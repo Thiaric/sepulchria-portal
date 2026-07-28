@@ -1,16 +1,18 @@
 import { AuthButton } from "@/components/auth-button";
+import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
+import { connection } from "next/server";
 import { Suspense } from "react";
 
 const navigationItems = [
-  { label: "Play", icon: "✦" },
-  { label: "World", icon: "◈" },
-  { label: "Characters", icon: "♙" },
-  { label: "Codex", icon: "⌘" },
-  { label: "Spells", icon: "✧" },
-  { label: "Market", icon: "◆" },
-  { label: "Forum", icon: "☷" },
-  { label: "Messages", icon: "✉" },
+  { label: "Play", icon: "✦", href: "#" },
+  { label: "World", icon: "◈", href: "#" },
+  { label: "Characters", icon: "♙", href: "/character" },
+  { label: "Codex", icon: "⌘", href: "#" },
+  { label: "Spells", icon: "✧", href: "#" },
+  { label: "Market", icon: "◆", href: "#" },
+  { label: "Forum", icon: "☷", href: "#" },
+  { label: "Messages", icon: "✉", href: "#" },
 ];
 
 const onlineCharacters = [
@@ -31,7 +33,52 @@ const onlineCharacters = [
   },
 ];
 
+type Character = {
+  id: string;
+  display_name: string;
+  occupation: string | null;
+  birthplace: string | null;
+  origin: string | null;
+  biography: string | null;
+  portrait_url: string | null;
+  status: string;
+};
+
 export default function Home() {
+  return (
+    <Suspense fallback={<DashboardLoading />}>
+      <Dashboard />
+    </Suspense>
+  );
+}
+
+async function Dashboard() {
+  await connection();
+
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  let character: Character | null = null;
+
+  if (user) {
+    const { data, error } = await supabase
+      .from("characters")
+      .select(
+        "id, display_name, occupation, birthplace, origin, biography, portrait_url, status",
+      )
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (error) {
+      throw new Error(`Unable to load character: ${error.message}`);
+    }
+
+    character = data;
+  }
+
   return (
     <main className="min-h-screen bg-[#120f0d] text-[#e8dcc4]">
       <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(116,82,42,0.16),_transparent_38%),linear-gradient(to_bottom,_#17120f,_#0d0b0a)]">
@@ -88,7 +135,7 @@ export default function Home() {
                 {navigationItems.map((item, index) => (
                   <Link
                     key={item.label}
-                    href="#"
+                    href={item.href}
                     className={`flex items-center gap-3 rounded-sm border px-3 py-3 text-sm transition ${
                       index === 0
                         ? "border-[#8d6d3e] bg-[#332719] text-[#efd9aa]"
@@ -179,37 +226,51 @@ export default function Home() {
                 </p>
 
                 <h2 className="mt-3 font-serif text-3xl text-[#e0cda7]">
-                  Create a character
+                  {character ? character.display_name : "Create a character"}
                 </h2>
 
                 <p className="mt-3 text-sm leading-6 text-[#9e907d]">
-                  Build the person who will walk the streets of Sepulchria.
-                  Their profile, history, belongings and relationships will all
-                  live here.
+                  {character
+                    ? character.biography ||
+                      "Your character record has been created. More information can be added later."
+                    : "Build the person who will walk the streets of Sepulchria. Their profile, history, belongings and relationships will all live here."}
                 </p>
 
                 <div className="mt-6 space-y-3 text-sm text-[#b4a58f]">
                   <div className="flex items-center justify-between border-b border-[#5e4930]/30 pb-3">
                     <span>Personal details</span>
-                    <span className="text-[#816a4b]">Not created</span>
+
+                    <span className="text-[#816a4b]">
+                      {character ? "Created" : "Not created"}
+                    </span>
                   </div>
 
                   <div className="flex items-center justify-between border-b border-[#5e4930]/30 pb-3">
                     <span>Background</span>
-                    <span className="text-[#816a4b]">Not created</span>
+
+                    <span className="text-[#816a4b]">
+                      {character?.biography ||
+                      character?.origin ||
+                      character?.birthplace
+                        ? "Added"
+                        : "Not created"}
+                    </span>
                   </div>
 
                   <div className="flex items-center justify-between">
                     <span>Portrait</span>
-                    <span className="text-[#816a4b]">Not selected</span>
+
+                    <span className="text-[#816a4b]">
+                      {character?.portrait_url ? "Selected" : "Not selected"}
+                    </span>
                   </div>
                 </div>
 
                 <Link
-                  href="#"
+                  href={character ? "/character" : "/character/create"}
                   className="mt-7 inline-flex text-xs uppercase tracking-[0.22em] text-[#c59a5a] transition hover:text-[#ebcc91]"
                 >
-                  Begin creation →
+                  {character ? "View character →" : "Begin creation →"}
                 </Link>
               </article>
             </div>
@@ -217,9 +278,11 @@ export default function Home() {
             <div className="mt-6 grid gap-5 md:grid-cols-3">
               <article className="rounded-sm border border-[#604a31]/40 bg-[#15110e] p-5">
                 <p className="text-2xl text-[#ae8750]">✦</p>
+
                 <h3 className="mt-4 font-serif text-xl text-[#d9c39c]">
                   Latest chronicle
                 </h3>
+
                 <p className="mt-2 text-sm leading-6 text-[#948775]">
                   Read recent events, announcements and changes in the living
                   world.
@@ -228,9 +291,11 @@ export default function Home() {
 
               <article className="rounded-sm border border-[#604a31]/40 bg-[#15110e] p-5">
                 <p className="text-2xl text-[#ae8750]">⌘</p>
+
                 <h3 className="mt-4 font-serif text-xl text-[#d9c39c]">
                   Consult the Codex
                 </h3>
+
                 <p className="mt-2 text-sm leading-6 text-[#948775]">
                   Explore rules, lore, factions, locations and the hidden laws
                   of Sepulchria.
@@ -239,9 +304,11 @@ export default function Home() {
 
               <article className="rounded-sm border border-[#604a31]/40 bg-[#15110e] p-5">
                 <p className="text-2xl text-[#ae8750]">✉</p>
+
                 <h3 className="mt-4 font-serif text-xl text-[#d9c39c]">
                   Private messages
                 </h3>
+
                 <p className="mt-2 text-sm leading-6 text-[#948775]">
                   Correspond privately with players and receive messages from
                   staff.
@@ -257,26 +324,75 @@ export default function Home() {
               </p>
 
               <div className="mt-4 border border-[#684f32]/45 bg-[#19130f] p-4">
-                <div className="flex h-32 items-center justify-center border border-dashed border-[#604a31] bg-[#100d0b]">
-                  <span className="font-serif text-sm italic text-[#756956]">
-                    No portrait
-                  </span>
-                </div>
+                {character ? (
+                  <>
+                    <div className="flex h-32 items-center justify-center overflow-hidden border border-dashed border-[#604a31] bg-[#100d0b]">
+                      {character.portrait_url ? (
+                        <img
+                          src={character.portrait_url}
+                          alt={`Portrait of ${character.display_name}`}
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <span className="font-serif text-sm italic text-[#756956]">
+                          No portrait
+                        </span>
+                      )}
+                    </div>
 
-                <p className="mt-4 font-serif text-xl text-[#d8c39b]">
-                  No character created
-                </p>
+                    <p className="mt-4 font-serif text-xl text-[#d8c39b]">
+                      {character.display_name}
+                    </p>
 
-                <p className="mt-2 text-xs leading-5 text-[#8e816f]">
-                  Create your first character to enter the city.
-                </p>
+                    <p className="mt-1 text-xs uppercase tracking-[0.18em] text-[#a17e4e]">
+                      {character.occupation || "Occupation unspecified"}
+                    </p>
 
-                <Link
-                  href="#"
-                  className="mt-4 block border border-[#755936] px-4 py-2 text-center text-[10px] uppercase tracking-[0.22em] text-[#c5a56d] transition hover:bg-[#2e2217]"
-                >
-                  Create character
-                </Link>
+                    <p className="mt-3 text-xs leading-5 text-[#8e816f]">
+                      {character.origin ||
+                        character.birthplace ||
+                        "No origin has been recorded yet."}
+                    </p>
+
+                    <div className="mt-4 flex items-center justify-between border-t border-[#5d472e]/40 pt-3 text-[10px] uppercase tracking-[0.18em]">
+                      <span className="text-[#776b5b]">Status</span>
+
+                      <span className="capitalize text-[#c4a16b]">
+                        {character.status}
+                      </span>
+                    </div>
+
+                    <Link
+                      href="/character"
+                      className="mt-4 block border border-[#755936] px-4 py-2 text-center text-[10px] uppercase tracking-[0.22em] text-[#c5a56d] transition hover:bg-[#2e2217]"
+                    >
+                      View character
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex h-32 items-center justify-center border border-dashed border-[#604a31] bg-[#100d0b]">
+                      <span className="font-serif text-sm italic text-[#756956]">
+                        No portrait
+                      </span>
+                    </div>
+
+                    <p className="mt-4 font-serif text-xl text-[#d8c39b]">
+                      No character created
+                    </p>
+
+                    <p className="mt-2 text-xs leading-5 text-[#8e816f]">
+                      Create your first character to enter the city.
+                    </p>
+
+                    <Link
+                      href="/character/create"
+                      className="mt-4 block border border-[#755936] px-4 py-2 text-center text-[10px] uppercase tracking-[0.22em] text-[#c5a56d] transition hover:bg-[#2e2217]"
+                    >
+                      Create character
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
 
@@ -292,25 +408,25 @@ export default function Home() {
               </div>
 
               <div className="mt-4 space-y-3">
-                {onlineCharacters.map((character) => (
+                {onlineCharacters.map((onlineCharacter) => (
                   <div
-                    key={character.name}
+                    key={onlineCharacter.name}
                     className="border-b border-[#59452e]/35 pb-3"
                   >
                     <div className="flex items-center gap-2">
                       <span className="h-2 w-2 rounded-full bg-[#78915a]" />
 
                       <p className="font-serif text-sm text-[#d0bb94]">
-                        {character.name}
+                        {onlineCharacter.name}
                       </p>
                     </div>
 
                     <p className="mt-1 pl-4 text-xs text-[#8e806d]">
-                      {character.role}
+                      {onlineCharacter.role}
                     </p>
 
                     <p className="mt-1 pl-4 text-[11px] italic text-[#6f6455]">
-                      {character.location}
+                      {onlineCharacter.location}
                     </p>
                   </div>
                 ))}
@@ -318,6 +434,22 @@ export default function Home() {
             </div>
           </aside>
         </div>
+      </div>
+    </main>
+  );
+}
+
+function DashboardLoading() {
+  return (
+    <main className="flex min-h-screen items-center justify-center bg-[#120f0d] text-[#e8dcc4]">
+      <div className="text-center">
+        <p className="font-serif text-3xl tracking-[0.22em] text-[#d9bd82]">
+          SEPULCHRIA
+        </p>
+
+        <p className="mt-4 text-xs uppercase tracking-[0.3em] text-[#887966]">
+          Opening the chronicle...
+        </p>
       </div>
     </main>
   );
