@@ -5,14 +5,14 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 
 const navigationItems = [
-  { label: "Play", icon: "✦", href: "#" },
+  { label: "Play", icon: "✦", href: "/game" },
   { label: "World", icon: "◈", href: "#" },
   { label: "Characters", icon: "♙", href: "/character" },
   { label: "Codex", icon: "⌘", href: "#" },
   { label: "Spells", icon: "✧", href: "#" },
   { label: "Market", icon: "◆", href: "#" },
   { label: "Forum", icon: "☷", href: "#" },
-  { label: "Messages", icon: "✉", href: "#" },
+  { label: "Messages", icon: "✉", href: "/messages" },
 ];
 
 const onlineCharacters = [
@@ -62,6 +62,7 @@ async function Dashboard() {
   } = await supabase.auth.getUser();
 
   let character: Character | null = null;
+  let unreadMessageCount = 0;
 
   if (user) {
     const { data, error } = await supabase
@@ -77,6 +78,57 @@ async function Dashboard() {
     }
 
     character = data;
+
+    if (character) {
+      const {
+        data: memberships,
+        error: membershipsError,
+      } = await supabase
+        .from("direct_conversation_participants")
+        .select("conversation_id, last_read_at")
+        .eq("character_id", character.id);
+
+      if (membershipsError) {
+        throw new Error(
+          `Unable to load message memberships: ${membershipsError.message}`,
+        );
+      }
+
+      const unreadCounts = await Promise.all(
+        (memberships ?? []).map(async (membership) => {
+          let unreadQuery = supabase
+            .from("direct_messages")
+            .select("id", {
+              count: "exact",
+              head: true,
+            })
+            .eq("conversation_id", membership.conversation_id)
+            .neq("sender_character_id", character.id);
+
+          if (membership.last_read_at) {
+            unreadQuery = unreadQuery.gt(
+              "created_at",
+              membership.last_read_at,
+            );
+          }
+
+          const { count, error: unreadError } = await unreadQuery;
+
+          if (unreadError) {
+            throw new Error(
+              `Unable to load unread messages: ${unreadError.message}`,
+            );
+          }
+
+          return count ?? 0;
+        }),
+      );
+
+      unreadMessageCount = unreadCounts.reduce(
+        (total, count) => total + count,
+        0,
+      );
+    }
   }
 
   return (
@@ -132,26 +184,43 @@ async function Dashboard() {
               </p>
 
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-1">
-                {navigationItems.map((item, index) => (
-                  <Link
-                    key={item.label}
-                    href={item.href}
-                    className={`flex items-center gap-3 rounded-sm border px-3 py-3 text-sm transition ${
-                      index === 0
-                        ? "border-[#8d6d3e] bg-[#332719] text-[#efd9aa]"
-                        : "border-transparent text-[#b6a894] hover:border-[#5d4930] hover:bg-[#1d1712] hover:text-[#e8d8ba]"
-                    }`}
-                  >
-                    <span
-                      aria-hidden="true"
-                      className="w-5 text-center text-[#b68b4f]"
-                    >
-                      {item.icon}
-                    </span>
+                {navigationItems.map((item, index) => {
+                  const isMessages = item.label === "Messages";
 
-                    <span>{item.label}</span>
-                  </Link>
-                ))}
+                  return (
+                    <Link
+                      key={item.label}
+                      href={item.href}
+                      className={`flex items-center rounded-sm border px-3 py-3 text-sm transition ${
+                        index === 0
+                          ? "border-[#8d6d3e] bg-[#332719] text-[#efd9aa]"
+                          : "border-transparent text-[#b6a894] hover:border-[#5d4930] hover:bg-[#1d1712] hover:text-[#e8d8ba]"
+                      }`}
+                    >
+                      <span className="flex min-w-0 items-center gap-3">
+                        <span
+                          aria-hidden="true"
+                          className="w-5 text-center text-[#b68b4f]"
+                        >
+                          {item.icon}
+                        </span>
+
+                        <span>{item.label}</span>
+                      </span>
+
+                      {isMessages && unreadMessageCount > 0 ? (
+                        <span
+                          aria-label={`${unreadMessageCount} unread messages`}
+                          className="ml-auto inline-flex min-w-5 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] px-1.5 py-0.5 text-[10px] font-semibold leading-none text-[#ffe1ac] shadow-[0_0_10px_rgba(190,75,45,0.35)]"
+                        >
+                          {unreadMessageCount > 99
+                            ? "99+"
+                            : unreadMessageCount}
+                        </span>
+                      ) : null}
+                    </Link>
+                  );
+                })}
               </div>
             </nav>
 
@@ -212,7 +281,7 @@ async function Dashboard() {
                   </p>
 
                   <Link
-                    href="#"
+                    href="/game"
                     className="mt-6 inline-flex w-fit items-center border border-[#967342] bg-[#3b2b1b] px-5 py-3 text-xs uppercase tracking-[0.22em] text-[#f1d9a7] transition hover:bg-[#513b25]"
                   >
                     Play now

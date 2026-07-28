@@ -1,20 +1,30 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+
 import { createClient } from "@/lib/supabase/client";
 
 type RoomRealtimeProps = {
   roomId: string;
 };
 
-export default function RoomRealtime({
-  roomId,
-}: RoomRealtimeProps) {
+export default function RoomRealtime({ roomId }: RoomRealtimeProps) {
   const router = useRouter();
+  const refreshTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const supabase = createClient();
+
+    const refreshSoon = () => {
+      if (refreshTimer.current) {
+        clearTimeout(refreshTimer.current);
+      }
+
+      refreshTimer.current = setTimeout(() => {
+        router.refresh();
+      }, 250);
+    };
 
     const channel = supabase
       .channel(`room-realtime-${roomId}`)
@@ -26,9 +36,7 @@ export default function RoomRealtime({
           table: "room_messages",
           filter: `room_id=eq.${roomId}`,
         },
-        () => {
-          router.refresh();
-        },
+        refreshSoon,
       )
       .on(
         "postgres_changes",
@@ -38,14 +46,16 @@ export default function RoomRealtime({
           table: "character_presence",
           filter: `room_id=eq.${roomId}`,
         },
-        () => {
-          router.refresh();
-        },
+        refreshSoon,
       )
       .subscribe();
 
     return () => {
-      supabase.removeChannel(channel);
+      if (refreshTimer.current) {
+        clearTimeout(refreshTimer.current);
+      }
+
+      void supabase.removeChannel(channel);
     };
   }, [roomId, router]);
 

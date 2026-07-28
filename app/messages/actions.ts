@@ -1,0 +1,475 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+
+import { createClient } from "@/lib/supabase/server";
+import {
+  PRIVATE_MESSAGE_COOLDOWN_SECONDS,
+  PRIVATE_MESSAGE_MAX_LENGTH,
+} from "@/lib/messages/constants";
+
+import type { MessageActionState } from "@/types/messages";
+
+type OwnedCharacter = {
+  id: string;
+};
+
+async function getContext() {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/auth/login");
+  }
+
+  const {
+    data: character,
+    error,
+  } = await supabase
+    .from("characters")
+    .select("id")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  if (!character) {
+    redirect("/character/create");
+  }
+
+  return {
+    supabase,
+    character: character as OwnedCharacter,
+  };
+}
+
+export async function startConversation(
+  formData: FormData,
+): Promise<void> {
+  const recipientId = String(
+    formData.get("recipientId") ?? "",
+  ).trim();
+
+  if (!recipientId) {
+    throw new Error("Missing recipient.");
+  }
+
+  const { supabase, character } =
+    await getContext();
+
+  if (recipientId === character.id) {
+    throw new Error(
+      "You cannot message yourself.",
+    );
+  }
+
+  const {
+    data: conversationId,
+    error,
+  } = await supabase.rpc(
+    "start_direct_conversation",
+    {
+      recipient_character_id: recipientId,
+    },
+  );
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  if (!conversationId) {
+    throw new Error(
+      "The conversation could not be created.",
+    );
+  }
+
+  redirect(`/messages/${conversationId}`);
+}
+
+export async function sendPrivateMessage(
+  previousState: MessageActionState,
+  formData: FormData,
+): Promise<MessageActionState> {
+  try {
+    const conversationId = String(
+      formData.get("conversationId") ?? "",
+    ).trim();
+
+    const body = String(
+      formData.get("body") ?? "",
+    ).trim();
+
+    const nonce =
+      String(
+        formData.get("client_nonce") ?? "",
+      ).trim() || crypto.randomUUID();
+
+    if (!conversationId || !body) {
+      return {
+        ok: false,
+        message:
+          "Write a message before sending it.",
+      };
+    }
+
+    if (
+      body.length >
+      PRIVATE_MESSAGE_MAX_LENGTH
+    ) {
+      return {
+        ok: false,
+        message: `The message exceeds ${PRIVATE_MESSAGE_MAX_LENGTH.toLocaleString(
+          "en-GB",
+        )} characters.`,
+      };
+    }
+
+    const { supabase, character } =
+      await getContext();
+
+    const {
+      data: participant,
+      error: participantError,
+    } = await supabase
+      .from(
+        "direct_conversation_participants",
+      )
+      .select("conversation_id")
+      .eq(
+        "conversation_id",
+        conversationId,
+      )
+      .eq("character_id", character.id)
+      .maybeSingle();
+
+    if (participantError) {
+      return {
+        ok: false,
+        message: participantError.message,
+      };
+    }
+
+    if (!participant) {
+      return {
+        ok: false,
+        message: "Conversation not found.",
+      };
+    }
+
+    const {
+      data: otherParticipant,
+      error: otherParticipantError,
+    } = await supabase
+      .from(
+        "direct_conversation_participants",
+      )
+      .select("character_id")
+      .eq(
+        "conversation_id",
+        conversationId,
+      )
+      .neq("character_id", character.id)
+      .maybeSingle();
+
+    if (otherParticipantError) {
+      return {
+        ok: false,
+        message:
+          otherParticipantError.message,
+      };
+    }
+
+    if (!otherParticipant) {
+      return {
+        ok: false,
+        message: "Recipient not found.",
+      };
+    }
+
+    const {
+      data: blocked,
+      error: blockError,
+    } = await supabase
+      .from("character_blocks")
+      .select("blocker_character_id")
+      .or(
+        [
+          `and(blocker_character_id.eq.${character.id},blocked_character_id.eq.${otherParticipant.character_id})`,
+          `and(blocker_character_id.eq.${otherParticipant.character_id},blocked_character_id.eq.${character.id})`,
+        ].join(","),
+      )
+      .limit(1)
+      .maybeSingle();
+
+    if (blockError) {
+      return {
+        ok: false,
+        message: blockError.message,
+      };
+    }
+
+    if (blocked) {
+      return {
+        ok: false,
+        message:
+          "This conversation is unavailable.",
+      };
+    }
+
+    const cooldownSince = new Date(
+      Date.now() -
+        PRIVATE_MESSAGE_COOLDOWN_SECONDS *
+          1000,
+    ).toISOString();
+
+    const {
+      data: recentMessage,
+      error: cooldownError,
+    } = await supabase
+      .from("direct_messages")
+      .select("id")
+      .eq(
+        "conversation_id",
+        conversationId,
+      )
+      .eq(
+        "sender_character_id",
+        character.id,
+      )
+      .gte("created_at", cooldownSince)
+      .limit(1)
+      .maybeSingle();
+
+    if (cooldownError) {
+      return {
+        ok: false,
+        message: cooldownError.message,
+      };
+    }
+
+    if (recentMessage) {
+      return {
+        ok: false,
+        message: `Please wait ${PRIVATE_MESSAGE_COOLDOWN_SECONDS} seconds before sending another message.`,
+      };
+    }
+
+    const { error: messageError } =
+      await supabase
+        .from("direct_messages")
+        .insert({
+          conversation_id: conversationId,
+          sender_character_id:
+            character.id,
+          body,
+          client_nonce: nonce,
+        });
+
+    if (
+      messageError &&
+      messageError.code !== "23505"
+    ) {
+      return {
+        ok: false,
+        message: messageError.message,
+      };
+    }
+
+    const now = new Date().toISOString();
+
+    const {
+      error: conversationUpdateError,
+    } = await supabase
+      .from("direct_conversations")
+      .update({
+        updated_at: now,
+      })
+      .eq("id", conversationId);
+
+    if (conversationUpdateError) {
+      return {
+        ok: false,
+        message:
+          conversationUpdateError.message,
+      };
+    }
+
+    const {
+      error: participantUpdateError,
+    } = await supabase
+      .from(
+        "direct_conversation_participants",
+      )
+      .update({
+        archived_at: null,
+      })
+      .eq(
+        "conversation_id",
+        conversationId,
+      );
+
+    if (participantUpdateError) {
+      return {
+        ok: false,
+        message:
+          participantUpdateError.message,
+      };
+    }
+
+    revalidatePath(
+      `/messages/${conversationId}`,
+    );
+
+    revalidatePath("/messages");
+
+    return {
+      ok: true,
+      message: "Message sent.",
+      submittedAt: Date.now(),
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Unexpected error.",
+    };
+  }
+}
+
+export async function markConversationRead(
+  conversationId: string,
+): Promise<void> {
+  const { supabase, character } =
+    await getContext();
+
+  const { error } = await supabase
+    .from(
+      "direct_conversation_participants",
+    )
+    .update({
+      last_read_at:
+        new Date().toISOString(),
+    })
+    .eq(
+      "conversation_id",
+      conversationId,
+    )
+    .eq("character_id", character.id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/messages");
+}
+
+export async function toggleArchive(
+  formData: FormData,
+): Promise<void> {
+  const conversationId = String(
+    formData.get("conversationId") ?? "",
+  ).trim();
+
+  const archive =
+    String(
+      formData.get("archive") ?? "false",
+    ) === "true";
+
+  const { supabase, character } =
+    await getContext();
+
+  const { error } = await supabase
+    .from(
+      "direct_conversation_participants",
+    )
+    .update({
+      archived_at: archive
+        ? new Date().toISOString()
+        : null,
+    })
+    .eq(
+      "conversation_id",
+      conversationId,
+    )
+    .eq("character_id", character.id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/messages");
+  redirect("/messages");
+}
+
+export async function toggleBlock(
+  formData: FormData,
+): Promise<void> {
+  const characterId = String(
+    formData.get("characterId") ?? "",
+  ).trim();
+
+  const block =
+    String(
+      formData.get("block") ?? "false",
+    ) === "true";
+
+  const { supabase, character } =
+    await getContext();
+
+  if (
+    !characterId ||
+    characterId === character.id
+  ) {
+    return;
+  }
+
+  if (block) {
+    const { error } = await supabase
+      .from("character_blocks")
+      .upsert(
+        {
+          blocker_character_id:
+            character.id,
+          blocked_character_id:
+            characterId,
+        },
+        {
+          onConflict:
+            "blocker_character_id,blocked_character_id",
+        },
+      );
+
+    if (error) {
+      throw new Error(error.message);
+    }
+  } else {
+    const { error } = await supabase
+      .from("character_blocks")
+      .delete()
+      .eq(
+        "blocker_character_id",
+        character.id,
+      )
+      .eq(
+        "blocked_character_id",
+        characterId,
+      );
+
+    if (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  revalidatePath("/messages");
+  revalidatePath(
+    `/character/${characterId}`,
+  );
+}
