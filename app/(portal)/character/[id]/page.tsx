@@ -1,7 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Profile } from "../page";
-import { startConversation } from "@/app/messages/actions";
+import { startConversation } from "@/app/(portal)/messages/actions";
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

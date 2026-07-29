@@ -1,0 +1,256 @@
+import "server-only";
+
+import { cache } from "react";
+import { redirect } from "next/navigation";
+
+import { createClient } from "@/lib/supabase/server";
+import type {
+  PortalCharacter,
+  PortalContext,
+  PortalPresence,
+} from "@/types/portal";
+
+const PRESENCE_ACTIVE_MINUTES = 3;
+
+type CharacterRow = {
+  id: string;
+  first_name: string;
+  surname: string;
+  display_name: string;
+  portrait_url: string | null;
+  occupation: string | null;
+  faction: string | null;
+  title: string | null;
+  biography: string | null;
+  status: "draft" | "submitted" | "approved" | "rejected";
+  current_room_id: string | null;
+  room:
+    | {
+        id: string;
+        name: string;
+        slug: string;
+        area:
+          | {
+              id: string;
+              name: string;
+              slug: string;
+            }
+          | {
+              id: string;
+              name: string;
+              slug: string;
+            }[]
+          | null;
+      }
+    | {
+        id: string;
+        name: string;
+        slug: string;
+        area:
+          | {
+              id: string;
+              name: string;
+              slug: string;
+            }
+          | {
+              id: string;
+              name: string;
+              slug: string;
+            }[]
+          | null;
+      }[]
+    | null;
+};
+
+function normaliseRelation<T>(value: T | T[] | null): T | null {
+  if (Array.isArray(value)) {
+    return value[0] ?? null;
+  }
+
+  return value;
+}
+
+export const getPortalContext = cache(
+  async (): Promise<PortalContext> => {
+    const supabase = await createClient();
+
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+      redirect("/auth/login");
+    }
+
+    const { data: characterData, error: characterError } =
+      await supabase
+        .from("characters")
+        .select(`
+          id,
+          first_name,
+          surname,
+          display_name,
+          portrait_url,
+          occupation,
+          faction,
+          title,
+          biography,
+          status,
+          current_room_id,
+          room:rooms!characters_current_room_id_fkey(
+            id,
+            name,
+            slug,
+            area:areas!rooms_area_id_fkey(
+              id,
+              name,
+              slug
+            )
+          )
+        `)
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+    if (characterError) {
+      throw new Error(
+        `Unable to load portal character: ${characterError.message}`,
+      );
+    }
+
+    let character: PortalCharacter | null = null;
+    let presence: PortalPresence | null = null;
+    let unreadMessageCount = 0;
+
+    if (characterData) {
+      const row = characterData as unknown as CharacterRow;
+      const room = normaliseRelation(row.room);
+      const area = room ? normaliseRelation(room.area) : null;
+
+      character = {
+  id: row.id,
+  first_name: row.first_name,
+  surname: row.surname,
+  display_name: row.display_name,
+  portrait_url: row.portrait_url,
+  occupation: row.occupation,
+  faction: row.faction,
+  title: row.title,
+  biography: row.biography,
+  status: row.status,
+  current_room_id: row.current_room_id,
+  currentRoom: room
+    ? {
+        id: room.id,
+        name: room.name,
+        slug: room.slug,
+        area,
+      }
+    : null,
+};
+
+const characterId = character.id;
+
+      const [
+        { data: presenceData, error: presenceError },
+        { data: memberships, error: membershipsError },
+      ] = await Promise.all([
+        supabase
+          .from("character_presence")
+          .select("status, last_seen_at, room_id")
+          .eq("character_id", character.id)
+          .maybeSingle(),
+
+        supabase
+          .from("direct_conversation_participants")
+          .select("conversation_id, last_read_at")
+          .eq("character_id", character.id)
+          .is("archived_at", null),
+      ]);
+
+      if (presenceError) {
+        throw new Error(
+          `Unable to load presence: ${presenceError.message}`,
+        );
+      }
+
+      if (membershipsError) {
+        throw new Error(
+          `Unable to load conversations: ${membershipsError.message}`,
+        );
+      }
+
+      presence = presenceData as PortalPresence | null;
+
+      const unreadCounts = await Promise.all(
+  (memberships ?? []).map(async (membership) => {
+    let query = supabase
+      .from("direct_messages")
+      .select("id", {
+        count: "exact",
+        head: true,
+      })
+      .eq(
+        "conversation_id",
+        membership.conversation_id,
+      )
+      .neq("sender_character_id", characterId);
+
+    if (membership.last_read_at) {
+      query = query.gt(
+        "created_at",
+        membership.last_read_at,
+      );
+    }
+
+    const { count, error } = await query;
+
+    if (error) {
+      throw new Error(
+        `Unable to count unread messages: ${error.message}`,
+      );
+    }
+
+    return count ?? 0;
+  }),
+);
+
+      unreadMessageCount = unreadCounts.reduce(
+        (total, current) => total + current,
+        0,
+      );
+    }
+
+    const activeSince = new Date(
+      Date.now() - PRESENCE_ACTIVE_MINUTES * 60_000,
+    ).toISOString();
+
+    const {
+      count: onlineCharacterCount,
+      error: onlineError,
+    } = await supabase
+      .from("character_presence")
+      .select("character_id", {
+        count: "exact",
+        head: true,
+      })
+      .gte("last_seen_at", activeSince);
+
+    if (onlineError) {
+      throw new Error(
+        `Unable to count online characters: ${onlineError.message}`,
+      );
+    }
+
+    return {
+      user: {
+        id: user.id,
+        email: user.email ?? null,
+      },
+      character,
+      presence,
+      unreadMessageCount,
+      onlineCharacterCount: onlineCharacterCount ?? 0,
+    };
+  },
+);

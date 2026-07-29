@@ -1,0 +1,50 @@
+export type PortalCharacterStatus =
+  | "draft"
+  | "submitted"
+  | "approved"
+  | "rejected";
+
+export type PortalPresenceStatus = "online" | "away" | "busy";
+
+export type PortalRoom = {
+  id: string;
+  name: string;
+  slug: string;
+  area: {
+    id: string;
+    name: string;
+    slug: string;
+  } | null;
+};
+
+export type PortalCharacter = {
+  id: string;
+  first_name: string;
+  surname: string;
+  display_name: string;
+  portrait_url: string | null;
+  occupation: string | null;
+  faction: string | null;
+  title: string | null;
+  biography: string | null;
+  status: PortalCharacterStatus;
+  current_room_id: string | null;
+  currentRoom: PortalRoom | null;
+};
+
+export type PortalPresence = {
+  status: PortalPresenceStatus;
+  last_seen_at: string;
+  room_id: string | null;
+};
+
+export type PortalContext = {
+  user: {
+    id: string;
+    email: string | null;
+  };
+  character: PortalCharacter | null;
+  presence: PortalPresence | null;
+  unreadMessageCount: number;
+  onlineCharacterCount: number;
+};
