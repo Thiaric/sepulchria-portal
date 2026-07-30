@@ -1,0 +1,654 @@
+import Image from "next/image";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+
+import { requireStaff } from "@/lib/auth/require-staff";
+import { createClient } from "@/lib/supabase/server";
+
+import {
+  updateCharacterAdministration,
+} from "../actions";
+
+type CharacterStatus =
+  | "draft"
+  | "submitted"
+  | "approved"
+  | "rejected";
+
+type CodexOption = {
+  id: string;
+  name: string;
+};
+
+type CodexRelation =
+  | {
+      id: string;
+      name: string;
+    }
+  | {
+      id: string;
+      name: string;
+    }[]
+  | null;
+
+type CharacterRow = {
+  id: string;
+  user_id: string;
+  public_slug: string;
+  first_name: string;
+  surname: string;
+  display_name: string | null;
+  pronouns: string | null;
+  date_of_birth: string | null;
+  birthplace: string | null;
+  origin: string | null;
+  occupation: string | null;
+  biography: string | null;
+  portrait_url: string | null;
+  status: CharacterStatus;
+  created_at: string;
+  updated_at: string;
+  current_room_id: string | null;
+  physical_description: string | null;
+  personality: string | null;
+  public_notes: string | null;
+  title: string | null;
+  race_id: string | null;
+  association_id: string | null;
+  staff_notes: string | null;
+  rejection_reason: string | null;
+  approved_at: string | null;
+  approved_by: string | null;
+  race: CodexRelation;
+  association: CodexRelation;
+};
+
+type AdminCharacterPageProps = {
+  params: Promise<{
+    id: string;
+  }>;
+};
+
+function normaliseRelation<T>(
+  value: T | T[] | null,
+): T | null {
+  if (Array.isArray(value)) {
+    return value[0] ?? null;
+  }
+
+  return value;
+}
+
+function getDisplayName(
+  character: CharacterRow,
+): string {
+  return (
+    character.display_name?.trim() ||
+    `${character.first_name} ${character.surname}`.trim() ||
+    "Unnamed character"
+  );
+}
+
+function formatDate(
+  value: string | null,
+): string {
+  if (!value) {
+    return "Not available";
+  }
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
+}
+
+export default async function AdminCharacterPage({
+  params,
+}: AdminCharacterPageProps) {
+  await requireStaff();
+
+  const { id } = await params;
+  const supabase = await createClient();
+
+  const [
+    characterResult,
+    racesResult,
+    associationsResult,
+  ] = await Promise.all([
+    supabase
+      .from("characters")
+      .select(`
+        id,
+        user_id,
+        public_slug,
+        first_name,
+        surname,
+        display_name,
+        pronouns,
+        date_of_birth,
+        birthplace,
+        origin,
+        occupation,
+        biography,
+        portrait_url,
+        status,
+        created_at,
+        updated_at,
+        current_room_id,
+        physical_description,
+        personality,
+        public_notes,
+        title,
+        race_id,
+        association_id,
+        staff_notes,
+        rejection_reason,
+        approved_at,
+        approved_by,
+
+        race:races!characters_race_id_fkey(
+          id,
+          name
+        ),
+
+        association:associations!characters_association_id_fkey(
+          id,
+          name
+        )
+      `)
+      .eq("id", id)
+      .maybeSingle(),
+
+    supabase
+      .from("races")
+      .select("id, name")
+      .order("name"),
+
+    supabase
+      .from("associations")
+      .select("id, name")
+      .order("name"),
+  ]);
+
+  const firstError =
+    characterResult.error ??
+    racesResult.error ??
+    associationsResult.error;
+
+  if (firstError) {
+    throw new Error(
+      `Unable to load character administration data: ${firstError.message}`,
+    );
+  }
+
+  if (!characterResult.data) {
+    notFound();
+  }
+
+  const character =
+    characterResult.data as unknown as CharacterRow;
+
+  const races =
+    (racesResult.data ??
+      []) as CodexOption[];
+
+  const associations =
+    (associationsResult.data ??
+      []) as CodexOption[];
+
+  const race =
+    normaliseRelation(character.race);
+
+  const association =
+    normaliseRelation(
+      character.association,
+    );
+
+  const displayName =
+    getDisplayName(character);
+
+  return (
+    <main className="p-5 sm:p-7 lg:p-9">
+      <div className="mx-auto max-w-6xl">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <Link
+            href="/admin/characters"
+            className="text-[9px] uppercase tracking-[0.18em] text-[#9c805b] transition hover:text-[#e4c796]"
+          >
+            ← Character archive
+          </Link>
+
+          <Link
+            href={`/characters/${character.public_slug}`}
+            className="border border-[#60482e]/55 bg-[#15100d] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[#ac9879] transition hover:border-[#987344] hover:text-[#e7cca0]"
+          >
+            Open public profile
+          </Link>
+        </div>
+
+        <section className="mt-6 overflow-hidden border border-[#60482e]/45 bg-[#15100d]">
+          <div className="grid lg:grid-cols-[260px_minmax(0,1fr)]">
+            <div className="border-b border-[#60482e]/35 bg-[#0f0b09] p-6 lg:border-b-0 lg:border-r">
+              <div className="relative mx-auto aspect-[3/4] w-full max-w-[210px] overflow-hidden border border-[#765937]/55 bg-[#090706]">
+                {character.portrait_url ? (
+                  <Image
+                    src={character.portrait_url}
+                    alt={`Portrait of ${displayName}`}
+                    fill
+                    sizes="210px"
+                    className="object-cover"
+                    priority
+                  />
+                ) : (
+                  <div className="flex h-full items-center justify-center font-serif text-5xl text-[#705334]">
+                    {character.first_name
+                      .charAt(0)
+                      .toUpperCase()}
+                    {character.surname
+                      .charAt(0)
+                      .toUpperCase()}
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-5 text-center">
+                <StatusBadge
+                  status={character.status}
+                />
+
+                <p className="mt-4 text-[9px] uppercase tracking-[0.18em] text-[#756957]">
+                  Created
+                </p>
+
+                <p className="mt-1 text-xs text-[#aa987d]">
+                  {formatDate(
+                    character.created_at,
+                  )}
+                </p>
+
+                <p className="mt-4 text-[9px] uppercase tracking-[0.18em] text-[#756957]">
+                  Last updated
+                </p>
+
+                <p className="mt-1 text-xs text-[#aa987d]">
+                  {formatDate(
+                    character.updated_at,
+                  )}
+                </p>
+              </div>
+            </div>
+
+            <div className="p-6 sm:p-8">
+              <p className="text-[9px] uppercase tracking-[0.28em] text-[#8c704b]">
+                Character administration
+              </p>
+
+              <h2 className="mt-2 font-serif text-4xl text-[#ead5ac]">
+                {displayName}
+              </h2>
+
+              <p className="mt-2 text-sm text-[#9f8968]">
+                {race?.name ??
+                  "No race assigned"}
+                {" · "}
+                {association?.name ??
+                  "No association assigned"}
+              </p>
+
+              <div className="mt-7 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                <ReadOnlyField
+                  label="Legal name"
+                  value={`${character.first_name} ${character.surname}`}
+                />
+
+                <ReadOnlyField
+                  label="Display name"
+                  value={
+                    character.display_name
+                  }
+                />
+
+                <ReadOnlyField
+                  label="Pronouns"
+                  value={character.pronouns}
+                />
+
+                <ReadOnlyField
+                  label="Date of birth"
+                  value={
+                    character.date_of_birth
+                  }
+                />
+
+                <ReadOnlyField
+                  label="Birthplace"
+                  value={character.birthplace}
+                />
+
+                <ReadOnlyField
+                  label="Origin"
+                  value={character.origin}
+                />
+
+                <ReadOnlyField
+                  label="Occupation"
+                  value={character.occupation}
+                />
+
+                <ReadOnlyField
+                  label="Public slug"
+                  value={character.public_slug}
+                />
+
+                <ReadOnlyField
+                  label="Owner user ID"
+                  value={character.user_id}
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
+          <div className="space-y-6">
+            <CharacterTextSection
+              title="Biography"
+              content={character.biography}
+            />
+
+            <CharacterTextSection
+              title="Physical description"
+              content={
+                character.physical_description
+              }
+            />
+
+            <CharacterTextSection
+              title="Personality"
+              content={character.personality}
+            />
+
+            <CharacterTextSection
+              title="Public notes"
+              content={character.public_notes}
+            />
+          </div>
+
+          <section className="h-fit border border-[#60482e]/45 bg-[#15100d] p-5 sm:p-6">
+            <p className="text-[9px] uppercase tracking-[0.24em] text-[#8c704b]">
+              Staff controls
+            </p>
+
+            <h3 className="mt-2 font-serif text-2xl text-[#dfc99f]">
+              Review and classification
+            </h3>
+
+            <form
+              action={
+                updateCharacterAdministration
+              }
+              className="mt-6"
+            >
+              <input
+                type="hidden"
+                name="characterId"
+                value={character.id}
+              />
+
+              <input
+                type="hidden"
+                name="returnTo"
+                value={`/admin/characters/${character.id}`}
+              />
+
+              <div className="space-y-5">
+                <AdminField label="Race">
+                  <select
+                    name="raceId"
+                    defaultValue={
+                      character.race_id ?? ""
+                    }
+                    className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                  >
+                    <option value="">
+                      No race assigned
+                    </option>
+
+                    {races.map((option) => (
+                      <option
+                        key={option.id}
+                        value={option.id}
+                      >
+                        {option.name}
+                      </option>
+                    ))}
+                  </select>
+                </AdminField>
+
+                <AdminField label="Association">
+                  <select
+                    name="associationId"
+                    defaultValue={
+                      character.association_id ??
+                      ""
+                    }
+                    className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                  >
+                    <option value="">
+                      No association assigned
+                    </option>
+
+                    {associations.map(
+                      (option) => (
+                        <option
+                          key={option.id}
+                          value={option.id}
+                        >
+                          {option.name}
+                        </option>
+                      ),
+                    )}
+                  </select>
+                </AdminField>
+
+                <AdminField label="Status">
+                  <select
+                    name="status"
+                    defaultValue={
+                      character.status
+                    }
+                    className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                  >
+                    <option value="draft">
+                      Draft
+                    </option>
+
+                    <option value="submitted">
+                      Submitted
+                    </option>
+
+                    <option value="approved">
+                      Approved
+                    </option>
+
+                    <option value="rejected">
+                      Rejected
+                    </option>
+                  </select>
+                </AdminField>
+
+                <AdminField label="Public title">
+                  <input
+                    type="text"
+                    name="title"
+                    defaultValue={
+                      character.title ?? ""
+                    }
+                    maxLength={120}
+                    placeholder="Optional public title"
+                    className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+                  />
+                </AdminField>
+
+                <AdminField label="Rejection reason">
+                  <textarea
+                    name="rejectionReason"
+                    defaultValue={
+                      character.rejection_reason ??
+                      ""
+                    }
+                    maxLength={5000}
+                    rows={5}
+                    placeholder="Explain what must be corrected when rejecting the sheet."
+                    className="w-full resize-y border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm leading-6 text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+                  />
+                </AdminField>
+
+                <AdminField label="Private staff notes">
+                  <textarea
+                    name="staffNotes"
+                    defaultValue={
+                      character.staff_notes ??
+                      ""
+                    }
+                    maxLength={10000}
+                    rows={7}
+                    placeholder="These notes are visible only to staff."
+                    className="w-full resize-y border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm leading-6 text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+                  />
+                </AdminField>
+              </div>
+
+              {character.approved_at ? (
+                <div className="mt-5 border border-[#315742]/55 bg-[#102019] p-4">
+                  <p className="text-[8px] uppercase tracking-[0.18em] text-[#6fa381]">
+                    Approval record
+                  </p>
+
+                  <p className="mt-2 text-xs leading-5 text-[#a8c2ae]">
+                    Approved{" "}
+                    {formatDate(
+                      character.approved_at,
+                    )}
+                  </p>
+
+                  {character.approved_by ? (
+                    <p className="mt-1 break-all text-[9px] text-[#718d79]">
+                      Staff ID:{" "}
+                      {character.approved_by}
+                    </p>
+                  ) : null}
+                </div>
+              ) : null}
+
+              <button
+                type="submit"
+                className="mt-6 w-full border border-[#987344] bg-[#3b2919] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[#efd6a8] transition hover:border-[#b98c50] hover:bg-[#50371f]"
+              >
+                Save character record
+              </button>
+            </form>
+          </section>
+        </div>
+      </div>
+    </main>
+  );
+}
+
+function AdminField({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <label className="block">
+      <span className="mb-2 block text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+        {label}
+      </span>
+
+      {children}
+    </label>
+  );
+}
+
+function ReadOnlyField({
+  label,
+  value,
+}: {
+  label: string;
+  value: string | null;
+}) {
+  return (
+    <div>
+      <p className="text-[8px] uppercase tracking-[0.2em] text-[#806b50]">
+        {label}
+      </p>
+
+      <p className="mt-2 break-words text-sm text-[#c9b99e]">
+        {value?.trim() || "Not provided"}
+      </p>
+    </div>
+  );
+}
+
+function CharacterTextSection({
+  title,
+  content,
+}: {
+  title: string;
+  content: string | null;
+}) {
+  return (
+    <section className="border border-[#60482e]/45 bg-[#15100d] p-5 sm:p-6">
+      <h3 className="font-serif text-2xl text-[#dfc99f]">
+        {title}
+      </h3>
+
+      {content?.trim() ? (
+        <div className="mt-4 whitespace-pre-wrap text-sm leading-7 text-[#b8aa96]">
+          {content}
+        </div>
+      ) : (
+        <p className="mt-4 text-sm italic text-[#756957]">
+          No information was provided.
+        </p>
+      )}
+    </section>
+  );
+}
+
+function StatusBadge({
+  status,
+}: {
+  status: CharacterStatus;
+}) {
+  const classes = {
+    draft:
+      "border-stone-600/60 text-stone-400",
+    submitted:
+      "border-amber-700/60 text-amber-500",
+    approved:
+      "border-emerald-800/60 text-emerald-500",
+    rejected:
+      "border-red-800/60 text-red-500",
+  };
+
+  return (
+    <span
+      className={`inline-block border bg-black/20 px-2.5 py-1 text-[8px] uppercase tracking-[0.18em] ${classes[status]}`}
+    >
+      {status}
+    </span>
+  );
+}

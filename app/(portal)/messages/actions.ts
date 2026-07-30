@@ -3,12 +3,11 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-import { createClient } from "@/lib/supabase/server";
 import {
   PRIVATE_MESSAGE_COOLDOWN_SECONDS,
   PRIVATE_MESSAGE_MAX_LENGTH,
 } from "@/lib/messages/constants";
-
+import { createClient } from "@/lib/supabase/server";
 import type { MessageActionState } from "@/types/messages";
 
 type OwnedCharacter = {
@@ -75,7 +74,8 @@ export async function startConversation(
   } = await supabase.rpc(
     "start_direct_conversation",
     {
-      recipient_character_id: recipientId,
+      recipient_character_id:
+        recipientId,
     },
   );
 
@@ -145,20 +145,25 @@ export async function sendPrivateMessage(
         "conversation_id",
         conversationId,
       )
-      .eq("character_id", character.id)
+      .eq(
+        "character_id",
+        character.id,
+      )
       .maybeSingle();
 
     if (participantError) {
       return {
         ok: false,
-        message: participantError.message,
+        message:
+          participantError.message,
       };
     }
 
     if (!participant) {
       return {
         ok: false,
-        message: "Conversation not found.",
+        message:
+          "Conversation not found.",
       };
     }
 
@@ -174,7 +179,10 @@ export async function sendPrivateMessage(
         "conversation_id",
         conversationId,
       )
-      .neq("character_id", character.id)
+      .neq(
+        "character_id",
+        character.id,
+      )
       .maybeSingle();
 
     if (otherParticipantError) {
@@ -188,7 +196,8 @@ export async function sendPrivateMessage(
     if (!otherParticipant) {
       return {
         ok: false,
-        message: "Recipient not found.",
+        message:
+          "Recipient not found.",
       };
     }
 
@@ -242,14 +251,18 @@ export async function sendPrivateMessage(
         "sender_character_id",
         character.id,
       )
-      .gte("created_at", cooldownSince)
+      .gte(
+        "created_at",
+        cooldownSince,
+      )
       .limit(1)
       .maybeSingle();
 
     if (cooldownError) {
       return {
         ok: false,
-        message: cooldownError.message,
+        message:
+          cooldownError.message,
       };
     }
 
@@ -264,7 +277,8 @@ export async function sendPrivateMessage(
       await supabase
         .from("direct_messages")
         .insert({
-          conversation_id: conversationId,
+          conversation_id:
+            conversationId,
           sender_character_id:
             character.id,
           body,
@@ -277,11 +291,13 @@ export async function sendPrivateMessage(
     ) {
       return {
         ok: false,
-        message: messageError.message,
+        message:
+          messageError.message,
       };
     }
 
-    const now = new Date().toISOString();
+    const now =
+      new Date().toISOString();
 
     const {
       error: conversationUpdateError,
@@ -362,7 +378,10 @@ export async function markConversationRead(
       "conversation_id",
       conversationId,
     )
-    .eq("character_id", character.id);
+    .eq(
+      "character_id",
+      character.id,
+    );
 
   if (error) {
     throw new Error(error.message);
@@ -380,7 +399,8 @@ export async function toggleArchive(
 
   const archive =
     String(
-      formData.get("archive") ?? "false",
+      formData.get("archive") ??
+        "false",
     ) === "true";
 
   const { supabase, character } =
@@ -399,7 +419,10 @@ export async function toggleArchive(
       "conversation_id",
       conversationId,
     )
-    .eq("character_id", character.id);
+    .eq(
+      "character_id",
+      character.id,
+    );
 
   if (error) {
     throw new Error(error.message);
@@ -428,6 +451,25 @@ export async function toggleBlock(
     !characterId ||
     characterId === character.id
   ) {
+    return;
+  }
+
+  const {
+    data: targetCharacter,
+    error: targetCharacterError,
+  } = await supabase
+    .from("characters")
+    .select("id, public_slug")
+    .eq("id", characterId)
+    .maybeSingle();
+
+  if (targetCharacterError) {
+    throw new Error(
+      targetCharacterError.message,
+    );
+  }
+
+  if (!targetCharacter) {
     return;
   }
 
@@ -469,7 +511,10 @@ export async function toggleBlock(
   }
 
   revalidatePath("/messages");
-  revalidatePath(
-    `/character/${characterId}`,
-  );
+
+  if (targetCharacter.public_slug) {
+    revalidatePath(
+      `/characters/${targetCharacter.public_slug}`,
+    );
+  }
 }

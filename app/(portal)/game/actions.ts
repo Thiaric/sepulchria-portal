@@ -279,7 +279,7 @@ export async function sendRoomMessage(
       character.current_room_id,
     );
 
-    revalidatePath("/game");
+    
 
     return {
       ok: true,

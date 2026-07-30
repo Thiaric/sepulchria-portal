@@ -32,7 +32,7 @@ export default function RoomChatForm() {
     <form
       ref={formRef}
       action={formAction}
-      className="border-t border-[#59432c]/40 p-4 sm:p-5"
+      className="shrink-0 border-t border-[#59432c]/40 bg-[#17110d] p-3 sm:p-4"
     >
       <input type="hidden" name="client_nonce" value={nonce} />
 
@@ -43,7 +43,7 @@ export default function RoomChatForm() {
         value={value}
         onChange={(event) => setValue(event.target.value)}
         placeholder="Write your action..."
-        className="min-h-28 w-full resize-y border border-[#60482e]/50 bg-[#0f0c09] px-4 py-3 text-sm leading-7 text-[#d0bea1] outline-none transition placeholder:text-[#5f574d] focus:border-[#927047]"
+        className="h-24 w-full resize-none border border-[#60482e]/50 bg-[#0f0c09] px-4 py-3 text-sm leading-6 text-[#d0bea1] outline-none transition placeholder:text-[#5f574d] focus:border-[#927047]"
       />
 
       <div className="mt-3 flex flex-wrap items-center justify-between gap-4">

@@ -29,9 +29,13 @@ export default function PresenceHeartbeat({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const statusRef = useRef<PresenceStatus>(initialStatus);
+  const statusRef =
+    useRef<PresenceStatus>(initialStatus);
+
   const roomIdRef = useRef(roomId);
-  const manualStatusRef = useRef<PresenceStatus>(initialStatus);
+
+  const manualStatusRef =
+    useRef<PresenceStatus>(initialStatus);
 
   useEffect(() => {
     roomIdRef.current = roomId;
@@ -164,23 +168,17 @@ export default function PresenceHeartbeat({
   }, [updatePresence]);
 
   return (
-    <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border border-[#60482e]/45 bg-[#15100d] px-4 py-3">
-      <div>
-        <p className="text-[9px] uppercase tracking-[0.25em] text-[#876a46]">
-          Presence
-        </p>
+    <div>
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <p className="text-[9px] uppercase tracking-[0.26em] text-[#876a46]">
+            Your presence
+          </p>
 
-        <p className="mt-1 text-xs text-[#8f8271]">
-          Your visible activity status
-        </p>
-      </div>
-
-      <div className="flex items-center gap-3">
-        {error ? (
-          <span className="text-xs text-[#d18b80]">
-            {error}
-          </span>
-        ) : null}
+          <p className="mt-1 text-xs text-[#8f8271]">
+            Visible activity status
+          </p>
+        </div>
 
         <select
           value={status}
@@ -197,6 +195,12 @@ export default function PresenceHeartbeat({
           <option value="busy">Busy</option>
         </select>
       </div>
+
+      {error ? (
+        <p className="mt-3 text-xs leading-5 text-[#d18b80]">
+          {error}
+        </p>
+      ) : null}
     </div>
   );
 }

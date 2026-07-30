@@ -1,0 +1,25 @@
+import { CodexEntryHero } from "@/components/codex/codex-entry-hero";
+import type { Race } from "@/types/codex";
+
+type RaceHeroProps = {
+  race: Race;
+};
+
+export function RaceHero({
+  race,
+}: RaceHeroProps) {
+  return (
+    <CodexEntryHero
+      name={race.name}
+      summary={race.summary}
+      description={race.description}
+      bannerUrl={race.banner_url}
+      imageUrl={race.image_url}
+      iconUrl={race.icon_url}
+      colour={race.colour}
+      categoryLabel="Race"
+      returnHref="/races"
+      returnLabel="Back to races"
+    />
+  );
+}

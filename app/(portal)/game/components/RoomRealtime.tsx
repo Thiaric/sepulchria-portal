@@ -9,9 +9,15 @@ type RoomRealtimeProps = {
   roomId: string;
 };
 
-export default function RoomRealtime({ roomId }: RoomRealtimeProps) {
+export default function RoomRealtime({
+  roomId,
+}: RoomRealtimeProps) {
   const router = useRouter();
-  const refreshTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const refreshTimer =
+    useRef<ReturnType<typeof setTimeout> | null>(
+      null,
+    );
 
   useEffect(() => {
     const supabase = createClient();
@@ -27,17 +33,7 @@ export default function RoomRealtime({ roomId }: RoomRealtimeProps) {
     };
 
     const channel = supabase
-      .channel(`room-realtime-${roomId}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "room_messages",
-          filter: `room_id=eq.${roomId}`,
-        },
-        refreshSoon,
-      )
+      .channel(`room-presence-${roomId}`)
       .on(
         "postgres_changes",
         {

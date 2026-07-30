@@ -4,6 +4,7 @@ export type CharacterSummary = {
   id: string;
   display_name: string;
   portrait_url: string | null;
+  public_slug: string | null;
 };
 
 export type RoomMessage = {

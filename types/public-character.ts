@@ -9,6 +9,14 @@ export type PublicPresenceStatus =
   | "away"
   | "busy";
 
+export type PublicCodexReference = {
+  id: string;
+  name: string;
+  slug: string;
+  icon_url: string | null;
+  colour: string | null;
+};
+
 export type PublicCharacterRoom = {
   id: string;
   name: string;
@@ -36,11 +44,15 @@ export type PublicCharacterProfile = {
   physical_description: string | null;
   personality: string | null;
   public_notes: string | null;
-  faction: string | null;
   title: string | null;
   status: PublicCharacterStatus;
+
+  race: PublicCodexReference | null;
+  association: PublicCodexReference | null;
+
   current_room_id: string | null;
   currentRoom: PublicCharacterRoom | null;
+
   presence: {
     status: PublicPresenceStatus;
     last_seen_at: string;

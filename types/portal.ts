@@ -4,7 +4,18 @@ export type PortalCharacterStatus =
   | "approved"
   | "rejected";
 
-export type PortalPresenceStatus = "online" | "away" | "busy";
+export type PortalPresenceStatus =
+  | "online"
+  | "away"
+  | "busy";
+
+export type PortalCodexReference = {
+  id: string;
+  name: string;
+  slug: string;
+  icon_url: string | null;
+  colour: string | null;
+};
 
 export type PortalRoom = {
   id: string;
@@ -24,10 +35,13 @@ export type PortalCharacter = {
   display_name: string;
   portrait_url: string | null;
   occupation: string | null;
-  faction: string | null;
   title: string | null;
   biography: string | null;
   status: PortalCharacterStatus;
+
+  race: PortalCodexReference | null;
+  association: PortalCodexReference | null;
+
   current_room_id: string | null;
   currentRoom: PortalRoom | null;
 };
@@ -43,6 +57,7 @@ export type PortalContext = {
     id: string;
     email: string | null;
   };
+
   character: PortalCharacter | null;
   presence: PortalPresence | null;
   unreadMessageCount: number;

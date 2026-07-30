@@ -6,11 +6,36 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import type {
   PortalCharacter,
+  PortalCodexReference,
   PortalContext,
   PortalPresence,
 } from "@/types/portal";
 
 const PRESENCE_ACTIVE_MINUTES = 3;
+
+type CodexRelationRow = {
+  id: string;
+  name: string;
+  slug: string;
+  icon_url: string | null;
+  colour: string | null;
+};
+
+type AreaRelationRow = {
+  id: string;
+  name: string;
+  slug: string;
+};
+
+type RoomRelationRow = {
+  id: string;
+  name: string;
+  slug: string;
+  area:
+    | AreaRelationRow
+    | AreaRelationRow[]
+    | null;
+};
 
 type CharacterRow = {
   id: string;
@@ -19,55 +44,61 @@ type CharacterRow = {
   display_name: string;
   portrait_url: string | null;
   occupation: string | null;
-  faction: string | null;
   title: string | null;
   biography: string | null;
-  status: "draft" | "submitted" | "approved" | "rejected";
+  status:
+    | "draft"
+    | "submitted"
+    | "approved"
+    | "rejected";
   current_room_id: string | null;
+
+  race:
+    | CodexRelationRow
+    | CodexRelationRow[]
+    | null;
+
+  association:
+    | CodexRelationRow
+    | CodexRelationRow[]
+    | null;
+
   room:
-    | {
-        id: string;
-        name: string;
-        slug: string;
-        area:
-          | {
-              id: string;
-              name: string;
-              slug: string;
-            }
-          | {
-              id: string;
-              name: string;
-              slug: string;
-            }[]
-          | null;
-      }
-    | {
-        id: string;
-        name: string;
-        slug: string;
-        area:
-          | {
-              id: string;
-              name: string;
-              slug: string;
-            }
-          | {
-              id: string;
-              name: string;
-              slug: string;
-            }[]
-          | null;
-      }[]
+    | RoomRelationRow
+    | RoomRelationRow[]
     | null;
 };
 
-function normaliseRelation<T>(value: T | T[] | null): T | null {
+function normaliseRelation<T>(
+  value: T | T[] | null,
+): T | null {
   if (Array.isArray(value)) {
     return value[0] ?? null;
   }
 
   return value;
+}
+
+function normaliseCodexReference(
+  value:
+    | CodexRelationRow
+    | CodexRelationRow[]
+    | null,
+): PortalCodexReference | null {
+  const relation =
+    normaliseRelation(value);
+
+  if (!relation) {
+    return null;
+  }
+
+  return {
+    id: relation.id,
+    name: relation.name,
+    slug: relation.slug,
+    icon_url: relation.icon_url,
+    colour: relation.colour,
+  };
 }
 
 export const getPortalContext = cache(
@@ -83,34 +114,52 @@ export const getPortalContext = cache(
       redirect("/auth/login");
     }
 
-    const { data: characterData, error: characterError } =
-      await supabase
-        .from("characters")
-        .select(`
+    const {
+      data: characterData,
+      error: characterError,
+    } = await supabase
+      .from("characters")
+      .select(`
+        id,
+        first_name,
+        surname,
+        display_name,
+        portrait_url,
+        occupation,
+        title,
+        biography,
+        status,
+        current_room_id,
+
+        race:races!characters_race_id_fkey(
           id,
-          first_name,
-          surname,
-          display_name,
-          portrait_url,
-          occupation,
-          faction,
-          title,
-          biography,
-          status,
-          current_room_id,
-          room:rooms!characters_current_room_id_fkey(
+          name,
+          slug,
+          icon_url,
+          colour
+        ),
+
+        association:associations!characters_association_id_fkey(
+          id,
+          name,
+          slug,
+          icon_url,
+          colour
+        ),
+
+        room:rooms!characters_current_room_id_fkey(
+          id,
+          name,
+          slug,
+          area:areas!rooms_area_id_fkey(
             id,
             name,
-            slug,
-            area:areas!rooms_area_id_fkey(
-              id,
-              name,
-              slug
-            )
+            slug
           )
-        `)
-        .eq("user_id", user.id)
-        .maybeSingle();
+        )
+      `)
+      .eq("user_id", user.id)
+      .maybeSingle();
 
     if (characterError) {
       throw new Error(
@@ -118,53 +167,93 @@ export const getPortalContext = cache(
       );
     }
 
-    let character: PortalCharacter | null = null;
-    let presence: PortalPresence | null = null;
+    let character: PortalCharacter | null =
+      null;
+
+    let presence: PortalPresence | null =
+      null;
+
     let unreadMessageCount = 0;
 
     if (characterData) {
-      const row = characterData as unknown as CharacterRow;
-      const room = normaliseRelation(row.room);
-      const area = room ? normaliseRelation(room.area) : null;
+      const row =
+        characterData as unknown as CharacterRow;
+
+      const room = normaliseRelation(
+        row.room,
+      );
+
+      const area = room
+        ? normaliseRelation(room.area)
+        : null;
 
       character = {
-  id: row.id,
-  first_name: row.first_name,
-  surname: row.surname,
-  display_name: row.display_name,
-  portrait_url: row.portrait_url,
-  occupation: row.occupation,
-  faction: row.faction,
-  title: row.title,
-  biography: row.biography,
-  status: row.status,
-  current_room_id: row.current_room_id,
-  currentRoom: room
-    ? {
-        id: room.id,
-        name: room.name,
-        slug: room.slug,
-        area,
-      }
-    : null,
-};
+        id: row.id,
+        first_name: row.first_name,
+        surname: row.surname,
+        display_name: row.display_name,
+        portrait_url: row.portrait_url,
+        occupation: row.occupation,
+        title: row.title,
+        biography: row.biography,
+        status: row.status,
 
-const characterId = character.id;
+        race: normaliseCodexReference(
+          row.race,
+        ),
+
+        association:
+          normaliseCodexReference(
+            row.association,
+          ),
+
+        current_room_id:
+          row.current_room_id,
+
+        currentRoom: room
+          ? {
+              id: room.id,
+              name: room.name,
+              slug: room.slug,
+              area,
+            }
+          : null,
+      };
+
+      const characterId = character.id;
 
       const [
-        { data: presenceData, error: presenceError },
-        { data: memberships, error: membershipsError },
+        {
+          data: presenceData,
+          error: presenceError,
+        },
+        {
+          data: memberships,
+          error: membershipsError,
+        },
       ] = await Promise.all([
         supabase
           .from("character_presence")
-          .select("status, last_seen_at, room_id")
-          .eq("character_id", character.id)
+          .select(
+            "status, last_seen_at, room_id",
+          )
+          .eq(
+            "character_id",
+            characterId,
+          )
           .maybeSingle(),
 
         supabase
-          .from("direct_conversation_participants")
-          .select("conversation_id, last_read_at")
-          .eq("character_id", character.id)
+          .from(
+            "direct_conversation_participants",
+          )
+          .select(
+            "conversation_id, last_read_at",
+          )
+          .eq(
+            "character_id",
+            characterId,
+          )
           .is("archived_at", null),
       ]);
 
@@ -180,49 +269,63 @@ const characterId = character.id;
         );
       }
 
-      presence = presenceData as PortalPresence | null;
+      presence =
+        presenceData as PortalPresence | null;
 
-      const unreadCounts = await Promise.all(
-  (memberships ?? []).map(async (membership) => {
-    let query = supabase
-      .from("direct_messages")
-      .select("id", {
-        count: "exact",
-        head: true,
-      })
-      .eq(
-        "conversation_id",
-        membership.conversation_id,
-      )
-      .neq("sender_character_id", characterId);
+      const unreadCounts =
+        await Promise.all(
+          (memberships ?? []).map(
+            async (membership) => {
+              let query = supabase
+                .from("direct_messages")
+                .select("id", {
+                  count: "exact",
+                  head: true,
+                })
+                .eq(
+                  "conversation_id",
+                  membership.conversation_id,
+                )
+                .neq(
+                  "sender_character_id",
+                  characterId,
+                );
 
-    if (membership.last_read_at) {
-      query = query.gt(
-        "created_at",
-        membership.last_read_at,
-      );
-    }
+              if (
+                membership.last_read_at
+              ) {
+                query = query.gt(
+                  "created_at",
+                  membership.last_read_at,
+                );
+              }
 
-    const { count, error } = await query;
+              const { count, error } =
+                await query;
 
-    if (error) {
-      throw new Error(
-        `Unable to count unread messages: ${error.message}`,
-      );
-    }
+              if (error) {
+                throw new Error(
+                  `Unable to count unread messages: ${error.message}`,
+                );
+              }
 
-    return count ?? 0;
-  }),
-);
+              return count ?? 0;
+            },
+          ),
+        );
 
-      unreadMessageCount = unreadCounts.reduce(
-        (total, current) => total + current,
-        0,
-      );
+      unreadMessageCount =
+        unreadCounts.reduce(
+          (total, current) =>
+            total + current,
+          0,
+        );
     }
 
     const activeSince = new Date(
-      Date.now() - PRESENCE_ACTIVE_MINUTES * 60_000,
+      Date.now() -
+        PRESENCE_ACTIVE_MINUTES *
+          60_000,
     ).toISOString();
 
     const {
@@ -250,7 +353,8 @@ const characterId = character.id;
       character,
       presence,
       unreadMessageCount,
-      onlineCharacterCount: onlineCharacterCount ?? 0,
+      onlineCharacterCount:
+        onlineCharacterCount ?? 0,
     };
   },
 );

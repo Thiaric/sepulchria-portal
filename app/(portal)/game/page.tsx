@@ -4,12 +4,8 @@ import { redirect } from "next/navigation";
 
 import { MESSAGE_PAGE_SIZE } from "@/lib/game/constants";
 import { createClient } from "@/lib/supabase/server";
-import type {
-  PresenceStatus,
-  RoomMessage,
-} from "@/types/game";
+import type { RoomMessage } from "@/types/game";
 
-import PresenceHeartbeat from "./components/PresenceHeartbeat";
 import RoomChatForm from "./components/RoomChatForm";
 import RoomMessageList from "./components/RoomMessageList";
 import RoomRealtime from "./components/RoomRealtime";
@@ -49,7 +45,9 @@ export default function GamePage(props: Props) {
   );
 }
 
-async function GameContent({ searchParams }: Props) {
+async function GameContent({
+  searchParams,
+}: Props) {
   const { before } = await searchParams;
   const supabase = await createClient();
 
@@ -61,14 +59,16 @@ async function GameContent({ searchParams }: Props) {
     redirect("/auth/login");
   }
 
-  const { data: character, error: characterError } =
-    await supabase
-      .from("characters")
-      .select(
-        "id, display_name, portrait_url, current_room_id",
-      )
-      .eq("user_id", user.id)
-      .maybeSingle();
+  const {
+    data: character,
+    error: characterError,
+  } = await supabase
+    .from("characters")
+    .select(
+      "id, display_name, portrait_url, current_room_id",
+    )
+    .eq("user_id", user.id)
+    .maybeSingle();
 
   if (characterError) {
     throw new Error(characterError.message);
@@ -80,16 +80,24 @@ async function GameContent({ searchParams }: Props) {
 
   if (!character.current_room_id) {
     return (
-      <MissingLocation name={character.display_name} />
+      <MissingLocation
+        name={character.display_name}
+      />
     );
   }
 
-  const { data: rawRoom, error: roomError } = await supabase
+  const {
+    data: rawRoom,
+    error: roomError,
+  } = await supabase
     .from("rooms")
     .select(
       "id, name, description, image_url, area_id, areas(id,name,description)",
     )
-    .eq("id", character.current_room_id)
+    .eq(
+      "id",
+      character.current_room_id,
+    )
     .maybeSingle();
 
   if (roomError) {
@@ -98,29 +106,13 @@ async function GameContent({ searchParams }: Props) {
 
   if (!rawRoom) {
     return (
-      <MissingLocation name={character.display_name} />
+      <MissingLocation
+        name={character.display_name}
+      />
     );
   }
 
   const room = rawRoom as RoomRelation;
-
-  const { data: ownPresence, error: ownPresenceError } =
-    await supabase
-      .from("character_presence")
-      .select("status")
-      .eq("character_id", character.id)
-      .maybeSingle();
-
-  if (ownPresenceError) {
-    throw new Error(ownPresenceError.message);
-  }
-
-  const initialPresenceStatus: PresenceStatus =
-    ownPresence?.status === "online" ||
-    ownPresence?.status === "away" ||
-    ownPresence?.status === "busy"
-      ? ownPresence.status
-      : "online";
 
   let messageQuery = supabase
     .from("room_messages")
@@ -133,15 +125,21 @@ async function GameContent({ searchParams }: Props) {
         character:characters!room_messages_character_id_fkey(
           id,
           display_name,
-          portrait_url
+          portrait_url,
+          public_slug
         )
       `,
     )
     .eq("room_id", room.id)
-    .order("created_at", { ascending: false })
+    .order("created_at", {
+      ascending: false,
+    })
     .limit(MESSAGE_PAGE_SIZE + 1);
 
-  if (before && !Number.isNaN(Date.parse(before))) {
+  if (
+    before &&
+    !Number.isNaN(Date.parse(before))
+  ) {
     messageQuery = messageQuery.lt(
       "created_at",
       before,
@@ -158,6 +156,7 @@ async function GameContent({ searchParams }: Props) {
   }
 
   const safeMessages = rawMessages ?? [];
+
   const hasOlderMessages =
     safeMessages.length > MESSAGE_PAGE_SIZE;
 
@@ -169,69 +168,23 @@ async function GameContent({ searchParams }: Props) {
     ? visibleMessages[0]?.created_at
     : undefined;
 
-  const areaRelation = room.areas;
-  const area = Array.isArray(areaRelation)
-    ? areaRelation[0]
-    : areaRelation;
-
   return (
-    <div className="p-5 sm:p-7 lg:p-9">
-      <RoomRealtime roomId={room.id} />
+  <div className="h-[calc(100dvh-5rem)] overflow-hidden p-3 sm:p-4 lg:p-5">
+    <RoomRealtime roomId={room.id} />
 
-      <PresenceHeartbeat
-  characterId={character.id}
-  roomId={room.id}
-  initialStatus={initialPresenceStatus}
-/>
+    <div className="mx-auto h-full max-w-5xl">
+      <article className="flex h-full min-h-0 flex-col overflow-hidden border border-[#6a5032]/50 bg-[#17110d]">
+        <RoomMessageList
+          roomId={room.id}
+          messages={visibleMessages}
+          olderBefore={olderBefore}
+        />
 
-      <div className="mx-auto max-w-5xl">
-        <article className="overflow-hidden border border-[#6a5032]/50 bg-[#17110d]">
-          {room.image_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={room.image_url}
-              alt={room.name}
-              className="h-56 w-full object-cover sm:h-72 lg:h-80"
-            />
-          ) : null}
-
-          <div className="border-t border-[#59432c]/40 px-5 py-6 sm:px-8">
-            <p className="text-[10px] uppercase tracking-[0.32em] text-[#927047]">
-              {area?.name ?? "Unknown area"}
-            </p>
-
-            <h1 className="mt-2 font-serif text-4xl text-[#ecd9b2] sm:text-5xl">
-              {room.name}
-            </h1>
-          </div>
-
-          <p className="whitespace-pre-line px-5 pb-7 text-sm leading-8 text-[#b0a18d] sm:px-8 sm:text-base">
-            {room.description ??
-              "No description has been written for this location yet."}
-          </p>
-        </article>
-
-        <article className="mt-6 border border-[#6a5032]/50 bg-[#17110d]">
-          <div className="border-b border-[#59432c]/40 px-5 py-5 sm:px-8">
-            <p className="text-[10px] uppercase tracking-[0.32em] text-[#927047]">
-              Room chronicle
-            </p>
-
-            <h2 className="mt-2 font-serif text-3xl text-[#dfc79c]">
-              Live roleplay
-            </h2>
-          </div>
-
-          <RoomMessageList
-            messages={visibleMessages}
-            olderBefore={olderBefore}
-          />
-
-          <RoomChatForm />
-        </article>
-      </div>
+        <RoomChatForm />
+      </article>
     </div>
-  );
+  </div>
+);
 }
 
 function MissingLocation({

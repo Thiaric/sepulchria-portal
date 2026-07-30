@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { GameContextPanel } from "@/components/portal/game-context-panel";
 
+import { GameContextPanel } from "@/components/portal/game-context-panel";
+import type { PresenceStatus } from "@/types/game";
 import type { PortalContext } from "@/types/portal";
 
 type PortalContextPanelProps = {
@@ -19,7 +20,10 @@ export function PortalContextPanel({
     return <DashboardContext context={context} />;
   }
 
-  if (pathname === "/game" || pathname.startsWith("/game/")) {
+  if (
+    pathname === "/game" ||
+    pathname.startsWith("/game/")
+  ) {
     return <GameContext context={context} />;
   }
 
@@ -28,6 +32,47 @@ export function PortalContextPanel({
     pathname.startsWith("/character/")
   ) {
     return <CharacterContext context={context} />;
+  }
+
+  if (
+    pathname === "/characters" ||
+    pathname.startsWith("/characters/")
+  ) {
+    return <CharacterArchiveContext />;
+  }
+
+  if (
+    pathname === "/races" ||
+    pathname.startsWith("/races/")
+  ) {
+    return (
+      <CodexContext
+        eyebrow="Codex"
+        title="Races"
+        description="The peoples and lineages of Asteros, their origins and their relationship with the Current."
+        primaryHref="/races"
+        primaryLabel="Browse races"
+        secondaryHref="/associations"
+        secondaryLabel="View associations"
+      />
+    );
+  }
+
+  if (
+    pathname === "/associations" ||
+    pathname.startsWith("/associations/")
+  ) {
+    return (
+      <CodexContext
+        eyebrow="Codex"
+        title="Associations"
+        description="The eleven civic bodies that shape Sepulchria's professions, laws, beliefs and daily life."
+        primaryHref="/associations"
+        primaryLabel="Browse associations"
+        secondaryHref="/races"
+        secondaryLabel="View races"
+      />
+    );
   }
 
   if (
@@ -68,12 +113,16 @@ function DashboardContext({
 
       <ContextRow
         label="Unread messages"
-        value={String(context.unreadMessageCount)}
+        value={String(
+          context.unreadMessageCount,
+        )}
       />
 
       <ContextRow
         label="Active characters"
-        value={String(context.onlineCharacterCount)}
+        value={String(
+          context.onlineCharacterCount,
+        )}
         last
       />
     </>
@@ -83,14 +132,23 @@ function DashboardContext({
 function GameContext({
   context,
 }: PortalContextPanelProps) {
-  const room = context.character?.currentRoom;
+  const character = context.character;
+  const room = character?.currentRoom;
+
+  const initialPresenceStatus: PresenceStatus =
+    context.presence?.status === "online" ||
+    context.presence?.status === "away" ||
+    context.presence?.status === "busy"
+      ? context.presence.status
+      : "online";
 
   return (
     <GameContextPanel
       roomId={room?.id ?? null}
-      roomName={room?.name ?? null}
-      areaName={room?.area?.name ?? null}
-      presenceStatus={context.presence?.status ?? null}
+      characterId={character?.id ?? null}
+      initialPresenceStatus={
+        initialPresenceStatus
+      }
     />
   );
 }
@@ -120,8 +178,7 @@ function CharacterContext({
           <ContextRow
             label="Title"
             value={
-              character.title ??
-              "None"
+              character.title ?? "None"
             }
           />
 
@@ -134,13 +191,21 @@ function CharacterContext({
           />
 
           <ContextRow
-            label="Faction"
-            value={
-              character.faction ??
-              "Unaffiliated"
-            }
-            last
-          />
+  label="Race"
+  value={
+    character.race?.name ??
+    "Not assigned"
+  }
+/>
+
+<ContextRow
+  label="Association"
+  value={
+    character.association?.name ??
+    "Not assigned"
+  }
+  last
+/>
 
           <Link
             href="/character/edit"
@@ -167,6 +232,87 @@ function CharacterContext({
   );
 }
 
+function CharacterArchiveContext() {
+  return (
+    <>
+      <ContextHeading
+        eyebrow="Archive"
+        title="Characters"
+      />
+
+      <p className="text-xs leading-6 text-[#938673]">
+        Browse the approved characters currently shaping the history of Sepulchria.
+      </p>
+
+      <ContextLink
+        href="/characters"
+        label="Browse characters"
+      />
+
+      <ContextLink
+        href="/races"
+        label="Explore races"
+        secondary
+      />
+    </>
+  );
+}
+
+function CodexContext({
+  eyebrow,
+  title,
+  description,
+  primaryHref,
+  primaryLabel,
+  secondaryHref,
+  secondaryLabel,
+}: {
+  eyebrow: string;
+  title: string;
+  description: string;
+  primaryHref: string;
+  primaryLabel: string;
+  secondaryHref: string;
+  secondaryLabel: string;
+}) {
+  return (
+    <>
+      <ContextHeading
+        eyebrow={eyebrow}
+        title={title}
+      />
+
+      <p className="text-xs leading-6 text-[#938673]">
+        {description}
+      </p>
+
+      <div className="mt-5 border-y border-[#59432c]/35 py-4">
+        <ContextRow
+          label="Archive"
+          value="Public"
+        />
+
+        <ContextRow
+          label="Status"
+          value="Available"
+          last
+        />
+      </div>
+
+      <ContextLink
+        href={primaryHref}
+        label={primaryLabel}
+      />
+
+      <ContextLink
+        href={secondaryHref}
+        label={secondaryLabel}
+        secondary
+      />
+    </>
+  );
+}
+
 function MessagesContext({
   context,
 }: PortalContextPanelProps) {
@@ -179,7 +325,9 @@ function MessagesContext({
 
       <ContextRow
         label="Unread"
-        value={String(context.unreadMessageCount)}
+        value={String(
+          context.unreadMessageCount,
+        )}
       />
 
       <ContextRow
@@ -192,8 +340,7 @@ function MessagesContext({
       />
 
       <p className="mt-5 text-xs leading-6 text-[#938673]">
-        Open a conversation to read or continue your private
-        correspondence.
+        Open a conversation to read or continue your private correspondence.
       </p>
 
       <Link
@@ -258,11 +405,37 @@ function ContextRow({
           : "border-b border-[#59432c]/35"
       }`}
     >
-      <span className="text-[#786b5b]">{label}</span>
+      <span className="text-[#786b5b]">
+        {label}
+      </span>
 
       <span className="max-w-[150px] break-words text-right capitalize text-[#bba98d]">
         {value}
       </span>
     </div>
+  );
+}
+
+function ContextLink({
+  href,
+  label,
+  secondary = false,
+}: {
+  href: string;
+  label: string;
+  secondary?: boolean;
+}) {
+  return (
+    <Link
+      href={href}
+      className={`mt-3 flex w-full items-center justify-between border px-4 py-3 text-[10px] uppercase tracking-[0.18em] transition ${
+        secondary
+          ? "border-[#59432c]/60 bg-transparent text-[#9d8c75] hover:border-[#765937] hover:bg-[#1f1711] hover:text-[#d7c09a]"
+          : "border-[#765937] bg-[#271c12] text-[#dfc79c] hover:border-[#997042] hover:bg-[#3b2919]"
+      }`}
+    >
+      <span>{label}</span>
+      <span aria-hidden="true">→</span>
+    </Link>
   );
 }

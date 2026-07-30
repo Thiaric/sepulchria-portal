@@ -1,5 +1,7 @@
 import Image from "next/image";
+import Link from "next/link";
 
+import { startConversation } from "@/app/(portal)/messages/actions";
 import type {
   PublicCharacterProfile,
   PublicPresenceStatus,
@@ -7,6 +9,9 @@ import type {
 
 type PublicCharacterProfileProps = {
   character: PublicCharacterProfile;
+  returnHref: string;
+  returnLabel: string;
+  canMessage: boolean;
 };
 
 const ACTIVE_PRESENCE_MINUTES = 3;
@@ -161,6 +166,9 @@ function Detail({
 
 export function PublicCharacterProfileView({
   character,
+  returnHref,
+  returnLabel,
+  canMessage,
 }: PublicCharacterProfileProps) {
   const presenceStatus =
     getPresenceStatus(character);
@@ -171,6 +179,34 @@ export function PublicCharacterProfileView({
 
   return (
     <article className="space-y-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <Link
+          href={returnHref}
+          className="inline-flex items-center gap-2 border border-[#60482e]/55 bg-[#15100d] px-4 py-3 text-[10px] uppercase tracking-[0.18em] text-[#c6ab80] transition hover:border-[#987344] hover:bg-[#261b12] hover:text-[#ead2a5]"
+        >
+          <span aria-hidden="true">←</span>
+          {returnLabel}
+        </Link>
+
+        {canMessage ? (
+          <form action={startConversation}>
+            <input
+              type="hidden"
+              name="recipientId"
+              value={character.id}
+            />
+
+            <button
+              type="submit"
+              className="inline-flex items-center gap-2 border border-[#987344] bg-[#3b2919] px-4 py-3 text-[10px] uppercase tracking-[0.18em] text-[#efd6a8] transition hover:border-[#b98c50] hover:bg-[#50371f]"
+            >
+              <span aria-hidden="true">✉</span>
+              Send private message
+            </button>
+          </form>
+        ) : null}
+      </div>
+
       <section className="overflow-hidden border border-[#6a4e31]/55 bg-[#120e0b]">
         <div className="relative min-h-[260px] overflow-hidden bg-[radial-gradient(circle_at_top,#382719_0%,#17100c_45%,#0d0907_100%)]">
           <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(194,155,99,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(194,155,99,0.08)_1px,transparent_1px)] [background-size:32px_32px]" />
@@ -206,11 +242,25 @@ export function PublicCharacterProfileView({
                   status={presenceStatus}
                 />
 
-                {character.faction ? (
-                  <span className="border border-[#60482e]/50 bg-black/20 px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-[#b9a991]">
-                    {character.faction}
-                  </span>
-                ) : null}
+                <div className="flex flex-wrap gap-2">
+  {character.race ? (
+    <Link
+      href={`/races/${character.race.slug}`}
+      className="border border-[#60482e]/50 bg-black/20 px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-[#b9a991] transition hover:border-[#987344] hover:text-[#ead2a5]"
+    >
+      {character.race.name}
+    </Link>
+  ) : null}
+
+  {character.association ? (
+    <Link
+      href={`/associations/${character.association.slug}`}
+      className="border border-[#60482e]/50 bg-black/20 px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-[#b9a991] transition hover:border-[#987344] hover:text-[#ead2a5]"
+    >
+      {character.association.name}
+    </Link>
+  ) : null}
+</div>
               </div>
 
               <p className="mt-5 text-[10px] uppercase tracking-[0.28em] text-[#8e704a]">
@@ -318,9 +368,14 @@ export function PublicCharacterProfileView({
               />
 
               <Detail
-                label="Faction"
-                value={character.faction}
-              />
+  label="Race"
+  value={character.race?.name ?? null}
+/>
+
+<Detail
+  label="Association"
+  value={character.association?.name ?? null}
+/>
             </dl>
           </section>
 
