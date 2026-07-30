@@ -4,6 +4,7 @@ import { PortalHeader } from "@/components/portal/portal-header";
 import { PortalRightSidebar } from "@/components/portal/portal-right-sidebar";
 import { PortalSidebar } from "@/components/portal/portal-sidebar";
 import { getPortalContext } from "@/lib/portal/get-portal-context";
+import { createClient } from "@/lib/supabase/server";
 
 type PortalLayoutProps = {
   children: ReactNode;
@@ -23,6 +24,42 @@ async function PortalLayoutContent({
   children,
 }: PortalLayoutProps) {
   const context = await getPortalContext();
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  let unreadForumCount = 0;
+
+  if (user) {
+    const {
+      data: unreadForumResult,
+      error: unreadForumError,
+    } = await supabase.rpc(
+      "get_unread_forum_topic_count",
+    );
+
+    if (!unreadForumError) {
+      if (
+        typeof unreadForumResult === "number" &&
+        Number.isFinite(unreadForumResult)
+      ) {
+        unreadForumCount = unreadForumResult;
+      } else if (
+        typeof unreadForumResult === "string"
+      ) {
+        const parsedCount = Number.parseInt(
+          unreadForumResult,
+          10,
+        );
+
+        if (Number.isFinite(parsedCount)) {
+          unreadForumCount = parsedCount;
+        }
+      }
+    }
+  }
 
   return (
     <div className="min-h-screen bg-[#120f0d] text-[#e8dcc4]">
@@ -31,12 +68,21 @@ async function PortalLayoutContent({
 
         <div className="mx-auto grid w-full max-w-[1800px] grid-cols-1 lg:grid-cols-[230px_minmax(0,1fr)] xl:grid-cols-[230px_minmax(0,1fr)_300px]">
           <PortalSidebar
-            unreadMessageCount={context.unreadMessageCount}
+            unreadMessageCount={
+              context.unreadMessageCount
+            }
+            unreadForumCount={
+              unreadForumCount
+            }
           />
 
-          <main className="min-w-0">{children}</main>
+          <main className="min-w-0">
+            {children}
+          </main>
 
-          <PortalRightSidebar context={context} />
+          <PortalRightSidebar
+            context={context}
+          />
         </div>
       </div>
     </div>

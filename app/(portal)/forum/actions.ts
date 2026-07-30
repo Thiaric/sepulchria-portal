@@ -538,19 +538,25 @@ export async function createForumTopicAction(
     createUniqueSlug(title);
 
   const {
-    data: createdTopic,
-    error: createTopicError,
-  } = await supabase.rpc(
-    "create_forum_topic",
-    {
-      p_section_id: section.id,
-      p_title: title,
-      p_slug: topicSlug,
-      p_body: body,
-      p_author_character_id:
-        character?.id ?? null,
-    },
-  );
+  data: createdTopic,
+  error: createTopicError,
+} = await supabase.rpc(
+  "create_forum_topic",
+  {
+    requested_section_id:
+      section.id,
+    requested_character_id:
+      character?.id ?? null,
+    requested_title:
+      title,
+    requested_slug:
+      topicSlug,
+    requested_body:
+      body,
+    requested_quoted_post_id:
+      null,
+  },
+);
 
   if (createTopicError) {
     return {

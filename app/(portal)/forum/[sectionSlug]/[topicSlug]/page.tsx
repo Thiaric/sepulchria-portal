@@ -263,6 +263,23 @@ export default async function TopicPage({
   const isStaff =
     staffResult === true;
 
+    if (user) {
+  const { error: markReadError } =
+    await supabase.rpc(
+      "mark_forum_topic_read",
+      {
+        target_topic_id: topic.id,
+      },
+    );
+
+  if (markReadError) {
+    console.error(
+      "Unable to mark forum topic as read:",
+      markReadError.message,
+    );
+  }
+}
+
   const {
     data: postRecords,
     error: postsError,

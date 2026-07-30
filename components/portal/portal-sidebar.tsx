@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 type PortalSidebarProps = {
   unreadMessageCount: number;
+  unreadForumCount: number;
 };
 
 type NavigationItem = {
@@ -89,6 +90,7 @@ const serviceNavigationItems: NavigationItem[] = [
 
 export function PortalSidebar({
   unreadMessageCount,
+  unreadForumCount,
 }: PortalSidebarProps) {
   const pathname = usePathname();
 
@@ -111,6 +113,17 @@ export function PortalSidebar({
     const active = isActive(item.activePaths);
     const isMessages =
       item.label === "Messages";
+    const isForum =
+      item.label === "Forum";
+
+    const notificationCount = isMessages
+      ? unreadMessageCount
+      : isForum
+        ? unreadForumCount
+        : 0;
+
+    const hasNotification =
+      notificationCount > 0;
 
     if (item.disabled) {
       return (
@@ -141,7 +154,9 @@ export function PortalSidebar({
         className={`flex min-h-9 items-center gap-2 border px-2.5 py-2 text-[11px] transition lg:text-xs ${
           active
             ? "border-[#8d6d3e] bg-[#332719] text-[#efd9aa]"
-            : "border-transparent text-[#b6a894] hover:border-[#5d4930] hover:bg-[#1d1712] hover:text-[#e8d8ba]"
+            : hasNotification && isForum
+              ? "border-[#a87532] bg-[#24190f] text-[#efd9aa] shadow-[0_0_12px_rgba(168,117,50,0.15)] hover:border-[#c08b43] hover:bg-[#2c1e12]"
+              : "border-transparent text-[#b6a894] hover:border-[#5d4930] hover:bg-[#1d1712] hover:text-[#e8d8ba]"
         }`}
       >
         <span className="w-4 shrink-0 text-center text-[12px] text-[#b68b4f]">
@@ -152,12 +167,17 @@ export function PortalSidebar({
           {item.label}
         </span>
 
-        {isMessages &&
-        unreadMessageCount > 0 ? (
-          <span className="ml-auto inline-flex min-w-4 items-center justify-center rounded-full bg-[#7a291f] px-1 py-0.5 text-[8px] font-semibold leading-none text-[#ffe1ac]">
-            {unreadMessageCount > 99
+        {hasNotification ? (
+          <span
+            className={`ml-auto inline-flex min-w-4 items-center justify-center rounded-full px-1 py-0.5 text-[8px] font-semibold leading-none ${
+              isForum
+                ? "bg-[#9a6728] text-[#fff0cf]"
+                : "bg-[#7a291f] text-[#ffe1ac]"
+            }`}
+          >
+            {notificationCount > 99
               ? "99+"
-              : unreadMessageCount}
+              : notificationCount}
           </span>
         ) : null}
       </Link>

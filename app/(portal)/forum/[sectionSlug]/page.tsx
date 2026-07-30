@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -97,6 +98,11 @@ type ForumTopic = {
   } | null;
 };
 
+type ForumTopicRead = {
+  topic_id: string;
+  last_read_at: string;
+};
+
 type ForumSectionPageProps = {
   params: Promise<{
     sectionSlug: string;
@@ -165,6 +171,10 @@ export default async function ForumSectionPage({
   const supabase = await createClient();
 
   const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const {
     data: sectionData,
     error: sectionError,
   } = await supabase
@@ -220,6 +230,10 @@ export default async function ForumSectionPage({
     {
       data: topicData,
       error: topicError,
+    },
+    {
+      data: readData,
+      error: readError,
     },
   ] = await Promise.all([
     supabase
@@ -287,6 +301,19 @@ export default async function ForumSectionPage({
       .order("last_post_at", {
         ascending: false,
       }),
+
+    user
+      ? supabase
+          .from("forum_topic_reads")
+          .select(`
+            topic_id,
+            last_read_at
+          `)
+          .eq("user_id", user.id)
+      : Promise.resolve({
+          data: [],
+          error: null,
+        }),
   ]);
 
   if (childSectionError) {
@@ -298,6 +325,12 @@ export default async function ForumSectionPage({
   if (topicError) {
     throw new Error(
       `Unable to load forum discussions: ${topicError.message}`,
+    );
+  }
+
+  if (readError) {
+    throw new Error(
+      `Unable to load forum read status: ${readError.message}`,
     );
   }
 
@@ -323,6 +356,82 @@ export default async function ForumSectionPage({
         ),
     }),
   );
+
+  const reads =
+    (readData ?? []) as ForumTopicRead[];
+
+  const readMap = new Map(
+    reads.map((read) => [
+      read.topic_id,
+      read.last_read_at,
+    ]),
+  );
+
+async function markSectionAsRead() {
+  "use server";
+
+  const supabase =
+    await createClient();
+
+  const {
+    data: { user },
+  } =
+    await supabase.auth.getUser();
+
+  if (!user) {
+    return;
+  }
+
+  const { error } =
+    await supabase.rpc(
+      "mark_forum_section_read",
+      {
+        target_section_id:
+          section.id,
+      },
+    );
+
+  if (error) {
+    throw new Error(
+      error.message,
+    );
+  }
+
+  revalidatePath("/forum");
+  revalidatePath(
+    `/forum/${section.slug}`,
+    "layout",
+  );
+}
+
+  const isTopicUnread = (
+    topic: ForumTopic,
+  ): boolean => {
+    if (!user) {
+      return false;
+    }
+
+    const lastReadAt = readMap.get(
+      topic.id,
+    );
+
+    if (!lastReadAt) {
+      return true;
+    }
+
+    return (
+      new Date(
+        topic.last_post_at,
+      ).getTime() >
+      new Date(lastReadAt).getTime()
+    );
+  };
+
+  const unreadTopics = user
+  ? topics.filter((topic) =>
+      isTopicUnread(topic),
+    ).length
+  : 0;
 
   const pinnedTopics = topics.filter(
     (topic) => topic.is_pinned,
@@ -444,12 +553,28 @@ export default async function ForumSectionPage({
               </div>
             </div>
 
-            <Link
-              href={`/forum/${section.slug}/new`}
-              className="shrink-0 border border-[#987344] bg-[#3b2919] px-5 py-3 text-center text-[9px] uppercase tracking-[0.2em] text-[#efd6a8] transition hover:border-[#b98c50] hover:bg-[#50371f]"
-            >
-              New discussion
-            </Link>
+            <div className="flex flex-wrap gap-3">
+  {user && unreadTopics > 0 ? (
+    <form action={markSectionAsRead}>
+      <button
+        type="submit"
+        className="border border-[#80613b] bg-[#2c1e14] px-5 py-3 text-[9px] uppercase tracking-[0.18em] text-[#d8bd91] transition hover:border-[#a67c45] hover:bg-[#3a2819]"
+      >
+        Mark section as read
+        <span className="ml-2 font-serif">
+          ({unreadTopics})
+        </span>
+      </button>
+    </form>
+  ) : null}
+
+  <Link
+    href={`/forum/${section.slug}/new`}
+    className="border border-[#987344] bg-[#3b2919] px-5 py-3 text-center text-[9px] uppercase tracking-[0.2em] text-[#efd6a8] transition hover:border-[#b98c50] hover:bg-[#50371f]"
+  >
+    New discussion
+  </Link>
+</div>
           </div>
         </header>
 
@@ -557,6 +682,11 @@ export default async function ForumSectionPage({
                             sectionSlug={
                               section.slug
                             }
+                            isUnread={
+                              isTopicUnread(
+                                topic,
+                              )
+                            }
                           />
                         ),
                       )}
@@ -588,6 +718,11 @@ export default async function ForumSectionPage({
                             }
                             sectionSlug={
                               section.slug
+                            }
+                            isUnread={
+                              isTopicUnread(
+                                topic,
+                              )
                             }
                           />
                         ),
@@ -699,9 +834,11 @@ function SubsectionRow({
 function TopicRow({
   topic,
   sectionSlug,
+  isUnread,
 }: {
   topic: ForumTopic;
   sectionSlug: string;
+  isUnread: boolean;
 }) {
   const characterName =
     getCharacterName(
@@ -709,7 +846,13 @@ function TopicRow({
     );
 
   return (
-    <article className="group grid gap-4 px-5 py-5 transition hover:bg-[#19120e] md:grid-cols-[minmax(0,1fr)_110px_190px] md:items-center sm:px-6">
+    <article
+      className={`group grid gap-4 border transition md:grid-cols-[minmax(0,1fr)_110px_190px] md:items-center ${
+        isUnread
+          ? "border-[#a87532] bg-[#1b130d] px-5 py-5 shadow-[inset_0_0_0_1px_rgba(168,117,50,0.14),0_0_16px_rgba(168,117,50,0.07)] hover:bg-[#21170f]"
+          : "border-transparent px-5 py-5 hover:bg-[#19120e]"
+      } sm:px-6`}
+    >
       <Link
         href={`/forum/${sectionSlug}/${topic.slug}`}
         className="flex min-w-0 items-center gap-4"
@@ -739,6 +882,12 @@ function TopicRow({
 
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
+            {isUnread ? (
+              <span className="border border-[#b9853e]/70 bg-[#3d2914] px-2 py-1 text-[7px] font-semibold uppercase tracking-[0.16em] text-[#f2ca82]">
+                New
+              </span>
+            ) : null}
+
             {topic.is_pinned ? (
               <span className="border border-amber-800/50 bg-amber-950/15 px-2 py-1 text-[7px] uppercase tracking-[0.15em] text-amber-500">
                 Pinned

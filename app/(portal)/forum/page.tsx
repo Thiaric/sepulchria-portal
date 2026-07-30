@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -42,9 +43,15 @@ type ForumTopic = {
   deleted_at: string | null;
 };
 
+type ForumTopicRead = {
+  topic_id: string;
+  last_read_at: string;
+};
+
 type SectionStatistics = {
   topics: number;
   replies: number;
+  unreadTopics: number;
   latestTopic: ForumTopic | null;
 };
 
@@ -67,6 +74,7 @@ function formatDate(value: string): string {
 function getSectionStatistics(
   sectionId: string,
   topics: ForumTopic[],
+  readMap: Map<string, string>,
 ): SectionStatistics {
   const sectionTopics = topics
     .filter(
@@ -84,6 +92,24 @@ function getSectionStatistics(
         ).getTime(),
     );
 
+  const unreadTopics =
+    sectionTopics.filter((topic) => {
+      const lastReadAt = readMap.get(
+        topic.id,
+      );
+
+      if (!lastReadAt) {
+        return true;
+      }
+
+      return (
+        new Date(
+          topic.last_post_at,
+        ).getTime() >
+        new Date(lastReadAt).getTime()
+      );
+    }).length;
+
   return {
     topics: sectionTopics.length,
     replies: sectionTopics.reduce(
@@ -91,6 +117,7 @@ function getSectionStatistics(
         total + topic.replies_count,
       0,
     ),
+    unreadTopics,
     latestTopic:
       sectionTopics[0] ?? null,
   };
@@ -99,9 +126,14 @@ function getSectionStatistics(
 export default async function ForumPage() {
   const supabase = await createClient();
 
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   const [
     { data: sectionData, error: sectionError },
     { data: topicData, error: topicError },
+    { data: readData, error: readError },
   ] = await Promise.all([
     supabase
       .from("forum_sections")
@@ -145,6 +177,19 @@ export default async function ForumPage() {
         deleted_at
       `)
       .is("deleted_at", null),
+
+    user
+      ? supabase
+          .from("forum_topic_reads")
+          .select(`
+            topic_id,
+            last_read_at
+          `)
+          .eq("user_id", user.id)
+      : Promise.resolve({
+          data: [],
+          error: null,
+        }),
   ]);
 
   if (sectionError) {
@@ -159,11 +204,76 @@ export default async function ForumPage() {
     );
   }
 
+  if (readError) {
+    throw new Error(
+      `Unable to load forum read status: ${readError.message}`,
+    );
+  }
+
   const sections =
     (sectionData ?? []) as unknown as ForumSection[];
 
   const topics =
     (topicData ?? []) as ForumTopic[];
+
+  const reads =
+    (readData ?? []) as ForumTopicRead[];
+
+  const readMap = new Map(
+    reads.map((read) => [
+      read.topic_id,
+      read.last_read_at,
+    ]),
+  );
+
+  const totalUnreadTopics = user
+    ? topics.filter((topic) => {
+        const lastReadAt = readMap.get(
+          topic.id,
+        );
+
+        if (!lastReadAt) {
+          return true;
+        }
+
+        return (
+          new Date(
+            topic.last_post_at,
+          ).getTime() >
+          new Date(lastReadAt).getTime()
+        );
+      }).length
+    : 0;
+
+  async function markAllTopicsAsRead() {
+    "use server";
+
+    const actionSupabase =
+      await createClient();
+
+    const {
+      data: { user: actionUser },
+    } =
+      await actionSupabase.auth.getUser();
+
+    if (!actionUser) {
+      return;
+    }
+
+    const { error } =
+      await actionSupabase.rpc(
+        "mark_all_forum_topics_read",
+      );
+
+    if (error) {
+      throw new Error(
+        `Unable to mark forum topics as read: ${error.message}`,
+      );
+    }
+
+    revalidatePath("/forum");
+    revalidatePath("/forum", "layout");
+  }
 
   const ongameSections = sections.filter(
     (section) =>
@@ -206,7 +316,25 @@ export default async function ForumPage() {
           </div>
         </header>
 
-        <ForumStaffTools className="mt-6" />
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
+          <ForumStaffTools />
+
+          {user && totalUnreadTopics > 0 ? (
+            <form
+              action={markAllTopicsAsRead}
+            >
+              <button
+                type="submit"
+                className="border border-[#987344] bg-[#3b2919] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[#efd6a8] transition hover:border-[#b98c50] hover:bg-[#50371f]"
+              >
+                Mark all as read
+                <span className="ml-2 font-serif text-sm">
+                  ({totalUnreadTopics})
+                </span>
+              </button>
+            </form>
+          ) : null}
+        </div>
 
         <div className="mt-7 space-y-8">
           <ForumCategory
@@ -215,6 +343,8 @@ export default async function ForumPage() {
             description="In-character chronicles, events, letters and conversations belonging to the living world of the game."
             sections={ongameSections}
             topics={topics}
+            readMap={readMap}
+            showUnread={Boolean(user)}
             emptyMessage="No Ongame sections are currently available."
           />
 
@@ -224,6 +354,8 @@ export default async function ForumPage() {
             description="Announcements, questions, introductions and conversations between members of the community."
             sections={offgameSections}
             topics={topics}
+            readMap={readMap}
+            showUnread={Boolean(user)}
             emptyMessage="No Offgame sections are currently available."
           />
 
@@ -233,6 +365,8 @@ export default async function ForumPage() {
             description="Dedicated halls belonging to the associations of Sepulchria. Access may depend on character membership."
             sections={organisationSections}
             topics={topics}
+            readMap={readMap}
+            showUnread={Boolean(user)}
             emptyMessage="No organisation forums have been created yet."
           />
         </div>
@@ -247,6 +381,8 @@ function ForumCategory({
   description,
   sections,
   topics,
+  readMap,
+  showUnread,
   emptyMessage,
 }: {
   eyebrow: string;
@@ -254,6 +390,8 @@ function ForumCategory({
   description: string;
   sections: ForumSection[];
   topics: ForumTopic[];
+  readMap: Map<string, string>;
+  showUnread: boolean;
   emptyMessage: string;
 }) {
   return (
@@ -291,7 +429,9 @@ function ForumCategory({
                 statistics={getSectionStatistics(
                   section.id,
                   topics,
+                  readMap,
                 )}
+                showUnread={showUnread}
               />
             ))}
           </div>
@@ -310,9 +450,11 @@ function ForumCategory({
 function ForumSectionRow({
   section,
   statistics,
+  showUnread,
 }: {
   section: ForumSection;
   statistics: SectionStatistics;
+  showUnread: boolean;
 }) {
   const sectionColour =
     section.colour &&
@@ -320,8 +462,18 @@ function ForumSectionRow({
       ? section.colour
       : "#8c704b";
 
+  const hasUnreadTopics =
+    showUnread &&
+    statistics.unreadTopics > 0;
+
   return (
-    <article className="group relative overflow-hidden">
+    <article
+      className={`group relative overflow-hidden border ${
+        hasUnreadTopics
+          ? "border-[#a87532] bg-[#1b130d] shadow-[inset_0_0_0_1px_rgba(168,117,50,0.16),0_0_18px_rgba(168,117,50,0.08)]"
+          : "border-transparent"
+      }`}
+    >
       {section.banner_url ? (
         <div className="absolute inset-0">
           <Image
@@ -376,6 +528,15 @@ function ForumSectionRow({
               <h3 className="font-serif text-xl text-[#d9c39d] transition group-hover:text-[#f0d8aa]">
                 {section.name}
               </h3>
+
+              {hasUnreadTopics ? (
+                <span className="border border-[#a87532]/70 bg-[#3b2814] px-2 py-1 text-[7px] font-semibold uppercase tracking-[0.16em] text-[#f0c987]">
+                  {statistics.unreadTopics}{" "}
+                  {statistics.unreadTopics === 1
+                    ? "new topic"
+                    : "new topics"}
+                </span>
+              ) : null}
 
               {section.visibility !==
               "public" ? (
