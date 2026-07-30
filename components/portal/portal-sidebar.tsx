@@ -2,6 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import {
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
+
+import { createClient } from "@/lib/supabase/client";
 
 type PortalSidebarProps = {
   unreadMessageCount: number;
@@ -88,13 +95,180 @@ const serviceNavigationItems: NavigationItem[] = [
   },
 ];
 
+function normalizeCount(
+  value: unknown,
+  fallback = 0,
+): number {
+  if (
+    typeof value === "number" &&
+    Number.isFinite(value)
+  ) {
+    return Math.max(0, value);
+  }
+
+  if (typeof value === "string") {
+    const parsedCount = Number.parseInt(
+      value,
+      10,
+    );
+
+    if (Number.isFinite(parsedCount)) {
+      return Math.max(0, parsedCount);
+    }
+  }
+
+  return fallback;
+}
+
 export function PortalSidebar({
   unreadMessageCount,
   unreadForumCount,
 }: PortalSidebarProps) {
   const pathname = usePathname();
 
-  function isActive(activePaths: string[]) {
+  const [
+    currentUnreadForumCount,
+    setCurrentUnreadForumCount,
+  ] = useState(
+    normalizeCount(unreadForumCount),
+  );
+
+  useEffect(() => {
+    setCurrentUnreadForumCount(
+      normalizeCount(unreadForumCount),
+    );
+  }, [unreadForumCount]);
+
+  const refreshForumCount =
+    useCallback(async () => {
+      const supabase = createClient();
+
+      const {
+        data,
+        error,
+      } = await supabase.rpc(
+        "get_unread_forum_topic_count",
+      );
+
+      if (error) {
+        console.error(
+          "Could not refresh forum unread count:",
+          error,
+        );
+        return;
+      }
+
+      setCurrentUnreadForumCount(
+        normalizeCount(data),
+      );
+    }, []);
+
+  useEffect(() => {
+    const supabase = createClient();
+
+    void refreshForumCount();
+
+    const channel = supabase
+      .channel("forum-sidebar-unread-count")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "forum_posts",
+        },
+        () => {
+          void refreshForumCount();
+        },
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "forum_topic_reads",
+        },
+        () => {
+          void refreshForumCount();
+        },
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "forum_topic_reads",
+        },
+        () => {
+          void refreshForumCount();
+        },
+      )
+      .subscribe((status, error) => {
+        if (status === "SUBSCRIBED") {
+          void refreshForumCount();
+        }
+
+        if (
+          status === "CHANNEL_ERROR" ||
+          status === "TIMED_OUT"
+        ) {
+          console.error(
+            "Forum sidebar realtime error:",
+            error,
+          );
+        }
+      });
+
+    const pollingInterval =
+      window.setInterval(() => {
+        void refreshForumCount();
+      }, 5000);
+
+    const handleWindowFocus = () => {
+      void refreshForumCount();
+    };
+
+    const handleVisibilityChange = () => {
+      if (
+        document.visibilityState ===
+        "visible"
+      ) {
+        void refreshForumCount();
+      }
+    };
+
+    window.addEventListener(
+      "focus",
+      handleWindowFocus,
+    );
+
+    document.addEventListener(
+      "visibilitychange",
+      handleVisibilityChange,
+    );
+
+    return () => {
+      window.clearInterval(
+        pollingInterval,
+      );
+
+      window.removeEventListener(
+        "focus",
+        handleWindowFocus,
+      );
+
+      document.removeEventListener(
+        "visibilitychange",
+        handleVisibilityChange,
+      );
+
+      void supabase.removeChannel(channel);
+    };
+  }, [refreshForumCount]);
+
+  function isActive(
+    activePaths: string[],
+  ) {
     return activePaths.some((path) => {
       if (path === "/") {
         return pathname === "/";
@@ -110,17 +284,24 @@ export function PortalSidebar({
   function renderNavigationItem(
     item: NavigationItem,
   ) {
-    const active = isActive(item.activePaths);
+    const active = isActive(
+      item.activePaths,
+    );
+
     const isMessages =
       item.label === "Messages";
+
     const isForum =
       item.label === "Forum";
 
-    const notificationCount = isMessages
-      ? unreadMessageCount
-      : isForum
-        ? unreadForumCount
-        : 0;
+    const notificationCount =
+      isMessages
+        ? normalizeCount(
+            unreadMessageCount,
+          )
+        : isForum
+          ? currentUnreadForumCount
+          : 0;
 
     const hasNotification =
       notificationCount > 0;
@@ -154,7 +335,8 @@ export function PortalSidebar({
         className={`flex min-h-9 items-center gap-2 border px-2.5 py-2 text-[11px] transition lg:text-xs ${
           active
             ? "border-[#8d6d3e] bg-[#332719] text-[#efd9aa]"
-            : hasNotification && isForum
+            : hasNotification &&
+                isForum
               ? "border-[#a87532] bg-[#24190f] text-[#efd9aa] shadow-[0_0_12px_rgba(168,117,50,0.15)] hover:border-[#c08b43] hover:bg-[#2c1e12]"
               : "border-transparent text-[#b6a894] hover:border-[#5d4930] hover:bg-[#1d1712] hover:text-[#e8d8ba]"
         }`}
@@ -197,7 +379,9 @@ export function PortalSidebar({
           </p>
 
           <p className="mt-1.5 text-[11px] leading-4 text-[#9e907d]">
-            A sealed city, a dying covenant and the first whispers from below.
+            A sealed city, a dying
+            covenant and the first
+            whispers from below.
           </p>
         </section>
 
