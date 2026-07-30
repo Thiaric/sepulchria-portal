@@ -78,7 +78,6 @@ const serviceNavigationItems: NavigationItem[] = [
     icon: "☷",
     href: "/forum",
     activePaths: ["/forum"],
-    disabled: true,
   },
   {
     label: "Messages",

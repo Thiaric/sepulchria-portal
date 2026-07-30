@@ -1,0 +1,676 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+
+import { createClient } from "@/lib/supabase/server";
+
+export type ForumModerationState = {
+  success: boolean;
+  message: string;
+};
+
+type ForumTopicRecord = {
+  id: string;
+  section_id: string;
+  title: string;
+  slug: string;
+  is_locked: boolean;
+  is_pinned: boolean;
+  deleted_at: string | null;
+};
+
+type ForumSectionRecord = {
+  id: string;
+  name: string;
+  slug: string;
+  is_active: boolean;
+};
+
+function readText(
+  formData: FormData,
+  key: string,
+  maximumLength = 500,
+): string {
+  const value = formData.get(key);
+
+  if (typeof value !== "string") {
+    return "";
+  }
+
+  return value.trim().slice(0, maximumLength);
+}
+
+function isUuid(value: string): boolean {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+    value,
+  );
+}
+
+async function requireStaff() {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return {
+      supabase,
+      user: null,
+      isStaff: false,
+      error: "You must be signed in.",
+    };
+  }
+
+  const {
+    data: staffResult,
+    error: staffError,
+  } = await supabase.rpc(
+    "current_user_is_staff",
+  );
+
+  if (staffError || staffResult !== true) {
+    return {
+      supabase,
+      user,
+      isStaff: false,
+      error:
+        "You do not have permission to moderate the forum.",
+    };
+  }
+
+  return {
+    supabase,
+    user,
+    isStaff: true,
+    error: null,
+  };
+}
+
+async function loadTopicContext(
+  topicId: string,
+) {
+  const supabase = await createClient();
+
+  const {
+    data: topic,
+    error: topicError,
+  } = await supabase
+    .from("forum_topics")
+    .select(
+      `
+        id,
+        section_id,
+        title,
+        slug,
+        is_locked,
+        is_pinned,
+        deleted_at
+      `,
+    )
+    .eq("id", topicId)
+    .maybeSingle<ForumTopicRecord>();
+
+  if (topicError || !topic) {
+    return {
+      topic: null,
+      section: null,
+      error:
+        topicError?.message ??
+        "The selected discussion does not exist.",
+    };
+  }
+
+  const {
+    data: section,
+    error: sectionError,
+  } = await supabase
+    .from("forum_sections")
+    .select(
+      `
+        id,
+        name,
+        slug,
+        is_active
+      `,
+    )
+    .eq("id", topic.section_id)
+    .maybeSingle<ForumSectionRecord>();
+
+  if (sectionError || !section) {
+    return {
+      topic,
+      section: null,
+      error:
+        sectionError?.message ??
+        "The discussion section does not exist.",
+    };
+  }
+
+  return {
+    topic,
+    section,
+    error: null,
+  };
+}
+
+async function writeModerationLog({
+  moderatorUserId,
+  topicId,
+  postId = null,
+  action,
+  details = null,
+}: {
+  moderatorUserId: string;
+  topicId: string;
+  postId?: string | null;
+  action: string;
+  details?: Record<string, unknown> | null;
+}) {
+  const supabase = await createClient();
+
+  await supabase
+    .from("forum_moderation_log")
+    .insert({
+      moderator_user_id:
+        moderatorUserId,
+      topic_id: topicId,
+      post_id: postId,
+      action,
+      details,
+    });
+}
+
+function revalidateForumTopic(
+  sectionSlug: string,
+  topicSlug: string,
+) {
+  revalidatePath("/forum");
+  revalidatePath(
+    `/forum/${sectionSlug}`,
+  );
+  revalidatePath(
+    `/forum/${sectionSlug}/${topicSlug}`,
+  );
+}
+
+export async function toggleTopicLockAction(
+  _previousState: ForumModerationState,
+  formData: FormData,
+): Promise<ForumModerationState> {
+  const topicId = readText(
+    formData,
+    "topicId",
+    100,
+  );
+
+  if (!isUuid(topicId)) {
+    return {
+      success: false,
+      message:
+        "The selected discussion is invalid.",
+    };
+  }
+
+  const access = await requireStaff();
+
+  if (
+    !access.user ||
+    !access.isStaff
+  ) {
+    return {
+      success: false,
+      message:
+        access.error ??
+        "Permission denied.",
+    };
+  }
+
+  const {
+    topic,
+    section,
+    error,
+  } = await loadTopicContext(topicId);
+
+  if (!topic || !section || error) {
+    return {
+      success: false,
+      message:
+        error ??
+        "The discussion could not be loaded.",
+    };
+  }
+
+  if (topic.deleted_at) {
+    return {
+      success: false,
+      message:
+        "A deleted discussion cannot be locked or unlocked.",
+    };
+  }
+
+  const nextLockedState =
+    !topic.is_locked;
+
+  const { error: updateError } =
+    await access.supabase
+      .from("forum_topics")
+      .update({
+        is_locked: nextLockedState,
+        updated_at:
+          new Date().toISOString(),
+      })
+      .eq("id", topic.id);
+
+  if (updateError) {
+    return {
+      success: false,
+      message: updateError.message,
+    };
+  }
+
+  await writeModerationLog({
+    moderatorUserId:
+      access.user.id,
+    topicId: topic.id,
+    action: nextLockedState
+      ? "topic_locked"
+      : "topic_unlocked",
+    details: {
+      title: topic.title,
+      section_id: section.id,
+    },
+  });
+
+  revalidateForumTopic(
+    section.slug,
+    topic.slug,
+  );
+
+  return {
+    success: true,
+    message: nextLockedState
+      ? "Discussion locked."
+      : "Discussion unlocked.",
+  };
+}
+
+export async function toggleTopicPinAction(
+  _previousState: ForumModerationState,
+  formData: FormData,
+): Promise<ForumModerationState> {
+  const topicId = readText(
+    formData,
+    "topicId",
+    100,
+  );
+
+  if (!isUuid(topicId)) {
+    return {
+      success: false,
+      message:
+        "The selected discussion is invalid.",
+    };
+  }
+
+  const access = await requireStaff();
+
+  if (
+    !access.user ||
+    !access.isStaff
+  ) {
+    return {
+      success: false,
+      message:
+        access.error ??
+        "Permission denied.",
+    };
+  }
+
+  const {
+    topic,
+    section,
+    error,
+  } = await loadTopicContext(topicId);
+
+  if (!topic || !section || error) {
+    return {
+      success: false,
+      message:
+        error ??
+        "The discussion could not be loaded.",
+    };
+  }
+
+  if (topic.deleted_at) {
+    return {
+      success: false,
+      message:
+        "A deleted discussion cannot be pinned or unpinned.",
+    };
+  }
+
+  const nextPinnedState =
+    !topic.is_pinned;
+
+  const { error: updateError } =
+    await access.supabase
+      .from("forum_topics")
+      .update({
+        is_pinned: nextPinnedState,
+        updated_at:
+          new Date().toISOString(),
+      })
+      .eq("id", topic.id);
+
+  if (updateError) {
+    return {
+      success: false,
+      message: updateError.message,
+    };
+  }
+
+  await writeModerationLog({
+    moderatorUserId:
+      access.user.id,
+    topicId: topic.id,
+    action: nextPinnedState
+      ? "topic_pinned"
+      : "topic_unpinned",
+    details: {
+      title: topic.title,
+      section_id: section.id,
+    },
+  });
+
+  revalidateForumTopic(
+    section.slug,
+    topic.slug,
+  );
+
+  return {
+    success: true,
+    message: nextPinnedState
+      ? "Discussion pinned."
+      : "Discussion unpinned.",
+  };
+}
+
+export async function moveTopicAction(
+  _previousState: ForumModerationState,
+  formData: FormData,
+): Promise<ForumModerationState> {
+  const topicId = readText(
+    formData,
+    "topicId",
+    100,
+  );
+
+  const destinationSectionId =
+    readText(
+      formData,
+      "destinationSectionId",
+      100,
+    );
+
+  if (
+    !isUuid(topicId) ||
+    !isUuid(destinationSectionId)
+  ) {
+    return {
+      success: false,
+      message:
+        "The selected discussion or destination section is invalid.",
+    };
+  }
+
+  const access = await requireStaff();
+
+  if (
+    !access.user ||
+    !access.isStaff
+  ) {
+    return {
+      success: false,
+      message:
+        access.error ??
+        "Permission denied.",
+    };
+  }
+
+  const {
+    topic,
+    section: currentSection,
+    error,
+  } = await loadTopicContext(topicId);
+
+  if (
+    !topic ||
+    !currentSection ||
+    error
+  ) {
+    return {
+      success: false,
+      message:
+        error ??
+        "The discussion could not be loaded.",
+    };
+  }
+
+  if (topic.deleted_at) {
+    return {
+      success: false,
+      message:
+        "A deleted discussion cannot be moved.",
+    };
+  }
+
+  if (
+    destinationSectionId ===
+    currentSection.id
+  ) {
+    return {
+      success: false,
+      message:
+        "The discussion is already in this section.",
+    };
+  }
+
+  const {
+    data: destinationSection,
+    error: destinationError,
+  } = await access.supabase
+    .from("forum_sections")
+    .select(
+      `
+        id,
+        name,
+        slug,
+        is_active
+      `,
+    )
+    .eq(
+      "id",
+      destinationSectionId,
+    )
+    .maybeSingle<ForumSectionRecord>();
+
+  if (
+    destinationError ||
+    !destinationSection ||
+    !destinationSection.is_active
+  ) {
+    return {
+      success: false,
+      message:
+        destinationError?.message ??
+        "The destination section is unavailable.",
+    };
+  }
+
+  const { error: updateError } =
+    await access.supabase
+      .from("forum_topics")
+      .update({
+        section_id:
+          destinationSection.id,
+        updated_at:
+          new Date().toISOString(),
+      })
+      .eq("id", topic.id);
+
+  if (updateError) {
+    return {
+      success: false,
+      message: updateError.message,
+    };
+  }
+
+  await writeModerationLog({
+    moderatorUserId:
+      access.user.id,
+    topicId: topic.id,
+    action: "topic_moved",
+    details: {
+      title: topic.title,
+      from_section_id:
+        currentSection.id,
+      from_section_name:
+        currentSection.name,
+      to_section_id:
+        destinationSection.id,
+      to_section_name:
+        destinationSection.name,
+    },
+  });
+
+  revalidatePath("/forum");
+  revalidatePath(
+    `/forum/${currentSection.slug}`,
+  );
+  revalidatePath(
+    `/forum/${destinationSection.slug}`,
+  );
+  revalidatePath(
+    `/forum/${destinationSection.slug}/${topic.slug}`,
+  );
+
+  redirect(
+    `/forum/${destinationSection.slug}/${topic.slug}`,
+  );
+}
+
+export async function deleteTopicAction(
+  _previousState: ForumModerationState,
+  formData: FormData,
+): Promise<ForumModerationState> {
+  const topicId = readText(
+    formData,
+    "topicId",
+    100,
+  );
+
+  if (!isUuid(topicId)) {
+    return {
+      success: false,
+      message:
+        "The selected discussion is invalid.",
+    };
+  }
+
+  const access = await requireStaff();
+
+  if (
+    !access.user ||
+    !access.isStaff
+  ) {
+    return {
+      success: false,
+      message:
+        access.error ??
+        "Permission denied.",
+    };
+  }
+
+  const {
+    topic,
+    section,
+    error,
+  } = await loadTopicContext(topicId);
+
+  if (!topic || !section || error) {
+    return {
+      success: false,
+      message:
+        error ??
+        "The discussion could not be loaded.",
+    };
+  }
+
+  if (topic.deleted_at) {
+    return {
+      success: false,
+      message:
+        "This discussion has already been deleted.",
+    };
+  }
+
+  const deletedAt =
+    new Date().toISOString();
+
+  const { error: topicError } =
+    await access.supabase
+      .from("forum_topics")
+      .update({
+        deleted_at: deletedAt,
+        updated_at: deletedAt,
+      })
+      .eq("id", topic.id);
+
+  if (topicError) {
+    return {
+      success: false,
+      message: topicError.message,
+    };
+  }
+
+  const { error: postsError } =
+    await access.supabase
+      .from("forum_posts")
+      .update({
+        deleted_at: deletedAt,
+      })
+      .eq("topic_id", topic.id)
+      .is("deleted_at", null);
+
+  if (postsError) {
+    return {
+      success: false,
+      message:
+        `The discussion was deleted, but some posts could not be marked as deleted: ${postsError.message}`,
+    };
+  }
+
+  await writeModerationLog({
+    moderatorUserId:
+      access.user.id,
+    topicId: topic.id,
+    action: "topic_deleted",
+    details: {
+      title: topic.title,
+      section_id: section.id,
+      section_name: section.name,
+    },
+  });
+
+  revalidatePath("/forum");
+  revalidatePath(
+    `/forum/${section.slug}`,
+  );
+
+  redirect(
+    `/forum/${section.slug}`,
+  );
+}
