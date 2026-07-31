@@ -76,9 +76,9 @@ async function PortalLayoutContent({
             }
           />
 
-          <main className="min-w-0">
-            {children}
-          </main>
+          <main className="portal-compact min-w-0">
+  {children}
+</main>
 
           <PortalRightSidebar
             context={context}

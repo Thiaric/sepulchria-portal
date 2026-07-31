@@ -43,10 +43,6 @@ export default async function AdminPage() {
           Staff control centre
         </p>
 
-        <h2 className="mt-2 font-serif text-4xl text-[#ead5ac]">
-          Welcome to the administration panel
-        </h2>
-
         <p className="mt-4 max-w-3xl text-sm leading-7 text-[#a99b89]">
           Manage characters, approvals, races,
           associations and other game data from

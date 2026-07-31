@@ -66,3 +66,608 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* =========================================================
+   SEPULCHRIA PORTAL — COMPACT LAYOUT
+   Riduce gli spazi eccessivi senza modificare le singole pagine.
+   ========================================================= */
+
+@layer utilities {
+  /*
+   * Densità generale del contenuto centrale.
+   * Non coinvolge header e sidebar.
+   */
+  .portal-compact {
+    font-size: 0.95rem;
+  }
+
+  /*
+   * Padding molto grandi
+   */
+  .portal-compact .p-12 {
+    padding: 2rem !important;
+  }
+
+  .portal-compact .p-10 {
+    padding: 1.75rem !important;
+  }
+
+  .portal-compact .p-9 {
+    padding: 1.625rem !important;
+  }
+
+  .portal-compact .p-8 {
+    padding: 1.5rem !important;
+  }
+
+  .portal-compact .p-7 {
+    padding: 1.375rem !important;
+  }
+
+  .portal-compact .p-6 {
+    padding: 1.25rem !important;
+  }
+
+  /*
+   * Padding verticale
+   */
+  .portal-compact .py-16 {
+    padding-top: 2.5rem !important;
+    padding-bottom: 2.5rem !important;
+  }
+
+  .portal-compact .py-14 {
+    padding-top: 2.25rem !important;
+    padding-bottom: 2.25rem !important;
+  }
+
+  .portal-compact .py-12 {
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+  }
+
+  .portal-compact .py-10 {
+    padding-top: 1.75rem !important;
+    padding-bottom: 1.75rem !important;
+  }
+
+  .portal-compact .py-9 {
+    padding-top: 1.625rem !important;
+    padding-bottom: 1.625rem !important;
+  }
+
+  .portal-compact .py-8 {
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+  }
+
+  .portal-compact .py-7 {
+    padding-top: 1.375rem !important;
+    padding-bottom: 1.375rem !important;
+  }
+
+  .portal-compact .py-6 {
+    padding-top: 1.25rem !important;
+    padding-bottom: 1.25rem !important;
+  }
+
+  /*
+   * Padding orizzontale
+   */
+  .portal-compact .px-12 {
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+  }
+
+  .portal-compact .px-10 {
+    padding-left: 1.75rem !important;
+    padding-right: 1.75rem !important;
+  }
+
+  .portal-compact .px-9 {
+    padding-left: 1.625rem !important;
+    padding-right: 1.625rem !important;
+  }
+
+  .portal-compact .px-8 {
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+  }
+
+  .portal-compact .px-7 {
+    padding-left: 1.375rem !important;
+    padding-right: 1.375rem !important;
+  }
+
+  .portal-compact .px-6 {
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
+  }
+
+  /*
+   * Gap delle griglie e dei flex
+   */
+  .portal-compact .gap-12 {
+    gap: 2rem !important;
+  }
+
+  .portal-compact .gap-10 {
+    gap: 1.625rem !important;
+  }
+
+  .portal-compact .gap-9 {
+    gap: 1.5rem !important;
+  }
+
+  .portal-compact .gap-8 {
+    gap: 1.375rem !important;
+  }
+
+  .portal-compact .gap-7 {
+    gap: 1.25rem !important;
+  }
+
+  .portal-compact .gap-6 {
+    gap: 1.125rem !important;
+  }
+
+  .portal-compact .gap-5 {
+    gap: 1rem !important;
+  }
+
+  /*
+   * Margini superiori molto grandi
+   */
+  .portal-compact .mt-16 {
+    margin-top: 2.5rem !important;
+  }
+
+  .portal-compact .mt-14 {
+    margin-top: 2.25rem !important;
+  }
+
+  .portal-compact .mt-12 {
+    margin-top: 2rem !important;
+  }
+
+  .portal-compact .mt-10 {
+    margin-top: 1.625rem !important;
+  }
+
+  .portal-compact .mt-9 {
+    margin-top: 1.5rem !important;
+  }
+
+  .portal-compact .mt-8 {
+    margin-top: 1.375rem !important;
+  }
+
+  .portal-compact .mt-7 {
+    margin-top: 1.25rem !important;
+  }
+
+  .portal-compact .mt-6 {
+    margin-top: 1.125rem !important;
+  }
+
+  /*
+   * Margini inferiori molto grandi
+   */
+  .portal-compact .mb-16 {
+    margin-bottom: 2.5rem !important;
+  }
+
+  .portal-compact .mb-14 {
+    margin-bottom: 2.25rem !important;
+  }
+
+  .portal-compact .mb-12 {
+    margin-bottom: 2rem !important;
+  }
+
+  .portal-compact .mb-10 {
+    margin-bottom: 1.625rem !important;
+  }
+
+  .portal-compact .mb-9 {
+    margin-bottom: 1.5rem !important;
+  }
+
+  .portal-compact .mb-8 {
+    margin-bottom: 1.375rem !important;
+  }
+
+  .portal-compact .mb-7 {
+    margin-bottom: 1.25rem !important;
+  }
+
+  .portal-compact .mb-6 {
+    margin-bottom: 1.125rem !important;
+  }
+
+  /*
+   * Spazi verticali tra figli.
+   */
+  .portal-compact
+    .space-y-12
+    > :not([hidden])
+    ~ :not([hidden]) {
+    margin-top: 2rem !important;
+  }
+
+  .portal-compact
+    .space-y-10
+    > :not([hidden])
+    ~ :not([hidden]) {
+    margin-top: 1.625rem !important;
+  }
+
+  .portal-compact
+    .space-y-8
+    > :not([hidden])
+    ~ :not([hidden]) {
+    margin-top: 1.375rem !important;
+  }
+
+  .portal-compact
+    .space-y-7
+    > :not([hidden])
+    ~ :not([hidden]) {
+    margin-top: 1.25rem !important;
+  }
+
+  .portal-compact
+    .space-y-6
+    > :not([hidden])
+    ~ :not([hidden]) {
+    margin-top: 1.125rem !important;
+  }
+
+  .portal-compact
+    .space-y-5
+    > :not([hidden])
+    ~ :not([hidden]) {
+    margin-top: 1rem !important;
+  }
+
+  /*
+   * Titoli principali.
+   * Restano importanti, ma occupano meno altezza.
+   */
+  .portal-compact .text-7xl {
+    font-size: 3.25rem !important;
+    line-height: 1 !important;
+  }
+
+  .portal-compact .text-6xl {
+    font-size: 2.875rem !important;
+    line-height: 1.05 !important;
+  }
+
+  .portal-compact .text-5xl {
+    font-size: 2.5rem !important;
+    line-height: 1.08 !important;
+  }
+
+  .portal-compact .text-4xl {
+    font-size: 2rem !important;
+    line-height: 1.12 !important;
+  }
+
+  .portal-compact .text-3xl {
+    font-size: 1.625rem !important;
+    line-height: 1.18 !important;
+  }
+
+  /*
+   * Testi descrittivi troppo grandi.
+   */
+  .portal-compact .text-xl {
+    font-size: 1.075rem !important;
+    line-height: 1.65 !important;
+  }
+
+  .portal-compact .text-lg {
+    font-size: 1rem !important;
+    line-height: 1.6 !important;
+  }
+
+  /*
+   * Altezza minima delle sezioni decorative.
+   */
+  .portal-compact .min-h-\[420px\] {
+    min-height: 280px !important;
+  }
+
+  .portal-compact .min-h-\[400px\] {
+    min-height: 270px !important;
+  }
+
+  .portal-compact .min-h-\[360px\] {
+    min-height: 250px !important;
+  }
+
+  .portal-compact .min-h-\[320px\] {
+    min-height: 230px !important;
+  }
+
+  /*
+   * Mantiene un minimo di respiro su mobile.
+   */
+  @media (max-width: 639px) {
+    .portal-compact {
+      font-size: 1rem;
+    }
+
+    .portal-compact .p-12,
+    .portal-compact .p-10,
+    .portal-compact .p-9,
+    .portal-compact .p-8,
+    .portal-compact .p-7,
+    .portal-compact .p-6 {
+      padding: 1.125rem !important;
+    }
+
+    .portal-compact .px-12,
+    .portal-compact .px-10,
+    .portal-compact .px-9,
+    .portal-compact .px-8,
+    .portal-compact .px-7,
+    .portal-compact .px-6 {
+      padding-left: 1.125rem !important;
+      padding-right: 1.125rem !important;
+    }
+
+    .portal-compact .text-7xl,
+    .portal-compact .text-6xl,
+    .portal-compact .text-5xl {
+      font-size: 2.25rem !important;
+    }
+
+    .portal-compact .text-4xl {
+      font-size: 1.875rem !important;
+    }
+  }
+}
+
+/* =========================================================
+   SEPULCHRIA PORTAL — EXTRA COMPACT OVERRIDES
+   Secondo livello di compressione.
+   ========================================================= */
+
+@layer utilities {
+  .portal-compact {
+    font-size: 0.92rem;
+  }
+
+  /* Padding generali */
+  .portal-compact .p-12,
+  .portal-compact .p-10,
+  .portal-compact .p-9,
+  .portal-compact .p-8 {
+    padding: 1.25rem !important;
+  }
+
+  .portal-compact .p-7,
+  .portal-compact .p-6 {
+    padding: 1rem !important;
+  }
+
+  /* Padding verticali */
+  .portal-compact .py-16,
+  .portal-compact .py-14,
+  .portal-compact .py-12 {
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+  }
+
+  .portal-compact .py-10,
+  .portal-compact .py-9,
+  .portal-compact .py-8 {
+    padding-top: 1.25rem !important;
+    padding-bottom: 1.25rem !important;
+  }
+
+  .portal-compact .py-7,
+  .portal-compact .py-6 {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
+
+  /* Padding orizzontali */
+  .portal-compact .px-12,
+  .portal-compact .px-10,
+  .portal-compact .px-9,
+  .portal-compact .px-8 {
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
+  }
+
+  .portal-compact .px-7,
+  .portal-compact .px-6 {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  /* Gap */
+  .portal-compact .gap-12,
+  .portal-compact .gap-10,
+  .portal-compact .gap-9 {
+    gap: 1.25rem !important;
+  }
+
+  .portal-compact .gap-8,
+  .portal-compact .gap-7,
+  .portal-compact .gap-6 {
+    gap: 1rem !important;
+  }
+
+  .portal-compact .gap-5 {
+    gap: 0.875rem !important;
+  }
+
+  /* Margini superiori */
+  .portal-compact .mt-16,
+  .portal-compact .mt-14,
+  .portal-compact .mt-12 {
+    margin-top: 1.5rem !important;
+  }
+
+  .portal-compact .mt-10,
+  .portal-compact .mt-9,
+  .portal-compact .mt-8 {
+    margin-top: 1.25rem !important;
+  }
+
+  .portal-compact .mt-7,
+  .portal-compact .mt-6 {
+    margin-top: 1rem !important;
+  }
+
+  /* Margini inferiori */
+  .portal-compact .mb-16,
+  .portal-compact .mb-14,
+  .portal-compact .mb-12 {
+    margin-bottom: 1.5rem !important;
+  }
+
+  .portal-compact .mb-10,
+  .portal-compact .mb-9,
+  .portal-compact .mb-8 {
+    margin-bottom: 1.25rem !important;
+  }
+
+  .portal-compact .mb-7,
+  .portal-compact .mb-6 {
+    margin-bottom: 1rem !important;
+  }
+
+  /* Space-y */
+  .portal-compact
+    .space-y-12
+    > :not([hidden])
+    ~ :not([hidden]),
+  .portal-compact
+    .space-y-10
+    > :not([hidden])
+    ~ :not([hidden]) {
+    margin-top: 1.25rem !important;
+  }
+
+  .portal-compact
+    .space-y-8
+    > :not([hidden])
+    ~ :not([hidden]),
+  .portal-compact
+    .space-y-7
+    > :not([hidden])
+    ~ :not([hidden]),
+  .portal-compact
+    .space-y-6
+    > :not([hidden])
+    ~ :not([hidden]) {
+    margin-top: 1rem !important;
+  }
+
+  .portal-compact
+    .space-y-5
+    > :not([hidden])
+    ~ :not([hidden]) {
+    margin-top: 0.875rem !important;
+  }
+
+  /* Titoli */
+  .portal-compact .text-7xl {
+    font-size: 2.75rem !important;
+  }
+
+  .portal-compact .text-6xl {
+    font-size: 2.5rem !important;
+  }
+
+  .portal-compact .text-5xl {
+    font-size: 2.2rem !important;
+  }
+
+  .portal-compact .text-4xl {
+    font-size: 1.8rem !important;
+  }
+
+  .portal-compact .text-3xl {
+    font-size: 1.5rem !important;
+  }
+
+  .portal-compact .text-2xl {
+    font-size: 1.3rem !important;
+  }
+
+  .portal-compact .text-xl {
+    font-size: 1rem !important;
+    line-height: 1.5 !important;
+  }
+
+  .portal-compact .text-lg {
+    font-size: 0.95rem !important;
+    line-height: 1.5 !important;
+  }
+
+  /* Hero e sezioni alte */
+  .portal-compact .min-h-\[420px\],
+  .portal-compact .min-h-\[400px\] {
+    min-height: 220px !important;
+  }
+
+  .portal-compact .min-h-\[360px\] {
+    min-height: 210px !important;
+  }
+
+  .portal-compact .min-h-\[320px\] {
+    min-height: 200px !important;
+  }
+
+  /* Card e riquadri più bassi */
+  .portal-compact article,
+  .portal-compact section {
+    scroll-margin-top: 5rem;
+  }
+
+  .portal-compact p {
+    line-height: 1.55;
+  }
+
+  
+  @media (max-width: 639px) {
+    .portal-compact {
+      font-size: 0.96rem;
+    }
+
+    .portal-compact .p-12,
+    .portal-compact .p-10,
+    .portal-compact .p-9,
+    .portal-compact .p-8,
+    .portal-compact .p-7,
+    .portal-compact .p-6 {
+      padding: 0.9rem !important;
+    }
+
+    .portal-compact .px-12,
+    .portal-compact .px-10,
+    .portal-compact .px-9,
+    .portal-compact .px-8,
+    .portal-compact .px-7,
+    .portal-compact .px-6 {
+      padding-left: 0.9rem !important;
+      padding-right: 0.9rem !important;
+    }
+
+    .portal-compact .text-7xl,
+    .portal-compact .text-6xl,
+    .portal-compact .text-5xl {
+      font-size: 2rem !important;
+    }
+
+    .portal-compact .text-4xl {
+      font-size: 1.65rem !important;
+    }
+  }
+}

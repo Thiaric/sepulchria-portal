@@ -375,13 +375,11 @@ export function PortalSidebar({
           </p>
 
           <p className="mt-1.5 font-serif text-base text-[#dbc28d]">
-            The City Beneath
+            The City of The First
           </p>
 
           <p className="mt-1.5 text-[11px] leading-4 text-[#9e907d]">
-            A sealed city, a dying
-            covenant and the first
-            whispers from below.
+            Built over the remains of a dead God, its Fate is decided by you.
           </p>
         </section>
 
