@@ -171,15 +171,15 @@ export default async function AdminAreasPage() {
                 />
               </AdminField>
 
-              <AdminField label="Image URL">
-                <input
-                  type="url"
-                  name="imageUrl"
-                  maxLength={2000}
-                  placeholder="https://..."
-                  className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
-                />
-              </AdminField>
+              <AdminField label="Image path or URL">
+  <input
+    type="text"
+    name="imageUrl"
+    maxLength={2000}
+    placeholder="/places/Central-Square.png"
+    className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+  />
+</AdminField>
 
               <AdminField label="Sort order">
                 <input
@@ -316,18 +316,16 @@ export default async function AdminAreasPage() {
                         />
                       </AdminField>
 
-                      <AdminField label="Image URL">
-                        <input
-                          type="url"
-                          name="imageUrl"
-                          maxLength={2000}
-                          defaultValue={
-                            area.image_url ?? ""
-                          }
-                          placeholder="https://..."
-                          className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
-                        />
-                      </AdminField>
+                      <AdminField label="Image path or URL">
+  <input
+    type="text"
+    name="imageUrl"
+    maxLength={2000}
+    defaultValue={area.image_url ?? ""}
+    placeholder="/places/Central-Square.png"
+    className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+  />
+</AdminField>
 
                       <AdminField label="Sort order">
                         <input
