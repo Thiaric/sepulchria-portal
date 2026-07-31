@@ -193,39 +193,30 @@ export function SepulchriaHomepage({
           </aside>
 
           <div
-            ref={mapRef}
-            onMouseMove={handleMapMove}
-            onMouseLeave={resetParallax}
-            className="group order-1 relative min-h-[360px] lg:order-2 lg:min-h-0"
-          >
-            <div className="absolute inset-[-7%] bg-[radial-gradient(ellipse_at_center,rgba(169,112,49,0.18),transparent_64%)] opacity-70 blur-2xl transition duration-1000 group-hover:opacity-100" />
+  ref={mapRef}
+  className="group relative order-1 flex min-h-0 items-center lg:order-2"
+>
+  <div className="absolute inset-[-7%] bg-[radial-gradient(ellipse_at_center,rgba(169,112,49,0.18),transparent_64%)] opacity-70 blur-2xl transition duration-1000 group-hover:opacity-100" />
 
-            <div className="relative h-full min-h-[360px] overflow-hidden lg:min-h-[420px]">
-              <div
-                className="absolute inset-0"
-                style={{
-                  transform: `translate3d(${parallax.x}px, ${parallax.y}px, 0) scale(1.035)`,
-                  transition: "transform 260ms ease-out",
-                }}
-              >
-                <Image
-                  src="/maps/land-of-the-fallen.png"
-                  alt="Illustrated map of the Land of the Fallen"
-                  fill
-                  priority
-                  sizes="(max-width: 1024px) 100vw, 60vw"
-                  className="object-contain object-center brightness-[0.8] contrast-[1.08] saturate-[0.88] drop-shadow-[0_28px_40px_rgba(0,0,0,0.58)] transition duration-1000 group-hover:brightness-[0.9] group-hover:saturate-100"
-                />
-              </div>
+  <div className="relative aspect-[1000/667] w-full overflow-hidden">
+    <Image
+      src="/maps/land-of-the-fallen.png"
+      alt="Illustrated map of the Land of the Fallen"
+      fill
+      priority
+      sizes="(max-width: 1024px) 100vw, 60vw"
+      className="object-contain object-center brightness-[0.8] contrast-[1.08] saturate-[0.88] drop-shadow-[0_28px_40px_rgba(0,0,0,0.58)] transition duration-1000 group-hover:brightness-[0.9] group-hover:saturate-100"
+    />
 
-              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_52%,rgba(9,7,6,0.7)_80%,#090706_100%)]" />
-              <div className="homepage-map-glow pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_58%,rgba(192,121,48,0.12),transparent_25%)] mix-blend-screen" />
+    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_62%,rgba(9,7,6,0.42)_88%,#090706_100%)]" />
 
-              <p className="absolute bottom-2 left-1/2 w-full max-w-xl -translate-x-1/2 px-4 text-center text-[8px] uppercase tracking-[0.28em] text-[#756653] sm:text-[9px]">
-                Beyond the walls lies a world whose history has not yet been revealed.
-              </p>
-            </div>
-          </div>
+    <div className="homepage-map-glow pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_58%,rgba(192,121,48,0.12),transparent_25%)] mix-blend-screen" />
+
+    <p className="absolute bottom-2 left-1/2 w-full max-w-xl -translate-x-1/2 px-4 text-center text-[8px] uppercase tracking-[0.28em] text-[#756653] sm:text-[9px]">
+      Beyond the walls lies a world whose history has not yet been revealed.
+    </p>
+  </div>
+</div>
 
           <aside className="order-3 flex min-h-0 flex-col justify-center">
             <div className="relative border border-[#6b5032]/45 bg-[#110c09]/82 px-5 py-4 shadow-[0_18px_60px_rgba(0,0,0,0.38)]">
