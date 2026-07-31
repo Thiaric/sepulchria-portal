@@ -141,9 +141,7 @@ export function SepulchriaHomepage({
 
       <div className="relative z-10 grid min-h-[100dvh] grid-rows-[auto_minmax(0,1fr)_auto] px-4 py-4 sm:px-6 lg:h-full lg:min-h-0 lg:px-8">
         <header className="mx-auto w-full max-w-[1500px] text-center">
-          <p className="text-[8px] uppercase tracking-[0.48em] text-[#9b7b51] sm:text-[9px]">
-            Chronicle of the Living Body
-          </p>
+        
 
           <h1 className="mt-1 font-serif text-4xl tracking-[0.12em] text-[#ead8b4] drop-shadow-[0_6px_28px_rgba(0,0,0,0.85)] sm:text-5xl lg:text-6xl">
             SEPULCHRIA

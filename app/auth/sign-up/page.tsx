@@ -1,11 +1,14 @@
+import { AuthPageShell } from "@/components/auth-page-shell";
 import { SignUpForm } from "@/components/sign-up-form";
 
-export default function Page() {
+export default function SignUpPage() {
   return (
-    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
-      <div className="w-full max-w-sm">
-        <SignUpForm />
-      </div>
-    </div>
+    <AuthPageShell
+      eyebrow="Begin Your Chronicle"
+      title="Enter the Living World"
+      description="Create your account and take the first step toward forging a character, choosing an allegiance and shaping Sepulchria."
+    >
+      <SignUpForm />
+    </AuthPageShell>
   );
 }

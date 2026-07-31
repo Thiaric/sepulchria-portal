@@ -1,11 +1,14 @@
+import { AuthPageShell } from "@/components/auth-page-shell";
 import { LoginForm } from "@/components/login-form";
 
-export default function Page() {
+export default function LoginPage() {
   return (
-    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
-      <div className="w-full max-w-sm">
-        <LoginForm />
-      </div>
-    </div>
+    <AuthPageShell
+      eyebrow="The Gates Await"
+      title="Return to Sepulchria"
+      description="Present your credentials and step once more into the city built from divine remains."
+    >
+      <LoginForm />
+    </AuthPageShell>
   );
 }
