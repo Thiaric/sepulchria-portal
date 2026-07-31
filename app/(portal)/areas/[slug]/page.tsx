@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
-import { moveCharacter } from "../../game/actions";
+import { enterRoomFromMap } from "../../game/actions";
 
 type Props = {
   params: Promise<{
@@ -115,8 +115,33 @@ export default async function AreaPage({ params }: Props) {
           </div>
 
           <Link
-  href="/map/sepulchria"
-  className="text-sm text-[#bda174] transition hover:text-[#f1ddb7]"
+  href="/?map=sepulchria"
+  className="
+    inline-flex
+    items-center
+    justify-center
+    gap-3
+
+    border border-[#80613b]
+    bg-[#241a12]
+
+    px-8
+    py-4
+
+    text-sm
+    font-semibold
+    uppercase
+    tracking-[0.22em]
+
+    text-[#e0b86a]
+
+    transition-all
+    duration-200
+
+    hover:bg-[#302217]
+    hover:border-[#b28b55]
+    hover:text-[#f4d89b]
+  "
 >
   ← Return to Sepulchria
 </Link>
@@ -141,7 +166,10 @@ export default async function AreaPage({ params }: Props) {
                   ) : null}
                 </div>
 
-                <form action={moveCharacter} className="shrink-0">
+                <form
+  action={enterRoomFromMap}
+  className="shrink-0"
+>
                   <input
                     type="hidden"
                     name="roomId"

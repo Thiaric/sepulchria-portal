@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 type InteractiveWorldMapProps = {
@@ -106,8 +107,13 @@ const cityHotspots: CityHotspot[] = [
 export function InteractiveWorldMap({
   areas,
 }: InteractiveWorldMapProps) {
-  const [level, setLevel] =
-    useState<MapLevel>("continent");
+  const searchParams = useSearchParams();
+
+  const [level, setLevel] = useState<MapLevel>(() =>
+    searchParams.get("map") === "sepulchria"
+      ? "city"
+      : "continent",
+  );
 
   const [hoveredArea, setHoveredArea] =
     useState<string | null>(null);
@@ -136,7 +142,7 @@ export function InteractiveWorldMap({
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#654c2f]/40 bg-[#17110d] px-4 py-3">
         <div>
           <p className="text-[8px] uppercase tracking-[0.28em] text-[#96734a]">
-            Explore Asteros
+            Welcome to Asteros - Explore the World and choose where your story will continue
           </p>
 
           <h2 className="mt-1 font-serif text-xl text-[#e4cda1]">
@@ -164,14 +170,8 @@ export function InteractiveWorldMap({
         )}
       </div>
 
-      <div className="flex w-full justify-center overflow-hidden bg-[#090705]">
-        <div
-          className="relative aspect-[3/2] w-full max-w-full overflow-hidden"
-          style={{
-            width:
-              "min(100%, calc((100dvh - 18rem) * 1.5))",
-          }}
-        >
+      <div className="w-full overflow-hidden bg-[#090705]">
+  <div className="relative h-[calc(100dvh-15rem)] min-h-[420px] w-full overflow-hidden">
           {/* CONTINENT MAP */}
 
           <div
@@ -190,7 +190,7 @@ export function InteractiveWorldMap({
               fill
               priority
               sizes="(max-width: 1024px) 100vw, 75vw"
-              className="object-contain object-center"
+              className="object-fill object-center"
             />
 
             <button
@@ -224,7 +224,7 @@ export function InteractiveWorldMap({
               alt="Map of Sepulchria"
               fill
               sizes="(max-width: 1024px) 100vw, 75vw"
-              className="object-contain object-center"
+              className="object-fill object-center"
             />
 
             {cityHotspots.map(

@@ -183,6 +183,67 @@ export async function moveCharacter(formData: FormData): Promise<void> {
   redirect("/game");
 }
 
+export async function enterRoomFromMap(
+  formData: FormData,
+): Promise<void> {
+  const roomId = String(
+    formData.get("roomId") ?? "",
+  ).trim();
+
+  if (!roomId) {
+    throw new Error("Invalid destination room.");
+  }
+
+  const { supabase, character } =
+    await getOwnedCharacter();
+
+  const {
+    data: destinationRoom,
+    error: roomError,
+  } = await supabase
+    .from("rooms")
+    .select("id")
+    .eq("id", roomId)
+    .eq("is_active", true)
+    .maybeSingle();
+
+  if (roomError) {
+    throw new Error(
+      `Unable to verify destination room: ${roomError.message}`,
+    );
+  }
+
+  if (!destinationRoom) {
+    throw new Error(
+      "This location is not available.",
+    );
+  }
+
+  const { error: moveError } = await supabase
+    .from("characters")
+    .update({
+      current_room_id: roomId,
+    })
+    .eq("id", character.id);
+
+  if (moveError) {
+    throw new Error(
+      `Unable to enter location: ${moveError.message}`,
+    );
+  }
+
+  await touchPresence(
+    supabase,
+    character.id,
+    roomId,
+  );
+
+  revalidatePath("/game");
+  revalidatePath("/");
+
+  redirect("/game");
+}
+
 export async function sendRoomMessage(
   _previousState: ActionState,
   formData: FormData,
