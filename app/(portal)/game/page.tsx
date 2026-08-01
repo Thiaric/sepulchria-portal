@@ -9,6 +9,7 @@ import type { RoomMessage } from "@/types/game";
 import RoomChatForm from "./components/RoomChatForm";
 import RoomMessageList from "./components/RoomMessageList";
 import RoomRealtime from "./components/RoomRealtime";
+import { leaveCurrentRoom } from "./actions";
 
 type Props = {
   searchParams: Promise<{
@@ -65,7 +66,7 @@ async function GameContent({
   } = await supabase
     .from("characters")
     .select(
-      "id, display_name, portrait_url, current_room_id",
+      "id, display_name, portrait_url, current_room_id, status",
     )
     .eq("user_id", user.id)
     .maybeSingle();
@@ -76,6 +77,14 @@ async function GameContent({
 
   if (!character) {
     redirect("/character/create");
+  }
+
+  if (character.status !== "approved") {
+    redirect(
+      `/character?error=${encodeURIComponent(
+        "Your character must be approved by the staff before entering the city.",
+      )}`,
+    );
   }
 
   if (!character.current_room_id) {
@@ -172,17 +181,38 @@ async function GameContent({
   <div className="h-[calc(100dvh-5rem)] overflow-hidden p-3 sm:p-4 lg:p-5">
     <RoomRealtime roomId={room.id} />
 
-    <div className="mx-auto h-full max-w-5xl">
-      <article className="flex h-full min-h-0 flex-col overflow-hidden border border-[#6a5032]/50 bg-[#17110d]">
-        <RoomMessageList
-          roomId={room.id}
-          messages={visibleMessages}
-          olderBefore={olderBefore}
-        />
+    <div className="mx-auto flex h-full max-w-5xl flex-col">
+  <div className="mb-3 flex shrink-0 items-center justify-between gap-4 border border-[#62492e]/45 bg-[#15100d] px-4 py-3">
+    <div className="min-w-0">
+      <p className="text-[8px] uppercase tracking-[0.24em] text-[#806b50]">
+        Current location
+      </p>
 
-        <RoomChatForm />
-      </article>
+      <p className="mt-1 truncate font-serif text-lg text-[#dec69a]">
+        {room.name}
+      </p>
     </div>
+
+    <form action={leaveCurrentRoom}>
+      <button
+        type="submit"
+        className="shrink-0 border border-[#7d493c] bg-[#2b1712] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[#d7a398] transition hover:border-[#b86958] hover:bg-[#422019]"
+      >
+        Leave room
+      </button>
+    </form>
+  </div>
+
+  <article className="flex min-h-0 flex-1 flex-col overflow-hidden border border-[#6a5032]/50 bg-[#17110d]">
+    <RoomMessageList
+      roomId={room.id}
+      messages={visibleMessages}
+      olderBefore={olderBefore}
+    />
+
+    <RoomChatForm />
+  </article>
+</div>
   </div>
 );
 }

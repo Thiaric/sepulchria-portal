@@ -19,6 +19,7 @@ type SupabaseClient = Awaited<ReturnType<typeof createClient>>;
 type OwnedCharacter = {
   id: string;
   current_room_id: string | null;
+  status: string;
 };
 
 const VALID_PRESENCE_STATUSES: PresenceStatus[] = [
@@ -48,7 +49,7 @@ async function getOwnedCharacter(): Promise<{
 
   const { data: character, error: characterError } = await supabase
     .from("characters")
-    .select("id, current_room_id")
+    .select("id, current_room_id, status")
     .eq("user_id", user.id)
     .maybeSingle();
 
@@ -58,6 +59,14 @@ async function getOwnedCharacter(): Promise<{
 
   if (!character) {
     redirect("/character/create");
+  }
+
+  if (character.status !== "approved") {
+    redirect(
+      `/character?error=${encodeURIComponent(
+        "Your character must be approved by the staff before entering the city.",
+      )}`,
+    );
   }
 
   return {
@@ -455,4 +464,49 @@ export async function heartbeatPresence(): Promise<PresenceActionResult> {
         error instanceof Error ? error.message : "Unexpected error.",
     };
   }
+}
+
+export async function leaveCurrentRoom(): Promise<void> {
+  const {
+    supabase,
+    character,
+  } = await getOwnedCharacter();
+
+  const { error: presenceError } =
+    await supabase
+      .from("character_presence")
+      .delete()
+      .eq(
+        "character_id",
+        character.id,
+      );
+
+  if (presenceError) {
+    throw new Error(
+      `Unable to leave the room: ${presenceError.message}`,
+    );
+  }
+
+  const { error: characterError } =
+    await supabase
+      .from("characters")
+      .update({
+        current_room_id: null,
+        updated_at:
+          new Date().toISOString(),
+      })
+      .eq("id", character.id);
+
+  if (characterError) {
+    throw new Error(
+      `Unable to clear the current location: ${characterError.message}`,
+    );
+  }
+
+  revalidatePath("/");
+  revalidatePath("/game");
+  revalidatePath("/characters");
+  revalidatePath("/character");
+
+  redirect("/");
 }

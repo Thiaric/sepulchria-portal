@@ -166,7 +166,17 @@ export async function updateCharacterAdministration(
     error: readError,
   } = await supabase
     .from("characters")
-    .select("public_slug")
+    .select(`
+      public_slug,
+      first_name,
+      surname,
+      physical_description,
+      personality,
+      biography,
+      status,
+      approved_at,
+      approved_by
+    `)
     .eq("id", characterId)
     .single();
 
@@ -179,32 +189,97 @@ export async function updateCharacterAdministration(
     );
   }
 
+  if (status === "approved") {
+    const missingFields: string[] = [];
+
+    if (!character.first_name?.trim()) {
+      missingFields.push("first name");
+    }
+
+    if (!character.surname?.trim()) {
+      missingFields.push("surname");
+    }
+
+    if (!raceId) {
+      missingFields.push("race");
+    }
+
+    if (!associationId) {
+      missingFields.push("Association");
+    }
+
+    if (!character.physical_description?.trim()) {
+      missingFields.push("physical description");
+    }
+
+    if (!character.personality?.trim()) {
+      missingFields.push("personality");
+    }
+
+    if (!character.biography?.trim()) {
+      missingFields.push("biography");
+    }
+
+    if (!character.public_slug?.trim()) {
+      missingFields.push("public slug");
+    }
+
+    if (missingFields.length > 0) {
+      throw new Error(
+        `This character cannot be approved until the following fields are completed: ${missingFields.join(
+          ", ",
+        )}.`,
+      );
+    }
+  }
+
   const now = new Date().toISOString();
+  const isNewApproval =
+    status === "approved" &&
+    character.status !== "approved";
 
   const approvalData =
     status === "approved"
       ? {
-          approved_at: now,
-          approved_by: staff.userId,
+          approved_at:
+            character.approved_at ?? now,
+          approved_by:
+            character.approved_by ??
+            staff.userId,
+          approval_notice_seen_at:
+            isNewApproval
+              ? null
+              : undefined,
         }
       : {
           approved_at: null,
           approved_by: null,
+          approval_notice_seen_at: null,
         };
+
+  const updatePayload = {
+    race_id: raceId,
+    association_id: associationId,
+    status,
+    title,
+    staff_notes: staffNotes,
+    rejection_reason: rejectionReason,
+    approved_at: approvalData.approved_at,
+    approved_by: approvalData.approved_by,
+    updated_at: now,
+    ...(approvalData.approval_notice_seen_at !==
+    undefined
+      ? {
+          approval_notice_seen_at:
+            approvalData.approval_notice_seen_at,
+        }
+      : {}),
+  };
 
   const { error: updateError } =
     await supabase
       .from("characters")
-      .update({
-        race_id: raceId,
-        association_id: associationId,
-        status,
-        title,
-        staff_notes: staffNotes,
-        rejection_reason: rejectionReason,
-        ...approvalData,
-        updated_at: now,
-      })
+      .update(updatePayload)
       .eq("id", characterId);
 
   if (updateError) {
