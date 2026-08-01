@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { PortalContextPanel } from "@/components/portal/portal-context-panel";
+import { RoomInfoButton } from "@/components/portal/room-info-button";
 import type { PortalContext } from "@/types/portal";
 
 type PortalRightSidebarProps = {
@@ -33,14 +34,20 @@ export function PortalRightSidebar({
             </div>
 
             {character?.currentRoom ? (
-              <Link
-                href="/game"
-                aria-label="Enter current location"
-                title="Enter current location"
-                className="shrink-0 border border-[#60482e]/55 bg-[#1d160f] px-2.5 py-2 text-xs text-[#c59a5a] transition hover:border-[#977242] hover:text-[#ebcc91]"
-              >
-                →
-              </Link>
+              <div className="flex shrink-0 items-center gap-2">
+                <RoomInfoButton
+                  roomId={character.currentRoom.id}
+                />
+
+                <Link
+                  href="/game"
+                  aria-label="Enter current location"
+                  title="Enter current location"
+                  className="border border-[#60482e]/55 bg-[#1d160f] px-2.5 py-2 text-xs text-[#c59a5a] transition hover:border-[#977242] hover:text-[#ebcc91]"
+                >
+                  →
+                </Link>
+              </div>
             ) : null}
           </div>
         </section>
