@@ -3,6 +3,7 @@ import Link from "next/link";
 import { LogoutButton } from "@/components/logout-button";
 import { getStaffSession } from "@/lib/auth/require-staff";
 import type { PortalContext } from "@/types/portal";
+import { ActiveCityCounter } from "@/components/portal/active-city-counter";
 
 type PortalHeaderProps = {
   context: PortalContext;
@@ -37,22 +38,11 @@ export async function PortalHeader({
         </Link>
 
         <div className="flex items-center gap-3">
-          <div
-            title={`${onlineCharacterCount} active characters`}
-            className="hidden h-10 items-center gap-3 border border-[#614b31] bg-[#17120f] px-3 md:flex"
-          >
-            <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-[#788d5e] shadow-[0_0_10px_rgba(120,141,94,0.55)]" />
-
-            <div className="flex items-baseline gap-2">
-              <span className="font-serif text-lg text-[#d8bf91]">
-                {onlineCharacterCount}
-              </span>
-
-              <span className="hidden text-[8px] uppercase tracking-[0.18em] text-[#81725f] lg:inline">
-                Active in the city
-              </span>
-            </div>
-          </div>
+          <ActiveCityCounter
+  initialCount={
+    onlineCharacterCount
+  }
+/>
 
           <Link
             href="/messages"

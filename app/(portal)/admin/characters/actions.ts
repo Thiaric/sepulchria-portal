@@ -3,7 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  requireAdmin,
+  requireStaff,
+} from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
 const CHARACTER_STATUSES = [
@@ -138,6 +141,15 @@ export async function updateCharacterAdministration(
       5000,
     );
 
+  if (
+    status === "rejected" &&
+    !submittedRejectionReason
+  ) {
+    throw new Error(
+      "A rejection reason is required when rejecting a character.",
+    );
+  }
+
   const rejectionReason =
     status === "rejected"
       ? submittedRejectionReason
@@ -149,12 +161,14 @@ export async function updateCharacterAdministration(
 
   const supabase = await createClient();
 
-  const { data: character, error: readError } =
-    await supabase
-      .from("characters")
-      .select("public_slug")
-      .eq("id", characterId)
-      .single();
+  const {
+    data: character,
+    error: readError,
+  } = await supabase
+    .from("characters")
+    .select("public_slug")
+    .eq("id", characterId)
+    .single();
 
   if (readError || !character) {
     throw new Error(
@@ -165,11 +179,12 @@ export async function updateCharacterAdministration(
     );
   }
 
+  const now = new Date().toISOString();
+
   const approvalData =
     status === "approved"
       ? {
-          approved_at:
-            new Date().toISOString(),
+          approved_at: now,
           approved_by: staff.userId,
         }
       : {
@@ -188,7 +203,7 @@ export async function updateCharacterAdministration(
         staff_notes: staffNotes,
         rejection_reason: rejectionReason,
         ...approvalData,
-        updated_at: new Date().toISOString(),
+        updated_at: now,
       })
       .eq("id", characterId);
 
@@ -203,10 +218,257 @@ export async function updateCharacterAdministration(
   revalidatePath(
     `/admin/characters/${characterId}`,
   );
+  revalidatePath("/character");
   revalidatePath("/characters");
-  revalidatePath(
-    `/characters/${character.public_slug}`,
-  );
+
+  if (character.public_slug) {
+    revalidatePath(
+      `/characters/${character.public_slug}`,
+    );
+  }
 
   redirect(returnTo);
+}
+
+export async function deleteCharacterAdministration(
+  formData: FormData,
+) {
+  /*
+   * requireAdmin() should permit only the roles configured
+   * as administrators/owners in the project.
+   */
+  await requireAdmin();
+
+  const characterId = readRequiredUuid(
+    formData.get("characterId"),
+  );
+
+  const confirmation = readOptionalText(
+    formData.get("confirmation"),
+    200,
+  );
+
+  if (!confirmation) {
+    throw new Error(
+      "Type the character name to confirm deletion.",
+    );
+  }
+
+  const supabase = await createClient();
+
+  const {
+    data: character,
+    error: characterError,
+  } = await supabase
+    .from("characters")
+    .select(`
+      id,
+      user_id,
+      public_slug,
+      first_name,
+      surname,
+      display_name,
+      status
+    `)
+    .eq("id", characterId)
+    .maybeSingle();
+
+  if (characterError || !character) {
+    throw new Error(
+      `Unable to find character: ${
+        characterError?.message ??
+        "Character not found."
+      }`,
+    );
+  }
+
+  const expectedName =
+    character.display_name?.trim() ||
+    `${character.first_name ?? ""} ${
+      character.surname ?? ""
+    }`.trim();
+
+  if (
+    confirmation.trim() !== expectedName
+  ) {
+    throw new Error(
+      `Confirmation does not match "${expectedName}".`,
+    );
+  }
+
+  /*
+   * Preserve forum discussions while removing the link
+   * to the deleted character.
+   */
+  const {
+    error: forumPostsError,
+  } = await supabase
+    .from("forum_posts")
+    .update({
+      author_character_id: null,
+    })
+    .eq(
+      "author_character_id",
+      characterId,
+    );
+
+  if (forumPostsError) {
+    throw new Error(
+      `Unable to anonymise forum posts: ${forumPostsError.message}`,
+    );
+  }
+
+  const {
+    error: forumTopicsError,
+  } = await supabase
+    .from("forum_topics")
+    .update({
+      author_character_id: null,
+    })
+    .eq(
+      "author_character_id",
+      characterId,
+    );
+
+  if (forumTopicsError) {
+    throw new Error(
+      `Unable to anonymise forum topics: ${forumTopicsError.message}`,
+    );
+  }
+
+  /*
+   * Delete dependent records before deleting the character.
+   * These operations are intentionally sequential so that
+   * any database error clearly identifies the affected table.
+   */
+
+  const {
+    error: presenceError,
+  } = await supabase
+    .from("character_presence")
+    .delete()
+    .eq("character_id", characterId);
+
+  if (presenceError) {
+    throw new Error(
+      `Unable to delete character presence: ${presenceError.message}`,
+    );
+  }
+
+
+
+  const {
+    error: roomMessagesError,
+  } = await supabase
+    .from("room_messages")
+    .delete()
+    .eq("character_id", characterId);
+
+  if (roomMessagesError) {
+    throw new Error(
+      `Unable to delete room messages: ${roomMessagesError.message}`,
+    );
+  }
+
+  const {
+    error: directMessagesError,
+  } = await supabase
+    .from("direct_messages")
+    .delete()
+    .eq(
+      "sender_character_id",
+      characterId,
+    );
+
+  if (directMessagesError) {
+    throw new Error(
+      `Unable to delete direct messages: ${directMessagesError.message}`,
+    );
+  }
+
+  const {
+    error: participantsError,
+  } = await supabase
+    .from(
+      "direct_conversation_participants",
+    )
+    .delete()
+    .eq("character_id", characterId);
+
+  if (participantsError) {
+    throw new Error(
+      `Unable to remove character from conversations: ${participantsError.message}`,
+    );
+  }
+
+  const {
+    error: blocksAsBlockerError,
+  } = await supabase
+    .from("character_blocks")
+    .delete()
+    .eq(
+      "blocker_character_id",
+      characterId,
+    );
+
+  if (blocksAsBlockerError) {
+    throw new Error(
+      `Unable to delete character blocks: ${blocksAsBlockerError.message}`,
+    );
+  }
+
+  const {
+    error: blocksAsBlockedError,
+  } = await supabase
+    .from("character_blocks")
+    .delete()
+    .eq(
+      "blocked_character_id",
+      characterId,
+    );
+
+  if (blocksAsBlockedError) {
+    throw new Error(
+      `Unable to delete character blocks: ${blocksAsBlockedError.message}`,
+    );
+  }
+
+  /*
+   * Delete the character sheet only.
+   * The associated Supabase Auth account remains intact,
+   * allowing the user to create a new character.
+   *
+   * There is deliberately no status restriction here:
+   * an owner/admin may delete draft, submitted, approved,
+   * or rejected characters.
+   */
+  const {
+    error: deleteError,
+  } = await supabase
+    .from("characters")
+    .delete()
+    .eq("id", characterId);
+
+  if (deleteError) {
+    throw new Error(
+      `Unable to delete character: ${deleteError.message}`,
+    );
+  }
+
+  revalidatePath("/");
+  revalidatePath("/game");
+  revalidatePath("/character");
+  revalidatePath("/characters");
+  revalidatePath("/messages");
+  revalidatePath("/forum");
+  revalidatePath("/admin");
+  revalidatePath("/admin/characters");
+
+  if (character.public_slug) {
+    revalidatePath(
+      `/characters/${character.public_slug}`,
+    );
+  }
+
+  redirect("/admin/characters");
 }

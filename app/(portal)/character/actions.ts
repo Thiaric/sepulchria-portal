@@ -1,5 +1,6 @@
 "use server";
 
+import { randomUUID } from "node:crypto";
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
@@ -32,6 +33,74 @@ function redirectWithError(
       mode,
     )}?error=${encodeURIComponent(message)}`,
   );
+}
+
+function redirectCharacterError(
+  message: string,
+): never {
+  redirect(
+    `/character?error=${encodeURIComponent(
+      message,
+    )}`,
+  );
+}
+
+function createPublicSlug(
+  firstName: string,
+  surname: string,
+) {
+  const baseSlug = `${firstName}-${surname}`
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+  const safeBase =
+    baseSlug || "character";
+
+  return `${safeBase}-${randomUUID().slice(
+    0,
+    8,
+  )}`;
+}
+
+function validatePortraitUrl(
+  portraitUrl: string,
+  mode: CharacterMode,
+) {
+  if (!portraitUrl) {
+    return;
+  }
+
+  /*
+   * Local images from /public are valid:
+   * /portraits/example.png
+   */
+  if (portraitUrl.startsWith("/")) {
+    return;
+  }
+
+  try {
+    const parsedUrl = new URL(
+      portraitUrl,
+    );
+
+    if (
+      parsedUrl.protocol !== "http:" &&
+      parsedUrl.protocol !== "https:"
+    ) {
+      redirectWithError(
+        mode,
+        "Portrait URL must use http or https.",
+      );
+    }
+  } catch {
+    redirectWithError(
+      mode,
+      "Portrait URL is invalid.",
+    );
+  }
 }
 
 export async function saveCharacter(
@@ -67,13 +136,27 @@ export async function saveCharacter(
     );
   }
 
+  const portraitUrl = text(
+    formData,
+    "portrait_url",
+    1000,
+  );
+
+  validatePortraitUrl(
+    portraitUrl,
+    mode,
+  );
+
   const payload = {
     first_name: firstName,
     surname,
 
     pronouns:
-      text(formData, "pronouns", 80) ||
-      null,
+      text(
+        formData,
+        "pronouns",
+        80,
+      ) || null,
 
     date_of_birth:
       text(
@@ -90,8 +173,11 @@ export async function saveCharacter(
       ) || null,
 
     origin:
-      text(formData, "origin", 160) ||
-      null,
+      text(
+        formData,
+        "origin",
+        160,
+      ) || null,
 
     occupation:
       text(
@@ -101,15 +187,14 @@ export async function saveCharacter(
       ) || null,
 
     title:
-      text(formData, "title", 160) ||
-      null,
-
-    portrait_url:
       text(
         formData,
-        "portrait_url",
-        1000,
+        "title",
+        160,
       ) || null,
+
+    portrait_url:
+      portraitUrl || null,
 
     physical_description:
       text(
@@ -139,7 +224,8 @@ export async function saveCharacter(
         10000,
       ) || null,
 
-    updated_at: new Date().toISOString(),
+    updated_at:
+      new Date().toISOString(),
   };
 
   if (mode === "create") {
@@ -183,7 +269,10 @@ export async function saveCharacter(
       supabase
         .from("associations")
         .select("id")
-        .eq("id", associationId)
+        .eq(
+          "id",
+          associationId,
+        )
         .maybeSingle(),
 
       supabase
@@ -221,14 +310,18 @@ export async function saveCharacter(
       );
     }
 
-    if (existingCharacterResult.error) {
+    if (
+      existingCharacterResult.error
+    ) {
       redirectWithError(
         mode,
         existingCharacterResult.error.message,
       );
     }
 
-    if (existingCharacterResult.data) {
+    if (
+      existingCharacterResult.data
+    ) {
       redirect("/character");
     }
 
@@ -238,6 +331,10 @@ export async function saveCharacter(
     } = await supabase
       .from("rooms")
       .select("id")
+      .eq("is_active", true)
+      .order("sort_order", {
+        ascending: true,
+      })
       .order("created_at", {
         ascending: true,
       })
@@ -254,15 +351,22 @@ export async function saveCharacter(
     if (!startingRoom) {
       redirectWithError(
         mode,
-        "No starting room exists. Create at least one room before creating characters.",
+        "No active starting room exists. Create at least one active room before creating characters.",
       );
     }
+
+    const publicSlug =
+      createPublicSlug(
+        firstName,
+        surname,
+      );
 
     const { error } = await supabase
       .from("characters")
       .insert({
         ...payload,
         user_id: user.id,
+        public_slug: publicSlug,
         status: "draft",
         current_room_id:
           startingRoom.id,
@@ -278,7 +382,9 @@ export async function saveCharacter(
       );
     }
 
-    redirect("/character?created=true");
+    redirect(
+      "/character?created=true",
+    );
   }
 
   const {
@@ -286,7 +392,7 @@ export async function saveCharacter(
     error: existingCharacterError,
   } = await supabase
     .from("characters")
-    .select("id")
+    .select("id, status")
     .eq("user_id", user.id)
     .maybeSingle();
 
@@ -301,10 +407,33 @@ export async function saveCharacter(
     redirect("/character/create");
   }
 
+  if (
+    existingCharacter.status ===
+    "submitted"
+  ) {
+    redirectWithError(
+      mode,
+      "Your character is currently awaiting staff review and cannot be edited.",
+    );
+  }
+
+  if (
+    existingCharacter.status ===
+    "approved"
+  ) {
+    redirectWithError(
+      mode,
+      "Approved characters cannot be edited. Contact the staff if changes are required.",
+    );
+  }
+
   const { error } = await supabase
     .from("characters")
     .update(payload)
-    .eq("id", existingCharacter.id)
+    .eq(
+      "id",
+      existingCharacter.id,
+    )
     .eq("user_id", user.id);
 
   if (error) {
@@ -314,5 +443,196 @@ export async function saveCharacter(
     );
   }
 
-  redirect("/character?updated=true");
+  redirect(
+    "/character?updated=true",
+  );
+}
+
+export async function submitCharacterForReview() {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/auth/login");
+  }
+
+  const {
+    data: character,
+    error: characterError,
+  } = await supabase
+    .from("characters")
+    .select(`
+      id,
+      status,
+      first_name,
+      surname,
+      race_id,
+      association_id,
+      physical_description,
+      personality,
+      biography
+    `)
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (characterError) {
+    redirectCharacterError(
+      characterError.message,
+    );
+  }
+
+  if (!character) {
+    redirect("/character/create");
+  }
+
+  if (
+    character.status === "submitted"
+  ) {
+    redirectCharacterError(
+      "Your character has already been submitted for review.",
+    );
+  }
+
+  if (
+    character.status === "approved"
+  ) {
+    redirectCharacterError(
+      "Your character has already been approved.",
+    );
+  }
+
+  if (
+    character.status !== "draft" &&
+    character.status !== "rejected"
+  ) {
+    redirectCharacterError(
+      "This character cannot currently be submitted for review.",
+    );
+  }
+
+  const missingFields: string[] = [];
+
+  if (
+    !character.first_name?.trim()
+  ) {
+    missingFields.push(
+      "first name",
+    );
+  }
+
+  if (!character.surname?.trim()) {
+    missingFields.push("surname");
+  }
+
+  if (!character.race_id) {
+    missingFields.push("race");
+  }
+
+  if (
+    !character.association_id
+  ) {
+    missingFields.push(
+      "Association",
+    );
+  }
+
+  if (
+    !character.physical_description?.trim()
+  ) {
+    missingFields.push(
+      "physical description",
+    );
+  }
+
+  if (
+    !character.personality?.trim()
+  ) {
+    missingFields.push(
+      "personality",
+    );
+  }
+
+  if (
+    !character.biography?.trim()
+  ) {
+    missingFields.push(
+      "biography",
+    );
+  }
+
+  if (missingFields.length > 0) {
+    redirectCharacterError(
+      `Complete the following fields before submitting: ${missingFields.join(
+        ", ",
+      )}.`,
+    );
+  }
+
+  const submittedAt =
+    new Date().toISOString();
+
+  const {
+    data: submittedCharacter,
+    error: submitError,
+  } = await supabase
+    .from("characters")
+    .update({
+      status: "submitted",
+      submitted_at: submittedAt,
+      rejection_reason: null,
+      updated_at: submittedAt,
+    })
+    .eq("id", character.id)
+    .eq("user_id", user.id)
+    .in("status", [
+      "draft",
+      "rejected",
+    ])
+    .select("id")
+    .maybeSingle();
+
+  if (submitError) {
+    redirectCharacterError(
+      submitError.message,
+    );
+  }
+
+  /*
+   * No row means another request already changed
+   * the status before this update completed.
+   */
+  if (!submittedCharacter) {
+    redirectCharacterError(
+      "The character could not be submitted because its status has already changed. Refresh the page and try again.",
+    );
+  }
+
+  redirect(
+    "/character?submitted=true",
+  );
+}
+
+export async function markApprovalNoticeSeen() {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return;
+  }
+
+  await supabase
+    .from("characters")
+    .update({
+      approval_notice_seen_at:
+        new Date().toISOString(),
+    })
+    .eq("user_id", user.id)
+    .eq("status", "approved")
+    .is("approval_notice_seen_at", null);
 }

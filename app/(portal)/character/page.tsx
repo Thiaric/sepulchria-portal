@@ -1,7 +1,16 @@
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { ApprovalNotice } from "@/components/character/approval-notice";
 
+import { submitCharacterForReview } from "./actions";
 import { createClient } from "@/lib/supabase/server";
+
+type CharacterStatus =
+  | "draft"
+  | "submitted"
+  | "approved"
+  | "rejected";
 
 type CodexRelation = {
   id: string;
@@ -25,6 +34,12 @@ type CharacterProfile = {
   public_notes?: string | null;
   portrait_url?: string | null;
   display_name?: string | null;
+  approval_notice_seen_at?: string | null;
+
+  status?: CharacterStatus | null;
+  rejection_reason?: string | null;
+  submitted_at?: string | null;
+  approved_at?: string | null;
 
   race:
     | CodexRelation
@@ -37,7 +52,19 @@ type CharacterProfile = {
     | null;
 };
 
-export default async function CharacterPage() {
+type CharacterPageProps = {
+  searchParams: Promise<{
+    created?: string;
+    updated?: string;
+    submitted?: string;
+    error?: string;
+  }>;
+};
+
+export default async function CharacterPage({
+  searchParams,
+}: CharacterPageProps) {
+  const params = await searchParams;
   const supabase = await createClient();
 
   const {
@@ -67,6 +94,11 @@ export default async function CharacterPage() {
       public_notes,
       portrait_url,
       display_name,
+      status,
+      rejection_reason,
+      submitted_at,
+      approved_at,
+      approval_notice_seen_at,
 
       race:races!characters_race_id_fkey(
         id,
@@ -95,12 +127,15 @@ export default async function CharacterPage() {
     redirect("/character/create");
   }
 
+  const notice = getPageNotice(params);
+
   return (
     <Profile
       character={
         character as unknown as CharacterProfile
       }
       own
+      notice={notice}
     />
   );
 }
@@ -109,10 +144,12 @@ export function Profile({
   character,
   own = false,
   messageAction = null,
+  notice = null,
 }: {
   character: CharacterProfile;
   own?: boolean;
-  messageAction?: React.ReactNode;
+  messageAction?: ReactNode;
+  notice?: PageNotice | null;
 }) {
   const race = normaliseRelation(
     character.race,
@@ -121,6 +158,19 @@ export function Profile({
   const association = normaliseRelation(
     character.association,
   );
+
+  const status =
+    character.status ?? "draft";
+
+  const canEdit =
+    own &&
+    (status === "draft" ||
+      status === "rejected");
+
+  const canSubmit =
+    own &&
+    (status === "draft" ||
+      status === "rejected");
 
   const items = [
     ["Pronouns", character.pronouns],
@@ -144,6 +194,32 @@ export function Profile({
   return (
     <div className="p-5 sm:p-7 lg:p-9">
       <div className="mx-auto max-w-5xl">
+        {notice ? (
+          <PageNoticeBanner notice={notice} />
+        ) : null}
+
+        {own &&
+character.status === "approved" &&
+!character.approval_notice_seen_at ? (
+  <ApprovalNotice />
+) : null}
+        
+
+        {own ? (
+          <CharacterStatusPanel
+            status={status}
+            rejectionReason={
+              character.rejection_reason
+            }
+            submittedAt={
+              character.submitted_at
+            }
+            approvedAt={
+              character.approved_at
+            }
+          />
+        ) : null}
+
         <div className="flex flex-wrap items-center justify-between gap-4">
           <Link
             href={own ? "/" : "/game"}
@@ -152,16 +228,33 @@ export function Profile({
             ← Return
           </Link>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center justify-end gap-3">
             {messageAction}
 
-            {own ? (
+            {canEdit ? (
               <Link
                 href="/character/edit"
                 className="border border-[#8d6d3e] bg-[#332719] px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-[#efd9aa] transition hover:bg-[#49351f]"
               >
                 Edit character
               </Link>
+            ) : null}
+
+            {canSubmit ? (
+              <form
+                action={
+                  submitCharacterForReview
+                }
+              >
+                <button
+                  type="submit"
+                  className="border border-[#a47b43] bg-[#472d18] px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-[#f3d7a5] transition hover:border-[#d0a15c] hover:bg-[#5c391d]"
+                >
+                  {status === "rejected"
+                    ? "Submit again"
+                    : "Submit for approval"}
+                </button>
+              </form>
             ) : null}
           </div>
         </div>
@@ -186,31 +279,43 @@ export function Profile({
           </div>
 
           <div className="min-w-0">
-            <p className="text-[10px] uppercase tracking-[0.3em] text-[#876a46]">
-              Character profile
-            </p>
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.3em] text-[#876a46]">
+                  Character profile
+                </p>
 
-            <h1 className="mt-3 break-words font-serif text-4xl text-[#ecd9b2] sm:text-5xl">
-              {character.display_name ??
-                "Unnamed character"}
-            </h1>
+                <h1 className="mt-3 break-words font-serif text-4xl text-[#ecd9b2] sm:text-5xl">
+                  {character.display_name ??
+                    "Unnamed character"}
+                </h1>
+              </div>
+
+              {own ? (
+                <CharacterStatusBadge
+                  status={status}
+                />
+              ) : null}
+            </div>
 
             <div className="mt-8 grid gap-px bg-[#4f3b28]/35 sm:grid-cols-2">
-              {items.map(([label, value]) => (
-                <div
-                  key={label}
-                  className="bg-[#17110d] p-4"
-                >
-                  <p className="text-[9px] uppercase tracking-[0.25em] text-[#796448]">
-                    {label}
-                  </p>
+              {items.map(
+                ([label, value]) => (
+                  <div
+                    key={label}
+                    className="bg-[#17110d] p-4"
+                  >
+                    <p className="text-[9px] uppercase tracking-[0.25em] text-[#796448]">
+                      {label}
+                    </p>
 
-                  <p className="mt-2 break-words text-sm text-[#cab89b]">
-                    {value ||
-                      "Not recorded"}
-                  </p>
-                </div>
-              ))}
+                    <p className="mt-2 break-words text-sm text-[#cab89b]">
+                      {value ||
+                        "Not recorded"}
+                    </p>
+                  </div>
+                ),
+              )}
             </div>
           </div>
         </section>
@@ -238,25 +343,220 @@ export function Profile({
         </section>
 
         <div className="mt-6 space-y-6">
-          {sections.map(([title, value]) => (
-            <article
-              key={title}
-              className="border border-[#6b5032]/50 bg-[#17110d] p-5 sm:p-7"
-            >
-              <h2 className="font-serif text-2xl text-[#dfc79c] sm:text-3xl">
-                {title}
-              </h2>
+          {sections.map(
+            ([title, value]) => (
+              <article
+                key={title}
+                className="border border-[#6b5032]/50 bg-[#17110d] p-5 sm:p-7"
+              >
+                <h2 className="font-serif text-2xl text-[#dfc79c] sm:text-3xl">
+                  {title}
+                </h2>
 
-              <p className="mt-5 whitespace-pre-line break-words text-sm leading-8 text-[#b0a18d]">
-                {value ||
-                  "No information has been added yet."}
-              </p>
-            </article>
-          ))}
+                <p className="mt-5 whitespace-pre-line break-words text-sm leading-8 text-[#b0a18d]">
+                  {value ||
+                    "No information has been added yet."}
+                </p>
+              </article>
+            ),
+          )}
         </div>
       </div>
     </div>
   );
+}
+
+function CharacterStatusPanel({
+  status,
+  rejectionReason,
+  submittedAt,
+  approvedAt,
+}: {
+  status: CharacterStatus;
+  rejectionReason?: string | null;
+  submittedAt?: string | null;
+  approvedAt?: string | null;
+}) {
+  if (status === "submitted") {
+    return (
+      <section className="mb-6 border border-[#75613d]/65 bg-[#282112]/75 p-5">
+        <p className="text-[9px] uppercase tracking-[0.25em] text-[#c0a166]">
+          Awaiting staff review
+        </p>
+
+        <h2 className="mt-2 font-serif text-2xl text-[#ead3a4]">
+          Your character has been submitted
+        </h2>
+
+        <p className="mt-3 text-sm leading-6 text-[#aa9c84]">
+          The character sheet is currently
+          locked while the staff reviews it.
+          You will be able to edit it again if
+          corrections are requested.
+        </p>
+
+        {submittedAt ? (
+          <p className="mt-3 text-xs text-[#837661]">
+            Submitted{" "}
+            {formatDateTime(submittedAt)}
+          </p>
+        ) : null}
+      </section>
+    );
+  }
+
+  if (status === "approved") {
+  return null;
+}
+
+  if (status === "rejected") {
+    return (
+      <section className="mb-6 border border-[#853e35]/70 bg-[#2d1512]/75 p-5">
+        <p className="text-[9px] uppercase tracking-[0.25em] text-[#d2786d]">
+          Corrections requested
+        </p>
+
+        <h2 className="mt-2 font-serif text-2xl text-[#efb4aa]">
+          Your character was not approved
+        </h2>
+
+        <p className="mt-3 text-sm leading-6 text-[#bd958e]">
+          Review the staff feedback below,
+          edit the character sheet, and submit
+          it again when the requested changes
+          have been completed.
+        </p>
+
+        <div className="mt-4 border border-[#70352f]/55 bg-[#170b0a]/60 p-4">
+          <p className="text-[8px] uppercase tracking-[0.22em] text-[#aa655d]">
+            Staff reason
+          </p>
+
+          <p className="mt-2 whitespace-pre-line text-sm leading-6 text-[#ddb2aa]">
+            {rejectionReason ||
+              "No rejection reason was provided. Contact the staff for clarification."}
+          </p>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="mb-6 border border-[#615039]/60 bg-[#1b1710]/75 p-5">
+      <p className="text-[9px] uppercase tracking-[0.25em] text-[#a58b61]">
+        Draft character
+      </p>
+
+      <h2 className="mt-2 font-serif text-2xl text-[#dfc79c]">
+        Complete your character sheet
+      </h2>
+
+      <p className="mt-3 text-sm leading-6 text-[#a89a84]">
+        You may continue editing this record.
+        When every required section is complete,
+        submit it to the staff for approval.
+      </p>
+    </section>
+  );
+}
+
+function CharacterStatusBadge({
+  status,
+}: {
+  status: CharacterStatus;
+}) {
+  const styles: Record<
+    CharacterStatus,
+    string
+  > = {
+    draft:
+      "border-[#76603e] bg-[#2a2115] text-[#d0ac72]",
+    submitted:
+      "border-[#81703f] bg-[#302813] text-[#dbc27a]",
+    approved:
+      "border-[#4c744f] bg-[#17291a] text-[#a7d1a5]",
+    rejected:
+      "border-[#843f37] bg-[#311512] text-[#e0968c]",
+  };
+
+  return (
+    <span
+      className={`inline-flex border px-3 py-2 text-[8px] uppercase tracking-[0.22em] ${styles[status]}`}
+    >
+      {status}
+    </span>
+  );
+}
+
+type PageNotice = {
+  tone: "success" | "error";
+  message: string;
+};
+
+function PageNoticeBanner({
+  notice,
+}: {
+  notice: PageNotice;
+}) {
+  const classes =
+    notice.tone === "error"
+      ? "border-[#873e35]/65 bg-[#351613]/70 text-[#e0a39a]"
+      : "border-[#4f704e]/65 bg-[#172619]/70 text-[#b7d2ae]";
+
+  return (
+    <div
+      role={
+        notice.tone === "error"
+          ? "alert"
+          : "status"
+      }
+      className={`mb-6 border px-4 py-3 text-sm ${classes}`}
+    >
+      {notice.message}
+    </div>
+  );
+}
+
+function getPageNotice(
+  params: {
+    created?: string;
+    updated?: string;
+    submitted?: string;
+    error?: string;
+  },
+): PageNotice | null {
+  if (params.error) {
+    return {
+      tone: "error",
+      message: params.error,
+    };
+  }
+
+  if (params.submitted === "true") {
+    return {
+      tone: "success",
+      message:
+        "Your character has been submitted to the staff for review.",
+    };
+  }
+
+  if (params.created === "true") {
+    return {
+      tone: "success",
+      message:
+        "Your character was created successfully. Review the sheet and submit it when it is complete.",
+    };
+  }
+
+  if (params.updated === "true") {
+    return {
+      tone: "success",
+      message:
+        "Your character sheet was updated successfully.",
+    };
+  }
+
+  return null;
 }
 
 function HeritageCard({
@@ -275,9 +575,9 @@ function HeritageCard({
     <article
       className="relative overflow-hidden border border-[#654b2e]/55 bg-[#15100d] p-5"
       style={{
-  borderColor: `${colour}88`,
-  color: colour,
-}}
+        borderColor: `${colour}88`,
+        color: colour,
+      }}
     >
       <p className="text-[9px] uppercase tracking-[0.25em] text-[#806b50]">
         {label}
@@ -307,7 +607,8 @@ function HeritageCard({
 
         <div className="min-w-0">
           <h2 className="break-words font-serif text-2xl text-[#e1c99f]">
-            {entry?.name ?? "Not assigned"}
+            {entry?.name ??
+              "Not assigned"}
           </h2>
 
           <p className="mt-1 text-[9px] uppercase tracking-[0.2em] text-[#786b5b]">
@@ -335,4 +636,24 @@ function normaliseRelation<T>(
   }
 
   return value;
+}
+
+function formatDateTime(
+  value: string,
+) {
+  const date = new Date(value);
+
+  if (
+    Number.isNaN(date.getTime())
+  ) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat(
+    "en-GB",
+    {
+      dateStyle: "medium",
+      timeStyle: "short",
+    },
+  ).format(date);
 }

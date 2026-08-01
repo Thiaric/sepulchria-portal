@@ -6,6 +6,7 @@ import { requireStaff } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
 import {
+  deleteCharacterAdministration,
   updateCharacterAdministration,
 } from "../actions";
 
@@ -557,6 +558,65 @@ export default async function AdminCharacterPage({
                 Save character record
               </button>
             </form>
+
+                        <div className="mt-8 border-t border-[#6f302b]/45 pt-6">
+              <div className="border border-[#843a32]/60 bg-[#26110f]/65 p-4">
+                <p className="text-[8px] uppercase tracking-[0.22em] text-[#c06d62]">
+                  Danger zone
+                </p>
+
+                <h4 className="mt-2 font-serif text-xl text-[#e1aaa2]">
+                  Permanently delete character
+                </h4>
+
+                <p className="mt-3 text-xs leading-5 text-[#a98782]">
+                  This removes the character
+                  sheet permanently but leaves
+                  the user account intact. The
+                  player will then be able to
+                  create a new character.
+                </p>
+
+                <p className="mt-3 text-xs leading-5 text-[#a98782]">
+                  Type{" "}
+                  <strong className="text-[#e1aaa2]">
+                    {getDisplayName(character)}
+                  </strong>{" "}
+                  to confirm.
+                </p>
+
+                <form
+                  action={
+                    deleteCharacterAdministration
+                  }
+                  className="mt-4"
+                >
+                  <input
+                    type="hidden"
+                    name="characterId"
+                    value={character.id}
+                  />
+
+                  <input
+                    type="text"
+                    name="confirmation"
+                    autoComplete="off"
+                    required
+                    placeholder={
+                      getDisplayName(character)
+                    }
+                    className="w-full border border-[#71352f] bg-[#100807] px-3 py-3 text-sm text-[#dfbbb5] outline-none placeholder:text-[#684b47] focus:border-[#bd6458]"
+                  />
+
+                  <button
+                    type="submit"
+                    className="mt-3 w-full border border-[#a44c42] bg-[#481d19] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[#f1beb6] transition hover:border-[#d66b5f] hover:bg-[#622720]"
+                  >
+                    Delete character permanently
+                  </button>
+                </form>
+              </div>
+            </div>
           </section>
         </div>
       </div>
