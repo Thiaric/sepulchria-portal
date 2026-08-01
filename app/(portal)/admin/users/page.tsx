@@ -3,7 +3,10 @@ import Link from "next/link";
 import { requireAdmin } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
-import { updateUserStaffRole } from "./actions";
+import {
+  deleteUserAccount,
+  updateUserStaffRole,
+} from "./actions";
 
 type AdminUserRow = {
   user_id: string;
@@ -65,7 +68,18 @@ function getCharacterName(
   );
 }
 
-export default async function AdminUsersPage() {
+type AdminUsersPageProps = {
+  searchParams: Promise<{
+    deleted?: string;
+    error?: string;
+  }>;
+};
+
+export default async function AdminUsersPage({
+  searchParams,
+}: AdminUsersPageProps) {
+  const pageParams =
+    await searchParams;
   const session = await requireAdmin();
   const supabase = await createClient();
 
@@ -155,6 +169,28 @@ export default async function AdminUsersPage() {
           </span>
         </div>
 
+        {pageParams.error ? (
+          <div
+            role="alert"
+            className="mt-6 border border-[#873e35]/65 bg-[#351613]/70 px-4 py-3 text-sm text-[#e0a39a]"
+          >
+            {pageParams.error}
+          </div>
+        ) : null}
+
+        {pageParams.deleted ? (
+          <div
+            role="status"
+            className="mt-6 border border-[#4f704e]/65 bg-[#172619]/70 px-4 py-3 text-sm text-[#b7d2ae]"
+          >
+            The account{" "}
+            <strong>
+              {pageParams.deleted}
+            </strong>{" "}
+            was permanently deleted.
+          </div>
+        ) : null}
+
         <div className="mt-8 space-y-5">
           {users.map((user) => {
             const userCharacters =
@@ -164,6 +200,15 @@ export default async function AdminUsersPage() {
 
             const isCurrentUser =
               user.user_id === session.userId;
+
+            const protectedAccount =
+              user.staff_role === "owner" ||
+              user.staff_role === "admin";
+
+            const canDeleteAccount =
+              !isCurrentUser &&
+              (session.role === "owner" ||
+                !protectedAccount);
 
             return (
               <section
@@ -328,6 +373,77 @@ export default async function AdminUsersPage() {
                       access to the administration
                       area.
                     </p>
+
+                    <div className="mt-6 border-t border-[#71352f]/45 pt-5">
+                      <p className="text-[8px] uppercase tracking-[0.22em] text-[#c06d62]">
+                        Danger zone
+                      </p>
+
+                      <h4 className="mt-2 font-serif text-lg text-[#e1aaa2]">
+                        Permanently delete account
+                      </h4>
+
+                      {canDeleteAccount &&
+                      user.email ? (
+                        <>
+                          <p className="mt-3 text-[10px] leading-5 text-[#a98782]">
+                            This deletes the Auth
+                            account, its characters,
+                            messages, presence and
+                            private data. Forum
+                            contributions are kept
+                            anonymously.
+                          </p>
+
+                          <p className="mt-3 text-[10px] leading-5 text-[#a98782]">
+                            Type{" "}
+                            <strong className="break-all text-[#e1aaa2]">
+                              {user.email}
+                            </strong>{" "}
+                            to confirm.
+                          </p>
+
+                          <form
+                            action={
+                              deleteUserAccount
+                            }
+                            className="mt-4"
+                          >
+                            <input
+                              type="hidden"
+                              name="userId"
+                              value={
+                                user.user_id
+                              }
+                            />
+
+                            <input
+                              type="email"
+                              name="confirmationEmail"
+                              autoComplete="off"
+                              required
+                              placeholder={
+                                user.email
+                              }
+                              className="w-full border border-[#71352f] bg-[#0c0706] px-3 py-3 text-xs text-[#dfbbb5] outline-none placeholder:text-[#684b47] focus:border-[#bd6458]"
+                            />
+
+                            <button
+                              type="submit"
+                              className="mt-3 w-full border border-[#a44c42] bg-[#481d19] px-4 py-3 text-[8px] uppercase tracking-[0.18em] text-[#f1beb6] transition hover:border-[#d66b5f] hover:bg-[#622720]"
+                            >
+                              Delete account permanently
+                            </button>
+                          </form>
+                        </>
+                      ) : (
+                        <p className="mt-3 text-[10px] leading-5 text-[#8c6d68]">
+                          {isCurrentUser
+                            ? "You cannot delete the account currently in use."
+                            : "Only the owner may delete an owner or administrator account."}
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </div>
               </section>
