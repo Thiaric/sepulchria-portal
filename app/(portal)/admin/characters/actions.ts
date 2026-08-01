@@ -174,8 +174,15 @@ export async function updateCharacterAdministration(
       personality,
       biography,
       status,
+      race_id,
+      association_id,
+      title,
+      staff_notes,
+      rejection_reason,
       approved_at,
-      approved_by
+      approved_by,
+      approval_notice_seen_at,
+      updated_at
     `)
     .eq("id", characterId)
     .single();
@@ -286,6 +293,52 @@ export async function updateCharacterAdministration(
     throw new Error(
       `Unable to update character: ${updateError.message}`,
     );
+  }
+
+  if (character.status !== status) {
+    const { error: historyError } =
+      await supabase
+        .from("character_status_history")
+        .insert({
+          character_id: characterId,
+          old_status: character.status,
+          new_status: status,
+          changed_by: staff.userId,
+          reason:
+            status === "rejected"
+              ? rejectionReason
+              : null,
+        });
+
+    if (historyError) {
+      const { error: rollbackError } =
+        await supabase
+          .from("characters")
+          .update({
+            race_id: character.race_id,
+            association_id: character.association_id,
+            status: character.status,
+            title: character.title,
+            staff_notes: character.staff_notes,
+            rejection_reason: character.rejection_reason,
+            approved_at: character.approved_at,
+            approved_by: character.approved_by,
+            approval_notice_seen_at:
+              character.approval_notice_seen_at,
+            updated_at: character.updated_at,
+          })
+          .eq("id", characterId);
+
+      if (rollbackError) {
+        throw new Error(
+          `The status history could not be recorded (${historyError.message}) and the previous character state could not be restored (${rollbackError.message}).`,
+        );
+      }
+
+      throw new Error(
+        `Unable to record the character status change: ${historyError.message}`,
+      );
+    }
   }
 
   revalidatePath("/admin");

@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ApprovalNotice } from "@/components/character/approval-notice";
+import { PendingSubmitButton } from "@/components/forms/pending-submit-button";
 
 import { submitCharacterForReview } from "./actions";
 import { createClient } from "@/lib/supabase/server";
@@ -246,14 +247,19 @@ character.status === "approved" &&
                   submitCharacterForReview
                 }
               >
-                <button
-                  type="submit"
-                  className="border border-[#a47b43] bg-[#472d18] px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-[#f3d7a5] transition hover:border-[#d0a15c] hover:bg-[#5c391d]"
-                >
-                  {status === "rejected"
-                    ? "Submit again"
-                    : "Submit for approval"}
-                </button>
+                <PendingSubmitButton
+                  idleText={
+                    status === "rejected"
+                      ? "Submit again"
+                      : "Submit for approval"
+                  }
+                  pendingText={
+                    status === "rejected"
+                      ? "Submitting again..."
+                      : "Submitting..."
+                  }
+                  className="border border-[#a47b43] bg-[#472d18] px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-[#f3d7a5] transition hover:border-[#d0a15c] hover:bg-[#5c391d] disabled:cursor-not-allowed disabled:opacity-60"
+                />
               </form>
             ) : null}
           </div>

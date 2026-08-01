@@ -473,7 +473,9 @@ export async function submitCharacterForReview() {
       association_id,
       physical_description,
       personality,
-      biography
+      biography,
+      submitted_at,
+      rejection_reason
     `)
     .eq("user_id", user.id)
     .maybeSingle();
@@ -600,13 +602,37 @@ export async function submitCharacterForReview() {
     );
   }
 
-  /*
-   * No row means another request already changed
-   * the status before this update completed.
-   */
   if (!submittedCharacter) {
     redirectCharacterError(
       "The character could not be submitted because its status has already changed. Refresh the page and try again.",
+    );
+  }
+
+  const { error: historyError } =
+    await supabase
+      .from("character_status_history")
+      .insert({
+        character_id: character.id,
+        old_status: character.status,
+        new_status: "submitted",
+        changed_by: user.id,
+        reason: null,
+      });
+
+  if (historyError) {
+    await supabase
+      .from("characters")
+      .update({
+        status: character.status,
+        submitted_at: character.submitted_at,
+        rejection_reason: character.rejection_reason,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", character.id)
+      .eq("user_id", user.id);
+
+    redirectCharacterError(
+      `The character could not be submitted because the status history could not be recorded: ${historyError.message}`,
     );
   }
 

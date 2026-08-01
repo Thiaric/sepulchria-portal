@@ -1,9 +1,15 @@
 "use client";
 
 import Link from "next/link";
+import {
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { usePathname } from "next/navigation";
 
 import { GameContextPanel } from "@/components/portal/game-context-panel";
+import { createClient } from "@/lib/supabase/client";
 import type { PresenceStatus } from "@/types/game";
 import type { PortalContext } from "@/types/portal";
 
@@ -75,6 +81,21 @@ export function PortalContextPanel({
     );
   }
 
+  const adminCharacterMatch =
+    pathname.match(
+      /^\/admin\/characters\/([0-9a-f-]+)$/i,
+    );
+
+  if (adminCharacterMatch) {
+    return (
+      <AdminCharacterHistoryContext
+        characterId={
+          adminCharacterMatch[1]
+        }
+      />
+    );
+  }
+
   if (
     pathname === "/messages" ||
     pathname.startsWith("/messages/")
@@ -83,6 +104,317 @@ export function PortalContextPanel({
   }
 
   return <DefaultContext />;
+}
+
+type CharacterStatusHistoryEntry = {
+  id: string;
+  old_status: string | null;
+  new_status: string;
+  changed_by: string | null;
+  reason: string | null;
+  created_at: string;
+};
+
+type AdminCharacterSummary = {
+  display_name: string | null;
+  first_name: string;
+  surname: string;
+};
+
+function AdminCharacterHistoryContext({
+  characterId,
+}: {
+  characterId: string;
+}) {
+  const [entries, setEntries] =
+    useState<CharacterStatusHistoryEntry[]>(
+      [],
+    );
+
+  const [characterName, setCharacterName] =
+    useState("Character");
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const [error, setError] =
+    useState<string | null>(null);
+
+  const loadHistory = useCallback(
+    async () => {
+      const supabase = createClient();
+
+      const [
+        characterResult,
+        historyResult,
+      ] = await Promise.all([
+        supabase
+          .from("characters")
+          .select(
+            "display_name, first_name, surname",
+          )
+          .eq("id", characterId)
+          .maybeSingle(),
+
+        supabase
+          .from(
+            "character_status_history",
+          )
+          .select(
+            `
+              id,
+              old_status,
+              new_status,
+              changed_by,
+              reason,
+              created_at
+            `,
+          )
+          .eq(
+            "character_id",
+            characterId,
+          )
+          .order("created_at", {
+            ascending: false,
+          })
+          .limit(30),
+      ]);
+
+      const firstError =
+        characterResult.error ??
+        historyResult.error;
+
+      if (firstError) {
+        setError(firstError.message);
+        setLoading(false);
+        return;
+      }
+
+      const character =
+        characterResult.data as
+          | AdminCharacterSummary
+          | null;
+
+      if (character) {
+        setCharacterName(
+          character.display_name?.trim() ||
+            `${character.first_name} ${character.surname}`.trim() ||
+            "Character",
+        );
+      }
+
+      setEntries(
+        (historyResult.data ??
+          []) as CharacterStatusHistoryEntry[],
+      );
+
+      setError(null);
+      setLoading(false);
+    },
+    [characterId],
+  );
+
+  useEffect(() => {
+    setLoading(true);
+    void loadHistory();
+  }, [loadHistory]);
+
+  useEffect(() => {
+    const supabase = createClient();
+
+    const channel = supabase
+      .channel(
+        `admin-character-history:${characterId}`,
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table:
+            "character_status_history",
+          filter: `character_id=eq.${characterId}`,
+        },
+        () => {
+          void loadHistory();
+        },
+      )
+      .subscribe();
+
+    return () => {
+      void supabase.removeChannel(
+        channel,
+      );
+    };
+  }, [characterId, loadHistory]);
+
+  return (
+    <div className="flex h-full min-h-0 flex-col">
+      <ContextHeading
+        eyebrow="Administration"
+        title={characterName}
+      />
+
+      <div className="mb-4 flex items-center justify-between gap-3 border-y border-[#59432c]/35 py-3">
+        <div>
+          <p className="text-[8px] uppercase tracking-[0.22em] text-[#876a46]">
+            Status history
+          </p>
+
+          <p className="mt-1 text-[11px] text-[#8f8271]">
+            Latest recorded changes
+          </p>
+        </div>
+
+        <span className="flex h-7 min-w-7 items-center justify-center border border-[#59432c]/50 bg-[#100c09] px-2 text-[10px] text-[#b2956f]">
+          {entries.length}
+        </span>
+      </div>
+
+      {error ? (
+        <p className="border border-[#743d35] bg-[#2a1512] p-3 text-[11px] leading-5 text-[#d8a49a]">
+          The character history could not
+          be loaded: {error}
+        </p>
+      ) : null}
+
+      <div className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain pr-1">
+        {loading ? (
+          <HistoryLoading />
+        ) : (
+          entries.map((entry) => (
+            <StatusHistoryCard
+              key={entry.id}
+              entry={entry}
+            />
+          ))
+        )}
+
+        {!loading &&
+        !error &&
+        entries.length === 0 ? (
+          <p className="border border-[#59432c]/30 bg-[#100c09]/60 p-3 text-[11px] leading-5 text-[#8f8271]">
+            No status changes have been
+            recorded for this character yet.
+          </p>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+function StatusHistoryCard({
+  entry,
+}: {
+  entry: CharacterStatusHistoryEntry;
+}) {
+  const statusStyles: Record<
+    string,
+    string
+  > = {
+    draft:
+      "border-stone-600/60 text-stone-400",
+    submitted:
+      "border-amber-700/60 text-amber-500",
+    approved:
+      "border-emerald-800/60 text-emerald-500",
+    rejected:
+      "border-red-800/60 text-red-500",
+  };
+
+  return (
+    <article className="border border-[#59432c]/40 bg-[#100c09] p-3">
+      <div className="flex flex-wrap items-center gap-2">
+        {entry.old_status ? (
+          <>
+            <span
+              className={`border bg-black/20 px-2 py-1 text-[7px] uppercase tracking-[0.14em] ${
+                statusStyles[
+                  entry.old_status
+                ] ??
+                "border-[#59432c]/60 text-[#9f917e]"
+              }`}
+            >
+              {entry.old_status}
+            </span>
+
+            <span
+              aria-hidden="true"
+              className="text-[10px] text-[#725a3d]"
+            >
+              →
+            </span>
+          </>
+        ) : null}
+
+        <span
+          className={`border bg-black/20 px-2 py-1 text-[7px] uppercase tracking-[0.14em] ${
+            statusStyles[
+              entry.new_status
+            ] ??
+            "border-[#59432c]/60 text-[#9f917e]"
+          }`}
+        >
+          {entry.new_status}
+        </span>
+      </div>
+
+      <p className="mt-2 text-[10px] text-[#887964]">
+        {formatHistoryDate(
+          entry.created_at,
+        )}
+      </p>
+
+      {entry.reason ? (
+        <div className="mt-3 border-l border-[#7c493e] pl-3">
+          <p className="text-[7px] uppercase tracking-[0.18em] text-[#a8665d]">
+            Reason
+          </p>
+
+          <p className="mt-1 whitespace-pre-wrap text-[11px] leading-5 text-[#c5a39d]">
+            {entry.reason}
+          </p>
+        </div>
+      ) : null}
+
+      {entry.changed_by ? (
+        <p
+          className="mt-3 truncate text-[8px] text-[#665b4d]"
+          title={entry.changed_by}
+        >
+          Changed by: {entry.changed_by}
+        </p>
+      ) : null}
+    </article>
+  );
+}
+
+function HistoryLoading() {
+  return (
+    <>
+      <div className="h-24 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
+      <div className="h-24 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
+      <div className="h-24 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
+    </>
+  );
+}
+
+function formatHistoryDate(
+  value: string,
+) {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat(
+    "en-GB",
+    {
+      dateStyle: "medium",
+      timeStyle: "short",
+    },
+  ).format(date);
 }
 
 function DashboardContext({
