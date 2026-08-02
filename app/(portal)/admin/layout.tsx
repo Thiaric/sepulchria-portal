@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
+import { SubmittedCharacterBadge } from "@/components/admin/submitted-character-badge";
 import { requireStaff } from "@/lib/auth/require-staff";
 
 type AdminLayoutProps = {
@@ -45,7 +46,10 @@ export default async function AdminLayout({
             ) : null}
 
             <AdminNavigationLink href="/admin/characters">
-              Characters
+              <span className="flex items-center gap-2">
+                <span>Characters</span>
+                <SubmittedCharacterBadge variant="admin-nav" />
+              </span>
             </AdminNavigationLink>
 
             <AdminNavigationLink href="/admin/areas">

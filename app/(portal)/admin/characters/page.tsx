@@ -216,7 +216,32 @@ export default async function AdminCharactersPage({
         matchesRace &&
         matchesAssociation
       );
+    }).sort((a, b) => {
+      if (
+        a.status === "submitted" &&
+        b.status !== "submitted"
+      ) {
+        return -1;
+      }
+
+      if (
+        a.status !== "submitted" &&
+        b.status === "submitted"
+      ) {
+        return 1;
+      }
+
+      return (
+        new Date(b.updated_at).getTime() -
+        new Date(a.updated_at).getTime()
+      );
     });
+
+  const submittedCount =
+    characters.filter(
+      (character) =>
+        character.status === "submitted",
+    ).length;
 
   const filtersAreActive = Boolean(
     searchQuery ||
@@ -251,6 +276,26 @@ export default async function AdminCharactersPage({
             {characters.length} characters
           </span>
         </div>
+
+        {submittedCount > 0 ? (
+          <section className="mt-8 flex flex-wrap items-center justify-between gap-4 border border-[#a87532]/75 bg-[#24190f] px-5 py-4 shadow-[0_0_18px_rgba(168,117,50,0.12)]">
+            <div>
+              <p className="text-[8px] uppercase tracking-[0.24em] text-[#c28b45]">
+                Staff attention required
+              </p>
+              <p className="mt-1 font-serif text-xl text-[#efd4a2]">
+                {submittedCount} character{submittedCount === 1 ? "" : "s"} awaiting review
+              </p>
+            </div>
+
+            <Link
+              href="/admin/characters?status=submitted"
+              className="border border-[#b1844b] bg-[#3b2919] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[#f1d6a5] transition hover:border-[#d09c56] hover:bg-[#50371f]"
+            >
+              Review submitted
+            </Link>
+          </section>
+        ) : null}
 
         <form
           method="get"
@@ -380,7 +425,11 @@ export default async function AdminCharactersPage({
               return (
                 <section
                   key={character.id}
-                  className="overflow-hidden border border-[#60482e]/45 bg-[#15100d]"
+                  className={`overflow-hidden border bg-[#15100d] ${
+                    character.status === "submitted"
+                      ? "border-[#b17a35] shadow-[0_0_20px_rgba(177,122,53,0.18)]"
+                      : "border-[#60482e]/45"
+                  }`}
                 >
                   <div className="grid lg:grid-cols-[110px_minmax(0,1fr)_210px]">
                     <div className="border-b border-[#60482e]/35 bg-[#0f0b09] p-4 lg:border-b-0 lg:border-r">
@@ -411,9 +460,17 @@ export default async function AdminCharactersPage({
                     <div className="p-5">
                       <div className="flex flex-wrap items-start justify-between gap-3">
                         <div>
-                          <h3 className="font-serif text-2xl text-[#e3cda5]">
-                            {displayName}
-                          </h3>
+                          <div className="flex flex-wrap items-center gap-3">
+                            <h3 className="font-serif text-2xl text-[#e3cda5]">
+                              {displayName}
+                            </h3>
+
+                            {character.status === "submitted" ? (
+                              <span className="animate-pulse border border-[#b17a35]/80 bg-[#3a2512] px-2 py-1 text-[7px] uppercase tracking-[0.18em] text-[#f0c77f]">
+                                Awaiting review
+                              </span>
+                            ) : null}
+                          </div>
 
                           {character.title ? (
                             <p className="mt-1 text-xs italic text-[#9f8968]">

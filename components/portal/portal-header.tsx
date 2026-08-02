@@ -4,6 +4,7 @@ import { LogoutButton } from "@/components/logout-button";
 import { getStaffSession } from "@/lib/auth/require-staff";
 import type { PortalContext } from "@/types/portal";
 import { ActiveCityCounter } from "@/components/portal/active-city-counter";
+import { UnreadMessageBadge } from "@/components/messages/unread-message-badge";
 
 type PortalHeaderProps = {
   context: PortalContext;
@@ -51,13 +52,12 @@ export async function PortalHeader({
           >
             ✉
 
-            {unreadMessageCount > 0 ? (
-              <span className="absolute -right-2 -top-2 inline-flex min-h-5 min-w-5 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] px-1 text-[9px] font-bold text-[#ffe1ac]">
-                {unreadMessageCount > 99
-                  ? "99+"
-                  : unreadMessageCount}
-              </span>
-            ) : null}
+            <UnreadMessageBadge
+              initialCount={
+                unreadMessageCount
+              }
+              variant="floating"
+            />
           </Link>
 
           {staffSession ? (

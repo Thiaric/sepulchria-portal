@@ -178,6 +178,11 @@ export default function TopicPost({
       post.id,
     )}#reply`;
 
+  const rapidReplyUrl =
+    `${postUrl}?quickReply=${encodeURIComponent(
+      post.id,
+    )}`;
+
   const isDeleted = Boolean(
     post.deleted_at,
   );
@@ -326,12 +331,22 @@ export default function TopicPost({
               <div className="flex flex-wrap gap-2">
                 {!isDeleted &&
                 !topicLocked ? (
-                  <Link
-                    href={quoteUrl}
-                    className="border border-[#60482e]/50 bg-[#19120e] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[#a58b68] transition hover:border-[#947047] hover:text-[#dec095]"
-                  >
-                    Quote
-                  </Link>
+                  <>
+                    <Link
+                      href={rapidReplyUrl}
+                      scroll={false}
+                      className="border border-[#8d6a40] bg-[#2b1d12] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[#d8bd91] transition hover:border-[#ad824d] hover:bg-[#3a2819]"
+                    >
+                      Rapid reply
+                    </Link>
+
+                    <Link
+                      href={quoteUrl}
+                      className="border border-[#60482e]/50 bg-[#19120e] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[#a58b68] transition hover:border-[#947047] hover:text-[#dec095]"
+                    >
+                      Quote
+                    </Link>
+                  </>
                 ) : null}
 
                 {!isDeleted &&

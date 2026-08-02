@@ -1,8 +1,8 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
-import { toggleArchive } from "./actions";
+
+import { MessagesInboxClient } from "./components/messages-inbox-client";
 
 type Props = {
   searchParams: Promise<{
@@ -13,7 +13,7 @@ type Props = {
 type ParticipantRow = {
   conversation_id: string;
   archived_at: string | null;
-  last_read_at: string;
+  last_read_at: string | null;
   conversation:
     | {
         id: string;
@@ -26,11 +26,68 @@ type ParticipantRow = {
     | null;
 };
 
-type OtherCharacter = {
+type CharacterSummary = {
   id: string;
-  display_name: string;
+  display_name: string | null;
+  first_name: string;
+  surname: string | null;
   portrait_url: string | null;
+  public_slug: string;
+  title: string | null;
 };
+
+type OtherParticipantRow = {
+  character:
+    | CharacterSummary
+    | CharacterSummary[]
+    | null;
+};
+
+type DirectMessageRow = {
+  id: string;
+  conversation_id: string;
+  body: string;
+  created_at: string;
+  sender_character_id: string;
+};
+
+type ConversationCard = {
+  id: string;
+  updatedAt: string;
+  archivedAt: string | null;
+  other: CharacterSummary | null;
+  lastMessage: DirectMessageRow | null;
+  unreadCount: number;
+  searchableText: string;
+  matchedMessages: {
+    id: string;
+    body: string;
+    createdAt: string;
+  }[];
+};
+
+function normaliseRelation<T>(
+  value: T | T[] | null,
+): T | null {
+  if (Array.isArray(value)) {
+    return value[0] ?? null;
+  }
+
+  return value;
+}
+
+function characterName(
+  character: CharacterSummary,
+): string {
+  return (
+    character.display_name?.trim() ||
+    [character.first_name, character.surname]
+      .filter(Boolean)
+      .join(" ")
+      .trim() ||
+    "Unnamed character"
+  );
+}
 
 export default async function MessagesPage({
   searchParams,
@@ -48,9 +105,12 @@ export default async function MessagesPage({
     redirect("/auth/login");
   }
 
-  const { data: character, error: characterError } = await supabase
+  const {
+    data: character,
+    error: characterError,
+  } = await supabase
     .from("characters")
-    .select("id, display_name")
+    .select("id, status")
     .eq("user_id", user.id)
     .maybeSingle();
 
@@ -62,7 +122,15 @@ export default async function MessagesPage({
     redirect("/character/create");
   }
 
-  let query = supabase
+  if (character.status !== "approved") {
+    redirect(
+      `/character?error=${encodeURIComponent(
+        "Your character must be approved before using private messages.",
+      )}`,
+    );
+  }
+
+  let membershipQuery = supabase
     .from("direct_conversation_participants")
     .select(`
       conversation_id,
@@ -75,201 +143,269 @@ export default async function MessagesPage({
     `)
     .eq("character_id", character.id);
 
-  query = showArchived
-    ? query.not("archived_at", "is", null)
-    : query.is("archived_at", null);
+  membershipQuery = showArchived
+    ? membershipQuery.not("archived_at", "is", null)
+    : membershipQuery.is("archived_at", null);
 
-  const { data: rows = [], error } = await query;
+  const {
+    data: membershipRows = [],
+    error: membershipsError,
+  } = await membershipQuery;
 
-  if (error) {
-    throw new Error(error.message);
+  if (membershipsError) {
+    throw new Error(membershipsError.message);
   }
 
-  const conversations = await Promise.all(
-    (rows as ParticipantRow[]).map(async (row) => {
-      const conversation = Array.isArray(row.conversation)
-        ? row.conversation[0]
-        : row.conversation;
+  const rows =
+    membershipRows as unknown as ParticipantRow[];
 
-      if (!conversation) {
-        return null;
-      }
+  const conversationIds = rows.map(
+    (row) => row.conversation_id,
+  );
 
-      const [
-        { data: otherParticipant },
-        { data: lastMessage },
-        { count: unreadCount },
-      ] = await Promise.all([
-        supabase
-          .from("direct_conversation_participants")
+  const [
+    otherParticipantsResult,
+    allMessagesResult,
+    availableCharactersResult,
+    blocksResult,
+  ] = await Promise.all([
+    conversationIds.length
+      ? supabase
+          .from(
+            "direct_conversation_participants",
+          )
           .select(`
+            conversation_id,
             character:characters(
               id,
               display_name,
-              portrait_url
+              first_name,
+              surname,
+              portrait_url,
+              public_slug,
+              title
             )
           `)
-          .eq("conversation_id", row.conversation_id)
+          .in("conversation_id", conversationIds)
           .neq("character_id", character.id)
-          .maybeSingle(),
+      : Promise.resolve({
+          data: [],
+          error: null,
+        }),
 
-        supabase
+    conversationIds.length
+      ? supabase
           .from("direct_messages")
-          .select("body, created_at, sender_character_id")
-          .eq("conversation_id", row.conversation_id)
-          .order("created_at", { ascending: false })
-          .limit(1)
-          .maybeSingle(),
-
-        supabase
-          .from("direct_messages")
-          .select("id", {
-            count: "exact",
-            head: true,
+          .select(
+            "id, conversation_id, body, created_at, sender_character_id",
+          )
+          .in("conversation_id", conversationIds)
+          .order("created_at", {
+            ascending: false,
           })
-          .eq("conversation_id", row.conversation_id)
-          .neq("sender_character_id", character.id)
-          .gt("created_at", row.last_read_at),
-      ]);
+      : Promise.resolve({
+          data: [],
+          error: null,
+        }),
 
-      const relation = otherParticipant?.character;
+    supabase
+      .from("characters")
+      .select(`
+        id,
+        display_name,
+        first_name,
+        surname,
+        portrait_url,
+        public_slug,
+        title
+      `)
+      .eq("status", "approved")
+      .neq("id", character.id)
+      .order("display_name", {
+        ascending: true,
+      }),
 
-      const other = (
-        Array.isArray(relation) ? relation[0] : relation
-      ) as OtherCharacter | null | undefined;
+    supabase
+      .from("character_blocks")
+      .select(
+        "blocker_character_id, blocked_character_id",
+      )
+      .or(
+        `blocker_character_id.eq.${character.id},blocked_character_id.eq.${character.id}`,
+      ),
+  ]);
 
-      return {
-        id: row.conversation_id,
-        updated_at: conversation.updated_at,
-        archived_at: row.archived_at,
-        other,
-        lastMessage,
-        unreadCount: unreadCount ?? 0,
-      };
-    }),
+  const firstError =
+    otherParticipantsResult.error ??
+    allMessagesResult.error ??
+    availableCharactersResult.error ??
+    blocksResult.error;
+
+  if (firstError) {
+    throw new Error(firstError.message);
+  }
+
+  const blockedCharacterIds = new Set<string>();
+
+  for (const block of blocksResult.data ?? []) {
+    blockedCharacterIds.add(
+      block.blocker_character_id === character.id
+        ? block.blocked_character_id
+        : block.blocker_character_id,
+    );
+  }
+
+  const availableCharacters = (
+    (availableCharactersResult.data ??
+      []) as CharacterSummary[]
+  ).filter(
+    (candidate) =>
+      !blockedCharacterIds.has(candidate.id),
   );
 
-  const validConversations = conversations
-    .filter((conversation) => conversation !== null)
+  const otherByConversation = new Map<
+    string,
+    CharacterSummary
+  >();
+
+  for (const row of
+    (otherParticipantsResult.data ??
+      []) as unknown as (OtherParticipantRow & {
+        conversation_id: string;
+      })[]) {
+    const other = normaliseRelation(
+      row.character,
+    );
+
+    if (other) {
+      otherByConversation.set(
+        row.conversation_id,
+        other,
+      );
+    }
+  }
+
+  const messagesByConversation = new Map<
+    string,
+    DirectMessageRow[]
+  >();
+
+  for (const message of
+    (allMessagesResult.data ??
+      []) as DirectMessageRow[]) {
+    const current =
+      messagesByConversation.get(
+        message.conversation_id,
+      ) ?? [];
+
+    current.push(message);
+
+    messagesByConversation.set(
+      message.conversation_id,
+      current,
+    );
+  }
+
+  const conversations =
+  rows
+    .map<ConversationCard | null>(
+      (row) => {
+        const conversation =
+          normaliseRelation(
+            row.conversation,
+          );
+
+        if (!conversation) {
+          return null;
+        }
+
+        const other =
+          otherByConversation.get(
+            row.conversation_id,
+          ) ?? null;
+
+        const messages =
+          messagesByConversation.get(
+            row.conversation_id,
+          ) ?? [];
+
+        const lastMessage =
+          messages[0] ?? null;
+
+        const lastReadTime =
+          row.last_read_at
+            ? Date.parse(
+                row.last_read_at,
+              )
+            : 0;
+
+        const unreadCount =
+          messages.filter(
+            (message) =>
+              message.sender_character_id !==
+                character.id &&
+              Date.parse(
+                message.created_at,
+              ) > lastReadTime,
+          ).length;
+
+        const name = other
+          ? characterName(other)
+          : "Unknown character";
+
+        const searchableText = [
+          name,
+          other?.title,
+          ...messages.map(
+            (message) =>
+              message.body,
+          ),
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+
+        return {
+          id: row.conversation_id,
+          updatedAt:
+            conversation.updated_at,
+          archivedAt:
+            row.archived_at,
+          other,
+          lastMessage,
+          unreadCount,
+          searchableText,
+          matchedMessages:
+            messages.map(
+              (message) => ({
+                id: message.id,
+                body: message.body,
+                createdAt:
+                  message.created_at,
+              }),
+            ),
+        };
+      },
+    )
+    .filter(
+      (
+        conversation,
+      ): conversation is ConversationCard =>
+        conversation !== null,
+    )
     .sort(
-      (first, second) =>
-        Date.parse(second.updated_at) - Date.parse(first.updated_at),
+      (a, b) =>
+        Date.parse(b.updatedAt) -
+        Date.parse(a.updatedAt),
     );
 
   return (
-    <div className="p-5 sm:p-7 lg:p-9">
-      <div className="mx-auto max-w-5xl">
-        <header className="flex flex-wrap items-end justify-between gap-5 border-b border-[#654b2e]/40 pb-6">
-          <div>
-            <p className="text-[10px] uppercase tracking-[0.32em] text-[#927047]">
-              Private correspondence
-            </p>
-
-            <h1 className="mt-2 font-serif text-4xl text-[#ecd9b2]">
-              Messages
-            </h1>
-          </div>
-
-          <div className="flex gap-2">
-            <Link
-              href="/messages"
-              className={`border px-4 py-2 text-[10px] uppercase tracking-[0.18em] transition ${
-                !showArchived
-                  ? "border-[#967342] bg-[#3b2b1b] text-[#efd9aa]"
-                  : "border-[#59432c] text-[#a98b61] hover:border-[#80613c]"
-              }`}
-            >
-              Inbox
-            </Link>
-
-            <Link
-              href="/messages?archived=1"
-              className={`border px-4 py-2 text-[10px] uppercase tracking-[0.18em] transition ${
-                showArchived
-                  ? "border-[#967342] bg-[#3b2b1b] text-[#efd9aa]"
-                  : "border-[#59432c] text-[#a98b61] hover:border-[#80613c]"
-              }`}
-            >
-              Archived
-            </Link>
-          </div>
-        </header>
-
-        <div className="mt-6 space-y-3">
-          {validConversations.map((conversation) => (
-            <article
-              key={conversation.id}
-              className="flex flex-col gap-4 border border-[#60482e]/45 bg-[#15100d] p-5 sm:flex-row sm:items-center"
-            >
-              <Link
-                href={`/messages/${conversation.id}`}
-                className="flex min-w-0 flex-1 items-center gap-4"
-              >
-                <div className="h-14 w-14 shrink-0 overflow-hidden border border-[#60482e] bg-[#0d0a08]">
-                  {conversation.other?.portrait_url ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={conversation.other.portrait_url}
-                      alt={`Portrait of ${conversation.other.display_name}`}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <span className="flex h-full items-center justify-center text-[#806b4e]">
-                      ?
-                    </span>
-                  )}
-                </div>
-
-                <div className="min-w-0">
-                  <div className="flex items-center gap-3">
-                    <h2 className="truncate font-serif text-xl text-[#dec69a]">
-                      {conversation.other?.display_name ??
-                        "Unknown character"}
-                    </h2>
-
-                    {conversation.unreadCount > 0 ? (
-                      <span className="rounded-full bg-[#8b3c32] px-2 py-1 text-[10px] font-bold text-[#ffe1ac]">
-                        {conversation.unreadCount}
-                      </span>
-                    ) : null}
-                  </div>
-
-                  <p className="mt-2 truncate text-sm text-[#9f907c]">
-                    {conversation.lastMessage?.body ?? "No messages yet."}
-                  </p>
-                </div>
-              </Link>
-
-              <form action={toggleArchive}>
-                <input
-                  type="hidden"
-                  name="conversationId"
-                  value={conversation.id}
-                />
-
-                <input
-                  type="hidden"
-                  name="archive"
-                  value={showArchived ? "false" : "true"}
-                />
-
-                <button
-                  type="submit"
-                  className="border border-[#59432c] px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-[#a98b61] transition hover:border-[#80613c] hover:text-[#d5ba8c]"
-                >
-                  {showArchived ? "Restore" : "Archive"}
-                </button>
-              </form>
-            </article>
-          ))}
-
-          {validConversations.length === 0 ? (
-            <p className="border border-[#60482e]/45 bg-[#15100d] p-8 text-center text-sm text-[#8f8271]">
-              No conversations here yet.
-            </p>
-          ) : null}
-        </div>
-      </div>
-    </div>
+    <MessagesInboxClient
+      conversations={conversations}
+      availableCharacters={
+        availableCharacters
+      }
+      showArchived={showArchived}
+    />
   );
 }

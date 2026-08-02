@@ -2,13 +2,22 @@
 
 import Link from "next/link";
 import {
+  useActionState,
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from "react";
-import { usePathname } from "next/navigation";
+import {
+  usePathname,
+  useSearchParams,
+} from "next/navigation";
 
 import { GameContextPanel } from "@/components/portal/game-context-panel";
+import {
+  createForumReplyAction,
+  type CreateForumReplyState,
+} from "@/app/(portal)/forum/actions";
 import { createClient } from "@/lib/supabase/client";
 import type { PresenceStatus } from "@/types/game";
 import type { PortalContext } from "@/types/portal";
@@ -21,6 +30,7 @@ export function PortalContextPanel({
   context,
 }: PortalContextPanelProps) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   if (pathname === "/") {
     return <DashboardContext context={context} />;
@@ -92,6 +102,48 @@ export function PortalContextPanel({
         characterId={
           adminCharacterMatch[1]
         }
+      />
+    );
+  }
+
+  if (pathname === "/forum") {
+    return <ForumOverviewContext />;
+  }
+
+  const forumTopicMatch =
+    pathname.match(
+      /^\/forum\/([^/]+)\/([^/]+)$/,
+    );
+
+  if (forumTopicMatch) {
+    return (
+      <ForumTopicContext
+        sectionSlug={decodeURIComponent(
+          forumTopicMatch[1],
+        )}
+        topicSlug={decodeURIComponent(
+          forumTopicMatch[2],
+        )}
+        quickReplyPostId={
+          searchParams.get(
+            "quickReply",
+          )
+        }
+      />
+    );
+  }
+
+  const forumSectionMatch =
+    pathname.match(
+      /^\/forum\/([^/]+)$/,
+    );
+
+  if (forumSectionMatch) {
+    return (
+      <ForumSectionContext
+        sectionSlug={decodeURIComponent(
+          forumSectionMatch[1],
+        )}
       />
     );
   }
@@ -682,6 +734,1023 @@ function MessagesContext({
         Open inbox
       </Link>
     </>
+  );
+}
+
+
+
+type ForumOverviewSection = {
+  id: string;
+  name: string;
+  slug: string;
+  section_type:
+    | "ongame"
+    | "offgame"
+    | "organisation";
+  parent_id: string | null;
+  is_active: boolean;
+};
+
+type ForumOverviewTopic = {
+  id: string;
+  section_id: string;
+  replies_count: number | null;
+  deleted_at: string | null;
+};
+
+type ForumOverviewGroup = {
+  key:
+    | "ongame"
+    | "offgame"
+    | "organisation";
+  label: string;
+  description: string;
+  sectionCount: number;
+  postCount: number;
+};
+
+function ForumOverviewContext() {
+  const [groups, setGroups] =
+    useState<ForumOverviewGroup[]>([]);
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const [error, setError] =
+    useState<string | null>(null);
+
+  const loadOverview =
+    useCallback(async () => {
+      const supabase =
+        createClient();
+
+      const [
+        sectionsResult,
+        topicsResult,
+      ] = await Promise.all([
+        supabase
+          .from("forum_sections")
+          .select(
+            "id, name, slug, section_type, parent_id, is_active",
+          )
+          .eq("is_active", true),
+
+        supabase
+          .from("forum_topics")
+          .select(
+            "id, section_id, replies_count, deleted_at",
+          )
+          .is("deleted_at", null),
+      ]);
+
+      const firstError =
+        sectionsResult.error ??
+        topicsResult.error;
+
+      if (firstError) {
+        setError(firstError.message);
+        setLoading(false);
+        return;
+      }
+
+      const sections =
+        (sectionsResult.data ??
+          []) as ForumOverviewSection[];
+
+      const topics =
+        (topicsResult.data ??
+          []) as ForumOverviewTopic[];
+
+      const definitions = [
+        {
+          key: "ongame" as const,
+          label: "Ongame",
+          description:
+            "In-character chronicles, events, letters and conversations belonging to Asteros.",
+        },
+        {
+          key: "offgame" as const,
+          label: "Offgame",
+          description:
+            "Announcements, questions and conversations between members of the community.",
+        },
+        {
+          key: "organisation" as const,
+          label: "Organisations",
+          description:
+            "Private and public halls belonging to Sepulchria's associations.",
+        },
+      ];
+
+      setGroups(
+        definitions.map(
+          (definition) => {
+            const groupSections =
+              sections.filter(
+                (section) =>
+                  section.section_type ===
+                  definition.key,
+              );
+
+            const sectionIds =
+              new Set(
+                groupSections.map(
+                  (section) =>
+                    section.id,
+                ),
+              );
+
+            const groupTopics =
+              topics.filter((topic) =>
+                sectionIds.has(
+                  topic.section_id,
+                ),
+              );
+
+            const postCount =
+              groupTopics.reduce(
+                (total, topic) =>
+                  total +
+                  1 +
+                  (topic.replies_count ??
+                    0),
+                0,
+              );
+
+            return {
+              ...definition,
+              sectionCount:
+                groupSections.length,
+              postCount,
+            };
+          },
+        ),
+      );
+
+      setError(null);
+      setLoading(false);
+    }, []);
+
+  useEffect(() => {
+    setLoading(true);
+    void loadOverview();
+  }, [loadOverview]);
+
+  useEffect(() => {
+    const supabase =
+      createClient();
+
+    const safeId = Math.random()
+      .toString(36)
+      .slice(2);
+
+    const channel = supabase
+      .channel(
+        `forum-overview-context:${safeId}`,
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "forum_posts",
+        },
+        () => {
+          void loadOverview();
+        },
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "forum_topics",
+        },
+        () => {
+          void loadOverview();
+        },
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "forum_sections",
+        },
+        () => {
+          void loadOverview();
+        },
+      )
+      .subscribe();
+
+    return () => {
+      void supabase.removeChannel(
+        channel,
+      );
+    };
+  }, [loadOverview]);
+
+  return (
+    <>
+      <ContextHeading
+        eyebrow="Community"
+        title="Forum"
+      />
+
+      <p className="text-[11px] leading-5 text-[#938673]">
+        Chronicles, discussions and the
+        halls of Sepulchria&apos;s
+        organisations.
+      </p>
+
+      {error ? (
+        <p className="mt-4 border border-[#743d35] bg-[#2a1512] p-3 text-[10px] leading-5 text-[#d8a49a]">
+          Forum statistics could not be
+          loaded.
+        </p>
+      ) : null}
+
+      <div className="mt-4 space-y-2">
+        {loading ? (
+  <>
+    <div className="h-20 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
+    <div className="h-20 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
+    <div className="h-20 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
+  </>
+) : (
+  groups.map((group) => (
+    <article
+      key={group.key}
+      className="border border-[#59432c]/40 bg-[#100c09] px-3 py-3"
+    >
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <h3 className="font-serif text-base text-[#d6bd91]">
+            {group.label}
+          </h3>
+
+          <p className="mt-1 text-[9px] leading-4 text-[#817565]">
+            {group.description}
+          </p>
+        </div>
+
+        <dl className="flex shrink-0 items-center gap-4">
+          <div className="text-right">
+            <dt className="text-[6px] uppercase tracking-[0.14em] text-[#665946]">
+              Sections
+            </dt>
+
+            <dd className="mt-0.5 font-serif text-sm text-[#c3a67d]">
+              {group.sectionCount}
+            </dd>
+          </div>
+
+          <div className="text-right">
+            <dt className="text-[6px] uppercase tracking-[0.14em] text-[#665946]">
+              Posts
+            </dt>
+
+            <dd className="mt-0.5 font-serif text-sm text-[#c3a67d]">
+              {group.postCount}
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </article>
+  ))
+)}
+      </div>
+    </>
+  );
+
+}
+
+type SectionActivityEntry = {
+  id: string;
+  body: string;
+  created_at: string;
+  topic:
+    | {
+        title: string;
+        slug: string;
+      }
+    | {
+        title: string;
+        slug: string;
+      }[]
+    | null;
+  author:
+    | {
+        display_name: string | null;
+        first_name: string;
+        surname: string | null;
+      }
+    | {
+        display_name: string | null;
+        first_name: string;
+        surname: string | null;
+      }[]
+    | null;
+};
+
+function ForumSectionContext({
+  sectionSlug,
+}: {
+  sectionSlug: string;
+}) {
+  const [entries, setEntries] =
+    useState<SectionActivityEntry[]>(
+      [],
+    );
+
+  const [sectionName, setSectionName] =
+    useState("Forum section");
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const [error, setError] =
+    useState<string | null>(null);
+
+  const loadActivity =
+    useCallback(async () => {
+      const supabase =
+        createClient();
+
+      const {
+        data: section,
+        error: sectionError,
+      } = await supabase
+        .from("forum_sections")
+        .select("id, name")
+        .eq("slug", sectionSlug)
+        .maybeSingle();
+
+      if (
+        sectionError ||
+        !section
+      ) {
+        setError(
+          sectionError?.message ??
+            "Section not found.",
+        );
+        setLoading(false);
+        return;
+      }
+
+      setSectionName(section.name);
+
+      const {
+        data,
+        error: postsError,
+      } = await supabase
+        .from("forum_posts")
+        .select(`
+          id,
+          body,
+          created_at,
+          topic:forum_topics!inner(
+            title,
+            slug,
+            section_id,
+            deleted_at
+          ),
+          author:characters!forum_posts_author_character_id_fkey(
+            display_name,
+            first_name,
+            surname
+          )
+        `)
+        .eq(
+          "topic.section_id",
+          section.id,
+        )
+        .is(
+          "topic.deleted_at",
+          null,
+        )
+        .is("deleted_at", null)
+        .order("created_at", {
+          ascending: false,
+        })
+        .limit(12);
+
+      if (postsError) {
+        setError(postsError.message);
+        setLoading(false);
+        return;
+      }
+
+      setEntries(
+        (data ??
+          []) as unknown as SectionActivityEntry[],
+      );
+
+      setError(null);
+      setLoading(false);
+    }, [sectionSlug]);
+
+  useEffect(() => {
+    setLoading(true);
+    void loadActivity();
+  }, [loadActivity]);
+
+  useEffect(() => {
+    const supabase =
+      createClient();
+
+    const channel = supabase
+      .channel(
+        `forum-section-context:${sectionSlug}`,
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "forum_posts",
+        },
+        () => {
+          void loadActivity();
+        },
+      )
+      .subscribe();
+
+    return () => {
+      void supabase.removeChannel(
+        channel,
+      );
+    };
+  }, [loadActivity, sectionSlug]);
+
+  return (
+    <div className="flex h-full min-h-0 flex-col">
+      <ContextHeading
+        eyebrow="Forum activity"
+        title={sectionName}
+      />
+
+      <p className="mb-4 text-xs leading-6 text-[#938673]">
+        The latest posts published in
+        this section.
+      </p>
+
+      {error ? (
+        <p className="border border-[#743d35] bg-[#2a1512] p-3 text-[11px] leading-5 text-[#d8a49a]">
+          Latest activity could not be
+          loaded.
+        </p>
+      ) : null}
+
+      <div className="min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-contain pr-1">
+        {loading ? (
+          <ForumContextLoading />
+        ) : (
+          entries.map((entry) => {
+            const topic =
+              normaliseContextRelation(
+                entry.topic,
+              );
+
+            const author =
+              normaliseContextRelation(
+                entry.author,
+              );
+
+            if (!topic) {
+              return null;
+            }
+
+            const authorName =
+              author?.display_name?.trim() ||
+              [
+                author?.first_name,
+                author?.surname,
+              ]
+                .filter(Boolean)
+                .join(" ")
+                .trim() ||
+              "Account";
+
+            return (
+              <Link
+                key={entry.id}
+                href={`/forum/${encodeURIComponent(
+                  sectionSlug,
+                )}/${encodeURIComponent(
+                  topic.slug,
+                )}#post-${entry.id}`}
+                className="block border border-[#59432c]/40 bg-[#100c09] p-3 transition hover:border-[#8d6a40] hover:bg-[#1a120d]"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <p className="min-w-0 truncate font-serif text-sm text-[#d6bd91]">
+                    {authorName}
+                  </p>
+
+                  <time className="shrink-0 text-[7px] uppercase tracking-[0.12em] text-[#665b4e]">
+                    {formatCompactDate(
+                      entry.created_at,
+                    )}
+                  </time>
+                </div>
+
+                <p className="mt-1 truncate text-[8px] uppercase tracking-[0.14em] text-[#8b704d]">
+                  {topic.title}
+                </p>
+
+                <p className="mt-2 line-clamp-3 text-[11px] leading-5 text-[#918473]">
+                  {shortenForumText(
+                    entry.body,
+                    150,
+                  )}
+                </p>
+              </Link>
+            );
+          })
+        )}
+
+        {!loading &&
+        !error &&
+        entries.length === 0 ? (
+          <p className="border border-[#59432c]/30 bg-[#100c09]/60 p-3 text-[11px] leading-5 text-[#8f8271]">
+            No posts have been published
+            in this section yet.
+          </p>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+type QuickReplyPost = {
+  id: string;
+  topic_id: string;
+  body: string;
+  deleted_at: string | null;
+  author:
+    | {
+        display_name: string | null;
+        first_name: string;
+        surname: string | null;
+      }
+    | {
+        display_name: string | null;
+        first_name: string;
+        surname: string | null;
+      }[]
+    | null;
+};
+
+type QuickReplyCharacter = {
+  id: string;
+  display_name: string | null;
+  first_name: string;
+  surname: string | null;
+};
+
+const quickReplyInitialState:
+  CreateForumReplyState = {
+    success: false,
+    message: "",
+  };
+
+function ForumTopicContext({
+  sectionSlug,
+  topicSlug,
+  quickReplyPostId,
+}: {
+  sectionSlug: string;
+  topicSlug: string;
+  quickReplyPostId: string | null;
+}) {
+  const [state, action, pending] =
+    useActionState(
+      createForumReplyAction,
+      quickReplyInitialState,
+    );
+
+  const [topicId, setTopicId] =
+    useState("");
+
+  const [topicTitle, setTopicTitle] =
+    useState("Discussion");
+
+  const [post, setPost] =
+    useState<QuickReplyPost | null>(
+      null,
+    );
+
+  const [characters, setCharacters] =
+    useState<QuickReplyCharacter[]>([]);
+
+  const [
+    selectedCharacterId,
+    setSelectedCharacterId,
+  ] = useState("");
+
+  const [body, setBody] =
+    useState("");
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const [error, setError] =
+    useState<string | null>(null);
+
+  const textareaRef =
+    useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    async function loadContext() {
+      const supabase =
+        createClient();
+
+      const {
+        data: topic,
+        error: topicError,
+      } = await supabase
+        .from("forum_topics")
+        .select("id, title")
+        .eq("slug", topicSlug)
+        .maybeSingle();
+
+      if (
+        topicError ||
+        !topic
+      ) {
+        setError(
+          topicError?.message ??
+            "Discussion not found.",
+        );
+        setLoading(false);
+        return;
+      }
+
+      setTopicId(topic.id);
+      setTopicTitle(topic.title);
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (user) {
+        const {
+          data: characterRows,
+        } = await supabase
+          .from("characters")
+          .select(
+            "id, display_name, first_name, surname",
+          )
+          .eq("user_id", user.id)
+          .eq("status", "approved")
+          .order("first_name");
+
+        const options =
+          (characterRows ??
+            []) as QuickReplyCharacter[];
+
+        setCharacters(options);
+
+        if (
+          options.length === 1
+        ) {
+          setSelectedCharacterId(
+            options[0].id,
+          );
+        }
+      }
+
+      if (quickReplyPostId) {
+        const {
+          data: selectedPost,
+          error: postError,
+        } = await supabase
+          .from("forum_posts")
+          .select(`
+            id,
+            topic_id,
+            body,
+            deleted_at,
+            author:characters!forum_posts_author_character_id_fkey(
+              display_name,
+              first_name,
+              surname
+            )
+          `)
+          .eq(
+            "id",
+            quickReplyPostId,
+          )
+          .eq(
+            "topic_id",
+            topic.id,
+          )
+          .maybeSingle();
+
+        if (
+          postError ||
+          !selectedPost ||
+          selectedPost.deleted_at
+        ) {
+          setError(
+            "The selected post is no longer available.",
+          );
+        } else {
+          setPost(
+            selectedPost as unknown as QuickReplyPost,
+          );
+          setError(null);
+
+          requestAnimationFrame(
+            () => {
+              textareaRef.current?.focus();
+            },
+          );
+        }
+      } else {
+        setPost(null);
+        setError(null);
+      }
+
+      setLoading(false);
+    }
+
+    setLoading(true);
+    void loadContext();
+  }, [
+    quickReplyPostId,
+    topicSlug,
+  ]);
+
+  const author =
+    post
+      ? normaliseContextRelation(
+          post.author,
+        )
+      : null;
+
+  const authorName =
+    author?.display_name?.trim() ||
+    [
+      author?.first_name,
+      author?.surname,
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .trim() ||
+    "Account";
+
+  return (
+    <div className="flex h-full min-h-0 flex-col">
+      <ContextHeading
+        eyebrow="Forum discussion"
+        title={topicTitle}
+      />
+
+      {loading ? (
+        <ForumContextLoading />
+      ) : !quickReplyPostId ? (
+        <>
+          <p className="text-xs leading-6 text-[#938673]">
+            Select Rapid reply beneath a
+            post to answer it directly
+            from this panel.
+          </p>
+
+          <ContextLink
+            href={`/forum/${sectionSlug}/${topicSlug}#reply`}
+            label="Open full reply editor"
+          />
+        </>
+      ) : error || !post ? (
+        <p className="border border-[#743d35] bg-[#2a1512] p-3 text-[11px] leading-5 text-[#d8a49a]">
+          {error ??
+            "The selected post could not be loaded."}
+        </p>
+      ) : (
+        <form
+          action={action}
+          className="flex min-h-0 flex-1 flex-col"
+        >
+          <input
+            type="hidden"
+            name="topicId"
+            value={topicId}
+          />
+
+          <input
+            type="hidden"
+            name="sectionSlug"
+            value={sectionSlug}
+          />
+
+          <input
+            type="hidden"
+            name="topicSlug"
+            value={topicSlug}
+          />
+
+          <input
+            type="hidden"
+            name="quotedPostId"
+            value={post.id}
+          />
+
+          <input
+            type="hidden"
+            name="imageUrls"
+            value="[]"
+          />
+
+          <div className="shrink-0 border-l-2 border-[#8b6840] bg-[#100c09] px-3 py-3">
+            <p className="text-[8px] uppercase tracking-[0.17em] text-[#9b7b53]">
+              Replying to {authorName}
+            </p>
+
+            <p className="mt-2 line-clamp-5 text-[11px] italic leading-5 text-[#9f927f]">
+              {shortenForumText(
+                post.body,
+                280,
+              )}
+            </p>
+
+            <div className="mt-3 flex flex-wrap gap-3">
+              <a
+                href={`#post-${post.id}`}
+                className="text-[8px] uppercase tracking-[0.14em] text-[#9c7650] transition hover:text-[#dfb982]"
+              >
+                View original
+              </a>
+
+              <Link
+                href={`/forum/${sectionSlug}/${topicSlug}`}
+                scroll={false}
+                className="text-[8px] uppercase tracking-[0.14em] text-[#776957] transition hover:text-[#c8a678]"
+              >
+                Cancel
+              </Link>
+            </div>
+          </div>
+
+          <label className="mt-4 block shrink-0">
+            <span className="text-[8px] uppercase tracking-[0.18em] text-[#9f8765]">
+              Reply as
+            </span>
+
+            <select
+              name="characterId"
+              value={selectedCharacterId}
+              onChange={(event) =>
+                setSelectedCharacterId(
+                  event.target.value,
+                )
+              }
+              disabled={pending}
+              className="mt-2 w-full border border-[#60482e]/50 bg-[#0d0907] px-3 py-2.5 text-xs text-[#d8c4a4] outline-none focus:border-[#aa7f47]"
+            >
+              <option value="">
+                Account only
+              </option>
+
+              {characters.map(
+                (character) => (
+                  <option
+                    key={character.id}
+                    value={character.id}
+                  >
+                    {character.display_name?.trim() ||
+                      [
+                        character.first_name,
+                        character.surname,
+                      ]
+                        .filter(Boolean)
+                        .join(" ")}
+                  </option>
+                ),
+              )}
+            </select>
+          </label>
+
+          <textarea
+            ref={textareaRef}
+            name="body"
+            value={body}
+            onChange={(event) =>
+              setBody(
+                event.target.value.slice(
+                  0,
+                  50_000,
+                ),
+              )
+            }
+            required
+            disabled={pending}
+            rows={8}
+            placeholder="Write a rapid reply..."
+            className="mt-4 min-h-32 w-full flex-1 resize-none border border-[#60482e]/50 bg-[#0d0907] p-3 text-xs leading-6 text-[#d2c1a7] outline-none placeholder:text-[#5f5549] focus:border-[#aa7f47]"
+          />
+
+          <div className="mt-3 shrink-0">
+            {state.message ? (
+              <p
+                className={`mb-3 text-[11px] leading-5 ${
+                  state.success
+                    ? "text-emerald-400"
+                    : "text-red-400"
+                }`}
+              >
+                {state.message}
+              </p>
+            ) : null}
+
+            <button
+              type="submit"
+              disabled={
+                pending ||
+                !body.trim()
+              }
+              className="w-full border border-[#a27b48] bg-[#49311d] px-4 py-3 text-[9px] uppercase tracking-[0.2em] text-[#f0d6aa] transition hover:border-[#c49555] hover:bg-[#5b3d22] disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {pending
+                ? "Publishing..."
+                : "Publish rapid reply"}
+            </button>
+
+            <Link
+              href={`/forum/${sectionSlug}/${topicSlug}?quote=${post.id}#reply`}
+              className="mt-3 flex w-full items-center justify-between border border-[#59432c]/60 px-4 py-3 text-[9px] uppercase tracking-[0.16em] text-[#9d8c75] transition hover:border-[#765937] hover:text-[#d7c09a]"
+            >
+              <span>
+                Open full editor
+              </span>
+              <span aria-hidden="true">
+                →
+              </span>
+            </Link>
+          </div>
+        </form>
+      )}
+    </div>
+  );
+}
+
+function normaliseContextRelation<T>(
+  value: T | T[] | null,
+): T | null {
+  if (Array.isArray(value)) {
+    return value[0] ?? null;
+  }
+
+  return value;
+}
+
+function shortenForumText(
+  value: string,
+  maximumLength: number,
+): string {
+  const normalized = value
+    .replace(/[*_>#\[\]()]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (
+    normalized.length <=
+    maximumLength
+  ) {
+    return normalized;
+  }
+
+  return `${normalized.slice(
+    0,
+    maximumLength - 1,
+  )}…`;
+}
+
+function formatCompactDate(
+  value: string,
+): string {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat(
+    "en-GB",
+    {
+      day: "2-digit",
+      month: "short",
+    },
+  ).format(date);
+}
+
+function ForumContextLoading() {
+  return (
+    <div className="space-y-2">
+      <div className="h-24 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
+      <div className="h-24 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
+      <div className="h-24 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
+    </div>
   );
 }
 

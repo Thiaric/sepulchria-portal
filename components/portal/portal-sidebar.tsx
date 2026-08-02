@@ -9,6 +9,7 @@ import {
 } from "react";
 
 import { createClient } from "@/lib/supabase/client";
+import { UnreadMessageBadge } from "@/components/messages/unread-message-badge";
 
 type PortalSidebarProps = {
   unreadMessageCount: number;
@@ -295,13 +296,9 @@ export function PortalSidebar({
       item.label === "Forum";
 
     const notificationCount =
-      isMessages
-        ? normalizeCount(
-            unreadMessageCount,
-          )
-        : isForum
-          ? currentUnreadForumCount
-          : 0;
+      isForum
+        ? currentUnreadForumCount
+        : 0;
 
     const hasNotification =
       notificationCount > 0;
@@ -350,17 +347,20 @@ export function PortalSidebar({
         </span>
 
         {hasNotification ? (
-          <span
-            className={`ml-auto inline-flex min-w-4 items-center justify-center rounded-full px-1 py-0.5 text-[8px] font-semibold leading-none ${
-              isForum
-                ? "bg-[#9a6728] text-[#fff0cf]"
-                : "bg-[#7a291f] text-[#ffe1ac]"
-            }`}
-          >
+          <span className="ml-auto inline-flex min-w-4 items-center justify-center rounded-full bg-[#9a6728] px-1 py-0.5 text-[8px] font-semibold leading-none text-[#fff0cf]">
             {notificationCount > 99
               ? "99+"
               : notificationCount}
           </span>
+        ) : null}
+
+        {isMessages ? (
+          <UnreadMessageBadge
+            initialCount={
+              unreadMessageCount
+            }
+            variant="inline"
+          />
         ) : null}
       </Link>
     );

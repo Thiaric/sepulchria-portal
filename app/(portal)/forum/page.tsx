@@ -4,7 +4,6 @@ import Link from "next/link";
 
 import { createClient } from "@/lib/supabase/server";
 
-import ForumStaffTools from "@/components/forum/forum-staff-tools";
 
 type ForumSection = {
   id: string;
@@ -292,37 +291,13 @@ export default async function ForumPage() {
         "organisation",
     );
 
+
   return (
     <main className="p-5 sm:p-7 lg:p-9">
       <div className="mx-auto max-w-7xl">
-        <header className="relative overflow-hidden border border-[#60482e]/45 bg-[#15100d]">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(131,91,50,0.18),transparent_45%)]" />
-
-          <div className="relative px-6 py-10 sm:px-9 sm:py-12">
-            <p className="text-[9px] uppercase tracking-[0.3em] text-[#8c704b]">
-              Sepulchria Community
-            </p>
-
-            <h1 className="mt-3 font-serif text-4xl text-[#ead5ac] sm:text-5xl">
-              Forum
-            </h1>
-
-            <p className="mt-4 max-w-3xl text-sm leading-7 text-[#a99b89]">
-              Chronicles, discussions,
-              announcements and the private
-              halls of Sepulchria&apos;s
-              organisations.
-            </p>
-          </div>
-        </header>
-
-        <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
-          <ForumStaffTools />
-
-          {user && totalUnreadTopics > 0 ? (
-            <form
-              action={markAllTopicsAsRead}
-            >
+        {user && totalUnreadTopics > 0 ? (
+          <div className="flex justify-end">
+            <form action={markAllTopicsAsRead}>
               <button
                 type="submit"
                 className="border border-[#987344] bg-[#3b2919] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[#efd6a8] transition hover:border-[#b98c50] hover:bg-[#50371f]"
@@ -333,14 +308,17 @@ export default async function ForumPage() {
                 </span>
               </button>
             </form>
-          ) : null}
-        </div>
+          </div>
+        ) : null}
 
-        <div className="mt-7 space-y-8">
-          <ForumCategory
+        <div className={`space-y-6 ${
+          user && totalUnreadTopics > 0
+            ? "mt-6"
+            : ""
+        }`}>
+          <ForumCategoryCard
             eyebrow="The World of Asteros"
             title="Ongame"
-            description="In-character chronicles, events, letters and conversations belonging to the living world of the game."
             sections={ongameSections}
             topics={topics}
             readMap={readMap}
@@ -348,10 +326,9 @@ export default async function ForumPage() {
             emptyMessage="No Ongame sections are currently available."
           />
 
-          <ForumCategory
+          <ForumCategoryCard
             eyebrow="The Community"
             title="Offgame"
-            description="Announcements, questions, introductions and conversations between members of the community."
             sections={offgameSections}
             topics={topics}
             readMap={readMap}
@@ -359,10 +336,9 @@ export default async function ForumPage() {
             emptyMessage="No Offgame sections are currently available."
           />
 
-          <ForumCategory
+          <ForumCategoryCard
             eyebrow="Orders and Powers"
             title="Organisations"
-            description="Dedicated halls belonging to the associations of Sepulchria. Access may depend on character membership."
             sections={organisationSections}
             topics={topics}
             readMap={readMap}
@@ -375,10 +351,9 @@ export default async function ForumPage() {
   );
 }
 
-function ForumCategory({
+function ForumCategoryCard({
   eyebrow,
   title,
-  description,
   sections,
   topics,
   readMap,
@@ -387,7 +362,6 @@ function ForumCategory({
 }: {
   eyebrow: string;
   title: string;
-  description: string;
   sections: ForumSection[];
   topics: ForumTopic[];
   readMap: Map<string, string>;
@@ -395,59 +369,53 @@ function ForumCategory({
   emptyMessage: string;
 }) {
   return (
-    <section>
-      <div className="mb-4 flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <p className="text-[8px] uppercase tracking-[0.26em] text-[#806a4d]">
-            {eyebrow}
-          </p>
+    <section className="overflow-hidden border border-[#60482e]/50 bg-[#15100d] shadow-[0_14px_35px_rgba(0,0,0,0.18)]">
+      <header className="border-b border-[#60482e]/40 bg-[#1a130e] px-5 py-5">
+        <p className="text-[8px] uppercase tracking-[0.26em] text-[#806a4d]">
+          {eyebrow}
+        </p>
 
-          <h2 className="mt-2 font-serif text-3xl text-[#dec69d]">
+        <div className="mt-2 flex items-center justify-between gap-4">
+          <h1 className="font-serif text-3xl text-[#dec69d]">
             {title}
-          </h2>
+          </h1>
 
-          <p className="mt-2 max-w-3xl text-sm leading-6 text-[#958878]">
-            {description}
+          <span className="border border-[#60482e]/45 bg-[#100c09] px-2.5 py-1.5 text-[8px] uppercase tracking-[0.15em] text-[#9c835f]">
+            {sections.length}{" "}
+            {sections.length === 1
+              ? "section"
+              : "sections"}
+          </span>
+        </div>
+      </header>
+
+      {sections.length > 0 ? (
+        <div className="divide-y divide-[#60482e]/30">
+          {sections.map((section) => (
+            <CompactForumSection
+              key={section.id}
+              section={section}
+              statistics={getSectionStatistics(
+                section.id,
+                topics,
+                readMap,
+              )}
+              showUnread={showUnread}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="px-5 py-10 text-center">
+          <p className="font-serif text-lg text-[#aa9982]">
+            {emptyMessage}
           </p>
         </div>
-
-        <span className="border border-[#60482e]/40 bg-[#15100d] px-3 py-2 text-[9px] uppercase tracking-[0.17em] text-[#9c835f]">
-          {sections.length}{" "}
-          {sections.length === 1
-            ? "section"
-            : "sections"}
-        </span>
-      </div>
-
-      <div className="overflow-hidden border border-[#60482e]/45 bg-[#15100d]">
-        {sections.length > 0 ? (
-          <div className="divide-y divide-[#60482e]/30">
-            {sections.map((section) => (
-              <ForumSectionRow
-                key={section.id}
-                section={section}
-                statistics={getSectionStatistics(
-                  section.id,
-                  topics,
-                  readMap,
-                )}
-                showUnread={showUnread}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="px-6 py-10 text-center">
-            <p className="font-serif text-lg text-[#aa9982]">
-              {emptyMessage}
-            </p>
-          </div>
-        )}
-      </div>
+      )}
     </section>
   );
 }
 
-function ForumSectionRow({
+function CompactForumSection({
   section,
   statistics,
   showUnread,
@@ -467,11 +435,12 @@ function ForumSectionRow({
     statistics.unreadTopics > 0;
 
   return (
-    <article
-      className={`group relative overflow-hidden border ${
+    <Link
+      href={`/forum/${section.slug}`}
+      className={`group relative block overflow-hidden px-5 py-5 transition sm:px-6 ${
         hasUnreadTopics
-          ? "border-[#a87532] bg-[#1b130d] shadow-[inset_0_0_0_1px_rgba(168,117,50,0.16),0_0_18px_rgba(168,117,50,0.08)]"
-          : "border-transparent"
+          ? "bg-[#1d140d] shadow-[inset_3px_0_0_#a87532]"
+          : "hover:bg-[#1a130e]"
       }`}
     >
       {section.banner_url ? (
@@ -481,19 +450,16 @@ function ForumSectionRow({
             alt=""
             fill
             sizes="100vw"
-            className="object-cover opacity-[0.08] transition duration-500 group-hover:opacity-[0.13]"
+            className="object-cover opacity-[0.055] transition duration-500 group-hover:opacity-[0.09]"
             unoptimized
           />
 
-          <div className="absolute inset-0 bg-gradient-to-r from-[#15100d] via-[#15100d]/95 to-[#15100d]/80" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#15100d] via-[#15100d]/96 to-[#15100d]/84" />
         </div>
       ) : null}
 
-      <div className="relative grid gap-5 px-5 py-5 md:grid-cols-[minmax(0,1fr)_130px_260px] md:items-center sm:px-6">
-        <Link
-          href={`/forum/${section.slug}`}
-          className="flex min-w-0 items-center gap-4"
-        >
+      <div className="relative grid gap-5 md:grid-cols-[minmax(0,1fr)_220px] md:items-center">
+        <div className="flex min-w-0 items-start gap-4">
           <div
             className="relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden border bg-[#0d0907]"
             style={{
@@ -523,24 +489,20 @@ function ForumSectionRow({
             )}
           </div>
 
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <h3 className="font-serif text-xl text-[#d9c39d] transition group-hover:text-[#f0d8aa]">
+              <h2 className="font-serif text-xl text-[#d9c39d] transition group-hover:text-[#f0d8aa]">
                 {section.name}
-              </h3>
+              </h2>
 
               {hasUnreadTopics ? (
-                <span className="border border-[#a87532]/70 bg-[#3b2814] px-2 py-1 text-[7px] font-semibold uppercase tracking-[0.16em] text-[#f0c987]">
-                  {statistics.unreadTopics}{" "}
-                  {statistics.unreadTopics === 1
-                    ? "new topic"
-                    : "new topics"}
+                <span className="rounded-full bg-[#7a291f] px-2 py-1 text-[7px] font-semibold uppercase tracking-[0.13em] text-[#ffe1ac]">
+                  {statistics.unreadTopics} new
                 </span>
               ) : null}
 
-              {section.visibility !==
-              "public" ? (
-                <span className="border border-[#675036]/60 bg-black/15 px-2 py-1 text-[7px] uppercase tracking-[0.16em] text-[#9e8767]">
+              {section.visibility !== "public" ? (
+                <span className="border border-[#675036]/60 bg-black/15 px-2 py-1 text-[7px] uppercase tracking-[0.14em] text-[#9e8767]">
                   {section.visibility ===
                   "members"
                     ? "Members"
@@ -550,90 +512,50 @@ function ForumSectionRow({
             </div>
 
             {section.association ? (
-              <p className="mt-1 text-[8px] uppercase tracking-[0.18em] text-[#7e684c]">
-                {
-                  section.association
-                    .name
-                }
+              <p className="mt-1 text-[8px] uppercase tracking-[0.16em] text-[#7e684c]">
+                {section.association.name}
               </p>
             ) : null}
 
-            <p className="mt-2 line-clamp-2 text-sm leading-6 text-[#968979]">
+            <p className="mt-2 line-clamp-2 text-xs leading-5 text-[#918474]">
               {section.description ||
                 "No description has been provided for this section."}
             </p>
           </div>
-        </Link>
-
-        <div className="grid grid-cols-2 gap-2 md:block md:text-center">
-          <ForumStatistic
-            value={statistics.topics}
-            label="Topics"
-          />
-
-          <ForumStatistic
-            value={statistics.replies}
-            label="Replies"
-          />
         </div>
 
-        <div className="border-t border-[#60482e]/25 pt-4 md:border-l md:border-t-0 md:pl-5 md:pt-0">
-          {statistics.latestTopic ? (
-            <>
-              <p className="text-[8px] uppercase tracking-[0.17em] text-[#75644d]">
-                Latest discussion
-              </p>
+        <div className="grid grid-cols-3 gap-px border border-[#60482e]/30 bg-[#60482e]/30 md:self-stretch">
+          <div className="flex flex-col items-center justify-center bg-[#100c09]/95 px-3 py-3 text-center">
+            <span className="font-serif text-lg text-[#c6aa80]">
+              {statistics.topics}
+            </span>
 
-              <Link
-                href={`/forum/${section.slug}/${statistics.latestTopic.slug}`}
-                className="mt-2 block truncate font-serif text-base text-[#c9b28e] transition hover:text-[#efd6a8]"
-              >
-                {
-                  statistics.latestTopic
-                    .title
-                }
-              </Link>
+            <span className="mt-1 text-[7px] uppercase tracking-[0.14em] text-[#766654]">
+              Topics
+            </span>
+          </div>
 
-              <p className="mt-1 text-[9px] text-[#776b5d]">
-                {formatDate(
-                  statistics.latestTopic
-                    .last_post_at,
-                )}
-              </p>
-            </>
-          ) : (
-            <>
-              <p className="text-[8px] uppercase tracking-[0.17em] text-[#75644d]">
-                Latest discussion
-              </p>
+          <div className="flex flex-col items-center justify-center bg-[#100c09]/95 px-3 py-3 text-center">
+            <span className="font-serif text-lg text-[#c6aa80]">
+              {statistics.replies}
+            </span>
 
-              <p className="mt-2 text-sm text-[#6f6457]">
-                No discussions yet.
-              </p>
-            </>
-          )}
+            <span className="mt-1 text-[7px] uppercase tracking-[0.14em] text-[#766654]">
+              Replies
+            </span>
+          </div>
+
+          <div className="flex items-center justify-center bg-[#100c09]/95 px-3 py-3 text-[#775f42] transition group-hover:text-[#c7a675]">
+            <span
+              aria-hidden="true"
+              className="transition group-hover:translate-x-1"
+            >
+              →
+            </span>
+          </div>
         </div>
       </div>
-    </article>
+    </Link>
   );
 }
 
-function ForumStatistic({
-  value,
-  label,
-}: {
-  value: number;
-  label: string;
-}) {
-  return (
-    <div className="inline-block min-w-[58px] px-2 py-1 text-center">
-      <p className="font-serif text-lg text-[#c4a980]">
-        {value}
-      </p>
-
-      <p className="mt-0.5 text-[7px] uppercase tracking-[0.14em] text-[#716453]">
-        {label}
-      </p>
-    </div>
-  );
-}

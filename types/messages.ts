@@ -4,6 +4,10 @@ export type MessageActionState = {
   submittedAt?: number;
 };
 
+export type PrivateMessageMode =
+  | "ongame"
+  | "offgame";
+
 export type ConversationSummary = {
   id: string;
   updated_at: string;
@@ -18,6 +22,7 @@ export type ConversationSummary = {
     body: string;
     created_at: string;
     sender_character_id: string;
+    message_mode: PrivateMessageMode;
   } | null;
 };
 
@@ -26,13 +31,17 @@ export type DirectMessage = {
   body: string;
   created_at: string;
   sender_character_id: string;
-  sender: {
-    id: string;
-    display_name: string;
-    portrait_url: string | null;
-  } | {
-    id: string;
-    display_name: string;
-    portrait_url: string | null;
-  }[] | null;
+  message_mode: PrivateMessageMode;
+  sender:
+    | {
+        id: string;
+        display_name: string;
+        portrait_url: string | null;
+      }
+    | {
+        id: string;
+        display_name: string;
+        portrait_url: string | null;
+      }[]
+    | null;
 };
