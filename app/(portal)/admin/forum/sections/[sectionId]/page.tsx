@@ -302,11 +302,11 @@ export default async function EditForumSectionPage({
           className="mb-6 flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.16em] text-[#746653]"
         >
           <Link
-            href="/forum"
-            className="transition hover:text-[#c7a16d]"
-          >
-            Forum
-          </Link>
+          href="/admin"
+          className="transition hover:text-[#c7a16d]"
+        >
+          Administration
+        </Link>
 
           <span aria-hidden="true">
             /
@@ -316,8 +316,8 @@ export default async function EditForumSectionPage({
             href="/admin/forum"
             className="transition hover:text-[#c7a16d]"
           >
-            Staff management
-          </Link>
+          Forum
+        </Link>
 
           <span aria-hidden="true">
             /

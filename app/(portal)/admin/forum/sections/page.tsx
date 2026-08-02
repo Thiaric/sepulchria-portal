@@ -247,10 +247,10 @@ export default async function ForumSectionsManagementPage() {
         className="mb-6 flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.16em] text-[#746653]"
       >
         <Link
-          href="/forum"
+          href="/admin"
           className="transition hover:text-[#c7a16d]"
         >
-          Forum
+          Administration
         </Link>
 
         <span aria-hidden="true">
@@ -261,7 +261,7 @@ export default async function ForumSectionsManagementPage() {
           href="/admin/forum"
           className="transition hover:text-[#c7a16d]"
         >
-          Staff management
+          Forum
         </Link>
 
         <span aria-hidden="true">

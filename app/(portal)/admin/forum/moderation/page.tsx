@@ -124,7 +124,7 @@ export default async function ForumModerationPage({
   if (!user) {
     redirect(
       `/login?redirect=${encodeURIComponent(
-        "/admin/forum/moderation",
+        "/admin/admin/forum/moderation",
       )}`,
     );
   }
@@ -331,10 +331,10 @@ export default async function ForumModerationPage({
         className="mb-6 flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.16em] text-[#746653]"
       >
         <Link
-          href="/forum"
+          href="/admin"
           className="transition hover:text-[#c7a16d]"
         >
-          Forum
+          Administration
         </Link>
 
         <span aria-hidden="true">
@@ -547,7 +547,7 @@ export default async function ForumModerationPage({
         >
           {previousPage ? (
             <Link
-              href={`/admin/forum/moderation?page=${previousPage}`}
+              href={`/admin/admin/forum/moderation?page=${previousPage}`}
               className="border border-[#60482e]/55 bg-[#19120e] px-4 py-3 text-[8px] uppercase tracking-[0.16em] text-[#a58b68] transition hover:border-[#947047] hover:text-[#dec095]"
             >
               Previous
@@ -565,7 +565,7 @@ export default async function ForumModerationPage({
 
           {nextPage ? (
             <Link
-              href={`/admin/forum/moderation?page=${nextPage}`}
+              href={`/admin/admin/forum/moderation?page=${nextPage}`}
               className="border border-[#60482e]/55 bg-[#19120e] px-4 py-3 text-[8px] uppercase tracking-[0.16em] text-[#a58b68] transition hover:border-[#947047] hover:text-[#dec095]"
             >
               Next

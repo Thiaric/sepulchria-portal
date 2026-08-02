@@ -1,13 +1,15 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 
 import { createClient } from "@/lib/supabase/server";
 
 type ForumStaffToolsProps = {
   className?: string;
+  showOverviewLink?: boolean;
 };
 
 export default async function ForumStaffTools({
   className = "",
+  showOverviewLink = false,
 }: ForumStaffToolsProps) {
   const supabase = await createClient();
 
@@ -50,12 +52,27 @@ export default async function ForumStaffTools({
         <p className="mt-2 max-w-3xl text-sm leading-6 text-[#a99880]">
           Manage forum sections,
           discussions and moderation
-          history.
+          history from the administration
+          area.
         </p>
       </div>
 
-      <div className="grid gap-3 px-5 py-5 sm:grid-cols-3 sm:px-6">
-        
+      <div
+        className={`grid gap-3 px-5 py-5 sm:px-6 ${
+          showOverviewLink
+            ? "sm:grid-cols-3"
+            : "sm:grid-cols-2"
+        }`}
+      >
+        {showOverviewLink ? (
+          <StaffLink
+            href="/admin/forum"
+            eyebrow="Control panel"
+            title="Forum Overview"
+            description="Return to the forum administration dashboard."
+            label="Open overview"
+          />
+        ) : null}
 
         <StaffLink
           href="/admin/forum/sections"
@@ -63,6 +80,14 @@ export default async function ForumStaffTools({
           title="Manage Sections"
           description="Create, edit, hide and organise forum sections."
           label="Manage sections"
+        />
+
+        <StaffLink
+          href="/admin/forum/topics"
+          eyebrow="Discussions"
+          title="Manage Topics"
+          description="Review active and deleted discussions."
+          label="Manage topics"
         />
 
         <StaffLink
