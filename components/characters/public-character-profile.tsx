@@ -3,9 +3,9 @@ import Link from "next/link";
 
 import { startConversation } from "@/app/(portal)/messages/actions";
 import { CharacterAttributesDisplay } from "@/components/characters/character-attributes-display";
+import { LiveCharacterPresence } from "@/components/characters/live-character-presence";
 import type {
   PublicCharacterProfile,
-  PublicPresenceStatus,
 } from "@/types/public-character";
 
 type PublicCharacterProfileProps = {
@@ -15,34 +15,10 @@ type PublicCharacterProfileProps = {
   canMessage: boolean;
 };
 
-const ACTIVE_PRESENCE_MINUTES = 3;
 
-function getPresenceStatus(
-  character: PublicCharacterProfile,
-): PublicPresenceStatus | "offline" {
-  if (!character.presence) {
-    return "offline";
-  }
-
-  const activeThreshold =
-    Date.now() -
-    ACTIVE_PRESENCE_MINUTES * 60_000;
-
-  const lastSeenTime = new Date(
-    character.presence.last_seen_at,
-  ).getTime();
-
-  if (
-    Number.isNaN(lastSeenTime) ||
-    lastSeenTime < activeThreshold
-  ) {
-    return "offline";
-  }
-
-  return character.presence.status;
-}
-
-function formatDate(value: string | null): string {
+function formatDate(
+  value: string | null,
+): string {
   if (!value) {
     return "Unknown";
   }
@@ -53,66 +29,14 @@ function formatDate(value: string | null): string {
     return value;
   }
 
-  return new Intl.DateTimeFormat("en-GB", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(date);
-}
-
-function formatLastSeen(
-  value: string | undefined,
-): string {
-  if (!value) {
-    return "No recent activity";
-  }
-
-  const date = new Date(value);
-
-  if (Number.isNaN(date.getTime())) {
-    return "No recent activity";
-  }
-
-  return new Intl.DateTimeFormat("en-GB", {
-    day: "numeric",
-    month: "short",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(date);
-}
-
-function PresenceIndicator({
-  status,
-}: {
-  status:
-    | PublicPresenceStatus
-    | "offline";
-}) {
-  const labels = {
-    online: "Online",
-    away: "Away",
-    busy: "Busy",
-    offline: "Offline",
-  };
-
-  const dotClasses = {
-    online: "bg-emerald-500",
-    away: "bg-amber-500",
-    busy: "bg-red-500",
-    offline: "bg-stone-600",
-  };
-
-  return (
-    <div className="inline-flex items-center gap-2 border border-[#60482e]/50 bg-black/20 px-3 py-2">
-      <span
-        className={`h-2 w-2 rounded-full ${dotClasses[status]}`}
-      />
-
-      <span className="text-[10px] uppercase tracking-[0.18em] text-[#b9a991]">
-        {labels[status]}
-      </span>
-    </div>
-  );
+  return new Intl.DateTimeFormat(
+    "en-GB",
+    {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    },
+  ).format(date);
 }
 
 function ProfileSection({
@@ -171,9 +95,6 @@ export function PublicCharacterProfileView({
   returnLabel,
   canMessage,
 }: PublicCharacterProfileProps) {
-  const presenceStatus =
-    getPresenceStatus(character);
-
   const fullName =
     character.display_name?.trim() ||
     `${character.first_name} ${character.surname}`.trim();
@@ -212,14 +133,14 @@ export function PublicCharacterProfileView({
         <div className="relative min-h-[260px] overflow-hidden bg-[radial-gradient(circle_at_top,#382719_0%,#17100c_45%,#0d0907_100%)]">
           <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(194,155,99,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(194,155,99,0.08)_1px,transparent_1px)] [background-size:32px_32px]" />
 
-          <div className="relative grid gap-6 p-5 sm:p-7 lg:grid-cols-[220px_1fr] lg:items-end">
-            <div className="relative mx-auto aspect-[3/4] w-full max-w-[220px] overflow-hidden border border-[#8a6840]/60 bg-[#0c0907] shadow-2xl lg:mx-0">
+          <div className="relative grid gap-5 p-5 sm:p-7 xl:grid-cols-[240px_minmax(0,1fr)_300px] xl:items-stretch">
+            <div className="relative mx-auto aspect-[3/4] w-full max-w-[240px] overflow-hidden border border-[#8a6840]/60 bg-[#0c0907] shadow-2xl xl:mx-0">
               {character.portrait_url ? (
                 <Image
                   src={character.portrait_url}
                   alt={`Portrait of ${fullName}`}
                   fill
-                  sizes="220px"
+                  sizes="240px"
                   className="object-cover"
                   priority
                 />
@@ -237,31 +158,25 @@ export function PublicCharacterProfileView({
               )}
             </div>
 
-            <div className="pb-1">
-              <div className="flex flex-wrap items-center gap-3">
-                <PresenceIndicator
-                  status={presenceStatus}
-                />
+            <div className="flex min-w-0 flex-col">
+              <div className="flex flex-wrap gap-2">
+                {character.race ? (
+                  <Link
+                    href={`/races/${character.race.slug}`}
+                    className="border border-[#60482e]/50 bg-black/20 px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-[#b9a991] transition hover:border-[#987344] hover:text-[#ead2a5]"
+                  >
+                    {character.race.name}
+                  </Link>
+                ) : null}
 
-                <div className="flex flex-wrap gap-2">
-  {character.race ? (
-    <Link
-      href={`/races/${character.race.slug}`}
-      className="border border-[#60482e]/50 bg-black/20 px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-[#b9a991] transition hover:border-[#987344] hover:text-[#ead2a5]"
-    >
-      {character.race.name}
-    </Link>
-  ) : null}
-
-  {character.association ? (
-    <Link
-      href={`/associations/${character.association.slug}`}
-      className="border border-[#60482e]/50 bg-black/20 px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-[#b9a991] transition hover:border-[#987344] hover:text-[#ead2a5]"
-    >
-      {character.association.name}
-    </Link>
-  ) : null}
-</div>
+                {character.association ? (
+                  <Link
+                    href={`/associations/${character.association.slug}`}
+                    className="border border-[#60482e]/50 bg-black/20 px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-[#b9a991] transition hover:border-[#987344] hover:text-[#ead2a5]"
+                  >
+                    {character.association.name}
+                  </Link>
+                ) : null}
               </div>
 
               <p className="mt-5 text-[10px] uppercase tracking-[0.28em] text-[#8e704a]">
@@ -278,7 +193,7 @@ export function PublicCharacterProfileView({
                 </p>
               ) : null}
 
-              <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm text-[#a99b89]">
+              <div className="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-sm text-[#a99b89]">
                 {character.pronouns ? (
                   <span>{character.pronouns}</span>
                 ) : null}
@@ -293,14 +208,29 @@ export function PublicCharacterProfileView({
                   </span>
                 ) : null}
               </div>
+
+              <div className="mt-6">
+                <CharacterAttributesDisplay
+                  character={character}
+                  compact
+                />
+              </div>
             </div>
+
+            <LiveCharacterPresence
+              characterId={character.id}
+              initialPresence={
+                character.presence
+              }
+              initialRoom={
+                character.currentRoom
+              }
+            />
           </div>
         </div>
       </section>
 
-      <CharacterAttributesDisplay
-        character={character}
-      />
+
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_300px]">
         <div className="space-y-5">
@@ -384,38 +314,6 @@ export function PublicCharacterProfileView({
             </dl>
           </section>
 
-          <section className="border border-[#60482e]/45 bg-[#15100d]/95 p-5">
-            <h2 className="font-serif text-lg text-[#dec89f]">
-              Current Presence
-            </h2>
-
-            <div className="mt-4">
-              <PresenceIndicator
-                status={presenceStatus}
-              />
-            </div>
-
-            <dl className="mt-5 space-y-5">
-              <Detail
-                label="Last activity"
-                value={formatLastSeen(
-                  character.presence
-                    ?.last_seen_at,
-                )}
-              />
-
-              <Detail
-                label="Current location"
-                value={
-                  character.currentRoom
-                    ? character.currentRoom.area
-                      ? `${character.currentRoom.name}, ${character.currentRoom.area.name}`
-                      : character.currentRoom.name
-                    : "Unknown"
-                }
-              />
-            </dl>
-          </section>
         </aside>
       </div>
     </article>

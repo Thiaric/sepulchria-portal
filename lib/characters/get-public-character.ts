@@ -106,6 +106,7 @@ type CharacterListRow = {
 type PresenceRow = {
   status: PublicPresenceStatus;
   last_seen_at: string;
+  room_id: string | null;
 };
 
 type PresenceListRow = {
@@ -276,30 +277,12 @@ export const getPublicCharacter = cache(
       return null;
     }
 
-    const rawRoom = normaliseRelation(
-      row.currentRoom,
-    );
-
-    const rawArea = rawRoom
-      ? normaliseRelation(rawRoom.area)
-      : null;
-
-    const currentRoom: PublicCharacterRoom | null =
-      rawRoom
-        ? {
-            id: rawRoom.id,
-            name: rawRoom.name,
-            slug: rawRoom.slug,
-            area: rawArea,
-          }
-        : null;
-
     const {
       data: presenceData,
       error: presenceError,
     } = await supabase
       .from("character_presence")
-      .select("status, last_seen_at")
+      .select("status, last_seen_at, room_id")
       .eq("character_id", row.id)
       .maybeSingle();
 
@@ -311,6 +294,56 @@ export const getPublicCharacter = cache(
 
     const presence =
       presenceData as PresenceRow | null;
+
+    let rawRoom = normaliseRelation(
+      row.currentRoom,
+    );
+
+    if (
+      presence?.room_id &&
+      presence.room_id !== rawRoom?.id
+    ) {
+      const {
+        data: liveRoomData,
+        error: liveRoomError,
+      } = await supabase
+        .from("rooms")
+        .select(`
+          id,
+          name,
+          slug,
+          area:areas!rooms_area_id_fkey(
+            id,
+            name,
+            slug
+          )
+        `)
+        .eq("id", presence.room_id)
+        .maybeSingle();
+
+      if (liveRoomError) {
+        throw new Error(
+          `Unable to load live character room: ${liveRoomError.message}`,
+        );
+      }
+
+      rawRoom =
+        liveRoomData as unknown as RoomRelationRow | null;
+    }
+
+    const rawArea = rawRoom
+      ? normaliseRelation(rawRoom.area)
+      : null;
+
+    const currentRoom: PublicCharacterRoom | null =
+      presence?.room_id && rawRoom
+        ? {
+            id: rawRoom.id,
+            name: rawRoom.name,
+            slug: rawRoom.slug,
+            area: rawArea,
+          }
+        : null;
 
     return {
       id: row.id,

@@ -28,6 +28,12 @@ export type PublicCharacterRoom = {
   } | null;
 };
 
+export type PublicCharacterPresence = {
+  status: PublicPresenceStatus;
+  last_seen_at: string;
+  room_id: string | null;
+};
+
 export type PublicCharacterProfile = {
   id: string;
   public_slug: string;
@@ -59,8 +65,5 @@ export type PublicCharacterProfile = {
   current_room_id: string | null;
   currentRoom: PublicCharacterRoom | null;
 
-  presence: {
-    status: PublicPresenceStatus;
-    last_seen_at: string;
-  } | null;
+  presence: PublicCharacterPresence | null;
 };

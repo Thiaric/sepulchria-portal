@@ -191,7 +191,12 @@ export function Profile({
 
   const items = [
     ["Pronouns", character.pronouns],
-    ["Born", character.date_of_birth],
+    [
+  "Born",
+  character.date_of_birth
+    ? new Date(character.date_of_birth).toLocaleDateString("en-GB")
+    : null,
+],
     ["Birthplace", character.birthplace],
     ["Origin", character.origin],
     ["Occupation", character.occupation],
