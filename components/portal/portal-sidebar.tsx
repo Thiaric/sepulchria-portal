@@ -38,13 +38,6 @@ const mainNavigationItems: NavigationItem[] = [
     activePaths: ["/game"],
   },
   {
-    label: "World",
-    icon: "◈",
-    href: "/world",
-    activePaths: ["/world"],
-    disabled: true,
-  },
-  {
     label: "Characters",
     icon: "♙",
     href: "/characters",
@@ -53,6 +46,13 @@ const mainNavigationItems: NavigationItem[] = [
 ];
 
 const codexNavigationItems: NavigationItem[] = [
+  {
+    label: "World",
+    icon: "◈",
+    href: "/world",
+    activePaths: ["/world"],
+    disabled: true,
+  },
   {
     label: "Races",
     icon: "♢",
@@ -347,12 +347,20 @@ export function PortalSidebar({
         </span>
 
         {hasNotification ? (
-          <span className="ml-auto inline-flex min-w-4 items-center justify-center rounded-full bg-[#9a6728] px-1 py-0.5 text-[8px] font-semibold leading-none text-[#fff0cf]">
-            {notificationCount > 99
-              ? "99+"
-              : notificationCount}
-          </span>
-        ) : null}
+  <span
+    title={`${notificationCount} unread forum notification${
+      notificationCount === 1 ? "" : "s"
+    }`}
+    aria-label={`${notificationCount} unread forum notification${
+      notificationCount === 1 ? "" : "s"
+    }`}
+    className="ml-auto inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] text-[7px] font-bold leading-none text-[#ffe1ac]"
+  >
+    {notificationCount > 9
+      ? "9+"
+      : notificationCount}
+  </span>
+) : null}
 
         {isMessages ? (
           <UnreadMessageBadge

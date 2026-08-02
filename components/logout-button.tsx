@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
+import { LogOut } from "lucide-react";
 
 export function LogoutButton() {
   const router = useRouter();
@@ -83,13 +84,41 @@ export function LogoutButton() {
   };
 
   return (
-    <Button
-      onClick={logout}
-      disabled={isLoggingOut}
-    >
+  <button
+    type="button"
+    onClick={logout}
+    disabled={isLoggingOut}
+    className="
+      inline-flex
+      h-10
+      items-center
+      justify-center
+      gap-2
+      border
+      border-[#6f5233]
+      bg-[#16100c]
+      px-4
+      text-[10px]
+      font-medium
+      uppercase
+      tracking-[0.22em]
+      text-[#d7b980]
+      transition-all
+      duration-200
+      hover:border-[#a97d47]
+      hover:bg-[#241811]
+      hover:text-[#f2d8a3]
+      disabled:cursor-not-allowed
+      disabled:opacity-60
+    "
+  >
+    <LogOut className="h-4 w-4" />
+
+    <span>
       {isLoggingOut
-        ? "Logging out..."
-        : "Logout"}
-    </Button>
-  );
+        ? "Exiting..."
+        : "Exit Game"}
+    </span>
+  </button>
+);
 }

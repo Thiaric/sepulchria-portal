@@ -36,7 +36,7 @@ export default async function AssociationsPage() {
           <div className="mt-6 flex flex-wrap gap-3">
             <div className="border border-[#60482e]/45 bg-black/20 px-4 py-3">
               <span className="block text-[9px] uppercase tracking-[0.22em] text-[#806b50]">
-                Civic bodies
+                Current Associations
               </span>
 
               <span className="mt-1 block font-serif text-xl text-[#d4bd94]">
@@ -44,15 +44,7 @@ export default async function AssociationsPage() {
               </span>
             </div>
 
-            <div className="border border-[#60482e]/45 bg-black/20 px-4 py-3">
-              <span className="block text-[9px] uppercase tracking-[0.22em] text-[#806b50]">
-                Character choice
-              </span>
-
-              <span className="mt-1 block font-serif text-sm text-[#d4bd94]">
-                Permanent after creation
-              </span>
-            </div>
+            
           </div>
         </div>
       </header>

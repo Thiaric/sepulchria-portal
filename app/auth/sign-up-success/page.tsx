@@ -33,7 +33,7 @@ export default function SignUpSuccessPage() {
           </p>
 
           <p className="mt-3 text-sm leading-6 text-[#a99b87]">
-            Open the message from Sepulchria and follow the confirmation link.
+            Open the message from Sepulchria and follow the confirmation link (please check your spam or junk folder).
             Once your email has been verified, return here and sign in.
           </p>
         </div>

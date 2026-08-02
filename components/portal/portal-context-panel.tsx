@@ -14,6 +14,7 @@ import {
 } from "next/navigation";
 
 import { GameContextPanel } from "@/components/portal/game-context-panel";
+import { MessagesContextNavigator } from "@/components/messages/messages-context-navigator";
 import {
   createForumReplyAction,
   type CreateForumReplyState,
@@ -701,39 +702,9 @@ function MessagesContext({
   context,
 }: PortalContextPanelProps) {
   return (
-    <>
-      <ContextHeading
-        eyebrow="Correspondence"
-        title="Private messages"
-      />
-
-      <ContextRow
-        label="Unread"
-        value={String(
-          context.unreadMessageCount,
-        )}
-      />
-
-      <ContextRow
-        label="Character"
-        value={
-          context.character?.display_name ??
-          "Unavailable"
-        }
-        last
-      />
-
-      <p className="mt-5 text-xs leading-6 text-[#938673]">
-        Open a conversation to read or continue your private correspondence.
-      </p>
-
-      <Link
-        href="/messages"
-        className="mt-5 inline-flex border border-[#765937] bg-[#271c12] px-4 py-3 text-[10px] uppercase tracking-[0.2em] text-[#dfc79c] transition hover:bg-[#3b2919]"
-      >
-        Open inbox
-      </Link>
-    </>
+    <MessagesContextNavigator
+      context={context}
+    />
   );
 }
 
