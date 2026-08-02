@@ -1,4 +1,4 @@
-import ForumStaffTools from "@/components/forum/forum-staff-tools";
+﻿import ForumStaffTools from "@/components/forum/forum-staff-tools";
 import { requireStaff } from "@/lib/auth/require-staff";
 
 export default async function AdminForumPage() {
@@ -31,3 +31,4 @@ export default async function AdminForumPage() {
     </main>
   );
 }
+

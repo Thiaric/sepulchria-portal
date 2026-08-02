@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 
 import { createClient } from "@/lib/supabase/server";
 
@@ -56,7 +56,7 @@ export default async function ForumStaffTools({
 
       <div className="grid gap-3 px-5 py-5 sm:grid-cols-3 sm:px-6">
         <StaffLink
-          href="/forum/manage"
+          href="/admin/forum"
           eyebrow="Control panel"
           title="Forum Management"
           description="Open the complete staff dashboard."
@@ -64,7 +64,7 @@ export default async function ForumStaffTools({
         />
 
         <StaffLink
-          href="/forum/manage/sections"
+          href="/admin/forum/sections"
           eyebrow="Structure"
           title="Manage Sections"
           description="Create, edit, hide and organise forum sections."
@@ -72,7 +72,7 @@ export default async function ForumStaffTools({
         />
 
         <StaffLink
-          href="/forum/moderation"
+          href="/admin/forum/moderation"
           eyebrow="History"
           title="Moderation Log"
           description="Review recorded moderation actions."

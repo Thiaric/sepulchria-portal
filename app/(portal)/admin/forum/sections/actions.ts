@@ -1,4 +1,4 @@
-"use server";
+﻿"use server";
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -63,7 +63,7 @@ function createSlug(value: string): string {
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
     .trim()
-    .replace(/['’]/g, "")
+    .replace(/['â€™]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
     .replace(/-{2,}/g, "-");
@@ -118,7 +118,7 @@ function redirectToCreateError(
   message: string,
 ): never {
   redirect(
-    `/forum/manage/sections/new?error=${encodeURIComponent(
+    `/admin/forum/sections/new?error=${encodeURIComponent(
       message,
     )}`,
   );
@@ -129,7 +129,7 @@ function redirectToEditError(
   message: string,
 ): never {
   redirect(
-    `/forum/manage/sections/${encodeURIComponent(
+    `/admin/forum/sections/${encodeURIComponent(
       sectionId,
     )}?error=${encodeURIComponent(
       message,
@@ -142,7 +142,7 @@ function redirectToEditSuccess(
   message: string,
 ): never {
   redirect(
-    `/forum/manage/sections/${encodeURIComponent(
+    `/admin/forum/sections/${encodeURIComponent(
       sectionId,
     )}?success=${encodeURIComponent(
       message,
@@ -496,9 +496,9 @@ function revalidateForumPaths(
   sectionSlug?: string,
 ): void {
   revalidatePath("/forum");
-  revalidatePath("/forum/manage");
+  revalidatePath("/admin/forum");
   revalidatePath(
-    "/forum/manage/sections",
+    "/admin/forum/sections",
   );
 
   if (sectionSlug) {
@@ -513,7 +513,7 @@ export async function createForumSectionAction(
 ): Promise<void> {
   const { supabase } =
     await requireStaff(
-      "/forum/manage/sections/new",
+      "/admin/forum/sections/new",
     );
 
   const sectionData =
@@ -581,7 +581,7 @@ export async function createForumSectionAction(
   );
 
   redirect(
-    "/forum/manage/sections",
+    "/admin/forum/sections",
   );
 }
 
@@ -595,12 +595,12 @@ export async function updateForumSectionAction(
 
   if (!sectionId) {
     redirect(
-      "/forum/manage/sections",
+      "/admin/forum/sections",
     );
   }
 
   const editPath =
-    `/forum/manage/sections/${encodeURIComponent(
+    `/admin/forum/sections/${encodeURIComponent(
       sectionId,
     )}`;
 
@@ -638,7 +638,7 @@ export async function updateForumSectionAction(
 
   if (!currentSection) {
     redirect(
-      "/forum/manage/sections",
+      "/admin/forum/sections",
     );
   }
 
@@ -733,12 +733,12 @@ export async function toggleForumSectionStatusAction(
 
   if (!sectionId) {
     redirect(
-      "/forum/manage/sections",
+      "/admin/forum/sections",
     );
   }
 
   const editPath =
-    `/forum/manage/sections/${encodeURIComponent(
+    `/admin/forum/sections/${encodeURIComponent(
       sectionId,
     )}`;
 
@@ -773,7 +773,7 @@ export async function toggleForumSectionStatusAction(
 
   if (!section) {
     redirect(
-      "/forum/manage/sections",
+      "/admin/forum/sections",
     );
   }
 
@@ -818,12 +818,12 @@ export async function deleteForumSectionAction(
 
   if (!sectionId) {
     redirect(
-      "/forum/manage/sections",
+      "/admin/forum/sections",
     );
   }
 
   const editPath =
-    `/forum/manage/sections/${encodeURIComponent(
+    `/admin/forum/sections/${encodeURIComponent(
       sectionId,
     )}`;
 
@@ -869,7 +869,7 @@ export async function deleteForumSectionAction(
 
   if (!section) {
     redirect(
-      "/forum/manage/sections",
+      "/admin/forum/sections",
     );
   }
 
@@ -954,8 +954,9 @@ export async function deleteForumSectionAction(
   );
 
   redirect(
-    `/forum/manage/sections?success=${encodeURIComponent(
+    `/admin/forum/sections?success=${encodeURIComponent(
       "The forum section has been permanently deleted.",
     )}`,
   );
 }
+
