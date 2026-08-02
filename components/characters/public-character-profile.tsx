@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { startConversation } from "@/app/(portal)/messages/actions";
+import { CharacterAttributesDisplay } from "@/components/characters/character-attributes-display";
 import type {
   PublicCharacterProfile,
   PublicPresenceStatus,
@@ -296,6 +297,10 @@ export function PublicCharacterProfileView({
           </div>
         </div>
       </section>
+
+      <CharacterAttributesDisplay
+        character={character}
+      />
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_300px]">
         <div className="space-y-5">

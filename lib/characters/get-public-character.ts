@@ -53,6 +53,12 @@ type CharacterRow = {
   personality: string | null;
   public_notes: string | null;
   title: string | null;
+  muscles: number | null;
+  reflexes: number | null;
+  vigor: number | null;
+  brains: number | null;
+  shrewd: number | null;
+  presence_score: number | null;
   status:
     | "draft"
     | "submitted"
@@ -214,6 +220,12 @@ export const getPublicCharacter = cache(
         personality,
         public_notes,
         title,
+        muscles,
+        reflexes,
+        vigor,
+        brains,
+        shrewd,
+        presence_score,
         status,
         current_room_id,
 
@@ -318,6 +330,12 @@ export const getPublicCharacter = cache(
       personality: row.personality,
       public_notes: row.public_notes,
       title: row.title,
+      muscles: row.muscles,
+      reflexes: row.reflexes,
+      vigor: row.vigor,
+      brains: row.brains,
+      shrewd: row.shrewd,
+      presence_score: row.presence_score,
       status: row.status,
 
       race: normaliseCodexReference(

@@ -45,6 +45,12 @@ export type PublicCharacterProfile = {
   personality: string | null;
   public_notes: string | null;
   title: string | null;
+  muscles: number | null;
+  reflexes: number | null;
+  vigor: number | null;
+  brains: number | null;
+  shrewd: number | null;
+  presence_score: number | null;
   status: PublicCharacterStatus;
 
   race: PublicCodexReference | null;

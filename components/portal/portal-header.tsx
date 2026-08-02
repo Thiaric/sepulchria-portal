@@ -29,12 +29,12 @@ export async function PortalHeader({
           href="/"
           className="min-w-0"
         >
-          <span className="block font-serif text-2xl font-semibold tracking-[0.22em] text-[#d9bd82] sm:text-3xl">
-            SEPULCHRIA
+          <span className="block font-serif text-2xl font-semibold tracking-[0.22em] text-[#d9bd82] sm:text-2xl">
+            SEPULCHRIA - THE CITY OF THE FIRST
           </span>
 
           <span className="mt-1 hidden text-[10px] uppercase tracking-[0.35em] text-[#8f806d] sm:block">
-            Chronicle of the Veiled City
+            Built upon the remains of The First, shaped by your choices.
           </span>
         </Link>
 

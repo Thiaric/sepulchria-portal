@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { requireStaff } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 import { CharacterReviewFields } from "@/components/admin/character-review-fields";
+import { AdminCharacterEditForm } from "@/components/admin/admin-character-edit-form";
 
 import {
   deleteCharacterAdministration,
@@ -61,6 +62,12 @@ type CharacterRow = {
   rejection_reason: string | null;
   approved_at: string | null;
   approved_by: string | null;
+  muscles: number | null;
+  reflexes: number | null;
+  vigor: number | null;
+  brains: number | null;
+  shrewd: number | null;
+  presence_score: number | null;
   race: CodexRelation;
   association: CodexRelation;
 };
@@ -156,6 +163,12 @@ export default async function AdminCharacterPage({
         rejection_reason,
         approved_at,
         approved_by,
+        muscles,
+        reflexes,
+        vigor,
+        brains,
+        shrewd,
+        presence_score,
 
         race:races!characters_race_id_fkey(
           id,
@@ -394,7 +407,7 @@ export default async function AdminCharacterPage({
               Review and classification
             </h3>
 
-            <form
+            <AdminCharacterEditForm
               action={
                 updateCharacterAdministration
               }
@@ -413,6 +426,170 @@ export default async function AdminCharacterPage({
               />
 
               <div className="space-y-5">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <AdminField label="First name">
+                    <input
+                      type="text"
+                      name="firstName"
+                      required
+                      maxLength={80}
+                      defaultValue={character.first_name}
+                      className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                    />
+                  </AdminField>
+
+                  <AdminField label="Surname">
+                    <input
+                      type="text"
+                      name="surname"
+                      required
+                      maxLength={80}
+                      defaultValue={character.surname}
+                      className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                    />
+                  </AdminField>
+
+                  <AdminField label="Pronouns">
+                    <input
+                      type="text"
+                      name="pronouns"
+                      maxLength={80}
+                      defaultValue={character.pronouns ?? ""}
+                      className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                    />
+                  </AdminField>
+
+                  <AdminField label="Date of birth">
+                    <input
+                      type="date"
+                      name="dateOfBirth"
+                      defaultValue={character.date_of_birth ?? ""}
+                      className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                    />
+                  </AdminField>
+
+                  <AdminField label="Birthplace">
+                    <input
+                      type="text"
+                      name="birthplace"
+                      maxLength={160}
+                      defaultValue={character.birthplace ?? ""}
+                      className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                    />
+                  </AdminField>
+
+                  <AdminField label="Origin">
+                    <input
+                      type="text"
+                      name="origin"
+                      maxLength={160}
+                      defaultValue={character.origin ?? ""}
+                      className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                    />
+                  </AdminField>
+
+                  <AdminField label="Occupation">
+                    <input
+                      type="text"
+                      name="occupation"
+                      maxLength={160}
+                      defaultValue={character.occupation ?? ""}
+                      className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                    />
+                  </AdminField>
+
+                  <AdminField label="Portrait URL">
+                    <input
+                      type="url"
+                      name="portraitUrl"
+                      maxLength={1000}
+                      defaultValue={character.portrait_url ?? ""}
+                      className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                    />
+                  </AdminField>
+                </div>
+
+                <AdminField label="Physical description">
+                  <textarea
+                    name="physicalDescription"
+                    rows={7}
+                    maxLength={10000}
+                    defaultValue={character.physical_description ?? ""}
+                    className="w-full resize-y border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm leading-6 text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                  />
+                </AdminField>
+
+                <AdminField label="Personality">
+                  <textarea
+                    name="personality"
+                    rows={7}
+                    maxLength={10000}
+                    defaultValue={character.personality ?? ""}
+                    className="w-full resize-y border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm leading-6 text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                  />
+                </AdminField>
+
+                <AdminField label="Biography">
+                  <textarea
+                    name="biography"
+                    rows={10}
+                    maxLength={20000}
+                    defaultValue={character.biography ?? ""}
+                    className="w-full resize-y border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm leading-6 text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                  />
+                </AdminField>
+
+                <AdminField label="Public notes">
+                  <textarea
+                    name="publicNotes"
+                    rows={6}
+                    maxLength={10000}
+                    defaultValue={character.public_notes ?? ""}
+                    className="w-full resize-y border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm leading-6 text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                  />
+                </AdminField>
+
+                <div className="border border-[#60482e]/45 bg-[#100c09] p-4">
+                  <div className="flex flex-wrap items-end justify-between gap-3">
+                    <div>
+                      <p className="text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+                        Character attributes
+                      </p>
+                      <p className="mt-2 text-xs leading-5 text-[#8f8271]">
+                        Leave all six empty for a legacy unassigned record, or enter values from 1 to 8 totalling exactly 20.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 grid grid-cols-2 gap-3">
+                    {[
+                      ["muscles", "Muscles", character.muscles],
+                      ["reflexes", "Reflexes", character.reflexes],
+                      ["vigor", "Vigor", character.vigor],
+                      ["brains", "Brains", character.brains],
+                      ["shrewd", "Shrewd", character.shrewd],
+                      ["presence_score", "Presence", character.presence_score],
+                    ].map(([name, label, value]) => (
+                      <label key={String(name)} className="block">
+                        <span className="text-[8px] uppercase tracking-[0.16em] text-[#806b50]">
+                          {String(label)}
+                        </span>
+                        <input
+                          type="number"
+                          name={String(name)}
+                          min={1}
+                          max={8}
+                          step={1}
+                          defaultValue={
+                            value === null ? "" : Number(value)
+                          }
+                          className="mt-2 w-full border border-[#60482e]/55 bg-[#0d0907] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                        />
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
                 <AdminField label="Race">
                   <select
                     name="raceId"
@@ -527,9 +704,9 @@ export default async function AdminCharacterPage({
               >
                 Save character record
               </button>
-            </form>
+            </AdminCharacterEditForm>
 
-                        <div className="mt-8 border-t border-[#6f302b]/45 pt-6">
+            <div className="mt-8 border-t border-[#6f302b]/45 pt-6">
               <div className="border border-[#843a32]/60 bg-[#26110f]/65 p-4">
                 <p className="text-[8px] uppercase tracking-[0.22em] text-[#c06d62]">
                   Danger zone

@@ -47,15 +47,22 @@ const mainNavigationItems: NavigationItem[] = [
 
 const codexNavigationItems: NavigationItem[] = [
   {
+    label: "Codex",
+    icon: "🕮",
+    href: "/codex",
+    activePaths: ["/codex"],
+    disabled: true,
+  },
+  {
     label: "World",
-    icon: "◈",
+    icon: "🌏︎",
     href: "/world",
     activePaths: ["/world"],
     disabled: true,
   },
   {
     label: "Races",
-    icon: "♢",
+    icon: "⚜",
     href: "/races",
     activePaths: ["/races"],
   },
@@ -67,7 +74,7 @@ const codexNavigationItems: NavigationItem[] = [
   },
   {
     label: "Spells",
-    icon: "✧",
+    icon: "✵",
     href: "/spells",
     activePaths: ["/spells"],
     disabled: true,
@@ -77,7 +84,7 @@ const codexNavigationItems: NavigationItem[] = [
 const serviceNavigationItems: NavigationItem[] = [
   {
     label: "Market",
-    icon: "◆",
+    icon: "⚖",
     href: "/market",
     activePaths: ["/market"],
     disabled: true,
@@ -377,37 +384,25 @@ export function PortalSidebar({
   return (
     <aside className="border-b border-[#6e5535]/30 bg-[#100d0b]/90 lg:sticky lg:top-20 lg:h-[calc(100vh-5rem)] lg:overflow-y-auto lg:border-b-0 lg:border-r">
       <div className="p-3 lg:p-4">
-        <section className="mb-4 hidden border border-[#6e5535]/40 bg-[#1b1511] p-3 lg:block">
-          <p className="text-[8px] uppercase tracking-[0.28em] text-[#887660]">
-            Current chronicle
-          </p>
-
-          <p className="mt-1.5 font-serif text-base text-[#dbc28d]">
-            The City of The First
-          </p>
-
-          <p className="mt-1.5 text-[11px] leading-4 text-[#9e907d]">
-            Built over the remains of a dead God, its Fate is decided by you.
-          </p>
-        </section>
+        
 
         <nav aria-label="Main navigation">
           <NavigationGroup
-            title="Navigation"
+            title="Navigate the World"
             items={mainNavigationItems.map(
               renderNavigationItem,
             )}
           />
 
           <NavigationGroup
-            title="Codex"
+            title="Codex and rules"
             items={codexNavigationItems.map(
               renderNavigationItem,
             )}
           />
 
           <NavigationGroup
-            title="City services"
+            title="services and utilities"
             items={serviceNavigationItems.map(
               renderNavigationItem,
             )}

@@ -16,6 +16,62 @@ const text = (
     .trim()
     .slice(0, max);
 
+const ATTRIBUTE_NAMES = [
+  "muscles",
+  "reflexes",
+  "vigor",
+  "brains",
+  "shrewd",
+  "presence_score",
+] as const;
+
+type AttributeName =
+  (typeof ATTRIBUTE_NAMES)[number];
+
+function readCreationAttributes(
+  formData: FormData,
+): Record<AttributeName, number> {
+  const entries = ATTRIBUTE_NAMES.map(
+    (name) => {
+      const raw = String(
+        formData.get(name) ?? "",
+      ).trim();
+
+      const value = Number(raw);
+
+      if (
+        !Number.isInteger(value) ||
+        value < 1 ||
+        value > 8
+      ) {
+        throw new Error(
+          `${name} must be a whole number between 1 and 8.`,
+        );
+      }
+
+      return [name, value] as const;
+    },
+  );
+
+  const attributes = Object.fromEntries(
+    entries,
+  ) as Record<AttributeName, number>;
+
+  const total = ATTRIBUTE_NAMES.reduce(
+    (sum, name) =>
+      sum + attributes[name],
+    0,
+  );
+
+  if (total !== 20) {
+    throw new Error(
+      "Character attributes must total exactly 20 points.",
+    );
+  }
+
+  return attributes;
+}
+
 function characterFormPath(
   mode: CharacterMode,
 ) {
@@ -229,6 +285,23 @@ export async function saveCharacter(
   };
 
   if (mode === "create") {
+    let attributes:
+      | Record<AttributeName, number>;
+
+    try {
+      attributes =
+        readCreationAttributes(
+          formData,
+        );
+    } catch (error) {
+      redirectWithError(
+        mode,
+        error instanceof Error
+          ? error.message
+          : "The character attributes are invalid.",
+      );
+    }
+
     const raceId = text(
       formData,
       "race_id",
@@ -373,6 +446,7 @@ export async function saveCharacter(
         race_id: raceId,
         association_id:
           associationId,
+        ...attributes,
       });
 
     if (error) {
@@ -448,6 +522,80 @@ export async function saveCharacter(
   );
 }
 
+export async function updateApprovedCharacterPortrait(
+  formData: FormData,
+) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/auth/login");
+  }
+
+  const portraitUrl = text(
+    formData,
+    "portrait_url",
+    1000,
+  );
+
+  validatePortraitUrl(
+    portraitUrl,
+    "update",
+  );
+
+  const {
+    data: character,
+    error: characterError,
+  } = await supabase
+    .from("characters")
+    .select("id, status")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (
+    characterError ||
+    !character
+  ) {
+    redirectCharacterError(
+      characterError?.message ??
+        "Character not found.",
+    );
+  }
+
+  if (
+    character.status !== "approved"
+  ) {
+    redirectCharacterError(
+      "This portrait editor is only available after character approval.",
+    );
+  }
+
+  const { error } = await supabase
+    .from("characters")
+    .update({
+      portrait_url:
+        portraitUrl || null,
+      updated_at:
+        new Date().toISOString(),
+    })
+    .eq("id", character.id)
+    .eq("user_id", user.id)
+    .eq("status", "approved");
+
+  if (error) {
+    redirectCharacterError(
+      error.message,
+    );
+  }
+
+  redirect(
+    "/character?updated=true",
+  );
+}
+
 export async function submitCharacterForReview() {
   const supabase = await createClient();
 
@@ -474,6 +622,12 @@ export async function submitCharacterForReview() {
       physical_description,
       personality,
       biography,
+      muscles,
+      reflexes,
+      vigor,
+      brains,
+      shrewd,
+      presence_score,
       submitted_at,
       rejection_reason
     `)
@@ -562,6 +716,34 @@ export async function submitCharacterForReview() {
   ) {
     missingFields.push(
       "biography",
+    );
+  }
+
+  const attributeValues = [
+    character.muscles,
+    character.reflexes,
+    character.vigor,
+    character.brains,
+    character.shrewd,
+    character.presence_score,
+  ];
+
+  const attributesValid =
+    attributeValues.every(
+      (value) =>
+        Number.isInteger(value) &&
+        value >= 1 &&
+        value <= 8,
+    ) &&
+    attributeValues.reduce(
+      (sum, value) =>
+        sum + Number(value),
+      0,
+    ) === 20;
+
+  if (!attributesValid) {
+    missingFields.push(
+      "a valid 20-point attribute allocation",
     );
   }
 

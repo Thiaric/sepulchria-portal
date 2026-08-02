@@ -7,6 +7,8 @@ import {
   useState,
 } from "react";
 
+import { CharacterAttributeAllocator } from "@/components/characters/character-attribute-allocator";
+
 type CharacterData = Record<
   string,
   string | null | undefined
@@ -47,18 +49,24 @@ const steps = [
   },
   {
     number: 3,
+    label: "Attributes",
+    description:
+      "Distribute the character's 20 attribute points.",
+  },
+  {
+    number: 4,
     label: "Appearance",
     description:
       "Portrait and physical description.",
   },
   {
-    number: 4,
+    number: 5,
     label: "Story",
     description:
       "Personality, biography and public notes.",
   },
   {
-    number: 5,
+    number: 6,
     label: "Review",
     description:
       "Review the character before saving.",
@@ -168,6 +176,43 @@ export default function CharacterForm({
   }
 }
 
+    if (step === 3 && mode === "create") {
+      const attributeNames = [
+        "muscles",
+        "reflexes",
+        "vigor",
+        "brains",
+        "shrewd",
+        "presence_score",
+      ];
+
+      const attributeValues =
+        attributeNames.map((name) =>
+          Number(getValue(name)),
+        );
+
+      const attributesValid =
+        attributeValues.every(
+          (value) =>
+            Number.isInteger(value) &&
+            value >= 1 &&
+            value <= 8,
+        ) &&
+        attributeValues.reduce(
+          (total, value) =>
+            total + value,
+          0,
+        ) === 20;
+
+      if (!attributesValid) {
+        setValidationError(
+          "Distribute exactly 20 points across the six attributes. Every value must be between 1 and 8.",
+        );
+
+        return false;
+      }
+    }
+
     setValidationError(null);
     return true;
   }
@@ -241,7 +286,7 @@ export default function CharacterForm({
       />
 
       <div className="border-b border-[#5d452d]/40 bg-[#110d0a] p-4 sm:p-6">
-        <div className="grid gap-2 sm:grid-cols-5">
+        <div className="grid gap-2 sm:grid-cols-3 xl:grid-cols-6">
           {steps.map((step) => {
             const active =
               currentStep === step.number;
@@ -446,7 +491,7 @@ export default function CharacterForm({
 
         <section
           className={
-            currentStep === 3
+            currentStep === 4
               ? "block"
               : "hidden"
           }
@@ -487,7 +532,27 @@ export default function CharacterForm({
 
         <section
           className={
-            currentStep === 4
+            currentStep === 3
+              ? "block"
+              : "hidden"
+          }
+        >
+          <CharacterAttributeAllocator
+            locked={mode === "update"}
+            initialValues={{
+              muscles: character?.muscles,
+              reflexes: character?.reflexes,
+              vigor: character?.vigor,
+              brains: character?.brains,
+              shrewd: character?.shrewd,
+              presence_score: character?.presence_score,
+            }}
+          />
+        </section>
+
+        <section
+          className={
+            currentStep === 5
               ? "block"
               : "hidden"
           }
@@ -530,7 +595,7 @@ export default function CharacterForm({
 
         <section
           className={
-            currentStep === 5
+            currentStep === 6
               ? "block"
               : "hidden"
           }
@@ -916,6 +981,15 @@ function ReviewPanel({
     ["Title", value("title")],
   ];
 
+  const attributes = [
+    ["Muscles", value("muscles")],
+    ["Reflexes", value("reflexes")],
+    ["Vigor", value("vigor")],
+    ["Brains", value("brains")],
+    ["Shrewd", value("shrewd")],
+    ["Presence", value("presence_score")],
+  ];
+
   return (
     <div className="space-y-7">
       <div className="border border-[#735735]/55 bg-[#21170f] p-5">
@@ -944,6 +1018,11 @@ function ReviewPanel({
       <ReviewSection
         title="Heritage"
         items={heritage}
+      />
+
+      <ReviewSection
+        title="Attributes"
+        items={attributes}
       />
 
       <div className="grid gap-5 md:grid-cols-2">

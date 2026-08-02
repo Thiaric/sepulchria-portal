@@ -91,6 +91,106 @@ function readOptionalText(
   return trimmed.slice(0, maxLength);
 }
 
+
+const ATTRIBUTE_NAMES = [
+  "muscles",
+  "reflexes",
+  "vigor",
+  "brains",
+  "shrewd",
+  "presence_score",
+] as const;
+
+type AttributeName =
+  (typeof ATTRIBUTE_NAMES)[number];
+
+function readOptionalAttributes(
+  formData: FormData,
+): Record<AttributeName, number | null> {
+  const rawValues = ATTRIBUTE_NAMES.map(
+    (name) =>
+      String(
+        formData.get(name) ?? "",
+      ).trim(),
+  );
+
+  if (
+    rawValues.every(
+      (value) => value === "",
+    )
+  ) {
+    return {
+      muscles: null,
+      reflexes: null,
+      vigor: null,
+      brains: null,
+      shrewd: null,
+      presence_score: null,
+    };
+  }
+
+  const values = rawValues.map(Number);
+
+  if (
+    !values.every(
+      (value) =>
+        Number.isInteger(value) &&
+        value >= 1 &&
+        value <= 8,
+    )
+  ) {
+    throw new Error(
+      "Every attribute must be a whole number between 1 and 8.",
+    );
+  }
+
+  if (
+    values.reduce(
+      (sum, value) => sum + value,
+      0,
+    ) !== 20
+  ) {
+    throw new Error(
+      "Character attributes must total exactly 20 points.",
+    );
+  }
+
+  return Object.fromEntries(
+    ATTRIBUTE_NAMES.map(
+      (name, index) => [
+        name,
+        values[index],
+      ],
+    ),
+  ) as Record<
+    AttributeName,
+    number | null
+  >;
+}
+
+function validateAdminPortraitUrl(
+  value: string | null,
+) {
+  if (!value || value.startsWith("/")) {
+    return;
+  }
+
+  try {
+    const url = new URL(value);
+
+    if (
+      url.protocol !== "http:" &&
+      url.protocol !== "https:"
+    ) {
+      throw new Error();
+    }
+  } catch {
+    throw new Error(
+      "Portrait URL must be a valid HTTP or HTTPS URL.",
+    );
+  }
+}
+
 function readReturnPath(
   value: FormDataEntryValue | null,
 ): string {
@@ -129,6 +229,82 @@ export async function updateCharacterAdministration(
     formData.get("title"),
     120,
   );
+
+  const firstName = readOptionalText(
+    formData.get("firstName"),
+    80,
+  );
+
+  const surname = readOptionalText(
+    formData.get("surname"),
+    80,
+  );
+
+  if (!firstName || !surname) {
+    throw new Error(
+      "First name and surname are required.",
+    );
+  }
+
+  const pronouns = readOptionalText(
+    formData.get("pronouns"),
+    80,
+  );
+
+  const dateOfBirth = readOptionalText(
+    formData.get("dateOfBirth"),
+    20,
+  );
+
+  const birthplace = readOptionalText(
+    formData.get("birthplace"),
+    160,
+  );
+
+  const origin = readOptionalText(
+    formData.get("origin"),
+    160,
+  );
+
+  const occupation = readOptionalText(
+    formData.get("occupation"),
+    160,
+  );
+
+  const portraitUrl = readOptionalText(
+    formData.get("portraitUrl"),
+    1000,
+  );
+
+  validateAdminPortraitUrl(
+    portraitUrl,
+  );
+
+  const physicalDescription =
+    readOptionalText(
+      formData.get(
+        "physicalDescription",
+      ),
+      10000,
+    );
+
+  const personality = readOptionalText(
+    formData.get("personality"),
+    10000,
+  );
+
+  const biography = readOptionalText(
+    formData.get("biography"),
+    20000,
+  );
+
+  const publicNotes = readOptionalText(
+    formData.get("publicNotes"),
+    10000,
+  );
+
+  const attributes =
+    readOptionalAttributes(formData);
 
   const staffNotes = readOptionalText(
     formData.get("staffNotes"),
@@ -170,9 +346,22 @@ export async function updateCharacterAdministration(
       public_slug,
       first_name,
       surname,
+      pronouns,
+      date_of_birth,
+      birthplace,
+      origin,
+      occupation,
+      portrait_url,
       physical_description,
       personality,
       biography,
+      public_notes,
+      muscles,
+      reflexes,
+      vigor,
+      brains,
+      shrewd,
+      presence_score,
       status,
       race_id,
       association_id,
@@ -199,11 +388,11 @@ export async function updateCharacterAdministration(
   if (status === "approved") {
     const missingFields: string[] = [];
 
-    if (!character.first_name?.trim()) {
+    if (!firstName) {
       missingFields.push("first name");
     }
 
-    if (!character.surname?.trim()) {
+    if (!surname) {
       missingFields.push("surname");
     }
 
@@ -215,20 +404,40 @@ export async function updateCharacterAdministration(
       missingFields.push("Association");
     }
 
-    if (!character.physical_description?.trim()) {
+    if (!physicalDescription) {
       missingFields.push("physical description");
     }
 
-    if (!character.personality?.trim()) {
+    if (!personality) {
       missingFields.push("personality");
     }
 
-    if (!character.biography?.trim()) {
+    if (!biography) {
       missingFields.push("biography");
     }
 
     if (!character.public_slug?.trim()) {
       missingFields.push("public slug");
+    }
+
+    const attributeValues = [
+      attributes.muscles,
+      attributes.reflexes,
+      attributes.vigor,
+      attributes.brains,
+      attributes.shrewd,
+      attributes.presence_score,
+    ];
+
+    if (
+      character.status !== "approved" &&
+      !attributeValues.every(
+        (value) => value !== null,
+      )
+    ) {
+      missingFields.push(
+        "character attributes",
+      );
     }
 
     if (missingFields.length > 0) {
@@ -265,6 +474,20 @@ export async function updateCharacterAdministration(
         };
 
   const updatePayload = {
+    first_name: firstName,
+    surname,
+    pronouns,
+    date_of_birth: dateOfBirth,
+    birthplace,
+    origin,
+    occupation,
+    portrait_url: portraitUrl,
+    physical_description:
+      physicalDescription,
+    personality,
+    biography,
+    public_notes: publicNotes,
+    ...attributes,
     race_id: raceId,
     association_id: associationId,
     status,
@@ -315,6 +538,29 @@ export async function updateCharacterAdministration(
         await supabase
           .from("characters")
           .update({
+            first_name: character.first_name,
+            surname: character.surname,
+            pronouns: character.pronouns,
+            date_of_birth:
+              character.date_of_birth,
+            birthplace: character.birthplace,
+            origin: character.origin,
+            occupation: character.occupation,
+            portrait_url:
+              character.portrait_url,
+            physical_description:
+              character.physical_description,
+            personality:
+              character.personality,
+            biography: character.biography,
+            public_notes:
+              character.public_notes,
+            muscles: character.muscles,
+            reflexes: character.reflexes,
+            vigor: character.vigor,
+            brains: character.brains,
+            shrewd: character.shrewd,
+            presence_score: character.presence_score,
             race_id: character.race_id,
             association_id: character.association_id,
             status: character.status,

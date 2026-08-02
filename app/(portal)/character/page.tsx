@@ -4,7 +4,11 @@ import { redirect } from "next/navigation";
 import { ApprovalNotice } from "@/components/character/approval-notice";
 import { PendingSubmitButton } from "@/components/forms/pending-submit-button";
 
-import { submitCharacterForReview } from "./actions";
+import {
+  submitCharacterForReview,
+  updateApprovedCharacterPortrait,
+} from "./actions";
+import { CharacterAttributesDisplay } from "@/components/characters/character-attributes-display";
 import { createClient } from "@/lib/supabase/server";
 
 type CharacterStatus =
@@ -36,6 +40,12 @@ type CharacterProfile = {
   portrait_url?: string | null;
   display_name?: string | null;
   approval_notice_seen_at?: string | null;
+  muscles?: number | null;
+  reflexes?: number | null;
+  vigor?: number | null;
+  brains?: number | null;
+  shrewd?: number | null;
+  presence_score?: number | null;
 
   status?: CharacterStatus | null;
   rejection_reason?: string | null;
@@ -100,6 +110,12 @@ export default async function CharacterPage({
       submitted_at,
       approved_at,
       approval_notice_seen_at,
+      muscles,
+      reflexes,
+      vigor,
+      brains,
+      shrewd,
+      presence_score,
 
       race:races!characters_race_id_fkey(
         id,
@@ -282,9 +298,39 @@ character.status === "approved" &&
                 ?
               </div>
             )}
-          </div>
 
-          <div className="min-w-0">
+          {own && status === "approved" ? (
+            <form
+              action={updateApprovedCharacterPortrait}
+              className="mt-4 border border-[#60482e]/45 bg-[#100c09] p-3"
+            >
+              <label className="block">
+                <span className="text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
+                  Change portrait
+                </span>
+
+                <input
+                  type="url"
+                  name="portrait_url"
+                  defaultValue={
+                    character.portrait_url ?? ""
+                  }
+                  placeholder="https://..."
+                  className="mt-2 w-full border border-[#60482e]/55 bg-[#0d0907] px-3 py-2 text-xs text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                />
+              </label>
+
+              <button
+                type="submit"
+                className="mt-3 w-full border border-[#8d6d3e] bg-[#332719] px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[#efd9aa] transition hover:bg-[#49351f]"
+              >
+                Update portrait
+              </button>
+            </form>
+          ) : null}
+        </div>
+
+        <div className="min-w-0">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
                 <p className="text-[10px] uppercase tracking-[0.3em] text-[#876a46]">
@@ -347,6 +393,12 @@ character.status === "approved" &&
             }
           />
         </section>
+
+        <div className="mt-6">
+          <CharacterAttributesDisplay
+            character={character}
+          />
+        </div>
 
         <div className="mt-6 space-y-6">
           {sections.map(
