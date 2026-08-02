@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import { requireStaff } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
+import { CharacterReviewFields } from "@/components/admin/character-review-fields";
 
 import {
   deleteCharacterAdministration,
@@ -461,31 +462,14 @@ export default async function AdminCharacterPage({
                   </select>
                 </AdminField>
 
-                <AdminField label="Status">
-                  <select
-                    name="status"
-                    defaultValue={
-                      character.status
-                    }
-                    className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
-                  >
-                    <option value="draft">
-                      Draft
-                    </option>
-
-                    <option value="submitted">
-                      Submitted
-                    </option>
-
-                    <option value="approved">
-                      Approved
-                    </option>
-
-                    <option value="rejected">
-                      Rejected
-                    </option>
-                  </select>
-                </AdminField>
+                <CharacterReviewFields
+                  initialStatus={
+                    character.status
+                  }
+                  initialRejectionReason={
+                    character.rejection_reason
+                  }
+                />
 
                 <AdminField label="Public title">
                   <input
@@ -497,20 +481,6 @@ export default async function AdminCharacterPage({
                     maxLength={120}
                     placeholder="Optional public title"
                     className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
-                  />
-                </AdminField>
-
-                <AdminField label="Rejection reason">
-                  <textarea
-                    name="rejectionReason"
-                    defaultValue={
-                      character.rejection_reason ??
-                      ""
-                    }
-                    maxLength={5000}
-                    rows={5}
-                    placeholder="Explain what must be corrected when rejecting the sheet."
-                    className="w-full resize-y border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm leading-6 text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
                   />
                 </AdminField>
 
