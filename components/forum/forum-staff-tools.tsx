@@ -66,6 +66,14 @@ export default async function ForumStaffTools({
         />
 
         <StaffLink
+          href="/admin/forum/topics"
+          eyebrow="Structure"
+          title="Manage Topics"
+          description="Manage single topics in the Sections."
+          label="Manage topics"
+        />
+
+        <StaffLink
           href="/admin/forum/moderation"
           eyebrow="History"
           title="Moderation Log"
