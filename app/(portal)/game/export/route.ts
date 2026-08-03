@@ -1,5 +1,10 @@
 import { redirect } from "next/navigation";
 
+import {
+  ROOM_HISTORY_HOURS,
+  ROOM_INACTIVITY_RESET_HOURS,
+  ROOM_HISTORY_BATCH_SIZE,
+} from "@/lib/game/constants";
 import { createClient } from "@/lib/supabase/server";
 import type {
   CharacterAttributeKey,
@@ -9,7 +14,6 @@ import type {
 
 export const dynamic = "force-dynamic";
 
-const EXPORT_BATCH_SIZE = 1000;
 
 type RoomRow = {
   id: string;
@@ -323,11 +327,67 @@ function renderMessage(
   `;
 }
 
-async function loadAllMessages(
+async function loadVisibleMessages(
   roomId: string,
 ) {
   const supabase =
     await createClient();
+
+  const {
+    data: latestMessage,
+    error: latestMessageError,
+  } = await supabase
+    .from("room_messages")
+    .select("created_at")
+    .eq("room_id", roomId)
+    .order("created_at", {
+      ascending: false,
+    })
+    .limit(1)
+    .maybeSingle();
+
+  if (latestMessageError) {
+    throw new Error(
+      `Unable to load the latest room entry: ${latestMessageError.message}`,
+    );
+  }
+
+  if (!latestMessage) {
+    return [] as RoomMessage[];
+  }
+
+  const now = Date.now();
+
+  const latestTimestamp =
+    Date.parse(
+      latestMessage.created_at,
+    );
+
+  const inactivityLimit =
+    ROOM_INACTIVITY_RESET_HOURS *
+    60 *
+    60 *
+    1000;
+
+  const roomIsStillActive =
+    !Number.isNaN(
+      latestTimestamp,
+    ) &&
+    now - latestTimestamp <
+      inactivityLimit;
+
+  if (!roomIsStillActive) {
+    return [] as RoomMessage[];
+  }
+
+  const historyStart =
+    new Date(
+      now -
+        ROOM_HISTORY_HOURS *
+          60 *
+          60 *
+          1000,
+    ).toISOString();
 
   const messages:
     RoomMessage[] = [];
@@ -337,7 +397,7 @@ async function loadAllMessages(
   while (true) {
     const to =
       from +
-      EXPORT_BATCH_SIZE -
+      ROOM_HISTORY_BATCH_SIZE -
       1;
 
     const {
@@ -374,6 +434,10 @@ async function loadAllMessages(
         )
       `)
       .eq("room_id", roomId)
+      .gte(
+        "created_at",
+        historyStart,
+      )
       .order(
         "created_at",
         {
@@ -384,7 +448,7 @@ async function loadAllMessages(
 
     if (error) {
       throw new Error(
-        `Unable to export room messages: ${error.message}`,
+        `Unable to export visible room messages: ${error.message}`,
       );
     }
 
@@ -396,13 +460,13 @@ async function loadAllMessages(
 
     if (
       batch.length <
-      EXPORT_BATCH_SIZE
+      ROOM_HISTORY_BATCH_SIZE
     ) {
       break;
     }
 
     from +=
-      EXPORT_BATCH_SIZE;
+      ROOM_HISTORY_BATCH_SIZE;
   }
 
   return messages;
@@ -493,7 +557,7 @@ export async function GET() {
     );
 
   const messages =
-    await loadAllMessages(
+    await loadVisibleMessages(
       room.id,
     );
 
