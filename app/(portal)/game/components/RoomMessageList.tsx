@@ -235,18 +235,18 @@ function ActionSpeechText({
         : segment;
 
       rendered.push(
-        <Fragment key={index}>
-          <span
-            className={
-              isAction
-                ? "italic text-[#a98a60]"
-                : "text-[#d3c2aa]"
-            }
-          >
-            {text}
-          </span>
-        </Fragment>,
-      );
+  <Fragment key={index}>
+    <span
+      className={
+        isAction
+          ? "italic text-[#a98a60]"
+          : "text-[#d3c2aa]"
+      }
+    >
+      {segment}
+    </span>
+  </Fragment>,
+);
     },
   );
 
