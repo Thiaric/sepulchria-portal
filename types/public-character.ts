@@ -57,6 +57,7 @@ export type PublicCharacterProfile = {
   brains: number | null;
   shrewd: number | null;
   presence_score: number | null;
+  current_health: number | null;
   status: PublicCharacterStatus;
 
   race: PublicCodexReference | null;

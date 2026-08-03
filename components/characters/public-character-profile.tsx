@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { startConversation } from "@/app/(portal)/messages/actions";
 import { CharacterAttributesDisplay } from "@/components/characters/character-attributes-display";
+import { CharacterHealthDisplay } from "@/components/characters/character-health-display";
 import { LiveCharacterPresence } from "@/components/characters/live-character-presence";
 import type {
   PublicCharacterProfile,
@@ -210,6 +211,13 @@ export function PublicCharacterProfileView({
               </div>
 
               <div className="mt-6">
+                <CharacterHealthDisplay
+                  character={character}
+                  compact
+                />
+              </div>
+
+              <div className="mt-3">
                 <CharacterAttributesDisplay
                   character={character}
                   compact

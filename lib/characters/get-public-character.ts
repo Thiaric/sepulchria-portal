@@ -59,6 +59,7 @@ type CharacterRow = {
   brains: number | null;
   shrewd: number | null;
   presence_score: number | null;
+  current_health: number | null;
   status:
     | "draft"
     | "submitted"
@@ -227,6 +228,7 @@ export const getPublicCharacter = cache(
         brains,
         shrewd,
         presence_score,
+        current_health,
         status,
         current_room_id,
 
@@ -369,6 +371,8 @@ export const getPublicCharacter = cache(
       brains: row.brains,
       shrewd: row.shrewd,
       presence_score: row.presence_score,
+      current_health:
+        row.current_health,
       status: row.status,
 
       race: normaliseCodexReference(

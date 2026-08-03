@@ -447,6 +447,8 @@ export async function saveCharacter(
         association_id:
           associationId,
         ...attributes,
+        current_health:
+          attributes.vigor * 10,
       });
 
     if (error) {

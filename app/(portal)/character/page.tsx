@@ -9,6 +9,7 @@ import {
   updateApprovedCharacterPortrait,
 } from "./actions";
 import { CharacterAttributesDisplay } from "@/components/characters/character-attributes-display";
+import { CharacterHealthDisplay } from "@/components/characters/character-health-display";
 import { createClient } from "@/lib/supabase/server";
 
 type CharacterStatus =
@@ -46,6 +47,7 @@ type CharacterProfile = {
   brains?: number | null;
   shrewd?: number | null;
   presence_score?: number | null;
+  current_health?: number | null;
 
   status?: CharacterStatus | null;
   rejection_reason?: string | null;
@@ -116,6 +118,7 @@ export default async function CharacterPage({
       brains,
       shrewd,
       presence_score,
+      current_health,
 
       race:races!characters_race_id_fkey(
         id,
@@ -398,6 +401,12 @@ character.status === "approved" &&
             }
           />
         </section>
+
+        <div className="mt-6">
+          <CharacterHealthDisplay
+            character={character}
+          />
+        </div>
 
         <div className="mt-6">
           <CharacterAttributesDisplay

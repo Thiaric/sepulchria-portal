@@ -306,6 +306,32 @@ export async function updateCharacterAdministration(
   const attributes =
     readOptionalAttributes(formData);
 
+  const currentHealthRaw = String(
+    formData.get("currentHealth") ?? "",
+  ).trim();
+
+  let submittedCurrentHealth:
+    number | null = null;
+
+  if (currentHealthRaw !== "") {
+    const parsedCurrentHealth =
+      Number(currentHealthRaw);
+
+    if (
+      !Number.isInteger(
+        parsedCurrentHealth,
+      ) ||
+      parsedCurrentHealth < 0
+    ) {
+      throw new Error(
+        "Current Health must be a whole number of 0 or more.",
+      );
+    }
+
+    submittedCurrentHealth =
+      parsedCurrentHealth;
+  }
+
   const staffNotes = readOptionalText(
     formData.get("staffNotes"),
     10000,
@@ -362,6 +388,7 @@ export async function updateCharacterAdministration(
       brains,
       shrewd,
       presence_score,
+      current_health,
       status,
       race_id,
       association_id,
@@ -473,6 +500,66 @@ export async function updateCharacterAdministration(
           approval_notice_seen_at: null,
         };
 
+  const newMaxHealth =
+    attributes.vigor === null
+      ? null
+      : attributes.vigor * 10;
+
+  let currentHealth:
+    number | null = null;
+
+  if (newMaxHealth !== null) {
+    const oldMaxHealth =
+      character.vigor === null
+        ? 0
+        : character.vigor * 10;
+
+    if (
+      submittedCurrentHealth !==
+      null
+    ) {
+      currentHealth =
+        Math.max(
+          0,
+          Math.min(
+            submittedCurrentHealth,
+            newMaxHealth,
+          ),
+        );
+    } else if (
+      character.current_health ===
+      null
+    ) {
+      currentHealth =
+        newMaxHealth;
+    } else if (
+      character.vigor !==
+      attributes.vigor
+    ) {
+      currentHealth =
+        Math.max(
+          0,
+          Math.min(
+            character.current_health +
+              (
+                newMaxHealth -
+                oldMaxHealth
+              ),
+            newMaxHealth,
+          ),
+        );
+    } else {
+      currentHealth =
+        Math.max(
+          0,
+          Math.min(
+            character.current_health,
+            newMaxHealth,
+          ),
+        );
+    }
+  }
+
   const updatePayload = {
     first_name: firstName,
     surname,
@@ -488,6 +575,8 @@ export async function updateCharacterAdministration(
     biography,
     public_notes: publicNotes,
     ...attributes,
+    current_health:
+      currentHealth,
     race_id: raceId,
     association_id: associationId,
     status,
@@ -561,6 +650,8 @@ export async function updateCharacterAdministration(
             brains: character.brains,
             shrewd: character.shrewd,
             presence_score: character.presence_score,
+            current_health:
+              character.current_health,
             race_id: character.race_id,
             association_id: character.association_id,
             status: character.status,

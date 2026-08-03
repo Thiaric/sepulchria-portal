@@ -68,6 +68,7 @@ type CharacterRow = {
   brains: number | null;
   shrewd: number | null;
   presence_score: number | null;
+  current_health: number | null;
   race: CodexRelation;
   association: CodexRelation;
 };
@@ -169,6 +170,7 @@ export default async function AdminCharacterPage({
         brains,
         shrewd,
         presence_score,
+        current_health,
 
         race:races!characters_race_id_fkey(
           id,
@@ -548,6 +550,49 @@ export default async function AdminCharacterPage({
                     className="w-full resize-y border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm leading-6 text-[#d7c4a5] outline-none focus:border-[#a17a49]"
                   />
                 </AdminField>
+
+                <div className="border border-[#60482e]/45 bg-[#100c09] p-4">
+                  <p className="text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+                    Character Health
+                  </p>
+
+                  <p className="mt-2 text-xs leading-5 text-[#8f8271]">
+                    Maximum Health is always Vigor × 10. Current Health cannot be higher than that maximum.
+                  </p>
+
+                  <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                    <label className="block">
+                      <span className="text-[8px] uppercase tracking-[0.16em] text-[#806b50]">
+                        Current Health
+                      </span>
+
+                      <input
+                        type="number"
+                        name="currentHealth"
+                        min={0}
+                        step={1}
+                        defaultValue={
+                          character.current_health === null
+                            ? ""
+                            : character.current_health
+                        }
+                        className="mt-2 w-full border border-[#60482e]/55 bg-[#0d0907] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                      />
+                    </label>
+
+                    <div>
+                      <span className="text-[8px] uppercase tracking-[0.16em] text-[#806b50]">
+                        Maximum Health
+                      </span>
+
+                      <div className="mt-2 border border-[#60482e]/45 bg-[#0d0907] px-3 py-3 text-sm text-[#bfae92]">
+                        {character.vigor === null
+                          ? "Not available"
+                          : character.vigor * 10}
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
                 <div className="border border-[#60482e]/45 bg-[#100c09] p-4">
                   <div className="flex flex-wrap items-end justify-between gap-3">
