@@ -2,20 +2,25 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { MESSAGE_PAGE_SIZE } from "@/lib/game/constants";
+import {
+  PRESENCE_ACTIVE_MINUTES,
+  ROOM_HISTORY_BATCH_SIZE,
+  ROOM_HISTORY_HOURS,
+  ROOM_INACTIVITY_RESET_HOURS,
+} from "@/lib/game/constants";
+import { getStaffSession } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
-import type { RoomMessage } from "@/types/game";
+import type {
+  PresentRoomCharacter,
+  RoomMessage,
+} from "@/types/game";
 
 import RoomChatForm from "./components/RoomChatForm";
 import RoomMessageList from "./components/RoomMessageList";
 import RoomRealtime from "./components/RoomRealtime";
 import { leaveCurrentRoom } from "./actions";
 
-type Props = {
-  searchParams: Promise<{
-    before?: string;
-  }>;
-};
+type Props = Record<string, never>;
 
 type Area = {
   id: string;
@@ -46,10 +51,7 @@ export default function GamePage(props: Props) {
   );
 }
 
-async function GameContent({
-  searchParams,
-}: Props) {
-  const { before } = await searchParams;
+async function GameContent() {
   const supabase = await createClient();
 
   const {
@@ -135,66 +137,225 @@ async function GameContent({
 
   const room = rawRoom as RoomRelation;
 
-  let messageQuery = supabase
-    .from("room_messages")
-    .select(
-      `
-        id,
-        message,
-        message_type,
-        roll_label,
-        dice_sides,
-        dice_result,
-        attribute_key,
-        attribute_value,
-        roll_total,
-        created_at,
-        character_id,
-        character:characters!room_messages_character_id_fkey(
-          id,
-          display_name,
-          portrait_url,
-          public_slug
-        )
-      `,
+  const messageSelect = `
+    id,
+    message,
+    message_type,
+    roll_label,
+    dice_sides,
+    dice_result,
+    attribute_key,
+    attribute_value,
+    roll_total,
+    whisper_recipient_character_id,
+    created_at,
+    character_id,
+
+    character:characters!room_messages_character_id_fkey(
+      id,
+      display_name,
+      portrait_url,
+      public_slug
+    ),
+
+    whisperRecipient:characters!room_messages_whisper_recipient_character_id_fkey(
+      id,
+      display_name,
+      portrait_url,
+      public_slug
     )
+  `;
+
+  const {
+    data: latestMessage,
+    error: latestMessageError,
+  } = await supabase
+    .from("room_messages")
+    .select("created_at")
     .eq("room_id", room.id)
     .order("created_at", {
       ascending: false,
     })
-    .limit(MESSAGE_PAGE_SIZE + 1);
+    .limit(1)
+    .maybeSingle();
 
-  if (
-    before &&
-    !Number.isNaN(Date.parse(before))
-  ) {
-    messageQuery = messageQuery.lt(
-      "created_at",
-      before,
+  if (latestMessageError) {
+    throw new Error(
+      `Unable to load the latest room entry: ${latestMessageError.message}`,
     );
   }
 
-  const {
-    data: rawMessages = [],
-    error: messagesError,
-  } = await messageQuery;
+  let visibleMessages:
+    RoomMessage[] = [];
 
-  if (messagesError) {
-    throw new Error(messagesError.message);
+  if (latestMessage) {
+    const now = Date.now();
+
+    const latestTimestamp =
+      Date.parse(
+        latestMessage.created_at,
+      );
+
+    const inactivityLimit =
+      ROOM_INACTIVITY_RESET_HOURS *
+      60 *
+      60 *
+      1000;
+
+    const roomIsStillActive =
+      !Number.isNaN(
+        latestTimestamp,
+      ) &&
+      now - latestTimestamp <
+        inactivityLimit;
+
+    if (roomIsStillActive) {
+      const historyStart =
+        new Date(
+          now -
+            ROOM_HISTORY_HOURS *
+              60 *
+              60 *
+              1000,
+        ).toISOString();
+
+      let from = 0;
+
+      while (true) {
+        const to =
+          from +
+          ROOM_HISTORY_BATCH_SIZE -
+          1;
+
+        const {
+          data: batch,
+          error: batchError,
+        } = await supabase
+          .from("room_messages")
+          .select(messageSelect)
+          .eq("room_id", room.id)
+          .gte(
+            "created_at",
+            historyStart,
+          )
+          .order("created_at", {
+            ascending: true,
+          })
+          .range(from, to);
+
+        if (batchError) {
+          throw new Error(
+            `Unable to load room entries: ${batchError.message}`,
+          );
+        }
+
+        const typedBatch =
+          (batch ??
+            []) as unknown as RoomMessage[];
+
+        visibleMessages.push(
+          ...typedBatch,
+        );
+
+        if (
+          typedBatch.length <
+          ROOM_HISTORY_BATCH_SIZE
+        ) {
+          break;
+        }
+
+        from +=
+          ROOM_HISTORY_BATCH_SIZE;
+      }
+    }
   }
 
-  const safeMessages = rawMessages ?? [];
+  const activeSince = new Date(
+    Date.now() -
+      PRESENCE_ACTIVE_MINUTES *
+        60_000,
+  ).toISOString();
 
-  const hasOlderMessages =
-    safeMessages.length > MESSAGE_PAGE_SIZE;
+  const [
+    presentResult,
+    staffSession,
+  ] = await Promise.all([
+    supabase
+      .from(
+        "character_presence",
+      )
+      .select(`
+        character_id,
+        character:characters!character_presence_character_id_fkey(
+          id,
+          display_name
+        )
+      `)
+      .eq("room_id", room.id)
+      .gte(
+        "last_seen_at",
+        activeSince,
+      ),
 
-  const visibleMessages = safeMessages
-    .slice(0, MESSAGE_PAGE_SIZE)
-    .reverse() as RoomMessage[];
+    getStaffSession(),
+  ]);
 
-  const olderBefore = hasOlderMessages
-    ? visibleMessages[0]?.created_at
-    : undefined;
+  if (presentResult.error) {
+    throw new Error(
+      `Unable to load present characters: ${presentResult.error.message}`,
+    );
+  }
+
+  const presentCharacters =
+    (
+      presentResult.data ?? []
+    )
+      .map((entry) => {
+        const relation =
+          Array.isArray(
+            entry.character,
+          )
+            ? entry.character[0]
+            : entry.character;
+
+        if (
+          !relation ||
+          relation.id ===
+            character.id
+        ) {
+          return null;
+        }
+
+        return {
+          id: relation.id,
+          display_name:
+            relation.display_name,
+        };
+      })
+      .filter(
+        (
+          entry,
+        ): entry is PresentRoomCharacter =>
+          entry !== null,
+      )
+      .sort((first, second) =>
+        first.display_name.localeCompare(
+          second.display_name,
+        ),
+      );
+
+  const canUseFate =
+    staffSession !== null &&
+    [
+      "owner",
+      "admin",
+      "master",
+    ].includes(
+      staffSession.role,
+    );
+
+  const canViewAllWhispers =
+    staffSession !== null;
 
   return (
   <div className="h-[calc(100dvh-5rem)] overflow-hidden p-3 sm:p-4 lg:p-5">
@@ -212,21 +373,35 @@ async function GameContent({
       </p>
     </div>
 
-    <form action={leaveCurrentRoom}>
-      <button
-        type="submit"
-        className="shrink-0 border border-[#7d493c] bg-[#2b1712] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[#d7a398] transition hover:border-[#b86958] hover:bg-[#422019]"
+    <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
+      <Link
+        href="/game/export"
+        className="border border-[#725c3d] bg-[#21190f] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[#d6bb8d] transition hover:border-[#a17a49] hover:bg-[#352718] hover:text-[#f0d6a7]"
       >
-        Leave room
-      </button>
-    </form>
+        Export role
+      </Link>
+
+      <form action={leaveCurrentRoom}>
+        <button
+          type="submit"
+          className="shrink-0 border border-[#7d493c] bg-[#2b1712] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[#d7a398] transition hover:border-[#b86958] hover:bg-[#422019]"
+        >
+          Leave room
+        </button>
+      </form>
+    </div>
   </div>
 
   <article className="flex min-h-0 flex-1 flex-col overflow-hidden border border-[#6a5032]/50 bg-[#17110d]">
     <RoomMessageList
       roomId={room.id}
       messages={visibleMessages}
-      olderBefore={olderBefore}
+      viewerCharacterId={
+        character.id
+      }
+      canViewAllWhispers={
+        canViewAllWhispers
+      }
     />
 
     <RoomChatForm
@@ -239,6 +414,10 @@ async function GameContent({
         presence_score:
           character.presence_score,
       }}
+      presentCharacters={
+        presentCharacters
+      }
+      canUseFate={canUseFate}
     />
   </article>
 </div>

@@ -9,6 +9,7 @@ import {
   CHAT_MAX_LENGTH,
   ROOM_ROLL_COOLDOWN_SECONDS,
 } from "@/lib/game/constants";
+import { getStaffSession } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 import type {
   ActionState,
@@ -272,85 +273,338 @@ export async function enterRoomFromMap(
   redirect("/game");
 }
 
+type WhisperRecipient = {
+  id: string;
+  display_name: string;
+};
+
+async function resolveWhisperRecipient(
+  supabase: SupabaseClient,
+  senderCharacterId: string,
+  roomId: string,
+  recipientId: string,
+): Promise<
+  | {
+      ok: true;
+      recipient: WhisperRecipient;
+    }
+  | {
+      ok: false;
+      message: string;
+    }
+> {
+  if (!recipientId) {
+    return {
+      ok: false,
+      message:
+        "Choose a character to whisper to.",
+    };
+  }
+
+  if (
+    recipientId ===
+    senderCharacterId
+  ) {
+    return {
+      ok: false,
+      message:
+        "You cannot whisper to yourself.",
+    };
+  }
+
+  const activeSince = new Date(
+    Date.now() -
+      5 * 60_000,
+  ).toISOString();
+
+  const {
+    data: presence,
+    error: presenceError,
+  } = await supabase
+    .from("character_presence")
+    .select("character_id")
+    .eq(
+      "character_id",
+      recipientId,
+    )
+    .eq("room_id", roomId)
+    .gte(
+      "last_seen_at",
+      activeSince,
+    )
+    .maybeSingle();
+
+  if (presenceError) {
+    return {
+      ok: false,
+      message:
+        `Unable to verify the whisper recipient: ${presenceError.message}`,
+    };
+  }
+
+  if (!presence) {
+    return {
+      ok: false,
+      message:
+        "That character is no longer present in this room.",
+    };
+  }
+
+  const {
+    data: recipient,
+    error: recipientError,
+  } = await supabase
+    .from("characters")
+    .select(
+      "id, display_name",
+    )
+    .eq("id", recipientId)
+    .maybeSingle();
+
+  if (
+    recipientError ||
+    !recipient
+  ) {
+    return {
+      ok: false,
+      message:
+        recipientError
+          ? `Unable to load the whisper recipient: ${recipientError.message}`
+          : "The selected whisper recipient no longer exists.",
+    };
+  }
+
+  return {
+    ok: true,
+    recipient:
+      recipient as WhisperRecipient,
+  };
+}
+
 export async function sendRoomMessage(
   _previousState: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
   try {
-    const message = String(formData.get("message") ?? "").trim();
-    const nonceRaw = String(formData.get("client_nonce") ?? "").trim();
+    const rawMessage = String(
+      formData.get("message") ??
+        "",
+    ).trim();
 
-    if (!message) {
+    if (!rawMessage) {
       return {
         ok: false,
-        message: "Write an action before sending it.",
+        message:
+          "Write an action or some dialogue before sending it.",
       };
     }
 
-    if (message.length > CHAT_MAX_LENGTH) {
+    if (
+      rawMessage.length >
+      CHAT_MAX_LENGTH
+    ) {
       return {
         ok: false,
-        message: `The action exceeds ${CHAT_MAX_LENGTH.toLocaleString(
-          "en-GB",
-        )} characters.`,
+        message:
+          `The message exceeds ${CHAT_MAX_LENGTH.toLocaleString(
+            "en-GB",
+          )} characters.`,
       };
     }
 
-    const { supabase, character } = await getOwnedCharacter();
+    const {
+      supabase,
+      character,
+    } = await getOwnedCharacter();
 
     if (!character.current_room_id) {
       return {
         ok: false,
-        message: "Your character has no current room.",
+        message:
+          "Your character has no current room.",
       };
     }
 
-    const cooldownStart = new Date(
-      Date.now() - CHAT_COOLDOWN_SECONDS * 1000,
-    ).toISOString();
+    const cooldownStart =
+      new Date(
+        Date.now() -
+          CHAT_COOLDOWN_SECONDS *
+            1000,
+      ).toISOString();
 
-    const { data: recentMessage, error: cooldownError } = await supabase
+    const {
+      data: recentMessage,
+      error: cooldownError,
+    } = await supabase
       .from("room_messages")
       .select("id")
-      .eq("character_id", character.id)
-      .gte("created_at", cooldownStart)
+      .eq(
+        "character_id",
+        character.id,
+      )
+      .gte(
+        "created_at",
+        cooldownStart,
+      )
       .limit(1)
       .maybeSingle();
 
     if (cooldownError) {
       return {
         ok: false,
-        message: `Unable to verify the sending cooldown: ${cooldownError.message}`,
+        message:
+          `Unable to verify the sending cooldown: ${cooldownError.message}`,
       };
     }
 
     if (recentMessage) {
       return {
         ok: false,
-        message: `Please wait ${CHAT_COOLDOWN_SECONDS} seconds between actions.`,
+        message:
+          `Please wait ${CHAT_COOLDOWN_SECONDS} seconds between actions.`,
       };
     }
 
-    const validNonce =
-      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
-        nonceRaw,
-      );
+    let messageType:
+      | "action"
+      | "whisper"
+      | "fate" =
+      "action";
 
-    const clientNonce = validNonce ? nonceRaw : crypto.randomUUID();
+    let storedMessage =
+      rawMessage;
 
-    const { error: insertError } = await supabase
+    let whisperRecipientId:
+      | string
+      | null = null;
+
+    if (
+      rawMessage.startsWith("^")
+    ) {
+      const staff =
+        await getStaffSession();
+
+      if (
+        !staff ||
+        ![
+          "owner",
+          "admin",
+          "master",
+        ].includes(staff.role)
+      ) {
+        return {
+          ok: false,
+          message:
+            "Only the owner, administrators and masters may write Fate actions.",
+        };
+      }
+
+      storedMessage =
+        rawMessage
+          .slice(1)
+          .trim();
+
+      if (!storedMessage) {
+        return {
+          ok: false,
+          message:
+            "Write the Fate action after ^.",
+        };
+      }
+
+      messageType = "fate";
+    } else {
+      const submittedRecipientId =
+        String(
+          formData.get(
+            "whisper_recipient_id",
+          ) ?? "",
+        ).trim();
+
+      if (submittedRecipientId) {
+        const resolution =
+          await resolveWhisperRecipient(
+            supabase,
+            character.id,
+            character.current_room_id,
+            submittedRecipientId,
+          );
+
+        if (!resolution.ok) {
+          return {
+            ok: false,
+            message:
+              resolution.message,
+          };
+        }
+
+        const marker =
+          `@${resolution.recipient.display_name}@`;
+
+        if (
+          !rawMessage.startsWith(
+            marker,
+          )
+        ) {
+          return {
+            ok: false,
+            message:
+              `The whisper must begin with ${marker}. Select the recipient again to restore it.`,
+          };
+        }
+
+        storedMessage =
+          rawMessage
+            .slice(
+              marker.length,
+            )
+            .trim();
+
+        if (!storedMessage) {
+          return {
+            ok: false,
+            message:
+              "Write the whisper after the character marker.",
+          };
+        }
+
+        messageType =
+          "whisper";
+
+        whisperRecipientId =
+          resolution.recipient.id;
+      }
+    }
+
+    const clientNonce =
+      readValidNonce(formData);
+
+    const {
+      error: insertError,
+    } = await supabase
       .from("room_messages")
       .insert({
-        room_id: character.current_room_id,
-        character_id: character.id,
-        message,
-        client_nonce: clientNonce,
+        room_id:
+          character.current_room_id,
+        character_id:
+          character.id,
+        message: storedMessage,
+        message_type:
+          messageType,
+        whisper_recipient_character_id:
+          whisperRecipientId,
+        client_nonce:
+          clientNonce,
       });
 
-    if (insertError?.code === "23505") {
+    if (
+      insertError?.code ===
+      "23505"
+    ) {
       return {
         ok: true,
-        message: "Action already received.",
+        message:
+          "Message already received.",
         submittedAt: Date.now(),
       };
     }
@@ -358,7 +612,8 @@ export async function sendRoomMessage(
     if (insertError) {
       return {
         ok: false,
-        message: `Unable to send action: ${insertError.message}`,
+        message:
+          `Unable to send the message: ${insertError.message}`,
       };
     }
 
@@ -368,18 +623,24 @@ export async function sendRoomMessage(
       character.current_room_id,
     );
 
-    
-
     return {
       ok: true,
-      message: "Action sent.",
+      message:
+        messageType === "whisper"
+          ? "Whisper sent."
+          : messageType ===
+              "fate"
+            ? "Fate action sent."
+            : "Action sent.",
       submittedAt: Date.now(),
     };
   } catch (error) {
     return {
       ok: false,
       message:
-        error instanceof Error ? error.message : "Unexpected error.",
+        error instanceof Error
+          ? error.message
+          : "Unexpected error.",
     };
   }
 }
@@ -572,10 +833,6 @@ const CHECK_DEFINITIONS = {
   dodge: {
     label: "Dodge",
     attribute: "reflexes",
-  },
-  cast_a_spell: {
-    label: "Cast a Spell",
-    attribute: "brains",
   },
   use_muscles: {
     label: "Use your Muscles",

@@ -10,6 +10,11 @@ export type CharacterSummary = {
   public_slug: string | null;
 };
 
+export type PresentRoomCharacter = {
+  id: string;
+  display_name: string;
+};
+
 export type CharacterAttributeKey =
   | "muscles"
   | "reflexes"
@@ -30,7 +35,9 @@ export type CharacterAttributes = {
 export type RoomMessageType =
   | "action"
   | "dice_roll"
-  | "attribute_check";
+  | "attribute_check"
+  | "whisper"
+  | "fate";
 
 export type RoomMessage = {
   id: string;
@@ -39,12 +46,21 @@ export type RoomMessage = {
   roll_label: string | null;
   dice_sides: number | null;
   dice_result: number | null;
-  attribute_key: CharacterAttributeKey | null;
+  attribute_key:
+    | CharacterAttributeKey
+    | null;
   attribute_value: number | null;
   roll_total: number | null;
+  whisper_recipient_character_id:
+    | string
+    | null;
   created_at: string;
   character_id: string;
   character:
+    | CharacterSummary
+    | CharacterSummary[]
+    | null;
+  whisperRecipient:
     | CharacterSummary
     | CharacterSummary[]
     | null;

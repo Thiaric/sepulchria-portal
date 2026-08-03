@@ -1,13 +1,19 @@
 "use client";
 
-import Link from "next/link";
 import {
+  Fragment,
+  type ReactNode,
   useEffect,
   useRef,
   useState,
 } from "react";
+import Link from "next/link";
 
 import { createClient } from "@/lib/supabase/client";
+import {
+  ROOM_HISTORY_HOURS,
+  ROOM_INACTIVITY_RESET_HOURS,
+} from "@/lib/game/constants";
 import type {
   CharacterAttributeKey,
   CharacterSummary,
@@ -18,7 +24,8 @@ import type {
 type RoomMessageListProps = {
   roomId: string;
   messages: RoomMessage[];
-  olderBefore?: string;
+  viewerCharacterId: string;
+  canViewAllWhispers: boolean;
 };
 
 type InsertedRoomMessage = {
@@ -35,6 +42,9 @@ type InsertedRoomMessage = {
     | null;
   attribute_value: number | null;
   roll_total: number | null;
+  whisper_recipient_character_id:
+    | string
+    | null;
   created_at: string;
 };
 
@@ -43,6 +53,16 @@ type RealtimeConnectionStatus =
   | "connected"
   | "disconnected";
 
+function normaliseRelation<T>(
+  value: T | T[] | null,
+): T | null {
+  if (Array.isArray(value)) {
+    return value[0] ?? null;
+  }
+
+  return value;
+}
+
 function mergeMessages(
   currentMessages: RoomMessage[],
   incomingMessages: RoomMessage[],
@@ -50,14 +70,16 @@ function mergeMessages(
   const messagesById =
     new Map<string, RoomMessage>();
 
-  for (const message of currentMessages) {
+  for (const message of
+    currentMessages) {
     messagesById.set(
       message.id,
       message,
     );
   }
 
-  for (const message of incomingMessages) {
+  for (const message of
+    incomingMessages) {
     messagesById.set(
       message.id,
       message,
@@ -68,8 +90,12 @@ function mergeMessages(
     messagesById.values(),
   ).sort(
     (first, second) =>
-      Date.parse(first.created_at) -
-      Date.parse(second.created_at),
+      Date.parse(
+        first.created_at,
+      ) -
+      Date.parse(
+        second.created_at,
+      ),
   );
 }
 
@@ -101,7 +127,8 @@ function getAttributeLabel(
       vigor: "Vigor",
       brains: "Brains",
       shrewd: "Shrewd",
-      presence_score: "Presence",
+      presence_score:
+        "Presence",
     };
 
   return key
@@ -126,7 +153,8 @@ function formatRollText(
       "attribute_check" &&
     item.roll_label &&
     item.dice_result !== null &&
-    item.attribute_value !== null &&
+    item.attribute_value !==
+      null &&
     item.roll_total !== null
   ) {
     return `${item.roll_label} · d20(${item.dice_result}) + ${getAttributeLabel(
@@ -140,12 +168,17 @@ function formatRollText(
   );
 }
 
-function formatMessageTime(
-  value: string,
+function formatTime(
+  createdAt: string,
 ): string {
-  const date = new Date(value);
+  const date =
+    new Date(createdAt);
 
-  if (Number.isNaN(date.getTime())) {
+  if (
+    Number.isNaN(
+      date.getTime(),
+    )
+  ) {
     return "";
   }
 
@@ -160,10 +193,113 @@ function formatMessageTime(
   ).format(date);
 }
 
+function ActionSpeechText({
+  content,
+}: {
+  content: string;
+}) {
+  const segments =
+    content.split(
+      /(<[^<>]*>|\([^()]*\))/g,
+    );
+
+  const rendered:
+    ReactNode[] = [];
+
+  segments.forEach(
+    (segment, index) => {
+      if (!segment) {
+        return;
+      }
+
+      const isAction =
+        (
+          segment.startsWith(
+            "<",
+          ) &&
+          segment.endsWith(
+            ">",
+          )
+        ) ||
+        (
+          segment.startsWith(
+            "(",
+          ) &&
+          segment.endsWith(
+            ")",
+          )
+        );
+
+      const text = isAction
+        ? segment.slice(1, -1)
+        : segment;
+
+      rendered.push(
+        <Fragment key={index}>
+          <span
+            className={
+              isAction
+                ? "italic text-[#a98a60]"
+                : "text-[#d3c2aa]"
+            }
+          >
+            {text}
+          </span>
+        </Fragment>,
+      );
+    },
+  );
+
+  return (
+    <p className="mt-3 whitespace-pre-wrap break-words text-sm leading-7">
+      {rendered}
+    </p>
+  );
+}
+
+function CharacterPortrait({
+  author,
+  characterHref,
+}: {
+  author: CharacterSummary | null;
+  characterHref: string;
+}) {
+  const portrait = (
+    <div className="h-12 w-12 shrink-0 overflow-hidden border border-[#60482e] bg-[#0d0a08]">
+      {author?.portrait_url ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={author.portrait_url}
+          alt={`Portrait of ${author.display_name}`}
+          className="h-full w-full object-cover"
+        />
+      ) : (
+        <span className="flex h-full items-center justify-center text-[#806b4e]">
+          ?
+        </span>
+      )}
+    </div>
+  );
+
+  if (!author?.public_slug) {
+    return portrait;
+  }
+
+  return (
+    <Link
+      href={characterHref}
+      className="shrink-0"
+    >
+      {portrait}
+    </Link>
+  );
+}
+
 export default function RoomMessageList({
   roomId,
   messages,
-  olderBefore,
+  viewerCharacterId,
+  canViewAllWhispers,
 }: RoomMessageListProps) {
   const [
     liveMessages,
@@ -200,14 +336,18 @@ export default function RoomMessageList({
     const container =
       scrollContainerRef.current;
 
-    if (container) {
-      container.scrollTop =
-        container.scrollHeight;
+    if (!container) {
+      return;
     }
+
+    container.scrollTop =
+      container.scrollHeight;
   }, []);
 
   useEffect(() => {
-    if (!shouldScrollRef.current) {
+    if (
+      !shouldScrollRef.current
+    ) {
       return;
     }
 
@@ -218,19 +358,109 @@ export default function RoomMessageList({
       return;
     }
 
-    const animationFrame =
-      requestAnimationFrame(() => {
-        container.scrollTo({
-          top: container.scrollHeight,
-          behavior: "smooth",
-        });
-      });
+    const frame =
+      requestAnimationFrame(
+        () => {
+          container.scrollTo({
+            top:
+              container.scrollHeight,
+            behavior: "smooth",
+          });
+        },
+      );
 
     return () =>
       cancelAnimationFrame(
-        animationFrame,
+        frame,
       );
   }, [liveMessages]);
+
+  useEffect(() => {
+    const historyWindow =
+      ROOM_HISTORY_HOURS *
+      60 *
+      60 *
+      1000;
+
+    const inactivityWindow =
+      ROOM_INACTIVITY_RESET_HOURS *
+      60 *
+      60 *
+      1000;
+
+    function pruneExpiredEntries() {
+      setLiveMessages(
+        (currentMessages) => {
+          if (
+            currentMessages.length ===
+            0
+          ) {
+            return currentMessages;
+          }
+
+          const now = Date.now();
+
+          const latestTimestamp =
+            Date.parse(
+              currentMessages[
+                currentMessages.length -
+                  1
+              ].created_at,
+            );
+
+          if (
+            Number.isNaN(
+              latestTimestamp,
+            ) ||
+            now - latestTimestamp >=
+              inactivityWindow
+          ) {
+            return [];
+          }
+
+          const historyStart =
+            now - historyWindow;
+
+          const filtered =
+            currentMessages.filter(
+              (message) => {
+                const timestamp =
+                  Date.parse(
+                    message.created_at,
+                  );
+
+                return (
+                  !Number.isNaN(
+                    timestamp,
+                  ) &&
+                  timestamp >=
+                    historyStart
+                );
+              },
+            );
+
+          return filtered.length ===
+            currentMessages.length
+            ? currentMessages
+            : filtered;
+        },
+      );
+    }
+
+    pruneExpiredEntries();
+
+    const timer =
+      window.setInterval(
+        pruneExpiredEntries,
+        60_000,
+      );
+
+    return () => {
+      window.clearInterval(
+        timer,
+      );
+    };
+  }, []);
 
   useEffect(() => {
     const supabase =
@@ -258,27 +488,65 @@ export default function RoomMessageList({
           const inserted =
             payload.new as InsertedRoomMessage;
 
-          const {
-            data: author,
-            error: authorError,
-          } = await supabase
-            .from("characters")
-            .select(`
-              id,
-              display_name,
-              portrait_url,
-              public_slug
-            `)
-            .eq(
-              "id",
-              inserted.character_id,
-            )
-            .maybeSingle();
+          const [
+            authorResult,
+            recipientResult,
+          ] = await Promise.all([
+            supabase
+              .from("characters")
+              .select(`
+                id,
+                display_name,
+                portrait_url,
+                public_slug
+              `)
+              .eq(
+                "id",
+                inserted.character_id,
+              )
+              .maybeSingle(),
 
-          if (authorError) {
+            inserted
+              .whisper_recipient_character_id
+              ? supabase
+                  .from(
+                    "characters",
+                  )
+                  .select(`
+                    id,
+                    display_name,
+                    portrait_url,
+                    public_slug
+                  `)
+                  .eq(
+                    "id",
+                    inserted
+                      .whisper_recipient_character_id,
+                  )
+                  .maybeSingle()
+              : Promise.resolve({
+                  data: null,
+                  error: null,
+                }),
+          ]);
+
+          if (
+            authorResult.error
+          ) {
             console.error(
               "Unable to load message author:",
-              authorError.message,
+              authorResult.error
+                .message,
+            );
+          }
+
+          if (
+            recipientResult.error
+          ) {
+            console.error(
+              "Unable to load whisper recipient:",
+              recipientResult.error
+                .message,
             );
           }
 
@@ -301,13 +569,21 @@ export default function RoomMessageList({
                 inserted.attribute_value,
               roll_total:
                 inserted.roll_total,
+              whisper_recipient_character_id:
+                inserted
+                  .whisper_recipient_character_id,
               created_at:
                 inserted.created_at,
               character_id:
                 inserted.character_id,
               character:
-                (author as CharacterSummary | null) ??
-                null,
+                authorResult.data as
+                  | CharacterSummary
+                  | null,
+              whisperRecipient:
+                recipientResult.data as
+                  | CharacterSummary
+                  | null,
             };
 
           setLiveMessages(
@@ -321,7 +597,8 @@ export default function RoomMessageList({
       )
       .subscribe((status) => {
         if (
-          status === "SUBSCRIBED"
+          status ===
+          "SUBSCRIBED"
         ) {
           setConnectionStatus(
             "connected",
@@ -392,33 +669,24 @@ export default function RoomMessageList({
         onScroll={handleScroll}
         className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
       >
-        {olderBefore ? (
-          <div className="border-b border-[#4f3b28]/35 p-4 text-center">
-            <Link
-              href={`/game?before=${encodeURIComponent(
-                olderBefore,
-              )}#room-chronicle`}
-              className="text-[10px] uppercase tracking-[0.2em] text-[#a98b61] hover:text-[#ecd29e]"
-            >
-              Load earlier actions
-            </Link>
-          </div>
-        ) : null}
 
-        {liveMessages.length > 0 ? (
+        {liveMessages.length >
+        0 ? (
           <div className="divide-y divide-[#4f3b28]/35">
             {liveMessages.map(
               (item) => {
                 const author =
-                  Array.isArray(
+                  normaliseRelation(
                     item.character,
-                  )
-                    ? item
-                        .character[0]
-                    : item.character;
+                  );
+
+                const recipient =
+                  normaliseRelation(
+                    item.whisperRecipient,
+                  );
 
                 const time =
-                  formatMessageTime(
+                  formatTime(
                     item.created_at,
                   );
 
@@ -428,16 +696,49 @@ export default function RoomMessageList({
                   );
 
                 if (
-                  item.message_type !==
-                  "action"
+                  item.message_type ===
+                  "fate"
                 ) {
-                  const naturalTwenty =
+                  return (
+                    <article
+                      key={item.id}
+                      className="border-y border-[#8a6637]/45 bg-[linear-gradient(90deg,rgba(91,56,24,0.28),rgba(24,16,11,0.82),rgba(91,56,24,0.18))] px-5 py-4 sm:px-7"
+                    >
+                      <div className="flex items-center justify-between gap-4">
+                        <span className="text-[9px] uppercase tracking-[0.32em] text-[#d4a65f]">
+                          The Voice of Fate
+                        </span>
+
+                        <time
+                          dateTime={
+                            item.created_at
+                          }
+                          className="text-[8px] uppercase tracking-[0.14em] text-[#776b5b]"
+                        >
+                          {time}
+                        </time>
+                      </div>
+
+                      <p className="mt-3 whitespace-pre-wrap break-words font-serif text-[15px] leading-7 text-[#d6c09a]">
+                        {item.message}
+                      </p>
+                    </article>
+                  );
+                }
+
+                if (
+                  item.message_type ===
+                    "dice_roll" ||
+                  item.message_type ===
+                    "attribute_check"
+                ) {
+                  const isNaturalTwenty =
                     item.dice_sides ===
                       20 &&
                     item.dice_result ===
                       20;
 
-                  const naturalOne =
+                  const isNaturalOne =
                     item.dice_sides ===
                       20 &&
                     item.dice_result ===
@@ -447,9 +748,9 @@ export default function RoomMessageList({
                     <article
                       key={item.id}
                       className={`flex min-w-0 items-center gap-3 px-5 py-3 sm:px-7 ${
-                        naturalTwenty
+                        isNaturalTwenty
                           ? "bg-emerald-950/10"
-                          : naturalOne
+                          : isNaturalOne
                             ? "bg-red-950/10"
                             : "bg-[#1b140e]/55"
                       }`}
@@ -457,9 +758,9 @@ export default function RoomMessageList({
                       <span
                         aria-hidden="true"
                         className={`shrink-0 text-sm ${
-                          naturalTwenty
+                          isNaturalTwenty
                             ? "text-emerald-500"
-                            : naturalOne
+                            : isNaturalOne
                               ? "text-red-500"
                               : "text-[#bd8d4d]"
                         }`}
@@ -487,9 +788,9 @@ export default function RoomMessageList({
 
                       <p
                         className={`min-w-0 flex-1 truncate text-xs ${
-                          naturalTwenty
+                          isNaturalTwenty
                             ? "text-emerald-300"
-                            : naturalOne
+                            : isNaturalOne
                               ? "text-red-300"
                               : "text-[#c8b89f]"
                         }`}
@@ -514,71 +815,76 @@ export default function RoomMessageList({
                   );
                 }
 
+                const isWhisper =
+                  item.message_type ===
+                  "whisper";
+
+                const isSender =
+                  item.character_id ===
+                  viewerCharacterId;
+
+                const isRecipient =
+                  item.whisper_recipient_character_id ===
+                  viewerCharacterId;
+
+                const whisperLabel =
+                  isSender
+                    ? `Whisper to ${
+                        recipient?.display_name ??
+                        "character"
+                      }`
+                    : isRecipient
+                      ? "Whisper to you"
+                      : canViewAllWhispers
+                        ? `Whisper to ${
+                            recipient?.display_name ??
+                            "character"
+                          }`
+                        : "Whisper";
+
                 return (
                   <article
                     key={item.id}
-                    className="flex gap-4 px-5 py-5 sm:px-7"
+                    className={`flex gap-4 px-5 py-5 sm:px-7 ${
+                      isWhisper
+                        ? "border-l-2 border-[#7d628f] bg-[#241b2a]/45"
+                        : ""
+                    }`}
                   >
-                    {author?.public_slug ? (
-                      <Link
-                        href={
-                          characterHref
-                        }
-                        className="h-12 w-12 shrink-0 overflow-hidden border border-[#60482e] bg-[#0d0a08]"
-                      >
-                        {author.portrait_url ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={
-                              author.portrait_url
-                            }
-                            alt={`Portrait of ${author.display_name}`}
-                            className="h-full w-full object-cover"
-                          />
-                        ) : (
-                          <span className="flex h-full items-center justify-center text-[#806b4e]">
-                            ?
-                          </span>
-                        )}
-                      </Link>
-                    ) : (
-                      <div className="h-12 w-12 shrink-0 overflow-hidden border border-[#60482e] bg-[#0d0a08]">
-                        {author?.portrait_url ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={
-                              author.portrait_url
-                            }
-                            alt={`Portrait of ${author.display_name}`}
-                            className="h-full w-full object-cover"
-                          />
-                        ) : (
-                          <span className="flex h-full items-center justify-center text-[#806b4e]">
-                            ?
-                          </span>
-                        )}
-                      </div>
-                    )}
+                    <CharacterPortrait
+                      author={author}
+                      characterHref={
+                        characterHref
+                      }
+                    />
 
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-baseline justify-between gap-2">
-                        {author?.public_slug ? (
-                          <Link
-                            href={
-                              characterHref
-                            }
-                            className="font-serif text-lg text-[#d8bf91] transition hover:text-[#ecd29e]"
-                          >
-                            {
-                              author.display_name
-                            }
-                          </Link>
-                        ) : (
-                          <span className="font-serif text-lg text-[#d8bf91]">
-                            {author?.display_name ??
-                              "Unknown character"}
-                          </span>
-                        )}
+                        <div className="flex flex-wrap items-center gap-3">
+                          {author?.public_slug ? (
+                            <Link
+                              href={
+                                characterHref
+                              }
+                              className="font-serif text-lg text-[#d8bf91] transition hover:text-[#ecd29e]"
+                            >
+                              {
+                                author.display_name
+                              }
+                            </Link>
+                          ) : (
+                            <span className="font-serif text-lg text-[#d8bf91]">
+                              {author?.display_name ??
+                                "Unknown character"}
+                            </span>
+                          )}
+
+                          {isWhisper ? (
+                            <span className="border border-[#7d628f]/60 bg-[#201727] px-2 py-1 text-[7px] uppercase tracking-[0.18em] text-[#c7add6]">
+                              {whisperLabel}
+                            </span>
+                          ) : null}
+                        </div>
 
                         <time
                           dateTime={
@@ -590,9 +896,11 @@ export default function RoomMessageList({
                         </time>
                       </div>
 
-                      <p className="mt-3 whitespace-pre-wrap break-words text-sm leading-7 text-[#b8aa96]">
-                        {item.message}
-                      </p>
+                      <ActionSpeechText
+                        content={
+                          item.message
+                        }
+                      />
                     </div>
                   </article>
                 );
