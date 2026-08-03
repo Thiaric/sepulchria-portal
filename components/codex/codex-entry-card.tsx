@@ -96,7 +96,7 @@ export function CodexEntryCard({
           href={`${hrefBase}/${slug}`}
           className="mt-6 inline-flex items-center justify-between border border-[#765937] bg-[#271c12] px-4 py-3 text-[10px] uppercase tracking-[0.2em] text-[#dfc79c] transition hover:border-[#a17a45] hover:bg-[#3b2919]"
         >
-          <span>Read entry</span>
+          <span>Open</span>
           <span aria-hidden="true">→</span>
         </Link>
       </div>

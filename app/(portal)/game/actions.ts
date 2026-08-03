@@ -1,15 +1,18 @@
 "use server";
 
+import { randomInt } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import {
   CHAT_COOLDOWN_SECONDS,
   CHAT_MAX_LENGTH,
+  ROOM_ROLL_COOLDOWN_SECONDS,
 } from "@/lib/game/constants";
 import { createClient } from "@/lib/supabase/server";
 import type {
   ActionState,
+  CharacterAttributeKey,
   PresenceActionResult,
   PresenceStatus,
 } from "@/types/game";
@@ -20,6 +23,12 @@ type OwnedCharacter = {
   id: string;
   current_room_id: string | null;
   status: string;
+  muscles: number | null;
+  reflexes: number | null;
+  vigor: number | null;
+  brains: number | null;
+  shrewd: number | null;
+  presence_score: number | null;
 };
 
 const VALID_PRESENCE_STATUSES: PresenceStatus[] = [
@@ -49,7 +58,17 @@ async function getOwnedCharacter(): Promise<{
 
   const { data: character, error: characterError } = await supabase
     .from("characters")
-    .select("id, current_room_id, status")
+    .select(`
+      id,
+      current_room_id,
+      status,
+      muscles,
+      reflexes,
+      vigor,
+      brains,
+      shrewd,
+      presence_score
+    `)
     .eq("user_id", user.id)
     .maybeSingle();
 
@@ -509,4 +528,418 @@ export async function leaveCurrentRoom(): Promise<void> {
   revalidatePath("/character");
 
   redirect("/");
+}
+
+const VALID_DICE_SIDES = [
+  4,
+  6,
+  8,
+  10,
+  12,
+  20,
+  100,
+] as const;
+
+type ValidDiceSides =
+  (typeof VALID_DICE_SIDES)[number];
+
+type CheckDefinition = {
+  label: string;
+  attribute: CharacterAttributeKey;
+};
+
+const CHECK_DEFINITIONS = {
+  unarmed_attack: {
+    label: "Unarmed Attack",
+    attribute: "muscles",
+  },
+  melee_attack_muscles: {
+    label: "Melee Attack (Muscles)",
+    attribute: "muscles",
+  },
+  melee_attack_reflexes: {
+    label: "Melee Attack (Reflexes)",
+    attribute: "reflexes",
+  },
+  ranged_attack: {
+    label: "Ranged Attack",
+    attribute: "reflexes",
+  },
+  defend: {
+    label: "Defend",
+    attribute: "vigor",
+  },
+  dodge: {
+    label: "Dodge",
+    attribute: "reflexes",
+  },
+  cast_a_spell: {
+    label: "Cast a Spell",
+    attribute: "brains",
+  },
+  use_muscles: {
+    label: "Use your Muscles",
+    attribute: "muscles",
+  },
+  use_reflexes: {
+    label: "Use your Reflexes",
+    attribute: "reflexes",
+  },
+  use_brains: {
+    label: "Use your Brains",
+    attribute: "brains",
+  },
+  use_shrewd: {
+    label: "Use your Shrewd",
+    attribute: "shrewd",
+  },
+  use_presence: {
+    label: "Use your Presence",
+    attribute: "presence_score",
+  },
+  resist_physical: {
+    label: "Resist (Physical)",
+    attribute: "vigor",
+  },
+  resist_shrewd: {
+    label: "Resist (Shrewd)",
+    attribute: "shrewd",
+  },
+  resist_brains: {
+    label: "Resist (Brains)",
+    attribute: "brains",
+  },
+  resist_presence: {
+    label: "Resist (Presence)",
+    attribute: "presence_score",
+  },
+} satisfies Record<string, CheckDefinition>;
+
+type CheckKey =
+  keyof typeof CHECK_DEFINITIONS;
+
+function readValidNonce(
+  formData: FormData,
+): string {
+  const nonceRaw = String(
+    formData.get("client_nonce") ?? "",
+  ).trim();
+
+  const validNonce =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+      nonceRaw,
+    );
+
+  return validNonce
+    ? nonceRaw
+    : crypto.randomUUID();
+}
+
+async function checkRoomRollCooldown(
+  supabase: SupabaseClient,
+  characterId: string,
+): Promise<ActionState | null> {
+  const cooldownStart = new Date(
+    Date.now() -
+      ROOM_ROLL_COOLDOWN_SECONDS * 1000,
+  ).toISOString();
+
+  const {
+    data: recentMessage,
+    error,
+  } = await supabase
+    .from("room_messages")
+    .select("id")
+    .eq("character_id", characterId)
+    .gte("created_at", cooldownStart)
+    .limit(1)
+    .maybeSingle();
+
+  if (error) {
+    return {
+      ok: false,
+      message:
+        `Unable to verify the roll cooldown: ${error.message}`,
+    };
+  }
+
+  if (recentMessage) {
+    return {
+      ok: false,
+      message:
+        `Please wait ${ROOM_ROLL_COOLDOWN_SECONDS} seconds between actions and rolls.`,
+    };
+  }
+
+  return null;
+}
+
+function isValidDiceSides(
+  value: number,
+): value is ValidDiceSides {
+  return VALID_DICE_SIDES.includes(
+    value as ValidDiceSides,
+  );
+}
+
+function isCheckKey(
+  value: string,
+): value is CheckKey {
+  return value in CHECK_DEFINITIONS;
+}
+
+function getAttributeLabel(
+  key: CharacterAttributeKey,
+): string {
+  const labels:
+    Record<CharacterAttributeKey, string> = {
+      muscles: "Muscles",
+      reflexes: "Reflexes",
+      vigor: "Vigor",
+      brains: "Brains",
+      shrewd: "Shrewd",
+      presence_score: "Presence",
+    };
+
+  return labels[key];
+}
+
+export async function sendRoomDiceRoll(
+  _previousState: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  try {
+    const sides = Number(
+      formData.get("dice_sides"),
+    );
+
+    if (!isValidDiceSides(sides)) {
+      return {
+        ok: false,
+        message:
+          "Choose a valid die before rolling.",
+      };
+    }
+
+    const {
+      supabase,
+      character,
+    } = await getOwnedCharacter();
+
+    if (!character.current_room_id) {
+      return {
+        ok: false,
+        message:
+          "Your character has no current room.",
+      };
+    }
+
+    const cooldown =
+      await checkRoomRollCooldown(
+        supabase,
+        character.id,
+      );
+
+    if (cooldown) {
+      return cooldown;
+    }
+
+    const result = randomInt(
+      1,
+      sides + 1,
+    );
+
+    const clientNonce =
+      readValidNonce(formData);
+
+    const { error } = await supabase
+      .from("room_messages")
+      .insert({
+        room_id:
+          character.current_room_id,
+        character_id:
+          character.id,
+        message:
+          `◆ d${sides} → ${result}`,
+        message_type: "dice_roll",
+        roll_label: null,
+        dice_sides: sides,
+        dice_result: result,
+        attribute_key: null,
+        attribute_value: null,
+        roll_total: result,
+        client_nonce: clientNonce,
+      });
+
+    if (error?.code === "23505") {
+      return {
+        ok: true,
+        message:
+          "Roll already received.",
+        submittedAt: Date.now(),
+      };
+    }
+
+    if (error) {
+      return {
+        ok: false,
+        message:
+          `Unable to roll the die: ${error.message}`,
+      };
+    }
+
+    await touchPresence(
+      supabase,
+      character.id,
+      character.current_room_id,
+    );
+
+    return {
+      ok: true,
+      message: `d${sides} rolled.`,
+      submittedAt: Date.now(),
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Unexpected error.",
+    };
+  }
+}
+
+export async function sendRoomAttributeCheck(
+  _previousState: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  try {
+    const checkKey = String(
+      formData.get("check_key") ?? "",
+    ).trim();
+
+    if (!isCheckKey(checkKey)) {
+      return {
+        ok: false,
+        message:
+          "Choose a valid check before rolling.",
+      };
+    }
+
+    const definition =
+      CHECK_DEFINITIONS[checkKey];
+
+    const {
+      supabase,
+      character,
+    } = await getOwnedCharacter();
+
+    if (!character.current_room_id) {
+      return {
+        ok: false,
+        message:
+          "Your character has no current room.",
+      };
+    }
+
+    const attributeValue =
+      character[definition.attribute];
+
+    if (
+      attributeValue === null ||
+      !Number.isInteger(attributeValue) ||
+      attributeValue < 1 ||
+      attributeValue > 8
+    ) {
+      return {
+        ok: false,
+        message:
+          "Your character must have a complete attribute allocation before making checks.",
+      };
+    }
+
+    const cooldown =
+      await checkRoomRollCooldown(
+        supabase,
+        character.id,
+      );
+
+    if (cooldown) {
+      return cooldown;
+    }
+
+    const result = randomInt(1, 21);
+    const total =
+      result + attributeValue;
+
+    const attributeLabel =
+      getAttributeLabel(
+        definition.attribute,
+      );
+
+    const clientNonce =
+      readValidNonce(formData);
+
+    const { error } = await supabase
+      .from("room_messages")
+      .insert({
+        room_id:
+          character.current_room_id,
+        character_id:
+          character.id,
+        message:
+          `◆ ${definition.label} · d20(${result}) + ${attributeLabel}(+${attributeValue}) = ${total}`,
+        message_type:
+          "attribute_check",
+        roll_label:
+          definition.label,
+        dice_sides: 20,
+        dice_result: result,
+        attribute_key:
+          definition.attribute,
+        attribute_value:
+          attributeValue,
+        roll_total: total,
+        client_nonce: clientNonce,
+      });
+
+    if (error?.code === "23505") {
+      return {
+        ok: true,
+        message:
+          "Check already received.",
+        submittedAt: Date.now(),
+      };
+    }
+
+    if (error) {
+      return {
+        ok: false,
+        message:
+          `Unable to make the check: ${error.message}`,
+      };
+    }
+
+    await touchPresence(
+      supabase,
+      character.id,
+      character.current_room_id,
+    );
+
+    return {
+      ok: true,
+      message:
+        `${definition.label}: ${total}.`,
+      submittedAt: Date.now(),
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Unexpected error.",
+    };
+  }
 }

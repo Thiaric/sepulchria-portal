@@ -9,8 +9,10 @@ import {
 
 import { createClient } from "@/lib/supabase/client";
 import type {
+  CharacterAttributeKey,
   CharacterSummary,
   RoomMessage,
+  RoomMessageType,
 } from "@/types/game";
 
 type RoomMessageListProps = {
@@ -24,6 +26,15 @@ type InsertedRoomMessage = {
   room_id: string;
   character_id: string;
   message: string;
+  message_type: RoomMessageType;
+  roll_label: string | null;
+  dice_sides: number | null;
+  dice_result: number | null;
+  attribute_key:
+    | CharacterAttributeKey
+    | null;
+  attribute_value: number | null;
+  roll_total: number | null;
   created_at: string;
 };
 
@@ -36,17 +47,26 @@ function mergeMessages(
   currentMessages: RoomMessage[],
   incomingMessages: RoomMessage[],
 ): RoomMessage[] {
-  const messagesById = new Map<string, RoomMessage>();
+  const messagesById =
+    new Map<string, RoomMessage>();
 
   for (const message of currentMessages) {
-    messagesById.set(message.id, message);
+    messagesById.set(
+      message.id,
+      message,
+    );
   }
 
   for (const message of incomingMessages) {
-    messagesById.set(message.id, message);
+    messagesById.set(
+      message.id,
+      message,
+    );
   }
 
-  return Array.from(messagesById.values()).sort(
+  return Array.from(
+    messagesById.values(),
+  ).sort(
     (first, second) =>
       Date.parse(first.created_at) -
       Date.parse(second.created_at),
@@ -54,7 +74,10 @@ function mergeMessages(
 }
 
 function getCharacterHref(
-  character: CharacterSummary | null | undefined,
+  character:
+    | CharacterSummary
+    | null
+    | undefined,
 ): string {
   if (!character?.public_slug) {
     return "#";
@@ -63,13 +86,91 @@ function getCharacterHref(
   return `/characters/${character.public_slug}?from=game`;
 }
 
+function getAttributeLabel(
+  key:
+    | CharacterAttributeKey
+    | null,
+): string {
+  const labels:
+    Record<
+      CharacterAttributeKey,
+      string
+    > = {
+      muscles: "Muscles",
+      reflexes: "Reflexes",
+      vigor: "Vigor",
+      brains: "Brains",
+      shrewd: "Shrewd",
+      presence_score: "Presence",
+    };
+
+  return key
+    ? labels[key]
+    : "Attribute";
+}
+
+function formatRollText(
+  item: RoomMessage,
+): string {
+  if (
+    item.message_type ===
+      "dice_roll" &&
+    item.dice_sides &&
+    item.dice_result
+  ) {
+    return `d${item.dice_sides} → ${item.dice_result}`;
+  }
+
+  if (
+    item.message_type ===
+      "attribute_check" &&
+    item.roll_label &&
+    item.dice_result !== null &&
+    item.attribute_value !== null &&
+    item.roll_total !== null
+  ) {
+    return `${item.roll_label} · d20(${item.dice_result}) + ${getAttributeLabel(
+      item.attribute_key,
+    )}(+${item.attribute_value}) = ${item.roll_total}`;
+  }
+
+  return item.message.replace(
+    /^◆\s*/,
+    "",
+  );
+}
+
+function formatMessageTime(
+  value: string,
+): string {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
+
+  return new Intl.DateTimeFormat(
+    "en-GB",
+    {
+      day: "2-digit",
+      month: "short",
+      hour: "2-digit",
+      minute: "2-digit",
+    },
+  ).format(date);
+}
+
 export default function RoomMessageList({
   roomId,
   messages,
   olderBefore,
 }: RoomMessageListProps) {
-  const [liveMessages, setLiveMessages] =
-    useState<RoomMessage[]>(messages);
+  const [
+    liveMessages,
+    setLiveMessages,
+  ] = useState<RoomMessage[]>(
+    messages,
+  );
 
   const [
     connectionStatus,
@@ -82,14 +183,16 @@ export default function RoomMessageList({
   const scrollContainerRef =
     useRef<HTMLDivElement>(null);
 
-  const shouldScrollRef = useRef(true);
+  const shouldScrollRef =
+    useRef(true);
 
   useEffect(() => {
-    setLiveMessages((currentMessages) =>
-      mergeMessages(
-        currentMessages,
-        messages,
-      ),
+    setLiveMessages(
+      (currentMessages) =>
+        mergeMessages(
+          currentMessages,
+          messages,
+        ),
     );
   }, [messages]);
 
@@ -97,12 +200,10 @@ export default function RoomMessageList({
     const container =
       scrollContainerRef.current;
 
-    if (!container) {
-      return;
+    if (container) {
+      container.scrollTop =
+        container.scrollHeight;
     }
-
-    container.scrollTop =
-      container.scrollHeight;
   }, []);
 
   useEffect(() => {
@@ -125,25 +226,33 @@ export default function RoomMessageList({
         });
       });
 
-    return () => {
-      cancelAnimationFrame(animationFrame);
-    };
+    return () =>
+      cancelAnimationFrame(
+        animationFrame,
+      );
   }, [liveMessages]);
 
   useEffect(() => {
-    const supabase = createClient();
+    const supabase =
+      createClient();
 
-    setConnectionStatus("connecting");
+    setConnectionStatus(
+      "connecting",
+    );
 
     const channel = supabase
-      .channel(`room-messages-${roomId}`)
+      .channel(
+        `room-messages-${roomId}`,
+      )
       .on(
         "postgres_changes",
         {
           event: "INSERT",
           schema: "public",
-          table: "room_messages",
-          filter: `room_id=eq.${roomId}`,
+          table:
+            "room_messages",
+          filter:
+            `room_id=eq.${roomId}`,
         },
         async (payload) => {
           const inserted =
@@ -154,14 +263,12 @@ export default function RoomMessageList({
             error: authorError,
           } = await supabase
             .from("characters")
-            .select(
-              `
-                id,
-                display_name,
-                portrait_url,
-                public_slug
-              `,
-            )
+            .select(`
+              id,
+              display_name,
+              portrait_url,
+              public_slug
+            `)
             .eq(
               "id",
               inserted.character_id,
@@ -175,17 +282,33 @@ export default function RoomMessageList({
             );
           }
 
-          const newMessage: RoomMessage = {
-            id: inserted.id,
-            message: inserted.message,
-            created_at:
-              inserted.created_at,
-            character_id:
-              inserted.character_id,
-            character:
-              (author as CharacterSummary | null) ??
-              null,
-          };
+          const newMessage:
+            RoomMessage = {
+              id: inserted.id,
+              message:
+                inserted.message,
+              message_type:
+                inserted.message_type,
+              roll_label:
+                inserted.roll_label,
+              dice_sides:
+                inserted.dice_sides,
+              dice_result:
+                inserted.dice_result,
+              attribute_key:
+                inserted.attribute_key,
+              attribute_value:
+                inserted.attribute_value,
+              roll_total:
+                inserted.roll_total,
+              created_at:
+                inserted.created_at,
+              character_id:
+                inserted.character_id,
+              character:
+                (author as CharacterSummary | null) ??
+                null,
+            };
 
           setLiveMessages(
             (currentMessages) =>
@@ -197,14 +320,20 @@ export default function RoomMessageList({
         },
       )
       .subscribe((status) => {
-        if (status === "SUBSCRIBED") {
-          setConnectionStatus("connected");
+        if (
+          status === "SUBSCRIBED"
+        ) {
+          setConnectionStatus(
+            "connected",
+          );
           return;
         }
 
         if (
-          status === "CHANNEL_ERROR" ||
-          status === "TIMED_OUT" ||
+          status ===
+            "CHANNEL_ERROR" ||
+          status ===
+            "TIMED_OUT" ||
           status === "CLOSED"
         ) {
           setConnectionStatus(
@@ -214,7 +343,9 @@ export default function RoomMessageList({
       });
 
     return () => {
-      void supabase.removeChannel(channel);
+      void supabase.removeChannel(
+        channel,
+      );
     };
   }, [roomId]);
 
@@ -236,8 +367,9 @@ export default function RoomMessageList({
   }
 
   return (
-  <div className="relative flex min-h-0 flex-1 flex-col">
-      {connectionStatus !== "connected" ? (
+    <div className="relative flex min-h-0 flex-1 flex-col">
+      {connectionStatus !==
+      "connected" ? (
         <div
           aria-live="polite"
           className={`border-b px-5 py-2 text-center text-[9px] uppercase tracking-[0.18em] ${
@@ -275,112 +407,197 @@ export default function RoomMessageList({
 
         {liveMessages.length > 0 ? (
           <div className="divide-y divide-[#4f3b28]/35">
-            {liveMessages.map((item) => {
-              const author =
-                Array.isArray(
-                  item.character,
-                )
-                  ? item.character[0]
-                  : item.character;
+            {liveMessages.map(
+              (item) => {
+                const author =
+                  Array.isArray(
+                    item.character,
+                  )
+                    ? item
+                        .character[0]
+                    : item.character;
 
-              const date = new Date(
-                item.created_at,
-              );
+                const time =
+                  formatMessageTime(
+                    item.created_at,
+                  );
 
-              const time = Number.isNaN(
-                date.getTime(),
-              )
-                ? ""
-                : new Intl.DateTimeFormat(
-                    "en-GB",
-                    {
-                      day: "2-digit",
-                      month: "short",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    },
-                  ).format(date);
+                const characterHref =
+                  getCharacterHref(
+                    author,
+                  );
 
-              const characterHref =
-                getCharacterHref(author);
+                if (
+                  item.message_type !==
+                  "action"
+                ) {
+                  const naturalTwenty =
+                    item.dice_sides ===
+                      20 &&
+                    item.dice_result ===
+                      20;
 
-              return (
-                <article
-                  key={item.id}
-                  className="flex gap-4 px-5 py-5 sm:px-7"
-                >
-                  {author?.public_slug ? (
-                    <Link
-                      href={characterHref}
-                      className="h-12 w-12 shrink-0 overflow-hidden border border-[#60482e] bg-[#0d0a08]"
+                  const naturalOne =
+                    item.dice_sides ===
+                      20 &&
+                    item.dice_result ===
+                      1;
+
+                  return (
+                    <article
+                      key={item.id}
+                      className={`flex min-w-0 items-center gap-3 px-5 py-3 sm:px-7 ${
+                        naturalTwenty
+                          ? "bg-emerald-950/10"
+                          : naturalOne
+                            ? "bg-red-950/10"
+                            : "bg-[#1b140e]/55"
+                      }`}
                     >
-                      {author.portrait_url ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={
-                            author.portrait_url
-                          }
-                          alt={`Portrait of ${author.display_name}`}
-                          className="h-full w-full object-cover"
-                        />
-                      ) : (
-                        <span className="flex h-full items-center justify-center text-[#806b4e]">
-                          ?
-                        </span>
-                      )}
-                    </Link>
-                  ) : (
-                    <div className="h-12 w-12 shrink-0 overflow-hidden border border-[#60482e] bg-[#0d0a08]">
-                      {author?.portrait_url ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={
-                            author.portrait_url
-                          }
-                          alt={`Portrait of ${author.display_name}`}
-                          className="h-full w-full object-cover"
-                        />
-                      ) : (
-                        <span className="flex h-full items-center justify-center text-[#806b4e]">
-                          ?
-                        </span>
-                      )}
-                    </div>
-                  )}
+                      <span
+                        aria-hidden="true"
+                        className={`shrink-0 text-sm ${
+                          naturalTwenty
+                            ? "text-emerald-500"
+                            : naturalOne
+                              ? "text-red-500"
+                              : "text-[#bd8d4d]"
+                        }`}
+                      >
+                        ◆
+                      </span>
 
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-baseline justify-between gap-2">
                       {author?.public_slug ? (
                         <Link
-                          href={characterHref}
-                          className="font-serif text-lg text-[#d8bf91] transition hover:text-[#ecd29e]"
+                          href={
+                            characterHref
+                          }
+                          className="shrink-0 font-serif text-sm text-[#d8bf91] transition hover:text-[#ecd29e]"
                         >
-                          {author.display_name}
+                          {
+                            author.display_name
+                          }
                         </Link>
                       ) : (
-                        <span className="font-serif text-lg text-[#d8bf91]">
+                        <span className="shrink-0 font-serif text-sm text-[#d8bf91]">
                           {author?.display_name ??
                             "Unknown character"}
                         </span>
                       )}
 
+                      <p
+                        className={`min-w-0 flex-1 truncate text-xs ${
+                          naturalTwenty
+                            ? "text-emerald-300"
+                            : naturalOne
+                              ? "text-red-300"
+                              : "text-[#c8b89f]"
+                        }`}
+                        title={formatRollText(
+                          item,
+                        )}
+                      >
+                        {formatRollText(
+                          item,
+                        )}
+                      </p>
+
                       <time
                         dateTime={
                           item.created_at
                         }
-                        className="text-[9px] uppercase tracking-[0.18em] text-[#776b5b]"
+                        className="shrink-0 text-[8px] uppercase tracking-[0.14em] text-[#776b5b]"
                       >
                         {time}
                       </time>
-                    </div>
+                    </article>
+                  );
+                }
 
-                    <p className="mt-3 whitespace-pre-wrap break-words text-sm leading-7 text-[#b8aa96]">
-                      {item.message}
-                    </p>
-                  </div>
-                </article>
-              );
-            })}
+                return (
+                  <article
+                    key={item.id}
+                    className="flex gap-4 px-5 py-5 sm:px-7"
+                  >
+                    {author?.public_slug ? (
+                      <Link
+                        href={
+                          characterHref
+                        }
+                        className="h-12 w-12 shrink-0 overflow-hidden border border-[#60482e] bg-[#0d0a08]"
+                      >
+                        {author.portrait_url ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={
+                              author.portrait_url
+                            }
+                            alt={`Portrait of ${author.display_name}`}
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <span className="flex h-full items-center justify-center text-[#806b4e]">
+                            ?
+                          </span>
+                        )}
+                      </Link>
+                    ) : (
+                      <div className="h-12 w-12 shrink-0 overflow-hidden border border-[#60482e] bg-[#0d0a08]">
+                        {author?.portrait_url ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={
+                              author.portrait_url
+                            }
+                            alt={`Portrait of ${author.display_name}`}
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <span className="flex h-full items-center justify-center text-[#806b4e]">
+                            ?
+                          </span>
+                        )}
+                      </div>
+                    )}
+
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-baseline justify-between gap-2">
+                        {author?.public_slug ? (
+                          <Link
+                            href={
+                              characterHref
+                            }
+                            className="font-serif text-lg text-[#d8bf91] transition hover:text-[#ecd29e]"
+                          >
+                            {
+                              author.display_name
+                            }
+                          </Link>
+                        ) : (
+                          <span className="font-serif text-lg text-[#d8bf91]">
+                            {author?.display_name ??
+                              "Unknown character"}
+                          </span>
+                        )}
+
+                        <time
+                          dateTime={
+                            item.created_at
+                          }
+                          className="text-[9px] uppercase tracking-[0.18em] text-[#776b5b]"
+                        >
+                          {time}
+                        </time>
+                      </div>
+
+                      <p className="mt-3 whitespace-pre-wrap break-words text-sm leading-7 text-[#b8aa96]">
+                        {item.message}
+                      </p>
+                    </div>
+                  </article>
+                );
+              },
+            )}
 
             <div id="chat-end" />
           </div>

@@ -66,7 +66,19 @@ async function GameContent({
   } = await supabase
     .from("characters")
     .select(
-      "id, display_name, portrait_url, current_room_id, status",
+      `
+        id,
+        display_name,
+        portrait_url,
+        current_room_id,
+        status,
+        muscles,
+        reflexes,
+        vigor,
+        brains,
+        shrewd,
+        presence_score
+      `,
     )
     .eq("user_id", user.id)
     .maybeSingle();
@@ -129,6 +141,13 @@ async function GameContent({
       `
         id,
         message,
+        message_type,
+        roll_label,
+        dice_sides,
+        dice_result,
+        attribute_key,
+        attribute_value,
+        roll_total,
         created_at,
         character_id,
         character:characters!room_messages_character_id_fkey(
@@ -210,7 +229,17 @@ async function GameContent({
       olderBefore={olderBefore}
     />
 
-    <RoomChatForm />
+    <RoomChatForm
+      attributes={{
+        muscles: character.muscles,
+        reflexes: character.reflexes,
+        vigor: character.vigor,
+        brains: character.brains,
+        shrewd: character.shrewd,
+        presence_score:
+          character.presence_score,
+      }}
+    />
   </article>
 </div>
   </div>
