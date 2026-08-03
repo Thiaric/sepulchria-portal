@@ -14,6 +14,7 @@ import {
 } from "next/navigation";
 
 import { GameContextPanel } from "@/components/portal/game-context-panel";
+import { LiveDashboardChronicle } from "@/components/portal/live-dashboard-chronicle";
 import { MessagesContextNavigator } from "@/components/messages/messages-context-navigator";
 import {
   createForumReplyAction,
@@ -474,43 +475,9 @@ function DashboardContext({
   context,
 }: PortalContextPanelProps) {
   return (
-    <>
-      <ContextHeading
-        eyebrow="Dashboard"
-        title="Your chronicle"
-      />
-
-      <ContextRow
-        label="Character"
-        value={
-          context.character?.display_name ??
-          "Not created"
-        }
-      />
-
-      <ContextRow
-        label="Location"
-        value={
-          context.character?.currentRoom?.name ??
-          "Not assigned"
-        }
-      />
-
-      <ContextRow
-        label="Unread messages"
-        value={String(
-          context.unreadMessageCount,
-        )}
-      />
-
-      <ContextRow
-        label="Active characters"
-        value={String(
-          context.onlineCharacterCount,
-        )}
-        last
-      />
-    </>
+    <LiveDashboardChronicle
+      context={context}
+    />
   );
 }
 
