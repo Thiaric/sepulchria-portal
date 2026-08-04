@@ -94,20 +94,6 @@ function getDisplayName(
   );
 }
 
-function statusLabel(
-  status: ActiveCharacter["status"],
-): string {
-  if (status === "busy") {
-    return "Busy";
-  }
-
-  if (status === "away") {
-    return "Away";
-  }
-
-  return "Online";
-}
-
 export function LiveDashboardChronicle({
   context,
 }: {
@@ -368,9 +354,9 @@ export function LiveDashboardChronicle({
           Dashboard
         </p>
 
-        <h2 className="mt-2 font-serif text-2xl text-[#d6bd91]">
+        <h1 className="mt-2 font-serif text-2xl text-[#d6bd91]">
           Your chronicle
-        </h2>
+        </h1>
       </header>
 
       <div className="mt-5 shrink-0 border-y border-[#59432c]/35 py-3">
@@ -463,106 +449,69 @@ export function LiveDashboardChronicle({
 
 function ActiveRoomCard({
   room,
-  currentCharacterId,
   currentRoomId,
 }: {
   room: ActiveRoom;
   currentCharacterId: string | null;
   currentRoomId: string | null;
 }) {
-  const otherCharacters =
-    room.characters.filter(
-      (character) =>
-        character.id !==
-        currentCharacterId,
-    );
-
   const alreadyHere =
     currentRoomId === room.id;
 
   return (
-    <article className="border border-[#59432c]/40 bg-[#100c09] p-3">
-      <div className="flex items-start justify-between gap-3">
+    <article className="border border-[#59432c]/40 bg-[#100c09] px-3 py-2.5">
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
         <div className="min-w-0">
-          <h3 className="truncate font-serif text-base text-[#d6bd91]">
+          <h3 className="truncate font-serif text-sm text-[#d6bd91]">
             {room.name}
           </h3>
 
           {room.areaName ? (
-            <p className="mt-1 truncate text-[8px] uppercase tracking-[0.14em] text-[#74654f]">
+            <p className="mt-0.5 truncate text-[7px] uppercase tracking-[0.13em] text-[#74654f]">
               {room.areaName}
             </p>
           ) : null}
         </div>
 
-        <span className="flex h-6 min-w-6 shrink-0 items-center justify-center rounded-full border border-[#59432c]/60 bg-[#19120d] px-1.5 text-[9px] text-[#c3a67d]">
-          {room.characters.length}
-        </span>
+        <div className="flex shrink-0 items-center gap-1.5">
+          <span
+  title={`${room.characters.length} active character${
+    room.characters.length === 1 ? "" : "s"
+  }`}
+  className="flex h-6 min-w-6 items-center justify-center rounded-full border border-[#59432c]/60 bg-[#19120d] px-1.5 text-[9px] text-[#c3a67d]"
+>
+  {room.characters.length}
+</span>
+
+<form action={enterRoomFromMap}>
+  <input
+    type="hidden"
+    name="roomId"
+    value={room.id}
+  />
+
+  <button
+    type="submit"
+    disabled={alreadyHere}
+    aria-label={
+      alreadyHere
+        ? "Current room"
+        : `Join ${room.name}`
+    }
+    title={
+      alreadyHere
+        ? "Current room"
+        : `Join ${room.name}`
+    }
+    className="flex h-6 w-6 items-center justify-center border border-[#765937] bg-[#271c12] text-[11px] text-[#dfc79c] transition hover:border-[#997042] hover:bg-[#3b2919] disabled:cursor-default disabled:border-[#4d4336] disabled:bg-[#17130f] disabled:text-[#706658]"
+  >
+    <span aria-hidden="true">
+      {alreadyHere ? "•" : "›"}
+    </span>
+  </button>
+</form>
+        </div>
       </div>
-
-      <div className="mt-3 space-y-1.5">
-        {room.characters.map(
-          (character) => (
-            <div
-              key={character.id}
-              className="flex min-w-0 items-center gap-2"
-            >
-              <span
-                className={`h-1.5 w-1.5 shrink-0 rounded-full ${
-                  character.status ===
-                  "busy"
-                    ? "bg-[#a15f55]"
-                    : character.status ===
-                        "away"
-                      ? "bg-[#b99a58]"
-                      : "bg-[#788d5e]"
-                }`}
-              />
-
-              <span className="min-w-0 flex-1 truncate text-[10px] text-[#aa9a84]">
-                {character.displayName}
-              </span>
-
-              <span className="shrink-0 text-[7px] uppercase tracking-[0.12em] text-[#665b4e]">
-                {statusLabel(
-                  character.status,
-                )}
-              </span>
-            </div>
-          ),
-        )}
-      </div>
-
-      <form
-        action={enterRoomFromMap}
-        className="mt-3"
-      >
-        <input
-          type="hidden"
-          name="roomId"
-          value={room.id}
-        />
-
-        <button
-          type="submit"
-          disabled={alreadyHere}
-          className="flex w-full items-center justify-between border border-[#765937] bg-[#271c12] px-3 py-2.5 text-[8px] uppercase tracking-[0.17em] text-[#dfc79c] transition hover:border-[#997042] hover:bg-[#3b2919] disabled:cursor-default disabled:border-[#4d4336] disabled:bg-[#17130f] disabled:text-[#706658]"
-        >
-          <span>
-            {alreadyHere
-              ? "Current room"
-              : otherCharacters.length > 0
-                ? "Join active chat"
-                : "Enter room"}
-          </span>
-
-          <span aria-hidden="true">
-            {alreadyHere
-              ? "•"
-              : "→"}
-          </span>
-        </button>
-      </form>
     </article>
   );
 }
@@ -598,9 +547,9 @@ function ContextSummaryRow({
 function ChronicleLoading() {
   return (
     <>
-      <div className="h-32 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
-      <div className="h-32 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
-      <div className="h-32 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
+      <div className="h-16 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
+      <div className="h-16 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
+      <div className="h-16 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
     </>
   );
 }

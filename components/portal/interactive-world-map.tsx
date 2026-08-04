@@ -28,79 +28,79 @@ const cityHotspots: CityHotspot[] = [
   {
     slug: "the-heart-of-sepulchria",
     shortName: "The Heart",
-    x: 48.3,
+    x: 47.3,
     y: 47.8,
-    size: 6,
+    size: 8,
   },
   {
     slug: "the-eyes-of-sepulchria",
     shortName: "The Eyes",
-    x: 63.8,
+    x: 63.5,
     y: 22.4,
-    size: 5.5,
+    size: 7,
   },
   {
     slug: "the-mind-of-sepulchria",
     shortName: "The Mind",
-    x: 33.4,
+    x: 32.1,
     y: 22.5,
-    size: 5.5,
+    size: 7,
   },
   {
     slug: "the-hands-of-sepulchria",
     shortName: "The Hands",
-    x: 26.1,
+    x: 23.7,
     y: 36.5,
-    size: 5.5,
+    size: 7,
   },
   {
     slug: "the-blood-of-sepulchria",
     shortName: "The Blood",
-    x: 26.3,
+    x: 23.9,
     y: 54.3,
-    size: 5.5,
+    size: 7,
   },
   {
     slug: "the-bones-of-sepulchria",
     shortName: "The Bones",
-    x: 32.6,
-    y: 68.8,
-    size: 5.5,
+    x: 30.7,
+    y: 69.8,
+    size: 7,
   },
   {
     slug: "the-arms-of-sepulchria",
     shortName: "The Arms",
     x: 70.6,
     y: 36.5,
-    size: 5.5,
+    size: 7,
   },
   {
     slug: "the-breath-of-sepulchria",
     shortName: "The Breath",
     x: 69.8,
-    y: 54,
-    size: 5.5,
+    y: 54.2,
+    size: 7,
   },
   {
     slug: "the-veins-of-sepulchria",
     shortName: "The Veins",
     x: 64.3,
-    y: 68.7,
-    size: 5.5,
+    y: 69.7,
+    size: 7,
   },
   {
     slug: "the-soul-of-sepulchria",
     shortName: "The Soul",
-    x: 48.6,
+    x: 47.6,
     y: 11.3,
-    size: 5,
+    size: 8,
   },
   {
     slug: "the-skin-of-sepulchria",
     shortName: "The Skin",
-    x: 48.3,
-    y: 73.5,
-    size: 5.5,
+    x: 47.3,
+    y: 74.5,
+    size: 7,
   },
 ];
 
@@ -185,7 +185,7 @@ export function InteractiveWorldMap({
             }
           >
             <Image
-              src="/maps/land-of-the-fallen.png"
+              src="/maps/land-of-the-fallenv2.png"
               alt="Map of The Godscar"
               fill
               priority
@@ -199,7 +199,7 @@ export function InteractiveWorldMap({
               onClick={() =>
                 setLevel("city")
               }
-              className="group absolute left-[46.72%] top-[62.7%] z-20 aspect-square w-[5.5%] -translate-x-1/2 -translate-y-1/2 rounded-full"
+              className="group absolute left-[47.09%] top-[69.7%] z-20 aspect-square w-[10.9%] -translate-x-1/2 -translate-y-1/2 rounded-full"
             >
               <span className="absolute inset-0 rounded-full border-2 border-[#ff3b30] bg-[#ff2d20]/10 opacity-85 shadow-[0_0_8px_rgba(255,45,32,0.95),0_0_20px_rgba(255,45,32,0.7),inset_0_0_10px_rgba(255,45,32,0.3)] transition duration-300 group-hover:scale-125 group-hover:border-[#ff766e] group-hover:bg-[#ff2d20]/20 group-hover:opacity-100 group-hover:shadow-[0_0_12px_rgba(255,70,60,1),0_0_32px_rgba(255,45,32,0.95),inset_0_0_14px_rgba(255,70,60,0.45)] motion-safe:animate-pulse" />
 
@@ -220,7 +220,7 @@ export function InteractiveWorldMap({
             aria-hidden={level !== "city"}
           >
             <Image
-              src="/maps/sepulchria-map.png"
+              src="/maps/sepulchria-mapv2.png"
               alt="Map of Sepulchria"
               fill
               sizes="(max-width: 1024px) 100vw, 75vw"

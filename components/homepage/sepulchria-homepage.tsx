@@ -200,7 +200,7 @@ export function SepulchriaHomepage({
 
   <div className="relative aspect-[1000/667] w-full overflow-hidden">
     <Image
-      src="/maps/land-of-the-fallen.png"
+      src="/maps/land-of-the-fallenv2.png"
       alt="Illustrated map of The Godscar"
       fill
       priority
