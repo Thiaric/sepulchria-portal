@@ -67,7 +67,7 @@ export function PortalContextPanel({
       <CodexContext
         eyebrow="Codex"
         title="Races"
-        description="The peoples and lineages of Asteros, their origins and their relationship with the Current."
+        description="The peoples and lineages of Aureth, their origins and their relationship with the Current."
         primaryHref="/races"
         primaryLabel="Browse races"
         secondaryHref="/associations"
@@ -764,7 +764,7 @@ function ForumOverviewContext() {
           key: "ongame" as const,
           label: "Ongame",
           description:
-            "In-character chronicles, events, letters and conversations belonging to Asteros.",
+            "In-character chronicles, events, letters and conversations belonging to Aureth.",
         },
         {
           key: "offgame" as const,

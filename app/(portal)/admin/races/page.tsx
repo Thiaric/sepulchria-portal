@@ -174,7 +174,7 @@ export default async function AdminRacesPage({
             <p className="mt-3 max-w-3xl text-sm leading-7 text-[#a99b89]">
               Create and maintain the
               playable ancestries of
-              Asteros.
+              Aureth.
             </p>
           </div>
 

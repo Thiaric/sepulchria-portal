@@ -6,7 +6,7 @@ import { getRaces } from "@/lib/races";
 export const metadata: Metadata = {
   title: "Races | Sepulchria",
   description:
-    "Discover the peoples and lineages available in the world of Asteros.",
+    "Discover the peoples and lineages available in the world of Aureth.",
 };
 
 export default async function RacesPage() {
@@ -19,7 +19,7 @@ export default async function RacesPage() {
 
         <div className="relative">
           <p className="text-[10px] uppercase tracking-[0.28em] text-[#886c48]">
-            The peoples of Asteros
+            The peoples of Aureth
           </p>
 
           <h1 className="mt-3 font-serif text-4xl text-[#e0c99e] sm:text-5xl">
@@ -27,7 +27,7 @@ export default async function RacesPage() {
           </h1>
 
           <p className="mt-4 max-w-3xl text-sm leading-7 text-[#9f9281]">
-            The peoples of Asteros differ in ancestry, appearance,
+            The peoples of Aureth differ in ancestry, appearance,
             culture and their relationship with the Current. Explore
             each entry before choosing the lineage of your character.
           </p>

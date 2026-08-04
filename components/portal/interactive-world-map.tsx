@@ -142,12 +142,12 @@ export function InteractiveWorldMap({
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#654c2f]/40 bg-[#17110d] px-4 py-3">
         <div>
           <p className="text-[8px] uppercase tracking-[0.28em] text-[#96734a]">
-            Welcome to Asteros - Explore the World and choose where your story will continue
+            Welcome to Aureth - Explore the World and choose where your story will continue
           </p>
 
           <h2 className="mt-1 font-serif text-xl text-[#e4cda1]">
             {level === "continent"
-              ? "The Land of the Fallen"
+              ? "The Godscar"
               : "Sepulchria — The Living Body"}
           </h2>
         </div>
@@ -186,7 +186,7 @@ export function InteractiveWorldMap({
           >
             <Image
               src="/maps/land-of-the-fallen.png"
-              alt="Map of the Land of the Fallen"
+              alt="Map of The Godscar"
               fill
               priority
               sizes="(max-width: 1024px) 100vw, 75vw"

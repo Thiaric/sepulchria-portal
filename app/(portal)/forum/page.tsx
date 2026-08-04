@@ -317,7 +317,7 @@ export default async function ForumPage() {
             : ""
         }`}>
           <ForumCategoryCard
-            eyebrow="The World of Asteros"
+            eyebrow="The World of Aureth"
             title="Ongame"
             sections={ongameSections}
             topics={topics}

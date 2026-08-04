@@ -17,7 +17,7 @@ export function RaceCard({
       imageUrl={race.image_url}
       iconUrl={race.icon_url}
       colour={race.colour}
-      categoryLabel="People of Asteros"
+      categoryLabel="People of Aureth"
     />
   );
 }
