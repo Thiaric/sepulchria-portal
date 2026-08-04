@@ -3,7 +3,6 @@
 import {
   useCallback,
   useEffect,
-  useMemo,
   useState,
 } from "react";
 
@@ -102,6 +101,13 @@ export function LiveDashboardChronicle({
   const [rooms, setRooms] =
     useState<ActiveRoom[]>([]);
 
+  const [
+    activeCharacterCount,
+    setActiveCharacterCount,
+  ] = useState(
+    context.onlineCharacterCount,
+  );
+
   const [loading, setLoading] =
     useState(true);
 
@@ -152,7 +158,6 @@ export function LiveDashboardChronicle({
           "last_seen_at",
           activeSince,
         )
-        .not("room_id", "is", null)
         .order("last_seen_at", {
           ascending: false,
         });
@@ -163,11 +168,24 @@ export function LiveDashboardChronicle({
         return;
       }
 
+      const activeRows =
+        (data ??
+          []) as unknown as PresenceRow[];
+
+      setActiveCharacterCount(
+        new Set(
+          activeRows.map(
+            (entry) =>
+              entry.character_id,
+          ),
+        ).size,
+      );
+
       const roomMap =
         new Map<string, ActiveRoom>();
 
       for (const rawEntry of
-        (data ?? []) as unknown as PresenceRow[]) {
+        activeRows) {
         const character =
           normaliseRelation(
             rawEntry.character,
@@ -335,18 +353,6 @@ export function LiveDashboardChronicle({
     };
   }, [refreshChronicle]);
 
-  const activeCharacterCount =
-    useMemo(
-      () =>
-        rooms.reduce(
-          (total, room) =>
-            total +
-            room.characters.length,
-          0,
-        ),
-      [rooms],
-    );
-
   return (
     <div className="flex h-full min-h-0 flex-col">
       <header className="shrink-0">
@@ -354,9 +360,9 @@ export function LiveDashboardChronicle({
           Dashboard
         </p>
 
-        <h1 className="mt-2 font-serif text-2xl text-[#d6bd91]">
+        <h2 className="mt-2 font-serif text-2xl text-[#d6bd91]">
           Your chronicle
-        </h1>
+        </h2>
       </header>
 
       <div className="mt-5 shrink-0 border-y border-[#59432c]/35 py-3">
@@ -392,7 +398,7 @@ export function LiveDashboardChronicle({
           </p>
 
           <p className="mt-1 text-[11px] text-[#8f8271]">
-            Rooms with active characters
+            All active characters · rooms below
           </p>
         </div>
 
@@ -473,43 +479,45 @@ function ActiveRoomCard({
           ) : null}
         </div>
 
-        <div className="flex shrink-0 items-center gap-1.5">
+        <div className="flex shrink-0 flex-col items-center gap-1.5">
           <span
-  title={`${room.characters.length} active character${
-    room.characters.length === 1 ? "" : "s"
-  }`}
-  className="flex h-6 min-w-6 items-center justify-center rounded-full border border-[#59432c]/60 bg-[#19120d] px-1.5 text-[9px] text-[#c3a67d]"
->
-  {room.characters.length}
-</span>
+            title={`${room.characters.length} active character${
+              room.characters.length === 1
+                ? ""
+                : "s"
+            }`}
+            className="flex h-6 min-w-6 items-center justify-center rounded-full border border-[#59432c]/60 bg-[#19120d] px-1.5 text-[9px] text-[#c3a67d]"
+          >
+            {room.characters.length}
+          </span>
 
-<form action={enterRoomFromMap}>
-  <input
-    type="hidden"
-    name="roomId"
-    value={room.id}
-  />
+          <form action={enterRoomFromMap}>
+            <input
+              type="hidden"
+              name="roomId"
+              value={room.id}
+            />
 
-  <button
-    type="submit"
-    disabled={alreadyHere}
-    aria-label={
-      alreadyHere
-        ? "Current room"
-        : `Join ${room.name}`
-    }
-    title={
-      alreadyHere
-        ? "Current room"
-        : `Join ${room.name}`
-    }
-    className="flex h-6 w-6 items-center justify-center border border-[#765937] bg-[#271c12] text-[11px] text-[#dfc79c] transition hover:border-[#997042] hover:bg-[#3b2919] disabled:cursor-default disabled:border-[#4d4336] disabled:bg-[#17130f] disabled:text-[#706658]"
-  >
-    <span aria-hidden="true">
-      {alreadyHere ? "•" : "›"}
-    </span>
-  </button>
-</form>
+            <button
+              type="submit"
+              disabled={alreadyHere}
+              aria-label={
+                alreadyHere
+                  ? "Current room"
+                  : `Join ${room.name}`
+              }
+              title={
+                alreadyHere
+                  ? "Current room"
+                  : `Join ${room.name}`
+              }
+              className="flex h-6 w-6 items-center justify-center border border-[#765937] bg-[#271c12] text-[11px] text-[#dfc79c] transition hover:border-[#997042] hover:bg-[#3b2919] disabled:cursor-default disabled:border-[#4d4336] disabled:bg-[#17130f] disabled:text-[#706658]"
+            >
+              <span aria-hidden="true">
+                {alreadyHere ? "•" : "›"}
+              </span>
+            </button>
+          </form>
         </div>
       </div>
     </article>

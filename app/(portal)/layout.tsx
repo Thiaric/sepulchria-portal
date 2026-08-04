@@ -1,6 +1,7 @@
 import { Suspense, type ReactNode } from "react";
 
 import { PortalHeader } from "@/components/portal/portal-header";
+import { PortalPresenceHeartbeat } from "@/components/portal/portal-presence-heartbeat";
 import { PortalRightSidebar } from "@/components/portal/portal-right-sidebar";
 import { PortalSidebar } from "@/components/portal/portal-sidebar";
 import { getPortalContext } from "@/lib/portal/get-portal-context";
@@ -64,6 +65,13 @@ async function PortalLayoutContent({
   return (
     <div className="min-h-screen bg-[#120f0d] text-[#e8dcc4]">
       <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(116,82,42,0.16),_transparent_38%),linear-gradient(to_bottom,_#17120f,_#0d0b0a)]">
+        <PortalPresenceHeartbeat
+          enabled={
+            context.character?.status ===
+            "approved"
+          }
+        />
+
         <PortalHeader context={context} />
 
         <div className="mx-auto grid w-full max-w-[1800px] grid-cols-1 lg:grid-cols-[230px_minmax(0,1fr)] xl:grid-cols-[230px_minmax(0,1fr)_300px]">

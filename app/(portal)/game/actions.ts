@@ -102,7 +102,7 @@ async function getOwnedCharacter(): Promise<{
 async function touchPresence(
   supabase: SupabaseClient,
   characterId: string,
-  roomId: string,
+  roomId: string | null,
 ): Promise<void> {
   const now = new Date().toISOString();
 
@@ -715,15 +715,10 @@ export async function updatePresence(
  */
 export async function heartbeatPresence(): Promise<PresenceActionResult> {
   try {
-    const { supabase, character } = await getOwnedCharacter();
-
-    if (!character.current_room_id) {
-      return {
-        ok: false,
-        status: "online",
-        message: "Your character has no current room.",
-      };
-    }
+    const {
+      supabase,
+      character,
+    } = await getOwnedCharacter();
 
     await touchPresence(
       supabase,
@@ -734,14 +729,17 @@ export async function heartbeatPresence(): Promise<PresenceActionResult> {
     return {
       ok: true,
       status: "online",
-      message: "Presence heartbeat updated.",
+      message:
+        "Presence heartbeat updated.",
     };
   } catch (error) {
     return {
       ok: false,
       status: "online",
       message:
-        error instanceof Error ? error.message : "Unexpected error.",
+        error instanceof Error
+          ? error.message
+          : "Unexpected error.",
     };
   }
 }
@@ -755,15 +753,23 @@ export async function leaveCurrentRoom(): Promise<void> {
   const { error: presenceError } =
     await supabase
       .from("character_presence")
-      .delete()
-      .eq(
-        "character_id",
-        character.id,
+      .upsert(
+        {
+          character_id:
+            character.id,
+          room_id: null,
+          last_seen_at:
+            new Date().toISOString(),
+        },
+        {
+          onConflict:
+            "character_id",
+        },
       );
 
   if (presenceError) {
     throw new Error(
-      `Unable to leave the room: ${presenceError.message}`,
+      `Unable to update presence while leaving the room: ${presenceError.message}`,
     );
   }
 
