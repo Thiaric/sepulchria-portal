@@ -382,7 +382,7 @@ character.status === "approved" &&
 
         <section className="mt-6 grid gap-5 md:grid-cols-2">
           <HeritageCard
-            label="Race"
+            label="Ancestry"
             entry={race}
             href={
               race

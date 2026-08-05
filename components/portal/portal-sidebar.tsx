@@ -61,7 +61,7 @@ const codexNavigationItems: NavigationItem[] = [
     disabled: true,
   },
   {
-    label: "Races",
+    label: "Ancestries",
     icon: "⚜",
     href: "/races",
     activePaths: ["/races"],

@@ -18,12 +18,12 @@ export async function generateMetadata({
 
   if (!race) {
     return {
-      title: "Race Not Found | Sepulchria",
+      title: "Ancestry Not Found | Sepulchria",
     };
   }
 
   return {
-    title: `${race.name} | Races | Sepulchria`,
+    title: `${race.name} | Ancestries | Sepulchria`,
     description:
       race.summary ||
       `Read the Sepulchria Codex entry for ${race.name}.`,

@@ -66,10 +66,10 @@ export function PortalContextPanel({
     return (
       <CodexContext
         eyebrow="Codex"
-        title="Races"
+        title="Ancestries"
         description="The peoples and lineages of Aureth, their origins and their relationship with the Current."
         primaryHref="/races"
-        primaryLabel="Browse races"
+        primaryLabel="Browse ancestries"
         secondaryHref="/associations"
         secondaryLabel="View associations"
       />
@@ -543,7 +543,7 @@ function CharacterContext({
           />
 
           <ContextRow
-  label="Race"
+  label="Ancestry"
   value={
     character.race?.name ??
     "Not assigned"
@@ -603,7 +603,7 @@ function CharacterArchiveContext() {
 
       <ContextLink
         href="/races"
-        label="Explore races"
+        label="Explore ancestries"
         secondary
       />
     </>

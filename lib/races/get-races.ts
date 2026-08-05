@@ -80,7 +80,7 @@ export const getRaces = cache(
 
     if (error) {
       throw new Error(
-        `Unable to load races: ${error.message}`,
+        `Unable to load ancestries: ${error.message}`,
       );
     }
 

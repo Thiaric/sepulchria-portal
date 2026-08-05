@@ -237,7 +237,7 @@ export default function TopicPost({
               {post.author_character
                 .race_name ? (
                 <CharacterDetail
-                  label="Race"
+                  label="Ancestry"
                   value={
                     post.author_character
                       .race_name

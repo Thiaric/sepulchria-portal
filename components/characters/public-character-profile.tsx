@@ -311,7 +311,7 @@ export function PublicCharacterProfileView({
               />
 
               <Detail
-  label="Race"
+  label="Ancestry"
   value={character.race?.name ?? null}
 />
 

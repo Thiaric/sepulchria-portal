@@ -44,7 +44,7 @@ export default async function AdminPage() {
         </p>
 
         <p className="mt-4 max-w-3xl text-sm leading-7 text-[#a99b89]">
-          Manage characters, approvals, races,
+          Manage characters, approvals, ancestries,
           associations and other game data from
           this protected area.
         </p>
@@ -76,7 +76,7 @@ export default async function AdminPage() {
           </h3>
 
           <p className="mt-3 max-w-2xl text-sm leading-7 text-[#a99b89]">
-            Assign races and associations, change
+            Assign ancestries and associations, change
             approval status and update public
             character titles.
           </p>

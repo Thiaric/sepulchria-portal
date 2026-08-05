@@ -127,7 +127,7 @@ export default async function AdminRacesPage({
 
   if (error) {
     throw new Error(
-      `Unable to load races: ${error.message}`,
+      `Unable to load ancestries: ${error.message}`,
     );
   }
 
@@ -168,7 +168,7 @@ export default async function AdminRacesPage({
             </p>
 
             <h2 className="mt-2 font-serif text-4xl text-[#ead5ac]">
-              Race Management
+              Ancestry Management
             </h2>
 
             <p className="mt-3 max-w-3xl text-sm leading-7 text-[#a99b89]">
@@ -182,8 +182,8 @@ export default async function AdminRacesPage({
             <AdminCounter>
               {races.length}{" "}
               {races.length === 1
-                ? "race"
-                : "races"}
+                ? "ancestry"
+                : "ancestries"}
             </AdminCounter>
 
             <AdminCounter>
@@ -208,11 +208,11 @@ export default async function AdminRacesPage({
 
         <section className="mt-8 border border-[#60482e]/45 bg-[#15100d] p-5 sm:p-6">
           <p className="text-[9px] uppercase tracking-[0.24em] text-[#8c704b]">
-            New race
+            New ancestry
           </p>
 
           <h3 className="mt-2 font-serif text-2xl text-[#dfc99f]">
-            Create a race
+            Create an ancestry
           </h3>
 
           <form
@@ -470,7 +470,7 @@ export default async function AdminRacesPage({
                   <div className="flex flex-wrap items-start justify-between gap-4">
                     <div>
                       <p className="text-[9px] uppercase tracking-[0.2em] text-[#8c704b]">
-                        Playable race
+                        Playable ancestry
                       </p>
 
                       <h3 className="mt-1 font-serif text-3xl text-[#e3cda5]">
@@ -710,7 +710,7 @@ export default async function AdminRacesPage({
           {races.length === 0 ? (
             <section className="border border-[#60482e]/45 bg-[#15100d] p-10 text-center">
               <p className="font-serif text-xl text-[#b9a88f]">
-                No races were found.
+                No ancestries were found.
               </p>
             </section>
           ) : null}

@@ -182,18 +182,18 @@ export function CharacterDirectory({
               onChange={(event) =>
                 setSearch(event.target.value)
               }
-              placeholder="Name, title, race, Association..."
+              placeholder="Name, title, ancestry, Association..."
               className="mt-2 w-full border border-[#60482e]/60 bg-[#0f0b09] px-3 py-3 text-sm text-[#d5c2a4] outline-none transition placeholder:text-[#665a4c] focus:border-[#a17a49]"
             />
           </label>
 
           <DirectorySelect
-            label="Race"
+            label="Ancestry"
             value={race}
             onChange={setRace}
           >
             <option value="all">
-              All races
+              All ancestries
             </option>
 
             {races.map(([id, name]) => (
@@ -380,7 +380,7 @@ function CharacterDirectoryCard({
 
           <div className="mt-5 space-y-2">
             <CodexBadge
-              label="Race"
+              label="Ancestry"
               entry={character.race}
             />
 

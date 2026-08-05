@@ -17,9 +17,9 @@ export function RaceHero({
       imageUrl={race.image_url}
       iconUrl={race.icon_url}
       colour={race.colour}
-      categoryLabel="Race"
+      categoryLabel="Ancestry"
       returnHref="/races"
-      returnLabel="Back to races"
+      returnLabel="Back to ancestries"
     />
   );
 }

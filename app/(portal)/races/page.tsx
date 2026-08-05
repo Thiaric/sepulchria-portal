@@ -23,7 +23,7 @@ export default async function RacesPage() {
           </p>
 
           <h1 className="mt-3 font-serif text-4xl text-[#e0c99e] sm:text-5xl">
-            Races
+            Ancestries
           </h1>
 
           <p className="mt-4 max-w-3xl text-sm leading-7 text-[#9f9281]">
@@ -35,7 +35,7 @@ export default async function RacesPage() {
           <div className="mt-6 flex flex-wrap gap-3">
             <div className="border border-[#60482e]/45 bg-black/20 px-4 py-3">
               <span className="block text-[9px] uppercase tracking-[0.22em] text-[#806b50]">
-                Current Races
+                Current Ancestries
               </span>
 
               <span className="mt-1 block font-serif text-xl text-[#d4bd94]">

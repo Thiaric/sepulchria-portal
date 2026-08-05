@@ -45,7 +45,7 @@ const steps = [
     number: 2,
     label: "Heritage",
     description:
-      "Race, Association and social role.",
+      "Ancestry, Association and social role.",
   },
   {
     number: 3,
@@ -161,7 +161,7 @@ export default function CharacterForm({
     if (step === 2 && mode === "create") {
   if (!selectedRaceId) {
     setValidationError(
-      "Choose a race before continuing.",
+      "Choose an ancestry before continuing.",
     );
 
     return false;
@@ -441,12 +441,12 @@ export default function CharacterForm({
         >{mode === "create" ? (
   <>
           <SelectionSection
-      title="Choose a race"
-      description="Race represents your character's ancestry and inherited nature."
+      title="Choose an ancestry"
+      description="Ancestry represents your character's heritage and inherited traits."
       options={races}
       selectedId={selectedRaceId}
       onSelect={setSelectedRaceId}
-      emptyMessage="No races are currently available."
+      emptyMessage="No ancestries are currently available."
     />
 
     <div className="my-10 border-t border-[#5d452d]/40" />
@@ -968,7 +968,7 @@ function ReviewPanel({
 
   const heritage = [
     [
-      "Race",
+      "Ancestry",
       selectedRace?.name ??
         "Not selected",
     ],
@@ -1120,7 +1120,7 @@ function LockedHeritage({
         </p>
 
         <p className="mt-3 text-sm leading-7 text-[#a0927f]">
-          Race and Association are chosen during character creation and cannot
+          Ancestry and Association are chosen during character creation and cannot
           be changed from the character editor. Contact the staff if a
           correction is necessary.
         </p>

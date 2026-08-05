@@ -340,14 +340,14 @@ export default async function AdminCharactersPage({
               </select>
             </FilterField>
 
-            <FilterField label="Race">
+            <FilterField label="Ancestry">
               <select
                 name="race"
                 defaultValue={raceFilter}
                 className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
               >
                 <option value="">
-                  All races
+                  All Ancestries
                 </option>
 
                 {races.map((race) => (
@@ -488,7 +488,7 @@ export default async function AdminCharactersPage({
 
                       <div className="mt-5 grid gap-4 sm:grid-cols-3">
                         <CharacterDetail
-                          label="Race"
+                          label="Ancestry"
                           value={
                             race?.name ??
                             "Not assigned"

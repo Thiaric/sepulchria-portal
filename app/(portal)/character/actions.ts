@@ -317,7 +317,7 @@ export async function saveCharacter(
     if (!raceId) {
       redirectWithError(
         mode,
-        "A race must be selected.",
+        "An ancestry must be selected.",
       );
     }
 
@@ -365,7 +365,7 @@ export async function saveCharacter(
     if (!raceResult.data) {
       redirectWithError(
         mode,
-        "The selected race is not valid.",
+        "The selected ancestry is not valid.",
       );
     }
 

@@ -61,7 +61,7 @@ export default async function AdminLayout({
             </AdminNavigationLink>
 
             <AdminNavigationLink href="/admin/races">
-              Races
+              Ancestries
             </AdminNavigationLink>
 
             <AdminNavigationLink href="/admin/associations">

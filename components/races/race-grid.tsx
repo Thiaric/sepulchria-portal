@@ -11,8 +11,8 @@ export function RaceGrid({
 }: RaceGridProps) {
   return (
     <CodexEntryGrid
-      emptyTitle="No races available"
-      emptyText="There are currently no active races in the Sepulchria Codex."
+      emptyTitle="No ancestries available"
+      emptyText="There are currently no active ancestries in the Sepulchria Codex."
     >
       {races.map((race) => (
         <RaceCard

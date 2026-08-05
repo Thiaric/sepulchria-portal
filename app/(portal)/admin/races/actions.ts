@@ -161,7 +161,7 @@ async function getUniqueSlug({
 
     if (error) {
       throw new Error(
-        `Unable to verify the race slug: ${error.message}`,
+        `Unable to verify the ancestry slug: ${error.message}`,
       );
     }
 
@@ -185,7 +185,7 @@ export async function createRace(
     const name = getRequiredText(
       formData,
       "name",
-      "Race name",
+      "Ancestry name",
     );
 
     const requestedSlug =
@@ -265,7 +265,7 @@ export async function createRace(
     const message =
       error instanceof Error
         ? error.message
-        : "Unable to create the race.";
+        : "Unable to create the ancestry.";
 
     redirectWithMessage(
       "error",
@@ -278,7 +278,7 @@ export async function createRace(
 
   redirectWithMessage(
     "success",
-    "Race created successfully.",
+    "Ancestry created successfully.",
   );
 }
 
@@ -298,7 +298,7 @@ export async function updateRace(
 
     if (!isUuid(raceId)) {
       throw new Error(
-        "The selected race is invalid.",
+        "The selected ancestry is invalid.",
       );
     }
 
@@ -315,14 +315,14 @@ export async function updateRace(
 
     if (!existingRace) {
       throw new Error(
-        "The selected race no longer exists.",
+        "The selected ancestry no longer exists.",
       );
     }
 
     const name = getRequiredText(
       formData,
       "name",
-      "Race name",
+      "Ancestry name",
     );
 
     const requestedSlug =
@@ -407,7 +407,7 @@ export async function updateRace(
     const message =
       error instanceof Error
         ? error.message
-        : "Unable to update the race.";
+        : "Unable to update the ancestry.";
 
     redirectWithMessage(
       "error",
@@ -421,7 +421,7 @@ export async function updateRace(
 
   redirectWithMessage(
     "success",
-    "Race updated successfully.",
+    "Ancestry updated successfully.",
   );
 }
 
@@ -441,7 +441,7 @@ export async function deleteRace(
 
     if (!isUuid(raceId)) {
       throw new Error(
-        "The selected race is invalid.",
+        "The selected ancestry is invalid.",
       );
     }
 
@@ -497,7 +497,7 @@ export async function deleteRace(
       characterCount > 0
     ) {
       throw new Error(
-        `This race cannot be deleted because ${characterCount} ${
+        `This ancestry cannot be deleted because ${characterCount} ${
           characterCount === 1
             ? "character is"
             : "characters are"
@@ -533,6 +533,6 @@ export async function deleteRace(
 
   redirectWithMessage(
     "success",
-    "Race deleted successfully.",
+    "Ancestry deleted successfully.",
   );
 }

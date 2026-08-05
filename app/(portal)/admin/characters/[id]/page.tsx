@@ -315,7 +315,7 @@ export default async function AdminCharacterPage({
 
               <p className="mt-2 text-sm text-[#9f8968]">
                 {race?.name ??
-                  "No race assigned"}
+                  "No ancestry assigned"}
                 {" · "}
                 {association?.name ??
                   "No association assigned"}
@@ -635,7 +635,7 @@ export default async function AdminCharacterPage({
                   </div>
                 </div>
 
-                <AdminField label="Race">
+                <AdminField label="Ancestry">
                   <select
                     name="raceId"
                     defaultValue={
@@ -644,7 +644,7 @@ export default async function AdminCharacterPage({
                     className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
                   >
                     <option value="">
-                      No race assigned
+                      No ancestry assigned
                     </option>
 
                     {races.map((option) => (
