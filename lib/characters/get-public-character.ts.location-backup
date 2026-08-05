@@ -1,4 +1,4 @@
-﻿import "server-only";
+import "server-only";
 
 import { cache } from "react";
 
@@ -93,11 +93,6 @@ type CharacterListRow = {
   occupation: string | null;
   title: string | null;
 
-  currentRoom:
-    | RoomRelationRow
-    | RoomRelationRow[]
-    | null;
-
   race:
     | CodexRelationRow
     | CodexRelationRow[]
@@ -131,10 +126,6 @@ export type PublicCharacterListItem = {
   occupation: string | null;
   title: string | null;
 
-  currentRoom:
-    | PublicCharacterRoom
-    | null;
-
   race: PublicCodexReference | null;
   association: PublicCodexReference | null;
 
@@ -144,8 +135,8 @@ export type PublicCharacterListItem = {
   } | null;
 
   /*
-   * CompatibilitÃ  temporanea con il vecchio
-   * CharacterDirectory. SarÃ  rimossa nel
+   * Compatibilità temporanea con il vecchio
+   * CharacterDirectory. Sarà rimossa nel
    * prossimo pacchetto.
    */
   faction: string | null;
@@ -444,17 +435,6 @@ export const getPublicCharacters = cache(
           slug,
           icon_url,
           colour
-        ),
-
-        currentRoom:rooms!characters_current_room_id_fkey(
-          id,
-          name,
-          slug,
-          area:areas!rooms_area_id_fkey(
-            id,
-            name,
-            slug
-          )
         )
       `)
       .eq("status", "approved")
@@ -535,28 +515,6 @@ export const getPublicCharacters = cache(
           character.association,
         );
 
-      const rawRoom =
-        normaliseRelation(
-          character.currentRoom,
-        );
-
-      const rawArea = rawRoom
-        ? normaliseRelation(
-            rawRoom.area,
-          )
-        : null;
-
-      const currentRoom:
-        PublicCharacterRoom | null =
-          rawRoom
-            ? {
-                id: rawRoom.id,
-                name: rawRoom.name,
-                slug: rawRoom.slug,
-                area: rawArea,
-              }
-            : null;
-
       return {
         id: character.id,
         public_slug:
@@ -571,14 +529,13 @@ export const getPublicCharacters = cache(
         occupation:
           character.occupation,
         title: character.title,
-        currentRoom,
         race,
         association,
 
         /*
-         * CompatibilitÃ  temporanea.
+         * Compatibilità temporanea.
          * Il prossimo CharacterDirectory
-         * userÃ  association direttamente.
+         * userà association direttamente.
          */
         faction:
           association?.name ?? null,
@@ -594,4 +551,3 @@ export const getPublicCharacters = cache(
     });
   },
 );
-

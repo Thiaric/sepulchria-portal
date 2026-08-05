@@ -1,7 +1,12 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { requireStaff } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
+
+import {
+  permanentlyDeleteForumTopicAction,
+} from "./actions";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -14,6 +19,8 @@ type ForumManageTopicsPageProps = {
     status?: string | string[];
     section?: string | string[];
     search?: string | string[];
+    success?: string | string[];
+    error?: string | string[];
   }>;
 };
 
@@ -213,33 +220,21 @@ export default async function ForumTopicsManagementPage({
       resolvedSearchParams.search,
     ).trim();
 
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect(
-      `/login?redirect=${encodeURIComponent(
-        "/admin/forum/topics",
-      )}`,
+  const successMessage =
+    getSearchParamValue(
+      resolvedSearchParams.success,
     );
-  }
 
-  const {
-    data: staffResult,
-    error: staffError,
-  } = await supabase.rpc(
-    "current_user_is_staff",
-  );
+  const errorMessage =
+    getSearchParamValue(
+      resolvedSearchParams.error,
+    );
 
-  if (
-    staffError ||
-    staffResult !== true
-  ) {
-    redirect("/forum");
-  }
+  const staff = await requireStaff();
+  const canPurge =
+    staff.role !== "master";
+
+  const supabase = await createClient();
 
   const {
     data: sectionRecords,
@@ -486,6 +481,13 @@ export default async function ForumTopicsManagementPage({
         Boolean(topic.deleted_at),
     ).length;
 
+  const returnTo = createTopicsUrl({
+    page: requestedPage,
+    status,
+    section: selectedSectionId,
+    search,
+  });
+
   return (
     <main className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <nav
@@ -521,20 +523,40 @@ export default async function ForumTopicsManagementPage({
 
       <header className="overflow-hidden border border-[#60482e]/45 bg-[#15100d]">
         <div className="border-b border-[#60482e]/35 bg-[#1a130e] px-5 py-7 sm:px-7">
-          <p className="text-[8px] uppercase tracking-[0.22em] text-amber-500">
-            Forum discussions
-          </p>
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <p className="text-[8px] uppercase tracking-[0.22em] text-amber-500">
+                Forum discussions
+              </p>
 
-          <h1 className="mt-3 font-serif text-3xl text-[#dec69d] sm:text-4xl">
-            Forum Topics
-          </h1>
+              <h1 className="mt-3 font-serif text-3xl text-[#dec69d] sm:text-4xl">
+                Forum Topics
+              </h1>
 
-          <p className="mt-3 max-w-3xl text-sm leading-6 text-[#817567]">
-            Search and inspect active,
-            locked, pinned and deleted
-            discussions across every
-            forum section.
-          </p>
+              <p className="mt-3 max-w-3xl text-sm leading-6 text-[#817567]">
+                Search and inspect active,
+                locked, pinned and deleted
+                discussions across every
+                forum section.
+              </p>
+            </div>
+
+            <div className="flex shrink-0 flex-wrap gap-2">
+              <Link
+                href="/admin/forum/replies"
+                className="border border-[#60482e]/55 bg-[#100c09] px-4 py-3 text-[8px] uppercase tracking-[0.15em] text-[#927b5b] transition hover:border-[#876640] hover:text-[#d8b986]"
+              >
+                Deleted replies
+              </Link>
+
+              <Link
+                href="/admin/forum/moderation"
+                className="border border-[#745633]/65 bg-[#21170f] px-4 py-3 text-[8px] uppercase tracking-[0.15em] text-[#c7a470] transition hover:border-[#a47a44] hover:bg-[#2c1d12] hover:text-[#ebca93]"
+              >
+                Moderation log
+              </Link>
+            </div>
+          </div>
         </div>
 
         <dl className="grid grid-cols-2 divide-x divide-y divide-[#60482e]/30 bg-[#100c09] sm:grid-cols-5 sm:divide-y-0">
@@ -564,6 +586,26 @@ export default async function ForumTopicsManagementPage({
           />
         </dl>
       </header>
+
+      {successMessage ? (
+        <div className="mt-6 border border-emerald-900/60 bg-emerald-950/20 px-5 py-4 text-sm leading-6 text-emerald-300">
+          {successMessage}
+        </div>
+      ) : null}
+
+      {errorMessage ? (
+        <div className="mt-6 border border-red-900/70 bg-red-950/20 px-5 py-4 text-sm leading-6 text-red-300">
+          {errorMessage}
+        </div>
+      ) : null}
+
+      {!canPurge ? (
+        <div className="mt-6 border border-amber-900/60 bg-amber-950/15 px-5 py-4 text-sm leading-6 text-amber-300">
+          Masters may inspect and moderate forum
+          content, but permanent deletion is restricted
+          to owners, administrators and moderators.
+        </div>
+      ) : null}
 
       <section className="mt-6 border border-[#60482e]/45 bg-[#15100d]">
         <form
@@ -616,7 +658,7 @@ export default async function ForumTopicsManagementPage({
                   >
                     {section.name}
                     {!section.is_active
-                      ? " â€” Hidden"
+                      ? " — Hidden"
                       : ""}
                   </option>
                 ),
@@ -780,31 +822,83 @@ export default async function ForumTopicsManagementPage({
                     />
                   </dl>
 
-                  <div className="flex flex-wrap gap-2 lg:justify-end">
+                  <div className="flex flex-col items-stretch gap-2 lg:items-end">
                     {publicTopicUrl &&
                     !topic.deleted_at ? (
-                      <Link
-                        href={
-                          publicTopicUrl
-                        }
-                        className="border border-[#60482e]/50 bg-[#110d0a] px-4 py-3 text-center text-[8px] uppercase tracking-[0.15em] text-[#927b5b] transition hover:border-[#876640] hover:text-[#d8b986]"
-                      >
-                        Open
-                      </Link>
+                      <div className="flex flex-wrap gap-2 lg:justify-end">
+                        <Link
+                          href={publicTopicUrl}
+                          className="border border-[#60482e]/50 bg-[#110d0a] px-4 py-3 text-center text-[8px] uppercase tracking-[0.15em] text-[#927b5b] transition hover:border-[#876640] hover:text-[#d8b986]"
+                        >
+                          Open
+                        </Link>
+
+                        <Link
+                          href={`${publicTopicUrl}#topic-moderation`}
+                          className="border border-[#745633]/65 bg-[#21170f] px-4 py-3 text-center text-[8px] uppercase tracking-[0.15em] text-[#c7a470] transition hover:border-[#a47a44] hover:bg-[#2c1d12] hover:text-[#ebca93]"
+                        >
+                          Moderate
+                        </Link>
+                      </div>
                     ) : null}
 
-                    {publicTopicUrl ? (
-                      <Link
-                        href={`${publicTopicUrl}#topic-moderation`}
-                        className="border border-[#745633]/65 bg-[#21170f] px-4 py-3 text-center text-[8px] uppercase tracking-[0.15em] text-[#c7a470] transition hover:border-[#a47a44] hover:bg-[#2c1d12] hover:text-[#ebca93]"
-                      >
-                        Moderate
-                      </Link>
-                    ) : (
-                      <span className="border border-red-950/50 bg-red-950/10 px-4 py-3 text-[8px] uppercase tracking-[0.15em] text-red-500">
+                    {!publicTopicUrl ? (
+                      <span className="border border-red-950/50 bg-red-950/10 px-4 py-3 text-center text-[8px] uppercase tracking-[0.15em] text-red-500">
                         Missing section
                       </span>
-                    )}
+                    ) : null}
+
+                    {topic.deleted_at &&
+                    canPurge ? (
+                      <details className="w-full border border-red-950/60 bg-red-950/10 lg:max-w-[260px]">
+                        <summary className="cursor-pointer list-none px-4 py-3 text-center text-[8px] uppercase tracking-[0.15em] text-red-400 transition hover:bg-red-950/20 hover:text-red-300">
+                          Permanently delete
+                        </summary>
+
+                        <form
+                          action={permanentlyDeleteForumTopicAction}
+                          className="border-t border-red-950/50 p-4"
+                        >
+                          <input
+                            type="hidden"
+                            name="topicId"
+                            value={topic.id}
+                          />
+
+                          <input
+                            type="hidden"
+                            name="returnTo"
+                            value={returnTo}
+                          />
+
+                          <p className="text-[10px] leading-5 text-red-300/80">
+                            This erases the discussion,
+                            every reply, attached image
+                            and read-history record. It
+                            cannot be undone.
+                          </p>
+
+                          <label className="mt-3 block text-[7px] uppercase tracking-[0.14em] text-red-400">
+                            Type the complete title
+                          </label>
+
+                          <input
+                            name="confirmation"
+                            required
+                            autoComplete="off"
+                            aria-label={`Type “${topic.title}” to confirm permanent deletion`}
+                            className="mt-2 w-full border border-red-900/70 bg-[#100909] px-3 py-2 text-xs text-red-200 outline-none focus:border-red-600"
+                          />
+
+                          <button
+                            type="submit"
+                            className="mt-3 w-full border border-red-800 bg-red-950/30 px-3 py-2.5 text-[8px] uppercase tracking-[0.14em] text-red-300 transition hover:border-red-600 hover:bg-red-950/55"
+                          >
+                            Erase discussion forever
+                          </button>
+                        </form>
+                      </details>
+                    ) : null}
                   </div>
                 </article>
               );

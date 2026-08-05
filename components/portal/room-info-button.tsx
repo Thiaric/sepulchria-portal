@@ -255,13 +255,13 @@ export function RoomInfoButton({
                 </div>
 
                 <div className="p-6 sm:p-8">
-                  <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_220px]">
+                  <div>
                     <div>
                       <p className="text-[8px] uppercase tracking-[0.25em] text-[#8c704b]">
                         About this location
                       </p>
 
-                      <p className="mt-4 whitespace-pre-line text-sm leading-8 text-[#b9aa96]">
+                      <p className="mt-2 whitespace-pre-line text-[15px] leading-7 text-[#b9aa96]">
                         {room.description?.trim() ||
                           "No description has been recorded for this room yet."}
                       </p>

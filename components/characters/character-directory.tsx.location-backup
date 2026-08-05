@@ -3,9 +3,6 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
-import {
-  enterRoomFromMap,
-} from "@/app/(portal)/game/actions";
 import type { PublicCharacterListItem } from "@/lib/characters/get-public-character";
 import type {
   PublicCodexReference,
@@ -30,7 +27,7 @@ export function CharacterDirectory({
   const [race, setRace] = useState("all");
   const [association, setAssociation] =
     useState("all");
-  const [location, setLocation] =
+  const [occupation, setOccupation] =
     useState("all");
   const [presence, setPresence] =
     useState<PresenceFilter>("all");
@@ -71,26 +68,21 @@ export function CharacterDirectory({
     );
   }, [characters]);
 
-  const locations = useMemo(() => {
-    const entries =
-      new Map<string, string>();
-
-    for (const character of characters) {
-      if (character.currentRoom?.id) {
-        entries.set(
-          character.currentRoom.id,
-          character.currentRoom.name,
-        );
-      }
-    }
-
+  const occupations = useMemo(() => {
     return Array.from(
-      entries.entries(),
-    ).sort(
-      ([, firstName], [, secondName]) =>
-        firstName.localeCompare(
-          secondName,
-        ),
+      new Set(
+        characters
+          .map(
+            (character) =>
+              character.occupation,
+          )
+          .filter(
+            (value): value is string =>
+              Boolean(value?.trim()),
+          ),
+      ),
+    ).sort((first, second) =>
+      first.localeCompare(second),
     );
   }, [characters]);
 
@@ -107,8 +99,6 @@ export function CharacterDirectory({
           character.surname,
           character.title,
           character.occupation,
-          character.currentRoom?.name,
-          character.currentRoom?.area?.name,
           character.race?.name,
           character.association?.name,
         ]
@@ -135,10 +125,10 @@ export function CharacterDirectory({
           character.association?.id ===
             association;
 
-        const matchesLocation =
-          location === "all" ||
-          character.currentRoom?.id ===
-            location;
+        const matchesOccupation =
+          occupation === "all" ||
+          character.occupation ===
+            occupation;
 
         const matchesPresence =
           presence === "all" ||
@@ -148,7 +138,7 @@ export function CharacterDirectory({
           matchesSearch &&
           matchesRace &&
           matchesAssociation &&
-          matchesLocation &&
+          matchesOccupation &&
           matchesPresence
         );
       },
@@ -156,7 +146,7 @@ export function CharacterDirectory({
   }, [
     association,
     characters,
-    location,
+    occupation,
     presence,
     race,
     search,
@@ -166,14 +156,14 @@ export function CharacterDirectory({
     search.trim() !== "" ||
     race !== "all" ||
     association !== "all" ||
-    location !== "all" ||
+    occupation !== "all" ||
     presence !== "all";
 
   function resetFilters() {
     setSearch("");
     setRace("all");
     setAssociation("all");
-    setLocation("all");
+    setOccupation("all");
     setPresence("all");
   }
 
@@ -232,24 +222,19 @@ export function CharacterDirectory({
           </DirectorySelect>
 
           <DirectorySelect
-            label="Current location"
-            value={location}
-            onChange={setLocation}
+            label="Occupation"
+            value={occupation}
+            onChange={setOccupation}
           >
             <option value="all">
-              All locations
+              All occupations
             </option>
 
-            {locations.map(
-              ([id, name]) => (
-                <option
-                  key={id}
-                  value={id}
-                >
-                  {name}
-                </option>
-              ),
-            )}
+            {occupations.map((item) => (
+              <option key={item} value={item}>
+                {item}
+              </option>
+            ))}
           </DirectorySelect>
 
           <DirectorySelect
@@ -360,15 +345,13 @@ function CharacterDirectoryCard({
     "offline";
 
   return (
-    <article className="group relative overflow-hidden border border-[#60482e]/45 bg-[#15100d]/95 transition duration-200 hover:-translate-y-0.5 hover:border-[#a17a49] hover:bg-[#1a130e]">
-      <Link
-        href={`/characters/${character.public_slug}?from=characters`}
-        aria-label={`Open ${character.display_name}'s profile`}
-        className="absolute inset-0 z-10"
-      />
+    <Link
+      href={`/characters/${character.public_slug}?from=characters`}
+      className="group relative overflow-hidden border border-[#60482e]/45 bg-[#15100d]/95 transition duration-200 hover:-translate-y-0.5 hover:border-[#a17a49] hover:bg-[#1a130e]"
+    >
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#b78a50]/0 to-transparent transition group-hover:via-[#b78a50]/70" />
 
-      <div className="pointer-events-none grid min-h-[215px] grid-cols-[125px_minmax(0,1fr)]">
+      <div className="grid min-h-[215px] grid-cols-[125px_minmax(0,1fr)]">
         <CharacterPortrait
           src={character.portrait_url}
           name={character.display_name}
@@ -408,48 +391,22 @@ function CharacterDirectoryCard({
           </div>
 
           <div className="mt-auto pt-5">
-            <div className="flex items-end justify-between gap-3">
+            {character.occupation ? (
               <CharacterDetail
-                label="Current location"
-                value={
-                  character.currentRoom?.name ??
-                  "No location"
-                }
-                muted={
-                  !character.currentRoom
-                }
+                label="Occupation"
+                value={character.occupation}
               />
-
-              {character.currentRoom ? (
-                <form
-                  action={enterRoomFromMap}
-                  className="pointer-events-auto relative z-20 shrink-0"
-                >
-                  <input
-                    type="hidden"
-                    name="roomId"
-                    value={
-                      character.currentRoom.id
-                    }
-                  />
-
-                  <button
-                    type="submit"
-                    aria-label={`Go to ${character.currentRoom.name}`}
-                    title={`Go to ${character.currentRoom.name}`}
-                    className="flex h-8 w-8 items-center justify-center border border-[#765937] bg-[#271c12] text-sm text-[#dfc79c] transition hover:border-[#997042] hover:bg-[#3b2919]"
-                  >
-                    <span aria-hidden="true">
-                      →
-                    </span>
-                  </button>
-                </form>
-              ) : null}
-            </div>
+            ) : (
+              <CharacterDetail
+                label="Occupation"
+                value="Not recorded"
+                muted
+              />
+            )}
           </div>
         </div>
       </div>
-    </article>
+    </Link>
   );
 }
 
