@@ -1,0 +1,372 @@
+# Phase A — Core Portal
+
+**Status: essentially complete**
+
+* Registration and login
+* Character creation and approval
+* Public character directory and profiles
+* Ancestries and Associations
+* Attributes and 20-point allocation
+* Health based on `Vigor × 10`
+* Staff character management
+* Portal-wide live presence
+* Dashboard “Your Chronicle”
+* Private messages
+* Forum and moderation
+* Permanent forum deletion tools
+* Realtime room chat
+* Speech/action formatting
+* Whispers
+* Fate actions
+* Dice rolls and checks
+* Six-hour room history
+* HTML role export
+
+# Phase B — Codex and Rules
+
+This now becomes the next phase.
+
+## B1 — Codex architecture
+
+Build the actual Codex system:
+
+* main Codex landing page
+* chapter index
+* category navigation
+* individual entry pages
+* previous/next navigation
+* breadcrumbs
+* searchable content
+* staff editing tools
+* draft/published status
+* sort order
+* images and banners
+* internal links between entries
+
+## B2 — Import and organise the source material
+
+Use the existing source documents:
+
+* The Codex of the First — Chapters I–X
+* AURETH Developer Bible
+
+Organise them into portal sections such as:
+
+* World premise
+* Sepulchria
+* History
+* Ancestries
+* Associations and powers
+* Roles and classes
+* Deities
+* Geography and districts
+* Magic and the Current
+* External threats
+* Setting summary
+
+The player Codex should contain public information, while the Developer Bible should remain staff-only where appropriate.
+
+## B3 — Rules architecture
+
+Create a dedicated Rules section with:
+
+* main Rules landing page
+* rule categories
+* individual rule pages
+* searchable rules
+* related-rule links
+* glossary
+* staff editing tools
+* draft/published workflow
+
+## B4 — Core gameplay rules
+
+Document the systems that already exist:
+
+* how play-by-chat works
+* speech and action formatting
+* whispers
+* Fate actions
+* room presence
+* dice
+* checks
+* attributes
+* 20-point allocation
+* Health
+* current and maximum Health
+* room history
+* exporting roles
+* private messages
+* forum use
+
+## B5 — Define future gameplay rules before coding them
+
+This is the important part. We should formally decide:
+
+* item categories
+* rarity levels
+* equipment slots
+* currency
+* carrying rules
+* weapon types
+* weapon damage
+* armour
+* healing
+* spell categories
+* spell damage
+* resistances
+* incapacitation
+* death
+* mission rewards
+* progression
+* crafting, if any
+* trade and market rules
+
+This prevents later systems from being built around placeholder logic.
+
+## B6 — Codex and Rules integration
+
+Link rules and lore to the rest of the portal:
+
+* ancestry pages linked from character sheets
+* association pages linked from profiles
+* spell entries linked from the spell list
+* item entries linked from inventories
+* room lore linked from maps
+* combat rules linked from weapon and spell panels
+* glossary terms linked throughout the site
+
+# Phase C — Inventory, Items and Economy
+
+After Phase B defines the setting and mechanics.
+
+## C1 — Item database
+
+* item name
+* description
+* image
+* category
+* rarity
+* tags
+* stackable
+* maximum stack
+* unique item
+* tradeable
+* sellable
+* consumable
+* equipable
+* quest item
+* active/inactive status
+* staff item creator and editor
+
+## C2 — Character inventory
+
+* inventory records
+* quantities
+* unique instances
+* acquisition date
+* item source
+* staff give/remove controls
+* player inventory page
+* item detail panel
+* stack handling
+
+## C3 — Equipment
+
+Using the slots defined in Phase B:
+
+* equip
+* unequip
+* slot validation
+* equipped-item display
+* weapon and armour assignment
+* future bonuses and effects
+
+## C4 — Currency
+
+Using the currency defined in Phase B:
+
+* character balance
+* staff adjustments
+* transaction history
+* audit trail
+* prevention of negative balance
+
+## C5 — Market
+
+* shops
+* shop stock
+* purchase prices
+* selling prices
+* buy
+* sell
+* admin shop management
+* stock limits
+* transaction safety
+
+# Phase D — Magic and Combat
+
+Built from the rules established in Phase B.
+
+## D1 — Spell database
+
+* name
+* school or category
+* description
+* requirements
+* damage or healing die
+* range
+* target
+* effects
+* restrictions
+* active/inactive status
+* staff editor
+
+## D2 — Character spells
+
+* learned spells
+* granted spells
+* spell ownership
+* access restrictions
+* character spellbook
+
+## D3 — Weapon and spell damage
+
+* damage rolls
+* attribute interactions
+* critical rules
+* armour
+* resistances
+* damage application
+* healing application
+* Health updates
+* combat log
+
+## D4 — Conditions
+
+* wounded
+* unconscious
+* incapacitated
+* poisoned
+* stunned
+* other setting-specific effects
+
+## D5 — Combat workflow
+
+* attack
+* defend
+* dodge
+* resist
+* cast
+* apply damage
+* heal
+* staff override
+* Fate intervention
+
+# Phase E — Missions and Progression
+
+## E1 — Missions
+
+* mission creation
+* assignment
+* public/private missions
+* objectives
+* clues
+* completion states
+* staff controls
+
+## E2 — Rewards
+
+* items
+* currency
+* spells
+* titles
+* reputation
+* progression points, if used
+
+## E3 — Progression
+
+To be defined from the rules:
+
+* experience or milestone system
+* attribute advancement
+* spell learning
+* reputation
+* association progression
+
+## E4 — Mission history
+
+* active missions
+* completed missions
+* failed missions
+* rewards received
+* staff audit trail
+
+# Phase F — World and Staff Management
+
+## F1 — World management
+
+* area editor
+* room editor
+* map management
+* room connections
+* room images
+* descriptions
+* active/inactive rooms
+
+## F2 — NPC management
+
+* NPC profiles
+* locations
+* shops
+* dialogue
+* mission roles
+* staff controls
+
+## F3 — Events
+
+* global events
+* local events
+* announcements
+* scheduled events
+* temporary room effects
+* event rewards
+
+## F4 — Timeline and history
+
+* world timeline
+* permanent events
+* staff-only notes
+* public historical entries
+
+## F5 — Permissions and auditing
+
+* advanced staff permissions
+* moderation logs
+* item logs
+* currency logs
+* combat logs
+* mission logs
+* content change history
+
+# Phase G — Polish and Launch
+
+* full responsive pass
+* accessibility
+* performance
+* caching
+* security audit
+* RLS audit
+* error handling
+* backups
+* testing
+* staff alpha
+* closed beta
+* content completion
+* launch preparation
+
+So the immediate next step is now:
+
+# **Phase B1 — Codex architecture**
+
+Then we import and organise the lore, followed by the Rules system, before touching inventory or market.
