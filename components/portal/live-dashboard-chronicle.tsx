@@ -500,7 +500,6 @@ function ActiveRoomCard({
 
             <button
               type="submit"
-              disabled={alreadyHere}
               aria-label={
                 alreadyHere
                   ? "Current room"
@@ -514,7 +513,7 @@ function ActiveRoomCard({
               className="flex h-6 w-6 items-center justify-center border border-[#765937] bg-[#271c12] text-[11px] text-[#dfc79c] transition hover:border-[#997042] hover:bg-[#3b2919] disabled:cursor-default disabled:border-[#4d4336] disabled:bg-[#17130f] disabled:text-[#706658]"
             >
               <span aria-hidden="true">
-                {alreadyHere ? "•" : "›"}
+                {alreadyHere ? "⊙" : "➔"}
               </span>
             </button>
           </form>
