@@ -39,6 +39,26 @@ function normaliseRelation<T>(
   return value;
 }
 
+
+function stripRichTextMarkup(
+  value: string,
+): string {
+  return value
+    .replace(
+      /\[img(?:=[^\]]*)?\]([\s\S]*?)\[\/img\]/gi,
+      "$1",
+    )
+    .replace(
+      /\[url=[^\]]+\]([\s\S]*?)\[\/url\]/gi,
+      "$1",
+    )
+    .replace(
+      /\[(?:\/)?(?:b|i|u|s|quote|h2|h3|center|list)\]/gi,
+      "",
+    )
+    .replace(/\[\*\]/gi, "• ");
+}
+
 function escapeHtml(
   value: string,
 ): string {
@@ -1093,7 +1113,7 @@ export async function GET() {
       ${
         room.description
           ? `<p class="room-description">${escapeHtml(
-              room.description,
+              stripRichTextMarkup(room.description),
             ).replaceAll(
               "\n",
               "<br />",

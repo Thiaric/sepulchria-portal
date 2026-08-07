@@ -1,3 +1,4 @@
+import { RichTextContent } from "@/components/editor/rich-text-content";
 import Link from "next/link";
 
 type CodexEntryCardProps = {
@@ -88,9 +89,16 @@ export function CodexEntryCard({
       </div>
 
       <div className="flex flex-1 flex-col p-5">
-        <p className="flex-1 text-sm leading-7 text-[#a99b89]">
-          {summary || "No summary is currently available."}
-        </p>
+        {summary ? (
+          <RichTextContent
+            body={summary}
+            className="flex-1 text-sm leading-7 text-[#a99b89]"
+          />
+        ) : (
+          <p className="flex-1 text-sm leading-7 text-[#a99b89]">
+            No summary is currently available.
+          </p>
+        )}
 
         <Link
           href={`${hrefBase}/${slug}`}

@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import { validateRichText } from "@/lib/rich-text";
 import { createClient } from "@/lib/supabase/server";
 
 const MAX_TITLE_LENGTH = 180;
@@ -431,6 +432,13 @@ export async function createForumTopicAction(
   } else if (body.length < 2) {
     fieldErrors.body =
       "The opening post is too short.";
+  }
+
+  const richTextError =
+    validateRichText(body);
+
+  if (richTextError) {
+    fieldErrors.body = richTextError;
   }
 
   const {

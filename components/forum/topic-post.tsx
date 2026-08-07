@@ -1,7 +1,9 @@
+
 import Link from "next/link";
 
 import DeletePostButton from "@/components/forum/delete-post-button";
 import PostModerationPanel from "@/components/forum/post-moderation-panel";
+import { RichTextContent } from "@/components/editor/rich-text-content";
 
 export type ForumPostCharacter = {
   id: string;
@@ -133,6 +135,27 @@ function shortenText(
     0,
     maximumLength - 3,
   )}...`;
+}
+
+function stripRichTextMarkup(
+  value: string,
+): string {
+  return value
+    .replace(
+      /\[img(?:=[^\]]*)?\]([\s\S]*?)\[\/img\]/gi,
+      "$1",
+    )
+    .replace(
+      /\[url=[^\]]+\]([\s\S]*?)\[\/url\]/gi,
+      "$1",
+    )
+    .replace(
+      /\[(?:\/)?(?:b|i|u|s|quote|h2|h3|center|list)\]/gi,
+      "",
+    )
+    .replace(/\[\*\]/gi, "• ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function isSafeUrl(value: string): boolean {
@@ -313,8 +336,9 @@ export default function TopicPost({
                   />
                 ) : null}
 
-                <MarkdownContent
+                <RichTextContent
                   body={post.body}
+                  className="text-sm leading-7 text-[#cbbba3] sm:text-[15px]"
                 />
 
                 {post.images.length > 0 ? (
@@ -505,7 +529,11 @@ function QuotedPost({
         </p>
       ) : (
         <p className="mt-3 whitespace-pre-wrap text-xs italic leading-6 text-[#9f927f]">
-          {shortenText(post.body)}
+          {shortenText(
+            stripRichTextMarkup(
+              post.body,
+            ),
+          )}
         </p>
       )}
     </blockquote>
@@ -556,234 +584,4 @@ function PostImages({
       )}
     </div>
   );
-}
-
-function MarkdownContent({
-  body,
-}: {
-  body: string;
-}) {
-  const lines = body.split(/\r?\n/);
-  const blocks: React.ReactNode[] = [];
-  let paragraphLines: string[] = [];
-  let listItems: string[] = [];
-  let quoteLines: string[] = [];
-
-  function flushParagraph() {
-    if (paragraphLines.length === 0) {
-      return;
-    }
-
-    const value = paragraphLines
-      .join(" ")
-      .trim();
-
-    if (value) {
-      blocks.push(
-        <p
-          key={`paragraph-${blocks.length}`}
-          className="leading-7 text-[#cbbba3]"
-        >
-          <InlineMarkdown value={value} />
-        </p>,
-      );
-    }
-
-    paragraphLines = [];
-  }
-
-  function flushList() {
-    if (listItems.length === 0) {
-      return;
-    }
-
-    blocks.push(
-      <ul
-        key={`list-${blocks.length}`}
-        className="list-disc space-y-2 pl-6 text-[#cbbba3]"
-      >
-        {listItems.map(
-          (item, index) => (
-            <li
-              key={`${item}-${index}`}
-              className="leading-7"
-            >
-              <InlineMarkdown
-                value={item}
-              />
-            </li>
-          ),
-        )}
-      </ul>,
-    );
-
-    listItems = [];
-  }
-
-  function flushQuote() {
-    if (quoteLines.length === 0) {
-      return;
-    }
-
-    blocks.push(
-      <blockquote
-        key={`quote-${blocks.length}`}
-        className="border-l-2 border-[#775735] bg-[#100c09] px-4 py-3 italic leading-7 text-[#a99b88]"
-      >
-        <InlineMarkdown
-          value={quoteLines.join(" ")}
-        />
-      </blockquote>,
-    );
-
-    quoteLines = [];
-  }
-
-  for (const rawLine of lines) {
-    const line = rawLine.trimEnd();
-
-    if (!line.trim()) {
-      flushParagraph();
-      flushList();
-      flushQuote();
-      continue;
-    }
-
-    if (
-      line.trimStart().startsWith(">")
-    ) {
-      flushParagraph();
-      flushList();
-
-      quoteLines.push(
-        line
-          .trimStart()
-          .replace(/^>\s?/, ""),
-      );
-
-      continue;
-    }
-
-    if (
-      /^[-*]\s+/.test(
-        line.trimStart(),
-      )
-    ) {
-      flushParagraph();
-      flushQuote();
-
-      listItems.push(
-        line
-          .trimStart()
-          .replace(/^[-*]\s+/, ""),
-      );
-
-      continue;
-    }
-
-    flushList();
-    flushQuote();
-    paragraphLines.push(line.trim());
-  }
-
-  flushParagraph();
-  flushList();
-  flushQuote();
-
-  return (
-    <div className="space-y-4 break-words text-sm sm:text-[15px]">
-      {blocks}
-    </div>
-  );
-}
-
-function InlineMarkdown({
-  value,
-}: {
-  value: string;
-}) {
-  const tokens: React.ReactNode[] = [];
-  const pattern =
-    /(\*\*[^*]+\*\*|\*[^*]+\*|\[[^\]]+\]\((https?:\/\/[^)\s]+)\))/g;
-
-  let lastIndex = 0;
-  let match:
-    | RegExpExecArray
-    | null;
-
-  while (
-    (match = pattern.exec(value)) !==
-    null
-  ) {
-    if (match.index > lastIndex) {
-      tokens.push(
-        value.slice(
-          lastIndex,
-          match.index,
-        ),
-      );
-    }
-
-    const token = match[0];
-
-    if (
-      token.startsWith("**") &&
-      token.endsWith("**")
-    ) {
-      tokens.push(
-        <strong
-          key={`strong-${match.index}`}
-          className="font-semibold text-[#e0c9a5]"
-        >
-          {token.slice(2, -2)}
-        </strong>,
-      );
-    } else if (
-      token.startsWith("*") &&
-      token.endsWith("*")
-    ) {
-      tokens.push(
-        <em
-          key={`italic-${match.index}`}
-          className="italic"
-        >
-          {token.slice(1, -1)}
-        </em>,
-      );
-    } else if (
-      token.startsWith("[")
-    ) {
-      const linkMatch =
-        token.match(
-          /^\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)$/,
-        );
-
-      if (linkMatch) {
-        tokens.push(
-          <a
-            key={`link-${match.index}`}
-            href={linkMatch[2]}
-            target="_blank"
-            rel="noreferrer"
-            className="text-[#c39b67] underline decoration-[#6c4d2d] underline-offset-4 transition hover:text-[#e3bc82]"
-          >
-            {linkMatch[1]}
-          </a>,
-        );
-      } else {
-        tokens.push(token);
-      }
-    } else {
-      tokens.push(token);
-    }
-
-    lastIndex =
-      match.index + token.length;
-  }
-
-  if (lastIndex < value.length) {
-    tokens.push(value.slice(lastIndex));
-  }
-
-  return <>{tokens}</>;
 }

@@ -1,3 +1,4 @@
+import { RichTextContent } from "@/components/editor/rich-text-content";
 import Link from "next/link";
 
 type CodexEntryHeroProps = {
@@ -107,9 +108,10 @@ export function CodexEntryHero({
               </div>
 
               {summary ? (
-                <p className="mt-6 max-w-3xl font-serif text-lg leading-8 text-[#c7b494] sm:text-xl">
-                  {summary}
-                </p>
+                <RichTextContent
+                  body={summary}
+                  className="mt-6 max-w-3xl font-serif text-lg leading-8 text-[#c7b494] sm:text-xl"
+                />
               ) : null}
             </div>
           </div>
@@ -138,9 +140,10 @@ export function CodexEntryHero({
         </div>
 
         {description?.trim() ? (
-          <div className="mx-auto mt-7 max-w-4xl whitespace-pre-line text-sm leading-8 text-[#b9aa96] sm:text-[15px]">
-            {description}
-          </div>
+          <RichTextContent
+            body={description}
+            className="mx-auto mt-7 max-w-4xl text-sm leading-8 text-[#b9aa96] sm:text-[15px]"
+          />
         ) : (
           <p className="mx-auto mt-7 max-w-3xl text-center text-sm leading-7 text-[#8f8373]">
             A complete description has not yet been added to this Codex entry.

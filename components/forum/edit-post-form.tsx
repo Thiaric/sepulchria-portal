@@ -1,5 +1,8 @@
 "use client";
 
+import { RichTextEditor } from "@/components/editor/rich-text-editor";
+
+
 import Link from "next/link";
 import {
   useActionState,
@@ -264,72 +267,18 @@ export default function EditPostForm({
             </span>
           </div>
 
-          <div className="mt-2 border border-[#60482e]/50 bg-[#0d0907]">
-            <div className="flex flex-wrap gap-2 border-b border-[#60482e]/35 p-2">
-              <EditorButton
-                label="Bold"
-                onClick={() =>
-                  insertText("**", "**")
-                }
+          <div className="mt-2">
+              <RichTextEditor
+                name="body"
+                value={body}
+                onChange={setBody}
+                maxLength={MAX_BODY_LENGTH}
+                rows={12}
+                placeholder="Edit your post..."
                 disabled={pending}
-              />
-
-              <EditorButton
-                label="Italic"
-                onClick={() =>
-                  insertText("*", "*")
-                }
-                disabled={pending}
-              />
-
-              <EditorButton
-                label="Quote"
-                onClick={() =>
-                  insertText("> ")
-                }
-                disabled={pending}
-              />
-
-              <EditorButton
-                label="Link"
-                onClick={() =>
-                  insertText(
-                    "[Link text](",
-                    ")",
-                  )
-                }
-                disabled={pending}
-              />
-
-              <EditorButton
-                label="List"
-                onClick={() =>
-                  insertText("- ")
-                }
-                disabled={pending}
+                variant="forum"
               />
             </div>
-
-            <textarea
-              ref={textareaRef}
-              id="edit-forum-post-body"
-              name="body"
-              value={body}
-              onChange={(event) =>
-                setBody(
-                  event.target.value.slice(
-                    0,
-                    MAX_BODY_LENGTH,
-                  ),
-                )
-              }
-              rows={18}
-              maxLength={MAX_BODY_LENGTH}
-              required
-              disabled={pending}
-              className="block w-full resize-y bg-transparent px-4 py-4 text-sm leading-7 text-[#d2c1a7] outline-none placeholder:text-[#5f5549] disabled:cursor-not-allowed disabled:opacity-60"
-            />
-          </div>
 
           <p className="mt-2 text-xs leading-5 text-[#776b5d]">
             Simple Markdown is supported:

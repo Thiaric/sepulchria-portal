@@ -6,6 +6,7 @@ import {
   useState,
 } from "react";
 
+import { RichTextContent } from "@/components/editor/rich-text-content";
 import { createClient } from "@/lib/supabase/client";
 
 type AreaRelation = {
@@ -261,10 +262,16 @@ export function RoomInfoButton({
                         About this location
                       </p>
 
-                      <p className="mt-2 whitespace-pre-line text-[15px] leading-7 text-[#b9aa96]">
-                        {room.description?.trim() ||
-                          "No description has been recorded for this room yet."}
-                      </p>
+                      {room.description?.trim() ? (
+                        <RichTextContent
+                          body={room.description}
+                          className="mt-2 text-[15px] leading-7 text-[#b9aa96]"
+                        />
+                      ) : (
+                        <p className="mt-2 text-[15px] leading-7 text-[#b9aa96]">
+                          No description has been recorded for this room yet.
+                        </p>
+                      )}
                     </div>
 
                     
@@ -276,9 +283,10 @@ export function RoomInfoButton({
                         About the area
                       </p>
 
-                      <p className="mt-3 text-sm leading-7 text-[#968875]">
-                        {area.description}
-                      </p>
+                      <RichTextContent
+                        body={area.description}
+                        className="mt-3 text-sm leading-7 text-[#968875]"
+                      />
                     </section>
                   ) : null}
                 </div>

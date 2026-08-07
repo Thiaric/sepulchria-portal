@@ -7,6 +7,7 @@ import {
   PRIVATE_MESSAGE_COOLDOWN_SECONDS,
   PRIVATE_MESSAGE_MAX_LENGTH,
 } from "@/lib/messages/constants";
+import { validateRichText } from "@/lib/rich-text";
 import { createClient } from "@/lib/supabase/server";
 import type {
   MessageActionState,
@@ -141,7 +142,7 @@ export async function sendTypedPrivateMessage(
     }
 
     const richBodyError =
-      validateRichMessageBody(body);
+      validateRichText(body, { maxImages: MAX_INLINE_IMAGES, maxLinks: MAX_LINKS });
 
     if (richBodyError) {
       return {

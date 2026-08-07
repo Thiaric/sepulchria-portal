@@ -3,6 +3,7 @@ import Image from "next/image";
 import { requireStaff } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
+import { RichTextEditor } from "@/components/editor/rich-text-editor";
 import {
   createArea,
   deleteArea,
@@ -195,13 +196,13 @@ export default async function AdminAreasPage() {
 
             <div className="mt-4">
               <AdminField label="Description">
-                <textarea
-                  name="description"
-                  maxLength={5000}
-                  rows={5}
-                  placeholder="Describe this area."
-                  className="w-full resize-y border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm leading-6 text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
-                />
+                <RichTextEditor
+                          name="description"
+                          placeholder="Describe this area."
+                          maxLength={5000}
+                          rows={5}
+                          variant="lore"
+                        />
               </AdminField>
             </div>
 
@@ -343,14 +344,12 @@ export default async function AdminAreasPage() {
 
                     <div className="mt-4">
                       <AdminField label="Description">
-                        <textarea
+                        <RichTextEditor
                           name="description"
+                          defaultValue={area.description ?? ""}
                           maxLength={5000}
                           rows={5}
-                          defaultValue={
-                            area.description ?? ""
-                          }
-                          className="w-full resize-y border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm leading-6 text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                          variant="lore"
                         />
                       </AdminField>
                     </div>

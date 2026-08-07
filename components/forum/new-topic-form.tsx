@@ -1,5 +1,8 @@
 "use client";
 
+import { RichTextEditor } from "@/components/editor/rich-text-editor";
+
+
 import {
   useActionState,
   useMemo,
@@ -531,78 +534,20 @@ export default function NewTopicForm({
               </span>
             </div>
 
-            <div className="mt-2 border border-[#60482e]/50 bg-[#0d0907]">
-              <div className="flex flex-wrap gap-2 border-b border-[#60482e]/35 p-2">
-                <EditorButton
-                  label="Bold"
-                  onClick={() =>
-                    insertText("**", "**")
-                  }
-                  disabled={pending}
-                />
-
-                <EditorButton
-                  label="Italic"
-                  onClick={() =>
-                    insertText("*", "*")
-                  }
-                  disabled={pending}
-                />
-
-                <EditorButton
-                  label="Quote"
-                  onClick={() =>
-                    insertText("> ")
-                  }
-                  disabled={pending}
-                />
-
-                <EditorButton
-                  label="Link"
-                  onClick={() =>
-                    insertText(
-                      "[Link text](",
-                      ")",
-                    )
-                  }
-                  disabled={pending}
-                />
-
-                <EditorButton
-                  label="List"
-                  onClick={() =>
-                    insertText("- ")
-                  }
-                  disabled={pending}
-                />
-              </div>
-
-              <textarea
-                id="forum-topic-body"
+            <div className="mt-2">
+              <RichTextEditor
                 name="body"
                 value={body}
-                onChange={(event) =>
-                  setBody(
-                    event.target.value.slice(
-                      0,
-                      MAX_BODY_LENGTH,
-                    ),
-                  )
-                }
-                rows={18}
+                onChange={setBody}
                 maxLength={MAX_BODY_LENGTH}
-                required
-                disabled={pending}
+                rows={18}
                 placeholder="Write the opening message..."
-                className="block w-full resize-y bg-transparent px-4 py-4 text-sm leading-7 text-[#d2c1a7] outline-none placeholder:text-[#5f5549] disabled:cursor-not-allowed disabled:opacity-60"
+                disabled={pending}
+                variant="forum"
               />
             </div>
 
-            <p className="mt-2 text-xs leading-5 text-[#776b5d]">
-              You can use simple Markdown:
-              **bold**, *italic*, links,
-              quotes and lists.
-            </p>
+            
 
             {state.fieldErrors?.body ? (
               <p className="mt-2 text-xs text-red-400">

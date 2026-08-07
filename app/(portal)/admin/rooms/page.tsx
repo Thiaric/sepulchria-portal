@@ -3,6 +3,7 @@ import Image from "next/image";
 import { requireStaff } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
+import { RichTextEditor } from "@/components/editor/rich-text-editor";
 import {
   createRoom,
   createRoomConnection,
@@ -485,13 +486,13 @@ export default async function AdminRoomsPage() {
 
               <div className="mt-4">
                 <AdminField label="Description">
-                  <textarea
-                    name="description"
-                    maxLength={10000}
-                    rows={6}
-                    placeholder="Describe the location, atmosphere and notable details."
-                    className="w-full resize-y border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm leading-6 text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
-                  />
+                  <RichTextEditor
+                          name="description"
+                          placeholder="Describe the location, atmosphere and notable details."
+                          maxLength={5000}
+                          rows={5}
+                          variant="lore"
+                        />
                 </AdminField>
               </div>
 
@@ -849,18 +850,14 @@ export default async function AdminRoomsPage() {
 
                       <div className="mt-4">
                         <AdminField label="Description">
-                          <textarea
-                            name="description"
-                            maxLength={
-                              10000
-                            }
-                            rows={6}
-                            defaultValue={
-                              room.description ??
-                              ""
-                            }
-                            className="w-full resize-y border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm leading-6 text-[#d7c4a5] outline-none focus:border-[#a17a49]"
-                          />
+                          <RichTextEditor
+                          name="description"
+                          defaultValue={room.description ??
+                              ""}
+                          maxLength={5000}
+                          rows={5}
+                          variant="lore"
+                        />
                         </AdminField>
                       </div>
 

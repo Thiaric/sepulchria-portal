@@ -3,6 +3,7 @@ import Image from "next/image";
 import { requireStaff } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
+import { RichTextEditor } from "@/components/editor/rich-text-editor";
 import {
   createRace,
   deleteRace,
@@ -273,25 +274,25 @@ export default async function AdminRacesPage({
 
               <div className="md:col-span-2">
                 <AdminField label="Summary">
-                  <textarea
-                    name="summary"
-                    maxLength={1000}
-                    rows={3}
-                    placeholder="A brief description shown in lists and selection screens."
-                    className="w-full resize-y border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm leading-6 text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
-                  />
+                  <RichTextEditor
+                          name="summary"
+                          placeholder="A brief description shown in lists and selection screens."
+                          maxLength={1000}
+                          rows={3}
+                          variant="lore"
+                        />
                 </AdminField>
               </div>
 
               <div className="md:col-span-2">
                 <AdminField label="Full description">
-                  <textarea
-                    name="description"
-                    maxLength={20000}
-                    rows={8}
-                    placeholder="Describe appearance, culture, traits, aptitudes and place in the world."
-                    className="w-full resize-y border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm leading-6 text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
-                  />
+                  <RichTextEditor
+                          name="description"
+                          placeholder="Describe appearance, culture, traits, aptitudes and place in the world."
+                          maxLength={20000}
+                          rows={8}
+                          variant="lore"
+                        />
                 </AdminField>
               </div>
 
@@ -563,29 +564,25 @@ export default async function AdminRacesPage({
 
                       <div className="md:col-span-2">
                         <AdminField label="Summary">
-                          <textarea
-                            name="summary"
-                            maxLength={1000}
-                            rows={3}
-                            defaultValue={
-                              race.summary
-                            }
-                            className="w-full resize-y border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm leading-6 text-[#d7c4a5] outline-none focus:border-[#a17a49]"
-                          />
+                          <RichTextEditor
+                          name="summary"
+                          defaultValue={race.summary}
+                          maxLength={1000}
+                          rows={3}
+                          variant="lore"
+                        />
                         </AdminField>
                       </div>
 
                       <div className="md:col-span-2">
                         <AdminField label="Full description">
-                          <textarea
-                            name="description"
-                            maxLength={20000}
-                            rows={8}
-                            defaultValue={
-                              race.description
-                            }
-                            className="w-full resize-y border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm leading-6 text-[#d7c4a5] outline-none focus:border-[#a17a49]"
-                          />
+                          <RichTextEditor
+                          name="description"
+                          defaultValue={race.description}
+                          maxLength={20000}
+                          rows={8}
+                          variant="lore"
+                        />
                         </AdminField>
                       </div>
 
