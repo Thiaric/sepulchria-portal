@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { requireStaff } from "@/lib/auth/require-staff";
+import { richTextToPlainText } from "@/lib/rich-text";
 import { createClient } from "@/lib/supabase/server";
 
 import {
@@ -165,9 +166,10 @@ function getCharacterName(
 function createExcerpt(
   value: string,
 ): string {
-  const normalized = value
-    .replace(/\s+/g, " ")
-    .trim();
+  const normalized =
+    richTextToPlainText(value)
+      .replace(/\s+/g, " ")
+      .trim();
 
   if (!normalized) {
     return "This reply no longer contains visible text.";

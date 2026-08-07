@@ -1,9 +1,9 @@
 import Image from "next/image";
 
+import { RichTextEditor } from "@/components/editor/rich-text-editor";
 import { requireStaff } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
-import { RichTextEditor } from "@/components/editor/rich-text-editor";
 import {
   createArea,
   deleteArea,
@@ -197,12 +197,12 @@ export default async function AdminAreasPage() {
             <div className="mt-4">
               <AdminField label="Description">
                 <RichTextEditor
-                          name="description"
-                          placeholder="Describe this area."
-                          maxLength={5000}
-                          rows={5}
-                          variant="lore"
-                        />
+                            name="description"
+                            placeholder="Describe this area."
+                            maxTextLength={5000}
+                            minHeight={260}
+                            variant="lore"
+                          />
               </AdminField>
             </div>
 
@@ -345,12 +345,12 @@ export default async function AdminAreasPage() {
                     <div className="mt-4">
                       <AdminField label="Description">
                         <RichTextEditor
-                          name="description"
-                          defaultValue={area.description ?? ""}
-                          maxLength={5000}
-                          rows={5}
-                          variant="lore"
-                        />
+                            name="description"
+                            defaultValue={area.description ?? ""}
+                            maxTextLength={5000}
+                            minHeight={260}
+                            variant="lore"
+                          />
                       </AdminField>
                     </div>
 
@@ -437,13 +437,13 @@ function AdminField({
   children: React.ReactNode;
 }) {
   return (
-    <label className="block">
-      <span className="mb-2 block text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+    <div className="block">
+      <div className="mb-2 block text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
         {label}
-      </span>
+      </div>
 
       {children}
-    </label>
+    </div>
   );
 }
 

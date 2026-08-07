@@ -93,6 +93,34 @@ export function PortalContextPanel({
     );
   }
 
+  if (pathname === "/admin/races") {
+    return (
+      <AdminCodexJumpContext
+        table="races"
+        itemLabel="ancestry"
+        pluralLabel="ancestries"
+        anchorPrefix="race"
+        createAnchor="race-new"
+        createLabel="Create new ancestry"
+        eyebrow="Ancestry management"
+      />
+    );
+  }
+
+  if (pathname === "/admin/associations") {
+    return (
+      <AdminCodexJumpContext
+        table="associations"
+        itemLabel="association"
+        pluralLabel="associations"
+        anchorPrefix="association"
+        createAnchor="association-new"
+        createLabel="Create new association"
+        eyebrow="Association management"
+      />
+    );
+  }
+
   const adminCharacterMatch =
     pathname.match(
       /^\/admin\/characters\/([0-9a-f-]+)$/i,
@@ -158,6 +186,216 @@ export function PortalContextPanel({
   }
 
   return <DefaultContext />;
+}
+
+
+type AdminCodexJumpEntry = {
+  id: string;
+  name: string;
+  slug: string;
+  is_active: boolean;
+};
+
+function AdminCodexJumpContext({
+  table,
+  itemLabel,
+  pluralLabel,
+  anchorPrefix,
+  createAnchor,
+  createLabel,
+  eyebrow,
+}: {
+  table: "races" | "associations";
+  itemLabel: string;
+  pluralLabel: string;
+  anchorPrefix: string;
+  createAnchor: string;
+  createLabel: string;
+  eyebrow: string;
+}) {
+  const [entries, setEntries] =
+    useState<AdminCodexJumpEntry[]>([]);
+  const [loading, setLoading] =
+    useState(true);
+  const [error, setError] =
+    useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadEntries() {
+      const supabase = createClient();
+
+      const { data, error } = await supabase
+        .from(table)
+        .select(
+          "id, name, slug, is_active, sort_order",
+        )
+        .order("sort_order", {
+          ascending: true,
+        })
+        .order("name", {
+          ascending: true,
+        });
+
+      if (cancelled) {
+        return;
+      }
+
+      if (error) {
+        setError(error.message);
+        setLoading(false);
+        return;
+      }
+
+      setEntries(
+        (data ?? []).map((entry) => ({
+          id: String(entry.id),
+          name: String(entry.name),
+          slug: String(entry.slug),
+          is_active:
+            entry.is_active === true,
+        })),
+      );
+      setError(null);
+      setLoading(false);
+    }
+
+    void loadEntries();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [table]);
+
+  function jumpTo(anchor: string) {
+    const element =
+      document.getElementById(anchor);
+
+    if (!element) {
+      return;
+    }
+
+    element.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
+    window.history.replaceState(
+      null,
+      "",
+      `#${anchor}`,
+    );
+  }
+
+  return (
+    <div className="flex h-full min-h-0 flex-col">
+      <ContextHeading
+        eyebrow={eyebrow}
+        title="Jump to entry"
+      />
+
+      <p className="mb-4 text-xs leading-6 text-[#938673]">
+        Jump directly to the {itemLabel} you
+        want to edit.
+      </p>
+
+      <button
+        type="button"
+        onClick={() =>
+          jumpTo(createAnchor)
+        }
+        className="mb-4 flex w-full items-center justify-between gap-3 border border-[#765937]/55 bg-[#271c12] px-3 py-3 text-left transition hover:border-[#9a7445] hover:bg-[#342318]"
+      >
+        <span className="text-[9px] uppercase tracking-[0.18em] text-[#d6b37d]">
+          {createLabel}
+        </span>
+
+        <span className="text-sm text-[#a88451]">
+          +
+        </span>
+      </button>
+
+      <div className="mb-3 flex items-center justify-between gap-3 border-y border-[#59432c]/35 py-3">
+        <p className="text-[8px] uppercase tracking-[0.22em] text-[#876a46]">
+          Existing {pluralLabel}
+        </p>
+
+        <span className="flex h-7 min-w-7 items-center justify-center border border-[#59432c]/50 bg-[#100c09] px-2 text-[10px] text-[#b2956f]">
+          {entries.length}
+        </span>
+      </div>
+
+      {error ? (
+        <p className="mb-3 border border-[#743d35] bg-[#2a1512] p-3 text-[11px] leading-5 text-[#d8a49a]">
+          The list could not be loaded:
+          {" "}
+          {error}
+        </p>
+      ) : null}
+
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1">
+        {loading ? (
+          <div className="space-y-2">
+            {Array.from({
+              length: 6,
+            }).map((_, index) => (
+              <div
+                key={index}
+                className="h-11 animate-pulse border border-[#59432c]/30 bg-[#19120d]"
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {entries.map((entry) => (
+              <button
+                key={entry.id}
+                type="button"
+                onClick={() =>
+                  jumpTo(
+                    `${anchorPrefix}-${entry.slug}`,
+                  )
+                }
+                className="group flex w-full items-center justify-between gap-3 border border-[#59432c]/40 bg-[#100c09] px-3 py-3 text-left transition hover:border-[#8d693e] hover:bg-[#1d150f]"
+              >
+                <span className="min-w-0 truncate font-serif text-sm text-[#cbb28a] transition group-hover:text-[#ead0a0]">
+                  {entry.name}
+                </span>
+
+                <span
+                  aria-label={
+                    entry.is_active
+                      ? "Active"
+                      : "Inactive"
+                  }
+                  title={
+                    entry.is_active
+                      ? "Active"
+                      : "Inactive"
+                  }
+                  className={`h-1.5 w-1.5 shrink-0 rounded-full ${
+                    entry.is_active
+                      ? "bg-emerald-600"
+                      : "bg-[#66594b]"
+                  }`}
+                />
+              </button>
+            ))}
+          </div>
+        )}
+
+        {!loading &&
+        !error &&
+        entries.length === 0 ? (
+          <p className="border border-[#59432c]/30 bg-[#100c09]/60 p-3 text-[11px] leading-5 text-[#8f8271]">
+            No {pluralLabel} have been
+            created yet.
+          </p>
+        ) : null}
+      </div>
+    </div>
+  );
 }
 
 type CharacterStatusHistoryEntry = {

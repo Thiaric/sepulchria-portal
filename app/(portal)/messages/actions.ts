@@ -7,8 +7,14 @@ import {
   PRIVATE_MESSAGE_COOLDOWN_SECONDS,
   PRIVATE_MESSAGE_MAX_LENGTH,
 } from "@/lib/messages/constants";
+import {
+  richTextToPlainText,
+  sanitizeRichHtml,
+} from "@/lib/rich-text";
 import { createClient } from "@/lib/supabase/server";
 import type { MessageActionState } from "@/types/messages";
+
+const MAX_BODY_HTML_LENGTH = 100_000;
 
 type OwnedCharacter = {
   id: string;
@@ -101,16 +107,26 @@ export async function sendPrivateMessage(
       formData.get("conversationId") ?? "",
     ).trim();
 
-    const body = String(
+    const rawBody = String(
       formData.get("body") ?? "",
     ).trim();
+
+    if (rawBody.length > MAX_BODY_HTML_LENGTH) {
+      return {
+        ok: false,
+        message: "The formatted message is too large.",
+      };
+    }
+
+    const body = sanitizeRichHtml(rawBody);
+    const visibleBody = richTextToPlainText(body);
 
     const nonce =
       String(
         formData.get("client_nonce") ?? "",
       ).trim() || crypto.randomUUID();
 
-    if (!conversationId || !body) {
+    if (!conversationId || !visibleBody) {
       return {
         ok: false,
         message:
@@ -119,7 +135,7 @@ export async function sendPrivateMessage(
     }
 
     if (
-      body.length >
+      visibleBody.length >
       PRIVATE_MESSAGE_MAX_LENGTH
     ) {
       return {

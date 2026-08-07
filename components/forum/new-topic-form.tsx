@@ -1,7 +1,7 @@
 "use client";
 
 import { RichTextEditor } from "@/components/editor/rich-text-editor";
-
+import { stripRichTextForPreview } from "@/lib/rich-text-shared";
 
 import {
   useActionState,
@@ -524,7 +524,9 @@ export default function NewTopicForm({
               </label>
 
               <span className="text-[9px] text-[#716453]">
-                {body.length.toLocaleString(
+                {stripRichTextForPreview(
+                  body,
+                ).length.toLocaleString(
                   "en-GB",
                 )}
                 /
@@ -536,18 +538,17 @@ export default function NewTopicForm({
 
             <div className="mt-2">
               <RichTextEditor
+                id="forum-topic-body"
                 name="body"
                 value={body}
                 onChange={setBody}
-                maxLength={MAX_BODY_LENGTH}
-                rows={18}
+                maxTextLength={MAX_BODY_LENGTH}
+                minHeight={360}
                 placeholder="Write the opening message..."
                 disabled={pending}
                 variant="forum"
               />
             </div>
-
-            
 
             {state.fieldErrors?.body ? (
               <p className="mt-2 text-xs text-red-400">

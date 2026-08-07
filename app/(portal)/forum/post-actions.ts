@@ -3,10 +3,14 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-import { validateRichText } from "@/lib/rich-text";
+import {
+  richTextToPlainText,
+  sanitizeRichHtml,
+} from "@/lib/rich-text";
 import { createClient } from "@/lib/supabase/server";
 
 const MAX_BODY_LENGTH = 50_000;
+const MAX_BODY_HTML_LENGTH = 250_000;
 const MAX_IMAGES = 8;
 const MAX_IMAGE_URL_LENGTH = 2_000;
 
@@ -331,11 +335,15 @@ export async function editForumPostAction(
     100,
   );
 
-  const body = readText(
+  const rawBody = readText(
     formData,
     "body",
-    MAX_BODY_LENGTH,
+    MAX_BODY_HTML_LENGTH,
   );
+
+  const body = sanitizeRichHtml(rawBody);
+  const visibleBody =
+    richTextToPlainText(body);
 
   const fieldErrors: NonNullable<
     EditForumPostState["fieldErrors"]
@@ -348,19 +356,18 @@ export async function editForumPostAction(
     };
   }
 
-  if (!body) {
+  if (!visibleBody) {
     fieldErrors.body =
       "The post cannot be empty.";
-  } else if (body.length < 2) {
+  } else if (visibleBody.length < 2) {
     fieldErrors.body =
       "The post is too short.";
-  }
-
-  const richTextError =
-    validateRichText(body);
-
-  if (richTextError) {
-    fieldErrors.body = richTextError;
+  } else if (
+    visibleBody.length >
+    MAX_BODY_LENGTH
+  ) {
+    fieldErrors.body =
+      `The post cannot exceed ${MAX_BODY_LENGTH.toLocaleString("en-GB")} visible characters.`;
   }
 
   const {

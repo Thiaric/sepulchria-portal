@@ -7,7 +7,10 @@ import {
   PRIVATE_MESSAGE_COOLDOWN_SECONDS,
   PRIVATE_MESSAGE_MAX_LENGTH,
 } from "@/lib/messages/constants";
-import { validateRichText } from "@/lib/rich-text";
+import {
+  richTextToPlainText,
+  sanitizeRichHtml,
+} from "@/lib/rich-text";
 import { createClient } from "@/lib/supabase/server";
 import type {
   MessageActionState,
@@ -19,68 +22,7 @@ const MESSAGE_MODES: PrivateMessageMode[] = [
   "offgame",
 ];
 
-const MAX_INLINE_IMAGES = 6;
-const MAX_LINKS = 12;
-
-function isSafeHttpUrl(
-  value: string,
-): boolean {
-  try {
-    const parsed = new URL(value);
-
-    return (
-      parsed.protocol === "http:" ||
-      parsed.protocol === "https:"
-    );
-  } catch {
-    return false;
-  }
-}
-
-function validateRichMessageBody(
-  body: string,
-): string | null {
-  const imageMatches = [
-    ...body.matchAll(
-      /\[img\]([\s\S]*?)\[\/img\]/gi,
-    ),
-  ];
-
-  if (
-    imageMatches.length >
-    MAX_INLINE_IMAGES
-  ) {
-    return `You may include a maximum of ${MAX_INLINE_IMAGES} images in one message.`;
-  }
-
-  for (const match of imageMatches) {
-    const url = match[1]?.trim() ?? "";
-
-    if (!isSafeHttpUrl(url)) {
-      return "Every image must use a valid HTTP or HTTPS URL.";
-    }
-  }
-
-  const linkMatches = [
-    ...body.matchAll(
-      /\[url=([^\]]+)\]([\s\S]*?)\[\/url\]/gi,
-    ),
-  ];
-
-  if (linkMatches.length > MAX_LINKS) {
-    return `You may include a maximum of ${MAX_LINKS} links in one message.`;
-  }
-
-  for (const match of linkMatches) {
-    const url = match[1]?.trim() ?? "";
-
-    if (!isSafeHttpUrl(url)) {
-      return "Every link must use a valid HTTP or HTTPS URL.";
-    }
-  }
-
-  return null;
-}
+const MAX_BODY_HTML_LENGTH = 100_000;
 
 function readMessageMode(
   value: FormDataEntryValue | null,
@@ -108,9 +50,19 @@ export async function sendTypedPrivateMessage(
       formData.get("conversationId") ?? "",
     ).trim();
 
-    const body = String(
+    const rawBody = String(
       formData.get("body") ?? "",
     ).trim();
+
+    if (rawBody.length > MAX_BODY_HTML_LENGTH) {
+      return {
+        ok: false,
+        message: "The formatted message is too large.",
+      };
+    }
+
+    const body = sanitizeRichHtml(rawBody);
+    const visibleBody = richTextToPlainText(body);
 
     const messageMode = readMessageMode(
       formData.get("messageMode"),
@@ -121,7 +73,7 @@ export async function sendTypedPrivateMessage(
         formData.get("client_nonce") ?? "",
       ).trim() || crypto.randomUUID();
 
-    if (!conversationId || !body) {
+    if (!conversationId || !visibleBody) {
       return {
         ok: false,
         message:
@@ -130,7 +82,7 @@ export async function sendTypedPrivateMessage(
     }
 
     if (
-      body.length >
+      visibleBody.length >
       PRIVATE_MESSAGE_MAX_LENGTH
     ) {
       return {
@@ -138,16 +90,6 @@ export async function sendTypedPrivateMessage(
         message: `The message exceeds ${PRIVATE_MESSAGE_MAX_LENGTH.toLocaleString(
           "en-GB",
         )} characters.`,
-      };
-    }
-
-    const richBodyError =
-      validateRichText(body, { maxImages: MAX_INLINE_IMAGES, maxLinks: MAX_LINKS });
-
-    if (richBodyError) {
-      return {
-        ok: false,
-        message: richBodyError,
       };
     }
 

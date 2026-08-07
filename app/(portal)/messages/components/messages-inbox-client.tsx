@@ -6,6 +6,9 @@ import {
   useState,
 } from "react";
 
+import { stripRichTextForPreview } from "@/lib/rich-text-shared";
+import { RichTextContentClient } from "@/components/editor/rich-text-content-client";
+
 import { toggleArchive } from "../actions";
 import { startConversationFromDirectory } from "../new-conversation-action";
 
@@ -80,9 +83,8 @@ function compactText(
   value: string,
   max = 150,
 ): string {
-  const normalized = value
-    .replace(/\s+/g, " ")
-    .trim();
+  const normalized =
+    stripRichTextForPreview(value);
 
   if (normalized.length <= max) {
     return normalized;
@@ -298,16 +300,21 @@ export function MessagesInboxClient({
                         </p>
                       ) : null}
 
-                      <p className="mt-2 truncate text-sm text-[#9f907c]">
-                        {conversation.matchSnippet
-                          ? compactText(
-                              conversation.matchSnippet,
-                            )
-                          : conversation
-                              .lastMessage
-                              ?.body ??
-                            "No messages yet."}
-                      </p>
+                      <div className="mt-2 max-h-6 overflow-hidden text-sm leading-6 text-[#9f907c]">
+  {conversation.matchSnippet ? (
+    <RichTextContentClient
+      body={conversation.matchSnippet}
+      className="[&_p]:m-0 [&_h1]:text-sm [&_h2]:text-sm [&_h3]:text-sm [&_img]:hidden [&_table]:hidden"
+    />
+  ) : conversation.lastMessage?.body ? (
+    <RichTextContentClient
+      body={conversation.lastMessage.body}
+      className="[&_p]:m-0 [&_h1]:text-sm [&_h2]:text-sm [&_h3]:text-sm [&_img]:hidden [&_table]:hidden"
+    />
+  ) : (
+    "No messages yet."
+  )}
+</div>
 
                       {conversation.matchSnippet ? (
                         <p className="mt-1 text-[8px] uppercase tracking-[0.16em] text-[#ad7d42]">

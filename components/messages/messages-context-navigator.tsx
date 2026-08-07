@@ -10,6 +10,7 @@ import {
 } from "react";
 import { usePathname } from "next/navigation";
 
+import { stripRichTextForPreview } from "@/lib/rich-text-shared";
 import { createClient } from "@/lib/supabase/client";
 import type { PortalContext } from "@/types/portal";
 
@@ -102,21 +103,8 @@ function compactText(
   value: string,
   maximumLength = 56,
 ): string {
-  const cleaned = value
-    .replace(
-      /\[(?:\/)?(?:b|i|u|s|quote)\]/gi,
-      "",
-    )
-    .replace(
-      /\[url=[^\]]+\]([\s\S]*?)\[\/url\]/gi,
-      "$1",
-    )
-    .replace(
-      /\[img(?:=[^\]]*)?\][\s\S]*?\[\/img\]/gi,
-      "[Image]",
-    )
-    .replace(/\s+/g, " ")
-    .trim();
+  const cleaned =
+    stripRichTextForPreview(value);
 
   if (cleaned.length <= maximumLength) {
     return cleaned;

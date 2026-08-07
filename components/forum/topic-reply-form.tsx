@@ -1,14 +1,13 @@
 "use client";
 
-import { RichTextEditor } from "@/components/editor/rich-text-editor";
-
-
 import {
   useActionState,
   useEffect,
-  useRef,
   useState,
 } from "react";
+
+import { RichTextEditor } from "@/components/editor/rich-text-editor";
+import { stripRichTextForPreview } from "@/lib/rich-text-shared";
 
 import {
   createForumReplyAction,
@@ -78,9 +77,8 @@ function isValidHttpUrl(
 }
 
 function shortenQuote(value: string): string {
-  const normalized = value
-    .replace(/\s+/g, " ")
-    .trim();
+  const normalized =
+    stripRichTextForPreview(value);
 
   if (normalized.length <= 280) {
     return normalized;
@@ -103,11 +101,6 @@ export default function TopicReplyForm({
       initialState,
     );
 
-  const textareaRef =
-    useRef<HTMLTextAreaElement | null>(
-      null,
-    );
-
   const [
     selectedCharacterId,
     setSelectedCharacterId,
@@ -128,59 +121,6 @@ export default function TopicReplyForm({
 
   const [imageError, setImageError] =
     useState("");
-
-  useEffect(() => {
-    if (quotedPost) {
-      textareaRef.current?.focus();
-    }
-  }, [quotedPost]);
-
-  function insertText(
-    prefix: string,
-    suffix = "",
-  ) {
-    const textarea =
-      textareaRef.current;
-
-    if (!textarea) {
-      return;
-    }
-
-    const selectionStart =
-      textarea.selectionStart;
-
-    const selectionEnd =
-      textarea.selectionEnd;
-
-    const selectedText = body.slice(
-      selectionStart,
-      selectionEnd,
-    );
-
-    const insertedText =
-      `${prefix}${selectedText}${suffix}`;
-
-    const nextBody =
-      body.slice(0, selectionStart) +
-      insertedText +
-      body.slice(selectionEnd);
-
-    setBody(nextBody);
-
-    requestAnimationFrame(() => {
-      textarea.focus();
-
-      const cursorPosition =
-        selectionStart +
-        prefix.length +
-        selectedText.length;
-
-      textarea.setSelectionRange(
-        cursorPosition,
-        cursorPosition,
-      );
-    });
-  }
 
   function addImage() {
     const imageUrl =
@@ -382,43 +322,26 @@ export default function TopicReplyForm({
         </div>
 
         <div>
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <label
-              htmlFor="forum-reply-body"
-              className="block text-[9px] uppercase tracking-[0.18em] text-[#9f8765]"
-            >
-              Message
-            </label>
-
-            <span className="text-[9px] text-[#716453]">
-              {body.length.toLocaleString(
-                "en-GB",
-              )}
-              /
-              {MAX_BODY_LENGTH.toLocaleString(
-                "en-GB",
-              )}
-            </span>
-          </div>
+          <label
+            htmlFor="forum-reply-body"
+            className="block text-[9px] uppercase tracking-[0.18em] text-[#9f8765]"
+          >
+            Message
+          </label>
 
           <div className="mt-2">
-              <RichTextEditor
-                name="body"
-                value={body}
-                onChange={setBody}
-                maxLength={MAX_BODY_LENGTH}
-                rows={12}
-                placeholder="Write your reply..."
-                disabled={pending}
-                variant="forum"
-              />
-            </div>
-
-          <p className="mt-2 text-xs leading-5 text-[#776b5d]">
-            Simple Markdown is supported:
-            bold, italic, links, quotes
-            and lists.
-          </p>
+            <RichTextEditor
+              id="forum-reply-body"
+              name="body"
+              value={body}
+              onChange={setBody}
+              maxTextLength={MAX_BODY_LENGTH}
+              minHeight={280}
+              placeholder="Write your reply..."
+              disabled={pending}
+              variant="forum"
+            />
+          </div>
 
           {state.fieldErrors?.body ? (
             <p className="mt-2 text-xs text-red-400">
@@ -551,26 +474,5 @@ export default function TopicReplyForm({
         </div>
       </form>
     </section>
-  );
-}
-
-function EditorButton({
-  label,
-  onClick,
-  disabled,
-}: {
-  label: string;
-  onClick: () => void;
-  disabled: boolean;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      className="border border-[#60482e]/45 bg-[#17100c] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[#9f8765] transition hover:border-[#8d6a40] hover:text-[#d8bd91] disabled:cursor-not-allowed disabled:opacity-50"
-    >
-      {label}
-    </button>
   );
 }

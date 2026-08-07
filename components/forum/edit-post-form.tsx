@@ -1,7 +1,7 @@
 "use client";
 
 import { RichTextEditor } from "@/components/editor/rich-text-editor";
-
+import { stripRichTextForPreview } from "@/lib/rich-text-shared";
 
 import Link from "next/link";
 import {
@@ -269,22 +269,17 @@ export default function EditPostForm({
 
           <div className="mt-2">
               <RichTextEditor
+                id="edit-forum-post-body"
                 name="body"
                 value={body}
                 onChange={setBody}
-                maxLength={MAX_BODY_LENGTH}
-                rows={12}
+                maxTextLength={MAX_BODY_LENGTH}
+                minHeight={320}
                 placeholder="Edit your post..."
                 disabled={pending}
                 variant="forum"
               />
             </div>
-
-          <p className="mt-2 text-xs leading-5 text-[#776b5d]">
-            Simple Markdown is supported:
-            bold, italic, links, quotes
-            and lists.
-          </p>
 
           {state.fieldErrors?.body ? (
             <p className="mt-2 text-xs text-red-400">

@@ -1,9 +1,9 @@
-
 import Link from "next/link";
 
+import { RichTextContent } from "@/components/editor/rich-text-content";
 import DeletePostButton from "@/components/forum/delete-post-button";
 import PostModerationPanel from "@/components/forum/post-moderation-panel";
-import { RichTextContent } from "@/components/editor/rich-text-content";
+import { richTextToPlainText } from "@/lib/rich-text";
 
 export type ForumPostCharacter = {
   id: string;
@@ -135,27 +135,6 @@ function shortenText(
     0,
     maximumLength - 3,
   )}...`;
-}
-
-function stripRichTextMarkup(
-  value: string,
-): string {
-  return value
-    .replace(
-      /\[img(?:=[^\]]*)?\]([\s\S]*?)\[\/img\]/gi,
-      "$1",
-    )
-    .replace(
-      /\[url=[^\]]+\]([\s\S]*?)\[\/url\]/gi,
-      "$1",
-    )
-    .replace(
-      /\[(?:\/)?(?:b|i|u|s|quote|h2|h3|center|list)\]/gi,
-      "",
-    )
-    .replace(/\[\*\]/gi, "• ")
-    .replace(/\s+/g, " ")
-    .trim();
 }
 
 function isSafeUrl(value: string): boolean {
@@ -530,7 +509,7 @@ function QuotedPost({
       ) : (
         <p className="mt-3 whitespace-pre-wrap text-xs italic leading-6 text-[#9f927f]">
           {shortenText(
-            stripRichTextMarkup(
+            richTextToPlainText(
               post.body,
             ),
           )}

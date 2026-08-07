@@ -21,8 +21,8 @@ export function RichMessageEditor({
     <RichTextEditor
       value={value}
       onChange={onChange}
-      maxLength={maxLength}
-      rows={6}
+      maxTextLength={maxLength}
+      minHeight={180}
       placeholder={placeholder}
       variant="message"
     />

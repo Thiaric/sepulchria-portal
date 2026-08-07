@@ -68,7 +68,7 @@ export function CodexEntryHero({
           )}
 
           <div className="relative flex min-h-[360px] items-end p-6 sm:p-8 lg:p-10">
-            <div className="max-w-4xl">
+            <div className="w-full">
               <div className="flex flex-wrap items-center gap-4">
                 <div
                   className="flex h-20 w-20 items-center justify-center overflow-hidden border bg-[#100c09]/90"
@@ -110,7 +110,7 @@ export function CodexEntryHero({
               {summary ? (
                 <RichTextContent
                   body={summary}
-                  className="mt-6 max-w-3xl font-serif text-lg leading-8 text-[#c7b494] sm:text-xl"
+                  className="mt-6 w-full font-serif text-lg leading-8 text-[#c7b494] sm:text-xl"
                 />
               ) : null}
             </div>
@@ -142,7 +142,7 @@ export function CodexEntryHero({
         {description?.trim() ? (
           <RichTextContent
             body={description}
-            className="mx-auto mt-7 max-w-4xl text-sm leading-8 text-[#b9aa96] sm:text-[15px]"
+            className="mt-7 w-full text-sm leading-8 text-[#b9aa96] sm:text-[15px]"
           />
         ) : (
           <p className="mx-auto mt-7 max-w-3xl text-center text-sm leading-7 text-[#8f8373]">

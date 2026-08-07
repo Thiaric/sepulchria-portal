@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { RichTextContentClient } from "@/components/editor/rich-text-content-client";
 
 import { createClient } from "@/lib/supabase/server";
 import { enterRoomFromMap } from "../../game/actions";
@@ -95,10 +96,11 @@ export default async function AreaPage({ params }: Props) {
           </h1>
 
           {safeArea.description ? (
-            <p className="mt-4 max-w-3xl whitespace-pre-line text-sm leading-7 text-[#b7a58c]">
-              {safeArea.description}
-            </p>
-          ) : null}
+  <RichTextContentClient
+    body={safeArea.description}
+    className="mt-4 max-w-3xl text-sm leading-7 text-[#b7a58c]"
+  />
+) : null}
         </div>
       </section>
 
@@ -160,10 +162,11 @@ export default async function AreaPage({ params }: Props) {
                   </h3>
 
                   {room.description ? (
-                    <p className="mt-2 text-sm leading-6 text-[#9e907d]">
-                      {room.description}
-                    </p>
-                  ) : null}
+  <RichTextContentClient
+    body={room.description}
+    className="mt-2 text-sm leading-6 text-[#9e907d]"
+  />
+) : null}
                 </div>
 
                 <form

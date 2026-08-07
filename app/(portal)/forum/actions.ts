@@ -3,11 +3,15 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-import { validateRichText } from "@/lib/rich-text";
+import {
+  richTextToPlainText,
+  sanitizeRichHtml,
+} from "@/lib/rich-text";
 import { createClient } from "@/lib/supabase/server";
 
 const MAX_TITLE_LENGTH = 180;
 const MAX_BODY_LENGTH = 50_000;
+const MAX_BODY_HTML_LENGTH = 250_000;
 const MAX_IMAGES = 8;
 const MAX_IMAGE_URL_LENGTH = 2_000;
 
@@ -405,11 +409,15 @@ export async function createForumTopicAction(
     MAX_TITLE_LENGTH,
   );
 
-  const body = readText(
+  const rawBody = readText(
     formData,
     "body",
-    MAX_BODY_LENGTH,
+    MAX_BODY_HTML_LENGTH,
   );
+
+  const body = sanitizeRichHtml(rawBody);
+  const visibleBody =
+    richTextToPlainText(body);
 
   const fieldErrors: ForumFieldErrors = {};
 
@@ -426,19 +434,18 @@ export async function createForumTopicAction(
       "The title must contain at least 3 characters.";
   }
 
-  if (!body) {
+  if (!visibleBody) {
     fieldErrors.body =
       "Write the opening post.";
-  } else if (body.length < 2) {
+  } else if (visibleBody.length < 2) {
     fieldErrors.body =
       "The opening post is too short.";
-  }
-
-  const richTextError =
-    validateRichText(body);
-
-  if (richTextError) {
-    fieldErrors.body = richTextError;
+  } else if (
+    visibleBody.length >
+    MAX_BODY_LENGTH
+  ) {
+    fieldErrors.body =
+      `The opening post cannot exceed ${MAX_BODY_LENGTH.toLocaleString("en-GB")} visible characters.`;
   }
 
   const {
@@ -699,11 +706,15 @@ export async function createForumReplyAction(
     100,
   );
 
-  const body = readText(
+  const rawBody = readText(
     formData,
     "body",
-    MAX_BODY_LENGTH,
+    MAX_BODY_HTML_LENGTH,
   );
+
+  const body = sanitizeRichHtml(rawBody);
+  const visibleBody =
+    richTextToPlainText(body);
 
   const fieldErrors: ForumFieldErrors = {};
 
@@ -712,12 +723,18 @@ export async function createForumReplyAction(
       "The discussion is invalid.";
   }
 
-  if (!body) {
+  if (!visibleBody) {
     fieldErrors.body =
       "Write a reply before publishing.";
-  } else if (body.length < 2) {
+  } else if (visibleBody.length < 2) {
     fieldErrors.body =
       "The reply is too short.";
+  } else if (
+    visibleBody.length >
+    MAX_BODY_LENGTH
+  ) {
+    fieldErrors.body =
+      `The reply cannot exceed ${MAX_BODY_LENGTH.toLocaleString("en-GB")} visible characters.`;
   }
 
   if (

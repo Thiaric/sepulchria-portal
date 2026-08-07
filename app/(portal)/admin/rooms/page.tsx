@@ -1,9 +1,9 @@
 import Image from "next/image";
 
+import { RichTextEditor } from "@/components/editor/rich-text-editor";
 import { requireStaff } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
-import { RichTextEditor } from "@/components/editor/rich-text-editor";
 import {
   createRoom,
   createRoomConnection,
@@ -487,12 +487,12 @@ export default async function AdminRoomsPage() {
               <div className="mt-4">
                 <AdminField label="Description">
                   <RichTextEditor
-                          name="description"
-                          placeholder="Describe the location, atmosphere and notable details."
-                          maxLength={5000}
-                          rows={5}
-                          variant="lore"
-                        />
+                            name="description"
+                            placeholder="Describe the location, atmosphere and notable details."
+                            maxTextLength={10000}
+                            minHeight={280}
+                            variant="lore"
+                          />
                 </AdminField>
               </div>
 
@@ -851,13 +851,13 @@ export default async function AdminRoomsPage() {
                       <div className="mt-4">
                         <AdminField label="Description">
                           <RichTextEditor
-                          name="description"
-                          defaultValue={room.description ??
+                            name="description"
+                            defaultValue={room.description ??
                               ""}
-                          maxLength={5000}
-                          rows={5}
-                          variant="lore"
-                        />
+                            maxTextLength={10000}
+                            minHeight={280}
+                            variant="lore"
+                          />
                         </AdminField>
                       </div>
 
@@ -1103,13 +1103,13 @@ function AdminField({
   children: React.ReactNode;
 }) {
   return (
-    <label className="block">
-      <span className="mb-2 block text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+    <div className="block">
+      <div className="mb-2 block text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
         {label}
-      </span>
+      </div>
 
       {children}
-    </label>
+    </div>
   );
 }
 

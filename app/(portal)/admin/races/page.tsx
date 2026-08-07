@@ -1,9 +1,10 @@
 import Image from "next/image";
 
+import { RichTextContent } from "@/components/editor/rich-text-content";
+import { RichTextEditor } from "@/components/editor/rich-text-editor";
 import { requireStaff } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
-import { RichTextEditor } from "@/components/editor/rich-text-editor";
 import {
   createRace,
   deleteRace,
@@ -207,7 +208,10 @@ export default async function AdminRacesPage({
           </div>
         ) : null}
 
-        <section className="mt-8 border border-[#60482e]/45 bg-[#15100d] p-5 sm:p-6">
+        <section
+          id="race-new"
+          className="scroll-mt-24 mt-8 border border-[#60482e]/45 bg-[#15100d] p-5 sm:p-6"
+        >
           <p className="text-[9px] uppercase tracking-[0.24em] text-[#8c704b]">
             New ancestry
           </p>
@@ -275,24 +279,24 @@ export default async function AdminRacesPage({
               <div className="md:col-span-2">
                 <AdminField label="Summary">
                   <RichTextEditor
-                          name="summary"
-                          placeholder="A brief description shown in lists and selection screens."
-                          maxLength={1000}
-                          rows={3}
-                          variant="lore"
-                        />
+                            name="summary"
+                            placeholder="A brief description shown in lists and selection screens."
+                            maxTextLength={1100}
+                            minHeight={150}
+                            variant="lore"
+                          />
                 </AdminField>
               </div>
 
               <div className="md:col-span-2">
                 <AdminField label="Full description">
                   <RichTextEditor
-                          name="description"
-                          placeholder="Describe appearance, culture, traits, aptitudes and place in the world."
-                          maxLength={20000}
-                          rows={8}
-                          variant="lore"
-                        />
+                            name="description"
+                            placeholder="Describe appearance, culture, traits, aptitudes and place in the world."
+                            maxTextLength={80000}
+                            minHeight={320}
+                            variant="lore"
+                          />
                 </AdminField>
               </div>
 
@@ -355,7 +359,8 @@ export default async function AdminRacesPage({
           {races.map((race) => (
             <section
               key={race.id}
-              className="overflow-hidden border border-[#60482e]/45 bg-[#15100d]"
+              id={`race-${race.slug}`}
+              className="scroll-mt-24 overflow-hidden border border-[#60482e]/45 bg-[#15100d]"
             >
               {race.banner_url ? (
                 <div className="relative h-44 border-b border-[#60482e]/40 bg-[#0b0807]">
@@ -478,11 +483,7 @@ export default async function AdminRacesPage({
                         {race.name}
                       </h3>
 
-                      {race.summary ? (
-                        <p className="mt-3 max-w-3xl text-sm leading-6 text-[#a99b89]">
-                          {race.summary}
-                        </p>
-                      ) : null}
+                    
                     </div>
 
                     {race.icon_url ? (
@@ -565,24 +566,24 @@ export default async function AdminRacesPage({
                       <div className="md:col-span-2">
                         <AdminField label="Summary">
                           <RichTextEditor
-                          name="summary"
-                          defaultValue={race.summary}
-                          maxLength={1000}
-                          rows={3}
-                          variant="lore"
-                        />
+                            name="summary"
+                            defaultValue={race.summary}
+                            maxTextLength={1100}
+                            minHeight={150}
+                            variant="lore"
+                          />
                         </AdminField>
                       </div>
 
                       <div className="md:col-span-2">
                         <AdminField label="Full description">
                           <RichTextEditor
-                          name="description"
-                          defaultValue={race.description}
-                          maxLength={20000}
-                          rows={8}
-                          variant="lore"
-                        />
+                            name="description"
+                            defaultValue={race.description}
+                            maxTextLength={80000}
+                            minHeight={320}
+                            variant="lore"
+                          />
                         </AdminField>
                       </div>
 
@@ -725,13 +726,13 @@ function AdminField({
   children: React.ReactNode;
 }) {
   return (
-    <label className="block">
-      <span className="mb-2 block text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+    <div className="block">
+      <div className="mb-2 block text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
         {label}
-      </span>
+      </div>
 
       {children}
-    </label>
+    </div>
   );
 }
 

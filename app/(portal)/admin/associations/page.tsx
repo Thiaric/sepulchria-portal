@@ -1,9 +1,10 @@
 import Image from "next/image";
 
+import { RichTextContent } from "@/components/editor/rich-text-content";
+import { RichTextEditor } from "@/components/editor/rich-text-editor";
 import { requireStaff } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
-import { RichTextEditor } from "@/components/editor/rich-text-editor";
 import {
   createAssociation,
   deleteAssociation,
@@ -209,7 +210,10 @@ export default async function AdminAssociationsPage({
           </div>
         ) : null}
 
-        <section className="mt-8 border border-[#60482e]/45 bg-[#15100d] p-5 sm:p-6">
+        <section
+          id="association-new"
+          className="scroll-mt-24 mt-8 border border-[#60482e]/45 bg-[#15100d] p-5 sm:p-6"
+        >
           <p className="text-[9px] uppercase tracking-[0.24em] text-[#8c704b]">
             New association
           </p>
@@ -268,24 +272,24 @@ export default async function AdminAssociationsPage({
               <div className="md:col-span-2">
                 <AdminField label="Summary">
                   <RichTextEditor
-                          name="summary"
-                          placeholder="A brief description shown in lists and selection screens."
-                          maxLength={1000}
-                          rows={3}
-                          variant="lore"
-                        />
+                            name="summary"
+                            placeholder="A brief description shown in lists and selection screens."
+                            maxTextLength={1100}
+                            minHeight={150}
+                            variant="lore"
+                          />
                 </AdminField>
               </div>
 
               <div className="md:col-span-2">
                 <AdminField label="Full description">
                   <RichTextEditor
-                          name="description"
-                          placeholder="Describe the association, its purpose, culture, hierarchy and role in the city."
-                          maxLength={20000}
-                          rows={8}
-                          variant="lore"
-                        />
+                            name="description"
+                            placeholder="Describe the association, its purpose, culture, hierarchy and role in the city."
+                            maxTextLength={80000}
+                            minHeight={320}
+                            variant="lore"
+                          />
                 </AdminField>
               </div>
 
@@ -349,7 +353,8 @@ export default async function AdminAssociationsPage({
             (association) => (
               <section
                 key={association.id}
-                className="overflow-hidden border border-[#60482e]/45 bg-[#15100d]"
+                id={`association-${association.slug}`}
+                className="scroll-mt-24 overflow-hidden border border-[#60482e]/45 bg-[#15100d]"
               >
                 {association.banner_url ? (
                   <div className="relative h-44 border-b border-[#60482e]/40 bg-[#0b0807]">
@@ -478,11 +483,7 @@ export default async function AdminAssociationsPage({
                           {association.name}
                         </h3>
 
-                        {association.summary ? (
-                          <p className="mt-3 max-w-3xl text-sm leading-6 text-[#a99b89]">
-                            {association.summary}
-                          </p>
-                        ) : null}
+                  
                       </div>
 
                       {association.icon_url ? (
@@ -570,24 +571,24 @@ export default async function AdminAssociationsPage({
                         <div className="md:col-span-2">
                           <AdminField label="Summary">
                             <RichTextEditor
-                          name="summary"
-                          defaultValue={association.summary}
-                          maxLength={1000}
-                          rows={3}
-                          variant="lore"
-                        />
+                            name="summary"
+                            defaultValue={association.summary}
+                            maxTextLength={1100}
+                            minHeight={150}
+                            variant="lore"
+                          />
                           </AdminField>
                         </div>
 
                         <div className="md:col-span-2">
                           <AdminField label="Full description">
                             <RichTextEditor
-                          name="description"
-                          defaultValue={association.description}
-                          maxLength={20000}
-                          rows={8}
-                          variant="lore"
-                        />
+                            name="description"
+                            defaultValue={association.description}
+                            maxTextLength={80000}
+                            minHeight={320}
+                            variant="lore"
+                          />
                           </AdminField>
                         </div>
 
@@ -735,13 +736,13 @@ function AdminField({
   children: React.ReactNode;
 }) {
   return (
-    <label className="block">
-      <span className="mb-2 block text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+    <div className="block">
+      <div className="mb-2 block text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
         {label}
-      </span>
+      </div>
 
       {children}
-    </label>
+    </div>
   );
 }
 

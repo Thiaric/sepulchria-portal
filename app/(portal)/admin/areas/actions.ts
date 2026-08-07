@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { requireStaff } from "@/lib/auth/require-staff";
+import { sanitizeRichHtml } from "@/lib/rich-text";
 import { createClient } from "@/lib/supabase/server";
 
 function readRequiredUuid(
@@ -191,10 +192,14 @@ export async function createArea(
     name,
   );
 
-  const description = readOptionalText(
+  const descriptionRaw = readOptionalText(
     formData.get("description"),
-    5000,
+    100000,
   );
+
+  const description = descriptionRaw
+    ? sanitizeRichHtml(descriptionRaw) || null
+    : null;
 
   const imageUrl = readOptionalText(
     formData.get("imageUrl"),
@@ -255,10 +260,14 @@ export async function updateArea(
     name,
   );
 
-  const description = readOptionalText(
+  const descriptionRaw = readOptionalText(
     formData.get("description"),
-    5000,
+    100000,
   );
+
+  const description = descriptionRaw
+    ? sanitizeRichHtml(descriptionRaw) || null
+    : null;
 
   const imageUrl = readOptionalText(
     formData.get("imageUrl"),

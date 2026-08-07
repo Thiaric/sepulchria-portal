@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { RichTextContentClient } from "@/components/editor/rich-text-content-client";
 
 type InteractiveWorldMapProps = {
   areas: {
@@ -311,11 +312,10 @@ export function InteractiveWorldMap({
                 </p>
 
                 {hoveredDatabaseArea.description ? (
-                  <p className="mt-1 text-xs leading-5 text-[#a99984]">
-                    {
-                      hoveredDatabaseArea.description
-                    }
-                  </p>
+                  <RichTextContentClient
+  body={hoveredDatabaseArea.description}
+  className="mt-1 text-xs leading-5 text-[#a99984] [&_p]:m-0 [&_h1]:text-xs [&_h2]:text-xs [&_h3]:text-xs [&_img]:hidden [&_table]:hidden"
+/>
                 ) : null}
               </div>
             ) : null}

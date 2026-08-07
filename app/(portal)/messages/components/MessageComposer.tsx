@@ -8,6 +8,7 @@ import {
 } from "react";
 
 import { PRIVATE_MESSAGE_MAX_LENGTH } from "@/lib/messages/constants";
+import { stripRichTextForPreview } from "@/lib/rich-text-shared";
 import { RichMessageEditor } from "@/components/messages/rich-message-editor";
 import type {
   MessageActionState,
@@ -183,7 +184,9 @@ export default function MessageComposer({
       <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="text-[10px] uppercase tracking-[0.2em] text-[#776b5c]">
-            {body.length.toLocaleString(
+            {stripRichTextForPreview(
+              body,
+            ).length.toLocaleString(
               "en-GB",
             )}{" "}
             /{" "}
@@ -209,7 +212,9 @@ export default function MessageComposer({
           type="submit"
           disabled={
             pending ||
-            !body.trim()
+            !stripRichTextForPreview(
+              body,
+            )
           }
           className={`border px-5 py-3 text-xs uppercase tracking-[0.22em] disabled:cursor-not-allowed disabled:opacity-40 ${
             isOnGame

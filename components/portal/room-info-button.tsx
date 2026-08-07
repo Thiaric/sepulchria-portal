@@ -6,7 +6,7 @@ import {
   useState,
 } from "react";
 
-import { RichTextContent } from "@/components/editor/rich-text-content";
+import { RichTextContentClient } from "@/components/editor/rich-text-content-client";
 import { createClient } from "@/lib/supabase/client";
 
 type AreaRelation = {
@@ -263,7 +263,7 @@ export function RoomInfoButton({
                       </p>
 
                       {room.description?.trim() ? (
-                        <RichTextContent
+                        <RichTextContentClient
                           body={room.description}
                           className="mt-2 text-[15px] leading-7 text-[#b9aa96]"
                         />
@@ -283,7 +283,7 @@ export function RoomInfoButton({
                         About the area
                       </p>
 
-                      <RichTextContent
+                      <RichTextContentClient
                         body={area.description}
                         className="mt-3 text-sm leading-7 text-[#968875]"
                       />

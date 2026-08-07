@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { requireStaff } from "@/lib/auth/require-staff";
+import { sanitizeRichHtml } from "@/lib/rich-text";
 import { createClient } from "@/lib/supabase/server";
 
 function getRequiredText(
@@ -199,16 +200,19 @@ export async function createAssociation(
       name,
     });
 
-    const summary = getTextOrEmpty(
-      formData,
-      "summary",
+    const summary = sanitizeRichHtml(
+      getTextOrEmpty(
+        formData,
+        "summary",
+      ),
     );
 
-    const description =
+    const description = sanitizeRichHtml(
       getTextOrEmpty(
         formData,
         "description",
-      );
+      ),
+    );
 
     const imageUrl = getOptionalText(
       formData,
@@ -345,16 +349,19 @@ export async function updateAssociation(
         associationId,
     });
 
-    const summary = getTextOrEmpty(
-      formData,
-      "summary",
+    const summary = sanitizeRichHtml(
+      getTextOrEmpty(
+        formData,
+        "summary",
+      ),
     );
 
-    const description =
+    const description = sanitizeRichHtml(
       getTextOrEmpty(
         formData,
         "description",
-      );
+      ),
+    );
 
     const imageUrl = getOptionalText(
       formData,

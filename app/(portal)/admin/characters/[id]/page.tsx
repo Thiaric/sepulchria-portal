@@ -824,13 +824,13 @@ function AdminField({
   children: React.ReactNode;
 }) {
   return (
-    <label className="block">
-      <span className="mb-2 block text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+    <div className="block">
+      <div className="mb-2 block text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
         {label}
-      </span>
+      </div>
 
       {children}
-    </label>
+    </div>
   );
 }
 

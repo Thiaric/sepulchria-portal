@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 
+import { richTextToPlainText } from "@/lib/rich-text";
 import { createClient } from "@/lib/supabase/server";
 
 import { MessagesInboxClient } from "./components/messages-inbox-client";
@@ -358,7 +359,9 @@ export default async function MessagesPage({
           other?.title,
           ...messages.map(
             (message) =>
-              message.body,
+              richTextToPlainText(
+                message.body,
+              ),
           ),
         ]
           .filter(Boolean)

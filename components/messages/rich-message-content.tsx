@@ -5,7 +5,5 @@ export function RichMessageContent({
 }: {
   body: string;
 }) {
-  return (
-    <RichTextContent body={body} />
-  );
+  return <RichTextContent body={body} />;
 }
