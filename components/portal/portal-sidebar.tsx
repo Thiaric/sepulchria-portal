@@ -74,7 +74,7 @@ const codexNavigationItems: NavigationItem[] = [
     activePaths: ["/associations"],
   },
   {
-    label: "Spells",
+    label: "Warping",
     icon: "✵",
     href: "/spells",
     activePaths: ["/spells"],
