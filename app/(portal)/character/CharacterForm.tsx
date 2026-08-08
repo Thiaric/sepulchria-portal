@@ -176,6 +176,31 @@ export default function CharacterForm({
   }
 }
 
+    if (step === 4) {
+      if (!getValue("physical_description")) {
+        setValidationError(
+          "Physical description is required before continuing.",
+        );
+        return false;
+      }
+    }
+
+    if (step === 5) {
+      if (!getValue("personality")) {
+        setValidationError(
+          "Personality is required before continuing.",
+        );
+        return false;
+      }
+
+      if (!getValue("biography")) {
+        setValidationError(
+          "Biography is required before continuing.",
+        );
+        return false;
+      }
+    }
+
     if (step === 3 && mode === "create") {
       const attributeNames = [
         "muscles",
@@ -511,6 +536,7 @@ export default function CharacterForm({
               <TextAreaField
                 label="Physical description"
                 name="physical_description"
+              required
                 rows={14}
                 maxLength={10000}
                 defaultValue={
@@ -561,6 +587,7 @@ export default function CharacterForm({
             <TextAreaField
               label="Personality"
               name="personality"
+              required
               rows={9}
               maxLength={10000}
               defaultValue={
@@ -572,6 +599,7 @@ export default function CharacterForm({
             <TextAreaField
               label="Biography"
               name="biography"
+              required
               rows={14}
               maxLength={20000}
               defaultValue={
@@ -701,6 +729,7 @@ function TextAreaField({
   maxLength,
   defaultValue,
   description,
+  required = false,
 }: {
   label: string;
   name: string;
@@ -708,11 +737,13 @@ function TextAreaField({
   maxLength: number;
   defaultValue?: string | null;
   description?: string;
+  required?: boolean;
 }) {
   return (
     <label className="block">
       <span className="mb-2 block text-[11px] uppercase tracking-[0.25em] text-[#a38357]">
         {label}
+        {required ? " *" : ""}
       </span>
 
       {description ? (
@@ -723,6 +754,7 @@ function TextAreaField({
 
       <textarea
         name={name}
+        required={required}
         rows={rows}
         maxLength={maxLength}
         defaultValue={defaultValue ?? ""}

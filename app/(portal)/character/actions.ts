@@ -203,6 +203,45 @@ export async function saveCharacter(
     mode,
   );
 
+  const physicalDescription = text(
+    formData,
+    "physical_description",
+    10000,
+  );
+
+  const personality = text(
+    formData,
+    "personality",
+    10000,
+  );
+
+  const biography = text(
+    formData,
+    "biography",
+    20000,
+  );
+
+  if (!physicalDescription) {
+    redirectWithError(
+      mode,
+      "Physical description is required.",
+    );
+  }
+
+  if (!personality) {
+    redirectWithError(
+      mode,
+      "Personality is required.",
+    );
+  }
+
+  if (!biography) {
+    redirectWithError(
+      mode,
+      "Biography is required.",
+    );
+  }
+
   const payload = {
     first_name: firstName,
     surname,
@@ -253,25 +292,11 @@ export async function saveCharacter(
       portraitUrl || null,
 
     physical_description:
-      text(
-        formData,
-        "physical_description",
-        10000,
-      ) || null,
+      physicalDescription,
 
-    personality:
-      text(
-        formData,
-        "personality",
-        10000,
-      ) || null,
+    personality,
 
-    biography:
-      text(
-        formData,
-        "biography",
-        20000,
-      ) || null,
+    biography,
 
     public_notes:
       text(
