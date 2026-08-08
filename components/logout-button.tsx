@@ -69,7 +69,7 @@ export function LogoutButton() {
         throw signOutError;
       }
 
-      router.replace("/auth/login");
+      router.replace("/homepage");
       router.refresh();
     } catch (error) {
       console.error(
