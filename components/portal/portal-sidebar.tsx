@@ -22,6 +22,7 @@ type NavigationItem = {
   href: string;
   activePaths: string[];
   disabled?: boolean;
+  opensModal?: boolean;
 };
 
 const mainNavigationItems: NavigationItem[] = [
@@ -51,14 +52,14 @@ const codexNavigationItems: NavigationItem[] = [
     icon: "🕮",
     href: "/codex",
     activePaths: ["/codex"],
-    disabled: true,
+    opensModal: true,
   },
   {
-    label: "World",
+    label: "Rules",
     icon: "🌏︎",
-    href: "/world",
-    activePaths: ["/world"],
-    disabled: true,
+    href: "/rules",
+    activePaths: ["/rules"],
+    opensModal: true,
   },
   {
     label: "Ancestries",
@@ -73,10 +74,10 @@ const codexNavigationItems: NavigationItem[] = [
     activePaths: ["/associations"],
   },
   {
-    label: "Spells",
+    label: "Warping",
     icon: "✵",
-    href: "/spells",
-    activePaths: ["/spells"],
+    href: "/warping",
+    activePaths: ["/warping"],
     disabled: true,
   },
 ];
@@ -135,6 +136,13 @@ export function PortalSidebar({
   const pathname = usePathname();
 
   const [
+    modalItem,
+    setModalItem,
+  ] = useState<NavigationItem | null>(
+    null,
+  );
+
+  const [
     currentUnreadForumCount,
     setCurrentUnreadForumCount,
   ] = useState(
@@ -146,6 +154,41 @@ export function PortalSidebar({
       normalizeCount(unreadForumCount),
     );
   }, [unreadForumCount]);
+
+  useEffect(() => {
+    if (!modalItem) {
+      return;
+    }
+
+    const previousOverflow =
+      document.body.style.overflow;
+
+    document.body.style.overflow =
+      "hidden";
+
+    function handleKeyDown(
+      event: KeyboardEvent,
+    ) {
+      if (event.key === "Escape") {
+        setModalItem(null);
+      }
+    }
+
+    window.addEventListener(
+      "keydown",
+      handleKeyDown,
+    );
+
+    return () => {
+      document.body.style.overflow =
+        previousOverflow;
+
+      window.removeEventListener(
+        "keydown",
+        handleKeyDown,
+      );
+    };
+  }, [modalItem]);
 
   const refreshForumCount =
     useCallback(async () => {
@@ -332,19 +375,20 @@ export function PortalSidebar({
       );
     }
 
-    return (
-      <Link
-        key={item.label}
-        href={item.href}
-        className={`flex min-h-9 items-center gap-2 border px-2.5 py-2 text-[11px] transition lg:text-xs ${
-          active
-            ? "border-[#8d6d3e] bg-[#332719] text-[#efd9aa]"
-            : hasNotification &&
-                isForum
-              ? "border-[#a87532] bg-[#24190f] text-[#efd9aa] shadow-[0_0_12px_rgba(168,117,50,0.15)] hover:border-[#c08b43] hover:bg-[#2c1e12]"
-              : "border-transparent text-[#b6a894] hover:border-[#5d4930] hover:bg-[#1d1712] hover:text-[#e8d8ba]"
-        }`}
-      >
+    const itemClassName = `flex min-h-9 items-center gap-2 border px-2.5 py-2 text-[11px] transition lg:text-xs ${
+      item.opensModal &&
+      modalItem?.href === item.href
+        ? "border-[#8d6d3e] bg-[#332719] text-[#efd9aa]"
+        : active
+          ? "border-[#8d6d3e] bg-[#332719] text-[#efd9aa]"
+          : hasNotification &&
+              isForum
+            ? "border-[#a87532] bg-[#24190f] text-[#efd9aa] shadow-[0_0_12px_rgba(168,117,50,0.15)] hover:border-[#c08b43] hover:bg-[#2c1e12]"
+            : "border-transparent text-[#b6a894] hover:border-[#5d4930] hover:bg-[#1d1712] hover:text-[#e8d8ba]"
+    }`;
+
+    const itemContents = (
+      <>
         <span className="w-4 shrink-0 text-center text-[12px] text-[#b68b4f]">
           {item.icon}
         </span>
@@ -354,20 +398,20 @@ export function PortalSidebar({
         </span>
 
         {hasNotification ? (
-  <span
-    title={`${notificationCount} unread forum notification${
-      notificationCount === 1 ? "" : "s"
-    }`}
-    aria-label={`${notificationCount} unread forum notification${
-      notificationCount === 1 ? "" : "s"
-    }`}
-    className="ml-auto inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] text-[7px] font-bold leading-none text-[#ffe1ac]"
-  >
-    {notificationCount > 9
-      ? "9+"
-      : notificationCount}
-  </span>
-) : null}
+          <span
+            title={`${notificationCount} unread forum notification${
+              notificationCount === 1 ? "" : "s"
+            }`}
+            aria-label={`${notificationCount} unread forum notification${
+              notificationCount === 1 ? "" : "s"
+            }`}
+            className="ml-auto inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] text-[7px] font-bold leading-none text-[#ffe1ac]"
+          >
+            {notificationCount > 9
+              ? "9+"
+              : notificationCount}
+          </span>
+        ) : null}
 
         {isMessages ? (
           <UnreadMessageBadge
@@ -377,12 +421,42 @@ export function PortalSidebar({
             variant="inline"
           />
         ) : null}
+      </>
+    );
+
+    if (item.opensModal) {
+      return (
+        <button
+          key={item.label}
+          type="button"
+          onClick={() =>
+            setModalItem(item)
+          }
+          className={`${itemClassName} w-full text-left`}
+          aria-haspopup="dialog"
+          aria-expanded={
+            modalItem?.href === item.href
+          }
+        >
+          {itemContents}
+        </button>
+      );
+    }
+
+    return (
+      <Link
+        key={item.label}
+        href={item.href}
+        className={itemClassName}
+      >
+        {itemContents}
       </Link>
     );
   }
 
   return (
-    <aside className="border-b border-[#6e5535]/30 bg-[#100d0b]/90 lg:sticky lg:top-20 lg:h-[calc(100vh-5rem)] lg:overflow-y-auto lg:border-b-0 lg:border-r">
+    <>
+      <aside className="border-b border-[#6e5535]/30 bg-[#100d0b]/90 lg:sticky lg:top-20 lg:h-[calc(100vh-5rem)] lg:overflow-y-auto lg:border-b-0 lg:border-r">
       <div className="p-3 lg:p-4">
         
 
@@ -412,10 +486,6 @@ export function PortalSidebar({
 
         <div className="mt-5 hidden border-t border-[#6e5535]/30 pt-3 lg:block">
           <span className="block py-1.5 text-[9px] uppercase tracking-[0.18em] text-[#5f5549]">
-            Rules · Coming soon
-          </span>
-
-          <span className="block py-1.5 text-[9px] uppercase tracking-[0.18em] text-[#5f5549]">
             Support · Coming soon
           </span>
 
@@ -425,6 +495,71 @@ export function PortalSidebar({
         </div>
       </div>
     </aside>
+
+      {modalItem ? (
+        <PublicPageModal
+          item={modalItem}
+          onClose={() =>
+            setModalItem(null)
+          }
+        />
+      ) : null}
+    </>
+  );
+}
+
+function PublicPageModal({
+  item,
+  onClose,
+}: {
+  item: NavigationItem;
+  onClose: () => void;
+}) {
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={item.label}
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/75 p-2 sm:p-4"
+      onMouseDown={(event) => {
+        if (
+          event.target ===
+          event.currentTarget
+        ) {
+          onClose();
+        }
+      }}
+    >
+      <div className="flex h-[96vh] w-[98vw] max-w-[1700px] flex-col overflow-hidden border border-[#6e5535]/65 bg-[#090705] shadow-[0_20px_80px_rgba(0,0,0,0.65)]">
+        <div className="flex h-10 shrink-0 items-center justify-between border-b border-[#60482e]/45 bg-[#100c09] px-3">
+          <div className="flex min-w-0 items-center gap-3">
+            <span className="text-[#b68b4f]">
+              {item.icon}
+            </span>
+
+            <span className="truncate font-serif text-sm text-[#d8c096]">
+              {item.label}
+            </span>
+          </div>
+
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label={`Close ${item.label}`}
+            title={`Close ${item.label}`}
+            className="flex h-7 w-7 items-center justify-center border border-[#60482e]/50 bg-[#17110d] text-base leading-none text-[#aa9675] transition hover:border-[#967342] hover:text-[#f1d7a5]"
+          >
+            ×
+          </button>
+        </div>
+
+        <iframe
+          src={item.href}
+          title={item.label}
+          className="min-h-0 w-full flex-1 border-0 bg-[#090705]"
+        />
+      </div>
+    </div>
   );
 }
 
