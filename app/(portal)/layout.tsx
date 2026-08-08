@@ -1,4 +1,5 @@
 import { Suspense, type ReactNode } from "react";
+import { redirect } from "next/navigation";
 
 import { PortalHeader } from "@/components/portal/portal-header";
 import { PortalPresenceHeartbeat } from "@/components/portal/portal-presence-heartbeat";
@@ -24,12 +25,17 @@ export default function PortalLayout({
 async function PortalLayoutContent({
   children,
 }: PortalLayoutProps) {
-  const context = await getPortalContext();
   const supabase = await createClient();
 
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/homepage");
+  }
+
+  const context = await getPortalContext();
 
   let unreadForumCount = 0;
 
