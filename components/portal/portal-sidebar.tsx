@@ -74,10 +74,10 @@ const codexNavigationItems: NavigationItem[] = [
     activePaths: ["/associations"],
   },
   {
-    label: "Warping",
+    label: "Spells",
     icon: "✵",
-    href: "/warping",
-    activePaths: ["/warping"],
+    href: "/spells",
+    activePaths: ["/spells"],
     disabled: true,
   },
 ];
@@ -554,7 +554,7 @@ function PublicPageModal({
         </div>
 
         <iframe
-          src={item.href}
+          src={`${item.href}?embedded=1`}
           title={item.label}
           className="min-h-0 w-full flex-1 border-0 bg-[#090705]"
         />
