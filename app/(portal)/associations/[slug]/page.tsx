@@ -27,7 +27,7 @@ export async function generateMetadata({
     title: `${association.name} | Associations | Sepulchria`,
     description:
       association.summary ||
-      `Read the Sepulchria Codex entry for ${association.name}.`,
+      `Read the Sepulchria Associations entry for ${association.name}.`,
   };
 }
 

@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { ForumTopicFavouriteButton } from "@/components/forum/forum-topic-favourite-button";
 import { createClient } from "@/lib/supabase/server";
 
 type ForumSection = {
@@ -847,12 +848,18 @@ function TopicRow({
 
   return (
     <article
-      className={`group grid gap-4 border transition md:grid-cols-[minmax(0,1fr)_110px_190px] md:items-center ${
+      className={`group relative grid gap-4 border transition md:grid-cols-[minmax(0,1fr)_110px_190px] md:items-center ${
         isUnread
           ? "border-[#a87532] bg-[#1b130d] px-5 py-5 shadow-[inset_0_0_0_1px_rgba(168,117,50,0.14),0_0_16px_rgba(168,117,50,0.07)] hover:bg-[#21170f]"
           : "border-transparent px-5 py-5 hover:bg-[#19120e]"
       } sm:px-6`}
     >
+      <ForumTopicFavouriteButton
+        topicId={topic.id}
+        compact
+        className="absolute right-3 top-3 z-20"
+      />
+
       <Link
         href={`/forum/${sectionSlug}/${topic.slug}`}
         className="flex min-w-0 items-center gap-4"

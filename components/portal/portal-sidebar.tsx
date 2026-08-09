@@ -530,7 +530,7 @@ function PublicPageModal({
         }
       }}
     >
-      <div className="flex h-[96vh] w-[98vw] max-w-[1700px] flex-col overflow-hidden border border-[#6e5535]/65 bg-[#090705] shadow-[0_20px_80px_rgba(0,0,0,0.65)]">
+      <div className="flex h-[85vh] w-[90vw] max-w-[1700px] flex-col overflow-hidden border border-[#6e5535]/65 bg-[#090705] shadow-[0_20px_80px_rgba(0,0,0,0.65)]">
         <div className="flex h-10 shrink-0 items-center justify-between border-b border-[#60482e]/45 bg-[#100c09] px-3">
           <div className="flex min-w-0 items-center gap-3">
             <span className="text-[#b68b4f]">
