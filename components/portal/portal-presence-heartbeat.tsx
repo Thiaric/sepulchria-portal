@@ -26,11 +26,7 @@ export function PortalPresenceHeartbeat({
     }
 
     async function sendHeartbeat() {
-      if (
-        runningRef.current ||
-        document.visibilityState !==
-          "visible"
-      ) {
+      if (runningRef.current) {
         return;
       }
 
@@ -48,8 +44,12 @@ export function PortalPresenceHeartbeat({
       }
     }
 
+    // Register presence immediately when the portal shell mounts.
     void sendHeartbeat();
 
+    // Keep refreshing even when the page is idle or the tab is in the
+    // background. Browsers may throttle background timers, so focus,
+    // visibility and reconnect events also force an immediate refresh.
     const intervalId =
       window.setInterval(
         () => {
@@ -71,6 +71,10 @@ export function PortalPresenceHeartbeat({
       void sendHeartbeat();
     }
 
+    function handleOnline() {
+      void sendHeartbeat();
+    }
+
     document.addEventListener(
       "visibilitychange",
       handleVisibilityChange,
@@ -79,6 +83,11 @@ export function PortalPresenceHeartbeat({
     window.addEventListener(
       "focus",
       handleWindowFocus,
+    );
+
+    window.addEventListener(
+      "online",
+      handleOnline,
     );
 
     return () => {
@@ -94,6 +103,11 @@ export function PortalPresenceHeartbeat({
       window.removeEventListener(
         "focus",
         handleWindowFocus,
+      );
+
+      window.removeEventListener(
+        "online",
+        handleOnline,
       );
     };
   }, [enabled]);

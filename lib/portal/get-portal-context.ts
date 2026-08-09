@@ -3,6 +3,9 @@ import "server-only";
 import { cache } from "react";
 import { redirect } from "next/navigation";
 
+import {
+  PRESENCE_ACTIVE_MINUTES,
+} from "@/lib/game/constants";
 import { createClient } from "@/lib/supabase/server";
 import type {
   PortalCharacter,
@@ -10,8 +13,6 @@ import type {
   PortalContext,
   PortalPresence,
 } from "@/types/portal";
-
-const PRESENCE_ACTIVE_MINUTES = 3;
 
 type CodexRelationRow = {
   id: string;

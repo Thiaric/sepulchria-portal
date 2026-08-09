@@ -6,9 +6,11 @@ import {
   useState,
 } from "react";
 
+import {
+  PRESENCE_ACTIVE_MINUTES,
+} from "@/lib/game/constants";
 import { createClient } from "@/lib/supabase/client";
 
-const PRESENCE_ACTIVE_MINUTES = 3;
 const REFRESH_INTERVAL_MS = 30_000;
 
 type ActiveCityCounterProps = {
@@ -117,12 +119,12 @@ export function ActiveCityCounter({
       title={`${count} active character${
         count === 1 ? "" : "s"
       }`}
-      className="hidden h-10 items-center gap-3 border border-[#614b31] bg-[#17120f] px-3 md:flex"
+      className="flex h-10 items-center gap-2 border border-[#614b31] bg-[#17120f] px-2 sm:gap-3 sm:px-3"
     >
       <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-[#788d5e] shadow-[0_0_10px_rgba(120,141,94,0.55)]" />
 
       <div className="flex items-baseline gap-2">
-        <span className="font-serif text-lg text-[#d8bf91]">
+        <span className="font-serif text-base text-[#d8bf91] sm:text-lg">
           {count}
         </span>
 
