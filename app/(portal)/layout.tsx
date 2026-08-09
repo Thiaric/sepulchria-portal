@@ -1,9 +1,7 @@
 import { Suspense, type ReactNode } from "react";
-import { redirect } from "next/navigation";
 
 import { PortalHeader } from "@/components/portal/portal-header";
-import { PortalPresenceHeartbeat } from "@/components/portal/portal-presence-heartbeat";
-import { PortalRightSidebar } from "@/components/portal/portal-right-sidebar";
+import { PortalResponsiveRightSidebar } from "@/components/portal/portal-responsive-right-sidebar";
 import { PortalSidebar } from "@/components/portal/portal-sidebar";
 import { getPortalContext } from "@/lib/portal/get-portal-context";
 import { createClient } from "@/lib/supabase/server";
@@ -25,20 +23,14 @@ export default function PortalLayout({
 async function PortalLayoutContent({
   children,
 }: PortalLayoutProps) {
+  const context = await getPortalContext();
   const supabase = await createClient();
 
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) {
-    redirect("/homepage");
-  }
-
-  const context = await getPortalContext();
-
   let unreadForumCount = 0;
-
   if (user) {
     const {
       data: unreadForumResult,
@@ -71,13 +63,6 @@ async function PortalLayoutContent({
   return (
     <div className="min-h-screen bg-[#120f0d] text-[#e8dcc4]">
       <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(116,82,42,0.16),_transparent_38%),linear-gradient(to_bottom,_#17120f,_#0d0b0a)]">
-        <PortalPresenceHeartbeat
-          enabled={
-            context.character?.status ===
-            "approved"
-          }
-        />
-
         <PortalHeader context={context} />
 
         <div className="mx-auto grid w-full max-w-[1800px] grid-cols-1 lg:grid-cols-[230px_minmax(0,1fr)] xl:grid-cols-[230px_minmax(0,1fr)_300px]">
@@ -90,11 +75,11 @@ async function PortalLayoutContent({
             }
           />
 
-          <main className="portal-compact min-w-0">
-  {children}
-</main>
+          <main className="min-w-0">
+            {children}
+          </main>
 
-          <PortalRightSidebar
+          <PortalResponsiveRightSidebar
             context={context}
           />
         </div>

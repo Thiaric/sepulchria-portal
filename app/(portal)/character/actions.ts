@@ -362,6 +362,8 @@ export async function saveCharacter(
         .from("races")
         .select("id")
         .eq("id", raceId)
+        .eq("is_active", true)
+        .eq("is_selectable", true)
         .maybeSingle(),
 
       supabase
@@ -371,6 +373,8 @@ export async function saveCharacter(
           "id",
           associationId,
         )
+        .eq("is_active", true)
+        .eq("is_selectable", true)
         .maybeSingle(),
 
       supabase
@@ -390,7 +394,7 @@ export async function saveCharacter(
     if (!raceResult.data) {
       redirectWithError(
         mode,
-        "The selected ancestry is not valid.",
+        "The selected ancestry is not currently available for character creation.",
       );
     }
 
@@ -404,7 +408,7 @@ export async function saveCharacter(
     if (!associationResult.data) {
       redirectWithError(
         mode,
-        "The selected Association is not valid.",
+        "The selected Association is not currently available for character creation.",
       );
     }
 

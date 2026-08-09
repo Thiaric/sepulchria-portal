@@ -22,6 +22,7 @@ type AssociationRow = {
   icon_url: string | null;
   colour: string | null;
   is_active: boolean;
+  is_selectable: boolean;
   sort_order: number;
   created_at: string;
   updated_at: string;
@@ -39,6 +40,7 @@ type AssociationQueryRow = {
   icon_url: string | null;
   colour: string | null;
   is_active: boolean;
+  is_selectable: boolean;
   sort_order: number;
   created_at: string;
   updated_at: string;
@@ -115,6 +117,7 @@ export default async function AdminAssociationsPage({
       icon_url,
       colour,
       is_active,
+      is_selectable,
       sort_order,
       created_at,
       updated_at,
@@ -147,6 +150,7 @@ export default async function AdminAssociationsPage({
       icon_url: association.icon_url,
       colour: association.colour,
       is_active: association.is_active,
+      is_selectable: association.is_selectable,
       sort_order: association.sort_order,
       created_at: association.created_at,
       updated_at: association.updated_at,
@@ -327,16 +331,29 @@ export default async function AdminAssociationsPage({
             </div>
 
             <div className="mt-5 flex flex-wrap items-center justify-between gap-4">
-              <label className="flex items-center gap-3 text-sm text-[#bbaa90]">
-                <input
-                  type="checkbox"
-                  name="isActive"
-                  defaultChecked
-                  className="h-4 w-4 accent-[#8b673d]"
-                />
+              <div className="flex flex-wrap items-center gap-6">
+                <label className="flex items-center gap-3 text-sm text-[#bbaa90]">
+                  <input
+                    type="checkbox"
+                    name="isActive"
+                    defaultChecked
+                    className="h-4 w-4 accent-[#8b673d]"
+                  />
 
-                Active and selectable
-              </label>
+                  Active
+                </label>
+
+                <label className="flex items-center gap-3 text-sm text-[#bbaa90]">
+                  <input
+                    type="checkbox"
+                    name="isSelectable"
+                    defaultChecked
+                    className="h-4 w-4 accent-[#8b673d]"
+                  />
+
+                  Selectable at character creation
+                </label>
+              </div>
 
               <button
                 type="submit"
@@ -423,11 +440,19 @@ export default async function AdminAssociationsPage({
                     </div>
 
                     <div className="mt-4 text-center">
-                      <StatusBadge
-                        isActive={
-                          association.is_active
-                        }
-                      />
+                      <div className="flex flex-wrap justify-center gap-2">
+                        <StatusBadge
+                          isActive={
+                            association.is_active
+                          }
+                        />
+
+                        <SelectableBadge
+                          isSelectable={
+                            association.is_selectable
+                          }
+                        />
+                      </div>
 
                       <p className="mt-3 text-[10px] uppercase tracking-[0.16em] text-[#887967]">
                         /{association.slug}
@@ -638,19 +663,33 @@ export default async function AdminAssociationsPage({
                       </div>
 
                       <div className="mt-5 flex flex-wrap items-center justify-between gap-4">
-                        <label className="flex items-center gap-3 text-sm text-[#bbaa90]">
-                          <input
-                            type="checkbox"
-                            name="isActive"
-                            defaultChecked={
-                              association.is_active
-                            }
-                            className="h-4 w-4 accent-[#8b673d]"
-                          />
+                        <div className="flex flex-wrap items-center gap-6">
+                          <label className="flex items-center gap-3 text-sm text-[#bbaa90]">
+                            <input
+                              type="checkbox"
+                              name="isActive"
+                              defaultChecked={
+                                association.is_active
+                              }
+                              className="h-4 w-4 accent-[#8b673d]"
+                            />
 
-                          Active and
-                          selectable
-                        </label>
+                            Active
+                          </label>
+
+                          <label className="flex items-center gap-3 text-sm text-[#bbaa90]">
+                            <input
+                              type="checkbox"
+                              name="isSelectable"
+                              defaultChecked={
+                                association.is_selectable
+                              }
+                              className="h-4 w-4 accent-[#8b673d]"
+                            />
+
+                            Selectable at character creation
+                          </label>
+                        </div>
 
                         <button
                           type="submit"
@@ -774,6 +813,26 @@ function StatusBadge({
       {isActive
         ? "Active"
         : "Inactive"}
+    </span>
+  );
+}
+
+function SelectableBadge({
+  isSelectable,
+}: {
+  isSelectable: boolean;
+}) {
+  return (
+    <span
+      className={
+        isSelectable
+          ? "inline-block border border-[#8b673d]/70 bg-black/20 px-2.5 py-1 text-[8px] uppercase tracking-[0.18em] text-[#d6b273]"
+          : "inline-block border border-stone-600/60 bg-black/20 px-2.5 py-1 text-[8px] uppercase tracking-[0.18em] text-stone-400"
+      }
+    >
+      {isSelectable
+        ? "Selectable"
+        : "Not selectable"}
     </span>
   );
 }

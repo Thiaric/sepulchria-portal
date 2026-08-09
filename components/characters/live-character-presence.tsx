@@ -355,9 +355,7 @@ export function LiveCharacterPresence({
           Live record
         </p>
 
-        <h2 className="mt-2 font-serif text-xl text-[#dec89f]">
-          Current Presence
-        </h2>
+        
       </div>
 
       <div className="mt-5">
@@ -397,9 +395,7 @@ export function LiveCharacterPresence({
         </div>
       </dl>
 
-      <p className="mt-auto border-t border-[#60482e]/30 pt-4 text-[8px] uppercase tracking-[0.14em] text-[#665a4c]">
-        Updates automatically
-      </p>
+      
     </section>
   );
 }

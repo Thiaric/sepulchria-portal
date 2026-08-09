@@ -245,6 +245,11 @@ export async function createRace(
       "isActive",
     );
 
+    const isSelectable = getCheckbox(
+      formData,
+      "isSelectable",
+    );
+
     const { error } = await supabase
       .from("races")
       .insert({
@@ -258,6 +263,7 @@ export async function createRace(
         colour,
         sort_order: sortOrder,
         is_active: isActive,
+        is_selectable: isSelectable,
         updated_at:
           new Date().toISOString(),
       });
@@ -386,6 +392,11 @@ export async function updateRace(
       "isActive",
     );
 
+    const isSelectable = getCheckbox(
+      formData,
+      "isSelectable",
+    );
+
     const { error: updateError } =
       await supabase
         .from("races")
@@ -400,6 +411,7 @@ export async function updateRace(
           colour,
           sort_order: sortOrder,
           is_active: isActive,
+          is_selectable: isSelectable,
           updated_at:
             new Date().toISOString(),
         })

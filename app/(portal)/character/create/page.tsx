@@ -4,8 +4,6 @@ import { redirect } from "next/navigation";
 import CharacterForm from "../CharacterForm";
 import { createCharacter } from "./actions";
 
-import { getAssociations } from "@/lib/associations";
-import { getRaces } from "@/lib/races";
 import { createClient } from "@/lib/supabase/server";
 
 type CreateCharacterPageProps = {
@@ -46,11 +44,52 @@ export default async function CreateCharacterPage({
     redirect("/character");
   }
 
-  const [races, associations] =
+  const [racesResult, associationsResult] =
     await Promise.all([
-      getRaces(),
-      getAssociations(),
+      supabase
+        .from("races")
+        .select(
+          "id, name, slug, summary, icon_url, colour",
+        )
+        .eq("is_active", true)
+        .eq("is_selectable", true)
+        .order("sort_order", {
+          ascending: true,
+        })
+        .order("name", {
+          ascending: true,
+        }),
+
+      supabase
+        .from("associations")
+        .select(
+          "id, name, slug, summary, icon_url, colour",
+        )
+        .eq("is_active", true)
+        .eq("is_selectable", true)
+        .order("sort_order", {
+          ascending: true,
+        })
+        .order("name", {
+          ascending: true,
+        }),
     ]);
+
+  if (racesResult.error) {
+    throw new Error(
+      `Unable to load selectable ancestries: ${racesResult.error.message}`,
+    );
+  }
+
+  if (associationsResult.error) {
+    throw new Error(
+      `Unable to load selectable Associations: ${associationsResult.error.message}`,
+    );
+  }
+
+  const races = racesResult.data ?? [];
+  const associations =
+    associationsResult.data ?? [];
 
   return (
     <main className="min-h-screen bg-[#100d0b] px-5 py-8 text-[#e7d5b0] sm:py-10">

@@ -245,6 +245,11 @@ export async function createAssociation(
       "isActive",
     );
 
+    const isSelectable = getCheckbox(
+      formData,
+      "isSelectable",
+    );
+
     const { error } = await supabase
       .from("associations")
       .insert({
@@ -258,6 +263,7 @@ export async function createAssociation(
         colour,
         sort_order: sortOrder,
         is_active: isActive,
+        is_selectable: isSelectable,
         updated_at:
           new Date().toISOString(),
       });
@@ -394,6 +400,11 @@ export async function updateAssociation(
       "isActive",
     );
 
+    const isSelectable = getCheckbox(
+      formData,
+      "isSelectable",
+    );
+
     const { error: updateError } =
       await supabase
         .from("associations")
@@ -408,6 +419,7 @@ export async function updateAssociation(
           colour,
           sort_order: sortOrder,
           is_active: isActive,
+          is_selectable: isSelectable,
           updated_at:
             new Date().toISOString(),
         })
