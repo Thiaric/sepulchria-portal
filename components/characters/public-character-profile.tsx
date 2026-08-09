@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { startConversation } from "@/app/(portal)/messages/actions";
 import { CharacterAttributesDisplay } from "@/components/characters/character-attributes-display";
+import { CharacterExpertiseTotal } from "@/components/characters/character-expertise-total";
 import { CharacterHealthDisplay } from "@/components/characters/character-health-display";
 import { LiveCharacterPresence } from "@/components/characters/live-character-presence";
 import type {
@@ -15,7 +16,6 @@ type PublicCharacterProfileProps = {
   returnLabel: string;
   canMessage: boolean;
 };
-
 
 function formatDate(
   value: string | null,
@@ -238,8 +238,6 @@ export function PublicCharacterProfileView({
         </div>
       </section>
 
-
-
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_300px]">
         <div className="space-y-5">
           <ProfileSection
@@ -284,6 +282,10 @@ export function PublicCharacterProfileView({
             </h2>
 
             <dl className="mt-5 space-y-5">
+              <CharacterExpertiseTotal
+                characterId={character.id}
+              />
+
               <Detail
                 label="Date of birth"
                 value={
@@ -311,17 +313,22 @@ export function PublicCharacterProfileView({
               />
 
               <Detail
-  label="Ancestry"
-  value={character.race?.name ?? null}
-/>
+                label="Ancestry"
+                value={
+                  character.race?.name ??
+                  null
+                }
+              />
 
-<Detail
-  label="Association"
-  value={character.association?.name ?? null}
-/>
+              <Detail
+                label="Association"
+                value={
+                  character.association
+                    ?.name ?? null
+                }
+              />
             </dl>
           </section>
-
         </aside>
       </div>
     </article>

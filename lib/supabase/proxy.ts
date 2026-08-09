@@ -8,6 +8,8 @@ const PUBLIC_ROUTES = [
   "/homepage",
   "/codex",
   "/rules",
+  "/terms",
+  "/privacy",
   "/auth",
 ];
 
