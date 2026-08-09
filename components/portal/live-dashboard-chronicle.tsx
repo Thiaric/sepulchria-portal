@@ -398,7 +398,7 @@ export function LiveDashboardChronicle({
           </p>
 
           <p className="mt-1 text-[11px] text-[#8f8271]">
-            All active characters · rooms below
+            All active characters · locations below
           </p>
         </div>
 

@@ -383,8 +383,8 @@ export default async function AdminRoomsPage() {
             <AdminCounter>
               {rooms.length}{" "}
               {rooms.length === 1
-                ? "room"
-                : "rooms"}
+                ? "Location"
+                : "Locations"}
             </AdminCounter>
 
             <AdminCounter>
@@ -519,7 +519,7 @@ export default async function AdminRoomsPage() {
           ) : (
             <p className="mt-5 border border-amber-900/40 bg-amber-950/10 p-4 text-sm leading-6 text-amber-500">
               Create at least one area
-              before creating rooms.
+              before creating locations.
             </p>
           )}
         </section>
@@ -530,7 +530,7 @@ export default async function AdminRoomsPage() {
           </p>
 
           <h3 className="mt-2 font-serif text-2xl text-[#dfc99f]">
-            Create a room connection
+            Create a location connection
           </h3>
 
           {rooms.length >= 2 ? (
@@ -641,7 +641,7 @@ export default async function AdminRoomsPage() {
             </form>
           ) : (
             <p className="mt-5 border border-amber-900/40 bg-amber-950/10 p-4 text-sm leading-6 text-amber-500">
-              At least two rooms are
+              At least two locations are
               required to create a
               connection.
             </p>
@@ -933,7 +933,7 @@ export default async function AdminRoomsPage() {
           {rooms.length === 0 ? (
             <section className="border border-[#60482e]/45 bg-[#15100d] p-10 text-center">
               <p className="font-serif text-xl text-[#b9a88f]">
-                No rooms were found.
+                No locations were found.
               </p>
             </section>
           ) : null}

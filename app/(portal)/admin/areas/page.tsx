@@ -128,7 +128,7 @@ export default async function AdminAreasPage() {
 
             <p className="mt-3 max-w-3xl text-sm leading-7 text-[#a99b89]">
               Create and organise the districts
-              that contain Sepulchria&apos;s rooms.
+              that contain Sepulchria&apos;s locations.
             </p>
           </div>
 

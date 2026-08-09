@@ -64,7 +64,7 @@ export default async function AreaPage({ params }: Props) {
     .order("name", { ascending: true });
 
   if (roomsError) {
-    throw new Error(`Unable to load rooms: ${roomsError.message}`);
+    throw new Error(`Unable to load locations: ${roomsError.message}`);
   }
 
   const safeArea = area as Area;
@@ -112,7 +112,7 @@ export default async function AreaPage({ params }: Props) {
             </p>
 
             <h2 className="mt-1 font-serif text-2xl text-[#dec69a]">
-              Rooms
+              Locations
             </h2>
           </div>
 
