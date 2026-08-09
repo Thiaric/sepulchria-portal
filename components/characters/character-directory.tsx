@@ -6,6 +6,9 @@ import { useMemo, useState } from "react";
 import {
   enterRoomFromMap,
 } from "@/app/(portal)/game/actions";
+import {
+  startConversation,
+} from "@/app/(portal)/messages/actions";
 import type { PublicCharacterListItem } from "@/lib/characters/get-public-character";
 import type {
   PublicCodexReference,
@@ -14,6 +17,7 @@ import type {
 
 type CharacterDirectoryProps = {
   characters: PublicCharacterListItem[];
+  viewerCharacterId: string | null;
 };
 
 type PresenceFilter =
@@ -25,6 +29,7 @@ type PresenceFilter =
 
 export function CharacterDirectory({
   characters,
+  viewerCharacterId,
 }: CharacterDirectoryProps) {
   const [search, setSearch] = useState("");
   const [race, setRace] = useState("all");
@@ -316,6 +321,9 @@ export function CharacterDirectory({
               <CharacterDirectoryCard
                 key={character.id}
                 character={character}
+                viewerCharacterId={
+                  viewerCharacterId
+                }
               />
             ),
           )}
@@ -352,12 +360,18 @@ export function CharacterDirectory({
 
 function CharacterDirectoryCard({
   character,
+  viewerCharacterId,
 }: {
   character: PublicCharacterListItem;
+  viewerCharacterId: string | null;
 }) {
   const status =
     character.presence?.status ??
     "offline";
+
+  const canMessage =
+    viewerCharacterId !== null &&
+    viewerCharacterId !== character.id;
 
   return (
     <article className="group relative overflow-hidden border border-[#60482e]/45 bg-[#15100d]/95 transition duration-200 hover:-translate-y-0.5 hover:border-[#a17a49] hover:bg-[#1a130e]">
@@ -366,6 +380,7 @@ function CharacterDirectoryCard({
         aria-label={`Open ${character.display_name}'s profile`}
         className="absolute inset-0 z-10"
       />
+
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#b78a50]/0 to-transparent transition group-hover:via-[#b78a50]/70" />
 
       <div className="pointer-events-none grid min-h-[215px] grid-cols-[125px_minmax(0,1fr)]">
@@ -420,31 +435,58 @@ function CharacterDirectoryCard({
                 }
               />
 
-              {character.currentRoom ? (
-                <form
-                  action={enterRoomFromMap}
-                  className="pointer-events-auto relative z-20 shrink-0"
-                >
-                  <input
-                    type="hidden"
-                    name="roomId"
-                    value={
-                      character.currentRoom.id
+              <div className="pointer-events-auto relative z-20 flex shrink-0 items-center gap-1.5">
+                {canMessage ? (
+                  <form
+                    action={
+                      startConversation
                     }
-                  />
-
-                  <button
-                    type="submit"
-                    aria-label={`Go to ${character.currentRoom.name}`}
-                    title={`Go to ${character.currentRoom.name}`}
-                    className="flex h-8 w-8 items-center justify-center border border-[#765937] bg-[#271c12] text-sm text-[#dfc79c] transition hover:border-[#997042] hover:bg-[#3b2919]"
                   >
-                    <span aria-hidden="true">
-                      →
-                    </span>
-                  </button>
-                </form>
-              ) : null}
+                    <input
+                      type="hidden"
+                      name="recipientId"
+                      value={character.id}
+                    />
+
+                    <button
+                      type="submit"
+                      aria-label={`Send a private message to ${character.display_name}`}
+                      title={`Message ${character.display_name}`}
+                      className="flex h-8 w-8 items-center justify-center border border-[#765937] bg-[#271c12] text-[13px] text-[#dfc79c] transition hover:border-[#997042] hover:bg-[#3b2919] hover:text-[#f0d5a5]"
+                    >
+                      <span aria-hidden="true">
+                        ✉
+                      </span>
+                    </button>
+                  </form>
+                ) : null}
+
+                {character.currentRoom ? (
+                  <form
+                    action={enterRoomFromMap}
+                  >
+                    <input
+                      type="hidden"
+                      name="roomId"
+                      value={
+                        character.currentRoom
+                          .id
+                      }
+                    />
+
+                    <button
+                      type="submit"
+                      aria-label={`Go to ${character.currentRoom.name}`}
+                      title={`Go to ${character.currentRoom.name}`}
+                      className="flex h-8 w-8 items-center justify-center border border-[#765937] bg-[#271c12] text-sm text-[#dfc79c] transition hover:border-[#997042] hover:bg-[#3b2919]"
+                    >
+                      <span aria-hidden="true">
+                        →
+                      </span>
+                    </button>
+                  </form>
+                ) : null}
+              </div>
             </div>
           </div>
         </div>
@@ -552,7 +594,7 @@ function CharacterDetail({
   muted?: boolean;
 }) {
   return (
-    <div>
+    <div className="min-w-0">
       <p className="text-[8px] uppercase tracking-[0.18em] text-[#735f47]">
         {label}
       </p>

@@ -5,6 +5,7 @@ import {
   useState,
 } from "react";
 import { X } from "lucide-react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { ForumSectionActivityContext } from "@/components/portal/forum-section-activity-context";
@@ -128,20 +129,32 @@ export function PortalResponsiveRightSidebar({
 
         <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-hidden p-4">
           <section className="shrink-0 border border-[#60482e]/45 bg-[#15100d] p-4">
-            <p className="text-[8px] uppercase tracking-[0.28em] text-[#876a46]">
-              Current location
-            </p>
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-[8px] uppercase tracking-[0.28em] text-[#876a46]">
+                  Current location
+                </p>
 
-            <h2 className="mt-2 truncate font-serif text-xl text-[#d6bd91]">
-              {character?.currentRoom
-                ?.name ?? "No location"}
-            </h2>
+                <h2 className="mt-2 truncate font-serif text-xl text-[#d6bd91]">
+                  {character?.currentRoom
+                    ?.name ?? "No location"}
+                </h2>
 
-            <p className="mt-1 truncate text-[11px] text-[#8f8271]">
-              {character?.currentRoom
-                ?.area?.name ??
-                "Your character has not entered the city yet."}
-            </p>
+                <p className="mt-1 truncate text-[11px] text-[#8f8271]">
+                  {character?.currentRoom
+                    ?.area?.name ??
+                    "Your character has not entered the city yet."}
+                </p>
+              </div>
+
+              {character?.currentRoom ? (
+                <Link
+                  href="/game"
+                  className="shrink-0 border border-[#765937]/60 bg-[#21170f] px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[#d8bc8d] transition hover:border-[#a07945] hover:bg-[#332217] hover:text-[#f0d4a2]"
+                >
+                  →               </Link>
+              ) : null}
+            </div>
           </section>
 
           <section className="min-h-0 flex-1 overflow-y-auto overscroll-contain border border-[#60482e]/45 bg-[#15100d] p-4">
