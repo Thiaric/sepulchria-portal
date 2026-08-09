@@ -111,9 +111,7 @@ export default async function AreaPage({ params }: Props) {
               Available locations
             </p>
 
-            <h2 className="mt-1 font-serif text-2xl text-[#dec69a]">
-              Locations
-            </h2>
+            
           </div>
 
           <Link
