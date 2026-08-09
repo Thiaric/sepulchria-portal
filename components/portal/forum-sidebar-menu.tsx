@@ -280,6 +280,15 @@ export function ForumSidebarMenu({
     setLoading(true);
     void loadTopics();
 
+    function handleFavouriteChanged() {
+      void loadTopics();
+    }
+
+    window.addEventListener(
+      "sepulchria:forum-favourite-changed",
+      handleFavouriteChanged,
+    );
+
     const supabase =
       createClient();
 
@@ -313,6 +322,11 @@ export function ForumSidebarMenu({
       .subscribe();
 
     return () => {
+      window.removeEventListener(
+        "sepulchria:forum-favourite-changed",
+        handleFavouriteChanged,
+      );
+
       void supabase.removeChannel(
         channel,
       );

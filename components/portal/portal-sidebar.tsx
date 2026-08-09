@@ -10,6 +10,7 @@ import {
 
 import { createClient } from "@/lib/supabase/client";
 import { UnreadMessageBadge } from "@/components/messages/unread-message-badge";
+import { ForumSidebarMenu } from "@/components/portal/forum-sidebar-menu";
 
 type PortalSidebarProps = {
   unreadMessageCount: number;
@@ -82,27 +83,20 @@ const codexNavigationItems: NavigationItem[] = [
   },
 ];
 
-const serviceNavigationItems: NavigationItem[] = [
-  {
-    label: "Market",
-    icon: "⚖",
-    href: "/market",
-    activePaths: ["/market"],
-    disabled: true,
-  },
-  {
-    label: "Forum",
-    icon: "☷",
-    href: "/forum",
-    activePaths: ["/forum"],
-  },
-  {
-    label: "Messages",
-    icon: "✉",
-    href: "/messages",
-    activePaths: ["/messages"],
-  },
-];
+const marketItem: NavigationItem = {
+  label: "Market",
+  icon: "⚖",
+  href: "/market",
+  activePaths: ["/market"],
+  disabled: true,
+};
+
+const messagesItem: NavigationItem = {
+  label: "Messages",
+  icon: "✉",
+  href: "/messages",
+  activePaths: ["/messages"],
+};
 
 function normalizeCount(
   value: unknown,
@@ -116,13 +110,14 @@ function normalizeCount(
   }
 
   if (typeof value === "string") {
-    const parsedCount = Number.parseInt(
-      value,
-      10,
-    );
+    const parsedCount =
+      Number.parseInt(value, 10);
 
     if (Number.isFinite(parsedCount)) {
-      return Math.max(0, parsedCount);
+      return Math.max(
+        0,
+        parsedCount,
+      );
     }
   }
 
@@ -135,23 +130,25 @@ export function PortalSidebar({
 }: PortalSidebarProps) {
   const pathname = usePathname();
 
-  const [
-    modalItem,
-    setModalItem,
-  ] = useState<NavigationItem | null>(
-    null,
-  );
+  const [modalItem, setModalItem] =
+    useState<NavigationItem | null>(
+      null,
+    );
 
   const [
     currentUnreadForumCount,
     setCurrentUnreadForumCount,
   ] = useState(
-    normalizeCount(unreadForumCount),
+    normalizeCount(
+      unreadForumCount,
+    ),
   );
 
   useEffect(() => {
     setCurrentUnreadForumCount(
-      normalizeCount(unreadForumCount),
+      normalizeCount(
+        unreadForumCount,
+      ),
     );
   }, [unreadForumCount]);
 
@@ -192,14 +189,13 @@ export function PortalSidebar({
 
   const refreshForumCount =
     useCallback(async () => {
-      const supabase = createClient();
+      const supabase =
+        createClient();
 
-      const {
-        data,
-        error,
-      } = await supabase.rpc(
-        "get_unread_forum_topic_count",
-      );
+      const { data, error } =
+        await supabase.rpc(
+          "get_unread_forum_topic_count",
+        );
 
       if (error) {
         console.error(
@@ -215,12 +211,15 @@ export function PortalSidebar({
     }, []);
 
   useEffect(() => {
-    const supabase = createClient();
+    const supabase =
+      createClient();
 
     void refreshForumCount();
 
     const channel = supabase
-      .channel("forum-sidebar-unread-count")
+      .channel(
+        "forum-sidebar-unread-count",
+      )
       .on(
         "postgres_changes",
         {
@@ -237,7 +236,8 @@ export function PortalSidebar({
         {
           event: "UPDATE",
           schema: "public",
-          table: "forum_topic_reads",
+          table:
+            "forum_topic_reads",
         },
         () => {
           void refreshForumCount();
@@ -248,7 +248,8 @@ export function PortalSidebar({
         {
           event: "INSERT",
           schema: "public",
-          table: "forum_topic_reads",
+          table:
+            "forum_topic_reads",
         },
         () => {
           void refreshForumCount();
@@ -275,61 +276,63 @@ export function PortalSidebar({
         void refreshForumCount();
       }, 5000);
 
-    const handleWindowFocus = () => {
+    function handleFocus() {
       void refreshForumCount();
-    };
+    }
 
-    const handleVisibilityChange = () => {
+    function handleVisibility() {
       if (
         document.visibilityState ===
         "visible"
       ) {
         void refreshForumCount();
       }
-    };
+    }
 
     window.addEventListener(
       "focus",
-      handleWindowFocus,
+      handleFocus,
     );
-
     document.addEventListener(
       "visibilitychange",
-      handleVisibilityChange,
+      handleVisibility,
     );
 
     return () => {
       window.clearInterval(
         pollingInterval,
       );
-
       window.removeEventListener(
         "focus",
-        handleWindowFocus,
+        handleFocus,
       );
-
       document.removeEventListener(
         "visibilitychange",
-        handleVisibilityChange,
+        handleVisibility,
       );
-
-      void supabase.removeChannel(channel);
+      void supabase.removeChannel(
+        channel,
+      );
     };
   }, [refreshForumCount]);
 
   function isActive(
     activePaths: string[],
   ) {
-    return activePaths.some((path) => {
-      if (path === "/") {
-        return pathname === "/";
-      }
+    return activePaths.some(
+      (path) => {
+        if (path === "/") {
+          return pathname === "/";
+        }
 
-      return (
-        pathname === path ||
-        pathname.startsWith(`${path}/`)
-      );
-    });
+        return (
+          pathname === path ||
+          pathname.startsWith(
+            `${path}/`,
+          )
+        );
+      },
+    );
   }
 
   function renderNavigationItem(
@@ -338,20 +341,8 @@ export function PortalSidebar({
     const active = isActive(
       item.activePaths,
     );
-
     const isMessages =
       item.label === "Messages";
-
-    const isForum =
-      item.label === "Forum";
-
-    const notificationCount =
-      isForum
-        ? currentUnreadForumCount
-        : 0;
-
-    const hasNotification =
-      notificationCount > 0;
 
     if (item.disabled) {
       return (
@@ -375,19 +366,17 @@ export function PortalSidebar({
       );
     }
 
-    const itemClassName = `flex min-h-9 items-center gap-2 border px-2.5 py-2 text-[11px] transition lg:text-xs ${
-      item.opensModal &&
-      modalItem?.href === item.href
-        ? "border-[#8d6d3e] bg-[#332719] text-[#efd9aa]"
-        : active
+    const itemClassName =
+      `flex min-h-9 items-center gap-2 border px-2.5 py-2 text-[11px] transition lg:text-xs ${
+        item.opensModal &&
+        modalItem?.href === item.href
           ? "border-[#8d6d3e] bg-[#332719] text-[#efd9aa]"
-          : hasNotification &&
-              isForum
-            ? "border-[#a87532] bg-[#24190f] text-[#efd9aa] shadow-[0_0_12px_rgba(168,117,50,0.15)] hover:border-[#c08b43] hover:bg-[#2c1e12]"
+          : active
+            ? "border-[#8d6d3e] bg-[#332719] text-[#efd9aa]"
             : "border-transparent text-[#b6a894] hover:border-[#5d4930] hover:bg-[#1d1712] hover:text-[#e8d8ba]"
-    }`;
+      }`;
 
-    const itemContents = (
+    const contents = (
       <>
         <span className="w-4 shrink-0 text-center text-[12px] text-[#b68b4f]">
           {item.icon}
@@ -396,22 +385,6 @@ export function PortalSidebar({
         <span className="truncate">
           {item.label}
         </span>
-
-        {hasNotification ? (
-          <span
-            title={`${notificationCount} unread forum notification${
-              notificationCount === 1 ? "" : "s"
-            }`}
-            aria-label={`${notificationCount} unread forum notification${
-              notificationCount === 1 ? "" : "s"
-            }`}
-            className="ml-auto inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] text-[7px] font-bold leading-none text-[#ffe1ac]"
-          >
-            {notificationCount > 9
-              ? "9+"
-              : notificationCount}
-          </span>
-        ) : null}
 
         {isMessages ? (
           <UnreadMessageBadge
@@ -435,10 +408,11 @@ export function PortalSidebar({
           className={`${itemClassName} w-full text-left`}
           aria-haspopup="dialog"
           aria-expanded={
-            modalItem?.href === item.href
+            modalItem?.href ===
+            item.href
           }
         >
-          {itemContents}
+          {contents}
         </button>
       );
     }
@@ -449,7 +423,7 @@ export function PortalSidebar({
         href={item.href}
         className={itemClassName}
       >
-        {itemContents}
+        {contents}
       </Link>
     );
   }
@@ -457,44 +431,56 @@ export function PortalSidebar({
   return (
     <>
       <aside className="border-b border-[#6e5535]/30 bg-[#100d0b]/90 lg:sticky lg:top-20 lg:h-[calc(100vh-5rem)] lg:overflow-y-auto lg:border-b-0 lg:border-r">
-      <div className="p-3 lg:p-4">
-        
+        <div className="p-3 lg:p-4">
+          <nav aria-label="Main navigation">
+            <NavigationGroup
+              title="Navigate the World"
+              items={mainNavigationItems.map(
+                renderNavigationItem,
+              )}
+            />
 
-        <nav aria-label="Main navigation">
-          <NavigationGroup
-            title="Navigate the World"
-            items={mainNavigationItems.map(
-              renderNavigationItem,
-            )}
-          />
+            <NavigationGroup
+              title="Codex and rules"
+              items={codexNavigationItems.map(
+                renderNavigationItem,
+              )}
+            />
 
-          <NavigationGroup
-            title="Codex and rules"
-            items={codexNavigationItems.map(
-              renderNavigationItem,
-            )}
-          />
+            <section>
+              <p className="mb-2.5 hidden text-[8px] uppercase tracking-[0.3em] text-[#766754] lg:block">
+                services and utilities
+              </p>
 
-          <NavigationGroup
-            title="services and utilities"
-            items={serviceNavigationItems.map(
-              renderNavigationItem,
-            )}
-            last
-          />
-        </nav>
+              <div className="grid grid-cols-3 gap-1.5 sm:grid-cols-5 lg:grid-cols-1">
+                {renderNavigationItem(
+                  marketItem,
+                )}
 
-        <div className="mt-5 hidden border-t border-[#6e5535]/30 pt-3 lg:block">
-          <span className="block py-1.5 text-[9px] uppercase tracking-[0.18em] text-[#5f5549]">
-            Support · Coming soon
-          </span>
+                <ForumSidebarMenu
+                  unreadCount={
+                    currentUnreadForumCount
+                  }
+                />
 
-          <span className="block py-1.5 text-[9px] uppercase tracking-[0.18em] text-[#5f5549]">
-            Staff · Coming soon
-          </span>
+                {renderNavigationItem(
+                  messagesItem,
+                )}
+              </div>
+            </section>
+          </nav>
+
+          <div className="mt-5 hidden border-t border-[#6e5535]/30 pt-3 lg:block">
+            <span className="block py-1.5 text-[9px] uppercase tracking-[0.18em] text-[#5f5549]">
+              Support · Coming soon
+            </span>
+
+            <span className="block py-1.5 text-[9px] uppercase tracking-[0.18em] text-[#5f5549]">
+              Staff · Coming soon
+            </span>
+          </div>
         </div>
-      </div>
-    </aside>
+      </aside>
 
       {modalItem ? (
         <PublicPageModal
@@ -566,20 +552,12 @@ function PublicPageModal({
 function NavigationGroup({
   title,
   items,
-  last = false,
 }: {
   title: string;
   items: React.ReactNode[];
-  last?: boolean;
 }) {
   return (
-    <section
-      className={
-        last
-          ? ""
-          : "mb-4 border-b border-[#6e5535]/20 pb-4"
-      }
-    >
+    <section className="mb-4 border-b border-[#6e5535]/20 pb-4">
       <p className="mb-2.5 hidden text-[8px] uppercase tracking-[0.3em] text-[#766754] lg:block">
         {title}
       </p>

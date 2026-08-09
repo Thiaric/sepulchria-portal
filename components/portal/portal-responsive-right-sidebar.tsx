@@ -2,12 +2,12 @@
 
 import {
   useEffect,
-  useRef,
   useState,
 } from "react";
 import { X } from "lucide-react";
 import { usePathname } from "next/navigation";
 
+import { ForumSectionActivityContext } from "@/components/portal/forum-section-activity-context";
 import { PortalContextPanel } from "@/components/portal/portal-context-panel";
 import type { PortalContext } from "@/types/portal";
 
@@ -19,11 +19,20 @@ export function PortalResponsiveRightSidebar({
   context,
 }: PortalResponsiveRightSidebarProps) {
   const [open, setOpen] = useState(false);
-  const contextSectionRef =
-    useRef<HTMLElement | null>(null);
-
   const pathname = usePathname();
   const { character } = context;
+
+  const forumSectionMatch =
+    pathname.match(
+      /^\/forum\/([^/]+)$/,
+    );
+
+  const forumSectionSlug =
+    forumSectionMatch
+      ? decodeURIComponent(
+          forumSectionMatch[1],
+        )
+      : null;
 
   useEffect(() => {
     if (!open) {
@@ -60,103 +69,8 @@ export function PortalResponsiveRightSidebar({
     };
   }, [open]);
 
-  useEffect(() => {
-    if (
-      pathname !== "/forum" &&
-      !pathname.startsWith("/forum/")
-    ) {
-      return;
-    }
-
-    const container =
-      contextSectionRef.current;
-
-    if (!container) {
-      return;
-    }
-
-    // Stable non-null reference for nested functions / MutationObserver.
-    const forumContainer: HTMLElement =
-      container;
-
-    function htmlToPlainText(
-      value: string,
-    ): string {
-      const parser = new DOMParser();
-
-      const parsed =
-        parser.parseFromString(
-          value,
-          "text/html",
-        );
-
-      return (
-        parsed.body.textContent ?? ""
-      )
-        .replace(/\u00a0/g, " ")
-        .replace(/\s+/g, " ")
-        .trim();
-    }
-
-    function cleanForumPreviews() {
-      const previewElements =
-        forumContainer.querySelectorAll<HTMLElement>(
-          "p.line-clamp-3, p.line-clamp-5",
-        );
-
-      previewElements.forEach(
-        (element) => {
-          const currentText =
-            element.textContent ?? "";
-
-          if (
-            !currentText.includes("<") ||
-            !currentText.includes(">")
-          ) {
-            return;
-          }
-
-          const cleaned =
-            htmlToPlainText(
-              currentText,
-            );
-
-          if (
-            cleaned &&
-            cleaned !== currentText
-          ) {
-            element.textContent =
-              cleaned;
-          }
-        },
-      );
-    }
-
-    cleanForumPreviews();
-
-    const observer =
-      new MutationObserver(() => {
-        cleanForumPreviews();
-      });
-
-    observer.observe(
-      forumContainer,
-      {
-        childList: true,
-        subtree: true,
-        characterData: true,
-      },
-    );
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [pathname]);
-
   return (
     <>
-      {/* Mobile/tablet trigger. The desktop sidebar below is the SAME component
-          instance, so realtime children are never mounted twice. */}
       <button
         type="button"
         onClick={() => setOpen(true)}
@@ -167,7 +81,6 @@ export function PortalResponsiveRightSidebar({
         ◈
       </button>
 
-      {/* Backdrop exists only on mobile/tablet. */}
       {open ? (
         <button
           type="button"
@@ -179,9 +92,6 @@ export function PortalResponsiveRightSidebar({
         />
       ) : null}
 
-      {/* ONE sidebar / ONE PortalContextPanel / ONE realtime subscription tree.
-          On desktop it occupies the third grid column.
-          Below xl it becomes an off-canvas drawer. */}
       <aside
         aria-label="Context sidebar"
         className={[
@@ -193,7 +103,6 @@ export function PortalResponsiveRightSidebar({
           "xl:sticky xl:top-20 xl:z-auto xl:h-[calc(100vh-5rem)] xl:w-auto xl:translate-x-0 xl:self-start xl:shadow-none xl:transition-none",
         ].join(" ")}
       >
-        {/* Mobile drawer heading */}
         <div className="flex h-16 shrink-0 items-center justify-between border-b border-[#6e5535]/40 px-4 xl:hidden">
           <div>
             <p className="text-[8px] uppercase tracking-[0.28em] text-[#876a46]">
@@ -235,13 +144,18 @@ export function PortalResponsiveRightSidebar({
             </p>
           </section>
 
-          <section
-            ref={contextSectionRef}
-            className="min-h-0 flex-1 overflow-y-auto overscroll-contain border border-[#60482e]/45 bg-[#15100d] p-4"
-          >
-            <PortalContextPanel
-              context={context}
-            />
+          <section className="min-h-0 flex-1 overflow-y-auto overscroll-contain border border-[#60482e]/45 bg-[#15100d] p-4">
+            {forumSectionSlug ? (
+              <ForumSectionActivityContext
+                sectionSlug={
+                  forumSectionSlug
+                }
+              />
+            ) : (
+              <PortalContextPanel
+                context={context}
+              />
+            )}
           </section>
         </div>
       </aside>
