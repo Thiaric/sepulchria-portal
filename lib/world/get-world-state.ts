@@ -1,3 +1,38 @@
 import "server-only";
-import {createClient} from "@/lib/supabase/server";import {DEFAULT_WORLD_STATE,type WorldState} from "@/lib/world/types";
-export async function getWorldState():Promise<WorldState>{const s=await createClient();const{data,error}=await s.from("world_state").select("id, game_datetime, automatic_time, time_scale, weather, weather_intensity, temperature_c, updated_at").eq("id","aureth").maybeSingle();return error||!data?DEFAULT_WORLD_STATE:data as WorldState}
+
+import { createClient } from "@/lib/supabase/server";
+import {
+  DEFAULT_WORLD_STATE,
+  type WorldState,
+} from "@/lib/world/types";
+
+export async function getWorldState(): Promise<WorldState> {
+  const supabase =
+    await createClient();
+
+  const { data, error } =
+    await supabase
+      .from("world_state")
+      .select(`
+        id,
+        game_datetime,
+        automatic_time,
+        time_scale,
+        weather,
+        weather_intensity,
+        temperature_c,
+        automatic_weather,
+        next_weather_change_game,
+        weather_override_until_game,
+        weather_last_changed_game,
+        updated_at
+      `)
+      .eq("id", "aureth")
+      .maybeSingle();
+
+  if (error || !data) {
+    return DEFAULT_WORLD_STATE;
+  }
+
+  return data as WorldState;
+}

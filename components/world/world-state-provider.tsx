@@ -28,25 +28,31 @@ const WorldContext =
 const WORLD_ROW_ID = "aureth";
 const RESYNC_INTERVAL_MS = 10_000;
 
-function isSameWorldState(
-  current: WorldState,
-  next: WorldState,
+function isSameState(
+  a: WorldState,
+  b: WorldState,
 ) {
   return (
-    current.id === next.id &&
-    current.game_datetime ===
-      next.game_datetime &&
-    current.automatic_time ===
-      next.automatic_time &&
-    current.time_scale ===
-      next.time_scale &&
-    current.weather === next.weather &&
-    current.weather_intensity ===
-      next.weather_intensity &&
-    current.temperature_c ===
-      next.temperature_c &&
-    current.updated_at ===
-      next.updated_at
+    a.id === b.id &&
+    a.game_datetime ===
+      b.game_datetime &&
+    a.automatic_time ===
+      b.automatic_time &&
+    a.time_scale === b.time_scale &&
+    a.weather === b.weather &&
+    a.weather_intensity ===
+      b.weather_intensity &&
+    a.temperature_c ===
+      b.temperature_c &&
+    a.automatic_weather ===
+      b.automatic_weather &&
+    a.next_weather_change_game ===
+      b.next_weather_change_game &&
+    a.weather_override_until_game ===
+      b.weather_override_until_game &&
+    a.weather_last_changed_game ===
+      b.weather_last_changed_game &&
+    a.updated_at === b.updated_at
   );
 }
 
@@ -60,31 +66,21 @@ export function WorldStateProvider({
   const [state, setState] =
     useState(initialState);
 
-  /*
-   * One local tick drives the in-game clock.
-   * Because gameDate is exposed through context,
-   * WorldIndicator and every AtmosphericImage
-   * re-render as time advances.
-   */
-  const [now, setNow] = useState(
-    () => Date.now(),
-  );
+  const [now, setNow] =
+    useState(() => Date.now());
 
-  const mountedRef = useRef(true);
+  const mounted = useRef(true);
 
   const applyState = useCallback(
-    (nextState: WorldState) => {
-      if (!mountedRef.current) {
+    (next: WorldState) => {
+      if (!mounted.current) {
         return;
       }
 
       setState((current) =>
-        isSameWorldState(
-          current,
-          nextState,
-        )
+        isSameState(current, next)
           ? current
-          : nextState,
+          : next,
       );
     },
     [],
@@ -98,34 +94,38 @@ export function WorldStateProvider({
       const { data, error } =
         await supabase
           .from("world_state")
-          .select(
-            `
-              id,
-              game_datetime,
-              automatic_time,
-              time_scale,
-              weather,
-              weather_intensity,
-              temperature_c,
-              updated_at
-            `,
-          )
+          .select(`
+            id,
+            game_datetime,
+            automatic_time,
+            time_scale,
+            weather,
+            weather_intensity,
+            temperature_c,
+            automatic_weather,
+            next_weather_change_game,
+            weather_override_until_game,
+            weather_last_changed_game,
+            updated_at
+          `)
           .eq("id", WORLD_ROW_ID)
           .maybeSingle();
 
       if (
         error ||
         !data ||
-        !mountedRef.current
+        !mounted.current
       ) {
         return;
       }
 
-      applyState(data as WorldState);
+      applyState(
+        data as WorldState,
+      );
     }, [applyState]);
 
   useEffect(() => {
-    mountedRef.current = true;
+    mounted.current = true;
 
     const timer =
       window.setInterval(() => {
@@ -133,7 +133,7 @@ export function WorldStateProvider({
       }, 1_000);
 
     return () => {
-      mountedRef.current = false;
+      mounted.current = false;
       window.clearInterval(timer);
     };
   }, []);
@@ -142,17 +142,9 @@ export function WorldStateProvider({
     const supabase =
       createClient();
 
-    /*
-     * Primary path:
-     * Supabase Realtime pushes staff/world
-     * changes to every connected portal.
-     *
-     * Important: all callbacks are added
-     * BEFORE subscribe().
-     */
     const channel = supabase
       .channel(
-        "sepulchria-world-state-live-v2",
+        "sepulchria-world-state-live-v3",
       )
       .on(
         "postgres_changes",
@@ -178,12 +170,9 @@ export function WorldStateProvider({
         },
       )
       .subscribe((status) => {
-        /*
-         * Resync immediately once the socket
-         * is genuinely live. This closes the
-         * gap between SSR and subscription.
-         */
-        if (status === "SUBSCRIBED") {
+        if (
+          status === "SUBSCRIBED"
+        ) {
           void syncWorldState();
         }
       });
@@ -193,16 +182,12 @@ export function WorldStateProvider({
         channel,
       );
     };
-  }, [applyState, syncWorldState]);
+  }, [
+    applyState,
+    syncWorldState,
+  ]);
 
   useEffect(() => {
-    /*
-     * Realtime is the fast path.
-     * This polling fallback guarantees that
-     * weather/time never remains stale if a
-     * websocket sleeps or Realtime misses an
-     * event. It does not reload the page.
-     */
     const timer =
       window.setInterval(() => {
         void syncWorldState();
@@ -214,92 +199,90 @@ export function WorldStateProvider({
   }, [syncWorldState]);
 
   useEffect(() => {
-    const handleFocus = () => {
+    const resync = () => {
+      setNow(Date.now());
       void syncWorldState();
     };
 
-    const handleVisibility = () => {
+    const visibility = () => {
       if (
         document.visibilityState ===
         "visible"
       ) {
-        setNow(Date.now());
-        void syncWorldState();
+        resync();
       }
-    };
-
-    const handleOnline = () => {
-      void syncWorldState();
     };
 
     window.addEventListener(
       "focus",
-      handleFocus,
+      resync,
     );
 
     window.addEventListener(
       "online",
-      handleOnline,
+      resync,
     );
 
     document.addEventListener(
       "visibilitychange",
-      handleVisibility,
+      visibility,
     );
 
     return () => {
       window.removeEventListener(
         "focus",
-        handleFocus,
+        resync,
       );
 
       window.removeEventListener(
         "online",
-        handleOnline,
+        resync,
       );
 
       document.removeEventListener(
         "visibilitychange",
-        handleVisibility,
+        visibility,
       );
     };
   }, [syncWorldState]);
 
-  const gameDate = useMemo(() => {
-    const baseGameTime =
-      Date.parse(state.game_datetime);
+  const gameDate =
+    useMemo(() => {
+      const base =
+        Date.parse(
+          state.game_datetime,
+        );
 
-    if (
-      Number.isNaN(baseGameTime)
-    ) {
-      return new Date();
-    }
+      if (Number.isNaN(base)) {
+        return new Date();
+      }
 
-    if (!state.automatic_time) {
-      return new Date(baseGameTime);
-    }
+      if (!state.automatic_time) {
+        return new Date(base);
+      }
 
-    const anchorRealTime =
-      Date.parse(state.updated_at);
+      const anchor =
+        Date.parse(state.updated_at);
 
-    const elapsedRealMs =
-      Number.isNaN(anchorRealTime)
-        ? 0
-        : Math.max(
-            0,
-            now - anchorRealTime,
-          );
+      const elapsed =
+        Number.isNaN(anchor)
+          ? 0
+          : Math.max(
+              0,
+              now - anchor,
+            );
 
-    const scale = Math.max(
-      0,
-      Number(state.time_scale) || 0,
-    );
-
-    return new Date(
-      baseGameTime +
-        elapsedRealMs * scale,
-    );
-  }, [now, state]);
+      return new Date(
+        base +
+          elapsed *
+            Math.max(
+              0,
+              Number(
+                state.time_scale,
+              ) || 0,
+            ),
+      );
+    }, [now, state]);
 
   const value = useMemo(
     () => ({
