@@ -160,9 +160,7 @@ export function MessagesInboxClient({
               Private correspondence
             </p>
 
-            <h1 className="mt-2 font-serif text-4xl text-[#ecd9b2]">
-              Messages
-            </h1>
+            
           </div>
 
           <div className="flex flex-wrap gap-2">

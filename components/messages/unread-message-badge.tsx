@@ -7,25 +7,36 @@ import {
   useRef,
   useState,
 } from "react";
+import {
+  usePathname,
+} from "next/navigation";
 
 import { usePortalAudio } from "@/components/audio/portal-audio-provider";
 import { createClient } from "@/lib/supabase/client";
 
 type UnreadMessageBadgeProps = {
   initialCount: number;
-  variant: "floating" | "inline";
+  variant:
+    | "floating"
+    | "inline";
 };
 
 type MembershipRow = {
   conversation_id: string;
-  last_read_at: string | null;
+  last_read_at:
+    | string
+    | null;
 };
 
 export function UnreadMessageBadge({
   initialCount,
   variant,
 }: UnreadMessageBadgeProps) {
-  const instanceId = useId();
+  const instanceId =
+    useId();
+
+  const pathname =
+    usePathname();
 
   const {
     playPortalSound,
@@ -34,17 +45,26 @@ export function UnreadMessageBadge({
   const [count, setCount] =
     useState(initialCount);
 
-  const countRef =
+  const lastCountRef =
     useRef(initialCount);
 
-  useEffect(() => {
-    countRef.current =
-      initialCount;
+  const initialSyncDoneRef =
+    useRef(false);
 
-    setCount(initialCount);
+  useEffect(() => {
+    setCount(
+      initialCount,
+    );
+
+    if (
+      !initialSyncDoneRef.current
+    ) {
+      lastCountRef.current =
+        initialCount;
+    }
   }, [initialCount]);
 
-  const refreshCount =
+  const calculateCount =
     useCallback(
       async (): Promise<
         number | null
@@ -58,14 +78,13 @@ export function UnreadMessageBadge({
           await supabase.auth.getUser();
 
         if (!user) {
-          countRef.current = 0;
-          setCount(0);
           return 0;
         }
 
         const {
           data: character,
-          error: characterError,
+          error:
+            characterError,
         } = await supabase
           .from("characters")
           .select("id")
@@ -79,14 +98,13 @@ export function UnreadMessageBadge({
           characterError ||
           !character
         ) {
-          countRef.current = 0;
-          setCount(0);
           return 0;
         }
 
         const {
           data: memberships,
-          error: membershipError,
+          error:
+            membershipError,
         } = await supabase
           .from(
             "direct_conversation_participants",
@@ -103,11 +121,14 @@ export function UnreadMessageBadge({
             null,
           );
 
-        if (membershipError) {
+        if (
+          membershipError
+        ) {
           console.error(
             "Unable to load private-message memberships:",
             membershipError.message,
           );
+
           return null;
         }
 
@@ -154,7 +175,7 @@ export function UnreadMessageBadge({
 
                 const {
                   count:
-                    conversationCount,
+                    unreadCount,
                   error,
                 } =
                   await query;
@@ -169,31 +190,84 @@ export function UnreadMessageBadge({
                 }
 
                 return (
-                  conversationCount ??
+                  unreadCount ??
                   0
                 );
               },
             ),
           );
 
-        const nextCount =
-          unreadCounts.reduce(
-            (
-              total,
-              current,
-            ) =>
-              total + current,
-            0,
-          );
+        return unreadCounts.reduce(
+          (
+            total,
+            current,
+          ) =>
+            total +
+            current,
+          0,
+        );
+      },
+      [],
+    );
 
-        countRef.current =
-          nextCount;
+  const refreshCount =
+    useCallback(
+      async (
+        allowSound:
+          boolean,
+      ) => {
+        const nextCount =
+          await calculateCount();
+
+        if (
+          nextCount === null
+        ) {
+          return;
+        }
+
+        const previousCount =
+          lastCountRef.current;
 
         setCount(nextCount);
 
-        return nextCount;
+        /*
+         * OUTSIDE A PRIVATE CONVERSATION:
+         * The floating HEADER badge owns the pigeon.
+         *
+         * We intentionally do not play it while viewing /messages/[id],
+         * because ConversationRealtime owns the normal beep there.
+         */
+        const isInsideConversation =
+          /^\/messages\/[^/]+\/?$/.test(
+            pathname,
+          );
+
+        if (
+          allowSound &&
+          variant ===
+            "floating" &&
+          initialSyncDoneRef.current &&
+          !isInsideConversation &&
+          nextCount >
+            previousCount
+        ) {
+          playPortalSound(
+            "private-message",
+          );
+        }
+
+        lastCountRef.current =
+          nextCount;
+
+        initialSyncDoneRef.current =
+          true;
       },
-      [],
+      [
+        calculateCount,
+        pathname,
+        playPortalSound,
+        variant,
+      ],
     );
 
   useEffect(() => {
@@ -201,11 +275,11 @@ export function UnreadMessageBadge({
       createClient();
 
     /*
-     * Initial synchronisation is silent.
-     * We only make the pigeon sound for a NEW direct_messages INSERT
-     * that actually raises the unread counter.
+     * Existing unread PMs are silent on initial load.
      */
-    void refreshCount();
+    void refreshCount(
+      false,
+    );
 
     const safeInstanceId =
       instanceId.replace(
@@ -226,66 +300,28 @@ export function UnreadMessageBadge({
             table:
               "direct_messages",
           },
-          async () => {
-            const previousCount =
-              countRef.current;
-
-            const nextCount =
-              await refreshCount();
-
+          () => {
             /*
-             * There are multiple badge instances in the portal.
-             * ONLY the floating badge in the header is allowed
-             * to make the PM sound.
+             * Same realtime event that updates the header count.
+             * If the count rises outside /messages/[id], pigeon.
              */
-            if (
-              variant ===
-                "floating" &&
-              nextCount !==
-                null &&
-              nextCount >
-                previousCount
-            ) {
-              playPortalSound(
-                "private-message",
-              );
-            }
+            void refreshCount(
+              true,
+            );
           },
         )
         .on(
           "postgres_changes",
           {
-            event: "UPDATE",
+            event: "*",
             schema: "public",
             table:
               "direct_conversation_participants",
           },
           () => {
-            void refreshCount();
-          },
-        )
-        .on(
-          "postgres_changes",
-          {
-            event: "INSERT",
-            schema: "public",
-            table:
-              "direct_conversation_participants",
-          },
-          () => {
-            void refreshCount();
-          },
-        )
-        .on(
-          "postgres_changes",
-          {
-            event: "DELETE",
-            schema: "public",
-            table:
-              "direct_conversation_participants",
-          },
-          () => {
-            void refreshCount();
+            void refreshCount(
+              false,
+            );
           },
         )
         .subscribe();
@@ -293,14 +329,18 @@ export function UnreadMessageBadge({
     const intervalId =
       window.setInterval(
         () => {
-          void refreshCount();
+          void refreshCount(
+            false,
+          );
         },
         30_000,
       );
 
     const handleFocus =
       () => {
-        void refreshCount();
+        void refreshCount(
+          false,
+        );
       };
 
     const handleVisibilityChange =
@@ -309,7 +349,9 @@ export function UnreadMessageBadge({
           document.visibilityState ===
           "visible"
         ) {
-          void refreshCount();
+          void refreshCount(
+            false,
+          );
         }
       };
 
@@ -344,7 +386,6 @@ export function UnreadMessageBadge({
     };
   }, [
     instanceId,
-    playPortalSound,
     refreshCount,
     variant,
   ]);
@@ -360,7 +401,9 @@ export function UnreadMessageBadge({
 
   const title =
     `${count} unread private message${
-      count === 1 ? "" : "s"
+      count === 1
+        ? ""
+        : "s"
     }`;
 
   if (
