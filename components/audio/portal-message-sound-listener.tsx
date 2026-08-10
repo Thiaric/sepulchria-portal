@@ -9,14 +9,6 @@ import {
 import { usePortalAudio } from "@/components/audio/portal-audio-provider";
 import { createClient } from "@/lib/supabase/client";
 
-type DirectMessageInsert = {
-  conversation_id: string;
-  sender_character_id:
-    | string
-    | null;
-  created_at: string;
-};
-
 type RoomMessageInsert = {
   room_id: string;
   character_id: string;
@@ -47,86 +39,13 @@ export function PortalMessageSoundListener({
   const mountedAtRef =
     useRef(Date.now());
 
-  useEffect(() => {
-    if (!characterId) {
-      return;
-    }
-
-    const channel =
-      supabase
-        .channel(
-          `portal-private-sound-${characterId}`,
-        )
-        .on(
-          "postgres_changes",
-          {
-            event: "INSERT",
-            schema: "public",
-            table:
-              "direct_messages",
-          },
-          async (payload) => {
-            const inserted =
-              payload.new as
-                DirectMessageInsert;
-
-            if (
-              !inserted ||
-              inserted.sender_character_id ===
-                characterId ||
-              Date.parse(
-                inserted.created_at,
-              ) <
-                mountedAtRef.current -
-                  2000
-            ) {
-              return;
-            }
-
-            const {
-              data: membership,
-              error,
-            } = await supabase
-              .from(
-                "direct_conversation_participants",
-              )
-              .select(
-                "conversation_id",
-              )
-              .eq(
-                "conversation_id",
-                inserted.conversation_id,
-              )
-              .eq(
-                "character_id",
-                characterId,
-              )
-              .maybeSingle();
-
-            if (
-              error ||
-              !membership
-            ) {
-              return;
-            }
-
-            playPortalSound(
-              "private-message",
-            );
-          },
-        )
-        .subscribe();
-
-    return () => {
-      void supabase.removeChannel(
-        channel,
-      );
-    };
-  }, [
-    characterId,
-    playPortalSound,
-    supabase,
-  ]);
+  /*
+   * Private-message audio is intentionally NOT handled here.
+   *
+   * The pigeon is tied directly to the floating unread-message badge,
+   * so it happens at exactly the same moment that the header notification
+   * appears/increases.
+   */
 
   useEffect(() => {
     if (

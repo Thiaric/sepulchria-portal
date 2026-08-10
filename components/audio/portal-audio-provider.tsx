@@ -17,7 +17,9 @@ type PortalSoundKind =
 
 type PortalAudioContextValue = {
   muted: boolean;
-  setMuted: (muted: boolean) => void;
+  setMuted: (
+    muted: boolean,
+  ) => void;
   toggleMuted: () => void;
   playPortalSound: (
     kind?: PortalSoundKind,
@@ -41,16 +43,21 @@ export function PortalAudioProvider({
     useState(false);
 
   const audioContextRef =
-    useRef<AudioContext | null>(null);
+    useRef<AudioContext | null>(
+      null,
+    );
 
   const masterGainRef =
-    useRef<GainNode | null>(null);
+    useRef<GainNode | null>(
+      null,
+    );
 
   const mutedRef =
     useRef(false);
 
   useEffect(() => {
-    mutedRef.current = muted;
+    mutedRef.current =
+      muted;
   }, [muted]);
 
   useEffect(() => {
@@ -69,7 +76,9 @@ export function PortalAudioProvider({
 
   const ensureAudioContext =
     useCallback(() => {
-      if (!audioContextRef.current) {
+      if (
+        !audioContextRef.current
+      ) {
         const context =
           new window.AudioContext();
 
@@ -77,7 +86,9 @@ export function PortalAudioProvider({
           context.createGain();
 
         master.gain.value =
-          mutedRef.current ? 0 : 1;
+          mutedRef.current
+            ? 0
+            : 1;
 
         master.connect(
           context.destination,
@@ -146,7 +157,8 @@ export function PortalAudioProvider({
     if (master) {
       master.gain.setValueAtTime(
         muted ? 0 : 1,
-        master.context.currentTime,
+        master.context
+          .currentTime,
       );
     }
 
@@ -154,15 +166,20 @@ export function PortalAudioProvider({
       parent: ParentNode,
     ) => {
       parent
-        .querySelectorAll?.("audio")
-        .forEach((element) => {
-          if (
-            element instanceof
-            HTMLAudioElement
-          ) {
-            element.muted = muted;
-          }
-        });
+        .querySelectorAll?.(
+          "audio",
+        )
+        .forEach(
+          (element) => {
+            if (
+              element instanceof
+              HTMLAudioElement
+            ) {
+              element.muted =
+                muted;
+            }
+          },
+        );
     };
 
     applyMute(document);
@@ -170,7 +187,10 @@ export function PortalAudioProvider({
     const observer =
       new MutationObserver(
         (records) => {
-          for (const record of records) {
+          for (
+            const record of
+            records
+          ) {
             for (
               const node of
               record.addedNodes
@@ -220,7 +240,8 @@ export function PortalAudioProvider({
         STORAGE_KEY
       ) {
         setMutedState(
-          event.newValue === "1",
+          event.newValue ===
+          "1",
         );
       }
     }
@@ -240,7 +261,9 @@ export function PortalAudioProvider({
 
   const setMuted =
     useCallback(
-      (nextMuted: boolean) => {
+      (
+        nextMuted: boolean,
+      ) => {
         mutedRef.current =
           nextMuted;
 
@@ -251,7 +274,9 @@ export function PortalAudioProvider({
         try {
           window.localStorage.setItem(
             STORAGE_KEY,
-            nextMuted ? "1" : "0",
+            nextMuted
+              ? "1"
+              : "0",
           );
         } catch {
           // localStorage can be unavailable.
@@ -308,25 +333,182 @@ export function PortalAudioProvider({
           context.currentTime +
           0.01;
 
-        const notes =
+        if (
           kind ===
           "private-message"
-            ? [
-                [659.25, 0, 0.11, 0.055],
-                [783.99, 0.12, 0.16, 0.045],
-              ]
-            : [
-                [523.25, 0, 0.09, 0.038],
-                [659.25, 0.09, 0.12, 0.03],
-              ];
+        ) {
+          /*
+           * Short, soft double coo for a NEW unread private message.
+           * No external audio asset is required.
+           */
+          const coos = [
+            {
+              offset: 0,
+              duration: 0.3,
+              startFrequency:
+                320,
+              endFrequency:
+                238,
+              volume: 0.085,
+            },
+            {
+              offset: 0.31,
+              duration: 0.36,
+              startFrequency:
+                292,
+              endFrequency:
+                215,
+              volume: 0.073,
+            },
+          ];
+
+          for (
+            const coo of
+            coos
+          ) {
+            const oscillator =
+              context.createOscillator();
+
+            const overtone =
+              context.createOscillator();
+
+            const gain =
+              context.createGain();
+
+            const overtoneGain =
+              context.createGain();
+
+            const cooStart =
+              start +
+              coo.offset;
+
+            const cooEnd =
+              cooStart +
+              coo.duration;
+
+            oscillator.type =
+              "sine";
+
+            overtone.type =
+              "sine";
+
+            oscillator.frequency.setValueAtTime(
+              coo.startFrequency,
+              cooStart,
+            );
+
+            oscillator.frequency.exponentialRampToValueAtTime(
+              coo.endFrequency,
+              cooEnd,
+            );
+
+            overtone.frequency.setValueAtTime(
+              coo.startFrequency *
+                2.01,
+              cooStart,
+            );
+
+            overtone.frequency.exponentialRampToValueAtTime(
+              coo.endFrequency *
+                1.96,
+              cooEnd,
+            );
+
+            gain.gain.setValueAtTime(
+              0.0001,
+              cooStart,
+            );
+
+            gain.gain.exponentialRampToValueAtTime(
+              coo.volume,
+              cooStart +
+                0.045,
+            );
+
+            gain.gain.exponentialRampToValueAtTime(
+              coo.volume *
+                0.45,
+              cooStart +
+                coo.duration *
+                  0.6,
+            );
+
+            gain.gain.exponentialRampToValueAtTime(
+              0.0001,
+              cooEnd,
+            );
+
+            overtoneGain.gain.setValueAtTime(
+              0.0001,
+              cooStart,
+            );
+
+            overtoneGain.gain.exponentialRampToValueAtTime(
+              coo.volume *
+                0.14,
+              cooStart +
+                0.06,
+            );
+
+            overtoneGain.gain.exponentialRampToValueAtTime(
+              0.0001,
+              cooEnd,
+            );
+
+            oscillator.connect(
+              gain,
+            );
+
+            overtone.connect(
+              overtoneGain,
+            );
+
+            gain.connect(master);
+
+            overtoneGain.connect(
+              master,
+            );
+
+            oscillator.start(
+              cooStart,
+            );
+
+            overtone.start(
+              cooStart,
+            );
+
+            oscillator.stop(
+              cooEnd + 0.02,
+            );
+
+            overtone.stop(
+              cooEnd + 0.02,
+            );
+          }
+
+          return;
+        }
+
+        const notes = [
+          {
+            frequency:
+              523.25,
+            offset: 0,
+            duration: 0.09,
+            volume: 0.038,
+          },
+          {
+            frequency:
+              659.25,
+            offset: 0.09,
+            duration: 0.12,
+            volume: 0.03,
+          },
+        ];
 
         for (
-          const [
-            frequency,
-            offset,
-            duration,
-            volume,
-          ] of notes
+          const note of
+          notes
         ) {
           const oscillator =
             context.createOscillator();
@@ -338,40 +520,46 @@ export function PortalAudioProvider({
             "sine";
 
           oscillator.frequency.setValueAtTime(
-            frequency,
-            start + offset,
+            note.frequency,
+            start +
+              note.offset,
           );
 
           gain.gain.setValueAtTime(
             0.0001,
-            start + offset,
+            start +
+              note.offset,
           );
 
           gain.gain.exponentialRampToValueAtTime(
-            volume,
+            note.volume,
             start +
-              offset +
+              note.offset +
               0.015,
           );
 
           gain.gain.exponentialRampToValueAtTime(
             0.0001,
             start +
-              offset +
-              duration,
+              note.offset +
+              note.duration,
           );
 
-          oscillator.connect(gain);
+          oscillator.connect(
+            gain,
+          );
+
           gain.connect(master);
 
           oscillator.start(
-            start + offset,
+            start +
+              note.offset,
           );
 
           oscillator.stop(
             start +
-              offset +
-              duration +
+              note.offset +
+              note.duration +
               0.02,
           );
         }
