@@ -125,7 +125,7 @@ export function WorldIndicator() {
         state.weather,
       )} · ${
         state.temperature_c
-      }°C · ${phase} · ${zone}`}
+      }°C · ${phase}`}
     >
       <span aria-hidden="true">
         {ICONS[state.weather] ??
@@ -142,9 +142,7 @@ export function WorldIndicator() {
         {time}
       </span>
 
-      <span className="hidden text-[8px] uppercase tracking-[0.12em] text-[#776956] lg:inline">
-        {zone}
-      </span>
+    
     </div>
   );
 }

@@ -33,6 +33,11 @@ const FONT_FAMILIES = [
   "Courier New",
 ];
 
+const FONT_SIZES = Array.from(
+  { length: 17 },
+  (_, index) => index + 8,
+);
+
 function visibleLength(value: string): number {
   return stripRichTextForPreview(value).length;
 }
@@ -135,6 +140,26 @@ export function RichTextEditor({
     commit(editor.innerHTML);
   }
 
+  function selectionInsideEditor() {
+    const editor = editorRef.current;
+    const selection = window.getSelection();
+
+    if (
+      !editor ||
+      !selection ||
+      selection.rangeCount === 0 ||
+      selection.isCollapsed
+    ) {
+      return false;
+    }
+
+    return editor.contains(
+      selection
+        .getRangeAt(0)
+        .commonAncestorContainer,
+    );
+  }
+
   function runCommand(
     command: string,
     commandValue?: string,
@@ -151,15 +176,6 @@ export function RichTextEditor({
 
     const selection = window.getSelection();
 
-    /*
-     * Inline formatting commands such as bold/italic/underline become
-     * "sticky" in contentEditable when executed with a collapsed caret:
-     * the browser changes the typing state instead of formatting text.
-     *
-     * Only allow those commands when actual text inside THIS editor is
-     * selected. This prevents the editor from randomly starting to type
-     * in bold after a click/double-click or after a previous command.
-     */
     const selectionIsInsideEditor =
       selection &&
       selection.rangeCount > 0 &&
@@ -175,7 +191,6 @@ export function RichTextEditor({
       "foreColor",
       "hiliteColor",
       "fontName",
-      "fontSize",
       "createLink",
     ]);
 
@@ -197,6 +212,87 @@ export function RichTextEditor({
       false,
       commandValue,
     );
+
+    syncFromEditor();
+  }
+
+  function applyFontSize(
+    size: number,
+  ) {
+    if (
+      disabled ||
+      sourceMode ||
+      !Number.isInteger(size) ||
+      size < 8 ||
+      size > 24
+    ) {
+      return;
+    }
+
+    const editor = editorRef.current;
+
+    if (!editor) {
+      return;
+    }
+
+    if (!selectionInsideEditor()) {
+      editor.focus();
+      return;
+    }
+
+    /*
+     * execCommand's fontSize API only accepts legacy values 1–7.
+     * Use a temporary size=7 wrapper, then convert ONLY the wrappers
+     * created by this command into exact pixel-sized spans.
+     */
+    const existingLegacyFonts =
+      new Set(
+        Array.from(
+          editor.querySelectorAll(
+            'font[size="7"]',
+          ),
+        ),
+      );
+
+    editor.focus();
+
+    document.execCommand(
+      "fontSize",
+      false,
+      "7",
+    );
+
+    editor
+      .querySelectorAll(
+        'font[size="7"]',
+      )
+      .forEach((fontNode) => {
+        if (
+          existingLegacyFonts.has(
+            fontNode,
+          )
+        ) {
+          return;
+        }
+
+        const span =
+          document.createElement(
+            "span",
+          );
+
+        span.style.fontSize =
+          `${size}px`;
+
+        while (
+          fontNode.firstChild
+        ) {
+          span.appendChild(
+            fontNode.firstChild,
+          );
+        }
+
+        fontNode.replaceWith(span);
+      });
 
     syncFromEditor();
   }
@@ -251,12 +347,6 @@ export function RichTextEditor({
       return;
     }
 
-    /*
-     * Selecting text must never mutate the document.
-     * If the browser/extension/contentEditable stack changes the HTML
-     * during the double-click itself, restore the exact pre-selection HTML
-     * while keeping the native text selection intact whenever possible.
-     */
     const htmlBeforeSelection =
       htmlBeforePointerSelection.current;
 
@@ -357,24 +447,34 @@ export function RichTextEditor({
           defaultValue=""
           disabled={disabled || sourceMode}
           onChange={(event) => {
-            if (event.target.value) {
-              runCommand(
-                "fontSize",
+            const size =
+              Number.parseInt(
                 event.target.value,
+                10,
               );
+
+            if (
+              Number.isInteger(size)
+            ) {
+              applyFontSize(size);
             }
+
             event.currentTarget.value = "";
           }}
           className="h-8 border border-[#59432c]/55 bg-[#17110d] px-2 text-[10px] text-[#cbb28a] outline-none"
         >
           <option value="">Size</option>
-          <option value="1">Very small</option>
-          <option value="2">Small</option>
-          <option value="3">Normal</option>
-          <option value="4">Large</option>
-          <option value="5">Larger</option>
-          <option value="6">Huge</option>
-          <option value="7">Largest</option>
+
+          {FONT_SIZES.map(
+            (size) => (
+              <option
+                key={size}
+                value={size}
+              >
+                {size}px
+              </option>
+            ),
+          )}
         </select>
 
         <label
@@ -530,6 +630,10 @@ export function RichTextEditor({
           contentEditable={!disabled}
           suppressContentEditableWarning
           data-placeholder={placeholder}
+          lang="en-GB"
+          spellCheck
+          autoCorrect="on"
+          autoCapitalize="sentences"
           onInput={syncFromEditor}
           onBlur={syncFromEditor}
           onMouseDown={rememberHtmlBeforePointerSelection}
@@ -549,7 +653,7 @@ export function RichTextEditor({
 
       <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#60482e]/35 bg-[#0b0806] px-3 py-2 text-[9px] leading-4 text-[#756958]">
         <span>
-          Paste formatted content directly. Fonts, sizes, colours, links, lists and web images are retained.
+          Paste formatted content directly. Fonts, 8–24px text sizes, colours, links, lists and web images are retained. Browser spelling and correction are enabled.
         </span>
         <span>
           {textLength.toLocaleString("en-GB")} / {maxTextLength.toLocaleString("en-GB")}

@@ -8,12 +8,28 @@ import {
 } from "@/lib/rich-text-shared";
 
 const SAFE_COLOUR = /^(?:#[0-9a-f]{3,8}|rgba?\([^)]{1,80}\)|hsla?\([^)]{1,80}\)|[a-z]{1,30})$/i;
-const SAFE_SIZE = /^(?:[0-9]{1,3}(?:\.[0-9]+)?(?:px|pt|em|rem|%)|xx-small|x-small|small|medium|large|x-large|xx-large)$/i;
+
+/*
+ * Inline user-selected font sizes are deliberately constrained to 8–24px.
+ * This also prevents oversized formatting pasted from external sites.
+ */
+const SAFE_SIZE = /^(?:[89]|1[0-9]|2[0-4])px$/i;
+
 const SAFE_SPACING = /^(?:0|[0-9]{1,3}(?:\.[0-9]+)?(?:px|pt|em|rem|%))$/i;
 const SAFE_FONT = /^[a-z0-9 ,'"\-]{1,160}$/i;
 const SAFE_WEIGHT = /^(?:normal|bold|bolder|lighter|[1-9]00)$/i;
 const SAFE_LINE_HEIGHT = /^(?:normal|[0-9]{1,2}(?:\.[0-9]+)?(?:px|pt|em|rem|%)?)$/i;
 const SAFE_DECORATION = /^[a-z\- ]{1,80}$/i;
+
+const LEGACY_FONT_SIZE_TO_PX: Record<string, string> = {
+  "1": "8px",
+  "2": "10px",
+  "3": "14px",
+  "4": "16px",
+  "5": "18px",
+  "6": "21px",
+  "7": "24px",
+};
 
 export function sanitizeRichHtml(
   value: string,
@@ -121,6 +137,43 @@ export function sanitizeRichHtml(
             : {}),
         },
       }),
+
+      /*
+       * Existing content created by the old 1–7 font-size toolbar is
+       * normalised into the new 8–24px system when it is saved again.
+       */
+      font: (_tagName, attribs) => {
+        const legacySize =
+          attribs.size
+            ? LEGACY_FONT_SIZE_TO_PX[
+                attribs.size
+              ]
+            : undefined;
+
+        const {
+          size: _legacySize,
+          ...remainingAttributes
+        } = attribs;
+
+        const styles = [
+          remainingAttributes.style,
+          legacySize
+            ? `font-size:${legacySize}`
+            : "",
+        ]
+          .filter(Boolean)
+          .join(";");
+
+        return {
+          tagName: "font",
+          attribs: {
+            ...remainingAttributes,
+            ...(styles
+              ? { style: styles }
+              : {}),
+          },
+        };
+      },
     },
     disallowedTagsMode: "discard",
     nonTextTags: [

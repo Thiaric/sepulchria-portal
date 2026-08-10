@@ -44,81 +44,21 @@ type CheckOption = {
 };
 
 const CHECK_OPTIONS: CheckOption[] = [
-  {
-    value: "unarmed_attack",
-    label: "Unarmed Attack",
-    attribute: "muscles",
-  },
-  {
-    value: "melee_attack_muscles",
-    label: "Melee Attack (Muscles)",
-    attribute: "muscles",
-  },
-  {
-    value: "melee_attack_reflexes",
-    label: "Melee Attack (Reflexes)",
-    attribute: "reflexes",
-  },
-  {
-    value: "ranged_attack",
-    label: "Ranged Attack",
-    attribute: "reflexes",
-  },
-  {
-    value: "defend",
-    label: "Defend",
-    attribute: "vigor",
-  },
-  {
-    value: "dodge",
-    label: "Dodge",
-    attribute: "reflexes",
-  },
-  {
-    value: "use_muscles",
-    label: "Use your Muscles",
-    attribute: "muscles",
-  },
-  {
-    value: "use_reflexes",
-    label: "Use your Reflexes",
-    attribute: "reflexes",
-  },
-  {
-    value: "use_brains",
-    label: "Use your Brains",
-    attribute: "brains",
-  },
-  {
-    value: "use_shrewd",
-    label: "Use your Shrewd",
-    attribute: "shrewd",
-  },
-  {
-    value: "use_presence",
-    label: "Use your Presence",
-    attribute: "presence_score",
-  },
-  {
-    value: "resist_physical",
-    label: "Resist (Physical)",
-    attribute: "vigor",
-  },
-  {
-    value: "resist_shrewd",
-    label: "Resist (Shrewd)",
-    attribute: "shrewd",
-  },
-  {
-    value: "resist_brains",
-    label: "Resist (Brains)",
-    attribute: "brains",
-  },
-  {
-    value: "resist_presence",
-    label: "Resist (Presence)",
-    attribute: "presence_score",
-  },
+  { value: "unarmed_attack", label: "Unarmed Attack", attribute: "muscles" },
+  { value: "melee_attack_muscles", label: "Melee Attack (Muscles)", attribute: "muscles" },
+  { value: "melee_attack_reflexes", label: "Melee Attack (Reflexes)", attribute: "reflexes" },
+  { value: "ranged_attack", label: "Ranged Attack", attribute: "reflexes" },
+  { value: "defend", label: "Defend", attribute: "vigor" },
+  { value: "dodge", label: "Dodge", attribute: "reflexes" },
+  { value: "use_muscles", label: "Use your Muscles", attribute: "muscles" },
+  { value: "use_reflexes", label: "Use your Reflexes", attribute: "reflexes" },
+  { value: "use_brains", label: "Use your Brains", attribute: "brains" },
+  { value: "use_shrewd", label: "Use your Shrewd", attribute: "shrewd" },
+  { value: "use_presence", label: "Use your Presence", attribute: "presence_score" },
+  { value: "resist_physical", label: "Resist (Physical)", attribute: "vigor" },
+  { value: "resist_shrewd", label: "Resist (Shrewd)", attribute: "shrewd" },
+  { value: "resist_brains", label: "Resist (Brains)", attribute: "brains" },
+  { value: "resist_presence", label: "Resist (Presence)", attribute: "presence_score" },
 ];
 
 const ATTRIBUTE_LABELS: Record<
@@ -382,6 +322,10 @@ export default function RoomChatForm({
           required
           maxLength={CHAT_MAX_LENGTH}
           value={value}
+          lang="en-GB"
+          spellCheck
+          autoCorrect="on"
+          autoCapitalize="sentences"
           onChange={(event) =>
             handleMessageChange(
               event.target.value,
