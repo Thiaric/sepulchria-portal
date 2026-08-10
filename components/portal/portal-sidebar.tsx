@@ -57,7 +57,7 @@ const codexNavigationItems: NavigationItem[] = [
   },
   {
     label: "Rules",
-    icon: "🌏︎",
+    icon: "🗊",
     href: "/rules",
     activePaths: ["/rules"],
     opensModal: true,

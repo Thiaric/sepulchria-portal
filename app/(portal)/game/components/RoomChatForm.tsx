@@ -10,6 +10,7 @@ import {
 import { useFormStatus } from "react-dom";
 
 import { CHAT_MAX_LENGTH } from "@/lib/game/constants";
+import { WritingAssistant } from "@/components/editor/writing-assistant";
 import type {
   ActionState,
   CharacterAttributeKey,
@@ -224,6 +225,38 @@ export default function RoomChatForm({
     }
   }
 
+  function replaceSpelling(
+    word: string,
+    replacement: string,
+  ) {
+    const escaped =
+      word.replace(
+        /[.*+?^${}()|[\]\\]/g,
+        "\\$&",
+      );
+
+    const pattern =
+      new RegExp(
+        `(^|[^\\p{L}’'-])(${escaped})(?=$|[^\\p{L}’'-])`,
+        "giu",
+      );
+
+    setValue((current) =>
+      current.replace(
+        pattern,
+        (
+          _match,
+          prefix: string,
+        ) =>
+          `${prefix}${replacement}`,
+      ),
+    );
+
+    requestAnimationFrame(() => {
+      textareaRef.current?.focus();
+    });
+  }
+
   function selectWhisperRecipient(
     characterId: string,
   ) {
@@ -333,6 +366,12 @@ export default function RoomChatForm({
           }
           placeholder="Speech outside brackets; actions, movement, descriptions inside < > or ( ). Out-of-character messages must be preceded by //. To whisper to a character, select them from the dropdown and begin your message with @CharacterName@."
           className="h-24 w-full resize-none border border-[#60482e]/50 bg-[#0f0c09] px-4 py-3 text-sm leading-6 text-[#d0bea1] outline-none transition placeholder:text-[#5f574d] focus:border-[#927047]"
+        />
+
+        <WritingAssistant
+          text={value}
+          onReplace={replaceSpelling}
+          compact
         />
 
         <div className="mt-3 grid items-center gap-2 xl:grid-cols-[auto_minmax(0,1fr)_auto]">

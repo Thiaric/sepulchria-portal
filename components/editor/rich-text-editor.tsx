@@ -10,6 +10,7 @@ import {
   legacyRichTextToHtml,
   stripRichTextForPreview,
 } from "@/lib/rich-text-shared";
+import { WritingAssistant } from "@/components/editor/writing-assistant";
 
 type RichTextEditorProps = {
   name?: string;
@@ -295,6 +296,69 @@ export function RichTextEditor({
       });
 
     syncFromEditor();
+  }
+
+  function replaceSpelling(
+    word: string,
+    replacement: string,
+  ) {
+    const editor =
+      editorRef.current;
+
+    if (
+      !editor ||
+      disabled ||
+      sourceMode
+    ) {
+      return;
+    }
+
+    const escaped =
+      word.replace(
+        /[.*+?^${}()|[\]\\]/g,
+        "\\$&",
+      );
+
+    const pattern =
+      new RegExp(
+        `(^|[^\\p{L}’'-])(${escaped})(?=$|[^\\p{L}’'-])`,
+        "giu",
+      );
+
+    const walker =
+      document.createTreeWalker(
+        editor,
+        NodeFilter.SHOW_TEXT,
+      );
+
+    let node =
+      walker.nextNode();
+
+    while (node) {
+      const value =
+        node.nodeValue ?? "";
+
+      const nextValue =
+        value.replace(
+          pattern,
+          (
+            _match,
+            prefix: string,
+          ) =>
+            `${prefix}${replacement}`,
+        );
+
+      if (nextValue !== value) {
+        node.nodeValue =
+          nextValue;
+      }
+
+      node =
+        walker.nextNode();
+    }
+
+    syncFromEditor();
+    editor.focus();
   }
 
   function createLink() {
@@ -648,6 +712,14 @@ export function RichTextEditor({
           type="hidden"
           name={name}
           value={html}
+        />
+      ) : null}
+
+      {!sourceMode ? (
+        <WritingAssistant
+          text={stripRichTextForPreview(html)}
+          onReplace={replaceSpelling}
+          disabled={disabled}
         />
       ) : null}
 
