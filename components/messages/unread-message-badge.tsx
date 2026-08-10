@@ -413,7 +413,7 @@ export function UnreadMessageBadge({
         () => {
           void refreshCount();
         },
-        30_000,
+        5_000,
       );
 
     const handleFocus =
