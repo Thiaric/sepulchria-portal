@@ -932,10 +932,126 @@ export async function deleteCharacterAdministration(
   }
 
   /*
-   * PRIVATE MESSAGES SENT BY THE CHARACTER
+   * PRIVATE CONVERSATIONS
+   *
+   * Find every conversation involving this character BEFORE
+   * removing participant rows. Deleting a character must remove
+   * the entire private conversation, not leave a "Deleted character"
+   * shell behind for the surviving participant.
    */
   const {
-    error: directMessagesError,
+    data: conversationMemberships,
+    error: conversationLookupError,
+  } = await supabase
+    .from(
+      "direct_conversation_participants",
+    )
+    .select("conversation_id")
+    .eq(
+      "character_id",
+      characterId,
+    );
+
+  if (conversationLookupError) {
+    throw new Error(
+      `Unable to find the character's private conversations: ${conversationLookupError.message}`,
+    );
+  }
+
+  const conversationIds = Array.from(
+    new Set(
+      (
+        conversationMemberships ??
+        []
+      )
+        .map(
+          (membership) =>
+            membership.conversation_id,
+        )
+        .filter(Boolean),
+    ),
+  );
+
+  if (conversationIds.length > 0) {
+    /*
+     * Delete EVERY message in those conversations, including
+     * messages written by the surviving participant.
+     *
+     * This is intentional: the conversation itself is being
+     * permanently deleted because one of its characters no
+     * longer exists.
+     */
+    const {
+      error: conversationMessagesError,
+    } = await supabase
+      .from("direct_messages")
+      .delete()
+      .in(
+        "conversation_id",
+        conversationIds,
+      );
+
+    if (conversationMessagesError) {
+      throw new Error(
+        `Unable to delete private-conversation messages: ${conversationMessagesError.message}`,
+      );
+    }
+
+    /*
+     * Remove ALL participants in those conversations, not only
+     * the character being deleted.
+     */
+    const {
+      error:
+        conversationParticipantsError,
+    } = await supabase
+      .from(
+        "direct_conversation_participants",
+      )
+      .delete()
+      .in(
+        "conversation_id",
+        conversationIds,
+      );
+
+    if (
+      conversationParticipantsError
+    ) {
+      throw new Error(
+        `Unable to delete private-conversation participants: ${conversationParticipantsError.message}`,
+      );
+    }
+
+    /*
+     * Finally delete the conversation records themselves.
+     */
+    const {
+      error: conversationsError,
+    } = await supabase
+      .from(
+        "direct_conversations",
+      )
+      .delete()
+      .in(
+        "id",
+        conversationIds,
+      );
+
+    if (conversationsError) {
+      throw new Error(
+        `Unable to delete private conversations: ${conversationsError.message}`,
+      );
+    }
+  }
+
+  /*
+   * Defensive cleanup: there should not normally be direct
+   * messages outside one of the memberships above, but remove
+   * any remaining messages authored by the character as well.
+   */
+  const {
+    error:
+      remainingDirectMessagesError,
   } = await supabase
     .from("direct_messages")
     .delete()
@@ -944,18 +1060,21 @@ export async function deleteCharacterAdministration(
       characterId,
     );
 
-  if (directMessagesError) {
+  if (
+    remainingDirectMessagesError
+  ) {
     throw new Error(
-      `Unable to delete private messages: ${directMessagesError.message}`,
+      `Unable to delete remaining private messages: ${remainingDirectMessagesError.message}`,
     );
   }
 
   /*
-   * REMOVE THE CHARACTER FROM PRIVATE
-   * CONVERSATIONS.
+   * Defensive cleanup for any stray participant row that was
+   * not part of the conversation list returned above.
    */
   const {
-    error: participantsError,
+    error:
+      remainingParticipantsError,
   } = await supabase
     .from(
       "direct_conversation_participants",
@@ -966,9 +1085,11 @@ export async function deleteCharacterAdministration(
       characterId,
     );
 
-  if (participantsError) {
+  if (
+    remainingParticipantsError
+  ) {
     throw new Error(
-      `Unable to remove character from conversations: ${participantsError.message}`,
+      `Unable to remove remaining private-conversation memberships: ${remainingParticipantsError.message}`,
     );
   }
 
