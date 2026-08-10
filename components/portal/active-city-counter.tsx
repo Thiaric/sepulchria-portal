@@ -711,12 +711,7 @@ export function ActiveCityCounter({
             </div>
           </div>
 
-          <div className="border-t border-[#59432c]/45 bg-[#100c09] px-4 py-2">
-            <p className="text-[7px] uppercase tracking-[0.18em] text-[#675a4a]">
-              Presence updates
-              automatically
-            </p>
-          </div>
+          
         </div>
       ) : null}
     </div>

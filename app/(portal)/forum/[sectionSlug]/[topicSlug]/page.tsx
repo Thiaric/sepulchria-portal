@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-
+import { ForumTopicFlagButton } from "@/components/forum/forum-topic-flag-button";
 import { ForumTopicFavouriteButton } from "@/components/forum/forum-topic-favourite-button";
 import TopicModerationPanel from "@/components/forum/topic-moderation-panel";
 import TopicPost, {
@@ -1052,6 +1052,17 @@ export default async function TopicPage({
                     <ForumTopicFavouriteButton
             topicId={topic.id}
           />
+
+          {user ? (
+  <ForumTopicFlagButton
+  topicId={topic.id}
+  topicTitle={topic.title}
+  sectionId={section.id}
+  sectionSlug={section.slug}
+  topicSlug={topic.slug}
+/>
+) : null}
+
 
           {isStaff ? (
             <TopicModerationPanel
