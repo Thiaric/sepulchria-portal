@@ -10,6 +10,7 @@ import { usePathname } from "next/navigation";
 
 import { ForumSectionActivityContext } from "@/components/portal/forum-section-activity-context";
 import { PortalContextPanel } from "@/components/portal/portal-context-panel";
+import { RoomInfoButton } from "@/components/portal/room-info-button";
 import type { PortalContext } from "@/types/portal";
 
 type PortalResponsiveRightSidebarProps = {
@@ -148,11 +149,22 @@ export function PortalResponsiveRightSidebar({
               </div>
 
               {character?.currentRoom ? (
-                <Link
-                  href="/game"
-                  className="shrink-0 border border-[#765937]/60 bg-[#21170f] px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[#d8bc8d] transition hover:border-[#a07945] hover:bg-[#332217] hover:text-[#f0d4a2]"
-                >
-                  →               </Link>
+                <div className="flex shrink-0 items-center gap-2">
+                  <RoomInfoButton
+                    roomId={
+                      character.currentRoom.id
+                    }
+                  />
+
+                  <Link
+                    href="/game"
+                    aria-label="Enter current location"
+                    title="Enter current location"
+                    className="border border-[#765937]/60 bg-[#21170f] px-3 py-2 text-xs text-[#d8bc8d] transition hover:border-[#a07945] hover:bg-[#332217] hover:text-[#f0d4a2]"
+                  >
+                    →
+                  </Link>
+                </div>
               ) : null}
             </div>
           </section>
