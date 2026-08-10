@@ -15,13 +15,16 @@ type CreateCharacterPageProps = {
 export default async function CreateCharacterPage({
   searchParams,
 }: CreateCharacterPageProps) {
-  const { error } = await searchParams;
+  const { error } =
+    await searchParams;
 
-  const supabase = await createClient();
+  const supabase =
+    await createClient();
 
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } =
+    await supabase.auth.getUser();
 
   if (!user) {
     redirect("/auth/login");
@@ -37,43 +40,53 @@ export default async function CreateCharacterPage({
     .maybeSingle();
 
   if (existingError) {
-    throw new Error(existingError.message);
+    throw new Error(
+      existingError.message,
+    );
   }
 
   if (existing) {
     redirect("/character");
   }
 
-  const [racesResult, associationsResult] =
-    await Promise.all([
-      supabase
-        .from("races")
-        .select(
-          "id, name, slug, summary, icon_url, colour",
-        )
-        .eq("is_active", true)
-        .eq("is_selectable", true)
-        .order("sort_order", {
-          ascending: true,
-        })
-        .order("name", {
-          ascending: true,
-        }),
+  const [
+    racesResult,
+    associationsResult,
+  ] = await Promise.all([
+    supabase
+      .from("races")
+      .select(
+        "id, name, slug, summary, icon_url, colour, min_age, max_age",
+      )
+      .eq("is_active", true)
+      .eq(
+        "is_selectable",
+        true,
+      )
+      .order("sort_order", {
+        ascending: true,
+      })
+      .order("name", {
+        ascending: true,
+      }),
 
-      supabase
-        .from("associations")
-        .select(
-          "id, name, slug, summary, icon_url, colour",
-        )
-        .eq("is_active", true)
-        .eq("is_selectable", true)
-        .order("sort_order", {
-          ascending: true,
-        })
-        .order("name", {
-          ascending: true,
-        }),
-    ]);
+    supabase
+      .from("associations")
+      .select(
+        "id, name, slug, summary, icon_url, colour",
+      )
+      .eq("is_active", true)
+      .eq(
+        "is_selectable",
+        true,
+      )
+      .order("sort_order", {
+        ascending: true,
+      })
+      .order("name", {
+        ascending: true,
+      }),
+  ]);
 
   if (racesResult.error) {
     throw new Error(
@@ -81,13 +94,17 @@ export default async function CreateCharacterPage({
     );
   }
 
-  if (associationsResult.error) {
+  if (
+    associationsResult.error
+  ) {
     throw new Error(
       `Unable to load selectable Associations: ${associationsResult.error.message}`,
     );
   }
 
-  const races = racesResult.data ?? [];
+  const races =
+    racesResult.data ?? [];
+
   const associations =
     associationsResult.data ?? [];
 
@@ -111,10 +128,13 @@ export default async function CreateCharacterPage({
           </h1>
 
           <p className="mt-4 text-sm leading-7 text-[#9e907d] sm:text-base">
-            Build the person who will enter
-            Sepulchria. You can review every
-            section before creating the final
-            character record.
+            Build the person who
+            will enter Sepulchria.
+            Heritage is chosen
+            first so the following
+            identity step can enforce
+            the correct ancestry age
+            range.
           </p>
         </header>
 
@@ -127,7 +147,9 @@ export default async function CreateCharacterPage({
         <CharacterForm
           action={createCharacter}
           races={races}
-          associations={associations}
+          associations={
+            associations
+          }
           submitLabel="Create character"
           mode="create"
         />

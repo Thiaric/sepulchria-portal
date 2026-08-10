@@ -18,6 +18,8 @@ type RaceRow = {
   banner_url: string | null;
   icon_url: string | null;
   colour: string | null;
+  min_age: number | null;
+  max_age: number | null;
   is_active: boolean;
   sort_order: number;
   created_at: string;
@@ -34,6 +36,8 @@ const RACE_SELECT = `
   banner_url,
   icon_url,
   colour,
+  min_age,
+  max_age,
   is_active,
   sort_order,
   created_at,
@@ -48,11 +52,14 @@ function normaliseRace(
     name: row.name,
     slug: row.slug,
     summary: row.summary ?? "",
-    description: row.description ?? "",
+    description:
+      row.description ?? "",
     image_url: row.image_url,
     banner_url: row.banner_url,
     icon_url: row.icon_url,
     colour: row.colour,
+    min_age: row.min_age,
+    max_age: row.max_age,
     is_active: row.is_active,
     sort_order: row.sort_order,
     created_at: row.created_at,
@@ -62,21 +69,20 @@ function normaliseRace(
 
 export const getRaces = cache(
   async (): Promise<Race[]> => {
-    const supabase = await createClient();
+    const supabase =
+      await createClient();
 
-    const {
-      data,
-      error,
-    } = await supabase
-      .from("races")
-      .select(RACE_SELECT)
-      .eq("is_active", true)
-      .order("sort_order", {
-        ascending: true,
-      })
-      .order("name", {
-        ascending: true,
-      });
+    const { data, error } =
+      await supabase
+        .from("races")
+        .select(RACE_SELECT)
+        .eq("is_active", true)
+        .order("sort_order", {
+          ascending: true,
+        })
+        .order("name", {
+          ascending: true,
+        });
 
     if (error) {
       throw new Error(
@@ -90,56 +96,67 @@ export const getRaces = cache(
   },
 );
 
-export const getRaceBySlug = cache(
-  async (
-    slug: string,
-  ): Promise<Race | null> => {
-    const normalisedSlug =
-      slug.trim().toLowerCase();
+export const getRaceBySlug =
+  cache(
+    async (
+      slug: string,
+    ): Promise<Race | null> => {
+      const normalisedSlug =
+        slug.trim().toLowerCase();
 
-    if (!normalisedSlug) {
-      return null;
-    }
+      if (!normalisedSlug) {
+        return null;
+      }
 
-    const supabase = await createClient();
+      const supabase =
+        await createClient();
 
-    const {
-      data,
-      error,
-    } = await supabase
-      .from("races")
-      .select(RACE_SELECT)
-      .eq("slug", normalisedSlug)
-      .eq("is_active", true)
-      .maybeSingle();
+      const { data, error } =
+        await supabase
+          .from("races")
+          .select(RACE_SELECT)
+          .eq(
+            "slug",
+            normalisedSlug,
+          )
+          .eq("is_active", true)
+          .maybeSingle();
 
-    if (error) {
-      throw new Error(
-        `Unable to load race "${normalisedSlug}": ${error.message}`,
+      if (error) {
+        throw new Error(
+          `Unable to load race "${normalisedSlug}": ${error.message}`,
+        );
+      }
+
+      if (!data) {
+        return null;
+      }
+
+      return normaliseRace(
+        data as RaceRow,
       );
-    }
+    },
+  );
 
-    if (!data) {
-      return null;
-    }
+export const getRaceOptions =
+  cache(
+    async (): Promise<
+      RaceOption[]
+    > => {
+      const races =
+        await getRaces();
 
-    return normaliseRace(
-      data as RaceRow,
-    );
-  },
-);
-
-export const getRaceOptions = cache(
-  async (): Promise<RaceOption[]> => {
-    const races = await getRaces();
-
-    return races.map((race) => ({
-      id: race.id,
-      name: race.name,
-      slug: race.slug,
-      summary: race.summary,
-      icon_url: race.icon_url,
-      colour: race.colour,
-    }));
-  },
-);
+      return races.map(
+        (race) => ({
+          id: race.id,
+          name: race.name,
+          slug: race.slug,
+          summary: race.summary,
+          icon_url: race.icon_url,
+          colour: race.colour,
+          min_age: race.min_age,
+          max_age: race.max_age,
+        }),
+      );
+    },
+  );

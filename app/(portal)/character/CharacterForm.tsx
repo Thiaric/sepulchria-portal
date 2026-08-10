@@ -11,7 +11,7 @@ import { CharacterAttributeAllocator } from "@/components/characters/character-a
 
 type CharacterData = Record<
   string,
-  string | null | undefined
+  string | number | null | undefined
 >;
 
 type CharacterOption = {
@@ -23,12 +23,17 @@ type CharacterOption = {
   colour: string | null;
 };
 
+type RaceOption = CharacterOption & {
+  min_age: number | null;
+  max_age: number | null;
+};
+
 type CharacterFormProps = {
   action: (
     formData: FormData,
   ) => void | Promise<void>;
   character?: CharacterData;
-  races: CharacterOption[];
+  races: RaceOption[];
   associations: CharacterOption[];
   submitLabel: string;
   mode: "create" | "update";
@@ -37,15 +42,15 @@ type CharacterFormProps = {
 const steps = [
   {
     number: 1,
-    label: "Identity",
+    label: "Heritage",
     description:
-      "Name, origins and personal details.",
+      "Choose the Ancestry and Association that shape your place in Sepulchria.",
   },
   {
     number: 2,
-    label: "Heritage",
+    label: "Identity",
     description:
-      "Ancestry, Association and social role.",
+      "Name, pronouns and age.",
   },
   {
     number: 3,
@@ -87,18 +92,30 @@ export default function CharacterForm({
   const [currentStep, setCurrentStep] =
     useState(1);
 
-  const [selectedRaceId, setSelectedRaceId] =
-    useState(character?.race_id ?? "");
+  const [
+    selectedRaceId,
+    setSelectedRaceId,
+  ] = useState(
+    String(character?.race_id ?? ""),
+  );
 
   const [
     selectedAssociationId,
     setSelectedAssociationId,
   ] = useState(
-    character?.association_id ?? "",
+    String(
+      character?.association_id ?? "",
+    ),
   );
 
-  const [validationError, setValidationError] =
-    useState<string | null>(null);
+  const [age, setAge] = useState(
+    String(character?.age ?? ""),
+  );
+
+  const [
+    validationError,
+    setValidationError,
+  ] = useState<string | null>(null);
 
   const selectedRace = useMemo(
     () =>
@@ -129,14 +146,16 @@ export default function CharacterForm({
       return "";
     }
 
-    const field = form.elements.namedItem(
-      name,
-    );
+    const field =
+      form.elements.namedItem(name);
 
     if (
-      field instanceof HTMLInputElement ||
-      field instanceof HTMLTextAreaElement ||
-      field instanceof HTMLSelectElement
+      field instanceof
+        HTMLInputElement ||
+      field instanceof
+        HTMLTextAreaElement ||
+      field instanceof
+        HTMLSelectElement
     ) {
       return field.value.trim();
     }
@@ -144,8 +163,105 @@ export default function CharacterForm({
     return "";
   }
 
+  function selectRace(id: string) {
+    setSelectedRaceId(id);
+
+    const race =
+      races.find(
+        (option) => option.id === id,
+      ) ?? null;
+
+    if (!race || !age) {
+      return;
+    }
+
+    const numericAge = Number(age);
+
+    const belowMinimum =
+      race.min_age !== null &&
+      numericAge < race.min_age;
+
+    const aboveMaximum =
+      race.max_age !== null &&
+      numericAge > race.max_age;
+
+    if (
+      !Number.isInteger(numericAge) ||
+      belowMinimum ||
+      aboveMaximum
+    ) {
+      setAge("");
+    }
+  }
+
+  function validateAge() {
+    if (!selectedRace) {
+      setValidationError(
+        "Choose an ancestry before entering an age.",
+      );
+      return false;
+    }
+
+    if (selectedRace.min_age === null) {
+      setValidationError(
+        "This ancestry does not yet have a playable age range configured. Contact the staff.",
+      );
+      return false;
+    }
+
+    const numericAge = Number(age);
+
+    if (
+      !Number.isInteger(numericAge)
+    ) {
+      setValidationError(
+        "Choose a valid whole-number age.",
+      );
+      return false;
+    }
+
+    if (
+      numericAge <
+      selectedRace.min_age
+    ) {
+      setValidationError(
+        `${selectedRace.name} characters must be at least ${selectedRace.min_age} years old.`,
+      );
+      return false;
+    }
+
+    if (
+      selectedRace.max_age !== null &&
+      numericAge >
+        selectedRace.max_age
+    ) {
+      setValidationError(
+        `${selectedRace.name} characters may be no older than ${selectedRace.max_age} years.`,
+      );
+      return false;
+    }
+
+    return true;
+  }
+
   function validateStep(step: number) {
     if (step === 1) {
+      if (!selectedRaceId) {
+        setValidationError(
+          "Choose an ancestry before continuing.",
+        );
+        return false;
+      }
+
+      if (!selectedAssociationId) {
+        setValidationError(
+          "Choose an Association before continuing.",
+        );
+        return false;
+      }
+    }
+
+    if (step === 2) {
       if (
         !getValue("first_name") ||
         !getValue("surname")
@@ -153,55 +269,18 @@ export default function CharacterForm({
         setValidationError(
           "First name and surname are required.",
         );
+        return false;
+      }
 
+      if (!validateAge()) {
         return false;
       }
     }
 
-    if (step === 2 && mode === "create") {
-  if (!selectedRaceId) {
-    setValidationError(
-      "Choose an ancestry before continuing.",
-    );
-
-    return false;
-  }
-
-  if (!selectedAssociationId) {
-    setValidationError(
-      "Choose an Association before continuing.",
-    );
-
-    return false;
-  }
-}
-
-    if (step === 4) {
-      if (!getValue("physical_description")) {
-        setValidationError(
-          "Physical description is required before continuing.",
-        );
-        return false;
-      }
-    }
-
-    if (step === 5) {
-      if (!getValue("personality")) {
-        setValidationError(
-          "Personality is required before continuing.",
-        );
-        return false;
-      }
-
-      if (!getValue("biography")) {
-        setValidationError(
-          "Biography is required before continuing.",
-        );
-        return false;
-      }
-    }
-
-    if (step === 3 && mode === "create") {
+    if (
+      step === 3 &&
+      mode === "create"
+    ) {
       const attributeNames = [
         "muscles",
         "reflexes",
@@ -233,7 +312,35 @@ export default function CharacterForm({
         setValidationError(
           "Distribute exactly 20 points across the six attributes. Every value must be between 1 and 8.",
         );
+        return false;
+      }
+    }
 
+    if (step === 4) {
+      if (
+        !getValue(
+          "physical_description",
+        )
+      ) {
+        setValidationError(
+          "Physical description is required before continuing.",
+        );
+        return false;
+      }
+    }
+
+    if (step === 5) {
+      if (!getValue("personality")) {
+        setValidationError(
+          "Personality is required before continuing.",
+        );
+        return false;
+      }
+
+      if (!getValue("biography")) {
+        setValidationError(
+          "Biography is required before continuing.",
+        );
         return false;
       }
     }
@@ -248,7 +355,10 @@ export default function CharacterForm({
     }
 
     setCurrentStep((step) =>
-      Math.min(step + 1, steps.length),
+      Math.min(
+        step + 1,
+        steps.length,
+      ),
     );
 
     window.scrollTo({
@@ -273,11 +383,14 @@ export default function CharacterForm({
   function goToStep(step: number) {
     if (step > currentStep) {
       for (
-        let checkedStep = currentStep;
+        let checkedStep =
+          currentStep;
         checkedStep < step;
         checkedStep += 1
       ) {
-        if (!validateStep(checkedStep)) {
+        if (
+          !validateStep(checkedStep)
+        ) {
           return;
         }
       }
@@ -398,6 +511,51 @@ export default function CharacterForm({
               : "hidden"
           }
         >
+          {mode === "create" ? (
+            <>
+              <SelectionSection
+                title="Choose an ancestry"
+                description="Ancestry represents your character's heritage and inherited traits. It also determines the playable age range used in the next step."
+                options={races}
+                selectedId={
+                  selectedRaceId
+                }
+                onSelect={selectRace}
+                emptyMessage="No ancestries are currently available."
+              />
+
+              <div className="my-10 border-t border-[#5d452d]/40" />
+
+              <SelectionSection
+                title="Choose an Association"
+                description="The Association represents your character's place within the living body of Sepulchria."
+                options={associations}
+                selectedId={
+                  selectedAssociationId
+                }
+                onSelect={
+                  setSelectedAssociationId
+                }
+                emptyMessage="No Associations are currently available."
+              />
+            </>
+          ) : (
+            <LockedHeritage
+              race={selectedRace}
+              association={
+                selectedAssociation
+              }
+            />
+          )}
+        </section>
+
+        <section
+          className={
+            currentStep === 2
+              ? "block"
+              : "hidden"
+          }
+        >
           <div className="grid gap-6 sm:grid-cols-2">
             <TextField
               label="First name"
@@ -428,90 +586,58 @@ export default function CharacterForm({
               placeholder="They/them, she/her, he/him..."
             />
 
-            <TextField
-              label="Date of birth"
-              name="date_of_birth"
-              type="date"
-              defaultValue={
-                character?.date_of_birth
-              }
+            <AgeField
+              race={selectedRace}
+              value={age}
+              onChange={setAge}
             />
+          </div>
 
-            <TextField
-              label="Birthplace"
-              name="birthplace"
-              defaultValue={
-                character?.birthplace
-              }
-              placeholder="City, settlement or region"
-            />
+          <div className="mt-7 border border-[#59432c]/40 bg-[#100c09] p-4">
+            <p className="text-[9px] uppercase tracking-[0.22em] text-[#806b50]">
+              Civic record
+            </p>
 
-            <TextField
-              label="Origin"
-              name="origin"
-              defaultValue={
-                character?.origin
-              }
-              placeholder="Homeland or cultural origin"
-            />
+            <p className="mt-2 text-xs leading-6 text-[#8f8271]">
+              Birthplace is automatically
+              recorded as{" "}
+              <span className="text-[#c9b18d]">
+                Sepulchria
+              </span>
+              . Every newly created or
+              player-edited character carries
+              the civic title{" "}
+              <span className="text-[#c9b18d]">
+                Citizen
+              </span>
+              . Occupation is assigned through
+              the Order system and cannot be
+              chosen here.
+            </p>
           </div>
         </section>
 
         <section
           className={
-            currentStep === 2
+            currentStep === 3
               ? "block"
               : "hidden"
           }
-        >{mode === "create" ? (
-  <>
-          <SelectionSection
-      title="Choose an ancestry"
-      description="Ancestry represents your character's heritage and inherited traits."
-      options={races}
-      selectedId={selectedRaceId}
-      onSelect={setSelectedRaceId}
-      emptyMessage="No ancestries are currently available."
-    />
-
-    <div className="my-10 border-t border-[#5d452d]/40" />
-
-          <SelectionSection
-      title="Choose an Association"
-      description="The Association represents your character's place within the living body of Sepulchria."
-      options={associations}
-      selectedId={selectedAssociationId}
-      onSelect={setSelectedAssociationId}
-      emptyMessage="No Associations are currently available."
-    />
- </>
-) : (
-  <LockedHeritage
-    race={selectedRace}
-    association={selectedAssociation}
-  />
-)}
-
-
-          <div className="mt-10 grid gap-6 sm:grid-cols-2">
-            <TextField
-              label="Occupation"
-              name="occupation"
-              defaultValue={
-                character?.occupation
-              }
-              placeholder="Scholar, artisan, guard..."
-            />
-
-            <TextField
-              label="Title"
-              name="title"
-              defaultValue={
-                character?.title
-              }
-              placeholder="Optional public title"
-            />
-          </div>
+        >
+          <CharacterAttributeAllocator
+            locked={mode === "update"}
+            initialValues={{
+              muscles:
+                character?.muscles,
+              reflexes:
+                character?.reflexes,
+              vigor: character?.vigor,
+              brains: character?.brains,
+              shrewd: character?.shrewd,
+              presence_score:
+                character?.presence_score,
+            }}
+          />
         </section>
 
         <section
@@ -536,7 +662,7 @@ export default function CharacterForm({
               <TextAreaField
                 label="Physical description"
                 name="physical_description"
-              required
+                required
                 rows={14}
                 maxLength={10000}
                 defaultValue={
@@ -547,33 +673,13 @@ export default function CharacterForm({
             </div>
 
             <PortraitPreview
-              initialUrl={
+              initialUrl={String(
                 character?.portrait_url ??
-                ""
-              }
+                  "",
+              )}
               formRef={formRef}
             />
           </div>
-        </section>
-
-        <section
-          className={
-            currentStep === 3
-              ? "block"
-              : "hidden"
-          }
-        >
-          <CharacterAttributeAllocator
-            locked={mode === "update"}
-            initialValues={{
-              muscles: character?.muscles,
-              reflexes: character?.reflexes,
-              vigor: character?.vigor,
-              brains: character?.brains,
-              shrewd: character?.shrewd,
-              presence_score: character?.presence_score,
-            }}
-          />
         </section>
 
         <section
@@ -634,6 +740,7 @@ export default function CharacterForm({
             selectedAssociation={
               selectedAssociation
             }
+            age={age}
             mode={mode}
           />
         </section>
@@ -663,8 +770,7 @@ export default function CharacterForm({
           )}
         </div>
 
-        {currentStep <
-        steps.length ? (
+        {currentStep < steps.length ? (
           <button
             type="button"
             onClick={goToNextStep}
@@ -685,6 +791,68 @@ export default function CharacterForm({
   );
 }
 
+function AgeField({
+  race,
+  value,
+  onChange,
+}: {
+  race: RaceOption | null;
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  const rangeLabel = !race
+    ? "Choose an ancestry first."
+    : race.min_age === null
+      ? "Playable age range not configured."
+      : race.max_age === null
+        ? `${race.min_age}+ years`
+        : `${race.min_age}–${race.max_age} years`;
+
+  return (
+    <label className="block">
+      <span className="mb-2 block text-[11px] uppercase tracking-[0.25em] text-[#a38357]">
+        Age *
+      </span>
+
+      <input
+        name="age"
+        type="number"
+        inputMode="numeric"
+        required
+        step={1}
+        min={
+          race?.min_age ?? undefined
+        }
+        max={
+          race?.max_age ?? undefined
+        }
+        value={value}
+        disabled={
+          !race ||
+          race.min_age === null
+        }
+        onChange={(event) =>
+          onChange(event.target.value)
+        }
+        placeholder={
+          race?.min_age !== null &&
+          race?.min_age !== undefined
+            ? String(race.min_age)
+            : ""
+        }
+        className="w-full border border-[#654c31] bg-[#0f0c09] px-4 py-3 text-sm text-[#dfceb0] outline-none transition placeholder:text-[#554d43] focus:border-[#a17a45] disabled:cursor-not-allowed disabled:opacity-45"
+      />
+
+      <span className="mt-2 block text-xs leading-5 text-[#766b5d]">
+        Allowed for{" "}
+        {race?.name ?? "this ancestry"}:
+        {" "}
+        {rangeLabel}
+      </span>
+    </label>
+  );
+}
+
 function TextField({
   label,
   name,
@@ -698,7 +866,10 @@ function TextField({
   name: string;
   required?: boolean;
   type?: string;
-  defaultValue?: string | null;
+  defaultValue?:
+    | string
+    | number
+    | null;
   placeholder?: string;
   autoComplete?: string;
 }) {
@@ -713,7 +884,9 @@ function TextField({
         name={name}
         type={type}
         required={required}
-        defaultValue={defaultValue ?? ""}
+        defaultValue={
+          defaultValue ?? ""
+        }
         placeholder={placeholder}
         autoComplete={autoComplete}
         className="w-full border border-[#654c31] bg-[#0f0c09] px-4 py-3 text-sm text-[#dfceb0] outline-none transition placeholder:text-[#554d43] focus:border-[#a17a45]"
@@ -735,7 +908,10 @@ function TextAreaField({
   name: string;
   rows: number;
   maxLength: number;
-  defaultValue?: string | null;
+  defaultValue?:
+    | string
+    | number
+    | null;
   description?: string;
   required?: boolean;
 }) {
@@ -757,13 +933,17 @@ function TextAreaField({
         required={required}
         rows={rows}
         maxLength={maxLength}
-        defaultValue={defaultValue ?? ""}
+        defaultValue={
+          defaultValue ?? ""
+        }
         className="w-full resize-y border border-[#654c31] bg-[#0f0c09] px-4 py-3 text-sm leading-7 text-[#dfceb0] outline-none transition placeholder:text-[#554d43] focus:border-[#a17a45]"
       />
 
       <span className="mt-2 block text-right text-[9px] uppercase tracking-[0.18em] text-[#61584d]">
         Maximum{" "}
-        {maxLength.toLocaleString("en-GB")}{" "}
+        {maxLength.toLocaleString(
+          "en-GB",
+        )}{" "}
         characters
       </span>
     </label>
@@ -800,13 +980,14 @@ function SelectionSection({
       {options.length > 0 ? (
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {options.map((option) => {
-  const selected =
-    selectedId === option.id;
+            const selected =
+              selectedId === option.id;
 
-  const optionColour =
-    option.colour ?? "#8d6d3e";
+            const optionColour =
+              option.colour ??
+              "#8d6d3e";
 
-  return (
+            return (
               <button
                 key={option.id}
                 type="button"
@@ -820,21 +1001,23 @@ function SelectionSection({
                     : "border-[#5c462f]/65 bg-[#120e0b] hover:border-[#85643d] hover:bg-[#1d1510]"
                 }`}
                 style={{
-  backgroundImage: `radial-gradient(circle at top right, ${optionColour}30, transparent 52%)`,
-}}
+                  backgroundImage: `radial-gradient(circle at top right, ${optionColour}30, transparent 52%)`,
+                }}
               >
                 <div className="flex items-start gap-4">
                   <div
                     className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden border bg-black/20 font-serif text-lg"
                     style={{
-  borderColor: `${optionColour}88`,
-  color: optionColour,
-}}
+                      borderColor: `${optionColour}88`,
+                      color: optionColour,
+                    }}
                   >
                     {option.icon_url ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                        src={option.icon_url}
+                        src={
+                          option.icon_url
+                        }
                         alt=""
                         className="h-full w-full object-cover"
                       />
@@ -874,7 +1057,7 @@ function SelectionSection({
                     }
                     className="text-[9px] uppercase tracking-[0.2em] text-[#9f7b4b] transition hover:text-[#e2c18a]"
                   >
-                    Read Codex ↗
+                    More Info ↗
                   </Link>
 
                   <span
@@ -907,7 +1090,9 @@ function PortraitPreview({
   formRef,
 }: {
   initialUrl: string;
-  formRef: React.RefObject<HTMLFormElement | null>;
+  formRef: React.RefObject<
+    HTMLFormElement | null
+  >;
 }) {
   const [url, setUrl] =
     useState(initialUrl);
@@ -918,7 +1103,9 @@ function PortraitPreview({
         "portrait_url",
       );
 
-    if (field instanceof HTMLInputElement) {
+    if (
+      field instanceof HTMLInputElement
+    ) {
       setUrl(field.value.trim());
     }
   }
@@ -936,7 +1123,9 @@ function PortraitPreview({
             src={url}
             alt="Character portrait preview"
             className="h-full w-full object-cover"
-            onError={() => setUrl("")}
+            onError={() =>
+              setUrl("")
+            }
           />
         ) : (
           <span className="font-serif text-5xl text-[#4e463d]">
@@ -960,11 +1149,17 @@ function ReviewPanel({
   formRef,
   selectedRace,
   selectedAssociation,
+  age,
   mode,
 }: {
-  formRef: React.RefObject<HTMLFormElement | null>;
-  selectedRace: CharacterOption | null;
-  selectedAssociation: CharacterOption | null;
+  formRef: React.RefObject<
+    HTMLFormElement | null
+  >;
+  selectedRace: RaceOption | null;
+  selectedAssociation:
+    | CharacterOption
+    | null;
+  age: string;
   mode: "create" | "update";
 }) {
   function value(name: string) {
@@ -974,8 +1169,10 @@ function ReviewPanel({
       );
 
     if (
-      field instanceof HTMLInputElement ||
-      field instanceof HTMLTextAreaElement
+      field instanceof
+        HTMLInputElement ||
+      field instanceof
+        HTMLTextAreaElement
     ) {
       return (
         field.value.trim() ||
@@ -985,18 +1182,6 @@ function ReviewPanel({
 
     return "Not recorded";
   }
-
-  const identity = [
-    ["First name", value("first_name")],
-    ["Surname", value("surname")],
-    ["Pronouns", value("pronouns")],
-    [
-      "Date of birth",
-      value("date_of_birth"),
-    ],
-    ["Birthplace", value("birthplace")],
-    ["Origin", value("origin")],
-  ];
 
   const heritage = [
     [
@@ -1009,8 +1194,25 @@ function ReviewPanel({
       selectedAssociation?.name ??
         "Not selected",
     ],
-    ["Occupation", value("occupation")],
-    ["Title", value("title")],
+  ];
+
+  const identity = [
+    [
+      "First name",
+      value("first_name"),
+    ],
+    ["Surname", value("surname")],
+    ["Pronouns", value("pronouns")],
+    ["Age", age || "Not recorded"],
+  ];
+
+  const civic = [
+    ["Birthplace", "Sepulchria"],
+    ["Title", "Citizen"],
+    [
+      "Occupation",
+      "Assigned through an Order",
+    ],
   ];
 
   const attributes = [
@@ -1019,7 +1221,10 @@ function ReviewPanel({
     ["Vigor", value("vigor")],
     ["Brains", value("brains")],
     ["Shrewd", value("shrewd")],
-    ["Presence", value("presence_score")],
+    [
+      "Presence",
+      value("presence_score"),
+    ],
   ];
 
   return (
@@ -1037,10 +1242,15 @@ function ReviewPanel({
 
         <p className="mt-3 text-sm leading-7 text-[#998b78]">
           Check the information below.
-          You may return to any previous step
-          before saving.
+          You may return to any previous
+          step before saving.
         </p>
       </div>
+
+      <ReviewSection
+        title="Heritage"
+        items={heritage}
+      />
 
       <ReviewSection
         title="Identity"
@@ -1048,8 +1258,8 @@ function ReviewPanel({
       />
 
       <ReviewSection
-        title="Heritage"
-        items={heritage}
+        title="Civic record"
+        items={civic}
       />
 
       <ReviewSection
@@ -1077,7 +1287,9 @@ function ReviewPanel({
 
         <ReviewText
           title="Public notes"
-          content={value("public_notes")}
+          content={value(
+            "public_notes",
+          )}
         />
       </div>
     </div>
@@ -1098,20 +1310,22 @@ function ReviewSection({
       </h3>
 
       <div className="grid gap-px bg-[#4f3b28]/35 sm:grid-cols-2">
-        {items.map(([label, value]) => (
-          <div
-            key={label}
-            className="bg-[#15100d] p-4"
-          >
-            <p className="text-[9px] uppercase tracking-[0.22em] text-[#796448]">
-              {label}
-            </p>
+        {items.map(
+          ([label, itemValue]) => (
+            <div
+              key={label}
+              className="bg-[#15100d] p-4"
+            >
+              <p className="text-[9px] uppercase tracking-[0.22em] text-[#796448]">
+                {label}
+              </p>
 
-            <p className="mt-2 break-words text-sm text-[#cab89b]">
-              {value}
-            </p>
-          </div>
-        ))}
+              <p className="mt-2 break-words text-sm text-[#cab89b]">
+                {itemValue}
+              </p>
+            </div>
+          ),
+        )}
       </div>
     </section>
   );
@@ -1141,8 +1355,10 @@ function LockedHeritage({
   race,
   association,
 }: {
-  race: CharacterOption | null;
-  association: CharacterOption | null;
+  race: RaceOption | null;
+  association:
+    | CharacterOption
+    | null;
 }) {
   return (
     <div>
@@ -1152,15 +1368,18 @@ function LockedHeritage({
         </p>
 
         <p className="mt-3 text-sm leading-7 text-[#a0927f]">
-          Ancestry and Association are chosen during character creation and cannot
-          be changed from the character editor. Contact the staff if a
-          correction is necessary.
+          Ancestry and Association are
+          chosen during character creation
+          and cannot be changed from the
+          character editor. Contact the
+          staff if a correction is
+          necessary.
         </p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <LockedHeritageCard
-          label="Race"
+          label="Ancestry"
           option={race}
           href={
             race
@@ -1222,13 +1441,16 @@ function LockedHeritageCard({
               className="h-full w-full object-cover"
             />
           ) : (
-            option?.name.charAt(0).toUpperCase() ?? "?"
+            option?.name
+              .charAt(0)
+              .toUpperCase() ?? "?"
           )}
         </div>
 
         <div className="min-w-0">
           <p className="font-serif text-xl text-[#e0c99e]">
-            {option?.name ?? "Not assigned"}
+            {option?.name ??
+              "Not assigned"}
           </p>
 
           <p className="mt-1 text-[9px] uppercase tracking-[0.18em] text-[#776b5c]">
@@ -1242,7 +1464,7 @@ function LockedHeritageCard({
         target="_blank"
         className="mt-5 inline-flex text-[9px] uppercase tracking-[0.2em] text-[#9f7b4b] transition hover:text-[#e2c18a]"
       >
-        Read Codex ↗
+        More Info ↗
       </Link>
     </article>
   );

@@ -29,6 +29,7 @@ type CodexRelation = {
 type CharacterProfile = {
   id?: string;
   pronouns?: string | null;
+  age?: number | null;
   date_of_birth?: string | null;
   birthplace?: string | null;
   origin?: string | null;
@@ -96,6 +97,7 @@ export default async function CharacterPage({
     .select(`
       id,
       pronouns,
+      age,
       date_of_birth,
       birthplace,
       origin,
@@ -195,15 +197,26 @@ export function Profile({
   const items = [
     ["Pronouns", character.pronouns],
     [
-  "Born",
-  character.date_of_birth
-    ? new Date(character.date_of_birth).toLocaleDateString("en-GB")
-    : null,
-],
-    ["Birthplace", character.birthplace],
-    ["Origin", character.origin],
-    ["Occupation", character.occupation],
-    ["Title", character.title],
+      "Age",
+      character.age !== null &&
+      character.age !== undefined
+        ? `${character.age} years`
+        : null,
+    ],
+    [
+      "Birthplace",
+      character.birthplace ??
+        "Sepulchria",
+    ],
+    [
+      "Occupation",
+      character.occupation ??
+        "No Order occupation assigned",
+    ],
+    [
+      "Title",
+      character.title ?? "Citizen",
+    ],
   ];
 
   const sections = [
@@ -224,11 +237,10 @@ export function Profile({
         ) : null}
 
         {own &&
-character.status === "approved" &&
-!character.approval_notice_seen_at ? (
-  <ApprovalNotice />
-) : null}
-        
+        character.status === "approved" &&
+        !character.approval_notice_seen_at ? (
+          <ApprovalNotice />
+        ) : null}
 
         {own ? (
           <CharacterStatusPanel
@@ -307,38 +319,42 @@ character.status === "approved" &&
               </div>
             )}
 
-          {own && status === "approved" ? (
-            <form
-              action={updateApprovedCharacterPortrait}
-              className="mt-4 border border-[#60482e]/45 bg-[#100c09] p-3"
-            >
-              <label className="block">
-                <span className="text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
-                  Change portrait
-                </span>
-
-                <input
-                  type="url"
-                  name="portrait_url"
-                  defaultValue={
-                    character.portrait_url ?? ""
-                  }
-                  placeholder="https://..."
-                  className="mt-2 w-full border border-[#60482e]/55 bg-[#0d0907] px-3 py-2 text-xs text-[#d7c4a5] outline-none focus:border-[#a17a49]"
-                />
-              </label>
-
-              <button
-                type="submit"
-                className="mt-3 w-full border border-[#8d6d3e] bg-[#332719] px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[#efd9aa] transition hover:bg-[#49351f]"
+            {own &&
+            status === "approved" ? (
+              <form
+                action={
+                  updateApprovedCharacterPortrait
+                }
+                className="mt-4 border border-[#60482e]/45 bg-[#100c09] p-3"
               >
-                Update portrait
-              </button>
-            </form>
-          ) : null}
-        </div>
+                <label className="block">
+                  <span className="text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
+                    Change portrait
+                  </span>
 
-        <div className="min-w-0">
+                  <input
+                    type="url"
+                    name="portrait_url"
+                    defaultValue={
+                      character.portrait_url ??
+                      ""
+                    }
+                    placeholder="https://..."
+                    className="mt-2 w-full border border-[#60482e]/55 bg-[#0d0907] px-3 py-2 text-xs text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                  />
+                </label>
+
+                <button
+                  type="submit"
+                  className="mt-3 w-full border border-[#8d6d3e] bg-[#332719] px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[#efd9aa] transition hover:bg-[#49351f]"
+                >
+                  Update portrait
+                </button>
+              </form>
+            ) : null}
+          </div>
+
+          <div className="min-w-0">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
                 <p className="text-[10px] uppercase tracking-[0.3em] text-[#876a46]">
@@ -457,20 +473,24 @@ function CharacterStatusPanel({
         </p>
 
         <h2 className="mt-2 font-serif text-2xl text-[#ead3a4]">
-          Your character has been submitted
+          Your character has been
+          submitted
         </h2>
 
         <p className="mt-3 text-sm leading-6 text-[#aa9c84]">
-          The character sheet is currently
-          locked while the staff reviews it.
-          You will be able to edit it again if
+          The character sheet is
+          currently locked while the
+          staff reviews it. You will be
+          able to edit it again if
           corrections are requested.
         </p>
 
         {submittedAt ? (
           <p className="mt-3 text-xs text-[#837661]">
             Submitted{" "}
-            {formatDateTime(submittedAt)}
+            {formatDateTime(
+              submittedAt,
+            )}
           </p>
         ) : null}
       </section>
@@ -478,8 +498,8 @@ function CharacterStatusPanel({
   }
 
   if (status === "approved") {
-  return null;
-}
+    return null;
+  }
 
   if (status === "rejected") {
     return (
@@ -489,13 +509,15 @@ function CharacterStatusPanel({
         </p>
 
         <h2 className="mt-2 font-serif text-2xl text-[#efb4aa]">
-          Your character was not approved
+          Your character was not
+          approved
         </h2>
 
         <p className="mt-3 text-sm leading-6 text-[#bd958e]">
-          Review the staff feedback below,
-          edit the character sheet, and submit
-          it again when the requested changes
+          Review the staff feedback
+          below, edit the character
+          sheet, and submit it again
+          when the requested changes
           have been completed.
         </p>
 
@@ -524,9 +546,10 @@ function CharacterStatusPanel({
       </h2>
 
       <p className="mt-3 text-sm leading-6 text-[#a89a84]">
-        You may continue editing this record.
-        When every required section is complete,
-        submit it to the staff for approval.
+        You may continue editing this
+        record. When every required
+        section is complete, submit it
+        to the staff for approval.
       </p>
     </section>
   );
@@ -604,7 +627,9 @@ function getPageNotice(
     };
   }
 
-  if (params.submitted === "true") {
+  if (
+    params.submitted === "true"
+  ) {
     return {
       tone: "success",
       message:
@@ -694,7 +719,9 @@ function HeritageCard({
         className="mt-5 flex items-center justify-between border-t border-[#5b452d]/40 pt-4 text-[9px] uppercase tracking-[0.2em] text-[#a27c4b] transition hover:text-[#e2c18a]"
       >
         <span>Open Codex entry</span>
-        <span aria-hidden="true">→</span>
+        <span aria-hidden="true">
+          →
+        </span>
       </Link>
     </article>
   );

@@ -14,9 +14,14 @@ export type CodexEntryBase = {
   updated_at: string;
 };
 
-export type Race = CodexEntryBase;
+export type Race =
+  CodexEntryBase & {
+    min_age: number | null;
+    max_age: number | null;
+  };
 
-export type Association = CodexEntryBase;
+export type Association =
+  CodexEntryBase;
 
 export type RaceOption = Pick<
   Race,
@@ -26,14 +31,17 @@ export type RaceOption = Pick<
   | "summary"
   | "icon_url"
   | "colour"
+  | "min_age"
+  | "max_age"
 >;
 
-export type AssociationOption = Pick<
-  Association,
-  | "id"
-  | "name"
-  | "slug"
-  | "summary"
-  | "icon_url"
-  | "colour"
->;
+export type AssociationOption =
+  Pick<
+    Association,
+    | "id"
+    | "name"
+    | "slug"
+    | "summary"
+    | "icon_url"
+    | "colour"
+  >;
