@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 
 import { RichTextContentClient } from "@/components/editor/rich-text-content-client";
 import { createClient } from "@/lib/supabase/client";
+import { AtmosphericImage } from "@/components/world/atmospheric-image";
 
 type AreaRelation = {
   id: string;
@@ -166,11 +167,10 @@ export function RoomInfoButton({ roomId }: RoomInfoButtonProps) {
           <>
             <div className="relative min-h-56 overflow-hidden border-b border-[#60482e]/45 bg-[#090706] sm:min-h-72">
               {room.image_url ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
+                <AtmosphericImage
                   src={room.image_url}
                   alt={room.name}
-                  className="absolute inset-0 h-full w-full object-cover"
+                  sizes="(max-width: 768px) 100vw, 48rem"
                 />
               ) : (
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(130,86,42,0.22),_transparent_60%),linear-gradient(to_bottom,_#17110d,_#090706)]" />

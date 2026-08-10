@@ -25,6 +25,7 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
               <span className="flex items-center gap-2"><span>Characters</span><SubmittedCharacterBadge variant="admin-nav" /></span>
             </AdminNavigationLink>
             <AdminNavigationLink href="/admin/expertise">Expertise</AdminNavigationLink>
+            <AdminNavigationLink href="/admin/world">World</AdminNavigationLink>
             <AdminNavigationLink href="/admin/areas">Areas</AdminNavigationLink>
             <AdminNavigationLink href="/admin/rooms">Locations</AdminNavigationLink>
             <AdminNavigationLink href="/admin/races">Ancestries</AdminNavigationLink>

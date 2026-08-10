@@ -130,44 +130,38 @@ export function PortalResponsiveRightSidebar({
 
         <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-hidden p-4">
           <section className="shrink-0 border border-[#60482e]/45 bg-[#15100d] p-4">
-            <div className="flex items-start justify-between gap-3">
-              <div className="min-w-0">
-                <p className="text-[8px] uppercase tracking-[0.28em] text-[#876a46]">
-                  Current location
-                </p>
+  <div className="flex items-center justify-between gap-3">
+    <p className="text-[8px] uppercase tracking-[0.28em] text-[#876a46]">
+      Current location
+    </p>
 
-                <h2 className="mt-2 truncate font-serif text-xl text-[#d6bd91]">
-                  {character?.currentRoom
-                    ?.name ?? "No location"}
-                </h2>
+    {character?.currentRoom ? (
+      <div className="flex shrink-0 items-center gap-2">
+        <RoomInfoButton
+          roomId={character.currentRoom.id}
+        />
 
-                <p className="mt-1 truncate text-[11px] text-[#8f8271]">
-                  {character?.currentRoom
-                    ?.area?.name ??
-                    "Your character has not entered the city yet."}
-                </p>
-              </div>
+        <Link
+          href="/game"
+          aria-label="Enter current location"
+          title="Enter current location"
+          className="flex h-8 w-8 items-center justify-center border border-[#765937]/60 bg-[#21170f] text-[11px] text-[#d8bc8d] transition hover:border-[#a07945] hover:bg-[#332217] hover:text-[#f0d4a2]"
+        >
+          →
+        </Link>
+      </div>
+    ) : null}
+  </div>
 
-              {character?.currentRoom ? (
-                <div className="flex shrink-0 items-center gap-2">
-                  <RoomInfoButton
-                    roomId={
-                      character.currentRoom.id
-                    }
-                  />
+  <h2 className="mt-3 font-serif text-[16px] leading-tight text-[#d6bd91]">
+    {character?.currentRoom?.name ?? "No location"}
+  </h2>
 
-                  <Link
-                    href="/game"
-                    aria-label="Enter current location"
-                    title="Enter current location"
-                    className="border border-[#765937]/60 bg-[#21170f] px-3 py-2 text-xs text-[#d8bc8d] transition hover:border-[#a07945] hover:bg-[#332217] hover:text-[#f0d4a2]"
-                  >
-                    →
-                  </Link>
-                </div>
-              ) : null}
-            </div>
-          </section>
+  <p className="mt-1 text-[10px] leading-snug text-[#8f8271]">
+    {character?.currentRoom?.area?.name ??
+      "Your character has not entered the city yet."}
+  </p>
+</section>
 
           <section className="min-h-0 flex-1 overflow-y-auto overscroll-contain border border-[#60482e]/45 bg-[#15100d] p-4">
             {forumSectionSlug ? (

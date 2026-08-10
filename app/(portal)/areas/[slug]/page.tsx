@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { RichTextContentClient } from "@/components/editor/rich-text-content-client";
+import { AtmosphericImage } from "@/components/world/atmospheric-image";
 
 import { createClient } from "@/lib/supabase/server";
 import { enterRoomFromMap } from "../../game/actions";
@@ -74,16 +75,14 @@ export default async function AreaPage({ params }: Props) {
     <div className="mx-auto max-w-5xl space-y-6 p-4 sm:p-6">
       <section className="overflow-hidden border border-[#6a5032]/50 bg-[#17110d]">
         {safeArea.image_url ? (
-          <div
-            className="min-h-64 bg-cover bg-center"
-            style={{
-              backgroundImage: `linear-gradient(
-                to top,
-                rgba(23, 17, 13, 1),
-                rgba(23, 17, 13, 0.15)
-              ), url("${safeArea.image_url}")`,
-            }}
-          />
+          <div className="relative min-h-64 overflow-hidden">
+            <AtmosphericImage
+              src={safeArea.image_url}
+              alt={safeArea.name}
+              sizes="(max-width: 1024px) 100vw, 70vw"
+            />
+            <div className="pointer-events-none absolute inset-0 z-[6] bg-gradient-to-t from-[#17110d] via-[#17110d]/20 to-transparent" />
+          </div>
         ) : null}
 
         <div className="p-6 sm:p-8">

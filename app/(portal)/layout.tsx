@@ -6,6 +6,8 @@ import { PortalResponsiveRightSidebar } from "@/components/portal/portal-respons
 import { PortalSidebar } from "@/components/portal/portal-sidebar";
 import { getPortalContext } from "@/lib/portal/get-portal-context";
 import { createClient } from "@/lib/supabase/server";
+import { getWorldState } from "@/lib/world/get-world-state";
+import { WorldStateProvider } from "@/components/world/world-state-provider";
 
 type PortalLayoutProps = {
   children: ReactNode;
@@ -24,7 +26,7 @@ export default function PortalLayout({
 async function PortalLayoutContent({
   children,
 }: PortalLayoutProps) {
-  const context = await getPortalContext();
+  const [context, worldState] = await Promise.all([getPortalContext(), getWorldState()]);
   const supabase = await createClient();
 
   const {
@@ -65,8 +67,9 @@ async function PortalLayoutContent({
     context.character?.status === "approved";
 
   return (
-    <div className="min-h-screen bg-[#120f0d] text-[#e8dcc4]">
-      <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(116,82,42,0.16),_transparent_38%),linear-gradient(to_bottom,_#17120f,_#0d0b0a)]">
+    <WorldStateProvider initialState={worldState}>
+      <div className="min-h-screen bg-[#120f0d] text-[#e8dcc4]">
+        <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(116,82,42,0.16),_transparent_38%),linear-gradient(to_bottom,_#17120f,_#0d0b0a)]">
         <PortalPresenceHeartbeat
           enabled={presenceEnabled}
         />
@@ -91,8 +94,9 @@ async function PortalLayoutContent({
             context={context}
           />
         </div>
+        </div>
       </div>
-    </div>
+    </WorldStateProvider>
   );
 }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { AtmosphericImage } from "@/components/world/atmospheric-image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -185,13 +185,13 @@ export function InteractiveWorldMap({
               level !== "continent"
             }
           >
-            <Image
+            <AtmosphericImage
               src="/maps/land-of-the-fallenv2.png"
               alt="Map of The Godscar"
-              fill
+              variant="map"
               priority
               sizes="(max-width: 1024px) 100vw, 75vw"
-              className="object-fill object-center"
+              objectFit="fill"
             />
 
             <button
@@ -220,12 +220,12 @@ export function InteractiveWorldMap({
             }`}
             aria-hidden={level !== "city"}
           >
-            <Image
+            <AtmosphericImage
               src="/maps/sepulchria-mapv2.png"
               alt="Map of Sepulchria"
-              fill
+              variant="map"
               sizes="(max-width: 1024px) 100vw, 75vw"
-              className="object-fill object-center"
+              objectFit="fill"
             />
 
             {cityHotspots.map(

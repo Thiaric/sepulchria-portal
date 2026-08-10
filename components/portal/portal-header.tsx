@@ -5,6 +5,7 @@ import { getStaffSession } from "@/lib/auth/require-staff";
 import type { PortalContext } from "@/types/portal";
 import { ActiveCityCounter } from "@/components/portal/active-city-counter";
 import { UnreadMessageBadge } from "@/components/messages/unread-message-badge";
+import { WorldIndicator } from "@/components/world/world-indicator";
 
 type PortalHeaderProps = {
   context: PortalContext;
@@ -39,6 +40,8 @@ export async function PortalHeader({
         </Link>
 
         <div className="flex items-center gap-3">
+          <WorldIndicator />
+
           <ActiveCityCounter
   initialCount={
     onlineCharacterCount
