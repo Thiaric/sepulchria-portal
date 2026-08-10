@@ -1,5 +1,8 @@
 import { Suspense, type ReactNode } from "react";
 
+import { PortalAudioProvider } from "@/components/audio/portal-audio-provider";
+import { PortalMessageSoundListener } from "@/components/audio/portal-message-sound-listener";
+
 import { PortalHeader } from "@/components/portal/portal-header";
 import { PortalPresenceHeartbeat } from "@/components/portal/portal-presence-heartbeat";
 import { PortalResponsiveRightSidebar } from "@/components/portal/portal-responsive-right-sidebar";
@@ -75,7 +78,13 @@ async function PortalLayoutContent({
 
   return (
     <WorldStateProvider initialState={worldState}>
-      <div className="h-dvh overflow-hidden bg-[#120f0d] text-[#e8dcc4]">
+      <PortalAudioProvider>
+        <PortalMessageSoundListener
+          characterId={context.character?.id ?? null}
+          currentRoomId={context.character?.current_room_id ?? null}
+        />
+
+        <div className="h-dvh overflow-hidden bg-[#120f0d] text-[#e8dcc4]">
         <div className="flex h-full min-h-0 flex-col bg-[radial-gradient(circle_at_top,_rgba(116,82,42,0.16),_transparent_38%),linear-gradient(to_bottom,_#17120f,_#0d0b0a)]">
           <PortalPresenceHeartbeat
             enabled={presenceEnabled}
@@ -86,12 +95,6 @@ async function PortalLayoutContent({
           </div>
 
           <style>{`
-            /*
-             * Responsive portal shell:
-             * 1) fit the viewport first by reducing density on short screens;
-             * 2) allow a column to scroll only when its real content still overflows.
-             */
-
             .sepulchria-viewport-body {
               --portal-left-width: 230px;
               --portal-right-width: 300px;
@@ -164,10 +167,6 @@ async function PortalLayoutContent({
               }
             }
 
-            /*
-             * Scrollbars exist only on real overflow.
-             * Keeping them thin makes the UI feel like an app, not a document.
-             */
             .sepulchria-viewport-body [data-portal-scroll] {
               scrollbar-width: thin;
               scrollbar-color: #5c472f transparent;
@@ -215,6 +214,7 @@ async function PortalLayoutContent({
           />
         </div>
       </div>
+      </PortalAudioProvider>
     </WorldStateProvider>
   );
 }

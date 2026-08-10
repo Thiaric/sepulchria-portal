@@ -6,6 +6,7 @@ import type { PortalContext } from "@/types/portal";
 import { ActiveCityCounter } from "@/components/portal/active-city-counter";
 import { UnreadMessageBadge } from "@/components/messages/unread-message-badge";
 import { WorldIndicator } from "@/components/world/world-indicator";
+import { PortalSoundToggle } from "@/components/audio/portal-sound-toggle";
 
 type PortalHeaderProps = {
   context: PortalContext;
@@ -47,6 +48,8 @@ export async function PortalHeader({
               onlineCharacterCount
             }
           />
+
+          <PortalSoundToggle />
 
           <Link
             href="/messages"
