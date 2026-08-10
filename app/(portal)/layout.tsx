@@ -4,8 +4,10 @@ import { PortalHeader } from "@/components/portal/portal-header";
 import { PortalPresenceHeartbeat } from "@/components/portal/portal-presence-heartbeat";
 import { PortalResponsiveRightSidebar } from "@/components/portal/portal-responsive-right-sidebar";
 import { PortalSidebar } from "@/components/portal/portal-sidebar";
+import { TidingsTicker } from "@/components/tidings/tidings-ticker";
 import { getPortalContext } from "@/lib/portal/get-portal-context";
 import { createClient } from "@/lib/supabase/server";
+import { getActiveTidings } from "@/lib/tidings/get-active-tidings";
 import { getWorldState } from "@/lib/world/get-world-state";
 import { WorldStateProvider } from "@/components/world/world-state-provider";
 
@@ -26,7 +28,11 @@ export default function PortalLayout({
 async function PortalLayoutContent({
   children,
 }: PortalLayoutProps) {
-  const [context, worldState] = await Promise.all([getPortalContext(), getWorldState()]);
+  const [context, worldState, initialTidings] = await Promise.all([
+    getPortalContext(),
+    getWorldState(),
+    getActiveTidings(),
+  ]);
   const supabase = await createClient();
 
   const {
@@ -94,6 +100,10 @@ async function PortalLayoutContent({
             context={context}
           />
         </div>
+
+        <TidingsTicker
+          initialTidings={initialTidings}
+        />
         </div>
       </div>
     </WorldStateProvider>

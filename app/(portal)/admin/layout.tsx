@@ -26,6 +26,7 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
             </AdminNavigationLink>
             <AdminNavigationLink href="/admin/expertise">Expertise</AdminNavigationLink>
             <AdminNavigationLink href="/admin/world">World</AdminNavigationLink>
+            <AdminNavigationLink href="/admin/tidings">Tidings</AdminNavigationLink>
             <AdminNavigationLink href="/admin/areas">Areas</AdminNavigationLink>
             <AdminNavigationLink href="/admin/rooms">Locations</AdminNavigationLink>
             <AdminNavigationLink href="/admin/races">Ancestries</AdminNavigationLink>

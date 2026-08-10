@@ -172,7 +172,7 @@ export function InteractiveWorldMap({
       </div>
 
       <div className="w-full overflow-hidden bg-[#090705]">
-  <div className="relative h-[calc(100dvh-15rem)] min-h-[420px] w-full overflow-hidden">
+  <div className="relative mx-auto w-full aspect-[16/9] overflow-hidden">
           {/* CONTINENT MAP */}
 
           <div
