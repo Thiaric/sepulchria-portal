@@ -159,6 +159,44 @@ function validatePortraitUrl(
   }
 }
 
+async function ensureFirstNameAvailable(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  firstName: string,
+  mode: CharacterMode,
+  excludeCharacterId?: string,
+) {
+  let query = supabase
+    .from("characters")
+    .select("id")
+    .ilike("first_name", firstName);
+
+  if (excludeCharacterId) {
+    query = query.neq(
+      "id",
+      excludeCharacterId,
+    );
+  }
+
+  const {
+    data: existingName,
+    error,
+  } = await query.limit(1).maybeSingle();
+
+  if (error) {
+    redirectWithError(
+      mode,
+      error.message,
+    );
+  }
+
+  if (existingName) {
+    redirectWithError(
+      mode,
+      "That first name is already in use. Please choose another.",
+    );
+  }
+}
+
 export async function saveCharacter(
   formData: FormData,
   mode: CharacterMode,
@@ -353,6 +391,12 @@ export async function saveCharacter(
       );
     }
 
+    await ensureFirstNameAvailable(
+      supabase,
+      firstName,
+      mode,
+    );
+
     const [
       raceResult,
       associationResult,
@@ -531,6 +575,13 @@ export async function saveCharacter(
       "Approved characters cannot be edited. Contact the staff if changes are required.",
     );
   }
+
+  await ensureFirstNameAvailable(
+    supabase,
+    firstName,
+    mode,
+    existingCharacter.id,
+  );
 
   const { error } = await supabase
     .from("characters")

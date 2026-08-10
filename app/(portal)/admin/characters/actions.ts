@@ -1,5 +1,6 @@
 "use server";
 
+import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -90,7 +91,6 @@ function readOptionalText(
 
   return trimmed.slice(0, maxLength);
 }
-
 
 const ATTRIBUTE_NAMES = [
   "muscles",
@@ -202,6 +202,27 @@ function readReturnPath(
   }
 
   return value;
+}
+
+function createPrivilegedClient() {
+  const url =
+    process.env.NEXT_PUBLIC_SUPABASE_URL;
+
+  const secret =
+    process.env.SUPABASE_SECRET_KEY;
+
+  if (!url || !secret) {
+    throw new Error(
+      "Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SECRET_KEY.",
+    );
+  }
+
+  return createAdminClient(url, secret, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    },
+  });
 }
 
 export async function updateCharacterAdministration(
@@ -428,23 +449,35 @@ export async function updateCharacterAdministration(
     }
 
     if (!associationId) {
-      missingFields.push("Association");
+      missingFields.push(
+        "Association",
+      );
     }
 
     if (!physicalDescription) {
-      missingFields.push("physical description");
+      missingFields.push(
+        "physical description",
+      );
     }
 
     if (!personality) {
-      missingFields.push("personality");
+      missingFields.push(
+        "personality",
+      );
     }
 
     if (!biography) {
-      missingFields.push("biography");
+      missingFields.push(
+        "biography",
+      );
     }
 
-    if (!character.public_slug?.trim()) {
-      missingFields.push("public slug");
+    if (
+      !character.public_slug?.trim()
+    ) {
+      missingFields.push(
+        "public slug",
+      );
     }
 
     const attributeValues = [
@@ -476,7 +509,9 @@ export async function updateCharacterAdministration(
     }
   }
 
-  const now = new Date().toISOString();
+  const now =
+    new Date().toISOString();
+
   const isNewApproval =
     status === "approved" &&
     character.status !== "approved";
@@ -485,7 +520,8 @@ export async function updateCharacterAdministration(
     status === "approved"
       ? {
           approved_at:
-            character.approved_at ?? now,
+            character.approved_at ??
+            now,
           approved_by:
             character.approved_by ??
             staff.userId,
@@ -497,7 +533,8 @@ export async function updateCharacterAdministration(
       : {
           approved_at: null,
           approved_by: null,
-          approval_notice_seen_at: null,
+          approval_notice_seen_at:
+            null,
         };
 
   const newMaxHealth =
@@ -582,9 +619,12 @@ export async function updateCharacterAdministration(
     status,
     title,
     staff_notes: staffNotes,
-    rejection_reason: rejectionReason,
-    approved_at: approvalData.approved_at,
-    approved_by: approvalData.approved_by,
+    rejection_reason:
+      rejectionReason,
+    approved_at:
+      approvalData.approved_at,
+    approved_by:
+      approvalData.approved_by,
     updated_at: now,
     ...(approvalData.approval_notice_seen_at !==
     undefined
@@ -595,11 +635,12 @@ export async function updateCharacterAdministration(
       : {}),
   };
 
-  const { error: updateError } =
-    await supabase
-      .from("characters")
-      .update(updatePayload)
-      .eq("id", characterId);
+  const {
+    error: updateError,
+  } = await supabase
+    .from("characters")
+    .update(updatePayload)
+    .eq("id", characterId);
 
   if (updateError) {
     throw new Error(
@@ -607,64 +648,93 @@ export async function updateCharacterAdministration(
     );
   }
 
-  if (character.status !== status) {
-    const { error: historyError } =
-      await supabase
-        .from("character_status_history")
-        .insert({
-          character_id: characterId,
-          old_status: character.status,
-          new_status: status,
-          changed_by: staff.userId,
-          reason:
-            status === "rejected"
-              ? rejectionReason
-              : null,
-        });
+  if (
+    character.status !== status
+  ) {
+    const {
+      error: historyError,
+    } = await supabase
+      .from(
+        "character_status_history",
+      )
+      .insert({
+        character_id: characterId,
+        old_status:
+          character.status,
+        new_status: status,
+        changed_by: staff.userId,
+        reason:
+          status === "rejected"
+            ? rejectionReason
+            : null,
+      });
 
     if (historyError) {
-      const { error: rollbackError } =
-        await supabase
-          .from("characters")
-          .update({
-            first_name: character.first_name,
-            surname: character.surname,
-            pronouns: character.pronouns,
-            date_of_birth:
-              character.date_of_birth,
-            birthplace: character.birthplace,
-            origin: character.origin,
-            occupation: character.occupation,
-            portrait_url:
-              character.portrait_url,
-            physical_description:
-              character.physical_description,
-            personality:
-              character.personality,
-            biography: character.biography,
-            public_notes:
-              character.public_notes,
-            muscles: character.muscles,
-            reflexes: character.reflexes,
-            vigor: character.vigor,
-            brains: character.brains,
-            shrewd: character.shrewd,
-            presence_score: character.presence_score,
-            current_health:
-              character.current_health,
-            race_id: character.race_id,
-            association_id: character.association_id,
-            status: character.status,
-            title: character.title,
-            staff_notes: character.staff_notes,
-            rejection_reason: character.rejection_reason,
-            approved_at: character.approved_at,
-            approved_by: character.approved_by,
-            approval_notice_seen_at:
-              character.approval_notice_seen_at,
-            updated_at: character.updated_at,
-          })
-          .eq("id", characterId);
+      const {
+        error: rollbackError,
+      } = await supabase
+        .from("characters")
+        .update({
+          first_name:
+            character.first_name,
+          surname:
+            character.surname,
+          pronouns:
+            character.pronouns,
+          date_of_birth:
+            character.date_of_birth,
+          birthplace:
+            character.birthplace,
+          origin:
+            character.origin,
+          occupation:
+            character.occupation,
+          portrait_url:
+            character.portrait_url,
+          physical_description:
+            character.physical_description,
+          personality:
+            character.personality,
+          biography:
+            character.biography,
+          public_notes:
+            character.public_notes,
+          muscles:
+            character.muscles,
+          reflexes:
+            character.reflexes,
+          vigor:
+            character.vigor,
+          brains:
+            character.brains,
+          shrewd:
+            character.shrewd,
+          presence_score:
+            character.presence_score,
+          current_health:
+            character.current_health,
+          race_id:
+            character.race_id,
+          association_id:
+            character.association_id,
+          status:
+            character.status,
+          title:
+            character.title,
+          staff_notes:
+            character.staff_notes,
+          rejection_reason:
+            character.rejection_reason,
+          approved_at:
+            character.approved_at,
+          approved_by:
+            character.approved_by,
+          approval_notice_seen_at:
+            character.approval_notice_seen_at,
+          updated_at:
+            character.updated_at,
+        })
+        .eq("id", characterId);
 
       if (rollbackError) {
         throw new Error(
@@ -679,7 +749,9 @@ export async function updateCharacterAdministration(
   }
 
   revalidatePath("/admin");
-  revalidatePath("/admin/characters");
+  revalidatePath(
+    "/admin/characters",
+  );
   revalidatePath(
     `/admin/characters/${characterId}`,
   );
@@ -699,19 +771,21 @@ export async function deleteCharacterAdministration(
   formData: FormData,
 ) {
   /*
-   * requireAdmin() should permit only the roles configured
-   * as administrators/owners in the project.
+   * The logged-in session is used ONLY to prove
+   * that the caller is an owner/admin.
    */
   await requireAdmin();
 
-  const characterId = readRequiredUuid(
-    formData.get("characterId"),
-  );
+  const characterId =
+    readRequiredUuid(
+      formData.get("characterId"),
+    );
 
-  const confirmation = readOptionalText(
-    formData.get("confirmation"),
-    200,
-  );
+  const confirmation =
+    readOptionalText(
+      formData.get("confirmation"),
+      200,
+    );
 
   if (!confirmation) {
     throw new Error(
@@ -719,7 +793,13 @@ export async function deleteCharacterAdministration(
     );
   }
 
-  const supabase = await createClient();
+  /*
+   * Destructive database operations use the
+   * server secret so RLS cannot silently turn
+   * the delete into a zero-row operation.
+   */
+  const supabase =
+    createPrivilegedClient();
 
   const {
     data: character,
@@ -738,7 +818,10 @@ export async function deleteCharacterAdministration(
     .eq("id", characterId)
     .maybeSingle();
 
-  if (characterError || !character) {
+  if (
+    characterError ||
+    !character
+  ) {
     throw new Error(
       `Unable to find character: ${
         characterError?.message ??
@@ -754,7 +837,8 @@ export async function deleteCharacterAdministration(
     }`.trim();
 
   if (
-    confirmation.trim() !== expectedName
+    confirmation.trim() !==
+    expectedName
   ) {
     throw new Error(
       `Confirmation does not match "${expectedName}".`,
@@ -762,16 +846,16 @@ export async function deleteCharacterAdministration(
   }
 
   /*
-   * Preserve forum discussions while removing the link
-   * to the deleted character.
+   * FORUM REPLIES
+   *
+   * Replies/posts written by this character are
+   * permanently removed.
    */
   const {
     error: forumPostsError,
   } = await supabase
     .from("forum_posts")
-    .update({
-      author_character_id: null,
-    })
+    .delete()
     .eq(
       "author_character_id",
       characterId,
@@ -779,10 +863,16 @@ export async function deleteCharacterAdministration(
 
   if (forumPostsError) {
     throw new Error(
-      `Unable to anonymise forum posts: ${forumPostsError.message}`,
+      `Unable to delete forum replies: ${forumPostsError.message}`,
     );
   }
 
+  /*
+   * FORUM TOPICS
+   *
+   * Topics survive. Only the character authorship
+   * link is removed.
+   */
   const {
     error: forumTopicsError,
   } = await supabase
@@ -797,22 +887,24 @@ export async function deleteCharacterAdministration(
 
   if (forumTopicsError) {
     throw new Error(
-      `Unable to anonymise forum topics: ${forumTopicsError.message}`,
+      `Unable to preserve forum topics: ${forumTopicsError.message}`,
     );
   }
 
   /*
-   * Delete dependent records before deleting the character.
-   * These operations are intentionally sequential so that
-   * any database error clearly identifies the affected table.
+   * ACTIVE PRESENCE
    */
-
   const {
     error: presenceError,
   } = await supabase
-    .from("character_presence")
+    .from(
+      "character_presence",
+    )
     .delete()
-    .eq("character_id", characterId);
+    .eq(
+      "character_id",
+      characterId,
+    );
 
   if (presenceError) {
     throw new Error(
@@ -820,21 +912,28 @@ export async function deleteCharacterAdministration(
     );
   }
 
-
-
+  /*
+   * LOCATION CHAT / ACTIONS
+   */
   const {
     error: roomMessagesError,
   } = await supabase
     .from("room_messages")
     .delete()
-    .eq("character_id", characterId);
+    .eq(
+      "character_id",
+      characterId,
+    );
 
   if (roomMessagesError) {
     throw new Error(
-      `Unable to delete room messages: ${roomMessagesError.message}`,
+      `Unable to delete location messages: ${roomMessagesError.message}`,
     );
   }
 
+  /*
+   * PRIVATE MESSAGES SENT BY THE CHARACTER
+   */
   const {
     error: directMessagesError,
   } = await supabase
@@ -847,10 +946,14 @@ export async function deleteCharacterAdministration(
 
   if (directMessagesError) {
     throw new Error(
-      `Unable to delete direct messages: ${directMessagesError.message}`,
+      `Unable to delete private messages: ${directMessagesError.message}`,
     );
   }
 
+  /*
+   * REMOVE THE CHARACTER FROM PRIVATE
+   * CONVERSATIONS.
+   */
   const {
     error: participantsError,
   } = await supabase
@@ -858,7 +961,10 @@ export async function deleteCharacterAdministration(
       "direct_conversation_participants",
     )
     .delete()
-    .eq("character_id", characterId);
+    .eq(
+      "character_id",
+      characterId,
+    );
 
   if (participantsError) {
     throw new Error(
@@ -866,8 +972,12 @@ export async function deleteCharacterAdministration(
     );
   }
 
+  /*
+   * BLOCKS, BOTH DIRECTIONS
+   */
   const {
-    error: blocksAsBlockerError,
+    error:
+      blocksAsBlockerError,
   } = await supabase
     .from("character_blocks")
     .delete()
@@ -883,7 +993,8 @@ export async function deleteCharacterAdministration(
   }
 
   const {
-    error: blocksAsBlockedError,
+    error:
+      blocksAsBlockedError,
   } = await supabase
     .from("character_blocks")
     .delete()
@@ -899,24 +1010,78 @@ export async function deleteCharacterAdministration(
   }
 
   /*
-   * Delete the character sheet only.
-   * The associated Supabase Auth account remains intact,
-   * allowing the user to create a new character.
-   *
-   * There is deliberately no status restriction here:
-   * an owner/admin may delete draft, submitted, approved,
-   * or rejected characters.
+   * CHARACTER STATUS HISTORY
    */
   const {
+    error: statusHistoryError,
+  } = await supabase
+    .from(
+      "character_status_history",
+    )
+    .delete()
+    .eq(
+      "character_id",
+      characterId,
+    );
+
+  if (statusHistoryError) {
+    throw new Error(
+      `Unable to delete character status history: ${statusHistoryError.message}`,
+    );
+  }
+
+  /*
+   * DELETE CHARACTER SHEET.
+   *
+   * The Supabase Auth user is deliberately left
+   * intact so the player can create a new character.
+   *
+   * Returning the deleted id proves a database row
+   * was actually removed.
+   */
+  const {
+    data: deletedCharacter,
     error: deleteError,
   } = await supabase
     .from("characters")
     .delete()
-    .eq("id", characterId);
+    .eq("id", characterId)
+    .select("id")
+    .maybeSingle();
 
   if (deleteError) {
     throw new Error(
       `Unable to delete character: ${deleteError.message}`,
+    );
+  }
+
+  if (!deletedCharacter) {
+    throw new Error(
+      "The character could not be deleted. No character row was removed.",
+    );
+  }
+
+  /*
+   * VERIFY THAT IT IS REALLY GONE.
+   */
+  const {
+    data: remainingCharacter,
+    error: verificationError,
+  } = await supabase
+    .from("characters")
+    .select("id")
+    .eq("id", characterId)
+    .maybeSingle();
+
+  if (verificationError) {
+    throw new Error(
+      `Unable to verify character deletion: ${verificationError.message}`,
+    );
+  }
+
+  if (remainingCharacter) {
+    throw new Error(
+      "Character deletion failed: the character still exists after the delete operation.",
     );
   }
 
@@ -927,7 +1092,9 @@ export async function deleteCharacterAdministration(
   revalidatePath("/messages");
   revalidatePath("/forum");
   revalidatePath("/admin");
-  revalidatePath("/admin/characters");
+  revalidatePath(
+    "/admin/characters",
+  );
 
   if (character.public_slug) {
     revalidatePath(
@@ -935,5 +1102,7 @@ export async function deleteCharacterAdministration(
     );
   }
 
-  redirect("/admin/characters");
+  redirect(
+    "/admin/characters",
+  );
 }
