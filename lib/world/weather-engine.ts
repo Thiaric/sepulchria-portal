@@ -9,6 +9,7 @@ import type {
 } from "@/lib/world/types";
 
 const WORLD_ROW_ID = "aureth";
+const TEMPERATURE_STEP_GAME_MS = 60 * 60 * 1000;
 
 type WeatherCandidate = {
   weather: WeatherKind;
@@ -16,10 +17,8 @@ type WeatherCandidate = {
 };
 
 function createAdminClient() {
-  const url =
-    process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const secret =
-    process.env.SUPABASE_SECRET_KEY;
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const secret = process.env.SUPABASE_SECRET_KEY;
 
   if (!url || !secret) {
     throw new Error(
@@ -39,95 +38,59 @@ function effectiveGameDate(
   state: WorldState,
   realNow = Date.now(),
 ) {
-  const base =
-    Date.parse(state.game_datetime);
+  const base = Date.parse(state.game_datetime);
 
-  if (
-    Number.isNaN(base) ||
-    !state.automatic_time
-  ) {
-    return new Date(
-      state.game_datetime,
-    );
+  if (Number.isNaN(base) || !state.automatic_time) {
+    return new Date(state.game_datetime);
   }
 
-  const anchor =
-    Date.parse(state.updated_at);
-
-  const elapsed =
-    Number.isNaN(anchor)
-      ? 0
-      : Math.max(
-          0,
-          realNow - anchor,
-        );
+  const anchor = Date.parse(state.updated_at);
+  const elapsed = Number.isNaN(anchor)
+    ? 0
+    : Math.max(0, realNow - anchor);
 
   return new Date(
     base +
       elapsed *
         Math.max(
           0,
-          Number(
-            state.time_scale,
-          ) || 0,
+          Number(state.time_scale) || 0,
         ),
   );
 }
 
 function seasonFor(date: Date) {
-  const month =
-    date.getUTCMonth() + 1;
+  const month = date.getUTCMonth() + 1;
 
-  if (
-    month === 12 ||
-    month <= 2
-  ) {
-    return "winter";
-  }
-
-  if (month <= 5) {
-    return "spring";
-  }
-
-  if (month <= 8) {
-    return "summer";
-  }
-
+  if (month === 12 || month <= 2) return "winter";
+  if (month <= 5) return "spring";
+  if (month <= 8) return "summer";
   return "autumn";
 }
 
 function weightedPick(
   candidates: WeatherCandidate[],
 ): WeatherKind {
-  const total =
-    candidates.reduce(
-      (sum, item) =>
-        sum + item.weight,
-      0,
-    );
+  const total = candidates.reduce(
+    (sum, item) => sum + item.weight,
+    0,
+  );
 
-  let roll =
-    Math.random() * total;
+  let roll = Math.random() * total;
 
   for (const item of candidates) {
     roll -= item.weight;
-
-    if (roll <= 0) {
-      return item.weather;
-    }
+    if (roll <= 0) return item.weather;
   }
 
-  return candidates[
-    candidates.length - 1
-  ].weather;
+  return candidates[candidates.length - 1].weather;
 }
 
 function candidatesFor(
   gameDate: Date,
   temperature: number,
 ): WeatherCandidate[] {
-  const season =
-    seasonFor(gameDate);
+  const season = seasonFor(gameDate);
 
   if (season === "winter") {
     if (temperature <= 1) {
@@ -165,6 +128,7 @@ function candidatesFor(
       { weather: "rain", weight: 13 },
       { weather: "heavy_rain", weight: 3 },
       { weather: "storm", weight: 3 },
+      { weather: "hail", weight: 2 },
     ];
   }
 
@@ -179,6 +143,7 @@ function candidatesFor(
       { weather: "rain", weight: 7 },
       { weather: "heavy_rain", weight: 3 },
       { weather: "storm", weight: 6 },
+      { weather: "hail", weight: 1 },
     ];
   }
 
@@ -192,19 +157,12 @@ function candidatesFor(
     { weather: "rain", weight: 11 },
     { weather: "heavy_rain", weight: 2 },
     { weather: "storm", weight: 2 },
+    { weather: "hail", weight: 2 },
   ];
 }
 
-const TRANSITIONS: Record<
-  WeatherKind,
-  WeatherKind[]
-> = {
-  clear: [
-    "clear",
-    "partly_cloudy",
-    "cloudy",
-    "fog",
-  ],
+const TRANSITIONS: Record<WeatherKind, WeatherKind[]> = {
+  clear: ["clear", "partly_cloudy", "cloudy", "fog"],
   partly_cloudy: [
     "clear",
     "partly_cloudy",
@@ -230,90 +188,34 @@ const TRANSITIONS: Record<
     "heavy_rain",
     "snow",
     "heavy_snow",
-  ],
-  fog: [
-    "fog",
-    "cloudy",
-    "overcast",
-    "partly_cloudy",
-    "drizzle",
-  ],
-  drizzle: [
-    "drizzle",
-    "cloudy",
-    "overcast",
-    "rain",
-    "partly_cloudy",
-  ],
-  rain: [
-    "drizzle",
-    "rain",
-    "heavy_rain",
-    "overcast",
-    "cloudy",
-    "storm",
-  ],
-  heavy_rain: [
-    "rain",
-    "heavy_rain",
-    "storm",
-    "overcast",
-  ],
-  storm: [
-    "storm",
-    "heavy_rain",
-    "rain",
-    "overcast",
-    "cloudy",
-  ],
-  snow: [
-    "snow",
-    "heavy_snow",
-    "overcast",
-    "cloudy",
-    "partly_cloudy",
-  ],
-  heavy_snow: [
-    "heavy_snow",
-    "snow",
-    "overcast",
-    "cloudy",
-  ],
-  hail: [
     "hail",
-    "rain",
-    "overcast",
-    "cloudy",
-    "snow",
   ],
+  fog: ["fog", "cloudy", "overcast", "partly_cloudy", "drizzle"],
+  drizzle: ["drizzle", "cloudy", "overcast", "rain", "partly_cloudy"],
+  rain: ["drizzle", "rain", "heavy_rain", "overcast", "cloudy", "storm", "hail"],
+  heavy_rain: ["rain", "heavy_rain", "storm", "overcast", "hail"],
+  storm: ["storm", "heavy_rain", "rain", "overcast", "cloudy", "hail"],
+  snow: ["snow", "heavy_snow", "overcast", "cloudy", "partly_cloudy", "hail"],
+  heavy_snow: ["heavy_snow", "snow", "overcast", "cloudy", "hail"],
+  hail: ["hail", "rain", "overcast", "cloudy", "snow"],
 };
 
 function chooseWeather(
   state: WorldState,
   gameDate: Date,
 ) {
-  const seasonal =
-    candidatesFor(
-      gameDate,
-      state.temperature_c,
-    );
+  const seasonal = candidatesFor(
+    gameDate,
+    state.temperature_c,
+  );
 
-  const allowed =
-    new Set(
-      TRANSITIONS[state.weather],
-    );
-
-  const believable =
-    seasonal.filter((candidate) =>
-      allowed.has(
-        candidate.weather,
-      ),
-    );
+  const allowed = new Set(TRANSITIONS[state.weather]);
+  const believable = seasonal.filter((candidate) =>
+    allowed.has(candidate.weather),
+  );
 
   return weightedPick(
-    believable.length > 0
-      ? believable
-      : seasonal,
+    believable.length > 0 ? believable : seasonal,
   );
 }
 
@@ -326,9 +228,7 @@ function chooseIntensity(
     weather === "fog" ||
     weather === "drizzle"
   ) {
-    return Math.random() < 0.72
-      ? "light"
-      : "moderate";
+    return Math.random() < 0.72 ? "light" : "moderate";
   }
 
   if (
@@ -337,275 +237,252 @@ function chooseIntensity(
     weather === "heavy_snow" ||
     weather === "hail"
   ) {
-    return Math.random() < 0.68
-      ? "heavy"
-      : "moderate";
+    return Math.random() < 0.68 ? "heavy" : "moderate";
   }
 
   const roll = Math.random();
-
-  if (roll < 0.2) {
-    return "light";
-  }
-
-  if (roll < 0.82) {
-    return "moderate";
-  }
-
+  if (roll < 0.2) return "light";
+  if (roll < 0.82) return "moderate";
   return "heavy";
 }
 
-function targetTemperature(
-  gameDate: Date,
-) {
-  const season =
-    seasonFor(gameDate);
-
-  const hour =
-    gameDate.getUTCHours();
-
-  const daytime =
-    hour >= 7 && hour < 19;
+function baseTemperatureTarget(gameDate: Date) {
+  const season = seasonFor(gameDate);
+  const hour = gameDate.getUTCHours();
+  const daytime = hour >= 7 && hour < 19;
 
   const ranges = {
-    winter: daytime
-      ? [2, 8]
-      : [-2, 4],
-    spring: daytime
-      ? [10, 17]
-      : [5, 11],
-    summer: daytime
-      ? [18, 27]
-      : [12, 18],
-    autumn: daytime
-      ? [9, 16]
-      : [4, 11],
+    winter: daytime ? [2, 8] : [-2, 4],
+    spring: daytime ? [10, 17] : [5, 11],
+    summer: daytime ? [18, 27] : [12, 18],
+    autumn: daytime ? [9, 16] : [4, 11],
   } as const;
 
-  const [min, max] =
-    ranges[season];
+  const [min, max] = ranges[season];
+  return min + Math.random() * (max - min);
+}
 
+const WEATHER_TEMPERATURE_MODIFIER: Record<WeatherKind, number> = {
+  clear: 2,
+  partly_cloudy: 1,
+  cloudy: 0,
+  overcast: -1,
+  fog: -2,
+  drizzle: -1,
+  rain: -2,
+  heavy_rain: -3,
+  storm: -4,
+  snow: -4,
+  heavy_snow: -5,
+  hail: -4,
+};
+
+function targetTemperature(
+  gameDate: Date,
+  weather: WeatherKind,
+) {
   return Math.round(
-    min +
-      Math.random() *
-        (max - min),
+    baseTemperatureTarget(gameDate) +
+      WEATHER_TEMPERATURE_MODIFIER[weather],
   );
 }
 
 function nextTemperature(
   current: number,
   gameDate: Date,
+  weather: WeatherKind,
 ) {
-  const target =
-    targetTemperature(gameDate);
+  const target = targetTemperature(gameDate, weather);
+  const delta = target - current;
 
-  const delta =
-    target - current;
+  if (Math.abs(delta) <= 1) return target;
 
-  if (Math.abs(delta) <= 2) {
-    return target;
-  }
-
-  return current +
+  return (
+    current +
     Math.sign(delta) *
       Math.min(
         Math.abs(delta),
-        1 + Math.floor(
-          Math.random() * 3,
-        ),
-      );
+        1 + Math.floor(Math.random() * 2),
+      )
+  );
 }
 
 function nextChangeDate(
   gameDate: Date,
   weather: WeatherKind,
 ) {
-  /*
-   * Most weather spells last 2–4 game hours.
-   * Storms/heavy precipitation are shorter.
-   */
   const hours =
     weather === "storm" ||
     weather === "heavy_rain" ||
     weather === "heavy_snow" ||
     weather === "hail"
-      ? 1 +
-        Math.random() * 2
-      : 2 +
-        Math.random() * 2;
+      ? 1 + Math.random() * 2
+      : 2 + Math.random() * 2;
 
   return new Date(
-    gameDate.getTime() +
-      hours *
-        60 *
-        60 *
-        1000,
+    gameDate.getTime() + hours * 60 * 60 * 1000,
   );
 }
 
-export async function tickAutomaticWeather() {
-  const supabase =
-    createAdminClient();
+function parseOptionalDate(value: string | null) {
+  return value ? Date.parse(value) : Number.NaN;
+}
 
-  const {
-    data,
-    error,
-  } = await supabase
+export async function tickAutomaticWeather() {
+  const supabase = createAdminClient();
+
+  const { data, error } = await supabase
     .from("world_state")
     .select("*")
     .eq("id", WORLD_ROW_ID)
     .maybeSingle();
 
   if (error || !data) {
-    throw new Error(
-      error?.message ??
-        "World state not found.",
+    throw new Error(error?.message ?? "World state not found.");
+  }
+
+  const state = data as WorldState;
+  const gameDate = effectiveGameDate(state);
+
+  const weatherOverrideUntil = parseOptionalDate(
+    state.weather_override_until_game,
+  );
+  const weatherOverrideActive =
+    !Number.isNaN(weatherOverrideUntil) &&
+    gameDate.getTime() < weatherOverrideUntil;
+  const weatherOverrideExpired =
+    !Number.isNaN(weatherOverrideUntil) &&
+    gameDate.getTime() >= weatherOverrideUntil;
+
+  const temperatureOverrideUntil = parseOptionalDate(
+    state.temperature_override_until_game,
+  );
+  const temperatureOverrideActive =
+    !Number.isNaN(temperatureOverrideUntil) &&
+    gameDate.getTime() < temperatureOverrideUntil;
+  const temperatureOverrideExpired =
+    !Number.isNaN(temperatureOverrideUntil) &&
+    gameDate.getTime() >= temperatureOverrideUntil;
+
+  const nextWeatherChange = parseOptionalDate(
+    state.next_weather_change_game,
+  );
+
+  const weatherTransitionDue =
+    state.automatic_weather &&
+    !weatherOverrideActive &&
+    (
+      weatherOverrideExpired ||
+      Number.isNaN(nextWeatherChange) ||
+      gameDate.getTime() >= nextWeatherChange
     );
-  }
 
-  const state =
-    data as WorldState;
+  let weather = state.weather;
+  let intensity = state.weather_intensity;
+  let nextWeatherChangeGame = state.next_weather_change_game;
+  let weatherLastChangedGame = state.weather_last_changed_game;
 
-  if (!state.automatic_weather) {
-    return {
-      changed: false,
-      reason:
-        "automatic-weather-disabled",
-    };
-  }
-
-  const gameDate =
-    effectiveGameDate(state);
-
-  const overrideUntil =
-    state.weather_override_until_game
-      ? Date.parse(
-          state.weather_override_until_game,
-        )
-      : Number.NaN;
-
-  /*
-   * A staff override is still active:
-   * do absolutely nothing until its
-   * GAME-TIME expiry.
-   */
-  if (
-    !Number.isNaN(overrideUntil) &&
-    gameDate.getTime() <
-      overrideUntil
-  ) {
-    return {
-      changed: false,
-      reason:
-        "staff-override-active",
-    };
-  }
-
-  const overrideExpired =
-    !Number.isNaN(overrideUntil) &&
-    gameDate.getTime() >=
-      overrideUntil;
-
-  const nextChange =
-    state.next_weather_change_game
-      ? Date.parse(
-          state.next_weather_change_game,
-        )
-      : Number.NaN;
-
-  /*
-   * If the override has just expired,
-   * automatic weather takes control
-   * IMMEDIATELY.
-   *
-   * Otherwise we wait until the normal
-   * scheduled transition.
-   */
-  const transitionDue =
-    overrideExpired ||
-    Number.isNaN(nextChange) ||
-    gameDate.getTime() >=
-      nextChange;
-
-  if (!transitionDue) {
-    return {
-      changed: false,
-      reason:
-        "waiting-for-next-change",
-    };
-  }
-
-  const weather =
-    chooseWeather(
-      state,
+  if (weatherTransitionDue) {
+    weather = chooseWeather(state, gameDate);
+    intensity = chooseIntensity(weather);
+    nextWeatherChangeGame = nextChangeDate(
       gameDate,
+      weather,
+    ).toISOString();
+    weatherLastChangedGame = gameDate.toISOString();
+  } else if (!state.automatic_weather) {
+    nextWeatherChangeGame = null;
+  }
+
+  const temperatureLastChanged = parseOptionalDate(
+    state.temperature_last_changed_game,
+  );
+
+  const temperatureTickDue =
+    state.automatic_temperature &&
+    !temperatureOverrideActive &&
+    (
+      temperatureOverrideExpired ||
+      Number.isNaN(temperatureLastChanged) ||
+      gameDate.getTime() - temperatureLastChanged >=
+        TEMPERATURE_STEP_GAME_MS ||
+      weatherTransitionDue
     );
 
-  const intensity =
-    chooseIntensity(weather);
+  let temperature = state.temperature_c;
+  let temperatureLastChangedGame =
+    state.temperature_last_changed_game;
 
-  const temperature =
-    nextTemperature(
+  if (temperatureTickDue) {
+    temperature = nextTemperature(
       state.temperature_c,
-      gameDate,
-    );
-
-  const nextWeatherChange =
-    nextChangeDate(
       gameDate,
       weather,
     );
+    temperatureLastChangedGame = gameDate.toISOString();
+  }
 
-  /*
-   * Re-anchor the moving game clock at
-   * the exact effective game time.
-   * This prevents updated_at from making
-   * the client clock jump backwards.
-   */
-  const now =
-    new Date().toISOString();
+  const anyChange =
+    weatherTransitionDue ||
+    temperatureTickDue ||
+    weatherOverrideExpired ||
+    temperatureOverrideExpired;
+
+  if (!anyChange) {
+    return {
+      changed: false,
+      reason: weatherOverrideActive
+        ? "staff-weather-override-active"
+        : temperatureOverrideActive
+          ? "staff-temperature-override-active"
+          : "waiting-for-next-change",
+    };
+  }
+
+  const now = new Date().toISOString();
 
   const next = {
-    game_datetime:
-      gameDate.toISOString(),
+    game_datetime: gameDate.toISOString(),
     weather,
-    weather_intensity:
-      intensity,
-    temperature_c:
-      temperature,
-    weather_override_until_game:
-      null,
-    weather_last_changed_game:
-      gameDate.toISOString(),
-    next_weather_change_game:
-      nextWeatherChange.toISOString(),
+    weather_intensity: intensity,
+    temperature_c: temperature,
+    next_weather_change_game: nextWeatherChangeGame,
+    weather_override_until_game: weatherOverrideExpired
+      ? null
+      : state.weather_override_until_game,
+    weather_last_changed_game: weatherLastChangedGame,
+    temperature_override_until_game: temperatureOverrideExpired
+      ? null
+      : state.temperature_override_until_game,
+    temperature_last_changed_game: temperatureLastChangedGame,
     updated_at: now,
   };
 
-  const {
-    error: updateError,
-  } = await supabase
+  const { error: updateError } = await supabase
     .from("world_state")
     .update(next)
     .eq("id", WORLD_ROW_ID);
 
   if (updateError) {
     throw new Error(
-      `Unable to advance automatic weather: ${updateError.message}`,
+      `Unable to advance automatic world climate: ${updateError.message}`,
     );
   }
 
   return {
     changed: true,
-    reason: overrideExpired
-      ? "staff-override-expired"
-      : "scheduled-weather-change",
+    reason:
+      weatherTransitionDue && temperatureTickDue
+        ? "weather-and-temperature-changed"
+        : weatherTransitionDue
+          ? "weather-changed"
+          : temperatureTickDue
+            ? "temperature-changed"
+            : "override-expired",
     weather,
     intensity,
     temperature,
-    gameDate:
-      gameDate.toISOString(),
-    nextWeatherChange:
-      nextWeatherChange.toISOString(),
+    gameDate: gameDate.toISOString(),
+    nextWeatherChange: nextWeatherChangeGame,
   };
 }

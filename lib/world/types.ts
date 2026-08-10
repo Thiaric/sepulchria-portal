@@ -32,6 +32,10 @@ export type WorldState = {
   weather_override_until_game: string | null;
   weather_last_changed_game: string | null;
 
+  automatic_temperature: boolean;
+  temperature_override_until_game: string | null;
+  temperature_last_changed_game: string | null;
+
   updated_at: string;
 };
 
@@ -50,6 +54,10 @@ export const DEFAULT_WORLD_STATE: WorldState = {
   next_weather_change_game: null,
   weather_override_until_game: null,
   weather_last_changed_game: null,
+
+  automatic_temperature: true,
+  temperature_override_until_game: null,
+  temperature_last_changed_game: null,
 
   updated_at:
     new Date().toISOString(),

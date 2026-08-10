@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ApprovalNotice } from "@/components/character/approval-notice";
 import { PendingSubmitButton } from "@/components/forms/pending-submit-button";
+import { CharacterExpertiseTotal } from "@/components/characters/character-expertise-total";
 
 import {
   submitCharacterForReview,
@@ -375,24 +376,27 @@ export function Profile({
             </div>
 
             <div className="mt-8 grid gap-px bg-[#4f3b28]/35 sm:grid-cols-2">
-              {items.map(
-                ([label, value]) => (
-                  <div
-                    key={label}
-                    className="bg-[#17110d] p-4"
-                  >
-                    <p className="text-[9px] uppercase tracking-[0.25em] text-[#796448]">
-                      {label}
-                    </p>
+  {items.map(([label, value]) => (
+    <div
+      key={label}
+      className="bg-[#17110d] p-4"
+    >
+      <p className="text-[9px] uppercase tracking-[0.25em] text-[#796448]">
+        {label}
+      </p>
 
-                    <p className="mt-2 break-words text-sm text-[#cab89b]">
-                      {value ||
-                        "Not recorded"}
-                    </p>
-                  </div>
-                ),
-              )}
-            </div>
+      <p className="mt-2 break-words text-sm text-[#cab89b]">
+        {value || "Not recorded"}
+      </p>
+    </div>
+  ))}
+
+  <div className="bg-[#17110d] p-4">
+    <CharacterExpertiseTotal
+      characterId={character.id!}
+    />
+  </div>
+</div>
           </div>
         </section>
 

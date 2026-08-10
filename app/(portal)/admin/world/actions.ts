@@ -25,146 +25,73 @@ const WEATHER: WeatherKind[] = [
   "hail",
 ];
 
-const INTENSITY: WeatherIntensity[] =
-  [
-    "light",
-    "moderate",
-    "heavy",
-  ];
+const INTENSITY: WeatherIntensity[] = [
+  "light",
+  "moderate",
+  "heavy",
+];
 
-function effectiveGameDate(
-  state: {
-    game_datetime: string;
-    automatic_time: boolean;
-    time_scale: number;
-    updated_at: string;
-  },
-) {
-  const base =
-    Date.parse(
-      state.game_datetime,
-    );
+export async function updateWorldState(formData: FormData) {
+  const staff = await requireStaff();
+  const supabase = await createClient();
 
-  if (
-    Number.isNaN(base) ||
-    !state.automatic_time
-  ) {
-    return new Date(
-      state.game_datetime,
-    );
-  }
+  const weather = String(
+    formData.get("weather") ?? "clear",
+  ) as WeatherKind;
 
-  const anchor =
-    Date.parse(state.updated_at);
+  const intensity = String(
+    formData.get("weatherIntensity") ?? "moderate",
+  ) as WeatherIntensity;
 
-  const elapsed =
-    Number.isNaN(anchor)
-      ? 0
-      : Math.max(
-          0,
-          Date.now() - anchor,
-        );
-
-  return new Date(
-    base +
-      elapsed *
-        Math.max(
-          0,
-          Number(
-            state.time_scale,
-          ) || 0,
-        ),
+  const temperature = Number(
+    formData.get("temperatureC"),
   );
-}
 
-export async function updateWorldState(
-  formData: FormData,
-) {
-  const staff =
-    await requireStaff();
-
-  const supabase =
-    await createClient();
-
-  const weather =
-    String(
-      formData.get("weather") ??
-        "clear",
-    ) as WeatherKind;
-
-  const intensity =
-    String(
-      formData.get(
-        "weatherIntensity",
-      ) ?? "moderate",
-    ) as WeatherIntensity;
-
-  const temperature =
-    Number(
-      formData.get(
-        "temperatureC",
-      ),
-    );
-
-  const timeScale =
-    Number(
-      formData.get("timeScale"),
-    );
+  const timeScale = Number(
+    formData.get("timeScale"),
+  );
 
   const automaticTime =
-    formData.get(
-      "automaticTime",
-    ) === "on";
+    formData.get("automaticTime") === "on";
 
   const automaticWeather =
-    formData.get(
-      "automaticWeather",
-    ) === "on";
+    formData.get("automaticWeather") === "on";
 
-  const overrideHours =
-    Math.max(
-      0,
-      Math.min(
-        12,
-        Number(
-          formData.get(
-            "overrideHours",
-          ) ?? 0,
-        ) || 0,
-      ),
-    );
+  const automaticTemperature =
+    formData.get("automaticTemperature") === "on";
 
-  const submittedDate =
-    new Date(
-      String(
-        formData.get(
-          "gameDatetime",
-        ) ?? "",
-      ),
-    );
+  const overrideHours = Math.max(
+    0,
+    Math.min(
+      12,
+      Number(formData.get("overrideHours") ?? 0) || 0,
+    ),
+  );
 
-  if (
-    !WEATHER.includes(weather)
-  ) {
-    throw new Error(
-      "Invalid weather condition.",
-    );
+  const temperatureOverrideHours = Math.max(
+    0,
+    Math.min(
+      12,
+      Number(
+        formData.get("temperatureOverrideHours") ?? 0,
+      ) || 0,
+    ),
+  );
+
+  const submittedDate = new Date(
+    String(formData.get("gameDatetime") ?? ""),
+  );
+
+  if (!WEATHER.includes(weather)) {
+    throw new Error("Invalid weather condition.");
+  }
+
+  if (!INTENSITY.includes(intensity)) {
+    throw new Error("Invalid weather intensity.");
   }
 
   if (
-    !INTENSITY.includes(
-      intensity,
-    )
-  ) {
-    throw new Error(
-      "Invalid weather intensity.",
-    );
-  }
-
-  if (
-    !Number.isFinite(
-      temperature,
-    ) ||
+    !Number.isFinite(temperature) ||
     temperature < -60 ||
     temperature > 60
   ) {
@@ -174,9 +101,7 @@ export async function updateWorldState(
   }
 
   if (
-    !Number.isFinite(
-      timeScale,
-    ) ||
+    !Number.isFinite(timeScale) ||
     timeScale < 0 ||
     timeScale > 24
   ) {
@@ -185,100 +110,98 @@ export async function updateWorldState(
     );
   }
 
-  if (
-    Number.isNaN(
-      submittedDate.getTime(),
-    )
-  ) {
-    throw new Error(
-      "Invalid game date/time.",
-    );
+  if (Number.isNaN(submittedDate.getTime())) {
+    throw new Error("Invalid game date/time.");
   }
 
-  const {
-    data: before,
-    error: beforeError,
-  } = await supabase
-    .from("world_state")
-    .select("*")
-    .eq("id", "aureth")
-    .maybeSingle();
+  const { data: before, error: beforeError } =
+    await supabase
+      .from("world_state")
+      .select("*")
+      .eq("id", "aureth")
+      .maybeSingle();
 
-  if (
-    beforeError ||
-    !before
-  ) {
+  if (beforeError || !before) {
     throw new Error(
       beforeError?.message ??
         "World state could not be loaded.",
     );
   }
 
-  const now =
-    new Date().toISOString();
+  const now = new Date().toISOString();
 
-  const overrideUntil =
-    automaticWeather &&
-    overrideHours > 0
+  const weatherOverrideUntil =
+    automaticWeather && overrideHours > 0
       ? new Date(
           submittedDate.getTime() +
-            overrideHours *
-              60 *
-              60 *
-              1000,
+            overrideHours * 60 * 60 * 1000,
         ).toISOString()
       : null;
+
+  const temperatureOverrideUntil =
+    automaticTemperature &&
+    temperatureOverrideHours > 0
+      ? new Date(
+          submittedDate.getTime() +
+            temperatureOverrideHours * 60 * 60 * 1000,
+        ).toISOString()
+      : null;
+
+  const nextWeatherChange = automaticWeather
+    ? new Date(
+        submittedDate.getTime() +
+          (2 + Math.random() * 2) * 60 * 60 * 1000,
+      ).toISOString()
+    : null;
 
   /*
-   * Staff choosing weather establishes
-   * the new current spell. Automatic
-   * weather can then resume after the
-   * optional game-hour override.
+   * Automatic temperature ON + no temperature override:
+   * keep the simulation's current temperature.
+   *
+   * Automatic temperature ON + override duration:
+   * apply the entered temperature now and hold it temporarily.
+   *
+   * Automatic temperature OFF:
+   * apply the entered temperature and keep it staff-controlled.
    */
-  const nextWeatherChange =
-    automaticWeather
-      ? new Date(
-          submittedDate.getTime() +
-            (2 +
-              Math.random() * 2) *
-              60 *
-              60 *
-              1000,
-        ).toISOString()
-      : null;
+  const staffControlsTemperature =
+    !automaticTemperature ||
+    temperatureOverrideHours > 0;
+
+  const nextTemperature = staffControlsTemperature
+    ? Math.round(temperature)
+    : before.temperature_c;
+
+  const nextTemperatureLastChanged = staffControlsTemperature
+    ? submittedDate.toISOString()
+    : before.temperature_last_changed_game ??
+      submittedDate.toISOString();
 
   const next = {
-    game_datetime:
-      submittedDate.toISOString(),
-    automatic_time:
-      automaticTime,
+    game_datetime: submittedDate.toISOString(),
+    automatic_time: automaticTime,
     time_scale: timeScale,
 
     weather,
-    weather_intensity:
-      intensity,
-    temperature_c:
-      Math.round(
-        temperature,
-      ),
+    weather_intensity: intensity,
+    temperature_c: nextTemperature,
 
-    automatic_weather:
-      automaticWeather,
-    weather_override_until_game:
-      overrideUntil,
-    next_weather_change_game:
-      nextWeatherChange,
-    weather_last_changed_game:
-      submittedDate.toISOString(),
+    automatic_weather: automaticWeather,
+    weather_override_until_game: weatherOverrideUntil,
+    next_weather_change_game: nextWeatherChange,
+    weather_last_changed_game: submittedDate.toISOString(),
+
+    automatic_temperature: automaticTemperature,
+    temperature_override_until_game: temperatureOverrideUntil,
+    temperature_last_changed_game: nextTemperatureLastChanged,
 
     updated_at: now,
   };
 
-  const { error } =
-    await supabase
-      .from("world_state")
-      .update(next)
-      .eq("id", "aureth");
+  const { error } = await supabase
+    .from("world_state")
+    .update(next)
+    .eq("id", "aureth");
 
   if (error) {
     throw new Error(
@@ -290,19 +213,16 @@ export async function updateWorldState(
     .from("world_state_history")
     .insert({
       changed_by: staff.userId,
-      previous_state:
-        before,
+      previous_state: before,
       new_state: {
         ...next,
         source: "staff",
-        override_hours:
-          overrideHours,
+        weather_override_hours: overrideHours,
+        temperature_override_hours:
+          temperatureOverrideHours,
       },
     });
 
   revalidatePath("/", "layout");
-
-  redirect(
-    "/admin/world?saved=1",
-  );
+  redirect("/admin/world?saved=1");
 }

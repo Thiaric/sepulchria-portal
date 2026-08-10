@@ -103,11 +103,7 @@ export function CodexEntryImageLightbox({
                 />
               </div>
 
-              <div className="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 border border-[#6d5132]/70 bg-[#100c09]/90 px-4 py-2 text-center shadow-[0_5px_18px_rgba(0,0,0,0.6)] backdrop-blur-sm">
-                <p className="font-serif text-sm text-[#e2c99e]">
-                  {name}
-                </p>
-              </div>
+              
             </div>
           </div>,
           document.body,

@@ -25,6 +25,9 @@ export async function getWorldState(): Promise<WorldState> {
         next_weather_change_game,
         weather_override_until_game,
         weather_last_changed_game,
+        automatic_temperature,
+        temperature_override_until_game,
+        temperature_last_changed_game,
         updated_at
       `)
       .eq("id", "aureth")
