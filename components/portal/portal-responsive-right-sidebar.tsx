@@ -8,11 +8,11 @@ import { X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { AtmosphericImage } from "@/components/world/atmospheric-image";
 import { ForumSectionActivityContext } from "@/components/portal/forum-section-activity-context";
 import { PortalContextPanel } from "@/components/portal/portal-context-panel";
 import { RoomInfoButton } from "@/components/portal/room-info-button";
 import type { PortalContext } from "@/types/portal";
-import { AtmosphericImage } from "@/components/world/atmospheric-image";
 
 type PortalResponsiveRightSidebarProps = {
   context: PortalContext;
@@ -106,22 +106,12 @@ export function PortalResponsiveRightSidebar({
         className={[
           "z-[70] flex min-h-0 min-w-0 flex-col border-l border-[#6e5535]/40 bg-[#100d0b]",
 
-          /*
-           * Mobile / tablet:
-           * slide-in drawer.
-           */
           "fixed inset-y-0 right-0 w-[min(88vw,360px)] overflow-y-auto overscroll-contain shadow-[-18px_0_50px_rgba(0,0,0,0.55)] transition-transform duration-200 ease-out",
 
           open
             ? "translate-x-0"
             : "translate-x-full",
 
-          /*
-           * Desktop:
-           * become a normal grid column.
-           * Height is inherited from the portal shell.
-           * Scrolling happens only if this column genuinely overflows.
-           */
           "xl:relative xl:inset-auto xl:z-auto xl:h-full xl:w-auto xl:translate-x-0 xl:self-stretch xl:overflow-y-auto xl:overscroll-contain xl:shadow-none xl:transition-none",
         ].join(" ")}
       >
@@ -152,63 +142,62 @@ export function PortalResponsiveRightSidebar({
         {/* SIDEBAR CONTENT */}
         <div className="flex min-h-0 flex-1 flex-col gap-3 p-4 xl:gap-[var(--portal-column-gap,0.75rem)] xl:p-[var(--portal-column-pad,1rem)]">
           {/* CURRENT LOCATION */}
-          <section className="relative shrink-0 overflow-hidden border border-[#60482e]/45 bg-[#15100d]">
-  {character?.currentRoom?.image_url ? (
-    <div className="absolute inset-0">
-      <AtmosphericImage
-        src={character.currentRoom.image_url}
-        alt={character.currentRoom.name}
-        variant="scene"
-        sizes="300px"
-        objectFit="cover"
-      />
-    </div>
-  ) : null}
+<div className="shrink-0">
+  <p className="mb-1.5 px-1 text-[8px] uppercase tracking-[0.24em] text-[#a88658]">
+    Current location
+  </p>
 
-  {/* Readability overlay — above weather image, below text */}
-  <div className="pointer-events-none absolute inset-0 z-[6] bg-[#0b0806]/48" />
+  <section className="relative min-h-[108px] overflow-hidden border border-[#60482e]/45 bg-[#15100d]">
+    {character?.currentRoom?.image_url ? (
+      <div className="absolute inset-0">
+        <AtmosphericImage
+          src={character.currentRoom.image_url}
+          alt={character.currentRoom.name}
+          variant="scene"
+          sizes="300px"
+          objectFit="cover"
+        />
+      </div>
+    ) : null}
 
-  <div className="pointer-events-none absolute inset-0 z-[6] bg-gradient-to-r from-[#100b08]/78 via-[#100b08]/52 to-[#100b08]/28" />
+    <div className="pointer-events-none absolute inset-0 z-[6] bg-[#0b0806]/48" />
 
-  <div className="relative z-10 p-4 xl:p-[var(--portal-section-pad,1rem)]">
-    <div className="flex min-w-0 items-center justify-between gap-2">
-      <p className="min-w-0 text-[8px] uppercase tracking-[0.24em] text-[#a88658]">
-        Current location
-      </p>
+    <div className="pointer-events-none absolute inset-0 z-[6] bg-gradient-to-r from-[#100b08]/78 via-[#100b08]/52 to-[#100b08]/28" />
 
-      {character?.currentRoom ? (
-        <div className="flex shrink-0 items-center gap-1.5">
-          <RoomInfoButton
-            roomId={
-              character.currentRoom.id
-            }
-          />
+    <div className="relative z-10 flex min-h-[108px] items-end p-4 xl:p-[var(--portal-section-pad,1rem)]">
+      <div className="flex w-full min-w-0 items-end justify-between gap-2">
+        <div className="min-w-0">
+          <h2 className="break-words font-serif text-[16px] leading-tight text-[#ead2a6] [text-shadow:0_2px_3px_rgba(0,0,0,1),0_0_6px_rgba(0,0,0,0.95)]">
+            {character?.currentRoom?.name ??
+              "No location"}
+          </h2>
 
-          <Link
-            href="/game"
-            aria-label="Enter current location"
-            title="Enter current location"
-            className="flex h-8 w-8 shrink-0 items-center justify-center border border-[#765937]/70 bg-[#160f0a]/80 text-[11px] text-[#d8bc8d] backdrop-blur-sm transition hover:border-[#a07945] hover:bg-[#332217] hover:text-[#f0d4a2]"
-          >
-            →
-          </Link>
+          <p className="mt-1 break-words text-[10px] leading-snug text-[#d0c0a8] [text-shadow:0_1px_2px_rgba(0,0,0,1),0_0_4px_rgba(0,0,0,0.95)]">
+            {character?.currentRoom?.area?.name ??
+              "Your character has not entered the city yet."}
+          </p>
         </div>
-      ) : null}
-    </div>
 
-    <div className="mt-2 min-w-0">
-      <h2 className="break-words font-serif text-[16px] leading-tight text-[#ead2a6] drop-shadow-[0_2px_3px_rgba(0,0,0,0.9)]">
-        {character?.currentRoom?.name ??
-          "No location"}
-      </h2>
+        {character?.currentRoom ? (
+          <div className="flex shrink-0 items-end gap-1.5">
+            <RoomInfoButton
+              roomId={character.currentRoom.id}
+            />
 
-      <p className="mt-1 break-words text-[10px] leading-snug text-[#b5a48d] drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]">
-        {character?.currentRoom?.area?.name ??
-          "Your character has not entered the city yet."}
-      </p>
+            <Link
+              href="/game"
+              aria-label="Enter current location"
+              title="Enter current location"
+              className="flex h-8 w-8 shrink-0 items-center justify-center border border-[#765937]/70 bg-[#160f0a]/80 text-[11px] text-[#d8bc8d] backdrop-blur-sm transition hover:border-[#a07945] hover:bg-[#332217] hover:text-[#f0d4a2]"
+            >
+              →
+            </Link>
+          </div>
+        ) : null}
+      </div>
     </div>
-  </div>
-</section>
+  </section>
+</div>
 
           {/* CONTEXT PANEL */}
           <section className="min-h-0 flex-1 border border-[#60482e]/45 bg-[#15100d] p-4 xl:p-[var(--portal-section-pad,1rem)]">

@@ -1,3 +1,4 @@
+import { CodexEntryImageLightbox } from "@/components/codex/codex-entry-image-lightbox";
 import { RichTextContent } from "@/components/editor/rich-text-content";
 import Link from "next/link";
 
@@ -10,6 +11,7 @@ type CodexEntryCardProps = {
   iconUrl: string | null;
   colour: string | null;
   categoryLabel: string;
+  enableImagePreview?: boolean;
 };
 
 export function CodexEntryCard({
@@ -21,8 +23,10 @@ export function CodexEntryCard({
   iconUrl,
   colour,
   categoryLabel,
+  enableImagePreview = false,
 }: CodexEntryCardProps) {
-  const accentColour = colour ?? "#8a6840";
+  const accentColour =
+    colour ?? "#8a6840";
 
   return (
     <article
@@ -41,7 +45,14 @@ export function CodexEntryCard({
               className="h-full w-full object-cover opacity-70 transition duration-500 group-hover:scale-105 group-hover:opacity-90"
             />
 
-            <div className="absolute inset-0 bg-gradient-to-t from-[#15100d] via-transparent to-black/20" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#15100d] via-transparent to-black/20" />
+
+            {enableImagePreview ? (
+              <CodexEntryImageLightbox
+                src={imageUrl}
+                name={name}
+              />
+            ) : null}
           </>
         ) : (
           <div
@@ -52,7 +63,7 @@ export function CodexEntryCard({
           />
         )}
 
-        <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex items-end justify-between gap-4 p-5">
           <div>
             <p className="text-[9px] uppercase tracking-[0.28em] text-[#d0b58a]">
               {categoryLabel}
@@ -79,9 +90,14 @@ export function CodexEntryCard({
             ) : (
               <span
                 className="font-serif text-2xl"
-                style={{ color: accentColour }}
+                style={{
+                  color:
+                    accentColour,
+                }}
               >
-                {name.slice(0, 1).toUpperCase()}
+                {name
+                  .slice(0, 1)
+                  .toUpperCase()}
               </span>
             )}
           </div>
@@ -96,7 +112,8 @@ export function CodexEntryCard({
           />
         ) : (
           <p className="flex-1 text-sm leading-7 text-[#a99b89]">
-            No summary is currently available.
+            No summary is currently
+            available.
           </p>
         )}
 
@@ -105,7 +122,9 @@ export function CodexEntryCard({
           className="mt-6 inline-flex items-center justify-between border border-[#765937] bg-[#271c12] px-4 py-3 text-[10px] uppercase tracking-[0.2em] text-[#dfc79c] transition hover:border-[#a17a45] hover:bg-[#3b2919]"
         >
           <span>Open</span>
-          <span aria-hidden="true">→</span>
+          <span aria-hidden="true">
+            →
+          </span>
         </Link>
       </div>
     </article>

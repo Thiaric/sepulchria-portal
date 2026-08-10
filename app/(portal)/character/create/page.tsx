@@ -56,7 +56,7 @@ export default async function CreateCharacterPage({
     supabase
       .from("races")
       .select(
-        "id, name, slug, summary, icon_url, colour, min_age, max_age",
+          "id, name, slug, summary, icon_url, banner_url, colour, min_age, max_age",
       )
       .eq("is_active", true)
       .eq(
@@ -73,7 +73,7 @@ export default async function CreateCharacterPage({
     supabase
       .from("associations")
       .select(
-        "id, name, slug, summary, icon_url, colour",
+        "id, name, slug, summary, icon_url, banner_url, colour",
       )
       .eq("is_active", true)
       .eq(

@@ -18,6 +18,7 @@ export function RaceCard({
       iconUrl={race.icon_url}
       colour={race.colour}
       categoryLabel="People of Aureth"
+      enableImagePreview
     />
   );
 }

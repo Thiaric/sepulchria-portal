@@ -18,6 +18,7 @@ export function AssociationCard({
       iconUrl={association.icon_url}
       colour={association.colour}
       categoryLabel="Body of the City"
+      enableImagePreview
     />
   );
 }

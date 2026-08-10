@@ -20,6 +20,7 @@ type CharacterOption = {
   slug: string;
   summary: string | null;
   icon_url: string | null;
+  banner_url: string | null;
   colour: string | null;
 };
 
@@ -522,6 +523,7 @@ export default function CharacterForm({
                 }
                 onSelect={selectRace}
                 emptyMessage="No ancestries are currently available."
+                showBanner
               />
 
               <div className="my-10 border-t border-[#5d452d]/40" />
@@ -957,6 +959,7 @@ function SelectionSection({
   selectedId,
   onSelect,
   emptyMessage,
+  showBanner = false,
 }: {
   title: string;
   description: string;
@@ -964,6 +967,7 @@ function SelectionSection({
   selectedId: string;
   onSelect: (id: string) => void;
   emptyMessage: string;
+  showBanner?: boolean;
 }) {
   return (
     <div>
@@ -995,7 +999,7 @@ function SelectionSection({
                   onSelect(option.id)
                 }
                 aria-pressed={selected}
-                className={`relative min-h-36 overflow-hidden border p-5 text-left transition ${
+                className={`group relative min-h-36 overflow-hidden border text-left transition ${
                   selected
                     ? "border-[#c19352] bg-[#332416] shadow-[0_0_24px_rgba(153,112,58,0.15)]"
                     : "border-[#5c462f]/65 bg-[#120e0b] hover:border-[#85643d] hover:bg-[#1d1510]"
@@ -1004,73 +1008,86 @@ function SelectionSection({
                   backgroundImage: `radial-gradient(circle at top right, ${optionColour}30, transparent 52%)`,
                 }}
               >
-                <div className="flex items-start gap-4">
-                  <div
-                    className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden border bg-black/20 font-serif text-lg"
-                    style={{
-                      borderColor: `${optionColour}88`,
-                      color: optionColour,
-                    }}
-                  >
-                    {option.icon_url ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={
-                          option.icon_url
-                        }
-                        alt=""
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      option.name
-                        .charAt(0)
-                        .toUpperCase()
-                    )}
+                {showBanner && option.banner_url ? (
+                  <div className="relative aspect-[2/1] w-full overflow-hidden border-b border-[#5c462f]/55 bg-[#0b0806]">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={option.banner_url}
+                      alt={`${option.name} ancestry`}
+                      className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+                    />
+
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#120e0b]/40 via-transparent to-black/5" />
+                  </div>
+                ) : null}
+
+                <div className="p-5">
+                  <div className="flex items-start gap-4">
+                    <div
+                      className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden border bg-black/20 font-serif text-lg"
+                      style={{
+                        borderColor: `${optionColour}88`,
+                        color: optionColour,
+                      }}
+                    >
+                      {option.icon_url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={option.icon_url}
+                          alt=""
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        option.name
+                          .charAt(0)
+                          .toUpperCase()
+                      )}
+                    </div>
+
+                    <div className="min-w-0">
+                      <p className="font-serif text-xl text-[#e0c99e]">
+                        {option.name}
+                      </p>
+
+                      <p className="mt-2 line-clamp-3 text-xs leading-6 text-[#918473]">
+                        {option.summary ||
+                          "Codex information will be added soon."}
+                      </p>
+                    </div>
                   </div>
 
-                  <div className="min-w-0">
-                    <p className="font-serif text-xl text-[#e0c99e]">
-                      {option.name}
-                    </p>
+                  <div className="mt-5 flex items-center justify-between border-t border-[#5b452d]/35 pt-3">
+                    <Link
+                      href={
+                        title
+                          .toLowerCase()
+                          .includes(
+                            "association",
+                          )
+                          ? `/associations/${option.slug}`
+                          : `/races/${option.slug}`
+                      }
+                      target="_blank"
+                      onClick={(event) =>
+                        event.stopPropagation()
+                      }
+                      className="text-[9px] uppercase tracking-[0.2em] text-[#9f7b4b] transition hover:text-[#e2c18a]"
+                    >
+                      Read More ↗
+                    </Link>
 
-                    <p className="mt-2 line-clamp-3 text-xs leading-6 text-[#918473]">
-                      {option.summary ||
-                        "Codex information will be added soon."}
-                    </p>
+                    <span
+                      className={`text-[9px] uppercase tracking-[0.2em] ${
+                        selected
+                          ? "text-[#e2be7b]"
+                          : "text-[#5f564b]"
+                      }`}
+                    >
+                      {selected
+                        ? "Selected"
+                        : "Choose"}
+                    </span>
                   </div>
-                </div>
-
-                <div className="mt-5 flex items-center justify-between border-t border-[#5b452d]/35 pt-3">
-                  <Link
-                    href={
-                      title
-                        .toLowerCase()
-                        .includes(
-                          "association",
-                        )
-                        ? `/associations/${option.slug}`
-                        : `/races/${option.slug}`
-                    }
-                    target="_blank"
-                    onClick={(event) =>
-                      event.stopPropagation()
-                    }
-                    className="text-[9px] uppercase tracking-[0.2em] text-[#9f7b4b] transition hover:text-[#e2c18a]"
-                  >
-                    More Info ↗
-                  </Link>
-
-                  <span
-                    className={`text-[9px] uppercase tracking-[0.2em] ${
-                      selected
-                        ? "text-[#e2be7b]"
-                        : "text-[#5f564b]"
-                    }`}
-                  >
-                    {selected
-                      ? "Selected"
-                      : "Choose"}
-                  </span>
                 </div>
               </button>
             );
