@@ -1,5 +1,6 @@
 import { requireStaff } from "@/lib/auth/require-staff";
 import { getWorldState } from "@/lib/world/get-world-state";
+import { AdminLondonClock } from "@/components/world/admin-london-clock";
 import {
   updateWorldState,
 } from "./actions";
@@ -153,22 +154,7 @@ export default async function Page({
               World clock
             </h3>
 
-            <label className="mt-5 block text-xs text-[#9a815f]">
-              Game date & time
-
-              <input
-                name="gameDatetime"
-                type="datetime-local"
-                defaultValue={
-                  state.game_datetime.slice(
-                    0,
-                    16,
-                  )
-                }
-                required
-                className="mt-2 w-full border border-[#60482e] bg-[#0f0b09] p-3 text-[#e1cba3]"
-              />
-            </label>
+            <AdminLondonClock />
 
             <label className="mt-5 flex gap-3 text-sm text-[#b8a58a]">
               <input
@@ -254,7 +240,7 @@ export default async function Page({
 
                 <span className="mt-1 block text-xs leading-5 text-[#847766]">
                   When enabled,
-                  Sepulchria's weather
+                  Sepulchria&apos;s weather
                   evolves without staff
                   intervention.
                 </span>
