@@ -1,10 +1,11 @@
 "use client";
 
+import { RichTextContentClient } from "@/components/editor/rich-text-content-client";
+import { MapMagnifyingLens } from "@/components/portal/map-magnifying-lens";
 import { AtmosphericImage } from "@/components/world/atmospheric-image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { RichTextContentClient } from "@/components/editor/rich-text-content-client";
 
 type InteractiveWorldMapProps = {
   areas: {
@@ -15,7 +16,9 @@ type InteractiveWorldMapProps = {
   }[];
 };
 
-type MapLevel = "continent" | "city";
+type MapLevel =
+  | "continent"
+  | "city";
 
 type CityHotspot = {
   slug: string;
@@ -108,21 +111,31 @@ const cityHotspots: CityHotspot[] = [
 export function InteractiveWorldMap({
   areas,
 }: InteractiveWorldMapProps) {
-  const searchParams = useSearchParams();
+  const searchParams =
+    useSearchParams();
 
-  const [level, setLevel] = useState<MapLevel>(() =>
-    searchParams.get("map") === "sepulchria"
-      ? "city"
-      : "continent",
+  const [level, setLevel] =
+    useState<MapLevel>(() =>
+      searchParams.get("map") ===
+      "sepulchria"
+        ? "city"
+        : "continent",
+    );
+
+  const [
+    hoveredArea,
+    setHoveredArea,
+  ] = useState<string | null>(
+    null,
   );
 
-  const [hoveredArea, setHoveredArea] =
-    useState<string | null>(null);
-
-  function findArea(slug: string) {
+  function findArea(
+    slug: string,
+  ) {
     return (
       areas.find(
-        (area) => area.slug === slug,
+        (area) =>
+          area.slug === slug,
       ) ?? null
     );
   }
@@ -130,24 +143,41 @@ export function InteractiveWorldMap({
   const hoveredHotspot =
     cityHotspots.find(
       (hotspot) =>
-        hotspot.slug === hoveredArea,
+        hotspot.slug ===
+        hoveredArea,
     ) ?? null;
 
   const hoveredDatabaseArea =
     hoveredHotspot
-      ? findArea(hoveredHotspot.slug)
+      ? findArea(
+          hoveredHotspot.slug,
+        )
       : null;
 
+  const currentMapSrc =
+    level === "continent"
+      ? "/maps/land-of-the-fallenv2.png"
+      : "/maps/sepulchria-mapv2.png";
+
+  const currentMapAlt =
+    level === "continent"
+      ? "Map of The Godscar"
+      : "Map of Sepulchria";
+
   return (
-    <section className="overflow-hidden border border-[#654c2f]/50 bg-[#100c09]">
+    <section className="relative z-10 overflow-visible border border-[#654c2f]/50 bg-[#100c09]">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#654c2f]/40 bg-[#17110d] px-4 py-3">
         <div>
           <p className="text-[8px] uppercase tracking-[0.28em] text-[#96734a]">
-            Welcome to Aureth - Explore the World and choose where your story will continue
+            Welcome to Aureth -
+            Explore the World and
+            choose where your story
+            will continue
           </p>
 
           <h2 className="mt-1 font-serif text-xl text-[#e4cda1]">
-            {level === "continent"
+            {level ===
+            "continent"
               ? "The Godscar"
               : "Sepulchria — The Living Body"}
           </h2>
@@ -157,8 +187,12 @@ export function InteractiveWorldMap({
           <button
             type="button"
             onClick={() => {
-              setHoveredArea(null);
-              setLevel("continent");
+              setHoveredArea(
+                null,
+              );
+              setLevel(
+                "continent",
+              );
             }}
             className="border border-[#765735]/60 bg-[#21170f] px-4 py-2 text-[9px] uppercase tracking-[0.2em] text-[#d2ad72] transition hover:border-[#b28246] hover:bg-[#332317] hover:text-[#f5ddb2]"
           >
@@ -171,18 +205,20 @@ export function InteractiveWorldMap({
         )}
       </div>
 
-      <div className="flex w-full justify-center overflow-hidden bg-[#090705]">
-  <div className="relative aspect-[16/9] w-[min(100%,calc((100dvh-12rem)*16/9))] max-w-full overflow-hidden">
+      <div className="flex w-full justify-center bg-[#090705]">
+  <div className="relative aspect-[16/9] w-[min(100%,calc((100dvh-12rem)*16/9))] max-w-full overflow-visible">
           {/* CONTINENT MAP */}
 
           <div
             className={`absolute inset-0 transition-all duration-700 ease-out ${
-              level === "continent"
+              level ===
+              "continent"
                 ? "pointer-events-auto translate-x-0 scale-100 opacity-100"
                 : "pointer-events-none -translate-x-[4%] scale-110 opacity-0"
             }`}
             aria-hidden={
-              level !== "continent"
+              level !==
+              "continent"
             }
           >
             <AtmosphericImage
@@ -218,7 +254,9 @@ export function InteractiveWorldMap({
                 ? "pointer-events-auto translate-x-0 scale-100 opacity-100"
                 : "pointer-events-none translate-x-[5%] scale-110 opacity-0"
             }`}
-            aria-hidden={level !== "city"}
+            aria-hidden={
+              level !== "city"
+            }
           >
             <AtmosphericImage
               src="/maps/sepulchria-mapv2.png"
@@ -230,9 +268,10 @@ export function InteractiveWorldMap({
 
             {cityHotspots.map(
               (hotspot) => {
-                const area = findArea(
-                  hotspot.slug,
-                );
+                const area =
+                  findArea(
+                    hotspot.slug,
+                  );
 
                 const active =
                   hoveredArea ===
@@ -247,8 +286,12 @@ export function InteractiveWorldMap({
                 if (!area) {
                   return (
                     <div
-                      key={hotspot.slug}
-                      style={style}
+                      key={
+                        hotspot.slug
+                      }
+                      style={
+                        style
+                      }
                       title={`${hotspot.shortName} is not available`}
                       className="absolute aspect-square -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#655b51]/50 bg-black/10"
                     />
@@ -257,7 +300,9 @@ export function InteractiveWorldMap({
 
                 return (
                   <Link
-                    key={hotspot.slug}
+                    key={
+                      hotspot.slug
+                    }
                     href={`/areas/${area.slug}`}
                     style={style}
                     aria-label={`Open ${area.name}`}
@@ -267,7 +312,9 @@ export function InteractiveWorldMap({
                       )
                     }
                     onMouseLeave={() =>
-                      setHoveredArea(null)
+                      setHoveredArea(
+                        null,
+                      )
                     }
                     onFocus={() =>
                       setHoveredArea(
@@ -275,7 +322,9 @@ export function InteractiveWorldMap({
                       )
                     }
                     onBlur={() =>
-                      setHoveredArea(null)
+                      setHoveredArea(
+                        null,
+                      )
                     }
                     className="group absolute z-20 aspect-square -translate-x-1/2 -translate-y-1/2 rounded-full"
                   >
@@ -308,18 +357,39 @@ export function InteractiveWorldMap({
                 </p>
 
                 <p className="mt-1 font-serif text-base text-[#f1d7aa]">
-                  {hoveredDatabaseArea.name}
+                  {
+                    hoveredDatabaseArea.name
+                  }
                 </p>
 
                 {hoveredDatabaseArea.description ? (
                   <RichTextContentClient
-  body={hoveredDatabaseArea.description}
-  className="mt-1 text-xs leading-5 text-[#a99984] [&_p]:m-0 [&_h1]:text-xs [&_h2]:text-xs [&_h3]:text-xs [&_img]:hidden [&_table]:hidden"
-/>
+                    body={
+                      hoveredDatabaseArea.description
+                    }
+                    className="mt-1 text-xs leading-5 text-[#a99984] [&_p]:m-0 [&_h1]:text-xs [&_h2]:text-xs [&_h3]:text-xs [&_img]:hidden [&_table]:hidden"
+                  />
                 ) : null}
               </div>
             ) : null}
           </div>
+
+          {/*
+           * SHARED MAP LENS
+           *
+           * It sits above whichever map is active.
+           * While enabled it intentionally captures
+           * map pointer events, so hotspot navigation
+           * cannot accidentally fire while someone
+           * is examining the map through the lens.
+           */}
+          <MapMagnifyingLens
+            key={currentMapSrc}
+            src={currentMapSrc}
+            alt={currentMapAlt}
+            zoom={2}
+            diameter={350}
+          />
         </div>
       </div>
     </section>
