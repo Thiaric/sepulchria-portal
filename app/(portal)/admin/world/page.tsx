@@ -17,6 +17,7 @@ const WEATHER = [
   "storm",
   "snow",
   "heavy_snow",
+  "hail",
 ] as const;
 
 function seasonFor(

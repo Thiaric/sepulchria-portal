@@ -66,6 +66,7 @@ function atmosphericFilter(
       "rain",
       "heavy_rain",
       "storm",
+      "hail",
     ].includes(weather)
   ) {
     saturation *=
@@ -76,10 +77,12 @@ function atmosphericFilter(
     brightness *=
       weather === "storm"
         ? 0.72
-        : weather ===
-            "overcast"
+        : weather === "hail"
           ? 0.82
-          : 0.9;
+          : weather ===
+              "overcast"
+            ? 0.82
+            : 0.9;
   }
 
   if (
@@ -178,65 +181,84 @@ export function AtmosphericOverlay() {
 
   const rainConfig = {
     drizzle: {
-      count: 20,
+      count: 14,
       height: 8,
       width: 1,
-      opacity: 0.35,
-      speed: 1.15,
-      angle: 4,
-      drift: -3,
+      opacity: 0.3,
+      speed: 0.9,
+      angle: 7,
+      drift: -4,
     },
 
     rain: {
-      count: 42,
-      height: 16,
+      count: 36,
+      height: 12,
       width: 1,
-      opacity: 0.68,
-      speed: 0.7,
+      opacity: 0.48,
+      speed: 0.82,
+      angle: 8,
+      drift: -5,
+    },
+
+    heavy_rain: {
+      count: 80,
+      height: 15,
+      width: 1.1,
+      opacity: 0.62,
+      speed: 0.68,
       angle: 9,
       drift: -6,
     },
 
-    heavy_rain: {
-      count: 78,
-      height: 24,
-      width: 1.3,
-      opacity: 0.88,
-      speed: 0.44,
-      angle: 14,
-      drift: -10,
-    },
-
     storm: {
-      count: 105,
-      height: 30,
-      width: 1.5,
-      opacity: 0.95,
-      speed: 0.32,
-      angle: 19,
-      drift: -15,
+      count: 110,
+      height: 17,
+      width: 1.2,
+      opacity: 0.7,
+      speed: 0.62,
+      angle: 11,
+      drift: -7,
     },
   } as const;
 
+  /*
+   * +30% snow volume compared with
+   * the previous version.
+   */
   const snowConfig = {
     snow: {
-      count: 32,
+      count: 36,
       minSize: 2,
       maxSize: 4,
-      opacity: 0.72,
-      speed: 7.6,
+      opacity: 0.66,
+      speed: 7.4,
       drift: 5,
     },
 
     heavy_snow: {
-      count: 76,
-      minSize: 3,
-      maxSize: 7,
-      opacity: 0.94,
-      speed: 4.7,
-      drift: 12,
+      count: 111,
+      minSize: 2,
+      maxSize: 5,
+      opacity: 0.84,
+      speed: 6,
+      drift: 7,
     },
   } as const;
+
+  /*
+   * Hail is deliberately visually different
+   * from both rain and snow:
+   * small solid pellets, steeper fall,
+   * and a little lateral movement.
+   */
+  const hailConfig = {
+    count: 72,
+    minSize: 2,
+    maxSize: 4,
+    opacity: 0.88,
+    speed: 1.15,
+    drift: -3,
+  };
 
   const currentRainConfig =
     weather in rainConfig
@@ -251,6 +273,9 @@ export function AtmosphericOverlay() {
           weather as keyof typeof snowConfig
         ]
       : null;
+
+  const isHail =
+    weather === "hail";
 
   return (
     <div
@@ -268,64 +293,63 @@ export function AtmosphericOverlay() {
         </>
       ) : null}
 
+      {/* RAIN */}
       {currentRainConfig
         ? Array.from(
             {
               length:
                 currentRainConfig.count,
             },
-            (_, index) => {
-              const variation =
-                (index % 7) * 0.025;
+            (_, index) => (
+              <i
+                key={`r${index}`}
+                className="sep-rain"
+                style={{
+                  left: `${
+                    (index * 37) %
+                    103
+                  }%`,
 
-              return (
-                <i
-                  key={`r${index}`}
-                  className="sep-rain"
-                  style={{
-                    left: `${
-                      (index * 37) % 103
-                    }%`,
+                  height: `${
+                    currentRainConfig.height +
+                    (index % 3)
+                  }%`,
 
-                    height: `${
-                      currentRainConfig.height +
-                      (index % 4) * 1.5
-                    }%`,
+                  width: `${
+                    currentRainConfig.width
+                  }px`,
 
-                    width: `${
-                      currentRainConfig.width
-                    }px`,
+                  opacity:
+                    Math.max(
+                      0.2,
+                      currentRainConfig.opacity -
+                        (index % 4) *
+                          0.025,
+                    ),
 
-                    opacity:
-                      Math.max(
-                        0.2,
-                        currentRainConfig.opacity -
-                          (index % 5) *
-                            0.035,
-                      ),
+                  animationDelay: `${
+                    -(index % 17) *
+                    0.11
+                  }s`,
 
-                    animationDelay: `${
-                      -(index % 17) *
-                      0.09
-                    }s`,
+                  animationDuration: `${
+                    currentRainConfig.speed +
+                    (index % 5) *
+                      0.03
+                  }s`,
 
-                    animationDuration: `${
-                      currentRainConfig.speed +
-                      variation
-                    }s`,
+                  ["--rain-drift" as string]:
+                    `${currentRainConfig.drift}vw`,
 
-                    ["--rain-drift" as string]:
-                      `${currentRainConfig.drift}vw`,
-
-                    ["--rain-angle" as string]:
-                      `${currentRainConfig.angle}deg`,
-                  }}
-                />
-              );
-            },
+                  ["--rain-angle" as string]:
+                    `${currentRainConfig.angle}deg`,
+                }}
+              />
+            ),
           )
         : null}
 
+      {/* SNOW */}
       {currentSnowConfig
         ? Array.from(
             {
@@ -360,7 +384,7 @@ export function AtmosphericOverlay() {
                         0.35,
                         currentSnowConfig.opacity -
                           (index % 5) *
-                            0.045,
+                            0.035,
                       ),
 
                     animationDelay: `${
@@ -370,8 +394,8 @@ export function AtmosphericOverlay() {
 
                     animationDuration: `${
                       currentSnowConfig.speed +
-                      (index % 8) *
-                        0.35
+                      (index % 7) *
+                        0.3
                     }s`,
 
                     ["--snow-drift" as string]:
@@ -388,6 +412,70 @@ export function AtmosphericOverlay() {
           )
         : null}
 
+      {/* HAIL */}
+      {isHail
+        ? Array.from(
+            {
+              length:
+                hailConfig.count,
+            },
+            (_, index) => {
+              const sizeRange =
+                hailConfig.maxSize -
+                hailConfig.minSize +
+                1;
+
+              const size =
+                hailConfig.minSize +
+                (index % sizeRange);
+
+              return (
+                <i
+                  key={`h${index}`}
+                  className="sep-hail"
+                  style={{
+                    left: `${
+                      (index * 43) %
+                      103
+                    }%`,
+
+                    width: `${size}px`,
+                    height: `${size}px`,
+
+                    opacity:
+                      Math.max(
+                        0.5,
+                        hailConfig.opacity -
+                          (index % 4) *
+                            0.045,
+                      ),
+
+                    animationDelay: `${
+                      -(index % 17) *
+                      0.08
+                    }s`,
+
+                    animationDuration: `${
+                      hailConfig.speed +
+                      (index % 5) *
+                        0.06
+                    }s`,
+
+                    ["--hail-drift" as string]:
+                      `${
+                        index % 2 === 0
+                          ? hailConfig.drift
+                          : -hailConfig.drift *
+                            0.55
+                      }vw`,
+                  }}
+                />
+              );
+            },
+          )
+        : null}
+
+      {/* STORM */}
       {weather === "storm" ? (
         <>
           <div className="sep-storm-darkening" />
@@ -399,26 +487,32 @@ export function AtmosphericOverlay() {
         .sep-rain {
           position: absolute;
           top: -30%;
-          background: linear-gradient(
-            to bottom,
-            transparent,
-            rgba(
-              210,
-              226,
-              240,
-              0.9
-            )
-          );
+
+          background:
+            linear-gradient(
+              to bottom,
+              transparent,
+              rgba(
+                210,
+                226,
+                240,
+                0.86
+              )
+            );
+
           transform:
             rotate(
               var(
                 --rain-angle,
-                10deg
+                8deg
               )
             );
+
           transform-origin: center;
+
           animation:
-            sep-rain-fall linear infinite;
+            sep-rain-fall
+            linear infinite;
         }
 
         @keyframes sep-rain-fall {
@@ -432,7 +526,7 @@ export function AtmosphericOverlay() {
               rotate(
                 var(
                   --rain-angle,
-                  10deg
+                  8deg
                 )
               );
           }
@@ -442,7 +536,7 @@ export function AtmosphericOverlay() {
               translate3d(
                 var(
                   --rain-drift,
-                  -7vw
+                  -5vw
                 ),
                 760%,
                 0
@@ -450,7 +544,7 @@ export function AtmosphericOverlay() {
               rotate(
                 var(
                   --rain-angle,
-                  10deg
+                  8deg
                 )
               );
           }
@@ -459,23 +553,29 @@ export function AtmosphericOverlay() {
         .sep-snow {
           position: absolute;
           top: -7%;
+
           border-radius: 999px;
-          background: rgba(
-            244,
-            247,
-            250,
-            0.95
-          );
+
+          background:
+            rgba(
+              244,
+              247,
+              250,
+              0.94
+            );
+
           box-shadow:
             0 0 3px
             rgba(
               255,
               255,
               255,
-              0.25
+              0.24
             );
+
           animation:
-            sep-snow-fall linear infinite;
+            sep-snow-fall
+            linear infinite;
         }
 
         @keyframes sep-snow-fall {
@@ -499,7 +599,7 @@ export function AtmosphericOverlay() {
                 58vh,
                 0
               )
-              rotate(140deg);
+              rotate(110deg);
           }
 
           100% {
@@ -515,13 +615,65 @@ export function AtmosphericOverlay() {
                 115vh,
                 0
               )
-              rotate(300deg);
+              rotate(220deg);
+          }
+        }
+
+        .sep-hail {
+          position: absolute;
+          top: -5%;
+
+          border-radius: 999px;
+
+          background:
+            rgba(
+              225,
+              235,
+              241,
+              0.96
+            );
+
+          box-shadow:
+            0 0 2px
+            rgba(
+              255,
+              255,
+              255,
+              0.5
+            );
+
+          animation:
+            sep-hail-fall
+            linear infinite;
+        }
+
+        @keyframes sep-hail-fall {
+          0% {
+            transform:
+              translate3d(
+                0,
+                0,
+                0
+              );
+          }
+
+          100% {
+            transform:
+              translate3d(
+                var(
+                  --hail-drift,
+                  -3vw
+                ),
+                115vh,
+                0
+              );
           }
         }
 
         .sep-fog {
           position: absolute;
           inset: -20% -35%;
+
           background:
             radial-gradient(
               ellipse at center,
@@ -540,7 +692,9 @@ export function AtmosphericOverlay() {
                 38%,
               transparent 70%
             );
+
           filter: blur(18px);
+
           animation:
             sep-fog-drift
             18s ease-in-out
@@ -549,8 +703,10 @@ export function AtmosphericOverlay() {
 
         .sep-fog-b {
           animation-duration: 26s;
+
           animation-direction:
             alternate-reverse;
+
           opacity: 0.65;
         }
 
@@ -565,6 +721,7 @@ export function AtmosphericOverlay() {
         .sep-storm-darkening {
           position: absolute;
           inset: 0;
+
           background:
             linear-gradient(
               to bottom,
@@ -578,7 +735,7 @@ export function AtmosphericOverlay() {
                 5,
                 9,
                 15,
-                0.32
+                0.3
               )
             );
         }
@@ -586,37 +743,25 @@ export function AtmosphericOverlay() {
         .sep-lightning {
           position: absolute;
           inset: 0;
+
           background: white;
           opacity: 0;
+
           animation:
             sep-lightning
-            7s infinite;
+            16s ease-in-out infinite;
         }
 
         @keyframes sep-lightning {
           0%,
-          82%,
           84%,
-          86%,
-          89%,
+          91%,
           100% {
             opacity: 0;
           }
 
-          83% {
-            opacity: 0.26;
-          }
-
-          85% {
-            opacity: 0.08;
-          }
-
           87% {
-            opacity: 0.34;
-          }
-
-          88% {
-            opacity: 0.04;
+            opacity: 0.09;
           }
         }
 
@@ -626,9 +771,14 @@ export function AtmosphericOverlay() {
         ) {
           .sep-rain,
           .sep-snow,
+          .sep-hail,
           .sep-fog,
           .sep-lightning {
             animation: none !important;
+          }
+
+          .sep-lightning {
+            display: none;
           }
         }
       `}</style>

@@ -22,6 +22,7 @@ const WEATHER: WeatherKind[] = [
   "storm",
   "snow",
   "heavy_snow",
+  "hail",
 ];
 
 const INTENSITY: WeatherIntensity[] =

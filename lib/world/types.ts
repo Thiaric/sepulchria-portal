@@ -9,7 +9,8 @@ export type WeatherKind =
   | "heavy_rain"
   | "storm"
   | "snow"
-  | "heavy_snow";
+  | "heavy_snow"
+  | "hail";
 
 export type WeatherIntensity =
   | "light"
