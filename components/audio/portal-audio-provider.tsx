@@ -26,6 +26,9 @@ type PortalAudioContextValue = {
 const STORAGE_KEY =
   "sepulchria-portal-sound-muted";
 
+const PIGEON_SOUND_URL =
+  "/sounds/private-message-pigeon.wav";
+
 const PortalAudioContext =
   createContext<PortalAudioContextValue | null>(
     null,
@@ -42,6 +45,10 @@ export function PortalAudioProvider({
   const mutedRef =
     useRef(false);
 
+  /*
+   * Keep the existing WebAudio route for the short beep.
+   * This is the same sound path used by the working Location notification.
+   */
   const audioContextRef =
     useRef<AudioContext | null>(
       null,
@@ -52,7 +59,15 @@ export function PortalAudioProvider({
       null,
     );
 
-  const getAudioContext =
+  /*
+   * The pigeon is now a REAL audio asset, not an oscillator imitation.
+   */
+  const pigeonAudioRef =
+    useRef<HTMLAudioElement | null>(
+      null,
+    );
+
+  const ensureAudioContext =
     useCallback(() => {
       if (
         !audioContextRef.current
@@ -82,92 +97,30 @@ export function PortalAudioProvider({
       return audioContextRef.current;
     }, []);
 
-  const applyMute =
-    useCallback(
-      async (
-        nextMuted: boolean,
-        persist = true,
-      ) => {
-        /*
-         * The ref changes synchronously before anything else.
-         * Every notification source therefore sees the new value immediately.
-         */
-        mutedRef.current =
-          nextMuted;
-
-        setMuted(nextMuted);
-
-        if (persist) {
-          try {
-            window.localStorage.setItem(
-              STORAGE_KEY,
-              nextMuted
-                ? "1"
-                : "0",
-            );
-          } catch {
-            // localStorage can be unavailable.
-          }
-        }
-
-        document
-          .querySelectorAll("audio")
-          .forEach(
-            (audio) => {
-              audio.muted =
-                nextMuted;
-            },
+  const ensurePigeonAudio =
+    useCallback(() => {
+      if (
+        !pigeonAudioRef.current
+      ) {
+        const audio =
+          new Audio(
+            PIGEON_SOUND_URL,
           );
 
-        const context =
-          getAudioContext();
+        audio.preload = "auto";
+        audio.volume = 0.72;
+        audio.muted =
+          mutedRef.current;
 
-        const master =
-          masterGainRef.current;
+        pigeonAudioRef.current =
+          audio;
+      }
 
-        if (master) {
-          master.gain.cancelScheduledValues(
-            context.currentTime,
-          );
-
-          master.gain.setValueAtTime(
-            nextMuted ? 0 : 1,
-            context.currentTime,
-          );
-        }
-
-        if (nextMuted) {
-          if (
-            context.state ===
-            "running"
-          ) {
-            try {
-              await context.suspend();
-            } catch {
-              // Ignore browser-specific suspend failure.
-            }
-          }
-
-          return;
-        }
-
-        if (
-          context.state ===
-          "suspended"
-        ) {
-          try {
-            await context.resume();
-          } catch {
-            // A browser may still require a user gesture.
-          }
-        }
-      },
-      [getAudioContext],
-    );
+      return pigeonAudioRef.current;
+    }, []);
 
   useEffect(() => {
-    let initialMuted =
-      false;
+    let initialMuted = false;
 
     try {
       initialMuted =
@@ -178,14 +131,41 @@ export function PortalAudioProvider({
       // localStorage can be unavailable.
     }
 
-    void applyMute(
-      initialMuted,
-      false,
-    );
-  }, [applyMute]);
+    mutedRef.current =
+      initialMuted;
+
+    setMuted(initialMuted);
+
+    const pigeon =
+      ensurePigeonAudio();
+
+    pigeon.muted =
+      initialMuted;
+
+    const context =
+      ensureAudioContext();
+
+    const master =
+      masterGainRef.current;
+
+    if (master) {
+      master.gain.setValueAtTime(
+        initialMuted ? 0 : 1,
+        context.currentTime,
+      );
+    }
+  }, [
+    ensureAudioContext,
+    ensurePigeonAudio,
+  ]);
 
   useEffect(() => {
-    const unlock =
+    /*
+     * Prime both audio systems on a normal user interaction.
+     * Browsers generally require one gesture before notification audio
+     * can be played programmatically.
+     */
+    const unlockAudio =
       () => {
         if (
           mutedRef.current
@@ -194,7 +174,7 @@ export function PortalAudioProvider({
         }
 
         const context =
-          getAudioContext();
+          ensureAudioContext();
 
         if (
           context.state ===
@@ -202,42 +182,70 @@ export function PortalAudioProvider({
         ) {
           void context.resume();
         }
+
+        const pigeon =
+          ensurePigeonAudio();
+
+        pigeon.load();
       };
 
     window.addEventListener(
       "pointerdown",
-      unlock,
+      unlockAudio,
       true,
     );
 
     window.addEventListener(
       "keydown",
-      unlock,
+      unlockAudio,
       true,
     );
 
     return () => {
       window.removeEventListener(
         "pointerdown",
-        unlock,
+        unlockAudio,
         true,
       );
 
       window.removeEventListener(
         "keydown",
-        unlock,
+        unlockAudio,
         true,
       );
     };
-  }, [getAudioContext]);
+  }, [
+    ensureAudioContext,
+    ensurePigeonAudio,
+  ]);
 
   useEffect(() => {
+    /*
+     * Future Character Sheet music will also obey the same global switch.
+     */
+    const applyToHtmlAudio =
+      (
+        parent: ParentNode,
+      ) => {
+        parent
+          .querySelectorAll?.(
+            "audio",
+          )
+          .forEach(
+            (audio) => {
+              audio.muted =
+                mutedRef.current;
+            },
+          );
+      };
+
+    applyToHtmlAudio(document);
+
     const observer =
       new MutationObserver(
         (records) => {
           for (
-            const record of
-            records
+            const record of records
           ) {
             for (
               const node of
@@ -260,16 +268,9 @@ export function PortalAudioProvider({
                   mutedRef.current;
               }
 
-              node
-                .querySelectorAll?.(
-                  "audio",
-                )
-                .forEach(
-                  (audio) => {
-                    audio.muted =
-                      mutedRef.current;
-                  },
-                );
+              applyToHtmlAudio(
+                node,
+              );
             }
           }
         },
@@ -288,6 +289,91 @@ export function PortalAudioProvider({
     };
   }, []);
 
+  const applyMuteImmediately =
+    useCallback(
+      (
+        nextMuted: boolean,
+        persist = true,
+      ) => {
+        /*
+         * Synchronous ref first: every sound source sees the new setting
+         * immediately in the SAME click.
+         */
+        mutedRef.current =
+          nextMuted;
+
+        setMuted(nextMuted);
+
+        if (persist) {
+          try {
+            window.localStorage.setItem(
+              STORAGE_KEY,
+              nextMuted
+                ? "1"
+                : "0",
+            );
+          } catch {
+            // localStorage can be unavailable.
+          }
+        }
+
+        /*
+         * Live mute for the WebAudio beep WITHOUT suspending the context.
+         * Suspending/resuming the context was the source of previous
+         * notification regressions.
+         */
+        const context =
+          ensureAudioContext();
+
+        const master =
+          masterGainRef.current;
+
+        if (master) {
+          master.gain.cancelScheduledValues(
+            context.currentTime,
+          );
+
+          master.gain.setValueAtTime(
+            nextMuted ? 0 : 1,
+            context.currentTime,
+          );
+        }
+
+        /*
+         * Live mute for the real pigeon file.
+         */
+        const pigeon =
+          ensurePigeonAudio();
+
+        pigeon.muted =
+          nextMuted;
+
+        if (
+          nextMuted &&
+          !pigeon.paused
+        ) {
+          pigeon.pause();
+          pigeon.currentTime = 0;
+        }
+
+        /*
+         * Future HTML <audio> (character music etc.)
+         */
+        document
+          .querySelectorAll("audio")
+          .forEach(
+            (audio) => {
+              audio.muted =
+                nextMuted;
+            },
+          );
+      },
+      [
+        ensureAudioContext,
+        ensurePigeonAudio,
+      ],
+    );
+
   useEffect(() => {
     const onStorage =
       (
@@ -300,7 +386,7 @@ export function PortalAudioProvider({
           return;
         }
 
-        void applyMute(
+        applyMuteImmediately(
           event.newValue ===
             "1",
           false,
@@ -318,14 +404,166 @@ export function PortalAudioProvider({
         onStorage,
       );
     };
-  }, [applyMute]);
+  }, [applyMuteImmediately]);
 
   const toggleMuted =
     useCallback(() => {
-      void applyMute(
+      applyMuteImmediately(
         !mutedRef.current,
       );
-    }, [applyMute]);
+    }, [applyMuteImmediately]);
+
+  const playBeep =
+    useCallback(() => {
+      if (
+        mutedRef.current
+      ) {
+        return;
+      }
+
+      const context =
+        ensureAudioContext();
+
+      const master =
+        masterGainRef.current;
+
+      if (!master) {
+        return;
+      }
+
+      const play =
+        () => {
+          if (
+            mutedRef.current ||
+            context.state !==
+              "running"
+          ) {
+            return;
+          }
+
+          const start =
+            context.currentTime +
+            0.01;
+
+          const notes = [
+            {
+              frequency: 523.25,
+              offset: 0,
+              duration: 0.09,
+              volume: 0.038,
+            },
+            {
+              frequency: 659.25,
+              offset: 0.09,
+              duration: 0.12,
+              volume: 0.03,
+            },
+          ];
+
+          for (
+            const note of notes
+          ) {
+            const oscillator =
+              context.createOscillator();
+
+            const gain =
+              context.createGain();
+
+            oscillator.type =
+              "sine";
+
+            oscillator.frequency.setValueAtTime(
+              note.frequency,
+              start +
+                note.offset,
+            );
+
+            gain.gain.setValueAtTime(
+              0.0001,
+              start +
+                note.offset,
+            );
+
+            gain.gain.exponentialRampToValueAtTime(
+              note.volume,
+              start +
+                note.offset +
+                0.015,
+            );
+
+            gain.gain.exponentialRampToValueAtTime(
+              0.0001,
+              start +
+                note.offset +
+                note.duration,
+            );
+
+            oscillator.connect(
+              gain,
+            );
+
+            gain.connect(
+              master,
+            );
+
+            oscillator.start(
+              start +
+                note.offset,
+            );
+
+            oscillator.stop(
+              start +
+                note.offset +
+                note.duration +
+                0.02,
+            );
+          }
+        };
+
+      if (
+        context.state ===
+        "running"
+      ) {
+        play();
+        return;
+      }
+
+      if (
+        context.state ===
+        "suspended"
+      ) {
+        void context
+          .resume()
+          .then(play)
+          .catch(() => {
+            // Browser still requires user interaction.
+          });
+      }
+    }, [ensureAudioContext]);
+
+  const playPigeon =
+    useCallback(() => {
+      if (
+        mutedRef.current
+      ) {
+        return;
+      }
+
+      const pigeon =
+        ensurePigeonAudio();
+
+      pigeon.muted = false;
+      pigeon.currentTime = 0;
+
+      void pigeon
+        .play()
+        .catch((error) => {
+          console.warn(
+            "Private-message pigeon sound could not play:",
+            error,
+          );
+        });
+    }, [ensurePigeonAudio]);
 
   const playPortalSound =
     useCallback(
@@ -335,282 +573,19 @@ export function PortalAudioProvider({
             "room-message",
       ) => {
         if (
-          mutedRef.current
+          kind ===
+          "private-message"
         ) {
+          playPigeon();
           return;
         }
 
-        const context =
-          getAudioContext();
-
-        const master =
-          masterGainRef.current;
-
-        if (!master) {
-          return;
-        }
-
-        const play =
-          () => {
-            if (
-              mutedRef.current ||
-              context.state !==
-                "running"
-            ) {
-              return;
-            }
-
-            const start =
-              context.currentTime +
-              0.01;
-
-            if (
-              kind ===
-              "private-message"
-            ) {
-              /*
-               * Clearly audible, short double pigeon-like coo.
-               */
-              const coos = [
-                {
-                  offset: 0,
-                  duration: 0.36,
-                  from: 430,
-                  to: 300,
-                  volume: 0.16,
-                },
-                {
-                  offset: 0.38,
-                  duration: 0.44,
-                  from: 390,
-                  to: 265,
-                  volume: 0.14,
-                },
-              ];
-
-              for (
-                const coo of
-                coos
-              ) {
-                const base =
-                  context.createOscillator();
-
-                const overtone =
-                  context.createOscillator();
-
-                const baseGain =
-                  context.createGain();
-
-                const overtoneGain =
-                  context.createGain();
-
-                const begin =
-                  start +
-                  coo.offset;
-
-                const end =
-                  begin +
-                  coo.duration;
-
-                base.type =
-                  "sine";
-
-                overtone.type =
-                  "triangle";
-
-                base.frequency.setValueAtTime(
-                  coo.from,
-                  begin,
-                );
-
-                base.frequency.exponentialRampToValueAtTime(
-                  coo.to,
-                  end,
-                );
-
-                overtone.frequency.setValueAtTime(
-                  coo.from *
-                    1.96,
-                  begin,
-                );
-
-                overtone.frequency.exponentialRampToValueAtTime(
-                  coo.to *
-                    1.9,
-                  end,
-                );
-
-                baseGain.gain.setValueAtTime(
-                  0.0001,
-                  begin,
-                );
-
-                baseGain.gain.exponentialRampToValueAtTime(
-                  coo.volume,
-                  begin + 0.045,
-                );
-
-                baseGain.gain.exponentialRampToValueAtTime(
-                  coo.volume *
-                    0.5,
-                  begin +
-                    coo.duration *
-                      0.6,
-                );
-
-                baseGain.gain.exponentialRampToValueAtTime(
-                  0.0001,
-                  end,
-                );
-
-                overtoneGain.gain.setValueAtTime(
-                  0.0001,
-                  begin,
-                );
-
-                overtoneGain.gain.exponentialRampToValueAtTime(
-                  coo.volume *
-                    0.12,
-                  begin + 0.06,
-                );
-
-                overtoneGain.gain.exponentialRampToValueAtTime(
-                  0.0001,
-                  end,
-                );
-
-                base.connect(
-                  baseGain,
-                );
-
-                overtone.connect(
-                  overtoneGain,
-                );
-
-                baseGain.connect(
-                  master,
-                );
-
-                overtoneGain.connect(
-                  master,
-                );
-
-                base.start(begin);
-                overtone.start(
-                  begin,
-                );
-
-                base.stop(
-                  end + 0.02,
-                );
-
-                overtone.stop(
-                  end + 0.02,
-                );
-              }
-
-              return;
-            }
-
-            const notes = [
-              {
-                frequency:
-                  523.25,
-                offset: 0,
-                duration: 0.09,
-                volume: 0.038,
-              },
-              {
-                frequency:
-                  659.25,
-                offset: 0.09,
-                duration: 0.12,
-                volume: 0.03,
-              },
-            ];
-
-            for (
-              const note of
-              notes
-            ) {
-              const oscillator =
-                context.createOscillator();
-
-              const gain =
-                context.createGain();
-
-              oscillator.type =
-                "sine";
-
-              oscillator.frequency.setValueAtTime(
-                note.frequency,
-                start +
-                  note.offset,
-              );
-
-              gain.gain.setValueAtTime(
-                0.0001,
-                start +
-                  note.offset,
-              );
-
-              gain.gain.exponentialRampToValueAtTime(
-                note.volume,
-                start +
-                  note.offset +
-                  0.015,
-              );
-
-              gain.gain.exponentialRampToValueAtTime(
-                0.0001,
-                start +
-                  note.offset +
-                  note.duration,
-              );
-
-              oscillator.connect(
-                gain,
-              );
-
-              gain.connect(
-                master,
-              );
-
-              oscillator.start(
-                start +
-                  note.offset,
-              );
-
-              oscillator.stop(
-                start +
-                  note.offset +
-                  note.duration +
-                  0.02,
-              );
-            }
-          };
-
-        if (
-          context.state ===
-          "running"
-        ) {
-          play();
-          return;
-        }
-
-        if (
-          context.state ===
-          "suspended"
-        ) {
-          void context
-            .resume()
-            .then(play)
-            .catch(() => {
-              // Browser still needs a user gesture.
-            });
-        }
+        playBeep();
       },
-      [getAudioContext],
+      [
+        playBeep,
+        playPigeon,
+      ],
     );
 
   const value =

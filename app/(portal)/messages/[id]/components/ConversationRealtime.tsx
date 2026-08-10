@@ -21,7 +21,8 @@ export default function ConversationRealtime({
 }: {
   conversationId: string;
 }) {
-  const router = useRouter();
+  const router =
+    useRouter();
 
   const {
     playPortalSound,
@@ -36,10 +37,9 @@ export default function ConversationRealtime({
     const supabase =
       createClient();
 
-    let cancelled =
-      false;
+    let cancelled = false;
 
-    async function loadViewerCharacter() {
+    async function setup() {
       const {
         data: { user },
       } =
@@ -64,18 +64,21 @@ export default function ConversationRealtime({
         .maybeSingle();
 
       if (
-        !cancelled &&
-        character
+        cancelled
       ) {
-        viewerCharacterIdRef.current =
-          character.id;
+        return;
       }
+
+      viewerCharacterIdRef.current =
+        character?.id ??
+        null;
+
+      void markConversationRead(
+        conversationId,
+      );
     }
 
-    void loadViewerCharacter();
-    void markConversationRead(
-      conversationId,
-    );
+    void setup();
 
     const channel =
       supabase
@@ -92,16 +95,16 @@ export default function ConversationRealtime({
             filter:
               `conversation_id=eq.${conversationId}`,
           },
-          (payload) => {
+          (
+            payload,
+          ) => {
             const inserted =
               payload.new as
                 DirectMessageInsert;
 
             /*
-             * PRIVATE CONVERSATION SOUND:
-             * If the other character sends a PM while this conversation is
-             * open, use the same proven short beep as the portal notification
-             * system. Your own sent messages never beep.
+             * OPEN PRIVATE CONVERSATION:
+             * incoming message from the other character -> normal beep.
              */
             if (
               viewerCharacterIdRef.current &&

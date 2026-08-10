@@ -28,6 +28,13 @@ type MembershipRow = {
     | null;
 };
 
+type DirectMessageInsert = {
+  conversation_id: string;
+  sender_character_id:
+    | string
+    | null;
+};
+
 export function UnreadMessageBadge({
   initialCount,
   variant,
@@ -45,159 +52,233 @@ export function UnreadMessageBadge({
   const [count, setCount] =
     useState(initialCount);
 
-  const lastCountRef =
-    useRef(initialCount);
-
-  const initialSyncDoneRef =
-    useRef(false);
-
-  useEffect(() => {
-    setCount(
-      initialCount,
+  const characterIdRef =
+    useRef<string | null>(
+      null,
     );
 
-    if (
-      !initialSyncDoneRef.current
-    ) {
-      lastCountRef.current =
-        initialCount;
-    }
-  }, [initialCount]);
+  const conversationIdsRef =
+    useRef<Set<string>>(
+      new Set(),
+    );
 
-  const calculateCount =
-    useCallback(
-      async (): Promise<
-        number | null
-      > => {
-        const supabase =
-          createClient();
+  const loadIdentity =
+    useCallback(async () => {
+      const supabase =
+        createClient();
 
-        const {
-          data: { user },
-        } =
-          await supabase.auth.getUser();
+      const {
+        data: { user },
+      } =
+        await supabase.auth.getUser();
 
-        if (!user) {
-          return 0;
-        }
+      if (!user) {
+        characterIdRef.current =
+          null;
 
-        const {
-          data: character,
-          error:
-            characterError,
-        } = await supabase
-          .from("characters")
-          .select("id")
-          .eq(
-            "user_id",
-            user.id,
-          )
-          .maybeSingle();
+        conversationIdsRef.current =
+          new Set();
 
-        if (
-          characterError ||
-          !character
-        ) {
-          return 0;
-        }
+        return;
+      }
 
-        const {
-          data: memberships,
-          error:
-            membershipError,
-        } = await supabase
-          .from(
-            "direct_conversation_participants",
-          )
-          .select(
-            "conversation_id, last_read_at",
-          )
-          .eq(
-            "character_id",
-            character.id,
-          )
-          .is(
-            "archived_at",
-            null,
-          );
+      const {
+        data: character,
+        error: characterError,
+      } = await supabase
+        .from("characters")
+        .select("id")
+        .eq(
+          "user_id",
+          user.id,
+        )
+        .maybeSingle();
 
-        if (
-          membershipError
-        ) {
-          console.error(
-            "Unable to load private-message memberships:",
-            membershipError.message,
-          );
+      if (
+        characterError ||
+        !character
+      ) {
+        characterIdRef.current =
+          null;
 
-          return null;
-        }
+        conversationIdsRef.current =
+          new Set();
 
-        const unreadCounts =
-          await Promise.all(
-            (
-              (memberships ??
-                []) as MembershipRow[]
-            ).map(
-              async (
-                membership,
-              ) => {
-                let query =
-                  supabase
-                    .from(
-                      "direct_messages",
-                    )
-                    .select(
-                      "id",
-                      {
-                        count:
-                          "exact",
-                        head: true,
-                      },
-                    )
-                    .eq(
-                      "conversation_id",
-                      membership.conversation_id,
-                    )
-                    .neq(
-                      "sender_character_id",
-                      character.id,
-                    );
+        return;
+      }
 
-                if (
-                  membership.last_read_at
-                ) {
-                  query =
-                    query.gt(
-                      "created_at",
-                      membership.last_read_at,
-                    );
-                }
+      characterIdRef.current =
+        character.id;
 
-                const {
-                  count:
-                    unreadCount,
-                  error,
-                } =
-                  await query;
+      const {
+        data: memberships,
+      } = await supabase
+        .from(
+          "direct_conversation_participants",
+        )
+        .select(
+          "conversation_id",
+        )
+        .eq(
+          "character_id",
+          character.id,
+        );
 
-                if (error) {
-                  console.error(
-                    "Unable to count unread private messages:",
-                    error.message,
+      conversationIdsRef.current =
+        new Set(
+          (
+            memberships ??
+            []
+          ).map(
+            (row) =>
+              row.conversation_id,
+          ),
+        );
+    }, []);
+
+  const refreshCount =
+    useCallback(async () => {
+      const supabase =
+        createClient();
+
+      const {
+        data: { user },
+      } =
+        await supabase.auth.getUser();
+
+      if (!user) {
+        setCount(0);
+        return;
+      }
+
+      const {
+        data: character,
+        error: characterError,
+      } = await supabase
+        .from("characters")
+        .select("id")
+        .eq(
+          "user_id",
+          user.id,
+        )
+        .maybeSingle();
+
+      if (
+        characterError ||
+        !character
+      ) {
+        setCount(0);
+        return;
+      }
+
+      characterIdRef.current =
+        character.id;
+
+      const {
+        data: memberships,
+        error: membershipError,
+      } = await supabase
+        .from(
+          "direct_conversation_participants",
+        )
+        .select(
+          "conversation_id, last_read_at",
+        )
+        .eq(
+          "character_id",
+          character.id,
+        )
+        .is(
+          "archived_at",
+          null,
+        );
+
+      if (membershipError) {
+        console.error(
+          "Unable to load private-message memberships:",
+          membershipError.message,
+        );
+        return;
+      }
+
+      const rows =
+        (
+          memberships ??
+          []
+        ) as MembershipRow[];
+
+      conversationIdsRef.current =
+        new Set(
+          rows.map(
+            (row) =>
+              row.conversation_id,
+          ),
+        );
+
+      const unreadCounts =
+        await Promise.all(
+          rows.map(
+            async (
+              membership,
+            ) => {
+              let query =
+                supabase
+                  .from(
+                    "direct_messages",
+                  )
+                  .select(
+                    "id",
+                    {
+                      count:
+                        "exact",
+                      head: true,
+                    },
+                  )
+                  .eq(
+                    "conversation_id",
+                    membership.conversation_id,
+                  )
+                  .neq(
+                    "sender_character_id",
+                    character.id,
                   );
 
-                  return 0;
-                }
+              if (
+                membership.last_read_at
+              ) {
+                query =
+                  query.gt(
+                    "created_at",
+                    membership.last_read_at,
+                  );
+              }
 
-                return (
-                  unreadCount ??
-                  0
+              const {
+                count:
+                  unreadCount,
+                error,
+              } =
+                await query;
+
+              if (error) {
+                console.error(
+                  "Unable to count unread private messages:",
+                  error.message,
                 );
-              },
-            ),
-          );
 
-        return unreadCounts.reduce(
+                return 0;
+              }
+
+              return (
+                unreadCount ??
+                0
+              );
+            },
+          ),
+        );
+
+      setCount(
+        unreadCounts.reduce(
           (
             total,
             current,
@@ -205,81 +286,16 @@ export function UnreadMessageBadge({
             total +
             current,
           0,
-        );
-      },
-      [],
-    );
-
-  const refreshCount =
-    useCallback(
-      async (
-        allowSound:
-          boolean,
-      ) => {
-        const nextCount =
-          await calculateCount();
-
-        if (
-          nextCount === null
-        ) {
-          return;
-        }
-
-        const previousCount =
-          lastCountRef.current;
-
-        setCount(nextCount);
-
-        /*
-         * OUTSIDE A PRIVATE CONVERSATION:
-         * The floating HEADER badge owns the pigeon.
-         *
-         * We intentionally do not play it while viewing /messages/[id],
-         * because ConversationRealtime owns the normal beep there.
-         */
-        const isInsideConversation =
-          /^\/messages\/[^/]+\/?$/.test(
-            pathname,
-          );
-
-        if (
-          allowSound &&
-          variant ===
-            "floating" &&
-          initialSyncDoneRef.current &&
-          !isInsideConversation &&
-          nextCount >
-            previousCount
-        ) {
-          playPortalSound(
-            "private-message",
-          );
-        }
-
-        lastCountRef.current =
-          nextCount;
-
-        initialSyncDoneRef.current =
-          true;
-      },
-      [
-        calculateCount,
-        pathname,
-        playPortalSound,
-        variant,
-      ],
-    );
+        ),
+      );
+    }, []);
 
   useEffect(() => {
     const supabase =
       createClient();
 
-    /*
-     * Existing unread PMs are silent on initial load.
-     */
-    void refreshCount(
-      false,
-    );
+    let cancelled =
+      false;
 
     const safeInstanceId =
       instanceId.replace(
@@ -287,60 +303,122 @@ export function UnreadMessageBadge({
         "",
       );
 
-    const channel =
-      supabase
-        .channel(
-          `unread-private-messages-${variant}-${safeInstanceId}`,
-        )
-        .on(
-          "postgres_changes",
-          {
-            event: "INSERT",
-            schema: "public",
-            table:
-              "direct_messages",
-          },
-          () => {
-            /*
-             * Same realtime event that updates the header count.
-             * If the count rises outside /messages/[id], pigeon.
-             */
-            void refreshCount(
-              true,
-            );
-          },
-        )
-        .on(
-          "postgres_changes",
-          {
-            event: "*",
-            schema: "public",
-            table:
-              "direct_conversation_participants",
-          },
-          () => {
-            void refreshCount(
-              false,
-            );
-          },
-        )
-        .subscribe();
+    async function start() {
+      /*
+       * Load the current character BEFORE subscribing, so the first incoming
+       * PM can be classified immediately.
+       */
+      await loadIdentity();
+
+      if (cancelled) {
+        return;
+      }
+
+      await refreshCount();
+
+      if (cancelled) {
+        return;
+      }
+
+      const channel =
+        supabase
+          .channel(
+            `unread-private-messages-${variant}-${safeInstanceId}`,
+          )
+          .on(
+            "postgres_changes",
+            {
+              event: "INSERT",
+              schema: "public",
+              table:
+                "direct_messages",
+            },
+            (
+              payload,
+            ) => {
+              const inserted =
+                payload.new as
+                  DirectMessageInsert;
+
+              const currentCharacterId =
+                characterIdRef.current;
+
+              const isInsideConversation =
+                /^\/messages\/[^/]+\/?$/.test(
+                  pathname,
+                );
+
+              /*
+               * PIGEON:
+               * - header floating badge only
+               * - recipient is NOT inside an open PM conversation
+               * - sender is another character
+               * - conversation belongs to this character
+               *
+               * No unread-count comparison controls the sound.
+               */
+              if (
+                variant ===
+                  "floating" &&
+                !isInsideConversation &&
+                currentCharacterId &&
+                inserted.sender_character_id !==
+                  currentCharacterId &&
+                conversationIdsRef.current.has(
+                  inserted.conversation_id,
+                )
+              ) {
+                playPortalSound(
+                  "private-message",
+                );
+              }
+
+              void refreshCount();
+            },
+          )
+          .on(
+            "postgres_changes",
+            {
+              event: "*",
+              schema: "public",
+              table:
+                "direct_conversation_participants",
+            },
+            () => {
+              void loadIdentity();
+              void refreshCount();
+            },
+          )
+          .subscribe();
+
+      cleanupChannelRef.current =
+        channel;
+    }
+
+    const cleanupChannelRef:
+      {
+        current:
+          | ReturnType<
+              typeof supabase.channel
+            >
+          | null;
+      } = {
+        current: null,
+      };
+
+    void start();
 
     const intervalId =
       window.setInterval(
         () => {
-          void refreshCount(
-            false,
-          );
+          void refreshCount();
         },
         30_000,
       );
 
     const handleFocus =
       () => {
-        void refreshCount(
-          false,
-        );
+        void refreshCount();
       };
 
     const handleVisibilityChange =
@@ -349,9 +427,7 @@ export function UnreadMessageBadge({
           document.visibilityState ===
           "visible"
         ) {
-          void refreshCount(
-            false,
-          );
+          void refreshCount();
         }
       };
 
@@ -366,6 +442,8 @@ export function UnreadMessageBadge({
     );
 
     return () => {
+      cancelled = true;
+
       window.clearInterval(
         intervalId,
       );
@@ -380,12 +458,19 @@ export function UnreadMessageBadge({
         handleVisibilityChange,
       );
 
-      void supabase.removeChannel(
-        channel,
-      );
+      if (
+        cleanupChannelRef.current
+      ) {
+        void supabase.removeChannel(
+          cleanupChannelRef.current,
+        );
+      }
     };
   }, [
     instanceId,
+    loadIdentity,
+    pathname,
+    playPortalSound,
     refreshCount,
     variant,
   ]);
