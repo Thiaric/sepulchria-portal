@@ -103,16 +103,34 @@ export function RichTextEditor({
   }, [controlled, value]);
 
   useEffect(() => {
-    const editor = editorRef.current;
+  const editor = editorRef.current;
 
-    if (
-      editor &&
-      !sourceMode &&
-      editor.innerHTML !== html
-    ) {
-      editor.innerHTML = html;
-    }
-  }, [html, sourceMode]);
+  if (
+    !editor ||
+    sourceMode
+  ) {
+    return;
+  }
+
+  /*
+   * Never rewrite the DOM while the user is actively
+   * editing. Doing so destroys the browser selection
+   * and can send the caret back to the beginning,
+   * especially after autocorrect/smart punctuation
+   * changes such as apostrophes.
+   */
+  if (
+    document.activeElement === editor
+  ) {
+    return;
+  }
+
+  if (
+    editor.innerHTML !== html
+  ) {
+    editor.innerHTML = html;
+  }
+}, [html, sourceMode]);
 
   function commit(nextHtml: string) {
     if (
