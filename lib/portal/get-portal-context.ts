@@ -32,6 +32,8 @@ type RoomRelationRow = {
   id: string;
   name: string;
   slug: string;
+  image_url: string | null;
+
   area:
     | AreaRelationRow
     | AreaRelationRow[]
@@ -149,15 +151,16 @@ export const getPortalContext = cache(
         ),
 
         room:rooms!characters_current_room_id_fkey(
-          id,
-          name,
-          slug,
-          area:areas!rooms_area_id_fkey(
-            id,
-            name,
-            slug
-          )
-        )
+  id,
+  name,
+  slug,
+  image_url,
+  area:areas!rooms_area_id_fkey(
+    id,
+    name,
+    slug
+  )
+)
       `)
       .eq("user_id", user.id)
       .maybeSingle();
@@ -212,13 +215,14 @@ export const getPortalContext = cache(
           row.current_room_id,
 
         currentRoom: room
-          ? {
-              id: room.id,
-              name: room.name,
-              slug: room.slug,
-              area,
-            }
-          : null,
+  ? {
+      id: room.id,
+      name: room.name,
+      slug: room.slug,
+      image_url: room.image_url,
+      area,
+    }
+  : null,
       };
 
       const characterId = character.id;

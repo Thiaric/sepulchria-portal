@@ -242,9 +242,9 @@ function ActionSpeechText({
   content: string;
 }) {
   const segments =
-    content.split(
-      /(<[^<>]*>|\([^()]*\))/g,
-    );
+  content.split(
+    /(<[^<>]*>|\([^()]*\)|\[[^\[\]]*\]|\{[^{}]*\})/g,
+  );
 
   const rendered:
     ReactNode[] = [];
@@ -256,22 +256,22 @@ function ActionSpeechText({
       }
 
       const isAction =
-        (
-          segment.startsWith(
-            "<",
-          ) &&
-          segment.endsWith(
-            ">",
-          )
-        ) ||
-        (
-          segment.startsWith(
-            "(",
-          ) &&
-          segment.endsWith(
-            ")",
-          )
-        );
+  (
+    segment.startsWith("<") &&
+    segment.endsWith(">")
+  ) ||
+  (
+    segment.startsWith("(") &&
+    segment.endsWith(")")
+  ) ||
+  (
+    segment.startsWith("[") &&
+    segment.endsWith("]")
+  ) ||
+  (
+    segment.startsWith("{") &&
+    segment.endsWith("}")
+  );
 
       const displayText = isAction
         ? segment.slice(1, -1)
@@ -889,10 +889,10 @@ export default function RoomMessageList({
                   return (
                     <article
                       key={item.id}
-                      className="border-y border-[#8a6637]/45 bg-[linear-gradient(90deg,rgba(91,56,24,0.28),rgba(24,16,11,0.82),rgba(91,56,24,0.18))] px-5 py-4 sm:px-7"
+                      className="border-y border-[#8a6637]/40 bg-[linear-gradient(90deg,rgba(91,56,24,0.22),rgba(24,16,11,0.72),rgba(91,56,24,0.14))] px-5 py-2.5 sm:px-7"
                     >
                       <div className="flex items-center justify-between gap-4">
-                        <span className="text-[9px] uppercase tracking-[0.32em] text-[#d4a65f]">
+                        <span className="text-[8px] uppercase tracking-[0.24em] text-[#c99b58]">
                           The Voice of Fate
                         </span>
 
@@ -906,7 +906,7 @@ export default function RoomMessageList({
                         </time>
                       </div>
 
-                      <p className="mt-3 whitespace-pre-wrap break-words font-serif text-[15px] leading-7 text-[#d6c09a]">
+                      <p className="mt-1.5 whitespace-pre-wrap break-words font-serif text-[13px] leading-5 text-[#d6c09a]">
                         {item.message}
                       </p>
                     </article>

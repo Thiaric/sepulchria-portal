@@ -21,6 +21,8 @@ export type PortalRoom = {
   id: string;
   name: string;
   slug: string;
+  image_url: string | null;
+
   area: {
     id: string;
     name: string;

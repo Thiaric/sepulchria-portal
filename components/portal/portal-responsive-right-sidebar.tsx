@@ -151,45 +151,63 @@ export function PortalResponsiveRightSidebar({
         {/* SIDEBAR CONTENT */}
         <div className="flex min-h-0 flex-1 flex-col gap-3 p-4 xl:gap-[var(--portal-column-gap,0.75rem)] xl:p-[var(--portal-column-pad,1rem)]">
           {/* CURRENT LOCATION */}
-          <section className="shrink-0 border border-[#60482e]/45 bg-[#15100d] p-4 xl:p-[var(--portal-section-pad,1rem)]">
-            <div className="flex min-w-0 items-center justify-between gap-2">
-              <p className="min-w-0 text-[8px] uppercase tracking-[0.24em] text-[#876a46]">
-                Current location
-              </p>
+          <section
+  className="relative shrink-0 overflow-hidden border border-[#60482e]/45 bg-[#15100d]"
+  style={
+    character?.currentRoom?.image_url
+      ? {
+          backgroundImage: `url("${character.currentRoom.image_url}")`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }
+      : undefined
+  }
+>
+  {/* Dark overlay: keeps the text readable over any room image */}
+  <div className="absolute inset-0 bg-[#0b0806]/72" />
 
-              {character?.currentRoom ? (
-                <div className="flex shrink-0 items-center gap-1.5">
-                  <RoomInfoButton
-                    roomId={
-                      character.currentRoom.id
-                    }
-                  />
+  {/* Slight warm gradient to preserve the Sepulchria look */}
+  <div className="absolute inset-0 bg-gradient-to-r from-[#100b08]/90 via-[#100b08]/65 to-[#100b08]/40" />
 
-                  <Link
-                    href="/game"
-                    aria-label="Enter current location"
-                    title="Enter current location"
-                    className="flex h-8 w-8 shrink-0 items-center justify-center border border-[#765937]/60 bg-[#21170f] text-[11px] text-[#d8bc8d] transition hover:border-[#a07945] hover:bg-[#332217] hover:text-[#f0d4a2]"
-                  >
-                    →
-                  </Link>
-                </div>
-              ) : null}
-            </div>
+  <div className="relative z-10 p-4 xl:p-[var(--portal-section-pad,1rem)]">
+    <div className="flex min-w-0 items-center justify-between gap-2">
+      <p className="min-w-0 text-[8px] uppercase tracking-[0.24em] text-[#a88658]">
+        Current location
+      </p>
 
-            <div className="mt-2 min-w-0">
-              <h2 className="break-words font-serif text-[16px] leading-tight text-[#d6bd91]">
-                {character?.currentRoom
-                  ?.name ?? "No location"}
-              </h2>
+      {character?.currentRoom ? (
+        <div className="flex shrink-0 items-center gap-1.5">
+          <RoomInfoButton
+            roomId={
+              character.currentRoom.id
+            }
+          />
 
-              <p className="mt-1 break-words text-[10px] leading-snug text-[#8f8271]">
-                {character?.currentRoom
-                  ?.area?.name ??
-                  "Your character has not entered the city yet."}
-              </p>
-            </div>
-          </section>
+          <Link
+            href="/game"
+            aria-label="Enter current location"
+            title="Enter current location"
+            className="flex h-8 w-8 shrink-0 items-center justify-center border border-[#765937]/70 bg-[#160f0a]/80 text-[11px] text-[#d8bc8d] backdrop-blur-sm transition hover:border-[#a07945] hover:bg-[#332217] hover:text-[#f0d4a2]"
+          >
+            →
+          </Link>
+        </div>
+      ) : null}
+    </div>
+
+    <div className="mt-2 min-w-0">
+      <h2 className="break-words font-serif text-[16px] leading-tight text-[#ead2a6] drop-shadow-[0_2px_3px_rgba(0,0,0,0.9)]">
+        {character?.currentRoom?.name ??
+          "No location"}
+      </h2>
+
+      <p className="mt-1 break-words text-[10px] leading-snug text-[#b5a48d] drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]">
+        {character?.currentRoom?.area?.name ??
+          "Your character has not entered the city yet."}
+      </p>
+    </div>
+  </div>
+</section>
 
           {/* CONTEXT PANEL */}
           <section className="min-h-0 flex-1 border border-[#60482e]/45 bg-[#15100d] p-4 xl:p-[var(--portal-section-pad,1rem)]">
