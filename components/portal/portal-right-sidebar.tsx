@@ -14,46 +14,54 @@ export function PortalRightSidebar({
   const { character } = context;
 
   return (
-    <aside className="hidden border-l border-[#6e5535]/30 bg-[#100d0b]/75 xl:sticky xl:top-20 xl:block xl:h-[calc(100vh-5rem)] xl:overflow-hidden">
-      <div className="flex h-full min-h-0 flex-col gap-3 p-4">
-        <section className="shrink-0 border border-[#60482e]/45 bg-[#15100d] p-4">
-          <p className="text-[8px] uppercase tracking-[0.28em] text-[#876a46]">
-            Current location
-          </p>
-
-          <div className="mt-2 flex items-start justify-between gap-3">
-            <div className="min-w-0">
-              <h2 className="truncate font-serif text-xl text-[#d6bd91]">
-                {character?.currentRoom?.name ?? "No location"}
-              </h2>
-
-              <p className="mt-1 truncate text-[11px] text-[#8f8271]">
-                {character?.currentRoom?.area?.name ??
-                  "Your character has not entered the city yet."}
-              </p>
-            </div>
+    <aside
+      aria-label="Context sidebar"
+      data-portal-column
+      data-portal-scroll
+      className="hidden min-h-0 min-w-0 overflow-y-auto overscroll-contain border-l border-[#6e5535]/30 bg-[#100d0b]/75 xl:flex xl:h-full xl:flex-col"
+    >
+      <div className="flex min-h-0 flex-1 flex-col gap-[var(--portal-column-gap)] p-[var(--portal-column-pad)]">
+        <section className="shrink-0 border border-[#60482e]/45 bg-[#15100d] p-[var(--portal-section-pad)]">
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-[8px] uppercase tracking-[0.24em] text-[#876a46]">
+              Current location
+            </p>
 
             {character?.currentRoom ? (
-              <div className="flex shrink-0 items-center gap-2">
+              <div className="flex shrink-0 items-center gap-1.5">
                 <RoomInfoButton
-                  roomId={character.currentRoom.id}
+                  roomId={
+                    character.currentRoom.id
+                  }
                 />
 
                 <Link
                   href="/game"
                   aria-label="Enter current location"
                   title="Enter current location"
-                  className="border border-[#60482e]/55 bg-[#1d160f] px-2.5 py-2 text-xs text-[#c59a5a] transition hover:border-[#977242] hover:text-[#ebcc91]"
+                  className="flex h-8 w-8 items-center justify-center border border-[#60482e]/55 bg-[#1d160f] text-[11px] text-[#c59a5a] transition hover:border-[#977242] hover:text-[#ebcc91]"
                 >
                   →
                 </Link>
               </div>
             ) : null}
           </div>
+
+          <h2 className="mt-2 break-words font-serif text-[16px] leading-tight text-[#d6bd91]">
+            {character?.currentRoom?.name ??
+              "No location"}
+          </h2>
+
+          <p className="mt-1 break-words text-[10px] leading-snug text-[#8f8271]">
+            {character?.currentRoom?.area?.name ??
+              "Your character has not entered the city yet."}
+          </p>
         </section>
 
-        <section className="min-h-0 flex-1 overflow-hidden border border-[#60482e]/45 bg-[#15100d] p-4">
-          <PortalContextPanel context={context} />
+        <section className="min-h-0 flex-1 border border-[#60482e]/45 bg-[#15100d] p-[var(--portal-section-pad)]">
+          <PortalContextPanel
+            context={context}
+          />
         </section>
       </div>
     </aside>

@@ -114,10 +114,7 @@ function normalizeCount(
       Number.parseInt(value, 10);
 
     if (Number.isFinite(parsedCount)) {
-      return Math.max(
-        0,
-        parsedCount,
-      );
+      return Math.max(0, parsedCount);
     }
   }
 
@@ -131,24 +128,18 @@ export function PortalSidebar({
   const pathname = usePathname();
 
   const [modalItem, setModalItem] =
-    useState<NavigationItem | null>(
-      null,
-    );
+    useState<NavigationItem | null>(null);
 
   const [
     currentUnreadForumCount,
     setCurrentUnreadForumCount,
   ] = useState(
-    normalizeCount(
-      unreadForumCount,
-    ),
+    normalizeCount(unreadForumCount),
   );
 
   useEffect(() => {
     setCurrentUnreadForumCount(
-      normalizeCount(
-        unreadForumCount,
-      ),
+      normalizeCount(unreadForumCount),
     );
   }, [unreadForumCount]);
 
@@ -349,7 +340,7 @@ export function PortalSidebar({
         <div
           key={item.label}
           title="Coming soon"
-          className="flex cursor-not-allowed items-center gap-2 border border-transparent px-2.5 py-2 text-[11px] text-[#62594d] opacity-65 lg:text-xs"
+          className="flex min-h-[var(--portal-nav-min-h)] cursor-not-allowed items-center gap-2 border border-transparent px-2.5 py-[var(--portal-nav-y)] text-[11px] text-[#62594d] opacity-65 lg:text-xs"
         >
           <span className="w-4 shrink-0 text-center text-[12px]">
             {item.icon}
@@ -367,7 +358,7 @@ export function PortalSidebar({
     }
 
     const itemClassName =
-      `flex min-h-9 items-center gap-2 border px-2.5 py-2 text-[11px] transition lg:text-xs ${
+      `flex min-h-[var(--portal-nav-min-h)] items-center gap-2 border px-2.5 py-[var(--portal-nav-y)] text-[11px] transition lg:text-xs ${
         item.opensModal &&
         modalItem?.href === item.href
           ? "border-[#8d6d3e] bg-[#332719] text-[#efd9aa]"
@@ -430,8 +421,12 @@ export function PortalSidebar({
 
   return (
     <>
-      <aside className="border-b border-[#6e5535]/30 bg-[#100d0b]/90 lg:sticky lg:top-20 lg:h-[calc(100vh-5rem)] lg:overflow-y-auto lg:border-b-0 lg:border-r">
-        <div className="p-3 lg:p-4">
+      <aside
+        data-portal-column
+        data-portal-scroll
+        className="border-b border-[#6e5535]/30 bg-[#100d0b]/90 lg:h-full lg:min-h-0 lg:overflow-y-auto lg:overscroll-contain lg:border-b-0 lg:border-r"
+      >
+        <div className="p-3 lg:p-[var(--portal-column-pad)]">
           <nav aria-label="Main navigation">
             <NavigationGroup
               title="Navigate the World"
@@ -448,7 +443,7 @@ export function PortalSidebar({
             />
 
             <section>
-              <p className="mb-2.5 hidden text-[8px] uppercase tracking-[0.3em] text-[#766754] lg:block">
+              <p className="mb-2 hidden text-[8px] uppercase tracking-[0.3em] text-[#766754] lg:block">
                 services and utilities
               </p>
 
@@ -470,12 +465,12 @@ export function PortalSidebar({
             </section>
           </nav>
 
-          <div className="mt-5 hidden border-t border-[#6e5535]/30 pt-3 lg:block">
-            <span className="block py-1.5 text-[9px] uppercase tracking-[0.18em] text-[#5f5549]">
+          <div className="mt-[var(--portal-group-gap)] hidden border-t border-[#6e5535]/30 pt-2 lg:block">
+            <span className="block py-1 text-[9px] uppercase tracking-[0.18em] text-[#5f5549]">
               Support · Coming soon
             </span>
 
-            <span className="block py-1.5 text-[9px] uppercase tracking-[0.18em] text-[#5f5549]">
+            <span className="block py-1 text-[9px] uppercase tracking-[0.18em] text-[#5f5549]">
               Staff · Coming soon
             </span>
           </div>
@@ -557,8 +552,8 @@ function NavigationGroup({
   items: React.ReactNode[];
 }) {
   return (
-    <section className="mb-4 border-b border-[#6e5535]/20 pb-4">
-      <p className="mb-2.5 hidden text-[8px] uppercase tracking-[0.3em] text-[#766754] lg:block">
+    <section className="mb-[var(--portal-group-gap)] border-b border-[#6e5535]/20 pb-[var(--portal-group-gap)]">
+      <p className="mb-2 hidden text-[8px] uppercase tracking-[0.3em] text-[#766754] lg:block">
         {title}
       </p>
 

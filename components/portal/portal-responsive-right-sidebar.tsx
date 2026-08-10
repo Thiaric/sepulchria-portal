@@ -73,9 +73,12 @@ export function PortalResponsiveRightSidebar({
 
   return (
     <>
+      {/* MOBILE / TABLET OPEN BUTTON */}
       <button
         type="button"
-        onClick={() => setOpen(true)}
+        onClick={() =>
+          setOpen(true)
+        }
         aria-label="Open context panel"
         aria-expanded={open}
         className="fixed bottom-5 right-5 z-40 flex h-12 w-12 items-center justify-center border border-[#765937] bg-[#1d160f] font-serif text-xl text-[#d8bf91] shadow-[0_12px_35px_rgba(0,0,0,0.45)] transition hover:border-[#a37b45] hover:text-[#f0d39d] xl:hidden"
@@ -83,6 +86,7 @@ export function PortalResponsiveRightSidebar({
         ◈
       </button>
 
+      {/* MOBILE / TABLET OVERLAY */}
       {open ? (
         <button
           type="button"
@@ -96,15 +100,31 @@ export function PortalResponsiveRightSidebar({
 
       <aside
         aria-label="Context sidebar"
+        data-portal-column
+        data-portal-scroll
         className={[
-          "z-[70] flex min-h-0 flex-col border-l border-[#6e5535]/40 bg-[#100d0b]",
-          "fixed inset-y-0 right-0 w-[min(88vw,360px)] shadow-[-18px_0_50px_rgba(0,0,0,0.55)] transition-transform duration-200 ease-out",
+          "z-[70] flex min-h-0 min-w-0 flex-col border-l border-[#6e5535]/40 bg-[#100d0b]",
+
+          /*
+           * Mobile / tablet:
+           * slide-in drawer.
+           */
+          "fixed inset-y-0 right-0 w-[min(88vw,360px)] overflow-y-auto overscroll-contain shadow-[-18px_0_50px_rgba(0,0,0,0.55)] transition-transform duration-200 ease-out",
+
           open
             ? "translate-x-0"
             : "translate-x-full",
-          "xl:sticky xl:top-20 xl:z-auto xl:h-[calc(100vh-5rem)] xl:w-auto xl:translate-x-0 xl:self-start xl:shadow-none xl:transition-none",
+
+          /*
+           * Desktop:
+           * become a normal grid column.
+           * Height is inherited from the portal shell.
+           * Scrolling happens only if this column genuinely overflows.
+           */
+          "xl:relative xl:inset-auto xl:z-auto xl:h-full xl:w-auto xl:translate-x-0 xl:self-stretch xl:overflow-y-auto xl:overscroll-contain xl:shadow-none xl:transition-none",
         ].join(" ")}
       >
+        {/* MOBILE / TABLET HEADER */}
         <div className="flex h-16 shrink-0 items-center justify-between border-b border-[#6e5535]/40 px-4 xl:hidden">
           <div>
             <p className="text-[8px] uppercase tracking-[0.28em] text-[#876a46]">
@@ -128,42 +148,51 @@ export function PortalResponsiveRightSidebar({
           </button>
         </div>
 
-        <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-hidden p-4">
-          <section className="shrink-0 border border-[#60482e]/45 bg-[#15100d] p-4">
-  <div className="flex items-center justify-between gap-3">
-    <p className="text-[8px] uppercase tracking-[0.28em] text-[#876a46]">
-      Current location
-    </p>
+        {/* SIDEBAR CONTENT */}
+        <div className="flex min-h-0 flex-1 flex-col gap-3 p-4 xl:gap-[var(--portal-column-gap,0.75rem)] xl:p-[var(--portal-column-pad,1rem)]">
+          {/* CURRENT LOCATION */}
+          <section className="shrink-0 border border-[#60482e]/45 bg-[#15100d] p-4 xl:p-[var(--portal-section-pad,1rem)]">
+            <div className="flex min-w-0 items-center justify-between gap-2">
+              <p className="min-w-0 text-[8px] uppercase tracking-[0.24em] text-[#876a46]">
+                Current location
+              </p>
 
-    {character?.currentRoom ? (
-      <div className="flex shrink-0 items-center gap-2">
-        <RoomInfoButton
-          roomId={character.currentRoom.id}
-        />
+              {character?.currentRoom ? (
+                <div className="flex shrink-0 items-center gap-1.5">
+                  <RoomInfoButton
+                    roomId={
+                      character.currentRoom.id
+                    }
+                  />
 
-        <Link
-          href="/game"
-          aria-label="Enter current location"
-          title="Enter current location"
-          className="flex h-8 w-8 items-center justify-center border border-[#765937]/60 bg-[#21170f] text-[11px] text-[#d8bc8d] transition hover:border-[#a07945] hover:bg-[#332217] hover:text-[#f0d4a2]"
-        >
-          →
-        </Link>
-      </div>
-    ) : null}
-  </div>
+                  <Link
+                    href="/game"
+                    aria-label="Enter current location"
+                    title="Enter current location"
+                    className="flex h-8 w-8 shrink-0 items-center justify-center border border-[#765937]/60 bg-[#21170f] text-[11px] text-[#d8bc8d] transition hover:border-[#a07945] hover:bg-[#332217] hover:text-[#f0d4a2]"
+                  >
+                    →
+                  </Link>
+                </div>
+              ) : null}
+            </div>
 
-  <h2 className="mt-3 font-serif text-[16px] leading-tight text-[#d6bd91]">
-    {character?.currentRoom?.name ?? "No location"}
-  </h2>
+            <div className="mt-2 min-w-0">
+              <h2 className="break-words font-serif text-[16px] leading-tight text-[#d6bd91]">
+                {character?.currentRoom
+                  ?.name ?? "No location"}
+              </h2>
 
-  <p className="mt-1 text-[10px] leading-snug text-[#8f8271]">
-    {character?.currentRoom?.area?.name ??
-      "Your character has not entered the city yet."}
-  </p>
-</section>
+              <p className="mt-1 break-words text-[10px] leading-snug text-[#8f8271]">
+                {character?.currentRoom
+                  ?.area?.name ??
+                  "Your character has not entered the city yet."}
+              </p>
+            </div>
+          </section>
 
-          <section className="min-h-0 flex-1 overflow-y-auto overscroll-contain border border-[#60482e]/45 bg-[#15100d] p-4">
+          {/* CONTEXT PANEL */}
+          <section className="min-h-0 flex-1 border border-[#60482e]/45 bg-[#15100d] p-4 xl:p-[var(--portal-section-pad,1rem)]">
             {forumSectionSlug ? (
               <ForumSectionActivityContext
                 sectionSlug={

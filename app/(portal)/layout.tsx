@@ -35,8 +35,7 @@ async function PortalLayoutContent({
       getActiveTidings(),
     ]);
 
-  const supabase =
-    await createClient();
+  const supabase = await createClient();
 
   const {
     data: { user },
@@ -54,44 +53,28 @@ async function PortalLayoutContent({
 
     if (!unreadForumError) {
       if (
-        typeof unreadForumResult ===
-          "number" &&
-        Number.isFinite(
-          unreadForumResult,
-        )
+        typeof unreadForumResult === "number" &&
+        Number.isFinite(unreadForumResult)
       ) {
-        unreadForumCount =
-          unreadForumResult;
+        unreadForumCount = unreadForumResult;
       } else if (
-        typeof unreadForumResult ===
-        "string"
+        typeof unreadForumResult === "string"
       ) {
         const parsedCount =
-          Number.parseInt(
-            unreadForumResult,
-            10,
-          );
+          Number.parseInt(unreadForumResult, 10);
 
-        if (
-          Number.isFinite(
-            parsedCount,
-          )
-        ) {
-          unreadForumCount =
-            parsedCount;
+        if (Number.isFinite(parsedCount)) {
+          unreadForumCount = parsedCount;
         }
       }
     }
   }
 
   const presenceEnabled =
-    context.character?.status ===
-    "approved";
+    context.character?.status === "approved";
 
   return (
-    <WorldStateProvider
-      initialState={worldState}
-    >
+    <WorldStateProvider initialState={worldState}>
       <div className="h-dvh overflow-hidden bg-[#120f0d] text-[#e8dcc4]">
         <div className="flex h-full min-h-0 flex-col bg-[radial-gradient(circle_at_top,_rgba(116,82,42,0.16),_transparent_38%),linear-gradient(to_bottom,_#17120f,_#0d0b0a)]">
           <PortalPresenceHeartbeat
@@ -99,45 +82,112 @@ async function PortalLayoutContent({
           />
 
           <div className="shrink-0">
-            <PortalHeader
-              context={context}
-            />
+            <PortalHeader context={context} />
           </div>
 
-          {/*
-           * This is the ONLY flexible vertical area.
-           *
-           * On desktop, its columns are constrained to the remaining
-           * viewport height and scroll internally.
-           *
-           * On smaller screens, the whole portal-body region scrolls,
-           * while the header and Tidings footer remain outside it.
-           */}
           <style>{`
+            /*
+             * Responsive portal shell:
+             * 1) fit the viewport first by reducing density on short screens;
+             * 2) allow a column to scroll only when its real content still overflows.
+             */
+
+            .sepulchria-viewport-body {
+              --portal-left-width: 230px;
+              --portal-right-width: 300px;
+              --portal-column-pad: 1rem;
+              --portal-column-gap: 0.75rem;
+              --portal-section-pad: 1rem;
+              --portal-nav-y: 0.5rem;
+              --portal-nav-min-h: 2.25rem;
+              --portal-group-gap: 1rem;
+            }
+
             @media (min-width: 1024px) {
-              .sepulchria-viewport-body > aside:first-of-type {
-                position: relative !important;
-                top: auto !important;
-                height: 100% !important;
-                min-height: 0 !important;
-                overflow-y: auto !important;
+              .sepulchria-viewport-body {
+                grid-template-columns:
+                  clamp(180px, 14vw, var(--portal-left-width))
+                  minmax(0, 1fr);
+                overflow: hidden;
+              }
+
+              .sepulchria-viewport-body > [data-portal-column] {
+                min-width: 0;
+                min-height: 0;
+                height: 100%;
               }
             }
 
             @media (min-width: 1280px) {
-              .sepulchria-viewport-body aside[aria-label="Context sidebar"] {
-                position: relative !important;
-                inset: auto !important;
-                top: auto !important;
-                right: auto !important;
-                height: 100% !important;
-                min-height: 0 !important;
-                align-self: stretch !important;
+              .sepulchria-viewport-body {
+                grid-template-columns:
+                  clamp(180px, 13vw, var(--portal-left-width))
+                  minmax(0, 1fr)
+                  clamp(240px, 18vw, var(--portal-right-width));
               }
+            }
+
+            @media (min-width: 1024px) and (max-height: 820px) {
+              .sepulchria-viewport-body {
+                --portal-column-pad: 0.75rem;
+                --portal-column-gap: 0.6rem;
+                --portal-section-pad: 0.75rem;
+                --portal-nav-y: 0.38rem;
+                --portal-nav-min-h: 2rem;
+                --portal-group-gap: 0.75rem;
+              }
+            }
+
+            @media (min-width: 1024px) and (max-height: 720px) {
+              .sepulchria-viewport-body {
+                --portal-left-width: 210px;
+                --portal-right-width: 275px;
+                --portal-column-pad: 0.6rem;
+                --portal-column-gap: 0.5rem;
+                --portal-section-pad: 0.6rem;
+                --portal-nav-y: 0.28rem;
+                --portal-nav-min-h: 1.8rem;
+                --portal-group-gap: 0.55rem;
+              }
+            }
+
+            @media (min-width: 1024px) and (max-height: 640px) {
+              .sepulchria-viewport-body {
+                --portal-left-width: 195px;
+                --portal-right-width: 255px;
+                --portal-column-pad: 0.45rem;
+                --portal-column-gap: 0.4rem;
+                --portal-section-pad: 0.5rem;
+                --portal-nav-y: 0.2rem;
+                --portal-nav-min-h: 1.65rem;
+                --portal-group-gap: 0.4rem;
+              }
+            }
+
+            /*
+             * Scrollbars exist only on real overflow.
+             * Keeping them thin makes the UI feel like an app, not a document.
+             */
+            .sepulchria-viewport-body [data-portal-scroll] {
+              scrollbar-width: thin;
+              scrollbar-color: #5c472f transparent;
+            }
+
+            .sepulchria-viewport-body [data-portal-scroll]::-webkit-scrollbar {
+              width: 7px;
+            }
+
+            .sepulchria-viewport-body [data-portal-scroll]::-webkit-scrollbar-track {
+              background: transparent;
+            }
+
+            .sepulchria-viewport-body [data-portal-scroll]::-webkit-scrollbar-thumb {
+              background: #5c472f;
+              border-radius: 999px;
             }
           `}</style>
 
-          <div className="sepulchria-viewport-body mx-auto grid min-h-0 w-full max-w-[1800px] flex-1 grid-cols-1 overflow-y-auto lg:grid-cols-[230px_minmax(0,1fr)] lg:overflow-hidden xl:grid-cols-[230px_minmax(0,1fr)_300px]">
+          <div className="sepulchria-viewport-body mx-auto grid min-h-0 w-full max-w-[1800px] flex-1 grid-cols-1 overflow-y-auto lg:overflow-hidden">
             <PortalSidebar
               unreadMessageCount={
                 context.unreadMessageCount
@@ -147,7 +197,11 @@ async function PortalLayoutContent({
               }
             />
 
-            <main className="min-w-0 lg:min-h-0 lg:overflow-y-auto">
+            <main
+              data-portal-column
+              data-portal-scroll
+              className="min-h-0 min-w-0 overflow-y-auto overscroll-contain"
+            >
               {children}
             </main>
 
@@ -157,9 +211,7 @@ async function PortalLayoutContent({
           </div>
 
           <TidingsTicker
-            initialTidings={
-              initialTidings
-            }
+            initialTidings={initialTidings}
           />
         </div>
       </div>
@@ -171,12 +223,12 @@ function PortalLoadingShell() {
   return (
     <div className="h-dvh overflow-hidden bg-[#120f0d] text-[#e8dcc4]">
       <div className="flex h-full min-h-0 flex-col bg-[radial-gradient(circle_at_top,_rgba(116,82,42,0.16),_transparent_38%),linear-gradient(to_bottom,_#17120f,_#0d0b0a)]">
-        <header className="h-20 shrink-0 animate-pulse border-b border-[#6e5535]/40 bg-[#0d0b0a]" />
+        <header className="h-[clamp(56px,8dvh,80px)] shrink-0 animate-pulse border-b border-[#6e5535]/40 bg-[#0d0b0a]" />
 
-        <div className="mx-auto grid min-h-0 w-full max-w-[1800px] flex-1 grid-cols-1 overflow-y-auto lg:grid-cols-[230px_minmax(0,1fr)] lg:overflow-hidden xl:grid-cols-[230px_minmax(0,1fr)_300px]">
-          <aside className="hidden h-full min-h-0 animate-pulse border-r border-[#6e5535]/30 bg-[#100d0b] lg:block" />
+        <div className="mx-auto grid min-h-0 w-full max-w-[1800px] flex-1 grid-cols-1 overflow-y-auto lg:grid-cols-[clamp(180px,14vw,230px)_minmax(0,1fr)] lg:overflow-hidden xl:grid-cols-[clamp(180px,13vw,230px)_minmax(0,1fr)_clamp(240px,18vw,300px)]">
+          <aside className="hidden min-h-0 animate-pulse overflow-hidden border-r border-[#6e5535]/30 bg-[#100d0b] lg:block" />
 
-          <main className="min-h-0 overflow-y-auto p-5 sm:p-7 lg:p-9">
+          <main className="min-h-0 overflow-hidden p-5 sm:p-7 lg:p-9">
             <div className="h-4 w-52 animate-pulse bg-[#2c2118]" />
             <div className="mt-5 h-12 max-w-xl animate-pulse bg-[#2c2118]" />
             <div className="mt-5 h-5 max-w-2xl animate-pulse bg-[#211914]" />
@@ -193,7 +245,7 @@ function PortalLoadingShell() {
             </div>
           </main>
 
-          <aside className="hidden h-full min-h-0 animate-pulse border-l border-[#6e5535]/30 bg-[#100d0b] xl:block" />
+          <aside className="hidden min-h-0 animate-pulse overflow-hidden border-l border-[#6e5535]/30 bg-[#100d0b] xl:block" />
         </div>
       </div>
     </div>

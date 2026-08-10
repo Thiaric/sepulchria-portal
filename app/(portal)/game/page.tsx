@@ -358,11 +358,11 @@ async function GameContent() {
     staffSession !== null;
 
   return (
-  <div className="h-[calc(100dvh-5rem)] overflow-hidden p-3 sm:p-4 lg:p-5">
+  <div className="h-full min-h-0 overflow-hidden p-2 sm:p-3 lg:p-4">
     <RoomRealtime roomId={room.id} />
 
     <div className="mx-auto flex h-full max-w-5xl flex-col">
-  <div className="mb-3 flex shrink-0 items-center justify-between gap-4 border border-[#62492e]/45 bg-[#15100d] px-4 py-3">
+  <div className="mb-2 flex shrink-0 items-center justify-between gap-3 border border-[#62492e]/45 bg-[#15100d] px-3 py-2">
     <div className="min-w-0">
       <p className="text-[8px] uppercase tracking-[0.24em] text-[#806b50]">
         Current location
@@ -375,19 +375,19 @@ async function GameContent() {
 
     <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
       <Link
-        href="/game/export"
-        className="border border-[#725c3d] bg-[#21190f] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[#d6bb8d] transition hover:border-[#a17a49] hover:bg-[#352718] hover:text-[#f0d6a7]"
-      >
-        Export role
-      </Link>
+  href="/game/export"
+  className="border border-[#725c3d] bg-[#21190f] px-3 py-1.5 text-[9px] uppercase tracking-[0.18em] text-[#d6bb8d] transition hover:border-[#a17a49] hover:bg-[#352718] hover:text-[#f0d6a7]"
+>
+  Export role
+</Link>
 
       <form action={leaveCurrentRoom}>
         <button
-          type="submit"
-          className="shrink-0 border border-[#7d493c] bg-[#2b1712] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[#d7a398] transition hover:border-[#b86958] hover:bg-[#422019]"
-        >
-          Leave room
-        </button>
+  type="submit"
+  className="shrink-0 border border-[#7d493c] bg-[#2b1712] px-3 py-1.5 text-[9px] uppercase tracking-[0.18em] text-[#d7a398] transition hover:border-[#b86958] hover:bg-[#422019]"
+>
+  Leave room
+</button>
       </form>
     </div>
   </div>
