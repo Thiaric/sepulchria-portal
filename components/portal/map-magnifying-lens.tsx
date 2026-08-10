@@ -31,7 +31,7 @@ export function MapMagnifyingLens({
   src,
   alt,
   zoom = 2,
-  diameter = 350,
+  diameter = 450,
 }: MapMagnifyingLensProps) {
   const [enabled, setEnabled] =
     useState(false);
@@ -95,11 +95,27 @@ export function MapMagnifyingLens({
       return;
     }
 
-    const pixelX =
+    const rawPixelX =
       event.clientX - bounds.left;
 
-    const pixelY =
+    const rawPixelY =
       event.clientY - bounds.top;
+
+    const pixelX = Math.max(
+      0,
+      Math.min(
+        bounds.width,
+        rawPixelX,
+      ),
+    );
+
+    const pixelY = Math.max(
+      0,
+      Math.min(
+        bounds.height,
+        rawPixelY,
+      ),
+    );
 
     const percentX =
       (pixelX / bounds.width) *
@@ -115,34 +131,10 @@ export function MapMagnifyingLens({
     });
 
     setPosition({
-      percentX: Math.max(
-        0,
-        Math.min(
-          100,
-          percentX,
-        ),
-      ),
-      percentY: Math.max(
-        0,
-        Math.min(
-          100,
-          percentY,
-        ),
-      ),
-      pixelX: Math.max(
-        0,
-        Math.min(
-          bounds.width,
-          pixelX,
-        ),
-      ),
-      pixelY: Math.max(
-        0,
-        Math.min(
-          bounds.height,
-          pixelY,
-        ),
-      ),
+      percentX,
+      percentY,
+      pixelX,
+      pixelY,
     });
 
     setHasPosition(true);
@@ -169,16 +161,9 @@ export function MapMagnifyingLens({
   }
 
   const lensSize = diameter;
+  const lensRadius =
+    lensSize / 2;
 
-  /*
-   * This is the important part:
-   *
-   * We take the ACTUAL rendered size
-   * of the map and enlarge that.
-   *
-   * So a 1000 × 562 map displayed on
-   * screen becomes 2500 × 1405 at 2.5×.
-   */
   const magnifiedWidth =
     mapSize.width * zoom;
 
@@ -186,16 +171,80 @@ export function MapMagnifyingLens({
     mapSize.height * zoom;
 
   /*
-   * Position the enlarged map so the
-   * point beneath the cursor is exactly
-   * in the centre of the lens.
+   * Clamp the LENS CENTRE inside the
+   * map so the circle never sticks out
+   * beyond the map container.
+   */
+  const lensCenterX =
+    mapSize.width > 0
+      ? Math.max(
+          Math.min(
+            position.pixelX,
+            Math.max(
+              lensRadius,
+              mapSize.width -
+                lensRadius,
+            ),
+          ),
+          Math.min(
+            lensRadius,
+            mapSize.width / 2,
+          ),
+        )
+      : 0;
+
+  const lensCenterY =
+    mapSize.height > 0
+      ? Math.max(
+          Math.min(
+            position.pixelY,
+            Math.max(
+              lensRadius,
+              mapSize.height -
+                lensRadius,
+            ),
+          ),
+          Math.min(
+            lensRadius,
+            mapSize.height / 2,
+          ),
+        )
+      : 0;
+
+  /*
+   * Convert the clamped lens centre back
+   * to percentages for absolute positioning.
+   */
+  const lensPercentX =
+    mapSize.width > 0
+      ? (lensCenterX /
+          mapSize.width) *
+        100
+      : 50;
+
+  const lensPercentY =
+    mapSize.height > 0
+      ? (lensCenterY /
+          mapSize.height) *
+        100
+      : 50;
+
+  /*
+   * Important:
+   * the magnified image is still centred
+   * on the ACTUAL cursor/tap position,
+   * not on the clamped lens centre.
+   *
+   * So when the lens reaches an edge,
+   * the glass stops moving but the
+   * inspected point remains accurate.
    */
   const magnifiedLeft =
-    lensSize / 2 -
+    lensRadius -
     position.pixelX * zoom;
 
   const magnifiedTop =
-    lensSize / 2 -
+    lensRadius -
     position.pixelY * zoom;
 
   return (
@@ -274,7 +323,7 @@ export function MapMagnifyingLens({
               );
             }
           }}
-          className="absolute inset-0 z-[70] cursor-crosshair touch-none"
+          className="absolute inset-0 z-[70] cursor-crosshair touch-none overflow-hidden"
           aria-label="Map magnifying lens active"
         >
           {!hasPosition ? (
@@ -292,8 +341,8 @@ export function MapMagnifyingLens({
               style={{
                 width: `${lensSize}px`,
                 height: `${lensSize}px`,
-                left: `${position.percentX}%`,
-                top: `${position.percentY}%`,
+                left: `${lensPercentX}%`,
+                top: `${lensPercentY}%`,
                 transform:
                   "translate(-50%, -50%)",
               }}

@@ -355,51 +355,13 @@ export function LiveDashboardChronicle({
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <header className="shrink-0">
-        <p className="text-[9px] uppercase tracking-[0.3em] text-[#876a46]">
-          Dashboard
-        </p>
-
-        <h2 className="mt-2 font-serif text-2xl text-[#d6bd91]">
-          Your chronicle
-        </h2>
-      </header>
-
-      <div className="mt-5 shrink-0 border-y border-[#59432c]/35 py-3">
-        <ContextSummaryRow
-          label="Character"
-          value={
-            context.character?.display_name ??
-            "Not created"
-          }
-        />
-
-        <ContextSummaryRow
-          label="Location"
-          value={
-            context.character?.currentRoom?.name ??
-            "Not assigned"
-          }
-        />
-
-        <ContextSummaryRow
-          label="Unread messages"
-          value={String(
-            context.unreadMessageCount,
-          )}
-          last
-        />
-      </div>
-
-      <div className="mt-4 flex shrink-0 items-center justify-between gap-4">
+      <div className="mt-1 flex shrink-0 items-center justify-between gap-4">
         <div>
           <p className="text-[8px] uppercase tracking-[0.22em] text-[#876a46]">
-            Active city
+            People in Sepulchria
           </p>
 
-          <p className="mt-1 text-[11px] text-[#8f8271]">
-            All active characters · locations below
-          </p>
+          
         </div>
 
         <span

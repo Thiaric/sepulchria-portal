@@ -205,8 +205,8 @@ export function InteractiveWorldMap({
         )}
       </div>
 
-      <div className="flex w-full justify-center bg-[#090705]">
-  <div className="relative aspect-[16/9] w-[min(100%,calc((100dvh-12rem)*16/9))] max-w-full overflow-visible">
+      <div className="flex w-full min-w-0 justify-center overflow-hidden bg-[#090705]">
+  <div className="relative aspect-[16/9] w-[min(100%,calc((100dvh-12rem)*16/9))] max-w-full min-w-0 overflow-hidden">
           {/* CONTINENT MAP */}
 
           <div
@@ -388,7 +388,7 @@ export function InteractiveWorldMap({
             src={currentMapSrc}
             alt={currentMapAlt}
             zoom={2}
-            diameter={350}
+            diameter={450}
           />
         </div>
       </div>
