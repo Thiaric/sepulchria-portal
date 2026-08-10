@@ -1,6 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 import { RichTextContentClient } from "@/components/editor/rich-text-content-client";
 import type { PublicCodexChapter } from "@/lib/codex/get-codex";
@@ -35,33 +39,37 @@ export function PublicCodex({
     [chapters],
   );
 
-  const [selectedNumber, setSelectedNumber] =
-    useState(() => {
-      if (typeof window === "undefined") {
-        return (
-          orderedChapters[0]
-            ?.chapter_number ?? 1
-        );
-      }
+  const [
+    selectedNumber,
+    setSelectedNumber,
+  ] = useState(() => {
+    if (
+      typeof window === "undefined"
+    ) {
+      return (
+        orderedChapters[0]
+          ?.chapter_number ?? 1
+      );
+    }
 
-      const match =
-        window.location.hash.match(
-          /^#chapter-(\d+)$/,
-        );
+    const match =
+      window.location.hash.match(
+        /^#chapter-(\d+)$/,
+      );
 
-      const fromHash = match
-        ? Number(match[1])
-        : NaN;
+    const fromHash = match
+      ? Number(match[1])
+      : NaN;
 
-      return orderedChapters.some(
-        (chapter) =>
-          chapter.chapter_number ===
-          fromHash,
-      )
-        ? fromHash
-        : (orderedChapters[0]
-            ?.chapter_number ?? 1);
-    });
+    return orderedChapters.some(
+      (chapter) =>
+        chapter.chapter_number ===
+        fromHash,
+    )
+      ? fromHash
+      : (orderedChapters[0]
+          ?.chapter_number ?? 1);
+  });
 
   const selectedChapter =
     orderedChapters.find(
@@ -80,7 +88,9 @@ export function PublicCodex({
     const hash =
       `#chapter-${selectedChapter.chapter_number}`;
 
-    if (window.location.hash !== hash) {
+    if (
+      window.location.hash !== hash
+    ) {
       window.history.replaceState(
         null,
         "",
@@ -91,6 +101,7 @@ export function PublicCodex({
 
   function selectChapter(
     chapter: PublicCodexChapter,
+    scrollToNavigation = false,
   ) {
     setSelectedNumber(
       chapter.chapter_number,
@@ -102,17 +113,31 @@ export function PublicCodex({
       `#chapter-${chapter.chapter_number}`,
     );
 
-    window.requestAnimationFrame(() => {
-      document
-        .getElementById("codex-chapter")
-        ?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-    });
+    /*
+     * Only Previous / Next use this.
+     *
+     * Clicking I, II, III, etc. above does
+     * NOT change the current scroll position.
+     */
+    if (scrollToNavigation) {
+      window.requestAnimationFrame(
+        () => {
+          document
+            .getElementById(
+              "codex-chapter-navigation",
+            )
+            ?.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+        },
+      );
+    }
   }
 
-  if (orderedChapters.length === 0) {
+  if (
+    orderedChapters.length === 0
+  ) {
     return (
       <main className="min-h-screen bg-[#090705] px-5 py-8 text-[#d6c3a3]">
         <div className="mx-auto max-w-7xl border border-[#60482e]/50 bg-[#120e0b] p-6 text-center">
@@ -121,8 +146,8 @@ export function PublicCodex({
           </h1>
 
           <p className="mt-2 text-sm text-[#9e907d]">
-            No published Codex chapters are
-            available yet.
+            No published Codex chapters
+            are available yet.
           </p>
         </div>
       </main>
@@ -146,15 +171,19 @@ export function PublicCodex({
             </div>
 
             <p className="max-w-xl text-xs leading-5 text-[#8f8271] sm:text-right">
-              Ten chapters preserving the
-              known history and lore of Aureth.
+              Ten chapters preserving
+              the known history and lore
+              of Aureth.
             </p>
           </div>
         </div>
       </header>
 
-      {/* VERY COMPACT 10-CHAPTER BAR — NO HORIZONTAL SCROLL */}
-      <div className="border-b border-[#60482e]/45 bg-[#100c09]">
+      {/* CHAPTER NAVIGATION */}
+      <div
+        id="codex-chapter-navigation"
+        className="scroll-mt-4 border-b border-[#60482e]/45 bg-[#100c09]"
+      >
         <nav
           aria-label="Codex chapters"
           className="mx-auto grid max-w-7xl grid-cols-5 px-3 sm:grid-cols-10 sm:px-5"
@@ -170,7 +199,10 @@ export function PublicCodex({
                   key={chapter.id}
                   type="button"
                   onClick={() =>
-                    selectChapter(chapter)
+                    selectChapter(
+                      chapter,
+                      false,
+                    )
                   }
                   title={`Chapter ${chapter.chapter_number}: ${chapter.title}`}
                   className={`h-10 border-x border-[#4c3926]/25 px-1 font-serif text-sm transition ${
@@ -193,11 +225,8 @@ export function PublicCodex({
       </div>
 
       {selectedChapter ? (
-        <article
-          id="codex-chapter"
-          className="scroll-mt-4"
-        >
-          {/* COMPACT CHAPTER TITLE STRIP */}
+        <article id="codex-chapter">
+          {/* CHAPTER TITLE */}
           <section className="border-b border-[#60482e]/35 bg-[#100c09]">
             <div className="mx-auto max-w-7xl px-5 py-5 sm:px-8">
               <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-5">
@@ -212,7 +241,9 @@ export function PublicCodex({
                 </p>
 
                 <h2 className="font-serif text-2xl leading-tight text-[#ead5ac] sm:text-3xl">
-                  {selectedChapter.title}
+                  {
+                    selectedChapter.title
+                  }
                 </h2>
               </div>
 
@@ -227,7 +258,7 @@ export function PublicCodex({
             </div>
           </section>
 
-          {/* CONTENT STARTS IMMEDIATELY */}
+          {/* CHAPTER CONTENT */}
           <section className="mx-auto max-w-7xl px-5 py-5 sm:px-8">
             <div className="border border-[#60482e]/40 bg-[#120e0b] px-5 py-6 sm:px-8 sm:py-7">
               {selectedChapter.description?.trim() ? (
@@ -240,22 +271,29 @@ export function PublicCodex({
               ) : (
                 <div className="py-8 text-center">
                   <p className="font-serif text-lg text-[#a9916e]">
-                    This chapter is ready for
-                    import.
+                    This chapter is ready
+                    for import.
                   </p>
 
                   <p className="mt-1 text-xs text-[#756b5e]">
-                    Its source text will be
-                    imported during Phase B2.
+                    Its source text will
+                    be imported during
+                    Phase B2.
                   </p>
                 </div>
               )}
             </div>
 
             <ChapterFooterNavigation
-              chapters={orderedChapters}
-              current={selectedChapter}
-              onSelect={selectChapter}
+              chapters={
+                orderedChapters
+              }
+              current={
+                selectedChapter
+              }
+              onSelect={
+                selectChapter
+              }
             />
           </section>
         </article>
@@ -273,6 +311,7 @@ function ChapterFooterNavigation({
   current: PublicCodexChapter;
   onSelect: (
     chapter: PublicCodexChapter,
+    scrollToNavigation?: boolean,
   ) => void;
 }) {
   const currentIndex =
@@ -283,13 +322,17 @@ function ChapterFooterNavigation({
 
   const previous =
     currentIndex > 0
-      ? chapters[currentIndex - 1]
+      ? chapters[
+          currentIndex - 1
+        ]
       : null;
 
   const next =
     currentIndex <
     chapters.length - 1
-      ? chapters[currentIndex + 1]
+      ? chapters[
+          currentIndex + 1
+        ]
       : null;
 
   return (
@@ -298,13 +341,17 @@ function ChapterFooterNavigation({
         <button
           type="button"
           onClick={() =>
-            onSelect(previous)
+            onSelect(
+              previous,
+              true,
+            )
           }
           className="min-w-0 flex-1 border border-[#60482e]/35 bg-[#100c09] px-4 py-3 text-left transition hover:border-[#85633a] hover:bg-[#19120d]"
         >
           <span className="block text-[7px] uppercase tracking-[0.17em] text-[#756550]">
             ← Previous
           </span>
+
           <span className="mt-1 block truncate font-serif text-sm text-[#bca47e]">
             {previous.title}
           </span>
@@ -316,12 +363,18 @@ function ChapterFooterNavigation({
       {next ? (
         <button
           type="button"
-          onClick={() => onSelect(next)}
+          onClick={() =>
+            onSelect(
+              next,
+              true,
+            )
+          }
           className="min-w-0 flex-1 border border-[#60482e]/35 bg-[#100c09] px-4 py-3 text-right transition hover:border-[#85633a] hover:bg-[#19120d]"
         >
           <span className="block text-[7px] uppercase tracking-[0.17em] text-[#756550]">
             Next →
           </span>
+
           <span className="mt-1 block truncate font-serif text-sm text-[#bca47e]">
             {next.title}
           </span>
