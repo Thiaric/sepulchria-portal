@@ -10,7 +10,10 @@ import {
   legacyRichTextToHtml,
   stripRichTextForPreview,
 } from "@/lib/rich-text-shared";
-import { WritingAssistant } from "@/components/editor/writing-assistant";
+import {
+  useRichTextSpellingHighlights,
+  useSpellingIssues,
+} from "@/components/editor/writing-assistant";
 
 type RichTextEditorProps = {
   name?: string;
@@ -298,69 +301,6 @@ export function RichTextEditor({
     syncFromEditor();
   }
 
-  function replaceSpelling(
-    word: string,
-    replacement: string,
-  ) {
-    const editor =
-      editorRef.current;
-
-    if (
-      !editor ||
-      disabled ||
-      sourceMode
-    ) {
-      return;
-    }
-
-    const escaped =
-      word.replace(
-        /[.*+?^${}()|[\]\\]/g,
-        "\\$&",
-      );
-
-    const pattern =
-      new RegExp(
-        `(^|[^\\p{L}’'-])(${escaped})(?=$|[^\\p{L}’'-])`,
-        "giu",
-      );
-
-    const walker =
-      document.createTreeWalker(
-        editor,
-        NodeFilter.SHOW_TEXT,
-      );
-
-    let node =
-      walker.nextNode();
-
-    while (node) {
-      const value =
-        node.nodeValue ?? "";
-
-      const nextValue =
-        value.replace(
-          pattern,
-          (
-            _match,
-            prefix: string,
-          ) =>
-            `${prefix}${replacement}`,
-        );
-
-      if (nextValue !== value) {
-        node.nodeValue =
-          nextValue;
-      }
-
-      node =
-        walker.nextNode();
-    }
-
-    syncFromEditor();
-    editor.focus();
-  }
-
   function createLink() {
     const url = window.prompt(
       "Paste the destination URL:",
@@ -424,11 +364,32 @@ export function RichTextEditor({
     });
   }
 
+  const spellingIssues =
+    useSpellingIssues(
+      stripRichTextForPreview(html),
+      disabled || sourceMode,
+    );
+
+  useRichTextSpellingHighlights(
+    editorRef,
+    spellingIssues,
+    disabled || sourceMode,
+  );
+
   const textLength = visibleLength(html);
   const fullToolbar = variant === "lore";
 
   return (
     <div className="overflow-hidden border border-[#60482e]/55 bg-[#0d0907]">
+      <style jsx global>{`
+        ::highlight(sepulchria-spelling-error) {
+          text-decoration-line: underline;
+          text-decoration-style: wavy;
+          text-decoration-color: #d05d52;
+          text-decoration-thickness: 1.5px;
+          text-underline-offset: 2px;
+        }
+      `}</style>
       <div
         className="relative z-20 flex flex-wrap items-center gap-1.5 overflow-hidden border-b border-[#60482e]/40 bg-[#100c09] p-2"
         style={{ isolation: "isolate" }}
@@ -715,17 +676,9 @@ export function RichTextEditor({
         />
       ) : null}
 
-      {!sourceMode ? (
-        <WritingAssistant
-          text={stripRichTextForPreview(html)}
-          onReplace={replaceSpelling}
-          disabled={disabled}
-        />
-      ) : null}
-
       <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#60482e]/35 bg-[#0b0806] px-3 py-2 text-[9px] leading-4 text-[#756958]">
         <span>
-          Paste formatted content directly. Fonts, 8–24px text sizes, colours, links, lists and web images are retained. Browser spelling and correction are enabled.
+          Paste formatted content directly. Fonts, 8–24px text sizes, colours, links, lists and web images are retained. Misspellings are marked with a red wavy underline.
         </span>
         <span>
           {textLength.toLocaleString("en-GB")} / {maxTextLength.toLocaleString("en-GB")}

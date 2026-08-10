@@ -4,6 +4,7 @@ import {
   useEffect,
   useMemo,
   useState,
+  type RefObject,
 } from "react";
 
 export type WritingIssue = {
@@ -11,107 +12,59 @@ export type WritingIssue = {
   suggestions: string[];
 };
 
-type WritingAssistantProps = {
-  text: string;
-  onReplace: (
-    word: string,
-    replacement: string,
-  ) => void;
-  disabled?: boolean;
-  compact?: boolean;
-};
+const SPELLING_HIGHLIGHT_NAME =
+  "sepulchria-spelling-error";
 
-const STORAGE_KEY =
-  "sepulchria-writing-assistant-ignored";
-
-function readIgnoredWords() {
-  if (
-    typeof window ===
-    "undefined"
-  ) {
-    return new Set<string>();
-  }
-
-  try {
-    const stored =
-      window.localStorage.getItem(
-        STORAGE_KEY,
-      );
-
-    const values =
-      stored
-        ? (JSON.parse(
-            stored,
-          ) as unknown)
-        : [];
-
-    if (
-      !Array.isArray(values)
-    ) {
-      return new Set<string>();
-    }
-
-    return new Set(
-      values
-        .filter(
-          (value):
-            value is string =>
-            typeof value ===
-            "string",
-        )
-        .map((value) =>
-          value.toLocaleLowerCase(
-            "en-GB",
-          ),
-        ),
-    );
-  } catch {
-    return new Set<string>();
-  }
-}
-
-function saveIgnoredWords(
-  words: Set<string>,
+function escapeRegex(
+  value: string,
 ) {
-  try {
-    window.localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify(
-        Array.from(words),
-      ),
-    );
-  } catch {
-    // localStorage can be unavailable in privacy modes.
-  }
+  return value.replace(
+    /[.*+?^${}()|[\]\\]/g,
+    "\\$&",
+  );
 }
 
-export function WritingAssistant({
-  text,
-  onReplace,
+function issuePattern(
+  issues: WritingIssue[],
+) {
+  const words = Array.from(
+    new Set(
+      issues
+        .map((issue) =>
+          issue.word.trim(),
+        )
+        .filter(Boolean),
+    ),
+  ).sort(
+    (a, b) =>
+      b.length - a.length,
+  );
+
+  if (words.length === 0) {
+    return null;
+  }
+
+  const alternatives =
+    words
+      .map(escapeRegex)
+      .join("|");
+
+  return new RegExp(
+    `(^|[^\\p{L}’'-])(${alternatives})(?=$|[^\\p{L}’'-])`,
+    "giu",
+  );
+}
+
+/**
+ * Checks the draft against Sepulchria's existing British-English
+ * spelling API. Nothing is rendered by this hook.
+ */
+export function useSpellingIssues(
+  text: string,
   disabled = false,
-  compact = false,
-}: WritingAssistantProps) {
+) {
   const [issues, setIssues] =
-    useState<WritingIssue[]>(
-      [],
-    );
-
-  const [ignored, setIgnored] =
-    useState<Set<string>>(
-      () => new Set(),
-    );
-
-  const [checking, setChecking] =
-    useState(false);
-
-  const [available, setAvailable] =
-    useState(true);
-
-  useEffect(() => {
-    setIgnored(
-      readIgnoredWords(),
-    );
-  }, []);
+    useState<WritingIssue[]>([]);
 
   useEffect(() => {
     if (
@@ -119,7 +72,6 @@ export function WritingAssistant({
       text.trim().length < 3
     ) {
       setIssues([]);
-      setChecking(false);
       return;
     }
 
@@ -129,8 +81,6 @@ export function WritingAssistant({
     const timer =
       window.setTimeout(
         async () => {
-          setChecking(true);
-
           try {
             const response =
               await fetch(
@@ -150,7 +100,7 @@ export function WritingAssistant({
               );
 
             if (!response.ok) {
-              setAvailable(false);
+              setIssues([]);
               return;
             }
 
@@ -159,7 +109,6 @@ export function WritingAssistant({
                 issues?: WritingIssue[];
               };
 
-            setAvailable(true);
             setIssues(
               Array.isArray(
                 result.issues,
@@ -177,17 +126,10 @@ export function WritingAssistant({
               return;
             }
 
-            setAvailable(false);
-          } finally {
-            if (
-              !controller.signal
-                .aborted
-            ) {
-              setChecking(false);
-            }
+            setIssues([]);
           }
         },
-        650,
+        550,
       );
 
     return () => {
@@ -196,141 +138,338 @@ export function WritingAssistant({
     };
   }, [disabled, text]);
 
-  const visibleIssues =
-    useMemo(
-      () =>
-        issues.filter(
-          (issue) =>
-            !ignored.has(
-              issue.word.toLocaleLowerCase(
-                "en-GB",
-              ),
-            ),
+  return issues;
+}
+
+/**
+ * Underlines misspellings directly inside a contentEditable editor using
+ * the CSS Custom Highlight API.
+ *
+ * Crucially, this does NOT insert spans or alter editor.innerHTML, so the
+ * spelling marks can never be saved into forum posts or private messages.
+ */
+export function useRichTextSpellingHighlights(
+  editorRef:
+    RefObject<HTMLDivElement | null>,
+  issues: WritingIssue[],
+  disabled = false,
+) {
+  useEffect(() => {
+    const editor =
+      editorRef.current;
+
+    const highlightRegistry =
+      (
+        CSS as unknown as {
+          highlights?: {
+            set: (
+              name: string,
+              value: unknown,
+            ) => void;
+            delete: (
+              name: string,
+            ) => boolean;
+          };
+        }
+      ).highlights;
+
+    const HighlightConstructor =
+      (
+        globalThis as unknown as {
+          Highlight?: new (
+            ...ranges: Range[]
+          ) => unknown;
+        }
+      ).Highlight;
+
+    if (
+      !editor ||
+      !highlightRegistry ||
+      !HighlightConstructor
+    ) {
+      return;
+    }
+
+    highlightRegistry.delete(
+      SPELLING_HIGHLIGHT_NAME,
+    );
+
+    if (
+      disabled ||
+      issues.length === 0
+    ) {
+      return;
+    }
+
+    const pattern =
+      issuePattern(issues);
+
+    if (!pattern) {
+      return;
+    }
+
+    const ranges: Range[] = [];
+
+    const walker =
+      document.createTreeWalker(
+        editor,
+        NodeFilter.SHOW_TEXT,
+      );
+
+    let current =
+      walker.nextNode();
+
+    while (current) {
+      const value =
+        current.nodeValue ?? "";
+
+      pattern.lastIndex = 0;
+
+      let match:
+        | RegExpExecArray
+        | null;
+
+      while (
+        (
+          match =
+            pattern.exec(value)
+        ) !== null
+      ) {
+        const prefix =
+          match[1] ?? "";
+
+        const word =
+          match[2] ?? "";
+
+        if (!word) {
+          continue;
+        }
+
+        const start =
+          match.index +
+          prefix.length;
+
+        const end =
+          start + word.length;
+
+        const range =
+          document.createRange();
+
+        range.setStart(
+          current,
+          start,
+        );
+
+        range.setEnd(
+          current,
+          end,
+        );
+
+        ranges.push(range);
+
+        if (
+          match.index ===
+          pattern.lastIndex
+        ) {
+          pattern.lastIndex += 1;
+        }
+      }
+
+      current =
+        walker.nextNode();
+    }
+
+    if (ranges.length > 0) {
+      highlightRegistry.set(
+        SPELLING_HIGHLIGHT_NAME,
+        new HighlightConstructor(
+          ...ranges,
         ),
-      [ignored, issues],
-    );
+      );
+    }
 
-  function ignoreWord(
-    word: string,
-  ) {
-    const next =
-      new Set(ignored);
+    return () => {
+      highlightRegistry.delete(
+        SPELLING_HIGHLIGHT_NAME,
+      );
+    };
+  }, [
+    disabled,
+    editorRef,
+    issues,
+  ]);
+}
 
-    next.add(
-      word.toLocaleLowerCase(
-        "en-GB",
-      ),
-    );
+/**
+ * Mirror layer for a real <textarea>.
+ * The textarea keeps all normal input/caret/selection behaviour.
+ * This layer is pointer-events:none and draws ONLY the red squiggle.
+ */
+export function SpellingTextareaOverlay({
+  text,
+  issues,
+  scrollTop = 0,
+}: {
+  text: string;
+  issues: WritingIssue[];
+  scrollTop?: number;
+}) {
+  const pattern = useMemo(
+    () => issuePattern(issues),
+    [issues],
+  );
 
-    setIgnored(next);
-    saveIgnoredWords(next);
-  }
+  const fragments =
+    useMemo(() => {
+      if (
+        !pattern ||
+        !text
+      ) {
+        return [
+          {
+            text,
+            misspelled: false,
+          },
+        ];
+      }
+
+      pattern.lastIndex = 0;
+
+      const output: Array<{
+        text: string;
+        misspelled: boolean;
+      }> = [];
+
+      let cursor = 0;
+      let match:
+        | RegExpExecArray
+        | null;
+
+      while (
+        (
+          match =
+            pattern.exec(text)
+        ) !== null
+      ) {
+        const prefix =
+          match[1] ?? "";
+
+        const word =
+          match[2] ?? "";
+
+        const wordStart =
+          match.index +
+          prefix.length;
+
+        if (
+          wordStart > cursor
+        ) {
+          output.push({
+            text: text.slice(
+              cursor,
+              wordStart,
+            ),
+            misspelled: false,
+          });
+        }
+
+        if (word) {
+          output.push({
+            text: word,
+            misspelled: true,
+          });
+        }
+
+        cursor =
+          wordStart +
+          word.length;
+
+        if (
+          match.index ===
+          pattern.lastIndex
+        ) {
+          pattern.lastIndex += 1;
+        }
+      }
+
+      if (
+        cursor < text.length
+      ) {
+        output.push({
+          text: text.slice(
+            cursor,
+          ),
+          misspelled: false,
+        });
+      }
+
+      return output;
+    }, [pattern, text]);
 
   if (
-    disabled ||
-    (!checking &&
-      available &&
-      visibleIssues.length ===
-        0)
+    !text ||
+    issues.length === 0
   ) {
     return null;
   }
 
   return (
     <div
-      className={`border border-[#60482e]/40 bg-[#100c09] ${
-        compact
-          ? "mt-2 px-3 py-2"
-          : "border-t-0 px-4 py-3"
-      }`}
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 z-20 overflow-hidden"
     >
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <p className="text-[8px] uppercase tracking-[0.2em] text-[#9e7d52]">
-          Writing assistant
-        </p>
-
-        {checking ? (
-          <span className="text-[9px] text-[#766a5a]">
-            Checking…
-          </span>
-        ) : !available ? (
-          <span className="text-[9px] text-[#b27d6e]">
-            Spell checker unavailable
-          </span>
-        ) : (
-          <span className="text-[9px] text-[#766a5a]">
-            {visibleIssues.length}{" "}
-            {visibleIssues.length ===
-            1
-              ? "possible issue"
-              : "possible issues"}
-          </span>
-        )}
-      </div>
-
-      {available &&
-      visibleIssues.length > 0 ? (
-        <div className="mt-2 space-y-2">
-          {visibleIssues
-            .slice(
-              0,
-              compact ? 4 : 8,
-            )
-            .map((issue) => (
-              <div
-                key={issue.word.toLocaleLowerCase(
-                  "en-GB",
-                )}
-                className="flex flex-wrap items-center gap-2 border-t border-[#60482e]/25 pt-2 first:border-t-0 first:pt-0"
+      <div
+        className="whitespace-pre-wrap break-words px-4 py-3 text-sm leading-6"
+        style={{
+          transform:
+            `translateY(-${scrollTop}px)`,
+          color: "transparent",
+          font: "inherit",
+          overflowWrap:
+            "break-word",
+        }}
+      >
+        {fragments.map(
+          (
+            fragment,
+            index,
+          ) =>
+            fragment.misspelled ? (
+              <span
+                key={index}
+                style={{
+                  color:
+                    "transparent",
+                  textDecorationLine:
+                    "underline",
+                  textDecorationStyle:
+                    "wavy",
+                  textDecorationColor:
+                    "#d05d52",
+                  textDecorationThickness:
+                    "1.5px",
+                  textUnderlineOffset:
+                    "2px",
+                }}
               >
-                <span className="font-serif text-sm text-[#e0b98a]">
-                  {issue.word}
-                </span>
+                {fragment.text}
+              </span>
+            ) : (
+              <span
+                key={index}
+              >
+                {fragment.text}
+              </span>
+            ),
+        )}
 
-                <span className="text-[9px] text-[#6f6354]">
-                  →
-                </span>
-
-                {issue.suggestions.length >
-                0 ? (
-                  issue.suggestions.map(
-                    (suggestion) => (
-                      <button
-                        key={suggestion}
-                        type="button"
-                        onClick={() =>
-                          onReplace(
-                            issue.word,
-                            suggestion,
-                          )
-                        }
-                        className="border border-[#715537]/55 bg-[#1b140f] px-2 py-1 text-[9px] text-[#cdb28a] transition hover:border-[#9a7244] hover:text-[#efd4a0]"
-                      >
-                        {suggestion}
-                      </button>
-                    ),
-                  )
-                ) : (
-                  <span className="text-[9px] italic text-[#75695b]">
-                    No suggestions
-                  </span>
-                )}
-
-                <button
-                  type="button"
-                  onClick={() =>
-                    ignoreWord(
-                      issue.word,
-                    )
-                  }
-                  className="ml-auto text-[8px] uppercase tracking-[0.12em] text-[#796b5a] underline decoration-[#5e503f] underline-offset-2 transition hover:text-[#b69a75]"
-                >
-                  Ignore
-                </button>
-              </div>
-            ))}
-        </div>
-      ) : null}
+        {/*
+         * Keeps a final blank line measurable in the same way as textarea.
+         */}
+        {text.endsWith("\n")
+          ? "\u200b"
+          : null}
+      </div>
     </div>
   );
 }

@@ -10,7 +10,10 @@ import {
 import { useFormStatus } from "react-dom";
 
 import { CHAT_MAX_LENGTH } from "@/lib/game/constants";
-import { WritingAssistant } from "@/components/editor/writing-assistant";
+import {
+  SpellingTextareaOverlay,
+  useSpellingIssues,
+} from "@/components/editor/writing-assistant";
 import type {
   ActionState,
   CharacterAttributeKey,
@@ -111,6 +114,14 @@ export default function RoomChatForm({
 
   const textareaRef =
     useRef<HTMLTextAreaElement>(null);
+
+  const [
+    textareaScrollTop,
+    setTextareaScrollTop,
+  ] = useState(0);
+
+  const spellingIssues =
+    useSpellingIssues(value);
 
   const nonceInputRef =
     useRef<HTMLInputElement>(null);
@@ -225,38 +236,6 @@ export default function RoomChatForm({
     }
   }
 
-  function replaceSpelling(
-    word: string,
-    replacement: string,
-  ) {
-    const escaped =
-      word.replace(
-        /[.*+?^${}()|[\]\\]/g,
-        "\\$&",
-      );
-
-    const pattern =
-      new RegExp(
-        `(^|[^\\p{L}’'-])(${escaped})(?=$|[^\\p{L}’'-])`,
-        "giu",
-      );
-
-    setValue((current) =>
-      current.replace(
-        pattern,
-        (
-          _match,
-          prefix: string,
-        ) =>
-          `${prefix}${replacement}`,
-      ),
-    );
-
-    requestAnimationFrame(() => {
-      textareaRef.current?.focus();
-    });
-  }
-
   function selectWhisperRecipient(
     characterId: string,
   ) {
@@ -349,30 +328,38 @@ export default function RoomChatForm({
           value={whisperRecipientId}
         />
 
-        <textarea
-          ref={textareaRef}
-          name="message"
-          required
-          maxLength={CHAT_MAX_LENGTH}
-          value={value}
-          lang="en-GB"
-          spellCheck
-          autoCorrect="on"
-          autoCapitalize="sentences"
-          onChange={(event) =>
-            handleMessageChange(
-              event.target.value,
-            )
-          }
-          placeholder="Speech outside brackets; actions, movement, descriptions inside < > or ( ). Out-of-character messages must be preceded by //. To whisper to a character, select them from the dropdown and begin your message with @CharacterName@."
-          className="h-24 w-full resize-none border border-[#60482e]/50 bg-[#0f0c09] px-4 py-3 text-sm leading-6 text-[#d0bea1] outline-none transition placeholder:text-[#5f574d] focus:border-[#927047]"
-        />
+        <div className="relative h-24 overflow-hidden border border-[#60482e]/50 bg-[#0f0c09] transition focus-within:border-[#927047]">
+          <textarea
+            ref={textareaRef}
+            name="message"
+            required
+            maxLength={CHAT_MAX_LENGTH}
+            value={value}
+            lang="en-GB"
+            spellCheck={false}
+            onScroll={(event) =>
+              setTextareaScrollTop(
+                event.currentTarget
+                  .scrollTop,
+              )
+            }
+            onChange={(event) =>
+              handleMessageChange(
+                event.target.value,
+              )
+            }
+            placeholder="Speech outside brackets; actions, movement, descriptions inside < > or ( ). Out-of-character messages must be preceded by //. To whisper to a character, select them from the dropdown and begin your message with @CharacterName@."
+            className="relative z-10 h-full w-full resize-none border-0 bg-transparent px-4 py-3 text-sm leading-6 text-[#d0bea1] outline-none placeholder:text-[#5f574d]"
+          />
 
-        <WritingAssistant
-          text={value}
-          onReplace={replaceSpelling}
-          compact
-        />
+          <SpellingTextareaOverlay
+            text={value}
+            issues={spellingIssues}
+            scrollTop={
+              textareaScrollTop
+            }
+          />
+        </div>
 
         <div className="mt-3 grid items-center gap-2 xl:grid-cols-[auto_minmax(0,1fr)_auto]">
           <div className="flex min-w-0 items-center gap-3">
