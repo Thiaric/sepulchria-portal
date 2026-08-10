@@ -10,15 +10,16 @@ export function RaceCard({
 }: RaceCardProps) {
   return (
     <CodexEntryCard
-      name={race.name}
-      slug={race.slug}
-      summary={race.summary}
-      hrefBase="/races"
-      imageUrl={race.image_url}
-      iconUrl={race.icon_url}
-      colour={race.colour}
-      categoryLabel="People of Aureth"
-      enableImagePreview
-    />
+  name={race.name}
+  slug={race.slug}
+  summary={race.summary}
+  hrefBase="/races"
+  imageUrl={race.image_url}
+  iconUrl={race.icon_url}
+  colour={race.colour}
+  categoryLabel="People of Aureth"
+  anchorId={`race-${race.slug}`}
+  enableImagePreview
+/>
   );
 }

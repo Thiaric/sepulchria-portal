@@ -59,39 +59,66 @@ export function PortalContextPanel({
     return <CharacterArchiveContext />;
   }
 
-  if (
-    pathname === "/races" ||
-    pathname.startsWith("/races/")
-  ) {
-    return (
-      <CodexContext
-        eyebrow="Codex"
-        title="Ancestries"
-        description="The peoples and lineages of Aureth, their origins and their relationship with the Current."
-        primaryHref="/races"
-        primaryLabel="Browse ancestries"
-        secondaryHref="/associations"
-        secondaryLabel="View associations"
-      />
-    );
-  }
+  if (pathname === "/races") {
+  return (
+    <PublicCodexJumpContext
+      table="races"
+      title="Ancestries"
+      eyebrow="Codex"
+      anchorPrefix="race"
+    />
+  );
+}
 
-  if (
-    pathname === "/associations" ||
-    pathname.startsWith("/associations/")
-  ) {
-    return (
-      <CodexContext
-        eyebrow="Codex"
-        title="Associations"
-        description="The eleven civic bodies that shape Sepulchria's professions, laws, beliefs and daily life."
-        primaryHref="/associations"
-        primaryLabel="Browse associations"
-        secondaryHref="/races"
-        secondaryLabel="View races"
-      />
-    );
-  }
+if (
+  pathname.startsWith(
+    "/races/",
+  )
+) {
+  return (
+    <CodexContext
+      eyebrow="Codex"
+      title="Ancestries"
+      description="The peoples and lineages of Aureth, their origins and their relationship with the Current."
+      primaryHref="/races"
+      primaryLabel="All ancestries"
+      secondaryHref="/associations"
+      secondaryLabel="Associations"
+    />
+  );
+}
+
+if (
+  pathname ===
+  "/associations"
+) {
+  return (
+    <PublicCodexJumpContext
+      table="associations"
+      title="Associations"
+      eyebrow="Codex"
+      anchorPrefix="association"
+    />
+  );
+}
+
+if (
+  pathname.startsWith(
+    "/associations/",
+  )
+) {
+  return (
+    <CodexContext
+      eyebrow="Codex"
+      title="Associations"
+      description="The civic bodies that shape Sepulchria's professions, laws, beliefs and daily life."
+      primaryHref="/associations"
+      primaryLabel="All associations"
+      secondaryHref="/races"
+      secondaryLabel="Ancestries"
+    />
+  );
+}
 
   if (pathname === "/admin/races") {
     return (
@@ -188,6 +215,217 @@ export function PortalContextPanel({
   return <DefaultContext />;
 }
 
+type PublicCodexJumpEntry = {
+  id: string;
+  name: string;
+  slug: string;
+};
+
+function PublicCodexJumpContext({
+  table,
+  title,
+  eyebrow,
+  anchorPrefix,
+}: {
+  table:
+    | "races"
+    | "associations";
+  title: string;
+  eyebrow: string;
+  anchorPrefix: string;
+}) {
+  const [entries, setEntries] =
+    useState<
+      PublicCodexJumpEntry[]
+    >([]);
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const [error, setError] =
+    useState<string | null>(
+      null,
+    );
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadEntries() {
+      const supabase =
+        createClient();
+
+      const {
+        data,
+        error,
+      } = await supabase
+        .from(table)
+        .select(
+          "id, name, slug, sort_order",
+        )
+        .eq(
+          "is_active",
+          true,
+        )
+        .order(
+          "sort_order",
+          {
+            ascending: true,
+          },
+        )
+        .order(
+          "name",
+          {
+            ascending: true,
+          },
+        );
+
+      if (cancelled) {
+        return;
+      }
+
+      if (error) {
+        setError(
+          error.message,
+        );
+
+        setLoading(false);
+        return;
+      }
+
+      setEntries(
+        (data ?? []).map(
+          (entry) => ({
+            id: String(
+              entry.id,
+            ),
+            name: String(
+              entry.name,
+            ),
+            slug: String(
+              entry.slug,
+            ),
+          }),
+        ),
+      );
+
+      setError(null);
+      setLoading(false);
+    }
+
+    void loadEntries();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [table]);
+
+  function jumpTo(
+    slug: string,
+  ) {
+    const anchor =
+      `${anchorPrefix}-${slug}`;
+
+    const element =
+      document.getElementById(
+        anchor,
+      );
+
+    if (!element) {
+      return;
+    }
+
+    element.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
+    window.history.replaceState(
+      null,
+      "",
+      `#${anchor}`,
+    );
+  }
+
+  return (
+    <div className="flex h-full min-h-0 flex-col">
+      <ContextHeading
+        eyebrow={eyebrow}
+        title={title}
+      />
+
+      <p className="mb-4 text-xs leading-6 text-[#938673]">
+        Jump directly to an
+        entry.
+      </p>
+
+      {error ? (
+        <p className="mb-3 border border-[#743d35] bg-[#2a1512] p-3 text-[11px] leading-5 text-[#d8a49a]">
+          The list could not be
+          loaded.
+        </p>
+      ) : null}
+
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1">
+        {loading ? (
+          <div className="space-y-2">
+            {Array.from({
+              length: 6,
+            }).map(
+              (_, index) => (
+                <div
+                  key={index}
+                  className="h-11 animate-pulse border border-[#59432c]/30 bg-[#19120d]"
+                />
+              ),
+            )}
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {entries.map(
+              (entry) => (
+                <button
+                  key={
+                    entry.id
+                  }
+                  type="button"
+                  onClick={() =>
+                    jumpTo(
+                      entry.slug,
+                    )
+                  }
+                  className="group flex w-full items-center justify-between gap-3 border border-[#59432c]/40 bg-[#100c09] px-3 py-3 text-left transition hover:border-[#8d693e] hover:bg-[#1d150f]"
+                >
+                  <span className="min-w-0 truncate font-serif text-sm text-[#cbb28a] transition group-hover:text-[#ead0a0]">
+                    {
+                      entry.name
+                    }
+                  </span>
+
+                  <span
+                    aria-hidden="true"
+                    className="shrink-0 text-[10px] text-[#725a3d] transition group-hover:translate-x-0.5 group-hover:text-[#b88a52]"
+                  >
+                    ↓
+                  </span>
+                </button>
+              ),
+            )}
+          </div>
+        )}
+
+        {!loading &&
+        !error &&
+        entries.length === 0 ? (
+          <p className="border border-[#59432c]/30 bg-[#100c09]/60 p-3 text-[11px] leading-5 text-[#8f8271]">
+            No active entries
+            are currently
+            available.
+          </p>
+        ) : null}
+      </div>
+    </div>
+  );
+}
 
 type AdminCodexJumpEntry = {
   id: string;
@@ -315,16 +553,6 @@ function AdminCodexJumpContext({
           +
         </span>
       </button>
-
-      <div className="mb-3 flex items-center justify-between gap-3 border-y border-[#59432c]/35 py-3">
-        <p className="text-[8px] uppercase tracking-[0.22em] text-[#876a46]">
-          Existing {pluralLabel}
-        </p>
-
-        <span className="flex h-7 min-w-7 items-center justify-center border border-[#59432c]/50 bg-[#100c09] px-2 text-[10px] text-[#b2956f]">
-          {entries.length}
-        </span>
-      </div>
 
       {error ? (
         <p className="mb-3 border border-[#743d35] bg-[#2a1512] p-3 text-[11px] leading-5 text-[#d8a49a]">

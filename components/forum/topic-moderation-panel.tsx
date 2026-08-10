@@ -147,7 +147,7 @@ export default function TopicModerationPanel({
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="border border-amber-900/60 bg-amber-950/10 px-4 py-3 text-[8px] uppercase tracking-[0.16em] text-amber-400 transition hover:border-amber-700 hover:bg-amber-950/25"
+        className="inline-flex h-10 items-center justify-center whitespace-nowrap border border-amber-800/70 bg-[#17110d] px-4 text-[8px] uppercase tracking-[0.16em] text-[#c8ae83] transition hover:bg-[#21170f] hover:text-[#ead4ad]"
       >
         Moderate topic
       </button>

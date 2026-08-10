@@ -645,7 +645,7 @@ export function ForumTopicFlagButton({
         onClick={() =>
           setOpen(true)
         }
-        className="border border-[#60482e]/55 bg-[#17110d] px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[#b39469] transition hover:border-[#9a7445] hover:bg-[#251a11] hover:text-[#e0c89e]"
+        className="inline-flex h-10 items-center justify-center gap-2 whitespace-nowrap border border-[#6f6755]/70 bg-[#17110d] px-4 text-[8px] uppercase tracking-[0.16em] text-[#c8ae83] transition hover:bg-[#21170f] hover:text-[#ead4ad]"
         title="Send selected characters a private message asking them to read this topic"
       >
         ⚑ Flag for reading

@@ -1048,7 +1048,7 @@ export default async function TopicPage({
               {section.name}
             </p>
           </div>
-
+<div className="flex flex-wrap items-center justify-end gap-2">
                     <ForumTopicFavouriteButton
             topicId={topic.id}
           />
@@ -1084,7 +1084,7 @@ export default async function TopicPage({
               }
             />
           ) : null}
-        </div>
+        </div></div>
 
         <dl className="grid grid-cols-2 divide-x divide-[#60482e]/30 bg-[#100c09] sm:grid-cols-4">
           <TopicStatistic

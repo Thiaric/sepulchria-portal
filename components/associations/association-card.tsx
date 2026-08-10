@@ -10,15 +10,16 @@ export function AssociationCard({
 }: AssociationCardProps) {
   return (
     <CodexEntryCard
-      name={association.name}
-      slug={association.slug}
-      summary={association.summary}
-      hrefBase="/associations"
-      imageUrl={association.image_url}
-      iconUrl={association.icon_url}
-      colour={association.colour}
-      categoryLabel="Body of the City"
-      enableImagePreview
-    />
+  name={association.name}
+  slug={association.slug}
+  summary={association.summary}
+  hrefBase="/associations"
+  imageUrl={association.image_url}
+  iconUrl={association.icon_url}
+  colour={association.colour}
+  categoryLabel="Body of the City"
+  anchorId={`association-${association.slug}`}
+  enableImagePreview
+/>
   );
 }

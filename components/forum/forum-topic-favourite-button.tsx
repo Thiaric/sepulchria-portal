@@ -188,8 +188,8 @@ export function ForumTopicFavouriteButton({
       className={[
         compact
           ? "flex h-8 w-8 items-center justify-center"
-          : "inline-flex min-h-10 items-center gap-2 border border-[#765937]/55 bg-[#20160f] px-3 py-2 text-[9px] uppercase tracking-[0.14em]",
-        "text-[#c99a53] transition hover:border-[#a47a42] hover:bg-[#2b1d13] hover:text-[#f3ca7d] disabled:cursor-wait disabled:opacity-45",
+          : "inline-flex h-10 items-center justify-center gap-2 whitespace-nowrap border border-[#9a7445]/70 bg-[#17110d] px-4 text-[8px] uppercase tracking-[0.16em]",
+        "text-[#c8ae83] transition hover:bg-[#21170f] hover:text-[#ead4ad] disabled:cursor-wait disabled:opacity-45",
         className,
       ].join(" ")}
     >
