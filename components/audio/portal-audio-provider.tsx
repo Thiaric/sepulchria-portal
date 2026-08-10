@@ -27,7 +27,7 @@ const STORAGE_KEY =
   "sepulchria-portal-sound-muted";
 
 const PIGEON_SOUND_URL =
-  "/sounds/private-message-pigeon.wav";
+  "/sounds/private-message-pigeon.mp3";
 
 const PortalAudioContext =
   createContext<PortalAudioContextValue | null>(
