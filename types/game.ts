@@ -3,11 +3,26 @@ export type PresenceStatus =
   | "away"
   | "busy";
 
+export type CharacterIdentityRelation = {
+  id: string;
+  name: string;
+  icon_url: string | null;
+};
+
 export type CharacterSummary = {
   id: string;
+  first_name?: string | null;
   display_name: string;
   portrait_url: string | null;
   public_slug: string | null;
+  race?:
+    | CharacterIdentityRelation
+    | CharacterIdentityRelation[]
+    | null;
+  association?:
+    | CharacterIdentityRelation
+    | CharacterIdentityRelation[]
+    | null;
 };
 
 export type PresentRoomCharacter = {

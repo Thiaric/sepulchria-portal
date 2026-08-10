@@ -63,6 +63,49 @@ function normaliseRelation<T>(
   return value;
 }
 
+function CharacterIdentityIcons({
+  author,
+}: {
+  author: CharacterSummary | null;
+}) {
+  const race = author
+    ? normaliseRelation(author.race)
+    : null;
+
+  const association = author
+    ? normaliseRelation(author.association)
+    : null;
+
+  if (
+    !race?.icon_url &&
+    !association?.icon_url
+  ) {
+    return null;
+  }
+
+  return (
+    <div className="flex shrink-0 flex-col items-center gap-1 pt-0.5">
+      {race?.icon_url ? (
+        <img
+          src={race.icon_url}
+          alt={race.name}
+          title={race.name}
+          className="h-4 w-4 object-contain"
+        />
+      ) : null}
+
+      {association?.icon_url ? (
+        <img
+          src={association.icon_url}
+          alt={association.name}
+          title={association.name}
+          className="h-4 w-4 object-contain"
+        />
+      ) : null}
+    </div>
+  );
+}
+
 function mergeMessages(
   currentMessages: RoomMessage[],
   incomingMessages: RoomMessage[],
@@ -230,30 +273,30 @@ function ActionSpeechText({
           )
         );
 
-      const text = isAction
+      const displayText = isAction
         ? segment.slice(1, -1)
         : segment;
 
       rendered.push(
-  <Fragment key={index}>
-    <span
-      className={
-        isAction
-          ? "italic text-[#a98a60]"
-          : "text-[#d3c2aa]"
-      }
-    >
-      {segment}
-    </span>
-  </Fragment>,
-);
+        <Fragment key={index}>
+          <span
+            className={
+              isAction
+                ? "italic text-[#a98a60]"
+                : "text-[#d3c2aa]"
+            }
+          >
+            {displayText}
+          </span>
+        </Fragment>,
+      );
     },
   );
 
   return (
-    <p className="mt-3 whitespace-pre-wrap break-words text-sm leading-7">
+    <span className="whitespace-pre-wrap break-words text-[13px] leading-6">
       {rendered}
-    </p>
+    </span>
   );
 }
 
@@ -265,12 +308,12 @@ function CharacterPortrait({
   characterHref: string;
 }) {
   const portrait = (
-    <div className="h-12 w-12 shrink-0 overflow-hidden border border-[#60482e] bg-[#0d0a08]">
+    <div className="h-9 w-9 shrink-0 overflow-hidden border border-[#60482e] bg-[#0d0a08]">
       {author?.portrait_url ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={author.portrait_url}
-          alt={`Portrait of ${author.display_name}`}
+          alt={`Portrait of ${author.first_name}`}
           className="h-full w-full object-cover"
         />
       ) : (
@@ -331,6 +374,138 @@ export default function RoomMessageList({
         ),
     );
   }, [messages]);
+
+  useEffect(() => {
+    const characterIds =
+      Array.from(
+        new Set(
+          liveMessages
+            .map(
+              (message) =>
+                message.character_id,
+            )
+            .filter(Boolean),
+        ),
+      );
+
+    if (
+      characterIds.length === 0
+    ) {
+      return;
+    }
+
+    const needsIdentityData =
+      liveMessages.some(
+        (message) => {
+          const author =
+            normaliseRelation(
+              message.character,
+            );
+
+          return (
+            author &&
+            (
+              author.race ===
+                undefined ||
+              author.association ===
+                undefined ||
+              author.first_name ===
+                undefined
+            )
+          );
+        },
+      );
+
+    if (!needsIdentityData) {
+      return;
+    }
+
+    let cancelled = false;
+
+    async function enrichAuthors() {
+      const supabase =
+        createClient();
+
+      const {
+        data,
+        error,
+      } = await supabase
+        .from("characters")
+        .select(`
+          id,
+          first_name,
+          display_name,
+          portrait_url,
+          public_slug,
+          race:races(
+            id,
+            name,
+            icon_url
+          ),
+          association:associations(
+            id,
+            name,
+            icon_url
+          )
+        `)
+        .in(
+          "id",
+          characterIds,
+        );
+
+      if (
+        error ||
+        !data ||
+        cancelled
+      ) {
+        if (error) {
+          console.error(
+            "Unable to load character identity icons:",
+            error.message,
+          );
+        }
+        return;
+      }
+
+      const byId =
+        new Map(
+          data.map(
+            (character) => [
+              character.id,
+              character as CharacterSummary,
+            ],
+          ),
+        );
+
+      setLiveMessages(
+        (currentMessages) =>
+          currentMessages.map(
+            (message) => {
+              const enriched =
+                byId.get(
+                  message.character_id,
+                );
+
+              if (!enriched) {
+                return message;
+              }
+
+              return {
+                ...message,
+                character:
+                  enriched,
+              };
+            },
+          ),
+      );
+    }
+
+    void enrichAuthors();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [liveMessages]);
 
   useEffect(() => {
     const container =
@@ -496,9 +671,20 @@ export default function RoomMessageList({
               .from("characters")
               .select(`
                 id,
+                first_name,
                 display_name,
                 portrait_url,
-                public_slug
+                public_slug,
+                race:races(
+                  id,
+                  name,
+                  icon_url
+                ),
+                association:associations(
+                  id,
+                  name,
+                  icon_url
+                )
               `)
               .eq(
                 "id",
@@ -514,6 +700,7 @@ export default function RoomMessageList({
                   )
                   .select(`
                     id,
+                    first_name,
                     display_name,
                     portrait_url,
                     public_slug
@@ -845,62 +1032,79 @@ export default function RoomMessageList({
                 return (
                   <article
                     key={item.id}
-                    className={`flex gap-4 px-5 py-5 sm:px-7 ${
+                    className={`flex gap-3 px-5 py-3 sm:px-7 ${
                       isWhisper
                         ? "border-l-2 border-[#7d628f] bg-[#241b2a]/45"
                         : ""
                     }`}
                   >
-                    <CharacterPortrait
-                      author={author}
-                      characterHref={
-                        characterHref
-                      }
-                    />
+                    <div className="flex shrink-0 items-start gap-1.5">
+                      <CharacterPortrait
+                        author={author}
+                        characterHref={
+                          characterHref
+                        }
+                      />
+
+                      <CharacterIdentityIcons
+                        author={author}
+                      />
+                    </div>
 
                     <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-baseline justify-between gap-2">
-                        <div className="flex flex-wrap items-center gap-3">
+                      {isWhisper ? (
+                        <div className="mb-2 flex items-center justify-between gap-3 border-b border-[#7d628f]/35 pb-1.5">
+                          <span className="text-[8px] uppercase tracking-[0.2em] text-[#c7add6]">
+                            {whisperLabel}
+                          </span>
+
+                          <time
+                            dateTime={
+                              item.created_at
+                            }
+                            className="shrink-0 text-[8px] uppercase tracking-[0.14em] text-[#776b5b]"
+                          >
+                            {time}
+                          </time>
+                        </div>
+                      ) : null}
+
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0 flex-1">
                           {author?.public_slug ? (
                             <Link
-                              href={
-                                characterHref
-                              }
-                              className="font-serif text-lg text-[#d8bf91] transition hover:text-[#ecd29e]"
+                              href={characterHref}
+                              className="mr-2 inline font-serif text-sm text-[#d8bf91] transition hover:text-[#ecd29e]"
                             >
-                              {
-                                author.display_name
-                              }
+                              {author.first_name ??
+                                author.display_name}
                             </Link>
                           ) : (
-                            <span className="font-serif text-lg text-[#d8bf91]">
-                              {author?.display_name ??
+                            <span className="mr-2 inline font-serif text-sm text-[#d8bf91]">
+                              {author?.first_name ??
+                                author?.display_name ??
                                 "Unknown character"}
                             </span>
                           )}
 
-                          {isWhisper ? (
-                            <span className="border border-[#7d628f]/60 bg-[#201727] px-2 py-1 text-[7px] uppercase tracking-[0.18em] text-[#c7add6]">
-                              {whisperLabel}
-                            </span>
-                          ) : null}
+                          <ActionSpeechText
+                            content={
+                              item.message
+                            }
+                          />
                         </div>
 
-                        <time
-                          dateTime={
-                            item.created_at
-                          }
-                          className="text-[9px] uppercase tracking-[0.18em] text-[#776b5b]"
-                        >
-                          {time}
-                        </time>
+                        {!isWhisper ? (
+                          <time
+                            dateTime={
+                              item.created_at
+                            }
+                            className="shrink-0 pt-1 text-[9px] uppercase tracking-[0.18em] text-[#776b5b]"
+                          >
+                            {time}
+                          </time>
+                        ) : null}
                       </div>
-
-                      <ActionSpeechText
-                        content={
-                          item.message
-                        }
-                      />
                     </div>
                   </article>
                 );

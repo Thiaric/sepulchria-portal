@@ -152,18 +152,48 @@ async function GameContent() {
     character_id,
 
     character:characters!room_messages_character_id_fkey(
-      id,
-      display_name,
-      portrait_url,
-      public_slug
-    ),
+  id,
+  first_name,
+  display_name,
+  portrait_url,
+  public_slug,
+
+  race:races!characters_race_id_fkey(
+    id,
+    name,
+    slug,
+    icon_url
+  ),
+
+  association:associations!characters_association_id_fkey(
+    id,
+    name,
+    slug,
+    icon_url
+  )
+),
 
     whisperRecipient:characters!room_messages_whisper_recipient_character_id_fkey(
-      id,
-      display_name,
-      portrait_url,
-      public_slug
-    )
+  id,
+  first_name,
+  display_name,
+  portrait_url,
+  public_slug,
+
+  race:races!characters_race_id_fkey(
+    id,
+    name,
+    slug,
+    icon_url
+  ),
+
+  association:associations!characters_association_id_fkey(
+    id,
+    name,
+    slug,
+    icon_url
+  )
+)
   `;
 
   const {
