@@ -6,6 +6,7 @@ import { CharacterAttributesDisplay } from "@/components/characters/character-at
 import { CharacterExpertiseTotal } from "@/components/characters/character-expertise-total";
 import { CharacterHealthDisplay } from "@/components/characters/character-health-display";
 import { LiveCharacterPresence } from "@/components/characters/live-character-presence";
+import { PublicCharacterAgeDetail } from "@/components/characters/public-character-age-detail";
 import type {
   PublicCharacterProfile,
 } from "@/types/public-character";
@@ -16,29 +17,6 @@ type PublicCharacterProfileProps = {
   returnLabel: string;
   canMessage: boolean;
 };
-
-function formatDate(
-  value: string | null,
-): string {
-  if (!value) {
-    return "Unknown";
-  }
-
-  const date = new Date(value);
-
-  if (Number.isNaN(date.getTime())) {
-    return value;
-  }
-
-  return new Intl.DateTimeFormat(
-    "en-GB",
-    {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    },
-  ).format(date);
-}
 
 function ProfileSection({
   title,
@@ -202,12 +180,6 @@ export function PublicCharacterProfileView({
                 {character.occupation ? (
                   <span>{character.occupation}</span>
                 ) : null}
-
-                {character.origin ? (
-                  <span>
-                    From {character.origin}
-                  </span>
-                ) : null}
               </div>
 
               <div className="mt-6">
@@ -286,25 +258,16 @@ export function PublicCharacterProfileView({
                 characterId={character.id}
               />
 
-              <Detail
-                label="Date of birth"
-                value={
-                  character.date_of_birth
-                    ? formatDate(
-                        character.date_of_birth,
-                      )
-                    : null
-                }
+              <PublicCharacterAgeDetail
+                characterId={character.id}
               />
 
               <Detail
                 label="Birthplace"
-                value={character.birthplace}
-              />
-
-              <Detail
-                label="Origin"
-                value={character.origin}
+                value={
+                  character.birthplace ??
+                  "Sepulchria"
+                }
               />
 
               <Detail

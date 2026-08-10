@@ -34,7 +34,7 @@ export async function PortalHeader({
           </span>
 
           <span className="mt-1 hidden text-[10px] uppercase tracking-[0.35em] text-[#8f806d] sm:block">
-            The city of the First. Built upon the remains of The First, shaped by your choices.
+            Built upon the remains of The First, shaped by your choices.
           </span>
         </Link>
 

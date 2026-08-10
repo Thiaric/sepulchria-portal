@@ -49,7 +49,9 @@ export function CharacterReviewFields({
 
       <label className="block">
         <span className="mb-2 flex items-center gap-2 text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
-          Rejection reason
+          {rejectionRequired
+              ? "Required"
+              : ""} reason
           <span
             className={
               rejectionRequired
@@ -59,7 +61,7 @@ export function CharacterReviewFields({
           >
             {rejectionRequired
               ? "Required"
-              : "Optional"}
+              : ""}
           </span>
         </span>
 
