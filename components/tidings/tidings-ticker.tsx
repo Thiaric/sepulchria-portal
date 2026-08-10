@@ -10,6 +10,8 @@ import {
 import { createClient } from "@/lib/supabase/client";
 import type { Tiding } from "@/lib/tidings/types";
 
+const RESYNC_INTERVAL_MS = 3_000;
+
 function stillVisible(tiding: Tiding, now: number) {
   if (!tiding.is_active) return false;
 
@@ -33,16 +35,46 @@ function priorityRank(priority: Tiding["priority"]) {
   return 0;
 }
 
+function sortTidings(entries: Tiding[]) {
+  return [...entries].sort((a, b) => {
+    const priority =
+      priorityRank(b.priority) -
+      priorityRank(a.priority);
+
+    if (priority !== 0) return priority;
+
+    return Date.parse(b.created_at) - Date.parse(a.created_at);
+  });
+}
+
+function isTiding(value: unknown): value is Tiding {
+  if (!value || typeof value !== "object") return false;
+
+  const entry = value as Partial<Tiding>;
+
+  return (
+    typeof entry.id === "string" &&
+    typeof entry.title === "string" &&
+    typeof entry.message === "string" &&
+    typeof entry.priority === "string" &&
+    typeof entry.is_active === "boolean" &&
+    typeof entry.starts_at === "string" &&
+    typeof entry.created_at === "string" &&
+    typeof entry.updated_at === "string"
+  );
+}
+
 export function TidingsTicker({
   initialTidings,
 }: {
   initialTidings: Tiding[];
 }) {
+  const supabase = useMemo(() => createClient(), []);
+
   const [tidings, setTidings] =
-    useState(initialTidings);
+    useState(() => sortTidings(initialTidings));
 
   const sync = useCallback(async () => {
-    const supabase = createClient();
     const now = new Date().toISOString();
 
     const { data, error } = await supabase
@@ -58,15 +90,13 @@ export function TidingsTicker({
       .limit(12);
 
     if (!error && data) {
-      setTidings(data as Tiding[]);
+      setTidings(sortTidings(data as Tiding[]));
     }
-  }, []);
+  }, [supabase]);
 
   useEffect(() => {
-    const supabase = createClient();
-
     const channel = supabase
-      .channel("portal-tidings-live")
+      .channel("portal-tidings-live-v2")
       .on(
         "postgres_changes",
         {
@@ -74,7 +104,51 @@ export function TidingsTicker({
           schema: "public",
           table: "tidings",
         },
-        () => {
+        (payload) => {
+          /*
+           * Update the footer IMMEDIATELY from the realtime payload.
+           * No router.refresh() and no full-page refresh is involved.
+           */
+          setTidings((current) => {
+            if (payload.eventType === "DELETE") {
+              const deletedId =
+                payload.old &&
+                typeof payload.old === "object" &&
+                "id" in payload.old &&
+                typeof payload.old.id === "string"
+                  ? payload.old.id
+                  : null;
+
+              if (!deletedId) return current;
+
+              return current.filter(
+                (entry) => entry.id !== deletedId,
+              );
+            }
+
+            if (!isTiding(payload.new)) {
+              return current;
+            }
+
+            const nextEntry = payload.new;
+            const withoutOldVersion = current.filter(
+              (entry) => entry.id !== nextEntry.id,
+            );
+
+            if (!stillVisible(nextEntry, Date.now())) {
+              return sortTidings(withoutOldVersion);
+            }
+
+            return sortTidings([
+              nextEntry,
+              ...withoutOldVersion,
+            ]).slice(0, 12);
+          });
+
+          /*
+           * Then verify against the database. This catches scheduling,
+           * expiry and policy edge-cases without delaying the visible update.
+           */
           void sync();
         },
       )
@@ -84,42 +158,71 @@ export function TidingsTicker({
         }
       });
 
+    return () => {
+      void supabase.removeChannel(channel);
+    };
+  }, [supabase, sync]);
+
+  useEffect(() => {
+    /*
+     * Realtime is the fast path. A 3-second fallback means that even if
+     * a websocket event is lost, only the Tidings footer self-corrects
+     * almost immediately without refreshing the page.
+     */
     const timer = window.setInterval(() => {
       void sync();
-    }, 60_000);
+    }, RESYNC_INTERVAL_MS);
+
+    return () => window.clearInterval(timer);
+  }, [sync]);
+
+  useEffect(() => {
+    const resync = () => {
+      void sync();
+    };
+
+    const visibility = () => {
+      if (document.visibilityState === "visible") {
+        resync();
+      }
+    };
+
+    window.addEventListener("focus", resync);
+    window.addEventListener("online", resync);
+    document.addEventListener("visibilitychange", visibility);
 
     return () => {
-      window.clearInterval(timer);
-      void supabase.removeChannel(channel);
+      window.removeEventListener("focus", resync);
+      window.removeEventListener("online", resync);
+      document.removeEventListener("visibilitychange", visibility);
     };
   }, [sync]);
 
   const visible = useMemo(() => {
     const now = Date.now();
 
-    return [...tidings]
-      .filter((entry) => stillVisible(entry, now))
-      .sort((a, b) => {
-        const priority =
-          priorityRank(b.priority) -
-          priorityRank(a.priority);
-
-        if (priority !== 0) return priority;
-
-        return (
-          Date.parse(b.created_at) -
-          Date.parse(a.created_at)
-        );
-      });
+    return sortTidings(
+      tidings.filter((entry) => stillVisible(entry, now)),
+    );
   }, [tidings]);
 
   const tickerText = useMemo(
     () =>
       visible
-        .map((entry) =>
-          `${entry.title} — ${entry.message}`,
-        )
+        .map((entry) => `${entry.title} — ${entry.message}`)
         .join("   ✦   "),
+    [visible],
+  );
+
+  /*
+   * Changing this key remounts only the moving text track, so a newly
+   * inserted Tiding appears immediately and the animation restarts cleanly.
+   */
+  const tickerKey = useMemo(
+    () =>
+      visible
+        .map((entry) => `${entry.id}:${entry.updated_at}`)
+        .join("|"),
     [visible],
   );
 
@@ -138,12 +241,11 @@ export function TidingsTicker({
 
   return (
     <>
-      <div aria-hidden="true" className="h-9" />
-
-      <div
+      <footer
         role="status"
+        aria-live="polite"
         aria-label="Tidings"
-        className={`fixed inset-x-0 bottom-0 z-[90] h-9 overflow-hidden border-t backdrop-blur-sm ${
+        className={`relative z-30 h-9 shrink-0 overflow-hidden border-t backdrop-blur-sm ${
           urgent
             ? "border-[#985847]/70 bg-[#1d0e0b]/96"
             : "border-[#765937]/65 bg-[#100c09]/96"
@@ -164,19 +266,15 @@ export function TidingsTicker({
 
           <div className="group relative min-w-0 flex-1 overflow-hidden">
             <div
+              key={tickerKey}
               className="sepulchria-tidings-track flex w-max items-center whitespace-nowrap pl-8 text-[10px] tracking-[0.07em] text-[#c9b391] group-hover:[animation-play-state:paused]"
               style={{
                 animationDuration: `${duration}s`,
               }}
             >
-              <TickerSegment
-                tidings={visible}
-              />
+              <TickerSegment tidings={visible} />
               <span className="mx-10 text-[#80684b]">✦</span>
-              <TickerSegment
-                tidings={visible}
-                ariaHidden
-              />
+              <TickerSegment tidings={visible} ariaHidden />
               <span className="mx-10 text-[#80684b]">✦</span>
             </div>
           </div>
@@ -206,7 +304,7 @@ export function TidingsTicker({
             }
           }
         `}</style>
-      </div>
+      </footer>
     </>
   );
 }

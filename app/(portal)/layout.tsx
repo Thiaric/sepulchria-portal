@@ -28,18 +28,22 @@ export default function PortalLayout({
 async function PortalLayoutContent({
   children,
 }: PortalLayoutProps) {
-  const [context, worldState, initialTidings] = await Promise.all([
-    getPortalContext(),
-    getWorldState(),
-    getActiveTidings(),
-  ]);
-  const supabase = await createClient();
+  const [context, worldState, initialTidings] =
+    await Promise.all([
+      getPortalContext(),
+      getWorldState(),
+      getActiveTidings(),
+    ]);
+
+  const supabase =
+    await createClient();
 
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   let unreadForumCount = 0;
+
   if (user) {
     const {
       data: unreadForumResult,
@@ -50,60 +54,113 @@ async function PortalLayoutContent({
 
     if (!unreadForumError) {
       if (
-        typeof unreadForumResult === "number" &&
-        Number.isFinite(unreadForumResult)
-      ) {
-        unreadForumCount = unreadForumResult;
-      } else if (
-        typeof unreadForumResult === "string"
-      ) {
-        const parsedCount = Number.parseInt(
+        typeof unreadForumResult ===
+          "number" &&
+        Number.isFinite(
           unreadForumResult,
-          10,
-        );
+        )
+      ) {
+        unreadForumCount =
+          unreadForumResult;
+      } else if (
+        typeof unreadForumResult ===
+        "string"
+      ) {
+        const parsedCount =
+          Number.parseInt(
+            unreadForumResult,
+            10,
+          );
 
-        if (Number.isFinite(parsedCount)) {
-          unreadForumCount = parsedCount;
+        if (
+          Number.isFinite(
+            parsedCount,
+          )
+        ) {
+          unreadForumCount =
+            parsedCount;
         }
       }
     }
   }
 
   const presenceEnabled =
-    context.character?.status === "approved";
+    context.character?.status ===
+    "approved";
 
   return (
-    <WorldStateProvider initialState={worldState}>
-      <div className="min-h-screen bg-[#120f0d] text-[#e8dcc4]">
-        <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(116,82,42,0.16),_transparent_38%),linear-gradient(to_bottom,_#17120f,_#0d0b0a)]">
-        <PortalPresenceHeartbeat
-          enabled={presenceEnabled}
-        />
-
-        <PortalHeader context={context} />
-
-        <div className="mx-auto grid w-full max-w-[1800px] grid-cols-1 lg:grid-cols-[230px_minmax(0,1fr)] xl:grid-cols-[230px_minmax(0,1fr)_300px]">
-          <PortalSidebar
-            unreadMessageCount={
-              context.unreadMessageCount
-            }
-            unreadForumCount={
-              unreadForumCount
-            }
+    <WorldStateProvider
+      initialState={worldState}
+    >
+      <div className="h-dvh overflow-hidden bg-[#120f0d] text-[#e8dcc4]">
+        <div className="flex h-full min-h-0 flex-col bg-[radial-gradient(circle_at_top,_rgba(116,82,42,0.16),_transparent_38%),linear-gradient(to_bottom,_#17120f,_#0d0b0a)]">
+          <PortalPresenceHeartbeat
+            enabled={presenceEnabled}
           />
 
-          <main className="min-w-0">
-            {children}
-          </main>
+          <div className="shrink-0">
+            <PortalHeader
+              context={context}
+            />
+          </div>
 
-          <PortalResponsiveRightSidebar
-            context={context}
+          {/*
+           * This is the ONLY flexible vertical area.
+           *
+           * On desktop, its columns are constrained to the remaining
+           * viewport height and scroll internally.
+           *
+           * On smaller screens, the whole portal-body region scrolls,
+           * while the header and Tidings footer remain outside it.
+           */}
+          <style>{`
+            @media (min-width: 1024px) {
+              .sepulchria-viewport-body > aside:first-of-type {
+                position: relative !important;
+                top: auto !important;
+                height: 100% !important;
+                min-height: 0 !important;
+                overflow-y: auto !important;
+              }
+            }
+
+            @media (min-width: 1280px) {
+              .sepulchria-viewport-body aside[aria-label="Context sidebar"] {
+                position: relative !important;
+                inset: auto !important;
+                top: auto !important;
+                right: auto !important;
+                height: 100% !important;
+                min-height: 0 !important;
+                align-self: stretch !important;
+              }
+            }
+          `}</style>
+
+          <div className="sepulchria-viewport-body mx-auto grid min-h-0 w-full max-w-[1800px] flex-1 grid-cols-1 overflow-y-auto lg:grid-cols-[230px_minmax(0,1fr)] lg:overflow-hidden xl:grid-cols-[230px_minmax(0,1fr)_300px]">
+            <PortalSidebar
+              unreadMessageCount={
+                context.unreadMessageCount
+              }
+              unreadForumCount={
+                unreadForumCount
+              }
+            />
+
+            <main className="min-w-0 lg:min-h-0 lg:overflow-y-auto">
+              {children}
+            </main>
+
+            <PortalResponsiveRightSidebar
+              context={context}
+            />
+          </div>
+
+          <TidingsTicker
+            initialTidings={
+              initialTidings
+            }
           />
-        </div>
-
-        <TidingsTicker
-          initialTidings={initialTidings}
-        />
         </div>
       </div>
     </WorldStateProvider>
@@ -112,14 +169,14 @@ async function PortalLayoutContent({
 
 function PortalLoadingShell() {
   return (
-    <div className="min-h-screen bg-[#120f0d] text-[#e8dcc4]">
-      <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(116,82,42,0.16),_transparent_38%),linear-gradient(to_bottom,_#17120f,_#0d0b0a)]">
-        <header className="h-20 animate-pulse border-b border-[#6e5535]/40 bg-[#0d0b0a]" />
+    <div className="h-dvh overflow-hidden bg-[#120f0d] text-[#e8dcc4]">
+      <div className="flex h-full min-h-0 flex-col bg-[radial-gradient(circle_at_top,_rgba(116,82,42,0.16),_transparent_38%),linear-gradient(to_bottom,_#17120f,_#0d0b0a)]">
+        <header className="h-20 shrink-0 animate-pulse border-b border-[#6e5535]/40 bg-[#0d0b0a]" />
 
-        <div className="mx-auto grid w-full max-w-[1800px] grid-cols-1 lg:grid-cols-[230px_minmax(0,1fr)] xl:grid-cols-[230px_minmax(0,1fr)_300px]">
-          <aside className="hidden min-h-[calc(100vh-5rem)] animate-pulse border-r border-[#6e5535]/30 bg-[#100d0b] lg:block" />
+        <div className="mx-auto grid min-h-0 w-full max-w-[1800px] flex-1 grid-cols-1 overflow-y-auto lg:grid-cols-[230px_minmax(0,1fr)] lg:overflow-hidden xl:grid-cols-[230px_minmax(0,1fr)_300px]">
+          <aside className="hidden h-full min-h-0 animate-pulse border-r border-[#6e5535]/30 bg-[#100d0b] lg:block" />
 
-          <main className="p-5 sm:p-7 lg:p-9">
+          <main className="min-h-0 overflow-y-auto p-5 sm:p-7 lg:p-9">
             <div className="h-4 w-52 animate-pulse bg-[#2c2118]" />
             <div className="mt-5 h-12 max-w-xl animate-pulse bg-[#2c2118]" />
             <div className="mt-5 h-5 max-w-2xl animate-pulse bg-[#211914]" />
@@ -136,7 +193,7 @@ function PortalLoadingShell() {
             </div>
           </main>
 
-          <aside className="hidden min-h-[calc(100vh-5rem)] animate-pulse border-l border-[#6e5535]/30 bg-[#100d0b] xl:block" />
+          <aside className="hidden h-full min-h-0 animate-pulse border-l border-[#6e5535]/30 bg-[#100d0b] xl:block" />
         </div>
       </div>
     </div>
