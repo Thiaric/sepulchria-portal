@@ -365,15 +365,17 @@ export function LiveDashboardChronicle({
         </div>
 
         <span
-          title={`${activeCharacterCount} active character${
-            activeCharacterCount === 1
-              ? ""
-              : "s"
-          }`}
-          className="flex h-8 min-w-8 items-center justify-center rounded-full border border-[#6a5637] bg-[#20170f] px-2 font-serif text-sm text-[#d9bd8d]"
-        >
-          {activeCharacterCount}
-        </span>
+  title={`${activeCharacterCount} active character${
+    activeCharacterCount === 1
+      ? ""
+      : "s"
+  }`}
+  className="flex h-8 min-w-8 items-center justify-center rounded-full border border-[#6a5637] bg-[#20170f] px-2 font-serif text-sm leading-none text-[#d9bd8d]"
+>
+  <span className="relative -top-[2px] leading-none">
+  {activeCharacterCount}
+</span>
+</span>
       </div>
 
       {error ? (
