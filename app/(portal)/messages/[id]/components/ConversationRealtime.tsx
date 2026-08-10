@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  useCallback,
   useEffect,
   useRef,
 } from "react";
@@ -15,6 +16,45 @@ type DirectMessageInsert = {
     | string
     | null;
 };
+
+type PrivateMessageSentEvent =
+  CustomEvent<{
+    conversationId: string;
+  }>;
+
+const PRIVATE_MESSAGE_SENT_EVENT =
+  "sepulchria:private-message-sent";
+
+function findConversationScrollBox() {
+  const section =
+    document.querySelector(
+      "main section",
+    );
+
+  if (!section) {
+    return null;
+  }
+
+  const candidates =
+    section.querySelectorAll<HTMLElement>(
+      "div.overflow-y-auto",
+    );
+
+  for (
+    const candidate of
+    candidates
+  ) {
+    if (
+      candidate.className.includes(
+        "max-h-[58vh]",
+      )
+    ) {
+      return candidate;
+    }
+  }
+
+  return null;
+}
 
 export default function ConversationRealtime({
   conversationId,
@@ -32,6 +72,144 @@ export default function ConversationRealtime({
     useRef<string | null>(
       null,
     );
+
+  const scrollToBottom =
+    useCallback(
+      (
+        behavior:
+          ScrollBehavior =
+            "auto",
+      ) => {
+        const attempt =
+          () => {
+            const container =
+              findConversationScrollBox();
+
+            if (!container) {
+              return;
+            }
+
+            container.scrollTo({
+              top:
+                container.scrollHeight,
+              behavior,
+            });
+          };
+
+        /*
+         * The conversation is server-rendered, so give React a couple of
+         * frames to finish painting before measuring scrollHeight.
+         */
+        requestAnimationFrame(
+          () => {
+            requestAnimationFrame(
+              attempt,
+            );
+          },
+        );
+      },
+      [],
+    );
+
+  useEffect(() => {
+    /*
+     * OPENING A CONVERSATION:
+     * always begin at the newest message.
+     */
+    scrollToBottom("auto");
+
+    const timeoutIds = [
+      window.setTimeout(
+        () =>
+          scrollToBottom(
+            "auto",
+          ),
+        80,
+      ),
+      window.setTimeout(
+        () =>
+          scrollToBottom(
+            "auto",
+          ),
+        220,
+      ),
+    ];
+
+    return () => {
+      for (
+        const timeoutId of
+        timeoutIds
+      ) {
+        window.clearTimeout(
+          timeoutId,
+        );
+      }
+    };
+  }, [
+    conversationId,
+    scrollToBottom,
+  ]);
+
+  useEffect(() => {
+    /*
+     * AFTER THE CURRENT USER SENDS A MESSAGE:
+     * MessageComposer fires this event after a successful server action.
+     *
+     * We retry briefly because the refreshed server component can arrive
+     * a fraction after the action state itself.
+     */
+    const handleOwnMessageSent =
+      (
+        event: Event,
+      ) => {
+        const customEvent =
+          event as
+            PrivateMessageSentEvent;
+
+        if (
+          customEvent.detail
+            ?.conversationId !==
+          conversationId
+        ) {
+          return;
+        }
+
+        scrollToBottom(
+          "smooth",
+        );
+
+        window.setTimeout(
+          () =>
+            scrollToBottom(
+              "smooth",
+            ),
+          100,
+        );
+
+        window.setTimeout(
+          () =>
+            scrollToBottom(
+              "smooth",
+            ),
+          300,
+        );
+      };
+
+    window.addEventListener(
+      PRIVATE_MESSAGE_SENT_EVENT,
+      handleOwnMessageSent,
+    );
+
+    return () => {
+      window.removeEventListener(
+        PRIVATE_MESSAGE_SENT_EVENT,
+        handleOwnMessageSent,
+      );
+    };
+  }, [
+    conversationId,
+    scrollToBottom,
+  ]);
 
   useEffect(() => {
     const supabase =
@@ -63,9 +241,7 @@ export default function ConversationRealtime({
         )
         .maybeSingle();
 
-      if (
-        cancelled
-      ) {
+      if (cancelled) {
         return;
       }
 
@@ -121,6 +297,26 @@ export default function ConversationRealtime({
             );
 
             router.refresh();
+
+            /*
+             * If a fresh message arrives while the conversation is open,
+             * keep the newest message visible as the refreshed content lands.
+             */
+            window.setTimeout(
+              () =>
+                scrollToBottom(
+                  "smooth",
+                ),
+              100,
+            );
+
+            window.setTimeout(
+              () =>
+                scrollToBottom(
+                  "smooth",
+                ),
+              300,
+            );
           },
         )
         .subscribe();
@@ -136,6 +332,7 @@ export default function ConversationRealtime({
     conversationId,
     playPortalSound,
     router,
+    scrollToBottom,
   ]);
 
   return null;

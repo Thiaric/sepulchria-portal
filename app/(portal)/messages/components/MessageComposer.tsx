@@ -22,6 +22,9 @@ const initialState: MessageActionState = {
   message: "",
 };
 
+const PRIVATE_MESSAGE_SENT_EVENT =
+  "sepulchria:private-message-sent";
+
 export default function MessageComposer({
   conversationId,
 }: {
@@ -59,6 +62,21 @@ export default function MessageComposer({
         crypto.randomUUID(),
       );
 
+      /*
+       * Tell the open conversation that a successful send just happened.
+       * ConversationRealtime owns the actual scroll behaviour.
+       */
+      window.dispatchEvent(
+        new CustomEvent(
+          PRIVATE_MESSAGE_SENT_EVENT,
+          {
+            detail: {
+              conversationId,
+            },
+          },
+        ),
+      );
+
       formRef.current
         ?.querySelector<HTMLTextAreaElement>(
           "textarea",
@@ -66,6 +84,7 @@ export default function MessageComposer({
         ?.focus();
     }
   }, [
+    conversationId,
     state.ok,
     state.submittedAt,
   ]);

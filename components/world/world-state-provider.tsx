@@ -70,6 +70,8 @@ export function WorldStateProvider({
     useState(() => Date.now());
 
   const mounted = useRef(true);
+  const weatherTickBusy =
+    useRef(false);
 
   const applyState = useCallback(
     (next: WorldState) => {
@@ -124,6 +126,46 @@ export function WorldStateProvider({
       );
     }, [applyState]);
 
+  const tickWeather =
+    useCallback(async () => {
+      if (
+        weatherTickBusy.current
+      ) {
+        return;
+      }
+
+      weatherTickBusy.current =
+        true;
+
+      try {
+        const response =
+          await fetch(
+            "/api/world/tick",
+            {
+              method: "POST",
+              cache: "no-store",
+            },
+          );
+
+        if (response.ok) {
+          /*
+           * Realtime normally supplies
+           * the changed row. This sync is
+           * a reliable fallback.
+           */
+          await syncWorldState();
+        }
+      } catch {
+        /*
+         * A temporary network error must
+         * never break the portal.
+         */
+      } finally {
+        weatherTickBusy.current =
+          false;
+      }
+    }, [syncWorldState]);
+
   useEffect(() => {
     mounted.current = true;
 
@@ -144,7 +186,7 @@ export function WorldStateProvider({
 
     const channel = supabase
       .channel(
-        "sepulchria-world-state-live-v3",
+        "sepulchria-world-state-live-v4",
       )
       .on(
         "postgres_changes",
@@ -174,6 +216,7 @@ export function WorldStateProvider({
           status === "SUBSCRIBED"
         ) {
           void syncWorldState();
+          void tickWeather();
         }
       });
 
@@ -185,22 +228,35 @@ export function WorldStateProvider({
   }, [
     applyState,
     syncWorldState,
+    tickWeather,
   ]);
 
+  /*
+   * One lightweight world heartbeat.
+   *
+   * Every 10 real seconds:
+   * - run the automatic weather engine;
+   * - reread world_state.
+   *
+   * The engine itself uses GAME TIME,
+   * so 24x time scale still behaves
+   * correctly.
+   */
   useEffect(() => {
     const timer =
       window.setInterval(() => {
-        void syncWorldState();
+        void tickWeather();
       }, RESYNC_INTERVAL_MS);
 
     return () => {
       window.clearInterval(timer);
     };
-  }, [syncWorldState]);
+  }, [tickWeather]);
 
   useEffect(() => {
     const resync = () => {
       setNow(Date.now());
+      void tickWeather();
       void syncWorldState();
     };
 
@@ -244,7 +300,10 @@ export function WorldStateProvider({
         visibility,
       );
     };
-  }, [syncWorldState]);
+  }, [
+    syncWorldState,
+    tickWeather,
+  ]);
 
   const gameDate =
     useMemo(() => {
@@ -262,7 +321,9 @@ export function WorldStateProvider({
       }
 
       const anchor =
-        Date.parse(state.updated_at);
+        Date.parse(
+          state.updated_at,
+        );
 
       const elapsed =
         Number.isNaN(anchor)

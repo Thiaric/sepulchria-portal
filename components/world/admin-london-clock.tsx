@@ -101,7 +101,7 @@ export function AdminLondonClock() {
         <div className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-end">
           <div>
             <p className="text-[8px] uppercase tracking-[0.2em] text-[#74634f]">
-              London date
+              Date
             </p>
 
             <p className="mt-1 font-serif text-lg text-[#e1cba3]">
@@ -113,7 +113,7 @@ export function AdminLondonClock() {
 
           <div className="sm:text-right">
             <p className="text-[8px] uppercase tracking-[0.2em] text-[#74634f]">
-              London time
+              Time
             </p>
 
             <p className="mt-1 font-serif text-2xl tabular-nums text-[#efd5a8]">
@@ -124,16 +124,7 @@ export function AdminLondonClock() {
           </div>
         </div>
 
-        <div className="mt-4 flex items-center justify-between gap-4 border-t border-[#60482e]/35 pt-3">
-          <p className="text-[10px] leading-5 text-[#796d5e]">
-            Updates automatically every
-            second using Europe/London.
-          </p>
-
-          <span className="shrink-0 border border-[#60482e]/55 bg-[#17110d] px-2 py-1 text-[8px] uppercase tracking-[0.16em] text-[#a88a61]">
-            {parts.zone}
-          </span>
-        </div>
+        
       </div>
     </div>
   );
