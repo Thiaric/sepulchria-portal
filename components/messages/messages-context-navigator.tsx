@@ -499,7 +499,7 @@ export function MessagesContextNavigator({
     const refreshInterval =
       window.setInterval(() => {
         void loadConversations();
-      }, 30_000);
+      }, 3_000);
 
     const handleFocus = () => {
       void loadConversations();
