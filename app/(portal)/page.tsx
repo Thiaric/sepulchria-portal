@@ -44,12 +44,10 @@ if (!user) {
   }
 
   return (
-    <div className="p-5 sm:p-6 lg:p-7">
-      
-
-      <InteractiveWorldMap
-        areas={(areas ?? []) as Area[]}
-      />
-    </div>
-  );
+  <div className="h-full min-h-0 p-2 sm:p-3 lg:p-4">
+    <InteractiveWorldMap
+      areas={(areas ?? []) as Area[]}
+    />
+  </div>
+);
 }
