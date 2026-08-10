@@ -671,3 +671,34 @@
     }
   }
 }
+
+/* =========================================================
+   SEPULCHRIA — GLOBAL SCROLLBARS
+   ========================================================= */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #5c472f transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #5c472f;
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #876a46;
+}
+
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
