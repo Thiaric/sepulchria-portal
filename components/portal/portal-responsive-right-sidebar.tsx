@@ -12,6 +12,7 @@ import { ForumSectionActivityContext } from "@/components/portal/forum-section-a
 import { PortalContextPanel } from "@/components/portal/portal-context-panel";
 import { RoomInfoButton } from "@/components/portal/room-info-button";
 import type { PortalContext } from "@/types/portal";
+import { AtmosphericImage } from "@/components/world/atmospheric-image";
 
 type PortalResponsiveRightSidebarProps = {
   context: PortalContext;
@@ -151,23 +152,23 @@ export function PortalResponsiveRightSidebar({
         {/* SIDEBAR CONTENT */}
         <div className="flex min-h-0 flex-1 flex-col gap-3 p-4 xl:gap-[var(--portal-column-gap,0.75rem)] xl:p-[var(--portal-column-pad,1rem)]">
           {/* CURRENT LOCATION */}
-          <section
-  className="relative shrink-0 overflow-hidden border border-[#60482e]/45 bg-[#15100d]"
-  style={
-    character?.currentRoom?.image_url
-      ? {
-          backgroundImage: `url("${character.currentRoom.image_url}")`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }
-      : undefined
-  }
->
-  {/* Dark overlay: keeps the text readable over any room image */}
-  <div className="absolute inset-0 bg-[#0b0806]/72" />
+          <section className="relative shrink-0 overflow-hidden border border-[#60482e]/45 bg-[#15100d]">
+  {character?.currentRoom?.image_url ? (
+    <div className="absolute inset-0">
+      <AtmosphericImage
+        src={character.currentRoom.image_url}
+        alt={character.currentRoom.name}
+        variant="scene"
+        sizes="300px"
+        objectFit="cover"
+      />
+    </div>
+  ) : null}
 
-  {/* Slight warm gradient to preserve the Sepulchria look */}
-  <div className="absolute inset-0 bg-gradient-to-r from-[#100b08]/90 via-[#100b08]/65 to-[#100b08]/40" />
+  {/* Readability overlay — above weather image, below text */}
+  <div className="pointer-events-none absolute inset-0 z-[6] bg-[#0b0806]/48" />
+
+  <div className="pointer-events-none absolute inset-0 z-[6] bg-gradient-to-r from-[#100b08]/78 via-[#100b08]/52 to-[#100b08]/28" />
 
   <div className="relative z-10 p-4 xl:p-[var(--portal-section-pad,1rem)]">
     <div className="flex min-w-0 items-center justify-between gap-2">

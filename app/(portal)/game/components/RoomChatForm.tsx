@@ -348,7 +348,7 @@ export default function RoomChatForm({
                 event.target.value,
               )
             }
-            placeholder="Speech outside brackets; actions, movement, descriptions inside < > or ( ). Out-of-character messages must be preceded by //. To whisper to a character, select them from the dropdown and begin your message with @CharacterName@."
+            placeholder="Speech outside brackets; actions, movement, descriptions inside < > or ( ) or [ ] or { }. Out-of-character messages must be preceded by //. To whisper to a character, select them from the dropdown and begin your message with @CharacterName@."
             className="relative z-10 h-full w-full resize-none border-0 bg-transparent px-4 py-3 text-sm leading-6 text-[#d0bea1] outline-none placeholder:text-[#5f574d]"
           />
 
@@ -521,7 +521,7 @@ export default function RoomChatForm({
           <p>
             Dialogue is written normally.
             Put movements and expressions
-            inside &lt; &gt; or ( ). Out-of-character messages must be preceeded by //.
+            inside &lt; &gt; or ( ) or &#91; &#93; or &#123; &#125;. Out-of-character messages must be preceeded by //.
           </p>
 
           {canUseFate ? (
