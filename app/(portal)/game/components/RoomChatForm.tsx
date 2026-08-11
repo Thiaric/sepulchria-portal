@@ -115,6 +115,9 @@ export default function RoomChatForm({
   const textareaRef =
     useRef<HTMLTextAreaElement>(null);
 
+  const messageFormRef =
+  useRef<HTMLFormElement>(null);
+
   const [
     textareaScrollTop,
     setTextareaScrollTop,
@@ -314,7 +317,10 @@ export default function RoomChatForm({
 
   return (
     <div className="shrink-0 border-t border-[#59432c]/40 bg-[#17110d] p-3 sm:p-4">
-      <form action={messageAction}>
+      <form
+  action={messageAction}
+  ref={messageFormRef}
+>
         <input
           ref={nonceInputRef}
           type="hidden"
@@ -336,7 +342,29 @@ export default function RoomChatForm({
             maxLength={CHAT_MAX_LENGTH}
             value={value}
             lang="en-GB"
-            spellCheck={false}
+            
+            onKeyDown={(event) => {
+  if (
+    event.key !== "Enter" ||
+    event.shiftKey ||
+    event.nativeEvent.isComposing
+  ) {
+    return;
+  }
+
+  event.preventDefault();
+
+  if (!value.trim()) {
+    return;
+  }
+
+  if (nonceInputRef.current) {
+    nonceInputRef.current.value =
+      messageNonce;
+  }
+
+  messageFormRef.current?.requestSubmit();
+}}
             onScroll={(event) =>
               setTextareaScrollTop(
                 event.currentTarget

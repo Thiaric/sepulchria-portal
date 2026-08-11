@@ -67,7 +67,18 @@ export function WorldStateProvider({
     useState(initialState);
 
   const [now, setNow] =
-    useState(() => Date.now());
+  useState(() => {
+    const initialAnchor =
+      Date.parse(
+        initialState.updated_at,
+      );
+
+    return Number.isNaN(
+      initialAnchor,
+    )
+      ? 0
+      : initialAnchor;
+  });
 
   const mounted = useRef(true);
   const weatherTickBusy =
@@ -167,18 +178,30 @@ export function WorldStateProvider({
     }, [syncWorldState]);
 
   useEffect(() => {
-    mounted.current = true;
+  mounted.current = true;
 
-    const timer =
-      window.setInterval(() => {
-        setNow(Date.now());
-      }, 1_000);
+  /*
+   * Hydration begins from the exact same
+   * world-time anchor used by the server.
+   *
+   * Once mounted in the browser, catch the
+   * clock up to the real current instant.
+   */
+  setNow(Date.now());
 
-    return () => {
-      mounted.current = false;
-      window.clearInterval(timer);
-    };
-  }, []);
+  const timer =
+    window.setInterval(() => {
+      setNow(Date.now());
+    }, 1_000);
+
+  return () => {
+    mounted.current = false;
+
+    window.clearInterval(
+      timer,
+    );
+  };
+}, []);
 
   useEffect(() => {
     const supabase =
@@ -313,7 +336,7 @@ export function WorldStateProvider({
         );
 
       if (Number.isNaN(base)) {
-        return new Date();
+       return new Date(0);
       }
 
       if (!state.automatic_time) {

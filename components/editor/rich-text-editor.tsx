@@ -661,7 +661,12 @@ export function RichTextEditor({
           disabled={disabled}
           spellCheck={false}
           className="block w-full resize-y bg-[#090706] px-4 py-4 font-mono text-xs leading-6 text-[#d7c4a5] outline-none"
-          style={{ minHeight }}
+          style={{
+  minHeight,
+  maxHeight:
+    "calc(85dvh - clamp(56px, 8dvh, 80px) - 7rem)",
+  overflowY: "auto",
+}}
         />
       ) : (
         <div
@@ -682,7 +687,12 @@ export function RichTextEditor({
           onMouseDown={rememberHtmlBeforePointerSelection}
           onDoubleClick={protectDoubleClickSelection}
           className="rich-wysiwyg-editor relative z-0 block w-full overflow-auto px-4 py-4 text-sm font-normal leading-7 text-[#d7c4a5] outline-none selection:bg-[#6b4b2c] selection:text-[#fff0d0] empty:before:pointer-events-none empty:before:text-[#625747] empty:before:content-[attr(data-placeholder)] [&_a]:text-[#d3a762] [&_a]:underline [&_blockquote]:border-l-2 [&_blockquote]:border-[#8d6d3e] [&_blockquote]:pl-4 [&_h1]:font-serif [&_h1]:text-4xl [&_h2]:font-serif [&_h2]:text-3xl [&_h3]:font-serif [&_h3]:text-2xl [&_img]:my-3 [&_img]:max-h-[620px] [&_img]:max-w-full [&_ol]:list-decimal [&_ol]:pl-7 [&_table]:max-w-full [&_table]:border-collapse [&_td]:border [&_td]:border-[#60482e]/45 [&_td]:p-2 [&_th]:border [&_th]:border-[#60482e]/45 [&_th]:p-2 [&_ul]:list-disc [&_ul]:pl-7"
-          style={{ minHeight }}
+          style={{
+  minHeight,
+  maxHeight:
+    "calc(85dvh - clamp(56px, 8dvh, 80px) - 7rem)",
+  overflowY: "auto",
+}}
         />
       )}
 
