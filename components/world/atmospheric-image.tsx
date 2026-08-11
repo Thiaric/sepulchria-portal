@@ -136,28 +136,35 @@ export function AtmosphericImage({
         ? "object-contain"
         : "object-cover";
 
-  return (
-    <>
-      <Image
-        src={src}
-        alt={alt}
-        fill
-        priority={priority}
-        sizes={sizes}
-        className={`${objectFitClass} object-center transition-[filter] duration-1000`}
-        style={{
-          filter:
-            atmosphericFilter(
-              hour,
-              state.weather,
-              variant,
-            ),
-        }}
-      />
+  const normalisedSrc =
+  src.startsWith("/") ||
+  src.startsWith("http://") ||
+  src.startsWith("https://")
+    ? src
+    : `/${src}`;
 
-      <AtmosphericOverlay />
-    </>
-  );
+return (
+  <>
+    <Image
+      src={normalisedSrc}
+      alt={alt}
+      fill
+      priority={priority}
+      sizes={sizes}
+      className={`${objectFitClass} object-center transition-[filter] duration-1000`}
+      style={{
+        filter:
+          atmosphericFilter(
+            hour,
+            state.weather,
+            variant,
+          ),
+      }}
+    />
+
+    <AtmosphericOverlay />
+  </>
+);
 }
 
 export function AtmosphericOverlay() {

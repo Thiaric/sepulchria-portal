@@ -239,7 +239,13 @@ export default async function AdminAreasPage() {
                   <div className="relative aspect-[4/3] w-full overflow-hidden border border-[#765937]/55 bg-[#090706]">
                     {area.image_url ? (
                       <Image
-                        src={area.image_url}
+                        src={
+  area.image_url.startsWith("/") ||
+  area.image_url.startsWith("http://") ||
+  area.image_url.startsWith("https://")
+    ? area.image_url
+    : `/${area.image_url}`
+}
                         alt={area.name}
                         fill
                         sizes="220px"

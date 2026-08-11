@@ -288,13 +288,10 @@ export function ConversationMessageList({
 
             <input
               type="date"
-              value={
-                startDate
-              }
+              value={startDate}
               onChange={(event) =>
                 setStartDate(
-                  event.target
-                    .value,
+                  event.target.value,
                 )
               }
               className="border border-[#60482e]/55 bg-[#0d0907] px-2 py-2 text-[10px] text-[#cdbb9f] outline-none focus:border-[#a17a49]"
@@ -311,8 +308,7 @@ export function ConversationMessageList({
               value={endDate}
               onChange={(event) =>
                 setEndDate(
-                  event.target
-                    .value,
+                  event.target.value,
                 )
               }
               className="border border-[#60482e]/55 bg-[#0d0907] px-2 py-2 text-[10px] text-[#cdbb9f] outline-none focus:border-[#a17a49]"
@@ -472,10 +468,14 @@ export function ConversationMessageList({
                 message.id,
               );
 
+            const senderName =
+              sender?.display_name ??
+              "Unknown";
+
             return (
               <article
                 key={message.id}
-                className={`relative max-w-[82%] border p-4 pl-11 transition ${
+                className={`relative max-w-[82%] border p-4 pb-10 transition ${
                   own
                     ? ongame
                       ? "ml-auto border-[#80613c] bg-[#2c2117]"
@@ -489,8 +489,120 @@ export function ConversationMessageList({
                     : ""
                 }`}
               >
+                <div className="flex items-start gap-3">
+                  {/* CHARACTER PORTRAIT */}
+                  <div className="h-11 w-11 shrink-0 overflow-hidden border border-[#60482e]/75 bg-[#0d0907]">
+                    {sender?.portrait_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={
+                          sender.portrait_url
+                        }
+                        alt={`Portrait of ${senderName}`}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <span className="flex h-full items-center justify-center font-serif text-sm text-[#9b805b]">
+                        {senderName
+                          .charAt(0)
+                          .toUpperCase()}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="min-w-0 flex-1">
+                    {/* TOP ROW */}
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p
+                          className={`font-serif text-sm ${
+                            ongame
+                              ? "text-[#d8bf91]"
+                              : "text-[#cbd0dc]"
+                          }`}
+                        >
+                          {senderName}
+                        </p>
+
+                        <MessageModeBadge
+                          mode={
+                            message.message_mode
+                          }
+                        />
+                      </div>
+
+                      <div className="flex flex-wrap items-center justify-end gap-2">
+                        <time className="text-[9px] uppercase tracking-[0.16em] text-[#776b5c]">
+                          {new Date(
+                            message.created_at,
+                          ).toLocaleString(
+                            "en-GB",
+                          )}
+                        </time>
+
+                        <form
+                          action={
+                            deletePrivateMessages
+                          }
+                          onSubmit={(
+                            event,
+                          ) => {
+                            if (
+                              !window.confirm(
+                                "Delete this message from your view? The other character will still see it unless they delete it too.",
+                              )
+                            ) {
+                              event.preventDefault();
+                            }
+                          }}
+                        >
+                          <input
+                            type="hidden"
+                            name="conversationId"
+                            value={
+                              conversationId
+                            }
+                          />
+
+                          <input
+                            type="hidden"
+                            name="messageIds"
+                            value={
+                              message.id
+                            }
+                          />
+
+                          <button
+                            type="submit"
+                            title="Delete this message from your view"
+                            className="border border-[#7b4035]/80 bg-[#27120f] px-2.5 py-1.5 text-[7px] uppercase tracking-[0.13em] text-[#d99b8e] transition hover:border-[#ad5a4c] hover:bg-[#391713] hover:text-[#f1b2a5]"
+                          >
+                            Delete
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+
+                    {/* MESSAGE BODY */}
+                    <div
+                      className={`mt-3 break-words text-sm leading-7 ${
+                        ongame
+                          ? "text-[#c7b79d]"
+                          : "text-[#c2c7d1]"
+                      }`}
+                    >
+                      <RichTextContentClient
+                        body={
+                          message.body
+                        }
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* CHECKBOX — BOTTOM RIGHT */}
                 <label
-                  className={`absolute left-3 top-4 flex h-6 w-6 cursor-pointer items-center justify-center border transition ${
+                  className={`absolute bottom-3 right-3 flex h-6 w-6 cursor-pointer items-center justify-center border transition ${
                     selected
                       ? "border-[#b8874d] bg-[#382516]"
                       : "border-[#6a5135] bg-[#0d0907] hover:border-[#9b7446]"
@@ -499,9 +611,7 @@ export function ConversationMessageList({
                 >
                   <input
                     type="checkbox"
-                    checked={
-                      selected
-                    }
+                    checked={selected}
                     onChange={() =>
                       toggleMessage(
                         message.id,
@@ -511,92 +621,6 @@ export function ConversationMessageList({
                     aria-label="Select message"
                   />
                 </label>
-
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <p
-                      className={`font-serif text-sm ${
-                        ongame
-                          ? "text-[#d8bf91]"
-                          : "text-[#cbd0dc]"
-                      }`}
-                    >
-                      {sender?.display_name ??
-                        "Unknown"}
-                    </p>
-
-                    <MessageModeBadge
-                      mode={
-                        message.message_mode
-                      }
-                    />
-                  </div>
-
-                  <div className="flex flex-wrap items-center justify-end gap-2">
-                    <time className="text-[9px] uppercase tracking-[0.16em] text-[#776b5c]">
-                      {new Date(
-                        message.created_at,
-                      ).toLocaleString(
-                        "en-GB",
-                      )}
-                    </time>
-
-                    <form
-                      action={
-                        deletePrivateMessages
-                      }
-                      onSubmit={(
-                        event,
-                      ) => {
-                        if (
-                          !window.confirm(
-                            "Delete this message from your view? The other character will still see it unless they delete it too.",
-                          )
-                        ) {
-                          event.preventDefault();
-                        }
-                      }}
-                    >
-                      <input
-                        type="hidden"
-                        name="conversationId"
-                        value={
-                          conversationId
-                        }
-                      />
-
-                      <input
-                        type="hidden"
-                        name="messageIds"
-                        value={
-                          message.id
-                        }
-                      />
-
-                      <button
-                        type="submit"
-                        title="Delete this message from your view"
-                        className="border border-[#7b4035]/80 bg-[#27120f] px-2.5 py-1.5 text-[7px] uppercase tracking-[0.13em] text-[#d99b8e] transition hover:border-[#ad5a4c] hover:bg-[#391713] hover:text-[#f1b2a5]"
-                      >
-                        Delete
-                      </button>
-                    </form>
-                  </div>
-                </div>
-
-                <div
-                  className={`mt-3 break-words text-sm leading-7 ${
-                    ongame
-                      ? "text-[#c7b79d]"
-                      : "text-[#c2c7d1]"
-                  }`}
-                >
-                  <RichTextContentClient
-                    body={
-                      message.body
-                    }
-                  />
-                </div>
               </article>
             );
           },
