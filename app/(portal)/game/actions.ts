@@ -522,6 +522,11 @@ export async function sendRoomMessage(
           ) ?? "",
         ).trim();
 
+      const typedWhisperMatch =
+        rawMessage.match(
+          /^@([^@\r\n]+)@\s*/,
+        );
+
       if (submittedRecipientId) {
         const resolution =
           await resolveWhisperRecipient(
@@ -535,7 +540,7 @@ export async function sendRoomMessage(
           return {
             ok: false,
             message:
-              resolution.message,
+              "Character not at this Location",
           };
         }
 
@@ -574,8 +579,92 @@ export async function sendRoomMessage(
 
         whisperRecipientId =
           resolution.recipient.id;
+      } else if (typedWhisperMatch) {
+        const typedCharacterName =
+          typedWhisperMatch[1].trim();
+
+        const {
+          data: matchingCharacters,
+          error: matchingCharactersError,
+        } = await supabase
+          .from("characters")
+          .select(
+            "id, display_name",
+          )
+          .ilike(
+            "display_name",
+            typedCharacterName,
+          )
+          .neq(
+            "id",
+            character.id,
+          )
+          .limit(10);
+
+        if (matchingCharactersError) {
+          return {
+            ok: false,
+            message:
+              `Unable to verify whisper recipient: ${matchingCharactersError.message}`,
+          };
+        }
+
+        let resolvedRecipient:
+          | WhisperRecipient
+          | null = null;
+
+        for (
+          const candidate of
+          matchingCharacters ?? []
+        ) {
+          const resolution =
+            await resolveWhisperRecipient(
+              supabase,
+              character.id,
+              character.current_room_id,
+              candidate.id,
+            );
+
+          if (resolution.ok) {
+            resolvedRecipient =
+              resolution.recipient;
+
+            break;
+          }
+        }
+
+        if (!resolvedRecipient) {
+          return {
+            ok: false,
+            message:
+              "Character not at this Location",
+          };
+        }
+
+        storedMessage =
+          rawMessage
+            .slice(
+              typedWhisperMatch[0]
+                .length,
+            )
+            .trim();
+
+        if (!storedMessage) {
+          return {
+            ok: false,
+            message:
+              "Write the whisper after the character marker.",
+          };
+        }
+
+        messageType =
+          "whisper";
+
+        whisperRecipientId =
+          resolvedRecipient.id;
       }
     }
+      
 
     const clientNonce =
       readValidNonce(formData);
