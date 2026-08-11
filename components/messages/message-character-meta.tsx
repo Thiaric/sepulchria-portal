@@ -6,7 +6,6 @@ import {
   useState,
 } from "react";
 
-import { PRESENCE_ACTIVE_MINUTES } from "@/lib/game/constants";
 import { createClient } from "@/lib/supabase/client";
 import type { PresenceStatus } from "@/types/game";
 
@@ -155,31 +154,11 @@ export function MessagePresenceStatus({
         data as PresenceRow | null;
 
       if (!presence) {
-        setStatus("offline");
-        return;
-      }
+  setStatus("offline");
+  return;
+}
 
-      const lastSeen =
-        Date.parse(
-          presence.last_seen_at,
-        );
-
-      const activeCutoff =
-        Date.now() -
-        PRESENCE_ACTIVE_MINUTES *
-          60_000;
-
-      if (
-        Number.isNaN(lastSeen) ||
-        lastSeen < activeCutoff
-      ) {
-        setStatus("offline");
-        return;
-      }
-
-      setStatus(
-        presence.status,
-      );
+setStatus(presence.status);
     }, [characterId]);
 
   useEffect(() => {
