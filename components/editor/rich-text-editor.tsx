@@ -42,6 +42,29 @@ const FONT_SIZES = Array.from(
   (_, index) => index + 8,
 );
 
+const STANDARD_TEXT_COLOURS = [
+  "#d64545", // red
+  "#ffb029", // orange
+  "#ffef40", // yellow
+  "#5f9f63", // green
+  "#4f7fc7", // blue
+  "#8f63b8", // purple
+  "#e889a9", // pink
+  "#c99d5f", // brown
+  "#ffffff", // white
+  "#ffc415", // gold
+  "#c0c0c0", // silver
+] as const;
+
+const RECENT_TEXT_COLOURS_KEY =
+  "sepulchria-recent-text-colours";
+
+const RECENT_HIGHLIGHT_COLOURS_KEY =
+  "sepulchria-recent-highlight-colours";
+
+const MAX_RECENT_TEXT_COLOURS = 10;
+const MAX_RECENT_HIGHLIGHT_COLOURS = 10;
+
 function visibleLength(value: string): number {
   return stripRichTextForPreview(value).length;
 }
@@ -74,11 +97,131 @@ export function RichTextEditor({
   const [sourceMode, setSourceMode] =
     useState(false);
 
+  const [
+    textColourOpen,
+    setTextColourOpen,
+  ] = useState(false);
+
+  const [
+    highlightColourOpen,
+    setHighlightColourOpen,
+  ] = useState(false);
+
+  const [
+    recentTextColours,
+    setRecentTextColours,
+  ] = useState<string[]>([]);
+
+  const [
+    recentHighlightColours,
+    setRecentHighlightColours,
+  ] = useState<string[]>([]);
+
+  const savedColourSelectionRef =
+    useRef<Range | null>(null);
+
   const lastValidHtml =
     useRef(initialHtml);
 
   const htmlBeforePointerSelection =
     useRef(initialHtml);
+
+  useEffect(() => {
+    try {
+      const storedTextColours =
+        window.localStorage.getItem(
+          RECENT_TEXT_COLOURS_KEY,
+        );
+
+      if (storedTextColours) {
+        const parsed =
+          JSON.parse(storedTextColours);
+
+        if (Array.isArray(parsed)) {
+          setRecentTextColours(
+            parsed
+              .filter(
+                (entry):
+                  entry is string =>
+                  typeof entry ===
+                  "string",
+              )
+              .slice(
+                0,
+                MAX_RECENT_TEXT_COLOURS,
+              ),
+          );
+        }
+      }
+
+      const storedHighlightColours =
+        window.localStorage.getItem(
+          RECENT_HIGHLIGHT_COLOURS_KEY,
+        );
+
+      if (storedHighlightColours) {
+        const parsed =
+          JSON.parse(
+            storedHighlightColours,
+          );
+
+        if (Array.isArray(parsed)) {
+          setRecentHighlightColours(
+            parsed
+              .filter(
+                (entry):
+                  entry is string =>
+                  typeof entry ===
+                  "string",
+              )
+              .slice(
+                0,
+                MAX_RECENT_HIGHLIGHT_COLOURS,
+              ),
+          );
+        }
+      }
+    } catch {
+      // Ignore unavailable or invalid local storage.
+    }
+  }, []);
+
+  useEffect(() => {
+    if (
+      !textColourOpen &&
+      !highlightColourOpen
+    ) {
+      return;
+    }
+
+    const handleEscape = (
+      event: KeyboardEvent,
+    ) => {
+      if (event.key !== "Escape") {
+        return;
+      }
+
+      setTextColourOpen(false);
+      setHighlightColourOpen(false);
+
+      editorRef.current?.focus();
+    };
+
+    window.addEventListener(
+      "keydown",
+      handleEscape,
+    );
+
+    return () => {
+      window.removeEventListener(
+        "keydown",
+        handleEscape,
+      );
+    };
+  }, [
+    textColourOpen,
+    highlightColourOpen,
+  ]);
 
   useEffect(() => {
     if (!controlled) {
@@ -319,6 +462,169 @@ export function RichTextEditor({
     syncFromEditor();
   }
 
+  function rememberColourSelection() {
+  const editor =
+    editorRef.current;
+
+  const selection =
+    window.getSelection();
+
+  if (
+    !editor ||
+    !selection ||
+    selection.rangeCount === 0
+  ) {
+    savedColourSelectionRef.current =
+      null;
+
+    return;
+  }
+
+  const range =
+    selection.getRangeAt(0);
+
+  if (
+    !editor.contains(
+      range.commonAncestorContainer,
+    )
+  ) {
+    savedColourSelectionRef.current =
+      null;
+
+    return;
+  }
+
+  savedColourSelectionRef.current =
+    range.cloneRange();
+}
+
+function restoreColourSelection() {
+  const range =
+    savedColourSelectionRef.current;
+
+  if (!range) {
+    return;
+  }
+
+  const selection =
+    window.getSelection();
+
+  if (!selection) {
+    return;
+  }
+
+  try {
+    selection.removeAllRanges();
+    selection.addRange(range);
+  } catch {
+    savedColourSelectionRef.current =
+      null;
+  }
+}
+
+function rememberRecentTextColour(
+  colour: string,
+) {
+  const normalised =
+    colour.toLowerCase();
+
+  setRecentTextColours(
+    (current) => {
+      const next = [
+        normalised,
+        ...current.filter(
+          (entry) =>
+            entry.toLowerCase() !==
+            normalised,
+        ),
+      ].slice(
+        0,
+        MAX_RECENT_TEXT_COLOURS,
+      );
+
+      try {
+        window.localStorage.setItem(
+          RECENT_TEXT_COLOURS_KEY,
+          JSON.stringify(next),
+        );
+      } catch {
+        // localStorage can be unavailable.
+      }
+
+      return next;
+    },
+  );
+}
+
+function applyTextColour(
+  colour: string,
+) {
+  restoreColourSelection();
+
+  runCommand(
+    "foreColor",
+    colour,
+  );
+
+  rememberRecentTextColour(
+    colour,
+  );
+
+  setTextColourOpen(false);
+}
+
+
+function rememberRecentHighlightColour(
+  colour: string,
+) {
+  const normalised =
+    colour.toLowerCase();
+
+  setRecentHighlightColours(
+    (current) => {
+      const next = [
+        normalised,
+        ...current.filter(
+          (entry) =>
+            entry.toLowerCase() !==
+            normalised,
+        ),
+      ].slice(
+        0,
+        MAX_RECENT_HIGHLIGHT_COLOURS,
+      );
+
+      try {
+        window.localStorage.setItem(
+          RECENT_HIGHLIGHT_COLOURS_KEY,
+          JSON.stringify(next),
+        );
+      } catch {
+        // localStorage can be unavailable.
+      }
+
+      return next;
+    },
+  );
+}
+
+function applyHighlightColour(
+  colour: string,
+) {
+  restoreColourSelection();
+
+  runCommand(
+    "hiliteColor",
+    colour,
+  );
+
+  rememberRecentHighlightColour(
+    colour,
+  );
+
+  setHighlightColourOpen(false);
+}
+
   function createLink() {
     const url = window.prompt(
       "Paste the destination URL:",
@@ -398,7 +704,7 @@ export function RichTextEditor({
   const fullToolbar = variant === "lore";
 
   return (
-    <div className="overflow-hidden border border-[#60482e]/55 bg-[#0d0907]">
+    <div className="relative overflow-visible border border-[#60482e]/55 bg-[#0d0907]">
       <style jsx global>{`
         ::highlight(sepulchria-spelling-error) {
           text-decoration-line: underline;
@@ -409,7 +715,7 @@ export function RichTextEditor({
         }
       `}</style>
       <div
-        className="relative z-20 flex flex-wrap items-center gap-1.5 overflow-hidden border-b border-[#60482e]/40 bg-[#100c09] p-2"
+        className="relative z-40 flex flex-wrap items-center gap-1.5 overflow-visible border-b border-[#60482e]/40 bg-[#100c09] p-2"
         style={{ isolation: "isolate" }}
       >
         <ToolbarButton
@@ -520,43 +826,283 @@ export function RichTextEditor({
           )}
         </select>
 
+        <div className="relative">
+  <button
+    type="button"
+    title="Text colour"
+    disabled={
+      disabled ||
+      sourceMode
+    }
+    onMouseDown={(event) => {
+      event.preventDefault();
+
+      rememberColourSelection();
+    }}
+    onClick={() => {
+      setHighlightColourOpen(false);
+
+      setTextColourOpen(
+        (current) =>
+          !current,
+      );
+    }}
+    className="flex h-8 items-center gap-2 border border-[#59432c]/55 bg-[#17110d] px-2 text-[9px] uppercase tracking-[0.1em] text-[#cbb28a] transition hover:border-[#967342] hover:text-[#f1d7a5] disabled:cursor-not-allowed disabled:opacity-40"
+  >
+    Colour
+
+    <span
+      aria-hidden="true"
+      className="text-[8px] text-[#8f7653]"
+    >
+      ▼
+    </span>
+  </button>
+
+  {textColourOpen ? (
+    <div className="absolute left-0 top-full z-[200] mt-1 w-[246px] border border-[#60482e]/70 bg-[#100c09] p-3 shadow-[0_12px_30px_rgba(0,0,0,0.55)]">
+      <p className="mb-2 text-[8px] uppercase tracking-[0.18em] text-[#806c52]">
+        Standard
+      </p>
+
+      <div className="grid grid-cols-11 gap-1.5">
+        {STANDARD_TEXT_COLOURS.map(
+          (colour) => (
+            <button
+              key={colour}
+              type="button"
+              title={colour}
+              aria-label={`Use colour ${colour}`}
+              onMouseDown={(
+                event,
+              ) =>
+                event.preventDefault()
+              }
+              onClick={() =>
+                applyTextColour(
+                  colour,
+                )
+              }
+              className="h-5 w-5 border border-[#77634b]/70 transition hover:scale-110 hover:border-[#d4b178]"
+              style={{
+                backgroundColor:
+                  colour,
+              }}
+            />
+          ),
+        )}
+      </div>
+
+      <div className="my-3 h-px bg-[#59432c]/40" />
+
+      <p className="mb-2 text-[8px] uppercase tracking-[0.18em] text-[#806c52]">
+        Recently used
+      </p>
+
+      <div className="flex min-h-5 flex-wrap items-center gap-1.5">
+        {recentTextColours.length >
+        0 ? (
+          recentTextColours.map(
+            (colour) => (
+              <button
+                key={colour}
+                type="button"
+                title={colour}
+                aria-label={`Use recent colour ${colour}`}
+                onMouseDown={(
+                  event,
+                ) =>
+                  event.preventDefault()
+                }
+                onClick={() =>
+                  applyTextColour(
+                    colour,
+                  )
+                }
+                className="h-5 w-5 border border-[#77634b]/70 transition hover:scale-110 hover:border-[#d4b178]"
+                style={{
+                  backgroundColor:
+                    colour,
+                }}
+              />
+            ),
+          )
+        ) : (
+          <span className="text-[9px] italic text-[#655b4e]">
+            No recent colours
+          </span>
+        )}
+
         <label
-          title="Text colour"
-          className="flex h-8 items-center gap-2 border border-[#59432c]/55 bg-[#17110d] px-2 text-[9px] uppercase tracking-[0.1em] text-[#cbb28a]"
+          title="Choose custom colour"
+          className="relative flex h-5 w-5 cursor-pointer items-center justify-center border border-dashed border-[#77634b]/70 bg-[#17110d] text-[12px] leading-none text-[#b99a70] transition hover:border-[#d4b178] hover:text-[#efd5a5]"
+          onMouseDown={() =>
+            rememberColourSelection()
+          }
         >
-          Colour
+          +
+
           <input
             type="color"
             defaultValue="#d7c4a5"
-            disabled={disabled || sourceMode}
-            onChange={(event) =>
-              runCommand(
-                "foreColor",
-                event.target.value,
+            disabled={
+              disabled ||
+              sourceMode
+            }
+            onChange={(
+              event,
+            ) =>
+              applyTextColour(
+                event.target
+                  .value,
               )
             }
-            className="h-5 w-5 cursor-pointer border-0 bg-transparent p-0"
+            className="absolute inset-0 cursor-pointer opacity-0"
           />
         </label>
+      </div>
+    </div>
+  ) : null}
+</div>
 
-        <label
-          title="Highlight colour"
-          className="flex h-8 items-center gap-2 border border-[#59432c]/55 bg-[#17110d] px-2 text-[9px] uppercase tracking-[0.1em] text-[#cbb28a]"
-        >
-          Highlight
-          <input
-            type="color"
-            defaultValue="#3b2919"
-            disabled={disabled || sourceMode}
-            onChange={(event) =>
-              runCommand(
-                "hiliteColor",
-                event.target.value,
-              )
+        <div className="relative">
+          <button
+            type="button"
+            title="Highlight colour"
+            disabled={
+              disabled ||
+              sourceMode
             }
-            className="h-5 w-5 cursor-pointer border-0 bg-transparent p-0"
-          />
-        </label>
+            onMouseDown={(event) => {
+              event.preventDefault();
+
+              rememberColourSelection();
+            }}
+            onClick={() => {
+              setTextColourOpen(false);
+
+              setHighlightColourOpen(
+                (current) =>
+                  !current,
+              );
+            }}
+            className="flex h-8 items-center gap-2 border border-[#59432c]/55 bg-[#17110d] px-2 text-[9px] uppercase tracking-[0.1em] text-[#cbb28a] transition hover:border-[#967342] hover:text-[#f1d7a5] disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            Highlight
+
+            <span
+              aria-hidden="true"
+              className="text-[8px] text-[#8f7653]"
+            >
+              ▼
+            </span>
+          </button>
+
+          {highlightColourOpen ? (
+            <div className="absolute left-0 top-full z-[200] mt-1 w-[246px] border border-[#60482e]/70 bg-[#100c09] p-3 shadow-[0_12px_30px_rgba(0,0,0,0.55)]">
+              <p className="mb-2 text-[8px] uppercase tracking-[0.18em] text-[#806c52]">
+                Standard
+              </p>
+
+              <div className="grid grid-cols-11 gap-1.5">
+                {STANDARD_TEXT_COLOURS.map(
+                  (colour) => (
+                    <button
+                      key={colour}
+                      type="button"
+                      title={colour}
+                      aria-label={`Use highlight ${colour}`}
+                      onMouseDown={(
+                        event,
+                      ) =>
+                        event.preventDefault()
+                      }
+                      onClick={() =>
+                        applyHighlightColour(
+                          colour,
+                        )
+                      }
+                      className="h-5 w-5 border border-[#77634b]/70 transition hover:scale-110 hover:border-[#d4b178]"
+                      style={{
+                        backgroundColor:
+                          colour,
+                      }}
+                    />
+                  ),
+                )}
+              </div>
+
+              <div className="my-3 h-px bg-[#59432c]/40" />
+
+              <p className="mb-2 text-[8px] uppercase tracking-[0.18em] text-[#806c52]">
+                Recently used
+              </p>
+
+              <div className="flex min-h-5 flex-wrap items-center gap-1.5">
+                {recentHighlightColours.length >
+                0 ? (
+                  recentHighlightColours.map(
+                    (colour) => (
+                      <button
+                        key={colour}
+                        type="button"
+                        title={colour}
+                        aria-label={`Use recent highlight ${colour}`}
+                        onMouseDown={(
+                          event,
+                        ) =>
+                          event.preventDefault()
+                        }
+                        onClick={() =>
+                          applyHighlightColour(
+                            colour,
+                          )
+                        }
+                        className="h-5 w-5 border border-[#77634b]/70 transition hover:scale-110 hover:border-[#d4b178]"
+                        style={{
+                          backgroundColor:
+                            colour,
+                        }}
+                      />
+                    ),
+                  )
+                ) : (
+                  <span className="text-[9px] italic text-[#655b4e]">
+                    No recent colours
+                  </span>
+                )}
+
+                <label
+                  title="Choose custom highlight"
+                  className="relative flex h-5 w-5 cursor-pointer items-center justify-center border border-dashed border-[#77634b]/70 bg-[#17110d] text-[12px] leading-none text-[#b99a70] transition hover:border-[#d4b178] hover:text-[#efd5a5]"
+                  onMouseDown={() =>
+                    rememberColourSelection()
+                  }
+                >
+                  +
+
+                  <input
+                    type="color"
+                    defaultValue="#3b2919"
+                    disabled={
+                      disabled ||
+                      sourceMode
+                    }
+                    onChange={(
+                      event,
+                    ) =>
+                      applyHighlightColour(
+                        event.target
+                          .value,
+                      )
+                    }
+                    className="absolute inset-0 cursor-pointer opacity-0"
+                  />
+                </label>
+              </div>
+            </div>
+          ) : null}
+        </div>
 
         <span className="mx-1 h-6 w-px bg-[#59432c]/45" />
 

@@ -2,7 +2,6 @@ import Link from "next/link";
 
 import { SubmittedCharacterBadge } from "@/components/admin/submitted-character-badge";
 import { PortalSoundToggle } from "@/components/audio/portal-sound-toggle";
-import { InstantChatDock } from "@/components/instant-chat/instant-chat-dock";
 import { LogoutButton } from "@/components/logout-button";
 import { UnreadMessageBadge } from "@/components/messages/unread-message-badge";
 import { ActiveCityCounter } from "@/components/portal/active-city-counter";
@@ -75,9 +74,6 @@ export async function PortalHeader({ context }: PortalHeaderProps) {
         </div>
       </header>
 
-      <InstantChatDock
-        characterId={character?.status === "approved" ? character.id : null}
-      />
-    </>
+      </>
   );
 }
