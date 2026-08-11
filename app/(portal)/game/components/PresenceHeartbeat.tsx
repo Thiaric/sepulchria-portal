@@ -10,8 +10,6 @@ import {
 import { createClient } from "@/lib/supabase/client";
 import type { PresenceStatus } from "@/types/game";
 
-const HEARTBEAT_INTERVAL_MS = 45_000;
-
 type PresenceHeartbeatProps = {
   characterId: string;
   roomId: string;
@@ -32,55 +30,22 @@ export default function PresenceHeartbeat({
   const [error, setError] =
     useState<string | null>(null);
 
-  const statusRef =
-    useRef<PresenceStatus>(
-      initialStatus,
-    );
-
   const roomIdRef =
     useRef(roomId);
-
-  const manualStatusRef =
-    useRef<PresenceStatus>(
-      initialStatus,
-    );
-
-  const hiddenSinceRef =
-    useRef<number | null>(null);
 
   useEffect(() => {
     roomIdRef.current = roomId;
   }, [roomId]);
 
-  useEffect(() => {
-    statusRef.current = status;
-  }, [status]);
-
-  useEffect(() => {
-    hiddenSinceRef.current =
-      document.visibilityState ===
-      "hidden"
-        ? Date.now()
-        : null;
-  }, []);
-
   const updatePresence =
     useCallback(
       async (
         nextStatus: PresenceStatus,
-        options?: {
-          showSavingState?: boolean;
-        },
       ) => {
         const supabase =
           createClient();
 
-        if (
-          options?.showSavingState
-        ) {
-          setSaving(true);
-        }
-
+        setSaving(true);
         setError(null);
 
         const {
@@ -95,7 +60,8 @@ export default function PresenceHeartbeat({
                 characterId,
               room_id:
                 roomIdRef.current,
-              status: nextStatus,
+              status:
+                nextStatus,
               last_seen_at:
                 new Date().toISOString(),
             },
@@ -110,25 +76,13 @@ export default function PresenceHeartbeat({
             "Presence could not be updated.",
           );
 
-          if (
-            options?.showSavingState
-          ) {
-            setSaving(false);
-          }
+          setSaving(false);
 
           return false;
         }
 
-        statusRef.current =
-          nextStatus;
-
         setStatus(nextStatus);
-
-        if (
-          options?.showSavingState
-        ) {
-          setSaving(false);
-        }
+        setSaving(false);
 
         return true;
       },
@@ -140,120 +94,28 @@ export default function PresenceHeartbeat({
       async (
         nextStatus: PresenceStatus,
       ) => {
-        manualStatusRef.current =
-          nextStatus;
-
         await updatePresence(
           nextStatus,
-          {
-            showSavingState: true,
-          },
         );
       },
       [updatePresence],
     );
 
-  useEffect(() => {
-    void updatePresence(
-      initialStatus,
-    );
-
-    const heartbeat =
-      window.setInterval(() => {
-        void updatePresence(
-          statusRef.current,
-        );
-      }, HEARTBEAT_INTERVAL_MS);
-
-    return () => {
-      window.clearInterval(
-        heartbeat,
-      );
-    };
-  }, [
-    initialStatus,
-    roomId,
-    updatePresence,
-  ]);
-
-  useEffect(() => {
-    const handleVisibilityChange =
-      () => {
-        if (
-          document.visibilityState ===
-          "hidden"
-        ) {
-          hiddenSinceRef.current =
-            Date.now();
-
-          if (
-            statusRef.current !==
-            "busy"
-          ) {
-            void updatePresence(
-              "away",
-            );
-          }
-
-          return;
-        }
-
-        hiddenSinceRef.current =
-          null;
-
-        const restoredStatus =
-          manualStatusRef.current ===
-          "busy"
-            ? "busy"
-            : "online";
-
-        void updatePresence(
-          restoredStatus,
-        );
-      };
-
-    document.addEventListener(
-      "visibilitychange",
-      handleVisibilityChange,
-    );
-
-    return () => {
-      document.removeEventListener(
-        "visibilitychange",
-        handleVisibilityChange,
-      );
-    };
-  }, [updatePresence]);
-
-  useEffect(() => {
-    const handleFocus = () => {
-      if (
-        document.visibilityState ===
-          "visible" &&
-        statusRef.current !==
-          "busy"
-      ) {
-        hiddenSinceRef.current =
-          null;
-
-        void updatePresence(
-          "online",
-        );
-      }
-    };
-
-    window.addEventListener(
-      "focus",
-      handleFocus,
-    );
-
-    return () => {
-      window.removeEventListener(
-        "focus",
-        handleFocus,
-      );
-    };
-  }, [updatePresence]);
+  /*
+   * IMPORTANT:
+   *
+   * This component no longer:
+   * - runs its own heartbeat;
+   * - watches tab visibility;
+   * - changes Online/Away automatically;
+   * - reacts to focus.
+   *
+   * It now exists ONLY for the manual
+   * Online / Away / Busy selector.
+   *
+   * Automatic presence belongs to the
+   * portal-level heartbeat.
+   */
 
   return (
     <div className="border border-[#59432c]/40 bg-[#100c09] p-3">

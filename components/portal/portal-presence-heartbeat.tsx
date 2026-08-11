@@ -7,10 +7,14 @@ import {
 
 import {
   heartbeatPresence,
+  updatePresence,
 } from "@/app/(portal)/game/actions";
 
 const HEARTBEAT_INTERVAL_MS =
   60_000;
+
+const AWAY_AFTER_MS =
+  15 * 60_000;
 
 export function PortalPresenceHeartbeat({
   enabled,
@@ -20,13 +24,23 @@ export function PortalPresenceHeartbeat({
   const runningRef =
     useRef(false);
 
+  const hiddenSinceRef =
+    useRef<number | null>(null);
+
+  const awayTimerRef =
+  useRef<number | null>(null);
+
   useEffect(() => {
     if (!enabled) {
       return;
     }
 
     async function sendHeartbeat() {
-      if (runningRef.current) {
+      if (
+        runningRef.current ||
+        document.visibilityState ===
+          "hidden"
+      ) {
         return;
       }
 
@@ -44,16 +58,106 @@ export function PortalPresenceHeartbeat({
       }
     }
 
-    // Register presence immediately when the portal shell mounts.
-    void sendHeartbeat();
+    async function markAway() {
+      try {
+        await updatePresence(
+          "away",
+        );
+      } catch (error) {
+        console.error(
+          "Unable to mark portal presence away:",
+          error,
+        );
+      }
+    }
 
-    // Keep refreshing even when the page is idle or the tab is in the
-    // background. Browsers may throttle background timers, so focus,
-    // visibility and reconnect events also force an immediate refresh.
+    async function restoreOnline() {
+      try {
+        /*
+         * Do not overwrite BUSY.
+         *
+         * updatePresence itself cannot tell
+         * whether Away was manual or automatic,
+         * so this preserves the same existing
+         * behaviour: Busy is sticky, while Away
+         * returns to Online when the user comes
+         * back to the portal.
+         */
+        const result =
+          await updatePresence(
+            "online",
+          );
+
+        if (!result.ok) {
+          console.error(
+            result.message,
+          );
+        }
+      } catch (error) {
+        console.error(
+          "Unable to restore portal presence:",
+          error,
+        );
+      }
+    }
+
+    function clearAwayTimer() {
+      if (
+        awayTimerRef.current !==
+        null
+      ) {
+        window.clearTimeout(
+          awayTimerRef.current,
+        );
+
+        awayTimerRef.current =
+          null;
+      }
+    }
+
+    function scheduleAway() {
+      clearAwayTimer();
+
+      awayTimerRef.current =
+        window.setTimeout(() => {
+          if (
+            document.visibilityState ===
+            "hidden"
+          ) {
+            void markAway();
+          }
+        }, AWAY_AFTER_MS);
+    }
+
+    /*
+     * Portal mounted and visible:
+     * register activity immediately.
+     */
+    if (
+      document.visibilityState ===
+      "visible"
+    ) {
+      void sendHeartbeat();
+    } else {
+      hiddenSinceRef.current =
+        Date.now();
+
+      scheduleAway();
+    }
+
+    /*
+     * Heartbeat only while the portal
+     * is actually visible.
+     */
     const intervalId =
       window.setInterval(
         () => {
-          void sendHeartbeat();
+          if (
+            document.visibilityState ===
+            "visible"
+          ) {
+            void sendHeartbeat();
+          }
         },
         HEARTBEAT_INTERVAL_MS,
       );
@@ -61,18 +165,65 @@ export function PortalPresenceHeartbeat({
     function handleVisibilityChange() {
       if (
         document.visibilityState ===
-        "visible"
+        "hidden"
       ) {
+        hiddenSinceRef.current =
+          Date.now();
+
+        scheduleAway();
+
+        return;
+      }
+
+      const hiddenSince =
+        hiddenSinceRef.current;
+
+      hiddenSinceRef.current =
+        null;
+
+      clearAwayTimer();
+
+      /*
+       * If the tab was hidden for at
+       * least 15 minutes, Away may have
+       * been applied while hidden.
+       *
+       * Returning to the portal makes
+       * the character Online again.
+       */
+      if (
+        hiddenSince !== null &&
+        Date.now() -
+          hiddenSince >=
+          AWAY_AFTER_MS
+      ) {
+        void restoreOnline();
+      } else {
         void sendHeartbeat();
       }
     }
 
     function handleWindowFocus() {
-      void sendHeartbeat();
+      if (
+        document.visibilityState ===
+        "visible"
+      ) {
+        hiddenSinceRef.current =
+          null;
+
+        clearAwayTimer();
+
+        void sendHeartbeat();
+      }
     }
 
     function handleOnline() {
-      void sendHeartbeat();
+      if (
+        document.visibilityState ===
+        "visible"
+      ) {
+        void sendHeartbeat();
+      }
     }
 
     document.addEventListener(
@@ -94,6 +245,8 @@ export function PortalPresenceHeartbeat({
       window.clearInterval(
         intervalId,
       );
+
+      clearAwayTimer();
 
       document.removeEventListener(
         "visibilitychange",

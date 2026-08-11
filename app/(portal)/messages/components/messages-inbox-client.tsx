@@ -6,8 +6,12 @@ import {
   useState,
 } from "react";
 
-import { stripRichTextForPreview } from "@/lib/rich-text-shared";
 import { RichTextContentClient } from "@/components/editor/rich-text-content-client";
+import {
+  MessageCharacterIcons,
+  MessagePresenceStatus,
+  type MessageCodexIdentity,
+} from "@/components/messages/message-character-meta";
 
 import { toggleArchive } from "../actions";
 import { startConversationFromDirectory } from "../new-conversation-action";
@@ -20,6 +24,16 @@ type CharacterSummary = {
   portrait_url: string | null;
   public_slug: string;
   title: string | null;
+
+  race:
+    | MessageCodexIdentity
+    | MessageCodexIdentity[]
+    | null;
+
+  association:
+    | MessageCodexIdentity
+    | MessageCodexIdentity[]
+    | null;
 };
 
 type MessageSearchEntry = {
@@ -33,20 +47,28 @@ type ConversationCard = {
   updatedAt: string;
   archivedAt: string | null;
   other: CharacterSummary | null;
+
   lastMessage: {
     id: string;
     body: string;
     created_at: string;
     sender_character_id: string;
   } | null;
+
   unreadCount: number;
   searchableText: string;
-  matchedMessages: MessageSearchEntry[];
+
+  matchedMessages:
+    MessageSearchEntry[];
 };
 
 type MessagesInboxClientProps = {
-  conversations: ConversationCard[];
-  availableCharacters: CharacterSummary[];
+  conversations:
+    ConversationCard[];
+
+  availableCharacters:
+    CharacterSummary[];
+
   showArchived: boolean;
 };
 
@@ -55,7 +77,10 @@ function displayName(
 ): string {
   return (
     character.display_name?.trim() ||
-    [character.first_name, character.surname]
+    [
+      character.first_name,
+      character.surname,
+    ]
       .filter(Boolean)
       .join(" ")
       .trim() ||
@@ -63,10 +88,17 @@ function displayName(
   );
 }
 
-function formatDate(value: string): string {
-  const date = new Date(value);
+function formatDate(
+  value: string,
+): string {
+  const date =
+    new Date(value);
 
-  if (Number.isNaN(date.getTime())) {
+  if (
+    Number.isNaN(
+      date.getTime(),
+    )
+  ) {
     return value;
   }
 
@@ -79,23 +111,6 @@ function formatDate(value: string): string {
   ).format(date);
 }
 
-function compactText(
-  value: string,
-  max = 150,
-): string {
-  const normalized =
-    stripRichTextForPreview(value);
-
-  if (normalized.length <= max) {
-    return normalized;
-  }
-
-  return `${normalized.slice(
-    0,
-    max - 1,
-  )}…`;
-}
-
 export function MessagesInboxClient({
   conversations,
   availableCharacters,
@@ -104,11 +119,15 @@ export function MessagesInboxClient({
   const [query, setQuery] =
     useState("");
 
-  const [newMessageOpen, setNewMessageOpen] =
-    useState(false);
+  const [
+    newMessageOpen,
+    setNewMessageOpen,
+  ] = useState(false);
 
   const normalizedQuery =
-    query.trim().toLowerCase();
+    query
+      .trim()
+      .toLowerCase();
 
   const filteredConversations =
     useMemo(() => {
@@ -124,28 +143,33 @@ export function MessagesInboxClient({
       }
 
       return conversations
-        .filter((conversation) =>
-          conversation.searchableText.includes(
-            normalizedQuery,
-          ),
+        .filter(
+          (conversation) =>
+            conversation.searchableText.includes(
+              normalizedQuery,
+            ),
         )
-        .map((conversation) => {
-          const matchingMessage =
-            conversation.matchedMessages.find(
-              (message) =>
-                message.body
-                  .toLowerCase()
-                  .includes(
-                    normalizedQuery,
-                  ),
-            );
+        .map(
+          (conversation) => {
+            const matchingMessage =
+              conversation.matchedMessages.find(
+                (message) =>
+                  message.body
+                    .toLowerCase()
+                    .includes(
+                      normalizedQuery,
+                    ),
+              );
 
-          return {
-            ...conversation,
-            matchSnippet:
-              matchingMessage?.body ?? null,
-          };
-        });
+            return {
+              ...conversation,
+              matchSnippet:
+                matchingMessage
+                  ?.body ??
+                null,
+            };
+          },
+        );
     }, [
       conversations,
       normalizedQuery,
@@ -159,15 +183,15 @@ export function MessagesInboxClient({
             <p className="text-[10px] uppercase tracking-[0.32em] text-[#927047]">
               Private correspondence
             </p>
-
-            
           </div>
 
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
               onClick={() =>
-                setNewMessageOpen(true)
+                setNewMessageOpen(
+                  true,
+                )
               }
               className="border border-[#a07742] bg-[#402a17] px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-[#f1d5a2] transition hover:border-[#c49351] hover:bg-[#56371c]"
             >
@@ -209,11 +233,12 @@ export function MessagesInboxClient({
               value={query}
               onChange={(event) =>
                 setQuery(
-                  event.target.value,
+                  event.target
+                    .value,
                 )
               }
               placeholder="Search by character or message text..."
-              className="w-full border border-[#60482e]/55 bg-[#100c09] px-4 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+              className="w-full border border-[#60482e]/55 bg-[#100c09] px-4 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49] [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
             />
           </label>
 
@@ -244,12 +269,14 @@ export function MessagesInboxClient({
 
               return (
                 <article
-                  key={conversation.id}
+                  key={
+                    conversation.id
+                  }
                   className="flex flex-col gap-4 border border-[#60482e]/45 bg-[#15100d] p-5 transition hover:border-[#80613c] sm:flex-row sm:items-center"
                 >
                   <Link
                     href={`/messages/${conversation.id}`}
-                    className="flex min-w-0 flex-1 items-center gap-4"
+                    className="flex min-w-0 flex-1 items-center gap-3"
                   >
                     <div className="h-14 w-14 shrink-0 overflow-hidden border border-[#60482e] bg-[#0d0a08]">
                       {conversation.other
@@ -272,11 +299,33 @@ export function MessagesInboxClient({
                       )}
                     </div>
 
-                    <div className="min-w-0 flex-1">
+                    {conversation.other ? (
+                      <MessageCharacterIcons
+                        race={
+                          conversation.other
+                            .race
+                        }
+                        association={
+                          conversation.other
+                            .association
+                        }
+                      />
+                    ) : null}
+
+                    <div className="min-w-0 flex-1 pl-1">
                       <div className="flex flex-wrap items-center gap-3">
                         <h2 className="truncate font-serif text-xl text-[#dec69a]">
                           {otherName}
                         </h2>
+
+                        {conversation.other ? (
+                          <MessagePresenceStatus
+                            characterId={
+                              conversation
+                                .other.id
+                            }
+                          />
+                        ) : null}
 
                         {conversation.unreadCount >
                         0 ? (
@@ -292,27 +341,35 @@ export function MessagesInboxClient({
                         ?.title ? (
                         <p className="mt-1 truncate text-[10px] italic text-[#8d7b63]">
                           {
-                            conversation.other
+                            conversation
+                              .other
                               .title
                           }
                         </p>
                       ) : null}
 
                       <div className="mt-2 max-h-6 overflow-hidden text-sm leading-6 text-[#9f907c]">
-  {conversation.matchSnippet ? (
-    <RichTextContentClient
-      body={conversation.matchSnippet}
-      className="[&_p]:m-0 [&_h1]:text-sm [&_h2]:text-sm [&_h3]:text-sm [&_img]:hidden [&_table]:hidden"
-    />
-  ) : conversation.lastMessage?.body ? (
-    <RichTextContentClient
-      body={conversation.lastMessage.body}
-      className="[&_p]:m-0 [&_h1]:text-sm [&_h2]:text-sm [&_h3]:text-sm [&_img]:hidden [&_table]:hidden"
-    />
-  ) : (
-    "No messages yet."
-  )}
-</div>
+                        {conversation.matchSnippet ? (
+                          <RichTextContentClient
+                            body={
+                              conversation.matchSnippet
+                            }
+                            className="[&_p]:m-0 [&_h1]:text-sm [&_h2]:text-sm [&_h3]:text-sm [&_img]:hidden [&_table]:hidden"
+                          />
+                        ) : conversation.lastMessage
+                            ?.body ? (
+                          <RichTextContentClient
+                            body={
+                              conversation
+                                .lastMessage
+                                .body
+                            }
+                            className="[&_p]:m-0 [&_h1]:text-sm [&_h2]:text-sm [&_h3]:text-sm [&_img]:hidden [&_table]:hidden"
+                          />
+                        ) : (
+                          "No messages yet."
+                        )}
+                      </div>
 
                       {conversation.matchSnippet ? (
                         <p className="mt-1 text-[8px] uppercase tracking-[0.16em] text-[#ad7d42]">
@@ -328,11 +385,17 @@ export function MessagesInboxClient({
                     </div>
                   </Link>
 
-                  <form action={toggleArchive}>
+                  <form
+                    action={
+                      toggleArchive
+                    }
+                  >
                     <input
                       type="hidden"
                       name="conversationId"
-                      value={conversation.id}
+                      value={
+                        conversation.id
+                      }
                     />
 
                     <input
@@ -373,9 +436,13 @@ export function MessagesInboxClient({
       <NewMessageModal
         open={newMessageOpen}
         onClose={() =>
-          setNewMessageOpen(false)
+          setNewMessageOpen(
+            false,
+          )
         }
-        characters={availableCharacters}
+        characters={
+          availableCharacters
+        }
       />
     </div>
   );
@@ -388,18 +455,23 @@ function NewMessageModal({
 }: {
   open: boolean;
   onClose: () => void;
-  characters: CharacterSummary[];
+  characters:
+    CharacterSummary[];
 }) {
   const [query, setQuery] =
     useState("");
 
-  const [selectedId, setSelectedId] =
-    useState("");
+  const [
+    selectedId,
+    setSelectedId,
+  ] = useState("");
 
   const filteredCharacters =
     useMemo(() => {
       const normalized =
-        query.trim().toLowerCase();
+        query
+          .trim()
+          .toLowerCase();
 
       if (!normalized) {
         return characters;
@@ -408,15 +480,22 @@ function NewMessageModal({
       return characters.filter(
         (character) =>
           [
-            displayName(character),
+            displayName(
+              character,
+            ),
             character.title,
           ]
             .filter(Boolean)
             .join(" ")
             .toLowerCase()
-            .includes(normalized),
+            .includes(
+              normalized,
+            ),
       );
-    }, [characters, query]);
+    }, [
+      characters,
+      query,
+    ]);
 
   if (!open) {
     return null;
@@ -456,7 +535,9 @@ function NewMessageModal({
 
           <button
             type="button"
-            onClick={onClose}
+            onClick={
+              onClose
+            }
             className="flex h-9 w-9 items-center justify-center border border-[#60482e]/55 text-lg text-[#b99a6d] transition hover:border-[#9b7446] hover:text-[#edd1a0]"
           >
             ×
@@ -474,12 +555,13 @@ function NewMessageModal({
               value={query}
               onChange={(event) =>
                 setQuery(
-                  event.target.value,
+                  event.target
+                    .value,
                 )
               }
               autoFocus
               placeholder="Type a character name..."
-              className="w-full border border-[#60482e]/55 bg-[#100c09] px-4 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+              className="w-full border border-[#60482e]/55 bg-[#100c09] px-4 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49] [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
             />
           </label>
 
@@ -487,7 +569,9 @@ function NewMessageModal({
             {filteredCharacters.map(
               (character) => {
                 const name =
-                  displayName(character);
+                  displayName(
+                    character,
+                  );
 
                 const selected =
                   selectedId ===
@@ -495,7 +579,9 @@ function NewMessageModal({
 
                 return (
                   <button
-                    key={character.id}
+                    key={
+                      character.id
+                    }
                     type="button"
                     onClick={() =>
                       setSelectedId(
@@ -513,7 +599,8 @@ function NewMessageModal({
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={
-                            character.portrait_url
+                            character
+                              .portrait_url
                           }
                           alt=""
                           className="h-full w-full object-cover"
@@ -521,16 +608,35 @@ function NewMessageModal({
                       ) : (
                         <span className="flex h-full items-center justify-center font-serif text-[#9b805b]">
                           {name
-                            .charAt(0)
+                            .charAt(
+                              0,
+                            )
                             .toUpperCase()}
                         </span>
                       )}
                     </div>
 
-                    <div className="min-w-0">
-                      <p className="truncate font-serif text-lg text-[#dcc397]">
-                        {name}
-                      </p>
+                    <MessageCharacterIcons
+                      race={
+                        character.race
+                      }
+                      association={
+                        character.association
+                      }
+                    />
+
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className="truncate font-serif text-lg text-[#dcc397]">
+                          {name}
+                        </p>
+
+                        <MessagePresenceStatus
+                          characterId={
+                            character.id
+                          }
+                        />
+                      </div>
 
                       <p className="mt-1 truncate text-[9px] text-[#7d7060]">
                         {character.title ??
@@ -545,7 +651,8 @@ function NewMessageModal({
             {filteredCharacters.length ===
             0 ? (
               <p className="border border-[#59432c]/40 bg-[#100c09] p-5 text-center text-sm text-[#817565]">
-                No available characters match
+                No available
+                characters match
                 your search.
               </p>
             ) : null}
@@ -555,7 +662,9 @@ function NewMessageModal({
         <footer className="flex justify-end gap-3 border-t border-[#60482e]/45 p-5">
           <button
             type="button"
-            onClick={onClose}
+            onClick={
+              onClose
+            }
             className="border border-[#59432c] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[#a98b61]"
           >
             Cancel
@@ -569,12 +678,16 @@ function NewMessageModal({
             <input
               type="hidden"
               name="recipientId"
-              value={selectedId}
+              value={
+                selectedId
+              }
             />
 
             <button
               type="submit"
-              disabled={!selectedId}
+              disabled={
+                !selectedId
+              }
               className="border border-[#a07742] bg-[#402a17] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[#f1d5a2] transition hover:border-[#c49351] hover:bg-[#56371c] disabled:cursor-not-allowed disabled:opacity-40"
             >
               Start conversation
