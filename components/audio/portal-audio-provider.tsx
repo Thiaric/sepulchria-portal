@@ -14,7 +14,9 @@ import {
 type PortalSoundKind =
   | "room-message"
   | "private-message"
-  | "chat-pop";
+  | "chat-pop"
+  | "instant-bubble"
+  | "instant-swish";
 
 type PortalAudioContextValue = {
   muted: boolean;
@@ -630,6 +632,219 @@ export function PortalAudioProvider({
     }
   }, [ensureAudioContext]);
 
+  const playBubble =
+  useCallback(() => {
+    if (mutedRef.current) {
+      return;
+    }
+
+    const context =
+      ensureAudioContext();
+
+    const master =
+      masterGainRef.current;
+
+    if (!master) {
+      return;
+    }
+
+    const play = () => {
+      if (
+        mutedRef.current ||
+        context.state !== "running"
+      ) {
+        return;
+      }
+
+      const start =
+        context.currentTime + 0.01;
+
+      const oscillator =
+        context.createOscillator();
+
+      const gain =
+        context.createGain();
+
+      oscillator.type = "sine";
+
+      oscillator.frequency.setValueAtTime(
+        240,
+        start,
+      );
+
+      oscillator.frequency.exponentialRampToValueAtTime(
+        620,
+        start + 0.08,
+      );
+
+      oscillator.frequency.exponentialRampToValueAtTime(
+        420,
+        start + 0.14,
+      );
+
+      gain.gain.setValueAtTime(
+        0.0001,
+        start,
+      );
+
+      gain.gain.exponentialRampToValueAtTime(
+        0.05,
+        start + 0.012,
+      );
+
+      gain.gain.exponentialRampToValueAtTime(
+        0.0001,
+        start + 0.16,
+      );
+
+      oscillator.connect(gain);
+      gain.connect(master);
+
+      oscillator.start(start);
+      oscillator.stop(
+        start + 0.17,
+      );
+    };
+
+    if (
+      context.state === "running"
+    ) {
+      play();
+      return;
+    }
+
+    if (
+      context.state === "suspended"
+    ) {
+      void context
+        .resume()
+        .then(play)
+        .catch(() => {
+          // Browser still requires interaction.
+        });
+    }
+  }, [ensureAudioContext]);
+
+  const playSwish =
+  useCallback(() => {
+    if (mutedRef.current) {
+      return;
+    }
+
+    const context =
+      ensureAudioContext();
+
+    const master =
+      masterGainRef.current;
+
+    if (!master) {
+      return;
+    }
+
+    const play = () => {
+      if (
+        mutedRef.current ||
+        context.state !== "running"
+      ) {
+        return;
+      }
+
+      const start =
+        context.currentTime + 0.01;
+
+      const duration = 0.18;
+
+      const buffer =
+        context.createBuffer(
+          1,
+          Math.floor(
+            context.sampleRate *
+              duration,
+          ),
+          context.sampleRate,
+        );
+
+      const data =
+        buffer.getChannelData(0);
+
+      for (
+        let index = 0;
+        index < data.length;
+        index += 1
+      ) {
+        data[index] =
+          Math.random() * 2 - 1;
+      }
+
+      const source =
+        context.createBufferSource();
+
+      source.buffer = buffer;
+
+      const filter =
+        context.createBiquadFilter();
+
+      filter.type = "bandpass";
+
+      filter.frequency.setValueAtTime(
+        750,
+        start,
+      );
+
+      filter.frequency.exponentialRampToValueAtTime(
+        2600,
+        start + duration,
+      );
+
+      filter.Q.value = 0.7;
+
+      const gain =
+        context.createGain();
+
+      gain.gain.setValueAtTime(
+        0.0001,
+        start,
+      );
+
+      gain.gain.exponentialRampToValueAtTime(
+        0.028,
+        start + 0.035,
+      );
+
+      gain.gain.exponentialRampToValueAtTime(
+        0.0001,
+        start + duration,
+      );
+
+      source.connect(filter);
+      filter.connect(gain);
+      gain.connect(master);
+
+      source.start(start);
+      source.stop(
+        start + duration,
+      );
+    };
+
+    if (
+      context.state === "running"
+    ) {
+      play();
+      return;
+    }
+
+    if (
+      context.state === "suspended"
+    ) {
+      void context
+        .resume()
+        .then(play)
+        .catch(() => {
+          // Browser still requires interaction.
+        });
+    }
+  }, [ensureAudioContext]);
+
   const playPigeon =
     useCallback(() => {
       if (
@@ -677,12 +892,30 @@ export function PortalAudioProvider({
         return;
       }
 
+      if (
+        kind ===
+        "instant-bubble"
+      ) {
+        playBubble();
+        return;
+      }
+
+      if (
+        kind ===
+        "instant-swish"
+      ) {
+        playSwish();
+        return;
+      }
+
       playBeep();
     },
     [
       playBeep,
       playPigeon,
       playPop,
+      playBubble,
+      playSwish,
     ],
   );
 

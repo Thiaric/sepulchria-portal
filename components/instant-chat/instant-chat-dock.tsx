@@ -271,38 +271,41 @@ export function InstantChatDock({
 
             const active =
               openChatRef.current;
+          if (
+  active?.conversationId ===
+    message.conversation_id &&
+  !chatMinimised &&
+  document.visibilityState ===
+    "visible"
+) {
+  setMessages(
+    (current) =>
+      current.some(
+        (existing) =>
+          existing.id ===
+          message.id,
+      )
+        ? current
+        : [
+            ...current,
+            message,
+          ],
+  );
 
-            if (
-              active?.conversationId ===
-                message.conversation_id &&
-              !chatMinimised &&
-              document.visibilityState ===
-                "visible"
-            ) {
-              setMessages(
-                (current) =>
-                  current.some(
-                    (existing) =>
-                      existing.id ===
-                      message.id,
-                  )
-                    ? current
-                    : [
-                        ...current,
-                        message,
-                      ],
-              );
+  playPortalSound(
+    "instant-swish",
+  );
 
-              void markRead(
-                message.conversation_id,
-              );
-            } else {
-              playPortalSound(
-                "room-message",
-              );
+  void markRead(
+    message.conversation_id,
+  );
+} else {
+  playPortalSound(
+    "instant-bubble",
+  );
 
-              void loadContacts();
-            }
+  void loadContacts();
+}
           },
         )
         .subscribe();
