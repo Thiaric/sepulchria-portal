@@ -306,12 +306,26 @@ export default function RoomChatForm({
       ? checkState.ok
       : diceState.ok;
 
-  const visibleStatusMessage =
-    messageState.message ||
-    utilityMessage;
+  const hasCompleteWhisperMarker =
+  /^@[^@\r\n]+@/.test(
+    value,
+  );
 
-  const visibleStatusOk =
-    messageState.message
+const hideMissingCharacterError =
+  messageState.message ===
+    "Character not at this Location" &&
+  !hasCompleteWhisperMarker;
+
+const visibleStatusMessage =
+  hideMissingCharacterError
+    ? utilityMessage
+    : messageState.message ||
+      utilityMessage;
+
+const visibleStatusOk =
+  hideMissingCharacterError
+    ? utilityOk
+    : messageState.message
       ? messageState.ok
       : utilityOk;
 
