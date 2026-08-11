@@ -490,6 +490,17 @@ function AdminRecordJumpContext({
     });
   }
 
+  function jumpToConnections() {
+    document
+      .getElementById(
+        "room-connections",
+      )
+      ?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+  }
+
   function jumpToCreate() {
     if (mode === "races") {
       document
@@ -639,6 +650,34 @@ function AdminRecordJumpContext({
           </p>
         ) : null}
       </div>
+
+      {mode === "rooms" ? (
+        <div className="mt-3 shrink-0 border-t border-[#59432c]/35 pt-3">
+          <p className="text-[8px] uppercase tracking-[0.2em] text-[#806b50]">
+            Connections
+          </p>
+
+          <button
+            type="button"
+            onClick={jumpToConnections}
+            className="mt-2 flex w-full items-center justify-between border border-[#765937]/55 bg-[#271c12] px-3 py-2.5 text-left transition hover:border-[#9a7445] hover:bg-[#342318]"
+          >
+            <span>
+              <span className="block font-serif text-[13px] text-[#d6b37d]">
+                Room connections
+              </span>
+
+              <span className="mt-0.5 block text-[8px] uppercase tracking-[0.12em] text-[#6f6252]">
+                Existing paths
+              </span>
+            </span>
+
+            <span className="shrink-0 text-[11px] text-[#8d693e]">
+              ↓
+            </span>
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }

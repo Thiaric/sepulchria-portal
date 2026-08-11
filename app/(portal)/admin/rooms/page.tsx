@@ -939,7 +939,10 @@ export default async function AdminRoomsPage() {
           ) : null}
         </div>
 
-        <section className="mt-8 border border-[#60482e]/45 bg-[#15100d] p-5 sm:p-6">
+        <section
+          id="room-connections"
+          className="mt-8 scroll-mt-6 border border-[#60482e]/45 bg-[#15100d] p-5 sm:p-6"
+        >
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
               <p className="text-[9px] uppercase tracking-[0.24em] text-[#8c704b]">
@@ -956,127 +959,141 @@ export default async function AdminRoomsPage() {
             </AdminCounter>
           </div>
 
-          <div className="mt-6 space-y-4">
+          <div className="mt-6 space-y-3">
             {connections.map(
               (connection) => (
-                <article
+                <details
                   key={connection.id}
-                  className="border border-[#60482e]/40 bg-[#100c09] p-4 sm:p-5"
+                  className="group border border-[#60482e]/40 bg-[#100c09]"
                 >
-                  <div className="flex flex-wrap items-start justify-between gap-4">
-                    <div>
-                      <p className="font-serif text-lg text-[#dfc99f]">
-                        {connection
-                          .from_room
-                          ?.name ??
-                          "Unknown room"}
-                        <span className="mx-3 text-[#7d6040]">
+                  <summary className="cursor-pointer list-none px-4 py-3.5 sm:px-5 [&::-webkit-details-marker]:hidden">
+                    <div className="flex flex-wrap items-center justify-between gap-4">
+                      <div className="min-w-0">
+                        <p className="font-serif text-lg text-[#dfc99f]">
+                          {connection
+                            .from_room
+                            ?.name ??
+                            "Unknown room"}
+
+                          <span className="mx-3 text-[#7d6040]">
+                            {connection.is_two_way
+                              ? "↔"
+                              : "→"}
+                          </span>
+
+                          {connection
+                            .to_room
+                            ?.name ??
+                            "Unknown room"}
+                        </p>
+
+                        <p className="mt-1 text-[9px] uppercase tracking-[0.15em] text-[#817461]">
+                          {connection.connection_name ??
+                            "Unnamed connection"}
+                        </p>
+                      </div>
+
+                      <div className="flex shrink-0 items-center gap-3">
+                        <span className="border border-[#60482e]/50 px-2.5 py-1 text-[8px] uppercase tracking-[0.18em] text-[#9e8969]">
                           {connection.is_two_way
-                            ? "↔"
-                            : "→"}
+                            ? "Two-way"
+                            : "One-way"}
                         </span>
-                        {connection
-                          .to_room
-                          ?.name ??
-                          "Unknown room"}
-                      </p>
 
-                      <p className="mt-2 text-[10px] uppercase tracking-[0.16em] text-[#817461]">
-                        {connection.connection_name ??
-                          "Unnamed connection"}
-                      </p>
+                        <span
+                          title="Expand connection"
+                          className="text-sm text-[#9a7445] transition-transform duration-200 group-open:rotate-180"
+                        >
+                          ▾
+                        </span>
+                      </div>
                     </div>
+                  </summary>
 
-                    <span className="border border-[#60482e]/50 px-2.5 py-1 text-[8px] uppercase tracking-[0.18em] text-[#9e8969]">
-                      {connection.is_two_way
-                        ? "Two-way"
-                        : "One-way"}
-                    </span>
-                  </div>
+                  <div className="border-t border-[#60482e]/30 px-4 pb-4 pt-4 sm:px-5 sm:pb-5">
+                    <form
+                      action={
+                        updateRoomConnection
+                      }
+                    >
+                      <input
+                        type="hidden"
+                        name="connectionId"
+                        value={connection.id}
+                      />
 
-                  <form
-                    action={
-                      updateRoomConnection
-                    }
-                    className="mt-5"
-                  >
-                    <input
-                      type="hidden"
-                      name="connectionId"
-                      value={connection.id}
-                    />
+                      <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_160px]">
+                        <AdminField label="Connection name">
+                          <input
+                            type="text"
+                            name="connectionName"
+                            maxLength={120}
+                            defaultValue={
+                              connection.connection_name ??
+                              ""
+                            }
+                            className="w-full border border-[#60482e]/55 bg-[#0c0907] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                          />
+                        </AdminField>
 
-                    <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_160px]">
-                      <AdminField label="Connection name">
-                        <input
-                          type="text"
-                          name="connectionName"
-                          maxLength={120}
-                          defaultValue={
-                            connection.connection_name ??
-                            ""
-                          }
-                          className="w-full border border-[#60482e]/55 bg-[#0c0907] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
-                        />
-                      </AdminField>
+                        <AdminField label="Sort order">
+                          <input
+                            type="number"
+                            name="sortOrder"
+                            min={-9999}
+                            max={9999}
+                            defaultValue={
+                              connection.sort_order
+                            }
+                            className="w-full border border-[#60482e]/55 bg-[#0c0907] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                          />
+                        </AdminField>
+                      </div>
 
-                      <AdminField label="Sort order">
-                        <input
-                          type="number"
-                          name="sortOrder"
-                          min={-9999}
-                          max={9999}
-                          defaultValue={
-                            connection.sort_order
-                          }
-                          className="w-full border border-[#60482e]/55 bg-[#0c0907] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
-                        />
-                      </AdminField>
-                    </div>
+                      <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
+                        <label className="flex items-center gap-3 text-sm text-[#bbaa90]">
+                          <input
+                            type="checkbox"
+                            name="isTwoWay"
+                            defaultChecked={
+                              connection.is_two_way
+                            }
+                            className="h-4 w-4 accent-[#8b673d]"
+                          />
 
-                    <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
-                      <label className="flex items-center gap-3 text-sm text-[#bbaa90]">
-                        <input
-                          type="checkbox"
-                          name="isTwoWay"
-                          defaultChecked={
-                            connection.is_two_way
-                          }
-                          className="h-4 w-4 accent-[#8b673d]"
-                        />
+                          Two-way connection
+                        </label>
 
-                        Two-way connection
-                      </label>
+                        <button
+                          type="submit"
+                          className="border border-[#987344] bg-[#3b2919] px-4 py-2.5 text-[8px] uppercase tracking-[0.18em] text-[#efd6a8] transition hover:border-[#b98c50] hover:bg-[#50371f]"
+                        >
+                          Save connection
+                        </button>
+                      </div>
+                    </form>
+
+                    <form
+                      action={
+                        deleteRoomConnection
+                      }
+                      className="mt-4 border-t border-[#60482e]/25 pt-4 text-right"
+                    >
+                      <input
+                        type="hidden"
+                        name="connectionId"
+                        value={connection.id}
+                      />
 
                       <button
                         type="submit"
-                        className="border border-[#987344] bg-[#3b2919] px-4 py-2.5 text-[8px] uppercase tracking-[0.18em] text-[#efd6a8] transition hover:border-[#b98c50] hover:bg-[#50371f]"
+                        className="border border-red-900/60 bg-red-950/20 px-4 py-2.5 text-[8px] uppercase tracking-[0.18em] text-red-500 transition hover:border-red-700 hover:bg-red-950/40"
                       >
-                        Save connection
+                        Delete connection
                       </button>
-                    </div>
-                  </form>
-
-                  <form
-                    action={
-                      deleteRoomConnection
-                    }
-                    className="mt-4 border-t border-[#60482e]/25 pt-4 text-right"
-                  >
-                    <input
-                      type="hidden"
-                      name="connectionId"
-                      value={connection.id}
-                    />
-
-                    <button
-                      type="submit"
-                      className="border border-red-900/60 bg-red-950/20 px-4 py-2.5 text-[8px] uppercase tracking-[0.18em] text-red-500 transition hover:border-red-700 hover:bg-red-950/40"
-                    >
-                      Delete connection
-                    </button>
-                  </form>
-                </article>
+                    </form>
+                  </div>
+                </details>
               ),
             )}
 
