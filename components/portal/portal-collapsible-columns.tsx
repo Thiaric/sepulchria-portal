@@ -90,7 +90,12 @@ export function PortalCollapsibleColumns({
         </button>
       </div>
 
-      {centre}
+      <div
+        data-portal-centre-host
+        className="min-h-0 min-w-0"
+      >
+        {centre}
+      </div>
 
       <div className="portal-right-shell relative min-h-0 min-w-0">
         {right}

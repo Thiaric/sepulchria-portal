@@ -173,13 +173,68 @@ async function PortalLayoutContent({
                   color: #efd39f;
                 }
 
-                .sepulchria-viewport-body > [data-portal-column],
+                .sepulchria-viewport-body
+                  > [data-portal-centre-host],
+                .sepulchria-viewport-body
+                  > .portal-left-shell,
+                .sepulchria-viewport-body
+                  > .portal-right-shell {
+                  min-width: 0;
+                  min-height: 0;
+                  height: 100%;
+                }
+
+                .sepulchria-viewport-body
+                  > [data-portal-centre-host]
+                  > [data-portal-column],
                 .sepulchria-viewport-body
                   > .portal-left-shell
                   > [data-portal-column] {
                   min-width: 0;
                   min-height: 0;
                   height: 100%;
+                }
+
+                /*
+                 * GLOBAL WIDE MODE
+                 *
+                 * Most portal pages deliberately centre their main page shell with
+                 * Tailwind max-w-* classes. When either permanent sidebar is hidden,
+                 * remove the width cap from the PAGE SHELL only, so Forum, Messages,
+                 * Ancestries, Associations, Characters and Admin pages can consume
+                 * the newly available centre space.
+                 *
+                 * The selectors intentionally target only the first layout wrapper(s)
+                 * below the portal main area. Nested reading columns, forms, modals
+                 * and small components keep their own max-width constraints.
+                 */
+                .sepulchria-viewport-body:is(
+                    [data-left-collapsed="true"],
+                    [data-right-collapsed="true"]
+                  )
+                  > [data-portal-centre-host]
+                  > [data-portal-column]
+                  > :is(main, section, article, div)
+                  > .mx-auto:is(
+                    .max-w-7xl,
+                    .max-w-6xl,
+                    .max-w-5xl,
+                    .max-w-4xl
+                  ),
+                .sepulchria-viewport-body:is(
+                    [data-left-collapsed="true"],
+                    [data-right-collapsed="true"]
+                  )
+                  > [data-portal-centre-host]
+                  > [data-portal-column]
+                  > .mx-auto:is(
+                    .max-w-7xl,
+                    .max-w-6xl,
+                    .max-w-5xl,
+                    .max-w-4xl
+                  ) {
+                  max-width: none !important;
+                  width: 100%;
                 }
               }
 

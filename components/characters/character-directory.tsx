@@ -183,7 +183,7 @@ export function CharacterDirectory({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 px-3">
       <section className="border border-[#60482e]/45 bg-[#15100d]/95 p-5">
         <div className="grid gap-4 xl:grid-cols-[minmax(220px,1fr)_170px_190px_180px_150px_auto] xl:items-end">
           <label className="block">
