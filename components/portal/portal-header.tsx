@@ -7,6 +7,7 @@ import { ActiveCityCounter } from "@/components/portal/active-city-counter";
 import { UnreadMessageBadge } from "@/components/messages/unread-message-badge";
 import { WorldIndicator } from "@/components/world/world-indicator";
 import { PortalSoundToggle } from "@/components/audio/portal-sound-toggle";
+import { SubmittedCharacterBadge } from "@/components/admin/submitted-character-badge";
 
 type PortalHeaderProps = {
   context: PortalContext;
@@ -67,15 +68,19 @@ export async function PortalHeader({
           </Link>
 
           {staffSession ? (
-            <Link
-              href="/admin"
-              aria-label="Open administration panel"
-              title={`Administration — ${staffSession.role}`}
-              className="flex h-8 w-8 items-center justify-center border border-[#7b5d36] bg-[#24180f] font-serif text-base text-[#d4ad70] transition hover:border-[#b1844b] hover:bg-[#382517] hover:text-[#ffe0a6] sm:h-9 sm:w-9 2xl:h-10 2xl:w-10 2xl:text-lg"
-            >
-              ⚙
-            </Link>
-          ) : null}
+  <Link
+    href="/admin"
+    aria-label="Open administration panel"
+    title={`Administration — ${staffSession.role}`}
+    className="relative flex h-8 w-8 items-center justify-center border border-[#7b5d36] bg-[#24180f] font-serif text-base text-[#d4ad70] transition hover:border-[#b1844b] hover:bg-[#382517] hover:text-[#ffe0a6] sm:h-9 sm:w-9 2xl:h-10 2xl:w-10 2xl:text-lg"
+  >
+    ⚙
+
+    <SubmittedCharacterBadge
+      variant="floating"
+    />
+  </Link>
+) : null}
 
           {character ? (
             <Link

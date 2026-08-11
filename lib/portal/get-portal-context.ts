@@ -114,7 +114,7 @@ export const getPortalContext = cache(
     } = await supabase.auth.getUser();
 
     if (userError || !user) {
-      redirect("/auth/login");
+      redirect("/homepage");
     }
 
     const {
