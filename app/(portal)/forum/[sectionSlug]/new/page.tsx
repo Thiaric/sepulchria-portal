@@ -366,7 +366,7 @@ export default async function NewForumTopicPage({
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(131,91,50,0.18),transparent_45%)]" />
           )}
 
-          <div className="relative flex items-center gap-5 px-6 py-8 sm:px-8 sm:py-10">
+          <div className="relative flex items-center gap-5 px-6 py-8 sm:px-8 sm:py-2">
             <div
               className="relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden border bg-[#0c0907]"
               style={{
@@ -410,11 +410,11 @@ export default async function NewForumTopicPage({
                     : "Organisation Forum"}
               </p>
 
-              <h1 className="mt-2 font-serif text-3xl text-[#ead5ac] sm:text-4xl">
+              <h1 className="mt-1 font-serif text-3xl text-[#ead5ac] sm:text-3xl">
                 New discussion
               </h1>
 
-              <p className="mt-2 text-sm leading-6 text-[#9e907f]">
+              <p className="mt-1 text-sm leading-6 text-[#9e907f]">
                 Publishing in{" "}
                 <span className="text-[#d0b68d]">
                   {

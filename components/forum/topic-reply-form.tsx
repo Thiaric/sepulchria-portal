@@ -105,11 +105,18 @@ export default function TopicReplyForm({
     selectedCharacterId,
     setSelectedCharacterId,
   ] = useState(
-    defaultCharacterId ??
-      (characters.length === 1
-        ? characters[0].id
-        : ""),
+    defaultCharacterId &&
+      characters.some(
+        (character) =>
+          character.id ===
+          defaultCharacterId,
+      )
+      ? defaultCharacterId
+      : characters[0]?.id ?? "",
   );
+
+  const [isAnonymous, setIsAnonymous] =
+    useState(false);
 
   const [body, setBody] = useState("");
   const [images, setImages] = useState<
@@ -272,6 +279,7 @@ export default function TopicReplyForm({
           <select
             id="reply-character"
             name="characterId"
+            required
             value={selectedCharacterId}
             onChange={(event) =>
               setSelectedCharacterId(
@@ -312,6 +320,35 @@ export default function TopicReplyForm({
         </div>
 
         <div>
+          <label className="flex cursor-pointer items-center gap-3 border border-[#60482e]/45 bg-[#100c09] px-4 py-3 text-sm text-[#c8b79c] transition hover:border-[#8b6840]">
+            <input
+              type="checkbox"
+              name="isAnonymous"
+              value="true"
+              checked={isAnonymous}
+              onChange={(event) =>
+                setIsAnonymous(
+                  event.target.checked,
+                )
+              }
+              disabled={pending}
+              className="h-4 w-4 accent-[#8b673d]"
+            />
+
+            <span>Anonymous</span>
+          </label>
+
+          {isAnonymous ? (
+            <p className="mt-2 border-l-2 border-[#8b6840] bg-[#100c09] px-3 py-2 text-[10px] leading-5 text-[#8f8271]">
+              Your identity will be hidden
+              from other players. You and
+              staff will still be able to
+              see which character posted it.
+            </p>
+          ) : null}
+        </div>
+
+        <div>
           <label
             htmlFor="forum-reply-body"
             className="block text-[9px] uppercase tracking-[0.18em] text-[#9f8765]"
@@ -346,7 +383,9 @@ export default function TopicReplyForm({
           <button
             type="submit"
             disabled={
-              pending || !body.trim()
+              pending ||
+              !selectedCharacterId ||
+              !body.trim()
             }
             className="border border-[#a27b48] bg-[#49311d] px-6 py-3 text-[9px] uppercase tracking-[0.2em] text-[#f0d6aa] transition hover:border-[#c49555] hover:bg-[#5b3d22] disabled:cursor-not-allowed disabled:opacity-50"
           >

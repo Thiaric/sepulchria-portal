@@ -101,10 +101,11 @@ export default function NewTopicForm({
 
   const [selectedCharacterId, setSelectedCharacterId] =
     useState(
-      characters.length === 1
-        ? characters[0].id
-        : "",
+      characters[0]?.id ?? "",
     );
+
+  const [isAnonymous, setIsAnonymous] =
+    useState(false);
 
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
@@ -181,7 +182,16 @@ export default function NewTopicForm({
         selectedCharacter.association_id !==
           nextSection.association_id
       ) {
-        setSelectedCharacterId("");
+        const firstCompatibleCharacter =
+          characters.find(
+            (character) =>
+              character.association_id ===
+              nextSection.association_id,
+          );
+
+        setSelectedCharacterId(
+          firstCompatibleCharacter?.id ?? "",
+        );
       }
     }
   }
@@ -401,6 +411,7 @@ export default function NewTopicForm({
             <select
               id="characterId"
               name="characterId"
+              required
               value={selectedCharacterId}
               onChange={(event) =>
                 setSelectedCharacterId(
@@ -410,10 +421,6 @@ export default function NewTopicForm({
               disabled={pending}
               className="mt-2 w-full border border-[#60482e]/50 bg-[#0d0907] px-4 py-3 text-sm text-[#d8c4a4] outline-none transition focus:border-[#aa7f47] disabled:cursor-not-allowed disabled:opacity-60"
             >
-              <option value="">
-                Account only
-              </option>
-
               {compatibleCharacters.map(
                 (character) => (
                   <option
@@ -456,6 +463,36 @@ export default function NewTopicForm({
                 available.
               </p>
             )}
+          </div>
+
+          <div className="lg:col-span-2">
+            <label className="flex cursor-pointer items-center gap-3 border border-[#60482e]/45 bg-[#100c09] px-4 py-3 text-sm text-[#c8b79c] transition hover:border-[#8b6840]">
+              <input
+                type="checkbox"
+                name="isAnonymous"
+                value="true"
+                checked={isAnonymous}
+                onChange={(event) =>
+                  setIsAnonymous(
+                    event.target.checked,
+                  )
+                }
+                disabled={pending}
+                className="h-4 w-4 accent-[#8b673d]"
+              />
+
+              <span>Anonymous</span>
+            </label>
+
+            {isAnonymous ? (
+              <p className="mt-2 border-l-2 border-[#8b6840] bg-[#100c09] px-3 py-2 text-[10px] leading-5 text-[#8f8271]">
+                Your identity will be hidden
+                from other players. You and
+                staff will still be able to
+                see which character created
+                the discussion.
+              </p>
+            ) : null}
           </div>
         </div>
       </section>
@@ -559,134 +596,7 @@ export default function NewTopicForm({
         </div>
       </section>
 
-      <section className="border border-[#60482e]/45 bg-[#15100d]">
-        <div className="border-b border-[#60482e]/35 px-5 py-4 sm:px-6">
-          <p className="text-[8px] uppercase tracking-[0.24em] text-[#806a4d]">
-            Attachments
-          </p>
-
-          <h2 className="mt-2 font-serif text-2xl text-[#dec69d]">
-            Images
-          </h2>
-        </div>
-
-        <div className="space-y-5 p-5 sm:p-6">
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <input
-              type="url"
-              value={newImageUrl}
-              onChange={(event) => {
-                setNewImageUrl(
-                  event.target.value,
-                );
-                setImageError("");
-              }}
-              onKeyDown={(event) => {
-                if (event.key === "Enter") {
-                  event.preventDefault();
-                  addImage();
-                }
-              }}
-              disabled={
-                pending ||
-                images.length >= MAX_IMAGES
-              }
-              placeholder="https://example.com/image.jpg"
-              className="min-w-0 flex-1 border border-[#60482e]/50 bg-[#0d0907] px-4 py-3 text-sm text-[#d8c4a4] outline-none transition placeholder:text-[#5f5549] focus:border-[#aa7f47] disabled:cursor-not-allowed disabled:opacity-60"
-            />
-
-            <button
-              type="button"
-              onClick={addImage}
-              disabled={
-                pending ||
-                images.length >= MAX_IMAGES
-              }
-              className="border border-[#80613b] bg-[#2c1e14] px-5 py-3 text-[9px] uppercase tracking-[0.17em] text-[#d8bd91] transition hover:border-[#a67c45] hover:bg-[#3a2819] disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              Add image
-            </button>
-          </div>
-
-          <div className="flex items-center justify-between gap-4">
-            <p className="text-xs leading-5 text-[#776b5d]">
-              Add direct HTTP or HTTPS image
-              links. Uploads through Supabase
-              Storage will be added later.
-            </p>
-
-            <span className="shrink-0 text-[9px] text-[#716453]">
-              {images.length}/{MAX_IMAGES}
-            </span>
-          </div>
-
-          {imageError ? (
-            <p className="text-xs text-red-400">
-              {imageError}
-            </p>
-          ) : null}
-
-          {state.fieldErrors?.imageUrls ? (
-            <p className="text-xs text-red-400">
-              {
-                state.fieldErrors
-                  .imageUrls
-              }
-            </p>
-          ) : null}
-
-          {images.length > 0 ? (
-            <div className="grid gap-3 sm:grid-cols-2">
-              {images.map(
-                (imageUrl, index) => (
-                  <div
-                    key={imageUrl}
-                    className="flex min-w-0 items-center gap-3 border border-[#60482e]/40 bg-[#0d0907] p-3"
-                  >
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center border border-[#60482e]/40 bg-[#17100c] font-serif text-sm text-[#9a7950]">
-                      {index + 1}
-                    </div>
-
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-xs text-[#aa9982]">
-                        {imageUrl}
-                      </p>
-
-                      <a
-                        href={imageUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="mt-1 inline-block text-[8px] uppercase tracking-[0.15em] text-[#8d724f] transition hover:text-[#d6b681]"
-                      >
-                        Preview
-                      </a>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() =>
-                        removeImage(
-                          imageUrl,
-                        )
-                      }
-                      disabled={pending}
-                      className="shrink-0 border border-red-900/50 px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-red-400 transition hover:bg-red-950/25 disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                ),
-              )}
-            </div>
-          ) : (
-            <div className="border border-dashed border-[#60482e]/40 px-5 py-8 text-center">
-              <p className="font-serif text-base text-[#8f816f]">
-                No images attached.
-              </p>
-            </div>
-          )}
-        </div>
-      </section>
+      
 
       <div className="flex flex-col-reverse gap-3 border border-[#60482e]/45 bg-[#15100d] p-4 sm:flex-row sm:items-center sm:justify-between">
         <Link
@@ -700,6 +610,7 @@ export default function NewTopicForm({
           type="submit"
           disabled={
             pending ||
+            !selectedCharacterId ||
             !title.trim() ||
             !body.trim()
           }

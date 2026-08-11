@@ -492,7 +492,7 @@ async function markSectionAsRead() {
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(131,91,50,0.18),transparent_45%)]" />
           )}
 
-          <div className="relative flex flex-col gap-6 px-6 py-9 sm:px-9 lg:flex-row lg:items-center lg:justify-between">
+          <div className="relative flex flex-col gap-6 px-6 py-2 sm:px-9 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex min-w-0 items-center gap-5">
               <div
                 className="relative flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden border bg-[#0c0907]"
@@ -534,7 +534,7 @@ async function markSectionAsRead() {
                       : "Organisation Forum"}
                 </p>
 
-                <h1 className="mt-2 font-serif text-4xl text-[#ead5ac] sm:text-5xl">
+                <h1 className="mt-1 font-serif text-4xl text-[#ead5ac] sm:text-3xl">
                   {section.name}
                 </h1>
 
@@ -547,7 +547,7 @@ async function markSectionAsRead() {
                   </p>
                 ) : null}
 
-                <p className="mt-4 max-w-3xl text-sm leading-7 text-[#aa9b88]">
+                <p className="mt-2 max-w-3xl text-sm leading-7 text-[#aa9b88]">
                   {section.description ||
                     "No description has been provided for this section."}
                 </p>
@@ -645,9 +645,7 @@ async function markSectionAsRead() {
                 Current conversations
               </p>
 
-              <h2 className="mt-2 font-serif text-2xl text-[#dec69d]">
-                Discussions
-              </h2>
+              
             </div>
 
             <Link

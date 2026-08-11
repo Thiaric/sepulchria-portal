@@ -219,20 +219,27 @@ export default function TopicPost({
             />
 
             <div className="min-w-0 flex-1 lg:mt-4">
-              <h2 className="truncate font-serif text-xl text-[#ddc59e]">
-                {authorName}
-              </h2>
+              <h2
+  className={`truncate font-serif text-xl ${
+    post.is_anonymous &&
+    post.anonymous_identity_visible
+      ? "text-red-400"
+      : "text-[#ddc59e]"
+  }`}
+>
+  {authorName}
+</h2>
 
               {post.is_anonymous ? (
-                <p className="mt-1 text-[8px] uppercase tracking-[0.16em] text-[#c49c65]">
+                <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-[#f87171]">
                   {post.anonymous_identity_visible
-                    ? "Anonymous · identity visible to you"
+                    ? "Anonymous"
                     : "Anonymous"}
                 </p>
               ) : null}
 
               {post.author_character?.title ? (
-                <p className="mt-1 text-[8px] uppercase tracking-[0.16em] text-[#9b7954]">
+                <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-[#9b7954]">
                   {post.author_character.title}
                 </p>
               ) : !post.is_anonymous ? (
