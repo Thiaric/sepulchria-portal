@@ -90,6 +90,7 @@ type ForumTopic = {
   updated_at: string;
   edited_at: string | null;
   deleted_at: string | null;
+  is_anonymous: boolean;
   author_character: {
     id: string;
     display_name: string | null;
@@ -97,6 +98,11 @@ type ForumTopic = {
     surname: string | null;
     portrait_url: string | null;
   } | null;
+};
+
+type OpeningPostRecord = {
+  topic_id: string;
+  is_anonymous: boolean;
 };
 
 type ForumTopicRead = {
@@ -174,6 +180,17 @@ export default async function ForumSectionPage({
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  const { data: staffResult } = user
+    ? await supabase.rpc(
+        "current_user_is_staff",
+      )
+    : {
+        data: false,
+      };
+
+  const isStaff =
+    staffResult === true;
 
   const {
     data: sectionData,
@@ -335,6 +352,50 @@ export default async function ForumSectionPage({
     );
   }
 
+  const topicRows =
+    (topicData ??
+      []) as unknown as ForumTopicQueryRow[];
+
+  const topicIds = topicRows.map(
+    (topic) => topic.id,
+  );
+
+  const {
+    data: openingPostData,
+    error: openingPostError,
+  } =
+    topicIds.length > 0
+      ? await supabase
+          .from("forum_posts")
+          .select(`
+            topic_id,
+            is_anonymous
+          `)
+          .in("topic_id", topicIds)
+          .eq("is_initial", true)
+          .is("deleted_at", null)
+      : {
+          data: [],
+          error: null,
+        };
+
+  if (openingPostError) {
+    throw new Error(
+      `Unable to load discussion anonymity: ${openingPostError.message}`,
+    );
+  }
+
+  const anonymousByTopic =
+    new Map(
+      (
+        (openingPostData ??
+          []) as OpeningPostRecord[]
+      ).map((post) => [
+        post.topic_id,
+        post.is_anonymous,
+      ]),
+    );
+
   const childSections = (
     (childSectionData ??
       []) as unknown as ForumSection[]
@@ -345,12 +406,12 @@ export default async function ForumSectionPage({
     ),
   }));
 
-  const topics = (
-    (topicData ??
-      []) as unknown as ForumTopicQueryRow[]
-  ).map(
+  const topics = topicRows.map(
     (topic): ForumTopic => ({
       ...topic,
+      is_anonymous:
+        anonymousByTopic.get(topic.id) ??
+        false,
       author_character:
         getSingleRelation(
           topic.author_character,
@@ -368,42 +429,42 @@ export default async function ForumSectionPage({
     ]),
   );
 
-async function markSectionAsRead() {
-  "use server";
+  async function markSectionAsRead() {
+    "use server";
 
-  const supabase =
-    await createClient();
+    const supabase =
+      await createClient();
 
-  const {
-    data: { user },
-  } =
-    await supabase.auth.getUser();
+    const {
+      data: { user },
+    } =
+      await supabase.auth.getUser();
 
-  if (!user) {
-    return;
-  }
+    if (!user) {
+      return;
+    }
 
-  const { error } =
-    await supabase.rpc(
-      "mark_forum_section_read",
-      {
-        target_section_id:
-          section.id,
-      },
+    const { error } =
+      await supabase.rpc(
+        "mark_forum_section_read",
+        {
+          target_section_id:
+            section.id,
+        },
+      );
+
+    if (error) {
+      throw new Error(
+        error.message,
+      );
+    }
+
+    revalidatePath("/forum");
+    revalidatePath(
+      `/forum/${section.slug}`,
+      "layout",
     );
-
-  if (error) {
-    throw new Error(
-      error.message,
-    );
   }
-
-  revalidatePath("/forum");
-  revalidatePath(
-    `/forum/${section.slug}`,
-    "layout",
-  );
-}
 
   const isTopicUnread = (
     topic: ForumTopic,
@@ -429,10 +490,10 @@ async function markSectionAsRead() {
   };
 
   const unreadTopics = user
-  ? topics.filter((topic) =>
-      isTopicUnread(topic),
-    ).length
-  : 0;
+    ? topics.filter((topic) =>
+        isTopicUnread(topic),
+      ).length
+    : 0;
 
   const pinnedTopics = topics.filter(
     (topic) => topic.is_pinned,
@@ -555,27 +616,32 @@ async function markSectionAsRead() {
             </div>
 
             <div className="flex flex-wrap gap-3">
-  {user && unreadTopics > 0 ? (
-    <form action={markSectionAsRead}>
-      <button
-        type="submit"
-        className="border border-[#80613b] bg-[#2c1e14] px-5 py-3 text-[9px] uppercase tracking-[0.18em] text-[#d8bd91] transition hover:border-[#a67c45] hover:bg-[#3a2819]"
-      >
-        Mark section as read
-        <span className="ml-2 font-serif">
-          ({unreadTopics})
-        </span>
-      </button>
-    </form>
-  ) : null}
+              {user &&
+              unreadTopics > 0 ? (
+                <form
+                  action={
+                    markSectionAsRead
+                  }
+                >
+                  <button
+                    type="submit"
+                    className="border border-[#80613b] bg-[#2c1e14] px-5 py-3 text-[9px] uppercase tracking-[0.18em] text-[#d8bd91] transition hover:border-[#a67c45] hover:bg-[#3a2819]"
+                  >
+                    Mark section as read
+                    <span className="ml-2 font-serif">
+                      ({unreadTopics})
+                    </span>
+                  </button>
+                </form>
+              ) : null}
 
-  <Link
-    href={`/forum/${section.slug}/new`}
-    className="border border-[#987344] bg-[#3b2919] px-5 py-3 text-center text-[9px] uppercase tracking-[0.2em] text-[#efd6a8] transition hover:border-[#b98c50] hover:bg-[#50371f]"
-  >
-    New discussion
-  </Link>
-</div>
+              <Link
+                href={`/forum/${section.slug}/new`}
+                className="border border-[#987344] bg-[#3b2919] px-5 py-3 text-center text-[9px] uppercase tracking-[0.2em] text-[#efd6a8] transition hover:border-[#b98c50] hover:bg-[#50371f]"
+              >
+                New discussion
+              </Link>
+            </div>
           </div>
         </header>
 
@@ -644,8 +710,6 @@ async function markSectionAsRead() {
               <p className="text-[8px] uppercase tracking-[0.24em] text-[#806a4d]">
                 Current conversations
               </p>
-
-              
             </div>
 
             <Link
@@ -675,16 +739,19 @@ async function markSectionAsRead() {
                             key={
                               topic.id
                             }
-                            topic={
-                              topic
-                            }
+                            topic={topic}
                             sectionSlug={
                               section.slug
                             }
-                            isUnread={
-                              isTopicUnread(
-                                topic,
-                              )
+                            isUnread={isTopicUnread(
+                              topic,
+                            )}
+                            viewerUserId={
+                              user?.id ??
+                              null
+                            }
+                            isStaff={
+                              isStaff
                             }
                           />
                         ),
@@ -712,16 +779,19 @@ async function markSectionAsRead() {
                             key={
                               topic.id
                             }
-                            topic={
-                              topic
-                            }
+                            topic={topic}
                             sectionSlug={
                               section.slug
                             }
-                            isUnread={
-                              isTopicUnread(
-                                topic,
-                              )
+                            isUnread={isTopicUnread(
+                              topic,
+                            )}
+                            viewerUserId={
+                              user?.id ??
+                              null
+                            }
+                            isStaff={
+                              isStaff
                             }
                           />
                         ),
@@ -834,15 +904,39 @@ function TopicRow({
   topic,
   sectionSlug,
   isUnread,
+  viewerUserId,
+  isStaff,
 }: {
   topic: ForumTopic;
   sectionSlug: string;
   isUnread: boolean;
+  viewerUserId: string | null;
+  isStaff: boolean;
 }) {
-  const characterName =
+  const canRevealAnonymousIdentity =
+    topic.is_anonymous &&
+    (
+      isStaff ||
+      Boolean(
+        viewerUserId &&
+          topic.author_user_id ===
+            viewerUserId,
+      )
+    );
+
+  const hideAnonymousIdentity =
+    topic.is_anonymous &&
+    !canRevealAnonymousIdentity;
+
+  const realCharacterName =
     getCharacterName(
       topic.author_character,
     );
+
+  const characterName =
+    hideAnonymousIdentity
+      ? "Anonymous"
+      : realCharacterName;
 
   return (
     <article
@@ -863,7 +957,8 @@ function TopicRow({
         className="flex min-w-0 items-center gap-4"
       >
         <div className="relative h-12 w-12 shrink-0 overflow-hidden border border-[#60482e]/50 bg-[#0c0907]">
-          {topic.author_character
+          {!hideAnonymousIdentity &&
+          topic.author_character
             ?.portrait_url ? (
             <Image
               src={
@@ -878,9 +973,11 @@ function TopicRow({
             />
           ) : (
             <div className="flex h-full items-center justify-center font-serif text-lg text-[#795d3a]">
-              {characterName
-                .charAt(0)
-                .toUpperCase()}
+              {hideAnonymousIdentity
+                ? "?"
+                : characterName
+                    .charAt(0)
+                    .toUpperCase()}
             </div>
           )}
         </div>
@@ -912,9 +1009,22 @@ function TopicRow({
 
           <p className="mt-1 text-[9px] text-[#796c5d]">
             Started by{" "}
-            <span className="text-[#9d896b]">
+            <span
+              className={
+                canRevealAnonymousIdentity
+                  ? "text-red-400"
+                  : "text-[#9d896b]"
+              }
+            >
               {characterName}
             </span>
+
+            {canRevealAnonymousIdentity ? (
+              <span className="ml-1 text-red-400">
+                (Anonymous)
+              </span>
+            ) : null}
+
             {" · "}
             {formatDate(
               topic.created_at,

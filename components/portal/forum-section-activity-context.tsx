@@ -4,6 +4,7 @@ import Link from "next/link";
 import {
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from "react";
 
@@ -13,6 +14,8 @@ type SectionActivityEntry = {
   id: string;
   body: string;
   created_at: string;
+  author_user_id: string | null;
+  is_anonymous: boolean;
   topic:
     | {
         title: string;
@@ -117,13 +120,10 @@ function forumPreviewText(
   const normalized =
     decodeHtmlEntities(
       value
-        // Keep separation between blocks/list entries.
         .replace(
           /<(?:br|\/p|\/div|\/li|\/ul|\/ol|\/blockquote|\/h[1-6])\s*\/?>/gi,
           " ",
         )
-        // Remove comments and ALL remaining HTML tags,
-        // including font/span/etc.
         .replace(
           /<!--[\s\S]*?-->/g,
           " ",
@@ -132,8 +132,6 @@ function forumPreviewText(
           /<[^>]*>/g,
           " ",
         )
-        // Legacy markdown cleanup retained from the
-        // original PortalContextPanel helper.
         .replace(
           /[*_>#\[\]()]/g,
           "",
@@ -194,10 +192,46 @@ export function ForumSectionActivityContext({
   const [error, setError] =
     useState<string | null>(null);
 
+  const [
+    viewerUserId,
+    setViewerUserId,
+  ] = useState<string | null>(null);
+
+  const [isStaff, setIsStaff] =
+    useState(false);
+
+  const scrollContainerRef =
+    useRef<HTMLDivElement | null>(
+      null,
+    );
+
   const loadActivity =
     useCallback(async () => {
       const supabase =
         createClient();
+
+      const {
+        data: { user },
+      } =
+        await supabase.auth.getUser();
+
+      setViewerUserId(
+        user?.id ?? null,
+      );
+
+      if (user) {
+        const {
+          data: staffResult,
+        } = await supabase.rpc(
+          "current_user_is_staff",
+        );
+
+        setIsStaff(
+          staffResult === true,
+        );
+      } else {
+        setIsStaff(false);
+      }
 
       const {
         data: section,
@@ -220,7 +254,9 @@ export function ForumSectionActivityContext({
         return;
       }
 
-      setSectionName(section.name);
+      setSectionName(
+        section.name,
+      );
 
       const {
         data,
@@ -231,6 +267,8 @@ export function ForumSectionActivityContext({
           id,
           body,
           created_at,
+          author_user_id,
+          is_anonymous,
           topic:forum_topics!inner(
             title,
             slug,
@@ -265,9 +303,24 @@ export function ForumSectionActivityContext({
         return;
       }
 
+      const latestEntries =
+        (
+          (data ??
+            []) as unknown as SectionActivityEntry[]
+        ).slice();
+
+      latestEntries.sort(
+        (first, second) =>
+          new Date(
+            first.created_at,
+          ).getTime() -
+          new Date(
+            second.created_at,
+          ).getTime(),
+      );
+
       setEntries(
-        (data ??
-          []) as unknown as SectionActivityEntry[],
+        latestEntries,
       );
 
       setError(null);
@@ -278,6 +331,36 @@ export function ForumSectionActivityContext({
     setLoading(true);
     void loadActivity();
   }, [loadActivity]);
+
+  useEffect(() => {
+    if (loading) {
+      return;
+    }
+
+    const container =
+      scrollContainerRef.current;
+
+    if (!container) {
+      return;
+    }
+
+    const frame =
+      window.requestAnimationFrame(
+        () => {
+          container.scrollTop =
+            container.scrollHeight;
+        },
+      );
+
+    return () => {
+      window.cancelAnimationFrame(
+        frame,
+      );
+    };
+  }, [
+    loading,
+    entries.length,
+  ]);
 
   useEffect(() => {
     const supabase =
@@ -334,7 +417,10 @@ export function ForumSectionActivityContext({
         </p>
       ) : null}
 
-      <div className="min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-contain pr-1">
+      <div
+        ref={scrollContainerRef}
+        className="min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-contain pr-1"
+      >
         {loading ? (
           <div className="space-y-2">
             <div className="h-24 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
@@ -355,7 +441,22 @@ export function ForumSectionActivityContext({
               return null;
             }
 
-            const authorName =
+            const canRevealAnonymousIdentity =
+              entry.is_anonymous &&
+              (
+                isStaff ||
+                Boolean(
+                  viewerUserId &&
+                    entry.author_user_id ===
+                      viewerUserId,
+                )
+              );
+
+            const hideAnonymousIdentity =
+              entry.is_anonymous &&
+              !canRevealAnonymousIdentity;
+
+            const realAuthorName =
               author?.display_name?.trim() ||
               [
                 author?.first_name,
@@ -364,7 +465,12 @@ export function ForumSectionActivityContext({
                 .filter(Boolean)
                 .join(" ")
                 .trim() ||
-              "Account";
+              "Unknown character";
+
+            const authorName =
+              hideAnonymousIdentity
+                ? "Anonymous"
+                : realAuthorName;
 
             return (
               <Link
@@ -377,9 +483,23 @@ export function ForumSectionActivityContext({
                 className="block border border-[#59432c]/40 bg-[#100c09] p-3 transition hover:border-[#8d6a40] hover:bg-[#1a120d]"
               >
                 <div className="flex items-start justify-between gap-3">
-                  <p className="min-w-0 truncate font-serif text-sm text-[#d6bd91]">
-                    {authorName}
-                  </p>
+                  <div className="min-w-0">
+                    <p
+                      className={`truncate font-serif text-sm ${
+                        canRevealAnonymousIdentity
+                          ? "text-red-400"
+                          : "text-[#d6bd91]"
+                      }`}
+                    >
+                      {authorName}
+                    </p>
+
+                    {canRevealAnonymousIdentity ? (
+                      <p className="mt-0.5 text-[7px] uppercase tracking-[0.13em] text-red-400">
+                        Anonymous
+                      </p>
+                    ) : null}
+                  </div>
 
                   <time className="shrink-0 text-[7px] uppercase tracking-[0.12em] text-[#665b4e]">
                     {formatCompactDate(
