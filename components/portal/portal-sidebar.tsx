@@ -19,6 +19,7 @@ type PortalSidebarProps = {
 
 type NavigationItem = {
   label: string;
+  title: string;
   icon: string;
   href: string;
   activePaths: string[];
@@ -29,18 +30,21 @@ type NavigationItem = {
 const mainNavigationItems: NavigationItem[] = [
   {
     label: "Dashboard",
+    title: "Back to the homepage",
     icon: "⌂",
     href: "/",
     activePaths: ["/"],
   },
   {
     label: "Play",
+    title: "Go to a location and start roleplaying or go back to the location you are in",
     icon: "✦",
     href: "/game",
     activePaths: ["/game"],
   },
   {
     label: "Characters",
+    title: "Manage your characters",
     icon: "♙",
     href: "/characters",
     activePaths: ["/characters"],
@@ -50,6 +54,7 @@ const mainNavigationItems: NavigationItem[] = [
 const codexNavigationItems: NavigationItem[] = [
   {
     label: "Codex",
+    title: "View the Ongame Lore Codex, including the world history, locations, and more",
     icon: "🕮",
     href: "/codex",
     activePaths: ["/codex"],
@@ -57,6 +62,7 @@ const codexNavigationItems: NavigationItem[] = [
   },
   {
     label: "Rules",
+    title: "View the game rules and regulations",
     icon: "🗊",
     href: "/rules",
     activePaths: ["/rules"],
@@ -64,18 +70,21 @@ const codexNavigationItems: NavigationItem[] = [
   },
   {
     label: "Ancestries",
+    title: "View information about different ancestries",
     icon: "⚜",
     href: "/races",
     activePaths: ["/races"],
   },
   {
     label: "Associations",
+    title: "View information about different associations",
     icon: "⌘",
     href: "/associations",
     activePaths: ["/associations"],
   },
   {
     label: "Warping",
+    title: "View information about Magic in Sepulchria, including Warping",
     icon: "✵",
     href: "/spells",
     activePaths: ["/spells"],
@@ -85,6 +94,7 @@ const codexNavigationItems: NavigationItem[] = [
 
 const marketItem: NavigationItem = {
   label: "Market",
+  title: "View the market and buy/sell items",
   icon: "⚖",
   href: "/market",
   activePaths: ["/market"],
@@ -93,6 +103,7 @@ const marketItem: NavigationItem = {
 
 const messagesItem: NavigationItem = {
   label: "Messages",
+  title: "View your messages",
   icon: "✉",
   href: "/messages",
   activePaths: ["/messages"],

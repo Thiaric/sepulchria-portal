@@ -8,7 +8,6 @@ import {
 import { createClient } from "@/lib/supabase/server";
 import type {
   CharacterAttributeKey,
-  CharacterSummary,
   RoomMessage,
 } from "@/types/game";
 
@@ -19,6 +18,7 @@ type RoomRow = {
   id: string;
   name: string;
   description: string | null;
+  image_url: string | null;
   area:
     | {
         name: string;
@@ -28,6 +28,7 @@ type RoomRow = {
       }[]
     | null;
 };
+
 
 function normaliseRelation<T>(
   value: T | T[] | null,
@@ -40,25 +41,6 @@ function normaliseRelation<T>(
 }
 
 
-function stripRichTextMarkup(
-  value: string,
-): string {
-  return value
-    .replace(
-      /\[img(?:=[^\]]*)?\]([\s\S]*?)\[\/img\]/gi,
-      "$1",
-    )
-    .replace(
-      /\[url=[^\]]+\]([\s\S]*?)\[\/url\]/gi,
-      "$1",
-    )
-    .replace(
-      /\[(?:\/)?(?:b|i|u|s|quote|h2|h3|center|list)\]/gi,
-      "",
-    )
-    .replace(/\[\*\]/gi, "• ");
-}
-
 function escapeHtml(
   value: string,
 ): string {
@@ -69,6 +51,7 @@ function escapeHtml(
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
 }
+
 
 function safeFilename(
   value: string,
@@ -87,10 +70,11 @@ function safeFilename(
       )
       .replace(
         /^-+|-+$/g,
-        ""
+        "",
       ) || "sepulchria-role"
   );
 }
+
 
 function formatDateTime(
   value: string,
@@ -114,36 +98,270 @@ function formatDateTime(
   ).format(date);
 }
 
+
+function formatCompactTime(
+  value: string,
+): string {
+  const date = new Date(value);
+
+  if (
+    Number.isNaN(
+      date.getTime(),
+    )
+  ) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat(
+    "en-GB",
+    {
+      day: "2-digit",
+      month: "short",
+      hour: "2-digit",
+      minute: "2-digit",
+    },
+  ).format(date);
+}
+
+
 function getAttributeLabel(
   key:
     | CharacterAttributeKey
     | null,
 ): string {
-  const labels:
-    Record<
-      CharacterAttributeKey,
-      string
-    > = {
-      muscles: "Muscles",
-      reflexes: "Reflexes",
-      vigor: "Vigor",
-      brains: "Brains",
-      shrewd: "Shrewd",
-      presence_score:
-        "Presence",
-    };
+  const labels: Record<
+    CharacterAttributeKey,
+    string
+  > = {
+    muscles: "Muscles",
+    reflexes: "Reflexes",
+    vigor: "Vigor",
+    brains: "Brains",
+    shrewd: "Shrewd",
+    presence_score: "Presence",
+  };
 
   return key
     ? labels[key]
     : "Attribute";
 }
 
+
+function getFirstName(
+  displayName:
+    | string
+    | null
+    | undefined,
+): string {
+  const clean =
+    displayName?.trim();
+
+  if (!clean) {
+    return "Unknown";
+  }
+
+  return (
+    clean.split(/\s+/)[0] ??
+    clean
+  );
+}
+
+
+function isSafeImageUrl(
+  value:
+    | string
+    | null
+    | undefined,
+): value is string {
+  if (!value) {
+    return false;
+  }
+
+  if (value.startsWith("/")) {
+    return true;
+  }
+
+  try {
+    const parsed =
+      new URL(value);
+
+    return (
+      parsed.protocol === "http:" ||
+      parsed.protocol === "https:"
+    );
+  } catch {
+    return false;
+  }
+}
+
+
+/*
+ * Renders the limited rich-text/BBCode
+ * used by Sepulchria descriptions.
+ *
+ * The content is escaped first, then
+ * supported markup is converted to HTML.
+ */
+function renderRichText(
+  value: string,
+): string {
+  let html =
+    escapeHtml(value);
+
+  html = html
+    .replace(
+      /\[b\]([\s\S]*?)\[\/b\]/gi,
+      "<strong>$1</strong>",
+    )
+    .replace(
+      /\[i\]([\s\S]*?)\[\/i\]/gi,
+      "<em>$1</em>",
+    )
+    .replace(
+      /\[u\]([\s\S]*?)\[\/u\]/gi,
+      "<u>$1</u>",
+    )
+    .replace(
+      /\[s\]([\s\S]*?)\[\/s\]/gi,
+      "<s>$1</s>",
+    )
+    .replace(
+      /\[h2\]([\s\S]*?)\[\/h2\]/gi,
+      "<h2>$1</h2>",
+    )
+    .replace(
+      /\[h3\]([\s\S]*?)\[\/h3\]/gi,
+      "<h3>$1</h3>",
+    )
+    .replace(
+      /\[center\]([\s\S]*?)\[\/center\]/gi,
+      '<div class="rich-center">$1</div>',
+    )
+    .replace(
+      /\[quote\]([\s\S]*?)\[\/quote\]/gi,
+      "<blockquote>$1</blockquote>",
+    )
+    .replace(
+      /\[list\]([\s\S]*?)\[\/list\]/gi,
+      '<div class="rich-list">$1</div>',
+    )
+    .replace(
+      /\[\*\]/gi,
+      '<span class="rich-bullet">•</span> ',
+    );
+
+  /*
+   * URLs are rendered as clickable links,
+   * but only HTTP/HTTPS links survive.
+   */
+  html = html.replace(
+    /\[url=([^\]]+)\]([\s\S]*?)\[\/url\]/gi,
+    (
+      _match,
+      rawUrl: string,
+      label: string,
+    ) => {
+      const decodedUrl =
+        rawUrl
+          .replaceAll(
+            "&amp;",
+            "&",
+          )
+          .replaceAll(
+            "&quot;",
+            '"',
+          )
+          .replaceAll(
+            "&#039;",
+            "'",
+          );
+
+      try {
+        const parsed =
+          new URL(decodedUrl);
+
+        if (
+          parsed.protocol !==
+            "http:" &&
+          parsed.protocol !==
+            "https:"
+        ) {
+          return label;
+        }
+
+        return `<a href="${escapeHtml(
+          parsed.toString(),
+        )}" target="_blank" rel="noreferrer">${label}</a>`;
+      } catch {
+        return label;
+      }
+    },
+  );
+
+  /*
+   * Images in descriptions are allowed
+   * only for safe web/relative URLs.
+   */
+  html = html.replace(
+    /\[img(?:=[^\]]*)?\]([\s\S]*?)\[\/img\]/gi,
+    (
+      _match,
+      rawUrl: string,
+    ) => {
+      const decodedUrl =
+        rawUrl
+          .trim()
+          .replaceAll(
+            "&amp;",
+            "&",
+          )
+          .replaceAll(
+            "&quot;",
+            '"',
+          )
+          .replaceAll(
+            "&#039;",
+            "'",
+          );
+
+      if (
+        !isSafeImageUrl(
+          decodedUrl,
+        )
+      ) {
+        return "";
+      }
+
+      return `<img class="rich-image" src="${escapeHtml(
+        decodedUrl,
+      )}" alt="" />`;
+    },
+  );
+
+  return html.replaceAll(
+    "\n",
+    "<br />",
+  );
+}
+
+
+/*
+ * Matches the live chat:
+ *
+ * <action>
+ * (action)
+ * [action]
+ * {action}
+ *
+ * Everything outside those delimiters
+ * is rendered as normal speech.
+ */
 function renderActionSpeech(
   content: string,
 ): string {
   const segments =
     content.split(
-      /(<[^<>]*>|\([^()]*\))/g,
+      /(<[^<>]*>|\([^()]*\)|\[[^\[\]]*\]|\{[^{}]*\})/g,
     );
 
   return segments
@@ -165,6 +383,22 @@ function renderActionSpeech(
           segment.endsWith(
             ")",
           )
+        ) ||
+        (
+          segment.startsWith(
+            "[",
+          ) &&
+          segment.endsWith(
+            "]",
+          )
+        ) ||
+        (
+          segment.startsWith(
+            "{",
+          ) &&
+          segment.endsWith(
+            "}",
+          )
         );
 
       const escaped =
@@ -180,6 +414,7 @@ function renderActionSpeech(
     })
     .join("");
 }
+
 
 function renderRollText(
   message: RoomMessage,
@@ -213,6 +448,49 @@ function renderRollText(
   );
 }
 
+
+function renderPortrait(
+  name: string,
+  portraitUrl:
+    | string
+    | null
+    | undefined,
+): string {
+  if (
+    isSafeImageUrl(
+      portraitUrl,
+    )
+  ) {
+    return `
+      <div class="portrait-wrap">
+        <img
+          class="portrait"
+          src="${escapeHtml(
+            portraitUrl,
+          )}"
+          alt="${escapeHtml(
+            name,
+          )}"
+        />
+      </div>
+    `;
+  }
+
+  const initial =
+    name
+      .trim()
+      .charAt(0)
+      .toUpperCase() ||
+    "?";
+
+  return `
+    <div class="portrait-wrap portrait-fallback">
+      ${escapeHtml(initial)}
+    </div>
+  `;
+}
+
+
 function renderMessage(
   message: RoomMessage,
 ): string {
@@ -230,34 +508,58 @@ function renderMessage(
     author?.display_name ??
     "Unknown character";
 
+  const shortAuthorName =
+    getFirstName(
+      authorName,
+    );
+
   const time =
-    formatDateTime(
+    formatCompactTime(
       message.created_at,
     );
 
+  /*
+   * FATE
+   */
   if (
     message.message_type ===
     "fate"
   ) {
     return `
       <article class="entry fate-entry">
-        <div class="entry-header">
-          <span class="fate-label">Fate</span>
-          <time>${escapeHtml(time)}</time>
+        <div class="fate-marker">
+          ✦
         </div>
 
-        <div class="fate-body">
-          ${escapeHtml(
-            message.message,
-          ).replaceAll(
-            "\n",
-            "<br />",
-          )}
+        <div class="fate-content">
+          <div class="compact-header">
+            <span class="fate-label">
+              Fate
+            </span>
+
+            <time>
+              ${escapeHtml(
+                time,
+              )}
+            </time>
+          </div>
+
+          <div class="fate-body">
+            ${escapeHtml(
+              message.message,
+            ).replaceAll(
+              "\n",
+              "<br />",
+            )}
+          </div>
         </div>
       </article>
     `;
   }
 
+  /*
+   * DICE / ATTRIBUTE CHECK
+   */
   if (
     message.message_type ===
       "dice_roll" ||
@@ -281,25 +583,36 @@ function renderMessage(
 
     return `
       <article class="entry roll-entry${extraClass}">
-        <div class="roll-symbol">◆</div>
+        <span class="roll-symbol">
+          ◆
+        </span>
 
-        <div class="roll-author">
-          ${escapeHtml(authorName)}
-        </div>
+        <span class="roll-author">
+          ${escapeHtml(
+            shortAuthorName,
+          )}
+        </span>
 
-        <div class="roll-result">
+        <span class="roll-result">
           ${escapeHtml(
             renderRollText(
               message,
             ),
           )}
-        </div>
+        </span>
 
-        <time>${escapeHtml(time)}</time>
+        <time>
+          ${escapeHtml(
+            time,
+          )}
+        </time>
       </article>
     `;
   }
 
+  /*
+   * NORMAL ROLE / WHISPER
+   */
   const isWhisper =
     message.message_type ===
     "whisper";
@@ -318,34 +631,56 @@ function renderMessage(
         ? " whisper-entry"
         : ""
     }">
-      <div class="entry-header">
-        <div class="author-line">
-          <span class="author-name">
-            ${escapeHtml(
-              authorName,
-            )}
-          </span>
 
-          ${
-            isWhisper
-              ? `<span class="whisper-label">${escapeHtml(
-                  whisperLabel,
-                )}</span>`
-              : ""
-          }
+      ${renderPortrait(
+        authorName,
+        author?.portrait_url,
+      )}
+
+      <div class="message-content">
+        <div class="compact-header">
+          <div class="author-line">
+            <span
+              class="author-name"
+              title="${escapeHtml(
+                authorName,
+              )}"
+            >
+              ${escapeHtml(
+                shortAuthorName,
+              )}
+            </span>
+
+            ${
+              isWhisper
+                ? `
+                  <span class="whisper-label">
+                    ${escapeHtml(
+                      whisperLabel,
+                    )}
+                  </span>
+                `
+                : ""
+            }
+          </div>
+
+          <time>
+            ${escapeHtml(
+              time,
+            )}
+          </time>
         </div>
 
-        <time>${escapeHtml(time)}</time>
-      </div>
-
-      <div class="role-body">
-        ${renderActionSpeech(
-          message.message,
-        )}
+        <div class="role-body">
+          ${renderActionSpeech(
+            message.message,
+          )}
+        </div>
       </div>
     </article>
   `;
 }
+
 
 async function loadVisibleMessages(
   roomId: string,
@@ -376,7 +711,8 @@ async function loadVisibleMessages(
     return [] as RoomMessage[];
   }
 
-  const now = Date.now();
+  const now =
+    Date.now();
 
   const latestTimestamp =
     Date.parse(
@@ -453,7 +789,10 @@ async function loadVisibleMessages(
           public_slug
         )
       `)
-      .eq("room_id", roomId)
+      .eq(
+        "room_id",
+        roomId,
+      )
       .gte(
         "created_at",
         historyStart,
@@ -464,7 +803,10 @@ async function loadVisibleMessages(
           ascending: true,
         },
       )
-      .range(from, to);
+      .range(
+        from,
+        to,
+      );
 
     if (error) {
       throw new Error(
@@ -476,7 +818,9 @@ async function loadVisibleMessages(
       (data ??
         []) as unknown as RoomMessage[];
 
-    messages.push(...batch);
+    messages.push(
+      ...batch,
+    );
 
     if (
       batch.length <
@@ -492,6 +836,7 @@ async function loadVisibleMessages(
   return messages;
 }
 
+
 export async function GET() {
   const supabase =
     await createClient();
@@ -502,7 +847,9 @@ export async function GET() {
     await supabase.auth.getUser();
 
   if (!user) {
-    redirect("/auth/login");
+    redirect(
+      "/auth/login",
+    );
   }
 
   const {
@@ -513,7 +860,10 @@ export async function GET() {
     .select(
       "id, display_name, current_room_id, status",
     )
-    .eq("user_id", user.id)
+    .eq(
+      "user_id",
+      user.id,
+    )
     .maybeSingle();
 
   if (
@@ -530,13 +880,17 @@ export async function GET() {
     character.status !==
     "approved"
   ) {
-    redirect("/character");
+    redirect(
+      "/character",
+    );
   }
 
   if (
     !character.current_room_id
   ) {
-    redirect("/game");
+    redirect(
+      "/game",
+    );
   }
 
   const {
@@ -548,6 +902,7 @@ export async function GET() {
       id,
       name,
       description,
+      image_url,
       area:areas!rooms_area_id_fkey(
         name
       )
@@ -597,10 +952,14 @@ export async function GET() {
               Boolean(value),
           ),
       ),
-    ).sort((first, second) =>
-      first.localeCompare(
+    ).sort(
+      (
+        first,
         second,
-      ),
+      ) =>
+        first.localeCompare(
+          second,
+        ),
     );
 
   const exportedAt =
@@ -613,17 +972,27 @@ export async function GET() {
         dateStyle: "long",
         timeStyle: "short",
       },
-    ).format(exportedAt);
+    ).format(
+      exportedAt,
+    );
 
   const roomHeading =
     area?.name
-      ? `${room.name}, ${area.name}`
+      ? `${room.name} · ${area.name}`
       : room.name;
+
+  const roomImage =
+    isSafeImageUrl(
+      room.image_url,
+    )
+      ? room.image_url
+      : null;
 
   const html = `<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
+
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1"
@@ -636,133 +1005,372 @@ export async function GET() {
   <style>
     :root {
       color-scheme: dark;
+
       font-family:
-        Georgia,
-        "Times New Roman",
-        serif;
-      background: #0d0907;
-      color: #d7c6aa;
+        Arial,
+        Helvetica,
+        sans-serif;
+
+      background: #090706;
+      color: #c9bba6;
     }
 
     * {
       box-sizing: border-box;
     }
 
+    html {
+      background: #090706;
+    }
+
     body {
       margin: 0;
+
       background:
         radial-gradient(
-          circle at top,
-          #2b1d12 0,
-          #120d09 42%,
-          #090706 100%
+          circle at 50% -15%,
+          #2a1c11 0,
+          #130e0a 31%,
+          #090706 70%
         );
-      color: #d7c6aa;
-      line-height: 1.65;
+
+      color: #c9bba6;
+
+      font-size: 13px;
+      line-height: 1.55;
     }
 
     main {
       width: min(
-        920px,
-        calc(100% - 32px)
+        980px,
+        calc(100% - 28px)
       );
-      margin: 32px auto;
+
+      margin: 18px auto 28px;
     }
 
-    header {
-      border: 1px solid #654b2e;
+    /*
+     * =====================================================
+     * ARCHIVE HEADER
+     * =====================================================
+     */
+
+    .archive-header {
+      position: relative;
+
+      overflow: hidden;
+
+      border:
+        1px solid
+        #60482e;
+
       background:
-        rgba(
-          21,
-          16,
-          13,
-          0.96
+        #15100d;
+    }
+
+    .location-image {
+      position: relative;
+
+      height:
+        clamp(
+          120px,
+          18vw,
+          190px
         );
-      padding: 28px;
+
+      overflow: hidden;
+
+      border-bottom:
+        1px solid
+        #60482e;
+    }
+
+    .location-image img {
+      width: 100%;
+      height: 100%;
+
+      display: block;
+
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .location-image::after {
+      content: "";
+
+      position: absolute;
+      inset: 0;
+
+      background:
+        linear-gradient(
+          to top,
+          rgba(
+            14,
+            10,
+            8,
+            0.9
+          ) 0%,
+          rgba(
+            14,
+            10,
+            8,
+            0.22
+          ) 50%,
+          rgba(
+            14,
+            10,
+            8,
+            0.04
+          ) 100%
+        );
+
+      pointer-events: none;
+    }
+
+    .location-image-title {
+      position: absolute;
+
+      z-index: 2;
+
+      left: 18px;
+      right: 18px;
+      bottom: 14px;
+    }
+
+    .location-image-title
+    .eyebrow {
+      margin-bottom: 3px;
+    }
+
+    .location-image-title h1 {
+      text-shadow:
+        0 2px 8px
+        rgba(
+          0,
+          0,
+          0,
+          0.95
+        );
+    }
+
+    .header-content {
+      padding: 15px 18px;
     }
 
     .eyebrow {
       margin: 0;
-      color: #987447;
-      font-family:
-        Arial,
-        sans-serif;
-      font-size: 10px;
-      letter-spacing: 0.28em;
-      text-transform: uppercase;
+
+      color: #94734c;
+
+      font-size: 8px;
+      font-weight: 600;
+
+      letter-spacing:
+        0.24em;
+
+      text-transform:
+        uppercase;
     }
 
     h1 {
       margin:
-        12px 0 0;
-      color: #ead5ad;
+        4px 0 0;
+
+      color: #dfc79f;
+
+      font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
       font-size:
         clamp(
-          30px,
-          6vw,
-          48px
+          22px,
+          4vw,
+          31px
         );
+
       font-weight: 400;
+
       line-height: 1.1;
     }
 
     .room-description {
-      margin:
-        18px 0 0;
-      color: #a99b88;
-      white-space:
-        pre-wrap;
+      max-width: 780px;
+
+      margin-top: 10px;
+
+      color: #9f927f;
+
+      font-size: 11px;
+      line-height: 1.6;
     }
 
+    .room-description
+    p {
+      margin:
+        5px 0;
+    }
+
+    .room-description
+    strong {
+      color: #cdb892;
+    }
+
+    .room-description
+    em {
+      color: #b09b7c;
+    }
+
+    .room-description
+    h2,
+    .room-description
+    h3 {
+      margin:
+        10px 0 4px;
+
+      color: #cfb78f;
+
+      font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+      font-weight: 400;
+    }
+
+    .room-description
+    h2 {
+      font-size: 16px;
+    }
+
+    .room-description
+    h3 {
+      font-size: 14px;
+    }
+
+    .room-description
+    blockquote {
+      margin:
+        8px 0;
+
+      border-left:
+        2px solid
+        #745536;
+
+      padding:
+        4px 10px;
+
+      color: #8f816e;
+
+      font-style: italic;
+    }
+
+    .room-description
+    a {
+      color: #c69a60;
+    }
+
+    .rich-center {
+      text-align: center;
+    }
+
+    .rich-bullet {
+      color: #b88a51;
+    }
+
+    .rich-image {
+      display: block;
+
+      max-width: 100%;
+      max-height: 260px;
+
+      margin:
+        8px auto;
+
+      object-fit: contain;
+    }
+
+    /*
+     * Metadata is deliberately a narrow
+     * horizontal bar rather than four
+     * large cards.
+     */
+
     .metadata {
-      display: grid;
-      grid-template-columns:
-        repeat(
-          auto-fit,
-          minmax(
-            180px,
-            1fr
-          )
-        );
-      gap: 12px;
-      margin-top: 24px;
+      display: flex;
+
+      flex-wrap: wrap;
+
+      gap:
+        5px 22px;
+
+      margin-top: 12px;
+
       border-top:
         1px solid
-        #59432c;
-      padding-top: 18px;
-      font-family:
-        Arial,
-        sans-serif;
+        rgba(
+          96,
+          72,
+          46,
+          0.45
+        );
+
+      padding-top: 10px;
+    }
+
+    .metadata-item {
+      display: flex;
+
+      align-items: baseline;
+
+      gap: 6px;
+
+      min-width: 0;
     }
 
     .metadata strong {
-      display: block;
-      color: #806b50;
-      font-size: 9px;
-      font-weight: 400;
-      letter-spacing: 0.2em;
+      color: #77654e;
+
+      font-size: 7px;
+      font-weight: 600;
+
+      letter-spacing:
+        0.15em;
+
       text-transform:
         uppercase;
     }
 
     .metadata span {
-      display: block;
-      margin-top: 4px;
-      color: #c9b69a;
-      font-size: 12px;
+      min-width: 0;
+
+      color: #b7a58b;
+
+      font-size: 9px;
     }
 
+    /*
+     * =====================================================
+     * CHRONICLE
+     * =====================================================
+     */
+
     .chronicle {
-      margin-top: 18px;
+      margin-top: 10px;
+
+      overflow: hidden;
+
       border:
         1px solid
         #60482e;
+
       background:
         rgba(
           17,
           13,
           10,
-          0.95
+          0.97
         );
     }
 
@@ -770,10 +1378,10 @@ export async function GET() {
       border-bottom:
         1px solid
         rgba(
-          79,
-          59,
-          40,
-          0.65
+          75,
+          56,
+          37,
+          0.46
         );
     }
 
@@ -781,75 +1389,199 @@ export async function GET() {
       border-bottom: 0;
     }
 
+    /*
+     * Normal role message:
+     * portrait + compact content.
+     */
+
     .role-entry {
-      padding: 22px 26px;
+      display: grid;
+
+      grid-template-columns:
+        36px minmax(
+          0,
+          1fr
+        );
+
+      gap: 10px;
+
+      padding:
+        10px 16px;
+
+      transition:
+        background 120ms ease;
     }
 
-    .entry-header {
+    .role-entry:nth-child(
+      even
+    ) {
+      background:
+        rgba(
+          255,
+          255,
+          255,
+          0.008
+        );
+    }
+
+    .portrait-wrap {
+      width: 36px;
+      height: 36px;
+
+      overflow: hidden;
+
+      align-self: start;
+
+      border:
+        1px solid
+        rgba(
+          118,
+          89,
+          55,
+          0.65
+        );
+
+      background: #0b0806;
+    }
+
+    .portrait {
+      display: block;
+
+      width: 100%;
+      height: 100%;
+
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .portrait-fallback {
       display: flex;
-      align-items:
-        baseline;
+
+      align-items: center;
+      justify-content: center;
+
+      color: #b99a6d;
+
+      font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+      font-size: 17px;
+    }
+
+    .message-content {
+      min-width: 0;
+    }
+
+    .compact-header {
+      display: flex;
+
+      align-items: center;
       justify-content:
         space-between;
-      gap: 16px;
+
+      gap: 12px;
+
+      min-height: 18px;
     }
 
     .author-line {
       display: flex;
+
+      min-width: 0;
+
       flex-wrap: wrap;
+
       align-items: center;
-      gap: 10px;
+
+      gap: 7px;
     }
 
     .author-name {
+      overflow: hidden;
+
       color: #d8bf91;
-      font-size: 18px;
+
+      font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+      font-size: 14px;
+
+      line-height: 1.15;
+
+      text-overflow:
+        ellipsis;
+
+      white-space: nowrap;
     }
 
     time {
       flex: 0 0 auto;
-      color: #776b5b;
-      font-family:
-        Arial,
-        sans-serif;
-      font-size: 9px;
-      letter-spacing: 0.12em;
+
+      color: #675c4e;
+
+      font-size: 7px;
+
+      letter-spacing:
+        0.09em;
+
       text-transform:
         uppercase;
+
+      white-space: nowrap;
     }
 
     .role-body {
-      margin-top: 12px;
-      font-family:
-        Arial,
-        sans-serif;
-      font-size: 14px;
-      line-height: 1.9;
-      white-space:
-        pre-wrap;
+      margin-top: 3px;
+
+      color: #c9b9a2;
+
+      font-size: 13px;
+
+      line-height: 1.72;
+
       overflow-wrap:
         anywhere;
     }
 
     .speech-text {
-      color: #d3c2aa;
+      color: #cdbda7;
     }
 
     .action-text {
-      color: #a98a60;
+      color: #a78760;
+
       font-style: italic;
     }
 
+    /*
+     * WHISPERS
+     */
+
     .whisper-entry {
       border-left:
-        3px solid
-        #7d628f;
+        2px solid
+        #76568a;
+
       background:
-        rgba(
-          36,
-          27,
-          42,
-          0.58
+        linear-gradient(
+          90deg,
+          rgba(
+            62,
+            40,
+            75,
+            0.22
+          ),
+          rgba(
+            27,
+            20,
+            30,
+            0.12
+          ) 58%,
+          transparent
         );
     }
 
@@ -860,69 +1592,110 @@ export async function GET() {
           125,
           98,
           143,
+          0.55
+        );
+
+      background:
+        rgba(
+          32,
+          23,
+          39,
           0.8
         );
-      background: #201727;
-      color: #c7add6;
-      padding: 3px 7px;
-      font-family:
-        Arial,
-        sans-serif;
-      font-size: 8px;
+
+      padding:
+        2px 5px;
+
+      color: #bda5cb;
+
+      font-size: 6px;
+
       letter-spacing:
-        0.14em;
+        0.11em;
+
       text-transform:
         uppercase;
     }
 
+    /*
+     * DICE
+     */
+
     .roll-entry {
       display: grid;
+
       grid-template-columns:
-        auto auto 1fr auto;
+        14px auto
+        minmax(
+          0,
+          1fr
+        )
+        auto;
+
       align-items: center;
-      gap: 12px;
-      padding: 12px 26px;
+
+      gap: 8px;
+
+      min-height: 34px;
+
+      padding:
+        6px 16px;
+
       background:
         rgba(
-          27,
-          20,
-          14,
-          0.7
+          31,
+          23,
+          16,
+          0.64
         );
-      font-family:
-        Arial,
-        sans-serif;
     }
 
     .roll-symbol {
-      color: #bd8d4d;
+      color: #b98849;
+
+      font-size: 9px;
     }
 
     .roll-author {
-      color: #d8bf91;
+      color: #cdb486;
+
       font-family:
         Georgia,
         "Times New Roman",
         serif;
-      white-space:
-        nowrap;
+
+      font-size: 11px;
+
+      white-space: nowrap;
     }
 
     .roll-result {
       min-width: 0;
-      color: #c8b89f;
-      font-size: 12px;
+
+      color: #aa9c87;
+
+      font-size: 10px;
+
       overflow-wrap:
         anywhere;
     }
 
     .critical-success {
       background:
-        rgba(
-          6,
-          78,
-          59,
-          0.18
+        linear-gradient(
+          90deg,
+          rgba(
+            6,
+            78,
+            59,
+            0.22
+          ),
+          rgba(
+            17,
+            13,
+            10,
+            0.8
+          )
         );
     }
 
@@ -930,16 +1703,25 @@ export async function GET() {
     .roll-symbol,
     .critical-success
     .roll-result {
-      color: #86efac;
+      color: #86d9a6;
     }
 
     .critical-failure {
       background:
-        rgba(
-          127,
-          29,
-          29,
-          0.18
+        linear-gradient(
+          90deg,
+          rgba(
+            127,
+            29,
+            29,
+            0.22
+          ),
+          rgba(
+            17,
+            13,
+            10,
+            0.8
+          )
         );
     }
 
@@ -947,27 +1729,45 @@ export async function GET() {
     .roll-symbol,
     .critical-failure
     .roll-result {
-      color: #fca5a5;
+      color: #e99797;
     }
 
+    /*
+     * FATE
+     */
+
     .fate-entry {
-      padding: 18px 26px;
+      display: grid;
+
+      grid-template-columns:
+        24px minmax(
+          0,
+          1fr
+        );
+
+      gap: 8px;
+
+      padding:
+        8px 16px;
+
       border-top:
         1px solid
         rgba(
           138,
           102,
           55,
-          0.7
+          0.5
         );
+
       border-bottom:
         1px solid
         rgba(
           138,
           102,
           55,
-          0.7
+          0.5
         );
+
       background:
         linear-gradient(
           90deg,
@@ -975,70 +1775,206 @@ export async function GET() {
             91,
             56,
             24,
-            0.4
+            0.27
           ),
           rgba(
             24,
             16,
             11,
-            0.9
-          ),
+            0.72
+          ) 55%,
           rgba(
             91,
             56,
             24,
-            0.25
+            0.08
           )
         );
     }
 
+    .fate-marker {
+      display: flex;
+
+      align-items:
+        flex-start;
+      justify-content:
+        center;
+
+      padding-top: 1px;
+
+      color: #c99851;
+
+      font-size: 12px;
+    }
+
+    .fate-content {
+      min-width: 0;
+    }
+
     .fate-label {
-      color: #d4a65f;
-      font-family:
-        Arial,
-        sans-serif;
-      font-size: 10px;
-      letter-spacing: 0.3em;
+      color: #d0a05a;
+
+      font-size: 7px;
+      font-weight: 600;
+
+      letter-spacing:
+        0.22em;
+
       text-transform:
         uppercase;
     }
 
     .fate-body {
-      margin-top: 12px;
-      color: #d6c09a;
-      font-size: 16px;
-      white-space:
-        pre-wrap;
+      margin-top: 2px;
+
+      color: #cbb58f;
+
+      font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+      font-size: 12px;
+
+      line-height: 1.6;
+
       overflow-wrap:
         anywhere;
     }
 
+    /*
+     * Empty archive
+     */
+
     .empty {
-      padding: 48px 24px;
-      color: #8e7d66;
-      text-align: center;
+      padding:
+        28px 18px;
+
+      color: #82735f;
+
+      font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+      font-size: 12px;
       font-style: italic;
+
+      text-align: center;
     }
 
+    /*
+     * FOOTER
+     */
+
     footer {
-      margin: 18px 0 0;
-      color: #6f6254;
-      font-family:
-        Arial,
-        sans-serif;
-      font-size: 10px;
-      line-height: 1.7;
+      margin-top: 10px;
+
+      color: #62574a;
+
+      font-size: 8px;
+
+      line-height: 1.55;
+
       text-align: center;
     }
+
+    /*
+     * =====================================================
+     * MOBILE
+     * =====================================================
+     */
+
+    @media (
+      max-width: 620px
+    ) {
+      main {
+        width:
+          calc(
+            100% - 16px
+          );
+
+        margin:
+          8px auto 18px;
+      }
+
+      .header-content {
+        padding:
+          12px 13px;
+      }
+
+      .location-image-title {
+        left: 13px;
+        right: 13px;
+        bottom: 11px;
+      }
+
+      .metadata {
+        gap:
+          5px 14px;
+      }
+
+      .role-entry {
+        grid-template-columns:
+          32px minmax(
+            0,
+            1fr
+          );
+
+        gap: 8px;
+
+        padding:
+          9px 11px;
+      }
+
+      .portrait-wrap {
+        width: 32px;
+        height: 32px;
+      }
+
+      .role-body {
+        font-size: 12px;
+      }
+
+      .roll-entry {
+        grid-template-columns:
+          12px auto 1fr;
+
+        gap: 6px;
+
+        padding:
+          6px 11px;
+      }
+
+      .roll-entry time {
+        display: none;
+      }
+
+      .fate-entry {
+        padding:
+          8px 11px;
+      }
+    }
+
+    /*
+     * =====================================================
+     * PRINT
+     * =====================================================
+     */
 
     @media print {
       :root {
         color-scheme: light;
       }
 
+      html,
       body {
         background: white;
         color: #241b14;
+      }
+
+      body {
+        font-size: 11px;
       }
 
       main {
@@ -1046,18 +1982,57 @@ export async function GET() {
         margin: 0;
       }
 
-      header,
+      .archive-header,
       .chronicle {
+        border-color:
+          #8b7864;
+
         background: white;
-        border-color: #8c755f;
+      }
+
+      .location-image {
+        height: 120px;
+
+        border-color:
+          #8b7864;
+      }
+
+      .location-image::after {
+        background:
+          linear-gradient(
+            to top,
+            rgba(
+              255,
+              255,
+              255,
+              0.2
+            ),
+            transparent
+          );
+      }
+
+      .location-image-title
+      h1,
+      .location-image-title
+      .eyebrow {
+        color: white;
+
+        text-shadow:
+          0 1px 4px
+          black;
       }
 
       h1,
       .author-name,
       .roll-author,
       .speech-text,
+      .role-body,
       .fate-body {
         color: #241b14;
+      }
+
+      .room-description {
+        color: #4f453b;
       }
 
       .action-text {
@@ -1070,30 +2045,36 @@ export async function GET() {
         break-inside: avoid;
       }
 
-      footer {
-        color: #66594e;
-      }
-    }
-
-    @media (
-      max-width: 620px
-    ) {
-      .entry-header {
-        align-items:
-          flex-start;
-        flex-direction:
-          column;
-        gap: 6px;
+      .role-entry {
+        background: white;
       }
 
       .roll-entry {
-        grid-template-columns:
-          auto 1fr;
+        background: #f7f4ef;
       }
 
-      .roll-result,
-      .roll-entry time {
-        grid-column: 2;
+      .fate-entry {
+        background: #f8f2e8;
+      }
+
+      .whisper-entry {
+        background: #f5eff7;
+
+        border-left-color:
+          #76568a;
+      }
+
+      .portrait-wrap {
+        border-color:
+          #9c8a73;
+      }
+
+      time {
+        color: #766a5d;
+      }
+
+      footer {
+        color: #66594e;
       }
     }
   </style>
@@ -1101,72 +2082,126 @@ export async function GET() {
 
 <body>
   <main>
-    <header>
-      <p class="eyebrow">
-        Sepulchria · Role Export
-      </p>
 
-      <h1>${escapeHtml(
-        roomHeading,
-      )}</h1>
+    <header class="archive-header">
 
       ${
-        room.description
-          ? `<p class="room-description">${escapeHtml(
-              stripRichTextMarkup(room.description),
-            ).replaceAll(
-              "\n",
-              "<br />",
-            )}</p>`
+        roomImage
+          ? `
+            <div class="location-image">
+              <img
+                src="${escapeHtml(
+                  roomImage,
+                )}"
+                alt="${escapeHtml(
+                  room.name,
+                )}"
+              />
+
+              <div class="location-image-title">
+                <p class="eyebrow">
+                  Sepulchria · Role Chronicle
+                </p>
+
+                <h1>
+                  ${escapeHtml(
+                    roomHeading,
+                  )}
+                </h1>
+              </div>
+            </div>
+          `
           : ""
       }
 
-      <div class="metadata">
-        <div>
-          <strong>
-            Exported by
-          </strong>
+      <div class="header-content">
 
-          <span>${escapeHtml(
-            character.display_name,
-          )}</span>
-        </div>
+        ${
+          !roomImage
+            ? `
+              <p class="eyebrow">
+                Sepulchria · Role Chronicle
+              </p>
 
-        <div>
-          <strong>
-            Exported on
-          </strong>
+              <h1>
+                ${escapeHtml(
+                  roomHeading,
+                )}
+              </h1>
+            `
+            : ""
+        }
 
-          <span>${escapeHtml(
-            exportedAtLabel,
-          )}</span>
-        </div>
+        ${
+          room.description
+            ? `
+              <div class="room-description">
+                ${renderRichText(
+                  room.description,
+                )}
+              </div>
+            `
+            : ""
+        }
 
-        <div>
-          <strong>
-            Visible entries
-          </strong>
+        <div class="metadata">
 
-          <span>${messages.length}</span>
-        </div>
+          <div class="metadata-item">
+            <strong>
+              Exported by
+            </strong>
 
-        <div>
-          <strong>
-            Participants
-          </strong>
+            <span>
+              ${escapeHtml(
+                character.display_name,
+              )}
+            </span>
+          </div>
 
-          <span>${
-            participants.length
-              ? escapeHtml(
-                  participants.join(
-                    ", ",
-                  ),
-                )
-              : "None recorded"
-          }</span>
+          <div class="metadata-item">
+            <strong>
+              Exported
+            </strong>
+
+            <span>
+              ${escapeHtml(
+                exportedAtLabel,
+              )}
+            </span>
+          </div>
+
+          <div class="metadata-item">
+            <strong>
+              Entries
+            </strong>
+
+            <span>
+              ${messages.length}
+            </span>
+          </div>
+
+          <div class="metadata-item">
+            <strong>
+              Participants
+            </strong>
+
+            <span>
+              ${
+                participants.length
+                  ? escapeHtml(
+                      participants.join(
+                        ", ",
+                      ),
+                    )
+                  : "None recorded"
+              }
+            </span>
+          </div>
+
         </div>
       </div>
     </header>
+
 
     <section class="chronicle">
       ${
@@ -1176,14 +2211,21 @@ export async function GET() {
                 renderMessage,
               )
               .join("")
-          : `<div class="empty">The room chronicle is empty.</div>`
+          : `
+            <div class="empty">
+              The room chronicle is empty.
+            </div>
+          `
       }
     </section>
 
+
     <footer>
-      This file contains only the room entries visible to the account that exported it.
-      Private whispers remain subject to Sepulchria's visibility rules.
+      Sepulchria · Role Chronicle ·
+      This archive contains only entries visible to the account that exported it.
+      Private whispers remain subject to their original visibility rules.
     </footer>
+
   </main>
 </body>
 </html>`;
@@ -1191,7 +2233,10 @@ export async function GET() {
   const datePart =
     exportedAt
       .toISOString()
-      .slice(0, 10);
+      .slice(
+        0,
+        10,
+      );
 
   const filename =
     `${safeFilename(
@@ -1202,13 +2247,17 @@ export async function GET() {
     html,
     {
       status: 200,
+
       headers: {
         "Content-Type":
           "text/html; charset=utf-8",
+
         "Content-Disposition":
           `attachment; filename="${filename}"`,
+
         "Cache-Control":
           "private, no-store, max-age=0",
+
         "X-Content-Type-Options":
           "nosniff",
       },
