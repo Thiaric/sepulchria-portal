@@ -595,7 +595,9 @@ export async function createForumTopicAction(
     requested_body:
       body,
     requested_quoted_post_id:
-      null,
+  null,
+requested_is_anonymous:
+  isAnonymous,
   },
 );
 
@@ -667,26 +669,6 @@ export async function createForumTopicAction(
       message:
         openingPostError.message,
     };
-  }
-
-  if (openingPost) {
-    const {
-      error: anonymityUpdateError,
-    } = await supabase
-      .from("forum_posts")
-      .update({
-        is_anonymous: isAnonymous,
-      })
-      .eq("id", openingPost.id)
-      .eq("author_user_id", user.id);
-
-    if (anonymityUpdateError) {
-      return {
-        success: false,
-        message:
-          `The discussion was created, but its anonymity setting could not be saved: ${anonymityUpdateError.message}`,
-      };
-    }
   }
 
   if (
