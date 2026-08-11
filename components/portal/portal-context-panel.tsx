@@ -53,12 +53,24 @@ export function PortalContextPanel({
     return <CharacterContext context={context} />;
   }
 
-  if (
-    pathname === "/characters" ||
-    pathname.startsWith("/characters/")
-  ) {
-    return <CharacterArchiveContext />;
-  }
+ if (pathname === "/characters") {
+  return <CharacterArchiveContext />;
+}
+
+const publicCharacterMatch =
+  pathname.match(
+    /^\/characters\/([^/]+)$/,
+  );
+
+if (publicCharacterMatch) {
+  return (
+    <PublicCharacterContext
+      publicSlug={decodeURIComponent(
+        publicCharacterMatch[1],
+      )}
+    />
+  );
+}
 
   if (pathname === "/races") {
   return (
@@ -1026,12 +1038,7 @@ function CharacterContext({
   last
 />
 
-          <Link
-            href="/character/edit"
-            className="mt-5 inline-flex border border-[#765937] bg-[#271c12] px-4 py-3 text-[10px] uppercase tracking-[0.2em] text-[#dfc79c] transition hover:bg-[#3b2919]"
-          >
-            Edit character
-          </Link>
+          
         </>
       ) : (
         <>
@@ -1051,29 +1058,744 @@ function CharacterContext({
   );
 }
 
+type CharacterArchiveEntry = {
+  id: string;
+  public_slug: string;
+  first_name: string;
+  surname: string;
+  display_name: string | null;
+};
+
 function CharacterArchiveContext() {
+  const [characters, setCharacters] =
+    useState<CharacterArchiveEntry[]>([]);
+
+  const [search, setSearch] =
+    useState("");
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const [error, setError] =
+    useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadCharacters() {
+      const supabase =
+        createClient();
+
+      const {
+        data,
+        error,
+      } = await supabase
+        .from("characters")
+        .select(
+          `
+            id,
+            public_slug,
+            first_name,
+            surname,
+            display_name
+          `,
+        )
+        .eq("status", "approved")
+        .order("first_name", {
+          ascending: true,
+        })
+        .order("surname", {
+          ascending: true,
+        });
+
+      if (cancelled) {
+        return;
+      }
+
+      if (error) {
+        setError(error.message);
+        setLoading(false);
+        return;
+      }
+
+      setCharacters(
+        (data ??
+          []) as CharacterArchiveEntry[],
+      );
+
+      setError(null);
+      setLoading(false);
+    }
+
+    void loadCharacters();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const normalisedSearch =
+    search
+      .trim()
+      .toLowerCase();
+
+  const filteredCharacters =
+    characters.filter(
+      (character) => {
+        const name =
+          character.display_name?.trim() ||
+          `${character.first_name} ${character.surname}`.trim();
+
+        return (
+          !normalisedSearch ||
+          name
+            .toLowerCase()
+            .includes(
+              normalisedSearch,
+            )
+        );
+      },
+    );
+
+  function jumpToCharacter(
+    publicSlug: string,
+  ) {
+    const element =
+      document.getElementById(
+        `character-${publicSlug}`,
+      );
+
+    if (!element) {
+      return;
+    }
+
+    element.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }
+
   return (
-    <>
+    <div className="flex h-full min-h-0 flex-col">
       <ContextHeading
         eyebrow="Archive"
         title="Characters"
       />
 
-      <p className="text-xs leading-6 text-[#938673]">
-        Browse the approved characters currently shaping the history of Sepulchria.
+      <p className="mb-4 text-xs leading-6 text-[#938673]">
+        Search the archive and jump
+        directly to a character.
       </p>
 
-      <ContextLink
-        href="/characters"
-        label="Browse characters"
+      <label className="mb-4 block">
+        <span className="text-[8px] uppercase tracking-[0.2em] text-[#806b50]">
+          Search
+        </span>
+
+        <input
+          type="search"
+          value={search}
+          onChange={(event) =>
+            setSearch(
+              event.target.value,
+            )
+          }
+          placeholder="Character name..."
+          className="mt-2 w-full border border-[#60482e]/55 bg-[#0d0907] px-3 py-2.5 text-xs text-[#d3bea0] outline-none transition placeholder:text-[#665a4c] focus:border-[#9b7545]"
+        />
+      </label>
+
+      {error ? (
+        <p className="mb-3 border border-[#743d35] bg-[#2a1512] p-3 text-[11px] leading-5 text-[#d8a49a]">
+          The character list could not
+          be loaded.
+        </p>
+      ) : null}
+
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1">
+        {loading ? (
+          <div className="space-y-2">
+            {Array.from({
+              length: 6,
+            }).map(
+              (_, index) => (
+                <div
+                  key={index}
+                  className="h-11 animate-pulse border border-[#59432c]/30 bg-[#19120d]"
+                />
+              ),
+            )}
+          </div>
+        ) : (
+          <div className="space-y-1.5">
+            {filteredCharacters.map(
+              (character) => {
+                const name =
+                  character.display_name?.trim() ||
+                  `${character.first_name} ${character.surname}`.trim();
+
+                return (
+                  <button
+                    key={character.id}
+                    type="button"
+                    onClick={() =>
+                      jumpToCharacter(
+                        character.public_slug,
+                      )
+                    }
+                    className="group flex w-full items-center justify-between gap-3 border border-[#59432c]/40 bg-[#100c09] px-3 py-2.5 text-left transition hover:border-[#8d693e] hover:bg-[#1d150f]"
+                  >
+                    <span className="min-w-0 truncate font-serif text-sm text-[#cbb28a] transition group-hover:text-[#ead0a0]">
+                      {name}
+                    </span>
+
+                    <span className="shrink-0 text-[10px] text-[#725a3d] transition group-hover:text-[#b88a52]">
+                      ↓
+                    </span>
+                  </button>
+                );
+              },
+            )}
+          </div>
+        )}
+
+        {!loading &&
+        !error &&
+        filteredCharacters.length ===
+          0 ? (
+          <p className="border border-[#59432c]/30 bg-[#100c09]/60 p-3 text-[11px] leading-5 text-[#8f8271]">
+            No characters match this
+            search.
+          </p>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+
+type PublicCharacterContextRelation = {
+  name: string;
+};
+
+type PublicCharacterContextRoom = {
+  name: string;
+  area:
+    | PublicCharacterContextRelation
+    | PublicCharacterContextRelation[]
+    | null;
+};
+
+type PublicCharacterContextRecord = {
+  id: string;
+  public_slug: string;
+  first_name: string;
+  surname: string;
+  display_name: string | null;
+  pronouns: string | null;
+  age: number | null;
+  birthplace: string | null;
+  origin: string | null;
+  occupation: string | null;
+  title: string | null;
+  expertise: number | null;
+  muscles: number | null;
+  reflexes: number | null;
+  vigor: number | null;
+  brains: number | null;
+  shrewd: number | null;
+  presence_score: number | null;
+  current_health: number | null;
+  status: string;
+
+  race:
+    | PublicCharacterContextRelation
+    | PublicCharacterContextRelation[]
+    | null;
+
+  association:
+    | PublicCharacterContextRelation
+    | PublicCharacterContextRelation[]
+    | null;
+
+  currentRoom:
+    | PublicCharacterContextRoom
+    | PublicCharacterContextRoom[]
+    | null;
+};
+
+function contextRelation<T>(
+  value: T | T[] | null,
+): T | null {
+  if (Array.isArray(value)) {
+    return value[0] ?? null;
+  }
+
+  return value;
+}
+
+
+function PublicCharacterContext({
+  publicSlug,
+}: {
+  publicSlug: string;
+}) {
+  const [
+    character,
+    setCharacter,
+  ] =
+    useState<PublicCharacterContextRecord | null>(
+      null,
+    );
+
+  const [
+    presenceStatus,
+    setPresenceStatus,
+  ] =
+    useState<string | null>(
+      null,
+    );
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const [error, setError] =
+    useState<string | null>(
+      null,
+    );
+
+  const loadCharacter =
+    useCallback(async () => {
+      const supabase =
+        createClient();
+
+      const {
+        data,
+        error,
+      } = await supabase
+        .from("characters")
+        .select(
+          `
+            id,
+            public_slug,
+            first_name,
+            surname,
+            display_name,
+            pronouns,
+            age,
+            birthplace,
+            origin,
+            occupation,
+            title,
+            expertise,
+            muscles,
+            reflexes,
+            vigor,
+            brains,
+            shrewd,
+            presence_score,
+            current_health,
+            status,
+
+            race:races!characters_race_id_fkey(
+              name
+            ),
+
+            association:associations!characters_association_id_fkey(
+              name
+            ),
+
+            currentRoom:rooms!characters_current_room_id_fkey(
+              name,
+              area:areas!rooms_area_id_fkey(
+                name
+              )
+            )
+          `,
+        )
+        .eq(
+          "public_slug",
+          publicSlug,
+        )
+        .eq(
+          "status",
+          "approved",
+        )
+        .maybeSingle();
+
+      if (error) {
+        setError(error.message);
+        setLoading(false);
+        return;
+      }
+
+      if (!data) {
+        setCharacter(null);
+        setLoading(false);
+        return;
+      }
+
+      const loadedCharacter =
+        data as unknown as
+          PublicCharacterContextRecord;
+
+      setCharacter(
+        loadedCharacter,
+      );
+
+      const {
+        data: presence,
+      } = await supabase
+        .from(
+          "character_presence",
+        )
+        .select("status")
+        .eq(
+          "character_id",
+          loadedCharacter.id,
+        )
+        .maybeSingle();
+
+      setPresenceStatus(
+        presence?.status ??
+          "offline",
+      );
+
+      setError(null);
+      setLoading(false);
+    }, [publicSlug]);
+
+  useEffect(() => {
+    setLoading(true);
+    void loadCharacter();
+  }, [loadCharacter]);
+
+  useEffect(() => {
+    if (!character?.id) {
+      return;
+    }
+
+    const supabase =
+      createClient();
+
+    const characterChannel =
+      supabase
+        .channel(
+          `public-character-context:${character.id}`,
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "UPDATE",
+            schema: "public",
+            table: "characters",
+            filter:
+              `id=eq.${character.id}`,
+          },
+          () => {
+            void loadCharacter();
+          },
+        )
+        .subscribe();
+
+    const presenceChannel =
+      supabase
+        .channel(
+          `public-character-context-presence:${character.id}`,
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table:
+              "character_presence",
+            filter:
+              `character_id=eq.${character.id}`,
+          },
+          () => {
+            void loadCharacter();
+          },
+        )
+        .subscribe();
+
+    return () => {
+      void supabase.removeChannel(
+        characterChannel,
+      );
+
+      void supabase.removeChannel(
+        presenceChannel,
+      );
+    };
+  }, [
+    character?.id,
+    loadCharacter,
+  ]);
+
+  if (loading) {
+    return (
+      <div className="space-y-3">
+        <div className="h-16 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
+
+        {Array.from({
+          length: 8,
+        }).map(
+          (_, index) => (
+            <div
+              key={index}
+              className="h-9 animate-pulse border border-[#59432c]/30 bg-[#19120d]"
+            />
+          ),
+        )}
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <>
+        <ContextHeading
+          eyebrow="Character"
+          title="Character record"
+        />
+
+        <p className="border border-[#743d35] bg-[#2a1512] p-3 text-[11px] leading-5 text-[#d8a49a]">
+          The character record could not
+          be loaded.
+        </p>
+      </>
+    );
+  }
+
+  if (!character) {
+    return (
+      <>
+        <ContextHeading
+          eyebrow="Character"
+          title="Character record"
+        />
+
+        <p className="text-xs leading-6 text-[#938673]">
+          This character is not
+          available.
+        </p>
+      </>
+    );
+  }
+
+  const race =
+    contextRelation(
+      character.race,
+    );
+
+  const association =
+    contextRelation(
+      character.association,
+    );
+
+  const room =
+    contextRelation(
+      character.currentRoom,
+    );
+
+  const area =
+    contextRelation(
+      room?.area ?? null,
+    );
+
+  const name =
+    character.display_name?.trim() ||
+    `${character.first_name} ${character.surname}`.trim();
+
+  const location =
+    room
+      ? area
+        ? `${room.name} · ${area.name}`
+        : room.name
+      : "Not currently in a location";
+
+  const rows: Array<{
+    label: string;
+    value: string;
+  }> = [
+    {
+      label: "First name",
+      value:
+        character.first_name ||
+        "—",
+    },
+    {
+      label: "Surname",
+      value:
+        character.surname ||
+        "—",
+    },
+    {
+      label: "Pronouns",
+      value:
+        character.pronouns ||
+        "—",
+    },
+    {
+  label: "Age",
+  value:
+    character.age !== null
+      ? `${character.age} years`
+      : "Not provided",
+},
+    {
+      label: "Birthplace",
+      value:
+        character.birthplace ||
+        "—",
+    },
+    {
+      label: "Origin",
+      value:
+        character.origin ||
+        "—",
+    },
+    {
+      label: "Title",
+      value:
+        character.title ||
+        "None",
+    },
+    {
+      label: "Occupation",
+      value:
+        character.occupation ||
+        "None",
+    },
+    {
+      label: "Ancestry",
+      value:
+        race?.name ??
+        "Not assigned",
+    },
+    {
+      label: "Association",
+      value:
+        association?.name ??
+        "Not assigned",
+    },
+    {
+      label: "Location",
+      value: location,
+    },
+    {
+      label: "Presence",
+      value:
+        presenceStatus ??
+        "offline",
+    },
+    {
+      label: "Health",
+      value: String(
+        character.current_health ??
+          0,
+      ),
+    },
+    {
+      label: "Expertise",
+      value: Number(
+        character.expertise ?? 0,
+      ).toFixed(1),
+    },
+  ];
+
+  const attributes = [
+    {
+      label: "Muscles",
+      value: character.muscles,
+    },
+    {
+      label: "Reflexes",
+      value: character.reflexes,
+    },
+    {
+      label: "Vigor",
+      value: character.vigor,
+    },
+    {
+      label: "Brains",
+      value: character.brains,
+    },
+    {
+      label: "Shrewd",
+      value: character.shrewd,
+    },
+    {
+      label: "Presence",
+      value:
+        character.presence_score,
+    },
+  ];
+
+  return (
+    <div className="flex h-full min-h-0 flex-col">
+      <ContextHeading
+        eyebrow="Character record"
+        title={name}
       />
 
-      <ContextLink
-        href="/races"
-        label="Explore ancestries"
-        secondary
-      />
-    </>
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1">
+        <div className="border border-[#59432c]/40 bg-[#100c09]">
+          {rows.map(
+            (row, index) => (
+              <div
+                key={row.label}
+                className={`grid grid-cols-[92px_minmax(0,1fr)] gap-3 px-3 py-2.5 ${
+                  index !==
+                  rows.length - 1
+                    ? "border-b border-[#59432c]/25"
+                    : ""
+                }`}
+              >
+                <span className="text-[7px] uppercase tracking-[0.16em] text-[#75644f]">
+                  {row.label}
+                </span>
+
+                <span className="min-w-0 break-words text-right text-[11px] text-[#c5b294]">
+                  {row.value}
+                </span>
+              </div>
+            ),
+          )}
+        </div>
+
+        <div className="mt-4">
+          <p className="mb-2 text-[8px] uppercase tracking-[0.2em] text-[#806b50]">
+            Attributes
+          </p>
+
+          <div className="grid grid-cols-2 gap-1.5">
+            {attributes.map(
+              (attribute) => (
+                <div
+                  key={
+                    attribute.label
+                  }
+                  className="border border-[#59432c]/40 bg-[#100c09] px-3 py-2.5"
+                >
+                  <p className="text-[7px] uppercase tracking-[0.14em] text-[#75644f]">
+                    {
+                      attribute.label
+                    }
+                  </p>
+
+                  <p className="mt-1 font-serif text-lg text-[#d7bd91]">
+                    {attribute.value ??
+                      "—"}
+                  </p>
+                </div>
+              ),
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 

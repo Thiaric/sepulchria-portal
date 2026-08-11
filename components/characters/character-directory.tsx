@@ -316,17 +316,22 @@ export function CharacterDirectory({
 
       {filteredCharacters.length > 0 ? (
         <section className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
-          {filteredCharacters.map(
-            (character) => (
-              <CharacterDirectoryCard
-                key={character.id}
-                character={character}
-                viewerCharacterId={
-                  viewerCharacterId
-                }
-              />
-            ),
-          )}
+        {filteredCharacters.map(
+  (character) => (
+    <div
+      key={character.id}
+      id={`character-${character.public_slug}`}
+      className="scroll-mt-6"
+    >
+      <CharacterDirectoryCard
+        character={character}
+        viewerCharacterId={
+          viewerCharacterId
+        }
+      />
+    </div>
+  ),
+)}  
         </section>
       ) : (
         <section className="border border-[#60482e]/45 bg-[#15100d]/95 p-10 text-center">
