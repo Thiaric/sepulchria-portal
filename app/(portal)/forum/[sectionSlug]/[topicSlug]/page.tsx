@@ -10,6 +10,7 @@ import TopicPost, {
   type ForumTopicPost,
 } from "@/components/forum/topic-post";
 import TopicReplyForm from "@/components/forum/topic-reply-form";
+import ForumTopicRealtime from "@/components/forum/forum-topic-realtime";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -1096,6 +1097,9 @@ export default async function TopicPage({
 
   return (
     <main className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <ForumTopicRealtime
+        topicId={topic.id}
+      />
       <nav
         aria-label="Forum breadcrumb"
         className="mb-6 flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.16em] text-[#746653]"
