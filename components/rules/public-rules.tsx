@@ -13,6 +13,7 @@ import type {
 
 type PublicRulesProps = {
   data: PublicRulesData;
+  initialView?: "rules" | "glossary";
 };
 
 function stripHtml(value: string) {
@@ -39,15 +40,21 @@ function stripHtml(value: string) {
 
 export function PublicRules({
   data,
+  initialView = "rules",
 }: PublicRulesProps) {
   const firstRule =
     data.rules[0] ?? null;
+
+  const startInGlossary =
+    initialView === "glossary";
 
   const [
     selectedRuleId,
     setSelectedRuleId,
   ] = useState<string | null>(
-    firstRule?.id ?? null,
+    startInGlossary
+      ? null
+      : (firstRule?.id ?? null),
   );
 
   const [
@@ -61,7 +68,7 @@ export function PublicRules({
   const [
     glossaryOpen,
     setGlossaryOpen,
-  ] = useState(false);
+  ] = useState(startInGlossary);
 
   const selectedRule =
     data.rules.find(
@@ -140,7 +147,9 @@ export function PublicRules({
     selectedRule,
   ]);
 
-  function selectRule(rule: PublicRuleEntry) {
+  function selectRule(
+    rule: PublicRuleEntry,
+  ) {
     setSelectedRuleId(rule.id);
     setGlossaryOpen(false);
   }
@@ -167,7 +176,11 @@ export function PublicRules({
                   event.target.value,
                 )
               }
-              placeholder="Search rules..."
+              placeholder={
+                glossaryOpen
+                  ? "Search glossary..."
+                  : "Search rules..."
+              }
               className="h-9 min-w-0 flex-1 border border-[#60482e]/45 bg-[#15100d] px-3 text-xs text-[#d6c3a3] outline-none placeholder:text-[#655c50] focus:border-[#9a7445]"
             />
 
@@ -189,94 +202,105 @@ export function PublicRules({
         </div>
       </header>
 
-      <nav className="border-b border-[#60482e]/35 bg-[#100c09]">
-        <div className="mx-auto flex max-w-7xl flex-wrap gap-1 px-4 py-2 sm:px-6">
-          <CategoryButton
-            active={
-              selectedCategoryId === "all"
-            }
-            label="All"
-            onClick={() =>
-              setSelectedCategoryId(
-                "all",
-              )
-            }
-          />
+      {!glossaryOpen ? (
+        <nav className="border-b border-[#60482e]/35 bg-[#100c09]">
+          <div className="mx-auto flex max-w-7xl flex-wrap gap-1 px-4 py-2 sm:px-6">
+            <CategoryButton
+              active={
+                selectedCategoryId ===
+                "all"
+              }
+              label="All"
+              onClick={() =>
+                setSelectedCategoryId(
+                  "all",
+                )
+              }
+            />
 
-          {data.categories.map(
-            (category) => (
-              <CategoryButton
-                key={category.id}
-                active={
-                  selectedCategoryId ===
-                  category.id
-                }
-                label={category.name}
-                onClick={() =>
-                  setSelectedCategoryId(
-                    category.id,
-                  )
-                }
-              />
-            ),
-          )}
-        </div>
-      </nav>
-
-      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 px-4 py-4 sm:px-6 lg:grid-cols-[280px_minmax(0,1fr)]">
-        <aside className="min-w-0 border border-[#60482e]/40 bg-[#120e0b]">
-          <div className="flex h-9 items-center justify-between border-b border-[#60482e]/35 px-3">
-            <p className="text-[8px] uppercase tracking-[0.2em] text-[#816a4d]">
-              Rule index
-            </p>
-
-            <span className="text-[9px] text-[#756958]">
-              {visibleRules.length}
-            </span>
-          </div>
-
-          <div className="max-h-[calc(100vh-190px)] overflow-y-auto p-2">
-            {visibleRules.length === 0 ? (
-              <p className="p-3 text-xs leading-5 text-[#766b5d]">
-                No matching published
-                rules.
-              </p>
-            ) : (
-              <div className="space-y-1">
-                {visibleRules.map(
-                  (rule) => (
-                    <button
-                      key={rule.id}
-                      type="button"
-                      onClick={() =>
-                        selectRule(rule)
-                      }
-                      className={`w-full border px-3 py-2.5 text-left transition ${
-                        selectedRule?.id ===
-                          rule.id &&
-                        !glossaryOpen
-                          ? "border-[#8d693e] bg-[#2a1d12]"
-                          : "border-transparent bg-[#100c09]/55 hover:border-[#59432c]/55 hover:bg-[#19120d]"
-                      }`}
-                    >
-                      <span className="block font-serif text-sm text-[#d0b78e]">
-                        {rule.title}
-                      </span>
-
-                      {rule.summary ? (
-                        <span className="mt-1 line-clamp-2 block text-[10px] leading-4 text-[#817565]">
-                          {stripHtml(
-                            rule.summary,
-                          )}
-                        </span>
-                      ) : null}
-                    </button>
-                  ),
-                )}
-              </div>
+            {data.categories.map(
+              (category) => (
+                <CategoryButton
+                  key={category.id}
+                  active={
+                    selectedCategoryId ===
+                    category.id
+                  }
+                  label={category.name}
+                  onClick={() =>
+                    setSelectedCategoryId(
+                      category.id,
+                    )
+                  }
+                />
+              ),
             )}
           </div>
-        </aside>
+        </nav>
+      ) : null}
+
+      <div
+        className={`mx-auto grid max-w-7xl grid-cols-1 gap-4 px-4 py-4 sm:px-6 ${
+          glossaryOpen
+            ? ""
+            : "lg:grid-cols-[280px_minmax(0,1fr)]"
+        }`}
+      >
+        {!glossaryOpen ? (
+          <aside className="min-w-0 border border-[#60482e]/40 bg-[#120e0b]">
+            <div className="flex h-9 items-center justify-between border-b border-[#60482e]/35 px-3">
+              <p className="text-[8px] uppercase tracking-[0.2em] text-[#816a4d]">
+                Rule index
+              </p>
+
+              <span className="text-[9px] text-[#756958]">
+                {visibleRules.length}
+              </span>
+            </div>
+
+            <div className="max-h-[calc(100vh-190px)] overflow-y-auto p-2">
+              {visibleRules.length ===
+              0 ? (
+                <p className="p-3 text-xs leading-5 text-[#766b5d]">
+                  No matching published
+                  rules.
+                </p>
+              ) : (
+                <div className="space-y-1">
+                  {visibleRules.map(
+                    (rule) => (
+                      <button
+                        key={rule.id}
+                        type="button"
+                        onClick={() =>
+                          selectRule(rule)
+                        }
+                        className={`w-full border px-3 py-2.5 text-left transition ${
+                          selectedRule?.id ===
+                          rule.id
+                            ? "border-[#8d693e] bg-[#2a1d12]"
+                            : "border-transparent bg-[#100c09]/55 hover:border-[#59432c]/55 hover:bg-[#19120d]"
+                        }`}
+                      >
+                        <span className="block font-serif text-sm text-[#d0b78e]">
+                          {rule.title}
+                        </span>
+
+                        {rule.summary ? (
+                          <span className="mt-1 line-clamp-2 block text-[10px] leading-4 text-[#817565]">
+                            {stripHtml(
+                              rule.summary,
+                            )}
+                          </span>
+                        ) : null}
+                      </button>
+                    ),
+                  )}
+                </div>
+              )}
+            </div>
+          </aside>
+        ) : null}
 
         <section className="min-w-0 border border-[#60482e]/40 bg-[#120e0b]">
           {glossaryOpen ? (
@@ -372,7 +396,8 @@ function RulePanel({
           className="mx-auto max-w-5xl text-sm leading-7 text-[#b9a991] [&_h1]:mt-7 [&_h1]:text-3xl [&_h2]:mt-6 [&_h2]:text-2xl [&_h3]:mt-5 [&_h3]:text-xl [&_p]:mb-4"
         />
 
-        {relatedRules.length > 0 ? (
+        {relatedRules.length >
+        0 ? (
           <div className="mt-6 border-t border-[#60482e]/30 pt-4">
             <p className="mb-2 text-[8px] uppercase tracking-[0.19em] text-[#79664c]">
               Related rules
@@ -380,7 +405,10 @@ function RulePanel({
 
             <div className="flex flex-wrap gap-2">
               {relatedRules.map(
-                ({ label, rule }) => (
+                ({
+                  label,
+                  rule,
+                }) => (
                   <button
                     key={rule.id}
                     type="button"
@@ -416,22 +444,25 @@ function GlossaryPanel({
   const normalized =
     query.trim().toLowerCase();
 
-  const entries = data.glossary.filter(
-    (entry) => {
-      if (!normalized) {
-        return true;
-      }
+  const entries =
+    data.glossary.filter(
+      (entry) => {
+        if (!normalized) {
+          return true;
+        }
 
-      return (
-        entry.term
-          .toLowerCase()
-          .includes(normalized) ||
-        stripHtml(entry.definition)
-          .toLowerCase()
-          .includes(normalized)
-      );
-    },
-  );
+        return (
+          entry.term
+            .toLowerCase()
+            .includes(normalized) ||
+          stripHtml(
+            entry.definition,
+          )
+            .toLowerCase()
+            .includes(normalized)
+        );
+      },
+    );
 
   return (
     <>
@@ -439,9 +470,19 @@ function GlossaryPanel({
         <p className="text-[7px] uppercase tracking-[0.24em] text-[#8d6f48]">
           Reference
         </p>
+
         <h2 className="mt-1 font-serif text-2xl text-[#e2c99c]">
           Glossary
         </h2>
+
+        <p className="mt-2 max-w-3xl text-xs leading-5 text-[#8d806e]">
+          A quick reference for terms
+          used throughout Sepulchria.
+          Where available, use the
+          related rule link to see the
+          term in its wider gameplay
+          context.
+        </p>
       </header>
 
       <div className="grid gap-2 p-3 sm:grid-cols-2 sm:p-5">

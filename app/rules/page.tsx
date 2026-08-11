@@ -13,6 +13,7 @@ export const metadata: Metadata = {
 type RulesPageProps = {
   searchParams?: Promise<{
     embedded?: string;
+    view?: string;
   }>;
 };
 
@@ -27,6 +28,11 @@ export default async function RulesPage({
   const isEmbedded =
     resolvedSearchParams.embedded === "1";
 
+  const initialView =
+    resolvedSearchParams.view === "glossary"
+      ? "glossary"
+      : "rules";
+
   return (
     <div className="relative">
       {!isEmbedded ? (
@@ -38,7 +44,10 @@ export default async function RulesPage({
         </Link>
       ) : null}
 
-      <PublicRules data={data} />
+      <PublicRules
+        data={data}
+        initialView={initialView}
+      />
     </div>
   );
 }

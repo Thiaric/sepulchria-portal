@@ -25,66 +25,88 @@ type NavigationItem = {
   activePaths: string[];
   disabled?: boolean;
   opensModal?: boolean;
+  subItem?: boolean;
 };
 
 const mainNavigationItems: NavigationItem[] = [
   {
     label: "Dashboard",
-    title: "Back to the homepage",
+    title:
+      "Your portal overview, recent activity and character information.",
     icon: "⌂",
     href: "/",
     activePaths: ["/"],
   },
   {
     label: "Play",
-    title: "Go to a location and start roleplaying or go back to the location you are in",
+    title:
+      "Enter the city, move between locations and roleplay with other characters.",
     icon: "✦",
     href: "/game",
     activePaths: ["/game"],
   },
   {
     label: "Characters",
-    title: "Manage your characters",
+    title:
+      "Browse the characters who inhabit Sepulchria.",
     icon: "♙",
     href: "/characters",
     activePaths: ["/characters"],
   },
 ];
 
-const codexNavigationItems: NavigationItem[] = [
-  {
-    label: "Codex",
-    title: "View the Ongame Lore Codex, including the world history, locations, and more",
-    icon: "🕮",
-    href: "/codex",
-    activePaths: ["/codex"],
-    opensModal: true,
-  },
-  {
-    label: "Rules",
-    title: "View the game rules and regulations",
-    icon: "🗊",
-    href: "/rules",
-    activePaths: ["/rules"],
-    opensModal: true,
-  },
+const codexItem: NavigationItem = {
+  label: "Codex",
+  title:
+    "Open the in-world Codex and explore Aureth's history, locations and lore.",
+  icon: "🕮",
+  href: "/codex",
+  activePaths: ["/codex"],
+  opensModal: true,
+};
+
+const rulesItem: NavigationItem = {
+  label: "Rules",
+  title:
+    "Read the official game rules and off-game documentation.",
+  icon: "🗊",
+  href: "/rules",
+  activePaths: ["/rules"],
+  opensModal: true,
+};
+
+const glossaryItem: NavigationItem = {
+  label: "Glossary",
+  title:
+    "Look up Sepulchria terminology, meanings and related rules.",
+  icon: "⌕",
+  href: "/rules?view=glossary",
+  activePaths: [],
+  opensModal: true,
+  subItem: true,
+};
+
+const otherCodexNavigationItems: NavigationItem[] = [
   {
     label: "Ancestries",
-    title: "View information about different ancestries",
+    title:
+      "Read about the playable ancestries of Sepulchria.",
     icon: "⚜",
     href: "/races",
     activePaths: ["/races"],
   },
   {
     label: "Associations",
-    title: "View information about different associations",
+    title:
+      "Explore the Associations and their place in Sepulchrian society.",
     icon: "⌘",
     href: "/associations",
     activePaths: ["/associations"],
   },
   {
     label: "Warping",
-    title: "View information about Magic in Sepulchria, including Warping",
+    title:
+      "Read about magic in Sepulchria, including Warping.",
     icon: "✵",
     href: "/spells",
     activePaths: ["/spells"],
@@ -94,7 +116,8 @@ const codexNavigationItems: NavigationItem[] = [
 
 const marketItem: NavigationItem = {
   label: "Market",
-  title: "View the market and buy/sell items",
+  title:
+    "Browse the market and buy or sell items.",
   icon: "⚖",
   href: "/market",
   activePaths: ["/market"],
@@ -103,7 +126,8 @@ const marketItem: NavigationItem = {
 
 const messagesItem: NavigationItem = {
   label: "Messages",
-  title: "View your messages",
+  title:
+    "Open your private conversations with other characters.",
   icon: "✉",
   href: "/messages",
   activePaths: ["/messages"],
@@ -124,8 +148,13 @@ function normalizeCount(
     const parsedCount =
       Number.parseInt(value, 10);
 
-    if (Number.isFinite(parsedCount)) {
-      return Math.max(0, parsedCount);
+    if (
+      Number.isFinite(parsedCount)
+    ) {
+      return Math.max(
+        0,
+        parsedCount,
+      );
     }
   }
 
@@ -138,19 +167,33 @@ export function PortalSidebar({
 }: PortalSidebarProps) {
   const pathname = usePathname();
 
-  const [modalItem, setModalItem] =
-    useState<NavigationItem | null>(null);
+  const [
+    modalItem,
+    setModalItem,
+  ] =
+    useState<NavigationItem | null>(
+      null,
+    );
+
+  const [
+    rulesExpanded,
+    setRulesExpanded,
+  ] = useState(false);
 
   const [
     currentUnreadForumCount,
     setCurrentUnreadForumCount,
   ] = useState(
-    normalizeCount(unreadForumCount),
+    normalizeCount(
+      unreadForumCount,
+    ),
   );
 
   useEffect(() => {
     setCurrentUnreadForumCount(
-      normalizeCount(unreadForumCount),
+      normalizeCount(
+        unreadForumCount,
+      ),
     );
   }, [unreadForumCount]);
 
@@ -168,7 +211,9 @@ export function PortalSidebar({
     function handleKeyDown(
       event: KeyboardEvent,
     ) {
-      if (event.key === "Escape") {
+      if (
+        event.key === "Escape"
+      ) {
         setModalItem(null);
       }
     }
@@ -194,16 +239,19 @@ export function PortalSidebar({
       const supabase =
         createClient();
 
-      const { data, error } =
-        await supabase.rpc(
-          "get_unread_forum_topic_count",
-        );
+      const {
+        data,
+        error,
+      } = await supabase.rpc(
+        "get_unread_forum_topic_count",
+      );
 
       if (error) {
         console.error(
           "Could not refresh forum unread count:",
           error,
         );
+
         return;
       }
 
@@ -218,65 +266,80 @@ export function PortalSidebar({
 
     void refreshForumCount();
 
-    const channel = supabase
-      .channel(
-        "forum-sidebar-unread-count",
-      )
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "forum_posts",
-        },
-        () => {
-          void refreshForumCount();
-        },
-      )
-      .on(
-        "postgres_changes",
-        {
-          event: "UPDATE",
-          schema: "public",
-          table:
-            "forum_topic_reads",
-        },
-        () => {
-          void refreshForumCount();
-        },
-      )
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table:
-            "forum_topic_reads",
-        },
-        () => {
-          void refreshForumCount();
-        },
-      )
-      .subscribe((status, error) => {
-        if (status === "SUBSCRIBED") {
-          void refreshForumCount();
-        }
-
-        if (
-          status === "CHANNEL_ERROR" ||
-          status === "TIMED_OUT"
-        ) {
-          console.error(
-            "Forum sidebar realtime error:",
+    const channel =
+      supabase
+        .channel(
+          "forum-sidebar-unread-count",
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table:
+              "forum_posts",
+          },
+          () => {
+            void refreshForumCount();
+          },
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "UPDATE",
+            schema: "public",
+            table:
+              "forum_topic_reads",
+          },
+          () => {
+            void refreshForumCount();
+          },
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table:
+              "forum_topic_reads",
+          },
+          () => {
+            void refreshForumCount();
+          },
+        )
+        .subscribe(
+          (
+            status,
             error,
-          );
-        }
-      });
+          ) => {
+            if (
+              status ===
+              "SUBSCRIBED"
+            ) {
+              void refreshForumCount();
+            }
+
+            if (
+              status ===
+                "CHANNEL_ERROR" ||
+              status ===
+                "TIMED_OUT"
+            ) {
+              console.error(
+                "Forum sidebar realtime error:",
+                error,
+              );
+            }
+          },
+        );
 
     const pollingInterval =
-      window.setInterval(() => {
-        void refreshForumCount();
-      }, 5000);
+      window.setInterval(
+        () => {
+          void refreshForumCount();
+        },
+        5000,
+      );
 
     function handleFocus() {
       void refreshForumCount();
@@ -295,6 +358,7 @@ export function PortalSidebar({
       "focus",
       handleFocus,
     );
+
     document.addEventListener(
       "visibilitychange",
       handleVisibility,
@@ -304,14 +368,17 @@ export function PortalSidebar({
       window.clearInterval(
         pollingInterval,
       );
+
       window.removeEventListener(
         "focus",
         handleFocus,
       );
+
       document.removeEventListener(
         "visibilitychange",
         handleVisibility,
       );
+
       void supabase.removeChannel(
         channel,
       );
@@ -324,7 +391,9 @@ export function PortalSidebar({
     return activePaths.some(
       (path) => {
         if (path === "/") {
-          return pathname === "/";
+          return (
+            pathname === "/"
+          );
         }
 
         return (
@@ -340,18 +409,25 @@ export function PortalSidebar({
   function renderNavigationItem(
     item: NavigationItem,
   ) {
-    const active = isActive(
-      item.activePaths,
-    );
+    const active =
+      isActive(
+        item.activePaths,
+      );
+
     const isMessages =
-      item.label === "Messages";
+      item.label ===
+      "Messages";
 
     if (item.disabled) {
       return (
         <div
           key={item.label}
-          title="Coming soon"
-          className="flex min-h-[var(--portal-nav-min-h)] cursor-not-allowed items-center gap-2 border border-transparent px-2.5 py-[var(--portal-nav-y)] text-[11px] text-[#62594d] opacity-65 lg:text-xs"
+          title={`${item.title} — Coming soon`}
+          className={`flex min-h-[var(--portal-nav-min-h)] cursor-not-allowed items-center gap-2 border border-transparent px-2.5 py-[var(--portal-nav-y)] text-[11px] text-[#62594d] opacity-65 lg:text-xs ${
+            item.subItem
+              ? "lg:ml-5"
+              : ""
+          }`}
         >
           <span className="w-4 shrink-0 text-center text-[12px]">
             {item.icon}
@@ -368,19 +444,46 @@ export function PortalSidebar({
       );
     }
 
-    const itemClassName =
-      `flex min-h-[var(--portal-nav-min-h)] items-center gap-2 border px-2.5 py-[var(--portal-nav-y)] text-[11px] transition lg:text-xs ${
-        item.opensModal &&
-        modalItem?.href === item.href
+    const modalActive =
+      item.opensModal &&
+      modalItem?.href ===
+        item.href;
+
+    const itemClassName = `
+      flex
+      min-h-[var(--portal-nav-min-h)]
+      items-center
+      gap-2
+      border
+      px-2.5
+      py-[var(--portal-nav-y)]
+      text-[11px]
+      transition
+      lg:text-xs
+      ${
+        item.subItem
+          ? "lg:ml-5 lg:min-h-7 lg:py-1 lg:text-[10px]"
+          : ""
+      }
+      ${
+        modalActive ||
+        active
           ? "border-[#8d6d3e] bg-[#332719] text-[#efd9aa]"
-          : active
-            ? "border-[#8d6d3e] bg-[#332719] text-[#efd9aa]"
+          : item.subItem
+            ? "border-transparent text-[#8f806d] hover:border-[#59432c] hover:bg-[#19120d] hover:text-[#d7bd91]"
             : "border-transparent text-[#b6a894] hover:border-[#5d4930] hover:bg-[#1d1712] hover:text-[#e8d8ba]"
-      }`;
+      }
+    `;
 
     const contents = (
       <>
-        <span className="w-4 shrink-0 text-center text-[12px] text-[#b68b4f]">
+        <span
+          className={`w-4 shrink-0 text-center text-[#b68b4f] ${
+            item.subItem
+              ? "text-[10px]"
+              : "text-[12px]"
+          }`}
+        >
           {item.icon}
         </span>
 
@@ -404,8 +507,13 @@ export function PortalSidebar({
         <button
           key={item.label}
           type="button"
+          title={
+            item.title
+          }
           onClick={() =>
-            setModalItem(item)
+            setModalItem(
+              item,
+            )
           }
           className={`${itemClassName} w-full text-left`}
           aria-haspopup="dialog"
@@ -423,10 +531,135 @@ export function PortalSidebar({
       <Link
         key={item.label}
         href={item.href}
-        className={itemClassName}
+        title={item.title}
+        className={
+          itemClassName
+        }
       >
         {contents}
       </Link>
+    );
+  }
+
+  function renderRulesMenu() {
+    const active =
+      isActive(
+        rulesItem.activePaths,
+      );
+
+    const modalActive =
+      modalItem?.href ===
+      rulesItem.href;
+
+    return (
+      <div
+        key="rules-menu"
+        className="min-w-0"
+      >
+        <div className="flex min-w-0 items-stretch">
+          {/* RULES MAIN BUTTON */}
+          <button
+            type="button"
+            title={
+              rulesItem.title
+            }
+            onClick={() =>
+              setModalItem(
+                rulesItem,
+              )
+            }
+            className={`flex min-h-[var(--portal-nav-min-h)] min-w-0 flex-1 items-center gap-2 border px-2.5 py-[var(--portal-nav-y)] text-left text-[11px] transition lg:text-xs ${
+              modalActive ||
+              active
+                ? "border-[#8d6d3e] bg-[#332719] text-[#efd9aa]"
+                : "border-transparent text-[#b6a894] hover:border-[#5d4930] hover:bg-[#1d1712] hover:text-[#e8d8ba]"
+            }`}
+            aria-haspopup="dialog"
+            aria-expanded={
+              modalActive
+            }
+          >
+            <span className="w-4 shrink-0 text-center text-[12px] text-[#b68b4f]">
+              {
+                rulesItem.icon
+              }
+            </span>
+
+            <span className="truncate">
+              {
+                rulesItem.label
+              }
+            </span>
+          </button>
+
+          {/* PLUS / MINUS */}
+          <button
+  type="button"
+  onClick={() =>
+    setRulesExpanded(
+      (current) => !current,
+    )
+  }
+  title={
+    rulesExpanded
+      ? "Hide Rules submenu"
+      : "Show Rules submenu"
+  }
+  aria-label={
+    rulesExpanded
+      ? "Collapse Rules submenu"
+      : "Expand Rules submenu"
+  }
+  aria-expanded={rulesExpanded}
+  className="ml-1 flex w-7 shrink-0 items-center justify-center gap-2 bg-transparent text-sm text-[#9e8767] transition hover:text-[#efd9aa]"
+>
+  <span
+    aria-hidden="true"
+    className="h-4 w-px shrink-0 bg-[#60482e]/45"
+  />
+
+  <span>
+    {rulesExpanded ? "−" : "+"}
+  </span>
+</button>
+        </div>
+
+        {/* RULES SUBMENU */}
+        {rulesExpanded ? (
+          <div className="mt-1 border-l border-[#60482e]/40 pl-3 lg:ml-4">
+            <button
+              type="button"
+              title={
+                glossaryItem.title
+              }
+              onClick={() =>
+                setModalItem(
+                  glossaryItem,
+                )
+              }
+              className={`flex min-h-7 w-full items-center gap-2 border px-2 py-1 text-left text-[10px] transition ${
+                modalItem?.href ===
+                glossaryItem.href
+                  ? "border-[#8d6d3e] bg-[#2a1d12] text-[#efd9aa]"
+                  : "border-transparent text-[#8f806d] hover:border-[#59432c] hover:bg-[#19120d] hover:text-[#d7bd91]"
+              }`}
+              aria-haspopup="dialog"
+            >
+              <span className="w-4 shrink-0 text-center text-[10px] text-[#9b7446]">
+                {
+                  glossaryItem.icon
+                }
+              </span>
+
+              <span className="truncate">
+                {
+                  glossaryItem.label
+                }
+              </span>
+            </button>
+          </div>
+        ) : null}
+      </div>
     );
   }
 
@@ -448,14 +681,23 @@ export function PortalSidebar({
 
             <NavigationGroup
               title="Codex and rules"
-              items={codexNavigationItems.map(
-                renderNavigationItem,
-              )}
+              items={[
+                renderNavigationItem(
+                  codexItem,
+                ),
+
+                renderRulesMenu(),
+
+                ...otherCodexNavigationItems.map(
+                  renderNavigationItem,
+                ),
+              ]}
             />
 
             <section>
               <p className="mb-2 hidden text-[8px] uppercase tracking-[0.3em] text-[#766754] lg:block">
-                services and utilities
+                services and
+                utilities
               </p>
 
               <div className="grid grid-cols-3 gap-1.5 sm:grid-cols-5 lg:grid-cols-1">
@@ -478,11 +720,13 @@ export function PortalSidebar({
 
           <div className="mt-[var(--portal-group-gap)] hidden border-t border-[#6e5535]/30 pt-2 lg:block">
             <span className="block py-1 text-[9px] uppercase tracking-[0.18em] text-[#5f5549]">
-              Support · Coming soon
+              Support · Coming
+              soon
             </span>
 
             <span className="block py-1 text-[9px] uppercase tracking-[0.18em] text-[#5f5549]">
-              Staff · Coming soon
+              Staff · Coming
+              soon
             </span>
           </div>
         </div>
@@ -507,13 +751,25 @@ function PublicPageModal({
   item: NavigationItem;
   onClose: () => void;
 }) {
+  const separator =
+    item.href.includes("?")
+      ? "&"
+      : "?";
+
+  const iframeSrc =
+    `${item.href}${separator}embedded=1`;
+
   return (
     <div
       role="dialog"
       aria-modal="true"
-      aria-label={item.label}
+      aria-label={
+        item.label
+      }
       className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/75 p-2 sm:p-4"
-      onMouseDown={(event) => {
+      onMouseDown={(
+        event,
+      ) => {
         if (
           event.target ===
           event.currentTarget
@@ -546,7 +802,7 @@ function PublicPageModal({
         </div>
 
         <iframe
-          src={`${item.href}?embedded=1`}
+          src={iframeSrc}
           title={item.label}
           className="min-h-0 w-full flex-1 border-0 bg-[#090705]"
         />
