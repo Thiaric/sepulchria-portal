@@ -13,7 +13,8 @@ import {
 
 type PortalSoundKind =
   | "room-message"
-  | "private-message";
+  | "private-message"
+  | "chat-pop";
 
 type PortalAudioContextValue = {
   muted: boolean;
@@ -541,6 +542,94 @@ export function PortalAudioProvider({
       }
     }, [ensureAudioContext]);
 
+  const playPop =
+  useCallback(() => {
+    if (mutedRef.current) {
+      return;
+    }
+
+    const context =
+      ensureAudioContext();
+
+    const master =
+      masterGainRef.current;
+
+    if (!master) {
+      return;
+    }
+
+    const play = () => {
+      if (
+        mutedRef.current ||
+        context.state !== "running"
+      ) {
+        return;
+      }
+
+      const start =
+        context.currentTime + 0.01;
+
+      const oscillator =
+        context.createOscillator();
+
+      const gain =
+        context.createGain();
+
+      oscillator.type = "sine";
+
+      oscillator.frequency.setValueAtTime(
+        380,
+        start,
+      );
+
+      oscillator.frequency.exponentialRampToValueAtTime(
+        170,
+        start + 0.09,
+      );
+
+      gain.gain.setValueAtTime(
+        0.0001,
+        start,
+      );
+
+      gain.gain.exponentialRampToValueAtTime(
+        0.055,
+        start + 0.008,
+      );
+
+      gain.gain.exponentialRampToValueAtTime(
+        0.0001,
+        start + 0.11,
+      );
+
+      oscillator.connect(gain);
+      gain.connect(master);
+
+      oscillator.start(start);
+      oscillator.stop(
+        start + 0.12,
+      );
+    };
+
+    if (
+      context.state === "running"
+    ) {
+      play();
+      return;
+    }
+
+    if (
+      context.state === "suspended"
+    ) {
+      void context
+        .resume()
+        .then(play)
+        .catch(() => {
+          // Browser still requires user interaction.
+        });
+    }
+  }, [ensureAudioContext]);
+
   const playPigeon =
     useCallback(() => {
       if (
@@ -566,27 +655,36 @@ export function PortalAudioProvider({
     }, [ensurePigeonAudio]);
 
   const playPortalSound =
-    useCallback(
-      (
-        kind:
-          PortalSoundKind =
-            "room-message",
-      ) => {
-        if (
-          kind ===
-          "private-message"
-        ) {
-          playPigeon();
-          return;
-        }
+  useCallback(
+    (
+      kind:
+        PortalSoundKind =
+          "room-message",
+    ) => {
+      if (
+        kind ===
+        "private-message"
+      ) {
+        playPigeon();
+        return;
+      }
 
-        playBeep();
-      },
-      [
-        playBeep,
-        playPigeon,
-      ],
-    );
+      if (
+        kind ===
+        "chat-pop"
+      ) {
+        playPop();
+        return;
+      }
+
+      playBeep();
+    },
+    [
+      playBeep,
+      playPigeon,
+      playPop,
+    ],
+  );
 
   const value =
     useMemo(

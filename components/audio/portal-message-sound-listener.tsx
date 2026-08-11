@@ -107,7 +107,7 @@ export function PortalMessageSoundListener({
             }
 
             playPortalSound(
-              "room-message",
+            "chat-pop",
             );
           },
         )
