@@ -69,30 +69,30 @@ export function ForumSidebarMenu({
     pathname.startsWith("/forum/");
 
   const [open, setOpen] =
-    useState(forumActive);
+    useState(false);
+
   const [recentOpen, setRecentOpen] =
-    useState(forumActive);
+    useState(true);
+
   const [
     favouritesOpen,
     setFavouritesOpen,
-  ] = useState(forumActive);
+  ] = useState(true);
 
   const [recent, setRecent] =
     useState<RecentTopic[]>([]);
+
   const [favourites, setFavourites] =
     useState<RecentTopic[]>([]);
+
   const [loading, setLoading] =
     useState(true);
+
   const [error, setError] =
     useState<string | null>(null);
+
   const [savingId, setSavingId] =
     useState<string | null>(null);
-
-  useEffect(() => {
-    if (forumActive) {
-      setOpen(true);
-    }
-  }, [forumActive]);
 
   const currentTopicPath =
     useMemo(() => {
