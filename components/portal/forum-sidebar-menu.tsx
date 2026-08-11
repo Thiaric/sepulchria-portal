@@ -514,38 +514,7 @@ export function ForumSidebarMenu({
             </div>
           ) : null}
 
-          <ForumTopicGroup
-            label="Recent Topics"
-            count={recent.length}
-            open={recentOpen}
-            onToggle={() =>
-              setRecentOpen(
-                (value) => !value,
-              )
-            }
-          >
-            {loading ? (
-              <LoadingRows count={3} />
-            ) : (
-              recent.map((topic) => (
-                <TopicShortcut
-                  key={topic.id}
-                  topic={topic}
-                  favourite={favouriteIds.has(
-                    topic.id,
-                  )}
-                  saving={
-                    savingId === topic.id
-                  }
-                  onToggleFavourite={() =>
-                    void toggleFavourite(
-                      topic,
-                    )
-                  }
-                />
-              ))
-            )}
-          </ForumTopicGroup>
+          
 
           <ForumTopicGroup
             label="Favourite Topics"
@@ -584,6 +553,39 @@ export function ForumSidebarMenu({
                 Use ☆ beside a recent
                 topic to save it.
               </p>
+            )}
+          </ForumTopicGroup>
+
+          <ForumTopicGroup
+            label="Recent Topics"
+            count={recent.length}
+            open={recentOpen}
+            onToggle={() =>
+              setRecentOpen(
+                (value) => !value,
+              )
+            }
+          >
+            {loading ? (
+              <LoadingRows count={3} />
+            ) : (
+              recent.map((topic) => (
+                <TopicShortcut
+                  key={topic.id}
+                  topic={topic}
+                  favourite={favouriteIds.has(
+                    topic.id,
+                  )}
+                  saving={
+                    savingId === topic.id
+                  }
+                  onToggleFavourite={() =>
+                    void toggleFavourite(
+                      topic,
+                    )
+                  }
+                />
+              ))
             )}
           </ForumTopicGroup>
 
