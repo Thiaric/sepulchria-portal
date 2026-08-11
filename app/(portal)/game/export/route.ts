@@ -5,6 +5,9 @@ import {
   ROOM_INACTIVITY_RESET_HOURS,
   ROOM_HISTORY_BATCH_SIZE,
 } from "@/lib/game/constants";
+import {
+  legacyRichTextToHtml,
+} from "@/lib/rich-text-shared";
 import { createClient } from "@/lib/supabase/server";
 import type {
   CharacterAttributeKey,
@@ -76,33 +79,11 @@ function safeFilename(
 }
 
 
-function formatDateTime(
-  value: string,
-): string {
-  const date = new Date(value);
-
-  if (
-    Number.isNaN(
-      date.getTime(),
-    )
-  ) {
-    return value;
-  }
-
-  return new Intl.DateTimeFormat(
-    "en-GB",
-    {
-      dateStyle: "medium",
-      timeStyle: "short",
-    },
-  ).format(date);
-}
-
-
 function formatCompactTime(
   value: string,
 ): string {
-  const date = new Date(value);
+  const date =
+    new Date(value);
 
   if (
     Number.isNaN(
@@ -138,7 +119,8 @@ function getAttributeLabel(
     vigor: "Vigor",
     brains: "Brains",
     shrewd: "Shrewd",
-    presence_score: "Presence",
+    presence_score:
+      "Presence",
   };
 
   return key
@@ -167,195 +149,123 @@ function getFirstName(
 }
 
 
-function isSafeImageUrl(
+function toAbsoluteAssetUrl(
   value:
     | string
     | null
     | undefined,
-): value is string {
-  if (!value) {
-    return false;
+  origin: string,
+): string | null {
+  if (!value?.trim()) {
+    return null;
   }
 
-  if (value.startsWith("/")) {
-    return true;
-  }
+  const clean =
+    value.trim();
 
   try {
-    const parsed =
-      new URL(value);
+    if (
+      clean.startsWith(
+        "http://",
+      ) ||
+      clean.startsWith(
+        "https://",
+      )
+    ) {
+      return new URL(
+        clean,
+      ).toString();
+    }
 
-    return (
-      parsed.protocol === "http:" ||
-      parsed.protocol === "https:"
-    );
+    const path =
+      clean.startsWith("/")
+        ? clean
+        : `/${clean}`;
+
+    return new URL(
+      path,
+      origin,
+    ).toString();
   } catch {
-    return false;
+    return null;
   }
 }
 
 
-/*
- * Renders the limited rich-text/BBCode
- * used by Sepulchria descriptions.
- *
- * The content is escaped first, then
- * supported markup is converted to HTML.
- */
-function renderRichText(
-  value: string,
+function normaliseHtmlUrls(
+  html: string,
+  origin: string,
 ): string {
-  let html =
-    escapeHtml(value);
-
-  html = html
-    .replace(
-      /\[b\]([\s\S]*?)\[\/b\]/gi,
-      "<strong>$1</strong>",
-    )
-    .replace(
-      /\[i\]([\s\S]*?)\[\/i\]/gi,
-      "<em>$1</em>",
-    )
-    .replace(
-      /\[u\]([\s\S]*?)\[\/u\]/gi,
-      "<u>$1</u>",
-    )
-    .replace(
-      /\[s\]([\s\S]*?)\[\/s\]/gi,
-      "<s>$1</s>",
-    )
-    .replace(
-      /\[h2\]([\s\S]*?)\[\/h2\]/gi,
-      "<h2>$1</h2>",
-    )
-    .replace(
-      /\[h3\]([\s\S]*?)\[\/h3\]/gi,
-      "<h3>$1</h3>",
-    )
-    .replace(
-      /\[center\]([\s\S]*?)\[\/center\]/gi,
-      '<div class="rich-center">$1</div>',
-    )
-    .replace(
-      /\[quote\]([\s\S]*?)\[\/quote\]/gi,
-      "<blockquote>$1</blockquote>",
-    )
-    .replace(
-      /\[list\]([\s\S]*?)\[\/list\]/gi,
-      '<div class="rich-list">$1</div>',
-    )
-    .replace(
-      /\[\*\]/gi,
-      '<span class="rich-bullet">•</span> ',
-    );
-
-  /*
-   * URLs are rendered as clickable links,
-   * but only HTTP/HTTPS links survive.
-   */
-  html = html.replace(
-    /\[url=([^\]]+)\]([\s\S]*?)\[\/url\]/gi,
+  return html.replace(
+    /\b(src|href)=(["'])(.*?)\2/gi,
     (
-      _match,
-      rawUrl: string,
-      label: string,
+      fullMatch,
+      attribute: string,
+      quote: string,
+      rawValue: string,
     ) => {
-      const decodedUrl =
-        rawUrl
-          .replaceAll(
-            "&amp;",
-            "&",
-          )
-          .replaceAll(
-            "&quot;",
-            '"',
-          )
-          .replaceAll(
-            "&#039;",
-            "'",
-          );
+      const value =
+        rawValue.trim();
 
-      try {
-        const parsed =
-          new URL(decodedUrl);
-
-        if (
-          parsed.protocol !==
-            "http:" &&
-          parsed.protocol !==
-            "https:"
-        ) {
-          return label;
-        }
-
-        return `<a href="${escapeHtml(
-          parsed.toString(),
-        )}" target="_blank" rel="noreferrer">${label}</a>`;
-      } catch {
-        return label;
+      if (!value) {
+        return fullMatch;
       }
-    },
-  );
-
-  /*
-   * Images in descriptions are allowed
-   * only for safe web/relative URLs.
-   */
-  html = html.replace(
-    /\[img(?:=[^\]]*)?\]([\s\S]*?)\[\/img\]/gi,
-    (
-      _match,
-      rawUrl: string,
-    ) => {
-      const decodedUrl =
-        rawUrl
-          .trim()
-          .replaceAll(
-            "&amp;",
-            "&",
-          )
-          .replaceAll(
-            "&quot;",
-            '"',
-          )
-          .replaceAll(
-            "&#039;",
-            "'",
-          );
 
       if (
-        !isSafeImageUrl(
-          decodedUrl,
-        )
+        value.startsWith("#") ||
+        value.startsWith("mailto:") ||
+        value.startsWith("tel:") ||
+        value.startsWith("data:") ||
+        value.startsWith("blob:")
       ) {
-        return "";
+        return fullMatch;
       }
 
-      return `<img class="rich-image" src="${escapeHtml(
-        decodedUrl,
-      )}" alt="" />`;
-    },
-  );
+      try {
+        const absoluteUrl =
+          value.startsWith(
+            "http://",
+          ) ||
+          value.startsWith(
+            "https://",
+          )
+            ? new URL(
+                value,
+              ).toString()
+            : new URL(
+                value.startsWith("/")
+                  ? value
+                  : `/${value}`,
+                origin,
+              ).toString();
 
-  return html.replaceAll(
-    "\n",
-    "<br />",
+        return `${attribute}=${quote}${escapeHtml(
+          absoluteUrl,
+        )}${quote}`;
+      } catch {
+        return fullMatch;
+      }
+    },
   );
 }
 
 
-/*
- * Matches the live chat:
- *
- * <action>
- * (action)
- * [action]
- * {action}
- *
- * Everything outside those delimiters
- * is rendered as normal speech.
- */
+function renderRichText(
+  value: string,
+  origin: string,
+): string {
+  const html =
+    legacyRichTextToHtml(
+      value,
+    );
+
+  return normaliseHtmlUrls(
+    html,
+    origin,
+  );
+}
+
+
 function renderActionSpeech(
   content: string,
 ): string {
@@ -367,46 +277,63 @@ function renderActionSpeech(
   return segments
     .filter(Boolean)
     .map((segment) => {
-      const isAction =
-        (
-          segment.startsWith(
-            "<",
-          ) &&
-          segment.endsWith(
-            ">",
-          )
-        ) ||
-        (
-          segment.startsWith(
-            "(",
-          ) &&
-          segment.endsWith(
-            ")",
-          )
-        ) ||
-        (
-          segment.startsWith(
-            "[",
-          ) &&
-          segment.endsWith(
-            "]",
-          )
-        ) ||
-        (
-          segment.startsWith(
-            "{",
-          ) &&
-          segment.endsWith(
-            "}",
-          )
+      const isAngle =
+        segment.startsWith(
+          "<",
+        ) &&
+        segment.endsWith(
+          ">",
         );
 
+      const isRound =
+        segment.startsWith(
+          "(",
+        ) &&
+        segment.endsWith(
+          ")",
+        );
+
+      const isSquare =
+        segment.startsWith(
+          "[",
+        ) &&
+        segment.endsWith(
+          "]",
+        );
+
+      const isCurly =
+        segment.startsWith(
+          "{",
+        ) &&
+        segment.endsWith(
+          "}",
+        );
+
+      const isAction =
+        isAngle ||
+        isRound ||
+        isSquare ||
+        isCurly;
+
+      /*
+       * The live chat removes the
+       * action delimiters themselves.
+       */
+      const displayText =
+        isAction
+          ? segment.slice(
+              1,
+              -1,
+            )
+          : segment;
+
       const escaped =
-        escapeHtml(segment)
-          .replaceAll(
-            "\n",
-            "<br />",
-          );
+        escapeHtml(
+          displayText,
+        ).replaceAll(
+          "\n",
+          "<br />",
+        );
 
       return isAction
         ? `<span class="action-text">${escaped}</span>`
@@ -455,18 +382,21 @@ function renderPortrait(
     | string
     | null
     | undefined,
+  origin: string,
 ): string {
-  if (
-    isSafeImageUrl(
+  const absolutePortraitUrl =
+    toAbsoluteAssetUrl(
       portraitUrl,
-    )
-  ) {
+      origin,
+    );
+
+  if (absolutePortraitUrl) {
     return `
       <div class="portrait-wrap">
         <img
           class="portrait"
           src="${escapeHtml(
-            portraitUrl,
+            absolutePortraitUrl,
           )}"
           alt="${escapeHtml(
             name,
@@ -493,6 +423,7 @@ function renderPortrait(
 
 function renderMessage(
   message: RoomMessage,
+  origin: string,
 ): string {
   const author =
     normaliseRelation(
@@ -534,7 +465,7 @@ function renderMessage(
         <div class="fate-content">
           <div class="compact-header">
             <span class="fate-label">
-              Fate
+              The Voice of Fate
             </span>
 
             <time>
@@ -558,7 +489,7 @@ function renderMessage(
   }
 
   /*
-   * DICE / ATTRIBUTE CHECK
+   * DICE / CHECK
    */
   if (
     message.message_type ===
@@ -635,10 +566,33 @@ function renderMessage(
       ${renderPortrait(
         authorName,
         author?.portrait_url,
+        origin,
       )}
 
       <div class="message-content">
+
+        ${
+          isWhisper
+            ? `
+              <div class="whisper-header">
+                <span class="whisper-label">
+                  ${escapeHtml(
+                    whisperLabel,
+                  )}
+                </span>
+
+                <time>
+                  ${escapeHtml(
+                    time,
+                  )}
+                </time>
+              </div>
+            `
+            : ""
+        }
+
         <div class="compact-header">
+
           <div class="author-line">
             <span
               class="author-name"
@@ -650,25 +604,20 @@ function renderMessage(
                 shortAuthorName,
               )}
             </span>
-
-            ${
-              isWhisper
-                ? `
-                  <span class="whisper-label">
-                    ${escapeHtml(
-                      whisperLabel,
-                    )}
-                  </span>
-                `
-                : ""
-            }
           </div>
 
-          <time>
-            ${escapeHtml(
-              time,
-            )}
-          </time>
+          ${
+            !isWhisper
+              ? `
+                <time>
+                  ${escapeHtml(
+                    time,
+                  )}
+                </time>
+              `
+              : ""
+          }
+
         </div>
 
         <div class="role-body">
@@ -676,6 +625,7 @@ function renderMessage(
             message.message,
           )}
         </div>
+
       </div>
     </article>
   `;
@@ -694,10 +644,16 @@ async function loadVisibleMessages(
   } = await supabase
     .from("room_messages")
     .select("created_at")
-    .eq("room_id", roomId)
-    .order("created_at", {
-      ascending: false,
-    })
+    .eq(
+      "room_id",
+      roomId,
+    )
+    .order(
+      "created_at",
+      {
+        ascending: false,
+      },
+    )
     .limit(1)
     .maybeSingle();
 
@@ -777,6 +733,7 @@ async function loadVisibleMessages(
 
         character:characters!room_messages_character_id_fkey(
           id,
+          first_name,
           display_name,
           portrait_url,
           public_slug
@@ -784,6 +741,7 @@ async function loadVisibleMessages(
 
         whisperRecipient:characters!room_messages_whisper_recipient_character_id_fkey(
           id,
+          first_name,
           display_name,
           portrait_url,
           public_slug
@@ -837,7 +795,14 @@ async function loadVisibleMessages(
 }
 
 
-export async function GET() {
+export async function GET(
+  request: Request,
+) {
+  const origin =
+    new URL(
+      request.url,
+    ).origin;
+
   const supabase =
     await createClient();
 
@@ -982,11 +947,10 @@ export async function GET() {
       : room.name;
 
   const roomImage =
-    isSafeImageUrl(
+    toAbsoluteAssetUrl(
       room.image_url,
-    )
-      ? room.image_url
-      : null;
+      origin,
+    );
 
   const html = `<!doctype html>
 <html lang="en">
@@ -1000,7 +964,7 @@ export async function GET() {
 
   <title>${escapeHtml(
     room.name,
-  )} · Sepulchria Role Export</title>
+  )} · Sepulchria Role Chronicle</title>
 
   <style>
     :root {
@@ -1028,16 +992,16 @@ export async function GET() {
 
       background:
         radial-gradient(
-          circle at 50% -15%,
+          circle at 50% -10%,
           #2a1c11 0,
-          #130e0a 31%,
-          #090706 70%
+          #130e0a 30%,
+          #090706 72%
         );
 
       color: #c9bba6;
 
       font-size: 13px;
-      line-height: 1.55;
+      line-height: 1.5;
     }
 
     main {
@@ -1046,18 +1010,18 @@ export async function GET() {
         calc(100% - 28px)
       );
 
-      margin: 18px auto 28px;
+      margin:
+        16px auto 26px;
     }
 
+
     /*
-     * =====================================================
-     * ARCHIVE HEADER
-     * =====================================================
+     * ===================================
+     * HEADER
+     * ===================================
      */
 
     .archive-header {
-      position: relative;
-
       overflow: hidden;
 
       border:
@@ -1073,7 +1037,7 @@ export async function GET() {
 
       height:
         clamp(
-          120px,
+          130px,
           18vw,
           190px
         );
@@ -1083,13 +1047,15 @@ export async function GET() {
       border-bottom:
         1px solid
         #60482e;
+
+      background: #0d0907;
     }
 
     .location-image img {
+      display: block;
+
       width: 100%;
       height: 100%;
-
-      display: block;
 
       object-fit: cover;
       object-position: center;
@@ -1108,19 +1074,19 @@ export async function GET() {
             14,
             10,
             8,
-            0.9
+            0.92
           ) 0%,
           rgba(
             14,
             10,
             8,
             0.22
-          ) 50%,
+          ) 55%,
           rgba(
             14,
             10,
             8,
-            0.04
+            0.02
           ) 100%
         );
 
@@ -1137,24 +1103,9 @@ export async function GET() {
       bottom: 14px;
     }
 
-    .location-image-title
-    .eyebrow {
-      margin-bottom: 3px;
-    }
-
-    .location-image-title h1 {
-      text-shadow:
-        0 2px 8px
-        rgba(
-          0,
-          0,
-          0,
-          0.95
-        );
-    }
-
     .header-content {
-      padding: 15px 18px;
+      padding:
+        13px 18px;
     }
 
     .eyebrow {
@@ -1191,43 +1142,59 @@ export async function GET() {
         );
 
       font-weight: 400;
-
       line-height: 1.1;
     }
 
-    .room-description {
-      max-width: 780px;
+    .location-image-title h1 {
+      color: #ead2a5;
 
-      margin-top: 10px;
+      text-shadow:
+        0 2px 8px
+        rgba(
+          0,
+          0,
+          0,
+          0.95
+        );
+    }
+
+
+    /*
+     * DESCRIPTION / STORED RICH TEXT
+     */
+
+    .room-description {
+      max-width: 820px;
+
+      margin-top: 9px;
 
       color: #9f927f;
 
       font-size: 11px;
-      line-height: 1.6;
+      line-height: 1.55;
     }
 
-    .room-description
-    p {
+    .room-description p {
       margin:
-        5px 0;
+        4px 0;
     }
 
-    .room-description
-    strong {
+    .room-description strong,
+    .room-description b {
       color: #cdb892;
+      font-weight: 700;
     }
 
-    .room-description
-    em {
+    .room-description em,
+    .room-description i {
       color: #b09b7c;
     }
 
-    .room-description
-    h2,
-    .room-description
-    h3 {
+    .room-description h1,
+    .room-description h2,
+    .room-description h3 {
       margin:
-        10px 0 4px;
+        9px 0 4px;
 
       color: #cfb78f;
 
@@ -1239,73 +1206,71 @@ export async function GET() {
       font-weight: 400;
     }
 
-    .room-description
-    h2 {
-      font-size: 16px;
+    .room-description h1 {
+      font-size: 17px;
     }
 
-    .room-description
-    h3 {
-      font-size: 14px;
+    .room-description h2 {
+      font-size: 15px;
     }
 
-    .room-description
-    blockquote {
+    .room-description h3 {
+      font-size: 13px;
+    }
+
+    .room-description ul,
+    .room-description ol {
       margin:
-        8px 0;
+        5px 0;
+
+      padding-left: 21px;
+    }
+
+    .room-description blockquote {
+      margin:
+        7px 0;
 
       border-left:
         2px solid
         #745536;
 
       padding:
-        4px 10px;
+        3px 9px;
 
       color: #8f816e;
 
       font-style: italic;
     }
 
-    .room-description
-    a {
+    .room-description a {
       color: #c69a60;
     }
 
-    .rich-center {
-      text-align: center;
-    }
-
-    .rich-bullet {
-      color: #b88a51;
-    }
-
-    .rich-image {
+    .room-description img {
       display: block;
 
       max-width: 100%;
       max-height: 260px;
 
       margin:
-        8px auto;
+        7px auto;
 
       object-fit: contain;
     }
 
+
     /*
-     * Metadata is deliberately a narrow
-     * horizontal bar rather than four
-     * large cards.
+     * METADATA
      */
 
     .metadata {
       display: flex;
-
       flex-wrap: wrap;
 
       gap:
         5px 22px;
 
-      margin-top: 12px;
+      margin-top: 10px;
 
       border-top:
         1px solid
@@ -1316,17 +1281,17 @@ export async function GET() {
           0.45
         );
 
-      padding-top: 10px;
+      padding-top: 8px;
     }
 
     .metadata-item {
       display: flex;
 
+      min-width: 0;
+
       align-items: baseline;
 
       gap: 6px;
-
-      min-width: 0;
     }
 
     .metadata strong {
@@ -1350,14 +1315,15 @@ export async function GET() {
       font-size: 9px;
     }
 
+
     /*
-     * =====================================================
+     * ===================================
      * CHRONICLE
-     * =====================================================
+     * ===================================
      */
 
     .chronicle {
-      margin-top: 10px;
+      margin-top: 9px;
 
       overflow: hidden;
 
@@ -1389,16 +1355,17 @@ export async function GET() {
       border-bottom: 0;
     }
 
+
     /*
-     * Normal role message:
-     * portrait + compact content.
+     * NORMAL ROLE ENTRY
      */
 
     .role-entry {
       display: grid;
 
       grid-template-columns:
-        36px minmax(
+        36px
+        minmax(
           0,
           1fr
         );
@@ -1406,22 +1373,7 @@ export async function GET() {
       gap: 10px;
 
       padding:
-        10px 16px;
-
-      transition:
-        background 120ms ease;
-    }
-
-    .role-entry:nth-child(
-      even
-    ) {
-      background:
-        rgba(
-          255,
-          255,
-          255,
-          0.008
-        );
+        9px 16px;
     }
 
     .portrait-wrap {
@@ -1477,21 +1429,19 @@ export async function GET() {
     .compact-header {
       display: flex;
 
+      min-height: 17px;
+
       align-items: center;
       justify-content:
         space-between;
 
       gap: 12px;
-
-      min-height: 18px;
     }
 
     .author-line {
       display: flex;
 
       min-width: 0;
-
-      flex-wrap: wrap;
 
       align-items: center;
 
@@ -1535,13 +1485,13 @@ export async function GET() {
     }
 
     .role-body {
-      margin-top: 3px;
+      margin-top: 2px;
 
       color: #c9b9a2;
 
       font-size: 13px;
 
-      line-height: 1.72;
+      line-height: 1.65;
 
       overflow-wrap:
         anywhere;
@@ -1557,8 +1507,9 @@ export async function GET() {
       font-style: italic;
     }
 
+
     /*
-     * WHISPERS
+     * WHISPER
      */
 
     .whisper-entry {
@@ -1585,61 +1536,66 @@ export async function GET() {
         );
     }
 
-    .whisper-label {
-      border:
+    .whisper-header {
+      display: flex;
+
+      align-items: center;
+      justify-content:
+        space-between;
+
+      gap: 10px;
+
+      margin-bottom: 3px;
+
+      border-bottom:
         1px solid
         rgba(
           125,
           98,
           143,
-          0.55
+          0.3
         );
 
-      background:
-        rgba(
-          32,
-          23,
-          39,
-          0.8
-        );
+      padding-bottom: 3px;
+    }
 
-      padding:
-        2px 5px;
-
+    .whisper-label {
       color: #bda5cb;
 
-      font-size: 6px;
+      font-size: 7px;
 
       letter-spacing:
-        0.11em;
+        0.14em;
 
       text-transform:
         uppercase;
     }
 
+
     /*
-     * DICE
+     * ROLLS
      */
 
     .roll-entry {
       display: grid;
 
       grid-template-columns:
-        14px auto
+        14px
+        auto
         minmax(
           0,
           1fr
         )
         auto;
 
+      min-height: 32px;
+
       align-items: center;
 
       gap: 8px;
 
-      min-height: 34px;
-
       padding:
-        6px 16px;
+        5px 16px;
 
       background:
         rgba(
@@ -1732,6 +1688,7 @@ export async function GET() {
       color: #e99797;
     }
 
+
     /*
      * FATE
      */
@@ -1740,7 +1697,8 @@ export async function GET() {
       display: grid;
 
       grid-template-columns:
-        24px minmax(
+        22px
+        minmax(
           0,
           1fr
         );
@@ -1748,7 +1706,7 @@ export async function GET() {
       gap: 8px;
 
       padding:
-        8px 16px;
+        7px 16px;
 
       border-top:
         1px solid
@@ -1795,8 +1753,6 @@ export async function GET() {
     .fate-marker {
       display: flex;
 
-      align-items:
-        flex-start;
       justify-content:
         center;
 
@@ -1818,7 +1774,7 @@ export async function GET() {
       font-weight: 600;
 
       letter-spacing:
-        0.22em;
+        0.2em;
 
       text-transform:
         uppercase;
@@ -1836,19 +1792,20 @@ export async function GET() {
 
       font-size: 12px;
 
-      line-height: 1.6;
+      line-height: 1.55;
 
       overflow-wrap:
         anywhere;
     }
 
+
     /*
-     * Empty archive
+     * EMPTY
      */
 
     .empty {
       padding:
-        28px 18px;
+        26px 18px;
 
       color: #82735f;
 
@@ -1863,26 +1820,26 @@ export async function GET() {
       text-align: center;
     }
 
+
     /*
      * FOOTER
      */
 
     footer {
-      margin-top: 10px;
+      margin-top: 9px;
 
       color: #62574a;
 
       font-size: 8px;
 
-      line-height: 1.55;
+      line-height: 1.5;
 
       text-align: center;
     }
 
+
     /*
-     * =====================================================
      * MOBILE
-     * =====================================================
      */
 
     @media (
@@ -1900,23 +1857,24 @@ export async function GET() {
 
       .header-content {
         padding:
-          12px 13px;
+          11px 13px;
       }
 
       .location-image-title {
         left: 13px;
         right: 13px;
-        bottom: 11px;
+        bottom: 10px;
       }
 
       .metadata {
         gap:
-          5px 14px;
+          4px 14px;
       }
 
       .role-entry {
         grid-template-columns:
-          32px minmax(
+          32px
+          minmax(
             0,
             1fr
           );
@@ -1924,7 +1882,7 @@ export async function GET() {
         gap: 8px;
 
         padding:
-          9px 11px;
+          8px 11px;
       }
 
       .portrait-wrap {
@@ -1938,12 +1896,14 @@ export async function GET() {
 
       .roll-entry {
         grid-template-columns:
-          12px auto 1fr;
+          12px
+          auto
+          1fr;
 
         gap: 6px;
 
         padding:
-          6px 11px;
+          5px 11px;
       }
 
       .roll-entry time {
@@ -1952,14 +1912,13 @@ export async function GET() {
 
       .fate-entry {
         padding:
-          8px 11px;
+          7px 11px;
       }
     }
 
+
     /*
-     * =====================================================
      * PRINT
-     * =====================================================
      */
 
     @media print {
@@ -1971,10 +1930,6 @@ export async function GET() {
       body {
         background: white;
         color: #241b14;
-      }
-
-      body {
-        font-size: 11px;
       }
 
       main {
@@ -1995,31 +1950,6 @@ export async function GET() {
 
         border-color:
           #8b7864;
-      }
-
-      .location-image::after {
-        background:
-          linear-gradient(
-            to top,
-            rgba(
-              255,
-              255,
-              255,
-              0.2
-            ),
-            transparent
-          );
-      }
-
-      .location-image-title
-      h1,
-      .location-image-title
-      .eyebrow {
-        color: white;
-
-        text-shadow:
-          0 1px 4px
-          black;
       }
 
       h1,
@@ -2089,6 +2019,7 @@ export async function GET() {
         roomImage
           ? `
             <div class="location-image">
+
               <img
                 src="${escapeHtml(
                   roomImage,
@@ -2099,6 +2030,7 @@ export async function GET() {
               />
 
               <div class="location-image-title">
+
                 <p class="eyebrow">
                   Sepulchria · Role Chronicle
                 </p>
@@ -2108,6 +2040,7 @@ export async function GET() {
                     roomHeading,
                   )}
                 </h1>
+
               </div>
             </div>
           `
@@ -2138,6 +2071,7 @@ export async function GET() {
               <div class="room-description">
                 ${renderRichText(
                   room.description,
+                  origin,
                 )}
               </div>
             `
@@ -2147,6 +2081,7 @@ export async function GET() {
         <div class="metadata">
 
           <div class="metadata-item">
+
             <strong>
               Exported by
             </strong>
@@ -2156,9 +2091,11 @@ export async function GET() {
                 character.display_name,
               )}
             </span>
+
           </div>
 
           <div class="metadata-item">
+
             <strong>
               Exported
             </strong>
@@ -2168,9 +2105,11 @@ export async function GET() {
                 exportedAtLabel,
               )}
             </span>
+
           </div>
 
           <div class="metadata-item">
+
             <strong>
               Entries
             </strong>
@@ -2178,9 +2117,11 @@ export async function GET() {
             <span>
               ${messages.length}
             </span>
+
           </div>
 
           <div class="metadata-item">
+
             <strong>
               Participants
             </strong>
@@ -2196,6 +2137,7 @@ export async function GET() {
                   : "None recorded"
               }
             </span>
+
           </div>
 
         </div>
@@ -2204,11 +2146,16 @@ export async function GET() {
 
 
     <section class="chronicle">
+
       ${
         messages.length
           ? messages
               .map(
-                renderMessage,
+                (message) =>
+                  renderMessage(
+                    message,
+                    origin,
+                  ),
               )
               .join("")
           : `
@@ -2217,6 +2164,7 @@ export async function GET() {
             </div>
           `
       }
+
     </section>
 
 
