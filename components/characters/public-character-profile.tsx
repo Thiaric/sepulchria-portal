@@ -212,11 +212,7 @@ export function PublicCharacterProfileView({
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_300px]">
         <div className="space-y-5">
-          <ProfileSection
-            title="Biography"
-            content={character.biography}
-          />
-
+          
           <ProfileSection
             title="Physical Description"
             content={
@@ -227,6 +223,11 @@ export function PublicCharacterProfileView({
           <ProfileSection
             title="Personality"
             content={character.personality}
+          />
+
+          <ProfileSection
+            title="Biography"
+            content={character.biography}
           />
 
           <ProfileSection

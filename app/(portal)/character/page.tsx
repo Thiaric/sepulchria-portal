@@ -7,7 +7,7 @@ import { CharacterExpertiseTotal } from "@/components/characters/character-exper
 
 import {
   submitCharacterForReview,
-  updateApprovedCharacterPortrait,
+  updateApprovedCharacterProfile,
 } from "./actions";
 import { CharacterAttributesDisplay } from "@/components/characters/character-attributes-display";
 import { CharacterHealthDisplay } from "@/components/characters/character-health-display";
@@ -220,15 +220,7 @@ export function Profile({
     ],
   ];
 
-  const sections = [
-    [
-      "Physical description",
-      character.physical_description,
-    ],
-    ["Personality", character.personality],
-    ["Biography", character.biography],
-    ["Public notes", character.public_notes],
-  ];
+
 
   return (
     <div className="p-5 sm:p-7 lg:p-9">
@@ -258,7 +250,7 @@ export function Profile({
           />
         ) : null}
 
-        <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <Link
             href={own ? "/" : "/game"}
             className="text-sm text-[#b8945d] transition hover:text-[#e3c28c]"
@@ -266,24 +258,20 @@ export function Profile({
             ← Return
           </Link>
 
-          <div className="flex flex-wrap items-center justify-end gap-3">
+          <div className="flex flex-wrap items-center justify-end gap-2">
             {messageAction}
 
             {canEdit ? (
               <Link
                 href="/character/edit"
-                className="border border-[#8d6d3e] bg-[#332719] px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-[#efd9aa] transition hover:bg-[#49351f]"
+                className="border border-[#8d6d3e] bg-[#332719] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[#efd9aa] transition hover:bg-[#49351f]"
               >
                 Edit character
               </Link>
             ) : null}
 
             {canSubmit ? (
-              <form
-                action={
-                  submitCharacterForReview
-                }
-              >
+              <form action={submitCharacterForReview}>
                 <PendingSubmitButton
                   idleText={
                     status === "rejected"
@@ -295,15 +283,15 @@ export function Profile({
                       ? "Submitting again..."
                       : "Submitting..."
                   }
-                  className="border border-[#a47b43] bg-[#472d18] px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-[#f3d7a5] transition hover:border-[#d0a15c] hover:bg-[#5c391d] disabled:cursor-not-allowed disabled:opacity-60"
+                  className="border border-[#a47b43] bg-[#472d18] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[#f3d7a5] transition hover:border-[#d0a15c] hover:bg-[#5c391d] disabled:cursor-not-allowed disabled:opacity-60"
                 />
               </form>
             ) : null}
           </div>
         </div>
 
-        <section className="mt-6 grid gap-8 border border-[#654b2e]/50 bg-[#17110d] p-5 sm:p-7 lg:grid-cols-[240px_minmax(0,1fr)]">
-          <div>
+        <section className="mt-4 grid gap-5 border border-[#654b2e]/50 bg-[#17110d] p-4 sm:p-5 lg:grid-cols-[200px_minmax(0,1fr)]">
+          <div className="mx-auto w-full max-w-[200px] lg:mx-0">
             {character.portrait_url ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -319,50 +307,16 @@ export function Profile({
                 ?
               </div>
             )}
-
-            {own &&
-            status === "approved" ? (
-              <form
-                action={
-                  updateApprovedCharacterPortrait
-                }
-                className="mt-4 border border-[#60482e]/45 bg-[#100c09] p-3"
-              >
-                <label className="block">
-                  <span className="text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
-                    Change portrait
-                  </span>
-
-                  <input
-                    type="url"
-                    name="portrait_url"
-                    defaultValue={
-                      character.portrait_url ??
-                      ""
-                    }
-                    placeholder="https://..."
-                    className="mt-2 w-full border border-[#60482e]/55 bg-[#0d0907] px-3 py-2 text-xs text-[#d7c4a5] outline-none focus:border-[#a17a49]"
-                  />
-                </label>
-
-                <button
-                  type="submit"
-                  className="mt-3 w-full border border-[#8d6d3e] bg-[#332719] px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[#efd9aa] transition hover:bg-[#49351f]"
-                >
-                  Update portrait
-                </button>
-              </form>
-            ) : null}
           </div>
 
           <div className="min-w-0">
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <div>
-                <p className="text-[10px] uppercase tracking-[0.3em] text-[#876a46]">
+            <div className="flex flex-wrap items-start justify-between gap-3 border-b border-[#5d452d]/35 pb-4">
+              <div className="min-w-0">
+                <p className="text-[9px] uppercase tracking-[0.28em] text-[#876a46]">
                   Character profile
                 </p>
 
-                <h1 className="mt-3 break-words font-serif text-4xl text-[#ecd9b2] sm:text-5xl">
+                <h1 className="mt-1 break-words font-serif text-3xl text-[#ecd9b2] sm:text-4xl">
                   {character.display_name ??
                     "Unnamed character"}
                 </h1>
@@ -375,86 +329,219 @@ export function Profile({
               ) : null}
             </div>
 
-            <div className="mt-8 grid gap-px bg-[#4f3b28]/35 sm:grid-cols-2">
-  {items.map(([label, value]) => (
-    <div
-      key={label}
-      className="bg-[#17110d] p-4"
-    >
-      <p className="text-[9px] uppercase tracking-[0.25em] text-[#796448]">
-        {label}
-      </p>
+            <div className="mt-4 grid gap-px bg-[#4f3b28]/35 sm:grid-cols-2 lg:grid-cols-3">
+              {items.map(([label, value]) => (
+                <div
+                  key={label}
+                  className="min-w-0 bg-[#17110d] px-3 py-2.5"
+                >
+                  <p className="text-[8px] uppercase tracking-[0.2em] text-[#796448]">
+                    {label}
+                  </p>
 
-      <p className="mt-2 break-words text-sm text-[#cab89b]">
-        {value || "Not recorded"}
-      </p>
-    </div>
-  ))}
+                  <p className="mt-1 break-words text-xs leading-5 text-[#cab89b]">
+                    {value || "Not recorded"}
+                  </p>
+                </div>
+              ))}
 
-  <div className="bg-[#17110d] p-4">
-    <CharacterExpertiseTotal
-      characterId={character.id!}
-    />
-  </div>
-</div>
+              <div className="min-w-0 bg-[#17110d] px-3 py-2.5">
+                <CharacterExpertiseTotal
+                  characterId={character.id!}
+                />
+              </div>
+            </div>
+
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              <CompactHeritageCard
+                label="Ancestry"
+                entry={race}
+                href={
+                  race
+                    ? `/races/${race.slug}`
+                    : "/races"
+                }
+              />
+
+              <CompactHeritageCard
+                label="Association"
+                entry={association}
+                href={
+                  association
+                    ? `/associations/${association.slug}`
+                    : "/associations"
+                }
+              />
+            </div>
           </div>
         </section>
 
-        <section className="mt-6 grid gap-5 md:grid-cols-2">
-          <HeritageCard
-            label="Ancestry"
-            entry={race}
-            href={
-              race
-                ? `/races/${race.slug}`
-                : "/races"
-            }
-          />
-
-          <HeritageCard
-            label="Association"
-            entry={association}
-            href={
-              association
-                ? `/associations/${association.slug}`
-                : "/associations"
-            }
-          />
-        </section>
-
-        <div className="mt-6">
+        <div className="mt-4">
           <CharacterHealthDisplay
             character={character}
           />
         </div>
 
-        <div className="mt-6">
+        <div className="mt-4">
           <CharacterAttributesDisplay
             character={character}
           />
         </div>
 
-        <div className="mt-6 space-y-6">
-          {sections.map(
-            ([title, value]) => (
-              <article
-                key={title}
-                className="border border-[#6b5032]/50 bg-[#17110d] p-5 sm:p-7"
-              >
-                <h2 className="font-serif text-2xl text-[#dfc79c] sm:text-3xl">
-                  {title}
+        <section className="mt-4 grid gap-4 md:grid-cols-2">
+          <ProfileTextSection
+            title="Physical description"
+            value={character.physical_description}
+          />
+
+          <ProfileTextSection
+            title="Personality"
+            value={character.personality}
+          />
+        </section>
+
+        <div className="mt-4">
+          <ProfileTextSection
+            title="Biography"
+            value={character.biography}
+          />
+        </div>
+
+        <div className="mt-4">
+          <ProfileTextSection
+            title="Public notes"
+            value={character.public_notes}
+            subtle
+          />
+        </div>
+
+        {own &&
+        status === "approved" ? (
+          <details className="group mt-4 border border-[#6b5032]/50 bg-[#17110d]">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-4 py-3 transition hover:bg-[#1d150f] sm:px-5 [&::-webkit-details-marker]:hidden">
+              <div>
+                <h2 className="font-serif text-lg text-[#dfc79c] sm:text-xl">
+                  Edit profile
                 </h2>
 
-                <p className="mt-5 whitespace-pre-line break-words text-sm leading-8 text-[#b0a18d]">
-                  {value ||
-                    "No information has been added yet."}
+                <p className="mt-1 text-[11px] leading-5 text-[#8f8271]">
+                  Update portrait and public character information without staff review.
                 </p>
-              </article>
-            ),
-          )}
-        </div>
+              </div>
+
+              <span
+                aria-hidden="true"
+                className="shrink-0 text-xs text-[#a98556] transition-transform group-open:rotate-180"
+              >
+                ▼
+              </span>
+            </summary>
+
+            <div className="border-t border-[#5d452d]/40 px-4 py-5 sm:px-5">
+              <form
+                action={updateApprovedCharacterProfile}
+                className="space-y-5"
+              >
+                <label className="block">
+                  <span className="text-[9px] uppercase tracking-[0.2em] text-[#806b50]">
+                    Portrait URL
+                  </span>
+
+                  <input
+                    type="url"
+                    name="portrait_url"
+                    defaultValue={
+                      character.portrait_url ?? ""
+                    }
+                    placeholder="https://..."
+                    className="mt-2 w-full border border-[#60482e]/55 bg-[#0d0907] px-3 py-2.5 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                  />
+                </label>
+
+                <div className="grid gap-5 md:grid-cols-2">
+                  <ApprovedProfileTextArea
+                    label="Physical description"
+                    name="physical_description"
+                    defaultValue={
+                      character.physical_description
+                    }
+                    required
+                    rows={7}
+                  />
+
+                  <ApprovedProfileTextArea
+                    label="Personality"
+                    name="personality"
+                    defaultValue={
+                      character.personality
+                    }
+                    required
+                    rows={7}
+                  />
+                </div>
+
+                <ApprovedProfileTextArea
+                  label="Biography"
+                  name="biography"
+                  defaultValue={
+                    character.biography
+                  }
+                  required
+                  rows={10}
+                />
+
+                <ApprovedProfileTextArea
+                  label="Public notes"
+                  name="public_notes"
+                  defaultValue={
+                    character.public_notes
+                  }
+                  rows={6}
+                />
+
+                <div className="flex justify-end border-t border-[#5d452d]/40 pt-4">
+                  <PendingSubmitButton
+                    idleText="Save profile changes"
+                    pendingText="Saving changes..."
+                    className="border border-[#8d6d3e] bg-[#332719] px-5 py-2.5 text-[9px] uppercase tracking-[0.18em] text-[#efd9aa] transition hover:bg-[#49351f] disabled:cursor-not-allowed disabled:opacity-60"
+                  />
+                </div>
+              </form>
+            </div>
+          </details>
+        ) : null}
       </div>
     </div>
+  );
+}
+
+
+function ApprovedProfileTextArea({
+  label,
+  name,
+  defaultValue,
+  required = false,
+  rows = 8,
+}: {
+  label: string;
+  name: string;
+  defaultValue?: string | null;
+  required?: boolean;
+  rows?: number;
+}) {
+  return (
+    <label className="block">
+      <span className="text-[9px] uppercase tracking-[0.2em] text-[#806b50]">
+        {label}
+      </span>
+      <textarea
+        name={name}
+        defaultValue={defaultValue ?? ""}
+        required={required}
+        rows={rows}
+        className="mt-2 w-full resize-y border border-[#60482e]/55 bg-[#0d0907] px-3 py-3 text-sm leading-7 text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+      />
+    </label>
   );
 }
 
@@ -660,7 +747,7 @@ function getPageNotice(
   return null;
 }
 
-function HeritageCard({
+function CompactHeritageCard({
   label,
   entry,
   href,
@@ -673,60 +760,79 @@ function HeritageCard({
     entry?.colour ?? "#8d6d3e";
 
   return (
-    <article
-      className="relative overflow-hidden border border-[#654b2e]/55 bg-[#15100d] p-5"
+    <Link
+      href={href}
+      className="group flex min-w-0 items-center gap-3 border bg-[#120e0b] p-3 transition hover:bg-[#1b140f]"
       style={{
-        borderColor: `${colour}88`,
-        color: colour,
+        borderColor: `${colour}66`,
       }}
     >
-      <p className="text-[9px] uppercase tracking-[0.25em] text-[#806b50]">
-        {label}
-      </p>
-
-      <div className="mt-4 flex items-center gap-4">
-        <div
-          className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden border bg-black/20 font-serif text-xl"
-          style={{
-            borderColor: `${colour}88`,
-            color: colour,
-          }}
-        >
-          {entry?.icon_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={entry.icon_url}
-              alt=""
-              className="h-full w-full object-cover"
-            />
-          ) : (
-            entry?.name
-              .charAt(0)
-              .toUpperCase() ?? "?"
-          )}
-        </div>
-
-        <div className="min-w-0">
-          <h2 className="break-words font-serif text-2xl text-[#e1c99f]">
-            {entry?.name ??
-              "Not assigned"}
-          </h2>
-
-          <p className="mt-1 text-[9px] uppercase tracking-[0.2em] text-[#786b5b]">
-            Permanent character record
-          </p>
-        </div>
+      <div
+        className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden border bg-black/20 font-serif text-sm"
+        style={{
+          borderColor: `${colour}88`,
+          color: colour,
+        }}
+      >
+        {entry?.icon_url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={entry.icon_url}
+            alt=""
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          entry?.name
+            .charAt(0)
+            .toUpperCase() ?? "?"
+        )}
       </div>
 
-      <Link
-        href={href}
-        className="mt-5 flex items-center justify-between border-t border-[#5b452d]/40 pt-4 text-[9px] uppercase tracking-[0.2em] text-[#a27c4b] transition hover:text-[#e2c18a]"
+      <div className="min-w-0 flex-1">
+        <p className="text-[7px] uppercase tracking-[0.2em] text-[#806b50]">
+          {label}
+        </p>
+
+        <p className="mt-0.5 truncate font-serif text-base text-[#e1c99f]">
+          {entry?.name ?? "Not assigned"}
+        </p>
+      </div>
+
+      <span
+        aria-hidden="true"
+        className="shrink-0 text-xs text-[#8d6d3e] transition group-hover:translate-x-0.5 group-hover:text-[#d2ad73]"
       >
-        <span>Open Codex entry</span>
-        <span aria-hidden="true">
-          →
-        </span>
-      </Link>
+        →
+      </span>
+    </Link>
+  );
+}
+
+function ProfileTextSection({
+  title,
+  value,
+  subtle = false,
+}: {
+  title: string;
+  value?: string | null;
+  subtle?: boolean;
+}) {
+  return (
+    <article
+      className={`h-full border border-[#6b5032]/50 p-4 sm:p-5 ${
+        subtle
+          ? "bg-[#130f0c]"
+          : "bg-[#17110d]"
+      }`}
+    >
+      <h2 className="font-serif text-xl text-[#dfc79c] sm:text-2xl">
+        {title}
+      </h2>
+
+      <p className="mt-3 whitespace-pre-line break-words text-sm leading-7 text-[#b0a18d]">
+        {value ||
+          "No information has been added yet."}
+      </p>
     </article>
   );
 }

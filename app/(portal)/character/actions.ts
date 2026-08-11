@@ -604,7 +604,7 @@ export async function saveCharacter(
   );
 }
 
-export async function updateApprovedCharacterPortrait(
+export async function updateApprovedCharacterProfile(
   formData: FormData,
 ) {
   const supabase = await createClient();
@@ -617,16 +617,47 @@ export async function updateApprovedCharacterPortrait(
     redirect("/auth/login");
   }
 
-  const portraitUrl = text(
+  const portraitUrl = text(formData, "portrait_url", 1000);
+  validatePortraitUrl(portraitUrl, "update");
+
+  const physicalDescription = text(
     formData,
-    "portrait_url",
-    1000,
+    "physical_description",
+    10000,
+  );
+  const personality = text(
+    formData,
+    "personality",
+    10000,
+  );
+  const biography = text(
+    formData,
+    "biography",
+    20000,
+  );
+  const publicNotes = text(
+    formData,
+    "public_notes",
+    10000,
   );
 
-  validatePortraitUrl(
-    portraitUrl,
-    "update",
-  );
+  if (!physicalDescription) {
+    redirectCharacterError(
+      "Physical description is required.",
+    );
+  }
+
+  if (!personality) {
+    redirectCharacterError(
+      "Personality is required.",
+    );
+  }
+
+  if (!biography) {
+    redirectCharacterError(
+      "Biography is required.",
+    );
+  }
 
   const {
     data: character,
@@ -637,45 +668,38 @@ export async function updateApprovedCharacterPortrait(
     .eq("user_id", user.id)
     .maybeSingle();
 
-  if (
-    characterError ||
-    !character
-  ) {
+  if (characterError || !character) {
     redirectCharacterError(
       characterError?.message ??
         "Character not found.",
     );
   }
 
-  if (
-    character.status !== "approved"
-  ) {
+  if (character.status !== "approved") {
     redirectCharacterError(
-      "This portrait editor is only available after character approval.",
+      "This profile editor is only available after character approval.",
     );
   }
 
   const { error } = await supabase
     .from("characters")
     .update({
-      portrait_url:
-        portraitUrl || null,
-      updated_at:
-        new Date().toISOString(),
+      portrait_url: portraitUrl || null,
+      physical_description: physicalDescription,
+      personality,
+      biography,
+      public_notes: publicNotes || null,
+      updated_at: new Date().toISOString(),
     })
     .eq("id", character.id)
     .eq("user_id", user.id)
     .eq("status", "approved");
 
   if (error) {
-    redirectCharacterError(
-      error.message,
-    );
+    redirectCharacterError(error.message);
   }
 
-  redirect(
-    "/character?updated=true",
-  );
+  redirect("/character?updated=true");
 }
 
 export async function submitCharacterForReview() {
