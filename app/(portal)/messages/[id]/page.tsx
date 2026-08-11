@@ -215,10 +215,7 @@ export default async function ConversationPage({ params }: ConversationPageProps
             </div>
           </div>
 
-          <div className="border-b border-[#59432c]/35 bg-[#100c09] px-5 py-3 text-[9px] leading-5 text-[#827564] sm:px-6">
-            <span className="text-[#d0aa70]">On-game</span> messages belong to the story.{" "}
-            <span className="text-[#aeb5c4]">Off-game</span> messages are player communication.
-          </div>
+        
 
           <ConversationMessageList
             conversationId={id}
