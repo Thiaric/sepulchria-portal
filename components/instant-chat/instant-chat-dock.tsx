@@ -137,7 +137,6 @@ export function InstantChatDock({
           "Instant chat contacts:",
           contactError.message,
         );
-
         return;
       }
 
@@ -177,7 +176,6 @@ export function InstantChatDock({
           setError(
             messageError.message,
           );
-
           return;
         }
 
@@ -400,9 +398,7 @@ export function InstantChatDock({
         setError(
           conversationError.message,
         );
-
         setBusy(false);
-
         return;
       }
 
@@ -455,9 +451,7 @@ export function InstantChatDock({
       setError(
         sendError.message,
       );
-
       setBusy(false);
-
       return;
     }
 
@@ -487,7 +481,6 @@ export function InstantChatDock({
       setError(
         toggleError.message,
       );
-
       return;
     }
 
@@ -548,15 +541,15 @@ export function InstantChatDock({
       {openChat && other ? (
         <section
           className={[
-            "absolute bottom-[calc(100%+0.5rem)] left-0 right-0",
+            "absolute bottom-[calc(100%+0.35rem)] left-0 right-0",
             "z-[130] overflow-hidden",
-            "border border-[#765937]/90",
+            "border border-[#765937]/80",
             "bg-[#100c09]",
-            "shadow-[0_-18px_60px_rgba(0,0,0,0.82)]",
+            "shadow-[0_-12px_40px_rgba(0,0,0,0.78)]",
           ].join(" ")}
         >
-          <header className="flex h-12 items-center gap-2 border-b border-[#60482e]/55 bg-[#1d160f] px-3">
-            <div className="h-8 w-8 shrink-0 overflow-hidden border border-[#60482e] bg-[#0d0907]">
+          <header className="flex h-9 items-center gap-1.5 border-b border-[#60482e]/55 bg-[#1d160f] px-2">
+            <div className="h-6 w-6 shrink-0 overflow-hidden border border-[#60482e] bg-[#0d0907]">
               {other.portrait_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -567,7 +560,7 @@ export function InstantChatDock({
                   className="h-full w-full object-cover"
                 />
               ) : (
-                <span className="flex h-full items-center justify-center font-serif text-[#b6976c]">
+                <span className="flex h-full items-center justify-center font-serif text-[9px] text-[#b6976c]">
                   {other.display_name
                     .charAt(0)
                     .toUpperCase()}
@@ -576,13 +569,13 @@ export function InstantChatDock({
             </div>
 
             <div className="min-w-0 flex-1">
-              <p className="truncate font-serif text-sm text-[#e1c89d]">
+              <p className="truncate font-serif text-[11px] leading-tight text-[#e1c89d]">
                 {
                   other.display_name
                 }
               </p>
 
-              <p className="text-[7px] uppercase tracking-[0.16em] text-[#8d7b63]">
+              <p className="mt-0.5 text-[6px] uppercase tracking-[0.12em] text-[#8d7b63]">
                 {
                   other.presence_status
                 }{" "}
@@ -603,7 +596,7 @@ export function InstantChatDock({
                   ? "Expand chat"
                   : "Minimise chat"
               }
-              className="flex h-7 w-7 items-center justify-center border border-[#60482e]/55 bg-[#15100d] text-[#b99b70] transition hover:border-[#8b683e] hover:text-[#e3c795]"
+              className="flex h-5 w-5 items-center justify-center border border-[#60482e]/55 bg-[#15100d] text-[9px] text-[#b99b70] transition hover:border-[#8b683e] hover:text-[#e3c795]"
             >
               {chatMinimised
                 ? "□"
@@ -618,7 +611,7 @@ export function InstantChatDock({
                 setError(null);
               }}
               title="Close chat"
-              className="flex h-7 w-7 items-center justify-center border border-[#60482e]/55 bg-[#15100d] text-[#b99b70] transition hover:border-[#8b683e] hover:text-[#e3c795]"
+              className="flex h-5 w-5 items-center justify-center border border-[#60482e]/55 bg-[#15100d] text-[10px] text-[#b99b70] transition hover:border-[#8b683e] hover:text-[#e3c795]"
             >
               ×
             </button>
@@ -628,7 +621,7 @@ export function InstantChatDock({
             <>
               <div
                 ref={scrollRef}
-                className="h-[min(320px,42dvh)] space-y-2 overflow-y-auto overscroll-contain bg-[#0d0a08] p-3"
+                className="h-[min(220px,30dvh)] space-y-1.5 overflow-y-auto overscroll-contain bg-[#0d0a08] p-2"
               >
                 {messages.map(
                   (message) => {
@@ -648,7 +641,7 @@ export function InstantChatDock({
                         }`}
                       >
                         <div
-                          className={`max-w-[82%] border px-3 py-2 text-xs leading-5 ${
+                          className={`max-w-[82%] border px-2 py-1.5 text-[10px] leading-4 ${
                             own
                               ? "border-[#80613c] bg-[#2c2117] text-[#dcc8a8]"
                               : "border-[#514233] bg-[#17120f] text-[#c5b59c]"
@@ -660,7 +653,7 @@ export function InstantChatDock({
                             }
                           </p>
 
-                          <time className="mt-1 block text-right text-[7px] text-[#746858]">
+                          <time className="mt-0.5 block text-right text-[6px] leading-none text-[#746858]">
                             {new Date(
                               message.created_at,
                             ).toLocaleTimeString(
@@ -680,7 +673,7 @@ export function InstantChatDock({
 
                 {messages.length ===
                 0 ? (
-                  <p className="py-12 text-center text-xs text-[#776b5d]">
+                  <p className="py-8 text-center text-[10px] text-[#776b5d]">
                     Start an
                     off-game
                     conversation.
@@ -689,12 +682,12 @@ export function InstantChatDock({
               </div>
 
               {error ? (
-                <p className="border-t border-[#7b4035]/50 bg-[#2b1411] px-3 py-2 text-[9px] text-[#e1a093]">
+                <p className="border-t border-[#7b4035]/50 bg-[#2b1411] px-2 py-1.5 text-[8px] text-[#e1a093]">
                   {error}
                 </p>
               ) : null}
 
-              <div className="flex gap-2 border-t border-[#60482e]/55 bg-[#15100d] p-2">
+              <div className="flex gap-1.5 border-t border-[#60482e]/55 bg-[#15100d] p-1.5">
                 <textarea
                   value={draft}
                   onChange={(
@@ -718,10 +711,10 @@ export function InstantChatDock({
                       void sendMessage();
                     }
                   }}
-                  rows={2}
+                  rows={1}
                   maxLength={1200}
                   placeholder="Off-game message…"
-                  className="min-h-[42px] min-w-0 flex-1 resize-none border border-[#60482e]/55 bg-[#0d0907] px-3 py-2 text-xs text-[#d8c6a8] outline-none placeholder:text-[#625747] focus:border-[#9b7446]"
+                  className="min-h-[32px] min-w-0 flex-1 resize-none border border-[#60482e]/55 bg-[#0d0907] px-2 py-1.5 text-[10px] leading-4 text-[#d8c6a8] outline-none placeholder:text-[#625747] focus:border-[#9b7446]"
                 />
 
                 <button
@@ -733,7 +726,7 @@ export function InstantChatDock({
                   onClick={() =>
                     void sendMessage()
                   }
-                  className="shrink-0 border border-[#8b683e] bg-[#382516] px-3 text-[8px] uppercase tracking-[0.14em] text-[#e2c28f] transition hover:bg-[#49301c] disabled:opacity-40"
+                  className="shrink-0 border border-[#8b683e] bg-[#382516] px-2 text-[7px] uppercase tracking-[0.1em] text-[#e2c28f] transition hover:bg-[#49301c] disabled:opacity-40"
                 >
                   Send
                 </button>
@@ -749,20 +742,20 @@ export function InstantChatDock({
       !openChat ? (
         <section
           className={[
-            "absolute bottom-[calc(100%+0.5rem)] left-0 right-0",
+            "absolute bottom-[calc(100%+0.35rem)] left-0 right-0",
             "z-[125] overflow-hidden",
-            "border border-[#765937]/90",
+            "border border-[#765937]/80",
             "bg-[#100c09]",
-            "shadow-[0_-18px_60px_rgba(0,0,0,0.82)]",
+            "shadow-[0_-12px_40px_rgba(0,0,0,0.78)]",
           ].join(" ")}
         >
-          <header className="flex items-center justify-between border-b border-[#60482e]/55 bg-[#1d160f] px-3 py-2.5">
+          <header className="flex items-center justify-between border-b border-[#60482e]/55 bg-[#1d160f] px-2.5 py-1.5">
             <div>
-              <p className="font-serif text-sm text-[#e1c89d]">
+              <p className="font-serif text-[11px] leading-tight text-[#e1c89d]">
                 Instant Chat
               </p>
 
-              <p className="text-[7px] uppercase tracking-[0.16em] text-[#806e59]">
+              <p className="mt-0.5 text-[6px] uppercase tracking-[0.12em] text-[#806e59]">
                 Off-game only
               </p>
             </div>
@@ -772,13 +765,13 @@ export function InstantChatDock({
               onClick={() =>
                 setDockOpen(false)
               }
-              className="flex h-7 w-7 items-center justify-center border border-[#60482e]/55 bg-[#15100d] text-[#b99b70] transition hover:border-[#8b683e] hover:text-[#e3c795]"
+              className="flex h-5 w-5 items-center justify-center border border-[#60482e]/55 bg-[#15100d] text-[10px] text-[#b99b70] transition hover:border-[#8b683e] hover:text-[#e3c795]"
             >
               ×
             </button>
           </header>
 
-          <div className="border-b border-[#60482e]/40 p-2">
+          <div className="border-b border-[#60482e]/40 p-1.5">
             <input
               type="search"
               value={search}
@@ -788,16 +781,16 @@ export function InstantChatDock({
                 )
               }
               placeholder="Find a character…"
-              className="w-full border border-[#60482e]/55 bg-[#0d0907] px-3 py-2 text-xs text-[#d8c6a8] outline-none placeholder:text-[#625747] focus:border-[#9b7446] [&::-webkit-search-cancel-button]:hidden"
+              className="w-full border border-[#60482e]/55 bg-[#0d0907] px-2 py-1.5 text-[9px] text-[#d8c6a8] outline-none placeholder:text-[#625747] focus:border-[#9b7446] [&::-webkit-search-cancel-button]:hidden"
             />
           </div>
 
-          <div className="max-h-[min(360px,46dvh)] overflow-y-auto overscroll-contain p-2">
+          <div className="max-h-[min(260px,34dvh)] overflow-y-auto overscroll-contain p-1.5">
             {!q &&
             activeContacts.length >
               0 ? (
               <>
-                <p className="px-2 py-1 text-[7px] uppercase tracking-[0.18em] text-[#806e59]">
+                <p className="px-1.5 py-1 text-[6px] uppercase tracking-[0.14em] text-[#806e59]">
                   Active chats
                 </p>
 
@@ -818,11 +811,11 @@ export function InstantChatDock({
                   ),
                 )}
 
-                <div className="my-2 border-t border-[#60482e]/35" />
+                <div className="my-1.5 border-t border-[#60482e]/35" />
               </>
             ) : null}
 
-            <p className="px-2 py-1 text-[7px] uppercase tracking-[0.18em] text-[#806e59]">
+            <p className="px-1.5 py-1 text-[6px] uppercase tracking-[0.14em] text-[#806e59]">
               People in
               Sepulchria
             </p>
@@ -846,7 +839,7 @@ export function InstantChatDock({
 
             {filteredContacts.length ===
             0 ? (
-              <p className="p-5 text-center text-xs text-[#776b5d]">
+              <p className="p-4 text-center text-[9px] text-[#776b5d]">
                 No characters
                 available.
               </p>
@@ -854,15 +847,15 @@ export function InstantChatDock({
           </div>
 
           {error ? (
-            <p className="border-t border-[#7b4035]/50 bg-[#2b1411] px-3 py-2 text-[9px] text-[#e1a093]">
+            <p className="border-t border-[#7b4035]/50 bg-[#2b1411] px-2 py-1.5 text-[8px] text-[#e1a093]">
               {error}
             </p>
           ) : null}
         </section>
       ) : null}
 
-      {/* SIDEBAR-BOTTOM CONTROL */}
-      <div className="flex w-full items-stretch gap-2 border-t border-[#60482e]/45 pt-3">
+      {/* COMPACT SIDEBAR CONTROL */}
+      <div className="flex w-full items-center gap-1 border-t border-[#60482e]/35 pt-2">
         <button
           type="button"
           onClick={() =>
@@ -870,18 +863,36 @@ export function InstantChatDock({
           }
           title={
             enabled
+              ? "Instant chat enabled — click to disable"
+              : "Instant chat disabled — click to enable"
+          }
+          aria-label={
+            enabled
               ? "Disable instant chat"
               : "Enable instant chat"
           }
-          className={`flex h-10 shrink-0 items-center justify-center border px-2.5 text-[7px] uppercase tracking-[0.12em] transition ${
+          className={`flex h-7 w-7 shrink-0 items-center justify-center border transition ${
             enabled
-              ? "border-[#60482e] bg-[#17120f] text-[#9f896a] hover:border-[#8b683e] hover:text-[#d4b17d]"
-              : "border-[#6b3f36] bg-[#261411] text-[#c88f82] hover:border-[#98594d]"
+              ? "border-[#60482e] bg-[#17120f] text-[#b89a70] hover:border-[#8b683e] hover:text-[#e3c795]"
+              : "border-[#6b3f36] bg-[#261411] text-[#a65f53] hover:border-[#98594d] hover:text-[#d68d80]"
           }`}
         >
-          {enabled
-            ? "Chat on"
-            : "Chat off"}
+          <svg
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            className="h-3.5 w-3.5"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z" />
+
+            {!enabled ? (
+              <path d="M4 4l16 16" />
+            ) : null}
+          </svg>
         </button>
 
         <button
@@ -901,10 +912,10 @@ export function InstantChatDock({
             setError(null);
           }}
           className={[
-            "relative flex h-10 min-w-0 flex-1 items-center justify-between gap-2",
-            "border border-[#8b683e] bg-[#2c1d12] px-3",
-            "font-serif text-sm text-[#e3c795]",
-            "transition hover:border-[#b1844b] hover:bg-[#382517]",
+            "relative flex h-7 min-w-0 flex-1 items-center justify-between gap-1.5",
+            "border border-[#765937]/70 bg-[#21170f] px-2",
+            "font-serif text-[10px] text-[#d8bc8d]",
+            "transition hover:border-[#9b7446] hover:bg-[#2b1d13]",
             "disabled:cursor-not-allowed disabled:border-[#49392b] disabled:bg-[#15110e] disabled:text-[#665b4d]",
           ].join(" ")}
         >
@@ -912,9 +923,9 @@ export function InstantChatDock({
             Instant Chat
           </span>
 
-          <div className="flex shrink-0 items-center gap-2">
+          <div className="flex shrink-0 items-center gap-1.5">
             {totalUnread > 0 ? (
-              <span className="flex min-w-5 items-center justify-center rounded-full bg-[#8b3c32] px-1.5 py-0.5 text-[9px] font-bold text-[#ffe1ac]">
+              <span className="flex min-w-4 items-center justify-center rounded-full bg-[#8b3c32] px-1 py-0.5 text-[7px] font-bold leading-none text-[#ffe1ac]">
                 {totalUnread >
                 99
                   ? "99+"
@@ -922,7 +933,7 @@ export function InstantChatDock({
               </span>
             ) : null}
 
-            <span className="text-[10px] text-[#a8895f]">
+            <span className="text-[7px] text-[#95754d]">
               {dockOpen
                 ? "▼"
                 : "▲"}
@@ -952,9 +963,9 @@ function ContactButton({
       type="button"
       disabled={busy}
       onClick={onOpen}
-      className="flex w-full items-center gap-2 border-b border-[#3d3024]/55 px-2 py-2 text-left transition hover:bg-[#1d160f] disabled:opacity-50"
+      className="flex w-full items-center gap-1.5 border-b border-[#3d3024]/55 px-1.5 py-1.5 text-left transition hover:bg-[#1d160f] disabled:opacity-50"
     >
-      <div className="h-9 w-9 shrink-0 overflow-hidden border border-[#60482e] bg-[#0d0907]">
+      <div className="h-7 w-7 shrink-0 overflow-hidden border border-[#60482e] bg-[#0d0907]">
         {contact.portrait_url ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -965,7 +976,7 @@ function ContactButton({
             className="h-full w-full object-cover"
           />
         ) : (
-          <span className="flex h-full items-center justify-center font-serif text-[#b6976c]">
+          <span className="flex h-full items-center justify-center font-serif text-[9px] text-[#b6976c]">
             {contact.display_name
               .charAt(0)
               .toUpperCase()}
@@ -974,13 +985,13 @@ function ContactButton({
       </div>
 
       <div className="min-w-0 flex-1">
-        <p className="truncate font-serif text-xs text-[#d8c09a]">
+        <p className="truncate font-serif text-[10px] leading-tight text-[#d8c09a]">
           {
             contact.display_name
           }
         </p>
 
-        <p className="mt-0.5 text-[7px] uppercase tracking-[0.14em] text-[#776b5d]">
+        <p className="mt-0.5 text-[6px] uppercase tracking-[0.1em] text-[#776b5d]">
           {
             contact.presence_status
           }
@@ -988,7 +999,7 @@ function ContactButton({
       </div>
 
       {unread > 0 ? (
-        <span className="flex min-w-5 items-center justify-center rounded-full bg-[#8b3c32] px-1.5 py-0.5 text-[9px] font-bold text-[#ffe1ac]">
+        <span className="flex min-w-4 items-center justify-center rounded-full bg-[#8b3c32] px-1 py-0.5 text-[7px] font-bold leading-none text-[#ffe1ac]">
           {unread > 99
             ? "99+"
             : unread}

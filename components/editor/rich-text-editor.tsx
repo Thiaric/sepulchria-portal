@@ -84,6 +84,14 @@ export function RichTextEditor({
   const editorRef =
     useRef<HTMLDivElement>(null);
 
+  const editorWrapperRef =
+    useRef<HTMLDivElement>(null);
+
+  const [
+    editorMaxHeight,
+    setEditorMaxHeight,
+  ] = useState<number | null>(null);
+
   const controlled = value !== undefined;
 
   const initialHtml =
@@ -688,6 +696,66 @@ function applyHighlightColour(
     });
   }
 
+  useEffect(() => {
+    const wrapper =
+      editorWrapperRef.current;
+
+    if (!wrapper) {
+      return;
+    }
+
+    const portalMain =
+      wrapper.closest(
+        "main[data-portal-column]",
+      );
+
+    if (
+      !(portalMain instanceof HTMLElement)
+    ) {
+      return;
+    }
+
+    const updateHeight = () => {
+      const centralBodyHeight =
+        portalMain.getBoundingClientRect()
+          .height;
+
+      setEditorMaxHeight(
+        Math.max(
+          minHeight,
+          Math.floor(
+            centralBodyHeight * 0.85,
+          ),
+        ),
+      );
+    };
+
+    updateHeight();
+
+    const observer =
+      new ResizeObserver(
+        updateHeight,
+      );
+
+    observer.observe(
+      portalMain,
+    );
+
+    window.addEventListener(
+      "resize",
+      updateHeight,
+    );
+
+    return () => {
+      observer.disconnect();
+
+      window.removeEventListener(
+        "resize",
+        updateHeight,
+      );
+    };
+  }, [minHeight]);
+
   const spellingIssues =
     useSpellingIssues(
       stripRichTextForPreview(html),
@@ -704,7 +772,10 @@ function applyHighlightColour(
   const fullToolbar = variant === "lore";
 
   return (
-    <div className="relative overflow-visible border border-[#60482e]/55 bg-[#0d0907]">
+    <div
+      ref={editorWrapperRef}
+      className="relative overflow-visible border border-[#60482e]/55 bg-[#0d0907]"
+    >
       <style jsx global>{`
         ::highlight(sepulchria-spelling-error) {
           text-decoration-line: underline;
@@ -715,7 +786,7 @@ function applyHighlightColour(
         }
       `}</style>
       <div
-        className="relative z-40 flex flex-wrap items-center gap-1.5 overflow-visible border-b border-[#60482e]/40 bg-[#100c09] p-2"
+        className="sticky top-0 z-40 flex flex-wrap items-center gap-1.5 overflow-visible border-b border-[#60482e]/40 bg-[#100c09] p-2 shadow-[0_5px_12px_rgba(0,0,0,0.28)]"
         style={{ isolation: "isolate" }}
       >
         <ToolbarButton
@@ -1206,13 +1277,14 @@ function applyHighlightColour(
           }
           disabled={disabled}
           spellCheck={false}
-          className="block w-full resize-y bg-[#090706] px-4 py-4 font-mono text-xs leading-6 text-[#d7c4a5] outline-none"
+          className="block w-full resize-none overflow-y-auto bg-[#090706] px-4 py-4 font-mono text-xs leading-6 text-[#d7c4a5] outline-none"
           style={{
-  minHeight,
-  maxHeight:
-    "calc(85dvh - clamp(56px, 8dvh, 80px) - 7rem)",
-  overflowY: "auto",
-}}
+            minHeight,
+            maxHeight:
+              editorMaxHeight ??
+              undefined,
+            overflowY: "auto",
+          }}
         />
       ) : (
         <div
@@ -1234,11 +1306,12 @@ function applyHighlightColour(
           onDoubleClick={protectDoubleClickSelection}
           className="rich-wysiwyg-editor relative z-0 block w-full overflow-auto px-4 py-4 text-sm font-normal leading-7 text-[#d7c4a5] outline-none selection:bg-[#6b4b2c] selection:text-[#fff0d0] empty:before:pointer-events-none empty:before:text-[#625747] empty:before:content-[attr(data-placeholder)] [&_a]:text-[#d3a762] [&_a]:underline [&_blockquote]:border-l-2 [&_blockquote]:border-[#8d6d3e] [&_blockquote]:pl-4 [&_h1]:font-serif [&_h1]:text-4xl [&_h2]:font-serif [&_h2]:text-3xl [&_h3]:font-serif [&_h3]:text-2xl [&_img]:my-3 [&_img]:max-h-[620px] [&_img]:max-w-full [&_ol]:list-decimal [&_ol]:pl-7 [&_table]:max-w-full [&_table]:border-collapse [&_td]:border [&_td]:border-[#60482e]/45 [&_td]:p-2 [&_th]:border [&_th]:border-[#60482e]/45 [&_th]:p-2 [&_ul]:list-disc [&_ul]:pl-7"
           style={{
-  minHeight,
-  maxHeight:
-    "calc(85dvh - clamp(56px, 8dvh, 80px) - 7rem)",
-  overflowY: "auto",
-}}
+            minHeight,
+            maxHeight:
+              editorMaxHeight ??
+              undefined,
+            overflowY: "auto",
+          }}
         />
       )}
 
