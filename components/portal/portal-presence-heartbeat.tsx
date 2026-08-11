@@ -7,7 +7,8 @@ import {
 
 import {
   heartbeatPresence,
-  updatePresence,
+  restoreManualPresence,
+  setAutomaticAway,
 } from "@/app/(portal)/game/actions";
 
 const HEARTBEAT_INTERVAL_MS =
@@ -28,7 +29,7 @@ export function PortalPresenceHeartbeat({
     useRef<number | null>(null);
 
   const awayTimerRef =
-  useRef<number | null>(null);
+    useRef<number | null>(null);
 
   useEffect(() => {
     if (!enabled) {
@@ -58,11 +59,16 @@ export function PortalPresenceHeartbeat({
       }
     }
 
-    async function markAway() {
+    async function markAutomaticAway() {
       try {
-        await updatePresence(
-          "away",
-        );
+        const result =
+          await setAutomaticAway();
+
+        if (!result.ok) {
+          console.error(
+            result.message,
+          );
+        }
       } catch (error) {
         console.error(
           "Unable to mark portal presence away:",
@@ -71,22 +77,10 @@ export function PortalPresenceHeartbeat({
       }
     }
 
-    async function restoreOnline() {
+    async function restorePresence() {
       try {
-        /*
-         * Do not overwrite BUSY.
-         *
-         * updatePresence itself cannot tell
-         * whether Away was manual or automatic,
-         * so this preserves the same existing
-         * behaviour: Busy is sticky, while Away
-         * returns to Online when the user comes
-         * back to the portal.
-         */
         const result =
-          await updatePresence(
-            "online",
-          );
+          await restoreManualPresence();
 
         if (!result.ok) {
           console.error(
@@ -115,7 +109,9 @@ export function PortalPresenceHeartbeat({
       }
     }
 
-    function scheduleAway() {
+    function scheduleAway(
+      delay = AWAY_AFTER_MS,
+    ) {
       clearAwayTimer();
 
       awayTimerRef.current =
@@ -124,20 +120,22 @@ export function PortalPresenceHeartbeat({
             document.visibilityState ===
             "hidden"
           ) {
-            void markAway();
+            void markAutomaticAway();
           }
-        }, AWAY_AFTER_MS);
+        }, delay);
     }
 
-    /*
-     * Portal mounted and visible:
-     * register activity immediately.
-     */
     if (
       document.visibilityState ===
       "visible"
     ) {
-      void sendHeartbeat();
+      /*
+       * This also repairs a stale automatic Away
+       * if the page was unloaded/reloaded while away.
+       * A manually selected Away remains Away because
+       * manual_status is also "away".
+       */
+      void restorePresence();
     } else {
       hiddenSinceRef.current =
         Date.now();
@@ -145,10 +143,6 @@ export function PortalPresenceHeartbeat({
       scheduleAway();
     }
 
-    /*
-     * Heartbeat only while the portal
-     * is actually visible.
-     */
     const intervalId =
       window.setInterval(
         () => {
@@ -175,46 +169,33 @@ export function PortalPresenceHeartbeat({
         return;
       }
 
-      const hiddenSince =
-        hiddenSinceRef.current;
-
       hiddenSinceRef.current =
         null;
 
       clearAwayTimer();
 
       /*
-       * If the tab was hidden for at
-       * least 15 minutes, Away may have
-       * been applied while hidden.
-       *
-       * Returning to the portal makes
-       * the character Online again.
+       * Always restore the remembered manual status
+       * when the user returns. This is safe even when
+       * Away was selected manually.
        */
-      if (
-        hiddenSince !== null &&
-        Date.now() -
-          hiddenSince >=
-          AWAY_AFTER_MS
-      ) {
-        void restoreOnline();
-      } else {
-        void sendHeartbeat();
-      }
+      void restorePresence();
     }
 
     function handleWindowFocus() {
       if (
-        document.visibilityState ===
+        document.visibilityState !==
         "visible"
       ) {
-        hiddenSinceRef.current =
-          null;
-
-        clearAwayTimer();
-
-        void sendHeartbeat();
+        return;
       }
+
+      hiddenSinceRef.current =
+        null;
+
+      clearAwayTimer();
+
+      void restorePresence();
     }
 
     function handleOnline() {
@@ -222,7 +203,7 @@ export function PortalPresenceHeartbeat({
         document.visibilityState ===
         "visible"
       ) {
-        void sendHeartbeat();
+        void restorePresence();
       }
     }
 

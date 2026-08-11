@@ -130,6 +130,7 @@ async function touchPresence(
       character_id: characterId,
       room_id: roomId,
       status: "online",
+      manual_status: "online",
       last_seen_at: now,
     });
 
@@ -677,6 +678,7 @@ export async function updatePresence(
           character_id: character.id,
           room_id: character.current_room_id,
           status,
+          manual_status: status,
           last_seen_at: new Date().toISOString(),
         },
         {
@@ -703,6 +705,114 @@ export async function updatePresence(
     return {
       ok: false,
       status,
+      message:
+        error instanceof Error ? error.message : "Unexpected error.",
+    };
+  }
+}
+
+/**
+ * Away automatico per inattività.
+ * Modifica solo lo status visibile e conserva manual_status.
+ */
+export async function setAutomaticAway(): Promise<PresenceActionResult> {
+  try {
+    const { supabase, character } = await getOwnedCharacter();
+
+    const { error } = await supabase
+      .from("character_presence")
+      .upsert(
+        {
+          character_id: character.id,
+          room_id: character.current_room_id,
+          status: "away",
+          last_seen_at: new Date().toISOString(),
+        },
+        {
+          onConflict: "character_id",
+        },
+      );
+
+    if (error) {
+      return {
+        ok: false,
+        status: "away",
+        message: `Unable to set automatic away status: ${error.message}`,
+      };
+    }
+
+    return {
+      ok: true,
+      status: "away",
+      message: "Automatic away status set.",
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      status: "away",
+      message:
+        error instanceof Error ? error.message : "Unexpected error.",
+    };
+  }
+}
+
+/**
+ * Ripristina lo status scelto manualmente dopo un Away automatico.
+ */
+export async function restoreManualPresence(): Promise<PresenceActionResult> {
+  try {
+    const { supabase, character } = await getOwnedCharacter();
+
+    const { data: presence, error: readError } = await supabase
+      .from("character_presence")
+      .select("manual_status")
+      .eq("character_id", character.id)
+      .maybeSingle();
+
+    if (readError) {
+      return {
+        ok: false,
+        status: "online",
+        message: `Unable to read presence: ${readError.message}`,
+      };
+    }
+
+    const manualStatus = isPresenceStatus(presence?.manual_status)
+      ? presence.manual_status
+      : "online";
+
+    const { error: updateError } = await supabase
+      .from("character_presence")
+      .upsert(
+        {
+          character_id: character.id,
+          room_id: character.current_room_id,
+          status: manualStatus,
+          manual_status: manualStatus,
+          last_seen_at: new Date().toISOString(),
+        },
+        {
+          onConflict: "character_id",
+        },
+      );
+
+    if (updateError) {
+      return {
+        ok: false,
+        status: manualStatus,
+        message: `Unable to restore presence: ${updateError.message}`,
+      };
+    }
+
+    return {
+      ok: true,
+      status: manualStatus,
+      message: "Manual presence restored.",
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      status: "online",
       message:
         error instanceof Error ? error.message : "Unexpected error.",
     };

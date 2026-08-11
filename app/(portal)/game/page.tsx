@@ -410,6 +410,7 @@ async function GameContent() {
     <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
       <Link
   href="/game/export"
+  title="Export the current game session as a file"
   className="border border-[#725c3d] bg-[#21190f] px-3 py-1.5 text-[9px] uppercase tracking-[0.18em] text-[#d6bb8d] transition hover:border-[#a17a49] hover:bg-[#352718] hover:text-[#f0d6a7]"
 >
   Export role
@@ -418,11 +419,22 @@ async function GameContent() {
 {roomArea ? (
   <Link
     href={`/areas/${roomArea.slug}`}
+    title="Return to the area page"
     className="border border-[#725c3d] bg-[#21190f] px-3 py-1.5 text-[9px] uppercase tracking-[0.18em] text-[#d6bb8d] transition hover:border-[#a17a49] hover:bg-[#352718] hover:text-[#f0d6a7]"
   >
     ← Back to {roomArea.name}
   </Link>
 ) : null}
+
+<form action={leaveCurrentRoom}>
+  <button
+    type="submit"
+    title="Leave this location and return to the city, your presence won't be counted in locations, only in the portal"
+    className="border border-[#8f3f36] bg-[#351714] px-3 py-1.5 text-[9px] uppercase tracking-[0.18em] text-[#e6a097] transition hover:border-[#c65a4d] hover:bg-[#4b1d19] hover:text-[#ffd0c9]"
+  >
+    Take Leave
+  </button>
+</form>
 
      
     </div>
