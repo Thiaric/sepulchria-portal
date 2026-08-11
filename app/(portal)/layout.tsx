@@ -2,17 +2,17 @@ import { Suspense, type ReactNode } from "react";
 
 import { PortalAudioProvider } from "@/components/audio/portal-audio-provider";
 import { PortalMessageSoundListener } from "@/components/audio/portal-message-sound-listener";
-
+import { PortalCollapsibleColumns } from "@/components/portal/portal-collapsible-columns";
 import { PortalHeader } from "@/components/portal/portal-header";
 import { PortalPresenceHeartbeat } from "@/components/portal/portal-presence-heartbeat";
 import { PortalResponsiveRightSidebar } from "@/components/portal/portal-responsive-right-sidebar";
 import { PortalSidebar } from "@/components/portal/portal-sidebar";
 import { TidingsTicker } from "@/components/tidings/tidings-ticker";
+import { WorldStateProvider } from "@/components/world/world-state-provider";
 import { getPortalContext } from "@/lib/portal/get-portal-context";
 import { createClient } from "@/lib/supabase/server";
 import { getActiveTidings } from "@/lib/tidings/get-active-tidings";
 import { getWorldState } from "@/lib/world/get-world-state";
-import { WorldStateProvider } from "@/components/world/world-state-provider";
 
 type PortalLayoutProps = {
   children: ReactNode;
@@ -85,135 +85,273 @@ async function PortalLayoutContent({
         />
 
         <div className="h-dvh overflow-hidden bg-[#120f0d] text-[#e8dcc4]">
-        <div className="flex h-full min-h-0 flex-col bg-[radial-gradient(circle_at_top,_rgba(116,82,42,0.16),_transparent_38%),linear-gradient(to_bottom,_#17120f,_#0d0b0a)]">
-          <PortalPresenceHeartbeat
-            enabled={presenceEnabled}
-          />
+          <div className="flex h-full min-h-0 flex-col bg-[radial-gradient(circle_at_top,_rgba(116,82,42,0.16),_transparent_38%),linear-gradient(to_bottom,_#17120f,_#0d0b0a)]">
+            <PortalPresenceHeartbeat
+              enabled={presenceEnabled}
+            />
 
-          <div className="shrink-0">
-            <PortalHeader context={context} />
-          </div>
+            <div className="shrink-0">
+              <PortalHeader context={context} />
+            </div>
 
-          <style>{`
-            .sepulchria-viewport-body {
-              --portal-left-width: 230px;
-              --portal-right-width: 300px;
-              --portal-column-pad: 1rem;
-              --portal-column-gap: 0.75rem;
-              --portal-section-pad: 1rem;
-              --portal-nav-y: 0.5rem;
-              --portal-nav-min-h: 2.25rem;
-              --portal-group-gap: 1rem;
-            }
-
-            @media (min-width: 1024px) {
+            <style>{`
               .sepulchria-viewport-body {
-                grid-template-columns:
-                  clamp(180px, 14vw, var(--portal-left-width))
-                  minmax(0, 1fr);
-                overflow: hidden;
+                --portal-left-width: 230px;
+                --portal-right-width: 300px;
+                --portal-column-pad: 1rem;
+                --portal-column-gap: 0.75rem;
+                --portal-section-pad: 1rem;
+                --portal-nav-y: 0.5rem;
+                --portal-nav-min-h: 2.25rem;
+                --portal-group-gap: 1rem;
+                max-width: 1800px;
               }
 
-              .sepulchria-viewport-body > [data-portal-column] {
-                min-width: 0;
-                min-height: 0;
-                height: 100%;
+              .portal-left-shell,
+              .portal-right-shell {
+                display: contents;
               }
-            }
 
-            @media (min-width: 1280px) {
-              .sepulchria-viewport-body {
-                grid-template-columns:
-                  clamp(180px, 13vw, var(--portal-left-width))
-                  minmax(0, 1fr)
-                  clamp(240px, 18vw, var(--portal-right-width));
+              .portal-left-collapse-toggle,
+              .portal-right-collapse-toggle {
+                display: none;
               }
-            }
 
-            @media (min-width: 1024px) and (max-height: 820px) {
-              .sepulchria-viewport-body {
-                --portal-column-pad: 0.75rem;
-                --portal-column-gap: 0.6rem;
-                --portal-section-pad: 0.75rem;
-                --portal-nav-y: 0.38rem;
-                --portal-nav-min-h: 2rem;
-                --portal-group-gap: 0.75rem;
+              @media (min-width: 1024px) {
+                .sepulchria-viewport-body {
+                  grid-template-columns:
+                    clamp(180px, 14vw, var(--portal-left-width))
+                    minmax(0, 1fr);
+                  overflow: hidden;
+                }
+
+                .sepulchria-viewport-body[data-left-collapsed="true"] {
+                  grid-template-columns:
+                    0
+                    minmax(0, 1fr);
+                }
+
+                .portal-left-shell {
+                  display: block;
+                  height: 100%;
+                  overflow: visible;
+                }
+
+                .sepulchria-viewport-body[data-left-collapsed="true"]
+                  .portal-left-shell > aside {
+                  visibility: hidden;
+                  pointer-events: none;
+                }
+
+                .portal-left-collapse-toggle {
+                  position: absolute;
+                  top: 50%;
+                  right: -11px;
+                  z-index: 45;
+                  display: flex;
+                  width: 22px;
+                  height: 52px;
+                  transform: translateY(-50%);
+                  align-items: center;
+                  justify-content: center;
+                  border: 1px solid rgba(110, 85, 53, 0.62);
+                  background: rgba(16, 13, 11, 0.96);
+                  color: #a98d65;
+                  font-family: Georgia, serif;
+                  font-size: 18px;
+                  line-height: 1;
+                  box-shadow: 4px 0 14px rgba(0, 0, 0, 0.28);
+                  transition:
+                    color 150ms ease,
+                    border-color 150ms ease,
+                    background 150ms ease;
+                }
+
+                .portal-left-collapse-toggle:hover {
+                  border-color: #9a7445;
+                  background: #1d160f;
+                  color: #efd39f;
+                }
+
+                .sepulchria-viewport-body > [data-portal-column],
+                .sepulchria-viewport-body
+                  > .portal-left-shell
+                  > [data-portal-column] {
+                  min-width: 0;
+                  min-height: 0;
+                  height: 100%;
+                }
               }
-            }
 
-            @media (min-width: 1024px) and (max-height: 720px) {
-              .sepulchria-viewport-body {
-                --portal-left-width: 210px;
-                --portal-right-width: 275px;
-                --portal-column-pad: 0.6rem;
-                --portal-column-gap: 0.5rem;
-                --portal-section-pad: 0.6rem;
-                --portal-nav-y: 0.28rem;
-                --portal-nav-min-h: 1.8rem;
-                --portal-group-gap: 0.55rem;
+              @media (min-width: 1280px) {
+                .sepulchria-viewport-body {
+                  grid-template-columns:
+                    clamp(180px, 13vw, var(--portal-left-width))
+                    minmax(0, 1fr)
+                    clamp(240px, 18vw, var(--portal-right-width));
+                }
+
+                .sepulchria-viewport-body[data-left-collapsed="true"] {
+                  grid-template-columns:
+                    0
+                    minmax(0, 1fr)
+                    clamp(240px, 18vw, var(--portal-right-width));
+                }
+
+                .sepulchria-viewport-body[data-right-collapsed="true"] {
+                  grid-template-columns:
+                    clamp(180px, 13vw, var(--portal-left-width))
+                    minmax(0, 1fr)
+                    0;
+                }
+
+                .sepulchria-viewport-body[data-left-collapsed="true"][data-right-collapsed="true"] {
+                  grid-template-columns:
+                    0
+                    minmax(0, 1fr)
+                    0;
+                  max-width: none;
+                }
+
+                .portal-right-shell {
+                  display: block;
+                  height: 100%;
+                  overflow: visible;
+                }
+
+                .sepulchria-viewport-body[data-right-collapsed="true"]
+                  .portal-right-shell > aside {
+                  visibility: hidden;
+                  pointer-events: none;
+                }
+
+                .portal-right-collapse-toggle {
+                  position: absolute;
+                  top: 50%;
+                  left: -11px;
+                  z-index: 45;
+                  display: flex;
+                  width: 22px;
+                  height: 52px;
+                  transform: translateY(-50%);
+                  align-items: center;
+                  justify-content: center;
+                  border: 1px solid rgba(110, 85, 53, 0.62);
+                  background: rgba(16, 13, 11, 0.96);
+                  color: #a98d65;
+                  font-family: Georgia, serif;
+                  font-size: 18px;
+                  line-height: 1;
+                  box-shadow: -4px 0 14px rgba(0, 0, 0, 0.28);
+                  transition:
+                    color 150ms ease,
+                    border-color 150ms ease,
+                    background 150ms ease;
+                }
+
+                .portal-right-collapse-toggle:hover {
+                  border-color: #9a7445;
+                  background: #1d160f;
+                  color: #efd39f;
+                }
+
+                .sepulchria-viewport-body
+                  > .portal-right-shell
+                  > [data-portal-column] {
+                  min-width: 0;
+                  min-height: 0;
+                  height: 100%;
+                }
               }
-            }
 
-            @media (min-width: 1024px) and (max-height: 640px) {
-              .sepulchria-viewport-body {
-                --portal-left-width: 195px;
-                --portal-right-width: 255px;
-                --portal-column-pad: 0.45rem;
-                --portal-column-gap: 0.4rem;
-                --portal-section-pad: 0.5rem;
-                --portal-nav-y: 0.2rem;
-                --portal-nav-min-h: 1.65rem;
-                --portal-group-gap: 0.4rem;
+              @media (min-width: 1024px) and (max-height: 820px) {
+                .sepulchria-viewport-body {
+                  --portal-column-pad: 0.75rem;
+                  --portal-column-gap: 0.6rem;
+                  --portal-section-pad: 0.75rem;
+                  --portal-nav-y: 0.38rem;
+                  --portal-nav-min-h: 2rem;
+                  --portal-group-gap: 0.75rem;
+                }
               }
-            }
 
-            .sepulchria-viewport-body [data-portal-scroll] {
-              scrollbar-width: thin;
-              scrollbar-color: #5c472f transparent;
-            }
-
-            .sepulchria-viewport-body [data-portal-scroll]::-webkit-scrollbar {
-              width: 7px;
-            }
-
-            .sepulchria-viewport-body [data-portal-scroll]::-webkit-scrollbar-track {
-              background: transparent;
-            }
-
-            .sepulchria-viewport-body [data-portal-scroll]::-webkit-scrollbar-thumb {
-              background: #5c472f;
-              border-radius: 999px;
-            }
-          `}</style>
-
-          <div className="sepulchria-viewport-body mx-auto grid min-h-0 w-full max-w-[1800px] flex-1 grid-cols-1 overflow-y-auto lg:overflow-hidden">
-            <PortalSidebar
-              unreadMessageCount={
-                context.unreadMessageCount
+              @media (min-width: 1024px) and (max-height: 720px) {
+                .sepulchria-viewport-body {
+                  --portal-left-width: 210px;
+                  --portal-right-width: 275px;
+                  --portal-column-pad: 0.6rem;
+                  --portal-column-gap: 0.5rem;
+                  --portal-section-pad: 0.6rem;
+                  --portal-nav-y: 0.28rem;
+                  --portal-nav-min-h: 1.8rem;
+                  --portal-group-gap: 0.55rem;
+                }
               }
-              unreadForumCount={
-                unreadForumCount
+
+              @media (min-width: 1024px) and (max-height: 640px) {
+                .sepulchria-viewport-body {
+                  --portal-left-width: 195px;
+                  --portal-right-width: 255px;
+                  --portal-column-pad: 0.45rem;
+                  --portal-column-gap: 0.4rem;
+                  --portal-section-pad: 0.5rem;
+                  --portal-nav-y: 0.2rem;
+                  --portal-nav-min-h: 1.65rem;
+                  --portal-group-gap: 0.4rem;
+                }
+              }
+
+              .sepulchria-viewport-body [data-portal-scroll] {
+                scrollbar-width: thin;
+                scrollbar-color: #5c472f transparent;
+              }
+
+              .sepulchria-viewport-body [data-portal-scroll]::-webkit-scrollbar {
+                width: 7px;
+              }
+
+              .sepulchria-viewport-body [data-portal-scroll]::-webkit-scrollbar-track {
+                background: transparent;
+              }
+
+              .sepulchria-viewport-body [data-portal-scroll]::-webkit-scrollbar-thumb {
+                background: #5c472f;
+                border-radius: 999px;
+              }
+            `}</style>
+
+            <PortalCollapsibleColumns
+              left={
+                <PortalSidebar
+                  unreadMessageCount={
+                    context.unreadMessageCount
+                  }
+                  unreadForumCount={
+                    unreadForumCount
+                  }
+                />
+              }
+              centre={
+                <main
+                  data-portal-column
+                  data-portal-scroll
+                  className="min-h-0 min-w-0 overflow-y-auto overscroll-contain"
+                >
+                  {children}
+                </main>
+              }
+              right={
+                <PortalResponsiveRightSidebar
+                  context={context}
+                />
               }
             />
 
-            <main
-              data-portal-column
-              data-portal-scroll
-              className="min-h-0 min-w-0 overflow-y-auto overscroll-contain"
-            >
-              {children}
-            </main>
-
-            <PortalResponsiveRightSidebar
-              context={context}
+            <TidingsTicker
+              initialTidings={initialTidings}
             />
           </div>
-
-          <TidingsTicker
-            initialTidings={initialTidings}
-          />
         </div>
-      </div>
       </PortalAudioProvider>
     </WorldStateProvider>
   );
