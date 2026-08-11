@@ -57,6 +57,7 @@ type ForumPostRecord = {
   quoted_post_id: string | null;
   body: string;
   is_initial: boolean;
+  is_anonymous: boolean;
   created_at: string;
   updated_at: string;
   edited_at: string | null;
@@ -295,6 +296,7 @@ export default async function TopicPage({
         quoted_post_id,
         body,
         is_initial,
+        is_anonymous,
         created_at,
         updated_at,
         edited_at,
@@ -743,9 +745,30 @@ export default async function TopicPage({
     };
   }
 
+  function canRevealAnonymousAuthor(
+    post: ForumPostRecord,
+  ): boolean {
+    return (
+      !post.is_anonymous ||
+      isStaff ||
+      Boolean(
+        user &&
+          post.author_user_id ===
+            user.id,
+      )
+    );
+  }
+
   function getPostAuthorName(
     post: ForumPostRecord,
   ): string {
+    if (
+      post.is_anonymous &&
+      !canRevealAnonymousAuthor(post)
+    ) {
+      return "Anonymous";
+    }
+
     if (
       post.author_character_id
     ) {
@@ -761,15 +784,22 @@ export default async function TopicPage({
       }
     }
 
-    if (post.author_user_id) {
-      return getProfileName(
-        profileMap.get(
-          post.author_user_id,
-        ),
-      );
+    return "Unknown character";
+  }
+
+  function getVisiblePostCharacter(
+    post: ForumPostRecord,
+  ): ForumPostCharacter | null {
+    if (
+      post.is_anonymous &&
+      !canRevealAnonymousAuthor(post)
+    ) {
+      return null;
     }
 
-    return "Account";
+    return mapCharacter(
+      post.author_character_id,
+    );
   }
 
   const quotedPostMap = new Map<
@@ -783,10 +813,13 @@ export default async function TopicPage({
         body: post.body,
         deleted_at:
           post.deleted_at,
+        is_anonymous:
+          post.is_anonymous,
+        anonymous_identity_visible:
+          post.is_anonymous &&
+          canRevealAnonymousAuthor(post),
         author_character:
-          mapCharacter(
-            post.author_character_id,
-          ),
+          getVisiblePostCharacter(post),
         author_name:
           getPostAuthorName(post),
       },
@@ -824,6 +857,11 @@ export default async function TopicPage({
         body: post.body,
         is_initial:
           post.is_initial,
+        is_anonymous:
+          post.is_anonymous,
+        anonymous_identity_visible:
+          post.is_anonymous &&
+          canRevealAnonymousAuthor(post),
         created_at:
           post.created_at,
         updated_at:
@@ -833,9 +871,7 @@ export default async function TopicPage({
         deleted_at:
           post.deleted_at,
         author_character:
-          mapCharacter(
-            post.author_character_id,
-          ),
+          getVisiblePostCharacter(post),
         author_name:
           getPostAuthorName(post),
         images: postImages,
@@ -927,14 +963,11 @@ export default async function TopicPage({
       !selectedQuote.deleted_at
     ) {
       quotePreview = {
-  id: selectedQuote.id,
-  author_name:
-    selectedQuote
-      .author_character
-      ?.display_name ||
-    selectedQuote.author_name,
-  body: selectedQuote.body,
-};
+        id: selectedQuote.id,
+        author_name:
+          selectedQuote.author_name,
+        body: selectedQuote.body,
+      };
     }
   }
 

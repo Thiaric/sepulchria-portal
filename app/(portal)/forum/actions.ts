@@ -101,6 +101,19 @@ function readText(
   return normalized;
 }
 
+function readCheckbox(
+  formData: FormData,
+  key: string,
+): boolean {
+  const value = formData.get(key);
+
+  return (
+    value === "on" ||
+    value === "true" ||
+    value === "1"
+  );
+}
+
 function isUuid(value: string): boolean {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
     value,
@@ -403,6 +416,11 @@ export async function createForumTopicAction(
     100,
   );
 
+  const isAnonymous = readCheckbox(
+    formData,
+    "isAnonymous",
+  );
+
   const title = readText(
     formData,
     "title",
@@ -424,6 +442,14 @@ export async function createForumTopicAction(
   if (!sectionId || !isUuid(sectionId)) {
     fieldErrors.sectionId =
       "Select a valid forum section.";
+  }
+
+  if (!characterId) {
+    fieldErrors.characterId =
+      "Choose an approved character. Account-only forum posting is not permitted.";
+  } else if (!isUuid(characterId)) {
+    fieldErrors.characterId =
+      "The selected character is invalid.";
   }
 
   if (!title) {
@@ -561,7 +587,7 @@ export async function createForumTopicAction(
     requested_section_id:
       section.id,
     requested_character_id:
-      character?.id ?? null,
+      character!.id,
     requested_title:
       title,
     requested_slug:
@@ -643,6 +669,26 @@ export async function createForumTopicAction(
     };
   }
 
+  if (openingPost) {
+    const {
+      error: anonymityUpdateError,
+    } = await supabase
+      .from("forum_posts")
+      .update({
+        is_anonymous: isAnonymous,
+      })
+      .eq("id", openingPost.id)
+      .eq("author_user_id", user.id);
+
+    if (anonymityUpdateError) {
+      return {
+        success: false,
+        message:
+          `The discussion was created, but its anonymity setting could not be saved: ${anonymityUpdateError.message}`,
+      };
+    }
+  }
+
   if (
     openingPost &&
     imageUrls.length > 0
@@ -700,6 +746,11 @@ export async function createForumReplyAction(
     100,
   );
 
+  const isAnonymous = readCheckbox(
+    formData,
+    "isAnonymous",
+  );
+
   const quotedPostId = readText(
     formData,
     "quotedPostId",
@@ -721,6 +772,14 @@ export async function createForumReplyAction(
   if (!topicId || !isUuid(topicId)) {
     fieldErrors.topicId =
       "The discussion is invalid.";
+  }
+
+  if (!characterId) {
+    fieldErrors.characterId =
+      "Choose an approved character. Account-only forum posting is not permitted.";
+  } else if (!isUuid(characterId)) {
+    fieldErrors.characterId =
+      "The selected character is invalid.";
   }
 
   if (!visibleBody) {
@@ -929,9 +988,10 @@ export async function createForumReplyAction(
       topic_id: topic.id,
       author_user_id: user.id,
       author_character_id:
-        character?.id ?? null,
+        character!.id,
       body,
       is_initial: false,
+      is_anonymous: isAnonymous,
       quoted_post_id:
         quotedPostId || null,
     })

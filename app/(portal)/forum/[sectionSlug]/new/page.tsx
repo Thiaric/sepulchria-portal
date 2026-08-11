@@ -436,27 +436,27 @@ export default async function NewForumTopicPage({
             </p>
 
             <p className="mt-2 text-sm leading-6 text-amber-200/70">
-              You currently have no
-              approved characters. You may
-              still publish using your
-              account unless this section
-              requires membership in a
-              specific organisation.
+              You need at least one approved
+              character before you can publish
+              in the forum. Account-only
+              posting is not permitted.
             </p>
           </div>
         ) : null}
 
-        <div className="mt-6">
-          <NewTopicForm
-            currentSection={
-              currentSection
-            }
-            availableSections={
-              formSections
-            }
-            characters={characters}
-          />
-        </div>
+        {characters.length > 0 ? (
+          <div className="mt-6">
+            <NewTopicForm
+              currentSection={
+                currentSection
+              }
+              availableSections={
+                formSections
+              }
+              characters={characters}
+            />
+          </div>
+        ) : null}
       </div>
     </main>
   );

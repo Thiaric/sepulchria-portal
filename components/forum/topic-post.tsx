@@ -30,6 +30,8 @@ export type ForumQuotedPost = {
   deleted_at: string | null;
   author_character: ForumPostCharacter | null;
   author_name: string;
+  is_anonymous: boolean;
+  anonymous_identity_visible: boolean;
 };
 
 export type ForumTopicPost = {
@@ -39,6 +41,8 @@ export type ForumTopicPost = {
   author_character_id: string | null;
   body: string;
   is_initial: boolean;
+  is_anonymous: boolean;
+  anonymous_identity_visible: boolean;
   created_at: string;
   updated_at: string;
   edited_at: string | null;
@@ -160,10 +164,14 @@ export default function TopicPost({
   canModerate,
   topicLocked,
 }: TopicPostProps) {
-  const authorName = getCharacterName(
-    post.author_character,
-    post.author_name,
-  );
+  const authorName =
+    post.is_anonymous &&
+    !post.anonymous_identity_visible
+      ? "Anonymous"
+      : getCharacterName(
+          post.author_character,
+          post.author_name,
+        );
 
   const postUrl =
     `/forum/${encodeURIComponent(
@@ -204,6 +212,10 @@ export default function TopicPost({
             <CharacterPortrait
               character={post.author_character}
               fallbackName={post.author_name}
+              anonymous={
+                post.is_anonymous &&
+                !post.anonymous_identity_visible
+              }
             />
 
             <div className="min-w-0 flex-1 lg:mt-4">
@@ -211,15 +223,23 @@ export default function TopicPost({
                 {authorName}
               </h2>
 
+              {post.is_anonymous ? (
+                <p className="mt-1 text-[8px] uppercase tracking-[0.16em] text-[#c49c65]">
+                  {post.anonymous_identity_visible
+                    ? "Anonymous · identity visible to you"
+                    : "Anonymous"}
+                </p>
+              ) : null}
+
               {post.author_character?.title ? (
                 <p className="mt-1 text-[8px] uppercase tracking-[0.16em] text-[#9b7954]">
                   {post.author_character.title}
                 </p>
-              ) : (
+              ) : !post.is_anonymous ? (
                 <p className="mt-1 text-[8px] uppercase tracking-[0.16em] text-[#776754]">
-                  Account
+                  Character
                 </p>
-              )}
+              ) : null}
             </div>
           </div>
 
@@ -396,15 +416,26 @@ export default function TopicPost({
 function CharacterPortrait({
   character,
   fallbackName,
+  anonymous = false,
 }: {
   character: ForumPostCharacter | null;
   fallbackName: string;
+  anonymous?: boolean;
 }) {
-  const initials =
-    getCharacterInitials(
-      character,
-      fallbackName,
+  const initials = anonymous
+    ? "?"
+    : getCharacterInitials(
+        character,
+        fallbackName,
+      );
+
+  if (anonymous) {
+    return (
+      <div className="flex h-20 w-20 shrink-0 items-center justify-center border border-[#6b5031]/55 bg-[#1b130e] font-serif text-3xl text-[#a98a61] lg:h-44 lg:w-full lg:text-5xl">
+        ?
+      </div>
     );
+  }
 
   if (
     character?.portrait_url &&
@@ -480,10 +511,13 @@ function QuotedPost({
   post: ForumQuotedPost;
 }) {
   const authorName =
-    getCharacterName(
-      post.author_character,
-      post.author_name,
-    );
+    post.is_anonymous &&
+    !post.anonymous_identity_visible
+      ? "Anonymous"
+      : getCharacterName(
+          post.author_character,
+          post.author_name,
+        );
 
   return (
     <blockquote className="mb-6 border-l-2 border-[#8b6840] bg-[#100c09] px-4 py-4">
@@ -491,6 +525,10 @@ function QuotedPost({
         <p className="text-[8px] uppercase tracking-[0.17em] text-[#9b7b53]">
           Originally posted by{" "}
           {authorName}
+          {post.is_anonymous &&
+          post.anonymous_identity_visible
+            ? " · Anonymous"
+            : ""}
         </p>
 
         <a

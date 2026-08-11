@@ -281,9 +281,7 @@ export default function TopicReplyForm({
             disabled={pending}
             className="mt-2 w-full border border-[#60482e]/50 bg-[#0d0907] px-4 py-3 text-sm text-[#d8c4a4] outline-none transition focus:border-[#aa7f47] disabled:cursor-not-allowed disabled:opacity-60"
           >
-            <option value="">
-              Account only
-            </option>
+            
 
             {characters.map(
               (character) => (
