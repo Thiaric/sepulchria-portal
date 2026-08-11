@@ -416,7 +416,7 @@ async function GameContent() {
   type="submit"
   className="shrink-0 border border-[#7d493c] bg-[#2b1712] px-3 py-1.5 text-[9px] uppercase tracking-[0.18em] text-[#d7a398] transition hover:border-[#b86958] hover:bg-[#422019]"
 >
-  Leave room
+  Leave Location
 </button>
       </form>
     </div>

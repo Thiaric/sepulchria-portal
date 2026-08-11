@@ -5,7 +5,7 @@ import { MapMagnifyingLens } from "@/components/portal/map-magnifying-lens";
 import { AtmosphericImage } from "@/components/world/atmospheric-image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type InteractiveWorldMapProps = {
   areas: {
@@ -129,6 +129,118 @@ export function InteractiveWorldMap({
     null,
   );
 
+
+  const mapAreaRef =
+    useRef<HTMLDivElement>(null);
+
+  const [
+    mapSize,
+    setMapSize,
+  ] = useState<{
+    width: number;
+    height: number;
+  } | null>(null);
+
+  useEffect(() => {
+    const mapArea =
+      mapAreaRef.current;
+
+    if (!mapArea) {
+      return;
+    }
+
+    const updateMapSize = () => {
+      const rect =
+        mapArea.getBoundingClientRect();
+
+      const portalMain =
+        mapArea.closest(
+          "main[data-portal-column]",
+        );
+
+      const availableBottom =
+        portalMain instanceof HTMLElement
+          ? portalMain.getBoundingClientRect()
+              .bottom
+          : window.innerHeight;
+
+      const availableHeight =
+        Math.max(
+          0,
+          availableBottom -
+            rect.top,
+        );
+
+      const availableWidth =
+        mapArea.clientWidth;
+
+      /*
+       * Both map images are 1536 x 1024,
+       * therefore their natural ratio is 3:2.
+       *
+       * We choose the largest 3:2 rectangle that
+       * fits BOTH the available width and the
+       * remaining height of the central portal body.
+       */
+      const widthFromHeight =
+        availableHeight * 1.5;
+
+      const width =
+        Math.min(
+          availableWidth,
+          widthFromHeight,
+        );
+
+      const height =
+        width / 1.5;
+
+      setMapSize({
+        width:
+          Math.floor(width),
+        height:
+          Math.floor(height),
+      });
+    };
+
+    updateMapSize();
+
+    const resizeObserver =
+      new ResizeObserver(
+        updateMapSize,
+      );
+
+    resizeObserver.observe(
+      mapArea,
+    );
+
+    const portalMain =
+      mapArea.closest(
+        "main[data-portal-column]",
+      );
+
+    if (
+      portalMain instanceof HTMLElement
+    ) {
+      resizeObserver.observe(
+        portalMain,
+      );
+    }
+
+    window.addEventListener(
+      "resize",
+      updateMapSize,
+    );
+
+    return () => {
+      resizeObserver.disconnect();
+
+      window.removeEventListener(
+        "resize",
+        updateMapSize,
+      );
+    };
+  }, []);
+
   function findArea(
     slug: string,
   ) {
@@ -166,7 +278,7 @@ export function InteractiveWorldMap({
 
   return (
     <section className="relative z-10 overflow-visible border border-[#654c2f]/50 bg-[#100c09]">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#654c2f]/40 bg-[#17110d] px-4 py-3">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#654c2f]/40 bg-[#17110d] px-4 py-2">
         <div>
           <p className="text-[8px] uppercase tracking-[0.28em] text-[#96734a]">
             Welcome to Aureth -
@@ -175,7 +287,7 @@ export function InteractiveWorldMap({
             will continue
           </p>
 
-          <h2 className="mt-1 font-serif text-xl text-[#e4cda1]">
+          <h2 className="mt-0 font-serif text-xl text-[#e4cda1]">
             {level ===
             "continent"
               ? "The Godscar"
@@ -205,8 +317,26 @@ export function InteractiveWorldMap({
         )}
       </div>
 
-      <div className="flex w-full min-w-0 justify-center overflow-hidden bg-[#090705]">
-  <div className="relative aspect-[16/9] w-[min(100%,calc((100dvh-12rem)*16/9))] max-w-full min-w-0 overflow-hidden">
+      <div
+        ref={mapAreaRef}
+        className="flex w-full min-w-0 justify-center overflow-hidden bg-[#090705]"
+      >
+        <div
+          className="relative min-w-0 max-w-full overflow-hidden"
+          style={
+            mapSize
+              ? {
+                  width: `${mapSize.width}px`,
+                  height: `${mapSize.height}px`,
+                }
+              : {
+                  width: "100%",
+                  aspectRatio: "3 / 2",
+                  maxHeight:
+                    "calc(100dvh - 12rem)",
+                }
+          }
+        >
           {/* CONTINENT MAP */}
 
           <div
@@ -227,7 +357,7 @@ export function InteractiveWorldMap({
               variant="map"
               priority
               sizes="(max-width: 1024px) 100vw, 75vw"
-              objectFit="fill"
+              objectFit="contain"
             />
 
             <button
@@ -263,7 +393,7 @@ export function InteractiveWorldMap({
               alt="Map of Sepulchria"
               variant="map"
               sizes="(max-width: 1024px) 100vw, 75vw"
-              objectFit="fill"
+              objectFit="contain"
             />
 
             {cityHotspots.map(
