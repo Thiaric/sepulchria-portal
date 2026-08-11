@@ -64,6 +64,12 @@ type ForumPostRecord = {
   deleted_at: string | null;
 };
 
+type CharacterIdentityRecord = {
+  id: string;
+  name: string;
+  icon_url: string | null;
+};
+
 type CharacterRecord = {
   id: string;
   user_id: string;
@@ -75,6 +81,14 @@ type CharacterRecord = {
   pronouns: string | null;
   faction: string | null;
   status: string;
+  race:
+    | CharacterIdentityRecord
+    | CharacterIdentityRecord[]
+    | null;
+  association:
+    | CharacterIdentityRecord
+    | CharacterIdentityRecord[]
+    | null;
 };
 
 type AssociationRecord = {
@@ -110,6 +124,16 @@ type ReplyCharacterOption = {
   association_id: string | null;
   association_name: string | null;
 };
+
+function normaliseRelation<T>(
+  value: T | T[] | null,
+): T | null {
+  if (Array.isArray(value)) {
+    return value[0] ?? null;
+  }
+
+  return value;
+}
 
 function isUuid(value: string): boolean {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
@@ -388,7 +412,17 @@ export default async function TopicPage({
               title,
               pronouns,
               faction,
-              status
+              status,
+              race:races(
+                id,
+                name,
+                icon_url
+              ),
+              association:associations(
+                id,
+                name,
+                icon_url
+              )
             `,
           )
           .in("id", characterIds)
@@ -492,7 +526,17 @@ export default async function TopicPage({
           title,
           pronouns,
           faction,
-          status
+          status,
+          race:races(
+            id,
+            name,
+            icon_url
+          ),
+          association:associations(
+            id,
+            name,
+            icon_url
+          )
         `,
       )
       .in(
@@ -724,6 +768,16 @@ export default async function TopicPage({
       return null;
     }
 
+    const race =
+      normaliseRelation(
+        character.race,
+      );
+
+    const association =
+      normaliseRelation(
+        character.association,
+      );
+
     return {
       id: character.id,
       display_name:
@@ -737,11 +791,20 @@ export default async function TopicPage({
       pronouns:
         character.pronouns,
       association_name:
+        association?.name ??
         characterAssociationNameMap.get(
           character.id,
-        ) ?? null,
+        ) ??
+        null,
+      association_icon_url:
+        association?.icon_url ??
+        null,
       race_name:
+        race?.name ??
         character.faction,
+      race_icon_url:
+        race?.icon_url ??
+        null,
     };
   }
 
@@ -906,7 +969,17 @@ export default async function TopicPage({
           title,
           pronouns,
           faction,
-          status
+          status,
+          race:races(
+            id,
+            name,
+            icon_url
+          ),
+          association:associations(
+            id,
+            name,
+            icon_url
+          )
         `,
       )
       .eq("user_id", user.id)

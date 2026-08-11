@@ -454,12 +454,10 @@ export function GameContextPanel({
         <div className="flex items-end justify-between gap-3">
           <div>
             <p className="text-[8px] uppercase tracking-[0.24em] text-[#876a46]">
-              Available exits
+              Available connections
             </p>
 
-            <h3 className="mt-0.5 font-serif text-lg text-[#d6bd91]">
-              Leave this room
-            </h3>
+            
           </div>
 
           <span className="text-[10px] text-[#806c52]">
@@ -504,10 +502,7 @@ export function GameContextPanel({
                           {destination.name}
                         </span>
 
-                        <span className="mt-0.5 block truncate text-[7px] uppercase tracking-[0.16em] text-[#846a49]">
-                          {exit.connection_name ??
-                            "Passage"}
-                        </span>
+                        
                       </span>
 
                       <span

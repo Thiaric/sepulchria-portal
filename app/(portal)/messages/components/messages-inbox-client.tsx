@@ -107,6 +107,7 @@ function formatDate(
     {
       dateStyle: "medium",
       timeStyle: "short",
+      timeZone: "Europe/London",
     },
   ).format(date);
 }

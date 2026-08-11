@@ -14,7 +14,9 @@ export type ForumPostCharacter = {
   title: string | null;
   pronouns: string | null;
   association_name: string | null;
+  association_icon_url: string | null;
   race_name: string | null;
+  race_icon_url: string | null;
 };
 
 export type ForumPostImage = {
@@ -209,14 +211,20 @@ export default function TopicPost({
       <div className="grid lg:grid-cols-[230px_minmax(0,1fr)]">
         <aside className="border-b border-[#60482e]/35 bg-[#110d0a] p-5 lg:border-b-0 lg:border-r lg:p-6">
           <div className="flex items-start gap-4 lg:block">
-            <CharacterPortrait
-              character={post.author_character}
-              fallbackName={post.author_name}
-              anonymous={
-                post.is_anonymous &&
-                !post.anonymous_identity_visible
-              }
-            />
+            <div className="shrink-0">
+              <CharacterPortrait
+                character={post.author_character}
+                fallbackName={post.author_name}
+                anonymous={
+                  post.is_anonymous &&
+                  !post.anonymous_identity_visible
+                }
+              />
+
+              <CharacterIdentityIcons
+                character={post.author_character}
+              />
+            </div>
 
             <div className="min-w-0 flex-1 lg:mt-4">
               <h2
@@ -250,42 +258,6 @@ export default function TopicPost({
             </div>
           </div>
 
-          {post.author_character ? (
-            <dl className="mt-5 space-y-3 border-t border-[#60482e]/25 pt-4">
-              {post.author_character
-                .pronouns ? (
-                <CharacterDetail
-                  label="Pronouns"
-                  value={
-                    post.author_character
-                      .pronouns
-                  }
-                />
-              ) : null}
-
-              {post.author_character
-                .race_name ? (
-                <CharacterDetail
-                  label="Ancestry"
-                  value={
-                    post.author_character
-                      .race_name
-                  }
-                />
-              ) : null}
-
-              {post.author_character
-                .association_name ? (
-                <CharacterDetail
-                  label="Organisation"
-                  value={
-                    post.author_character
-                      .association_name
-                  }
-                />
-              ) : null}
-            </dl>
-          ) : null}
         </aside>
 
         <div className="min-w-0">
@@ -470,22 +442,90 @@ function CharacterPortrait({
   );
 }
 
-function CharacterDetail({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}) {
-  return (
-    <div>
-      <dt className="text-[7px] uppercase tracking-[0.16em] text-[#645846]">
-        {label}
-      </dt>
+function normaliseImageUrl(
+  value: string | null,
+): string | null {
+  if (!value?.trim()) {
+    return null;
+  }
 
-      <dd className="mt-1 text-xs leading-5 text-[#9c8d78]">
-        {value}
-      </dd>
+  const clean = value.trim();
+
+  if (
+    clean.startsWith("/") ||
+    clean.startsWith("http://") ||
+    clean.startsWith("https://")
+  ) {
+    return clean;
+  }
+
+  return `/${clean}`;
+}
+
+function CharacterIdentityIcons({
+  character,
+}: {
+  character: ForumPostCharacter | null;
+}) {
+  if (!character) {
+    return null;
+  }
+
+  const raceIcon =
+    normaliseImageUrl(
+      character.race_icon_url,
+    );
+
+  const associationIcon =
+    normaliseImageUrl(
+      character.association_icon_url,
+    );
+
+  if (!raceIcon && !associationIcon) {
+    return null;
+  }
+
+  return (
+    <div className="mt-2 flex items-center justify-center gap-2 lg:mt-3">
+      {raceIcon ? (
+        <div
+          className="flex h-8 w-8 items-center justify-center border border-[#60482e]/45 bg-[#0b0806] p-1"
+          title={
+            character.race_name ??
+            "Ancestry"
+          }
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={raceIcon}
+            alt={
+              character.race_name ??
+              "Ancestry"
+            }
+            className="h-full w-full object-contain"
+          />
+        </div>
+      ) : null}
+
+      {associationIcon ? (
+        <div
+          className="flex h-8 w-8 items-center justify-center border border-[#60482e]/45 bg-[#0b0806] p-1"
+          title={
+            character.association_name ??
+            "Association"
+          }
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={associationIcon}
+            alt={
+              character.association_name ??
+              "Association"
+            }
+            className="h-full w-full object-contain"
+          />
+        </div>
+      ) : null}
     </div>
   );
 }
