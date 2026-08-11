@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { CodexEntryImageLightbox } from "@/components/codex/codex-entry-image-lightbox";
 import { RichTextContentClient } from "@/components/editor/rich-text-content-client";
 import { AtmosphericImage } from "@/components/world/atmospheric-image";
 
@@ -34,6 +35,7 @@ export default async function AreaPage({
   params,
 }: Props) {
   const { slug } = await params;
+
   const supabase =
     await createClient();
 
@@ -82,7 +84,9 @@ export default async function AreaPage({
     );
   }
 
-  const safeArea = area as Area;
+  const safeArea =
+    area as Area;
+
   const safeRooms =
     (rooms ?? []) as Room[];
 
@@ -99,12 +103,14 @@ export default async function AreaPage({
               objectFit="cover"
             />
 
-            {/* Much lighter readability treatment */}
+            <CodexEntryImageLightbox
+              src={safeArea.image_url}
+              name={safeArea.name}
+            />
+
             <div className="pointer-events-none absolute inset-0 z-[6] bg-gradient-to-t from-[#17110d]/72 via-[#17110d]/12 to-transparent" />
 
-            <div className="absolute inset-x-0 bottom-0 z-10 p-4 sm:p-5">
-              
-
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 p-4 sm:p-5">
               <h1 className="mt-1 font-serif text-2xl leading-tight text-[#d9bd82] [text-shadow:0_2px_5px_rgba(0,0,0,0.95)] sm:text-3xl">
                 {safeArea.name}
               </h1>
@@ -141,8 +147,6 @@ export default async function AreaPage({
             <p className="text-[9px] uppercase tracking-[0.24em] text-[#8f7757]">
               Available locations
             </p>
-
-            
           </div>
 
           <Link
@@ -167,9 +171,20 @@ export default async function AreaPage({
                         src={
                           room.image_url
                         }
-                        alt={room.name}
+                        alt={
+                          room.name
+                        }
                         sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
                         objectFit="cover"
+                      />
+
+                      <CodexEntryImageLightbox
+                        src={
+                          room.image_url
+                        }
+                        name={
+                          room.name
+                        }
                       />
 
                       <div className="pointer-events-none absolute inset-0 z-[6] bg-gradient-to-t from-[#120e0b]/65 via-transparent to-transparent" />
@@ -199,7 +214,9 @@ export default async function AreaPage({
                       <input
                         type="hidden"
                         name="roomId"
-                        value={room.id}
+                        value={
+                          room.id
+                        }
                       />
 
                       <button

@@ -25,6 +25,7 @@ type Props = Record<string, never>;
 type Area = {
   id: string;
   name: string;
+  slug: string;
   description: string | null;
 };
 
@@ -115,8 +116,8 @@ async function GameContent() {
   } = await supabase
     .from("rooms")
     .select(
-      "id, name, description, image_url, area_id, areas(id,name,description)",
-    )
+  "id, name, description, image_url, area_id, areas(id,name,slug,description)",
+)
     .eq(
       "id",
       character.current_room_id,
@@ -136,6 +137,11 @@ async function GameContent() {
   }
 
   const room = rawRoom as RoomRelation;
+
+  const roomArea =
+  Array.isArray(room.areas)
+    ? room.areas[0] ?? null
+    : room.areas;
 
   const messageSelect = `
     id,
@@ -391,12 +397,10 @@ async function GameContent() {
   <div className="h-full min-h-0 overflow-hidden p-2 sm:p-3 lg:p-4">
     <RoomRealtime roomId={room.id} />
 
-    <div className="mx-auto flex h-full max-w-5xl flex-col">
+    <div className="mx-auto flex h-full max-w-80dvh flex-col">
   <div className="mb-2 flex shrink-0 items-center justify-between gap-3 border border-[#62492e]/45 bg-[#15100d] px-3 py-2">
     <div className="min-w-0">
-      <p className="text-[8px] uppercase tracking-[0.24em] text-[#806b50]">
-        Current location
-      </p>
+      
 
       <p className="mt-1 truncate font-serif text-lg text-[#dec69a]">
         {room.name}
@@ -411,14 +415,16 @@ async function GameContent() {
   Export role
 </Link>
 
-      <form action={leaveCurrentRoom}>
-        <button
-  type="submit"
-  className="shrink-0 border border-[#7d493c] bg-[#2b1712] px-3 py-1.5 text-[9px] uppercase tracking-[0.18em] text-[#d7a398] transition hover:border-[#b86958] hover:bg-[#422019]"
->
-  Leave Location
-</button>
-      </form>
+{roomArea ? (
+  <Link
+    href={`/areas/${roomArea.slug}`}
+    className="border border-[#725c3d] bg-[#21190f] px-3 py-1.5 text-[9px] uppercase tracking-[0.18em] text-[#d6bb8d] transition hover:border-[#a17a49] hover:bg-[#352718] hover:text-[#f0d6a7]"
+  >
+    ← Back to {roomArea.name}
+  </Link>
+) : null}
+
+     
     </div>
   </div>
 
