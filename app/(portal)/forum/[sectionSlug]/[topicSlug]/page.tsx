@@ -1038,15 +1038,16 @@ export default async function TopicPage({
                   Locked
                 </span>
               ) : null}
+
+              
             </div>
 
-            <h1 className="mt-3 break-words font-serif text-3xl text-[#dec69d] sm:text-4xl">
+
+            <h1 className="mt-3 break-words font-serif text-3xl text-[#dec69d] sm:text-1xl">
               {topic.title}
             </h1>
 
-            <p className="mt-3 text-sm leading-6 text-[#817567]">
-              {section.name}
-            </p>
+            
           </div>
 <div className="flex flex-wrap items-center justify-end gap-2">
                     <ForumTopicFavouriteButton

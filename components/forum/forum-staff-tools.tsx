@@ -48,9 +48,7 @@ export default async function ForumStaffTools({
         </h2>
 
         <p className="mt-2 max-w-3xl text-sm leading-6 text-[#a99880]">
-          Manage forum sections,
-          discussions and moderation
-          history.
+          Manage sections, discussions (topics) and recorded moderation activity, delete topics or replies.
         </p>
       </div>
 

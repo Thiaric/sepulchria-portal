@@ -1,0 +1,163 @@
+/*
+ * Admin-only density pass.
+ * This file is imported by app/(portal)/admin/layout.tsx and the scope is
+ * applied only to the page content, not the shared portal header/sidebar.
+ */
+
+.admin-compact {
+  --admin-field-y: 0.55rem;
+  --admin-section-pad: 1rem;
+}
+
+.admin-compact main {
+  padding: 1rem !important;
+}
+
+@media (min-width: 640px) {
+  .admin-compact main {
+    padding: 1.15rem !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .admin-compact main {
+    padding: 1.25rem !important;
+  }
+}
+
+/* Compress the repeated large vertical gaps used by the older admin pages. */
+.admin-compact [class~="mt-8"] {
+  margin-top: 1rem !important;
+}
+
+.admin-compact [class~="mt-6"] {
+  margin-top: 0.8rem !important;
+}
+
+.admin-compact [class~="mt-5"] {
+  margin-top: 0.7rem !important;
+}
+
+.admin-compact [class~="mt-4"] {
+  margin-top: 0.6rem !important;
+}
+
+.admin-compact [class~="mb-6"] {
+  margin-bottom: 0.8rem !important;
+}
+
+.admin-compact [class~="mb-5"] {
+  margin-bottom: 0.7rem !important;
+}
+
+.admin-compact [class~="gap-6"] {
+  gap: 0.8rem !important;
+}
+
+.admin-compact [class~="gap-5"] {
+  gap: 0.7rem !important;
+}
+
+.admin-compact [class~="gap-4"] {
+  gap: 0.65rem !important;
+}
+
+.admin-compact [class~="space-y-5"] > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 0.75rem !important;
+}
+
+.admin-compact [class~="space-y-4"] > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 0.65rem !important;
+}
+
+/* Smaller page headings without changing the portal's general typography. */
+.admin-compact main h2[class*="text-4xl"] {
+  font-size: 1.9rem !important;
+  line-height: 2.15rem !important;
+}
+
+.admin-compact main h3[class*="text-3xl"] {
+  font-size: 1.55rem !important;
+  line-height: 1.85rem !important;
+}
+
+.admin-compact main h3[class*="text-2xl"],
+.admin-compact main h2[class*="text-2xl"] {
+  font-size: 1.25rem !important;
+  line-height: 1.55rem !important;
+}
+
+/* Form controls: the old 46–52px fields are unnecessarily tall. */
+.admin-compact main input:not([type="checkbox"]):not([type="radio"]):not([type="color"]),
+.admin-compact main select {
+  min-height: 36px !important;
+  padding-top: var(--admin-field-y) !important;
+  padding-bottom: var(--admin-field-y) !important;
+}
+
+.admin-compact main button[type="submit"],
+.admin-compact main form a {
+  padding-top: 0.55rem !important;
+  padding-bottom: 0.55rem !important;
+}
+
+/* Reduce generic card/section padding while retaining hierarchy. */
+.admin-compact main section[class*="p-5"],
+.admin-compact main section[class*="p-6"] {
+  padding: var(--admin-section-pad) !important;
+}
+
+.admin-compact main [class~="p-6"] {
+  padding: 1rem !important;
+}
+
+.admin-compact main [class~="p-5"] {
+  padding: 0.9rem !important;
+}
+
+.admin-compact main [class~="py-7"] {
+  padding-top: 1rem !important;
+  padding-bottom: 1rem !important;
+}
+
+/*
+ * Rich editor density.
+ * Inline minHeight values in old admin pages are intentionally overridden
+ * here. The editor remains scrollable internally and its sticky toolbar stays
+ * visible.
+ */
+.admin-compact .rich-wysiwyg-editor {
+  min-height: 145px !important;
+  max-height: min(42dvh, 360px) !important;
+  overflow-y: auto !important;
+}
+
+.admin-compact textarea[style*="min-height"] {
+  min-height: 145px !important;
+  max-height: min(42dvh, 360px) !important;
+  overflow-y: auto !important;
+}
+
+/* Summary editors should not dominate an entire screen. */
+.admin-compact main [class*="col-span-2"] .rich-wysiwyg-editor {
+  min-height: 135px !important;
+}
+
+/* Admin preview imagery: preserve it, but stop it consuming half a viewport. */
+.admin-compact main [class~="h-44"] {
+  height: 7rem !important;
+}
+
+.admin-compact main [class*="aspect-[4/3]"] {
+  max-height: 160px !important;
+}
+
+/* Compact counters and badges. */
+.admin-compact main span[class*="px-4"][class*="py-3"] {
+  padding: 0.5rem 0.75rem !important;
+}
+
+/* Keep anchor jumps clear of the sticky portal header. */
+.admin-compact main section {
+  scroll-margin-top: 6rem;
+}

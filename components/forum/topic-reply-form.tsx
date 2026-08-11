@@ -182,19 +182,11 @@ export default function TopicReplyForm({
       id="reply"
       className="scroll-mt-24 border border-[#60482e]/45 bg-[#15100d]"
     >
-      <div className="border-b border-[#60482e]/35 px-5 py-4 sm:px-6">
-        <p className="text-[8px] uppercase tracking-[0.24em] text-[#806a4d]">
-          Join the conversation
-        </p>
-
-        <h2 className="mt-2 font-serif text-2xl text-[#dec69d]">
-          Write a reply
-        </h2>
-      </div>
+      
 
       <form
         action={formAction}
-        className="space-y-6 p-5 sm:p-6"
+        className="space-y-1 p-5 sm:p-6"
       >
         <input
           type="hidden"
@@ -350,114 +342,7 @@ export default function TopicReplyForm({
           ) : null}
         </div>
 
-        <div>
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <input
-              type="url"
-              value={newImageUrl}
-              onChange={(event) => {
-                setNewImageUrl(
-                  event.target.value,
-                );
-                setImageError("");
-              }}
-              onKeyDown={(event) => {
-                if (
-                  event.key === "Enter"
-                ) {
-                  event.preventDefault();
-                  addImage();
-                }
-              }}
-              disabled={
-                pending ||
-                images.length >=
-                  MAX_IMAGES
-              }
-              placeholder="https://example.com/image.jpg"
-              className="min-w-0 flex-1 border border-[#60482e]/50 bg-[#0d0907] px-4 py-3 text-sm text-[#d8c4a4] outline-none transition placeholder:text-[#5f5549] focus:border-[#aa7f47] disabled:cursor-not-allowed disabled:opacity-60"
-            />
-
-            <button
-              type="button"
-              onClick={addImage}
-              disabled={
-                pending ||
-                images.length >=
-                  MAX_IMAGES
-              }
-              className="border border-[#80613b] bg-[#2c1e14] px-5 py-3 text-[9px] uppercase tracking-[0.17em] text-[#d8bd91] transition hover:border-[#a67c45] hover:bg-[#3a2819] disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              Add image
-            </button>
-          </div>
-
-          <div className="mt-2 flex items-center justify-between gap-4">
-            <p className="text-xs text-[#776b5d]">
-              Direct image links only.
-            </p>
-
-            <span className="text-[9px] text-[#716453]">
-              {images.length}/
-              {MAX_IMAGES}
-            </span>
-          </div>
-
-          {imageError ? (
-            <p className="mt-2 text-xs text-red-400">
-              {imageError}
-            </p>
-          ) : null}
-
-          {state.fieldErrors
-            ?.imageUrls ? (
-            <p className="mt-2 text-xs text-red-400">
-              {
-                state.fieldErrors
-                  .imageUrls
-              }
-            </p>
-          ) : null}
-
-          {images.length > 0 ? (
-            <div className="mt-4 space-y-2">
-              {images.map(
-                (imageUrl, index) => (
-                  <div
-                    key={imageUrl}
-                    className="flex min-w-0 items-center gap-3 border border-[#60482e]/40 bg-[#0d0907] p-3"
-                  >
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center border border-[#60482e]/40 bg-[#17100c] font-serif text-sm text-[#9a7950]">
-                      {index + 1}
-                    </div>
-
-                    <a
-                      href={imageUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="min-w-0 flex-1 truncate text-xs text-[#aa9982] transition hover:text-[#d6b681]"
-                    >
-                      {imageUrl}
-                    </a>
-
-                    <button
-                      type="button"
-                      onClick={() =>
-                        removeImage(
-                          imageUrl,
-                        )
-                      }
-                      disabled={pending}
-                      className="shrink-0 border border-red-900/50 px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-red-400 transition hover:bg-red-950/25 disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                ),
-              )}
-            </div>
-          ) : null}
-        </div>
+        
 
         <div className="flex justify-end border-t border-[#60482e]/30 pt-5">
           <button

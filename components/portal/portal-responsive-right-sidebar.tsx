@@ -9,10 +9,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { InstantChatDock } from "@/components/instant-chat/instant-chat-dock";
-import { AtmosphericImage } from "@/components/world/atmospheric-image";
+import { AdminContextPanel } from "@/components/portal/admin-context-panel";
 import { ForumSectionActivityContext } from "@/components/portal/forum-section-activity-context";
 import { PortalContextPanel } from "@/components/portal/portal-context-panel";
 import { RoomInfoButton } from "@/components/portal/room-info-button";
+import { AtmosphericImage } from "@/components/world/atmospheric-image";
 import type { PortalContext } from "@/types/portal";
 
 type PortalResponsiveRightSidebarProps = {
@@ -22,9 +23,14 @@ type PortalResponsiveRightSidebarProps = {
 export function PortalResponsiveRightSidebar({
   context,
 }: PortalResponsiveRightSidebarProps) {
-  const [open, setOpen] = useState(false);
-  const pathname = usePathname();
-  const { character } = context;
+  const [open, setOpen] =
+    useState(false);
+
+  const pathname =
+    usePathname();
+
+  const { character } =
+    context;
 
   const forumSectionMatch =
     pathname.match(
@@ -37,6 +43,12 @@ export function PortalResponsiveRightSidebar({
           forumSectionMatch[1],
         )
       : null;
+
+  const isAdminPath =
+    pathname === "/admin" ||
+    pathname.startsWith(
+      "/admin/",
+    );
 
   useEffect(() => {
     if (!open) {
@@ -52,7 +64,10 @@ export function PortalResponsiveRightSidebar({
     const handleKeyDown = (
       event: KeyboardEvent,
     ) => {
-      if (event.key === "Escape") {
+      if (
+        event.key ===
+        "Escape"
+      ) {
         setOpen(false);
       }
     };
@@ -75,7 +90,6 @@ export function PortalResponsiveRightSidebar({
 
   return (
     <>
-      {/* MOBILE / TABLET OPEN BUTTON */}
       <button
         type="button"
         onClick={() =>
@@ -88,7 +102,6 @@ export function PortalResponsiveRightSidebar({
         ◈
       </button>
 
-      {/* MOBILE / TABLET OVERLAY */}
       {open ? (
         <button
           type="button"
@@ -106,17 +119,13 @@ export function PortalResponsiveRightSidebar({
         data-portal-scroll
         className={[
           "z-[70] flex min-h-0 min-w-0 flex-col border-l border-[#6e5535]/40 bg-[#100d0b]",
-
           "fixed inset-y-0 right-0 w-[min(88vw,360px)] overflow-hidden overscroll-contain shadow-[-18px_0_50px_rgba(0,0,0,0.55)] transition-transform duration-200 ease-out",
-
           open
             ? "translate-x-0"
             : "translate-x-full",
-
           "xl:relative xl:inset-auto xl:z-auto xl:h-full xl:w-auto xl:translate-x-0 xl:self-stretch xl:overflow-hidden xl:shadow-none xl:transition-none",
         ].join(" ")}
       >
-        {/* MOBILE / TABLET HEADER */}
         <div className="flex h-16 shrink-0 items-center justify-between border-b border-[#6e5535]/40 px-4 xl:hidden">
           <div>
             <p className="text-[8px] uppercase tracking-[0.28em] text-[#876a46]">
@@ -140,18 +149,17 @@ export function PortalResponsiveRightSidebar({
           </button>
         </div>
 
-        {/* SIDEBAR CONTENT */}
         <div className="flex min-h-0 flex-1 flex-col p-4 xl:p-[var(--portal-column-pad,1rem)]">
-          {/* SCROLLABLE SIDEBAR AREA */}
           <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto overscroll-contain xl:gap-[var(--portal-column-gap,0.75rem)]">
-            {/* CURRENT LOCATION */}
             <div className="shrink-0">
               <p className="mb-1.5 px-1 text-[8px] uppercase tracking-[0.24em] text-[#a88658]">
                 Current location
               </p>
 
               <section className="relative min-h-[108px] overflow-hidden border border-[#60482e]/45 bg-[#15100d]">
-                {character?.currentRoom?.image_url ? (
+                {character
+                  ?.currentRoom
+                  ?.image_url ? (
                   <div className="absolute inset-0">
                     <AtmosphericImage
                       src={
@@ -188,12 +196,14 @@ export function PortalResponsiveRightSidebar({
                       <p className="mt-1 break-words text-[10px] leading-snug text-[#d0c0a8] [text-shadow:0_1px_2px_rgba(0,0,0,1),0_0_4px_rgba(0,0,0,0.95)]">
                         {character
                           ?.currentRoom
-                          ?.area?.name ??
+                          ?.area
+                          ?.name ??
                           "Your character has not entered the city yet."}
                       </p>
                     </div>
 
-                    {character?.currentRoom ? (
+                    {character
+                      ?.currentRoom ? (
                       <div className="flex shrink-0 items-end gap-1.5">
                         <RoomInfoButton
                           roomId={
@@ -218,9 +228,14 @@ export function PortalResponsiveRightSidebar({
               </section>
             </div>
 
-            {/* CONTEXT PANEL */}
             <section className="min-h-0 flex-1 border border-[#60482e]/45 bg-[#15100d] p-4 xl:p-[var(--portal-section-pad,1rem)]">
-              {forumSectionSlug ? (
+              {isAdminPath ? (
+                <AdminContextPanel
+                  pathname={
+                    pathname
+                  }
+                />
+              ) : forumSectionSlug ? (
                 <ForumSectionActivityContext
                   sectionSlug={
                     forumSectionSlug
@@ -228,13 +243,14 @@ export function PortalResponsiveRightSidebar({
                 />
               ) : (
                 <PortalContextPanel
-                  context={context}
+                  context={
+                    context
+                  }
                 />
               )}
             </section>
           </div>
 
-          {/* INSTANT CHAT — FIXED TO BOTTOM OF RIGHT SIDEBAR */}
           {character?.status ===
           "approved" ? (
             <div className="relative mt-3 shrink-0">
