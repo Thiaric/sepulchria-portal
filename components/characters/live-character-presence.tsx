@@ -166,10 +166,12 @@ export function LiveCharacterPresence({
   characterId,
   initialPresence,
   initialRoom,
+  compact = false,
 }: {
   characterId: string;
   initialPresence: PublicCharacterPresence | null;
   initialRoom: PublicCharacterRoom | null;
+  compact?: boolean;
 }) {
   const [presence, setPresence] =
     useState<PublicCharacterPresence | null>(
@@ -348,14 +350,56 @@ export function LiveCharacterPresence({
             : room.name
           : "No current location";
 
+  if (compact) {
+    return (
+      <>
+        <div className="min-w-0 bg-[#17110d] px-3 py-2">
+          <p className="text-[7px] uppercase tracking-[0.19em] text-[#796448]">
+            Live record
+          </p>
+
+          <p
+            className={`mt-1 flex items-center gap-1.5 text-[11px] leading-5 ${appearance.text}`}
+          >
+            <span
+              className={`h-1.5 w-1.5 shrink-0 rounded-full ${appearance.dot}`}
+            />
+            {appearance.label}
+          </p>
+        </div>
+
+        <div className="min-w-0 bg-[#17110d] px-3 py-2">
+          <p className="text-[7px] uppercase tracking-[0.19em] text-[#796448]">
+            Last activity
+          </p>
+
+          <p className="mt-1 break-words text-[11px] leading-5 text-[#cab89b]">
+            {formatRelativeActivity(
+              presence?.last_seen_at,
+              now,
+            )}
+          </p>
+        </div>
+
+        <div className="min-w-0 bg-[#17110d] px-3 py-2">
+          <p className="text-[7px] uppercase tracking-[0.19em] text-[#796448]">
+            Current location
+          </p>
+
+          <p className="mt-1 break-words text-[11px] leading-5 text-[#cab89b]">
+            {location}
+          </p>
+        </div>
+      </>
+    );
+  }
+
   return (
     <section className="flex h-full flex-col border border-[#60482e]/45 bg-black/15 p-5">
       <div>
         <p className="text-[8px] uppercase tracking-[0.24em] text-[#806b50]">
           Live record
         </p>
-
-        
       </div>
 
       <div className="mt-5">
@@ -394,8 +438,6 @@ export function LiveCharacterPresence({
           </dd>
         </div>
       </dl>
-
-      
     </section>
   );
 }

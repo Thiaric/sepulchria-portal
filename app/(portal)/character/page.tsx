@@ -293,111 +293,115 @@ export function Profile({
           </div>
         </div>
 
-        <section className="mt-4 grid gap-5 border border-[#654b2e]/50 bg-[#17110d] p-4 sm:p-5 lg:grid-cols-[200px_minmax(0,1fr)]">
-          <div className="mx-auto w-full max-w-[200px] lg:mx-0">
-            {character.portrait_url ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={character.portrait_url}
-                alt={`Portrait of ${
-                  character.display_name ??
-                  "character"
-                }`}
-                className="aspect-[3/4] w-full border border-[#60482e]/50 object-cover"
-              />
-            ) : (
-              <div className="flex aspect-[3/4] w-full items-center justify-center border border-[#60482e]/50 bg-[#0d0a08] font-serif text-5xl text-[#5f503f]">
-                ?
+        <section className="mt-4 grid gap-4 xl:grid-cols-[minmax(0,1.45fr)_minmax(360px,0.9fr)]">
+          <div className="min-w-0">
+            <section className="grid gap-4 border border-[#654b2e]/50 bg-[#17110d] p-4 sm:p-5 lg:grid-cols-[180px_minmax(0,1fr)]">
+              <div className="mx-auto w-full max-w-[180px] lg:mx-0">
+                {character.portrait_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={character.portrait_url}
+                    alt={`Portrait of ${
+                      character.display_name ??
+                      "character"
+                    }`}
+                    className="aspect-[3/4] w-full border border-[#60482e]/50 object-cover"
+                  />
+                ) : (
+                  <div className="flex aspect-[3/4] w-full items-center justify-center border border-[#60482e]/50 bg-[#0d0a08] font-serif text-5xl text-[#5f503f]">
+                    ?
+                  </div>
+                )}
               </div>
-            )}
+
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-start justify-between gap-3 border-b border-[#5d452d]/35 pb-3">
+                  <div className="min-w-0">
+                    <p className="text-[8px] uppercase tracking-[0.26em] text-[#876a46]">
+                      Character profile
+                    </p>
+
+                    <h1 className="mt-1 break-words font-serif text-3xl text-[#ecd9b2] sm:text-[2.15rem]">
+                      {character.display_name ??
+                        "Unnamed character"}
+                    </h1>
+                  </div>
+
+                  {own ? (
+                    <CharacterStatusBadge
+                      status={status}
+                    />
+                  ) : null}
+                </div>
+
+                <div className="mt-3 grid gap-px bg-[#4f3b28]/35 sm:grid-cols-2 lg:grid-cols-3">
+                  {items.map(([label, value]) => (
+                    <div
+                      key={label}
+                      className="min-w-0 bg-[#17110d] px-3 py-2"
+                    >
+                      <p className="text-[7px] uppercase tracking-[0.19em] text-[#796448]">
+                        {label}
+                      </p>
+
+                      <p className="mt-1 break-words text-[11px] leading-5 text-[#cab89b]">
+                        {value || "Not recorded"}
+                      </p>
+                    </div>
+                  ))}
+
+                  <div className="min-w-0 bg-[#17110d] px-3 py-2">
+                    <CharacterExpertiseTotal
+                      characterId={character.id!}
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                  <CompactHeritageCard
+                    label="Ancestry"
+                    entry={race}
+                    href={
+                      race
+                        ? `/races/${race.slug}`
+                        : "/races"
+                    }
+                  />
+
+                  <CompactHeritageCard
+                    label="Association"
+                    entry={association}
+                    href={
+                      association
+                        ? `/associations/${association.slug}`
+                        : "/associations"
+                    }
+                  />
+                </div>
+              </div>
+            </section>
+
+            {character.music_url ? (
+              <div className="mt-4">
+                <CharacterMusicPlayer
+                  src={character.music_url}
+                />
+              </div>
+            ) : null}
           </div>
 
           <div className="min-w-0">
-            <div className="flex flex-wrap items-start justify-between gap-3 border-b border-[#5d452d]/35 pb-4">
-              <div className="min-w-0">
-                <p className="text-[9px] uppercase tracking-[0.28em] text-[#876a46]">
-                  Character profile
-                </p>
+            <CharacterAttributesDisplay
+              character={character}
+            />
 
-                <h1 className="mt-1 break-words font-serif text-3xl text-[#ecd9b2] sm:text-4xl">
-                  {character.display_name ??
-                    "Unnamed character"}
-                </h1>
-              </div>
-
-              {own ? (
-                <CharacterStatusBadge
-                  status={status}
-                />
-              ) : null}
-            </div>
-
-            <div className="mt-4 grid gap-px bg-[#4f3b28]/35 sm:grid-cols-2 lg:grid-cols-3">
-              {items.map(([label, value]) => (
-                <div
-                  key={label}
-                  className="min-w-0 bg-[#17110d] px-3 py-2.5"
-                >
-                  <p className="text-[8px] uppercase tracking-[0.2em] text-[#796448]">
-                    {label}
-                  </p>
-
-                  <p className="mt-1 break-words text-xs leading-5 text-[#cab89b]">
-                    {value || "Not recorded"}
-                  </p>
-                </div>
-              ))}
-
-              <div className="min-w-0 bg-[#17110d] px-3 py-2.5">
-                <CharacterExpertiseTotal
-                  characterId={character.id!}
-                />
-              </div>
-            </div>
-
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              <CompactHeritageCard
-                label="Ancestry"
-                entry={race}
-                href={
-                  race
-                    ? `/races/${race.slug}`
-                    : "/races"
-                }
-              />
-
-              <CompactHeritageCard
-                label="Association"
-                entry={association}
-                href={
-                  association
-                    ? `/associations/${association.slug}`
-                    : "/associations"
-                }
+            <div className="mt-4">
+              <CharacterHealthDisplay
+                character={character}
               />
             </div>
           </div>
         </section>
-
-        {character.music_url ? (
-          <div className="mt-4">
-            <CharacterMusicPlayer
-              src={character.music_url}
-            />
-          </div>
-        ) : null}
-
-        <div className="mt-4">
-          <CharacterHealthDisplay
-            character={character}
-          />
-        </div>
-
-        <div className="mt-4">
-          <CharacterAttributesDisplay
-            character={character}
-          />
-        </div>
 
         <section className="mt-4 grid gap-4 md:grid-cols-2">
           <ProfileTextSection

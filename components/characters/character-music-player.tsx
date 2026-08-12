@@ -316,9 +316,7 @@ export function CharacterMusicPlayer({
                 Music
               </p>
 
-              <p className="truncate font-serif text-sm text-[#d9c096]">
-                {label}
-              </p>
+              
             </div>
 
             <span className="shrink-0 text-[9px] tabular-nums text-[#776b5c]">

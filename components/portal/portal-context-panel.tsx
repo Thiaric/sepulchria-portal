@@ -1168,16 +1168,16 @@ function CharacterArchiveContext() {
   return (
     <div className="flex h-full min-h-0 flex-col">
       <ContextHeading
-        eyebrow="Archive"
-        title="Characters"
+        eyebrow="Character archive"
+        title=""       
       />
 
-      <p className="mb-4 text-xs leading-6 text-[#938673]">
+      <p className="mb-1 text-xs leading-1 text-[#938673]">
         Search the archive and jump
         directly to a character.
       </p>
 
-      <label className="mb-4 block">
+      <label className="mb-1 block">
         <span className="text-[8px] uppercase tracking-[0.2em] text-[#806b50]">
           Search
         </span>
