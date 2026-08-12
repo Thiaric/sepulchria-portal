@@ -13,7 +13,7 @@ import { AdminContextPanel } from "@/components/portal/admin-context-panel";
 import { ForumSectionActivityContext } from "@/components/portal/forum-section-activity-context";
 import { PortalContextPanel } from "@/components/portal/portal-context-panel";
 import { RoomInfoButton } from "@/components/portal/room-info-button";
-import { AtmosphericImage } from "@/components/world/atmospheric-image";
+import { LocationAtmosphericImage } from "@/components/world/location-atmospheric-image";
 import type { PortalContext } from "@/types/portal";
 
 type PortalResponsiveRightSidebarProps = {
@@ -160,23 +160,20 @@ export function PortalResponsiveRightSidebar({
                 {character
                   ?.currentRoom
                   ?.image_url ? (
-                  <div className="absolute inset-0">
-                    <AtmosphericImage
-                      src={
-                        character
-                          .currentRoom
-                          .image_url
-                      }
-                      alt={
-                        character
-                          .currentRoom
-                          .name
-                      }
-                      variant="scene"
-                      sizes="300px"
-                      objectFit="cover"
-                    />
-                  </div>
+                  <LocationAtmosphericImage
+                    src={
+                      character
+                        .currentRoom
+                        .image_url
+                    }
+                    alt={
+                      character
+                        .currentRoom
+                        .name
+                    }
+                    sizes="300px"
+                    objectFit="cover"
+                  />
                 ) : null}
 
                 <div className="pointer-events-none absolute inset-0 z-[6] bg-[#0b0806]/48" />

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 
 import { CodexEntryImageLightbox } from "@/components/codex/codex-entry-image-lightbox";
 import { RichTextContentClient } from "@/components/editor/rich-text-content-client";
-import { AtmosphericImage } from "@/components/world/atmospheric-image";
+import { LocationAtmosphericImage } from "@/components/world/location-atmospheric-image";
 
 import { createClient } from "@/lib/supabase/server";
 import { enterRoomFromMap } from "../../game/actions";
@@ -96,7 +96,7 @@ export default async function AreaPage({
       <section className="overflow-hidden border border-[#6a5032]/50 bg-[#17110d]">
         {safeArea.image_url ? (
           <div className="relative h-[clamp(180px,28dvh,300px)] overflow-hidden">
-            <AtmosphericImage
+            <LocationAtmosphericImage
               src={safeArea.image_url}
               alt={safeArea.name}
               sizes="(max-width: 1024px) 100vw, 70vw"
@@ -167,7 +167,7 @@ export default async function AreaPage({
                 >
                   {room.image_url ? (
                     <div className="relative aspect-[16/7] w-full overflow-hidden border-b border-[#584128]/45 bg-[#0b0806]">
-                      <AtmosphericImage
+                      <LocationAtmosphericImage
                         src={
                           room.image_url
                         }
