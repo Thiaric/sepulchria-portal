@@ -557,7 +557,6 @@ export function PortalSidebar({
         className="min-w-0"
       >
         <div className="flex min-w-0 items-stretch">
-          {/* RULES MAIN BUTTON */}
           <button
             type="button"
             title={
@@ -592,39 +591,42 @@ export function PortalSidebar({
             </span>
           </button>
 
-          {/* PLUS / MINUS */}
           <button
-  type="button"
-  onClick={() =>
-    setRulesExpanded(
-      (current) => !current,
-    )
-  }
-  title={
-    rulesExpanded
-      ? "Hide Rules submenu"
-      : "Show Rules submenu"
-  }
-  aria-label={
-    rulesExpanded
-      ? "Collapse Rules submenu"
-      : "Expand Rules submenu"
-  }
-  aria-expanded={rulesExpanded}
-  className="ml-1 flex w-7 shrink-0 items-center justify-center gap-2 bg-transparent text-sm text-[#9e8767] transition hover:text-[#efd9aa]"
->
-  <span
-    aria-hidden="true"
-    className="h-4 w-px shrink-0 bg-[#60482e]/45"
-  />
+            type="button"
+            onClick={() =>
+              setRulesExpanded(
+                (current) =>
+                  !current,
+              )
+            }
+            title={
+              rulesExpanded
+                ? "Hide Rules submenu"
+                : "Show Rules submenu"
+            }
+            aria-label={
+              rulesExpanded
+                ? "Collapse Rules submenu"
+                : "Expand Rules submenu"
+            }
+            aria-expanded={
+              rulesExpanded
+            }
+            className="ml-1 flex w-7 shrink-0 items-center justify-center gap-2 bg-transparent text-sm text-[#9e8767] transition hover:text-[#efd9aa]"
+          >
+            <span
+              aria-hidden="true"
+              className="h-4 w-px shrink-0 bg-[#60482e]/45"
+            />
 
-  <span>
-    {rulesExpanded ? "−" : "+"}
-  </span>
-</button>
+            <span>
+              {rulesExpanded
+                ? "−"
+                : "+"}
+            </span>
+          </button>
         </div>
 
-        {/* RULES SUBMENU */}
         {rulesExpanded ? (
           <div className="mt-1 border-l border-[#60482e]/40 pl-3 lg:ml-4">
             <button
@@ -663,6 +665,121 @@ export function PortalSidebar({
     );
   }
 
+  function renderMobileItem(
+    item: NavigationItem,
+  ) {
+    const active =
+      isActive(
+        item.activePaths,
+      );
+
+    const className = `
+      relative
+      flex
+      h-10
+      min-w-0
+      items-center
+      justify-center
+      border
+      text-[17px]
+      leading-none
+      transition
+      ${
+        item.disabled
+          ? "cursor-not-allowed border-transparent text-[#51483d] opacity-45"
+          : active
+            ? "border-[#8d6d3e] bg-[#332719] text-[#efd9aa]"
+            : "border-transparent text-[#b68b4f] hover:border-[#5d4930] hover:bg-[#1d1712] hover:text-[#efd9aa]"
+      }
+    `;
+
+    if (item.disabled) {
+      return (
+        <div
+          key={item.label}
+          title={`${item.label} — Coming soon`}
+          aria-label={`${item.label} — Coming soon`}
+          className={
+            className
+          }
+        >
+          <span aria-hidden="true">
+            {item.icon}
+          </span>
+        </div>
+      );
+    }
+
+    if (item.opensModal) {
+      return (
+        <button
+          key={item.label}
+          type="button"
+          title={item.label}
+          aria-label={
+            item.label
+          }
+          onClick={() =>
+            setModalItem(
+              item,
+            )
+          }
+          className={
+            className
+          }
+        >
+          <span aria-hidden="true">
+            {item.icon}
+          </span>
+        </button>
+      );
+    }
+
+    return (
+      <Link
+        key={item.label}
+        href={item.href}
+        title={item.label}
+        aria-label={
+          item.label
+        }
+        className={
+          className
+        }
+      >
+        <span aria-hidden="true">
+          {item.icon}
+        </span>
+
+        {item.label ===
+          "Messages" &&
+        unreadMessageCount >
+          0 ? (
+          <span className="absolute right-0.5 top-0.5 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] px-0.5 text-[7px] font-bold leading-none text-[#ffe1ac]">
+            {unreadMessageCount >
+            9
+              ? "9+"
+              : unreadMessageCount}
+          </span>
+        ) : null}
+      </Link>
+    );
+  }
+
+  const mobileNavigationItems = [
+    ...mainNavigationItems,
+    codexItem,
+    rulesItem,
+    ...otherCodexNavigationItems,
+    marketItem,
+  ];
+
+  const forumActive =
+    pathname === "/forum" ||
+    pathname.startsWith(
+      "/forum/",
+    );
+
   return (
     <>
       <aside
@@ -670,7 +787,52 @@ export function PortalSidebar({
         data-portal-scroll
         className="border-b border-[#6e5535]/30 bg-[#100d0b]/90 lg:h-full lg:min-h-0 lg:overflow-y-auto lg:overscroll-contain lg:border-b-0 lg:border-r"
       >
-        <div className="p-3 lg:p-[var(--portal-column-pad)]">
+        {/* MOBILE NAVIGATION */}
+        <div className="px-2 py-1.5 lg:hidden">
+          <nav
+            aria-label="Main navigation"
+            className="grid grid-cols-6 gap-1"
+          >
+            {mobileNavigationItems.map(
+              renderMobileItem,
+            )}
+
+            <Link
+              href="/forum"
+              title="Forum"
+              aria-label="Forum"
+              className={`relative flex h-10 min-w-0 items-center justify-center border text-[17px] leading-none transition ${
+                forumActive
+                  ? "border-[#8d6d3e] bg-[#332719] text-[#efd9aa]"
+                  : currentUnreadForumCount >
+                      0
+                    ? "border-[#a87532] bg-[#24190f] text-[#efd9aa]"
+                    : "border-transparent text-[#b68b4f] hover:border-[#5d4930] hover:bg-[#1d1712] hover:text-[#efd9aa]"
+              }`}
+            >
+              <span aria-hidden="true">
+                ☷
+              </span>
+
+              {currentUnreadForumCount >
+              0 ? (
+                <span className="absolute right-0.5 top-0.5 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] px-0.5 text-[7px] font-bold leading-none text-[#ffe1ac]">
+                  {currentUnreadForumCount >
+                  9
+                    ? "9+"
+                    : currentUnreadForumCount}
+                </span>
+              ) : null}
+            </Link>
+
+            {renderMobileItem(
+              messagesItem,
+            )}
+          </nav>
+        </div>
+
+        {/* DESKTOP SIDEBAR */}
+        <div className="hidden p-[var(--portal-column-pad)] lg:block">
           <nav aria-label="Main navigation">
             <NavigationGroup
               title="Navigate the World"
@@ -695,12 +857,12 @@ export function PortalSidebar({
             />
 
             <section>
-              <p className="mb-2 hidden text-[8px] uppercase tracking-[0.3em] text-[#766754] lg:block">
+              <p className="mb-2 text-[8px] uppercase tracking-[0.3em] text-[#766754]">
                 services and
                 utilities
               </p>
 
-              <div className="grid grid-cols-3 gap-1.5 sm:grid-cols-5 lg:grid-cols-1">
+              <div className="grid grid-cols-1 gap-1.5">
                 {renderNavigationItem(
                   marketItem,
                 )}
@@ -718,7 +880,7 @@ export function PortalSidebar({
             </section>
           </nav>
 
-          <div className="mt-[var(--portal-group-gap)] hidden border-t border-[#6e5535]/30 pt-2 lg:block">
+          <div className="mt-[var(--portal-group-gap)] border-t border-[#6e5535]/30 pt-2">
             <span className="block py-1 text-[9px] uppercase tracking-[0.18em] text-[#5f5549]">
               Support · Coming
               soon
@@ -820,11 +982,11 @@ function NavigationGroup({
 }) {
   return (
     <section className="mb-[var(--portal-group-gap)] border-b border-[#6e5535]/20 pb-[var(--portal-group-gap)]">
-      <p className="mb-2 hidden text-[8px] uppercase tracking-[0.3em] text-[#766754] lg:block">
+      <p className="mb-2 text-[8px] uppercase tracking-[0.3em] text-[#766754]">
         {title}
       </p>
 
-      <div className="grid grid-cols-3 gap-1.5 sm:grid-cols-5 lg:grid-cols-1">
+      <div className="grid grid-cols-1 gap-1.5">
         {items}
       </div>
     </section>
