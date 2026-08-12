@@ -428,11 +428,31 @@ export function ActiveCityCounter({
       </button>
 
       {open ? (
-        <div
-          role="dialog"
-          aria-label="Active characters in Sepulchria"
-          className="absolute right-0 top-[calc(100%+0.5rem)] z-[120] w-[min(92vw,25rem)] overflow-hidden border border-[#6d5132] bg-[#0f0b08]/[0.98] shadow-[0_22px_60px_rgba(0,0,0,0.75)] backdrop-blur-md"
-        >
+  <div
+    role="dialog"
+    aria-label="Active characters in Sepulchria"
+    className="
+      fixed
+      left-2
+      right-2
+      top-[calc(clamp(56px,8dvh,80px)+0.5rem)]
+      z-[120]
+      max-h-[calc(100dvh-clamp(56px,8dvh,80px)-1rem)]
+      overflow-hidden
+      border
+      border-[#6d5132]
+      bg-[#0f0b08]/[0.98]
+      shadow-[0_22px_60px_rgba(0,0,0,0.75)]
+      backdrop-blur-md
+
+      sm:left-auto
+      sm:right-0
+      sm:top-[calc(100%+0.5rem)]
+      sm:w-[min(92vw,25rem)]
+      sm:max-h-none
+      sm:absolute
+    "
+  >
           <div className="flex items-center justify-between gap-4 border-b border-[#59432c]/55 bg-[#17110d] px-4 py-3">
             <div>
               <p className="text-[8px] uppercase tracking-[0.26em] text-[#8d6b43]">
@@ -515,7 +535,7 @@ export function ActiveCityCounter({
             </div>
           </div>
 
-          <div className="max-h-[min(58vh,30rem)] overflow-y-auto overscroll-contain p-2">
+          <div className="max-h-[calc(100dvh-clamp(56px,8dvh,80px)-9.5rem)] overflow-y-auto overscroll-contain p-2 sm:max-h-[min(58vh,30rem)]">
             {loading &&
             presentCharacters.length ===
               0 ? (

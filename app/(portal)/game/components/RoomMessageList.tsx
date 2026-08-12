@@ -851,11 +851,11 @@ export default function RoomMessageList({
       ) : null}
 
       <div
-        id="room-chronicle"
-        ref={scrollContainerRef}
-        onScroll={handleScroll}
-        className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
-      >
+  id="room-chronicle"
+  ref={scrollContainerRef}
+  onScroll={handleScroll}
+  className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
+>
 
         {liveMessages.length >
         0 ? (
