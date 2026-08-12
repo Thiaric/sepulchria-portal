@@ -280,21 +280,29 @@ function ActionSpeechText({
       rendered.push(
         <Fragment key={index}>
           <span
-            className={
-              isAction
-                ? "italic text-[#a98a60]"
-                : "text-[#d3c2aa]"
-            }
-          >
-            {displayText}
-          </span>
+  className={
+    isAction
+      ? "italic text-[#a98a60]"
+      : "text-[#d3c2aa]"
+  }
+  style={{
+    lineHeight: "18px",
+  }}
+>
+  {displayText}
+</span>
         </Fragment>,
       );
     },
   );
 
   return (
-    <span className="whitespace-pre-wrap break-words text-[13px] leading-6">
+    <span
+  className="whitespace-pre-wrap break-words text-[13px]"
+  style={{
+    lineHeight: "18px",
+  }}
+>
       {rendered}
     </span>
   );
@@ -831,7 +839,7 @@ export default function RoomMessageList({
   }
 
   return (
-    <div className="relative flex min-h-0 flex-1 flex-col">
+    <div className="relative flex min-h-0 flex-none flex-col lg:flex-1">
       {connectionStatus !==
       "connected" ? (
         <div
@@ -854,7 +862,7 @@ export default function RoomMessageList({
   id="room-chronicle"
   ref={scrollContainerRef}
   onScroll={handleScroll}
-  className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
+  className="min-h-0 flex-none overflow-visible lg:flex-1 lg:overflow-y-auto lg:overscroll-contain"
 >
 
         {liveMessages.length >
@@ -1031,82 +1039,78 @@ export default function RoomMessageList({
 
                 return (
                   <article
-                    key={item.id}
-                    className={`flex gap-3 px-5 py-3 sm:px-7 ${
-                      isWhisper
-                        ? "border-l-2 border-[#7d628f] bg-[#241b2a]/45"
-                        : ""
-                    }`}
-                  >
-                    <div className="flex shrink-0 items-start gap-1.5">
-                      <CharacterPortrait
-                        author={author}
-                        characterHref={
-                          characterHref
-                        }
-                      />
+  key={item.id}
+  className={`flex gap-3 px-5 py-3 sm:px-7 ${
+    isWhisper
+      ? "border-l-2 border-[#7d628f] bg-[#241b2a]/45"
+      : ""
+  }`}
+>
+  {/* Character identity + timestamp */}
+  <div className="flex w-[76px] shrink-0 flex-col">
+    <div className="flex items-start gap-1.5">
+      <CharacterPortrait
+        author={author}
+        characterHref={
+          characterHref
+        }
+      />
 
-                      <CharacterIdentityIcons
-                        author={author}
-                      />
-                    </div>
+      <CharacterIdentityIcons
+        author={author}
+      />
+    </div>
 
-                    <div className="min-w-0 flex-1">
-                      {isWhisper ? (
-                        <div className="mb-2 flex items-center justify-between gap-3 border-b border-[#7d628f]/35 pb-1.5">
-                          <span className="text-[8px] uppercase tracking-[0.2em] text-[#c7add6]">
-                            {whisperLabel}
-                          </span>
+    <time
+      dateTime={
+        item.created_at
+      }
+      className="mt-1.5 block text-[7px] uppercase leading-4 tracking-[0.12em] text-[#776b5b]"
+    >
+      {time}
+    </time>
+  </div>
 
-                          <time
-                            dateTime={
-                              item.created_at
-                            }
-                            className="shrink-0 text-[8px] uppercase tracking-[0.14em] text-[#776b5b]"
-                          >
-                            {time}
-                          </time>
-                        </div>
-                      ) : null}
+  {/* Message */}
+  <div className="min-w-0 flex-1">
+    {isWhisper ? (
+      <div className="mb-2 border-b border-[#7d628f]/35 pb-1.5">
+        <span className="text-[8px] uppercase tracking-[0.2em] text-[#c7add6]">
+          {whisperLabel}
+        </span>
+      </div>
+    ) : null}
 
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="min-w-0 flex-1">
-                          {author?.public_slug ? (
-                            <Link
-                              href={characterHref}
-                              className="mr-2 inline font-serif text-sm text-[#d8bf91] transition hover:text-[#ecd29e]"
-                            >
-                              {author.first_name ??
-                                author.display_name}
-                            </Link>
-                          ) : (
-                            <span className="mr-2 inline font-serif text-sm text-[#d8bf91]">
-                              {author?.first_name ??
-                                author?.display_name ??
-                                "Unknown character"}
-                            </span>
-                          )}
+    <div
+  className="min-w-0"
+  style={{
+    lineHeight: "18px",
+  }}
+>
+      {author?.public_slug ? (
+        <Link
+          href={characterHref}
+          className="mr-2 inline font-serif text-sm leading-[18px] text-[#d8bf91] transition hover:text-[#ecd29e]"
+        >
+          {author.first_name ??
+            author.display_name}
+        </Link>
+      ) : (
+        <span className="mr-2 inline font-serif text-sm leading-[18px] text-[#d8bf91]">
+          {author?.first_name ??
+            author?.display_name ??
+            "Unknown character"}
+        </span>
+      )}
 
-                          <ActionSpeechText
-                            content={
-                              item.message
-                            }
-                          />
-                        </div>
-
-                        {!isWhisper ? (
-                          <time
-                            dateTime={
-                              item.created_at
-                            }
-                            className="shrink-0 pt-1 text-[9px] uppercase tracking-[0.18em] text-[#776b5b]"
-                          >
-                            {time}
-                          </time>
-                        ) : null}
-                      </div>
-                    </div>
-                  </article>
+      <ActionSpeechText
+        content={
+          item.message
+        }
+      />
+    </div>
+  </div>
+</article>
                 );
               },
             )}

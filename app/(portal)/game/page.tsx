@@ -407,11 +407,11 @@ async function GameContent() {
       </p>
     </div>
 
-    <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
+    <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:shrink-0 sm:flex-wrap sm:items-center sm:justify-end">
       <Link
   href="/game/export"
   title="Export the current game session as a file"
-  className="border border-[#725c3d] bg-[#21190f] px-3 py-1.5 text-[9px] uppercase tracking-[0.18em] text-[#d6bb8d] transition hover:border-[#a17a49] hover:bg-[#352718] hover:text-[#f0d6a7]"
+  className="flex min-w-0 items-center justify-center border border-[#725c3d] bg-[#21190f] px-2 py-1.5 text-center text-[8px] uppercase tracking-[0.12em] text-[#d6bb8d] transition hover:border-[#a17a49] hover:bg-[#352718] hover:text-[#f0d6a7] sm:px-3 sm:text-[9px] sm:tracking-[0.18em]"
 >
   Export role
 </Link>
@@ -420,17 +420,20 @@ async function GameContent() {
   <Link
     href={`/areas/${roomArea.slug}`}
     title="Return to the area page"
-    className="border border-[#725c3d] bg-[#21190f] px-3 py-1.5 text-[9px] uppercase tracking-[0.18em] text-[#d6bb8d] transition hover:border-[#a17a49] hover:bg-[#352718] hover:text-[#f0d6a7]"
+    className="flex min-w-0 items-center justify-center border border-[#725c3d] bg-[#21190f] px-2 py-1.5 text-center text-[8px] uppercase tracking-[0.12em] text-[#d6bb8d] transition hover:border-[#a17a49] hover:bg-[#352718] hover:text-[#f0d6a7] sm:px-3 sm:text-[9px] sm:tracking-[0.18em]"
   >
     ← Back to {roomArea.name}
   </Link>
 ) : null}
 
-<form action={leaveCurrentRoom}>
+<form
+  action={leaveCurrentRoom}
+  className="col-span-2 sm:col-auto"
+>
   <button
     type="submit"
     title="Leave this location and return to the city, your presence won't be counted in locations, only in the portal"
-    className="border border-[#8f3f36] bg-[#351714] px-3 py-1.5 text-[9px] uppercase tracking-[0.18em] text-[#e6a097] transition hover:border-[#c65a4d] hover:bg-[#4b1d19] hover:text-[#ffd0c9]"
+    className="w-full border border-[#8f3f36] bg-[#351714] px-2 py-1.5 text-[8px] uppercase tracking-[0.12em] text-[#e6a097] transition hover:border-[#c65a4d] hover:bg-[#4b1d19] hover:text-[#ffd0c9] sm:w-auto sm:px-3 sm:text-[9px] sm:tracking-[0.18em]"
   >
     Take Leave
   </button>
@@ -440,7 +443,7 @@ async function GameContent() {
     </div>
   </div>
 
-  <article className="flex min-h-0 flex-1 flex-col overflow-hidden border border-[#6a5032]/50 bg-[#17110d]">
+  <article className="flex min-h-0 flex-1 flex-col overflow-visible border border-[#6a5032]/50 bg-[#17110d] lg:overflow-hidden">
     <RoomMessageList
       roomId={room.id}
       messages={visibleMessages}
