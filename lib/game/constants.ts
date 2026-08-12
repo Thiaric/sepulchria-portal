@@ -1,4 +1,4 @@
-export const CHAT_MAX_LENGTH = 1000;
+export const CHAT_MAX_LENGTH = 1200;
 export const CHAT_COOLDOWN_SECONDS = 3;
 export const PRESENCE_ACTIVE_MINUTES = 5;
 export const ROOM_ROLL_COOLDOWN_SECONDS = 3;

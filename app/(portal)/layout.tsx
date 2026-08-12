@@ -388,12 +388,12 @@ async function PortalLayoutContent({
               }
               centre={
                 <main
-                  data-portal-column
-                  data-portal-scroll
-                  className="min-h-0 min-w-0 overflow-y-auto overscroll-contain"
-                >
-                  {children}
-                </main>
+  data-portal-column
+  data-portal-scroll
+  className="min-h-0 min-w-0 overflow-visible lg:overflow-y-auto lg:overscroll-contain"
+>
+  {children}
+</main>
               }
               right={
                 <PortalResponsiveRightSidebar
