@@ -8,7 +8,6 @@ import {
 } from "react";
 
 import { moveCharacter } from "@/app/(portal)/game/actions";
-import PresenceHeartbeat from "@/app/(portal)/game/components/PresenceHeartbeat";
 import { createClient } from "@/lib/supabase/client";
 import type { PresenceStatus } from "@/types/game";
 
@@ -16,8 +15,6 @@ const PRESENCE_ACTIVE_MINUTES = 3;
 
 type GameContextPanelProps = {
   roomId: string | null;
-  characterId: string | null;
-  initialPresenceStatus: PresenceStatus;
 };
 
 type CodexSummary = {
@@ -74,8 +71,6 @@ type RoomExit = {
 
 export function GameContextPanel({
   roomId,
-  characterId,
-  initialPresenceStatus,
 }: GameContextPanelProps) {
   const [
     presentCharacters,
@@ -288,17 +283,7 @@ export function GameContextPanel({
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      {characterId ? (
-        <section className="shrink-0">
-          <PresenceHeartbeat
-            characterId={characterId}
-            roomId={roomId}
-            initialStatus={
-              initialPresenceStatus
-            }
-          />
-        </section>
-      ) : null}
+      
 
       {error ? (
         <p className="mt-3 shrink-0 border border-[#743d35] bg-[#2a1512] p-2.5 text-[11px] leading-5 text-[#d8a49a]">
@@ -307,7 +292,7 @@ export function GameContextPanel({
         </p>
       ) : null}
 
-      <section className="mt-4 flex min-h-0 flex-1 flex-col border-t border-[#59432c]/40 pt-4">
+      <section className="mt-1 flex min-h-0 flex-1 flex-col border-[#59432c]/40 pt-0">
         <div className="flex shrink-0 items-center justify-between gap-3">
           <div className="min-w-0">
             <p className="text-[8px] uppercase tracking-[0.24em] text-[#876a46]">

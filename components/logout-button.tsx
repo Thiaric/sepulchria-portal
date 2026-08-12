@@ -93,7 +93,7 @@ export function LogoutButton() {
       h-10
       items-center
       justify-center
-      gap-2
+      gap-0
       border
       border-[#6f5233]
       bg-[#16100c]
@@ -117,7 +117,7 @@ export function LogoutButton() {
     <span>
       {isLoggingOut
         ? "Exiting..."
-        : "Exit Game"}
+        : ""}
     </span>
   </button>
 );

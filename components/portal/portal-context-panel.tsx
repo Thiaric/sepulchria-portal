@@ -21,7 +21,6 @@ import {
   type CreateForumReplyState,
 } from "@/app/(portal)/forum/actions";
 import { createClient } from "@/lib/supabase/client";
-import type { PresenceStatus } from "@/types/game";
 import type { PortalContext } from "@/types/portal";
 import { ForumSectionActivityContext } from "@/components/portal/forum-section-activity-context";
 
@@ -963,22 +962,13 @@ function DashboardContext({
 function GameContext({
   context,
 }: PortalContextPanelProps) {
-  const character = context.character;
-  const room = character?.currentRoom;
-
-  const initialPresenceStatus: PresenceStatus =
-    context.presence?.status === "online" ||
-    context.presence?.status === "away" ||
-    context.presence?.status === "busy"
-      ? context.presence.status
-      : "online";
+  const room =
+    context.character?.currentRoom;
 
   return (
     <GameContextPanel
-      roomId={room?.id ?? null}
-      characterId={character?.id ?? null}
-      initialPresenceStatus={
-        initialPresenceStatus
+      roomId={
+        room?.id ?? null
       }
     />
   );
