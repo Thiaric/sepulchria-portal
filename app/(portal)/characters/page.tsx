@@ -48,12 +48,10 @@ export default async function CharactersPage() {
     <div className="mx-auto w-full max-w-7xl space-y-6">
       <header className="border border-[#60482e]/45 bg-[#15100d]/95 p-6 sm:p-8">
         <p className="text-[10px] uppercase tracking-[0.28em] text-[#886c48]">
-          Sepulchria archive
+          Sepulchria's People
         </p>
 
-        <h1 className="mt-3 font-serif text-4xl text-[#e0c99e] sm:text-5xl">
-          Characters
-        </h1>
+        
 
         <p className="mt-4 max-w-3xl text-sm leading-7 text-[#9f9281]">
           Browse the people currently shaping the

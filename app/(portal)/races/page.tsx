@@ -23,9 +23,6 @@ export default async function RacesPage() {
         The peoples of Aureth
       </p>
 
-      <h1 className="mt-2 font-serif text-4xl text-[#e0c99e] sm:text-5xl">
-        Ancestries
-      </h1>
 
       <p className="mt-3 max-w-3xl text-sm leading-6 text-[#9f9281]">
         The peoples of Aureth differ in ancestry, appearance,
