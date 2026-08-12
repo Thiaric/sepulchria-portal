@@ -170,7 +170,8 @@ export default async function AreaPage({
               (room) => (
                 <article
                   key={room.id}
-                  className="overflow-hidden border border-[#584128]/60 bg-[#120e0b]"
+                  id={`location-${room.slug}`}
+                  className="scroll-mt-4 overflow-hidden border border-[#584128]/60 bg-[#120e0b]"
                 >
                   {room.image_url ? (
                     <div className="relative aspect-[16/7] w-full overflow-hidden border-b border-[#584128]/45 bg-[#0b0806]">
@@ -208,7 +209,7 @@ export default async function AreaPage({
                         body={
                           room.description
                         }
-                        className="mt-1 line-clamp-3 text-[11px] leading-5 text-[#9e907d] [&_p]:m-0 [&_h1]:text-xs [&_h2]:text-xs [&_h3]:text-xs [&_img]:hidden [&_table]:hidden"
+                        className="mt-1 text-[11px] leading-5 text-[#9e907d] [&_p]:m-0 [&_h1]:text-xs [&_h2]:text-xs [&_h3]:text-xs [&_img]:hidden [&_table]:hidden"
                       />
                     ) : null}
 

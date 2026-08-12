@@ -217,6 +217,21 @@ if (
   );
 }
 
+  const areaMatch =
+    pathname.match(
+      /^\/areas\/([^/]+)$/,
+    );
+
+  if (areaMatch) {
+    return (
+      <AreaContext
+        areaSlug={decodeURIComponent(
+          areaMatch[1],
+        )}
+      />
+    );
+  }
+
   if (
     pathname === "/messages" ||
     pathname.startsWith("/messages/")
@@ -2612,6 +2627,237 @@ function ForumContextLoading() {
       <div className="h-24 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
       <div className="h-24 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
       <div className="h-24 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
+    </div>
+  );
+}
+
+type AreaContextRoom = {
+  id: string;
+  name: string;
+  slug: string;
+  sort_order: number | null;
+};
+
+function AreaContext({
+  areaSlug,
+}: {
+  areaSlug: string;
+}) {
+  const [areaName, setAreaName] =
+    useState("Area");
+
+  const [rooms, setRooms] =
+    useState<AreaContextRoom[]>([]);
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const [error, setError] =
+    useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadArea() {
+      const supabase =
+        createClient();
+
+      const {
+        data: area,
+        error: areaError,
+      } = await supabase
+        .from("areas")
+        .select("id, name")
+        .eq("slug", areaSlug)
+        .eq("is_active", true)
+        .maybeSingle();
+
+      if (cancelled) {
+        return;
+      }
+
+      if (areaError || !area) {
+        setError(
+          areaError?.message ??
+            "Area not found.",
+        );
+        setLoading(false);
+        return;
+      }
+
+      const {
+        data: roomRows,
+        error: roomsError,
+      } = await supabase
+        .from("rooms")
+        .select(
+          "id, name, slug, sort_order",
+        )
+        .eq("area_id", area.id)
+        .eq("is_active", true)
+        .order("sort_order", {
+          ascending: true,
+        })
+        .order("name", {
+          ascending: true,
+        });
+
+      if (cancelled) {
+        return;
+      }
+
+      if (roomsError) {
+        setError(
+          roomsError.message,
+        );
+        setLoading(false);
+        return;
+      }
+
+      setAreaName(
+        String(area.name),
+      );
+
+      setRooms(
+        (roomRows ?? []).map(
+          (room) => ({
+            id: String(room.id),
+            name: String(room.name),
+            slug: String(room.slug),
+            sort_order:
+              room.sort_order === null
+                ? null
+                : Number(
+                    room.sort_order,
+                  ),
+          }),
+        ),
+      );
+
+      setError(null);
+      setLoading(false);
+    }
+
+    setLoading(true);
+    void loadArea();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [areaSlug]);
+
+  function jumpToLocation(
+    slug: string,
+  ) {
+    const anchor =
+      `location-${slug}`;
+
+    const element =
+      document.getElementById(
+        anchor,
+      );
+
+    if (!element) {
+      return;
+    }
+
+    element.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
+    window.history.replaceState(
+      null,
+      "",
+      `#${anchor}`,
+    );
+  }
+
+  return (
+    <div className="flex h-full min-h-0 flex-col">
+      <ContextHeading
+        eyebrow="District of Sepulchria"
+        title={areaName}
+      />
+
+      <p className="mb-4 text-xs leading-6 text-[#938673]">
+        Jump directly to a
+        location in this area.
+      </p>
+
+      {error ? (
+        <p className="mb-3 border border-[#743d35] bg-[#2a1512] p-3 text-[11px] leading-5 text-[#d8a49a]">
+          The locations could not
+          be loaded.
+        </p>
+      ) : null}
+
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1">
+        {loading ? (
+          <div className="space-y-2">
+            {Array.from({
+              length: 6,
+            }).map(
+              (_, index) => (
+                <div
+                  key={index}
+                  className="h-11 animate-pulse border border-[#59432c]/30 bg-[#19120d]"
+                />
+              ),
+            )}
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {rooms.map(
+              (room) => (
+                <button
+                  key={room.id}
+                  type="button"
+                  onClick={() =>
+                    jumpToLocation(
+                      room.slug,
+                    )
+                  }
+                  className="group flex w-full items-center justify-between gap-3 border border-[#59432c]/40 bg-[#100c09] px-3 py-3 text-left transition hover:border-[#8d693e] hover:bg-[#1d150f]"
+                >
+                  <span className="min-w-0 font-serif text-sm text-[#cbb28a] transition group-hover:text-[#ead0a0]">
+                    {room.name}
+                  </span>
+
+                  <span
+                    aria-hidden="true"
+                    className="shrink-0 text-[10px] text-[#725a3d] transition group-hover:translate-x-0.5 group-hover:text-[#b88a52]"
+                  >
+                    ↓
+                  </span>
+                </button>
+              ),
+            )}
+          </div>
+        )}
+
+        {!loading &&
+        !error &&
+        rooms.length === 0 ? (
+          <p className="border border-[#59432c]/30 bg-[#100c09]/60 p-3 text-[11px] leading-5 text-[#8f8271]">
+            No active locations
+            are currently
+            available.
+          </p>
+        ) : null}
+      </div>
+
+      <Link
+        href="/?map=sepulchria"
+        className="mt-4 flex w-full shrink-0 items-center justify-between border border-[#765937] bg-[#271c12] px-4 py-3 text-[10px] uppercase tracking-[0.18em] text-[#dfc79c] transition hover:border-[#997042] hover:bg-[#3b2919]"
+      >
+        <span>
+          Return to Sepulchria
+        </span>
+        <span aria-hidden="true">
+          →
+        </span>
+      </Link>
     </div>
   );
 }
