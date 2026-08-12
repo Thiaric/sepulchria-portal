@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { CodexEntryImageLightbox } from "@/components/codex/codex-entry-image-lightbox";
 import { RichTextContentClient } from "@/components/editor/rich-text-content-client";
 import { LocationAtmosphericImage } from "@/components/world/location-atmospheric-image";
+import { LocationImageLightbox } from "@/components/world/location-image-lightbox";
 
 import { createClient } from "@/lib/supabase/server";
 import { enterRoomFromMap } from "../../game/actions";
@@ -34,7 +34,8 @@ type Room = {
 export default async function AreaPage({
   params,
 }: Props) {
-  const { slug } = await params;
+  const { slug } =
+    await params;
 
   const supabase =
     await createClient();
@@ -92,20 +93,27 @@ export default async function AreaPage({
 
   return (
     <div className="mx-auto max-w-6xl space-y-4 p-3 sm:p-4 lg:p-5">
-      {/* AREA HERO */}
       <section className="overflow-hidden border border-[#6a5032]/50 bg-[#17110d]">
         {safeArea.image_url ? (
           <div className="relative h-[clamp(180px,28dvh,300px)] overflow-hidden">
             <LocationAtmosphericImage
-              src={safeArea.image_url}
-              alt={safeArea.name}
+              src={
+                safeArea.image_url
+              }
+              alt={
+                safeArea.name
+              }
               sizes="(max-width: 1024px) 100vw, 70vw"
               objectFit="cover"
             />
 
-            <CodexEntryImageLightbox
-              src={safeArea.image_url}
-              name={safeArea.name}
+            <LocationImageLightbox
+              src={
+                safeArea.image_url
+              }
+              name={
+                safeArea.name
+              }
             />
 
             <div className="pointer-events-none absolute inset-0 z-[6] bg-gradient-to-t from-[#17110d]/72 via-[#17110d]/12 to-transparent" />
@@ -140,7 +148,6 @@ export default async function AreaPage({
         ) : null}
       </section>
 
-      {/* AVAILABLE LOCATIONS */}
       <section className="border border-[#6a5032]/50 bg-[#17110d] p-3 sm:p-4">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
           <div>
@@ -178,7 +185,7 @@ export default async function AreaPage({
                         objectFit="cover"
                       />
 
-                      <CodexEntryImageLightbox
+                      <LocationImageLightbox
                         src={
                           room.image_url
                         }

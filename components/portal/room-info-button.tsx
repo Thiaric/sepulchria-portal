@@ -1,11 +1,15 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { createPortal } from "react-dom";
 
 import { RichTextContentClient } from "@/components/editor/rich-text-content-client";
+import { LocationAtmosphericImage } from "@/components/world/location-atmospheric-image";
 import { createClient } from "@/lib/supabase/client";
-import { AtmosphericImage } from "@/components/world/atmospheric-image";
 
 type AreaRelation = {
   id: string;
@@ -21,63 +25,92 @@ type RoomDetails = {
   description: string | null;
   image_url: string | null;
   sort_order: number | null;
-  area: AreaRelation | AreaRelation[] | null;
+  area:
+    | AreaRelation
+    | AreaRelation[]
+    | null;
 };
 
 type RoomInfoButtonProps = {
   roomId: string;
 };
 
-export function RoomInfoButton({ roomId }: RoomInfoButtonProps) {
-  const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [room, setRoom] = useState<RoomDetails | null>(null);
+export function RoomInfoButton({
+  roomId,
+}: RoomInfoButtonProps) {
+  const [open, setOpen] =
+    useState(false);
 
-  const loadRoom = useCallback(async () => {
-    setLoading(true);
-    setError(null);
+  const [loading, setLoading] =
+    useState(false);
 
-    const supabase = createClient();
+  const [error, setError] =
+    useState<string | null>(
+      null,
+    );
 
-    const { data, error: roomError } = await supabase
-      .from("rooms")
-      .select(`
-        id,
-        name,
-        slug,
-        description,
-        image_url,
-        sort_order,
-        area:areas!rooms_area_id_fkey(
+  const [room, setRoom] =
+    useState<RoomDetails | null>(
+      null,
+    );
+
+  const loadRoom =
+    useCallback(async () => {
+      setLoading(true);
+      setError(null);
+
+      const supabase =
+        createClient();
+
+      const {
+        data,
+        error: roomError,
+      } = await supabase
+        .from("rooms")
+        .select(`
           id,
           name,
           slug,
-          description
-        )
-      `)
-      .eq("id", roomId)
-      .maybeSingle();
+          description,
+          image_url,
+          sort_order,
+          area:areas!rooms_area_id_fkey(
+            id,
+            name,
+            slug,
+            description
+          )
+        `)
+        .eq("id", roomId)
+        .maybeSingle();
 
-    if (roomError) {
-      setError(roomError.message);
+      if (roomError) {
+        setError(
+          roomError.message,
+        );
+        setLoading(false);
+        return;
+      }
+
+      if (!data) {
+        setError(
+          "This room could not be found.",
+        );
+        setLoading(false);
+        return;
+      }
+
+      setRoom(
+        data as unknown as RoomDetails,
+      );
+
       setLoading(false);
-      return;
-    }
+    }, [roomId]);
 
-    if (!data) {
-      setError("This room could not be found.");
-      setLoading(false);
-      return;
-    }
-
-    setRoom(data as unknown as RoomDetails);
-    setLoading(false);
-  }, [roomId]);
-
-  const closeModal = useCallback(() => {
-    setOpen(false);
-  }, []);
+  const closeModal =
+    useCallback(() => {
+      setOpen(false);
+    }, []);
 
   function openModal() {
     setOpen(true);
@@ -92,31 +125,55 @@ export function RoomInfoButton({ roomId }: RoomInfoButtonProps) {
       return;
     }
 
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    const previousOverflow =
+      document.body.style.overflow;
 
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") {
+    document.body.style.overflow =
+      "hidden";
+
+    function handleKeyDown(
+      event: KeyboardEvent,
+    ) {
+      if (
+        event.key === "Escape"
+      ) {
         closeModal();
       }
     }
 
-    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener(
+      "keydown",
+      handleKeyDown,
+    );
 
     return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [closeModal, open]);
+      document.body.style.overflow =
+        previousOverflow;
 
-  const area = normaliseRelation(room?.area ?? null);
+      window.removeEventListener(
+        "keydown",
+        handleKeyDown,
+      );
+    };
+  }, [
+    closeModal,
+    open,
+  ]);
+
+  const area =
+    normaliseRelation(
+      room?.area ?? null,
+    );
 
   const modal = open ? (
     <div
       role="presentation"
       className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm sm:p-6"
       onMouseDown={(event) => {
-        if (event.target === event.currentTarget) {
+        if (
+          event.target ===
+          event.currentTarget
+        ) {
           closeModal();
         }
       }}
@@ -157,7 +214,9 @@ export function RoomInfoButton({ roomId }: RoomInfoButtonProps) {
 
             <button
               type="button"
-              onClick={() => void loadRoom()}
+              onClick={() =>
+                void loadRoom()
+              }
               className="mt-5 border border-[#765937] bg-[#271c12] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[#dfc79c] transition hover:bg-[#3b2919]"
             >
               Try again
@@ -167,20 +226,24 @@ export function RoomInfoButton({ roomId }: RoomInfoButtonProps) {
           <>
             <div className="relative min-h-56 overflow-hidden border-b border-[#60482e]/45 bg-[#090706] sm:min-h-72">
               {room.image_url ? (
-                <AtmosphericImage
-                  src={room.image_url}
+                <LocationAtmosphericImage
+                  src={
+                    room.image_url
+                  }
                   alt={room.name}
                   sizes="(max-width: 768px) 100vw, 48rem"
+                  objectFit="cover"
                 />
               ) : (
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(130,86,42,0.22),_transparent_60%),linear-gradient(to_bottom,_#17110d,_#090706)]" />
               )}
 
-              <div className="absolute inset-0 bg-gradient-to-t from-[#120d0a] via-[#120d0a]/35 to-black/15" />
+              <div className="absolute inset-0 z-[6] bg-gradient-to-t from-[#120d0a] via-[#120d0a]/35 to-black/15" />
 
-              <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8">
+              <div className="absolute inset-x-0 bottom-0 z-10 p-6 sm:p-8">
                 <p className="text-[8px] uppercase tracking-[0.28em] text-[#c49a61]">
-                  {area?.name ?? "Sepulchria"}
+                  {area?.name ??
+                    "Sepulchria"}
                 </p>
 
                 <h2
@@ -199,7 +262,9 @@ export function RoomInfoButton({ roomId }: RoomInfoButtonProps) {
 
               {room.description?.trim() ? (
                 <RichTextContentClient
-                  body={room.description}
+                  body={
+                    room.description
+                  }
                   className="mt-2 text-[15px] leading-7 text-[#b9aa96]"
                 />
               ) : (
@@ -215,7 +280,9 @@ export function RoomInfoButton({ roomId }: RoomInfoButtonProps) {
                   </p>
 
                   <RichTextContentClient
-                    body={area.description}
+                    body={
+                      area.description
+                    }
                     className="mt-3 text-sm leading-7 text-[#968875]"
                   />
                 </section>
@@ -239,7 +306,12 @@ export function RoomInfoButton({ roomId }: RoomInfoButtonProps) {
         Info
       </button>
 
-      {modal ? createPortal(modal, document.body) : null}
+      {modal
+        ? createPortal(
+            modal,
+            document.body,
+          )
+        : null}
     </>
   );
 }
@@ -263,7 +335,12 @@ function RoomInfoLoading() {
   );
 }
 
-function normaliseRelation<T>(value: T | T[] | null): T | null {
+function normaliseRelation<T>(
+  value:
+    | T
+    | T[]
+    | null,
+): T | null {
   if (Array.isArray(value)) {
     return value[0] ?? null;
   }

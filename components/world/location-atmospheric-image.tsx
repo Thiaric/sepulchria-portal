@@ -69,16 +69,11 @@ function insertSuffixBeforeExtension(
   )}${tail}`;
 }
 
-function getLocationImageUrl(
+function deriveLocationImageUrl(
   baseUrl: string,
   weather: string,
   hour: number,
 ) {
-  /*
-   * Snow has priority over night.
-   *
-   * The weather engine currently uses "snow" and "heavy_snow".
-   */
   if (
     weather === "snow" ||
     weather === "heavy_snow"
@@ -89,10 +84,6 @@ function getLocationImageUrl(
     );
   }
 
-  /*
-   * Match the portal's existing AtmosphericImage day/night rules:
-   * night from 21:00 through 04:59.
-   */
   if (
     hour < 5 ||
     hour >= 21
@@ -104,6 +95,32 @@ function getLocationImageUrl(
   }
 
   return baseUrl;
+}
+
+export function useLocationImageSource(
+  src: string,
+) {
+  const {
+    state,
+    gameDate,
+  } = useWorldState();
+
+  const hour =
+    getLondonHour(gameDate);
+
+  return useMemo(
+    () =>
+      deriveLocationImageUrl(
+        src,
+        state.weather,
+        hour,
+      ),
+    [
+      src,
+      state.weather,
+      hour,
+    ],
+  );
 }
 
 export function LocationAtmosphericImage({
@@ -122,28 +139,8 @@ export function LocationAtmosphericImage({
     | "fill"
     | "contain";
 }) {
-  const {
-    state,
-    gameDate,
-  } = useWorldState();
-
-  const hour =
-    getLondonHour(gameDate);
-
   const atmosphericSrc =
-    useMemo(
-      () =>
-        getLocationImageUrl(
-          src,
-          state.weather,
-          hour,
-        ),
-      [
-        src,
-        state.weather,
-        hour,
-      ],
-    );
+    useLocationImageSource(src);
 
   const [
     fallbackToBase,
