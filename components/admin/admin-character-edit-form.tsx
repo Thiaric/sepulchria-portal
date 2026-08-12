@@ -656,11 +656,7 @@ export function AdminCharacterEditForm({
                   : `${selectedRace.name}: ${selectedRace.min_age}–${selectedRace.max_age} years`}
         </p>
 
-        <p className="mt-2 text-[9px] leading-5 text-[#6f6253]">
-          Changing the Ancestry selector
-          below updates this allowed range
-          immediately.
-        </p>
+        
       </section>
 
       {children}

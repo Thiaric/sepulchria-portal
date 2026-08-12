@@ -47,6 +47,7 @@ export type PublicCharacterProfile = {
   occupation: string | null;
   biography: string | null;
   portrait_url: string | null;
+  music_url: string | null;
   physical_description: string | null;
   personality: string | null;
   public_notes: string | null;

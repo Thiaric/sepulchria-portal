@@ -661,6 +661,20 @@ export default function CharacterForm({
                 placeholder="https://..."
               />
 
+              <TextField
+                label="Character music URL"
+                name="music_url"
+                type="url"
+                defaultValue={
+                  character?.music_url
+                }
+                placeholder="https://.../theme.mp3"
+              />
+
+              <p className="-mt-4 text-xs leading-6 text-[#786d5f]">
+                Optional. Use a direct browser-playable audio URL. The track never autoplays.
+              </p>
+
               <TextAreaField
                 label="Physical description"
                 name="physical_description"

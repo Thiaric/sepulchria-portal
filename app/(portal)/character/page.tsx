@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { ApprovalNotice } from "@/components/character/approval-notice";
 import { PendingSubmitButton } from "@/components/forms/pending-submit-button";
 import { CharacterExpertiseTotal } from "@/components/characters/character-expertise-total";
+import { CharacterMusicPlayer } from "@/components/characters/character-music-player";
 
 import {
   submitCharacterForReview,
@@ -41,6 +42,7 @@ type CharacterProfile = {
   biography?: string | null;
   public_notes?: string | null;
   portrait_url?: string | null;
+  music_url?: string | null;
   display_name?: string | null;
   approval_notice_seen_at?: string | null;
   muscles?: number | null;
@@ -109,6 +111,7 @@ export default async function CharacterPage({
       biography,
       public_notes,
       portrait_url,
+      music_url,
       display_name,
       status,
       rejection_reason,
@@ -376,6 +379,14 @@ export function Profile({
           </div>
         </section>
 
+        {character.music_url ? (
+          <div className="mt-4">
+            <CharacterMusicPlayer
+              src={character.music_url}
+            />
+          </div>
+        ) : null}
+
         <div className="mt-4">
           <CharacterHealthDisplay
             character={character}
@@ -456,6 +467,24 @@ export function Profile({
                     placeholder="https://..."
                     className="mt-2 w-full border border-[#60482e]/55 bg-[#0d0907] px-3 py-2.5 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
                   />
+                </label>
+
+                <label className="block">
+                  <span className="text-[9px] uppercase tracking-[0.2em] text-[#806b50]">
+                    Character music URL
+                  </span>
+
+                  <input
+                    type="url"
+                    name="music_url"
+                    defaultValue={
+                      character.music_url ?? ""
+                    }
+                    placeholder="https://.../theme.mp3"
+                    className="mt-2 w-full border border-[#60482e]/55 bg-[#0d0907] px-3 py-2.5 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                  />
+
+                
                 </label>
 
                 <div className="grid gap-5 md:grid-cols-2">

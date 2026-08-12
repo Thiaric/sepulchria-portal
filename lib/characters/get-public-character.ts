@@ -49,6 +49,7 @@ type CharacterRow = {
   occupation: string | null;
   biography: string | null;
   portrait_url: string | null;
+  music_url: string | null;
   physical_description: string | null;
   personality: string | null;
   public_notes: string | null;
@@ -227,6 +228,7 @@ export const getPublicCharacter = cache(
         occupation,
         biography,
         portrait_url,
+        music_url,
         physical_description,
         personality,
         public_notes,
@@ -369,6 +371,7 @@ export const getPublicCharacter = cache(
       occupation: row.occupation,
       biography: row.biography,
       portrait_url: row.portrait_url,
+      music_url: row.music_url,
       physical_description:
         row.physical_description,
       personality: row.personality,

@@ -191,6 +191,29 @@ function validateAdminPortraitUrl(
   }
 }
 
+function validateAdminMusicUrl(
+  value: string | null,
+) {
+  if (!value) {
+    return;
+  }
+
+  try {
+    const url = new URL(value);
+
+    if (
+      url.protocol !== "http:" &&
+      url.protocol !== "https:"
+    ) {
+      throw new Error();
+    }
+  } catch {
+    throw new Error(
+      "Character music URL must be a valid HTTP or HTTPS URL.",
+    );
+  }
+}
+
 function readReturnPath(
   value: FormDataEntryValue | null,
 ): string {
@@ -301,7 +324,17 @@ export async function updateCharacterAdministration(
     portraitUrl,
   );
 
-  const physicalDescription =
+  
+
+  const musicUrl = readOptionalText(
+    formData.get("musicUrl"),
+    2000,
+  );
+
+  validateAdminMusicUrl(
+    musicUrl,
+  );
+const physicalDescription =
     readOptionalText(
       formData.get(
         "physicalDescription",
@@ -399,6 +432,7 @@ export async function updateCharacterAdministration(
       origin,
       occupation,
       portrait_url,
+      music_url,
       physical_description,
       personality,
       biography,
@@ -606,6 +640,7 @@ export async function updateCharacterAdministration(
     origin,
     occupation,
     portrait_url: portraitUrl,
+    music_url: musicUrl,
     physical_description:
       physicalDescription,
     personality,
@@ -691,6 +726,8 @@ export async function updateCharacterAdministration(
             character.occupation,
           portrait_url:
             character.portrait_url,
+          music_url:
+            character.music_url,
           physical_description:
             character.physical_description,
           personality:

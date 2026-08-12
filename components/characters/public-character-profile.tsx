@@ -5,6 +5,7 @@ import { startConversation } from "@/app/(portal)/messages/actions";
 import { CharacterAttributesDisplay } from "@/components/characters/character-attributes-display";
 import { CharacterExpertiseTotal } from "@/components/characters/character-expertise-total";
 import { CharacterHealthDisplay } from "@/components/characters/character-health-display";
+import { CharacterMusicPlayer } from "@/components/characters/character-music-player";
 import { LiveCharacterPresence } from "@/components/characters/live-character-presence";
 import { PublicCharacterAgeDetail } from "@/components/characters/public-character-age-detail";
 import type {
@@ -209,6 +210,12 @@ export function PublicCharacterProfileView({
           </div>
         </div>
       </section>
+
+      {character.music_url ? (
+        <CharacterMusicPlayer
+          src={character.music_url}
+        />
+      ) : null}
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_300px]">
         <div className="space-y-5">

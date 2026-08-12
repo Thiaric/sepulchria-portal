@@ -48,6 +48,7 @@ type CharacterRow = {
   occupation: string | null;
   biography: string | null;
   portrait_url: string | null;
+  music_url: string | null;
   status: CharacterStatus;
   created_at: string;
   updated_at: string;
@@ -150,6 +151,7 @@ export default async function AdminCharacterPage({
         occupation,
         biography,
         portrait_url,
+        music_url,
         status,
         created_at,
         updated_at,
@@ -506,6 +508,17 @@ export default async function AdminCharacterPage({
                       name="portraitUrl"
                       maxLength={1000}
                       defaultValue={character.portrait_url ?? ""}
+                      className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                    />
+                  </AdminField>
+
+                  <AdminField label="Character music URL">
+                    <input
+                      type="url"
+                      name="musicUrl"
+                      maxLength={2000}
+                      defaultValue={character.music_url ?? ""}
+                      placeholder="https://.../theme.mp3"
                       className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
                     />
                   </AdminField>

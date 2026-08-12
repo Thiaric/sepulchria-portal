@@ -159,6 +159,35 @@ function validatePortraitUrl(
   }
 }
 
+function validateMusicUrl(
+  musicUrl: string,
+  mode: CharacterMode,
+) {
+  if (!musicUrl) {
+    return;
+  }
+
+  try {
+    const parsedUrl =
+      new URL(musicUrl);
+
+    if (
+      parsedUrl.protocol !== "http:" &&
+      parsedUrl.protocol !== "https:"
+    ) {
+      redirectWithError(
+        mode,
+        "Character music URL must use http or https.",
+      );
+    }
+  } catch {
+    redirectWithError(
+      mode,
+      "Character music URL is invalid.",
+    );
+  }
+}
+
 async function ensureFirstNameAvailable(
   supabase: Awaited<ReturnType<typeof createClient>>,
   firstName: string,
@@ -238,6 +267,17 @@ export async function saveCharacter(
 
   validatePortraitUrl(
     portraitUrl,
+    mode,
+  );
+
+  const musicUrl = text(
+    formData,
+    "music_url",
+    2000,
+  );
+
+  validateMusicUrl(
+    musicUrl,
     mode,
   );
 
@@ -328,6 +368,9 @@ export async function saveCharacter(
 
     portrait_url:
       portraitUrl || null,
+
+    music_url:
+      musicUrl || null,
 
     physical_description:
       physicalDescription,
@@ -620,6 +663,16 @@ export async function updateApprovedCharacterProfile(
   const portraitUrl = text(formData, "portrait_url", 1000);
   validatePortraitUrl(portraitUrl, "update");
 
+  const musicUrl = text(
+    formData,
+    "music_url",
+    2000,
+  );
+  validateMusicUrl(
+    musicUrl,
+    "update",
+  );
+
   const physicalDescription = text(
     formData,
     "physical_description",
@@ -685,6 +738,7 @@ export async function updateApprovedCharacterProfile(
     .from("characters")
     .update({
       portrait_url: portraitUrl || null,
+      music_url: musicUrl || null,
       physical_description: physicalDescription,
       personality,
       biography,
