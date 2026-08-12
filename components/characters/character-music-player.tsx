@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -10,8 +11,46 @@ import { usePortalAudio } from "@/components/audio/portal-audio-provider";
 
 type CharacterMusicPlayerProps = {
   src: string;
-  label?: string;
 };
+
+/*
+ * Keep a registry of every CharacterMusicPlayer audio element.
+ *
+ * This matters during Next.js client navigation: if a previous character
+ * route is temporarily retained/cached, we can still stop or mute its audio.
+ */
+const characterMusicRegistry =
+  new Set<HTMLAudioElement>();
+
+function stopAudioElement(
+  audio: HTMLAudioElement,
+  reset = false,
+) {
+  try {
+    audio.pause();
+
+    if (reset) {
+      audio.currentTime = 0;
+    }
+  } catch {
+    // Ignore browser media cleanup errors.
+  }
+}
+
+function stopOtherCharacterMusic(
+  current: HTMLAudioElement,
+) {
+  characterMusicRegistry.forEach(
+    (audio) => {
+      if (audio !== current) {
+        stopAudioElement(
+          audio,
+          true,
+        );
+      }
+    },
+  );
+}
 
 function formatTime(value: number) {
   if (
@@ -36,12 +75,22 @@ function formatTime(value: number) {
 
 export function CharacterMusicPlayer({
   src,
-  label = "Character Theme",
 }: CharacterMusicPlayerProps) {
   const audioRef =
     useRef<HTMLAudioElement | null>(
       null,
     );
+
+  const playerRef =
+    useRef<HTMLElement | null>(
+      null,
+    );
+
+  const autoplayCancelledRef =
+    useRef(false);
+
+  const autoplayFinishedRef =
+    useRef(false);
 
   const { muted: portalMuted } =
     usePortalAudio();
@@ -64,6 +113,63 @@ export function CharacterMusicPlayer({
   const [error, setError] =
     useState(false);
 
+  /*
+   * Callback ref gives us deterministic cleanup when React removes/replaces
+   * the <audio> node. We stop it BEFORE dropping our reference.
+   */
+  const setAudioElement =
+    useCallback(
+      (
+        next:
+          | HTMLAudioElement
+          | null,
+      ) => {
+        const previous =
+          audioRef.current;
+
+        if (
+          previous &&
+          previous !== next
+        ) {
+          stopAudioElement(
+            previous,
+            true,
+          );
+
+          characterMusicRegistry.delete(
+            previous,
+          );
+
+          /*
+           * Remove the media source as an extra guard against a detached
+           * element continuing to stream after client-side navigation.
+           */
+          previous.removeAttribute(
+            "src",
+          );
+
+          try {
+            previous.load();
+          } catch {
+            // Ignore cleanup errors.
+          }
+        }
+
+        audioRef.current =
+          next;
+
+        if (next) {
+          characterMusicRegistry.add(
+            next,
+          );
+        }
+      },
+      [],
+    );
+
+  /*
+   * Volume belongs to this player.
+   */
   useEffect(() => {
     const audio =
       audioRef.current;
@@ -75,6 +181,31 @@ export function CharacterMusicPlayer({
     audio.volume = volume;
   }, [volume]);
 
+  /*
+   * Global portal mute is authoritative.
+   *
+   * Apply it to EVERY registered CharacterMusicPlayer, including any stale
+   * player temporarily retained by Next.js.
+   */
+  useEffect(() => {
+    characterMusicRegistry.forEach(
+      (audio) => {
+        const ownLocalMute =
+          audio.dataset
+            .localMuted ===
+          "true";
+
+        audio.muted =
+          portalMuted ||
+          ownLocalMute;
+      },
+    );
+  }, [portalMuted]);
+
+  /*
+   * Local mute applies to this track and is also stored on the DOM element so
+   * the global portal mute can preserve it.
+   */
   useEffect(() => {
     const audio =
       audioRef.current;
@@ -82,20 +213,23 @@ export function CharacterMusicPlayer({
     if (!audio) {
       return;
     }
-
-    audio.muted =
-      portalMuted ||
-      localMuted;
 
     audio.dataset.localMuted =
       localMuted
         ? "true"
         : "false";
+
+    audio.muted =
+      portalMuted ||
+      localMuted;
   }, [
     portalMuted,
     localMuted,
   ]);
 
+  /*
+   * Reset whenever the character music source changes.
+   */
   useEffect(() => {
     const audio =
       audioRef.current;
@@ -104,94 +238,194 @@ export function CharacterMusicPlayer({
       return;
     }
 
-    audio.pause();
-    audio.currentTime = 0;
+    autoplayCancelledRef.current =
+      false;
+
+    autoplayFinishedRef.current =
+      false;
+
+    stopAudioElement(
+      audio,
+      true,
+    );
 
     setPlaying(false);
     setCurrentTime(0);
     setDuration(0);
     setError(false);
 
+    audio.src = src;
     audio.load();
+
+    return () => {
+      autoplayCancelledRef.current =
+        true;
+
+      stopAudioElement(
+        audio,
+        true,
+      );
+
+      characterMusicRegistry.delete(
+        audio,
+      );
+
+      audio.removeAttribute(
+        "src",
+      );
+
+      try {
+        audio.load();
+      } catch {
+        // Ignore cleanup errors.
+      }
+    };
   }, [src]);
 
+  /*
+   * Controlled autoplay.
+   *
+   * IMPORTANT: there is deliberately NO `autoPlay` attribute on <audio>.
+   * Native autoplay was able to start independently of our React controls
+   * during cached/client navigation.
+   *
+   * We try once immediately. If the browser blocks audible autoplay, the
+   * first interaction OUTSIDE the player can unlock it. Any interaction
+   * INSIDE the player permanently cancels fallback autoplay and leaves the
+   * viewer in control.
+   */
   useEffect(() => {
-  let unlocked = false;
+    let listenersInstalled =
+      false;
 
-  async function tryAutoplay() {
-    const element =
-      audioRef.current;
-
-    if (!element) {
-      return false;
-    }
-
-    if (!element.paused) {
-      return true;
-    }
-
-    try {
-      await element.play();
-      return true;
-    } catch {
-      return false;
-    }
-  }
-
-  function removeUnlockListeners() {
-    window.removeEventListener(
-      "pointerdown",
-      unlockAutoplay,
-      true,
-    );
-
-    window.removeEventListener(
-      "keydown",
-      unlockAutoplay,
-      true,
-    );
-  }
-
-  async function unlockAutoplay() {
-    if (unlocked) {
-      return;
-    }
-
-    const started =
-      await tryAutoplay();
-
-    if (started) {
-      unlocked = true;
-
-      removeUnlockListeners();
-    }
-  }
-
-  void tryAutoplay().then(
-    (started) => {
-      if (started) {
-        unlocked = true;
+    function removeListeners() {
+      if (!listenersInstalled) {
         return;
       }
 
-      window.addEventListener(
+      window.removeEventListener(
         "pointerdown",
-        unlockAutoplay,
+        handleUnlock,
         true,
       );
 
-      window.addEventListener(
+      window.removeEventListener(
         "keydown",
-        unlockAutoplay,
+        handleUnlock,
         true,
       );
-    },
-  );
 
-  return () => {
-    removeUnlockListeners();
-  };
-}, [src]);
+      listenersInstalled =
+        false;
+    }
+
+    async function tryPlay() {
+      const audio =
+        audioRef.current;
+
+      if (
+        !audio ||
+        autoplayCancelledRef.current ||
+        autoplayFinishedRef.current
+      ) {
+        return false;
+      }
+
+      /*
+       * Only one character theme may ever play at a time.
+       */
+      stopOtherCharacterMusic(
+        audio,
+      );
+
+      try {
+        await audio.play();
+
+        autoplayFinishedRef.current =
+          true;
+
+        removeListeners();
+
+        return true;
+      } catch {
+        return false;
+      }
+    }
+
+    function handleUnlock(
+      event: Event,
+    ) {
+      if (
+        autoplayCancelledRef.current ||
+        autoplayFinishedRef.current
+      ) {
+        removeListeners();
+        return;
+      }
+
+      const player =
+        playerRef.current;
+
+      if (
+        event.target instanceof
+          Node &&
+        player?.contains(
+          event.target,
+        )
+      ) {
+        autoplayCancelledRef.current =
+          true;
+
+        removeListeners();
+        return;
+      }
+
+      void tryPlay();
+    }
+
+    void tryPlay().then(
+      (started) => {
+        if (
+          started ||
+          autoplayCancelledRef.current
+        ) {
+          return;
+        }
+
+        window.addEventListener(
+          "pointerdown",
+          handleUnlock,
+          true,
+        );
+
+        window.addEventListener(
+          "keydown",
+          handleUnlock,
+          true,
+        );
+
+        listenersInstalled =
+          true;
+      },
+    );
+
+    return () => {
+      autoplayCancelledRef.current =
+        true;
+
+      removeListeners();
+
+      const audio =
+        audioRef.current;
+
+      if (audio) {
+        stopAudioElement(
+          audio,
+          true,
+        );
+      }
+    };
+  }, [src]);
 
   async function togglePlayback() {
     const audio =
@@ -201,10 +435,20 @@ export function CharacterMusicPlayer({
       return;
     }
 
+    autoplayCancelledRef.current =
+      true;
+
     if (!audio.paused) {
-      audio.pause();
+      stopAudioElement(audio);
       return;
     }
+
+    /*
+     * If the viewer manually presses Play, stop every other character theme.
+     */
+    stopOtherCharacterMusic(
+      audio,
+    );
 
     try {
       await audio.play();
@@ -212,6 +456,16 @@ export function CharacterMusicPlayer({
       setError(true);
       setPlaying(false);
     }
+  }
+
+  function toggleLocalMute() {
+    autoplayCancelledRef.current =
+      true;
+
+    setLocalMuted(
+      (current) =>
+        !current,
+    );
   }
 
   function seek(value: number) {
@@ -225,18 +479,32 @@ export function CharacterMusicPlayer({
       return;
     }
 
-    audio.currentTime = value;
+    autoplayCancelledRef.current =
+      true;
+
+    audio.currentTime =
+      value;
 
     setCurrentTime(value);
   }
 
+  function changeVolume(
+    value: number,
+  ) {
+    autoplayCancelledRef.current =
+      true;
+
+    setVolume(value);
+  }
+
   return (
-    <section className="border border-[#60482e]/45 bg-[#120e0b] px-4 py-3 sm:px-5">
+    <section
+      ref={playerRef}
+      className="border border-[#60482e]/45 bg-[#120e0b] px-4 py-3 sm:px-5"
+    >
       <audio
-        ref={audioRef}
-        src={src}
+        ref={setAudioElement}
         preload="auto"
-        autoPlay
         muted={
           portalMuted ||
           localMuted
@@ -247,7 +515,15 @@ export function CharacterMusicPlayer({
             ? "true"
             : "false"
         }
-        onPlay={() => {
+        onPlay={(event) => {
+          /*
+           * A last safety net: whenever THIS element begins playback,
+           * kill every other registered character theme.
+           */
+          stopOtherCharacterMusic(
+            event.currentTarget,
+          );
+
           setPlaying(true);
           setError(false);
         }}
@@ -280,7 +556,16 @@ export function CharacterMusicPlayer({
           );
         }}
         onError={() => {
-          setError(true);
+          /*
+           * During cleanup we intentionally clear `src`; don't show a player
+           * error for an element that is being removed.
+           */
+          if (
+            audioRef.current
+          ) {
+            setError(true);
+          }
+
           setPlaying(false);
         }}
       />
@@ -315,8 +600,6 @@ export function CharacterMusicPlayer({
               <p className="text-[7px] uppercase tracking-[0.22em] text-[#806b50]">
                 Music
               </p>
-
-              
             </div>
 
             <span className="shrink-0 text-[9px] tabular-nums text-[#776b5c]">
@@ -362,12 +645,9 @@ export function CharacterMusicPlayer({
 
         <button
           type="button"
-          onClick={() => {
-            setLocalMuted(
-              (current) =>
-                !current,
-            );
-          }}
+          onClick={
+            toggleLocalMute
+          }
           aria-pressed={
             localMuted
           }
@@ -408,7 +688,7 @@ export function CharacterMusicPlayer({
             step="0.05"
             value={volume}
             onChange={(event) => {
-              setVolume(
+              changeVolume(
                 Number(
                   event.target
                     .value,
