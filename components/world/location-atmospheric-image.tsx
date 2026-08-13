@@ -142,30 +142,60 @@ export function LocationAtmosphericImage({
   const atmosphericSrc =
     useLocationImageSource(src);
 
+    const { gameDate } = useWorldState();
+
+const hour = getLondonHour(gameDate);
+
+const isNight =
+  hour < 5 || hour >= 21;
+
   const [
-    fallbackToBase,
-    setFallbackToBase,
-  ] = useState(false);
+  fallbackStage,
+  setFallbackStage,
+] = useState<
+  "atmospheric" | "night" | "base"
+>("atmospheric");
 
   useEffect(() => {
-    setFallbackToBase(false);
-  }, [atmosphericSrc]);
+  setFallbackStage("atmospheric");
+}, [atmosphericSrc]);
 
-  const displayedSrc =
-    fallbackToBase
-      ? src
+  const nightSrc =
+  insertSuffixBeforeExtension(
+    src,
+    "-n",
+  );
+
+const displayedSrc =
+  fallbackStage === "base"
+    ? src
+    : fallbackStage === "night"
+      ? nightSrc
       : atmosphericSrc;
 
   return (
     <div
       className="absolute inset-0"
       onErrorCapture={() => {
-        if (
-          displayedSrc !== src
-        ) {
-          setFallbackToBase(true);
-        }
-      }}
+  if (
+    fallbackStage === "atmospheric"
+  ) {
+    if (
+      isNight &&
+      atmosphericSrc !== nightSrc
+    ) {
+      setFallbackStage("night");
+    } else {
+      setFallbackStage("base");
+    }
+
+    return;
+  }
+
+  if (fallbackStage === "night") {
+    setFallbackStage("base");
+  }
+}}
     >
       <AtmosphericImage
         key={displayedSrc}
