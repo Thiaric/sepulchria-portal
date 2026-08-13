@@ -144,7 +144,15 @@ export function WorldIndicator() {
         <span>{ICONS[state.weather] ?? "◌"}</span>
         <span className="hidden text-[9px] uppercase tracking-[0.08em] text-[#a38c69] xl:inline">
           {state.temperature_c}°C | {shortDate} - {time} |</span>
-        <span className="hidden text-base 2xl:inline">{lunar.symbol}</span>
+        <span className="inline-flex shrink-0 items-center justify-center">
+  <img
+    src={lunar.symbol}
+    alt={lunar.name}
+    width={20}
+    height={20}
+    className="block h-5 w-5 object-contain"
+  />
+</span>
       </button>
 
       {mounted && open
@@ -189,9 +197,15 @@ export function WorldIndicator() {
                     <p className="text-[8px] uppercase tracking-[0.2em] text-[#806b50]">
                       Lunar phase
                     </p>
-                    <div className="mt-3 text-5xl leading-none">
-                      {lunar.symbol}
-                    </div>
+                    <div className="mt-3 flex items-center justify-center">
+  <img
+    src={lunar.symbol}
+    alt={lunar.name}
+    width={80}
+    height={80}
+    className="block h-20 w-20 object-contain"
+  />
+</div>
                     <p className="mt-3 font-serif text-base text-[#dfc79c]">
                       {lunar.name}
                     </p>

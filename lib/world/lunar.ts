@@ -16,15 +16,15 @@ export function getLunarPhase(date: Date): LunarPhase {
   const illumination = (1 - Math.cos(cycle * Math.PI * 2)) / 2;
   const index = Math.floor(cycle * 8 + 0.5) % 8;
   const phases = [
-    ["New Moon", "🌑"],
-    ["Waxing Crescent", "🌒"],
-    ["First Quarter", "🌓"],
-    ["Waxing Gibbous", "🌔"],
-    ["Full Moon", "🌕"],
-    ["Waning Gibbous", "🌖"],
-    ["Last Quarter", "🌗"],
-    ["Waning Crescent", "🌘"],
-  ] as const;
+  ["New Moon", "/icons/moon/new-moon.png"],
+  ["Waxing Crescent", "/icons/moon/waxing-crescent.png"],
+  ["First Quarter", "/icons/moon/first-quarter.png"],
+  ["Waxing Gibbous", "/icons/moon/waxing-gibbous.png"],
+  ["Full Moon", "/icons/moon/full-moon.png"],
+  ["Waning Gibbous", "/icons/moon/waning-gibbous.png"],
+  ["Last Quarter", "/icons/moon/last-quarter.png"],
+  ["Waning Crescent", "/icons/moon/waning-crescent.png"],
+] as const;
 
   return {
     name: phases[index][0],
