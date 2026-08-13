@@ -12,13 +12,14 @@ import { createClient } from "@/lib/supabase/server";
 import type { DirectMessage } from "@/types/messages";
 
 import {
-  deleteConversationForMe,
+  
   toggleArchive,
   toggleBlock,
 } from "../actions";
 import MessageComposer from "../components/MessageComposer";
 import { ConversationMessageList } from "./components/ConversationMessageList";
 import ConversationRealtime from "./components/ConversationRealtime";
+import { DeleteConversationForm } from "./components/DeleteConversationForm";
 
 type ConversationPageProps = {
   params: Promise<{
@@ -448,24 +449,9 @@ export default async function ConversationPage({
                 </button>
               </form>
 
-              <form
-                action={
-                  deleteConversationForMe
-                }
-              >
-                <input
-                  type="hidden"
-                  name="conversationId"
-                  value={id}
-                />
-
-                <button
-                  type="submit"
-                  className="border border-[#7b4035] px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-[#d99b8e]"
-                >
-                  Delete conversation
-                </button>
-              </form>
+              <DeleteConversationForm
+  conversationId={id}
+/>
 
               <form
                 action={
