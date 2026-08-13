@@ -15,6 +15,21 @@ const WEATHER = [
   "rain", "heavy_rain", "storm", "snow", "heavy_snow", "hail",
 ] as const;
 
+const WEATHER_ICONS: Record<string, string> = {
+  clear: "/icons/weather/clear.png",
+  partly_cloudy: "/icons/weather/partly-cloudy.png",
+  cloudy: "/icons/weather/cloudy.png",
+  overcast: "/icons/weather/overcast.png",
+  fog: "/icons/weather/fog.png",
+  drizzle: "/icons/weather/drizzle.png",
+  rain: "/icons/weather/rain.png",
+  heavy_rain: "/icons/weather/heavy-rain.png",
+  storm: "/icons/weather/storm.png",
+  snow: "/icons/weather/snow.png",
+  heavy_snow: "/icons/weather/heavy-snow.png",
+  hail: "/icons/weather/hail.png",
+};
+
 function seasonFor(date: Date) {
   const month = date.getUTCMonth() + 1;
   if (month >= 3 && month <= 5) return "Spring";
@@ -66,30 +81,42 @@ export default async function Page({
         </p>
 
         <div className="mt-5 grid gap-3 sm:grid-cols-5">
-          <Fact label="Season" value={seasonFor(gameDate)} />
-          <Fact label="Time of day" value={phaseFor(gameDate)} />
-          <Fact label="Moon" value={`${lunar.symbol} ${lunar.name}`} />
-          <Fact
-            label="Weather engine"
-            value={
-              state.weather_override_until_game
-                ? "Temporary override"
-                : state.automatic_weather
-                  ? "Automatic"
-                  : "Staff controlled"
-            }
-          />
-          <Fact
-            label="Temperature"
-            value={
-              state.temperature_override_until_game
-                ? `${state.temperature_c}°C · Override`
-                : state.automatic_temperature
-                  ? `${state.temperature_c}°C · Auto`
-                  : `${state.temperature_c}°C · Staff`
-            }
-          />
-        </div>
+  <Fact
+    label="Season"
+    value={seasonFor(gameDate)}
+  />
+
+  <Fact
+    label="Time of day"
+    value={phaseFor(gameDate)}
+  />
+
+  <ImageFact
+    label="Moon"
+    value={lunar.name}
+    image={lunar.symbol}
+  />
+
+  <ImageFact
+    label="Weather"
+    value={state.weather.replaceAll("_", " ")}
+    image={
+      WEATHER_ICONS[state.weather] ??
+      "/icons/weather/clear.png"
+    }
+  />
+
+  <Fact
+    label="Temperature"
+    value={
+      state.temperature_override_until_game
+        ? `${state.temperature_c}°C · Override`
+        : state.automatic_temperature
+          ? `${state.temperature_c}°C · Auto`
+          : `${state.temperature_c}°C · Staff`
+    }
+  />
+</div>
 
         {saved ? (
           <p className="mt-5 border border-[#42624a] bg-[#122019] p-3 text-sm text-[#9fd0a9]">
@@ -156,7 +183,11 @@ export default async function Page({
                 {formatAurethDate(gameDate)}
               </p>
               <div className="mt-3 flex items-center gap-3">
-                <span className="text-3xl">{lunar.symbol}</span>
+                <img
+    src={lunar.symbol}
+    alt={lunar.name}
+    className="mx-auto h-20 w-20 object-contain"
+  />
                 <div>
                   <p className="font-serif text-base text-[#dfc79c]">
                     {lunar.name}
@@ -361,6 +392,38 @@ function Fact({
       <p className="mt-2 font-serif text-lg text-[#ddc69d]">
         {value}
       </p>
+    </div>
+  );
+}
+
+function ImageFact({
+  label,
+  value,
+  image,
+}: {
+  label: string;
+  value: string;
+  image: string;
+}) {
+  return (
+    <div className="border border-[#60482e]/45 bg-[#15100d] p-4">
+      <p className="text-[8px] uppercase tracking-[0.2em] text-[#806b50]">
+        {label}
+      </p>
+
+      <div className="mt-2 flex items-center gap-3">
+        <img
+          src={image}
+          alt={value}
+          width={34}
+          height={34}
+          className="block h-[34px] w-[34px] shrink-0 object-contain"
+        />
+
+        <p className="font-serif text-lg capitalize text-[#ddc69d]">
+          {value}
+        </p>
+      </div>
     </div>
   );
 }

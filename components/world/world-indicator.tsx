@@ -13,18 +13,18 @@ import {
 import { getLunarPhase } from "@/lib/world/lunar";
 
 const ICONS: Record<string, string> = {
-  clear: "☀",
-  partly_cloudy: "◐",
-  cloudy: "☁",
-  overcast: "☁",
-  fog: "≋",
-  drizzle: "☂",
-  rain: "☂",
-  heavy_rain: "☂",
-  storm: "ϟ",
-  snow: "❄",
-  heavy_snow: "❄",
-  hail: "◆",
+  clear: "/icons/weather/clear.png",
+  partly_cloudy: "/icons/weather/partly-cloudy.png",
+  cloudy: "/icons/weather/cloudy.png",
+  overcast: "/icons/weather/overcast.png",
+  fog: "/icons/weather/fog.png",
+  drizzle: "/icons/weather/drizzle.png",
+  rain: "/icons/weather/rain.png",
+  heavy_rain: "/icons/weather/heavy-rain.png",
+  storm: "/icons/weather/storm.png",
+  snow: "/icons/weather/snow.png",
+  heavy_snow: "/icons/weather/heavy-snow.png",
+  hail: "/icons/weather/hail.png",
 };
 
 function weatherLabel(value: string) {
@@ -141,7 +141,15 @@ export function WorldIndicator() {
         title={`${fullDate} · ${lunar.name} · ${weatherLabel(state.weather)}`}
         aria-label="Open in-game calendar"
       >
-        <span>{ICONS[state.weather] ?? "◌"}</span>
+        <span className="inline-flex shrink-0 items-center justify-center">
+  <img
+    src={ICONS[state.weather] ?? "/icons/weather/clear.png"}
+    alt={weatherLabel(state.weather)}
+    width={20}
+    height={20}
+    className="block h-5 w-5 object-contain"
+  />
+</span>
         <span className="hidden text-[9px] uppercase tracking-[0.08em] text-[#a38c69] xl:inline">
           {state.temperature_c}°C | {shortDate} - {time} |</span>
         <span className="inline-flex shrink-0 items-center justify-center">
