@@ -192,39 +192,82 @@ export function WorldIndicator() {
                   {fullDate}
                 </h2>
 
-                <div className="mt-5 grid grid-cols-3 gap-2">
-                  <Fact label="Time" value={time} />
-                  <Fact label="Weather" value={weatherLabel(state.weather)} />
-                  <Fact label="Temperature" value={`${state.temperature_c}°C`} />
-                </div>
+                <div className="mt-5 grid gap-5 sm:grid-cols-[1fr_190px]">
+  <div>
+    <div className="grid grid-cols-2 gap-2">
+      <Fact
+        label="Time"
+        value={time}
+      />
 
-                <div className="mt-5 grid gap-5 sm:grid-cols-[1fr_150px]">
-                  <Calendar date={gameDate} />
+      <Fact
+        label="Temperature"
+        value={`${state.temperature_c}°C`}
+      />
+    </div>
 
-                  <div className="border border-[#60482e]/40 bg-[#100c09] p-4 text-center">
-                    <p className="text-[8px] uppercase tracking-[0.2em] text-[#806b50]">
-                      Lunar phase
-                    </p>
-                    <div className="mt-3 flex items-center justify-center">
-  <img
-    src={lunar.symbol}
-    alt={lunar.name}
-    width={80}
-    height={80}
-    className="block h-20 w-20 object-contain"
-  />
+    <div className="mt-5">
+      <Calendar date={gameDate} />
+    </div>
+  </div>
+
+  <div className="flex flex-col border border-[#60482e]/40 bg-[#100c09] p-4">
+    <div className="border-b border-[#60482e]/35 pb-4 text-center">
+      <p className="text-[8px] uppercase tracking-[0.2em] text-[#806b50]">
+        Current weather
+      </p>
+
+      <div className="mt-3 flex items-center justify-center">
+        <img
+          src={
+            ICONS[state.weather] ??
+            "/icons/weather/clear.png"
+          }
+          alt={weatherLabel(state.weather)}
+          width={72}
+          height={72}
+          className="block h-[72px] w-[72px] object-contain"
+        />
+      </div>
+
+      <p className="mt-3 font-serif text-base capitalize text-[#dfc79c]">
+        {weatherLabel(state.weather)}
+      </p>
+
+      <p className="mt-1 text-[9px] uppercase tracking-[0.12em] text-[#746858]">
+        {state.weather_intensity}
+      </p>
+    </div>
+
+    <div className="flex flex-1 flex-col justify-end pt-4 text-center">
+      <p className="text-[8px] uppercase tracking-[0.2em] text-[#806b50]">
+        Lunar phase
+      </p>
+
+      <div className="mt-3 flex items-center justify-center">
+        <img
+          src={lunar.symbol}
+          alt={lunar.name}
+          width={86}
+          height={86}
+          className="block h-[86px] w-[86px] object-contain"
+        />
+      </div>
+
+      <p className="mt-3 font-serif text-base text-[#dfc79c]">
+        {lunar.name}
+      </p>
+
+      <p className="mt-2 text-[9px] leading-4 text-[#827563]">
+        {lunar.illumination}% illuminated
+      </p>
+
+      <p className="text-[9px] leading-4 text-[#6f6456]">
+        Day {lunar.ageDays} of the lunar cycle
+      </p>
+    </div>
+  </div>
 </div>
-                    <p className="mt-3 font-serif text-base text-[#dfc79c]">
-                      {lunar.name}
-                    </p>
-                    <p className="mt-2 text-[9px] leading-4 text-[#827563]">
-                      {lunar.illumination}% illuminated
-                    </p>
-                    <p className="text-[9px] leading-4 text-[#6f6456]">
-                      Day {lunar.ageDays} of the lunar cycle
-                    </p>
-                  </div>
-                </div>
               </section>
             </div>,
             document.body,
