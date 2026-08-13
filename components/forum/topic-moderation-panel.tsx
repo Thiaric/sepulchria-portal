@@ -84,6 +84,11 @@ export default function TopicModerationPanel({
   const [deleteOpen, setDeleteOpen] =
     useState(false);
 
+    const [
+  deleteReason,
+  setDeleteReason,
+] = useState("");
+
   const [destinationSectionId, setDestinationSectionId] =
     useState("");
 
@@ -457,10 +462,43 @@ export default function TopicModerationPanel({
               </div>
 
               <ModerationMessage
-                state={deleteState}
-              />
+  state={deleteState}
+/>
 
-              <form action={deleteAction}>
+<div>
+  <label
+    htmlFor="topic-delete-reason"
+    className="text-[8px] uppercase tracking-[0.18em] text-[#917957]"
+  >
+    Moderation reason
+  </label>
+
+  <textarea
+    id="topic-delete-reason"
+    value={deleteReason}
+    onChange={(event) =>
+      setDeleteReason(
+        event.target.value,
+      )
+    }
+    maxLength={1000}
+    rows={4}
+    disabled={deletePending}
+    placeholder="Reason for removing this discussion..."
+    className="mt-3 w-full resize-y border border-[#60482e]/50 bg-[#0d0907] px-4 py-3 text-sm leading-6 text-[#d2bea0] outline-none placeholder:text-[#5f5548] focus:border-[#a47a44] disabled:opacity-50"
+  />
+
+  <p className="mt-2 text-right text-[8px] uppercase tracking-[0.14em] text-[#665947]">
+    {deleteReason.length}/1000
+  </p>
+</div>
+
+<form action={deleteAction}>
+  <input
+    type="hidden"
+    name="reason"
+    value={deleteReason}
+  />
                 <input
                   type="hidden"
                   name="topicId"

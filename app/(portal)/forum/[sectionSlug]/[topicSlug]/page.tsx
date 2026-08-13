@@ -111,6 +111,17 @@ type ForumPostImageRecord = {
   sort_order: number | null;
 };
 
+type ForumModerationLogRecord = {
+  post_id: string | null;
+  action: string;
+  details:
+    | {
+        reason?: string | null;
+      }
+    | null;
+  created_at: string;
+};
+
 type ProfileRecord = {
   id: string;
   display_name: string | null;
@@ -604,6 +615,71 @@ export default async function TopicPage({
   );
 
   const {
+  data: moderationLogRecords,
+  error: moderationLogsError,
+} =
+  postIds.length > 0
+    ? await supabase
+        .from(
+          "forum_moderation_log",
+        )
+        .select(
+          `
+            post_id,
+            action,
+            details,
+            created_at
+          `,
+        )
+        .in("post_id", postIds)
+        .eq(
+  "action",
+  "delete_post",
+)
+        .order("created_at", {
+          ascending: false,
+        })
+    : {
+        data: [],
+        error: null,
+      };
+
+if (moderationLogsError) {
+  console.error(
+    "Unable to load post moderation reasons:",
+    moderationLogsError.message,
+  );
+}
+
+const moderationLogs =
+  (moderationLogRecords ??
+    []) as ForumModerationLogRecord[];
+
+const moderationReasonMap =
+  new Map<string, string>();
+
+for (const log of moderationLogs) {
+  if (
+    !log.post_id ||
+    moderationReasonMap.has(
+      log.post_id,
+    )
+  ) {
+    continue;
+  }
+
+  const reason =
+    log.details?.reason?.trim();
+
+  if (reason) {
+    moderationReasonMap.set(
+      log.post_id,
+      reason,
+    );
+  }
+}
+
+  const {
     data: imageRecords,
     error: imagesError,
   } =
@@ -934,6 +1010,10 @@ export default async function TopicPage({
           post.edited_at,
         deleted_at:
           post.deleted_at,
+          moderation_reason:
+  moderationReasonMap.get(
+    post.id,
+  ) ?? null,
         author_character:
           getVisiblePostCharacter(post),
         author_name:

@@ -168,19 +168,32 @@ async function writeModerationLog({
   postId?: string | null;
   action: string;
   details?: Record<string, unknown> | null;
-}) {
-  const supabase = await createClient();
+}): Promise<string | null> {
+  const supabase =
+    await createClient();
 
-  await supabase
-    .from("forum_moderation_log")
-    .insert({
-      moderator_user_id:
-        moderatorUserId,
-      topic_id: topicId,
-      post_id: postId,
-      action,
-      details,
-    });
+  const { error } =
+    await supabase
+      .from("forum_moderation_log")
+      .insert({
+        moderator_user_id:
+          moderatorUserId,
+        topic_id: topicId,
+        post_id: postId,
+        action,
+        details,
+      });
+
+  if (error) {
+    console.error(
+      "Unable to write forum moderation log:",
+      error.message,
+    );
+
+    return error.message;
+  }
+
+  return null;
 }
 
 function revalidateForumTopic(
@@ -572,6 +585,12 @@ export async function deleteTopicAction(
     100,
   );
 
+  const reason = readText(
+    formData,
+    "reason",
+    1_000,
+  );
+
   if (!isUuid(topicId)) {
     return {
       success: false,
@@ -580,7 +599,8 @@ export async function deleteTopicAction(
     };
   }
 
-  const access = await requireStaff();
+  const access =
+    await requireStaff();
 
   if (
     !access.user ||
@@ -598,9 +618,15 @@ export async function deleteTopicAction(
     topic,
     section,
     error,
-  } = await loadTopicContext(topicId);
+  } = await loadTopicContext(
+    topicId,
+  );
 
-  if (!topic || !section || error) {
+  if (
+    !topic ||
+    !section ||
+    error
+  ) {
     return {
       success: false,
       message:
@@ -636,6 +662,12 @@ export async function deleteTopicAction(
     };
   }
 
+  /*
+   * Soft-delete every post in the topic.
+   *
+   * The database trigger you already fixed
+   * now preserves every post body.
+   */
   const { error: postsError } =
     await access.supabase
       .from("forum_posts")
@@ -646,31 +678,256 @@ export async function deleteTopicAction(
       .is("deleted_at", null);
 
   if (postsError) {
+    await access.supabase
+      .from("forum_topics")
+      .update({
+        deleted_at: null,
+      })
+      .eq("id", topic.id);
+
     return {
       success: false,
       message:
-        `The discussion was deleted, but some posts could not be marked as deleted: ${postsError.message}`,
+        `The discussion could not be fully deleted: ${postsError.message}`,
     };
   }
 
-  await writeModerationLog({
-    moderatorUserId:
-      access.user.id,
-    topicId: topic.id,
-    action: "topic_deleted",
-    details: {
-      title: topic.title,
-      section_id: section.id,
-      section_name: section.name,
-    },
-  });
+  const logError =
+    await writeModerationLog({
+      moderatorUserId:
+        access.user.id,
+      topicId: topic.id,
+      action: "delete_topic",
+      details: {
+        title: topic.title,
+        section_id:
+          section.id,
+        section_name:
+          section.name,
+        reason:
+          reason || null,
+      },
+    });
+
+  if (logError) {
+    /*
+     * Roll everything back if the audit
+     * record cannot be written.
+     */
+    await access.supabase
+      .from("forum_topics")
+      .update({
+        deleted_at: null,
+      })
+      .eq("id", topic.id);
+
+    await access.supabase
+      .from("forum_posts")
+      .update({
+        deleted_at: null,
+      })
+      .eq("topic_id", topic.id)
+      .eq(
+        "deleted_at",
+        deletedAt,
+      );
+
+    return {
+      success: false,
+      message:
+        `The moderation log could not be written, so the discussion was not deleted: ${logError}`,
+    };
+  }
 
   revalidatePath("/forum");
   revalidatePath(
     `/forum/${section.slug}`,
   );
+  revalidatePath(
+    "/admin/forum/topics",
+  );
+  revalidatePath(
+    "/admin/forum/moderation",
+  );
 
   redirect(
     `/forum/${section.slug}`,
+  );
+}
+
+export async function restoreTopicAction(
+  formData: FormData,
+): Promise<void> {
+  const topicId = readText(
+    formData,
+    "topicId",
+    100,
+  );
+
+  const reason = readText(
+    formData,
+    "reason",
+    1_000,
+  );
+
+  const returnTo = readText(
+    formData,
+    "returnTo",
+    1200,
+  );
+
+  if (!isUuid(topicId)) {
+    redirect(
+      "/admin/forum/topics?status=deleted&error=Invalid%20discussion.",
+    );
+  }
+
+  const access =
+    await requireStaff();
+
+  if (
+    !access.user ||
+    !access.isStaff
+  ) {
+    redirect(
+      "/admin/forum/topics?status=deleted&error=Permission%20denied.",
+    );
+  }
+
+  const {
+    topic,
+    section,
+    error,
+  } = await loadTopicContext(
+    topicId,
+  );
+
+  if (
+    !topic ||
+    !section ||
+    error
+  ) {
+    redirect(
+      "/admin/forum/topics?status=deleted&error=Unable%20to%20load%20discussion.",
+    );
+  }
+
+  if (!topic.deleted_at) {
+    redirect(
+      "/admin/forum/topics?status=deleted&error=Discussion%20is%20not%20deleted.",
+    );
+  }
+
+  const originalDeletedAt =
+    topic.deleted_at;
+
+  const { error: topicError } =
+    await access.supabase
+      .from("forum_topics")
+      .update({
+        deleted_at: null,
+        updated_at:
+          new Date().toISOString(),
+      })
+      .eq("id", topic.id);
+
+  if (topicError) {
+    redirect(
+      `/admin/forum/topics?status=deleted&error=${encodeURIComponent(
+        topicError.message,
+      )}`,
+    );
+  }
+
+  /*
+   * Restore only posts that were deleted
+   * as part of this topic deletion.
+   *
+   * This avoids accidentally restoring a
+   * reply that had already been moderated
+   * before the topic itself was removed.
+   */
+  const { error: postsError } =
+    await access.supabase
+      .from("forum_posts")
+      .update({
+        deleted_at: null,
+      })
+      .eq("topic_id", topic.id)
+      .eq(
+        "deleted_at",
+        originalDeletedAt,
+      );
+
+  if (postsError) {
+    await access.supabase
+      .from("forum_topics")
+      .update({
+        deleted_at:
+          originalDeletedAt,
+      })
+      .eq("id", topic.id);
+
+    redirect(
+      `/admin/forum/topics?status=deleted&error=${encodeURIComponent(
+        postsError.message,
+      )}`,
+    );
+  }
+
+  const logError =
+    await writeModerationLog({
+      moderatorUserId:
+        access.user.id,
+      topicId: topic.id,
+      action: "restore_topic",
+      details: {
+        title: topic.title,
+        section_id:
+          section.id,
+        section_name:
+          section.name,
+        reason:
+          reason || null,
+      },
+    });
+
+  if (logError) {
+    redirect(
+      `/admin/forum/topics?status=deleted&error=${encodeURIComponent(
+        `The topic was restored, but the moderation log could not be written: ${logError}`,
+      )}`,
+    );
+  }
+
+  revalidateForumTopic(
+    section.slug,
+    topic.slug,
+  );
+
+  revalidatePath(
+    "/admin/forum/topics",
+  );
+
+  revalidatePath(
+    "/admin/forum/moderation",
+  );
+
+  const destination =
+    returnTo.startsWith(
+      "/admin/forum/topics",
+    )
+      ? returnTo
+      : "/admin/forum/topics?status=deleted";
+
+  const separator =
+    destination.includes("?")
+      ? "&"
+      : "?";
+
+  redirect(
+    `${destination}${separator}success=${encodeURIComponent(
+      `“${topic.title}” has been restored.`,
+    )}`,
   );
 }

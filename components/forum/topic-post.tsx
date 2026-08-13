@@ -49,6 +49,7 @@ export type ForumTopicPost = {
   updated_at: string;
   edited_at: string | null;
   deleted_at: string | null;
+  moderation_reason: string | null;
   author_character: ForumPostCharacter | null;
   author_name: string;
   images: ForumPostImage[];
@@ -304,8 +305,11 @@ export default function TopicPost({
           <div className="min-h-48 px-5 py-6 sm:px-7 sm:py-7">
             {isDeleted ? (
               <DeletedPostMessage
-                isInitial={post.is_initial}
-              />
+  isInitial={post.is_initial}
+  moderationReason={
+    post.moderation_reason
+  }
+/>
             ) : (
               <>
                 {post.quoted_post ? (
@@ -532,21 +536,37 @@ function CharacterIdentityIcons({
 
 function DeletedPostMessage({
   isInitial,
+  moderationReason,
 }: {
   isInitial: boolean;
+  moderationReason:
+    | string
+    | null;
 }) {
   return (
     <div className="flex min-h-36 items-center justify-center border border-dashed border-[#60482e]/35 bg-[#100c09] px-5 py-8 text-center">
-      <div>
-        <p className="text-[8px] uppercase tracking-[0.2em] text-[#765f46]">
-          Deleted content
+      <div className="max-w-xl">
+        <p className="text-[8px] uppercase tracking-[0.2em] text-[#a65d51]">
+          Moderated content
         </p>
 
-        <p className="mt-3 font-serif text-xl italic text-[#8f806e]">
+        <p className="mt-3 font-serif text-lg text-[#bba88a]">
           {isInitial
-            ? "This discussion has been deleted."
-            : "This reply has been deleted."}
+            ? "This opening post has been deleted."
+            : "This post has been deleted by the moderation team."}
         </p>
+
+        {moderationReason ? (
+          <div className="mt-5 border border-[#654b32]/55 bg-[#17100c] px-4 py-3">
+            <p className="text-[8px] uppercase tracking-[0.18em] text-[#8e714d]">
+              Moderation reason
+            </p>
+
+            <p className="mt-2 text-sm leading-5 text-[#c8b79c]">
+              {moderationReason}
+            </p>
+          </div>
+        ) : null}
       </div>
     </div>
   );

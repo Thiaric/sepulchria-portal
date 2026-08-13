@@ -199,19 +199,34 @@ async function writeModerationLog({
   postId: string;
   action: string;
   details?: Record<string, unknown>;
-}) {
-  const supabase = await createClient();
+}): Promise<string | null> {
+  const supabase =
+    await createClient();
 
-  await supabase
-    .from("forum_moderation_log")
-    .insert({
-      moderator_user_id:
-        moderatorUserId,
-      topic_id: topicId,
-      post_id: postId,
-      action,
-      details: details ?? null,
-    });
+  const { error } =
+    await supabase
+      .from(
+        "forum_moderation_log",
+      )
+      .insert({
+        moderator_user_id:
+          moderatorUserId,
+        topic_id: topicId,
+        post_id: postId,
+        action,
+        details: details ?? null,
+      });
+
+  if (error) {
+    console.error(
+      "Unable to write forum moderation log:",
+      error.message,
+    );
+
+    return error.message;
+  }
+
+  return null;
 }
 
 function revalidatePostPages(
@@ -325,23 +340,52 @@ export async function moderateDeletePostAction(
     };
   }
 
+  const logError =
   await writeModerationLog({
     moderatorUserId:
       access.user.id,
     topicId: topic.id,
     postId: post.id,
-    action: "post_deleted",
+    action: "delete_post",
     details: {
       topic_title: topic.title,
       section_id: section.id,
-      section_name: section.name,
+      section_name:
+        section.name,
       reason: reason || null,
+
+      /*
+       * Keep a recovery snapshot in
+       * the moderation history too.
+       */
+      original_body: post.body,
+
       author_user_id:
         post.author_user_id,
       author_character_id:
         post.author_character_id,
     },
   });
+
+if (logError) {
+  /*
+   * Moderation without an audit
+   * record is not acceptable.
+   * Undo the soft deletion.
+   */
+  await access.supabase
+    .from("forum_posts")
+    .update({
+      deleted_at: null,
+    })
+    .eq("id", post.id);
+
+  return {
+    success: false,
+    message:
+      `The moderation log could not be written, so the post was not deleted: ${logError}`,
+  };
+}
 
   revalidatePostPages(
     section.slug,
@@ -442,16 +486,18 @@ export async function restorePostAction(
     };
   }
 
+  const logError =
   await writeModerationLog({
     moderatorUserId:
       access.user.id,
     topicId: topic.id,
     postId: post.id,
-    action: "post_restored",
+    action: "restore_post",
     details: {
       topic_title: topic.title,
       section_id: section.id,
-      section_name: section.name,
+      section_name:
+        section.name,
       reason: reason || null,
       author_user_id:
         post.author_user_id,
@@ -459,6 +505,14 @@ export async function restorePostAction(
         post.author_character_id,
     },
   });
+
+if (logError) {
+  return {
+    success: false,
+    message:
+      `The post was restored, but the moderation log could not be written: ${logError}`,
+  };
+}
 
   revalidatePostPages(
     section.slug,

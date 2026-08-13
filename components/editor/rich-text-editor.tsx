@@ -13,6 +13,7 @@ import {
 import {
   useRichTextSpellingHighlights,
   useSpellingIssues,
+  type WritingIssue,
 } from "@/components/editor/writing-assistant";
 
 type RichTextEditorProps = {
@@ -64,6 +65,8 @@ const RECENT_HIGHLIGHT_COLOURS_KEY =
 
 const MAX_RECENT_TEXT_COLOURS = 10;
 const MAX_RECENT_HIGHLIGHT_COLOURS = 10;
+const SPELLING_DICTIONARY_KEY =
+  "sepulchria-spelling-user-dictionary";
 
 function visibleLength(value: string): number {
   return stripRichTextForPreview(value).length;
@@ -91,6 +94,21 @@ export function RichTextEditor({
     editorMaxHeight,
     setEditorMaxHeight,
   ] = useState<number | null>(null);
+
+  const [
+  ignoredSpellingWords,
+  setIgnoredSpellingWords,
+] = useState<string[]>([]);
+
+const [
+  spellingMenu,
+  setSpellingMenu,
+] = useState<{
+  issue: WritingIssue;
+  range: Range;
+  x: number;
+  y: number;
+} | null>(null);
 
   const controlled = value !== undefined;
 
@@ -133,6 +151,36 @@ export function RichTextEditor({
 
   const htmlBeforePointerSelection =
     useRef(initialHtml);
+
+    useEffect(() => {
+  try {
+    const stored =
+      window.localStorage.getItem(
+        SPELLING_DICTIONARY_KEY,
+      );
+
+    if (!stored) {
+      return;
+    }
+
+    const parsed =
+      JSON.parse(stored);
+
+    if (Array.isArray(parsed)) {
+      setIgnoredSpellingWords(
+        parsed.filter(
+          (
+            value,
+          ): value is string =>
+            typeof value ===
+            "string",
+        ),
+      );
+    }
+  } catch {
+    // Ignore unavailable localStorage.
+  }
+}, []);
 
   useEffect(() => {
     try {
@@ -757,16 +805,353 @@ function applyHighlightColour(
   }, [minHeight]);
 
   const spellingIssues =
-    useSpellingIssues(
-      stripRichTextForPreview(html),
-      disabled || sourceMode,
-    );
-
-  useRichTextSpellingHighlights(
-    editorRef,
-    spellingIssues,
+  useSpellingIssues(
+    stripRichTextForPreview(html),
     disabled || sourceMode,
   );
+
+const visibleSpellingIssues =
+  spellingIssues.filter(
+    (issue) =>
+      !ignoredSpellingWords.includes(
+        issue.word.toLocaleLowerCase(
+          "en-GB",
+        ),
+      ),
+  );
+
+useRichTextSpellingHighlights(
+  editorRef,
+  visibleSpellingIssues,
+  disabled || sourceMode,
+);
+
+function getTextRangeAtPoint(
+  x: number,
+  y: number,
+) {
+  const editor =
+    editorRef.current;
+
+  if (!editor) {
+    return null;
+  }
+
+  let node: Node | null =
+    null;
+
+  let offset = 0;
+
+  const documentWithCaret =
+    document as Document & {
+      caretRangeFromPoint?: (
+        x: number,
+        y: number,
+      ) => Range | null;
+
+      caretPositionFromPoint?: (
+        x: number,
+        y: number,
+      ) => {
+        offsetNode: Node;
+        offset: number;
+      } | null;
+    };
+
+  const browserRange =
+    documentWithCaret
+      .caretRangeFromPoint?.(
+        x,
+        y,
+      );
+
+  if (browserRange) {
+    node =
+      browserRange.startContainer;
+
+    offset =
+      browserRange.startOffset;
+  } else {
+    const position =
+      documentWithCaret
+        .caretPositionFromPoint?.(
+          x,
+          y,
+        );
+
+    if (position) {
+      node =
+        position.offsetNode;
+
+      offset =
+        position.offset;
+    }
+  }
+
+  if (
+    !node ||
+    node.nodeType !==
+      Node.TEXT_NODE ||
+    !editor.contains(node)
+  ) {
+    return null;
+  }
+
+  const text =
+    node.nodeValue ?? "";
+
+  if (!text) {
+    return null;
+  }
+
+  const isWordCharacter = (
+    character: string,
+  ) =>
+    /[\p{L}’'-]/u.test(
+      character,
+    );
+
+  let start =
+    Math.min(
+      offset,
+      text.length,
+    );
+
+  let end = start;
+
+  if (
+    start === text.length ||
+    !isWordCharacter(
+      text[start] ?? "",
+    )
+  ) {
+    start -= 1;
+    end = start + 1;
+  }
+
+  if (start < 0) {
+    return null;
+  }
+
+  while (
+    start > 0 &&
+    isWordCharacter(
+      text[start - 1],
+    )
+  ) {
+    start -= 1;
+  }
+
+  while (
+    end < text.length &&
+    isWordCharacter(
+      text[end],
+    )
+  ) {
+    end += 1;
+  }
+
+  const word =
+    text.slice(
+      start,
+      end,
+    );
+
+  if (!word) {
+    return null;
+  }
+
+  const range =
+    document.createRange();
+
+  range.setStart(
+    node,
+    start,
+  );
+
+  range.setEnd(
+    node,
+    end,
+  );
+
+  return {
+    word,
+    range,
+  };
+}
+
+function handleSpellingClick(
+  event: React.MouseEvent<HTMLDivElement>,
+) {
+  if (
+    disabled ||
+    sourceMode
+  ) {
+    return;
+  }
+
+  const result =
+    getTextRangeAtPoint(
+      event.clientX,
+      event.clientY,
+    );
+
+  if (!result) {
+    setSpellingMenu(null);
+    return;
+  }
+
+  const issue =
+    visibleSpellingIssues.find(
+      (candidate) =>
+        candidate.word.localeCompare(
+          result.word,
+          "en-GB",
+          {
+            sensitivity:
+              "accent",
+          },
+        ) === 0,
+    );
+
+  if (!issue) {
+    setSpellingMenu(null);
+    return;
+  }
+
+  setSpellingMenu({
+    issue,
+    range:
+      result.range.cloneRange(),
+    x: Math.min(
+      event.clientX,
+      window.innerWidth - 280,
+    ),
+    y: Math.min(
+      event.clientY + 18,
+      window.innerHeight - 260,
+    ),
+  });
+}
+
+function preserveWordCase(
+  original: string,
+  replacement: string,
+) {
+  if (
+    original ===
+    original.toUpperCase()
+  ) {
+    return replacement.toUpperCase();
+  }
+
+  if (
+    original[0] ===
+    original[0]?.toUpperCase()
+  ) {
+    return (
+      replacement
+        .charAt(0)
+        .toUpperCase() +
+      replacement.slice(1)
+    );
+  }
+
+  return replacement;
+}
+
+function applySpellingSuggestion(
+  suggestion: string,
+) {
+  if (!spellingMenu) {
+    return;
+  }
+
+  const replacement =
+    preserveWordCase(
+      spellingMenu.issue.word,
+      suggestion,
+    );
+
+  const range =
+    spellingMenu.range;
+
+  try {
+    range.deleteContents();
+
+    range.insertNode(
+      document.createTextNode(
+        replacement,
+      ),
+    );
+
+    syncFromEditor();
+  } catch {
+    // The editor changed before
+    // the correction was selected.
+  }
+
+  setSpellingMenu(null);
+
+  editorRef.current?.focus();
+}
+
+function ignoreSpellingWord() {
+  if (!spellingMenu) {
+    return;
+  }
+
+  const word =
+    spellingMenu.issue.word
+      .toLocaleLowerCase(
+        "en-GB",
+      );
+
+  setIgnoredSpellingWords(
+    (current) =>
+      current.includes(word)
+        ? current
+        : [...current, word],
+  );
+
+  setSpellingMenu(null);
+}
+
+function addSpellingWordToDictionary() {
+  if (!spellingMenu) {
+    return;
+  }
+
+  const word =
+    spellingMenu.issue.word
+      .toLocaleLowerCase(
+        "en-GB",
+      );
+
+  setIgnoredSpellingWords(
+    (current) => {
+      const next =
+        current.includes(word)
+          ? current
+          : [...current, word];
+
+      try {
+        window.localStorage.setItem(
+          SPELLING_DICTIONARY_KEY,
+          JSON.stringify(
+            next,
+          ),
+        );
+      } catch {
+        // localStorage unavailable.
+      }
+
+      return next;
+    },
+  );
+
+  setSpellingMenu(null);
+}
 
   const textLength = visibleLength(html);
   const fullToolbar = variant === "lore";
@@ -778,12 +1163,13 @@ function applyHighlightColour(
     >
       <style jsx global>{`
         ::highlight(sepulchria-spelling-error) {
-          text-decoration-line: underline;
-          text-decoration-style: wavy;
-          text-decoration-color: #d05d52;
-          text-decoration-thickness: 1.5px;
-          text-underline-offset: 2px;
-        }
+  background-color: rgba(208, 93, 82, 0.10);
+  text-decoration-line: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: #d05d52;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 2px;
+}
       `}</style>
       <div
         className="sticky top-0 z-40 flex flex-wrap items-center gap-1.5 overflow-visible border-b border-[#60482e]/40 bg-[#100c09] p-2 shadow-[0_5px_12px_rgba(0,0,0,0.28)]"
@@ -1269,62 +1655,158 @@ function applyHighlightColour(
       </div>
 
       {sourceMode ? (
-        <textarea
-          id={id}
-          value={html}
-          onChange={(event) =>
-            commit(event.target.value)
-          }
-          disabled={disabled}
-          spellCheck={false}
-          className="block w-full resize-none overflow-y-auto bg-[#090706] px-4 py-4 font-mono text-xs leading-6 text-[#d7c4a5] outline-none"
-          style={{
-            minHeight,
-            maxHeight:
-              editorMaxHeight ??
-              undefined,
-            overflowY: "auto",
-          }}
-        />
-      ) : (
-        <div
-          ref={editorRef}
-          id={id}
-          role="textbox"
-          aria-multiline="true"
-          aria-label={placeholder}
-          contentEditable={!disabled}
-          suppressContentEditableWarning
-          data-placeholder={placeholder}
-          lang="en-GB"
-          spellCheck
-          autoCorrect="on"
-          autoCapitalize="sentences"
-          onInput={syncFromEditor}
-          onBlur={syncFromEditor}
-          onMouseDown={rememberHtmlBeforePointerSelection}
-          onDoubleClick={protectDoubleClickSelection}
-          className="rich-wysiwyg-editor relative z-0 block w-full overflow-auto px-4 py-4 text-sm font-normal leading-7 text-[#d7c4a5] outline-none selection:bg-[#6b4b2c] selection:text-[#fff0d0] empty:before:pointer-events-none empty:before:text-[#625747] empty:before:content-[attr(data-placeholder)] [&_a]:text-[#d3a762] [&_a]:underline [&_blockquote]:border-l-2 [&_blockquote]:border-[#8d6d3e] [&_blockquote]:pl-4 [&_h1]:font-serif [&_h1]:text-4xl [&_h2]:font-serif [&_h2]:text-3xl [&_h3]:font-serif [&_h3]:text-2xl [&_img]:my-3 [&_img]:max-h-[620px] [&_img]:max-w-full [&_ol]:list-decimal [&_ol]:pl-7 [&_table]:max-w-full [&_table]:border-collapse [&_td]:border [&_td]:border-[#60482e]/45 [&_td]:p-2 [&_th]:border [&_th]:border-[#60482e]/45 [&_th]:p-2 [&_ul]:list-disc [&_ul]:pl-7"
-          style={{
-            minHeight,
-            maxHeight:
-              editorMaxHeight ??
-              undefined,
-            overflowY: "auto",
-          }}
-        />
-      )}
+  <textarea
+    id={id}
+    value={html}
+    onChange={(event) =>
+      commit(event.target.value)
+    }
+    disabled={disabled}
+    spellCheck={false}
+    className="block w-full resize-none overflow-y-auto bg-[#090706] px-4 py-4 font-mono text-xs leading-6 text-[#d7c4a5] outline-none"
+    style={{
+      minHeight,
+      maxHeight:
+        editorMaxHeight ??
+        undefined,
+      overflowY: "auto",
+    }}
+  />
+) : (
+  <>
+    <div
+      ref={editorRef}
+      id={id}
+      role="textbox"
+      aria-multiline="true"
+      aria-label={placeholder}
+      contentEditable={!disabled}
+      suppressContentEditableWarning
+      data-placeholder={placeholder}
+      lang="en-GB"
+      spellCheck
+      autoCorrect="on"
+      autoCapitalize="sentences"
+      onInput={syncFromEditor}
+      onBlur={syncFromEditor}
+      onMouseDown={
+        rememberHtmlBeforePointerSelection
+      }
+      onDoubleClick={
+        protectDoubleClickSelection
+      }
+      onClick={
+        handleSpellingClick
+      }
+      className="rich-wysiwyg-editor relative z-0 block w-full overflow-auto px-4 py-4 text-sm font-normal leading-7 text-[#d7c4a5] outline-none selection:bg-[#6b4b2c] selection:text-[#fff0d0] empty:before:pointer-events-none empty:before:text-[#625747] empty:before:content-[attr(data-placeholder)] [&_a]:text-[#d3a762] [&_a]:underline [&_blockquote]:border-l-2 [&_blockquote]:border-[#8d6d3e] [&_blockquote]:pl-4 [&_h1]:font-serif [&_h1]:text-4xl [&_h2]:font-serif [&_h2]:text-3xl [&_h3]:font-serif [&_h3]:text-2xl [&_img]:my-3 [&_img]:max-h-[620px] [&_img]:max-w-full [&_ol]:list-decimal [&_ol]:pl-7 [&_table]:max-w-full [&_table]:border-collapse [&_td]:border [&_td]:border-[#60482e]/45 [&_td]:p-2 [&_th]:border [&_th]:border-[#60482e]/45 [&_th]:p-2 [&_ul]:list-disc [&_ul]:pl-7"
+      style={{
+        minHeight,
+        maxHeight:
+          editorMaxHeight ??
+          undefined,
+        overflowY: "auto",
+      }}
+    />
 
-      {name ? (
-        <input
-          type="hidden"
-          name={name}
-          value={html}
-        />
-      ) : null}
+    {spellingMenu ? (
+      <div
+        className="fixed z-[9999] w-64 border border-[#765937]/80 bg-[#120d0a] p-3 shadow-[0_14px_40px_rgba(0,0,0,0.85)]"
+        style={{
+          left: spellingMenu.x,
+          top: spellingMenu.y,
+        }}
+        onMouseDown={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
+        }}
+      >
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="text-[7px] uppercase tracking-[0.2em] text-[#806b50]">
+              Spelling
+            </p>
 
-      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#60482e]/35 bg-[#0b0806] px-3 py-2 text-[9px] leading-4 text-[#756958]">
-        <span>
+            <p className="mt-1 font-serif text-base text-[#dfc79c]">
+              {spellingMenu.issue.word}
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={() =>
+              setSpellingMenu(null)
+            }
+            className="text-sm text-[#887760] transition hover:text-[#e2c99d]"
+          >
+            ×
+          </button>
+        </div>
+
+        {spellingMenu.issue.suggestions
+          .length > 0 ? (
+          <div className="mt-3 space-y-1">
+            <p className="mb-2 text-[7px] uppercase tracking-[0.18em] text-[#756651]">
+              Suggestions
+            </p>
+
+            {spellingMenu.issue.suggestions.map(
+              (suggestion) => (
+                <button
+                  key={suggestion}
+                  type="button"
+                  onClick={() =>
+                    applySpellingSuggestion(
+                      suggestion,
+                    )
+                  }
+                  className="block w-full border border-[#60482e]/40 bg-[#17110d] px-3 py-2 text-left font-serif text-sm text-[#d7bf96] transition hover:border-[#987344] hover:bg-[#241a11] hover:text-[#f0d49d]"
+                >
+                  {suggestion}
+                </button>
+              ),
+            )}
+          </div>
+        ) : (
+          <p className="mt-3 text-xs text-[#827565]">
+            No replacement suggestions found.
+          </p>
+        )}
+
+        <div className="mt-3 grid grid-cols-2 gap-2 border-t border-[#60482e]/35 pt-3">
+          <button
+            type="button"
+            onClick={
+              ignoreSpellingWord
+            }
+            className="border border-[#60482e]/45 bg-[#15100d] px-2 py-2 text-[8px] uppercase tracking-[0.12em] text-[#a08c70] transition hover:border-[#87663b] hover:text-[#d4bb91]"
+          >
+            Ignore once
+          </button>
+
+          <button
+            type="button"
+            onClick={
+              addSpellingWordToDictionary
+            }
+            className="border border-[#87663b]/70 bg-[#251a10] px-2 py-2 text-[8px] uppercase tracking-[0.12em] text-[#d3af76] transition hover:border-[#aa8148] hover:text-[#efd09b]"
+          >
+            Add word
+          </button>
+        </div>
+      </div>
+    ) : null}
+    </>
+)}
+
+{name ? (
+  <input
+    type="hidden"
+    name={name}
+    value={html}
+  />
+) : null}
+
+<div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#60482e]/35 bg-[#0b0806] px-3 py-2 text-[9px] leading-4 text-[#756958]"><span>
           Paste formatted content directly. Fonts, 8–24px text sizes, colours, links, lists and web images are retained. Misspellings are marked with a red wavy underline.
         </span>
         <span>

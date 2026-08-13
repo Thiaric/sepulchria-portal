@@ -165,11 +165,11 @@ export async function POST(
     extractUniqueWords(safeText)
   ) {
     if (
-      shouldSkipWord(word) ||
-      checker.correct(word)
-    ) {
-      continue;
-    }
+  shouldSkipWord(word) ||
+  isCorrectWord(word)
+) {
+  continue;
+}
 
     const suggestions =
       checker
@@ -200,4 +200,36 @@ export async function POST(
   return NextResponse.json({
     issues,
   });
+}
+
+function isCorrectWord(
+  word: string,
+) {
+  if (checker.correct(word)) {
+    return true;
+  }
+
+  /*
+   * Accept possessives when the underlying
+   * word is already valid:
+   *
+   * Sepulchria's
+   * Aureth's
+   * Jordan's
+   */
+  const possessive =
+    word.match(
+      /^(.+?)[’']s$/iu,
+    );
+
+  if (
+    possessive?.[1] &&
+    checker.correct(
+      possessive[1],
+    )
+  ) {
+    return true;
+  }
+
+  return false;
 }

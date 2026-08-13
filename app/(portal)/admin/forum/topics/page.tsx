@@ -8,6 +8,10 @@ import {
   permanentlyDeleteForumTopicAction,
 } from "./actions";
 
+import {
+  restoreTopicAction,
+} from "@/app/(portal)/forum/moderation-actions";
+
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
@@ -847,6 +851,59 @@ export default async function ForumTopicsManagementPage({
                         Missing section
                       </span>
                     ) : null}
+
+                    {topic.deleted_at ? (
+  <details className="w-full border border-emerald-950/60 bg-emerald-950/10 lg:max-w-[260px]">
+    <summary className="cursor-pointer list-none px-4 py-3 text-center text-[8px] uppercase tracking-[0.15em] text-emerald-400 transition hover:bg-emerald-950/20 hover:text-emerald-300">
+      Restore discussion
+    </summary>
+
+    <form
+      action={
+        restoreTopicAction
+      }
+      className="border-t border-emerald-950/50 p-4"
+    >
+      <input
+        type="hidden"
+        name="topicId"
+        value={topic.id}
+      />
+
+      <input
+        type="hidden"
+        name="returnTo"
+        value={returnTo}
+      />
+
+      <p className="text-[10px] leading-5 text-emerald-300/80">
+        Restore this discussion
+        together with the posts
+        removed when the discussion
+        was deleted.
+      </p>
+
+      <label className="mt-3 block text-[7px] uppercase tracking-[0.14em] text-emerald-400">
+        Restoration note
+      </label>
+
+      <textarea
+        name="reason"
+        maxLength={1000}
+        rows={3}
+        placeholder="Optional reason for restoration..."
+        className="mt-2 w-full resize-y border border-emerald-900/70 bg-[#09100b] px-3 py-2 text-xs text-emerald-200 outline-none placeholder:text-emerald-900 focus:border-emerald-600"
+      />
+
+      <button
+        type="submit"
+        className="mt-3 w-full border border-emerald-800 bg-emerald-950/30 px-3 py-2.5 text-[8px] uppercase tracking-[0.14em] text-emerald-300 transition hover:border-emerald-600 hover:bg-emerald-950/55"
+      >
+        Restore discussion
+      </button>
+    </form>
+  </details>
+) : null}
 
                     {topic.deleted_at &&
                     canPurge ? (
