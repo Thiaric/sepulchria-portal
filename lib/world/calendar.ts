@@ -54,7 +54,7 @@ export function getAurethDate(date: Date): AurethDate {
 
 export function formatAurethDate(date: Date) {
   const value = getAurethDate(date);
-  return `${value.weekdayName}, ${value.day} ${value.monthName}, ${value.year} ADF`;
+  return `${value.weekdayName}, ${value.day} ${value.monthName}, ${value.year} ADN`;
 }
 
 export function formatShortAurethDate(date: Date) {

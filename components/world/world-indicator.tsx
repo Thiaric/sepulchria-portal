@@ -56,7 +56,7 @@ function Calendar({ date }: { date: Date }) {
           {aureth.monthName}
         </p>
         <p className="text-[8px] uppercase tracking-[0.14em] text-[#806f59]">
-          {aureth.year} ADF
+          {aureth.year} ADN
         </p>
       </div>
 
