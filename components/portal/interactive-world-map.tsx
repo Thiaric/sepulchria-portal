@@ -46,6 +46,34 @@ const cityHotspots: CityHotspot[] = [
   { slug: "the-skin-of-sepulchria", shortName: "The Skin", points: "443,107,458,171,426,196,415,214,348,247,254,278,248,249,233,248,226,276,226,289,197,305,148,339,91,369,81,351,61,291,9,213,130,126,222,72,287,23,363,15,443,44", labelX: 245, labelY: 177 },
 ];
 
+function getAreaInfoPosition(
+  hotspot: CityHotspot,
+) {
+  const xPercent =
+    (hotspot.labelX / 1536) * 100;
+
+  const yPercent =
+    (hotspot.labelY / 1024) * 100;
+
+  /*
+   * Put the information panel on the opposite
+   * side of the map from the hovered district.
+   *
+   * Values are deliberately kept away from the
+   * edges so the box remains inside the map.
+   */
+  const left =
+    xPercent < 50 ? 72 : 28;
+
+  const top =
+    yPercent < 50 ? 72 : 28;
+
+  return {
+    left: `${left}%`,
+    top: `${top}%`,
+  };
+}
+
 export function InteractiveWorldMap({
   areas,
 }: InteractiveWorldMapProps) {
@@ -203,6 +231,13 @@ export function InteractiveWorldMap({
           hoveredHotspot.slug,
         )
       : null;
+
+      const hoveredInfoPosition =
+  hoveredHotspot
+    ? getAreaInfoPosition(
+        hoveredHotspot,
+      )
+    : null;
 
   const currentMapSrc =
     level === "continent"
@@ -417,24 +452,27 @@ export function InteractiveWorldMap({
               );
             })}
 
-            {hoveredDatabaseArea ? (
-              <div className="pointer-events-none absolute bottom-4 left-1/2 z-40 w-[min(90%,26rem)] -translate-x-1/2 border border-[#8f6a3d]/80 bg-[#120b09]/95 px-4 py-3 text-center shadow-[0_12px_34px_rgba(0,0,0,0.9)]">
-<p className="font-serif text-base text-[#f1d7aa]">
-                  {
-                    hoveredDatabaseArea.name
-                  }
-                </p>
+            {hoveredDatabaseArea &&
+hoveredInfoPosition ? (
+  <div
+    className="pointer-events-none absolute z-40 w-[min(42%,26rem)] -translate-x-1/2 -translate-y-1/2 border border-[#8f6a3d]/80 bg-[#120b09]/95 px-4 py-3 text-center shadow-[0_12px_34px_rgba(0,0,0,0.9)] transition-[left,top] duration-200"
+    style={hoveredInfoPosition}
+  >
+    <p className="font-serif text-base text-[#f1d7aa]">
+      {hoveredDatabaseArea.name}
+    </p>
 
-                {hoveredDatabaseArea.description ? (
-                  <RichTextContentClient
-                    body={
-                      hoveredDatabaseArea.description
-                    }
-                    className="mt-1 text-xs leading-5 text-[#a99984] [&_p]:m-0 [&_h1]:text-xs [&_h2]:text-xs [&_h3]:text-xs [&_img]:hidden [&_table]:hidden"
-                  />
-                ) : null}
-              </div>
-            ) : null}
+    {hoveredDatabaseArea.description ? (
+      <RichTextContentClient
+        body={
+          hoveredDatabaseArea.description
+        }
+        className="mt-1 text-xs leading-5 text-[#a99984] [&_p]:m-0 [&_h1]:text-xs [&_h2]:text-xs [&_h3]:text-xs [&_img]:hidden [&_table]:hidden"
+      />
+    ) : null}
+  </div>
+) : null}
+              
           </div>
 
           {/*
