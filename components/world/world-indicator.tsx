@@ -248,9 +248,9 @@ export function WorldIndicator() {
         <img
           src={lunar.symbol}
           alt={lunar.name}
-          width={86}
-          height={86}
-          className="block h-[86px] w-[86px] object-contain"
+          width={72}
+          height={72}
+          className="block h-[72px] w-[72px] object-contain"
         />
       </div>
 
