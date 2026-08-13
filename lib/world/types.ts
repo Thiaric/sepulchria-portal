@@ -17,6 +17,17 @@ export type WeatherIntensity =
   | "moderate"
   | "heavy";
 
+export type ClimateOverrideSnapshot = {
+  weather: WeatherKind;
+  weather_intensity: WeatherIntensity;
+  temperature_c: number;
+  automatic_weather: boolean;
+  automatic_temperature: boolean;
+  next_weather_change_game: string | null;
+  weather_last_changed_game: string | null;
+  temperature_last_changed_game: string | null;
+};
+
 export type WorldState = {
   id: string;
   game_datetime: string;
@@ -36,13 +47,13 @@ export type WorldState = {
   temperature_override_until_game: string | null;
   temperature_last_changed_game: string | null;
 
+  climate_override_snapshot: ClimateOverrideSnapshot | null;
   updated_at: string;
 };
 
 export const DEFAULT_WORLD_STATE: WorldState = {
   id: "aureth",
-  game_datetime:
-    new Date().toISOString(),
+  game_datetime: new Date().toISOString(),
   automatic_time: true,
   time_scale: 1,
 
@@ -59,6 +70,6 @@ export const DEFAULT_WORLD_STATE: WorldState = {
   temperature_override_until_game: null,
   temperature_last_changed_game: null,
 
-  updated_at:
-    new Date().toISOString(),
+  climate_override_snapshot: null,
+  updated_at: new Date().toISOString(),
 };

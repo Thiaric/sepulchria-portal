@@ -3,6 +3,7 @@ import "server-only";
 import { createClient } from "@supabase/supabase-js";
 
 import type {
+  ClimateOverrideSnapshot,
   WeatherIntensity,
   WeatherKind,
   WorldState,
@@ -52,16 +53,12 @@ function effectiveGameDate(
   return new Date(
     base +
       elapsed *
-        Math.max(
-          0,
-          Number(state.time_scale) || 0,
-        ),
+        Math.max(0, Number(state.time_scale) || 0),
   );
 }
 
 function seasonFor(date: Date) {
   const month = date.getUTCMonth() + 1;
-
   if (month === 12 || month <= 2) return "winter";
   if (month <= 5) return "spring";
   if (month <= 8) return "summer";
@@ -75,7 +72,6 @@ function weightedPick(
     (sum, item) => sum + item.weight,
     0,
   );
-
   let roll = Math.random() * total;
 
   for (const item of candidates) {
@@ -163,33 +159,9 @@ function candidatesFor(
 
 const TRANSITIONS: Record<WeatherKind, WeatherKind[]> = {
   clear: ["clear", "partly_cloudy", "cloudy", "fog"],
-  partly_cloudy: [
-    "clear",
-    "partly_cloudy",
-    "cloudy",
-    "overcast",
-    "drizzle",
-  ],
-  cloudy: [
-    "partly_cloudy",
-    "cloudy",
-    "overcast",
-    "fog",
-    "drizzle",
-    "rain",
-    "snow",
-  ],
-  overcast: [
-    "cloudy",
-    "overcast",
-    "fog",
-    "drizzle",
-    "rain",
-    "heavy_rain",
-    "snow",
-    "heavy_snow",
-    "hail",
-  ],
+  partly_cloudy: ["clear", "partly_cloudy", "cloudy", "overcast", "drizzle"],
+  cloudy: ["partly_cloudy", "cloudy", "overcast", "fog", "drizzle", "rain", "snow"],
+  overcast: ["cloudy", "overcast", "fog", "drizzle", "rain", "heavy_rain", "snow", "heavy_snow", "hail"],
   fog: ["fog", "cloudy", "overcast", "partly_cloudy", "drizzle"],
   drizzle: ["drizzle", "cloudy", "overcast", "rain", "partly_cloudy"],
   rain: ["drizzle", "rain", "heavy_rain", "overcast", "cloudy", "storm", "hail"],
@@ -200,28 +172,16 @@ const TRANSITIONS: Record<WeatherKind, WeatherKind[]> = {
   hail: ["hail", "rain", "overcast", "cloudy", "snow"],
 };
 
-function chooseWeather(
-  state: WorldState,
-  gameDate: Date,
-) {
-  const seasonal = candidatesFor(
-    gameDate,
-    state.temperature_c,
-  );
-
+function chooseWeather(state: WorldState, gameDate: Date) {
+  const seasonal = candidatesFor(gameDate, state.temperature_c);
   const allowed = new Set(TRANSITIONS[state.weather]);
   const believable = seasonal.filter((candidate) =>
     allowed.has(candidate.weather),
   );
-
-  return weightedPick(
-    believable.length > 0 ? believable : seasonal,
-  );
+  return weightedPick(believable.length > 0 ? believable : seasonal);
 }
 
-function chooseIntensity(
-  weather: WeatherKind,
-): WeatherIntensity {
+function chooseIntensity(weather: WeatherKind): WeatherIntensity {
   if (
     weather === "clear" ||
     weather === "partly_cloudy" ||
@@ -328,6 +288,16 @@ function parseOptionalDate(value: string | null) {
   return value ? Date.parse(value) : Number.NaN;
 }
 
+function hasExpired(value: string | null, gameDate: Date) {
+  const parsed = parseOptionalDate(value);
+  return !Number.isNaN(parsed) && gameDate.getTime() >= parsed;
+}
+
+function isActive(value: string | null, gameDate: Date) {
+  const parsed = parseOptionalDate(value);
+  return !Number.isNaN(parsed) && gameDate.getTime() < parsed;
+}
+
 export async function tickAutomaticWeather() {
   const supabase = createAdminClient();
 
@@ -343,26 +313,103 @@ export async function tickAutomaticWeather() {
 
   const state = data as WorldState;
   const gameDate = effectiveGameDate(state);
+  const snapshot =
+    state.climate_override_snapshot as ClimateOverrideSnapshot | null;
 
-  const weatherOverrideUntil = parseOptionalDate(
+  const weatherOverrideActive = isActive(
     state.weather_override_until_game,
+    gameDate,
   );
-  const weatherOverrideActive =
-    !Number.isNaN(weatherOverrideUntil) &&
-    gameDate.getTime() < weatherOverrideUntil;
-  const weatherOverrideExpired =
-    !Number.isNaN(weatherOverrideUntil) &&
-    gameDate.getTime() >= weatherOverrideUntil;
-
-  const temperatureOverrideUntil = parseOptionalDate(
+  const weatherOverrideExpired = hasExpired(
+    state.weather_override_until_game,
+    gameDate,
+  );
+  const temperatureOverrideActive = isActive(
     state.temperature_override_until_game,
+    gameDate,
   );
-  const temperatureOverrideActive =
-    !Number.isNaN(temperatureOverrideUntil) &&
-    gameDate.getTime() < temperatureOverrideUntil;
-  const temperatureOverrideExpired =
-    !Number.isNaN(temperatureOverrideUntil) &&
-    gameDate.getTime() >= temperatureOverrideUntil;
+  const temperatureOverrideExpired = hasExpired(
+    state.temperature_override_until_game,
+    gameDate,
+  );
+
+  /*
+   * Temporary overrides RESTORE the exact pre-override climate.
+   * They do not ask the simulation to invent a replacement state.
+   */
+  if (
+    snapshot &&
+    (weatherOverrideExpired || temperatureOverrideExpired)
+  ) {
+    const weatherStillActive =
+      weatherOverrideActive && !weatherOverrideExpired;
+    const temperatureStillActive =
+      temperatureOverrideActive && !temperatureOverrideExpired;
+
+    const next = {
+      game_datetime: gameDate.toISOString(),
+
+      weather: weatherOverrideExpired
+        ? snapshot.weather
+        : state.weather,
+      weather_intensity: weatherOverrideExpired
+        ? snapshot.weather_intensity
+        : state.weather_intensity,
+      automatic_weather: weatherOverrideExpired
+        ? snapshot.automatic_weather
+        : state.automatic_weather,
+      next_weather_change_game: weatherOverrideExpired
+        ? snapshot.next_weather_change_game
+        : state.next_weather_change_game,
+      weather_last_changed_game: weatherOverrideExpired
+        ? snapshot.weather_last_changed_game
+        : state.weather_last_changed_game,
+      weather_override_until_game: weatherOverrideExpired
+        ? null
+        : state.weather_override_until_game,
+
+      temperature_c: temperatureOverrideExpired
+        ? snapshot.temperature_c
+        : state.temperature_c,
+      automatic_temperature: temperatureOverrideExpired
+        ? snapshot.automatic_temperature
+        : state.automatic_temperature,
+      temperature_last_changed_game: temperatureOverrideExpired
+        ? snapshot.temperature_last_changed_game
+        : state.temperature_last_changed_game,
+      temperature_override_until_game: temperatureOverrideExpired
+        ? null
+        : state.temperature_override_until_game,
+
+      climate_override_snapshot:
+        weatherStillActive || temperatureStillActive
+          ? snapshot
+          : null,
+
+      updated_at: new Date().toISOString(),
+    };
+
+    const { error: restoreError } = await supabase
+      .from("world_state")
+      .update(next)
+      .eq("id", WORLD_ROW_ID);
+
+    if (restoreError) {
+      throw new Error(
+        `Unable to restore pre-override climate: ${restoreError.message}`,
+      );
+    }
+
+    return {
+      changed: true,
+      reason: "temporary-override-restored",
+      weather: next.weather,
+      intensity: next.weather_intensity,
+      temperature: next.temperature_c,
+      gameDate: gameDate.toISOString(),
+      nextWeatherChange: next.next_weather_change_game,
+    };
+  }
 
   const nextWeatherChange = parseOptionalDate(
     state.next_weather_change_game,
@@ -372,7 +419,6 @@ export async function tickAutomaticWeather() {
     state.automatic_weather &&
     !weatherOverrideActive &&
     (
-      weatherOverrideExpired ||
       Number.isNaN(nextWeatherChange) ||
       gameDate.getTime() >= nextWeatherChange
     );
@@ -402,7 +448,6 @@ export async function tickAutomaticWeather() {
     state.automatic_temperature &&
     !temperatureOverrideActive &&
     (
-      temperatureOverrideExpired ||
       Number.isNaN(temperatureLastChanged) ||
       gameDate.getTime() - temperatureLastChanged >=
         TEMPERATURE_STEP_GAME_MS ||
@@ -423,10 +468,7 @@ export async function tickAutomaticWeather() {
   }
 
   const anyChange =
-    weatherTransitionDue ||
-    temperatureTickDue ||
-    weatherOverrideExpired ||
-    temperatureOverrideExpired;
+    weatherTransitionDue || temperatureTickDue;
 
   if (!anyChange) {
     return {
@@ -439,23 +481,18 @@ export async function tickAutomaticWeather() {
     };
   }
 
-  const now = new Date().toISOString();
-
   const next = {
     game_datetime: gameDate.toISOString(),
     weather,
     weather_intensity: intensity,
     temperature_c: temperature,
     next_weather_change_game: nextWeatherChangeGame,
-    weather_override_until_game: weatherOverrideExpired
-      ? null
-      : state.weather_override_until_game,
+    weather_override_until_game: state.weather_override_until_game,
     weather_last_changed_game: weatherLastChangedGame,
-    temperature_override_until_game: temperatureOverrideExpired
-      ? null
-      : state.temperature_override_until_game,
+    temperature_override_until_game: state.temperature_override_until_game,
     temperature_last_changed_game: temperatureLastChangedGame,
-    updated_at: now,
+    climate_override_snapshot: state.climate_override_snapshot,
+    updated_at: new Date().toISOString(),
   };
 
   const { error: updateError } = await supabase
@@ -476,9 +513,7 @@ export async function tickAutomaticWeather() {
         ? "weather-and-temperature-changed"
         : weatherTransitionDue
           ? "weather-changed"
-          : temperatureTickDue
-            ? "temperature-changed"
-            : "override-expired",
+          : "temperature-changed",
     weather,
     intensity,
     temperature,
