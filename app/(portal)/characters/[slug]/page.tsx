@@ -92,7 +92,7 @@ export default async function PublicCharacterPage({
       : "Back to characters";
 
   return (
-    <div className="mx-auto w-full max-w-7xl">
+    <div className="mx-auto w-full max-w-7xl p-6">
       <PublicCharacterProfileView
         character={character}
         returnHref={returnHref}

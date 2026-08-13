@@ -17,6 +17,7 @@ type Contact = {
   portrait_url: string | null;
   public_slug: string;
   presence_status: string;
+  last_seen_at?: string | null;
   conversation_id: string | null;
   unread_count: number | string;
   last_message_at: string | null;
@@ -140,8 +141,112 @@ export function InstantChatDock({
         return;
       }
 
+      const rpcContacts =
+        (data ?? []) as Contact[];
+
+      /*
+       * Do not trust the RPC's stored presence_status on its own.
+       * A browser can disappear without ever writing "offline", leaving
+       * an old "online" value behind indefinitely.
+       *
+       * character_presence.last_seen_at is the heartbeat source of truth.
+       * Anything older than 2 minutes is treated as offline.
+       */
+      const contactIds =
+        rpcContacts.map(
+          (contact) =>
+            contact.character_id,
+        );
+
+      if (contactIds.length === 0) {
+        setContacts([]);
+        return;
+      }
+
+      const {
+        data: presenceRows,
+        error: presenceError,
+      } = await supabase
+        .from(
+          "character_presence",
+        )
+        .select(
+          "character_id, last_seen_at",
+        )
+        .in(
+          "character_id",
+          contactIds,
+        );
+
+      if (presenceError) {
+        console.error(
+          "Instant chat presence:",
+          presenceError.message,
+        );
+
+        /*
+         * Fail safely: if heartbeat data cannot be read, do not show
+         * somebody as online merely because a stale status says so.
+         */
+        setContacts(
+          rpcContacts.map(
+            (contact) => ({
+              ...contact,
+              presence_status:
+                "offline",
+            }),
+          ),
+        );
+        return;
+      }
+
+      const lastSeenByCharacter =
+        new Map<string, string | null>(
+          (presenceRows ?? []).map(
+            (row) => [
+              row.character_id as string,
+              (row.last_seen_at ??
+                null) as string | null,
+            ],
+          ),
+        );
+
+      const ONLINE_WINDOW_MS =
+        2 * 60 * 1000;
+
+      const now = Date.now();
+
       setContacts(
-        (data ?? []) as Contact[],
+        rpcContacts.map(
+          (contact) => {
+            const lastSeen =
+              lastSeenByCharacter.get(
+                contact.character_id,
+              ) ?? null;
+
+            const lastSeenMs =
+              lastSeen
+                ? Date.parse(lastSeen)
+                : Number.NaN;
+
+            const heartbeatIsFresh =
+              Number.isFinite(
+                lastSeenMs,
+              ) &&
+              now - lastSeenMs <=
+                ONLINE_WINDOW_MS;
+
+            return {
+              ...contact,
+              last_seen_at:
+                lastSeen,
+              presence_status:
+                heartbeatIsFresh
+                  ? contact.presence_status
+                  : "offline",
+            };
+          },
+        ),
       );
     }, [
       characterId,

@@ -44,7 +44,7 @@ if (!user) {
   }
 
   return (
-  <div className="h-full min-h-0 p-2 sm:p-3 lg:p-4">
+  <div className="h-full min-h-0 p-1 sm:p-1 lg:p-1">
     <InteractiveWorldMap
       areas={(areas ?? []) as Area[]}
     />

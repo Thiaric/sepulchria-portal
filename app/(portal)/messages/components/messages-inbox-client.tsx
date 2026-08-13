@@ -177,7 +177,7 @@ export function MessagesInboxClient({
     ]);
 
   return (
-    <div className="p-5 sm:p-7 lg:p-9">
+    <div className="p-2 sm:p-7 lg:p-6">
       <div className="mx-auto max-w-5xl">
         <header className="flex flex-wrap items-end justify-between gap-5 border-b border-[#654b2e]/40 pb-6">
           <div>
