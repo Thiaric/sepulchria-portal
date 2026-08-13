@@ -23,89 +23,27 @@ type MapLevel =
 type CityHotspot = {
   slug: string;
   shortName: string;
-  x: number;
-  y: number;
-  size: number;
+  points: string;
+  labelX: number;
+  labelY: number;
 };
 
+/*
+ * Polygon coordinates use the map's native 1536 x 1024 coordinate system.
+ * Edit `points` to reshape a district.
+ */
 const cityHotspots: CityHotspot[] = [
-  {
-    slug: "the-heart-of-sepulchria",
-    shortName: "The Heart",
-    x: 47.3,
-    y: 47.8,
-    size: 8,
-  },
-  {
-    slug: "the-eyes-of-sepulchria",
-    shortName: "The Eyes",
-    x: 63.5,
-    y: 22.4,
-    size: 7,
-  },
-  {
-    slug: "the-mind-of-sepulchria",
-    shortName: "The Mind",
-    x: 32.1,
-    y: 22.5,
-    size: 7,
-  },
-  {
-    slug: "the-hands-of-sepulchria",
-    shortName: "The Hands",
-    x: 23.7,
-    y: 36.5,
-    size: 7,
-  },
-  {
-    slug: "the-blood-of-sepulchria",
-    shortName: "The Blood",
-    x: 23.9,
-    y: 54.3,
-    size: 7,
-  },
-  {
-    slug: "the-bones-of-sepulchria",
-    shortName: "The Bones",
-    x: 30.7,
-    y: 69.8,
-    size: 7,
-  },
-  {
-    slug: "the-arms-of-sepulchria",
-    shortName: "The Arms",
-    x: 70.6,
-    y: 36.5,
-    size: 7,
-  },
-  {
-    slug: "the-breath-of-sepulchria",
-    shortName: "The Breath",
-    x: 69.8,
-    y: 54.2,
-    size: 7,
-  },
-  {
-    slug: "the-veins-of-sepulchria",
-    shortName: "The Veins",
-    x: 64.3,
-    y: 69.7,
-    size: 7,
-  },
-  {
-    slug: "the-soul-of-sepulchria",
-    shortName: "The Soul",
-    x: 47.6,
-    y: 11.3,
-    size: 8,
-  },
-  {
-    slug: "the-skin-of-sepulchria",
-    shortName: "The Skin",
-    x: 47.3,
-    y: 74.5,
-    size: 7,
-  },
+  { slug: "the-heart-of-sepulchria", shortName: "The Heart", points: "360,321,617,254,681,262,883,316,894,352,848,382,822,420,839,444,897,474,970,467,966,524,734,596,678,562,608,567,573,595,536,639,524,685,501,730,497,780,522,821,487,843,442,798,455,771,383,723,425,689,438,647,418,622,365,601,376,563,389,519,392,498,436,449,441,384", labelX: 619, labelY: 470 },
+  { slug: "the-eyes-of-sepulchria", shortName: "The Eyes", points: "794,82,798,132,793,170,792,206,800,241,898,288,910,271,919,238,930,235,940,256,948,284,1067,333,1173,303,1272,268,1187,168,1131,139,1140,62,1057,44,1034,55,1027,90,934,113", labelX: 1017, labelY: 196 },
+  { slug: "the-mind-of-sepulchria", shortName: "The Mind", points: "745,613,760,674,753,754,772,741,877,783,967,732,962,695,986,687,1045,668,1049,645,1048,614,1001,581,984,569,970,548,905,561,809,587", labelX: 889, labelY: 660 },
+  { slug: "the-hands-of-sepulchria", shortName: "The Hands", points: "114,710,134,675,197,622,232,598,290,607,355,601,399,611,420,639,423,672,399,705,378,720,378,731,443,771,432,797,437,809,485,850,454,876,438,842,416,875,373,876,357,856,347,877,236,851,183,815,182,780,182,757,167,747,153,748,115,724", labelX: 297, labelY: 736 },
+  { slug: "the-blood-of-sepulchria", shortName: "The Blood", points: "514,763,540,792,541,815,611,861,640,869,689,872,689,807,700,773,706,785,747,740,747,701,736,643,716,595,683,573,643,569,605,586,572,606,550,630,552,668,535,689,514,727", labelX: 634, labelY: 717 },
+  { slug: "the-bones-of-sepulchria", shortName: "The Bones", points: "714,874,719,807,774,773,851,805,872,828,877,799,1074,699,1080,640,1170,588,1343,670,1472,615,1506,695,1460,784,1356,876,1297,933,1189,967,1169,977,1029,937,990,948,893,902,850,935,805,918,775,918,723,901", labelX: 1138, labelY: 748 },
+  { slug: "the-arms-of-sepulchria", shortName: "The Arms", points: "248,351,233,346,203,359,129,385,115,407,98,416,80,497,205,563,237,557,286,573,362,557,373,534,373,515,362,503,367,487,404,461,420,443,424,404,423,379,393,355,347,328,282,354,263,367", labelX: 259, labelY: 452 },
+  { slug: "the-breath-of-sepulchria", shortName: "The Breath", points: "889,366,856,374,834,401,840,438,867,457,932,467,977,457,1018,432,1034,415,1071,389,1062,362,948,312,948,280,924,229,904,275,905,359", labelX: 945, labelY: 383 },
+  { slug: "the-veins-of-sepulchria", shortName: "The Veins", points: "989,470,977,504,985,538,1012,562,1061,591,1073,566,1084,530,1096,561,1117,579,1166,552,1182,554,1199,530,1209,546,1278,530,1285,503,1294,486,1303,497,1309,516,1347,488,1315,457,1266,432,1209,427,1179,419,1166,396,1149,413,1087,405,1049,420,1038,443", labelX: 1140, labelY: 490 },
+  { slug: "the-soul-of-sepulchria", shortName: "The Soul", points: "434,232,472,261,614,234,689,235,777,249,781,192,784,133,780,74,739,63,704,64,704,34,650,26,572,43,561,67,507,80,475,99,483,173", labelX: 626, labelY: 150 },
+  { slug: "the-skin-of-sepulchria", shortName: "The Skin", points: "443,107,458,171,426,196,415,214,348,247,254,278,248,249,233,248,226,276,226,289,197,305,148,339,91,369,81,351,61,291,9,213,130,126,222,72,287,23,363,15,443,44", labelX: 245, labelY: 177 },
 ];
 
 export function InteractiveWorldMap({
@@ -306,7 +244,7 @@ export function InteractiveWorldMap({
                 "continent",
               );
             }}
-            className="border border-[#765735]/60 bg-[#21170f] px-4 py-2 text-[9px] uppercase tracking-[0.2em] text-[#d2ad72] transition hover:border-[#b28246] hover:bg-[#332317] hover:text-[#f5ddb2]"
+            className="border border-[#765735]/80 bg-[#21170f] px-4 py-2 text-[9px] uppercase tracking-[0.2em] text-[#9c8156] transition hover:border-[#b28246] hover:bg-[#332317] hover:text-[#fad798]"
           >
             ← Return to continent
           </button>
@@ -368,9 +306,9 @@ export function InteractiveWorldMap({
               }
               className="group absolute left-[47.09%] top-[69.7%] z-20 aspect-square w-[10.9%] -translate-x-1/2 -translate-y-1/2 rounded-full"
             >
-              <span className="absolute inset-0 rounded-full border-2 border-[#ff3b30] bg-[#ff2d20]/10 opacity-85 shadow-[0_0_8px_rgba(255,45,32,0.95),0_0_20px_rgba(255,45,32,0.7),inset_0_0_10px_rgba(255,45,32,0.3)] transition duration-300 group-hover:scale-125 group-hover:border-[#ff766e] group-hover:bg-[#ff2d20]/20 group-hover:opacity-100 group-hover:shadow-[0_0_12px_rgba(255,70,60,1),0_0_32px_rgba(255,45,32,0.95),inset_0_0_14px_rgba(255,70,60,0.45)] motion-safe:animate-pulse" />
+              <span className="absolute inset-0 rounded-full border-[3px] border-[#c39a58] bg-[#b28246]/10 opacity-95 shadow-[0_0_4px_rgba(225,185,120,1),0_0_11px_rgba(178,130,70,0.95),0_0_22px_rgba(178,130,70,0.65),inset_0_0_7px_rgba(178,130,70,0.22)] transition duration-300 group-hover:scale-125 group-hover:border-[4px] group-hover:border-[#e1b978] group-hover:bg-[#b28246]/20 group-hover:opacity-100 group-hover:shadow-[0_0_6px_rgba(238,204,143,1),0_0_16px_rgba(225,185,120,1),0_0_34px_rgba(178,130,70,0.9),inset_0_0_10px_rgba(225,185,120,0.30)] motion-safe:animate-pulse" />
 
-              <span className="absolute bottom-full left-1/2 mb-2 -translate-x-1/2 whitespace-nowrap border border-[#9f302a] bg-[#160908]/95 px-3 py-1.5 font-serif text-xs text-[#ffc2bd] opacity-0 shadow-[0_8px_22px_rgba(0,0,0,0.8)] transition duration-300 group-hover:-translate-y-1 group-hover:opacity-100">
+              <span className="absolute bottom-full left-1/2 mb-2 -translate-x-1/2 whitespace-nowrap border border-[#8f6a3d] bg-[#17110d]/95 px-3 py-1.5 font-serif text-xs text-[#e7c991] opacity-0 shadow-[0_8px_22px_rgba(0,0,0,0.8)] transition duration-300 group-hover:-translate-y-1 group-hover:opacity-100">
                 Enter Sepulchria
               </span>
             </button>
@@ -396,97 +334,92 @@ export function InteractiveWorldMap({
               objectFit="contain"
             />
 
-            {cityHotspots.map(
-              (hotspot) => {
-                const area =
-                  findArea(
-                    hotspot.slug,
-                  );
+            <svg
+              viewBox="0 0 1536 1024"
+              preserveAspectRatio="none"
+              className="absolute inset-0 z-20 h-full w-full"
+              aria-label="Sepulchria districts"
+            >
+              <defs>
+                <filter id="district-glow" x="-40%" y="-40%" width="180%" height="180%">
+                  <feGaussianBlur stdDeviation="7" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+              </defs>
 
-                const active =
-                  hoveredArea ===
-                  hotspot.slug;
-
-                const style = {
-                  left: `${hotspot.x}%`,
-                  top: `${hotspot.y}%`,
-                  width: `${hotspot.size}%`,
-                };
+              {cityHotspots.map((hotspot) => {
+                const area = findArea(hotspot.slug);
+                const active = hoveredArea === hotspot.slug;
 
                 if (!area) {
                   return (
-                    <div
-                      key={
-                        hotspot.slug
-                      }
-                      style={
-                        style
-                      }
-                      title={`${hotspot.shortName} is not available`}
-                      className="absolute aspect-square -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#655b51]/50 bg-black/10"
+                    <polygon
+                      key={hotspot.slug}
+                      points={hotspot.points}
+                      fill="rgba(0,0,0,0.10)"
+                      stroke="rgba(139,105,64,0.82)"
+                      strokeWidth="3"
+                      vectorEffect="non-scaling-stroke"
+                      style={{
+                        filter:
+                          "drop-shadow(0 0 2px rgba(139,105,64,0.55))",
+                      }}
                     />
                   );
                 }
 
                 return (
                   <Link
-                    key={
-                      hotspot.slug
-                    }
+                    key={hotspot.slug}
                     href={`/areas/${area.slug}`}
-                    style={style}
                     aria-label={`Open ${area.name}`}
-                    onMouseEnter={() =>
-                      setHoveredArea(
-                        hotspot.slug,
-                      )
-                    }
-                    onMouseLeave={() =>
-                      setHoveredArea(
-                        null,
-                      )
-                    }
-                    onFocus={() =>
-                      setHoveredArea(
-                        hotspot.slug,
-                      )
-                    }
-                    onBlur={() =>
-                      setHoveredArea(
-                        null,
-                      )
-                    }
-                    className="group absolute z-20 aspect-square -translate-x-1/2 -translate-y-1/2 rounded-full"
+                    onMouseEnter={() => setHoveredArea(hotspot.slug)}
+                    onMouseLeave={() => setHoveredArea(null)}
+                    onFocus={() => setHoveredArea(hotspot.slug)}
+                    onBlur={() => setHoveredArea(null)}
                   >
-                    <span
-                      className={`absolute inset-0 rounded-full border-2 transition duration-300 ${
-                        active
-                          ? "scale-125 border-[#ff766e] bg-[#ff2d20]/20 opacity-100 shadow-[0_0_10px_rgba(255,70,60,1),0_0_28px_rgba(255,45,32,0.95),inset_0_0_12px_rgba(255,70,60,0.45)]"
-                          : "border-[#e33a30]/75 bg-[#ff2d20]/5 opacity-60 shadow-[0_0_8px_rgba(255,45,32,0.65)]"
-                      }`}
+                    <polygon
+                      points={hotspot.points}
+                      className="cursor-pointer transition-all duration-300"
+                      fill={active ? "rgba(178,130,70,0.20)" : "rgba(178,130,70,0.045)"}
+                      stroke={active ? "rgba(238,204,143,1)" : "rgba(195,154,88,0.98)"}
+                      strokeWidth={active ? 5 : 3}
+                      vectorEffect="non-scaling-stroke"
+                      style={{
+                        filter: active
+                          ? "drop-shadow(0 0 5px rgba(238,204,143,0.95)) drop-shadow(0 0 11px rgba(178,130,70,0.75))"
+                          : "drop-shadow(0 0 2px rgba(178,130,70,0.72))",
+                      }}
                     />
-
-                    <span
-                      className={`pointer-events-none absolute bottom-full left-1/2 z-30 mb-2 -translate-x-1/2 whitespace-nowrap border border-[#9f302a] bg-[#160908]/95 px-3 py-1.5 font-serif text-xs text-[#ffc2bd] shadow-[0_8px_22px_rgba(0,0,0,0.85)] transition duration-200 ${
-                        active
-                          ? "-translate-y-1 opacity-100"
-                          : "translate-y-0 opacity-0"
-                      }`}
-                    >
-                      {area.name}
-                    </span>
                   </Link>
                 );
-              },
-            )}
+              })}
+            </svg>
+
+            {cityHotspots.map((hotspot) => {
+              const area = findArea(hotspot.slug);
+              if (!area || hoveredArea !== hotspot.slug) return null;
+
+              return (
+                <div
+                  key={`label-${hotspot.slug}`}
+                  className="pointer-events-none absolute z-30 -translate-x-1/2 -translate-y-full whitespace-nowrap border border-[#8f6a3d] bg-[#17110d]/95 px-3 py-1.5 font-serif text-xs text-[#e7c991] shadow-[0_8px_22px_rgba(0,0,0,0.85)]"
+                  style={{
+                    left: `${(hotspot.labelX / 1536) * 100}%`,
+                    top: `${(hotspot.labelY / 1024) * 100}%`,
+                  }}
+                >
+                  {area.name}
+                </div>
+              );
+            })}
 
             {hoveredDatabaseArea ? (
-              <div className="pointer-events-none absolute bottom-4 left-1/2 z-40 w-[min(90%,26rem)] -translate-x-1/2 border border-[#9f302a]/80 bg-[#120b09]/95 px-4 py-3 text-center shadow-[0_12px_34px_rgba(0,0,0,0.9)]">
-                <p className="text-[8px] uppercase tracking-[0.25em] text-[#e3665e]">
-                  Open district
-                </p>
-
-                <p className="mt-1 font-serif text-base text-[#f1d7aa]">
+              <div className="pointer-events-none absolute bottom-4 left-1/2 z-40 w-[min(90%,26rem)] -translate-x-1/2 border border-[#8f6a3d]/80 bg-[#120b09]/95 px-4 py-3 text-center shadow-[0_12px_34px_rgba(0,0,0,0.9)]">
+<p className="font-serif text-base text-[#f1d7aa]">
                   {
                     hoveredDatabaseArea.name
                   }
