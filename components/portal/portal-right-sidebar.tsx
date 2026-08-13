@@ -23,6 +23,7 @@ export function PortalRightSidebar({
       <div className="flex min-h-0 flex-1 flex-col gap-[var(--portal-column-gap)] p-[var(--portal-column-pad)]">
         <section className="shrink-0 border border-[#60482e]/45 bg-[#15100d] p-[var(--portal-section-pad)]">
           <div className="flex items-center justify-between gap-2">
+            
             <p className="text-[8px] uppercase tracking-[0.24em] text-[#876a46]">
               Current location
             </p>

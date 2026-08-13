@@ -1,28 +1,28 @@
 const YEAR_OFFSET = 2207;
 
 export const AURETH_MONTHS = [
-  "Frostwane",
-  "Thawrise",
-  "Bloomtide",
-  "Rainmoot",
-  "Greengold",
-  "Suncrest",
-  "Highflame",
-  "Emberwane",
-  "Harvestfall",
-  "Veilwane",
-  "Gloamreach",
-  "Nightdeep",
+  "Frostern",
+  "Molakorn",
+  "Estaron",
+  "Ameron",
+  "Paneron",
+  "Soltiron",
+  "Flameron",
+  "Wanern",
+  "Vintorn",
+  "Bifron",
+  "Morsern",
+  "Nochern",
 ] as const;
 
 export const AURETH_WEEKDAYS = [
-  "Dawnturn",
-  "Veilturn",
-  "Cinderturn",
-  "Crowntide",
-  "Veynday",
-  "Starwake",
-  "Gloamrest",
+  "Caemos",
+  "Tharmos",
+  "Linmos",
+  "Vaemos",
+  "Selmos",
+  "Namartes",
+  "Caeliant",
 ] as const;
 
 export type AurethDate = {
@@ -59,5 +59,5 @@ export function formatAurethDate(date: Date) {
 
 export function formatShortAurethDate(date: Date) {
   const value = getAurethDate(date);
-  return `${value.day} ${value.monthName.slice(0, 4)} · ${value.year} ADF`;
+  return `${value.day} ${value.monthName}`;
 }

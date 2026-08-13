@@ -142,16 +142,8 @@ export function WorldIndicator() {
         aria-label="Open in-game calendar"
       >
         <span>{ICONS[state.weather] ?? "◌"}</span>
-        <span className="text-[9px] uppercase tracking-[0.15em]">
-          {state.temperature_c}°C
-        </span>
-        <span>·</span>
-        <span className="font-serif text-sm text-[#e0c89e]">{time}</span>
-        <span className="hidden text-[#6f6252] xl:inline">·</span>
         <span className="hidden text-[9px] uppercase tracking-[0.08em] text-[#a38c69] xl:inline">
-          {shortDate}
-        </span>
-        <span className="hidden text-[#6f6252] 2xl:inline">·</span>
+          {state.temperature_c}°C | {shortDate} - {time} |</span>
         <span className="hidden text-base 2xl:inline">{lunar.symbol}</span>
       </button>
 
