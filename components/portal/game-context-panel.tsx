@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { CharacterOrderIdentity } from "@/components/characters/character-order-identity";
 import {
   useCallback,
   useEffect,
@@ -332,10 +333,7 @@ export function GameContextPanel({
                     person.race,
                   );
 
-                const association =
-                  normaliseRelation(
-                    person.association,
-                  );
+                
 
                 const displayName =
                   person.display_name?.trim() ||
@@ -343,9 +341,6 @@ export function GameContextPanel({
 
                 const raceName =
   race?.name ?? null;
-
-const associationName =
-  association?.name ?? null;
 
                 return (
   <div
@@ -359,7 +354,7 @@ const associationName =
     >
       <div className="absolute inset-y-0 left-0 w-px bg-[#b88a52]/0 transition group-hover:bg-[#b88a52]/70" />
 
-      <div className="flex min-h-[60px] items-center gap-2.5 px-2.5 py-2 pr-10">
+      <div className="flex min-h-[78px] items-center gap-3 px-3 py-2.5 pr-10">
         <div className="relative shrink-0">
           <Portrait
             src={person.portrait_url}
@@ -388,25 +383,17 @@ const associationName =
             </p>
           ) : null}
 
-          <div className="mt-1.5 flex items-center gap-1.5">
-            <MiniCodexIcon entry={race} />
+          <div className="mt-2 min-w-0 space-y-1.5">
+            <div className="flex min-w-0 items-center gap-1.5">
+  <MiniCodexIcon entry={race} />
 
-            <MiniCodexIcon
-              entry={association}
-            />
-
-            <div className="min-w-0 text-[8px] leading-3 text-[#8e7b62]">
-  <p className="truncate">
-    {raceName ||
-      "Unknown ancestry"}
-  </p>
-
-  <p className="truncate">
-    {associationName ||
-      "No association"}
-  </p>
+  <CharacterOrderIdentity
+    characterId={person.id}
+    variant="mini"
+  />
 </div>
           </div>
+
         </div>
       </div>
     </Link>
@@ -544,7 +531,7 @@ function MiniCodexIcon({
 
   return (
     <span
-      className="flex h-4 w-4 shrink-0 items-center justify-center overflow-hidden border bg-[#0d0907] font-serif text-[7px]"
+      className="flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden border bg-[#0d0907] font-serif text-[8px]"
       style={{
         borderColor: `${colour}88`,
         color: colour,

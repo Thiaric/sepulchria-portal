@@ -6,6 +6,7 @@ import {
   useState,
 } from "react";
 
+import { CharacterOrderIdentity } from "@/components/characters/character-order-identity";
 import { createClient } from "@/lib/supabase/client";
 import type { PresenceStatus } from "@/types/game";
 
@@ -32,19 +33,14 @@ export function normaliseMessageRelation<T>(
 }
 
 export function MessageCharacterIcons({
+  characterId,
   race,
-  association,
 }: {
+  characterId: string;
   race: Relation<MessageCodexIdentity>;
-  association: Relation<MessageCodexIdentity>;
 }) {
   const raceEntry =
     normaliseMessageRelation(race);
-
-  const associationEntry =
-    normaliseMessageRelation(
-      association,
-    );
 
   return (
     <div className="flex shrink-0 flex-col gap-1">
@@ -54,10 +50,9 @@ export function MessageCharacterIcons({
         labelPrefix="Ancestry"
       />
 
-      <IdentityIcon
-        entry={associationEntry}
-        fallback="O"
-        labelPrefix="Association"
+      <CharacterOrderIdentity
+        characterId={characterId}
+        variant="message"
       />
     </div>
   );
@@ -154,29 +149,29 @@ export function MessagePresenceStatus({
         data as PresenceRow | null;
 
       if (!presence) {
-  setStatus("offline");
-  return;
-}
+        setStatus("offline");
+        return;
+      }
 
-const lastSeen =
-  new Date(
-    presence.last_seen_at,
-  ).getTime();
+      const lastSeen =
+        new Date(
+          presence.last_seen_at,
+        ).getTime();
 
-const offlineAfter =
-  5 * 60_000;
+      const offlineAfter =
+        5 * 60_000;
 
-const isStale =
-  Number.isNaN(lastSeen) ||
-  Date.now() - lastSeen >
-    offlineAfter;
+      const isStale =
+        Number.isNaN(lastSeen) ||
+        Date.now() - lastSeen >
+          offlineAfter;
 
-if (isStale) {
-  setStatus("offline");
-  return;
-}
+      if (isStale) {
+        setStatus("offline");
+        return;
+      }
 
-setStatus(presence.status);
+      setStatus(presence.status);
     }, [characterId]);
 
   useEffect(() => {

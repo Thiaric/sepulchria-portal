@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 import Link from "next/link";
-
+import { CharacterOrderIdentity } from "@/components/characters/character-order-identity";
 import { createClient } from "@/lib/supabase/client";
 import {
   ROOM_HISTORY_HOURS,
@@ -72,14 +72,7 @@ function CharacterIdentityIcons({
     ? normaliseRelation(author.race)
     : null;
 
-  const association = author
-    ? normaliseRelation(author.association)
-    : null;
-
-  if (
-    !race?.icon_url &&
-    !association?.icon_url
-  ) {
+  if (!author) {
     return null;
   }
 
@@ -94,17 +87,14 @@ function CharacterIdentityIcons({
         />
       ) : null}
 
-      {association?.icon_url ? (
-        <img
-          src={association.icon_url}
-          alt={association.name}
-          title={association.name}
-          className="h-4 w-4 object-contain"
-        />
-      ) : null}
+      <CharacterOrderIdentity
+        characterId={author.id}
+        variant="chat"
+      />
     </div>
   );
 }
+
 
 function mergeMessages(
   currentMessages: RoomMessage[],

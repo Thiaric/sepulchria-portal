@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { CharacterOrderIdentity } from "@/components/characters/character-order-identity";
+
 
 import { RichTextContent } from "@/components/editor/rich-text-content";
 import DeletePostButton from "@/components/forum/delete-post-button";
@@ -480,12 +482,7 @@ function CharacterIdentityIcons({
       character.race_icon_url,
     );
 
-  const associationIcon =
-    normaliseImageUrl(
-      character.association_icon_url,
-    );
-
-  if (!raceIcon && !associationIcon) {
+  if (!raceIcon && !character.id) {
     return null;
   }
 
@@ -511,25 +508,10 @@ function CharacterIdentityIcons({
         </div>
       ) : null}
 
-      {associationIcon ? (
-        <div
-          className="flex h-8 w-8 items-center justify-center border border-[#60482e]/45 bg-[#0b0806] p-1"
-          title={
-            character.association_name ??
-            "Association"
-          }
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={associationIcon}
-            alt={
-              character.association_name ??
-              "Association"
-            }
-            className="h-full w-full object-contain"
-          />
-        </div>
-      ) : null}
+      <CharacterOrderIdentity
+        characterId={character.id}
+        variant="forum"
+      />
     </div>
   );
 }

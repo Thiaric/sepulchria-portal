@@ -302,15 +302,15 @@ export function MessagesInboxClient({
 
                     {conversation.other ? (
                       <MessageCharacterIcons
+                        characterId={
+                          conversation.other.id
+                        }
                         race={
                           conversation.other
                             .race
                         }
-                        association={
-                          conversation.other
-                            .association
-                        }
                       />
+
                     ) : null}
 
                     <div className="min-w-0 flex-1 pl-1">
@@ -618,11 +618,11 @@ function NewMessageModal({
                     </div>
 
                     <MessageCharacterIcons
+                      characterId={
+                        character.id
+                      }
                       race={
                         character.race
-                      }
-                      association={
-                        character.association
                       }
                     />
 

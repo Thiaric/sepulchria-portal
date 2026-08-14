@@ -3,6 +3,7 @@
 import Link from "next/link";
 
 import { startConversation } from "@/app/(portal)/messages/actions";
+import { CharacterOrderIdentity } from "@/components/characters/character-order-identity";
 import {
   useCallback,
   useEffect,
@@ -502,7 +503,7 @@ export function ActiveCityCounter({
                     event.target.value,
                   )
                 }
-                placeholder="Search name, ancestry, association…"
+                placeholder="Search name, ancestry, Order…"
                 autoComplete="off"
                 className="w-full border border-[#59432c]/55 bg-[#0d0907] py-2.5 pl-8 pr-9 text-xs text-[#d8c4a4] outline-none placeholder:text-[#62584b] focus:border-[#9a7445] [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
               />
@@ -667,12 +668,11 @@ export function ActiveCityCounter({
                                 fallback="No ancestry"
                               />
 
-                              <HeritageEntry
-                                entry={
-                                  association
-                                }
-                                fallback="No association"
+                              <CharacterOrderIdentity
+                                characterId={person.id}
+                                variant="inline"
                               />
+
                             </div>
                           </div>
                         </Link>

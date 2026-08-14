@@ -397,10 +397,8 @@ export default async function ConversationPage({
               </div>
 
               <MessageCharacterIcons
+                characterId={other.id}
                 race={other.race}
-                association={
-                  other.association
-                }
               />
 
               <div className="min-w-0 pl-1">
