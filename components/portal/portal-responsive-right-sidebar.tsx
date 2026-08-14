@@ -10,6 +10,8 @@ import { usePathname } from "next/navigation";
 
 import { InstantChatDock } from "@/components/instant-chat/instant-chat-dock";
 import { AdminContextPanel } from "@/components/portal/admin-context-panel";
+import { AdminOrdersContext } from "@/components/portal/admin-orders-context";
+import { CharacterDetailContextPanel } from "@/components/portal/character-detail-context-panel";
 import { ForumSectionActivityContext } from "@/components/portal/forum-section-activity-context";
 import { PortalContextPanel } from "@/components/portal/portal-context-panel";
 import { RoomInfoButton } from "@/components/portal/room-info-button";
@@ -43,6 +45,27 @@ export function PortalResponsiveRightSidebar({
           forumSectionMatch[1],
         )
       : null;
+
+  const publicCharacterMatch =
+    pathname.match(
+      /^\/characters\/([^/]+)$/,
+    );
+
+  const publicCharacterSlug =
+    publicCharacterMatch
+      ? decodeURIComponent(
+          publicCharacterMatch[1],
+        )
+      : null;
+
+  const isOwnCharacterPath =
+    pathname === "/character" ||
+    pathname.startsWith(
+      "/character/",
+    );
+
+  const isAdminOrdersPath =
+    pathname === "/admin/orders";
 
   const isAdminPath =
     pathname === "/admin" ||
@@ -161,18 +184,18 @@ export function PortalResponsiveRightSidebar({
                   ?.currentRoom
                   ?.image_url ? (
                   <LocationAtmosphericImage
-  src={
-    character.currentRoom.image_url
-  }
-  alt={
-    character.currentRoom.name
-  }
-  sizes="300px"
-  objectFit="cover"
-  isOutdoors={
-    character.currentRoom.is_outdoors
-  }
-/>
+                    src={
+                      character.currentRoom.image_url
+                    }
+                    alt={
+                      character.currentRoom.name
+                    }
+                    sizes="300px"
+                    objectFit="cover"
+                    isOutdoors={
+                      character.currentRoom.is_outdoors
+                    }
+                  />
                 ) : null}
 
                 <div className="pointer-events-none absolute inset-0 z-[6] bg-[#0b0806]/48" />
@@ -225,7 +248,24 @@ export function PortalResponsiveRightSidebar({
             </div>
 
             <section className="min-h-0 flex-1 border border-[#60482e]/45 bg-[#15100d] p-4 xl:p-[var(--portal-section-pad,1rem)]">
-              {isAdminPath ? (
+              {isAdminOrdersPath ? (
+                <AdminOrdersContext />
+              ) : isOwnCharacterPath ? (
+                <CharacterDetailContextPanel
+                  characterId={
+                    character?.id ?? null
+                  }
+                  ownCharacter={
+                    character ?? null
+                  }
+                />
+              ) : publicCharacterSlug ? (
+                <CharacterDetailContextPanel
+                  publicSlug={
+                    publicCharacterSlug
+                  }
+                />
+              ) : isAdminPath ? (
                 <AdminContextPanel
                   pathname={
                     pathname

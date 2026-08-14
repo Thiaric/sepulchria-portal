@@ -6,6 +6,7 @@ import { requireStaff } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 import { OrderLevelStructure } from "@/components/admin/order-level-structure";
 import { OrderMembershipManager } from "@/components/admin/order-membership-manager";
+import { AdminOrderCollapsible } from "@/components/admin/admin-order-collapsible";
 
 import {
   createOrder,
@@ -438,11 +439,18 @@ export default async function AdminOrdersPage({
         <div className="mt-6 space-y-5">
           {orders.map(
             (order) => (
-              <section
+              <AdminOrderCollapsible
                 key={order.id}
                 id={`order-${order.slug}`}
-                className="scroll-mt-24 overflow-hidden border border-[#60482e]/45 bg-[#15100d]"
+                name={order.name}
+                associationName={
+                  associationName(
+                    order.association,
+                  )
+                }
+                isActive={order.is_active}
               >
+
                 {order.banner_url ? (
                   <div className="relative h-44 border-b border-[#60482e]/40 bg-[#0b0807]">
                     <Image
@@ -874,7 +882,7 @@ export default async function AdminOrdersPage({
                     </div>
                   </div>
                 </div>
-              </section>
+              </AdminOrderCollapsible>
             ),
           )}
 

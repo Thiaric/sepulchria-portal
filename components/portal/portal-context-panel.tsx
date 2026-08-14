@@ -23,6 +23,8 @@ import {
 import { createClient } from "@/lib/supabase/client";
 import type { PortalContext } from "@/types/portal";
 import { ForumSectionActivityContext } from "@/components/portal/forum-section-activity-context";
+import { AdminOrdersContext } from "@/components/portal/admin-orders-context";
+import { CharacterOrderContext } from "@/components/portal/character-order-context";
 
 type PortalContextPanelProps = {
   context: PortalContext;
@@ -159,6 +161,11 @@ if (
       />
     );
   }
+
+  if (pathname === "/admin/orders") {
+    return <AdminOrdersContext />;
+  }
+
 
   const adminCharacterMatch =
     pathname.match(
@@ -1022,29 +1029,17 @@ function CharacterContext({
           />
 
           <ContextRow
-            label="Occupation"
+            label="Ancestry"
             value={
-              character.occupation ??
-              "None"
+              character.race?.name ??
+              "Not assigned"
             }
           />
 
-          <ContextRow
-  label="Ancestry"
-  value={
-    character.race?.name ??
-    "Not assigned"
-  }
-/>
+          <CharacterOrderContext
+            characterId={character.id}
+          />
 
-<ContextRow
-  label="Association"
-  value={
-    character.association?.name ??
-    "Not assigned"
-  }
-  last
-/>
 
           
         </>
@@ -1304,7 +1299,6 @@ type PublicCharacterContextRecord = {
   age: number | null;
   birthplace: string | null;
   origin: string | null;
-  occupation: string | null;
   title: string | null;
   expertise: number | null;
   muscles: number | null;
@@ -1393,7 +1387,6 @@ function PublicCharacterContext({
             age,
             birthplace,
             origin,
-            occupation,
             title,
             expertise,
             muscles,
@@ -1409,9 +1402,7 @@ function PublicCharacterContext({
               name
             ),
 
-            association:associations!characters_association_id_fkey(
-              name
-            ),
+            
 
             currentRoom:rooms!characters_current_room_id_fkey(
               name,
@@ -1597,10 +1588,7 @@ function PublicCharacterContext({
       character.race,
     );
 
-  const association =
-    contextRelation(
-      character.association,
-    );
+  
 
   const room =
     contextRelation(
@@ -1670,24 +1658,14 @@ function PublicCharacterContext({
         character.title ||
         "None",
     },
-    {
-      label: "Occupation",
-      value:
-        character.occupation ||
-        "None",
-    },
+    
     {
       label: "Ancestry",
       value:
         race?.name ??
         "Not assigned",
     },
-    {
-      label: "Association",
-      value:
-        association?.name ??
-        "Not assigned",
-    },
+    
     {
       label: "Location",
       value: location,
@@ -1773,11 +1751,17 @@ function PublicCharacterContext({
           )}
         </div>
 
+        <div className="mt-4 border-y border-[#59432c]/35">
+          <CharacterOrderContext
+            characterId={character.id}
+          />
+        </div>
+
         <div className="mt-4">
           <p className="mb-2 text-[8px] uppercase tracking-[0.2em] text-[#806b50]">
             Attributes
           </p>
-
+          
           <div className="grid grid-cols-2 gap-1.5">
             {attributes.map(
               (attribute) => (
