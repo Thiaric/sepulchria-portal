@@ -1,4 +1,4 @@
-export const AURETH_YEAR_OFFSET = 2207;
+export const AURETH_YEAR_OFFSET = 2200;
 
 export const AURETH_MONTHS = [
   "Frostern",

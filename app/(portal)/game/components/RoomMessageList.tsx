@@ -1119,7 +1119,7 @@ export default function RoomMessageList({
           </div>
         ) : (
           <div className="flex h-full min-h-0 items-center justify-center px-6 py-10 text-center font-serif italic text-[#8e7d66]">
-            The room is silent.
+          The air awaits for a story to begin...
           </div>
         )}
       </div>
