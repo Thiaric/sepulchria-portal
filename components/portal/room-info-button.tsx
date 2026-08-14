@@ -25,6 +25,7 @@ type RoomDetails = {
   description: string | null;
   image_url: string | null;
   sort_order: number | null;
+  is_outdoors: boolean;
   area:
     | AreaRelation
     | AreaRelation[]
@@ -73,8 +74,9 @@ export function RoomInfoButton({
           slug,
           description,
           image_url,
-          sort_order,
-          area:areas!rooms_area_id_fkey(
+sort_order,
+is_outdoors,
+area:areas!rooms_area_id_fkey(
             id,
             name,
             slug,
@@ -227,13 +229,12 @@ export function RoomInfoButton({
             <div className="relative min-h-56 overflow-hidden border-b border-[#60482e]/45 bg-[#090706] sm:min-h-72">
               {room.image_url ? (
                 <LocationAtmosphericImage
-                  src={
-                    room.image_url
-                  }
-                  alt={room.name}
-                  sizes="(max-width: 768px) 100vw, 48rem"
-                  objectFit="cover"
-                />
+  src={room.image_url}
+  alt={room.name}
+  sizes="(max-width: 768px) 100vw, 48rem"
+  objectFit="cover"
+  isOutdoors={room.is_outdoors}
+/>
               ) : (
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(130,86,42,0.22),_transparent_60%),linear-gradient(to_bottom,_#17110d,_#090706)]" />
               )}

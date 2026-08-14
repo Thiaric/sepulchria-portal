@@ -29,6 +29,7 @@ type Room = {
   description: string | null;
   image_url: string | null;
   sort_order: number | null;
+  is_outdoors: boolean;
 };
 
 export default async function AreaPage({
@@ -68,8 +69,8 @@ export default async function AreaPage({
   } = await supabase
     .from("rooms")
     .select(
-      "id, name, slug, description, image_url, sort_order",
-    )
+  "id, name, slug, description, image_url, sort_order, is_outdoors",
+)
     .eq("area_id", area.id)
     .eq("is_active", true)
     .order("sort_order", {
@@ -167,6 +168,7 @@ export default async function AreaPage({
         {safeRooms.length > 0 ? (
           <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
             {safeRooms.map(
+              
               (room) => (
                 <article
                   key={room.id}
@@ -176,15 +178,12 @@ export default async function AreaPage({
                   {room.image_url ? (
                     <div className="relative aspect-[16/7] w-full overflow-hidden border-b border-[#584128]/45 bg-[#0b0806]">
                       <LocationAtmosphericImage
-                        src={
-                          room.image_url
-                        }
-                        alt={
-                          room.name
-                        }
-                        sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
-                        objectFit="cover"
-                      />
+  src={room.image_url}
+  alt={room.name}
+  sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
+  objectFit="cover"
+  isOutdoors={room.is_outdoors}
+/>
 
                       <LocationImageLightbox
                         src={

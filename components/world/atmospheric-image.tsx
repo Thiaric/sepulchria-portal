@@ -115,6 +115,7 @@ export function AtmosphericImage({
   priority,
   sizes,
   objectFit = "cover",
+  showWeatherEffects = true,
 }: {
   src: string;
   nightSrc?: string;
@@ -128,6 +129,7 @@ export function AtmosphericImage({
     | "cover"
     | "fill"
     | "contain";
+    showWeatherEffects?: boolean;
 }) {
   const {
     state,
@@ -172,15 +174,19 @@ return (
       className={`${objectFitClass} object-center transition-[filter] duration-1000`}
       style={{
         filter:
-          atmosphericFilter(
-            hour,
-            state.weather,
-            variant,
-          ),
+  atmosphericFilter(
+    hour,
+    showWeatherEffects
+      ? state.weather
+      : "clear",
+    variant,
+  ),
       }}
     />
 
-    <AtmosphericOverlay />
+    {showWeatherEffects ? (
+  <AtmosphericOverlay />
+) : null}
   </>
 );
 }

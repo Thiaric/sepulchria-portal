@@ -129,6 +129,7 @@ export function LocationAtmosphericImage({
   priority,
   sizes,
   objectFit = "cover",
+  isOutdoors = true,
 }: {
   src: string;
   alt: string;
@@ -138,9 +139,15 @@ export function LocationAtmosphericImage({
     | "cover"
     | "fill"
     | "contain";
+    isOutdoors?: boolean;
 }) {
-  const atmosphericSrc =
-    useLocationImageSource(src);
+  const weatherAtmosphericSrc =
+  useLocationImageSource(src);
+
+const atmosphericSrc =
+  isOutdoors
+    ? weatherAtmosphericSrc
+    : src;
 
     const { gameDate } = useWorldState();
 
@@ -198,14 +205,15 @@ const displayedSrc =
 }}
     >
       <AtmosphericImage
-        key={displayedSrc}
-        src={displayedSrc}
-        alt={alt}
-        variant="scene"
-        priority={priority}
-        sizes={sizes}
-        objectFit={objectFit}
-      />
+  key={displayedSrc}
+  src={displayedSrc}
+  alt={alt}
+  variant="scene"
+  priority={priority}
+  sizes={sizes}
+  objectFit={objectFit}
+  showWeatherEffects={isOutdoors}
+/>
     </div>
   );
 }

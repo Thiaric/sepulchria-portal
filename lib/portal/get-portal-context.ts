@@ -33,6 +33,7 @@ type RoomRelationRow = {
   name: string;
   slug: string;
   image_url: string | null;
+  is_outdoors: boolean;
 
   area:
     | AreaRelationRow
@@ -155,6 +156,7 @@ export const getPortalContext = cache(
   name,
   slug,
   image_url,
+  is_outdoors,
   area:areas!rooms_area_id_fkey(
     id,
     name,
@@ -220,6 +222,7 @@ export const getPortalContext = cache(
       name: room.name,
       slug: room.slug,
       image_url: room.image_url,
+      is_outdoors: room.is_outdoors,
       area,
     }
   : null,

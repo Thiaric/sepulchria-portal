@@ -16,7 +16,7 @@ export const AURETH_MONTHS = [
 ] as const;
 
 export const AURETH_WEEKDAYS = [
-  "Caemos",
+  "Edrimos",
   "Tharmos",
   "Linmos",
   "Vaemos",

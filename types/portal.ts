@@ -22,6 +22,7 @@ export type PortalRoom = {
   name: string;
   slug: string;
   image_url: string | null;
+  is_outdoors: boolean;
 
   area: {
     id: string;

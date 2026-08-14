@@ -161,19 +161,18 @@ export function PortalResponsiveRightSidebar({
                   ?.currentRoom
                   ?.image_url ? (
                   <LocationAtmosphericImage
-                    src={
-                      character
-                        .currentRoom
-                        .image_url
-                    }
-                    alt={
-                      character
-                        .currentRoom
-                        .name
-                    }
-                    sizes="300px"
-                    objectFit="cover"
-                  />
+  src={
+    character.currentRoom.image_url
+  }
+  alt={
+    character.currentRoom.name
+  }
+  sizes="300px"
+  objectFit="cover"
+  isOutdoors={
+    character.currentRoom.is_outdoors
+  }
+/>
                 ) : null}
 
                 <div className="pointer-events-none absolute inset-0 z-[6] bg-[#0b0806]/48" />
