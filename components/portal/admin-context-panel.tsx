@@ -161,18 +161,14 @@ function AdminRecordJumpContext({
 
         if (mode === "rooms") {
           const { data, error } =
-            await supabase
-              .from("rooms")
-              .select(
-                "id, name, slug, is_active, sort_order, area:areas(name)",
-              )
-              .order(
-                "sort_order",
-                {
-                  ascending: true,
-                },
-              )
-              .order("name");
+  await supabase
+    .from("rooms")
+    .select(
+      "id, name, slug, is_active, sort_order, area:areas(name)",
+    )
+    .order("name", {
+      ascending: true,
+    });
 
           if (error) {
             throw error;

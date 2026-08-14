@@ -11,11 +11,19 @@ import {
   setAutomaticAway,
 } from "@/app/(portal)/game/actions";
 
+import { createClient } from "@/lib/supabase/client";
+
 const HEARTBEAT_INTERVAL_MS =
   60_000;
 
 const AWAY_AFTER_MS =
   15 * 60_000;
+
+const LOGOUT_AFTER_MS =
+  60 * 60_000;
+
+const HIDDEN_SINCE_KEY =
+  "sepulchria-hidden-since";
 
 export function PortalPresenceHeartbeat({
   enabled,
@@ -25,10 +33,10 @@ export function PortalPresenceHeartbeat({
   const runningRef =
     useRef(false);
 
-  const hiddenSinceRef =
+  const awayTimerRef =
     useRef<number | null>(null);
 
-  const awayTimerRef =
+  const logoutTimerRef =
     useRef<number | null>(null);
 
   useEffect(() => {
@@ -95,6 +103,36 @@ export function PortalPresenceHeartbeat({
       }
     }
 
+    async function logoutForInactivity() {
+      try {
+        localStorage.removeItem(
+          HIDDEN_SINCE_KEY,
+        );
+
+        const supabase =
+          createClient();
+
+        const { error } =
+          await supabase.auth.signOut();
+
+        if (error) {
+          console.error(
+            "Unable to sign out inactive session:",
+            error.message,
+          );
+        }
+      } catch (error) {
+        console.error(
+          "Unable to sign out inactive session:",
+          error,
+        );
+      } finally {
+        window.location.replace(
+          "/auth/login",
+        );
+      }
+    }
+
     function clearAwayTimer() {
       if (
         awayTimerRef.current !==
@@ -109,10 +147,34 @@ export function PortalPresenceHeartbeat({
       }
     }
 
+    function clearLogoutTimer() {
+      if (
+        logoutTimerRef.current !==
+        null
+      ) {
+        window.clearTimeout(
+          logoutTimerRef.current,
+        );
+
+        logoutTimerRef.current =
+          null;
+      }
+    }
+
+    function clearTimers() {
+      clearAwayTimer();
+      clearLogoutTimer();
+    }
+
     function scheduleAway(
       delay = AWAY_AFTER_MS,
     ) {
       clearAwayTimer();
+
+      if (delay <= 0) {
+        void markAutomaticAway();
+        return;
+      }
 
       awayTimerRef.current =
         window.setTimeout(() => {
@@ -125,22 +187,112 @@ export function PortalPresenceHeartbeat({
         }, delay);
     }
 
+    function scheduleLogout(
+      delay = LOGOUT_AFTER_MS,
+    ) {
+      clearLogoutTimer();
+
+      if (delay <= 0) {
+        void logoutForInactivity();
+        return;
+      }
+
+      logoutTimerRef.current =
+        window.setTimeout(() => {
+          if (
+            document.visibilityState ===
+            "hidden"
+          ) {
+            void logoutForInactivity();
+          }
+        }, delay);
+    }
+
+    function beginHiddenPeriod() {
+      const existing =
+        localStorage.getItem(
+          HIDDEN_SINCE_KEY,
+        );
+
+      const parsed =
+        existing
+          ? Number(existing)
+          : NaN;
+
+      const hiddenSince =
+        Number.isFinite(parsed)
+          ? parsed
+          : Date.now();
+
+      localStorage.setItem(
+        HIDDEN_SINCE_KEY,
+        String(hiddenSince),
+      );
+
+      const elapsed =
+        Date.now() - hiddenSince;
+
+      if (
+        elapsed >= LOGOUT_AFTER_MS
+      ) {
+        void logoutForInactivity();
+        return;
+      }
+
+      scheduleAway(
+        Math.max(
+          AWAY_AFTER_MS - elapsed,
+          0,
+        ),
+      );
+
+      scheduleLogout(
+        Math.max(
+          LOGOUT_AFTER_MS - elapsed,
+          0,
+        ),
+      );
+    }
+
+    function returnToPortal() {
+      const stored =
+        localStorage.getItem(
+          HIDDEN_SINCE_KEY,
+        );
+
+      if (stored) {
+        const hiddenSince =
+          Number(stored);
+
+        if (
+          Number.isFinite(
+            hiddenSince,
+          ) &&
+          Date.now() -
+            hiddenSince >=
+            LOGOUT_AFTER_MS
+        ) {
+          void logoutForInactivity();
+          return;
+        }
+      }
+
+      localStorage.removeItem(
+        HIDDEN_SINCE_KEY,
+      );
+
+      clearTimers();
+
+      void restorePresence();
+    }
+
     if (
       document.visibilityState ===
       "visible"
     ) {
-      /*
-       * This also repairs a stale automatic Away
-       * if the page was unloaded/reloaded while away.
-       * A manually selected Away remains Away because
-       * manual_status is also "away".
-       */
-      void restorePresence();
+      returnToPortal();
     } else {
-      hiddenSinceRef.current =
-        Date.now();
-
-      scheduleAway();
+      beginHiddenPeriod();
     }
 
     const intervalId =
@@ -161,25 +313,11 @@ export function PortalPresenceHeartbeat({
         document.visibilityState ===
         "hidden"
       ) {
-        hiddenSinceRef.current =
-          Date.now();
-
-        scheduleAway();
-
+        beginHiddenPeriod();
         return;
       }
 
-      hiddenSinceRef.current =
-        null;
-
-      clearAwayTimer();
-
-      /*
-       * Always restore the remembered manual status
-       * when the user returns. This is safe even when
-       * Away was selected manually.
-       */
-      void restorePresence();
+      returnToPortal();
     }
 
     function handleWindowFocus() {
@@ -190,12 +328,7 @@ export function PortalPresenceHeartbeat({
         return;
       }
 
-      hiddenSinceRef.current =
-        null;
-
-      clearAwayTimer();
-
-      void restorePresence();
+      returnToPortal();
     }
 
     function handleOnline() {
@@ -203,7 +336,7 @@ export function PortalPresenceHeartbeat({
         document.visibilityState ===
         "visible"
       ) {
-        void restorePresence();
+        returnToPortal();
       }
     }
 
@@ -227,7 +360,7 @@ export function PortalPresenceHeartbeat({
         intervalId,
       );
 
-      clearAwayTimer();
+      clearTimers();
 
       document.removeEventListener(
         "visibilitychange",
