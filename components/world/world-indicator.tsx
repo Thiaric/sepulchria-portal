@@ -18,6 +18,7 @@ import {
   toIsoDateKey,
 } from "@/lib/world/calendar";
 import { getLunarPhase } from "@/lib/world/lunar";
+import { CalendarEventNotificationBadge } from "@/components/world/calendar-event-notification-badge";
 
 const ICONS: Record<string, string> = {
   clear: "/icons/weather/clear.png",
@@ -525,7 +526,11 @@ function CalendarEventList({
   );
 }
 
-export function WorldIndicator() {
+export function WorldIndicator({
+  characterId,
+}: {
+  characterId: string | null;
+}) {
   const {
     state,
     gameDate,
@@ -808,12 +813,22 @@ export function WorldIndicator() {
         onClick={() =>
           setOpen(true)
         }
-        className="hidden h-10 items-center gap-2 border border-[#614b31] bg-[#17120f] px-3 text-[#c9aa79] transition hover:border-[#8d6b42] hover:bg-[#201711] md:flex"
+        className="relative hidden h-10 items-center gap-2 border border-[#614b31] bg-[#17120f] px-3 text-[#c9aa79] transition hover:border-[#8d6b42] hover:bg-[#201711] md:flex"
         title={`${fullDate} · ${lunar.name} · ${weatherLabel(
           state.weather,
         )}`}
         aria-label="Open in-game calendar"
-      >
+      ><CalendarEventNotificationBadge
+  characterId={
+    characterId
+  }
+  gameDate={
+    gameDate
+  }
+  calendarOpen={
+    open
+  }
+/>
         <span className="inline-flex shrink-0 items-center justify-center">
           <img
             src={

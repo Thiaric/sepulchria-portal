@@ -143,7 +143,7 @@ export default async function AreaPage({
               body={
                 safeArea.description
               }
-              className="max-w-4xl text-[13px] leading-6 text-[#b7a58c] [&_p]:my-2"
+              className="max-full text-[13px] leading-6 text-[#b7a58c] [&_p]:my-2"
             />
           </div>
         ) : null}
