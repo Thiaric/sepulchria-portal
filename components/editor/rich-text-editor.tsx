@@ -1079,13 +1079,35 @@ function applySpellingSuggestion(
   try {
     range.deleteContents();
 
-    range.insertNode(
-      document.createTextNode(
-        replacement,
-      ),
-    );
+const replacementNode =
+  document.createTextNode(
+    replacement,
+  );
 
-    syncFromEditor();
+range.insertNode(
+  replacementNode,
+);
+
+const selection =
+  window.getSelection();
+
+if (selection) {
+  const caretRange =
+    document.createRange();
+
+  caretRange.setStartAfter(
+    replacementNode,
+  );
+
+  caretRange.collapse(true);
+
+  selection.removeAllRanges();
+  selection.addRange(
+    caretRange,
+  );
+}
+
+syncFromEditor();
   } catch {
     // The editor changed before
     // the correction was selected.

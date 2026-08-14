@@ -126,6 +126,18 @@ export default function RoomChatForm({
   const spellingIssues =
     useSpellingIssues(value);
 
+  const [
+  spellingMenu,
+  setSpellingMenu,
+] = useState<{
+  word: string;
+  start: number;
+  end: number;
+  suggestions: string[];
+  x: number;
+  y: number;
+} | null>(null);
+
   const nonceInputRef =
     useRef<HTMLInputElement>(null);
 
@@ -329,6 +341,209 @@ const visibleStatusOk =
       ? messageState.ok
       : utilityOk;
 
+ function getWordAtPosition(
+  position: number,
+) {
+  if (!value) {
+    return null;
+  }
+
+  const isWordCharacter = (
+    character: string,
+  ) =>
+    /[\p{L}’'-]/u.test(
+      character,
+    );
+
+  let start = Math.min(
+    position,
+    value.length,
+  );
+
+  let end = start;
+
+  if (
+    start === value.length ||
+    !isWordCharacter(
+      value[start] ?? "",
+    )
+  ) {
+    start -= 1;
+    end = start + 1;
+  }
+
+  if (start < 0) {
+    return null;
+  }
+
+  while (
+    start > 0 &&
+    isWordCharacter(
+      value[start - 1],
+    )
+  ) {
+    start -= 1;
+  }
+
+  while (
+    end < value.length &&
+    isWordCharacter(
+      value[end],
+    )
+  ) {
+    end += 1;
+  }
+
+  const word =
+    value.slice(
+      start,
+      end,
+    );
+
+  if (!word) {
+    return null;
+  }
+
+  return {
+    word,
+    start,
+    end,
+  };
+}
+
+function handleSpellingClick(
+  event: React.MouseEvent<HTMLTextAreaElement>,
+) {
+  const textarea =
+    event.currentTarget;
+
+  /*
+   * Let the browser first put the caret
+   * where the user clicked.
+   */
+  window.requestAnimationFrame(() => {
+    const position =
+      textarea.selectionStart;
+
+    const result =
+      getWordAtPosition(
+        position,
+      );
+
+    if (!result) {
+      setSpellingMenu(null);
+      return;
+    }
+
+    const issue =
+      spellingIssues.find(
+        (candidate) =>
+          candidate.word.localeCompare(
+            result.word,
+            "en-GB",
+            {
+              sensitivity:
+                "accent",
+            },
+          ) === 0,
+      );
+
+    if (!issue) {
+      setSpellingMenu(null);
+      return;
+    }
+
+    setSpellingMenu({
+      word: result.word,
+      start: result.start,
+      end: result.end,
+      suggestions:
+        issue.suggestions,
+      x: Math.min(
+        event.clientX,
+        window.innerWidth - 230,
+      ),
+      y: Math.min(
+        event.clientY + 16,
+        window.innerHeight - 320,
+      ),
+    });
+  });
+}
+
+function preserveWordCase(
+  original: string,
+  replacement: string,
+) {
+  if (
+    original ===
+    original.toUpperCase()
+  ) {
+    return replacement.toUpperCase();
+  }
+
+  if (
+    original[0] ===
+    original[0]?.toUpperCase()
+  ) {
+    return (
+      replacement
+        .charAt(0)
+        .toUpperCase() +
+      replacement.slice(1)
+    );
+  }
+
+  return replacement;
+}
+
+function applySpellingSuggestion(
+  suggestion: string,
+) {
+  if (!spellingMenu) {
+    return;
+  }
+
+  const replacement =
+    preserveWordCase(
+      spellingMenu.word,
+      suggestion,
+    );
+
+  const nextValue =
+    value.slice(
+      0,
+      spellingMenu.start,
+    ) +
+    replacement +
+    value.slice(
+      spellingMenu.end,
+    );
+
+  const caretPosition =
+    spellingMenu.start +
+    replacement.length;
+
+  setValue(nextValue);
+  setSpellingMenu(null);
+
+  window.requestAnimationFrame(() => {
+    const textarea =
+      textareaRef.current;
+
+    if (!textarea) {
+      return;
+    }
+
+    textarea.focus();
+
+    textarea.setSelectionRange(
+      caretPosition,
+      caretPosition,
+    );
+  });
+}     
+
   return (
     <div className="shrink-0 border-t border-[#59432c]/40 bg-[#17110d] p-3 sm:p-4">
       <form
@@ -356,6 +571,9 @@ const visibleStatusOk =
             maxLength={CHAT_MAX_LENGTH}
             value={value}
             lang="en-GB"
+            onClick={
+    handleSpellingClick
+  }
             
             onKeyDown={(event) => {
   if (
@@ -402,6 +620,57 @@ const visibleStatusOk =
             }
           />
         </div>
+
+        {spellingMenu ? (
+  <div
+    className="fixed z-[9999] w-[220px] border border-[#60482e]/70 bg-[#100c09] p-2 shadow-[0_12px_30px_rgba(0,0,0,0.65)]"
+    style={{
+      left:
+        spellingMenu.x,
+      top:
+        spellingMenu.y,
+    }}
+  >
+    <p className="border-b border-[#59432c]/40 px-2 pb-2 text-[8px] uppercase tracking-[0.18em] text-[#806c52]">
+      Spelling
+    </p>
+
+    {spellingMenu.suggestions
+      .length > 0 ? (
+      <div className="mt-1 max-h-52 overflow-y-auto">
+        {spellingMenu.suggestions.map(
+          (suggestion) => (
+            <button
+              key={
+                suggestion
+              }
+              type="button"
+              onMouseDown={(
+                event,
+              ) => {
+                event.preventDefault();
+
+                applySpellingSuggestion(
+                  suggestion,
+                );
+              }}
+              className="block w-full px-2 py-1.5 text-left text-xs text-[#cdb894] transition hover:bg-[#2a1d12] hover:text-[#f0d3a2]"
+            >
+              {preserveWordCase(
+                spellingMenu.word,
+                suggestion,
+              )}
+            </button>
+          ),
+        )}
+      </div>
+    ) : (
+      <p className="px-2 py-2 text-[10px] italic text-[#706557]">
+        No suggestions found.
+      </p>
+    )}
+  </div>
+) : null}
 
         <div className="mt-3 grid items-center gap-2 xl:grid-cols-[auto_minmax(0,1fr)_auto]">
           <div className="flex min-w-0 items-center gap-3">

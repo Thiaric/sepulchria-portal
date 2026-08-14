@@ -5,7 +5,7 @@ import nspell from "nspell";
 const MAX_TEXT_LENGTH = 50_000;
 const MAX_UNIQUE_WORDS = 2_500;
 const MAX_ISSUES = 30;
-const MAX_SUGGESTIONS = 5;
+const MAX_SUGGESTIONS = 12;
 
 /*
  * Words which are legitimate inside the Sepulchria setting and would
@@ -41,6 +41,37 @@ function normaliseWord(value: string) {
   return value
     .replace(/^[’']+|[’']+$/g, "")
     .trim();
+}
+
+function adjacentSwapCorrections(
+  word: string,
+) {
+  const corrections: string[] = [];
+
+  for (
+    let index = 0;
+    index < word.length - 1;
+    index += 1
+  ) {
+    const swapped =
+      word.slice(0, index) +
+      word[index + 1] +
+      word[index] +
+      word.slice(index + 2);
+
+    if (
+      checker.correct(swapped) &&
+      !corrections.some(
+        (entry) =>
+          entry.toLocaleLowerCase("en-GB") ===
+          swapped.toLocaleLowerCase("en-GB"),
+      )
+    ) {
+      corrections.push(swapped);
+    }
+  }
+
+  return corrections;
 }
 
 function extractUniqueWords(text: string) {
@@ -171,18 +202,21 @@ export async function POST(
   continue;
 }
 
-    const suggestions =
-      checker
-        .suggest(word)
-        .filter(
-          (suggestion) =>
-            suggestion.length > 0 &&
-            suggestion.length <= 64,
-        )
-        .slice(
-          0,
-          MAX_SUGGESTIONS,
-        );
+    const suggestions = Array.from(
+  new Set([
+    ...adjacentSwapCorrections(word),
+    ...checker.suggest(word),
+  ]),
+)
+  .filter(
+    (suggestion) =>
+      suggestion.length > 0 &&
+      suggestion.length <= 64,
+  )
+  .slice(
+    0,
+    MAX_SUGGESTIONS,
+  );
 
     issues.push({
       word,
