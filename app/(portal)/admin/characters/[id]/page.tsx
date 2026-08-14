@@ -47,7 +47,6 @@ type CharacterRow = {
   date_of_birth: string | null;
   birthplace: string | null;
   origin: string | null;
-  occupation: string | null;
   biography: string | null;
   portrait_url: string | null;
   music_url: string | null;
@@ -170,7 +169,6 @@ export default async function AdminCharacterPage({
         date_of_birth,
         birthplace,
         origin,
-        occupation,
         biography,
         portrait_url,
         music_url,
@@ -397,11 +395,6 @@ export default async function AdminCharacterPage({
                 />
 
                 <ReadOnlyField
-                  label="Occupation"
-                  value={character.occupation}
-                />
-
-                <ReadOnlyField
                   label="Public slug"
                   value={character.public_slug}
                 />
@@ -571,15 +564,7 @@ export default async function AdminCharacterPage({
                     />
                   </AdminField>
 
-                  <AdminField label="Occupation">
-                    <input
-                      type="text"
-                      name="occupation"
-                      maxLength={160}
-                      defaultValue={character.occupation ?? ""}
-                      className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
-                    />
-                  </AdminField>
+                  
 
                   <AdminField label="Portrait URL">
                     <input

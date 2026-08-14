@@ -5,7 +5,6 @@ import { ApprovalNotice } from "@/components/character/approval-notice";
 import { PendingSubmitButton } from "@/components/forms/pending-submit-button";
 import { CharacterExpertiseTotal } from "@/components/characters/character-expertise-total";
 import { CharacterMusicPlayer } from "@/components/characters/character-music-player";
-import { CharacterOrderSummary } from "@/components/characters/character-order-summary";
 
 
 import {
@@ -37,7 +36,6 @@ type CharacterProfile = {
   date_of_birth?: string | null;
   birthplace?: string | null;
   origin?: string | null;
-  occupation?: string | null;
   title?: string | null;
   physical_description?: string | null;
   personality?: string | null;
@@ -110,7 +108,6 @@ export default async function CharacterPage({
       date_of_birth,
       birthplace,
       origin,
-      occupation,
       title,
       physical_description,
       personality,
@@ -187,6 +184,10 @@ export function Profile({
     character.race,
   );
 
+  const association = normaliseRelation(
+    character.association,
+  );
+
   const status =
     character.status ?? "draft";
 
@@ -226,11 +227,6 @@ export function Profile({
     "Birthplace",
     character.birthplace ??
       "Sepulchria",
-  ],
-  [
-    "Occupation",
-    character.occupation ??
-      "No Order occupation assigned",
   ],
   [
     "Title",
@@ -372,7 +368,7 @@ export function Profile({
                   </div>
                 </div>
 
-                <div className="mt-3">
+                <div className="mt-3 grid gap-3 sm:grid-cols-2">
                   <CompactHeritageCard
                     label="Ancestry"
                     entry={race}
@@ -383,11 +379,15 @@ export function Profile({
                     }
                   />
 
-                  {character.id ? (
-                    <CharacterOrderSummary
-                      characterId={character.id}
-                    />
-                  ) : null}
+                  <CompactHeritageCard
+                    label="Association"
+                    entry={association}
+                    href={
+                      association
+                        ? `/associations/${association.slug}`
+                        : "/associations"
+                    }
+                  />
                 </div>
               </div>
             </section>

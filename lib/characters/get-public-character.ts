@@ -50,7 +50,6 @@ type CharacterRow = {
   date_of_birth: string | null;
   birthplace: string | null;
   origin: string | null;
-  occupation: string | null;
   biography: string | null;
   portrait_url: string | null;
   music_url: string | null;
@@ -95,7 +94,6 @@ type CharacterListRow = {
   surname: string;
   display_name: string | null;
   portrait_url: string | null;
-  occupation: string | null;
   title: string | null;
 
   currentRoom:
@@ -133,7 +131,6 @@ export type PublicCharacterListItem = {
   surname: string;
   display_name: string;
   portrait_url: string | null;
-  occupation: string | null;
   title: string | null;
 
   currentRoom:
@@ -149,8 +146,8 @@ export type PublicCharacterListItem = {
   } | null;
 
   /*
-   * CompatibilitÃ  temporanea con il vecchio
-   * CharacterDirectory. SarÃ  rimossa nel
+   * CompatibilitÃ  temporanea con il vecchio
+   * CharacterDirectory. SarÃ  rimossa nel
    * prossimo pacchetto.
    */
   faction: string | null;
@@ -231,7 +228,6 @@ export const getPublicCharacter = cache(
         date_of_birth,
         birthplace,
         origin,
-        occupation,
         biography,
         portrait_url,
         music_url,
@@ -381,7 +377,6 @@ export const getPublicCharacter = cache(
       date_of_birth: row.date_of_birth,
       birthplace: row.birthplace,
       origin: row.origin,
-      occupation: row.occupation,
       biography: row.biography,
       portrait_url: row.portrait_url,
       music_url: row.music_url,
@@ -444,7 +439,6 @@ export const getPublicCharacters = cache(
         surname,
         display_name,
         portrait_url,
-        occupation,
         title,
 
         race:races!characters_race_id_fkey(
@@ -585,17 +579,15 @@ export const getPublicCharacters = cache(
           getDisplayName(character),
         portrait_url:
           character.portrait_url,
-        occupation:
-          character.occupation,
         title: character.title,
         currentRoom,
         race,
         association,
 
         /*
-         * CompatibilitÃ  temporanea.
+         * CompatibilitÃ  temporanea.
          * Il prossimo CharacterDirectory
-         * userÃ  association direttamente.
+         * userÃ  association direttamente.
          */
         faction:
           association?.name ?? null,
@@ -611,4 +603,3 @@ export const getPublicCharacters = cache(
     });
   },
 );
-

@@ -337,11 +337,6 @@ const sexualOrientation =
     160,
   );
 
-  const occupation = readOptionalText(
-    formData.get("occupation"),
-    160,
-  );
-
   const portraitUrl = readOptionalText(
     formData.get("portraitUrl"),
     1000,
@@ -459,7 +454,6 @@ const physicalDescription =
       date_of_birth,
       birthplace,
       origin,
-      occupation,
       portrait_url,
       music_url,
       physical_description,
@@ -670,7 +664,6 @@ const physicalDescription =
     date_of_birth: dateOfBirth,
     birthplace,
     origin,
-    occupation,
     portrait_url: portraitUrl,
     music_url: musicUrl,
     physical_description:
@@ -759,8 +752,6 @@ sexual_orientation:
             character.birthplace,
           origin:
             character.origin,
-          occupation:
-            character.occupation,
           portrait_url:
             character.portrait_url,
           music_url:

@@ -111,7 +111,6 @@ export function CharacterDirectory({
           character.first_name,
           character.surname,
           character.title,
-          character.occupation,
           character.currentRoom?.name,
           character.currentRoom?.area?.name,
           character.race?.name,

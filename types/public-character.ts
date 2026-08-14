@@ -70,7 +70,6 @@ export type PublicCharacterProfile = {
   date_of_birth: string | null;
   birthplace: string | null;
   origin: string | null;
-  occupation: string | null;
   biography: string | null;
   portrait_url: string | null;
   music_url: string | null;

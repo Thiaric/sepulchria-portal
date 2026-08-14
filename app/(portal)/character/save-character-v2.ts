@@ -149,7 +149,6 @@ export async function saveCharacterV2(formData: FormData, mode: CharacterMode) {
       // Keep the legacy column null until the later cleanup migration.
       association_id: null,
 
-      occupation: null,
       date_of_birth: null,
       ...stats,
       current_health: stats.vigor * 10,
