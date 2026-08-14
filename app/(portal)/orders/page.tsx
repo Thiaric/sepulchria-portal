@@ -90,7 +90,7 @@ export default async function OrdersPage() {
             </p>
 
             <p className="mt-3 max-w-3xl text-sm leading-6 text-[#9f9281]">
-              Beneath the Associations stand the Orders: the specialised
+              Within the Associations stand the Orders: the specialised
               institutions, disciplines and professional bodies through which
               Sepulchrians practise their crafts, duties and callings.
             </p>
