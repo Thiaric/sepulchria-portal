@@ -1,14 +1,16 @@
-﻿import "server-only";
+import "server-only";
 
 import { cache } from "react";
 
 import { createClient } from "@/lib/supabase/server";
+import { getPublicOrderMembership } from "@/lib/orders/get-public-order-membership";
 import type {
   PublicCharacterProfile,
   PublicCharacterRoom,
   PublicCodexReference,
   PublicPresenceStatus,
 } from "@/types/public-character";
+
 
 const PRESENCE_ACTIVE_MINUTES = 3;
 
@@ -362,6 +364,11 @@ export const getPublicCharacter = cache(
           }
         : null;
 
+    const orderMembership =
+      await getPublicOrderMembership(
+        row.id,
+      );
+
     return {
       id: row.id,
       public_slug: row.public_slug,
@@ -398,9 +405,10 @@ export const getPublicCharacter = cache(
       ),
 
       association:
-        normaliseCodexReference(
-          row.association,
-        ),
+        orderMembership?.association ??
+        null,
+
+      orderMembership,
 
       current_room_id: row.current_room_id,
       currentRoom,

@@ -5,6 +5,8 @@ import { ApprovalNotice } from "@/components/character/approval-notice";
 import { PendingSubmitButton } from "@/components/forms/pending-submit-button";
 import { CharacterExpertiseTotal } from "@/components/characters/character-expertise-total";
 import { CharacterMusicPlayer } from "@/components/characters/character-music-player";
+import { CharacterOrderSummary } from "@/components/characters/character-order-summary";
+
 
 import {
   submitCharacterForReview,
@@ -183,10 +185,6 @@ export function Profile({
 }) {
   const race = normaliseRelation(
     character.race,
-  );
-
-  const association = normaliseRelation(
-    character.association,
   );
 
   const status =
@@ -374,7 +372,7 @@ export function Profile({
                   </div>
                 </div>
 
-                <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                <div className="mt-3">
                   <CompactHeritageCard
                     label="Ancestry"
                     entry={race}
@@ -385,15 +383,11 @@ export function Profile({
                     }
                   />
 
-                  <CompactHeritageCard
-                    label="Association"
-                    entry={association}
-                    href={
-                      association
-                        ? `/associations/${association.slug}`
-                        : "/associations"
-                    }
-                  />
+                  {character.id ? (
+                    <CharacterOrderSummary
+                      characterId={character.id}
+                    />
+                  ) : null}
                 </div>
               </div>
             </section>
