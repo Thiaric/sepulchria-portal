@@ -818,17 +818,7 @@ export function WorldIndicator({
           state.weather,
         )}`}
         aria-label="Open in-game calendar"
-      ><CalendarEventNotificationBadge
-  characterId={
-    characterId
-  }
-  gameDate={
-    gameDate
-  }
-  calendarOpen={
-    open
-  }
-/>
+      >
         <span className="inline-flex shrink-0 items-center justify-center">
           <img
             src={

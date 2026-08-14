@@ -133,6 +133,15 @@ const messagesItem: NavigationItem = {
   activePaths: ["/messages"],
 };
 
+const manageOrderItem: NavigationItem = {
+  label: "Manage Order",
+  title:
+    "Manage the members and affairs of the Order you lead.",
+  icon: "⚜",
+  href: "/orders/manage",
+  activePaths: ["/orders/manage"],
+};
+
 function normalizeCount(
   value: unknown,
   fallback = 0,
@@ -168,6 +177,11 @@ export function PortalSidebar({
   const pathname = usePathname();
 
   const [
+    hasOrderLeadership,
+    setHasOrderLeadership,
+  ] = useState(false);
+
+  const [
     modalItem,
     setModalItem,
   ] =
@@ -188,6 +202,120 @@ export function PortalSidebar({
       unreadForumCount,
     ),
   );
+
+  const refreshOrderLeadership =
+    useCallback(async () => {
+      const supabase =
+        createClient();
+
+      const {
+        data: { user },
+      } =
+        await supabase.auth.getUser();
+
+      if (!user) {
+        setHasOrderLeadership(false);
+        return;
+      }
+
+      const {
+        data: character,
+        error: characterError,
+      } = await supabase
+        .from("characters")
+        .select("id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (
+        characterError ||
+        !character
+      ) {
+        setHasOrderLeadership(false);
+        return;
+      }
+
+      const {
+        data: memberships,
+        error: membershipError,
+      } = await supabase
+        .from("order_memberships")
+        .select(`
+          id,
+          level:order_levels!order_memberships_order_level_id_fkey(
+            level
+          )
+        `)
+        .eq(
+          "character_id",
+          character.id,
+        );
+
+      if (membershipError) {
+        console.error(
+          "Unable to check Order leadership:",
+          membershipError,
+        );
+        setHasOrderLeadership(false);
+        return;
+      }
+
+      setHasOrderLeadership(
+        (memberships ?? []).some(
+          (membership) => {
+            const relation =
+              Array.isArray(
+                membership.level,
+              )
+                ? membership.level[0]
+                : membership.level;
+
+            return (
+              relation?.level === 5
+            );
+          },
+        ),
+      );
+    }, []);
+
+  useEffect(() => {
+    void refreshOrderLeadership();
+
+    function handleFocus() {
+      void refreshOrderLeadership();
+    }
+
+    function handleVisibility() {
+      if (
+        document.visibilityState ===
+        "visible"
+      ) {
+        void refreshOrderLeadership();
+      }
+    }
+
+    window.addEventListener(
+      "focus",
+      handleFocus,
+    );
+
+    document.addEventListener(
+      "visibilitychange",
+      handleVisibility,
+    );
+
+    return () => {
+      window.removeEventListener(
+        "focus",
+        handleFocus,
+      );
+
+      document.removeEventListener(
+        "visibilitychange",
+        handleVisibility,
+      );
+    };
+  }, [refreshOrderLeadership]);
 
   useEffect(() => {
     setCurrentUnreadForumCount(
@@ -772,6 +900,9 @@ export function PortalSidebar({
     rulesItem,
     ...otherCodexNavigationItems,
     marketItem,
+    ...(hasOrderLeadership
+      ? [manageOrderItem]
+      : []),
   ];
 
   const forumActive =
@@ -872,6 +1003,12 @@ export function PortalSidebar({
                     currentUnreadForumCount
                   }
                 />
+
+                {hasOrderLeadership
+                  ? renderNavigationItem(
+                      manageOrderItem,
+                    )
+                  : null}
 
                 {renderNavigationItem(
                   messagesItem,
