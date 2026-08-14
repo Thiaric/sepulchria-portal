@@ -203,35 +203,42 @@ export function Profile({
       status === "rejected");
 
   const items = [
-    [
+  [
     "Gender",
     formatGender(
       character.gender,
     ),
   ],
-    ["Pronouns", character.pronouns],
-    [
-      "Age",
-      character.age !== null &&
-      character.age !== undefined
-        ? `${character.age} years`
-        : null,
-    ],
-    [
-      "Birthplace",
-      character.birthplace ??
-        "Sepulchria",
-    ],
-    [
-      "Occupation",
-      character.occupation ??
-        "No Order occupation assigned",
-    ],
-    [
-      "Title",
-      character.title ?? "Citizen",
-    ],
-  ];
+  [
+    "Sexual orientation",
+    character.sexual_orientation,
+  ],
+  [
+    "Pronouns",
+    character.pronouns,
+  ],
+  [
+    "Age",
+    character.age !== null &&
+    character.age !== undefined
+      ? `${character.age} years`
+      : null,
+  ],
+  [
+    "Birthplace",
+    character.birthplace ??
+      "Sepulchria",
+  ],
+  [
+    "Occupation",
+    character.occupation ??
+      "No Order occupation assigned",
+  ],
+  [
+    "Title",
+    character.title ?? "Citizen",
+  ],
+];
 
 
 

@@ -107,6 +107,50 @@ export function InteractiveWorldMap({
     height: number;
   } | null>(null);
 
+  const [isMobile, setIsMobile] =
+    useState(false);
+
+  const [isNight, setIsNight] =
+    useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia(
+      "(max-width: 767px)",
+    );
+
+    const update = () => {
+      setIsMobile(media.matches);
+    };
+
+    update();
+    media.addEventListener("change", update);
+
+    return () => {
+      media.removeEventListener("change", update);
+    };
+  }, []);
+
+  useEffect(() => {
+    function updateTimeOfDay() {
+      const londonHour = Number(
+        new Intl.DateTimeFormat("en-GB", {
+          timeZone: "Europe/London",
+          hour: "2-digit",
+          hour12: false,
+        }).format(new Date()),
+      );
+
+      setIsNight(londonHour >= 20 || londonHour < 5);
+    }
+
+    updateTimeOfDay();
+    const interval = window.setInterval(updateTimeOfDay, 60_000);
+
+    return () => {
+      window.clearInterval(interval);
+    };
+  }, []);
+
   useEffect(() => {
     const mapArea =
       mapAreaRef.current;
@@ -241,8 +285,12 @@ export function InteractiveWorldMap({
 
   const currentMapSrc =
     level === "continent"
-      ? "/maps/land-of-the-fallenv2.png"
-      : "/maps/sepulchria-mapv2.png";
+      ? isNight
+        ? "/maps/land-of-the-fallenv2-n.png"
+        : "/maps/land-of-the-fallenv2.png"
+      : isNight
+        ? "/maps/sepulchria-mapv2-n.png"
+        : "/maps/sepulchria-mapv2.png";
 
   const currentMapAlt =
     level === "continent"
@@ -491,7 +539,7 @@ hoveredInfoPosition ? (
             src={currentMapSrc}
             alt={currentMapAlt}
             zoom={2}
-            diameter={450}
+            diameter={isMobile ? 180 : 450}
           />
         </div>
             </div>
