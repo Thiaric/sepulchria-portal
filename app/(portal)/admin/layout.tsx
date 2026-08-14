@@ -76,6 +76,10 @@ export default async function AdminLayout({
               Locations
             </AdminNavigationLink>
 
+            <AdminNavigationLink href="/admin/orders">
+              Orders
+            </AdminNavigationLink>
+
             <AdminNavigationLink href="/admin/rules">
               Rules
             </AdminNavigationLink>
