@@ -188,11 +188,11 @@ export function HeaderCharacterIdentity({
             existingPresence?.room_id ??
             null,
 
-          status:
-            nextStatus,
+          status: nextStatus,
+manual_status: nextStatus,
 
-          last_seen_at:
-            new Date().toISOString(),
+last_seen_at:
+  new Date().toISOString(),
         },
         {
           onConflict:

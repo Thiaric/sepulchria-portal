@@ -542,60 +542,80 @@ export default async function AdminRoomsPage() {
             >
               <div className="grid gap-4 md:grid-cols-2">
                 <AdminField label="Starting room">
-                  <select
-                    name="fromRoomId"
-                    required
-                    defaultValue=""
-                    className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
-                  >
-                    <option
-                      value=""
-                      disabled
-                    >
-                      Select a room
-                    </option>
+  <select
+    name="fromRoomId"
+    required
+    defaultValue=""
+    className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+  >
+    <option value="" disabled>
+      Select a room
+    </option>
 
-                    {rooms.map((room) => (
-                      <option
-                        key={room.id}
-                        value={room.id}
-                      >
-                        {room.area?.name
-                          ? `${room.area.name} — `
-                          : ""}
-                        {room.name}
-                      </option>
-                    ))}
-                  </select>
-                </AdminField>
+    {[...rooms]
+  .sort((a, b) => {
+    const areaA = a.area?.name ?? "";
+    const areaB = b.area?.name ?? "";
+
+    const areaComparison = areaA.localeCompare(areaB);
+
+    if (areaComparison !== 0) {
+      return areaComparison;
+    }
+
+    return a.name.localeCompare(b.name);
+  })
+  .map((room) => (
+    <option
+      key={room.id}
+      value={room.id}
+    >
+      {room.area?.name
+        ? `${room.area.name} — `
+        : ""}
+      {room.name}
+    </option>
+  ))}
+  </select>
+</AdminField>
 
                 <AdminField label="Destination room">
-                  <select
-                    name="toRoomId"
-                    required
-                    defaultValue=""
-                    className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
-                  >
-                    <option
-                      value=""
-                      disabled
-                    >
-                      Select a room
-                    </option>
+  <select
+    name="toRoomId"
+    required
+    defaultValue=""
+    className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+  >
+    <option value="" disabled>
+      Select a room
+    </option>
 
-                    {rooms.map((room) => (
-                      <option
-                        key={room.id}
-                        value={room.id}
-                      >
-                        {room.area?.name
-                          ? `${room.area.name} — `
-                          : ""}
-                        {room.name}
-                      </option>
-                    ))}
-                  </select>
-                </AdminField>
+    {[...rooms]
+      .sort((a, b) => {
+        const areaA = a.area?.name ?? "";
+        const areaB = b.area?.name ?? "";
+
+        const areaComparison = areaA.localeCompare(areaB);
+
+        if (areaComparison !== 0) {
+          return areaComparison;
+        }
+
+        return a.name.localeCompare(b.name);
+      })
+      .map((room) => (
+        <option
+          key={room.id}
+          value={room.id}
+        >
+          {room.area?.name
+            ? `${room.area.name} — `
+            : ""}
+          {room.name}
+        </option>
+      ))}
+  </select>
+</AdminField>
 
                 <AdminField label="Connection name">
                   <input

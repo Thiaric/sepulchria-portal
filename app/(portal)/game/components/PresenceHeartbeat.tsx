@@ -61,9 +61,11 @@ export default function PresenceHeartbeat({
               room_id:
                 roomIdRef.current,
               status:
-                nextStatus,
-              last_seen_at:
-                new Date().toISOString(),
+  nextStatus,
+manual_status:
+  nextStatus,
+last_seen_at:
+  new Date().toISOString(),
             },
             {
               onConflict:
