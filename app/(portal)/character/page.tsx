@@ -52,6 +52,8 @@ type CharacterProfile = {
   shrewd?: number | null;
   presence_score?: number | null;
   current_health?: number | null;
+  gender?: string | null;
+  sexual_orientation?: string | null;
 
   status?: CharacterStatus | null;
   rejection_reason?: string | null;
@@ -100,6 +102,8 @@ export default async function CharacterPage({
     .select(`
       id,
       pronouns,
+      gender,
+      sexual_orientation,
       age,
       date_of_birth,
       birthplace,
@@ -199,6 +203,12 @@ export function Profile({
       status === "rejected");
 
   const items = [
+    [
+    "Gender",
+    formatGender(
+      character.gender,
+    ),
+  ],
     ["Pronouns", character.pronouns],
     [
       "Age",
@@ -491,6 +501,24 @@ export function Profile({
                 
                 </label>
 
+                <label className="block">
+  <span className="text-[9px] uppercase tracking-[0.2em] text-[#806b50]">
+    Sexual orientation
+  </span>
+
+  <input
+    type="text"
+    name="sexual_orientation"
+    maxLength={120}
+    defaultValue={
+      character.sexual_orientation ??
+      ""
+    }
+    placeholder="Optional"
+    className="mt-2 w-full border border-[#60482e]/55 bg-[#0d0907] px-3 py-2.5 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+  />
+</label>
+
                 <div className="grid gap-5 md:grid-cols-2">
                   <ApprovedProfileTextArea
                     label="Physical description"
@@ -548,6 +576,23 @@ export function Profile({
   );
 }
 
+function formatGender(
+  value: string | null | undefined,
+) {
+  if (value === "male") {
+    return "Male";
+  }
+
+  if (value === "female") {
+    return "Female";
+  }
+
+  if (value === "non_binary") {
+    return "Non-binary";
+  }
+
+  return null;
+}
 
 function ApprovedProfileTextArea({
   label,

@@ -41,6 +41,8 @@ export type PublicCharacterProfile = {
   surname: string;
   display_name: string;
   pronouns: string | null;
+  gender: string | null;
+  sexual_orientation: string | null;
   date_of_birth: string | null;
   birthplace: string | null;
   origin: string | null;

@@ -20,6 +20,24 @@ type PublicCharacterProfileProps = {
   canMessage: boolean;
 };
 
+function formatGender(
+  value: string | null,
+) {
+  if (value === "male") {
+    return "Male";
+  }
+
+  if (value === "female") {
+    return "Female";
+  }
+
+  if (value === "non_binary") {
+    return "Non-binary";
+  }
+
+  return null;
+}
+
 export function PublicCharacterProfileView({
   character,
   returnHref,
@@ -102,9 +120,25 @@ export function PublicCharacterProfileView({
 
               <div className="mt-3 grid gap-px bg-[#4f3b28]/35 sm:grid-cols-2 lg:grid-cols-3">
                 <CompactDetail
+  label="Gender"
+  value={
+    formatGender(
+      character.gender,
+    )
+  }
+/>
+                
+                <CompactDetail
                   label="Pronouns"
                   value={character.pronouns}
                 />
+
+                <CompactDetail
+  label="Sexual orientation"
+  value={
+    character.sexual_orientation
+  }
+/>
 
                 <div className="min-w-0 bg-[#17110d] px-3 py-2 [&_dt]:text-[7px] [&_dt]:uppercase [&_dt]:tracking-[0.19em] [&_dt]:text-[#796448] [&_dd]:mt-1 [&_dd]:text-[11px] [&_dd]:leading-5 [&_dd]:text-[#cab89b]">
                   <PublicCharacterAgeDetail

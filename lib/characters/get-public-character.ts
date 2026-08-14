@@ -43,6 +43,8 @@ type CharacterRow = {
   surname: string;
   display_name: string | null;
   pronouns: string | null;
+  gender: string | null;
+  sexual_orientation: string | null;
   date_of_birth: string | null;
   birthplace: string | null;
   origin: string | null;
@@ -222,6 +224,8 @@ export const getPublicCharacter = cache(
         surname,
         display_name,
         pronouns,
+        gender,
+        sexual_orientation,
         date_of_birth,
         birthplace,
         origin,
@@ -365,6 +369,8 @@ export const getPublicCharacter = cache(
       surname: row.surname,
       display_name: getDisplayName(row),
       pronouns: row.pronouns,
+      gender: row.gender,
+      sexual_orientation: row.sexual_orientation,
       date_of_birth: row.date_of_birth,
       birthplace: row.birthplace,
       origin: row.origin,

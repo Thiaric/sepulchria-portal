@@ -51,7 +51,7 @@ const steps = [
     number: 2,
     label: "Identity",
     description:
-      "Name, pronouns and age.",
+      "Name, gender, pronouns, orientation and age.",
   },
   {
     number: 3,
@@ -276,6 +276,23 @@ export default function CharacterForm({
       if (!validateAge()) {
         return false;
       }
+
+      const gender =
+  getValue("gender");
+
+if (
+  ![
+    "male",
+    "female",
+    "non_binary",
+  ].includes(gender)
+) {
+  setValidationError(
+    "Choose a gender before continuing.",
+  );
+
+  return false;
+}
     }
 
     if (
@@ -587,6 +604,48 @@ export default function CharacterForm({
               }
               placeholder="They/them, she/her, he/him..."
             />
+
+            <label className="block">
+  <span className="mb-2 block text-[11px] uppercase tracking-[0.25em] text-[#a38357]">
+    Gender *
+  </span>
+
+  <select
+    name="gender"
+    required
+    defaultValue={
+      String(
+        character?.gender ?? "",
+      )
+    }
+    className="w-full border border-[#654c31] bg-[#0f0c09] px-4 py-3 text-sm text-[#dfceb0] outline-none transition focus:border-[#a17a45]"
+  >
+    <option value="">
+      Choose gender
+    </option>
+
+    <option value="male">
+      Male
+    </option>
+
+    <option value="female">
+      Female
+    </option>
+
+    <option value="non_binary">
+      Non-binary
+    </option>
+  </select>
+</label>
+
+<TextField
+  label="Sexual orientation"
+  name="sexual_orientation"
+  defaultValue={
+    character?.sexual_orientation
+  }
+  placeholder="Optional"
+/>
 
             <AgeField
               race={selectedRace}
@@ -1176,6 +1235,24 @@ function PortraitPreview({
   );
 }
 
+function formatGender(
+  value: string,
+) {
+  if (value === "male") {
+    return "Male";
+  }
+
+  if (value === "female") {
+    return "Female";
+  }
+
+  if (value === "non_binary") {
+    return "Non-binary";
+  }
+
+  return "Not recorded";
+}
+
 function ReviewPanel({
   formRef,
   selectedRace,
@@ -1228,14 +1305,35 @@ function ReviewPanel({
   ];
 
   const identity = [
-    [
-      "First name",
-      value("first_name"),
-    ],
-    ["Surname", value("surname")],
-    ["Pronouns", value("pronouns")],
-    ["Age", age || "Not recorded"],
-  ];
+  [
+    "First name",
+    value("first_name"),
+  ],
+  [
+    "Surname",
+    value("surname"),
+  ],
+  [
+    "Gender",
+    formatGender(
+      value("gender"),
+    ),
+  ],
+  [
+    "Pronouns",
+    value("pronouns"),
+  ],
+  [
+    "Sexual orientation",
+    value(
+      "sexual_orientation",
+    ),
+  ],
+  [
+    "Age",
+    age || "Not recorded",
+  ],
+];
 
   const civic = [
     ["Birthplace", "Sepulchria"],

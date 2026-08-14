@@ -42,6 +42,8 @@ type CharacterRow = {
   surname: string;
   display_name: string | null;
   pronouns: string | null;
+  gender: string | null;
+  sexual_orientation: string | null;
   date_of_birth: string | null;
   birthplace: string | null;
   origin: string | null;
@@ -122,6 +124,24 @@ function formatDate(
   }).format(date);
 }
 
+function formatGender(
+  value: string | null,
+) {
+  if (value === "male") {
+    return "Male";
+  }
+
+  if (value === "female") {
+    return "Female";
+  }
+
+  if (value === "non_binary") {
+    return "Non-binary";
+  }
+
+  return null;
+}
+
 export default async function AdminCharacterPage({
   params,
 }: AdminCharacterPageProps) {
@@ -145,6 +165,8 @@ export default async function AdminCharacterPage({
         surname,
         display_name,
         pronouns,
+        gender,
+        sexual_orientation,
         date_of_birth,
         birthplace,
         origin,
@@ -342,6 +364,22 @@ export default async function AdminCharacterPage({
                 />
 
                 <ReadOnlyField
+  label="Gender"
+  value={
+    formatGender(
+      character.gender,
+    )
+  }
+/>
+
+<ReadOnlyField
+  label="Sexual orientation"
+  value={
+    character.sexual_orientation
+  }
+/>
+
+                <ReadOnlyField
                   label="Date of birth"
                   value={
                     character.date_of_birth
@@ -462,6 +500,47 @@ export default async function AdminCharacterPage({
                       className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
                     />
                   </AdminField>
+
+                  <AdminField label="Gender">
+  <select
+    name="gender"
+    required
+    defaultValue={
+      character.gender ?? ""
+    }
+    className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+  >
+    <option value="">
+      Choose gender
+    </option>
+
+    <option value="male">
+      Male
+    </option>
+
+    <option value="female">
+      Female
+    </option>
+
+    <option value="non_binary">
+      Non-binary
+    </option>
+  </select>
+</AdminField>
+
+<AdminField label="Sexual orientation">
+  <input
+    type="text"
+    name="sexualOrientation"
+    maxLength={120}
+    defaultValue={
+      character.sexual_orientation ??
+      ""
+    }
+    placeholder="Optional"
+    className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+  />
+</AdminField>
 
                   <AdminField label="Date of birth">
                     <input

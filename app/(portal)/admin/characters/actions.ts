@@ -295,6 +295,33 @@ export async function updateCharacterAdministration(
     80,
   );
 
+  const gender =
+  readOptionalText(
+    formData.get("gender"),
+    20,
+  );
+
+if (
+  !gender ||
+  ![
+    "male",
+    "female",
+    "non_binary",
+  ].includes(gender)
+) {
+  throw new Error(
+    "A valid gender must be selected.",
+  );
+}
+
+const sexualOrientation =
+  readOptionalText(
+    formData.get(
+      "sexualOrientation",
+    ),
+    120,
+  );
+
   const dateOfBirth = readOptionalText(
     formData.get("dateOfBirth"),
     20,
@@ -427,6 +454,8 @@ const physicalDescription =
       first_name,
       surname,
       pronouns,
+      gender,
+      sexual_orientation,
       date_of_birth,
       birthplace,
       origin,
@@ -635,6 +664,9 @@ const physicalDescription =
     first_name: firstName,
     surname,
     pronouns,
+    gender,
+    sexual_orientation:
+    sexualOrientation,
     date_of_birth: dateOfBirth,
     birthplace,
     origin,
@@ -716,6 +748,11 @@ const physicalDescription =
             character.surname,
           pronouns:
             character.pronouns,
+            gender:
+  character.gender,
+
+sexual_orientation:
+  character.sexual_orientation,
           date_of_birth:
             character.date_of_birth,
           birthplace:

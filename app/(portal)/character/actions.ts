@@ -320,6 +320,25 @@ export async function saveCharacter(
     );
   }
 
+  const gender = text(
+  formData,
+  "gender",
+  20,
+);
+
+if (
+  ![
+    "male",
+    "female",
+    "non_binary",
+  ].includes(gender)
+) {
+  redirectWithError(
+    mode,
+    "A valid gender must be selected.",
+  );
+}
+
   const payload = {
     first_name: firstName,
     surname,
@@ -385,6 +404,15 @@ export async function saveCharacter(
         "public_notes",
         10000,
       ) || null,
+
+      gender,
+
+sexual_orientation:
+  text(
+    formData,
+    "sexual_orientation",
+    120,
+  ) || null,
 
     updated_at:
       new Date().toISOString(),
@@ -694,6 +722,13 @@ export async function updateApprovedCharacterProfile(
     10000,
   );
 
+  const sexualOrientation =
+  text(
+    formData,
+    "sexual_orientation",
+    120,
+  );
+
   if (!physicalDescription) {
     redirectCharacterError(
       "Physical description is required.",
@@ -735,16 +770,26 @@ export async function updateApprovedCharacterProfile(
   }
 
   const { error } = await supabase
-    .from("characters")
-    .update({
-      portrait_url: portraitUrl || null,
-      music_url: musicUrl || null,
-      physical_description: physicalDescription,
-      personality,
-      biography,
-      public_notes: publicNotes || null,
-      updated_at: new Date().toISOString(),
-    })
+  .from("characters")
+  .update({
+    portrait_url: portraitUrl || null,
+    music_url: musicUrl || null,
+
+    sexual_orientation:
+      sexualOrientation || null,
+
+    physical_description:
+      physicalDescription,
+
+    personality,
+    biography,
+
+    public_notes:
+      publicNotes || null,
+
+    updated_at:
+      new Date().toISOString(),
+  })
     .eq("id", character.id)
     .eq("user_id", user.id)
     .eq("status", "approved");
@@ -773,13 +818,14 @@ export async function submitCharacterForReview() {
   } = await supabase
     .from("characters")
     .select(`
-      id,
-      status,
-      first_name,
-      surname,
-      race_id,
-      association_id,
-      physical_description,
+  id,
+  status,
+  first_name,
+  surname,
+  gender,
+  race_id,
+  association_id,
+  physical_description,
       personality,
       biography,
       muscles,
@@ -842,6 +888,17 @@ export async function submitCharacterForReview() {
   if (!character.surname?.trim()) {
     missingFields.push("surname");
   }
+
+  if (
+  !character.gender ||
+  ![
+    "male",
+    "female",
+    "non_binary",
+  ].includes(character.gender)
+) {
+  missingFields.push("gender");
+}
 
   if (!character.race_id) {
     missingFields.push("race");
