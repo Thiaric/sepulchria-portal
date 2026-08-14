@@ -9,7 +9,6 @@ import { PortalResponsiveRightSidebar } from "@/components/portal/portal-respons
 import { PortalSidebar } from "@/components/portal/portal-sidebar";
 import { TidingsTicker } from "@/components/tidings/tidings-ticker";
 import { WorldStateProvider } from "@/components/world/world-state-provider";
-import { characterLeadsAnyOrder } from "@/lib/orders/get-order-leadership";
 import { getPortalContext } from "@/lib/portal/get-portal-context";
 import { createClient } from "@/lib/supabase/server";
 import { getActiveTidings } from "@/lib/tidings/get-active-tidings";
@@ -19,9 +18,7 @@ type PortalLayoutProps = {
   children: ReactNode;
 };
 
-export default function PortalLayout({
-  children,
-}: PortalLayoutProps) {
+export default function PortalLayout({ children }: PortalLayoutProps) {
   return (
     <Suspense fallback={<PortalLoadingShell />}>
       <PortalLayoutContent>{children}</PortalLayoutContent>
@@ -29,59 +26,51 @@ export default function PortalLayout({
   );
 }
 
-async function PortalLayoutContent({
-  children,
-}: PortalLayoutProps) {
-  const [context, worldState, initialTidings] =
-    await Promise.all([
-      getPortalContext(),
-      getWorldState(),
-      getActiveTidings(),
-    ]);
+async function PortalLayoutContent({ children }: PortalLayoutProps) {
+  const [context, worldState, initialTidings] = await Promise.all([
+    getPortalContext(),
+    getWorldState(),
+    getActiveTidings(),
+  ]);
 
   const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
 
   let unreadForumCount = 0;
   let hasOrderLeadership = false;
 
   if (user) {
-    const {
-      data: unreadForumResult,
-      error: unreadForumError,
-    } = await supabase.rpc(
-      "get_unread_forum_topic_count",
-    );
+    const { data: unreadForumResult, error: unreadForumError } =
+      await supabase.rpc("get_unread_forum_topic_count");
 
     if (!unreadForumError) {
-      if (
-        typeof unreadForumResult === "number" &&
-        Number.isFinite(unreadForumResult)
-      ) {
+      if (typeof unreadForumResult === "number" && Number.isFinite(unreadForumResult)) {
         unreadForumCount = unreadForumResult;
-      } else if (
-        typeof unreadForumResult === "string"
-      ) {
-        const parsedCount =
-          Number.parseInt(unreadForumResult, 10);
-
-        if (Number.isFinite(parsedCount)) {
-          unreadForumCount = parsedCount;
-        }
+      } else if (typeof unreadForumResult === "string") {
+        const parsedCount = Number.parseInt(unreadForumResult, 10);
+        if (Number.isFinite(parsedCount)) unreadForumCount = parsedCount;
       }
     }
 
-    hasOrderLeadership =
-      await characterLeadsAnyOrder(
-        context.character?.id,
-      );
+    if (context.character?.id) {
+      const { data: memberships, error: membershipError } = await supabase
+        .from("order_memberships")
+        .select(`level:order_levels!order_memberships_order_level_id_fkey(level)`)
+        .eq("character_id", context.character.id);
+
+      if (!membershipError) {
+        hasOrderLeadership = (memberships ?? []).some((membership) => {
+          const relation = membership.level as
+            | { level: number }
+            | { level: number }[]
+            | null;
+          return (Array.isArray(relation) ? relation[0]?.level : relation?.level) === 5;
+        });
+      }
+    }
   }
 
-  const presenceEnabled =
-    context.character?.status === "approved";
+  const presenceEnabled = context.character?.status === "approved";
 
   return (
     <WorldStateProvider initialState={worldState}>
@@ -90,318 +79,26 @@ async function PortalLayoutContent({
           characterId={context.character?.id ?? null}
           currentRoomId={context.character?.current_room_id ?? null}
         />
-
         <div className="h-dvh overflow-hidden bg-[#120f0d] text-[#e8dcc4]">
           <div className="flex h-full min-h-0 flex-col bg-[radial-gradient(circle_at_top,_rgba(116,82,42,0.16),_transparent_38%),linear-gradient(to_bottom,_#17120f,_#0d0b0a)]">
-            <PortalPresenceHeartbeat
-              enabled={presenceEnabled}
-            />
-
-            <div className="shrink-0">
-              <PortalHeader context={context} />
-            </div>
-
+            <PortalPresenceHeartbeat enabled={presenceEnabled} />
+            <div className="shrink-0"><PortalHeader context={context} /></div>
             <style>{`
-              .sepulchria-viewport-body {
-                --portal-left-width: 230px;
-                --portal-right-width: 300px;
-                --portal-column-pad: 1rem;
-                --portal-column-gap: 0.75rem;
-                --portal-section-pad: 1rem;
-                --portal-nav-y: 0.5rem;
-                --portal-nav-min-h: 2.25rem;
-                --portal-group-gap: 1rem;
-                max-width: 1800px;
-              }
-
-              .portal-left-shell,
-              .portal-right-shell {
-                display: contents;
-              }
-
-              .portal-left-collapse-toggle,
-              .portal-right-collapse-toggle {
-                display: none;
-              }
-
-              @media (min-width: 1024px) {
-                .sepulchria-viewport-body {
-                  grid-template-columns:
-                    clamp(180px, 14vw, var(--portal-left-width))
-                    minmax(0, 1fr);
-                  overflow: hidden;
-                }
-
-                .sepulchria-viewport-body[data-left-collapsed="true"] {
-                  grid-template-columns:
-                    0
-                    minmax(0, 1fr);
-                }
-
-                .portal-left-shell {
-                  display: block;
-                  height: 100%;
-                  overflow: visible;
-                }
-
-                .sepulchria-viewport-body[data-left-collapsed="true"]
-                  .portal-left-shell > aside {
-                  visibility: hidden;
-                  pointer-events: none;
-                }
-
-                .portal-left-collapse-toggle {
-                  position: absolute;
-                  top: 50%;
-                  right: -11px;
-                  z-index: 45;
-                  display: flex;
-                  width: 22px;
-                  height: 52px;
-                  transform: translateY(-50%);
-                  align-items: center;
-                  justify-content: center;
-                  border: 1px solid rgba(110, 85, 53, 0.62);
-                  background: rgba(16, 13, 11, 0.96);
-                  color: #a98d65;
-                  font-family: Georgia, serif;
-                  font-size: 18px;
-                  line-height: 1;
-                  box-shadow: 4px 0 14px rgba(0, 0, 0, 0.28);
-                  transition:
-                    color 150ms ease,
-                    border-color 150ms ease,
-                    background 150ms ease;
-                }
-
-                .portal-left-collapse-toggle:hover {
-                  border-color: #9a7445;
-                  background: #1d160f;
-                  color: #efd39f;
-                }
-
-                .sepulchria-viewport-body
-                  > [data-portal-centre-host],
-                .sepulchria-viewport-body
-                  > .portal-left-shell,
-                .sepulchria-viewport-body
-                  > .portal-right-shell {
-                  min-width: 0;
-                  min-height: 0;
-                  height: 100%;
-                }
-
-                .sepulchria-viewport-body
-                  > [data-portal-centre-host]
-                  > [data-portal-column],
-                .sepulchria-viewport-body
-                  > .portal-left-shell
-                  > [data-portal-column] {
-                  min-width: 0;
-                  min-height: 0;
-                  height: 100%;
-                }
-
-                .sepulchria-viewport-body:is(
-                    [data-left-collapsed="true"],
-                    [data-right-collapsed="true"]
-                  )
-                  > [data-portal-centre-host]
-                  > [data-portal-column]
-                  > :is(main, section, article, div)
-                  > .mx-auto:is(
-                    .max-w-7xl,
-                    .max-w-6xl,
-                    .max-w-5xl,
-                    .max-w-4xl
-                  ),
-                .sepulchria-viewport-body:is(
-                    [data-left-collapsed="true"],
-                    [data-right-collapsed="true"]
-                  )
-                  > [data-portal-centre-host]
-                  > [data-portal-column]
-                  > .mx-auto:is(
-                    .max-w-7xl,
-                    .max-w-6xl,
-                    .max-w-5xl,
-                    .max-w-4xl
-                  ) {
-                  max-width: none !important;
-                  width: 100%;
-                }
-              }
-
-              @media (min-width: 1280px) {
-                .sepulchria-viewport-body {
-                  grid-template-columns:
-                    clamp(180px, 13vw, var(--portal-left-width))
-                    minmax(0, 1fr)
-                    clamp(240px, 18vw, var(--portal-right-width));
-                }
-
-                .sepulchria-viewport-body[data-left-collapsed="true"] {
-                  grid-template-columns:
-                    0
-                    minmax(0, 1fr)
-                    clamp(240px, 18vw, var(--portal-right-width));
-                }
-
-                .sepulchria-viewport-body[data-right-collapsed="true"] {
-                  grid-template-columns:
-                    clamp(180px, 13vw, var(--portal-left-width))
-                    minmax(0, 1fr)
-                    0;
-                }
-
-                .sepulchria-viewport-body[data-left-collapsed="true"][data-right-collapsed="true"] {
-                  grid-template-columns:
-                    0
-                    minmax(0, 1fr)
-                    0;
-                  max-width: none;
-                }
-
-                .portal-right-shell {
-                  display: block;
-                  height: 100%;
-                  overflow: visible;
-                }
-
-                .sepulchria-viewport-body[data-right-collapsed="true"]
-                  .portal-right-shell > aside {
-                  visibility: hidden;
-                  pointer-events: none;
-                }
-
-                .portal-right-collapse-toggle {
-                  position: absolute;
-                  top: 50%;
-                  left: -11px;
-                  z-index: 45;
-                  display: flex;
-                  width: 22px;
-                  height: 52px;
-                  transform: translateY(-50%);
-                  align-items: center;
-                  justify-content: center;
-                  border: 1px solid rgba(110, 85, 53, 0.62);
-                  background: rgba(16, 13, 11, 0.96);
-                  color: #a98d65;
-                  font-family: Georgia, serif;
-                  font-size: 18px;
-                  line-height: 1;
-                  box-shadow: -4px 0 14px rgba(0, 0, 0, 0.28);
-                  transition:
-                    color 150ms ease,
-                    border-color 150ms ease,
-                    background 150ms ease;
-                }
-
-                .portal-right-collapse-toggle:hover {
-                  border-color: #9a7445;
-                  background: #1d160f;
-                  color: #efd39f;
-                }
-
-                .sepulchria-viewport-body
-                  > .portal-right-shell
-                  > [data-portal-column] {
-                  min-width: 0;
-                  min-height: 0;
-                  height: 100%;
-                }
-              }
-
-              @media (min-width: 1024px) and (max-height: 820px) {
-                .sepulchria-viewport-body {
-                  --portal-column-pad: 0.75rem;
-                  --portal-column-gap: 0.6rem;
-                  --portal-section-pad: 0.75rem;
-                  --portal-nav-y: 0.38rem;
-                  --portal-nav-min-h: 2rem;
-                  --portal-group-gap: 0.75rem;
-                }
-              }
-
-              @media (min-width: 1024px) and (max-height: 720px) {
-                .sepulchria-viewport-body {
-                  --portal-left-width: 210px;
-                  --portal-right-width: 275px;
-                  --portal-column-pad: 0.6rem;
-                  --portal-column-gap: 0.5rem;
-                  --portal-section-pad: 0.6rem;
-                  --portal-nav-y: 0.28rem;
-                  --portal-nav-min-h: 1.8rem;
-                  --portal-group-gap: 0.55rem;
-                }
-              }
-
-              @media (min-width: 1024px) and (max-height: 640px) {
-                .sepulchria-viewport-body {
-                  --portal-left-width: 195px;
-                  --portal-right-width: 255px;
-                  --portal-column-pad: 0.45rem;
-                  --portal-column-gap: 0.4rem;
-                  --portal-section-pad: 0.5rem;
-                  --portal-nav-y: 0.2rem;
-                  --portal-nav-min-h: 1.65rem;
-                  --portal-group-gap: 0.4rem;
-                }
-              }
-
-              .sepulchria-viewport-body [data-portal-scroll] {
-                scrollbar-width: thin;
-                scrollbar-color: #5c472f transparent;
-              }
-
-              .sepulchria-viewport-body [data-portal-scroll]::-webkit-scrollbar {
-                width: 7px;
-              }
-
-              .sepulchria-viewport-body [data-portal-scroll]::-webkit-scrollbar-track {
-                background: transparent;
-              }
-
-              .sepulchria-viewport-body [data-portal-scroll]::-webkit-scrollbar-thumb {
-                background: #5c472f;
-                border-radius: 999px;
-              }
+              .sepulchria-viewport-body { --portal-left-width:230px; --portal-right-width:300px; --portal-column-pad:1rem; --portal-column-gap:.75rem; --portal-section-pad:1rem; --portal-nav-y:.5rem; --portal-nav-min-h:2.25rem; --portal-group-gap:1rem; max-width:1800px; }
+              .portal-left-shell,.portal-right-shell{display:contents}.portal-left-collapse-toggle,.portal-right-collapse-toggle{display:none}
+              @media(min-width:1024px){.sepulchria-viewport-body{grid-template-columns:clamp(180px,14vw,var(--portal-left-width)) minmax(0,1fr);overflow:hidden}.sepulchria-viewport-body[data-left-collapsed="true"]{grid-template-columns:0 minmax(0,1fr)}.portal-left-shell{display:block;height:100%;overflow:visible}.sepulchria-viewport-body[data-left-collapsed="true"] .portal-left-shell>aside{visibility:hidden;pointer-events:none}.portal-left-collapse-toggle{position:absolute;top:50%;right:-11px;z-index:45;display:flex;width:22px;height:52px;transform:translateY(-50%);align-items:center;justify-content:center;border:1px solid rgba(110,85,53,.62);background:rgba(16,13,11,.96);color:#a98d65;font-family:Georgia,serif;font-size:18px;line-height:1;box-shadow:4px 0 14px rgba(0,0,0,.28);transition:color 150ms ease,border-color 150ms ease,background 150ms ease}.portal-left-collapse-toggle:hover{border-color:#9a7445;background:#1d160f;color:#efd39f}.sepulchria-viewport-body>[data-portal-centre-host],.sepulchria-viewport-body>.portal-left-shell,.sepulchria-viewport-body>.portal-right-shell{min-width:0;min-height:0;height:100%}.sepulchria-viewport-body>[data-portal-centre-host]>[data-portal-column],.sepulchria-viewport-body>.portal-left-shell>[data-portal-column]{min-width:0;min-height:0;height:100%}.sepulchria-viewport-body:is([data-left-collapsed="true"],[data-right-collapsed="true"])>[data-portal-centre-host]>[data-portal-column]>:is(main,section,article,div)>.mx-auto:is(.max-w-7xl,.max-w-6xl,.max-w-5xl,.max-w-4xl),.sepulchria-viewport-body:is([data-left-collapsed="true"],[data-right-collapsed="true"])>[data-portal-centre-host]>[data-portal-column]>.mx-auto:is(.max-w-7xl,.max-w-6xl,.max-w-5xl,.max-w-4xl){max-width:none!important;width:100%}}
+              @media(min-width:1280px){.sepulchria-viewport-body{grid-template-columns:clamp(180px,13vw,var(--portal-left-width)) minmax(0,1fr) clamp(240px,18vw,var(--portal-right-width))}.sepulchria-viewport-body[data-left-collapsed="true"]{grid-template-columns:0 minmax(0,1fr) clamp(240px,18vw,var(--portal-right-width))}.sepulchria-viewport-body[data-right-collapsed="true"]{grid-template-columns:clamp(180px,13vw,var(--portal-left-width)) minmax(0,1fr) 0}.sepulchria-viewport-body[data-left-collapsed="true"][data-right-collapsed="true"]{grid-template-columns:0 minmax(0,1fr) 0;max-width:none}.portal-right-shell{display:block;height:100%;overflow:visible}.sepulchria-viewport-body[data-right-collapsed="true"] .portal-right-shell>aside{visibility:hidden;pointer-events:none}.portal-right-collapse-toggle{position:absolute;top:50%;left:-11px;z-index:45;display:flex;width:22px;height:52px;transform:translateY(-50%);align-items:center;justify-content:center;border:1px solid rgba(110,85,53,.62);background:rgba(16,13,11,.96);color:#a98d65;font-family:Georgia,serif;font-size:18px;line-height:1;box-shadow:-4px 0 14px rgba(0,0,0,.28);transition:color 150ms ease,border-color 150ms ease,background 150ms ease}.portal-right-collapse-toggle:hover{border-color:#9a7445;background:#1d160f;color:#efd39f}.sepulchria-viewport-body>.portal-right-shell>[data-portal-column]{min-width:0;min-height:0;height:100%}}
+              @media(min-width:1024px) and (max-height:820px){.sepulchria-viewport-body{--portal-column-pad:.75rem;--portal-column-gap:.6rem;--portal-section-pad:.75rem;--portal-nav-y:.38rem;--portal-nav-min-h:2rem;--portal-group-gap:.75rem}}
+              @media(min-width:1024px) and (max-height:720px){.sepulchria-viewport-body{--portal-left-width:210px;--portal-right-width:275px;--portal-column-pad:.6rem;--portal-column-gap:.5rem;--portal-section-pad:.6rem;--portal-nav-y:.28rem;--portal-nav-min-h:1.8rem;--portal-group-gap:.55rem}}
+              @media(min-width:1024px) and (max-height:640px){.sepulchria-viewport-body{--portal-left-width:195px;--portal-right-width:255px;--portal-column-pad:.45rem;--portal-column-gap:.4rem;--portal-section-pad:.5rem;--portal-nav-y:.2rem;--portal-nav-min-h:1.65rem;--portal-group-gap:.4rem}}
+              .sepulchria-viewport-body [data-portal-scroll]{scrollbar-width:thin;scrollbar-color:#5c472f transparent}.sepulchria-viewport-body [data-portal-scroll]::-webkit-scrollbar{width:7px}.sepulchria-viewport-body [data-portal-scroll]::-webkit-scrollbar-track{background:transparent}.sepulchria-viewport-body [data-portal-scroll]::-webkit-scrollbar-thumb{background:#5c472f;border-radius:999px}
             `}</style>
-
             <PortalCollapsibleColumns
-              left={
-                <PortalSidebar
-                  unreadMessageCount={
-                    context.unreadMessageCount
-                  }
-                  unreadForumCount={
-                    unreadForumCount
-                  }
-                  hasOrderLeadership={
-                    hasOrderLeadership
-                  }
-                />
-              }
-              centre={
-                <main
-                  data-portal-column
-                  data-portal-scroll
-                  className="min-h-0 min-w-0 overflow-visible lg:overflow-y-auto lg:overscroll-contain"
-                >
-                  {children}
-                </main>
-              }
-              right={
-                <PortalResponsiveRightSidebar
-                  context={context}
-                />
-              }
+              left={<PortalSidebar unreadMessageCount={context.unreadMessageCount} unreadForumCount={unreadForumCount} hasOrderLeadership={hasOrderLeadership} />}
+              centre={<main data-portal-column data-portal-scroll className="min-h-0 min-w-0 overflow-visible lg:overflow-y-auto lg:overscroll-contain">{children}</main>}
+              right={<PortalResponsiveRightSidebar context={context} />}
             />
-
-            <TidingsTicker
-              initialTidings={initialTidings}
-            />
+            <TidingsTicker initialTidings={initialTidings} />
           </div>
         </div>
       </PortalAudioProvider>
@@ -414,27 +111,13 @@ function PortalLoadingShell() {
     <div className="h-dvh overflow-hidden bg-[#120f0d] text-[#e8dcc4]">
       <div className="flex h-full min-h-0 flex-col bg-[radial-gradient(circle_at_top,_rgba(116,82,42,0.16),_transparent_38%),linear-gradient(to_bottom,_#17120f,_#0d0b0a)]">
         <header className="h-[clamp(56px,8dvh,80px)] shrink-0 animate-pulse border-b border-[#6e5535]/40 bg-[#0d0b0a]" />
-
         <div className="mx-auto grid min-h-0 w-full max-w-[1800px] flex-1 grid-cols-1 overflow-y-auto lg:grid-cols-[clamp(180px,14vw,230px)_minmax(0,1fr)] lg:overflow-hidden xl:grid-cols-[clamp(180px,13vw,230px)_minmax(0,1fr)_clamp(240px,18vw,300px)]">
           <aside className="hidden min-h-0 animate-pulse overflow-hidden border-r border-[#6e5535]/30 bg-[#100d0b] lg:block" />
-
           <main className="min-h-0 overflow-hidden p-5 sm:p-7 lg:p-9">
-            <div className="h-4 w-52 animate-pulse bg-[#2c2118]" />
-            <div className="mt-5 h-12 max-w-xl animate-pulse bg-[#2c2118]" />
-            <div className="mt-5 h-5 max-w-2xl animate-pulse bg-[#211914]" />
-
-            <div className="mt-10 grid gap-5 md:grid-cols-2">
-              <div className="h-64 animate-pulse border border-[#60482e]/30 bg-[#17120f]" />
-              <div className="h-64 animate-pulse border border-[#60482e]/30 bg-[#17120f]" />
-            </div>
-
-            <div className="mt-6 grid gap-5 md:grid-cols-3">
-              <div className="h-44 animate-pulse border border-[#60482e]/30 bg-[#17120f]" />
-              <div className="h-44 animate-pulse border border-[#60482e]/30 bg-[#17120f]" />
-              <div className="h-44 animate-pulse border border-[#60482e]/30 bg-[#17120f]" />
-            </div>
+            <div className="h-4 w-52 animate-pulse bg-[#2c2118]" /><div className="mt-5 h-12 max-w-xl animate-pulse bg-[#2c2118]" /><div className="mt-5 h-5 max-w-2xl animate-pulse bg-[#211914]" />
+            <div className="mt-10 grid gap-5 md:grid-cols-2"><div className="h-64 animate-pulse border border-[#60482e]/30 bg-[#17120f]" /><div className="h-64 animate-pulse border border-[#60482e]/30 bg-[#17120f]" /></div>
+            <div className="mt-6 grid gap-5 md:grid-cols-3"><div className="h-44 animate-pulse border border-[#60482e]/30 bg-[#17120f]" /><div className="h-44 animate-pulse border border-[#60482e]/30 bg-[#17120f]" /><div className="h-44 animate-pulse border border-[#60482e]/30 bg-[#17120f]" /></div>
           </main>
-
           <aside className="hidden min-h-0 animate-pulse overflow-hidden border-l border-[#6e5535]/30 bg-[#100d0b] xl:block" />
         </div>
       </div>
