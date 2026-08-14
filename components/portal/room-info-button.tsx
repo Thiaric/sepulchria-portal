@@ -115,12 +115,12 @@ area:areas!rooms_area_id_fkey(
     }, []);
 
   function openModal() {
-    setOpen(true);
+  setOpen(true);
 
-    if (!room && !loading) {
-      void loadRoom();
-    }
+  if (!loading) {
+    void loadRoom();
   }
+}
 
   useEffect(() => {
     if (!open) {
