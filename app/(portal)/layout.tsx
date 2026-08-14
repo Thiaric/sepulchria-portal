@@ -9,6 +9,7 @@ import { PortalResponsiveRightSidebar } from "@/components/portal/portal-respons
 import { PortalSidebar } from "@/components/portal/portal-sidebar";
 import { TidingsTicker } from "@/components/tidings/tidings-ticker";
 import { WorldStateProvider } from "@/components/world/world-state-provider";
+import { characterLeadsAnyOrder } from "@/lib/orders/get-order-leadership";
 import { getPortalContext } from "@/lib/portal/get-portal-context";
 import { createClient } from "@/lib/supabase/server";
 import { getActiveTidings } from "@/lib/tidings/get-active-tidings";
@@ -45,6 +46,7 @@ async function PortalLayoutContent({
   } = await supabase.auth.getUser();
 
   let unreadForumCount = 0;
+  let hasOrderLeadership = false;
 
   if (user) {
     const {
@@ -71,6 +73,11 @@ async function PortalLayoutContent({
         }
       }
     }
+
+    hasOrderLeadership =
+      await characterLeadsAnyOrder(
+        context.character?.id,
+      );
   }
 
   const presenceEnabled =
@@ -195,19 +202,6 @@ async function PortalLayoutContent({
                   height: 100%;
                 }
 
-                /*
-                 * GLOBAL WIDE MODE
-                 *
-                 * Most portal pages deliberately centre their main page shell with
-                 * Tailwind max-w-* classes. When either permanent sidebar is hidden,
-                 * remove the width cap from the PAGE SHELL only, so Forum, Messages,
-                 * Ancestries, Associations, Characters and Admin pages can consume
-                 * the newly available centre space.
-                 *
-                 * The selectors intentionally target only the first layout wrapper(s)
-                 * below the portal main area. Nested reading columns, forms, modals
-                 * and small components keep their own max-width constraints.
-                 */
                 .sepulchria-viewport-body:is(
                     [data-left-collapsed="true"],
                     [data-right-collapsed="true"]
@@ -384,16 +378,19 @@ async function PortalLayoutContent({
                   unreadForumCount={
                     unreadForumCount
                   }
+                  hasOrderLeadership={
+                    hasOrderLeadership
+                  }
                 />
               }
               centre={
                 <main
-  data-portal-column
-  data-portal-scroll
-  className="min-h-0 min-w-0 overflow-visible lg:overflow-y-auto lg:overscroll-contain"
->
-  {children}
-</main>
+                  data-portal-column
+                  data-portal-scroll
+                  className="min-h-0 min-w-0 overflow-visible lg:overflow-y-auto lg:overscroll-contain"
+                >
+                  {children}
+                </main>
               }
               right={
                 <PortalResponsiveRightSidebar
