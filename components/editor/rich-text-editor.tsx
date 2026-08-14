@@ -1027,10 +1027,14 @@ function handleSpellingClick(
       event.clientX,
       window.innerWidth - 280,
     ),
-    y: Math.min(
-      event.clientY + 18,
-      window.innerHeight - 260,
-    ),
+    y:
+      event.clientY >
+      window.innerHeight / 2
+        ? Math.max(
+            16,
+            event.clientY - 320,
+          )
+        : event.clientY + 18,
   });
 }
 
@@ -1766,7 +1770,7 @@ function addSpellingWordToDictionary() {
 
         {spellingMenu.issue.suggestions
           .length > 0 ? (
-          <div className="mt-3 space-y-1">
+          <div className="mt-3 max-h-48 space-y-1 overflow-y-auto pr-1">
             <p className="mb-2 text-[7px] uppercase tracking-[0.18em] text-[#756651]">
               Suggestions
             </p>

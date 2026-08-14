@@ -112,6 +112,11 @@ export default function RoomChatForm({
     setWhisperRecipientId,
   ] = useState("");
 
+  const [
+  ignoredSpellingWords,
+  setIgnoredSpellingWords,
+] = useState<string[]>([]);
+
   const textareaRef =
     useRef<HTMLTextAreaElement>(null);
 
@@ -124,7 +129,17 @@ export default function RoomChatForm({
   ] = useState(0);
 
   const spellingIssues =
-    useSpellingIssues(value);
+  useSpellingIssues(value);
+
+const visibleSpellingIssues =
+  spellingIssues.filter(
+    (issue) =>
+      !ignoredSpellingWords.includes(
+        issue.word.toLocaleLowerCase(
+          "en-GB",
+        ),
+      ),
+  );
 
   const [
   spellingMenu,
@@ -436,7 +451,7 @@ function handleSpellingClick(
     }
 
     const issue =
-      spellingIssues.find(
+  visibleSpellingIssues.find(
         (candidate) =>
           candidate.word.localeCompare(
             result.word,
@@ -542,7 +557,29 @@ function applySpellingSuggestion(
       caretPosition,
     );
   });
-}     
+}  
+
+function ignoreSpellingWord() {
+  if (!spellingMenu) {
+    return;
+  }
+
+  const word =
+    spellingMenu.word.toLocaleLowerCase(
+      "en-GB",
+    );
+
+  setIgnoredSpellingWords(
+    (current) =>
+      current.includes(word)
+        ? current
+        : [...current, word],
+  );
+
+  setSpellingMenu(null);
+
+  textareaRef.current?.focus();
+}
 
   return (
     <div className="shrink-0 border-t border-[#59432c]/40 bg-[#17110d] p-3 sm:p-4">
@@ -613,8 +650,8 @@ function applySpellingSuggestion(
           />
 
           <SpellingTextareaOverlay
-            text={value}
-            issues={spellingIssues}
+  text={value}
+  issues={visibleSpellingIssues}
             scrollTop={
               textareaScrollTop
             }
@@ -669,6 +706,19 @@ function applySpellingSuggestion(
         No suggestions found.
       </p>
     )}
+
+    <div className="mt-2 border-t border-[#60482e]/35 pt-2">
+  <button
+    type="button"
+    onMouseDown={(event) => {
+      event.preventDefault();
+      ignoreSpellingWord();
+    }}
+    className="w-full border border-[#60482e]/45 bg-[#15100d] px-2 py-2 text-[8px] uppercase tracking-[0.12em] text-[#a08c70] transition hover:border-[#87663b] hover:text-[#d4bb91]"
+  >
+    Ignore once
+  </button>
+</div>
   </div>
 ) : null}
 
@@ -866,6 +916,8 @@ function SubmitButton({
   const { pending } =
     useFormStatus();
 
+    
+
   return (
     <button
       type="submit"
@@ -897,6 +949,8 @@ function RollButton({
 }) {
   const { pending } =
     useFormStatus();
+
+    
 
   return (
     <button
