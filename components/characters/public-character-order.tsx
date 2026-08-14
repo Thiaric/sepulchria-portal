@@ -11,64 +11,77 @@ export function PublicCharacterOrder({
 }) {
   if (!membership) {
     return (
-      <div className="border border-[#60482e]/45 bg-[#120e0b] p-3">
-        <p className="text-[7px] uppercase tracking-[0.2em] text-[#806b50]">
+      <section className="border border-[#60482e]/45 bg-[#120e0b] p-4">
+        <p className="text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
           Order
         </p>
 
-        <p className="mt-1 font-serif text-base text-[#8f8271]">
-          Not affiliated
+        <p className="mt-2 text-sm text-[#8f8271]">
+          This character does not currently belong to an Order.
         </p>
-      </div>
+      </section>
     );
   }
 
-  const level =
-    membership.level
-      ? `Level ${membership.level.level}`
-      : "Not assigned";
+  const colour =
+    membership.order.colour ??
+    membership.association?.colour ??
+    "#8d6d3e";
 
   return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-      <Card
-        label="Association"
-        value={
-          membership.association
-            ?.name ??
-          "Not assigned"
-        }
-        href={
-          membership.association
-            ? `/associations/${membership.association.slug}`
-            : undefined
-        }
-      />
+    <section
+      className="border bg-[#120e0b] p-4"
+      style={{
+        borderColor: `${colour}66`,
+      }}
+    >
+      <p className="text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+        Order membership
+      </p>
 
-      <Card
-        label="Order"
-        value={
-          membership.order.name
-        }
-        href={`/orders/${membership.order.slug}`}
-      />
+      <div className="mt-3 grid gap-px bg-[#4f3b28]/35 sm:grid-cols-2 lg:grid-cols-4">
+        <OrderDetail
+          label="Association"
+          value={
+            membership.association
+              ?.name ??
+            "Not assigned"
+          }
+          href={
+            membership.association
+              ? `/associations/${membership.association.slug}`
+              : undefined
+          }
+        />
 
-      <Card
-        label="Level"
-        value={level}
-      />
+        <OrderDetail
+          label="Order"
+          value={membership.order.name}
+          href={`/orders/${membership.order.slug}`}
+        />
 
-      <Card
-        label="Job"
-        value={
-          membership.job?.name ??
-          "No specific job"
-        }
-      />
-    </div>
+        <OrderDetail
+          label="Level"
+          value={
+            membership.level
+              ? `Level ${membership.level.level}`
+              : "Not assigned"
+          }
+        />
+
+        <OrderDetail
+          label="Role"
+          value={
+            membership.job?.name ??
+            "No specific role"
+          }
+        />
+      </div>
+    </section>
   );
 }
 
-function Card({
+function OrderDetail({
   label,
   value,
   href,
@@ -77,13 +90,13 @@ function Card({
   value: string;
   href?: string;
 }) {
-  const body = (
+  const content = (
     <>
-      <p className="text-[7px] uppercase tracking-[0.2em] text-[#806b50]">
+      <p className="text-[7px] uppercase tracking-[0.19em] text-[#796448]">
         {label}
       </p>
 
-      <p className="mt-1 truncate font-serif text-base text-[#e1c99f]">
+      <p className="mt-1 break-words text-[11px] leading-5 text-[#cab89b]">
         {value}
       </p>
     </>
@@ -92,13 +105,13 @@ function Card({
   return href ? (
     <Link
       href={href}
-      className="border border-[#60482e]/55 bg-[#120e0b] p-3 transition hover:bg-[#1b140f]"
+      className="min-w-0 bg-[#17110d] px-3 py-2 transition hover:bg-[#211810]"
     >
-      {body}
+      {content}
     </Link>
   ) : (
-    <div className="border border-[#60482e]/55 bg-[#120e0b] p-3">
-      {body}
+    <div className="min-w-0 bg-[#17110d] px-3 py-2">
+      {content}
     </div>
   );
 }

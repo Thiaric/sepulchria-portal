@@ -95,7 +95,7 @@ export async function CharacterOrderSummary({
     }>,
   );
 
-  const job = one(
+  const role = one(
     data.job as Relation<{
       id: string;
       name: string;
@@ -155,10 +155,10 @@ export async function CharacterOrderSummary({
         />
 
         <OrderDetail
-          label="Job"
+          label="Role"
           value={
-            job?.name ??
-            "No specific job"
+            role?.name ??
+            "No specific role"
           }
         />
       </div>
