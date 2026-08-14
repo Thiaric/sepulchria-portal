@@ -54,11 +54,18 @@ function back(
   );
 }
 
-function refresh() {
+function refresh(characterId?: string) {
   revalidatePath("/admin/orders");
+  revalidatePath("/orders");
   revalidatePath("/admin/characters");
   revalidatePath("/characters");
   revalidatePath("/character");
+
+  if (characterId) {
+    revalidatePath(
+      `/admin/characters/${characterId}`,
+    );
+  }
 }
 
 async function verifyStructure({
@@ -111,12 +118,90 @@ async function verifyStructure({
 
     if (!job) {
       throw new Error(
-        "The selected job does not belong to the selected level.",
+        "The selected role does not belong to the selected level.",
       );
     }
   }
 
   return level;
+}
+
+async function getOrderAssociation(
+  supabase: Awaited<
+    ReturnType<typeof createClient>
+  >,
+  orderId: string,
+) {
+  const {
+    data: order,
+    error,
+  } = await supabase
+    .from("orders")
+    .select("association_id")
+    .eq("id", orderId)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  if (!order?.association_id) {
+    throw new Error(
+      "This Order has no Association assigned.",
+    );
+  }
+
+  return order.association_id as string;
+}
+
+async function syncCharacterAssociation(
+  supabase: Awaited<
+    ReturnType<typeof createClient>
+  >,
+  characterId: string,
+) {
+  const {
+    data: memberships,
+    error,
+  } = await supabase
+    .from("order_memberships")
+    .select(`
+      order:orders!order_memberships_order_id_fkey(
+        association_id
+      )
+    `)
+    .eq("character_id", characterId)
+    .limit(1);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const relation =
+    memberships?.[0]?.order ?? null;
+
+  const order =
+    Array.isArray(relation)
+      ? relation[0] ?? null
+      : relation;
+
+  const associationId =
+    order?.association_id ?? null;
+
+  const {
+    error: updateError,
+  } = await supabase
+    .from("characters")
+    .update({
+      association_id: associationId,
+    })
+    .eq("id", characterId);
+
+  if (updateError) {
+    throw new Error(
+      updateError.message,
+    );
+  }
 }
 
 export async function addOrderMember(
@@ -169,6 +254,12 @@ export async function addOrderMember(
       jobId,
     });
 
+    const associationId =
+      await getOrderAssociation(
+        supabase,
+        orderId,
+      );
+
     const {
       data: character,
       error: characterError,
@@ -190,7 +281,9 @@ export async function addOrderMember(
       );
     }
 
-    const { error } = await supabase
+    const {
+      error: membershipError,
+    } = await supabase
       .from("order_memberships")
       .insert({
         order_id: orderId,
@@ -200,17 +293,47 @@ export async function addOrderMember(
         added_by: staff.userId,
       });
 
-    if (error) {
-      if (error.code === "23505") {
+    if (membershipError) {
+      if (
+        membershipError.code ===
+        "23505"
+      ) {
         throw new Error(
-          `${character.display_name} is already a member of this Order.`,
+          `${character.display_name} is already a member of an Order.`,
         );
       }
 
-      throw new Error(error.message);
+      throw new Error(
+        membershipError.message,
+      );
     }
 
-    refresh();
+    const {
+      error: associationError,
+    } = await supabase
+      .from("characters")
+      .update({
+        association_id:
+          associationId,
+      })
+      .eq("id", characterId);
+
+    if (associationError) {
+      await supabase
+        .from("order_memberships")
+        .delete()
+        .eq("order_id", orderId)
+        .eq(
+          "character_id",
+          characterId,
+        );
+
+      throw new Error(
+        `Membership was rolled back because the Association could not be synchronised: ${associationError.message}`,
+      );
+    }
+
+    refresh(characterId);
 
     back(
       orderId,
@@ -283,15 +406,21 @@ export async function updateOrderMember(
       error: readError,
     } = await supabase
       .from("order_memberships")
-      .select(
-        "id, character:characters(display_name)",
-      )
+      .select(`
+        id,
+        character_id,
+        character:characters(
+          display_name
+        )
+      `)
       .eq("id", membershipId)
       .eq("order_id", orderId)
       .maybeSingle();
 
     if (readError) {
-      throw new Error(readError.message);
+      throw new Error(
+        readError.message,
+      );
     }
 
     if (!membership) {
@@ -312,8 +441,15 @@ export async function updateOrderMember(
       throw new Error(error.message);
     }
 
+    await syncCharacterAssociation(
+      supabase,
+      membership.character_id,
+    );
+
     const relation =
-      Array.isArray(membership.character)
+      Array.isArray(
+        membership.character,
+      )
         ? membership.character[0]
         : membership.character;
 
@@ -321,7 +457,9 @@ export async function updateOrderMember(
       relation?.display_name ??
       "Member";
 
-    refresh();
+    refresh(
+      membership.character_id,
+    );
 
     back(
       orderId,
@@ -374,15 +512,21 @@ export async function removeOrderMember(
       error: readError,
     } = await supabase
       .from("order_memberships")
-      .select(
-        "id, character:characters(display_name)",
-      )
+      .select(`
+        id,
+        character_id,
+        character:characters(
+          display_name
+        )
+      `)
       .eq("id", membershipId)
       .eq("order_id", orderId)
       .maybeSingle();
 
     if (readError) {
-      throw new Error(readError.message);
+      throw new Error(
+        readError.message,
+      );
     }
 
     if (!membership) {
@@ -400,8 +544,15 @@ export async function removeOrderMember(
       throw new Error(error.message);
     }
 
+    await syncCharacterAssociation(
+      supabase,
+      membership.character_id,
+    );
+
     const relation =
-      Array.isArray(membership.character)
+      Array.isArray(
+        membership.character,
+      )
         ? membership.character[0]
         : membership.character;
 
@@ -409,7 +560,9 @@ export async function removeOrderMember(
       relation?.display_name ??
       "Member";
 
-    refresh();
+    refresh(
+      membership.character_id,
+    );
 
     back(
       orderId,

@@ -2,10 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { AdminCharacterEditForm } from "@/components/admin/admin-character-edit-form";
+import { CharacterReviewFields } from "@/components/admin/character-review-fields";
 import { requireStaff } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
-import { CharacterReviewFields } from "@/components/admin/character-review-fields";
-import { AdminCharacterEditForm } from "@/components/admin/admin-character-edit-form";
 
 import {
   deleteCharacterAdministration,
@@ -59,7 +59,6 @@ type CharacterRow = {
   public_notes: string | null;
   title: string | null;
   race_id: string | null;
-  association_id: string | null;
   staff_notes: string | null;
   rejection_reason: string | null;
   approved_at: string | null;
@@ -72,7 +71,6 @@ type CharacterRow = {
   presence_score: number | null;
   current_health: number | null;
   race: CodexRelation;
-  association: CodexRelation;
 };
 
 type AdminCharacterPageProps = {
@@ -114,13 +112,16 @@ function formatDate(
     return value;
   }
 
-  return new Intl.DateTimeFormat("en-GB", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(date);
+  return new Intl.DateTimeFormat(
+    "en-GB",
+    {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    },
+  ).format(date);
 }
 
 function formatGender(
@@ -147,12 +148,12 @@ export default async function AdminCharacterPage({
   await requireStaff();
 
   const { id } = await params;
-  const supabase = await createClient();
+  const supabase =
+    await createClient();
 
   const [
     characterResult,
     racesResult,
-    associationsResult,
   ] = await Promise.all([
     supabase
       .from("characters")
@@ -181,7 +182,6 @@ export default async function AdminCharacterPage({
         public_notes,
         title,
         race_id,
-        association_id,
         staff_notes,
         rejection_reason,
         approved_at,
@@ -197,11 +197,6 @@ export default async function AdminCharacterPage({
         race:races!characters_race_id_fkey(
           id,
           name
-        ),
-
-        association:associations!characters_association_id_fkey(
-          id,
-          name
         )
       `)
       .eq("id", id)
@@ -211,17 +206,11 @@ export default async function AdminCharacterPage({
       .from("races")
       .select("id, name")
       .order("name"),
-
-    supabase
-      .from("associations")
-      .select("id, name")
-      .order("name"),
   ]);
 
   const firstError =
     characterResult.error ??
-    racesResult.error ??
-    associationsResult.error;
+    racesResult.error;
 
   if (firstError) {
     throw new Error(
@@ -234,22 +223,16 @@ export default async function AdminCharacterPage({
   }
 
   const character =
-    characterResult.data as unknown as CharacterRow;
+    characterResult.data as unknown as
+      CharacterRow;
 
   const races =
     (racesResult.data ??
       []) as CodexOption[];
 
-  const associations =
-    (associationsResult.data ??
-      []) as CodexOption[];
-
   const race =
-    normaliseRelation(character.race);
-
-  const association =
     normaliseRelation(
-      character.association,
+      character.race,
     );
 
   const displayName =
@@ -280,7 +263,9 @@ export default async function AdminCharacterPage({
               <div className="relative mx-auto aspect-[3/4] w-full max-w-[210px] overflow-hidden border border-[#765937]/55 bg-[#090706]">
                 {character.portrait_url ? (
                   <Image
-                    src={character.portrait_url}
+                    src={
+                      character.portrait_url
+                    }
                     alt={`Portrait of ${displayName}`}
                     fill
                     sizes="210px"
@@ -301,7 +286,9 @@ export default async function AdminCharacterPage({
 
               <div className="mt-5 text-center">
                 <StatusBadge
-                  status={character.status}
+                  status={
+                    character.status
+                  }
                 />
 
                 <p className="mt-4 text-[9px] uppercase tracking-[0.18em] text-[#756957]">
@@ -338,9 +325,6 @@ export default async function AdminCharacterPage({
               <p className="mt-2 text-sm text-[#9f8968]">
                 {race?.name ??
                   "No ancestry assigned"}
-                {" · "}
-                {association?.name ??
-                  "No association assigned"}
               </p>
 
               <div className="mt-7 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
@@ -358,24 +342,24 @@ export default async function AdminCharacterPage({
 
                 <ReadOnlyField
                   label="Pronouns"
-                  value={character.pronouns}
+                  value={
+                    character.pronouns
+                  }
                 />
 
                 <ReadOnlyField
-  label="Gender"
-  value={
-    formatGender(
-      character.gender,
-    )
-  }
-/>
+                  label="Gender"
+                  value={formatGender(
+                    character.gender,
+                  )}
+                />
 
-<ReadOnlyField
-  label="Sexual orientation"
-  value={
-    character.sexual_orientation
-  }
-/>
+                <ReadOnlyField
+                  label="Sexual orientation"
+                  value={
+                    character.sexual_orientation
+                  }
+                />
 
                 <ReadOnlyField
                   label="Date of birth"
@@ -386,22 +370,30 @@ export default async function AdminCharacterPage({
 
                 <ReadOnlyField
                   label="Birthplace"
-                  value={character.birthplace}
+                  value={
+                    character.birthplace
+                  }
                 />
 
                 <ReadOnlyField
                   label="Origin"
-                  value={character.origin}
+                  value={
+                    character.origin
+                  }
                 />
 
                 <ReadOnlyField
                   label="Public slug"
-                  value={character.public_slug}
+                  value={
+                    character.public_slug
+                  }
                 />
 
                 <ReadOnlyField
                   label="Owner user ID"
-                  value={character.user_id}
+                  value={
+                    character.user_id
+                  }
                 />
               </div>
             </div>
@@ -412,7 +404,9 @@ export default async function AdminCharacterPage({
           <div className="space-y-6">
             <CharacterTextSection
               title="Biography"
-              content={character.biography}
+              content={
+                character.biography
+              }
             />
 
             <CharacterTextSection
@@ -424,12 +418,16 @@ export default async function AdminCharacterPage({
 
             <CharacterTextSection
               title="Personality"
-              content={character.personality}
+              content={
+                character.personality
+              }
             />
 
             <CharacterTextSection
               title="Public notes"
-              content={character.public_notes}
+              content={
+                character.public_notes
+              }
             />
           </div>
 
@@ -468,7 +466,9 @@ export default async function AdminCharacterPage({
                       name="firstName"
                       required
                       maxLength={80}
-                      defaultValue={character.first_name}
+                      defaultValue={
+                        character.first_name
+                      }
                       className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
                     />
                   </AdminField>
@@ -479,7 +479,9 @@ export default async function AdminCharacterPage({
                       name="surname"
                       required
                       maxLength={80}
-                      defaultValue={character.surname}
+                      defaultValue={
+                        character.surname
+                      }
                       className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
                     />
                   </AdminField>
@@ -489,57 +491,64 @@ export default async function AdminCharacterPage({
                       type="text"
                       name="pronouns"
                       maxLength={80}
-                      defaultValue={character.pronouns ?? ""}
+                      defaultValue={
+                        character.pronouns ??
+                        ""
+                      }
                       className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
                     />
                   </AdminField>
 
                   <AdminField label="Gender">
-  <select
-    name="gender"
-    required
-    defaultValue={
-      character.gender ?? ""
-    }
-    className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
-  >
-    <option value="">
-      Choose gender
-    </option>
+                    <select
+                      name="gender"
+                      required
+                      defaultValue={
+                        character.gender ??
+                        ""
+                      }
+                      className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                    >
+                      <option value="">
+                        Choose gender
+                      </option>
 
-    <option value="male">
-      Male
-    </option>
+                      <option value="male">
+                        Male
+                      </option>
 
-    <option value="female">
-      Female
-    </option>
+                      <option value="female">
+                        Female
+                      </option>
 
-    <option value="non_binary">
-      Non-binary
-    </option>
-  </select>
-</AdminField>
+                      <option value="non_binary">
+                        Non-binary
+                      </option>
+                    </select>
+                  </AdminField>
 
-<AdminField label="Sexual orientation">
-  <input
-    type="text"
-    name="sexualOrientation"
-    maxLength={120}
-    defaultValue={
-      character.sexual_orientation ??
-      ""
-    }
-    placeholder="Optional"
-    className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
-  />
-</AdminField>
+                  <AdminField label="Sexual orientation">
+                    <input
+                      type="text"
+                      name="sexualOrientation"
+                      maxLength={120}
+                      defaultValue={
+                        character.sexual_orientation ??
+                        ""
+                      }
+                      placeholder="Optional"
+                      className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                    />
+                  </AdminField>
 
                   <AdminField label="Date of birth">
                     <input
                       type="date"
                       name="dateOfBirth"
-                      defaultValue={character.date_of_birth ?? ""}
+                      defaultValue={
+                        character.date_of_birth ??
+                        ""
+                      }
                       className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
                     />
                   </AdminField>
@@ -549,7 +558,10 @@ export default async function AdminCharacterPage({
                       type="text"
                       name="birthplace"
                       maxLength={160}
-                      defaultValue={character.birthplace ?? ""}
+                      defaultValue={
+                        character.birthplace ??
+                        ""
+                      }
                       className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
                     />
                   </AdminField>
@@ -559,19 +571,23 @@ export default async function AdminCharacterPage({
                       type="text"
                       name="origin"
                       maxLength={160}
-                      defaultValue={character.origin ?? ""}
+                      defaultValue={
+                        character.origin ??
+                        ""
+                      }
                       className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
                     />
                   </AdminField>
-
-                  
 
                   <AdminField label="Portrait URL">
                     <input
                       type="url"
                       name="portraitUrl"
                       maxLength={1000}
-                      defaultValue={character.portrait_url ?? ""}
+                      defaultValue={
+                        character.portrait_url ??
+                        ""
+                      }
                       className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
                     />
                   </AdminField>
@@ -581,7 +597,10 @@ export default async function AdminCharacterPage({
                       type="url"
                       name="musicUrl"
                       maxLength={2000}
-                      defaultValue={character.music_url ?? ""}
+                      defaultValue={
+                        character.music_url ??
+                        ""
+                      }
                       placeholder="https://.../theme.mp3"
                       className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
                     />
@@ -593,7 +612,10 @@ export default async function AdminCharacterPage({
                     name="physicalDescription"
                     rows={7}
                     maxLength={10000}
-                    defaultValue={character.physical_description ?? ""}
+                    defaultValue={
+                      character.physical_description ??
+                      ""
+                    }
                     className="w-full resize-y border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm leading-6 text-[#d7c4a5] outline-none focus:border-[#a17a49]"
                   />
                 </AdminField>
@@ -603,7 +625,10 @@ export default async function AdminCharacterPage({
                     name="personality"
                     rows={7}
                     maxLength={10000}
-                    defaultValue={character.personality ?? ""}
+                    defaultValue={
+                      character.personality ??
+                      ""
+                    }
                     className="w-full resize-y border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm leading-6 text-[#d7c4a5] outline-none focus:border-[#a17a49]"
                   />
                 </AdminField>
@@ -613,7 +638,10 @@ export default async function AdminCharacterPage({
                     name="biography"
                     rows={10}
                     maxLength={20000}
-                    defaultValue={character.biography ?? ""}
+                    defaultValue={
+                      character.biography ??
+                      ""
+                    }
                     className="w-full resize-y border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm leading-6 text-[#d7c4a5] outline-none focus:border-[#a17a49]"
                   />
                 </AdminField>
@@ -623,7 +651,10 @@ export default async function AdminCharacterPage({
                     name="publicNotes"
                     rows={6}
                     maxLength={10000}
-                    defaultValue={character.public_notes ?? ""}
+                    defaultValue={
+                      character.public_notes ??
+                      ""
+                    }
                     className="w-full resize-y border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm leading-6 text-[#d7c4a5] outline-none focus:border-[#a17a49]"
                   />
                 </AdminField>
@@ -649,7 +680,8 @@ export default async function AdminCharacterPage({
                         min={0}
                         step={1}
                         defaultValue={
-                          character.current_health === null
+                          character.current_health ===
+                          null
                             ? ""
                             : character.current_health
                         }
@@ -663,9 +695,11 @@ export default async function AdminCharacterPage({
                       </span>
 
                       <div className="mt-2 border border-[#60482e]/45 bg-[#0d0907] px-3 py-3 text-sm text-[#bfae92]">
-                        {character.vigor === null
+                        {character.vigor ===
+                        null
                           ? "Not available"
-                          : character.vigor * 10}
+                          : character.vigor *
+                            10}
                       </div>
                     </div>
                   </div>
@@ -677,6 +711,7 @@ export default async function AdminCharacterPage({
                       <p className="text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
                         Character attributes
                       </p>
+
                       <p className="mt-2 text-xs leading-5 text-[#8f8271]">
                         Leave all six empty for a legacy unassigned record, or enter values from 1 to 8 totalling exactly 20.
                       </p>
@@ -685,30 +720,75 @@ export default async function AdminCharacterPage({
 
                   <div className="mt-4 grid grid-cols-2 gap-3">
                     {[
-                      ["muscles", "Muscles", character.muscles],
-                      ["reflexes", "Reflexes", character.reflexes],
-                      ["vigor", "Vigor", character.vigor],
-                      ["brains", "Brains", character.brains],
-                      ["shrewd", "Shrewd", character.shrewd],
-                      ["presence_score", "Presence", character.presence_score],
-                    ].map(([name, label, value]) => (
-                      <label key={String(name)} className="block">
-                        <span className="text-[8px] uppercase tracking-[0.16em] text-[#806b50]">
-                          {String(label)}
-                        </span>
-                        <input
-                          type="number"
-                          name={String(name)}
-                          min={1}
-                          max={8}
-                          step={1}
-                          defaultValue={
-                            value === null ? "" : Number(value)
-                          }
-                          className="mt-2 w-full border border-[#60482e]/55 bg-[#0d0907] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
-                        />
-                      </label>
-                    ))}
+                      [
+                        "muscles",
+                        "Muscles",
+                        character.muscles,
+                      ],
+                      [
+                        "reflexes",
+                        "Reflexes",
+                        character.reflexes,
+                      ],
+                      [
+                        "vigor",
+                        "Vigor",
+                        character.vigor,
+                      ],
+                      [
+                        "brains",
+                        "Brains",
+                        character.brains,
+                      ],
+                      [
+                        "shrewd",
+                        "Shrewd",
+                        character.shrewd,
+                      ],
+                      [
+                        "presence_score",
+                        "Presence",
+                        character.presence_score,
+                      ],
+                    ].map(
+                      ([
+                        name,
+                        label,
+                        value,
+                      ]) => (
+                        <label
+                          key={String(
+                            name,
+                          )}
+                          className="block"
+                        >
+                          <span className="text-[8px] uppercase tracking-[0.16em] text-[#806b50]">
+                            {String(
+                              label,
+                            )}
+                          </span>
+
+                          <input
+                            type="number"
+                            name={String(
+                              name,
+                            )}
+                            min={1}
+                            max={8}
+                            step={1}
+                            defaultValue={
+                              value ===
+                              null
+                                ? ""
+                                : Number(
+                                    value,
+                                  )
+                            }
+                            className="mt-2 w-full border border-[#60482e]/55 bg-[#0d0907] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                          />
+                        </label>
+                      ),
+                    )}
                   </div>
                 </div>
 
@@ -716,7 +796,8 @@ export default async function AdminCharacterPage({
                   <select
                     name="raceId"
                     defaultValue={
-                      character.race_id ?? ""
+                      character.race_id ??
+                      ""
                     }
                     className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
                   >
@@ -724,37 +805,19 @@ export default async function AdminCharacterPage({
                       No ancestry assigned
                     </option>
 
-                    {races.map((option) => (
-                      <option
-                        key={option.id}
-                        value={option.id}
-                      >
-                        {option.name}
-                      </option>
-                    ))}
-                  </select>
-                </AdminField>
-
-                <AdminField label="Association">
-                  <select
-                    name="associationId"
-                    defaultValue={
-                      character.association_id ??
-                      ""
-                    }
-                    className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
-                  >
-                    <option value="">
-                      No association assigned
-                    </option>
-
-                    {associations.map(
+                    {races.map(
                       (option) => (
                         <option
-                          key={option.id}
-                          value={option.id}
+                          key={
+                            option.id
+                          }
+                          value={
+                            option.id
+                          }
                         >
-                          {option.name}
+                          {
+                            option.name
+                          }
                         </option>
                       ),
                     )}
@@ -775,7 +838,8 @@ export default async function AdminCharacterPage({
                     type="text"
                     name="title"
                     defaultValue={
-                      character.title ?? ""
+                      character.title ??
+                      ""
                     }
                     maxLength={120}
                     placeholder="Optional public title"
@@ -814,7 +878,9 @@ export default async function AdminCharacterPage({
                   {character.approved_by ? (
                     <p className="mt-1 break-all text-[9px] text-[#718d79]">
                       Staff ID:{" "}
-                      {character.approved_by}
+                      {
+                        character.approved_by
+                      }
                     </p>
                   ) : null}
                 </div>
@@ -835,21 +901,26 @@ export default async function AdminCharacterPage({
                 </p>
 
                 <h4 className="mt-2 font-serif text-xl text-[#e1aaa2]">
-                  Permanently delete character
+                  Permanently delete
+                  character
                 </h4>
 
                 <p className="mt-3 text-xs leading-5 text-[#a98782]">
-                  This removes the character
-                  sheet permanently but leaves
-                  the user account intact. The
-                  player will then be able to
-                  create a new character.
+                  This removes the
+                  character sheet
+                  permanently but leaves
+                  the user account intact.
+                  The player will then be
+                  able to create a new
+                  character.
                 </p>
 
                 <p className="mt-3 text-xs leading-5 text-[#a98782]">
                   Type{" "}
                   <strong className="text-[#e1aaa2]">
-                    {getDisplayName(character)}
+                    {getDisplayName(
+                      character,
+                    )}
                   </strong>{" "}
                   to confirm.
                 </p>
@@ -863,7 +934,9 @@ export default async function AdminCharacterPage({
                   <input
                     type="hidden"
                     name="characterId"
-                    value={character.id}
+                    value={
+                      character.id
+                    }
                   />
 
                   <input
@@ -871,9 +944,9 @@ export default async function AdminCharacterPage({
                     name="confirmation"
                     autoComplete="off"
                     required
-                    placeholder={
-                      getDisplayName(character)
-                    }
+                    placeholder={getDisplayName(
+                      character,
+                    )}
                     className="w-full border border-[#71352f] bg-[#100807] px-3 py-3 text-sm text-[#dfbbb5] outline-none placeholder:text-[#684b47] focus:border-[#bd6458]"
                   />
 
@@ -881,7 +954,8 @@ export default async function AdminCharacterPage({
                     type="submit"
                     className="mt-3 w-full border border-[#a44c42] bg-[#481d19] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[#f1beb6] transition hover:border-[#d66b5f] hover:bg-[#622720]"
                   >
-                    Delete character permanently
+                    Delete character
+                    permanently
                   </button>
                 </form>
               </div>
@@ -925,7 +999,8 @@ function ReadOnlyField({
       </p>
 
       <p className="mt-2 break-words text-sm text-[#c9b99e]">
-        {value?.trim() || "Not provided"}
+        {value?.trim() ||
+          "Not provided"}
       </p>
     </div>
   );
@@ -950,7 +1025,8 @@ function CharacterTextSection({
         </div>
       ) : (
         <p className="mt-4 text-sm italic text-[#756957]">
-          No information was provided.
+          No information was
+          provided.
         </p>
       )}
     </section>

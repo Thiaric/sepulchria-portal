@@ -1,6 +1,8 @@
 "use server";
 
-import { createClient as createAdminClient } from "@supabase/supabase-js";
+import {
+  createClient as createAdminClient,
+} from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -47,7 +49,8 @@ function readOptionalUuid(
 function readRequiredUuid(
   value: FormDataEntryValue | null,
 ): string {
-  const parsed = readOptionalUuid(value);
+  const parsed =
+    readOptionalUuid(value);
 
   if (!parsed) {
     throw new Error(
@@ -89,7 +92,10 @@ function readOptionalText(
     return null;
   }
 
-  return trimmed.slice(0, maxLength);
+  return trimmed.slice(
+    0,
+    maxLength,
+  );
 }
 
 const ATTRIBUTE_NAMES = [
@@ -106,13 +112,16 @@ type AttributeName =
 
 function readOptionalAttributes(
   formData: FormData,
-): Record<AttributeName, number | null> {
-  const rawValues = ATTRIBUTE_NAMES.map(
-    (name) =>
+): Record<
+  AttributeName,
+  number | null
+> {
+  const rawValues =
+    ATTRIBUTE_NAMES.map((name) =>
       String(
         formData.get(name) ?? "",
       ).trim(),
-  );
+    );
 
   if (
     rawValues.every(
@@ -129,7 +138,8 @@ function readOptionalAttributes(
     };
   }
 
-  const values = rawValues.map(Number);
+  const values =
+    rawValues.map(Number);
 
   if (
     !values.every(
@@ -146,7 +156,8 @@ function readOptionalAttributes(
 
   if (
     values.reduce(
-      (sum, value) => sum + value,
+      (sum, value) =>
+        sum + value,
       0,
     ) !== 20
   ) {
@@ -171,7 +182,10 @@ function readOptionalAttributes(
 function validateAdminPortraitUrl(
   value: string | null,
 ) {
-  if (!value || value.startsWith("/")) {
+  if (
+    !value ||
+    value.startsWith("/")
+  ) {
     return;
   }
 
@@ -219,7 +233,9 @@ function readReturnPath(
 ): string {
   if (
     typeof value !== "string" ||
-    !value.startsWith("/admin/characters")
+    !value.startsWith(
+      "/admin/characters",
+    )
   ) {
     return "/admin/characters";
   }
@@ -229,10 +245,12 @@ function readReturnPath(
 
 function createPrivilegedClient() {
   const url =
-    process.env.NEXT_PUBLIC_SUPABASE_URL;
+    process.env
+      .NEXT_PUBLIC_SUPABASE_URL;
 
   const secret =
-    process.env.SUPABASE_SECRET_KEY;
+    process.env
+      .SUPABASE_SECRET_KEY;
 
   if (!url || !secret) {
     throw new Error(
@@ -240,49 +258,60 @@ function createPrivilegedClient() {
     );
   }
 
-  return createAdminClient(url, secret, {
-    auth: {
-      persistSession: false,
-      autoRefreshToken: false,
+  return createAdminClient(
+    url,
+    secret,
+    {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+      },
     },
-  });
+  );
 }
 
 export async function updateCharacterAdministration(
   formData: FormData,
 ) {
-  const staff = await requireStaff();
+  const staff =
+    await requireStaff();
 
-  const characterId = readRequiredUuid(
-    formData.get("characterId"),
-  );
+  const characterId =
+    readRequiredUuid(
+      formData.get(
+        "characterId",
+      ),
+    );
 
-  const raceId = readOptionalUuid(
-    formData.get("raceId"),
-  );
+  const raceId =
+    readOptionalUuid(
+      formData.get("raceId"),
+    );
 
-  const associationId = readOptionalUuid(
-    formData.get("associationId"),
-  );
+  const status =
+    readStatus(
+      formData.get("status"),
+    );
 
-  const status = readStatus(
-    formData.get("status"),
-  );
+  const title =
+    readOptionalText(
+      formData.get("title"),
+      120,
+    );
 
-  const title = readOptionalText(
-    formData.get("title"),
-    120,
-  );
+  const firstName =
+    readOptionalText(
+      formData.get(
+        "firstName",
+      ),
+      80,
+    );
 
-  const firstName = readOptionalText(
-    formData.get("firstName"),
-    80,
-  );
-
-  const surname = readOptionalText(
-    formData.get("surname"),
-    80,
-  );
+  const surname =
+    readOptionalText(
+      formData.get("surname"),
+      80,
+    );
 
   if (!firstName || !surname) {
     throw new Error(
@@ -290,73 +319,86 @@ export async function updateCharacterAdministration(
     );
   }
 
-  const pronouns = readOptionalText(
-    formData.get("pronouns"),
-    80,
-  );
+  const pronouns =
+    readOptionalText(
+      formData.get(
+        "pronouns",
+      ),
+      80,
+    );
 
   const gender =
-  readOptionalText(
-    formData.get("gender"),
-    20,
-  );
+    readOptionalText(
+      formData.get("gender"),
+      20,
+    );
 
-if (
-  !gender ||
-  ![
-    "male",
-    "female",
-    "non_binary",
-  ].includes(gender)
-) {
-  throw new Error(
-    "A valid gender must be selected.",
-  );
-}
+  if (
+    !gender ||
+    ![
+      "male",
+      "female",
+      "non_binary",
+    ].includes(gender)
+  ) {
+    throw new Error(
+      "A valid gender must be selected.",
+    );
+  }
 
-const sexualOrientation =
-  readOptionalText(
-    formData.get(
-      "sexualOrientation",
-    ),
-    120,
-  );
+  const sexualOrientation =
+    readOptionalText(
+      formData.get(
+        "sexualOrientation",
+      ),
+      120,
+    );
 
-  const dateOfBirth = readOptionalText(
-    formData.get("dateOfBirth"),
-    20,
-  );
+  const dateOfBirth =
+    readOptionalText(
+      formData.get(
+        "dateOfBirth",
+      ),
+      20,
+    );
 
-  const birthplace = readOptionalText(
-    formData.get("birthplace"),
-    160,
-  );
+  const birthplace =
+    readOptionalText(
+      formData.get(
+        "birthplace",
+      ),
+      160,
+    );
 
-  const origin = readOptionalText(
-    formData.get("origin"),
-    160,
-  );
+  const origin =
+    readOptionalText(
+      formData.get("origin"),
+      160,
+    );
 
-  const portraitUrl = readOptionalText(
-    formData.get("portraitUrl"),
-    1000,
-  );
+  const portraitUrl =
+    readOptionalText(
+      formData.get(
+        "portraitUrl",
+      ),
+      1000,
+    );
 
   validateAdminPortraitUrl(
     portraitUrl,
   );
 
-  
-
-  const musicUrl = readOptionalText(
-    formData.get("musicUrl"),
-    2000,
-  );
+  const musicUrl =
+    readOptionalText(
+      formData.get("musicUrl"),
+      2000,
+    );
 
   validateAdminMusicUrl(
     musicUrl,
   );
-const physicalDescription =
+
+  const physicalDescription =
     readOptionalText(
       formData.get(
         "physicalDescription",
@@ -364,32 +406,48 @@ const physicalDescription =
       10000,
     );
 
-  const personality = readOptionalText(
-    formData.get("personality"),
-    10000,
-  );
+  const personality =
+    readOptionalText(
+      formData.get(
+        "personality",
+      ),
+      10000,
+    );
 
-  const biography = readOptionalText(
-    formData.get("biography"),
-    20000,
-  );
+  const biography =
+    readOptionalText(
+      formData.get(
+        "biography",
+      ),
+      20000,
+    );
 
-  const publicNotes = readOptionalText(
-    formData.get("publicNotes"),
-    10000,
-  );
+  const publicNotes =
+    readOptionalText(
+      formData.get(
+        "publicNotes",
+      ),
+      10000,
+    );
 
   const attributes =
-    readOptionalAttributes(formData);
+    readOptionalAttributes(
+      formData,
+    );
 
-  const currentHealthRaw = String(
-    formData.get("currentHealth") ?? "",
-  ).trim();
+  const currentHealthRaw =
+    String(
+      formData.get(
+        "currentHealth",
+      ) ?? "",
+    ).trim();
 
   let submittedCurrentHealth:
     number | null = null;
 
-  if (currentHealthRaw !== "") {
+  if (
+    currentHealthRaw !== ""
+  ) {
     const parsedCurrentHealth =
       Number(currentHealthRaw);
 
@@ -408,14 +466,19 @@ const physicalDescription =
       parsedCurrentHealth;
   }
 
-  const staffNotes = readOptionalText(
-    formData.get("staffNotes"),
-    10000,
-  );
+  const staffNotes =
+    readOptionalText(
+      formData.get(
+        "staffNotes",
+      ),
+      10000,
+    );
 
   const submittedRejectionReason =
     readOptionalText(
-      formData.get("rejectionReason"),
+      formData.get(
+        "rejectionReason",
+      ),
       5000,
     );
 
@@ -433,11 +496,15 @@ const physicalDescription =
       ? submittedRejectionReason
       : null;
 
-  const returnTo = readReturnPath(
-    formData.get("returnTo"),
-  );
+  const returnTo =
+    readReturnPath(
+      formData.get(
+        "returnTo",
+      ),
+    );
 
-  const supabase = await createClient();
+  const supabase =
+    await createClient();
 
   const {
     data: character,
@@ -469,7 +536,6 @@ const physicalDescription =
       current_health,
       status,
       race_id,
-      association_id,
       title,
       staff_notes,
       rejection_reason,
@@ -481,7 +547,10 @@ const physicalDescription =
     .eq("id", characterId)
     .single();
 
-  if (readError || !character) {
+  if (
+    readError ||
+    !character
+  ) {
     throw new Error(
       `Unable to find character: ${
         readError?.message ??
@@ -490,28 +559,33 @@ const physicalDescription =
     );
   }
 
-  if (status === "approved") {
-    const missingFields: string[] = [];
+  if (
+    status === "approved"
+  ) {
+    const missingFields:
+      string[] = [];
 
     if (!firstName) {
-      missingFields.push("first name");
-    }
-
-    if (!surname) {
-      missingFields.push("surname");
-    }
-
-    if (!raceId) {
-      missingFields.push("race");
-    }
-
-    if (!associationId) {
       missingFields.push(
-        "Association",
+        "first name",
       );
     }
 
-    if (!physicalDescription) {
+    if (!surname) {
+      missingFields.push(
+        "surname",
+      );
+    }
+
+    if (!raceId) {
+      missingFields.push(
+        "race",
+      );
+    }
+
+    if (
+      !physicalDescription
+    ) {
       missingFields.push(
         "physical description",
       );
@@ -547,9 +621,11 @@ const physicalDescription =
     ];
 
     if (
-      character.status !== "approved" &&
+      character.status !==
+        "approved" &&
       !attributeValues.every(
-        (value) => value !== null,
+        (value) =>
+          value !== null,
       )
     ) {
       missingFields.push(
@@ -557,7 +633,9 @@ const physicalDescription =
       );
     }
 
-    if (missingFields.length > 0) {
+    if (
+      missingFields.length > 0
+    ) {
       throw new Error(
         `This character cannot be approved until the following fields are completed: ${missingFields.join(
           ", ",
@@ -571,7 +649,8 @@ const physicalDescription =
 
   const isNewApproval =
     status === "approved" &&
-    character.status !== "approved";
+    character.status !==
+      "approved";
 
   const approvalData =
     status === "approved"
@@ -660,25 +739,28 @@ const physicalDescription =
     pronouns,
     gender,
     sexual_orientation:
-    sexualOrientation,
-    date_of_birth: dateOfBirth,
+      sexualOrientation,
+    date_of_birth:
+      dateOfBirth,
     birthplace,
     origin,
-    portrait_url: portraitUrl,
+    portrait_url:
+      portraitUrl,
     music_url: musicUrl,
     physical_description:
       physicalDescription,
     personality,
     biography,
-    public_notes: publicNotes,
+    public_notes:
+      publicNotes,
     ...attributes,
     current_health:
       currentHealth,
     race_id: raceId,
-    association_id: associationId,
     status,
     title,
-    staff_notes: staffNotes,
+    staff_notes:
+      staffNotes,
     rejection_reason:
       rejectionReason,
     approved_at:
@@ -686,11 +768,13 @@ const physicalDescription =
     approved_by:
       approvalData.approved_by,
     updated_at: now,
-    ...(approvalData.approval_notice_seen_at !==
+    ...(approvalData
+      .approval_notice_seen_at !==
     undefined
       ? {
           approval_notice_seen_at:
-            approvalData.approval_notice_seen_at,
+            approvalData
+              .approval_notice_seen_at,
         }
       : {}),
   };
@@ -709,7 +793,8 @@ const physicalDescription =
   }
 
   if (
-    character.status !== status
+    character.status !==
+    status
   ) {
     const {
       error: historyError,
@@ -718,11 +803,13 @@ const physicalDescription =
         "character_status_history",
       )
       .insert({
-        character_id: characterId,
+        character_id:
+          characterId,
         old_status:
           character.status,
         new_status: status,
-        changed_by: staff.userId,
+        changed_by:
+          staff.userId,
         reason:
           status === "rejected"
             ? rejectionReason
@@ -741,11 +828,10 @@ const physicalDescription =
             character.surname,
           pronouns:
             character.pronouns,
-            gender:
-  character.gender,
-
-sexual_orientation:
-  character.sexual_orientation,
+          gender:
+            character.gender,
+          sexual_orientation:
+            character.sexual_orientation,
           date_of_birth:
             character.date_of_birth,
           birthplace:
@@ -780,8 +866,6 @@ sexual_orientation:
             character.current_health,
           race_id:
             character.race_id,
-          association_id:
-            character.association_id,
           status:
             character.status,
           title:
@@ -799,7 +883,10 @@ sexual_orientation:
           updated_at:
             character.updated_at,
         })
-        .eq("id", characterId);
+        .eq(
+          "id",
+          characterId,
+        );
 
       if (rollbackError) {
         throw new Error(
@@ -823,7 +910,9 @@ sexual_orientation:
   revalidatePath("/character");
   revalidatePath("/characters");
 
-  if (character.public_slug) {
+  if (
+    character.public_slug
+  ) {
     revalidatePath(
       `/characters/${character.public_slug}`,
     );
@@ -835,20 +924,20 @@ sexual_orientation:
 export async function deleteCharacterAdministration(
   formData: FormData,
 ) {
-  /*
-   * The logged-in session is used ONLY to prove
-   * that the caller is an owner/admin.
-   */
   await requireAdmin();
 
   const characterId =
     readRequiredUuid(
-      formData.get("characterId"),
+      formData.get(
+        "characterId",
+      ),
     );
 
   const confirmation =
     readOptionalText(
-      formData.get("confirmation"),
+      formData.get(
+        "confirmation",
+      ),
       200,
     );
 
@@ -858,11 +947,6 @@ export async function deleteCharacterAdministration(
     );
   }
 
-  /*
-   * Destructive database operations use the
-   * server secret so RLS cannot silently turn
-   * the delete into a zero-row operation.
-   */
   const supabase =
     createPrivilegedClient();
 
@@ -910,12 +994,6 @@ export async function deleteCharacterAdministration(
     );
   }
 
-  /*
-   * FORUM REPLIES
-   *
-   * Replies/posts written by this character are
-   * permanently removed.
-   */
   const {
     error: forumPostsError,
   } = await supabase
@@ -932,18 +1010,13 @@ export async function deleteCharacterAdministration(
     );
   }
 
-  /*
-   * FORUM TOPICS
-   *
-   * Topics survive. Only the character authorship
-   * link is removed.
-   */
   const {
     error: forumTopicsError,
   } = await supabase
     .from("forum_topics")
     .update({
-      author_character_id: null,
+      author_character_id:
+        null,
     })
     .eq(
       "author_character_id",
@@ -956,9 +1029,6 @@ export async function deleteCharacterAdministration(
     );
   }
 
-  /*
-   * ACTIVE PRESENCE
-   */
   const {
     error: presenceError,
   } = await supabase
@@ -977,9 +1047,6 @@ export async function deleteCharacterAdministration(
     );
   }
 
-  /*
-   * LOCATION CHAT / ACTIONS
-   */
   const {
     error: roomMessagesError,
   } = await supabase
@@ -996,14 +1063,6 @@ export async function deleteCharacterAdministration(
     );
   }
 
-  /*
-   * PRIVATE CONVERSATIONS
-   *
-   * Find every conversation involving this character BEFORE
-   * removing participant rows. Deleting a character must remove
-   * the entire private conversation, not leave a "Deleted character"
-   * shell behind for the surviving participant.
-   */
   const {
     data: conversationMemberships,
     error: conversationLookupError,
@@ -1017,55 +1076,53 @@ export async function deleteCharacterAdministration(
       characterId,
     );
 
-  if (conversationLookupError) {
+  if (
+    conversationLookupError
+  ) {
     throw new Error(
       `Unable to find the character's private conversations: ${conversationLookupError.message}`,
     );
   }
 
-  const conversationIds = Array.from(
-    new Set(
-      (
-        conversationMemberships ??
-        []
-      )
-        .map(
-          (membership) =>
-            membership.conversation_id,
+  const conversationIds =
+    Array.from(
+      new Set(
+        (
+          conversationMemberships ??
+          []
         )
-        .filter(Boolean),
-    ),
-  );
+          .map(
+            (membership) =>
+              membership.conversation_id,
+          )
+          .filter(Boolean),
+      ),
+    );
 
-  if (conversationIds.length > 0) {
-    /*
-     * Delete EVERY message in those conversations, including
-     * messages written by the surviving participant.
-     *
-     * This is intentional: the conversation itself is being
-     * permanently deleted because one of its characters no
-     * longer exists.
-     */
+  if (
+    conversationIds.length >
+    0
+  ) {
     const {
       error: conversationMessagesError,
     } = await supabase
-      .from("direct_messages")
+      .from(
+        "direct_messages",
+      )
       .delete()
       .in(
         "conversation_id",
         conversationIds,
       );
 
-    if (conversationMessagesError) {
+    if (
+      conversationMessagesError
+    ) {
       throw new Error(
         `Unable to delete private-conversation messages: ${conversationMessagesError.message}`,
       );
     }
 
-    /*
-     * Remove ALL participants in those conversations, not only
-     * the character being deleted.
-     */
     const {
       error:
         conversationParticipantsError,
@@ -1087,9 +1144,6 @@ export async function deleteCharacterAdministration(
       );
     }
 
-    /*
-     * Finally delete the conversation records themselves.
-     */
     const {
       error: conversationsError,
     } = await supabase
@@ -1109,11 +1163,6 @@ export async function deleteCharacterAdministration(
     }
   }
 
-  /*
-   * Defensive cleanup: there should not normally be direct
-   * messages outside one of the memberships above, but remove
-   * any remaining messages authored by the character as well.
-   */
   const {
     error:
       remainingDirectMessagesError,
@@ -1133,10 +1182,6 @@ export async function deleteCharacterAdministration(
     );
   }
 
-  /*
-   * Defensive cleanup for any stray participant row that was
-   * not part of the conversation list returned above.
-   */
   const {
     error:
       remainingParticipantsError,
@@ -1158,9 +1203,6 @@ export async function deleteCharacterAdministration(
     );
   }
 
-  /*
-   * BLOCKS, BOTH DIRECTIONS
-   */
   const {
     error:
       blocksAsBlockerError,
@@ -1172,7 +1214,9 @@ export async function deleteCharacterAdministration(
       characterId,
     );
 
-  if (blocksAsBlockerError) {
+  if (
+    blocksAsBlockerError
+  ) {
     throw new Error(
       `Unable to delete character blocks: ${blocksAsBlockerError.message}`,
     );
@@ -1189,15 +1233,14 @@ export async function deleteCharacterAdministration(
       characterId,
     );
 
-  if (blocksAsBlockedError) {
+  if (
+    blocksAsBlockedError
+  ) {
     throw new Error(
       `Unable to delete character blocks: ${blocksAsBlockedError.message}`,
     );
   }
 
-  /*
-   * CHARACTER STATUS HISTORY
-   */
   const {
     error: statusHistoryError,
   } = await supabase
@@ -1216,15 +1259,6 @@ export async function deleteCharacterAdministration(
     );
   }
 
-  /*
-   * DELETE CHARACTER SHEET.
-   *
-   * The Supabase Auth user is deliberately left
-   * intact so the player can create a new character.
-   *
-   * Returning the deleted id proves a database row
-   * was actually removed.
-   */
   const {
     data: deletedCharacter,
     error: deleteError,
@@ -1247,9 +1281,6 @@ export async function deleteCharacterAdministration(
     );
   }
 
-  /*
-   * VERIFY THAT IT IS REALLY GONE.
-   */
   const {
     data: remainingCharacter,
     error: verificationError,
@@ -1282,7 +1313,9 @@ export async function deleteCharacterAdministration(
     "/admin/characters",
   );
 
-  if (character.public_slug) {
+  if (
+    character.public_slug
+  ) {
     revalidatePath(
       `/characters/${character.public_slug}`,
     );

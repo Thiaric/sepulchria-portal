@@ -209,6 +209,144 @@ function refreshOrders() {
   revalidatePath(
     "/admin/associations",
   );
+
+  revalidatePath("/orders");
+  revalidatePath("/character");
+  revalidatePath("/characters");
+  revalidatePath(
+    "/admin/characters",
+  );
+}
+
+async function syncCharactersForOrder(
+  supabase: Awaited<
+    ReturnType<typeof createClient>
+  >,
+  orderId: string,
+  associationId: string,
+) {
+  const {
+    data: memberships,
+    error: membershipsError,
+  } = await supabase
+    .from("order_memberships")
+    .select("character_id")
+    .eq("order_id", orderId);
+
+  if (membershipsError) {
+    throw new Error(
+      membershipsError.message,
+    );
+  }
+
+  const characterIds =
+    Array.from(
+      new Set(
+        (memberships ?? [])
+          .map(
+            (membership) =>
+              membership.character_id,
+          )
+          .filter(Boolean),
+      ),
+    );
+
+  if (
+    characterIds.length === 0
+  ) {
+    return;
+  }
+
+  const {
+    error: updateError,
+  } = await supabase
+    .from("characters")
+    .update({
+      association_id:
+        associationId,
+    })
+    .in(
+      "id",
+      characterIds,
+    );
+
+  if (updateError) {
+    throw new Error(
+      updateError.message,
+    );
+  }
+
+  characterIds.forEach(
+    (characterId) => {
+      revalidatePath(
+        `/admin/characters/${characterId}`,
+      );
+    },
+  );
+}
+
+async function recalculateCharacterAssociation(
+  supabase: Awaited<
+    ReturnType<typeof createClient>
+  >,
+  characterId: string,
+) {
+  const {
+    data: memberships,
+    error,
+  } = await supabase
+    .from("order_memberships")
+    .select(`
+      order:orders!order_memberships_order_id_fkey(
+        association_id
+      )
+    `)
+    .eq(
+      "character_id",
+      characterId,
+    )
+    .limit(1);
+
+  if (error) {
+    throw new Error(
+      error.message,
+    );
+  }
+
+  const relation =
+    memberships?.[0]?.order ??
+    null;
+
+  const order =
+    Array.isArray(relation)
+      ? relation[0] ?? null
+      : relation;
+
+  const associationId =
+    order?.association_id ?? null;
+
+  const {
+    error: updateError,
+  } = await supabase
+    .from("characters")
+    .update({
+      association_id:
+        associationId,
+    })
+    .eq(
+      "id",
+      characterId,
+    );
+
+  if (updateError) {
+    throw new Error(
+      updateError.message,
+    );
+  }
+
+  revalidatePath(
+    `/admin/characters/${characterId}`,
+  );
 }
 
 export async function createOrder(
@@ -375,6 +513,28 @@ export async function updateOrder(
       );
     }
 
+    const {
+      data: existingOrder,
+      error: existingOrderError,
+    } = await supabase
+      .from("orders")
+      .select("association_id")
+      .eq("id", orderId)
+      .maybeSingle();
+
+    if (
+      existingOrderError ||
+      !existingOrder
+    ) {
+      throw new Error(
+        existingOrderError?.message ??
+          "Order not found.",
+      );
+    }
+
+    const previousAssociationId =
+      existingOrder.association_id;
+
     const name =
       requiredText(
         formData,
@@ -468,6 +628,38 @@ export async function updateOrder(
         error.message,
       );
     }
+
+    if (
+      previousAssociationId !==
+      associationId
+    ) {
+      try {
+        await syncCharactersForOrder(
+          supabase,
+          orderId,
+          associationId,
+        );
+      } catch (syncError) {
+        await supabase
+          .from("orders")
+          .update({
+            association_id:
+              previousAssociationId,
+          })
+          .eq(
+            "id",
+            orderId,
+          );
+
+        throw new Error(
+          `The Order was not moved because member Associations could not be synchronised: ${
+            syncError instanceof Error
+              ? syncError.message
+              : "Unknown error."
+          }`,
+        );
+      }
+    }
   } catch (error) {
     redirectMessage(
       "error",
@@ -524,6 +716,32 @@ export async function deleteOrder(
     }
 
     const {
+      data: memberships,
+      error: membershipReadError,
+    } = await supabase
+      .from("order_memberships")
+      .select("character_id")
+      .eq("order_id", orderId);
+
+    if (membershipReadError) {
+      throw new Error(
+        membershipReadError.message,
+      );
+    }
+
+    const affectedCharacterIds =
+      Array.from(
+        new Set(
+          (memberships ?? [])
+            .map(
+              (membership) =>
+                membership.character_id,
+            )
+            .filter(Boolean),
+        ),
+      );
+
+    const {
       error,
     } =
       await supabase
@@ -537,6 +755,16 @@ export async function deleteOrder(
     if (error) {
       throw new Error(
         error.message,
+      );
+    }
+
+    for (
+      const characterId
+      of affectedCharacterIds
+    ) {
+      await recalculateCharacterAssociation(
+        supabase,
+        characterId,
       );
     }
   } catch (error) {
