@@ -39,13 +39,19 @@ export default async function AdminLayout({
           >
             <AdminNavigationLink href="/admin">
               Overview
+            </AdminNavigationLink> 
+
+            <AdminNavigationLink href="/admin/races">
+              Ancestries
+            </AdminNavigationLink>            
+
+            <AdminNavigationLink href="/admin/areas">
+              Areas
             </AdminNavigationLink>
 
-            {canManageUsers ? (
-              <AdminNavigationLink href="/admin/users">
-                Users
-              </AdminNavigationLink>
-            ) : null}
+            <AdminNavigationLink href="/admin/associations">
+              Associations
+            </AdminNavigationLink>           
 
             <AdminNavigationLink href="/admin/characters">
               <span className="flex items-center gap-2">
@@ -54,40 +60,38 @@ export default async function AdminLayout({
               </span>
             </AdminNavigationLink>
 
+            <AdminNavigationLink href="/admin/events">
+              Events
+            </AdminNavigationLink>
+
             <AdminNavigationLink href="/admin/expertise">
               Expertise
-            </AdminNavigationLink>
-
-            <AdminNavigationLink href="/admin/world">
-              World
-            </AdminNavigationLink>
-
-            <AdminNavigationLink href="/admin/tidings">
-              Tidings
-            </AdminNavigationLink>
-
-            <AdminNavigationLink href="/admin/areas">
-              Areas
-            </AdminNavigationLink>
-
-            <AdminNavigationLink href="/admin/rooms">
-              Locations
-            </AdminNavigationLink>
-
-            <AdminNavigationLink href="/admin/races">
-              Ancestries
-            </AdminNavigationLink>
-
-            <AdminNavigationLink href="/admin/associations">
-              Associations
             </AdminNavigationLink>
 
             <AdminNavigationLink href="/admin/forum">
               Forum
             </AdminNavigationLink>
 
+            <AdminNavigationLink href="/admin/rooms">
+              Locations
+            </AdminNavigationLink>
+
             <AdminNavigationLink href="/admin/rules">
               Rules
+            </AdminNavigationLink>
+          
+            <AdminNavigationLink href="/admin/tidings">
+              Tidings
+            </AdminNavigationLink>            
+
+            {canManageUsers ? (
+              <AdminNavigationLink href="/admin/users">
+                Users
+              </AdminNavigationLink>
+            ) : null}
+
+            <AdminNavigationLink href="/admin/world">
+              World
             </AdminNavigationLink>
           </nav>
         </div>
@@ -104,7 +108,6 @@ export default async function AdminLayout({
         </div>
       </div>
 
-      {/* Only admin page content receives the density overrides. */}
       <div className="admin-compact">
         {children}
       </div>

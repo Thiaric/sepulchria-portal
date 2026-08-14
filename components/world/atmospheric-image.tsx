@@ -53,12 +53,12 @@ function atmosphericFilter(
     hour >= 5 &&
     hour < 7
   ) {
-    brightness *= 0.72;
+    brightness *= 1;
   } else if (
     hour >= 18 &&
     hour < 20
   ) {
-    brightness *= 0.76;
+    brightness *= 1;
   }
 
   /*
@@ -81,18 +81,18 @@ function atmosphericFilter(
   ) {
     saturation *=
       weather === "cloudy"
-        ? 0.78
-        : 0.64;
+        ? 1
+        : 1;
 
     brightness *=
       weather === "storm"
-        ? 0.72
+        ? 1
         : weather === "hail"
-          ? 0.82
+          ? 1
           : weather ===
               "overcast"
-            ? 0.82
-            : 0.9;
+            ? 1
+            : 1;
   }
 
   if (
@@ -101,7 +101,7 @@ function atmosphericFilter(
       "heavy_snow",
     ].includes(weather)
   ) {
-    saturation *= 0.82;
+    saturation *= 1;
   }
 
   return `brightness(${brightness}) saturate(${saturation})`;
