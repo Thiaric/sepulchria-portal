@@ -450,45 +450,57 @@ useEffect(() => {
         </section>
 
         {/* FOOTER */}
-        <footer className="mx-auto flex w-full max-w-[1500px] flex-col items-center justify-between gap-2 border-t border-[#57412a]/35 pt-3 sm:flex-row">
-          <p className="font-serif text-sm italic text-[#a9987d] sm:text-base">
-            “The Current remembers
-            every choice.”
-          </p>
+        {/* FOOTER */}
+<footer className="mx-auto w-full max-w-[1500px] border-t border-[#57412a]/35 pt-3">
+  <div className="flex flex-col items-center justify-between gap-2 sm:flex-row">
+    <p className="font-serif text-sm italic text-[#a9987d] sm:text-base">
+      “The Current remembers
+      every choice.”
+    </p>
 
-          <nav
-            aria-label="Footer navigation"
-            className="flex flex-wrap justify-center gap-x-5 gap-y-1 text-[8px] uppercase tracking-[0.18em] text-[#796d5f] sm:justify-end"
-          >
-            <Link
-              href="#"
-              className="transition hover:text-[#cdb487]"
-            >
-              Discord
-            </Link>
+    <nav
+      aria-label="Footer navigation"
+      className="flex flex-wrap justify-center gap-x-5 gap-y-1 text-[8px] uppercase tracking-[0.18em] text-[#796d5f] sm:justify-end"
+    >
+      <Link
+        href="#"
+        className="transition hover:text-[#cdb487]"
+      >
+        Discord
+      </Link>
 
-            <Link
-              href="#"
-              className="transition hover:text-[#cdb487]"
-            >
-              Credits
-            </Link>
+      <Link
+        href="#"
+        className="transition hover:text-[#cdb487]"
+      >
+        Credits
+      </Link>
 
-            <Link
-              href="/privacy"
-              className="transition hover:text-[#cdb487]"
-            >
-              Privacy
-            </Link>
+      <Link
+        href="/privacy"
+        className="transition hover:text-[#cdb487]"
+      >
+        Privacy
+      </Link>
 
-            <Link
-              href="/terms"
-              className="transition hover:text-[#cdb487]"
-            >
-              Terms
-            </Link>
-          </nav>
-        </footer>
+      <Link
+        href="/terms"
+        className="transition hover:text-[#cdb487]"
+      >
+        Terms
+      </Link>
+    </nav>
+  </div>
+
+  <div className="mt-3 border-t border-[#57412a]/20 pt-2 text-center">
+    <p className="mx-auto max-w-4xl text-[8px] leading-4 text-[#706659]">
+      <span className="uppercase tracking-[0.16em] text-[#8b7659]">
+        AI Content Disclosure —
+      </span>{" "}
+      Generative artificial intelligence tools have been used in the development of Sepulchria to assist with certain visual assets, written content, and technical development. All creative direction, worldbuilding, editorial decisions and final published content are reviewed and curated by the Sepulchria team.
+    </p>
+  </div>
+</footer>
       </div>
 
       {/* ABOUT SEPULCHRIA MODAL */}

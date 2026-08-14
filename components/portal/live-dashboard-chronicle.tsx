@@ -409,7 +409,7 @@ export function LiveDashboardChronicle({
         !error &&
         rooms.length === 0 ? (
           <p className="border border-[#59432c]/30 bg-[#100c09]/60 p-4 text-[11px] leading-5 text-[#8f8271]">
-            No characters are currently active in Sepulchria.
+            No locations are populated at the moment.
           </p>
         ) : null}
       </div>
