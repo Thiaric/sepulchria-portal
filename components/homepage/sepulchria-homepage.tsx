@@ -95,6 +95,49 @@ export function SepulchriaHomepage({
     setAboutOpen,
   ] = useState(false);
 
+  const [
+  isNight,
+  setIsNight,
+] = useState(false);
+
+useEffect(() => {
+  function updateTimeOfDay() {
+    const londonHour =
+      Number(
+        new Intl.DateTimeFormat(
+          "en-GB",
+          {
+            timeZone:
+              "Europe/London",
+            hour: "2-digit",
+            hour12: false,
+          },
+        ).format(
+          new Date(),
+        ),
+      );
+
+    setIsNight(
+      londonHour >= 20 ||
+        londonHour < 5,
+    );
+  }
+
+  updateTimeOfDay();
+
+  const interval =
+    window.setInterval(
+      updateTimeOfDay,
+      60_000,
+    );
+
+  return () => {
+    window.clearInterval(
+      interval,
+    );
+  };
+}, []);
+
   useEffect(() => {
     const media =
       window.matchMedia(
@@ -329,8 +372,12 @@ export function SepulchriaHomepage({
                 }}
               >
                 <Image
-                  src="/maps/land-of-the-fallenv2.png"
-                  alt="Illustrated map of The Godscar"
+  src={
+    isNight
+      ? "/maps/land-of-the-fallenv2-n.png"
+      : "/maps/land-of-the-fallenv2.png"
+  }
+  alt="Illustrated map of The Godscar"
                   fill
                   priority
                   sizes="(max-width: 1024px) 100vw, 60vw"

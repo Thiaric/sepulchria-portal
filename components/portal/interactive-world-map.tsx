@@ -325,8 +325,9 @@ export function InteractiveWorldMap({
             }
           >
             <AtmosphericImage
-              src="/maps/land-of-the-fallenv2.png"
-              alt="Map of The Godscar"
+  src="/maps/land-of-the-fallenv2.png"
+  nightSrc="/maps/land-of-the-fallenv2-n.png"
+  alt="Map of The Godscar"
               variant="map"
               priority
               sizes="(max-width: 1024px) 100vw, 75vw"
@@ -362,8 +363,9 @@ export function InteractiveWorldMap({
             }
           >
             <AtmosphericImage
-              src="/maps/sepulchria-mapv2.png"
-              alt="Map of Sepulchria"
+  src="/maps/sepulchria-mapv2.png"
+  nightSrc="/maps/sepulchria-mapv2-n.png"
+  alt="Map of Sepulchria"
               variant="map"
               sizes="(max-width: 1024px) 100vw, 75vw"
               objectFit="contain"
@@ -455,7 +457,7 @@ export function InteractiveWorldMap({
             {hoveredDatabaseArea &&
 hoveredInfoPosition ? (
   <div
-    className="pointer-events-none absolute z-40 w-[min(42%,26rem)] -translate-x-1/2 -translate-y-1/2 border border-[#8f6a3d]/80 bg-[#120b09]/95 px-4 py-3 text-center shadow-[0_12px_34px_rgba(0,0,0,0.9)] transition-[left,top] duration-200"
+    className="pointer-events-none absolute z-40 hidden w-[min(42%,26rem)] -translate-x-1/2 -translate-y-1/2 border border-[#8f6a3d]/80 bg-[#120b09]/95 px-4 py-3 text-center shadow-[0_12px_34px_rgba(0,0,0,0.9)] transition-[left,top] duration-200 md:block"
     style={hoveredInfoPosition}
   >
     <p className="font-serif text-base text-[#f1d7aa]">
@@ -492,7 +494,29 @@ hoveredInfoPosition ? (
             diameter={450}
           />
         </div>
-      </div>
+            </div>
+
+      {level === "city" &&
+      hoveredDatabaseArea ? (
+        <div className="border-t border-[#654c2f]/50 bg-[#17110d] px-4 py-3 md:hidden">
+          <p className="text-[8px] uppercase tracking-[0.22em] text-[#96734a]">
+            District
+          </p>
+
+          <p className="mt-1 font-serif text-base text-[#f1d7aa]">
+            {hoveredDatabaseArea.name}
+          </p>
+
+          {hoveredDatabaseArea.description ? (
+            <RichTextContentClient
+              body={
+                hoveredDatabaseArea.description
+              }
+              className="mt-1 text-[11px] leading-4 text-[#a99984] [&_p]:m-0 [&_h1]:text-xs [&_h2]:text-xs [&_h3]:text-xs [&_img]:hidden [&_table]:hidden"
+            />
+          ) : null}
+        </div>
+      ) : null}
     </section>
   );
 }

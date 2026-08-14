@@ -37,26 +37,36 @@ function atmosphericFilter(
   let brightness = 1;
   let saturation = 1;
 
-  const minimumBrightness =
-    variant === "map"
-      ? 0.55
-      : 0.34;
+  /*
+   * TIME OF DAY
+   *
+   * Night uses dedicated artwork, so there
+   * is NO additional nighttime darkening.
+   *
+   * 05:00–06:59 = dawn
+   * 07:00–17:59 = full daylight
+   * 18:00–19:59 = evening
+   * 20:00–04:59 = dedicated night image
+   */
 
   if (
-    hour < 5 ||
-    hour >= 21
+    hour >= 5 &&
+    hour < 7
   ) {
-    brightness *=
-      minimumBrightness;
-  } else if (hour < 7) {
     brightness *= 0.72;
-  } else if (hour >= 18) {
-    brightness *=
-      hour >= 20
-        ? 0.55
-        : 0.76;
+  } else if (
+    hour >= 18 &&
+    hour < 20
+  ) {
+    brightness *= 0.76;
   }
 
+  /*
+   * WEATHER
+   *
+   * Keep the existing weather effects
+   * regardless of which artwork is shown.
+   */
   if (
     [
       "cloudy",
@@ -94,14 +104,12 @@ function atmosphericFilter(
     saturation *= 0.82;
   }
 
-  return `brightness(${Math.max(
-    minimumBrightness,
-    brightness,
-  )}) saturate(${saturation})`;
+  return `brightness(${brightness}) saturate(${saturation})`;
 }
 
 export function AtmosphericImage({
   src,
+  nightSrc,
   alt,
   variant = "scene",
   priority,
@@ -109,6 +117,7 @@ export function AtmosphericImage({
   objectFit = "cover",
 }: {
   src: string;
+  nightSrc?: string;
   alt: string;
   variant?:
     | "scene"
@@ -136,12 +145,21 @@ export function AtmosphericImage({
         ? "object-contain"
         : "object-cover";
 
-  const normalisedSrc =
-  src.startsWith("/") ||
-  src.startsWith("http://") ||
-  src.startsWith("https://")
-    ? src
-    : `/${src}`;
+  const isNight =
+  hour < 5 ||
+  hour >= 20;
+
+const selectedSrc =
+  isNight && nightSrc
+    ? nightSrc
+    : src;
+
+const normalisedSrc =
+  selectedSrc.startsWith("/") ||
+  selectedSrc.startsWith("http://") ||
+  selectedSrc.startsWith("https://")
+    ? selectedSrc
+    : `/${selectedSrc}`;
 
 return (
   <>
@@ -182,9 +200,7 @@ export function AtmosphericOverlay() {
   const fog =
     weather === "fog";
 
-  const night =
-    hour < 5 ||
-    hour >= 21;
+  
 
   const rainConfig = {
     drizzle: {
@@ -289,9 +305,7 @@ export function AtmosphericOverlay() {
       className="pointer-events-none absolute inset-0 z-[5] overflow-hidden"
       aria-hidden="true"
     >
-      {night ? (
-        <div className="absolute inset-0 bg-[#06101c]/15" />
-      ) : null}
+      
 
       {fog ? (
         <>
