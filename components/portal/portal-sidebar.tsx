@@ -104,6 +104,14 @@ const otherCodexNavigationItems: NavigationItem[] = [
     activePaths: ["/associations"],
   },
   {
+    label: "Orders",
+    title:
+      "Read about the Orders, their ties to Associations, and their structure and scope.",
+    icon: "▣",
+    href: "/orders",
+    activePaths: ["/orders"],
+  },
+  {
     label: "Warping",
     title:
       "Read about magic in Sepulchria, including Warping.",

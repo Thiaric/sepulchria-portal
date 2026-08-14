@@ -254,10 +254,11 @@ export default async function OrderPage({
     <main className="p-5 sm:p-7 lg:p-9">
       <div className="mx-auto max-w-6xl">
         <Link
-          href="/associations"
-          className="text-[9px] uppercase tracking-[0.2em] text-[#9c805b] transition hover:text-[#e4c796]"
+          href="/orders"
+          className="inline-flex items-center gap-2 border border-[#60482e]/55 bg-[#15100d] px-4 py-3 text-[10px] uppercase tracking-[0.18em] text-[#c6ab80] transition hover:border-[#987344] hover:bg-[#261b12] hover:text-[#ead2a5]"
         >
-          ← Associations & Orders
+          <span aria-hidden="true">←</span>
+          Back to Orders
         </Link>
 
         <article className="mt-5 overflow-hidden border border-[#60482e]/45 bg-[#15100d]">
