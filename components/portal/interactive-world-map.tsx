@@ -329,7 +329,7 @@ export function InteractiveWorldMap({
             }}
             className="border border-[#765735]/80 bg-[#21170f] px-4 py-2 text-[9px] uppercase tracking-[0.2em] text-[#9c8156] transition hover:border-[#b28246] hover:bg-[#332317] hover:text-[#fad798]"
           >
-            ← Return to continent
+            ← Return to Aureth
           </button>
         ) : (
           <p className="text-[9px] uppercase tracking-[0.2em] text-[#776752]">

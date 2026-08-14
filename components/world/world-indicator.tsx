@@ -280,17 +280,17 @@ function Calendar({
         </div>
       </div>
 
-      <div className="mt-2 flex justify-center">
+      <div className="mt-1 flex justify-center">
         <button
           type="button"
           onClick={onToday}
-          className="border border-[#60482e]/45 bg-[#15100d] px-3 py-1.5 text-[7px] uppercase tracking-[0.16em] text-[#9d896d] transition hover:border-[#967342] hover:text-[#dfc79c]"
+          className="border border-[#60482e]/45 bg-[#15100d] px-2 py-1 ... text-[7px] uppercase tracking-[0.16em] text-[#9d896d] transition hover:border-[#967342] hover:text-[#dfc79c]"
         >
           Current month
         </button>
       </div>
 
-      <div className="mt-3 grid grid-cols-7 gap-px border border-[#60482e]/35 bg-[#60482e]/25">
+      <div className="mt-2 grid grid-cols-7 ... gap-px border border-[#60482e]/35 bg-[#60482e]/25">
         {AURETH_WEEKDAYS.map(
           (weekday) => (
             <div
@@ -449,11 +449,8 @@ function CalendarEventList({
   events: CalendarEvent[];
 }) {
   if (!dateKey) {
-    return (
-      <div className="mt-4 border border-[#60482e]/35 bg-[#100c09] p-3 text-[10px] leading-5 text-[#756958]">
-        Days with events have a gold marker. Click one to read its events.
-      </div>
-    );
+      return null;
+
   }
 
   const date =
@@ -873,10 +870,10 @@ export function WorldIndicator() {
               }}
             >
               <section
-                role="dialog"
-                aria-modal="true"
-                className="relative my-auto w-full max-w-2xl border border-[#765937]/70 bg-[#120d0a] p-4 shadow-[0_30px_100px_rgba(0,0,0,0.85)] sm:p-5"
-              >
+  role="dialog"
+  aria-modal="true"
+  className="relative w-full max-w-2xl max-h-[calc(100dvh-24px)] overflow-y-auto border border-[#765937]/70 bg-[#120d0a] p-3 shadow-[0_30px_100px_rgba(0,0,0,0.85)] sm:p-4"
+>
                 <button
                   type="button"
                   onClick={() =>
@@ -895,27 +892,19 @@ export function WorldIndicator() {
                   the Darkest Night
                 </p>
 
-                <h2 className="mt-2 pr-10 font-serif text-2xl text-[#e2cda4]">
-                  {fullDate}
-                </h2>
+                <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 pr-10">
+  <h2 className="font-serif text-base text-[#e2cda4]">
+    {fullDate}
+  </h2>
 
-                <div className="mt-5 grid gap-5 md:grid-cols-[minmax(0,1fr)_150px]">
+  <span className="text-[8px] uppercase tracking-[0.12em] text-[#8f7b60]">
+    {time} · {state.temperature_c}°C
+  </span>
+</div>
+
+                <div className="mt-3 grid gap-3 md:grid-cols-[minmax(0,1fr)_140px]">
                   <div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <Fact
-                        label="Time"
-                        value={
-                          time
-                        }
-                      />
-
-                      <Fact
-                        label="Temperature"
-                        value={`${state.temperature_c}°C`}
-                      />
-                    </div>
-
-                    <div className="mt-5">
+                    <div>
                       <Calendar
                         currentDate={
                           gameDate
@@ -1007,7 +996,7 @@ export function WorldIndicator() {
                         weather
                       </p>
 
-                      <div className="mt-3 flex items-center justify-center">
+                      <div className="mt-2 flex items-center justify-center">
                         <img
                           src={
                             ICONS[
@@ -1019,17 +1008,13 @@ export function WorldIndicator() {
                           alt={weatherLabel(
                             state.weather,
                           )}
-                          width={
-                            72
-                          }
-                          height={
-                            72
-                          }
-                          className="block h-[72px] w-[72px] object-contain"
+                          width={50}
+height={50}
+className="block h-11 w-11 object-contain"
                         />
                       </div>
 
-                      <p className="mt-3 font-serif text-base capitalize text-[#dfc79c]">
+                      <p className="mt-1 font-serif text-sm capitalize text-[#dfc79c]">
                         {weatherLabel(
                           state.weather,
                         )}
@@ -1048,7 +1033,7 @@ export function WorldIndicator() {
                         lunar phase
                       </p>
 
-                      <div className="mt-3 flex items-center justify-center">
+                      <div className="mt-2 flex items-center justify-center">
                         <img
                           src={
                             lunar.symbol
@@ -1057,12 +1042,12 @@ export function WorldIndicator() {
                             lunar.name
                           }
                           width={
-                            72
+                            50
                           }
                           height={
-                            72
+                            50
                           }
-                          className="block h-[72px] w-[72px] object-contain"
+                          className="block h-[50px] w-[50px] object-contain"
                         />
                       </div>
 
