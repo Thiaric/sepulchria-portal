@@ -8,6 +8,7 @@ import { CharacterHealthDisplay } from "@/components/characters/character-health
 import { CharacterMusicPlayer } from "@/components/characters/character-music-player";
 import { LiveCharacterPresence } from "@/components/characters/live-character-presence";
 import { PublicCharacterAgeDetail } from "@/components/characters/public-character-age-detail";
+import { PublicCharacterOrder } from "@/components/characters/public-character-order";
 import type {
   PublicCharacterProfile,
   PublicCodexReference,
@@ -180,7 +181,7 @@ export function PublicCharacterProfileView({
                 />
               </div>
 
-              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+              <div className="mt-3">
                 <CompactHeritageCard
                   label="Ancestry"
                   entry={character.race}
@@ -191,15 +192,13 @@ export function PublicCharacterProfileView({
                   }
                 />
 
-                <CompactHeritageCard
-                  label="Association"
-                  entry={character.association}
-                  href={
-                    character.association
-                      ? `/associations/${character.association.slug}`
-                      : "/associations"
-                  }
-                />
+                <div className="mt-3">
+                  <PublicCharacterOrder
+                    membership={
+                      character.orderMembership
+                    }
+                  />
+                </div>
               </div>
             </div>
           </section>
