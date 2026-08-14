@@ -275,6 +275,10 @@ export async function createRoom(
     formData.get("isActive"),
   );
 
+  const isOutdoors = readCheckbox(
+  formData.get("isOutdoors"),
+);
+
   await assertAreaExists(areaId);
   await assertUniqueSlug(slug);
 
@@ -283,15 +287,16 @@ export async function createRoom(
   const { error } = await supabase
     .from("rooms")
     .insert({
-      area_id: areaId,
-      name,
-      slug,
-      description,
-      image_url: imageUrl,
-      sort_order: sortOrder,
-      is_active: isActive,
-      updated_at: new Date().toISOString(),
-    });
+  area_id: areaId,
+  name,
+  slug,
+  description,
+  image_url: imageUrl,
+  sort_order: sortOrder,
+  is_active: isActive,
+  is_outdoors: isOutdoors,
+  updated_at: new Date().toISOString(),
+});
 
   if (error) {
     throw new Error(
@@ -351,6 +356,10 @@ export async function updateRoom(
     formData.get("isActive"),
   );
 
+  const isOutdoors = readCheckbox(
+  formData.get("isOutdoors"),
+);
+
   await assertRoomExists(roomId);
   await assertAreaExists(areaId);
   await assertUniqueSlug(
@@ -363,15 +372,16 @@ export async function updateRoom(
   const { error } = await supabase
     .from("rooms")
     .update({
-      area_id: areaId,
-      name,
-      slug,
-      description,
-      image_url: imageUrl,
-      sort_order: sortOrder,
-      is_active: isActive,
-      updated_at: new Date().toISOString(),
-    })
+  area_id: areaId,
+  name,
+  slug,
+  description,
+  image_url: imageUrl,
+  sort_order: sortOrder,
+  is_active: isActive,
+  is_outdoors: isOutdoors,
+  updated_at: new Date().toISOString(),
+})
     .eq("id", roomId);
 
   if (error) {

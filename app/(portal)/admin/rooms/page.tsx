@@ -29,6 +29,7 @@ type RoomRow = {
   image_url: string | null;
   sort_order: number;
   is_active: boolean;
+  is_outdoors: boolean;
   created_at: string;
   updated_at: string;
   area: AreaRow | null;
@@ -46,6 +47,7 @@ type RoomQueryRow = {
   image_url: string | null;
   sort_order: number;
   is_active: boolean;
+  is_outdoors: boolean;
   created_at: string;
   updated_at: string;
   area:
@@ -211,8 +213,9 @@ export default async function AdminRoomsPage() {
         description,
         image_url,
         sort_order,
-        is_active,
-        created_at,
+is_active,
+is_outdoors,
+created_at,
         updated_at,
         area:areas (
           id,
@@ -294,7 +297,8 @@ export default async function AdminRoomsPage() {
       image_url: room.image_url,
       sort_order: room.sort_order,
       is_active: room.is_active,
-      created_at: room.created_at,
+is_outdoors: room.is_outdoors,
+created_at: room.created_at,
       updated_at: room.updated_at,
       area: getSingleRelation(
         room.area,
@@ -497,24 +501,37 @@ export default async function AdminRoomsPage() {
               </div>
 
               <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
-                <label className="flex items-center gap-3 text-sm text-[#bbaa90]">
-                  <input
-                    type="checkbox"
-                    name="isActive"
-                    defaultChecked
-                    className="h-4 w-4 accent-[#8b673d]"
-                  />
+  <div className="flex flex-wrap items-center gap-6">
+    <label className="flex items-center gap-3 text-sm text-[#bbaa90]">
+      <input
+        type="checkbox"
+        name="isActive"
+        defaultChecked
+        className="h-4 w-4 accent-[#8b673d]"
+      />
 
-                  Active
-                </label>
+      Active
+    </label>
 
-                <button
-                  type="submit"
-                  className="border border-[#987344] bg-[#3b2919] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[#efd6a8] transition hover:border-[#b98c50] hover:bg-[#50371f]"
-                >
-                  Create room
-                </button>
-              </div>
+    <label className="flex items-center gap-3 text-sm text-[#bbaa90]">
+      <input
+        type="checkbox"
+        name="isOutdoors"
+        defaultChecked
+        className="h-4 w-4 accent-[#8b673d]"
+      />
+
+      Outdoor location
+    </label>
+  </div>
+
+  <button
+    type="submit"
+    className="border border-[#987344] bg-[#3b2919] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[#efd6a8] transition hover:border-[#b98c50] hover:bg-[#50371f]"
+  >
+    Create location
+  </button>
+</div>
             </form>
           ) : (
             <p className="mt-5 border border-amber-900/40 bg-amber-950/10 p-4 text-sm leading-6 text-amber-500">
@@ -882,26 +899,37 @@ export default async function AdminRoomsPage() {
                       </div>
 
                       <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
-                        <label className="flex items-center gap-3 text-sm text-[#bbaa90]">
-                          <input
-                            type="checkbox"
-                            name="isActive"
-                            defaultChecked={
-                              room.is_active
-                            }
-                            className="h-4 w-4 accent-[#8b673d]"
-                          />
+  <div className="flex flex-wrap items-center gap-6">
+    <label className="flex items-center gap-3 text-sm text-[#bbaa90]">
+      <input
+        type="checkbox"
+        name="isActive"
+        defaultChecked={room.is_active}
+        className="h-4 w-4 accent-[#8b673d]"
+      />
 
-                          Active
-                        </label>
+      Active
+    </label>
 
-                        <button
-                          type="submit"
-                          className="border border-[#987344] bg-[#3b2919] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[#efd6a8] transition hover:border-[#b98c50] hover:bg-[#50371f]"
-                        >
-                          Save changes
-                        </button>
-                      </div>
+    <label className="flex items-center gap-3 text-sm text-[#bbaa90]">
+      <input
+        type="checkbox"
+        name="isOutdoors"
+        defaultChecked={room.is_outdoors}
+        className="h-4 w-4 accent-[#8b673d]"
+      />
+
+      Outdoor location
+    </label>
+  </div>
+
+  <button
+    type="submit"
+    className="border border-[#987344] bg-[#3b2919] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[#efd6a8] transition hover:border-[#b98c50] hover:bg-[#50371f]"
+  >
+    Save location
+  </button>
+</div>
                     </form>
 
                     <form
