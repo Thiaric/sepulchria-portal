@@ -225,10 +225,11 @@ export function MessagesContextNavigator({
           )
         `)
         .eq(
-          "character_id",
-          currentCharacterId,
-        )
-        .is("archived_at", null);
+  "character_id",
+  currentCharacterId,
+)
+.is("archived_at", null)
+.is("deleted_at", null);
 
       if (membershipError) {
         setError(membershipError.message);

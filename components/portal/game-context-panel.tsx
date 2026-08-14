@@ -10,11 +10,13 @@ import {
 import { moveCharacter } from "@/app/(portal)/game/actions";
 import { createClient } from "@/lib/supabase/client";
 import type { PresenceStatus } from "@/types/game";
+import { startConversation } from "@/app/(portal)/messages/actions";
 
 const PRESENCE_ACTIVE_MINUTES = 3;
 
 type GameContextPanelProps = {
   roomId: string | null;
+  currentCharacterId: string | null;
 };
 
 type CodexSummary = {
@@ -71,6 +73,7 @@ type RoomExit = {
 
 export function GameContextPanel({
   roomId,
+  currentCharacterId,
 }: GameContextPanelProps) {
   const [
     presentCharacters,
@@ -338,88 +341,99 @@ export function GameContextPanel({
                   person.display_name?.trim() ||
                   "Unnamed character";
 
-                const heritageText = [
-                  race?.name,
-                  association?.name,
-                ]
-                  .filter(Boolean)
-                  .join(" · ");
+                const raceName =
+  race?.name ?? null;
+
+const associationName =
+  association?.name ?? null;
 
                 return (
-                  <Link
-                    key={
-                      presence.character_id
-                    }
-                    href={`/characters/${person.public_slug}?from=game`}
-                    title={`Open ${displayName}'s profile`}
-                    className="group relative block overflow-hidden border border-[#59432c]/40 bg-[#100c09] transition hover:border-[#9b7446] hover:bg-[#1a120c]"
-                  >
-                    <div className="absolute inset-y-0 left-0 w-px bg-[#b88a52]/0 transition group-hover:bg-[#b88a52]/70" />
+  <div
+    key={presence.character_id}
+    className="group relative overflow-hidden border border-[#59432c]/40 bg-[#100c09] transition hover:border-[#9b7446] hover:bg-[#1a120c]"
+  >
+    <Link
+      href={`/characters/${person.public_slug}?from=game`}
+      title={`Open ${displayName}'s profile`}
+      className="block"
+    >
+      <div className="absolute inset-y-0 left-0 w-px bg-[#b88a52]/0 transition group-hover:bg-[#b88a52]/70" />
 
-                    <div className="flex min-h-[60px] items-center gap-2.5 px-2.5 py-2">
-                      <div className="relative shrink-0">
-                        <Portrait
-                          src={
-                            person.portrait_url
-                          }
-                          name={displayName}
-                        />
+      <div className="flex min-h-[60px] items-center gap-2.5 px-2.5 py-2 pr-10">
+        <div className="relative shrink-0">
+          <Portrait
+            src={person.portrait_url}
+            name={displayName}
+          />
 
-                        <PresenceDot
-                          status={
-                            presence.status
-                          }
-                        />
-                      </div>
+          <PresenceDot
+            status={presence.status}
+          />
+        </div>
 
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center justify-between gap-2">
-                          <p className="truncate font-serif text-[13px] leading-4 text-[#dbc397] transition group-hover:text-[#ecd5a8]">
-                            {displayName}
-                          </p>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center justify-between gap-2">
+            <p className="truncate font-serif text-[13px] leading-4 text-[#dbc397] transition group-hover:text-[#ecd5a8]">
+              {displayName}
+            </p>
 
-                          <PresenceLabel
-                            status={
-                              presence.status
-                            }
-                          />
-                        </div>
+            <PresenceLabel
+              status={presence.status}
+            />
+          </div>
 
-                        {person.title ? (
-                          <p className="mt-0.5 truncate font-serif text-[10px] italic leading-3 text-[#9d8769]">
-                            {person.title}
-                          </p>
-                        ) : null}
+          {person.title ? (
+            <p className="mt-0.5 truncate font-serif text-[10px] italic leading-3 text-[#9d8769]">
+              {person.title}
+            </p>
+          ) : null}
 
-                        <div className="mt-1.5 flex items-center justify-between gap-2">
-                          <div className="flex min-w-0 items-center gap-1.5">
-                            <MiniCodexIcon
-                              entry={race}
-                            />
+          <div className="mt-1.5 flex items-center gap-1.5">
+            <MiniCodexIcon entry={race} />
 
-                            <MiniCodexIcon
-                              entry={
-                                association
-                              }
-                            />
+            <MiniCodexIcon
+              entry={association}
+            />
 
-                            <p className="truncate text-[8px] leading-3 text-[#8e7b62]">
-                              {heritageText ||
-                                "Citizen of Sepulchria"}
-                            </p>
-                          </div>
+            <div className="min-w-0 text-[8px] leading-3 text-[#8e7b62]">
+  <p className="truncate">
+    {raceName ||
+      "Unknown ancestry"}
+  </p>
 
-                          <span
-                            aria-hidden="true"
-                            className="shrink-0 translate-x-1 text-[10px] text-[#725a3d] opacity-0 transition group-hover:translate-x-0 group-hover:opacity-100"
-                          >
-                            →
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-                );
+  <p className="truncate">
+    {associationName ||
+      "No association"}
+  </p>
+</div>
+          </div>
+        </div>
+      </div>
+    </Link>
+
+    {person.id !== currentCharacterId ? (
+  <form
+    action={startConversation}
+    className="absolute bottom-2 right-2 z-10"
+  >
+    <input
+      type="hidden"
+      name="recipientId"
+      value={person.id}
+    />
+
+    <button
+      type="submit"
+      title={`Message ${displayName}`}
+      aria-label={`Message ${displayName}`}
+      className="flex h-6 w-6 items-center justify-center border border-[#60482e]/60 bg-[#17110d] text-[12px] text-[#a98b61] transition hover:border-[#9a7445] hover:bg-[#2a1d12] hover:text-[#e0c392]"
+    >
+      ✉
+    </button>
+  </form>
+) : null}
+  </div>
+);
               },
             )
           )}

@@ -158,6 +158,24 @@ export function MessagePresenceStatus({
   return;
 }
 
+const lastSeen =
+  new Date(
+    presence.last_seen_at,
+  ).getTime();
+
+const offlineAfter =
+  5 * 60_000;
+
+const isStale =
+  Number.isNaN(lastSeen) ||
+  Date.now() - lastSeen >
+    offlineAfter;
+
+if (isStale) {
+  setStatus("offline");
+  return;
+}
+
 setStatus(presence.status);
     }, [characterId]);
 

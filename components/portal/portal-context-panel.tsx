@@ -985,6 +985,9 @@ function GameContext({
       roomId={
         room?.id ?? null
       }
+      currentCharacterId={
+  context.character?.id ?? null
+}
     />
   );
 }
