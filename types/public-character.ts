@@ -4,7 +4,10 @@ export type PublicCharacterStatus =
   | "approved"
   | "rejected";
 
-export type PublicPresenceStatus = "online" | "away" | "busy";
+export type PublicPresenceStatus =
+  | "online"
+  | "away"
+  | "busy";
 
 export type PublicCodexReference = {
   id: string;
@@ -21,12 +24,16 @@ export type PublicOrderMembership = {
     slug: string;
     colour: string | null;
   };
-  association: PublicCodexReference | null;
+
+  association:
+    | PublicCodexReference
+    | null;
+
   level: {
     id: string;
     level: number;
-    name: string | null;
   } | null;
+
   job: {
     id: string;
     name: string;
@@ -37,7 +44,12 @@ export type PublicCharacterRoom = {
   id: string;
   name: string;
   slug: string;
-  area: { id: string; name: string; slug: string } | null;
+
+  area: {
+    id: string;
+    name: string;
+    slug: string;
+  } | null;
 };
 
 export type PublicCharacterPresence = {
@@ -74,10 +86,28 @@ export type PublicCharacterProfile = {
   presence_score: number | null;
   current_health: number | null;
   status: PublicCharacterStatus;
-  race: PublicCodexReference | null;
-  association: PublicCodexReference | null;
-  orderMembership: PublicOrderMembership | null;
-  current_room_id: string | null;
-  currentRoom: PublicCharacterRoom | null;
-  presence: PublicCharacterPresence | null;
+
+  race:
+    | PublicCodexReference
+    | null;
+
+  association:
+    | PublicCodexReference
+    | null;
+
+  orderMembership:
+    | PublicOrderMembership
+    | null;
+
+  current_room_id:
+    | string
+    | null;
+
+  currentRoom:
+    | PublicCharacterRoom
+    | null;
+
+  presence:
+    | PublicCharacterPresence
+    | null;
 };

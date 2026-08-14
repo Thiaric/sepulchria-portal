@@ -24,7 +24,7 @@ export async function CharacterOrderSummary({
         name,
         slug,
         colour,
-        association:associations!orders_association_id_fkey(
+        association:associations(
           id,
           name,
           slug,
@@ -33,8 +33,7 @@ export async function CharacterOrderSummary({
       ),
       level:order_levels!order_memberships_order_level_id_fkey(
         id,
-        level,
-        name
+        level
       ),
       job:order_jobs!order_memberships_order_job_id_fkey(
         id,
@@ -46,8 +45,18 @@ export async function CharacterOrderSummary({
     .maybeSingle();
 
   if (error) {
-    console.error("Unable to load character Order:", error);
-    return null;
+    console.error(
+      "Unable to load character Order:",
+      error.message,
+    );
+
+    return (
+      <section className="mt-3 border border-red-900/45 bg-red-950/10 p-4">
+        <p className="text-[8px] uppercase tracking-[0.22em] text-red-400">
+          Order membership unavailable
+        </p>
+      </section>
+    );
   }
 
   if (!data) {
@@ -56,6 +65,7 @@ export async function CharacterOrderSummary({
         <p className="text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
           Order
         </p>
+
         <p className="mt-2 text-sm text-[#8f8271]">
           This character does not currently belong to an Order.
         </p>
@@ -63,41 +73,53 @@ export async function CharacterOrderSummary({
     );
   }
 
-  const order = one(data.order as Relation<{
-    id: string;
-    name: string;
-    slug: string;
-    colour: string | null;
-    association: Relation<{
+  const order = one(
+    data.order as Relation<{
       id: string;
       name: string;
       slug: string;
       colour: string | null;
-    }>;
-  }>);
+      association: Relation<{
+        id: string;
+        name: string;
+        slug: string;
+        colour: string | null;
+      }>;
+    }>,
+  );
 
-  const level = one(data.level as Relation<{
-    id: string;
-    level: number;
-    name: string | null;
-  }>);
+  const level = one(
+    data.level as Relation<{
+      id: string;
+      level: number;
+    }>,
+  );
 
-  const job = one(data.job as Relation<{
-    id: string;
-    name: string;
-  }>);
+  const job = one(
+    data.job as Relation<{
+      id: string;
+      name: string;
+    }>,
+  );
 
   if (!order) {
     return null;
   }
 
-  const association = one(order.association);
-  const colour = order.colour ?? association?.colour ?? "#8d6d3e";
+  const association =
+    one(order.association);
+
+  const colour =
+    order.colour ??
+    association?.colour ??
+    "#8d6d3e";
 
   return (
     <section
       className="mt-3 border bg-[#120e0b] p-4"
-      style={{ borderColor: `${colour}66` }}
+      style={{
+        borderColor: `${colour}66`,
+      }}
     >
       <p className="text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
         Order membership
@@ -106,27 +128,38 @@ export async function CharacterOrderSummary({
       <div className="mt-3 grid gap-px bg-[#4f3b28]/35 sm:grid-cols-2 lg:grid-cols-4">
         <OrderDetail
           label="Association"
-          value={association?.name ?? "Not assigned"}
-          href={association ? `/associations/${association.slug}` : undefined}
+          value={
+            association?.name ??
+            "Not assigned"
+          }
+          href={
+            association
+              ? `/associations/${association.slug}`
+              : undefined
+          }
         />
+
         <OrderDetail
           label="Order"
           value={order.name}
           href={`/orders/${order.slug}`}
         />
+
         <OrderDetail
           label="Level"
           value={
             level
-              ? level.name
-                ? `${level.level} — ${level.name}`
-                : `Level ${level.level}`
+              ? `Level ${level.level}`
               : "Not assigned"
           }
         />
+
         <OrderDetail
           label="Job"
-          value={job?.name ?? "No specific job"}
+          value={
+            job?.name ??
+            "No specific job"
+          }
         />
       </div>
     </section>
@@ -147,6 +180,7 @@ function OrderDetail({
       <p className="text-[7px] uppercase tracking-[0.19em] text-[#796448]">
         {label}
       </p>
+
       <p className="mt-1 break-words text-[11px] leading-5 text-[#cab89b]">
         {value}
       </p>
