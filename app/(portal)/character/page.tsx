@@ -14,6 +14,7 @@ import {
 } from "./actions";
 import { CharacterAttributesDisplay } from "@/components/characters/character-attributes-display";
 import { CharacterHealthDisplay } from "@/components/characters/character-health-display";
+import { getEffectiveCharacterAttributes } from "@/lib/characters/get-effective-character-attributes";
 import { createClient } from "@/lib/supabase/server";
 
 type CharacterStatus =
@@ -157,12 +158,31 @@ export default async function CharacterPage({
     redirect("/character/create");
   }
 
+  const effectiveAttributes =
+    await getEffectiveCharacterAttributes(
+      character.id,
+      {
+        muscles: character.muscles,
+        reflexes: character.reflexes,
+        vigor: character.vigor,
+        brains: character.brains,
+        shrewd: character.shrewd,
+        presence_score:
+          character.presence_score,
+      },
+    );
+
+  const characterWithEffectiveAttributes = {
+    ...character,
+    ...effectiveAttributes,
+  };
+
   const notice = getPageNotice(params);
 
   return (
     <Profile
       character={
-        character as unknown as CharacterProfile
+        characterWithEffectiveAttributes as unknown as CharacterProfile
       }
       own
       notice={notice}

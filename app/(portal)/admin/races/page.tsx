@@ -23,6 +23,12 @@ type RaceRow = {
   colour: string | null;
   is_active: boolean;
   is_selectable: boolean;
+  muscles_modifier: number;
+  reflexes_modifier: number;
+  vigour_modifier: number;
+  shrewd_modifier: number;
+  brains_modifier: number;
+  presence_modifier: number;
   sort_order: number;
   created_at: string;
   updated_at: string;
@@ -41,6 +47,12 @@ type RaceQueryRow = {
   colour: string | null;
   is_active: boolean;
   is_selectable: boolean;
+  muscles_modifier: number;
+  reflexes_modifier: number;
+  vigour_modifier: number;
+  shrewd_modifier: number;
+  brains_modifier: number;
+  presence_modifier: number;
   sort_order: number;
   created_at: string;
   updated_at: string;
@@ -118,6 +130,12 @@ export default async function AdminRacesPage({
       colour,
       is_active,
       is_selectable,
+      muscles_modifier,
+      reflexes_modifier,
+      vigour_modifier,
+      shrewd_modifier,
+      brains_modifier,
+      presence_modifier,
       sort_order,
       created_at,
       updated_at,
@@ -151,6 +169,18 @@ export default async function AdminRacesPage({
       colour: race.colour,
       is_active: race.is_active,
       is_selectable: race.is_selectable,
+      muscles_modifier:
+        race.muscles_modifier,
+      reflexes_modifier:
+        race.reflexes_modifier,
+      vigour_modifier:
+        race.vigour_modifier,
+      shrewd_modifier:
+        race.shrewd_modifier,
+      brains_modifier:
+        race.brains_modifier,
+      presence_modifier:
+        race.presence_modifier,
       sort_order: race.sort_order,
       created_at: race.created_at,
       updated_at: race.updated_at,
@@ -279,6 +309,10 @@ export default async function AdminRacesPage({
                   />
                 </div>
               </AdminField>
+
+              <div className="md:col-span-2">
+                <AttributeModifierFields />
+              </div>
 
               <div className="md:col-span-2">
                 <AdminField label="Summary">
@@ -589,6 +623,25 @@ export default async function AdminRacesPage({
                       </AdminField>
 
                       <div className="md:col-span-2">
+                        <AttributeModifierFields
+                          values={{
+                            muscles:
+                              race.muscles_modifier,
+                            reflexes:
+                              race.reflexes_modifier,
+                            vigour:
+                              race.vigour_modifier,
+                            shrewd:
+                              race.shrewd_modifier,
+                            brains:
+                              race.brains_modifier,
+                            presence:
+                              race.presence_modifier,
+                          }}
+                        />
+                      </div>
+
+                      <div className="md:col-span-2">
                         <AdminField label="Summary">
                           <RichTextEditor
                             name="summary"
@@ -754,6 +807,87 @@ export default async function AdminRacesPage({
         </div>
       </div>
     </main>
+  );
+}
+
+const ATTRIBUTE_MODIFIER_FIELDS = [
+  {
+    key: "muscles",
+    label: "Muscles",
+  },
+  {
+    key: "reflexes",
+    label: "Reflexes",
+  },
+  {
+    key: "vigour",
+    label: "Vigour",
+  },
+  {
+    key: "shrewd",
+    label: "Shrewd",
+  },
+  {
+    key: "brains",
+    label: "Brains",
+  },
+  {
+    key: "presence",
+    label: "Presence",
+  },
+] as const;
+
+function AttributeModifierFields({
+  values,
+}: {
+  values?: Partial<
+    Record<
+      (typeof ATTRIBUTE_MODIFIER_FIELDS)[number]["key"],
+      number
+    >
+  >;
+}) {
+  return (
+    <section className="border border-[#60482e]/45 bg-[#100c09] p-4">
+      <p className="text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+        Attribute modifiers
+      </p>
+
+      <p className="mt-2 text-[11px] leading-5 text-[#8f8271]">
+        These values are added to the character&apos;s base attributes. Order Level modifiers are applied separately.
+      </p>
+
+      <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+        {ATTRIBUTE_MODIFIER_FIELDS.map(
+          ({ key, label }) => (
+            <label
+              key={key}
+              className="block"
+            >
+              <span className="mb-1.5 block text-[8px] uppercase tracking-[0.12em] text-[#776956]">
+                {label}
+              </span>
+
+              <input
+                type="number"
+                name={`${key}Modifier`}
+                min={-10}
+                max={10}
+                step={1}
+                defaultValue={
+                  values?.[key] ?? 0
+                }
+                className="w-full border border-[#60482e]/55 bg-[#15100d] px-2 py-2 text-center text-sm text-[#d7c4a5] outline-none focus:border-[#9b7446]"
+              />
+            </label>
+          ),
+        )}
+      </div>
+
+      <p className="mt-3 text-[9px] leading-5 text-[#756957]">
+        Effective attribute = Base + Ancestry modifier + Order modifier.
+      </p>
+    </section>
   );
 }
 

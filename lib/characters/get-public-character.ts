@@ -2,6 +2,7 @@ import "server-only";
 
 import { cache } from "react";
 
+import { getEffectiveCharacterAttributes } from "@/lib/characters/get-effective-character-attributes";
 import { createClient } from "@/lib/supabase/server";
 import { getPublicOrderMembership } from "@/lib/orders/get-public-order-membership";
 import type {
@@ -365,6 +366,20 @@ export const getPublicCharacter = cache(
         row.id,
       );
 
+    const effectiveAttributes =
+      await getEffectiveCharacterAttributes(
+        row.id,
+        {
+          muscles: row.muscles,
+          reflexes: row.reflexes,
+          vigor: row.vigor,
+          brains: row.brains,
+          shrewd: row.shrewd,
+          presence_score:
+            row.presence_score,
+        },
+      );
+
     return {
       id: row.id,
       public_slug: row.public_slug,
@@ -385,12 +400,13 @@ export const getPublicCharacter = cache(
       personality: row.personality,
       public_notes: row.public_notes,
       title: row.title,
-      muscles: row.muscles,
-      reflexes: row.reflexes,
-      vigor: row.vigor,
-      brains: row.brains,
-      shrewd: row.shrewd,
-      presence_score: row.presence_score,
+      muscles: effectiveAttributes.muscles,
+      reflexes: effectiveAttributes.reflexes,
+      vigor: effectiveAttributes.vigor,
+      brains: effectiveAttributes.brains,
+      shrewd: effectiveAttributes.shrewd,
+      presence_score:
+        effectiveAttributes.presence_score,
       current_health:
         row.current_health,
       status: row.status,

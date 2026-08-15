@@ -84,6 +84,80 @@ function getInteger(
   );
 }
 
+function getAttributeModifier(
+  formData: FormData,
+  fieldName: string,
+  label: string,
+): number {
+  const value =
+    formData.get(fieldName);
+
+  if (
+    typeof value !== "string" ||
+    value.trim() === ""
+  ) {
+    return 0;
+  }
+
+  const parsedValue =
+    Number(value);
+
+  if (
+    !Number.isInteger(parsedValue) ||
+    parsedValue < -10 ||
+    parsedValue > 10
+  ) {
+    throw new Error(
+      `${label} modifier must be a whole number between -10 and 10.`,
+    );
+  }
+
+  return parsedValue;
+}
+
+function getAttributeModifiers(
+  formData: FormData,
+) {
+  return {
+    muscles_modifier:
+      getAttributeModifier(
+        formData,
+        "musclesModifier",
+        "Muscles",
+      ),
+    reflexes_modifier:
+      getAttributeModifier(
+        formData,
+        "reflexesModifier",
+        "Reflexes",
+      ),
+    vigour_modifier:
+      getAttributeModifier(
+        formData,
+        "vigourModifier",
+        "Vigour",
+      ),
+    shrewd_modifier:
+      getAttributeModifier(
+        formData,
+        "shrewdModifier",
+        "Shrewd",
+      ),
+    brains_modifier:
+      getAttributeModifier(
+        formData,
+        "brainsModifier",
+        "Brains",
+      ),
+    presence_modifier:
+      getAttributeModifier(
+        formData,
+        "presenceModifier",
+        "Presence",
+      ),
+  };
+}
+
 function getCheckbox(
   formData: FormData,
   fieldName: string,
@@ -250,6 +324,11 @@ export async function createRace(
       "isSelectable",
     );
 
+    const attributeModifiers =
+      getAttributeModifiers(
+        formData,
+      );
+
     const { error } = await supabase
       .from("races")
       .insert({
@@ -264,6 +343,7 @@ export async function createRace(
         sort_order: sortOrder,
         is_active: isActive,
         is_selectable: isSelectable,
+        ...attributeModifiers,
         updated_at:
           new Date().toISOString(),
       });
@@ -397,6 +477,11 @@ export async function updateRace(
       "isSelectable",
     );
 
+    const attributeModifiers =
+      getAttributeModifiers(
+        formData,
+      );
+
     const { error: updateError } =
       await supabase
         .from("races")
@@ -412,6 +497,7 @@ export async function updateRace(
           sort_order: sortOrder,
           is_active: isActive,
           is_selectable: isSelectable,
+          ...attributeModifiers,
           updated_at:
             new Date().toISOString(),
         })

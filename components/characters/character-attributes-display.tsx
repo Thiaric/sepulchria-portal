@@ -9,15 +9,15 @@ export const CHARACTER_ATTRIBUTE_DEFINITIONS = [
   },
   {
     key: "vigor",
-    label: "Vigor",
-  },
-  {
-    key: "brains",
-    label: "Brains",
+    label: "Vigour",
   },
   {
     key: "shrewd",
     label: "Shrewd",
+  },
+  {
+    key: "brains",
+    label: "Brains",
   },
   {
     key: "presence_score",
@@ -64,7 +64,7 @@ export function CharacterAttributesDisplay({
 
           {hasAnyAttribute ? (
             <p className="text-[7px] uppercase tracking-[0.14em] text-[#776957]">
-              20 points
+              Effective values
             </p>
           ) : null}
         </div>
