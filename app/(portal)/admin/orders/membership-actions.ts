@@ -341,6 +341,14 @@ export async function addOrderMember(
       `${character.display_name} added to the Order.`,
     );
   } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message ===
+        "NEXT_REDIRECT"
+    ) {
+      throw error;
+    }
+
     back(
       orderId,
       "error",
@@ -349,6 +357,7 @@ export async function addOrderMember(
         : "Unable to add the Order member.",
     );
   }
+
 }
 
 export async function updateOrderMember(
@@ -467,6 +476,14 @@ export async function updateOrderMember(
       `${name}'s Order position was updated.`,
     );
   } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message ===
+        "NEXT_REDIRECT"
+    ) {
+      throw error;
+    }
+
     back(
       orderId,
       "error",
@@ -475,6 +492,7 @@ export async function updateOrderMember(
         : "Unable to update the Order member.",
     );
   }
+
 }
 
 export async function removeOrderMember(
@@ -570,6 +588,14 @@ export async function removeOrderMember(
       `${name} removed from the Order.`,
     );
   } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message ===
+        "NEXT_REDIRECT"
+    ) {
+      throw error;
+    }
+
     back(
       orderId,
       "error",
@@ -578,4 +604,5 @@ export async function removeOrderMember(
         : "Unable to remove the Order member.",
     );
   }
+
 }

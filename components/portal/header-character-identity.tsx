@@ -7,6 +7,7 @@ import {
 import Link from "next/link";
 
 import { createClient } from "@/lib/supabase/client";
+import { HeaderOrderIcon } from "@/components/portal/header-order-icon";
 import type {
   PortalCharacter,
   PortalPresenceStatus,
@@ -319,29 +320,9 @@ last_seen_at:
             />
           )}
 
-          {character.association
-            ?.icon_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={
-                character
-                  .association
-                  .icon_url
-              }
-              alt={
-                character
-                  .association
-                  .name
-              }
-              title={`Association: ${character.association.name}`}
-              className="h-4 w-4 object-contain"
-            />
-          ) : (
-            <span
-              className="h-4 w-4"
-              aria-hidden="true"
-            />
-          )}
+          <HeaderOrderIcon
+            characterId={character.id}
+          />
         </div>
       </div>
 

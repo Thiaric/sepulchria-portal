@@ -1,8 +1,9 @@
 import {
   addOrderMember,
-  removeOrderMember,
   updateOrderMember,
 } from "@/app/(portal)/admin/orders/membership-actions";
+import { AdminOrderMemberRemoveButton } from "@/components/admin/admin-order-member-remove-button";
+
 import { createClient } from "@/lib/supabase/server";
 
 type Level = {
@@ -392,15 +393,11 @@ export async function OrderMembershipManager({
                       Save
                     </button>
 
-                    <button
-                      type="submit"
-                      formAction={
-                        removeOrderMember
+                    <AdminOrderMemberRemoveButton
+                      characterName={
+                        character.display_name
                       }
-                      className="border border-red-900/55 bg-red-950/20 px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-red-300"
-                    >
-                      Remove
-                    </button>
+                    />
                   </div>
                 </div>
 
