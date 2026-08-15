@@ -5,6 +5,11 @@ import { notFound } from "next/navigation";
 
 import { ForumTopicFavouriteButton } from "@/components/forum/forum-topic-favourite-button";
 import { createClient } from "@/lib/supabase/server";
+import {
+  canAccessOrderSection,
+  canViewOrderTopic,
+  getForumViewerContext,
+} from "@/lib/forum/order-forum-access";
 
 type ForumSection = {
   id: string;
@@ -16,6 +21,7 @@ type ForumSection = {
     | "offgame"
     | "organisation";
   association_id: string | null;
+  order_id: string | null;
   parent_id: string | null;
   visibility:
     | "public"
@@ -56,6 +62,7 @@ type ForumTopicQueryRow = {
   updated_at: string;
   edited_at: string | null;
   deleted_at: string | null;
+  visible_order_levels: number[] | null;
   author_character:
     | {
         id: string;
@@ -90,6 +97,7 @@ type ForumTopic = {
   updated_at: string;
   edited_at: string | null;
   deleted_at: string | null;
+  visible_order_levels: number[] | null;
   is_anonymous: boolean;
   author_character: {
     id: string;
@@ -204,6 +212,7 @@ export default async function ForumSectionPage({
       description,
       section_type,
       association_id,
+      order_id,
       parent_id,
       visibility,
       icon_url,
@@ -240,6 +249,18 @@ export default async function ForumSectionPage({
     ),
   };
 
+  const viewer =
+    await getForumViewerContext(supabase);
+
+  if (
+    !canAccessOrderSection(
+      viewer,
+      section.order_id,
+    )
+  ) {
+    notFound();
+  }
+
   const [
     {
       data: childSectionData,
@@ -263,6 +284,7 @@ export default async function ForumSectionPage({
         description,
         section_type,
         association_id,
+        order_id,
         parent_id,
         visibility,
         icon_url,
@@ -303,6 +325,7 @@ export default async function ForumSectionPage({
         updated_at,
         edited_at,
         deleted_at,
+        visible_order_levels,
         author_character:characters!forum_topics_author_character_id_fkey (
           id,
           display_name,
@@ -399,25 +422,42 @@ export default async function ForumSectionPage({
   const childSections = (
     (childSectionData ??
       []) as unknown as ForumSection[]
-  ).map((childSection) => ({
-    ...childSection,
-    association: getSingleRelation(
-      childSection.association,
-    ),
-  }));
+  )
+    .filter((childSection) =>
+      canAccessOrderSection(
+        viewer,
+        childSection.order_id,
+      ),
+    )
+    .map((childSection) => ({
+      ...childSection,
+      association: getSingleRelation(
+        childSection.association,
+      ),
+    }));
 
-  const topics = topicRows.map(
-    (topic): ForumTopic => ({
-      ...topic,
-      is_anonymous:
-        anonymousByTopic.get(topic.id) ??
-        false,
-      author_character:
-        getSingleRelation(
-          topic.author_character,
-        ),
-    }),
-  );
+  const topics = topicRows
+    .filter((topic) =>
+      !section.order_id ||
+      canViewOrderTopic({
+        viewer,
+        orderId: section.order_id,
+        visibleLevels:
+          topic.visible_order_levels,
+      }),
+    )
+    .map(
+      (topic): ForumTopic => ({
+        ...topic,
+        is_anonymous:
+          anonymousByTopic.get(topic.id) ??
+          false,
+        author_character:
+          getSingleRelation(
+            topic.author_character,
+          ),
+      }),
+    );
 
   const reads =
     (readData ?? []) as ForumTopicRead[];

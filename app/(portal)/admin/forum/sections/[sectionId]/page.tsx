@@ -36,6 +36,7 @@ type ForumSectionRecord = {
     | "offgame"
     | "organisation";
   association_id: string | null;
+  order_id: string | null;
   parent_id: string | null;
   visibility:
     | "public"
@@ -58,6 +59,12 @@ type ParentSectionRecord = {
 type AssociationRecord = {
   id: string;
   name: string;
+};
+
+type OrderRecord = {
+  id: string;
+  name: string;
+  association_id: string;
 };
 
 type TopicRecord = {
@@ -156,6 +163,7 @@ export default async function EditForumSectionPage({
           description,
           section_type,
           association_id,
+          order_id,
           parent_id,
           visibility,
           icon_url,
@@ -217,6 +225,23 @@ export default async function EditForumSectionPage({
       .eq("parent_id", sectionId),
   ]);
 
+  const {
+    data: orderRecords,
+    error: ordersError,
+  } = await supabase
+    .from("orders")
+    .select("id, name, association_id")
+    .eq("is_active", true)
+    .order("name", {
+      ascending: true,
+    });
+
+  if (ordersError) {
+    throw new Error(
+      `Unable to load Orders: ${ordersError.message}`,
+    );
+  }
+
   if (sectionError) {
     throw new Error(
       `Unable to load the forum section: ${sectionError.message}`,
@@ -261,6 +286,9 @@ export default async function EditForumSectionPage({
   const associations =
     (associationRecords ??
       []) as AssociationRecord[];
+
+  const orders =
+    (orderRecords ?? []) as OrderRecord[];
 
   const topics =
     (topicRecords ??
@@ -616,6 +644,32 @@ export default async function EditForumSectionPage({
                       </option>
                     ),
                   )}
+                </select>
+              </FieldGroup>
+
+              <FieldGroup
+                label="Order"
+                htmlFor="forum-section-order-owner"
+                description="Optional exact Order connected to this section. Selecting an Order automatically makes this an Organisation / Members section and derives its Association."
+              >
+                <select
+                  id="forum-section-order-owner"
+                  name="order_id"
+                  defaultValue={section.order_id ?? ""}
+                  className={inputClassName}
+                >
+                  <option value="">
+                    No specific Order
+                  </option>
+
+                  {orders.map((order) => (
+                    <option
+                      key={order.id}
+                      value={order.id}
+                    >
+                      {order.name}
+                    </option>
+                  ))}
                 </select>
               </FieldGroup>
 

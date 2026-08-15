@@ -16,6 +16,12 @@ type AssociationRecord = {
   name: string;
 };
 
+type OrderRecord = {
+  id: string;
+  name: string;
+  association_id: string;
+};
+
 type ForumSectionRecord = {
   id: string;
   name: string;
@@ -103,6 +109,23 @@ export default async function NewForumSectionPage({
       }),
   ]);
 
+  const {
+    data: orderRecords,
+    error: ordersError,
+  } = await supabase
+    .from("orders")
+    .select("id, name, association_id")
+    .eq("is_active", true)
+    .order("name", {
+      ascending: true,
+    });
+
+  if (ordersError) {
+    throw new Error(
+      `Unable to load Orders: ${ordersError.message}`,
+    );
+  }
+
   if (associationsError) {
     throw new Error(
       `Unable to load organisations: ${associationsError.message}`,
@@ -122,6 +145,9 @@ export default async function NewForumSectionPage({
   const sections =
     (sectionRecords ??
       []) as ForumSectionRecord[];
+
+  const orders =
+    (orderRecords ?? []) as OrderRecord[];
 
   const resolvedSearchParams =
     await searchParams;
@@ -373,6 +399,32 @@ export default async function NewForumSectionPage({
                       </option>
                     ),
                   )}
+                </select>
+              </FieldGroup>
+
+              <FieldGroup
+                label="Order"
+                htmlFor="forum-section-order-owner"
+                description="Optional exact Order connected to this section. Selecting an Order automatically makes this an Organisation / Members section and derives its Association."
+              >
+                <select
+                  id="forum-section-order-owner"
+                  name="order_id"
+                  defaultValue=""
+                  className={inputClassName}
+                >
+                  <option value="">
+                    No specific Order
+                  </option>
+
+                  {orders.map((order) => (
+                    <option
+                      key={order.id}
+                      value={order.id}
+                    >
+                      {order.name}
+                    </option>
+                  ))}
                 </select>
               </FieldGroup>
 

@@ -36,6 +36,7 @@ type ValidatedSectionData = {
   section_type: SectionType;
   visibility: SectionVisibility;
   association_id: string | null;
+  order_id: string | null;
   parent_id: string | null;
   icon_url: string | null;
   banner_url: string | null;
@@ -222,6 +223,11 @@ function validateSectionForm(
     "association_id",
   );
 
+  const orderId = getStringValue(
+    formData,
+    "order_id",
+  );
+
   const parentId = getStringValue(
     formData,
     "parent_id",
@@ -337,6 +343,7 @@ function validateSectionForm(
     visibility,
     association_id:
       associationId || null,
+    order_id: orderId || null,
     parent_id: parentId || null,
     icon_url: iconUrl || null,
     banner_url: bannerUrl || null,
@@ -377,6 +384,42 @@ async function verifyAssociation(
       "The selected organisation no longer exists.",
     );
   }
+}
+
+async function resolveOrderAssociation(
+  supabase: Awaited<
+    ReturnType<typeof createClient>
+  >,
+  orderId: string | null,
+  onError: (message: string) => never,
+): Promise<string | null> {
+  if (!orderId) {
+    return null;
+  }
+
+  const { data: order, error } =
+    await supabase
+      .from("orders")
+      .select("id, association_id")
+      .eq("id", orderId)
+      .maybeSingle<{
+        id: string;
+        association_id: string;
+      }>();
+
+  if (error) {
+    onError(
+      `Unable to verify the Order: ${error.message}`,
+    );
+  }
+
+  if (!order) {
+    onError(
+      "The selected Order no longer exists.",
+    );
+  }
+
+  return order.association_id;
 }
 
 async function verifyParentSection(
@@ -543,6 +586,21 @@ export async function createForumSectionAction(
     );
   }
 
+  const orderAssociationId =
+    await resolveOrderAssociation(
+      supabase,
+      sectionData.order_id,
+      redirectToCreateError,
+    );
+
+  if (sectionData.order_id) {
+    sectionData.association_id =
+      orderAssociationId;
+    sectionData.section_type =
+      "organisation";
+    sectionData.visibility = "members";
+  }
+
   await verifyAssociation(
     supabase,
     sectionData.association_id,
@@ -668,6 +726,21 @@ export async function updateForumSectionAction(
     onError(
       "Another forum section already uses this slug.",
     );
+  }
+
+  const orderAssociationId =
+    await resolveOrderAssociation(
+      supabase,
+      sectionData.order_id,
+      onError,
+    );
+
+  if (sectionData.order_id) {
+    sectionData.association_id =
+      orderAssociationId;
+    sectionData.section_type =
+      "organisation";
+    sectionData.visibility = "members";
   }
 
   await verifyAssociation(

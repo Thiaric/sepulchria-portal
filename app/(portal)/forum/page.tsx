@@ -3,6 +3,11 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { createClient } from "@/lib/supabase/server";
+import {
+  canAccessOrderSection,
+  canViewOrderTopic,
+  getForumViewerContext,
+} from "@/lib/forum/order-forum-access";
 
 
 type ForumSection = {
@@ -15,6 +20,7 @@ type ForumSection = {
     | "offgame"
     | "organisation";
   association_id: string | null;
+  order_id: string | null;
   parent_id: string | null;
   visibility:
     | "public"
@@ -39,6 +45,7 @@ type ForumTopic = {
   slug: string;
   replies_count: number;
   last_post_at: string;
+  visible_order_levels: number[] | null;
   deleted_at: string | null;
 };
 
@@ -129,6 +136,9 @@ export default async function ForumPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const viewer =
+    await getForumViewerContext(supabase);
+
   const [
     { data: sectionData, error: sectionError },
     { data: topicData, error: topicError },
@@ -143,6 +153,7 @@ export default async function ForumPage() {
         description,
         section_type,
         association_id,
+        order_id,
         parent_id,
         visibility,
         icon_url,
@@ -173,6 +184,7 @@ export default async function ForumPage() {
         slug,
         replies_count,
         last_post_at,
+        visible_order_levels,
         deleted_at
       `)
       .is("deleted_at", null),
@@ -209,11 +221,46 @@ export default async function ForumPage() {
     );
   }
 
-  const sections =
+  const allSections =
     (sectionData ?? []) as unknown as ForumSection[];
 
+  const sectionById = new Map(
+    allSections.map((section) => [
+      section.id,
+      section,
+    ]),
+  );
+
+  const sections = allSections.filter(
+    (section) =>
+      canAccessOrderSection(
+        viewer,
+        section.order_id,
+      ),
+  );
+
   const topics =
-    (topicData ?? []) as ForumTopic[];
+    ((topicData ?? []) as ForumTopic[]).filter(
+      (topic) => {
+        const section =
+          sectionById.get(topic.section_id);
+
+        if (!section) {
+          return false;
+        }
+
+        if (!section.order_id) {
+          return true;
+        }
+
+        return canViewOrderTopic({
+          viewer,
+          orderId: section.order_id,
+          visibleLevels:
+            topic.visible_order_levels,
+        });
+      },
+    );
 
   const reads =
     (readData ?? []) as ForumTopicRead[];
