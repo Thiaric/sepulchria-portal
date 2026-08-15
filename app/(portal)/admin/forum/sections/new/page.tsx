@@ -1,8 +1,9 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import Script from "next/script";
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
+import { ForumOrderSectionFields } from "@/components/admin/forum-order-section-fields";
 
 import {
   createForumSectionAction,
@@ -148,6 +149,22 @@ export default async function NewForumSectionPage({
 
   const orders =
     (orderRecords ?? []) as OrderRecord[];
+
+  const associationNameById = new Map(
+    associations.map((association) => [
+      association.id,
+      association.name,
+    ]),
+  );
+
+  const orderOptions = orders.map((order) => ({
+    id: order.id,
+    name: order.name,
+    associationName:
+      associationNameById.get(
+        order.association_id,
+      ) ?? "Unassigned Association",
+  }));
 
   const resolvedSearchParams =
     await searchParams;
@@ -368,65 +385,10 @@ export default async function NewForumSectionPage({
                 </select>
               </FieldGroup>
 
-              <FieldGroup
-                label="Organisation"
-                htmlFor="forum-section-association"
-                description="Optional organisation connected to this section."
-              >
-                <select
-                  id="forum-section-association"
-                  name="association_id"
-                  defaultValue=""
-                  className={inputClassName}
-                >
-                  <option value="">
-                    No organisation
-                  </option>
-
-                  {associations.map(
-                    (association) => (
-                      <option
-                        key={
-                          association.id
-                        }
-                        value={
-                          association.id
-                        }
-                      >
-                        {
-                          association.name
-                        }
-                      </option>
-                    ),
-                  )}
-                </select>
-              </FieldGroup>
-
-              <FieldGroup
-                label="Order"
-                htmlFor="forum-section-order-owner"
-                description="Optional exact Order connected to this section. Selecting an Order automatically makes this an Organisation / Members section and derives its Association."
-              >
-                <select
-                  id="forum-section-order-owner"
-                  name="order_id"
-                  defaultValue=""
-                  className={inputClassName}
-                >
-                  <option value="">
-                    No specific Order
-                  </option>
-
-                  {orders.map((order) => (
-                    <option
-                      key={order.id}
-                      value={order.id}
-                    >
-                      {order.name}
-                    </option>
-                  ))}
-                </select>
-              </FieldGroup>
+              <ForumOrderSectionFields
+                orders={orderOptions}
+                inputClassName={inputClassName}
+              />
 
               <FieldGroup
                 label="Parent section"
@@ -451,7 +413,7 @@ export default async function NewForumSectionPage({
                       >
                         {section.name}
                         {!section.is_active
-                          ? " â€” Hidden"
+                          ? " — Hidden"
                           : ""}
                       </option>
                     ),

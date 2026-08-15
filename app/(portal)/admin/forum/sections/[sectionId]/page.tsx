@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import Script from "next/script";
 import {
   notFound,
@@ -11,6 +11,7 @@ import {
   updateForumSectionAction,
 } from "../actions";
 import { createClient } from "@/lib/supabase/server";
+import { ForumOrderSectionFields } from "@/components/admin/forum-order-section-fields";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -290,6 +291,22 @@ export default async function EditForumSectionPage({
   const orders =
     (orderRecords ?? []) as OrderRecord[];
 
+  const associationNameById = new Map(
+    associations.map((association) => [
+      association.id,
+      association.name,
+    ]),
+  );
+
+  const orderOptions = orders.map((order) => ({
+    id: order.id,
+    name: order.name,
+    associationName:
+      associationNameById.get(
+        order.association_id,
+      ) ?? "Unassigned Association",
+  }));
+
   const topics =
     (topicRecords ??
       []) as TopicRecord[];
@@ -548,7 +565,7 @@ export default async function EditForumSectionPage({
             <SectionHeading
               eyebrow="Classification"
               title="Type and access"
-              description="Define the category, visibility and any connected organisation."
+              description="Define the category, visibility and any connected Order."
             />
 
             <div className="mt-6 grid gap-5 md:grid-cols-2">
@@ -610,68 +627,11 @@ export default async function EditForumSectionPage({
                 </select>
               </FieldGroup>
 
-              <FieldGroup
-                label="Organisation"
-                htmlFor="forum-section-association"
-                description="Optional organisation connected to this section."
-              >
-                <select
-                  id="forum-section-association"
-                  name="association_id"
-                  defaultValue={
-                    section.association_id ??
-                    ""
-                  }
-                  className={inputClassName}
-                >
-                  <option value="">
-                    No organisation
-                  </option>
-
-                  {associations.map(
-                    (association) => (
-                      <option
-                        key={
-                          association.id
-                        }
-                        value={
-                          association.id
-                        }
-                      >
-                        {
-                          association.name
-                        }
-                      </option>
-                    ),
-                  )}
-                </select>
-              </FieldGroup>
-
-              <FieldGroup
-                label="Order"
-                htmlFor="forum-section-order-owner"
-                description="Optional exact Order connected to this section. Selecting an Order automatically makes this an Organisation / Members section and derives its Association."
-              >
-                <select
-                  id="forum-section-order-owner"
-                  name="order_id"
-                  defaultValue={section.order_id ?? ""}
-                  className={inputClassName}
-                >
-                  <option value="">
-                    No specific Order
-                  </option>
-
-                  {orders.map((order) => (
-                    <option
-                      key={order.id}
-                      value={order.id}
-                    >
-                      {order.name}
-                    </option>
-                  ))}
-                </select>
-              </FieldGroup>
+              <ForumOrderSectionFields
+                orders={orderOptions}
+                defaultOrderId={section.order_id}
+                inputClassName={inputClassName}
+              />
 
               <FieldGroup
                 label="Parent section"
@@ -705,7 +665,7 @@ export default async function EditForumSectionPage({
                           parentSection.name
                         }
                         {!parentSection.is_active
-                          ? " â€” Hidden"
+                          ? " — Hidden"
                           : ""}
                       </option>
                     ),

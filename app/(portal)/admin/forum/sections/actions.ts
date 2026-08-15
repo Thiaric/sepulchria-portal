@@ -1,4 +1,4 @@
-﻿"use server";
+"use server";
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -64,7 +64,7 @@ function createSlug(value: string): string {
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
     .trim()
-    .replace(/['â€™]/g, "")
+    .replace(/[\u2019']/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
     .replace(/-{2,}/g, "-");
@@ -341,8 +341,7 @@ function validateSectionForm(
       description || null,
     section_type: sectionType,
     visibility,
-    association_id:
-      associationId || null,
+    association_id: null,
     order_id: orderId || null,
     parent_id: parentId || null,
     icon_url: iconUrl || null,
@@ -404,7 +403,7 @@ async function resolveOrderAssociation(
       .eq("id", orderId)
       .maybeSingle<{
         id: string;
-        association_id: string;
+        association_id: string | null;
       }>();
 
   if (error) {
@@ -416,6 +415,12 @@ async function resolveOrderAssociation(
   if (!order) {
     onError(
       "The selected Order no longer exists.",
+    );
+  }
+
+  if (!order.association_id) {
+    onError(
+      "The selected Order has no Association assigned.",
     );
   }
 
@@ -593,9 +598,10 @@ export async function createForumSectionAction(
       redirectToCreateError,
     );
 
+  sectionData.association_id =
+    orderAssociationId;
+
   if (sectionData.order_id) {
-    sectionData.association_id =
-      orderAssociationId;
     sectionData.section_type =
       "organisation";
     sectionData.visibility = "members";
@@ -735,9 +741,10 @@ export async function updateForumSectionAction(
       onError,
     );
 
+  sectionData.association_id =
+    orderAssociationId;
+
   if (sectionData.order_id) {
-    sectionData.association_id =
-      orderAssociationId;
     sectionData.section_type =
       "organisation";
     sectionData.visibility = "members";
