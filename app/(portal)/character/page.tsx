@@ -14,6 +14,7 @@ import {
 } from "./actions";
 import { CharacterAttributesDisplay } from "@/components/characters/character-attributes-display";
 import { CharacterHealthDisplay } from "@/components/characters/character-health-display";
+import { LiveCharacterSheetRefresh } from "@/components/characters/live-character-sheet-refresh";
 import { getEffectiveCharacterAttributes } from "@/lib/characters/get-effective-character-attributes";
 import { createClient } from "@/lib/supabase/server";
 
@@ -179,14 +180,29 @@ export default async function CharacterPage({
 
   const notice = getPageNotice(params);
 
+  const liveRace =
+    normaliseRelation(
+      character.race as
+        | CodexRelation
+        | CodexRelation[]
+        | null,
+    );
+
   return (
-    <Profile
-      character={
-        characterWithEffectiveAttributes as unknown as CharacterProfile
-      }
-      own
-      notice={notice}
-    />
+    <>
+      <LiveCharacterSheetRefresh
+        characterId={character.id}
+        raceId={liveRace?.id ?? null}
+      />
+
+      <Profile
+        character={
+          characterWithEffectiveAttributes as unknown as CharacterProfile
+        }
+        own
+        notice={notice}
+      />
+    </>
   );
 }
 

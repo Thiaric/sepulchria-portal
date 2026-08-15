@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 
 import { PublicCharacterProfileView } from "@/components/characters/public-character-profile";
+import { LiveCharacterSheetRefresh } from "@/components/characters/live-character-sheet-refresh";
 import { getPublicCharacter } from "@/lib/characters/get-public-character";
 import { createClient } from "@/lib/supabase/server";
 
@@ -93,6 +94,14 @@ export default async function PublicCharacterPage({
 
   return (
     <div className="mx-auto w-full max-w-7xl p-6">
+      <LiveCharacterSheetRefresh
+        characterId={character.id}
+        raceId={
+          character.race?.id ??
+          null
+        }
+      />
+
       <PublicCharacterProfileView
         character={character}
         returnHref={returnHref}
