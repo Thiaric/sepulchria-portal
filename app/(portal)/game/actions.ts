@@ -11,6 +11,7 @@ import {
 } from "@/lib/game/constants";
 import { getStaffSession } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
+import { getEffectiveCharacterAttributes } from "@/lib/characters/get-effective-character-attributes";
 import type {
   ActionState,
   CharacterAttributeKey,
@@ -1157,7 +1158,7 @@ function getAttributeLabel(
     Record<CharacterAttributeKey, string> = {
       muscles: "Muscles",
       reflexes: "Reflexes",
-      vigor: "Vigor",
+      vigor: "Vigour",
       brains: "Brains",
       shrewd: "Shrewd",
       presence_score: "Presence",
@@ -1305,14 +1306,29 @@ export async function sendRoomAttributeCheck(
       };
     }
 
+    const effectiveAttributes =
+      await getEffectiveCharacterAttributes(
+        character.id,
+        {
+          muscles: character.muscles,
+          reflexes: character.reflexes,
+          vigor: character.vigor,
+          brains: character.brains,
+          shrewd: character.shrewd,
+          presence_score:
+            character.presence_score,
+        },
+      );
+
     const attributeValue =
-      character[definition.attribute];
+      effectiveAttributes[
+        definition.attribute
+      ];
 
     if (
       attributeValue === null ||
       !Number.isInteger(attributeValue) ||
-      attributeValue < 1 ||
-      attributeValue > 8
+      attributeValue < 1
     ) {
       return {
         ok: false,

@@ -10,6 +10,7 @@ import {
 } from "@/lib/game/constants";
 import { getStaffSession } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
+import { getCharacterAttributeBreakdown } from "@/lib/characters/get-effective-character-attributes";
 import type {
   PresentRoomCharacter,
   RoomMessage,
@@ -137,6 +138,20 @@ async function GameContent() {
   }
 
   const room = rawRoom as RoomRelation;
+
+  const attributeBreakdown =
+    await getCharacterAttributeBreakdown(
+      character.id,
+      {
+        muscles: character.muscles,
+        reflexes: character.reflexes,
+        vigor: character.vigor,
+        brains: character.brains,
+        shrewd: character.shrewd,
+        presence_score:
+          character.presence_score,
+      },
+    );
 
   const roomArea =
   Array.isArray(room.areas)
@@ -457,14 +472,22 @@ async function GameContent() {
 
     <RoomChatForm
       attributes={{
-        muscles: character.muscles,
-        reflexes: character.reflexes,
-        vigor: character.vigor,
-        brains: character.brains,
-        shrewd: character.shrewd,
+        muscles:
+          attributeBreakdown.muscles.effective,
+        reflexes:
+          attributeBreakdown.reflexes.effective,
+        vigor:
+          attributeBreakdown.vigor.effective,
+        brains:
+          attributeBreakdown.brains.effective,
+        shrewd:
+          attributeBreakdown.shrewd.effective,
         presence_score:
-          character.presence_score,
+          attributeBreakdown.presence_score.effective,
       }}
+      attributeBreakdown={
+        attributeBreakdown
+      }
       presentCharacters={
         presentCharacters
       }

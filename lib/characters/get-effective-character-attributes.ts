@@ -11,6 +11,22 @@ export type CharacterAttributeValues = {
   presence_score: number | null;
 };
 
+export type CharacterAttributeBreakdownEntry = {
+  base: number | null;
+  ancestry: number;
+  order: number;
+  effective: number | null;
+};
+
+export type CharacterAttributeBreakdown = {
+  muscles: CharacterAttributeBreakdownEntry;
+  reflexes: CharacterAttributeBreakdownEntry;
+  vigor: CharacterAttributeBreakdownEntry;
+  brains: CharacterAttributeBreakdownEntry;
+  shrewd: CharacterAttributeBreakdownEntry;
+  presence_score: CharacterAttributeBreakdownEntry;
+};
+
 type Relation<T> =
   | T
   | T[]
@@ -33,26 +49,26 @@ function one<T>(
     : value;
 }
 
-function effective(
-  baseValue: number | null,
-  ancestryModifier: number,
-  orderModifier: number,
-): number | null {
-  if (baseValue === null) {
-    return null;
-  }
-
-  return (
-    baseValue +
-    ancestryModifier +
-    orderModifier
-  );
+function makeBreakdown(
+  base: number | null,
+  ancestry: number,
+  order: number,
+): CharacterAttributeBreakdownEntry {
+  return {
+    base,
+    ancestry,
+    order,
+    effective:
+      base === null
+        ? null
+        : base + ancestry + order,
+  };
 }
 
-export async function getEffectiveCharacterAttributes(
+export async function getCharacterAttributeBreakdown(
   characterId: string,
   baseAttributes: CharacterAttributeValues,
-): Promise<CharacterAttributeValues> {
+): Promise<CharacterAttributeBreakdown> {
   const supabase =
     await createClient();
 
@@ -121,35 +137,61 @@ export async function getEffectiveCharacterAttributes(
   );
 
   return {
-    muscles: effective(
+    muscles: makeBreakdown(
       baseAttributes.muscles,
       ancestry?.muscles_modifier ?? 0,
       orderLevel?.muscles_modifier ?? 0,
     ),
-    reflexes: effective(
+    reflexes: makeBreakdown(
       baseAttributes.reflexes,
       ancestry?.reflexes_modifier ?? 0,
       orderLevel?.reflexes_modifier ?? 0,
     ),
-    vigor: effective(
+    vigor: makeBreakdown(
       baseAttributes.vigor,
       ancestry?.vigour_modifier ?? 0,
       orderLevel?.vigour_modifier ?? 0,
     ),
-    brains: effective(
+    brains: makeBreakdown(
       baseAttributes.brains,
       ancestry?.brains_modifier ?? 0,
       orderLevel?.brains_modifier ?? 0,
     ),
-    shrewd: effective(
+    shrewd: makeBreakdown(
       baseAttributes.shrewd,
       ancestry?.shrewd_modifier ?? 0,
       orderLevel?.shrewd_modifier ?? 0,
     ),
-    presence_score: effective(
+    presence_score: makeBreakdown(
       baseAttributes.presence_score,
       ancestry?.presence_modifier ?? 0,
       orderLevel?.presence_modifier ?? 0,
     ),
+  };
+}
+
+export async function getEffectiveCharacterAttributes(
+  characterId: string,
+  baseAttributes: CharacterAttributeValues,
+): Promise<CharacterAttributeValues> {
+  const breakdown =
+    await getCharacterAttributeBreakdown(
+      characterId,
+      baseAttributes,
+    );
+
+  return {
+    muscles:
+      breakdown.muscles.effective,
+    reflexes:
+      breakdown.reflexes.effective,
+    vigor:
+      breakdown.vigor.effective,
+    brains:
+      breakdown.brains.effective,
+    shrewd:
+      breakdown.shrewd.effective,
+    presence_score:
+      breakdown.presence_score.effective,
   };
 }

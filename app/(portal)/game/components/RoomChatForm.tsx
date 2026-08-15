@@ -71,18 +71,40 @@ const ATTRIBUTE_LABELS: Record<
 > = {
   muscles: "Muscles",
   reflexes: "Reflexes",
-  vigor: "Vigor",
+  vigor: "Vigour",
   brains: "Brains",
   shrewd: "Shrewd",
   presence_score: "Presence",
 };
 
+type AttributeBreakdownEntry = {
+  base: number | null;
+  ancestry: number;
+  order: number;
+  effective: number | null;
+};
+
+type AttributeBreakdown = Record<
+  CharacterAttributeKey,
+  AttributeBreakdownEntry
+>;
+
+function formatSigned(
+  value: number,
+): string {
+  return value >= 0
+    ? `+${value}`
+    : String(value);
+}
+
 export default function RoomChatForm({
   attributes,
+  attributeBreakdown,
   presentCharacters,
   canUseFate,
 }: {
   attributes: CharacterAttributes;
+  attributeBreakdown: AttributeBreakdown;
   presentCharacters: PresentRoomCharacter[];
   canUseFate: boolean;
 }) {
@@ -179,8 +201,7 @@ const visibleSpellingIssues =
         ).every(
           (score) =>
             Number.isInteger(score) &&
-            Number(score) >= 1 &&
-            Number(score) <= 8,
+            Number(score) >= 1,
         ),
       [attributes],
     );
@@ -800,18 +821,33 @@ function ignoreSpellingWord() {
                         option.attribute
                       ];
 
+                    const breakdown =
+                      attributeBreakdown[
+                        option.attribute
+                      ];
+
+                    const effectiveLabel =
+                      score === null
+                        ? "—"
+                        : formatSigned(score);
+
                     return (
                       <option
                         key={option.value}
                         value={option.value}
                       >
-                        {option.label} (
-                        {
+                        {option.label} — {
                           ATTRIBUTE_LABELS[
                             option.attribute
                           ]
-                        }{" "}
-                        +{score ?? "—"})
+                        }: {breakdown.base ?? "—"} Base{" "}
+                        {formatSigned(
+                          breakdown.ancestry,
+                        )} Ancestry{" "}
+                        {formatSigned(
+                          breakdown.order,
+                        )} Order ={" "}
+                        {effectiveLabel}
                       </option>
                     );
                   },
