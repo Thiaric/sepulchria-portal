@@ -909,7 +909,7 @@ export function PortalSidebar({
     src={item.icon}
     alt=""
     aria-hidden="true"
-    className="h-full w-full object-contain opacity-35"
+    className="h-full w-full object-contain"
   />
 </span>
         </div>
@@ -945,7 +945,7 @@ export function PortalSidebar({
     src={item.icon}
     alt=""
     aria-hidden="true"
-    className="h-full w-full object-contain opacity-35"
+    className="h-full w-full object-contain"
   />
 </span>
         </button>
@@ -975,7 +975,7 @@ export function PortalSidebar({
     src={item.icon}
     alt=""
     aria-hidden="true"
-    className="h-full w-full object-contain opacity-35"
+    className="h-full w-full object-contain"
   />
 </span>
 
