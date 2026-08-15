@@ -544,9 +544,16 @@ function CodexBadge({
           {label}
         </p>
 
-        <p className="mt-0.5 truncate text-[11px] text-[#bca98e]">
-          {entry?.name ?? "Not assigned"}
-        </p>
+        <p
+  className="mt-0.5 truncate text-[11px]"
+  style={{
+    color: entry
+      ? colour
+      : "#675e52",
+  }}
+>
+  {entry?.name ?? "Not assigned"}
+</p>
       </div>
     </div>
   );
