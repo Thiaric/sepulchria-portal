@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { RichTextContentClient } from "@/components/editor/rich-text-content-client";
+import { CollapsibleRoomDescription } from "@/components/world/collapsible-room-description";
 import { LocationAtmosphericImage } from "@/components/world/location-atmospheric-image";
 import { LocationImageLightbox } from "@/components/world/location-image-lightbox";
 
@@ -204,13 +205,12 @@ export default async function AreaPage({
                     </h3>
 
                     {room.description ? (
-                      <RichTextContentClient
-                        body={
-                          room.description
-                        }
-                        className="mt-1 text-[11px] leading-5 text-[#9e907d] [&_p]:m-0 [&_h1]:text-xs [&_h2]:text-xs [&_h3]:text-xs [&_img]:hidden [&_table]:hidden"
-                      />
-                    ) : null}
+  <CollapsibleRoomDescription
+    body={
+      room.description
+    }
+  />
+) : null}
 
                     <form
                       action={

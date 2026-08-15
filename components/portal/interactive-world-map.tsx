@@ -4,7 +4,10 @@ import { RichTextContentClient } from "@/components/editor/rich-text-content-cli
 import { MapMagnifyingLens } from "@/components/portal/map-magnifying-lens";
 import { AtmosphericImage } from "@/components/world/atmospheric-image";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import {
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 type InteractiveWorldMapProps = {
@@ -77,6 +80,9 @@ function getAreaInfoPosition(
 export function InteractiveWorldMap({
   areas,
 }: InteractiveWorldMapProps) {
+  const router =
+    useRouter();
+
   const searchParams =
     useSearchParams();
 
@@ -87,6 +93,19 @@ export function InteractiveWorldMap({
         ? "city"
         : "continent",
     );
+
+  useEffect(() => {
+  setHoveredArea(null);
+
+  if (
+    searchParams.get("map") ===
+    "sepulchria"
+  ) {
+    setLevel("city");
+  } else {
+    setLevel("continent");
+  }
+}, [searchParams]); 
 
   const [
     hoveredArea,
@@ -311,7 +330,7 @@ export function InteractiveWorldMap({
           <h2 className="mt-0 font-serif text-xl text-[#e4cda1]">
             {level ===
             "continent"
-              ? "The Godscar"
+              ? "Aureth - The Godscar"
               : "Sepulchria — The Living Body"}
           </h2>
         </div>
@@ -320,13 +339,9 @@ export function InteractiveWorldMap({
           <button
             type="button"
             onClick={() => {
-              setHoveredArea(
-                null,
-              );
-              setLevel(
-                "continent",
-              );
-            }}
+  setHoveredArea(null);
+  router.push("/");
+}}
             className="border border-[#765735]/80 bg-[#21170f] px-4 py-2 text-[9px] uppercase tracking-[0.2em] text-[#9c8156] transition hover:border-[#b28246] hover:bg-[#332317] hover:text-[#fad798]"
           >
             ← Return to Aureth
@@ -375,7 +390,7 @@ export function InteractiveWorldMap({
             <AtmosphericImage
   src="/maps/land-of-the-fallenv2.png"
   nightSrc="/maps/land-of-the-fallenv2-n.png"
-  alt="Map of The Godscar"
+  alt="Map of Aureth - The Godscar"
               variant="map"
               priority
               sizes="(max-width: 1024px) 100vw, 75vw"
@@ -385,9 +400,12 @@ export function InteractiveWorldMap({
             <button
               type="button"
               aria-label="Enter Sepulchria"
-              onClick={() =>
-                setLevel("city")
-              }
+              onClick={() => {
+  setHoveredArea(null);
+  router.push(
+    "/?map=sepulchria",
+  );
+}}
               className="group absolute left-[47.09%] top-[69.7%] z-20 aspect-square w-[10.9%] -translate-x-1/2 -translate-y-1/2 rounded-full"
             >
               <span className="absolute inset-0 rounded-full border-[3px] border-[#c39a58] bg-[#b28246]/10 opacity-95 shadow-[0_0_4px_rgba(225,185,120,1),0_0_11px_rgba(178,130,70,0.95),0_0_22px_rgba(178,130,70,0.65),inset_0_0_7px_rgba(178,130,70,0.22)] transition duration-300 group-hover:scale-125 group-hover:border-[4px] group-hover:border-[#e1b978] group-hover:bg-[#b28246]/20 group-hover:opacity-100 group-hover:shadow-[0_0_6px_rgba(238,204,143,1),0_0_16px_rgba(225,185,120,1),0_0_34px_rgba(178,130,70,0.9),inset_0_0_10px_rgba(225,185,120,0.30)] motion-safe:animate-pulse" />

@@ -3,6 +3,7 @@
 import Link from "next/link";
 
 import { startConversation } from "@/app/(portal)/messages/actions";
+import { enterRoomFromMap } from "@/app/(portal)/game/actions";
 import { CharacterOrderIdentity } from "@/components/characters/character-order-identity";
 import {
   useCallback,
@@ -51,14 +52,26 @@ type CharacterSummary = {
     | null;
 };
 
+type PresenceRoom = {
+  id: string;
+  name: string;
+  slug: string;
+};
+
 type PresentCharacter = {
   character_id: string;
+  room_id: string | null;
   status: PresenceStatus;
   last_seen_at: string;
 
   character:
     | CharacterSummary
     | CharacterSummary[]
+    | null;
+
+  room:
+    | PresenceRoom
+    | PresenceRoom[]
     | null;
 };
 
@@ -107,12 +120,19 @@ export function ActiveCityCounter({
         await supabase
           .from("character_presence")
           .select(
-            `
-              character_id,
-              status,
-              last_seen_at,
+  `
+    character_id,
+    room_id,
+    status,
+    last_seen_at,
 
-              character:characters!character_presence_character_id_fkey(
+    room:rooms!character_presence_room_id_fkey(
+      id,
+      name,
+      slug
+    ),
+
+    character:characters!character_presence_character_id_fkey(
                 id,
                 display_name,
                 portrait_url,
@@ -361,18 +381,24 @@ export function ActiveCityCounter({
             );
 
           const association =
-            normaliseRelation(
-              person.association,
-            );
+  normaliseRelation(
+    person.association,
+  );
 
-          const searchableText = [
-            person.display_name,
-            person.title,
-            person.occupation,
-            race?.name,
-            association?.name,
-            presence.status,
-          ]
+const room =
+  normaliseRelation(
+    presence.room,
+  );
+
+const searchableText = [
+  person.display_name,
+  person.title,
+  person.occupation,
+  race?.name,
+  association?.name,
+  room?.name,
+  presence.status,
+]
             .filter(Boolean)
             .join(" ")
             .toLocaleLowerCase();
@@ -590,13 +616,18 @@ export function ActiveCityCounter({
                     );
 
                   const association =
-                    normaliseRelation(
-                      person.association,
-                    );
+  normaliseRelation(
+    person.association,
+  );
 
-                  const displayName =
-                    person.display_name?.trim() ||
-                    "Unnamed character";
+const room =
+  normaliseRelation(
+    presence.room,
+  );
+
+const displayName =
+  person.display_name?.trim() ||
+  "Unnamed character";
 
                   const isCurrentCharacter =
                     currentCharacterId ===
@@ -663,17 +694,16 @@ export function ActiveCityCounter({
                             </div>
 
                             <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5">
-                              <HeritageEntry
-                                entry={race}
-                                fallback="No ancestry"
-                              />
+  <HeritageEntry
+    entry={race}
+    fallback="No ancestry"
+  />
 
-                              <CharacterOrderIdentity
-                                characterId={person.id}
-                                variant="inline"
-                              />
-
-                            </div>
+  <CharacterOrderIdentity
+    characterId={person.id}
+    variant="inline"
+  />
+</div>
                           </div>
                         </Link>
 
@@ -724,6 +754,45 @@ export function ActiveCityCounter({
                           </Link>
                         </div>
                       </div>
+
+                      {room && presence.room_id ? (
+  <form
+    action={enterRoomFromMap}
+    onSubmit={() =>
+      setOpen(false)
+    }
+    className="border-t border-[#59432c]/30"
+  >
+    <input
+      type="hidden"
+      name="roomId"
+      value={presence.room_id}
+    />
+
+    <button
+      type="submit"
+      title={`Go directly to ${room.name}`}
+      className="group/location flex w-full items-center justify-between gap-3 px-3 py-2 text-left transition hover:bg-[#21170f]"
+    >
+      <span className="flex min-w-0 items-center gap-2">
+        <span
+          aria-hidden="true"
+          className="shrink-0 text-[10px] text-[#8f6d42]"
+        >
+          ⌖
+        </span>
+
+        <span className="truncate text-[9px] text-[#9c8b73] transition group-hover/location:text-[#ddc294]">
+          {room.name}
+        </span>
+      </span>
+
+      <span className="shrink-0 text-[8px] uppercase tracking-[0.14em] text-[#725a3d] transition group-hover/location:text-[#c59b64]">
+        Go there →
+      </span>
+    </button>
+  </form>
+) : null}
                     </div>
                   );
                 },

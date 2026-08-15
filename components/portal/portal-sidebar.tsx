@@ -1,7 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import {
+  usePathname,
+  useSearchParams,
+} from "next/navigation";
 import {
   useCallback,
   useEffect,
@@ -30,7 +33,7 @@ type NavigationItem = {
 
 const mainNavigationItems: NavigationItem[] = [
   {
-    label: "Dashboard",
+    label: "Aureth's Map",
     title:
       "Your portal overview, recent activity and character information.",
     icon: "/icons/dashboard.png",
@@ -38,13 +41,13 @@ const mainNavigationItems: NavigationItem[] = [
     activePaths: ["/"],
   },
   {
-    label: "Play",
-    title:
-      "Enter the city, move between locations and roleplay with other characters.",
-    icon: "/icons/play.png",
-    href: "/game",
-    activePaths: ["/game"],
-  },
+  label: "Enter Sepulchria",
+  title:
+    "Open the Sepulchria map and choose where to go.",
+  icon: "/icons/play.png",
+  href: "/?map=sepulchria",
+  activePaths: [],
+},
   {
     label: "Characters",
     title:
@@ -183,6 +186,13 @@ export function PortalSidebar({
   unreadForumCount,
 }: PortalSidebarProps) {
   const pathname = usePathname();
+
+  const searchParams =
+    useSearchParams();
+
+  const sepulchriaMapOpen =
+    searchParams.get("map") ===
+    "sepulchria";
 
   const [
     hasOrderLeadership,
@@ -527,33 +537,54 @@ export function PortalSidebar({
   }, [refreshForumCount]);
 
   function isActive(
-    activePaths: string[],
+  activePaths: string[],
+  item?: NavigationItem,
+) {
+  if (
+    item?.label === "Enter Sepulchria"
   ) {
-    return activePaths.some(
-      (path) => {
-        if (path === "/") {
-          return (
-            pathname === "/"
-          );
-        }
-
-        return (
-          pathname === path ||
-          pathname.startsWith(
-            `${path}/`,
-          )
-        );
-      },
+    return (
+      pathname === "/" &&
+      sepulchriaMapOpen
     );
   }
+
+  if (
+  item?.label ===
+  "Aureth's Map"
+) {
+    return (
+      pathname === "/" &&
+      !sepulchriaMapOpen
+    );
+  }
+
+  return activePaths.some(
+    (path) => {
+      if (path === "/") {
+        return (
+          pathname === "/"
+        );
+      }
+
+      return (
+        pathname === path ||
+        pathname.startsWith(
+          `${path}/`,
+        )
+      );
+    },
+  );
+}
 
   function renderNavigationItem(
     item: NavigationItem,
   ) {
     const active =
-      isActive(
-        item.activePaths,
-      );
+  isActive(
+    item.activePaths,
+    item,
+  );
 
     const isMessages =
       item.label ===
@@ -832,9 +863,10 @@ export function PortalSidebar({
     item: NavigationItem,
   ) {
     const active =
-      isActive(
-        item.activePaths,
-      );
+  isActive(
+    item.activePaths,
+    item,
+  );
 
     const className = `
       relative
