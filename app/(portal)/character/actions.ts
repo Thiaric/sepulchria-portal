@@ -817,7 +817,6 @@ export async function submitCharacterForReview() {
   surname,
   gender,
   race_id,
-  association_id,
   physical_description,
       personality,
       biography,
@@ -897,13 +896,7 @@ export async function submitCharacterForReview() {
     missingFields.push("race");
   }
 
-  if (
-    !character.association_id
-  ) {
-    missingFields.push(
-      "Association",
-    );
-  }
+  
 
   if (
     !character.physical_description?.trim()
@@ -930,32 +923,28 @@ export async function submitCharacterForReview() {
   }
 
   const attributeValues = [
-    character.muscles,
-    character.reflexes,
-    character.vigor,
-    character.brains,
-    character.shrewd,
-    character.presence_score,
-  ];
+  character.muscles,
+  character.reflexes,
+  character.vigor,
+  character.brains,
+  character.shrewd,
+  character.presence_score,
+];
 
-  const attributesValid =
-    attributeValues.every(
-      (value) =>
-        Number.isInteger(value) &&
-        value >= 1 &&
-        value <= 8,
-    ) &&
-    attributeValues.reduce(
-      (sum, value) =>
-        sum + Number(value),
-      0,
-    ) === 20;
+const attributesValid =
+  attributeValues.every(
+    (value) =>
+      Number.isInteger(value) &&
+      value !== null &&
+      value >= 1 &&
+      value <= 8,
+  );
 
-  if (!attributesValid) {
-    missingFields.push(
-      "a valid 20-point attribute allocation",
-    );
-  }
+if (!attributesValid) {
+  missingFields.push(
+    "a complete base attribute record",
+  );
+}
 
   if (missingFields.length > 0) {
     redirectCharacterError(
