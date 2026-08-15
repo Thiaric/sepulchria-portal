@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { requireStaff } from "@/lib/auth/require-staff";
+import { adjustHealthForVigourModifier } from "@/lib/characters/adjust-health-for-vigour-modifier";
 import { createClient } from "@/lib/supabase/server";
 
 const ATTRIBUTE_FIELDS = [
@@ -88,7 +89,7 @@ export async function updateOrderLevel(formData: FormData) {
 
   const { data: existing, error: readError } = await supabase
     .from("order_levels")
-    .select("id, order_id, level")
+    .select("id, order_id, level, vigour_modifier")
     .eq("id", levelId)
     .eq("order_id", orderId)
     .maybeSingle();
@@ -105,6 +106,46 @@ export async function updateOrderLevel(formData: FormData) {
     redirectBack(orderId, "error", "The Order level could not be verified.");
   }
 
+  const oldVigourModifier =
+    existing.vigour_modifier ?? 0;
+
+  const newVigourModifier =
+    updates.vigour_modifier ?? 0;
+
+  let affectedMembers: Array<{
+    character_id: string;
+    character:
+      | { current_health: number | null }
+      | { current_health: number | null }[]
+      | null;
+  }> = [];
+
+  if (oldVigourModifier !== newVigourModifier) {
+    const {
+      data: memberships,
+      error: membershipsError,
+    } = await supabase
+      .from("order_memberships")
+      .select(`
+        character_id,
+        character:characters!order_memberships_character_id_fkey(
+          current_health
+        )
+      `)
+      .eq("order_level_id", levelId);
+
+    if (membershipsError) {
+      redirectBack(
+        orderId,
+        "error",
+        `Unable to load characters holding this level: ${membershipsError.message}`,
+      );
+    }
+
+    affectedMembers =
+      (memberships ?? []) as typeof affectedMembers;
+  }
+
   const { error } = await supabase
     .from("order_levels")
     .update(updates)
@@ -114,7 +155,60 @@ export async function updateOrderLevel(formData: FormData) {
     redirectBack(orderId, "error", error.message);
   }
 
+  if (oldVigourModifier !== newVigourModifier) {
+    for (const membership of affectedMembers) {
+      const relation =
+        Array.isArray(membership.character)
+          ? membership.character[0] ?? null
+          : membership.character;
+
+      if (!relation) {
+        continue;
+      }
+
+      const nextCurrentHealth =
+        adjustHealthForVigourModifier({
+          currentHealth:
+            relation.current_health,
+          oldModifier:
+            oldVigourModifier,
+          newModifier:
+            newVigourModifier,
+        });
+
+      const { error: healthError } =
+        await supabase
+          .from("characters")
+          .update({
+            current_health:
+              nextCurrentHealth,
+          })
+          .eq(
+            "id",
+            membership.character_id,
+          );
+
+      if (healthError) {
+        redirectBack(
+          orderId,
+          "error",
+          `The Order level was updated, but Current Health could not be synchronised for one of its holders: ${healthError.message}`,
+        );
+      }
+
+      revalidatePath(
+        `/admin/characters/${membership.character_id}`,
+      );
+    }
+  }
+
   revalidatePath("/admin/orders");
+  revalidatePath("/orders");
+  revalidatePath("/admin/characters");
+  revalidatePath("/characters");
+  revalidatePath("/character");
+  revalidatePath("/game");
+
   redirectBack(orderId, "success", `Level ${level} updated.`);
 }
 
