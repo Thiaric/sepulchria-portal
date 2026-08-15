@@ -1,4 +1,5 @@
 import { CodexEntryHero } from "@/components/codex/codex-entry-hero";
+import { AncestryAttributeModifiers } from "@/components/races/ancestry-attribute-modifiers";
 import type { Race } from "@/types/codex";
 
 type RaceHeroProps = {
@@ -20,6 +21,9 @@ export function RaceHero({
       categoryLabel="Ancestry"
       returnHref="/races"
       returnLabel="Back to ancestries"
+      betweenHeroAndRecord={
+        <AncestryAttributeModifiers modifiers={race} />
+      }
     />
   );
 }

@@ -3,6 +3,7 @@ import { RichTextContent } from "@/components/editor/rich-text-content";
 import {
   stripRichTextForPreview,
 } from "@/lib/rich-text-shared";
+import type { ReactNode } from "react";
 import Link from "next/link";
 
 type CodexEntryCardProps = {
@@ -16,6 +17,7 @@ type CodexEntryCardProps = {
   categoryLabel: string;
   anchorId?: string;
   enableImagePreview?: boolean;
+  expandedExtra?: ReactNode;
 };
 
 function makePreview(
@@ -60,6 +62,7 @@ export function CodexEntryCard({
   categoryLabel,
   anchorId,
   enableImagePreview = false,
+  expandedExtra,
 }: CodexEntryCardProps) {
   const accentColour =
     colour ?? "#8a6840";
@@ -156,6 +159,8 @@ export function CodexEntryCard({
                 body={summary}
                 className="text-sm leading-7 text-[#a99b89]"
               />
+
+              {expandedExtra}
             </div>
 
             <summary className="mt-3 cursor-pointer list-none text-[9px] uppercase tracking-[0.18em] text-[#b88d54] transition hover:text-[#e0bb7f]">

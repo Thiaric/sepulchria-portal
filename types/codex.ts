@@ -18,6 +18,12 @@ export type Race =
   CodexEntryBase & {
     min_age: number | null;
     max_age: number | null;
+    muscles_modifier: number;
+    reflexes_modifier: number;
+    vigour_modifier: number;
+    shrewd_modifier: number;
+    brains_modifier: number;
+    presence_modifier: number;
   };
 
 export type Association =

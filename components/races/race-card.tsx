@@ -1,4 +1,5 @@
 import { CodexEntryCard } from "@/components/codex/codex-entry-card";
+import { AncestryAttributeModifiers } from "@/components/races/ancestry-attribute-modifiers";
 import type { Race } from "@/types/codex";
 
 type RaceCardProps = {
@@ -20,6 +21,12 @@ export function RaceCard({
   categoryLabel="People of Aureth"
   anchorId={`race-${race.slug}`}
   enableImagePreview
+  expandedExtra={
+    <AncestryAttributeModifiers
+      modifiers={race}
+      compact
+    />
+  }
 />
   );
 }

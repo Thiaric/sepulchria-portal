@@ -20,6 +20,12 @@ type RaceRow = {
   colour: string | null;
   min_age: number | null;
   max_age: number | null;
+  muscles_modifier: number;
+  reflexes_modifier: number;
+  vigour_modifier: number;
+  shrewd_modifier: number;
+  brains_modifier: number;
+  presence_modifier: number;
   is_active: boolean;
   sort_order: number;
   created_at: string;
@@ -38,6 +44,12 @@ const RACE_SELECT = `
   colour,
   min_age,
   max_age,
+  muscles_modifier,
+  reflexes_modifier,
+  vigour_modifier,
+  shrewd_modifier,
+  brains_modifier,
+  presence_modifier,
   is_active,
   sort_order,
   created_at,
@@ -60,6 +72,12 @@ function normaliseRace(
     colour: row.colour,
     min_age: row.min_age,
     max_age: row.max_age,
+    muscles_modifier: row.muscles_modifier ?? 0,
+    reflexes_modifier: row.reflexes_modifier ?? 0,
+    vigour_modifier: row.vigour_modifier ?? 0,
+    shrewd_modifier: row.shrewd_modifier ?? 0,
+    brains_modifier: row.brains_modifier ?? 0,
+    presence_modifier: row.presence_modifier ?? 0,
     is_active: row.is_active,
     sort_order: row.sort_order,
     created_at: row.created_at,

@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { RichTextContent } from "@/components/editor/rich-text-content";
 import Link from "next/link";
 
@@ -12,6 +13,7 @@ type CodexEntryHeroProps = {
   categoryLabel: string;
   returnHref: string;
   returnLabel: string;
+  betweenHeroAndRecord?: ReactNode;
 };
 
 export function CodexEntryHero({
@@ -25,6 +27,7 @@ export function CodexEntryHero({
   categoryLabel,
   returnHref,
   returnLabel,
+  betweenHeroAndRecord,
 }: CodexEntryHeroProps) {
   const accentColour = colour ?? "#8a6840";
   const heroImage = bannerUrl ?? imageUrl;
@@ -110,13 +113,15 @@ export function CodexEntryHero({
               {summary ? (
                 <RichTextContent
                   body={summary}
-                  className="mt-6 w-full font-serif text-lg leading-8 text-[#c7b494] sm:text-xl"
+                  className="mt-6 w-full font-serif text-sm leading-7 text-[#c7b494] sm:text-base"
                 />
               ) : null}
             </div>
           </div>
         </div>
       </section>
+
+      {betweenHeroAndRecord}
 
       <section className="border border-[#60482e]/45 bg-[#15100d]/95 p-6 sm:p-8">
         <div className="flex items-center gap-4">
