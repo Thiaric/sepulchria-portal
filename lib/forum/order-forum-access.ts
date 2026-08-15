@@ -2,9 +2,11 @@ import "server-only";
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-export const ORDER_LEVELS = [0, 1, 2, 3, 4, 5] as const;
-
-export type OrderLevel = (typeof ORDER_LEVELS)[number];
+import {
+  ORDER_LEVELS,
+  isOrderLevel,
+  type OrderLevel,
+} from "@/lib/forum/order-levels";
 
 export type ForumOrderMembership = {
   orderId: string;
@@ -33,10 +35,6 @@ type MembershipRow = {
 
 function one<T>(value: T | T[] | null): T | null {
   return Array.isArray(value) ? value[0] ?? null : value;
-}
-
-export function isOrderLevel(value: number): value is OrderLevel {
-  return ORDER_LEVELS.includes(value as OrderLevel);
 }
 
 export function normaliseStoredVisibleLevels(

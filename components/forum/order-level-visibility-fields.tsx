@@ -1,7 +1,7 @@
 import {
   ORDER_LEVELS,
   type OrderLevel,
-} from "@/lib/forum/order-forum-access";
+} from "@/lib/forum/order-levels";
 
 export function OrderLevelVisibilityFields({
   actorLevel,

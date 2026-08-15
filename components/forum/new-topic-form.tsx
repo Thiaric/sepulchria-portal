@@ -2,6 +2,8 @@
 
 import { RichTextEditor } from "@/components/editor/rich-text-editor";
 import { stripRichTextForPreview } from "@/lib/rich-text-shared";
+import { OrderLevelVisibilityFields } from "@/components/forum/order-level-visibility-fields";
+import type { OrderLevel } from "@/lib/forum/order-levels";
 
 import {
   useActionState,
@@ -28,6 +30,7 @@ type ForumSectionOption = {
     | "members"
     | "staff";
   association_id: string | null;
+  order_id: string | null;
 };
 
 type CharacterOption = {
@@ -44,6 +47,8 @@ type NewTopicFormProps = {
   currentSection: ForumSectionOption;
   availableSections: ForumSectionOption[];
   characters: CharacterOption[];
+  viewerOrderLevel: OrderLevel | null;
+  isStaff: boolean;
 };
 
 const initialState: CreateForumTopicState = {
@@ -89,6 +94,8 @@ export default function NewTopicForm({
   currentSection,
   availableSections,
   characters,
+  viewerOrderLevel,
+  isStaff,
 }: NewTopicFormProps) {
   const [state, formAction, pending] =
     useActionState(
@@ -496,6 +503,25 @@ export default function NewTopicForm({
           </div>
         </div>
       </section>
+
+      {selectedSection.order_id ? (
+        <OrderLevelVisibilityFields
+          actorLevel={viewerOrderLevel}
+          unrestricted={
+            isStaff || viewerOrderLevel === 5
+          }
+        />
+      ) : null}
+
+      {state.fieldErrors
+        ?.visibleOrderLevels ? (
+        <p className="-mt-4 text-xs text-red-400">
+          {
+            state.fieldErrors
+              .visibleOrderLevels
+          }
+        </p>
+      ) : null}
 
       <section className="border border-[#60482e]/45 bg-[#15100d]">
         <div className="border-b border-[#60482e]/35 px-5 py-4 sm:px-6">

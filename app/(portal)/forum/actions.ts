@@ -8,6 +8,12 @@ import {
   sanitizeRichHtml,
 } from "@/lib/rich-text";
 import { createClient } from "@/lib/supabase/server";
+import {
+  canCreateOrderTopic,
+  getForumViewerContext,
+  readRequestedVisibleLevels,
+  resolveVisibleLevelsForActor,
+} from "@/lib/forum/order-forum-access";
 
 const MAX_TITLE_LENGTH = 180;
 const MAX_BODY_LENGTH = 50_000;
@@ -23,6 +29,7 @@ export type ForumFieldErrors = {
   imageUrls?: string;
   quotedPostId?: string;
   topicId?: string;
+  visibleOrderLevels?: string;
 };
 
 export type CreateForumTopicState = {
@@ -42,6 +49,7 @@ type ForumSectionRecord = {
   slug: string;
   name: string;
   association_id: string | null;
+  order_id: string | null;
   visibility: string;
   is_active: boolean;
 };
@@ -515,6 +523,7 @@ export async function createForumTopicAction(
         slug,
         name,
         association_id,
+        order_id,
         visibility,
         is_active
       `,
@@ -559,7 +568,79 @@ export async function createForumTopicAction(
     };
   }
 
-  if (
+  let topicVisibleOrderLevels:
+    number[] | null = null;
+
+  if (section.order_id) {
+    const viewer =
+      await getForumViewerContext(supabase);
+
+    if (
+      !canCreateOrderTopic(
+        viewer,
+        section.order_id,
+      )
+    ) {
+      return {
+        success: false,
+        message:
+          "You are not a member of this Order.",
+        fieldErrors: {
+          sectionId:
+            "Choose a forum section belonging to your Order.",
+        },
+      };
+    }
+
+    if (
+      !viewer.isStaff &&
+      viewer.characterId !==
+        character?.id
+    ) {
+      return {
+        success: false,
+        message:
+          "Publish using the character who belongs to this Order.",
+        fieldErrors: {
+          characterId:
+            "Choose your Order member character.",
+        },
+      };
+    }
+
+    try {
+      topicVisibleOrderLevels =
+        resolveVisibleLevelsForActor({
+          requestedLevels:
+            readRequestedVisibleLevels(
+              formData,
+            ),
+          actorLevel:
+            viewer.membership?.orderId ===
+            section.order_id
+              ? viewer.membership.level
+              : null,
+          unrestricted:
+            viewer.isStaff ||
+            (viewer.membership?.orderId ===
+              section.order_id &&
+              viewer.membership.level === 5),
+        });
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Choose valid Order Levels.";
+
+      return {
+        success: false,
+        message,
+        fieldErrors: {
+          visibleOrderLevels: message,
+        },
+      };
+    }
+  } else if (
     section.association_id &&
     character?.association_id !==
       section.association_id
@@ -651,6 +732,25 @@ requested_is_anonymous:
       message:
         "The discussion was created, but its opening post could not be found.",
     };
+  }
+
+  if (section.order_id) {
+    const { error: visibilityError } =
+      await supabase
+        .from("forum_topics")
+        .update({
+          visible_order_levels:
+            topicVisibleOrderLevels,
+        })
+        .eq("id", createdTopicId);
+
+    if (visibilityError) {
+      return {
+        success: false,
+        message:
+          `The discussion was created, but its Order visibility could not be saved: ${visibilityError.message}`,
+      };
+    }
   }
 
   const {

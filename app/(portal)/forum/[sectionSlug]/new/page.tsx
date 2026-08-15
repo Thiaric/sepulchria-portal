@@ -7,6 +7,10 @@ import {
 
 import NewTopicForm from "@/components/forum/new-topic-form";
 import { createClient } from "@/lib/supabase/server";
+import {
+  canAccessOrderSection,
+  getForumViewerContext,
+} from "@/lib/forum/order-forum-access";
 
 type ForumSectionQueryRow = {
   id: string;
@@ -21,6 +25,7 @@ type ForumSectionQueryRow = {
     | "members"
     | "staff";
   association_id: string | null;
+  order_id: string | null;
   description: string;
   icon_url: string | null;
   banner_url: string | null;
@@ -54,6 +59,7 @@ type ForumSectionOption = {
     | "members"
     | "staff";
   association_id: string | null;
+  order_id: string | null;
 };
 
 type CharacterQueryRow = {
@@ -149,6 +155,7 @@ export default async function NewForumTopicPage({
       section_type,
       visibility,
       association_id,
+      order_id,
       description,
       icon_url,
       banner_url,
@@ -183,6 +190,18 @@ export default async function NewForumTopicPage({
       currentSectionRow.association,
     );
 
+  const viewer =
+    await getForumViewerContext(supabase);
+
+  if (
+    !canAccessOrderSection(
+      viewer,
+      currentSectionRow.order_id,
+    )
+  ) {
+    notFound();
+  }
+
   const [
     {
       data: availableSectionData,
@@ -202,6 +221,7 @@ export default async function NewForumTopicPage({
         section_type,
         visibility,
         association_id,
+        order_id,
         is_active,
         sort_order
       `)
@@ -248,10 +268,16 @@ export default async function NewForumTopicPage({
   }
 
   const availableSections =
-    (
+    ((
       availableSectionData ??
       []
-    ) as ForumSectionOption[];
+    ) as ForumSectionOption[]).filter(
+      (section) =>
+        canAccessOrderSection(
+          viewer,
+          section.order_id,
+        ),
+    );
 
   const currentSection:
     ForumSectionOption = {
@@ -264,6 +290,8 @@ export default async function NewForumTopicPage({
       currentSectionRow.visibility,
     association_id:
       currentSectionRow.association_id,
+    order_id:
+      currentSectionRow.order_id,
   };
 
   const sectionExistsInOptions =
@@ -454,6 +482,10 @@ export default async function NewForumTopicPage({
                 formSections
               }
               characters={characters}
+              viewerOrderLevel={
+                viewer.membership?.level ?? null
+              }
+              isStaff={viewer.isStaff}
             />
           </div>
         ) : null}
