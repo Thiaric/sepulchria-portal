@@ -33,7 +33,7 @@ const mainNavigationItems: NavigationItem[] = [
     label: "Dashboard",
     title:
       "Your portal overview, recent activity and character information.",
-    icon: "⌂",
+    icon: "/icons/dashboard.png",
     href: "/",
     activePaths: ["/"],
   },
@@ -41,7 +41,7 @@ const mainNavigationItems: NavigationItem[] = [
     label: "Play",
     title:
       "Enter the city, move between locations and roleplay with other characters.",
-    icon: "✦",
+    icon: "/icons/play.png",
     href: "/game",
     activePaths: ["/game"],
   },
@@ -49,7 +49,7 @@ const mainNavigationItems: NavigationItem[] = [
     label: "Characters",
     title:
       "Browse the characters who inhabit Sepulchria.",
-    icon: "♙",
+    icon: "/icons/characters.png",
     href: "/characters",
     activePaths: ["/characters"],
   },
@@ -59,7 +59,7 @@ const codexItem: NavigationItem = {
   label: "Codex",
   title:
     "Open the in-world Codex and explore Aureth's history, locations and lore.",
-  icon: "🕮",
+  icon: "/icons/codex.png",
   href: "/codex",
   activePaths: ["/codex"],
   opensModal: true,
@@ -69,7 +69,7 @@ const rulesItem: NavigationItem = {
   label: "Rules",
   title:
     "Read the official game rules and off-game documentation.",
-  icon: "🗊",
+  icon: "/icons/rules.png",
   href: "/rules",
   activePaths: ["/rules"],
   opensModal: true,
@@ -79,7 +79,7 @@ const glossaryItem: NavigationItem = {
   label: "Glossary",
   title:
     "Look up Sepulchria terminology, meanings and related rules.",
-  icon: "⌕",
+  icon: "/icons/rules.png",
   href: "/rules?view=glossary",
   activePaths: [],
   opensModal: true,
@@ -91,7 +91,7 @@ const otherCodexNavigationItems: NavigationItem[] = [
     label: "Ancestries",
     title:
       "Read about the playable ancestries of Sepulchria.",
-    icon: "⚜",
+    icon: "/icons/ancestries.png",
     href: "/races",
     activePaths: ["/races"],
   },
@@ -99,7 +99,7 @@ const otherCodexNavigationItems: NavigationItem[] = [
     label: "Associations",
     title:
       "Explore the Associations and their place in Sepulchrian society.",
-    icon: "⌘",
+    icon: "/icons/associations.png",
     href: "/associations",
     activePaths: ["/associations"],
   },
@@ -107,7 +107,7 @@ const otherCodexNavigationItems: NavigationItem[] = [
     label: "Orders",
     title:
       "Read about the Orders, their ties to Associations, and their structure and scope.",
-    icon: "▣",
+    icon: "/icons/orders.png",
     href: "/orders",
     activePaths: ["/orders"],
   },
@@ -115,7 +115,7 @@ const otherCodexNavigationItems: NavigationItem[] = [
     label: "Warping",
     title:
       "Read about magic in Sepulchria, including Warping.",
-    icon: "✵",
+    icon: "/icons/warping.png",
     href: "/spells",
     activePaths: ["/spells"],
     disabled: true,
@@ -126,7 +126,7 @@ const marketItem: NavigationItem = {
   label: "Market",
   title:
     "Browse the market and buy or sell items.",
-  icon: "⚖",
+  icon: "/icons/market.png",
   href: "/market",
   activePaths: ["/market"],
   disabled: true,
@@ -136,7 +136,7 @@ const messagesItem: NavigationItem = {
   label: "Messages",
   title:
     "Open your private conversations with other characters.",
-  icon: "✉",
+  icon: "/icons/messages.png",
   href: "/messages",
   activePaths: ["/messages"],
 };
@@ -145,7 +145,7 @@ const manageOrderItem: NavigationItem = {
   label: "Manage Order",
   title:
     "Manage the members and affairs of the Order you lead.",
-  icon: "⚜",
+  icon: "/icons/orders.png",
   href: "/orders/manage",
   activePaths: ["/orders/manage"],
 };
@@ -188,6 +188,11 @@ export function PortalSidebar({
     hasOrderLeadership,
     setHasOrderLeadership,
   ] = useState(false);
+
+  const [
+  mobileForumExpanded,
+  setMobileForumExpanded,
+] = useState(false);
 
   const [
     modalItem,
@@ -565,9 +570,20 @@ export function PortalSidebar({
               : ""
           }`}
         >
-          <span className="w-4 shrink-0 text-center text-[12px]">
-            {item.icon}
-          </span>
+          <span
+  className={`flex shrink-0 items-center justify-center ${
+    item.subItem
+      ? "h-4 w-4"
+      : "h-[18px] w-[18px]"
+  }`}
+>
+  <img
+    src={item.icon}
+    alt=""
+    aria-hidden="true"
+    className="h-full w-full object-contain opacity-35"
+  />
+</span>
 
           <span className="truncate">
             {item.label}
@@ -614,14 +630,19 @@ export function PortalSidebar({
     const contents = (
       <>
         <span
-          className={`w-4 shrink-0 text-center text-[#b68b4f] ${
-            item.subItem
-              ? "text-[10px]"
-              : "text-[12px]"
-          }`}
-        >
-          {item.icon}
-        </span>
+  className={`flex shrink-0 items-center justify-center ${
+    item.subItem
+      ? "h-4 w-4"
+      : "h-[18px] w-[18px]"
+  }`}
+>
+  <img
+    src={item.icon}
+    alt=""
+    aria-hidden="true"
+    className="h-full w-full object-contain"
+  />
+</span>
 
         <span className="truncate">
           {item.label}
@@ -714,11 +735,14 @@ export function PortalSidebar({
               modalActive
             }
           >
-            <span className="w-4 shrink-0 text-center text-[12px] text-[#b68b4f]">
-              {
-                rulesItem.icon
-              }
-            </span>
+            <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center">
+  <img
+    src={rulesItem.icon}
+    alt=""
+    aria-hidden="true"
+    className="h-full w-full object-contain"
+  />
+</span>
 
             <span className="truncate">
               {
@@ -783,11 +807,14 @@ export function PortalSidebar({
               }`}
               aria-haspopup="dialog"
             >
-              <span className="w-4 shrink-0 text-center text-[10px] text-[#9b7446]">
-                {
-                  glossaryItem.icon
-                }
-              </span>
+              <span className="flex h-4 w-4 shrink-0 items-center justify-center">
+  <img
+    src={glossaryItem.icon}
+    alt=""
+    aria-hidden="true"
+    className="h-full w-full object-contain"
+  />
+</span>
 
               <span className="truncate">
                 {
@@ -839,9 +866,20 @@ export function PortalSidebar({
             className
           }
         >
-          <span aria-hidden="true">
-            {item.icon}
-          </span>
+          <span
+  className={`flex shrink-0 items-center justify-center ${
+    item.subItem
+      ? "h-4 w-4"
+      : "h-[18px] w-[18px]"
+  }`}
+>
+  <img
+    src={item.icon}
+    alt=""
+    aria-hidden="true"
+    className="h-full w-full object-contain opacity-35"
+  />
+</span>
         </div>
       );
     }
@@ -864,9 +902,20 @@ export function PortalSidebar({
             className
           }
         >
-          <span aria-hidden="true">
-            {item.icon}
-          </span>
+          <span
+  className={`flex shrink-0 items-center justify-center ${
+    item.subItem
+      ? "h-4 w-4"
+      : "h-[18px] w-[18px]"
+  }`}
+>
+  <img
+    src={item.icon}
+    alt=""
+    aria-hidden="true"
+    className="h-full w-full object-contain opacity-35"
+  />
+</span>
         </button>
       );
     }
@@ -883,9 +932,20 @@ export function PortalSidebar({
           className
         }
       >
-        <span aria-hidden="true">
-          {item.icon}
-        </span>
+        <span
+  className={`flex shrink-0 items-center justify-center ${
+    item.subItem
+      ? "h-4 w-4"
+      : "h-[18px] w-[18px]"
+  }`}
+>
+  <img
+    src={item.icon}
+    alt=""
+    aria-hidden="true"
+    className="h-full w-full object-contain opacity-35"
+  />
+</span>
 
         {item.label ===
           "Messages" &&
@@ -903,15 +963,14 @@ export function PortalSidebar({
   }
 
   const mobileNavigationItems = [
-    ...mainNavigationItems,
-    codexItem,
-    rulesItem,
-    ...otherCodexNavigationItems,
-    marketItem,
-    ...(hasOrderLeadership
-      ? [manageOrderItem]
-      : []),
-  ];
+  ...mainNavigationItems,
+  codexItem,
+  ...otherCodexNavigationItems,
+  marketItem,
+  ...(hasOrderLeadership
+    ? [manageOrderItem]
+    : []),
+];
 
   const forumActive =
     pathname === "/forum" ||
@@ -927,48 +986,161 @@ export function PortalSidebar({
         className="border-b border-[#6e5535]/30 bg-[#100d0b]/90 lg:h-full lg:min-h-0 lg:overflow-y-auto lg:overscroll-contain lg:border-b-0 lg:border-r"
       >
         {/* MOBILE NAVIGATION */}
-        <div className="px-2 py-1.5 lg:hidden">
-          <nav
-            aria-label="Main navigation"
-            className="grid grid-cols-6 gap-1"
-          >
-            {mobileNavigationItems.map(
-              renderMobileItem,
-            )}
+<div className="px-2 py-1.5 lg:hidden">
+  <nav
+    aria-label="Main navigation"
+    className="grid grid-cols-6 gap-1"
+  >
+    {mobileNavigationItems.map(
+      renderMobileItem,
+    )}
 
-            <Link
-              href="/forum"
-              title="Forum"
-              aria-label="Forum"
-              className={`relative flex h-10 min-w-0 items-center justify-center border text-[17px] leading-none transition ${
-                forumActive
-                  ? "border-[#8d6d3e] bg-[#332719] text-[#efd9aa]"
-                  : currentUnreadForumCount >
-                      0
-                    ? "border-[#a87532] bg-[#24190f] text-[#efd9aa]"
-                    : "border-transparent text-[#b68b4f] hover:border-[#5d4930] hover:bg-[#1d1712] hover:text-[#efd9aa]"
-              }`}
-            >
-              <span aria-hidden="true">
-                ☷
-              </span>
+    {/* RULES */}
+    <div
+      className={`relative flex h-10 min-w-0 border transition ${
+        isActive(
+          rulesItem.activePaths,
+        ) ||
+        modalItem?.href ===
+          rulesItem.href
+          ? "border-[#8d6d3e] bg-[#332719]"
+          : "border-transparent hover:border-[#5d4930] hover:bg-[#1d1712]"
+      }`}
+    >
+      <button
+        type="button"
+        title="Rules"
+        aria-label="Rules"
+        onClick={() =>
+          setModalItem(
+            rulesItem,
+          )
+        }
+        className="flex min-w-0 flex-1 items-center justify-center"
+      >
+        <img
+          src="/icons/rules.png"
+          alt=""
+          aria-hidden="true"
+          className="h-[18px] w-[18px] object-contain"
+        />
+      </button>
 
-              {currentUnreadForumCount >
-              0 ? (
-                <span className="absolute right-0.5 top-0.5 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] px-0.5 text-[7px] font-bold leading-none text-[#ffe1ac]">
-                  {currentUnreadForumCount >
-                  9
-                    ? "9+"
-                    : currentUnreadForumCount}
-                </span>
-              ) : null}
-            </Link>
+      <button
+        type="button"
+        onClick={() =>
+          setRulesExpanded(
+            (current) =>
+              !current,
+          )
+        }
+        aria-label={
+          rulesExpanded
+            ? "Collapse Rules submenu"
+            : "Expand Rules submenu"
+        }
+        className="flex w-5 shrink-0 items-center justify-center border-l border-[#60482e]/45 text-sm text-[#b68b4f]"
+      >
+        {rulesExpanded
+          ? "−"
+          : "+"}
+      </button>
+    </div>
 
-            {renderMobileItem(
-              messagesItem,
-            )}
-          </nav>
-        </div>
+    {/* FORUM */}
+    <div
+      className={`relative flex h-10 min-w-0 border transition ${
+        forumActive
+          ? "border-[#8d6d3e] bg-[#332719]"
+          : currentUnreadForumCount >
+              0
+            ? "border-[#a87532] bg-[#24190f]"
+            : "border-transparent hover:border-[#5d4930] hover:bg-[#1d1712]"
+      }`}
+    >
+      <Link
+        href="/forum"
+        title="Forum"
+        aria-label="Forum"
+        className="relative flex min-w-0 flex-1 items-center justify-center"
+      >
+        <img
+          src="/icons/forum.png"
+          alt=""
+          aria-hidden="true"
+          className="h-[18px] w-[18px] object-contain"
+        />
+
+        {currentUnreadForumCount >
+        0 ? (
+          <span className="absolute right-0.5 top-0.5 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] px-0.5 text-[7px] font-bold leading-none text-[#ffe1ac]">
+            {currentUnreadForumCount >
+            9
+              ? "9+"
+              : currentUnreadForumCount}
+          </span>
+        ) : null}
+      </Link>
+
+      <button
+        type="button"
+        onClick={() =>
+          setMobileForumExpanded(
+            (current) =>
+              !current,
+          )
+        }
+        aria-label={
+          mobileForumExpanded
+            ? "Collapse Forum shortcuts"
+            : "Expand Forum shortcuts"
+        }
+        className="flex w-5 shrink-0 items-center justify-center border-l border-[#60482e]/45 text-sm text-[#b68b4f]"
+      >
+        {mobileForumExpanded
+          ? "−"
+          : "+"}
+      </button>
+    </div>
+
+    {renderMobileItem(
+      messagesItem,
+    )}
+  </nav>
+
+  {rulesExpanded ? (
+    <div className="mt-1 border border-[#60482e]/40 bg-[#100c09] p-1">
+      <button
+        type="button"
+        title="Glossary"
+        aria-label="Glossary"
+        onClick={() =>
+          setModalItem(
+            glossaryItem,
+          )
+        }
+        className="flex h-9 w-full items-center justify-center border border-transparent transition hover:border-[#59432c] hover:bg-[#19120d]"
+      >
+        <img
+          src="/icons/rules.png"
+          alt=""
+          aria-hidden="true"
+          className="h-4 w-4 object-contain"
+        />
+      </button>
+    </div>
+  ) : null}
+
+  {mobileForumExpanded ? (
+    <div className="mt-1 border border-[#60482e]/40 bg-[#100c09] p-1">
+      <ForumSidebarMenu
+        unreadCount={
+          currentUnreadForumCount
+        }
+      />
+    </div>
+  ) : null}
+</div>
 
         {/* DESKTOP SIDEBAR */}
         <div className="hidden p-[var(--portal-column-pad)] lg:block">
@@ -1088,9 +1260,20 @@ function PublicPageModal({
       <div className="flex h-[85vh] w-[90vw] max-w-[1700px] flex-col overflow-hidden border border-[#6e5535]/65 bg-[#090705] shadow-[0_20px_80px_rgba(0,0,0,0.65)]">
         <div className="flex h-10 shrink-0 items-center justify-between border-b border-[#60482e]/45 bg-[#100c09] px-3">
           <div className="flex min-w-0 items-center gap-3">
-            <span className="text-[#b68b4f]">
-              {item.icon}
-            </span>
+            <span
+  className={`flex shrink-0 items-center justify-center ${
+    item.subItem
+      ? "h-4 w-4"
+      : "h-[18px] w-[18px]"
+  }`}
+>
+  <img
+    src={item.icon}
+    alt=""
+    aria-hidden="true"
+    className="h-full w-full object-contain opacity-35"
+  />
+</span>
 
             <span className="truncate font-serif text-sm text-[#d8c096]">
               {item.label}

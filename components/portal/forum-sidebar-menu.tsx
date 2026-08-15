@@ -4,6 +4,7 @@ import Link from "next/link";
 import {
   useCallback,
   useEffect,
+  useId,
   useMemo,
   useState,
 } from "react";
@@ -63,6 +64,9 @@ export function ForumSidebarMenu({
   unreadCount,
 }: ForumSidebarMenuProps) {
   const pathname = usePathname();
+
+  const realtimeInstanceId =
+    useId().replace(/:/g, "");
 
   const forumActive =
     pathname === "/forum" ||
@@ -293,9 +297,9 @@ export function ForumSidebarMenu({
       createClient();
 
     const channel = supabase
-      .channel(
-        "left-forum-topic-menu",
-      )
+  .channel(
+    `left-forum-topic-menu-${realtimeInstanceId}`,
+  )
       .on(
         "postgres_changes",
         {
@@ -331,7 +335,10 @@ export function ForumSidebarMenu({
         channel,
       );
     };
-  }, [loadTopics]);
+  }, [
+  loadTopics,
+  realtimeInstanceId,
+]);
 
   const favouriteIds = new Set(
     favourites.map(
@@ -439,9 +446,14 @@ export function ForumSidebarMenu({
           href="/forum"
           className="flex min-w-0 flex-1 items-center gap-2 px-2.5 py-2"
         >
-          <span className="w-4 shrink-0 text-center text-[12px] text-[#b68b4f]">
-            ☷
-          </span>
+          <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center">
+  <img
+    src="/icons/forum.png"
+    alt=""
+    aria-hidden="true"
+    className="h-full w-full object-contain"
+  />
+</span>
 
           <span className="truncate">
             Forum
