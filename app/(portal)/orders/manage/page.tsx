@@ -383,7 +383,9 @@ export default async function ManageOrdersPage({
                     key={
                       order.id
                     }
-                    className="overflow-hidden border border-[#60482e]/45 bg-[#15100d]"
+                    id={`managed-order-${order.id}`}
+                    className="scroll-mt-6 overflow-hidden border border-[#60482e]/45 bg-[#15100d]"
+
                     style={
                       order.colour
                         ? {

@@ -15,6 +15,9 @@ import type {
   PublicPresenceStatus,
 } from "@/types/public-character";
 
+import { CharacterDirectoryOrderBadge } from "@/components/characters/character-directory-order-badge";
+
+
 type CharacterDirectoryProps = {
   characters: PublicCharacterListItem[];
   viewerCharacterId: string | null;
@@ -420,9 +423,8 @@ function CharacterDirectoryCard({
               entry={character.race}
             />
 
-            <CodexBadge
-              label="Association"
-              entry={character.association}
+            <CharacterDirectoryOrderBadge
+              characterId={character.id}
             />
           </div>
 

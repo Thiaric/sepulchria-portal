@@ -25,6 +25,8 @@ import type { PortalContext } from "@/types/portal";
 import { ForumSectionActivityContext } from "@/components/portal/forum-section-activity-context";
 import { AdminOrdersContext } from "@/components/portal/admin-orders-context";
 import { CharacterOrderContext } from "@/components/portal/character-order-context";
+import { OrderLeadershipContext } from "@/components/portal/order-leadership-context";
+
 
 type PortalContextPanelProps = {
   context: PortalContext;
@@ -133,6 +135,55 @@ if (
     />
   );
 }
+
+if (
+  pathname ===
+  "/orders"
+) {
+  return (
+    <PublicCodexJumpContext
+      table="orders"
+      title="Orders"
+      eyebrow="Codex"
+      anchorPrefix="order"
+    />
+  );
+}
+
+if (
+  pathname ===
+  "/orders/manage"
+) {
+  return (
+    <OrderLeadershipContext />
+  );
+}
+
+
+const publicOrderMatch =
+  pathname.match(
+    /^\/orders\/([^/]+)$/,
+  );
+
+if (
+  publicOrderMatch &&
+  decodeURIComponent(
+    publicOrderMatch[1],
+  ) !== "manage"
+) {
+  return (
+    <CodexContext
+      eyebrow="Codex"
+      title="Orders"
+      description="The specialised Orders of Sepulchria, their disciplines, ranks, roles and place within the Associations."
+      primaryHref="/orders"
+      primaryLabel="All Orders"
+      secondaryHref="/associations"
+      secondaryLabel="Associations"
+    />
+  );
+}
+
 
   if (pathname === "/admin/races") {
     return (
@@ -263,7 +314,8 @@ function PublicCodexJumpContext({
 }: {
   table:
     | "races"
-    | "associations";
+    | "associations"
+    | "orders";
   title: string;
   eyebrow: string;
   anchorPrefix: string;
