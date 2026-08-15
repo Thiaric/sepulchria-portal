@@ -787,14 +787,30 @@ if (
  * value and is NOT overwritten.
  */
 if (isNewApproval) {
+  /*
+   * A newly approved character has not entered active play yet.
+   * Initialise Current Health from the COMPLETE effective Vigour.
+   *
+   * IMPORTANT:
+   * - characters.vigor remains BASE Vigour only.
+   * - Ancestry and Order modifiers remain separate.
+   * - We SET the starting health here rather than ADDING modifiers,
+   *   because character creation may already have initialised health
+   *   using the Ancestry modifier.
+   *
+   * Example:
+   * Base Vigour 3 + Ancestry +2 + Order 0 = 5
+   * Current Health = 50
+   */
   currentHealth =
-    adjustHealthForVigourModifier({
-      currentHealth,
-      oldModifier: 0,
-      newModifier:
+    Math.max(
+      0,
+      (
+        newBaseVigour +
         newRaceVigourModifier +
-        currentOrderVigourModifier,
-    });
+        currentOrderVigourModifier
+      ) * 10,
+    );
 } else if (ancestryChanged) {
   /*
    * AFTER APPROVAL
