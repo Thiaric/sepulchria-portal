@@ -39,10 +39,10 @@ export function HeaderOrderIcon({
   useEffect(() => {
     let cancelled = false;
 
-    async function loadOrder() {
-      const supabase =
-        createClient();
+    const supabase =
+      createClient();
 
+    async function loadOrder() {
       const {
         data,
         error,
@@ -87,8 +87,45 @@ export function HeaderOrderIcon({
 
     void loadOrder();
 
+    const channel =
+      supabase
+        .channel(
+          `header-order-membership-${characterId}`,
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table:
+              "order_memberships",
+            filter:
+              `character_id=eq.${characterId}`,
+          },
+          () => {
+            void loadOrder();
+          },
+        )
+        .subscribe();
+
+    const interval =
+      window.setInterval(
+        () => {
+          void loadOrder();
+        },
+        5000,
+      );
+
     return () => {
       cancelled = true;
+
+      window.clearInterval(
+        interval,
+      );
+
+      void supabase.removeChannel(
+        channel,
+      );
     };
   }, [characterId]);
 

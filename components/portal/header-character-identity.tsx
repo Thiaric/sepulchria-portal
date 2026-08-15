@@ -5,6 +5,7 @@ import {
   useState,
 } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/client";
 import { HeaderOrderIcon } from "@/components/portal/header-order-icon";
@@ -14,7 +15,8 @@ import type {
 } from "@/types/portal";
 
 type HeaderCharacterIdentityProps = {
-  character: PortalCharacter;
+  userId: string;
+  character: PortalCharacter | null;
   initialPresenceStatus: PortalPresenceStatus;
 };
 
@@ -45,9 +47,11 @@ const PRESENCE_STYLES: Record<
 };
 
 export function HeaderCharacterIdentity({
+  userId,
   character,
   initialPresenceStatus,
 }: HeaderCharacterIdentityProps) {
+  const router = useRouter();
   const [
     presenceStatus,
     setPresenceStatus,
@@ -66,6 +70,170 @@ export function HeaderCharacterIdentity({
   }, [initialPresenceStatus]);
 
   useEffect(() => {
+    const supabase =
+      createClient();
+
+    let cancelled = false;
+    let initialised = false;
+    let lastId: string | null =
+      character?.id ?? null;
+    let lastUpdatedAt: string | null =
+      null;
+
+    async function checkCharacterRecord() {
+      const {
+        data,
+        error,
+      } = await supabase
+        .from("characters")
+        .select(
+          "id, updated_at",
+        )
+        .eq(
+          "user_id",
+          userId,
+        )
+        .maybeSingle();
+
+      if (
+        cancelled ||
+        error
+      ) {
+        if (error) {
+          console.error(
+            "Unable to refresh header character identity:",
+            error.message,
+          );
+        }
+
+        return;
+      }
+
+      const nextId =
+        data?.id ?? null;
+      const nextUpdatedAt =
+        data?.updated_at ?? null;
+
+      if (!initialised) {
+        initialised = true;
+
+        const identityChanged =
+          nextId !== lastId;
+
+        lastId = nextId;
+        lastUpdatedAt =
+          nextUpdatedAt;
+
+        if (identityChanged) {
+          router.refresh();
+        }
+
+        return;
+      }
+
+      if (
+        nextId !== lastId ||
+        nextUpdatedAt !==
+          lastUpdatedAt
+      ) {
+        lastId = nextId;
+        lastUpdatedAt =
+          nextUpdatedAt;
+
+        router.refresh();
+      }
+    }
+
+    void checkCharacterRecord();
+
+    const channel =
+      supabase
+        .channel(
+          `header-character-record-${userId}`,
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table:
+              "characters",
+            filter:
+              `user_id=eq.${userId}`,
+          },
+          (payload) => {
+            const next =
+              payload.new as {
+                id?: string;
+                updated_at?: string;
+              };
+
+            if (next?.id) {
+              lastId =
+                next.id;
+            }
+
+            if (
+              next?.updated_at
+            ) {
+              lastUpdatedAt =
+                next.updated_at;
+            }
+
+            router.refresh();
+          },
+        )
+        .subscribe();
+
+    const interval =
+      window.setInterval(
+        () => {
+          void checkCharacterRecord();
+        },
+        5000,
+      );
+
+    function handleVisibilityChange() {
+      if (
+        document.visibilityState ===
+        "visible"
+      ) {
+        void checkCharacterRecord();
+      }
+    }
+
+    document.addEventListener(
+      "visibilitychange",
+      handleVisibilityChange,
+    );
+
+    return () => {
+      cancelled = true;
+
+      window.clearInterval(
+        interval,
+      );
+
+      document.removeEventListener(
+        "visibilitychange",
+        handleVisibilityChange,
+      );
+
+      void supabase.removeChannel(
+        channel,
+      );
+    };
+  }, [
+    character?.id,
+    router,
+    userId,
+  ]);
+
+  useEffect(() => {
+    if (!character) {
+      return;
+    }
+
     const supabase =
       createClient();
 
@@ -111,12 +279,13 @@ export function HeaderCharacterIdentity({
         channel,
       );
     };
-  }, [character.id]);
+  }, [character?.id]);
 
   async function changePresence(
     nextStatus: PortalPresenceStatus,
   ) {
     if (
+      !character ||
       saving ||
       nextStatus === presenceStatus
     ) {
@@ -213,6 +382,17 @@ last_seen_at:
     }
 
     setSaving(false);
+  }
+
+  if (!character) {
+    return (
+      <Link
+        href="/character/create"
+        className="hidden text-[10px] uppercase tracking-[0.16em] text-[#c59a5a] md:block 2xl:text-xs 2xl:tracking-[0.18em]"
+      >
+        Create character
+      </Link>
+    );
   }
 
   const presence =

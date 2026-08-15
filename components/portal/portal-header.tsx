@@ -59,19 +59,14 @@ export async function PortalHeader({ context }: PortalHeaderProps) {
               </Link>
             ) : null}
 
-            {character ? (
-              <HeaderCharacterIdentity
-                character={character}
-                initialPresenceStatus={presence?.status ?? "online"}
-              />
-            ) : (
-              <Link
-                href="/character/create"
-                className="hidden text-[10px] uppercase tracking-[0.16em] text-[#c59a5a] md:block 2xl:text-xs 2xl:tracking-[0.18em]"
-              >
-                Create character
-              </Link>
-            )}
+            <HeaderCharacterIdentity
+              userId={context.user.id}
+              character={character}
+              initialPresenceStatus={
+                presence?.status ??
+                "online"
+              }
+            />
 
             <LogoutButton />
           </div>
