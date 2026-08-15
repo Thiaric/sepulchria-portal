@@ -33,9 +33,10 @@ export default async function AdminMediaPage() {
             </h2>
 
             <p className="mt-1 max-w-3xl text-xs leading-5 text-[#928674]">
-              Upload images into the
-              repository&apos;s public folder
-              and its subfolders.
+              Stage uploads and deletions for
+              the repository&apos;s public
+              folder, then save the whole
+              batch as one GitHub commit.
             </p>
           </div>
 
@@ -70,11 +71,20 @@ export default async function AdminMediaPage() {
           </p>
 
           <p className="mt-2 text-[10px] leading-5 text-[#817567]">
-            Files are committed to
+            Adding an upload only stages its
+            bytes in GitHub and marking a
+            deletion changes only this page.
+            Neither action changes
             <code className="mx-1 text-[#c6ad87]">
-              public/...
+              master
             </code>
-            in GitHub. For example,
+            or triggers Vercel. When you
+            click
+            <strong className="mx-1 font-normal text-[#d1b68e]">
+              Save changes
+            </strong>
+            the entire batch is written as
+            one commit. A file stored as
             <code className="mx-1 text-[#c6ad87]">
               public/images/map.webp
             </code>

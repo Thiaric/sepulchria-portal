@@ -1,20 +1,25 @@
-import { NextResponse } from "next/server";
+import {
+  NextResponse,
+} from "next/server";
 
 import {
   ALLOWED_IMAGE_TYPES,
   MAX_MEDIA_FILE_BYTES,
+  commitPublicMediaBatch,
   createRepositoryPath,
-  listPublicFolders,
+  listPublicMedia,
   normaliseFileName,
   normaliseFolder,
-  uploadPublicImage,
+  stagePublicImage,
+  type PublicMediaBatchUpload,
 } from "@/lib/github/public-media";
 import {
   getStaffSession,
 } from "@/lib/auth/require-staff";
 
 export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
+export const dynamic =
+  "force-dynamic";
 
 async function getApiAdmin() {
   const session =
@@ -48,17 +53,16 @@ export async function GET() {
   }
 
   try {
-    return NextResponse.json({
-      folders:
-        await listPublicFolders(),
-    });
+    return NextResponse.json(
+      await listPublicMedia(),
+    );
   } catch (error) {
     return NextResponse.json(
       {
         error:
           error instanceof Error
             ? error.message
-            : "Unable to load public folders.",
+            : "Unable to load public media.",
       },
       {
         status: 500,
@@ -96,7 +100,7 @@ export async function POST(
       return NextResponse.json(
         {
           error:
-            "Choose an image to upload.",
+            "Choose an image to stage.",
         },
         {
           status: 400,
@@ -147,11 +151,14 @@ export async function POST(
     const fileName =
       normaliseFileName({
         requestedName: String(
-          formData.get("fileName") ??
-            "",
+          formData.get(
+            "fileName",
+          ) ?? "",
         ),
-        originalName: file.name,
-        mimeType: file.type,
+        originalName:
+          file.name,
+        mimeType:
+          file.type,
       });
 
     const repositoryPath =
@@ -165,15 +172,141 @@ export async function POST(
         "replaceExisting",
       ) === "true";
 
-    const bytes = new Uint8Array(
-      await file.arrayBuffer(),
-    );
+    const bytes =
+      new Uint8Array(
+        await file.arrayBuffer(),
+      );
 
-    const result =
-      await uploadPublicImage({
+    const staged =
+      await stagePublicImage({
         bytes,
         repositoryPath,
         replaceExisting,
+      });
+
+    return NextResponse.json({
+      success: true,
+      staged,
+    });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : "Unable to stage the image.",
+      },
+      {
+        status: 500,
+      },
+    );
+  }
+}
+
+export async function PATCH(
+  request: Request,
+) {
+  const session =
+    await getApiAdmin();
+
+  if (!session) {
+    return NextResponse.json(
+      {
+        error:
+          "Owner or Administrator access is required.",
+      },
+      {
+        status: 403,
+      },
+    );
+  }
+
+  try {
+    const body =
+      (await request.json()) as {
+        uploads?: unknown;
+        deletions?: unknown;
+      };
+
+    if (
+      !Array.isArray(
+        body.uploads,
+      ) ||
+      !Array.isArray(
+        body.deletions,
+      )
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "Invalid pending media changes.",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+
+    const uploads:
+      PublicMediaBatchUpload[] =
+      body.uploads.map(
+        (item) => {
+          if (
+            !item ||
+            typeof item !==
+              "object"
+          ) {
+            throw new Error(
+              "Invalid staged upload.",
+            );
+          }
+
+          const record =
+            item as Record<
+              string,
+              unknown
+            >;
+
+          if (
+            typeof record.repositoryPath !==
+              "string" ||
+            typeof record.blobSha !==
+              "string"
+          ) {
+            throw new Error(
+              "Invalid staged upload.",
+            );
+          }
+
+          return {
+            repositoryPath:
+              record.repositoryPath,
+            blobSha:
+              record.blobSha,
+          };
+        },
+      );
+
+    const deletions =
+      body.deletions.map(
+        (item) => {
+          if (
+            typeof item !==
+            "string"
+          ) {
+            throw new Error(
+              "Invalid pending deletion.",
+            );
+          }
+
+          return item;
+        },
+      );
+
+    const result =
+      await commitPublicMediaBatch({
+        uploads,
+        deletions,
       });
 
     return NextResponse.json({
@@ -186,7 +319,7 @@ export async function POST(
         error:
           error instanceof Error
             ? error.message
-            : "Unable to upload the image.",
+            : "Unable to save media changes.",
       },
       {
         status: 500,

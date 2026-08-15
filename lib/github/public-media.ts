@@ -7,6 +7,9 @@ const DEFAULT_BRANCH = "master";
 export const MAX_MEDIA_FILE_BYTES =
   3_500_000;
 
+export const MAX_MEDIA_BATCH_CHANGES =
+  100;
+
 export const ALLOWED_IMAGE_TYPES =
   new Map<string, string>([
     ["image/png", ".png"],
@@ -15,6 +18,9 @@ export const ALLOWED_IMAGE_TYPES =
     ["image/gif", ".gif"],
     ["image/avif", ".avif"],
   ]);
+
+const IMAGE_EXTENSIONS =
+  /\.(png|jpe?g|webp|gif|avif)$/i;
 
 type GitHubConfig = {
   token: string;
@@ -30,10 +36,51 @@ type GitHubContentsFile = {
 type GitHubTreeItem = {
   path: string;
   type: "blob" | "tree" | "commit";
+  size?: number;
 };
 
 type GitHubTreeResponse = {
   tree?: GitHubTreeItem[];
+};
+
+type GitHubRefResponse = {
+  object?: {
+    sha?: string;
+  };
+};
+
+type GitHubCommitResponse = {
+  sha?: string;
+  tree?: {
+    sha?: string;
+  };
+};
+
+type GitHubBlobResponse = {
+  sha?: string;
+};
+
+type GitHubCreatedCommitResponse = {
+  sha?: string;
+  html_url?: string | null;
+};
+
+export type PublicMediaImage = {
+  repositoryPath: string;
+  publicPath: string;
+  previewUrl: string;
+  size: number | null;
+};
+
+export type StagedPublicImage = {
+  repositoryPath: string;
+  publicPath: string;
+  blobSha: string;
+};
+
+export type PublicMediaBatchUpload = {
+  repositoryPath: string;
+  blobSha: string;
 };
 
 function getGitHubConfig(): GitHubConfig {
@@ -103,6 +150,15 @@ async function githubFetch(
   );
 }
 
+function encodeRepositoryPath(
+  repositoryPath: string,
+): string {
+  return repositoryPath
+    .split("/")
+    .map(encodeURIComponent)
+    .join("/");
+}
+
 export function normaliseFolder(
   value: string,
 ): string {
@@ -153,11 +209,9 @@ export function normaliseFileName({
     );
   }
 
-  const requested =
-    requestedName.trim();
-
   const sourceName =
-    requested || originalName;
+    requestedName.trim() ||
+    originalName;
 
   const lastDot =
     sourceName.lastIndexOf(".");
@@ -200,16 +254,41 @@ export function createPublicPath(
   );
 }
 
+function assertPublicImagePath(
+  repositoryPath: string,
+): void {
+  if (
+    !repositoryPath.startsWith("public/") ||
+    repositoryPath.includes("..") ||
+    !IMAGE_EXTENSIONS.test(repositoryPath)
+  ) {
+    throw new Error(
+      "Only image files inside public/ can be managed here.",
+    );
+  }
+}
+
+function assertBlobSha(
+  sha: string,
+): void {
+  if (!/^[0-9a-f]{40}$/i.test(sha)) {
+    throw new Error(
+      "An invalid staged Git blob was supplied.",
+    );
+  }
+}
+
 async function getExistingFile(
   repositoryPath: string,
 ): Promise<GitHubContentsFile | null> {
+  assertPublicImagePath(repositoryPath);
+
   const config = getGitHubConfig();
 
   const response = await githubFetch(
-    `/contents/${repositoryPath
-      .split("/")
-      .map(encodeURIComponent)
-      .join("/")}?ref=${encodeURIComponent(
+    `/contents/${encodeRepositoryPath(
+      repositoryPath,
+    )}?ref=${encodeURIComponent(
       config.branch,
     )}`,
   );
@@ -240,7 +319,7 @@ async function getExistingFile(
   return data;
 }
 
-export async function uploadPublicImage({
+export async function stagePublicImage({
   bytes,
   repositoryPath,
   replaceExisting,
@@ -248,48 +327,36 @@ export async function uploadPublicImage({
   bytes: Uint8Array;
   repositoryPath: string;
   replaceExisting: boolean;
-}): Promise<{
-  repositoryPath: string;
-  publicPath: string;
-  commitUrl: string | null;
-}> {
-  const config = getGitHubConfig();
+}): Promise<StagedPublicImage> {
+  assertPublicImagePath(repositoryPath);
 
-  const existing =
-    await getExistingFile(repositoryPath);
+  if (!replaceExisting) {
+    const existing =
+      await getExistingFile(
+        repositoryPath,
+      );
 
-  if (
-    existing &&
-    !replaceExisting
-  ) {
-    throw new Error(
-      "A file already exists at this path. Enable Replace existing file to overwrite it.",
-    );
+    if (existing) {
+      throw new Error(
+        "A file already exists at this path. Enable Replace existing file to stage a replacement.",
+      );
+    }
   }
 
-  const encodedContent =
-    Buffer.from(bytes).toString("base64");
-
   const response = await githubFetch(
-    `/contents/${repositoryPath
-      .split("/")
-      .map(encodeURIComponent)
-      .join("/")}`,
+    "/git/blobs",
     {
-      method: "PUT",
+      method: "POST",
       headers: {
         "Content-Type":
           "application/json",
       },
       body: JSON.stringify({
-        message: existing
-          ? `Replace media: ${repositoryPath}`
-          : `Upload media: ${repositoryPath}`,
-        content: encodedContent,
-        branch: config.branch,
-        ...(existing
-          ? { sha: existing.sha }
-          : {}),
+        content:
+          Buffer.from(bytes).toString(
+            "base64",
+          ),
+        encoding: "base64",
       }),
     },
   );
@@ -298,29 +365,32 @@ export async function uploadPublicImage({
     const body = await response.text();
 
     throw new Error(
-      `GitHub rejected the upload (${response.status}): ${body}`,
+      `GitHub rejected the staged image (${response.status}): ${body}`,
     );
   }
 
   const data =
-    (await response.json()) as {
-      commit?: {
-        html_url?: string | null;
-      };
-    };
+    (await response.json()) as
+      GitHubBlobResponse;
+
+  if (!data.sha) {
+    throw new Error(
+      "GitHub staged the image without returning a blob SHA.",
+    );
+  }
 
   return {
     repositoryPath,
     publicPath:
       createPublicPath(repositoryPath),
-    commitUrl:
-      data.commit?.html_url ?? null,
+    blobSha: data.sha,
   };
 }
 
-export async function listPublicFolders(): Promise<
-  string[]
-> {
+export async function listPublicMedia(): Promise<{
+  folders: string[];
+  images: PublicMediaImage[];
+}> {
   const config = getGitHubConfig();
 
   const response = await githubFetch(
@@ -330,30 +400,379 @@ export async function listPublicFolders(): Promise<
   );
 
   if (!response.ok) {
-    return [];
+    const body = await response.text();
+
+    throw new Error(
+      `GitHub could not load public media (${response.status}): ${body}`,
+    );
   }
 
   const data =
     (await response.json()) as
       GitHubTreeResponse;
 
-  const folders = new Set<string>();
+  const folders =
+    new Set<string>();
+
+  const images:
+    PublicMediaImage[] = [];
 
   for (const item of data.tree ?? []) {
     if (
-      item.type !== "tree" ||
-      !item.path.startsWith("public/")
+      item.type === "tree" &&
+      item.path.startsWith("public/")
+    ) {
+      folders.add(
+        item.path.replace(
+          /^public\//,
+          "",
+        ),
+      );
+      continue;
+    }
+
+    if (
+      item.type !== "blob" ||
+      !item.path.startsWith("public/") ||
+      !IMAGE_EXTENSIONS.test(item.path)
     ) {
       continue;
     }
 
-    folders.add(
-      item.path.replace(/^public\//, ""),
+    images.push({
+      repositoryPath:
+        item.path,
+      publicPath:
+        createPublicPath(item.path),
+      previewUrl:
+        `https://raw.githubusercontent.com/${encodeURIComponent(
+          config.owner,
+        )}/${encodeURIComponent(
+          config.repo,
+        )}/${encodeURIComponent(
+          config.branch,
+        )}/${encodeRepositoryPath(
+          item.path,
+        )}`,
+      size:
+        typeof item.size === "number"
+          ? item.size
+          : null,
+    });
+  }
+
+  return {
+    folders:
+      Array.from(folders).sort(
+        (a, b) =>
+          a.localeCompare(
+            b,
+            "en",
+          ),
+      ),
+    images: images.sort(
+      (a, b) =>
+        a.repositoryPath.localeCompare(
+          b.repositoryPath,
+          "en",
+        ),
+    ),
+  };
+}
+
+export async function commitPublicMediaBatch({
+  uploads,
+  deletions,
+}: {
+  uploads: PublicMediaBatchUpload[];
+  deletions: string[];
+}): Promise<{
+  commitSha: string;
+  commitUrl: string;
+  changedCount: number;
+}> {
+  const config = getGitHubConfig();
+
+  if (
+    uploads.length +
+      deletions.length ===
+    0
+  ) {
+    throw new Error(
+      "There are no pending media changes to save.",
     );
   }
 
-  return Array.from(folders).sort(
-    (a, b) =>
-      a.localeCompare(b, "en"),
-  );
+  if (
+    uploads.length +
+      deletions.length >
+    MAX_MEDIA_BATCH_CHANGES
+  ) {
+    throw new Error(
+      `A maximum of ${MAX_MEDIA_BATCH_CHANGES} media changes can be saved in one batch.`,
+    );
+  }
+
+  const uploadPaths =
+    new Set<string>();
+
+  for (const upload of uploads) {
+    assertPublicImagePath(
+      upload.repositoryPath,
+    );
+    assertBlobSha(upload.blobSha);
+
+    if (
+      uploadPaths.has(
+        upload.repositoryPath,
+      )
+    ) {
+      throw new Error(
+        `The upload path ${upload.repositoryPath} appears more than once.`,
+      );
+    }
+
+    uploadPaths.add(
+      upload.repositoryPath,
+    );
+  }
+
+  const deletePaths =
+    new Set<string>();
+
+  for (const repositoryPath of deletions) {
+    assertPublicImagePath(
+      repositoryPath,
+    );
+
+    if (
+      deletePaths.has(
+        repositoryPath,
+      )
+    ) {
+      throw new Error(
+        `The deletion path ${repositoryPath} appears more than once.`,
+      );
+    }
+
+    if (
+      uploadPaths.has(
+        repositoryPath,
+      )
+    ) {
+      throw new Error(
+        `The same path cannot be uploaded and deleted in one batch: ${repositoryPath}`,
+      );
+    }
+
+    deletePaths.add(
+      repositoryPath,
+    );
+  }
+
+  const refResponse =
+    await githubFetch(
+      `/git/ref/heads/${encodeURIComponent(
+        config.branch,
+      )}`,
+    );
+
+  if (!refResponse.ok) {
+    const body =
+      await refResponse.text();
+
+    throw new Error(
+      `GitHub could not load the current branch (${refResponse.status}): ${body}`,
+    );
+  }
+
+  const refData =
+    (await refResponse.json()) as
+      GitHubRefResponse;
+
+  const parentCommitSha =
+    refData.object?.sha;
+
+  if (!parentCommitSha) {
+    throw new Error(
+      "GitHub did not return the current branch commit.",
+    );
+  }
+
+  const parentResponse =
+    await githubFetch(
+      `/git/commits/${encodeURIComponent(
+        parentCommitSha,
+      )}`,
+    );
+
+  if (!parentResponse.ok) {
+    const body =
+      await parentResponse.text();
+
+    throw new Error(
+      `GitHub could not load the parent commit (${parentResponse.status}): ${body}`,
+    );
+  }
+
+  const parentData =
+    (await parentResponse.json()) as
+      GitHubCommitResponse;
+
+  const baseTreeSha =
+    parentData.tree?.sha;
+
+  if (!baseTreeSha) {
+    throw new Error(
+      "GitHub did not return the parent tree.",
+    );
+  }
+
+  const treeEntries = [
+    ...uploads.map(
+      (upload) => ({
+        path:
+          upload.repositoryPath,
+        mode: "100644",
+        type: "blob",
+        sha: upload.blobSha,
+      }),
+    ),
+    ...deletions.map(
+      (repositoryPath) => ({
+        path: repositoryPath,
+        mode: "100644",
+        type: "blob",
+        sha: null,
+      }),
+    ),
+  ];
+
+  const treeResponse =
+    await githubFetch(
+      "/git/trees",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
+        body: JSON.stringify({
+          base_tree: baseTreeSha,
+          tree: treeEntries,
+        }),
+      },
+    );
+
+  if (!treeResponse.ok) {
+    const body =
+      await treeResponse.text();
+
+    throw new Error(
+      `GitHub could not create the media tree (${treeResponse.status}): ${body}`,
+    );
+  }
+
+  const treeData =
+    (await treeResponse.json()) as {
+      sha?: string;
+    };
+
+  if (!treeData.sha) {
+    throw new Error(
+      "GitHub created the media tree without returning its SHA.",
+    );
+  }
+
+  const uploadCount =
+    uploads.length;
+  const deletionCount =
+    deletions.length;
+
+  const commitMessage =
+    `Update media library (${uploadCount} upload${
+      uploadCount === 1
+        ? ""
+        : "s"
+    }, ${deletionCount} deletion${
+      deletionCount === 1
+        ? ""
+        : "s"
+    })`;
+
+  const commitResponse =
+    await githubFetch(
+      "/git/commits",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
+        body: JSON.stringify({
+          message:
+            commitMessage,
+          tree: treeData.sha,
+          parents: [
+            parentCommitSha,
+          ],
+        }),
+      },
+    );
+
+  if (!commitResponse.ok) {
+    const body =
+      await commitResponse.text();
+
+    throw new Error(
+      `GitHub could not create the media commit (${commitResponse.status}): ${body}`,
+    );
+  }
+
+  const commitData =
+    (await commitResponse.json()) as
+      GitHubCreatedCommitResponse;
+
+  if (!commitData.sha) {
+    throw new Error(
+      "GitHub created the commit without returning its SHA.",
+    );
+  }
+
+  const updateRefResponse =
+    await githubFetch(
+      `/git/refs/heads/${encodeURIComponent(
+        config.branch,
+      )}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
+        body: JSON.stringify({
+          sha: commitData.sha,
+          force: false,
+        }),
+      },
+    );
+
+  if (!updateRefResponse.ok) {
+    const body =
+      await updateRefResponse.text();
+
+    throw new Error(
+      `The media commit was created but master moved before it could be saved (${updateRefResponse.status}). Refresh the Media Library and save again. GitHub response: ${body}`,
+    );
+  }
+
+  return {
+    commitSha: commitData.sha,
+    commitUrl:
+      commitData.html_url ||
+      `https://github.com/${config.owner}/${config.repo}/commit/${commitData.sha}`,
+    changedCount:
+      uploads.length +
+      deletions.length,
+  };
 }
