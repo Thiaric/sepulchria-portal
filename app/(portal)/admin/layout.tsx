@@ -89,9 +89,15 @@ export default async function AdminLayout({
             </AdminNavigationLink>            
 
             {canManageUsers ? (
-              <AdminNavigationLink href="/admin/users">
-                Users
-              </AdminNavigationLink>
+              <>
+                <AdminNavigationLink href="/admin/media">
+                  Media
+                </AdminNavigationLink>
+
+                <AdminNavigationLink href="/admin/users">
+                  Users
+                </AdminNavigationLink>
+              </>
             ) : null}
 
             <AdminNavigationLink href="/admin/world">
