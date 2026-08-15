@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
@@ -33,7 +33,7 @@ type Props = {
 const steps = [
   ["Heritage", "Choose the Ancestry that shapes your character's heritage."],
   ["Identity", "Name, gender, pronouns, orientation and age."],
-  ["Attributes", "Distribute the character's attribute points."],
+  ["Attributes", "Review the character's standard base attributes."],
   ["Appearance", "Portrait and physical description."],
   ["Story", "Personality, biography and public notes."],
   ["Review", "Review the character before saving."],
@@ -90,16 +90,6 @@ export default function CharacterForm({
       else message = validateAge();
     }
 
-    if (current === 3 && mode === "create") {
-      const names = ["muscles", "reflexes", "vigor", "brains", "shrewd", "presence_score"];
-      const values = names.map((name) => Number(value(name)));
-      if (
-        !values.every((item) => Number.isInteger(item) && item >= 1 && item <= 8) ||
-        values.reduce((sum, item) => sum + item, 0) !== 20
-      ) {
-        message = "Distribute exactly 20 points across the six attributes.";
-      }
-    }
 
     if (current === 4 && !value("physical_description"))
       message = "Physical description is required before continuing.";
@@ -225,7 +215,7 @@ export default function CharacterForm({
                   ? "Choose a configured ancestry first."
                   : race.max_age === null
                     ? `${race.min_age}+ years`
-                    : `${race.min_age}–${race.max_age} years`}
+                    : `${race.min_age}â€“${race.max_age} years`}
               </span>
             </label>
           </div>
@@ -280,7 +270,7 @@ export default function CharacterForm({
       <div className="flex justify-between gap-3 border-t border-[#5d452d]/40 bg-[#110d0a] p-6">
         {step > 1 ? (
           <button type="button" onClick={() => { setError(null); setStep(step - 1); }} className={secondaryButton}>
-            ← Previous
+            â† Previous
           </button>
         ) : (
           <Link href={mode === "create" ? "/" : "/character"} className={secondaryButton}>
@@ -290,7 +280,7 @@ export default function CharacterForm({
 
         {step < steps.length ? (
           <button type="button" onClick={next} className={primaryButton}>
-            Continue →
+            Continue â†’
           </button>
         ) : (
           <button type="submit" className={primaryButton}>
@@ -379,7 +369,7 @@ function RaceSelection({
                   onClick={(event) => event.stopPropagation()}
                   className="mt-4 inline-block text-[9px] uppercase tracking-[0.2em] text-[#9f7b4b]"
                 >
-                  Read More ↗
+                  Read More â†—
                 </Link>
               </div>
             </button>

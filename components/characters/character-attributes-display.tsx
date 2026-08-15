@@ -112,7 +112,7 @@ export function CharacterAttributesDisplay({
 
         {hasAnyAttribute ? (
           <p className="text-[8px] uppercase tracking-[0.16em] text-[#776957]">
-            20 point allocation
+            Base + Ancestry + Order
           </p>
         ) : null}
       </div>

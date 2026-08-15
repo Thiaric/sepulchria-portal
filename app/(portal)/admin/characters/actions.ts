@@ -1,4 +1,4 @@
-"use server";
+﻿"use server";
 
 import {
   createClient as createAdminClient,
@@ -154,17 +154,6 @@ function readOptionalAttributes(
     );
   }
 
-  if (
-    values.reduce(
-      (sum, value) =>
-        sum + value,
-      0,
-    ) !== 20
-  ) {
-    throw new Error(
-      "Character attributes must total exactly 20 points.",
-    );
-  }
 
   return Object.fromEntries(
     ATTRIBUTE_NAMES.map(

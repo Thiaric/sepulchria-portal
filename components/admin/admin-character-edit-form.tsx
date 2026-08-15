@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import {
   useEffect,
@@ -453,20 +453,6 @@ export function AdminCharacterEditForm({
       return false;
     }
 
-    const total = values.reduce(
-      (sum, value) =>
-        sum + value,
-      0,
-    );
-
-    if (total !== 20) {
-      setAttributeError(
-        `Character attributes currently total ${total}. They must total exactly 20 points.`,
-      );
-
-      scrollToAttributes(form);
-      return false;
-    }
 
     setAttributeError(null);
     return true;
@@ -653,7 +639,7 @@ export function AdminCharacterEditForm({
                 : selectedRace.max_age ===
                     null
                   ? `${selectedRace.name}: ${selectedRace.min_age}+ years`
-                  : `${selectedRace.name}: ${selectedRace.min_age}–${selectedRace.max_age} years`}
+                  : `${selectedRace.name}: ${selectedRace.min_age}â€“${selectedRace.max_age} years`}
         </p>
 
         
