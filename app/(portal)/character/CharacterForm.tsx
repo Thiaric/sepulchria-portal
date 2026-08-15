@@ -215,7 +215,7 @@ export default function CharacterForm({
                   ? "Choose a configured ancestry first."
                   : race.max_age === null
                     ? `${race.min_age}+ years`
-                    : `${race.min_age}â€“${race.max_age} years`}
+                    : `${race.min_age}\u2013${race.max_age} years`}
               </span>
             </label>
           </div>
@@ -270,7 +270,7 @@ export default function CharacterForm({
       <div className="flex justify-between gap-3 border-t border-[#5d452d]/40 bg-[#110d0a] p-6">
         {step > 1 ? (
           <button type="button" onClick={() => { setError(null); setStep(step - 1); }} className={secondaryButton}>
-            â† Previous
+            &larr; Previous
           </button>
         ) : (
           <Link href={mode === "create" ? "/" : "/character"} className={secondaryButton}>
@@ -280,7 +280,7 @@ export default function CharacterForm({
 
         {step < steps.length ? (
           <button type="button" onClick={next} className={primaryButton}>
-            Continue â†’
+            Continue &rarr;
           </button>
         ) : (
           <button type="submit" className={primaryButton}>
@@ -369,7 +369,7 @@ function RaceSelection({
                   onClick={(event) => event.stopPropagation()}
                   className="mt-4 inline-block text-[9px] uppercase tracking-[0.2em] text-[#9f7b4b]"
                 >
-                  Read More â†—
+                  Read More →
                 </Link>
               </div>
             </button>

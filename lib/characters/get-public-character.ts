@@ -146,9 +146,9 @@ export type PublicCharacterListItem = {
   } | null;
 
   /*
-   * CompatibilitÃ  temporanea con il vecchio
-   * CharacterDirectory. SarÃ  rimossa nel
-   * prossimo pacchetto.
+   * Temporary compatibility with the old
+   * CharacterDirectory. This will be removed
+   * in a future cleanup.
    */
   faction: string | null;
 };
@@ -585,9 +585,9 @@ export const getPublicCharacters = cache(
         association,
 
         /*
-         * CompatibilitÃ  temporanea.
-         * Il prossimo CharacterDirectory
-         * userÃ  association direttamente.
+         * Temporary compatibility layer.
+         * A future CharacterDirectory cleanup
+         * should use association directly.
          */
         faction:
           association?.name ?? null,
