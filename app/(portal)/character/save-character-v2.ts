@@ -315,7 +315,7 @@ export async function saveCharacterV2(
       supabase
         .from("races")
         .select(
-          "id, name, min_age, max_age",
+          "id, name, min_age, max_age, vigour_modifier",
         )
         .eq(
           "id",
@@ -449,9 +449,19 @@ export async function saveCharacterV2(
            */
           ...STANDARD_BASE_ATTRIBUTES,
 
+          /*
+           * Starting Health uses EFFECTIVE Vigour immediately:
+           *
+           * Base Vigour + Ancestry Vigour modifier.
+           *
+           * The BASE vigor column itself remains 3.
+           * The modifier remains stored on the Ancestry.
+           */
           current_health:
-            STANDARD_BASE_ATTRIBUTES.vigor *
-            10,
+            (
+              STANDARD_BASE_ATTRIBUTES.vigor +
+              (raceResult.data.vigour_modifier ?? 0)
+            ) * 10,
         });
 
     if (error) {

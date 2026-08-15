@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
@@ -20,6 +20,12 @@ type CharacterOption = {
 type RaceOption = CharacterOption & {
   min_age: number | null;
   max_age: number | null;
+  muscles_modifier: number | null;
+  reflexes_modifier: number | null;
+  vigour_modifier: number | null;
+  shrewd_modifier: number | null;
+  brains_modifier: number | null;
+  presence_modifier: number | null;
 };
 
 type Props = {
@@ -231,6 +237,14 @@ export default function CharacterForm({
               brains: character?.brains,
               shrewd: character?.shrewd,
               presence_score: character?.presence_score,
+            }}
+            ancestryModifiers={{
+              muscles: race?.muscles_modifier ?? 0,
+              reflexes: race?.reflexes_modifier ?? 0,
+              vigor: race?.vigour_modifier ?? 0,
+              brains: race?.brains_modifier ?? 0,
+              shrewd: race?.shrewd_modifier ?? 0,
+              presence_score: race?.presence_modifier ?? 0,
             }}
           />
         </section>

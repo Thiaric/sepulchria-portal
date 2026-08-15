@@ -34,6 +34,35 @@ type CodexRelation =
     }[]
   | null;
 
+type AttributeModifierSource = {
+  muscles_modifier: number | null;
+  reflexes_modifier: number | null;
+  vigour_modifier: number | null;
+  shrewd_modifier: number | null;
+  brains_modifier: number | null;
+  presence_modifier: number | null;
+};
+
+type CharacterRaceRelation =
+  | ({
+      id: string;
+      name: string;
+    } & AttributeModifierSource)
+  | ({
+      id: string;
+      name: string;
+    } & AttributeModifierSource)[]
+  | null;
+
+type OrderLevelRelation =
+  | AttributeModifierSource
+  | AttributeModifierSource[]
+  | null;
+
+type OrderMembershipRow = {
+  level: OrderLevelRelation;
+};
+
 type CharacterRow = {
   id: string;
   user_id: string;
@@ -70,7 +99,7 @@ type CharacterRow = {
   shrewd: number | null;
   presence_score: number | null;
   current_health: number | null;
-  race: CodexRelation;
+  race: CharacterRaceRelation;
 };
 
 type AdminCharacterPageProps = {
@@ -154,6 +183,7 @@ export default async function AdminCharacterPage({
   const [
     characterResult,
     racesResult,
+    orderMembershipResult,
   ] = await Promise.all([
     supabase
       .from("characters")
@@ -196,7 +226,13 @@ export default async function AdminCharacterPage({
 
         race:races!characters_race_id_fkey(
           id,
-          name
+          name,
+          muscles_modifier,
+          reflexes_modifier,
+          vigour_modifier,
+          shrewd_modifier,
+          brains_modifier,
+          presence_modifier
         )
       `)
       .eq("id", id)
@@ -206,11 +242,28 @@ export default async function AdminCharacterPage({
       .from("races")
       .select("id, name")
       .order("name"),
+
+    supabase
+      .from("order_memberships")
+      .select(`
+        level:order_levels!order_memberships_order_level_id_fkey(
+          muscles_modifier,
+          reflexes_modifier,
+          vigour_modifier,
+          shrewd_modifier,
+          brains_modifier,
+          presence_modifier
+        )
+      `)
+      .eq("character_id", id)
+      .limit(1)
+      .maybeSingle(),
   ]);
 
   const firstError =
     characterResult.error ??
-    racesResult.error;
+    racesResult.error ??
+    orderMembershipResult.error;
 
   if (firstError) {
     throw new Error(
@@ -234,6 +287,65 @@ export default async function AdminCharacterPage({
     normaliseRelation(
       character.race,
     );
+
+  const orderMembership =
+    orderMembershipResult.data as
+      | OrderMembershipRow
+      | null;
+
+  const orderLevel =
+    normaliseRelation(
+      orderMembership?.level ??
+        null,
+    );
+
+  const ancestryModifiers = {
+    muscles:
+      race?.muscles_modifier ?? 0,
+    reflexes:
+      race?.reflexes_modifier ?? 0,
+    vigor:
+      race?.vigour_modifier ?? 0,
+    brains:
+      race?.brains_modifier ?? 0,
+    shrewd:
+      race?.shrewd_modifier ?? 0,
+    presence_score:
+      race?.presence_modifier ?? 0,
+  };
+
+  const orderModifiers = {
+    muscles:
+      orderLevel?.muscles_modifier ??
+      0,
+    reflexes:
+      orderLevel?.reflexes_modifier ??
+      0,
+    vigor:
+      orderLevel?.vigour_modifier ??
+      0,
+    brains:
+      orderLevel?.brains_modifier ??
+      0,
+    shrewd:
+      orderLevel?.shrewd_modifier ??
+      0,
+    presence_score:
+      orderLevel?.presence_modifier ??
+      0,
+  };
+
+  const effectiveVigour =
+    character.vigor === null
+      ? null
+      : character.vigor +
+        ancestryModifiers.vigor +
+        orderModifiers.vigor;
+
+  const maximumHealth =
+    effectiveVigour === null
+      ? null
+      : effectiveVigour * 10;
 
   const displayName =
     getDisplayName(character);
@@ -665,7 +777,7 @@ export default async function AdminCharacterPage({
                   </p>
 
                   <p className="mt-2 text-xs leading-5 text-[#8f8271]">
-                    Maximum Health is always Vigor × 10. Current Health cannot be higher than that maximum.
+                    Maximum Health uses effective Vigour: Base + Ancestry + Order, then × 10. The editable Attribute fields below remain BASE values only.
                   </p>
 
                   <div className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -695,14 +807,38 @@ export default async function AdminCharacterPage({
                       </span>
 
                       <div className="mt-2 border border-[#60482e]/45 bg-[#0d0907] px-3 py-3 text-sm text-[#bfae92]">
-                        {character.vigor ===
+                        {maximumHealth ===
                         null
                           ? "Not available"
-                          : character.vigor *
-                            10}
+                          : maximumHealth}
                       </div>
                     </div>
                   </div>
+
+                  {effectiveVigour !== null ? (
+                    <div className="mt-3 border border-[#60482e]/35 bg-[#0d0907] px-3 py-3 text-[10px] leading-5 text-[#9f917c]">
+                      Effective Vigour:{" "}
+                      <span className="text-[#d7c4a5]">
+                        Base {character.vigor ?? 0}
+                      </span>{" "}
+                      + Ancestry{" "}
+                      <span className="text-[#d7c4a5]">
+                        {formatModifier(
+                          ancestryModifiers.vigor,
+                        )}
+                      </span>{" "}
+                      + Order{" "}
+                      <span className="text-[#d7c4a5]">
+                        {formatModifier(
+                          orderModifiers.vigor,
+                        )}
+                      </span>{" "}
+                      ={" "}
+                      <span className="font-semibold text-[#e6c994]">
+                        {effectiveVigour}
+                      </span>
+                    </div>
+                  ) : null}
                 </div>
 
                 <div className="border border-[#60482e]/45 bg-[#100c09] p-4">
@@ -713,81 +849,141 @@ export default async function AdminCharacterPage({
                       </p>
 
                       <p className="mt-2 text-xs leading-5 text-[#8f8271]">
-                        Leave all six empty for a legacy unassigned record, or enter values from 1 to 8 totalling exactly 20.
+                        The number field is the BASE Attribute controlled by staff. Ancestry and Order modifiers are shown separately and are never written into the base value.
                       </p>
                     </div>
                   </div>
 
-                  <div className="mt-4 grid grid-cols-2 gap-3">
+                  <div className="mt-4 grid gap-3 sm:grid-cols-2">
                     {[
-                      [
-                        "muscles",
-                        "Muscles",
-                        character.muscles,
-                      ],
-                      [
-                        "reflexes",
-                        "Reflexes",
-                        character.reflexes,
-                      ],
-                      [
-                        "vigor",
-                        "Vigor",
-                        character.vigor,
-                      ],
-                      [
-                        "brains",
-                        "Brains",
-                        character.brains,
-                      ],
-                      [
-                        "shrewd",
-                        "Shrewd",
-                        character.shrewd,
-                      ],
-                      [
-                        "presence_score",
-                        "Presence",
-                        character.presence_score,
-                      ],
+                      {
+                        name: "muscles",
+                        label: "Muscles",
+                        value:
+                          character.muscles,
+                        ancestry:
+                          ancestryModifiers.muscles,
+                        order:
+                          orderModifiers.muscles,
+                      },
+                      {
+                        name: "reflexes",
+                        label: "Reflexes",
+                        value:
+                          character.reflexes,
+                        ancestry:
+                          ancestryModifiers.reflexes,
+                        order:
+                          orderModifiers.reflexes,
+                      },
+                      {
+                        name: "vigor",
+                        label: "Vigour",
+                        value:
+                          character.vigor,
+                        ancestry:
+                          ancestryModifiers.vigor,
+                        order:
+                          orderModifiers.vigor,
+                      },
+                      {
+                        name: "brains",
+                        label: "Brains",
+                        value:
+                          character.brains,
+                        ancestry:
+                          ancestryModifiers.brains,
+                        order:
+                          orderModifiers.brains,
+                      },
+                      {
+                        name: "shrewd",
+                        label: "Shrewd",
+                        value:
+                          character.shrewd,
+                        ancestry:
+                          ancestryModifiers.shrewd,
+                        order:
+                          orderModifiers.shrewd,
+                      },
+                      {
+                        name:
+                          "presence_score",
+                        label: "Presence",
+                        value:
+                          character.presence_score,
+                        ancestry:
+                          ancestryModifiers.presence_score,
+                        order:
+                          orderModifiers.presence_score,
+                      },
                     ].map(
-                      ([
+                      ({
                         name,
                         label,
                         value,
-                      ]) => (
-                        <label
-                          key={String(
-                            name,
-                          )}
-                          className="block"
-                        >
-                          <span className="text-[8px] uppercase tracking-[0.16em] text-[#806b50]">
-                            {String(
-                              label,
-                            )}
-                          </span>
+                        ancestry,
+                        order,
+                      }) => {
+                        const effective =
+                          value === null
+                            ? null
+                            : Number(
+                                value,
+                              ) +
+                              ancestry +
+                              order;
 
-                          <input
-                            type="number"
-                            name={String(
-                              name,
-                            )}
-                            min={1}
-                            max={8}
-                            step={1}
-                            defaultValue={
-                              value ===
-                              null
-                                ? ""
-                                : Number(
-                                    value,
-                                  )
-                            }
-                            className="mt-2 w-full border border-[#60482e]/55 bg-[#0d0907] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
-                          />
-                        </label>
-                      ),
+                        return (
+                          <div
+                            key={name}
+                            className="border border-[#60482e]/35 bg-[#0d0907] p-3"
+                          >
+                            <label className="block">
+                              <span className="text-[8px] uppercase tracking-[0.16em] text-[#806b50]">
+                                {label} — Base
+                              </span>
+
+                              <input
+                                type="number"
+                                name={name}
+                                min={1}
+                                max={8}
+                                step={1}
+                                defaultValue={
+                                  value ===
+                                  null
+                                    ? ""
+                                    : Number(
+                                        value,
+                                      )
+                                }
+                                className="mt-2 w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                              />
+                            </label>
+
+                            <div className="mt-3 grid grid-cols-3 gap-2 text-center">
+                              <AttributeModifierBox
+                                label="Ancestry"
+                                value={
+                                  ancestry
+                                }
+                              />
+                              <AttributeModifierBox
+                                label="Order"
+                                value={
+                                  order
+                                }
+                              />
+                              <AttributeEffectiveBox
+                                value={
+                                  effective
+                                }
+                              />
+                            </div>
+                          </div>
+                        );
+                      },
                     )}
                   </div>
                 </div>
@@ -1030,6 +1226,54 @@ function CharacterTextSection({
         </p>
       )}
     </section>
+  );
+}
+
+function formatModifier(
+  value: number,
+): string {
+  if (value > 0) {
+    return `+${value}`;
+  }
+
+  return String(value);
+}
+
+function AttributeModifierBox({
+  label,
+  value,
+}: {
+  label: string;
+  value: number;
+}) {
+  return (
+    <div className="border border-[#60482e]/30 bg-black/20 px-2 py-2">
+      <p className="text-[7px] uppercase tracking-[0.12em] text-[#746856]">
+        {label}
+      </p>
+      <p className="mt-1 text-xs text-[#c7b393]">
+        {formatModifier(value)}
+      </p>
+    </div>
+  );
+}
+
+function AttributeEffectiveBox({
+  value,
+}: {
+  value: number | null;
+}) {
+  return (
+    <div className="border border-[#8d6a3d]/45 bg-[#1a120c] px-2 py-2">
+      <p className="text-[7px] uppercase tracking-[0.12em] text-[#98784e]">
+        Effective
+      </p>
+      <p className="mt-1 text-xs font-semibold text-[#e6c994]">
+        {value === null
+          ? "—"
+          : value}
+      </p>
+    </div>
   );
 }
 

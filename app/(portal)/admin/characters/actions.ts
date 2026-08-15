@@ -594,6 +594,44 @@ if (raceIds.length > 0) {
 const ancestryChanged =
   character.race_id !== raceId;
 
+/*
+ * Load the character's current Order Vigour modifier too.
+ * Base attributes stay stored on characters; Order/Ancestry
+ * modifiers are never written into the base columns.
+ */
+let currentOrderVigourModifier = 0;
+
+const {
+  data: orderMembership,
+  error: orderMembershipError,
+} = await supabase
+  .from("order_memberships")
+  .select(`
+    level:order_levels!order_memberships_order_level_id_fkey(
+      vigour_modifier
+    )
+  `)
+  .eq("character_id", characterId)
+  .limit(1)
+  .maybeSingle();
+
+if (orderMembershipError) {
+  throw new Error(
+    `Unable to load Order Vigour modifier: ${orderMembershipError.message}`,
+  );
+}
+
+const orderLevelRelation =
+  orderMembership?.level ?? null;
+
+const orderLevel =
+  Array.isArray(orderLevelRelation)
+    ? orderLevelRelation[0] ?? null
+    : orderLevelRelation;
+
+currentOrderVigourModifier =
+  orderLevel?.vigour_modifier ?? 0;
+
   if (
     status === "approved"
   ) {
@@ -735,19 +773,36 @@ if (
 }
 
 /*
- * Changing Ancestry is an event.
+ * FIRST APPROVAL
+ * --------------
+ * Creation stores BASE health only.
  *
- * Apply ONLY the difference between the
- * old and new Ancestry Vigour modifier.
+ * On first approval, bring Current Health up by every
+ * permanent Vigour modifier already attached to the
+ * character:
  *
- * Example:
- * old ancestry +1
- * new ancestry +3
- * current HP 24
+ *   Ancestry Vigour + Order Vigour
  *
- * 24 + ((3 - 1) × 10) = 44
+ * Base Vigour itself remains the editable characters.vigor
+ * value and is NOT overwritten.
  */
-if (ancestryChanged) {
+if (isNewApproval) {
+  currentHealth =
+    adjustHealthForVigourModifier({
+      currentHealth,
+      oldModifier: 0,
+      newModifier:
+        newRaceVigourModifier +
+        currentOrderVigourModifier,
+    });
+} else if (ancestryChanged) {
+  /*
+   * AFTER APPROVAL
+   * --------------
+   * Changing Ancestry changes Current Health only by
+   * the difference between the old and new Ancestry
+   * Vigour modifiers, preserving existing damage.
+   */
   currentHealth =
     adjustHealthForVigourModifier({
       currentHealth,
@@ -756,6 +811,50 @@ if (ancestryChanged) {
       newModifier:
         newRaceVigourModifier,
     });
+} else {
+  /*
+   * LEGACY / STALE-HEALTH REPAIR
+   * ----------------------------
+   * Older approved characters may still have Current
+   * Health equal to BASE Vigour × 10 because their
+   * Ancestry/Order modifiers were never applied.
+   *
+   * When staff save such a record unchanged, repair it
+   * once by adding the currently active permanent
+   * Vigour modifiers.
+   *
+   * Example:
+   *   Base Vigour 3
+   *   Current Health 30
+   *   Ancestry +2
+   *   Order 0
+   *
+   * becomes 50 Current Health while BASE Vigour stays 3.
+   */
+  const hasPermanentVigourModifier =
+    newRaceVigourModifier !== 0 ||
+    currentOrderVigourModifier !== 0;
+
+  const looksLikeUnmodifiedBaseHealth =
+    character.status === "approved" &&
+    character.current_health ===
+      oldBaseVigour * 10 &&
+    submittedCurrentHealth ===
+      character.current_health &&
+    oldBaseVigour ===
+      newBaseVigour &&
+    hasPermanentVigourModifier;
+
+  if (looksLikeUnmodifiedBaseHealth) {
+    currentHealth =
+      adjustHealthForVigourModifier({
+        currentHealth,
+        oldModifier: 0,
+        newModifier:
+          newRaceVigourModifier +
+          currentOrderVigourModifier,
+      });
+  }
 }
 
 currentHealth =

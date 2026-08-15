@@ -33,7 +33,7 @@ export default async function CreateCharacterPage({
   const { data: races, error: racesError } = await supabase
     .from("races")
     .select(
-      "id, name, slug, summary, icon_url, banner_url, colour, min_age, max_age",
+      "id, name, slug, summary, icon_url, banner_url, colour, min_age, max_age, muscles_modifier, reflexes_modifier, vigour_modifier, shrewd_modifier, brains_modifier, presence_modifier",
     )
     .eq("is_active", true)
     .eq("is_selectable", true)
