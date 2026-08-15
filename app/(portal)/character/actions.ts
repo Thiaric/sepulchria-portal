@@ -467,8 +467,10 @@ sexual_orientation:
       existingCharacterResult,
     ] = await Promise.all([
       supabase
-        .from("races")
-        .select("id")
+  .from("races")
+  .select(
+    "id, vigour_modifier",
+  )
         .eq("id", raceId)
         .eq("is_active", true)
         .eq("is_selectable", true)
@@ -585,7 +587,13 @@ sexual_orientation:
           associationId,
         ...attributes,
         current_health:
-          attributes.vigor * 10,
+  (
+    attributes.vigor +
+    (
+      raceResult.data
+        ?.vigour_modifier ?? 0
+    )
+  ) * 10,
       });
 
     if (error) {

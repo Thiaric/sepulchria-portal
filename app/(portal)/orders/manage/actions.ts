@@ -6,6 +6,7 @@ import {
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import { adjustHealthForVigourModifier } from "@/lib/characters/adjust-health-for-vigour-modifier";
 import { requireOrderHead } from "@/lib/orders/require-order-manager";
 import { createClient } from "@/lib/supabase/server";
 
@@ -68,7 +69,9 @@ async function level(
     error,
   } = await supabase
     .from("order_levels")
-    .select("level")
+    .select(
+      "level, vigour_modifier",
+    )
     .eq("id", levelId)
     .eq("order_id", orderId)
     .maybeSingle();
@@ -79,7 +82,7 @@ async function level(
     );
   }
 
-  return data.level;
+  return data;
 }
 
 async function role(
@@ -230,6 +233,65 @@ async function syncCharacterAssociation(
   }
 }
 
+async function adjustCharacterHealthForOrderModifier({
+  characterId,
+  oldModifier,
+  newModifier,
+}: {
+  characterId: string;
+  oldModifier: number;
+  newModifier: number;
+}) {
+  if (
+    oldModifier ===
+    newModifier
+  ) {
+    return;
+  }
+
+  const admin =
+    createPrivilegedClient();
+
+  const {
+    data: character,
+    error: characterError,
+  } = await admin
+    .from("characters")
+    .select("current_health")
+    .eq("id", characterId)
+    .single();
+
+  if (characterError) {
+    throw new Error(
+      characterError.message,
+    );
+  }
+
+  const newCurrentHealth =
+    adjustHealthForVigourModifier({
+      currentHealth:
+        character.current_health,
+      oldModifier,
+      newModifier,
+    });
+
+  const {
+    error: healthError,
+  } = await admin
+    .from("characters")
+    .update({
+      current_health:
+        newCurrentHealth,
+    })
+    .eq("id", characterId);
+
+  if (healthError) {
+    throw new Error(
+      healthError.message,
+    );
+  }
+}
+
 function refresh(
   characterId?: string,
 ) {
@@ -279,17 +341,20 @@ export async function headAddMember(
     const supabase =
       await createClient();
 
-    if (
-      (await level(
-        supabase,
-        orderId,
-        levelId,
-      )) >= 5
-    ) {
-      throw new Error(
-        "Only staff can appoint a Level 5 Head.",
-      );
-    }
+    const selectedLevel =
+  await level(
+    supabase,
+    orderId,
+    levelId,
+  );
+
+if (
+  selectedLevel.level >= 5
+) {
+  throw new Error(
+    "Only staff can appoint a Level 5 Head.",
+  );
+}
 
     await role(
       supabase,
@@ -342,26 +407,34 @@ export async function headAddMember(
       );
 
     if (associationError) {
-      await admin
-        .from(
-          "order_memberships",
-        )
-        .delete()
-        .eq(
-          "order_id",
-          orderId,
-        )
-        .eq(
-          "character_id",
-          characterId,
-        );
+  await admin
+    .from(
+      "order_memberships",
+    )
+    .delete()
+    .eq(
+      "order_id",
+      orderId,
+    )
+    .eq(
+      "character_id",
+      characterId,
+    );
 
-      throw new Error(
-        `Membership was rolled back because the Association could not be synchronised: ${associationError.message}`,
-      );
-    }
+  throw new Error(
+    `Membership was rolled back because the Association could not be synchronised: ${associationError.message}`,
+  );
+}
 
-    refresh(characterId);
+await adjustCharacterHealthForOrderModifier({
+  characterId,
+  oldModifier: 0,
+  newModifier:
+    selectedLevel
+      .vigour_modifier ?? 0,
+});
+
+refresh(characterId);
     succeeded = true;
   } catch (error) {
     back(
@@ -417,11 +490,12 @@ export async function headUpdateMember(
     } = await supabase
       .from("order_memberships")
       .select(`
-        character_id,
-        level:order_levels!order_memberships_order_level_id_fkey(
-          level
-        )
-      `)
+  character_id,
+  level:order_levels!order_memberships_order_level_id_fkey(
+    level,
+    vigour_modifier
+  )
+`)
       .eq("id", membershipId)
       .eq("order_id", orderId)
       .maybeSingle();
@@ -449,17 +523,20 @@ export async function headUpdateMember(
       );
     }
 
-    if (
-      (await level(
-        supabase,
-        orderId,
-        levelId,
-      )) >= 5
-    ) {
-      throw new Error(
-        "Only staff can appoint a Level 5 Head.",
-      );
-    }
+    const selectedLevel =
+  await level(
+    supabase,
+    orderId,
+    levelId,
+  );
+
+if (
+  selectedLevel.level >= 5
+) {
+  throw new Error(
+    "Only staff can appoint a Level 5 Head.",
+  );
+}
 
     await role(
       supabase,
@@ -484,14 +561,25 @@ export async function headUpdateMember(
       .eq("order_id", orderId);
 
     if (updateError) {
-      throw new Error(
-        updateError.message,
-      );
-    }
+  throw new Error(
+    updateError.message,
+  );
+}
 
-    await syncCharacterAssociation(
-      target.character_id,
-    );
+await adjustCharacterHealthForOrderModifier({
+  characterId:
+    target.character_id,
+  oldModifier:
+    existingLevel
+      ?.vigour_modifier ?? 0,
+  newModifier:
+    selectedLevel
+      .vigour_modifier ?? 0,
+});
+
+await syncCharacterAssociation(
+  target.character_id,
+);
 
     refresh(
       target.character_id,
@@ -546,11 +634,12 @@ export async function headRemoveMember(
     } = await supabase
       .from("order_memberships")
       .select(`
-        character_id,
-        level:order_levels!order_memberships_order_level_id_fkey(
-          level
-        )
-      `)
+  character_id,
+  level:order_levels!order_memberships_order_level_id_fkey(
+    level,
+    vigour_modifier
+  )
+`)
       .eq("id", membershipId)
       .eq("order_id", orderId)
       .maybeSingle();
@@ -590,14 +679,23 @@ export async function headRemoveMember(
       .eq("order_id", orderId);
 
     if (deleteError) {
-      throw new Error(
-        deleteError.message,
-      );
-    }
+  throw new Error(
+    deleteError.message,
+  );
+}
 
-    await syncCharacterAssociation(
-      target.character_id,
-    );
+await adjustCharacterHealthForOrderModifier({
+  characterId:
+    target.character_id,
+  oldModifier:
+    existingLevel
+      ?.vigour_modifier ?? 0,
+  newModifier: 0,
+});
+
+await syncCharacterAssociation(
+  target.character_id,
+);
 
     refresh(
       target.character_id,

@@ -10,6 +10,7 @@ import {
   requireAdmin,
   requireStaff,
 } from "@/lib/auth/require-staff";
+import { adjustHealthForVigourModifier } from "@/lib/characters/adjust-health-for-vigour-modifier";
 import { createClient } from "@/lib/supabase/server";
 
 const CHARACTER_STATUSES = [
@@ -548,6 +549,51 @@ export async function updateCharacterAdministration(
     );
   }
 
+  const raceIds = [
+  character.race_id,
+  raceId,
+].filter(
+  (value): value is string =>
+    Boolean(value),
+);
+
+let oldRaceVigourModifier = 0;
+let newRaceVigourModifier = 0;
+
+if (raceIds.length > 0) {
+  const {
+    data: raceModifierRows,
+    error: raceModifierError,
+  } = await supabase
+    .from("races")
+    .select(
+      "id, vigour_modifier",
+    )
+    .in("id", raceIds);
+
+  if (raceModifierError) {
+    throw new Error(
+      `Unable to load Ancestry Vigour modifiers: ${raceModifierError.message}`,
+    );
+  }
+
+  oldRaceVigourModifier =
+    raceModifierRows?.find(
+      (race) =>
+        race.id ===
+        character.race_id,
+    )?.vigour_modifier ?? 0;
+
+  newRaceVigourModifier =
+    raceModifierRows?.find(
+      (race) =>
+        race.id === raceId,
+    )?.vigour_modifier ?? 0;
+}
+
+const ancestryChanged =
+  character.race_id !== raceId;
+
   if (
     status === "approved"
   ) {
@@ -662,65 +708,61 @@ export async function updateCharacterAdministration(
             null,
         };
 
-  const newMaxHealth =
-    attributes.vigor === null
-      ? null
-      : attributes.vigor * 10;
+  const oldBaseVigour =
+  character.vigor ?? 0;
 
-  let currentHealth:
-    number | null = null;
+const newBaseVigour =
+  attributes.vigor ?? 0;
 
-  if (newMaxHealth !== null) {
-    const oldMaxHealth =
-      character.vigor === null
-        ? 0
-        : character.vigor * 10;
+let currentHealth =
+  submittedCurrentHealth ??
+  character.current_health ??
+  oldBaseVigour * 10;
 
-    if (
-      submittedCurrentHealth !==
-      null
-    ) {
-      currentHealth =
-        Math.max(
-          0,
-          Math.min(
-            submittedCurrentHealth,
-            newMaxHealth,
-          ),
-        );
-    } else if (
-      character.current_health ===
-      null
-    ) {
-      currentHealth =
-        newMaxHealth;
-    } else if (
-      character.vigor !==
-      attributes.vigor
-    ) {
-      currentHealth =
-        Math.max(
-          0,
-          Math.min(
-            character.current_health +
-              (
-                newMaxHealth -
-                oldMaxHealth
-              ),
-            newMaxHealth,
-          ),
-        );
-    } else {
-      currentHealth =
-        Math.max(
-          0,
-          Math.min(
-            character.current_health,
-            newMaxHealth,
-          ),
-        );
-    }
-  }
+/*
+ * If staff changed the character's BASE
+ * Vigour manually, preserve the existing
+ * health difference.
+ */
+if (
+  oldBaseVigour !==
+  newBaseVigour
+) {
+  currentHealth +=
+    (newBaseVigour -
+      oldBaseVigour) *
+    10;
+}
+
+/*
+ * Changing Ancestry is an event.
+ *
+ * Apply ONLY the difference between the
+ * old and new Ancestry Vigour modifier.
+ *
+ * Example:
+ * old ancestry +1
+ * new ancestry +3
+ * current HP 24
+ *
+ * 24 + ((3 - 1) × 10) = 44
+ */
+if (ancestryChanged) {
+  currentHealth =
+    adjustHealthForVigourModifier({
+      currentHealth,
+      oldModifier:
+        oldRaceVigourModifier,
+      newModifier:
+        newRaceVigourModifier,
+    });
+}
+
+currentHealth =
+  Math.max(
+    0,
+    currentHealth,
+  );
 
   const updatePayload = {
     first_name: firstName,

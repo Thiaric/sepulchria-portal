@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { requireStaff } from "@/lib/auth/require-staff";
+import { adjustHealthForVigourModifier } from "@/lib/characters/adjust-health-for-vigour-modifier";
 import { createClient } from "@/lib/supabase/server";
 
 function text(
@@ -86,7 +87,9 @@ async function verifyStructure({
     error: levelError,
   } = await supabase
     .from("order_levels")
-    .select("id, level")
+    .select(
+  "id, level, vigour_modifier",
+)
     .eq("id", levelId)
     .eq("order_id", orderId)
     .maybeSingle();
@@ -204,6 +207,63 @@ async function syncCharacterAssociation(
   }
 }
 
+async function adjustCharacterHealthForOrderModifier({
+  supabase,
+  characterId,
+  oldModifier,
+  newModifier,
+}: {
+  supabase: Awaited<
+    ReturnType<typeof createClient>
+  >;
+  characterId: string;
+  oldModifier: number;
+  newModifier: number;
+}) {
+  if (oldModifier === newModifier) {
+    return;
+  }
+
+  const {
+    data: character,
+    error: characterError,
+  } = await supabase
+    .from("characters")
+    .select("current_health")
+    .eq("id", characterId)
+    .single();
+
+  if (characterError) {
+    throw new Error(
+      characterError.message,
+    );
+  }
+
+  const newCurrentHealth =
+    adjustHealthForVigourModifier({
+      currentHealth:
+        character.current_health,
+      oldModifier,
+      newModifier,
+    });
+
+  const {
+    error: healthError,
+  } = await supabase
+    .from("characters")
+    .update({
+      current_health:
+        newCurrentHealth,
+    })
+    .eq("id", characterId);
+
+  if (healthError) {
+    throw new Error(
+      healthError.message,
+    );
+  }
+}
+
 export async function addOrderMember(
   formData: FormData,
 ) {
@@ -247,12 +307,13 @@ export async function addOrderMember(
     const supabase =
       await createClient();
 
-    await verifyStructure({
-      supabase,
-      orderId,
-      levelId,
-      jobId,
-    });
+    const selectedLevel =
+  await verifyStructure({
+    supabase,
+    orderId,
+    levelId,
+    jobId,
+  });
 
     const associationId =
       await getOrderAssociation(
@@ -333,6 +394,17 @@ export async function addOrderMember(
       );
     }
 
+    await adjustCharacterHealthForOrderModifier({
+  supabase,
+  characterId,
+  oldModifier: 0,
+  newModifier:
+    selectedLevel
+      .vigour_modifier ?? 0,
+});
+
+refresh(characterId);
+
     refresh(characterId);
 
     back(
@@ -403,12 +475,13 @@ export async function updateOrderMember(
     const supabase =
       await createClient();
 
-    await verifyStructure({
-      supabase,
-      orderId,
-      levelId,
-      jobId,
-    });
+    const selectedLevel =
+  await verifyStructure({
+    supabase,
+    orderId,
+    levelId,
+    jobId,
+  });
 
     const {
       data: membership,
@@ -416,12 +489,15 @@ export async function updateOrderMember(
     } = await supabase
       .from("order_memberships")
       .select(`
-        id,
-        character_id,
-        character:characters(
-          display_name
-        )
-      `)
+  id,
+  character_id,
+  level:order_levels!order_memberships_order_level_id_fkey(
+    vigour_modifier
+  ),
+  character:characters(
+    display_name
+  )
+`)
       .eq("id", membershipId)
       .eq("order_id", orderId)
       .maybeSingle();
@@ -438,6 +514,22 @@ export async function updateOrderMember(
       );
     }
 
+    const oldLevelRelation =
+  Array.isArray(
+    membership.level,
+  )
+    ? membership.level[0] ??
+      null
+    : membership.level;
+
+const oldVigourModifier =
+  oldLevelRelation
+    ?.vigour_modifier ?? 0;
+
+const newVigourModifier =
+  selectedLevel
+    .vigour_modifier ?? 0;
+
     const { error } = await supabase
       .from("order_memberships")
       .update({
@@ -447,13 +539,23 @@ export async function updateOrderMember(
       .eq("id", membershipId);
 
     if (error) {
-      throw new Error(error.message);
-    }
+  throw new Error(error.message);
+}
 
-    await syncCharacterAssociation(
-      supabase,
-      membership.character_id,
-    );
+await adjustCharacterHealthForOrderModifier({
+  supabase,
+  characterId:
+    membership.character_id,
+  oldModifier:
+    oldVigourModifier,
+  newModifier:
+    newVigourModifier,
+});
+
+await syncCharacterAssociation(
+  supabase,
+  membership.character_id,
+);
 
     const relation =
       Array.isArray(
@@ -531,12 +633,15 @@ export async function removeOrderMember(
     } = await supabase
       .from("order_memberships")
       .select(`
-        id,
-        character_id,
-        character:characters(
-          display_name
-        )
-      `)
+  id,
+  character_id,
+  level:order_levels!order_memberships_order_level_id_fkey(
+    vigour_modifier
+  ),
+  character:characters(
+    display_name
+  )
+`)
       .eq("id", membershipId)
       .eq("order_id", orderId)
       .maybeSingle();
@@ -553,19 +658,40 @@ export async function removeOrderMember(
       );
     }
 
+    const oldLevelRelation =
+  Array.isArray(
+    membership.level,
+  )
+    ? membership.level[0] ??
+      null
+    : membership.level;
+
+const oldVigourModifier =
+  oldLevelRelation
+    ?.vigour_modifier ?? 0;
+
     const { error } = await supabase
       .from("order_memberships")
       .delete()
       .eq("id", membershipId);
 
     if (error) {
-      throw new Error(error.message);
-    }
+  throw new Error(error.message);
+}
 
-    await syncCharacterAssociation(
-      supabase,
-      membership.character_id,
-    );
+await adjustCharacterHealthForOrderModifier({
+  supabase,
+  characterId:
+    membership.character_id,
+  oldModifier:
+    oldVigourModifier,
+  newModifier: 0,
+});
+
+await syncCharacterAssociation(
+  supabase,
+  membership.character_id,
+);
 
     const relation =
       Array.isArray(
