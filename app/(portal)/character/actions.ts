@@ -31,6 +31,8 @@ type AttributeName =
 function readCreationAttributes(
   formData: FormData,
 ): Record<AttributeName, number> {
+  const STANDARD_BASE_VALUE = 3;
+
   const entries = ATTRIBUTE_NAMES.map(
     (name) => {
       const raw = String(
@@ -41,35 +43,26 @@ function readCreationAttributes(
 
       if (
         !Number.isInteger(value) ||
-        value < 1 ||
-        value > 8
+        value !== STANDARD_BASE_VALUE
       ) {
         throw new Error(
-          `${name} must be a whole number between 1 and 8.`,
+          `${name} must start at ${STANDARD_BASE_VALUE}.`,
         );
       }
 
-      return [name, value] as const;
+      return [
+        name,
+        STANDARD_BASE_VALUE,
+      ] as const;
     },
   );
 
-  const attributes = Object.fromEntries(
+  return Object.fromEntries(
     entries,
-  ) as Record<AttributeName, number>;
-
-  const total = ATTRIBUTE_NAMES.reduce(
-    (sum, name) =>
-      sum + attributes[name],
-    0,
-  );
-
-  if (total !== 20) {
-    throw new Error(
-      "Character attributes must total exactly 20 points.",
-    );
-  }
-
-  return attributes;
+  ) as Record<
+    AttributeName,
+    number
+  >;
 }
 
 function characterFormPath(
