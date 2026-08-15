@@ -1040,13 +1040,50 @@ currentHealth =
         );
       }
 
-      throw new Error(
+           throw new Error(
         `Unable to record the character status change: ${historyError.message}`,
       );
     }
   }
 
-  revalidatePath("/admin");
+  /*
+   * INSTANT CHAT
+   * ------------
+   * Instant Chat becomes available when a character is
+   * approved for the first time.
+   *
+   * Older characters already have this row. Newer characters
+   * may not, so upsert makes this safe for both cases.
+   *
+   * ignoreDuplicates preserves an existing player's enabled /
+   * disabled preference rather than resetting it to true.
+   */
+  if (isNewApproval) {
+    const {
+      error: instantChatSettingsError,
+    } = await supabase
+      .from("instant_chat_settings")
+      .upsert(
+        {
+          character_id:
+            characterId,
+          enabled: true,
+        },
+        {
+          onConflict:
+            "character_id",
+          ignoreDuplicates: true,
+        },
+      );
+
+    if (instantChatSettingsError) {
+      throw new Error(
+        `The character was approved, but Instant Chat could not be initialised: ${instantChatSettingsError.message}`,
+      );
+    }
+  }
+
+  revalidatePath("/admin"); 
   revalidatePath(
     "/admin/characters",
   );
