@@ -374,8 +374,8 @@ useEffect(() => {
                 <Image
   src={
     isNight
-      ? "/maps/land-of-the-fallenv2-n.jpg"
-      : "/maps/land-of-the-fallenv2.jpg"
+      ? "/maps/sepulchria-mapv2.png"
+      : "/maps/sepulchria-mapv2-n.png"
   }
   alt="Illustrated map of The Godscar"
                   fill
