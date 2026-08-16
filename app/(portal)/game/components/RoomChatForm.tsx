@@ -880,7 +880,7 @@ function ignoreSpellingWord() {
                 presentCharacters.length ===
                 0
               }
-              aria-label="Whisper to a character in this room"
+              aria-label="Whisper to a character"
               className="min-w-0 border border-[#654c31] bg-[#0f0c09] px-3 py-2 text-[10px] uppercase tracking-[0.1em] text-[#d8c29b] outline-none focus:border-[#a17a45] disabled:cursor-not-allowed disabled:opacity-45"
             >
               <option value="">
