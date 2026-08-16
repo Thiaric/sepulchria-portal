@@ -3,6 +3,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { RichTextContent } from "@/components/editor/rich-text-content";
+import {
+  PublicOrderRoleGraph,
+  type PublicOrderGraphLink,
+  type PublicOrderGraphRole,
+} from "@/components/orders/public-order-role-graph";
 import { createClient } from "@/lib/supabase/server";
 
 type Relation<T> = T | T[] | null;
@@ -130,6 +135,7 @@ export default async function OrderPage({
   const [
     levelsResult,
     membersResult,
+    linksResult,
   ] = await Promise.all([
     supabase
       .from("order_levels")
@@ -176,6 +182,12 @@ export default async function OrderPage({
         )
       `)
       .eq("order_id", order.id),
+
+    supabase
+      .from("order_job_links")
+      .select(
+        "id, from_job_id, to_job_id",
+      ),
   ]);
 
   if (levelsResult.error) {
@@ -187,6 +199,12 @@ export default async function OrderPage({
   if (membersResult.error) {
     throw new Error(
       `Unable to load Order members: ${membersResult.error.message}`,
+    );
+  }
+
+  if (linksResult.error) {
+    throw new Error(
+      `Unable to load Order Role links: ${linksResult.error.message}`,
     );
   }
 
@@ -206,6 +224,38 @@ export default async function OrderPage({
           ),
       ),
     }));
+
+  const graphRoles =
+    levels.flatMap(
+      (level) =>
+        (level.roles ?? []).map(
+          (role) => ({
+            ...role,
+            level: level.level,
+          }),
+        ),
+    ) as PublicOrderGraphRole[];
+
+  const graphRoleIds =
+    new Set(
+      graphRoles.map(
+        (role) => role.id,
+      ),
+    );
+
+  const graphLinks =
+    (
+      (linksResult.data ??
+        []) as PublicOrderGraphLink[]
+    ).filter(
+      (link) =>
+        graphRoleIds.has(
+          link.from_job_id,
+        ) &&
+        graphRoleIds.has(
+          link.to_job_id,
+        ),
+    );
 
   const members =
     (
@@ -337,14 +387,10 @@ export default async function OrderPage({
                 </h2>
               </div>
 
-              <div className="mt-5 space-y-3">
-                {levels.map((level) => (
-                  <LevelCard
-                    key={level.id}
-                    level={level}
-                  />
-                ))}
-              </div>
+              <PublicOrderRoleGraph
+                roles={graphRoles}
+                links={graphLinks}
+              />
             </section>
 
             <section className="mt-8 border-t border-[#60482e]/35 pt-7">
@@ -441,98 +487,6 @@ export default async function OrderPage({
         </article>
       </div>
     </main>
-  );
-}
-
-function LevelCard({
-  level,
-}: {
-  level: LevelRow;
-}) {
-  function roleModifiers(
-    role: RoleRow,
-  ) {
-    return [
-      ["Muscles", role.muscles_modifier],
-      ["Reflexes", role.reflexes_modifier],
-      ["Vigour", role.vigour_modifier],
-      ["Shrewd", role.shrewd_modifier],
-      ["Brains", role.brains_modifier],
-      ["Presence", role.presence_modifier],
-    ] as const;
-  }
-
-  return (
-    <div className="grid gap-4 border border-[#59432c]/45 bg-[#100c09] p-4 lg:grid-cols-[120px_minmax(0,1fr)] lg:items-start">
-      <div>
-        <p className="text-[7px] uppercase tracking-[0.18em] text-[#756958]">
-          Level
-        </p>
-
-        <p className="mt-1 font-serif text-2xl text-[#d8bf91]">
-          {level.level}
-        </p>
-      </div>
-
-      <div>
-        <p className="text-[7px] uppercase tracking-[0.18em] text-[#756958]">
-          Roles &amp; Attribute modifiers
-        </p>
-
-        {(level.roles ?? []).length > 0 ? (
-          <div className="mt-2 grid gap-2 md:grid-cols-2">
-            {(level.roles ?? []).map((role) => {
-              const activeModifiers =
-                roleModifiers(role).filter(
-                  ([, value]) => value !== 0,
-                );
-
-              return (
-                <div
-                  key={role.id}
-                  className="border border-[#6c5031]/55 bg-[#18110d] px-3 py-3"
-                >
-                  <p className="font-serif text-sm text-[#cab28a]">
-                    {role.name}
-                  </p>
-
-                  {role.description ? (
-                    <p className="mt-1 text-[9px] leading-4 text-[#817362]">
-                      {role.description}
-                    </p>
-                  ) : null}
-
-                  <div className="mt-2 flex flex-wrap gap-1.5">
-                    {activeModifiers.length > 0 ? (
-                      activeModifiers.map(
-                        ([label, value]) => (
-                          <span
-                            key={label}
-                            className="border border-[#59432c]/45 bg-[#100c09] px-2 py-1 text-[8px] uppercase tracking-[0.1em] text-[#9e896c]"
-                          >
-                            {label}{" "}
-                            {value > 0 ? "+" : ""}
-                            {value}
-                          </span>
-                        ),
-                      )
-                    ) : (
-                      <span className="text-[9px] italic text-[#746858]">
-                        No Attribute modifiers
-                      </span>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          <p className="mt-2 text-[10px] italic text-[#746858]">
-            No Roles assigned
-          </p>
-        )}
-      </div>
-    </div>
   );
 }
 

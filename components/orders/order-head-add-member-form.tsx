@@ -48,6 +48,16 @@ export function OrderHeadAddMemberForm({
       [levelId, levels],
     );
 
+  const selectedJob =
+    useMemo(
+      () =>
+        selectedLevel?.jobs.find(
+          (job) =>
+            job.id === jobId,
+        ) ?? null,
+      [jobId, selectedLevel],
+    );
+
   return (
     <form
       action={headAddMember}
@@ -124,12 +134,41 @@ export function OrderHeadAddMemberForm({
               Select Role
             </option>
 
-            {(selectedLevel?.jobs ?? []).map((job) => (
-              <option key={job.id} value={job.id}>
-                {job.name}
-              </option>
-            ))}
+            {(selectedLevel?.jobs ?? []).map((job) => {
+              const before =
+                job.before.length
+                  ? `from ${job.before.join(" / ")}`
+                  : "entry";
+
+              const after =
+                job.after.length
+                  ? `to ${job.after.join(" / ")}`
+                  : "final";
+
+              return (
+                <option
+                  key={job.id}
+                  value={job.id}
+                >
+                  {job.name} — {before} · {after}
+                </option>
+              );
+            })}
           </select>
+
+          {selectedJob ? (
+            <span className="mt-1.5 block text-[8px] leading-4 text-[#6f665a]">
+              Before:{" "}
+              {selectedJob.before.length
+                ? selectedJob.before.join(", ")
+                : "none"}
+              {" · "}
+              After:{" "}
+              {selectedJob.after.length
+                ? selectedJob.after.join(", ")
+                : "none"}
+            </span>
+          ) : null}
         </label>
 
         <button

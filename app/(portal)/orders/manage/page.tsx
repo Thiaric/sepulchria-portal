@@ -183,6 +183,7 @@ export default async function ManageOrdersPage({
                   levelsResult,
                   membersResult,
                   charactersResult,
+                  linksResult,
                 ] =
                   await Promise.all([
                     supabase
@@ -253,12 +254,21 @@ export default async function ManageOrdersPage({
                             true,
                         },
                       ),
+
+                    supabase
+                      .from(
+                        "order_job_links",
+                      )
+                      .select(
+                        "from_job_id, to_job_id",
+                      ),
                   ]);
 
                 if (
                   levelsResult.error ||
                   membersResult.error ||
-                  charactersResult.error
+                  charactersResult.error ||
+                  linksResult.error
                 ) {
                   return (
                     <Notice
@@ -271,27 +281,67 @@ export default async function ManageOrdersPage({
                   );
                 }
 
-                const levels =
+                const rawLevels =
+                  levelsResult.data ?? [];
+
+                const rawJobs =
+                  rawLevels.flatMap(
+                    (level) =>
+                      (level.jobs ?? []).map(
+                        (job) => ({
+                          id: job.id,
+                          name: job.name,
+                          sort_order:
+                            job.sort_order,
+                          level:
+                            level.level,
+                        }),
+                      ),
+                  );
+
+                const jobById =
+                  new Map(
+                    rawJobs.map(
+                      (job) => [
+                        job.id,
+                        job,
+                      ],
+                    ),
+                  );
+
+                const orderJobIds =
+                  new Set(
+                    rawJobs.map(
+                      (job) => job.id,
+                    ),
+                  );
+
+                const orderLinks =
                   (
-                    levelsResult.data ??
+                    linksResult.data ??
                     []
-                  ).map(
+                  ).filter(
+                    (link) =>
+                      orderJobIds.has(
+                        link.from_job_id,
+                      ) &&
+                      orderJobIds.has(
+                        link.to_job_id,
+                      ),
+                  );
+
+                const levels =
+                  rawLevels.map(
                     (level) => ({
-                      id:
-                        level.id,
+                      id: level.id,
                       level:
                         level.level,
                       jobs: [
-                        ...(
-                          level.jobs ??
-                          []
-                        ),
+                        ...(level.jobs ??
+                          []),
                       ]
                         .sort(
-                          (
-                            a,
-                            b,
-                          ) =>
+                          (a, b) =>
                             a.sort_order -
                               b.sort_order ||
                             a.name.localeCompare(
@@ -299,14 +349,55 @@ export default async function ManageOrdersPage({
                             ),
                         )
                         .map(
-                          (
-                            job,
-                          ) => ({
-                            id:
-                              job.id,
-                            name:
-                              job.name,
-                          }),
+                          (job) => {
+                            const before =
+                              orderLinks
+                                .filter(
+                                  (link) =>
+                                    link.to_job_id ===
+                                    job.id,
+                                )
+                                .map(
+                                  (link) =>
+                                    jobById.get(
+                                      link.from_job_id,
+                                    )?.name,
+                                )
+                                .filter(
+                                  (
+                                    name,
+                                  ): name is string =>
+                                    Boolean(name),
+                                );
+
+                            const after =
+                              orderLinks
+                                .filter(
+                                  (link) =>
+                                    link.from_job_id ===
+                                    job.id,
+                                )
+                                .map(
+                                  (link) =>
+                                    jobById.get(
+                                      link.to_job_id,
+                                    )?.name,
+                                )
+                                .filter(
+                                  (
+                                    name,
+                                  ): name is string =>
+                                    Boolean(name),
+                                );
+
+                            return {
+                              id: job.id,
+                              name:
+                                job.name,
+                              before,
+                              after,
+                            };
+                          },
                         ),
                     }),
                   ) as OrderHeadLevelOption[];

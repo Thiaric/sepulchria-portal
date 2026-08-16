@@ -13,6 +13,8 @@ export type OrderHeadLevelOption = {
   jobs: {
     id: string;
     name: string;
+    before: string[];
+    after: string[];
   }[];
 };
 
@@ -47,6 +49,16 @@ export function OrderHeadMemberForm({
             level.id === levelId,
         ) ?? null,
       [levelId, levels],
+    );
+
+  const selectedJob =
+    useMemo(
+      () =>
+        selectedLevel?.jobs.find(
+          (job) =>
+            job.id === jobId,
+        ) ?? null,
+      [jobId, selectedLevel],
     );
 
   function changeLevel(nextLevelId: string) {
@@ -136,12 +148,41 @@ export function OrderHeadMemberForm({
               Select Role
             </option>
 
-            {(selectedLevel?.jobs ?? []).map((job) => (
-              <option key={job.id} value={job.id}>
-                {job.name}
-              </option>
-            ))}
+            {(selectedLevel?.jobs ?? []).map((job) => {
+              const before =
+                job.before.length
+                  ? `from ${job.before.join(" / ")}`
+                  : "entry";
+
+              const after =
+                job.after.length
+                  ? `to ${job.after.join(" / ")}`
+                  : "final";
+
+              return (
+                <option
+                  key={job.id}
+                  value={job.id}
+                >
+                  {job.name} — {before} · {after}
+                </option>
+              );
+            })}
           </select>
+
+          {selectedJob ? (
+            <span className="mt-1.5 block text-[8px] leading-4 text-[#6f665a]">
+              Before:{" "}
+              {selectedJob.before.length
+                ? selectedJob.before.join(", ")
+                : "none"}
+              {" · "}
+              After:{" "}
+              {selectedJob.after.length
+                ? selectedJob.after.join(", ")
+                : "none"}
+            </span>
+          ) : null}
         </label>
 
         <div className="flex gap-2">

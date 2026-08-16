@@ -221,58 +221,6 @@ async function adjustCharacterHealthForOrderModifier({
   }
 }
 
-async function verifyProgression({
-  supabase,
-  oldLevel,
-  oldRoleId,
-  newLevel,
-  newRoleId,
-}: {
-  supabase: Awaited<ReturnType<typeof createClient>>;
-  oldLevel: number;
-  oldRoleId: string;
-  newLevel: number;
-  newRoleId: string;
-}) {
-  if (oldLevel === newLevel) {
-    return;
-  }
-
-  const delta =
-    newLevel - oldLevel;
-
-  if (Math.abs(delta) !== 1) {
-    throw new Error(
-      "Members may only move one Level at a time.",
-    );
-  }
-
-  const fromJobId =
-    delta > 0
-      ? oldRoleId
-      : newRoleId;
-
-  const toJobId =
-    delta > 0
-      ? newRoleId
-      : oldRoleId;
-
-  const { data, error } = await supabase
-    .from("order_job_links")
-    .select("id")
-    .eq("from_job_id", fromJobId)
-    .eq("to_job_id", toJobId)
-    .maybeSingle();
-
-  if (error) throw new Error(error.message);
-
-  if (!data) {
-    throw new Error(
-      "Those Roles are not linked in this Order's progression structure.",
-    );
-  }
-}
-
 function refresh(
   characterId?: string,
 ) {
@@ -510,17 +458,7 @@ export async function headUpdateMember(
         roleId,
       );
 
-    await verifyProgression({
-      supabase,
-      oldLevel:
-        existingLevel.level,
-      oldRoleId:
-        existingRole.id,
-      newLevel:
-        selectedLevel.level,
-      newRoleId:
-        selectedRole.id,
-    });
+
 
     const admin =
       createPrivilegedClient();

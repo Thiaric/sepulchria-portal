@@ -123,7 +123,7 @@ export async function OrderLevelStructure({ orderId }: { orderId: string }) {
         {levels.map((level) => {
           const nextLevel = levels.find((candidate) => candidate.level === level.level + 1);
           return (
-            <details key={level.id} open={level.level >= 5} className="border border-[#59432c]/45 bg-[#100c09]">
+            <details key={level.id} className="border border-[#59432c]/45 bg-[#100c09]">
               <summary className="cursor-pointer list-none px-4 py-3">
                 <p className="font-serif text-lg text-[#d8bf91]">Level {level.level}</p>
                 <p className="mt-0.5 text-[8px] uppercase tracking-[0.14em] text-[#756958]">{level.jobs?.length ?? 0} {(level.jobs?.length ?? 0) === 1 ? "role" : "roles"}</p>
