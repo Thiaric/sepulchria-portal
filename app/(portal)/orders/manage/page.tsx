@@ -125,7 +125,7 @@ export default async function ManageOrdersPage({
       (membership) =>
         one(
           membership.level,
-        )?.level === 5,
+        )?.level === 6,
     );
 
   if (!leaderships.length) {
@@ -204,7 +204,7 @@ export default async function ManageOrdersPage({
                       )
                       .lt(
                         "level",
-                        5,
+                        6,
                       )
                       .order(
                         "level",
@@ -458,7 +458,7 @@ export default async function ManageOrdersPage({
 
                             if (
                               currentLevel ===
-                              5
+                              6
                             ) {
                               return (
                                 <div

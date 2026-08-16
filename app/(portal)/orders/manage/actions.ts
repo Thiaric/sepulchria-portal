@@ -349,7 +349,7 @@ export async function headAddMember(
   );
 
 if (
-  selectedLevel.level >= 5
+  selectedLevel.level >= 6
 ) {
   throw new Error(
     "Only staff can appoint a Level 5 Head.",
@@ -516,7 +516,7 @@ export async function headUpdateMember(
     if (
       target.character_id ===
         head.characterId ||
-      existingLevel?.level === 5
+      existingLevel?.level === 6
     ) {
       throw new Error(
         "The Head cannot alter their own membership.",
@@ -534,7 +534,7 @@ if (
   selectedLevel.level >= 5
 ) {
   throw new Error(
-    "Only staff can appoint a Level 5 Head.",
+    "Only staff can appoint a Level 6 Head.",
   );
 }
 

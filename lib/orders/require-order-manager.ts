@@ -14,8 +14,8 @@ export async function requireOrderHead(orderId: string) {
     .select("id, level:order_levels!order_memberships_order_level_id_fkey(level)")
     .eq("order_id", orderId).eq("character_id", character.id).maybeSingle();
   const relation = Array.isArray(membership?.level) ? membership?.level[0] : membership?.level;
-  if (error || !membership || relation?.level !== 5)
-    throw new Error("Only the Level 5 Head may manage this Order.");
+  if (error || !membership || relation?.level !== 6)
+    throw new Error("Only the Level 6 Head may manage this Order.");
 
   return { userId: user.id, characterId: character.id };
 }

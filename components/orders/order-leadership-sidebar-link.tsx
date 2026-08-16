@@ -97,7 +97,7 @@ export function OrderLeadershipSidebarLink({
                 : membership.level;
 
             return (
-              relation?.level === 5
+              relation?.level === 6
             );
           },
         );
