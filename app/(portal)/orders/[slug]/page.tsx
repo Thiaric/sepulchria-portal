@@ -33,17 +33,17 @@ type RoleRow = {
   name: string;
   description: string | null;
   sort_order: number;
-};
-
-type LevelRow = {
-  id: string;
-  level: number;
   muscles_modifier: number;
   reflexes_modifier: number;
   vigour_modifier: number;
   shrewd_modifier: number;
   brains_modifier: number;
   presence_modifier: number;
+};
+
+type LevelRow = {
+  id: string;
+  level: number;
   roles: RoleRow[] | null;
 };
 
@@ -136,17 +136,17 @@ export default async function OrderPage({
       .select(`
         id,
         level,
-        muscles_modifier,
-        reflexes_modifier,
-        vigour_modifier,
-        shrewd_modifier,
-        brains_modifier,
-        presence_modifier,
         roles:order_jobs(
           id,
           name,
           description,
-          sort_order
+          sort_order,
+          muscles_modifier,
+          reflexes_modifier,
+          vigour_modifier,
+          shrewd_modifier,
+          brains_modifier,
+          presence_modifier
         )
       `)
       .eq("order_id", order.id)
@@ -449,22 +449,21 @@ function LevelCard({
 }: {
   level: LevelRow;
 }) {
-  const modifiers = [
-    ["Muscles", level.muscles_modifier],
-    ["Reflexes", level.reflexes_modifier],
-    ["Vigour", level.vigour_modifier],
-    ["Shrewd", level.shrewd_modifier],
-    ["Brains", level.brains_modifier],
-    ["Presence", level.presence_modifier],
-  ] as const;
-
-  const activeModifiers =
-    modifiers.filter(
-      ([, value]) => value !== 0,
-    );
+  function roleModifiers(
+    role: RoleRow,
+  ) {
+    return [
+      ["Muscles", role.muscles_modifier],
+      ["Reflexes", role.reflexes_modifier],
+      ["Vigour", role.vigour_modifier],
+      ["Shrewd", role.shrewd_modifier],
+      ["Brains", role.brains_modifier],
+      ["Presence", role.presence_modifier],
+    ] as const;
+  }
 
   return (
-    <div className="grid gap-3 border border-[#59432c]/45 bg-[#100c09] p-4 lg:grid-cols-[120px_minmax(0,1fr)_minmax(220px,auto)] lg:items-center">
+    <div className="grid gap-4 border border-[#59432c]/45 bg-[#100c09] p-4 lg:grid-cols-[120px_minmax(0,1fr)] lg:items-start">
       <div>
         <p className="text-[7px] uppercase tracking-[0.18em] text-[#756958]">
           Level
@@ -477,60 +476,61 @@ function LevelCard({
 
       <div>
         <p className="text-[7px] uppercase tracking-[0.18em] text-[#756958]">
-          Roles
+          Roles &amp; Attribute modifiers
         </p>
 
-        <div className="mt-2 flex flex-wrap gap-2">
-          {(level.roles ?? []).length >
-          0 ? (
-            (level.roles ?? []).map(
-              (role) => (
-                <span
+        {(level.roles ?? []).length > 0 ? (
+          <div className="mt-2 grid gap-2 md:grid-cols-2">
+            {(level.roles ?? []).map((role) => {
+              const activeModifiers =
+                roleModifiers(role).filter(
+                  ([, value]) => value !== 0,
+                );
+
+              return (
+                <div
                   key={role.id}
-                  title={
-                    role.description ??
-                    undefined
-                  }
-                  className="border border-[#6c5031]/55 bg-[#18110d] px-3 py-1.5 text-[10px] text-[#cab28a]"
+                  className="border border-[#6c5031]/55 bg-[#18110d] px-3 py-3"
                 >
-                  {role.name}
-                </span>
-              ),
-            )
-          ) : (
-            <span className="text-[10px] italic text-[#746858]">
-              No roles assigned
-            </span>
-          )}
-        </div>
-      </div>
+                  <p className="font-serif text-sm text-[#cab28a]">
+                    {role.name}
+                  </p>
 
-      <div className="lg:text-right">
-        <p className="text-[7px] uppercase tracking-[0.18em] text-[#756958]">
-          Attribute modifiers
-        </p>
+                  {role.description ? (
+                    <p className="mt-1 text-[9px] leading-4 text-[#817362]">
+                      {role.description}
+                    </p>
+                  ) : null}
 
-        <div className="mt-2 flex flex-wrap gap-1.5 lg:justify-end">
-          {activeModifiers.length >
-          0 ? (
-            activeModifiers.map(
-              ([label, value]) => (
-                <span
-                  key={label}
-                  className="border border-[#59432c]/45 bg-[#18110d] px-2 py-1 text-[8px] uppercase tracking-[0.1em] text-[#9e896c]"
-                >
-                  {label}{" "}
-                  {value > 0 ? "+" : ""}
-                  {value}
-                </span>
-              ),
-            )
-          ) : (
-            <span className="text-[10px] italic text-[#746858]">
-              None
-            </span>
-          )}
-        </div>
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {activeModifiers.length > 0 ? (
+                      activeModifiers.map(
+                        ([label, value]) => (
+                          <span
+                            key={label}
+                            className="border border-[#59432c]/45 bg-[#100c09] px-2 py-1 text-[8px] uppercase tracking-[0.1em] text-[#9e896c]"
+                          >
+                            {label}{" "}
+                            {value > 0 ? "+" : ""}
+                            {value}
+                          </span>
+                        ),
+                      )
+                    ) : (
+                      <span className="text-[9px] italic text-[#746858]">
+                        No Attribute modifiers
+                      </span>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <p className="mt-2 text-[10px] italic text-[#746858]">
+            No Roles assigned
+          </p>
+        )}
       </div>
     </div>
   );

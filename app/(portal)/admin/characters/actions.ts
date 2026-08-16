@@ -607,7 +607,7 @@ const {
 } = await supabase
   .from("order_memberships")
   .select(`
-    level:order_levels!order_memberships_order_level_id_fkey(
+    role:order_jobs!order_memberships_order_job_id_fkey(
       vigour_modifier
     )
   `)
@@ -621,16 +621,16 @@ if (orderMembershipError) {
   );
 }
 
-const orderLevelRelation =
-  orderMembership?.level ?? null;
+const orderRoleRelation =
+  orderMembership?.role ?? null;
 
-const orderLevel =
-  Array.isArray(orderLevelRelation)
-    ? orderLevelRelation[0] ?? null
-    : orderLevelRelation;
+const orderRole =
+  Array.isArray(orderRoleRelation)
+    ? orderRoleRelation[0] ?? null
+    : orderRoleRelation;
 
 currentOrderVigourModifier =
-  orderLevel?.vigour_modifier ?? 0;
+  orderRole?.vigour_modifier ?? 0;
 
   if (
     status === "approved"

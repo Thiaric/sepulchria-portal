@@ -54,13 +54,13 @@ type CharacterRaceRelation =
     } & AttributeModifierSource)[]
   | null;
 
-type OrderLevelRelation =
+type OrderRoleRelation =
   | AttributeModifierSource
   | AttributeModifierSource[]
   | null;
 
 type OrderMembershipRow = {
-  level: OrderLevelRelation;
+  role: OrderRoleRelation;
 };
 
 type CharacterRow = {
@@ -246,7 +246,7 @@ export default async function AdminCharacterPage({
     supabase
       .from("order_memberships")
       .select(`
-        level:order_levels!order_memberships_order_level_id_fkey(
+        role:order_jobs!order_memberships_order_job_id_fkey(
           muscles_modifier,
           reflexes_modifier,
           vigour_modifier,
@@ -293,9 +293,9 @@ export default async function AdminCharacterPage({
       | OrderMembershipRow
       | null;
 
-  const orderLevel =
+  const orderRole =
     normaliseRelation(
-      orderMembership?.level ??
+      orderMembership?.role ??
         null,
     );
 
@@ -316,22 +316,22 @@ export default async function AdminCharacterPage({
 
   const orderModifiers = {
     muscles:
-      orderLevel?.muscles_modifier ??
+      orderRole?.muscles_modifier ??
       0,
     reflexes:
-      orderLevel?.reflexes_modifier ??
+      orderRole?.reflexes_modifier ??
       0,
     vigor:
-      orderLevel?.vigour_modifier ??
+      orderRole?.vigour_modifier ??
       0,
     brains:
-      orderLevel?.brains_modifier ??
+      orderRole?.brains_modifier ??
       0,
     shrewd:
-      orderLevel?.shrewd_modifier ??
+      orderRole?.shrewd_modifier ??
       0,
     presence_score:
-      orderLevel?.presence_modifier ??
+      orderRole?.presence_modifier ??
       0,
   };
 
