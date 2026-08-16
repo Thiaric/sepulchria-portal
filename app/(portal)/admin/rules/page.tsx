@@ -720,7 +720,8 @@ export default async function AdminRulesPage() {
                 (entry) => (
                   <details
                     key={entry.id}
-                    className="border border-[#60482e]/40 bg-[#15100d]"
+                    id={`glossary-${entry.slug}`}
+                    className="scroll-mt-24 border border-[#60482e]/40 bg-[#15100d]"
                   >
                     <summary className="cursor-pointer list-none px-4 py-3">
                       <div className="flex items-center justify-between">

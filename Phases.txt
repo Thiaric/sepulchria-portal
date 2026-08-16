@@ -1,329 +1,681 @@
+B1 — Codex architecture audit and completion
 
+Keep the existing codex_chapters foundation and the public Chapters I–X model. The public loader already distinguishes visibility = public and status = published, which is exactly the right starting point.
 
-## B2 — Import and organise the source material
-
-Use the existing source documents:
-
-* The Codex of the First — Chapters I–X
-* AURETH Developer Bible
-
-Organise them into portal sections such as:
-
-* World premise
-* Sepulchria
-* History
-* Ancestries
-* Associations and powers
-* Roles and classes
-* Deities
-* Geography and districts
-* Magic and the Current
-* External threats
-* Setting summary
-
-The player Codex should contain public information, while the Developer Bible should remain staff-only where appropriate.
-
-## B3 — Rules architecture
-
-Create a dedicated Rules section with:
-
-* main Rules landing page
-* rule categories
-* individual rule pages
-* searchable rules
-* related-rule links
-* glossary
-* staff editing tools
-* draft/published workflow
-
-## B4 — Core gameplay rules
-
-Document the systems that already exist:
-
-* how play-by-chat works
-* speech and action formatting
-* whispers
-* Fate actions
-* room presence
-* dice
-* checks
-* attributes
-* 20-point allocation
-* Health
-* current and maximum Health
-* room history
-* exporting roles
-* private messages
-* forum use
-
-## B5 — Define future gameplay rules before coding them
-
-This is the important part. We should formally decide:
-
-* item categories
-* rarity levels
-* equipment slots
-* currency
-* carrying rules
-* weapon types
-* weapon damage
-* armour
-* healing
-* spell categories
-* spell damage
-* resistances
-* incapacitation
-* death
-* mission rewards
-* progression
-* crafting, if any
-* trade and market rules
-
-This prevents later systems from being built around placeholder logic.
-
-## B6 — Codex and Rules integration
-
-Link rules and lore to the rest of the portal:
-
-* ancestry pages linked from character sheets
-* association pages linked from profiles
-* spell entries linked from the spell list
-* item entries linked from inventories
-* room lore linked from maps
-* combat rules linked from weapon and spell panels
-* glossary terms linked throughout the site
-
-# Phase C — Inventory, Items and Economy
-
-After Phase B defines the setting and mechanics.
-
-## C1 — Item database
-
-* item name
-* description
-* image
-* category
-* rarity
-* tags
-* stackable
-* maximum stack
-* unique item
-* tradeable
-* sellable
-* consumable
-* equipable
-* quest item
-* active/inactive status
-* staff item creator and editor
-
-## C2 — Character inventory
-
-* inventory records
-* quantities
-* unique instances
-* acquisition date
-* item source
-* staff give/remove controls
-* player inventory page
-* item detail panel
-* stack handling
-
-## C3 — Equipment
-
-Using the slots defined in Phase B:
-
-* equip
-* unequip
-* slot validation
-* equipped-item display
-* weapon and armour assignment
-* future bonuses and effects
-
-## C4 — Currency
-
-Using the currency defined in Phase B:
-
-* character balance
-* staff adjustments
-* transaction history
-* audit trail
-* prevention of negative balance
-
-## C5 — Market
-
-* shops
-* shop stock
-* purchase prices
-* selling prices
-* buy
-* sell
-* admin shop management
-* stock limits
-* transaction safety
-
-# Phase D — Magic and Combat
-
-Built from the rules established in Phase B.
-
-## D1 — Spell database
-
-* name
-* school or category
-* description
-* requirements
-* damage or healing die
-* range
-* target
-* effects
-* restrictions
-* active/inactive status
-* staff editor
-
-## D2 — Character spells
-
-* learned spells
-* granted spells
-* spell ownership
-* access restrictions
-* character spellbook
-
-## D3 — Weapon and spell damage
-
-* damage rolls
-* attribute interactions
-* critical rules
-* armour
-* resistances
-* damage application
-* healing application
-* Health updates
-* combat log
-
-## D4 — Conditions
-
-* wounded
-* unconscious
-* incapacitated
-* poisoned
-* stunned
-* other setting-specific effects
-
-## D5 — Combat workflow
-
-* attack
-* defend
-* dodge
-* resist
-* cast
-* apply damage
-* heal
-* staff override
-* Fate intervention
-
-# Phase E — Missions and Progression
-
-## E1 — Missions
-
-* mission creation
-* assignment
-* public/private missions
-* objectives
-* clues
-* completion states
-* staff controls
-
-## E2 — Rewards
-
-* items
-* currency
-* spells
-* titles
-* reputation
-* progression points, if used
-
-## E3 — Progression
-
-To be defined from the rules:
-
-* experience or milestone system
-* attribute advancement
-* spell learning
-* reputation
-* association progression
-
-## E4 — Mission history
-
-* active missions
-* completed missions
-* failed missions
-* rewards received
-* staff audit trail
-
-# Phase F — World and Staff Management
-
-## F1 — World management
-
-* area editor
-* room editor
-* map management
-* room connections
-* room images
-* descriptions
-* active/inactive rooms
-
-## F2 — NPC management
-
-* NPC profiles
-* locations
-* shops
-* dialogue
-* mission roles
-* staff controls
-
-## F3 — Events
-
-* global events
-* local events
-* announcements
-* scheduled events
-* temporary room effects
-* event rewards
-
-## F4 — Timeline and history
-
-* world timeline
-* permanent events
-* staff-only notes
-* public historical entries
-
-## F5 — Permissions and auditing
-
-* advanced staff permissions
-* moderation logs
-* item logs
-* currency logs
-* combat logs
-* mission logs
-* content change history
-
-# Phase G — Polish and Launch
-
-* full responsive pass
-* accessibility
-* performance
-* caching
-* security audit
-* RLS audit
-* error handling
-* backups
-* testing
-* staff alpha
-* closed beta
-* content completion
-* launch preparation
-
-So the immediate next step is now:
-
-# **Phase B1 — Codex architecture**
-
-Then we import and organise the lore, followed by the Rules system, before touching inventory or market.
+Now complete the missing management layer:
+
+audit the existing Chapters I–X against the actual current lore;
+determine whether a chapter alone is enough or whether chapters need child entries/articles;
+create proper staff Codex management if it is still missing;
+support draft / published;
+support public / staff-only;
+ordering;
+summaries;
+rich text;
+images/banners;
+internal staff notes where useful;
+preview before publication;
+clear separation between Player Codex and Developer Bible knowledge.
+
+I would not create another competing lore system. We should extend the current Codex model.
+
+B2 — Lore migration and organisation
+
+Import and reconcile:
+
+The Codex of the First — Chapters I–X
+AURETH Developer Bible
+
+Organise their actual material under the existing lore structure, broadly covering:
+
+World premise and Aureth
+Sepulchria
+History and the Severing
+Ancestries
+Associations
+Orders and social power
+Roles / Expertise / classes
+Deities
+Geography
+Districts and locations
+The Current and magic
+External threats
+Setting summary
+
+The important distinction becomes:
+
+Player knowledge → public Codex.
+
+GM/developer truth, secrets, unrevealed history, future hooks → staff-only material.
+
+Where the Developer Bible contradicts an older Codex passage, we should stop and decide which is canonical rather than silently importing both.
+
+B3 — Rules system audit, not construction
+
+The previous roadmap said to create:
+
+categories, rule pages, search, related rules, glossary, staff editor, drafts/publishing
+
+but those systems already exist. The repository already loads active rule categories, published rules, links between rules and published glossary entries. The staff side already creates and edits categories, rules, glossary entries and related-rule links with draft/published workflows.
+
+So B3 should instead be:
+
+verify all Rules UI works correctly;
+improve navigation/search if needed;
+audit slugs and category organisation;
+verify related-rule links;
+verify glossary linking;
+make the public modal experience coherent;
+verify draft material is impossible for players to retrieve directly;
+clean up staff editing UX;
+add change history later under auditing rather than rebuilding Rules.
+B4 — Document the systems that actually exist now
+
+This is where your old roadmap is especially obsolete.
+
+Remove:
+
+20-point allocation
+
+because that is no longer the system.
+
+The official Attributes rule must now describe:
+
+Base Attributes + Ancestry modifiers + Order Level modifiers = Effective Attributes
+
+with new characters starting at the standard six base values rather than distributing 20 points.
+
+The Rules content should cover the actual portal behaviour:
+
+play-by-chat basics;
+actions and speech;
+whispers;
+Fate actions;
+room presence;
+online / away / busy;
+dice;
+checks;
+Muscles, Reflexes, Vigour, Shrewd, Brains, Presence;
+standard base Attributes;
+Ancestry modifiers;
+Order Level modifiers;
+effective Attributes;
+Health;
+effective Vigour → maximum Health;
+current Health;
+room/chat history;
+chat export — the repository already has the game export route;
+private messages;
+Instant Chat;
+blocking;
+forum;
+Organisation forum restrictions;
+Order-Level forum visibility;
+character approval;
+character presence/navigation.
+
+The room gameplay itself already has concrete implementation for Fate, dice and room messages, so those rules should be derived from the application rather than invented from an old design document.
+
+B5 — Define the unbuilt mechanical systems
+
+This remains one of the most important phases.
+
+Before inventory/combat code, formally decide:
+
+Items
+
+categories;
+rarity;
+stackability;
+unique items;
+tradeability;
+consumables;
+quest items;
+carry rules.
+
+Equipment
+
+slots;
+whether multiple weapons are possible;
+armour slots;
+accessories;
+equip restrictions.
+
+Economy
+
+currency name;
+starting balance;
+buying/selling;
+player trading;
+staff grants;
+whether shops have finite stock.
+
+Weapons & combat
+
+weapon classes;
+attack checks;
+base damage;
+attribute contribution;
+criticals;
+defence;
+dodging;
+armour;
+resistances.
+
+Health
+
+healing;
+natural recovery;
+unconsciousness;
+incapacitation;
+death;
+resurrection, if possible.
+
+Magic
+
+categories;
+requirements;
+spell ownership;
+damage/healing;
+resisted spells;
+costs/cooldowns if any;
+Current/Cinder consequences if mechanically relevant.
+
+Progression
+
+milestones vs XP;
+Attribute advancement;
+Order progression;
+spell acquisition;
+reputation;
+mission rewards.
+
+Optional systems
+
+crafting;
+durability;
+encumbrance;
+player-to-player trade.
+
+Nothing from Phase D onward should implement placeholder answers to these questions.
+
+B6 — Codex/Rules deep integration
+
+Connect knowledge to the rest of the portal rather than leaving Codex and Rules as isolated encyclopaedias:
+
+Ancestry → /races/[slug];
+Association → Association page;
+Order → Order page;
+locations → maps/areas/rooms;
+Attributes → relevant rule;
+Health → Health rule;
+Fate/dice controls → gameplay rule;
+forum → forum rules;
+future spell → spell lore/rules;
+future item → item lore/rules;
+future weapon → combat rule;
+glossary terms → linked reference where practical.
+
+This should be designed once and then reused by future systems.
+
+Phase C — Support, Tickets, Reports & Moderation
+
+I would put your new ticket/report system here, before Inventory.
+
+It affects virtually every communication system already present, so it is better to build the common moderation architecture now than retrofit five unrelated report mechanisms later.
+
+C1 — Ticket system
+
+Create a proper player ↔ staff support system.
+
+Player side:
+
+Support link in the portal;
+/support;
+New Ticket;
+My Tickets;
+ticket conversation/history;
+staff replies;
+player replies;
+open / awaiting player / awaiting staff / resolved / closed;
+category;
+priority if appropriate;
+attachments later if wanted.
+
+Suggested ticket categories:
+
+Account
+Character
+Technical problem
+Rules question
+Gameplay
+Forum
+Other
+
+Staff side:
+
+/admin/tickets;
+queue;
+filters;
+assignment;
+staff-only notes;
+reply;
+status;
+priority;
+resolution;
+full audit trail.
+C2 — Unified Report system
+
+Reports should use the ticket infrastructure, not become a second disconnected support system.
+
+A report creates a special ticket with type = report.
+
+A report should preserve:
+
+reporter user;
+reporter character;
+reported character if identifiable;
+source type;
+source ID;
+source URL/context;
+reason;
+reporter explanation;
+creation time;
+assignment;
+status;
+staff notes;
+resolution.
+
+Crucially, it should also save a snapshot of the reported content at report time.
+
+Otherwise somebody could report:
+
+“this person wrote an abusive message”
+
+and the author edits/deletes it before staff opens the report.
+
+C3 — Report buttons everywhere required
+
+One reusable Report component/action should support different targets rather than six bespoke reporting systems.
+
+Target types should include at minimum:
+
+forum_topic
+forum_post
+direct_message
+room_message
+instant_chat_message
+
+A room message includes both ordinary speech and actions, so every action/message in play can be reported through its room_messages record.
+
+The repository already has all of these separate communication surfaces: forum topics/posts, room messages, direct messages and Instant Chat.
+
+The UI should therefore add:
+
+Forum topic
+
+Report topic
+
+Every forum reply
+
+Report
+
+Every private-message entry
+
+Report
+
+Every room/chat message or action
+
+Report
+
+Every Instant Chat message
+
+Report
+
+Not the whole conversation — the individual offending item.
+
+The report modal should ask for a reason such as:
+
+Harassment
+Offensive/inappropriate content
+Metagaming / rule breach
+Spam
+Impersonation
+Sexual/inappropriate behaviour
+Other
+
+plus optional explanation.
+
+One important distinction: the current forum already contains a concept called flagging, but it is a mechanism for sending/flagging a topic to other eligible characters, not a staff abuse-report system. It should therefore remain separate rather than being repurposed.
+
+C4 — Staff Reports centre
+
+Inside Administration:
+
+Reports
+
+with:
+
+New;
+Assigned;
+Investigating;
+Resolved;
+Dismissed.
+
+Staff should see:
+
+exact reported snapshot;
+reporter;
+author/sender;
+surrounding context;
+direct link to original;
+whether original has since been edited/deleted;
+prior reports involving the same user/character;
+staff notes;
+action taken.
+
+For room and messaging reports, I would also provide a small amount of adjacent context — e.g. several messages before and after — only to authorised staff.
+
+C5 — Abuse protection and auditability
+
+Add:
+
+prevent duplicate reports by the same user on the same object while one is open;
+report rate limiting;
+server-side target verification;
+reporters cannot alter report evidence;
+reported users cannot see who reported them through ordinary UI;
+immutable event/audit history;
+staff action log;
+report deletion restricted heavily or preferably never physically deleted;
+closed tickets retained for audit.
+
+This is also where we eventually connect account moderation/suspension controls.
+
+Phase D — Items, Inventory & Economy
+
+This is your old Phase C, moved down because support/moderation is more foundational for a live community.
+
+D1 — Item catalogue
+
+Create the canonical item definition:
+
+name;
+slug;
+description;
+image;
+category;
+rarity;
+tags;
+stackable;
+maximum stack;
+unique;
+tradeable;
+sellable;
+consumable;
+equipable;
+quest item;
+active/inactive;
+future mechanical metadata;
+staff creator/editor.
+
+Avoid embedding weapon/spell logic directly into arbitrary JSON unless we deliberately design an effect model in B5.
+
+D2 — Character inventory
+inventory ownership;
+quantities;
+unique instances;
+acquisition date;
+acquisition source;
+notes/provenance if useful;
+staff give/remove;
+player inventory;
+item details;
+stacking;
+transaction-safe changes.
+D3 — Equipment
+slots from B5;
+equip/unequip;
+slot validation;
+restrictions;
+equipped display on character;
+weapon assignment;
+armour assignment;
+future effects.
+D4 — Currency & ledger
+
+Do not store only a mutable number without history.
+
+Build:
+
+current balance;
+transaction ledger;
+source/reference;
+staff adjustment with reason;
+purchase;
+sale;
+reward;
+transfer if allowed;
+negative-balance prevention;
+audit trail.
+D5 — Market
+shops;
+shop categories;
+stock;
+purchase price;
+sell price;
+buy;
+sell;
+stock limits;
+unlimited-stock items where appropriate;
+shop availability;
+staff shop editor;
+transaction atomicity.
+Phase E — Magic, Abilities & Combat
+E1 — Spell catalogue
+
+Use the mechanics formally defined in B5:
+
+name;
+category/school;
+lore;
+mechanical description;
+requirements;
+range;
+target;
+damage/healing;
+effects;
+restrictions;
+active/inactive;
+staff editor.
+E2 — Character spellbook
+learned;
+granted;
+removed;
+source;
+restrictions;
+Order/Ancestry/Expertise requirements where applicable;
+player spellbook.
+E3 — Combat engine
+attack;
+defence;
+dodge;
+resist;
+Attribute interactions;
+Ancestry modifiers;
+Order modifiers;
+weapon damage;
+spell damage;
+criticals;
+armour;
+resistance;
+damage;
+healing;
+Health;
+staff overrides;
+combat audit.
+E4 — Conditions
+
+Generic condition architecture rather than hardcoding every state:
+
+wounded;
+unconscious;
+incapacitated;
+poisoned;
+stunned;
+setting-specific effects;
+start/end;
+duration;
+source;
+staff override.
+E5 — Gameplay combat UI
+
+Integrate with room play:
+
+attack;
+defend;
+cast;
+target selection;
+resolve;
+display rolls;
+Fate interaction;
+combat events in the roleplay stream where appropriate.
+Phase F — Missions, Rewards & Progression
+F1 — Missions
+public/private;
+staff-created;
+character/party assignment;
+objectives;
+clues;
+stages;
+active/completed/failed;
+hidden GM information.
+F2 — Rewards
+
+Reusable reward engine:
+
+items;
+currency;
+spells;
+titles;
+reputation;
+progression;
+Order-related rewards if appropriate.
+F3 — Progression
+
+Implement the decisions from B5:
+
+XP/milestones;
+Attribute advancement if permitted;
+spell learning;
+reputation;
+Order progression;
+Expertise progression if relevant.
+F4 — Mission history
+current;
+completed;
+failed;
+rewards;
+changes;
+staff audit.
+Phase G — World, NPCs, Events & Advanced Staff Tools
+
+This phase must also be rewritten because parts of the old F1 already exist. Areas and Locations already have admin surfaces.
+
+So this becomes enhancement rather than initial construction.
+
+G1 — World management completion
+
+Audit and extend existing:
+
+world;
+areas;
+locations/rooms;
+images;
+room descriptions;
+map placement;
+connections;
+active/inactive;
+travel restrictions;
+staff-only room data;
+map tooling.
+G2 — NPC system
+NPC profiles;
+portraits;
+location;
+faction/Order/Association;
+shops;
+missions;
+dialogue/profile information;
+hidden staff notes.
+G3 — Events
+
+You already have an Events admin area, so we audit that implementation before rebuilding anything.
+
+Then extend toward:
+
+global/local;
+announcements;
+schedules;
+event state;
+location effects;
+participating characters;
+rewards.
+G4 — Timeline
+public history;
+internal staff chronology;
+events promoted into permanent canon;
+Codex linkage;
+future/revealed secrets.
+G5 — Staff roles, permissions & auditing
+
+Extend the current owner/admin/staff model:
+
+granular capabilities;
+moderation rights;
+tickets/reports;
+Codex publishing;
+Rules publishing;
+items/economy;
+missions;
+world changes;
+audit viewer.
+
+Central logs should ultimately cover:
+
+staff moderation;
+characters;
+reports;
+tickets;
+items;
+currency;
+combat;
+missions;
+Codex;
+Rules;
+world edits.
+Phase H — Polish, Security, Testing & Launch
+
+Only when the feature architecture is substantially complete:
+
+responsive review;
+accessibility;
+keyboard navigation;
+performance;
+caching;
+image optimisation;
+Realtime connection audit;
+RLS audit;
+server-action permissions;
+direct-URL permission tests;
+report/privacy security;
+transaction testing;
+concurrency;
+error UX;
+backup strategy;
+restore testing;
+staff alpha;
+closed beta;
+bug triage;
+content completion;
+launch checklist.

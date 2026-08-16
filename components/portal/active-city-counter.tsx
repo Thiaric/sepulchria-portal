@@ -788,7 +788,7 @@ export function ActiveCityCounter({
                                 </form>
                               ) : (
                                 <span className="min-w-0 flex-1 truncate text-[8px] text-[#62594d]">
-                                  Location unavailable
+                                  Around Sepulchria
                                 </span>
                               )}
 

@@ -24,6 +24,7 @@ import { createClient } from "@/lib/supabase/client";
 import type { PortalContext } from "@/types/portal";
 import { ForumSectionActivityContext } from "@/components/portal/forum-section-activity-context";
 import { AdminOrdersContext } from "@/components/portal/admin-orders-context";
+import { AdminRulesContext } from "@/components/portal/admin-rules-context";
 import { CharacterOrderContext } from "@/components/portal/character-order-context";
 import { OrderLeadershipContext } from "@/components/portal/order-leadership-context";
 
@@ -215,6 +216,10 @@ if (
 
   if (pathname === "/admin/orders") {
     return <AdminOrdersContext />;
+  }
+
+  if (pathname === "/admin/rules") {
+    return <AdminRulesContext />;
   }
 
 
