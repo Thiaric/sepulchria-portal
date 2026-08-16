@@ -288,3 +288,91 @@ export async function deleteOrderJobLink(formData: FormData) {
   refreshStructure();
   redirectBack(orderId, "success", "Role progression link removed.");
 }
+
+export async function createOrderJobLinkLive({
+  orderId,
+  fromJobId,
+  toJobId,
+}: {
+  orderId: string;
+  fromJobId: string;
+  toJobId: string;
+}) {
+  try {
+    await requireStaff();
+
+    if (!isUuid(orderId) || !isUuid(fromJobId) || !isUuid(toJobId)) {
+      return { ok: false as const, error: "Invalid Role progression link." };
+    }
+
+    const supabase = await createClient();
+
+    const { data, error } = await supabase
+      .from("order_job_links")
+      .insert({
+        from_job_id: fromJobId,
+        to_job_id: toJobId,
+      })
+      .select("id, from_job_id, to_job_id")
+      .single();
+
+    if (error) {
+      return { ok: false as const, error: error.message };
+    }
+
+    revalidatePath("/admin/orders");
+    revalidatePath("/orders");
+    revalidatePath("/orders/manage");
+
+    return { ok: true as const, link: data };
+  } catch (error) {
+    return {
+      ok: false as const,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Unable to add Role progression link.",
+    };
+  }
+}
+
+export async function deleteOrderJobLinkLive({
+  orderId,
+  linkId,
+}: {
+  orderId: string;
+  linkId: string;
+}) {
+  try {
+    await requireStaff();
+
+    if (!isUuid(orderId) || !isUuid(linkId)) {
+      return { ok: false as const, error: "Invalid Role progression link." };
+    }
+
+    const supabase = await createClient();
+
+    const { error } = await supabase
+      .from("order_job_links")
+      .delete()
+      .eq("id", linkId);
+
+    if (error) {
+      return { ok: false as const, error: error.message };
+    }
+
+    revalidatePath("/admin/orders");
+    revalidatePath("/orders");
+    revalidatePath("/orders/manage");
+
+    return { ok: true as const };
+  } catch (error) {
+    return {
+      ok: false as const,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Unable to remove Role progression link.",
+    };
+  }
+}
