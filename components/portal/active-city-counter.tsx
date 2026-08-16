@@ -1,18 +1,17 @@
 "use client";
 
 import Link from "next/link";
-
-import { startConversation } from "@/app/(portal)/messages/actions";
-import { enterRoomFromMap } from "@/app/(portal)/game/actions";
-import { CharacterOrderIdentity } from "@/components/characters/character-order-identity";
+import { createPortal } from "react-dom";
 import {
   useCallback,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from "react";
 
+import { enterRoomFromMap } from "@/app/(portal)/game/actions";
+import { startConversation } from "@/app/(portal)/messages/actions";
+import { CharacterOrderIdentity } from "@/components/characters/character-order-identity";
 import {
   PRESENCE_ACTIVE_MINUTES,
 } from "@/lib/game/constants";
@@ -103,73 +102,79 @@ export function ActiveCityCounter({
     setCurrentCharacterId,
   ] = useState<string | null>(null);
 
-  const wrapperRef =
-    useRef<HTMLDivElement | null>(null);
-
   const refreshPresence =
     useCallback(async () => {
-      const supabase = createClient();
+      const supabase =
+        createClient();
 
-      const activeSince = new Date(
-        Date.now() -
-          PRESENCE_ACTIVE_MINUTES *
-            60_000,
-      ).toISOString();
+      const activeSince =
+        new Date(
+          Date.now() -
+            PRESENCE_ACTIVE_MINUTES *
+              60_000,
+        ).toISOString();
 
-      const { data, error } =
-        await supabase
-          .from("character_presence")
-          .select(
-  `
-    character_id,
-    room_id,
-    status,
-    last_seen_at,
+      const {
+        data,
+        error: presenceError,
+      } = await supabase
+        .from(
+          "character_presence",
+        )
+        .select(
+          `
+            character_id,
+            room_id,
+            status,
+            last_seen_at,
 
-    room:rooms!character_presence_room_id_fkey(
-      id,
-      name,
-      slug
-    ),
+            room:rooms!character_presence_room_id_fkey(
+              id,
+              name,
+              slug
+            ),
 
-    character:characters!character_presence_character_id_fkey(
+            character:characters!character_presence_character_id_fkey(
+              id,
+              display_name,
+              portrait_url,
+              public_slug,
+              title,
+              occupation,
+
+              race:races!characters_race_id_fkey(
                 id,
-                display_name,
-                portrait_url,
-                public_slug,
-                title,
-                occupation,
+                name,
+                slug,
+                icon_url,
+                colour
+              ),
 
-                race:races!characters_race_id_fkey(
-                  id,
-                  name,
-                  slug,
-                  icon_url,
-                  colour
-                ),
-
-                association:associations!characters_association_id_fkey(
-                  id,
-                  name,
-                  slug,
-                  icon_url,
-                  colour
-                )
+              association:associations!characters_association_id_fkey(
+                id,
+                name,
+                slug,
+                icon_url,
+                colour
               )
-            `,
-          )
-          .gte(
-            "last_seen_at",
-            activeSince,
-          )
-          .order("last_seen_at", {
+            )
+          `,
+        )
+        .gte(
+          "last_seen_at",
+          activeSince,
+        )
+        .order(
+          "last_seen_at",
+          {
             ascending: false,
-          });
+          },
+        );
 
-      if (error) {
+      if (presenceError) {
         console.error(
           "Unable to refresh active characters:",
-          error.message,
+          presenceError.message,
         );
 
         setError(
@@ -193,33 +198,41 @@ export function ActiveCityCounter({
     let cancelled = false;
 
     async function loadCurrentCharacter() {
-      const supabase = createClient();
+      const supabase =
+        createClient();
 
       const {
         data: { user },
-      } = await supabase.auth.getUser();
+      } =
+        await supabase.auth.getUser();
 
-      if (!user || cancelled) {
+      if (
+        !user ||
+        cancelled
+      ) {
         return;
       }
 
       const {
         data: character,
-        error,
+        error: characterError,
       } = await supabase
         .from("characters")
         .select("id")
-        .eq("user_id", user.id)
+        .eq(
+          "user_id",
+          user.id,
+        )
         .maybeSingle();
 
       if (cancelled) {
         return;
       }
 
-      if (error) {
+      if (characterError) {
         console.error(
           "Unable to identify current character:",
-          error.message,
+          characterError.message,
         );
         return;
       }
@@ -239,7 +252,8 @@ export function ActiveCityCounter({
   useEffect(() => {
     void refreshPresence();
 
-    const supabase = createClient();
+    const supabase =
+      createClient();
 
     const channel = supabase
       .channel(
@@ -260,9 +274,12 @@ export function ActiveCityCounter({
       .subscribe();
 
     const intervalId =
-      window.setInterval(() => {
-        void refreshPresence();
-      }, REFRESH_INTERVAL_MS);
+      window.setInterval(
+        () => {
+          void refreshPresence();
+        },
+        REFRESH_INTERVAL_MS,
+      );
 
     function handleVisibilityChange() {
       if (
@@ -279,7 +296,9 @@ export function ActiveCityCounter({
     );
 
     return () => {
-      window.clearInterval(intervalId);
+      window.clearInterval(
+        intervalId,
+      );
 
       document.removeEventListener(
         "visibilitychange",
@@ -297,31 +316,23 @@ export function ActiveCityCounter({
       return;
     }
 
-    function handlePointerDown(
-      event: MouseEvent,
+    function handleKeyDown(
+      event: KeyboardEvent,
     ) {
       if (
-        wrapperRef.current &&
-        !wrapperRef.current.contains(
-          event.target as Node,
-        )
+        event.key ===
+        "Escape"
       ) {
         setOpen(false);
       }
     }
 
-    function handleKeyDown(
-      event: KeyboardEvent,
-    ) {
-      if (event.key === "Escape") {
-        setOpen(false);
-      }
-    }
+    const previousOverflow =
+      document.body.style
+        .overflow;
 
-    document.addEventListener(
-      "mousedown",
-      handlePointerDown,
-    );
+    document.body.style.overflow =
+      "hidden";
 
     window.addEventListener(
       "keydown",
@@ -329,10 +340,8 @@ export function ActiveCityCounter({
     );
 
     return () => {
-      document.removeEventListener(
-        "mousedown",
-        handlePointerDown,
-      );
+      document.body.style.overflow =
+        previousOverflow;
 
       window.removeEventListener(
         "keydown",
@@ -342,13 +351,15 @@ export function ActiveCityCounter({
   }, [open]);
 
   function toggleOpen() {
-    const nextOpen = !open;
+    const nextOpen =
+      !open;
 
     setOpen(nextOpen);
 
     if (nextOpen) {
       setSearchQuery("");
       setLoading(true);
+
       void refreshPresence();
     }
   }
@@ -381,24 +392,24 @@ export function ActiveCityCounter({
             );
 
           const association =
-  normaliseRelation(
-    person.association,
-  );
+            normaliseRelation(
+              person.association,
+            );
 
-const room =
-  normaliseRelation(
-    presence.room,
-  );
+          const room =
+            normaliseRelation(
+              presence.room,
+            );
 
-const searchableText = [
-  person.display_name,
-  person.title,
-  person.occupation,
-  race?.name,
-  association?.name,
-  room?.name,
-  presence.status,
-]
+          const searchableText = [
+            person.display_name,
+            person.title,
+            person.occupation,
+            race?.name,
+            association?.name,
+            room?.name,
+            presence.status,
+          ]
             .filter(Boolean)
             .join(" ")
             .toLocaleLowerCase();
@@ -414,17 +425,16 @@ const searchableText = [
     ]);
 
   return (
-    <div
-      ref={wrapperRef}
-      className="relative"
-    >
+    <>
       <button
         type="button"
         onClick={toggleOpen}
         aria-expanded={open}
         aria-haspopup="dialog"
         title={`${count} active character${
-          count === 1 ? "" : "s"
+          count === 1
+            ? ""
+            : "s"
         } — click to view`}
         className={`flex h-10 items-center gap-2 border px-2 transition sm:gap-3 sm:px-3 ${
           open
@@ -447,211 +457,224 @@ const searchableText = [
         <span
           aria-hidden="true"
           className={`hidden text-[8px] text-[#7e674b] transition-transform lg:inline ${
-            open ? "rotate-180" : ""
+            open
+              ? "rotate-180"
+              : ""
           }`}
         >
           ▾
         </span>
       </button>
 
-      {open ? (
-  <div
-    role="dialog"
-    aria-label="Active characters in Sepulchria"
-    className="
-      fixed
-      left-2
-      right-2
-      top-[calc(clamp(56px,8dvh,80px)+0.5rem)]
-      z-[120]
-      max-h-[calc(100dvh-clamp(56px,8dvh,80px)-1rem)]
-      overflow-hidden
-      border
-      border-[#6d5132]
-      bg-[#0f0b08]/[0.98]
-      shadow-[0_22px_60px_rgba(0,0,0,0.75)]
-      backdrop-blur-md
+      {open && typeof document !== "undefined"
+        ? createPortal(
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="People in Sepulchria"
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/75 p-2 sm:p-4"
+          onMouseDown={(
+            event,
+          ) => {
+            if (
+              event.target ===
+              event.currentTarget
+            ) {
+              setOpen(false);
+            }
+          }}
+        >
+          <div className="flex h-[85vh] w-[90vw] max-w-[1700px] flex-col overflow-hidden border border-[#6e5535]/65 bg-[#090705] shadow-[0_20px_80px_rgba(0,0,0,0.65)]">
+            <div className="flex min-h-12 shrink-0 items-center justify-between gap-4 border-b border-[#60482e]/45 bg-[#100c09] px-4 sm:px-5">
+              <div className="flex min-w-0 items-center gap-3">
+                <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-[#788d5e] shadow-[0_0_10px_rgba(120,141,94,0.55)]" />
 
-      sm:left-auto
-      sm:right-0
-      sm:top-[calc(100%+0.5rem)]
-      sm:w-[min(92vw,25rem)]
-      sm:max-h-none
-      sm:absolute
-    "
-  >
-          <div className="flex items-center justify-between gap-4 border-b border-[#59432c]/55 bg-[#17110d] px-4 py-3">
-            <div>
-              <p className="text-[8px] uppercase tracking-[0.26em] text-[#8d6b43]">
-                City Presence
-              </p>
+                <div className="min-w-0">
+                  <p className="text-[7px] uppercase tracking-[0.25em] text-[#806b50]">
+                    City Presence
+                  </p>
 
-              
-            </div>
+                  <h2 className="truncate font-serif text-base text-[#d8c096] sm:text-lg">
+                    People in Sepulchria
+                  </h2>
+                </div>
+              </div>
 
-            <div className="flex items-center gap-2">
-              <span className="flex h-7 min-w-7 items-center justify-center border border-[#59432c]/55 bg-[#100c09] px-2 font-serif text-sm text-[#c9ab7c]">
-                {count}
-              </span>
+              <div className="flex shrink-0 items-center gap-2">
+                <span className="flex h-7 min-w-7 items-center justify-center border border-[#59432c]/55 bg-[#17110d] px-2 font-serif text-sm text-[#c9ab7c]">
+                  {count}
+                </span>
 
-              <button
-                type="button"
-                onClick={() =>
-                  setOpen(false)
-                }
-                aria-label="Close active character list"
-                title="Close"
-                className="flex h-7 w-7 items-center justify-center border border-[#59432c]/55 bg-[#100c09] text-sm text-[#9d8564] transition hover:border-[#8d6d43] hover:text-[#e0c99d]"
-              >
-                ×
-              </button>
-            </div>
-          </div>
-
-          <div className="border-b border-[#59432c]/45 bg-[#100c09] p-2.5">
-            <label className="relative block">
-              <span className="sr-only">
-                Search active characters
-              </span>
-
-              <span
-                aria-hidden="true"
-                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-[#806c52]"
-              >
-                ⌕
-              </span>
-
-              <input
-                type="search"
-                value={searchQuery}
-                onChange={(event) =>
-                  setSearchQuery(
-                    event.target.value,
-                  )
-                }
-                placeholder="Search name, ancestry, Order…"
-                autoComplete="off"
-                className="w-full border border-[#59432c]/55 bg-[#0d0907] py-2.5 pl-8 pr-9 text-xs text-[#d8c4a4] outline-none placeholder:text-[#62584b] focus:border-[#9a7445] [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
-              />
-
-              {searchQuery ? (
                 <button
                   type="button"
                   onClick={() =>
-                    setSearchQuery("")
+                    setOpen(
+                      false,
+                    )
                   }
-                  aria-label="Clear search"
-                  title="Clear search"
-                  className="absolute right-2 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center text-xs text-[#7e6b52] transition hover:text-[#d7bb8d]"
+                  aria-label="Close People in Sepulchria"
+                  title="Close"
+                  className="flex h-7 w-7 items-center justify-center border border-[#60482e]/50 bg-[#17110d] text-base leading-none text-[#aa9675] transition hover:border-[#967342] hover:text-[#f1d7a5]"
                 >
                   ×
                 </button>
-              ) : null}
-            </label>
-
-            <div className="mt-2 flex items-center justify-between gap-3 px-0.5">
-              <p className="text-[7px] uppercase tracking-[0.17em] text-[#66594a]">
-                {searchQuery
-                  ? `${filteredCharacters.length} matching`
-                  : `${count} present`}
-              </p>
-
-              <p className="text-[7px] uppercase tracking-[0.14em] text-[#5f5549]">
-                Scroll to see more
-              </p>
+              </div>
             </div>
-          </div>
 
-          <div className="max-h-[calc(100dvh-clamp(56px,8dvh,80px)-9.5rem)] overflow-y-auto overscroll-contain p-2 sm:max-h-[min(58vh,30rem)]">
-            {loading &&
-            presentCharacters.length ===
-              0 ? (
-              <LoadingRows />
-            ) : null}
+            <div className="shrink-0 border-b border-[#59432c]/40 bg-[#0d0907] px-3 py-3 sm:px-5">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                <label className="relative min-w-0 flex-1">
+                  <span className="sr-only">
+                    Search active characters
+                  </span>
 
-            {error ? (
-              <p className="border border-[#743d35] bg-[#2a1512] p-3 text-[11px] leading-5 text-[#d8a49a]">
-                {error}
-              </p>
-            ) : null}
+                  <span
+                    aria-hidden="true"
+                    className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-[#806c52]"
+                  >
+                    ⌕
+                  </span>
 
-            {!error &&
-            !loading &&
-            presentCharacters.length ===
-              0 ? (
-              <p className="border border-[#59432c]/35 bg-[#100c09] p-4 text-center text-[11px] leading-5 text-[#8f8271]">
-                No characters are
-                currently active in the
-                city.
-              </p>
-            ) : null}
+                  <input
+                    type="search"
+                    value={
+                      searchQuery
+                    }
+                    onChange={(
+                      event,
+                    ) =>
+                      setSearchQuery(
+                        event
+                          .target
+                          .value,
+                      )
+                    }
+                    placeholder="Search name, ancestry, Order, location…"
+                    autoComplete="off"
+                    className="w-full border border-[#59432c]/55 bg-[#100c09] py-2.5 pl-8 pr-9 text-xs text-[#d8c4a4] outline-none placeholder:text-[#62584b] focus:border-[#9a7445] [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
+                  />
 
-            {!error &&
-            !loading &&
-            presentCharacters.length >
-              0 &&
-            filteredCharacters.length ===
-              0 ? (
-              <p className="border border-[#59432c]/35 bg-[#100c09] p-4 text-center text-[11px] leading-5 text-[#8f8271]">
-                No active characters
-                match your search.
-              </p>
-            ) : null}
-
-            <div className="space-y-1.5">
-              {filteredCharacters.map(
-                (presence) => {
-                  const person =
-                    normaliseRelation(
-                      presence.character,
-                    );
-
-                  if (!person) {
-                    return null;
-                  }
-
-                  const race =
-                    normaliseRelation(
-                      person.race,
-                    );
-
-                  const association =
-  normaliseRelation(
-    person.association,
-  );
-
-const room =
-  normaliseRelation(
-    presence.room,
-  );
-
-const displayName =
-  person.display_name?.trim() ||
-  "Unnamed character";
-
-                  const isCurrentCharacter =
-                    currentCharacterId ===
-                    person.id;
-
-                  return (
-                    <div
-                      key={
-                        presence.character_id
+                  {searchQuery ? (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setSearchQuery(
+                          "",
+                        )
                       }
-                      className="group relative overflow-hidden border border-[#59432c]/40 bg-[#120e0b] transition hover:border-[#9b7446] hover:bg-[#1c140e]"
+                      aria-label="Clear search"
+                      title="Clear search"
+                      className="absolute right-2 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center text-xs text-[#7e6b52] transition hover:text-[#d7bb8d]"
                     >
-                      <div className="absolute inset-y-0 left-0 w-px bg-[#b88a52]/0 transition group-hover:bg-[#b88a52]/75" />
+                      ×
+                    </button>
+                  ) : null}
+                </label>
 
-                      <div className="flex min-h-[72px] items-center gap-2 px-3 py-2.5">
-                        <Link
-                          href={`/characters/${person.public_slug}`}
-                          onClick={() =>
-                            setOpen(false)
-                          }
-                          title={`Open ${displayName}'s character sheet`}
-                          className="flex min-w-0 flex-1 items-center gap-3"
-                        >
-                          <div className="relative shrink-0">
+                <div className="flex shrink-0 items-center justify-between gap-4 sm:justify-end">
+                  <p className="text-[7px] uppercase tracking-[0.17em] text-[#746450]">
+                    {searchQuery
+                      ? `${filteredCharacters.length} matching`
+                      : `${count} present`}
+                  </p>
+
+                  <p className="text-[7px] uppercase tracking-[0.14em] text-[#5f5549]">
+                    Live city presence
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-3 sm:p-4 lg:p-5">
+              {loading &&
+              presentCharacters.length ===
+                0 ? (
+                <LoadingRows />
+              ) : null}
+
+              {error ? (
+                <p className="border border-[#743d35] bg-[#2a1512] p-4 text-[11px] leading-5 text-[#d8a49a]">
+                  {error}
+                </p>
+              ) : null}
+
+              {!error &&
+              !loading &&
+              presentCharacters.length ===
+                0 ? (
+                <p className="border border-[#59432c]/35 bg-[#100c09] p-6 text-center text-[11px] leading-5 text-[#8f8271]">
+                  No characters are
+                  currently active in
+                  the city.
+                </p>
+              ) : null}
+
+              {!error &&
+              !loading &&
+              presentCharacters.length >
+                0 &&
+              filteredCharacters.length ===
+                0 ? (
+                <p className="border border-[#59432c]/35 bg-[#100c09] p-6 text-center text-[11px] leading-5 text-[#8f8271]">
+                  No active characters
+                  match your search.
+                </p>
+              ) : null}
+
+              <div className="grid gap-2.5 md:grid-cols-2 2xl:grid-cols-3">
+                {filteredCharacters.map(
+                  (
+                    presence,
+                  ) => {
+                    const person =
+                      normaliseRelation(
+                        presence.character,
+                      );
+
+                    if (
+                      !person
+                    ) {
+                      return null;
+                    }
+
+                    const race =
+                      normaliseRelation(
+                        person.race,
+                      );
+
+                    const room =
+                      normaliseRelation(
+                        presence.room,
+                      );
+
+                    const displayName =
+                      person.display_name?.trim() ||
+                      "Unnamed character";
+
+                    const isCurrentCharacter =
+                      currentCharacterId ===
+                      person.id;
+
+                    return (
+                      <article
+                        key={
+                          presence.character_id
+                        }
+                        className="group relative min-w-0 overflow-hidden border border-[#59432c]/40 bg-[#120e0b] transition hover:border-[#8f6c43] hover:bg-[#18110d]"
+                      >
+                        <div className="absolute inset-y-0 left-0 w-px bg-[#b88a52]/0 transition group-hover:bg-[#b88a52]/70" />
+
+                        <div className="flex min-w-0 items-center gap-2.5 px-3 py-2.5">
+                          <Link
+                            href={`/characters/${person.public_slug}`}
+                            onClick={() =>
+                              setOpen(
+                                false,
+                              )
+                            }
+                            title={`Open ${displayName}'s character sheet`}
+                            className="relative shrink-0"
+                          >
                             <Portrait
                               src={
                                 person.portrait_url
@@ -666,25 +689,26 @@ const displayName =
                                 presence.status
                               }
                             />
-                          </div>
+                          </Link>
 
                           <div className="min-w-0 flex-1">
-                            <div className="flex items-start justify-between gap-3">
-                              <div className="min-w-0">
-                                <p className="truncate font-serif text-sm text-[#dbc397] transition group-hover:text-[#ecd5a8]">
+                            <div className="flex min-w-0 items-center gap-2">
+                              <Link
+                                href={`/characters/${person.public_slug}`}
+                                onClick={() =>
+                                  setOpen(
+                                    false,
+                                  )
+                                }
+                                title={`Open ${displayName}'s character sheet`}
+                                className="min-w-0 flex-1"
+                              >
+                                <p className="truncate font-serif text-sm text-[#dbc397] transition hover:text-[#ecd5a8]">
                                   {
                                     displayName
                                   }
                                 </p>
-
-                                {(person.title ||
-                                  person.occupation) ? (
-                                  <p className="mt-0.5 truncate text-[9px] text-[#8f7b61]">
-                                    {person.title ||
-                                      person.occupation}
-                                  </p>
-                                ) : null}
-                              </div>
+                              </Link>
 
                               <PresenceLabel
                                 status={
@@ -693,117 +717,148 @@ const displayName =
                               />
                             </div>
 
-                            <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5">
-  <HeritageEntry
-    entry={race}
-    fallback="No ancestry"
-  />
+                            {(person.title ||
+                              person.occupation) ? (
+                              <p className="mt-0.5 truncate text-[8px] text-[#83725d]">
+                                {person.title ||
+                                  person.occupation}
+                              </p>
+                            ) : null}
 
-  <CharacterOrderIdentity
-    characterId={person.id}
-    variant="inline"
-  />
-</div>
-                          </div>
-                        </Link>
-
-                        <div className="flex shrink-0 items-center gap-1">
-                          {!isCurrentCharacter ? (
-                            <form
-                              action={
-                                startConversation
-                              }
-                              onSubmit={() =>
-                                setOpen(false)
-                              }
-                            >
-                              <input
-                                type="hidden"
-                                name="recipientId"
-                                value={person.id}
+                            <div className="mt-1.5 flex min-w-0 flex-wrap items-center gap-x-2.5 gap-y-1">
+                              <HeritageEntry
+                                entry={
+                                  race
+                                }
+                                fallback="No ancestry"
                               />
 
-                              <button
-                                type="submit"
-                                aria-label={`Send a private message to ${displayName}`}
-                                title={`Message ${displayName}`}
-                                className="flex h-8 w-8 items-center justify-center border border-[#6d5132]/70 bg-[#1b130d] text-sm text-[#b89059] transition hover:border-[#a47b43] hover:bg-[#332318] hover:text-[#f0d09a]"
-                              >
-                                ✉
-                              </button>
-                            </form>
-                          ) : (
-                            <span
-                              title="This is your character"
-                              className="flex h-8 w-8 items-center justify-center text-[8px] uppercase text-[#66594a]"
-                            >
-                              You
-                            </span>
-                          )}
+                              <CharacterOrderIdentity
+                                characterId={
+                                  person.id
+                                }
+                                variant="inline"
+                              />
+                            </div>
 
-                          <Link
-                            href={`/characters/${person.public_slug}`}
-                            onClick={() =>
-                              setOpen(false)
-                            }
-                            aria-label={`Open ${displayName}'s character sheet`}
-                            title={`Open ${displayName}'s character sheet`}
-                            className="flex h-8 w-6 items-center justify-center text-xs text-[#725a3d] transition hover:translate-x-0.5 hover:text-[#c59b64]"
-                          >
-                            →
-                          </Link>
+                            <div className="mt-1.5 flex min-w-0 items-center justify-between gap-2 border-t border-[#59432c]/25 pt-1.5">
+                              {room &&
+                              presence.room_id ? (
+                                <form
+                                  action={
+                                    enterRoomFromMap
+                                  }
+                                  onSubmit={() =>
+                                    setOpen(
+                                      false,
+                                    )
+                                  }
+                                  className="min-w-0 flex-1"
+                                >
+                                  <input
+                                    type="hidden"
+                                    name="roomId"
+                                    value={
+                                      presence.room_id
+                                    }
+                                  />
+
+                                  <button
+                                    type="submit"
+                                    title={`Go directly to ${room.name}`}
+                                    className="group/location flex max-w-full items-center gap-1.5 text-left"
+                                  >
+                                    <span
+                                      aria-hidden="true"
+                                      className="shrink-0 text-[9px] text-[#8f6d42]"
+                                    >
+                                      ⌖
+                                    </span>
+
+                                    <span className="truncate text-[8px] text-[#95836c] transition group-hover/location:text-[#ddc294]">
+                                      {
+                                        room.name
+                                      }
+                                    </span>
+
+                                    <span className="shrink-0 text-[7px] uppercase tracking-[0.12em] text-[#725a3d] transition group-hover/location:text-[#c59b64]">
+                                      Go →
+                                    </span>
+                                  </button>
+                                </form>
+                              ) : (
+                                <span className="min-w-0 flex-1 truncate text-[8px] text-[#62594d]">
+                                  Location unavailable
+                                </span>
+                              )}
+
+                              <div className="flex shrink-0 items-center gap-1">
+                                {!isCurrentCharacter ? (
+                                  <form
+                                    action={
+                                      startConversation
+                                    }
+                                    onSubmit={() =>
+                                      setOpen(
+                                        false,
+                                      )
+                                    }
+                                  >
+                                    <input
+                                      type="hidden"
+                                      name="recipientId"
+                                      value={
+                                        person.id
+                                      }
+                                    />
+
+                                    <button
+                                      type="submit"
+                                      aria-label={`Send a private message to ${displayName}`}
+                                      title={`Message ${displayName}`}
+                                      className="flex h-6 w-6 items-center justify-center border border-[#6d5132]/60 bg-[#1b130d] text-[10px] text-[#b89059] transition hover:border-[#a47b43] hover:bg-[#332318] hover:text-[#f0d09a]"
+                                    >
+                                      ✉
+                                    </button>
+                                  </form>
+                                ) : (
+                                  <span
+                                    title="This is your character"
+                                    className="flex h-6 min-w-6 items-center justify-center px-1 text-[7px] uppercase text-[#66594a]"
+                                  >
+                                    You
+                                  </span>
+                                )}
+
+                                <Link
+                                  href={`/characters/${person.public_slug}`}
+                                  onClick={() =>
+                                    setOpen(
+                                      false,
+                                    )
+                                  }
+                                  aria-label={`Open ${displayName}'s character sheet`}
+                                  title={`Open ${displayName}'s character sheet`}
+                                  className="flex h-6 w-6 items-center justify-center border border-[#59432c]/35 bg-[#15100d] text-[10px] text-[#725a3d] transition hover:border-[#8f6d43] hover:text-[#c59b64]"
+                                >
+                                  →
+                                </Link>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-
-                      {room && presence.room_id ? (
-  <form
-    action={enterRoomFromMap}
-    onSubmit={() =>
-      setOpen(false)
-    }
-    className="border-t border-[#59432c]/30"
-  >
-    <input
-      type="hidden"
-      name="roomId"
-      value={presence.room_id}
-    />
-
-    <button
-      type="submit"
-      title={`Go directly to ${room.name}`}
-      className="group/location flex w-full items-center justify-between gap-3 px-3 py-2 text-left transition hover:bg-[#21170f]"
-    >
-      <span className="flex min-w-0 items-center gap-2">
-        <span
-          aria-hidden="true"
-          className="shrink-0 text-[10px] text-[#8f6d42]"
-        >
-          ⌖
-        </span>
-
-        <span className="truncate text-[9px] text-[#9c8b73] transition group-hover/location:text-[#ddc294]">
-          {room.name}
-        </span>
-      </span>
-
-      <span className="shrink-0 text-[8px] uppercase tracking-[0.14em] text-[#725a3d] transition group-hover/location:text-[#c59b64]">
-        Go there →
-      </span>
-    </button>
-  </form>
-) : null}
-                    </div>
-                  );
-                },
-              )}
+                      </article>
+                    );
+                  },
+                )}
+              </div>
             </div>
           </div>
-
-          
-        </div>
-      ) : null}
-    </div>
+        </div>,
+        document.body,
+      )
+        : null}
+    </>
   );
 }
 
@@ -823,7 +878,8 @@ function HeritageEntry({
   }
 
   const colour =
-    entry.colour ?? "#8d6d3e";
+    entry.colour ??
+    "#8d6d3e";
 
   return (
     <span
@@ -831,16 +887,19 @@ function HeritageEntry({
       title={entry.name}
     >
       <span
-        className="flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden border bg-[#0d0907] font-serif text-[8px]"
+        className="flex h-4 w-4 shrink-0 items-center justify-center overflow-hidden border bg-[#0d0907] font-serif text-[7px]"
         style={{
-          borderColor: `${colour}88`,
+          borderColor:
+            `${colour}88`,
           color: colour,
         }}
       >
         {entry.icon_url ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={entry.icon_url}
+            src={
+              entry.icon_url
+            }
             alt=""
             className="h-full w-full object-cover"
           />
@@ -878,7 +937,7 @@ function PresenceDot({
   return (
     <span
       title={status}
-      className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 ${classes[status]}`}
+      className={`absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 ${classes[status]}`}
     />
   );
 }
@@ -892,9 +951,12 @@ function PresenceLabel({
     PresenceStatus,
     string
   > = {
-    online: "text-emerald-500",
-    away: "text-amber-500",
-    busy: "text-red-500",
+    online:
+      "text-emerald-500",
+    away:
+      "text-amber-500",
+    busy:
+      "text-red-500",
   };
 
   return (
@@ -918,12 +980,14 @@ function Portrait({
     .filter(Boolean)
     .slice(0, 2)
     .map((part) =>
-      part.charAt(0).toUpperCase(),
+      part
+        .charAt(0)
+        .toUpperCase(),
     )
     .join("");
 
   return (
-    <div className="h-12 w-12 overflow-hidden border border-[#705538] bg-[#0d0a08] shadow-inner">
+    <div className="h-10 w-10 overflow-hidden border border-[#705538] bg-[#0d0a08] shadow-inner">
       {src ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
@@ -932,8 +996,9 @@ function Portrait({
           className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
         />
       ) : (
-        <span className="flex h-full items-center justify-center font-serif text-sm text-[#a0845e]">
-          {initials || "?"}
+        <span className="flex h-full items-center justify-center font-serif text-xs text-[#a0845e]">
+          {initials ||
+            "?"}
         </span>
       )}
     </div>
@@ -942,10 +1007,15 @@ function Portrait({
 
 function LoadingRows() {
   return (
-    <div className="space-y-1.5">
-      <div className="h-[72px] animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
-      <div className="h-[72px] animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
-      <div className="h-[72px] animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
+    <div className="grid gap-2.5 md:grid-cols-2 2xl:grid-cols-3">
+      {Array.from({
+        length: 6,
+      }).map((_, index) => (
+        <div
+          key={index}
+          className="h-[88px] animate-pulse border border-[#59432c]/30 bg-[#19120d]"
+        />
+      ))}
     </div>
   );
 }
@@ -953,8 +1023,13 @@ function LoadingRows() {
 function normaliseRelation<T>(
   value: T | T[] | null,
 ): T | null {
-  if (Array.isArray(value)) {
-    return value[0] ?? null;
+  if (
+    Array.isArray(value)
+  ) {
+    return (
+      value[0] ??
+      null
+    );
   }
 
   return value;
