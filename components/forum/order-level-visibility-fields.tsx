@@ -75,11 +75,11 @@ export function OrderLevelVisibilityFields({
 
       {!unrestricted && actorLevel !== null ? (
         <p className="mt-3 text-[10px] leading-5 text-[#756957]">
-          As Level {actorLevel}, Levels {actorLevel}–5 are always included.
+          As Level {actorLevel}, Levels {actorLevel}–6 are always included.
         </p>
       ) : (
         <p className="mt-3 text-[10px] leading-5 text-[#756957]">
-          You may choose any non-empty combination of Levels 0–5.
+          You may choose any non-empty combination of Levels 1–6.
         </p>
       )}
     </section>

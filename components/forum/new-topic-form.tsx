@@ -508,7 +508,7 @@ export default function NewTopicForm({
         <OrderLevelVisibilityFields
           actorLevel={viewerOrderLevel}
           unrestricted={
-            isStaff || viewerOrderLevel === 5
+            isStaff || viewerOrderLevel === 6
           }
         />
       ) : null}

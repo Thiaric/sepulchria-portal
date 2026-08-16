@@ -304,7 +304,7 @@ export function GameContextPanel({
             </p>
 
             <h3 className="mt-0.5 font-serif text-lg text-[#d6bd91]">
-              In this room
+              In this Location
             </h3>
           </div>
 

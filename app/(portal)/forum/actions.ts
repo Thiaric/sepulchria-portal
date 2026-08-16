@@ -624,7 +624,7 @@ export async function createForumTopicAction(
             viewer.isStaff ||
             (viewer.membership?.orderId ===
               section.order_id &&
-              viewer.membership.level === 5),
+              viewer.membership.level === 6),
         });
     } catch (error) {
       const message =

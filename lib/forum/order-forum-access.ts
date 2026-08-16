@@ -73,18 +73,18 @@ export function readRequestedVisibleLevels(
 /**
  * Level rules:
  *
- * Level 5 Head / Staff:
- *   may choose any non-empty combination of Levels 0–5.
+ * Level 6 Head / Staff:
+ *   may choose any non-empty combination of Levels 1–6.
+ *
+ * Level 5:
+ *   Levels 5 and 6 are forced; 1–4 are optional.
  *
  * Level 4:
- *   Levels 4 and 5 are forced; 0–3 are optional.
- *
- * Level 3:
- *   Levels 3,4,5 are forced; 0–2 are optional.
+ *   Levels 4,5,6 are forced; 1–3 are optional.
  *
  * ...and so on.
  *
- * Level 0 therefore always produces 0–5.
+ * Level 1 therefore always produces 1–6.
  */
 export function resolveVisibleLevelsForActor({
   requestedLevels,
@@ -207,7 +207,7 @@ export function isOrderHeadFor(
 ): boolean {
   return (
     viewer.membership?.orderId === orderId &&
-    viewer.membership.level === 5
+    viewer.membership.level === 6
   );
 }
 
