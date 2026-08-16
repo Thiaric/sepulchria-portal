@@ -138,7 +138,7 @@ export function OrderLeadershipContext() {
             (membership) =>
               one(
                 membership.level,
-              )?.level === 5,
+              )?.level === 6,
           )
           .map(
             (membership) =>
@@ -282,7 +282,7 @@ export function OrderLeadershipContext() {
         orders.length === 0 ? (
           <p className="border border-[#59432c]/30 bg-[#100c09]/60 p-3 text-[11px] leading-5 text-[#8f8271]">
             You are not currently the
-            Level 5 Head of an Order.
+            Level 6 Head of an Order.
           </p>
         ) : null}
       </div>

@@ -56,7 +56,7 @@ export async function characterLeadsAnyOrder(
           ? relation[0]?.level
           : relation?.level;
 
-      return level === 5;
+      return level === 6;
     },
   );
 }

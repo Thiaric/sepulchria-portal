@@ -294,7 +294,7 @@ export function PortalSidebar({
                 : membership.level;
 
             return (
-              relation?.level === 5
+              relation?.level === 6
             );
           },
         ),

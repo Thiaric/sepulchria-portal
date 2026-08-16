@@ -145,9 +145,9 @@ export default async function ManageOrdersPage({
 
         <p className="mt-3 max-w-3xl text-sm leading-7 text-[#a99b89]">
           Admit members, assign jobs
-          and manage Levels 0–4.
+          and manage Levels 1–5.
           Appointment or removal of a
-          Level 5 Head remains a staff
+          Level 6 Head remains a staff
           responsibility.
         </p>
 
@@ -396,7 +396,7 @@ export default async function ManageOrdersPage({
                   >
                     <div className="border-b border-[#60482e]/35 px-5 py-5 sm:px-6">
                       <p className="text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
-                        Level 5 · Head
+                        Level 6 · Head
                       </p>
 
                       <div className="mt-1 flex flex-wrap items-end justify-between gap-3">
@@ -484,7 +484,7 @@ export default async function ManageOrdersPage({
                                   </div>
 
                                   <p className="text-xs text-[#b49b74]">
-                                    Level 5
+                                    Level 6
                                   </p>
 
                                   <p className="text-xs text-[#b49b74]">
