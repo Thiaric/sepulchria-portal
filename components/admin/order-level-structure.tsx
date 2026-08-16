@@ -5,6 +5,12 @@ import {
 } from "@/components/admin/order-role-progression-editor";
 
 import {
+  PublicOrderRoleGraph,
+  type PublicOrderGraphLink,
+  type PublicOrderGraphRole,
+} from "@/components/orders/public-order-role-graph";
+
+import {
   createOrderJob,
   createOrderJobLink,
   deleteOrderJob,
@@ -101,6 +107,25 @@ export async function OrderLevelStructure({ orderId }: { orderId: string }) {
   );
   const jobById = new Map(allJobs.map((job) => [job.id, job]));
 
+  const graphRoles = allJobs.map((job) => ({
+    id: job.id,
+    name: job.name,
+    level: job.level,
+    description: job.description,
+    muscles_modifier: job.muscles_modifier,
+    reflexes_modifier: job.reflexes_modifier,
+    vigour_modifier: job.vigour_modifier,
+    shrewd_modifier: job.shrewd_modifier,
+    brains_modifier: job.brains_modifier,
+    presence_modifier: job.presence_modifier,
+  })) satisfies PublicOrderGraphRole[];
+
+  const graphLinks = links.map((link) => ({
+    id: link.id,
+    from_job_id: link.from_job_id,
+    to_job_id: link.to_job_id,
+  })) satisfies PublicOrderGraphLink[];
+
   return (
     <section className="mt-8 border-t border-[#60482e]/35 pt-6">
       <p className="text-[8px] uppercase tracking-[0.24em] text-[#806b50]">Order hierarchy</p>
@@ -108,6 +133,11 @@ export async function OrderLevelStructure({ orderId }: { orderId: string }) {
       <p className="mt-2 max-w-4xl text-[11px] leading-5 text-[#8f8271]">
         Levels define authority. Roles define Attribute modifiers and progression. Link each Role to one or more Roles on the Level immediately above it to create branching or diamond structures.
       </p>
+
+      <PublicOrderRoleGraph
+        roles={graphRoles}
+        links={graphLinks}
+      />
 
       <OrderRoleProgressionEditor
         orderId={orderId}
