@@ -388,8 +388,8 @@ export function InteractiveWorldMap({
             }
           >
             <AtmosphericImage
-  src="/maps/land-of-the-fallenv2.png"
-  nightSrc="/maps/land-of-the-fallenv2-n.png"
+  src="/maps/land-of-the-fallenv2.jpg"
+  nightSrc="/maps/land-of-the-fallenv2-n.jpg"
   alt="Map of Aureth - The Godscar"
               variant="map"
               priority
