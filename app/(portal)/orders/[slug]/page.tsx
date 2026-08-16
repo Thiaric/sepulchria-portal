@@ -311,58 +311,107 @@ export default async function OrderPage({
           Back to Orders
         </Link>
 
-        <article className="mt-5 overflow-hidden border border-[#60482e]/45 bg-[#15100d]">
-          {order.banner_url ? (
-            <div className="relative h-48 border-b border-[#60482e]/40 bg-[#0b0807] sm:h-64">
-              <Image
-                src={order.banner_url}
-                alt={`${order.name} banner`}
-                fill
-                sizes="100vw"
-                className="object-cover opacity-75"
-                unoptimized
-                priority
-              />
-
-              <div className="absolute inset-0 bg-gradient-to-t from-[#15100d] via-[#15100d]/15 to-black/25" />
-            </div>
-          ) : null}
-
-          <div className="p-5 sm:p-7 lg:p-8">
-            <div className="flex flex-col gap-5 sm:flex-row sm:items-start">
-              <OrderIcon
-                src={order.icon_url}
-                name={order.name}
-                colour={colour}
-              />
-
-              <div className="min-w-0 flex-1">
-                <p className="text-[9px] uppercase tracking-[0.28em] text-[#8c704b]">
-                  Order
-                </p>
-
-                <h1 className="mt-2 break-words font-serif text-4xl text-[#ead5ac] sm:text-5xl">
-                  {order.name}
-                </h1>
-
-                {association ? (
-                  <Link
-                    href={`/associations/${association.slug}`}
-                    className="mt-3 inline-block font-serif text-lg text-[#b89a6c] transition hover:text-[#e2c18e]"
-                  >
-                    {association.name}
-                  </Link>
-                ) : null}
-
-                {order.summary ? (
-                  <RichTextContent
-                    body={order.summary}
-                    className="mt-5 max-w-4xl text-sm leading-7 text-[#b6a58d]"
+        <article className="mt-5 space-y-5">
+          <section
+            className="relative overflow-hidden border border-[#60482e]/55 bg-[#110d0a]"
+            style={{
+              boxShadow: `inset 0 4px 0 ${colour}`,
+            }}
+          >
+            <div className="relative min-h-[360px] overflow-hidden">
+              {order.banner_url ?? order.image_url ? (
+                <>
+                  <Image
+                    src={
+                      order.banner_url ??
+                      order.image_url ??
+                      ""
+                    }
+                    alt=""
+                    fill
+                    sizes="100vw"
+                    className="object-cover opacity-45"
+                    unoptimized
+                    priority
                   />
-                ) : null}
+
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#100c09] via-[#100c09]/90 to-[#100c09]/35" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#100c09] via-transparent to-black/30" />
+                </>
+              ) : (
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    background: `radial-gradient(circle at top right, ${colour}55 0%, #17100c 42%, #0d0907 100%)`,
+                  }}
+                />
+              )}
+
+              <div className="relative flex min-h-[360px] items-end p-6 sm:p-8 lg:p-10">
+                <div className="w-full">
+                  <div className="flex flex-wrap items-center gap-4">
+                    <div
+                      className="relative flex h-20 w-20 items-center justify-center overflow-hidden border bg-[#100c09]/90"
+                      style={{
+                        borderColor: `${colour}bb`,
+                      }}
+                    >
+                      {order.icon_url ? (
+                        <Image
+                          src={order.icon_url}
+                          alt=""
+                          fill
+                          sizes="80px"
+                          className="object-cover"
+                          unoptimized
+                        />
+                      ) : (
+                        <span
+                          className="font-serif text-4xl"
+                          style={{ color: colour }}
+                        >
+                          {order.name
+                            .slice(0, 1)
+                            .toUpperCase()}
+                        </span>
+                      )}
+                    </div>
+
+                    <div>
+                      <p
+                        className="text-[10px] uppercase tracking-[0.3em]"
+                        style={{ color: colour }}
+                      >
+                        Order
+                      </p>
+
+                      <h1 className="mt-2 font-serif text-4xl leading-tight text-[#ead6ad] sm:text-5xl lg:text-6xl">
+                        {order.name}
+                      </h1>
+
+                      {association ? (
+                        <Link
+                          href={`/associations/${association.slug}`}
+                          className="mt-2 inline-block font-serif text-base text-[#b89a6c] transition hover:text-[#e2c18e] sm:text-lg"
+                        >
+                          {association.name}
+                        </Link>
+                      ) : null}
+                    </div>
+                  </div>
+
+                  {order.summary ? (
+                    <RichTextContent
+                      body={order.summary}
+                      className="mt-6 w-full font-serif text-sm leading-7 text-[#c7b494] sm:text-base"
+                    />
+                  ) : null}
+                </div>
               </div>
             </div>
+          </section>
 
+          <div className="border border-[#60482e]/45 bg-[#15100d]/95 p-5 sm:p-7 lg:p-8">
             {order.description ? (
               <section className="mt-8 border-t border-[#60482e]/35 pt-7">
                 <p className="text-[8px] uppercase tracking-[0.24em] text-[#806b50]">
@@ -487,43 +536,6 @@ export default async function OrderPage({
         </article>
       </div>
     </main>
-  );
-}
-
-function OrderIcon({
-  src,
-  name,
-  colour,
-}: {
-  src: string | null;
-  name: string;
-  colour: string;
-}) {
-  return (
-    <div
-      className="relative flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden border bg-[#0d0907] sm:h-28 sm:w-28"
-      style={{
-        borderColor: `${colour}88`,
-      }}
-    >
-      {src ? (
-        <Image
-          src={src}
-          alt={`${name} icon`}
-          fill
-          sizes="112px"
-          className="object-contain p-3"
-          unoptimized
-        />
-      ) : (
-        <span
-          className="font-serif text-4xl"
-          style={{ color: colour }}
-        >
-          {name.charAt(0).toUpperCase()}
-        </span>
-      )}
-    </div>
   );
 }
 

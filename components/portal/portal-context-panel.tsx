@@ -93,14 +93,16 @@ if (
   )
 ) {
   return (
-    <CodexContext
-      eyebrow="Codex"
+    <PublicCodexEntryNavigator
+      table="races"
       title="Ancestries"
+      eyebrow="Codex"
       description="The peoples and lineages of Aureth, their origins and their relationship with the Current."
-      primaryHref="/races"
-      primaryLabel="All ancestries"
-      secondaryHref="/associations"
-      secondaryLabel="Associations"
+      baseHref="/races"
+      currentSlug={decodeURIComponent(
+        pathname.split("/")[2] ?? "",
+      )}
+      itemLabel="ancestry"
     />
   );
 }
@@ -125,14 +127,16 @@ if (
   )
 ) {
   return (
-    <CodexContext
-      eyebrow="Codex"
+    <PublicCodexEntryNavigator
+      table="associations"
       title="Associations"
+      eyebrow="Codex"
       description="The civic bodies that shape Sepulchria's professions, laws, beliefs and daily life."
-      primaryHref="/associations"
-      primaryLabel="All associations"
-      secondaryHref="/races"
-      secondaryLabel="Ancestries"
+      baseHref="/associations"
+      currentSlug={decodeURIComponent(
+        pathname.split("/")[2] ?? "",
+      )}
+      itemLabel="association"
     />
   );
 }
@@ -173,14 +177,16 @@ if (
   ) !== "manage"
 ) {
   return (
-    <CodexContext
-      eyebrow="Codex"
+    <PublicCodexEntryNavigator
+      table="orders"
       title="Orders"
+      eyebrow="Codex"
       description="The specialised Orders of Sepulchria, their disciplines, ranks, roles and place within the Associations."
-      primaryHref="/orders"
-      primaryLabel="All Orders"
-      secondaryHref="/associations"
-      secondaryLabel="Associations"
+      baseHref="/orders"
+      currentSlug={decodeURIComponent(
+        publicOrderMatch[1],
+      )}
+      itemLabel="order"
     />
   );
 }
@@ -310,6 +316,165 @@ type PublicCodexJumpEntry = {
   name: string;
   slug: string;
 };
+
+function PublicCodexEntryNavigator({
+  table,
+  title,
+  eyebrow,
+  description,
+  baseHref,
+  currentSlug,
+  itemLabel,
+}: {
+  table:
+    | "races"
+    | "associations"
+    | "orders";
+  title: string;
+  eyebrow: string;
+  description: string;
+  baseHref: string;
+  currentSlug: string;
+  itemLabel: string;
+}) {
+  const [entries, setEntries] =
+    useState<PublicCodexJumpEntry[]>([]);
+  const [loading, setLoading] =
+    useState(true);
+  const [error, setError] =
+    useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadEntries() {
+      const supabase = createClient();
+
+      const { data, error } = await supabase
+        .from(table)
+        .select("id, name, slug, sort_order")
+        .eq("is_active", true)
+        .order("sort_order", {
+          ascending: true,
+        })
+        .order("name", {
+          ascending: true,
+        });
+
+      if (cancelled) return;
+
+      if (error) {
+        setError(error.message);
+        setLoading(false);
+        return;
+      }
+
+      setEntries(
+        (data ?? [])
+          .map((entry) => ({
+            id: String(entry.id),
+            name: String(entry.name),
+            slug: String(entry.slug),
+          }))
+          .filter(
+            (entry) =>
+              entry.slug !== currentSlug,
+          ),
+      );
+
+      setError(null);
+      setLoading(false);
+    }
+
+    void loadEntries();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [table, currentSlug]);
+
+  return (
+    <div className="flex h-full min-h-0 flex-col">
+      <ContextHeading
+        eyebrow={eyebrow}
+        title={title}
+      />
+
+      <p className="text-xs leading-6 text-[#938673]">
+        {description}
+      </p>
+
+      <div className="my-4 h-px bg-[#59432c]/35" />
+
+      <p className="mb-3 text-[8px] uppercase tracking-[0.2em] text-[#806b50]">
+        Other {title.toLowerCase()}
+      </p>
+
+      {error ? (
+        <p className="mb-3 border border-[#743d35] bg-[#2a1512] p-3 text-[11px] leading-5 text-[#d8a49a]">
+          The list could not be loaded.
+        </p>
+      ) : null}
+
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1">
+        {loading ? (
+          <div className="space-y-2">
+            {Array.from({
+              length: 6,
+            }).map((_, index) => (
+              <div
+                key={index}
+                className="h-11 animate-pulse border border-[#59432c]/30 bg-[#19120d]"
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {entries.map((entry) => (
+              <Link
+                key={entry.id}
+                href={`${baseHref}/${entry.slug}`}
+                className="group flex w-full items-center justify-between gap-3 border border-[#59432c]/40 bg-[#100c09] px-3 py-3 text-left transition hover:border-[#8d693e] hover:bg-[#1d150f]"
+              >
+                <span className="min-w-0 truncate font-serif text-sm text-[#cbb28a] transition group-hover:text-[#ead0a0]">
+                  {entry.name}
+                </span>
+
+                <span
+                  aria-hidden="true"
+                  className="shrink-0 text-[10px] text-[#725a3d] transition group-hover:translate-x-0.5 group-hover:text-[#b88a52]"
+                >
+                  →
+                </span>
+              </Link>
+            ))}
+          </div>
+        )}
+
+        {!loading &&
+        !error &&
+        entries.length === 0 ? (
+          <p className="border border-[#59432c]/30 bg-[#100c09]/60 p-3 text-[11px] leading-5 text-[#8f8271]">
+            No other active {itemLabel} entries
+            are currently available.
+          </p>
+        ) : null}
+      </div>
+
+      <Link
+        href={baseHref}
+        className="mt-4 flex w-full items-center justify-between gap-3 border border-[#765937]/45 bg-[#17100c] px-3 py-3 text-[8px] uppercase tracking-[0.16em] text-[#9d8869] transition hover:border-[#987344] hover:text-[#d6b786]"
+      >
+        <span>
+          View all {title.toLowerCase()}
+        </span>
+        <span aria-hidden="true">
+          ↗
+        </span>
+      </Link>
+    </div>
+  );
+}
 
 function PublicCodexJumpContext({
   table,
