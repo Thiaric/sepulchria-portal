@@ -100,7 +100,7 @@ export async function getCharacterAttributeBreakdown(
     supabase
       .from("order_memberships")
       .select(`
-        level:order_levels!order_memberships_order_level_id_fkey(
+        role:order_jobs!order_memberships_order_job_id_fkey(
           muscles_modifier,
           reflexes_modifier,
           vigour_modifier,
@@ -122,7 +122,7 @@ export async function getCharacterAttributeBreakdown(
 
   if (membershipError) {
     throw new Error(
-      `Unable to load Order attribute modifiers: ${membershipError.message}`,
+      `Unable to load Order role attribute modifiers: ${membershipError.message}`,
     );
   }
 
@@ -131,8 +131,8 @@ export async function getCharacterAttributeBreakdown(
       Relation<ModifierRow>,
   );
 
-  const orderLevel = one(
-    (membershipData?.level ?? null) as
+  const orderRole = one(
+    (membershipData?.role ?? null) as
       Relation<ModifierRow>,
   );
 
@@ -140,32 +140,32 @@ export async function getCharacterAttributeBreakdown(
     muscles: makeBreakdown(
       baseAttributes.muscles,
       ancestry?.muscles_modifier ?? 0,
-      orderLevel?.muscles_modifier ?? 0,
+      orderRole?.muscles_modifier ?? 0,
     ),
     reflexes: makeBreakdown(
       baseAttributes.reflexes,
       ancestry?.reflexes_modifier ?? 0,
-      orderLevel?.reflexes_modifier ?? 0,
+      orderRole?.reflexes_modifier ?? 0,
     ),
     vigor: makeBreakdown(
       baseAttributes.vigor,
       ancestry?.vigour_modifier ?? 0,
-      orderLevel?.vigour_modifier ?? 0,
+      orderRole?.vigour_modifier ?? 0,
     ),
     brains: makeBreakdown(
       baseAttributes.brains,
       ancestry?.brains_modifier ?? 0,
-      orderLevel?.brains_modifier ?? 0,
+      orderRole?.brains_modifier ?? 0,
     ),
     shrewd: makeBreakdown(
       baseAttributes.shrewd,
       ancestry?.shrewd_modifier ?? 0,
-      orderLevel?.shrewd_modifier ?? 0,
+      orderRole?.shrewd_modifier ?? 0,
     ),
     presence_score: makeBreakdown(
       baseAttributes.presence_score,
       ancestry?.presence_modifier ?? 0,
-      orderLevel?.presence_modifier ?? 0,
+      orderRole?.presence_modifier ?? 0,
     ),
   };
 }

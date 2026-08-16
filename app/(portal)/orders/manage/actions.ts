@@ -6,40 +6,27 @@ import {
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-import { adjustHealthForVigourModifier } from "@/lib/characters/adjust-health-for-vigour-modifier";
-import { requireOrderHead } from "@/lib/orders/require-order-manager";
-import { createClient } from "@/lib/supabase/server";
+import {
+  adjustHealthForVigourModifier,
+} from "@/lib/characters/adjust-health-for-vigour-modifier";
+import {
+  requireOrderHead,
+} from "@/lib/orders/require-order-manager";
+import {
+  createClient,
+} from "@/lib/supabase/server";
 
-function req(
-  formData: FormData,
-  name: string,
-) {
-  const value =
-    formData.get(name);
+function req(formData: FormData, name: string) {
+  const value = formData.get(name);
 
   if (
     typeof value !== "string" ||
     !value.trim()
   ) {
-    throw new Error(
-      `${name} is required.`,
-    );
+    throw new Error(`${name} is required.`);
   }
 
   return value.trim();
-}
-
-function opt(
-  formData: FormData,
-  name: string,
-) {
-  const value =
-    formData.get(name);
-
-  return typeof value === "string" &&
-    value.trim()
-    ? value.trim()
-    : null;
 }
 
 function back(
@@ -47,9 +34,7 @@ function back(
   type: "success" | "error",
   message: string,
 ): never {
-  const params =
-    new URLSearchParams();
-
+  const params = new URLSearchParams();
   params.set(type, message);
 
   redirect(
@@ -58,72 +43,51 @@ function back(
 }
 
 async function level(
-  supabase: Awaited<
-    ReturnType<typeof createClient>
-  >,
+  supabase: Awaited<ReturnType<typeof createClient>>,
   orderId: string,
   levelId: string,
 ) {
-  const {
-    data,
-    error,
-  } = await supabase
+  const { data, error } = await supabase
     .from("order_levels")
-    .select(
-      "level, vigour_modifier",
-    )
+    .select("id, level")
     .eq("id", levelId)
     .eq("order_id", orderId)
     .maybeSingle();
 
   if (error || !data) {
-    throw new Error(
-      "Invalid level.",
-    );
+    throw new Error("Invalid Level.");
   }
 
   return data;
 }
 
 async function role(
-  supabase: Awaited<
-    ReturnType<typeof createClient>
-  >,
+  supabase: Awaited<ReturnType<typeof createClient>>,
   levelId: string,
-  roleId: string | null,
+  roleId: string,
 ) {
-  if (!roleId) {
-    return;
-  }
-
-  const {
-    data,
-    error,
-  } = await supabase
+  const { data, error } = await supabase
     .from("order_jobs")
-    .select("id")
+    .select("id, order_level_id, vigour_modifier")
     .eq("id", roleId)
-    .eq(
-      "order_level_id",
-      levelId,
-    )
+    .eq("order_level_id", levelId)
     .maybeSingle();
 
   if (error || !data) {
     throw new Error(
-      "Role does not belong to that level.",
+      "Role does not belong to that Level.",
     );
   }
+
+  return data;
 }
 
 function createPrivilegedClient() {
   const url =
-    process.env
-      .NEXT_PUBLIC_SUPABASE_URL;
+    process.env.NEXT_PUBLIC_SUPABASE_URL;
 
   const secret =
-    process.env
-      .SUPABASE_SECRET_KEY;
+    process.env.SUPABASE_SECRET_KEY;
 
   if (!url || !secret) {
     throw new Error(
@@ -144,25 +108,16 @@ function createPrivilegedClient() {
 }
 
 async function getOrderAssociation(
-  supabase: Awaited<
-    ReturnType<typeof createClient>
-  >,
+  supabase: Awaited<ReturnType<typeof createClient>>,
   orderId: string,
 ) {
-  const {
-    data,
-    error,
-  } = await supabase
+  const { data, error } = await supabase
     .from("orders")
     .select("association_id")
     .eq("id", orderId)
     .maybeSingle();
 
-  if (error) {
-    throw new Error(
-      error.message,
-    );
-  }
+  if (error) throw new Error(error.message);
 
   if (!data?.association_id) {
     throw new Error(
@@ -179,52 +134,34 @@ async function syncCharacterAssociation(
   const admin =
     createPrivilegedClient();
 
-  const {
-    data: memberships,
-    error,
-  } = await admin
+  const { data, error } = await admin
     .from("order_memberships")
     .select(`
       order:orders!order_memberships_order_id_fkey(
         association_id
       )
     `)
-    .eq(
-      "character_id",
-      characterId,
-    )
+    .eq("character_id", characterId)
     .limit(1);
 
-  if (error) {
-    throw new Error(
-      error.message,
-    );
-  }
+  if (error) throw new Error(error.message);
 
   const relation =
-    memberships?.[0]?.order ??
-    null;
+    data?.[0]?.order ?? null;
 
   const order =
     Array.isArray(relation)
       ? relation[0] ?? null
       : relation;
 
-  const associationId =
-    order?.association_id ?? null;
-
-  const {
-    error: updateError,
-  } = await admin
-    .from("characters")
-    .update({
-      association_id:
-        associationId,
-    })
-    .eq(
-      "id",
-      characterId,
-    );
+  const { error: updateError } =
+    await admin
+      .from("characters")
+      .update({
+        association_id:
+          order?.association_id ?? null,
+      })
+      .eq("id", characterId);
 
   if (updateError) {
     throw new Error(
@@ -242,32 +179,25 @@ async function adjustCharacterHealthForOrderModifier({
   oldModifier: number;
   newModifier: number;
 }) {
-  if (
-    oldModifier ===
-    newModifier
-  ) {
+  if (oldModifier === newModifier) {
     return;
   }
 
   const admin =
     createPrivilegedClient();
 
-  const {
-    data: character,
-    error: characterError,
-  } = await admin
-    .from("characters")
-    .select("current_health")
-    .eq("id", characterId)
-    .single();
+  const { data: character, error } =
+    await admin
+      .from("characters")
+      .select("current_health")
+      .eq("id", characterId)
+      .single();
 
-  if (characterError) {
-    throw new Error(
-      characterError.message,
-    );
+  if (error) {
+    throw new Error(error.message);
   }
 
-  const newCurrentHealth =
+  const currentHealth =
     adjustHealthForVigourModifier({
       currentHealth:
         character.current_health,
@@ -275,15 +205,14 @@ async function adjustCharacterHealthForOrderModifier({
       newModifier,
     });
 
-  const {
-    error: healthError,
-  } = await admin
-    .from("characters")
-    .update({
-      current_health:
-        newCurrentHealth,
-    })
-    .eq("id", characterId);
+  const { error: healthError } =
+    await admin
+      .from("characters")
+      .update({
+        current_health:
+          currentHealth,
+      })
+      .eq("id", characterId);
 
   if (healthError) {
     throw new Error(
@@ -292,18 +221,67 @@ async function adjustCharacterHealthForOrderModifier({
   }
 }
 
+async function verifyProgression({
+  supabase,
+  oldLevel,
+  oldRoleId,
+  newLevel,
+  newRoleId,
+}: {
+  supabase: Awaited<ReturnType<typeof createClient>>;
+  oldLevel: number;
+  oldRoleId: string;
+  newLevel: number;
+  newRoleId: string;
+}) {
+  if (oldLevel === newLevel) {
+    return;
+  }
+
+  const delta =
+    newLevel - oldLevel;
+
+  if (Math.abs(delta) !== 1) {
+    throw new Error(
+      "Members may only move one Level at a time.",
+    );
+  }
+
+  const fromJobId =
+    delta > 0
+      ? oldRoleId
+      : newRoleId;
+
+  const toJobId =
+    delta > 0
+      ? newRoleId
+      : oldRoleId;
+
+  const { data, error } = await supabase
+    .from("order_job_links")
+    .select("id")
+    .eq("from_job_id", fromJobId)
+    .eq("to_job_id", toJobId)
+    .maybeSingle();
+
+  if (error) throw new Error(error.message);
+
+  if (!data) {
+    throw new Error(
+      "Those Roles are not linked in this Order's progression structure.",
+    );
+  }
+}
+
 function refresh(
   characterId?: string,
 ) {
-  revalidatePath(
-    "/orders/manage",
-  );
-  revalidatePath(
-    "/admin/orders",
-  );
+  revalidatePath("/orders/manage");
+  revalidatePath("/admin/orders");
   revalidatePath("/orders");
   revalidatePath("/character");
   revalidatePath("/characters");
+  revalidatePath("/game");
 
   if (characterId) {
     revalidatePath(
@@ -322,45 +300,39 @@ export async function headAddMember(
 
   try {
     const head =
-      await requireOrderHead(
-        orderId,
-      );
+      await requireOrderHead(orderId);
 
     const characterId =
-      req(
-        formData,
-        "characterId",
-      );
+      req(formData, "characterId");
 
     const levelId =
       req(formData, "levelId");
 
     const roleId =
-      opt(formData, "jobId");
+      req(formData, "jobId");
 
     const supabase =
       await createClient();
 
     const selectedLevel =
-  await level(
-    supabase,
-    orderId,
-    levelId,
-  );
+      await level(
+        supabase,
+        orderId,
+        levelId,
+      );
 
-if (
-  selectedLevel.level >= 6
-) {
-  throw new Error(
-    "Only staff can appoint a Level 6 Head.",
-  );
-}
+    if (selectedLevel.level >= 6) {
+      throw new Error(
+        "Only staff can appoint a Level 6 Head.",
+      );
+    }
 
-    await role(
-      supabase,
-      levelId,
-      roleId,
-    );
+    const selectedRole =
+      await role(
+        supabase,
+        levelId,
+        roleId,
+      );
 
     const associationId =
       await getOrderAssociation(
@@ -371,26 +343,18 @@ if (
     const admin =
       createPrivilegedClient();
 
-    const {
-      error,
-    } = await admin
+    const { error } = await admin
       .from("order_memberships")
       .insert({
         order_id: orderId,
-        character_id:
-          characterId,
-        order_level_id:
-          levelId,
-        order_job_id:
-          roleId,
-        added_by:
-          head.userId,
+        character_id: characterId,
+        order_level_id: levelId,
+        order_job_id: roleId,
+        added_by: head.userId,
       });
 
     if (error) {
-      throw new Error(
-        error.message,
-      );
+      throw new Error(error.message);
     }
 
     const {
@@ -401,40 +365,32 @@ if (
         association_id:
           associationId,
       })
-      .eq(
-        "id",
-        characterId,
-      );
+      .eq("id", characterId);
 
     if (associationError) {
-  await admin
-    .from(
-      "order_memberships",
-    )
-    .delete()
-    .eq(
-      "order_id",
-      orderId,
-    )
-    .eq(
-      "character_id",
+      await admin
+        .from("order_memberships")
+        .delete()
+        .eq("order_id", orderId)
+        .eq(
+          "character_id",
+          characterId,
+        );
+
+      throw new Error(
+        `Membership was rolled back because the Association could not be synchronised: ${associationError.message}`,
+      );
+    }
+
+    await adjustCharacterHealthForOrderModifier({
       characterId,
-    );
+      oldModifier: 0,
+      newModifier:
+        selectedRole
+          .vigour_modifier ?? 0,
+    });
 
-  throw new Error(
-    `Membership was rolled back because the Association could not be synchronised: ${associationError.message}`,
-  );
-}
-
-await adjustCharacterHealthForOrderModifier({
-  characterId,
-  oldModifier: 0,
-  newModifier:
-    selectedLevel
-      .vigour_modifier ?? 0,
-});
-
-refresh(characterId);
+    refresh(characterId);
     succeeded = true;
   } catch (error) {
     back(
@@ -465,9 +421,7 @@ export async function headUpdateMember(
 
   try {
     const head =
-      await requireOrderHead(
-        orderId,
-      );
+      await requireOrderHead(orderId);
 
     const membershipId =
       req(
@@ -479,7 +433,7 @@ export async function headUpdateMember(
       req(formData, "levelId");
 
     const roleId =
-      opt(formData, "jobId");
+      req(formData, "jobId");
 
     const supabase =
       await createClient();
@@ -490,28 +444,35 @@ export async function headUpdateMember(
     } = await supabase
       .from("order_memberships")
       .select(`
-  character_id,
-  level:order_levels!order_memberships_order_level_id_fkey(
-    level,
-    vigour_modifier
-  )
-`)
+        character_id,
+        level:order_levels!order_memberships_order_level_id_fkey(
+          level
+        ),
+        role:order_jobs!order_memberships_order_job_id_fkey(
+          id,
+          vigour_modifier,
+          order_level_id
+        )
+      `)
       .eq("id", membershipId)
       .eq("order_id", orderId)
       .maybeSingle();
-
-    const existingLevel =
-      Array.isArray(
-        target?.level,
-      )
-        ? target?.level[0]
-        : target?.level;
 
     if (error || !target) {
       throw new Error(
         "Membership not found.",
       );
     }
+
+    const existingLevel =
+      Array.isArray(target.level)
+        ? target.level[0] ?? null
+        : target.level;
+
+    const existingRole =
+      Array.isArray(target.role)
+        ? target.role[0] ?? null
+        : target.role;
 
     if (
       target.character_id ===
@@ -523,26 +484,43 @@ export async function headUpdateMember(
       );
     }
 
+    if (!existingLevel || !existingRole) {
+      throw new Error(
+        "The member's current Order position is incomplete.",
+      );
+    }
+
     const selectedLevel =
-  await level(
-    supabase,
-    orderId,
-    levelId,
-  );
+      await level(
+        supabase,
+        orderId,
+        levelId,
+      );
 
-if (
-  selectedLevel.level >= 6
-) {
-  throw new Error(
-    "Only staff can appoint a Level 6 Head.",
-  );
-}
+    if (selectedLevel.level >= 6) {
+      throw new Error(
+        "Only staff can appoint a Level 6 Head.",
+      );
+    }
 
-    await role(
+    const selectedRole =
+      await role(
+        supabase,
+        levelId,
+        roleId,
+      );
+
+    await verifyProgression({
       supabase,
-      levelId,
-      roleId,
-    );
+      oldLevel:
+        existingLevel.level,
+      oldRoleId:
+        existingRole.id,
+      newLevel:
+        selectedLevel.level,
+      newRoleId:
+        selectedRole.id,
+    });
 
     const admin =
       createPrivilegedClient();
@@ -552,34 +530,32 @@ if (
     } = await admin
       .from("order_memberships")
       .update({
-        order_level_id:
-          levelId,
-        order_job_id:
-          roleId,
+        order_level_id: levelId,
+        order_job_id: roleId,
       })
       .eq("id", membershipId)
       .eq("order_id", orderId);
 
     if (updateError) {
-  throw new Error(
-    updateError.message,
-  );
-}
+      throw new Error(
+        updateError.message,
+      );
+    }
 
-await adjustCharacterHealthForOrderModifier({
-  characterId:
-    target.character_id,
-  oldModifier:
-    existingLevel
-      ?.vigour_modifier ?? 0,
-  newModifier:
-    selectedLevel
-      .vigour_modifier ?? 0,
-});
+    await adjustCharacterHealthForOrderModifier({
+      characterId:
+        target.character_id,
+      oldModifier:
+        existingRole
+          .vigour_modifier ?? 0,
+      newModifier:
+        selectedRole
+          .vigour_modifier ?? 0,
+    });
 
-await syncCharacterAssociation(
-  target.character_id,
-);
+    await syncCharacterAssociation(
+      target.character_id,
+    );
 
     refresh(
       target.character_id,
@@ -615,9 +591,7 @@ export async function headRemoveMember(
 
   try {
     const head =
-      await requireOrderHead(
-        orderId,
-      );
+      await requireOrderHead(orderId);
 
     const membershipId =
       req(
@@ -634,28 +608,34 @@ export async function headRemoveMember(
     } = await supabase
       .from("order_memberships")
       .select(`
-  character_id,
-  level:order_levels!order_memberships_order_level_id_fkey(
-    level,
-    vigour_modifier
-  )
-`)
+        character_id,
+        level:order_levels!order_memberships_order_level_id_fkey(
+          level
+        ),
+        role:order_jobs!order_memberships_order_job_id_fkey(
+          id,
+          vigour_modifier
+        )
+      `)
       .eq("id", membershipId)
       .eq("order_id", orderId)
       .maybeSingle();
-
-    const existingLevel =
-      Array.isArray(
-        target?.level,
-      )
-        ? target?.level[0]
-        : target?.level;
 
     if (error || !target) {
       throw new Error(
         "Membership not found.",
       );
     }
+
+    const existingLevel =
+      Array.isArray(target.level)
+        ? target.level[0] ?? null
+        : target.level;
+
+    const existingRole =
+      Array.isArray(target.role)
+        ? target.role[0] ?? null
+        : target.role;
 
     if (
       target.character_id ===
@@ -664,6 +644,12 @@ export async function headRemoveMember(
     ) {
       throw new Error(
         "The Head cannot remove themselves.",
+      );
+    }
+
+    if (!existingRole) {
+      throw new Error(
+        "The member has no valid Order Role.",
       );
     }
 
@@ -679,23 +665,23 @@ export async function headRemoveMember(
       .eq("order_id", orderId);
 
     if (deleteError) {
-  throw new Error(
-    deleteError.message,
-  );
-}
+      throw new Error(
+        deleteError.message,
+      );
+    }
 
-await adjustCharacterHealthForOrderModifier({
-  characterId:
-    target.character_id,
-  oldModifier:
-    existingLevel
-      ?.vigour_modifier ?? 0,
-  newModifier: 0,
-});
+    await adjustCharacterHealthForOrderModifier({
+      characterId:
+        target.character_id,
+      oldModifier:
+        existingRole
+          .vigour_modifier ?? 0,
+      newModifier: 0,
+    });
 
-await syncCharacterAssociation(
-  target.character_id,
-);
+    await syncCharacterAssociation(
+      target.character_id,
+    );
 
     refresh(
       target.character_id,

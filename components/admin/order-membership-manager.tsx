@@ -262,7 +262,7 @@ export async function OrderMembershipManager({
                 membership.level,
               );
 
-            const currentJob =
+            const currentRole =
               single(
                 membership.job,
               );
@@ -342,19 +342,20 @@ export async function OrderMembershipManager({
 
                   <label>
                     <span className="mb-1 block text-[7px] uppercase tracking-[0.14em] text-[#756958]">
-                      Job
+                      Role
                     </span>
 
                     <select
                       name="jobId"
+                      required
                       defaultValue={
                         membership.order_job_id ??
                         ""
                       }
                       className="w-full border border-[#60482e]/50 bg-[#15100d] px-2 py-2 text-xs text-[#d7c4a5] outline-none"
                     >
-                      <option value="">
-                        No specific job
+                      <option value="" disabled>
+                        Select Role
                       </option>
 
                       {levels.map(
@@ -407,8 +408,8 @@ export async function OrderMembershipManager({
                     {
                       currentLevel.level
                     }
-                    {currentJob
-                      ? ` · ${currentJob.name}`
+                    {currentRole
+                      ? ` · ${currentRole.name}`
                       : ""}
                   </p>
                 ) : null}
@@ -519,16 +520,17 @@ export async function OrderMembershipManager({
 
           <label>
             <span className="mb-1 block text-[7px] uppercase tracking-[0.14em] text-[#756958]">
-              Job
+              Role
             </span>
 
             <select
               name="jobId"
+              required
               defaultValue=""
               className="w-full border border-[#60482e]/50 bg-[#15100d] px-2 py-2 text-xs text-[#d7c4a5] outline-none"
             >
-              <option value="">
-                No specific job
+              <option value="" disabled>
+                Select Role
               </option>
 
               {levels.map(

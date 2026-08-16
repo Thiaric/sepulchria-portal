@@ -80,7 +80,7 @@ async function verifyStructure({
   >;
   orderId: string;
   levelId: string;
-  jobId: string | null;
+  jobId: string;
 }) {
   const {
     data: level,
@@ -88,7 +88,7 @@ async function verifyStructure({
   } = await supabase
     .from("order_levels")
     .select(
-  "id, level, vigour_modifier",
+  "id, level",
 )
     .eq("id", levelId)
     .eq("order_id", orderId)
@@ -104,29 +104,27 @@ async function verifyStructure({
     );
   }
 
-  if (jobId) {
-    const {
-      data: job,
-      error: jobError,
-    } = await supabase
-      .from("order_jobs")
-      .select("id")
-      .eq("id", jobId)
-      .eq("order_level_id", levelId)
-      .maybeSingle();
+  const {
+    data: job,
+    error: jobError,
+  } = await supabase
+    .from("order_jobs")
+    .select("id, vigour_modifier")
+    .eq("id", jobId)
+    .eq("order_level_id", levelId)
+    .maybeSingle();
 
-    if (jobError) {
-      throw new Error(jobError.message);
-    }
-
-    if (!job) {
-      throw new Error(
-        "The selected role does not belong to the selected level.",
-      );
-    }
+  if (jobError) {
+    throw new Error(jobError.message);
   }
 
-  return level;
+  if (!job) {
+    throw new Error(
+      "The selected Role does not belong to the selected Level.",
+    );
+  }
+
+  return { level, job };
 }
 
 async function getOrderAssociation(
@@ -288,16 +286,17 @@ export async function addOrderMember(
       "Level",
     );
 
-    const jobId = optionalText(
+    const jobId = text(
       formData,
       "jobId",
+      "Role",
     );
 
     if (
       !isUuid(orderId) ||
       !isUuid(characterId) ||
       !isUuid(levelId) ||
-      (jobId && !isUuid(jobId))
+      !isUuid(jobId)
     ) {
       throw new Error(
         "The selected membership data is invalid.",
@@ -307,7 +306,7 @@ export async function addOrderMember(
     const supabase =
       await createClient();
 
-    const selectedLevel =
+    const selected =
   await verifyStructure({
     supabase,
     orderId,
@@ -399,13 +398,11 @@ export async function addOrderMember(
   characterId,
   oldModifier: 0,
   newModifier:
-    selectedLevel
+    selected.job
       .vigour_modifier ?? 0,
 });
 
 refresh(characterId);
-
-    refresh(characterId);
 
     back(
       orderId,
@@ -456,16 +453,17 @@ export async function updateOrderMember(
       "Level",
     );
 
-    const jobId = optionalText(
+    const jobId = text(
       formData,
       "jobId",
+      "Role",
     );
 
     if (
       !isUuid(orderId) ||
       !isUuid(membershipId) ||
       !isUuid(levelId) ||
-      (jobId && !isUuid(jobId))
+      !isUuid(jobId)
     ) {
       throw new Error(
         "The selected membership data is invalid.",
@@ -475,7 +473,7 @@ export async function updateOrderMember(
     const supabase =
       await createClient();
 
-    const selectedLevel =
+    const selected =
   await verifyStructure({
     supabase,
     orderId,
@@ -491,7 +489,7 @@ export async function updateOrderMember(
       .select(`
   id,
   character_id,
-  level:order_levels!order_memberships_order_level_id_fkey(
+  role:order_jobs!order_memberships_order_job_id_fkey(
     vigour_modifier
   ),
   character:characters(
@@ -514,20 +512,20 @@ export async function updateOrderMember(
       );
     }
 
-    const oldLevelRelation =
+    const oldRoleRelation =
   Array.isArray(
-    membership.level,
+    membership.role,
   )
-    ? membership.level[0] ??
+    ? membership.role[0] ??
       null
-    : membership.level;
+    : membership.role;
 
 const oldVigourModifier =
-  oldLevelRelation
+  oldRoleRelation
     ?.vigour_modifier ?? 0;
 
 const newVigourModifier =
-  selectedLevel
+  selected.job
     .vigour_modifier ?? 0;
 
     const { error } = await supabase
@@ -635,7 +633,7 @@ export async function removeOrderMember(
       .select(`
   id,
   character_id,
-  level:order_levels!order_memberships_order_level_id_fkey(
+  role:order_jobs!order_memberships_order_job_id_fkey(
     vigour_modifier
   ),
   character:characters(
@@ -658,16 +656,16 @@ export async function removeOrderMember(
       );
     }
 
-    const oldLevelRelation =
+    const oldRoleRelation =
   Array.isArray(
-    membership.level,
+    membership.role,
   )
-    ? membership.level[0] ??
+    ? membership.role[0] ??
       null
-    : membership.level;
+    : membership.role;
 
 const oldVigourModifier =
-  oldLevelRelation
+  oldRoleRelation
     ?.vigour_modifier ?? 0;
 
     const { error } = await supabase

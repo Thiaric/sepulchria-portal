@@ -532,11 +532,11 @@ hoveredInfoPosition ? (
 
     {hoveredDatabaseArea.description ? (
       <RichTextContentClient
-        body={
-          hoveredDatabaseArea.description
-        }
-        className="mt-1 text-xs leading-5 text-[#a99984] [&_p]:m-0 [&_h1]:text-xs [&_h2]:text-xs [&_h3]:text-xs [&_img]:hidden [&_table]:hidden"
-      />
+  body={
+    hoveredDatabaseArea.description
+  }
+  className="mt-0.2 text-[12px] leading-[1] text-[#a99984] [&_p]:m-0 [&_p+p]:mt-0.5 [&_h1]:m-0 [&_h1]:text-[11px] [&_h2]:m-0 [&_h2]:text-[11px] [&_h3]:m-0 [&_h3]:text-[11px] [&_img]:hidden [&_table]:hidden"
+/>
     ) : null}
   </div>
 ) : null}
