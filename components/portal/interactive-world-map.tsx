@@ -305,8 +305,8 @@ export function InteractiveWorldMap({
   const currentMapSrc =
     level === "continent"
       ? isNight
-        ? "/maps/land-of-the-fallenv2-n.png"
-        : "/maps/land-of-the-fallenv2.png"
+        ? "/maps/land-of-the-fallenv2-n.jpg"
+        : "/maps/land-of-the-fallenv2.jpg"
       : isNight
         ? "/maps/sepulchria-mapv2-n.png"
         : "/maps/sepulchria-mapv2.png";
