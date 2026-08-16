@@ -86,7 +86,7 @@ function deriveLocationImageUrl(
 
   if (
     hour < 5 ||
-    hour >= 21
+    hour >= 20
   ) {
     return insertSuffixBeforeExtension(
       baseUrl,
@@ -154,7 +154,7 @@ const atmosphericSrc =
 const hour = getLondonHour(gameDate);
 
 const isNight =
-  hour < 5 || hour >= 21;
+  hour < 5 || hour >= 20;
 
   const [
   fallbackStage,
