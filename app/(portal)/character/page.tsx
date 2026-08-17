@@ -15,6 +15,7 @@ import {
 } from "./actions";
 import { CharacterMechanicsDisplay } from "@/components/characters/character-mechanics-display";
 import { CharacterGiftsDisplay } from "@/components/characters/character-gifts-display";
+import { CharacterInventoryDisplay } from "@/components/characters/character-inventory-display";
 import { LiveCharacterSheetRefresh } from "@/components/characters/live-character-sheet-refresh";
 import { getEffectiveCharacterAttributes } from "@/lib/characters/get-effective-character-attributes";
 import { createClient } from "@/lib/supabase/server";
@@ -464,7 +465,9 @@ export function Profile({
           </div>
 
           <div data-character-sheet-panel="inventory">
-            <div className="min-h-28 border border-[#60482e]/35 bg-[#130f0c]" />
+            {character.id ? (
+              <CharacterInventoryDisplay characterId={character.id} />
+            ) : null}
           </div>
 
           <div data-character-sheet-panel="gifts">

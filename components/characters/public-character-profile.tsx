@@ -4,6 +4,7 @@ import Link from "next/link";
 import { startConversation } from "@/app/(portal)/messages/actions";
 import { CharacterMechanicsDisplay } from "@/components/characters/character-mechanics-display";
 import { CharacterGiftsDisplay } from "@/components/characters/character-gifts-display";
+import { CharacterInventoryDisplay } from "@/components/characters/character-inventory-display";
 import { CharacterExpertiseTotal } from "@/components/characters/character-expertise-total";
 import { CharacterMusicPlayer } from "@/components/characters/character-music-player";
 import { CharacterSheetTabs } from "@/components/characters/character-sheet-tabs";
@@ -251,7 +252,7 @@ export function PublicCharacterProfileView({
         </div>
 
         <div data-character-sheet-panel="inventory">
-          <div className="min-h-28 border border-[#60482e]/35 bg-[#130f0c]" />
+          <CharacterInventoryDisplay characterId={character.id} />
         </div>
 
         <div data-character-sheet-panel="gifts">

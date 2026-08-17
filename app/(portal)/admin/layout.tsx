@@ -78,6 +78,10 @@ export default async function AdminLayout({
               Items
             </AdminNavigationLink>
 
+            <AdminNavigationLink href="/admin/items/vault">
+              Item Vault
+            </AdminNavigationLink>
+
             <AdminNavigationLink href="/admin/forum">
               Forum
             </AdminNavigationLink>            

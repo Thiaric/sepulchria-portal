@@ -424,12 +424,21 @@ export default async function AdminCharacterPage({
             ← Character archive
           </Link>
 
+          <div className="flex flex-wrap gap-2">
+            <Link
+              href={`/admin/characters/${character.id}/inventory`}
+              className="border border-[#987344] bg-[#3b2919] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[#efd6a8] transition hover:border-[#b98c50] hover:bg-[#50371f]"
+            >
+              Manage inventory
+            </Link>
+
           <Link
             href={`/characters/${character.public_slug}`}
             className="border border-[#60482e]/55 bg-[#15100d] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[#ac9879] transition hover:border-[#987344] hover:text-[#e7cca0]"
           >
             Open public profile
           </Link>
+          </div>
         </div>
 
         <section className="mt-6 overflow-hidden border border-[#60482e]/45 bg-[#15100d]">

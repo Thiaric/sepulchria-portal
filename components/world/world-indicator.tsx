@@ -903,7 +903,7 @@ export function WorldIndicator({
   </h2>
 
   <span className="text-[8px] uppercase tracking-[0.12em] text-[#8f7b60]">
-    {time} · {state.temperature_c}°C
+    {time}
   </span>
 </div>
 
@@ -1022,7 +1022,7 @@ className="block h-11 w-11 object-contain"
                       <p className="mt-1 font-serif text-sm capitalize text-[#dfc79c]">
                         {weatherLabel(
                           state.weather,
-                        )}
+                        )} - {state.temperature_c}°C
                       </p>
 
                       <p className="mt-1 text-[9px] uppercase tracking-[0.12em] text-[#746858]">
