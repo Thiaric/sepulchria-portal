@@ -22,6 +22,7 @@ type ContextMode =
   | "races"
   | "associations"
   | "gifts"
+  | "items"
   | "users"
   | "characters"
   | "forum";
@@ -50,6 +51,10 @@ function getMode(
 
   if (pathname === "/admin/gifts") {
     return "gifts";
+  }
+
+  if (pathname === "/admin/items") {
+    return "items";
   }
 
   if (pathname === "/admin/users") {
@@ -564,6 +569,36 @@ function AdminRecordJumpContext({
           );
         }
 
+        if (mode === "items") {
+          const { data, error } =
+            await supabase
+              .from("items")
+              .select(
+                "id, name, quality, is_active, sort_order",
+              )
+              .order(
+                "sort_order",
+                { ascending: true },
+              )
+              .order("name");
+
+          if (error) {
+            throw error;
+          }
+
+          next = (data ?? []).map(
+            (row) => ({
+              id: String(row.id),
+              label: String(row.name),
+              secondary: String(
+                row.quality ?? "average",
+              ),
+              active:
+                row.is_active === true,
+            }),
+          );
+        }
+
         if (mode === "users") {
           const { data, error } =
             await supabase.rpc(
@@ -676,7 +711,10 @@ function AdminRecordJumpContext({
             : mode ===
                 "users"
               ? "Users"
-              : "Areas";
+              : mode ===
+                  "items"
+                ? "Items"
+                : "Areas";
 
   function jumpTo(
     entry: JumpEntry,
@@ -723,6 +761,25 @@ function AdminRecordJumpContext({
           ?.closest<HTMLElement>(
             "section",
           ) ?? null;
+    } else if (
+      mode === "items"
+    ) {
+      const details =
+        document.getElementById(
+          `item-${entry.id}`,
+        );
+
+      if (
+        details instanceof
+        HTMLDetailsElement
+      ) {
+        details.open = true;
+      }
+
+      target =
+        details instanceof HTMLElement
+          ? details
+          : null;
     } else if (
       mode === "users"
     ) {
@@ -798,6 +855,18 @@ function AdminRecordJumpContext({
       document
         .getElementById(
           "association-new",
+        )
+        ?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      return;
+    }
+
+    if (mode === "items") {
+      document
+        .getElementById(
+          "item-new",
         )
         ?.scrollIntoView({
           behavior: "smooth",
