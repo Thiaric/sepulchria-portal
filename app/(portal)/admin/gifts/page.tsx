@@ -159,7 +159,10 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
           </div>
         ) : null}
 
-        <section className="mt-8 border border-[#60482e]/45 bg-[#15100d] p-5 sm:p-6">
+        <section
+          id="gift-new"
+          className="mt-8 scroll-mt-6 border border-[#60482e]/45 bg-[#15100d] p-5 sm:p-6"
+        >
           <p className="text-[9px] uppercase tracking-[0.24em] text-[#8c704b]">
             New Gift
           </p>
@@ -178,7 +181,8 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
           {gifts.map((gift) => (
             <details
               key={gift.id}
-              className="border border-[#59432c]/45 bg-[#100c09]"
+              id={`gift-${gift.id}`}
+              className="scroll-mt-6 border border-[#59432c]/45 bg-[#100c09]"
             >
               <summary className="cursor-pointer list-none px-4 py-4">
                 <div className="flex items-center justify-between gap-3">

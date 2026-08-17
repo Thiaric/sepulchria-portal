@@ -224,6 +224,10 @@ if (
     return <AdminOrdersContext />;
   }
 
+  if (pathname === "/admin/gifts") {
+    return <AdminGiftsContext />;
+  }
+
   if (pathname === "/admin/rules") {
     return <AdminRulesContext />;
   }
@@ -309,6 +313,267 @@ if (
   }
 
   return <DefaultContext />;
+}
+
+type AdminGiftContextEntry = {
+  id: string;
+  name: string;
+  is_active: boolean;
+};
+
+function AdminGiftsContext() {
+  const [entries, setEntries] =
+    useState<AdminGiftContextEntry[]>([]);
+
+  const [search, setSearch] =
+    useState("");
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const [error, setError] =
+    useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadGifts() {
+      const supabase = createClient();
+
+      const { data, error } = await supabase
+        .from("gifts")
+        .select("id, name, is_active, sort_order")
+        .order("sort_order", {
+          ascending: true,
+        })
+        .order("name", {
+          ascending: true,
+        });
+
+      if (cancelled) {
+        return;
+      }
+
+      if (error) {
+        setError(error.message);
+        setLoading(false);
+        return;
+      }
+
+      setEntries(
+        (data ?? []).map((gift) => ({
+          id: String(gift.id),
+          name: String(gift.name),
+          is_active: Boolean(gift.is_active),
+        })),
+      );
+
+      setError(null);
+      setLoading(false);
+    }
+
+    void loadGifts();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const normalisedSearch =
+    search.trim().toLowerCase();
+
+  const filteredEntries =
+    entries.filter(
+      (entry) =>
+        !normalisedSearch ||
+        entry.name
+          .toLowerCase()
+          .includes(normalisedSearch),
+    );
+
+  function jumpToGift(giftId: string) {
+    const element =
+      document.getElementById(
+        `gift-${giftId}`,
+      );
+
+    if (!element) {
+      return;
+    }
+
+    if (
+      element instanceof
+      HTMLDetailsElement
+    ) {
+      element.open = true;
+    }
+
+    element.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
+    window.history.replaceState(
+      null,
+      "",
+      `#gift-${giftId}`,
+    );
+  }
+
+  function jumpToCreate() {
+    const element =
+      document.getElementById(
+        "gift-new",
+      );
+
+    if (!element) {
+      return;
+    }
+
+    element.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
+    window.history.replaceState(
+      null,
+      "",
+      "#gift-new",
+    );
+  }
+
+  return (
+    <div className="flex h-full min-h-0 flex-col">
+      <ContextHeading
+        eyebrow="Administration"
+        title="Gifts"
+      />
+
+      <p className="text-xs leading-6 text-[#938673]">
+        Jump directly to a Gift
+        definition.
+      </p>
+
+      <button
+        type="button"
+        onClick={jumpToCreate}
+        className="mt-4 flex w-full items-center justify-between gap-3 border border-[#765937]/55 bg-[#21180f] px-3 py-3 text-left transition hover:border-[#a17a49] hover:bg-[#2b1f14]"
+      >
+        <span className="text-[8px] uppercase tracking-[0.16em] text-[#d2b383]">
+          Create new Gift
+        </span>
+
+        <span
+          aria-hidden="true"
+          className="text-[#8d6b43]"
+        >
+          +
+        </span>
+      </button>
+
+      <div className="mt-4">
+        <label className="block">
+          <span className="text-[8px] uppercase tracking-[0.2em] text-[#806b50]">
+            Search
+          </span>
+
+          <input
+            type="search"
+            value={search}
+            onChange={(event) =>
+              setSearch(
+                event.target.value,
+              )
+            }
+            placeholder="Search Gifts..."
+            className="mt-2 w-full border border-[#59432c]/45 bg-[#100c09] px-3 py-2.5 text-xs text-[#d4bea0] outline-none placeholder:text-[#665b4d] focus:border-[#987344]"
+          />
+        </label>
+      </div>
+
+      <div className="my-4 h-px bg-[#59432c]/35" />
+
+      <div className="mb-2 flex items-center justify-between gap-3">
+        <p className="text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
+          Created Gifts
+        </p>
+
+        <span className="text-[7px] uppercase tracking-[0.12em] text-[#6f6353]">
+          {filteredEntries.length}
+          {normalisedSearch
+            ? ` / ${entries.length}`
+            : ""}
+        </span>
+      </div>
+
+      {error ? (
+        <p className="mb-3 border border-[#743d35] bg-[#2a1512] p-3 text-[11px] leading-5 text-[#d8a49a]">
+          The Gift list could not
+          be loaded.
+        </p>
+      ) : null}
+
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1">
+        {loading ? (
+          <div className="space-y-2">
+            {Array.from({
+              length: 8,
+            }).map((_, index) => (
+              <div
+                key={index}
+                className="h-10 animate-pulse border border-[#59432c]/30 bg-[#19120d]"
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="space-y-1.5">
+            {filteredEntries.map(
+              (entry) => (
+                <button
+                  key={entry.id}
+                  type="button"
+                  onClick={() =>
+                    jumpToGift(
+                      entry.id,
+                    )
+                  }
+                  className="group flex w-full items-center justify-between gap-3 border border-[#59432c]/35 bg-[#100c09] px-3 py-2.5 text-left transition hover:border-[#8d693e] hover:bg-[#1d150f]"
+                >
+                  <span className="min-w-0 truncate font-serif text-[13px] text-[#cbb28a] transition group-hover:text-[#ead0a0]">
+                    {entry.name}
+                  </span>
+
+                  <span className="flex shrink-0 items-center gap-2">
+                    {!entry.is_active ? (
+                      <span className="text-[6px] uppercase tracking-[0.1em] text-[#6f6353]">
+                        Inactive
+                      </span>
+                    ) : null}
+
+                    <span
+                      aria-hidden="true"
+                      className="text-[9px] text-[#725a3d] transition group-hover:translate-x-0.5 group-hover:text-[#b88a52]"
+                    >
+                      →
+                    </span>
+                  </span>
+                </button>
+              ),
+            )}
+          </div>
+        )}
+
+        {!loading &&
+        !error &&
+        filteredEntries.length === 0 ? (
+          <p className="border border-[#59432c]/30 bg-[#100c09]/60 p-3 text-[11px] leading-5 text-[#8f8271]">
+            No Gifts match this
+            search.
+          </p>
+        ) : null}
+      </div>
+    </div>
+  );
 }
 
 type PublicCodexJumpEntry = {
