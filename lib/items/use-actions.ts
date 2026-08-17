@@ -17,6 +17,8 @@ export async function useInventoryItem(
 ): Promise<UseInventoryItemResult> {
   const recordKind = text(formData, "recordKind");
   const recordId = text(formData, "recordId");
+  const targetCharacterId =
+    text(formData, "targetCharacterId") || null;
 
   if (!["standard", "unique"].includes(recordKind) || !recordId) {
     return { ok: false, message: "Invalid Item." };
@@ -25,10 +27,11 @@ export async function useInventoryItem(
   const supabase = await createClient();
 
   const { data, error } = await supabase.rpc(
-    "use_own_inventory_record_guarded",
+    "use_own_inventory_record_targeted",
     {
       p_record_kind: recordKind,
       p_record_id: recordId,
+      p_target_character_id: targetCharacterId,
     },
   );
 
@@ -41,6 +44,7 @@ export async function useInventoryItem(
     blocked?: boolean;
     block_reason?: string;
     item_name?: string;
+    target_name?: string;
     health_delta?: number;
     temporary_effects?: number;
   };
@@ -70,13 +74,15 @@ export async function useInventoryItem(
     details.push("temporary effect activated");
   }
 
-  // D5.1.2 rule: no revalidatePath here.
-  // The client performs one controlled refresh after a successful use.
+  const target =
+    result.target_name
+      ? ` on ${result.target_name}`
+      : "";
 
   return {
     ok: true,
     message: details.length
-      ? `${result.item_name ?? "Item"} used: ${details.join(", ")}.`
-      : `${result.item_name ?? "Item"} used.`,
+      ? `${result.item_name ?? "Item"} used${target}: ${details.join(", ")}.`
+      : `${result.item_name ?? "Item"} used${target}.`,
   };
 }

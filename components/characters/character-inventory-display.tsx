@@ -23,6 +23,7 @@ type CharacterState = {
   brains: number | null;
   presence_score: number | null;
   current_health: number | null;
+  current_room_id: string | null;
 };
 
 type MembershipState = {
@@ -384,11 +385,12 @@ export async function CharacterInventoryDisplay({
     cooldownsResult,
     maxHealthResult,
     activeEffectsResult,
+    targetsResult,
   ] = await Promise.all([
     supabase
       .from("characters")
       .select(
-        "display_name, first_name, surname, race_id, muscles, reflexes, vigor, shrewd, brains, presence_score, current_health",
+        "display_name, first_name, surname, race_id, muscles, reflexes, vigor, shrewd, brains, presence_score, current_health, current_room_id",
       )
       .eq(
         "id",
@@ -521,6 +523,20 @@ export async function CharacterInventoryDisplay({
           data: [],
           error: null,
         }),
+
+    own
+      ? supabase
+          .from("characters")
+          .select(
+            "id, display_name, current_room_id, status",
+          )
+          .eq("status", "approved")
+          .neq("id", characterId)
+          .order("display_name")
+      : Promise.resolve({
+          data: [],
+          error: null,
+        }),
   ]);
 
   const stateError =
@@ -530,7 +546,8 @@ export async function CharacterInventoryDisplay({
     uniqueInstancesResult.error ??
     cooldownsResult.error ??
     maxHealthResult.error ??
-    activeEffectsResult.error;
+    activeEffectsResult.error ??
+    targetsResult.error;
 
   if (stateError) {
     throw new Error(
@@ -647,6 +664,21 @@ export async function CharacterInventoryDisplay({
       ? Number(maxHealthResult.data)
       : null;
 
+  const useTargets =
+    (targetsResult.data ?? [])
+      .filter(
+        (target) =>
+          character?.current_room_id &&
+          target.current_room_id ===
+            character.current_room_id,
+      )
+      .map((target) => ({
+        id: target.id,
+        name:
+          target.display_name?.trim() ||
+          "Unnamed character",
+      }));
+
   const browserRows:
     InventoryBrowserRow[] =
     rows.map((row) => {
@@ -713,6 +745,7 @@ export async function CharacterInventoryDisplay({
         characterName
       }
       own={own}
+      useTargets={useTargets}
     />
   );
 }

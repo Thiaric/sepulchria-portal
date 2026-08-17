@@ -24,80 +24,75 @@ export function LiveCharacterSheetRefresh({
 
   useEffect(() => {
     const supabase = createClient();
-
     let disposed = false;
 
     function refreshSheet() {
-      if (disposed) {
-        return;
-      }
+      if (disposed) return;
 
-      if (
-        refreshTimerRef.current !== null
-      ) {
-        window.clearTimeout(
-          refreshTimerRef.current,
-        );
+      if (refreshTimerRef.current !== null) {
+        window.clearTimeout(refreshTimerRef.current);
       }
 
       refreshTimerRef.current =
-        window.setTimeout(
-          () => {
-            if (!disposed) {
-              router.refresh();
-            }
-          },
-          250,
-        );
+        window.setTimeout(() => {
+          if (!disposed) {
+            router.refresh();
+          }
+        }, 250);
     }
 
     const channels = [
       supabase
-        .channel(
-          `live-sheet-character-${characterId}`,
-        )
+        .channel(`live-sheet-character-${characterId}`)
         .on(
           "postgres_changes",
           {
             event: "*",
             schema: "public",
             table: "characters",
-            filter:
-              `id=eq.${characterId}`,
+            filter: `id=eq.${characterId}`,
           },
           refreshSheet,
         )
         .subscribe(),
 
       supabase
-        .channel(
-          `live-sheet-membership-${characterId}`,
-        )
+        .channel(`live-sheet-membership-${characterId}`)
         .on(
           "postgres_changes",
           {
             event: "*",
             schema: "public",
             table: "order_memberships",
-            filter:
-              `character_id=eq.${characterId}`,
+            filter: `character_id=eq.${characterId}`,
           },
           refreshSheet,
         )
         .subscribe(),
 
       supabase
-        .channel(
-          `live-sheet-character-gifts-${characterId}`,
-        )
+        .channel(`live-sheet-character-gifts-${characterId}`)
         .on(
           "postgres_changes",
           {
             event: "*",
             schema: "public",
             table: "character_gifts",
-            filter:
-              `character_id=eq.${characterId}`,
+            filter: `character_id=eq.${characterId}`,
+          },
+          refreshSheet,
+        )
+        .subscribe(),
+
+      supabase
+        .channel(`live-sheet-active-items-${characterId}`)
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "character_active_item_effects",
+            filter: `character_id=eq.${characterId}`,
           },
           refreshSheet,
         )
@@ -107,17 +102,14 @@ export function LiveCharacterSheetRefresh({
     if (raceId) {
       channels.push(
         supabase
-          .channel(
-            `live-sheet-race-${raceId}-${characterId}`,
-          )
+          .channel(`live-sheet-race-${raceId}-${characterId}`)
           .on(
             "postgres_changes",
             {
               event: "*",
               schema: "public",
               table: "races",
-              filter:
-                `id=eq.${raceId}`,
+              filter: `id=eq.${raceId}`,
             },
             refreshSheet,
           )
@@ -126,10 +118,7 @@ export function LiveCharacterSheetRefresh({
     }
 
     function refreshWhenVisible() {
-      if (
-        document.visibilityState ===
-        "visible"
-      ) {
+      if (document.visibilityState === "visible") {
         refreshSheet();
       }
     }
@@ -142,12 +131,8 @@ export function LiveCharacterSheetRefresh({
     return () => {
       disposed = true;
 
-      if (
-        refreshTimerRef.current !== null
-      ) {
-        window.clearTimeout(
-          refreshTimerRef.current,
-        );
+      if (refreshTimerRef.current !== null) {
+        window.clearTimeout(refreshTimerRef.current);
       }
 
       document.removeEventListener(
@@ -156,16 +141,10 @@ export function LiveCharacterSheetRefresh({
       );
 
       for (const channel of channels) {
-        void supabase.removeChannel(
-          channel,
-        );
+        void supabase.removeChannel(channel);
       }
     };
-  }, [
-    characterId,
-    raceId,
-    router,
-  ]);
+  }, [characterId, raceId, router]);
 
   return null;
 }

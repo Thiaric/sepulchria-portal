@@ -16,6 +16,11 @@ import {
 } from "@/lib/items/inventory-move-actions";
 import { useInventoryItem } from "@/lib/items/use-actions";
 
+export type InventoryUseTarget = {
+  id: string;
+  name: string;
+};
+
 export type InventoryRequirement = {
   label: string;
   met: boolean;
@@ -362,8 +367,10 @@ function ActiveUseTimers({
 
 function UseControl({
   row,
+  targets,
 }: {
   row: InventoryBrowserRow;
+  targets: InventoryUseTarget[];
 }) {
   const router = useRouter();
 
@@ -376,6 +383,9 @@ function UseControl({
   const [success, setSuccess] =
     useState(false);
 
+  const [selectedTargetId, setSelectedTargetId] =
+    useState("");
+
   if (!row.is_usable) {
     return null;
   }
@@ -383,13 +393,16 @@ function UseControl({
   const targetMode =
     row.target_mode ?? "self";
 
-  if (targetMode !== "self") {
-    return (
-      <p className="mt-3 border border-[#59432c]/40 bg-[#100c09] px-3 py-2 text-[8px] uppercase tracking-[0.1em] text-[#8d7d68]">
-        This Item requires a target. Targeted use is coming in the next D5 step.
-      </p>
-    );
-  }
+  const needsOtherTarget =
+    targetMode === "other";
+
+  const allowsOtherTarget =
+    targetMode === "other" ||
+    targetMode === "either";
+
+  const targetUnavailable =
+    needsOtherTarget &&
+    targets.length === 0;
 
   if (
     row.record_kind === "unique" &&
@@ -450,6 +463,16 @@ function UseControl({
       row.record_id,
     );
 
+    if (
+      allowsOtherTarget &&
+      selectedTargetId
+    ) {
+      data.set(
+        "targetCharacterId",
+        selectedTargetId,
+      );
+    }
+
     setMessage(null);
 
     startTransition(async () => {
@@ -465,17 +488,68 @@ function UseControl({
     });
   };
 
+  if (targetUnavailable) {
+    return (
+      <p className="mt-3 border border-[#59432c]/40 bg-[#100c09] px-3 py-2 text-[8px] uppercase tracking-[0.1em] text-[#a6947b]">
+        No other character is currently in the same location.
+      </p>
+    );
+  }
+
   return (
     <div className="mt-3">
       <ActiveUseTimers
         row={row}
       />
 
+      {allowsOtherTarget ? (
+        <label className="mt-2 block">
+          <span className="mb-1.5 block text-[7px] uppercase tracking-[0.14em] text-[#806b50]">
+            Target
+          </span>
+
+          <select
+            value={selectedTargetId}
+            onChange={(event) =>
+              setSelectedTargetId(
+                event.target.value,
+              )
+            }
+            className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-2 text-[9px] text-[#cdbb9d] outline-none focus:border-[#987344]"
+          >
+            {targetMode === "either" ? (
+              <option value="">
+                Self
+              </option>
+            ) : (
+              <option value="">
+                Choose character...
+              </option>
+            )}
+
+            {targets.map((target) => (
+              <option
+                key={target.id}
+                value={target.id}
+              >
+                {target.name}
+              </option>
+            ))}
+          </select>
+        </label>
+      ) : null}
+
       <div className="mt-2 flex flex-wrap items-center gap-2">
         <button
           type="button"
           onClick={run}
-          disabled={pending}
+          disabled={
+            pending ||
+            (
+              needsOtherTarget &&
+              !selectedTargetId
+            )
+          }
           className="border border-[#6f7545] bg-[#202615] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[#cbd39a] transition hover:bg-[#293019] disabled:cursor-wait disabled:opacity-50"
         >
           {pending ? "Using..." : "Use"}
@@ -585,6 +659,7 @@ function ItemCard({
   containers,
   characterName,
   own,
+  useTargets,
   compact = false,
 }: {
   row: InventoryBrowserRow;
@@ -592,6 +667,7 @@ function ItemCard({
     InventoryBrowserRow[];
   characterName: string;
   own: boolean;
+  useTargets: InventoryUseTarget[];
   compact?: boolean;
 }) {
   const eligible =
@@ -763,7 +839,10 @@ function ItemCard({
           ) : null}
 
           {own ? (
-            <UseControl row={row} />
+            <UseControl
+              row={row}
+              targets={useTargets}
+            />
           ) : null}
 
           {own ? (
@@ -1312,11 +1391,13 @@ export function CharacterInventoryBrowser({
   rows,
   characterName,
   own = false,
+  useTargets = [],
 }: {
   rows:
     InventoryBrowserRow[];
   characterName: string;
   own?: boolean;
+  useTargets?: InventoryUseTarget[];
 }) {
   const [
     search,
@@ -1862,6 +1943,9 @@ export function CharacterInventoryBrowser({
                           own={
                             own
                           }
+                          useTargets={
+                            useTargets
+                          }
                         />
                       ),
                     )}
@@ -2012,6 +2096,9 @@ export function CharacterInventoryBrowser({
                                   }
                                   own={
                                     own
+                                  }
+                                  useTargets={
+                                    useTargets
                                   }
                                   compact
                                 />
