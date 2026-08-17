@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { CharacterOrderIdentity } from "@/components/characters/character-order-identity";
+import { ForumCharacterLink } from "@/components/forum/forum-character-link";
 
 
 import { RichTextContent } from "@/components/editor/rich-text-content";
 import DeletePostButton from "@/components/forum/delete-post-button";
 import PostModerationPanel from "@/components/forum/post-moderation-panel";
+
 import { richTextToPlainText } from "@/lib/rich-text";
 
 export type ForumPostCharacter = {
@@ -178,6 +180,10 @@ export default function TopicPost({
           post.author_name,
         );
 
+  const linkAuthorToProfile =
+    !post.is_anonymous &&
+    Boolean(post.author_character?.id);
+
   const postUrl =
     `/forum/${encodeURIComponent(
       sectionSlug,
@@ -222,6 +228,9 @@ export default function TopicPost({
                   post.is_anonymous &&
                   !post.anonymous_identity_visible
                 }
+                linkToProfile={
+                  linkAuthorToProfile
+                }
               />
 
               <CharacterIdentityIcons
@@ -238,7 +247,14 @@ export default function TopicPost({
       : "text-[#ddc59e]"
   }`}
 >
-  {authorName}
+  <ForumCharacterLink
+    characterId={post.author_character?.id}
+    disabled={!linkAuthorToProfile}
+    className="transition hover:text-[#efd4a0]"
+    ariaLabel={`View ${authorName}'s character sheet`}
+  >
+    {authorName}
+  </ForumCharacterLink>
 </h2>
 
               {post.is_anonymous ? (
@@ -402,10 +418,12 @@ function CharacterPortrait({
   character,
   fallbackName,
   anonymous = false,
+  linkToProfile = false,
 }: {
   character: ForumPostCharacter | null;
   fallbackName: string;
   anonymous?: boolean;
+  linkToProfile?: boolean;
 }) {
   const initials = anonymous
     ? "?"
@@ -426,7 +444,7 @@ function CharacterPortrait({
     character?.portrait_url &&
     isSafeUrl(character.portrait_url)
   ) {
-    return (
+    const portrait = (
       <div className="h-20 w-20 shrink-0 overflow-hidden border border-[#6b5031]/55 bg-[#0b0806] lg:h-44 lg:w-full">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -439,12 +457,40 @@ function CharacterPortrait({
         />
       </div>
     );
+
+    return (
+      <ForumCharacterLink
+        characterId={character.id}
+        disabled={!linkToProfile}
+        className="block transition hover:brightness-110"
+        ariaLabel={`View ${getCharacterName(
+          character,
+          fallbackName,
+        )}'s character sheet`}
+      >
+        {portrait}
+      </ForumCharacterLink>
+    );
   }
 
-  return (
+  const fallbackPortrait = (
     <div className="flex h-20 w-20 shrink-0 items-center justify-center border border-[#6b5031]/55 bg-[#1b130e] font-serif text-2xl text-[#a98a61] lg:h-44 lg:w-full lg:text-4xl">
       {initials}
     </div>
+  );
+
+  return (
+    <ForumCharacterLink
+      characterId={character?.id}
+      disabled={!linkToProfile}
+      className="block transition hover:brightness-110"
+      ariaLabel={`View ${getCharacterName(
+        character,
+        fallbackName,
+      )}'s character sheet`}
+    >
+      {fallbackPortrait}
+    </ForumCharacterLink>
   );
 }
 
