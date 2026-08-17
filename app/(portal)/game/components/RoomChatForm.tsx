@@ -23,6 +23,7 @@ import type {
 } from "@/types/game";
 import {
   activateRoomGift,
+  useRoomGift,
   sendRoomAttributeCheck,
   sendRoomDiceRoll,
   sendRoomMessage,
@@ -152,6 +153,14 @@ export default function RoomChatForm({
       activateRoomGift,
       initialState,
     );
+
+  const [
+    giftUseState,
+    giftUseAction,
+  ] = useActionState(
+    useRoomGift,
+    initialState,
+  );
 
   const [selectedGiftId, setSelectedGiftId] =
     useState(
@@ -311,6 +320,19 @@ const visibleSpellingIssues =
     router,
   ]);
 
+  useEffect(() => {
+    if (
+      giftUseState.ok &&
+      giftUseState.submittedAt
+    ) {
+      router.refresh();
+    }
+  }, [
+    giftUseState.ok,
+    giftUseState.submittedAt,
+    router,
+  ]);
+
   function handleMessageChange(
     nextValue: string,
   ) {
@@ -403,16 +425,19 @@ const visibleSpellingIssues =
   }
 
   const utilityMessage =
+    giftUseState.message ||
     giftState.message ||
     checkState.message ||
     diceState.message;
 
   const utilityOk =
-    giftState.message
-      ? giftState.ok
-      : checkState.message
-        ? checkState.ok
-        : diceState.ok;
+    giftUseState.message
+      ? giftUseState.ok
+      : giftState.message
+        ? giftState.ok
+        : checkState.message
+          ? checkState.ok
+          : diceState.ok;
 
   const hasCompleteWhisperMarker =
   /^@[^@\r\n]+@/.test(
@@ -639,24 +664,6 @@ function applySpellingSuggestion(
     );
   });
 }  
-
-function insertSelectedGiftMarker() {
-  if (!selectedGift) {
-    return;
-  }
-
-  const marker = `[Gift: ${selectedGift.name}]`;
-
-  setValue((current) =>
-    current.startsWith(marker)
-      ? current
-      : `${marker} ${current}`,
-  );
-
-  window.requestAnimationFrame(() => {
-    textareaRef.current?.focus();
-  });
-}
 
 function ignoreSpellingWord() {
   if (!spellingMenu) {
@@ -1049,8 +1056,9 @@ function ignoreSpellingWord() {
                 </button>
               ) : (
                 <button
-                  type="button"
-                  onClick={insertSelectedGiftMarker}
+                  type="submit"
+                  formAction={giftUseAction}
+                  formNoValidate
                   className="border border-[#765937] bg-[#21190f] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[#d6bb8d] transition hover:border-[#a17a49]"
                 >
                   Use Gift

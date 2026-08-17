@@ -59,6 +59,73 @@ function createPrivilegedClient() {
   });
 }
 
+function giftDurationLabel(
+  effectMode: string,
+  durationMinutes: number | null,
+): string {
+  if (effectMode === "temporary") {
+    return durationMinutes
+      ? `${durationMinutes} minutes`
+      : "Temporary";
+  }
+
+  if (effectMode === "passive") {
+    return "Passive";
+  }
+
+  return "No duration";
+}
+
+async function insertGiftUseMessage({
+  admin,
+  characterId,
+  roomId,
+  giftName,
+  giftDescription,
+  effectMode,
+  durationMinutes,
+}: {
+  admin: ReturnType<typeof createPrivilegedClient>;
+  characterId: string;
+  roomId: string;
+  giftName: string;
+  giftDescription: string;
+  effectMode: string;
+  durationMinutes: number | null;
+}) {
+  const description =
+    giftDescription.trim() || "No description";
+
+  const duration =
+    giftDurationLabel(
+      effectMode,
+      durationMinutes,
+    );
+
+  const { error } = await admin
+    .from("room_messages")
+    .insert({
+      room_id: roomId,
+      character_id: characterId,
+      message:
+        `◆ used "${giftName}" · ${description} · Duration: ${duration}`,
+      message_type: "attribute_check",
+      roll_label: null,
+      dice_sides: null,
+      dice_result: null,
+      attribute_key: null,
+      attribute_value: null,
+      roll_total: null,
+      client_nonce: crypto.randomUUID(),
+    });
+
+  if (error) {
+    throw new Error(
+      `Unable to announce Gift use: ${error.message}`,
+    );
+  }
+}
+
 const VALID_PRESENCE_STATUSES: PresenceStatus[] = [
   "online",
   "away",
@@ -762,6 +829,130 @@ export async function sendRoomMessage(
   }
 }
 
+export async function useRoomGift(
+  _previousState: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  try {
+    const characterGiftId = String(
+      formData.get("character_gift_id") ?? "",
+    ).trim();
+
+    const { supabase, character } =
+      await getOwnedCharacter();
+
+    if (!character.current_room_id) {
+      return {
+        ok: false,
+        message: "Your character has no current room.",
+      };
+    }
+
+    const roomId =
+      character.current_room_id;
+
+    const { data: ownership, error: ownershipError } =
+      await supabase
+        .from("character_gifts")
+        .select(`
+          id,
+          gift:gifts(
+            id,
+            name,
+            description,
+            is_active,
+            effect_mode,
+            duration_minutes
+          )
+        `)
+        .eq("id", characterGiftId)
+        .eq("character_id", character.id)
+        .maybeSingle();
+
+    if (ownershipError || !ownership) {
+      return {
+        ok: false,
+        message:
+          ownershipError?.message ??
+          "This Gift is not owned by your character.",
+      };
+    }
+
+    const relation = ownership.gift ?? null;
+    const gift = Array.isArray(relation)
+      ? relation[0] ?? null
+      : relation;
+
+    if (!gift || !gift.is_active) {
+      return {
+        ok: false,
+        message: "This Gift is not currently available.",
+      };
+    }
+
+    if (gift.effect_mode === "temporary") {
+      const { data: activation, error: activationError } =
+        await supabase
+          .from("gift_activations")
+          .select("id")
+          .eq("character_gift_id", characterGiftId)
+          .is("ended_at", null)
+          .gt("expires_at", new Date().toISOString())
+          .limit(1)
+          .maybeSingle();
+
+      if (activationError) {
+        return {
+          ok: false,
+          message: activationError.message,
+        };
+      }
+
+      if (!activation) {
+        return {
+          ok: false,
+          message:
+            `${gift.name} must be activated before it can be used.`,
+        };
+      }
+    }
+
+    const admin = createPrivilegedClient();
+
+    await insertGiftUseMessage({
+      admin,
+      characterId: character.id,
+      roomId,
+      giftName: gift.name,
+      giftDescription: gift.description ?? "",
+      effectMode: gift.effect_mode,
+      durationMinutes: gift.duration_minutes,
+    });
+
+    await touchPresence(
+      supabase,
+      character.id,
+      character.current_room_id,
+    );
+
+    revalidatePath("/game");
+
+    return {
+      ok: true,
+      message: `${gift.name} used.`,
+      submittedAt: Date.now(),
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Unable to use Gift.",
+    };
+  }
+}
+
 export async function activateRoomGift(
   _previousState: ActionState,
   formData: FormData,
@@ -808,6 +999,7 @@ export async function activateRoomGift(
         gift:gifts(
           id,
           name,
+          description,
           is_active,
           effect_mode,
           duration_minutes,
@@ -919,14 +1111,39 @@ export async function activateRoomGift(
       };
     }
 
+    try {
+      await insertGiftUseMessage({
+        admin,
+        characterId: character.id,
+        roomId: character.current_room_id!,
+        giftName: gift.name,
+        giftDescription: gift.description ?? "",
+        effectMode: gift.effect_mode,
+        durationMinutes: gift.duration_minutes,
+      });
+    } catch (announcementError) {
+      return {
+        ok: false,
+        message:
+          announcementError instanceof Error
+            ? announcementError.message
+            : "Gift was activated, but its use could not be announced in chat.",
+      };
+    }
+
+    await touchPresence(
+      supabase,
+      character.id,
+      character.current_room_id,
+    );
+
     revalidatePath("/game");
     revalidatePath("/character");
     revalidatePath("/characters");
 
     return {
       ok: true,
-      message:
-        `${gift.name} activated for ${gift.duration_minutes ?? "?"} minutes.`,
+      message: `${gift.name} activated and used.`,
       submittedAt: Date.now(),
     };
   } catch (error) {
@@ -1400,6 +1617,9 @@ export async function sendRoomDiceRoll(
           "Your character has no current room.",
       };
     }
+
+    const roomId =
+      character.current_room_id;
 
     const cooldown =
       await checkRoomRollCooldown(

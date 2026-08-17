@@ -123,6 +123,14 @@ const otherCodexNavigationItems: NavigationItem[] = [
     activePaths: ["/spells"],
     disabled: true,
   },
+  {
+    label: "Gifts",
+    title:
+      "Browse the Gifts available through Ancestries, Orders and other sources.",
+    icon: "/icons/warping.png",
+    href: "/gifts",
+    activePaths: ["/gifts"],
+  },
 ];
 
 const marketItem: NavigationItem = {
