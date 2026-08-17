@@ -381,7 +381,7 @@ export function LiveCharacterPresence({
           </p>
         </div>
 
-        <div className="min-w-0 bg-[#17110d] px-3 py-2">
+        <div className="min-w-0 bg-[#17110d] px-3 py-2 sm:col-span-2 lg:col-span-3">
           <p className="text-[7px] uppercase tracking-[0.19em] text-[#796448]">
             Current location
           </p>

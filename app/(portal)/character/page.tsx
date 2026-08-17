@@ -385,30 +385,33 @@ export function Profile({
                     </div>
                   ))}
 
-                  <div className="min-w-0 bg-[#17110d] px-3 py-2">
+                  <div className="min-w-0 bg-[#17110d] px-3 py-2 sm:col-span-2 lg:col-span-3">
                     <CharacterExpertiseTotal
                       characterId={character.id!}
                     />
                   </div>
                 </div>
 
-                <div className="mt-3">
-                  <CompactHeritageCard
-                    label="Ancestry"
-                    entry={race}
-                    href={
-                      race
-                        ? `/races/${race.slug}`
-                        : "/races"
-                    }
-                  />
+              </div>
 
-                  {character.id ? (
-                    <CharacterOrderSummary
-                      characterId={character.id}
-                    />
-                  ) : null}
-                </div>
+              <div className="h-full">
+                <CompactHeritageCard
+                  label="Ancestry"
+                  entry={race}
+                  href={
+                    race
+                      ? `/races/${race.slug}`
+                      : "/races"
+                  }
+                />
+              </div>
+
+              <div className="h-full">
+                {character.id ? (
+                  <CharacterOrderSummary
+                    characterId={character.id}
+                  />
+                ) : null}
               </div>
             </section>
 
@@ -906,7 +909,7 @@ function CompactHeritageCard({
   return (
     <Link
       href={href}
-      className="group flex min-w-0 items-center gap-3 border bg-[#120e0b] p-3 transition hover:bg-[#1b140f]"
+      className="group flex h-full min-w-0 items-center gap-3 border bg-[#120e0b] p-3 transition hover:bg-[#1b140f]"
       style={{
         borderColor: `${colour}66`,
       }}

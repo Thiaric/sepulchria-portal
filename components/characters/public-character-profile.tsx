@@ -184,25 +184,26 @@ export function PublicCharacterProfileView({
                 />
               </div>
 
-              <div className="mt-3">
-                <CompactHeritageCard
-                  label="Ancestry"
-                  entry={character.race}
-                  href={
-                    character.race
-                      ? `/races/${character.race.slug}`
-                      : "/races"
-                  }
-                />
+            </div>
 
-                <div className="mt-3">
-                  <PublicCharacterOrder
-                    membership={
-                      character.orderMembership
-                    }
-                  />
-                </div>
-              </div>
+            <div className="h-full">
+              <CompactHeritageCard
+                label="Ancestry"
+                entry={character.race}
+                href={
+                  character.race
+                    ? `/races/${character.race.slug}`
+                    : "/races"
+                }
+              />
+            </div>
+
+            <div className="h-full">
+              <PublicCharacterOrder
+                membership={
+                  character.orderMembership
+                }
+              />
             </div>
           </section>
 
@@ -308,7 +309,7 @@ function CompactHeritageCard({
   return (
     <Link
       href={href}
-      className="group flex min-w-0 items-center gap-3 border bg-[#120e0b] p-3 transition hover:bg-[#1b140f]"
+      className="group flex h-full min-w-0 items-center gap-3 border bg-[#120e0b] p-3 transition hover:bg-[#1b140f]"
       style={{
         borderColor: `${colour}66`,
       }}
