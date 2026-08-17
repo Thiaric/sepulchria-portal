@@ -1902,3 +1902,256 @@ export async function sendRoomAttributeCheck(
     };
   }
 }
+
+export async function useRoomItem(
+  _previousState: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  try {
+    const recordKind = String(
+      formData.get("item_record_kind") ?? "",
+    ).trim();
+
+    const recordId = String(
+      formData.get("item_record_id") ?? "",
+    ).trim();
+
+    const targetCharacterId =
+      String(
+        formData.get("item_target_character_id") ?? "",
+      ).trim() || null;
+
+    if (
+      !["standard", "unique"].includes(recordKind) ||
+      !recordId
+    ) {
+      return { ok: false, message: "Choose an Item." };
+    }
+
+    const { supabase, character } = await getOwnedCharacter();
+
+    if (!character.current_room_id) {
+      return {
+        ok: false,
+        message: "Your character has no current room.",
+      };
+    }
+
+    let itemId: string | null = null;
+
+    if (recordKind === "standard") {
+      const { data, error } = await supabase
+        .from("character_items")
+        .select("item_id")
+        .eq("id", recordId)
+        .eq("character_id", character.id)
+        .maybeSingle();
+
+      if (error || !data) {
+        return {
+          ok: false,
+          message: "That Item is no longer in your Inventory.",
+        };
+      }
+
+      itemId = data.item_id;
+    } else {
+      const { data, error } = await supabase
+        .from("character_item_instances")
+        .select("item_id")
+        .eq("id", recordId)
+        .eq("owner_character_id", character.id)
+        .eq("vault_status", "owned")
+        .maybeSingle();
+
+      if (error || !data) {
+        return {
+          ok: false,
+          message: "That Item is no longer in your Inventory.",
+        };
+      }
+
+      itemId = data.item_id;
+    }
+
+    const { data: item, error: itemError } = await supabase
+      .from("items")
+      .select(`
+        name,
+        target_mode,
+        effects:item_effects(
+          trigger_type,
+          effect_mode,
+          duration_minutes,
+          muscles_modifier,
+          reflexes_modifier,
+          vigour_modifier,
+          shrewd_modifier,
+          brains_modifier,
+          presence_modifier,
+          health_delta,
+          max_health_modifier
+        )
+      `)
+      .eq("id", itemId)
+      .maybeSingle();
+
+    if (itemError || !item) {
+      return { ok: false, message: "Unable to load that Item." };
+    }
+
+    if (item.target_mode === "self" && targetCharacterId) {
+      return {
+        ok: false,
+        message: "This Item can only be used on yourself.",
+      };
+    }
+
+    if (item.target_mode === "other" && !targetCharacterId) {
+      return {
+        ok: false,
+        message: "Choose another character.",
+      };
+    }
+
+    if (targetCharacterId) {
+      const activeSince = new Date(
+        Date.now() - 5 * 60_000,
+      ).toISOString();
+
+      const { data: presence } = await supabase
+        .from("character_presence")
+        .select("character_id")
+        .eq("character_id", targetCharacterId)
+        .eq("room_id", character.current_room_id)
+        .gte("last_seen_at", activeSince)
+        .maybeSingle();
+
+      if (!presence) {
+        return {
+          ok: false,
+          message: "That character is no longer present in this room.",
+        };
+      }
+    }
+
+    const { data: result, error: useError } = await supabase.rpc(
+      "use_own_inventory_record_targeted",
+      {
+        p_record_kind: recordKind,
+        p_record_id: recordId,
+        p_target_character_id: targetCharacterId,
+      },
+    );
+
+    if (useError) {
+      return { ok: false, message: useError.message };
+    }
+
+    const outcome = (result ?? {}) as {
+      blocked?: boolean;
+      block_reason?: string;
+      item_name?: string;
+      target_name?: string;
+    };
+
+    if (outcome.blocked) {
+      return {
+        ok: false,
+        message:
+          outcome.block_reason ??
+          "This Item cannot be used right now.",
+      };
+    }
+
+    const rawEffects = Array.isArray(item.effects)
+      ? item.effects
+      : item.effects
+        ? [item.effects]
+        : [];
+
+    const effectParts: string[] = [];
+
+    for (const effect of rawEffects) {
+      if (effect.trigger_type !== "use") continue;
+
+      const modifiers = [
+        ["Muscles", effect.muscles_modifier],
+        ["Reflexes", effect.reflexes_modifier],
+        ["Vigour", effect.vigour_modifier],
+        ["Shrewd", effect.shrewd_modifier],
+        ["Brains", effect.brains_modifier],
+        ["Presence", effect.presence_modifier],
+      ] as const;
+
+      for (const [label, value] of modifiers) {
+        if (Number(value ?? 0) !== 0) {
+          const amount = Number(value);
+          effectParts.push(
+            `${label} ${amount > 0 ? "+" : ""}${amount}`,
+          );
+        }
+      }
+
+      if (Number(effect.health_delta ?? 0) !== 0) {
+        const amount = Number(effect.health_delta);
+        effectParts.push(
+          `Health ${amount > 0 ? "+" : ""}${amount}`,
+        );
+      }
+
+      if (Number(effect.max_health_modifier ?? 0) !== 0) {
+        const amount = Number(effect.max_health_modifier);
+        effectParts.push(
+          `Max Health ${amount > 0 ? "+" : ""}${amount}`,
+        );
+      }
+
+      if (
+        effect.effect_mode === "temporary" &&
+        effect.duration_minutes
+      ) {
+        effectParts.push(
+          `Duration: ${effect.duration_minutes} min`,
+        );
+      }
+    }
+
+    const targetLabel =
+      targetCharacterId && outcome.target_name
+        ? ` on ${outcome.target_name}`
+        : "";
+
+    const { error: messageError } = await supabase
+      .from("room_messages")
+      .insert({
+        room_id: character.current_room_id,
+        character_id: character.id,
+        message:
+          `◆ used "${outcome.item_name ?? item.name}"${targetLabel}` +
+          `${effectParts.length ? ` · ${effectParts.join(" · ")}` : ""}`,
+        message_type: "action",
+        client_nonce: crypto.randomUUID(),
+      });
+
+    if (messageError) {
+      throw new Error(
+        `Item was used, but the room announcement failed: ${messageError.message}`,
+      );
+    }
+
+    return {
+      ok: true,
+      message: "Item used.",
+      submittedAt: Date.now(),
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Unable to use Item.",
+    };
+  }
+}

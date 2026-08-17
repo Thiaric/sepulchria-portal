@@ -261,6 +261,154 @@ async function GameContent() {
         gift !== null,
     );
 
+  const {
+    data: rawInventoryRows,
+    error: chatInventoryError,
+  } = await supabase.rpc(
+    "get_public_character_inventory",
+    { p_character_id: character.id },
+  );
+
+  if (chatInventoryError) {
+    throw new Error(
+      `Unable to load usable Items for chat: ${chatInventoryError.message}`,
+    );
+  }
+
+  const chatInventoryRows =
+    (rawInventoryRows ?? []) as {
+      record_kind: "standard" | "unique";
+      record_id: string;
+      item_id: string;
+      name: string;
+      quantity: number;
+      is_usable: boolean;
+    }[];
+
+  const usableRows =
+    chatInventoryRows.filter((row) => row.is_usable);
+
+  const usableItemIds = [
+    ...new Set(usableRows.map((row) => row.item_id)),
+  ];
+
+  const [
+    usableMastersResult,
+    uniqueChargesResult,
+    itemCooldownsResult,
+  ] = await Promise.all([
+    usableItemIds.length
+      ? supabase
+          .from("items")
+          .select(`
+            id,
+            name,
+            description,
+            target_mode,
+            max_charges,
+            effects:item_effects(
+              trigger_type,
+              effect_mode,
+              duration_minutes,
+              muscles_modifier,
+              reflexes_modifier,
+              vigour_modifier,
+              shrewd_modifier,
+              brains_modifier,
+              presence_modifier,
+              health_delta,
+              max_health_modifier
+            )
+          `)
+          .in("id", usableItemIds)
+      : Promise.resolve({ data: [], error: null }),
+
+    supabase
+      .from("character_item_instances")
+      .select("id, charges_remaining")
+      .eq("owner_character_id", character.id),
+
+    supabase
+      .from("character_item_use_cooldowns")
+      .select("source_key, ready_at")
+      .eq("character_id", character.id),
+  ]);
+
+  const chatItemError =
+    usableMastersResult.error ??
+    uniqueChargesResult.error ??
+    itemCooldownsResult.error;
+
+  if (chatItemError) {
+    throw new Error(
+      `Unable to prepare usable Items for chat: ${chatItemError.message}`,
+    );
+  }
+
+  const masterById = new Map(
+    (usableMastersResult.data ?? []).map(
+      (item) => [item.id, item],
+    ),
+  );
+
+  const chargesByInstance = new Map(
+    (uniqueChargesResult.data ?? []).map(
+      (instance) => [
+        instance.id,
+        instance.charges_remaining,
+      ],
+    ),
+  );
+
+  const cooldownByKey = new Map(
+    (itemCooldownsResult.data ?? []).map(
+      (entry) => [entry.source_key, entry.ready_at],
+    ),
+  );
+
+  const chatItems = usableRows
+    .map((row) => {
+      const master = masterById.get(row.item_id);
+      if (!master) return null;
+
+      const sourceKey =
+        row.record_kind === "unique"
+          ? `unique:${row.record_id}`
+          : `standard:${row.item_id}`;
+
+      return {
+        recordKind: row.record_kind,
+        recordId: row.record_id,
+        itemId: row.item_id,
+        name: row.name,
+        description: master.description ?? "",
+        quantity: row.quantity,
+        targetMode:
+          (master.target_mode ?? "self") as
+            | "self"
+            | "other"
+            | "either",
+        maxCharges: master.max_charges,
+        chargesRemaining:
+          row.record_kind === "unique"
+            ? chargesByInstance.get(row.record_id) ?? null
+            : null,
+        cooldownReadyAt:
+          cooldownByKey.get(sourceKey) ?? null,
+        effects: Array.isArray(master.effects)
+          ? master.effects
+          : master.effects
+            ? [master.effects]
+            : [],
+      };
+    })
+    .filter(
+      (
+        item,
+      ): item is NonNullable<typeof item> =>
+        item !== null,
+    );
+
   const roomArea =
   Array.isArray(room.areas)
     ? room.areas[0] ?? null
@@ -597,6 +745,7 @@ async function GameContent() {
         attributeBreakdown
       }
       gifts={chatGifts}
+      items={chatItems}
       presentCharacters={
         presentCharacters
       }

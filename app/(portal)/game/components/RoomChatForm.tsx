@@ -24,6 +24,7 @@ import type {
 import {
   activateRoomGift,
   useRoomGift,
+  useRoomItem,
   sendRoomAttributeCheck,
   sendRoomDiceRoll,
   sendRoomMessage,
@@ -89,6 +90,32 @@ type AttributeBreakdownEntry = {
   effective: number | null;
 };
 
+type ChatItem = {
+  recordKind: "standard" | "unique";
+  recordId: string;
+  itemId: string;
+  name: string;
+  description: string;
+  quantity: number;
+  targetMode: "self" | "other" | "either";
+  maxCharges: number | null;
+  chargesRemaining: number | null;
+  cooldownReadyAt: string | null;
+  effects: {
+    trigger_type: string;
+    effect_mode: string;
+    duration_minutes: number | null;
+    muscles_modifier: number;
+    reflexes_modifier: number;
+    vigour_modifier: number;
+    shrewd_modifier: number;
+    brains_modifier: number;
+    presence_modifier: number;
+    health_delta: number;
+    max_health_modifier: number;
+  }[];
+};
+
 type ChatGift = {
   characterGiftId: string;
   giftId: string;
@@ -120,12 +147,14 @@ export default function RoomChatForm({
   attributes,
   attributeBreakdown,
   gifts,
+  items,
   presentCharacters,
   canUseFate,
 }: {
   attributes: CharacterAttributes;
   attributeBreakdown: AttributeBreakdown;
   gifts: ChatGift[];
+  items: ChatItem[];
   presentCharacters: PresentRoomCharacter[];
   canUseFate: boolean;
 }) {
@@ -162,6 +191,54 @@ export default function RoomChatForm({
     useRoomGift,
     initialState,
   );
+
+  const [itemMode, setItemMode] =
+    useState(false);
+
+  const [itemState, itemAction] =
+    useActionState(
+      useRoomItem,
+      initialState,
+    );
+
+  const [selectedItemKey, setSelectedItemKey] =
+    useState(
+      items[0]
+        ? `${items[0].recordKind}:${items[0].recordId}`
+        : "",
+    );
+
+  const [itemTargetId, setItemTargetId] =
+    useState("");
+
+  const selectedItem = useMemo(
+    () =>
+      items.find(
+        (item) =>
+          `${item.recordKind}:${item.recordId}` ===
+          selectedItemKey,
+      ) ??
+      items[0] ??
+      null,
+    [items, selectedItemKey],
+  );
+
+  useEffect(() => {
+    setItemTargetId("");
+  }, [selectedItemKey]);
+
+  useEffect(() => {
+    if (
+      itemState.ok &&
+      itemState.submittedAt
+    ) {
+      router.refresh();
+    }
+  }, [
+    itemState.ok,
+    itemState.submittedAt,
+    router,
+  ]);
 
   const [selectedGiftId, setSelectedGiftId] =
     useState(
@@ -453,14 +530,17 @@ const visibleSpellingIssues =
   }
 
   const utilityMessage =
+    itemState.message ||
     giftUseState.message ||
     giftState.message ||
     checkState.message ||
     diceState.message;
 
   const utilityOk =
-    giftUseState.message
-      ? giftUseState.ok
+    itemState.message
+      ? itemState.ok
+      : giftUseState.message
+        ? giftUseState.ok
       : giftState.message
         ? giftState.ok
         : checkState.message
@@ -717,16 +797,228 @@ function ignoreSpellingWord() {
 
   return (
     <div className="shrink-0 border-t border-[#59432c]/40 bg-[#17110d] p-3 sm:p-4">
+      <div className="mb-2 flex justify-end">
+        <button
+          type="button"
+          onClick={() =>
+            setItemMode((current) => !current)
+          }
+          className="border border-[#765937] bg-[#21190f] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[#d6bb8d] transition hover:border-[#a17a49]"
+        >
+          {itemMode ? "Back to Chat" : "Use Items"}
+        </button>
+      </div>
+
+      {itemMode ? (
+        <form
+          action={itemAction}
+          className="border border-[#59432c]/35 bg-[#100c09] p-3"
+        >
+          {selectedItem ? (
+            <>
+              <input
+  type="hidden"
+  name="item_record_kind"
+  value={selectedItem.recordKind ?? ""}
+  readOnly
+/>
+
+<input
+  type="hidden"
+  name="item_record_id"
+  value={selectedItem.recordId ?? ""}
+  readOnly
+/>
+
+<input
+  type="hidden"
+  name="item_target_character_id"
+  value={itemTargetId ?? ""}
+  readOnly
+/>
+
+              <div className="grid gap-3 md:grid-cols-2">
+                <label>
+                  <span className="mb-1.5 block text-[8px] uppercase tracking-[0.14em] text-[#806b50]">
+                    Item
+                  </span>
+                  <select
+                    value={selectedItemKey}
+                    onChange={(event) =>
+                      setSelectedItemKey(event.target.value)
+                    }
+                    className="w-full border border-[#654c31] bg-[#0f0c09] px-3 py-2 text-[10px] text-[#d8c29b] outline-none focus:border-[#a17a45]"
+                  >
+                    {items.map((item) => (
+                      <option
+                        key={`${item.recordKind}:${item.recordId}`}
+                        value={`${item.recordKind}:${item.recordId}`}
+                      >
+                        {item.name}
+                        {item.quantity > 1
+                          ? ` ×${item.quantity}`
+                          : ""}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label>
+                  <span className="mb-1.5 block text-[8px] uppercase tracking-[0.14em] text-[#806b50]">
+                    Target
+                  </span>
+                  <select
+                    value={itemTargetId}
+                    onChange={(event) =>
+                      setItemTargetId(event.target.value)
+                    }
+                    disabled={selectedItem.targetMode === "self"}
+                    className="w-full border border-[#654c31] bg-[#0f0c09] px-3 py-2 text-[10px] text-[#d8c29b] outline-none focus:border-[#a17a45] disabled:opacity-55"
+                  >
+                    {selectedItem.targetMode !== "other" ? (
+                      <option value="">Self</option>
+                    ) : (
+                      <option value="">Choose character...</option>
+                    )}
+
+                    {selectedItem.targetMode !== "self"
+                      ? presentCharacters.map((entry) => (
+                          <option
+                            key={entry.id}
+                            value={entry.id}
+                          >
+                            {entry.display_name}
+                          </option>
+                        ))
+                      : null}
+                  </select>
+                </label>
+              </div>
+
+              <div className="mt-3 border border-[#59432c]/30 bg-[#15100d] p-3">
+                <p className="font-serif text-base text-[#dec89f]">
+                  {selectedItem.name}
+                </p>
+
+                {selectedItem.description ? (
+                  <p className="mt-1 text-[10px] leading-5 text-[#8f8271]">
+                    {selectedItem.description}
+                  </p>
+                ) : null}
+
+                <div className="mt-2 flex flex-wrap gap-2 text-[8px] uppercase tracking-[0.1em] text-[#9b8768]">
+                  {selectedItem.effects
+                    .filter((effect) => effect.trigger_type === "use")
+                    .map((effect, index) => {
+                      const parts: string[] = [];
+
+                      if (effect.health_delta) {
+                        parts.push(
+                          `Health ${effect.health_delta > 0 ? "+" : ""}${effect.health_delta}`,
+                        );
+                      }
+
+                      const mods = [
+                        ["Muscles", effect.muscles_modifier],
+                        ["Reflexes", effect.reflexes_modifier],
+                        ["Vigour", effect.vigour_modifier],
+                        ["Shrewd", effect.shrewd_modifier],
+                        ["Brains", effect.brains_modifier],
+                        ["Presence", effect.presence_modifier],
+                      ] as const;
+
+                      for (const [label, value] of mods) {
+                        if (value) {
+                          parts.push(
+                            `${label} ${value > 0 ? "+" : ""}${value}`,
+                          );
+                        }
+                      }
+
+                      if (
+                        effect.effect_mode === "temporary" &&
+                        effect.duration_minutes
+                      ) {
+                        parts.push(
+                          `${effect.duration_minutes} min`,
+                        );
+                      }
+
+                      return (
+                        <span
+                          key={index}
+                          className="border border-[#60482e]/40 px-2 py-1"
+                        >
+                          {parts.join(" · ") || "Use effect"}
+                        </span>
+                      );
+                    })}
+                </div>
+
+                {selectedItem.cooldownReadyAt &&
+                Date.parse(selectedItem.cooldownReadyAt) > Date.now() ? (
+                  <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-amber-400">
+                    On cooldown
+                  </p>
+                ) : null}
+
+                {selectedItem.maxCharges !== null ? (
+                  <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-[#8f7c61]">
+                    {selectedItem.chargesRemaining ?? selectedItem.maxCharges}
+                    {" / "}
+                    {selectedItem.maxCharges} charges
+                  </p>
+                ) : null}
+              </div>
+
+              <div className="mt-3 flex items-center justify-between gap-3">
+                <p
+                  aria-live="polite"
+                  className={`text-xs ${
+                    itemState.ok
+                      ? "text-[#9bb58c]"
+                      : "text-[#d58d82]"
+                  }`}
+                >
+                  {itemState.message}
+                </p>
+
+                <button
+                  type="submit"
+                  disabled={
+                    Boolean(
+                      selectedItem.cooldownReadyAt &&
+                      Date.parse(selectedItem.cooldownReadyAt) > Date.now(),
+                    ) ||
+                    (
+                      selectedItem.targetMode === "other" &&
+                      !itemTargetId
+                    )
+                  }
+                  className="border border-[#85653c] bg-[#342617] px-5 py-2.5 text-[9px] uppercase tracking-[0.18em] text-[#efd4a0] transition hover:bg-[#4a351f] disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  Use Item
+                </button>
+              </div>
+            </>
+          ) : (
+            <p className="text-sm italic text-[#756958]">
+              You have no usable Items.
+            </p>
+          )}
+        </form>
+      ) : (
       <form
   action={messageAction}
   ref={messageFormRef}
 >
         <input
-          ref={nonceInputRef}
-          type="hidden"
-          name="client_nonce"
-          defaultValue={messageNonce}
-        />
+  ref={nonceInputRef}
+  type="hidden"
+  name="client_nonce"
+  value={messageNonce ?? ""}
+  readOnly
+/>
 
         <input
           type="hidden"
@@ -1172,6 +1464,7 @@ function ignoreSpellingWord() {
           </p>
         ) : null}
       </form>
+      )}
     </div>
   );
 }
