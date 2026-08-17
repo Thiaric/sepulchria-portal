@@ -1,7 +1,5 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-
 import { createClient } from "@/lib/supabase/server";
 
 export type UseInventoryItemResult = {
@@ -48,6 +46,7 @@ export async function useInventoryItem(
 
   if (Number(result.health_delta ?? 0) !== 0) {
     const amount = Number(result.health_delta);
+
     details.push(
       amount > 0
         ? `restored ${amount} Health`
@@ -59,8 +58,11 @@ export async function useInventoryItem(
     details.push("temporary effect activated");
   }
 
-  revalidatePath("/character");
-  revalidatePath("/characters");
+  // IMPORTANT:
+  // Do not call revalidatePath() here.
+  // The client performs one controlled router.refresh() after the action
+  // succeeds. Combining revalidatePath + router.refresh + realtime refresh
+  // caused overlapping renders when an Item changed the character row.
 
   return {
     ok: true,

@@ -19,13 +19,11 @@ export function LiveCharacterSheetRefresh({
 }: LiveCharacterSheetRefreshProps) {
   const router = useRouter();
 
-  // Browser setTimeout returns a numeric id.
   const refreshTimerRef =
     useRef<number | null>(null);
 
   useEffect(() => {
-    const supabase =
-      createClient();
+    const supabase = createClient();
 
     let disposed = false;
 
@@ -49,7 +47,7 @@ export function LiveCharacterSheetRefresh({
               router.refresh();
             }
           },
-          150,
+          250,
         );
     }
 
@@ -80,70 +78,9 @@ export function LiveCharacterSheetRefresh({
           {
             event: "*",
             schema: "public",
-            table:
-              "order_memberships",
+            table: "order_memberships",
             filter:
               `character_id=eq.${characterId}`,
-          },
-          refreshSheet,
-        )
-        .subscribe(),
-
-      supabase
-        .channel(
-          `live-sheet-order-levels-${characterId}`,
-        )
-        .on(
-          "postgres_changes",
-          {
-            event: "*",
-            schema: "public",
-            table: "order_levels",
-          },
-          refreshSheet,
-        )
-        .subscribe(),
-
-      supabase
-        .channel(
-          `live-sheet-order-jobs-${characterId}`,
-        )
-        .on(
-          "postgres_changes",
-          {
-            event: "*",
-            schema: "public",
-            table: "order_jobs",
-          },
-          refreshSheet,
-        )
-        .subscribe(),
-
-      supabase
-        .channel(
-          `live-sheet-orders-${characterId}`,
-        )
-        .on(
-          "postgres_changes",
-          {
-            event: "*",
-            schema: "public",
-            table: "orders",
-          },
-          refreshSheet,
-        )
-        .subscribe(),
-
-      supabase
-        .channel(
-          `live-sheet-associations-${characterId}`,
-        )
-        .on(
-          "postgres_changes",
-          {
-            event: "*",
-            schema: "public",
-            table: "associations",
           },
           refreshSheet,
         )
@@ -161,36 +98,6 @@ export function LiveCharacterSheetRefresh({
             table: "character_gifts",
             filter:
               `character_id=eq.${characterId}`,
-          },
-          refreshSheet,
-        )
-        .subscribe(),
-
-      supabase
-        .channel(
-          `live-sheet-gifts-${characterId}`,
-        )
-        .on(
-          "postgres_changes",
-          {
-            event: "*",
-            schema: "public",
-            table: "gifts",
-          },
-          refreshSheet,
-        )
-        .subscribe(),
-
-      supabase
-        .channel(
-          `live-sheet-gift-activations-${characterId}`,
-        )
-        .on(
-          "postgres_changes",
-          {
-            event: "*",
-            schema: "public",
-            table: "gift_activations",
           },
           refreshSheet,
         )
@@ -218,16 +125,6 @@ export function LiveCharacterSheetRefresh({
       );
     }
 
-    const fallbackInterval =
-      window.setInterval(
-        () => {
-          if (!disposed) {
-            router.refresh();
-          }
-        },
-        10000,
-      );
-
     function refreshWhenVisible() {
       if (
         document.visibilityState ===
@@ -245,10 +142,6 @@ export function LiveCharacterSheetRefresh({
     return () => {
       disposed = true;
 
-      window.clearInterval(
-        fallbackInterval,
-      );
-
       if (
         refreshTimerRef.current !== null
       ) {
@@ -262,9 +155,7 @@ export function LiveCharacterSheetRefresh({
         refreshWhenVisible,
       );
 
-      for (
-        const channel of channels
-      ) {
+      for (const channel of channels) {
         void supabase.removeChannel(
           channel,
         );
