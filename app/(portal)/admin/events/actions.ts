@@ -1,7 +1,6 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
 import { requireStaff } from "@/lib/auth/require-staff";
 import {
@@ -256,7 +255,6 @@ export async function createCalendarEvent(
   }
 
   refreshEventPages();
-  redirect("/admin/events");
 }
 
 export async function updateCalendarEvent(
@@ -339,7 +337,6 @@ export async function updateCalendarEvent(
   }
 
   refreshEventPages();
-  redirect("/admin/events");
 }
 
 export async function deleteCalendarEvent(
@@ -387,5 +384,4 @@ export async function deleteCalendarEvent(
   }
 
   refreshEventPages();
-  redirect("/admin/events");
 }

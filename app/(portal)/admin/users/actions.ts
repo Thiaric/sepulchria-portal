@@ -97,7 +97,6 @@ export async function updateUserStaffRole(
   revalidatePath("/admin");
   revalidatePath("/admin/users");
 
-  redirect("/admin/users");
 }
 
 function readRequiredEmail(

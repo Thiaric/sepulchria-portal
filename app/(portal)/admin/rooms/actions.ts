@@ -1,7 +1,6 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
 import { requireStaff } from "@/lib/auth/require-staff";
 import { sanitizeRichHtml } from "@/lib/rich-text";
@@ -305,7 +304,6 @@ export async function createRoom(
   }
 
   refreshRoomPages();
-  redirect("/admin/rooms");
 }
 
 export async function updateRoom(
@@ -391,7 +389,6 @@ export async function updateRoom(
   }
 
   refreshRoomPages();
-  redirect("/admin/rooms");
 }
 
 export async function deleteRoom(
@@ -546,7 +543,6 @@ export async function deleteRoom(
   }
 
   refreshRoomPages();
-  redirect("/admin/rooms");
 }
 
 export async function createRoomConnection(
@@ -630,7 +626,6 @@ export async function createRoomConnection(
   }
 
   refreshRoomPages();
-  redirect("/admin/rooms");
 }
 
 export async function updateRoomConnection(
@@ -676,7 +671,6 @@ export async function updateRoomConnection(
   }
 
   refreshRoomPages();
-  redirect("/admin/rooms");
 }
 
 export async function deleteRoomConnection(
@@ -704,5 +698,4 @@ export async function deleteRoomConnection(
   }
 
   refreshRoomPages();
-  redirect("/admin/rooms");
 }

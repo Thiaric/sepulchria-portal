@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
+import { AdminInteractionKeeper } from "@/components/admin/admin-interaction-keeper";
 import { SubmittedCharacterBadge } from "@/components/admin/submitted-character-badge";
 import { requireStaff } from "@/lib/auth/require-staff";
 
@@ -21,6 +22,7 @@ export default async function AdminLayout({
 
   return (
     <div className="min-h-[calc(100vh-5rem)]">
+      <AdminInteractionKeeper />
       <div className="border-b border-[#60482e]/45 bg-[#100c09] px-5 py-4 sm:px-7 lg:px-9">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>

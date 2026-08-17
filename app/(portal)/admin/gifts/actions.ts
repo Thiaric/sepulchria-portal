@@ -167,7 +167,7 @@ export async function createGift(formData: FormData) {
   }
 
   refresh();
-  back("success", "Gift created successfully.");
+  return;
 }
 
 export async function updateGift(formData: FormData) {
@@ -195,7 +195,7 @@ export async function updateGift(formData: FormData) {
   }
 
   refresh();
-  back("success", "Gift updated successfully.");
+  return;
 }
 
 export async function assignGiftToCharacter(formData: FormData) {
@@ -242,7 +242,7 @@ export async function assignGiftToCharacter(formData: FormData) {
   }
 
   refresh();
-  back("success", "Gift assigned to character.");
+  return;
 }
 
 export async function removeGiftFromCharacter(formData: FormData) {
@@ -268,7 +268,7 @@ export async function removeGiftFromCharacter(formData: FormData) {
   }
 
   refresh();
-  back("success", "Gift removed from character.");
+  return;
 }
 
 export async function deleteGift(formData: FormData) {
@@ -299,5 +299,5 @@ export async function deleteGift(formData: FormData) {
   }
 
   refresh();
-  back("success", "Gift deleted.");
+  return;
 }

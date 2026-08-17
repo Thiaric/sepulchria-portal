@@ -1,7 +1,6 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
 import { requireStaff } from "@/lib/auth/require-staff";
 import { sanitizeRichHtml } from "@/lib/rich-text";
@@ -237,7 +236,6 @@ export async function createArea(
   }
 
   refreshAreaPages();
-  redirect("/admin/areas");
 }
 
 export async function updateArea(
@@ -317,7 +315,6 @@ export async function updateArea(
   }
 
   refreshAreaPages();
-  redirect("/admin/areas");
 }
 
 export async function deleteArea(
@@ -392,5 +389,4 @@ export async function deleteArea(
   }
 
   refreshAreaPages();
-  redirect("/admin/areas");
 }

@@ -1,7 +1,6 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
 import { requireStaff } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
@@ -72,7 +71,7 @@ export async function resetWeatherOverride() {
 
   if (!snapshot) {
     revalidatePath("/", "layout");
-    redirect("/admin/world?weatherReset=empty");
+    return;
   }
 
   const gameDate = effectiveGameDate(state);
@@ -112,7 +111,6 @@ export async function resetWeatherOverride() {
   });
 
   revalidatePath("/", "layout");
-  redirect("/admin/world?weatherReset=1");
 }
 
 export async function updateWorldState(formData: FormData) {
@@ -275,5 +273,4 @@ export async function updateWorldState(formData: FormData) {
   });
 
   revalidatePath("/", "layout");
-  redirect("/admin/world?saved=1");
 }
