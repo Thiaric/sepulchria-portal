@@ -37,17 +37,14 @@ export async function getCharacterActiveItemModifiers(
 ): Promise<CharacterActiveItemModifiers> {
   const supabase = await createClient();
 
-  const { error: reconcileError } = await supabase.rpc(
-    "reconcile_expired_item_effects",
-    { p_character_id: characterId },
-  );
-
-  if (reconcileError) {
-    throw new Error(
-      `Unable to reconcile expired Item effects: ${reconcileError.message}`,
-    );
-  }
-
+  // IMPORTANT:
+  // This function is called while rendering character sheets.
+  // It must remain read-only. Expired effects are already excluded by
+  // get_character_active_item_modifiers() with `expires_at > now()`.
+  //
+  // The previous D5.1 version called reconcile_expired_item_effects()
+  // here, which updated the character row during every render and could
+  // create repeated render/invalidation activity.
   const { data, error } = await supabase
     .rpc("get_character_active_item_modifiers", {
       p_character_id: characterId,
