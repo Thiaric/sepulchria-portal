@@ -1008,6 +1008,11 @@ export default function RoomMessageList({
                   );
                 }
 
+                const isOutOfCharacter =
+                  item.message
+                    .trimStart()
+                    .startsWith("//");
+
                 const isWhisper =
                   item.message_type ===
                   "whisper";
@@ -1039,9 +1044,11 @@ export default function RoomMessageList({
                   <article
   key={item.id}
   className={`flex gap-3 px-5 py-3 sm:px-7 ${
-    isWhisper
-      ? "border-l-2 border-[#7d628f] bg-[#241b2a]/45"
-      : ""
+    isOutOfCharacter
+      ? "border-l-2 border-[#627f9f] bg-[#182536]/55"
+      : isWhisper
+        ? "border-l-2 border-[#7d628f] bg-[#241b2a]/45"
+        : ""
   }`}
 >
   {/* Character identity + timestamp */}
@@ -1071,11 +1078,25 @@ export default function RoomMessageList({
 
   {/* Message */}
   <div className="min-w-0 flex-1">
-    {isWhisper ? (
-      <div className="mb-2 border-b border-[#7d628f]/35 pb-1.5">
-        <span className="text-[8px] uppercase tracking-[0.2em] text-[#c7add6]">
-          {whisperLabel}
-        </span>
+    {isWhisper || isOutOfCharacter ? (
+      <div
+        className={`mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 border-b pb-1.5 ${
+          isOutOfCharacter
+            ? "border-[#627f9f]/40"
+            : "border-[#7d628f]/35"
+        }`}
+      >
+        {isOutOfCharacter ? (
+          <span className="text-[8px] uppercase tracking-[0.2em] text-[#a9c7e6]">
+            Out of Character message
+          </span>
+        ) : null}
+
+        {isWhisper ? (
+          <span className="text-[8px] uppercase tracking-[0.2em] text-[#c7add6]">
+            {whisperLabel}
+          </span>
+        ) : null}
       </div>
     ) : null}
 

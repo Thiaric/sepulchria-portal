@@ -1114,7 +1114,7 @@ function FilterBar({
 
   return (
     <div className="mt-5 border border-[#60482e]/40 bg-[#120e0b] p-3 sm:p-4">
-      <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-2 xl:grid-cols-[minmax(220px,2fr)_repeat(6,minmax(0,1fr))]">
         <input
           value={search}
           onChange={(event) =>
@@ -1124,7 +1124,7 @@ function FilterBar({
             )
           }
           placeholder="Search Items by name..."
-          className={`${control} sm:col-span-2`}
+          className={control}
         />
 
         <select

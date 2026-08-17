@@ -552,6 +552,11 @@ function renderMessage(
   /*
    * NORMAL ROLE / WHISPER
    */
+  const isOutOfCharacter =
+    message.message
+      .trimStart()
+      .startsWith("//");
+
   const isWhisper =
     message.message_type ===
     "whisper";
@@ -566,9 +571,11 @@ function renderMessage(
 
   return `
     <article class="entry role-entry${
-      isWhisper
-        ? " whisper-entry"
-        : ""
+      isOutOfCharacter
+        ? " ooc-entry"
+        : isWhisper
+          ? " whisper-entry"
+          : ""
     }">
 
       ${renderPortrait(
@@ -580,14 +587,36 @@ function renderMessage(
       <div class="message-content">
 
         ${
-          isWhisper
+          isWhisper || isOutOfCharacter
             ? `
-              <div class="whisper-header">
-                <span class="whisper-label">
-                  ${escapeHtml(
-                    whisperLabel,
-                  )}
-                </span>
+              <div class="${
+                isOutOfCharacter
+                  ? "ooc-header"
+                  : "whisper-header"
+              }">
+                <div class="special-message-labels">
+                  ${
+                    isOutOfCharacter
+                      ? `
+                        <span class="ooc-label">
+                          Out of Character message
+                        </span>
+                      `
+                      : ""
+                  }
+
+                  ${
+                    isWhisper
+                      ? `
+                        <span class="whisper-label">
+                          ${escapeHtml(
+                            whisperLabel,
+                          )}
+                        </span>
+                      `
+                      : ""
+                  }
+                </div>
 
                 <time>
                   ${escapeHtml(
@@ -615,7 +644,7 @@ function renderMessage(
           </div>
 
           ${
-            !isWhisper
+            !isWhisper && !isOutOfCharacter
               ? `
                 <time>
                   ${escapeHtml(
@@ -1571,6 +1600,80 @@ export async function GET(
       color: #bda5cb;
 
       font-size: 7px;
+
+      letter-spacing:
+        0.14em;
+
+      text-transform:
+        uppercase;
+    }
+
+
+    /*
+     * OUT OF CHARACTER
+     */
+
+    .ooc-entry {
+      border-left:
+        2px solid
+        #627f9f;
+
+      background:
+        linear-gradient(
+          90deg,
+          rgba(
+            33,
+            58,
+            83,
+            0.34
+          ),
+          rgba(
+            22,
+            34,
+            49,
+            0.20
+          ) 58%,
+          transparent
+        );
+    }
+
+    .ooc-header {
+      display: flex;
+
+      align-items: center;
+      justify-content:
+        space-between;
+
+      gap: 10px;
+
+      margin-bottom: 3px;
+
+      border-bottom:
+        1px solid
+        rgba(
+          98,
+          127,
+          159,
+          0.38
+        );
+
+      padding-bottom: 3px;
+    }
+
+    .special-message-labels {
+      display: flex;
+      flex-wrap: wrap;
+
+      align-items: center;
+
+      gap: 5px 12px;
+    }
+
+    .ooc-label {
+      color: #a9c7e6;
+
+      font-size: 7px;
+      font-weight: 600;
 
       letter-spacing:
         0.14em;

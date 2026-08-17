@@ -1,0 +1,35 @@
+from pathlib import Path
+
+ROOT = Path.cwd()
+if not (ROOT / 'package.json').exists():
+    raise SystemExit('ERROR: Run this installer from the sepulchria-portal repository root.')
+
+replacements = []
+replacements.append(('app/(portal)/game/components/RoomMessageList.tsx', '                const isWhisper =\n                  item.message_type ===\n                  "whisper";\n', '                const isOutOfCharacter =\n                  item.message\n                    .trimStart()\n                    .startsWith("//");\n\n                const isWhisper =\n                  item.message_type ===\n                  "whisper";\n'))
+replacements.append(('app/(portal)/game/components/RoomMessageList.tsx', '  className={`flex gap-3 px-5 py-3 sm:px-7 ${\n    isWhisper\n      ? "border-l-2 border-[#7d628f] bg-[#241b2a]/45"\n      : ""\n  }`}\n>', '  className={`flex gap-3 px-5 py-3 sm:px-7 ${\n    isOutOfCharacter\n      ? "border-l-2 border-[#627f9f] bg-[#182536]/55"\n      : isWhisper\n        ? "border-l-2 border-[#7d628f] bg-[#241b2a]/45"\n        : ""\n  }`}\n>'))
+replacements.append(('app/(portal)/game/components/RoomMessageList.tsx', '    {isWhisper ? (\n      <div className="mb-2 border-b border-[#7d628f]/35 pb-1.5">\n        <span className="text-[8px] uppercase tracking-[0.2em] text-[#c7add6]">\n          {whisperLabel}\n        </span>\n      </div>\n    ) : null}\n', '    {isWhisper || isOutOfCharacter ? (\n      <div\n        className={`mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 border-b pb-1.5 ${\n          isOutOfCharacter\n            ? "border-[#627f9f]/40"\n            : "border-[#7d628f]/35"\n        }`}\n      >\n        {isOutOfCharacter ? (\n          <span className="text-[8px] uppercase tracking-[0.2em] text-[#a9c7e6]">\n            Out of Character message\n          </span>\n        ) : null}\n\n        {isWhisper ? (\n          <span className="text-[8px] uppercase tracking-[0.2em] text-[#c7add6]">\n            {whisperLabel}\n          </span>\n        ) : null}\n      </div>\n    ) : null}\n'))
+replacements.append(('app/(portal)/game/export/route.ts', '  const isWhisper =\n    message.message_type ===\n    "whisper";\n\n  const whisperLabel =\n', '  const isOutOfCharacter =\n    message.message\n      .trimStart()\n      .startsWith("//");\n\n  const isWhisper =\n    message.message_type ===\n    "whisper";\n\n  const whisperLabel =\n'))
+replacements.append(('app/(portal)/game/export/route.ts', '    <article class="entry role-entry${\n      isWhisper\n        ? " whisper-entry"\n        : ""\n    }">\n', '    <article class="entry role-entry${\n      isOutOfCharacter\n        ? " ooc-entry"\n        : isWhisper\n          ? " whisper-entry"\n          : ""\n    }">\n'))
+replacements.append(('app/(portal)/game/export/route.ts', '        ${\n          isWhisper\n            ? `\n              <div class="whisper-header">\n                <span class="whisper-label">\n                  ${escapeHtml(\n                    whisperLabel,\n                  )}\n                </span>\n\n                <time>\n                  ${escapeHtml(\n                    time,\n                  )}\n                </time>\n              </div>\n            `\n            : ""\n        }\n', '        ${\n          isWhisper || isOutOfCharacter\n            ? `\n              <div class="${\n                isOutOfCharacter\n                  ? "ooc-header"\n                  : "whisper-header"\n              }">\n                <div class="special-message-labels">\n                  ${\n                    isOutOfCharacter\n                      ? `\n                        <span class="ooc-label">\n                          Out of Character message\n                        </span>\n                      `\n                      : ""\n                  }\n\n                  ${\n                    isWhisper\n                      ? `\n                        <span class="whisper-label">\n                          ${escapeHtml(\n                            whisperLabel,\n                          )}\n                        </span>\n                      `\n                      : ""\n                  }\n                </div>\n\n                <time>\n                  ${escapeHtml(\n                    time,\n                  )}\n                </time>\n              </div>\n            `\n            : ""\n        }\n'))
+replacements.append(('app/(portal)/game/export/route.ts', '            !isWhisper\n              ? `\n', '            !isWhisper && !isOutOfCharacter\n              ? `\n'))
+replacements.append(('app/(portal)/game/export/route.ts', '    .whisper-label {\n      color: #bda5cb;\n\n      font-size: 7px;\n\n      letter-spacing:\n        0.14em;\n\n      text-transform:\n        uppercase;\n    }\n\n\n    /*\n     * ROLLS\n     */\n', '    .whisper-label {\n      color: #bda5cb;\n\n      font-size: 7px;\n\n      letter-spacing:\n        0.14em;\n\n      text-transform:\n        uppercase;\n    }\n\n\n    /*\n     * OUT OF CHARACTER\n     */\n\n    .ooc-entry {\n      border-left:\n        2px solid\n        #627f9f;\n\n      background:\n        linear-gradient(\n          90deg,\n          rgba(\n            33,\n            58,\n            83,\n            0.34\n          ),\n          rgba(\n            22,\n            34,\n            49,\n            0.20\n          ) 58%,\n          transparent\n        );\n    }\n\n    .ooc-header {\n      display: flex;\n\n      align-items: center;\n      justify-content:\n        space-between;\n\n      gap: 10px;\n\n      margin-bottom: 3px;\n\n      border-bottom:\n        1px solid\n        rgba(\n          98,\n          127,\n          159,\n          0.38\n        );\n\n      padding-bottom: 3px;\n    }\n\n    .special-message-labels {\n      display: flex;\n      flex-wrap: wrap;\n\n      align-items: center;\n\n      gap: 5px 12px;\n    }\n\n    .ooc-label {\n      color: #a9c7e6;\n\n      font-size: 7px;\n      font-weight: 600;\n\n      letter-spacing:\n        0.14em;\n\n      text-transform:\n        uppercase;\n    }\n\n\n    /*\n     * ROLLS\n     */\n'))
+
+changed = set()
+for rel, old, new in replacements:
+    path = ROOT / rel
+    if not path.exists():
+        raise SystemExit(f'ERROR: Missing expected file: {rel}')
+    text = path.read_text(encoding='utf-8')
+    if old not in text:
+        raise SystemExit(f'ERROR: Expected Phase 10 block not found in {rel}. No files after this point were intentionally changed.')
+    text = text.replace(old, new, 1)
+    path.write_text(text, encoding='utf-8')
+    changed.add(rel)
+
+for rel in sorted(changed):
+    print(f'Updated: {rel}')
+print()
+print('SUCCESS')
+print('Out-of-Character chat/export styling installed.')
+print('No SQL is required.')
+print('Now run: npm run build')
