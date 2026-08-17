@@ -887,30 +887,11 @@ export async function useRoomGift(
     }
 
     if (gift.effect_mode === "temporary") {
-      const { data: activation, error: activationError } =
-        await supabase
-          .from("gift_activations")
-          .select("id")
-          .eq("character_gift_id", characterGiftId)
-          .is("ended_at", null)
-          .gt("expires_at", new Date().toISOString())
-          .limit(1)
-          .maybeSingle();
-
-      if (activationError) {
-        return {
-          ok: false,
-          message: activationError.message,
-        };
-      }
-
-      if (!activation) {
-        return {
-          ok: false,
-          message:
-            `${gift.name} must be activated before it can be used.`,
-        };
-      }
+      return {
+        ok: false,
+        message:
+          `${gift.name} is a temporary Gift. It can only be activated when it is ready.`,
+      };
     }
 
     await insertGiftUseMessage({

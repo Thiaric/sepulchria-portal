@@ -127,7 +127,7 @@ const otherCodexNavigationItems: NavigationItem[] = [
     label: "Gifts",
     title:
       "Browse the Gifts available through Ancestries, Orders and other sources.",
-    icon: "/icons/warping.png",
+    icon: "/icons/gifts.png",
     href: "/gifts",
     activePaths: ["/gifts"],
   },

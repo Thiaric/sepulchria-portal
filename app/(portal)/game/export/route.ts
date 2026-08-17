@@ -489,13 +489,21 @@ function renderMessage(
   }
 
   /*
-   * DICE / CHECK
+   * DICE / CHECK / GIFT USE
    */
+  const isGiftUse =
+    message.message_type ===
+      "action" &&
+    message.message.startsWith(
+      '◆ used "',
+    );
+
   if (
     message.message_type ===
       "dice_roll" ||
     message.message_type ===
-      "attribute_check"
+      "attribute_check" ||
+    isGiftUse
   ) {
     const naturalTwenty =
       message.dice_sides === 20 &&
