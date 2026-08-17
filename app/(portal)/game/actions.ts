@@ -73,11 +73,11 @@ function giftDurationLabel(
     return "Passive";
   }
 
-  return "No duration";
+  return "";
 }
 
 async function insertGiftUseMessage({
-  admin,
+  supabase,
   characterId,
   roomId,
   giftName,
@@ -85,7 +85,7 @@ async function insertGiftUseMessage({
   effectMode,
   durationMinutes,
 }: {
-  admin: ReturnType<typeof createPrivilegedClient>;
+  supabase: SupabaseClient;
   characterId: string;
   roomId: string;
   giftName: string;
@@ -102,22 +102,18 @@ async function insertGiftUseMessage({
       durationMinutes,
     );
 
-  const { error } = await admin
-    .from("room_messages")
-    .insert({
-      room_id: roomId,
-      character_id: characterId,
-      message:
-        `◆ used "${giftName}" · ${description} · Duration: ${duration}`,
-      message_type: "attribute_check",
-      roll_label: null,
-      dice_sides: null,
-      dice_result: null,
-      attribute_key: null,
-      attribute_value: null,
-      roll_total: null,
-      client_nonce: crypto.randomUUID(),
-    });
+  const { error } = await supabase
+  .from("room_messages")
+  .insert({
+    room_id: roomId,
+    character_id: characterId,
+    message:
+      `◆ used "${giftName}" · ${description}${
+        duration ? ` · Duration: ${duration}` : ""
+      }`,
+    message_type: "action",
+    client_nonce: crypto.randomUUID(),
+  });
 
   if (error) {
     throw new Error(
@@ -917,10 +913,8 @@ export async function useRoomGift(
       }
     }
 
-    const admin = createPrivilegedClient();
-
     await insertGiftUseMessage({
-      admin,
+      supabase,
       characterId: character.id,
       roomId,
       giftName: gift.name,
@@ -1066,6 +1060,88 @@ export async function activateRoomGift(
       };
     }
 
+    const cooldownHours = 6;
+
+const cooldownSince = new Date(
+  Date.now() - cooldownHours * 60 * 60 * 1000,
+).toISOString();
+
+const {
+  data: recentActivation,
+  error: cooldownError,
+} = await supabase
+  .from("gift_activations")
+  .select("activated_at")
+  .eq(
+    "character_gift_id",
+    characterGiftId,
+  )
+  .gte(
+    "activated_at",
+    cooldownSince,
+  )
+  .order(
+    "activated_at",
+    {
+      ascending: false,
+    },
+  )
+  .limit(1)
+  .maybeSingle();
+
+if (cooldownError) {
+  return {
+    ok: false,
+    message:
+      `Unable to verify Gift cooldown: ${cooldownError.message}`,
+  };
+}
+
+if (recentActivation) {
+  const availableAt =
+    new Date(
+      new Date(
+        recentActivation.activated_at,
+      ).getTime() +
+        cooldownHours *
+          60 *
+          60 *
+          1000,
+    );
+
+  const remainingMs =
+    Math.max(
+      0,
+      availableAt.getTime() -
+        Date.now(),
+    );
+
+  const remainingHours =
+    Math.floor(
+      remainingMs /
+        (60 * 60 * 1000),
+    );
+
+  const remainingMinutes =
+    Math.ceil(
+      (
+        remainingMs %
+        (60 * 60 * 1000)
+      ) /
+        (60 * 1000),
+    );
+
+  return {
+    ok: false,
+    message:
+      `${gift.name} is on cooldown. You can use it again in ${
+        remainingHours
+          ? `${remainingHours}h `
+          : ""
+      }${remainingMinutes}m.`,
+  };
+}
+
     const admin = createPrivilegedClient();
 
     const {
@@ -1113,7 +1189,7 @@ export async function activateRoomGift(
 
     try {
       await insertGiftUseMessage({
-        admin,
+        supabase,
         characterId: character.id,
         roomId: character.current_room_id!,
         giftName: gift.name,

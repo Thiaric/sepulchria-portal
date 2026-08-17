@@ -205,14 +205,35 @@ async function GameContent() {
         return null;
       }
 
+      const activations =
+        ownership.activations ?? [];
+
       const activeActivation =
-        (ownership.activations ?? []).find(
+        activations.find(
           (activation) =>
             activation.ended_at === null &&
-            activation.health_reverted_at === null &&
             Date.parse(activation.activated_at) <= giftNow &&
             Date.parse(activation.expires_at) > giftNow,
         ) ?? null;
+
+      const latestActivation =
+        [...activations]
+          .sort(
+            (a, b) =>
+              Date.parse(b.activated_at) -
+              Date.parse(a.activated_at),
+          )[0] ?? null;
+
+      const cooldownUntil =
+        gift.effect_mode === "temporary" &&
+        latestActivation
+          ? new Date(
+              Date.parse(
+                latestActivation.activated_at,
+              ) +
+                6 * 60 * 60 * 1000,
+            ).toISOString()
+          : null;
 
       return {
         characterGiftId: ownership.id,
@@ -226,6 +247,11 @@ async function GameContent() {
         durationMinutes: gift.duration_minutes,
         activeUntil:
           activeActivation?.expires_at ?? null,
+        cooldownUntil:
+          cooldownUntil &&
+          Date.parse(cooldownUntil) > giftNow
+            ? cooldownUntil
+            : null,
       };
     })
     .filter(

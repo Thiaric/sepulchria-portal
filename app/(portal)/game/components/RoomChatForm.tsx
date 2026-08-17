@@ -100,6 +100,7 @@ type ChatGift = {
     | "temporary";
   durationMinutes: number | null;
   activeUntil: string | null;
+  cooldownUntil: string | null;
 };
 
 type AttributeBreakdown = Record<
@@ -178,6 +179,33 @@ export default function RoomChatForm({
       null,
     [gifts, selectedGiftId],
   );
+
+  const selectedGiftIsActive =
+    selectedGift?.effectMode === "temporary" &&
+    Boolean(selectedGift.activeUntil);
+
+  const selectedGiftIsOnCooldown =
+    selectedGift?.effectMode === "temporary" &&
+    !selectedGiftIsActive &&
+    Boolean(selectedGift?.cooldownUntil);
+
+  function giftCooldownLabel(cooldownUntil: string) {
+    const remainingMs = Math.max(
+      0,
+      Date.parse(cooldownUntil) - Date.now(),
+    );
+
+    const hours = Math.floor(
+      remainingMs / (60 * 60 * 1000),
+    );
+
+    const minutes = Math.ceil(
+      (remainingMs % (60 * 60 * 1000)) /
+        (60 * 1000),
+    );
+
+    return `${hours ? `${hours}h ` : ""}${minutes}m`;
+  }
 
   const [value, setValue] =
     useState("");
@@ -1043,17 +1071,37 @@ function ignoreSpellingWord() {
                 ))}
               </select>
 
-              {selectedGift?.effectMode ===
-                "temporary" &&
-              !selectedGift.activeUntil ? (
-                <button
-                  type="submit"
-                  formAction={giftAction}
-                  formNoValidate
-                  className="border border-[#85653c] bg-[#342617] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[#efd4a0] transition hover:bg-[#4a351f]"
-                >
-                  Activate Gift
-                </button>
+              {selectedGift?.effectMode === "temporary" ? (
+                selectedGiftIsActive ? (
+                  <button
+                    type="button"
+                    disabled
+                    className="cursor-not-allowed border border-[#59432c]/35 bg-[#17120e] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[#756958] opacity-60"
+                  >
+                    Active
+                  </button>
+                ) : selectedGiftIsOnCooldown &&
+                  selectedGift?.cooldownUntil ? (
+                  <button
+                    type="button"
+                    disabled
+                    className="cursor-not-allowed border border-[#59432c]/35 bg-[#17120e] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[#756958] opacity-60"
+                  >
+                    Cooldown{" "}
+                    {giftCooldownLabel(
+                      selectedGift.cooldownUntil,
+                    )}
+                  </button>
+                ) : (
+                  <button
+                    type="submit"
+                    formAction={giftAction}
+                    formNoValidate
+                    className="border border-[#85653c] bg-[#342617] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[#efd4a0] transition hover:bg-[#4a351f]"
+                  >
+                    Activate Gift
+                  </button>
+                )
               ) : (
                 <button
                   type="submit"

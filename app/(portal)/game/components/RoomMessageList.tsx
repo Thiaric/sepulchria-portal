@@ -911,11 +911,19 @@ export default function RoomMessageList({
                   );
                 }
 
+                const isGiftUse =
+                  item.message_type ===
+                    "action" &&
+                  item.message.startsWith(
+                    '◆ used "',
+                  );
+
                 if (
                   item.message_type ===
                     "dice_roll" ||
                   item.message_type ===
-                    "attribute_check"
+                    "attribute_check" ||
+                  isGiftUse
                 ) {
                   const isNaturalTwenty =
                     item.dice_sides ===
