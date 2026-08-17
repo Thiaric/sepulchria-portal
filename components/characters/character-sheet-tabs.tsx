@@ -5,18 +5,20 @@ import { useState } from "react";
 
 type TabId =
   | "short"
-  | "description"
-  | "notes"
+  | "profile"
+  | "inventory"
   | "gifts"
   | "warping"
+  | "offgame"
   | "edit";
 
 const PUBLIC_TABS: { id: TabId; label: string }[] = [
   { id: "short", label: "In Short" },
-  { id: "description", label: "Description" },
-  { id: "notes", label: "Notes" },
+  { id: "profile", label: "Profile" },
+  { id: "inventory", label: "Inventory" },
   { id: "gifts", label: "Feats" },
   { id: "warping", label: "Warping" },
+  { id: "offgame", label: "Offgame" },
 ];
 
 export function CharacterSheetTabs({
@@ -75,10 +77,11 @@ export function CharacterSheetTabs({
       <style>{`
         .character-sheet-tabs [data-character-sheet-panel] { display: none; }
         .character-sheet-tabs[data-character-sheet-active-tab="short"] [data-character-sheet-panel="short"],
-        .character-sheet-tabs[data-character-sheet-active-tab="description"] [data-character-sheet-panel="description"],
-        .character-sheet-tabs[data-character-sheet-active-tab="notes"] [data-character-sheet-panel="notes"],
+        .character-sheet-tabs[data-character-sheet-active-tab="profile"] [data-character-sheet-panel="profile"],
+        .character-sheet-tabs[data-character-sheet-active-tab="inventory"] [data-character-sheet-panel="inventory"],
         .character-sheet-tabs[data-character-sheet-active-tab="gifts"] [data-character-sheet-panel="gifts"],
         .character-sheet-tabs[data-character-sheet-active-tab="warping"] [data-character-sheet-panel="warping"],
+        .character-sheet-tabs[data-character-sheet-active-tab="offgame"] [data-character-sheet-panel="offgame"],
         .character-sheet-tabs[data-character-sheet-active-tab="edit"] [data-character-sheet-panel="edit"] {
           display: block;
         }

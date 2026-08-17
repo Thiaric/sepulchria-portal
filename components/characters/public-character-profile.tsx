@@ -221,7 +221,7 @@ export function PublicCharacterProfileView({
           </section>
         </div>
 
-        <div data-character-sheet-panel="description">
+        <div data-character-sheet-panel="profile">
           <section className="grid gap-4 md:grid-cols-2">
         <ProfileSection
           title="Physical Description"
@@ -239,19 +239,18 @@ export function PublicCharacterProfileView({
           <div className="mt-4">
             <ProfileSection title="Biography" content={character.biography} />
           </div>
+
+          <div className="mt-4">
+            <ProfileSection
+              title="Public Notes"
+              content={character.public_notes}
+              subtle
+            />
+          </div>
         </div>
 
-        <div data-character-sheet-panel="notes">
-          <ProfileSection
-            title="Public Notes"
-            content={character.public_notes}
-            subtle
-          />
-          {!character.public_notes ? (
-            <section className="border border-[#60482e]/35 bg-[#130f0c] p-6 text-center">
-              <p className="font-serif text-sm text-[#8f8271]">No public notes have been shared.</p>
-            </section>
-          ) : null}
+        <div data-character-sheet-panel="inventory">
+          <div className="min-h-28 border border-[#60482e]/35 bg-[#130f0c]" />
         </div>
 
         <div data-character-sheet-panel="gifts">
@@ -260,6 +259,14 @@ export function PublicCharacterProfileView({
 
         <div data-character-sheet-panel="warping">
           <div className="min-h-28 border border-[#60482e]/35 bg-[#130f0c]" />
+        </div>
+
+        <div data-character-sheet-panel="offgame">
+          <ProfileSection
+            title="Offgame"
+            content={character.offgame}
+            subtle
+          />
         </div>
       </CharacterSheetTabs>
     </article>

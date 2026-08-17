@@ -45,6 +45,7 @@ type CharacterProfile = {
   personality?: string | null;
   biography?: string | null;
   public_notes?: string | null;
+  offgame?: string | null;
   portrait_url?: string | null;
   music_url?: string | null;
   display_name?: string | null;
@@ -117,6 +118,7 @@ export default async function CharacterPage({
       personality,
       biography,
       public_notes,
+      offgame,
       portrait_url,
       music_url,
       display_name,
@@ -429,7 +431,7 @@ export function Profile({
             </section>
           </div>
 
-          <div data-character-sheet-panel="description">
+          <div data-character-sheet-panel="profile">
             <section className="grid gap-4 md:grid-cols-2">
           <ProfileTextSection
             title="Physical description"
@@ -448,14 +450,18 @@ export function Profile({
                 value={character.biography}
               />
             </div>
+
+            <div className="mt-4">
+              <ProfileTextSection
+                title="Public notes"
+                value={character.public_notes}
+                subtle
+              />
+            </div>
           </div>
 
-          <div data-character-sheet-panel="notes">
-            <ProfileTextSection
-              title="Public notes"
-              value={character.public_notes}
-              subtle
-            />
+          <div data-character-sheet-panel="inventory">
+            <div className="min-h-28 border border-[#60482e]/35 bg-[#130f0c]" />
           </div>
 
           <div data-character-sheet-panel="gifts">
@@ -466,6 +472,14 @@ export function Profile({
 
           <div data-character-sheet-panel="warping">
             <div className="min-h-28 border border-[#60482e]/35 bg-[#130f0c]" />
+          </div>
+
+          <div data-character-sheet-panel="offgame">
+            <ProfileTextSection
+              title="Offgame"
+              value={character.offgame}
+              subtle
+            />
           </div>
 
           <div data-character-sheet-panel="edit">
@@ -590,6 +604,15 @@ export function Profile({
                   name="public_notes"
                   defaultValue={
                     character.public_notes
+                  }
+                  rows={6}
+                />
+
+                <ApprovedProfileTextArea
+                  label="Offgame"
+                  name="offgame"
+                  defaultValue={
+                    character.offgame
                   }
                   rows={6}
                 />

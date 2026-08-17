@@ -1,4 +1,4 @@
-﻿"use server";
+"use server";
 
 import {
   createClient as createAdminClient,
@@ -420,6 +420,14 @@ export async function updateCharacterAdministration(
       10000,
     );
 
+  const offgame =
+    readOptionalText(
+      formData.get(
+        "offgame",
+      ),
+      10000,
+    );
+
   const attributes =
     readOptionalAttributes(
       formData,
@@ -517,6 +525,7 @@ export async function updateCharacterAdministration(
       personality,
       biography,
       public_notes,
+      offgame,
       muscles,
       reflexes,
       vigor,
@@ -899,6 +908,7 @@ currentHealth =
     biography,
     public_notes:
       publicNotes,
+    offgame,
     ...attributes,
     current_health:
       currentHealth,
@@ -996,6 +1006,8 @@ currentHealth =
             character.biography,
           public_notes:
             character.public_notes,
+          offgame:
+            character.offgame,
           muscles:
             character.muscles,
           reflexes:

@@ -398,6 +398,17 @@ if (
         10000,
       ) || null,
 
+    ...(mode === "update"
+      ? {
+          offgame:
+            text(
+              formData,
+              "offgame",
+              10000,
+            ) || null,
+        }
+      : {}),
+
       gender,
 
 sexual_orientation:
@@ -723,6 +734,12 @@ export async function updateApprovedCharacterProfile(
     10000,
   );
 
+  const offgame = text(
+    formData,
+    "offgame",
+    10000,
+  );
+
   const sexualOrientation =
   text(
     formData,
@@ -787,6 +804,9 @@ export async function updateApprovedCharacterProfile(
 
     public_notes:
       publicNotes || null,
+
+    offgame:
+      offgame || null,
 
     updated_at:
       new Date().toISOString(),

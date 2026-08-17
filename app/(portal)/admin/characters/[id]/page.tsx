@@ -91,6 +91,7 @@ type CharacterRow = {
   physical_description: string | null;
   personality: string | null;
   public_notes: string | null;
+  offgame: string | null;
   title: string | null;
   race_id: string | null;
   staff_notes: string | null;
@@ -215,6 +216,7 @@ export default async function AdminCharacterPage({
         physical_description,
         personality,
         public_notes,
+        offgame,
         title,
         race_id,
         staff_notes,
@@ -602,6 +604,13 @@ export default async function AdminCharacterPage({
                 character.public_notes
               }
             />
+
+            <CharacterTextSection
+              title="Offgame"
+              content={
+                character.offgame
+              }
+            />
           </div>
 
           <section className="h-fit border border-[#60482e]/45 bg-[#15100d] p-5 sm:p-6">
@@ -826,6 +835,19 @@ export default async function AdminCharacterPage({
                     maxLength={10000}
                     defaultValue={
                       character.public_notes ??
+                      ""
+                    }
+                    className="w-full resize-y border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm leading-6 text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                  />
+                </AdminField>
+
+                <AdminField label="Offgame">
+                  <textarea
+                    name="offgame"
+                    rows={6}
+                    maxLength={10000}
+                    defaultValue={
+                      character.offgame ??
                       ""
                     }
                     className="w-full resize-y border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm leading-6 text-[#d7c4a5] outline-none focus:border-[#a17a49]"

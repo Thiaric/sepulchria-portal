@@ -376,6 +376,16 @@ export default function CharacterForm({
             <Area label="Personality" name="personality" required rows={9} maxLength={10000} defaultValue={character?.personality} />
             <Area label="Biography" name="biography" required rows={14} maxLength={20000} defaultValue={character?.biography} />
             <Area label="Public notes" name="public_notes" rows={7} maxLength={10000} defaultValue={character?.public_notes} />
+
+            {mode === "update" ? (
+              <Area
+                label="Offgame"
+                name="offgame"
+                rows={7}
+                maxLength={10000}
+                defaultValue={character?.offgame}
+              />
+            ) : null}
           </div>
         </section>
 
