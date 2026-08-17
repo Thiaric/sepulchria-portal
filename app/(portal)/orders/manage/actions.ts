@@ -1014,7 +1014,7 @@ export async function headAssignOrderGift(
 
     if (giftError || !gift) {
       throw new Error(
-        "Gift is not active or does not exist.",
+        "Feat is not active or does not exist.",
       );
     }
 
@@ -1036,7 +1036,7 @@ export async function headAssignOrderGift(
       !eligibility
     ) {
       throw new Error(
-        "This Gift is not available through the member's current Role.",
+        "This Feat is not available through the member's current Role.",
       );
     }
 
@@ -1093,7 +1093,7 @@ export async function headAssignOrderGift(
     if (error || !assignment) {
       throw new Error(
         error?.message ??
-          "Gift assignment could not be created.",
+          "Feat assignment could not be created.",
       );
     }
 
@@ -1110,14 +1110,14 @@ export async function headAssignOrderGift(
       "error",
       error instanceof Error
         ? error.message
-        : "Unable to assign Gift.",
+        : "Unable to assign Feat.",
     );
   }
 
   back(
     orderId,
     "success",
-    "Order Gift assigned.",
+    "Order Feat assigned.",
   );
 }
 
@@ -1196,7 +1196,7 @@ export async function headRemoveOrderGift(
       !assignment
     ) {
       throw new Error(
-        "Gift assignment not found.",
+        "Feat assignment not found.",
       );
     }
 
@@ -1205,7 +1205,7 @@ export async function headRemoveOrderGift(
       "order"
     ) {
       throw new Error(
-        "Order Heads can remove only Gifts assigned through an Order.",
+        "Order Heads can remove only Feats assigned through an Order.",
       );
     }
 
@@ -1231,7 +1231,7 @@ export async function headRemoveOrderGift(
       orderId
     ) {
       throw new Error(
-        "This Gift was not assigned through this Order.",
+        "This Feat was not assigned through this Order.",
       );
     }
 
@@ -1260,13 +1260,13 @@ export async function headRemoveOrderGift(
       "error",
       error instanceof Error
         ? error.message
-        : "Unable to remove Gift.",
+        : "Unable to remove Feat.",
     );
   }
 
   back(
     orderId,
     "success",
-    "Order Gift removed.",
+    "Order Feat removed.",
   );
 }

@@ -58,11 +58,11 @@ export function OrderHeadGiftManager({
       <div className="flex flex-wrap items-end justify-between gap-2">
         <div>
           <p className="text-[7px] uppercase tracking-[0.14em] text-[#756958]">
-            Order Gifts
+            Order Feats
           </p>
 
           <p className="mt-1 text-[9px] leading-4 text-[#6f665a]">
-            Gifts available through this member&apos;s current Role.
+            Feats available through this member&apos;s current Role.
           </p>
         </div>
 
@@ -137,7 +137,7 @@ export function OrderHeadGiftManager({
                       type="submit"
                       className="border border-[#765937]/55 bg-[#261b12] px-3 py-2 text-[7px] uppercase tracking-[0.12em] text-[#ccb083]"
                     >
-                      Assign Gift
+                      Assign Feat
                     </button>
                   </form>
                 ) : isOrderOwned ? (
@@ -171,12 +171,12 @@ export function OrderHeadGiftManager({
                       type="submit"
                       className="border border-red-900/45 bg-red-950/15 px-3 py-2 text-[7px] uppercase tracking-[0.12em] text-red-300"
                     >
-                      Remove Gift
+                      Remove Feat
                     </button>
                   </form>
                 ) : (
                   <p className="mt-3 text-[8px] italic leading-4 text-[#6d6254]">
-                    This character already owns this Gift through {owned.source}; the Order does not create a duplicate.
+                    This character already owns this Feat through {owned.source}; the Order does not create a duplicate.
                   </p>
                 )}
               </div>
@@ -185,7 +185,7 @@ export function OrderHeadGiftManager({
         </div>
       ) : (
         <p className="mt-3 text-[9px] italic text-[#6d6254]">
-          No active Gifts are linked to this Role.
+          No active Feats are linked to this Role.
         </p>
       )}
     </div>

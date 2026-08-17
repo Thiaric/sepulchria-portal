@@ -226,10 +226,10 @@ export default function CharacterForm({
               <div className="flex flex-wrap items-end justify-between gap-3">
                 <div>
                   <p className="text-[9px] uppercase tracking-[0.22em] text-[#806b50]">
-                    Ancestry Gifts
+                    Ancestry Feats
                   </p>
                   <p className="mt-2 text-xs leading-6 text-[#8f8271]">
-                    Choose up to two Gifts available to {race.name}.
+                    Choose up to two Feats available to {race.name}.
                   </p>
                 </div>
                 <p className="text-[8px] uppercase tracking-[0.14em] text-[#756958]">
@@ -275,7 +275,7 @@ export default function CharacterForm({
                 </div>
               ) : (
                 <p className="mt-4 text-xs italic text-[#746958]">
-                  No active Ancestry Gifts are currently available for {race.name}.
+                  No active Ancestry Feats are currently available for {race.name}.
                 </p>
               )}
             </div>
@@ -391,7 +391,7 @@ export default function CharacterForm({
               Ancestry: <span className="text-[#d6bd91]">{race?.name ?? "Not selected"}</span>.
               {mode === "create" ? (
                 <>
-                  {" "}Ancestry Gifts:{" "}
+                  {" "}Ancestry Feats:{" "}
                   <span className="text-[#d6bd91]">
                     {selectedAncestryGifts.length
                       ? selectedAncestryGifts.map((gift) => gift.name).join(", ")

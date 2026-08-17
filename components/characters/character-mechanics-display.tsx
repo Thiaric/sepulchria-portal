@@ -133,7 +133,7 @@ export async function CharacterMechanicsDisplay({
                                 : "text-[#b99765]"
                             }
                           >
-                            {signed(entry.gifts)} Gifts
+                            {signed(entry.gifts)} Feats
                           </span>{" "}
                           ={" "}
                           <span className="text-[#99866a]">

@@ -49,7 +49,7 @@ export default async function GiftsPage() {
 
   if (error) {
     throw new Error(
-      `Unable to load Gifts: ${error.message}`,
+      `Unable to load Feats: ${error.message}`,
     );
   }
 
@@ -134,7 +134,7 @@ export default async function GiftsPage() {
           <div className="mt-1 flex flex-wrap items-end justify-between gap-4">
             <div>
               <h1 className="font-serif text-4xl text-[#ead5ac]">
-                Gifts
+                Feats
               </h1>
 
               <p className="mt-2 max-w-3xl text-xs leading-6 text-[#9f927f]">
@@ -143,7 +143,7 @@ export default async function GiftsPage() {
             </div>
 
             <p className="text-[8px] uppercase tracking-[0.14em] text-[#766a59]">
-              {gifts.length} active Gifts
+              {gifts.length} active Feats
             </p>
           </div>
         </header>

@@ -450,7 +450,7 @@ function AdminGiftsContext() {
       />
 
       <p className="text-xs leading-6 text-[#938673]">
-        Jump directly to a Gift
+        Jump directly to a Feat
         definition.
       </p>
 
@@ -460,7 +460,7 @@ function AdminGiftsContext() {
         className="mt-4 flex w-full items-center justify-between gap-3 border border-[#765937]/55 bg-[#21180f] px-3 py-3 text-left transition hover:border-[#a17a49] hover:bg-[#2b1f14]"
       >
         <span className="text-[8px] uppercase tracking-[0.16em] text-[#d2b383]">
-          Create new Gift
+          Create new Feat
         </span>
 
         <span
@@ -485,7 +485,7 @@ function AdminGiftsContext() {
                 event.target.value,
               )
             }
-            placeholder="Search Gifts..."
+            placeholder="Search Feats..."
             className="mt-2 w-full border border-[#59432c]/45 bg-[#100c09] px-3 py-2.5 text-xs text-[#d4bea0] outline-none placeholder:text-[#665b4d] focus:border-[#987344]"
           />
         </label>
@@ -495,7 +495,7 @@ function AdminGiftsContext() {
 
       <div className="mb-2 flex items-center justify-between gap-3">
         <p className="text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
-          Created Gifts
+          Created Feats
         </p>
 
         <span className="text-[7px] uppercase tracking-[0.12em] text-[#6f6353]">
@@ -508,7 +508,7 @@ function AdminGiftsContext() {
 
       {error ? (
         <p className="mb-3 border border-[#743d35] bg-[#2a1512] p-3 text-[11px] leading-5 text-[#d8a49a]">
-          The Gift list could not
+          The Feat list could not
           be loaded.
         </p>
       ) : null}
@@ -567,7 +567,7 @@ function AdminGiftsContext() {
         !error &&
         filteredEntries.length === 0 ? (
           <p className="border border-[#59432c]/30 bg-[#100c09]/60 p-3 text-[11px] leading-5 text-[#8f8271]">
-            No Gifts match this
+            No Feats match this
             search.
           </p>
         ) : null}
@@ -3109,6 +3109,7 @@ type AreaContextRoom = {
   id: string;
   name: string;
   slug: string;
+  image_url: string | null;
   sort_order: number | null;
 };
 
@@ -3165,7 +3166,7 @@ function AreaContext({
       } = await supabase
         .from("rooms")
         .select(
-          "id, name, slug, sort_order",
+          "id, name, slug, image_url, sort_order",
         )
         .eq("area_id", area.id)
         .eq("is_active", true)
@@ -3198,6 +3199,11 @@ function AreaContext({
             id: String(room.id),
             name: String(room.name),
             slug: String(room.slug),
+            image_url:
+              typeof room.image_url === "string" &&
+              room.image_url.trim()
+                ? room.image_url
+                : null,
             sort_order:
               room.sort_order === null
                 ? null
@@ -3292,15 +3298,30 @@ function AreaContext({
                       room.slug,
                     )
                   }
-                  className="group flex w-full items-center justify-between gap-3 border border-[#59432c]/40 bg-[#100c09] px-3 py-3 text-left transition hover:border-[#8d693e] hover:bg-[#1d150f]"
+                  className="group flex w-full items-center gap-3 overflow-hidden border border-[#59432c]/40 bg-[#100c09] p-2 text-left transition hover:border-[#8d693e] hover:bg-[#1d150f]"
                 >
-                  <span className="min-w-0 font-serif text-sm text-[#cbb28a] transition group-hover:text-[#ead0a0]">
+                  <span className="relative h-11 w-16 shrink-0 overflow-hidden border border-[#59432c]/45 bg-[#0b0806]">
+                    {room.image_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={room.image_url}
+                        alt=""
+                        className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                      />
+                    ) : (
+                      <span className="flex h-full w-full items-center justify-center text-[6px] uppercase tracking-[0.12em] text-[#5f5446]">
+                        No image
+                      </span>
+                    )}
+                  </span>
+
+                  <span className="min-w-0 flex-1 font-serif text-sm leading-4 text-[#cbb28a] transition group-hover:text-[#ead0a0]">
                     {room.name}
                   </span>
 
                   <span
                     aria-hidden="true"
-                    className="shrink-0 text-[10px] text-[#725a3d] transition group-hover:translate-x-0.5 group-hover:text-[#b88a52]"
+                    className="shrink-0 pr-1 text-[10px] text-[#725a3d] transition group-hover:translate-x-0.5 group-hover:text-[#b88a52]"
                   >
                     ↓
                   </span>

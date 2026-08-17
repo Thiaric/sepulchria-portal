@@ -74,11 +74,11 @@ export function AdminAncestryGiftSelector({
   return (
     <div className="border border-[#60482e]/45 bg-[#100c09] p-4">
       <p className="text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
-        Ancestry Gifts
+        Ancestry Feats
       </p>
 
       <p className="mt-2 text-xs leading-5 text-[#8f8271]">
-        Choose up to two Gifts available to the selected Ancestry. Changing
+        Choose up to two Feats available to the selected Ancestry. Changing
         Ancestry removes selections that are no longer eligible.
       </p>
 
@@ -129,7 +129,7 @@ export function AdminAncestryGiftSelector({
         </div>
       ) : (
         <p className="mt-4 text-[10px] italic text-[#746958]">
-          No active Ancestry Gifts are available for this Ancestry.
+          No active Ancestry Feats are available for this Ancestry.
         </p>
       )}
 

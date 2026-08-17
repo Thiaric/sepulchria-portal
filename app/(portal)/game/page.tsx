@@ -188,7 +188,7 @@ async function GameContent() {
 
   if (ownedGiftError) {
     throw new Error(
-      `Unable to load character Gifts: ${ownedGiftError.message}`,
+      `Unable to load character Feats: ${ownedGiftError.message}`,
     );
   }
 

@@ -964,7 +964,7 @@ function ignoreSpellingWord() {
                         }: {breakdown.base ?? "—"} Base{" "}
                         {formatSigned(
                           breakdown.gifts,
-                        )} Gifts ={" "}
+                        )} Feats ={" "}
                         {breakdown.adjustedBase ?? "—"} Adjusted Base{" "}
                         {formatSigned(
                           breakdown.ancestry,
@@ -1066,7 +1066,7 @@ function ignoreSpellingWord() {
                         ? gift.activeUntil
                           ? "Active"
                           : `${gift.durationMinutes ?? "?"} min`
-                        : "Gift"}
+                        : "Feat"}
                   </option>
                 ))}
               </select>
@@ -1099,7 +1099,7 @@ function ignoreSpellingWord() {
                     formNoValidate
                     className="border border-[#85653c] bg-[#342617] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[#efd4a0] transition hover:bg-[#4a351f]"
                   >
-                    Activate Gift
+                    Activate Feat
                   </button>
                 )
               ) : (
@@ -1109,7 +1109,7 @@ function ignoreSpellingWord() {
                   formNoValidate
                   className="border border-[#765937] bg-[#21190f] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[#d6bb8d] transition hover:border-[#a17a49]"
                 >
-                  Use Gift
+                  Use Feat
                 </button>
               )}
 

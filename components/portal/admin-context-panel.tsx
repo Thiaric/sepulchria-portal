@@ -263,11 +263,11 @@ function AdminGiftsJumpContext() {
       </p>
 
       <h2 className="mt-1 font-serif text-xl text-[#d8bf91]">
-        Jump to Gifts
+        Jump to Feats
       </h2>
 
       <p className="mt-2 text-[11px] leading-5 text-[#8f8271]">
-        Search the Gift catalogue
+        Search the Feats catalogue
         and jump directly to the
         definition you want to edit.
       </p>
@@ -283,7 +283,7 @@ function AdminGiftsJumpContext() {
 
       <label className="mt-3 block">
         <span className="text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
-          Search Gifts
+          Search Feats
         </span>
 
         <input
@@ -301,7 +301,7 @@ function AdminGiftsJumpContext() {
           {query
             ? ` / ${entries.length}`
             : ""}{" "}
-          Gifts
+          Feats
         </span>
       </label>
 
@@ -371,8 +371,8 @@ function AdminGiftsJumpContext() {
           0 ? (
           <p className="border border-[#59432c]/30 bg-[#100c09]/60 p-3 text-[11px] text-[#8f8271]">
             {query
-              ? "No Gifts match this search."
-              : "No Gifts found."}
+              ? "No Feats match this search."
+              : "No Feats found."}
           </p>
         ) : null}
       </div>

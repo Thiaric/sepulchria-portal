@@ -535,7 +535,7 @@ export default async function ManageOrdersPage({
                     <Notice
                       key={order.id}
                       error
-                      text={`Unable to load Gifts for ${order.name}.`}
+                      text={`Unable to load Feats for ${order.name}.`}
                     />
                   );
                 }

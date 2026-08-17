@@ -69,7 +69,7 @@ export default async function CreateCharacterPage({
 
   if (giftsError) {
     throw new Error(
-      `Unable to load Ancestry Gifts: ${giftsError.message}`,
+      `Unable to load Ancestry Feats: ${giftsError.message}`,
     );
   }
 

@@ -72,7 +72,7 @@ function giftValues(formData: FormData) {
   const effectMode = requiredText(formData, "effectMode", "Effect mode");
 
   if (!["none", "passive", "temporary"].includes(effectMode)) {
-    throw new Error("Invalid Gift effect mode.");
+    throw new Error("Invalid Feat effect mode.");
   }
 
   const durationMinutes =
@@ -81,7 +81,7 @@ function giftValues(formData: FormData) {
       : null;
 
   if (effectMode === "temporary" && (!durationMinutes || durationMinutes <= 0)) {
-    throw new Error("Temporary Gifts need a duration greater than 0 minutes.");
+    throw new Error("Temporary Feats need a duration greater than 0 minutes.");
   }
 
   return {

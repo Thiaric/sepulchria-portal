@@ -124,9 +124,9 @@ const otherCodexNavigationItems: NavigationItem[] = [
     disabled: true,
   },
   {
-    label: "Gifts",
+    label: "Feats",
     title:
-      "Browse the Gifts available through Ancestries, Orders and other sources.",
+      "Browse the Feats available for Characters through Ancestries, Orders and other sources.",
     icon: "/icons/gifts.png",
     href: "/gifts",
     activePaths: ["/gifts"],

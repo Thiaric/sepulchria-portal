@@ -322,7 +322,7 @@ export default async function AdminCharacterPage({
     selectedAncestryGiftResult.error
   ) {
     throw new Error(
-      `Unable to load character Ancestry Gifts: ${
+      `Unable to load character Ancestry Feats: ${
         ancestryGiftResult.error?.message ??
         selectedAncestryGiftResult.error?.message
       }`,

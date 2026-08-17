@@ -101,7 +101,7 @@ export async function CharacterGiftsDisplay({
 
   if (error) {
     throw new Error(
-      `Unable to load character Gifts: ${error.message}`,
+      `Unable to load character Feats: ${error.message}`,
     );
   }
 
@@ -116,10 +116,10 @@ export async function CharacterGiftsDisplay({
     return (
       <section className={shell}>
         <p className="text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
-          Character Gifts
+          Character Feats
         </p>
         <p className="mt-2 text-[10px] italic leading-5 text-[#756957]">
-          No Gifts have been assigned.
+          No Feats have been assigned.
         </p>
       </section>
     );
@@ -132,10 +132,10 @@ export async function CharacterGiftsDisplay({
       <div className="flex items-end justify-between gap-3">
         <div>
           <p className="text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
-            Character Gifts
+            Character Feats
           </p>
           <h2 className="mt-1 font-serif text-xl text-[#dec89f]">
-            Gifts
+            Feats
           </h2>
         </div>
 

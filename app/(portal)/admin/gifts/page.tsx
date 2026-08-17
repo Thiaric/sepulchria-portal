@@ -103,7 +103,7 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
     charactersResult.error;
 
   if (firstError) {
-    throw new Error(`Unable to load Gift management: ${firstError.message}`);
+    throw new Error(`Unable to load Feat management: ${firstError.message}`);
   }
 
   const gifts = (giftsResult.data ?? []) as unknown as Gift[];
@@ -139,11 +139,11 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
             Administration
           </p>
           <h1 className="mt-2 font-serif text-4xl text-[#ead5ac]">
-            Gift Management
+            Feat Management
           </h1>
           <p className="mt-3 max-w-3xl text-sm leading-7 text-[#a99b89]">
-            Create Gifts, configure Attribute effects, link Ancestries and
-            Order Roles, and assign Gifts directly to characters.
+            Create Feats, configure Attribute effects, link Ancestries and
+            Order Roles, and assign Feats directly to characters.
           </p>
         </div>
 
@@ -164,10 +164,10 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
           className="mt-8 scroll-mt-6 border border-[#60482e]/45 bg-[#15100d] p-5 sm:p-6"
         >
           <p className="text-[9px] uppercase tracking-[0.24em] text-[#8c704b]">
-            New Gift
+            New Feat
           </p>
           <h2 className="mt-2 font-serif text-2xl text-[#dfc99f]">
-            Create a Gift
+            Create a Feat
           </h2>
 
           <GiftForm
@@ -242,7 +242,7 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
                       type="submit"
                       className="border border-[#987344] bg-[#3b2919] px-4 py-2.5 text-[8px] uppercase tracking-[0.16em] text-[#efd6a8]"
                     >
-                      Assign Gift
+                      Assign Feat
                     </button>
                   </form>
 
@@ -289,7 +289,7 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
                       type="submit"
                       className="border border-red-900/55 bg-red-950/20 px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-red-300"
                     >
-                      Delete Gift
+                      Delete Feat
                     </button>
                   </form>
                 </div>
@@ -441,7 +441,7 @@ function GiftForm({
           type="submit"
           className="border border-[#987344] bg-[#3b2919] px-5 py-3 text-[9px] uppercase tracking-[0.18em] text-[#efd6a8]"
         >
-          {gift ? "Save Gift" : "Create Gift"}
+          {gift ? "Save Feat" : "Create Feat"}
         </button>
       </div>
     </form>

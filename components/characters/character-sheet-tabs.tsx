@@ -15,7 +15,7 @@ const PUBLIC_TABS: { id: TabId; label: string }[] = [
   { id: "short", label: "In Short" },
   { id: "description", label: "Description" },
   { id: "notes", label: "Notes" },
-  { id: "gifts", label: "Gifts" },
+  { id: "gifts", label: "Feats" },
   { id: "warping", label: "Warping" },
 ];
 

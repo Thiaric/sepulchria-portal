@@ -131,7 +131,7 @@ export async function applyGiftOwnershipHealthEffects(
   if (error || !assignment) {
     throw new Error(
       error?.message ??
-        "Gift assignment not found.",
+        "Feat assignment not found.",
     );
   }
 
@@ -183,7 +183,7 @@ export async function removeGiftOwnershipHealthEffects(
   if (error || !assignment) {
     throw new Error(
       error?.message ??
-        "Gift assignment not found.",
+        "Feat assignment not found.",
     );
   }
 

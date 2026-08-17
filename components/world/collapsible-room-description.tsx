@@ -27,7 +27,16 @@ export function CollapsibleRoomDescription({
       () =>
         stripRichTextForPreview(
           body,
-        ),
+        )
+          .replace(
+            /\[Image\]/gi,
+            "",
+          )
+          .replace(
+            /\s+/g,
+            " ",
+          )
+          .trim(),
       [body],
     );
 

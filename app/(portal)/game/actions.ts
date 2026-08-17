@@ -117,7 +117,7 @@ async function insertGiftUseMessage({
 
   if (error) {
     throw new Error(
-      `Unable to announce Gift use: ${error.message}`,
+      `Unable to announce Feat use: ${error.message}`,
     );
   }
 }
@@ -870,7 +870,7 @@ export async function useRoomGift(
         ok: false,
         message:
           ownershipError?.message ??
-          "This Gift is not owned by your character.",
+          "This Feat is not owned by your character.",
       };
     }
 
@@ -882,7 +882,7 @@ export async function useRoomGift(
     if (!gift || !gift.is_active) {
       return {
         ok: false,
-        message: "This Gift is not currently available.",
+        message: "This Feat is not currently available.",
       };
     }
 
@@ -923,7 +923,7 @@ export async function useRoomGift(
       message:
         error instanceof Error
           ? error.message
-          : "Unable to use Gift.",
+          : "Unable to use Feat.",
     };
   }
 }
@@ -990,7 +990,7 @@ export async function activateRoomGift(
         ok: false,
         message:
           ownershipError?.message ??
-          "This Gift is not owned by your character.",
+          "This Feat is not owned by your character.",
       };
     }
 
@@ -1002,14 +1002,14 @@ export async function activateRoomGift(
     if (!gift || !gift.is_active) {
       return {
         ok: false,
-        message: "This Gift is not currently active.",
+        message: "This Feat is not currently active.",
       };
     }
 
     if (gift.effect_mode !== "temporary") {
       return {
         ok: false,
-        message: "This Gift does not require activation.",
+        message: "This Feat does not require activation.",
       };
     }
 
@@ -1074,7 +1074,7 @@ if (cooldownError) {
   return {
     ok: false,
     message:
-      `Unable to verify Gift cooldown: ${cooldownError.message}`,
+      `Unable to verify Feat cooldown: ${cooldownError.message}`,
   };
 }
 
@@ -1142,7 +1142,7 @@ if (recentActivation) {
         ok: false,
         message:
           activationError?.message ??
-          "Unable to activate Gift.",
+          "Unable to activate Feat.",
       };
     }
 
@@ -1164,7 +1164,7 @@ if (recentActivation) {
         message:
           healthError instanceof Error
             ? healthError.message
-            : "Gift activation Health could not be applied.",
+            : "Feat activation Health could not be applied.",
       };
     }
 
@@ -1184,7 +1184,7 @@ if (recentActivation) {
         message:
           announcementError instanceof Error
             ? announcementError.message
-            : "Gift was activated, but its use could not be announced in chat.",
+            : "Feat was activated, but its use could not be announced in chat.",
       };
     }
 
@@ -1209,7 +1209,7 @@ if (recentActivation) {
       message:
         error instanceof Error
           ? error.message
-          : "Unable to activate Gift.",
+          : "Unable to activate Feat.",
     };
   }
 }

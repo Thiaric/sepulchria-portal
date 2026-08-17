@@ -56,7 +56,7 @@ function effectLabel(gift: Gift) {
       : "Temporary";
   }
 
-  return "Gift";
+  return "Feat";
 }
 
 function typeLabels(gift: Gift) {
@@ -375,7 +375,7 @@ export function GiftsCatalogue({
 
         <div className="mt-2 flex items-center justify-between gap-3 border-t border-[#59432c]/25 pt-2">
           <p className="text-[7px] uppercase tracking-[0.12em] text-[#6f6353]">
-            A Gift may belong to more
+            A Feat may belong to more
             than one category.
           </p>
 
@@ -524,7 +524,7 @@ export function GiftsCatalogue({
         </section>
       ) : (
         <section className="mt-3 border border-[#59432c]/40 bg-[#100c09] p-5 text-xs italic text-[#817565]">
-          No Gifts match the selected
+          No Feats match the selected
           filters.
         </section>
       )}

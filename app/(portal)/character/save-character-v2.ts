@@ -408,7 +408,7 @@ export async function saveCharacterV2(
     if (selectedGiftIds.length > 2) {
       fail(
         mode,
-        "Choose no more than 2 Ancestry Gifts.",
+        "Choose no more than 2 Ancestry Feats.",
       );
     }
 
@@ -433,7 +433,7 @@ export async function saveCharacterV2(
           mode,
           eligibilityResult.error?.message ??
             activeGiftsResult.error?.message ??
-            "Unable to validate Ancestry Gifts.",
+            "Unable to validate Ancestry Feats.",
         );
       }
 
@@ -453,7 +453,7 @@ export async function saveCharacterV2(
       ) {
         fail(
           mode,
-          "One or more selected Gifts are not available to this Ancestry.",
+          "One or more selected Feats are not available to this Ancestry.",
         );
       }
     }
@@ -599,7 +599,7 @@ export async function saveCharacterV2(
 
         fail(
           mode,
-          `Character creation was rolled back because the selected Gifts could not be saved: ${giftError.message}`,
+          `Character creation was rolled back because the selected Feats could not be saved: ${giftError.message}`,
         );
       }
     }
@@ -635,7 +635,7 @@ export async function saveCharacterV2(
 
         fail(
           mode,
-          `Character creation was rolled back because Gift Health could not be prepared: ${createdGiftAssignmentsError.message}`,
+          `Character creation was rolled back because Feat Health could not be prepared: ${createdGiftAssignmentsError.message}`,
         );
       }
 
@@ -660,8 +660,8 @@ export async function saveCharacterV2(
         fail(
           mode,
           giftHealthError instanceof Error
-            ? `Character creation was rolled back because Gift Health could not be applied: ${giftHealthError.message}`
-            : "Character creation was rolled back because Gift Health could not be applied.",
+            ? `Character creation was rolled back because Feat Health could not be applied: ${giftHealthError.message}`
+            : "Character creation was rolled back because Feat Health could not be applied.",
         );
       }
     }

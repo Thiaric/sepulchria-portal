@@ -141,7 +141,7 @@ export async function saveAdminCharacterAge(
     if (selectedGiftIds.length > 2) {
       return {
         ok: false,
-        error: "Choose no more than 2 Ancestry Gifts.",
+        error: "Choose no more than 2 Ancestry Feats.",
       };
     }
 
@@ -226,7 +226,7 @@ export async function saveAdminCharacterAge(
           error:
             eligibilityResult.error?.message ??
             activeResult.error?.message ??
-            "Unable to validate Ancestry Gifts.",
+            "Unable to validate Ancestry Feats.",
         };
       }
 
@@ -247,7 +247,7 @@ export async function saveAdminCharacterAge(
         return {
           ok: false,
           error:
-            "One or more selected Gifts are not available to this Ancestry.",
+            "One or more selected Feats are not available to this Ancestry.",
         };
       }
     }

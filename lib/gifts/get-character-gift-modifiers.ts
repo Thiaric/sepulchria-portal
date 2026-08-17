@@ -62,7 +62,7 @@ export async function getCharacterGiftAttributeModifiers(
 
   if (reconcileError) {
     throw new Error(
-      `Unable to reconcile expired Gift Health: ${reconcileError.message}`,
+      `Unable to reconcile expired Feat Health: ${reconcileError.message}`,
     );
   }
 
@@ -93,7 +93,7 @@ export async function getCharacterGiftAttributeModifiers(
 
   if (ownershipError) {
     throw new Error(
-      `Unable to load character Gift modifiers: ${ownershipError.message}`,
+      `Unable to load character Feat modifiers: ${ownershipError.message}`,
     );
   }
 
@@ -164,7 +164,7 @@ export async function getCharacterGiftAttributeModifiers(
 
     if (activationError) {
       throw new Error(
-        `Unable to load active Gift effects: ${activationError.message}`,
+        `Unable to load active Feat effects: ${activationError.message}`,
       );
     }
 
