@@ -466,7 +466,7 @@ export function Profile({
 
           <div data-character-sheet-panel="inventory">
             {character.id ? (
-              <CharacterInventoryDisplay characterId={character.id} />
+              <CharacterInventoryDisplay characterId={character.id} own />
             ) : null}
           </div>
 

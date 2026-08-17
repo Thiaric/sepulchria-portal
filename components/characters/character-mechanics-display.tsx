@@ -56,7 +56,11 @@ export async function CharacterMechanicsDisplay({
   const maxHealth =
     breakdown.vigor.effective === null
       ? null
-      : breakdown.vigor.effective * 10;
+      : Math.max(
+          0,
+          breakdown.vigor.effective * 10 +
+            breakdown.itemMaxHealth,
+        );
 
   const currentHealth =
     maxHealth === null
@@ -77,16 +81,9 @@ export async function CharacterMechanicsDisplay({
   return (
     <div className="space-y-4">
       <section className="border border-[#60482e]/45 bg-[#15100d]/95 p-5 sm:p-6">
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          <div>
-            
-            <h2 className="mt-[-8] font-serif text-2xl text-[#dec89f]">
-              Attributes
-            </h2>
-          </div>
-
-          
-        </div>
+        <h2 className="mt-[-8] font-serif text-2xl text-[#dec89f]">
+          Attributes
+        </h2>
 
         <div className="mt-5 grid gap-px bg-[#4f3b28]/35 sm:grid-cols-2">
           {DEFINITIONS.map(([key, label]) => {
@@ -122,7 +119,7 @@ export async function CharacterMechanicsDisplay({
                     {entry.base !== null ? (
                       <span
                         role="tooltip"
-                        className="pointer-events-none absolute bottom-full right-0 z-30 mb-2 hidden w-max max-w-[260px] border border-[#765937]/70 bg-[#0b0806] px-3 py-2 text-left shadow-xl group-hover:block group-focus-within:block"
+                        className="pointer-events-none absolute bottom-full right-0 z-30 mb-2 hidden w-max max-w-[300px] border border-[#765937]/70 bg-[#0b0806] px-3 py-2 text-left shadow-xl group-hover:block group-focus-within:block"
                       >
                         <span className="block whitespace-nowrap text-[7px] uppercase leading-4 tracking-[0.08em] text-[#756958]">
                           {entry.base} Base ·{" "}
@@ -134,8 +131,18 @@ export async function CharacterMechanicsDisplay({
                             }
                           >
                             {signed(entry.gifts)} Feats
-                          </span>{" "}
-                          ={" "}
+                          </span>
+                          {" · "}
+                          <span
+                            className={
+                              entry.items === 0
+                                ? ""
+                                : "text-[#b99765]"
+                            }
+                          >
+                            {signed(entry.items)} Items
+                          </span>
+                          {" = "}
                           <span className="text-[#99866a]">
                             {entry.adjustedBase} Adjusted Base
                           </span>
@@ -164,12 +171,9 @@ export async function CharacterMechanicsDisplay({
 
       <section className="border border-[#60482e]/45 bg-[#15100d]/95 p-5 sm:p-6">
         <div className="flex items-end justify-between gap-4">
-          <div>
-            
-            <h2 className="mt-[-8] font-serif text-2xl text-[#dec89f]">
-              Health
-            </h2>
-          </div>
+          <h2 className="mt-[-8] font-serif text-2xl text-[#dec89f]">
+            Health
+          </h2>
 
           <p className="font-serif text-2xl text-[#e1c28d]">
             {currentHealth === null || maxHealth === null
@@ -190,6 +194,9 @@ export async function CharacterMechanicsDisplay({
         {maxHealth !== null ? (
           <p className="mt-2 text-[8px] uppercase tracking-[0.14em] text-[#776957]">
             Maximum Health = Effective Vigour × 10
+            {breakdown.itemMaxHealth !== 0
+              ? ` ${signed(breakdown.itemMaxHealth)} Item Max Health`
+              : ""}
           </p>
         ) : null}
       </section>

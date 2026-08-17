@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 
+import { ItemEquipmentForm } from "@/components/admin/item-equipment-form";
 import { requireStaff } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
@@ -374,6 +375,10 @@ export default async function AdminItemsPage({ searchParams }: Props) {
                     item={item}
                     categories={categories}
                     subcategories={subcategories}
+                  />
+
+                  <ItemEquipmentForm
+                    itemId={item.id}
                   />
 
                   <section className="mt-7 border-t border-[#59432c]/35 pt-5">
