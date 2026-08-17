@@ -776,6 +776,35 @@ function ItemCard({
             </p>
           ) : null}
 
+          {row.equipment_bonuses.length ? (
+            <div className="mt-3 border-t border-[#59432c]/30 pt-2.5">
+              <p className="text-[7px] uppercase tracking-[0.16em] text-[#806b50]">
+                Equipment bonuses
+              </p>
+
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {row.equipment_bonuses.map(
+                  (bonus) => (
+                    <span
+                      key={bonus.label}
+                      className={`border px-2 py-1 text-[7px] uppercase tracking-[0.1em] ${
+                        bonus.value > 0
+                          ? "border-emerald-900/65 bg-emerald-950/20 text-emerald-400"
+                          : "border-red-900/65 bg-red-950/20 text-red-400"
+                      }`}
+                    >
+                      {bonus.label}{" "}
+                      {bonus.value > 0
+                        ? "+"
+                        : ""}
+                      {bonus.value}
+                    </span>
+                  ),
+                )}
+              </div>
+            </div>
+          ) : null}
+
           <Requirements
             requirements={
               row.requirements
@@ -1275,12 +1304,6 @@ function EquipmentFigure({
       </div>
 
       <div className="grid gap-2 p-3 sm:grid-cols-2 md:hidden">
-        <div className="col-span-full mx-auto mb-3 h-[220px] w-[110px]">
-          <div className="relative h-full w-full scale-[0.46] origin-top">
-            <Silhouette />
-          </div>
-        </div>
-
         {SLOT_ORDER.map(
           (slot) => (
             <EquipmentSlotCard

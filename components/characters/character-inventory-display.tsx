@@ -367,7 +367,10 @@ function equipmentBonuses(
   };
 
   for (const effect of item.effects ?? []) {
-    if (effect.trigger_type !== "passive") {
+    if (
+      effect.trigger_type !== "equipped" ||
+      effect.effect_mode !== "passive"
+    ) {
       continue;
     }
 
