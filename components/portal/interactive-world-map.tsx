@@ -23,7 +23,7 @@ type MapLevel =
   | "continent"
   | "city";
 
-type CityHotspot = {
+type MapHotspot = {
   slug: string;
   shortName: string;
   points: string;
@@ -35,7 +35,7 @@ type CityHotspot = {
  * Polygon coordinates use the map's native 1536 x 1024 coordinate system.
  * Edit `points` to reshape a district.
  */
-const cityHotspots: CityHotspot[] = [
+const cityHotspots: MapHotspot[] = [
   { slug: "the-heart-of-sepulchria", shortName: "The Heart", points: "360,321,617,254,681,262,883,316,894,352,848,382,822,420,839,444,897,474,970,467,966,524,734,596,678,562,608,567,573,595,536,639,524,685,501,730,497,780,522,821,487,843,442,798,455,771,383,723,425,689,438,647,418,622,365,601,376,563,389,519,392,498,436,449,441,384", labelX: 619, labelY: 470 },
   { slug: "the-eyes-of-sepulchria", shortName: "The Eyes", points: "794,82,798,132,793,170,792,206,800,241,898,288,910,271,919,238,930,235,940,256,948,284,1067,333,1173,303,1272,268,1187,168,1131,139,1140,62,1057,44,1034,55,1027,90,934,113", labelX: 1017, labelY: 196 },
   { slug: "the-mind-of-sepulchria", shortName: "The Mind", points: "745,613,760,674,753,754,772,741,877,783,967,732,962,695,986,687,1045,668,1049,645,1048,614,1001,581,984,569,970,548,905,561,809,587", labelX: 889, labelY: 660 },
@@ -49,8 +49,18 @@ const cityHotspots: CityHotspot[] = [
   { slug: "the-skin-of-sepulchria", shortName: "The Skin", points: "443,107,458,171,426,196,415,214,348,247,254,278,248,249,233,248,226,276,226,289,197,305,148,339,91,369,81,351,61,291,9,213,130,126,222,72,287,23,363,15,443,44", labelX: 245, labelY: 177 },
 ];
 
+const continentHotspots: MapHotspot[] = [
+  {
+    slug: "sepulchria",
+    shortName: "Sepulchria",
+    points: "597,880,612,845,666,825,705,825,755,832,782,846,808,870,815,897,831,899,841,913,835,924,823,943,849,955,857,973,842,978,826,983,800,994,769,986,738,970,716,978,704,982,679,982,650,951,632,945,606,921",
+    labelX: 723,
+    labelY: 714,
+  },
+];
+
 function getAreaInfoPosition(
-  hotspot: CityHotspot,
+  hotspot: MapHotspot,
 ) {
   const xPercent =
     (hotspot.labelX / 1536) * 100;
@@ -397,23 +407,98 @@ export function InteractiveWorldMap({
               objectFit="contain"
             />
 
-            <button
-              type="button"
-              aria-label="Enter Sepulchria"
-              onClick={() => {
-  setHoveredArea(null);
-  router.push(
-    "/?map=sepulchria",
-  );
-}}
-              className="group absolute left-[47.09%] top-[69.7%] z-20 aspect-square w-[10.9%] -translate-x-1/2 -translate-y-1/2 rounded-full"
-            >
-              <span className="absolute inset-0 rounded-full border-[3px] border-[#c39a58] bg-[#b28246]/10 opacity-95 shadow-[0_0_4px_rgba(225,185,120,1),0_0_11px_rgba(178,130,70,0.95),0_0_22px_rgba(178,130,70,0.65),inset_0_0_7px_rgba(178,130,70,0.22)] transition duration-300 group-hover:scale-125 group-hover:border-[4px] group-hover:border-[#e1b978] group-hover:bg-[#b28246]/20 group-hover:opacity-100 group-hover:shadow-[0_0_6px_rgba(238,204,143,1),0_0_16px_rgba(225,185,120,1),0_0_34px_rgba(178,130,70,0.9),inset_0_0_10px_rgba(225,185,120,0.30)] motion-safe:animate-pulse" />
+           <svg
+  viewBox="0 0 1536 1024"
+  preserveAspectRatio="none"
+  className="absolute inset-0 z-20 h-full w-full"
+  aria-label="Aureth locations"
+>
+  {continentHotspots.map((hotspot) => {
+    const active =
+      hoveredArea === hotspot.slug;
 
-              <span className="absolute bottom-full left-1/2 mb-2 -translate-x-1/2 whitespace-nowrap border border-[#8f6a3d] bg-[#17110d]/95 px-3 py-1.5 font-serif text-xs text-[#e7c991] opacity-0 shadow-[0_8px_22px_rgba(0,0,0,0.8)] transition duration-300 group-hover:-translate-y-1 group-hover:opacity-100">
-                Enter Sepulchria
-              </span>
-            </button>
+    return (
+      <polygon
+        key={hotspot.slug}
+        points={hotspot.points}
+        onClick={() => {
+          setHoveredArea(null);
+
+          if (
+            hotspot.slug ===
+            "sepulchria"
+          ) {
+            router.push(
+              "/?map=sepulchria",
+            );
+          }
+        }}
+        onMouseEnter={() =>
+          setHoveredArea(
+            hotspot.slug,
+          )
+        }
+        onMouseLeave={() =>
+          setHoveredArea(null)
+        }
+        className="cursor-pointer transition-all duration-300"
+        fill={
+          active
+            ? "rgba(178,130,70,0.20)"
+            : "rgba(178,130,70,0.045)"
+        }
+        stroke={
+          active
+            ? "rgba(238,204,143,1)"
+            : "rgba(195,154,88,0.98)"
+        }
+        strokeWidth={
+          active ? 5 : 3
+        }
+        vectorEffect="non-scaling-stroke"
+        style={{
+          filter: active
+            ? "drop-shadow(0 0 5px rgba(238,204,143,0.95)) drop-shadow(0 0 11px rgba(178,130,70,0.75))"
+            : "drop-shadow(0 0 2px rgba(178,130,70,0.72))",
+        }}
+      />
+    );
+  })}
+</svg>
+{continentHotspots.map(
+  (hotspot) => {
+    if (
+      hoveredArea !==
+      hotspot.slug
+    ) {
+      return null;
+    }
+
+    return (
+      <div
+        key={`continent-label-${hotspot.slug}`}
+        className="pointer-events-none absolute z-30 -translate-x-1/2 -translate-y-full whitespace-nowrap border border-[#8f6a3d] bg-[#17110d]/95 px-3 py-1.5 font-serif text-xs text-[#e7c991] shadow-[0_8px_22px_rgba(0,0,0,0.85)]"
+        style={{
+          left: `${
+            (
+              hotspot.labelX /
+              1536
+            ) * 100
+          }%`,
+          top: `${
+            (
+              hotspot.labelY /
+              1024
+            ) * 100
+          }%`,
+        }}
+      >
+        Enter{" "}
+        {hotspot.shortName}
+      </div>
+    );
+  },
+)} 
           </div>
 
           {/* CITY MAP */}
