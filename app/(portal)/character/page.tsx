@@ -6,6 +6,7 @@ import { PendingSubmitButton } from "@/components/forms/pending-submit-button";
 import { CharacterExpertiseTotal } from "@/components/characters/character-expertise-total";
 import { CharacterMusicPlayer } from "@/components/characters/character-music-player";
 import { CharacterOrderSummary } from "@/components/characters/character-order-summary";
+import { CharacterSheetTabs } from "@/components/characters/character-sheet-tabs";
 
 
 import {
@@ -298,24 +299,10 @@ export function Profile({
         ) : null}
 
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <Link
-            href={own ? "/" : "/game"}
-            className="text-sm text-[#b8945d] transition hover:text-[#e3c28c]"
-          >
-            ← Return
-          </Link>
+          
 
           <div className="flex flex-wrap items-center justify-end gap-2">
             {messageAction}
-
-            {canEdit ? (
-              <Link
-                href="/character/edit"
-                className="border border-[#8d6d3e] bg-[#332719] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[#efd9aa] transition hover:bg-[#49351f]"
-              >
-                Edit character
-              </Link>
-            ) : null}
 
             {canSubmit ? (
               <form action={submitCharacterForReview}>
@@ -337,7 +324,9 @@ export function Profile({
           </div>
         </div>
 
-        <section className="mt-4 grid gap-4 xl:grid-cols-[minmax(0,1.45fr)_minmax(360px,0.9fr)]">
+        <CharacterSheetTabs own={own}>
+          <div data-character-sheet-panel="short">
+            <section className="grid gap-4 xl:grid-cols-[minmax(0,1.45fr)_minmax(360px,0.9fr)]">
           <div className="min-w-0">
             <section className="grid gap-4 border border-[#654b2e]/50 bg-[#17110d] p-4 sm:p-5 lg:grid-cols-[180px_minmax(0,1fr)]">
               <div className="mx-auto w-full max-w-[180px] lg:mx-0">
@@ -430,24 +419,18 @@ export function Profile({
             ) : null}
           </div>
 
-          <div className="min-w-0">
-            {character.id ? (
-              <>
-                <CharacterMechanicsDisplay
-                  characterId={character.id}
-                />
-
-                <div className="mt-4">
-                  <CharacterGiftsDisplay
+              <div className="min-w-0">
+                {character.id ? (
+                  <CharacterMechanicsDisplay
                     characterId={character.id}
                   />
-                </div>
-              </>
-            ) : null}
+                ) : null}
+              </div>
+            </section>
           </div>
-        </section>
 
-        <section className="mt-4 grid gap-4 md:grid-cols-2">
+          <div data-character-sheet-panel="description">
+            <section className="grid gap-4 md:grid-cols-2">
           <ProfileTextSection
             title="Physical description"
             value={character.physical_description}
@@ -459,45 +442,62 @@ export function Profile({
           />
         </section>
 
-        <div className="mt-4">
-          <ProfileTextSection
-            title="Biography"
-            value={character.biography}
-          />
-        </div>
+            <div className="mt-4">
+              <ProfileTextSection
+                title="Biography"
+                value={character.biography}
+              />
+            </div>
+          </div>
 
-        <div className="mt-4">
-          <ProfileTextSection
-            title="Public notes"
-            value={character.public_notes}
-            subtle
-          />
-        </div>
+          <div data-character-sheet-panel="notes">
+            <ProfileTextSection
+              title="Public notes"
+              value={character.public_notes}
+              subtle
+            />
+          </div>
 
-        {own &&
-        status === "approved" ? (
-          <details className="group mt-4 border border-[#6b5032]/50 bg-[#17110d]">
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-4 py-3 transition hover:bg-[#1d150f] sm:px-5 [&::-webkit-details-marker]:hidden">
-              <div>
-                <h2 className="font-serif text-lg text-[#dfc79c] sm:text-xl">
-                  Edit profile
-                </h2>
+          <div data-character-sheet-panel="gifts">
+            {character.id ? (
+              <CharacterGiftsDisplay characterId={character.id} />
+            ) : null}
+          </div>
 
-                <p className="mt-1 text-[11px] leading-5 text-[#8f8271]">
-                  Update portrait and public character information without staff review.
-                </p>
-              </div>
+          <div data-character-sheet-panel="warping">
+            <div className="min-h-28 border border-[#60482e]/35 bg-[#130f0c]" />
+          </div>
 
-              <span
-                aria-hidden="true"
-                className="shrink-0 text-xs text-[#a98556] transition-transform group-open:rotate-180"
-              >
-                ▼
-              </span>
-            </summary>
+          <div data-character-sheet-panel="edit">
+            {canEdit ? (
+              <section className="border border-[#6b5032]/50 bg-[#17110d] p-5">
+                <p className="text-[8px] uppercase tracking-[0.22em] text-[#806b50]">Character editing</p>
+                <h2 className="mt-2 font-serif text-xl text-[#dfc79c]">Edit character</h2>
+                <p className="mt-2 text-[11px] leading-5 text-[#8f8271]">This character is still editable through the full character editor.</p>
+                <Link
+                  href="/character/edit"
+                  className="mt-4 inline-flex border border-[#8d6d3e] bg-[#332719] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[#efd9aa] transition hover:bg-[#49351f]"
+                >
+                  Open character editor
+                </Link>
+              </section>
+            ) : null}
 
-            <div className="border-t border-[#5d452d]/40 px-4 py-5 sm:px-5">
-              <form
+            {own &&
+            status === "approved" ? (
+          <section className="mt-4 border border-[#6b5032]/50 bg-[#17110d]">
+  <div className="px-4 py-3 sm:px-5">
+    <h2 className="font-serif text-lg text-[#dfc79c] sm:text-xl">
+      Edit profile
+    </h2>
+
+    <p className="mt-1 text-[11px] leading-5 text-[#8f8271]">
+      Update portrait and public character information without staff review.
+    </p>
+  </div>
+
+  <div className="border-t border-[#5d452d]/40 px-4 py-5 sm:px-5">
+    <form
                 action={updateApprovedCharacterProfile}
                 className="space-y-5"
               >
@@ -602,9 +602,18 @@ export function Profile({
                   />
                 </div>
               </form>
-            </div>
-          </details>
-        ) : null}
+  </div>
+</section>
+            ) : null}
+
+            {own && !canEdit && status !== "approved" ? (
+              <section className="border border-[#6b5032]/50 bg-[#17110d] p-5">
+                <h2 className="font-serif text-xl text-[#dfc79c]">Editing unavailable</h2>
+                <p className="mt-2 text-[11px] leading-5 text-[#8f8271]">This character cannot currently be edited while it is awaiting staff review.</p>
+              </section>
+            ) : null}
+          </div>
+        </CharacterSheetTabs>
       </div>
     </div>
   );

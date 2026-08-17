@@ -6,6 +6,7 @@ import { CharacterMechanicsDisplay } from "@/components/characters/character-mec
 import { CharacterGiftsDisplay } from "@/components/characters/character-gifts-display";
 import { CharacterExpertiseTotal } from "@/components/characters/character-expertise-total";
 import { CharacterMusicPlayer } from "@/components/characters/character-music-player";
+import { CharacterSheetTabs } from "@/components/characters/character-sheet-tabs";
 import { LiveCharacterPresence } from "@/components/characters/live-character-presence";
 import { PublicCharacterAgeDetail } from "@/components/characters/public-character-age-detail";
 import { PublicCharacterOrder } from "@/components/characters/public-character-order";
@@ -81,7 +82,9 @@ export function PublicCharacterProfileView({
         ) : null}
       </div>
 
-      <section className="grid gap-4 xl:grid-cols-[minmax(0,1.45fr)_minmax(360px,0.9fr)]">
+      <CharacterSheetTabs>
+        <div data-character-sheet-panel="short">
+          <section className="grid gap-4 xl:grid-cols-[minmax(0,1.45fr)_minmax(360px,0.9fr)]">
         <div className="min-w-0">
           <section className="grid gap-4 border border-[#654b2e]/50 bg-[#17110d] p-4 sm:p-5 lg:grid-cols-[180px_minmax(0,1fr)]">
             <div className="relative mx-auto aspect-[3/4] w-full max-w-[180px] overflow-hidden border border-[#60482e]/50 bg-[#0d0a08] lg:mx-0">
@@ -212,21 +215,14 @@ export function PublicCharacterProfileView({
           ) : null}
         </div>
 
-        <div className="min-w-0">
-          <CharacterMechanicsDisplay
-            characterId={character.id}
-          />
-
-          <div className="mt-4">
-            <CharacterGiftsDisplay
-              characterId={character.id}
-            />
-          </div>
-
+            <div className="min-w-0">
+              <CharacterMechanicsDisplay characterId={character.id} />
+            </div>
+          </section>
         </div>
-      </section>
 
-      <section className="grid gap-4 md:grid-cols-2">
+        <div data-character-sheet-panel="description">
+          <section className="grid gap-4 md:grid-cols-2">
         <ProfileSection
           title="Physical Description"
           content={
@@ -240,28 +236,32 @@ export function PublicCharacterProfileView({
         />
       </section>
 
-      <ProfileSection
-        title="Biography"
-        content={character.biography}
-      />
+          <div className="mt-4">
+            <ProfileSection title="Biography" content={character.biography} />
+          </div>
+        </div>
 
-      <ProfileSection
-        title="Public Notes"
-        content={character.public_notes}
-        subtle
-      />
+        <div data-character-sheet-panel="notes">
+          <ProfileSection
+            title="Public Notes"
+            content={character.public_notes}
+            subtle
+          />
+          {!character.public_notes ? (
+            <section className="border border-[#60482e]/35 bg-[#130f0c] p-6 text-center">
+              <p className="font-serif text-sm text-[#8f8271]">No public notes have been shared.</p>
+            </section>
+          ) : null}
+        </div>
 
-      {!character.biography &&
-      !character.physical_description &&
-      !character.personality &&
-      !character.public_notes ? (
-        <section className="border border-[#60482e]/45 bg-[#15100d]/95 p-8 text-center">
-          <p className="font-serif text-lg text-[#b9a88f]">
-            This character has not yet shared
-            any public information.
-          </p>
-        </section>
-      ) : null}
+        <div data-character-sheet-panel="gifts">
+          <CharacterGiftsDisplay characterId={character.id} />
+        </div>
+
+        <div data-character-sheet-panel="warping">
+          <div className="min-h-28 border border-[#60482e]/35 bg-[#130f0c]" />
+        </div>
+      </CharacterSheetTabs>
     </article>
   );
 }

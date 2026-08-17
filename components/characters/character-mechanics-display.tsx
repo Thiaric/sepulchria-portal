@@ -79,17 +79,13 @@ export async function CharacterMechanicsDisplay({
       <section className="border border-[#60482e]/45 bg-[#15100d]/95 p-5 sm:p-6">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <p className="text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
-              Character record
-            </p>
-            <h2 className="mt-2 font-serif text-2xl text-[#dec89f]">
+            
+            <h2 className="mt-[-8] font-serif text-2xl text-[#dec89f]">
               Attributes
             </h2>
           </div>
 
-          <p className="text-[8px] uppercase tracking-[0.16em] text-[#776957]">
-            Adjusted Base + Ancestry + Order
-          </p>
+          
         </div>
 
         <div className="mt-5 grid gap-px bg-[#4f3b28]/35 sm:grid-cols-2">
@@ -143,10 +139,8 @@ export async function CharacterMechanicsDisplay({
       <section className="border border-[#60482e]/45 bg-[#15100d]/95 p-5 sm:p-6">
         <div className="flex items-end justify-between gap-4">
           <div>
-            <p className="text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
-              Vital condition
-            </p>
-            <h2 className="mt-2 font-serif text-2xl text-[#dec89f]">
+            
+            <h2 className="mt-[-8] font-serif text-2xl text-[#dec89f]">
               Health
             </h2>
           </div>
