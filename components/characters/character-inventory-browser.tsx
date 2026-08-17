@@ -78,6 +78,9 @@ export type InventoryBrowserRow = {
   cooldown_ready_at:
     | string
     | null;
+  active_effect_expires_at:
+    | string
+    | null;
   use_block_reason:
     | string
     | null;
@@ -292,6 +295,71 @@ function Badges({
   );
 }
 
+function remainingMinutes(
+  value: string | null,
+) {
+  if (!value) {
+    return null;
+  }
+
+  const timestamp =
+    Date.parse(value);
+
+  if (
+    !Number.isFinite(timestamp) ||
+    timestamp <= Date.now()
+  ) {
+    return null;
+  }
+
+  return Math.max(
+    1,
+    Math.ceil(
+      (timestamp - Date.now()) /
+        60_000,
+    ),
+  );
+}
+
+function ActiveUseTimers({
+  row,
+}: {
+  row: InventoryBrowserRow;
+}) {
+  const durationRemaining =
+    remainingMinutes(
+      row.active_effect_expires_at,
+    );
+
+  const cooldownRemaining =
+    remainingMinutes(
+      row.cooldown_ready_at,
+    );
+
+  if (
+    durationRemaining === null &&
+    cooldownRemaining === null
+  ) {
+    return null;
+  }
+
+  return (
+    <div className="mt-3 grid gap-1.5">
+      {durationRemaining !== null ? (
+        <p className="border border-emerald-900/45 bg-emerald-950/10 px-3 py-2 text-[8px] uppercase tracking-[0.1em] text-emerald-400">
+          Effect active — {durationRemaining} min remaining
+        </p>
+      ) : null}
+
+      {cooldownRemaining !== null ? (
+        <p className="border border-amber-900/45 bg-amber-950/10 px-3 py-2 text-[8px] uppercase tracking-[0.1em] text-amber-400">
+          On cooldown — ready in {cooldownRemaining} min
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
 function UseControl({
   row,
 }: {
@@ -348,28 +416,18 @@ function UseControl({
     );
   }
 
-  const readyAt =
-    row.cooldown_ready_at
-      ? Date.parse(row.cooldown_ready_at)
-      : Number.NaN;
-
-  const onCooldown =
-    Number.isFinite(readyAt) &&
-    readyAt > Date.now();
-
-  if (onCooldown) {
-    const minutes = Math.max(
-      1,
-      Math.ceil(
-        (readyAt - Date.now()) /
-          60_000,
-      ),
+  const cooldownRemaining =
+    remainingMinutes(
+      row.cooldown_ready_at,
     );
 
+  if (
+    cooldownRemaining !== null
+  ) {
     return (
-      <p className="mt-3 border border-amber-900/45 bg-amber-950/10 px-3 py-2 text-[8px] uppercase tracking-[0.1em] text-amber-400">
-        On cooldown — ready in {minutes} min
-      </p>
+      <ActiveUseTimers
+        row={row}
+      />
     );
   }
 
@@ -409,7 +467,11 @@ function UseControl({
 
   return (
     <div className="mt-3">
-      <div className="flex flex-wrap items-center gap-2">
+      <ActiveUseTimers
+        row={row}
+      />
+
+      <div className="mt-2 flex flex-wrap items-center gap-2">
         <button
           type="button"
           onClick={run}

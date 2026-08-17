@@ -383,6 +383,7 @@ export async function CharacterInventoryDisplay({
     uniqueInstancesResult,
     cooldownsResult,
     maxHealthResult,
+    activeEffectsResult,
   ] = await Promise.all([
     supabase
       .from("characters")
@@ -501,6 +502,25 @@ export async function CharacterInventoryDisplay({
           data: null,
           error: null,
         }),
+
+    own
+      ? supabase
+          .from("character_active_item_effects")
+          .select(
+            "item_id, item_instance_id, expires_at",
+          )
+          .eq(
+            "character_id",
+            characterId,
+          )
+          .gt(
+            "expires_at",
+            new Date().toISOString(),
+          )
+      : Promise.resolve({
+          data: [],
+          error: null,
+        }),
   ]);
 
   const stateError =
@@ -509,7 +529,8 @@ export async function CharacterInventoryDisplay({
     requirementsResult.error ??
     uniqueInstancesResult.error ??
     cooldownsResult.error ??
-    maxHealthResult.error;
+    maxHealthResult.error ??
+    activeEffectsResult.error;
 
   if (stateError) {
     throw new Error(
@@ -564,6 +585,62 @@ export async function CharacterInventoryDisplay({
     ]),
   );
 
+  const activeEffectExpiryByItem =
+    new Map<string, string>();
+
+  const activeEffectExpiryByInstance =
+    new Map<string, string>();
+
+  for (
+    const effect of
+      activeEffectsResult.data ?? []
+  ) {
+    const expiresAt =
+      effect.expires_at;
+
+    if (!expiresAt) {
+      continue;
+    }
+
+    if (
+      effect.item_instance_id
+    ) {
+      const previous =
+        activeEffectExpiryByInstance.get(
+          effect.item_instance_id,
+        );
+
+      if (
+        !previous ||
+        Date.parse(expiresAt) >
+          Date.parse(previous)
+      ) {
+        activeEffectExpiryByInstance.set(
+          effect.item_instance_id,
+          expiresAt,
+        );
+      }
+    } else if (
+      effect.item_id
+    ) {
+      const previous =
+        activeEffectExpiryByItem.get(
+          effect.item_id,
+        );
+
+      if (
+        !previous ||
+        Date.parse(expiresAt) >
+          Date.parse(previous)
+      ) {
+        activeEffectExpiryByItem.set(
+          effect.item_id,
+          expiresAt,
+        );
+      }
+    }
+  }
+
   const maxHealth =
     own &&
     maxHealthResult.data !== null
@@ -602,6 +679,14 @@ export async function CharacterInventoryDisplay({
           master?.cooldown_minutes ?? null,
         cooldown_ready_at:
           cooldowns.get(sourceKey) ?? null,
+        active_effect_expires_at:
+          row.record_kind === "unique"
+            ? activeEffectExpiryByInstance.get(
+                row.record_id,
+              ) ?? null
+            : activeEffectExpiryByItem.get(
+                row.item_id,
+              ) ?? null,
         use_block_reason:
           own
             ? getUseBlockReason(
