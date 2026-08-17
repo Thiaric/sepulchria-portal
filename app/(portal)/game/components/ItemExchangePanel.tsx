@@ -334,7 +334,7 @@ export function ItemExchangePanel({
 
       <div className="grid gap-3 lg:grid-cols-2">
         <section className="border border-[#59432c]/30 bg-[#15100d] p-3">
-          <p className="font-serif text-base text-[#dec89f]">Give Item</p>
+          <p className="font-serif text-base text-[#dec89f]">Give Item as a Gift</p>
           <div className="mt-2 grid gap-1">
             <select className={field} value={giveChoice} onChange={(e) => setGiveChoice(e.target.value)}>
               <option value="">Choose Item...</option>
