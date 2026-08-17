@@ -101,39 +101,65 @@ export async function CharacterMechanicsDisplay({
                   <span className="text-[8px] uppercase tracking-[0.16em] text-[#8b7455]">
                     {label}
                   </span>
-                  <span className="font-serif text-2xl text-[#e1c28d]">
-                    {entry.effective ?? "—"}
-                  </span>
-                </div>
 
-                {entry.base !== null ? (
-                  <div className="mt-2 border-t border-[#59432c]/25 pt-2 text-[7px] uppercase leading-4 tracking-[0.08em] text-[#756958]">
-                    {entry.base} Base ·{" "}
+                  <span className="group relative inline-flex">
                     <span
-                      className={
-                        entry.gifts === 0
-                          ? ""
-                          : "text-[#b99765]"
+                      tabIndex={entry.base !== null ? 0 : -1}
+                      className={`font-serif text-2xl text-[#e1c28d] ${
+                        entry.base !== null
+                          ? "cursor-help outline-none transition hover:text-[#f0d49f] focus:text-[#f0d49f]"
+                          : ""
+                      }`}
+                      aria-label={
+                        entry.base !== null
+                          ? `${label}: ${entry.effective}. Hover or focus to see calculations.`
+                          : `${label}: unavailable`
                       }
                     >
-                      {signed(entry.gifts)} Gifts
-                    </span>{" "}
-                    ={" "}
-                    <span className="text-[#99866a]">
-                      {entry.adjustedBase} Adjusted Base
+                      {entry.effective ?? "—"}
                     </span>
-                    <br />
-                    {signed(entry.ancestry)} Ancestry ·{" "}
-                    {signed(entry.order)} Order ={" "}
-                    <span className="text-[#c8a879]">
-                      {entry.effective} Effective
-                    </span>
-                  </div>
-                ) : null}
+
+                    {entry.base !== null ? (
+                      <span
+                        role="tooltip"
+                        className="pointer-events-none absolute bottom-full right-0 z-30 mb-2 hidden w-max max-w-[260px] border border-[#765937]/70 bg-[#0b0806] px-3 py-2 text-left shadow-xl group-hover:block group-focus-within:block"
+                      >
+                        <span className="block whitespace-nowrap text-[7px] uppercase leading-4 tracking-[0.08em] text-[#756958]">
+                          {entry.base} Base ·{" "}
+                          <span
+                            className={
+                              entry.gifts === 0
+                                ? ""
+                                : "text-[#b99765]"
+                            }
+                          >
+                            {signed(entry.gifts)} Gifts
+                          </span>{" "}
+                          ={" "}
+                          <span className="text-[#99866a]">
+                            {entry.adjustedBase} Adjusted Base
+                          </span>
+                        </span>
+
+                        <span className="mt-0.5 block whitespace-nowrap text-[7px] uppercase leading-4 tracking-[0.08em] text-[#756958]">
+                          {signed(entry.ancestry)} Ancestry ·{" "}
+                          {signed(entry.order)} Order ={" "}
+                          <span className="text-[#c8a879]">
+                            {entry.effective} Effective
+                          </span>
+                        </span>
+                      </span>
+                    ) : null}
+                  </span>
+                </div>
               </div>
             );
           })}
         </div>
+
+        <p className="mt-3 text-center text-[7px] uppercase tracking-[0.12em] text-[#6f6252]">
+          Hover over a number to see calculations
+        </p>
       </section>
 
       <section className="border border-[#60482e]/45 bg-[#15100d]/95 p-5 sm:p-6">
