@@ -15,6 +15,8 @@ import {
   SpellingTextareaOverlay,
   useSpellingIssues,
 } from "@/components/editor/writing-assistant";
+import { ItemExchangePanel } from "./ItemExchangePanel";
+import { createClient } from "@/lib/supabase/client";
 import type {
   ActionState,
   CharacterAttributeKey,
@@ -160,6 +162,105 @@ export default function RoomChatForm({
 }) {
   const router = useRouter();
 
+  const exchangeSupabase =
+    useMemo(
+      () => createClient(),
+      [],
+    );
+
+  const [
+    hasIncomingExchange,
+    setHasIncomingExchange,
+  ] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    let myCharacterId:
+      string | null = null;
+
+    async function checkIncomingExchange() {
+      const {
+        data: characterId,
+        error: characterError,
+      } = await exchangeSupabase.rpc(
+        "my_character_id",
+      );
+
+      if (
+        !active ||
+        characterError ||
+        !characterId
+      ) {
+        return;
+      }
+
+      myCharacterId =
+        String(characterId);
+
+      const {
+        data,
+        error,
+      } = await exchangeSupabase
+        .from("item_trades")
+        .select("id")
+        .eq(
+          "status",
+          "open",
+        )
+        .eq(
+          "character_two_id",
+          myCharacterId,
+        )
+        .limit(1);
+
+      if (!active || error) {
+        return;
+      }
+
+      setHasIncomingExchange(
+        Boolean(data?.length),
+      );
+    }
+
+    void checkIncomingExchange();
+
+    const channel =
+      exchangeSupabase
+        .channel(
+          `incoming-item-exchange-${crypto.randomUUID()}`,
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "item_trades",
+          },
+          () => {
+            void checkIncomingExchange();
+          },
+        )
+        .subscribe();
+
+    const fallback =
+      window.setInterval(
+        () => {
+          void checkIncomingExchange();
+        },
+        3000,
+      );
+
+    return () => {
+      active = false;
+      window.clearInterval(
+        fallback,
+      );
+      void exchangeSupabase.removeChannel(
+        channel,
+      );
+    };
+  }, [exchangeSupabase]);
+
   const [messageState, messageAction] =
     useActionState(
       sendRoomMessage,
@@ -199,6 +300,7 @@ export default function RoomChatForm({
       | "attributes"
       | "feat"
       | "items"
+      | "exchange"
       | null
     >(null);
 
@@ -808,13 +910,17 @@ function ignoreSpellingWord() {
   const utilityButtonActiveClass =
     "border border-[#a17a49] bg-[#3a2919] px-3 py-2 text-[8px] uppercase tracking-[0.13em] text-[#f0d6a7]";
 
+  const incomingExchangeButtonClass =
+    "animate-pulse border border-[#d1a45f] bg-[#4a3218] px-3 py-2 text-[8px] uppercase tracking-[0.13em] text-[#ffe0a3] shadow-[0_0_14px_rgba(209,164,95,0.55)] transition hover:border-[#efc77c] hover:bg-[#5a3b1c]";
+
   function toggleUtility(
     mode:
       | "whisper"
       | "dice"
       | "attributes"
       | "feat"
-      | "items",
+      | "items"
+      | "exchange",
   ) {
     setUtilityMode((current) =>
       current === mode ? null : mode,
@@ -1380,6 +1486,11 @@ function ignoreSpellingWord() {
             </p>
           )}
         </form>
+      ) : utilityMode === "exchange" ? (
+        <ItemExchangePanel
+          presentCharacters={presentCharacters}
+          onClose={() => setUtilityMode(null)}
+        />
       ) : (
         <form
           action={itemAction}
@@ -1729,6 +1840,31 @@ function ignoreSpellingWord() {
           }
         >
           Use Items
+        </button>
+
+        <button
+          type="button"
+          onClick={() =>
+            toggleUtility("exchange")
+          }
+          disabled={
+            presentCharacters.length === 0
+          }
+          title={
+            hasIncomingExchange &&
+            utilityMode !== "exchange"
+              ? "Incoming Item Exchange"
+              : "Item Exchange"
+          }
+          className={
+            utilityMode === "exchange"
+              ? utilityButtonActiveClass
+              : hasIncomingExchange
+                ? incomingExchangeButtonClass
+                : utilityButtonClass
+          }
+        >
+          Item Exchange
         </button>
       </div>
 

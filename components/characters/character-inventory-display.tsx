@@ -1,6 +1,5 @@
 import "server-only";
 
-import Link from "next/link";
 
 import {
   CharacterInventoryBrowser,
@@ -741,17 +740,7 @@ export async function CharacterInventoryDisplay({
     });
 
   return (
-    <>
-      {own ? (
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border border-[#59432c]/35 bg-[#120e0b] p-3">
-          <div>
-            <p className="text-[8px] uppercase tracking-[0.16em] text-[#806b50]">Item Actions</p>
-            <p className="mt-1 text-xs text-[#8f8271]">Give, discard, or exchange Items with another character.</p>
-          </div>
-          <Link href="/character/item-exchange" className="border border-[#87663b] bg-[#2a1d12] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[#d8bd91]">Open Item Exchange</Link>
-        </div>
-      ) : null}
-      <CharacterInventoryBrowser
+    <CharacterInventoryBrowser
       rows={browserRows}
       characterName={
         characterName
@@ -759,6 +748,5 @@ export async function CharacterInventoryDisplay({
       own={own}
       useTargets={useTargets}
     />
-    </>
   );
 }

@@ -15,6 +15,7 @@ import {
   moveOwnInventoryItem,
 } from "@/lib/items/inventory-move-actions";
 import { useInventoryItem } from "@/lib/items/use-actions";
+import { discardInventoryItem } from "@/lib/items/player-transfer-actions";
 
 export type InventoryUseTarget = {
   id: string;
@@ -591,6 +592,79 @@ function MoveControls({
   );
 }
 
+function DiscardControl({
+  row,
+}: {
+  row: InventoryBrowserRow;
+}) {
+  const router = useRouter();
+  const [pending, startTransition] =
+    useTransition();
+  const [message, setMessage] =
+    useState<string | null>(null);
+
+  if (
+    row.is_equipped ||
+    row.parent_container_id ||
+    row.is_quest_item
+  ) {
+    return null;
+  }
+
+  const run = () => {
+    const quantity =
+      Math.max(1, row.quantity);
+
+    const warning =
+      row.record_kind === "unique"
+        ? `Return "${row.name}" to the Admin Vault?`
+        : quantity > 1
+          ? `Discard all ${quantity} × ${row.name}? This cannot be undone.`
+          : `Discard "${row.name}"? This cannot be undone.`;
+
+    if (!window.confirm(warning)) {
+      return;
+    }
+
+    const data = new FormData();
+    data.set("recordKind", row.record_kind);
+    data.set("recordId", row.record_id);
+    data.set("quantity", String(quantity));
+
+    setMessage(null);
+
+    startTransition(async () => {
+      const result =
+        await discardInventoryItem(data);
+
+      setMessage(result.message);
+
+      if (result.ok) {
+        router.refresh();
+      }
+    });
+  };
+
+  return (
+    <div className="mt-3">
+      <button
+        type="button"
+        onClick={run}
+        disabled={pending}
+        className="border border-red-900/55 bg-red-950/10 px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-red-400 transition hover:bg-red-950/20 disabled:cursor-wait disabled:opacity-45"
+      >
+        {pending ? "Discarding..." : "Discard"}
+      </button>
+
+      {message ? (
+        <p className="mt-2 text-[8px] leading-4 text-[#9b8768]">
+          {message}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
 function ItemCard({
   row,
   containers,
@@ -788,6 +862,12 @@ function ItemCard({
               containers={
                 containers
               }
+            />
+          ) : null}
+
+          {own ? (
+            <DiscardControl
+              row={row}
             />
           ) : null}
         </div>

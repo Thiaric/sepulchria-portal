@@ -1,3 +1,6 @@
+import { readFile } from "node:fs/promises";
+import { extname, join } from "node:path";
+
 import { redirect } from "next/navigation";
 
 import {
@@ -188,6 +191,136 @@ function toAbsoluteAssetUrl(
     ).toString();
   } catch {
     return null;
+  }
+}
+
+
+function getImageMimeType(
+  pathname: string,
+): string {
+  switch (
+    extname(
+      pathname,
+    ).toLowerCase()
+  ) {
+    case ".jpg":
+    case ".jpeg":
+      return "image/jpeg";
+
+    case ".webp":
+      return "image/webp";
+
+    case ".gif":
+      return "image/gif";
+
+    case ".svg":
+      return "image/svg+xml";
+
+    case ".avif":
+      return "image/avif";
+
+    case ".png":
+    default:
+      return "image/png";
+  }
+}
+
+
+async function toEmbeddedExportAssetUrl(
+  value:
+    | string
+    | null
+    | undefined,
+  origin: string,
+): Promise<string | null> {
+  if (!value?.trim()) {
+    return null;
+  }
+
+  const clean =
+    value.trim();
+
+  if (
+    clean.startsWith(
+      "data:",
+    )
+  ) {
+    return clean;
+  }
+
+  if (
+    clean.startsWith(
+      "http://",
+    ) ||
+    clean.startsWith(
+      "https://",
+    )
+  ) {
+    return toAbsoluteAssetUrl(
+      clean,
+      origin,
+    );
+  }
+
+  const rawPath =
+    clean.split(/[?#]/)[0] ??
+    "";
+
+  let relativePath: string;
+
+  try {
+    relativePath =
+      decodeURIComponent(
+        rawPath,
+      ).replace(
+        /^\/+/,
+        "",
+      );
+  } catch {
+    return toAbsoluteAssetUrl(
+      clean,
+      origin,
+    );
+  }
+
+  if (
+    !relativePath ||
+    relativePath
+      .split("/")
+      .includes("..")
+  ) {
+    return toAbsoluteAssetUrl(
+      clean,
+      origin,
+    );
+  }
+
+  try {
+    const filePath =
+      join(
+        process.cwd(),
+        "public",
+        relativePath,
+      );
+
+    const file =
+      await readFile(
+        filePath,
+      );
+
+    const mimeType =
+      getImageMimeType(
+        relativePath,
+      );
+
+    return `data:${mimeType};base64,${file.toString(
+      "base64",
+    )}`;
+  } catch {
+    return toAbsoluteAssetUrl(
+      clean,
+      origin,
+    );
   }
 }
 
@@ -984,7 +1117,7 @@ export async function GET(
       : room.name;
 
   const roomImage =
-    toAbsoluteAssetUrl(
+    await toEmbeddedExportAssetUrl(
       room.image_url,
       origin,
     );
@@ -1201,7 +1334,7 @@ export async function GET(
      */
 
     .room-description {
-      max-width: 820px;
+      max-width: 100%;
 
       margin-top: 9px;
 
