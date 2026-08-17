@@ -10,7 +10,7 @@ import { createClient } from "@/lib/supabase/server";
 
 type Relation<T> = T | T[] | null;
 
-type InventoryRow = Omit<InventoryBrowserRow, "requirements">;
+type InventoryRow = Omit<InventoryBrowserRow, "requirements" | "equipment_bonuses">;
 
 type CharacterState = {
   display_name: string | null;
@@ -54,6 +54,13 @@ type ItemRequirementRow = {
         trigger_type: string;
         effect_mode: string;
         health_delta: number;
+        muscles_modifier: number;
+        reflexes_modifier: number;
+        vigour_modifier: number;
+        shrewd_modifier: number;
+        brains_modifier: number;
+        presence_modifier: number;
+        max_health_modifier: number;
       }[]
     | null;
   min_muscles: number | null;
@@ -335,6 +342,52 @@ function getUseBlockReason(
   return "This Item would have no effect right now.";
 }
 
+function equipmentBonuses(
+  item: ItemRequirementRow | undefined,
+) {
+  if (!item) {
+    return [];
+  }
+
+  const totals =
+    new Map<string, number>();
+
+  const add = (
+    label: string,
+    value: number,
+  ) => {
+    if (!value) {
+      return;
+    }
+
+    totals.set(
+      label,
+      (totals.get(label) ?? 0) + value,
+    );
+  };
+
+  for (const effect of item.effects ?? []) {
+    if (effect.trigger_type !== "passive") {
+      continue;
+    }
+
+    add("Muscles", effect.muscles_modifier);
+    add("Reflexes", effect.reflexes_modifier);
+    add("Vigour", effect.vigour_modifier);
+    add("Shrewd", effect.shrewd_modifier);
+    add("Brains", effect.brains_modifier);
+    add("Presence", effect.presence_modifier);
+    add("Max Health", effect.max_health_modifier);
+  }
+
+  return [...totals.entries()]
+    .filter(([, value]) => value !== 0)
+    .map(([label, value]) => ({
+      label,
+      value,
+    }));
+}
+
 export async function CharacterInventoryDisplay({
   characterId,
   own = false,
@@ -437,7 +490,14 @@ export async function CharacterInventoryDisplay({
             effects:item_effects(
               trigger_type,
               effect_mode,
-              health_delta
+              health_delta,
+              muscles_modifier,
+              reflexes_modifier,
+              vigour_modifier,
+              shrewd_modifier,
+              brains_modifier,
+              presence_modifier,
+              max_health_modifier
             ),
             min_muscles,
             min_reflexes,
@@ -734,6 +794,12 @@ export async function CharacterInventoryDisplay({
                 master,
                 character,
                 membership,
+              )
+            : [],
+        equipment_bonuses:
+          row.is_equippable
+            ? equipmentBonuses(
+                master,
               )
             : [],
       };

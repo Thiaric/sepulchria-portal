@@ -27,6 +27,11 @@ export type InventoryRequirement = {
   met: boolean;
 };
 
+export type InventoryEquipmentBonus = {
+  label: string;
+  value: number;
+};
+
 export type InventoryBrowserRow = {
   record_kind:
     | "standard"
@@ -92,6 +97,8 @@ export type InventoryBrowserRow = {
     | null;
   requirements:
     InventoryRequirement[];
+  equipment_bonuses:
+    InventoryEquipmentBonus[];
 };
 
 type StatusFilter =
@@ -891,99 +898,216 @@ function Silhouette() {
   );
 }
 
+function EquipmentCandidate({
+  row,
+}: {
+  row: InventoryBrowserRow;
+}) {
+  const eligible =
+    meetsAllRequirements(row);
+
+  return (
+    <div className="mt-2 border-t border-[#59432c]/30 pt-2">
+      <div className="flex gap-2">
+        <ItemThumbnail row={row} size="small" />
+
+        <div className="min-w-0 flex-1">
+          <p className="font-serif text-[12px] text-[#d8c095]">
+            {row.name}
+          </p>
+
+          {row.description?.trim() ? (
+            <p className="mt-1 line-clamp-3 text-[8px] leading-4 text-[#8f8271]">
+              {row.description}
+            </p>
+          ) : null}
+        </div>
+      </div>
+
+      {row.equipment_bonuses.length ? (
+        <div className="mt-2 border-t border-[#59432c]/25 pt-2">
+          <p className="text-[7px] uppercase tracking-[0.14em] text-[#806b50]">
+            Bonuses
+          </p>
+
+          <div className="mt-1.5 flex flex-wrap gap-1.5">
+            {row.equipment_bonuses.map((bonus) => (
+              <span
+                key={bonus.label}
+                className="border border-[#49634f]/55 bg-[#132016] px-2 py-1 text-[7px] uppercase tracking-[0.1em] text-[#9cbe9f]"
+              >
+                {bonus.label}{" "}
+                {bonus.value > 0 ? "+" : ""}
+                {bonus.value}
+              </span>
+            ))}
+          </div>
+        </div>
+      ) : null}
+
+      <Requirements requirements={row.requirements} />
+
+      {eligible ? (
+        <form action={equipInventoryItem} className="mt-2">
+          <input type="hidden" name="recordKind" value={row.record_kind} />
+          <input type="hidden" name="recordId" value={row.record_id} />
+          <button
+            type="submit"
+            className="w-full border border-[#987344] bg-[#3b2919] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[#efd6a8] transition hover:bg-[#4a321e]"
+          >
+            Equip
+          </button>
+        </form>
+      ) : (
+        <p className="mt-2 border border-red-900/45 bg-red-950/10 px-2 py-2 text-[7px] uppercase tracking-[0.1em] text-red-400">
+          Requirements not met
+        </p>
+      )}
+    </div>
+  );
+}
+
 function EquipmentSlotCard({
   slot,
   rows,
+  available,
   own,
 }: {
   slot: string;
-  rows:
-    InventoryBrowserRow[];
+  rows: InventoryBrowserRow[];
+  available: InventoryBrowserRow[];
   own: boolean;
 }) {
-  const sorted = [
-    ...rows,
-  ].sort(
+  const [open, setOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState("");
+
+  const opensUp =
+  slot === "feet" ||
+  slot === "legs" ||
+  slot === "waist" ||
+  slot === "main_hand" ||
+  slot === "off_hand";
+
+const isRightSide =
+  slot === "neck" ||
+  slot === "torso" ||
+  slot === "hands" ||
+  slot === "off_hand" ||
+  slot === "waist";
+
+  const sorted = [...rows].sort(
     (a, b) =>
       LAYER_ORDER.indexOf(
-        a.equipped_layer as
-          (typeof LAYER_ORDER)[number],
+        a.equipped_layer as (typeof LAYER_ORDER)[number],
       ) -
       LAYER_ORDER.indexOf(
-        b.equipped_layer as
-          (typeof LAYER_ORDER)[number],
+        b.equipped_layer as (typeof LAYER_ORDER)[number],
       ),
   );
 
+  const selected =
+    available.find(
+      (row) =>
+        `${row.record_kind}:${row.record_id}` === selectedId,
+    ) ?? null;
+
   return (
-    <div className="border border-[#60482e]/45 bg-[#120d09]/95 p-2.5 shadow-[0_8px_24px_rgba(0,0,0,0.18)]">
+    <div className={`relative border border-[#60482e]/45 bg-[#120d09]/95 p-2.5 shadow-[0_8px_24px_rgba(0,0,0,0.18)] ${
+  open ? "z-[80]" : "z-0"
+}`}>
       <p className="text-[7px] uppercase tracking-[0.18em] text-[#876f4f]">
-        {
-          SLOT_LABELS[
-            slot
-          ]
-        }
+        {SLOT_LABELS[slot]}
       </p>
 
       {sorted.length ? (
         <div className="mt-2 space-y-2">
-          {sorted.map(
-            (row) => (
-              <div
-                key={`${row.record_kind}-${row.record_id}`}
-                className="flex items-center gap-2 border-t border-[#59432c]/25 pt-2 first:border-t-0 first:pt-0"
-              >
-                <ItemThumbnail
-                  row={row}
-                  size="small"
-                />
+          {sorted.map((row) => (
+            <div
+              key={`${row.record_kind}-${row.record_id}`}
+              className="flex items-center gap-2 border-t border-[#59432c]/25 pt-2 first:border-t-0 first:pt-0"
+            >
+              <ItemThumbnail row={row} size="small" />
 
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-serif text-[12px] text-[#d8c095]">
-                    {
-                      row.name
-                    }
-                  </p>
-                  <p className="mt-0.5 text-[6px] uppercase tracking-[0.12em] text-[#756957]">
-                    {titleCase(
-                      row.equipped_layer ??
-                        "equipped",
-                    )}
-                  </p>
-                </div>
-
-                {own ? (
-                  <form
-                    action={
-                      unequipInventoryItem
-                    }
-                  >
-                    <input
-                      type="hidden"
-                      name="recordKind"
-                      value={
-                        row.record_kind
-                      }
-                    />
-                    <input
-                      type="hidden"
-                      name="recordId"
-                      value={
-                        row.record_id
-                      }
-                    />
-                    <button
-                      type="submit"
-                      title={`Unequip ${row.name}`}
-                      className="px-1 text-[13px] text-[#806d55] transition hover:text-[#d7b77f]"
-                    >
-                      ×
-                    </button>
-                  </form>
-                ) : null}
+              <div className="min-w-0 flex-1">
+                <p className="truncate font-serif text-[12px] text-[#d8c095]">
+                  {row.name}
+                </p>
+                <p className="mt-0.5 text-[6px] uppercase tracking-[0.12em] text-[#756957]">
+                  {titleCase(row.equipped_layer ?? "equipped")}
+                </p>
               </div>
-            ),
-          )}
+
+              {own ? (
+                <form action={unequipInventoryItem}>
+                  <input type="hidden" name="recordKind" value={row.record_kind} />
+                  <input type="hidden" name="recordId" value={row.record_id} />
+                  <button
+                    type="submit"
+                    title={`Unequip ${row.name}`}
+                    className="px-1 text-[13px] text-[#806d55] transition hover:text-[#d7b77f]"
+                  >
+                    ×
+                  </button>
+                </form>
+              ) : null}
+            </div>
+          ))}
+        </div>
+      ) : own ? (
+        <div className="relative mt-2">
+          <button
+            type="button"
+            onClick={() => setOpen((value) => !value)}
+            className="w-full border border-dashed border-[#6d5336]/55 bg-[#17110d] px-3 py-3 text-left transition hover:border-[#9b7548] hover:bg-[#1c140e]"
+          >
+            <span className="block text-[9px] uppercase tracking-[0.14em] text-[#947c5b]">
+              Empty
+            </span>
+            <span className="mt-1 block text-[7px] uppercase tracking-[0.12em] text-[#665b4c]">
+              Click to equip
+            </span>
+          </button>
+
+          {open ? (
+  <div
+  className={`absolute z-[200] w-[280px] border border-[#60482e]/40 bg-[#0e0a08] p-2 shadow-2xl ${
+    opensUp
+      ? "bottom-full mb-2"
+      : "top-full mt-2"
+  } ${
+    isRightSide
+      ? "right-0"
+      : "left-0"
+  }`}
+>
+              {available.length ? (
+                <>
+                  <select
+                    value={selectedId}
+                    onChange={(event) => setSelectedId(event.target.value)}
+                    className="w-full border border-[#60482e]/55 bg-[#100c09] px-2 py-2 text-[9px] text-[#cdb894] outline-none focus:border-[#987344]"
+                  >
+                    <option value="">Choose Item...</option>
+                    {available.map((row) => (
+                      <option
+                        key={`${row.record_kind}:${row.record_id}`}
+                        value={`${row.record_kind}:${row.record_id}`}
+                      >
+                        {row.name}
+                        {row.quantity > 1 ? ` ×${row.quantity}` : ""}
+                      </option>
+                    ))}
+                  </select>
+
+                  {selected ? <EquipmentCandidate row={selected} /> : null}
+                </>
+              ) : (
+                <p className="text-[8px] italic leading-4 text-[#665b4c]">
+                  No available Items for this slot.
+                </p>
+              )}
+            </div>
+          ) : null}
         </div>
       ) : (
         <p className="mt-2 text-[9px] italic text-[#665b4c]">
@@ -997,36 +1121,50 @@ function EquipmentSlotCard({
 const DESKTOP_POSITIONS:
   Record<string, string> = {
     head:
-      "left-1/2 top-0 w-[190px] -translate-x-1/2",
+      "left-1/2 top-[1%] w-[175px] -translate-x-1/2",
+
     neck:
-      "right-[5%] top-[12%] w-[185px]",
+      "right-[19%] top-[13%] w-[175px]",
+
     shoulders:
-      "left-[5%] top-[17%] w-[185px]",
+      "left-[19%] top-[18%] w-[175px]",
+
     back:
-      "left-[2%] top-[34%] w-[185px]",
+      "left-[17%] top-[34%] w-[175px]",
+
     torso:
-      "right-[2%] top-[34%] w-[185px]",
+      "right-[17%] top-[34%] w-[175px]",
+
     arms:
-      "left-[1%] top-[51%] w-[185px]",
+      "left-[15%] top-[50%] w-[175px]",
+
     hands:
-      "right-[1%] top-[51%] w-[185px]",
+      "right-[15%] top-[50%] w-[175px]",
+
     main_hand:
-      "left-[4%] top-[68%] w-[185px]",
+      "left-[17%] top-[66%] w-[175px]",
+
     off_hand:
-      "right-[4%] top-[68%] w-[185px]",
+      "right-[17%] top-[66%] w-[175px]",
+
     waist:
-      "right-[18%] top-[80%] w-[175px]",
+      "right-[23%] top-[80%] w-[165px]",
+
     legs:
-      "left-[18%] top-[80%] w-[175px]",
+      "left-[23%] top-[80%] w-[165px]",
+
     feet:
-      "left-1/2 bottom-0 w-[190px] -translate-x-1/2",
+      "left-1/2 bottom-[1%] w-[175px] -translate-x-1/2",
   };
 
 function EquipmentFigure({
   equipped,
+  inventory,
   own,
 }: {
   equipped:
+    InventoryBrowserRow[];
+  inventory:
     InventoryBrowserRow[];
   own: boolean;
 }) {
@@ -1054,8 +1192,37 @@ function EquipmentFigure({
     );
   }
 
+  const availableBySlot =
+    new Map<
+      string,
+      InventoryBrowserRow[]
+    >();
+
+  for (const row of inventory) {
+    if (
+      !row.is_equippable ||
+      row.is_equipped ||
+      row.parent_container_id ||
+      !row.configured_slot
+    ) {
+      continue;
+    }
+
+    const values =
+      availableBySlot.get(
+        row.configured_slot,
+      ) ?? [];
+
+    values.push(row);
+
+    availableBySlot.set(
+      row.configured_slot,
+      values,
+    );
+  }
+
   return (
-    <section className="mt-5 overflow-hidden border border-[#60482e]/45 bg-[#100c09]">
+    <section className="relative z-10 mt-5 overflow-visible border border-[#60482e]/45 bg-[#100c09]">
       <div className="border-b border-[#59432c]/35 px-4 py-3 sm:px-5">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
@@ -1077,7 +1244,7 @@ function EquipmentFigure({
         </div>
       </div>
 
-      <div className="relative hidden min-h-[760px] md:block">
+      <div className="relative hidden min-h-[800px] overflow-visible md:block">
         <div className="absolute inset-x-[24%] top-[10%] bottom-[8%] rounded-[45%] border border-[#60482e]/15 bg-[radial-gradient(circle_at_center,rgba(92,68,42,0.10),transparent_68%)]" />
 
         <Silhouette />
@@ -1092,6 +1259,11 @@ function EquipmentFigure({
                 slot={slot}
                 rows={
                   bySlot.get(
+                    slot,
+                  ) ?? []
+                }
+                available={
+                  availableBySlot.get(
                     slot,
                   ) ?? []
                 }
@@ -1116,6 +1288,11 @@ function EquipmentFigure({
               slot={slot}
               rows={
                 bySlot.get(
+                  slot,
+                ) ?? []
+              }
+              available={
+                availableBySlot.get(
                   slot,
                 ) ?? []
               }
@@ -1873,6 +2050,7 @@ export function CharacterInventoryBrowser({
         equipped={
           equipped
         }
+        inventory={rows}
         own={own}
       />
 
