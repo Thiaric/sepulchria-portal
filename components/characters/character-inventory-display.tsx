@@ -22,6 +22,7 @@ type CharacterState = {
   shrewd: number | null;
   brains: number | null;
   presence_score: number | null;
+  current_health: number | null;
 };
 
 type MembershipState = {
@@ -46,6 +47,13 @@ type ItemRequirementRow = {
   target_mode: string | null;
   max_charges: number | null;
   cooldown_minutes: number | null;
+  effects:
+    | {
+        trigger_type: string;
+        effect_mode: string;
+        health_delta: number;
+      }[]
+    | null;
   min_muscles: number | null;
   min_reflexes: number | null;
   min_vigour: number | null;
@@ -231,6 +239,100 @@ function requirementList(
   return requirements;
 }
 
+function getUseBlockReason(
+  item: ItemRequirementRow | undefined,
+  character: CharacterState | null,
+  maxHealth: number | null,
+): string | null {
+  if (
+    !item ||
+    !character ||
+    maxHealth === null
+  ) {
+    return null;
+  }
+
+  const effects =
+    (item.effects ?? []).filter(
+      (effect) =>
+        effect.trigger_type === "use",
+    );
+
+  if (!effects.length) {
+    return "This Item has no configured Use effect.";
+  }
+
+  // Temporary effects are meaningful even if a simultaneous heal would
+  // be wasted, so the Item is allowed.
+  if (
+    effects.some(
+      (effect) =>
+        effect.effect_mode ===
+        "temporary",
+    )
+  ) {
+    return null;
+  }
+
+  const currentHealth =
+    Math.max(
+      0,
+      Math.min(
+        character.current_health ??
+          maxHealth,
+        maxHealth,
+      ),
+    );
+
+  const hasApplicableInstant =
+    effects.some((effect) => {
+      if (
+        effect.effect_mode !==
+        "instant"
+      ) {
+        return false;
+      }
+
+      if (
+        effect.health_delta > 0
+      ) {
+        return (
+          currentHealth <
+          maxHealth
+        );
+      }
+
+      if (
+        effect.health_delta < 0
+      ) {
+        return currentHealth > 0;
+      }
+
+      return false;
+    });
+
+  if (hasApplicableInstant) {
+    return null;
+  }
+
+  const isHealingItem =
+    effects.some(
+      (effect) =>
+        effect.effect_mode ===
+          "instant" &&
+        effect.health_delta > 0,
+    );
+
+  if (
+    isHealingItem &&
+    currentHealth >= maxHealth
+  ) {
+    return "You are already at full Health.";
+  }
+
+  return "This Item would have no effect right now.";
+}
+
 export async function CharacterInventoryDisplay({
   characterId,
   own = false,
@@ -280,11 +382,12 @@ export async function CharacterInventoryDisplay({
     requirementsResult,
     uniqueInstancesResult,
     cooldownsResult,
+    maxHealthResult,
   ] = await Promise.all([
     supabase
       .from("characters")
       .select(
-        "display_name, first_name, surname, race_id, muscles, reflexes, vigor, shrewd, brains, presence_score",
+        "display_name, first_name, surname, race_id, muscles, reflexes, vigor, shrewd, brains, presence_score, current_health",
       )
       .eq(
         "id",
@@ -327,6 +430,11 @@ export async function CharacterInventoryDisplay({
             target_mode,
             max_charges,
             cooldown_minutes,
+            effects:item_effects(
+              trigger_type,
+              effect_mode,
+              health_delta
+            ),
             min_muscles,
             min_reflexes,
             min_vigour,
@@ -381,6 +489,18 @@ export async function CharacterInventoryDisplay({
           data: [],
           error: null,
         }),
+
+    own
+      ? supabase.rpc(
+          "get_character_current_max_health",
+          {
+            p_character_id: characterId,
+          },
+        )
+      : Promise.resolve({
+          data: null,
+          error: null,
+        }),
   ]);
 
   const stateError =
@@ -388,7 +508,8 @@ export async function CharacterInventoryDisplay({
     membershipResult.error ??
     requirementsResult.error ??
     uniqueInstancesResult.error ??
-    cooldownsResult.error;
+    cooldownsResult.error ??
+    maxHealthResult.error;
 
   if (stateError) {
     throw new Error(
@@ -443,6 +564,12 @@ export async function CharacterInventoryDisplay({
     ]),
   );
 
+  const maxHealth =
+    own &&
+    maxHealthResult.data !== null
+      ? Number(maxHealthResult.data)
+      : null;
+
   const browserRows:
     InventoryBrowserRow[] =
     rows.map((row) => {
@@ -475,6 +602,14 @@ export async function CharacterInventoryDisplay({
           master?.cooldown_minutes ?? null,
         cooldown_ready_at:
           cooldowns.get(sourceKey) ?? null,
+        use_block_reason:
+          own
+            ? getUseBlockReason(
+                master,
+                character,
+                maxHealth,
+              )
+            : null,
         requirements:
           row.is_equippable
             ? requirementList(

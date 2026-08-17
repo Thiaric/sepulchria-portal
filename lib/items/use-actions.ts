@@ -25,7 +25,7 @@ export async function useInventoryItem(
   const supabase = await createClient();
 
   const { data, error } = await supabase.rpc(
-    "use_own_inventory_record",
+    "use_own_inventory_record_guarded",
     {
       p_record_kind: recordKind,
       p_record_id: recordId,
@@ -37,10 +37,22 @@ export async function useInventoryItem(
   }
 
   const result = (data ?? {}) as {
+    ok?: boolean;
+    blocked?: boolean;
+    block_reason?: string;
     item_name?: string;
     health_delta?: number;
     temporary_effects?: number;
   };
+
+  if (result.blocked) {
+    return {
+      ok: false,
+      message:
+        result.block_reason ??
+        "This Item cannot be used right now.",
+    };
+  }
 
   const details: string[] = [];
 
@@ -58,11 +70,8 @@ export async function useInventoryItem(
     details.push("temporary effect activated");
   }
 
-  // IMPORTANT:
-  // Do not call revalidatePath() here.
-  // The client performs one controlled router.refresh() after the action
-  // succeeds. Combining revalidatePath + router.refresh + realtime refresh
-  // caused overlapping renders when an Item changed the character row.
+  // D5.1.2 rule: no revalidatePath here.
+  // The client performs one controlled refresh after a successful use.
 
   return {
     ok: true,

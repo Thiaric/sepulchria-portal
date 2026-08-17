@@ -78,6 +78,9 @@ export type InventoryBrowserRow = {
   cooldown_ready_at:
     | string
     | null;
+  use_block_reason:
+    | string
+    | null;
   requirements:
     InventoryRequirement[];
 };
@@ -335,6 +338,14 @@ function UseControl({
         </p>
       );
     }
+  }
+
+  if (row.use_block_reason) {
+    return (
+      <p className="mt-3 border border-[#59432c]/40 bg-[#100c09] px-3 py-2 text-[8px] uppercase tracking-[0.1em] text-[#a6947b]">
+        {row.use_block_reason}
+      </p>
+    );
   }
 
   const readyAt =
