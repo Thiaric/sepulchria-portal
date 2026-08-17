@@ -880,21 +880,13 @@ function Silhouette() {
   return (
     <div
       aria-hidden="true"
-      className="absolute left-1/2 top-1/2 h-[480px] w-[190px] -translate-x-1/2 -translate-y-1/2 opacity-70"
+      className="absolute left-1/2 top-1/2 h-[520px] w-[300px] -translate-x-1/2 -translate-y-1/2"
     >
-      <div className="absolute left-1/2 top-0 h-20 w-20 -translate-x-1/2 rounded-full border border-[#806442]/55 bg-[#1a130e]" />
-
-      <div className="absolute left-1/2 top-[86px] h-[190px] w-[108px] -translate-x-1/2 rounded-[46%_46%_30%_30%] border border-[#806442]/55 bg-[#17100c]" />
-
-      <div className="absolute left-[12px] top-[105px] h-[195px] w-8 rotate-[8deg] rounded-full border border-[#806442]/45 bg-[#15100c]" />
-
-      <div className="absolute right-[12px] top-[105px] h-[195px] w-8 -rotate-[8deg] rounded-full border border-[#806442]/45 bg-[#15100c]" />
-
-      <div className="absolute bottom-0 left-[48px] h-[210px] w-9 rotate-[2deg] rounded-full border border-[#806442]/45 bg-[#15100c]" />
-
-      <div className="absolute bottom-0 right-[48px] h-[210px] w-9 -rotate-[2deg] rounded-full border border-[#806442]/45 bg-[#15100c]" />
-
-      <div className="absolute left-1/2 top-[70px] h-[390px] w-px -translate-x-1/2 bg-gradient-to-b from-transparent via-[#8b6940]/25 to-transparent" />
+      <img
+        src="/character-sheet/human.png"
+        alt=""
+        className="h-full w-full object-contain opacity-80"
+      />
     </div>
   );
 }
