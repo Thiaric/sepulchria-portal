@@ -66,7 +66,7 @@ export function CollapsibleRoomDescription({
       {expanded ? (
         <RichTextContentClient
           body={body}
-          className="text-[11px] leading-5 text-[#9e907d] [&_p]:m-0 [&_h1]:text-xs [&_h2]:text-xs [&_h3]:text-xs [&_img]:hidden [&_table]:hidden"
+          className="text-[11px] leading-5 text-[#9e907d] [&_p]:m-0 [&_h1]:text-xs [&_h2]:text-xs [&_h3]:text-xs"
         />
       ) : (
         <p className="text-[11px] leading-5 text-[#9e907d]">
