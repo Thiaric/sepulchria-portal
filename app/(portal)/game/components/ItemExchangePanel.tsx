@@ -301,7 +301,7 @@ export function ItemExchangePanel({
           {confirmed ? "Confirmed" : "Not confirmed"}
         </span>
       </div>
-      <div className="mt-2 space-y-1.5">
+      <div className="mt-2 max-h-48 space-y-1.5 overflow-y-auto pr-1">
         {list.length ? list.map((offer) => (
           <div key={offer.id} className="flex items-center justify-between gap-2 border border-[#59432c]/25 px-3 py-2">
             <span className="text-[10px] text-[#cdb894]">
@@ -327,7 +327,7 @@ export function ItemExchangePanel({
         <div>
           <p className="text-[7px] uppercase tracking-[0.18em] text-[#806b50]">Location Utility</p>
           <h3 className="mt-1 font-serif text-lg text-[#dec89f]">Item Exchange</h3>
-          <p className="mt-1 text-[9px] text-[#817565]">Give Items or exchange several Items with another character in this Location.</p>
+          
         </div>
         <button type="button" onClick={onClose} className={button}>Back to Chat</button>
       </div>
@@ -335,7 +335,7 @@ export function ItemExchangePanel({
       <div className="grid gap-3 lg:grid-cols-2">
         <section className="border border-[#59432c]/30 bg-[#15100d] p-3">
           <p className="font-serif text-base text-[#dec89f]">Give Item</p>
-          <div className="mt-3 grid gap-2">
+          <div className="mt-2 grid gap-1">
             <select className={field} value={giveChoice} onChange={(e) => setGiveChoice(e.target.value)}>
               <option value="">Choose Item...</option>
               {inventory.map((row) => (
