@@ -12,8 +12,8 @@ import {
   submitCharacterForReview,
   updateApprovedCharacterProfile,
 } from "./actions";
-import { CharacterAttributesDisplay } from "@/components/characters/character-attributes-display";
-import { CharacterHealthDisplay } from "@/components/characters/character-health-display";
+import { CharacterMechanicsDisplay } from "@/components/characters/character-mechanics-display";
+import { CharacterGiftsDisplay } from "@/components/characters/character-gifts-display";
 import { LiveCharacterSheetRefresh } from "@/components/characters/live-character-sheet-refresh";
 import { getEffectiveCharacterAttributes } from "@/lib/characters/get-effective-character-attributes";
 import { createClient } from "@/lib/supabase/server";
@@ -431,15 +431,19 @@ export function Profile({
           </div>
 
           <div className="min-w-0">
-            <CharacterAttributesDisplay
-              character={character}
-            />
+            {character.id ? (
+              <>
+                <CharacterMechanicsDisplay
+                  characterId={character.id}
+                />
 
-            <div className="mt-4">
-              <CharacterHealthDisplay
-                character={character}
-              />
-            </div>
+                <div className="mt-4">
+                  <CharacterGiftsDisplay
+                    characterId={character.id}
+                  />
+                </div>
+              </>
+            ) : null}
           </div>
         </section>
 

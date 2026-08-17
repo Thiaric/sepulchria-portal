@@ -3,7 +3,14 @@
 import { randomUUID } from "node:crypto";
 import { redirect } from "next/navigation";
 
+import {
+  createClient as createAdminClient,
+} from "@supabase/supabase-js";
+
 import { createClient } from "@/lib/supabase/server";
+import {
+  applyGiftOwnershipHealthEffects,
+} from "@/lib/gifts/gift-health-effects";
 
 type CharacterMode = "create" | "update";
 
@@ -24,6 +31,40 @@ const text = (
   String(formData.get(name) ?? "")
     .trim()
     .slice(0, max);
+
+function createPrivilegedClient() {
+  const url =
+    process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const secret =
+    process.env.SUPABASE_SECRET_KEY;
+
+  if (!url || !secret) {
+    throw new Error(
+      "Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SECRET_KEY.",
+    );
+  }
+
+  return createAdminClient(url, secret, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    },
+  });
+}
+
+function readAncestryGiftIds(formData: FormData) {
+  return Array.from(
+    new Set(
+      formData
+        .getAll("ancestryGiftIds")
+        .filter(
+          (value): value is string =>
+            typeof value === "string" &&
+            /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value),
+        ),
+    ),
+  );
+}
 
 function path(mode: CharacterMode) {
   return `/character/${
@@ -361,6 +402,62 @@ export async function saveCharacterV2(
       mode,
     );
 
+    const selectedGiftIds =
+      readAncestryGiftIds(formData);
+
+    if (selectedGiftIds.length > 2) {
+      fail(
+        mode,
+        "Choose no more than 2 Ancestry Gifts.",
+      );
+    }
+
+    if (selectedGiftIds.length > 0) {
+      const [eligibilityResult, activeGiftsResult] =
+        await Promise.all([
+          supabase
+            .from("gift_races")
+            .select("gift_id")
+            .eq("race_id", raceId)
+            .in("gift_id", selectedGiftIds),
+
+          supabase
+            .from("gifts")
+            .select("id")
+            .eq("is_active", true)
+            .in("id", selectedGiftIds),
+        ]);
+
+      if (eligibilityResult.error || activeGiftsResult.error) {
+        fail(
+          mode,
+          eligibilityResult.error?.message ??
+            activeGiftsResult.error?.message ??
+            "Unable to validate Ancestry Gifts.",
+        );
+      }
+
+      const eligibleIds = new Set(
+        (eligibilityResult.data ?? []).map((row) => row.gift_id),
+      );
+      const activeIds = new Set(
+        (activeGiftsResult.data ?? []).map((row) => row.id),
+      );
+
+      if (
+        selectedGiftIds.some(
+          (giftId) =>
+            !eligibleIds.has(giftId) ||
+            !activeIds.has(giftId),
+        )
+      ) {
+        fail(
+          mode,
+          "One or more selected Gifts are not available to this Ancestry.",
+        );
+      }
+    }
+
     if (existingResult.error) {
       fail(
         mode,
@@ -411,7 +508,10 @@ export async function saveCharacterV2(
       );
     }
 
-    const { error } =
+    const {
+      data: createdCharacter,
+      error,
+    } =
       await supabase
         .from("characters")
         .insert({
@@ -462,14 +562,110 @@ export async function saveCharacterV2(
               STANDARD_BASE_ATTRIBUTES.vigor +
               (raceResult.data.vigour_modifier ?? 0)
             ) * 10,
-        });
+        })
+        .select("id")
+        .single();
 
-    if (error) {
+    if (error || !createdCharacter) {
       fail(
         mode,
-        error.message,
+        error?.message ??
+          "Character could not be created.",
       );
     }
+
+    if (selectedGiftIds.length > 0) {
+      const admin =
+        createPrivilegedClient();
+
+      const { error: giftError } =
+        await admin
+          .from("character_gifts")
+          .insert(
+            selectedGiftIds.map((giftId) => ({
+              character_id: createdCharacter.id,
+              gift_id: giftId,
+              acquisition_source: "ancestry",
+              source_race_id: raceId,
+              assigned_by: user.id,
+            })),
+          );
+
+      if (giftError) {
+        await admin
+          .from("characters")
+          .delete()
+          .eq("id", createdCharacter.id);
+
+        fail(
+          mode,
+          `Character creation was rolled back because the selected Gifts could not be saved: ${giftError.message}`,
+        );
+      }
+    }
+
+    // PHASE5_PASSIVE_GIFT_HEALTH_AFTER_CREATE
+    if (selectedGiftIds.length > 0) {
+      const giftHealthAdmin =
+        createPrivilegedClient();
+
+      const {
+        data: createdGiftAssignments,
+        error: createdGiftAssignmentsError,
+      } = await giftHealthAdmin
+        .from("character_gifts")
+        .select("id")
+        .eq(
+          "character_id",
+          createdCharacter.id,
+        )
+        .eq(
+          "acquisition_source",
+          "ancestry",
+        );
+
+      if (createdGiftAssignmentsError) {
+        await giftHealthAdmin
+          .from("characters")
+          .delete()
+          .eq(
+            "id",
+            createdCharacter.id,
+          );
+
+        fail(
+          mode,
+          `Character creation was rolled back because Gift Health could not be prepared: ${createdGiftAssignmentsError.message}`,
+        );
+      }
+
+      try {
+        for (
+          const assignment
+          of createdGiftAssignments ?? []
+        ) {
+          await applyGiftOwnershipHealthEffects(
+            assignment.id,
+          );
+        }
+      } catch (giftHealthError) {
+        await giftHealthAdmin
+          .from("characters")
+          .delete()
+          .eq(
+            "id",
+            createdCharacter.id,
+          );
+
+        fail(
+          mode,
+          giftHealthError instanceof Error
+            ? `Character creation was rolled back because Gift Health could not be applied: ${giftHealthError.message}`
+            : "Character creation was rolled back because Gift Health could not be applied.",
+        );
+      }
+    }
+
 
     redirect(
       "/character?created=true",

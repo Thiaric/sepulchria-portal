@@ -1,6 +1,10 @@
 "use server";
 
 import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  applyGiftOwnershipHealthEffects,
+  removeGiftOwnershipHealthEffects,
+} from "@/lib/gifts/gift-health-effects";
 import { createClient } from "@/lib/supabase/server";
 
 type RaceAgeOption = {
@@ -122,6 +126,25 @@ export async function saveAdminCharacterAge(
 
     const age = Number(ageRaw);
 
+    const selectedGiftIds = Array.from(
+      new Set(
+        formData
+          .getAll("ancestryGiftIds")
+          .filter(
+            (value): value is string =>
+              typeof value === "string" &&
+              /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value),
+          ),
+      ),
+    );
+
+    if (selectedGiftIds.length > 2) {
+      return {
+        ok: false,
+        error: "Choose no more than 2 Ancestry Gifts.",
+      };
+    }
+
     if (
       !ageRaw ||
       !Number.isInteger(age) ||
@@ -181,6 +204,54 @@ export async function saveAdminCharacterAge(
       };
     }
 
+    if (selectedGiftIds.length > 0) {
+      const [eligibilityResult, activeResult] =
+        await Promise.all([
+          supabase
+            .from("gift_races")
+            .select("gift_id")
+            .eq("race_id", raceId)
+            .in("gift_id", selectedGiftIds),
+
+          supabase
+            .from("gifts")
+            .select("id")
+            .eq("is_active", true)
+            .in("id", selectedGiftIds),
+        ]);
+
+      if (eligibilityResult.error || activeResult.error) {
+        return {
+          ok: false,
+          error:
+            eligibilityResult.error?.message ??
+            activeResult.error?.message ??
+            "Unable to validate Ancestry Gifts.",
+        };
+      }
+
+      const eligibleIds = new Set(
+        (eligibilityResult.data ?? []).map((row) => row.gift_id),
+      );
+      const activeIds = new Set(
+        (activeResult.data ?? []).map((row) => row.id),
+      );
+
+      if (
+        selectedGiftIds.some(
+          (giftId) =>
+            !eligibleIds.has(giftId) ||
+            !activeIds.has(giftId),
+        )
+      ) {
+        return {
+          ok: false,
+          error:
+            "One or more selected Gifts are not available to this Ancestry.",
+        };
+      }
+    }
+
     const { error } = await supabase
       .from("characters")
       .update({
@@ -202,6 +273,136 @@ export async function saveAdminCharacterAge(
         error: error.message,
       };
     }
+    // PHASE5_REMOVE_OLD_ANCESTRY_GIFT_HEALTH
+    const {
+      data: oldAncestryAssignments,
+      error: oldGiftLoadError,
+    } = await supabase
+      .from("character_gifts")
+      .select("id")
+      .eq(
+        "character_id",
+        characterId,
+      )
+      .eq(
+        "acquisition_source",
+        "ancestry",
+      );
+
+    if (oldGiftLoadError) {
+      return {
+        ok: false,
+        error:
+          oldGiftLoadError.message,
+      };
+    }
+
+    try {
+      for (
+        const assignment
+        of oldAncestryAssignments ?? []
+      ) {
+        await removeGiftOwnershipHealthEffects(
+          assignment.id,
+        );
+      }
+    } catch (giftHealthError) {
+      return {
+        ok: false,
+        error:
+          giftHealthError instanceof Error
+            ? giftHealthError.message
+            : "Unable to remove previous Gift Health effects.",
+      };
+    }
+
+
+
+    const { error: removeGiftError } =
+      await supabase
+        .from("character_gifts")
+        .delete()
+        .eq("character_id", characterId)
+        .eq("acquisition_source", "ancestry");
+
+    if (removeGiftError) {
+      return {
+        ok: false,
+        error: removeGiftError.message,
+      };
+    }
+
+    if (selectedGiftIds.length > 0) {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      const { error: insertGiftError } =
+        await supabase
+          .from("character_gifts")
+          .insert(
+            selectedGiftIds.map((giftId) => ({
+              character_id: characterId,
+              gift_id: giftId,
+              acquisition_source: "ancestry",
+              source_race_id: raceId,
+              assigned_by: user?.id ?? null,
+            })),
+          );
+
+      if (insertGiftError) {
+        return {
+          ok: false,
+          error: insertGiftError.message,
+        };
+      }
+    }
+
+    // PHASE5_APPLY_NEW_ANCESTRY_GIFT_HEALTH
+    if (selectedGiftIds.length > 0) {
+      const {
+        data: newAncestryAssignments,
+        error: newGiftLoadError,
+      } = await supabase
+        .from("character_gifts")
+        .select("id")
+        .eq(
+          "character_id",
+          characterId,
+        )
+        .eq(
+          "acquisition_source",
+          "ancestry",
+        );
+
+      if (newGiftLoadError) {
+        return {
+          ok: false,
+          error:
+            newGiftLoadError.message,
+        };
+      }
+
+      try {
+        for (
+          const assignment
+          of newAncestryAssignments ?? []
+        ) {
+          await applyGiftOwnershipHealthEffects(
+            assignment.id,
+          );
+        }
+      } catch (giftHealthError) {
+        return {
+          ok: false,
+          error:
+            giftHealthError instanceof Error
+              ? giftHealthError.message
+              : "Unable to apply new Gift Health effects.",
+        };
+      }
+    }
+
 
     return { ok: true };
   } catch (error) {

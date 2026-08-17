@@ -2,6 +2,11 @@ import { redirect } from "next/navigation";
 
 import { OrderHeadAddMemberForm } from "@/components/orders/order-head-add-member-form";
 import {
+  OrderHeadGiftManager,
+  type OrderGiftOption,
+  type OrderGiftOwnership,
+} from "@/components/orders/order-head-gift-manager";
+import {
   OrderHeadMemberForm,
   type OrderHeadLevelOption,
 } from "@/components/orders/order-head-member-form";
@@ -52,6 +57,7 @@ type MemberRow = {
     level: number;
   }>;
   job: Relation<{
+    id: string;
     name: string;
   }>;
 };
@@ -184,6 +190,7 @@ export default async function ManageOrdersPage({
                   membersResult,
                   charactersResult,
                   linksResult,
+                  giftsResult,
                 ] =
                   await Promise.all([
                     supabase
@@ -232,6 +239,7 @@ export default async function ManageOrdersPage({
                           level
                         ),
                         job:order_jobs!order_memberships_order_job_id_fkey(
+                          id,
                           name
                         )
                       `)
@@ -262,13 +270,32 @@ export default async function ManageOrdersPage({
                       .select(
                         "from_job_id, to_job_id",
                       ),
+
+                    supabase
+                      .from("gifts")
+                      .select(`
+                        id,
+                        name,
+                        description,
+                        roles:gift_order_jobs(
+                          order_job_id
+                        )
+                      `)
+                      .eq("is_active", true)
+                      .order("sort_order", {
+                        ascending: true,
+                      })
+                      .order("name", {
+                        ascending: true,
+                      }),
                   ]);
 
                 if (
                   levelsResult.error ||
                   membersResult.error ||
                   charactersResult.error ||
-                  linksResult.error
+                  linksResult.error ||
+                  giftsResult.error
                 ) {
                   return (
                     <Notice
@@ -446,6 +473,31 @@ export default async function ManageOrdersPage({
                   },
                 );
 
+                const giftOptions =
+                  (
+                    giftsResult.data ??
+                    []
+                  )
+                    .map((gift) => ({
+                      id: gift.id,
+                      name: gift.name,
+                      description:
+                        gift.description ?? "",
+                      roleIds:
+                        (gift.roles ?? []).map(
+                          (entry) =>
+                            entry.order_job_id,
+                        ),
+                    }))
+                    .filter((gift) =>
+                      gift.roleIds.some(
+                        (roleId) =>
+                          orderJobIds.has(
+                            roleId,
+                          ),
+                      ),
+                    ) satisfies OrderGiftOption[];
+
                 const memberIds =
                   new Set(
                     members.map(
@@ -455,6 +507,71 @@ export default async function ManageOrdersPage({
                         member.character_id,
                     ),
                   );
+
+                const {
+                  data: giftOwnershipRows,
+                  error: giftOwnershipError,
+                } = memberIds.size
+                  ? await supabase
+                      .from("character_gifts")
+                      .select(`
+                        id,
+                        character_id,
+                        gift_id,
+                        acquisition_source,
+                        source_order_job_id
+                      `)
+                      .in(
+                        "character_id",
+                        Array.from(memberIds),
+                      )
+                  : {
+                      data: [],
+                      error: null,
+                    };
+
+                if (giftOwnershipError) {
+                  return (
+                    <Notice
+                      key={order.id}
+                      error
+                      text={`Unable to load Gifts for ${order.name}.`}
+                    />
+                  );
+                }
+
+                const ownershipByCharacter =
+                  new Map<
+                    string,
+                    OrderGiftOwnership[]
+                  >();
+
+                for (
+                  const row
+                  of giftOwnershipRows ?? []
+                ) {
+                  const current =
+                    ownershipByCharacter.get(
+                      row.character_id,
+                    ) ?? [];
+
+                  current.push({
+                    assignmentId: row.id,
+                    giftId: row.gift_id,
+                    source:
+                      row.acquisition_source as
+                        | "ancestry"
+                        | "order"
+                        | "staff",
+                    sourceOrderJobId:
+                      row.source_order_job_id,
+                  });
+
+                  ownershipByCharacter.set(
+                    row.character_id,
+                    current,
+                  );
+                }
 
                 const available =
                   (
@@ -591,30 +708,58 @@ export default async function ManageOrdersPage({
                               );
                             }
 
+                            const currentRoleId =
+                              member.order_job_id;
+
                             return (
-                              <OrderHeadMemberForm
-                                key={
-                                  member.id
-                                }
-                                orderId={
-                                  order.id
-                                }
-                                membershipId={
-                                  member.id
-                                }
-                                characterName={
-                                  c.display_name
-                                }
-                                initialLevelId={
-                                  member.order_level_id
-                                }
-                                initialJobId={
-                                  member.order_job_id
-                                }
-                                levels={
-                                  levels
-                                }
-                              />
+                              <div
+                                key={member.id}
+                                className="border border-[#59432c]/40 bg-[#100c09] p-3"
+                              >
+                                <OrderHeadMemberForm
+                                  orderId={
+                                    order.id
+                                  }
+                                  membershipId={
+                                    member.id
+                                  }
+                                  characterName={
+                                    c.display_name
+                                  }
+                                  initialLevelId={
+                                    member.order_level_id
+                                  }
+                                  initialJobId={
+                                    currentRoleId
+                                  }
+                                  levels={
+                                    levels
+                                  }
+                                  embedded
+                                />
+
+                                {currentRoleId ? (
+                                  <OrderHeadGiftManager
+                                    orderId={
+                                      order.id
+                                    }
+                                    membershipId={
+                                      member.id
+                                    }
+                                    currentRoleId={
+                                      currentRoleId
+                                    }
+                                    gifts={
+                                      giftOptions
+                                    }
+                                    ownership={
+                                      ownershipByCharacter.get(
+                                        member.character_id,
+                                      ) ?? []
+                                    }
+                                  />
+                                ) : null}
+                              </div>
                             );
                           },
                         )}

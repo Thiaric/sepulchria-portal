@@ -1,8 +1,13 @@
 import Image from "next/image";
+import { CharacterGiftsDisplay } from "@/components/characters/character-gifts-display";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { AdminCharacterEditForm } from "@/components/admin/admin-character-edit-form";
+import {
+  AdminAncestryGiftSelector,
+  type AdminAncestryGiftOption,
+} from "@/components/admin/admin-ancestry-gift-selector";
 import { CharacterReviewFields } from "@/components/admin/character-review-fields";
 import { requireStaff } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
@@ -282,6 +287,62 @@ export default async function AdminCharacterPage({
   const races =
     (racesResult.data ??
       []) as CodexOption[];
+
+  const [
+    ancestryGiftResult,
+    selectedAncestryGiftResult,
+  ] = await Promise.all([
+    supabase
+      .from("gifts")
+      .select(`
+        id,
+        name,
+        description,
+        eligibility:gift_races(
+          race_id
+        )
+      `)
+      .eq("is_active", true)
+      .order("sort_order", {
+        ascending: true,
+      })
+      .order("name", {
+        ascending: true,
+      }),
+
+    supabase
+      .from("character_gifts")
+      .select("gift_id")
+      .eq("character_id", id)
+      .eq("acquisition_source", "ancestry"),
+  ]);
+
+  if (
+    ancestryGiftResult.error ||
+    selectedAncestryGiftResult.error
+  ) {
+    throw new Error(
+      `Unable to load character Ancestry Gifts: ${
+        ancestryGiftResult.error?.message ??
+        selectedAncestryGiftResult.error?.message
+      }`,
+    );
+  }
+
+  const ancestryGiftOptions =
+    (ancestryGiftResult.data ?? []).map((gift) => ({
+      id: gift.id,
+      name: gift.name,
+      description: gift.description ?? "",
+      raceIds: (gift.eligibility ?? []).map(
+        (entry) => entry.race_id,
+      ),
+    })) satisfies AdminAncestryGiftOption[];
+
+  const selectedAncestryGiftIds =
+    (selectedAncestryGiftResult.data ?? []).map(
+      (entry) => entry.gift_id,
+    );
 
   const race =
     normaliseRelation(
@@ -1019,6 +1080,20 @@ export default async function AdminCharacterPage({
                     )}
                   </select>
                 </AdminField>
+
+                <AdminAncestryGiftSelector
+                  gifts={ancestryGiftOptions}
+                  initialRaceId={character.race_id ?? ""}
+                  initialSelectedIds={selectedAncestryGiftIds}
+                />
+
+                {/* PHASE6_ADMIN_GIFTS_DISPLAY */}
+                <div className="mt-4">
+                  <CharacterGiftsDisplay
+                    characterId={id}
+                    compact
+                  />
+                </div>
 
                 <CharacterReviewFields
                   initialStatus={

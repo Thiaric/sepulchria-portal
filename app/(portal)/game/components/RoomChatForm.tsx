@@ -8,6 +8,7 @@ import {
   useState,
 } from "react";
 import { useFormStatus } from "react-dom";
+import { useRouter } from "next/navigation";
 
 import { CHAT_MAX_LENGTH } from "@/lib/game/constants";
 import {
@@ -21,6 +22,7 @@ import type {
   PresentRoomCharacter,
 } from "@/types/game";
 import {
+  activateRoomGift,
   sendRoomAttributeCheck,
   sendRoomDiceRoll,
   sendRoomMessage,
@@ -79,9 +81,24 @@ const ATTRIBUTE_LABELS: Record<
 
 type AttributeBreakdownEntry = {
   base: number | null;
+  gifts: number;
+  adjustedBase: number | null;
   ancestry: number;
   order: number;
   effective: number | null;
+};
+
+type ChatGift = {
+  characterGiftId: string;
+  giftId: string;
+  name: string;
+  description: string;
+  effectMode:
+    | "none"
+    | "passive"
+    | "temporary";
+  durationMinutes: number | null;
+  activeUntil: string | null;
 };
 
 type AttributeBreakdown = Record<
@@ -100,14 +117,18 @@ function formatSigned(
 export default function RoomChatForm({
   attributes,
   attributeBreakdown,
+  gifts,
   presentCharacters,
   canUseFate,
 }: {
   attributes: CharacterAttributes;
   attributeBreakdown: AttributeBreakdown;
+  gifts: ChatGift[];
   presentCharacters: PresentRoomCharacter[];
   canUseFate: boolean;
 }) {
+  const router = useRouter();
+
   const [messageState, messageAction] =
     useActionState(
       sendRoomMessage,
@@ -125,6 +146,29 @@ export default function RoomChatForm({
       sendRoomAttributeCheck,
       initialState,
     );
+
+  const [giftState, giftAction] =
+    useActionState(
+      activateRoomGift,
+      initialState,
+    );
+
+  const [selectedGiftId, setSelectedGiftId] =
+    useState(
+      gifts[0]?.characterGiftId ?? "",
+    );
+
+  const selectedGift = useMemo(
+    () =>
+      gifts.find(
+        (gift) =>
+          gift.characterGiftId ===
+          selectedGiftId,
+      ) ??
+      gifts[0] ??
+      null,
+    [gifts, selectedGiftId],
+  );
 
   const [value, setValue] =
     useState("");
@@ -254,6 +298,19 @@ const visibleSpellingIssues =
     checkState.submittedAt,
   ]);
 
+  useEffect(() => {
+    if (
+      giftState.ok &&
+      giftState.submittedAt
+    ) {
+      router.refresh();
+    }
+  }, [
+    giftState.ok,
+    giftState.submittedAt,
+    router,
+  ]);
+
   function handleMessageChange(
     nextValue: string,
   ) {
@@ -346,13 +403,16 @@ const visibleSpellingIssues =
   }
 
   const utilityMessage =
+    giftState.message ||
     checkState.message ||
     diceState.message;
 
   const utilityOk =
-    checkState.message
-      ? checkState.ok
-      : diceState.ok;
+    giftState.message
+      ? giftState.ok
+      : checkState.message
+        ? checkState.ok
+        : diceState.ok;
 
   const hasCompleteWhisperMarker =
   /^@[^@\r\n]+@/.test(
@@ -580,6 +640,24 @@ function applySpellingSuggestion(
   });
 }  
 
+function insertSelectedGiftMarker() {
+  if (!selectedGift) {
+    return;
+  }
+
+  const marker = `[Gift: ${selectedGift.name}]`;
+
+  setValue((current) =>
+    current.startsWith(marker)
+      ? current
+      : `${marker} ${current}`,
+  );
+
+  window.requestAnimationFrame(() => {
+    textareaRef.current?.focus();
+  });
+}
+
 function ignoreSpellingWord() {
   if (!spellingMenu) {
     return;
@@ -619,6 +697,14 @@ function ignoreSpellingWord() {
           type="hidden"
           name="whisper_recipient_id"
           value={whisperRecipientId}
+        />
+
+        <input
+          type="hidden"
+          name="character_gift_id"
+          value={
+            selectedGift?.characterGiftId ?? ""
+          }
         />
 
         <div className="relative h-24 overflow-hidden border border-[#60482e]/50 bg-[#0f0c09] transition focus-within:border-[#927047]">
@@ -842,6 +928,10 @@ function ignoreSpellingWord() {
                           ]
                         }: {breakdown.base ?? "—"} Base{" "}
                         {formatSigned(
+                          breakdown.gifts,
+                        )} Gifts ={" "}
+                        {breakdown.adjustedBase ?? "—"} Adjusted Base{" "}
+                        {formatSigned(
                           breakdown.ancestry,
                         )} Ancestry{" "}
                         {formatSigned(
@@ -913,6 +1003,94 @@ function ignoreSpellingWord() {
             }}
           />
         </div>
+
+        {gifts.length ? (
+          <div className="mt-2 border border-[#59432c]/35 bg-[#100c09] p-2.5">
+            <div className="grid gap-2 md:grid-cols-[minmax(220px,0.8fr)_auto_minmax(0,1.2fr)] md:items-center">
+              <select
+                value={
+                  selectedGift?.characterGiftId ?? ""
+                }
+                onChange={(event) =>
+                  setSelectedGiftId(
+                    event.target.value,
+                  )
+                }
+                aria-label="Choose a Gift"
+                className="min-w-0 border border-[#654c31] bg-[#0f0c09] px-3 py-2 text-[10px] uppercase tracking-[0.1em] text-[#d8c29b] outline-none focus:border-[#a17a45]"
+              >
+                {gifts.map((gift) => (
+                  <option
+                    key={gift.characterGiftId}
+                    value={gift.characterGiftId}
+                  >
+                    {gift.name} —{" "}
+                    {gift.effectMode === "passive"
+                      ? "Passive"
+                      : gift.effectMode === "temporary"
+                        ? gift.activeUntil
+                          ? "Active"
+                          : `${gift.durationMinutes ?? "?"} min`
+                        : "Gift"}
+                  </option>
+                ))}
+              </select>
+
+              {selectedGift?.effectMode ===
+                "temporary" &&
+              !selectedGift.activeUntil ? (
+                <button
+                  type="submit"
+                  formAction={giftAction}
+                  formNoValidate
+                  className="border border-[#85653c] bg-[#342617] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[#efd4a0] transition hover:bg-[#4a351f]"
+                >
+                  Activate Gift
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={insertSelectedGiftMarker}
+                  className="border border-[#765937] bg-[#21190f] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[#d6bb8d] transition hover:border-[#a17a49]"
+                >
+                  Use Gift
+                </button>
+              )}
+
+              <div className="min-w-0">
+                <p className="text-[8px] uppercase tracking-[0.12em] text-[#8b7657]">
+                  {selectedGift?.effectMode === "passive"
+                    ? "Passive effect is already active"
+                    : selectedGift?.effectMode ===
+                          "temporary" &&
+                        selectedGift.activeUntil
+                      ? `Active until ${new Date(
+                          selectedGift.activeUntil,
+                        ).toLocaleTimeString(
+                          "en-GB",
+                          {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          },
+                        )}`
+                      : selectedGift?.effectMode ===
+                          "temporary"
+                        ? "Activate to apply its temporary Attribute effect"
+                        : "No automatic Attribute effect"}
+                </p>
+
+                {selectedGift?.description ? (
+                  <p
+                    className="mt-1 truncate text-[9px] text-[#817565]"
+                    title={selectedGift.description}
+                  >
+                    {selectedGift.description}
+                  </p>
+                ) : null}
+              </div>
+            </div>
+          </div>
+        ) : null}
 
         <div className="mt-1.5 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-[8px] leading-4 text-[#756958]">
           <p>

@@ -153,6 +153,88 @@ async function GameContent() {
       },
     );
 
+  const {
+    data: ownedGiftRows,
+    error: ownedGiftError,
+  } = await supabase
+    .from("character_gifts")
+    .select(`
+      id,
+      gift:gifts(
+        id,
+        name,
+        description,
+        is_active,
+        effect_mode,
+        duration_minutes,
+        muscles_modifier,
+        reflexes_modifier,
+        vigour_modifier,
+        shrewd_modifier,
+        brains_modifier,
+        presence_modifier
+      ),
+      activations:gift_activations(
+        activated_at,
+        expires_at,
+        ended_at,
+        health_reverted_at
+      )
+    `)
+    .eq(
+      "character_id",
+      character.id,
+    );
+
+  if (ownedGiftError) {
+    throw new Error(
+      `Unable to load character Gifts: ${ownedGiftError.message}`,
+    );
+  }
+
+  const giftNow = Date.now();
+
+  const chatGifts = (ownedGiftRows ?? [])
+    .map((ownership) => {
+      const relation = ownership.gift ?? null;
+      const gift = Array.isArray(relation)
+        ? relation[0] ?? null
+        : relation;
+
+      if (!gift || !gift.is_active) {
+        return null;
+      }
+
+      const activeActivation =
+        (ownership.activations ?? []).find(
+          (activation) =>
+            activation.ended_at === null &&
+            activation.health_reverted_at === null &&
+            Date.parse(activation.activated_at) <= giftNow &&
+            Date.parse(activation.expires_at) > giftNow,
+        ) ?? null;
+
+      return {
+        characterGiftId: ownership.id,
+        giftId: gift.id,
+        name: gift.name,
+        description: gift.description ?? "",
+        effectMode: gift.effect_mode as
+          | "none"
+          | "passive"
+          | "temporary",
+        durationMinutes: gift.duration_minutes,
+        activeUntil:
+          activeActivation?.expires_at ?? null,
+      };
+    })
+    .filter(
+      (
+        gift,
+      ): gift is NonNullable<typeof gift> =>
+        gift !== null,
+    );
+
   const roomArea =
   Array.isArray(room.areas)
     ? room.areas[0] ?? null
@@ -488,6 +570,7 @@ async function GameContent() {
       attributeBreakdown={
         attributeBreakdown
       }
+      gifts={chatGifts}
       presentCharacters={
         presentCharacters
       }

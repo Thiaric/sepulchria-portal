@@ -1,6 +1,9 @@
 "use server";
 
 import { randomInt } from "node:crypto";
+import {
+  createClient as createAdminClient,
+} from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -12,6 +15,9 @@ import {
 import { getStaffSession } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 import { getEffectiveCharacterAttributes } from "@/lib/characters/get-effective-character-attributes";
+import {
+  applyTemporaryGiftActivationHealth,
+} from "@/lib/gifts/gift-health-effects";
 import type {
   ActionState,
   CharacterAttributeKey,
@@ -32,6 +38,26 @@ type OwnedCharacter = {
   shrewd: number | null;
   presence_score: number | null;
 };
+
+function createPrivilegedClient() {
+  const url =
+    process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const secret =
+    process.env.SUPABASE_SECRET_KEY;
+
+  if (!url || !secret) {
+    throw new Error(
+      "Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SECRET_KEY.",
+    );
+  }
+
+  return createAdminClient(url, secret, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    },
+  });
+}
 
 const VALID_PRESENCE_STATUSES: PresenceStatus[] = [
   "online",
@@ -732,6 +758,184 @@ export async function sendRoomMessage(
         error instanceof Error
           ? error.message
           : "Unexpected error.",
+    };
+  }
+}
+
+export async function activateRoomGift(
+  _previousState: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  try {
+    const characterGiftId = String(
+      formData.get("character_gift_id") ?? "",
+    ).trim();
+
+    if (
+      !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+        characterGiftId,
+      )
+    ) {
+      return {
+        ok: false,
+        message: "Choose a valid Gift.",
+      };
+    }
+
+    const {
+      supabase,
+      character,
+    } = await getOwnedCharacter();
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return {
+        ok: false,
+        message: "Your session has expired.",
+      };
+    }
+
+    const {
+      data: ownership,
+      error: ownershipError,
+    } = await supabase
+      .from("character_gifts")
+      .select(`
+        id,
+        gift:gifts(
+          id,
+          name,
+          is_active,
+          effect_mode,
+          duration_minutes,
+          vigour_modifier
+        )
+      `)
+      .eq("id", characterGiftId)
+      .eq("character_id", character.id)
+      .maybeSingle();
+
+    if (ownershipError || !ownership) {
+      return {
+        ok: false,
+        message:
+          ownershipError?.message ??
+          "This Gift is not owned by your character.",
+      };
+    }
+
+    const relation = ownership.gift ?? null;
+    const gift = Array.isArray(relation)
+      ? relation[0] ?? null
+      : relation;
+
+    if (!gift || !gift.is_active) {
+      return {
+        ok: false,
+        message: "This Gift is not currently active.",
+      };
+    }
+
+    if (gift.effect_mode !== "temporary") {
+      return {
+        ok: false,
+        message: "This Gift does not require activation.",
+      };
+    }
+
+    const now = new Date().toISOString();
+
+    const {
+      data: existing,
+      error: existingError,
+    } = await supabase
+      .from("gift_activations")
+      .select("id")
+      .eq("character_gift_id", characterGiftId)
+      .is("ended_at", null)
+      .gt("expires_at", now)
+      .limit(1)
+      .maybeSingle();
+
+    if (existingError) {
+      return {
+        ok: false,
+        message: existingError.message,
+      };
+    }
+
+    if (existing) {
+      return {
+        ok: false,
+        message: `${gift.name} is already active.`,
+      };
+    }
+
+    const admin = createPrivilegedClient();
+
+    const {
+      data: activation,
+      error: activationError,
+    } = await admin
+      .from("gift_activations")
+      .insert({
+        character_gift_id: characterGiftId,
+        activated_by: user.id,
+      })
+      .select("id, expires_at")
+      .single();
+
+    if (activationError || !activation) {
+      return {
+        ok: false,
+        message:
+          activationError?.message ??
+          "Unable to activate Gift.",
+      };
+    }
+
+    try {
+      await applyTemporaryGiftActivationHealth({
+        activationId: activation.id,
+        characterId: character.id,
+        vigourModifier:
+          gift.vigour_modifier ?? 0,
+      });
+    } catch (healthError) {
+      await admin
+        .from("gift_activations")
+        .delete()
+        .eq("id", activation.id);
+
+      return {
+        ok: false,
+        message:
+          healthError instanceof Error
+            ? healthError.message
+            : "Gift activation Health could not be applied.",
+      };
+    }
+
+    revalidatePath("/game");
+    revalidatePath("/character");
+    revalidatePath("/characters");
+
+    return {
+      ok: true,
+      message:
+        `${gift.name} activated for ${gift.duration_minutes ?? "?"} minutes.`,
+      submittedAt: Date.now(),
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Unable to activate Gift.",
     };
   }
 }

@@ -2,9 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { startConversation } from "@/app/(portal)/messages/actions";
-import { CharacterAttributesDisplay } from "@/components/characters/character-attributes-display";
+import { CharacterMechanicsDisplay } from "@/components/characters/character-mechanics-display";
+import { CharacterGiftsDisplay } from "@/components/characters/character-gifts-display";
 import { CharacterExpertiseTotal } from "@/components/characters/character-expertise-total";
-import { CharacterHealthDisplay } from "@/components/characters/character-health-display";
 import { CharacterMusicPlayer } from "@/components/characters/character-music-player";
 import { LiveCharacterPresence } from "@/components/characters/live-character-presence";
 import { PublicCharacterAgeDetail } from "@/components/characters/public-character-age-detail";
@@ -213,13 +213,13 @@ export function PublicCharacterProfileView({
         </div>
 
         <div className="min-w-0">
-          <CharacterAttributesDisplay
-            character={character}
+          <CharacterMechanicsDisplay
+            characterId={character.id}
           />
 
           <div className="mt-4">
-            <CharacterHealthDisplay
-              character={character}
+            <CharacterGiftsDisplay
+              characterId={character.id}
             />
           </div>
 

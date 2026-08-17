@@ -1,0 +1,178 @@
+import "server-only";
+
+import { getCharacterAttributeBreakdown } from "@/lib/characters/get-effective-character-attributes";
+import { createClient } from "@/lib/supabase/server";
+
+const DEFINITIONS = [
+  ["muscles", "Muscles"],
+  ["reflexes", "Reflexes"],
+  ["vigor", "Vigour"],
+  ["shrewd", "Shrewd"],
+  ["brains", "Brains"],
+  ["presence_score", "Presence"],
+] as const;
+
+function signed(value: number) {
+  return value >= 0 ? `+${value}` : String(value);
+}
+
+export async function CharacterMechanicsDisplay({
+  characterId,
+}: {
+  characterId: string;
+}) {
+  const supabase = await createClient();
+
+  const { data: character, error } = await supabase
+    .from("characters")
+    .select(
+      "muscles, reflexes, vigor, brains, shrewd, presence_score, current_health",
+    )
+    .eq("id", characterId)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(
+      `Unable to load character mechanics: ${error.message}`,
+    );
+  }
+
+  if (!character) {
+    return null;
+  }
+
+  const breakdown = await getCharacterAttributeBreakdown(
+    characterId,
+    {
+      muscles: character.muscles,
+      reflexes: character.reflexes,
+      vigor: character.vigor,
+      brains: character.brains,
+      shrewd: character.shrewd,
+      presence_score: character.presence_score,
+    },
+  );
+
+  const maxHealth =
+    breakdown.vigor.effective === null
+      ? null
+      : breakdown.vigor.effective * 10;
+
+  const currentHealth =
+    maxHealth === null
+      ? null
+      : Math.max(
+          0,
+          Math.min(
+            character.current_health ?? maxHealth,
+            maxHealth,
+          ),
+        );
+
+  const healthPercentage =
+    maxHealth && currentHealth !== null
+      ? Math.round((currentHealth / maxHealth) * 100)
+      : 0;
+
+  return (
+    <div className="space-y-4">
+      <section className="border border-[#60482e]/45 bg-[#15100d]/95 p-5 sm:p-6">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+              Character record
+            </p>
+            <h2 className="mt-2 font-serif text-2xl text-[#dec89f]">
+              Attributes
+            </h2>
+          </div>
+
+          <p className="text-[8px] uppercase tracking-[0.16em] text-[#776957]">
+            Adjusted Base + Ancestry + Order
+          </p>
+        </div>
+
+        <div className="mt-5 grid gap-px bg-[#4f3b28]/35 sm:grid-cols-2">
+          {DEFINITIONS.map(([key, label]) => {
+            const entry = breakdown[key];
+
+            return (
+              <div
+                key={key}
+                className="bg-[#120e0b] px-4 py-3"
+              >
+                <div className="flex items-center justify-between gap-4">
+                  <span className="text-[8px] uppercase tracking-[0.16em] text-[#8b7455]">
+                    {label}
+                  </span>
+                  <span className="font-serif text-2xl text-[#e1c28d]">
+                    {entry.effective ?? "—"}
+                  </span>
+                </div>
+
+                {entry.base !== null ? (
+                  <div className="mt-2 border-t border-[#59432c]/25 pt-2 text-[7px] uppercase leading-4 tracking-[0.08em] text-[#756958]">
+                    {entry.base} Base ·{" "}
+                    <span
+                      className={
+                        entry.gifts === 0
+                          ? ""
+                          : "text-[#b99765]"
+                      }
+                    >
+                      {signed(entry.gifts)} Gifts
+                    </span>{" "}
+                    ={" "}
+                    <span className="text-[#99866a]">
+                      {entry.adjustedBase} Adjusted Base
+                    </span>
+                    <br />
+                    {signed(entry.ancestry)} Ancestry ·{" "}
+                    {signed(entry.order)} Order ={" "}
+                    <span className="text-[#c8a879]">
+                      {entry.effective} Effective
+                    </span>
+                  </div>
+                ) : null}
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="border border-[#60482e]/45 bg-[#15100d]/95 p-5 sm:p-6">
+        <div className="flex items-end justify-between gap-4">
+          <div>
+            <p className="text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+              Vital condition
+            </p>
+            <h2 className="mt-2 font-serif text-2xl text-[#dec89f]">
+              Health
+            </h2>
+          </div>
+
+          <p className="font-serif text-2xl text-[#e1c28d]">
+            {currentHealth === null || maxHealth === null
+              ? "—"
+              : `${currentHealth} / ${maxHealth}`}
+          </p>
+        </div>
+
+        <div className="mt-3 h-2 overflow-hidden border border-[#60482e]/45 bg-[#0d0907]">
+          <div
+            className="h-full bg-gradient-to-r from-[#7b2f2a] via-[#a94f3f] to-[#c26a50] transition-[width] duration-300"
+            style={{
+              width: `${healthPercentage}%`,
+            }}
+          />
+        </div>
+
+        {maxHealth !== null ? (
+          <p className="mt-2 text-[8px] uppercase tracking-[0.14em] text-[#776957]">
+            Maximum Health = Effective Vigour × 10
+          </p>
+        ) : null}
+      </section>
+    </div>
+  );
+}

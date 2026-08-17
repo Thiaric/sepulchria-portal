@@ -1,6 +1,9 @@
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
+import {
+  getCharacterGiftAttributeModifiers,
+} from "@/lib/gifts/get-character-gift-modifiers";
 
 export type CharacterAttributeValues = {
   muscles: number | null;
@@ -13,6 +16,8 @@ export type CharacterAttributeValues = {
 
 export type CharacterAttributeBreakdownEntry = {
   base: number | null;
+  gifts: number;
+  adjustedBase: number | null;
   ancestry: number;
   order: number;
   effective: number | null;
@@ -51,17 +56,27 @@ function one<T>(
 
 function makeBreakdown(
   base: number | null,
+  gifts: number,
   ancestry: number,
   order: number,
 ): CharacterAttributeBreakdownEntry {
+  const adjustedBase =
+    base === null
+      ? null
+      : base + gifts;
+
   return {
     base,
+    gifts,
+    adjustedBase,
     ancestry,
     order,
     effective:
-      base === null
+      adjustedBase === null
         ? null
-        : base + ancestry + order,
+        : adjustedBase +
+          ancestry +
+          order,
   };
 }
 
@@ -81,6 +96,7 @@ export async function getCharacterAttributeBreakdown(
       data: membershipData,
       error: membershipError,
     },
+    giftModifiers,
   ] = await Promise.all([
     supabase
       .from("characters")
@@ -112,6 +128,10 @@ export async function getCharacterAttributeBreakdown(
       .eq("character_id", characterId)
       .limit(1)
       .maybeSingle(),
+
+    getCharacterGiftAttributeModifiers(
+      characterId,
+    ),
   ]);
 
   if (characterError) {
@@ -139,31 +159,37 @@ export async function getCharacterAttributeBreakdown(
   return {
     muscles: makeBreakdown(
       baseAttributes.muscles,
+      giftModifiers.muscles,
       ancestry?.muscles_modifier ?? 0,
       orderRole?.muscles_modifier ?? 0,
     ),
     reflexes: makeBreakdown(
       baseAttributes.reflexes,
+      giftModifiers.reflexes,
       ancestry?.reflexes_modifier ?? 0,
       orderRole?.reflexes_modifier ?? 0,
     ),
     vigor: makeBreakdown(
       baseAttributes.vigor,
+      giftModifiers.vigor,
       ancestry?.vigour_modifier ?? 0,
       orderRole?.vigour_modifier ?? 0,
     ),
     brains: makeBreakdown(
       baseAttributes.brains,
+      giftModifiers.brains,
       ancestry?.brains_modifier ?? 0,
       orderRole?.brains_modifier ?? 0,
     ),
     shrewd: makeBreakdown(
       baseAttributes.shrewd,
+      giftModifiers.shrewd,
       ancestry?.shrewd_modifier ?? 0,
       orderRole?.shrewd_modifier ?? 0,
     ),
     presence_score: makeBreakdown(
       baseAttributes.presence_score,
+      giftModifiers.presence_score,
       ancestry?.presence_modifier ?? 0,
       orderRole?.presence_modifier ?? 0,
     ),

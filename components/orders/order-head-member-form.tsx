@@ -25,6 +25,7 @@ type Props = {
   initialLevelId: string;
   initialJobId: string | null;
   levels: OrderHeadLevelOption[];
+  embedded?: boolean;
 };
 
 export function OrderHeadMemberForm({
@@ -34,6 +35,7 @@ export function OrderHeadMemberForm({
   initialLevelId,
   initialJobId,
   levels,
+  embedded = false,
 }: Props) {
   const [levelId, setLevelId] =
     useState(initialLevelId);
@@ -96,7 +98,11 @@ export function OrderHeadMemberForm({
   return (
     <form
       action={headUpdateMember}
-      className="border border-[#59432c]/40 bg-[#100c09] p-3"
+      className={
+        embedded
+          ? ""
+          : "border border-[#59432c]/40 bg-[#100c09] p-3"
+      }
     >
       <input type="hidden" name="orderId" value={orderId} />
       <input type="hidden" name="membershipId" value={membershipId} />

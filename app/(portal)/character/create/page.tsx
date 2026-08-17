@@ -46,6 +46,45 @@ export default async function CreateCharacterPage({
     );
   }
 
+  const {
+    data: giftRows,
+    error: giftsError,
+  } = await supabase
+    .from("gifts")
+    .select(`
+      id,
+      name,
+      description,
+      eligibility:gift_races(
+        race_id
+      )
+    `)
+    .eq("is_active", true)
+    .order("sort_order", {
+      ascending: true,
+    })
+    .order("name", {
+      ascending: true,
+    });
+
+  if (giftsError) {
+    throw new Error(
+      `Unable to load Ancestry Gifts: ${giftsError.message}`,
+    );
+  }
+
+  const ancestryGifts =
+    (giftRows ?? []).map((gift) => ({
+      id: gift.id,
+      name: gift.name,
+      description:
+        gift.description ?? "",
+      raceIds:
+        (gift.eligibility ?? []).map(
+          (entry) => entry.race_id,
+        ),
+    }));
+
   return (
     <main className="min-h-screen bg-[#100d0b] px-5 py-8 text-[#e7d5b0] sm:py-10">
       <div className="mx-auto max-w-7xl">
@@ -79,6 +118,7 @@ export default async function CreateCharacterPage({
         <CharacterForm
           action={createCharacter}
           races={races ?? []}
+          ancestryGifts={ancestryGifts}
           submitLabel="Create character"
           mode="create"
         />

@@ -148,6 +148,53 @@ export function LiveCharacterSheetRefresh({
           refreshSheet,
         )
         .subscribe(),
+
+      supabase
+        .channel(
+          `live-sheet-character-gifts-${characterId}`,
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "character_gifts",
+            filter:
+              `character_id=eq.${characterId}`,
+          },
+          refreshSheet,
+        )
+        .subscribe(),
+
+      supabase
+        .channel(
+          `live-sheet-gifts-${characterId}`,
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "gifts",
+          },
+          refreshSheet,
+        )
+        .subscribe(),
+
+      supabase
+        .channel(
+          `live-sheet-gift-activations-${characterId}`,
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "gift_activations",
+          },
+          refreshSheet,
+        )
+        .subscribe(),
     ];
 
     if (raceId) {

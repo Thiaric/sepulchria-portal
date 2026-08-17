@@ -13,6 +13,10 @@ import {
   requireOrderHead,
 } from "@/lib/orders/require-order-manager";
 import {
+  applyGiftOwnershipHealthEffects,
+  removeGiftOwnershipHealthEffects,
+} from "@/lib/gifts/gift-health-effects";
+import {
   createClient,
 } from "@/lib/supabase/server";
 
@@ -221,11 +225,276 @@ async function adjustCharacterHealthForOrderModifier({
   }
 }
 
+async function syncOrderGiftsForRole({
+  characterId,
+  orderId,
+  newRoleId,
+}: {
+  characterId: string;
+  orderId: string;
+  newRoleId: string;
+}) {
+  const admin =
+    createPrivilegedClient();
+
+  const {
+    data: owned,
+    error: ownedError,
+  } = await admin
+    .from("character_gifts")
+    .select(`
+      id,
+      gift_id,
+      source_order_job_id,
+      sourceRole:order_jobs!character_gifts_source_order_job_id_fkey(
+        order_level_id,
+        level:order_levels(
+          order_id
+        )
+      )
+    `)
+    .eq("character_id", characterId)
+    .eq(
+      "acquisition_source",
+      "order",
+    );
+
+  if (ownedError) {
+    throw new Error(
+      ownedError.message,
+    );
+  }
+
+  const fromThisOrder =
+    (owned ?? []).filter(
+      (assignment) => {
+        const roleRelation =
+          assignment.sourceRole ??
+          null;
+
+        const sourceRole =
+          Array.isArray(
+            roleRelation,
+          )
+            ? roleRelation[0] ??
+              null
+            : roleRelation;
+
+        const levelRelation =
+          sourceRole?.level ??
+          null;
+
+        const sourceLevel =
+          Array.isArray(
+            levelRelation,
+          )
+            ? levelRelation[0] ??
+              null
+            : levelRelation;
+
+        return (
+          sourceLevel?.order_id ===
+          orderId
+        );
+      },
+    );
+
+  if (!fromThisOrder.length) {
+    return;
+  }
+
+  const giftIds =
+    fromThisOrder.map(
+      (assignment) =>
+        assignment.gift_id,
+    );
+
+  const {
+    data: eligible,
+    error: eligibilityError,
+  } = await admin
+    .from("gift_order_jobs")
+    .select("gift_id")
+    .eq(
+      "order_job_id",
+      newRoleId,
+    )
+    .in("gift_id", giftIds);
+
+  if (eligibilityError) {
+    throw new Error(
+      eligibilityError.message,
+    );
+  }
+
+  const eligibleIds =
+    new Set(
+      (eligible ?? []).map(
+        (row) => row.gift_id,
+      ),
+    );
+
+  const removeIds =
+    fromThisOrder
+      .filter(
+        (assignment) =>
+          !eligibleIds.has(
+            assignment.gift_id,
+          ),
+      )
+      .map(
+        (assignment) =>
+          assignment.id,
+      );
+
+  if (removeIds.length) {
+    for (const assignmentId of removeIds) {
+      await removeGiftOwnershipHealthEffects(
+        assignmentId,
+      );
+    }
+
+    const { error } =
+      await admin
+        .from("character_gifts")
+        .delete()
+        .in("id", removeIds);
+
+    if (error) {
+      throw new Error(
+        error.message,
+      );
+    }
+  }
+
+  const keepIds =
+    fromThisOrder
+      .filter((assignment) =>
+        eligibleIds.has(
+          assignment.gift_id,
+        ),
+      )
+      .map(
+        (assignment) =>
+          assignment.id,
+      );
+
+  if (keepIds.length) {
+    const { error } =
+      await admin
+        .from("character_gifts")
+        .update({
+          source_order_job_id:
+            newRoleId,
+        })
+        .in("id", keepIds);
+
+    if (error) {
+      throw new Error(
+        error.message,
+      );
+    }
+  }
+}
+
+async function removeOrderGiftsForMembership({
+  characterId,
+  orderId,
+}: {
+  characterId: string;
+  orderId: string;
+}) {
+  const admin =
+    createPrivilegedClient();
+
+  const {
+    data: owned,
+    error,
+  } = await admin
+    .from("character_gifts")
+    .select(`
+      id,
+      sourceRole:order_jobs!character_gifts_source_order_job_id_fkey(
+        level:order_levels(
+          order_id
+        )
+      )
+    `)
+    .eq("character_id", characterId)
+    .eq(
+      "acquisition_source",
+      "order",
+    );
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const ids =
+    (owned ?? [])
+      .filter((assignment) => {
+        const roleRelation =
+          assignment.sourceRole ??
+          null;
+
+        const role =
+          Array.isArray(
+            roleRelation,
+          )
+            ? roleRelation[0] ??
+              null
+            : roleRelation;
+
+        const levelRelation =
+          role?.level ?? null;
+
+        const levelRow =
+          Array.isArray(
+            levelRelation,
+          )
+            ? levelRelation[0] ??
+              null
+            : levelRelation;
+
+        return (
+          levelRow?.order_id ===
+          orderId
+        );
+      })
+      .map(
+        (assignment) =>
+          assignment.id,
+      );
+
+  if (!ids.length) {
+    return;
+  }
+
+  for (const assignmentId of ids) {
+    await removeGiftOwnershipHealthEffects(
+      assignmentId,
+    );
+  }
+
+  const { error: deleteError } =
+    await admin
+      .from("character_gifts")
+      .delete()
+      .in("id", ids);
+
+  if (deleteError) {
+    throw new Error(
+      deleteError.message,
+    );
+  }
+}
+
 function refresh(
   characterId?: string,
 ) {
   revalidatePath("/orders/manage");
   revalidatePath("/admin/orders");
+  revalidatePath("/admin/gifts");
   revalidatePath("/orders");
   revalidatePath("/character");
   revalidatePath("/characters");
@@ -480,6 +749,14 @@ export async function headUpdateMember(
       );
     }
 
+    await syncOrderGiftsForRole({
+      characterId:
+        target.character_id,
+      orderId,
+      newRoleId:
+        selectedRole.id,
+    });
+
     await adjustCharacterHealthForOrderModifier({
       characterId:
         target.character_id,
@@ -594,6 +871,12 @@ export async function headRemoveMember(
     const admin =
       createPrivilegedClient();
 
+    await removeOrderGiftsForMembership({
+      characterId:
+        target.character_id,
+      orderId,
+    });
+
     const {
       error: deleteError,
     } = await admin
@@ -643,4 +926,347 @@ export async function headRemoveMember(
       "Member removed.",
     );
   }
+}
+
+
+export async function headAssignOrderGift(
+  formData: FormData,
+) {
+  const orderId =
+    req(formData, "orderId");
+
+  try {
+    const head =
+      await requireOrderHead(
+        orderId,
+      );
+
+    const membershipId =
+      req(
+        formData,
+        "membershipId",
+      );
+
+    const giftId =
+      req(formData, "giftId");
+
+    const supabase =
+      await createClient();
+
+    const {
+      data: membership,
+      error: membershipError,
+    } = await supabase
+      .from("order_memberships")
+      .select(`
+        character_id,
+        order_job_id,
+        level:order_levels!order_memberships_order_level_id_fkey(
+          level
+        )
+      `)
+      .eq("id", membershipId)
+      .eq("order_id", orderId)
+      .maybeSingle();
+
+    if (
+      membershipError ||
+      !membership
+    ) {
+      throw new Error(
+        "Membership not found.",
+      );
+    }
+
+    const levelRelation =
+      membership.level ?? null;
+
+    const currentLevel =
+      Array.isArray(levelRelation)
+        ? levelRelation[0] ?? null
+        : levelRelation;
+
+    if (
+      currentLevel?.level === 6 &&
+      membership.character_id !==
+        head.characterId
+    ) {
+      throw new Error(
+        "Only staff can manage another Level 6 Head.",
+      );
+    }
+
+    if (!membership.order_job_id) {
+      throw new Error(
+        "This member has no valid Order Role.",
+      );
+    }
+
+    const {
+      data: gift,
+      error: giftError,
+    } = await supabase
+      .from("gifts")
+      .select("id, name")
+      .eq("id", giftId)
+      .eq("is_active", true)
+      .maybeSingle();
+
+    if (giftError || !gift) {
+      throw new Error(
+        "Gift is not active or does not exist.",
+      );
+    }
+
+    const {
+      data: eligibility,
+      error: eligibilityError,
+    } = await supabase
+      .from("gift_order_jobs")
+      .select("gift_id")
+      .eq("gift_id", giftId)
+      .eq(
+        "order_job_id",
+        membership.order_job_id,
+      )
+      .maybeSingle();
+
+    if (
+      eligibilityError ||
+      !eligibility
+    ) {
+      throw new Error(
+        "This Gift is not available through the member's current Role.",
+      );
+    }
+
+    const admin =
+      createPrivilegedClient();
+
+    const {
+      data: existing,
+      error: existingError,
+    } = await admin
+      .from("character_gifts")
+      .select(
+        "id, acquisition_source",
+      )
+      .eq(
+        "character_id",
+        membership.character_id,
+      )
+      .eq("gift_id", giftId)
+      .maybeSingle();
+
+    if (existingError) {
+      throw new Error(
+        existingError.message,
+      );
+    }
+
+    if (existing) {
+      throw new Error(
+        `This character already owns ${gift.name} through ${existing.acquisition_source}.`,
+      );
+    }
+
+    const {
+      data: assignment,
+      error,
+    } =
+      await admin
+        .from("character_gifts")
+        .insert({
+          character_id:
+            membership.character_id,
+          gift_id: giftId,
+          acquisition_source:
+            "order",
+          source_order_job_id:
+            membership.order_job_id,
+          assigned_by:
+            head.userId,
+        })
+        .select("id")
+        .single();
+
+    if (error || !assignment) {
+      throw new Error(
+        error?.message ??
+          "Gift assignment could not be created.",
+      );
+    }
+
+    await applyGiftOwnershipHealthEffects(
+      assignment.id,
+    );
+
+    refresh(
+      membership.character_id,
+    );
+  } catch (error) {
+    back(
+      orderId,
+      "error",
+      error instanceof Error
+        ? error.message
+        : "Unable to assign Gift.",
+    );
+  }
+
+  back(
+    orderId,
+    "success",
+    "Order Gift assigned.",
+  );
+}
+
+export async function headRemoveOrderGift(
+  formData: FormData,
+) {
+  const orderId =
+    req(formData, "orderId");
+
+  try {
+    await requireOrderHead(
+      orderId,
+    );
+
+    const membershipId =
+      req(
+        formData,
+        "membershipId",
+      );
+
+    const assignmentId =
+      req(
+        formData,
+        "assignmentId",
+      );
+
+    const supabase =
+      await createClient();
+
+    const {
+      data: membership,
+      error: membershipError,
+    } = await supabase
+      .from("order_memberships")
+      .select("character_id")
+      .eq("id", membershipId)
+      .eq("order_id", orderId)
+      .maybeSingle();
+
+    if (
+      membershipError ||
+      !membership
+    ) {
+      throw new Error(
+        "Membership not found.",
+      );
+    }
+
+    const admin =
+      createPrivilegedClient();
+
+    const {
+      data: assignment,
+      error: assignmentError,
+    } = await admin
+      .from("character_gifts")
+      .select(`
+        id,
+        character_id,
+        acquisition_source,
+        sourceRole:order_jobs!character_gifts_source_order_job_id_fkey(
+          level:order_levels(
+            order_id
+          )
+        )
+      `)
+      .eq("id", assignmentId)
+      .eq(
+        "character_id",
+        membership.character_id,
+      )
+      .maybeSingle();
+
+    if (
+      assignmentError ||
+      !assignment
+    ) {
+      throw new Error(
+        "Gift assignment not found.",
+      );
+    }
+
+    if (
+      assignment.acquisition_source !==
+      "order"
+    ) {
+      throw new Error(
+        "Order Heads can remove only Gifts assigned through an Order.",
+      );
+    }
+
+    const roleRelation =
+      assignment.sourceRole ??
+      null;
+
+    const sourceRole =
+      Array.isArray(roleRelation)
+        ? roleRelation[0] ?? null
+        : roleRelation;
+
+    const levelRelation =
+      sourceRole?.level ?? null;
+
+    const sourceLevel =
+      Array.isArray(levelRelation)
+        ? levelRelation[0] ?? null
+        : levelRelation;
+
+    if (
+      sourceLevel?.order_id !==
+      orderId
+    ) {
+      throw new Error(
+        "This Gift was not assigned through this Order.",
+      );
+    }
+
+    await removeGiftOwnershipHealthEffects(
+      assignmentId,
+    );
+
+    const { error } =
+      await admin
+        .from("character_gifts")
+        .delete()
+        .eq("id", assignmentId);
+
+    if (error) {
+      throw new Error(
+        error.message,
+      );
+    }
+
+    refresh(
+      membership.character_id,
+    );
+  } catch (error) {
+    back(
+      orderId,
+      "error",
+      error instanceof Error
+        ? error.message
+        : "Unable to remove Gift.",
+    );
+  }
+
+  back(
+    orderId,
+    "success",
+    "Order Gift removed.",
+  );
 }

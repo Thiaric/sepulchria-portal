@@ -28,10 +28,18 @@ type RaceOption = CharacterOption & {
   presence_modifier: number | null;
 };
 
+type AncestryGiftOption = {
+  id: string;
+  name: string;
+  description: string;
+  raceIds: string[];
+};
+
 type Props = {
   action: (formData: FormData) => void | Promise<void>;
   character?: CharacterData;
   races: RaceOption[];
+  ancestryGifts?: AncestryGiftOption[];
   submitLabel: string;
   mode: "create" | "update";
 };
@@ -49,12 +57,14 @@ export default function CharacterForm({
   action,
   character,
   races,
+  ancestryGifts = [],
   submitLabel,
   mode,
 }: Props) {
   const formRef = useRef<HTMLFormElement>(null);
   const [step, setStep] = useState(1);
   const [raceId, setRaceId] = useState(String(character?.race_id ?? ""));
+  const [ancestryGiftIds, setAncestryGiftIds] = useState<string[]>([]);
   const [age, setAge] = useState(String(character?.age ?? ""));
   const [error, setError] = useState<string | null>(null);
 
@@ -62,6 +72,41 @@ export default function CharacterForm({
     () => races.find((item) => item.id === raceId) ?? null,
     [races, raceId],
   );
+
+  const eligibleAncestryGifts = useMemo(
+    () =>
+      ancestryGifts.filter((gift) =>
+        gift.raceIds.includes(raceId),
+      ),
+    [ancestryGifts, raceId],
+  );
+
+  const selectedAncestryGifts = useMemo(
+    () =>
+      ancestryGifts.filter((gift) =>
+        ancestryGiftIds.includes(gift.id),
+      ),
+    [ancestryGifts, ancestryGiftIds],
+  );
+
+  function selectRace(nextRaceId: string) {
+    setRaceId(nextRaceId);
+    setAncestryGiftIds([]);
+  }
+
+  function toggleAncestryGift(giftId: string) {
+    setAncestryGiftIds((current) => {
+      if (current.includes(giftId)) {
+        return current.filter((id) => id !== giftId);
+      }
+
+      if (current.length >= 2) {
+        return current;
+      }
+
+      return [...current, giftId];
+    });
+  }
 
   function value(name: string) {
     const field = formRef.current?.elements.namedItem(name);
@@ -119,6 +164,15 @@ export default function CharacterForm({
     >
       <input type="hidden" name="race_id" value={raceId} />
 
+      {ancestryGiftIds.map((giftId) => (
+        <input
+          key={giftId}
+          type="hidden"
+          name="ancestryGiftIds"
+          value={giftId}
+        />
+      ))}
+
       <div className="grid gap-2 border-b border-[#5d452d]/40 bg-[#110d0a] p-4 sm:grid-cols-3 xl:grid-cols-6">
         {steps.map(([label], index) => (
           <button
@@ -162,10 +216,70 @@ export default function CharacterForm({
 
         <section className={step === 1 ? "block" : "hidden"}>
           {mode === "create" ? (
-            <RaceSelection races={races} selectedId={raceId} onSelect={setRaceId} />
+            <RaceSelection races={races} selectedId={raceId} onSelect={selectRace} />
           ) : (
             <LockedRace race={race} />
           )}
+
+          {mode === "create" && race ? (
+            <div className="mt-6 border border-[#59432c]/40 bg-[#100c09] p-4">
+              <div className="flex flex-wrap items-end justify-between gap-3">
+                <div>
+                  <p className="text-[9px] uppercase tracking-[0.22em] text-[#806b50]">
+                    Ancestry Gifts
+                  </p>
+                  <p className="mt-2 text-xs leading-6 text-[#8f8271]">
+                    Choose up to two Gifts available to {race.name}.
+                  </p>
+                </div>
+                <p className="text-[8px] uppercase tracking-[0.14em] text-[#756958]">
+                  {ancestryGiftIds.length} / 2 selected
+                </p>
+              </div>
+
+              {eligibleAncestryGifts.length ? (
+                <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                  {eligibleAncestryGifts.map((gift) => {
+                    const selected = ancestryGiftIds.includes(gift.id);
+                    const disabled = !selected && ancestryGiftIds.length >= 2;
+
+                    return (
+                      <button
+                        key={gift.id}
+                        type="button"
+                        disabled={disabled}
+                        onClick={() => toggleAncestryGift(gift.id)}
+                        className={`border p-4 text-left transition ${
+                          selected
+                            ? "border-[#c19352] bg-[#332416]"
+                            : "border-[#5c462f]/65 bg-[#120e0b] hover:border-[#8a683f]"
+                        } disabled:cursor-not-allowed disabled:opacity-35`}
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <span className="font-serif text-base text-[#dfc79c]">
+                            {gift.name}
+                          </span>
+                          <span className="text-[8px] uppercase tracking-[0.12em] text-[#8e7656]">
+                            {selected ? "Selected" : "Choose"}
+                          </span>
+                        </div>
+
+                        {gift.description ? (
+                          <p className="mt-2 text-[11px] leading-5 text-[#918473]">
+                            {gift.description}
+                          </p>
+                        ) : null}
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (
+                <p className="mt-4 text-xs italic text-[#746958]">
+                  No active Ancestry Gifts are currently available for {race.name}.
+                </p>
+              )}
+            </div>
+          ) : null}
 
           <div className="mt-6 border border-[#59432c]/40 bg-[#100c09] p-4">
             <p className="text-[9px] uppercase tracking-[0.22em] text-[#806b50]">
@@ -275,7 +389,17 @@ export default function CharacterForm({
             </h3>
             <p className="mt-3 text-sm leading-7 text-[#998b78]">
               Ancestry: <span className="text-[#d6bd91]">{race?.name ?? "Not selected"}</span>.
-              Association and Order membership will be managed through the Order system.
+              {mode === "create" ? (
+                <>
+                  {" "}Ancestry Gifts:{" "}
+                  <span className="text-[#d6bd91]">
+                    {selectedAncestryGifts.length
+                      ? selectedAncestryGifts.map((gift) => gift.name).join(", ")
+                      : "None selected"}
+                  </span>.
+                </>
+              ) : null}
+              {" "}Association and Order membership will be managed through the Order system.
             </p>
           </div>
         </section>
