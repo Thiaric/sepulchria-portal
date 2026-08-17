@@ -59,7 +59,8 @@ export async function CharacterMechanicsDisplay({
       : Math.max(
           0,
           breakdown.vigor.effective * 10 +
-            breakdown.itemMaxHealth,
+            breakdown.itemMaxHealth +
+            breakdown.activeItemMaxHealth,
         );
 
   const currentHealth =
@@ -119,28 +120,20 @@ export async function CharacterMechanicsDisplay({
                     {entry.base !== null ? (
                       <span
                         role="tooltip"
-                        className="pointer-events-none absolute bottom-full right-0 z-30 mb-2 hidden w-max max-w-[300px] border border-[#765937]/70 bg-[#0b0806] px-3 py-2 text-left shadow-xl group-hover:block group-focus-within:block"
+                        className="pointer-events-none absolute bottom-full right-0 z-30 mb-2 hidden w-max max-w-[340px] border border-[#765937]/70 bg-[#0b0806] px-3 py-2 text-left shadow-xl group-hover:block group-focus-within:block"
                       >
                         <span className="block whitespace-nowrap text-[7px] uppercase leading-4 tracking-[0.08em] text-[#756958]">
                           {entry.base} Base ·{" "}
-                          <span
-                            className={
-                              entry.gifts === 0
-                                ? ""
-                                : "text-[#b99765]"
-                            }
-                          >
+                          <span className={entry.gifts === 0 ? "" : "text-[#b99765]"}>
                             {signed(entry.gifts)} Feats
                           </span>
                           {" · "}
-                          <span
-                            className={
-                              entry.items === 0
-                                ? ""
-                                : "text-[#b99765]"
-                            }
-                          >
+                          <span className={entry.items === 0 ? "" : "text-[#b99765]"}>
                             {signed(entry.items)} Items
+                          </span>
+                          {" · "}
+                          <span className={entry.activeItems === 0 ? "" : "text-emerald-400"}>
+                            {signed(entry.activeItems)} Active Effects
                           </span>
                           {" = "}
                           <span className="text-[#99866a]">
@@ -185,9 +178,7 @@ export async function CharacterMechanicsDisplay({
         <div className="mt-3 h-2 overflow-hidden border border-[#60482e]/45 bg-[#0d0907]">
           <div
             className="h-full bg-gradient-to-r from-[#7b2f2a] via-[#a94f3f] to-[#c26a50] transition-[width] duration-300"
-            style={{
-              width: `${healthPercentage}%`,
-            }}
+            style={{ width: `${healthPercentage}%` }}
           />
         </div>
 
@@ -195,7 +186,10 @@ export async function CharacterMechanicsDisplay({
           <p className="mt-2 text-[8px] uppercase tracking-[0.14em] text-[#776957]">
             Maximum Health = Effective Vigour × 10
             {breakdown.itemMaxHealth !== 0
-              ? ` ${signed(breakdown.itemMaxHealth)} Item Max Health`
+              ? ` ${signed(breakdown.itemMaxHealth)} Passive Item Max Health`
+              : ""}
+            {breakdown.activeItemMaxHealth !== 0
+              ? ` ${signed(breakdown.activeItemMaxHealth)} Active Item Max Health`
               : ""}
           </p>
         ) : null}

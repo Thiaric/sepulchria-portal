@@ -7,6 +7,9 @@ import {
 import {
   getCharacterItemPassiveModifiers,
 } from "@/lib/items/get-character-item-modifiers";
+import {
+  getCharacterActiveItemModifiers,
+} from "@/lib/items/get-character-active-item-modifiers";
 
 export type CharacterAttributeValues = {
   muscles: number | null;
@@ -21,6 +24,7 @@ export type CharacterAttributeBreakdownEntry = {
   base: number | null;
   gifts: number;
   items: number;
+  activeItems: number;
   adjustedBase: number | null;
   ancestry: number;
   order: number;
@@ -35,6 +39,7 @@ export type CharacterAttributeBreakdown = {
   shrewd: CharacterAttributeBreakdownEntry;
   presence_score: CharacterAttributeBreakdownEntry;
   itemMaxHealth: number;
+  activeItemMaxHealth: number;
 };
 
 type Relation<T> = T | T[] | null;
@@ -49,25 +54,29 @@ type ModifierRow = {
 };
 
 function one<T>(value: Relation<T>): T | null {
-  return Array.isArray(value) ? value[0] ?? null : value;
+  return Array.isArray(value)
+    ? value[0] ?? null
+    : value;
 }
 
 function makeBreakdown(
   base: number | null,
   gifts: number,
   items: number,
+  activeItems: number,
   ancestry: number,
   order: number,
 ): CharacterAttributeBreakdownEntry {
   const adjustedBase =
     base === null
       ? null
-      : base + gifts + items;
+      : base + gifts + items + activeItems;
 
   return {
     base,
     gifts,
     items,
+    activeItems,
     adjustedBase,
     ancestry,
     order,
@@ -95,6 +104,7 @@ export async function getCharacterAttributeBreakdown(
     },
     giftModifiers,
     itemModifiers,
+    activeItemModifiers,
   ] = await Promise.all([
     supabase
       .from("characters")
@@ -129,6 +139,7 @@ export async function getCharacterAttributeBreakdown(
 
     getCharacterGiftAttributeModifiers(characterId),
     getCharacterItemPassiveModifiers(characterId),
+    getCharacterActiveItemModifiers(characterId),
   ]);
 
   if (characterError) {
@@ -156,6 +167,7 @@ export async function getCharacterAttributeBreakdown(
       baseAttributes.muscles,
       giftModifiers.muscles,
       itemModifiers.muscles,
+      activeItemModifiers.muscles,
       ancestry?.muscles_modifier ?? 0,
       orderRole?.muscles_modifier ?? 0,
     ),
@@ -163,6 +175,7 @@ export async function getCharacterAttributeBreakdown(
       baseAttributes.reflexes,
       giftModifiers.reflexes,
       itemModifiers.reflexes,
+      activeItemModifiers.reflexes,
       ancestry?.reflexes_modifier ?? 0,
       orderRole?.reflexes_modifier ?? 0,
     ),
@@ -170,6 +183,7 @@ export async function getCharacterAttributeBreakdown(
       baseAttributes.vigor,
       giftModifiers.vigor,
       itemModifiers.vigor,
+      activeItemModifiers.vigor,
       ancestry?.vigour_modifier ?? 0,
       orderRole?.vigour_modifier ?? 0,
     ),
@@ -177,6 +191,7 @@ export async function getCharacterAttributeBreakdown(
       baseAttributes.brains,
       giftModifiers.brains,
       itemModifiers.brains,
+      activeItemModifiers.brains,
       ancestry?.brains_modifier ?? 0,
       orderRole?.brains_modifier ?? 0,
     ),
@@ -184,6 +199,7 @@ export async function getCharacterAttributeBreakdown(
       baseAttributes.shrewd,
       giftModifiers.shrewd,
       itemModifiers.shrewd,
+      activeItemModifiers.shrewd,
       ancestry?.shrewd_modifier ?? 0,
       orderRole?.shrewd_modifier ?? 0,
     ),
@@ -191,10 +207,12 @@ export async function getCharacterAttributeBreakdown(
       baseAttributes.presence_score,
       giftModifiers.presence_score,
       itemModifiers.presence_score,
+      activeItemModifiers.presence_score,
       ancestry?.presence_modifier ?? 0,
       orderRole?.presence_modifier ?? 0,
     ),
     itemMaxHealth: itemModifiers.maxHealth,
+    activeItemMaxHealth: activeItemModifiers.maxHealth,
   };
 }
 
