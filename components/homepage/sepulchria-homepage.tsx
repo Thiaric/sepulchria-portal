@@ -276,7 +276,7 @@ useEffect(() => {
       <div className="relative z-10 grid min-h-[100dvh] grid-rows-[auto_minmax(0,1fr)_auto] px-4 py-4 sm:px-6 lg:h-full lg:min-h-0 lg:px-8">
         {/* HEADER */}
         <header className="mx-auto w-full max-w-[1500px] text-center">
-          <h1 className="mt-1 font-serif text-4xl tracking-[0.12em] text-[#ead8b4] drop-shadow-[0_6px_28px_rgba(0,0,0,0.85)] sm:text-5xl lg:text-6xl">
+          <h1 className="mt-1 font-serif text-4xl tracking-[0.12em] text-[#ead8b4] drop-shadow-[0_6px_28px_rgba(0,0,0,0.85)] sm:text-5xl lg:text-6xl [@media(max-height:800px)]:text-4xl">
             SEPULCHRIA
           </h1>
 
@@ -296,7 +296,7 @@ useEffect(() => {
         </header>
 
         {/* MAIN CONTENT */}
-        <section className="mx-auto grid min-h-0 w-full max-w-[1500px] gap-5 py-4 lg:grid-cols-[220px_minmax(0,1fr)_270px] xl:grid-cols-[240px_minmax(0,1fr)_300px]">
+        <section className="mx-auto grid min-h-0 w-full max-w-[1500px] gap-5 py-4 lg:grid-cols-[220px_minmax(0,1fr)_270px] xl:grid-cols-[240px_minmax(0,1fr)_300px] [@media(max-height:800px)]:gap-3 [@media(max-height:800px)]:py-2">
           {/* LEFT NAVIGATION */}
           <aside className="order-2 flex min-h-0 flex-col justify-center lg:order-1">
             <div className="relative border border-[#6b5032]/55 bg-[#120d0a]/86 p-3 shadow-[0_18px_60px_rgba(0,0,0,0.42)]">
@@ -357,11 +357,11 @@ useEffect(() => {
             onMouseLeave={
               resetParallax
             }
-            className="group relative order-1 flex min-h-0 items-center lg:order-2"
+            className="group relative order-1 flex min-h-0 h-full items-center justify-center lg:order-2"
           >
             <div className="absolute inset-[-7%] bg-[radial-gradient(ellipse_at_center,rgba(169,112,49,0.18),transparent_64%)] opacity-70 blur-2xl transition duration-1000 group-hover:opacity-100" />
 
-            <div className="relative aspect-[1000/667] w-full overflow-hidden">
+            <div className="relative mx-auto aspect-[1000/667] h-full max-h-[calc(100dvh-280px)] w-auto max-w-full overflow-hidden">
               <div
                 className="absolute inset-0 transition-transform duration-300 ease-out"
                 style={{
