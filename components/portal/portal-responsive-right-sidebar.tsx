@@ -11,6 +11,8 @@ import { usePathname } from "next/navigation";
 import { InstantChatDock } from "@/components/instant-chat/instant-chat-dock";
 import { AdminContextPanel } from "@/components/portal/admin-context-panel";
 import { AdminOrdersContext } from "@/components/portal/admin-orders-context";
+import { AdminRulesContext } from "@/components/portal/admin-rules-context";
+import { AdminEventsTidingsContext } from "@/components/portal/admin-events-tidings-context";
 import { CharacterDetailContextPanel } from "@/components/portal/character-detail-context-panel";
 import { ForumSectionActivityContext } from "@/components/portal/forum-section-activity-context";
 import { PortalContextPanel } from "@/components/portal/portal-context-panel";
@@ -27,6 +29,8 @@ export function PortalResponsiveRightSidebar({
 }: PortalResponsiveRightSidebarProps) {
   const [open, setOpen] =
     useState(false);
+  const [adminRevision, setAdminRevision] =
+    useState(0);
 
   const pathname =
     usePathname();
@@ -67,11 +71,38 @@ export function PortalResponsiveRightSidebar({
   const isAdminOrdersPath =
     pathname === "/admin/orders";
 
+  const isAdminRulesPath =
+    pathname === "/admin/rules";
+
+  const isAdminEventsPath =
+    pathname === "/admin/events";
+
+  const isAdminTidingsPath =
+    pathname === "/admin/tidings";
+
   const isAdminPath =
     pathname === "/admin" ||
     pathname.startsWith(
       "/admin/",
     );
+
+  useEffect(() => {
+    const handleAdminDataChanged = () => {
+      setAdminRevision((value) => value + 1);
+    };
+
+    window.addEventListener(
+      "sepulchria:admin-data-changed",
+      handleAdminDataChanged,
+    );
+
+    return () => {
+      window.removeEventListener(
+        "sepulchria:admin-data-changed",
+        handleAdminDataChanged,
+      );
+    };
+  }, []);
 
   useEffect(() => {
     if (!open) {
@@ -249,7 +280,13 @@ export function PortalResponsiveRightSidebar({
 
             <section className="min-h-0 flex-1 border border-[#60482e]/45 bg-[#15100d] p-4 xl:p-[var(--portal-section-pad,1rem)]">
               {isAdminOrdersPath ? (
-                <AdminOrdersContext />
+                <AdminOrdersContext key={`orders-${adminRevision}`} />
+              ) : isAdminRulesPath ? (
+                <AdminRulesContext key={`rules-${adminRevision}`} />
+              ) : isAdminEventsPath ? (
+                <AdminEventsTidingsContext key={`events-${adminRevision}`} mode="events" />
+              ) : isAdminTidingsPath ? (
+                <AdminEventsTidingsContext key={`tidings-${adminRevision}`} mode="tidings" />
               ) : isOwnCharacterPath ? (
                 <CharacterDetailContextPanel
                   characterId={
@@ -267,6 +304,7 @@ export function PortalResponsiveRightSidebar({
                 />
               ) : isAdminPath ? (
                 <AdminContextPanel
+                  key={`${pathname}-${adminRevision}`}
                   pathname={
                     pathname
                   }
