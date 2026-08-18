@@ -146,6 +146,23 @@ export async function sellMarketListing(
     };
   }
 
+  const { error: normalizeError } =
+    await supabase.rpc(
+      "normalize_inventory_after_change",
+      {
+        p_other_character_id: null,
+      },
+    );
+
+  if (normalizeError) {
+    return {
+      ok: false,
+      message:
+        "Sale completed, but remaining stacks could not be consolidated: " +
+        normalizeError.message,
+    };
+  }
+
   revalidatePath("/market");
   revalidatePath("/character");
   revalidatePath("/characters");

@@ -58,6 +58,25 @@ export async function useInventoryItem(
     };
   }
 
+  if (recordKind === "standard") {
+    const { error: normalizeError } =
+      await supabase.rpc(
+        "normalize_inventory_after_change",
+        {
+          p_other_character_id: null,
+        },
+      );
+
+    if (normalizeError) {
+      return {
+        ok: false,
+        message:
+          "Item used, but remaining stacks could not be consolidated: " +
+          normalizeError.message,
+      };
+    }
+  }
+
   const details: string[] = [];
 
   if (Number(result.health_delta ?? 0) !== 0) {
