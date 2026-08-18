@@ -265,28 +265,16 @@ export function ItemExchangePanel({
     }
 
     await mutate(async () => {
-      const { error } = await supabase.rpc("give_own_inventory_record", {
-        k: kind,
-        r: id,
-        target: giveTarget,
-        q: giveQuantity,
-      });
+      const { error } = await supabase.rpc(
+        "give_own_inventory_record_normalized",
+        {
+          k: kind,
+          r: id,
+          target: giveTarget,
+          q: giveQuantity,
+        },
+      );
       if (error) throw new Error(error.message);
-
-      const { error: normalizeError } =
-        await supabase.rpc(
-          "normalize_inventory_after_change",
-          {
-            p_other_character_id: giveTarget,
-          },
-        );
-
-      if (normalizeError) {
-        throw new Error(
-          "Item given, but stacks could not be consolidated: " +
-            normalizeError.message,
-        );
-      }
 
       setOk(true);
       setMessage("Item given successfully.");
@@ -411,28 +399,6 @@ export function ItemExchangePanel({
         tid: trade.id,
       });
       if (error) throw new Error(error.message);
-
-      if (Boolean(data)) {
-        const otherCharacterId =
-          trade.character_one_id === myId
-            ? trade.character_two_id
-            : trade.character_one_id;
-
-        const { error: normalizeError } =
-          await supabase.rpc(
-            "normalize_inventory_after_change",
-            {
-              p_other_character_id: otherCharacterId,
-            },
-          );
-
-        if (normalizeError) {
-          throw new Error(
-            "Exchange completed, but stacks could not be consolidated: " +
-              normalizeError.message,
-          );
-        }
-      }
 
       setOk(true);
       setMessage(

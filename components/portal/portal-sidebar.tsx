@@ -14,6 +14,7 @@ import {
 import { createClient } from "@/lib/supabase/client";
 import { UnreadMessageBadge } from "@/components/messages/unread-message-badge";
 import { ForumSidebarMenu } from "@/components/portal/forum-sidebar-menu";
+import { enterRoomFromMap } from "@/app/(portal)/game/actions";
 
 type PortalSidebarProps = {
   unreadMessageCount: number;
@@ -233,6 +234,11 @@ export function PortalSidebar({
     ),
   );
 
+  const [
+    oddJobsRoomId,
+    setOddJobsRoomId,
+  ] = useState<string | null>(null);
+
   const refreshOrderLeadership =
     useCallback(async () => {
       const supabase =
@@ -354,6 +360,51 @@ export function PortalSidebar({
       ),
     );
   }, [unreadForumCount]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadOddJobsRoom() {
+      const supabase =
+        createClient();
+
+      const {
+        data: room,
+        error,
+      } = await supabase
+        .from("rooms")
+        .select("id")
+        .eq(
+          "slug",
+          "odd-jobs-bureau",
+        )
+        .eq("is_active", true)
+        .maybeSingle();
+
+      if (cancelled) {
+        return;
+      }
+
+      if (error) {
+        console.error(
+          "Unable to load The Odd Jobs Bureau:",
+          error,
+        );
+        setOddJobsRoomId(null);
+        return;
+      }
+
+      setOddJobsRoomId(
+        room?.id ?? null,
+      );
+    }
+
+    void loadOddJobsRoom();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     if (!modalItem) {
@@ -1216,6 +1267,62 @@ export function PortalSidebar({
                 {renderNavigationItem(
                   marketItem,
                 )}
+
+                <form
+                  action={enterRoomFromMap}
+                >
+                  <input
+                    type="hidden"
+                    name="roomId"
+                    value={
+                      oddJobsRoomId ?? ""
+                    }
+                  />
+
+                  <button
+                    type="submit"
+                    disabled={!oddJobsRoomId}
+                    title={
+                      oddJobsRoomId
+                        ? "Go directly to The Odd Jobs Bureau."
+                        : "The Odd Jobs Bureau is currently unavailable."
+                    }
+                    className="
+                      flex
+                      min-h-[var(--portal-nav-min-h)]
+                      w-full
+                      items-center
+                      gap-2
+                      border
+                      border-transparent
+                      px-2.5
+                      py-[var(--portal-nav-y)]
+                      text-left
+                      text-[11px]
+                      text-[#b6a894]
+                      transition
+                      hover:border-[#5d4930]
+                      hover:bg-[#1d1712]
+                      hover:text-[#e8d8ba]
+                      disabled:cursor-not-allowed
+                      disabled:opacity-45
+                      lg:text-xs
+                    "
+                  >
+                    <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center">
+                      <img
+                        src="/icons/play.png"
+                        alt=""
+                        aria-hidden="true"
+                        className="h-full w-full object-contain"
+                      />
+                    </span>
+
+                    <span className="truncate">
+                      The Odd Jobs Bureau
+                    </span>
+                  </button>
+                </form>
 
                 <ForumSidebarMenu
                   unreadCount={
