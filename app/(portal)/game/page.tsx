@@ -35,6 +35,7 @@ type RoomRelation = {
   id: string;
   name: string;
   slug: string;
+  chat_enabled: boolean;
   description: string | null;
   image_url: string | null;
   area_id: string;
@@ -119,7 +120,7 @@ async function GameContent() {
   } = await supabase
     .from("rooms")
     .select(
-  "id, name, slug, description, image_url, area_id, areas(id,name,slug,description)",
+  "id, name, slug, chat_enabled, description, image_url, area_id, areas(id,name,slug,description)",
 )
     .eq(
       "id",
@@ -734,19 +735,21 @@ async function GameContent() {
       <OddJobsPanel jobs={oddJobs} />
     ) : null}
 
-    <RoomMessageList
-      roomId={room.id}
-      messages={visibleMessages}
-      viewerCharacterId={
-        character.id
-      }
-      canViewAllWhispers={
-        canViewAllWhispers
-      }
-    />
+    {room.chat_enabled ? (
+      <>
+        <RoomMessageList
+          roomId={room.id}
+          messages={visibleMessages}
+          viewerCharacterId={
+            character.id
+          }
+          canViewAllWhispers={
+            canViewAllWhispers
+          }
+        />
 
-    <RoomChatForm
-      attributes={{
+        <RoomChatForm
+          attributes={{
         muscles:
           attributeBreakdown.muscles.effective,
         reflexes:
@@ -768,8 +771,10 @@ async function GameContent() {
       presentCharacters={
         presentCharacters
       }
-      canUseFate={canUseFate}
-    />
+          canUseFate={canUseFate}
+        />
+      </>
+    ) : null}
   </article>
 </div>
   </div>

@@ -278,6 +278,10 @@ export async function createRoom(
   formData.get("isOutdoors"),
 );
 
+  const chatEnabled = readCheckbox(
+    formData.get("chatEnabled"),
+  );
+
   await assertAreaExists(areaId);
   await assertUniqueSlug(slug);
 
@@ -294,6 +298,7 @@ export async function createRoom(
   sort_order: sortOrder,
   is_active: isActive,
   is_outdoors: isOutdoors,
+  chat_enabled: chatEnabled,
   updated_at: new Date().toISOString(),
 });
 
@@ -358,6 +363,10 @@ export async function updateRoom(
   formData.get("isOutdoors"),
 );
 
+  const chatEnabled = readCheckbox(
+    formData.get("chatEnabled"),
+  );
+
   await assertRoomExists(roomId);
   await assertAreaExists(areaId);
   await assertUniqueSlug(
@@ -378,6 +387,7 @@ export async function updateRoom(
   sort_order: sortOrder,
   is_active: isActive,
   is_outdoors: isOutdoors,
+  chat_enabled: chatEnabled,
   updated_at: new Date().toISOString(),
 })
     .eq("id", roomId);

@@ -263,9 +263,7 @@ function ActionSpeechText({
     segment.endsWith("}")
   );
 
-      const displayText = isAction
-        ? segment.slice(1, -1)
-        : segment;
+      const displayText = segment;
 
       rendered.push(
         <Fragment key={index}>

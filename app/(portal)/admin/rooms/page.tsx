@@ -31,6 +31,7 @@ type RoomRow = {
   sort_order: number;
   is_active: boolean;
   is_outdoors: boolean;
+  chat_enabled: boolean;
   created_at: string;
   updated_at: string;
   area: AreaRow | null;
@@ -49,6 +50,7 @@ type RoomQueryRow = {
   sort_order: number;
   is_active: boolean;
   is_outdoors: boolean;
+  chat_enabled: boolean;
   created_at: string;
   updated_at: string;
   area:
@@ -216,6 +218,7 @@ export default async function AdminRoomsPage() {
         sort_order,
 is_active,
 is_outdoors,
+chat_enabled,
 created_at,
         updated_at,
         area:areas (
@@ -299,6 +302,7 @@ created_at,
       sort_order: room.sort_order,
       is_active: room.is_active,
 is_outdoors: room.is_outdoors,
+chat_enabled: room.chat_enabled,
 created_at: room.created_at,
       updated_at: room.updated_at,
       area: getSingleRelation(
@@ -523,6 +527,17 @@ created_at: room.created_at,
       />
 
       Outdoor location
+    </label>
+
+    <label className="flex items-center gap-3 text-sm text-[#bbaa90]">
+      <input
+        type="checkbox"
+        name="chatEnabled"
+        defaultChecked
+        className="h-4 w-4 accent-[#8b673d]"
+      />
+
+      Chat enabled
     </label>
   </div>
 
@@ -921,6 +936,17 @@ created_at: room.created_at,
       />
 
       Outdoor location
+    </label>
+
+    <label className="flex items-center gap-3 text-sm text-[#bbaa90]">
+      <input
+        type="checkbox"
+        name="chatEnabled"
+        defaultChecked={room.chat_enabled}
+        className="h-4 w-4 accent-[#8b673d]"
+      />
+
+      Chat enabled
     </label>
   </div>
 

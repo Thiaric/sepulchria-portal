@@ -449,16 +449,10 @@ function renderActionSpeech(
         isCurly;
 
       /*
-       * The live chat removes the
-       * action delimiters themselves.
+       * Preserve action delimiters exactly as written.
        */
       const displayText =
-        isAction
-          ? segment.slice(
-              1,
-              -1,
-            )
-          : segment;
+        segment;
 
       const escaped =
         escapeHtml(
