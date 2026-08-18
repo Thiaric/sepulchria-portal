@@ -64,6 +64,9 @@ export function ItemExchangePanel({
   const [giveChoice, setGiveChoice] = useState("");
   const [giveTarget, setGiveTarget] = useState("");
   const [giveQuantity, setGiveQuantity] = useState(1);
+  const [remnantTarget, setRemnantTarget] = useState("");
+  const [remnantAmount, setRemnantAmount] = useState(1);
+  const [walletBalance, setWalletBalance] = useState(0);
   const [tradeTarget, setTradeTarget] = useState("");
   const [offerChoice, setOfferChoice] = useState("");
   const [offerQuantity, setOfferQuantity] = useState(1);
@@ -83,7 +86,7 @@ export function ItemExchangePanel({
     const characterId = String(id);
     setMyId(characterId);
 
-    const [meResult, invResult, tradeResult] = await Promise.all([
+    const [meResult, invResult, tradeResult, walletResult] = await Promise.all([
       supabase.from("characters").select("display_name").eq("id", characterId).maybeSingle(),
       supabase.rpc("get_public_character_inventory", { p_character_id: characterId }),
       supabase
@@ -93,9 +96,15 @@ export function ItemExchangePanel({
         .or(`character_one_id.eq.${characterId},character_two_id.eq.${characterId}`)
         .order("created_at", { ascending: false })
         .limit(1),
+      supabase
+        .from("character_wallets")
+        .select("balance")
+        .eq("character_id", characterId)
+        .maybeSingle(),
     ]);
 
     if (meResult.data?.display_name) setMyName(meResult.data.display_name);
+    setWalletBalance(Number(walletResult.data?.balance ?? 0));
 
     const ownRows = ((invResult.data ?? []) as InventoryRecord[]).filter(
       (row) =>
@@ -251,6 +260,43 @@ export function ItemExchangePanel({
       setMessage("Item given successfully.");
       setGiveChoice("");
       setGiveQuantity(1);
+    });
+  }
+
+  async function giveRemnants() {
+    if (!remnantTarget) {
+      setOk(false);
+      setMessage("Choose a character.");
+      return;
+    }
+
+    if (!Number.isSafeInteger(remnantAmount) || remnantAmount < 1) {
+      setOk(false);
+      setMessage("Enter a positive whole Remnant amount.");
+      return;
+    }
+
+    if (remnantAmount > walletBalance) {
+      setOk(false);
+      setMessage("You do not have enough Remnants.");
+      return;
+    }
+
+    await mutate(async () => {
+      const { error } = await supabase.rpc(
+        "give_remnants_same_location",
+        {
+          p_target_character_id: remnantTarget,
+          p_amount: remnantAmount,
+        },
+      );
+
+      if (error) throw new Error(error.message);
+
+      setOk(true);
+      setMessage("Remnants given successfully.");
+      setRemnantTarget("");
+      setRemnantAmount(1);
     });
   }
 
@@ -415,6 +461,66 @@ export function ItemExchangePanel({
             </select>
             <input className={field} type="number" min={1} value={giveQuantity} onChange={(e) => setGiveQuantity(Math.max(1, Number.parseInt(e.target.value || "1", 10) || 1))} />
             <button type="button" className={button} disabled={pending || !giveChoice || !giveTarget} onClick={() => void give()}>Give Item</button>
+          </div>
+        </section>
+
+        <section className="border border-[#59432c]/30 bg-[#15100d] p-3">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <p className="font-serif text-base text-[#dec89f]">Give Remnants</p>
+              <p className="mt-1 text-[8px] leading-4 text-[#756958]">
+                Give Remnants to another character currently in this location.
+              </p>
+            </div>
+            <div className="shrink-0 text-right">
+              <p className="text-[7px] uppercase tracking-[0.12em] text-[#756958]">Wallet</p>
+              <p className="font-serif text-sm text-[#e4c589]">
+                {walletBalance.toLocaleString("en-GB")} R
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-2 grid gap-1">
+            <select
+              className={field}
+              value={remnantTarget}
+              onChange={(e) => setRemnantTarget(e.target.value)}
+            >
+              <option value="">Give to...</option>
+              {presentCharacters.map((character) => (
+                <option key={character.id} value={character.id}>
+                  {character.display_name}
+                </option>
+              ))}
+            </select>
+
+            <input
+              className={field}
+              type="number"
+              min={1}
+              step={1}
+              max={Math.max(1, walletBalance)}
+              value={remnantAmount}
+              onChange={(e) =>
+                setRemnantAmount(
+                  Math.max(1, Number.parseInt(e.target.value || "1", 10) || 1),
+                )
+              }
+            />
+
+            <button
+              type="button"
+              className={button}
+              disabled={
+                pending ||
+                !remnantTarget ||
+                remnantAmount < 1 ||
+                remnantAmount > walletBalance
+              }
+              onClick={() => void giveRemnants()}
+            >
+              Give Remnants
+            </button>
           </div>
         </section>
 
