@@ -14,6 +14,7 @@ import { AdminOrdersContext } from "@/components/portal/admin-orders-context";
 import { AdminRulesContext } from "@/components/portal/admin-rules-context";
 import { AdminEventsTidingsContext } from "@/components/portal/admin-events-tidings-context";
 import { AdminRecordSearchContext } from "@/components/portal/admin-record-search-context";
+import { AdminJobsContext } from "@/components/portal/admin-jobs-context";
 import { CharacterDetailContextPanel } from "@/components/portal/character-detail-context-panel";
 import { ForumSectionActivityContext } from "@/components/portal/forum-section-activity-context";
 import { PortalContextPanel } from "@/components/portal/portal-context-panel";
@@ -83,6 +84,9 @@ export function PortalResponsiveRightSidebar({
 
   const isAdminItemsPath =
     pathname === "/admin/items";
+
+  const isAdminJobsPath =
+    pathname === "/admin/jobs";
 
   const isAdminLocationsPath =
     pathname === "/admin/rooms";
@@ -310,6 +314,10 @@ export function PortalResponsiveRightSidebar({
                 <AdminRecordSearchContext
                   key={`items-${adminRevision}`}
                   mode="items"
+                />
+              ) : isAdminJobsPath ? (
+                <AdminJobsContext
+                  key={`jobs-${adminRevision}`}
                 />
               ) : isAdminLocationsPath ? (
                 <AdminRecordSearchContext
