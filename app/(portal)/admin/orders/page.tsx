@@ -343,6 +343,28 @@ export default async function AdminOrdersPage({
                   />
                 </AdminField>
 
+                <div className="md:col-span-2">
+                  <AdminField label="Monthly pay by Level (Remnants)">
+                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+                      {[1, 2, 3, 4, 5, 6].map((level) => (
+                        <label key={level}>
+                          <span className="mb-1 block text-[8px] uppercase tracking-[0.12em] text-[#756958]">
+                            Level {level}
+                          </span>
+                          <input
+                            type="number"
+                            name={`monthlyPay${level}`}
+                            min={0}
+                            step={1}
+                            defaultValue={0}
+                            className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                          />
+                        </label>
+                      ))}
+                    </div>
+                  </AdminField>
+                </div>
+
                 <AdminField label="Colour">
                   <input
                     type="text"

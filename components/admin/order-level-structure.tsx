@@ -14,6 +14,7 @@ import {
   createOrderJob,
   createOrderJobLink,
   deleteOrderJob,
+  updateOrderLevel,
   deleteOrderJobLink,
   updateOrderJob,
 } from "@/app/(portal)/admin/orders/structure-actions";
@@ -38,6 +39,7 @@ type OrderJobRow = ModifierFields & {
 type OrderLevelRow = {
   id: string;
   level: number;
+  monthly_pay: number;
   jobs: OrderJobRow[] | null;
 };
 
@@ -65,6 +67,7 @@ export async function OrderLevelStructure({ orderId }: { orderId: string }) {
       .select(`
         id,
         level,
+        monthly_pay,
         jobs:order_jobs(
           id,
           order_level_id,
@@ -160,6 +163,35 @@ export async function OrderLevelStructure({ orderId }: { orderId: string }) {
               </summary>
 
               <div className="border-t border-[#59432c]/35 p-4">
+                <form
+                  action={updateOrderLevel}
+                  className="mb-4 flex flex-wrap items-end gap-3 border border-[#59432c]/35 bg-[#15100d] p-3"
+                >
+                  <input type="hidden" name="orderId" value={orderId} />
+                  <input type="hidden" name="levelId" value={level.id} />
+
+                  <label className="min-w-[180px] flex-1">
+                    <span className="mb-1 block text-[7px] uppercase tracking-[0.14em] text-[#756958]">
+                      Monthly pay · Remnants
+                    </span>
+                    <input
+                      type="number"
+                      name="monthlyPay"
+                      min={0}
+                      step={1}
+                      defaultValue={Number(level.monthly_pay ?? 0)}
+                      className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-2 text-sm text-[#d7c4a5]"
+                    />
+                  </label>
+
+                  <button
+                    type="submit"
+                    className="border border-[#987344] bg-[#3b2919] px-4 py-2 text-[8px] uppercase text-[#efd6a8]"
+                  >
+                    Save Level Pay
+                  </button>
+                </form>
+
                 <div className="space-y-4">
                   {(level.jobs ?? []).map((job) => {
                     const outgoing = links.filter((link) => link.from_job_id === job.id);

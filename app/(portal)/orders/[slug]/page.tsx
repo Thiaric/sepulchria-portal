@@ -9,6 +9,7 @@ import {
   type PublicOrderGraphRole,
 } from "@/components/orders/public-order-role-graph";
 import { createClient } from "@/lib/supabase/server";
+import { formatRemnants } from "@/lib/economy/currency";
 
 type Relation<T> = T | T[] | null;
 
@@ -49,6 +50,7 @@ type RoleRow = {
 type LevelRow = {
   id: string;
   level: number;
+  monthly_pay: number;
   roles: RoleRow[] | null;
 };
 
@@ -132,6 +134,18 @@ export default async function OrderPage({
   const order =
     orderData as unknown as OrderRow;
 
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { data: viewerCharacter } = user
+    ? await supabase
+        .from("characters")
+        .select("id")
+        .eq("user_id", user.id)
+        .maybeSingle()
+    : { data: null };
+
   const [
     levelsResult,
     membersResult,
@@ -142,6 +156,7 @@ export default async function OrderPage({
       .select(`
         id,
         level,
+        monthly_pay,
         roles:order_jobs(
           id,
           name,
@@ -292,6 +307,31 @@ export default async function OrderPage({
         );
       });
 
+  const viewerMembership =
+    viewerCharacter
+      ? ((membersResult.data ?? []) as unknown as MemberRow[]).find(
+          (membership) =>
+            one(membership.character)?.id === viewerCharacter.id,
+        ) ?? null
+      : null;
+
+  const viewerLevel =
+    one(viewerMembership?.level ?? null)?.level ?? null;
+
+  const visiblePayLevels =
+    viewerLevel === null
+      ? []
+      : [...levels]
+          .filter((level) => level.level <= viewerLevel)
+          .sort((a, b) => b.level - a.level);
+
+  const payByLevel = Object.fromEntries(
+    visiblePayLevels.map((level) => [
+      level.level,
+      formatRemnants(Number(level.monthly_pay ?? 0)),
+    ]),
+  );
+
   const association =
     one(order.association);
 
@@ -439,6 +479,7 @@ export default async function OrderPage({
               <PublicOrderRoleGraph
                 roles={graphRoles}
                 links={graphLinks}
+                payByLevel={payByLevel}
               />
             </section>
 

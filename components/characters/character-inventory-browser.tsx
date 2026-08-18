@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  useEffect,
   useMemo,
   useState,
   useTransition,
@@ -1270,12 +1271,16 @@ function EquipmentFigure({
   equipped,
   inventory,
   own,
+  collapsed,
+  onToggle,
 }: {
   equipped:
     InventoryBrowserRow[];
   inventory:
     InventoryBrowserRow[];
   own: boolean;
+  collapsed: boolean;
+  onToggle: () => void;
 }) {
   const bySlot =
     new Map<
@@ -1332,7 +1337,12 @@ function EquipmentFigure({
 
   return (
     <section className="relative z-10 mt-5 overflow-visible border border-[#60482e]/45 bg-[#100c09]">
-      <div className="border-b border-[#59432c]/35 px-4 py-3 sm:px-5">
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={!collapsed}
+        className="block w-full border-b border-[#59432c]/35 px-4 py-3 text-left transition hover:bg-[#17100c] sm:px-5"
+      >
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <p className="text-[7px] uppercase tracking-[0.2em] text-[#806b50]">
@@ -1344,15 +1354,22 @@ function EquipmentFigure({
             </h3>
           </div>
 
-          <p className="text-[8px] uppercase tracking-[0.12em] text-[#756958]">
-            {
-              equipped.length
-            }{" "}
-            equipped
-          </p>
+          <div className="flex items-center gap-3">
+            <p className="text-[8px] uppercase tracking-[0.12em] text-[#756958]">
+              {
+                equipped.length
+              }{" "}
+              equipped
+            </p>
+            <span className="font-serif text-lg text-[#8f7757]">
+              {collapsed ? "+" : "−"}
+            </span>
+          </div>
         </div>
-      </div>
+      </button>
 
+      {!collapsed ? (
+        <>
       <div className="relative hidden min-h-[800px] overflow-visible md:block">
         <div className="absolute inset-x-[24%] top-[10%] bottom-[8%] rounded-[45%] border border-[#60482e]/15 bg-[radial-gradient(circle_at_center,rgba(92,68,42,0.10),transparent_68%)]" />
 
@@ -1404,6 +1421,8 @@ function EquipmentFigure({
           ),
         )}
       </div>
+        </>
+      ) : null}
     </section>
   );
 }
@@ -1735,6 +1754,34 @@ export function CharacterInventoryBrowser({
   ] = useState<
     Set<string>
   >(() => new Set());
+
+  const [
+    equipmentCollapsed,
+    setEquipmentCollapsed,
+  ] = useState(false);
+
+  const filtersActive =
+    Boolean(search.trim()) ||
+    Boolean(category) ||
+    Boolean(subcategory) ||
+    Boolean(quality) ||
+    Boolean(slot) ||
+    status !== "all" ||
+    (own && requirement !== "all");
+
+  useEffect(() => {
+    setEquipmentCollapsed(filtersActive);
+  }, [
+    search,
+    category,
+    subcategory,
+    quality,
+    slot,
+    status,
+    requirement,
+    own,
+    filtersActive,
+  ]);
 
   const categories =
     useMemo(
@@ -2155,6 +2202,12 @@ export function CharacterInventoryBrowser({
         }
         inventory={rows}
         own={own}
+        collapsed={equipmentCollapsed}
+        onToggle={() =>
+          setEquipmentCollapsed(
+            (value) => !value,
+          )
+        }
       />
 
       <div className="mt-5 space-y-3">

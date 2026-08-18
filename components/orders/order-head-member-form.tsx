@@ -10,6 +10,7 @@ import {
 export type OrderHeadLevelOption = {
   id: string;
   level: number;
+  monthlyPay?: number;
   jobs: {
     id: string;
     name: string;
@@ -131,7 +132,7 @@ export function OrderHeadMemberForm({
           >
             {levels.map((level) => (
               <option key={level.id} value={level.id}>
-                Level {level.level}
+                Level {level.level}{level.monthlyPay !== undefined ? ` · ${level.monthlyPay.toLocaleString("en-GB")} R/month` : ""}
               </option>
             ))}
           </select>

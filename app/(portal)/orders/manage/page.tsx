@@ -11,6 +11,7 @@ import {
   type OrderHeadLevelOption,
 } from "@/components/orders/order-head-member-form";
 import { createClient } from "@/lib/supabase/server";
+import { formatRemnants } from "@/lib/economy/currency";
 
 type Props = {
   searchParams?: Promise<{
@@ -308,6 +309,25 @@ export default async function ManageOrdersPage({
                   );
                 }
 
+                const {
+                  data: payLevelRows,
+                  error: payLevelsError,
+                } = await supabase
+                  .from("order_levels")
+                  .select("id, level, monthly_pay")
+                  .eq("order_id", order.id)
+                  .order("level", { ascending: false });
+
+                if (payLevelsError) {
+                  return (
+                    <Notice
+                      key={order.id}
+                      error
+                      text={`Unable to load monthly pay for ${order.name}.`}
+                    />
+                  );
+                }
+
                 const rawLevels =
                   levelsResult.data ?? [];
 
@@ -363,6 +383,13 @@ export default async function ManageOrdersPage({
                       id: level.id,
                       level:
                         level.level,
+                      monthlyPay:
+                        Number(
+                          (payLevelRows ?? []).find(
+                            (payLevel) =>
+                              payLevel.level === level.level,
+                          )?.monthly_pay ?? 0,
+                        ),
                       jobs: [
                         ...(level.jobs ??
                           []),

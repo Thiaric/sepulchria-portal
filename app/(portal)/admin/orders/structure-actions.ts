@@ -73,17 +73,28 @@ export async function updateOrderLevel(formData: FormData) {
   if (!isUuid(orderId) || !isUuid(levelId)) {
     throw new Error("Invalid Order level.");
   }
+  const monthlyPay = integer(
+    formData,
+    "monthlyPay",
+    0,
+    1000000000,
+    0,
+  );
+
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("order_levels")
-    .select("id, level")
+    .update({ monthly_pay: monthlyPay })
     .eq("id", levelId)
     .eq("order_id", orderId)
+    .select("id, level, monthly_pay")
     .maybeSingle();
+
   if (error) redirectBack(orderId, "error", error.message);
   if (!data) redirectBack(orderId, "error", "The selected level no longer exists.");
+
   refreshStructure();
-  redirectBack(orderId, "success", `Level ${data.level} verified.`);
+  redirectBack(orderId, "success", `Level ${data.level} monthly pay updated.`);
 }
 
 export async function createOrderJob(formData: FormData) {

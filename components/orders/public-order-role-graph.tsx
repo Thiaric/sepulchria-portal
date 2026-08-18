@@ -29,6 +29,7 @@ export type PublicOrderGraphLink = {
 type Props = {
   roles: PublicOrderGraphRole[];
   links: PublicOrderGraphLink[];
+  payByLevel?: Record<number, string>;
 };
 
 type Line = {
@@ -53,6 +54,7 @@ function modifiers(role: PublicOrderGraphRole) {
 export function PublicOrderRoleGraph({
   roles,
   links,
+  payByLevel = {},
 }: Props) {
   const containerRef =
     useRef<HTMLDivElement | null>(null);
@@ -223,6 +225,12 @@ export function PublicOrderRoleGraph({
                 <p className="font-serif text-lg text-[#c3a778]">
                   {level}
                 </p>
+
+                {payByLevel[level] ? (
+                  <p className="mt-1 text-[7px] uppercase tracking-[0.1em] text-[#9b815d]">
+                    {payByLevel[level]} / month
+                  </p>
+                ) : null}
               </div>
 
               <div className="flex justify-center gap-3">

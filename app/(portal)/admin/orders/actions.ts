@@ -381,6 +381,7 @@ export async function createOrder(
       });
 
     const {
+      data: createdOrder,
       error,
     } =
       await supabase
@@ -443,12 +444,38 @@ export async function createOrder(
               formData,
               "isActive",
             ),
-        });
+        })
+        .select("id")
+        .single();
 
-    if (error) {
+    if (error || !createdOrder) {
       throw new Error(
-        error.message,
+        error?.message ??
+          "Unable to read the newly created Order.",
       );
+    }
+
+    for (let level = 1; level <= 6; level += 1) {
+      const monthlyPay = Math.max(
+        0,
+        integer(
+          formData,
+          `monthlyPay${level}`,
+        ),
+      );
+
+      const { error: payError } =
+        await supabase
+          .from("order_levels")
+          .update({ monthly_pay: monthlyPay })
+          .eq("order_id", createdOrder.id)
+          .eq("level", level);
+
+      if (payError) {
+        throw new Error(
+          `Order created, but Level ${level} pay could not be saved: ${payError.message}`,
+        );
+      }
     }
   } catch (error) {
     redirectMessage(
