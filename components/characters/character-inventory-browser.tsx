@@ -45,6 +45,7 @@ export type InventoryBrowserRow = {
     | "unique";
   record_id: string;
   item_id: string;
+  item_active: boolean;
   parent_container_id:
     | string
     | null;
@@ -873,6 +874,10 @@ function ItemCard({
                   Unequip
                 </button>
               </form>
+            ) : !row.item_active ? (
+              <p className="mt-3 border border-red-900/45 bg-red-950/10 px-3 py-2 text-[8px] leading-5 uppercase tracking-[0.1em] text-red-400">
+                This Item is inactive and cannot be equipped.
+              </p>
             ) : eligible ? (
               <form
                 action={
@@ -1005,7 +1010,11 @@ function EquipmentCandidate({
 
       <Requirements requirements={row.requirements} />
 
-      {eligible ? (
+      {!row.item_active ? (
+        <p className="mt-2 border border-red-900/45 bg-red-950/10 px-2 py-2 text-[7px] uppercase tracking-[0.1em] text-red-400">
+          This Item is inactive and cannot be equipped.
+        </p>
+      ) : eligible ? (
         <form action={equipInventoryItem} className="mt-2">
           <input type="hidden" name="recordKind" value={row.record_kind} />
           <input type="hidden" name="recordId" value={row.record_id} />
@@ -1152,6 +1161,7 @@ const isRightSide =
                         value={`${row.record_kind}:${row.record_id}`}
                       >
                         {row.name}
+                        {!row.item_active ? " (Inactive)" : ""}
                         {row.quantity > 1 ? ` ×${row.quantity}` : ""}
                       </option>
                     ))}

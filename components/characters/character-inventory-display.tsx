@@ -13,7 +13,7 @@ type Relation<T> = T | T[] | null;
 
 type InventoryRow = Omit<
   InventoryBrowserRow,
-  "requirements" | "equipment_bonuses" | "item_effects"
+  "requirements" | "equipment_bonuses" | "item_effects" | "item_active"
 >;
 
 type CharacterState = {
@@ -48,6 +48,7 @@ type MembershipState = {
 
 type ItemRequirementRow = {
   id: string;
+  is_active: boolean;
   equip_slot: string | null;
   use_behaviour: string | null;
   target_mode: string | null;
@@ -121,6 +122,11 @@ function requirementList(
   const order = one(level?.order ?? null);
 
   const requirements: InventoryRequirement[] = [];
+
+  requirements.push({
+    label: "Item active",
+    met: item.is_active === true,
+  });
 
   const attribute = (
     label: string,
@@ -544,6 +550,7 @@ export async function CharacterInventoryDisplay({
           .from("items")
           .select(`
             id,
+            is_active,
             equip_slot,
             use_behaviour,
             target_mode,
@@ -818,6 +825,8 @@ export async function CharacterInventoryDisplay({
 
       return {
         ...row,
+        item_active:
+          master?.is_active === true,
         configured_slot:
           master?.equip_slot ??
           null,

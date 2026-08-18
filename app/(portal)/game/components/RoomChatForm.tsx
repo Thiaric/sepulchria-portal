@@ -679,6 +679,43 @@ const visibleStatusOk =
       ? messageState.ok
       : utilityOk;
 
+const [
+  transientStatusMessage,
+  setTransientStatusMessage,
+] = useState<string | null>(null);
+
+const [
+  transientStatusOk,
+  setTransientStatusOk,
+] = useState(false);
+
+useEffect(() => {
+  if (!visibleStatusMessage) {
+    setTransientStatusMessage(null);
+    return;
+  }
+
+  setTransientStatusMessage(
+    visibleStatusMessage,
+  );
+
+  setTransientStatusOk(
+    visibleStatusOk,
+  );
+
+  const timeout =
+    window.setTimeout(() => {
+      setTransientStatusMessage(null);
+    }, 3000);
+
+  return () => {
+    window.clearTimeout(timeout);
+  };
+}, [
+  visibleStatusMessage,
+  visibleStatusOk,
+]);
+
  function getWordAtPosition(
   position: number,
 ) {
@@ -905,13 +942,13 @@ function ignoreSpellingWord() {
 }
 
   const utilityButtonClass =
-    "border border-[#765937] bg-[#21190f] px-3 py-2 text-[8px] uppercase tracking-[0.13em] text-[#d6bb8d] transition hover:border-[#a17a49] hover:bg-[#2b2014] disabled:cursor-not-allowed disabled:opacity-40";
+    "border border-[#765937] bg-[#21190f] px-2.5 py-1.5 text-[7px] uppercase tracking-[0.12em] text-[#d6bb8d] transition hover:border-[#a17a49] hover:bg-[#2b2014] disabled:cursor-not-allowed disabled:opacity-40";
 
   const utilityButtonActiveClass =
-    "border border-[#a17a49] bg-[#3a2919] px-3 py-2 text-[8px] uppercase tracking-[0.13em] text-[#f0d6a7]";
+    "border border-[#a17a49] bg-[#3a2919] px-2.5 py-1.5 text-[7px] uppercase tracking-[0.12em] text-[#f0d6a7]";
 
   const incomingExchangeButtonClass =
-    "animate-pulse border border-[#d1a45f] bg-[#4a3218] px-3 py-2 text-[8px] uppercase tracking-[0.13em] text-[#ffe0a3] shadow-[0_0_14px_rgba(209,164,95,0.55)] transition hover:border-[#efc77c] hover:bg-[#5a3b1c]";
+    "animate-pulse border border-[#d1a45f] bg-[#4a3218] px-2.5 py-1.5 text-[7px] uppercase tracking-[0.12em] text-[#ffe0a3] shadow-[0_0_14px_rgba(209,164,95,0.55)] transition hover:border-[#efc77c] hover:bg-[#5a3b1c]";
 
   function toggleUtility(
     mode:
@@ -928,7 +965,7 @@ function ignoreSpellingWord() {
   }
 
   return (
-    <div className="shrink-0 border-t border-[#59432c]/40 bg-[#17110d] p-3 sm:p-4">
+    <div className="shrink-0 border-t border-[#59432c]/40 bg-[#17110d] p-2 sm:px-3 sm:py-2">
       {utilityMode === null ? (
         <form
           action={messageAction}
@@ -949,7 +986,7 @@ function ignoreSpellingWord() {
             readOnly
           />
 
-          <div className="relative h-24 overflow-hidden border border-[#60482e]/50 bg-[#0f0c09] transition focus-within:border-[#927047]">
+          <div className="relative h-[100px] overflow-hidden border border-[#60482e]/50 bg-[#0f0c09] transition focus-within:border-[#927047]">
             <textarea
               ref={textareaRef}
               name="message"
@@ -984,7 +1021,7 @@ function ignoreSpellingWord() {
                 setValue(event.target.value)
               }
               placeholder="Speech outside brackets; actions, movement and descriptions inside < > or ( ) or [ ] or { }. Out-of-character messages must be preceded by //."
-              className="relative z-10 h-full w-full resize-none border-0 bg-transparent px-4 py-3 text-sm leading-6 text-[#d0bea1] outline-none placeholder:text-[#5f574d]"
+              className="relative z-10 h-full w-full resize-none border-0 bg-transparent px-3 py-2 text-[13px] leading-5 text-[#d0bea1] outline-none placeholder:text-[#5f574d]"
             />
 
             <SpellingTextareaOverlay
@@ -1050,9 +1087,9 @@ function ignoreSpellingWord() {
             </div>
           ) : null}
 
-          <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
-            <div className="flex min-w-0 items-center gap-3">
-              <p className="shrink-0 text-[9px] uppercase tracking-[0.18em] text-[#685d50]">
+          <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+            <div className="flex min-w-0 items-center gap-2">
+              <p className="shrink-0 text-[8px] uppercase tracking-[0.16em] text-[#685d50]">
                 {value.length.toLocaleString(
                   "en-GB",
                 )}{" "}
@@ -1062,17 +1099,17 @@ function ignoreSpellingWord() {
                 )}
               </p>
 
-              {visibleStatusMessage ? (
+              {transientStatusMessage ? (
                 <p
                   aria-live="polite"
                   className={`min-w-0 truncate text-xs ${
-                    visibleStatusOk
+                    transientStatusOk
                       ? "text-[#9bb58c]"
                       : "text-[#d58d82]"
                   }`}
-                  title={visibleStatusMessage}
+                  title={transientStatusMessage}
                 >
-                  {visibleStatusMessage}
+                  {transientStatusMessage}
                 </p>
               ) : null}
             </div>
@@ -1150,6 +1187,26 @@ function ignoreSpellingWord() {
               required
               maxLength={CHAT_MAX_LENGTH}
               value={value}
+              onKeyDown={(event) => {
+  if (
+    event.key !== "Enter" ||
+    event.shiftKey ||
+    event.nativeEvent.isComposing
+  ) {
+    return;
+  }
+
+  event.preventDefault();
+
+  if (
+    !whisperRecipientId ||
+    !value.trim()
+  ) {
+    return;
+  }
+
+  messageFormRef.current?.requestSubmit();
+}}
               onChange={(event) =>
                 handleMessageChange(
                   event.target.value,
@@ -1765,7 +1822,7 @@ function ignoreSpellingWord() {
         </form>
       )}
 
-      <div className="mt-3 flex flex-wrap gap-2 border-t border-[#59432c]/30 pt-3">
+      <div className="-mt-9 mx-[105px] flex flex-wrap justify-center gap-1.5 border-0 pt-0 max-lg:mx-0 max-lg:mt-2 max-lg:border-t max-lg:border-[#59432c]/30 max-lg:pt-2">
         <button
           type="button"
           onClick={() =>
@@ -1868,23 +1925,23 @@ function ignoreSpellingWord() {
         </button>
       </div>
 
-      <div className="mt-1.5 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-[8px] leading-4 text-[#756958]">
-        <p>
-          Dialogue is written normally.
-          Put movements and expressions
-          inside &lt; &gt; or ( ) or
-          &#91; &#93; or &#123; &#125;.
-          Out-of-character messages must
-          be preceded by //.
-        </p>
+      <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[7px] leading-3 text-[#756958]">
+  <p>
+    Dialogue is written normally.
+    Put movements and expressions
+    inside &lt; &gt; or ( ) or
+    &#91; &#93; or &#123; &#125;.
+    Out-of-character messages must
+    be preceded by //.
+  </p>
 
-        {canUseFate ? (
-          <p className="text-[#a88658]">
-            Fate action: begin the message
-            with <strong>^</strong>
-          </p>
-        ) : null}
-      </div>
+  {canUseFate ? (
+    <p className="text-[#a88658]">
+      Fate action: begin the message
+      with <strong>^</strong>
+    </p>
+  ) : null}
+</div>
     </div>
   );
 }
@@ -1941,7 +1998,7 @@ function SubmitButton({
       type="submit"
       onClick={onPrepare}
       disabled={disabled || pending}
-      className="border border-[#85653c] bg-[#342617] px-6 py-3 text-xs uppercase tracking-[0.23em] text-[#efd4a0] transition hover:bg-[#4a351f] disabled:cursor-not-allowed disabled:opacity-40"
+      className="border border-[#85653c] bg-[#342617] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[#efd4a0] transition hover:bg-[#4a351f] disabled:cursor-not-allowed disabled:opacity-40"
     >
       {pending
         ? "Sending..."
