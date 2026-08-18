@@ -1,3 +1,4 @@
+import { AdminActionForm } from "@/components/admin/admin-action-form";
 import Image from "next/image";
 
 import { RichTextContent } from "@/components/editor/rich-text-content";
@@ -269,7 +270,7 @@ export default async function AdminOrdersPage({
               create an Order.
             </div>
           ) : (
-            <form
+            <AdminActionForm
               action={createOrder}
               className="mt-6"
             >
@@ -432,7 +433,7 @@ export default async function AdminOrdersPage({
                   Create Order
                 </button>
               </div>
-            </form>
+            </AdminActionForm>
           )}
         </section>
 
@@ -618,7 +619,7 @@ export default async function AdminOrdersPage({
                       
                     ) : null}
 
-                    <form
+                    <AdminActionForm
                       action={
                         updateOrder
                       }
@@ -821,7 +822,7 @@ export default async function AdminOrdersPage({
                           Save Order
                         </button>
                       </div>
-                    </form>
+                    </AdminActionForm>
 
                     <OrderLevelStructure orderId={order.id} />
 
@@ -833,7 +834,7 @@ export default async function AdminOrdersPage({
                           Delete Order
                         </summary>
 
-                        <form
+                        <AdminActionForm
                           action={
                             deleteOrder
                           }
@@ -877,7 +878,7 @@ export default async function AdminOrdersPage({
                               permanently
                             </button>
                           </div>
-                        </form>
+                        </AdminActionForm>
                       </details>
                     </div>
                   </div>

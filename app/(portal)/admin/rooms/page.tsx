@@ -1,3 +1,4 @@
+import { AdminActionForm } from "@/components/admin/admin-action-form";
 import Image from "next/image";
 
 import { RichTextEditor } from "@/components/editor/rich-text-editor";
@@ -410,7 +411,7 @@ created_at: room.created_at,
           </h3>
 
           {areas.length > 0 ? (
-            <form
+            <AdminActionForm
               action={createRoom}
               className="mt-6"
             >
@@ -532,7 +533,7 @@ created_at: room.created_at,
     Create location
   </button>
 </div>
-            </form>
+            </AdminActionForm>
           ) : (
             <p className="mt-5 border border-amber-900/40 bg-amber-950/10 p-4 text-sm leading-6 text-amber-500">
               Create at least one area
@@ -551,7 +552,7 @@ created_at: room.created_at,
           </h3>
 
           {rooms.length >= 2 ? (
-            <form
+            <AdminActionForm
               action={
                 createRoomConnection
               }
@@ -675,7 +676,7 @@ created_at: room.created_at,
                   Create connection
                 </button>
               </div>
-            </form>
+            </AdminActionForm>
           ) : (
             <p className="mt-5 border border-amber-900/40 bg-amber-950/10 p-4 text-sm leading-6 text-amber-500">
               At least two locations are
@@ -785,7 +786,7 @@ created_at: room.created_at,
                       </p>
                     </div>
 
-                    <form
+                    <AdminActionForm
                       action={updateRoom}
                       className="mt-6"
                     >
@@ -930,9 +931,9 @@ created_at: room.created_at,
     Save location
   </button>
 </div>
-                    </form>
+                    </AdminActionForm>
 
-                    <form
+                    <AdminActionForm
                       action={deleteRoom}
                       className="mt-6 border-t border-[#60482e]/30 pt-5"
                     >
@@ -971,7 +972,7 @@ created_at: room.created_at,
                           refer to this room.
                         </p>
                       ) : null}
-                    </form>
+                    </AdminActionForm>
                   </div>
                 </div>
               </section>
@@ -1059,7 +1060,7 @@ created_at: room.created_at,
                   </summary>
 
                   <div className="border-t border-[#60482e]/30 px-4 pb-4 pt-4 sm:px-5 sm:pb-5">
-                    <form
+                    <AdminActionForm
                       action={
                         updateRoomConnection
                       }
@@ -1119,9 +1120,9 @@ created_at: room.created_at,
                           Save connection
                         </button>
                       </div>
-                    </form>
+                    </AdminActionForm>
 
-                    <form
+                    <AdminActionForm
                       action={
                         deleteRoomConnection
                       }
@@ -1139,7 +1140,7 @@ created_at: room.created_at,
                       >
                         Delete connection
                       </button>
-                    </form>
+                    </AdminActionForm>
                   </div>
                 </details>
               ),

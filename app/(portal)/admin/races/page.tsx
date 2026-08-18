@@ -1,3 +1,4 @@
+import { AdminActionForm } from "@/components/admin/admin-action-form";
 import Image from "next/image";
 
 import { RichTextContent } from "@/components/editor/rich-text-content";
@@ -254,7 +255,7 @@ export default async function AdminRacesPage({
             Create an ancestry
           </h3>
 
-          <form
+          <AdminActionForm
             action={createRace}
             className="mt-6"
           >
@@ -403,7 +404,7 @@ export default async function AdminRacesPage({
                 Create race
               </button>
             </div>
-          </form>
+          </AdminActionForm>
         </section>
 
         <div className="mt-6 space-y-5">
@@ -559,7 +560,7 @@ export default async function AdminRacesPage({
                     ) : null}
                   </div>
 
-                  <form
+                  <AdminActionForm
                     action={updateRace}
                     className="mt-6"
                   >
@@ -746,9 +747,9 @@ export default async function AdminRacesPage({
                         Save changes
                       </button>
                     </div>
-                  </form>
+                  </AdminActionForm>
 
-                  <form
+                  <AdminActionForm
                     action={deleteRace}
                     className="mt-6 border-t border-[#60482e]/30 pt-5"
                   >
@@ -791,7 +792,7 @@ export default async function AdminRacesPage({
                         .
                       </p>
                     ) : null}
-                  </form>
+                  </AdminActionForm>
                 </div>
               </div>
             </section>

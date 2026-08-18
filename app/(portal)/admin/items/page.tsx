@@ -1,3 +1,4 @@
+import { AdminActionForm } from "@/components/admin/admin-action-form";
 import type { ReactNode } from "react";
 
 import { ItemEquipmentForm } from "@/components/admin/item-equipment-form";
@@ -197,7 +198,7 @@ export default async function AdminItemsPage({ searchParams }: Props) {
             Sepulchria needs beneath them.
           </p>
 
-          <form
+          <AdminActionForm
             action={createSubcategory}
             className="mt-5 grid gap-3 md:grid-cols-[1fr_1fr_1fr_110px_auto]"
           >
@@ -223,12 +224,12 @@ export default async function AdminItemsPage({ searchParams }: Props) {
               placeholder="Description (optional)"
               className={`${inputClass} md:col-span-5`}
             />
-          </form>
+          </AdminActionForm>
 
           {subcategories.length ? (
             <div className="mt-5 grid gap-2 xl:grid-cols-2">
               {subcategories.map((subcategory) => (
-                <form
+                <AdminActionForm
                   key={subcategory.id}
                   action={updateSubcategory}
                   className="border border-[#59432c]/40 bg-[#100c09] p-3"
@@ -292,7 +293,7 @@ export default async function AdminItemsPage({ searchParams }: Props) {
                       </button>
                     </div>
                   </div>
-                </form>
+                </AdminActionForm>
               ))}
             </div>
           ) : null}
@@ -412,7 +413,7 @@ export default async function AdminItemsPage({ searchParams }: Props) {
                   </section>
 
                   <div className="mt-6 flex justify-end border-t border-[#59432c]/35 pt-5">
-                    <form action={deleteItem}>
+                    <AdminActionForm action={deleteItem}>
                       <input type="hidden" name="itemId" value={item.id} />
                       <button
                         type="submit"
@@ -420,7 +421,7 @@ export default async function AdminItemsPage({ searchParams }: Props) {
                       >
                         Delete Item
                       </button>
-                    </form>
+                    </AdminActionForm>
                   </div>
                 </div>
               </details>
@@ -450,7 +451,7 @@ function ItemForm({
   subcategories: Subcategory[];
 }) {
   return (
-    <form action={action} className="mt-5">
+    <AdminActionForm action={action} className="mt-5">
       {item ? <input type="hidden" name="itemId" value={item.id} /> : null}
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -659,13 +660,13 @@ function ItemForm({
         Stackable is enabled, Use settings unless Usable is enabled, and
         Container capacity unless the core category is Container.
       </p>
-    </form>
+    </AdminActionForm>
   );
 }
 
 function EffectForm({ itemId, effect }: { itemId: string; effect?: Effect }) {
   return (
-    <form
+    <AdminActionForm
       action={effect ? updateItemEffect : createItemEffect}
       className="border border-[#59432c]/35 bg-[#15100d] p-3"
     >
@@ -771,7 +772,7 @@ function EffectForm({ itemId, effect }: { itemId: string; effect?: Effect }) {
         apply Health only; Attribute and Max Health modifiers are for
         Temporary/Passive effects.
       </p>
-    </form>
+    </AdminActionForm>
   );
 }
 

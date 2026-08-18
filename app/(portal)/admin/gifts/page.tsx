@@ -1,3 +1,4 @@
+import { AdminActionForm } from "@/components/admin/admin-action-form";
 import { requireStaff } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
@@ -216,7 +217,7 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
                     Staff assignment
                   </p>
 
-                  <form
+                  <AdminActionForm
                     action={assignGiftToCharacter}
                     className="mt-3 flex flex-wrap gap-2"
                   >
@@ -244,7 +245,7 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
                     >
                       Assign Feat
                     </button>
-                  </form>
+                  </AdminActionForm>
 
                   {gift.assignments?.length ? (
                     <div className="mt-4 grid gap-2 md:grid-cols-2 xl:grid-cols-3">
@@ -263,7 +264,7 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
                             </p>
                           </div>
 
-                          <form action={removeGiftFromCharacter}>
+                          <AdminActionForm action={removeGiftFromCharacter}>
                             <input
                               type="hidden"
                               name="assignmentId"
@@ -275,7 +276,7 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
                             >
                               Remove
                             </button>
-                          </form>
+                          </AdminActionForm>
                         </div>
                       ))}
                     </div>
@@ -283,7 +284,7 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
                 </div>
 
                 <div className="mt-6 border-t border-[#59432c]/35 pt-5">
-                  <form action={deleteGift} className="flex justify-end">
+                  <AdminActionForm action={deleteGift} className="flex justify-end">
                     <input type="hidden" name="giftId" value={gift.id} />
                     <button
                       type="submit"
@@ -291,7 +292,7 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
                     >
                       Delete Feat
                     </button>
-                  </form>
+                  </AdminActionForm>
                 </div>
               </div>
             </details>
@@ -325,7 +326,7 @@ function GiftForm({
   const selectedRoles = new Set(gift?.roles?.map((item) => item.order_job_id) ?? []);
 
   return (
-    <form action={action} className="mt-5">
+    <AdminActionForm action={action} className="mt-5">
       {gift ? <input type="hidden" name="giftId" value={gift.id} /> : null}
 
       <div className="grid gap-4 md:grid-cols-2">
@@ -444,7 +445,7 @@ function GiftForm({
           {gift ? "Save Feat" : "Create Feat"}
         </button>
       </div>
-    </form>
+    </AdminActionForm>
   );
 }
 

@@ -1,3 +1,4 @@
+import { AdminActionForm } from "@/components/admin/admin-action-form";
 import Image from "next/image";
 
 import { RichTextEditor } from "@/components/editor/rich-text-editor";
@@ -146,7 +147,7 @@ export default async function AdminAreasPage() {
             Create an area
           </h3>
 
-          <form
+          <AdminActionForm
             action={createArea}
             className="mt-6"
           >
@@ -225,7 +226,7 @@ export default async function AdminAreasPage() {
                 Create area
               </button>
             </div>
-          </form>
+          </AdminActionForm>
         </section>
 
         <div className="mt-6 space-y-5">
@@ -290,7 +291,7 @@ export default async function AdminAreasPage() {
                     </p>
                   </div>
 
-                  <form
+                  <AdminActionForm
                     action={updateArea}
                     className="mt-6"
                   >
@@ -381,9 +382,9 @@ export default async function AdminAreasPage() {
                         Save changes
                       </button>
                     </div>
-                  </form>
+                  </AdminActionForm>
 
-                  <form
+                  <AdminActionForm
                     action={deleteArea}
                     className="mt-6 border-t border-[#60482e]/30 pt-5"
                   >
@@ -416,7 +417,7 @@ export default async function AdminAreasPage() {
                         rooms.
                       </p>
                     ) : null}
-                  </form>
+                  </AdminActionForm>
                 </div>
               </div>
             </section>

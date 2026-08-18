@@ -1,3 +1,4 @@
+import { AdminActionForm } from "@/components/admin/admin-action-form";
 import { requireStaff } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 import {
@@ -53,7 +54,7 @@ export default async function TidingsAdminPage({
             </h3>
           </div>
 
-          <form action={createTidingAction} className="grid gap-5 p-5 sm:p-6 lg:grid-cols-2">
+          <AdminActionForm action={createTidingAction} className="grid gap-5 p-5 sm:p-6 lg:grid-cols-2">
             <label className="block text-[9px] uppercase tracking-[0.18em] text-[#9f8765]">
               Title
               <input
@@ -116,7 +117,7 @@ export default async function TidingsAdminPage({
                 Publish now
               </button>
             </div>
-          </form>
+          </AdminActionForm>
         </section>
 
         <section className="mt-7">
@@ -192,7 +193,7 @@ export default async function TidingsAdminPage({
 
                       <div className="flex shrink-0 gap-2">
                         {!expired ? (
-                          <form action={toggleTidingAction}>
+                          <AdminActionForm action={toggleTidingAction}>
                             <input type="hidden" name="id" value={entry.id} />
                             <input
                               type="hidden"
@@ -205,10 +206,10 @@ export default async function TidingsAdminPage({
                             >
                               {entry.is_active ? "Hide" : "Show"}
                             </button>
-                          </form>
+                          </AdminActionForm>
                         ) : null}
 
-                        <form action={deleteTidingAction}>
+                        <AdminActionForm action={deleteTidingAction}>
                           <input type="hidden" name="id" value={entry.id} />
                           <button
                             type="submit"
@@ -216,7 +217,7 @@ export default async function TidingsAdminPage({
                           >
                             Delete
                           </button>
-                        </form>
+                        </AdminActionForm>
                       </div>
                     </div>
                   </article>

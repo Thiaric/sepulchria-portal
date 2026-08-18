@@ -1,3 +1,4 @@
+import { AdminActionForm } from "@/components/admin/admin-action-form";
 import Image from "next/image";
 
 import { RichTextContent } from "@/components/editor/rich-text-content";
@@ -226,7 +227,7 @@ export default async function AdminAssociationsPage({
             Create an association
           </h3>
 
-          <form
+          <AdminActionForm
             action={createAssociation}
             className="mt-6"
           >
@@ -362,7 +363,7 @@ export default async function AdminAssociationsPage({
                 Create association
               </button>
             </div>
-          </form>
+          </AdminActionForm>
         </section>
 
         <div className="mt-6 space-y-5">
@@ -527,7 +528,7 @@ export default async function AdminAssociationsPage({
                       ) : null}
                     </div>
 
-                    <form
+                    <AdminActionForm
                       action={
                         updateAssociation
                       }
@@ -698,9 +699,9 @@ export default async function AdminAssociationsPage({
                           Save changes
                         </button>
                       </div>
-                    </form>
+                    </AdminActionForm>
 
-                    <form
+                    <AdminActionForm
                       action={
                         deleteAssociation
                       }
@@ -746,7 +747,7 @@ export default async function AdminAssociationsPage({
                           .
                         </p>
                       ) : null}
-                    </form>
+                    </AdminActionForm>
                   </div>
                 </div>
               </section>

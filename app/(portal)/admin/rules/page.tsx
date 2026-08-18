@@ -1,3 +1,4 @@
+import { AdminActionForm } from "@/components/admin/admin-action-form";
 import { RichTextEditor } from "@/components/editor/rich-text-editor";
 import { requireStaff } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
@@ -158,7 +159,7 @@ export default async function AdminRulesPage() {
             eyebrow="Structure"
             title="Create category"
           >
-            <form
+            <AdminActionForm
               action={
                 createRuleCategory
               }
@@ -210,14 +211,14 @@ export default async function AdminRulesPage() {
                   Create category
                 </SubmitButton>
               </div>
-            </form>
+            </AdminActionForm>
           </CompactPanel>
 
           <CompactPanel
             eyebrow="Reference"
             title="Create glossary entry"
           >
-            <form
+            <AdminActionForm
               action={
                 createGlossaryEntry
               }
@@ -300,7 +301,7 @@ export default async function AdminRulesPage() {
               <SubmitButton>
                 Create glossary entry
               </SubmitButton>
-            </form>
+            </AdminActionForm>
           </CompactPanel>
         </section>
 
@@ -309,7 +310,7 @@ export default async function AdminRulesPage() {
           title="Create rule"
           className="mt-4"
         >
-          <form
+          <AdminActionForm
             action={createRuleEntry}
             className="space-y-3"
           >
@@ -407,7 +408,7 @@ export default async function AdminRulesPage() {
             <SubmitButton>
               Create rule
             </SubmitButton>
-          </form>
+          </AdminActionForm>
         </CompactPanel>
 
         <section className="mt-5">
@@ -450,7 +451,7 @@ export default async function AdminRulesPage() {
                   </div>
                 </summary>
 
-                <form
+                <AdminActionForm
                   action={
                     updateRuleEntry
                   }
@@ -584,9 +585,9 @@ export default async function AdminRulesPage() {
                       Save changes
                     </SubmitButton>
                   </div>
-                </form>
+                </AdminActionForm>
 
-                <form
+                <AdminActionForm
                   action={
                     deleteRuleEntry
                   }
@@ -603,7 +604,7 @@ export default async function AdminRulesPage() {
                   >
                     Delete rule
                   </button>
-                </form>
+                </AdminActionForm>
               </details>
             ))}
 
@@ -627,7 +628,7 @@ export default async function AdminRulesPage() {
             <div className="mt-3 space-y-2">
               {categories.map(
                 (category) => (
-                  <form
+                  <AdminActionForm
                     key={category.id}
                     action={
                       updateRuleCategory
@@ -703,7 +704,7 @@ export default async function AdminRulesPage() {
                       placeholder="Category summary"
                       className={`sm:col-span-4 ${inputClass}`}
                     />
-                  </form>
+                  </AdminActionForm>
                 ),
               )}
             </div>
@@ -736,7 +737,7 @@ export default async function AdminRulesPage() {
                       </div>
                     </summary>
 
-                    <form
+                    <AdminActionForm
                       action={
                         updateGlossaryEntry
                       }
@@ -859,9 +860,9 @@ export default async function AdminRulesPage() {
                       <SubmitButton>
                         Save glossary entry
                       </SubmitButton>
-                    </form>
+                    </AdminActionForm>
 
-                    <form
+                    <AdminActionForm
                       action={
                         deleteGlossaryEntry
                       }
@@ -880,7 +881,7 @@ export default async function AdminRulesPage() {
                       >
                         Delete
                       </button>
-                    </form>
+                    </AdminActionForm>
                   </details>
                 ),
               )}
@@ -895,7 +896,7 @@ export default async function AdminRulesPage() {
           />
 
           <div className="mt-3 grid gap-3 lg:grid-cols-[1fr_auto]">
-            <form
+            <AdminActionForm
               action={createRuleLink}
               className="grid gap-2 border border-[#60482e]/40 bg-[#15100d] p-3 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_100px_auto]"
             >
@@ -959,7 +960,7 @@ export default async function AdminRulesPage() {
               <SubmitButton>
                 Add link
               </SubmitButton>
-            </form>
+            </AdminActionForm>
           </div>
 
           {links.length > 0 ? (
@@ -980,7 +981,7 @@ export default async function AdminRulesPage() {
                   );
 
                 return (
-                  <form
+                  <AdminActionForm
                     key={link.id}
                     action={
                       deleteRuleLink
@@ -1008,7 +1009,7 @@ export default async function AdminRulesPage() {
                     >
                       Remove
                     </button>
-                  </form>
+                  </AdminActionForm>
                 );
               })}
             </div>

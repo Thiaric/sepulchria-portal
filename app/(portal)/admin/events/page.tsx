@@ -1,3 +1,4 @@
+import { AdminActionForm } from "@/components/admin/admin-action-form";
 import {
   AURETH_MONTHS,
   AURETH_YEAR_OFFSET,
@@ -370,7 +371,7 @@ export default async function EventsAdminPage() {
           Dates are entered in the Aureth calendar. The underlying database date is converted automatically.
         </p>
 
-        <form
+        <AdminActionForm
           action={
             createCalendarEvent
           }
@@ -391,7 +392,7 @@ export default async function EventsAdminPage() {
               Create event
             </button>
           </div>
-        </form>
+        </AdminActionForm>
       </section>
 
       <section className="border border-[#60482e]/45 bg-[#15100d] p-4 sm:p-5">
@@ -458,7 +459,7 @@ export default async function EventsAdminPage() {
                 </summary>
 
                 <div className="border-t border-[#59432c]/35 p-4">
-                  <form
+                  <AdminActionForm
                     action={
                       updateCalendarEvent
                     }
@@ -485,9 +486,9 @@ export default async function EventsAdminPage() {
                         Save event
                       </button>
                     </div>
-                  </form>
+                  </AdminActionForm>
 
-                  <form
+                  <AdminActionForm
                     action={
                       deleteCalendarEvent
                     }
@@ -519,7 +520,7 @@ export default async function EventsAdminPage() {
                         Delete event
                       </button>
                     </div>
-                  </form>
+                  </AdminActionForm>
                 </div>
               </details>
             );
