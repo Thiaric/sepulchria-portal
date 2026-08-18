@@ -9,6 +9,10 @@ export type OddJobStateRow = {
   job_name: string;
   job_description: string;
   pay: number;
+  starting_pay: number;
+  claims_used: number;
+  claims_remaining: number;
+  max_claims: number;
   sort_order: number;
   claimed: boolean;
   claimed_job_id: string | null;
@@ -32,6 +36,15 @@ export function OddJobsPanel({ jobs }: { jobs: OddJobStateRow[] }) {
 
   function work(jobId: string) {
     if (alreadyWorked || pending) return;
+
+    const selected = jobs.find((job) => job.job_id === jobId);
+
+    if (!selected || selected.claims_remaining <= 0) {
+      setOk(false);
+      setMessage("This job has no work slots remaining today.");
+      return;
+    }
+
     setPendingJobId(jobId);
     setMessage(null);
 
@@ -40,7 +53,10 @@ export function OddJobsPanel({ jobs }: { jobs: OddJobStateRow[] }) {
       setOk(result.ok);
       setMessage(result.message);
       setPendingJobId(null);
-      if (result.ok) router.refresh();
+
+      if (result.ok) {
+        router.refresh();
+      }
     });
   }
 
@@ -48,11 +64,20 @@ export function OddJobsPanel({ jobs }: { jobs: OddJobStateRow[] }) {
     <details open className="shrink-0 border-b border-[#60482e]/45 bg-[#120e0b]">
       <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-2 [&::-webkit-details-marker]:hidden">
         <div>
-          <p className="text-[7px] uppercase tracking-[0.18em] text-[#806b50]">Odd Jobs Bureau</p>
-          <p className="mt-0.5 font-serif text-sm text-[#dec89f]">Today&apos;s work</p>
+          <p className="text-[7px] uppercase tracking-[0.18em] text-[#806b50]">
+            Odd Jobs Bureau
+          </p>
+
+          <p className="mt-0.5 font-serif text-sm text-[#dec89f]">
+            Today&apos;s work
+          </p>
         </div>
+
         <div className="text-right">
-          <p className="text-[7px] uppercase tracking-[0.12em] text-[#756958]">Wallet</p>
+          <p className="text-[7px] uppercase tracking-[0.12em] text-[#756958]">
+            Wallet
+          </p>
+
           <p className="font-serif text-base text-[#e4c589]">
             {Number(first.wallet_balance).toLocaleString("en-GB")} Remnants
           </p>
@@ -69,33 +94,76 @@ export function OddJobsPanel({ jobs }: { jobs: OddJobStateRow[] }) {
           </p>
         ) : (
           <p className="mb-3 text-[9px] leading-4 text-[#8f8271]">
-            Choose one job for today. Each job has a city-wide daily rate between
-            10 and 50 Remnants. Rates reset at midnight UK time.
+            Choose one job for today. Each job begins with a daily rate between
+            10 and 50 Remnants and has 50 work slots. After every 5 completed
+            shifts, that job&apos;s pay falls by 10% of its starting rate, rounded up.
+            Everything resets at midnight UK time.
           </p>
         )}
 
         <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
-          {jobs.map((job) => (
-            <article key={job.job_id} className="flex min-h-[104px] flex-col border border-[#59432c]/40 bg-[#17110d] p-3">
-              <div className="flex items-start justify-between gap-2">
-                <h3 className="font-serif text-[13px] text-[#d9c29a]">{job.job_name}</h3>
-                <span className="shrink-0 text-[10px] font-semibold text-[#d8ad69]">{job.pay} R</span>
-              </div>
-              <p className="mt-1 flex-1 text-[8px] leading-4 text-[#807463]">{job.job_description}</p>
-              <button
-                type="button"
-                onClick={() => work(job.job_id)}
-                disabled={alreadyWorked || pending}
-                className="mt-2 border border-[#85653c] bg-[#342617] px-3 py-1.5 text-[8px] uppercase tracking-[0.14em] text-[#efd4a0] transition hover:bg-[#4a351f] disabled:cursor-not-allowed disabled:opacity-40"
+          {jobs.map((job) => {
+            const soldOut = Number(job.claims_remaining) <= 0;
+
+            return (
+              <article
+                key={job.job_id}
+                className="flex min-h-[124px] flex-col border border-[#59432c]/40 bg-[#17110d] p-3"
               >
-                {pending && pendingJobId === job.job_id ? "Working..." : alreadyWorked ? "Worked today" : "Work"}
-              </button>
-            </article>
-          ))}
+                <div className="flex items-start justify-between gap-2">
+                  <h3 className="font-serif text-[13px] text-[#d9c29a]">
+                    {job.job_name}
+                  </h3>
+
+                  <span className="shrink-0 text-[10px] font-semibold text-[#d8ad69]">
+                    {job.pay} R
+                  </span>
+                </div>
+
+                <p className="mt-1 flex-1 text-[8px] leading-4 text-[#807463]">
+                  {job.job_description}
+                </p>
+
+                <div className="mt-2 flex items-center justify-between gap-2 text-[7px] uppercase tracking-[0.1em]">
+                  <span className={soldOut ? "text-red-400" : "text-[#8e7a60]"}>
+                    {soldOut
+                      ? "Not available"
+                      : `${job.claims_remaining} / ${job.max_claims} left`}
+                  </span>
+
+                  {job.pay < job.starting_pay ? (
+                    <span className="text-[#8f6e49]">
+                      Started {job.starting_pay} R
+                    </span>
+                  ) : null}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => work(job.job_id)}
+                  disabled={alreadyWorked || pending || soldOut}
+                  className="mt-2 border border-[#85653c] bg-[#342617] px-3 py-1.5 text-[8px] uppercase tracking-[0.14em] text-[#efd4a0] transition hover:bg-[#4a351f] disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  {pending && pendingJobId === job.job_id
+                    ? "Working..."
+                    : alreadyWorked
+                      ? "Worked today"
+                      : soldOut
+                        ? "Unavailable"
+                        : "Work"}
+                </button>
+              </article>
+            );
+          })}
         </div>
 
         {message ? (
-          <p aria-live="polite" className={`mt-3 text-[9px] ${ok ? "text-emerald-400" : "text-red-400"}`}>
+          <p
+            aria-live="polite"
+            className={`mt-3 text-[9px] ${
+              ok ? "text-emerald-400" : "text-red-400"
+            }`}
+          >
             {message}
           </p>
         ) : null}
