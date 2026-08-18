@@ -16,6 +16,7 @@ import {
 import { CharacterMechanicsDisplay } from "@/components/characters/character-mechanics-display";
 import { CharacterGiftsDisplay } from "@/components/characters/character-gifts-display";
 import { CharacterInventoryDisplay } from "@/components/characters/character-inventory-display";
+import { CharacterRemnantsWallet } from "@/components/characters/character-remnants-wallet";
 import { LiveCharacterSheetRefresh } from "@/components/characters/live-character-sheet-refresh";
 import { getEffectiveCharacterAttributes } from "@/lib/characters/get-effective-character-attributes";
 import { createClient } from "@/lib/supabase/server";
@@ -415,6 +416,10 @@ export function Profile({
                 ) : null}
               </div>
             </section>
+
+            {own && character.id ? (
+              <CharacterRemnantsWallet characterId={character.id} />
+            ) : null}
 
             {character.music_url ? (
               <div className="mt-4">

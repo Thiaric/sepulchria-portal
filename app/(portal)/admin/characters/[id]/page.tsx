@@ -9,6 +9,7 @@ import {
   type AdminAncestryGiftOption,
 } from "@/components/admin/admin-ancestry-gift-selector";
 import { CharacterReviewFields } from "@/components/admin/character-review-fields";
+import { AdminCharacterRemnants } from "@/components/admin/admin-character-remnants";
 import { requireStaff } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
@@ -583,6 +584,8 @@ export default async function AdminCharacterPage({
             </div>
           </div>
         </section>
+
+        <AdminCharacterRemnants characterId={character.id} />
 
         <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
           <div className="space-y-6">

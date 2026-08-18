@@ -19,6 +19,7 @@ import type {
 import RoomChatForm from "./components/RoomChatForm";
 import RoomMessageList from "./components/RoomMessageList";
 import RoomRealtime from "./components/RoomRealtime";
+import { OddJobsPanel, type OddJobStateRow } from "./components/OddJobsPanel";
 import { leaveCurrentRoom } from "./actions";
 
 type Props = Record<string, never>;
@@ -33,6 +34,7 @@ type Area = {
 type RoomRelation = {
   id: string;
   name: string;
+  slug: string;
   description: string | null;
   image_url: string | null;
   area_id: string;
@@ -117,7 +119,7 @@ async function GameContent() {
   } = await supabase
     .from("rooms")
     .select(
-  "id, name, description, image_url, area_id, areas(id,name,slug,description)",
+  "id, name, slug, description, image_url, area_id, areas(id,name,slug,description)",
 )
     .eq(
       "id",
@@ -664,6 +666,19 @@ async function GameContent() {
   const canViewAllWhispers =
     staffSession !== null;
 
+  let oddJobs: OddJobStateRow[] = [];
+
+  if (room.slug === "odd-jobs-bureau") {
+    const { data: oddJobsData, error: oddJobsError } =
+      await supabase.rpc("get_my_odd_jobs_state");
+
+    if (oddJobsError) {
+      throw new Error(`Unable to load Odd Jobs Bureau: ${oddJobsError.message}`);
+    }
+
+    oddJobs = (oddJobsData ?? []) as OddJobStateRow[];
+  }
+
   return (
   <div className="h-full min-h-0 overflow-hidden p-2 sm:p-3 lg:p-4">
     <RoomRealtime roomId={room.id} />
@@ -715,6 +730,10 @@ async function GameContent() {
   </div>
 
   <article className="flex min-h-0 flex-1 flex-col overflow-visible border border-[#6a5032]/50 bg-[#17110d] lg:overflow-hidden">
+    {room.slug === "odd-jobs-bureau" ? (
+      <OddJobsPanel jobs={oddJobs} />
+    ) : null}
+
     <RoomMessageList
       roomId={room.id}
       messages={visibleMessages}
