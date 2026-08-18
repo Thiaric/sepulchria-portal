@@ -1311,7 +1311,7 @@ export function PortalSidebar({
                   >
                     <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center">
                       <img
-                        src="/icons/play.png"
+                        src="/icons/bureau.png"
                         alt=""
                         aria-hidden="true"
                         className="h-full w-full object-contain"
