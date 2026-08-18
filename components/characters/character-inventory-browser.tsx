@@ -385,9 +385,11 @@ function ActiveUseTimers({
 function UseControl({
   row,
   targets,
+  compact = false,
 }: {
   row: InventoryBrowserRow;
   targets: InventoryUseTarget[];
+  compact?: boolean;
 }) {
   const router = useRouter();
 
@@ -494,17 +496,17 @@ function UseControl({
   }
 
   return (
-    <div className="mt-3">
+    <div className={compact ? "min-w-0" : "mt-3"}>
       <ActiveUseTimers
         row={row}
       />
 
-      <div className="mt-2 flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         <button
           type="button"
           onClick={run}
           disabled={pending}
-          className="border border-[#6f7545] bg-[#202615] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[#cbd39a] transition hover:bg-[#293019] disabled:cursor-wait disabled:opacity-50"
+          className="border border-[#6f7545] bg-[#202615] px-3 py-1.5 text-[8px] uppercase tracking-[0.14em] text-[#cbd39a] transition hover:bg-[#293019] disabled:cursor-wait disabled:opacity-50"
         >
           {pending ? "Using..." : "Use"}
         </button>
@@ -534,10 +536,12 @@ function UseControl({
 function MoveControls({
   row,
   containers,
+  compact = false,
 }: {
   row: InventoryBrowserRow;
   containers:
     InventoryBrowserRow[];
+  compact?: boolean;
 }) {
   if (
     row.record_kind ===
@@ -553,7 +557,11 @@ function MoveControls({
       action={
         moveOwnInventoryItem
       }
-      className="mt-3 flex flex-wrap gap-2"
+      className={
+        compact
+          ? "flex min-w-[220px] flex-1 gap-2"
+          : "mt-3 flex flex-wrap gap-2"
+      }
     >
       <input
         type="hidden"
@@ -574,7 +582,7 @@ function MoveControls({
           row.parent_container_id ??
           ""
         }
-        className="min-w-[150px] flex-1 border border-[#60482e]/55 bg-[#100c09] px-3 py-2 text-[9px] text-[#cdbb9d] outline-none focus:border-[#987344]"
+        className="min-w-[150px] flex-1 border border-[#60482e]/55 bg-[#100c09] px-3 py-1.5 text-[9px] text-[#cdbb9d] outline-none focus:border-[#987344]"
       >
         <option value="">
           Loose Inventory
@@ -600,7 +608,7 @@ function MoveControls({
 
       <button
         type="submit"
-        className="border border-[#6f5639]/60 bg-[#1b140f] px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-[#bca483] transition hover:border-[#987344] hover:text-[#e2c99f]"
+        className="border border-[#6f5639]/60 bg-[#1b140f] px-3 py-1.5 text-[8px] uppercase tracking-[0.12em] text-[#bca483] transition hover:border-[#987344] hover:text-[#e2c99f]"
       >
         Move
       </button>
@@ -610,8 +618,10 @@ function MoveControls({
 
 function DiscardControl({
   row,
+  compact = false,
 }: {
   row: InventoryBrowserRow;
+  compact?: boolean;
 }) {
   const router = useRouter();
   const [pending, startTransition] =
@@ -662,12 +672,12 @@ function DiscardControl({
   };
 
   return (
-    <div className="mt-3">
+    <div className={compact ? "min-w-0" : "mt-3"}>
       <button
         type="button"
         onClick={run}
         disabled={pending}
-        className="border border-red-900/55 bg-red-950/10 px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-red-400 transition hover:bg-red-950/20 disabled:cursor-wait disabled:opacity-45"
+        className="border border-red-900/55 bg-red-950/10 px-3 py-1.5 text-[8px] uppercase tracking-[0.14em] text-red-400 transition hover:bg-red-950/20 disabled:cursor-wait disabled:opacity-45"
       >
         {pending ? "Discarding..." : "Discard"}
       </button>
@@ -691,7 +701,7 @@ function ItemEffects({
   }
 
   return (
-    <div className="mt-3 border-t border-[#59432c]/30 pt-2.5">
+    <div className="mt-2 border-t border-[#59432c]/30 pt-2">
       <p className="text-[7px] uppercase tracking-[0.16em] text-[#806b50]">
         Effects
       </p>
@@ -816,7 +826,7 @@ function ItemCard({
 
           {!compact &&
           row.description?.trim() ? (
-            <p className="mt-3 whitespace-pre-wrap text-xs leading-6 text-[#9f927f]">
+            <p className="mt-2 whitespace-pre-wrap text-xs leading-5 text-[#9f927f]">
               {
                 row.description
               }
@@ -906,25 +916,24 @@ function ItemCard({
           ) : null}
 
           {own ? (
-            <UseControl
-              row={row}
-              targets={useTargets}
-            />
-          ) : null}
+            <div className="mt-3 flex flex-wrap items-start gap-2">
+              <UseControl
+                row={row}
+                targets={useTargets}
+                compact
+              />
 
-          {own ? (
-            <MoveControls
-              row={row}
-              containers={
-                containers
-              }
-            />
-          ) : null}
+              <MoveControls
+                row={row}
+                containers={containers}
+                compact
+              />
 
-          {own ? (
-            <DiscardControl
-              row={row}
-            />
+              <DiscardControl
+                row={row}
+                compact
+              />
+            </div>
           ) : null}
         </div>
       </div>
