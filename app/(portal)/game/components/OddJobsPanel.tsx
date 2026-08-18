@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { workOddJob } from "../odd-jobs-actions";
+import { formatRemnants } from "@/lib/economy/currency";
 
 export type OddJobStateRow = {
   job_id: string;
@@ -79,7 +80,7 @@ export function OddJobsPanel({ jobs }: { jobs: OddJobStateRow[] }) {
           </p>
 
           <p className="font-serif text-base text-[#e4c589]">
-            {Number(first.wallet_balance).toLocaleString("en-GB")} Remnants
+            {formatRemnants(Number(first.wallet_balance))}
           </p>
         </div>
       </summary>
@@ -89,7 +90,7 @@ export function OddJobsPanel({ jobs }: { jobs: OddJobStateRow[] }) {
           <p className="mb-3 border border-emerald-900/45 bg-emerald-950/10 px-3 py-2 text-[9px] text-emerald-400">
             You have already worked today
             {first.claimed_job_name ? ` — ${first.claimed_job_name}` : ""}
-            {first.claimed_pay !== null ? ` (+${first.claimed_pay} Remnants)` : ""}.
+            {first.claimed_pay !== null ? ` (+${formatRemnants(first.claimed_pay)})` : ""}.
             Return tomorrow.
           </p>
         ) : (
@@ -116,7 +117,7 @@ export function OddJobsPanel({ jobs }: { jobs: OddJobStateRow[] }) {
                   </h3>
 
                   <span className="shrink-0 text-[10px] font-semibold text-[#d8ad69]">
-                    {job.pay} R
+                    {formatRemnants(job.pay)}
                   </span>
                 </div>
 
@@ -133,7 +134,7 @@ export function OddJobsPanel({ jobs }: { jobs: OddJobStateRow[] }) {
 
                   {job.pay < job.starting_pay ? (
                     <span className="text-[#8f6e49]">
-                      Started {job.starting_pay} R
+                      Started {formatRemnants(job.starting_pay)}
                     </span>
                   ) : null}
                 </div>

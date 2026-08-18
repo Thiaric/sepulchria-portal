@@ -2,6 +2,7 @@ import "server-only";
 
 import { AdminActionForm } from "@/components/admin/admin-action-form";
 import { createClient } from "@/lib/supabase/server";
+import { formatRemnants, formatSignedRemnants } from "@/lib/economy/currency";
 import { adjustCharacterRemnants } from "@/app/(portal)/admin/characters/remnants-actions";
 
 export async function AdminCharacterRemnants({ characterId }: { characterId: string }) {
@@ -31,7 +32,7 @@ export async function AdminCharacterRemnants({ characterId }: { characterId: str
         </div>
         <div className="text-right">
           <p className="text-[8px] uppercase tracking-[0.14em] text-[#756958]">Current balance</p>
-          <p className="mt-1 font-serif text-3xl text-[#e3c17e]">{balance.toLocaleString("en-GB")}</p>
+          <p className="mt-1 font-serif text-3xl text-[#e3c17e]">{formatRemnants(balance)}</p>
         </div>
       </div>
 
@@ -63,10 +64,10 @@ export async function AdminCharacterRemnants({ characterId }: { characterId: str
           {(ledgerResult.data ?? []).map((entry) => (
             <div key={entry.id} className="grid gap-1 border border-[#59432c]/30 bg-[#100c09] px-3 py-2 sm:grid-cols-[90px_minmax(0,1fr)_110px]">
               <span className={Number(entry.amount) > 0 ? "text-[10px] text-emerald-400" : "text-[10px] text-red-400"}>
-                {Number(entry.amount) > 0 ? "+" : ""}{Number(entry.amount)}
+                {formatSignedRemnants(Number(entry.amount))}
               </span>
               <span className="min-w-0 text-[9px] text-[#a99578]">{entry.reason}</span>
-              <span className="text-right text-[8px] text-[#756958]">Balance {Number(entry.balance_after)}</span>
+              <span className="text-right text-[8px] text-[#756958]">Balance {formatRemnants(Number(entry.balance_after))}</span>
             </div>
           ))}
         </div>

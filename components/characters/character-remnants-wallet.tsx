@@ -1,6 +1,7 @@
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
+import { formatRemnants, formatSignedRemnants } from "@/lib/economy/currency";
 
 export async function CharacterRemnantsWallet({ characterId }: { characterId: string }) {
   const supabase = await createClient();
@@ -24,7 +25,7 @@ export async function CharacterRemnantsWallet({ characterId }: { characterId: st
       <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
         <div>
           <p className="text-[7px] uppercase tracking-[0.18em] text-[#806b50]">Remnants</p>
-          <p className="mt-1 font-serif text-2xl text-[#e2c389]">{balance.toLocaleString("en-GB")}</p>
+          <p className="mt-1 font-serif text-2xl text-[#e2c389]">{formatRemnants(balance)}</p>
         </div>
         <p className="max-w-sm text-right text-[8px] leading-4 text-[#776b5b]">
           Every change to this balance is recorded permanently.
@@ -39,7 +40,7 @@ export async function CharacterRemnantsWallet({ characterId }: { characterId: st
               <div key={entry.id} className="flex items-center justify-between gap-3 text-[9px]">
                 <span className="min-w-0 truncate text-[#958774]">{entry.reason}</span>
                 <span className={Number(entry.amount) > 0 ? "shrink-0 text-emerald-400" : "shrink-0 text-red-400"}>
-                  {Number(entry.amount) > 0 ? "+" : ""}{Number(entry.amount).toLocaleString("en-GB")}
+                  {formatSignedRemnants(Number(entry.amount))}
                 </span>
               </div>
             ))}
