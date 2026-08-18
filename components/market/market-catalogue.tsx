@@ -1071,10 +1071,11 @@ export function MarketCatalogue({
 
             return (
               <article
+                id={`market-item-${item.id}`}
                 key={
                   listing.id
                 }
-                className="flex gap-4 border border-[#60482e]/40 bg-[#15100d] p-4"
+                className="scroll-mt-6 flex gap-4 border border-[#60482e]/40 bg-[#15100d] p-4"
               >
                 <div className="h-24 w-24 shrink-0 overflow-hidden border border-[#59432c]/40 bg-[#100c09]">
                   {item.image_url ? (

@@ -16,6 +16,8 @@ import { AdminEventsTidingsContext } from "@/components/portal/admin-events-tidi
 import { AdminRecordSearchContext } from "@/components/portal/admin-record-search-context";
 import { AdminJobsContext } from "@/components/portal/admin-jobs-context";
 import { AdminMarketContext } from "@/components/portal/admin-market-context";
+import { MarketShopsContext } from "@/components/portal/market-shops-context";
+import { MarketItemsContext } from "@/components/portal/market-items-context";
 import { CharacterDetailContextPanel } from "@/components/portal/character-detail-context-panel";
 import { ForumSectionActivityContext } from "@/components/portal/forum-section-activity-context";
 import { PortalContextPanel } from "@/components/portal/portal-context-panel";
@@ -97,6 +99,17 @@ export function PortalResponsiveRightSidebar({
 
   const isAdminUsersPath =
     pathname === "/admin/users";
+
+  const marketShopMatch =
+    pathname.match(/^\/market\/([^/]+)$/);
+
+  const marketShopSlug =
+    marketShopMatch
+      ? decodeURIComponent(marketShopMatch[1])
+      : null;
+
+  const isMarketPath =
+    pathname === "/market";
 
   const isAdminPath =
     pathname === "/admin" ||
@@ -337,6 +350,10 @@ export function PortalResponsiveRightSidebar({
                   key={`users-${adminRevision}`}
                   mode="users"
                 />
+              ) : isMarketPath ? (
+                <MarketShopsContext />
+              ) : marketShopSlug ? (
+                <MarketItemsContext shopSlug={marketShopSlug} />
               ) : isOwnCharacterPath ? (
                 <CharacterDetailContextPanel
                   characterId={

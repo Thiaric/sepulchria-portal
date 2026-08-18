@@ -85,6 +85,26 @@ export function LiveCharacterSheetRefresh({
         .subscribe(),
 
       supabase
+        .channel(`live-sheet-inventory-${characterId}`)
+        .on("postgres_changes", { event: "*", schema: "public", table: "character_items", filter: `character_id=eq.${characterId}` }, refreshSheet)
+        .subscribe(),
+
+      supabase
+        .channel(`live-sheet-instances-${characterId}`)
+        .on("postgres_changes", { event: "*", schema: "public", table: "character_item_instances", filter: `owner_character_id=eq.${characterId}` }, refreshSheet)
+        .subscribe(),
+
+      supabase
+        .channel(`live-sheet-wallet-${characterId}`)
+        .on("postgres_changes", { event: "*", schema: "public", table: "character_wallets", filter: `character_id=eq.${characterId}` }, refreshSheet)
+        .subscribe(),
+
+      supabase
+        .channel(`live-sheet-ledger-${characterId}`)
+        .on("postgres_changes", { event: "INSERT", schema: "public", table: "remnant_ledger", filter: `character_id=eq.${characterId}` }, refreshSheet)
+        .subscribe(),
+
+      supabase
         .channel(`live-sheet-active-items-${characterId}`)
         .on(
           "postgres_changes",
@@ -128,6 +148,10 @@ export function LiveCharacterSheetRefresh({
       refreshWhenVisible,
     );
 
+    const fallbackInterval = window.setInterval(() => {
+      if (document.visibilityState === "visible") refreshSheet();
+    }, 5000);
+
     return () => {
       disposed = true;
 
@@ -139,6 +163,8 @@ export function LiveCharacterSheetRefresh({
         "visibilitychange",
         refreshWhenVisible,
       );
+
+      window.clearInterval(fallbackInterval);
 
       for (const channel of channels) {
         void supabase.removeChannel(channel);

@@ -7,6 +7,7 @@ type TabId =
   | "short"
   | "profile"
   | "inventory"
+  | "ledger"
   | "gifts"
   | "warping"
   | "offgame"
@@ -31,7 +32,12 @@ export function CharacterSheetTabs({
   const [activeTab, setActiveTab] = useState<TabId>("short");
 
   const tabs = own
-    ? [...PUBLIC_TABS, { id: "edit" as const, label: "EDIT" }]
+    ? [
+        ...PUBLIC_TABS.slice(0, 3),
+        { id: "ledger" as const, label: "LEDGER" },
+        ...PUBLIC_TABS.slice(3),
+        { id: "edit" as const, label: "EDIT" },
+      ]
     : PUBLIC_TABS;
 
   return (
@@ -118,6 +124,7 @@ export function CharacterSheetTabs({
         .character-sheet-tabs[data-character-sheet-active-tab="short"] [data-character-sheet-panel="short"],
         .character-sheet-tabs[data-character-sheet-active-tab="profile"] [data-character-sheet-panel="profile"],
         .character-sheet-tabs[data-character-sheet-active-tab="inventory"] [data-character-sheet-panel="inventory"],
+        .character-sheet-tabs[data-character-sheet-active-tab="ledger"] [data-character-sheet-panel="ledger"],
         .character-sheet-tabs[data-character-sheet-active-tab="gifts"] [data-character-sheet-panel="gifts"],
         .character-sheet-tabs[data-character-sheet-active-tab="warping"] [data-character-sheet-panel="warping"],
         .character-sheet-tabs[data-character-sheet-active-tab="offgame"] [data-character-sheet-panel="offgame"],

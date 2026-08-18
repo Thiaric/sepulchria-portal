@@ -14,7 +14,7 @@ export async function AdminCharacterRemnants({ characterId }: { characterId: str
       .select("id, amount, balance_after, reason, created_at")
       .eq("character_id", characterId)
       .order("created_at", { ascending: false })
-      .limit(20),
+      .limit(250),
   ]);
 
   const error = walletResult.error ?? ledgerResult.error;
@@ -60,7 +60,7 @@ export async function AdminCharacterRemnants({ characterId }: { characterId: str
 
       <div className="mt-5 border-t border-[#59432c]/30 pt-4">
         <p className="mb-2 text-[8px] uppercase tracking-[0.14em] text-[#806b50]">Recent ledger</p>
-        <div className="max-h-72 space-y-1.5 overflow-y-auto pr-1">
+        <div className="max-h-[230px] space-y-1.5 overflow-y-auto pr-1">
           {(ledgerResult.data ?? []).map((entry) => (
             <div key={entry.id} className="grid gap-1 border border-[#59432c]/30 bg-[#100c09] px-3 py-2 sm:grid-cols-[90px_minmax(0,1fr)_110px]">
               <span className={Number(entry.amount) > 0 ? "text-[10px] text-emerald-400" : "text-[10px] text-red-400"}>

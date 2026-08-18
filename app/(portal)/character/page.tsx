@@ -17,6 +17,7 @@ import { CharacterMechanicsDisplay } from "@/components/characters/character-mec
 import { CharacterGiftsDisplay } from "@/components/characters/character-gifts-display";
 import { CharacterInventoryDisplay } from "@/components/characters/character-inventory-display";
 import { CharacterRemnantsWallet } from "@/components/characters/character-remnants-wallet";
+import { CharacterLedger } from "@/components/characters/character-ledger";
 import { LiveCharacterSheetRefresh } from "@/components/characters/live-character-sheet-refresh";
 import { getEffectiveCharacterAttributes } from "@/lib/characters/get-effective-character-attributes";
 import { createClient } from "@/lib/supabase/server";
@@ -472,6 +473,12 @@ export function Profile({
           <div data-character-sheet-panel="inventory">
             {character.id ? (
               <CharacterInventoryDisplay characterId={character.id} own />
+            ) : null}
+          </div>
+
+          <div data-character-sheet-panel="ledger">
+            {own && character.id ? (
+              <CharacterLedger characterId={character.id} />
             ) : null}
           </div>
 
