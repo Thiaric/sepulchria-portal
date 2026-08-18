@@ -747,6 +747,9 @@ export async function updateApprovedCharacterProfile(
     120,
   );
 
+  const showLastActivity =
+    formData.get("show_last_activity") === "true";
+
   if (!physicalDescription) {
     redirectCharacterError(
       "Physical description is required.",
@@ -807,6 +810,9 @@ export async function updateApprovedCharacterProfile(
 
     offgame:
       offgame || null,
+
+    show_last_activity:
+      showLastActivity,
 
     updated_at:
       new Date().toISOString(),

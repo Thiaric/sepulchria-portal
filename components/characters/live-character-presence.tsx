@@ -166,11 +166,13 @@ export function LiveCharacterPresence({
   characterId,
   initialPresence,
   initialRoom,
+  showLastActivity = true,
   compact = false,
 }: {
   characterId: string;
   initialPresence: PublicCharacterPresence | null;
   initialRoom: PublicCharacterRoom | null;
+  showLastActivity?: boolean;
   compact?: boolean;
 }) {
   const [presence, setPresence] =
@@ -368,18 +370,20 @@ export function LiveCharacterPresence({
           </p>
         </div>
 
-        <div className="min-w-0 bg-[#17110d] px-3 py-2">
-          <p className="text-[7px] uppercase tracking-[0.19em] text-[#796448]">
-            Last activity
-          </p>
+        {showLastActivity ? (
+          <div className="min-w-0 bg-[#17110d] px-3 py-2">
+            <p className="text-[7px] uppercase tracking-[0.19em] text-[#796448]">
+              Last activity
+            </p>
 
-          <p className="mt-1 break-words text-[11px] leading-5 text-[#cab89b]">
-            {formatRelativeActivity(
-              presence?.last_seen_at,
-              now,
-            )}
-          </p>
-        </div>
+            <p className="mt-1 break-words text-[11px] leading-5 text-[#cab89b]">
+              {formatRelativeActivity(
+                presence?.last_seen_at,
+                now,
+              )}
+            </p>
+          </div>
+        ) : null}
 
         <div className="min-w-0 bg-[#17110d] px-3 py-2 sm:col-span-2 lg:col-span-3">
           <p className="text-[7px] uppercase tracking-[0.19em] text-[#796448]">
@@ -415,18 +419,20 @@ export function LiveCharacterPresence({
       </div>
 
       <dl className="mt-6 space-y-5">
-        <div>
-          <dt className="text-[8px] uppercase tracking-[0.2em] text-[#806b50]">
-            Last activity
-          </dt>
+        {showLastActivity ? (
+          <div>
+            <dt className="text-[8px] uppercase tracking-[0.2em] text-[#806b50]">
+              Last activity
+            </dt>
 
-          <dd className="mt-2 text-sm text-[#d4c4ad]">
-            {formatRelativeActivity(
-              presence?.last_seen_at,
-              now,
-            )}
-          </dd>
-        </div>
+            <dd className="mt-2 text-sm text-[#d4c4ad]">
+              {formatRelativeActivity(
+                presence?.last_seen_at,
+                now,
+              )}
+            </dd>
+          </div>
+        ) : null}
 
         <div>
           <dt className="text-[8px] uppercase tracking-[0.2em] text-[#806b50]">

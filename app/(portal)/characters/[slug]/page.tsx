@@ -4,6 +4,7 @@ import { notFound, redirect } from "next/navigation";
 import { PublicCharacterProfileView } from "@/components/characters/public-character-profile";
 import { LiveCharacterSheetRefresh } from "@/components/characters/live-character-sheet-refresh";
 import { getPublicCharacter } from "@/lib/characters/get-public-character";
+import { getStaffSession } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
 type PublicCharacterPageProps = {
@@ -67,14 +68,22 @@ export default async function PublicCharacterPage({
     redirect("/auth/login");
   }
 
+  const [
+    activeCharacterResult,
+    staffSession,
+  ] = await Promise.all([
+    supabase
+      .from("characters")
+      .select("id")
+      .eq("user_id", user.id)
+      .maybeSingle(),
+    getStaffSession(),
+  ]);
+
   const {
     data: activeCharacter,
     error: activeCharacterError,
-  } = await supabase
-    .from("characters")
-    .select("id")
-    .eq("user_id", user.id)
-    .maybeSingle();
+  } = activeCharacterResult;
 
   if (activeCharacterError) {
     throw new Error(
@@ -109,6 +118,11 @@ export default async function PublicCharacterPage({
         canMessage={
           Boolean(activeCharacter) &&
           activeCharacter?.id !== character.id
+        }
+        canViewLastActivity={
+          character.show_last_activity ||
+          staffSession !== null ||
+          activeCharacter?.id === character.id
         }
       />
     </div>

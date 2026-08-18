@@ -62,6 +62,7 @@ type CharacterProfile = {
   current_health?: number | null;
   gender?: string | null;
   sexual_orientation?: string | null;
+  show_last_activity?: boolean | null;
 
   status?: CharacterStatus | null;
   rejection_reason?: string | null;
@@ -137,6 +138,7 @@ export default async function CharacterPage({
       shrewd,
       presence_score,
       current_health,
+      show_last_activity,
 
       race:races!characters_race_id_fkey(
         id,
@@ -639,6 +641,29 @@ export function Profile({
                   }
                   rows={6}
                 />
+
+                <label className="flex items-start gap-3 border border-[#60482e]/45 bg-[#100c09] px-4 py-3">
+                  <input
+                    type="checkbox"
+                    name="show_last_activity"
+                    value="true"
+                    defaultChecked={
+                      character.show_last_activity === true
+                    }
+                    className="mt-0.5 h-4 w-4 shrink-0 accent-[#9a7543]"
+                  />
+
+                  <span className="min-w-0">
+                    <span className="block text-[9px] uppercase tracking-[0.2em] text-[#b99768]">
+                      Show Last Activity publicly
+                    </span>
+
+                    <span className="mt-1 block text-[11px] leading-5 text-[#817463]">
+                      When enabled, other players can see when this character was last active.
+                      Staff can always see Last Activity regardless of this setting.
+                    </span>
+                  </span>
+                </label>
 
                 <div className="flex justify-end border-t border-[#5d452d]/40 pt-4">
                   <PendingSubmitButton

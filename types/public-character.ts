@@ -85,6 +85,7 @@ export type PublicCharacterProfile = {
   shrewd: number | null;
   presence_score: number | null;
   current_health: number | null;
+  show_last_activity: boolean;
   status: PublicCharacterStatus;
 
   race:

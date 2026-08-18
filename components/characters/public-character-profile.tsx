@@ -21,6 +21,7 @@ type PublicCharacterProfileProps = {
   returnHref: string;
   returnLabel: string;
   canMessage: boolean;
+  canViewLastActivity: boolean;
 };
 
 function formatGender(
@@ -46,6 +47,7 @@ export function PublicCharacterProfileView({
   returnHref,
   returnLabel,
   canMessage,
+  canViewLastActivity,
 }: PublicCharacterProfileProps) {
   const fullName =
     character.display_name?.trim() ||
@@ -180,6 +182,9 @@ export function PublicCharacterProfileView({
                   }
                   initialRoom={
                     character.currentRoom
+                  }
+                  showLastActivity={
+                    canViewLastActivity
                   }
                   compact
                 />
