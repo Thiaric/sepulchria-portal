@@ -253,7 +253,6 @@ export default async function MarketShopPage({ params }: Props) {
         is_equipped: boolean;
         transfer_policy: string;
         is_quest_item: boolean;
-        item_active: boolean;
       }>
   ) {
     if (
@@ -261,8 +260,7 @@ export default async function MarketShopPage({ params }: Props) {
       row.parent_container_id ||
       row.is_equipped ||
       row.transfer_policy !== "free" ||
-      row.is_quest_item ||
-      !row.item_active
+      row.is_quest_item
     ) {
       continue;
     }
