@@ -284,7 +284,11 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
                 </div>
 
                 <div className="mt-6 border-t border-[#59432c]/35 pt-5">
-                  <AdminActionForm action={deleteGift} className="flex justify-end">
+                  <AdminActionForm
+  action={deleteGift}
+  confirmMessage={`Are you sure you want to permanently delete the Feat "${gift.name}"?`}
+  className="flex justify-end"
+>
                     <input type="hidden" name="giftId" value={gift.id} />
                     <button
                       type="submit"

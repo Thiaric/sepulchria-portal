@@ -13,6 +13,7 @@ import { AdminContextPanel } from "@/components/portal/admin-context-panel";
 import { AdminOrdersContext } from "@/components/portal/admin-orders-context";
 import { AdminRulesContext } from "@/components/portal/admin-rules-context";
 import { AdminEventsTidingsContext } from "@/components/portal/admin-events-tidings-context";
+import { AdminRecordSearchContext } from "@/components/portal/admin-record-search-context";
 import { CharacterDetailContextPanel } from "@/components/portal/character-detail-context-panel";
 import { ForumSectionActivityContext } from "@/components/portal/forum-section-activity-context";
 import { PortalContextPanel } from "@/components/portal/portal-context-panel";
@@ -79,6 +80,15 @@ export function PortalResponsiveRightSidebar({
 
   const isAdminTidingsPath =
     pathname === "/admin/tidings";
+
+  const isAdminItemsPath =
+    pathname === "/admin/items";
+
+  const isAdminLocationsPath =
+    pathname === "/admin/rooms";
+
+  const isAdminUsersPath =
+    pathname === "/admin/users";
 
   const isAdminPath =
     pathname === "/admin" ||
@@ -280,13 +290,37 @@ export function PortalResponsiveRightSidebar({
 
             <section className="min-h-0 flex-1 border border-[#60482e]/45 bg-[#15100d] p-4 xl:p-[var(--portal-section-pad,1rem)]">
               {isAdminOrdersPath ? (
-                <AdminOrdersContext key={`orders-${adminRevision}`} />
+                <AdminRecordSearchContext
+                  key={`orders-${adminRevision}`}
+                  mode="orders"
+                />
               ) : isAdminRulesPath ? (
                 <AdminRulesContext key={`rules-${adminRevision}`} />
               ) : isAdminEventsPath ? (
-                <AdminEventsTidingsContext key={`events-${adminRevision}`} mode="events" />
+                <AdminRecordSearchContext
+                  key={`events-${adminRevision}`}
+                  mode="events"
+                />
               ) : isAdminTidingsPath ? (
-                <AdminEventsTidingsContext key={`tidings-${adminRevision}`} mode="tidings" />
+                <AdminRecordSearchContext
+                  key={`tidings-${adminRevision}`}
+                  mode="tidings"
+                />
+              ) : isAdminItemsPath ? (
+                <AdminRecordSearchContext
+                  key={`items-${adminRevision}`}
+                  mode="items"
+                />
+              ) : isAdminLocationsPath ? (
+                <AdminRecordSearchContext
+                  key={`locations-${adminRevision}`}
+                  mode="locations"
+                />
+              ) : isAdminUsersPath ? (
+                <AdminRecordSearchContext
+                  key={`users-${adminRevision}`}
+                  mode="users"
+                />
               ) : isOwnCharacterPath ? (
                 <CharacterDetailContextPanel
                   characterId={

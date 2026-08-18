@@ -287,6 +287,7 @@ export default async function AdminItemsPage({ searchParams }: Props) {
                       <button
                         type="submit"
                         formAction={deleteSubcategory}
+                        data-confirm-message={`Are you sure you want to permanently delete the subcategory "${subcategory.name}"?`}
                         className="border border-red-900/55 bg-red-950/20 px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-red-300"
                       >
                         Delete
@@ -413,7 +414,10 @@ export default async function AdminItemsPage({ searchParams }: Props) {
                   </section>
 
                   <div className="mt-6 flex justify-end border-t border-[#59432c]/35 pt-5">
-                    <AdminActionForm action={deleteItem}>
+                    <AdminActionForm
+  action={deleteItem}
+  confirmMessage={`Are you sure you want to permanently delete "${item.name}"?`}
+>
                       <input type="hidden" name="itemId" value={item.id} />
                       <button
                         type="submit"
@@ -759,6 +763,7 @@ function EffectForm({ itemId, effect }: { itemId: string; effect?: Effect }) {
             <button
               type="submit"
               formAction={deleteItemEffect}
+              data-confirm-message="Are you sure you want to permanently delete this Item effect?"
               className="border border-red-900/55 bg-red-950/20 px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-red-300"
             >
               Delete

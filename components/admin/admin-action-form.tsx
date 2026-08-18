@@ -29,6 +29,7 @@ type AdminActionFormProps =
   > & {
     action: ServerAction;
     children: ReactNode;
+    confirmMessage?: string;
   };
 
 const DATA_CHANGED_EVENT =
@@ -213,6 +214,7 @@ export function AdminActionForm({
   action,
   children,
   onSubmit,
+  confirmMessage,
   ...props
 }: AdminActionFormProps) {
   const submitButtonRef =
@@ -374,7 +376,15 @@ export function AdminActionForm({
       {...props}
       action={dispatch}
       onSubmit={(event) => {
-        scrollRef.current = {
+  if (
+    confirmMessage &&
+    !window.confirm(confirmMessage)
+  ) {
+    event.preventDefault();
+    return;
+  }
+
+  scrollRef.current = {
           x: window.scrollX,
           y: window.scrollY,
         };
@@ -384,6 +394,23 @@ export function AdminActionForm({
 
         const submitter =
           nativeEvent.submitter;
+
+          if (
+  submitter instanceof HTMLButtonElement
+) {
+  const buttonConfirmMessage =
+    submitter.dataset.confirmMessage;
+
+  if (
+    buttonConfirmMessage &&
+    !window.confirm(
+      buttonConfirmMessage,
+    )
+  ) {
+    event.preventDefault();
+    return;
+  }
+}
 
         if (
           submitter instanceof
