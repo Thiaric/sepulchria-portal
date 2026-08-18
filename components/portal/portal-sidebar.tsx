@@ -140,7 +140,6 @@ const marketItem: NavigationItem = {
   icon: "/icons/market.png",
   href: "/market",
   activePaths: ["/market"],
-  disabled: true,
 };
 
 const messagesItem: NavigationItem = {

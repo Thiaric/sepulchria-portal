@@ -82,6 +82,10 @@ export default async function AdminLayout({
               Jobs
             </AdminNavigationLink>
 
+            <AdminNavigationLink href="/admin/market">
+              Market
+            </AdminNavigationLink>
+
             <AdminNavigationLink href="/admin/items/vault">
               Item Vault
             </AdminNavigationLink>
