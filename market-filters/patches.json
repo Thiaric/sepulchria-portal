@@ -1,0 +1,17 @@
+[
+  {
+    "label": "MarketCatalogue import",
+    "old": "import { createClient } from \"@/lib/supabase/server\";\n",
+    "new": "import { createClient } from \"@/lib/supabase/server\";\nimport {\n  MarketCatalogue,\n  type MarketCatalogueListing,\n} from \"@/components/market/market-catalogue\";\n"
+  },
+  {
+    "label": "wallet loader",
+    "old": "  const { data, error } = await supabase\n    .from(\"market_listings\")\n",
+    "new": "  const { data: character } = await supabase\n    .from(\"characters\")\n    .select(\"id\")\n    .eq(\"user_id\", user.id)\n    .maybeSingle();\n\n  const { data: wallet } = character\n    ? await supabase\n        .from(\"character_wallets\")\n        .select(\"balance\")\n        .eq(\"character_id\", character.id)\n        .maybeSingle()\n    : { data: null };\n\n  const { data, error } = await supabase\n    .from(\"market_listings\")\n"
+  },
+  {
+    "label": "client catalogue data",
+    "old": "  const listings = ((data ?? []) as unknown as Listing[])\n    .filter((listing) => one(listing.item)?.is_active === true);\n\n  return (\n",
+    "new": "  const listings = ((data ?? []) as unknown as Listing[])\n    .filter((listing) => one(listing.item)?.is_active === true);\n\n  const catalogueListings: MarketCatalogueListing[] =\n    listings.flatMap((listing) => {\n      const item = one(listing.item);\n\n      if (!item) return [];\n\n      return [{\n        id: listing.id,\n        buy_price: Number(listing.buy_price),\n        sell_price: listing.sell_price === null ? null : Number(listing.sell_price),\n        stock_mode: listing.stock_mode,\n        stock_quantity: listing.stock_quantity === null ? null : Number(listing.stock_quantity),\n        item: {\n          id: item.id,\n          name: item.name,\n          slug: item.slug,\n          description: item.description,\n          image_url: item.image_url,\n          quality: item.quality,\n          is_quest_item: item.is_quest_item,\n          is_usable: item.is_usable,\n          is_equippable: item.is_equippable,\n          equip_slot: item.equip_slot,\n          equip_layer: item.equip_layer,\n          hands_required: Number(item.hands_required ?? 0),\n          use_behaviour: item.use_behaviour,\n          target_mode: item.target_mode,\n          cooldown_minutes: item.cooldown_minutes,\n          max_charges: item.max_charges,\n          effects: item.effects ?? [],\n          category: one(item.category)?.name ?? null,\n          subcategory: one(item.subcategory)?.name ?? null,\n        },\n      }];\n    });\n\n  return (\n"
+  }
+]

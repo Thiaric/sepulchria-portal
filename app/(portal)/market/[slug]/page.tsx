@@ -2,6 +2,10 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
+import {
+  MarketCatalogue,
+  type MarketCatalogueListing,
+} from "@/components/market/market-catalogue";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -214,6 +218,20 @@ export default async function MarketShopPage({ params }: Props) {
     notFound();
   }
 
+  const { data: character } = await supabase
+    .from("characters")
+    .select("id")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  const { data: wallet } = character
+    ? await supabase
+        .from("character_wallets")
+        .select("balance")
+        .eq("character_id", character.id)
+        .maybeSingle()
+    : { data: null };
+
   const { data, error } = await supabase
     .from("market_listings")
     .select(`
@@ -268,6 +286,42 @@ export default async function MarketShopPage({ params }: Props) {
   const listings = ((data ?? []) as unknown as Listing[])
     .filter((listing) => one(listing.item)?.is_active === true);
 
+  const catalogueListings: MarketCatalogueListing[] =
+    listings.flatMap((listing) => {
+      const item = one(listing.item);
+
+      if (!item) return [];
+
+      return [{
+        id: listing.id,
+        buy_price: Number(listing.buy_price),
+        sell_price: listing.sell_price === null ? null : Number(listing.sell_price),
+        stock_mode: listing.stock_mode,
+        stock_quantity: listing.stock_quantity === null ? null : Number(listing.stock_quantity),
+        item: {
+          id: item.id,
+          name: item.name,
+          slug: item.slug,
+          description: item.description,
+          image_url: item.image_url,
+          quality: item.quality,
+          is_quest_item: item.is_quest_item,
+          is_usable: item.is_usable,
+          is_equippable: item.is_equippable,
+          equip_slot: item.equip_slot,
+          equip_layer: item.equip_layer,
+          hands_required: Number(item.hands_required ?? 0),
+          use_behaviour: item.use_behaviour,
+          target_mode: item.target_mode,
+          cooldown_minutes: item.cooldown_minutes,
+          max_charges: item.max_charges,
+          effects: item.effects ?? [],
+          category: one(item.category)?.name ?? null,
+          subcategory: one(item.subcategory)?.name ?? null,
+        },
+      }];
+    });
+
   return (
     <main className="p-5 sm:p-7 lg:p-9">
       <div className="mx-auto max-w-7xl">
@@ -304,131 +358,15 @@ export default async function MarketShopPage({ params }: Props) {
           </div>
         </section>
 
-        <div className="mt-6 grid gap-3 lg:grid-cols-2">
-          {listings.map((listing) => {
-            const item = one(listing.item);
-            if (!item) return null;
-
-            const category = one(item.category);
-            const subcategory = one(item.subcategory);
-            const outOfStock =
-              listing.stock_mode === "finite" &&
-              Number(listing.stock_quantity ?? 0) <= 0;
-
-            return (
-              <article
-                key={listing.id}
-                className="flex gap-4 border border-[#60482e]/40 bg-[#15100d] p-4"
-              >
-                <div className="h-24 w-24 shrink-0 overflow-hidden border border-[#59432c]/40 bg-[#100c09]">
-                  {item.image_url ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={item.image_url}
-                      alt=""
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-full items-center justify-center text-[#705b3e]">
-                      ◇
-                    </div>
-                  )}
-                </div>
-
-                <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-start justify-between gap-2">
-                    <div>
-                      <h2 className="font-serif text-xl text-[#dcc49a]">
-                        {item.name}
-                      </h2>
-                      <p className="mt-1 text-[7px] uppercase tracking-[0.13em] text-[#756958]">
-                        {[category?.name, subcategory?.name, item.quality]
-                          .filter(Boolean)
-                          .join(" · ")}
-                      </p>
-                    </div>
-
-                    <span className="text-sm font-semibold text-[#e1bd79]">
-                      {Number(listing.buy_price).toLocaleString("en-GB")} R
-                    </span>
-                  </div>
-
-                  <p className="mt-2 line-clamp-3 text-[10px] leading-5 text-[#958775]">
-                    {item.description}
-                  </p>
-
-                  <div className="mt-3 flex flex-wrap gap-1.5">
-                    {item.is_equippable ? (
-                      <span className="border border-[#6c5739]/55 bg-[#1d160f] px-2 py-1 text-[7px] uppercase tracking-[0.11em] text-[#c3a778]">
-                        Equippable · {slotLabel(item.equip_slot)}
-                        {item.hands_required > 0
-                          ? ` · ${item.hands_required === 1 ? "1 hand" : "2 hands"}`
-                          : ""}
-                      </span>
-                    ) : null}
-
-                    {useLabel(item) ? (
-                      <span className="border border-[#6c5739]/55 bg-[#1d160f] px-2 py-1 text-[7px] uppercase tracking-[0.11em] text-[#c3a778]">
-                        {useLabel(item)}
-                      </span>
-                    ) : null}
-
-                    {item.is_quest_item ? (
-                      <span className="border border-[#6c5739]/55 bg-[#1d160f] px-2 py-1 text-[7px] uppercase tracking-[0.11em] text-[#c3a778]">
-                        Quest Item
-                      </span>
-                    ) : null}
-                  </div>
-
-                  {effectLines(item.effects).length ? (
-                    <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
-                      {effectLines(item.effects).map((effect, index) => (
-                        <span
-                          key={`${listing.id}-effect-${index}`}
-                          className="text-[8px] leading-4 text-[#b69a72]"
-                        >
-                          {effect}
-                        </span>
-                      ))}
-                    </div>
-                  ) : null}
-
-                  <div className="mt-3 flex flex-wrap items-center gap-2">
-                    <span
-                      className={
-                        outOfStock
-                          ? "border border-red-900/45 bg-red-950/10 px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-red-400"
-                          : "border border-[#59432c]/40 bg-[#100c09] px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[#947e61]"
-                      }
-                    >
-                      {listing.stock_mode === "unlimited"
-                        ? "Unlimited stock"
-                        : outOfStock
-                          ? "Out of stock"
-                          : `${listing.stock_quantity} in stock`}
-                    </span>
-
-                    {listing.sell_price !== null ? (
-                      <span className="border border-[#59432c]/40 bg-[#100c09] px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[#806f5b]">
-                        Buyback {Number(listing.sell_price).toLocaleString("en-GB")} R
-                      </span>
-                    ) : null}
-                  </div>
-
-                  <p className="mt-3 text-[7px] uppercase tracking-[0.12em] text-[#665b4d]">
-                    Purchasing unlocks in Economy 3
-                  </p>
-                </div>
-              </article>
-            );
-          })}
-        </div>
-
-        {!listings.length ? (
-          <section className="mt-6 border border-[#60482e]/40 bg-[#15100d] p-8 text-center text-sm text-[#8f8271]">
-            This shop has no available catalogue entries.
-          </section>
-        ) : null}
+        <MarketCatalogue
+          listings={catalogueListings}
+          walletBalance={
+            wallet?.balance === undefined ||
+            wallet?.balance === null
+              ? null
+              : Number(wallet.balance)
+          }
+        />
       </div>
     </main>
   );
