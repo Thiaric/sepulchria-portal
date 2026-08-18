@@ -1,7 +1,6 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
 import { requireStaff } from "@/lib/auth/require-staff";
 import { adjustHealthForVigourModifier } from "@/lib/characters/adjust-health-for-vigour-modifier";
@@ -46,16 +45,6 @@ function integer(
   return Math.max(min, Math.min(max, parsed));
 }
 
-function redirectBack(
-  orderId: string,
-  type: "success" | "error",
-  message: string,
-): never {
-  const params = new URLSearchParams();
-  params.set(type, message);
-  redirect(`/admin/orders?${params.toString()}#order-${orderId}`);
-}
-
 function refreshStructure() {
   revalidatePath("/admin/orders");
   revalidatePath("/orders");
@@ -90,11 +79,10 @@ export async function updateOrderLevel(formData: FormData) {
     .select("id, level, monthly_pay")
     .maybeSingle();
 
-  if (error) redirectBack(orderId, "error", error.message);
-  if (!data) redirectBack(orderId, "error", "The selected level no longer exists.");
+  if (error) throw new Error(error.message);
+  if (!data) throw new Error("The selected level no longer exists.");
 
   refreshStructure();
-  redirectBack(orderId, "success", `Level ${data.level} monthly pay updated.`);
 }
 
 export async function createOrderJob(formData: FormData) {
@@ -126,8 +114,8 @@ export async function createOrderJob(formData: FormData) {
     .eq("id", levelId)
     .eq("order_id", orderId)
     .maybeSingle();
-  if (levelError) redirectBack(orderId, "error", levelError.message);
-  if (!level) redirectBack(orderId, "error", "The selected Order level does not exist.");
+  if (levelError) throw new Error(levelError.message);
+  if (!level) throw new Error("The selected Order level does not exist.");
 
   const { error } = await supabase.from("order_jobs").insert({
     order_level_id: levelId,
@@ -136,9 +124,8 @@ export async function createOrderJob(formData: FormData) {
     sort_order: sortOrder,
     ...modifiers,
   });
-  if (error) redirectBack(orderId, "error", error.message);
+  if (error) throw new Error(error.message);
   refreshStructure();
-  redirectBack(orderId, "success", `${name} added.`);
 }
 
 export async function updateOrderJob(formData: FormData) {
@@ -177,13 +164,13 @@ export async function updateOrderJob(formData: FormData) {
     `)
     .eq("id", jobId)
     .maybeSingle();
-  if (jobError) redirectBack(orderId, "error", jobError.message);
+  if (jobError) throw new Error(jobError.message);
 
   const relation = Array.isArray(job?.order_level)
     ? job?.order_level[0]
     : job?.order_level;
   if (!job || !relation || relation.order_id !== orderId) {
-    redirectBack(orderId, "error", "The selected role does not belong to this Order.");
+    throw new Error("The selected role does not belong to this Order.");
   }
 
   const oldVigour = job.vigour_modifier ?? 0;
@@ -202,7 +189,7 @@ export async function updateOrderJob(formData: FormData) {
         character:characters!order_memberships_character_id_fkey(current_health)
       `)
       .eq("order_job_id", jobId);
-    if (error) redirectBack(orderId, "error", error.message);
+    if (error) throw new Error(error.message);
     affected = (data ?? []) as typeof affected;
   }
 
@@ -210,7 +197,7 @@ export async function updateOrderJob(formData: FormData) {
     .from("order_jobs")
     .update(updates)
     .eq("id", jobId);
-  if (error) redirectBack(orderId, "error", error.message);
+  if (error) throw new Error(error.message);
 
   if (oldVigour !== newVigour) {
     for (const membership of affected) {
@@ -228,14 +215,13 @@ export async function updateOrderJob(formData: FormData) {
         .update({ current_health: currentHealth })
         .eq("id", membership.character_id);
       if (healthError) {
-        redirectBack(orderId, "error", `Role updated, but Current Health could not be synchronised: ${healthError.message}`);
+        throw new Error(`Role updated, but Current Health could not be synchronised: ${healthError.message}`);
       }
       revalidatePath(`/admin/characters/${membership.character_id}`);
     }
   }
 
   refreshStructure();
-  redirectBack(orderId, "success", `${name} updated.`);
 }
 
 export async function deleteOrderJob(formData: FormData) {
@@ -250,25 +236,24 @@ export async function deleteOrderJob(formData: FormData) {
     .select(`id, name, order_level:order_levels!order_jobs_order_level_id_fkey(order_id)`)
     .eq("id", jobId)
     .maybeSingle();
-  if (readError) redirectBack(orderId, "error", readError.message);
+  if (readError) throw new Error(readError.message);
   const relation = Array.isArray(job?.order_level) ? job?.order_level[0] : job?.order_level;
   if (!job || !relation || relation.order_id !== orderId) {
-    redirectBack(orderId, "error", "The selected role does not belong to this Order.");
+    throw new Error("The selected role does not belong to this Order.");
   }
 
   const { count, error: countError } = await supabase
     .from("order_memberships")
     .select("id", { count: "exact", head: true })
     .eq("order_job_id", jobId);
-  if (countError) redirectBack(orderId, "error", countError.message);
+  if (countError) throw new Error(countError.message);
   if ((count ?? 0) > 0) {
-    redirectBack(orderId, "error", "Move every member out of this role before deleting it.");
+    throw new Error("Move every member out of this role before deleting it.");
   }
 
   const { error } = await supabase.from("order_jobs").delete().eq("id", jobId);
-  if (error) redirectBack(orderId, "error", error.message);
+  if (error) throw new Error(error.message);
   refreshStructure();
-  redirectBack(orderId, "success", `${job.name} deleted.`);
 }
 
 export async function createOrderJobLink(formData: FormData) {
@@ -283,9 +268,8 @@ export async function createOrderJobLink(formData: FormData) {
   const { error } = await supabase
     .from("order_job_links")
     .insert({ from_job_id: fromJobId, to_job_id: toJobId });
-  if (error) redirectBack(orderId, "error", error.message);
+  if (error) throw new Error(error.message);
   refreshStructure();
-  redirectBack(orderId, "success", "Role progression link added.");
 }
 
 export async function deleteOrderJobLink(formData: FormData) {
@@ -295,9 +279,8 @@ export async function deleteOrderJobLink(formData: FormData) {
   if (!isUuid(orderId) || !isUuid(linkId)) throw new Error("Invalid role progression link.");
   const supabase = await createClient();
   const { error } = await supabase.from("order_job_links").delete().eq("id", linkId);
-  if (error) redirectBack(orderId, "error", error.message);
+  if (error) throw new Error(error.message);
   refreshStructure();
-  redirectBack(orderId, "success", "Role progression link removed.");
 }
 
 export async function createOrderJobLinkLive({

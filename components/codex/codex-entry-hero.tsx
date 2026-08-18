@@ -14,6 +14,7 @@ type CodexEntryHeroProps = {
   returnHref: string;
   returnLabel: string;
   betweenHeroAndRecord?: ReactNode;
+  recordReplacement?: ReactNode;
 };
 
 export function CodexEntryHero({
@@ -28,6 +29,7 @@ export function CodexEntryHero({
   returnHref,
   returnLabel,
   betweenHeroAndRecord,
+  recordReplacement,
 }: CodexEntryHeroProps) {
   const accentColour = colour ?? "#8a6840";
   const heroImage = bannerUrl ?? imageUrl;
@@ -123,6 +125,7 @@ export function CodexEntryHero({
 
       {betweenHeroAndRecord}
 
+      {recordReplacement ?? (
       <section className="border border-[#60482e]/45 bg-[#15100d]/95 p-6 sm:p-8">
         <div className="flex items-center gap-4">
           <span
@@ -155,6 +158,7 @@ export function CodexEntryHero({
           </p>
         )}
       </section>
+      )}
     </article>
   );
 }

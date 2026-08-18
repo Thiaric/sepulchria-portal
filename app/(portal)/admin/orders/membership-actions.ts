@@ -1,7 +1,6 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
 import { requireStaff } from "@/lib/auth/require-staff";
 import { adjustHealthForVigourModifier } from "@/lib/characters/adjust-health-for-vigour-modifier";
@@ -39,19 +38,6 @@ function optionalText(
 function isUuid(value: string) {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
     value,
-  );
-}
-
-function back(
-  orderId: string,
-  type: "success" | "error",
-  message: string,
-): never {
-  const params = new URLSearchParams();
-  params.set(type, message);
-
-  redirect(
-    `/admin/orders?${params.toString()}#order-${orderId}`,
   );
 }
 
@@ -403,12 +389,7 @@ export async function addOrderMember(
 });
 
 refresh(characterId);
-
-    back(
-      orderId,
-      "success",
-      `${character.display_name} added to the Order.`,
-    );
+    return;
   } catch (error) {
     if (
       error instanceof Error &&
@@ -418,13 +399,7 @@ refresh(characterId);
       throw error;
     }
 
-    back(
-      orderId,
-      "error",
-      error instanceof Error
-        ? error.message
-        : "Unable to add the Order member.",
-    );
+    throw new Error(error instanceof Error ? error.message : "Unable to add the Order member.");
   }
 
 }
@@ -569,12 +544,7 @@ await syncCharacterAssociation(
     refresh(
       membership.character_id,
     );
-
-    back(
-      orderId,
-      "success",
-      `${name}'s Order position was updated.`,
-    );
+    return;
   } catch (error) {
     if (
       error instanceof Error &&
@@ -584,13 +554,7 @@ await syncCharacterAssociation(
       throw error;
     }
 
-    back(
-      orderId,
-      "error",
-      error instanceof Error
-        ? error.message
-        : "Unable to update the Order member.",
-    );
+    throw new Error(error instanceof Error ? error.message : "Unable to update the Order member.");
   }
 
 }
@@ -705,12 +669,7 @@ await syncCharacterAssociation(
     refresh(
       membership.character_id,
     );
-
-    back(
-      orderId,
-      "success",
-      `${name} removed from the Order.`,
-    );
+    return;
   } catch (error) {
     if (
       error instanceof Error &&
@@ -720,13 +679,7 @@ await syncCharacterAssociation(
       throw error;
     }
 
-    back(
-      orderId,
-      "error",
-      error instanceof Error
-        ? error.message
-        : "Unable to remove the Order member.",
-    );
+    throw new Error(error instanceof Error ? error.message : "Unable to remove the Order member.");
   }
 
 }

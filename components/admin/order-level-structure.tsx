@@ -1,3 +1,4 @@
+import { AdminActionForm } from "@/components/admin/admin-action-form";
 import { createClient } from "@/lib/supabase/server";
 
 import {
@@ -163,7 +164,7 @@ export async function OrderLevelStructure({ orderId }: { orderId: string }) {
               </summary>
 
               <div className="border-t border-[#59432c]/35 p-4">
-                <form
+                <AdminActionForm
                   action={updateOrderLevel}
                   className="mb-4 flex flex-wrap items-end gap-3 border border-[#59432c]/35 bg-[#15100d] p-3"
                 >
@@ -190,7 +191,7 @@ export async function OrderLevelStructure({ orderId }: { orderId: string }) {
                   >
                     Save Level Pay
                   </button>
-                </form>
+                </AdminActionForm>
 
                 <div className="space-y-4">
                   {(level.jobs ?? []).map((job) => {
@@ -199,7 +200,7 @@ export async function OrderLevelStructure({ orderId }: { orderId: string }) {
                     const linkedAbove = new Set(outgoing.map((link) => link.to_job_id));
                     return (
                       <div key={job.id} className="border border-[#59432c]/40 bg-[#15100d] p-4">
-                        <form action={updateOrderJob}>
+                        <AdminActionForm action={updateOrderJob}>
                           <input type="hidden" name="orderId" value={orderId} />
                           <input type="hidden" name="jobId" value={job.id} />
                           <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_100px_auto]">
@@ -223,7 +224,7 @@ export async function OrderLevelStructure({ orderId }: { orderId: string }) {
                               </label>
                             ))}
                           </div>
-                        </form>
+                        </AdminActionForm>
 
                         <div className="mt-4 border-t border-[#59432c]/30 pt-4">
                           <p className="text-[8px] uppercase tracking-[0.18em] text-[#806b50]">Progression</p>
@@ -271,7 +272,7 @@ export async function OrderLevelStructure({ orderId }: { orderId: string }) {
                   })}
                 </div>
 
-                <form action={createOrderJob} className="mt-4 border border-dashed border-[#765937]/40 bg-[#15100d]/60 p-3">
+                <AdminActionForm action={createOrderJob} className="mt-4 border border-dashed border-[#765937]/40 bg-[#15100d]/60 p-3">
                   <input type="hidden" name="orderId" value={orderId} />
                   <input type="hidden" name="levelId" value={level.id} />
                   <p className="text-[8px] uppercase tracking-[0.18em] text-[#806b50]">Add Role to Level {level.level}</p>
@@ -291,7 +292,7 @@ export async function OrderLevelStructure({ orderId }: { orderId: string }) {
                       </label>
                     ))}
                   </div>
-                </form>
+                </AdminActionForm>
               </div>
             </details>
           );

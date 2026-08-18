@@ -1,3 +1,4 @@
+import { AdminActionForm } from "@/components/admin/admin-action-form";
 import {
   addOrderMember,
   updateOrderMember,
@@ -272,7 +273,7 @@ export async function OrderMembershipManager({
             }
 
             return (
-              <form
+              <AdminActionForm
                 key={
                   membership.id
                 }
@@ -398,6 +399,8 @@ export async function OrderMembershipManager({
                       characterName={
                         character.display_name
                       }
+                      orderId={orderId}
+                      membershipId={membership.id}
                     />
                   </div>
                 </div>
@@ -413,7 +416,7 @@ export async function OrderMembershipManager({
                       : ""}
                   </p>
                 ) : null}
-              </form>
+              </AdminActionForm>
             );
           },
         )}
@@ -427,7 +430,7 @@ export async function OrderMembershipManager({
         ) : null}
       </div>
 
-      <form
+      <AdminActionForm
         action={addOrderMember}
         className="mt-4 border border-dashed border-[#765937]/45 bg-[#100c09] p-4"
       >
@@ -566,7 +569,7 @@ export async function OrderMembershipManager({
             Add member
           </button>
         </div>
-      </form>
+      </AdminActionForm>
     </section>
   );
 }
