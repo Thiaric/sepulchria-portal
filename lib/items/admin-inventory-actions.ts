@@ -245,6 +245,22 @@ export async function grantStandardItem(formData: FormData) {
         remaining -= stackSize;
       }
     }
+
+    if (item.categorySlug !== "container") {
+      const { error: normalizeError } = await supabase.rpc(
+        "normalize_character_inventory_stacks_staff",
+        {
+          p_character_id: characterId,
+        },
+      );
+
+      if (normalizeError) {
+        throw new Error(
+          "Item granted, but stacks could not be consolidated: " +
+            normalizeError.message,
+        );
+      }
+    }
   } catch (error) {
     fail(
       formData,
@@ -292,6 +308,20 @@ export async function removeStandardItem(formData: FormData) {
         .eq("id", rowId);
 
       if (updateError) throw new Error(updateError.message);
+    }
+
+    const { error: normalizeError } = await supabase.rpc(
+      "normalize_character_inventory_stacks_staff",
+      {
+        p_character_id: characterId,
+      },
+    );
+
+    if (normalizeError) {
+      throw new Error(
+        "Item removed, but remaining stacks could not be consolidated: " +
+          normalizeError.message,
+      );
     }
   } catch (error) {
     fail(
