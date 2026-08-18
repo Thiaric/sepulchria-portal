@@ -1,7 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+import { revalidatePath, updateTag } from "next/cache";
 
 import { requireStaff } from "@/lib/auth/require-staff";
 import { sanitizeRichHtml } from "@/lib/rich-text";
@@ -189,14 +188,8 @@ function redirectWithMessage(
   type: "success" | "error",
   message: string,
 ): never {
-  const searchParams =
-    new URLSearchParams();
-
-  searchParams.set(type, message);
-
-  redirect(
-    `/admin/races?${searchParams.toString()}`,
-  );
+  void type;
+  throw new Error(message);
 }
 
 async function getUniqueSlug({
@@ -363,13 +356,9 @@ export async function createRace(
     );
   }
 
+  updateTag("admin-races-catalogue");
   revalidatePath("/admin/races");
   revalidatePath("/character/create");
-
-  redirectWithMessage(
-    "success",
-    "Ancestry created successfully.",
-  );
 }
 
 export async function updateRace(
@@ -520,14 +509,10 @@ export async function updateRace(
     );
   }
 
+  updateTag("admin-races-catalogue");
   revalidatePath("/admin/races");
   revalidatePath("/character/create");
   revalidatePath("/character");
-
-  redirectWithMessage(
-    "success",
-    "Ancestry updated successfully.",
-  );
 }
 
 export async function deleteRace(
@@ -633,11 +618,7 @@ export async function deleteRace(
     );
   }
 
+  updateTag("admin-races-catalogue");
   revalidatePath("/admin/races");
   revalidatePath("/character/create");
-
-  redirectWithMessage(
-    "success",
-    "Ancestry deleted successfully.",
-  );
 }

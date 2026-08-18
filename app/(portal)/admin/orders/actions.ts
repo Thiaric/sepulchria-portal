@@ -3,7 +3,6 @@
 import {
   revalidatePath,
 } from "next/cache";
-import { redirect } from "next/navigation";
 
 import { requireStaff } from "@/lib/auth/require-staff";
 import { sanitizeRichHtml } from "@/lib/rich-text";
@@ -121,22 +120,11 @@ function isUuid(
 }
 
 function redirectMessage(
-  type:
-    | "success"
-    | "error",
+  type: "success" | "error",
   message: string,
 ): never {
-  const params =
-    new URLSearchParams();
-
-  params.set(
-    type,
-    message,
-  );
-
-  redirect(
-    `/admin/orders?${params.toString()}`,
-  );
+  void type;
+  throw new Error(message);
 }
 
 async function uniqueSlug({
@@ -472,11 +460,6 @@ export async function createOrder(
   }
 
   refreshOrders();
-
-  redirectMessage(
-    "success",
-    "Order created successfully.",
-  );
 }
 
 export async function updateOrder(
@@ -670,11 +653,6 @@ export async function updateOrder(
   }
 
   refreshOrders();
-
-  redirectMessage(
-    "success",
-    "Order updated successfully.",
-  );
 }
 
 export async function deleteOrder(
@@ -777,9 +755,4 @@ export async function deleteOrder(
   }
 
   refreshOrders();
-
-  redirectMessage(
-    "success",
-    "Order deleted successfully.",
-  );
 }

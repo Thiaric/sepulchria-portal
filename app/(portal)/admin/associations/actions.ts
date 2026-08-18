@@ -1,7 +1,6 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
 import { requireStaff } from "@/lib/auth/require-staff";
 import { sanitizeRichHtml } from "@/lib/rich-text";
@@ -115,14 +114,8 @@ function redirectWithMessage(
   type: "success" | "error",
   message: string,
 ): never {
-  const searchParams =
-    new URLSearchParams();
-
-  searchParams.set(type, message);
-
-  redirect(
-    `/admin/associations?${searchParams.toString()}`,
-  );
+  void type;
+  throw new Error(message);
 }
 
 async function getUniqueSlug({
@@ -289,11 +282,6 @@ export async function createAssociation(
   revalidatePath(
     "/character/create",
   );
-
-  redirectWithMessage(
-    "success",
-    "Association created successfully.",
-  );
 }
 
 export async function updateAssociation(
@@ -449,11 +437,6 @@ export async function updateAssociation(
     "/character/create",
   );
   revalidatePath("/character");
-
-  redirectWithMessage(
-    "success",
-    "Association updated successfully.",
-  );
 }
 
 export async function deleteAssociation(
@@ -570,10 +553,5 @@ export async function deleteAssociation(
   );
   revalidatePath(
     "/character/create",
-  );
-
-  redirectWithMessage(
-    "success",
-    "Association deleted successfully.",
   );
 }
