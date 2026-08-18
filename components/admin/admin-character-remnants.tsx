@@ -1,8 +1,9 @@
 import "server-only";
 
 import { AdminActionForm } from "@/components/admin/admin-action-form";
+import { LedgerEntries } from "@/components/economy/ledger-entries";
 import { createClient } from "@/lib/supabase/server";
-import { formatRemnants, formatSignedRemnants } from "@/lib/economy/currency";
+import { formatRemnants } from "@/lib/economy/currency";
 import { adjustCharacterRemnants } from "@/app/(portal)/admin/characters/remnants-actions";
 
 export async function AdminCharacterRemnants({ characterId }: { characterId: string }) {
@@ -21,6 +22,7 @@ export async function AdminCharacterRemnants({ characterId }: { characterId: str
   if (error) throw new Error(`Unable to load Remnant administration: ${error.message}`);
 
   const balance = Number(walletResult.data?.balance ?? 0);
+  const entries = ledgerResult.data ?? [];
 
   return (
     <section className="mt-6 border border-[#60482e]/45 bg-[#15100d] p-5 sm:p-6">
@@ -60,17 +62,13 @@ export async function AdminCharacterRemnants({ characterId }: { characterId: str
 
       <div className="mt-5 border-t border-[#59432c]/30 pt-4">
         <p className="mb-2 text-[8px] uppercase tracking-[0.14em] text-[#806b50]">Recent ledger</p>
-        <div className="max-h-[230px] space-y-1.5 overflow-y-auto pr-1">
-          {(ledgerResult.data ?? []).map((entry) => (
-            <div key={entry.id} className="grid gap-1 border border-[#59432c]/30 bg-[#100c09] px-3 py-2 sm:grid-cols-[90px_minmax(0,1fr)_110px]">
-              <span className={Number(entry.amount) > 0 ? "text-[10px] text-emerald-400" : "text-[10px] text-red-400"}>
-                {formatSignedRemnants(Number(entry.amount))}
-              </span>
-              <span className="min-w-0 text-[9px] text-[#a99578]">{entry.reason}</span>
-              <span className="text-right text-[8px] text-[#756958]">Balance {formatRemnants(Number(entry.balance_after))}</span>
-            </div>
-          ))}
-        </div>
+        {entries.length ? (
+          <div className="border border-[#59432c]/25">
+            <LedgerEntries entries={entries} compact />
+          </div>
+        ) : (
+          <p className="py-5 text-center text-[10px] text-[#756958]">No Ledger transactions yet.</p>
+        )}
       </div>
     </section>
   );
