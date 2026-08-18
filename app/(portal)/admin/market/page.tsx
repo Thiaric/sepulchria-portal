@@ -5,7 +5,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import {
   createMarketListing,
   createMarketShop,
-  deactivateMarketListing,
+  removeMarketListing,
   updateMarketListing,
   updateMarketShop,
 } from "./actions";
@@ -293,7 +293,7 @@ export default async function AdminMarketPage() {
 
                             <button
                               type="submit"
-                              formAction={deactivateMarketListing}
+                              formAction={removeMarketListing}
                               className="border border-red-900/50 bg-red-950/15 px-3 py-2.5 text-[8px] uppercase tracking-[0.12em] text-red-300"
                             >
                               Remove

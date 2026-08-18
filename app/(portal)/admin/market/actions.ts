@@ -218,7 +218,7 @@ export async function updateMarketListing(formData: FormData) {
   refreshMarket();
 }
 
-export async function deactivateMarketListing(formData: FormData) {
+export async function removeMarketListing(formData: FormData) {
   await requireStaff();
 
   const listingId = text(formData, "listingId");
@@ -226,15 +226,29 @@ export async function deactivateMarketListing(formData: FormData) {
 
   const supabase = createAdminClient();
 
+  const { data: listing, error: listingError } = await supabase
+    .from("market_listings")
+    .select("id, shop:market_shops(slug)")
+    .eq("id", listingId)
+    .maybeSingle();
+
+  if (listingError) throw new Error(listingError.message);
+  if (!listing) throw new Error("Market listing not found.");
+
+  const shop = Array.isArray(listing.shop)
+    ? listing.shop[0] ?? null
+    : listing.shop;
+
   const { error } = await supabase
     .from("market_listings")
-    .update({
-      is_active: false,
-      updated_at: new Date().toISOString(),
-    })
+    .delete()
     .eq("id", listingId);
 
   if (error) throw new Error(error.message);
 
   refreshMarket();
+
+  if (shop?.slug) {
+    revalidatePath(`/market/${shop.slug}`);
+  }
 }
