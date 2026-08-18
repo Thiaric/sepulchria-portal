@@ -253,10 +253,19 @@ export default async function MarketShopPage({ params }: Props) {
         is_equipped: boolean;
         transfer_policy: string;
         is_quest_item: boolean;
+        container_capacity: number | null;
+        record_id: string;
       }>
   ) {
+    const normalStandard =
+      row.record_kind === "standard";
+
+    const ordinaryContainer =
+      row.record_kind === "unique" &&
+      row.container_capacity !== null;
+
     if (
-      row.record_kind !== "standard" ||
+      (!normalStandard && !ordinaryContainer) ||
       row.parent_container_id ||
       row.is_equipped ||
       row.transfer_policy !== "free" ||
@@ -265,10 +274,31 @@ export default async function MarketShopPage({ params }: Props) {
       continue;
     }
 
+    if (ordinaryContainer) {
+      const [{ count: standardChildren }, { count: instanceChildren }] =
+        await Promise.all([
+          supabase
+            .from("character_items")
+            .select("id", { count: "exact", head: true })
+            .eq("container_instance_id", row.record_id),
+          supabase
+            .from("character_item_instances")
+            .select("id", { count: "exact", head: true })
+            .eq("container_instance_id", row.record_id),
+        ]);
+
+      if (
+        (standardChildren ?? 0) > 0 ||
+        (instanceChildren ?? 0) > 0
+      ) {
+        continue;
+      }
+    }
+
     sellableByItem.set(
       row.item_id,
       (sellableByItem.get(row.item_id) ?? 0) +
-        Number(row.quantity ?? 0),
+        (ordinaryContainer ? 1 : Number(row.quantity ?? 0)),
     );
   }
 

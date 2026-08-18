@@ -203,8 +203,19 @@ export default async function AdminCharacterInventoryPage({
     (row) => one(one(row.item)?.category ?? null)?.slug === "container",
   );
 
-  const nonContainerItems = items.filter(
-    (item) => one(item.category)?.slug !== "container",
+  const ordinaryContainers = containers.filter(
+    (row) =>
+      !row.custom_name &&
+      !row.custom_description &&
+      !row.custom_image_url &&
+      !row.quality_override &&
+      !row.transfer_policy_override &&
+      row.is_quest_item_override === null &&
+      !row.notes,
+  );
+
+  const bespokeUniqueRows = uniqueRows.filter(
+    (row) => !ordinaryContainers.some((container) => container.id === row.id),
   );
 
   const returnTo = `/admin/characters/${character.id}/inventory`;
@@ -270,7 +281,7 @@ export default async function AdminCharacterInventoryPage({
                 <option value="" disabled>
                   Select Item
                 </option>
-                {nonContainerItems.map((item) => (
+                {items.map((item) => (
                   <option key={item.id} value={item.id}>
                     {item.name}
                     {!item.is_active ? " (inactive)" : ""}
@@ -305,7 +316,7 @@ export default async function AdminCharacterInventoryPage({
               Individual instance
             </p>
             <h2 className="mt-1 font-serif text-2xl text-[#dfc99f]">
-              Create Unique Item
+              Create Bespoke Unique Item
             </h2>
 
             <form action={createUniqueItemForCharacter} className="mt-5 space-y-3">
@@ -359,7 +370,7 @@ export default async function AdminCharacterInventoryPage({
               />
 
               <button type="submit" className={buttonClass}>
-                Create & Grant Unique Item
+                Create & Grant Bespoke Item
               </button>
             </form>
           </section>
@@ -373,7 +384,7 @@ export default async function AdminCharacterInventoryPage({
             Standard Items
           </h2>
 
-          {standardRows.length ? (
+          {standardRows.length || ordinaryContainers.length ? (
             <div className="mt-4 grid gap-3 lg:grid-cols-2">
               {standardRows.map((row) => {
                 const item = one(row.item);
@@ -439,6 +450,38 @@ export default async function AdminCharacterInventoryPage({
                   </article>
                 );
               })}
+
+              {ordinaryContainers.map((row) => {
+                const item = one(row.item);
+                const category = one(item?.category ?? null);
+
+                return (
+                  <article
+                    key={row.id}
+                    className="border border-[#59432c]/40 bg-[#100c09] p-4"
+                  >
+                    <p className="font-serif text-lg text-[#d8bf91]">
+                      {item?.name ?? "Unknown Container"}
+                    </p>
+                    <p className="mt-1 text-[8px] uppercase tracking-[0.13em] text-[#756958]">
+                      {category?.name ?? "Container"} · Loose
+                    </p>
+                    <p className="mt-3 text-[9px] leading-5 text-[#8f8271]">
+                      Standard Container possession.
+                    </p>
+                    <form action={sendUniqueItemToVault} className="mt-3">
+                      <input type="hidden" name="instanceId" value={row.id} />
+                      <input type="hidden" name="returnTo" value={returnTo} />
+                      <button
+                        type="submit"
+                        className="border border-red-900/55 bg-red-950/20 px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-red-300"
+                      >
+                        Remove
+                      </button>
+                    </form>
+                  </article>
+                );
+              })}
             </div>
           ) : (
             <p className="mt-4 text-sm italic text-[#817565]">
@@ -455,9 +498,9 @@ export default async function AdminCharacterInventoryPage({
             Unique Items
           </h2>
 
-          {uniqueRows.length ? (
+          {bespokeUniqueRows.length ? (
             <div className="mt-4 space-y-4">
-              {uniqueRows.map((row) => {
+              {bespokeUniqueRows.map((row) => {
                 const item = one(row.item);
                 const isContainer =
                   one(item?.category ?? null)?.slug === "container";

@@ -132,11 +132,7 @@ export async function grantStandardItem(formData: FormData) {
 
     const item = await getItem(itemId);
 
-    if (item.categorySlug === "container") {
-      throw new Error(
-        "Containers must be granted as individual instances so they can hold Items.",
-      );
-    }
+    
 
     const quantity = integer(formData, "quantity", 1) ?? 1;
     if (quantity < 1 || quantity > 9999) {
@@ -148,7 +144,31 @@ export async function grantStandardItem(formData: FormData) {
       throw new Error("Invalid container.");
     }
 
-    if (!item.stackable) {
+    if (item.categorySlug === "container") {
+      if (containerId) {
+        throw new Error(
+          "A Container cannot be granted inside another Container from this panel.",
+        );
+      }
+
+      for (let index = 0; index < quantity; index += 1) {
+        const { error } = await supabase
+          .from("character_item_instances")
+          .insert({
+            item_id: itemId,
+            owner_character_id: characterId,
+            charges_remaining:
+              item.use_behaviour === "limited_charges"
+                ? item.max_charges
+                : null,
+            vault_status: "owned",
+            acquisition_source: "staff",
+            assigned_by: staff.userId,
+          });
+
+        if (error) throw new Error(error.message);
+      }
+    } else if (!item.stackable) {
       const rows = Array.from({ length: quantity }).map(() => ({
         character_id: characterId,
         item_id: itemId,
