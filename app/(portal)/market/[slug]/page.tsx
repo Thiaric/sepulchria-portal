@@ -10,6 +10,20 @@ type Props = {
 type CategoryRelation = { name: string } | { name: string }[] | null;
 type SubcategoryRelation = { name: string } | { name: string }[] | null;
 
+type ItemEffect = {
+  trigger_type: "owned" | "equipped" | "use";
+  effect_mode: "instant" | "temporary" | "passive";
+  duration_minutes: number | null;
+  health_delta: number;
+  muscles_modifier: number;
+  reflexes_modifier: number;
+  vigour_modifier: number;
+  shrewd_modifier: number;
+  brains_modifier: number;
+  presence_modifier: number;
+  max_health_modifier: number;
+};
+
 type Listing = {
   id: string;
   buy_price: number;
@@ -26,6 +40,15 @@ type Listing = {
     is_active: boolean;
     is_quest_item: boolean;
     is_usable: boolean;
+    is_equippable: boolean;
+    equip_slot: string | null;
+    equip_layer: string | null;
+    hands_required: number;
+    use_behaviour: "reusable" | "consumable" | "limited_charges" | null;
+    target_mode: "self" | "other" | "either" | null;
+    cooldown_minutes: number | null;
+    max_charges: number | null;
+    effects: ItemEffect[] | null;
     category: CategoryRelation;
     subcategory: SubcategoryRelation;
   } | {
@@ -38,6 +61,15 @@ type Listing = {
     is_active: boolean;
     is_quest_item: boolean;
     is_usable: boolean;
+    is_equippable: boolean;
+    equip_slot: string | null;
+    equip_layer: string | null;
+    hands_required: number;
+    use_behaviour: "reusable" | "consumable" | "limited_charges" | null;
+    target_mode: "self" | "other" | "either" | null;
+    cooldown_minutes: number | null;
+    max_charges: number | null;
+    effects: ItemEffect[] | null;
     category: CategoryRelation;
     subcategory: SubcategoryRelation;
   }[] | null;
@@ -45,6 +77,114 @@ type Listing = {
 
 function one<T>(value: T | T[] | null): T | null {
   return Array.isArray(value) ? value[0] ?? null : value;
+}
+
+function slotLabel(slot: string | null) {
+  if (!slot) return null;
+
+  const labels: Record<string, string> = {
+    head: "Head",
+    neck: "Neck",
+    shoulders: "Shoulders",
+    torso: "Torso",
+    back: "Back",
+    arms: "Arms",
+    hands: "Hands",
+    waist: "Waist",
+    legs: "Legs",
+    feet: "Feet",
+    main_hand: "Main Hand",
+    off_hand: "Off Hand",
+  };
+
+  return labels[slot] ?? slot.replaceAll("_", " ");
+}
+
+function effectLines(effects: ItemEffect[] | null) {
+  const result: string[] = [];
+
+  for (const effect of effects ?? []) {
+    const context =
+      effect.trigger_type === "use"
+        ? "On use"
+        : effect.trigger_type === "equipped"
+          ? "While equipped"
+          : "While owned";
+
+    const duration =
+      effect.effect_mode === "temporary" && effect.duration_minutes
+        ? ` for ${effect.duration_minutes} min`
+        : "";
+
+    const values: Array<[string, number]> = [
+      ["Health", effect.health_delta],
+      ["Muscles", effect.muscles_modifier],
+      ["Reflexes", effect.reflexes_modifier],
+      ["Vigour", effect.vigour_modifier],
+      ["Shrewd", effect.shrewd_modifier],
+      ["Brains", effect.brains_modifier],
+      ["Presence", effect.presence_modifier],
+      ["Max Health", effect.max_health_modifier],
+    ];
+
+    for (const [label, value] of values) {
+      if (!value) continue;
+
+      if (
+        label === "Health" &&
+        effect.trigger_type === "use" &&
+        effect.effect_mode === "instant" &&
+        value > 0
+      ) {
+        result.push(`${context}: heals ${value} Health`);
+        continue;
+      }
+
+      result.push(
+        `${context}${duration}: ${value > 0 ? "+" : ""}${value} ${label}`,
+      );
+    }
+  }
+
+  return result;
+}
+
+function useLabel(item: {
+  is_usable: boolean;
+  use_behaviour: "reusable" | "consumable" | "limited_charges" | null;
+  target_mode: "self" | "other" | "either" | null;
+  cooldown_minutes: number | null;
+  max_charges: number | null;
+}) {
+  if (!item.is_usable) return null;
+
+  const pieces = ["Usable"];
+
+  if (item.use_behaviour === "consumable") {
+    pieces.push("Consumable");
+  } else if (item.use_behaviour === "reusable") {
+    pieces.push("Reusable");
+  } else if (item.use_behaviour === "limited_charges") {
+    pieces.push(
+      item.max_charges
+        ? `${item.max_charges} charges`
+        : "Limited charges",
+    );
+  }
+
+  if (item.target_mode === "self") {
+    pieces.push("Self");
+  } else if (item.target_mode === "other") {
+    pieces.push("Others");
+  } else if (item.target_mode === "either") {
+    pieces.push("Self / Others");
+  }
+
+  if (item.cooldown_minutes) {
+    pieces.push(`${item.cooldown_minutes} min cooldown`);
+  }
+
+  return pieces.join(" · ");
 }
 
 export default async function MarketShopPage({ params }: Props) {
@@ -92,6 +232,27 @@ export default async function MarketShopPage({ params }: Props) {
         is_active,
         is_quest_item,
         is_usable,
+        is_equippable,
+        equip_slot,
+        equip_layer,
+        hands_required,
+        use_behaviour,
+        target_mode,
+        cooldown_minutes,
+        max_charges,
+        effects:item_effects(
+          trigger_type,
+          effect_mode,
+          duration_minutes,
+          health_delta,
+          muscles_modifier,
+          reflexes_modifier,
+          vigour_modifier,
+          shrewd_modifier,
+          brains_modifier,
+          presence_modifier,
+          max_health_modifier
+        ),
         category:item_categories(name),
         subcategory:item_subcategories(name)
       )
@@ -195,6 +356,42 @@ export default async function MarketShopPage({ params }: Props) {
                   <p className="mt-2 line-clamp-3 text-[10px] leading-5 text-[#958775]">
                     {item.description}
                   </p>
+
+                  <div className="mt-3 flex flex-wrap gap-1.5">
+                    {item.is_equippable ? (
+                      <span className="border border-[#6c5739]/55 bg-[#1d160f] px-2 py-1 text-[7px] uppercase tracking-[0.11em] text-[#c3a778]">
+                        Equippable · {slotLabel(item.equip_slot)}
+                        {item.hands_required > 0
+                          ? ` · ${item.hands_required === 1 ? "1 hand" : "2 hands"}`
+                          : ""}
+                      </span>
+                    ) : null}
+
+                    {useLabel(item) ? (
+                      <span className="border border-[#6c5739]/55 bg-[#1d160f] px-2 py-1 text-[7px] uppercase tracking-[0.11em] text-[#c3a778]">
+                        {useLabel(item)}
+                      </span>
+                    ) : null}
+
+                    {item.is_quest_item ? (
+                      <span className="border border-[#6c5739]/55 bg-[#1d160f] px-2 py-1 text-[7px] uppercase tracking-[0.11em] text-[#c3a778]">
+                        Quest Item
+                      </span>
+                    ) : null}
+                  </div>
+
+                  {effectLines(item.effects).length ? (
+                    <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
+                      {effectLines(item.effects).map((effect, index) => (
+                        <span
+                          key={`${listing.id}-effect-${index}`}
+                          className="text-[8px] leading-4 text-[#b69a72]"
+                        >
+                          {effect}
+                        </span>
+                      ))}
+                    </div>
+                  ) : null}
 
                   <div className="mt-3 flex flex-wrap items-center gap-2">
                     <span
