@@ -444,8 +444,8 @@ export function Profile({
             </section>
           </div>
 
-          <div data-character-sheet-panel="profile">
-            <section className="grid gap-4 md:grid-cols-2">
+          <div data-character-sheet-panel="profile" className="py-2 border border-[#6b5032]/50">
+          <section className="grid gap-4 md:grid-cols-2 px-2">
           <ProfileTextSection
             title="Physical description"
             value={character.physical_description}
@@ -457,14 +457,14 @@ export function Profile({
           />
         </section>
 
-            <div className="mt-4">
+            <div className="mt-4 px-2">
               <ProfileTextSection
                 title="Biography"
                 value={character.biography}
               />
             </div>
 
-            <div className="mt-4">
+            <div className="mt-4 px-2">
               <ProfileTextSection
                 title="Public notes"
                 value={character.public_notes}
@@ -495,12 +495,14 @@ export function Profile({
             <div className="min-h-28 border border-[#60482e]/35 bg-[#130f0c]" />
           </div>
 
-          <div data-character-sheet-panel="offgame">
+          <div data-character-sheet-panel="offgame"  className="py-2 border border-[#6b5032]/50">
+            <section className="grid gap-4 px-2">
             <ProfileTextSection
               title="Offgame"
               value={character.offgame}
               subtle
             />
+            </section>
           </div>
 
           <div data-character-sheet-panel="edit">

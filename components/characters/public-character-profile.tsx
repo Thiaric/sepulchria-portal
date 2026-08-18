@@ -223,8 +223,8 @@ export function PublicCharacterProfileView({
           </section>
         </div>
 
-        <div data-character-sheet-panel="profile">
-          <section className="grid gap-4 md:grid-cols-2">
+        <div data-character-sheet-panel="profile" className="py-2 border border-[#6b5032]/50">
+          <section className="grid gap-4 md:grid-cols-2 px-2">
         <ProfileSection
           title="Physical Description"
           content={
@@ -238,11 +238,11 @@ export function PublicCharacterProfileView({
         />
       </section>
 
-          <div className="mt-4">
+          <div className="mt-4 px-2">
             <ProfileSection title="Biography" content={character.biography} />
           </div>
 
-          <div className="mt-4">
+          <div className="mt-4 px-2">
             <ProfileSection
               title="Public Notes"
               content={character.public_notes}
@@ -263,12 +263,14 @@ export function PublicCharacterProfileView({
           <div className="min-h-28 border border-[#60482e]/35 bg-[#130f0c]" />
         </div>
 
-        <div data-character-sheet-panel="offgame">
+        <div data-character-sheet-panel="offgame"  className="py-2 border border-[#6b5032]/50">
+            <section className="grid gap-4 px-2">
           <ProfileSection
             title="Offgame"
             content={character.offgame}
             subtle
           />
+          </section>
         </div>
       </CharacterSheetTabs>
     </article>
