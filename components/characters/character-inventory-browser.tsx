@@ -32,6 +32,13 @@ export type InventoryEquipmentBonus = {
   value: number;
 };
 
+export type InventoryItemEffect = {
+  label: string;
+  value: number;
+  context: string;
+  duration_minutes: number | null;
+};
+
 export type InventoryBrowserRow = {
   record_kind:
     | "standard"
@@ -99,6 +106,8 @@ export type InventoryBrowserRow = {
     InventoryRequirement[];
   equipment_bonuses:
     InventoryEquipmentBonus[];
+  item_effects:
+    InventoryItemEffect[];
 };
 
 type StatusFilter =
@@ -672,6 +681,44 @@ function DiscardControl({
   );
 }
 
+function ItemEffects({
+  effects,
+}: {
+  effects: InventoryItemEffect[];
+}) {
+  if (!effects.length) {
+    return null;
+  }
+
+  return (
+    <div className="mt-3 border-t border-[#59432c]/30 pt-2.5">
+      <p className="text-[7px] uppercase tracking-[0.16em] text-[#806b50]">
+        Effects
+      </p>
+
+      <div className="mt-2 flex flex-wrap gap-1.5">
+        {effects.map((effect, index) => (
+          <span
+            key={`${effect.context}-${effect.label}-${index}`}
+            className={`border px-2 py-1 text-[7px] uppercase tracking-[0.1em] ${
+              effect.value > 0
+                ? "border-emerald-900/65 bg-emerald-950/20 text-emerald-400"
+                : "border-red-900/65 bg-red-950/20 text-red-400"
+            }`}
+          >
+            {effect.context} · {effect.label}{" "}
+            {effect.value > 0 ? "+" : ""}
+            {effect.value}
+            {effect.duration_minutes !== null
+              ? ` · ${effect.duration_minutes} min`
+              : ""}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function ItemCard({
   row,
   containers,
@@ -776,34 +823,7 @@ function ItemCard({
             </p>
           ) : null}
 
-          {row.equipment_bonuses.length ? (
-            <div className="mt-3 border-t border-[#59432c]/30 pt-2.5">
-              <p className="text-[7px] uppercase tracking-[0.16em] text-[#806b50]">
-                Equipment bonuses
-              </p>
-
-              <div className="mt-2 flex flex-wrap gap-1.5">
-                {row.equipment_bonuses.map(
-                  (bonus) => (
-                    <span
-                      key={bonus.label}
-                      className={`border px-2 py-1 text-[7px] uppercase tracking-[0.1em] ${
-                        bonus.value > 0
-                          ? "border-emerald-900/65 bg-emerald-950/20 text-emerald-400"
-                          : "border-red-900/65 bg-red-950/20 text-red-400"
-                      }`}
-                    >
-                      {bonus.label}{" "}
-                      {bonus.value > 0
-                        ? "+"
-                        : ""}
-                      {bonus.value}
-                    </span>
-                  ),
-                )}
-              </div>
-            </div>
-          ) : null}
+          <ItemEffects effects={row.item_effects} />
 
           <Requirements
             requirements={

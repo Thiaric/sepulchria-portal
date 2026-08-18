@@ -4,13 +4,17 @@ import "server-only";
 import {
   CharacterInventoryBrowser,
   type InventoryBrowserRow,
+  type InventoryItemEffect,
   type InventoryRequirement,
 } from "@/components/characters/character-inventory-browser";
 import { createClient } from "@/lib/supabase/server";
 
 type Relation<T> = T | T[] | null;
 
-type InventoryRow = Omit<InventoryBrowserRow, "requirements" | "equipment_bonuses">;
+type InventoryRow = Omit<
+  InventoryBrowserRow,
+  "requirements" | "equipment_bonuses" | "item_effects"
+>;
 
 type CharacterState = {
   display_name: string | null;
@@ -53,6 +57,7 @@ type ItemRequirementRow = {
     | {
         trigger_type: string;
         effect_mode: string;
+        duration_minutes: number | null;
         health_delta: number;
         muscles_modifier: number;
         reflexes_modifier: number;
@@ -391,6 +396,60 @@ function equipmentBonuses(
     }));
 }
 
+function itemEffects(
+  item: ItemRequirementRow | undefined,
+): InventoryItemEffect[] {
+  if (!item) {
+    return [];
+  }
+
+  const result: InventoryItemEffect[] = [];
+
+  const push = (
+    context: string,
+    durationMinutes: number | null,
+    label: string,
+    value: number,
+  ) => {
+    if (!value) return;
+
+    result.push({
+      context,
+      duration_minutes: durationMinutes,
+      label,
+      value,
+    });
+  };
+
+  for (const effect of item.effects ?? []) {
+    const context =
+      effect.trigger_type === "owned"
+        ? "While owned"
+        : effect.trigger_type === "equipped"
+          ? "While equipped"
+          : effect.trigger_type === "use"
+            ? "On use"
+            : "Effect";
+
+    const durationMinutes =
+      effect.trigger_type === "use" &&
+      effect.effect_mode === "temporary"
+        ? effect.duration_minutes
+        : null;
+
+    push(context, durationMinutes, "Health", effect.health_delta);
+    push(context, durationMinutes, "Muscles", effect.muscles_modifier);
+    push(context, durationMinutes, "Reflexes", effect.reflexes_modifier);
+    push(context, durationMinutes, "Vigour", effect.vigour_modifier);
+    push(context, durationMinutes, "Shrewd", effect.shrewd_modifier);
+    push(context, durationMinutes, "Brains", effect.brains_modifier);
+    push(context, durationMinutes, "Presence", effect.presence_modifier);
+    push(context, durationMinutes, "Max Health", effect.max_health_modifier);
+  }
+
+  return result;
+}
+
 export async function CharacterInventoryDisplay({
   characterId,
   own = false,
@@ -493,6 +552,7 @@ export async function CharacterInventoryDisplay({
             effects:item_effects(
               trigger_type,
               effect_mode,
+              duration_minutes,
               health_delta,
               muscles_modifier,
               reflexes_modifier,
@@ -805,6 +865,8 @@ export async function CharacterInventoryDisplay({
                 master,
               )
             : [],
+        item_effects:
+          itemEffects(master),
       };
     });
 
