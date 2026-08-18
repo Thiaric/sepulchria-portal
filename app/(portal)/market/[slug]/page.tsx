@@ -327,9 +327,10 @@ export default async function MarketShopPage({ params }: Props) {
       <div className="mx-auto max-w-7xl">
         <Link
           href="/market"
-          className="text-[8px] uppercase tracking-[0.18em] text-[#a88658] hover:text-[#dfbd84]"
+          className="inline-flex items-center gap-2 border border-[#60482e]/55 bg-[#15100d] px-4 py-3 text-[10px] uppercase tracking-[0.18em] text-[#c6ab80] transition hover:border-[#987344] hover:bg-[#261b12] hover:text-[#ead2a5]"
         >
-          ← Back to Market
+          <span aria-hidden="true">←</span>
+          Back to Market
         </Link>
 
         <section className="mt-4 overflow-hidden border border-[#60482e]/45 bg-[#15100d]">

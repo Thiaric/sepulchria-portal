@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { PresentRoomCharacter } from "@/types/game";
 
@@ -70,6 +70,7 @@ export function ItemExchangePanel({
   const [message, setMessage] = useState("");
   const [ok, setOk] = useState(false);
   const [pending, setPending] = useState(false);
+  const activeTradeIdRef = useRef<string | null>(null);
 
   const load = useCallback(async () => {
     const { data: id, error: idError } = await supabase.rpc("my_character_id");
@@ -106,14 +107,37 @@ export function ItemExchangePanel({
     setInventory(ownRows);
 
     const currentTrade = (tradeResult.data?.[0] ?? null) as Trade | null;
+    const previousTradeId = activeTradeIdRef.current;
+
     setTrade(currentTrade);
 
     if (!currentTrade) {
       setOffers([]);
       setPartnerInventory([]);
       setPartnerName("Other Character");
+
+      if (previousTradeId) {
+        const { data: finishedTrade } = await supabase
+          .from("item_trades")
+          .select("status")
+          .eq("id", previousTradeId)
+          .maybeSingle();
+
+        if (finishedTrade?.status === "completed") {
+          setOk(true);
+          setMessage("Exchange completed successfully.");
+        } else if (finishedTrade?.status === "cancelled") {
+          setOk(true);
+          setMessage("Exchange cancelled.");
+        }
+
+        activeTradeIdRef.current = null;
+      }
+
       return;
     }
+
+    activeTradeIdRef.current = currentTrade.id;
 
     const partnerId =
       currentTrade.character_one_id === characterId

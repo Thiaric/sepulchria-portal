@@ -1,0 +1,26 @@
+[
+  {
+    "path": "app/(portal)/market/[slug]/page.tsx",
+    "label": "Back to Market button styling",
+    "old": "        <Link\n          href=\"/market\"\n          className=\"text-[8px] uppercase tracking-[0.18em] text-[#a88658] hover:text-[#dfbd84]\"\n        >\n          ← Back to Market\n        </Link>\n",
+    "new": "        <Link\n          href=\"/market\"\n          className=\"inline-flex items-center gap-2 border border-[#60482e]/55 bg-[#15100d] px-4 py-3 text-[10px] uppercase tracking-[0.18em] text-[#c6ab80] transition hover:border-[#987344] hover:bg-[#261b12] hover:text-[#ead2a5]\"\n        >\n          <span aria-hidden=\"true\">←</span>\n          Back to Market\n        </Link>\n"
+  },
+  {
+    "path": "app/(portal)/game/components/ItemExchangePanel.tsx",
+    "label": "useRef import",
+    "old": "import { useCallback, useEffect, useMemo, useState } from \"react\";\n",
+    "new": "import { useCallback, useEffect, useMemo, useRef, useState } from \"react\";\n"
+  },
+  {
+    "path": "app/(portal)/game/components/ItemExchangePanel.tsx",
+    "label": "trade ref state",
+    "old": "  const [message, setMessage] = useState(\"\");\n  const [ok, setOk] = useState(false);\n  const [pending, setPending] = useState(false);\n\n  const load = useCallback(async () => {\n",
+    "new": "  const [message, setMessage] = useState(\"\");\n  const [ok, setOk] = useState(false);\n  const [pending, setPending] = useState(false);\n  const activeTradeIdRef = useRef<string | null>(null);\n\n  const load = useCallback(async () => {\n"
+  },
+  {
+    "path": "app/(portal)/game/components/ItemExchangePanel.tsx",
+    "label": "live completion detection",
+    "old": "    const currentTrade = (tradeResult.data?.[0] ?? null) as Trade | null;\n    setTrade(currentTrade);\n\n    if (!currentTrade) {\n      setOffers([]);\n      setPartnerInventory([]);\n      setPartnerName(\"Other Character\");\n      return;\n    }\n\n    const partnerId =\n",
+    "new": "    const currentTrade = (tradeResult.data?.[0] ?? null) as Trade | null;\n    const previousTradeId = activeTradeIdRef.current;\n\n    setTrade(currentTrade);\n\n    if (!currentTrade) {\n      setOffers([]);\n      setPartnerInventory([]);\n      setPartnerName(\"Other Character\");\n\n      if (previousTradeId) {\n        const { data: finishedTrade } = await supabase\n          .from(\"item_trades\")\n          .select(\"status\")\n          .eq(\"id\", previousTradeId)\n          .maybeSingle();\n\n        if (finishedTrade?.status === \"completed\") {\n          setOk(true);\n          setMessage(\"Exchange completed successfully.\");\n        } else if (finishedTrade?.status === \"cancelled\") {\n          setOk(true);\n          setMessage(\"Exchange cancelled.\");\n        }\n\n        activeTradeIdRef.current = null;\n      }\n\n      return;\n    }\n\n    activeTradeIdRef.current = currentTrade.id;\n\n    const partnerId =\n"
+  }
+]
