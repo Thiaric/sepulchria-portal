@@ -84,9 +84,9 @@ export function CharacterExpertiseTotal({
   if (expertise === null) {
     return (
       <div>
-        <dt className="text-[9px] uppercase tracking-[0.22em] text-[#806b50]">
+        <p className="text-[7px] uppercase tracking-[0.18em] text-[#806b50]">
           Expertise
-        </dt>
+        </p>
         <dd className="mt-1 text-sm text-[#7c7163]">
           Loading…
         </dd>
@@ -96,9 +96,9 @@ export function CharacterExpertiseTotal({
 
   return (
     <div>
-      <dt className="text-[9px] uppercase tracking-[0.22em] text-[#806b50]">
+      <p className="text-[7px] uppercase tracking-[0.18em] text-[#806b50]">
         Expertise
-      </dt>
+      </p>
 
       <dd className="mt-1 flex items-baseline gap-2">
         <span className="font-serif text-2xl text-[#e0c79d]">

@@ -388,11 +388,16 @@ export function Profile({
                     </div>
                   ))}
 
-                  <div className="min-w-0 bg-[#17110d] px-3 py-2 sm:col-span-2 lg:col-span-3">
+                  <div className="min-w-0 bg-[#17110d] px-3 py-2 sm:col-span-2 lg:col-span-1">
                     <CharacterExpertiseTotal
                       characterId={character.id!}
                     />
                   </div>
+                 <div className="min-w-0 bg-[#17110d] px-3 py-2 sm:col-span-2 lg:col-span-2">
+                   
+                  {own && character.id ? (
+              <CharacterRemnantsWallet characterId={character.id} />
+            ) : null} </div>
                 </div>
 
               </div>
@@ -418,9 +423,7 @@ export function Profile({
               </div>
             </section>
 
-            {own && character.id ? (
-              <CharacterRemnantsWallet characterId={character.id} />
-            ) : null}
+            
 
             {character.music_url ? (
               <div className="mt-4">

@@ -630,6 +630,9 @@ function DiscardControl({
   const [message, setMessage] =
     useState<string | null>(null);
 
+  const [discardQuantity, setDiscardQuantity] =
+    useState(1);
+
   if (
     row.is_equipped ||
     row.parent_container_id ||
@@ -639,14 +642,22 @@ function DiscardControl({
   }
 
   const run = () => {
-    const quantity =
+    const availableQuantity =
       Math.max(1, row.quantity);
+
+    const quantity =
+      row.record_kind === "standard"
+        ? Math.min(
+            availableQuantity,
+            Math.max(1, discardQuantity),
+          )
+        : 1;
 
     const warning =
       row.record_kind === "unique"
         ? `Return "${row.name}" to the Admin Vault?`
         : quantity > 1
-          ? `Discard all ${quantity} × ${row.name}? This cannot be undone.`
+          ? `Discard ${quantity} × ${row.name}? This cannot be undone.`
           : `Discard "${row.name}"? This cannot be undone.`;
 
     if (!window.confirm(warning)) {
@@ -674,14 +685,44 @@ function DiscardControl({
 
   return (
     <div className={compact ? "min-w-0" : "mt-3"}>
-      <button
-        type="button"
-        onClick={run}
-        disabled={pending}
-        className="border border-red-900/55 bg-red-950/10 px-3 py-1.5 text-[8px] uppercase tracking-[0.14em] text-red-400 transition hover:bg-red-950/20 disabled:cursor-wait disabled:opacity-45"
-      >
-        {pending ? "Discarding..." : "Discard"}
-      </button>
+      <div className="flex flex-wrap items-center gap-2">
+        {row.record_kind === "standard" && row.quantity > 1 ? (
+          <label className="flex items-center gap-2">
+            <span className="text-[7px] uppercase tracking-[0.12em] text-[#80735f]">
+              Qty
+            </span>
+
+            <select
+              value={discardQuantity}
+              onChange={(event) =>
+                setDiscardQuantity(
+                  Number.parseInt(event.target.value, 10),
+                )
+              }
+              disabled={pending}
+              className="h-8 border border-[#60482e]/55 bg-[#100c09] px-2 text-[9px] text-[#cdbb9d] outline-none focus:border-[#987344] disabled:opacity-45"
+            >
+              {Array.from(
+                { length: Math.max(1, row.quantity) },
+                (_, index) => index + 1,
+              ).map((value) => (
+                <option key={value} value={value}>
+                  {value}
+                </option>
+              ))}
+            </select>
+          </label>
+        ) : null}
+
+        <button
+          type="button"
+          onClick={run}
+          disabled={pending}
+          className="border border-red-900/55 bg-red-950/10 px-3 py-1.5 text-[8px] uppercase tracking-[0.14em] text-red-400 transition hover:bg-red-950/20 disabled:cursor-wait disabled:opacity-45"
+        >
+          {pending ? "Discarding..." : "Discard"}
+        </button>
+      </div>
 
       {message ? (
         <p className="mt-2 text-[8px] leading-4 text-[#9b8768]">

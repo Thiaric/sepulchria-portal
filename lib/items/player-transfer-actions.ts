@@ -36,6 +36,21 @@ export async function discardInventoryItem(
     return { ok: false, message: error.message };
   }
 
+  if (recordKind === "standard") {
+    const { error: normalizeError } = await supabase.rpc(
+      "normalize_own_inventory_stacks",
+    );
+
+    if (normalizeError) {
+      return {
+        ok: false,
+        message:
+          "Item discarded, but the remaining stacks could not be consolidated: " +
+          normalizeError.message,
+      };
+    }
+  }
+
   revalidatePath("/character");
   revalidatePath("/characters");
   revalidatePath("/game");
