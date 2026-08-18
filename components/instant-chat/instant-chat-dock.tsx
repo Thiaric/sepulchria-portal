@@ -273,7 +273,7 @@ export function InstantChatDock({
             conversationId,
           )
           .order("created_at", {
-            ascending: true,
+            ascending: false,
           })
           .limit(200);
 
@@ -285,8 +285,10 @@ export function InstantChatDock({
         }
 
         setMessages(
-          (data ??
-            []) as ChatMessage[],
+          (
+            (data ??
+              []) as ChatMessage[]
+          ).reverse(),
         );
       },
       [supabase],

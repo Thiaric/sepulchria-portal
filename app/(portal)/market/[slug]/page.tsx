@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
+import { formatRemnants } from "@/lib/economy/currency";
 import {
   MarketCatalogue,
   type MarketCatalogueListing,
@@ -393,6 +394,12 @@ export default async function MarketShopPage({ params }: Props) {
       }];
     });
 
+  const walletBalance =
+    wallet?.balance === undefined ||
+    wallet?.balance === null
+      ? null
+      : Number(wallet.balance);
+
   return (
     <main className="p-5 sm:p-7 lg:p-9">
       <div className="mx-auto max-w-7xl">
@@ -424,20 +431,28 @@ export default async function MarketShopPage({ params }: Props) {
             <h1 className="mt-2 font-serif text-4xl text-[#ead5ac]">
               {shop.name}
             </h1>
-            <p className="mt-3 max-w-4xl text-sm leading-7 text-[#a99b89]">
-              {shop.description}
-            </p>
+            <div className="mt-3 flex flex-wrap items-end justify-between gap-5">
+              <p className="max-w-4xl text-sm leading-7 text-[#a99b89]">
+                {shop.description}
+              </p>
+
+              <div className="ml-auto shrink-0 text-right">
+                <p className="text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
+                  Available Remnants
+                </p>
+                <p className="mt-1 font-serif text-2xl text-[#e3c17e]">
+                  {walletBalance === null
+                    ? "—"
+                    : formatRemnants(walletBalance)}
+                </p>
+              </div>
+            </div>
           </div>
         </section>
 
         <MarketCatalogue
           listings={catalogueListings}
-          walletBalance={
-            wallet?.balance === undefined ||
-            wallet?.balance === null
-              ? null
-              : Number(wallet.balance)
-          }
+          walletBalance={walletBalance}
         />
       </div>
     </main>

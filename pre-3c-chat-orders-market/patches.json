@@ -1,0 +1,36 @@
+{
+  "instant": [
+    {
+      "label": "load newest instant-chat messages",
+      "old": "          .order(\"created_at\", {\n            ascending: true,\n          })\n          .limit(200);\n",
+      "new": "          .order(\"created_at\", {\n            ascending: false,\n          })\n          .limit(200);\n"
+    },
+    {
+      "label": "display newest instant-chat messages chronologically",
+      "old": "        setMessages(\n          (data ??\n            []) as ChatMessage[],\n        );\n",
+      "new": "        setMessages(\n          (\n            (data ??\n              []) as ChatMessage[]\n          ).reverse(),\n        );\n"
+    }
+  ],
+  "market": [
+    {
+      "label": "currency formatter import",
+      "old": "import { createClient } from \"@/lib/supabase/server\";\nimport {\n  MarketCatalogue,\n",
+      "new": "import { createClient } from \"@/lib/supabase/server\";\nimport { formatRemnants } from \"@/lib/economy/currency\";\nimport {\n  MarketCatalogue,\n"
+    },
+    {
+      "label": "wallet balance local",
+      "old": "  return (\n    <main className=\"p-5 sm:p-7 lg:p-9\">\n",
+      "new": "  const walletBalance =\n    wallet?.balance === undefined ||\n    wallet?.balance === null\n      ? null\n      : Number(wallet.balance);\n\n  return (\n    <main className=\"p-5 sm:p-7 lg:p-9\">\n"
+    },
+    {
+      "label": "shop header available Remnants",
+      "old": "            <p className=\"mt-3 max-w-4xl text-sm leading-7 text-[#a99b89]\">\n              {shop.description}\n            </p>\n",
+      "new": "            <div className=\"mt-3 flex flex-wrap items-end justify-between gap-5\">\n              <p className=\"max-w-4xl text-sm leading-7 text-[#a99b89]\">\n                {shop.description}\n              </p>\n\n              <div className=\"ml-auto shrink-0 text-right\">\n                <p className=\"text-[8px] uppercase tracking-[0.18em] text-[#806b50]\">\n                  Available Remnants\n                </p>\n                <p className=\"mt-1 font-serif text-2xl text-[#e3c17e]\">\n                  {walletBalance === null\n                    ? \"\u2014\"\n                    : formatRemnants(walletBalance)}\n                </p>\n              </div>\n            </div>\n"
+    },
+    {
+      "label": "reuse wallet balance",
+      "old": "          walletBalance={\n            wallet?.balance === undefined ||\n            wallet?.balance === null\n              ? null\n              : Number(wallet.balance)\n          }\n",
+      "new": "          walletBalance={walletBalance}\n"
+    }
+  ]
+}

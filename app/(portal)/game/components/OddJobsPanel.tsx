@@ -62,8 +62,8 @@ export function OddJobsPanel({ jobs }: { jobs: OddJobStateRow[] }) {
   }
 
   return (
-    <details open className="shrink-0 border-b border-[#60482e]/45 bg-[#120e0b]">
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-2 [&::-webkit-details-marker]:hidden">
+    <div className="shrink-0 border-b border-[#60482e]/45 bg-[#120e0b]">
+      <div className="flex items-center justify-between gap-3 px-3 py-2">
         <div>
           <p className="text-[7px] uppercase tracking-[0.18em] text-[#806b50]">
             Odd Jobs Bureau
@@ -83,7 +83,7 @@ export function OddJobsPanel({ jobs }: { jobs: OddJobStateRow[] }) {
             {formatRemnants(Number(first.wallet_balance))}
           </p>
         </div>
-      </summary>
+      </div>
 
       <div className="border-t border-[#59432c]/30 px-3 py-3">
         {alreadyWorked ? (
@@ -169,6 +169,6 @@ export function OddJobsPanel({ jobs }: { jobs: OddJobStateRow[] }) {
           </p>
         ) : null}
       </div>
-    </details>
+    </div>
   );
 }
