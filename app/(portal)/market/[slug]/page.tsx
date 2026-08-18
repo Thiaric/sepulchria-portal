@@ -232,6 +232,48 @@ export default async function MarketShopPage({ params }: Props) {
         .maybeSingle()
     : { data: null };
 
+  const { data: inventoryRows } = character
+    ? await supabase.rpc(
+        "get_public_character_inventory",
+        {
+          p_character_id: character.id,
+        },
+      )
+    : { data: [] };
+
+  const sellableByItem = new Map<string, number>();
+
+  for (
+    const row of
+      (inventoryRows ?? []) as Array<{
+        record_kind: string;
+        item_id: string;
+        quantity: number;
+        parent_container_id: string | null;
+        is_equipped: boolean;
+        transfer_policy: string;
+        is_quest_item: boolean;
+        item_active: boolean;
+      }>
+  ) {
+    if (
+      row.record_kind !== "standard" ||
+      row.parent_container_id ||
+      row.is_equipped ||
+      row.transfer_policy !== "free" ||
+      row.is_quest_item ||
+      !row.item_active
+    ) {
+      continue;
+    }
+
+    sellableByItem.set(
+      row.item_id,
+      (sellableByItem.get(row.item_id) ?? 0) +
+        Number(row.quantity ?? 0),
+    );
+  }
+
   const { data, error } = await supabase
     .from("market_listings")
     .select(`
@@ -298,6 +340,7 @@ export default async function MarketShopPage({ params }: Props) {
         sell_price: listing.sell_price === null ? null : Number(listing.sell_price),
         stock_mode: listing.stock_mode,
         stock_quantity: listing.stock_quantity === null ? null : Number(listing.stock_quantity),
+        owned_sellable_quantity: sellableByItem.get(item.id) ?? 0,
         item: {
           id: item.id,
           name: item.name,

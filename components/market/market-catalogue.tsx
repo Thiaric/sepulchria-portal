@@ -12,6 +12,7 @@ import {
 } from "@/lib/economy/currency";
 import {
   buyMarketListing,
+  sellMarketListing,
 } from "@/app/(portal)/market/actions";
 
 export type MarketCatalogueEffect = {
@@ -34,6 +35,7 @@ export type MarketCatalogueListing = {
   sell_price: number | null;
   stock_mode: "finite" | "unlimited";
   stock_quantity: number | null;
+  owned_sellable_quantity: number;
   item: {
     id: string;
     name: string;
@@ -306,11 +308,25 @@ export function MarketCatalogue({
   >({});
 
   const [
+    sellQuantities,
+    setSellQuantities,
+  ] = useState<
+    Record<string, number>
+  >({});
+
+  const [
     pendingListingId,
     setPendingListingId,
   ] = useState<string | null>(
     null,
   );
+
+  const [
+    pendingDirection,
+    setPendingDirection,
+  ] = useState<
+    "buy" | "sell" | null
+  >(null);
 
   const [
     feedback,
@@ -590,6 +606,14 @@ export function MarketCatalogue({
     ] ?? 1;
   }
 
+  function sellQuantityFor(
+    listingId: string,
+  ) {
+    return sellQuantities[
+      listingId
+    ] ?? 1;
+  }
+
   function buy(
     listing:
       MarketCatalogueListing,
@@ -602,6 +626,7 @@ export function MarketCatalogue({
     setPendingListingId(
       listing.id,
     );
+    setPendingDirection("buy");
 
     setFeedback((current) => {
       const next = {
@@ -637,9 +662,76 @@ export function MarketCatalogue({
         setPendingListingId(
           null,
         );
+        setPendingDirection(null);
 
         if (result.ok) {
           setQuantities(
+            (current) => ({
+              ...current,
+              [listing.id]: 1,
+            }),
+          );
+
+          router.refresh();
+        }
+      },
+    );
+  }
+
+  function sell(
+    listing:
+      MarketCatalogueListing,
+  ) {
+    if (pending) return;
+
+    const quantity =
+      sellQuantityFor(
+        listing.id,
+      );
+
+    setPendingListingId(
+      listing.id,
+    );
+    setPendingDirection("sell");
+
+    setFeedback((current) => {
+      const next = {
+        ...current,
+      };
+
+      delete next[
+        listing.id
+      ];
+
+      return next;
+    });
+
+    startTransition(
+      async () => {
+        const result =
+          await sellMarketListing(
+            listing.id,
+            quantity,
+          );
+
+        setFeedback(
+          (current) => ({
+            ...current,
+            [listing.id]: {
+              ok: result.ok,
+              message:
+                result.message,
+            },
+          }),
+        );
+
+        setPendingListingId(
+          null,
+        );
+        setPendingDirection(null);
+
+        if (result.ok) {
+          setSellQuantities(
             (current) => ({
               ...current,
               [listing.id]: 1,
@@ -934,6 +1026,29 @@ export function MarketCatalogue({
               listing.buy_price *
               quantity;
 
+            const sellQuantity =
+              sellQuantityFor(
+                listing.id,
+              );
+
+            const sellTotal =
+              (listing.sell_price ??
+                0) *
+              sellQuantity;
+
+            const canSell =
+              listing.sell_price !==
+                null &&
+              listing.sell_price > 0 &&
+              listing
+                .owned_sellable_quantity >
+                0;
+
+            const exceedsOwned =
+              sellQuantity >
+              listing
+                .owned_sellable_quantity;
+
             const cannotAfford =
               walletBalance !==
                 null &&
@@ -1176,7 +1291,9 @@ export function MarketCatalogue({
                     >
                       {pending &&
                       pendingListingId ===
-                        listing.id
+                        listing.id &&
+                      pendingDirection ===
+                        "buy"
                         ? "Buying..."
                         : "Buy"}
                     </button>
@@ -1202,6 +1319,117 @@ export function MarketCatalogue({
                       </span>
                     ) : null}
                   </div>
+
+                  {listing.sell_price !==
+                  null ? (
+                    <div className="mt-2 flex flex-wrap items-center gap-2 border-t border-[#59432c]/20 pt-2">
+                      <span className="text-[7px] uppercase tracking-[0.12em] text-[#756958]">
+                        You own{" "}
+                        {
+                          listing
+                            .owned_sellable_quantity
+                        }{" "}
+                        sellable
+                      </span>
+
+                      <input
+                        type="number"
+                        min={1}
+                        max={Math.max(
+                          1,
+                          Math.min(
+                            99,
+                            listing
+                              .owned_sellable_quantity,
+                          ),
+                        )}
+                        value={
+                          sellQuantity
+                        }
+                        onChange={(
+                          event,
+                        ) => {
+                          const parsed =
+                            Number.parseInt(
+                              event
+                                .target
+                                .value ||
+                                "1",
+                              10,
+                            );
+
+                          setSellQuantities(
+                            (
+                              current,
+                            ) => ({
+                              ...current,
+                              [listing.id]:
+                                Number.isFinite(
+                                  parsed,
+                                )
+                                  ? Math.max(
+                                      1,
+                                      Math.min(
+                                        99,
+                                        parsed,
+                                      ),
+                                    )
+                                  : 1,
+                            }),
+                          );
+                        }}
+                        disabled={
+                          !canSell
+                        }
+                        className="h-8 w-16 border border-[#59432c]/45 bg-[#100c09] px-2 text-center text-[10px] text-[#d4bea0] outline-none focus:border-[#987344] disabled:opacity-35"
+                        aria-label={`Quantity of ${item.name} to sell`}
+                      />
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          sell(
+                            listing,
+                          )
+                        }
+                        disabled={
+                          pending ||
+                          !canSell ||
+                          exceedsOwned
+                        }
+                        className="h-8 border border-[#85653c] bg-[#342617] px-4 text-[8px] uppercase tracking-[0.14em] text-[#efd4a0] transition hover:bg-[#4a351f] disabled:cursor-not-allowed disabled:opacity-40"
+                      >
+                        {pending &&
+                        pendingListingId ===
+                          listing.id &&
+                        pendingDirection ===
+                          "sell"
+                          ? "Selling..."
+                          : "Sell"}
+                      </button>
+
+                      <span className="text-[8px] text-[#8e7a60]">
+                        Receive{" "}
+                        {formatRemnants(
+                          sellTotal,
+                        )}
+                      </span>
+
+                      {!canSell ? (
+                        <span className="text-[8px] text-[#6f6252]">
+                          No eligible
+                          copies
+                        </span>
+                      ) : null}
+
+                      {exceedsOwned ? (
+                        <span className="text-[8px] text-red-400">
+                          You do not own
+                          that many
+                        </span>
+                      ) : null}
+                    </div>
+                  ) : null}
 
                   {status ? (
                     <p
