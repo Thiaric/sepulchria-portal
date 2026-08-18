@@ -21,6 +21,8 @@ type Trade = {
   character_two_id: string;
   character_one_confirmed: boolean;
   character_two_confirmed: boolean;
+  character_one_remnants: number;
+  character_two_remnants: number;
   status: string;
 };
 
@@ -70,10 +72,12 @@ export function ItemExchangePanel({
   const [tradeTarget, setTradeTarget] = useState("");
   const [offerChoice, setOfferChoice] = useState("");
   const [offerQuantity, setOfferQuantity] = useState(1);
+  const [tradeRemnantAmount, setTradeRemnantAmount] = useState(0);
   const [message, setMessage] = useState("");
   const [ok, setOk] = useState(false);
   const [pending, setPending] = useState(false);
   const activeTradeIdRef = useRef<string | null>(null);
+  const remnantInputTradeIdRef = useRef<string | null>(null);
 
   const load = useCallback(async () => {
     const { data: id, error: idError } = await supabase.rpc("my_character_id");
@@ -91,7 +95,7 @@ export function ItemExchangePanel({
       supabase.rpc("get_public_character_inventory", { p_character_id: characterId }),
       supabase
         .from("item_trades")
-        .select("id,character_one_id,character_two_id,character_one_confirmed,character_two_confirmed,status")
+        .select("id,character_one_id,character_two_id,character_one_confirmed,character_two_confirmed,character_one_remnants,character_two_remnants,status")
         .eq("status", "open")
         .or(`character_one_id.eq.${characterId},character_two_id.eq.${characterId}`)
         .order("created_at", { ascending: false })
@@ -119,6 +123,24 @@ export function ItemExchangePanel({
     const previousTradeId = activeTradeIdRef.current;
 
     setTrade(currentTrade);
+
+    if (currentTrade) {
+      // Initialise from DB only when entering a different trade.
+      // Realtime/polling refreshes must not overwrite what is being typed.
+      if (remnantInputTradeIdRef.current !== currentTrade.id) {
+        setTradeRemnantAmount(
+          Number(
+            currentTrade.character_one_id === characterId
+              ? currentTrade.character_one_remnants
+              : currentTrade.character_two_remnants,
+          ) || 0,
+        );
+        remnantInputTradeIdRef.current = currentTrade.id;
+      }
+    } else {
+      setTradeRemnantAmount(0);
+      remnantInputTradeIdRef.current = null;
+    }
 
     if (!currentTrade) {
       setOffers([]);
@@ -195,6 +217,16 @@ export function ItemExchangePanel({
 
   const mine = offers.filter((offer) => offer.character_id === myId);
   const theirs = offers.filter((offer) => offer.character_id !== myId);
+
+  const mineRemnants =
+    trade && myId
+      ? Number(trade.character_one_id === myId ? trade.character_one_remnants : trade.character_two_remnants) || 0
+      : 0;
+
+  const theirsRemnants =
+    trade && myId
+      ? Number(trade.character_one_id === myId ? trade.character_two_remnants : trade.character_one_remnants) || 0
+      : 0;
 
   const mineConfirmed =
     trade && myId
@@ -346,10 +378,36 @@ export function ItemExchangePanel({
     });
   }
 
+  async function setRemnantsOffer() {
+    if (!trade) return;
+
+    if (!Number.isSafeInteger(tradeRemnantAmount) || tradeRemnantAmount < 0) {
+      setOk(false);
+      setMessage("Enter a whole Remnant amount of 0 or more.");
+      return;
+    }
+
+    if (tradeRemnantAmount > walletBalance) {
+      setOk(false);
+      setMessage("You do not have enough Remnants for that offer.");
+      return;
+    }
+
+    await mutate(async () => {
+      const { error } = await supabase.rpc("set_item_trade_remnants", {
+        tid: trade.id,
+        p_amount: tradeRemnantAmount,
+      });
+      if (error) throw new Error(error.message);
+      setOk(true);
+      setMessage("Remnants offer updated. Both confirmations reset.");
+    });
+  }
+
   async function confirmExchange() {
     if (!trade) return;
     await mutate(async () => {
-      const { data, error } = await supabase.rpc("confirm_item_trade", {
+      const { data, error } = await supabase.rpc("confirm_item_trade_with_remnants", {
         tid: trade.id,
       });
       if (error) throw new Error(error.message);
@@ -400,6 +458,7 @@ export function ItemExchangePanel({
   const offerBox = (
     title: string,
     list: Offer[],
+    remnants: number,
     confirmed: boolean,
     own: boolean,
   ) => (
@@ -427,6 +486,16 @@ export function ItemExchangePanel({
           <p className="text-[9px] italic text-[#756958]">No Items offered yet.</p>
         )}
       </div>
+      <div className="mt-2 border-t border-[#59432c]/30 pt-2">
+        <div className="flex items-center justify-between gap-3">
+          <span className="text-[8px] uppercase tracking-[0.12em] text-[#756958]">
+            Remnants offered
+          </span>
+          <strong className="font-serif text-sm text-[#e4c589]">
+            {remnants.toLocaleString("en-GB")} R
+          </strong>
+        </div>
+      </div>
     </div>
   );
 
@@ -442,6 +511,8 @@ export function ItemExchangePanel({
       </div>
 
       <div className="grid gap-3 lg:grid-cols-2">
+        {!trade ? (
+          <>
         <section className="border border-[#59432c]/30 bg-[#15100d] p-3">
           <p className="font-serif text-base text-[#dec89f]">Give Item as a Gift</p>
           <div className="mt-2 grid gap-1">
@@ -523,8 +594,10 @@ export function ItemExchangePanel({
             </button>
           </div>
         </section>
+          </>
+        ) : null}
 
-        <section className="border border-[#59432c]/30 bg-[#15100d] p-3">
+        <section className="border border-[#59432c]/30 bg-[#15100d] p-3 lg:col-span-2">
           <p className="font-serif text-base text-[#dec89f]">Exchange Items</p>
           {!trade ? (
             <div className="mt-3 grid gap-2">
@@ -549,8 +622,8 @@ export function ItemExchangePanel({
       {trade ? (
         <section className="mt-3 border border-[#59432c]/30 bg-[#15100d] p-3">
           <div className="grid gap-3 lg:grid-cols-2">
-            {offerBox(`${myName}'s Offer`, mine, mineConfirmed, true)}
-            {offerBox(`${partnerName}'s Offer`, theirs, theirsConfirmed, false)}
+            {offerBox(`${myName}'s Offer`, mine, mineRemnants, mineConfirmed, true)}
+            {offerBox(`${partnerName}'s Offer`, theirs, theirsRemnants, theirsConfirmed, false)}
           </div>
 
           <div className="mt-3 grid gap-2 md:grid-cols-[minmax(0,1fr)_100px_auto]">
@@ -564,6 +637,40 @@ export function ItemExchangePanel({
             </select>
             <input className={field} type="number" min={1} value={offerQuantity} onChange={(e) => setOfferQuantity(Math.max(1, Number.parseInt(e.target.value || "1", 10) || 1))} />
             <button type="button" className={button} disabled={pending || !offerChoice} onClick={() => void addOffer()}>Add to Offer</button>
+          </div>
+
+          <div className="mt-3 grid gap-2 border-t border-[#59432c]/30 pt-3 md:grid-cols-[minmax(0,1fr)_auto]">
+            <div>
+              <label className="mb-1 block text-[7px] uppercase tracking-[0.12em] text-[#756958]">
+                Your Remnants offer · Wallet {walletBalance.toLocaleString("en-GB")} R
+              </label>
+              <input
+                className={field}
+                type="number"
+                min={0}
+                step={1}
+                max={Math.max(0, walletBalance)}
+                value={tradeRemnantAmount}
+                onChange={(e) =>
+                  setTradeRemnantAmount(
+                    Math.max(0, Number.parseInt(e.target.value || "0", 10) || 0),
+                  )
+                }
+              />
+            </div>
+            <button
+              type="button"
+              className={`${button} self-end`}
+              disabled={
+                pending ||
+                tradeRemnantAmount < 0 ||
+                tradeRemnantAmount > walletBalance ||
+                tradeRemnantAmount === mineRemnants
+              }
+              onClick={() => void setRemnantsOffer()}
+            >
+              Update Remnants Offer
+            </button>
           </div>
 
           <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-[#59432c]/30 pt-3">
@@ -586,7 +693,7 @@ export function ItemExchangePanel({
       ) : null}
 
       <p className="mt-3 text-[8px] leading-4 text-[#756958]">
-        Only loose, unequipped, freely transferable, non-Quest Items can be given or exchanged. Changing either offer resets both confirmations.
+        Only loose, unequipped, freely transferable, non-Quest Items can be given or exchanged. Item and Remnants offers are completed together. Changing either Items or Remnants resets both confirmations.
       </p>
     </div>
   );
