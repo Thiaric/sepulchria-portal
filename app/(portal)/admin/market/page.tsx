@@ -214,7 +214,7 @@ export default async function AdminMarketPage() {
                     </select>
 
                     <input type="number" name="buyPrice" min={0} required placeholder="Buy price" className={inputClass} />
-                    <input type="number" name="sellPrice" min={0} placeholder="Buyback" className={inputClass} />
+                    <input type="number" name="sellPrice" min={0} placeholder="Shop Buyback" className={inputClass} />
 
                     <select name="stockMode" defaultValue="unlimited" className={inputClass}>
                       <option value="unlimited">Unlimited</option>

@@ -623,6 +623,19 @@ export function MarketCatalogue({
     const quantity =
       quantityFor(listing.id);
 
+      const total =
+  listing.buy_price *
+  quantity;
+
+const confirmed =
+  window.confirm(
+    `Buy ${quantity} × ${listing.item.name} for ${formatRemnants(total)}?`,
+  );
+
+if (!confirmed) {
+  return;
+}
+
     setPendingListingId(
       listing.id,
     );
@@ -688,6 +701,22 @@ export function MarketCatalogue({
       sellQuantityFor(
         listing.id,
       );
+
+      const shopBuyback =
+  listing.sell_price ?? 0;
+
+const total =
+  shopBuyback *
+  quantity;
+
+const confirmed =
+  window.confirm(
+    `Sell ${quantity} × ${listing.item.name} to this shop for ${formatRemnants(total)}?`,
+  );
+
+if (!confirmed) {
+  return;
+}
 
     setPendingListingId(
       listing.id,
@@ -1209,7 +1238,7 @@ export function MarketCatalogue({
                     {listing.sell_price !==
                     null ? (
                       <span className="border border-[#59432c]/40 bg-[#100c09] px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[#806f5b]">
-                        Buyback{" "}
+                        Shop Buyback{" "}
                         {formatRemnants(
                           listing.sell_price,
                         )}
