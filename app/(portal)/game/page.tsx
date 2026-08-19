@@ -158,9 +158,27 @@ async function GameContent() {
           background_colour:
             privateAccess.metadata
               .backgroundColour,
-          text_colour:
+          speech_colour:
             privateAccess.metadata
-              .textColour,
+              .speechColour,
+          action_colour:
+            privateAccess.metadata
+              .actionColour,
+          system_colour:
+            privateAccess.metadata
+              .systemColour,
+          whisper_background_colour:
+            privateAccess.metadata
+              .whisperBackgroundColour,
+          whisper_text_colour:
+            privateAccess.metadata
+              .whisperTextColour,
+          offgame_background_colour:
+            privateAccess.metadata
+              .offgameBackgroundColour,
+          offgame_text_colour:
+            privateAccess.metadata
+              .offgameTextColour,
         }
       : null;
 
@@ -728,20 +746,14 @@ async function GameContent() {
       ? ({
           "--private-location-bg":
             privateLocation.background_colour,
-          "--private-location-text":
-            privateLocation.text_colour,
         } as CSSProperties)
       : undefined
   }
 >
     {privateLocation ? (
       <style>{`
-        .private-location-theme article {
-          background: var(--private-location-bg) !important;
-        }
-        .private-location-theme article,
-        .private-location-theme article * {
-          color: var(--private-location-text) !important;
+        .private-location-theme #room-chronicle {
+          background: var(--private-location-bg);
         }
       `}</style>
     ) : null}
@@ -838,6 +850,28 @@ async function GameContent() {
           }
           canViewAllWhispers={
             canViewAllWhispers
+          }
+          privateLocationTheme={
+            privateLocation
+              ? {
+                  backgroundColour:
+                    privateLocation.background_colour,
+                  speechColour:
+                    privateLocation.speech_colour,
+                  actionColour:
+                    privateLocation.action_colour,
+                  systemColour:
+                    privateLocation.system_colour,
+                  whisperBackgroundColour:
+                    privateLocation.whisper_background_colour,
+                  whisperTextColour:
+                    privateLocation.whisper_text_colour,
+                  offgameBackgroundColour:
+                    privateLocation.offgame_background_colour,
+                  offgameTextColour:
+                    privateLocation.offgame_text_colour,
+                }
+              : null
           }
         />
 

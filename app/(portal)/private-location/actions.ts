@@ -1064,12 +1064,60 @@ export async function updatePrivateLocation(
       "#17110d",
     );
 
-  const textColour =
+  const speechColour =
     readColour(
       formData.get(
-        "textColour",
+        "speechColour",
       ),
-      "#c7b79d",
+      "#d3c2aa",
+    );
+
+  const actionColour =
+    readColour(
+      formData.get(
+        "actionColour",
+      ),
+      "#a98a60",
+    );
+
+  const systemColour =
+    readColour(
+      formData.get(
+        "systemColour",
+      ),
+      "#c8b89f",
+    );
+
+  const whisperBackgroundColour =
+    readColour(
+      formData.get(
+        "whisperBackgroundColour",
+      ),
+      "#241b2a",
+    );
+
+  const whisperTextColour =
+    readColour(
+      formData.get(
+        "whisperTextColour",
+      ),
+      "#c7add6",
+    );
+
+  const offgameBackgroundColour =
+    readColour(
+      formData.get(
+        "offgameBackgroundColour",
+      ),
+      "#182536",
+    );
+
+  const offgameTextColour =
+    readColour(
+      formData.get(
+        "offgameTextColour",
+      ),
+      "#a9c7e6",
     );
 
   const {
@@ -1101,8 +1149,20 @@ export async function updatePrivateLocation(
     .update({
       background_colour:
         backgroundColour,
-      text_colour:
-        textColour,
+      speech_colour:
+        speechColour,
+      action_colour:
+        actionColour,
+      system_colour:
+        systemColour,
+      whisper_background_colour:
+        whisperBackgroundColour,
+      whisper_text_colour:
+        whisperTextColour,
+      offgame_background_colour:
+        offgameBackgroundColour,
+      offgame_text_colour:
+        offgameTextColour,
       updated_at:
         new Date().toISOString(),
     })

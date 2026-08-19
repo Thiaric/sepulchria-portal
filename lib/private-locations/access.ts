@@ -11,7 +11,13 @@ import {
 type PrivateLocationMetadata = {
   ownerCharacterId: string;
   backgroundColour: string;
-  textColour: string;
+  speechColour: string;
+  actionColour: string;
+  systemColour: string;
+  whisperBackgroundColour: string;
+  whisperTextColour: string;
+  offgameBackgroundColour: string;
+  offgameTextColour: string;
 };
 
 export type PrivateLocationAccess = {
@@ -62,7 +68,7 @@ export async function getPrivateLocationAccess(
       "private_location_rooms",
     )
     .select(
-      "owner_character_id, background_colour, text_colour",
+      "owner_character_id, background_colour, speech_colour, action_colour, system_colour, whisper_background_colour, whisper_text_colour, offgame_background_colour, offgame_text_colour",
     )
     .eq(
       "room_id",
@@ -90,8 +96,20 @@ export async function getPrivateLocationAccess(
         privateRoom.owner_character_id,
       backgroundColour:
         privateRoom.background_colour,
-      textColour:
-        privateRoom.text_colour,
+      speechColour:
+        privateRoom.speech_colour,
+      actionColour:
+        privateRoom.action_colour,
+      systemColour:
+        privateRoom.system_colour,
+      whisperBackgroundColour:
+        privateRoom.whisper_background_colour,
+      whisperTextColour:
+        privateRoom.whisper_text_colour,
+      offgameBackgroundColour:
+        privateRoom.offgame_background_colour,
+      offgameTextColour:
+        privateRoom.offgame_text_colour,
     };
 
   const staff =

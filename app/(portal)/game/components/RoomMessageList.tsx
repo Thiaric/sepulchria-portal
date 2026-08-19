@@ -21,11 +21,25 @@ import type {
   RoomMessageType,
 } from "@/types/game";
 
+type PrivateLocationMessageTheme = {
+  backgroundColour: string;
+  speechColour: string;
+  actionColour: string;
+  systemColour: string;
+  whisperBackgroundColour: string;
+  whisperTextColour: string;
+  offgameBackgroundColour: string;
+  offgameTextColour: string;
+};
+
 type RoomMessageListProps = {
   roomId: string;
   messages: RoomMessage[];
   viewerCharacterId: string;
   canViewAllWhispers: boolean;
+  privateLocationTheme:
+    | PrivateLocationMessageTheme
+    | null;
 };
 
 type InsertedRoomMessage = {
@@ -228,8 +242,12 @@ function formatTime(
 
 function ActionSpeechText({
   content,
+  speechColour,
+  actionColour,
 }: {
   content: string;
+  speechColour?: string;
+  actionColour?: string;
 }) {
   const segments =
   content.split(
@@ -275,6 +293,10 @@ function ActionSpeechText({
   }
   style={{
     lineHeight: "18px",
+    color:
+      isAction
+        ? actionColour
+        : speechColour,
   }}
 >
   {displayText}
@@ -339,6 +361,7 @@ export default function RoomMessageList({
   messages,
   viewerCharacterId,
   canViewAllWhispers,
+  privateLocationTheme,
 }: RoomMessageListProps) {
   const [
     liveMessages,
@@ -943,8 +966,18 @@ export default function RoomMessageList({
                           ? "bg-emerald-950/10"
                           : isNaturalOne
                             ? "bg-red-950/10"
-                            : "bg-[#1b140e]/55"
+                            : privateLocationTheme
+                              ? ""
+                              : "bg-[#1b140e]/55"
                       }`}
+                      style={
+                        privateLocationTheme
+                          ? {
+                              backgroundColor:
+                                privateLocationTheme.backgroundColour,
+                            }
+                          : undefined
+                      }
                     >
                       <span
                         aria-hidden="true"
@@ -955,6 +988,16 @@ export default function RoomMessageList({
                               ? "text-red-500"
                               : "text-[#bd8d4d]"
                         }`}
+                        style={
+                          privateLocationTheme &&
+                          !isNaturalTwenty &&
+                          !isNaturalOne
+                            ? {
+                                color:
+                                  privateLocationTheme.systemColour,
+                              }
+                            : undefined
+                        }
                       >
                         ◆
                       </span>
@@ -965,13 +1008,31 @@ export default function RoomMessageList({
                             characterHref
                           }
                           className="shrink-0 font-serif text-sm text-[#d8bf91] transition hover:text-[#ecd29e]"
+                          style={
+                            privateLocationTheme
+                              ? {
+                                  color:
+                                    privateLocationTheme.systemColour,
+                                }
+                              : undefined
+                          }
                         >
                           {
                             author.display_name
                           }
                         </Link>
                       ) : (
-                        <span className="shrink-0 font-serif text-sm text-[#d8bf91]">
+                        <span
+                          className="shrink-0 font-serif text-sm text-[#d8bf91]"
+                          style={
+                            privateLocationTheme
+                              ? {
+                                  color:
+                                    privateLocationTheme.systemColour,
+                                }
+                              : undefined
+                          }
+                        >
                           {author?.display_name ??
                             "Unknown character"}
                         </span>
@@ -988,6 +1049,14 @@ export default function RoomMessageList({
                         title={formatRollText(
                           item,
                         )}
+                        style={
+                          privateLocationTheme
+                            ? {
+                                color:
+                                  privateLocationTheme.systemColour,
+                              }
+                            : undefined
+                        }
                       >
                         {formatRollText(
                           item,
@@ -1048,6 +1117,28 @@ export default function RoomMessageList({
         ? "border-l-2 border-[#7d628f] bg-[#241b2a]/45"
         : ""
   }`}
+  style={
+    privateLocationTheme
+      ? isOutOfCharacter
+        ? {
+            backgroundColor:
+              privateLocationTheme.offgameBackgroundColour,
+            color:
+              privateLocationTheme.offgameTextColour,
+          }
+        : isWhisper
+          ? {
+              backgroundColor:
+                privateLocationTheme.whisperBackgroundColour,
+              color:
+                privateLocationTheme.whisperTextColour,
+            }
+          : {
+              backgroundColor:
+                privateLocationTheme.backgroundColour,
+            }
+      : undefined
+  }
 >
   {/* Character identity + timestamp */}
   <div className="flex w-[76px] shrink-0 flex-col">
@@ -1085,13 +1176,33 @@ export default function RoomMessageList({
         }`}
       >
         {isOutOfCharacter ? (
-          <span className="text-[8px] uppercase tracking-[0.2em] text-[#a9c7e6]">
+          <span
+            className="text-[8px] uppercase tracking-[0.2em] text-[#a9c7e6]"
+            style={
+              privateLocationTheme
+                ? {
+                    color:
+                      privateLocationTheme.offgameTextColour,
+                  }
+                : undefined
+            }
+          >
             Out of Character message
           </span>
         ) : null}
 
         {isWhisper ? (
-          <span className="text-[8px] uppercase tracking-[0.2em] text-[#c7add6]">
+          <span
+            className="text-[8px] uppercase tracking-[0.2em] text-[#c7add6]"
+            style={
+              privateLocationTheme
+                ? {
+                    color:
+                      privateLocationTheme.whisperTextColour,
+                  }
+                : undefined
+            }
+          >
             {whisperLabel}
           </span>
         ) : null}
@@ -1108,12 +1219,42 @@ export default function RoomMessageList({
         <Link
           href={characterHref}
           className="mr-2 inline font-serif text-sm leading-[18px] text-[#d8bf91] transition hover:text-[#ecd29e]"
+          style={
+            privateLocationTheme &&
+            (
+              isWhisper ||
+              isOutOfCharacter
+            )
+              ? {
+                  color:
+                    isWhisper
+                      ? privateLocationTheme.whisperTextColour
+                      : privateLocationTheme.offgameTextColour,
+                }
+              : undefined
+          }
         >
           {author.first_name ??
             author.display_name}
         </Link>
       ) : (
-        <span className="mr-2 inline font-serif text-sm leading-[18px] text-[#d8bf91]">
+        <span
+          className="mr-2 inline font-serif text-sm leading-[18px] text-[#d8bf91]"
+          style={
+            privateLocationTheme &&
+            (
+              isWhisper ||
+              isOutOfCharacter
+            )
+              ? {
+                  color:
+                    isWhisper
+                      ? privateLocationTheme.whisperTextColour
+                      : privateLocationTheme.offgameTextColour,
+                }
+              : undefined
+          }
+        >
           {author?.first_name ??
             author?.display_name ??
             "Unknown character"}
@@ -1123,6 +1264,24 @@ export default function RoomMessageList({
       <ActionSpeechText
         content={
           item.message
+        }
+        speechColour={
+          privateLocationTheme
+            ? isWhisper
+              ? privateLocationTheme.whisperTextColour
+              : isOutOfCharacter
+                ? privateLocationTheme.offgameTextColour
+                : privateLocationTheme.speechColour
+            : undefined
+        }
+        actionColour={
+          privateLocationTheme
+            ? isWhisper
+              ? privateLocationTheme.whisperTextColour
+              : isOutOfCharacter
+                ? privateLocationTheme.offgameTextColour
+                : privateLocationTheme.actionColour
+            : undefined
         }
       />
     </div>

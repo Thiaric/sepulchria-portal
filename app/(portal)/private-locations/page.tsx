@@ -33,6 +33,31 @@ function label(
   );
 }
 
+function ColourField({
+  label: fieldLabel,
+  name,
+  value,
+}: {
+  label: string;
+  name: string;
+  value: string;
+}) {
+  return (
+    <label className="grid gap-1">
+      <span className="text-[8px] uppercase tracking-[0.15em] text-[#806b50]">
+        {fieldLabel}
+      </span>
+
+      <input
+        type="color"
+        name={name}
+        defaultValue={value}
+        className="h-10 w-full border border-[#60482e]/55 bg-transparent"
+      />
+    </label>
+  );
+}
+
 export default async function PrivateLocationPage() {
   const supabase =
     await createClient();
@@ -107,7 +132,13 @@ export default async function PrivateLocationPage() {
   let theme:
     | {
         background_colour: string;
-        text_colour: string;
+        speech_colour: string;
+        action_colour: string;
+        system_colour: string;
+        whisper_background_colour: string;
+        whisper_text_colour: string;
+        offgame_background_colour: string;
+        offgame_text_colour: string;
       }
     | null = null;
 
@@ -142,7 +173,7 @@ export default async function PrivateLocationPage() {
       supabase
         .from("private_location_rooms")
         .select(
-          "background_colour, text_colour",
+          "background_colour, speech_colour, action_colour, system_colour, whisper_background_colour, whisper_text_colour, offgame_background_colour, offgame_text_colour",
         )
         .eq("room_id", ownedRoomId)
         .single(),
@@ -397,34 +428,74 @@ export default async function PrivateLocationPage() {
               </label>
 
               <div className="grid grid-cols-2 gap-3">
-                <label className="grid gap-1">
-                  <span className="text-[8px] uppercase tracking-[0.15em] text-[#806b50]">
-                    Chat background
-                  </span>
-                  <input
-                    type="color"
-                    name="backgroundColour"
-                    defaultValue={
-                      theme.background_colour
-                    }
-                    className="h-10 w-full border border-[#60482e]/55 bg-transparent"
-                  />
-                </label>
+                <ColourField
+                  label="Chat background"
+                  name="backgroundColour"
+                  value={
+                    theme.background_colour
+                  }
+                />
 
-                <label className="grid gap-1">
-                  <span className="text-[8px] uppercase tracking-[0.15em] text-[#806b50]">
-                    Chat text
-                  </span>
-                  <input
-                    type="color"
-                    name="textColour"
-                    defaultValue={
-                      theme.text_colour
-                    }
-                    className="h-10 w-full border border-[#60482e]/55 bg-transparent"
-                  />
-                </label>
+                <ColourField
+                  label="Spoken text"
+                  name="speechColour"
+                  value={
+                    theme.speech_colour
+                  }
+                />
+
+                <ColourField
+                  label="Action text"
+                  name="actionColour"
+                  value={
+                    theme.action_colour
+                  }
+                />
+
+                <ColourField
+                  label="Dice / Skills / Feats"
+                  name="systemColour"
+                  value={
+                    theme.system_colour
+                  }
+                />
+
+                <ColourField
+                  label="Whisper background"
+                  name="whisperBackgroundColour"
+                  value={
+                    theme.whisper_background_colour
+                  }
+                />
+
+                <ColourField
+                  label="Whisper text"
+                  name="whisperTextColour"
+                  value={
+                    theme.whisper_text_colour
+                  }
+                />
+
+                <ColourField
+                  label="Off-Game background"
+                  name="offgameBackgroundColour"
+                  value={
+                    theme.offgame_background_colour
+                  }
+                />
+
+                <ColourField
+                  label="Off-Game text"
+                  name="offgameTextColour"
+                  value={
+                    theme.offgame_text_colour
+                  }
+                />
               </div>
+
+              <p className="text-[8px] leading-4 text-[#6f6252]">
+                The Voice of Fate always keeps the standard Sepulchria styling.
+              </p>
 
               <button
                 type="submit"
