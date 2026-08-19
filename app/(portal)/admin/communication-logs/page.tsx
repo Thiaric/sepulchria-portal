@@ -173,7 +173,7 @@ export default async function CommunicationLogsPage({
 
   const view =
     params.view === "chat" ||
-    params.view === "whisper"
+    params.view === "instant"
       ? params.view
       : "pm";
 
@@ -267,12 +267,16 @@ export default async function CommunicationLogsPage({
           params,
           characters,
         )
-      : await loadRoomMessages(
-          params,
-          view,
-          privateRoomIds,
-          headquartersRoomIds,
-        );
+      : view === "instant"
+        ? await loadInstantChatMessages(
+            params,
+            characters,
+          )
+        : await loadRoomMessages(
+            params,
+            privateRoomIds,
+            headquartersRoomIds,
+          );
 
   return (
     <main className="p-5 sm:p-7 lg:p-9">
@@ -288,7 +292,8 @@ export default async function CommunicationLogsPage({
 
           <p className="mt-3 max-w-4xl text-sm leading-7 text-[#9c8d79]">
             Staff-only read access to historical Private Messages,
-            location chat and private whispers. Viewing a log does not
+            complete location chat logs (including whispers), and the
+            bottom-right off-game Instant Chat. Viewing a log does not
             join the conversation, alter unread state, or appear as a
             participant.
           </p>
@@ -334,19 +339,19 @@ export default async function CommunicationLogsPage({
           <ViewLink
             active={
               view ===
-              "whisper"
+              "instant"
             }
             href={buildHref(
               params,
               {
-                view: "whisper",
-                conversation:
-                  null,
+                view: "instant",
+                room: null,
+                kind: null,
                 type: null,
               },
             )}
           >
-            Instant / Whisper Chats
+            Instant Chats
           </ViewLink>
         </div>
 
@@ -401,14 +406,19 @@ export default async function CommunicationLogsPage({
               )}
             </select>
 
-            {view === "pm" ? (
+            {view === "pm" ||
+            view === "instant" ? (
               <input
                 name="conversation"
                 defaultValue={
                   params.conversation ??
                   ""
                 }
-                placeholder="Conversation UUID..."
+                placeholder={
+                  view === "instant"
+                    ? "Instant Chat UUID..."
+                    : "Conversation UUID..."
+                }
                 className={input}
               />
             ) : (
@@ -462,7 +472,7 @@ export default async function CommunicationLogsPage({
             />
           </div>
 
-          {view !== "pm" ? (
+          {view === "chat" ? (
             <div className="mt-2 grid gap-2 md:grid-cols-2 xl:grid-cols-6">
               <select
                 name="kind"
@@ -486,32 +496,33 @@ export default async function CommunicationLogsPage({
                 </option>
               </select>
 
-              {view === "chat" ? (
-                <select
-                  name="type"
-                  defaultValue={
-                    params.type ??
-                    ""
-                  }
-                  className={input}
-                >
-                  <option value="">
-                    All chat entries
-                  </option>
-                  <option value="action">
-                    Actions / Dialogue
-                  </option>
-                  <option value="dice_roll">
-                    Dice Rolls
-                  </option>
-                  <option value="attribute_check">
-                    Attribute Checks
-                  </option>
-                  <option value="fate">
-                    Fate
-                  </option>
-                </select>
-              ) : null}
+              <select
+                name="type"
+                defaultValue={
+                  params.type ??
+                  ""
+                }
+                className={input}
+              >
+                <option value="">
+                  All chat entries
+                </option>
+                <option value="action">
+                  Actions / Dialogue
+                </option>
+                <option value="dice_roll">
+                  Dice Rolls
+                </option>
+                <option value="attribute_check">
+                  Attribute Checks
+                </option>
+                <option value="fate">
+                  Fate
+                </option>
+                <option value="whisper">
+                  Whispers
+                </option>
+              </select>
             </div>
           ) : null}
 
@@ -968,7 +979,6 @@ async function loadPrivateMessages(
 
 async function loadRoomMessages(
   params: SearchParams,
-  view: "chat" | "whisper",
   privateRoomIds: Set<string>,
   headquartersRoomIds: Set<string>,
 ) {
@@ -1019,26 +1029,12 @@ async function loadRoomMessages(
       .limit(250);
 
   if (
-    view === "whisper"
+    params.type?.trim()
   ) {
     query = query.eq(
       "message_type",
-      "whisper",
+      params.type.trim(),
     );
-  } else {
-    query = query.neq(
-      "message_type",
-      "whisper",
-    );
-
-    if (
-      params.type?.trim()
-    ) {
-      query = query.eq(
-        "message_type",
-        params.type.trim(),
-      );
-    }
   }
 
   if (params.q?.trim()) {
@@ -1058,18 +1054,9 @@ async function loadRoomMessages(
   if (
     params.character?.trim()
   ) {
-    if (
-      view === "whisper"
-    ) {
-      query = query.or(
-        `character_id.eq.${params.character.trim()},whisper_recipient_character_id.eq.${params.character.trim()}`,
-      );
-    } else {
-      query = query.eq(
-        "character_id",
-        params.character.trim(),
-      );
-    }
+    query = query.or(
+      `character_id.eq.${params.character.trim()},whisper_recipient_character_id.eq.${params.character.trim()}`,
+    );
   }
 
   const from =
@@ -1231,7 +1218,7 @@ async function loadRoomMessages(
                     {characterName(
                       sender,
                     )}
-                    {view ===
+                    {message.message_type ===
                       "whisper" ? (
                       <>
                         {" "}
@@ -1304,13 +1291,144 @@ async function loadRoomMessages(
       )}
 
       {!messages.length ? (
-        <EmptyState
-          message={
-            view === "whisper"
-              ? "No Instant / Whisper messages match these filters."
-              : "No Location Chat messages match these filters."
-          }
-        />
+        <EmptyState message="No Location Chat messages match these filters." />
+      ) : null}
+    </section>
+  );
+}
+
+
+async function loadInstantChatMessages(
+  params: SearchParams,
+  characters: CharacterOption[],
+) {
+  const supabase =
+    createAdminClient();
+
+  let query =
+    supabase
+      .from("instant_chat_messages")
+      .select(
+        "id, conversation_id, sender_character_id, body, created_at",
+      )
+      .order("created_at", {
+        ascending: false,
+      })
+      .limit(250);
+
+  if (params.q?.trim()) {
+    query = query.ilike(
+      "body",
+      `%${params.q.trim()}%`,
+    );
+  }
+
+  if (params.character?.trim()) {
+    query = query.eq(
+      "sender_character_id",
+      params.character.trim(),
+    );
+  }
+
+  if (params.conversation?.trim()) {
+    query = query.eq(
+      "conversation_id",
+      params.conversation.trim(),
+    );
+  }
+
+  const from =
+    startOfDay(params.from);
+  const to =
+    endOfDay(params.to);
+
+  if (from) {
+    query = query.gte(
+      "created_at",
+      from,
+    );
+  }
+
+  if (to) {
+    query = query.lte(
+      "created_at",
+      to,
+    );
+  }
+
+  const {
+    data: messages,
+    error,
+  } = await query;
+
+  if (error) {
+    throw new Error(
+      `Unable to load Instant Chat logs: ${error.message}`,
+    );
+  }
+
+  const characterById =
+    new Map(
+      characters.map(
+        (character) => [
+          character.id,
+          characterName(character),
+        ],
+      ),
+    );
+
+  return (
+    <section className="mt-4 space-y-2">
+      {(messages ?? []).map(
+        (message) => (
+          <article
+            key={message.id}
+            className="border border-[#59432c]/40 bg-[#15100d] p-4"
+          >
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <p className="font-serif text-base text-[#dcc49a]">
+                  {characterById.get(
+                    String(
+                      message.sender_character_id,
+                    ),
+                  ) ??
+                    "Unknown character"}
+                </p>
+
+                <p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-[#806f5b]">
+                  Instant Chat · Off-game
+                </p>
+              </div>
+
+              <div className="text-right">
+                <p className="text-[9px] text-[#9b8768]">
+                  {formatDateTime(
+                    String(
+                      message.created_at,
+                    ),
+                  )}
+                </p>
+
+                <p className="mt-1 font-mono text-[7px] text-[#62584b]">
+                  {String(
+                    message.conversation_id,
+                  )}
+                </p>
+              </div>
+            </div>
+
+            <p className="mt-3 whitespace-pre-wrap border-t border-[#59432c]/25 pt-3 text-xs leading-6 text-[#c1b198]">
+              {String(
+                message.body ?? "",
+              )}
+            </p>
+          </article>
+        ),
+      )}
+
+      {!messages?.length ? (
+        <EmptyState message="No Instant Chat messages match these filters." />
       ) : null}
     </section>
   );
