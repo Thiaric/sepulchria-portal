@@ -1052,6 +1052,60 @@ export function PortalSidebar({
     );
   }
 
+  function renderMobileOddJobsItem() {
+    const className = `
+      relative
+      flex
+      h-10
+      min-w-0
+      items-center
+      justify-center
+      border
+      text-[17px]
+      leading-none
+      transition
+      ${
+        oddJobsRoomId
+          ? "border-transparent text-[#b68b4f] hover:border-[#5d4930] hover:bg-[#1d1712] hover:text-[#efd9aa]"
+          : "cursor-not-allowed border-transparent text-[#51483d] opacity-45"
+      }
+    `;
+
+    return (
+      <form
+        action={enterRoomFromMap}
+        className="min-w-0"
+      >
+        <input
+          type="hidden"
+          name="roomId"
+          value={oddJobsRoomId ?? ""}
+        />
+
+        <button
+          type="submit"
+          disabled={!oddJobsRoomId}
+          title={
+            oddJobsRoomId
+              ? "The Odd Jobs Bureau"
+              : "The Odd Jobs Bureau is currently unavailable."
+          }
+          aria-label="The Odd Jobs Bureau"
+          className={`${className} w-full`}
+        >
+          <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center">
+            <img
+              src="/icons/bureau.png"
+              alt=""
+              aria-hidden="true"
+              className="h-full w-full object-contain"
+            />
+          </span>
+        </button>
+      </form>
+    );
+  }
+
   const mobileNavigationItems = [
   ...mainNavigationItems,
   codexItem,
@@ -1079,11 +1133,13 @@ export function PortalSidebar({
 <div className="px-2 py-1.5 lg:hidden">
   <nav
     aria-label="Main navigation"
-    className="grid grid-cols-6 gap-1"
+    className="grid grid-cols-5 gap-1 sm:grid-cols-6"
   >
     {mobileNavigationItems.map(
       renderMobileItem,
     )}
+
+    {renderMobileOddJobsItem()}
 
     {/* RULES */}
     <div

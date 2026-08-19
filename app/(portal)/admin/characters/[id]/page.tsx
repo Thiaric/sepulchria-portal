@@ -10,6 +10,10 @@ import {
 } from "@/components/admin/admin-ancestry-gift-selector";
 import { CharacterReviewFields } from "@/components/admin/character-review-fields";
 import { AdminCharacterRemnants } from "@/components/admin/admin-character-remnants";
+import {
+  AdminCharacterFeatureAccess,
+  type CharacterFeatureEntitlementRow,
+} from "@/components/admin/admin-character-feature-access";
 import { requireStaff } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
@@ -191,6 +195,7 @@ export default async function AdminCharacterPage({
     characterResult,
     racesResult,
     orderMembershipResult,
+    featureEntitlementsResult,
   ] = await Promise.all([
     supabase
       .from("characters")
@@ -266,12 +271,20 @@ export default async function AdminCharacterPage({
       .eq("character_id", id)
       .limit(1)
       .maybeSingle(),
+
+    supabase
+      .from("character_feature_entitlements")
+      .select(
+        "feature_key, enabled, source, note, granted_at, updated_at",
+      )
+      .eq("character_id", id),
   ]);
 
   const firstError =
     characterResult.error ??
     racesResult.error ??
-    orderMembershipResult.error;
+    orderMembershipResult.error ??
+    featureEntitlementsResult.error;
 
   if (firstError) {
     throw new Error(
@@ -413,6 +426,10 @@ export default async function AdminCharacterPage({
 
   const displayName =
     getDisplayName(character);
+
+  const featureEntitlements =
+    (featureEntitlementsResult.data ??
+      []) as CharacterFeatureEntitlementRow[];
 
   return (
     <main className="p-5 sm:p-7 lg:p-9">
@@ -586,6 +603,11 @@ export default async function AdminCharacterPage({
         </section>
 
         <AdminCharacterRemnants characterId={character.id} />
+
+        <AdminCharacterFeatureAccess
+          characterId={character.id}
+          entitlements={featureEntitlements}
+        />
 
         <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
           <div className="space-y-6">

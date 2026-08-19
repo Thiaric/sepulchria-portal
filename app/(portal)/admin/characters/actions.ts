@@ -1520,3 +1520,101 @@ export async function deleteCharacterAdministration(
     "/admin/characters",
   );
 }
+
+const CHARACTER_FEATURE_KEYS = [
+  "private_chat",
+  "friend_list",
+] as const;
+
+type CharacterFeatureKey =
+  (typeof CHARACTER_FEATURE_KEYS)[number];
+
+const CHARACTER_FEATURE_SOURCES = [
+  "paid",
+  "expertise",
+  "staff",
+] as const;
+
+type CharacterFeatureSource =
+  (typeof CHARACTER_FEATURE_SOURCES)[number];
+
+export async function setCharacterFeatureEntitlement(
+  formData: FormData,
+) {
+  const staff = await requireStaff();
+
+  const characterId =
+    readRequiredUuid(formData.get("characterId"));
+
+  const featureKeyRaw =
+    String(formData.get("featureKey") ?? "").trim();
+
+  if (
+    !CHARACTER_FEATURE_KEYS.includes(
+      featureKeyRaw as CharacterFeatureKey,
+    )
+  ) {
+    throw new Error("The selected feature is invalid.");
+  }
+
+  const sourceRaw =
+    String(formData.get("source") ?? "").trim();
+
+  if (
+    !CHARACTER_FEATURE_SOURCES.includes(
+      sourceRaw as CharacterFeatureSource,
+    )
+  ) {
+    throw new Error("The selected unlock source is invalid.");
+  }
+
+  const enabled =
+    String(formData.get("enabled") ?? "false") === "true";
+
+  const note =
+    readOptionalText(formData.get("note"), 1000);
+
+  const admin = createPrivilegedClient();
+
+  const { data: character, error: characterError } =
+    await admin
+      .from("characters")
+      .select("id")
+      .eq("id", characterId)
+      .maybeSingle();
+
+  if (characterError || !character) {
+    throw new Error(
+      characterError?.message ?? "Character not found.",
+    );
+  }
+
+  const now = new Date().toISOString();
+
+  const { error } = await admin
+    .from("character_feature_entitlements")
+    .upsert(
+      {
+        character_id: characterId,
+        feature_key: featureKeyRaw,
+        enabled,
+        source: sourceRaw,
+        note,
+        granted_by: staff.userId,
+        granted_at: now,
+        updated_at: now,
+      },
+      {
+        onConflict: "character_id,feature_key",
+      },
+    );
+
+  if (error) {
+    throw new Error(
+      `Unable to update feature access: ${error.message}`,
+    );
+  }
+
+  revalidatePath(`/admin/characters/${characterId}`);
+}
+
