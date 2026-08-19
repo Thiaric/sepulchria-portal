@@ -6,10 +6,12 @@ import {
 
 type DeleteConversationFormProps = {
   conversationId: string;
+  isGroup?: boolean;
 };
 
 export function DeleteConversationForm({
   conversationId,
+  isGroup = false,
 }: DeleteConversationFormProps) {
   return (
     <form
@@ -19,7 +21,9 @@ export function DeleteConversationForm({
       onSubmit={(event) => {
         const confirmed =
           window.confirm(
-            "Are you sure you want to delete this conversation? This will remove it from your private messages.",
+            isGroup
+              ? "Are you sure you want to leave this group conversation? You will stop receiving new messages and notifications from this group, and you will not be able to reopen its history."
+              : "Are you sure you want to delete this conversation? This will remove it from your private messages.",
           );
 
         if (!confirmed) {
@@ -37,7 +41,9 @@ export function DeleteConversationForm({
         type="submit"
         className="border border-[#7b4035] px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-[#d99b8e]"
       >
-        Delete conversation
+        {isGroup
+          ? "Leave conversation"
+          : "Delete conversation"}
       </button>
     </form>
   );

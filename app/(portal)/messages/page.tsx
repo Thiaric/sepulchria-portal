@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getStaffSession } from "@/lib/auth/require-staff";
 
 import { MessagesInboxClient } from "./components/messages-inbox-client";
+import { MessagesInboxRealtime } from "./components/messages-inbox-realtime";
 
 type Props = {
   searchParams: Promise<{
@@ -627,7 +628,14 @@ export default async function MessagesPage({
     await getStaffSession();
 
   return (
-    <MessagesInboxClient
+    <>
+      <MessagesInboxRealtime
+        characterId={
+          character.id
+        }
+      />
+
+      <MessagesInboxClient
       viewerIsStaff={
         staffSession !== null
       }
@@ -640,6 +648,7 @@ export default async function MessagesPage({
       showArchived={
         showArchived
       }
-    />
+      />
+    </>
   );
 }

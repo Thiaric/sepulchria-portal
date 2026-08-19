@@ -252,6 +252,7 @@ export async function GroupConversationView({
                 conversationId={
                   conversationId
                 }
+                isGroup
               />
             </div>
           </header>

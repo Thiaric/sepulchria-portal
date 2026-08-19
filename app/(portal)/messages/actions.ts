@@ -234,12 +234,88 @@ export async function deleteConversationForMe(formData: FormData): Promise<void>
   const conversationId = String(formData.get("conversationId") ?? "").trim();
   if (!conversationId) return;
 
-  const { supabase } = await getContext();
-  const { error } = await supabase.rpc("delete_direct_conversation_for_me", {
-    target_conversation_id: conversationId,
-  });
+  const {
+    supabase,
+    character,
+  } = await getContext();
 
-  if (error) throw new Error(error.message);
+  const {
+    data: conversation,
+    error: conversationError,
+  } = await supabase
+    .from("direct_conversations")
+    .select("id, is_group")
+    .eq("id", conversationId)
+    .maybeSingle();
+
+  if (conversationError) {
+    throw new Error(
+      conversationError.message,
+    );
+  }
+
+  if (!conversation) {
+    redirect("/messages");
+  }
+
+  if (conversation.is_group) {
+    const now =
+      new Date().toISOString();
+
+    const {
+      error: leaveError,
+    } = await supabase
+      .from(
+        "direct_conversation_participants",
+      )
+      .update({
+        deleted_at: now,
+        archived_at: now,
+        last_read_at: now,
+      })
+      .eq(
+        "conversation_id",
+        conversationId,
+      )
+      .eq(
+        "character_id",
+        character.id,
+      )
+      .is(
+        "deleted_at",
+        null,
+      );
+
+    if (leaveError) {
+      throw new Error(
+        leaveError.message,
+      );
+    }
+
+    revalidatePath("/messages");
+    revalidatePath(
+      `/messages/${conversationId}`,
+    );
+
+    redirect("/messages");
+  }
+
+  const {
+    error,
+  } = await supabase.rpc(
+    "delete_direct_conversation_for_me",
+    {
+      target_conversation_id:
+        conversationId,
+    },
+  );
+
+  if (error) {
+    throw new Error(
+      error.message,
+    );
+  }
+
   revalidatePath("/messages");
   redirect("/messages");
 }
