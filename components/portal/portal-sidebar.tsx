@@ -319,12 +319,13 @@ export function PortalSidebar({
 
         supabase
           .from("private_location_members")
-          .select("room_id")
+          .select("room_id, role")
           .eq(
             "character_id",
             character.id,
           )
           .eq("status", "active")
+          .eq("role", "member")
           .limit(1)
           .maybeSingle(),
 
@@ -342,8 +343,7 @@ export function PortalSidebar({
 
       setHasPrivateLocationAccess(
         entitlementResult.data?.enabled === true ||
-        Boolean(membershipResult.data) ||
-        Boolean(invitationResult.data),
+        Boolean(membershipResult.data),
       );
     }, []);
 

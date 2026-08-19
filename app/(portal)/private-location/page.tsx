@@ -100,7 +100,7 @@ export default async function PrivateLocationPage() {
     );
   }
 
-  const accessible =
+  let accessible =
     (memberships ?? [])
       .map((row) => {
         const relation =
@@ -118,7 +118,12 @@ export default async function PrivateLocationPage() {
             }
           : null;
       })
-      .filter(Boolean) as Array<{
+      .filter(Boolean)
+      .filter(
+        (entry) =>
+          entry?.role !== "owner" ||
+          ownerEnabled,
+      ) as Array<{
         room: {
           id: string;
           name: string;
@@ -225,6 +230,23 @@ export default async function PrivateLocationPage() {
 
     ownedRoom =
       roomResult.data;
+
+    if (
+      ownedRoom &&
+      !accessible.some(
+        (entry) =>
+          entry.room.id ===
+          ownedRoom?.id,
+      )
+    ) {
+      accessible = [
+        {
+          room: ownedRoom,
+          role: "owner",
+        },
+        ...accessible,
+      ];
+    }
 
     theme =
       themeResult.data;

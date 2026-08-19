@@ -208,6 +208,31 @@ export async function ensureOwnedPrivateLocation() {
   }
 
   if (existing) {
+    const {
+      error: ownerMembershipError,
+    } = await admin
+      .from("private_location_members")
+      .upsert(
+        {
+          room_id: existing.room_id,
+          character_id: character.id,
+          role: "owner",
+          status: "active",
+          updated_at:
+            new Date().toISOString(),
+        },
+        {
+          onConflict:
+            "room_id,character_id",
+        },
+      );
+
+    if (ownerMembershipError) {
+      throw new Error(
+        `Unable to repair Private Location ownership: ${ownerMembershipError.message}`,
+      );
+    }
+
     return existing.room_id as string;
   }
 
