@@ -24,6 +24,8 @@ type ActiveCityCounterProps = {
   initialCount: number;
   isStaff: boolean;
   visiblePrivateRoomIds: string[];
+  allOrderHeadquartersRoomIds: string[];
+  visibleOrderHeadquartersRoomIds: string[];
 };
 
 type CodexSummary = {
@@ -88,6 +90,8 @@ export function ActiveCityCounter({
   initialCount,
   isStaff,
   visiblePrivateRoomIds,
+  allOrderHeadquartersRoomIds,
+  visibleOrderHeadquartersRoomIds,
 }: ActiveCityCounterProps) {
   const [count, setCount] =
     useState(initialCount);
@@ -121,6 +125,24 @@ export function ActiveCityCounter({
           visiblePrivateRoomIds,
         ),
       [visiblePrivateRoomIds],
+    );
+
+  const allOrderHeadquartersRoomIdSet =
+    useMemo(
+      () =>
+        new Set(
+          allOrderHeadquartersRoomIds,
+        ),
+      [allOrderHeadquartersRoomIds],
+    );
+
+  const visibleOrderHeadquartersRoomIdSet =
+    useMemo(
+      () =>
+        new Set(
+          visibleOrderHeadquartersRoomIds,
+        ),
+      [visibleOrderHeadquartersRoomIds],
     );
 
   const refreshPresence =
@@ -434,15 +456,26 @@ export function ActiveCityCounter({
 
           const privateRoom =
             roomArea?.slug ===
-            "private-locations";
+              "private-locations" ||
+            (
+              room !== null &&
+              allOrderHeadquartersRoomIdSet.has(
+                room.id,
+              )
+            );
 
           const maySeePrivateRoom =
             !privateRoom ||
             isStaff ||
             (
               room !== null &&
-              visiblePrivateRoomIdSet.has(
-                room.id,
+              (
+                visiblePrivateRoomIdSet.has(
+                  room.id,
+                ) ||
+                visibleOrderHeadquartersRoomIdSet.has(
+                  room.id,
+                )
               )
             );
 
@@ -471,6 +504,8 @@ export function ActiveCityCounter({
       searchQuery,
       isStaff,
       visiblePrivateRoomIdSet,
+      allOrderHeadquartersRoomIdSet,
+      visibleOrderHeadquartersRoomIdSet,
     ]);
 
   return (
@@ -705,15 +740,26 @@ export function ActiveCityCounter({
 
                     const privateRoom =
                       roomArea?.slug ===
-                      "private-locations";
+                        "private-locations" ||
+                      (
+                        room !== null &&
+                        allOrderHeadquartersRoomIdSet.has(
+                          room.id,
+                        )
+                      );
 
                     const maySeePrivateRoom =
                       !privateRoom ||
                       isStaff ||
                       (
                         room !== null &&
-                        visiblePrivateRoomIdSet.has(
-                          room.id,
+                        (
+                          visiblePrivateRoomIdSet.has(
+                            room.id,
+                          ) ||
+                          visibleOrderHeadquartersRoomIdSet.has(
+                            room.id,
+                          )
                         )
                       );
 

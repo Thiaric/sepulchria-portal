@@ -14,6 +14,9 @@ import {
 import {
   getStaffSession,
 } from "@/lib/auth/require-staff";
+import {
+  getOrderHeadquartersVisibility,
+} from "@/lib/order-headquarters/access";
 import type {
   PortalCharacter,
   PortalCodexReference,
@@ -200,6 +203,12 @@ export const getPortalContext = cache(
         >
       > = [];
 
+    let allOrderHeadquartersRoomIds:
+      string[] = [];
+
+    let visibleOrderHeadquartersRoomIds:
+      string[] = [];
+
     if (characterData) {
       const row =
         characterData as unknown as CharacterRow;
@@ -253,6 +262,17 @@ export const getPortalContext = cache(
         await getVisiblePrivateLocations(
           characterId,
         );
+
+      const headquartersVisibility =
+        await getOrderHeadquartersVisibility(
+          characterId,
+        );
+
+      allOrderHeadquartersRoomIds =
+        headquartersVisibility.allRoomIds;
+
+      visibleOrderHeadquartersRoomIds =
+        headquartersVisibility.visibleRoomIds;
 
       if (
         character.current_room_id
@@ -405,6 +425,8 @@ export const getPortalContext = cache(
       isStaff:
         staffSession !== null,
       privateLocations,
+      allOrderHeadquartersRoomIds,
+      visibleOrderHeadquartersRoomIds,
     };
   },
 );

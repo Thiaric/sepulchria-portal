@@ -224,6 +224,17 @@ export function LiveDashboardChronicle({
           continue;
         }
 
+        if (
+          context.allOrderHeadquartersRoomIds.includes(
+            room.id,
+          ) &&
+          !context.visibleOrderHeadquartersRoomIds.includes(
+            room.id,
+          )
+        ) {
+          continue;
+        }
+
         const activeCharacter:
           ActiveCharacter = {
             id: character.id,
@@ -303,7 +314,11 @@ export function LiveDashboardChronicle({
       setRooms(nextRooms);
       setError(null);
       setLoading(false);
-    }, [context.privateLocations]);
+    }, [
+      context.privateLocations,
+      context.allOrderHeadquartersRoomIds,
+      context.visibleOrderHeadquartersRoomIds,
+    ]);
 
   useEffect(() => {
     void refreshChronicle();

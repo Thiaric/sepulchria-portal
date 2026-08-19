@@ -76,4 +76,6 @@ export type PortalContext = {
   currentRoomAccessAllowed: boolean;
   isStaff: boolean;
   privateLocations: PortalPrivateLocation[];
+  allOrderHeadquartersRoomIds: string[];
+  visibleOrderHeadquartersRoomIds: string[];
 };

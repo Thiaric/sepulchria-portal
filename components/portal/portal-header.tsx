@@ -46,6 +46,12 @@ export async function PortalHeader({ context }: PortalHeaderProps) {
                     location.roomId,
                 )
               }
+              allOrderHeadquartersRoomIds={
+                context.allOrderHeadquartersRoomIds
+              }
+              visibleOrderHeadquartersRoomIds={
+                context.visibleOrderHeadquartersRoomIds
+              }
             />
             <PortalSoundToggle />
 
