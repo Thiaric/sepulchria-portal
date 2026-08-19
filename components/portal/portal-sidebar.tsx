@@ -148,7 +148,7 @@ const privateLocationItem: NavigationItem = {
   label: "Private Location",
   title:
     "Manage or enter invitation-only Private Locations.",
-  icon: "/icons/messages.png",
+  icon: "/icons/private.png",
   href: "/private-locations",
   activePaths: ["/private-locations"],
 };
@@ -157,7 +157,7 @@ const friendsItem: NavigationItem = {
   label: "Friend List",
   title:
     "Open your character relationships and relationship requests.",
-  icon: "/icons/characters.png",
+  icon: "/icons/friends.png",
   href: "/friends",
   activePaths: ["/friends"],
 };
@@ -175,7 +175,7 @@ const manageOrderItem: NavigationItem = {
   label: "Manage Order",
   title:
     "Manage the members and affairs of the Order you lead.",
-  icon: "/icons/orders.png",
+  icon: "/icons/manage-orders.png",
   href: "/orders/manage",
   activePaths: ["/orders/manage"],
 };

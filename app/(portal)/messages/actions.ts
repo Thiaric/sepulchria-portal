@@ -277,6 +277,41 @@ export async function deleteConversationForMe(formData: FormData): Promise<void>
       );
     }
 
+    /*
+     * Leaving a group is permanent membership removal.
+     * Verify the database actually removed this character before redirecting.
+     * This prevents a broken/stale RPC from pretending that Leave succeeded.
+     */
+    const {
+      data: membershipAfterLeave,
+      error: verifyLeaveError,
+    } = await supabase
+      .from(
+        "direct_conversation_participants",
+      )
+      .select("conversation_id")
+      .eq(
+        "conversation_id",
+        conversationId,
+      )
+      .eq(
+        "character_id",
+        character.id,
+      )
+      .maybeSingle();
+
+    if (verifyLeaveError) {
+      throw new Error(
+        verifyLeaveError.message,
+      );
+    }
+
+    if (membershipAfterLeave) {
+      throw new Error(
+        "Leave Conversation failed: your membership still exists. The conversation has NOT been left.",
+      );
+    }
+
     revalidatePath("/messages");
     revalidatePath(
       `/messages/${conversationId}`,
