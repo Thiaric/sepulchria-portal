@@ -74,6 +74,8 @@ type PresentCharacter = {
   room_id: string | null;
   status: PresenceStatus;
   last_seen_at: string;
+  appear_offline: boolean;
+  appeared_offline_at: string | null;
 
   character:
     | CharacterSummary
@@ -170,6 +172,8 @@ export function ActiveCityCounter({
             room_id,
             status,
             last_seen_at,
+            appear_offline,
+            appeared_offline_at,
 
             room:rooms!character_presence_room_id_fkey(
               id,
@@ -234,11 +238,24 @@ export function ActiveCityCounter({
         (data ??
           []) as unknown as PresentCharacter[];
 
-      setPresentCharacters(rows);
-      setCount(rows.length);
+      const visibleRows =
+        isStaff
+          ? rows
+          : rows.filter(
+              (row) =>
+                row.appear_offline !==
+                true,
+            );
+
+      setPresentCharacters(
+        visibleRows,
+      );
+      setCount(
+        visibleRows.length,
+      );
       setError(null);
       setLoading(false);
-    }, []);
+    }, [isStaff]);
 
   useEffect(() => {
     let cancelled = false;
@@ -804,6 +821,11 @@ export function ActiveCityCounter({
                               status={
                                 presence.status
                               }
+                              cloaked={
+                                isStaff &&
+                                presence.appear_offline ===
+                                  true
+                              }
                             />
                           </Link>
 
@@ -829,6 +851,11 @@ export function ActiveCityCounter({
                               <PresenceLabel
                                 status={
                                   presence.status
+                                }
+                                cloaked={
+                                  isStaff &&
+                                  presence.appear_offline ===
+                                    true
                                 }
                               />
                             </div>
@@ -1036,8 +1063,10 @@ function HeritageEntry({
 
 function PresenceDot({
   status,
+  cloaked = false,
 }: {
   status: PresenceStatus;
+  cloaked?: boolean;
 }) {
   const classes: Record<
     PresenceStatus,
@@ -1054,15 +1083,21 @@ function PresenceDot({
   return (
     <span
       title={status}
-      className={`absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 ${classes[status]}`}
+      className={`absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 ${classes[status]} ${
+        cloaked
+          ? "opacity-50"
+          : ""
+      }`}
     />
   );
 }
 
 function PresenceLabel({
   status,
+  cloaked = false,
 }: {
   status: PresenceStatus;
+  cloaked?: boolean;
 }) {
   const classes: Record<
     PresenceStatus,
@@ -1078,7 +1113,11 @@ function PresenceLabel({
 
   return (
     <span
-      className={`shrink-0 text-[7px] uppercase tracking-[0.14em] ${classes[status]}`}
+      className={`shrink-0 text-[7px] uppercase tracking-[0.14em] ${classes[status]} ${
+        cloaked
+          ? "opacity-50"
+          : ""
+      }`}
     >
       {status}
     </span>

@@ -6,6 +6,7 @@ import { LogoutButton } from "@/components/logout-button";
 import { UnreadMessageBadge } from "@/components/messages/unread-message-badge";
 import { ActiveCityCounter } from "@/components/portal/active-city-counter";
 import { HeaderCharacterIdentity } from "@/components/portal/header-character-identity";
+import { StaffAppearOfflineToggle } from "@/components/portal/staff-appear-offline-toggle";
 import { WorldIndicator } from "@/components/world/world-indicator";
 import { getStaffSession } from "@/lib/auth/require-staff";
 import type { PortalContext } from "@/types/portal";
@@ -74,6 +75,19 @@ export async function PortalHeader({ context }: PortalHeaderProps) {
                 ⚙
                 <SubmittedCharacterBadge variant="floating" />
               </Link>
+            ) : null}
+
+            {staffSession &&
+            character ? (
+              <StaffAppearOfflineToggle
+                characterId={
+                  character.id
+                }
+                initialAppearOffline={
+                  presence?.appear_offline ===
+                  true
+                }
+              />
             ) : null}
 
             <HeaderCharacterIdentity

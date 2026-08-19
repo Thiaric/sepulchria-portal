@@ -104,17 +104,25 @@ type PresenceView =
 type PresenceRow = {
   status: PresenceStatus;
   last_seen_at: string;
+  appear_offline: boolean;
 };
 
 export function MessagePresenceStatus({
   characterId,
+  viewerIsStaff = false,
 }: {
   characterId: string;
+  viewerIsStaff?: boolean;
 }) {
   const [status, setStatus] =
     useState<PresenceView>(
       "offline",
     );
+
+  const [
+    cloaked,
+    setCloaked,
+  ] = useState(false);
 
   const refreshPresence =
     useCallback(async () => {
@@ -129,7 +137,7 @@ export function MessagePresenceStatus({
           "character_presence",
         )
         .select(
-          "status, last_seen_at",
+          "status, last_seen_at, appear_offline",
         )
         .eq(
           "character_id",
@@ -150,8 +158,24 @@ export function MessagePresenceStatus({
 
       if (!presence) {
         setStatus("offline");
+        setCloaked(false);
         return;
       }
+
+      if (
+        presence.appear_offline &&
+        !viewerIsStaff
+      ) {
+        setStatus("offline");
+        setCloaked(false);
+        return;
+      }
+
+      setCloaked(
+        viewerIsStaff &&
+        presence.appear_offline ===
+          true,
+      );
 
       const lastSeen =
         new Date(
@@ -172,7 +196,10 @@ export function MessagePresenceStatus({
       }
 
       setStatus(presence.status);
-    }, [characterId]);
+    }, [
+      characterId,
+      viewerIsStaff,
+    ]);
 
   useEffect(() => {
     void refreshPresence();
@@ -248,7 +275,11 @@ export function MessagePresenceStatus({
   return (
     <span
       title={presentation.label}
-      className={`inline-flex items-center gap-1.5 text-[8px] uppercase tracking-[0.15em] ${presentation.textClass}`}
+      className={`inline-flex items-center gap-1.5 text-[8px] uppercase tracking-[0.15em] ${presentation.textClass} ${
+        cloaked
+          ? "opacity-50"
+          : ""
+      }`}
     >
       <span
         className={`h-2 w-2 rounded-full ${presentation.dotClass}`}

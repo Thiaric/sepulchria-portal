@@ -5,6 +5,7 @@ import { cache } from "react";
 import { getEffectiveCharacterAttributes } from "@/lib/characters/get-effective-character-attributes";
 import { createClient } from "@/lib/supabase/server";
 import { getPublicOrderMembership } from "@/lib/orders/get-public-order-membership";
+import { getStaffSession } from "@/lib/auth/require-staff";
 import type {
   PublicCharacterProfile,
   PublicCharacterRoom,
@@ -119,12 +120,16 @@ type PresenceRow = {
   status: PublicPresenceStatus;
   last_seen_at: string;
   room_id: string | null;
+  appear_offline: boolean;
+  appeared_offline_at: string | null;
 };
 
 type PresenceListRow = {
   character_id: string;
   status: PublicPresenceStatus;
   last_seen_at: string;
+  appear_offline: boolean;
+  appeared_offline_at: string | null;
 };
 
 export type PublicCharacterListItem = {
@@ -297,14 +302,27 @@ export const getPublicCharacter = cache(
       return null;
     }
 
+    const [
+      staffSession,
+      presenceResult,
+    ] = await Promise.all([
+      getStaffSession(),
+      supabase
+        .from("character_presence")
+        .select(
+          "status, last_seen_at, room_id, appear_offline, appeared_offline_at",
+        )
+        .eq(
+          "character_id",
+          row.id,
+        )
+        .maybeSingle(),
+    ]);
+
     const {
       data: presenceData,
       error: presenceError,
-    } = await supabase
-      .from("character_presence")
-      .select("status, last_seen_at, room_id")
-      .eq("character_id", row.id)
-      .maybeSingle();
+    } = presenceResult;
 
     if (presenceError) {
       throw new Error(
@@ -312,8 +330,26 @@ export const getPublicCharacter = cache(
       );
     }
 
-    const presence =
+    const rawPresence =
       presenceData as PresenceRow | null;
+
+    const presence =
+      rawPresence
+        ? {
+            ...rawPresence,
+            last_seen_at:
+              rawPresence.appear_offline &&
+              !staffSession
+                ? rawPresence.appeared_offline_at ??
+                  rawPresence.last_seen_at
+                : rawPresence.last_seen_at,
+            room_id:
+              rawPresence.appear_offline &&
+              !staffSession
+                ? null
+                : rawPresence.room_id,
+          }
+        : null;
 
     let rawRoom = normaliseRelation(
       row.currentRoom,
@@ -528,7 +564,9 @@ export const getPublicCharacters = cache(
       .select(`
         character_id,
         status,
-        last_seen_at
+        last_seen_at,
+        appear_offline,
+        appeared_offline_at
       `)
       .in("character_id", characterIds)
       .gte("last_seen_at", activeSince);
@@ -539,14 +577,26 @@ export const getPublicCharacters = cache(
       );
     }
 
+    const directoryStaff =
+      await getStaffSession();
+
+    const visiblePresenceRows =
+      ((presenceData ??
+        []) as PresenceListRow[])
+        .filter(
+          (presence) =>
+            directoryStaff !== null ||
+            presence.appear_offline !==
+              true,
+        );
+
     const presenceByCharacter = new Map<
       string,
       PresenceListRow
     >();
 
     for (const presence of
-      (presenceData ??
-        []) as PresenceListRow[]) {
+      visiblePresenceRows) {
       presenceByCharacter.set(
         presence.character_id,
         presence,
@@ -620,6 +670,10 @@ export const getPublicCharacters = cache(
               status: presence.status,
               last_seen_at:
                 presence.last_seen_at,
+              appear_offline:
+                presence.appear_offline,
+              appeared_offline_at:
+                presence.appeared_offline_at,
             }
           : null,
       };

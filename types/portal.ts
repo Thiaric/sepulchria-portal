@@ -53,6 +53,8 @@ export type PortalPresence = {
   status: PortalPresenceStatus;
   last_seen_at: string;
   room_id: string | null;
+  appear_offline: boolean;
+  appeared_offline_at: string | null;
 };
 
 export type PortalPrivateLocation = {

@@ -9,6 +9,7 @@ import {
   MessagePresenceStatus,
 } from "@/components/messages/message-character-meta";
 import { createClient } from "@/lib/supabase/server";
+import { getStaffSession } from "@/lib/auth/require-staff";
 import type { DirectMessage } from "@/types/messages";
 
 import {
@@ -93,6 +94,9 @@ export default async function ConversationPage({
       "/character/create",
     );
   }
+
+  const staffSession =
+    await getStaffSession();
 
   const {
     data: membership,
@@ -415,6 +419,10 @@ export default async function ConversationPage({
                   <MessagePresenceStatus
                     characterId={
                       other.id
+                    }
+                    viewerIsStaff={
+                      staffSession !==
+                      null
                     }
                   />
                 </div>

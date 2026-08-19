@@ -173,6 +173,9 @@ export default async function PublicCharacterPage({
           staffSession !== null ||
           activeCharacter?.id === character.id
         }
+        viewerIsStaff={
+          staffSession !== null
+        }
         canUseFriendList={
           canUseFriendList
         }

@@ -301,7 +301,7 @@ export const getPortalContext = cache(
         supabase
           .from("character_presence")
           .select(
-            "status, last_seen_at, room_id",
+            "status, last_seen_at, room_id, appear_offline, appeared_offline_at",
           )
           .eq(
             "character_id",
@@ -394,16 +394,31 @@ export const getPortalContext = cache(
           60_000,
     ).toISOString();
 
+    let onlineCountQuery =
+      supabase
+        .from("character_presence")
+        .select("character_id", {
+          count: "exact",
+          head: true,
+        })
+        .gte(
+          "last_seen_at",
+          activeSince,
+        );
+
+    if (!staffSession) {
+      onlineCountQuery =
+        onlineCountQuery.eq(
+          "appear_offline",
+          false,
+        );
+    }
+
     const {
       count: onlineCharacterCount,
       error: onlineError,
-    } = await supabase
-      .from("character_presence")
-      .select("character_id", {
-        count: "exact",
-        head: true,
-      })
-      .gte("last_seen_at", activeSince);
+    } =
+      await onlineCountQuery;
 
     if (onlineError) {
       throw new Error(

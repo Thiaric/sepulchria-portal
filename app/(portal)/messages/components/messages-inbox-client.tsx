@@ -63,6 +63,8 @@ type ConversationCard = {
 };
 
 type MessagesInboxClientProps = {
+  viewerIsStaff: boolean;
+
   conversations:
     ConversationCard[];
 
@@ -113,6 +115,7 @@ function formatDate(
 }
 
 export function MessagesInboxClient({
+  viewerIsStaff,
   conversations,
   availableCharacters,
   showArchived,
@@ -324,6 +327,9 @@ export function MessagesInboxClient({
                             characterId={
                               conversation
                                 .other.id
+                            }
+                            viewerIsStaff={
+                              viewerIsStaff
                             }
                           />
                         ) : null}

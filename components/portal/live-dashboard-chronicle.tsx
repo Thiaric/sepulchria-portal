@@ -47,6 +47,8 @@ type PresenceRow = {
     | "away"
     | "busy";
   last_seen_at: string;
+  appear_offline: boolean;
+  appeared_offline_at: string | null;
   character:
     | PresenceCharacterRow
     | PresenceCharacterRow[]
@@ -138,6 +140,8 @@ export function LiveDashboardChronicle({
           room_id,
           status,
           last_seen_at,
+          appear_offline,
+          appeared_offline_at,
 
           character:characters!character_presence_character_id_fkey(
             id,
@@ -175,9 +179,18 @@ export function LiveDashboardChronicle({
         (data ??
           []) as unknown as PresenceRow[];
 
+      const visibleRows =
+        context.isStaff
+          ? activeRows
+          : activeRows.filter(
+              (entry) =>
+                entry.appear_offline !==
+                true,
+            );
+
       setActiveCharacterCount(
         new Set(
-          activeRows.map(
+          visibleRows.map(
             (entry) =>
               entry.character_id,
           ),
@@ -188,7 +201,7 @@ export function LiveDashboardChronicle({
         new Map<string, ActiveRoom>();
 
       for (const rawEntry of
-        activeRows) {
+        visibleRows) {
         const character =
           normaliseRelation(
             rawEntry.character,
@@ -318,6 +331,7 @@ export function LiveDashboardChronicle({
       context.privateLocations,
       context.allOrderHeadquartersRoomIds,
       context.visibleOrderHeadquartersRoomIds,
+      context.isStaff,
     ]);
 
   useEffect(() => {

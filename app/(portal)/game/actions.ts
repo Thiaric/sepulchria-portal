@@ -1441,6 +1441,151 @@ export async function restoreManualPresence(): Promise<PresenceActionResult> {
   }
 }
 
+export async function toggleStaffAppearOffline(): Promise<{
+  ok: boolean;
+  appearOffline: boolean;
+  message: string;
+}> {
+  try {
+    const staff =
+      await getStaffSession();
+
+    if (!staff) {
+      return {
+        ok: false,
+        appearOffline: false,
+        message:
+          "Only staff can use Appear Offline.",
+      };
+    }
+
+    const {
+      character,
+    } =
+      await getOwnedCharacter();
+
+    const admin =
+      createPrivilegedClient();
+
+    const {
+      data: current,
+      error: readError,
+    } = await admin
+      .from("character_presence")
+      .select("appear_offline")
+      .eq(
+        "character_id",
+        character.id,
+      )
+      .maybeSingle();
+
+    if (readError) {
+      return {
+        ok: false,
+        appearOffline: false,
+        message:
+          `Unable to read presence visibility: ${readError.message}`,
+      };
+    }
+
+    const next =
+      current?.appear_offline !==
+      true;
+
+    const now =
+      new Date().toISOString();
+
+    const updatePayload =
+      next
+        ? {
+            appear_offline: true,
+            appeared_offline_at:
+              now,
+          }
+        : {
+            appear_offline: false,
+            appeared_offline_at:
+              null,
+            last_seen_at: now,
+          };
+
+    const {
+      data: updated,
+      error: updateError,
+    } = await admin
+      .from("character_presence")
+      .update(updatePayload)
+      .eq(
+        "character_id",
+        character.id,
+      )
+      .select("character_id")
+      .maybeSingle();
+
+    if (updateError) {
+      return {
+        ok: false,
+        appearOffline:
+          current?.appear_offline ===
+          true,
+        message:
+          `Unable to change presence visibility: ${updateError.message}`,
+      };
+    }
+
+    if (!updated) {
+      const {
+        error: insertError,
+      } = await admin
+        .from("character_presence")
+        .insert({
+          character_id:
+            character.id,
+          room_id:
+            character.current_room_id,
+          status: "online",
+          manual_status: "online",
+          last_seen_at: now,
+          appear_offline: next,
+          appeared_offline_at:
+            next ? now : null,
+        });
+
+      if (insertError) {
+        return {
+          ok: false,
+          appearOffline: false,
+          message:
+            `Unable to create presence visibility: ${insertError.message}`,
+        };
+      }
+    }
+
+    revalidatePath("/");
+    revalidatePath("/game");
+    revalidatePath("/characters");
+    revalidatePath("/messages");
+
+    return {
+      ok: true,
+      appearOffline: next,
+      message:
+        next
+          ? "You now appear offline to players."
+          : "Your normal presence is visible again.",
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      appearOffline: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Unexpected error.",
+    };
+  }
+}
+
 /**
  * Heartbeat: aggiorna solo last_seen_at e stanza.
  * Non riceve né riscrive lo status.

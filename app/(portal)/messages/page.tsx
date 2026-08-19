@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 
 import { richTextToPlainText } from "@/lib/rich-text";
 import { createClient } from "@/lib/supabase/server";
+import { getStaffSession } from "@/lib/auth/require-staff";
 
 import { MessagesInboxClient } from "./components/messages-inbox-client";
 
@@ -588,8 +589,14 @@ export default async function MessagesPage({
           ),
       );
 
+  const staffSession =
+    await getStaffSession();
+
   return (
     <MessagesInboxClient
+      viewerIsStaff={
+        staffSession !== null
+      }
       conversations={
         conversations
       }

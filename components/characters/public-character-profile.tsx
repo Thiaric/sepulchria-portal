@@ -23,6 +23,7 @@ type PublicCharacterProfileProps = {
   returnLabel: string;
   canMessage: boolean;
   canViewLastActivity: boolean;
+  viewerIsStaff: boolean;
   canUseFriendList: boolean;
   isInFriendList: boolean;
 };
@@ -51,6 +52,7 @@ export function PublicCharacterProfileView({
   returnLabel,
   canMessage,
   canViewLastActivity,
+  viewerIsStaff,
   canUseFriendList,
   isInFriendList,
 }: PublicCharacterProfileProps) {
@@ -245,6 +247,9 @@ export function PublicCharacterProfileView({
                   }
                   showLastActivity={
                     canViewLastActivity
+                  }
+                  viewerIsStaff={
+                    viewerIsStaff
                   }
                   compact
                 />

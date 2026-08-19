@@ -21,6 +21,8 @@ type PresencePayload = {
   status: PublicPresenceStatus;
   last_seen_at: string;
   room_id: string | null;
+  appear_offline: boolean;
+  appeared_offline_at: string | null;
 };
 
 type RoomRelation = {
@@ -54,8 +56,16 @@ function normaliseRelation<T>(
 function getEffectiveStatus(
   presence: PublicCharacterPresence | null,
   now: number,
+  viewerIsStaff: boolean,
 ): PublicPresenceStatus | "offline" {
   if (!presence) {
+    return "offline";
+  }
+
+  if (
+    presence.appear_offline &&
+    !viewerIsStaff
+  ) {
     return "offline";
   }
 
@@ -167,12 +177,14 @@ export function LiveCharacterPresence({
   initialPresence,
   initialRoom,
   showLastActivity = true,
+  viewerIsStaff = false,
   compact = false,
 }: {
   characterId: string;
   initialPresence: PublicCharacterPresence | null;
   initialRoom: PublicCharacterRoom | null;
   showLastActivity?: boolean;
+  viewerIsStaff?: boolean;
   compact?: boolean;
 }) {
   const [presence, setPresence] =
@@ -298,6 +310,12 @@ export function LiveCharacterPresence({
                 next.last_seen_at,
               room_id:
                 next.room_id,
+              appear_offline:
+                next.appear_offline ===
+                true,
+              appeared_offline_at:
+                next.appeared_offline_at ??
+                null,
             };
 
           setPresence(nextPresence);
@@ -332,14 +350,31 @@ export function LiveCharacterPresence({
         getEffectiveStatus(
           presence,
           now,
+          viewerIsStaff,
         ),
-      [presence, now],
+      [
+        presence,
+        now,
+        viewerIsStaff,
+      ],
     );
 
   const appearance =
     statusAppearance(
       effectiveStatus,
     );
+
+  const cloakedForStaff =
+    viewerIsStaff &&
+    presence?.appear_offline ===
+      true;
+
+  const visibleLastActivity =
+    presence?.appear_offline &&
+    !viewerIsStaff
+      ? presence.appeared_offline_at ??
+        presence.last_seen_at
+      : presence?.last_seen_at;
 
   const location =
     effectiveStatus === "offline"
@@ -361,7 +396,11 @@ export function LiveCharacterPresence({
           </p>
 
           <p
-            className={`mt-1 flex items-center gap-1.5 text-[11px] leading-5 ${appearance.text}`}
+            className={`mt-1 flex items-center gap-1.5 text-[11px] leading-5 ${appearance.text} ${
+              cloakedForStaff
+                ? "opacity-50"
+                : ""
+            }`}
           >
             <span
               className={`h-1.5 w-1.5 shrink-0 rounded-full ${appearance.dot}`}
@@ -378,7 +417,7 @@ export function LiveCharacterPresence({
 
             <p className="mt-1 break-words text-[11px] leading-5 text-[#cab89b]">
               {formatRelativeActivity(
-                presence?.last_seen_at,
+                visibleLastActivity,
                 now,
               )}
             </p>
@@ -408,7 +447,11 @@ export function LiveCharacterPresence({
 
       <div className="mt-5">
         <span
-          className={`inline-flex items-center gap-2 border border-[#60482e]/50 bg-[#0d0907]/70 px-3 py-2 text-[9px] uppercase tracking-[0.18em] ${appearance.text}`}
+          className={`inline-flex items-center gap-2 border border-[#60482e]/50 bg-[#0d0907]/70 px-3 py-2 text-[9px] uppercase tracking-[0.18em] ${appearance.text} ${
+            cloakedForStaff
+              ? "opacity-50"
+              : ""
+          }`}
         >
           <span
             className={`h-2 w-2 rounded-full ${appearance.dot}`}
