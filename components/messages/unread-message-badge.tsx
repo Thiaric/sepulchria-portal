@@ -29,6 +29,11 @@ export function UnreadMessageBadge({
   const instanceId = useId();
   const pathname = usePathname();
 
+  const currentConversationId =
+    pathname.match(
+      /^\/messages\/([^/]+)\/?$/,
+    )?.[1] ?? null;
+
   const {
     playPortalSound,
   } = usePortalAudio();
@@ -118,6 +123,10 @@ export function UnreadMessageBadge({
           .is(
             "archived_at",
             null,
+          )
+          .is(
+            "deleted_at",
+            null,
           );
 
         if (membershipError) {
@@ -135,9 +144,18 @@ export function UnreadMessageBadge({
             []
           ) as MembershipRow[];
 
+        const countableRows =
+          currentConversationId
+            ? rows.filter(
+                (membership) =>
+                  membership.conversation_id !==
+                  currentConversationId,
+              )
+            : rows;
+
         const unreadCounts =
           await Promise.all(
-            rows.map(
+            countableRows.map(
               async (
                 membership,
               ) => {
@@ -206,7 +224,7 @@ export function UnreadMessageBadge({
           0,
         );
       },
-      [],
+      [currentConversationId],
     );
 
   const refreshCount =

@@ -320,7 +320,8 @@ export const getPortalContext = cache(
             "character_id",
             characterId,
           )
-          .is("archived_at", null),
+          .is("archived_at", null)
+          .is("deleted_at", null),
       ]);
 
       if (presenceError) {

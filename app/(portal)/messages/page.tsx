@@ -285,6 +285,10 @@ export default async function MessagesPage({
             "character_id",
             character.id,
           )
+          .is(
+            "deleted_at",
+            null,
+          )
       : Promise.resolve({
           data: [],
           error: null,

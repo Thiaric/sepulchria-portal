@@ -147,6 +147,10 @@ export async function sendTypedPrivateMessage(
         "character_id",
         character.id,
       )
+      .is(
+        "deleted_at",
+        null,
+      )
       .maybeSingle();
 
     if (participantError) {

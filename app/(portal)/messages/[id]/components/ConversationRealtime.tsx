@@ -217,6 +217,16 @@ export default function ConversationRealtime({
 
     let cancelled = false;
 
+    function keepConversationRead() {
+      if (cancelled) {
+        return;
+      }
+
+      void markConversationRead(
+        conversationId,
+      );
+    }
+
     async function setup() {
       const {
         data: { user },
@@ -249,12 +259,34 @@ export default function ConversationRealtime({
         character?.id ??
         null;
 
-      void markConversationRead(
-        conversationId,
-      );
+      keepConversationRead();
     }
 
     void setup();
+
+    const handleFocus = () => {
+      keepConversationRead();
+    };
+
+    const handleVisibilityChange =
+      () => {
+        if (
+          document.visibilityState ===
+          "visible"
+        ) {
+          keepConversationRead();
+        }
+      };
+
+    window.addEventListener(
+      "focus",
+      handleFocus,
+    );
+
+    document.addEventListener(
+      "visibilitychange",
+      handleVisibilityChange,
+    );
 
     const channel =
       supabase
@@ -292,11 +324,14 @@ export default function ConversationRealtime({
               );
             }
 
-            void markConversationRead(
-              conversationId,
-            );
+            keepConversationRead();
 
             router.refresh();
+
+            window.setTimeout(
+              keepConversationRead,
+              120,
+            );
 
             /*
              * If a fresh message arrives while the conversation is open,
@@ -323,6 +358,16 @@ export default function ConversationRealtime({
 
     return () => {
       cancelled = true;
+
+      window.removeEventListener(
+        "focus",
+        handleFocus,
+      );
+
+      document.removeEventListener(
+        "visibilitychange",
+        handleVisibilityChange,
+      );
 
       void supabase.removeChannel(
         channel,

@@ -93,6 +93,7 @@ export async function sendPrivateMessage(
       .select("conversation_id")
       .eq("conversation_id", conversationId)
       .eq("character_id", character.id)
+      .is("deleted_at", null)
       .maybeSingle();
 
     if (participantError) return { ok: false, message: participantError.message };
@@ -185,7 +186,8 @@ export async function markConversationRead(conversationId: string): Promise<void
     .from("direct_conversation_participants")
     .update({ last_read_at: new Date().toISOString() })
     .eq("conversation_id", conversationId)
-    .eq("character_id", character.id);
+    .eq("character_id", character.id)
+    .is("deleted_at", null);
 
   if (error) throw new Error(error.message);
   revalidatePath("/messages");
@@ -200,10 +202,10 @@ export async function toggleArchive(formData: FormData): Promise<void> {
     .from("direct_conversation_participants")
     .update({
       archived_at: archive ? new Date().toISOString() : null,
-      ...(archive ? {} : { deleted_at: null }),
     })
     .eq("conversation_id", conversationId)
-    .eq("character_id", character.id);
+    .eq("character_id", character.id)
+    .is("deleted_at", null);
 
   if (error) throw new Error(error.message);
   revalidatePath("/messages");
@@ -259,32 +261,15 @@ export async function deleteConversationForMe(formData: FormData): Promise<void>
   }
 
   if (conversation.is_group) {
-    const now =
-      new Date().toISOString();
-
     const {
       error: leaveError,
-    } = await supabase
-      .from(
-        "direct_conversation_participants",
-      )
-      .update({
-        deleted_at: now,
-        archived_at: now,
-        last_read_at: now,
-      })
-      .eq(
-        "conversation_id",
-        conversationId,
-      )
-      .eq(
-        "character_id",
-        character.id,
-      )
-      .is(
-        "deleted_at",
-        null,
-      );
+    } = await supabase.rpc(
+      "leave_group_conversation",
+      {
+        target_conversation_id:
+          conversationId,
+      },
+    );
 
     if (leaveError) {
       throw new Error(
