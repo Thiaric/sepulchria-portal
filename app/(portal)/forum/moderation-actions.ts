@@ -4,6 +4,10 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
+import {
+  resolveActorCharacterId,
+  sendForumNotification,
+} from "@/lib/forum/forum-notifications";
 
 export type ForumModerationState = {
   success: boolean;
@@ -15,6 +19,7 @@ type ForumTopicRecord = {
   section_id: string;
   title: string;
   slug: string;
+  author_character_id: string | null;
   is_locked: boolean;
   is_pinned: boolean;
   deleted_at: string | null;
@@ -105,6 +110,7 @@ async function loadTopicContext(
         section_id,
         title,
         slug,
+        author_character_id,
         is_locked,
         is_pinned,
         deleted_at
@@ -209,6 +215,55 @@ function revalidateForumTopic(
   );
 }
 
+async function notifyTopicAuthor({
+  supabase,
+  moderatorUserId,
+  topic,
+  heading,
+  message,
+  href,
+  linkLabel,
+}: {
+  supabase: Awaited<
+    ReturnType<typeof createClient>
+  >;
+  moderatorUserId: string;
+  topic: ForumTopicRecord;
+  heading: string;
+  message: string;
+  href: string;
+  linkLabel: string;
+}) {
+  if (
+    !topic.author_character_id
+  ) {
+    return;
+  }
+
+  const actorCharacterId =
+    await resolveActorCharacterId(
+      supabase,
+      moderatorUserId,
+    );
+
+  if (!actorCharacterId) {
+    return;
+  }
+
+  await sendForumNotification({
+    supabase,
+    actorCharacterId,
+    recipientCharacterId:
+      topic.author_character_id,
+    heading,
+    message,
+    href,
+    linkLabel,
+  });
+
+  revalidatePath("/messages");
+}
+
 export async function toggleTopicLockAction(
   _previousState: ForumModerationState,
   formData: FormData,
@@ -295,6 +350,30 @@ export async function toggleTopicLockAction(
       title: topic.title,
       section_id: section.id,
     },
+  });
+
+  await notifyTopicAuthor({
+    supabase:
+      access.supabase,
+    moderatorUserId:
+      access.user.id,
+    topic,
+    heading:
+      nextLockedState
+        ? "Your forum topic was locked"
+        : "Your forum topic was unlocked",
+    message:
+      nextLockedState
+        ? `Staff locked “${topic.title}”.`
+        : `Staff unlocked “${topic.title}”.`,
+    href:
+      `/forum/${encodeURIComponent(
+        section.slug,
+      )}/${encodeURIComponent(
+        topic.slug,
+      )}`,
+    linkLabel:
+      "Open topic",
   });
 
   revalidateForumTopic(
@@ -396,6 +475,30 @@ export async function toggleTopicPinAction(
       title: topic.title,
       section_id: section.id,
     },
+  });
+
+  await notifyTopicAuthor({
+    supabase:
+      access.supabase,
+    moderatorUserId:
+      access.user.id,
+    topic,
+    heading:
+      nextPinnedState
+        ? "Your forum topic was pinned"
+        : "Your forum topic was unpinned",
+    message:
+      nextPinnedState
+        ? `Staff pinned “${topic.title}”.`
+        : `Staff unpinned “${topic.title}”.`,
+    href:
+      `/forum/${encodeURIComponent(
+        section.slug,
+      )}/${encodeURIComponent(
+        topic.slug,
+      )}`,
+    linkLabel:
+      "Open topic",
   });
 
   revalidateForumTopic(
@@ -557,6 +660,26 @@ export async function moveTopicAction(
       to_section_name:
         destinationSection.name,
     },
+  });
+
+  await notifyTopicAuthor({
+    supabase:
+      access.supabase,
+    moderatorUserId:
+      access.user.id,
+    topic,
+    heading:
+      "Your forum topic was moved",
+    message:
+      `Staff moved “${topic.title}” from ${currentSection.name} to ${destinationSection.name}.`,
+    href:
+      `/forum/${encodeURIComponent(
+        destinationSection.slug,
+      )}/${encodeURIComponent(
+        topic.slug,
+      )}`,
+    linkLabel:
+      "Open moved topic",
   });
 
   revalidatePath("/forum");
@@ -739,6 +862,26 @@ export async function deleteTopicAction(
     };
   }
 
+  await notifyTopicAuthor({
+    supabase:
+      access.supabase,
+    moderatorUserId:
+      access.user.id,
+    topic,
+    heading:
+      "Your forum topic was moderated",
+    message:
+      reason
+        ? `Staff removed “${topic.title}”. Reason: ${reason}`
+        : `Staff removed “${topic.title}”.`,
+    href:
+      `/forum/${encodeURIComponent(
+        section.slug,
+      )}`,
+    linkLabel:
+      "Open forum section",
+  });
+
   revalidatePath("/forum");
   revalidatePath(
     `/forum/${section.slug}`,
@@ -899,6 +1042,28 @@ export async function restoreTopicAction(
       )}`,
     );
   }
+
+  await notifyTopicAuthor({
+    supabase:
+      access.supabase,
+    moderatorUserId:
+      access.user.id,
+    topic,
+    heading:
+      "Your forum topic was restored",
+    message:
+      reason
+        ? `Staff restored “${topic.title}”. Note: ${reason}`
+        : `Staff restored “${topic.title}”.`,
+    href:
+      `/forum/${encodeURIComponent(
+        section.slug,
+      )}/${encodeURIComponent(
+        topic.slug,
+      )}`,
+    linkLabel:
+      "Open restored topic",
+  });
 
   revalidateForumTopic(
     section.slug,

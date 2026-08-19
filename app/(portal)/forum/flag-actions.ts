@@ -22,6 +22,7 @@ export type ForumFlagRecipient = {
   raceName: string | null;
   associationId: string | null;
   associationName: string | null;
+  isFriend: boolean;
 };
 
 type CharacterRow = {
@@ -363,6 +364,53 @@ export async function loadForumFlagRecipients(
       senderData.id,
     );
 
+  const [
+    friendFeatureResult,
+    friendEntriesResult,
+  ] = await Promise.all([
+    supabase
+      .from(
+        "character_feature_entitlements",
+      )
+      .select("enabled")
+      .eq(
+        "character_id",
+        senderData.id,
+      )
+      .eq(
+        "feature_key",
+        "friend_list",
+      )
+      .maybeSingle(),
+    supabase
+      .from(
+        "character_friend_entries",
+      )
+      .select(
+        "target_character_id",
+      )
+      .eq(
+        "owner_character_id",
+        senderData.id,
+      ),
+  ]);
+
+  const friendIds =
+    friendFeatureResult.data
+      ?.enabled === true
+      ? new Set(
+          (
+            friendEntriesResult.data ??
+            []
+          ).map(
+            (row) =>
+              String(
+                row.target_character_id,
+              ),
+          ),
+        )
+      : new Set<string>();
+
   return characters.map(
     (character) => ({
       id: character.id,
@@ -385,6 +433,10 @@ export async function loadForumFlagRecipients(
               character.association_id,
             ) ?? null
           : null,
+      isFriend:
+        friendIds.has(
+          character.id,
+        ),
     }),
   );
 }
@@ -415,6 +467,15 @@ export async function flagForumTopic(
     const topicSlug = String(
       formData.get("topicSlug") ?? "",
     ).trim();
+
+    const customMessage =
+      String(
+        formData.get(
+          "customMessage",
+        ) ?? "",
+      )
+        .trim()
+        .slice(0, 1_000);
 
     if (
       !topicId ||
@@ -616,10 +677,26 @@ export async function flagForumTopic(
     const safePath =
       escapeHtml(topicPath);
 
+    const safeCustomMessage =
+      customMessage
+        ? escapeHtml(
+            customMessage,
+          ).replaceAll(
+            "\n",
+            "<br />",
+          )
+        : "";
+
     const messageBody =
+      `<div data-forum-flag="true">` +
+      `<p><strong>Forum Flag for Reading</strong></p>` +
       `<p><strong>${safeSender}</strong> wants you to read this forum topic:</p>` +
       `<p><strong>${safeTitle}</strong></p>` +
-      `<p><a href="${safePath}">Open topic →</a></p>`;
+      (safeCustomMessage
+        ? `<p><em>Personal note:</em></p><blockquote>${safeCustomMessage}</blockquote>`
+        : "") +
+      `<p><a href="${safePath}">Open topic →</a></p>` +
+      `</div>`;
 
     let sent = 0;
     let skipped = 0;

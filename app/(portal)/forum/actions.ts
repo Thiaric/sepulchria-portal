@@ -9,6 +9,9 @@ import {
 } from "@/lib/rich-text";
 import { createClient } from "@/lib/supabase/server";
 import {
+  notifyForumReplyAudience,
+} from "@/lib/forum/forum-notifications";
+import {
   canCreateOrderTopic,
   getForumViewerContext,
   readRequestedVisibleLevels,
@@ -59,6 +62,7 @@ type ForumTopicRecord = {
   section_id: string;
   slug: string;
   title: string;
+  author_character_id: string | null;
   is_locked: boolean;
   deleted_at: string | null;
 };
@@ -927,6 +931,7 @@ export async function createForumReplyAction(
         section_id,
         slug,
         title,
+        author_character_id,
         is_locked,
         deleted_at
       `,
@@ -1120,6 +1125,24 @@ export async function createForumReplyAction(
   revalidatePath(
     `/forum/${finalSectionSlug}/${finalTopicSlug}`,
   );
+
+  await notifyForumReplyAudience({
+    supabase,
+    actorCharacterId:
+      character!.id,
+    topicId: topic.id,
+    topicAuthorCharacterId:
+      topic.author_character_id,
+    topicTitle: topic.title,
+    href:
+      `/forum/${encodeURIComponent(
+        finalSectionSlug,
+      )}/${encodeURIComponent(
+        finalTopicSlug,
+      )}#post-${createdPost.id}`,
+  });
+
+  revalidatePath("/messages");
 
   redirect(
     `/forum/${finalSectionSlug}/${finalTopicSlug}#post-${createdPost.id}`,

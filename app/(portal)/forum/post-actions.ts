@@ -8,6 +8,10 @@ import {
   sanitizeRichHtml,
 } from "@/lib/rich-text";
 import { createClient } from "@/lib/supabase/server";
+import {
+  resolveActorCharacterId,
+  sendForumNotification,
+} from "@/lib/forum/forum-notifications";
 
 const MAX_BODY_LENGTH = 50_000;
 const MAX_BODY_HTML_LENGTH = 250_000;
@@ -32,6 +36,7 @@ type ForumPostRecord = {
   id: string;
   topic_id: string;
   author_user_id: string | null;
+  author_character_id: string | null;
   body: string;
   is_initial: boolean;
   deleted_at: string | null;
@@ -41,6 +46,7 @@ type ForumTopicRecord = {
   id: string;
   section_id: string;
   slug: string;
+  title: string;
   author_user_id: string | null;
   is_locked: boolean;
   deleted_at: string | null;
@@ -213,6 +219,7 @@ async function getPostContext(
         id,
         topic_id,
         author_user_id,
+        author_character_id,
         body,
         is_initial,
         deleted_at
@@ -249,6 +256,7 @@ async function getPostContext(
         id,
         section_id,
         slug,
+        title,
         author_user_id,
         is_locked,
         deleted_at
@@ -526,6 +534,42 @@ export async function editForumPostAction(
     section.slug,
     topic.slug,
   );
+
+  if (
+    !ownsPost &&
+    post.author_character_id
+  ) {
+    const actorCharacterId =
+      await resolveActorCharacterId(
+        supabase,
+        user.id,
+      );
+
+    if (actorCharacterId) {
+      await sendForumNotification({
+        supabase,
+        actorCharacterId,
+        recipientCharacterId:
+          post.author_character_id,
+        heading:
+          "Your forum content was edited",
+        message:
+          `Another user edited your post in “${topic.title}”.`,
+        href:
+          `/forum/${encodeURIComponent(
+            section.slug,
+          )}/${encodeURIComponent(
+            topic.slug,
+          )}#post-${post.id}`,
+        linkLabel:
+          "Open edited post",
+      });
+
+      revalidatePath(
+        "/messages",
+      );
+    }
+  }
 
   redirect(
     `/forum/${section.slug}/${topic.slug}#post-${post.id}`,

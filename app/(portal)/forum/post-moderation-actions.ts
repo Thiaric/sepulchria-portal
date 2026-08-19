@@ -3,6 +3,10 @@
 import { revalidatePath } from "next/cache";
 
 import { createClient } from "@/lib/supabase/server";
+import {
+  resolveActorCharacterId,
+  sendForumNotification,
+} from "@/lib/forum/forum-notifications";
 
 export type PostModerationState = {
   success: boolean;
@@ -387,6 +391,44 @@ if (logError) {
   };
 }
 
+  if (
+    post.author_character_id
+  ) {
+    const actorCharacterId =
+      await resolveActorCharacterId(
+        access.supabase,
+        access.user.id,
+      );
+
+    if (actorCharacterId) {
+      await sendForumNotification({
+        supabase:
+          access.supabase,
+        actorCharacterId,
+        recipientCharacterId:
+          post.author_character_id,
+        heading:
+          "Your forum post was moderated",
+        message:
+          reason
+            ? `Your post in “${topic.title}” was removed by staff. Reason: ${reason}`
+            : `Your post in “${topic.title}” was removed by staff.`,
+        href:
+          `/forum/${encodeURIComponent(
+            section.slug,
+          )}/${encodeURIComponent(
+            topic.slug,
+          )}`,
+        linkLabel:
+          "Open topic",
+      });
+
+      revalidatePath(
+        "/messages",
+      );
+    }
+  }
+
   revalidatePostPages(
     section.slug,
     topic.slug,
@@ -513,6 +555,44 @@ if (logError) {
       `The post was restored, but the moderation log could not be written: ${logError}`,
   };
 }
+
+  if (
+    post.author_character_id
+  ) {
+    const actorCharacterId =
+      await resolveActorCharacterId(
+        access.supabase,
+        access.user.id,
+      );
+
+    if (actorCharacterId) {
+      await sendForumNotification({
+        supabase:
+          access.supabase,
+        actorCharacterId,
+        recipientCharacterId:
+          post.author_character_id,
+        heading:
+          "Your forum post was restored",
+        message:
+          reason
+            ? `Your post in “${topic.title}” was restored by staff. Note: ${reason}`
+            : `Your post in “${topic.title}” was restored by staff.`,
+        href:
+          `/forum/${encodeURIComponent(
+            section.slug,
+          )}/${encodeURIComponent(
+            topic.slug,
+          )}#post-${post.id}`,
+        linkLabel:
+          "Open restored post",
+      });
+
+      revalidatePath(
+        "/messages",
+      );
+    }
+  }
 
   revalidatePostPages(
     section.slug,

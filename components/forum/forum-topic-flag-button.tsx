@@ -259,6 +259,37 @@ export function ForumTopicFlagButton({
         );
     }, [characters]);
 
+  const friends =
+    useMemo(
+      () =>
+        characters
+          .filter(
+            (character) =>
+              character.isFriend,
+          )
+          .map(
+            (character) => ({
+              id: character.id,
+              name:
+                character.name,
+            }),
+          ),
+      [characters],
+    );
+
+  function selectAllFriends() {
+    setSelectedCharacters(
+      (current) =>
+        new Set([
+          ...current,
+          ...friends.map(
+            (friend) =>
+              friend.id,
+          ),
+        ]),
+    );
+  }
+
   const matchingCharacters =
     useMemo(() => {
       const needle =
@@ -412,6 +443,42 @@ export function ForumTopicFlagButton({
             </p>
           ) : (
             <div className="space-y-5">
+              {friends.length > 0 ? (
+                <section className="border border-[#59432c]/40 bg-[#0d0a08] p-3">
+                  <div className="mb-2 flex items-center justify-between gap-3">
+                    <h3 className="text-[8px] uppercase tracking-[0.2em] text-[#9b774b]">
+                      Friend List
+                    </h3>
+
+                    <button
+                      type="button"
+                      onClick={
+                        selectAllFriends
+                      }
+                      className="border border-[#765735] px-2.5 py-1.5 text-[8px] uppercase tracking-[0.13em] text-[#c4a578] hover:border-[#a47a45] hover:text-[#e3c79a]"
+                    >
+                      Select full Friend List
+                    </button>
+                  </div>
+
+                  <SelectionGroup
+                    title="Select individual friends"
+                    options={
+                      friends
+                    }
+                    selected={
+                      selectedCharacters
+                    }
+                    onToggle={(id) =>
+                      toggle(
+                        setSelectedCharacters,
+                        id,
+                      )
+                    }
+                  />
+                </section>
+              ) : null}
+
               <SelectionGroup
                 title="Ancestries"
                 options={races}
@@ -594,6 +661,23 @@ export function ForumTopicFlagButton({
               value={id}
             />
           ))}
+
+          <label className="mb-3 block">
+            <span className="mb-1.5 block text-[8px] uppercase tracking-[0.16em] text-[#9b774b]">
+              Personal message
+              <span className="ml-1 normal-case tracking-normal text-[#6f6254]">
+                (optional)
+              </span>
+            </span>
+
+            <textarea
+              name="customMessage"
+              maxLength={1000}
+              rows={3}
+              placeholder='Example: "Read this, I found Reply number 3 quite interesting."'
+              className="w-full resize-y border border-[#59432c]/55 bg-[#0b0806] px-3 py-2.5 text-xs leading-5 text-[#d7c1a0] outline-none placeholder:text-[#62584b] focus:border-[#9a7445]"
+            />
+          </label>
 
           {state.message ? (
             <p
