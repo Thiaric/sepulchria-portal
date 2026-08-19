@@ -92,14 +92,53 @@ export default async function PublicCharacterPage({
     );
   }
 
-  const canUseFriendList =
+  let canUseFriendList = false;
+  let isInFriendList = false;
+
+  if (
     activeCharacter &&
     activeCharacter.id !== character.id
-      ? await hasCharacterFeature(
-          activeCharacter.id,
-          "friend_list",
+  ) {
+    canUseFriendList =
+      await hasCharacterFeature(
+        activeCharacter.id,
+        "friend_list",
+      );
+
+    if (canUseFriendList) {
+      const {
+        count: friendEntryCount,
+        error: friendEntryError,
+      } = await supabase
+        .from(
+          "character_friend_entries",
         )
-      : false;
+        .select(
+          "id",
+          {
+            count: "exact",
+            head: true,
+          },
+        )
+        .eq(
+          "owner_character_id",
+          activeCharacter.id,
+        )
+        .eq(
+          "target_character_id",
+          character.id,
+        );
+
+      if (friendEntryError) {
+        throw new Error(
+          `Unable to check Friend List entry: ${friendEntryError.message}`,
+        );
+      }
+
+      isInFriendList =
+        (friendEntryCount ?? 0) > 0;
+    }
+  }
 
   const returnHref =
     from === "game"
@@ -136,6 +175,9 @@ export default async function PublicCharacterPage({
         }
         canUseFriendList={
           canUseFriendList
+        }
+        isInFriendList={
+          isInFriendList
         }
       />
     </div>

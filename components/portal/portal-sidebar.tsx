@@ -248,6 +248,93 @@ export function PortalSidebar({
     setOddJobsRoomId,
   ] = useState<string | null>(null);
 
+  const [
+    hasFriendListFeature,
+    setHasFriendListFeature,
+  ] = useState(false);
+
+  const refreshFriendListFeature =
+    useCallback(async () => {
+      const supabase =
+        createClient();
+
+      const {
+        data: { user },
+      } =
+        await supabase.auth.getUser();
+
+      if (!user) {
+        setHasFriendListFeature(
+          false,
+        );
+        return;
+      }
+
+      const {
+        data: character,
+        error: characterError,
+      } = await supabase
+        .from("characters")
+        .select("id")
+        .eq(
+          "user_id",
+          user.id,
+        )
+        .maybeSingle();
+
+      if (
+        characterError ||
+        !character
+      ) {
+        if (characterError) {
+          console.error(
+            "Unable to identify character for Friend List access:",
+            characterError,
+          );
+        }
+
+        setHasFriendListFeature(
+          false,
+        );
+        return;
+      }
+
+      const {
+        data: entitlement,
+        error: entitlementError,
+      } = await supabase
+        .from(
+          "character_feature_entitlements",
+        )
+        .select("enabled")
+        .eq(
+          "character_id",
+          character.id,
+        )
+        .eq(
+          "feature_key",
+          "friend_list",
+        )
+        .maybeSingle();
+
+      if (entitlementError) {
+        console.error(
+          "Unable to check Friend List access:",
+          entitlementError,
+        );
+
+        setHasFriendListFeature(
+          false,
+        );
+        return;
+      }
+
+      setHasFriendListFeature(
+        entitlement?.enabled ===
+          true,
+      );
+    }, []);
+
   const refreshOrderLeadership =
     useCallback(async () => {
       const supabase =
@@ -322,6 +409,45 @@ export function PortalSidebar({
         ),
       );
     }, []);
+
+  useEffect(() => {
+    void refreshFriendListFeature();
+
+    function handleFocus() {
+      void refreshFriendListFeature();
+    }
+
+    function handleVisibility() {
+      if (
+        document.visibilityState ===
+        "visible"
+      ) {
+        void refreshFriendListFeature();
+      }
+    }
+
+    window.addEventListener(
+      "focus",
+      handleFocus,
+    );
+
+    document.addEventListener(
+      "visibilitychange",
+      handleVisibility,
+    );
+
+    return () => {
+      window.removeEventListener(
+        "focus",
+        handleFocus,
+      );
+
+      document.removeEventListener(
+        "visibilitychange",
+        handleVisibility,
+      );
+    };
+  }, [refreshFriendListFeature]);
 
   useEffect(() => {
     void refreshOrderLeadership();
@@ -1260,9 +1386,11 @@ export function PortalSidebar({
       </button>
     </div>
 
-    {renderMobileItem(
-      friendsItem,
-    )}
+    {hasFriendListFeature
+      ? renderMobileItem(
+          friendsItem,
+        )
+      : null}
 
     {renderMobileItem(
       messagesItem,
@@ -1407,9 +1535,11 @@ export function PortalSidebar({
                     )
                   : null}
 
-                {renderNavigationItem(
-                  friendsItem,
-                )}
+                {hasFriendListFeature
+                  ? renderNavigationItem(
+                      friendsItem,
+                    )
+                  : null}
 
                 {renderNavigationItem(
                   messagesItem,

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import {
+  addFriendListEntry,
   removeFriendListEntry,
   updateFriendListEntry,
 } from "./actions";
@@ -98,6 +99,35 @@ export default async function FriendsPage() {
     );
   }
 
+  const {
+    data: availableCharacterData,
+    error: availableCharacterError,
+  } = await supabase
+    .from("characters")
+    .select(
+      "id, first_name, surname, display_name, public_slug, portrait_url",
+    )
+    .eq("status", "approved")
+    .neq("id", character.id);
+
+  if (availableCharacterError) {
+    throw new Error(
+      availableCharacterError.message,
+    );
+  }
+
+  const availableCharacters =
+    ((availableCharacterData ?? []) as CharacterRow[])
+      .sort((a, b) =>
+        displayName(a).localeCompare(
+          displayName(b),
+          "en",
+          {
+            sensitivity: "base",
+          },
+        ),
+      );
+
   const { data: entryData, error: entryError } = await supabase
     .from("character_friend_entries")
     .select(
@@ -143,17 +173,107 @@ export default async function FriendsPage() {
 
   return (
     <main className="mx-auto w-full max-w-6xl p-5 sm:p-7 lg:p-9">
-      <header className="border border-[#60482e]/45 bg-[#15100d] p-6">
-        <p className="text-[9px] uppercase tracking-[0.24em] text-[#8c704b]">
-          Personal character record
-        </p>
-        <h1 className="mt-2 font-serif text-3xl text-[#e1c89f]">
-          Friend List
-        </h1>
-        <p className="mt-2 text-sm leading-7 text-[#928572]">
-          This list belongs only to your character. Adding someone does not
-          notify them and does not require their approval.
-        </p>
+      <header className="border border-[#60482e]/45 bg-[#15100d] px-4 py-3 sm:px-5">
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+          <div className="min-w-0">
+            <p className="text-[8px] uppercase tracking-[0.22em] text-[#8c704b]">
+              Personal character record
+            </p>
+
+            <h1 className="mt-0.5 font-serif text-2xl leading-none text-[#e1c89f]">
+              Friend List
+            </h1>
+          </div>
+
+          <p className="min-w-[220px] flex-1 text-[11px] leading-5 text-[#928572]">
+            Your private In-Game and Off-Game contact record. Adding someone
+            does not notify them or require approval.
+          </p>
+        </div>
+
+        <form
+          action={addFriendListEntry}
+          className="mt-3 grid gap-2 border-t border-[#60482e]/30 pt-3 sm:grid-cols-[minmax(180px,1fr)_130px_150px_auto]"
+        >
+          <label className="sr-only" htmlFor="friend-list-character">
+            Character
+          </label>
+
+          <select
+            id="friend-list-character"
+            name="targetCharacterId"
+            required
+            defaultValue=""
+            className="min-w-0 border border-[#60482e]/55 bg-[#100c09] px-3 py-2 text-[10px] text-[#c8b18d] outline-none focus:border-[#9a7543]"
+          >
+            <option value="" disabled>
+              Select character...
+            </option>
+
+            {availableCharacters.map(
+              (availableCharacter) => (
+                <option
+                  key={availableCharacter.id}
+                  value={availableCharacter.id}
+                >
+                  {displayName(
+                    availableCharacter,
+                  )}
+                </option>
+              ),
+            )}
+          </select>
+
+          <select
+            name="listScope"
+            defaultValue="ingame"
+            aria-label="Friend List section"
+            className="border border-[#60482e]/55 bg-[#100c09] px-3 py-2 text-[10px] text-[#c8b18d] outline-none focus:border-[#9a7543]"
+          >
+            <option value="ingame">
+              In-Game
+            </option>
+            <option value="offgame">
+              Off-Game
+            </option>
+          </select>
+
+          <select
+            name="relationshipType"
+            defaultValue="friend"
+            aria-label="Relationship type"
+            className="border border-[#60482e]/55 bg-[#100c09] px-3 py-2 text-[10px] text-[#c8b18d] outline-none focus:border-[#9a7543]"
+          >
+            <option value="friend">
+              Friend
+            </option>
+            <option value="close_friend">
+              Close Friend
+            </option>
+            <option value="family">
+              Family
+            </option>
+            <option value="romance">
+              Romance
+            </option>
+            <option value="lover">
+              Lover
+            </option>
+            <option value="partner">
+              Partner
+            </option>
+            <option value="spouse">
+              Spouse
+            </option>
+          </select>
+
+          <button
+            type="submit"
+            className="border border-[#668657] bg-[#172313] px-4 py-2 text-[9px] uppercase tracking-[0.16em] text-[#b8d8a7] transition hover:bg-[#22321c]"
+          >
+            Add
+          </button>
+        </form>
       </header>
 
       <FriendSection

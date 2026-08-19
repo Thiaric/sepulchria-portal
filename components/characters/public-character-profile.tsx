@@ -24,6 +24,7 @@ type PublicCharacterProfileProps = {
   canMessage: boolean;
   canViewLastActivity: boolean;
   canUseFriendList: boolean;
+  isInFriendList: boolean;
 };
 
 function formatGender(
@@ -51,6 +52,7 @@ export function PublicCharacterProfileView({
   canMessage,
   canViewLastActivity,
   canUseFriendList,
+  isInFriendList,
 }: PublicCharacterProfileProps) {
   const fullName =
     character.display_name?.trim() ||
@@ -70,7 +72,15 @@ export function PublicCharacterProfileView({
         </Link>
 
         <div className="flex flex-wrap items-center justify-end gap-2">
-          {canUseFriendList ? (
+          {canUseFriendList &&
+          isInFriendList ? (
+            <Link
+              href="/friends"
+              className="inline-flex items-center gap-2 border border-[#668657] bg-[#172313] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[#b8d8a7] transition hover:bg-[#22321c]"
+            >
+              ✓ In Friend List
+            </Link>
+          ) : canUseFriendList ? (
             <form
               action={addFriendListEntry}
               className="flex flex-wrap items-stretch"
