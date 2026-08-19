@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { startConversation } from "@/app/(portal)/messages/actions";
-import { sendRelationshipRequest } from "@/app/(portal)/friends/actions";
+import { addFriendListEntry } from "@/app/(portal)/friends/actions";
 import { CharacterMechanicsDisplay } from "@/components/characters/character-mechanics-display";
 import { CharacterGiftsDisplay } from "@/components/characters/character-gifts-display";
 import { CharacterInventoryDisplay } from "@/components/characters/character-inventory-display";
@@ -23,16 +23,7 @@ type PublicCharacterProfileProps = {
   returnLabel: string;
   canMessage: boolean;
   canViewLastActivity: boolean;
-  relationshipControl:
-    | {
-        canRequest: boolean;
-        state:
-          | "none"
-          | "outgoing_pending"
-          | "incoming_pending"
-          | "accepted";
-      }
-    | null;
+  canUseFriendList: boolean;
 };
 
 function formatGender(
@@ -59,7 +50,7 @@ export function PublicCharacterProfileView({
   returnLabel,
   canMessage,
   canViewLastActivity,
-  relationshipControl,
+  canUseFriendList,
 }: PublicCharacterProfileProps) {
   const fullName =
     character.display_name?.trim() ||
@@ -79,37 +70,26 @@ export function PublicCharacterProfileView({
         </Link>
 
         <div className="flex flex-wrap items-center justify-end gap-2">
-          {relationshipControl?.state === "accepted" ? (
-            <Link
-              href="/friends"
-              className="inline-flex items-center gap-2 border border-[#668657] bg-[#172313] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[#b8d8a7]"
-            >
-              In Friend List
-            </Link>
-          ) : relationshipControl?.state === "outgoing_pending" ? (
-            <Link
-              href="/friends"
-              className="inline-flex items-center gap-2 border border-[#80643f] bg-[#21180f] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[#c8ab7f]"
-            >
-              Request sent
-            </Link>
-          ) : relationshipControl?.state === "incoming_pending" ? (
-            <Link
-              href="/friends"
-              className="inline-flex items-center gap-2 border border-[#9a7543] bg-[#382819] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[#efd6a8]"
-            >
-              Respond to request
-            </Link>
-          ) : relationshipControl?.canRequest ? (
+          {canUseFriendList ? (
             <form
-              action={sendRelationshipRequest}
-              className="flex items-stretch"
+              action={addFriendListEntry}
+              className="flex flex-wrap items-stretch"
             >
               <input
                 type="hidden"
-                name="recipientId"
+                name="targetCharacterId"
                 value={character.id}
               />
+
+              <select
+                name="listScope"
+                defaultValue="ingame"
+                aria-label="Friend List section"
+                className="border border-r-0 border-[#60482e]/55 bg-[#100c09] px-2 text-[9px] text-[#c8b18d] outline-none"
+              >
+                <option value="ingame">In-Game</option>
+                <option value="offgame">Off-Game</option>
+              </select>
 
               <select
                 name="relationshipType"
@@ -130,7 +110,7 @@ export function PublicCharacterProfileView({
                 type="submit"
                 className="inline-flex items-center gap-2 border border-[#668657] bg-[#172313] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[#b8d8a7] transition hover:bg-[#22321c]"
               >
-                Add relationship
+                Add to Friend List
               </button>
             </form>
           ) : null}

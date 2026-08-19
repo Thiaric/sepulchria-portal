@@ -248,11 +248,6 @@ export function PortalSidebar({
     setOddJobsRoomId,
   ] = useState<string | null>(null);
 
-  const [
-    incomingFriendRequestCount,
-    setIncomingFriendRequestCount,
-  ] = useState(0);
-
   const refreshOrderLeadership =
     useCallback(async () => {
       const supabase =
@@ -419,139 +414,6 @@ export function PortalSidebar({
       cancelled = true;
     };
   }, []);
-
-  const refreshFriendRequestCount =
-    useCallback(async () => {
-      const supabase =
-        createClient();
-
-      const {
-        data: { user },
-      } =
-        await supabase.auth.getUser();
-
-      if (!user) {
-        setIncomingFriendRequestCount(
-          0,
-        );
-        return;
-      }
-
-      const {
-        data: character,
-        error: characterError,
-      } = await supabase
-        .from("characters")
-        .select("id")
-        .eq(
-          "user_id",
-          user.id,
-        )
-        .maybeSingle();
-
-      if (
-        characterError ||
-        !character
-      ) {
-        if (characterError) {
-          console.error(
-            "Unable to identify character for Friend List badge:",
-            characterError,
-          );
-        }
-
-        setIncomingFriendRequestCount(
-          0,
-        );
-        return;
-      }
-
-      const {
-        count,
-        error,
-      } = await supabase
-        .from(
-          "character_relationships",
-        )
-        .select(
-          "id",
-          {
-            count: "exact",
-            head: true,
-          },
-        )
-        .eq(
-          "recipient_character_id",
-          character.id,
-        )
-        .eq(
-          "status",
-          "pending",
-        );
-
-      if (error) {
-        console.error(
-          "Unable to refresh Friend List request count:",
-          error,
-        );
-        return;
-      }
-
-      setIncomingFriendRequestCount(
-        normalizeCount(count),
-      );
-    }, []);
-
-  useEffect(() => {
-    void refreshFriendRequestCount();
-
-    const pollingInterval =
-      window.setInterval(
-        () => {
-          void refreshFriendRequestCount();
-        },
-        5000,
-      );
-
-    function handleFocus() {
-      void refreshFriendRequestCount();
-    }
-
-    function handleVisibility() {
-      if (
-        document.visibilityState ===
-        "visible"
-      ) {
-        void refreshFriendRequestCount();
-      }
-    }
-
-    window.addEventListener(
-      "focus",
-      handleFocus,
-    );
-
-    document.addEventListener(
-      "visibilitychange",
-      handleVisibility,
-    );
-
-    return () => {
-      window.clearInterval(
-        pollingInterval,
-      );
-
-      window.removeEventListener(
-        "focus",
-        handleFocus,
-      );
-
-      document.removeEventListener(
-        "visibilitychange",
-        handleVisibility,
-      );
-    };
-  }, [refreshFriendRequestCount]);
 
   useEffect(() => {
     if (!modalItem) {
@@ -795,10 +657,6 @@ export function PortalSidebar({
       item.label ===
       "Messages";
 
-    const isFriends =
-      item.label ===
-      "Friend List";
-
     if (item.disabled) {
       return (
         <div
@@ -897,16 +755,6 @@ export function PortalSidebar({
           />
         ) : null}
 
-        {isFriends &&
-        incomingFriendRequestCount >
-          0 ? (
-          <span className="ml-auto inline-flex min-w-5 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] px-1.5 py-0.5 text-[8px] font-bold leading-none text-[#ffe1ac]">
-            {incomingFriendRequestCount >
-            99
-              ? "99+"
-              : incomingFriendRequestCount}
-          </span>
-        ) : null}
       </>
     );
 
@@ -1211,17 +1059,6 @@ export function PortalSidebar({
           </span>
         ) : null}
 
-        {item.label ===
-          "Friend List" &&
-        incomingFriendRequestCount >
-          0 ? (
-          <span className="absolute right-0.5 top-0.5 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] px-0.5 text-[7px] font-bold leading-none text-[#ffe1ac]">
-            {incomingFriendRequestCount >
-            9
-              ? "9+"
-              : incomingFriendRequestCount}
-          </span>
-        ) : null}
       </Link>
     );
   }

@@ -92,86 +92,14 @@ export default async function PublicCharacterPage({
     );
   }
 
-  let relationshipControl:
-    | {
-        canRequest: boolean;
-        state:
-          | "none"
-          | "outgoing_pending"
-          | "incoming_pending"
-          | "accepted";
-      }
-    | null = null;
-
-  if (
+  const canUseFriendList =
     activeCharacter &&
     activeCharacter.id !== character.id
-  ) {
-    const [
-      ownFriendListEnabled,
-      targetFriendListEnabled,
-      relationshipResult,
-    ] = await Promise.all([
-      hasCharacterFeature(
-        activeCharacter.id,
-        "friend_list",
-      ),
-      hasCharacterFeature(
-        character.id,
-        "friend_list",
-      ),
-      supabase
-        .from("character_relationships")
-        .select(
-          "requester_character_id, recipient_character_id, status",
+      ? await hasCharacterFeature(
+          activeCharacter.id,
+          "friend_list",
         )
-        .or(
-          [
-            `and(requester_character_id.eq.${activeCharacter.id},recipient_character_id.eq.${character.id})`,
-            `and(requester_character_id.eq.${character.id},recipient_character_id.eq.${activeCharacter.id})`,
-          ].join(","),
-        )
-        .in("status", ["pending", "accepted"])
-        .limit(1)
-        .maybeSingle(),
-    ]);
-
-    if (relationshipResult.error) {
-      throw new Error(
-        `Unable to load relationship state: ${relationshipResult.error.message}`,
-      );
-    }
-
-    const relationship =
-      relationshipResult.data;
-
-    let state:
-      | "none"
-      | "outgoing_pending"
-      | "incoming_pending"
-      | "accepted" =
-      "none";
-
-    if (relationship?.status === "accepted") {
-      state = "accepted";
-    } else if (
-      relationship?.status === "pending" &&
-      relationship.requester_character_id === activeCharacter.id
-    ) {
-      state = "outgoing_pending";
-    } else if (
-      relationship?.status === "pending"
-    ) {
-      state = "incoming_pending";
-    }
-
-    relationshipControl = {
-      canRequest:
-        ownFriendListEnabled &&
-        targetFriendListEnabled,
-      state,
-    };
-  }
+      : false;
 
   const returnHref =
     from === "game"
@@ -206,8 +134,8 @@ export default async function PublicCharacterPage({
           staffSession !== null ||
           activeCharacter?.id === character.id
         }
-        relationshipControl={
-          relationshipControl
+        canUseFriendList={
+          canUseFriendList
         }
       />
     </div>
