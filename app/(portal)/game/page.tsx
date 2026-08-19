@@ -777,11 +777,25 @@ async function GameContent() {
 
   {roomArea ? (
     <Link
-      href={`/areas/${roomArea.slug}`}
-      title="Return to the area page"
+      href={
+        roomArea.slug ===
+        "private-locations"
+          ? "/private-locations"
+          : `/areas/${roomArea.slug}`
+      }
+      title={
+        roomArea.slug ===
+        "private-locations"
+          ? "Return to Private Locations"
+          : "Return to the area page"
+      }
       className="flex min-w-0 items-center justify-center border border-[#725c3d] bg-[#21190f] px-2 py-1.5 text-center text-[8px] uppercase tracking-[0.12em] text-[#d6bb8d] transition hover:border-[#a17a49] hover:bg-[#352718] hover:text-[#f0d6a7] sm:px-3 sm:text-[9px] sm:tracking-[0.18em]"
     >
-      ← Back to {roomArea.name}
+      ← Back to{" "}
+      {roomArea.slug ===
+      "private-locations"
+        ? "Private Locations"
+        : roomArea.name}
     </Link>
   ) : null}
 

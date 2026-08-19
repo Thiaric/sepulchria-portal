@@ -35,7 +35,12 @@ export async function PortalHeader({ context }: PortalHeaderProps) {
     character?.id ?? null
   }
 />
-            <ActiveCityCounter initialCount={onlineCharacterCount} />
+            <ActiveCityCounter
+              initialCount={onlineCharacterCount}
+              isStaff={
+                staffSession !== null
+              }
+            />
             <PortalSoundToggle />
 
             <Link

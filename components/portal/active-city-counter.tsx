@@ -22,6 +22,7 @@ const REFRESH_INTERVAL_MS = 5_000;
 
 type ActiveCityCounterProps = {
   initialCount: number;
+  isStaff: boolean;
 };
 
 type CodexSummary = {
@@ -84,6 +85,7 @@ type PresentCharacter = {
 
 export function ActiveCityCounter({
   initialCount,
+  isStaff,
 }: ActiveCityCounterProps) {
   const [count, setCount] =
     useState(initialCount);
@@ -429,7 +431,8 @@ export function ActiveCityCounter({
             person.occupation,
             race?.name,
             association?.name,
-            privateRoom
+            privateRoom &&
+            !isStaff
               ? null
               : room?.name,
             presence.status,
@@ -446,6 +449,7 @@ export function ActiveCityCounter({
     }, [
       presentCharacters,
       searchQuery,
+      isStaff,
     ]);
 
   return (
@@ -779,7 +783,10 @@ export function ActiveCityCounter({
                             <div className="mt-1.5 flex min-w-0 items-center justify-between gap-2 border-t border-[#59432c]/25 pt-1.5">
                               {room &&
                               presence.room_id &&
-                              !privateRoom ? (
+                              (
+                                !privateRoom ||
+                                isStaff
+                              ) ? (
                                 <form
                                   action={
                                     enterRoomFromMap

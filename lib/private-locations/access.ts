@@ -182,3 +182,244 @@ export async function getPrivateLocationAccess(
     metadata,
   };
 }
+
+
+export type VisiblePrivateLocation = {
+  roomId: string;
+  name: string;
+  description: string | null;
+  imageUrl: string | null;
+  role: "owner" | "member" | "staff";
+};
+
+export async function getVisiblePrivateLocations(
+  characterId: string,
+): Promise<VisiblePrivateLocation[]> {
+  const admin =
+    createPrivilegedClient();
+
+  const staff =
+    await getStaffSession();
+
+  const {
+    data: privateRows,
+    error: privateRowsError,
+  } = await admin
+    .from("private_location_rooms")
+    .select(
+      "room_id, owner_character_id",
+    );
+
+  if (privateRowsError) {
+    throw new Error(
+      `Unable to load Private Locations: ${privateRowsError.message}`,
+    );
+  }
+
+  if (
+    !privateRows ||
+    privateRows.length === 0
+  ) {
+    return [];
+  }
+
+  const ownerIds = [
+    ...new Set(
+      privateRows.map(
+        (row) =>
+          row.owner_character_id,
+      ),
+    ),
+  ];
+
+  const {
+    data: entitlements,
+    error: entitlementError,
+  } = await admin
+    .from(
+      "character_feature_entitlements",
+    )
+    .select("character_id, enabled")
+    .eq(
+      "feature_key",
+      "private_chat",
+    )
+    .in(
+      "character_id",
+      ownerIds,
+    );
+
+  if (entitlementError) {
+    throw new Error(
+      `Unable to load Private Location entitlements: ${entitlementError.message}`,
+    );
+  }
+
+  const enabledOwners =
+    new Set(
+      (entitlements ?? [])
+        .filter(
+          (entry) =>
+            entry.enabled === true,
+        )
+        .map(
+          (entry) =>
+            entry.character_id,
+        ),
+    );
+
+  const enabledPrivateRows =
+    privateRows.filter(
+      (row) =>
+        enabledOwners.has(
+          row.owner_character_id,
+        ),
+    );
+
+  if (
+    enabledPrivateRows.length === 0
+  ) {
+    return [];
+  }
+
+  const roomIds =
+    enabledPrivateRows.map(
+      (row) => row.room_id,
+    );
+
+  const {
+    data: rooms,
+    error: roomsError,
+  } = await admin
+    .from("rooms")
+    .select(
+      "id, name, description, image_url",
+    )
+    .in("id", roomIds)
+    .eq("is_active", true);
+
+  if (roomsError) {
+    throw new Error(
+      `Unable to load Private Location rooms: ${roomsError.message}`,
+    );
+  }
+
+  const roomById =
+    new Map(
+      (rooms ?? []).map(
+        (room) => [
+          room.id,
+          room,
+        ],
+      ),
+    );
+
+  let activeMemberRoomIds =
+    new Set<string>();
+
+  if (!staff) {
+    const {
+      data: memberships,
+      error: membershipError,
+    } = await admin
+      .from(
+        "private_location_members",
+      )
+      .select("room_id")
+      .eq(
+        "character_id",
+        characterId,
+      )
+      .eq("status", "active")
+      .eq("role", "member");
+
+    if (membershipError) {
+      throw new Error(
+        `Unable to load Private Location memberships: ${membershipError.message}`,
+      );
+    }
+
+    activeMemberRoomIds =
+      new Set(
+        (memberships ?? []).map(
+          (membership) =>
+            membership.room_id,
+        ),
+      );
+  }
+
+  return enabledPrivateRows
+    .map((row) => {
+      const room =
+        roomById.get(
+          row.room_id,
+        );
+
+      if (!room) {
+        return null;
+      }
+
+      if (staff) {
+        return {
+          roomId: room.id,
+          name: room.name,
+          description:
+            room.description,
+          imageUrl:
+            room.image_url,
+          role:
+            "staff" as const,
+        };
+      }
+
+      if (
+        row.owner_character_id ===
+        characterId
+      ) {
+        return {
+          roomId: room.id,
+          name: room.name,
+          description:
+            room.description,
+          imageUrl:
+            room.image_url,
+          role:
+            "owner" as const,
+        };
+      }
+
+      if (
+        activeMemberRoomIds.has(
+          room.id,
+        )
+      ) {
+        return {
+          roomId: room.id,
+          name: room.name,
+          description:
+            room.description,
+          imageUrl:
+            room.image_url,
+          role:
+            "member" as const,
+        };
+      }
+
+      return null;
+    })
+    .filter(
+      (
+        entry,
+      ): entry is VisiblePrivateLocation =>
+        entry !== null,
+    )
+    .sort((a, b) =>
+      a.name.localeCompare(
+        b.name,
+        "en",
+        {
+          sensitivity: "base",
+        },
+      ),
+    );
+}

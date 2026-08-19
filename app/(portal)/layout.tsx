@@ -414,6 +414,9 @@ async function PortalLayoutContent({
                   unreadForumCount={
                     unreadForumCount
                   }
+                  isStaff={
+                    context.isStaff
+                  }
                 />
               }
               centre={

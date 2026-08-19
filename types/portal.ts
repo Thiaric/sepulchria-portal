@@ -55,6 +55,14 @@ export type PortalPresence = {
   room_id: string | null;
 };
 
+export type PortalPrivateLocation = {
+  roomId: string;
+  name: string;
+  description: string | null;
+  imageUrl: string | null;
+  role: "owner" | "member" | "staff";
+};
+
 export type PortalContext = {
   user: {
     id: string;
@@ -66,4 +74,6 @@ export type PortalContext = {
   unreadMessageCount: number;
   onlineCharacterCount: number;
   currentRoomAccessAllowed: boolean;
+  isStaff: boolean;
+  privateLocations: PortalPrivateLocation[];
 };

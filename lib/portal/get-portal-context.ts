@@ -9,7 +9,11 @@ import {
 import { createClient } from "@/lib/supabase/server";
 import {
   getPrivateLocationAccess,
+  getVisiblePrivateLocations,
 } from "@/lib/private-locations/access";
+import {
+  getStaffSession,
+} from "@/lib/auth/require-staff";
 import type {
   PortalCharacter,
   PortalCodexReference,
@@ -186,6 +190,16 @@ export const getPortalContext = cache(
     let currentRoomAccessAllowed =
       true;
 
+    const staffSession =
+      await getStaffSession();
+
+    let privateLocations:
+      Awaited<
+        ReturnType<
+          typeof getVisiblePrivateLocations
+        >
+      > = [];
+
     if (characterData) {
       const row =
         characterData as unknown as CharacterRow;
@@ -234,6 +248,11 @@ export const getPortalContext = cache(
       };
 
       const characterId = character.id;
+
+      privateLocations =
+        await getVisiblePrivateLocations(
+          characterId,
+        );
 
       if (
         character.current_room_id
@@ -383,6 +402,9 @@ export const getPortalContext = cache(
       onlineCharacterCount:
         onlineCharacterCount ?? 0,
       currentRoomAccessAllowed,
+      isStaff:
+        staffSession !== null,
+      privateLocations,
     };
   },
 );

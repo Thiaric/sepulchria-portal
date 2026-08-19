@@ -214,7 +214,8 @@ export function LiveDashboardChronicle({
 
         if (
           area?.slug ===
-          "private-locations"
+            "private-locations" &&
+          !context.isStaff
         ) {
           continue;
         }
@@ -298,7 +299,7 @@ export function LiveDashboardChronicle({
       setRooms(nextRooms);
       setError(null);
       setLoading(false);
-    }, []);
+    }, [context.isStaff]);
 
   useEffect(() => {
     void refreshChronicle();

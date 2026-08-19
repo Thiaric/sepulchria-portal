@@ -795,7 +795,7 @@ export async function invitePrivateLocation(
       .eq("id", conversationId);
   }
 
-  revalidatePath("/private-location");
+  revalidatePath("/private-locations");
   revalidatePath("/messages");
 }
 
@@ -917,7 +917,7 @@ export async function respondPrivateLocationInvitation(
     return;
   }
 
-  revalidatePath("/private-location");
+  revalidatePath("/private-locations");
   revalidatePath("/messages");
 }
 
@@ -1023,7 +1023,7 @@ export async function kickPrivateLocationMember(
     );
   }
 
-  revalidatePath("/private-location");
+  revalidatePath("/private-locations");
   revalidatePath("/game");
   revalidatePath("/");
 }
@@ -1114,7 +1114,7 @@ export async function updatePrivateLocation(
     );
   }
 
-  revalidatePath("/private-location");
+  revalidatePath("/private-locations");
   revalidatePath("/game");
   revalidatePath("/");
 }

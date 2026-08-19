@@ -14,6 +14,9 @@ import {
 } from "next/navigation";
 
 import { GameContextPanel } from "@/components/portal/game-context-panel";
+import {
+  enterRoomFromMap,
+} from "@/app/(portal)/game/actions";
 import { LiveDashboardChronicle } from "@/components/portal/live-dashboard-chronicle";
 import { MessagesContextNavigator } from "@/components/messages/messages-context-navigator";
 import {
@@ -289,6 +292,17 @@ if (
     />
   );
 }
+
+  if (
+    pathname ===
+    "/private-locations"
+  ) {
+    return (
+      <PrivateLocationsContext
+        context={context}
+      />
+    );
+  }
 
   const areaMatch =
     pathname.match(
@@ -2330,6 +2344,87 @@ function CodexContext({
         secondary
       />
     </>
+  );
+}
+
+
+function PrivateLocationsContext({
+  context,
+}: PortalContextPanelProps) {
+  const locations =
+    context.privateLocations;
+
+  return (
+    <div className="flex h-full min-h-0 flex-col">
+      <ContextHeading
+        eyebrow="Invitation-only"
+        title="Private Locations"
+      />
+
+      <p className="text-[11px] leading-5 text-[#938673]">
+        {context.isStaff
+          ? "Enabled Private Locations. Staff may enter any listed room."
+          : "Private Locations currently available to your character."}
+      </p>
+
+      <div className="my-4 h-px bg-[#59432c]/35" />
+
+      <div className="min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-contain pr-1">
+        {locations.map(
+          (location) => (
+            <article
+              key={
+                location.roomId
+              }
+              className="border border-[#59432c]/40 bg-[#100c09] p-3"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="truncate font-serif text-sm text-[#d6bd91]">
+                    {location.name}
+                  </p>
+
+                  <p className="mt-1 text-[7px] uppercase tracking-[0.14em] text-[#75644f]">
+                    {location.role}
+                  </p>
+                </div>
+
+                <form
+                  action={
+                    enterRoomFromMap
+                  }
+                >
+                  <input
+                    type="hidden"
+                    name="roomId"
+                    value={
+                      location.roomId
+                    }
+                  />
+
+                  <button
+                    type="submit"
+                    title={`Enter ${location.name}`}
+                    aria-label={`Enter ${location.name}`}
+                    className="flex h-7 w-7 items-center justify-center border border-[#765937] bg-[#271c12] text-[10px] text-[#dfc79c] transition hover:border-[#997042] hover:bg-[#3b2919]"
+                  >
+                    →
+                  </button>
+                </form>
+              </div>
+            </article>
+          ),
+        )}
+
+        {locations.length ===
+        0 ? (
+          <p className="border border-[#59432c]/30 bg-[#100c09]/60 p-3 text-[11px] leading-5 text-[#8f8271]">
+            No enabled Private Locations
+            are currently available.
+          </p>
+        ) : null}
+      </div>
+    </div>
   );
 }
 

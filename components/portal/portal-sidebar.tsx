@@ -19,6 +19,7 @@ import { enterRoomFromMap } from "@/app/(portal)/game/actions";
 type PortalSidebarProps = {
   unreadMessageCount: number;
   unreadForumCount: number;
+  isStaff: boolean;
 };
 
 type NavigationItem = {
@@ -148,8 +149,8 @@ const privateLocationItem: NavigationItem = {
   title:
     "Manage or enter invitation-only Private Locations.",
   icon: "/icons/messages.png",
-  href: "/private-location",
-  activePaths: ["/private-location"],
+  href: "/private-locations",
+  activePaths: ["/private-locations"],
 };
 
 const friendsItem: NavigationItem = {
@@ -210,6 +211,7 @@ function normalizeCount(
 export function PortalSidebar({
   unreadMessageCount,
   unreadForumCount,
+  isStaff,
 }: PortalSidebarProps) {
   const pathname = usePathname();
 
@@ -342,10 +344,11 @@ export function PortalSidebar({
       ]);
 
       setHasPrivateLocationAccess(
+        isStaff ||
         entitlementResult.data?.enabled === true ||
         Boolean(membershipResult.data),
       );
-    }, []);
+    }, [isStaff]);
 
   const refreshFriendListFeature =
     useCallback(async () => {
