@@ -2,13 +2,18 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import {
+  formatRemnants,
+} from "@/lib/economy/currency";
 import type { PresentRoomCharacter } from "@/types/game";
 
 type InventoryRecord = {
   record_kind: "standard" | "unique";
   record_id: string;
+  item_id: string;
   name: string;
   quantity: number;
+  reference_value: number | null;
   parent_container_id: string | null;
   is_equipped: boolean;
   transfer_policy: string;
@@ -110,13 +115,73 @@ export function ItemExchangePanel({
     if (meResult.data?.display_name) setMyName(meResult.data.display_name);
     setWalletBalance(Number(walletResult.data?.balance ?? 0));
 
-    const ownRows = ((invResult.data ?? []) as InventoryRecord[]).filter(
-      (row) =>
-        !row.parent_container_id &&
-        !row.is_equipped &&
-        row.transfer_policy === "free" &&
-        !row.is_quest_item,
-    );
+    const rawOwnRows =
+      (invResult.data ?? []) as Omit<
+        InventoryRecord,
+        "reference_value"
+      >[];
+
+    const ownItemIds = [
+      ...new Set(
+        rawOwnRows.map(
+          (row) => row.item_id,
+        ),
+      ),
+    ];
+
+    const {
+      data: ownValueRows,
+      error: ownValueError,
+    } = ownItemIds.length
+      ? await supabase
+          .from("items")
+          .select(
+            "id, reference_value",
+          )
+          .in("id", ownItemIds)
+      : {
+          data: [],
+          error: null,
+        };
+
+    if (ownValueError) {
+      throw new Error(
+        ownValueError.message,
+      );
+    }
+
+    const ownValues =
+      new Map(
+        (ownValueRows ?? []).map(
+          (row) => [
+            row.id,
+            row.reference_value === null
+              ? null
+              : Number(
+                  row.reference_value,
+                ),
+          ],
+        ),
+      );
+
+    const ownRows =
+      rawOwnRows
+        .filter(
+          (row) =>
+            !row.parent_container_id &&
+            !row.is_equipped &&
+            row.transfer_policy ===
+              "free" &&
+            !row.is_quest_item,
+        )
+        .map((row) => ({
+          ...row,
+          reference_value:
+            ownValues.get(
+              row.item_id,
+            ) ?? null,
+        }));
+
     setInventory(ownRows);
 
     const currentTrade = (tradeResult.data?.[0] ?? null) as Trade | null;
@@ -185,9 +250,79 @@ export function ItemExchangePanel({
       supabase.rpc("get_public_character_inventory", { p_character_id: partnerId }),
     ]);
 
-    setPartnerName(partnerResult.data?.display_name ?? "Other Character");
-    setOffers((offersResult.data ?? []) as Offer[]);
-    setPartnerInventory((partnerInvResult.data ?? []) as InventoryRecord[]);
+    const rawPartnerRows =
+      (partnerInvResult.data ?? []) as Omit<
+        InventoryRecord,
+        "reference_value"
+      >[];
+
+    const partnerItemIds = [
+      ...new Set(
+        rawPartnerRows.map(
+          (row) => row.item_id,
+        ),
+      ),
+    ];
+
+    const {
+      data: partnerValueRows,
+      error: partnerValueError,
+    } = partnerItemIds.length
+      ? await supabase
+          .from("items")
+          .select(
+            "id, reference_value",
+          )
+          .in(
+            "id",
+            partnerItemIds,
+          )
+      : {
+          data: [],
+          error: null,
+        };
+
+    if (partnerValueError) {
+      throw new Error(
+        partnerValueError.message,
+      );
+    }
+
+    const partnerValues =
+      new Map(
+        (
+          partnerValueRows ?? []
+        ).map((row) => [
+          row.id,
+          row.reference_value ===
+          null
+            ? null
+            : Number(
+                row.reference_value,
+              ),
+        ]),
+      );
+
+    setPartnerName(
+      partnerResult.data
+        ?.display_name ??
+        "Other Character",
+    );
+    setOffers(
+      (offersResult.data ??
+        []) as Offer[],
+    );
+    setPartnerInventory(
+      rawPartnerRows.map(
+        (row) => ({
+          ...row,
+          reference_value:
+            partnerValues.get(
+              row.item_id,
+            ) ?? null,
+        }),
+      ),
+    );
   }, [supabase]);
 
   useEffect(() => {
@@ -207,13 +342,51 @@ export function ItemExchangePanel({
     };
   }, [load, supabase]);
 
-  const names = useMemo(() => {
-    const map = new Map<string, string>();
-    for (const row of [...inventory, ...partnerInventory]) {
-      map.set(`${row.record_kind}:${row.record_id}`, row.name);
-    }
-    return map;
-  }, [inventory, partnerInventory]);
+  const inventoryRecords =
+    useMemo(() => {
+      const map =
+        new Map<
+          string,
+          InventoryRecord
+        >();
+
+      for (const row of [
+        ...inventory,
+        ...partnerInventory,
+      ]) {
+        map.set(
+          `${row.record_kind}:${row.record_id}`,
+          row,
+        );
+      }
+
+      return map;
+    }, [
+      inventory,
+      partnerInventory,
+    ]);
+
+  const offerReferenceTotal = (
+    list: Offer[],
+  ) =>
+    list.reduce(
+      (total, offer) => {
+        const row =
+          inventoryRecords.get(
+            `${offer.record_kind}:${offer.record_id}`,
+          );
+
+        return (
+          total +
+          Number(
+            row?.reference_value ??
+              0,
+          ) *
+            offer.quantity
+        );
+      },
+      0,
+    );
 
   const mine = offers.filter((offer) => offer.character_id === myId);
   const theirs = offers.filter((offer) => offer.character_id !== myId);
@@ -439,8 +612,27 @@ export function ItemExchangePanel({
         {list.length ? list.map((offer) => (
           <div key={offer.id} className="flex items-center justify-between gap-2 border border-[#59432c]/25 px-3 py-2">
             <span className="text-[10px] text-[#cdb894]">
-              {names.get(`${offer.record_kind}:${offer.record_id}`) ?? "Item"}
-              {offer.quantity > 1 ? ` ×${offer.quantity}` : ""}
+              {inventoryRecords.get(
+                `${offer.record_kind}:${offer.record_id}`,
+              )?.name ?? "Item"}
+              {offer.quantity > 1
+                ? ` ×${offer.quantity}`
+                : ""}
+              {(() => {
+                const value =
+                  inventoryRecords.get(
+                    `${offer.record_kind}:${offer.record_id}`,
+                  )?.reference_value;
+
+                return value ===
+                  null ||
+                  value ===
+                    undefined
+                  ? ""
+                  : ` · ${formatRemnants(
+                      value,
+                    )} each`;
+              })()}
             </span>
             {own ? (
               <button type="button" disabled={pending} onClick={() => void removeOffer(offer.id)} className="text-[7px] uppercase text-red-400">
@@ -455,10 +647,38 @@ export function ItemExchangePanel({
       <div className="mt-2 border-t border-[#59432c]/30 pt-2">
         <div className="flex items-center justify-between gap-3">
           <span className="text-[8px] uppercase tracking-[0.12em] text-[#756958]">
+            Items · Reference Value
+          </span>
+          <strong className="font-serif text-sm text-[#d1b17d]">
+            {formatRemnants(
+              offerReferenceTotal(
+                list,
+              ),
+            )}
+          </strong>
+        </div>
+
+        <div className="mt-1 flex items-center justify-between gap-3">
+          <span className="text-[8px] uppercase tracking-[0.12em] text-[#756958]">
             Remnants offered
           </span>
           <strong className="font-serif text-sm text-[#e4c589]">
-            {remnants.toLocaleString("en-GB")} R
+            {formatRemnants(
+              remnants,
+            )}
+          </strong>
+        </div>
+
+        <div className="mt-2 flex items-center justify-between gap-3 border-t border-[#59432c]/25 pt-2">
+          <span className="text-[8px] uppercase tracking-[0.12em] text-[#a18b6c]">
+            Total offered value
+          </span>
+          <strong className="font-serif text-base text-[#efd09a]">
+            {formatRemnants(
+              offerReferenceTotal(
+                list,
+              ) + remnants,
+            )}
           </strong>
         </div>
       </div>
@@ -486,7 +706,16 @@ export function ItemExchangePanel({
               <option value="">Choose Item...</option>
               {inventory.map((row) => (
                 <option key={encoded(row)} value={encoded(row)}>
-                  {row.name}{row.quantity > 1 ? ` ×${row.quantity}` : ""}
+                  {row.name}
+                  {row.quantity > 1
+                    ? ` ×${row.quantity}`
+                    : ""}
+                  {row.reference_value !==
+                  null
+                    ? ` · Ref ${formatRemnants(
+                        row.reference_value,
+                      )}`
+                    : ""}
                 </option>
               ))}
             </select>
@@ -498,6 +727,33 @@ export function ItemExchangePanel({
             </select>
             <input className={field} type="number" min={1} value={giveQuantity} onChange={(e) => setGiveQuantity(Math.max(1, Number.parseInt(e.target.value || "1", 10) || 1))} />
             <button type="button" className={button} disabled={pending || !giveChoice || !giveTarget} onClick={() => void give()}>Give Item</button>
+
+            {giveChoice ? (() => {
+              const { kind, id } =
+                decode(giveChoice);
+              const selected =
+                inventoryRecords.get(
+                  `${kind}:${id}`,
+                );
+              const value =
+                selected?.reference_value;
+
+              return value ===
+                null ||
+                value === undefined
+                ? null
+                : (
+                  <p className="border-t border-[#59432c]/25 pt-2 text-[8px] uppercase tracking-[0.12em] text-[#9b8768]">
+                    Reference Value being given:{" "}
+                    <strong className="text-[#e1bd79]">
+                      {formatRemnants(
+                        value *
+                          giveQuantity,
+                      )}
+                    </strong>
+                  </p>
+                );
+            })() : null}
           </div>
         </section>
 
@@ -597,7 +853,16 @@ export function ItemExchangePanel({
               <option value="">Add one of your Items...</option>
               {inventory.map((row) => (
                 <option key={encoded(row)} value={encoded(row)}>
-                  {row.name}{row.quantity > 1 ? ` ×${row.quantity}` : ""}
+                  {row.name}
+                  {row.quantity > 1
+                    ? ` ×${row.quantity}`
+                    : ""}
+                  {row.reference_value !==
+                  null
+                    ? ` · Ref ${formatRemnants(
+                        row.reference_value,
+                      )}`
+                    : ""}
                 </option>
               ))}
             </select>

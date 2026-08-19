@@ -54,6 +54,7 @@ type ItemRequirementRow = {
   target_mode: string | null;
   max_charges: number | null;
   cooldown_minutes: number | null;
+  reference_value: number | null;
   effects:
     | {
         trigger_type: string;
@@ -556,6 +557,7 @@ export async function CharacterInventoryDisplay({
             target_mode,
             max_charges,
             cooldown_minutes,
+            reference_value,
             effects:item_effects(
               trigger_type,
               effect_mode,
@@ -827,6 +829,13 @@ export async function CharacterInventoryDisplay({
         ...row,
         item_active:
           master?.is_active === true,
+        reference_value:
+          master?.reference_value === null ||
+          master?.reference_value === undefined
+            ? null
+            : Number(
+                master.reference_value,
+              ),
         configured_slot:
           master?.equip_slot ??
           null,

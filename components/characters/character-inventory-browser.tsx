@@ -9,6 +9,9 @@ import {
 import { useRouter } from "next/navigation";
 
 import {
+  formatRemnants,
+} from "@/lib/economy/currency";
+import {
   equipInventoryItem,
   unequipInventoryItem,
 } from "@/lib/items/equipment-actions";
@@ -61,6 +64,7 @@ export type InventoryBrowserRow = {
     | null;
   quality: string;
   quantity: number;
+  reference_value: number | null;
   is_unique: boolean;
   is_quest_item: boolean;
   transfer_policy: string;
@@ -292,6 +296,14 @@ function Badges({
 }) {
   return (
     <div className="flex flex-wrap gap-1.5">
+      {row.reference_value !== null ? (
+        <span className="border border-[#8d6d3e]/55 bg-[#21180f] px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[#d3b278]">
+          Reference {formatRemnants(
+            row.reference_value,
+          )}
+        </span>
+      ) : null}
+
       {row.is_equipped ? (
         <span className="border border-[#9a7543]/65 bg-[#2d2115] px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[#dfbd83]">
           Equipped
