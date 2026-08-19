@@ -12,6 +12,9 @@ import {
   legacyRichTextToHtml,
 } from "@/lib/rich-text-shared";
 import { createClient } from "@/lib/supabase/server";
+import {
+  getPrivateLocationAccess,
+} from "@/lib/private-locations/access";
 import type {
   CharacterAttributeKey,
   RoomMessage,
@@ -1055,6 +1058,22 @@ export async function GET(
   const room =
     roomData as unknown as RoomRow;
 
+  const privateAccess =
+    await getPrivateLocationAccess(
+      room.id,
+      character.id,
+    );
+
+  if (
+    privateAccess.isPrivate &&
+    !privateAccess.allowed
+  ) {
+    redirect("/game");
+  }
+
+  const privateTheme =
+    privateAccess.metadata;
+
   const area =
     normaliseRelation(
       room.area,
@@ -1141,6 +1160,70 @@ export async function GET(
 
       background: #090706;
       color: #c9bba6;
+
+      --chat-background: ${
+        privateTheme
+          ? escapeHtml(
+              privateTheme.backgroundColour,
+            )
+          : "#110d0a"
+      };
+
+      --speech-colour: ${
+        privateTheme
+          ? escapeHtml(
+              privateTheme.speechColour,
+            )
+          : "#cdbda7"
+      };
+
+      --action-colour: ${
+        privateTheme
+          ? escapeHtml(
+              privateTheme.actionColour,
+            )
+          : "#a78760"
+      };
+
+      --system-colour: ${
+        privateTheme
+          ? escapeHtml(
+              privateTheme.systemColour,
+            )
+          : "#aa9c87"
+      };
+
+      --whisper-background: ${
+        privateTheme
+          ? escapeHtml(
+              privateTheme.whisperBackgroundColour,
+            )
+          : "#241b2a"
+      };
+
+      --whisper-text: ${
+        privateTheme
+          ? escapeHtml(
+              privateTheme.whisperTextColour,
+            )
+          : "#bda5cb"
+      };
+
+      --offgame-background: ${
+        privateTheme
+          ? escapeHtml(
+              privateTheme.offgameBackgroundColour,
+            )
+          : "#182536"
+      };
+
+      --offgame-text: ${
+        privateTheme
+          ? escapeHtml(
+              privateTheme.offgameTextColour,
+            )
+          : "#a9c7e6"
+      };
     }
 
     * {
@@ -1496,11 +1579,14 @@ export async function GET(
         #60482e;
 
       background:
-        rgba(
-          17,
-          13,
-          10,
-          0.97
+        var(
+          --chat-background,
+          rgba(
+            17,
+            13,
+            10,
+            0.97
+          )
         );
     }
 
@@ -1662,11 +1748,19 @@ export async function GET(
     }
 
     .speech-text {
-      color: #cdbda7;
+      color:
+        var(
+          --speech-colour,
+          #cdbda7
+        );
     }
 
     .action-text {
-      color: #a78760;
+      color:
+        var(
+          --action-colour,
+          #a78760
+        );
 
       font-style: italic;
     }
@@ -1682,21 +1776,9 @@ export async function GET(
         #76568a;
 
       background:
-        linear-gradient(
-          90deg,
-          rgba(
-            62,
-            40,
-            75,
-            0.22
-          ),
-          rgba(
-            27,
-            20,
-            30,
-            0.12
-          ) 58%,
-          transparent
+        var(
+          --whisper-background,
+          #241b2a
         );
     }
 
@@ -1724,7 +1806,11 @@ export async function GET(
     }
 
     .whisper-label {
-      color: #bda5cb;
+      color:
+        var(
+          --whisper-text,
+          #bda5cb
+        );
 
       font-size: 7px;
 
@@ -1733,6 +1819,22 @@ export async function GET(
 
       text-transform:
         uppercase;
+    }
+
+
+    .whisper-entry
+    .author-name,
+    .whisper-entry
+    .speech-text,
+    .whisper-entry
+    .action-text,
+    .whisper-entry
+    .role-body {
+      color:
+        var(
+          --whisper-text,
+          #bda5cb
+        );
     }
 
 
@@ -1746,21 +1848,9 @@ export async function GET(
         #627f9f;
 
       background:
-        linear-gradient(
-          90deg,
-          rgba(
-            33,
-            58,
-            83,
-            0.34
-          ),
-          rgba(
-            22,
-            34,
-            49,
-            0.20
-          ) 58%,
-          transparent
+        var(
+          --offgame-background,
+          #182536
         );
     }
 
@@ -1797,7 +1887,11 @@ export async function GET(
     }
 
     .ooc-label {
-      color: #a9c7e6;
+      color:
+        var(
+          --offgame-text,
+          #a9c7e6
+        );
 
       font-size: 7px;
       font-weight: 600;
@@ -1807,6 +1901,22 @@ export async function GET(
 
       text-transform:
         uppercase;
+    }
+
+
+    .ooc-entry
+    .author-name,
+    .ooc-entry
+    .speech-text,
+    .ooc-entry
+    .action-text,
+    .ooc-entry
+    .role-body {
+      color:
+        var(
+          --offgame-text,
+          #a9c7e6
+        );
     }
 
 
@@ -1845,13 +1955,21 @@ export async function GET(
     }
 
     .roll-symbol {
-      color: #b98849;
+      color:
+        var(
+          --system-colour,
+          #b98849
+        );
 
       font-size: 9px;
     }
 
     .roll-author {
-      color: #cdb486;
+      color:
+        var(
+          --system-colour,
+          #cdb486
+        );
 
       font-family:
         Georgia,
@@ -1866,7 +1984,11 @@ export async function GET(
     .roll-result {
       min-width: 0;
 
-      color: #aa9c87;
+      color:
+        var(
+          --system-colour,
+          #aa9c87
+        );
 
       font-size: 10px;
 
@@ -1897,7 +2019,7 @@ export async function GET(
     .roll-symbol,
     .critical-success
     .roll-result {
-      color: #86d9a6;
+      color: #86d9a6 !important;
     }
 
     .critical-failure {
@@ -1923,7 +2045,7 @@ export async function GET(
     .roll-symbol,
     .critical-failure
     .roll-result {
-      color: #e99797;
+      color: #e99797 !important;
     }
 
 

@@ -1050,7 +1050,9 @@ export default function RoomMessageList({
                           item,
                         )}
                         style={
-                          privateLocationTheme
+                          privateLocationTheme &&
+                          !isNaturalTwenty &&
+                          !isNaturalOne
                             ? {
                                 color:
                                   privateLocationTheme.systemColour,
