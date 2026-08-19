@@ -305,7 +305,8 @@ export function MessagesInboxClient({
                       )}
                     </div>
 
-                    {conversation.other ? (
+                    {!conversation.isGroup &&
+                    conversation.other ? (
                       <MessageCharacterIcons
                         characterId={
                           conversation.other.id
@@ -315,7 +316,6 @@ export function MessagesInboxClient({
                             .race
                         }
                       />
-
                     ) : null}
 
                     <div className="min-w-0 flex-1 pl-1">
@@ -324,7 +324,8 @@ export function MessagesInboxClient({
                           {otherName}
                         </h2>
 
-                        {conversation.other ? (
+                        {!conversation.isGroup &&
+                        conversation.other ? (
                           <MessagePresenceStatus
                             characterId={
                               conversation
@@ -346,7 +347,8 @@ export function MessagesInboxClient({
                         ) : null}
                       </div>
 
-                      {conversation.other
+                      {!conversation.isGroup &&
+                      conversation.other
                         ?.title ? (
                         <p className="mt-1 truncate text-[10px] italic text-[#8d7b63]">
                           {

@@ -3,6 +3,7 @@
 import {
   useCallback,
   useEffect,
+  useId,
   useState,
 } from "react";
 
@@ -114,6 +115,12 @@ export function MessagePresenceStatus({
   characterId: string;
   viewerIsStaff?: boolean;
 }) {
+  const subscriptionId =
+    useId().replace(
+      /[^a-zA-Z0-9_-]/g,
+      "",
+    );
+
   const [status, setStatus] =
     useState<PresenceView>(
       "offline",
@@ -210,7 +217,7 @@ export function MessagePresenceStatus({
     const channel =
       supabase
         .channel(
-          `message-presence-${characterId}`,
+          `message-presence-${characterId}-${subscriptionId}`,
         )
         .on(
           "postgres_changes",
@@ -267,6 +274,7 @@ export function MessagePresenceStatus({
   }, [
     characterId,
     refreshPresence,
+    subscriptionId,
   ]);
 
   const presentation =

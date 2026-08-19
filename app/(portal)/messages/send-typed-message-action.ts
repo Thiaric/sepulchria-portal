@@ -165,13 +165,13 @@ export async function sendTypedPrivateMessage(
     }
 
     const {
-      data: otherParticipant,
+      data: otherParticipants,
       error: otherParticipantError,
     } = await supabase
       .from(
         "direct_conversation_participants",
       )
-      .select("character_id")
+      .select("character_id, deleted_at")
       .eq(
         "conversation_id",
         conversationId,
@@ -180,7 +180,10 @@ export async function sendTypedPrivateMessage(
         "character_id",
         character.id,
       )
-      .maybeSingle();
+      .is(
+        "deleted_at",
+        null,
+      );
 
     if (otherParticipantError) {
       return {
@@ -190,7 +193,7 @@ export async function sendTypedPrivateMessage(
       };
     }
 
-    if (!otherParticipant) {
+    if (!otherParticipants?.length) {
       return {
         ok: false,
         message:
@@ -198,20 +201,30 @@ export async function sendTypedPrivateMessage(
       };
     }
 
+    const otherIds =
+      otherParticipants.map(
+        (row) =>
+          row.character_id as string,
+      );
+
     const {
-      data: blocked,
+      data: blocks,
       error: blockError,
     } = await supabase
       .from("character_blocks")
-      .select("blocker_character_id")
-      .or(
-        [
-          `and(blocker_character_id.eq.${character.id},blocked_character_id.eq.${otherParticipant.character_id})`,
-          `and(blocker_character_id.eq.${otherParticipant.character_id},blocked_character_id.eq.${character.id})`,
-        ].join(","),
+      .select(
+        "blocker_character_id, blocked_character_id",
       )
-      .limit(1)
-      .maybeSingle();
+      .or(
+        otherIds
+          .flatMap(
+            (otherId) => [
+              `and(blocker_character_id.eq.${character.id},blocked_character_id.eq.${otherId})`,
+              `and(blocker_character_id.eq.${otherId},blocked_character_id.eq.${character.id})`,
+            ],
+          )
+          .join(","),
+      );
 
     if (blockError) {
       return {
@@ -220,7 +233,7 @@ export async function sendTypedPrivateMessage(
       };
     }
 
-    if (blocked) {
+    if ((blocks ?? []).length > 0) {
       return {
         ok: false,
         message:
@@ -321,6 +334,10 @@ export async function sendTypedPrivateMessage(
       .eq(
         "conversation_id",
         conversationId,
+      )
+      .is(
+        "deleted_at",
+        null,
       );
 
     if (participantUpdateError) {

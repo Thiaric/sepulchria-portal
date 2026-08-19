@@ -100,9 +100,10 @@ export async function sendPrivateMessage(
 
     const { data: otherParticipants, error: otherParticipantError } = await supabase
       .from("direct_conversation_participants")
-      .select("character_id")
+      .select("character_id, deleted_at")
       .eq("conversation_id", conversationId)
-      .neq("character_id", character.id);
+      .neq("character_id", character.id)
+      .is("deleted_at", null);
 
     if (otherParticipantError) return { ok: false, message: otherParticipantError.message };
     if (!otherParticipants?.length) return { ok: false, message: "Recipient not found." };

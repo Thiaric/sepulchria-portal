@@ -64,6 +64,10 @@ export async function GroupConversationView({
       .eq(
         "conversation_id",
         conversationId,
+      )
+      .is(
+        "deleted_at",
+        null,
       ),
     supabase
       .from("direct_messages")
