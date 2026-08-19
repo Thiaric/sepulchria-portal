@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { Suspense, type CSSProperties } from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -39,6 +39,7 @@ type RoomRelation = {
   description: string | null;
   image_url: string | null;
   area_id: string;
+  is_outdoors: boolean;
   areas: Area | Area[] | null;
 };
 
@@ -120,7 +121,7 @@ async function GameContent() {
   } = await supabase
     .from("rooms")
     .select(
-  "id, name, slug, chat_enabled, description, image_url, area_id, areas(id,name,slug,description)",
+  "id, name, slug, chat_enabled, description, image_url, area_id, is_outdoors, areas(id,name,slug,description)",
 )
     .eq(
       "id",
@@ -141,6 +142,72 @@ async function GameContent() {
   }
 
   const room = rawRoom as RoomRelation;
+
+  const {
+    data: privateLocation,
+    error: privateLocationError,
+  } = await supabase
+    .from("private_location_rooms")
+    .select(
+      "owner_character_id, background_colour, text_colour",
+    )
+    .eq("room_id", room.id)
+    .maybeSingle();
+
+  if (privateLocationError) {
+    throw new Error(
+      `Unable to inspect private location access: ${privateLocationError.message}`,
+    );
+  }
+
+  if (privateLocation) {
+    const [
+      privateMembershipResult,
+      privateStaffSession,
+      ownerEntitlementResult,
+    ] = await Promise.all([
+      supabase
+        .from("private_location_members")
+        .select("status")
+        .eq("room_id", room.id)
+        .eq(
+          "character_id",
+          character.id,
+        )
+        .maybeSingle(),
+
+      getStaffSession(),
+
+      supabase
+        .from("character_feature_entitlements")
+        .select("enabled")
+        .eq(
+          "character_id",
+          privateLocation.owner_character_id,
+        )
+        .eq(
+          "feature_key",
+          "private_chat",
+        )
+        .maybeSingle(),
+    ]);
+
+    const mayEnter =
+      privateStaffSession !== null ||
+      (
+        ownerEntitlementResult.data?.enabled === true &&
+        privateMembershipResult.data?.status === "active"
+      );
+
+    if (!mayEnter) {
+      return (
+        <div
+          className="h-full min-h-[60vh] bg-[#0d0b0a]"
+          aria-label="Unavailable location"
+        />
+      );
+    }
+  }
 
   const attributeBreakdown =
     await getCharacterAttributeBreakdown(
@@ -685,9 +752,32 @@ async function GameContent() {
   className={
     room.slug === "odd-jobs-bureau"
   ? "min-h-full overflow-visible p-2 sm:p-3 lg:h-full lg:min-h-0 lg:overflow-y-auto lg:overscroll-contain lg:p-4"
-  : "h-full min-h-0 overflow-hidden p-2 sm:p-3 lg:p-4"
+  : privateLocation
+    ? "private-location-theme h-full min-h-0 overflow-hidden p-2 sm:p-3 lg:p-4"
+    : "h-full min-h-0 overflow-hidden p-2 sm:p-3 lg:p-4"
+  }
+  style={
+    privateLocation
+      ? ({
+          "--private-location-bg":
+            privateLocation.background_colour,
+          "--private-location-text":
+            privateLocation.text_colour,
+        } as CSSProperties)
+      : undefined
   }
 >
+    {privateLocation ? (
+      <style>{`
+        .private-location-theme article {
+          background: var(--private-location-bg) !important;
+        }
+        .private-location-theme article,
+        .private-location-theme article * {
+          color: var(--private-location-text) !important;
+        }
+      `}</style>
+    ) : null}
     <RoomRealtime roomId={room.id} />
 
     <div

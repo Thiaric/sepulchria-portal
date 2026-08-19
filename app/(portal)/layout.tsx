@@ -5,6 +5,7 @@ import { PortalMessageSoundListener } from "@/components/audio/portal-message-so
 import { PortalCollapsibleColumns } from "@/components/portal/portal-collapsible-columns";
 import { PortalHeader } from "@/components/portal/portal-header";
 import { PortalPresenceHeartbeat } from "@/components/portal/portal-presence-heartbeat";
+import { PrivateLocationInvitationPopup } from "@/components/private-location/private-location-invitation-popup";
 import { PortalResponsiveRightSidebar } from "@/components/portal/portal-responsive-right-sidebar";
 import { PortalSidebar } from "@/components/portal/portal-sidebar";
 import { TidingsTicker } from "@/components/tidings/tidings-ticker";
@@ -113,6 +114,14 @@ async function PortalLayoutContent({
             null
           }
         />
+
+        <PrivateLocationInvitationPopup
+          characterId={
+            context.character?.id ??
+            null
+          }
+        />
+
 
         <div className="h-dvh overflow-hidden bg-[#120f0d] text-[#e8dcc4]">
           <div className="flex h-full min-h-0 flex-col bg-[radial-gradient(circle_at_top,_rgba(116,82,42,0.16),_transparent_38%),linear-gradient(to_bottom,_#17120f,_#0d0b0a)]">

@@ -143,6 +143,15 @@ const marketItem: NavigationItem = {
   activePaths: ["/market"],
 };
 
+const privateLocationItem: NavigationItem = {
+  label: "Private Location",
+  title:
+    "Manage or enter invitation-only Private Locations.",
+  icon: "/icons/messages.png",
+  href: "/private-location",
+  activePaths: ["/private-location"],
+};
+
 const friendsItem: NavigationItem = {
   label: "Friend List",
   title:
@@ -252,6 +261,91 @@ export function PortalSidebar({
     hasFriendListFeature,
     setHasFriendListFeature,
   ] = useState(false);
+
+  const [
+    hasPrivateLocationAccess,
+    setHasPrivateLocationAccess,
+  ] = useState(false);
+
+  const refreshPrivateLocationAccess =
+    useCallback(async () => {
+      const supabase =
+        createClient();
+
+      const {
+        data: { user },
+      } =
+        await supabase.auth.getUser();
+
+      if (!user) {
+        setHasPrivateLocationAccess(
+          false,
+        );
+        return;
+      }
+
+      const {
+        data: character,
+      } = await supabase
+        .from("characters")
+        .select("id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (!character) {
+        setHasPrivateLocationAccess(
+          false,
+        );
+        return;
+      }
+
+      const [
+        entitlementResult,
+        membershipResult,
+        invitationResult,
+      ] = await Promise.all([
+        supabase
+          .from("character_feature_entitlements")
+          .select("enabled")
+          .eq(
+            "character_id",
+            character.id,
+          )
+          .eq(
+            "feature_key",
+            "private_chat",
+          )
+          .maybeSingle(),
+
+        supabase
+          .from("private_location_members")
+          .select("room_id")
+          .eq(
+            "character_id",
+            character.id,
+          )
+          .eq("status", "active")
+          .limit(1)
+          .maybeSingle(),
+
+        supabase
+          .from("private_location_invitations")
+          .select("id")
+          .eq(
+            "recipient_character_id",
+            character.id,
+          )
+          .eq("status", "pending")
+          .limit(1)
+          .maybeSingle(),
+      ]);
+
+      setHasPrivateLocationAccess(
+        entitlementResult.data?.enabled === true ||
+        Boolean(membershipResult.data) ||
+        Boolean(invitationResult.data),
+      );
+    }, []);
 
   const refreshFriendListFeature =
     useCallback(async () => {
@@ -409,6 +503,44 @@ export function PortalSidebar({
         ),
       );
     }, []);
+
+  useEffect(() => {
+    void refreshPrivateLocationAccess();
+
+    function handleFocus() {
+      void refreshPrivateLocationAccess();
+    }
+
+    function handleVisibility() {
+      if (
+        document.visibilityState === "visible"
+      ) {
+        void refreshPrivateLocationAccess();
+      }
+    }
+
+    window.addEventListener(
+      "focus",
+      handleFocus,
+    );
+
+    document.addEventListener(
+      "visibilitychange",
+      handleVisibility,
+    );
+
+    return () => {
+      window.removeEventListener(
+        "focus",
+        handleFocus,
+      );
+
+      document.removeEventListener(
+        "visibilitychange",
+        handleVisibility,
+      );
+    };
+  }, [refreshPrivateLocationAccess]);
 
   useEffect(() => {
     void refreshFriendListFeature();
@@ -1386,6 +1518,12 @@ export function PortalSidebar({
       </button>
     </div>
 
+    {hasPrivateLocationAccess
+      ? renderMobileItem(
+          privateLocationItem,
+        )
+      : null}
+
     {hasFriendListFeature
       ? renderMobileItem(
           friendsItem,
@@ -1532,6 +1670,12 @@ export function PortalSidebar({
                 {hasOrderLeadership
                   ? renderNavigationItem(
                       manageOrderItem,
+                    )
+                  : null}
+
+                {hasPrivateLocationAccess
+                  ? renderNavigationItem(
+                      privateLocationItem,
                     )
                   : null}
 

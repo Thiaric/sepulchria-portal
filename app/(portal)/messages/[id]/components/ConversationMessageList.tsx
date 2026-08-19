@@ -6,6 +6,7 @@ import {
 } from "react";
 
 import { RichTextContentClient } from "@/components/editor/rich-text-content-client";
+import { PrivateLocationInvitationMessage } from "@/components/messages/private-location-invitation-message";
 import { stripRichTextForPreview } from "@/lib/rich-text-shared";
 import type {
   DirectMessage,
@@ -591,11 +592,26 @@ export function ConversationMessageList({
                           : "text-[#c2c7d1]"
                       }`}
                     >
-                      <RichTextContentClient
-                        body={
-                          message.body
-                        }
-                      />
+                      {(() => {
+                        const inviteMatch =
+                          message.body.match(
+                            /PRIVATE_LOCATION_INVITE:([0-9a-f-]{36})/i,
+                          );
+
+                        return inviteMatch ? (
+                          <PrivateLocationInvitationMessage
+                            invitationId={
+                              inviteMatch[1]
+                            }
+                          />
+                        ) : (
+                          <RichTextContentClient
+                            body={
+                              message.body
+                            }
+                          />
+                        );
+                      })()}
                     </div>
                   </div>
                 </div>
