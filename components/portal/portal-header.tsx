@@ -40,6 +40,12 @@ export async function PortalHeader({ context }: PortalHeaderProps) {
               isStaff={
                 staffSession !== null
               }
+              visiblePrivateRoomIds={
+                context.privateLocations.map(
+                  (location) =>
+                    location.roomId,
+                )
+              }
             />
             <PortalSoundToggle />
 

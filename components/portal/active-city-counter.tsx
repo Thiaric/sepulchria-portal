@@ -23,6 +23,7 @@ const REFRESH_INTERVAL_MS = 5_000;
 type ActiveCityCounterProps = {
   initialCount: number;
   isStaff: boolean;
+  visiblePrivateRoomIds: string[];
 };
 
 type CodexSummary = {
@@ -86,6 +87,7 @@ type PresentCharacter = {
 export function ActiveCityCounter({
   initialCount,
   isStaff,
+  visiblePrivateRoomIds,
 }: ActiveCityCounterProps) {
   const [count, setCount] =
     useState(initialCount);
@@ -111,6 +113,15 @@ export function ActiveCityCounter({
     currentCharacterId,
     setCurrentCharacterId,
   ] = useState<string | null>(null);
+
+  const visiblePrivateRoomIdSet =
+    useMemo(
+      () =>
+        new Set(
+          visiblePrivateRoomIds,
+        ),
+      [visiblePrivateRoomIds],
+    );
 
   const refreshPresence =
     useCallback(async () => {
@@ -425,16 +436,25 @@ export function ActiveCityCounter({
             roomArea?.slug ===
             "private-locations";
 
+          const maySeePrivateRoom =
+            !privateRoom ||
+            isStaff ||
+            (
+              room !== null &&
+              visiblePrivateRoomIdSet.has(
+                room.id,
+              )
+            );
+
           const searchableText = [
             person.display_name,
             person.title,
             person.occupation,
             race?.name,
             association?.name,
-            privateRoom &&
-            !isStaff
-              ? null
-              : room?.name,
+            maySeePrivateRoom
+              ? room?.name
+              : null,
             presence.status,
           ]
             .filter(Boolean)
@@ -450,6 +470,7 @@ export function ActiveCityCounter({
       presentCharacters,
       searchQuery,
       isStaff,
+      visiblePrivateRoomIdSet,
     ]);
 
   return (
@@ -686,6 +707,16 @@ export function ActiveCityCounter({
                       roomArea?.slug ===
                       "private-locations";
 
+                    const maySeePrivateRoom =
+                      !privateRoom ||
+                      isStaff ||
+                      (
+                        room !== null &&
+                        visiblePrivateRoomIdSet.has(
+                          room.id,
+                        )
+                      );
+
                     const displayName =
                       person.display_name?.trim() ||
                       "Unnamed character";
@@ -783,10 +814,7 @@ export function ActiveCityCounter({
                             <div className="mt-1.5 flex min-w-0 items-center justify-between gap-2 border-t border-[#59432c]/25 pt-1.5">
                               {room &&
                               presence.room_id &&
-                              (
-                                !privateRoom ||
-                                isStaff
-                              ) ? (
+                              maySeePrivateRoom ? (
                                 <form
                                   action={
                                     enterRoomFromMap
