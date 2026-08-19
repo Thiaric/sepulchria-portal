@@ -542,6 +542,13 @@ export function ConversationMessageList({
                           )}
                         </time>
 
+                        <a
+                          href={`/messages/forward/${message.id}`}
+                          className="border border-[#59432c]/80 bg-[#17110d] px-2.5 py-1.5 text-[7px] uppercase tracking-[0.13em] text-[#b99b70] transition hover:border-[#8b6a40] hover:text-[#e3c28d]"
+                        >
+                          Forward
+                        </a>
+
                         <form
                           action={
                             deletePrivateMessages
@@ -593,6 +600,28 @@ export function ConversationMessageList({
                           : "text-[#c2c7d1]"
                       }`}
                     >
+                      {message.forwarded_body ? (
+                        <div className="mb-3 border-l-2 border-[#9a7543] bg-black/20 p-3">
+                          <p className="mb-2 text-[7px] uppercase tracking-[0.16em] text-[#9b8465]">
+                            Forwarded from{" "}
+                            {message.forwarded_sender_name ??
+                              "Unknown"}
+                            {message.forwarded_created_at
+                              ? ` · ${new Date(
+                                  message.forwarded_created_at,
+                                ).toLocaleString("en-GB")}`
+                              : ""}
+                          </p>
+
+                          <RichTextContentClient
+                            body={
+                              message.forwarded_body
+                            }
+                            className="text-xs text-[#aa9c88] [&_p]:my-1"
+                          />
+                        </div>
+                      ) : null}
+
                       {(() => {
                         const inviteMatch =
                           message.body.match(

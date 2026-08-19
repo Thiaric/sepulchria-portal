@@ -21,6 +21,7 @@ import MessageComposer from "../components/MessageComposer";
 import { ConversationMessageList } from "./components/ConversationMessageList";
 import ConversationRealtime from "./components/ConversationRealtime";
 import { DeleteConversationForm } from "./components/DeleteConversationForm";
+import { GroupConversationView } from "../components/group-conversation-view";
 
 type ConversationPageProps = {
   params: Promise<{
@@ -131,6 +132,35 @@ export default async function ConversationPage({
     notFound();
   }
 
+  const {
+    data: conversationMeta,
+    error: conversationMetaError,
+  } = await supabase
+    .from("direct_conversations")
+    .select("is_group, title")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (conversationMetaError) {
+    throw new Error(
+      conversationMetaError.message,
+    );
+  }
+
+  if (conversationMeta?.is_group) {
+    return (
+      <GroupConversationView
+        conversationId={id}
+        viewerCharacterId={
+          character.id
+        }
+        title={
+          conversationMeta.title
+        }
+      />
+    );
+  }
+
   const [
     otherParticipantResult,
     messagesResult,
@@ -182,6 +212,10 @@ export default async function ConversationPage({
         created_at,
         sender_character_id,
         message_mode,
+        forwarded_from_message_id,
+        forwarded_sender_name,
+        forwarded_created_at,
+        forwarded_body,
         sender:characters!direct_messages_sender_character_id_fkey(
           id,
           display_name,

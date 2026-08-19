@@ -49,10 +49,14 @@ type ParticipantRow = {
     | {
         id: string;
         updated_at: string;
+        is_group: boolean;
+        title: string | null;
       }
     | {
         id: string;
         updated_at: string;
+        is_group: boolean;
+        title: string | null;
       }[]
     | null;
 };
@@ -81,6 +85,9 @@ type ConversationCard = {
   updatedAt: string;
   archivedAt: string | null;
   other: CharacterSummary | null;
+  isGroup: boolean;
+  groupTitle: string | null;
+  participantNames: string[];
 
   lastMessage: DirectMessageRow | null;
 
@@ -183,7 +190,9 @@ export default async function MessagesPage({
         last_read_at,
         conversation:direct_conversations(
           id,
-          updated_at
+          updated_at,
+          is_group,
+          title
         )
       `)
       .eq(
@@ -427,10 +436,10 @@ export default async function MessagesPage({
         ),
     );
 
-  const otherByConversation =
+  const othersByConversation =
     new Map<
       string,
-      CharacterSummary
+      CharacterSummary[]
     >();
 
   for (
@@ -450,9 +459,16 @@ export default async function MessagesPage({
       );
 
     if (other) {
-      otherByConversation.set(
+      const current =
+        othersByConversation.get(
+          row.conversation_id,
+        ) ?? [];
+
+      current.push(other);
+
+      othersByConversation.set(
         row.conversation_id,
-        other,
+        current,
       );
     }
   }
@@ -494,10 +510,18 @@ export default async function MessagesPage({
           return null;
         }
 
-        const other =
-          otherByConversation.get(
+        const others =
+          othersByConversation.get(
             row.conversation_id,
-          ) ?? null;
+          ) ?? [];
+
+        const other =
+          others[0] ?? null;
+
+        const participantNames =
+          others.map(
+            characterName,
+          );
 
         const messages =
           messagesByConversation.get(
@@ -525,9 +549,14 @@ export default async function MessagesPage({
                 lastReadTime,
           ).length;
 
-        const name = other
-          ? characterName(other)
-          : "Unknown character";
+        const name =
+          conversation.is_group
+            ? conversation.title?.trim() ||
+              participantNames.join(", ") ||
+              "Group conversation"
+            : other
+              ? characterName(other)
+              : "Unknown character";
 
         const searchableText =
           [
@@ -556,6 +585,11 @@ export default async function MessagesPage({
             row.archived_at,
 
           other,
+          isGroup:
+            conversation.is_group,
+          groupTitle:
+            conversation.title,
+          participantNames,
           lastMessage,
           unreadCount,
           searchableText,

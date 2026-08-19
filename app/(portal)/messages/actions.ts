@@ -98,28 +98,29 @@ export async function sendPrivateMessage(
     if (participantError) return { ok: false, message: participantError.message };
     if (!participant) return { ok: false, message: "Conversation not found." };
 
-    const { data: otherParticipant, error: otherParticipantError } = await supabase
+    const { data: otherParticipants, error: otherParticipantError } = await supabase
       .from("direct_conversation_participants")
       .select("character_id")
       .eq("conversation_id", conversationId)
-      .neq("character_id", character.id)
-      .maybeSingle();
+      .neq("character_id", character.id);
 
     if (otherParticipantError) return { ok: false, message: otherParticipantError.message };
-    if (!otherParticipant) return { ok: false, message: "Recipient not found." };
+    if (!otherParticipants?.length) return { ok: false, message: "Recipient not found." };
 
-    const { data: blocked, error: blockError } = await supabase
+    const otherIds = otherParticipants.map((row) => row.character_id as string);
+
+    const { data: blocks, error: blockError } = await supabase
       .from("character_blocks")
-      .select("blocker_character_id")
-      .or([
-        `and(blocker_character_id.eq.${character.id},blocked_character_id.eq.${otherParticipant.character_id})`,
-        `and(blocker_character_id.eq.${otherParticipant.character_id},blocked_character_id.eq.${character.id})`,
-      ].join(","))
-      .limit(1)
-      .maybeSingle();
+      .select("blocker_character_id, blocked_character_id")
+      .or(
+        otherIds.flatMap((otherId) => [
+          `and(blocker_character_id.eq.${character.id},blocked_character_id.eq.${otherId})`,
+          `and(blocker_character_id.eq.${otherId},blocked_character_id.eq.${character.id})`,
+        ]).join(","),
+      );
 
     if (blockError) return { ok: false, message: blockError.message };
-    if (blocked) return { ok: false, message: "This conversation is unavailable." };
+    if ((blocks ?? []).length > 0) return { ok: false, message: "This conversation is unavailable." };
 
     const cooldownSince = new Date(
       Date.now() - PRIVATE_MESSAGE_COOLDOWN_SECONDS * 1000,

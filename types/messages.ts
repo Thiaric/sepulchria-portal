@@ -32,6 +32,10 @@ export type DirectMessage = {
   created_at: string;
   sender_character_id: string;
   message_mode: PrivateMessageMode;
+  forwarded_from_message_id?: string | null;
+  forwarded_sender_name?: string | null;
+  forwarded_created_at?: string | null;
+  forwarded_body?: string | null;
   sender:
     | {
         id: string;

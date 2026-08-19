@@ -47,6 +47,9 @@ type ConversationCard = {
   updatedAt: string;
   archivedAt: string | null;
   other: CharacterSummary | null;
+  isGroup: boolean;
+  groupTitle: string | null;
+  participantNames: string[];
 
   lastMessage: {
     id: string;
@@ -190,17 +193,12 @@ export function MessagesInboxClient({
           </div>
 
           <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={() =>
-                setNewMessageOpen(
-                  true,
-                )
-              }
+            <Link
+              href="/messages/new"
               className="border border-[#a07742] bg-[#402a17] px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-[#f1d5a2] transition hover:border-[#c49351] hover:bg-[#56371c]"
             >
               New message
-            </button>
+            </Link>
 
             <Link
               href="/messages"
@@ -265,11 +263,15 @@ export function MessagesInboxClient({
           {filteredConversations.map(
             (conversation) => {
               const otherName =
-                conversation.other
-                  ? displayName(
-                      conversation.other,
-                    )
-                  : "Deleted character";
+                conversation.isGroup
+                  ? conversation.groupTitle?.trim() ||
+                    conversation.participantNames.join(", ") ||
+                    "Group conversation"
+                  : conversation.other
+                    ? displayName(
+                        conversation.other,
+                      )
+                    : "Deleted character";
 
               return (
                 <article
