@@ -143,6 +143,7 @@ async function getAccessibleCharacterRows(
       `,
     )
     .eq("status", "approved")
+    .eq("is_system", false)
     .order("first_name", {
       ascending: true,
     });

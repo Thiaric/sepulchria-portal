@@ -111,6 +111,31 @@ export async function sendPrivateMessage(
 
     const otherIds = otherParticipants.map((row) => row.character_id as string);
 
+    const {
+      data: systemRecipients,
+      error: systemRecipientError,
+    } = await supabase
+      .from("characters")
+      .select("id")
+      .in("id", otherIds)
+      .eq("is_system", true);
+
+    if (systemRecipientError) {
+      return {
+        ok: false,
+        message:
+          systemRecipientError.message,
+      };
+    }
+
+    if ((systemRecipients ?? []).length > 0) {
+      return {
+        ok: false,
+        message:
+          "Automated system conversations cannot receive replies.",
+      };
+    }
+
     const { data: blocks, error: blockError } = await supabase
       .from("character_blocks")
       .select("blocker_character_id, blocked_character_id")

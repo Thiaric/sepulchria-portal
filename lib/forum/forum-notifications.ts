@@ -1,6 +1,37 @@
-import type {
-  SupabaseClient,
+import "server-only";
+
+import {
+  createClient as createAdminClient,
+  type SupabaseClient,
 } from "@supabase/supabase-js";
+
+const FORUM_SYSTEM_CHARACTER_ID =
+  "00000000-0000-4000-8000-00000000f001";
+
+function createPrivilegedClient() {
+  const url =
+    process.env.NEXT_PUBLIC_SUPABASE_URL;
+
+  const secret =
+    process.env.SUPABASE_SECRET_KEY;
+
+  if (!url || !secret) {
+    throw new Error(
+      "Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SECRET_KEY.",
+    );
+  }
+
+  return createAdminClient(
+    url,
+    secret,
+    {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+      },
+    },
+  );
+}
 
 function escapeHtml(
   value: string,
@@ -182,6 +213,186 @@ export async function sendForumNotification({
   return true;
 }
 
+async function sendAnonymousForumNotification({
+  recipientCharacterId,
+  heading,
+  message,
+  href,
+  linkLabel = "Open forum",
+}: {
+  recipientCharacterId: string;
+  heading: string;
+  message: string;
+  href: string;
+  linkLabel?: string;
+}): Promise<boolean> {
+  const admin =
+    createPrivilegedClient();
+
+  const pairKey =
+    `system-forum:${recipientCharacterId}`;
+
+  let conversationId:
+    | string
+    | null = null;
+
+  const {
+    data: existing,
+    error: existingError,
+  } = await admin
+    .from("direct_conversations")
+    .select("id")
+    .eq("pair_key", pairKey)
+    .maybeSingle();
+
+  if (existingError) {
+    console.error(
+      "Unable to find Forum system conversation:",
+      existingError.message,
+    );
+    return false;
+  }
+
+  conversationId =
+    existing?.id ?? null;
+
+  if (!conversationId) {
+    const {
+      data: created,
+      error: createError,
+    } = await admin
+      .from("direct_conversations")
+      .insert({
+        pair_key: pairKey,
+        is_group: false,
+        title:
+          "Sepulchria Forum",
+        created_by_character_id:
+          null,
+      })
+      .select("id")
+      .single();
+
+    if (
+      createError ||
+      !created
+    ) {
+      console.error(
+        "Unable to create Forum system conversation:",
+        createError?.message ??
+          "No conversation returned.",
+      );
+      return false;
+    }
+
+    conversationId =
+      created.id;
+
+    const {
+      error: participantsError,
+    } = await admin
+      .from(
+        "direct_conversation_participants",
+      )
+      .insert([
+        {
+          conversation_id:
+            conversationId,
+          character_id:
+            FORUM_SYSTEM_CHARACTER_ID,
+        },
+        {
+          conversation_id:
+            conversationId,
+          character_id:
+            recipientCharacterId,
+        },
+      ]);
+
+    if (participantsError) {
+      await admin
+        .from(
+          "direct_conversations",
+        )
+        .delete()
+        .eq(
+          "id",
+          conversationId,
+        );
+
+      console.error(
+        "Unable to create Forum system participants:",
+        participantsError.message,
+      );
+      return false;
+    }
+  }
+
+  const body =
+    forumNoticeBody({
+      heading,
+      message,
+      href,
+      linkLabel,
+    });
+
+  const timestamp =
+    new Date().toISOString();
+
+  const {
+    error: messageError,
+  } = await admin
+    .from("direct_messages")
+    .insert({
+      conversation_id:
+        conversationId,
+      sender_character_id:
+        FORUM_SYSTEM_CHARACTER_ID,
+      body,
+      message_mode:
+        "offgame",
+      client_nonce:
+        crypto.randomUUID(),
+    });
+
+  if (messageError) {
+    console.error(
+      "Unable to send anonymous Forum notification:",
+      messageError.message,
+    );
+    return false;
+  }
+
+  await admin
+    .from("direct_conversations")
+    .update({
+      updated_at: timestamp,
+    })
+    .eq("id", conversationId);
+
+  /*
+   * Re-open the recipient's system notification thread if archived.
+   * Never alter deleted_at: this is not a player group membership.
+   */
+  await admin
+    .from(
+      "direct_conversation_participants",
+    )
+    .update({
+      archived_at: null,
+    })
+    .eq(
+      "conversation_id",
+      conversationId,
+    )
+    .eq(
+      "character_id",
+      recipientCharacterId,
+    );
+
+  return true;
+}
+
 export async function notifyForumReplyAudience({
   supabase,
   actorCharacterId,
@@ -189,6 +400,7 @@ export async function notifyForumReplyAudience({
   topicAuthorCharacterId,
   topicTitle,
   href,
+  isAnonymous = false,
 }: {
   supabase: SupabaseClient;
   actorCharacterId: string;
@@ -199,6 +411,7 @@ export async function notifyForumReplyAudience({
     | undefined;
   topicTitle: string;
   href: string;
+  isAnonymous?: boolean;
 }) {
   const recipients =
     new Set<string>();
@@ -293,18 +506,29 @@ export async function notifyForumReplyAudience({
   await Promise.all(
     [...recipients].map(
       (recipientCharacterId) =>
-        sendForumNotification({
-          supabase,
-          actorCharacterId,
-          recipientCharacterId,
-          heading:
-            "New reply to a forum topic",
-          message:
-            `A new reply has been posted to “${topicTitle}”.`,
-          href,
-          linkLabel:
-            "Open reply",
-        }),
+        isAnonymous
+          ? sendAnonymousForumNotification({
+              recipientCharacterId,
+              heading:
+                "New anonymous reply to a forum topic",
+              message:
+                `A new anonymous reply has been posted to “${topicTitle}”.`,
+              href,
+              linkLabel:
+                "Open reply",
+            })
+          : sendForumNotification({
+              supabase,
+              actorCharacterId,
+              recipientCharacterId,
+              heading:
+                "New reply to a forum topic",
+              message:
+                `A new reply has been posted to “${topicTitle}”.`,
+              href,
+              linkLabel:
+                "Open reply",
+            }),
     ),
   );
 }

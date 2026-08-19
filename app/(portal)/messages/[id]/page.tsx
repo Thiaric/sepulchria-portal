@@ -41,6 +41,7 @@ type OtherCharacter = {
   display_name: string | null;
   portrait_url: string | null;
   public_slug: string | null;
+  is_system: boolean;
 
   race:
     | CodexIdentity
@@ -176,6 +177,7 @@ export default async function ConversationPage({
           display_name,
           portrait_url,
           public_slug,
+          is_system,
 
           race:races!characters_race_id_fkey(
             id,
@@ -379,9 +381,10 @@ export default async function ConversationPage({
     .reverse();
 
   const profileHref =
+    !other.is_system &&
     other.public_slug
       ? `/characters/${other.public_slug}?from=messages`
-      : "/characters";
+      : "/messages";
 
   return (
     <main className="min-h-screen bg-[#100d0b] text-[#e7d5b0]">
@@ -538,7 +541,11 @@ export default async function ConversationPage({
             }
           />
 
-          {blocked ? (
+          {other.is_system ? (
+            <div className="border-t border-[#59432c]/40 bg-[#100c09] px-5 py-4 text-center text-[9px] uppercase tracking-[0.16em] text-[#7f725f]">
+              Automated Forum notification - replies are disabled
+            </div>
+          ) : blocked ? (
             <p className="border-t border-[#59432c]/40 p-6 text-center text-sm text-[#c78f7e]">
               Messaging is disabled
               for this conversation.

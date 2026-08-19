@@ -212,6 +212,34 @@ export async function sendTypedPrivateMessage(
       );
 
     const {
+      data: systemRecipients,
+      error: systemRecipientError,
+    } = await supabase
+      .from("characters")
+      .select("id")
+      .in("id", otherIds)
+      .eq("is_system", true);
+
+    if (systemRecipientError) {
+      return {
+        ok: false,
+        message:
+          systemRecipientError.message,
+      };
+    }
+
+    if (
+      (systemRecipients ?? [])
+        .length > 0
+    ) {
+      return {
+        ok: false,
+        message:
+          "Automated system conversations cannot receive replies.",
+      };
+    }
+
+    const {
       data: blocks,
       error: blockError,
     } = await supabase

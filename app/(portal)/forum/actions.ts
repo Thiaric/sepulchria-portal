@@ -1134,6 +1134,7 @@ export async function createForumReplyAction(
     topicAuthorCharacterId:
       topic.author_character_id,
     topicTitle: topic.title,
+    isAnonymous,
     href:
       `/forum/${encodeURIComponent(
         finalSectionSlug,

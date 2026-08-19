@@ -125,6 +125,7 @@ export default async function ForwardMessagePage({
         "id, first_name, surname, display_name, title",
       )
       .eq("status", "approved")
+      .eq("is_system", false)
       .neq("id", character.id)
       .order("display_name"),
     supabase

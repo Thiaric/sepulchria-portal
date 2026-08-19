@@ -24,6 +24,7 @@ type CharacterSummary = {
   portrait_url: string | null;
   public_slug: string;
   title: string | null;
+  is_system: boolean;
 
   race:
     | MessageCodexIdentity
@@ -306,7 +307,8 @@ export function MessagesInboxClient({
                     </div>
 
                     {!conversation.isGroup &&
-                    conversation.other ? (
+                    conversation.other &&
+                    !conversation.other.is_system ? (
                       <MessageCharacterIcons
                         characterId={
                           conversation.other.id
@@ -325,7 +327,8 @@ export function MessagesInboxClient({
                         </h2>
 
                         {!conversation.isGroup &&
-                        conversation.other ? (
+                        conversation.other &&
+                        !conversation.other.is_system ? (
                           <MessagePresenceStatus
                             characterId={
                               conversation
@@ -348,8 +351,10 @@ export function MessagesInboxClient({
                       </div>
 
                       {!conversation.isGroup &&
+                      conversation.other &&
+                      !conversation.other.is_system &&
                       conversation.other
-                        ?.title ? (
+                        .title ? (
                         <p className="mt-1 truncate text-[10px] italic text-[#8d7b63]">
                           {
                             conversation

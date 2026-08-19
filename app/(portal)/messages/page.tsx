@@ -28,6 +28,7 @@ type CharacterSummary = {
   portrait_url: string | null;
   public_slug: string;
   title: string | null;
+  is_system: boolean;
 
   race:
     | CodexIdentity
@@ -261,6 +262,7 @@ export default async function MessagesPage({
               portrait_url,
               public_slug,
               title,
+              is_system,
 
               race:races!characters_race_id_fkey(
                 id,
