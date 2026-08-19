@@ -39,6 +39,10 @@ export default async function AreaPage({
   const { slug } =
     await params;
 
+  if (slug === "private-locations") {
+    notFound();
+  }
+
   const supabase =
     await createClient();
 

@@ -29,6 +29,7 @@ if (!user) {
       "id, name, slug, description",
     )
     .eq("is_active", true)
+    .neq("slug", "private-locations")
     .order("sort_order", {
       ascending: true,
     })
