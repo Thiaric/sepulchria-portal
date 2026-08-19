@@ -94,6 +94,10 @@ export default async function AdminLayout({
               Forum
             </AdminNavigationLink>            
 
+            <AdminNavigationLink href="/admin/communication-logs">
+              Logs
+            </AdminNavigationLink>
+
             <AdminNavigationLink href="/admin/rooms">
               Locations
             </AdminNavigationLink>
