@@ -12,6 +12,12 @@ import { getStaffSession } from "@/lib/auth/require-staff";
 import {
   getPrivateLocationAccess,
 } from "@/lib/private-locations/access";
+import {
+  getOrderHeadquartersManageData,
+} from "@/lib/order-headquarters/access";
+import {
+  OrderHeadquartersManageMenu,
+} from "@/components/orders/order-headquarters-manage-menu";
 import { createClient } from "@/lib/supabase/server";
 import { getCharacterAttributeBreakdown } from "@/lib/characters/get-effective-character-attributes";
 import type {
@@ -719,6 +725,12 @@ async function GameContent() {
   const canViewAllWhispers =
     staffSession !== null;
 
+  const headquartersManageData =
+    await getOrderHeadquartersManageData(
+      room.id,
+      character.id,
+    );
+
   let oddJobs: OddJobStateRow[] = [];
 
   if (room.slug === "odd-jobs-bureau") {
@@ -776,6 +788,12 @@ async function GameContent() {
     </div>
 
     <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:shrink-0 sm:flex-wrap sm:items-center sm:justify-end">
+
+  {headquartersManageData ? (
+    <OrderHeadquartersManageMenu
+      data={headquartersManageData}
+    />
+  ) : null}
 
   {room.chat_enabled ? (
     <Link

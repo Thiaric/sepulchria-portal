@@ -398,6 +398,35 @@ export async function updateRoom(
     );
   }
 
+  const {
+    data: headquarters,
+  } = await supabase
+    .from("order_headquarters")
+    .select("id")
+    .eq("room_id", roomId)
+    .maybeSingle();
+
+  if (headquarters && !isActive) {
+    await supabase
+      .from("order_headquarters_invitations")
+      .update({
+        status: "revoked",
+        responded_at: new Date().toISOString(),
+      })
+      .eq("headquarters_id", headquarters.id)
+      .in("status", ["pending", "accepted"]);
+
+    await supabase
+      .from("characters")
+      .update({ current_room_id: null })
+      .eq("current_room_id", roomId);
+
+    await supabase
+      .from("character_presence")
+      .update({ room_id: null })
+      .eq("room_id", roomId);
+  }
+
   refreshRoomPages();
 }
 

@@ -515,6 +515,39 @@ const newVigourModifier =
   throw new Error(error.message);
 }
 
+const {
+  data: removedHeadquarters,
+} = await supabase
+  .from("order_headquarters")
+  .select("room_id")
+  .eq("order_id", orderId)
+  .maybeSingle();
+
+if (removedHeadquarters) {
+  const {
+    data: removedCharacter,
+  } = await supabase
+    .from("characters")
+    .select("current_room_id")
+    .eq("id", membership.character_id)
+    .maybeSingle();
+
+  if (
+    removedCharacter?.current_room_id ===
+    removedHeadquarters.room_id
+  ) {
+    await supabase
+      .from("characters")
+      .update({ current_room_id: null })
+      .eq("id", membership.character_id);
+
+    await supabase
+      .from("character_presence")
+      .update({ room_id: null })
+      .eq("character_id", membership.character_id);
+  }
+}
+
 await adjustCharacterHealthForOrderModifier({
   supabase,
   characterId:

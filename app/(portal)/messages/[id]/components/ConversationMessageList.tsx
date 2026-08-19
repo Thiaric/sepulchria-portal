@@ -7,6 +7,7 @@ import {
 
 import { RichTextContentClient } from "@/components/editor/rich-text-content-client";
 import { PrivateLocationInvitationMessage } from "@/components/messages/private-location-invitation-message";
+import { OrderHeadquartersInvitationMessage } from "@/components/messages/order-headquarters-invitation-message";
 import { stripRichTextForPreview } from "@/lib/rich-text-shared";
 import type {
   DirectMessage,
@@ -598,7 +599,18 @@ export function ConversationMessageList({
                             /PRIVATE_LOCATION_INVITE:([0-9a-f-]{36})/i,
                           );
 
-                        return inviteMatch ? (
+                        const headquartersInviteMatch =
+                          message.body.match(
+                            /ORDER_HEADQUARTERS_INVITE:([0-9a-f-]{36})/i,
+                          );
+
+                        return headquartersInviteMatch ? (
+                          <OrderHeadquartersInvitationMessage
+                            invitationId={
+                              headquartersInviteMatch[1]
+                            }
+                          />
+                        ) : inviteMatch ? (
                           <PrivateLocationInvitationMessage
                             invitationId={
                               inviteMatch[1]

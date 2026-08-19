@@ -20,6 +20,12 @@ type AssociationRow = {
   name: string;
 };
 
+type HeadquartersAreaRow = {
+  id: string;
+  name: string;
+  is_active: boolean;
+};
+
 type OrderRow = {
   id: string;
   association_id: string;
@@ -145,6 +151,24 @@ export default async function AdminOrdersPage({
   const associations =
     (associationData ??
       []) as AssociationRow[];
+
+  const {
+    data: headquartersAreaData,
+    error: headquartersAreaError,
+  } = await supabase
+    .from("areas")
+    .select("id, name, is_active")
+    .order("sort_order", { ascending: true })
+    .order("name", { ascending: true });
+
+  if (headquartersAreaError) {
+    throw new Error(
+      `Unable to load Headquarters Areas: ${headquartersAreaError.message}`,
+    );
+  }
+
+  const headquartersAreas =
+    (headquartersAreaData ?? []) as HeadquartersAreaRow[];
 
   const {
     data: orderData,
@@ -308,6 +332,35 @@ export default async function AdminOrdersPage({
                         </option>
                       ),
                     )}
+                  </select>
+                </AdminField>
+
+                <AdminField label="Headquarters Area">
+                  <select
+                    name="headquartersAreaId"
+                    required
+                    defaultValue=""
+                    className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                  >
+                    <option value="" disabled>Select Headquarters Area</option>
+                    {headquartersAreas.map((area) => (
+                      <option key={area.id} value={area.id}>
+                        {area.name}{!area.is_active ? " — inactive" : ""}
+                      </option>
+                    ))}
+                  </select>
+                </AdminField>
+
+                <AdminField label="Headquarters environment">
+                  <select
+                    name="headquartersOutdoors"
+                    required
+                    defaultValue=""
+                    className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                  >
+                    <option value="" disabled>Choose Indoor or Outdoor</option>
+                    <option value="false">Indoor</option>
+                    <option value="true">Outdoor</option>
                   </select>
                 </AdminField>
 

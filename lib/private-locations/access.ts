@@ -83,6 +83,40 @@ export async function getPrivateLocationAccess(
   }
 
   if (!privateRoom) {
+    const {
+      getOrderHeadquartersAccess,
+    } = await import(
+      "@/lib/order-headquarters/access"
+    );
+
+    const headquartersAccess =
+      await getOrderHeadquartersAccess(
+        roomId,
+        characterId,
+      );
+
+    if (headquartersAccess.isHeadquarters) {
+      const theme = headquartersAccess.theme;
+
+      return {
+        isPrivate: true,
+        allowed: headquartersAccess.allowed,
+        metadata: theme
+          ? {
+              ownerCharacterId: "",
+              backgroundColour: theme.backgroundColour,
+              speechColour: theme.speechColour,
+              actionColour: theme.actionColour,
+              systemColour: theme.systemColour,
+              whisperBackgroundColour: theme.whisperBackgroundColour,
+              whisperTextColour: theme.whisperTextColour,
+              offgameBackgroundColour: theme.offgameBackgroundColour,
+              offgameTextColour: theme.offgameTextColour,
+            }
+          : null,
+      };
+    }
+
     return {
       isPrivate: false,
       allowed: true,

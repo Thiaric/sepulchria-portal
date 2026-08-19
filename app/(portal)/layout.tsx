@@ -6,6 +6,7 @@ import { PortalCollapsibleColumns } from "@/components/portal/portal-collapsible
 import { PortalHeader } from "@/components/portal/portal-header";
 import { PortalPresenceHeartbeat } from "@/components/portal/portal-presence-heartbeat";
 import { PrivateLocationInvitationPopup } from "@/components/private-location/private-location-invitation-popup";
+import { OrderHeadquartersInvitationPopup } from "@/components/orders/order-headquarters-invitation-popup";
 import { PortalResponsiveRightSidebar } from "@/components/portal/portal-responsive-right-sidebar";
 import { PortalSidebar } from "@/components/portal/portal-sidebar";
 import { TidingsTicker } from "@/components/tidings/tidings-ticker";
@@ -116,6 +117,13 @@ async function PortalLayoutContent({
         />
 
         <PrivateLocationInvitationPopup
+          characterId={
+            context.character?.id ??
+            null
+          }
+        />
+
+        <OrderHeadquartersInvitationPopup
           characterId={
             context.character?.id ??
             null

@@ -363,6 +363,36 @@ export async function createOrder(
       );
     }
 
+    const headquartersAreaId =
+      requiredText(
+        formData,
+        "headquartersAreaId",
+        "Headquarters Area",
+      );
+
+    if (!isUuid(headquartersAreaId)) {
+      throw new Error("Invalid Headquarters Area.");
+    }
+
+    const headquartersOutdoorsRaw =
+      requiredText(
+        formData,
+        "headquartersOutdoors",
+        "Headquarters environment",
+      );
+
+    if (
+      headquartersOutdoorsRaw !== "true" &&
+      headquartersOutdoorsRaw !== "false"
+    ) {
+      throw new Error(
+        "Choose whether the Headquarters is Indoor or Outdoor.",
+      );
+    }
+
+    const headquartersOutdoors =
+      headquartersOutdoorsRaw === "true";
+
     const name =
       requiredText(
         formData,
@@ -453,6 +483,54 @@ export async function createOrder(
         error?.message ??
           "Unable to read the newly created Order.",
       );
+    }
+
+    const headquartersSlug =
+      `order-${slug}-headquarters-${createdOrder.id.slice(0, 8)}`;
+
+    const {
+      data: headquartersRoom,
+      error: headquartersRoomError,
+    } = await supabase
+      .from("rooms")
+      .insert({
+        area_id: headquartersAreaId,
+        name: `${name} Headquarters`,
+        slug: headquartersSlug,
+        description:
+          sanitizeRichHtml(
+            textOrEmpty(formData, "description"),
+          ) || null,
+        image_url:
+          optionalText(formData, "imageUrl"),
+        sort_order: 0,
+        is_active: true,
+        is_outdoors: headquartersOutdoors,
+        chat_enabled: true,
+        updated_at: new Date().toISOString(),
+      })
+      .select("id")
+      .single();
+
+    if (headquartersRoomError || !headquartersRoom) {
+      await supabase.from("orders").delete().eq("id", createdOrder.id);
+      throw new Error(
+        headquartersRoomError?.message ??
+          "Unable to create the Order Headquarters.",
+      );
+    }
+
+    const { error: headquartersError } = await supabase
+      .from("order_headquarters")
+      .insert({
+        order_id: createdOrder.id,
+        room_id: headquartersRoom.id,
+      });
+
+    if (headquartersError) {
+      await supabase.from("rooms").delete().eq("id", headquartersRoom.id);
+      await supabase.from("orders").delete().eq("id", createdOrder.id);
+      throw new Error(headquartersError.message);
     }
 
     for (let level = 1; level <= 6; level += 1) {

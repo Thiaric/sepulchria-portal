@@ -7,6 +7,9 @@ import { LocationAtmosphericImage } from "@/components/world/location-atmospheri
 import { LocationImageLightbox } from "@/components/world/location-image-lightbox";
 
 import { createClient } from "@/lib/supabase/server";
+import {
+  getOrderHeadquartersAccess,
+} from "@/lib/order-headquarters/access";
 import { enterRoomFromMap } from "../../game/actions";
 
 type Props = {
@@ -74,8 +77,8 @@ export default async function AreaPage({
   } = await supabase
     .from("rooms")
     .select(
-  "id, name, slug, description, image_url, sort_order, is_outdoors",
-)
+      "id, name, slug, description, image_url, sort_order, is_outdoors",
+    )
     .eq("area_id", area.id)
     .eq("is_active", true)
     .order("sort_order", {
@@ -97,29 +100,51 @@ export default async function AreaPage({
   const safeRooms =
     (rooms ?? []) as Room[];
 
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const {
+    data: viewerCharacter,
+  } = user
+    ? await supabase
+        .from("characters")
+        .select("id")
+        .eq("user_id", user.id)
+        .maybeSingle()
+    : { data: null };
+
+  const accessPairs =
+    await Promise.all(
+      safeRooms.map(async (room) => [
+        room.id,
+        viewerCharacter
+          ? await getOrderHeadquartersAccess(
+              room.id,
+              viewerCharacter.id,
+            )
+          : null,
+      ] as const),
+    );
+
+  const headquartersAccess =
+    new Map(accessPairs);
+
   return (
     <div className="mx-auto max-w-6xl space-y-4 p-3 sm:p-4 lg:p-5">
       <section className="overflow-hidden border border-[#6a5032]/50 bg-[#17110d]">
         {safeArea.image_url ? (
           <div className="relative h-[clamp(180px,28dvh,300px)] overflow-hidden">
             <LocationAtmosphericImage
-              src={
-                safeArea.image_url
-              }
-              alt={
-                safeArea.name
-              }
+              src={safeArea.image_url}
+              alt={safeArea.name}
               sizes="(max-width: 1024px) 100vw, 70vw"
               objectFit="cover"
             />
 
             <LocationImageLightbox
-              src={
-                safeArea.image_url
-              }
-              name={
-                safeArea.name
-              }
+              src={safeArea.image_url}
+              name={safeArea.name}
             />
 
             <div className="pointer-events-none absolute inset-0 z-[6] bg-gradient-to-t from-[#17110d]/72 via-[#17110d]/12 to-transparent" />
@@ -145,9 +170,7 @@ export default async function AreaPage({
         {safeArea.description ? (
           <div className="border-t border-[#6a5032]/35 px-4 py-3 sm:px-5 sm:py-4">
             <RichTextContentClient
-              body={
-                safeArea.description
-              }
+              body={safeArea.description}
               className="max-full text-[13px] leading-6 text-[#b7a58c] [&_p]:my-2"
             />
           </div>
@@ -172,9 +195,17 @@ export default async function AreaPage({
 
         {safeRooms.length > 0 ? (
           <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
-            {safeRooms.map(
-              
-              (room) => (
+            {safeRooms.map((room) => {
+              const access =
+                headquartersAccess.get(
+                  room.id,
+                );
+
+              const canSeeDetails =
+                !access?.isHeadquarters ||
+                access.allowed;
+
+              return (
                 <article
                   key={room.id}
                   id={`location-${room.slug}`}
@@ -183,20 +214,16 @@ export default async function AreaPage({
                   {room.image_url ? (
                     <div className="relative aspect-[16/7] w-full overflow-hidden border-b border-[#584128]/45 bg-[#0b0806]">
                       <LocationAtmosphericImage
-  src={room.image_url}
-  alt={room.name}
-  sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
-  objectFit="cover"
-  isOutdoors={room.is_outdoors}
-/>
+                        src={room.image_url}
+                        alt={room.name}
+                        sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                        objectFit="cover"
+                        isOutdoors={room.is_outdoors}
+                      />
 
                       <LocationImageLightbox
-                        src={
-                          room.image_url
-                        }
-                        name={
-                          room.name
-                        }
+                        src={room.image_url}
+                        name={room.name}
                       />
 
                       <div className="pointer-events-none absolute inset-0 z-[6] bg-gradient-to-t from-[#120e0b]/65 via-transparent to-transparent" />
@@ -208,39 +235,38 @@ export default async function AreaPage({
                       {room.name}
                     </h3>
 
-                    {room.description ? (
-  <CollapsibleRoomDescription
-    body={
-      room.description
-    }
-  />
-) : null}
-
-                    <form
-                      action={
-                        enterRoomFromMap
-                      }
-                      className="mt-3"
-                    >
-                      <input
-                        type="hidden"
-                        name="roomId"
-                        value={
-                          room.id
-                        }
+                    {canSeeDetails &&
+                    room.description ? (
+                      <CollapsibleRoomDescription
+                        body={room.description}
                       />
+                    ) : null}
 
-                      <button
-                        type="submit"
-                        className="w-full border border-[#80613b] bg-[#241a12] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#efd4a0] transition hover:border-[#b28b55] hover:bg-[#302217] hover:text-white"
+                    {canSeeDetails ? (
+                      <form
+                        action={
+                          enterRoomFromMap
+                        }
+                        className="mt-3"
                       >
-                        Enter
-                      </button>
-                    </form>
+                        <input
+                          type="hidden"
+                          name="roomId"
+                          value={room.id}
+                        />
+
+                        <button
+                          type="submit"
+                          className="w-full border border-[#80613b] bg-[#241a12] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#efd4a0] transition hover:border-[#b28b55] hover:bg-[#302217] hover:text-white"
+                        >
+                          Enter
+                        </button>
+                      </form>
+                    ) : null}
                   </div>
                 </article>
-              ),
-            )}
+              );
+            })}
           </div>
         ) : (
           <p className="text-xs text-[#9e907d]">

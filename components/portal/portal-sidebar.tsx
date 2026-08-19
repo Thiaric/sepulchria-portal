@@ -1603,7 +1603,7 @@ export function PortalSidebar({
                 utilities
               </p>
 
-              <div className="grid grid-cols-1 gap-1.5">
+              <div className="grid grid-cols-1 gap-0.1">
                 {renderNavigationItem(
                   marketItem,
                 )}
@@ -1696,12 +1696,12 @@ export function PortalSidebar({
           </nav>
 
           <div className="mt-[var(--portal-group-gap)] border-t border-[#6e5535]/30 pt-2">
-            <span className="block py-1 text-[9px] uppercase tracking-[0.18em] text-[#5f5549]">
+            <span className="block py-0.1 text-[9px] uppercase tracking-[0.18em] text-[#5f5549]">
               Support · Coming
               soon
             </span>
 
-            <span className="block py-1 text-[9px] uppercase tracking-[0.18em] text-[#5f5549]">
+            <span className="block py-0.1 text-[9px] uppercase tracking-[0.18em] text-[#5f5549]">
               Staff · Coming
               soon
             </span>
@@ -1812,7 +1812,7 @@ function NavigationGroup({
         {title}
       </p>
 
-      <div className="grid grid-cols-1 gap-1.5">
+      <div className="grid grid-cols-1 gap-0.1">
         {items}
       </div>
     </section>
