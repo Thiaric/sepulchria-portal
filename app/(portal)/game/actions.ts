@@ -18,6 +18,9 @@ import { getEffectiveCharacterAttributes } from "@/lib/characters/get-effective-
 import {
   applyTemporaryGiftActivationHealth,
 } from "@/lib/gifts/gift-health-effects";
+import {
+  getPrivateLocationAccess,
+} from "@/lib/private-locations/access";
 import type {
   ActionState,
   CharacterAttributeKey,
@@ -179,9 +182,30 @@ async function getOwnedCharacter(): Promise<{
     );
   }
 
+  const ownedCharacter =
+    character as OwnedCharacter;
+
+  if (
+    ownedCharacter.current_room_id
+  ) {
+    const currentAccess =
+      await getPrivateLocationAccess(
+        ownedCharacter.current_room_id,
+        ownedCharacter.id,
+      );
+
+    if (
+      currentAccess.isPrivate &&
+      !currentAccess.allowed
+    ) {
+      ownedCharacter.current_room_id =
+        null;
+    }
+  }
+
   return {
     supabase,
-    character: character as OwnedCharacter,
+    character: ownedCharacter,
   };
 }
 
@@ -288,6 +312,21 @@ export async function moveCharacter(formData: FormData): Promise<void> {
     throw new Error("This room is not connected to the current location.");
   }
 
+  const destinationAccess =
+    await getPrivateLocationAccess(
+      roomId,
+      character.id,
+    );
+
+  if (
+    destinationAccess.isPrivate &&
+    !destinationAccess.allowed
+  ) {
+    throw new Error(
+      "This location is not available.",
+    );
+  }
+
   const { error: moveError } = await supabase
     .from("characters")
     .update({ current_room_id: roomId })
@@ -334,6 +373,21 @@ export async function enterRoomFromMap(
   }
 
   if (!destinationRoom) {
+    throw new Error(
+      "This location is not available.",
+    );
+  }
+
+  const destinationAccess =
+    await getPrivateLocationAccess(
+      roomId,
+      character.id,
+    );
+
+  if (
+    destinationAccess.isPrivate &&
+    !destinationAccess.allowed
+  ) {
     throw new Error(
       "This location is not available.",
     );

@@ -65,4 +65,5 @@ export type PortalContext = {
   presence: PortalPresence | null;
   unreadMessageCount: number;
   onlineCharacterCount: number;
+  currentRoomAccessAllowed: boolean;
 };

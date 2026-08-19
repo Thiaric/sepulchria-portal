@@ -9,6 +9,9 @@ import {
   ROOM_INACTIVITY_RESET_HOURS,
 } from "@/lib/game/constants";
 import { getStaffSession } from "@/lib/auth/require-staff";
+import {
+  getPrivateLocationAccess,
+} from "@/lib/private-locations/access";
 import { createClient } from "@/lib/supabase/server";
 import { getCharacterAttributeBreakdown } from "@/lib/characters/get-effective-character-attributes";
 import type {
@@ -143,70 +146,34 @@ async function GameContent() {
 
   const room = rawRoom as RoomRelation;
 
-  const {
-    data: privateLocation,
-    error: privateLocationError,
-  } = await supabase
-    .from("private_location_rooms")
-    .select(
-      "owner_character_id, background_colour, text_colour",
-    )
-    .eq("room_id", room.id)
-    .maybeSingle();
-
-  if (privateLocationError) {
-    throw new Error(
-      `Unable to inspect private location access: ${privateLocationError.message}`,
+  const privateAccess =
+    await getPrivateLocationAccess(
+      room.id,
+      character.id,
     );
-  }
 
-  if (privateLocation) {
-    const [
-      privateMembershipResult,
-      privateStaffSession,
-      ownerEntitlementResult,
-    ] = await Promise.all([
-      supabase
-        .from("private_location_members")
-        .select("status")
-        .eq("room_id", room.id)
-        .eq(
-          "character_id",
-          character.id,
-        )
-        .maybeSingle(),
+  const privateLocation =
+    privateAccess.metadata
+      ? {
+          background_colour:
+            privateAccess.metadata
+              .backgroundColour,
+          text_colour:
+            privateAccess.metadata
+              .textColour,
+        }
+      : null;
 
-      getStaffSession(),
-
-      supabase
-        .from("character_feature_entitlements")
-        .select("enabled")
-        .eq(
-          "character_id",
-          privateLocation.owner_character_id,
-        )
-        .eq(
-          "feature_key",
-          "private_chat",
-        )
-        .maybeSingle(),
-    ]);
-
-    const mayEnter =
-      privateStaffSession !== null ||
-      (
-        ownerEntitlementResult.data?.enabled === true &&
-        privateMembershipResult.data?.status === "active"
-      );
-
-    if (!mayEnter) {
-      return (
-        <div
-          className="h-full min-h-[60vh] bg-[#0d0b0a]"
-          aria-label="Unavailable location"
-        />
-      );
-    }
+  if (
+    privateAccess.isPrivate &&
+    !privateAccess.allowed
+  ) {
+    return (
+      <div
+        className="h-full min-h-[60vh] bg-[#0d0b0a]"
+        aria-label="Unavailable location"
+      />
+    );
   }
 
   const attributeBreakdown =

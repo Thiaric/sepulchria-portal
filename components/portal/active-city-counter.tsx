@@ -55,6 +55,14 @@ type PresenceRoom = {
   id: string;
   name: string;
   slug: string;
+  area:
+    | {
+        slug: string;
+      }
+    | {
+        slug: string;
+      }[]
+    | null;
 };
 
 type PresentCharacter = {
@@ -131,7 +139,10 @@ export function ActiveCityCounter({
             room:rooms!character_presence_room_id_fkey(
               id,
               name,
-              slug
+              slug,
+              area:areas!rooms_area_id_fkey(
+                slug
+              )
             ),
 
             character:characters!character_presence_character_id_fkey(
@@ -401,13 +412,26 @@ export function ActiveCityCounter({
               presence.room,
             );
 
+          const roomArea =
+            room
+              ? normaliseRelation(
+                  room.area,
+                )
+              : null;
+
+          const privateRoom =
+            roomArea?.slug ===
+            "private-locations";
+
           const searchableText = [
             person.display_name,
             person.title,
             person.occupation,
             race?.name,
             association?.name,
-            room?.name,
+            privateRoom
+              ? null
+              : room?.name,
             presence.status,
           ]
             .filter(Boolean)
@@ -647,6 +671,17 @@ export function ActiveCityCounter({
                         presence.room,
                       );
 
+                    const roomArea =
+                      room
+                        ? normaliseRelation(
+                            room.area,
+                          )
+                        : null;
+
+                    const privateRoom =
+                      roomArea?.slug ===
+                      "private-locations";
+
                     const displayName =
                       person.display_name?.trim() ||
                       "Unnamed character";
@@ -743,7 +778,8 @@ export function ActiveCityCounter({
 
                             <div className="mt-1.5 flex min-w-0 items-center justify-between gap-2 border-t border-[#59432c]/25 pt-1.5">
                               {room &&
-                              presence.room_id ? (
+                              presence.room_id &&
+                              !privateRoom ? (
                                 <form
                                   action={
                                     enterRoomFromMap

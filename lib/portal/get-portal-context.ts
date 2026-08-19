@@ -7,6 +7,9 @@ import {
   PRESENCE_ACTIVE_MINUTES,
 } from "@/lib/game/constants";
 import { createClient } from "@/lib/supabase/server";
+import {
+  getPrivateLocationAccess,
+} from "@/lib/private-locations/access";
 import type {
   PortalCharacter,
   PortalCodexReference,
@@ -180,6 +183,8 @@ export const getPortalContext = cache(
       null;
 
     let unreadMessageCount = 0;
+    let currentRoomAccessAllowed =
+      true;
 
     if (characterData) {
       const row =
@@ -229,6 +234,20 @@ export const getPortalContext = cache(
       };
 
       const characterId = character.id;
+
+      if (
+        character.current_room_id
+      ) {
+        const roomAccess =
+          await getPrivateLocationAccess(
+            character.current_room_id,
+            character.id,
+          );
+
+        currentRoomAccessAllowed =
+          !roomAccess.isPrivate ||
+          roomAccess.allowed;
+      }
 
       const [
         {
@@ -363,6 +382,7 @@ export const getPortalContext = cache(
       unreadMessageCount,
       onlineCharacterCount:
         onlineCharacterCount ?? 0,
+      currentRoomAccessAllowed,
     };
   },
 );

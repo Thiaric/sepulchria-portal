@@ -30,9 +30,11 @@ type PresenceRoomRow = {
   area:
     | {
         name: string;
+        slug: string;
       }
     | {
         name: string;
+        slug: string;
       }[]
     | null;
 };
@@ -150,7 +152,8 @@ export function LiveDashboardChronicle({
             name,
             slug,
             area:areas!rooms_area_id_fkey(
-              name
+              name,
+              slug
             )
           )
         `)
@@ -208,6 +211,13 @@ export function LiveDashboardChronicle({
           normaliseRelation(
             room.area,
           );
+
+        if (
+          area?.slug ===
+          "private-locations"
+        ) {
+          continue;
+        }
 
         const activeCharacter:
           ActiveCharacter = {

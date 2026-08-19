@@ -43,6 +43,18 @@ export function PortalResponsiveRightSidebar({
   const { character } =
     context;
 
+  const privateRoomBlocked =
+    (
+      pathname === "/game" ||
+      pathname.startsWith(
+        "/game/",
+      )
+    ) &&
+    character?.currentRoom
+      ?.area?.slug ===
+      "private-locations" &&
+    !context.currentRoomAccessAllowed;
+
   const forumSectionMatch =
     pathname.match(
       /^\/forum\/([^/]+)$/,
@@ -172,6 +184,16 @@ export function PortalResponsiveRightSidebar({
       );
     };
   }, [open]);
+
+  if (privateRoomBlocked) {
+    return (
+      <aside
+        aria-label="Unavailable location"
+        data-portal-column
+        className="hidden h-full min-h-0 border-l border-[#6e5535]/40 bg-[#0d0b0a] xl:block"
+      />
+    );
+  }
 
   return (
     <>
