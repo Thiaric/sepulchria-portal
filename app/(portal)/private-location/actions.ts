@@ -647,106 +647,33 @@ export async function invitePrivateLocation(
   }
 
   if (deliveryMethod === "message") {
+    const authenticated =
+      await createClient();
+
     const {
-      data: ownerConversations,
-      error: ownerConversationsError,
-    } = await admin
-      .from("direct_conversation_participants")
-      .select("conversation_id")
-      .eq(
-        "character_id",
-        owner.id,
-      );
-
-    if (ownerConversationsError) {
-      throw new Error(
-        ownerConversationsError.message,
-      );
-    }
-
-    const ownerIds =
-      (ownerConversations ?? [])
-        .map(
-          (row) =>
-            row.conversation_id as string,
-        );
-
-    let conversationId:
-      | string
-      | null = null;
-
-    if (ownerIds.length > 0) {
-      const {
-        data: shared,
-        error: sharedError,
-      } = await admin
-        .from("direct_conversation_participants")
-        .select("conversation_id")
-        .eq(
-          "character_id",
+      data: conversationId,
+      error: conversationError,
+    } = await authenticated.rpc(
+      "start_direct_conversation",
+      {
+        recipient_character_id:
           recipientId,
-        )
-        .in(
-          "conversation_id",
-          ownerIds,
-        )
-        .limit(1)
-        .maybeSingle();
+      },
+    );
 
-      if (sharedError) {
-        throw new Error(
-          sharedError.message,
-        );
-      }
+    if (
+      conversationError ||
+      !conversationId
+    ) {
+      await admin
+        .from("private_location_invitations")
+        .delete()
+        .eq("id", invitation.id);
 
-      conversationId =
-        shared?.conversation_id ??
-        null;
-    }
-
-    if (!conversationId) {
-      const {
-        data: createdConversation,
-        error: conversationError,
-      } = await admin
-        .from("direct_conversations")
-        .insert({})
-        .select("id")
-        .single();
-
-      if (conversationError) {
-        throw new Error(
-          conversationError.message,
-        );
-      }
-
-      conversationId =
-        createdConversation.id;
-
-      const {
-        error: participantError,
-      } = await admin
-        .from("direct_conversation_participants")
-        .insert([
-          {
-            conversation_id:
-              conversationId,
-            character_id:
-              owner.id,
-          },
-          {
-            conversation_id:
-              conversationId,
-            character_id:
-              recipientId,
-          },
-        ]);
-
-      if (participantError) {
-        throw new Error(
-          participantError.message,
-        );
-      }
+      throw new Error(
+        conversationError?.message ??
+          "The invitation conversation could not be created.",
+      );
     }
 
     const {
@@ -781,6 +708,11 @@ export async function invitePrivateLocation(
       });
 
     if (messageError) {
+      await admin
+        .from("private_location_invitations")
+        .delete()
+        .eq("id", invitation.id);
+
       throw new Error(
         messageError.message,
       );
@@ -793,6 +725,69 @@ export async function invitePrivateLocation(
           new Date().toISOString(),
       })
       .eq("id", conversationId);
+  }
+
+  revalidatePath("/private-locations");
+  revalidatePath("/messages");
+}
+
+export async function cancelPrivateLocationInvitation(
+  formData: FormData,
+) {
+  const roomId =
+    readUuid(formData.get("roomId"));
+
+  const invitationId =
+    readUuid(
+      formData.get("invitationId"),
+    );
+
+  const {
+    admin,
+  } = await requireOwner(roomId);
+
+  const {
+    data: invitation,
+    error: invitationError,
+  } = await admin
+    .from("private_location_invitations")
+    .select("id, room_id, status")
+    .eq("id", invitationId)
+    .eq("room_id", roomId)
+    .maybeSingle();
+
+  if (
+    invitationError ||
+    !invitation
+  ) {
+    throw new Error(
+      invitationError?.message ??
+        "Invitation not found.",
+    );
+  }
+
+  if (invitation.status !== "pending") {
+    throw new Error(
+      "Only pending invitations can be cancelled.",
+    );
+  }
+
+  const {
+    error: cancelError,
+  } = await admin
+    .from("private_location_invitations")
+    .update({
+      status: "cancelled",
+      responded_at:
+        new Date().toISOString(),
+    })
+    .eq("id", invitationId)
+    .eq("status", "pending");
+
+  if (cancelError) {
+    throw new Error(
+      cancelError.message,
+    );
   }
 
   revalidatePath("/private-locations");

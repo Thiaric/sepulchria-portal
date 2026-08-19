@@ -62,49 +62,33 @@ async function requirePermission(roomId: string, kind: "invite" | "customize") {
 }
 
 async function ensureConversation(
-  admin: ReturnType<typeof adminClient>,
-  first: string,
-  second: string,
+  recipientId: string,
 ) {
-  const { data: firstRows, error } = await admin
-    .from("direct_conversation_participants")
-    .select("conversation_id")
-    .eq("character_id", first);
+  const authenticated =
+    await createClient();
 
-  if (error) throw new Error(error.message);
+  const {
+    data: conversationId,
+    error,
+  } = await authenticated.rpc(
+    "start_direct_conversation",
+    {
+      recipient_character_id:
+        recipientId,
+    },
+  );
 
-  const ids = (firstRows ?? []).map((row) => row.conversation_id as string);
-
-  if (ids.length) {
-    const { data: shared, error: sharedError } = await admin
-      .from("direct_conversation_participants")
-      .select("conversation_id")
-      .eq("character_id", second)
-      .in("conversation_id", ids)
-      .limit(1)
-      .maybeSingle();
-
-    if (sharedError) throw new Error(sharedError.message);
-    if (shared) return shared.conversation_id as string;
+  if (error) {
+    throw new Error(error.message);
   }
 
-  const { data: conversation, error: conversationError } = await admin
-    .from("direct_conversations")
-    .insert({})
-    .select("id")
-    .single();
+  if (!conversationId) {
+    throw new Error(
+      "The invitation conversation could not be created.",
+    );
+  }
 
-  if (conversationError) throw new Error(conversationError.message);
-
-  const { error: participantError } = await admin
-    .from("direct_conversation_participants")
-    .insert([
-      { conversation_id: conversation.id, character_id: first },
-      { conversation_id: conversation.id, character_id: second },
-    ]);
-
-  if (participantError) throw new Error(participantError.message);
-  return conversation.id as string;
+  return conversationId as string;
 }
 
 function duration(value: FormDataEntryValue | null) {
@@ -174,7 +158,21 @@ export async function inviteOrderHeadquarters(formData: FormData) {
   if (invitationError) throw new Error(invitationError.message);
 
   if (!online) {
-    const conversationId = await ensureConversation(admin, character.id, recipientId);
+    let conversationId: string;
+
+    try {
+      conversationId =
+        await ensureConversation(
+          recipientId,
+        );
+    } catch (error) {
+      await admin
+        .from("order_headquarters_invitations")
+        .delete()
+        .eq("id", invitation.id);
+
+      throw error;
+    }
     const roomRelation = hq.room;
     const room = Array.isArray(roomRelation) ? roomRelation[0] : roomRelation;
 
@@ -193,7 +191,14 @@ export async function inviteOrderHeadquarters(formData: FormData) {
         client_nonce: crypto.randomUUID(),
       });
 
-    if (messageError) throw new Error(messageError.message);
+    if (messageError) {
+      await admin
+        .from("order_headquarters_invitations")
+        .delete()
+        .eq("id", invitation.id);
+
+      throw new Error(messageError.message);
+    }
 
     await admin
       .from("direct_conversations")

@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 
 import {
+  cancelPrivateLocationInvitation,
   ensureOwnedPrivateLocation,
   enterPrivateLocation,
   invitePrivateLocation,
@@ -154,6 +155,15 @@ export default async function PrivateLocationPage() {
   let candidates:
     CharacterSummary[] = [];
 
+  let pendingInvitations: Array<{
+    id: string;
+    recipient_character_id: string;
+    recipient:
+      | CharacterSummary
+      | CharacterSummary[]
+      | null;
+  }> = [];
+
   if (ownedRoomId) {
     const [
       roomResult,
@@ -203,7 +213,16 @@ export default async function PrivateLocationPage() {
 
       supabase
         .from("private_location_invitations")
-        .select("recipient_character_id")
+        .select(`
+          id,
+          recipient_character_id,
+          recipient:characters!private_location_invitations_recipient_character_id_fkey(
+            id,
+            display_name,
+            first_name,
+            surname
+          )
+        `)
         .eq("room_id", ownedRoomId)
         .eq("status", "pending"),
     ]);
@@ -255,9 +274,12 @@ export default async function PrivateLocationPage() {
         ),
       );
 
+    pendingInvitations =
+      (pendingResult.data ?? []) as typeof pendingInvitations;
+
     const pendingIds =
       new Set(
-        (pendingResult.data ?? [])
+        pendingInvitations
           .map(
             (row) =>
               row.recipient_character_id,
@@ -549,6 +571,63 @@ export default async function PrivateLocationPage() {
                   Invite
                 </button>
               </form>
+
+              {pendingInvitations.length > 0 ? (
+                <div className="mt-5 space-y-2 border-t border-[#60482e]/30 pt-4">
+                  <p className="text-[8px] uppercase tracking-[0.15em] text-[#806b50]">
+                    Pending invitations
+                  </p>
+
+                  {pendingInvitations.map((row) => {
+                    const relation =
+                      row.recipient;
+
+                    const recipient =
+                      Array.isArray(relation)
+                        ? relation[0]
+                        : relation;
+
+                    if (!recipient) {
+                      return null;
+                    }
+
+                    return (
+                      <div
+                        key={row.id}
+                        className="flex items-center justify-between gap-3 border border-[#60482e]/35 bg-[#100c09] px-3 py-2"
+                      >
+                        <span className="truncate text-xs text-[#cbb899]">
+                          {label(recipient)}
+                        </span>
+
+                        <form
+                          action={
+                            cancelPrivateLocationInvitation
+                          }
+                        >
+                          <input
+                            type="hidden"
+                            name="roomId"
+                            value={ownedRoom.id}
+                          />
+                          <input
+                            type="hidden"
+                            name="invitationId"
+                            value={row.id}
+                          />
+
+                          <button
+                            type="submit"
+                            className="text-[8px] uppercase tracking-[0.14em] text-[#d18f83]"
+                          >
+                            Cancel
+                          </button>
+                        </form>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : null}
 
               <div className="mt-5 space-y-2 border-t border-[#60482e]/30 pt-4">
                 {members.map(
