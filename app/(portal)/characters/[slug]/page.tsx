@@ -5,6 +5,7 @@ import { PublicCharacterProfileView } from "@/components/characters/public-chara
 import { LiveCharacterSheetRefresh } from "@/components/characters/live-character-sheet-refresh";
 import { getPublicCharacter } from "@/lib/characters/get-public-character";
 import { getStaffSession } from "@/lib/auth/require-staff";
+import { hasCharacterFeature } from "@/lib/features/character-feature-entitlements";
 import { createClient } from "@/lib/supabase/server";
 
 type PublicCharacterPageProps = {
@@ -91,6 +92,87 @@ export default async function PublicCharacterPage({
     );
   }
 
+  let relationshipControl:
+    | {
+        canRequest: boolean;
+        state:
+          | "none"
+          | "outgoing_pending"
+          | "incoming_pending"
+          | "accepted";
+      }
+    | null = null;
+
+  if (
+    activeCharacter &&
+    activeCharacter.id !== character.id
+  ) {
+    const [
+      ownFriendListEnabled,
+      targetFriendListEnabled,
+      relationshipResult,
+    ] = await Promise.all([
+      hasCharacterFeature(
+        activeCharacter.id,
+        "friend_list",
+      ),
+      hasCharacterFeature(
+        character.id,
+        "friend_list",
+      ),
+      supabase
+        .from("character_relationships")
+        .select(
+          "requester_character_id, recipient_character_id, status",
+        )
+        .or(
+          [
+            `and(requester_character_id.eq.${activeCharacter.id},recipient_character_id.eq.${character.id})`,
+            `and(requester_character_id.eq.${character.id},recipient_character_id.eq.${activeCharacter.id})`,
+          ].join(","),
+        )
+        .in("status", ["pending", "accepted"])
+        .limit(1)
+        .maybeSingle(),
+    ]);
+
+    if (relationshipResult.error) {
+      throw new Error(
+        `Unable to load relationship state: ${relationshipResult.error.message}`,
+      );
+    }
+
+    const relationship =
+      relationshipResult.data;
+
+    let state:
+      | "none"
+      | "outgoing_pending"
+      | "incoming_pending"
+      | "accepted" =
+      "none";
+
+    if (relationship?.status === "accepted") {
+      state = "accepted";
+    } else if (
+      relationship?.status === "pending" &&
+      relationship.requester_character_id === activeCharacter.id
+    ) {
+      state = "outgoing_pending";
+    } else if (
+      relationship?.status === "pending"
+    ) {
+      state = "incoming_pending";
+    }
+
+    relationshipControl = {
+      canRequest:
+        ownFriendListEnabled &&
+        targetFriendListEnabled,
+      state,
+    };
+  }
+
   const returnHref =
     from === "game"
       ? "/game"
@@ -123,6 +205,9 @@ export default async function PublicCharacterPage({
           character.show_last_activity ||
           staffSession !== null ||
           activeCharacter?.id === character.id
+        }
+        relationshipControl={
+          relationshipControl
         }
       />
     </div>

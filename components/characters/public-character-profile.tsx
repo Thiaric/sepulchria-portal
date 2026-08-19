@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { startConversation } from "@/app/(portal)/messages/actions";
+import { sendRelationshipRequest } from "@/app/(portal)/friends/actions";
 import { CharacterMechanicsDisplay } from "@/components/characters/character-mechanics-display";
 import { CharacterGiftsDisplay } from "@/components/characters/character-gifts-display";
 import { CharacterInventoryDisplay } from "@/components/characters/character-inventory-display";
@@ -22,6 +23,16 @@ type PublicCharacterProfileProps = {
   returnLabel: string;
   canMessage: boolean;
   canViewLastActivity: boolean;
+  relationshipControl:
+    | {
+        canRequest: boolean;
+        state:
+          | "none"
+          | "outgoing_pending"
+          | "incoming_pending"
+          | "accepted";
+      }
+    | null;
 };
 
 function formatGender(
@@ -48,6 +59,7 @@ export function PublicCharacterProfileView({
   returnLabel,
   canMessage,
   canViewLastActivity,
+  relationshipControl,
 }: PublicCharacterProfileProps) {
   const fullName =
     character.display_name?.trim() ||
@@ -66,23 +78,81 @@ export function PublicCharacterProfileView({
           {returnLabel}
         </Link>
 
-        {canMessage ? (
-          <form action={startConversation}>
-            <input
-              type="hidden"
-              name="recipientId"
-              value={character.id}
-            />
-
-            <button
-              type="submit"
-              className="inline-flex items-center gap-2 border border-[#987344] bg-[#3b2919] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[#efd6a8] transition hover:border-[#b98c50] hover:bg-[#50371f]"
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          {relationshipControl?.state === "accepted" ? (
+            <Link
+              href="/friends"
+              className="inline-flex items-center gap-2 border border-[#668657] bg-[#172313] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[#b8d8a7]"
             >
-              <span aria-hidden="true">✉</span>
-              Send private message
-            </button>
-          </form>
-        ) : null}
+              In Friend List
+            </Link>
+          ) : relationshipControl?.state === "outgoing_pending" ? (
+            <Link
+              href="/friends"
+              className="inline-flex items-center gap-2 border border-[#80643f] bg-[#21180f] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[#c8ab7f]"
+            >
+              Request sent
+            </Link>
+          ) : relationshipControl?.state === "incoming_pending" ? (
+            <Link
+              href="/friends"
+              className="inline-flex items-center gap-2 border border-[#9a7543] bg-[#382819] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[#efd6a8]"
+            >
+              Respond to request
+            </Link>
+          ) : relationshipControl?.canRequest ? (
+            <form
+              action={sendRelationshipRequest}
+              className="flex items-stretch"
+            >
+              <input
+                type="hidden"
+                name="recipientId"
+                value={character.id}
+              />
+
+              <select
+                name="relationshipType"
+                defaultValue="friend"
+                aria-label="Relationship type"
+                className="border border-r-0 border-[#60482e]/55 bg-[#100c09] px-2 text-[9px] text-[#c8b18d] outline-none"
+              >
+                <option value="friend">Friend</option>
+                <option value="close_friend">Close Friend</option>
+                <option value="family">Family</option>
+                <option value="romance">Romance</option>
+                <option value="lover">Lover</option>
+                <option value="partner">Partner</option>
+                <option value="spouse">Spouse</option>
+              </select>
+
+              <button
+                type="submit"
+                className="inline-flex items-center gap-2 border border-[#668657] bg-[#172313] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[#b8d8a7] transition hover:bg-[#22321c]"
+              >
+                Add relationship
+              </button>
+            </form>
+          ) : null}
+
+          {canMessage ? (
+            <form action={startConversation}>
+              <input
+                type="hidden"
+                name="recipientId"
+                value={character.id}
+              />
+
+              <button
+                type="submit"
+                className="inline-flex items-center gap-2 border border-[#987344] bg-[#3b2919] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[#efd6a8] transition hover:border-[#b98c50] hover:bg-[#50371f]"
+              >
+                <span aria-hidden="true">✉</span>
+                Send private message
+              </button>
+            </form>
+          ) : null}
+        </div>
       </div>
 
       <CharacterSheetTabs>
