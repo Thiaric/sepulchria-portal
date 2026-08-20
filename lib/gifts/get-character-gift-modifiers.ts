@@ -152,7 +152,7 @@ export async function getCharacterGiftAttributeModifiers(
     } = await supabase
       .from("gift_activations")
       .select(
-        "character_gift_id",
+        "character_gift_id, target_character_id",
       )
       .in(
         "character_gift_id",
@@ -185,9 +185,14 @@ export async function getCharacterGiftAttributeModifiers(
       const activation
       of activationData ?? []
     ) {
-      activeTemporaryIds.add(
-        activation.character_gift_id,
-      );
+      if (
+        activation.target_character_id === null ||
+        activation.target_character_id === characterId
+      ) {
+        activeTemporaryIds.add(
+          activation.character_gift_id,
+        );
+      }
     }
   }
 
@@ -241,6 +246,34 @@ export async function getCharacterGiftAttributeModifiers(
 
     total.maxHealth +=
       gift.max_health_modifier ?? 0;
+  }
+
+  const {
+    data: targetedRows,
+    error: targetedError,
+  } = await supabase.rpc(
+    "get_targeted_gift_modifiers",
+    { p_character_id: characterId },
+  );
+
+  if (targetedError) {
+    throw new Error(
+      `Unable to load targeted Feat effects: ${targetedError.message}`,
+    );
+  }
+
+  const targeted = Array.isArray(targetedRows)
+    ? targetedRows[0] ?? null
+    : targetedRows;
+
+  if (targeted) {
+    total.muscles += Number(targeted.muscles ?? 0);
+    total.reflexes += Number(targeted.reflexes ?? 0);
+    total.vigor += Number(targeted.vigor ?? 0);
+    total.brains += Number(targeted.brains ?? 0);
+    total.shrewd += Number(targeted.shrewd ?? 0);
+    total.presence_score += Number(targeted.presence_score ?? 0);
+    total.maxHealth += Number(targeted.max_health ?? 0);
   }
 
   return total;

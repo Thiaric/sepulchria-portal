@@ -961,7 +961,7 @@ export default function RoomMessageList({
                   return (
                     <article
                       key={item.id}
-                      className={`flex min-w-0 items-center gap-3 px-5 py-3 sm:px-7 ${
+                      className={`flex min-w-0 items-start gap-3 px-5 py-3 sm:px-7 ${
                         isNaturalTwenty
                           ? "bg-emerald-950/10"
                           : isNaturalOne
@@ -1039,7 +1039,7 @@ export default function RoomMessageList({
                       )}
 
                       <p
-                        className={`min-w-0 flex-1 truncate text-xs ${
+                        className={`min-w-0 flex-1 whitespace-normal break-words text-xs leading-5 ${
                           isNaturalTwenty
                             ? "text-emerald-300"
                             : isNaturalOne

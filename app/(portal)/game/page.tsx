@@ -227,6 +227,9 @@ async function GameContent() {
         description,
         is_active,
         effect_mode,
+        target_mode,
+        damage_dice,
+        damage_type,
         duration_minutes,
         cooldown_minutes,
         health_delta,
@@ -310,6 +313,13 @@ async function GameContent() {
           | "none"
           | "passive"
           | "temporary",
+        targetMode:
+          (gift.target_mode ?? "self") as
+            | "self"
+            | "other"
+            | "either",
+        damageDice: gift.damage_dice ?? null,
+        damageType: gift.damage_type ?? null,
         durationMinutes: gift.duration_minutes,
         cooldownMinutes:
           gift.cooldown_minutes ?? 0,
@@ -317,6 +327,12 @@ async function GameContent() {
           gift.health_delta ?? 0,
         maxHealthModifier:
           gift.max_health_modifier ?? 0,
+        musclesModifier: gift.muscles_modifier ?? 0,
+        reflexesModifier: gift.reflexes_modifier ?? 0,
+        vigourModifier: gift.vigour_modifier ?? 0,
+        shrewdModifier: gift.shrewd_modifier ?? 0,
+        brainsModifier: gift.brains_modifier ?? 0,
+        presenceModifier: gift.presence_modifier ?? 0,
         activeUntil:
           activeActivation?.expires_at ?? null,
         cooldownUntil:

@@ -127,10 +127,19 @@ type ChatGift = {
     | "none"
     | "passive"
     | "temporary";
+  targetMode: "self" | "other" | "either";
+  damageDice: string | null;
+  damageType: string | null;
   durationMinutes: number | null;
   cooldownMinutes: number;
   healthDelta: number;
   maxHealthModifier: number;
+  musclesModifier: number;
+  reflexesModifier: number;
+  vigourModifier: number;
+  shrewdModifier: number;
+  brainsModifier: number;
+  presenceModifier: number;
   activeUntil: string | null;
   cooldownUntil: string | null;
 };
@@ -368,6 +377,13 @@ export default function RoomChatForm({
       null,
     [gifts, selectedGiftId],
   );
+
+  const [giftTargetId, setGiftTargetId] =
+    useState("");
+
+  useEffect(() => {
+    setGiftTargetId("");
+  }, [selectedGiftId]);
 
   const selectedGiftIsActive =
     selectedGift?.effectMode === "temporary" &&
@@ -1411,6 +1427,13 @@ function ignoreSpellingWord() {
                 readOnly
               />
 
+              <input
+                type="hidden"
+                name="gift_target_character_id"
+                value={giftTargetId}
+                readOnly
+              />
+
               <label className="block">
                 <span className="mb-1.5 block text-[8px] uppercase tracking-[0.14em] text-[#806b50]">
                   Feat
@@ -1441,6 +1464,32 @@ function ignoreSpellingWord() {
                 </select>
               </label>
 
+              {selectedGift.targetMode !== "self" ? (
+                <label className="mt-3 block">
+                  <span className="mb-1.5 block text-[8px] uppercase tracking-[0.14em] text-[#806b50]">
+                    Target character
+                  </span>
+                  <select
+                    value={giftTargetId}
+                    onChange={(event) =>
+                      setGiftTargetId(event.target.value)
+                    }
+                    className="w-full border border-[#654c31] bg-[#0f0c09] px-3 py-2.5 text-[10px] text-[#d8c29b] outline-none focus:border-[#a17a45]"
+                  >
+                    {selectedGift.targetMode === "either" ? (
+                      <option value="">Self</option>
+                    ) : (
+                      <option value="">Choose character...</option>
+                    )}
+                    {presentCharacters.map((entry) => (
+                      <option key={entry.id} value={entry.id}>
+                        {entry.display_name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              ) : null}
+
               <div className="mt-3 border border-[#59432c]/30 bg-[#15100d] p-3">
                 <p className="font-serif text-base text-[#dec89f]">
                   {selectedGift.name}
@@ -1465,6 +1514,31 @@ function ignoreSpellingWord() {
                     {selectedGift.maxHealthModifier !== 0
                       ? `Max Health ${formatSigned(selectedGift.maxHealthModifier)}`
                       : ""}
+                  </p>
+                ) : null}
+
+                {(selectedGift.damageDice ||
+                  selectedGift.musclesModifier ||
+                  selectedGift.reflexesModifier ||
+                  selectedGift.vigourModifier ||
+                  selectedGift.shrewdModifier ||
+                  selectedGift.brainsModifier ||
+                  selectedGift.presenceModifier) ? (
+                  <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-[#aa8c61]">
+                    {selectedGift.damageDice
+                      ? `Damage ${selectedGift.damageDice}${selectedGift.damageType ? ` ${selectedGift.damageType}` : ""}`
+                      : ""}
+                    {[
+                      ["Muscles", selectedGift.musclesModifier],
+                      ["Reflexes", selectedGift.reflexesModifier],
+                      ["Vigour", selectedGift.vigourModifier],
+                      ["Shrewd", selectedGift.shrewdModifier],
+                      ["Brains", selectedGift.brainsModifier],
+                      ["Presence", selectedGift.presenceModifier],
+                    ]
+                      .filter(([, value]) => Number(value) !== 0)
+                      .map(([label, value]) => `${label} ${formatSigned(Number(value))}`)
+                      .join(" · ")}
                   </p>
                 ) : null}
 
@@ -1516,7 +1590,15 @@ function ignoreSpellingWord() {
                     giftState.message}
                 </p>
 
-                {selectedGift.effectMode ===
+                {selectedGift.effectMode === "passive" ? (
+                  <button
+                    type="button"
+                    disabled
+                    className="cursor-not-allowed border border-[#59432c]/35 bg-[#17120e] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[#756958] opacity-60"
+                  >
+                    Passive
+                  </button>
+                ) : selectedGift.effectMode ===
                 "temporary" ? (
                   selectedGiftIsActive ? (
                     <button
@@ -1543,6 +1625,10 @@ function ignoreSpellingWord() {
                       type="submit"
                       formAction={giftAction}
                       formNoValidate
+                      disabled={
+                        selectedGift.targetMode === "other" &&
+                        !giftTargetId
+                      }
                       className="border border-[#85653c] bg-[#342617] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[#efd4a0] transition hover:bg-[#4a351f]"
                     >
                       Activate Feat
@@ -1553,6 +1639,10 @@ function ignoreSpellingWord() {
                     type="submit"
                     formAction={giftUseAction}
                     formNoValidate
+                    disabled={
+                      selectedGift.targetMode === "other" &&
+                      !giftTargetId
+                    }
                     className="border border-[#765937] bg-[#21190f] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[#d6bb8d] transition hover:border-[#a17a49]"
                   >
                     Use Feat

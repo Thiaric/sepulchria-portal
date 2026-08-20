@@ -94,14 +94,49 @@ function giftValues(formData: FormData) {
   }
 
   const healthDelta =
-    effectMode === "temporary"
-      ? integer(formData, "healthDelta", 0)
-      : 0;
+    effectMode === "passive"
+      ? 0
+      : integer(formData, "healthDelta", 0);
 
   const maxHealthModifier =
     effectMode === "none"
       ? 0
       : integer(formData, "maxHealthModifier", 0);
+
+  const requestedTargetMode =
+    requiredText(formData, "targetMode", "Target mode");
+
+  if (!["self", "other", "either"].includes(requestedTargetMode)) {
+    throw new Error("Invalid Feat target mode.");
+  }
+
+  const targetMode =
+    effectMode === "passive" ? "self" : requestedTargetMode;
+
+  const rawDamageDice = optionalText(formData, "damageDice");
+  const damageDice =
+    effectMode === "passive" ? null : rawDamageDice;
+
+  if (
+    damageDice &&
+    !/^[1-9][0-9]*d(4|6|8|10|12|20|100)$/.test(damageDice)
+  ) {
+    throw new Error(
+      "Damage dice must use a format such as 1d4, 2d6 or 1d12.",
+    );
+  }
+
+  if (damageDice) {
+    const count = Number.parseInt(damageDice.split("d")[0] ?? "0", 10);
+    if (count > 20) {
+      throw new Error("A Feat cannot roll more than 20 damage dice.");
+    }
+  }
+
+  const damageType =
+    damageDice
+      ? optionalText(formData, "damageType") ?? "Damage"
+      : null;
 
   return {
     name: requiredText(formData, "name", "Gift name"),
@@ -109,9 +144,12 @@ function giftValues(formData: FormData) {
     is_active: checkbox(formData, "isActive"),
     is_general: checkbox(formData, "isGeneral"),
     effect_mode: effectMode,
+    target_mode: targetMode,
     duration_minutes: durationMinutes,
     cooldown_minutes: cooldownMinutes,
     health_delta: healthDelta,
+    damage_dice: damageDice,
+    damage_type: damageType,
     max_health_modifier: maxHealthModifier,
     muscles_modifier: attr(formData, "musclesModifier", "Muscles"),
     reflexes_modifier: attr(formData, "reflexesModifier", "Reflexes"),

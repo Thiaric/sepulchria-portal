@@ -20,6 +20,9 @@ type Gift = {
   is_active: boolean;
   is_general: boolean;
   effect_mode: "none" | "passive" | "temporary";
+  target_mode: "self" | "other" | "either";
+  damage_dice: string | null;
+  damage_type: string | null;
   duration_minutes: number | null;
   cooldown_minutes: number;
   health_delta: number;
@@ -66,6 +69,7 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
         .from("gifts")
         .select(`
           id, name, description, is_active, is_general, effect_mode,
+          target_mode, damage_dice, damage_type,
           duration_minutes, cooldown_minutes, health_delta, max_health_modifier,
           muscles_modifier, reflexes_modifier,
           vigour_modifier, shrewd_modifier, brains_modifier,
@@ -406,6 +410,18 @@ function GiftForm({
           </select>
         </Field>
 
+        <Field label="Target">
+          <select
+            name="targetMode"
+            defaultValue={gift?.target_mode ?? "self"}
+            className={inputClass}
+          >
+            <option value="self">Self</option>
+            <option value="other">Other character</option>
+            <option value="either">Self or other character</option>
+          </select>
+        </Field>
+
         <Field label="Temporary duration (minutes)">
           <input
             type="number"
@@ -447,6 +463,24 @@ function GiftForm({
           />
         </Field>
 
+        <Field label="Damage dice">
+          <input
+            name="damageDice"
+            placeholder="e.g. 1d4"
+            defaultValue={gift?.damage_dice ?? ""}
+            className={inputClass}
+          />
+        </Field>
+
+        <Field label="Damage type">
+          <input
+            name="damageType"
+            placeholder="e.g. Lightning"
+            defaultValue={gift?.damage_type ?? ""}
+            className={inputClass}
+          />
+        </Field>
+
         <Field label="Maximum Health modifier">
           <input
             type="number"
@@ -455,6 +489,14 @@ function GiftForm({
             className={inputClass}
           />
         </Field>
+
+        <div className="md:col-span-2 border border-[#59432c]/35 bg-[#15100d] px-4 py-3 text-[9px] leading-5 text-[#8f8271]">
+          <strong className="text-[#c7ad83]">Effect rules:</strong>{" "}
+          Instant Health / Damage applies whenever a non-passive Feat is used.
+          Attribute and Maximum Health modifiers are persistent for Passive Feats
+          and last for the configured duration on Temporary Feats. Passive Feats
+          are always self-only.
+        </div>
 
         <div className="md:col-span-2 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
           {[

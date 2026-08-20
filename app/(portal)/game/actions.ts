@@ -33,6 +33,7 @@ type SupabaseClient = Awaited<ReturnType<typeof createClient>>;
 
 type OwnedCharacter = {
   id: string;
+  display_name: string;
   current_room_id: string | null;
   status: string;
   muscles: number | null;
@@ -80,6 +81,132 @@ function giftDurationLabel(
   return "";
 }
 
+type GiftTargetMode = "self" | "other" | "either";
+
+type ResolvedGiftTarget = {
+  id: string;
+  displayName: string;
+  isSelf: boolean;
+};
+
+function rollGiftDamage(damageDice: string | null): number {
+  if (!damageDice) return 0;
+
+  const match = /^([1-9][0-9]*)d(4|6|8|10|12|20|100)$/.exec(
+    damageDice,
+  );
+
+  if (!match) {
+    throw new Error("This Feat has invalid damage dice.");
+  }
+
+  const count = Number.parseInt(match[1], 10);
+  const sides = Number.parseInt(match[2], 10);
+
+  if (count < 1 || count > 20) {
+    throw new Error("This Feat has invalid damage dice.");
+  }
+
+  let total = 0;
+  for (let index = 0; index < count; index += 1) {
+    total += randomInt(1, sides + 1);
+  }
+
+  return total;
+}
+
+async function resolveGiftTarget({
+  supabase,
+  character,
+  roomId,
+  targetMode,
+  requestedTargetId,
+}: {
+  supabase: SupabaseClient;
+  character: OwnedCharacter;
+  roomId: string;
+  targetMode: GiftTargetMode;
+  requestedTargetId: string;
+}): Promise<ResolvedGiftTarget> {
+  if (
+    targetMode === "self" ||
+    (targetMode === "either" && !requestedTargetId)
+  ) {
+    return {
+      id: character.id,
+      displayName: character.display_name,
+      isSelf: true,
+    };
+  }
+
+  if (!requestedTargetId) {
+    throw new Error("Choose a character to target.");
+  }
+
+  if (requestedTargetId === character.id) {
+    if (targetMode === "other") {
+      throw new Error("This Feat must target another character.");
+    }
+
+    return {
+      id: character.id,
+      displayName: character.display_name,
+      isSelf: true,
+    };
+  }
+
+  const activeSince = new Date(
+    Date.now() - 5 * 60_000,
+  ).toISOString();
+
+  const { data: presence, error: presenceError } =
+    await supabase
+      .from("character_presence")
+      .select("character_id")
+      .eq("character_id", requestedTargetId)
+      .eq("room_id", roomId)
+      .gte("last_seen_at", activeSince)
+      .maybeSingle();
+
+  if (presenceError) {
+    throw new Error(
+      `Unable to verify Feat target: ${presenceError.message}`,
+    );
+  }
+
+  if (!presence) {
+    throw new Error(
+      "That character is no longer present in this Location.",
+    );
+  }
+
+  const { data: target, error: targetError } =
+    await supabase
+      .from("characters")
+      .select("id, display_name, current_room_id, status, is_system")
+      .eq("id", requestedTargetId)
+      .maybeSingle();
+
+  if (
+    targetError ||
+    !target ||
+    target.status !== "approved" ||
+    target.is_system ||
+    target.current_room_id !== roomId
+  ) {
+    throw new Error(
+      targetError?.message ??
+        "That character cannot currently be targeted.",
+    );
+  }
+
+  return {
+    id: target.id,
+    displayName: target.display_name,
+    isSelf: false,
+  };
+}
+
 async function insertGiftUseMessage({
   supabase,
   characterId,
@@ -88,6 +215,8 @@ async function insertGiftUseMessage({
   giftDescription,
   effectMode,
   durationMinutes,
+  target,
+  effectSummary,
 }: {
   supabase: SupabaseClient;
   characterId: string;
@@ -96,28 +225,34 @@ async function insertGiftUseMessage({
   giftDescription: string;
   effectMode: string;
   durationMinutes: number | null;
+  target: ResolvedGiftTarget;
+  effectSummary: string[];
 }) {
   const description =
     giftDescription.trim() || "No description";
 
   const duration =
-    giftDurationLabel(
-      effectMode,
-      durationMinutes,
-    );
+    giftDurationLabel(effectMode, durationMinutes);
+
+  const suffix = [
+    ...effectSummary,
+    duration ? `Duration: ${duration}` : "",
+  ]
+    .filter(Boolean)
+    .join(" · ");
 
   const { error } = await supabase
-  .from("room_messages")
-  .insert({
-    room_id: roomId,
-    character_id: characterId,
-    message:
-      `◆ used "${giftName}" · ${description}${
-        duration ? ` · Duration: ${duration}` : ""
-      }`,
-    message_type: "action",
-    client_nonce: crypto.randomUUID(),
-  });
+    .from("room_messages")
+    .insert({
+      room_id: roomId,
+      character_id: characterId,
+      message:
+        `◆ used "${giftName}" on ${
+          target.isSelf ? "self" : target.displayName
+        } · ${description}${suffix ? ` · ${suffix}` : ""}`,
+      message_type: "action",
+      client_nonce: crypto.randomUUID(),
+    });
 
   if (error) {
     throw new Error(
@@ -155,6 +290,7 @@ async function getOwnedCharacter(): Promise<{
     .from("characters")
     .select(`
       id,
+      display_name,
       current_room_id,
       status,
       muscles,
@@ -889,18 +1025,18 @@ export async function useRoomGift(
       formData.get("character_gift_id") ?? "",
     ).trim();
 
+    const requestedTargetId = String(
+      formData.get("gift_target_character_id") ?? "",
+    ).trim();
+
     const { supabase, character } =
       await getOwnedCharacter();
 
     if (!character.current_room_id) {
-      return {
-        ok: false,
-        message: "Your character has no current room.",
-      };
+      return { ok: false, message: "Your character has no current room." };
     }
 
-    const roomId =
-      character.current_room_id;
+    const roomId = character.current_room_id;
 
     const { error: staffExpiryError } = await supabase.rpc(
       "reconcile_expired_staff_gifts",
@@ -908,7 +1044,10 @@ export async function useRoomGift(
     );
 
     if (staffExpiryError) {
-      return { ok: false, message: `Unable to reconcile expired Feats: ${staffExpiryError.message}` };
+      return {
+        ok: false,
+        message: `Unable to reconcile expired Feats: ${staffExpiryError.message}`,
+      };
     }
 
     const { data: ownership, error: ownershipError } =
@@ -917,12 +1056,9 @@ export async function useRoomGift(
         .select(`
           id,
           gift:gifts(
-            id,
-            name,
-            description,
-            is_active,
-            effect_mode,
-            duration_minutes
+            id, name, description, is_active, effect_mode,
+            target_mode, damage_dice, damage_type,
+            duration_minutes, health_delta
           )
         `)
         .eq("id", characterGiftId)
@@ -944,18 +1080,54 @@ export async function useRoomGift(
       : relation;
 
     if (!gift || !gift.is_active) {
-      return {
-        ok: false,
-        message: "This Feat is not currently available.",
-      };
+      return { ok: false, message: "This Feat is not currently available." };
     }
 
     if (gift.effect_mode === "temporary") {
       return {
         ok: false,
-        message:
-          `${gift.name} is a temporary Gift. It can only be activated when it is ready.`,
+        message: `${gift.name} is a temporary Feat. Activate it instead.`,
       };
+    }
+
+    if (gift.effect_mode === "passive") {
+      return {
+        ok: false,
+        message: `${gift.name} is passive and is already in effect.`,
+      };
+    }
+
+    const target = await resolveGiftTarget({
+      supabase,
+      character,
+      roomId,
+      targetMode: (gift.target_mode ?? "self") as GiftTargetMode,
+      requestedTargetId,
+    });
+
+    const damage = rollGiftDamage(gift.damage_dice ?? null);
+    const healthDelta = Number(gift.health_delta ?? 0);
+    const combinedHealthDelta = healthDelta - damage;
+
+    if (combinedHealthDelta !== 0) {
+      await applyGiftCurrentHealthDelta({
+        characterId: target.id,
+        healthDelta: combinedHealthDelta,
+      });
+    }
+
+    const effectSummary: string[] = [];
+
+    if (healthDelta !== 0) {
+      effectSummary.push(
+        `Health ${healthDelta > 0 ? "+" : ""}${healthDelta}`,
+      );
+    }
+
+    if (damage > 0) {
+      effectSummary.push(
+        `${gift.damage_dice} ${gift.damage_type ?? "Damage"} → ${damage} Damage`,
+      );
     }
 
     await insertGiftUseMessage({
@@ -966,6 +1138,8 @@ export async function useRoomGift(
       giftDescription: gift.description ?? "",
       effectMode: gift.effect_mode,
       durationMinutes: gift.duration_minutes,
+      target,
+      effectSummary,
     });
 
     await touchPresence(
@@ -975,10 +1149,15 @@ export async function useRoomGift(
     );
 
     revalidatePath("/game");
+    revalidatePath("/character");
+    revalidatePath("/characters");
 
     return {
       ok: true,
-      message: `${gift.name} used.`,
+      message:
+        damage > 0
+          ? `${gift.name} used for ${damage} ${gift.damage_type ?? "Damage"} damage.`
+          : `${gift.name} used.`,
       submittedAt: Date.now(),
     };
   } catch (error) {
@@ -1001,31 +1180,30 @@ export async function activateRoomGift(
       formData.get("character_gift_id") ?? "",
     ).trim();
 
+    const requestedTargetId = String(
+      formData.get("gift_target_character_id") ?? "",
+    ).trim();
+
     if (
       !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
         characterGiftId,
       )
     ) {
-      return {
-        ok: false,
-        message: "Choose a valid Gift.",
-      };
+      return { ok: false, message: "Choose a valid Feat." };
     }
 
-    const {
-      supabase,
-      character,
-    } = await getOwnedCharacter();
+    const { supabase, character } =
+      await getOwnedCharacter();
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    if (!character.current_room_id) {
+      return { ok: false, message: "Your character has no current room." };
+    }
 
+    const roomId = character.current_room_id;
+
+    const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      return {
-        ok: false,
-        message: "Your session has expired.",
-      };
+      return { ok: false, message: "Your session has expired." };
     }
 
     const { error: staffExpiryError } = await supabase.rpc(
@@ -1034,37 +1212,29 @@ export async function activateRoomGift(
     );
 
     if (staffExpiryError) {
-      return { ok: false, message: `Unable to reconcile expired Feats: ${staffExpiryError.message}` };
+      return {
+        ok: false,
+        message: `Unable to reconcile expired Feats: ${staffExpiryError.message}`,
+      };
     }
 
-    const {
-      data: ownership,
-      error: ownershipError,
-    } = await supabase
-      .from("character_gifts")
-      .select(`
-        id,
-        gift:gifts(
+    const { data: ownership, error: ownershipError } =
+      await supabase
+        .from("character_gifts")
+        .select(`
           id,
-          name,
-          description,
-          is_active,
-          effect_mode,
-          duration_minutes,
-          cooldown_minutes,
-          health_delta,
-          max_health_modifier,
-          muscles_modifier,
-          reflexes_modifier,
-          vigour_modifier,
-          shrewd_modifier,
-          brains_modifier,
-          presence_modifier
-        )
-      `)
-      .eq("id", characterGiftId)
-      .eq("character_id", character.id)
-      .maybeSingle();
+          gift:gifts(
+            id, name, description, is_active, effect_mode,
+            target_mode, damage_dice, damage_type,
+            duration_minutes, cooldown_minutes, health_delta,
+            max_health_modifier, muscles_modifier, reflexes_modifier,
+            vigour_modifier, shrewd_modifier, brains_modifier,
+            presence_modifier
+          )
+        `)
+        .eq("id", characterGiftId)
+        .eq("character_id", character.id)
+        .maybeSingle();
 
     if (ownershipError || !ownership) {
       return {
@@ -1081,10 +1251,7 @@ export async function activateRoomGift(
       : relation;
 
     if (!gift || !gift.is_active) {
-      return {
-        ok: false,
-        message: "This Feat is not currently active.",
-      };
+      return { ok: false, message: "This Feat is not currently active." };
     }
 
     if (gift.effect_mode !== "temporary") {
@@ -1094,120 +1261,82 @@ export async function activateRoomGift(
       };
     }
 
+    const target = await resolveGiftTarget({
+      supabase,
+      character,
+      roomId,
+      targetMode: (gift.target_mode ?? "self") as GiftTargetMode,
+      requestedTargetId,
+    });
+
     const now = new Date().toISOString();
 
-    const {
-      data: existing,
-      error: existingError,
-    } = await supabase
-      .from("gift_activations")
-      .select("id")
-      .eq("character_gift_id", characterGiftId)
-      .is("ended_at", null)
-      .gt("expires_at", now)
-      .limit(1)
-      .maybeSingle();
+    const { data: existing, error: existingError } =
+      await supabase
+        .from("gift_activations")
+        .select("id")
+        .eq("character_gift_id", characterGiftId)
+        .is("ended_at", null)
+        .gt("expires_at", now)
+        .limit(1)
+        .maybeSingle();
 
     if (existingError) {
-      return {
-        ok: false,
-        message: existingError.message,
-      };
+      return { ok: false, message: existingError.message };
     }
 
     if (existing) {
-      return {
-        ok: false,
-        message: `${gift.name} is already active.`,
-      };
+      return { ok: false, message: `${gift.name} is already active.` };
     }
 
-    const cooldownMinutes =
-      Math.max(
-        0,
-        Number(
-          gift.cooldown_minutes ?? 0,
-        ),
-      );
+    const cooldownMinutes = Math.max(
+      0,
+      Number(gift.cooldown_minutes ?? 0),
+    );
 
     if (cooldownMinutes > 0) {
-      const cooldownSince =
-        new Date(
-          Date.now() -
-            cooldownMinutes *
-              60 *
-              1000,
-        ).toISOString();
+      const cooldownSince = new Date(
+        Date.now() - cooldownMinutes * 60 * 1000,
+      ).toISOString();
 
-      const {
-        data: recentActivation,
-        error: cooldownError,
-      } = await supabase
-        .from("gift_activations")
-        .select("activated_at")
-        .eq(
-          "character_gift_id",
-          characterGiftId,
-        )
-        .gte(
-          "activated_at",
-          cooldownSince,
-        )
-        .order(
-          "activated_at",
-          {
-            ascending: false,
-          },
-        )
-        .limit(1)
-        .maybeSingle();
+      const { data: recentActivation, error: cooldownError } =
+        await supabase
+          .from("gift_activations")
+          .select("activated_at")
+          .eq("character_gift_id", characterGiftId)
+          .gte("activated_at", cooldownSince)
+          .order("activated_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
 
       if (cooldownError) {
         return {
           ok: false,
-          message:
-            `Unable to verify Feat cooldown: ${cooldownError.message}`,
+          message: `Unable to verify Feat cooldown: ${cooldownError.message}`,
         };
       }
 
       if (recentActivation) {
-        const availableAt =
-          new Date(
-            new Date(
-              recentActivation.activated_at,
-            ).getTime() +
-              cooldownMinutes *
-                60 *
-                1000,
-          );
+        const availableAt = new Date(
+          new Date(recentActivation.activated_at).getTime() +
+            cooldownMinutes * 60 * 1000,
+        );
 
-        const remainingMinutes =
-          Math.max(
-            1,
-            Math.ceil(
-              (
-                availableAt.getTime() -
-                Date.now()
-              ) /
-                (60 * 1000),
-            ),
-          );
+        const remainingMinutes = Math.max(
+          1,
+          Math.ceil(
+            (availableAt.getTime() - Date.now()) / (60 * 1000),
+          ),
+        );
 
-        const remainingHours =
-          Math.floor(
-            remainingMinutes / 60,
-          );
-
-        const remainderMinutes =
-          remainingMinutes % 60;
+        const remainingHours = Math.floor(remainingMinutes / 60);
+        const remainderMinutes = remainingMinutes % 60;
 
         return {
           ok: false,
           message:
             `${gift.name} is on cooldown. You can use it again in ${
-              remainingHours
-                ? `${remainingHours}h `
-                : ""
+              remainingHours ? `${remainingHours}h ` : ""
             }${remainderMinutes}m.`,
         };
       }
@@ -1215,17 +1344,16 @@ export async function activateRoomGift(
 
     const admin = createPrivilegedClient();
 
-    const {
-      data: activation,
-      error: activationError,
-    } = await admin
-      .from("gift_activations")
-      .insert({
-        character_gift_id: characterGiftId,
-        activated_by: user.id,
-      })
-      .select("id, expires_at")
-      .single();
+    const { data: activation, error: activationError } =
+      await admin
+        .from("gift_activations")
+        .insert({
+          character_gift_id: characterGiftId,
+          activated_by: user.id,
+          target_character_id: target.id,
+        })
+        .select("id, expires_at")
+        .single();
 
     if (activationError || !activation) {
       return {
@@ -1236,20 +1364,26 @@ export async function activateRoomGift(
       };
     }
 
-    try {
-      await applyTemporaryGiftActivationHealth({
-        activationId: activation.id,
-        characterId: character.id,
-        vigourModifier:
-          gift.vigour_modifier ?? 0,
-      });
+    const damage = rollGiftDamage(gift.damage_dice ?? null);
+    const healthDelta = Number(gift.health_delta ?? 0);
+    const combinedHealthDelta = healthDelta - damage;
 
-      await applyGiftCurrentHealthDelta({
-        characterId: character.id,
-        healthDelta:
-          gift.health_delta ?? 0,
-      });
-    } catch (healthError) {
+    try {
+      if (target.isSelf) {
+        await applyTemporaryGiftActivationHealth({
+          activationId: activation.id,
+          characterId: target.id,
+          vigourModifier: gift.vigour_modifier ?? 0,
+        });
+      }
+
+      if (combinedHealthDelta !== 0) {
+        await applyGiftCurrentHealthDelta({
+          characterId: target.id,
+          healthDelta: combinedHealthDelta,
+        });
+      }
+    } catch (effectError) {
       await admin
         .from("gift_activations")
         .delete()
@@ -1258,57 +1392,54 @@ export async function activateRoomGift(
       return {
         ok: false,
         message:
-          healthError instanceof Error
-            ? healthError.message
-            : "Feat activation Health could not be applied.",
+          effectError instanceof Error
+            ? effectError.message
+            : "Feat effects could not be applied.",
       };
     }
 
-    try {
-      await insertGiftUseMessage({
-        supabase,
-        characterId: character.id,
-        roomId: character.current_room_id!,
-        giftName: gift.name,
-        giftDescription: [
-          gift.description ?? "",
-          gift.health_delta
-            ? `Health ${gift.health_delta > 0 ? "+" : ""}${gift.health_delta}`
-            : "",
-          gift.max_health_modifier
-            ? `Max Health ${gift.max_health_modifier > 0 ? "+" : ""}${gift.max_health_modifier}`
-            : "",
-          gift.muscles_modifier
-            ? `Muscles ${gift.muscles_modifier > 0 ? "+" : ""}${gift.muscles_modifier}`
-            : "",
-          gift.reflexes_modifier
-            ? `Reflexes ${gift.reflexes_modifier > 0 ? "+" : ""}${gift.reflexes_modifier}`
-            : "",
-          gift.vigour_modifier
-            ? `Vigour ${gift.vigour_modifier > 0 ? "+" : ""}${gift.vigour_modifier}`
-            : "",
-          gift.shrewd_modifier
-            ? `Shrewd ${gift.shrewd_modifier > 0 ? "+" : ""}${gift.shrewd_modifier}`
-            : "",
-          gift.brains_modifier
-            ? `Brains ${gift.brains_modifier > 0 ? "+" : ""}${gift.brains_modifier}`
-            : "",
-          gift.presence_modifier
-            ? `Presence ${gift.presence_modifier > 0 ? "+" : ""}${gift.presence_modifier}`
-            : "",
-        ].filter(Boolean).join(" · "),
-        effectMode: gift.effect_mode,
-        durationMinutes: gift.duration_minutes,
-      });
-    } catch (announcementError) {
-      return {
-        ok: false,
-        message:
-          announcementError instanceof Error
-            ? announcementError.message
-            : "Feat was activated, but its use could not be announced in chat.",
-      };
+    const effectSummary: string[] = [];
+
+    if (healthDelta !== 0) {
+      effectSummary.push(
+        `Health ${healthDelta > 0 ? "+" : ""}${healthDelta}`,
+      );
     }
+
+    if (damage > 0) {
+      effectSummary.push(
+        `${gift.damage_dice} ${gift.damage_type ?? "Damage"} → ${damage} Damage`,
+      );
+    }
+
+    effectSummary.push(
+      ...[
+        ["Muscles", gift.muscles_modifier],
+        ["Reflexes", gift.reflexes_modifier],
+        ["Vigour", gift.vigour_modifier],
+        ["Shrewd", gift.shrewd_modifier],
+        ["Brains", gift.brains_modifier],
+        ["Presence", gift.presence_modifier],
+        ["Max Health", gift.max_health_modifier],
+      ]
+        .filter(([, value]) => Number(value) !== 0)
+        .map(
+          ([label, value]) =>
+            `${label} ${Number(value) > 0 ? "+" : ""}${Number(value)}`,
+        ),
+    );
+
+    await insertGiftUseMessage({
+      supabase,
+      characterId: character.id,
+      roomId,
+      giftName: gift.name,
+      giftDescription: gift.description ?? "",
+      effectMode: gift.effect_mode,
+      durationMinutes: gift.duration_minutes,
+      target,
+      effectSummary,
+    });
 
     await touchPresence(
       supabase,
@@ -1322,7 +1453,10 @@ export async function activateRoomGift(
 
     return {
       ok: true,
-      message: `${gift.name} activated and used.`,
+      message:
+        damage > 0
+          ? `${gift.name} activated for ${damage} ${gift.damage_type ?? "Damage"} damage.`
+          : `${gift.name} activated and used.`,
       submittedAt: Date.now(),
     };
   } catch (error) {
