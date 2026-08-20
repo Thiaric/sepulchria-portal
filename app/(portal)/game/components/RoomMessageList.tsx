@@ -209,9 +209,59 @@ function formatRollText(
     )}(+${item.attribute_value}) = ${item.roll_total}`;
   }
 
-  return item.message.replace(
+    return item.message.replace(
     /^◆\s*/,
     "",
+  );
+}
+
+function renderRollText(
+  item: RoomMessage,
+): ReactNode {
+  const text = formatRollText(item);
+
+  if (
+    item.message_type !== "action" ||
+    !text.includes("Success Roll:")
+  ) {
+    return text;
+  }
+
+  const outcome =
+    text.includes(" - SUCCESS")
+      ? "SUCCESS"
+      : text.includes(" - FAILED")
+        ? "FAILED"
+        : null;
+
+  if (!outcome) {
+    return text;
+  }
+
+  const colour =
+    outcome === "SUCCESS"
+      ? "text-emerald-400"
+      : "text-red-400";
+
+  const resultIndex =
+    text.indexOf("Success Roll:");
+
+  const beforeResult =
+    text.slice(0, resultIndex);
+
+  const result =
+    text.slice(resultIndex);
+
+  return (
+    <>
+      {beforeResult}
+
+      <span
+        className={`font-semibold ${colour}`}
+      >
+        {result}
+      </span>
+    </>
   );
 }
 
@@ -1060,9 +1110,9 @@ export default function RoomMessageList({
                             : undefined
                         }
                       >
-                        {formatRollText(
-                          item,
-                        )}
+                        {renderRollText(
+  item,
+)}
                       </p>
 
                       <time
