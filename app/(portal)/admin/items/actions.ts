@@ -110,19 +110,19 @@ async function itemValues(formData: FormData) {
   const isUsable = checkbox(formData, "isUsable");
 
   let useBehaviour: string | null = null;
-  let targetMode: string | null = null;
+  const targetMode = requiredText(formData, "targetMode", "Target mode");
   let maxCharges: number | null = null;
   let cooldownMinutes: number | null = null;
 
+  if (!TARGET_MODES.includes(targetMode as (typeof TARGET_MODES)[number])) {
+    throw new Error("Invalid target mode.");
+  }
+
   if (isUsable) {
     useBehaviour = requiredText(formData, "useBehaviour", "Use behaviour");
-    targetMode = requiredText(formData, "targetMode", "Target mode");
 
     if (!USE_BEHAVIOURS.includes(useBehaviour as (typeof USE_BEHAVIOURS)[number])) {
       throw new Error("Invalid use behaviour.");
-    }
-    if (!TARGET_MODES.includes(targetMode as (typeof TARGET_MODES)[number])) {
-      throw new Error("Invalid target mode.");
     }
 
     cooldownMinutes = integer(formData, "cooldownMinutes", null);
@@ -142,6 +142,80 @@ async function itemValues(formData: FormData) {
   if (referenceValue !== null && referenceValue < 0) {
     throw new Error("Reference value cannot be negative.");
   }
+
+  /*
+   * SUCCESS / ATTACK MECHANICS
+   *
+   * No Success Die = automatic success.
+   * With a die:
+   * dX + optional effective Attribute >= Success Threshold.
+   *
+   * For weapons, the same Relevant Attribute is also added to damage.
+   */
+  let successDie: number | null = null;
+  let successThreshold: number | null = null;
+  let successAttribute: string | null = null;
+
+  const rawSuccessDie = optionalText(formData, "successDie");
+
+  if (rawSuccessDie) {
+    const parsedSuccessDie = Number.parseInt(rawSuccessDie, 10);
+
+    if (![4, 6, 8, 10, 12, 20, 100].includes(parsedSuccessDie)) {
+      throw new Error("Invalid Success Die.");
+    }
+
+    successDie = parsedSuccessDie;
+    successThreshold = integer(formData, "successThreshold", 0);
+
+    if (successThreshold === null || successThreshold < 1) {
+      throw new Error(
+        "An Item Success Roll needs a threshold of at least 1.",
+      );
+    }
+
+    const requestedSuccessAttribute =
+      optionalText(formData, "successAttribute");
+
+    if (
+      requestedSuccessAttribute &&
+      ![
+        "muscles",
+        "reflexes",
+        "vigor",
+        "brains",
+        "shrewd",
+        "presence_score",
+      ].includes(requestedSuccessAttribute)
+    ) {
+      throw new Error("Invalid Success Attribute.");
+    }
+
+    successAttribute = requestedSuccessAttribute;
+  }
+
+  const damageDice = optionalText(formData, "damageDice");
+
+  if (
+    damageDice &&
+    !/^[1-9][0-9]*d(4|6|8|10|12|20|100)$/.test(damageDice)
+  ) {
+    throw new Error(
+      "Damage dice must use a format such as 1d4, 2d6 or 1d12.",
+    );
+  }
+
+  if (damageDice) {
+    const count = Number.parseInt(damageDice.split("d")[0] ?? "0", 10);
+
+    if (count > 20) {
+      throw new Error("An Item cannot roll more than 20 damage dice.");
+    }
+  }
+
+  const damageType = damageDice
+    ? optionalText(formData, "damageType") ?? "Damage"
+    : null;
 
   const supabase = await createClient();
   const { data: category, error: categoryError } = await supabase
@@ -182,6 +256,11 @@ async function itemValues(formData: FormData) {
     max_charges: maxCharges,
     target_mode: targetMode,
     cooldown_minutes: cooldownMinutes,
+    success_die: successDie,
+    success_threshold: successThreshold,
+    success_attribute: successAttribute,
+    damage_dice: damageDice,
+    damage_type: damageType,
     container_capacity: containerCapacity,
     sort_order: integer(formData, "sortOrder", 0) ?? 0,
     updated_at: new Date().toISOString(),

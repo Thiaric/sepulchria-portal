@@ -71,6 +71,18 @@ type Item = {
   max_charges: number | null;
   target_mode: "self" | "other" | "either" | null;
   cooldown_minutes: number | null;
+  success_die: number | null;
+  success_threshold: number | null;
+  success_attribute:
+    | "muscles"
+    | "reflexes"
+    | "vigor"
+    | "brains"
+    | "shrewd"
+    | "presence_score"
+    | null;
+  damage_dice: string | null;
+  damage_type: string | null;
   container_capacity: number | null;
   sort_order: number;
   effects: Effect[] | null;
@@ -125,6 +137,11 @@ export default async function AdminItemsPage({ searchParams }: Props) {
         max_charges,
         target_mode,
         cooldown_minutes,
+        success_die,
+        success_threshold,
+        success_attribute,
+        damage_dice,
+        damage_type,
         container_capacity,
         sort_order,
         effects:item_effects(
@@ -610,6 +627,69 @@ function ItemForm({
           </select>
         </Field>
 
+        <Field label="Success Die">
+          <select
+            name="successDie"
+            defaultValue={item?.success_die ?? ""}
+            className={inputClass}
+          >
+            <option value="">Automatic success</option>
+            <option value="4">d4</option>
+            <option value="6">d6</option>
+            <option value="8">d8</option>
+            <option value="10">d10</option>
+            <option value="12">d12</option>
+            <option value="20">d20</option>
+            <option value="100">d100</option>
+          </select>
+        </Field>
+
+        <Field label="Success Threshold">
+          <input
+            type="number"
+            min={1}
+            step={1}
+            name="successThreshold"
+            defaultValue={item?.success_threshold ?? ""}
+            placeholder="Required when a die is selected"
+            className={inputClass}
+          />
+        </Field>
+
+        <Field label="Relevant Attribute">
+          <select
+            name="successAttribute"
+            defaultValue={item?.success_attribute ?? ""}
+            className={inputClass}
+          >
+            <option value="">None - pure roll</option>
+            <option value="muscles">Muscles</option>
+            <option value="reflexes">Reflexes</option>
+            <option value="vigor">Vigour</option>
+            <option value="brains">Brains</option>
+            <option value="shrewd">Shrewd</option>
+            <option value="presence_score">Presence</option>
+          </select>
+        </Field>
+
+        <Field label="Damage Dice">
+          <input
+            name="damageDice"
+            defaultValue={item?.damage_dice ?? ""}
+            placeholder="e.g. 1d4"
+            className={inputClass}
+          />
+        </Field>
+
+        <Field label="Damage Type">
+          <input
+            name="damageType"
+            defaultValue={item?.damage_type ?? ""}
+            placeholder="e.g. Piercing, Lightning"
+            className={inputClass}
+          />
+        </Field>
+
         <Field label="Maximum charges">
           <input
             type="number"
@@ -659,11 +739,25 @@ function ItemForm({
         </button>
       </div>
 
-      <p className="mt-3 text-[9px] leading-5 text-[#756958]">
-        Irrelevant settings are automatically ignored: Maximum Stack unless
-        Stackable is enabled, Use settings unless Usable is enabled, and
-        Container capacity unless the core category is Container.
-      </p>
+      <div className="mt-3 border border-[#59432c]/30 bg-[#100c09] px-3 py-2 text-[9px] leading-5 text-[#756958]">
+        <p>
+          <span className="text-[#a88b61]">Success:</span>{" "}
+          no Success Die means automatic success. With a die, the Item succeeds
+          when the die plus its optional Relevant Attribute meets or exceeds the
+          threshold.
+        </p>
+        <p className="mt-1">
+          <span className="text-[#a88b61]">Weapons:</span>{" "}
+          the same Relevant Attribute is also added to weapon damage.
+          Example: d20 + Reflexes vs 12, then 1d4 + Reflexes Piercing Damage.
+        </p>
+        <p className="mt-1">
+          Irrelevant settings are automatically ignored: Maximum Stack unless
+          Stackable is enabled, Use behaviour/charges/cooldown unless Usable is
+          enabled, and Container capacity unless the core category is Container.
+          Target and Success/Damage mechanics remain Item-level configuration.
+        </p>
+      </div>
     </AdminActionForm>
   );
 }
