@@ -31,6 +31,12 @@ import {
   sendRoomDiceRoll,
   sendRoomMessage,
 } from "../actions";
+import {
+  startAttributeOpposedAction,
+  startUnarmedAttack,
+  startWeaponOpposedAttack,
+} from "../opposed-actions";
+import { PendingOpposedActions } from "./PendingOpposedActions";
 
 const initialState: ActionState = {
   ok: false,
@@ -54,18 +60,11 @@ type CheckOption = {
 };
 
 const CHECK_OPTIONS: CheckOption[] = [
-  { value: "unarmed_attack", label: "Unarmed Attack", attribute: "muscles" },
-  { value: "defend", label: "Defend", attribute: "vigor" },
-  { value: "dodge", label: "Dodge", attribute: "reflexes" },
   { value: "use_muscles", label: "Use your Muscles", attribute: "muscles" },
   { value: "use_reflexes", label: "Use your Reflexes", attribute: "reflexes" },
   { value: "use_brains", label: "Use your Brains", attribute: "brains" },
   { value: "use_shrewd", label: "Use your Shrewd", attribute: "shrewd" },
   { value: "use_presence", label: "Use your Presence", attribute: "presence_score" },
-  { value: "resist_physical", label: "Resist (Physical)", attribute: "vigor" },
-  { value: "resist_shrewd", label: "Resist (Shrewd)", attribute: "shrewd" },
-  { value: "resist_brains", label: "Resist (Brains)", attribute: "brains" },
-  { value: "resist_presence", label: "Resist (Presence)", attribute: "presence_score" },
 ];
 
 const ATTRIBUTE_LABELS: Record<
@@ -299,6 +298,24 @@ export default function RoomChatForm({
       initialState,
     );
 
+  const [opposedAttributeState, opposedAttributeAction] =
+    useActionState(
+      startAttributeOpposedAction,
+      initialState,
+    );
+
+  const [unarmedState, unarmedAction] =
+    useActionState(
+      startUnarmedAttack,
+      initialState,
+    );
+
+  const [weaponState, weaponAction] =
+    useActionState(
+      startWeaponOpposedAttack,
+      initialState,
+    );
+
   const [giftState, giftAction] =
     useActionState(
       activateRoomGift,
@@ -373,6 +390,18 @@ export default function RoomChatForm({
     useState("");
 
   const [weaponTargetId, setWeaponTargetId] =
+    useState("");
+  const [weaponExternalTarget, setWeaponExternalTarget] =
+    useState("");
+
+  const [attributeTargetId, setAttributeTargetId] =
+    useState("");
+  const [attributeExternalTarget, setAttributeExternalTarget] =
+    useState("");
+
+  const [unarmedTargetId, setUnarmedTargetId] =
+    useState("");
+  const [unarmedExternalTarget, setUnarmedExternalTarget] =
     useState("");
 
   const selectedWeapon = useMemo(
@@ -1070,6 +1099,7 @@ function ignoreSpellingWord() {
 
   return (
     <div className="shrink-0 border-t border-[#59432c]/40 bg-[#17110d] p-2 sm:px-3 sm:py-2">
+      <PendingOpposedActions />
       {utilityMode === null ? (
         <form
           action={messageAction}
@@ -1409,18 +1439,18 @@ function ignoreSpellingWord() {
           ) : null}
         </form>
       ) : utilityMode === "attributes" ? (
-        <form
-          action={checkAction}
-          className="border border-[#59432c]/35 bg-[#100c09] p-3"
-        >
+        <div className="border border-[#59432c]/35 bg-[#100c09] p-3">
           <UtilityPanelHeader
             title="Atk / Def / Dodge / Resist / Use Attribute"
-            description="Attack with an equipped Weapon, or make a defensive, dodge, resistance or Check."
+            description="Attack or act now; if you target another Character, their valid counter decides the result. Text targets are resolved by Fate."
             onClose={() => setUtilityMode(null)}
           />
 
           {selectedWeapon ? (
-            <div className="mb-3 border border-[#6a5032]/45 bg-[#15100d] p-3">
+            <form
+              action={weaponAction}
+              className="mb-3 border border-[#6a5032]/45 bg-[#15100d] p-3"
+            >
               <p className="text-[8px] uppercase tracking-[0.16em] text-[#9a7d55]">
                 Equipped Weapon Attack
               </p>
@@ -1457,16 +1487,19 @@ function ignoreSpellingWord() {
 
                 <label>
                   <span className="mb-1 block text-[8px] uppercase tracking-[0.12em] text-[#806b50]">
-                    Target
+                    Character target
                   </span>
                   <select
                     value={weaponTargetId}
-                    onChange={(event) =>
-                      setWeaponTargetId(event.target.value)
-                    }
+                    onChange={(event) => {
+                      setWeaponTargetId(event.target.value);
+                      if (event.target.value) {
+                        setWeaponExternalTarget("");
+                      }
+                    }}
                     className="w-full border border-[#654c31] bg-[#0f0c09] px-3 py-2.5 text-[10px] text-[#d8c29b] outline-none focus:border-[#a17a45]"
                   >
-                    <option value="">Choose character...</option>
+                    <option value="">No Character target</option>
                     {presentCharacters.map((entry) => (
                       <option key={entry.id} value={entry.id}>
                         {entry.display_name}
@@ -1476,16 +1509,34 @@ function ignoreSpellingWord() {
                 </label>
               </div>
 
+              <label className="mt-2 block">
+                <span className="mb-1 block text-[8px] uppercase tracking-[0.12em] text-[#806b50]">
+                  Or other target
+                </span>
+                <input
+                  type="text"
+                  value={weaponExternalTarget}
+                  onChange={(event) => {
+                    setWeaponExternalTarget(event.target.value);
+                    if (event.target.value) {
+                      setWeaponTargetId("");
+                    }
+                  }}
+                  placeholder="door, Monster A, guard..."
+                  className="w-full border border-[#654c31] bg-[#0f0c09] px-3 py-2.5 text-[10px] text-[#d8c29b] outline-none focus:border-[#a17a45]"
+                />
+              </label>
+
               <div className="mt-2 flex flex-wrap gap-1.5 text-[8px] uppercase tracking-[0.1em] text-[#a98b61]">
                 <span className="border border-[#59432c]/40 px-2 py-1">
-                  Success{" "}
+                  Attack Roll{" "}
                   {selectedWeapon.successDie
                     ? `d${selectedWeapon.successDie}${
                         selectedWeapon.successAttribute
                           ? ` + ${ATTRIBUTE_LABELS[selectedWeapon.successAttribute]}`
                           : ""
-                      } >= ${selectedWeapon.successThreshold ?? "?"}`
-                    : "Automatic"}
+                      }`
+                    : "d20"}
                 </span>
                 <span className="border border-[#59432c]/40 px-2 py-1">
                   Damage{" "}
@@ -1497,124 +1548,184 @@ function ignoreSpellingWord() {
                     ? ` ${selectedWeapon.damageType}`
                     : ""}
                 </span>
+                <span className="border border-[#59432c]/40 px-2 py-1">
+                  Counter: Dodge / Defend
+                </span>
               </div>
 
-              <div className="mt-3">
+              <input
+                type="hidden"
+                name="item_record_kind"
+                value={selectedWeapon.recordKind}
+                readOnly
+              />
+              <input
+                type="hidden"
+                name="item_record_id"
+                value={selectedWeapon.recordId}
+                readOnly
+              />
+              <input
+                type="hidden"
+                name="opposed_target_character_id"
+                value={weaponTargetId}
+                readOnly
+              />
+              <input
+                type="hidden"
+                name="opposed_external_target"
+                value={weaponExternalTarget}
+                readOnly
+              />
+
+              <div className="mt-3 flex items-center justify-between gap-3">
+                <p className={`text-xs ${weaponState.ok ? "text-[#9bb58c]" : "text-[#d58d82]"}`}>
+                  {weaponState.message}
+                </p>
                 <button
                   type="submit"
-                  formAction={itemAction}
-                  formNoValidate
-                  disabled={
-                    !weaponTargetId ||
-                    Boolean(
-                      selectedWeapon.cooldownReadyAt &&
-                        Date.parse(selectedWeapon.cooldownReadyAt) > Date.now(),
-                    )
-                  }
-                  
+                  disabled={!weaponTargetId && !weaponExternalTarget.trim()}
                   className="border border-[#85653c] bg-[#342617] px-5 py-2.5 text-[9px] uppercase tracking-[0.18em] text-[#efd4a0] transition hover:bg-[#4a351f] disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   Attack
                 </button>
-                <input
-                  type="hidden"
-                  name="item_record_kind"
-                  value={selectedWeapon.recordKind}
-                  readOnly
-                />
-                <input
-                  type="hidden"
-                  name="item_record_id"
-                  value={selectedWeapon.recordId}
-                  readOnly
-                />
-                <input
-                  type="hidden"
-                  name="item_target_character_id"
-                  value={weaponTargetId}
-                  readOnly
-                />
               </div>
-            </div>
+            </form>
           ) : (
             <p className="mb-3 border border-[#59432c]/35 bg-[#15100d] px-3 py-2 text-[9px] text-[#817565]">
               No Weapon is equipped in Main Hand or Off Hand.
             </p>
           )}
 
-          <input
-            type="hidden"
-            name="client_nonce"
-            value={checkNonce ?? ""}
-            readOnly
-          />
-
-          <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
-            <label>
-              <span className="mb-1.5 block text-[8px] uppercase tracking-[0.14em] text-[#806b50]">
-                Attribute check
-              </span>
+          <div className="grid gap-3 lg:grid-cols-2">
+            <form
+              action={unarmedAction}
+              className="border border-[#59432c]/30 bg-[#15100d] p-3"
+            >
+              <p className="text-[8px] uppercase tracking-[0.14em] text-[#9a7d55]">
+                Unarmed Attack
+              </p>
+              <p className="mt-1 text-[9px] text-[#817565]">
+                d20 + Muscles. If Dodge / Defend is lower: 1 + Muscles Damage.
+              </p>
 
               <select
-                name="check_key"
-                defaultValue="use_muscles"
-                disabled={!attributesComplete}
-                className="w-full border border-[#654c31] bg-[#0f0c09] px-3 py-2.5 text-[10px] text-[#d8c29b] outline-none focus:border-[#a17a45] disabled:opacity-45"
+                value={unarmedTargetId}
+                onChange={(event) => {
+                  setUnarmedTargetId(event.target.value);
+                  if (event.target.value) {
+                    setUnarmedExternalTarget("");
+                  }
+                }}
+                className="mt-2 w-full border border-[#654c31] bg-[#0f0c09] px-3 py-2 text-[10px] text-[#d8c29b]"
               >
-                {CHECK_OPTIONS.map((option) => {
-                  const score =
-                    attributes[
-                      option.attribute
-                    ];
-                  const breakdown =
-                    attributeBreakdown[
-                      option.attribute
-                    ];
-
-                  return (
-                    <option
-                      key={option.value}
-                      value={option.value}
-                    >
-                      {option.label} —{" "}
-                      {
-                        ATTRIBUTE_LABELS[
-                          option.attribute
-                        ]
-                      }
-                      :{" "}
-                      {score === null
-                        ? "—"
-                        : formatSigned(score)}
-                      {" Effective · "}
-                      {breakdown.base ?? "—"}{" "}
-                      Base
-                    </option>
-                  );
-                })}
+                <option value="">No Character target</option>
+                {presentCharacters.map((entry) => (
+                  <option key={entry.id} value={entry.id}>
+                    {entry.display_name}
+                  </option>
+                ))}
               </select>
-            </label>
 
-            <RollButton
-              label="Roll Check"
-              disabled={!attributesComplete}
-              formAction={checkAction}
-              onPrepare={() => undefined}
-            />
-          </div>
+              <input
+                type="text"
+                value={unarmedExternalTarget}
+                onChange={(event) => {
+                  setUnarmedExternalTarget(event.target.value);
+                  if (event.target.value) {
+                    setUnarmedTargetId("");
+                  }
+                }}
+                placeholder="Other target: door, Monster A..."
+                className="mt-2 w-full border border-[#654c31] bg-[#0f0c09] px-3 py-2 text-[10px] text-[#d8c29b]"
+              />
 
-          {checkState.message ? (
-            <p
-              className={`mt-3 text-xs ${
-                checkState.ok
-                  ? "text-[#9bb58c]"
-                  : "text-[#d58d82]"
-              }`}
+              <input type="hidden" name="opposed_target_character_id" value={unarmedTargetId} readOnly />
+              <input type="hidden" name="opposed_external_target" value={unarmedExternalTarget} readOnly />
+
+              <button
+                type="submit"
+                className="mt-2 border border-[#85653c] bg-[#342617] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[#efd4a0]"
+              >
+                Unarmed Attack
+              </button>
+
+              {unarmedState.message ? (
+                <p className={`mt-2 text-xs ${unarmedState.ok ? "text-[#9bb58c]" : "text-[#d58d82]"}`}>
+                  {unarmedState.message}
+                </p>
+              ) : null}
+            </form>
+
+            <form
+              action={opposedAttributeAction}
+              className="border border-[#59432c]/30 bg-[#15100d] p-3"
             >
-              {checkState.message}
-            </p>
-          ) : null}
-        </form>
+              <p className="text-[8px] uppercase tracking-[0.14em] text-[#9a7d55]">
+                Attribute Action
+              </p>
+
+              <select
+                name="opposed_attribute"
+                defaultValue="muscles"
+                className="mt-2 w-full border border-[#654c31] bg-[#0f0c09] px-3 py-2 text-[10px] text-[#d8c29b]"
+              >
+                {CHECK_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.attribute}>
+                    {option.label} — {ATTRIBUTE_LABELS[option.attribute]}: {formatSigned(Number(attributes[option.attribute] ?? 0))}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                value={attributeTargetId}
+                onChange={(event) => {
+                  setAttributeTargetId(event.target.value);
+                  if (event.target.value) {
+                    setAttributeExternalTarget("");
+                  }
+                }}
+                className="mt-2 w-full border border-[#654c31] bg-[#0f0c09] px-3 py-2 text-[10px] text-[#d8c29b]"
+              >
+                <option value="">No Character target</option>
+                {presentCharacters.map((entry) => (
+                  <option key={entry.id} value={entry.id}>
+                    {entry.display_name}
+                  </option>
+                ))}
+              </select>
+
+              <input
+                type="text"
+                value={attributeExternalTarget}
+                onChange={(event) => {
+                  setAttributeExternalTarget(event.target.value);
+                  if (event.target.value) {
+                    setAttributeTargetId("");
+                  }
+                }}
+                placeholder="Other target: lock, crowd, Monster A..."
+                className="mt-2 w-full border border-[#654c31] bg-[#0f0c09] px-3 py-2 text-[10px] text-[#d8c29b]"
+              />
+
+              <input type="hidden" name="opposed_target_character_id" value={attributeTargetId} readOnly />
+              <input type="hidden" name="opposed_external_target" value={attributeExternalTarget} readOnly />
+
+              <button
+                type="submit"
+                className="mt-2 border border-[#85653c] bg-[#342617] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[#efd4a0]"
+              >
+                Roll Action
+              </button>
+
+              {opposedAttributeState.message ? (
+                <p className={`mt-2 text-xs ${opposedAttributeState.ok ? "text-[#9bb58c]" : "text-[#d58d82]"}`}>
+                  {opposedAttributeState.message}
+                </p>
+              ) : null}
+            </form>
+          </div>
+        </div>
       ) : utilityMode === "feat" ? (
         <form className="border border-[#59432c]/35 bg-[#100c09] p-3">
           <UtilityPanelHeader
@@ -2157,7 +2268,7 @@ function ignoreSpellingWord() {
           )}
         </form>
       )}
-{utilityMode === null ? (
+      {utilityMode === null ? (
       <div className="-mt-9 mx-[105px] flex flex-wrap justify-center gap-1.5 border-0 pt-0 max-lg:mx-0 max-lg:mt-2 max-lg:border-t max-lg:border-[#59432c]/30 max-lg:pt-2">
         <button
           type="button"
