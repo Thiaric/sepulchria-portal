@@ -75,13 +75,26 @@ function giftValues(formData: FormData) {
     throw new Error("Invalid Feat effect mode.");
   }
 
-  const durationMinutes =
-    effectMode === "temporary"
-      ? integer(formData, "durationMinutes", 0)
-      : null;
+  let durationMinutes: number | null = null;
 
-  if (effectMode === "temporary" && (!durationMinutes || durationMinutes <= 0)) {
-    throw new Error("Temporary Feats need a duration greater than 0 minutes.");
+  if (effectMode === "temporary") {
+    const durationMode = requiredText(formData, "durationMode", "Duration");
+
+    if (!["instantaneous", "minutes"].includes(durationMode)) {
+      throw new Error("Invalid Feat duration.");
+    }
+
+    if (durationMode === "instantaneous") {
+      durationMinutes = 0;
+    } else {
+      durationMinutes = integer(formData, "durationMinutes", 0);
+
+      if (durationMinutes <= 0) {
+        throw new Error(
+          "Timed Activated Feats need a duration greater than 0 minutes.",
+        );
+      }
+    }
   }
 
   const cooldownMinutes =
@@ -138,6 +151,85 @@ function giftValues(formData: FormData) {
       ? optionalText(formData, "damageType") ?? "Damage"
       : null;
 
+  const musclesModifier = attr(formData, "musclesModifier", "Muscles");
+  const reflexesModifier = attr(formData, "reflexesModifier", "Reflexes");
+  const vigourModifier = attr(formData, "vigourModifier", "Vigour");
+  const shrewdModifier = attr(formData, "shrewdModifier", "Shrewd");
+  const brainsModifier = attr(formData, "brainsModifier", "Brains");
+  const presenceModifier = attr(formData, "presenceModifier", "Presence");
+
+  const hasLingeringModifier =
+    maxHealthModifier !== 0 ||
+    musclesModifier !== 0 ||
+    reflexesModifier !== 0 ||
+    vigourModifier !== 0 ||
+    shrewdModifier !== 0 ||
+    brainsModifier !== 0 ||
+    presenceModifier !== 0;
+
+  if (
+    effectMode === "temporary" &&
+    durationMinutes === 0 &&
+    hasLingeringModifier
+  ) {
+    throw new Error(
+      "Instantaneous Activated Feats may only change Current Health or deal Damage. Attribute and Maximum Health modifiers require a timed duration.",
+    );
+  }
+
+  if (
+    effectMode === "temporary" &&
+    durationMinutes === 0 &&
+    healthDelta === 0 &&
+    !damageDice
+  ) {
+    throw new Error(
+      "An Instantaneous Activated Feat must change Current Health or deal Damage.",
+    );
+  }
+
+  let successDie: number | null = null;
+  let successThreshold: number | null = null;
+  let successAttribute: string | null = null;
+
+  if (effectMode !== "passive") {
+    const rawSuccessDie = optionalText(formData, "successDie");
+
+    if (rawSuccessDie) {
+      const parsedSuccessDie = Number.parseInt(rawSuccessDie, 10);
+
+      if (![4, 6, 8, 10, 12, 20, 100].includes(parsedSuccessDie)) {
+        throw new Error("Invalid Success Die.");
+      }
+
+      successDie = parsedSuccessDie;
+      successThreshold = integer(formData, "successThreshold", 0);
+
+      if (successThreshold < 1) {
+        throw new Error("A Success Roll needs a threshold of at least 1.");
+      }
+
+      const requestedSuccessAttribute =
+        optionalText(formData, "successAttribute");
+
+      if (
+        requestedSuccessAttribute &&
+        ![
+          "muscles",
+          "reflexes",
+          "vigor",
+          "brains",
+          "shrewd",
+          "presence_score",
+        ].includes(requestedSuccessAttribute)
+      ) {
+        throw new Error("Invalid Success Attribute.");
+      }
+
+      successAttribute = requestedSuccessAttribute;
+    }
+  }
+
   return {
     name: requiredText(formData, "name", "Gift name"),
     description: optionalText(formData, "description") ?? "",
@@ -150,13 +242,16 @@ function giftValues(formData: FormData) {
     health_delta: healthDelta,
     damage_dice: damageDice,
     damage_type: damageType,
+    success_die: successDie,
+    success_threshold: successThreshold,
+    success_attribute: successAttribute,
     max_health_modifier: maxHealthModifier,
-    muscles_modifier: attr(formData, "musclesModifier", "Muscles"),
-    reflexes_modifier: attr(formData, "reflexesModifier", "Reflexes"),
-    vigour_modifier: attr(formData, "vigourModifier", "Vigour"),
-    shrewd_modifier: attr(formData, "shrewdModifier", "Shrewd"),
-    brains_modifier: attr(formData, "brainsModifier", "Brains"),
-    presence_modifier: attr(formData, "presenceModifier", "Presence"),
+    muscles_modifier: musclesModifier,
+    reflexes_modifier: reflexesModifier,
+    vigour_modifier: vigourModifier,
+    shrewd_modifier: shrewdModifier,
+    brains_modifier: brainsModifier,
+    presence_modifier: presenceModifier,
     sort_order: integer(formData, "sortOrder", 0),
   };
 }

@@ -23,6 +23,16 @@ type Gift = {
   target_mode: "self" | "other" | "either";
   damage_dice: string | null;
   damage_type: string | null;
+  success_die: number | null;
+  success_threshold: number | null;
+  success_attribute:
+    | "muscles"
+    | "reflexes"
+    | "vigor"
+    | "brains"
+    | "shrewd"
+    | "presence_score"
+    | null;
   duration_minutes: number | null;
   cooldown_minutes: number;
   health_delta: number;
@@ -70,6 +80,7 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
         .select(`
           id, name, description, is_active, is_general, effect_mode,
           target_mode, damage_dice, damage_type,
+          success_die, success_threshold, success_attribute,
           duration_minutes, cooldown_minutes, health_delta, max_health_modifier,
           muscles_modifier, reflexes_modifier,
           vigour_modifier, shrewd_modifier, brains_modifier,
@@ -422,12 +433,34 @@ function GiftForm({
           </select>
         </Field>
 
-        <Field label="Temporary duration (minutes)">
+        <Field label="Activated duration">
+          <select
+            name="durationMode"
+            defaultValue={
+              gift?.effect_mode === "temporary" &&
+              gift.duration_minutes === 0
+                ? "instantaneous"
+                : "minutes"
+            }
+            className={inputClass}
+          >
+            <option value="instantaneous">Instantaneous</option>
+            <option value="minutes">Timed</option>
+          </select>
+        </Field>
+
+        <Field label="Duration (minutes)">
           <input
             type="number"
             min={1}
+            step={1}
             name="durationMinutes"
-            defaultValue={gift?.duration_minutes ?? ""}
+            placeholder="Required when Timed"
+            defaultValue={
+              gift?.duration_minutes && gift.duration_minutes > 0
+                ? gift.duration_minutes
+                : ""
+            }
             className={inputClass}
           />
         </Field>
@@ -462,6 +495,56 @@ function GiftForm({
             className={inputClass}
           />
         </Field>
+
+        <Field label="Success Die">
+          <select
+            name="successDie"
+            defaultValue={gift?.success_die ?? ""}
+            className={inputClass}
+          >
+            <option value="">Automatic success</option>
+            <option value="4">d4</option>
+            <option value="6">d6</option>
+            <option value="8">d8</option>
+            <option value="10">d10</option>
+            <option value="12">d12</option>
+            <option value="20">d20</option>
+            <option value="100">d100</option>
+          </select>
+        </Field>
+
+        <Field label="Success threshold">
+          <input
+            type="number"
+            min={1}
+            step={1}
+            name="successThreshold"
+            placeholder="e.g. 12"
+            defaultValue={gift?.success_threshold ?? ""}
+            className={inputClass}
+          />
+        </Field>
+
+        <Field label="Defining Attribute">
+          <select
+            name="successAttribute"
+            defaultValue={gift?.success_attribute ?? ""}
+            className={inputClass}
+          >
+            <option value="">None - pure die</option>
+            <option value="muscles">Muscles</option>
+            <option value="reflexes">Reflexes</option>
+            <option value="vigor">Vigour</option>
+            <option value="brains">Brains</option>
+            <option value="shrewd">Shrewd</option>
+            <option value="presence_score">Presence</option>
+          </select>
+        </Field>
+
+        <div className="flex items-end border border-[#59432c]/35 bg-[#15100d] px-4 py-3 text-[9px] leading-5 text-[#8f8271]">
+          No Success Die means automatic success. If a Defining Attribute is
+          selected, its current effective value is added to the roll.
+        </div>
 
         <Field label="Damage dice">
           <input

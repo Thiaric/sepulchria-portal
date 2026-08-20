@@ -230,6 +230,9 @@ async function GameContent() {
         target_mode,
         damage_dice,
         damage_type,
+        success_die,
+        success_threshold,
+        success_attribute,
         duration_minutes,
         cooldown_minutes,
         health_delta,
@@ -320,6 +323,17 @@ async function GameContent() {
             | "either",
         damageDice: gift.damage_dice ?? null,
         damageType: gift.damage_type ?? null,
+        successDie: gift.success_die ?? null,
+        successThreshold: gift.success_threshold ?? null,
+        successAttribute:
+          (gift.success_attribute ?? null) as
+            | "muscles"
+            | "reflexes"
+            | "vigor"
+            | "brains"
+            | "shrewd"
+            | "presence_score"
+            | null,
         durationMinutes: gift.duration_minutes,
         cooldownMinutes:
           gift.cooldown_minutes ?? 0,

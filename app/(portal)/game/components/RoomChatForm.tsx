@@ -130,6 +130,9 @@ type ChatGift = {
   targetMode: "self" | "other" | "either";
   damageDice: string | null;
   damageType: string | null;
+  successDie: number | null;
+  successThreshold: number | null;
+  successAttribute: CharacterAttributeKey | null;
   durationMinutes: number | null;
   cooldownMinutes: number;
   healthDelta: number;
@@ -1501,6 +1504,19 @@ function ignoreSpellingWord() {
                     }
                   </p>
                 ) : null}
+                <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-[#c5a36f]">
+                  Success:{" "}
+                  {selectedGift.effectMode === "passive"
+                    ? "No roll - Passive Feat"
+                    : selectedGift.successDie
+                      ? `d${selectedGift.successDie}${
+                          selectedGift.successAttribute
+                            ? ` + ${ATTRIBUTE_LABELS[selectedGift.successAttribute]}`
+                            : ""
+                        } >= ${selectedGift.successThreshold}`
+                      : "Automatic"}
+                </p>
+
                 {(selectedGift.healthDelta !== 0 ||
                   selectedGift.maxHealthModifier !== 0) ? (
                   <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-[#aa8c61]">
@@ -1545,7 +1561,7 @@ function ignoreSpellingWord() {
                 <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-[#8b7657]">
                   {selectedGift.effectMode ===
                   "passive"
-                    ? "Passive effect is already active"
+                    ? "Passive effect is already active - you can show this Feat in chat"
                     : selectedGift.effectMode ===
                           "temporary" &&
                         selectedGift.activeUntil
@@ -1561,9 +1577,10 @@ function ignoreSpellingWord() {
                       : selectedGift.effectMode ===
                           "temporary"
                         ? `Duration: ${
-                            selectedGift.durationMinutes ??
-                            "?"
-                          } min · Cooldown: ${
+                            selectedGift.durationMinutes === 0
+                              ? "Instantaneous"
+                              : `${selectedGift.durationMinutes ?? "?"} min`
+                          } · Cooldown: ${
                             selectedGift.cooldownMinutes === 0
                               ? "None"
                               : `${selectedGift.cooldownMinutes} min`
@@ -1592,11 +1609,12 @@ function ignoreSpellingWord() {
 
                 {selectedGift.effectMode === "passive" ? (
                   <button
-                    type="button"
-                    disabled
-                    className="cursor-not-allowed border border-[#59432c]/35 bg-[#17120e] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[#756958] opacity-60"
+                    type="submit"
+                    formAction={giftUseAction}
+                    formNoValidate
+                    className="border border-[#765937] bg-[#21190f] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[#d6bb8d] transition hover:border-[#a17a49]"
                   >
-                    Passive
+                    Show Feat
                   </button>
                 ) : selectedGift.effectMode ===
                 "temporary" ? (

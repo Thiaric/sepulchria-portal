@@ -69,6 +69,10 @@ function giftDurationLabel(
   durationMinutes: number | null,
 ): string {
   if (effectMode === "temporary") {
+    if (durationMinutes === 0) {
+      return "Instantaneous";
+    }
+
     return durationMinutes
       ? `${durationMinutes} minutes`
       : "Temporary";
@@ -88,6 +92,86 @@ type ResolvedGiftTarget = {
   displayName: string;
   isSelf: boolean;
 };
+
+type GiftSuccessAttribute =
+  | "muscles"
+  | "reflexes"
+  | "vigor"
+  | "brains"
+  | "shrewd"
+  | "presence_score";
+
+const GIFT_SUCCESS_ATTRIBUTE_LABELS: Record<
+  GiftSuccessAttribute,
+  string
+> = {
+  muscles: "Muscles",
+  reflexes: "Reflexes",
+  vigor: "Vigour",
+  brains: "Brains",
+  shrewd: "Shrewd",
+  presence_score: "Presence",
+};
+
+async function rollGiftSuccess({
+  character,
+  successDie,
+  successThreshold,
+  successAttribute,
+}: {
+  character: OwnedCharacter;
+  successDie: number | null;
+  successThreshold: number | null;
+  successAttribute: GiftSuccessAttribute | null;
+}) {
+  if (!successDie) {
+    return {
+      success: true,
+      summary: "Success Roll: Automatic - SUCCESS",
+    };
+  }
+
+  if (
+    ![4, 6, 8, 10, 12, 20, 100].includes(successDie) ||
+    !successThreshold ||
+    successThreshold < 1
+  ) {
+    throw new Error("This Feat has an invalid Success Roll.");
+  }
+
+  const rolled = randomInt(1, successDie + 1);
+  let modifier = 0;
+  let modifierText = "";
+
+  if (successAttribute) {
+    const effective = await getEffectiveCharacterAttributes(
+      character.id,
+      {
+        muscles: character.muscles,
+        reflexes: character.reflexes,
+        vigor: character.vigor,
+        brains: character.brains,
+        shrewd: character.shrewd,
+        presence_score: character.presence_score,
+      },
+    );
+
+    modifier = Number(effective[successAttribute] ?? 0);
+    modifierText =
+      ` + ${GIFT_SUCCESS_ATTRIBUTE_LABELS[successAttribute]} ` +
+      `(${modifier >= 0 ? "+" : ""}${modifier})`;
+  }
+
+  const total = rolled + modifier;
+  const success = total >= successThreshold;
+
+  return {
+    success,
+    summary:
+      `Success Roll: d${successDie} -> ${rolled}${modifierText}` +
+      ` = ${total} vs ${successThreshold} - ${success ? "SUCCESS" : "FAILED"}`,
+  };
+}
 
 function rollGiftDamage(damageDice: string | null): number {
   if (!damageDice) return 0;
@@ -1058,6 +1142,7 @@ export async function useRoomGift(
           gift:gifts(
             id, name, description, is_active, effect_mode,
             target_mode, damage_dice, damage_type,
+            success_die, success_threshold, success_attribute,
             duration_minutes, health_delta
           )
         `)
@@ -1091,9 +1176,36 @@ export async function useRoomGift(
     }
 
     if (gift.effect_mode === "passive") {
+      const selfTarget: ResolvedGiftTarget = {
+        id: character.id,
+        displayName: character.display_name,
+        isSelf: true,
+      };
+
+      await insertGiftUseMessage({
+        supabase,
+        characterId: character.id,
+        roomId,
+        giftName: gift.name,
+        giftDescription: gift.description ?? "",
+        effectMode: gift.effect_mode,
+        durationMinutes: gift.duration_minutes,
+        target: selfTarget,
+        effectSummary: ["Passive Feat - shown"],
+      });
+
+      await touchPresence(
+        supabase,
+        character.id,
+        character.current_room_id,
+      );
+
+      revalidatePath("/game");
+
       return {
-        ok: false,
-        message: `${gift.name} is passive and is already in effect.`,
+        ok: true,
+        message: `${gift.name} shown in chat.`,
+        submittedAt: Date.now(),
       };
     }
 
@@ -1104,6 +1216,42 @@ export async function useRoomGift(
       targetMode: (gift.target_mode ?? "self") as GiftTargetMode,
       requestedTargetId,
     });
+
+    const successRoll = await rollGiftSuccess({
+      character,
+      successDie: gift.success_die ?? null,
+      successThreshold: gift.success_threshold ?? null,
+      successAttribute:
+        (gift.success_attribute ?? null) as GiftSuccessAttribute | null,
+    });
+
+    if (!successRoll.success) {
+      await insertGiftUseMessage({
+        supabase,
+        characterId: character.id,
+        roomId,
+        giftName: gift.name,
+        giftDescription: gift.description ?? "",
+        effectMode: gift.effect_mode,
+        durationMinutes: gift.duration_minutes,
+        target,
+        effectSummary: [successRoll.summary, "No effect applied"],
+      });
+
+      await touchPresence(
+        supabase,
+        character.id,
+        character.current_room_id,
+      );
+
+      revalidatePath("/game");
+
+      return {
+        ok: true,
+        message: `${gift.name} failed.`,
+        submittedAt: Date.now(),
+      };
+    }
 
     const damage = rollGiftDamage(gift.damage_dice ?? null);
     const healthDelta = Number(gift.health_delta ?? 0);
@@ -1116,7 +1264,7 @@ export async function useRoomGift(
       });
     }
 
-    const effectSummary: string[] = [];
+    const effectSummary: string[] = [successRoll.summary];
 
     if (healthDelta !== 0) {
       effectSummary.push(
@@ -1226,6 +1374,7 @@ export async function activateRoomGift(
           gift:gifts(
             id, name, description, is_active, effect_mode,
             target_mode, damage_dice, damage_type,
+            success_die, success_threshold, success_attribute,
             duration_minutes, cooldown_minutes, health_delta,
             max_health_modifier, muscles_modifier, reflexes_modifier,
             vigour_modifier, shrewd_modifier, brains_modifier,
@@ -1364,12 +1513,63 @@ export async function activateRoomGift(
       };
     }
 
+    const successRoll = await rollGiftSuccess({
+      character,
+      successDie: gift.success_die ?? null,
+      successThreshold: gift.success_threshold ?? null,
+      successAttribute:
+        (gift.success_attribute ?? null) as GiftSuccessAttribute | null,
+    });
+
+    if (!successRoll.success) {
+      const { error: endError } = await admin
+        .from("gift_activations")
+        .update({ ended_at: new Date().toISOString() })
+        .eq("id", activation.id);
+
+      if (endError) {
+        return {
+          ok: false,
+          message: `Unable to finish failed Feat attempt: ${endError.message}`,
+        };
+      }
+
+      await insertGiftUseMessage({
+        supabase,
+        characterId: character.id,
+        roomId,
+        giftName: gift.name,
+        giftDescription: gift.description ?? "",
+        effectMode: gift.effect_mode,
+        durationMinutes: gift.duration_minutes,
+        target,
+        effectSummary: [successRoll.summary, "No effect applied"],
+      });
+
+      await touchPresence(
+        supabase,
+        character.id,
+        character.current_room_id,
+      );
+
+      revalidatePath("/game");
+
+      return {
+        ok: true,
+        message: `${gift.name} failed. Cooldown has started.`,
+        submittedAt: Date.now(),
+      };
+    }
+
     const damage = rollGiftDamage(gift.damage_dice ?? null);
     const healthDelta = Number(gift.health_delta ?? 0);
     const combinedHealthDelta = healthDelta - damage;
 
     try {
-      if (target.isSelf) {
+      if (
+        target.isSelf &&
+        Number(gift.duration_minutes ?? 0) > 0
+      ) {
         await applyTemporaryGiftActivationHealth({
           activationId: activation.id,
           characterId: target.id,
@@ -1398,7 +1598,7 @@ export async function activateRoomGift(
       };
     }
 
-    const effectSummary: string[] = [];
+    const effectSummary: string[] = [successRoll.summary];
 
     if (healthDelta !== 0) {
       effectSummary.push(
