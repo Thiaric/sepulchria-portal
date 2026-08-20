@@ -68,6 +68,66 @@ function one<T>(value: T | T[] | null): T | null {
   return Array.isArray(value) ? value[0] ?? null : value;
 }
 
+const ADMIN_SUCCESS_ATTRIBUTE_LABELS: Record<
+  NonNullable<Gift["success_attribute"]>,
+  string
+> = {
+  muscles: "Muscles",
+  reflexes: "Reflexes",
+  vigor: "Vigour",
+  brains: "Brains",
+  shrewd: "Shrewd",
+  presence_score: "Presence",
+};
+
+function adminTargetLabel(gift: Gift) {
+  if (gift.target_mode === "other") return "Other";
+  if (gift.target_mode === "either") return "Self / Other";
+  return "Self";
+}
+
+function adminSuccessLabel(gift: Gift) {
+  if (gift.effect_mode === "passive") return "No roll";
+
+  if (!gift.success_die || !gift.success_threshold) {
+    return "Automatic";
+  }
+
+  const attribute = gift.success_attribute
+    ? ` + ${ADMIN_SUCCESS_ATTRIBUTE_LABELS[gift.success_attribute]}`
+    : "";
+
+  return `d${gift.success_die}${attribute} ≥ ${gift.success_threshold}`;
+}
+
+function adminDurationLabel(gift: Gift) {
+  if (gift.effect_mode === "passive") return "Permanent";
+  if (gift.effect_mode !== "temporary") return "Instant use";
+  if (gift.duration_minutes === 0) return "Instantaneous";
+
+  return gift.duration_minutes
+    ? `${gift.duration_minutes} min`
+    : "Not set";
+}
+
+function adminModifierLabel(gift: Gift) {
+  const values = [
+    ["Mus", gift.muscles_modifier],
+    ["Ref", gift.reflexes_modifier],
+    ["Vig", gift.vigour_modifier],
+    ["Shr", gift.shrewd_modifier],
+    ["Bra", gift.brains_modifier],
+    ["Pre", gift.presence_modifier],
+  ]
+    .filter(([, value]) => Number(value) !== 0)
+    .map(([label, value]) => {
+      const number = Number(value);
+      return `${label} ${number > 0 ? "+" : ""}${number}`;
+    });
+
+  return values.length ? values.join(" · ") : "None";
+}
+
 export default async function AdminGiftsPage({ searchParams }: Props) {
   await requireStaff();
   const params = (await searchParams) ?? {};
@@ -207,9 +267,9 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
               className="scroll-mt-6 border border-[#59432c]/45 bg-[#100c09]"
             >
               <summary className="cursor-pointer list-none px-4 py-4">
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <p className="font-serif text-lg text-[#d8bf91]">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="truncate font-serif text-lg text-[#d8bf91]">
                       {gift.name}
                     </p>
                     <p className="mt-1 text-[8px] uppercase tracking-[0.14em] text-[#766956]">
@@ -219,9 +279,78 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
                       {gift.assignments?.length ?? 0} owners
                     </p>
                   </div>
-                  <span className="text-[8px] uppercase tracking-[0.14em] text-[#9b8768]">
+
+                  <span className="shrink-0 text-[8px] uppercase tracking-[0.14em] text-[#9b8768]">
                     {gift.is_active ? "Active" : "Inactive"}
                   </span>
+                </div>
+
+                <div className="mt-3 grid grid-cols-2 gap-1.5 border-t border-[#59432c]/25 pt-3 md:grid-cols-3 xl:grid-cols-6">
+                  <AdminRecapBox
+                    label="Use"
+                    value={`${
+                      gift.effect_mode === "temporary"
+                        ? "Activated"
+                        : gift.effect_mode === "passive"
+                          ? "Passive"
+                          : "Standard"
+                    } · ${adminTargetLabel(gift)}`}
+                  />
+
+                  <AdminRecapBox
+                    label="Success"
+                    value={adminSuccessLabel(gift)}
+                  />
+
+                  <AdminRecapBox
+                    label="Timing"
+                    value={`${
+                      adminDurationLabel(gift)
+                    } · ${
+                      gift.effect_mode === "temporary"
+                        ? gift.cooldown_minutes === 0
+                          ? "No cooldown"
+                          : `${gift.cooldown_minutes} min cooldown`
+                        : "No cooldown"
+                    }`}
+                  />
+
+                  <AdminRecapBox
+                    label="Health / Damage"
+                    value={`${
+                      gift.damage_dice
+                        ? `${gift.damage_dice}${
+                            gift.damage_type
+                              ? ` ${gift.damage_type}`
+                              : ""
+                          }`
+                        : "No damage"
+                    } · HP ${
+                      gift.health_delta !== 0
+                        ? `${gift.health_delta > 0 ? "+" : ""}${gift.health_delta}`
+                        : "—"
+                    } · Max ${
+                      gift.max_health_modifier !== 0
+                        ? `${gift.max_health_modifier > 0 ? "+" : ""}${gift.max_health_modifier}`
+                        : "—"
+                    }`}
+                  />
+
+                  <AdminRecapBox
+                    label="Attributes"
+                    value={adminModifierLabel(gift)}
+                  />
+
+                  <AdminRecapBox
+                    label="Access"
+                    value={`Ancestries ${
+                      gift.races?.length ?? 0
+                    } · Roles ${
+                      gift.roles?.length ?? 0
+                    } · General ${
+                      gift.is_general ? "Yes" : "No"
+                    }`}
+                  />
                 </div>
               </summary>
 
@@ -350,6 +479,25 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
         </div>
       </div>
     </main>
+  );
+}
+
+function AdminRecapBox({
+  label,
+  value,
+}: {
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="min-w-0 border border-[#59432c]/35 bg-[#15100d] px-2.5 py-2">
+      <p className="text-[6px] uppercase tracking-[0.13em] text-[#806a4c]">
+        {label}
+      </p>
+      <p className="mt-1 min-w-0 break-words text-[8px] leading-4 text-[#b8a382]">
+        {value}
+      </p>
+    </div>
   );
 }
 
@@ -719,4 +867,5 @@ function Eligibility({
       </div>
     </div>
   );
+
 }

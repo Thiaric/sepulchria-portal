@@ -16,8 +16,14 @@ export default async function GiftsPage() {
       description,
       is_general,
       effect_mode,
+      target_mode,
       duration_minutes,
       cooldown_minutes,
+      success_die,
+      success_threshold,
+      success_attribute,
+      damage_dice,
+      damage_type,
       health_delta,
       max_health_modifier,
       muscles_modifier,
@@ -111,10 +117,32 @@ export default async function GiftsPage() {
         | "none"
         | "passive"
         | "temporary",
+      targetMode:
+        (gift.target_mode ?? "self") as
+          | "self"
+          | "other"
+          | "either",
       durationMinutes:
         gift.duration_minutes,
       cooldownMinutes:
         gift.cooldown_minutes,
+      successDie:
+        gift.success_die ?? null,
+      successThreshold:
+        gift.success_threshold ?? null,
+      successAttribute:
+        (gift.success_attribute ?? null) as
+          | "muscles"
+          | "reflexes"
+          | "vigor"
+          | "brains"
+          | "shrewd"
+          | "presence_score"
+          | null,
+      damageDice:
+        gift.damage_dice ?? null,
+      damageType:
+        gift.damage_type ?? null,
       healthDelta:
         gift.health_delta,
       maxHealthModifier:

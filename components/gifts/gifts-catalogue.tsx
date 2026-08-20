@@ -4,6 +4,7 @@ import {
   useEffect,
   useMemo,
   useState,
+  type ReactNode,
 } from "react";
 
 type GiftType =
@@ -21,8 +22,24 @@ type Gift = {
     | "none"
     | "passive"
     | "temporary";
+  targetMode:
+    | "self"
+    | "other"
+    | "either";
   durationMinutes: number | null;
   cooldownMinutes: number;
+  successDie: number | null;
+  successThreshold: number | null;
+  successAttribute:
+    | "muscles"
+    | "reflexes"
+    | "vigor"
+    | "brains"
+    | "shrewd"
+    | "presence_score"
+    | null;
+  damageDice: string | null;
+  damageType: string | null;
   healthDelta: number;
   maxHealthModifier: number;
   modifiers: {
@@ -100,6 +117,58 @@ function modifierLabels(gift: Gift) {
       ([label, value]) =>
         `${label} ${signed(Number(value))}`,
     );
+}
+
+const ATTRIBUTE_LABELS: Record<
+  NonNullable<Gift["successAttribute"]>,
+  string
+> = {
+  muscles: "Muscles",
+  reflexes: "Reflexes",
+  vigor: "Vigour",
+  brains: "Brains",
+  shrewd: "Shrewd",
+  presence_score: "Presence",
+};
+
+function targetLabel(target: Gift["targetMode"]) {
+  if (target === "other") return "Other character";
+  if (target === "either") return "Self or other character";
+  return "Self";
+}
+
+function successLabel(gift: Gift) {
+  if (gift.effectMode === "passive") {
+    return "No roll (Passive)";
+  }
+
+  if (!gift.successDie || !gift.successThreshold) {
+    return "Automatic";
+  }
+
+  const attribute = gift.successAttribute
+    ? ` + ${ATTRIBUTE_LABELS[gift.successAttribute]}`
+    : "";
+
+  return `d${gift.successDie}${attribute} ≥ ${gift.successThreshold}`;
+}
+
+function durationLabel(gift: Gift) {
+  if (gift.effectMode === "passive") {
+    return "Permanent while owned";
+  }
+
+  if (gift.effectMode !== "temporary") {
+    return "Instant use";
+  }
+
+  if (gift.durationMinutes === 0) {
+    return "Instantaneous";
+  }
+
+  return gift.durationMinutes
+    ? `${gift.durationMinutes} min`
+    : "Not set";
 }
 
 export function GiftsCatalogue({
@@ -457,7 +526,7 @@ export function GiftsCatalogue({
                 id={`gift-${gift.id}`}
                 className="scroll-mt-4 border border-[#59432c]/40 bg-[#100c09] px-4 py-3"
               >
-                <div className="grid gap-3 lg:grid-cols-[minmax(180px,0.8fr)_minmax(260px,1.6fr)_minmax(180px,1fr)] lg:items-start">
+                <div className="grid gap-3 lg:grid-cols-[minmax(200px,0.8fr)_minmax(0,2.2fr)] lg:items-start">
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-1.5">
                       {types.map(
@@ -498,70 +567,132 @@ export function GiftsCatalogue({
                       "No description."}
                   </p>
 
-                  <div className="space-y-1 text-[8px] leading-4 text-[#7d7161]">
-                    {ancestryText ? (
-                      <p className="truncate">
-                        <span className="uppercase tracking-[0.1em] text-[#9f825b]">
-                          Ancestry:
-                        </span>{" "}
-                        {ancestryText}
-                      </p>
-                    ) : null}
+                </div>
 
-                    {orderText ? (
-                      <p className="truncate">
-                        <span className="uppercase tracking-[0.1em] text-[#9f825b]">
-                          Order:
-                        </span>{" "}
-                        {orderText}
-                      </p>
-                    ) : null}
+                <div className="mt-3 grid grid-cols-2 gap-1.5 border-t border-[#59432c]/30 pt-3 md:grid-cols-3 xl:grid-cols-6">
+                  <RecapBox
+                    label="Use"
+                    value={
+                      <>
+                        <span>
+                          {gift.effectMode === "temporary"
+                            ? "Activated"
+                            : gift.effectMode === "passive"
+                              ? "Passive"
+                              : "Standard"}
+                        </span>
+                        <span className="text-[#725f49]"> · </span>
+                        <span>{targetLabel(gift.targetMode)}</span>
+                      </>
+                    }
+                  />
 
-                    {gift.isGeneral ? (
-                      <p>
-                        <span className="uppercase tracking-[0.1em] text-[#9f825b]">
-                          General:
-                        </span>{" "}
-                        Yes
-                      </p>
-                    ) : null}
+                  <RecapBox
+                    label="Success"
+                    value={successLabel(gift)}
+                  />
 
-                    {gift.effectMode === "temporary" ? (
-                      <p>
-                        <span className="uppercase tracking-[0.1em] text-[#9f825b]">
-                          Cooldown:
-                        </span>{" "}
-                        {gift.cooldownMinutes === 0
-                          ? "None"
-                          : `${gift.cooldownMinutes} min`}
-                      </p>
-                    ) : null}
+                  <RecapBox
+                    label="Timing"
+                    value={
+                      <>
+                        <span>{durationLabel(gift)}</span>
+                        <span className="text-[#725f49]"> · </span>
+                        <span>
+                          {gift.effectMode === "temporary"
+                            ? gift.cooldownMinutes === 0
+                              ? "No cooldown"
+                              : `${gift.cooldownMinutes} min cooldown`
+                            : "No cooldown"}
+                        </span>
+                      </>
+                    }
+                  />
 
-                    {gift.roles.length ? (
-                      <details className="pt-0.5">
-                        <summary className="cursor-pointer text-[7px] uppercase tracking-[0.1em] text-[#91754f] hover:text-[#c3a06d]">
-                          Show linked roles
-                        </summary>
+                  <RecapBox
+                    label="Health / Damage"
+                    value={
+                      <>
+                        <span>
+                          {gift.damageDice
+                            ? `${gift.damageDice}${
+                                gift.damageType
+                                  ? ` ${gift.damageType}`
+                                  : ""
+                              }`
+                            : "No damage"}
+                        </span>
+                        <span className="text-[#725f49]"> · </span>
+                        <span>
+                          HP{" "}
+                          {gift.healthDelta !== 0
+                            ? signed(gift.healthDelta)
+                            : "—"}
+                        </span>
+                        <span className="text-[#725f49]"> · </span>
+                        <span>
+                          Max{" "}
+                          {gift.maxHealthModifier !== 0
+                            ? signed(gift.maxHealthModifier)
+                            : "—"}
+                        </span>
+                      </>
+                    }
+                  />
 
-                        <div className="mt-1 max-h-28 overflow-y-auto border-l border-[#59432c]/35 pl-2 text-[8px] leading-4">
-                          {gift.roles.map(
-                            (role) => (
-                              <p key={role.id}>
-                                {role.orderName
-                                  ? `${role.orderName} · `
-                                  : ""}
-                                {role.level !==
-                                null
-                                  ? `L${role.level} · `
-                                  : ""}
-                                {role.name}
-                              </p>
-                            ),
-                          )}
-                        </div>
-                      </details>
-                    ) : null}
-                  </div>
+                  <RecapBox
+                    label="Attributes"
+                    value={
+                      modifiers.length
+                        ? modifiers.join(" · ")
+                        : "None"
+                    }
+                  />
+
+                  <RecapBox
+                    label="Eligibility"
+                    value={
+                      <div className="space-y-0.5">
+                        <p>
+                          {ancestryText
+                            ? `Ancestry: ${ancestryText}`
+                            : "Ancestry: None"}
+                        </p>
+                        <p>
+                          {orderText
+                            ? `Order: ${orderText}`
+                            : "Order: None"}
+                        </p>
+                        <p>
+                          General: {gift.isGeneral ? "Yes" : "No"}
+                        </p>
+
+                        {gift.roles.length ? (
+                          <details className="pt-0.5">
+                            <summary className="cursor-pointer text-[#b99a6d] hover:text-[#dbc294]">
+                              Roles: {gift.roles.length}
+                            </summary>
+
+                            <div className="mt-1 max-h-24 overflow-y-auto border-l border-[#59432c]/35 pl-2 text-[#8f8271]">
+                              {gift.roles.map((role) => (
+                                <p key={role.id}>
+                                  {role.orderName
+                                    ? `${role.orderName} · `
+                                    : ""}
+                                  {role.level !== null
+                                    ? `L${role.level} · `
+                                    : ""}
+                                  {role.name}
+                                </p>
+                              ))}
+                            </div>
+                          </details>
+                        ) : (
+                          <p>Roles: None</p>
+                        )}
+                      </div>
+                    }
+                  />
                 </div>
               </article>
             );
@@ -574,6 +705,25 @@ export function GiftsCatalogue({
         </section>
       )}
     </>
+  );
+}
+
+function RecapBox({
+  label,
+  value,
+}: {
+  label: string;
+  value: ReactNode;
+}) {
+  return (
+    <div className="min-w-0 border border-[#59432c]/40 bg-[#15100d] px-2.5 py-2">
+      <p className="text-[6px] uppercase tracking-[0.13em] text-[#806a4c]">
+        {label}
+      </p>
+      <div className="mt-1 min-w-0 break-words text-[8px] leading-4 text-[#b8a382]">
+        {value}
+      </div>
+    </div>
   );
 }
 

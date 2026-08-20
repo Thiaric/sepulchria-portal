@@ -8,8 +8,21 @@ type Gift = {
   description: string;
   is_active: boolean;
   effect_mode: "none" | "passive" | "temporary";
+  target_mode: "self" | "other" | "either";
   duration_minutes: number | null;
   cooldown_minutes: number;
+  success_die: number | null;
+  success_threshold: number | null;
+  success_attribute:
+    | "muscles"
+    | "reflexes"
+    | "vigor"
+    | "brains"
+    | "shrewd"
+    | "presence_score"
+    | null;
+  damage_dice: string | null;
+  damage_type: string | null;
   health_delta: number;
   max_health_modifier: number;
   muscles_modifier: number;
@@ -68,6 +81,77 @@ function modifierText(gift: Gift) {
     .join(" · ");
 }
 
+const SUCCESS_ATTRIBUTE_LABELS: Record<
+  NonNullable<Gift["success_attribute"]>,
+  string
+> = {
+  muscles: "Muscles",
+  reflexes: "Reflexes",
+  vigor: "Vigour",
+  brains: "Brains",
+  shrewd: "Shrewd",
+  presence_score: "Presence",
+};
+
+function giftTargetLabel(gift: Gift) {
+  if (gift.target_mode === "other") return "Other character";
+  if (gift.target_mode === "either") return "Self or other character";
+  return "Self";
+}
+
+function giftSuccessLabel(gift: Gift) {
+  if (gift.effect_mode === "passive") {
+    return "No roll (Passive)";
+  }
+
+  if (!gift.success_die || !gift.success_threshold) {
+    return "Automatic";
+  }
+
+  const attribute = gift.success_attribute
+    ? ` + ${SUCCESS_ATTRIBUTE_LABELS[gift.success_attribute]}`
+    : "";
+
+  return `d${gift.success_die}${attribute} ≥ ${gift.success_threshold}`;
+}
+
+function giftDurationLabel(gift: Gift) {
+  if (gift.effect_mode === "passive") {
+    return "Permanent while owned";
+  }
+
+  if (gift.effect_mode !== "temporary") {
+    return "Instant use";
+  }
+
+  if (gift.duration_minutes === 0) {
+    return "Instantaneous";
+  }
+
+  return gift.duration_minutes
+    ? `${gift.duration_minutes} min`
+    : "Not set";
+}
+
+function CharacterFeatRecapBox({
+  label,
+  value,
+}: {
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="min-w-0 border border-[#59432c]/35 bg-[#120e0b] px-2.5 py-2">
+      <p className="text-[6px] uppercase tracking-[0.13em] text-[#806a4c]">
+        {label}
+      </p>
+      <p className="mt-1 min-w-0 break-words text-[8px] leading-4 text-[#b8a382]">
+        {value}
+      </p>
+    </div>
+  );
+}
+
 export async function CharacterGiftsDisplay({
   characterId,
   compact = false,
@@ -98,8 +182,14 @@ export async function CharacterGiftsDisplay({
         description,
         is_active,
         effect_mode,
+        target_mode,
         duration_minutes,
         cooldown_minutes,
+        success_die,
+        success_threshold,
+        success_attribute,
+        damage_dice,
+        damage_type,
         health_delta,
         max_health_modifier,
         muscles_modifier,
@@ -250,10 +340,72 @@ export async function CharacterGiftsDisplay({
               </div>
 
               {gift.description ? (
-                <p className="mt-2 text-[10px] leading-5 text-[#8f8271]">
+                <p className="mt-2 whitespace-pre-line text-[10px] leading-5 text-[#8f8271]">
                   {gift.description}
                 </p>
               ) : null}
+
+              <div className="mt-3 grid grid-cols-2 gap-1.5 border-t border-[#59432c]/30 pt-3 md:grid-cols-3 xl:grid-cols-6">
+                <CharacterFeatRecapBox
+                  label="Use"
+                  value={`${
+                    gift.effect_mode === "temporary"
+                      ? "Activated"
+                      : gift.effect_mode === "passive"
+                        ? "Passive"
+                        : "Standard"
+                  } · ${giftTargetLabel(gift)}`}
+                />
+
+                <CharacterFeatRecapBox
+                  label="Success"
+                  value={giftSuccessLabel(gift)}
+                />
+
+                <CharacterFeatRecapBox
+                  label="Timing"
+                  value={`${
+                    giftDurationLabel(gift)
+                  } · ${
+                    gift.effect_mode === "temporary"
+                      ? gift.cooldown_minutes === 0
+                        ? "No cooldown"
+                        : `${gift.cooldown_minutes} min cooldown`
+                      : "No cooldown"
+                  }`}
+                />
+
+                <CharacterFeatRecapBox
+                  label="Health / Damage"
+                  value={`${
+                    gift.damage_dice
+                      ? `${gift.damage_dice}${
+                          gift.damage_type
+                            ? ` ${gift.damage_type}`
+                            : ""
+                        }`
+                      : "No damage"
+                  } · HP ${
+                    gift.health_delta !== 0
+                      ? signed(gift.health_delta)
+                      : "—"
+                  } · Max ${
+                    gift.max_health_modifier !== 0
+                      ? signed(gift.max_health_modifier)
+                      : "—"
+                  }`}
+                />
+
+                <CharacterFeatRecapBox
+                  label="Attributes"
+                  value={modifierText(gift) || "None"}
+                />
+
+                <CharacterFeatRecapBox
+                  label="Status"
+                  value={state}
+                />
+              </div>
             </div>
           );
         })}
