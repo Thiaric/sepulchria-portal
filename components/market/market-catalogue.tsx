@@ -53,6 +53,18 @@ export type MarketCatalogueListing = {
     target_mode: "self" | "other" | "either" | null;
     cooldown_minutes: number | null;
     max_charges: number | null;
+    success_die: number | null;
+    success_threshold: number | null;
+    success_attribute:
+      | "muscles"
+      | "reflexes"
+      | "vigor"
+      | "brains"
+      | "shrewd"
+      | "presence_score"
+      | null;
+    damage_dice: string | null;
+    damage_type: string | null;
     effects: MarketCatalogueEffect[];
     category: string | null;
     subcategory: string | null;
@@ -182,6 +194,54 @@ function effectLines(
         }${value} ${label}`,
       );
     }
+  }
+
+  return result;
+}
+
+const MARKET_ATTRIBUTE_LABELS: Record<
+  NonNullable<MarketCatalogueListing["item"]["success_attribute"]>,
+  string
+> = {
+  muscles: "Muscles",
+  reflexes: "Reflexes",
+  vigor: "Vigour",
+  brains: "Brains",
+  shrewd: "Shrewd",
+  presence_score: "Presence",
+};
+
+function mechanicsLabels(
+  item: MarketCatalogueListing["item"],
+) {
+  const result: string[] = [];
+
+  if (item.success_die && item.success_threshold) {
+    result.push(
+      `Success d${item.success_die}${
+        item.success_attribute
+          ? ` + ${MARKET_ATTRIBUTE_LABELS[item.success_attribute]}`
+          : ""
+      } >= ${item.success_threshold}`,
+    );
+  } else {
+    result.push("Success Automatic");
+  }
+
+  if (item.damage_dice) {
+    const weaponAttribute =
+      item.category?.toLowerCase() === "weapon" &&
+      item.success_attribute
+        ? ` + ${MARKET_ATTRIBUTE_LABELS[item.success_attribute]}`
+        : "";
+
+    result.push(
+      `Damage ${item.damage_dice}${weaponAttribute}${
+        item.damage_type
+          ? ` ${item.damage_type}`
+          : ""
+      }`,
+    );
   }
 
   return result;
@@ -1193,6 +1253,17 @@ if (!confirmed) {
                         Quest Item
                       </span>
                     ) : null}
+                  </div>
+
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {mechanicsLabels(item).map((label) => (
+                      <span
+                        key={`${listing.id}-${label}`}
+                        className="border border-[#59432c]/40 bg-[#100c09] px-2 py-1 text-[7px] uppercase tracking-[0.1em] text-[#b99d72]"
+                      >
+                        {label}
+                      </span>
+                    ))}
                   </div>
 
                   {effectLines(

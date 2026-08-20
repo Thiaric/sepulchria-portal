@@ -55,6 +55,18 @@ type ItemRequirementRow = {
   max_charges: number | null;
   cooldown_minutes: number | null;
   reference_value: number | null;
+  success_die: number | null;
+  success_threshold: number | null;
+  success_attribute:
+    | "muscles"
+    | "reflexes"
+    | "vigor"
+    | "brains"
+    | "shrewd"
+    | "presence_score"
+    | null;
+  damage_dice: string | null;
+  damage_type: string | null;
   effects:
     | {
         trigger_type: string;
@@ -558,6 +570,11 @@ export async function CharacterInventoryDisplay({
             max_charges,
             cooldown_minutes,
             reference_value,
+            success_die,
+            success_threshold,
+            success_attribute,
+            damage_dice,
+            damage_type,
             effects:item_effects(
               trigger_type,
               effect_mode,
@@ -852,6 +869,16 @@ export async function CharacterInventoryDisplay({
             : null,
         cooldown_minutes:
           master?.cooldown_minutes ?? null,
+        success_die:
+          master?.success_die ?? null,
+        success_threshold:
+          master?.success_threshold ?? null,
+        success_attribute:
+          master?.success_attribute ?? null,
+        damage_dice:
+          master?.damage_dice ?? null,
+        damage_type:
+          master?.damage_type ?? null,
         cooldown_ready_at:
           cooldowns.get(sourceKey) ?? null,
         active_effect_expires_at:

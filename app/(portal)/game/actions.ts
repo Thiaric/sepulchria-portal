@@ -2580,6 +2580,9 @@ export async function useRoomItem(
       .select(`
         name,
         target_mode,
+        success_die,
+        success_threshold,
+        success_attribute,
         effects:item_effects(
           trigger_type,
           effect_mode,
@@ -2634,6 +2637,138 @@ export async function useRoomItem(
           message: "That character is no longer present in this room.",
         };
       }
+    }
+
+    const successRoll = await rollGiftSuccess({
+      character,
+      successDie: item.success_die ?? null,
+      successThreshold: item.success_threshold ?? null,
+      successAttribute:
+        (item.success_attribute ?? null) as GiftSuccessAttribute | null,
+    });
+
+    if (!successRoll.success) {
+      let spentText = "";
+
+      if (recordKind === "standard") {
+        const { data: owned, error: ownedError } = await supabase
+          .from("character_items")
+          .select("id, quantity, item:items(use_behaviour)")
+          .eq("id", recordId)
+          .eq("character_id", character.id)
+          .maybeSingle();
+
+        if (ownedError || !owned) {
+          return { ok: false, message: "That Item is no longer in your Inventory." };
+        }
+
+        const relation = owned.item ?? null;
+        const ownedItem = Array.isArray(relation) ? relation[0] ?? null : relation;
+
+        if (ownedItem?.use_behaviour === "consumable") {
+          const quantity = Number(owned.quantity ?? 0);
+
+          if (quantity <= 0) {
+            return { ok: false, message: "This Item has no uses remaining." };
+          }
+
+          if (quantity === 1) {
+            const { error: spendError } = await supabase
+              .from("character_items")
+              .delete()
+              .eq("id", recordId)
+              .eq("character_id", character.id);
+
+            if (spendError) return { ok: false, message: spendError.message };
+          } else {
+            const { error: spendError } = await supabase
+              .from("character_items")
+              .update({ quantity: quantity - 1 })
+              .eq("id", recordId)
+              .eq("character_id", character.id);
+
+            if (spendError) return { ok: false, message: spendError.message };
+          }
+
+          spentText = " - Consumable use spent";
+        }
+      } else {
+        const { data: owned, error: ownedError } = await supabase
+          .from("character_item_instances")
+          .select("id, charges_remaining, item:items(use_behaviour)")
+          .eq("id", recordId)
+          .eq("owner_character_id", character.id)
+          .eq("vault_status", "owned")
+          .maybeSingle();
+
+        if (ownedError || !owned) {
+          return { ok: false, message: "That Item is no longer in your Inventory." };
+        }
+
+        const relation = owned.item ?? null;
+        const ownedItem = Array.isArray(relation) ? relation[0] ?? null : relation;
+
+        if (ownedItem?.use_behaviour === "limited_charges") {
+          const remaining = Number(owned.charges_remaining ?? 0);
+
+          if (remaining <= 0) {
+            return { ok: false, message: "This Item has no charges remaining." };
+          }
+
+          const { error: spendError } = await supabase
+            .from("character_item_instances")
+            .update({ charges_remaining: remaining - 1 })
+            .eq("id", recordId)
+            .eq("owner_character_id", character.id)
+            .eq("vault_status", "owned");
+
+          if (spendError) return { ok: false, message: spendError.message };
+
+          spentText = ` - Charge spent (${remaining - 1} remaining)`;
+        } else if (ownedItem?.use_behaviour === "consumable") {
+          const { error: spendError } = await supabase
+            .from("character_item_instances")
+            .delete()
+            .eq("id", recordId)
+            .eq("owner_character_id", character.id)
+            .eq("vault_status", "owned");
+
+          if (spendError) return { ok: false, message: spendError.message };
+
+          spentText = " - Consumable use spent";
+        }
+      }
+
+      const { error: failedMessageError } = await supabase
+        .from("room_messages")
+        .insert({
+          room_id: character.current_room_id,
+          character_id: character.id,
+          message:
+            `◆ used "${item.name}"` +
+            ` - ${successRoll.summary}` +
+            ` - No effect applied` +
+            `${spentText}` +
+            ` - Cooldown did not start`,
+          message_type: "action",
+          client_nonce: crypto.randomUUID(),
+        });
+
+      if (failedMessageError) {
+        throw new Error(
+          `Item attempt resolved, but the room announcement failed: ${failedMessageError.message}`,
+        );
+      }
+
+      revalidatePath("/game");
+      revalidatePath("/character");
+      revalidatePath("/characters");
+
+      return {
+        ok: true,
+        message: `${item.name} failed.`,
+        submittedAt: Date.now(),
+      };
     }
 
     const { data: result, error: useError } = await supabase.rpc(
@@ -2730,7 +2865,8 @@ export async function useRoomItem(
         character_id: character.id,
         message:
           `◆ used "${outcome.item_name ?? item.name}"${targetLabel}` +
-          `${effectParts.length ? ` · ${effectParts.join(" · ")}` : ""}`,
+          ` - ${successRoll.summary}` +
+          `${effectParts.length ? ` - ${effectParts.join(" - ")}` : ""}`,
         message_type: "action",
         client_nonce: crypto.randomUUID(),
       });

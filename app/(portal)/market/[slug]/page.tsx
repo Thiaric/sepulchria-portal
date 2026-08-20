@@ -53,6 +53,18 @@ type Listing = {
     target_mode: "self" | "other" | "either" | null;
     cooldown_minutes: number | null;
     max_charges: number | null;
+    success_die: number | null;
+    success_threshold: number | null;
+    success_attribute:
+      | "muscles"
+      | "reflexes"
+      | "vigor"
+      | "brains"
+      | "shrewd"
+      | "presence_score"
+      | null;
+    damage_dice: string | null;
+    damage_type: string | null;
     effects: ItemEffect[] | null;
     category: CategoryRelation;
     subcategory: SubcategoryRelation;
@@ -74,6 +86,18 @@ type Listing = {
     target_mode: "self" | "other" | "either" | null;
     cooldown_minutes: number | null;
     max_charges: number | null;
+    success_die: number | null;
+    success_threshold: number | null;
+    success_attribute:
+      | "muscles"
+      | "reflexes"
+      | "vigor"
+      | "brains"
+      | "shrewd"
+      | "presence_score"
+      | null;
+    damage_dice: string | null;
+    damage_type: string | null;
     effects: ItemEffect[] | null;
     category: CategoryRelation;
     subcategory: SubcategoryRelation;
@@ -329,6 +353,11 @@ export default async function MarketShopPage({ params }: Props) {
         target_mode,
         cooldown_minutes,
         max_charges,
+        success_die,
+        success_threshold,
+        success_attribute,
+        damage_dice,
+        damage_type,
         effects:item_effects(
           trigger_type,
           effect_mode,
@@ -387,6 +416,11 @@ export default async function MarketShopPage({ params }: Props) {
           target_mode: item.target_mode,
           cooldown_minutes: item.cooldown_minutes,
           max_charges: item.max_charges,
+          success_die: item.success_die,
+          success_threshold: item.success_threshold,
+          success_attribute: item.success_attribute,
+          damage_dice: item.damage_dice,
+          damage_type: item.damage_type,
           effects: item.effects ?? [],
           category: one(item.category)?.name ?? null,
           subcategory: one(item.subcategory)?.name ?? null,

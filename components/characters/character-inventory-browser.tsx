@@ -99,6 +99,26 @@ export type InventoryBrowserRow = {
   cooldown_minutes:
     | number
     | null;
+  success_die:
+    | number
+    | null;
+  success_threshold:
+    | number
+    | null;
+  success_attribute:
+    | "muscles"
+    | "reflexes"
+    | "vigor"
+    | "brains"
+    | "shrewd"
+    | "presence_score"
+    | null;
+  damage_dice:
+    | string
+    | null;
+  damage_type:
+    | string
+    | null;
   cooldown_ready_at:
     | string
     | null;
@@ -354,6 +374,89 @@ function remainingMinutes(
       (timestamp - Date.now()) /
         60_000,
     ),
+  );
+}
+
+const ITEM_ATTRIBUTE_LABELS: Record<
+  NonNullable<InventoryBrowserRow["success_attribute"]>,
+  string
+> = {
+  muscles: "Muscles",
+  reflexes: "Reflexes",
+  vigor: "Vigour",
+  brains: "Brains",
+  shrewd: "Shrewd",
+  presence_score: "Presence",
+};
+
+function ItemMechanics({
+  row,
+}: {
+  row: InventoryBrowserRow;
+}) {
+  const success =
+    row.success_die && row.success_threshold
+      ? `d${row.success_die}${
+          row.success_attribute
+            ? ` + ${ITEM_ATTRIBUTE_LABELS[row.success_attribute]}`
+            : ""
+        } >= ${row.success_threshold}`
+      : "Automatic";
+
+  const damage = row.damage_dice
+    ? `${row.damage_dice}${
+        row.success_attribute &&
+        row.category_name.toLowerCase() === "weapon"
+          ? ` + ${ITEM_ATTRIBUTE_LABELS[row.success_attribute]}`
+          : ""
+      }${
+        row.damage_type
+          ? ` ${row.damage_type}`
+          : ""
+      }`
+    : "None";
+
+  if (
+    success === "Automatic" &&
+    damage === "None" &&
+    !row.is_usable
+  ) {
+    return null;
+  }
+
+  return (
+    <div className="mt-2 grid grid-cols-2 gap-1.5 border-t border-[#59432c]/30 pt-2 sm:grid-cols-3">
+      <div className="min-w-0 border border-[#59432c]/35 bg-[#100c09] px-2.5 py-2">
+        <p className="text-[6px] uppercase tracking-[0.13em] text-[#806a4c]">
+          Target
+        </p>
+        <p className="mt-1 break-words text-[8px] leading-4 text-[#b8a382]">
+          {row.target_mode === "other"
+            ? "Other"
+            : row.target_mode === "either"
+              ? "Self / Other"
+              : "Self"}
+        </p>
+      </div>
+
+      <div className="min-w-0 border border-[#59432c]/35 bg-[#100c09] px-2.5 py-2">
+        <p className="text-[6px] uppercase tracking-[0.13em] text-[#806a4c]">
+          Success
+        </p>
+        <p className="mt-1 break-words text-[8px] leading-4 text-[#b8a382]">
+          {success}
+        </p>
+      </div>
+
+      <div className="min-w-0 border border-[#59432c]/35 bg-[#100c09] px-2.5 py-2">
+        <p className="text-[6px] uppercase tracking-[0.13em] text-[#806a4c]">
+          Damage
+        </p>
+        <p className="mt-1 break-words text-[8px] leading-4 text-[#b8a382]">
+          {damage}
+        </p>
+      </div>
+    </div>
   );
 }
 
@@ -887,6 +990,8 @@ function ItemCard({
               }
             </p>
           ) : null}
+
+          <ItemMechanics row={row} />
 
           <ItemEffects effects={row.item_effects} />
 
