@@ -247,7 +247,8 @@ export async function getOrderHeadquartersManageData(
   const { data: characters, error: characterError } = await admin
     .from("characters")
     .select("id, display_name, first_name, surname")
-    .eq("status", "approved");
+    .eq("status", "approved")
+      .eq("is_system", false);
 
   if (characterError) throw new Error(characterError.message);
 

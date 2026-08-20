@@ -99,6 +99,103 @@ function isSafeHttpUrl(value: string): boolean {
   }
 }
 
+
+function normaliseForumChangeText(
+  html: string,
+): string {
+  return richTextToPlainText(html)
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function forumChangeExcerpt(
+  value: string,
+  start: number,
+  end: number,
+): string {
+  const CONTEXT = 90;
+  const from = Math.max(0, start - CONTEXT);
+  const to = Math.min(
+    value.length,
+    end + CONTEXT,
+  );
+
+  const excerpt = value
+    .slice(from, to)
+    .trim();
+
+  return `${from > 0 ? "…" : ""}${excerpt}${
+    to < value.length ? "…" : ""
+  }`;
+}
+
+function describeForumContentChange(
+  beforeHtml: string,
+  afterHtml: string,
+): string {
+  const before =
+    normaliseForumChangeText(beforeHtml);
+  const after =
+    normaliseForumChangeText(afterHtml);
+
+  if (before === after) {
+    return "The visible text was unchanged; formatting or attachments may have been adjusted.";
+  }
+
+  if (
+    before.length <= 420 &&
+    after.length <= 420
+  ) {
+    return [
+      "Content before:",
+      before || "(empty)",
+      "",
+      "Content now:",
+      after || "(empty)",
+    ].join("\n");
+  }
+
+  let prefix = 0;
+
+  while (
+    prefix < before.length &&
+    prefix < after.length &&
+    before[prefix] === after[prefix]
+  ) {
+    prefix += 1;
+  }
+
+  let suffix = 0;
+
+  while (
+    suffix < before.length - prefix &&
+    suffix < after.length - prefix &&
+    before[before.length - 1 - suffix] ===
+      after[after.length - 1 - suffix]
+  ) {
+    suffix += 1;
+  }
+
+  const beforeEnd =
+    before.length - suffix;
+  const afterEnd =
+    after.length - suffix;
+
+  return [
+    "Changed section:",
+    `Before: ${forumChangeExcerpt(
+      before,
+      prefix,
+      beforeEnd,
+    ) || "(empty)"}`,
+    `Now: ${forumChangeExcerpt(
+      after,
+      prefix,
+      afterEnd,
+    ) || "(empty)"}`,
+  ].join("\n");
+}
+
 function parseImageUrls(
   formData: FormData,
 ): {
@@ -554,7 +651,10 @@ export async function editForumPostAction(
         heading:
           "Your forum content was edited",
         message:
-          `Another user edited your post in “${topic.title}”.`,
+          `Staff edited your post in “${topic.title}”.\n\n${describeForumContentChange(
+            post.body,
+            body,
+          )}`,
         href:
           `/forum/${encodeURIComponent(
             section.slug,

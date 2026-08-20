@@ -1065,6 +1065,7 @@ for (const log of moderationLogs) {
       )
       .eq("user_id", user.id)
       .eq("status", "approved")
+      .eq("is_system", false)
       .order("first_name", {
         ascending: true,
       });

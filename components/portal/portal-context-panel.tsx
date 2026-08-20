@@ -227,6 +227,10 @@ if (
     return <AdminOrdersContext />;
   }
 
+  if (pathname === "/gifts") {
+    return <PublicGiftsContext />;
+  }
+
   if (pathname === "/admin/gifts") {
     return <AdminGiftsContext />;
   }
@@ -327,6 +331,215 @@ if (
   }
 
   return <DefaultContext />;
+}
+
+type PublicGiftContextEntry = {
+  id: string;
+  name: string;
+};
+
+function PublicGiftsContext() {
+  const [entries, setEntries] =
+    useState<PublicGiftContextEntry[]>([]);
+
+  const [search, setSearch] =
+    useState("");
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const [error, setError] =
+    useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadGifts() {
+      const supabase = createClient();
+
+      const { data, error } =
+        await supabase
+          .from("gifts")
+          .select(
+            "id, name, sort_order",
+          )
+          .eq("is_active", true)
+          .order("sort_order", {
+            ascending: true,
+          })
+          .order("name", {
+            ascending: true,
+          });
+
+      if (cancelled) {
+        return;
+      }
+
+      if (error) {
+        setError(error.message);
+        setLoading(false);
+        return;
+      }
+
+      setEntries(
+        (data ?? []).map((gift) => ({
+          id: String(gift.id),
+          name: String(gift.name),
+        })),
+      );
+
+      setError(null);
+      setLoading(false);
+    }
+
+    void loadGifts();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const query =
+    search.trim().toLowerCase();
+
+  const filteredEntries =
+    entries.filter(
+      (entry) =>
+        !query ||
+        entry.name
+          .toLowerCase()
+          .includes(query),
+    );
+
+  function jumpToGift(
+    giftId: string,
+  ) {
+    const element =
+      document.getElementById(
+        `gift-${giftId}`,
+      );
+
+    if (!element) {
+      return;
+    }
+
+    element.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
+    window.history.replaceState(
+      null,
+      "",
+      `#gift-${giftId}`,
+    );
+  }
+
+  return (
+    <div className="flex h-full min-h-0 flex-col">
+      <ContextHeading
+        eyebrow="Codex"
+        title="Feats"
+      />
+
+      <p className="text-xs leading-6 text-[#938673]">
+        Search the active Feats and
+        jump directly to a definition.
+      </p>
+
+      <label className="mt-4 block">
+        <span className="text-[8px] uppercase tracking-[0.2em] text-[#806b50]">
+          Search Feats
+        </span>
+
+        <input
+          type="search"
+          value={search}
+          onChange={(event) =>
+            setSearch(
+              event.target.value,
+            )
+          }
+          placeholder="Name..."
+          className="mt-2 w-full border border-[#59432c]/45 bg-[#100c09] px-3 py-2.5 text-xs text-[#d4bea0] outline-none placeholder:text-[#665b4d] focus:border-[#987344]"
+        />
+      </label>
+
+      <div className="my-4 h-px bg-[#59432c]/35" />
+
+      <div className="mb-2 flex items-center justify-between gap-3">
+        <p className="text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
+          Jump to Feat
+        </p>
+
+        <span className="text-[7px] uppercase tracking-[0.12em] text-[#6f6353]">
+          {filteredEntries.length}
+          {query
+            ? ` / ${entries.length}`
+            : ""}
+        </span>
+      </div>
+
+      {error ? (
+        <p className="mb-3 border border-[#743d35] bg-[#2a1512] p-3 text-[11px] leading-5 text-[#d8a49a]">
+          The Feat list could not
+          be loaded.
+        </p>
+      ) : null}
+
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1">
+        {loading ? (
+          <div className="space-y-2">
+            {Array.from({
+              length: 8,
+            }).map((_, index) => (
+              <div
+                key={index}
+                className="h-10 animate-pulse border border-[#59432c]/30 bg-[#19120d]"
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="space-y-1.5">
+            {filteredEntries.map(
+              (entry) => (
+                <button
+                  key={entry.id}
+                  type="button"
+                  onClick={() =>
+                    jumpToGift(
+                      entry.id,
+                    )
+                  }
+                  className="group flex w-full items-center justify-between gap-3 border border-[#59432c]/35 bg-[#100c09] px-3 py-2.5 text-left transition hover:border-[#8d693e] hover:bg-[#1d150f]"
+                >
+                  <span className="min-w-0 truncate font-serif text-[13px] text-[#cbb28a] transition group-hover:text-[#ead0a0]">
+                    {entry.name}
+                  </span>
+
+                  <span
+                    aria-hidden="true"
+                    className="text-[9px] text-[#725a3d] transition group-hover:translate-x-0.5 group-hover:text-[#b88a52]"
+                  >
+                    →
+                  </span>
+                </button>
+              ),
+            )}
+          </div>
+        )}
+
+        {!loading &&
+        !error &&
+        filteredEntries.length === 0 ? (
+          <p className="border border-[#59432c]/30 bg-[#100c09]/60 p-3 text-[11px] leading-5 text-[#8f8271]">
+            No Feats match this
+            search.
+          </p>
+        ) : null}
+      </div>
+    </div>
+  );
 }
 
 type AdminGiftContextEntry = {
@@ -1605,6 +1818,7 @@ function CharacterArchiveContext() {
           `,
         )
         .eq("status", "approved")
+      .eq("is_system", false)
         .order("first_name", {
           ascending: true,
         })
@@ -2849,6 +3063,7 @@ function ForumTopicContext({
           )
           .eq("user_id", user.id)
           .eq("status", "approved")
+      .eq("is_system", false)
           .order("first_name");
 
         const options =

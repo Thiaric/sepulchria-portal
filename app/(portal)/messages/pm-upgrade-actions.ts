@@ -94,7 +94,8 @@ async function ensureRecipientsAvailable(
     .from("characters")
     .select("id")
     .in("id", clean)
-    .eq("status", "approved");
+    .eq("status", "approved")
+      .eq("is_system", false);
 
   if (error) {
     throw new Error(error.message);

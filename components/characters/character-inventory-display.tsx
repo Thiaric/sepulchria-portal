@@ -664,6 +664,7 @@ export async function CharacterInventoryDisplay({
             "id, display_name, current_room_id, status",
           )
           .eq("status", "approved")
+      .eq("is_system", false)
           .neq("id", characterId)
           .order("display_name")
       : Promise.resolve({

@@ -283,6 +283,7 @@ export const getPublicCharacter = cache(
         )
       `)
       .eq("public_slug", publicSlug)
+      .eq("is_system", false)
       .maybeSingle();
 
     if (characterError) {
@@ -528,6 +529,7 @@ export const getPublicCharacters = cache(
         )
       `)
       .eq("status", "approved")
+      .eq("is_system", false)
       .order("display_name", {
         ascending: true,
         nullsFirst: false,

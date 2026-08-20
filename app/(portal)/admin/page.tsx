@@ -33,7 +33,8 @@ export default async function AdminPage() {
         count: "exact",
         head: true,
       })
-      .eq("status", "approved"),
+      .eq("status", "approved")
+      .eq("is_system", false),
   ]);
 
   return (

@@ -209,6 +209,7 @@ export default async function PrivateLocationPage() {
           "id, display_name, first_name, surname",
         )
         .eq("status", "approved")
+      .eq("is_system", false)
         .neq("id", character.id),
 
       supabase

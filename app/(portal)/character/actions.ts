@@ -819,7 +819,8 @@ export async function updateApprovedCharacterProfile(
   })
     .eq("id", character.id)
     .eq("user_id", user.id)
-    .eq("status", "approved");
+    .eq("status", "approved")
+      .eq("is_system", false);
 
   if (error) {
     redirectCharacterError(error.message);
@@ -1075,5 +1076,6 @@ export async function markApprovalNoticeSeen() {
     })
     .eq("user_id", user.id)
     .eq("status", "approved")
+      .eq("is_system", false)
     .is("approval_notice_seen_at", null);
 }

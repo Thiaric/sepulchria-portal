@@ -80,6 +80,7 @@ export default async function NewPrivateMessagePage() {
       )
       .eq("status", "approved")
       .eq("is_system", false)
+      .eq("is_system", false)
       .neq("id", character.id)
       .order("display_name"),
     supabase

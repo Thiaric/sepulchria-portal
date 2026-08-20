@@ -1177,9 +1177,7 @@ export function PortalSidebar({
 </span>
 
               <span className="truncate">
-                {
-                  glossaryItem.label
-                }
+                Glossary
               </span>
             </button>
           </div>
@@ -1405,7 +1403,7 @@ export function PortalSidebar({
 <div className="px-2 py-1.5 lg:hidden">
   <nav
     aria-label="Main navigation"
-    className="grid grid-cols-5 gap-1 sm:grid-cols-6"
+    className="grid grid-flow-col grid-rows-2 auto-cols-[minmax(42px,1fr)] gap-1 overflow-x-auto overscroll-x-contain pb-1"
   >
     {mobileNavigationItems.map(
       renderMobileItem,

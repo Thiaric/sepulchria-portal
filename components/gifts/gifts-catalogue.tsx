@@ -423,7 +423,8 @@ export function GiftsCatalogue({
             return (
               <article
                 key={gift.id}
-                className="border border-[#59432c]/40 bg-[#100c09] px-4 py-3"
+                id={`gift-${gift.id}`}
+                className="scroll-mt-4 border border-[#59432c]/40 bg-[#100c09] px-4 py-3"
               >
                 <div className="grid gap-3 lg:grid-cols-[minmax(180px,0.8fr)_minmax(260px,1.6fr)_minmax(180px,1fr)] lg:items-start">
                   <div className="min-w-0">
@@ -460,10 +461,7 @@ export function GiftsCatalogue({
                   </div>
 
                   <p
-                    className="line-clamp-3 text-[11px] leading-5 text-[#9c8e7b]"
-                    title={
-                      gift.description
-                    }
+                    className="whitespace-pre-line text-[11px] leading-5 text-[#9c8e7b]"
                   >
                     {gift.description ||
                       "No description."}

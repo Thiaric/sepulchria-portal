@@ -108,6 +108,7 @@ export default async function FriendsPage() {
       "id, first_name, surname, display_name, public_slug, portrait_url",
     )
     .eq("status", "approved")
+      .eq("is_system", false)
     .neq("id", character.id);
 
   if (availableCharacterError) {
@@ -153,7 +154,8 @@ export default async function FriendsPage() {
       .select(
         "id, first_name, surname, display_name, public_slug, portrait_url",
       )
-      .in("id", targetIds);
+      .in("id", targetIds)
+      .eq("is_system", false);
 
     if (error) throw new Error(error.message);
 

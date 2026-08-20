@@ -143,6 +143,7 @@ async function getAccessibleCharacterRows(
       `,
     )
     .eq("status", "approved")
+      .eq("is_system", false)
     .eq("is_system", false)
     .order("first_name", {
       ascending: true,
@@ -343,6 +344,7 @@ export async function loadForumFlagRecipients(
     .select("id")
     .eq("user_id", user.id)
     .eq("status", "approved")
+      .eq("is_system", false)
     .maybeSingle();
 
   if (senderError) {
@@ -566,6 +568,7 @@ export async function flagForumTopic(
       )
       .eq("user_id", user.id)
       .eq("status", "approved")
+      .eq("is_system", false)
       .maybeSingle();
 
     if (

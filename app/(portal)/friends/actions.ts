@@ -134,7 +134,7 @@ export async function addFriendListEntry(formData: FormData) {
 
   const { data: target, error: targetError } = await admin
     .from("characters")
-    .select("id, status, public_slug")
+    .select("id, status, public_slug, is_system")
     .eq("id", targetCharacterId)
     .maybeSingle();
 
@@ -144,9 +144,12 @@ export async function addFriendListEntry(formData: FormData) {
     );
   }
 
-  if (target.status !== "approved") {
+  if (
+    target.status !== "approved" ||
+    target.is_system === true
+  ) {
     throw new Error(
-      "Only approved characters can be added to a Friend List.",
+      "Only playable approved characters can be added to a Friend List.",
     );
   }
 

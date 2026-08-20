@@ -4,7 +4,7 @@ import { RaceGrid } from "@/components/races/race-grid";
 import { getRaces } from "@/lib/races";
 
 export const metadata: Metadata = {
-  title: "Races | Sepulchria",
+  title: "Ancestries | Sepulchria",
   description:
     "Discover the peoples and lineages available in the world of Aureth.",
 };

@@ -88,6 +88,7 @@ export async function resolveActorCharacterId(
     .select("id")
     .eq("user_id", userId)
     .eq("status", "approved")
+      .eq("is_system", false)
     .maybeSingle();
 
   if (error) {

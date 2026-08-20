@@ -250,6 +250,7 @@ export default async function NewForumTopicPage({
       `)
       .eq("user_id", userId)
       .eq("status", "approved")
+      .eq("is_system", false)
       .order("display_name", {
         ascending: true,
       }),

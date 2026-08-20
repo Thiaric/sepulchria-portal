@@ -99,6 +99,7 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
         .from("characters")
         .select("id, display_name")
         .eq("status", "approved")
+      .eq("is_system", false)
         .order("display_name", { ascending: true }),
     ]);
 
