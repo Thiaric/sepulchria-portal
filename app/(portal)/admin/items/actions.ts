@@ -10,6 +10,15 @@ const QUALITIES = ["poor", "average", "fine", "superior", "flawless", "peerless"
 const TRANSFER_POLICIES = ["free", "restricted", "bound"] as const;
 const USE_BEHAVIOURS = ["reusable", "consumable", "limited_charges"] as const;
 const TARGET_MODES = ["self", "other", "either"] as const;
+const RESOLUTION_MODES = ["automatic", "fixed", "opposed"] as const;
+const COUNTER_OPTIONS = [
+  "dodge",
+  "defend",
+  "resist_vigour",
+  "resist_shrewd",
+  "resist_brains",
+  "resist_presence",
+] as const;
 const TRIGGER_TYPES = ["owned", "equipped", "use"] as const;
 
 function requiredText(formData: FormData, name: string, label: string) {
@@ -144,21 +153,51 @@ async function itemValues(formData: FormData) {
   }
 
   /*
-   * SUCCESS / ATTACK MECHANICS
+   * RESOLUTION / SUCCESS MECHANICS
    *
-   * No Success Die = automatic success.
-   * With a die:
-   * dX + optional effective Attribute >= Success Threshold.
-   *
-   * For weapons, the same Relevant Attribute is also added to damage.
+   * automatic = no roll required.
+   * fixed     = die + optional Attribute vs Admin threshold.
+   * opposed   = die + optional Attribute vs the target's chosen Counter.
    */
+  const resolutionMode =
+    requiredText(formData, "resolutionMode", "Resolution mode");
+
+  if (
+    !RESOLUTION_MODES.includes(
+      resolutionMode as (typeof RESOLUTION_MODES)[number],
+    )
+  ) {
+    throw new Error("Invalid Resolution Mode.");
+  }
+
+  const rawCounterOptions = formData
+    .getAll("counterOptions")
+    .filter((value): value is string => typeof value === "string");
+
+  const counterOptions = [
+    ...new Set(
+      rawCounterOptions.filter((value) =>
+        COUNTER_OPTIONS.includes(
+          value as (typeof COUNTER_OPTIONS)[number],
+        ),
+      ),
+    ),
+  ];
+
+  if (rawCounterOptions.length !== counterOptions.length) {
+    throw new Error("Invalid Counter option.");
+  }
+
   let successDie: number | null = null;
   let successThreshold: number | null = null;
   let successAttribute: string | null = null;
 
-  const rawSuccessDie = optionalText(formData, "successDie");
-
-  if (rawSuccessDie) {
+  if (resolutionMode !== "automatic") {
+    const rawSuccessDie = requiredText(
+      formData,
+      "successDie",
+      "Success Die",
+    );
     const parsedSuccessDie = Number.parseInt(rawSuccessDie, 10);
 
     if (![4, 6, 8, 10, 12, 20, 100].includes(parsedSuccessDie)) {
@@ -166,13 +205,6 @@ async function itemValues(formData: FormData) {
     }
 
     successDie = parsedSuccessDie;
-    successThreshold = integer(formData, "successThreshold", 0);
-
-    if (successThreshold === null || successThreshold < 1) {
-      throw new Error(
-        "An Item Success Roll needs a threshold of at least 1.",
-      );
-    }
 
     const requestedSuccessAttribute =
       optionalText(formData, "successAttribute");
@@ -192,6 +224,25 @@ async function itemValues(formData: FormData) {
     }
 
     successAttribute = requestedSuccessAttribute;
+
+    if (resolutionMode === "fixed") {
+      successThreshold = integer(formData, "successThreshold", 0);
+
+      if (successThreshold === null || successThreshold < 1) {
+        throw new Error(
+          "Fixed DC Items need a Success Threshold of at least 1.",
+        );
+      }
+    }
+
+    if (
+      resolutionMode === "opposed" &&
+      counterOptions.length === 0
+    ) {
+      throw new Error(
+        "Opposed Items need at least one allowed Counter.",
+      );
+    }
   }
 
   const damageDice = optionalText(formData, "damageDice");
@@ -259,6 +310,8 @@ async function itemValues(formData: FormData) {
     success_die: successDie,
     success_threshold: successThreshold,
     success_attribute: successAttribute,
+    resolution_mode: resolutionMode,
+    counter_options: counterOptions,
     damage_dice: damageDice,
     damage_type: damageType,
     container_capacity: containerCapacity,

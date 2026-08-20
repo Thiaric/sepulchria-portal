@@ -440,7 +440,7 @@ export async function startWeaponOpposedAttack(
     const { data: item, error: itemError } = await admin
       .from("items")
       .select(
-        "id, name, success_die, success_attribute, damage_dice, damage_type, category:item_categories(slug)",
+        "id, name, resolution_mode, counter_options, success_die, success_attribute, damage_dice, damage_type, category:item_categories(slug)",
       )
       .eq("id", row.item_id)
       .maybeSingle();
@@ -453,6 +453,31 @@ export async function startWeaponOpposedAttack(
       return {
         ok: false,
         message: "Unable to load equipped Weapon.",
+      };
+    }
+
+    if (item.resolution_mode !== "opposed") {
+      return {
+        ok: false,
+        message:
+          "This Weapon is not configured for Opposed resolution.",
+      };
+    }
+
+    const configuredCounters = (
+      Array.isArray(item.counter_options)
+        ? item.counter_options
+        : []
+    ).filter(
+      (counter): counter is CounterKind =>
+        counter in COUNTERS,
+    );
+
+    if (!configuredCounters.length) {
+      return {
+        ok: false,
+        message:
+          "This Weapon has no configured Counter options.",
       };
     }
 
@@ -491,7 +516,7 @@ export async function startWeaponOpposedAttack(
       rolled,
       attribute,
       modifier,
-      allowedCounters: ["dodge", "defend"],
+      allowedCounters: configuredCounters,
       itemId: item.id,
       recordKind,
       recordId,
@@ -503,7 +528,7 @@ export async function startWeaponOpposedAttack(
     await roomMessage(
       character.current_room_id!,
       character.id,
-      `◆ attacks ${target.display_name} with "${item.name}" · d${die} -> ${rolled} + ${ATTRIBUTE_LABELS[attribute]} (${modifier >= 0 ? "+" : ""}${modifier}) = ${total} · Awaiting Dodge or Defend`,
+      `◆ attacks ${target.display_name} with "${item.name}" · d${die} -> ${rolled} + ${ATTRIBUTE_LABELS[attribute]} (${modifier >= 0 ? "+" : ""}${modifier}) = ${total} · Awaiting ${configuredCounters.map((counter) => COUNTERS[counter].label).join(" or ")}`,
     );
 
     revalidatePath("/game");

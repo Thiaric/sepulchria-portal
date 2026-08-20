@@ -101,6 +101,8 @@ type ChatItem = {
   cooldownReadyAt: string | null;
   successDie?: number | null;
   successThreshold?: number | null;
+  resolutionMode?: "automatic" | "fixed" | "opposed";
+  counterOptions?: string[];
   successAttribute?: CharacterAttributeKey | null;
   damageDice?: string | null;
   damageType?: string | null;
@@ -1551,7 +1553,22 @@ function ignoreSpellingWord() {
                     : ""}
                 </span>
                 <span className="border border-[#59432c]/40 px-2 py-1">
-                  Counter: Dodge / Defend
+                  Counter:{" "}
+                  {selectedWeapon.counterOptions?.length
+                    ? selectedWeapon.counterOptions
+                        .map((counter) => {
+                          const labels: Record<string, string> = {
+                            dodge: "Dodge",
+                            defend: "Defend",
+                            resist_vigour: "Resist Vigour",
+                            resist_shrewd: "Resist Shrewd",
+                            resist_brains: "Resist Brains",
+                            resist_presence: "Resist Presence",
+                          };
+                          return labels[counter] ?? counter;
+                        })
+                        .join(" / ")
+                    : "None configured"}
                 </span>
               </div>
 

@@ -412,6 +412,8 @@ async function GameContent() {
             max_charges,
             success_die,
             success_threshold,
+            resolution_mode,
+            counter_options,
             success_attribute,
             damage_dice,
             damage_type,
@@ -525,6 +527,15 @@ async function GameContent() {
           cooldownByKey.get(sourceKey) ?? null,
         successDie: master.success_die ?? null,
         successThreshold: master.success_threshold ?? null,
+        resolutionMode:
+          (master.resolution_mode ?? "automatic") as
+            | "automatic"
+            | "fixed"
+            | "opposed",
+        counterOptions:
+          Array.isArray(master.counter_options)
+            ? master.counter_options
+            : [],
         successAttribute: master.success_attribute ?? null,
         damageDice: master.damage_dice ?? null,
         damageType: master.damage_type ?? null,

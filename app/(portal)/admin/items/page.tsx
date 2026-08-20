@@ -73,6 +73,8 @@ type Item = {
   cooldown_minutes: number | null;
   success_die: number | null;
   success_threshold: number | null;
+  resolution_mode: "automatic" | "fixed" | "opposed";
+  counter_options: string[];
   success_attribute:
     | "muscles"
     | "reflexes"
@@ -139,6 +141,8 @@ export default async function AdminItemsPage({ searchParams }: Props) {
         cooldown_minutes,
         success_die,
         success_threshold,
+        resolution_mode,
+        counter_options,
         success_attribute,
         damage_dice,
         damage_type,
@@ -644,13 +648,25 @@ function ItemForm({
           </select>
         </Field>
 
-        <Field label="Success Die">
+        <Field label="Resolution Mode">
+          <select
+            name="resolutionMode"
+            defaultValue={item?.resolution_mode ?? "automatic"}
+            className={inputClass}
+          >
+            <option value="automatic">Automatic</option>
+            <option value="fixed">Fixed DC</option>
+            <option value="opposed">Opposed Roll</option>
+          </select>
+        </Field>
+
+        <Field label="Success / Action Die">
           <select
             name="successDie"
             defaultValue={item?.success_die ?? ""}
             className={inputClass}
           >
-            <option value="">Automatic success</option>
+            <option value="">None</option>
             <option value="4">d4</option>
             <option value="6">d6</option>
             <option value="8">d8</option>
@@ -661,7 +677,7 @@ function ItemForm({
           </select>
         </Field>
 
-        <Field label="Success Threshold">
+        <Field label="Fixed DC Threshold">
           <input
             type="number"
             min={1}
@@ -688,6 +704,37 @@ function ItemForm({
             <option value="presence_score">Presence</option>
           </select>
         </Field>
+
+        <div className="md:col-span-2 xl:col-span-4">
+          <p className="mb-2 text-[8px] uppercase tracking-[0.16em] text-[#806b50]">
+            Allowed Counters — Opposed Roll only
+          </p>
+          <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+            {[
+              ["dodge", "Dodge — Reflexes"],
+              ["defend", "Defend — Vigour"],
+              ["resist_vigour", "Resist — Vigour"],
+              ["resist_shrewd", "Resist — Shrewd"],
+              ["resist_brains", "Resist — Brains"],
+              ["resist_presence", "Resist — Presence"],
+            ].map(([value, label]) => (
+              <label
+                key={value}
+                className="flex items-center gap-2 border border-[#59432c]/35 bg-[#15100d] px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-[#aa9473]"
+              >
+                <input
+                  type="checkbox"
+                  name="counterOptions"
+                  value={value}
+                  defaultChecked={
+                    item?.counter_options?.includes(value) ?? false
+                  }
+                />
+                {label}
+              </label>
+            ))}
+          </div>
+        </div>
 
         <Field label="Damage Dice">
           <input
@@ -758,15 +805,16 @@ function ItemForm({
 
       <div className="mt-3 border border-[#59432c]/30 bg-[#100c09] px-3 py-2 text-[9px] leading-5 text-[#756958]">
         <p>
-          <span className="text-[#a88b61]">Success:</span>{" "}
-          no Success Die means automatic success. With a die, the Item succeeds
-          when the die plus its optional Relevant Attribute meets or exceeds the
-          threshold.
+          <span className="text-[#a88b61]">Resolution:</span>{" "}
+          Automatic applies directly; Fixed DC rolls the selected die plus its
+          optional Relevant Attribute against the configured threshold; Opposed
+          rolls against one Counter chosen by the targeted Character.
         </p>
         <p className="mt-1">
-          <span className="text-[#a88b61]">Weapons:</span>{" "}
-          the same Relevant Attribute is also added to weapon damage.
-          Example: d20 + Reflexes vs 12, then 1d4 + Reflexes Piercing Damage.
+          <span className="text-[#a88b61]">Opposed:</span>{" "}
+          choose one or more valid Counters. The defender wins ties. Weapons use
+          the same Relevant Attribute for their attack roll and damage unless a
+          later rule overrides it.
         </p>
         <p className="mt-1">
           Irrelevant settings are automatically ignored: Maximum Stack unless
