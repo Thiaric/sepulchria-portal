@@ -385,6 +385,8 @@ async function GameContent() {
       name: string;
       quantity: number;
       is_usable: boolean;
+      is_equipped: boolean;
+      equipped_slot: string | null;
     }[];
 
   const usableRows =
@@ -408,6 +410,13 @@ async function GameContent() {
             description,
             target_mode,
             max_charges,
+            success_die,
+            success_threshold,
+            success_attribute,
+            damage_dice,
+            damage_type,
+            cooldown_minutes,
+            category:item_categories(slug),
             effects:item_effects(
               trigger_type,
               effect_mode,
@@ -478,6 +487,23 @@ async function GameContent() {
           ? `unique:${row.record_id}`
           : `standard:${row.item_id}`;
 
+      const categoryRelation = master.category ?? null;
+      const category = Array.isArray(categoryRelation)
+        ? categoryRelation[0] ?? null
+        : categoryRelation;
+
+      if (
+        category?.slug === "weapon" &&
+        (
+          !row.is_equipped ||
+          !["main_hand", "off_hand"].includes(
+            String(row.equipped_slot ?? ""),
+          )
+        )
+      ) {
+        return null;
+      }
+
       return {
         recordKind: row.record_kind,
         recordId: row.record_id,
@@ -497,6 +523,14 @@ async function GameContent() {
             : null,
         cooldownReadyAt:
           cooldownByKey.get(sourceKey) ?? null,
+        successDie: master.success_die ?? null,
+        successThreshold: master.success_threshold ?? null,
+        successAttribute: master.success_attribute ?? null,
+        damageDice: master.damage_dice ?? null,
+        damageType: master.damage_type ?? null,
+        categorySlug: category?.slug ?? null,
+        isEquipped: row.is_equipped ?? false,
+        equippedSlot: row.equipped_slot ?? null,
         effects: Array.isArray(master.effects)
           ? master.effects
           : master.effects

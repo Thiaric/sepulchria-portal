@@ -2550,6 +2550,7 @@ async function applyRoomItemDamage(
   if (damage <= 0) return;
 
   const admin = createPrivilegedClient();
+  const supabase = await createClient();
 
   const [targetResult, maxResult] = await Promise.all([
     admin
@@ -2557,7 +2558,7 @@ async function applyRoomItemDamage(
       .select("current_health")
       .eq("id", targetCharacterId)
       .maybeSingle(),
-    admin.rpc("get_character_current_max_health", {
+    supabase.rpc("get_character_current_max_health", {
       p_character_id: targetCharacterId,
     }),
   ]);
@@ -2835,6 +2836,49 @@ export async function useRoomItem(
       return { ok: false, message: "Unable to load that Item." };
     }
 
+    const category =
+      oneItemRelation(item.category);
+
+    if (category?.slug === "weapon") {
+      const { data: inventoryRows, error: inventoryError } =
+        await supabase.rpc(
+          "get_public_character_inventory",
+          { p_character_id: character.id },
+        );
+
+      if (inventoryError) {
+        return {
+          ok: false,
+          message:
+            `Unable to verify equipped Weapon: ${inventoryError.message}`,
+        };
+      }
+
+      const equipped = ((inventoryRows ?? []) as Array<{
+        record_kind?: string;
+        record_id?: string;
+        is_equipped?: boolean;
+        equipped_slot?: string | null;
+      }>).find(
+        (row) =>
+          row.record_kind === recordKind &&
+          row.record_id === recordId,
+      );
+
+      if (
+        !equipped?.is_equipped ||
+        !["main_hand", "off_hand"].includes(
+          String(equipped.equipped_slot ?? ""),
+        )
+      ) {
+        return {
+          ok: false,
+          message:
+            "Weapons can only be used while equipped in Main Hand or Off Hand.",
+        };
+      }
+    }
+
     if (item.target_mode === "self" && targetCharacterId) {
       return {
         ok: false,
@@ -3046,16 +3090,44 @@ export async function useRoomItem(
       result = {
         blocked: false,
         item_name: item.name,
-        target_name: null,
+        target_name: undefined,
       };
     }
 
-    const outcome = (result ?? {}) as {
+    let outcome = (result ?? {}) as {
       blocked?: boolean;
       block_reason?: string;
       item_name?: string;
       target_name?: string;
     };
+
+    if (
+      outcome.blocked &&
+      Boolean(item.damage_dice) &&
+      outcome.block_reason?.includes("no configured Use effect")
+    ) {
+      await resolveRoomDamageOnlyUse({
+        supabase,
+        characterId: character.id,
+        recordKind,
+        recordId,
+        itemId,
+        useBehaviour:
+          (item.use_behaviour ?? null) as
+            | "reusable"
+            | "consumable"
+            | "limited_charges"
+            | null,
+        cooldownMinutes:
+          item.cooldown_minutes ?? null,
+      });
+
+      outcome = {
+        blocked: false,
+        item_name: item.name,
+        target_name: undefined,
+      };
+    }
 
     if (outcome.blocked) {
       return {
@@ -3065,9 +3137,6 @@ export async function useRoomItem(
           "This Item cannot be used right now.",
       };
     }
-
-    const category =
-      oneItemRelation(item.category);
 
     const baseDamage =
       rollRoomItemDamage(

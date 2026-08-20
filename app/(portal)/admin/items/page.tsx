@@ -389,46 +389,63 @@ export default async function AdminItemsPage({ searchParams }: Props) {
                 </summary>
 
                 <div className="border-t border-[#59432c]/35 p-4 sm:p-5">
-                  <ItemForm
-                    action={updateItem}
-                    item={item}
-                    categories={categories}
-                    subcategories={subcategories}
-                  />
+                  <section className="border border-[#6a5032]/45 bg-[#130e0b] p-4 sm:p-5">
+                    <p className="text-[8px] uppercase tracking-[0.2em] text-[#8c704b]">
+                      Use / Effects
+                    </p>
+                    <h3 className="mt-1 font-serif text-xl text-[#d8bf91]">
+                      Item mechanics
+                    </h3>
+                    <p className="mt-2 text-[10px] leading-5 text-[#817361]">
+                      Configure the Item, its target, success roll, damage, use behaviour,
+                      charges, cooldown and all additional Health or Attribute effects here.
+                      Damage is a valid effect by itself and never requires a dummy Use effect.
+                    </p>
+
+                    <div className="mt-4">
+                      <ItemForm
+                        action={updateItem}
+                        item={item}
+                        categories={categories}
+                        subcategories={subcategories}
+                      />
+                    </div>
+
+                    <div className="mt-5 border-t border-[#59432c]/35 pt-5">
+                      <p className="text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
+                        Health / Attribute effects
+                      </p>
+
+                      {effects.length ? (
+                        <div className="mt-4 space-y-3">
+                          {effects.map((effect) => (
+                            <EffectForm
+                              key={effect.id}
+                              itemId={item.id}
+                              effect={effect}
+                            />
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="mt-3 text-xs italic text-[#766956]">
+                          No additional Health or Attribute effects configured.
+                        </p>
+                      )}
+
+                      <details className="mt-4 border border-[#59432c]/35 bg-[#100c09]">
+                        <summary className="cursor-pointer list-none px-3 py-3 font-serif text-sm text-[#cab28a]">
+                          + Add Health / Attribute effect
+                        </summary>
+                        <div className="border-t border-[#59432c]/30 p-3">
+                          <EffectForm itemId={item.id} />
+                        </div>
+                      </details>
+                    </div>
+                  </section>
 
                   <ItemEquipmentForm
                     itemId={item.id}
                   />
-
-                  <section className="mt-7 border-t border-[#59432c]/35 pt-5">
-                    <p className="text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
-                      Mechanical effects
-                    </p>
-                    <h3 className="mt-1 font-serif text-xl text-[#d8bf91]">
-                      Item effects
-                    </h3>
-
-                    {effects.length ? (
-                      <div className="mt-4 space-y-3">
-                        {effects.map((effect) => (
-                          <EffectForm key={effect.id} itemId={item.id} effect={effect} />
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="mt-3 text-xs italic text-[#766956]">
-                        No mechanical effects configured.
-                      </p>
-                    )}
-
-                    <details className="mt-4 border border-[#59432c]/35 bg-[#15100d]">
-                      <summary className="cursor-pointer list-none px-3 py-3 font-serif text-sm text-[#cab28a]">
-                        + Add effect
-                      </summary>
-                      <div className="border-t border-[#59432c]/30 p-3">
-                        <EffectForm itemId={item.id} />
-                      </div>
-                    </details>
-                  </section>
 
                   <div className="mt-6 flex justify-end border-t border-[#59432c]/35 pt-5">
                     <AdminActionForm

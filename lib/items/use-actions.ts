@@ -555,7 +555,7 @@ async function resolveDamageOnlySuccessfulUse({
     ok: true,
     blocked: false,
     item_name: record.item.name,
-    target_name: null,
+    target_name: undefined,
     health_delta: 0,
     temporary_effects: 0,
   };
@@ -570,20 +570,21 @@ async function applyItemDamage(
   }
 
   const admin = createPrivilegedClient();
+const supabase = await createClient();
 
-  const [
-    characterResult,
-    maxHealthResult,
-  ] = await Promise.all([
-    admin
-      .from("characters")
-      .select("current_health")
-      .eq("id", targetCharacterId)
-      .maybeSingle(),
-    admin.rpc("get_character_current_max_health", {
-      p_character_id: targetCharacterId,
-    }),
-  ]);
+const [
+  characterResult,
+  maxHealthResult,
+] = await Promise.all([
+  admin
+    .from("characters")
+    .select("current_health")
+    .eq("id", targetCharacterId)
+    .maybeSingle(),
+  supabase.rpc("get_character_current_max_health", {
+    p_character_id: targetCharacterId,
+  }),
+]);
 
   const error =
     characterResult.error ??
@@ -657,11 +658,54 @@ export async function useInventoryItem(
       character,
     } = await getOwnedCharacter();
 
-    const record = await loadAttemptRecord(
+      const record = await loadAttemptRecord(
       recordKind,
       recordId,
       character.id,
     );
+
+    const categorySlug =
+      one(record.item.category)?.slug ?? null;
+
+    if (categorySlug === "weapon") {
+      const { data: inventoryRows, error: inventoryError } =
+        await supabase.rpc(
+          "get_public_character_inventory",
+          { p_character_id: character.id },
+        );
+
+      if (inventoryError) {
+        return {
+          ok: false,
+          message:
+            `Unable to verify equipped Weapon: ${inventoryError.message}`,
+        };
+      }
+
+      const equipped = ((inventoryRows ?? []) as Array<{
+        record_kind?: string;
+        record_id?: string;
+        is_equipped?: boolean;
+        equipped_slot?: string | null;
+      }>).find(
+        (row) =>
+          row.record_kind === recordKind &&
+          row.record_id === recordId,
+      );
+
+      if (
+        !equipped?.is_equipped ||
+        !["main_hand", "off_hand"].includes(
+          String(equipped.equipped_slot ?? ""),
+        )
+      ) {
+        return {
+          ok: false,
+          message:
+            "Weapons can only be used while equipped in Main Hand or Off Hand.",
+        };
+      }
+    }
 
     const targetMode =
       record.item.target_mode ?? "self";
@@ -735,7 +779,7 @@ export async function useInventoryItem(
       });
     }
 
-    const result = (data ?? {}) as {
+    let result = (data ?? {}) as {
       ok?: boolean;
       blocked?: boolean;
       block_reason?: string;
@@ -745,6 +789,17 @@ export async function useInventoryItem(
       temporary_effects?: number;
     };
 
+    if (
+      result.blocked &&
+      Boolean(record.item.damage_dice) &&
+      result.block_reason?.includes("no configured Use effect")
+    ) {
+      result = await resolveDamageOnlySuccessfulUse({
+        record,
+        characterId: character.id,
+      });
+    }
+
     if (result.blocked) {
       return {
         ok: false,
@@ -753,9 +808,6 @@ export async function useInventoryItem(
           "This Item cannot be used right now.",
       };
     }
-
-    const categorySlug =
-      one(record.item.category)?.slug ?? null;
 
     const baseDamage =
       rollDamage(record.item.damage_dice);
