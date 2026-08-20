@@ -42,6 +42,25 @@ type VaultRow = {
   }[] | null;
 };
 
+type DestroyedHistoryEntry = {
+  event_type?: string;
+  details?: string;
+  created_at?: string;
+};
+
+type DestroyedArchiveRow = {
+  id: string;
+  original_instance_id: string;
+  item_name: string;
+  display_name: string;
+  description: string | null;
+  image_url: string | null;
+  quality: string | null;
+  destruction_reason: string;
+  destroyed_at: string;
+  provenance_snapshot: DestroyedHistoryEntry[] | null;
+};
+
 type Props = {
   searchParams?: Promise<{ error?: string }>;
 };
@@ -72,7 +91,8 @@ export default async function AdminItemVaultPage({
   const params = (await searchParams) ?? {};
   const supabase = await createClient();
 
-  const [itemsResult, charactersResult, vaultResult] = await Promise.all([
+  const [itemsResult, charactersResult, vaultResult, destroyedResult] =
+    await Promise.all([
     supabase
       .from("items")
       .select("id, name, is_active")
@@ -107,10 +127,30 @@ export default async function AdminItemVaultPage({
       .eq("vault_status", "admin_vault")
       .is("owner_character_id", null)
       .order("created_at", { ascending: false }),
+
+    supabase
+      .from("destroyed_item_instances")
+      .select(`
+        id,
+        original_instance_id,
+        item_name,
+        display_name,
+        description,
+        image_url,
+        quality,
+        destruction_reason,
+        destroyed_at,
+        provenance_snapshot
+      `)
+      .order("destroyed_at", { ascending: false })
+      .limit(100),
   ]);
 
   const firstError =
-    itemsResult.error ?? charactersResult.error ?? vaultResult.error;
+    itemsResult.error ??
+    charactersResult.error ??
+    vaultResult.error ??
+    destroyedResult.error;
 
   if (firstError) {
     throw new Error(`Unable to load Admin Vault: ${firstError.message}`);
@@ -119,6 +159,7 @@ export default async function AdminItemVaultPage({
   const items = (itemsResult.data ?? []) as MasterItem[];
   const characters = (charactersResult.data ?? []) as Character[];
   const vault = (vaultResult.data ?? []) as unknown as VaultRow[];
+  const destroyed = (destroyedResult.data ?? []) as unknown as DestroyedArchiveRow[];
 
   const returnTo = "/admin/items/vault";
 
@@ -367,17 +408,33 @@ export default async function AdminItemVaultPage({
 
                     <form
                       action={destroyVaultItem}
-                      className="mt-4 flex justify-end border-t border-[#59432c]/35 pt-4"
+                      className="mt-4 border-t border-[#59432c]/35 pt-4"
                     >
                       <input type="hidden" name="instanceId" value={row.id} />
                       <input type="hidden" name="returnTo" value={returnTo} />
 
-                      <button
-                        type="submit"
-                        className="border border-red-900/55 bg-red-950/20 px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-red-300"
-                      >
-                        Destroy permanently
-                      </button>
+                      <label className="block">
+                        <span className="text-[8px] uppercase tracking-[0.14em] text-[#8f7154]">
+                          Destruction reason
+                        </span>
+                        <textarea
+                          name="destructionReason"
+                          required
+                          maxLength={1000}
+                          rows={2}
+                          placeholder="Why is this individual Item being permanently destroyed?"
+                          className={`${inputClass} mt-2`}
+                        />
+                      </label>
+
+                      <div className="mt-3 flex justify-end">
+                        <button
+                          type="submit"
+                          className="border border-red-900/55 bg-red-950/20 px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-red-300"
+                        >
+                          Archive & destroy
+                        </button>
+                      </div>
                     </form>
                   </article>
                 );
@@ -386,6 +443,139 @@ export default async function AdminItemVaultPage({
           ) : (
             <div className="mt-4 border border-[#59432c]/40 bg-[#100c09] p-6 text-sm italic text-[#817565]">
               The Admin Vault is empty.
+            </div>
+          )}
+        </section>
+
+        <section className="mt-8 border-t border-[#60482e]/35 pt-7">
+          <div className="flex items-end justify-between gap-3">
+            <div>
+              <p className="text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+                Audit archive
+              </p>
+              <h2 className="mt-1 font-serif text-2xl text-[#dfc99f]">
+                Destroyed Unique Items
+              </h2>
+              <p className="mt-2 max-w-3xl text-xs leading-6 text-[#817565]">
+                Destroyed Items no longer exist in live inventory, but their final
+                state, destruction reason, and complete provenance are retained here.
+              </p>
+            </div>
+            <p className="text-[8px] uppercase tracking-[0.12em] text-[#756958]">
+              {destroyed.length} archived
+            </p>
+          </div>
+
+          {destroyed.length ? (
+            <div className="mt-4 space-y-3">
+              {destroyed.map((row) => {
+                const history = Array.isArray(row.provenance_snapshot)
+                  ? row.provenance_snapshot
+                  : [];
+                const destroyedAt = new Date(row.destroyed_at).toLocaleString(
+                  "en-GB",
+                  {
+                    timeZone: "UTC",
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  },
+                );
+
+                return (
+                  <article
+                    key={row.id}
+                    className="border border-red-950/45 bg-[#100c09] p-4"
+                  >
+                    <div className="flex gap-3">
+                      <div className="h-14 w-14 shrink-0 overflow-hidden border border-[#60482e]/45 bg-[#0d0907] opacity-70">
+                        {row.image_url ? (
+                          <img
+                            src={row.image_url}
+                            alt=""
+                            className="h-full w-full object-cover grayscale"
+                          />
+                        ) : (
+                          <div className="flex h-full items-center justify-center font-serif text-[#756247]">
+                            ◇
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-start justify-between gap-2">
+                          <div>
+                            <p className="font-serif text-lg text-[#bfa98a]">
+                              {row.display_name || row.item_name}
+                            </p>
+                            <p className="mt-1 text-[8px] uppercase tracking-[0.13em] text-[#756958]">
+                              Destroyed · {row.quality ?? "unknown quality"}
+                            </p>
+                          </div>
+                          <p className="text-[8px] uppercase tracking-[0.12em] text-[#6f6254]">
+                            {destroyedAt} UTC
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-3 border border-red-950/35 bg-red-950/10 px-3 py-2">
+                      <p className="text-[8px] uppercase tracking-[0.13em] text-red-300/80">
+                        Destruction reason
+                      </p>
+                      <p className="mt-1 text-xs leading-5 text-[#9c8e7c]">
+                        {row.destruction_reason}
+                      </p>
+                    </div>
+
+                    {row.description?.trim() ? (
+                      <p className="mt-3 text-xs leading-6 text-[#817565]">
+                        {row.description}
+                      </p>
+                    ) : null}
+
+                    <details className="mt-3 border border-[#59432c]/35 bg-[#15100d]">
+                      <summary className="cursor-pointer list-none px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[#9b8768]">
+                        Retained provenance · {history.length} event
+                        {history.length === 1 ? "" : "s"}
+                      </summary>
+                      <div className="space-y-2 border-t border-[#59432c]/30 p-3">
+                        {history.length ? (
+                          history.map((entry, index) => (
+                            <div
+                              key={`${row.id}-${index}`}
+                              className="border-l border-[#765937]/55 pl-3"
+                            >
+                              <p className="text-[8px] uppercase tracking-[0.12em] text-[#a68a61]">
+                                {(entry.event_type ?? "unknown event").replace(/_/g, " ")}
+                              </p>
+                              {entry.details ? (
+                                <p className="mt-1 text-[10px] leading-5 text-[#817565]">
+                                  {entry.details}
+                                </p>
+                              ) : null}
+                            </div>
+                          ))
+                        ) : (
+                          <p className="text-xs italic text-[#756958]">
+                            No prior provenance records were present.
+                          </p>
+                        )}
+                      </div>
+                    </details>
+
+                    <p className="mt-3 font-mono text-[9px] text-[#5f5549]">
+                      Original instance: {row.original_instance_id}
+                    </p>
+                  </article>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="mt-4 border border-[#59432c]/40 bg-[#100c09] p-6 text-sm italic text-[#817565]">
+              No Unique Items have been destroyed since the archive was enabled.
             </div>
           )}
         </section>

@@ -575,31 +575,22 @@ export async function destroyVaultItem(formData: FormData) {
 
   try {
     const instanceId = requiredText(formData, "instanceId", "Vault Item");
+    const reason = requiredText(formData, "destructionReason", "Destruction reason");
+
     if (!isUuid(instanceId)) throw new Error("Invalid Vault Item.");
-
-    const { data: instance, error } = await supabase
-      .from("character_item_instances")
-      .select("vault_status, owner_character_id")
-      .eq("id", instanceId)
-      .maybeSingle();
-
-    if (
-      error ||
-      !instance ||
-      instance.vault_status !== "admin_vault" ||
-      instance.owner_character_id
-    ) {
-      throw new Error("Only ownerless Admin Vault Items can be destroyed here.");
+    if (reason.length > 1000) {
+      throw new Error("Destruction reason must be 1000 characters or fewer.");
     }
 
-    await assertContainerEmpty(instanceId);
+    const { error } = await supabase.rpc(
+      "admin_vault_destroy_unique_item",
+      {
+        p_instance_id: instanceId,
+        p_reason: reason,
+      },
+    );
 
-    const { error: deleteError } = await supabase
-      .from("character_item_instances")
-      .delete()
-      .eq("id", instanceId);
-
-    if (deleteError) throw new Error(deleteError.message);
+    if (error) throw new Error(error.message);
   } catch (error) {
     fail(
       formData,
