@@ -127,6 +127,7 @@ async function rollGiftSuccess({
   if (!successDie) {
     return {
       success: true,
+      modifier: 0,
       summary: "Success Roll: Automatic - SUCCESS",
     };
   }
@@ -167,6 +168,7 @@ async function rollGiftSuccess({
 
   return {
     success,
+    modifier,
     summary:
       `Success Roll: d${successDie} -> ${rolled}${modifierText}` +
       ` = ${total} vs ${successThreshold} - ${success ? "SUCCESS" : "FAILED"}`,
@@ -2504,6 +2506,230 @@ export async function sendRoomAttributeCheck(
   }
 }
 
+function oneItemRelation<T>(
+  value: T | T[] | null,
+): T | null {
+  return Array.isArray(value)
+    ? value[0] ?? null
+    : value;
+}
+
+function rollRoomItemDamage(
+  damageDice: string | null,
+): number {
+  if (!damageDice) return 0;
+
+  const match =
+    /^([1-9][0-9]*)d(4|6|8|10|12|20|100)$/.exec(
+      damageDice,
+    );
+
+  if (!match) {
+    throw new Error("This Item has invalid Damage Dice.");
+  }
+
+  const count = Number.parseInt(match[1], 10);
+  const sides = Number.parseInt(match[2], 10);
+
+  if (count < 1 || count > 20) {
+    throw new Error("This Item has invalid Damage Dice.");
+  }
+
+  let total = 0;
+  for (let index = 0; index < count; index += 1) {
+    total += randomInt(1, sides + 1);
+  }
+
+  return total;
+}
+
+async function applyRoomItemDamage(
+  targetCharacterId: string,
+  damage: number,
+) {
+  if (damage <= 0) return;
+
+  const admin = createPrivilegedClient();
+
+  const [targetResult, maxResult] = await Promise.all([
+    admin
+      .from("characters")
+      .select("current_health")
+      .eq("id", targetCharacterId)
+      .maybeSingle(),
+    admin.rpc("get_character_current_max_health", {
+      p_character_id: targetCharacterId,
+    }),
+  ]);
+
+  const readError = targetResult.error ?? maxResult.error;
+
+  if (readError || !targetResult.data) {
+    throw new Error(
+      `Unable to apply Item damage: ${
+        readError?.message ?? "target not found"
+      }`,
+    );
+  }
+
+  const maxHealth = Math.max(1, Number(maxResult.data ?? 1));
+  const currentHealth = Math.max(
+    0,
+    Math.min(
+      Number(targetResult.data.current_health ?? maxHealth),
+      maxHealth,
+    ),
+  );
+
+  const { error } = await admin
+    .from("characters")
+    .update({
+      current_health: Math.max(0, currentHealth - damage),
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", targetCharacterId);
+
+  if (error) {
+    throw new Error(`Unable to apply Item damage: ${error.message}`);
+  }
+}
+
+async function resolveRoomDamageOnlyUse({
+  supabase,
+  characterId,
+  recordKind,
+  recordId,
+  itemId,
+  useBehaviour,
+  cooldownMinutes,
+}: {
+  supabase: SupabaseClient;
+  characterId: string;
+  recordKind: string;
+  recordId: string;
+  itemId: string;
+  useBehaviour:
+    | "reusable"
+    | "consumable"
+    | "limited_charges"
+    | null;
+  cooldownMinutes: number | null;
+}) {
+  const sourceKey =
+    recordKind === "unique"
+      ? `unique:${recordId}`
+      : `standard:${itemId}`;
+
+  const cooldown = Math.max(0, Number(cooldownMinutes ?? 0));
+
+  if (cooldown > 0) {
+    const { data, error } = await supabase
+      .from("character_item_use_cooldowns")
+      .select("ready_at")
+      .eq("character_id", characterId)
+      .eq("source_key", sourceKey)
+      .maybeSingle();
+
+    if (error) throw new Error(error.message);
+
+    if (data?.ready_at && Date.parse(data.ready_at) > Date.now()) {
+      throw new Error("This Item is still on cooldown.");
+    }
+  }
+
+  if (recordKind === "standard") {
+    if (useBehaviour === "consumable") {
+      const { data, error } = await supabase
+        .from("character_items")
+        .select("quantity")
+        .eq("id", recordId)
+        .eq("character_id", characterId)
+        .maybeSingle();
+
+      if (error || !data) {
+        throw new Error(
+          error?.message ?? "That Item is no longer in your Inventory.",
+        );
+      }
+
+      const quantity = Number(data.quantity ?? 0);
+      if (quantity <= 0) throw new Error("This Item has no uses remaining.");
+
+      if (quantity === 1) {
+        const { error: spendError } = await supabase
+          .from("character_items")
+          .delete()
+          .eq("id", recordId)
+          .eq("character_id", characterId);
+        if (spendError) throw new Error(spendError.message);
+      } else {
+        const { error: spendError } = await supabase
+          .from("character_items")
+          .update({ quantity: quantity - 1 })
+          .eq("id", recordId)
+          .eq("character_id", characterId);
+        if (spendError) throw new Error(spendError.message);
+      }
+    }
+  } else {
+    const { data, error } = await supabase
+      .from("character_item_instances")
+      .select("charges_remaining")
+      .eq("id", recordId)
+      .eq("owner_character_id", characterId)
+      .eq("vault_status", "owned")
+      .maybeSingle();
+
+    if (error || !data) {
+      throw new Error(
+        error?.message ?? "That Item is no longer in your Inventory.",
+      );
+    }
+
+    if (useBehaviour === "limited_charges") {
+      const remaining = Number(data.charges_remaining ?? 0);
+      if (remaining <= 0) {
+        throw new Error("This Item has no charges remaining.");
+      }
+
+      const { error: spendError } = await supabase
+        .from("character_item_instances")
+        .update({ charges_remaining: remaining - 1 })
+        .eq("id", recordId)
+        .eq("owner_character_id", characterId)
+        .eq("vault_status", "owned");
+
+      if (spendError) throw new Error(spendError.message);
+    } else if (useBehaviour === "consumable") {
+      const { error: spendError } = await supabase
+        .from("character_item_instances")
+        .delete()
+        .eq("id", recordId)
+        .eq("owner_character_id", characterId)
+        .eq("vault_status", "owned");
+
+      if (spendError) throw new Error(spendError.message);
+    }
+  }
+
+  if (cooldown > 0) {
+    const { error } = await supabase
+      .from("character_item_use_cooldowns")
+      .upsert(
+        {
+          character_id: characterId,
+          source_key: sourceKey,
+          ready_at: new Date(
+            Date.now() + cooldown * 60_000,
+          ).toISOString(),
+        },
+        { onConflict: "character_id,source_key" },
+      );
+
+    if (error) throw new Error(error.message);
+  }
+}
+
 export async function useRoomItem(
   _previousState: ActionState,
   formData: FormData,
@@ -2583,6 +2809,11 @@ export async function useRoomItem(
         success_die,
         success_threshold,
         success_attribute,
+        damage_dice,
+        damage_type,
+        cooldown_minutes,
+        use_behaviour,
+        category:item_categories(slug),
         effects:item_effects(
           trigger_type,
           effect_mode,
@@ -2771,7 +3002,7 @@ export async function useRoomItem(
       };
     }
 
-    const { data: result, error: useError } = await supabase.rpc(
+    const rpcResult = await supabase.rpc(
       "use_own_inventory_record_targeted",
       {
         p_record_kind: recordKind,
@@ -2780,8 +3011,43 @@ export async function useRoomItem(
       },
     );
 
-    if (useError) {
-      return { ok: false, message: useError.message };
+    let result = rpcResult.data;
+
+    if (rpcResult.error) {
+      const damageOnlyFallback =
+        Boolean(item.damage_dice) &&
+        rpcResult.error.message.includes(
+          "no configured Use effect",
+        );
+
+      if (!damageOnlyFallback) {
+        return {
+          ok: false,
+          message: rpcResult.error.message,
+        };
+      }
+
+      await resolveRoomDamageOnlyUse({
+        supabase,
+        characterId: character.id,
+        recordKind,
+        recordId,
+        itemId,
+        useBehaviour:
+          (item.use_behaviour ?? null) as
+            | "reusable"
+            | "consumable"
+            | "limited_charges"
+            | null,
+        cooldownMinutes:
+          item.cooldown_minutes ?? null,
+      });
+
+      result = {
+        blocked: false,
+        item_name: item.name,
+        target_name: null,
+      };
     }
 
     const outcome = (result ?? {}) as {
@@ -2798,6 +3064,35 @@ export async function useRoomItem(
           outcome.block_reason ??
           "This Item cannot be used right now.",
       };
+    }
+
+    const category =
+      oneItemRelation(item.category);
+
+    const baseDamage =
+      rollRoomItemDamage(
+        item.damage_dice ?? null,
+      );
+
+    const attributeDamage =
+      category?.slug === "weapon" &&
+      item.success_attribute
+        ? Number(successRoll.modifier ?? 0)
+        : 0;
+
+    const damage = Math.max(
+      0,
+      baseDamage + attributeDamage,
+    );
+
+    const actualTargetId =
+      targetCharacterId ?? character.id;
+
+    if (damage > 0) {
+      await applyRoomItemDamage(
+        actualTargetId,
+        damage,
+      );
     }
 
     const rawEffects = Array.isArray(item.effects)
@@ -2853,10 +3148,30 @@ export async function useRoomItem(
       }
     }
 
+    if (damage > 0) {
+      const attributeText =
+        category?.slug === "weapon" &&
+        item.success_attribute
+          ? ` + ${
+              GIFT_SUCCESS_ATTRIBUTE_LABELS[
+                item.success_attribute as GiftSuccessAttribute
+              ]
+            } (${Number(successRoll.modifier ?? 0) >= 0 ? "+" : ""}${Number(successRoll.modifier ?? 0)})`
+          : "";
+
+      effectParts.push(
+        `${item.damage_dice}${attributeText} ${
+          item.damage_type ?? "Damage"
+        } -> ${damage} Damage`,
+      );
+    }
+
     const targetLabel =
       targetCharacterId && outcome.target_name
         ? ` on ${outcome.target_name}`
-        : "";
+        : targetCharacterId
+          ? " on the selected target"
+          : "";
 
     const { error: messageError } = await supabase
       .from("room_messages")

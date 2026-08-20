@@ -41,6 +41,7 @@ type ItemMechanics = {
   success_attribute: ItemSuccessAttribute | null;
   damage_dice: string | null;
   damage_type: string | null;
+  cooldown_minutes: number | null;
   category: { slug: string } | { slug: string }[] | null;
 };
 
@@ -136,6 +137,7 @@ async function loadAttemptRecord(
     success_attribute,
     damage_dice,
     damage_type,
+    cooldown_minutes,
     category:item_categories(slug)
   `;
 
@@ -450,6 +452,115 @@ async function consumeFailedAttempt(
   return "No consumable charge was spent.";
 }
 
+async function resolveDamageOnlySuccessfulUse({
+  record,
+  characterId,
+}: {
+  record: AttemptRecord;
+  characterId: string;
+}) {
+  const admin = createPrivilegedClient();
+  const sourceKey =
+    record.recordKind === "unique"
+      ? `unique:${record.recordId}`
+      : `standard:${record.itemId}`;
+
+  const now = Date.now();
+  const cooldownMinutes = Math.max(
+    0,
+    Number(record.item.cooldown_minutes ?? 0),
+  );
+
+  if (cooldownMinutes > 0) {
+    const { data: cooldown, error: cooldownError } = await admin
+      .from("character_item_use_cooldowns")
+      .select("ready_at")
+      .eq("character_id", characterId)
+      .eq("source_key", sourceKey)
+      .maybeSingle();
+
+    if (cooldownError) throw new Error(cooldownError.message);
+
+    if (cooldown?.ready_at && Date.parse(cooldown.ready_at) > now) {
+      throw new Error("This Item is still on cooldown.");
+    }
+  }
+
+  const behaviour = record.item.use_behaviour;
+
+  if (behaviour === "consumable") {
+    if (record.recordKind === "standard") {
+      const quantity = Number(record.quantity ?? 0);
+      if (quantity <= 0) throw new Error("This Item has no uses remaining.");
+
+      if (quantity === 1) {
+        const { error } = await admin
+          .from("character_items")
+          .delete()
+          .eq("id", record.recordId)
+          .eq("character_id", characterId);
+        if (error) throw new Error(error.message);
+      } else {
+        const { error } = await admin
+          .from("character_items")
+          .update({ quantity: quantity - 1 })
+          .eq("id", record.recordId)
+          .eq("character_id", characterId);
+        if (error) throw new Error(error.message);
+      }
+    } else {
+      const { error } = await admin
+        .from("character_item_instances")
+        .delete()
+        .eq("id", record.recordId)
+        .eq("owner_character_id", characterId)
+        .eq("vault_status", "owned");
+      if (error) throw new Error(error.message);
+    }
+  } else if (behaviour === "limited_charges") {
+    if (record.recordKind !== "unique") {
+      throw new Error("Limited-charge Items require an individual Item instance.");
+    }
+
+    const remaining = Number(record.chargesRemaining ?? 0);
+    if (remaining <= 0) throw new Error("This Item has no charges remaining.");
+
+    const { error } = await admin
+      .from("character_item_instances")
+      .update({ charges_remaining: remaining - 1 })
+      .eq("id", record.recordId)
+      .eq("owner_character_id", characterId)
+      .eq("vault_status", "owned");
+    if (error) throw new Error(error.message);
+  }
+
+  if (cooldownMinutes > 0) {
+    const { error } = await admin
+      .from("character_item_use_cooldowns")
+      .upsert(
+        {
+          character_id: characterId,
+          source_key: sourceKey,
+          ready_at: new Date(
+            now + cooldownMinutes * 60_000,
+          ).toISOString(),
+        },
+        { onConflict: "character_id,source_key" },
+      );
+
+    if (error) throw new Error(error.message);
+  }
+
+  return {
+    ok: true,
+    blocked: false,
+    item_name: record.item.name,
+    target_name: null,
+    health_delta: 0,
+    temporary_effects: 0,
+  };
+}
+
 async function applyItemDamage(
   targetCharacterId: string,
   amount: number,
@@ -592,7 +703,7 @@ export async function useInventoryItem(
       };
     }
 
-    const { data, error } = await supabase.rpc(
+    const rpcResult = await supabase.rpc(
       "use_own_inventory_record_targeted",
       {
         p_record_kind: recordKind,
@@ -602,11 +713,26 @@ export async function useInventoryItem(
       },
     );
 
-    if (error) {
-      return {
-        ok: false,
-        message: error.message,
-      };
+    let data = rpcResult.data;
+
+    if (rpcResult.error) {
+      const damageOnlyFallback =
+        Boolean(record.item.damage_dice) &&
+        rpcResult.error.message.includes(
+          "no configured Use effect",
+        );
+
+      if (!damageOnlyFallback) {
+        return {
+          ok: false,
+          message: rpcResult.error.message,
+        };
+      }
+
+      data = await resolveDamageOnlySuccessfulUse({
+        record,
+        characterId: character.id,
+      });
     }
 
     const result = (data ?? {}) as {
