@@ -3,6 +3,9 @@ import "server-only";
 import { cache } from "react";
 
 import { getEffectiveCharacterAttributes } from "@/lib/characters/get-effective-character-attributes";
+import {
+  PRESENCE_ACTIVE_MINUTES,
+} from "@/lib/game/constants";
 import { createClient } from "@/lib/supabase/server";
 import { getPublicOrderMembership } from "@/lib/orders/get-public-order-membership";
 import { getStaffSession } from "@/lib/auth/require-staff";
@@ -13,8 +16,6 @@ import type {
   PublicPresenceStatus,
 } from "@/types/public-character";
 
-
-const PRESENCE_ACTIVE_MINUTES = 3;
 
 type CodexRelationRow = {
   id: string;

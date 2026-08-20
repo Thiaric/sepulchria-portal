@@ -35,6 +35,15 @@ export function OddJobsPanel({ jobs }: { jobs: OddJobStateRow[] }) {
   const first = jobs[0];
   const alreadyWorked = jobs.some((job) => job.claimed);
 
+  function playCoinSound() {
+  const audio = new Audio("/sounds/coins.mp3");
+  audio.volume = 0.45;
+
+  void audio.play().catch(() => {
+    // Audio may be blocked by the browser; the job still succeeds normally.
+  });
+}
+
   function work(jobId: string) {
     if (alreadyWorked || pending) return;
 
@@ -56,8 +65,9 @@ export function OddJobsPanel({ jobs }: { jobs: OddJobStateRow[] }) {
       setPendingJobId(null);
 
       if (result.ok) {
-        router.refresh();
-      }
+  playCoinSound();
+  router.refresh();
+}
     });
   }
 

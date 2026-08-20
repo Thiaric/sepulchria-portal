@@ -9,11 +9,12 @@ import {
 } from "react";
 
 import { moveCharacter } from "@/app/(portal)/game/actions";
+import {
+  PRESENCE_ACTIVE_MINUTES,
+} from "@/lib/game/constants";
 import { createClient } from "@/lib/supabase/client";
 import type { PresenceStatus } from "@/types/game";
 import { startConversation } from "@/app/(portal)/messages/actions";
-
-const PRESENCE_ACTIVE_MINUTES = 3;
 
 type GameContextPanelProps = {
   roomId: string | null;

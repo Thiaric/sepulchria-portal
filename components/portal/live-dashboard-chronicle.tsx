@@ -7,12 +7,14 @@ import {
 } from "react";
 
 import { enterRoomFromMap } from "@/app/(portal)/game/actions";
+import {
+  PRESENCE_ACTIVE_MINUTES,
+} from "@/lib/game/constants";
 import { createClient } from "@/lib/supabase/client";
 import type {
   PortalContext,
 } from "@/types/portal";
 
-const PRESENCE_ACTIVE_MINUTES = 3;
 const REFRESH_INTERVAL_MS = 30_000;
 
 type PresenceCharacterRow = {
