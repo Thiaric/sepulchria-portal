@@ -1071,9 +1071,18 @@ currentHealth =
    * disabled preference rather than resetting it to true.
    */
   if (isNewApproval) {
+    /*
+     * This is an administrative provisioning action.
+     * The ordinary session client is subject to the player's RLS policy
+     * and cannot insert settings for a character merely because an admin
+     * is approving it. Use the existing service-role client here instead.
+     */
+    const instantChatAdmin =
+      createPrivilegedClient();
+
     const {
       error: instantChatSettingsError,
-    } = await supabase
+    } = await instantChatAdmin
       .from("instant_chat_settings")
       .upsert(
         {
@@ -1455,14 +1464,15 @@ export async function deleteCharacterAdministration(
   }
 
   const {
-    data: deletedCharacter,
+    data: characterDeleted,
     error: deleteError,
-  } = await supabase
-    .from("characters")
-    .delete()
-    .eq("id", characterId)
-    .select("id")
-    .maybeSingle();
+  } = await supabase.rpc(
+    "delete_character_completely",
+    {
+      p_character_id:
+        characterId,
+    },
+  );
 
   if (deleteError) {
     throw new Error(
@@ -1470,7 +1480,7 @@ export async function deleteCharacterAdministration(
     );
   }
 
-  if (!deletedCharacter) {
+  if (characterDeleted !== true) {
     throw new Error(
       "The character could not be deleted. No character row was removed.",
     );

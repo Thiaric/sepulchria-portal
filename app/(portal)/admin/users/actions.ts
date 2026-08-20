@@ -532,18 +532,33 @@ if (forumTopicsAnonymiseError) {
       }
     }
 
-    const {
-      error:
-        characterDeleteError,
-    } = await admin
-      .from("characters")
-      .delete()
-      .in("id", characterIds);
-
-    if (characterDeleteError) {
-      redirectUserManagementError(
-        `Unable to delete the account character: ${characterDeleteError.message}`,
+    for (
+      const characterId of
+        characterIds
+    ) {
+      const {
+        data: characterDeleted,
+        error:
+          characterDeleteError,
+      } = await admin.rpc(
+        "delete_character_completely",
+        {
+          p_character_id:
+            characterId,
+        },
       );
+
+      if (characterDeleteError) {
+        redirectUserManagementError(
+          `Unable to delete the account character: ${characterDeleteError.message}`,
+        );
+      }
+
+      if (characterDeleted !== true) {
+        redirectUserManagementError(
+          "Unable to delete the account character: no character row was removed.",
+        );
+      }
     }
   }
 
