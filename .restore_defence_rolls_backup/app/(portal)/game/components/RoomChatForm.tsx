@@ -65,13 +65,6 @@ const CHECK_OPTIONS: CheckOption[] = [
   { value: "use_brains", label: "Use your Brains", attribute: "brains" },
   { value: "use_shrewd", label: "Use your Shrewd", attribute: "shrewd" },
   { value: "use_presence", label: "Use your Presence", attribute: "presence_score" },
-
-  { value: "dodge", label: "Dodge", attribute: "reflexes" },
-  { value: "defend", label: "Defend", attribute: "vigor" },
-  { value: "resist_vigour", label: "Resist (Physical)", attribute: "vigor" },
-  { value: "resist_shrewd", label: "Resist (Shrewd)", attribute: "shrewd" },
-  { value: "resist_brains", label: "Resist (Brains)", attribute: "brains" },
-  { value: "resist_presence", label: "Resist (Presence)", attribute: "presence_score" },
 ];
 
 const ATTRIBUTE_LABELS: Record<
@@ -1692,12 +1685,12 @@ function ignoreSpellingWord() {
               </p>
 
               <select
-                name="opposed_action"
-                defaultValue="use_muscles"
+                name="opposed_attribute"
+                defaultValue="muscles"
                 className="mt-2 w-full border border-[#654c31] bg-[#0f0c09] px-3 py-2 text-[10px] text-[#d8c29b]"
               >
                 {CHECK_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
+                  <option key={option.value} value={option.attribute}>
                     {option.label} — {ATTRIBUTE_LABELS[option.attribute]}: {formatSigned(Number(attributes[option.attribute] ?? 0))}
                   </option>
                 ))}

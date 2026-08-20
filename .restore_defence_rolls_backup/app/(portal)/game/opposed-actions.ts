@@ -175,84 +175,6 @@ function defaultCounter(attribute: CharacterAttributeKey): CounterKind {
   return "resist_presence";
 }
 
-type StandaloneActionCode =
-  | "use_muscles"
-  | "use_reflexes"
-  | "use_brains"
-  | "use_shrewd"
-  | "use_presence"
-  | "dodge"
-  | "defend"
-  | "resist_vigour"
-  | "resist_shrewd"
-  | "resist_brains"
-  | "resist_presence";
-
-const STANDALONE_ACTIONS: Record<
-  StandaloneActionCode,
-  {
-    label: string;
-    attribute: CharacterAttributeKey;
-    defaultCounter: CounterKind;
-  }
-> = {
-  use_muscles: {
-    label: "Use your Muscles",
-    attribute: "muscles",
-    defaultCounter: "resist_vigour",
-  },
-  use_reflexes: {
-    label: "Use your Reflexes",
-    attribute: "reflexes",
-    defaultCounter: "dodge",
-  },
-  use_brains: {
-    label: "Use your Brains",
-    attribute: "brains",
-    defaultCounter: "resist_brains",
-  },
-  use_shrewd: {
-    label: "Use your Shrewd",
-    attribute: "shrewd",
-    defaultCounter: "resist_shrewd",
-  },
-  use_presence: {
-    label: "Use your Presence",
-    attribute: "presence_score",
-    defaultCounter: "resist_presence",
-  },
-  dodge: {
-    label: "Dodge",
-    attribute: "reflexes",
-    defaultCounter: "dodge",
-  },
-  defend: {
-    label: "Defend",
-    attribute: "vigor",
-    defaultCounter: "defend",
-  },
-  resist_vigour: {
-    label: "Resist (Physical)",
-    attribute: "vigor",
-    defaultCounter: "resist_vigour",
-  },
-  resist_shrewd: {
-    label: "Resist (Shrewd)",
-    attribute: "shrewd",
-    defaultCounter: "resist_shrewd",
-  },
-  resist_brains: {
-    label: "Resist (Brains)",
-    attribute: "brains",
-    defaultCounter: "resist_brains",
-  },
-  resist_presence: {
-    label: "Resist (Presence)",
-    attribute: "presence_score",
-    defaultCounter: "resist_presence",
-  },
-};
-
 async function createPending({
   character,
   targetId,
@@ -327,24 +249,21 @@ export async function startAttributeOpposedAction(
 ): Promise<ActionState> {
   try {
     const { character } = await ownedCharacter();
-
-    const actionCode = field(
+    const attribute = field(
       formData,
-      "opposed_action",
-    ) as StandaloneActionCode;
+      "opposed_attribute",
+    ) as CharacterAttributeKey;
 
-    const selectedAction = STANDALONE_ACTIONS[actionCode];
-
-    if (!selectedAction) {
-      return { ok: false, message: "Invalid Action." };
+    if (!(attribute in ATTRIBUTE_LABELS)) {
+      return { ok: false, message: "Invalid Attribute." };
     }
 
-    const { attribute, label } = selectedAction;
     const targetId = field(formData, "opposed_target_character_id");
     const otherTarget = field(formData, "opposed_external_target");
     const modifier = await effective(character, attribute);
     const rolled = roll(20);
     const total = rolled + modifier;
+    const label = `Use ${ATTRIBUTE_LABELS[attribute]}`;
 
     if (!targetId) {
       const targetText = otherTarget ? ` on ${otherTarget}` : "";
@@ -364,7 +283,7 @@ export async function startAttributeOpposedAction(
       };
     }
 
-    const counter = selectedAction.defaultCounter;
+    const counter = defaultCounter(attribute);
     const target = await createPending({
       character,
       targetId,
