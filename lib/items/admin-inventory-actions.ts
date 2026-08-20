@@ -513,169 +513,58 @@ async function assertContainerEmpty(instanceId: string) {
 }
 
 export async function sendUniqueItemToVault(formData: FormData) {
-  const staff = await requireStaff();
+  await requireStaff();
   const supabase = await createClient();
-
   let characterId = "";
-
   try {
     const instanceId = requiredText(formData, "instanceId", "Unique Item");
     if (!isUuid(instanceId)) throw new Error("Invalid Unique Item.");
-
-    const { data: current, error } = await supabase
-      .from("character_item_instances")
-      .select("owner_character_id")
-      .eq("id", instanceId)
-      .maybeSingle();
-
-    if (error || !current?.owner_character_id) {
-      throw new Error("Owned Unique Item not found.");
-    }
-
-    characterId = current.owner_character_id;
-    await assertContainerEmpty(instanceId);
-
-    const { error: updateError } = await supabase
-      .from("character_item_instances")
-      .update({
-        owner_character_id: null,
-        container_instance_id: null,
-        vault_status: "admin_vault",
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", instanceId);
-
-    if (updateError) throw new Error(updateError.message);
-
-    const { error: historyError } = await supabase
-      .from("item_instance_history")
-      .insert({
-        item_instance_id: instanceId,
-        from_character_id: characterId,
-        actor_user_id: staff.userId,
-        event_type: "moved_to_admin_vault",
-        details: "Removed from the character and placed in the Admin Vault.",
-      });
-
-    if (historyError) throw new Error(historyError.message);
+    const { data, error } = await supabase.rpc("admin_vault_send_unique_item", { p_instance_id: instanceId });
+    if (error) throw new Error(error.message);
+    if (typeof data !== "string" || !isUuid(data)) throw new Error("Unable to identify the previous Item owner.");
+    characterId = data;
   } catch (error) {
-    fail(
-      formData,
-      error instanceof Error ? error.message : "Unable to move Unique Item.",
-    );
+    fail(formData, error instanceof Error ? error.message : "Unable to move Unique Item.");
   }
-
   refreshCharacter(characterId);
   refreshVault();
 }
 
 export async function createUniqueItemInVault(formData: FormData) {
-  const staff = await requireStaff();
+  await requireStaff();
   const supabase = await createClient();
-
   try {
     const itemId = requiredText(formData, "itemId", "Item");
-    const item = await getItem(itemId);
-
-    const { data: instance, error } = await supabase
-      .from("character_item_instances")
-      .insert({
-        item_id: itemId,
-        owner_character_id: null,
-        ...uniqueOverrides(formData),
-        charges_remaining:
-          item.use_behaviour === "limited_charges" ? item.max_charges : null,
-        container_instance_id: null,
-        vault_status: "admin_vault",
-        acquisition_source: "staff",
-        assigned_by: staff.userId,
-      })
-      .select("id")
-      .single();
-
-    if (error || !instance) {
-      throw new Error(error?.message ?? "Vault Item could not be created.");
-    }
-
-    const { error: historyError } = await supabase
-      .from("item_instance_history")
-      .insert({
-        item_instance_id: instance.id,
-        actor_user_id: staff.userId,
-        event_type: "created_in_admin_vault",
-        details: "Created as an individual Item instance in the Admin Vault.",
-      });
-
-    if (historyError) throw new Error(historyError.message);
+    if (!isUuid(itemId)) throw new Error("Invalid Item.");
+    const o = uniqueOverrides(formData);
+    const { error } = await supabase.rpc("admin_vault_create_unique_item", {
+      p_item_id: itemId, p_custom_name: o.custom_name, p_custom_description: o.custom_description,
+      p_custom_image_url: o.custom_image_url, p_quality_override: o.quality_override,
+      p_transfer_policy_override: o.transfer_policy_override, p_is_quest_item_override: o.is_quest_item_override,
+      p_notes: o.notes,
+    });
+    if (error) throw new Error(error.message);
   } catch (error) {
-    fail(
-      formData,
-      error instanceof Error ? error.message : "Unable to create Vault Item.",
-    );
+    fail(formData, error instanceof Error ? error.message : "Unable to create Vault Item.");
   }
-
   refreshVault();
 }
 
 export async function assignVaultItemToCharacter(formData: FormData) {
-  const staff = await requireStaff();
+  await requireStaff();
   const supabase = await createClient();
-
   let characterId = "";
-
   try {
     const instanceId = requiredText(formData, "instanceId", "Vault Item");
     characterId = requiredText(formData, "characterId", "Character");
-
-    if (!isUuid(instanceId) || !isUuid(characterId)) {
-      throw new Error("Invalid Vault Item or character.");
-    }
-
-    const { data: instance, error } = await supabase
-      .from("character_item_instances")
-      .select("id, vault_status, owner_character_id")
-      .eq("id", instanceId)
-      .maybeSingle();
-
-    if (
-      error ||
-      !instance ||
-      instance.vault_status !== "admin_vault" ||
-      instance.owner_character_id
-    ) {
-      throw new Error("That Item is not currently in the Admin Vault.");
-    }
-
-    const { error: updateError } = await supabase
-      .from("character_item_instances")
-      .update({
-        owner_character_id: characterId,
-        vault_status: "owned",
-        container_instance_id: null,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", instanceId);
-
-    if (updateError) throw new Error(updateError.message);
-
-    const { error: historyError } = await supabase
-      .from("item_instance_history")
-      .insert({
-        item_instance_id: instanceId,
-        to_character_id: characterId,
-        actor_user_id: staff.userId,
-        event_type: "assigned_from_admin_vault",
-        details: "Assigned from the Admin Vault to a character.",
-      });
-
-    if (historyError) throw new Error(historyError.message);
+    if (!isUuid(instanceId) || !isUuid(characterId)) throw new Error("Invalid Vault Item or character.");
+    const { error } = await supabase.rpc("admin_vault_assign_unique_item", {
+      p_instance_id: instanceId, p_character_id: characterId,
+    });
+    if (error) throw new Error(error.message);
   } catch (error) {
-    fail(
-      formData,
-      error instanceof Error ? error.message : "Unable to assign Vault Item.",
-    );
+    fail(formData, error instanceof Error ? error.message : "Unable to assign Vault Item.");
   }
-
   refreshCharacter(characterId);
   refreshVault();
 }
