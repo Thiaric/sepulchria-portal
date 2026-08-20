@@ -59,6 +59,7 @@ export async function CharacterMechanicsDisplay({
       : Math.max(
           0,
           breakdown.vigor.effective * 10 +
+            breakdown.giftMaxHealth +
             breakdown.itemMaxHealth +
             breakdown.activeItemMaxHealth,
         );
@@ -185,6 +186,9 @@ export async function CharacterMechanicsDisplay({
         {maxHealth !== null ? (
           <p className="mt-2 text-[8px] uppercase tracking-[0.14em] text-[#776957]">
             Maximum Health = Effective Vigour × 10
+            {breakdown.giftMaxHealth !== 0
+              ? ` ${signed(breakdown.giftMaxHealth)} Feat Max Health`
+              : ""}
             {breakdown.itemMaxHealth !== 0
               ? ` ${signed(breakdown.itemMaxHealth)} Passive Item Max Health`
               : ""}

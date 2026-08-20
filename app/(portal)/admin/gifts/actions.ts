@@ -84,6 +84,25 @@ function giftValues(formData: FormData) {
     throw new Error("Temporary Feats need a duration greater than 0 minutes.");
   }
 
+  const cooldownMinutes =
+    effectMode === "temporary"
+      ? integer(formData, "cooldownMinutes", 0)
+      : 0;
+
+  if (cooldownMinutes < 0) {
+    throw new Error("Feat cooldown cannot be negative.");
+  }
+
+  const healthDelta =
+    effectMode === "temporary"
+      ? integer(formData, "healthDelta", 0)
+      : 0;
+
+  const maxHealthModifier =
+    effectMode === "none"
+      ? 0
+      : integer(formData, "maxHealthModifier", 0);
+
   return {
     name: requiredText(formData, "name", "Gift name"),
     description: optionalText(formData, "description") ?? "",
@@ -91,6 +110,9 @@ function giftValues(formData: FormData) {
     is_general: checkbox(formData, "isGeneral"),
     effect_mode: effectMode,
     duration_minutes: durationMinutes,
+    cooldown_minutes: cooldownMinutes,
+    health_delta: healthDelta,
+    max_health_modifier: maxHealthModifier,
     muscles_modifier: attr(formData, "musclesModifier", "Muscles"),
     reflexes_modifier: attr(formData, "reflexesModifier", "Reflexes"),
     vigour_modifier: attr(formData, "vigourModifier", "Vigour"),

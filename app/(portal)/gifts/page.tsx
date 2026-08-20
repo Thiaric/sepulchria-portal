@@ -17,6 +17,9 @@ export default async function GiftsPage() {
       is_general,
       effect_mode,
       duration_minutes,
+      cooldown_minutes,
+      health_delta,
+      max_health_modifier,
       muscles_modifier,
       reflexes_modifier,
       vigour_modifier,
@@ -110,6 +113,12 @@ export default async function GiftsPage() {
         | "temporary",
       durationMinutes:
         gift.duration_minutes,
+      cooldownMinutes:
+        gift.cooldown_minutes,
+      healthDelta:
+        gift.health_delta,
+      maxHealthModifier:
+        gift.max_health_modifier,
       modifiers: {
         muscles: gift.muscles_modifier,
         reflexes: gift.reflexes_modifier,

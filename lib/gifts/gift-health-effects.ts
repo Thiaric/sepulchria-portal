@@ -7,6 +7,9 @@ import {
 import {
   adjustHealthForVigourModifier,
 } from "@/lib/characters/adjust-health-for-vigour-modifier";
+import {
+  getCharacterAttributeBreakdown,
+} from "@/lib/characters/get-effective-character-attributes";
 
 function adminClient() {
   const url =
@@ -336,3 +339,90 @@ export async function applyTemporaryGiftActivationHealth({
     );
   }
 }
+
+export async function applyGiftCurrentHealthDelta({
+  characterId,
+  healthDelta,
+}: {
+  characterId: string;
+  healthDelta: number;
+}) {
+  if (!healthDelta) {
+    return;
+  }
+
+  const admin = adminClient();
+
+  const {
+    data: character,
+    error,
+  } = await admin
+    .from("characters")
+    .select(
+      "muscles, reflexes, vigor, brains, shrewd, presence_score, current_health",
+    )
+    .eq("id", characterId)
+    .single();
+
+  if (error || !character) {
+    throw new Error(
+      error?.message ??
+        "Unable to load character Health.",
+    );
+  }
+
+  const breakdown =
+    await getCharacterAttributeBreakdown(
+      characterId,
+      {
+        muscles: character.muscles,
+        reflexes: character.reflexes,
+        vigor: character.vigor,
+        brains: character.brains,
+        shrewd: character.shrewd,
+        presence_score:
+          character.presence_score,
+      },
+    );
+
+  if (breakdown.vigor.effective === null) {
+    throw new Error(
+      "Unable to calculate Maximum Health.",
+    );
+  }
+
+  const maxHealth = Math.max(
+    0,
+    breakdown.vigor.effective * 10 +
+      breakdown.giftMaxHealth +
+      breakdown.itemMaxHealth +
+      breakdown.activeItemMaxHealth,
+  );
+
+  const before =
+    character.current_health ??
+    maxHealth;
+
+  const after = Math.max(
+    0,
+    Math.min(
+      maxHealth,
+      before + healthDelta,
+    ),
+  );
+
+  const { error: updateError } =
+    await admin
+      .from("characters")
+      .update({
+        current_health: after,
+      })
+      .eq("id", characterId);
+
+  if (updateError) {
+    throw new Error(
+      updateError.message,
+    );
+  }
+}
+

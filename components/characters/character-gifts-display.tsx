@@ -9,6 +9,9 @@ type Gift = {
   is_active: boolean;
   effect_mode: "none" | "passive" | "temporary";
   duration_minutes: number | null;
+  cooldown_minutes: number;
+  health_delta: number;
+  max_health_modifier: number;
   muscles_modifier: number;
   reflexes_modifier: number;
   vigour_modifier: number;
@@ -47,6 +50,8 @@ function sourceLabel(value: Ownership["acquisition_source"]) {
 
 function modifierText(gift: Gift) {
   return [
+    ["HP", gift.health_delta],
+    ["Max HP", gift.max_health_modifier],
     ["Mus", gift.muscles_modifier],
     ["Ref", gift.reflexes_modifier],
     ["Vig", gift.vigour_modifier],
@@ -83,6 +88,9 @@ export async function CharacterGiftsDisplay({
         is_active,
         effect_mode,
         duration_minutes,
+        cooldown_minutes,
+        health_delta,
+        max_health_modifier,
         muscles_modifier,
         reflexes_modifier,
         vigour_modifier,
@@ -163,6 +171,22 @@ export async function CharacterGiftsDisplay({
 
           let state = "Usable";
 
+          const latestActivation =
+            [...(ownership.activations ?? [])]
+              .sort(
+                (a, b) =>
+                  Date.parse(b.activated_at) -
+                  Date.parse(a.activated_at),
+              )[0] ?? null;
+
+          const cooldownUntil =
+            gift.effect_mode === "temporary" &&
+            latestActivation &&
+            gift.cooldown_minutes > 0
+              ? Date.parse(latestActivation.activated_at) +
+                gift.cooldown_minutes * 60_000
+              : null;
+
           if (!gift.is_active) {
             state = "Inactive";
           } else if (gift.effect_mode === "passive") {
@@ -175,7 +199,13 @@ export async function CharacterGiftsDisplay({
                   hour: "2-digit",
                   minute: "2-digit",
                 })}`
-              : `Ready · ${gift.duration_minutes ?? "?"} min`;
+              : cooldownUntil &&
+                  cooldownUntil > now
+                ? `Cooldown · ${Math.ceil(
+                    (cooldownUntil - now) /
+                      60_000,
+                  )} min`
+                : `Ready · ${gift.duration_minutes ?? "?"} min`;
           }
 
           const modifiers = modifierText(gift);

@@ -128,6 +128,9 @@ type ChatGift = {
     | "passive"
     | "temporary";
   durationMinutes: number | null;
+  cooldownMinutes: number;
+  healthDelta: number;
+  maxHealthModifier: number;
   activeUntil: string | null;
   cooldownUntil: string | null;
 };
@@ -1449,6 +1452,22 @@ function ignoreSpellingWord() {
                     }
                   </p>
                 ) : null}
+                {(selectedGift.healthDelta !== 0 ||
+                  selectedGift.maxHealthModifier !== 0) ? (
+                  <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-[#aa8c61]">
+                    {selectedGift.healthDelta !== 0
+                      ? `Health ${formatSigned(selectedGift.healthDelta)}`
+                      : ""}
+                    {selectedGift.healthDelta !== 0 &&
+                    selectedGift.maxHealthModifier !== 0
+                      ? " · "
+                      : ""}
+                    {selectedGift.maxHealthModifier !== 0
+                      ? `Max Health ${formatSigned(selectedGift.maxHealthModifier)}`
+                      : ""}
+                  </p>
+                ) : null}
+
                 <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-[#8b7657]">
                   {selectedGift.effectMode ===
                   "passive"
@@ -1470,7 +1489,11 @@ function ignoreSpellingWord() {
                         ? `Duration: ${
                             selectedGift.durationMinutes ??
                             "?"
-                          } min`
+                          } min · Cooldown: ${
+                            selectedGift.cooldownMinutes === 0
+                              ? "None"
+                              : `${selectedGift.cooldownMinutes} min`
+                          }`
                         : "No automatic Attribute effect"}
                 </p>
               </div>

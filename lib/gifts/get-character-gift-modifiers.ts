@@ -9,6 +9,7 @@ export type GiftAttributeModifiers = {
   brains: number;
   shrewd: number;
   presence_score: number;
+  maxHealth: number;
 };
 
 export const ZERO_GIFT_ATTRIBUTE_MODIFIERS: GiftAttributeModifiers = {
@@ -18,6 +19,7 @@ export const ZERO_GIFT_ATTRIBUTE_MODIFIERS: GiftAttributeModifiers = {
   brains: 0,
   shrewd: 0,
   presence_score: 0,
+  maxHealth: 0,
 };
 
 type GiftRow = {
@@ -31,6 +33,7 @@ type GiftRow = {
   brains_modifier: number;
   shrewd_modifier: number;
   presence_modifier: number;
+  max_health_modifier: number;
 };
 
 type OwnershipRow = {
@@ -83,7 +86,8 @@ export async function getCharacterGiftAttributeModifiers(
         vigour_modifier,
         brains_modifier,
         shrewd_modifier,
-        presence_modifier
+        presence_modifier,
+        max_health_modifier
       )
     `)
     .eq(
@@ -225,6 +229,9 @@ export async function getCharacterGiftAttributeModifiers(
 
     total.presence_score +=
       gift.presence_modifier ?? 0;
+
+    total.maxHealth +=
+      gift.max_health_modifier ?? 0;
   }
 
   return total;

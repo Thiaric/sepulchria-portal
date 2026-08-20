@@ -38,6 +38,7 @@ export type CharacterAttributeBreakdown = {
   brains: CharacterAttributeBreakdownEntry;
   shrewd: CharacterAttributeBreakdownEntry;
   presence_score: CharacterAttributeBreakdownEntry;
+  giftMaxHealth: number;
   itemMaxHealth: number;
   activeItemMaxHealth: number;
 };
@@ -211,6 +212,7 @@ export async function getCharacterAttributeBreakdown(
       ancestry?.presence_modifier ?? 0,
       orderRole?.presence_modifier ?? 0,
     ),
+    giftMaxHealth: giftModifiers.maxHealth,
     itemMaxHealth: itemModifiers.maxHealth,
     activeItemMaxHealth: activeItemModifiers.maxHealth,
   };

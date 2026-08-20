@@ -21,6 +21,9 @@ type Gift = {
   is_general: boolean;
   effect_mode: "none" | "passive" | "temporary";
   duration_minutes: number | null;
+  cooldown_minutes: number;
+  health_delta: number;
+  max_health_modifier: number;
   muscles_modifier: number;
   reflexes_modifier: number;
   vigour_modifier: number;
@@ -62,7 +65,8 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
         .from("gifts")
         .select(`
           id, name, description, is_active, is_general, effect_mode,
-          duration_minutes, muscles_modifier, reflexes_modifier,
+          duration_minutes, cooldown_minutes, health_delta, max_health_modifier,
+          muscles_modifier, reflexes_modifier,
           vigour_modifier, shrewd_modifier, brains_modifier,
           presence_modifier, sort_order,
           races:gift_races(race_id),
@@ -143,8 +147,8 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
             Feat Management
           </h1>
           <p className="mt-3 max-w-3xl text-sm leading-7 text-[#a99b89]">
-            Create Feats, configure Attribute effects, link Ancestries and
-            Order Roles, and assign Feats directly to characters.
+            Create Feats, configure Attribute, Health, duration and cooldown effects,
+            link Ancestries and Order Roles, and assign Feats directly to characters.
           </p>
         </div>
 
@@ -381,6 +385,46 @@ function GiftForm({
             min={1}
             name="durationMinutes"
             defaultValue={gift?.duration_minutes ?? ""}
+            className={inputClass}
+          />
+        </Field>
+
+        <Field label="Cooldown (minutes)">
+          <input
+            type="number"
+            min={0}
+            step={1}
+            name="cooldownMinutes"
+            list="feat-cooldown-options"
+            defaultValue={gift?.cooldown_minutes ?? 360}
+            className={inputClass}
+          />
+          <datalist id="feat-cooldown-options">
+            <option value="0" label="No cooldown" />
+            <option value="30" label="30 minutes" />
+            <option value="60" label="1 hour" />
+            <option value="120" label="2 hours" />
+            <option value="240" label="4 hours" />
+            <option value="360" label="6 hours" />
+            <option value="720" label="12 hours" />
+            <option value="1440" label="24 hours" />
+          </datalist>
+        </Field>
+
+        <Field label="Current Health change on use">
+          <input
+            type="number"
+            name="healthDelta"
+            defaultValue={gift?.health_delta ?? 0}
+            className={inputClass}
+          />
+        </Field>
+
+        <Field label="Maximum Health modifier">
+          <input
+            type="number"
+            name="maxHealthModifier"
+            defaultValue={gift?.max_health_modifier ?? 0}
             className={inputClass}
           />
         </Field>

@@ -16,6 +16,7 @@ import { getStaffSession } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 import { getEffectiveCharacterAttributes } from "@/lib/characters/get-effective-character-attributes";
 import {
+  applyGiftCurrentHealthDelta,
   applyTemporaryGiftActivationHealth,
 } from "@/lib/gifts/gift-health-effects";
 import {
@@ -1032,7 +1033,15 @@ export async function activateRoomGift(
           is_active,
           effect_mode,
           duration_minutes,
-          vigour_modifier
+          cooldown_minutes,
+          health_delta,
+          max_health_modifier,
+          muscles_modifier,
+          reflexes_modifier,
+          vigour_modifier,
+          shrewd_modifier,
+          brains_modifier,
+          presence_modifier
         )
       `)
       .eq("id", characterGiftId)
@@ -1095,87 +1104,96 @@ export async function activateRoomGift(
       };
     }
 
-    const cooldownHours = 6;
+    const cooldownMinutes =
+      Math.max(
+        0,
+        Number(
+          gift.cooldown_minutes ?? 0,
+        ),
+      );
 
-const cooldownSince = new Date(
-  Date.now() - cooldownHours * 60 * 60 * 1000,
-).toISOString();
+    if (cooldownMinutes > 0) {
+      const cooldownSince =
+        new Date(
+          Date.now() -
+            cooldownMinutes *
+              60 *
+              1000,
+        ).toISOString();
 
-const {
-  data: recentActivation,
-  error: cooldownError,
-} = await supabase
-  .from("gift_activations")
-  .select("activated_at")
-  .eq(
-    "character_gift_id",
-    characterGiftId,
-  )
-  .gte(
-    "activated_at",
-    cooldownSince,
-  )
-  .order(
-    "activated_at",
-    {
-      ascending: false,
-    },
-  )
-  .limit(1)
-  .maybeSingle();
+      const {
+        data: recentActivation,
+        error: cooldownError,
+      } = await supabase
+        .from("gift_activations")
+        .select("activated_at")
+        .eq(
+          "character_gift_id",
+          characterGiftId,
+        )
+        .gte(
+          "activated_at",
+          cooldownSince,
+        )
+        .order(
+          "activated_at",
+          {
+            ascending: false,
+          },
+        )
+        .limit(1)
+        .maybeSingle();
 
-if (cooldownError) {
-  return {
-    ok: false,
-    message:
-      `Unable to verify Feat cooldown: ${cooldownError.message}`,
-  };
-}
+      if (cooldownError) {
+        return {
+          ok: false,
+          message:
+            `Unable to verify Feat cooldown: ${cooldownError.message}`,
+        };
+      }
 
-if (recentActivation) {
-  const availableAt =
-    new Date(
-      new Date(
-        recentActivation.activated_at,
-      ).getTime() +
-        cooldownHours *
-          60 *
-          60 *
-          1000,
-    );
+      if (recentActivation) {
+        const availableAt =
+          new Date(
+            new Date(
+              recentActivation.activated_at,
+            ).getTime() +
+              cooldownMinutes *
+                60 *
+                1000,
+          );
 
-  const remainingMs =
-    Math.max(
-      0,
-      availableAt.getTime() -
-        Date.now(),
-    );
+        const remainingMinutes =
+          Math.max(
+            1,
+            Math.ceil(
+              (
+                availableAt.getTime() -
+                Date.now()
+              ) /
+                (60 * 1000),
+            ),
+          );
 
-  const remainingHours =
-    Math.floor(
-      remainingMs /
-        (60 * 60 * 1000),
-    );
+        const remainingHours =
+          Math.floor(
+            remainingMinutes / 60,
+          );
 
-  const remainingMinutes =
-    Math.ceil(
-      (
-        remainingMs %
-        (60 * 60 * 1000)
-      ) /
-        (60 * 1000),
-    );
+        const remainderMinutes =
+          remainingMinutes % 60;
 
-  return {
-    ok: false,
-    message:
-      `${gift.name} is on cooldown. You can use it again in ${
-        remainingHours
-          ? `${remainingHours}h `
-          : ""
-      }${remainingMinutes}m.`,
-  };
-}
+        return {
+          ok: false,
+          message:
+            `${gift.name} is on cooldown. You can use it again in ${
+              remainingHours
+                ? `${remainingHours}h `
+                : ""
+            }${remainderMinutes}m.`,
+        };
+      }
+    }
 
     const admin = createPrivilegedClient();
 
@@ -1207,6 +1225,12 @@ if (recentActivation) {
         vigourModifier:
           gift.vigour_modifier ?? 0,
       });
+
+      await applyGiftCurrentHealthDelta({
+        characterId: character.id,
+        healthDelta:
+          gift.health_delta ?? 0,
+      });
     } catch (healthError) {
       await admin
         .from("gift_activations")
@@ -1228,7 +1252,33 @@ if (recentActivation) {
         characterId: character.id,
         roomId: character.current_room_id!,
         giftName: gift.name,
-        giftDescription: gift.description ?? "",
+        giftDescription: [
+          gift.description ?? "",
+          gift.health_delta
+            ? `Health ${gift.health_delta > 0 ? "+" : ""}${gift.health_delta}`
+            : "",
+          gift.max_health_modifier
+            ? `Max Health ${gift.max_health_modifier > 0 ? "+" : ""}${gift.max_health_modifier}`
+            : "",
+          gift.muscles_modifier
+            ? `Muscles ${gift.muscles_modifier > 0 ? "+" : ""}${gift.muscles_modifier}`
+            : "",
+          gift.reflexes_modifier
+            ? `Reflexes ${gift.reflexes_modifier > 0 ? "+" : ""}${gift.reflexes_modifier}`
+            : "",
+          gift.vigour_modifier
+            ? `Vigour ${gift.vigour_modifier > 0 ? "+" : ""}${gift.vigour_modifier}`
+            : "",
+          gift.shrewd_modifier
+            ? `Shrewd ${gift.shrewd_modifier > 0 ? "+" : ""}${gift.shrewd_modifier}`
+            : "",
+          gift.brains_modifier
+            ? `Brains ${gift.brains_modifier > 0 ? "+" : ""}${gift.brains_modifier}`
+            : "",
+          gift.presence_modifier
+            ? `Presence ${gift.presence_modifier > 0 ? "+" : ""}${gift.presence_modifier}`
+            : "",
+        ].filter(Boolean).join(" · "),
         effectMode: gift.effect_mode,
         durationMinutes: gift.duration_minutes,
       });

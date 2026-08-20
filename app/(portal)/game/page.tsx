@@ -228,6 +228,9 @@ async function GameContent() {
         is_active,
         effect_mode,
         duration_minutes,
+        cooldown_minutes,
+        health_delta,
+        max_health_modifier,
         muscles_modifier,
         reflexes_modifier,
         vigour_modifier,
@@ -292,7 +295,9 @@ async function GameContent() {
               Date.parse(
                 latestActivation.activated_at,
               ) +
-                6 * 60 * 60 * 1000,
+                (gift.cooldown_minutes ?? 0) *
+                  60 *
+                  1000,
             ).toISOString()
           : null;
 
@@ -306,6 +311,12 @@ async function GameContent() {
           | "passive"
           | "temporary",
         durationMinutes: gift.duration_minutes,
+        cooldownMinutes:
+          gift.cooldown_minutes ?? 0,
+        healthDelta:
+          gift.health_delta ?? 0,
+        maxHealthModifier:
+          gift.max_health_modifier ?? 0,
         activeUntil:
           activeActivation?.expires_at ?? null,
         cooldownUntil:

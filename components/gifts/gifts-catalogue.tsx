@@ -18,6 +18,9 @@ type Gift = {
     | "passive"
     | "temporary";
   durationMinutes: number | null;
+  cooldownMinutes: number;
+  healthDelta: number;
+  maxHealthModifier: number;
   modifiers: {
     muscles: number;
     reflexes: number;
@@ -79,6 +82,8 @@ function typeLabels(gift: Gift) {
 
 function modifierLabels(gift: Gift) {
   return [
+    ["HP", gift.healthDelta],
+    ["Max HP", gift.maxHealthModifier],
     ["Mus", gift.modifiers.muscles],
     ["Ref", gift.modifiers.reflexes],
     ["Vig", gift.modifiers.vigour],
@@ -489,6 +494,17 @@ export function GiftsCatalogue({
                           General:
                         </span>{" "}
                         Yes
+                      </p>
+                    ) : null}
+
+                    {gift.effectMode === "temporary" ? (
+                      <p>
+                        <span className="uppercase tracking-[0.1em] text-[#9f825b]">
+                          Cooldown:
+                        </span>{" "}
+                        {gift.cooldownMinutes === 0
+                          ? "None"
+                          : `${gift.cooldownMinutes} min`}
                       </p>
                     ) : null}
 
