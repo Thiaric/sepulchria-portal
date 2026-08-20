@@ -150,16 +150,21 @@ async function roomMessage(
   characterId: string,
   message: string,
 ) {
-  const admin = privilegedClient();
-  const { error } = await admin.from("room_messages").insert({
-    room_id: roomId,
-    character_id: characterId,
-    message,
-    message_type: "action",
-    client_nonce: crypto.randomUUID(),
-  });
+  const supabase = await createClient();
 
-  if (error) throw new Error(error.message);
+  const { error } = await supabase
+    .from("room_messages")
+    .insert({
+      room_id: roomId,
+      character_id: characterId,
+      message,
+      message_type: "action",
+      client_nonce: crypto.randomUUID(),
+    });
+
+  if (error) {
+    throw new Error(error.message);
+  }
 }
 
 function defaultCounter(attribute: CharacterAttributeKey): CounterKind {

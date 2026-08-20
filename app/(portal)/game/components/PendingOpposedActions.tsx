@@ -8,7 +8,10 @@ import {
 } from "react";
 
 import { createClient } from "@/lib/supabase/client";
-import type { ActionState } from "@/types/game";
+import type {
+  ActionState,
+  CharacterAttributes,
+} from "@/types/game";
 import { counterOpposedAction } from "../opposed-actions";
 
 const initialState: ActionState = {
@@ -36,7 +39,27 @@ const COUNTER_LABELS: Record<string, string> = {
   resist_presence: "Resist — Presence",
 };
 
-export function PendingOpposedActions() {
+const COUNTER_ATTRIBUTES: Record<
+  string,
+  keyof CharacterAttributes
+> = {
+  dodge: "reflexes",
+  defend: "vigor",
+  resist_vigour: "vigor",
+  resist_shrewd: "shrewd",
+  resist_brains: "brains",
+  resist_presence: "presence_score",
+};
+
+function signed(value: number) {
+  return value >= 0 ? `+${value}` : String(value);
+}
+
+export function PendingOpposedActions({
+  attributes,
+}: {
+  attributes: CharacterAttributes;
+}) {
   const supabase = useMemo(() => createClient(), []);
   const [pendingActions, setPendingActions] =
     useState<PendingAction[]>([]);
@@ -140,6 +163,16 @@ export function PendingOpposedActions() {
                   className="border border-[#765937] bg-[#2a1c11] px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-[#dfc18f] transition hover:border-[#a47b48]"
                 >
                   {COUNTER_LABELS[counter] ?? counter}
+{" "}
+(
+{signed(
+  Number(
+    attributes[
+      COUNTER_ATTRIBUTES[counter]
+    ] ?? 0,
+  ),
+)}
+)
                 </button>
               ))}
             </form>

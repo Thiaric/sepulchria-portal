@@ -1099,7 +1099,9 @@ function ignoreSpellingWord() {
 
   return (
     <div className="shrink-0 border-t border-[#59432c]/40 bg-[#17110d] p-2 sm:px-3 sm:py-2">
-      <PendingOpposedActions />
+      <PendingOpposedActions
+  attributes={attributes}
+/>
       {utilityMode === null ? (
         <form
           action={messageAction}
