@@ -597,13 +597,11 @@ export async function counterOpposedAction(
   formData: FormData,
 ): Promise<ActionState> {
   try {
-    const { supabase, character } = await ownedCharacter();
+    const { character } = await ownedCharacter();
     const actionId = field(formData, "opposed_action_id");
-    const rawCounterKind = field(formData, "counter_kind");
-    const doNothing = rawCounterKind === "__do_nothing__";
-    const counterKind = rawCounterKind as CounterKind;
+    const counterKind = field(formData, "counter_kind") as CounterKind;
 
-    if (!actionId || (!doNothing && !COUNTERS[counterKind])) {
+    if (!actionId || !COUNTERS[counterKind]) {
       return { ok: false, message: "Invalid Counter." };
     }
 
@@ -639,50 +637,25 @@ export async function counterOpposedAction(
       };
     }
 
-    if (
-      !doNothing &&
-      !(pending.allowed_counters ?? []).includes(counterKind)
-    ) {
+    if (!(pending.allowed_counters ?? []).includes(counterKind)) {
       return {
         ok: false,
         message: "That Counter is not allowed.",
       };
     }
 
-    const counter = doNothing ? null : COUNTERS[counterKind];
-    const modifier =
-      doNothing || !counter
-        ? 0
-        : await effective(character, counter.attribute);
-    const rolled = doNothing ? 0 : roll(20);
+    const counter = COUNTERS[counterKind];
+    const modifier = await effective(character, counter.attribute);
+    const rolled = roll(20);
     const total = rolled + modifier;
     const attackTotal = Number(pending.attack_total);
-    const countered = doNothing ? false : total >= attackTotal;
-
-    if (
-      pending.action_kind === "item" &&
-      pending.source_item_id &&
-      pending.source_record_kind &&
-      pending.source_record_id
-    ) {
-      const { error: itemResolutionError } = await supabase.rpc(
-        "resolve_opposed_item_use",
-        {
-          p_action_id: pending.id,
-          p_apply_effects: !countered,
-        },
-      );
-
-      if (itemResolutionError) {
-        throw new Error(itemResolutionError.message);
-      }
-    }
+    const countered = total >= attackTotal;
 
     let damage = 0;
 
     if (
       !countered &&
-      ["weapon", "unarmed", "item"].includes(pending.action_kind)
+      ["weapon", "unarmed"].includes(pending.action_kind)
     ) {
       const attackModifier = pending.damage_attribute
         ? Number(pending.attack_modifier ?? 0)
@@ -704,10 +677,10 @@ export async function counterOpposedAction(
       .from("opposed_actions")
       .update({
         status,
-        counter_kind: doNothing ? "do_nothing" : counterKind,
-        counter_roll: doNothing ? null : rolled,
-        counter_attribute: counter?.attribute ?? null,
-        counter_modifier: doNothing ? null : modifier,
+        counter_kind: counterKind,
+        counter_roll: rolled,
+        counter_attribute: counter.attribute,
+        counter_modifier: modifier,
         counter_total: total,
         resolved_damage: damage,
         resolved_at: new Date().toISOString(),
@@ -718,23 +691,15 @@ export async function counterOpposedAction(
     if (updateError) throw new Error(updateError.message);
 
     const outcome = countered
-      ? `${counter?.label.toUpperCase()} SUCCESSFUL · ${total} >= ${attackTotal} · No effect`
-      : doNothing
-        ? `${pending.action_label} SUCCEEDS · No Counter attempted${
-            damage > 0 ? ` · ${damage} Damage` : ""
-          }`
-        : `${pending.action_label} SUCCEEDS · ${attackTotal} > ${total}${
-            damage > 0 ? ` · ${damage} Damage` : ""
-          }`;
-
-    const resolutionMessage = doNothing
-      ? `◆ ${character.display_name} chooses Do nothing · ${outcome}`
-      : `◆ ${character.display_name} uses ${counter!.label} · d20 -> ${rolled} + ${ATTRIBUTE_LABELS[counter!.attribute]} (${modifier >= 0 ? "+" : ""}${modifier}) = ${total} · ${outcome}`;
+      ? `${counter.label.toUpperCase()} SUCCESSFUL · ${total} >= ${attackTotal} · No effect`
+      : `${pending.action_label} SUCCEEDS · ${attackTotal} > ${total}${
+          damage > 0 ? ` · ${damage} Damage` : ""
+        }`;
 
     await roomMessage(
       pending.room_id,
       character.id,
-      resolutionMessage,
+      `◆ ${character.display_name} uses ${counter.label} · d20 -> ${rolled} + ${ATTRIBUTE_LABELS[counter.attribute]} (${modifier >= 0 ? "+" : ""}${modifier}) = ${total} · ${outcome}`,
     );
 
     revalidatePath("/game");

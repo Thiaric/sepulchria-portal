@@ -39,8 +39,6 @@ type ItemMechanics = {
   success_die: number | null;
   success_threshold: number | null;
   success_attribute: ItemSuccessAttribute | null;
-  resolution_mode: "automatic" | "fixed" | "opposed" | null;
-  counter_options: string[] | null;
   damage_dice: string | null;
   damage_type: string | null;
   cooldown_minutes: number | null;
@@ -137,8 +135,6 @@ async function loadAttemptRecord(
     success_die,
     success_threshold,
     success_attribute,
-    resolution_mode,
-    counter_options,
     damage_dice,
     damage_type,
     cooldown_minutes,
@@ -719,14 +715,6 @@ export async function useInventoryItem(
       targetMode,
       requestedTargetId: targetCharacterId,
     });
-
-    if (record.item.resolution_mode === "opposed") {
-      return {
-        ok: false,
-        message:
-          "Opposed Items must be used from Play so the target can choose a Counter.",
-      };
-    }
 
     const successRoll =
       await rollItemSuccess(

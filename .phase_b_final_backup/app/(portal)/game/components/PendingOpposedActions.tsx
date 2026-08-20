@@ -175,15 +175,6 @@ export function PendingOpposedActions({
 )
                 </button>
               ))}
-
-              <button
-                type="submit"
-                name="counter_kind"
-                value="__do_nothing__"
-                className="border border-[#765937] bg-[#2a1c11] px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-[#dfc18f] transition hover:border-[#a47b48]"
-              >
-                Do nothing
-              </button>
             </form>
           </section>
         );
