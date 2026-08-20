@@ -227,7 +227,7 @@ if (
     return <AdminOrdersContext />;
   }
 
-  if (pathname === "/gifts") {
+  if (pathname === "/feats") {
     return <PublicGiftsContext />;
   }
 

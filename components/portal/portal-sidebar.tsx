@@ -130,8 +130,8 @@ const otherCodexNavigationItems: NavigationItem[] = [
     title:
       "Browse the Feats available for Characters through Ancestries, Orders and other sources.",
     icon: "/icons/gifts.png",
-    href: "/gifts",
-    activePaths: ["/gifts"],
+    href: "/feats",
+    activePaths: ["/feats"],
   },
 ];
 
