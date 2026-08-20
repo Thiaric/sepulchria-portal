@@ -2607,7 +2607,7 @@ async function resolveRoomDamageOnlyUse({
   characterId: string;
   recordKind: string;
   recordId: string;
-  itemId: string;
+  itemId: string | null;
   useBehaviour:
     | "reusable"
     | "consumable"
