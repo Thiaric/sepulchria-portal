@@ -423,7 +423,7 @@ export async function saveCharacterV2(
 
           supabase
             .from("gifts")
-            .select("id")
+            .select("id, ancestry_choice_group")
             .eq("is_active", true)
             .in("id", selectedGiftIds),
         ]);
@@ -455,6 +455,63 @@ export async function saveCharacterV2(
           mode,
           "One or more selected Feats are not available to this Ancestry.",
         );
+      }
+
+      const selectedGrouped =
+        (activeGiftsResult.data ?? [])
+          .filter((row) => row.ancestry_choice_group);
+
+      if (selectedGrouped.length > 0) {
+        const groups = new Set(
+          selectedGrouped.map(
+            (row) => row.ancestry_choice_group,
+          ),
+        );
+
+        if (
+          groups.size !== 1 ||
+          selectedGrouped.length !== selectedGiftIds.length
+        ) {
+          fail(
+            mode,
+            "Choose one complete grouped Ancestry Feat pair.",
+          );
+        }
+
+        const selectedGroup =
+          selectedGrouped[0].ancestry_choice_group;
+
+        const {
+          data: completeGroup,
+          error: completeGroupError,
+        } = await supabase
+          .from("gifts")
+          .select(`
+            id,
+            eligibility:gift_races!inner(race_id)
+          `)
+          .eq("is_active", true)
+          .eq("ancestry_choice_group", selectedGroup)
+          .eq("eligibility.race_id", raceId);
+
+        if (completeGroupError) {
+          fail(mode, completeGroupError.message);
+        }
+
+        const completeGroupIds = new Set(
+          (completeGroup ?? []).map((row) => row.id),
+        );
+
+        if (
+          completeGroupIds.size === 0 ||
+          completeGroupIds.size !== selectedGiftIds.length ||
+          selectedGiftIds.some((id) => !completeGroupIds.has(id))
+        ) {
+          fail(
+            mode,
+            "Choose one complete Ancestry Feat group.",
+          );
+        }
       }
     }
 

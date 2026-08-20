@@ -33,6 +33,7 @@ type AncestryGiftOption = {
   name: string;
   description: string;
   raceIds: string[];
+  choiceGroup: string | null;
 };
 
 type Props = {
@@ -95,7 +96,42 @@ export default function CharacterForm({
   }
 
   function toggleAncestryGift(giftId: string) {
+    const gift =
+      eligibleAncestryGifts.find(
+        (item) => item.id === giftId,
+      );
+
+    if (!gift) return;
+
     setAncestryGiftIds((current) => {
+      if (gift.choiceGroup) {
+        const groupIds =
+          eligibleAncestryGifts
+            .filter(
+              (item) =>
+                item.choiceGroup === gift.choiceGroup,
+            )
+            .map((item) => item.id);
+
+        const wholeGroupSelected =
+          groupIds.length > 0 &&
+          groupIds.every((id) =>
+            current.includes(id),
+          );
+
+        if (wholeGroupSelected) {
+          return current.filter(
+            (id) => !groupIds.includes(id),
+          );
+        }
+
+        if (groupIds.length > 2) {
+          return current;
+        }
+
+        return groupIds;
+      }
+
       if (current.includes(giftId)) {
         return current.filter((id) => id !== giftId);
       }

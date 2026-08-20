@@ -7,6 +7,7 @@ export type AdminAncestryGiftOption = {
   name: string;
   description: string;
   raceIds: string[];
+  choiceGroup: string | null;
 };
 
 export function AdminAncestryGiftSelector({
@@ -58,7 +59,40 @@ export function AdminAncestryGiftSelector({
   );
 
   function toggle(giftId: string) {
+    const gift =
+      eligible.find((item) => item.id === giftId);
+
+    if (!gift) return;
+
     setSelected((current) => {
+      if (gift.choiceGroup) {
+        const groupIds =
+          eligible
+            .filter(
+              (item) =>
+                item.choiceGroup === gift.choiceGroup,
+            )
+            .map((item) => item.id);
+
+        const wholeGroupSelected =
+          groupIds.length > 0 &&
+          groupIds.every((id) =>
+            current.includes(id),
+          );
+
+        if (wholeGroupSelected) {
+          return current.filter(
+            (id) => !groupIds.includes(id),
+          );
+        }
+
+        if (groupIds.length > 2) {
+          return current;
+        }
+
+        return groupIds;
+      }
+
       if (current.includes(giftId)) {
         return current.filter((id) => id !== giftId);
       }

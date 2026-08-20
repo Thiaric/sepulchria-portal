@@ -55,6 +55,7 @@ export default async function CreateCharacterPage({
       id,
       name,
       description,
+      ancestry_choice_group,
       eligibility:gift_races(
         race_id
       )
@@ -79,6 +80,8 @@ export default async function CreateCharacterPage({
       name: gift.name,
       description:
         gift.description ?? "",
+      choiceGroup:
+        gift.ancestry_choice_group ?? null,
       raceIds:
         (gift.eligibility ?? []).map(
           (entry) => entry.race_id,

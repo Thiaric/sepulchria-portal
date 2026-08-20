@@ -314,6 +314,7 @@ export default async function AdminCharacterPage({
         id,
         name,
         description,
+        ancestry_choice_group,
         eligibility:gift_races(
           race_id
         )
@@ -350,6 +351,8 @@ export default async function AdminCharacterPage({
       id: gift.id,
       name: gift.name,
       description: gift.description ?? "",
+      choiceGroup:
+        gift.ancestry_choice_group ?? null,
       raceIds: (gift.eligibility ?? []).map(
         (entry) => entry.race_id,
       ),
