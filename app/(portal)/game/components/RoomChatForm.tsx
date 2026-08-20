@@ -55,9 +55,6 @@ type CheckOption = {
 
 const CHECK_OPTIONS: CheckOption[] = [
   { value: "unarmed_attack", label: "Unarmed Attack", attribute: "muscles" },
-  { value: "melee_attack_muscles", label: "Melee Attack (Muscles)", attribute: "muscles" },
-  { value: "melee_attack_reflexes", label: "Melee Attack (Reflexes)", attribute: "reflexes" },
-  { value: "ranged_attack", label: "Ranged Attack", attribute: "reflexes" },
   { value: "defend", label: "Defend", attribute: "vigor" },
   { value: "dodge", label: "Dodge", attribute: "reflexes" },
   { value: "use_muscles", label: "Use your Muscles", attribute: "muscles" },
@@ -103,6 +100,14 @@ type ChatItem = {
   maxCharges: number | null;
   chargesRemaining: number | null;
   cooldownReadyAt: string | null;
+  successDie?: number | null;
+  successThreshold?: number | null;
+  successAttribute?: CharacterAttributeKey | null;
+  damageDice?: string | null;
+  damageType?: string | null;
+  categorySlug?: string | null;
+  isEquipped?: boolean;
+  equippedSlot?: string | null;
   effects: {
     trigger_type: string;
     effect_mode: string;
@@ -325,31 +330,108 @@ export default function RoomChatForm({
       initialState,
     );
 
+  const regularItems = useMemo(
+    () =>
+      items.filter(
+        (item) => item.categorySlug !== "weapon",
+      ),
+    [items],
+  );
+
+  const weaponItems = useMemo(
+    () =>
+      items.filter(
+        (item) =>
+          item.categorySlug === "weapon" &&
+          item.isEquipped === true &&
+          ["main_hand", "off_hand"].includes(
+            String(item.equippedSlot ?? ""),
+          ),
+      ),
+    [items],
+  );
+
   const [selectedItemKey, setSelectedItemKey] =
-    useState(
-      items[0]
-        ? `${items[0].recordKind}:${items[0].recordId}`
-        : "",
-    );
+    useState("");
 
   const [itemTargetId, setItemTargetId] =
     useState("");
 
   const selectedItem = useMemo(
     () =>
-      items.find(
+      regularItems.find(
         (item) =>
           `${item.recordKind}:${item.recordId}` ===
           selectedItemKey,
       ) ??
-      items[0] ??
+      regularItems[0] ??
       null,
-    [items, selectedItemKey],
+    [regularItems, selectedItemKey],
   );
+
+  const [selectedWeaponKey, setSelectedWeaponKey] =
+    useState("");
+
+  const [weaponTargetId, setWeaponTargetId] =
+    useState("");
+
+  const selectedWeapon = useMemo(
+    () =>
+      weaponItems.find(
+        (item) =>
+          `${item.recordKind}:${item.recordId}` ===
+          selectedWeaponKey,
+      ) ??
+      weaponItems[0] ??
+      null,
+    [weaponItems, selectedWeaponKey],
+  );
+
+  useEffect(() => {
+    if (
+      selectedItemKey &&
+      regularItems.some(
+        (item) =>
+          `${item.recordKind}:${item.recordId}` ===
+          selectedItemKey,
+      )
+    ) {
+      return;
+    }
+
+    setSelectedItemKey(
+      regularItems[0]
+        ? `${regularItems[0].recordKind}:${regularItems[0].recordId}`
+        : "",
+    );
+  }, [regularItems, selectedItemKey]);
+
+  useEffect(() => {
+    if (
+      selectedWeaponKey &&
+      weaponItems.some(
+        (item) =>
+          `${item.recordKind}:${item.recordId}` ===
+          selectedWeaponKey,
+      )
+    ) {
+      return;
+    }
+
+    setSelectedWeaponKey(
+      weaponItems[0]
+        ? `${weaponItems[0].recordKind}:${weaponItems[0].recordId}`
+        : "",
+    );
+  }, [weaponItems, selectedWeaponKey]);
 
   useEffect(() => {
     setItemTargetId("");
   }, [selectedItemKey]);
+
+  useEffect(() => {
+    setWeaponTargetId("");
+  }, [selectedWeaponKey]);
 
   useEffect(() => {
     if (
@@ -1332,10 +1414,133 @@ function ignoreSpellingWord() {
           className="border border-[#59432c]/35 bg-[#100c09] p-3"
         >
           <UtilityPanelHeader
-            title="Use Attributes"
-            description="Choose the check to perform. The current effective score is shown before rolling."
+            title="Atk / Def / Dodge / Resist / Use Attribute"
+            description="Attack with an equipped Weapon, or make a defensive, dodge, resistance or Check."
             onClose={() => setUtilityMode(null)}
           />
+
+          {selectedWeapon ? (
+            <div className="mb-3 border border-[#6a5032]/45 bg-[#15100d] p-3">
+              <p className="text-[8px] uppercase tracking-[0.16em] text-[#9a7d55]">
+                Equipped Weapon Attack
+              </p>
+
+              <div className="mt-2 grid gap-2 md:grid-cols-2">
+                <label>
+                  <span className="mb-1 block text-[8px] uppercase tracking-[0.12em] text-[#806b50]">
+                    Weapon
+                  </span>
+                  <select
+                    value={selectedWeaponKey}
+                    onChange={(event) =>
+                      setSelectedWeaponKey(event.target.value)
+                    }
+                    className="w-full border border-[#654c31] bg-[#0f0c09] px-3 py-2.5 text-[10px] text-[#d8c29b] outline-none focus:border-[#a17a45]"
+                  >
+                    {weaponItems.map((item) => (
+                      <option
+                        key={`${item.recordKind}:${item.recordId}`}
+                        value={`${item.recordKind}:${item.recordId}`}
+                      >
+                        {item.name}
+                        {item.equippedSlot
+                          ? ` - ${
+                              item.equippedSlot === "main_hand"
+                                ? "Main Hand"
+                                : "Off Hand"
+                            }`
+                          : ""}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label>
+                  <span className="mb-1 block text-[8px] uppercase tracking-[0.12em] text-[#806b50]">
+                    Target
+                  </span>
+                  <select
+                    value={weaponTargetId}
+                    onChange={(event) =>
+                      setWeaponTargetId(event.target.value)
+                    }
+                    className="w-full border border-[#654c31] bg-[#0f0c09] px-3 py-2.5 text-[10px] text-[#d8c29b] outline-none focus:border-[#a17a45]"
+                  >
+                    <option value="">Choose character...</option>
+                    {presentCharacters.map((entry) => (
+                      <option key={entry.id} value={entry.id}>
+                        {entry.display_name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+
+              <div className="mt-2 flex flex-wrap gap-1.5 text-[8px] uppercase tracking-[0.1em] text-[#a98b61]">
+                <span className="border border-[#59432c]/40 px-2 py-1">
+                  Success{" "}
+                  {selectedWeapon.successDie
+                    ? `d${selectedWeapon.successDie}${
+                        selectedWeapon.successAttribute
+                          ? ` + ${ATTRIBUTE_LABELS[selectedWeapon.successAttribute]}`
+                          : ""
+                      } >= ${selectedWeapon.successThreshold ?? "?"}`
+                    : "Automatic"}
+                </span>
+                <span className="border border-[#59432c]/40 px-2 py-1">
+                  Damage{" "}
+                  {selectedWeapon.damageDice ?? "None"}
+                  {selectedWeapon.successAttribute
+                    ? ` + ${ATTRIBUTE_LABELS[selectedWeapon.successAttribute]}`
+                    : ""}
+                  {selectedWeapon.damageType
+                    ? ` ${selectedWeapon.damageType}`
+                    : ""}
+                </span>
+              </div>
+
+              <div className="mt-3">
+                <button
+                  type="submit"
+                  formAction={itemAction}
+                  formNoValidate
+                  disabled={
+                    !weaponTargetId ||
+                    Boolean(
+                      selectedWeapon.cooldownReadyAt &&
+                        Date.parse(selectedWeapon.cooldownReadyAt) > Date.now(),
+                    )
+                  }
+                  
+                  className="border border-[#85653c] bg-[#342617] px-5 py-2.5 text-[9px] uppercase tracking-[0.18em] text-[#efd4a0] transition hover:bg-[#4a351f] disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  Attack
+                </button>
+                <input
+                  type="hidden"
+                  name="item_record_kind"
+                  value={selectedWeapon.recordKind}
+                  readOnly
+                />
+                <input
+                  type="hidden"
+                  name="item_record_id"
+                  value={selectedWeapon.recordId}
+                  readOnly
+                />
+                <input
+                  type="hidden"
+                  name="item_target_character_id"
+                  value={weaponTargetId}
+                  readOnly
+                />
+              </div>
+            </div>
+          ) : (
+            <p className="mb-3 border border-[#59432c]/35 bg-[#15100d] px-3 py-2 text-[9px] text-[#817565]">
+              No Weapon is equipped in Main Hand or Off Hand.
+            </p>
+          )}
 
           <input
             type="hidden"
@@ -1391,7 +1596,7 @@ function ignoreSpellingWord() {
             </label>
 
             <RollButton
-              label="Use Attribute"
+              label="Roll Check"
               disabled={!attributesComplete}
               formAction={checkAction}
               onPrepare={() => undefined}
@@ -1730,7 +1935,7 @@ function ignoreSpellingWord() {
                     }
                     className="w-full border border-[#654c31] bg-[#0f0c09] px-3 py-2.5 text-[10px] text-[#d8c29b] outline-none focus:border-[#a17a45]"
                   >
-                    {items.map((item) => (
+                    {regularItems.map((item) => (
                       <option
                         key={`${item.recordKind}:${item.recordId}`}
                         value={`${item.recordKind}:${item.recordId}`}
@@ -1947,12 +2152,12 @@ function ignoreSpellingWord() {
             </>
           ) : (
             <p className="text-sm italic text-[#756958]">
-              You have no usable Items.
+              You have no usable non-Weapon Items.
             </p>
           )}
         </form>
       )}
-
+{utilityMode === null ? (
       <div className="-mt-9 mx-[105px] flex flex-wrap justify-center gap-1.5 border-0 pt-0 max-lg:mx-0 max-lg:mt-2 max-lg:border-t max-lg:border-[#59432c]/30 max-lg:pt-2">
         <button
           type="button"
@@ -1997,7 +2202,7 @@ function ignoreSpellingWord() {
               : utilityButtonClass
           }
         >
-          Use Attributes
+          Atk / Def / Dodge / Resist / Use Attribute
         </button>
 
         <button
@@ -2055,6 +2260,7 @@ function ignoreSpellingWord() {
           Item Exchange
         </button>
       </div>
+      ) : null}
 
       <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[7px] leading-3 text-[#756958]">
   <p>

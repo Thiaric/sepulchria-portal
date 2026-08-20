@@ -317,11 +317,13 @@ export function AdminRecordSearchContext({ mode }: { mode: Mode }) {
 
     if (mode === "items") {
       target =
+        document.getElementById(`item-${entry.id}`) ??
         document
           .querySelector<HTMLInputElement>(
             `input[name="itemId"][value="${CSS.escape(entry.id)}"]`,
           )
-          ?.closest<HTMLElement>("details, section, article") ?? null;
+          ?.closest<HTMLElement>("details") ??
+        null;
     }
 
     if (mode === "locations") {
