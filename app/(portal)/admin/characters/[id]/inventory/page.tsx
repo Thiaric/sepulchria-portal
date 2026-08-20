@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { AdminActionForm } from "@/components/admin/admin-action-form";
 import { requireStaff } from "@/lib/auth/require-staff";
 import {
   createUniqueItemForCharacter,
@@ -469,16 +470,21 @@ export default async function AdminCharacterInventoryPage({
                     <p className="mt-3 text-[9px] leading-5 text-[#8f8271]">
                       Standard Container possession.
                     </p>
-                    <form action={sendUniqueItemToVault} className="mt-3">
+                    <AdminActionForm
+                      action={sendUniqueItemToVault}
+                      confirmMessage={`Remove ${uniqueName(row)} from this character and place it in the Admin Vault?`}
+                      className="mt-3"
+                    >
                       <input type="hidden" name="instanceId" value={row.id} />
                       <input type="hidden" name="returnTo" value={returnTo} />
+                      <input type="hidden" name="liveAction" value="1" />
                       <button
                         type="submit"
                         className="border border-red-900/55 bg-red-950/20 px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-red-300"
                       >
                         Remove
                       </button>
-                    </form>
+                    </AdminActionForm>
                   </article>
                 );
               })}
@@ -532,9 +538,10 @@ export default async function AdminCharacterInventoryPage({
                     </summary>
 
                     <div className="border-t border-[#59432c]/35 p-4">
-                      <form action={updateUniqueItem}>
+                      <AdminActionForm action={updateUniqueItem}>
                         <input type="hidden" name="instanceId" value={row.id} />
                         <input type="hidden" name="returnTo" value={returnTo} />
+                        <input type="hidden" name="liveAction" value="1" />
 
                         <div className="grid gap-3 md:grid-cols-2">
                           <input
@@ -596,7 +603,7 @@ export default async function AdminCharacterInventoryPage({
                             Save Unique Item
                           </button>
                         </div>
-                      </form>
+                      </AdminActionForm>
 
                       <div className="mt-5 border-t border-[#59432c]/35 pt-4">
                         <p className="text-[8px] uppercase tracking-[0.16em] text-[#806b50]">
@@ -626,12 +633,14 @@ export default async function AdminCharacterInventoryPage({
                         )}
                       </div>
 
-                      <form
+                      <AdminActionForm
                         action={sendUniqueItemToVault}
+                        confirmMessage={`Move ${uniqueName(row)} to the Admin Vault?`}
                         className="mt-5 flex justify-end border-t border-[#59432c]/35 pt-4"
                       >
                         <input type="hidden" name="instanceId" value={row.id} />
                         <input type="hidden" name="returnTo" value={returnTo} />
+                        <input type="hidden" name="liveAction" value="1" />
 
                         <button
                           type="submit"
@@ -639,7 +648,7 @@ export default async function AdminCharacterInventoryPage({
                         >
                           Move to Admin Vault
                         </button>
-                      </form>
+                      </AdminActionForm>
                     </div>
                   </details>
                 );

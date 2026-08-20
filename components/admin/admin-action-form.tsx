@@ -42,6 +42,13 @@ function pendingLabel(
     text.trim().toLowerCase();
 
   if (
+    value.includes("destroy") ||
+    value.includes("archive")
+  ) {
+    return "Destroying...";
+  }
+
+  if (
     value.includes("delete") ||
     value.includes("remove")
   ) {
@@ -78,6 +85,13 @@ function successMessage(
 ) {
   const value =
     text.trim().toLowerCase();
+
+  if (
+    value.includes("destroy") ||
+    value.includes("archive")
+  ) {
+    return "Destroyed successfully.";
+  }
 
   if (
     value.includes("delete") ||

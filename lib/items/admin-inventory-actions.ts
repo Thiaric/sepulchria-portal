@@ -46,6 +46,10 @@ function returnPath(formData: FormData) {
 }
 
 function fail(formData: FormData, message: string): never {
+  if (formData.get("liveAction") === "1") {
+    throw new Error(message);
+  }
+
   const params = new URLSearchParams();
   params.set("error", message);
   redirect(`${returnPath(formData)}?${params.toString()}`);

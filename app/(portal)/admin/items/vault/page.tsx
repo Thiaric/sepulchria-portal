@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { AdminActionForm } from "@/components/admin/admin-action-form";
 import { requireStaff } from "@/lib/auth/require-staff";
 import {
   assignVaultItemToCharacter,
@@ -202,11 +203,12 @@ export default async function AdminItemVaultPage({
             Create directly in Vault
           </h2>
 
-          <form
+          <AdminActionForm
             action={createUniqueItemInVault}
             className="mt-5 grid gap-3 md:grid-cols-2"
           >
             <input type="hidden" name="returnTo" value={returnTo} />
+            <input type="hidden" name="liveAction" value="1" />
 
             <select name="itemId" required defaultValue="" className={inputClass}>
               <option value="" disabled>
@@ -283,7 +285,7 @@ export default async function AdminItemVaultPage({
                 Create in Vault
               </button>
             </div>
-          </form>
+          </AdminActionForm>
         </section>
 
         <section className="mt-6">
@@ -354,12 +356,13 @@ export default async function AdminItemVaultPage({
                       </p>
                     ) : null}
 
-                    <form
+                    <AdminActionForm
                       action={assignVaultItemToCharacter}
                       className="mt-4 flex gap-2"
                     >
                       <input type="hidden" name="instanceId" value={row.id} />
                       <input type="hidden" name="returnTo" value={returnTo} />
+                      <input type="hidden" name="liveAction" value="1" />
 
                       <select
                         name="characterId"
@@ -380,7 +383,7 @@ export default async function AdminItemVaultPage({
                       <button type="submit" className={buttonClass}>
                         Assign
                       </button>
-                    </form>
+                    </AdminActionForm>
 
                     {history.length ? (
                       <details className="mt-4 border border-[#59432c]/35 bg-[#15100d]">
@@ -406,12 +409,14 @@ export default async function AdminItemVaultPage({
                       </details>
                     ) : null}
 
-                    <form
+                    <AdminActionForm
                       action={destroyVaultItem}
+                      confirmMessage={`Permanently destroy ${name}? The live Item will be removed, while its audit archive and provenance are retained.`}
                       className="mt-4 border-t border-[#59432c]/35 pt-4"
                     >
                       <input type="hidden" name="instanceId" value={row.id} />
                       <input type="hidden" name="returnTo" value={returnTo} />
+                      <input type="hidden" name="liveAction" value="1" />
 
                       <label className="block">
                         <span className="text-[8px] uppercase tracking-[0.14em] text-[#8f7154]">
@@ -435,7 +440,7 @@ export default async function AdminItemVaultPage({
                           Archive & destroy
                         </button>
                       </div>
-                    </form>
+                    </AdminActionForm>
                   </article>
                 );
               })}
