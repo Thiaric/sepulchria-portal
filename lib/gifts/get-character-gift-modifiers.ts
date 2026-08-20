@@ -52,6 +52,15 @@ export async function getCharacterGiftAttributeModifiers(
 ): Promise<GiftAttributeModifiers> {
   const supabase = await createClient();
 
+  const { error: staffExpiryError } = await supabase.rpc(
+    "reconcile_expired_staff_gifts",
+    { p_character_id: characterId },
+  );
+
+  if (staffExpiryError) {
+    throw new Error(`Unable to reconcile expired staff Feats: ${staffExpiryError.message}`);
+  }
+
   // Revert any temporary Vigour Health that has expired before
   // calculating the character's current mechanics.
   const { error: reconcileError } =

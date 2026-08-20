@@ -30,6 +30,7 @@ type Activation = {
 type Ownership = {
   id: string;
   acquisition_source: "ancestry" | "order" | "staff";
+  expires_at: string | null;
   gift: Gift | Gift[] | null;
   activations: Activation[] | null;
 };
@@ -76,11 +77,21 @@ export async function CharacterGiftsDisplay({
 }) {
   const supabase = await createClient();
 
+  const { error: staffExpiryError } = await supabase.rpc(
+    "reconcile_expired_staff_gifts",
+    { p_character_id: characterId },
+  );
+
+  if (staffExpiryError) {
+    throw new Error(`Unable to reconcile expired staff Feats: ${staffExpiryError.message}`);
+  }
+
   const { data, error } = await supabase
     .from("character_gifts")
     .select(`
       id,
       acquisition_source,
+      expires_at,
       gift:gifts(
         id,
         name,
@@ -223,7 +234,10 @@ export async function CharacterGiftsDisplay({
                   <p className="mt-1 text-[7px] uppercase tracking-[0.12em] text-[#756958]">
                     {sourceLabel(
                       ownership.acquisition_source,
-                    )}{" "}
+                    )}
+                    {ownership.acquisition_source === "staff" && ownership.expires_at
+                      ? ` · Granted until ${new Date(ownership.expires_at).toLocaleDateString("en-GB")}`
+                      : ""}{" "}
                     · {state}
                   </p>
                 </div>

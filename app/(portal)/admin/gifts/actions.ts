@@ -227,9 +227,37 @@ export async function assignGiftToCharacter(formData: FormData) {
   try {
     const giftId = requiredText(formData, "giftId", "Gift");
     const characterId = requiredText(formData, "characterId", "Character");
+    const assignmentMode = requiredText(formData, "assignmentMode", "Assignment duration");
 
     if (!isUuid(giftId) || !isUuid(characterId)) {
       throw new Error("Invalid Gift or character.");
+    }
+
+    if (!["permanent", "temporary"].includes(assignmentMode)) {
+      throw new Error("Invalid Feat assignment duration.");
+    }
+
+    const assignmentDays =
+      assignmentMode === "temporary"
+        ? integer(formData, "assignmentDays", 0)
+        : 0;
+
+    if (assignmentMode === "temporary" && assignmentDays <= 0) {
+      throw new Error("Temporary Feat assignments need at least 1 day.");
+    }
+
+    const expiresAt =
+      assignmentMode === "temporary"
+        ? new Date(Date.now() + assignmentDays * 24 * 60 * 60 * 1000).toISOString()
+        : null;
+
+    const { error: expiryError } = await supabase.rpc(
+      "reconcile_expired_staff_gifts",
+      { p_character_id: characterId },
+    );
+
+    if (expiryError) {
+      throw new Error(`Unable to clear expired Feat assignments: ${expiryError.message}`);
     }
 
     const {
@@ -242,6 +270,7 @@ export async function assignGiftToCharacter(formData: FormData) {
         character_id: characterId,
         acquisition_source: "staff",
         assigned_by: staff.userId,
+        expires_at: expiresAt,
       })
       .select("id")
       .single();

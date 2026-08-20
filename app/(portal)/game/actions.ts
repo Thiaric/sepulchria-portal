@@ -902,6 +902,15 @@ export async function useRoomGift(
     const roomId =
       character.current_room_id;
 
+    const { error: staffExpiryError } = await supabase.rpc(
+      "reconcile_expired_staff_gifts",
+      { p_character_id: character.id },
+    );
+
+    if (staffExpiryError) {
+      return { ok: false, message: `Unable to reconcile expired Feats: ${staffExpiryError.message}` };
+    }
+
     const { data: ownership, error: ownershipError } =
       await supabase
         .from("character_gifts")
@@ -1017,6 +1026,15 @@ export async function activateRoomGift(
         ok: false,
         message: "Your session has expired.",
       };
+    }
+
+    const { error: staffExpiryError } = await supabase.rpc(
+      "reconcile_expired_staff_gifts",
+      { p_character_id: character.id },
+    );
+
+    if (staffExpiryError) {
+      return { ok: false, message: `Unable to reconcile expired Feats: ${staffExpiryError.message}` };
     }
 
     const {

@@ -37,6 +37,7 @@ type Gift = {
     id: string;
     character_id: string;
     acquisition_source: "ancestry" | "order" | "staff";
+    expires_at: string | null;
   }[] | null;
 };
 
@@ -72,7 +73,7 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
           races:gift_races(race_id),
           roles:gift_order_jobs(order_job_id),
           assignments:character_gifts(
-            id, character_id, acquisition_source
+            id, character_id, acquisition_source, expires_at
           )
         `)
         .order("sort_order", { ascending: true })
@@ -243,6 +244,26 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
                       ))}
                     </select>
 
+                    <select
+                      name="assignmentMode"
+                      required
+                      defaultValue="permanent"
+                      className="min-w-[150px] border border-[#60482e]/55 bg-[#15100d] px-3 py-2.5 text-xs text-[#d7c4a5] outline-none"
+                    >
+                      <option value="permanent">Permanent</option>
+                      <option value="temporary">Temporary</option>
+                    </select>
+
+                    <input
+                      type="number"
+                      name="assignmentDays"
+                      min={1}
+                      step={1}
+                      placeholder="Days"
+                      aria-label="Temporary assignment duration in days"
+                      className="w-[100px] border border-[#60482e]/55 bg-[#15100d] px-3 py-2.5 text-xs text-[#d7c4a5] outline-none"
+                    />
+
                     <button
                       type="submit"
                       className="border border-[#987344] bg-[#3b2919] px-4 py-2.5 text-[8px] uppercase tracking-[0.16em] text-[#efd6a8]"
@@ -265,6 +286,11 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
                             </p>
                             <p className="mt-1 text-[7px] uppercase tracking-[0.12em] text-[#6e6252]">
                               {assignment.acquisition_source}
+                              {assignment.acquisition_source === "staff"
+                                ? assignment.expires_at
+                                  ? ` · Until ${new Date(assignment.expires_at).toLocaleDateString("en-GB")}`
+                                  : " · Permanent"
+                                : ""}
                             </p>
                           </div>
 
