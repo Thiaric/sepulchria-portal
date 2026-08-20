@@ -554,6 +554,41 @@ export async function createUniqueItemInVault(formData: FormData) {
   refreshVault();
 }
 
+export async function updateVaultUniqueItem(formData: FormData) {
+  await requireStaff();
+  const supabase = await createClient();
+
+  try {
+    const instanceId = requiredText(formData, "instanceId", "Vault Item");
+    if (!isUuid(instanceId)) throw new Error("Invalid Vault Item.");
+
+    const o = uniqueOverrides(formData);
+
+    const { error } = await supabase.rpc(
+      "admin_vault_update_unique_item",
+      {
+        p_instance_id: instanceId,
+        p_custom_name: o.custom_name,
+        p_custom_description: o.custom_description,
+        p_custom_image_url: o.custom_image_url,
+        p_quality_override: o.quality_override,
+        p_transfer_policy_override: o.transfer_policy_override,
+        p_is_quest_item_override: o.is_quest_item_override,
+        p_notes: o.notes,
+      },
+    );
+
+    if (error) throw new Error(error.message);
+  } catch (error) {
+    fail(
+      formData,
+      error instanceof Error ? error.message : "Unable to update Vault Item.",
+    );
+  }
+
+  refreshVault();
+}
+
 export async function assignVaultItemToCharacter(formData: FormData) {
   await requireStaff();
   const supabase = await createClient();

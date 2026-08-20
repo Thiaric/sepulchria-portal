@@ -1,11 +1,13 @@
 import Link from "next/link";
 
 import { AdminActionForm } from "@/components/admin/admin-action-form";
+import { AdminVaultFilters } from "@/components/admin/admin-vault-filters";
 import { requireStaff } from "@/lib/auth/require-staff";
 import {
   assignVaultItemToCharacter,
   createUniqueItemInVault,
   destroyVaultItem,
+  updateVaultUniqueItem,
 } from "@/lib/items/admin-inventory-actions";
 import { createClient } from "@/lib/supabase/server";
 
@@ -30,10 +32,15 @@ type VaultRow = {
   custom_description: string | null;
   custom_image_url: string | null;
   quality_override: string | null;
+  transfer_policy_override: string | null;
+  is_quest_item_override: boolean | null;
+  notes: string | null;
   item: Relation<{
     name: string;
     quality: string;
     image_url: string | null;
+    transfer_policy: string;
+    is_quest_item: boolean;
   }>;
   history: {
     id: string;
@@ -113,10 +120,15 @@ export default async function AdminItemVaultPage({
         custom_description,
         custom_image_url,
         quality_override,
+        transfer_policy_override,
+        is_quest_item_override,
+        notes,
         item:items(
           name,
           quality,
-          image_url
+          image_url,
+          transfer_policy,
+          is_quest_item
         ),
         history:item_instance_history(
           id,
@@ -305,6 +317,10 @@ export default async function AdminItemVaultPage({
           </div>
 
           {vault.length ? (
+            <AdminVaultFilters scope="live" total={vault.length} />
+          ) : null}
+
+          {vault.length ? (
             <div className="mt-4 grid gap-4 lg:grid-cols-2">
               {vault.map((row) => {
                 const master = one(row.item);
@@ -312,6 +328,22 @@ export default async function AdminItemVaultPage({
                   row.custom_name?.trim() || master?.name || "Unknown Item";
                 const quality = row.quality_override ?? master?.quality ?? "average";
                 const image = row.custom_image_url ?? master?.image_url ?? null;
+                const transfer =
+                  row.transfer_policy_override ??
+                  master?.transfer_policy ??
+                  "free";
+                const quest =
+                  row.is_quest_item_override ??
+                  master?.is_quest_item ??
+                  false;
+                const searchText = [
+                  name,
+                  master?.name ?? "",
+                  row.custom_description ?? "",
+                  row.notes ?? "",
+                ]
+                  .join(" ")
+                  .toLowerCase();
 
                 const history = [...(row.history ?? [])].sort(
                   (a, b) =>
@@ -322,6 +354,11 @@ export default async function AdminItemVaultPage({
                 return (
                   <article
                     key={row.id}
+                    data-vault-scope="live"
+                    data-search={searchText}
+                    data-quality={quality}
+                    data-transfer={transfer}
+                    data-quest={quest ? "yes" : "no"}
                     className="border border-[#59432c]/40 bg-[#100c09] p-4"
                   >
                     <div className="flex gap-3">
@@ -345,7 +382,8 @@ export default async function AdminItemVaultPage({
                           {name}
                         </p>
                         <p className="mt-1 text-[8px] uppercase tracking-[0.13em] text-[#756958]">
-                          Unique · {quality}
+                          Unique · {quality} · {transfer}
+                          {quest ? " · Quest" : ""}
                         </p>
                       </div>
                     </div>
@@ -355,6 +393,101 @@ export default async function AdminItemVaultPage({
                         {row.custom_description}
                       </p>
                     ) : null}
+
+                    <details className="mt-4 border border-[#59432c]/35 bg-[#15100d]">
+                      <summary className="cursor-pointer list-none px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[#9b8768]">
+                        Edit Vault Item
+                      </summary>
+
+                      <div className="border-t border-[#59432c]/30 p-3">
+                        <AdminActionForm
+                          action={updateVaultUniqueItem}
+                          className="grid gap-3 md:grid-cols-2"
+                        >
+                          <input type="hidden" name="instanceId" value={row.id} />
+                          <input type="hidden" name="returnTo" value={returnTo} />
+                          <input type="hidden" name="liveAction" value="1" />
+
+                          <input
+                            name="customName"
+                            defaultValue={row.custom_name ?? ""}
+                            placeholder="Custom name"
+                            className={inputClass}
+                          />
+
+                          <input
+                            type="url"
+                            name="customImageUrl"
+                            defaultValue={row.custom_image_url ?? ""}
+                            placeholder="Custom image URL"
+                            className={inputClass}
+                          />
+
+                          <textarea
+                            name="customDescription"
+                            rows={3}
+                            defaultValue={row.custom_description ?? ""}
+                            placeholder="Custom description"
+                            className={`${inputClass} md:col-span-2`}
+                          />
+
+                          <select
+                            name="qualityOverride"
+                            defaultValue={row.quality_override ?? ""}
+                            className={inputClass}
+                          >
+                            <option value="">Inherit quality</option>
+                            <option value="poor">Poor</option>
+                            <option value="average">Average</option>
+                            <option value="fine">Fine</option>
+                            <option value="superior">Superior</option>
+                            <option value="flawless">Flawless</option>
+                            <option value="peerless">Peerless</option>
+                          </select>
+
+                          <select
+                            name="transferPolicyOverride"
+                            defaultValue={row.transfer_policy_override ?? ""}
+                            className={inputClass}
+                          >
+                            <option value="">Inherit transfer policy</option>
+                            <option value="free">Free</option>
+                            <option value="restricted">Restricted</option>
+                            <option value="bound">Bound</option>
+                          </select>
+
+                          <select
+                            name="questOverride"
+                            defaultValue={
+                              row.is_quest_item_override === null
+                                ? "inherit"
+                                : row.is_quest_item_override
+                                  ? "yes"
+                                  : "no"
+                            }
+                            className={inputClass}
+                          >
+                            <option value="inherit">Inherit Quest status</option>
+                            <option value="yes">Quest Item: Yes</option>
+                            <option value="no">Quest Item: No</option>
+                          </select>
+
+                          <textarea
+                            name="notes"
+                            rows={2}
+                            defaultValue={row.notes ?? ""}
+                            placeholder="Private staff notes"
+                            className={inputClass}
+                          />
+
+                          <div className="md:col-span-2 flex justify-end">
+                            <button type="submit" className={buttonClass}>
+                              Save Vault Item
+                            </button>
+                          </div>
+                        </AdminActionForm>
+                      </div>
+                    </details>
 
                     <AdminActionForm
                       action={assignVaultItemToCharacter}
@@ -472,6 +605,10 @@ export default async function AdminItemVaultPage({
           </div>
 
           {destroyed.length ? (
+            <AdminVaultFilters scope="archive" total={destroyed.length} />
+          ) : null}
+
+          {destroyed.length ? (
             <div className="mt-4 space-y-3">
               {destroyed.map((row) => {
                 const history = Array.isArray(row.provenance_snapshot)
@@ -492,6 +629,17 @@ export default async function AdminItemVaultPage({
                 return (
                   <article
                     key={row.id}
+                    data-vault-scope="archive"
+                    data-search={[
+                      row.display_name,
+                      row.item_name,
+                      row.description ?? "",
+                      row.destruction_reason,
+                      row.original_instance_id,
+                    ]
+                      .join(" ")
+                      .toLowerCase()}
+                    data-quality={row.quality ?? ""}
                     className="border border-red-950/45 bg-[#100c09] p-4"
                   >
                     <div className="flex gap-3">
