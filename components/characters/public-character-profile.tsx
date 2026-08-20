@@ -263,8 +263,8 @@ export function PublicCharacterProfileView({
                 entry={character.race}
                 href={
                   character.race
-                    ? `/races/${character.race.slug}`
-                    : "/races"
+                    ? `/ancestries/${character.race.slug}`
+                    : "/ancestries"
                 }
               />
             </div>

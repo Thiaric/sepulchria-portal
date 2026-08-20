@@ -19,7 +19,7 @@ export function RaceHero({
       iconUrl={race.icon_url}
       colour={race.colour}
       categoryLabel="Ancestry"
-      returnHref="/races"
+      returnHref="/ancestries"
       returnLabel="Back to ancestries"
       betweenHeroAndRecord={
         <AncestryAttributeModifiers modifiers={race} />

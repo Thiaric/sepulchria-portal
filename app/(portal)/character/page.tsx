@@ -410,8 +410,8 @@ export function Profile({
                   entry={race}
                   href={
                     race
-                      ? `/races/${race.slug}`
-                      : "/races"
+                      ? `/ancestries/${race.slug}`
+                      : "/ancestries"
                   }
                 />
               </div>

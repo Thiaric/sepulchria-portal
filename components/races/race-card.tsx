@@ -14,7 +14,7 @@ export function RaceCard({
   name={race.name}
   slug={race.slug}
   summary={race.summary}
-  hrefBase="/races"
+  hrefBase="/ancestries"
   imageUrl={race.image_url}
   iconUrl={race.icon_url}
   colour={race.colour}

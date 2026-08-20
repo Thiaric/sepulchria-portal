@@ -548,7 +548,7 @@ function RaceSelection({
                   {race.summary || "Codex information will be added soon."}
                 </p>
                 <Link
-                  href={`/races/${race.slug}`}
+                  href={`/ancestries/${race.slug}`}
                   target="_blank"
                   onClick={(event) => event.stopPropagation()}
                   className="mt-4 inline-block text-[9px] uppercase tracking-[0.2em] text-[#9f7b4b]"

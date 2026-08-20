@@ -97,8 +97,8 @@ const otherCodexNavigationItems: NavigationItem[] = [
     title:
       "Read about the playable ancestries of Sepulchria.",
     icon: "/icons/ancestries.png",
-    href: "/races",
-    activePaths: ["/races"],
+    href: "/ancestries",
+    activePaths: ["/ancestries"],
   },
   {
     label: "Associations",

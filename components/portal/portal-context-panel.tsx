@@ -79,7 +79,7 @@ if (publicCharacterMatch) {
   );
 }
 
-  if (pathname === "/races") {
+  if (pathname === "/ancestries") {
   return (
     <PublicCodexJumpContext
       table="races"
@@ -92,7 +92,7 @@ if (publicCharacterMatch) {
 
 if (
   pathname.startsWith(
-    "/races/",
+    "/ancestries/",
   )
 ) {
   return (
@@ -101,7 +101,7 @@ if (
       title="Ancestries"
       eyebrow="Codex"
       description="The peoples and lineages of Aureth, their origins and their relationship with the Current."
-      baseHref="/races"
+      baseHref="/ancestries"
       currentSlug={decodeURIComponent(
         pathname.split("/")[2] ?? "",
       )}
