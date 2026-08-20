@@ -1,6 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 type GiftType =
   | "all"
@@ -260,6 +264,33 @@ export function GiftsCatalogue({
     nameFilter,
     descriptionFilter,
   ]);
+
+  useEffect(() => {
+    const visibleGiftIds =
+      filtered.map((gift) => gift.id);
+
+    /*
+     * The Feats catalogue and the portal context sidebar are separate
+     * client components. Publish the catalogue's actual filtered result so
+     * the sidebar always mirrors every filter on the page: type, Ancestry,
+     * Order, name and description.
+     */
+    sessionStorage.setItem(
+      "sepulchria:gifts-visible-ids",
+      JSON.stringify(visibleGiftIds),
+    );
+
+    window.dispatchEvent(
+      new CustomEvent(
+        "sepulchria:gifts-filter-change",
+        {
+          detail: {
+            ids: visibleGiftIds,
+          },
+        },
+      ),
+    );
+  }, [filtered]);
 
   function reset() {
     setType("all");

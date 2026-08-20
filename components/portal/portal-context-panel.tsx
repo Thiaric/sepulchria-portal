@@ -351,6 +351,73 @@ function PublicGiftsContext() {
   const [error, setError] =
     useState<string | null>(null);
 
+  const [
+    visibleGiftIds,
+    setVisibleGiftIds,
+  ] = useState<Set<string> | null>(
+    null,
+  );
+
+  useEffect(() => {
+    function applyVisibleIds(
+      ids: unknown,
+    ) {
+      if (!Array.isArray(ids)) {
+        return;
+      }
+
+      setVisibleGiftIds(
+        new Set(
+          ids.map((id) =>
+            String(id),
+          ),
+        ),
+      );
+    }
+
+    const stored =
+      sessionStorage.getItem(
+        "sepulchria:gifts-visible-ids",
+      );
+
+    if (stored) {
+      try {
+        applyVisibleIds(
+          JSON.parse(stored),
+        );
+      } catch {
+        sessionStorage.removeItem(
+          "sepulchria:gifts-visible-ids",
+        );
+      }
+    }
+
+    function handleFilterChange(
+      event: Event,
+    ) {
+      const customEvent =
+        event as CustomEvent<{
+          ids?: string[];
+        }>;
+
+      applyVisibleIds(
+        customEvent.detail?.ids,
+      );
+    }
+
+    window.addEventListener(
+      "sepulchria:gifts-filter-change",
+      handleFilterChange,
+    );
+
+    return () => {
+      window.removeEventListener(
+        "sepulchria:gifts-filter-change",
+        handleFilterChange,
+      );
+    };
+  }, []);
+
   useEffect(() => {
     let cancelled = false;
 
@@ -402,8 +469,17 @@ function PublicGiftsContext() {
   const query =
     search.trim().toLowerCase();
 
+  const pageFilteredEntries =
+    visibleGiftIds === null
+      ? entries
+      : entries.filter((entry) =>
+          visibleGiftIds.has(
+            entry.id,
+          ),
+        );
+
   const filteredEntries =
-    entries.filter(
+    pageFilteredEntries.filter(
       (entry) =>
         !query ||
         entry.name
@@ -474,7 +550,9 @@ function PublicGiftsContext() {
 
         <span className="text-[7px] uppercase tracking-[0.12em] text-[#6f6353]">
           {filteredEntries.length}
-          {query
+          {(query ||
+            pageFilteredEntries.length !==
+              entries.length)
             ? ` / ${entries.length}`
             : ""}
         </span>

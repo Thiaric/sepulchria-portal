@@ -10,6 +10,9 @@ import {
   hasCharacterFeature,
 } from "@/lib/features/character-feature-entitlements";
 import {
+  getStaffSession,
+} from "@/lib/auth/require-staff";
+import {
   createClient,
 } from "@/lib/supabase/server";
 
@@ -393,6 +396,21 @@ async function canAccess(
 
   if (privateError || !privateRoom) {
     return false;
+  }
+
+  /*
+   * Staff are allowed to enter every character-owned Private Location,
+   * exactly like Order Headquarters. They do not need an invitation or
+   * a private_location_members row.
+   *
+   * The shared game access guard already grants staff access; this keeps
+   * the dedicated "Enter Private Location" action consistent with it.
+   */
+  const staff =
+    await getStaffSession();
+
+  if (staff) {
+    return true;
   }
 
   const {
