@@ -47,8 +47,6 @@ type Effect = {
   presence_modifier: number;
   health_delta: number;
   max_health_modifier: number;
-  warping_affinity_modifier: number;
-  warps_per_day_modifier: number;
   allow_duplicate_stacking: boolean;
   sort_order: number;
 };
@@ -163,8 +161,6 @@ export default async function AdminItemsPage({ searchParams }: Props) {
           presence_modifier,
           health_delta,
           max_health_modifier,
-          warping_affinity_modifier,
-          warps_per_day_modifier,
           allow_duplicate_stacking,
           sort_order
         )
@@ -896,8 +892,6 @@ function EffectForm({ itemId, effect }: { itemId: string; effect?: Effect }) {
           ["Presence", "presenceModifier", effect?.presence_modifier ?? 0],
           ["Health", "healthDelta", effect?.health_delta ?? 0],
           ["Max Health", "maxHealthModifier", effect?.max_health_modifier ?? 0],
-          ["Warping Affinity +", "warpingAffinityModifier", effect?.warping_affinity_modifier ?? 0],
-          ["Shapes / day +", "warpsPerDayModifier", effect?.warps_per_day_modifier ?? 0],
         ].map(([label, name, value]) => (
           <Field key={String(name)} label={String(label)}>
             <input
@@ -940,8 +934,7 @@ function EffectForm({ itemId, effect }: { itemId: string; effect?: Effect }) {
       <p className="mt-2 text-[8px] leading-5 text-[#6f6252]">
         Owned and Equipped effects are saved as Passive. Instant Use effects
         apply Health only; Attribute and Max Health modifiers are for
-        Temporary/Passive effects. Warping bonuses are limited to Affinity +8
-        and Shapes/day +10.
+        Temporary/Passive effects.
       </p>
     </AdminActionForm>
   );

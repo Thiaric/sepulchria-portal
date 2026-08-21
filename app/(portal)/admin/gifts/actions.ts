@@ -157,6 +157,8 @@ function giftValues(formData: FormData) {
   const shrewdModifier = attr(formData, "shrewdModifier", "Shrewd");
   const brainsModifier = attr(formData, "brainsModifier", "Brains");
   const presenceModifier = attr(formData, "presenceModifier", "Presence");
+  const warpingAffinityModifier = Math.max(0, Math.min(8, integer(formData, "warpingAffinityModifier", 0)));
+  const warpsPerDayModifier = Math.max(0, Math.min(10, integer(formData, "warpsPerDayModifier", 0)));
 
   const hasLingeringModifier =
     maxHealthModifier !== 0 ||
@@ -165,7 +167,9 @@ function giftValues(formData: FormData) {
     vigourModifier !== 0 ||
     shrewdModifier !== 0 ||
     brainsModifier !== 0 ||
-    presenceModifier !== 0;
+    presenceModifier !== 0 ||
+    warpingAffinityModifier !== 0 ||
+    warpsPerDayModifier !== 0;
 
   if (
     effectMode === "temporary" &&
@@ -252,6 +256,8 @@ function giftValues(formData: FormData) {
     shrewd_modifier: shrewdModifier,
     brains_modifier: brainsModifier,
     presence_modifier: presenceModifier,
+    warping_affinity_modifier: effectMode === "none" ? 0 : warpingAffinityModifier,
+    warps_per_day_modifier: effectMode === "none" ? 0 : warpsPerDayModifier,
     sort_order: integer(formData, "sortOrder", 0),
   };
 }

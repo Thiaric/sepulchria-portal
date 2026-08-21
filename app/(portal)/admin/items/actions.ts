@@ -521,6 +521,8 @@ function effectValues(formData: FormData) {
     presence_modifier: instantUse ? 0 : mod("presenceModifier", "Presence"),
     health_delta: triggerType === "use" ? mod("healthDelta", "Health") : 0,
     max_health_modifier: instantUse ? 0 : mod("maxHealthModifier", "Maximum Health"),
+    warping_affinity_modifier: instantUse ? 0 : Math.max(0, Math.min(8, integer(formData, "warpingAffinityModifier", 0) ?? 0)),
+    warps_per_day_modifier: instantUse ? 0 : Math.max(0, Math.min(10, integer(formData, "warpsPerDayModifier", 0) ?? 0)),
     allow_duplicate_stacking: checkbox(formData, "allowDuplicateStacking"),
     sort_order: integer(formData, "sortOrder", 0) ?? 0,
     updated_at: new Date().toISOString(),

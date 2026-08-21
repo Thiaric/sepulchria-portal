@@ -43,8 +43,6 @@ type Gift = {
   shrewd_modifier: number;
   brains_modifier: number;
   presence_modifier: number;
-  warping_affinity_modifier: number;
-  warps_per_day_modifier: number;
   sort_order: number;
   races: { race_id: string }[] | null;
   roles: { order_job_id: string }[] | null;
@@ -120,8 +118,6 @@ function adminModifierLabel(gift: Gift) {
     ["Shr", gift.shrewd_modifier],
     ["Bra", gift.brains_modifier],
     ["Pre", gift.presence_modifier],
-    ["Affinity", gift.warping_affinity_modifier],
-    ["Shapes/day", gift.warps_per_day_modifier],
   ]
     .filter(([, value]) => Number(value) !== 0)
     .map(([label, value]) => {
@@ -148,7 +144,7 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
           duration_minutes, cooldown_minutes, health_delta, max_health_modifier,
           muscles_modifier, reflexes_modifier,
           vigour_modifier, shrewd_modifier, brains_modifier,
-          presence_modifier, warping_affinity_modifier, warps_per_day_modifier, sort_order,
+          presence_modifier, sort_order,
           races:gift_races(race_id),
           roles:gift_order_jobs(order_job_id),
           assignments:character_gifts(
@@ -729,8 +725,8 @@ function GiftForm({
           <strong className="text-[#c7ad83]">Effect rules:</strong>{" "}
           Instant Health / Damage applies whenever a non-passive Feat is used.
           Attribute and Maximum Health modifiers are persistent for Passive Feats
-          and last for the configured duration on Temporary Feats. Warping bonuses
-          follow the same Passive/Temporary lifecycle. Passive Feats are always self-only.
+          and last for the configured duration on Temporary Feats. Passive Feats
+          are always self-only.
         </div>
 
         <div className="md:col-span-2 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
@@ -741,8 +737,6 @@ function GiftForm({
             ["Shrewd", "shrewdModifier", gift?.shrewd_modifier ?? 0],
             ["Brains", "brainsModifier", gift?.brains_modifier ?? 0],
             ["Presence", "presenceModifier", gift?.presence_modifier ?? 0],
-            ["Warping Affinity +", "warpingAffinityModifier", gift?.warping_affinity_modifier ?? 0],
-            ["Shapes / day +", "warpsPerDayModifier", gift?.warps_per_day_modifier ?? 0],
           ].map(([label, name, value]) => (
             <Field key={String(name)} label={String(label)}>
               <input
