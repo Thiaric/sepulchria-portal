@@ -10,7 +10,6 @@ import {
 } from "@/components/admin/admin-ancestry-gift-selector";
 import { CharacterReviewFields } from "@/components/admin/character-review-fields";
 import { AdminCharacterRemnants } from "@/components/admin/admin-character-remnants";
-import { AdminCharacterWarping } from "@/components/admin/AdminCharacterWarping";
 import {
   AdminCharacterFeatureAccess,
   type CharacterFeatureEntitlementRow,
@@ -458,6 +457,13 @@ export default async function AdminCharacterPage({
               Manage inventory
             </Link>
 
+            <Link
+              href={`/admin/characters/${character.id}/warping`}
+              className="border border-[#987344] bg-[#3b2919] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[#efd6a8] transition hover:border-[#b98c50] hover:bg-[#50371f]"
+            >
+              Manage Warping
+            </Link>
+
           <Link
             href={`/characters/${character.public_slug}`}
             className="border border-[#60482e]/55 bg-[#15100d] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[#ac9879] transition hover:border-[#987344] hover:text-[#e7cca0]"
@@ -609,9 +615,6 @@ export default async function AdminCharacterPage({
             </div>
           </div>
         </section>
-
-        <AdminCharacterWarping characterId={character.id} affinity={character.warping_affinity ?? 1} warpsPerDay={character.warps_per_day ?? 3} />
-
         <AdminCharacterRemnants characterId={character.id} />
 
         <AdminCharacterFeatureAccess

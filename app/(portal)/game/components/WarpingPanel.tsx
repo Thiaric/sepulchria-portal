@@ -27,11 +27,11 @@ export function WarpingPanel({presentCharacters,onBack}:{presentCharacters:C[];o
  async function warp(){if(!s||busy)return;setBusy(true);setMsg("");try{
   const au=await db.auth.getUser();if(!au.data.user)throw Error("Not signed in.");
   const me=await db.from("characters").select("id,current_room_id").eq("user_id",au.data.user.id).single();if(me.error||!me.data)throw Error(me.error?.message??"Character not found.");
-  if(!access?.allowed)throw Error(access?.reasons?.join(" · ")||"This Shape cannot currently be Warped.");
+  const freshAccess=await getShapeAccessForCurrentCharacter(s.id);if(!freshAccess.allowed)throw Error(freshAccess.reasons.join(" · ")||"This Shape cannot currently be Warped.");
   const wt=s.target_mode==="written",self=s.target_mode==="self";if(wt&&!written.trim())throw Error("Write the Fate target.");if(!wt&&!self&&!targets.length)throw Error("Choose a target.");
   if(s.is_dispel&&(!targets.length||!selectedDispelEffect))throw Error("Choose an active effect to dispel before Warping.");
   const cr=await db.from("shape_casts").insert({caster_character_id:me.data.id,shape_id:s.id,room_id:me.data.current_room_id,written_target:wt?written.trim():null}).select("id").single();if(cr.error||!cr.data)throw Error(cr.error?.message??"Cast failed.");
-  if(s.price_key&&PM[s.price_key]){const [stage,days]=PM[s.price_key];const pe=await db.from("character_price_effects").insert({cast_id:cr.data.id,character_id:me.data.id,price_key:s.price_key,stage,expires_at:new Date(Date.now()+days*86400000).toISOString()});if(pe.error)throw Error(pe.error.message)}
+  if(s.price_key){const pe=await db.rpc("create_price_for_shape_cast",{p_cast_id:cr.data.id,p_shape_id:s.id});if(pe.error)throw Error(pe.error.message)}
   const rows=wt?[{cast_id:cr.data.id,target_kind:"written",outcome:"manual"}]:self?[{cast_id:cr.data.id,target_character_id:me.data.id,target_kind:"self",outcome:"success",resolved_at:new Date().toISOString()}]:targets.map(id=>({cast_id:cr.data.id,target_character_id:id,target_kind:id===me.data.id?"self":"character",outcome:id===me.data.id||s.resolution_mode==="automatic"?"success":"pending",resolved_at:id===me.data.id||s.resolution_mode==="automatic"?new Date().toISOString():null}));
   const tr=await db.from("shape_cast_targets").insert(rows);if(tr.error)throw Error(tr.error.message);
   let preparedDispelMessage="";

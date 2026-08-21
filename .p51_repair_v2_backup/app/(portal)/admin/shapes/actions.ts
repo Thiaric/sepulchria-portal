@@ -65,28 +65,17 @@ export async function deleteShape(f:FormData){
   revalidatePath("/admin/shapes"); redirect("/admin/shapes?success=Shape%20deleted");
 }
 export async function assignShape(f:FormData){
-  await requireStaff();
-  const db=await createClient();
-  const shapeId=txt(f,"shape_id");
-  const {error}=await db.rpc("staff_assign_shape_to_character",{
-    p_character_id:txt(f,"character_id"),
-    p_shape_id:shapeId,
-    p_override_level:check(f,"override_level"),
-  });
-  if(error){ throw new Error(error.message); }
-  revalidatePath("/admin/shapes");
-  revalidatePath("/game");
+  await requireStaff(); const db=await createClient(); const shapeId=txt(f,"shape_id");
+  const {error}=await db.rpc("staff_assign_shape_to_character",{p_character_id:txt(f,"character_id"),p_shape_id:shapeId,p_override_level:check(f,"override_level")});
+  if(error) redirect(`/admin/shapes?error=${encodeURIComponent(error.message)}#shape-${shapeId}`);
+  revalidatePath("/admin/shapes"); redirect(`/admin/shapes?success=Shape%20assigned#shape-${shapeId}`);
 }
-
 export async function removeAssignment(f:FormData){
-  await requireStaff();
-  const db=await createClient();
+  await requireStaff(); const db=await createClient();
   const {error}=await db.from("character_shapes").delete().eq("id",txt(f,"assignment_id"));
-  if(error){ throw new Error(error.message); }
-  revalidatePath("/admin/shapes");
-  revalidatePath("/game");
+  if(error) redirect(`/admin/shapes?error=${encodeURIComponent(error.message)}`);
+  revalidatePath("/admin/shapes"); redirect("/admin/shapes?success=Assignment%20removed");
 }
-
 export async function linkOrderRole(f:FormData){
   await requireStaff(); const db=await createClient(); const shapeId=txt(f,"shape_id");
   const {error}=await db.from("order_job_shapes").upsert({shape_id:shapeId,order_job_id:txt(f,"order_job_id")},{onConflict:"order_job_id,shape_id"});
