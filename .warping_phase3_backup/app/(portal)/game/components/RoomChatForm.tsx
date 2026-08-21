@@ -37,7 +37,6 @@ import {
   startWeaponOpposedAttack,
 } from "../opposed-actions";
 import { PendingOpposedActions } from "./PendingOpposedActions";
-import { PendingShapeResponses } from "./PendingShapeResponses";
 import { WarpingPanel } from "./WarpingPanel";
 
 const initialState: ActionState = {
@@ -1115,7 +1114,6 @@ function ignoreSpellingWord() {
       <PendingOpposedActions
   attributes={attributes}
 />
-      <PendingShapeResponses attributes={attributes} />
       <div className="mb-2 flex justify-end">
         <button
           type="button"
