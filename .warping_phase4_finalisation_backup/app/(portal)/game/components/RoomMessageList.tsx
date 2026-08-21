@@ -428,8 +428,6 @@ export default function RoomMessageList({
       "connecting",
     );
 
-  const [activeShapeTags,setActiveShapeTags]=useState<Record<string,{buffs:string[];debuffs:string[];conditions:string[]}>>({});
-
   const scrollContainerRef =
     useRef<HTMLDivElement>(null);
 
@@ -577,10 +575,6 @@ export default function RoomMessageList({
       cancelled = true;
     };
   }, [liveMessages]);
-
-  useEffect(()=>{let active=true;const supabase=createClient();async function loadShapeTags(){const ids=Array.from(new Set(liveMessages.map(m=>m.character_id).filter(Boolean)));if(!ids.length){if(active)setActiveShapeTags({});return}const q=await supabase.rpc("get_active_shape_chat_tags",{p_character_ids:ids});if(q.error){console.error("Unable to load Shape chat tags:",q.error.message);return}if(active){const next:Record<string,{buffs:string[];debuffs:string[];conditions:string[]}>={};for(const row of q.data??[])next[String(row.character_id)]={buffs:row.buffs??[],debuffs:row.debuffs??[],conditions:row.conditions??[]};setActiveShapeTags(next)}}void loadShapeTags();const channel=supabase.channel(`shape-chat-effects-${crypto.randomUUID()}`).on("postgres_changes",{event:"*",schema:"public",table:"character_shape_effects"},()=>void loadShapeTags()).subscribe();const timer=window.setInterval(()=>void loadShapeTags(),30000);return()=>{active=false;window.clearInterval(timer);void supabase.removeChannel(channel)}},[liveMessages]);
-
-  function shapeTagText(characterId:string){const x=activeShapeTags[characterId];if(!x)return null;const groups:string[]=[];if(x.buffs.length)groups.push(x.buffs.join(" - "));if(x.debuffs.length)groups.push(x.debuffs.join(" - "));if(x.conditions.length)groups.push(x.conditions.join(" - "));if(!groups.length)return null;return <span className="mr-2 inline text-[9px] uppercase tracking-[.04em] text-[#b99765]"> | {groups.join(" | ")} | </span>;}
 
   useEffect(() => {
     const container =
@@ -1076,7 +1070,6 @@ export default function RoomMessageList({
                           {
                             author.display_name
                           }
-                          {shapeTagText(author.id)}
                         </Link>
                       ) : (
                         <span
@@ -1295,7 +1288,6 @@ export default function RoomMessageList({
         >
           {author.first_name ??
             author.display_name}
-          {shapeTagText(author.id)}
         </Link>
       ) : (
         <span
