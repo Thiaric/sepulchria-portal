@@ -10,7 +10,6 @@ import {
 } from "@/components/admin/admin-ancestry-gift-selector";
 import { CharacterReviewFields } from "@/components/admin/character-review-fields";
 import { AdminCharacterRemnants } from "@/components/admin/admin-character-remnants";
-import { AdminCharacterWarping } from "@/components/admin/AdminCharacterWarping";
 import {
   AdminCharacterFeatureAccess,
   type CharacterFeatureEntitlementRow,
@@ -111,8 +110,6 @@ type CharacterRow = {
   shrewd: number | null;
   presence_score: number | null;
   current_health: number | null;
-  warping_affinity: number;
-  warps_per_day: number;
   race: CharacterRaceRelation;
 };
 
@@ -239,8 +236,6 @@ export default async function AdminCharacterPage({
         shrewd,
         presence_score,
         current_health,
-        warping_affinity,
-        warps_per_day,
 
         race:races!characters_race_id_fkey(
           id,
@@ -609,8 +604,6 @@ export default async function AdminCharacterPage({
             </div>
           </div>
         </section>
-
-        <AdminCharacterWarping characterId={character.id} affinity={character.warping_affinity ?? 1} warpsPerDay={character.warps_per_day ?? 3} />
 
         <AdminCharacterRemnants characterId={character.id} />
 

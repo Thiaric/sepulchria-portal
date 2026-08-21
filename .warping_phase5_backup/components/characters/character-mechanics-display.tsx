@@ -3,7 +3,6 @@ import "server-only";
 import { getCharacterAttributeBreakdown } from "@/lib/characters/get-effective-character-attributes";
 import { createClient } from "@/lib/supabase/server";
 import { ActiveShapeEffects } from "@/components/characters/ActiveShapeEffects";
-import { ActivePriceEffects } from "@/components/characters/ActivePriceEffects";
 
 const DEFINITIONS = [
   ["muscles", "Muscles"],
@@ -85,7 +84,6 @@ export async function CharacterMechanicsDisplay({
 
   return (
     <div className="space-y-4">
-      <ActivePriceEffects characterId={characterId} />
       <ActiveShapeEffects characterId={characterId} />
       <section className="border border-[#60482e]/45 bg-[#15100d]/95 p-5 sm:p-6">
         <h2 className="mt-[-8] font-serif text-2xl text-[#dec89f]">
