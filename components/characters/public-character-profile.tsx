@@ -9,6 +9,7 @@ import { CharacterInventoryDisplay } from "@/components/characters/character-inv
 import { CharacterExpertiseTotal } from "@/components/characters/character-expertise-total";
 import { CharacterMusicPlayer } from "@/components/characters/character-music-player";
 import { CharacterSheetTabs } from "@/components/characters/character-sheet-tabs";
+import { CharacterShapesDisplay } from "@/components/characters/character-shapes-display";
 import { LiveCharacterPresence } from "@/components/characters/live-character-presence";
 import { PublicCharacterAgeDetail } from "@/components/characters/public-character-age-detail";
 import { PublicCharacterOrder } from "@/components/characters/public-character-order";
@@ -330,7 +331,7 @@ export function PublicCharacterProfileView({
         </div>
 
         <div data-character-sheet-panel="warping">
-          <div className="min-h-28 border border-[#60482e]/35 bg-[#130f0c]" />
+          <CharacterShapesDisplay characterId={character.id} />
         </div>
 
         <div data-character-sheet-panel="offgame"  className="py-2 border border-[#6b5032]/50">

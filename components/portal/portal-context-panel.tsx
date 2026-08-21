@@ -231,6 +231,10 @@ if (
     return <PublicGiftsContext />;
   }
 
+  if (pathname === "/warping") {
+    return <PublicShapesContext />;
+  }
+
   if (pathname === "/admin/gifts") {
     return <AdminGiftsContext />;
   }
@@ -332,6 +336,9 @@ if (
 
   return <DefaultContext />;
 }
+
+type PublicShapeContextEntry={id:string;name:string};
+function PublicShapesContext(){const [entries,setEntries]=useState<PublicShapeContextEntry[]>([]);const [search,setSearch]=useState("");const [visible,setVisible]=useState<Set<string>|null>(null);useEffect(()=>{const apply=(ids:unknown)=>{if(Array.isArray(ids))setVisible(new Set(ids.map(String)))};const stored=sessionStorage.getItem("sepulchria:shapes-visible-ids");if(stored)try{apply(JSON.parse(stored))}catch{};const h=(e:Event)=>apply((e as CustomEvent<{ids?:string[]}>).detail?.ids);window.addEventListener("sepulchria:shapes-filter-change",h);return()=>window.removeEventListener("sepulchria:shapes-filter-change",h)},[]);useEffect(()=>{let c=false;(async()=>{const db=createClient();const {data}=await db.from("shapes").select("id,name").eq("is_active",true).order("level").order("name");if(!c)setEntries((data??[]).map(x=>({id:String(x.id),name:String(x.name)})))})();return()=>{c=true}},[]);const q=search.trim().toLowerCase();const page=visible===null?entries:entries.filter(x=>visible.has(x.id));const filtered=page.filter(x=>!q||x.name.toLowerCase().includes(q));const jump=(id:string)=>{const el=document.getElementById(`shape-${id}`);if(el){el.scrollIntoView({behavior:"smooth",block:"start"});window.history.replaceState(null,"",`#shape-${id}`)}};return <div className="flex h-full min-h-0 flex-col"><ContextHeading eyebrow="Codex" title="Warping"/><p className="text-xs leading-6 text-[#938673]">Search Shapes and jump directly to a definition.</p><input type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search Shapes..." className="mt-4 w-full border border-[#59432c]/45 bg-[#100c09] px-3 py-2.5 text-xs text-[#d4bea0] outline-none"/><div className="my-4 h-px bg-[#59432c]/35"/><p className="mb-2 text-[8px] uppercase tracking-[.18em] text-[#806b50]">Jump to Shape · {filtered.length}</p><div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">{filtered.map(x=><button key={x.id} type="button" onClick={()=>jump(x.id)} className="flex w-full items-center justify-between border border-[#59432c]/35 bg-[#100c09] px-3 py-2.5 text-left"><span className="truncate font-serif text-[13px] text-[#cbb28a]">{x.name}</span><span className="text-[#725a3d]">→</span></button>)}</div></div>}
 
 type PublicGiftContextEntry = {
   id: string;
