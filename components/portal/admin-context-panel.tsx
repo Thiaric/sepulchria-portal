@@ -23,6 +23,7 @@ type ContextMode =
   | "associations"
   | "gifts"
   | "items"
+  | "shapes"
   | "users"
   | "characters"
   | "forum";
@@ -55,6 +56,10 @@ function getMode(
 
   if (pathname === "/admin/items") {
     return "items";
+  }
+
+  if (pathname === "/admin/shapes") {
+    return "shapes";
   }
 
   if (pathname === "/admin/users") {
@@ -107,11 +112,30 @@ export function AdminContextPanel({
     );
   }
 
+  if (mode === "shapes") {
+    return (
+      <AdminShapesJumpContext />
+    );
+  }
+
   return (
     <AdminRecordJumpContext
       mode={mode}
     />
   );
+}
+
+function AdminShapesJumpContext() {
+  const [entries,setEntries]=useState<JumpEntry[]>([]);
+  const [loading,setLoading]=useState(true);
+  const [error,setError]=useState<string|null>(null);
+  const [search,setSearch]=useState("");
+  useEffect(()=>{let cancelled=false;async function load(){const supabase=createClient();const {data,error}=await supabase.from("shapes").select("id,name,word_of_power,level,is_active").order("level").order("name");if(cancelled)return;if(error){setError(error.message);setLoading(false);return;}setEntries((data??[]).map(row=>({id:String(row.id),label:String(row.name),secondary:`L${String(row.level)} · ${String(row.word_of_power)}`,active:row.is_active===true})));setLoading(false);setError(null);}void load();return()=>{cancelled=true;};},[]);
+  const q=search.trim().toLowerCase();
+  const visible=entries.filter(e=>!q||e.label.toLowerCase().includes(q)||(e.secondary??"").toLowerCase().includes(q));
+  function jump(entry:JumpEntry){const el=document.getElementById(`shape-${entry.id}`);if(el instanceof HTMLDetailsElement)el.open=true;el?.scrollIntoView({behavior:"smooth",block:"start"});}
+  function create(){document.getElementById("shape-new")?.scrollIntoView({behavior:"smooth",block:"start"});}
+  return <div className="flex h-full min-h-0 flex-col"><p className="text-[8px] uppercase tracking-[0.24em] text-[#806b50]">Administration</p><h2 className="mt-1 font-serif text-xl text-[#d8bf91]">Jump to Shapes</h2><p className="mt-2 text-[11px] leading-5 text-[#8f8271]">Search the Shape catalogue and jump directly to a Shape.</p><button type="button" onClick={create} className="mt-3 flex w-full items-center justify-between border border-[#765937]/55 bg-[#271c12] px-3 py-2.5 text-left text-[9px] uppercase tracking-[0.16em] text-[#d6b37d]"><span>Create new</span><span>+</span></button><label className="mt-3 block"><span className="text-[8px] uppercase tracking-[0.18em] text-[#806b50]">Search Shapes</span><input type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Name or Word of Power..." className="mt-2 w-full border border-[#59432c]/45 bg-[#100c09] px-3 py-2.5 text-xs text-[#d4bea0] outline-none"/><span className="mt-1.5 block text-right text-[7px] uppercase tracking-[0.1em] text-[#6f6353]">{visible.length}{q?` / ${entries.length}`:""} Shapes</span></label>{error?<p className="mt-3 text-[10px] text-[#d8a49a]">{error}</p>:null}<div className="mt-3 min-h-0 flex-1 overflow-y-auto pr-1">{loading?<p className="text-[10px] text-[#8f8271]">Loading...</p>:<div className="space-y-1.5">{visible.map(e=><button key={e.id} type="button" onClick={()=>jump(e)} className="group flex w-full items-center justify-between gap-2 border border-[#59432c]/40 bg-[#100c09] px-3 py-2 text-left"><span className="min-w-0"><span className="block truncate font-serif text-[13px] text-[#cbb28a]">{e.label}</span><span className="mt-0.5 block truncate text-[8px] uppercase tracking-[0.12em] text-[#6f6252]">{e.secondary}</span></span><span className={`h-1.5 w-1.5 rounded-full ${e.active?"bg-emerald-600":"bg-[#66594b]"}`}/></button>)}</div>}</div></div>;
 }
 
 function AdminGiftsJumpContext() {
