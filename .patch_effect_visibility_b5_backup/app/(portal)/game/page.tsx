@@ -242,9 +242,7 @@ async function GameContent() {
         vigour_modifier,
         shrewd_modifier,
         brains_modifier,
-        presence_modifier,
-        warping_affinity_modifier,
-        warps_per_day_modifier
+        presence_modifier
       ),
       activations:gift_activations(
         activated_at,
@@ -349,8 +347,6 @@ async function GameContent() {
         shrewdModifier: gift.shrewd_modifier ?? 0,
         brainsModifier: gift.brains_modifier ?? 0,
         presenceModifier: gift.presence_modifier ?? 0,
-        warpingAffinityModifier: gift.warping_affinity_modifier ?? 0,
-        warpsPerDayModifier: gift.warps_per_day_modifier ?? 0,
         activeUntil:
           activeActivation?.expires_at ?? null,
         cooldownUntil:
@@ -434,9 +430,7 @@ async function GameContent() {
               brains_modifier,
               presence_modifier,
               health_delta,
-              max_health_modifier,
-              warping_affinity_modifier,
-              warps_per_day_modifier
+              max_health_modifier
             )
           `)
           .in("id", usableItemIds)

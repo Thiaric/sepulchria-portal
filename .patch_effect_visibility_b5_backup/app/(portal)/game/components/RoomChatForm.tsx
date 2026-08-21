@@ -130,8 +130,6 @@ type ChatItem = {
     presence_modifier: number;
     health_delta: number;
     max_health_modifier: number;
-    warping_affinity_modifier: number;
-    warps_per_day_modifier: number;
   }[];
 };
 
@@ -160,8 +158,6 @@ type ChatGift = {
   shrewdModifier: number;
   brainsModifier: number;
   presenceModifier: number;
-  warpingAffinityModifier: number;
-  warpsPerDayModifier: number;
   activeUntil: string | null;
   cooldownUntil: string | null;
 };
@@ -1903,9 +1899,7 @@ function ignoreSpellingWord() {
                   selectedGift.vigourModifier ||
                   selectedGift.shrewdModifier ||
                   selectedGift.brainsModifier ||
-                  selectedGift.presenceModifier ||
-                  selectedGift.warpingAffinityModifier ||
-                  selectedGift.warpsPerDayModifier) ? (
+                  selectedGift.presenceModifier) ? (
                   <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-[#aa8c61]">
                     {selectedGift.damageDice
                       ? `Damage ${selectedGift.damageDice}${selectedGift.damageType ? ` ${selectedGift.damageType}` : ""}`
@@ -1917,8 +1911,6 @@ function ignoreSpellingWord() {
                       ["Shrewd", selectedGift.shrewdModifier],
                       ["Brains", selectedGift.brainsModifier],
                       ["Presence", selectedGift.presenceModifier],
-                      ["Affinity", selectedGift.warpingAffinityModifier],
-                      ["Shapes/day", selectedGift.warpsPerDayModifier],
                     ]
                       .filter(([, value]) => Number(value) !== 0)
                       .map(([label, value]) => `${label} ${formatSigned(Number(value))}`)
@@ -2225,8 +2217,6 @@ function ignoreSpellingWord() {
                           "Presence",
                           effect.presence_modifier,
                         ],
-                        ["Affinity", effect.warping_affinity_modifier],
-                        ["Shapes/day", effect.warps_per_day_modifier],
                       ] as const;
 
                       for (const [

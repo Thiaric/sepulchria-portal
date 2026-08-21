@@ -118,16 +118,25 @@ async function itemValues(formData: FormData) {
 
   const isUsable = checkbox(formData, "isUsable");
 
-  let useBehaviour: string | null = null;
-  const targetMode = requiredText(formData, "targetMode", "Target mode");
-  let maxCharges: number | null = null;
-  let cooldownMinutes: number | null = null;
+let useBehaviour: string | null = null;
+let targetMode: string | null = null;
+let maxCharges: number | null = null;
+let cooldownMinutes: number | null = null;
 
-  if (!TARGET_MODES.includes(targetMode as (typeof TARGET_MODES)[number])) {
+if (isUsable) {
+  targetMode = requiredText(
+    formData,
+    "targetMode",
+    "Target mode",
+  );
+
+  if (
+    !TARGET_MODES.includes(
+      targetMode as (typeof TARGET_MODES)[number],
+    )
+  ) {
     throw new Error("Invalid target mode.");
   }
-
-  if (isUsable) {
     useBehaviour = requiredText(formData, "useBehaviour", "Use behaviour");
 
     if (!USE_BEHAVIOURS.includes(useBehaviour as (typeof USE_BEHAVIOURS)[number])) {

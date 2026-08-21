@@ -31,8 +31,6 @@ type Gift = {
   shrewd_modifier: number;
   brains_modifier: number;
   presence_modifier: number;
-  warping_affinity_modifier: number;
-  warps_per_day_modifier: number;
 };
 
 type Activation = {
@@ -74,8 +72,6 @@ function modifierText(gift: Gift) {
     ["Shr", gift.shrewd_modifier],
     ["Bra", gift.brains_modifier],
     ["Pre", gift.presence_modifier],
-    ["Affinity", gift.warping_affinity_modifier],
-    ["Shapes/day", gift.warps_per_day_modifier],
   ]
     .filter(([, value]) => Number(value) !== 0)
     .map(
@@ -201,9 +197,7 @@ export async function CharacterGiftsDisplay({
         vigour_modifier,
         shrewd_modifier,
         brains_modifier,
-        presence_modifier,
-        warping_affinity_modifier,
-        warps_per_day_modifier
+        presence_modifier
       ),
       activations:gift_activations(
         activated_at,

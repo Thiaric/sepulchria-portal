@@ -27,8 +27,6 @@ type ItemEffect = {
   brains_modifier: number;
   presence_modifier: number;
   max_health_modifier: number;
-  warping_affinity_modifier: number;
-  warps_per_day_modifier: number;
 };
 
 type Listing = {
@@ -156,8 +154,6 @@ function effectLines(effects: ItemEffect[] | null) {
       ["Brains", effect.brains_modifier],
       ["Presence", effect.presence_modifier],
       ["Max Health", effect.max_health_modifier],
-      ["Affinity", effect.warping_affinity_modifier],
-      ["Shapes/day", effect.warps_per_day_modifier],
     ];
 
     for (const [label, value] of values) {
@@ -373,9 +369,7 @@ export default async function MarketShopPage({ params }: Props) {
           shrewd_modifier,
           brains_modifier,
           presence_modifier,
-          max_health_modifier,
-          warping_affinity_modifier,
-          warps_per_day_modifier
+          max_health_modifier
         ),
         category:item_categories(name),
         subcategory:item_subcategories(name)

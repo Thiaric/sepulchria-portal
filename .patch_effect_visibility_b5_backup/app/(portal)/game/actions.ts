@@ -1380,8 +1380,7 @@ export async function activateRoomGift(
             duration_minutes, cooldown_minutes, health_delta,
             max_health_modifier, muscles_modifier, reflexes_modifier,
             vigour_modifier, shrewd_modifier, brains_modifier,
-            presence_modifier, warping_affinity_modifier,
-            warps_per_day_modifier
+            presence_modifier
           )
         `)
         .eq("id", characterGiftId)
@@ -1624,8 +1623,6 @@ export async function activateRoomGift(
         ["Brains", gift.brains_modifier],
         ["Presence", gift.presence_modifier],
         ["Max Health", gift.max_health_modifier],
-        ["Affinity", gift.warping_affinity_modifier],
-        ["Shapes/day", gift.warps_per_day_modifier],
       ]
         .filter(([, value]) => Number(value) !== 0)
         .map(

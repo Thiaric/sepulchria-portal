@@ -32,8 +32,6 @@ export default async function GiftsPage() {
       shrewd_modifier,
       brains_modifier,
       presence_modifier,
-      warping_affinity_modifier,
-      warps_per_day_modifier,
       races:gift_races(
         race:races(
           id,
@@ -149,8 +147,6 @@ export default async function GiftsPage() {
         gift.health_delta,
       maxHealthModifier:
         gift.max_health_modifier,
-      warpingAffinityModifier: gift.warping_affinity_modifier,
-      warpsPerDayModifier: gift.warps_per_day_modifier,
       modifiers: {
         muscles: gift.muscles_modifier,
         reflexes: gift.reflexes_modifier,

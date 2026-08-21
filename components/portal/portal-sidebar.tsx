@@ -121,9 +121,8 @@ const otherCodexNavigationItems: NavigationItem[] = [
     title:
       "Read about magic in Sepulchria, including Warping.",
     icon: "/icons/warping.png",
-    href: "/spells",
+    href: "/warping",
     activePaths: ["/spells"],
-    disabled: true,
   },
   {
     label: "Feats",

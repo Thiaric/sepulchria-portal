@@ -80,8 +80,6 @@ type ItemRequirementRow = {
         brains_modifier: number;
         presence_modifier: number;
         max_health_modifier: number;
-        warping_affinity_modifier: number;
-        warps_per_day_modifier: number;
       }[]
     | null;
   min_muscles: number | null;
@@ -407,8 +405,6 @@ function equipmentBonuses(
     add("Brains", effect.brains_modifier);
     add("Presence", effect.presence_modifier);
     add("Max Health", effect.max_health_modifier);
-    add("Affinity", effect.warping_affinity_modifier);
-    add("Shapes/day", effect.warps_per_day_modifier);
   }
 
   return [...totals.entries()]
@@ -468,8 +464,6 @@ function itemEffects(
     push(context, durationMinutes, "Brains", effect.brains_modifier);
     push(context, durationMinutes, "Presence", effect.presence_modifier);
     push(context, durationMinutes, "Max Health", effect.max_health_modifier);
-    push(context, durationMinutes, "Affinity", effect.warping_affinity_modifier);
-    push(context, durationMinutes, "Shapes/day", effect.warps_per_day_modifier);
   }
 
   return result;
@@ -592,9 +586,7 @@ export async function CharacterInventoryDisplay({
               shrewd_modifier,
               brains_modifier,
               presence_modifier,
-              max_health_modifier,
-              warping_affinity_modifier,
-              warps_per_day_modifier
+              max_health_modifier
             ),
             min_muscles,
             min_reflexes,

@@ -42,8 +42,6 @@ type Gift = {
   damageType: string | null;
   healthDelta: number;
   maxHealthModifier: number;
-  warpingAffinityModifier: number;
-  warpsPerDayModifier: number;
   modifiers: {
     muscles: number;
     reflexes: number;
@@ -113,8 +111,6 @@ function modifierLabels(gift: Gift) {
     ["Shr", gift.modifiers.shrewd],
     ["Bra", gift.modifiers.brains],
     ["Pre", gift.modifiers.presence],
-    ["Affinity", gift.warpingAffinityModifier],
-    ["Shapes/day", gift.warpsPerDayModifier],
   ]
     .filter(([, value]) => Number(value) !== 0)
     .map(
