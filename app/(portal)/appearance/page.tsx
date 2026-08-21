@@ -82,9 +82,7 @@ export default async function AppearancePage() {
   return (
     <main>
       <div className="mx-auto max-w-5xl">
-        <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))]">
-          Account
-        </p>
+        
 
         <h1 className="mt-1 font-serif text-3xl text-[rgb(var(--sep-colour-ead5ac))]">
           Portal Appearance

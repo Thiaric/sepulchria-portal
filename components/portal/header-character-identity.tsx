@@ -506,19 +506,7 @@ last_seen_at:
         </div>
       </div>
 
-      <div className="hidden min-w-0 max-w-32 lg:block 2xl:max-w-44">
-        <p className="truncate font-serif text-xs text-[rgb(var(--sep-colour-dfc79c))] 2xl:text-sm">
-          {
-            character.display_name
-          }
-        </p>
-
-        <p className="truncate text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-81725f))] 2xl:text-[9px] 2xl:tracking-[0.18em]">
-          {character.title ||
-            character.occupation ||
-            "Citizen of Sepulchria"}
-        </p>
-      </div>
+      
     </Link>
   </div>
 );

@@ -9,16 +9,8 @@ import {
   type AdminAncestryGiftOption,
 } from "@/components/admin/admin-ancestry-gift-selector";
 import { CharacterReviewFields } from "@/components/admin/character-review-fields";
-import { AdminCharacterRemnants } from "@/components/admin/admin-character-remnants";
-import {
-  AdminCharacterFeatureAccess,
-  type CharacterFeatureEntitlementRow,
-  type CharacterPortalSkinEntitlementRow,
-  type CharacterPortalSkinRow,
-} from "@/components/admin/admin-character-feature-access";
 import { requireStaff } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
-import { createAdminClient } from "@/lib/supabase/admin";
 
 import {
   deleteCharacterAdministration,
@@ -200,7 +192,6 @@ export default async function AdminCharacterPage({
     characterResult,
     racesResult,
     orderMembershipResult,
-    featureEntitlementsResult,
   ] = await Promise.all([
     supabase
       .from("characters")
@@ -279,19 +270,12 @@ export default async function AdminCharacterPage({
       .limit(1)
       .maybeSingle(),
 
-    supabase
-      .from("character_feature_entitlements")
-      .select(
-        "feature_key, enabled, source, note, granted_at, updated_at",
-      )
-      .eq("character_id", id),
   ]);
 
   const firstError =
     characterResult.error ??
     racesResult.error ??
-    orderMembershipResult.error ??
-    featureEntitlementsResult.error;
+    orderMembershipResult.error;
 
   if (firstError) {
     throw new Error(
@@ -306,66 +290,6 @@ export default async function AdminCharacterPage({
   const character =
     characterResult.data as unknown as
       CharacterRow;
-
-  const privileged =
-    createAdminClient();
-
-  const [
-    portalSkinsResult,
-    portalSkinEntitlementsResult,
-  ] = await Promise.all([
-    privileged
-      .from("portal_skins")
-      .select(`
-        id,
-        slug,
-        name,
-        description,
-        is_default
-      `)
-      .eq("is_active", true)
-      .order("sort_order", {
-        ascending: true,
-      })
-      .order("name", {
-        ascending: true,
-      }),
-
-    privileged
-      .from(
-        "user_portal_skin_entitlements",
-      )
-      .select(`
-        skin_id,
-        enabled,
-        source,
-        note
-      `)
-      .eq(
-        "user_id",
-        character.user_id,
-      ),
-  ]);
-
-  if (
-    portalSkinsResult.error ||
-    portalSkinEntitlementsResult.error
-  ) {
-    throw new Error(
-      `Unable to load portal skin access: ${
-        portalSkinsResult.error?.message ??
-        portalSkinEntitlementsResult.error?.message
-      }`,
-    );
-  }
-
-  const portalSkins =
-    (portalSkinsResult.data ??
-      []) as CharacterPortalSkinRow[];
-
-  const portalSkinEntitlements =
-    (portalSkinEntitlementsResult.data ??
-      []) as CharacterPortalSkinEntitlementRow[];
 
   const races =
     (racesResult.data ??
@@ -497,10 +421,6 @@ export default async function AdminCharacterPage({
   const displayName =
     getDisplayName(character);
 
-  const featureEntitlements =
-    (featureEntitlementsResult.data ??
-      []) as CharacterFeatureEntitlementRow[];
-
   return (
     <main className="p-5 sm:p-7 lg:p-9">
       <div className="mx-auto max-w-6xl">
@@ -525,6 +445,20 @@ export default async function AdminCharacterPage({
               className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
             >
               Manage Warping
+            </Link>
+
+            <Link
+              href={`/admin/characters/${character.id}/premium-features`}
+              className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
+            >
+              Premium Features
+            </Link>
+
+            <Link
+              href={`/admin/characters/${character.id}/ledger`}
+              className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
+            >
+              Ledger
             </Link>
 
           <Link
@@ -678,18 +612,6 @@ export default async function AdminCharacterPage({
             </div>
           </div>
         </section>
-        <AdminCharacterRemnants characterId={character.id} />
-
-        <AdminCharacterFeatureAccess
-          characterId={character.id}
-          entitlements={featureEntitlements}
-          portalSkins={
-    portalSkins
-  }
-  portalSkinEntitlements={
-    portalSkinEntitlements
-  }
-/>
 
         <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
           <div className="space-y-6">

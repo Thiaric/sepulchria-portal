@@ -88,23 +88,23 @@ export function AdminCharacterFeatureAccess({
     );
 
   return (
-    <section className="mt-6 overflow-hidden border border-[#60482e]/45 bg-[#15100d]">
-      <div className="border-b border-[#60482e]/35 bg-[#100c09] px-5 py-4">
-        <p className="text-[9px] uppercase tracking-[0.24em] text-[#8c704b]">
+    <section className="mt-6 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
+      <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] px-5 py-4">
+        <p className="text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))]">
           Feature access
         </p>
 
-        <h2 className="mt-2 font-serif text-2xl text-[#e1c89f]">
+        <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-e1c89f))]">
           Premium & reward features
         </h2>
 
-        <p className="mt-2 max-w-3xl text-[11px] leading-5 text-[#8f8271]">
+        <p className="mt-2 max-w-3xl text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
           Staff controls optional character and account features.
           Paid records a real-money purchase already confirmed by staff.
         </p>
       </div>
 
-      <div className="grid gap-px bg-[#4f3b28]/35 lg:grid-cols-2">
+      <div className="grid gap-px bg-[rgb(var(--sep-colour-4f3b28))]/35 lg:grid-cols-2">
         {FEATURES.map((feature) => {
           const entitlement =
             byFeature.get(
@@ -120,7 +120,7 @@ export function AdminCharacterFeatureAccess({
               action={
                 setCharacterFeatureEntitlement
               }
-              className="bg-[#17110d] p-5"
+              className="bg-[rgb(var(--sep-colour-17110d))] p-5"
             >
               <input
                 type="hidden"
@@ -135,10 +135,10 @@ export function AdminCharacterFeatureAccess({
 
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <h3 className="font-serif text-lg text-[#dfc79c]">
+                  <h3 className="font-serif text-lg text-[rgb(var(--sep-colour-dfc79c))]">
                     {feature.name}
                   </h3>
-                  <p className="mt-2 text-[11px] leading-5 text-[#8f8271]">
+                  <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
                     {
                       feature.description
                     }
@@ -160,7 +160,7 @@ export function AdminCharacterFeatureAccess({
 
               <div className="mt-5 grid gap-4">
                 <label>
-                  <span className="text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
+                  <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
                     Access
                   </span>
 
@@ -171,7 +171,7 @@ export function AdminCharacterFeatureAccess({
                         ? "true"
                         : "false"
                     }
-                    className="mt-2 w-full border border-[#60482e]/55 bg-[#0d0907] px-3 py-2.5 text-sm text-[#d7c4a5]"
+                    className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-sm text-[rgb(var(--sep-colour-d7c4a5))]"
                   >
                     <option value="false">
                       Disabled
@@ -183,7 +183,7 @@ export function AdminCharacterFeatureAccess({
                 </label>
 
                 <label>
-                  <span className="text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
+                  <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
                     Unlock source
                   </span>
 
@@ -193,7 +193,7 @@ export function AdminCharacterFeatureAccess({
                       entitlement?.source ??
                       "staff"
                     }
-                    className="mt-2 w-full border border-[#60482e]/55 bg-[#0d0907] px-3 py-2.5 text-sm text-[#d7c4a5]"
+                    className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-sm text-[rgb(var(--sep-colour-d7c4a5))]"
                   >
                     <option value="paid">
                       Real-money purchase
@@ -208,7 +208,7 @@ export function AdminCharacterFeatureAccess({
                 </label>
 
                 <label>
-                  <span className="text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
+                  <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
                     Staff note
                   </span>
 
@@ -221,15 +221,15 @@ export function AdminCharacterFeatureAccess({
                       ""
                     }
                     placeholder="Optional: payment reference, reward reason, event prize..."
-                    className="mt-2 w-full resize-y border border-[#60482e]/55 bg-[#0d0907] px-3 py-2.5 text-sm leading-6 text-[#d7c4a5]"
+                    className="mt-2 w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-sm leading-6 text-[rgb(var(--sep-colour-d7c4a5))]"
                   />
                 </label>
               </div>
 
-              <div className="mt-5 flex justify-end border-t border-[#5d452d]/35 pt-4">
+              <div className="mt-5 flex justify-end border-t border-[rgb(var(--sep-colour-5d452d))]/35 pt-4">
                 <button
                   type="submit"
-                  className="border border-[#8d6d3e] bg-[#332719] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[#efd9aa]"
+                  className="border border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd9aa))]"
                 >
                   Save access
                 </button>
@@ -256,7 +256,7 @@ export function AdminCharacterFeatureAccess({
                 action={
                   setCharacterPortalSkinEntitlement
                 }
-                className="bg-[#17110d] p-5"
+                className="bg-[rgb(var(--sep-colour-17110d))] p-5"
               >
                 <input
                   type="hidden"
@@ -271,15 +271,15 @@ export function AdminCharacterFeatureAccess({
 
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <p className="mb-1 text-[7px] uppercase tracking-[0.18em] text-[#806b50]">
+                    <p className="mb-1 text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
                       Portal skin
                     </p>
 
-                    <h3 className="font-serif text-lg text-[#dfc79c]">
+                    <h3 className="font-serif text-lg text-[rgb(var(--sep-colour-dfc79c))]">
                       {skin.name}
                     </h3>
 
-                    <p className="mt-2 text-[11px] leading-5 text-[#8f8271]">
+                    <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
                       {skin.description ||
                         "Unlocks this premium portal appearance for the account that owns this character."}
                     </p>
@@ -300,7 +300,7 @@ export function AdminCharacterFeatureAccess({
 
                 <div className="mt-5 grid gap-4">
                   <label>
-                    <span className="text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
+                    <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
                       Access
                     </span>
 
@@ -311,7 +311,7 @@ export function AdminCharacterFeatureAccess({
                           ? "true"
                           : "false"
                       }
-                      className="mt-2 w-full border border-[#60482e]/55 bg-[#0d0907] px-3 py-2.5 text-sm text-[#d7c4a5]"
+                      className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-sm text-[rgb(var(--sep-colour-d7c4a5))]"
                     >
                       <option value="false">
                         Disabled
@@ -323,7 +323,7 @@ export function AdminCharacterFeatureAccess({
                   </label>
 
                   <label>
-                    <span className="text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
+                    <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
                       Unlock source
                     </span>
 
@@ -333,7 +333,7 @@ export function AdminCharacterFeatureAccess({
                         entitlement?.source ??
                         "staff"
                       }
-                      className="mt-2 w-full border border-[#60482e]/55 bg-[#0d0907] px-3 py-2.5 text-sm text-[#d7c4a5]"
+                      className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-sm text-[rgb(var(--sep-colour-d7c4a5))]"
                     >
                       <option value="paid">
                         Real-money purchase
@@ -345,7 +345,7 @@ export function AdminCharacterFeatureAccess({
                   </label>
 
                   <label>
-                    <span className="text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
+                    <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
                       Staff note
                     </span>
 
@@ -358,15 +358,15 @@ export function AdminCharacterFeatureAccess({
                         ""
                       }
                       placeholder="Optional: payment reference or staff grant reason..."
-                      className="mt-2 w-full resize-y border border-[#60482e]/55 bg-[#0d0907] px-3 py-2.5 text-sm leading-6 text-[#d7c4a5]"
+                      className="mt-2 w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-sm leading-6 text-[rgb(var(--sep-colour-d7c4a5))]"
                     />
                   </label>
                 </div>
 
-                <div className="mt-5 flex justify-end border-t border-[#5d452d]/35 pt-4">
+                <div className="mt-5 flex justify-end border-t border-[rgb(var(--sep-colour-5d452d))]/35 pt-4">
                   <button
                     type="submit"
-                    className="border border-[#8d6d3e] bg-[#332719] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[#efd9aa]"
+                    className="border border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd9aa))]"
                   >
                     Save access
                   </button>
