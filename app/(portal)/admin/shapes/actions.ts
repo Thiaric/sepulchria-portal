@@ -87,9 +87,9 @@ export async function removeAssignment(f:FormData){
   revalidatePath("/game");
 }
 
-export async function linkOrderRole(f:FormData){
-  await requireStaff(); const db=await createClient(); const shapeId=txt(f,"shape_id");
-  const {error}=await db.from("order_job_shapes").upsert({shape_id:shapeId,order_job_id:txt(f,"order_job_id")},{onConflict:"order_job_id,shape_id"});
-  if(error) redirect(`/admin/shapes?error=${encodeURIComponent(error.message)}#shape-${shapeId}`);
-  revalidatePath("/admin/shapes"); redirect(`/admin/shapes?success=Order%20Shape%20linked#shape-${shapeId}`);
+export async function linkOrderLevel(f:FormData){
+ await requireStaff();const db=await createClient();const shapeId=txt(f,'shape_id');const {error}=await db.from('order_level_shapes').upsert({shape_id:shapeId,order_level_id:txt(f,'order_level_id')},{onConflict:'order_level_id,shape_id'});if(error)throw new Error(error.message);const {data:members}=await db.from('order_memberships').select('character_id');for(const member of members??[])await db.rpc('sync_character_order_shapes',{p_character_id:member.character_id});revalidatePath('/admin/shapes');revalidatePath('/game');
+}
+export async function unlinkOrderLevel(f:FormData){
+ await requireStaff();const db=await createClient();const shapeId=txt(f,'shape_id');const {error}=await db.from('order_level_shapes').delete().eq('shape_id',shapeId).eq('order_level_id',txt(f,'order_level_id'));if(error)throw new Error(error.message);const {data:members}=await db.from('order_memberships').select('character_id');for(const member of members??[])await db.rpc('sync_character_order_shapes',{p_character_id:member.character_id});revalidatePath('/admin/shapes');revalidatePath('/game');
 }

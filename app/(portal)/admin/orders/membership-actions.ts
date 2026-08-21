@@ -55,6 +55,8 @@ function refresh(characterId?: string) {
   }
 }
 
+async function syncOrderShapes(supabase:Awaited<ReturnType<typeof createClient>>,characterId:string){const {error}=await supabase.rpc("sync_character_order_shapes",{p_character_id:characterId});if(error)throw new Error(`Unable to synchronise Order Shapes: ${error.message}`);}
+
 async function verifyStructure({
   supabase,
   orderId,
@@ -388,6 +390,7 @@ export async function addOrderMember(
       .vigour_modifier ?? 0,
 });
 
+await syncOrderShapes(supabase,characterId);
 refresh(characterId);
     return;
   } catch (error) {
@@ -574,6 +577,7 @@ await syncCharacterAssociation(
       relation?.display_name ??
       "Member";
 
+    await syncOrderShapes(supabase,membership.character_id);
     refresh(
       membership.character_id,
     );
@@ -699,6 +703,7 @@ await syncCharacterAssociation(
       relation?.display_name ??
       "Member";
 
+    await syncOrderShapes(supabase,membership.character_id);
     refresh(
       membership.character_id,
     );

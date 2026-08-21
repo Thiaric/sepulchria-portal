@@ -1,7 +1,7 @@
 import { requireStaff } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 import { ACTION_WORDS,ATTRIBUTES,ESSENCE_WORDS,LAW_WORDS,MOVEMENTS,PRICES,SAVES,WARPING_SCHOOLS } from "@/lib/warping/constants";
-import { assignShape,createShape,deleteShape,linkOrderRole,removeAssignment,updateShape } from "./actions";
+import { assignShape,createShape,deleteShape,linkOrderLevel,unlinkOrderLevel,removeAssignment,updateShape } from "./actions";
 import { ShapeDeleteSubmit } from "@/components/admin/shape-delete-submit";
 import { WarpingReference } from "@/components/admin/warping-reference";
 
@@ -66,13 +66,13 @@ function ShapeForm({s,action}:{s?:S;action:(f:FormData)=>void|Promise<void>}){
 export default async function AdminShapesPage({searchParams}:Props){
   await requireStaff(); const params=(await searchParams)??{}; const db=await createClient();
   const [sr,cr,lr]=await Promise.all([
-    db.from("shapes").select("*,assignments:character_shapes(id,character_id,acquisition_source,level_override),order_links:order_job_shapes(id,order_job_id)").order("level").order("name"),
+    db.from("shapes").select("*,assignments:character_shapes(id,character_id,acquisition_source,level_override),order_links:order_level_shapes(id,order_level_id)").order("level").order("name"),
     db.from("characters").select("id,display_name").eq("status","approved").eq("is_system",false).order("display_name"),
-    db.from("order_levels").select("level,order:orders(id,name),roles:order_jobs(id,name,sort_order)").order("level",{ascending:false}),
+    db.from("order_levels").select("id,level,order:orders(id,name)").order("level",{ascending:true}),
   ]);
   const err=sr.error??cr.error??lr.error;if(err)throw new Error(`Unable to load Shapes: ${err.message}`);
   const shapes=(sr.data??[]) as S[];const chars=(cr.data??[]) as {id:string;display_name:string}[];const charMap=new Map(chars.map(c=>[c.id,c.display_name]));
-  const roles=(lr.data??[]).flatMap((r:any)=>{const o=Array.isArray(r.order)?r.order[0]:r.order;return(r.roles??[]).map((j:any)=>({...j,orderName:o?.name??"Unknown",level:r.level}));});
+  const levels=(lr.data??[]).map((r:any)=>{const o=Array.isArray(r.order)?r.order[0]:r.order;return{id:r.id,level:r.level,orderName:o?.name??"Unknown"};});
   return <main className="p-5 sm:p-7 lg:p-9"><div className="mx-auto max-w-7xl"><p className="text-[9px] uppercase tracking-[0.28em] text-[#8c704b]">Administration</p><h1 className="mt-2 font-serif text-4xl text-[#ead5ac]">Warping — Shapes</h1>
     {params.success?<div className="mt-5 border border-emerald-800/50 p-3 text-sm text-emerald-400">{params.success}</div>:null}{params.error?<div className="mt-5 border border-red-900/60 p-3 text-sm text-red-400">{params.error}</div>:null}
     <section id="shape-new" className="mt-8 border border-[#60482e]/45 bg-[#15100d] p-5"><h2 className="font-serif text-2xl text-[#dfc99f]">Create a Shape</h2><WarpingReference/><ShapeForm action={createShape}/></section>
@@ -81,7 +81,7 @@ export default async function AdminShapesPage({searchParams}:Props){
       <div className="border-t border-[#60482e]/35 p-5"><div className="flex justify-end"><form action={deleteShape}><input type="hidden" name="shape_id" value={s.id}/><ShapeDeleteSubmit shapeName={s.name}/></form></div>
       <ShapeForm s={s} action={updateShape}/>
       <div className="mt-5 grid gap-4 lg:grid-cols-2"><div className="border border-[#60482e]/35 p-4"><h3 className="font-serif text-lg text-[#d8c29b]">Direct Assignment</h3><form action={assignShape} className="mt-3 grid gap-2 sm:grid-cols-[1fr_auto_auto]"><input type="hidden" name="shape_id" value={s.id}/><select required name="character_id" className={cls}><option value="">Character...</option>{chars.map(c=><option key={c.id} value={c.id}>{c.display_name}</option>)}</select><label className="flex items-center gap-2 text-[9px] text-[#c6ae88]"><input type="checkbox" name="override_level"/>Level override</label><button className="border border-[#765937] px-3 py-2 text-[8px] uppercase text-[#d6bb8d]">Assign</button></form><div className="mt-3 space-y-1">{(s.assignments??[]).filter((a:any)=>a.acquisition_source==="staff").map((a:any)=><form key={a.id} action={removeAssignment} className="flex justify-between border-t border-[#60482e]/25 pt-2"><input type="hidden" name="assignment_id" value={a.id}/><span className="text-[10px] text-[#a99b89]">{charMap.get(a.character_id)??a.character_id}{a.level_override?" · override":""}</span><button className="text-[8px] uppercase text-red-400">Remove</button></form>)}</div></div>
-      <div className="border border-[#60482e]/35 p-4"><h3 className="font-serif text-lg text-[#d8c29b]">Order Role Shape</h3><form action={linkOrderRole} className="mt-3 grid gap-2 sm:grid-cols-[1fr_auto]"><input type="hidden" name="shape_id" value={s.id}/><select required name="order_job_id" className={cls}><option value="">Order role...</option>{roles.map((r:any)=><option key={r.id} value={r.id}>{r.orderName} — {r.name} (L{r.level})</option>)}</select><button className="border border-[#765937] px-3 py-2 text-[8px] uppercase text-[#d6bb8d]">Link</button></form></div></div>
+      <div className="border border-[#60482e]/35 p-4"><h3 className="font-serif text-lg text-[#d8c29b]">Order Role Shape</h3><form action={linkOrderLevel} className="mt-3 grid gap-2 sm:grid-cols-[1fr_auto]"><input type="hidden" name="shape_id" value={s.id}/><select required name="order_level_id" className={cls}><option value="">Order Level...</option>{levels.filter((l:any)=>!(s.order_links??[]).some((x:any)=>x.order_level_id===l.id)).map((l:any)=><option key={l.id} value={l.id}>{l.orderName} - Level {l.level}</option>)}</select><button className="border border-[#765937] px-3 py-2 text-[8px] uppercase text-[#d6bb8d]">Link</button></form></div></div>
       </div>
     </details>)}</div>
   </div></main>;
