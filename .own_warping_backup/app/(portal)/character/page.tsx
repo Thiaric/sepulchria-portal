@@ -15,7 +15,6 @@ import {
 } from "./actions";
 import { CharacterMechanicsDisplay } from "@/components/characters/character-mechanics-display";
 import { CharacterGiftsDisplay } from "@/components/characters/character-gifts-display";
-import { CharacterShapesDisplay } from "@/components/characters/character-shapes-display";
 import { CharacterInventoryDisplay } from "@/components/characters/character-inventory-display";
 import { CharacterRemnantsWallet } from "@/components/characters/character-remnants-wallet";
 import { CharacterLedger } from "@/components/characters/character-ledger";
@@ -495,9 +494,7 @@ export function Profile({
           </div>
 
           <div data-character-sheet-panel="warping">
-            {character.id ? (
-              <CharacterShapesDisplay characterId={character.id} />
-            ) : null}
+            <div className="min-h-28 border border-[#60482e]/35 bg-[#130f0c]" />
           </div>
 
           <div data-character-sheet-panel="offgame"  className="py-2 border border-[#6b5032]/50">
