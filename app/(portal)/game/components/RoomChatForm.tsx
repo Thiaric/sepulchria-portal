@@ -37,6 +37,7 @@ import {
   startWeaponOpposedAttack,
 } from "../opposed-actions";
 import { PendingOpposedActions } from "./PendingOpposedActions";
+import { WarpingPanel } from "./WarpingPanel";
 
 const initialState: ActionState = {
   ok: false,
@@ -347,6 +348,7 @@ export default function RoomChatForm({
       | "feat"
       | "items"
       | "exchange"
+      | "warping"
       | null
     >(null);
 
@@ -1099,7 +1101,8 @@ function ignoreSpellingWord() {
       | "attributes"
       | "feat"
       | "items"
-      | "exchange",
+      | "exchange"
+      | "warping",
   ) {
     setUtilityMode((current) =>
       current === mode ? null : mode,
@@ -1111,6 +1114,19 @@ function ignoreSpellingWord() {
       <PendingOpposedActions
   attributes={attributes}
 />
+      <div className="mb-2 flex justify-end">
+        <button
+          type="button"
+          onClick={() => toggleUtility("warping")}
+          className={
+            utilityMode === "warping"
+              ? utilityButtonActiveClass
+              : utilityButtonClass
+          }
+        >
+          Warping
+        </button>
+      </div>
       {utilityMode === null ? (
         <form
           action={messageAction}
@@ -2016,6 +2032,11 @@ function ignoreSpellingWord() {
             </p>
           )}
         </form>
+      ) : utilityMode === "warping" ? (
+        <WarpingPanel
+          presentCharacters={presentCharacters}
+          onBack={() => setUtilityMode(null)}
+        />
       ) : utilityMode === "exchange" ? (
         <ItemExchangePanel
           presentCharacters={presentCharacters}
