@@ -2,7 +2,6 @@ import "server-only";
 
 import { getCharacterAttributeBreakdown } from "@/lib/characters/get-effective-character-attributes";
 import { createClient } from "@/lib/supabase/server";
-import { getEffectiveCharacterWarping } from "@/lib/warping/get-effective-character-warping";
 import { ActiveShapeEffects } from "@/components/characters/ActiveShapeEffects";
 import { ActivePriceEffects } from "@/components/characters/ActivePriceEffects";
 
@@ -43,8 +42,6 @@ export async function CharacterMechanicsDisplay({
   if (!character) {
     return null;
   }
-
-  const warping = await getEffectiveCharacterWarping(characterId);
 
   const breakdown = await getCharacterAttributeBreakdown(
     characterId,
@@ -90,37 +87,7 @@ export async function CharacterMechanicsDisplay({
     <div className="space-y-4">
       <ActivePriceEffects characterId={characterId} />
       <ActiveShapeEffects characterId={characterId} />
-            <section className="border border-[#60482e]/45 bg-[#15100d]/95 p-5 sm:p-6">
-        <h2 className="font-serif text-2xl text-[#dec89f]">Warping</h2>
-
-        <div className="mt-5 grid gap-px bg-[#4f3b28]/35 sm:grid-cols-2">
-          <div className="bg-[#120e0b] px-4 py-3">
-            <p className="text-[8px] uppercase tracking-[0.16em] text-[#8b7455]">
-              Current Affinity
-            </p>
-            <p className="mt-1 font-serif text-2xl text-[#e1c28d]">
-              {warping.affinity}
-            </p>
-            <p className="mt-1 text-[7px] uppercase tracking-[0.08em] text-[#756958]">
-              {warping.baseAffinity} Base · {signed(warping.itemAffinity)} Items · {signed(warping.featAffinity)} Feats
-            </p>
-          </div>
-
-          <div className="bg-[#120e0b] px-4 py-3">
-            <p className="text-[8px] uppercase tracking-[0.16em] text-[#8b7455]">
-              Shapes per day
-            </p>
-            <p className="mt-1 font-serif text-2xl text-[#e1c28d]">
-              {warping.warpsPerDay}
-            </p>
-            <p className="mt-1 text-[7px] uppercase tracking-[0.08em] text-[#756958]">
-              {warping.baseWarpsPerDay} Base · {signed(warping.itemWarpsPerDay)} Items · {signed(warping.featWarpsPerDay)} Feats
-            </p>
-          </div>
-        </div>
-      </section>
-
-<section className="border border-[#60482e]/45 bg-[#15100d]/95 p-5 sm:p-6">
+      <section className="border border-[#60482e]/45 bg-[#15100d]/95 p-5 sm:p-6">
         <h2 className="mt-[-8] font-serif text-2xl text-[#dec89f]">
           Attributes
         </h2>

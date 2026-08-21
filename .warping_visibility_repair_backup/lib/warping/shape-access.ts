@@ -2,7 +2,6 @@ import "server-only";
 
 import { getEffectiveCharacterAttributes } from "@/lib/characters/get-effective-character-attributes";
 import { createClient } from "@/lib/supabase/server";
-import { getEffectiveCharacterWarping } from "@/lib/warping/get-effective-character-warping";
 
 export async function getCharacterShapeAccess(characterId:string,shapeId:string){
   const db=await createClient();
@@ -30,7 +29,6 @@ export async function getCharacterShapeAccess(characterId:string,shapeId:string)
   }
 
   const character=characterResult.data;
-  const effectiveWarping=await getEffectiveCharacterWarping(characterId);
   const shape=shapeResult.data;
   const assignments=assignmentResult.data??[];
 
@@ -52,7 +50,7 @@ export async function getCharacterShapeAccess(characterId:string,shapeId:string)
   if(
     !orderGranted &&
     !manualLevelOverride &&
-    Number(shape.level)>effectiveWarping.affinity
+    Number(shape.level)>Number(character.warping_affinity)
   ){
     reasons.push(`Requires Affinity ${shape.level}`);
   }
@@ -99,7 +97,7 @@ export async function getCharacterShapeAccess(characterId:string,shapeId:string)
   if(castCount.error)throw new Error(castCount.error.message);
 
   const warpsUsed=castCount.count??0;
-  const warpsPerDay=effectiveWarping.warpsPerDay;
+  const warpsPerDay=Number(character.warps_per_day??3);
   const warpsRemaining=Math.max(0,warpsPerDay-warpsUsed);
 
   if(warpsRemaining<=0)reasons.push("No Warps remaining");
@@ -107,7 +105,7 @@ export async function getCharacterShapeAccess(characterId:string,shapeId:string)
   return {
     allowed:reasons.length===0,
     reasons,
-    affinity:effectiveWarping.affinity,
+    affinity:Number(character.warping_affinity??1),
     warpsPerDay,
     warpsUsed,
     warpsRemaining,
