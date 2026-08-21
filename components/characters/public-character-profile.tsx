@@ -415,7 +415,7 @@ function CompactHeritageCard({
           {label}
         </p>
 
-        <p className="mt-0.5 truncate font-serif text-base text-[#e1c99f]">
+        <p className="mt-0.5 font-serif text-base text-[#e1c99f]">
           {entry?.name ?? "Not assigned"}
         </p>
       </div>
