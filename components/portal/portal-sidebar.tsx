@@ -922,7 +922,7 @@ export function PortalSidebar({
         <div
           key={item.label}
           title={`${item.title} — Coming soon`}
-          className={`flex min-h-[var(--portal-nav-min-h)] cursor-not-allowed items-center gap-2 border border-transparent px-2.5 py-[var(--portal-nav-y)] text-[11px] text-[#62594d] opacity-65 lg:text-xs ${
+          className={`flex min-h-[var(--portal-nav-min-h)] cursor-not-allowed items-center gap-2 border border-transparent px-2.5 py-[var(--portal-nav-y)] text-[11px] text-[rgb(var(--sep-colour-62594d))] opacity-65 lg:text-xs ${
             item.subItem
               ? "lg:ml-5"
               : ""
@@ -947,7 +947,7 @@ export function PortalSidebar({
             {item.label}
           </span>
 
-          <span className="ml-auto hidden text-[7px] uppercase tracking-[0.16em] text-[#504940] lg:block">
+          <span className="ml-auto hidden text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-504940))] lg:block">
             Soon
           </span>
         </div>
@@ -978,10 +978,10 @@ export function PortalSidebar({
       ${
         modalActive ||
         active
-          ? "border-[#8d6d3e] bg-[#332719] text-[#efd9aa]"
+          ? "border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] text-[rgb(var(--sep-colour-efd9aa))]"
           : item.subItem
-            ? "border-transparent text-[#8f806d] hover:border-[#59432c] hover:bg-[#19120d] hover:text-[#d7bd91]"
-            : "border-transparent text-[#b6a894] hover:border-[#5d4930] hover:bg-[#1d1712] hover:text-[#e8d8ba]"
+            ? "border-transparent text-[rgb(var(--sep-colour-8f806d))] hover:border-[rgb(var(--sep-colour-59432c))] hover:bg-[rgb(var(--sep-colour-19120d))] hover:text-[rgb(var(--sep-colour-d7bd91))]"
+            : "border-transparent text-[rgb(var(--sep-colour-b6a894))] hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))] hover:text-[rgb(var(--sep-colour-e8d8ba))]"
       }
     `;
 
@@ -1086,8 +1086,8 @@ export function PortalSidebar({
             className={`flex min-h-[var(--portal-nav-min-h)] min-w-0 flex-1 items-center gap-2 border px-2.5 py-[var(--portal-nav-y)] text-left text-[11px] transition lg:text-xs ${
               modalActive ||
               active
-                ? "border-[#8d6d3e] bg-[#332719] text-[#efd9aa]"
-                : "border-transparent text-[#b6a894] hover:border-[#5d4930] hover:bg-[#1d1712] hover:text-[#e8d8ba]"
+                ? "border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] text-[rgb(var(--sep-colour-efd9aa))]"
+                : "border-transparent text-[rgb(var(--sep-colour-b6a894))] hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))] hover:text-[rgb(var(--sep-colour-e8d8ba))]"
             }`}
             aria-haspopup="dialog"
             aria-expanded={
@@ -1131,11 +1131,11 @@ export function PortalSidebar({
             aria-expanded={
               rulesExpanded
             }
-            className="ml-1 flex w-7 shrink-0 items-center justify-center gap-2 bg-transparent text-sm text-[#9e8767] transition hover:text-[#efd9aa]"
+            className="ml-1 flex w-7 shrink-0 items-center justify-center gap-2 bg-transparent text-sm text-[rgb(var(--sep-colour-9e8767))] transition hover:text-[rgb(var(--sep-colour-efd9aa))]"
           >
             <span
               aria-hidden="true"
-              className="h-4 w-px shrink-0 bg-[#60482e]/45"
+              className="h-4 w-px shrink-0 bg-[rgb(var(--sep-colour-60482e))]/45"
             />
 
             <span>
@@ -1147,7 +1147,7 @@ export function PortalSidebar({
         </div>
 
         {rulesExpanded ? (
-          <div className="mt-1 border-l border-[#60482e]/40 pl-3 lg:ml-4">
+          <div className="mt-1 border-l border-[rgb(var(--sep-colour-60482e))]/40 pl-3 lg:ml-4">
             <button
               type="button"
               title={
@@ -1161,8 +1161,8 @@ export function PortalSidebar({
               className={`flex min-h-7 w-full items-center gap-2 border px-2 py-1 text-left text-[10px] transition ${
                 modalItem?.href ===
                 glossaryItem.href
-                  ? "border-[#8d6d3e] bg-[#2a1d12] text-[#efd9aa]"
-                  : "border-transparent text-[#8f806d] hover:border-[#59432c] hover:bg-[#19120d] hover:text-[#d7bd91]"
+                  ? "border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-2a1d12))] text-[rgb(var(--sep-colour-efd9aa))]"
+                  : "border-transparent text-[rgb(var(--sep-colour-8f806d))] hover:border-[rgb(var(--sep-colour-59432c))] hover:bg-[rgb(var(--sep-colour-19120d))] hover:text-[rgb(var(--sep-colour-d7bd91))]"
               }`}
               aria-haspopup="dialog"
             >
@@ -1207,10 +1207,10 @@ export function PortalSidebar({
       transition
       ${
         item.disabled
-          ? "cursor-not-allowed border-transparent text-[#51483d] opacity-45"
+          ? "cursor-not-allowed border-transparent text-[rgb(var(--sep-colour-51483d))] opacity-45"
           : active
-            ? "border-[#8d6d3e] bg-[#332719] text-[#efd9aa]"
-            : "border-transparent text-[#b68b4f] hover:border-[#5d4930] hover:bg-[#1d1712] hover:text-[#efd9aa]"
+            ? "border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] text-[rgb(var(--sep-colour-efd9aa))]"
+            : "border-transparent text-[rgb(var(--sep-colour-b68b4f))] hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))] hover:text-[rgb(var(--sep-colour-efd9aa))]"
       }
     `;
 
@@ -1309,7 +1309,7 @@ export function PortalSidebar({
           "Messages" &&
         unreadMessageCount >
           0 ? (
-          <span className="absolute right-0.5 top-0.5 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] px-0.5 text-[7px] font-bold leading-none text-[#ffe1ac]">
+          <span className="absolute right-0.5 top-0.5 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full border border-[rgb(var(--sep-colour-d19a4c))] bg-[rgb(var(--sep-colour-7a291f))] px-0.5 text-[7px] font-bold leading-none text-[rgb(var(--sep-colour-ffe1ac))]">
             {unreadMessageCount >
             9
               ? "9+"
@@ -1335,8 +1335,8 @@ export function PortalSidebar({
       transition
       ${
         oddJobsRoomId
-          ? "border-transparent text-[#b68b4f] hover:border-[#5d4930] hover:bg-[#1d1712] hover:text-[#efd9aa]"
-          : "cursor-not-allowed border-transparent text-[#51483d] opacity-45"
+          ? "border-transparent text-[rgb(var(--sep-colour-b68b4f))] hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))] hover:text-[rgb(var(--sep-colour-efd9aa))]"
+          : "cursor-not-allowed border-transparent text-[rgb(var(--sep-colour-51483d))] opacity-45"
       }
     `;
 
@@ -1396,7 +1396,8 @@ export function PortalSidebar({
       <aside
         data-portal-column
         data-portal-scroll
-        className="border-b border-[#6e5535]/30 bg-[#100d0b]/90 lg:h-full lg:min-h-0 lg:overflow-y-auto lg:overscroll-contain lg:border-b-0 lg:border-r"
+        data-portal-navigation
+        className="border-b border-[rgb(var(--sep-colour-6e5535))]/30 bg-[rgb(var(--sep-colour-100d0b))]/90 lg:h-full lg:min-h-0 lg:overflow-y-auto lg:overscroll-contain lg:border-b-0 lg:border-r"
       >
         {/* MOBILE NAVIGATION */}
 <div className="px-2 py-1.5 lg:hidden">
@@ -1418,8 +1419,8 @@ export function PortalSidebar({
         ) ||
         modalItem?.href ===
           rulesItem.href
-          ? "border-[#8d6d3e] bg-[#332719]"
-          : "border-transparent hover:border-[#5d4930] hover:bg-[#1d1712]"
+          ? "border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))]"
+          : "border-transparent hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))]"
       }`}
     >
       <button
@@ -1454,7 +1455,7 @@ export function PortalSidebar({
             ? "Collapse Rules submenu"
             : "Expand Rules submenu"
         }
-        className="flex w-5 shrink-0 items-center justify-center border-l border-[#60482e]/45 text-sm text-[#b68b4f]"
+        className="flex w-5 shrink-0 items-center justify-center border-l border-[rgb(var(--sep-colour-60482e))]/45 text-sm text-[rgb(var(--sep-colour-b68b4f))]"
       >
         {rulesExpanded
           ? "−"
@@ -1466,11 +1467,11 @@ export function PortalSidebar({
     <div
       className={`relative flex h-10 min-w-0 border transition ${
         forumActive
-          ? "border-[#8d6d3e] bg-[#332719]"
+          ? "border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))]"
           : currentUnreadForumCount >
               0
-            ? "border-[#a87532] bg-[#24190f]"
-            : "border-transparent hover:border-[#5d4930] hover:bg-[#1d1712]"
+            ? "border-[rgb(var(--sep-colour-a87532))] bg-[rgb(var(--sep-colour-24190f))]"
+            : "border-transparent hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))]"
       }`}
     >
       <Link
@@ -1488,7 +1489,7 @@ export function PortalSidebar({
 
         {currentUnreadForumCount >
         0 ? (
-          <span className="absolute right-0.5 top-0.5 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] px-0.5 text-[7px] font-bold leading-none text-[#ffe1ac]">
+          <span className="absolute right-0.5 top-0.5 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full border border-[rgb(var(--sep-colour-d19a4c))] bg-[rgb(var(--sep-colour-7a291f))] px-0.5 text-[7px] font-bold leading-none text-[rgb(var(--sep-colour-ffe1ac))]">
             {currentUnreadForumCount >
             9
               ? "9+"
@@ -1510,7 +1511,7 @@ export function PortalSidebar({
             ? "Collapse Forum shortcuts"
             : "Expand Forum shortcuts"
         }
-        className="flex w-5 shrink-0 items-center justify-center border-l border-[#60482e]/45 text-sm text-[#b68b4f]"
+        className="flex w-5 shrink-0 items-center justify-center border-l border-[rgb(var(--sep-colour-60482e))]/45 text-sm text-[rgb(var(--sep-colour-b68b4f))]"
       >
         {mobileForumExpanded
           ? "−"
@@ -1536,7 +1537,7 @@ export function PortalSidebar({
   </nav>
 
   {rulesExpanded ? (
-    <div className="mt-1 border border-[#60482e]/40 bg-[#100c09] p-1">
+    <div className="mt-1 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] p-1">
       <button
         type="button"
         title="Glossary"
@@ -1546,7 +1547,7 @@ export function PortalSidebar({
             glossaryItem,
           )
         }
-        className="flex h-9 w-full items-center justify-center border border-transparent transition hover:border-[#59432c] hover:bg-[#19120d]"
+        className="flex h-9 w-full items-center justify-center border border-transparent transition hover:border-[rgb(var(--sep-colour-59432c))] hover:bg-[rgb(var(--sep-colour-19120d))]"
       >
         <img
           src="/icons/rules.png"
@@ -1559,7 +1560,7 @@ export function PortalSidebar({
   ) : null}
 
   {mobileForumExpanded ? (
-    <div className="mt-1 border border-[#60482e]/40 bg-[#100c09] p-1">
+    <div className="mt-1 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] p-1">
       <ForumSidebarMenu
         unreadCount={
           currentUnreadForumCount
@@ -1595,7 +1596,7 @@ export function PortalSidebar({
             />
 
             <section>
-              <p className="mb-2 text-[8px] uppercase tracking-[0.3em] text-[#766754]">
+              <p className="mb-2 text-[8px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-766754))]">
                 services and
                 utilities
               </p>
@@ -1636,11 +1637,11 @@ export function PortalSidebar({
                       py-[var(--portal-nav-y)]
                       text-left
                       text-[11px]
-                      text-[#b6a894]
+                      text-[rgb(var(--sep-colour-b6a894))]
                       transition
-                      hover:border-[#5d4930]
-                      hover:bg-[#1d1712]
-                      hover:text-[#e8d8ba]
+                      hover:border-[rgb(var(--sep-colour-5d4930))]
+                      hover:bg-[rgb(var(--sep-colour-1d1712))]
+                      hover:text-[rgb(var(--sep-colour-e8d8ba))]
                       disabled:cursor-not-allowed
                       disabled:opacity-45
                       lg:text-xs
@@ -1692,13 +1693,13 @@ export function PortalSidebar({
             </section>
           </nav>
 
-          <div className="mt-[var(--portal-group-gap)] border-t border-[#6e5535]/30 pt-2">
-            <span className="block py-0.1 text-[9px] uppercase tracking-[0.18em] text-[#5f5549]">
+          <div className="mt-[var(--portal-group-gap)] border-t border-[rgb(var(--sep-colour-6e5535))]/30 pt-2">
+            <span className="block py-0.1 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-5f5549))]">
               Support · Coming
               soon
             </span>
 
-            <span className="block py-0.1 text-[9px] uppercase tracking-[0.18em] text-[#5f5549]">
+            <span className="block py-0.1 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-5f5549))]">
               Staff · Coming
               soon
             </span>
@@ -1752,8 +1753,8 @@ function PublicPageModal({
         }
       }}
     >
-      <div className="flex h-[85vh] w-[90vw] max-w-[1700px] flex-col overflow-hidden border border-[#6e5535]/65 bg-[#090705] shadow-[0_20px_80px_rgba(0,0,0,0.65)]">
-        <div className="flex h-10 shrink-0 items-center justify-between border-b border-[#60482e]/45 bg-[#100c09] px-3">
+      <div className="flex h-[85vh] w-[90vw] max-w-[1700px] flex-col overflow-hidden border border-[rgb(var(--sep-colour-6e5535))]/65 bg-[rgb(var(--sep-colour-090705))] shadow-[0_20px_80px_rgba(var(--sep-rgb-0-0-0),0.65)]">
+        <div className="flex h-10 shrink-0 items-center justify-between border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3">
           <div className="flex min-w-0 items-center gap-3">
             <span
   className={`flex shrink-0 items-center justify-center ${
@@ -1770,7 +1771,7 @@ function PublicPageModal({
   />
 </span>
 
-            <span className="truncate font-serif text-sm text-[#d8c096]">
+            <span className="truncate font-serif text-sm text-[rgb(var(--sep-colour-d8c096))]">
               {item.label}
             </span>
           </div>
@@ -1780,7 +1781,7 @@ function PublicPageModal({
             onClick={onClose}
             aria-label={`Close ${item.label}`}
             title={`Close ${item.label}`}
-            className="flex h-7 w-7 items-center justify-center border border-[#60482e]/50 bg-[#17110d] text-base leading-none text-[#aa9675] transition hover:border-[#967342] hover:text-[#f1d7a5]"
+            className="flex h-7 w-7 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-17110d))] text-base leading-none text-[rgb(var(--sep-colour-aa9675))] transition hover:border-[rgb(var(--sep-colour-967342))] hover:text-[rgb(var(--sep-colour-f1d7a5))]"
           >
             ×
           </button>
@@ -1789,7 +1790,7 @@ function PublicPageModal({
         <iframe
           src={iframeSrc}
           title={item.label}
-          className="min-h-0 w-full flex-1 border-0 bg-[#090705]"
+          className="min-h-0 w-full flex-1 border-0 bg-[rgb(var(--sep-colour-090705))]"
         />
       </div>
     </div>
@@ -1804,8 +1805,8 @@ function NavigationGroup({
   items: React.ReactNode[];
 }) {
   return (
-    <section className="mb-[var(--portal-group-gap)] border-b border-[#6e5535]/20 pb-[var(--portal-group-gap)]">
-      <p className="mb-2 text-[8px] uppercase tracking-[0.3em] text-[#766754]">
+    <section className="mb-[var(--portal-group-gap)] border-b border-[rgb(var(--sep-colour-6e5535))]/20 pb-[var(--portal-group-gap)]">
+      <p className="mb-2 text-[8px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-766754))]">
         {title}
       </p>
 

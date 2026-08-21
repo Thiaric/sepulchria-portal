@@ -155,15 +155,15 @@ export function PublicRules({
   }
 
   return (
-    <main className="min-h-screen bg-[#090705] text-[#d7c5a7]">
-      <header className="border-b border-[#60482e]/40 bg-[#0f0b09]">
+    <main className="min-h-screen bg-[rgb(var(--sep-colour-090705))] text-[rgb(var(--sep-colour-d7c5a7))]">
+      <header className="border-b border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-0f0b09))]">
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-4 sm:px-6 lg:flex-row lg:items-end lg:justify-between lg:gap-5">
           <div>
-            <p className="text-[7px] uppercase tracking-[0.28em] text-[#8f714a]">
+            <p className="text-[7px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8f714a))]">
               Sepulchria · Offgame
             </p>
 
-            <h1 className="mt-1 font-serif text-3xl leading-none text-[#ead5ac]">
+            <h1 className="mt-1 font-serif text-3xl leading-none text-[rgb(var(--sep-colour-ead5ac))]">
               Rules
             </h1>
           </div>
@@ -181,7 +181,7 @@ export function PublicRules({
                   ? "Search glossary..."
                   : "Search rules..."
               }
-              className="h-9 min-w-0 flex-1 border border-[#60482e]/45 bg-[#15100d] px-3 text-xs text-[#d6c3a3] outline-none placeholder:text-[#655c50] focus:border-[#9a7445]"
+              className="h-9 min-w-0 flex-1 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-3 text-xs text-[rgb(var(--sep-colour-d6c3a3))] outline-none placeholder:text-[rgb(var(--sep-colour-655c50))] focus:border-[rgb(var(--sep-colour-9a7445))]"
             />
 
             <button
@@ -192,8 +192,8 @@ export function PublicRules({
               }}
               className={`h-9 shrink-0 border px-4 text-[8px] uppercase tracking-[0.18em] transition ${
                 glossaryOpen
-                  ? "border-[#9a7445] bg-[#302115] text-[#e7c996]"
-                  : "border-[#60482e]/45 bg-[#15100d] text-[#9f8d71] hover:border-[#8c693e] hover:text-[#d6b782]"
+                  ? "border-[rgb(var(--sep-colour-9a7445))] bg-[rgb(var(--sep-colour-302115))] text-[rgb(var(--sep-colour-e7c996))]"
+                  : "border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] text-[rgb(var(--sep-colour-9f8d71))] hover:border-[rgb(var(--sep-colour-8c693e))] hover:text-[rgb(var(--sep-colour-d6b782))]"
               }`}
             >
               Glossary
@@ -203,7 +203,7 @@ export function PublicRules({
       </header>
 
       {!glossaryOpen ? (
-        <nav className="border-b border-[#60482e]/35 bg-[#100c09]">
+        <nav className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))]">
           <div className="mx-auto flex max-w-7xl flex-wrap gap-1 px-4 py-2 sm:px-6">
             <CategoryButton
               active={
@@ -247,13 +247,13 @@ export function PublicRules({
         }`}
       >
         {!glossaryOpen ? (
-          <aside className="min-w-0 border border-[#60482e]/40 bg-[#120e0b]">
-            <div className="flex h-9 items-center justify-between border-b border-[#60482e]/35 px-3">
-              <p className="text-[8px] uppercase tracking-[0.2em] text-[#816a4d]">
+          <aside className="min-w-0 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-120e0b))]">
+            <div className="flex h-9 items-center justify-between border-b border-[rgb(var(--sep-colour-60482e))]/35 px-3">
+              <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-816a4d))]">
                 Rule index
               </p>
 
-              <span className="text-[9px] text-[#756958]">
+              <span className="text-[9px] text-[rgb(var(--sep-colour-756958))]">
                 {visibleRules.length}
               </span>
             </div>
@@ -261,7 +261,7 @@ export function PublicRules({
             <div className="max-h-[calc(100vh-190px)] overflow-y-auto p-2">
               {visibleRules.length ===
               0 ? (
-                <p className="p-3 text-xs leading-5 text-[#766b5d]">
+                <p className="p-3 text-xs leading-5 text-[rgb(var(--sep-colour-766b5d))]">
                   No matching published
                   rules.
                 </p>
@@ -278,16 +278,16 @@ export function PublicRules({
                         className={`w-full border px-3 py-2.5 text-left transition ${
                           selectedRule?.id ===
                           rule.id
-                            ? "border-[#8d693e] bg-[#2a1d12]"
-                            : "border-transparent bg-[#100c09]/55 hover:border-[#59432c]/55 hover:bg-[#19120d]"
+                            ? "border-[rgb(var(--sep-colour-8d693e))] bg-[rgb(var(--sep-colour-2a1d12))]"
+                            : "border-transparent bg-[rgb(var(--sep-colour-100c09))]/55 hover:border-[rgb(var(--sep-colour-59432c))]/55 hover:bg-[rgb(var(--sep-colour-19120d))]"
                         }`}
                       >
-                        <span className="block font-serif text-sm text-[#d0b78e]">
+                        <span className="block font-serif text-sm text-[rgb(var(--sep-colour-d0b78e))]">
                           {rule.title}
                         </span>
 
                         {rule.summary ? (
-                          <span className="mt-1 line-clamp-2 block text-[10px] leading-4 text-[#817565]">
+                          <span className="mt-1 line-clamp-2 block text-[10px] leading-4 text-[rgb(var(--sep-colour-817565))]">
                             {stripHtml(
                               rule.summary,
                             )}
@@ -302,7 +302,7 @@ export function PublicRules({
           </aside>
         ) : null}
 
-        <section className="min-w-0 border border-[#60482e]/40 bg-[#120e0b]">
+        <section className="min-w-0 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-120e0b))]">
           {glossaryOpen ? (
             <GlossaryPanel
               data={data}
@@ -322,7 +322,7 @@ export function PublicRules({
               }
             />
           ) : (
-            <div className="p-8 text-center text-sm text-[#7d7161]">
+            <div className="p-8 text-center text-sm text-[rgb(var(--sep-colour-7d7161))]">
               Select a rule from the
               index.
             </div>
@@ -348,8 +348,8 @@ function CategoryButton({
       onClick={onClick}
       className={`border px-2.5 py-1.5 text-[8px] uppercase tracking-[0.13em] transition ${
         active
-          ? "border-[#8c693e] bg-[#2a1d12] text-[#dfc28f]"
-          : "border-[#4f3b28]/45 bg-[#15100d] text-[#776a58] hover:border-[#765937] hover:text-[#bca47e]"
+          ? "border-[rgb(var(--sep-colour-8c693e))] bg-[rgb(var(--sep-colour-2a1d12))] text-[rgb(var(--sep-colour-dfc28f))]"
+          : "border-[rgb(var(--sep-colour-4f3b28))]/45 bg-[rgb(var(--sep-colour-15100d))] text-[rgb(var(--sep-colour-776a58))] hover:border-[rgb(var(--sep-colour-765937))] hover:text-[rgb(var(--sep-colour-bca47e))]"
       }`}
     >
       {label}
@@ -373,19 +373,19 @@ function RulePanel({
 }) {
   return (
     <>
-      <header className="border-b border-[#60482e]/35 px-5 py-4 sm:px-7">
-        <p className="text-[7px] uppercase tracking-[0.24em] text-[#8d6f48]">
+      <header className="border-b border-[rgb(var(--sep-colour-60482e))]/35 px-5 py-4 sm:px-7">
+        <p className="text-[7px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8d6f48))]">
           Official rule
         </p>
 
-        <h2 className="mt-1 font-serif text-2xl text-[#e2c99c]">
+        <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-e2c99c))]">
           {rule.title}
         </h2>
 
         {rule.summary ? (
           <RichTextContentClient
             body={rule.summary}
-            className="mt-2 text-xs leading-6 text-[#9e8e78] [&_p]:m-0"
+            className="mt-2 text-xs leading-6 text-[rgb(var(--sep-colour-9e8e78))] [&_p]:m-0"
           />
         ) : null}
       </header>
@@ -393,13 +393,13 @@ function RulePanel({
       <div className="px-5 py-5 sm:px-7">
         <RichTextContentClient
           body={rule.body}
-          className="mx-auto max-w-5xl text-sm leading-7 text-[#b9a991] [&_h1]:mt-7 [&_h1]:text-3xl [&_h2]:mt-6 [&_h2]:text-2xl [&_h3]:mt-5 [&_h3]:text-xl [&_p]:mb-4"
+          className="mx-auto max-w-5xl text-sm leading-7 text-[rgb(var(--sep-colour-b9a991))] [&_h1]:mt-7 [&_h1]:text-3xl [&_h2]:mt-6 [&_h2]:text-2xl [&_h3]:mt-5 [&_h3]:text-xl [&_p]:mb-4"
         />
 
         {relatedRules.length >
         0 ? (
-          <div className="mt-6 border-t border-[#60482e]/30 pt-4">
-            <p className="mb-2 text-[8px] uppercase tracking-[0.19em] text-[#79664c]">
+          <div className="mt-6 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-4">
+            <p className="mb-2 text-[8px] uppercase tracking-[0.19em] text-[rgb(var(--sep-colour-79664c))]">
               Related rules
             </p>
 
@@ -415,7 +415,7 @@ function RulePanel({
                     onClick={() =>
                       onSelectRule(rule)
                     }
-                    className="border border-[#59432c]/50 bg-[#17110d] px-3 py-2 text-xs text-[#b59e78] transition hover:border-[#8c693e] hover:text-[#e2c58f]"
+                    className="border border-[rgb(var(--sep-colour-59432c))]/50 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 text-xs text-[rgb(var(--sep-colour-b59e78))] transition hover:border-[rgb(var(--sep-colour-8c693e))] hover:text-[rgb(var(--sep-colour-e2c58f))]"
                   >
                     {label ??
                       rule.title}
@@ -466,16 +466,16 @@ function GlossaryPanel({
 
   return (
     <>
-      <header className="border-b border-[#60482e]/35 px-5 py-4 sm:px-7">
-        <p className="text-[7px] uppercase tracking-[0.24em] text-[#8d6f48]">
+      <header className="border-b border-[rgb(var(--sep-colour-60482e))]/35 px-5 py-4 sm:px-7">
+        <p className="text-[7px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8d6f48))]">
           Reference
         </p>
 
-        <h2 className="mt-1 font-serif text-2xl text-[#e2c99c]">
+        <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-e2c99c))]">
           Glossary
         </h2>
 
-        <p className="mt-2 max-w-3xl text-xs leading-5 text-[#8d806e]">
+        <p className="mt-2 max-w-3xl text-xs leading-5 text-[rgb(var(--sep-colour-8d806e))]">
           A quick reference for terms
           used throughout Sepulchria.
           Where available, use the
@@ -487,7 +487,7 @@ function GlossaryPanel({
 
       <div className="grid gap-2 p-3 sm:grid-cols-2 sm:p-5">
         {entries.length === 0 ? (
-          <p className="p-3 text-xs text-[#766b5d]">
+          <p className="p-3 text-xs text-[rgb(var(--sep-colour-766b5d))]">
             No matching glossary
             entries.
           </p>
@@ -505,9 +505,9 @@ function GlossaryPanel({
             return (
               <article
                 key={entry.id}
-                className="border border-[#59432c]/40 bg-[#100c09]/70 p-4"
+                className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))]/70 p-4"
               >
-                <h3 className="font-serif text-lg text-[#d2b98e]">
+                <h3 className="font-serif text-lg text-[rgb(var(--sep-colour-d2b98e))]">
                   {entry.term}
                 </h3>
 
@@ -515,7 +515,7 @@ function GlossaryPanel({
                   body={
                     entry.definition
                   }
-                  className="mt-2 text-xs leading-6 text-[#948674] [&_p]:m-0"
+                  className="mt-2 text-xs leading-6 text-[rgb(var(--sep-colour-948674))] [&_p]:m-0"
                 />
 
                 {relatedRule ? (
@@ -526,7 +526,7 @@ function GlossaryPanel({
                         relatedRule,
                       )
                     }
-                    className="mt-3 text-[8px] uppercase tracking-[0.15em] text-[#9a7547] hover:text-[#dfbd84]"
+                    className="mt-3 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-9a7547))] hover:text-[rgb(var(--sep-colour-dfbd84))]"
                   >
                     Related rule →
                   </button>

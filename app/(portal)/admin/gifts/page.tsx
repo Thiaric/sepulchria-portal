@@ -221,13 +221,13 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
     <main className="p-5 sm:p-7 lg:p-9">
       <div className="mx-auto max-w-7xl">
         <div>
-          <p className="text-[9px] uppercase tracking-[0.28em] text-[#8c704b]">
+          <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
             Administration
           </p>
-          <h1 className="mt-2 font-serif text-4xl text-[#ead5ac]">
+          <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">
             Feat Management
           </h1>
-          <p className="mt-3 max-w-3xl text-sm leading-7 text-[#a99b89]">
+          <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))]">
             Create Feats, configure Attribute, Health, duration and cooldown effects,
             link Ancestries and Order Roles, and assign Feats directly to characters.
           </p>
@@ -247,12 +247,12 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
 
         <section
           id="gift-new"
-          className="mt-8 scroll-mt-6 border border-[#60482e]/45 bg-[#15100d] p-5 sm:p-6"
+          className="mt-8 scroll-mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6"
         >
-          <p className="text-[9px] uppercase tracking-[0.24em] text-[#8c704b]">
+          <p className="text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))]">
             New Feat
           </p>
-          <h2 className="mt-2 font-serif text-2xl text-[#dfc99f]">
+          <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">
             Create a Feat
           </h2>
 
@@ -268,15 +268,15 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
             <details
               key={gift.id}
               id={`gift-${gift.id}`}
-              className="scroll-mt-6 border border-[#59432c]/45 bg-[#100c09]"
+              className="scroll-mt-6 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))]"
             >
               <summary className="cursor-pointer list-none px-4 py-4">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <p className="truncate font-serif text-lg text-[#d8bf91]">
+                    <p className="truncate font-serif text-lg text-[rgb(var(--sep-colour-d8bf91))]">
                       {gift.name}
                     </p>
-                    <p className="mt-1 text-[8px] uppercase tracking-[0.14em] text-[#766956]">
+                    <p className="mt-1 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-766956))]">
                       {gift.effect_mode}
                       {gift.is_general ? " · General" : ""}
                       {" · "}
@@ -284,12 +284,12 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
                     </p>
                   </div>
 
-                  <span className="shrink-0 text-[8px] uppercase tracking-[0.14em] text-[#9b8768]">
+                  <span className="shrink-0 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9b8768))]">
                     {gift.is_active ? "Active" : "Inactive"}
                   </span>
                 </div>
 
-                <div className="mt-3 grid grid-cols-2 gap-1.5 border-t border-[#59432c]/25 pt-3 md:grid-cols-3 xl:grid-cols-6">
+                <div className="mt-3 grid grid-cols-2 gap-1.5 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-3 md:grid-cols-3 xl:grid-cols-6">
                   <AdminRecapBox
                     label="Use"
                     value={`${
@@ -358,7 +358,7 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
                 </div>
               </summary>
 
-              <div className="border-t border-[#59432c]/35 p-4 sm:p-5">
+              <div className="border-t border-[rgb(var(--sep-colour-59432c))]/35 p-4 sm:p-5">
                 <GiftForm
                   action={updateGift}
                   gift={gift}
@@ -366,8 +366,8 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
                   roles={roles}
                 />
 
-                <div className="mt-6 border-t border-[#59432c]/35 pt-5">
-                  <p className="text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
+                <div className="mt-6 border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-5">
+                  <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
                     Staff assignment
                   </p>
 
@@ -381,7 +381,7 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
                       name="characterId"
                       required
                       defaultValue=""
-                      className="min-w-[240px] flex-1 border border-[#60482e]/55 bg-[#15100d] px-3 py-2.5 text-xs text-[#d7c4a5] outline-none"
+                      className="min-w-[240px] flex-1 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none"
                     >
                       <option value="" disabled>
                         Select character
@@ -397,7 +397,7 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
                       name="assignmentMode"
                       required
                       defaultValue="permanent"
-                      className="min-w-[150px] border border-[#60482e]/55 bg-[#15100d] px-3 py-2.5 text-xs text-[#d7c4a5] outline-none"
+                      className="min-w-[150px] border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none"
                     >
                       <option value="permanent">Permanent</option>
                       <option value="temporary">Temporary</option>
@@ -410,12 +410,12 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
                       step={1}
                       placeholder="Days"
                       aria-label="Temporary assignment duration in days"
-                      className="w-[100px] border border-[#60482e]/55 bg-[#15100d] px-3 py-2.5 text-xs text-[#d7c4a5] outline-none"
+                      className="w-[100px] border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none"
                     />
 
                     <button
                       type="submit"
-                      className="border border-[#987344] bg-[#3b2919] px-4 py-2.5 text-[8px] uppercase tracking-[0.16em] text-[#efd6a8]"
+                      className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-2.5 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-efd6a8))]"
                     >
                       Assign Feat
                     </button>
@@ -426,14 +426,14 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
                       {gift.assignments.map((assignment) => (
                         <div
                           key={assignment.id}
-                          className="flex items-center justify-between gap-3 border border-[#59432c]/35 bg-[#15100d] px-3 py-2"
+                          className="flex items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2"
                         >
                           <div className="min-w-0">
-                            <p className="truncate font-serif text-sm text-[#cab28a]">
+                            <p className="truncate font-serif text-sm text-[rgb(var(--sep-colour-cab28a))]">
                               {characterById.get(assignment.character_id)?.display_name ??
                                 "Unknown character"}
                             </p>
-                            <p className="mt-1 text-[7px] uppercase tracking-[0.12em] text-[#6e6252]">
+                            <p className="mt-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6e6252))]">
                               {assignment.acquisition_source}
                               {assignment.acquisition_source === "staff"
                                 ? assignment.expires_at
@@ -462,7 +462,7 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
                   ) : null}
                 </div>
 
-                <div className="mt-6 border-t border-[#59432c]/35 pt-5">
+                <div className="mt-6 border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-5">
                   <AdminActionForm
   action={deleteGift}
   confirmMessage={`Are you sure you want to permanently delete the Feat "${gift.name}"?`}
@@ -494,11 +494,11 @@ function AdminRecapBox({
   value: string;
 }) {
   return (
-    <div className="min-w-0 border border-[#59432c]/35 bg-[#15100d] px-2.5 py-2">
-      <p className="text-[6px] uppercase tracking-[0.13em] text-[#806a4c]">
+    <div className="min-w-0 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))] px-2.5 py-2">
+      <p className="text-[6px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-806a4c))]">
         {label}
       </p>
-      <p className="mt-1 min-w-0 break-words text-[8px] leading-4 text-[#b8a382]">
+      <p className="mt-1 min-w-0 break-words text-[8px] leading-4 text-[rgb(var(--sep-colour-b8a382))]">
         {value}
       </p>
     </div>
@@ -506,7 +506,7 @@ function AdminRecapBox({
 }
 
 const inputClass =
-  "w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]";
+  "w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]";
 
 function GiftForm({
   action,
@@ -693,7 +693,7 @@ function GiftForm({
           </select>
         </Field>
 
-        <div className="flex items-end border border-[#59432c]/35 bg-[#15100d] px-4 py-3 text-[9px] leading-5 text-[#8f8271]">
+        <div className="flex items-end border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 text-[9px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
           No Success Die means automatic success. If a Defining Attribute is
           selected, its current effective value is added to the roll.
         </div>
@@ -725,8 +725,8 @@ function GiftForm({
           />
         </Field>
 
-        <div className="md:col-span-2 border border-[#59432c]/35 bg-[#15100d] px-4 py-3 text-[9px] leading-5 text-[#8f8271]">
-          <strong className="text-[#c7ad83]">Effect rules:</strong>{" "}
+        <div className="md:col-span-2 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 text-[9px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+          <strong className="text-[rgb(var(--sep-colour-c7ad83))]">Effect rules:</strong>{" "}
           Instant Health / Damage applies whenever a non-passive Feat is used.
           Attribute and Maximum Health modifiers are persistent for Passive Feats
           and last for the configured duration on Temporary Feats. Warping bonuses
@@ -794,7 +794,7 @@ function GiftForm({
 
         <button
           type="submit"
-          className="border border-[#987344] bg-[#3b2919] px-5 py-3 text-[9px] uppercase tracking-[0.18em] text-[#efd6a8]"
+          className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd6a8))]"
         >
           {gift ? "Save Feat" : "Create Feat"}
         </button>
@@ -812,7 +812,7 @@ function Field({
 }) {
   return (
     <label>
-      <span className="mb-2 block text-[8px] uppercase tracking-[0.16em] text-[#756958]">
+      <span className="mb-2 block text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-756958))]">
         {label}
       </span>
       {children}
@@ -830,12 +830,12 @@ function Check({
   checked: boolean;
 }) {
   return (
-    <label className="flex items-center gap-2 text-[10px] text-[#b6a58d]">
+    <label className="flex items-center gap-2 text-[10px] text-[rgb(var(--sep-colour-b6a58d))]">
       <input
         type="checkbox"
         name={name}
         defaultChecked={checked}
-        className="h-4 w-4 accent-[#8b673d]"
+        className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))]"
       />
       {label}
     </label>
@@ -852,20 +852,20 @@ function Eligibility({
   items: { id: string; label: string; checked: boolean }[];
 }) {
   return (
-    <div className="border border-[#59432c]/40 bg-[#0d0a08] p-4">
-      <p className="font-serif text-base text-[#d3ba8c]">{title}</p>
+    <div className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-0d0a08))] p-4">
+      <p className="font-serif text-base text-[rgb(var(--sep-colour-d3ba8c))]">{title}</p>
       <div className="mt-3 max-h-56 space-y-1.5 overflow-y-auto pr-1">
         {items.map((item) => (
           <label
             key={item.id}
-            className="flex items-center gap-2 text-[10px] text-[#b6a58d]"
+            className="flex items-center gap-2 text-[10px] text-[rgb(var(--sep-colour-b6a58d))]"
           >
             <input
               type="checkbox"
               name={name}
               value={item.id}
               defaultChecked={item.checked}
-              className="h-4 w-4 accent-[#8b673d]"
+              className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))]"
             />
             {item.label}
           </label>

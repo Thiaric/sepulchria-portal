@@ -409,11 +409,11 @@ export function AdminRecordSearchContext({ mode }: { mode: Mode }) {
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <p className="text-[8px] uppercase tracking-[0.24em] text-[#806b50]">
+      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
         Administration
       </p>
-      <h2 className="mt-1 font-serif text-xl text-[#d8bf91]">Jump to {title}</h2>
-      <p className="mt-2 text-[11px] leading-5 text-[#8f8271]">
+      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">Jump to {title}</h2>
+      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
         Search the catalogue and jump directly to the record you want to edit.
       </p>
 
@@ -421,7 +421,7 @@ export function AdminRecordSearchContext({ mode }: { mode: Mode }) {
         <button
           type="button"
           onClick={jumpToCreate}
-          className="mt-3 flex w-full items-center justify-between border border-[#765937]/55 bg-[#271c12] px-3 py-2.5 text-left text-[9px] uppercase tracking-[0.16em] text-[#d6b37d] transition hover:border-[#9a7445] hover:bg-[#342318]"
+          className="mt-3 flex w-full items-center justify-between border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-271c12))] px-3 py-2.5 text-left text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d6b37d))] transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:bg-[rgb(var(--sep-colour-342318))]"
         >
           <span>Create new</span>
           <span>+</span>
@@ -434,7 +434,7 @@ export function AdminRecordSearchContext({ mode }: { mode: Mode }) {
           value={search}
           onChange={(event) => setSearch(event.target.value)}
           placeholder={`Search ${title}...`}
-          className="w-full border border-[#59432c]/45 bg-[#100c09] px-3 py-2.5 text-xs text-[#d4bea0] outline-none placeholder:text-[#665b4d] focus:border-[#987344]"
+          className="w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))]"
         />
 
         {mode === "items" ? (
@@ -442,7 +442,7 @@ export function AdminRecordSearchContext({ mode }: { mode: Mode }) {
             <select
               value={category}
               onChange={(event) => setCategory(event.target.value)}
-              className="min-w-0 border border-[#59432c]/45 bg-[#100c09] px-2 py-2 text-[9px] text-[#bda787] outline-none focus:border-[#987344]"
+              className="min-w-0 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-2 py-2 text-[9px] text-[rgb(var(--sep-colour-bda787))] outline-none focus:border-[rgb(var(--sep-colour-987344))]"
             >
               <option value="all">All categories</option>
               {categories.map((value) => (
@@ -453,7 +453,7 @@ export function AdminRecordSearchContext({ mode }: { mode: Mode }) {
             <select
               value={quality}
               onChange={(event) => setQuality(event.target.value)}
-              className="min-w-0 border border-[#59432c]/45 bg-[#100c09] px-2 py-2 text-[9px] capitalize text-[#bda787] outline-none focus:border-[#987344]"
+              className="min-w-0 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-2 py-2 text-[9px] capitalize text-[rgb(var(--sep-colour-bda787))] outline-none focus:border-[rgb(var(--sep-colour-987344))]"
             >
               <option value="all">All qualities</option>
               {qualities.map((value) => (
@@ -467,7 +467,7 @@ export function AdminRecordSearchContext({ mode }: { mode: Mode }) {
           <select
             value={role}
             onChange={(event) => setRole(event.target.value)}
-            className="w-full border border-[#59432c]/45 bg-[#100c09] px-3 py-2 text-[9px] text-[#bda787] outline-none focus:border-[#987344]"
+            className="w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[9px] text-[rgb(var(--sep-colour-bda787))] outline-none focus:border-[rgb(var(--sep-colour-987344))]"
           >
             <option value="all">All roles</option>
             {roles.map((value) => (
@@ -476,7 +476,7 @@ export function AdminRecordSearchContext({ mode }: { mode: Mode }) {
           </select>
         ) : null}
 
-        <p className="text-right text-[7px] uppercase tracking-[0.1em] text-[#6f6353]">
+        <p className="text-right text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-6f6353))]">
           {visible.length}
           {(search.trim() || category !== "all" || quality !== "all" || role !== "all") &&
           visible.length !== entries.length
@@ -487,7 +487,7 @@ export function AdminRecordSearchContext({ mode }: { mode: Mode }) {
       </div>
 
       {error ? (
-        <p className="mt-3 border border-[#743d35] bg-[#2a1512] p-2.5 text-[10px] leading-5 text-[#d8a49a]">
+        <p className="mt-3 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-2.5 text-[10px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]">
           {error}
         </p>
       ) : null}
@@ -498,7 +498,7 @@ export function AdminRecordSearchContext({ mode }: { mode: Mode }) {
             {Array.from({ length: 7 }).map((_, index) => (
               <div
                 key={index}
-                className="h-12 animate-pulse border border-[#59432c]/30 bg-[#19120d]"
+                className="h-12 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]"
               />
             ))}
           </div>
@@ -509,14 +509,14 @@ export function AdminRecordSearchContext({ mode }: { mode: Mode }) {
                 key={entry.id}
                 type="button"
                 onClick={() => jumpTo(entry)}
-                className="group flex w-full items-center justify-between gap-2 border border-[#59432c]/40 bg-[#100c09] px-3 py-2 text-left transition hover:border-[#8d693e] hover:bg-[#1d150f]"
+                className="group flex w-full items-center justify-between gap-2 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-left transition hover:border-[rgb(var(--sep-colour-8d693e))] hover:bg-[rgb(var(--sep-colour-1d150f))]"
               >
                 <span className="min-w-0">
-                  <span className="block truncate font-serif text-[13px] text-[#cbb28a] group-hover:text-[#ead0a0]">
+                  <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
                     {entry.label}
                   </span>
                   {entry.secondary ? (
-                    <span className="mt-0.5 block truncate text-[7px] uppercase tracking-[0.1em] text-[#806d55]">
+                    <span className="mt-0.5 block truncate text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-806d55))]">
                       {entry.secondary}
                       {entry.tertiary ? ` · ${entry.tertiary}` : ""}
                     </span>
@@ -527,7 +527,7 @@ export function AdminRecordSearchContext({ mode }: { mode: Mode }) {
                   <span
                     title={entry.active ? "Active" : "Inactive"}
                     className={`h-1.5 w-1.5 shrink-0 rounded-full ${
-                      entry.active ? "bg-emerald-600" : "bg-[#66594b]"
+                      entry.active ? "bg-emerald-600" : "bg-[rgb(var(--sep-colour-66594b))]"
                     }`}
                   />
                 ) : null}
@@ -537,7 +537,7 @@ export function AdminRecordSearchContext({ mode }: { mode: Mode }) {
         )}
 
         {!loading && !error && visible.length === 0 ? (
-          <p className="border border-[#59432c]/30 bg-[#100c09]/60 p-3 text-[11px] text-[#8f8271]">
+          <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-3 text-[11px] text-[rgb(var(--sep-colour-8f8271))]">
             No {title} match these filters.
           </p>
         ) : null}

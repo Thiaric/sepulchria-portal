@@ -336,19 +336,19 @@ export function ForumFavouriteTopicsPanel() {
   }
 
   return (
-    <section className="border border-[#59432c]/40 bg-[#100c09] p-3">
+    <section className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-3">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <p className="text-[8px] uppercase tracking-[0.22em] text-[#876a46]">
+          <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))]">
             Forum
           </p>
 
-          <h3 className="mt-1 font-serif text-base text-[#d6bd91]">
+          <h3 className="mt-1 font-serif text-base text-[rgb(var(--sep-colour-d6bd91))]">
             Favourite Topics
           </h3>
         </div>
 
-        <span className="flex h-7 min-w-7 items-center justify-center border border-[#59432c]/50 bg-[#0c0907] px-2 text-[10px] text-[#b2956f]">
+        <span className="flex h-7 min-w-7 items-center justify-center border border-[rgb(var(--sep-colour-59432c))]/50 bg-[rgb(var(--sep-colour-0c0907))] px-2 text-[10px] text-[rgb(var(--sep-colour-b2956f))]">
           {favourites.length}
         </span>
       </div>
@@ -360,20 +360,20 @@ export function ForumFavouriteTopicsPanel() {
             void toggleCurrent()
           }
           disabled={saving}
-          className="mt-3 flex w-full items-center justify-between gap-3 border border-[#765937]/55 bg-[#20160f] px-3 py-3 text-left transition hover:border-[#9a7445] hover:bg-[#2c1d13] disabled:opacity-60"
+          className="mt-3 flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-20160f))] px-3 py-3 text-left transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:bg-[rgb(var(--sep-colour-2c1d13))] disabled:opacity-60"
         >
           <span className="min-w-0">
-            <span className="block text-[8px] uppercase tracking-[0.17em] text-[#8c7556]">
+            <span className="block text-[8px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-8c7556))]">
               Current topic
             </span>
 
-            <span className="mt-1 block truncate font-serif text-sm text-[#d9c19a]">
+            <span className="mt-1 block truncate font-serif text-sm text-[rgb(var(--sep-colour-d9c19a))]">
               {currentTopic.title}
             </span>
           </span>
 
           <span
-            className="shrink-0 text-lg text-[#d3a85f]"
+            className="shrink-0 text-lg text-[rgb(var(--sep-colour-d3a85f))]"
             aria-hidden="true"
           >
             {currentIsFavourite
@@ -384,7 +384,7 @@ export function ForumFavouriteTopicsPanel() {
       ) : null}
 
       {error ? (
-        <p className="mt-3 border border-[#743d35] bg-[#2a1512] p-2 text-[10px] leading-4 text-[#d8a49a]">
+        <p className="mt-3 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-2 text-[10px] leading-4 text-[rgb(var(--sep-colour-d8a49a))]">
           {error}
         </p>
       ) : null}
@@ -392,9 +392,9 @@ export function ForumFavouriteTopicsPanel() {
       <div className="mt-3 space-y-2">
         {loading ? (
           <>
-            <div className="h-12 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
-            <div className="h-12 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
-            <div className="h-12 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
+            <div className="h-12 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
+            <div className="h-12 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
+            <div className="h-12 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
           </>
         ) : favourites.length > 0 ? (
           favourites.map(
@@ -406,20 +406,20 @@ export function ForumFavouriteTopicsPanel() {
                 )}/${encodeURIComponent(
                   item.slug,
                 )}`}
-                className="block border border-[#59432c]/35 bg-[#0d0a08] px-3 py-2.5 transition hover:border-[#8d6a40] hover:bg-[#1a120d]"
+                className="block border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-0d0a08))] px-3 py-2.5 transition hover:border-[rgb(var(--sep-colour-8d6a40))] hover:bg-[rgb(var(--sep-colour-1a120d))]"
               >
-                <p className="truncate font-serif text-sm text-[#cfb78f]">
+                <p className="truncate font-serif text-sm text-[rgb(var(--sep-colour-cfb78f))]">
                   {item.title}
                 </p>
 
-                <p className="mt-1 truncate text-[8px] uppercase tracking-[0.13em] text-[#746653]">
+                <p className="mt-1 truncate text-[8px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-746653))]">
                   {item.sectionName}
                 </p>
               </Link>
             ),
           )
         ) : (
-          <p className="border border-[#59432c]/30 bg-[#0d0a08] p-3 text-[10px] leading-5 text-[#817565]">
+          <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-0d0a08))] p-3 text-[10px] leading-5 text-[rgb(var(--sep-colour-817565))]">
             No favourite topics yet.
             Open a topic and press ☆
             to save it here.

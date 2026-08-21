@@ -97,10 +97,10 @@ type Props = {
 };
 
 const inputClass =
-  "w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-2.5 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]";
+  "w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]";
 
 const buttonClass =
-  "border border-[#987344] bg-[#3b2919] px-4 py-2.5 text-[8px] uppercase tracking-[0.16em] text-[#efd6a8] transition hover:bg-[#4a321e]";
+  "border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-2.5 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:bg-[rgb(var(--sep-colour-4a321e))]";
 
 export default async function AdminItemsPage({ searchParams }: Props) {
   await requireStaff();
@@ -193,11 +193,11 @@ export default async function AdminItemsPage({ searchParams }: Props) {
     <main className="p-5 sm:p-7 lg:p-9">
       <div className="mx-auto max-w-7xl">
         <div>
-          <p className="text-[9px] uppercase tracking-[0.28em] text-[#8c704b]">
+          <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
             Administration
           </p>
-          <h1 className="mt-2 font-serif text-4xl text-[#ead5ac]">Item Management</h1>
-          <p className="mt-3 max-w-4xl text-sm leading-7 text-[#a99b89]">
+          <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">Item Management</h1>
+          <p className="mt-3 max-w-4xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))]">
             Manage the master Item catalogue, staff-created subcategories, stack
             rules, transfer policies, usable-item settings, containers, and
             mechanical effects.
@@ -212,13 +212,13 @@ export default async function AdminItemsPage({ searchParams }: Props) {
 
         <section
           id="item-subcategories"
-          className="mt-8 border border-[#60482e]/45 bg-[#15100d] p-5 sm:p-6"
+          className="mt-8 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6"
         >
-          <p className="text-[9px] uppercase tracking-[0.24em] text-[#8c704b]">
+          <p className="text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))]">
             Classification
           </p>
-          <h2 className="mt-2 font-serif text-2xl text-[#dfc99f]">Item subcategories</h2>
-          <p className="mt-2 max-w-3xl text-xs leading-6 text-[#8f8271]">
+          <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">Item subcategories</h2>
+          <p className="mt-2 max-w-3xl text-xs leading-6 text-[rgb(var(--sep-colour-8f8271))]">
             Core categories are fixed by the system. Create whatever subcategories
             Sepulchria needs beneath them.
           </p>
@@ -257,7 +257,7 @@ export default async function AdminItemsPage({ searchParams }: Props) {
                 <AdminActionForm
                   key={subcategory.id}
                   action={updateSubcategory}
-                  className="border border-[#59432c]/40 bg-[#100c09] p-3"
+                  className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-3"
                 >
                   <input type="hidden" name="subcategoryId" value={subcategory.id} />
 
@@ -327,12 +327,12 @@ export default async function AdminItemsPage({ searchParams }: Props) {
 
         <section
           id="item-new"
-          className="mt-6 scroll-mt-6 border border-[#60482e]/45 bg-[#15100d] p-5 sm:p-6"
+          className="mt-6 scroll-mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6"
         >
-          <p className="text-[9px] uppercase tracking-[0.24em] text-[#8c704b]">
+          <p className="text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))]">
             Catalogue
           </p>
-          <h2 className="mt-2 font-serif text-2xl text-[#dfc99f]">Create Item</h2>
+          <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">Create Item</h2>
 
           <ItemForm
             action={createItem}
@@ -355,11 +355,11 @@ export default async function AdminItemsPage({ searchParams }: Props) {
               <details
                 key={item.id}
                 id={`item-${item.id}`}
-                className="scroll-mt-6 border border-[#59432c]/45 bg-[#100c09]"
+                className="scroll-mt-6 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))]"
               >
                 <summary className="cursor-pointer list-none px-4 py-4">
                   <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 shrink-0 overflow-hidden border border-[#59432c]/45 bg-[#17110d]">
+                    <div className="h-12 w-12 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-17110d))]">
                       {item.image_url ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
@@ -368,17 +368,17 @@ export default async function AdminItemsPage({ searchParams }: Props) {
                           className="h-full w-full object-cover"
                         />
                       ) : (
-                        <div className="flex h-full items-center justify-center font-serif text-lg text-[#6f6252]">
+                        <div className="flex h-full items-center justify-center font-serif text-lg text-[rgb(var(--sep-colour-6f6252))]">
                           ◇
                         </div>
                       )}
                     </div>
 
                     <div className="min-w-0 flex-1">
-                      <p className="truncate font-serif text-lg text-[#d8bf91]">
+                      <p className="truncate font-serif text-lg text-[rgb(var(--sep-colour-d8bf91))]">
                         {item.name}
                       </p>
-                      <p className="mt-1 text-[8px] uppercase tracking-[0.14em] text-[#766956]">
+                      <p className="mt-1 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-766956))]">
                         {category?.name ?? "Unknown"}
                         {subcategory ? ` · ${subcategory.name}` : ""}
                         {" · "}
@@ -390,21 +390,21 @@ export default async function AdminItemsPage({ searchParams }: Props) {
                       </p>
                     </div>
 
-                    <span className="shrink-0 text-[8px] uppercase tracking-[0.14em] text-[#9b8768]">
+                    <span className="shrink-0 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9b8768))]">
                       {item.is_active ? "Active" : "Inactive"}
                     </span>
                   </div>
                 </summary>
 
-                <div className="border-t border-[#59432c]/35 p-4 sm:p-5">
-                  <section className="border border-[#6a5032]/45 bg-[#130e0b] p-4 sm:p-5">
-                    <p className="text-[8px] uppercase tracking-[0.2em] text-[#8c704b]">
+                <div className="border-t border-[rgb(var(--sep-colour-59432c))]/35 p-4 sm:p-5">
+                  <section className="border border-[rgb(var(--sep-colour-6a5032))]/45 bg-[rgb(var(--sep-colour-130e0b))] p-4 sm:p-5">
+                    <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-8c704b))]">
                       Use / Effects
                     </p>
-                    <h3 className="mt-1 font-serif text-xl text-[#d8bf91]">
+                    <h3 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
                       Item mechanics
                     </h3>
-                    <p className="mt-2 text-[10px] leading-5 text-[#817361]">
+                    <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-817361))]">
                       Configure the Item, its target, success roll, damage, use behaviour,
                       charges, cooldown and all additional Health or Attribute effects here.
                       Damage is a valid effect by itself and never requires a dummy Use effect.
@@ -419,8 +419,8 @@ export default async function AdminItemsPage({ searchParams }: Props) {
                       />
                     </div>
 
-                    <div className="mt-5 border-t border-[#59432c]/35 pt-5">
-                      <p className="text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
+                    <div className="mt-5 border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-5">
+                      <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
                         Health / Attribute effects
                       </p>
 
@@ -435,16 +435,16 @@ export default async function AdminItemsPage({ searchParams }: Props) {
                           ))}
                         </div>
                       ) : (
-                        <p className="mt-3 text-xs italic text-[#766956]">
+                        <p className="mt-3 text-xs italic text-[rgb(var(--sep-colour-766956))]">
                           No additional Health or Attribute effects configured.
                         </p>
                       )}
 
-                      <details className="mt-4 border border-[#59432c]/35 bg-[#100c09]">
-                        <summary className="cursor-pointer list-none px-3 py-3 font-serif text-sm text-[#cab28a]">
+                      <details className="mt-4 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))]">
+                        <summary className="cursor-pointer list-none px-3 py-3 font-serif text-sm text-[rgb(var(--sep-colour-cab28a))]">
                           + Add Health / Attribute effect
                         </summary>
-                        <div className="border-t border-[#59432c]/30 p-3">
+                        <div className="border-t border-[rgb(var(--sep-colour-59432c))]/30 p-3">
                           <EffectForm itemId={item.id} />
                         </div>
                       </details>
@@ -455,7 +455,7 @@ export default async function AdminItemsPage({ searchParams }: Props) {
                     itemId={item.id}
                   />
 
-                  <div className="mt-6 flex justify-end border-t border-[#59432c]/35 pt-5">
+                  <div className="mt-6 flex justify-end border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-5">
                     <AdminActionForm
   action={deleteItem}
   confirmMessage={`Are you sure you want to permanently delete "${item.name}"?`}
@@ -476,7 +476,7 @@ export default async function AdminItemsPage({ searchParams }: Props) {
         </div>
 
         {!items.length ? (
-          <section className="mt-6 border border-[#59432c]/40 bg-[#100c09] p-6 text-sm italic text-[#817565]">
+          <section className="mt-6 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-6 text-sm italic text-[rgb(var(--sep-colour-817565))]">
             No Items have been created yet.
           </section>
         ) : null}
@@ -710,7 +710,7 @@ function ItemForm({
         </Field>
 
         <div className="md:col-span-2 xl:col-span-4">
-          <p className="mb-2 text-[8px] uppercase tracking-[0.16em] text-[#806b50]">
+          <p className="mb-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))]">
             Allowed Counters — Opposed Roll only
           </p>
           <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
@@ -724,7 +724,7 @@ function ItemForm({
             ].map(([value, label]) => (
               <label
                 key={value}
-                className="flex items-center gap-2 border border-[#59432c]/35 bg-[#15100d] px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-[#aa9473]"
+                className="flex items-center gap-2 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-aa9473))]"
               >
                 <input
                   type="checkbox"
@@ -791,7 +791,7 @@ function ItemForm({
         </Field>
       </div>
 
-      <div className="mt-5 flex flex-wrap items-center justify-between gap-4 border-t border-[#59432c]/35 pt-4">
+      <div className="mt-5 flex flex-wrap items-center justify-between gap-4 border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-4">
         <div className="flex flex-wrap gap-5">
           <Check name="isActive" label="Active" checked={item?.is_active ?? true} />
           <Check name="isQuestItem" label="Quest Item" checked={item?.is_quest_item ?? false} />
@@ -801,21 +801,21 @@ function ItemForm({
 
         <button
           type="submit"
-          className="border border-[#987344] bg-[#3b2919] px-5 py-3 text-[9px] uppercase tracking-[0.18em] text-[#efd6a8]"
+          className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd6a8))]"
         >
           {item ? "Save Item" : "Create Item"}
         </button>
       </div>
 
-      <div className="mt-3 border border-[#59432c]/30 bg-[#100c09] px-3 py-2 text-[9px] leading-5 text-[#756958]">
+      <div className="mt-3 border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[9px] leading-5 text-[rgb(var(--sep-colour-756958))]">
         <p>
-          <span className="text-[#a88b61]">Resolution:</span>{" "}
+          <span className="text-[rgb(var(--sep-colour-a88b61))]">Resolution:</span>{" "}
           Automatic applies directly; Fixed DC rolls the selected die plus its
           optional Relevant Attribute against the configured threshold; Opposed
           rolls against one Counter chosen by the targeted Character.
         </p>
         <p className="mt-1">
-          <span className="text-[#a88b61]">Opposed:</span>{" "}
+          <span className="text-[rgb(var(--sep-colour-a88b61))]">Opposed:</span>{" "}
           choose one or more valid Counters. The defender wins ties. Weapons use
           the same Relevant Attribute for their attack roll and damage unless a
           later rule overrides it.
@@ -835,7 +835,7 @@ function EffectForm({ itemId, effect }: { itemId: string; effect?: Effect }) {
   return (
     <AdminActionForm
       action={effect ? updateItemEffect : createItemEffect}
-      className="border border-[#59432c]/35 bg-[#15100d] p-3"
+      className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))] p-3"
     >
       <input type="hidden" name="itemId" value={itemId} />
       {effect ? <input type="hidden" name="effectId" value={effect.id} /> : null}
@@ -937,7 +937,7 @@ function EffectForm({ itemId, effect }: { itemId: string; effect?: Effect }) {
         </div>
       </div>
 
-      <p className="mt-2 text-[8px] leading-5 text-[#6f6252]">
+      <p className="mt-2 text-[8px] leading-5 text-[rgb(var(--sep-colour-6f6252))]">
         Owned and Equipped effects are saved as Passive. Instant Use effects
         apply Health only; Attribute and Max Health modifiers are for
         Temporary/Passive effects. Warping bonuses are limited to Affinity +8
@@ -950,7 +950,7 @@ function EffectForm({ itemId, effect }: { itemId: string; effect?: Effect }) {
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-[8px] uppercase tracking-[0.16em] text-[#806b50]">
+      <span className="mb-1.5 block text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))]">
         {label}
       </span>
       {children}
@@ -968,7 +968,7 @@ function Check({
   checked: boolean;
 }) {
   return (
-    <label className="flex items-center gap-2 text-[8px] uppercase tracking-[0.14em] text-[#9d896a]">
+    <label className="flex items-center gap-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9d896a))]">
       <input type="checkbox" name={name} defaultChecked={checked} />
       {label}
     </label>

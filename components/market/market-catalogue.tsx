@@ -834,11 +834,11 @@ if (!confirmed) {
   }
 
   const compactInput =
-    "h-8 border border-[#59432c]/45 bg-[#100c09] px-2.5 text-[9px] text-[#cdb897] outline-none placeholder:text-[#665b4d] focus:border-[#987344]";
+    "h-8 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-2.5 text-[9px] text-[rgb(var(--sep-colour-cdb897))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))]";
 
   return (
     <>
-      <section className="mt-5 border border-[#60482e]/40 bg-[#15100d] px-3 py-2.5">
+      <section className="mt-5 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2.5">
         <div className="grid gap-1.5 lg:grid-cols-[minmax(170px,1.35fr)_130px_130px_110px_130px_90px_90px_auto]">
           <input
             type="search"
@@ -997,14 +997,14 @@ if (!confirmed) {
           <button
             type="button"
             onClick={resetFilters}
-            className="h-8 border border-[#6b5235] bg-[#21170f] px-3 text-[7px] uppercase tracking-[0.12em] text-[#b89a70] transition hover:border-[#927047]"
+            className="h-8 border border-[rgb(var(--sep-colour-6b5235))] bg-[rgb(var(--sep-colour-21170f))] px-3 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-b89a70))] transition hover:border-[rgb(var(--sep-colour-927047))]"
           >
             Reset
           </button>
         </div>
 
-        <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-[#59432c]/25 pt-1.5">
-          <span className="mr-0.5 text-[7px] uppercase tracking-[0.12em] text-[#6f6252]">
+        <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-1.5">
+          <span className="mr-0.5 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))]">
             Effects
           </span>
 
@@ -1015,7 +1015,7 @@ if (!confirmed) {
             ]) => (
               <label
                 key={value}
-                className="flex cursor-pointer items-center gap-1 text-[8px] text-[#9a886f]"
+                className="flex cursor-pointer items-center gap-1 text-[8px] text-[rgb(var(--sep-colour-9a886f))]"
               >
                 <input
                   type="checkbox"
@@ -1029,7 +1029,7 @@ if (!confirmed) {
                       value,
                     )
                   }
-                  className="h-3 w-3 accent-[#8b673d]"
+                  className="h-3 w-3 accent-[rgb(var(--sep-colour-8b673d))]"
                 />
 
                 {label}
@@ -1037,9 +1037,9 @@ if (!confirmed) {
             ),
           )}
 
-          <span className="mx-1 hidden h-3 w-px bg-[#59432c]/40 sm:block" />
+          <span className="mx-1 hidden h-3 w-px bg-[rgb(var(--sep-colour-59432c))]/40 sm:block" />
 
-          <label className="flex cursor-pointer items-center gap-1 text-[8px] text-[#9a886f]">
+          <label className="flex cursor-pointer items-center gap-1 text-[8px] text-[rgb(var(--sep-colour-9a886f))]">
             <input
               type="checkbox"
               checked={
@@ -1053,14 +1053,14 @@ if (!confirmed) {
                     .checked,
                 )
               }
-              className="h-3 w-3 accent-[#8b673d]"
+              className="h-3 w-3 accent-[rgb(var(--sep-colour-8b673d))]"
             />
             In stock
           </label>
 
           {walletBalance !==
           null ? (
-            <label className="flex cursor-pointer items-center gap-1 text-[8px] text-[#9a886f]">
+            <label className="flex cursor-pointer items-center gap-1 text-[8px] text-[rgb(var(--sep-colour-9a886f))]">
               <input
                 type="checkbox"
                 checked={
@@ -1074,7 +1074,7 @@ if (!confirmed) {
                       .checked,
                   )
                 }
-                className="h-3 w-3 accent-[#8b673d]"
+                className="h-3 w-3 accent-[rgb(var(--sep-colour-8b673d))]"
               />
 
               Affordable (
@@ -1085,7 +1085,7 @@ if (!confirmed) {
             </label>
           ) : null}
 
-          <span className="ml-auto text-[7px] uppercase tracking-[0.11em] text-[#6f6252]">
+          <span className="ml-auto text-[7px] uppercase tracking-[0.11em] text-[rgb(var(--sep-colour-6f6252))]">
             {visible.length} /{" "}
             {listings.length}
           </span>
@@ -1164,9 +1164,9 @@ if (!confirmed) {
                 key={
                   listing.id
                 }
-                className="scroll-mt-6 flex gap-4 border border-[#60482e]/40 bg-[#15100d] p-4"
+                className="scroll-mt-6 flex gap-4 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))] p-4"
               >
-                <div className="h-24 w-24 shrink-0 overflow-hidden border border-[#59432c]/40 bg-[#100c09]">
+                <div className="h-24 w-24 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))]">
                   {item.image_url ? (
                     <img
                       src={
@@ -1176,7 +1176,7 @@ if (!confirmed) {
                       className="h-full w-full object-cover"
                     />
                   ) : (
-                    <div className="flex h-full items-center justify-center text-[#705b3e]">
+                    <div className="flex h-full items-center justify-center text-[rgb(var(--sep-colour-705b3e))]">
                       ◇
                     </div>
                   )}
@@ -1185,11 +1185,11 @@ if (!confirmed) {
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-start justify-between gap-2">
                     <div>
-                      <h2 className="font-serif text-xl text-[#dcc49a]">
+                      <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-dcc49a))]">
                         {item.name}
                       </h2>
 
-                      <p className="mt-1 text-[7px] uppercase tracking-[0.13em] text-[#756958]">
+                      <p className="mt-1 text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-756958))]">
                         {[
                           item.category,
                           item.subcategory,
@@ -1204,14 +1204,14 @@ if (!confirmed) {
                       </p>
                     </div>
 
-                    <span className="text-sm font-semibold text-[#e1bd79]">
+                    <span className="text-sm font-semibold text-[rgb(var(--sep-colour-e1bd79))]">
                       {formatRemnants(
                         listing.buy_price,
                       )}
                     </span>
                   </div>
 
-                  <p className="mt-2 line-clamp-3 text-[10px] leading-5 text-[#958775]">
+                  <p className="mt-2 line-clamp-3 text-[10px] leading-5 text-[rgb(var(--sep-colour-958775))]">
                     {
                       item.description
                     }
@@ -1219,7 +1219,7 @@ if (!confirmed) {
 
                   <div className="mt-3 flex flex-wrap gap-1.5">
                     {item.is_equippable ? (
-                      <span className="border border-[#6c5739]/55 bg-[#1d160f] px-2 py-1 text-[7px] uppercase tracking-[0.11em] text-[#c3a778]">
+                      <span className="border border-[rgb(var(--sep-colour-6c5739))]/55 bg-[rgb(var(--sep-colour-1d160f))] px-2 py-1 text-[7px] uppercase tracking-[0.11em] text-[rgb(var(--sep-colour-c3a778))]">
                         Equippable
                         {" · "}
                         {slotLabel(
@@ -1241,7 +1241,7 @@ if (!confirmed) {
                     {useLabel(
                       item,
                     ) ? (
-                      <span className="border border-[#6c5739]/55 bg-[#1d160f] px-2 py-1 text-[7px] uppercase tracking-[0.11em] text-[#c3a778]">
+                      <span className="border border-[rgb(var(--sep-colour-6c5739))]/55 bg-[rgb(var(--sep-colour-1d160f))] px-2 py-1 text-[7px] uppercase tracking-[0.11em] text-[rgb(var(--sep-colour-c3a778))]">
                         {useLabel(
                           item,
                         )}
@@ -1249,7 +1249,7 @@ if (!confirmed) {
                     ) : null}
 
                     {item.is_quest_item ? (
-                      <span className="border border-[#6c5739]/55 bg-[#1d160f] px-2 py-1 text-[7px] uppercase tracking-[0.11em] text-[#c3a778]">
+                      <span className="border border-[rgb(var(--sep-colour-6c5739))]/55 bg-[rgb(var(--sep-colour-1d160f))] px-2 py-1 text-[7px] uppercase tracking-[0.11em] text-[rgb(var(--sep-colour-c3a778))]">
                         Quest Item
                       </span>
                     ) : null}
@@ -1259,7 +1259,7 @@ if (!confirmed) {
                     {mechanicsLabels(item).map((label) => (
                       <span
                         key={`${listing.id}-${label}`}
-                        className="border border-[#59432c]/40 bg-[#100c09] px-2 py-1 text-[7px] uppercase tracking-[0.1em] text-[#b99d72]"
+                        className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-2 py-1 text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-b99d72))]"
                       >
                         {label}
                       </span>
@@ -1279,7 +1279,7 @@ if (!confirmed) {
                         ) => (
                           <span
                             key={`${listing.id}-effect-${index}`}
-                            className="text-[8px] leading-4 text-[#b69a72]"
+                            className="text-[8px] leading-4 text-[rgb(var(--sep-colour-b69a72))]"
                           >
                             {
                               effect
@@ -1295,7 +1295,7 @@ if (!confirmed) {
                       className={
                         outOfStock
                           ? "border border-red-900/45 bg-red-950/10 px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-red-400"
-                          : "border border-[#59432c]/40 bg-[#100c09] px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[#947e61]"
+                          : "border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-947e61))]"
                       }
                     >
                       {listing.stock_mode ===
@@ -1308,7 +1308,7 @@ if (!confirmed) {
 
                     {listing.sell_price !==
                     null ? (
-                      <span className="border border-[#59432c]/40 bg-[#100c09] px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[#806f5b]">
+                      <span className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806f5b))]">
                         Shop Buyback{" "}
                         {formatRemnants(
                           listing.sell_price,
@@ -1317,7 +1317,7 @@ if (!confirmed) {
                     ) : null}
                   </div>
 
-                  <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-[#59432c]/25 pt-2.5">
+                  <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-2.5">
                     <input
                       type="number"
                       min={1}
@@ -1371,7 +1371,7 @@ if (!confirmed) {
                           }),
                         );
                       }}
-                      className="h-8 w-16 border border-[#59432c]/45 bg-[#100c09] px-2 text-center text-[10px] text-[#d4bea0] outline-none focus:border-[#987344]"
+                      className="h-8 w-16 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-2 text-center text-[10px] text-[rgb(var(--sep-colour-d4bea0))] outline-none focus:border-[rgb(var(--sep-colour-987344))]"
                       aria-label={`Quantity of ${item.name}`}
                     />
 
@@ -1388,7 +1388,7 @@ if (!confirmed) {
                         cannotAfford ||
                         exceedsStock
                       }
-                      className="h-8 border border-[#85653c] bg-[#342617] px-4 text-[8px] uppercase tracking-[0.14em] text-[#efd4a0] transition hover:bg-[#4a351f] disabled:cursor-not-allowed disabled:opacity-40"
+                      className="h-8 border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-4 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:bg-[rgb(var(--sep-colour-4a351f))] disabled:cursor-not-allowed disabled:opacity-40"
                     >
                       {pending &&
                       pendingListingId ===
@@ -1399,7 +1399,7 @@ if (!confirmed) {
                         : "Buy"}
                     </button>
 
-                    <span className="text-[8px] text-[#8e7a60]">
+                    <span className="text-[8px] text-[rgb(var(--sep-colour-8e7a60))]">
                       Total{" "}
                       {formatRemnants(
                         total,
@@ -1423,8 +1423,8 @@ if (!confirmed) {
 
                   {listing.sell_price !==
                   null ? (
-                    <div className="mt-2 flex flex-wrap items-center gap-2 border-t border-[#59432c]/20 pt-2">
-                      <span className="text-[7px] uppercase tracking-[0.12em] text-[#756958]">
+                    <div className="mt-2 flex flex-wrap items-center gap-2 border-t border-[rgb(var(--sep-colour-59432c))]/20 pt-2">
+                      <span className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
                         You own{" "}
                         {
                           listing
@@ -1482,7 +1482,7 @@ if (!confirmed) {
                         disabled={
                           !canSell
                         }
-                        className="h-8 w-16 border border-[#59432c]/45 bg-[#100c09] px-2 text-center text-[10px] text-[#d4bea0] outline-none focus:border-[#987344] disabled:opacity-35"
+                        className="h-8 w-16 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-2 text-center text-[10px] text-[rgb(var(--sep-colour-d4bea0))] outline-none focus:border-[rgb(var(--sep-colour-987344))] disabled:opacity-35"
                         aria-label={`Quantity of ${item.name} to sell`}
                       />
 
@@ -1498,7 +1498,7 @@ if (!confirmed) {
                           !canSell ||
                           exceedsOwned
                         }
-                        className="h-8 border border-[#85653c] bg-[#342617] px-4 text-[8px] uppercase tracking-[0.14em] text-[#efd4a0] transition hover:bg-[#4a351f] disabled:cursor-not-allowed disabled:opacity-40"
+                        className="h-8 border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-4 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:bg-[rgb(var(--sep-colour-4a351f))] disabled:cursor-not-allowed disabled:opacity-40"
                       >
                         {pending &&
                         pendingListingId ===
@@ -1509,7 +1509,7 @@ if (!confirmed) {
                           : "Sell"}
                       </button>
 
-                      <span className="text-[8px] text-[#8e7a60]">
+                      <span className="text-[8px] text-[rgb(var(--sep-colour-8e7a60))]">
                         Receive{" "}
                         {formatRemnants(
                           sellTotal,
@@ -1517,7 +1517,7 @@ if (!confirmed) {
                       </span>
 
                       {!canSell ? (
-                        <span className="text-[8px] text-[#6f6252]">
+                        <span className="text-[8px] text-[rgb(var(--sep-colour-6f6252))]">
                           No eligible
                           copies
                         </span>
@@ -1554,7 +1554,7 @@ if (!confirmed) {
       </div>
 
       {!visible.length ? (
-        <section className="mt-4 border border-[#60482e]/40 bg-[#15100d] p-6 text-center text-sm text-[#8f8271]">
+        <section className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))] p-6 text-center text-sm text-[rgb(var(--sep-colour-8f8271))]">
           No Items match the
           selected filters.
         </section>

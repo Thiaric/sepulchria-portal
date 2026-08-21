@@ -347,7 +347,7 @@ export default async function ForumPage() {
             <form action={markAllTopicsAsRead}>
               <button
                 type="submit"
-                className="border border-[#987344] bg-[#3b2919] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[#efd6a8] transition hover:border-[#b98c50] hover:bg-[#50371f]"
+                className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
               >
                 Mark all as read
                 <span className="ml-2 font-serif text-sm">
@@ -416,18 +416,18 @@ function ForumCategoryCard({
   emptyMessage: string;
 }) {
   return (
-    <section className="overflow-hidden border border-[#60482e]/50 bg-[#15100d] shadow-[0_14px_35px_rgba(0,0,0,0.18)]">
-      <header className="border-b border-[#60482e]/40 bg-[#1a130e] px-5 py-5">
-        <p className="text-[8px] uppercase tracking-[0.26em] text-[#806a4d]">
+    <section className="overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-15100d))] shadow-[0_14px_35px_rgba(var(--sep-rgb-0-0-0),0.18)]">
+      <header className="border-b border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-1a130e))] px-5 py-5">
+        <p className="text-[8px] uppercase tracking-[0.26em] text-[rgb(var(--sep-colour-806a4d))]">
           {eyebrow}
         </p>
 
         <div className="mt-2 flex items-center justify-between gap-4">
-          <h1 className="font-serif text-3xl text-[#dec69d]">
+          <h1 className="font-serif text-3xl text-[rgb(var(--sep-colour-dec69d))]">
             {title}
           </h1>
 
-          <span className="border border-[#60482e]/45 bg-[#100c09] px-2.5 py-1.5 text-[8px] uppercase tracking-[0.15em] text-[#9c835f]">
+          <span className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-2.5 py-1.5 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-9c835f))]">
             {sections.length}{" "}
             {sections.length === 1
               ? "section"
@@ -437,7 +437,7 @@ function ForumCategoryCard({
       </header>
 
       {sections.length > 0 ? (
-        <div className="divide-y divide-[#60482e]/30">
+        <div className="divide-y divide-[rgb(var(--sep-colour-60482e))]/30">
           {sections.map((section) => (
             <CompactForumSection
               key={section.id}
@@ -453,7 +453,7 @@ function ForumCategoryCard({
         </div>
       ) : (
         <div className="px-5 py-10 text-center">
-          <p className="font-serif text-lg text-[#aa9982]">
+          <p className="font-serif text-lg text-[rgb(var(--sep-colour-aa9982))]">
             {emptyMessage}
           </p>
         </div>
@@ -486,8 +486,8 @@ function CompactForumSection({
       href={`/forum/${section.slug}`}
       className={`group relative block overflow-hidden px-5 py-5 transition sm:px-6 ${
         hasUnreadTopics
-          ? "bg-[#1d140d] shadow-[inset_3px_0_0_#a87532]"
-          : "hover:bg-[#1a130e]"
+          ? "bg-[rgb(var(--sep-colour-1d140d))] shadow-[inset_3px_0_0_#a87532]"
+          : "hover:bg-[rgb(var(--sep-colour-1a130e))]"
       }`}
     >
       {section.banner_url ? (
@@ -501,14 +501,14 @@ function CompactForumSection({
             unoptimized
           />
 
-          <div className="absolute inset-0 bg-gradient-to-r from-[#15100d] via-[#15100d]/96 to-[#15100d]/84" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[rgb(var(--sep-colour-15100d))] via-[rgb(var(--sep-colour-15100d))]/96 to-[rgb(var(--sep-colour-15100d))]/84" />
         </div>
       ) : null}
 
       <div className="relative grid gap-5 md:grid-cols-[minmax(0,1fr)_220px] md:items-center">
         <div className="flex min-w-0 items-start gap-4">
           <div
-            className="relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden border bg-[#0d0907]"
+            className="relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-0d0907))]"
             style={{
               borderColor: `${sectionColour}88`,
             }}
@@ -538,18 +538,18 @@ function CompactForumSection({
 
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <h2 className="font-serif text-xl text-[#d9c39d] transition group-hover:text-[#f0d8aa]">
+              <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-d9c39d))] transition group-hover:text-[rgb(var(--sep-colour-f0d8aa))]">
                 {section.name}
               </h2>
 
               {hasUnreadTopics ? (
-                <span className="rounded-full bg-[#7a291f] px-2 py-1 text-[7px] font-semibold uppercase tracking-[0.13em] text-[#ffe1ac]">
+                <span className="rounded-full bg-[rgb(var(--sep-colour-7a291f))] px-2 py-1 text-[7px] font-semibold uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-ffe1ac))]">
                   {statistics.unreadTopics} new
                 </span>
               ) : null}
 
               {section.visibility !== "public" ? (
-                <span className="border border-[#675036]/60 bg-black/15 px-2 py-1 text-[7px] uppercase tracking-[0.14em] text-[#9e8767]">
+                <span className="border border-[rgb(var(--sep-colour-675036))]/60 bg-black/15 px-2 py-1 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9e8767))]">
                   {section.visibility ===
                   "members"
                     ? "Members"
@@ -559,40 +559,40 @@ function CompactForumSection({
             </div>
 
             {section.association ? (
-              <p className="mt-1 text-[8px] uppercase tracking-[0.16em] text-[#7e684c]">
+              <p className="mt-1 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-7e684c))]">
                 {section.association.name}
               </p>
             ) : null}
 
-            <p className="mt-2 line-clamp-2 text-xs leading-5 text-[#918474]">
+            <p className="mt-2 line-clamp-2 text-xs leading-5 text-[rgb(var(--sep-colour-918474))]">
               {section.description ||
                 "No description has been provided for this section."}
             </p>
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-px border border-[#60482e]/30 bg-[#60482e]/30 md:self-stretch">
-          <div className="flex flex-col items-center justify-center bg-[#100c09]/95 px-3 py-3 text-center">
-            <span className="font-serif text-lg text-[#c6aa80]">
+        <div className="grid grid-cols-3 gap-px border border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-60482e))]/30 md:self-stretch">
+          <div className="flex flex-col items-center justify-center bg-[rgb(var(--sep-colour-100c09))]/95 px-3 py-3 text-center">
+            <span className="font-serif text-lg text-[rgb(var(--sep-colour-c6aa80))]">
               {statistics.topics}
             </span>
 
-            <span className="mt-1 text-[7px] uppercase tracking-[0.14em] text-[#766654]">
+            <span className="mt-1 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-766654))]">
               Topics
             </span>
           </div>
 
-          <div className="flex flex-col items-center justify-center bg-[#100c09]/95 px-3 py-3 text-center">
-            <span className="font-serif text-lg text-[#c6aa80]">
+          <div className="flex flex-col items-center justify-center bg-[rgb(var(--sep-colour-100c09))]/95 px-3 py-3 text-center">
+            <span className="font-serif text-lg text-[rgb(var(--sep-colour-c6aa80))]">
               {statistics.replies}
             </span>
 
-            <span className="mt-1 text-[7px] uppercase tracking-[0.14em] text-[#766654]">
+            <span className="mt-1 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-766654))]">
               Replies
             </span>
           </div>
 
-          <div className="flex items-center justify-center bg-[#100c09]/95 px-3 py-3 text-[#775f42] transition group-hover:text-[#c7a675]">
+          <div className="flex items-center justify-center bg-[rgb(var(--sep-colour-100c09))]/95 px-3 py-3 text-[rgb(var(--sep-colour-775f42))] transition group-hover:text-[rgb(var(--sep-colour-c7a675))]">
             <span
               aria-hidden="true"
               className="transition group-hover:translate-x-1"

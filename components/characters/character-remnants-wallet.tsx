@@ -17,9 +17,9 @@ export async function CharacterRemnantsWallet({ characterId }: { characterId: st
   return (
     <section>
       
-          <p className="text-[7px] uppercase tracking-[0.18em] text-[#806b50]">Currency (Remnants)</p>
+          <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">Currency (Remnants)</p>
           <dd className="mt-1 flex items-baseline gap-1">
-          <span className="font-serif text-2xl text-[#e0c79d]">{formatRemnants(balance)}</span>
+          <span className="font-serif text-2xl text-[rgb(var(--sep-colour-e0c79d))]">{formatRemnants(balance)}</span>
         </dd>
     </section>
   );

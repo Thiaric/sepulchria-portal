@@ -156,10 +156,10 @@ function buildHref(
 }
 
 const input =
-  "h-9 min-w-0 border border-[#60482e]/55 bg-[#100c09] px-3 text-[9px] text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#9b7446]";
+  "h-9 min-w-0 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 text-[9px] text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-9b7446))]";
 
 const button =
-  "h-9 border border-[#80613b] bg-[#261b12] px-4 text-[8px] uppercase tracking-[0.14em] text-[#d5b785] transition hover:border-[#ad824d]";
+  "h-9 border border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-261b12))] px-4 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d5b785))] transition hover:border-[rgb(var(--sep-colour-ad824d))]";
 
 export default async function CommunicationLogsPage({
   searchParams,
@@ -282,15 +282,15 @@ export default async function CommunicationLogsPage({
     <main className="p-5 sm:p-7 lg:p-9">
       <div className="mx-auto max-w-[1500px]">
         <div>
-          <p className="text-[9px] uppercase tracking-[0.28em] text-[#8c704b]">
+          <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
             Administration · Moderation
           </p>
 
-          <h1 className="mt-2 font-serif text-4xl text-[#ead5ac]">
+          <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">
             Communication Logs
           </h1>
 
-          <p className="mt-3 max-w-4xl text-sm leading-7 text-[#9c8d79]">
+          <p className="mt-3 max-w-4xl text-sm leading-7 text-[rgb(var(--sep-colour-9c8d79))]">
             Staff-only read access to historical Private Messages,
             complete location chat logs (including whispers), and the
             bottom-right off-game Instant Chat. Viewing a log does not
@@ -357,7 +357,7 @@ export default async function CommunicationLogsPage({
 
         <form
           method="get"
-          className="mt-4 border border-[#60482e]/45 bg-[#15100d] p-4"
+          className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4"
         >
           <input
             type="hidden"
@@ -541,7 +541,7 @@ export default async function CommunicationLogsPage({
               Reset
             </Link>
 
-            <span className="ml-auto text-[8px] uppercase tracking-[0.12em] text-[#716654]">
+            <span className="ml-auto text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-716654))]">
               Newest first · maximum 250 results
             </span>
           </div>
@@ -889,11 +889,11 @@ async function loadPrivateMessages(
           return (
             <article
               key={message.id}
-              className="border border-[#59432c]/40 bg-[#15100d] p-4"
+              className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-15100d))] p-4"
             >
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <p className="font-serif text-base text-[#dcc49a]">
+                  <p className="font-serif text-base text-[rgb(var(--sep-colour-dcc49a))]">
                     {sender
                       ? characterName(
                           sender,
@@ -906,7 +906,7 @@ async function loadPrivateMessages(
                         "Deleted / unknown sender"}
                   </p>
 
-                  <p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-[#806f5b]">
+                  <p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806f5b))]">
                     {conversationLabel}
                     {" · "}
                     {message.message_mode ??
@@ -915,7 +915,7 @@ async function loadPrivateMessages(
                 </div>
 
                 <div className="shrink-0 text-right">
-                  <p className="text-[9px] text-[#9b8768]">
+                  <p className="text-[9px] text-[rgb(var(--sep-colour-9b8768))]">
                     {formatDateTime(
                       String(
                         message.created_at,
@@ -923,7 +923,7 @@ async function loadPrivateMessages(
                     )}
                   </p>
 
-                  <p className="mt-1 font-mono text-[7px] text-[#62584b]">
+                  <p className="mt-1 font-mono text-[7px] text-[rgb(var(--sep-colour-62584b))]">
                     {
                       message.conversation_id
                     }
@@ -931,7 +931,7 @@ async function loadPrivateMessages(
                 </div>
               </div>
 
-              <div className="mt-3 whitespace-pre-wrap border-t border-[#59432c]/25 pt-3 text-xs leading-6 text-[#c1b198]">
+              <div className="mt-3 whitespace-pre-wrap border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-3 text-xs leading-6 text-[rgb(var(--sep-colour-c1b198))]">
                 {plainText(
                   String(
                     message.body ??
@@ -942,8 +942,8 @@ async function loadPrivateMessages(
               </div>
 
               {message.forwarded_body ? (
-                <div className="mt-3 border-l-2 border-[#80613b] bg-[#100c09] p-3 text-[10px] leading-5 text-[#9e907d]">
-                  <p className="mb-1 text-[7px] uppercase tracking-[0.12em] text-[#806f5b]">
+                <div className="mt-3 border-l-2 border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-100c09))] p-3 text-[10px] leading-5 text-[rgb(var(--sep-colour-9e907d))]">
+                  <p className="mb-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806f5b))]">
                     Forwarded from{" "}
                     {message.forwarded_sender_name ??
                       "Unknown"}
@@ -1210,11 +1210,11 @@ async function loadRoomMessages(
           return (
             <article
               key={message.id}
-              className="border border-[#59432c]/40 bg-[#15100d] p-4"
+              className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-15100d))] p-4"
             >
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <p className="font-serif text-base text-[#dcc49a]">
+                  <p className="font-serif text-base text-[rgb(var(--sep-colour-dcc49a))]">
                     {characterName(
                       sender,
                     )}
@@ -1222,7 +1222,7 @@ async function loadRoomMessages(
                       "whisper" ? (
                       <>
                         {" "}
-                        <span className="text-[#806f5b]">
+                        <span className="text-[rgb(var(--sep-colour-806f5b))]">
                           →
                         </span>{" "}
                         {characterName(
@@ -1232,7 +1232,7 @@ async function loadRoomMessages(
                     ) : null}
                   </p>
 
-                  <p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-[#806f5b]">
+                  <p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806f5b))]">
                     {room?.name ??
                       "Unknown location"}
                     {" · "}
@@ -1242,7 +1242,7 @@ async function loadRoomMessages(
                   </p>
                 </div>
 
-                <p className="text-[9px] text-[#9b8768]">
+                <p className="text-[9px] text-[rgb(var(--sep-colour-9b8768))]">
                   {formatDateTime(
                     String(
                       message.created_at,
@@ -1251,7 +1251,7 @@ async function loadRoomMessages(
                 </p>
               </div>
 
-              <p className="mt-3 whitespace-pre-wrap border-t border-[#59432c]/25 pt-3 text-xs leading-6 text-[#c1b198]">
+              <p className="mt-3 whitespace-pre-wrap border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-3 text-xs leading-6 text-[rgb(var(--sep-colour-c1b198))]">
                 {String(
                   message.message ??
                     "",
@@ -1263,7 +1263,7 @@ async function loadRoomMessages(
                 null ||
               message.roll_total !==
                 null ? (
-                <p className="mt-2 text-[8px] uppercase tracking-[0.1em] text-[#786a58]">
+                <p className="mt-2 text-[8px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-786a58))]">
                   {[
                     message.roll_label,
                     message.dice_sides
@@ -1383,11 +1383,11 @@ async function loadInstantChatMessages(
         (message) => (
           <article
             key={message.id}
-            className="border border-[#59432c]/40 bg-[#15100d] p-4"
+            className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-15100d))] p-4"
           >
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <p className="font-serif text-base text-[#dcc49a]">
+                <p className="font-serif text-base text-[rgb(var(--sep-colour-dcc49a))]">
                   {characterById.get(
                     String(
                       message.sender_character_id,
@@ -1396,13 +1396,13 @@ async function loadInstantChatMessages(
                     "Unknown character"}
                 </p>
 
-                <p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-[#806f5b]">
+                <p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806f5b))]">
                   Instant Chat · Off-game
                 </p>
               </div>
 
               <div className="text-right">
-                <p className="text-[9px] text-[#9b8768]">
+                <p className="text-[9px] text-[rgb(var(--sep-colour-9b8768))]">
                   {formatDateTime(
                     String(
                       message.created_at,
@@ -1410,7 +1410,7 @@ async function loadInstantChatMessages(
                   )}
                 </p>
 
-                <p className="mt-1 font-mono text-[7px] text-[#62584b]">
+                <p className="mt-1 font-mono text-[7px] text-[rgb(var(--sep-colour-62584b))]">
                   {String(
                     message.conversation_id,
                   )}
@@ -1418,7 +1418,7 @@ async function loadInstantChatMessages(
               </div>
             </div>
 
-            <p className="mt-3 whitespace-pre-wrap border-t border-[#59432c]/25 pt-3 text-xs leading-6 text-[#c1b198]">
+            <p className="mt-3 whitespace-pre-wrap border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-3 text-xs leading-6 text-[rgb(var(--sep-colour-c1b198))]">
               {String(
                 message.body ?? "",
               )}
@@ -1449,8 +1449,8 @@ function ViewLink({
       href={href}
       className={`border px-4 py-2.5 text-[8px] uppercase tracking-[0.16em] transition ${
         active
-          ? "border-[#a47b47] bg-[#3b2919] text-[#efd3a1]"
-          : "border-[#60482e]/50 bg-[#15100d] text-[#9f8a6d] hover:border-[#8d683f]"
+          ? "border-[rgb(var(--sep-colour-a47b47))] bg-[rgb(var(--sep-colour-3b2919))] text-[rgb(var(--sep-colour-efd3a1))]"
+          : "border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-15100d))] text-[rgb(var(--sep-colour-9f8a6d))] hover:border-[rgb(var(--sep-colour-8d683f))]"
       }`}
     >
       {children}
@@ -1464,7 +1464,7 @@ function EmptyState({
   message: string;
 }) {
   return (
-    <div className="border border-[#59432c]/40 bg-[#100c09] p-8 text-center text-sm italic text-[#776b5b]">
+    <div className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-8 text-center text-sm italic text-[rgb(var(--sep-colour-776b5b))]">
       {message}
     </div>
   );

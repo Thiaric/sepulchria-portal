@@ -233,17 +233,17 @@ export async function OrderMembershipManager({
       );
 
   return (
-    <section className="mt-8 border-t border-[#60482e]/35 pt-6">
+    <section className="mt-8 border-t border-[rgb(var(--sep-colour-60482e))]/35 pt-6">
       <div>
-        <p className="text-[8px] uppercase tracking-[0.24em] text-[#806b50]">
+        <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
           Order membership
         </p>
 
-        <h4 className="mt-1 font-serif text-2xl text-[#dec69a]">
+        <h4 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dec69a))]">
           Members
         </h4>
 
-        <p className="mt-2 max-w-3xl text-[11px] leading-5 text-[#8f8271]">
+        <p className="mt-2 max-w-3xl text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
           Staff can place characters
           into this Order and assign
           their current level and job.
@@ -280,7 +280,7 @@ export async function OrderMembershipManager({
                 action={
                   updateOrderMember
                 }
-                className="border border-[#59432c]/40 bg-[#100c09] p-3"
+                className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-3"
               >
                 <input
                   type="hidden"
@@ -298,11 +298,11 @@ export async function OrderMembershipManager({
 
                 <div className="grid gap-3 lg:grid-cols-[minmax(180px,1fr)_140px_minmax(180px,1fr)_auto] lg:items-end">
                   <div>
-                    <p className="text-[7px] uppercase tracking-[0.14em] text-[#756958]">
+                    <p className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
                       Character
                     </p>
 
-                    <p className="mt-1 font-serif text-sm text-[#d8bf91]">
+                    <p className="mt-1 font-serif text-sm text-[rgb(var(--sep-colour-d8bf91))]">
                       {
                         character.display_name
                       }
@@ -310,7 +310,7 @@ export async function OrderMembershipManager({
                   </div>
 
                   <label>
-                    <span className="mb-1 block text-[7px] uppercase tracking-[0.14em] text-[#756958]">
+                    <span className="mb-1 block text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
                       Level
                     </span>
 
@@ -319,7 +319,7 @@ export async function OrderMembershipManager({
                       defaultValue={
                         membership.order_level_id
                       }
-                      className="w-full border border-[#60482e]/50 bg-[#15100d] px-2 py-2 text-xs text-[#d7c4a5] outline-none"
+                      className="w-full border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-15100d))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none"
                     >
                       {levels.map(
                         (level) => (
@@ -342,7 +342,7 @@ export async function OrderMembershipManager({
                   </label>
 
                   <label>
-                    <span className="mb-1 block text-[7px] uppercase tracking-[0.14em] text-[#756958]">
+                    <span className="mb-1 block text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
                       Role
                     </span>
 
@@ -353,7 +353,7 @@ export async function OrderMembershipManager({
                         membership.order_job_id ??
                         ""
                       }
-                      className="w-full border border-[#60482e]/50 bg-[#15100d] px-2 py-2 text-xs text-[#d7c4a5] outline-none"
+                      className="w-full border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-15100d))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none"
                     >
                       <option value="" disabled>
                         Select Role
@@ -390,7 +390,7 @@ export async function OrderMembershipManager({
                   <div className="flex gap-2">
                     <button
                       type="submit"
-                      className="border border-[#765937]/55 bg-[#261b12] px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-[#ccb083]"
+                      className="border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-261b12))] px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-ccb083))]"
                     >
                       Save
                     </button>
@@ -406,7 +406,7 @@ export async function OrderMembershipManager({
                 </div>
 
                 {currentLevel ? (
-                  <p className="mt-2 text-[8px] text-[#716554]">
+                  <p className="mt-2 text-[8px] text-[rgb(var(--sep-colour-716554))]">
                     Current: Level{" "}
                     {
                       currentLevel.level
@@ -423,7 +423,7 @@ export async function OrderMembershipManager({
 
         {memberships.length ===
         0 ? (
-          <p className="border border-[#59432c]/25 bg-[#100c09] p-4 text-[10px] italic text-[#746858]">
+          <p className="border border-[rgb(var(--sep-colour-59432c))]/25 bg-[rgb(var(--sep-colour-100c09))] p-4 text-[10px] italic text-[rgb(var(--sep-colour-746858))]">
             This Order has no members
             yet.
           </p>
@@ -432,7 +432,7 @@ export async function OrderMembershipManager({
 
       <AdminActionForm
         action={addOrderMember}
-        className="mt-4 border border-dashed border-[#765937]/45 bg-[#100c09] p-4"
+        className="mt-4 border border-dashed border-[rgb(var(--sep-colour-765937))]/45 bg-[rgb(var(--sep-colour-100c09))] p-4"
       >
         <input
           type="hidden"
@@ -440,13 +440,13 @@ export async function OrderMembershipManager({
           value={orderId}
         />
 
-        <p className="text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
+        <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
           Add member
         </p>
 
         <div className="mt-3 grid gap-3 lg:grid-cols-[minmax(220px,1fr)_140px_minmax(200px,1fr)_auto] lg:items-end">
           <label>
-            <span className="mb-1 block text-[7px] uppercase tracking-[0.14em] text-[#756958]">
+            <span className="mb-1 block text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
               Character
             </span>
 
@@ -454,7 +454,7 @@ export async function OrderMembershipManager({
               name="characterId"
               required
               defaultValue=""
-              className="w-full border border-[#60482e]/50 bg-[#15100d] px-2 py-2 text-xs text-[#d7c4a5] outline-none"
+              className="w-full border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-15100d))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none"
             >
               <option
                 value=""
@@ -483,7 +483,7 @@ export async function OrderMembershipManager({
           </label>
 
           <label>
-            <span className="mb-1 block text-[7px] uppercase tracking-[0.14em] text-[#756958]">
+            <span className="mb-1 block text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
               Level
             </span>
 
@@ -501,7 +501,7 @@ export async function OrderMembershipManager({
                 ]?.id ??
                 ""
               }
-              className="w-full border border-[#60482e]/50 bg-[#15100d] px-2 py-2 text-xs text-[#d7c4a5] outline-none"
+              className="w-full border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-15100d))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none"
             >
               {levels.map(
                 (level) => (
@@ -522,7 +522,7 @@ export async function OrderMembershipManager({
           </label>
 
           <label>
-            <span className="mb-1 block text-[7px] uppercase tracking-[0.14em] text-[#756958]">
+            <span className="mb-1 block text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
               Role
             </span>
 
@@ -530,7 +530,7 @@ export async function OrderMembershipManager({
               name="jobId"
               required
               defaultValue=""
-              className="w-full border border-[#60482e]/50 bg-[#15100d] px-2 py-2 text-xs text-[#d7c4a5] outline-none"
+              className="w-full border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-15100d))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none"
             >
               <option value="" disabled>
                 Select Role
@@ -564,7 +564,7 @@ export async function OrderMembershipManager({
               availableCharacters.length ===
               0
             }
-            className="border border-[#987344] bg-[#3b2919] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[#efd6a8] disabled:cursor-not-allowed disabled:opacity-40"
+            className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd6a8))] disabled:cursor-not-allowed disabled:opacity-40"
           >
             Add member
           </button>

@@ -43,11 +43,11 @@ export default async function ForumStaffTools({
           Staff tools
         </p>
 
-        <h2 className="mt-2 font-serif text-2xl text-[#dec69d]">
+        <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dec69d))]">
           Forum Administration
         </h2>
 
-        <p className="mt-2 max-w-3xl text-sm leading-6 text-[#a99880]">
+        <p className="mt-2 max-w-3xl text-sm leading-6 text-[rgb(var(--sep-colour-a99880))]">
           Manage sections, discussions (topics) and recorded moderation activity, delete topics or replies.
         </p>
       </div>
@@ -97,22 +97,22 @@ function StaffLink({
   label: string;
 }) {
   return (
-    <article className="flex h-full flex-col border border-[#60482e]/45 bg-[#15100d]">
+    <article className="flex h-full flex-col border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
       <div className="flex-1 px-4 py-4">
         <p className="text-[7px] uppercase tracking-[0.18em] text-amber-500">
           {eyebrow}
         </p>
 
-        <h3 className="mt-2 font-serif text-lg text-[#d8c09a]">
+        <h3 className="mt-2 font-serif text-lg text-[rgb(var(--sep-colour-d8c09a))]">
           {title}
         </h3>
 
-        <p className="mt-2 text-xs leading-5 text-[#817567]">
+        <p className="mt-2 text-xs leading-5 text-[rgb(var(--sep-colour-817567))]">
           {description}
         </p>
       </div>
 
-      <div className="border-t border-[#60482e]/30 bg-[#110d0a] px-4 py-3">
+      <div className="border-t border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-110d0a))] px-4 py-3">
         <Link
           href={href}
           className="block border border-amber-800/60 bg-amber-950/20 px-4 py-3 text-center text-[8px] uppercase tracking-[0.16em] text-amber-300 transition hover:border-amber-600 hover:bg-amber-950/40"

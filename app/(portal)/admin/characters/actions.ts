@@ -1548,6 +1548,234 @@ const CHARACTER_FEATURE_SOURCES = [
 type CharacterFeatureSource =
   (typeof CHARACTER_FEATURE_SOURCES)[number];
 
+
+export async function setCharacterPortalSkinEntitlement(
+  formData: FormData,
+) {
+  const staff = await requireStaff();
+
+  const characterId =
+    readRequiredUuid(
+      formData.get("characterId"),
+    );
+
+  const skinId =
+    readRequiredUuid(
+      formData.get("skinId"),
+    );
+
+  const enabledRaw =
+    formData.get("enabled");
+
+  const enabled =
+    enabledRaw === "true"
+      ? true
+      : enabledRaw === "false"
+        ? false
+        : null;
+
+  if (enabled === null) {
+    throw new Error(
+      "The selected portal skin access value is invalid.",
+    );
+  }
+
+  const sourceRaw =
+    formData.get("source");
+
+  const source =
+    sourceRaw === "paid" ||
+    sourceRaw === "staff"
+      ? sourceRaw
+      : null;
+
+  if (!source) {
+    throw new Error(
+      "The selected portal skin unlock source is invalid.",
+    );
+  }
+
+  const note =
+    readOptionalText(
+      formData.get("note"),
+      1000,
+    );
+
+  const admin =
+    createPrivilegedClient();
+
+  const {
+    data: character,
+    error: characterError,
+  } = await admin
+    .from("characters")
+    .select("id, user_id")
+    .eq("id", characterId)
+    .maybeSingle();
+
+  if (
+    characterError ||
+    !character
+  ) {
+    throw new Error(
+      `Unable to load the selected character account: ${
+        characterError?.message ??
+        "Character not found."
+      }`,
+    );
+  }
+
+  const {
+    data: skin,
+    error: skinError,
+  } = await admin
+    .from("portal_skins")
+    .select(
+      "id, slug, name, is_default",
+    )
+    .eq("id", skinId)
+    .maybeSingle();
+
+  if (
+    skinError ||
+    !skin
+  ) {
+    throw new Error(
+      `Unable to load the selected portal skin: ${
+        skinError?.message ??
+        "Skin not found."
+      }`,
+    );
+  }
+
+  if (skin.is_default === true) {
+    throw new Error(
+      "The default Sepulchria skin does not require premium access.",
+    );
+  }
+
+  const now =
+    new Date().toISOString();
+
+  const {
+    error: entitlementError,
+  } = await admin
+    .from(
+      "user_portal_skin_entitlements",
+    )
+    .upsert(
+      {
+        user_id:
+          character.user_id,
+        skin_id:
+          skinId,
+        enabled,
+        source,
+        note,
+        granted_by:
+          staff.userId,
+        granted_at:
+          now,
+        updated_at:
+          now,
+      },
+      {
+        onConflict:
+          "user_id,skin_id",
+      },
+    );
+
+  if (entitlementError) {
+    throw new Error(
+      `Unable to update portal skin access: ${entitlementError.message}`,
+    );
+  }
+
+  if (!enabled) {
+    const {
+      data: preference,
+      error: preferenceError,
+    } = await admin
+      .from(
+        "user_portal_preferences",
+      )
+      .select(
+        "selected_skin_id",
+      )
+      .eq(
+        "user_id",
+        character.user_id,
+      )
+      .maybeSingle();
+
+    if (preferenceError) {
+      throw new Error(
+        `Portal skin access was updated, but the account preference could not be checked: ${preferenceError.message}`,
+      );
+    }
+
+    if (
+      preference?.selected_skin_id ===
+      skinId
+    ) {
+      const {
+        data: defaultSkin,
+        error: defaultSkinError,
+      } = await admin
+        .from("portal_skins")
+        .select("id")
+        .eq("is_default", true)
+        .eq("is_active", true)
+        .maybeSingle();
+
+      if (
+        defaultSkinError ||
+        !defaultSkin
+      ) {
+        throw new Error(
+          `Portal skin access was revoked, but the account could not be returned to Sepulchria: ${
+            defaultSkinError?.message ??
+            "Default skin not found."
+          }`,
+        );
+      }
+
+      const {
+        error: resetError,
+      } = await admin
+        .from(
+          "user_portal_preferences",
+        )
+        .upsert(
+          {
+            user_id:
+              character.user_id,
+            selected_skin_id:
+              defaultSkin.id,
+            updated_at:
+              now,
+          },
+          {
+            onConflict:
+              "user_id",
+          },
+        );
+
+      if (resetError) {
+        throw new Error(
+          `Portal skin access was revoked, but the account could not be returned to Sepulchria: ${resetError.message}`,
+        );
+      }
+    }
+  }
+
+  revalidatePath(
+    `/admin/characters/${characterId}`,
+  );
+  revalidatePath("/appearance");
+}
+
+
 export async function setCharacterFeatureEntitlement(
   formData: FormData,
 ) {

@@ -78,7 +78,7 @@ function IdentityIcon({
           ? `${labelPrefix}: ${entry.name}`
           : `No ${labelPrefix.toLowerCase()}`
       }
-      className="flex h-6 w-6 items-center justify-center overflow-hidden border bg-[#0d0907] font-serif text-[8px]"
+      className="flex h-6 w-6 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-0d0907))] font-serif text-[8px]"
       style={{
         borderColor: `${colour}99`,
         color: colour,
@@ -308,7 +308,7 @@ function presencePresentation(
         textClass:
           "text-emerald-500",
         dotClass:
-          "bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.75)]",
+          "bg-emerald-500 shadow-[0_0_6px_rgba(var(--sep-rgb-16-185-129),0.75)]",
       };
 
     case "away":
@@ -317,7 +317,7 @@ function presencePresentation(
         textClass:
           "text-amber-500",
         dotClass:
-          "bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.65)]",
+          "bg-amber-500 shadow-[0_0_6px_rgba(var(--sep-rgb-245-158-11),0.65)]",
       };
 
     case "busy":
@@ -326,16 +326,16 @@ function presencePresentation(
         textClass:
           "text-red-500",
         dotClass:
-          "bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.65)]",
+          "bg-red-500 shadow-[0_0_6px_rgba(var(--sep-rgb-239-68-68),0.65)]",
       };
 
     default:
       return {
         label: "Offline",
         textClass:
-          "text-[#746b60]",
+          "text-[rgb(var(--sep-colour-746b60))]",
         dotClass:
-          "bg-[#5e5850]",
+          "bg-[rgb(var(--sep-colour-5e5850))]",
       };
   }
 }

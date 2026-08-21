@@ -27,11 +27,11 @@ export async function PublicCharacterAgeDetail({
 
   return (
     <div>
-      <dt className="text-[9px] uppercase tracking-[0.22em] text-[#806b50]">
+      <dt className="text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
         Age
       </dt>
 
-      <dd className="mt-1 text-sm text-[#d4c4ad]">
+      <dd className="mt-1 text-sm text-[rgb(var(--sep-colour-d4c4ad))]">
         {age !== null
           ? `${age} years`
           : "Not provided"}

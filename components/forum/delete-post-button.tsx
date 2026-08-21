@@ -115,7 +115,7 @@ export default function DeletePostButton({
             aria-modal="true"
             aria-labelledby={`delete-post-title-${postId}`}
             tabIndex={-1}
-            className="w-full max-w-lg border border-red-950/70 bg-[#15100d] shadow-2xl outline-none"
+            className="w-full max-w-lg border border-red-950/70 bg-[rgb(var(--sep-colour-15100d))] shadow-2xl outline-none"
           >
             <header className="border-b border-red-950/50 bg-red-950/10 px-5 py-5 sm:px-6">
               <p className="text-[8px] uppercase tracking-[0.22em] text-red-500">
@@ -124,7 +124,7 @@ export default function DeletePostButton({
 
               <h2
                 id={`delete-post-title-${postId}`}
-                className="mt-2 font-serif text-2xl text-[#dec6ae]"
+                className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dec6ae))]"
               >
                 {isInitialPost
                   ? "Delete this discussion?"
@@ -133,7 +133,7 @@ export default function DeletePostButton({
             </header>
 
             <div className="space-y-5 px-5 py-6 sm:px-6">
-              <p className="text-sm leading-7 text-[#aa9b88]">
+              <p className="text-sm leading-7 text-[rgb(var(--sep-colour-aa9b88))]">
                 {isInitialPost
                   ? "Deleting the opening post will remove the entire discussion and all of its replies from the forum."
                   : "The reply will remain in the discussion as a deleted-post marker, but its content will no longer be visible."}
@@ -164,14 +164,14 @@ export default function DeletePostButton({
                   value={postId}
                 />
 
-                <div className="flex flex-col-reverse gap-3 border-t border-[#60482e]/30 pt-5 sm:flex-row sm:justify-end">
+                <div className="flex flex-col-reverse gap-3 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-5 sm:flex-row sm:justify-end">
                   <button
                     type="button"
                     onClick={() =>
                       setIsOpen(false)
                     }
                     disabled={pending}
-                    className="border border-[#60482e]/55 bg-[#19120e] px-5 py-3 text-[9px] uppercase tracking-[0.17em] text-[#a58b68] transition hover:border-[#947047] hover:text-[#dec095] disabled:cursor-not-allowed disabled:opacity-50"
+                    className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-19120e))] px-5 py-3 text-[9px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-a58b68))] transition hover:border-[rgb(var(--sep-colour-947047))] hover:text-[rgb(var(--sep-colour-dec095))] disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     Cancel
                   </button>

@@ -80,28 +80,28 @@ export default async function OrdersPage() {
 
   return (
     <div className="mx-auto w-full max-w-7xl space-y-6 p-5 sm:p-7 lg:p-9">
-      <header className="relative overflow-hidden border border-[#60482e]/45 bg-[#15100d]/95 px-6 py-5 sm:px-8">
-        <div className="absolute inset-0 opacity-30 [background-image:radial-gradient(circle_at_top_right,rgba(145,105,60,0.35),transparent_42%)]" />
+      <header className="relative overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 px-6 py-5 sm:px-8">
+        <div className="absolute inset-0 opacity-30 [background-image:radial-gradient(circle_at_top_right,rgba(var(--sep-rgb-145-105-60),0.35),transparent_42%)]" />
 
         <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
           <div className="min-w-0">
-            <p className="text-[10px] uppercase tracking-[0.28em] text-[#886c48]">
+            <p className="text-[10px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-886c48))]">
               Orders of Sepulchria
             </p>
 
-            <p className="mt-3 max-w-3xl text-sm leading-6 text-[#9f9281]">
+            <p className="mt-3 max-w-3xl text-sm leading-6 text-[rgb(var(--sep-colour-9f9281))]">
               Within the Associations stand the Orders: the specialised
               institutions, disciplines and professional bodies through which
               Sepulchrians practise their crafts, duties and callings.
             </p>
           </div>
 
-          <div className="shrink-0 border border-[#60482e]/45 bg-black/20 px-5 py-3">
-            <span className="block text-[9px] uppercase tracking-[0.22em] text-[#806b50]">
+          <div className="shrink-0 border border-[rgb(var(--sep-colour-60482e))]/45 bg-black/20 px-5 py-3">
+            <span className="block text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
               Current Orders
             </span>
 
-            <span className="mt-1 block font-serif text-xl text-[#d4bd94]">
+            <span className="mt-1 block font-serif text-xl text-[rgb(var(--sep-colour-d4bd94))]">
               {orders.length}
             </span>
           </div>

@@ -251,7 +251,7 @@ function ItemThumbnail({
 
   return (
     <div
-      className={`shrink-0 overflow-hidden border border-[#60482e]/45 bg-[#0d0907] ${sizeClass}`}
+      className={`shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0d0907))] ${sizeClass}`}
     >
       {row.image_url ? (
         // eslint-disable-next-line @next/next/no-img-element
@@ -261,7 +261,7 @@ function ItemThumbnail({
           className="h-full w-full object-cover"
         />
       ) : (
-        <div className="flex h-full items-center justify-center font-serif text-[#756247]">
+        <div className="flex h-full items-center justify-center font-serif text-[rgb(var(--sep-colour-756247))]">
           ◇
         </div>
       )}
@@ -280,8 +280,8 @@ function Requirements({
   }
 
   return (
-    <div className="mt-3 border-t border-[#59432c]/30 pt-2.5">
-      <p className="text-[7px] uppercase tracking-[0.16em] text-[#806b50]">
+    <div className="mt-3 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-2.5">
+      <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))]">
         Requirements
       </p>
 
@@ -317,7 +317,7 @@ function Badges({
   return (
     <div className="flex flex-wrap gap-1.5">
       {row.reference_value !== null ? (
-        <span className="border border-[#8d6d3e]/55 bg-[#21180f] px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[#d3b278]">
+        <span className="border border-[rgb(var(--sep-colour-8d6d3e))]/55 bg-[rgb(var(--sep-colour-21180f))] px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-d3b278))]">
           Reference {formatRemnants(
             row.reference_value,
           )}
@@ -325,25 +325,25 @@ function Badges({
       ) : null}
 
       {row.is_equipped ? (
-        <span className="border border-[#9a7543]/65 bg-[#2d2115] px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[#dfbd83]">
+        <span className="border border-[rgb(var(--sep-colour-9a7543))]/65 bg-[rgb(var(--sep-colour-2d2115))] px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-dfbd83))]">
           Equipped
         </span>
       ) : null}
 
       {row.is_unique ? (
-        <span className="border border-[#8d6d3e]/55 px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[#c7a46e]">
+        <span className="border border-[rgb(var(--sep-colour-8d6d3e))]/55 px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-c7a46e))]">
           Unique
         </span>
       ) : null}
 
       {row.is_quest_item ? (
-        <span className="border border-[#65456f]/55 px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[#bda0c7]">
+        <span className="border border-[rgb(var(--sep-colour-65456f))]/55 px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-bda0c7))]">
           Quest
         </span>
       ) : null}
 
       {row.is_usable ? (
-        <span className="border border-[#49634f]/55 px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[#9cbe9f]">
+        <span className="border border-[rgb(var(--sep-colour-49634f))]/55 px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-9cbe9f))]">
           Usable
         </span>
       ) : null}
@@ -425,12 +425,12 @@ function ItemMechanics({
   }
 
   return (
-    <div className="mt-2 grid grid-cols-2 gap-1.5 border-t border-[#59432c]/30 pt-2 sm:grid-cols-3">
-      <div className="min-w-0 border border-[#59432c]/35 bg-[#100c09] px-2.5 py-2">
-        <p className="text-[6px] uppercase tracking-[0.13em] text-[#806a4c]">
+    <div className="mt-2 grid grid-cols-2 gap-1.5 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-2 sm:grid-cols-3">
+      <div className="min-w-0 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] px-2.5 py-2">
+        <p className="text-[6px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-806a4c))]">
           Target
         </p>
-        <p className="mt-1 break-words text-[8px] leading-4 text-[#b8a382]">
+        <p className="mt-1 break-words text-[8px] leading-4 text-[rgb(var(--sep-colour-b8a382))]">
           {row.target_mode === "other"
             ? "Other"
             : row.target_mode === "either"
@@ -439,20 +439,20 @@ function ItemMechanics({
         </p>
       </div>
 
-      <div className="min-w-0 border border-[#59432c]/35 bg-[#100c09] px-2.5 py-2">
-        <p className="text-[6px] uppercase tracking-[0.13em] text-[#806a4c]">
+      <div className="min-w-0 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] px-2.5 py-2">
+        <p className="text-[6px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-806a4c))]">
           Success
         </p>
-        <p className="mt-1 break-words text-[8px] leading-4 text-[#b8a382]">
+        <p className="mt-1 break-words text-[8px] leading-4 text-[rgb(var(--sep-colour-b8a382))]">
           {success}
         </p>
       </div>
 
-      <div className="min-w-0 border border-[#59432c]/35 bg-[#100c09] px-2.5 py-2">
-        <p className="text-[6px] uppercase tracking-[0.13em] text-[#806a4c]">
+      <div className="min-w-0 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] px-2.5 py-2">
+        <p className="text-[6px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-806a4c))]">
           Damage
         </p>
-        <p className="mt-1 break-words text-[8px] leading-4 text-[#b8a382]">
+        <p className="mt-1 break-words text-[8px] leading-4 text-[rgb(var(--sep-colour-b8a382))]">
           {damage}
         </p>
       </div>
@@ -548,7 +548,7 @@ function UseControl({
 
   if (row.use_block_reason) {
     return (
-      <p className="mt-3 border border-[#59432c]/40 bg-[#100c09] px-3 py-2 text-[8px] uppercase tracking-[0.1em] text-[#a6947b]">
+      <p className="mt-3 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[8px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-a6947b))]">
         {row.use_block_reason}
       </p>
     );
@@ -606,7 +606,7 @@ function UseControl({
 
   if (inventoryCannotUse) {
     return (
-      <p className="mt-3 border border-[#59432c]/40 bg-[#100c09] px-3 py-2 text-[8px] uppercase tracking-[0.1em] text-[#a6947b]">
+      <p className="mt-3 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[8px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-a6947b))]">
         This Item targets another character. Use it from the chat.
       </p>
     );
@@ -623,13 +623,13 @@ function UseControl({
           type="button"
           onClick={run}
           disabled={pending}
-          className="border border-[#6f7545] bg-[#202615] px-3 py-1.5 text-[8px] uppercase tracking-[0.14em] text-[#cbd39a] transition hover:bg-[#293019] disabled:cursor-wait disabled:opacity-50"
+          className="border border-[rgb(var(--sep-colour-6f7545))] bg-[rgb(var(--sep-colour-202615))] px-3 py-1.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-cbd39a))] transition hover:bg-[rgb(var(--sep-colour-293019))] disabled:cursor-wait disabled:opacity-50"
         >
           {pending ? "Using..." : "Use"}
         </button>
 
         {remaining !== null ? (
-          <span className="text-[7px] uppercase tracking-[0.12em] text-[#80735f]">
+          <span className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-80735f))]">
             {remaining} / {row.max_charges} charges
           </span>
         ) : null}
@@ -699,7 +699,7 @@ function MoveControls({
           row.parent_container_id ??
           ""
         }
-        className="min-w-[150px] flex-1 border border-[#60482e]/55 bg-[#100c09] px-3 py-1.5 text-[9px] text-[#cdbb9d] outline-none focus:border-[#987344]"
+        className="min-w-[150px] flex-1 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-1.5 text-[9px] text-[rgb(var(--sep-colour-cdbb9d))] outline-none focus:border-[rgb(var(--sep-colour-987344))]"
       >
         <option value="">
           Loose Inventory
@@ -725,7 +725,7 @@ function MoveControls({
 
       <button
         type="submit"
-        className="border border-[#6f5639]/60 bg-[#1b140f] px-3 py-1.5 text-[8px] uppercase tracking-[0.12em] text-[#bca483] transition hover:border-[#987344] hover:text-[#e2c99f]"
+        className="border border-[rgb(var(--sep-colour-6f5639))]/60 bg-[rgb(var(--sep-colour-1b140f))] px-3 py-1.5 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-bca483))] transition hover:border-[rgb(var(--sep-colour-987344))] hover:text-[rgb(var(--sep-colour-e2c99f))]"
       >
         Move
       </button>
@@ -804,7 +804,7 @@ function DiscardControl({
       <div className="flex flex-wrap items-center gap-2">
         {row.record_kind === "standard" && row.quantity > 1 ? (
           <label className="flex items-center gap-2">
-            <span className="text-[7px] uppercase tracking-[0.12em] text-[#80735f]">
+            <span className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-80735f))]">
               Qty
             </span>
 
@@ -816,7 +816,7 @@ function DiscardControl({
                 )
               }
               disabled={pending}
-              className="h-8 border border-[#60482e]/55 bg-[#100c09] px-2 text-[9px] text-[#cdbb9d] outline-none focus:border-[#987344] disabled:opacity-45"
+              className="h-8 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-2 text-[9px] text-[rgb(var(--sep-colour-cdbb9d))] outline-none focus:border-[rgb(var(--sep-colour-987344))] disabled:opacity-45"
             >
               {Array.from(
                 { length: Math.max(1, row.quantity) },
@@ -841,7 +841,7 @@ function DiscardControl({
       </div>
 
       {message ? (
-        <p className="mt-2 text-[8px] leading-4 text-[#9b8768]">
+        <p className="mt-2 text-[8px] leading-4 text-[rgb(var(--sep-colour-9b8768))]">
           {message}
         </p>
       ) : null}
@@ -859,8 +859,8 @@ function ItemEffects({
   }
 
   return (
-    <div className="mt-2 border-t border-[#59432c]/30 pt-2">
-      <p className="text-[7px] uppercase tracking-[0.16em] text-[#806b50]">
+    <div className="mt-2 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-2">
+      <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))]">
         Effects
       </p>
 
@@ -912,8 +912,8 @@ function ItemCard({
     <article
       className={`border ${
         row.is_equipped
-          ? "border-[#8d6d3e]/65 bg-[#18110c]"
-          : "border-[#59432c]/40 bg-[#120e0b]"
+          ? "border-[rgb(var(--sep-colour-8d6d3e))]/65 bg-[rgb(var(--sep-colour-18110c))]"
+          : "border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-120e0b))]"
       } ${
         compact
           ? "p-3"
@@ -933,12 +933,12 @@ function ItemCard({
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-start justify-between gap-2">
             <div className="min-w-0">
-              <p className="font-serif text-base text-[#dec89f]">
+              <p className="font-serif text-base text-[rgb(var(--sep-colour-dec89f))]">
                 {row.name}
 
                 {row.quantity >
                 1 ? (
-                  <span className="ml-2 font-sans text-[10px] text-[#9b8768]">
+                  <span className="ml-2 font-sans text-[10px] text-[rgb(var(--sep-colour-9b8768))]">
                     ×
                     {
                       row.quantity
@@ -947,7 +947,7 @@ function ItemCard({
                 ) : null}
               </p>
 
-              <p className="mt-1 text-[7px] uppercase tracking-[0.14em] text-[#776957]">
+              <p className="mt-1 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-776957))]">
                 {
                   row.category_name
                 }
@@ -963,7 +963,7 @@ function ItemCard({
               {row.is_equipped &&
               row.equipped_slot &&
               row.equipped_layer ? (
-                <p className="mt-1 text-[7px] uppercase tracking-[0.12em] text-[#9b815d]">
+                <p className="mt-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-9b815d))]">
                   {titleCase(
                     row.equipped_slot,
                   )}
@@ -984,7 +984,7 @@ function ItemCard({
 
           {!compact &&
           row.description?.trim() ? (
-            <p className="mt-2 whitespace-pre-wrap text-xs leading-5 text-[#9f927f]">
+            <p className="mt-2 whitespace-pre-wrap text-xs leading-5 text-[rgb(var(--sep-colour-9f927f))]">
               {
                 row.description
               }
@@ -1028,7 +1028,7 @@ function ItemCard({
 
                 <button
                   type="submit"
-                  className="border border-[#6a5136]/60 bg-[#1b140f] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[#aa9577] transition hover:border-[#8e6d46] hover:text-[#dfc79c]"
+                  className="border border-[rgb(var(--sep-colour-6a5136))]/60 bg-[rgb(var(--sep-colour-1b140f))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-aa9577))] transition hover:border-[rgb(var(--sep-colour-8e6d46))] hover:text-[rgb(var(--sep-colour-dfc79c))]"
                 >
                   Unequip
                 </button>
@@ -1061,7 +1061,7 @@ function ItemCard({
 
                 <button
                   type="submit"
-                  className="border border-[#987344] bg-[#3b2919] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[#efd6a8] transition hover:bg-[#4a321e]"
+                  className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:bg-[rgb(var(--sep-colour-4a321e))]"
                 >
                   Equip
                 </button>
@@ -1129,17 +1129,17 @@ function EquipmentCandidate({
     meetsAllRequirements(row);
 
   return (
-    <div className="mt-2 border-t border-[#59432c]/30 pt-2">
+    <div className="mt-2 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-2">
       <div className="flex gap-2">
         <ItemThumbnail row={row} size="small" />
 
         <div className="min-w-0 flex-1">
-          <p className="font-serif text-[12px] text-[#d8c095]">
+          <p className="font-serif text-[12px] text-[rgb(var(--sep-colour-d8c095))]">
             {row.name}
           </p>
 
           {row.description?.trim() ? (
-            <p className="mt-1 line-clamp-3 text-[8px] leading-4 text-[#8f8271]">
+            <p className="mt-1 line-clamp-3 text-[8px] leading-4 text-[rgb(var(--sep-colour-8f8271))]">
               {row.description}
             </p>
           ) : null}
@@ -1147,8 +1147,8 @@ function EquipmentCandidate({
       </div>
 
       {row.equipment_bonuses.length ? (
-        <div className="mt-2 border-t border-[#59432c]/25 pt-2">
-          <p className="text-[7px] uppercase tracking-[0.14em] text-[#806b50]">
+        <div className="mt-2 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-2">
+          <p className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))]">
             Bonuses
           </p>
 
@@ -1156,7 +1156,7 @@ function EquipmentCandidate({
             {row.equipment_bonuses.map((bonus) => (
               <span
                 key={bonus.label}
-                className="border border-[#49634f]/55 bg-[#132016] px-2 py-1 text-[7px] uppercase tracking-[0.1em] text-[#9cbe9f]"
+                className="border border-[rgb(var(--sep-colour-49634f))]/55 bg-[rgb(var(--sep-colour-132016))] px-2 py-1 text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-9cbe9f))]"
               >
                 {bonus.label}{" "}
                 {bonus.value > 0 ? "+" : ""}
@@ -1179,7 +1179,7 @@ function EquipmentCandidate({
           <input type="hidden" name="recordId" value={row.record_id} />
           <button
             type="submit"
-            className="w-full border border-[#987344] bg-[#3b2919] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[#efd6a8] transition hover:bg-[#4a321e]"
+            className="w-full border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:bg-[rgb(var(--sep-colour-4a321e))]"
           >
             Equip
           </button>
@@ -1238,10 +1238,10 @@ const isRightSide =
     ) ?? null;
 
   return (
-    <div className={`relative border border-[#60482e]/45 bg-[#120d09]/95 p-2.5 shadow-[0_8px_24px_rgba(0,0,0,0.18)] ${
+    <div className={`relative border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-120d09))]/95 p-2.5 shadow-[0_8px_24px_rgba(var(--sep-rgb-0-0-0),0.18)] ${
   open ? "z-[80]" : "z-0"
 }`}>
-      <p className="text-[7px] uppercase tracking-[0.18em] text-[#876f4f]">
+      <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-876f4f))]">
         {SLOT_LABELS[slot]}
       </p>
 
@@ -1250,15 +1250,15 @@ const isRightSide =
           {sorted.map((row) => (
             <div
               key={`${row.record_kind}-${row.record_id}`}
-              className="flex items-center gap-2 border-t border-[#59432c]/25 pt-2 first:border-t-0 first:pt-0"
+              className="flex items-center gap-2 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-2 first:border-t-0 first:pt-0"
             >
               <ItemThumbnail row={row} size="small" />
 
               <div className="min-w-0 flex-1">
-                <p className="truncate font-serif text-[12px] text-[#d8c095]">
+                <p className="truncate font-serif text-[12px] text-[rgb(var(--sep-colour-d8c095))]">
                   {row.name}
                 </p>
-                <p className="mt-0.5 text-[6px] uppercase tracking-[0.12em] text-[#756957]">
+                <p className="mt-0.5 text-[6px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756957))]">
                   {titleCase(row.equipped_layer ?? "equipped")}
                 </p>
               </div>
@@ -1270,7 +1270,7 @@ const isRightSide =
                   <button
                     type="submit"
                     title={`Unequip ${row.name}`}
-                    className="px-1 text-[13px] text-[#806d55] transition hover:text-[#d7b77f]"
+                    className="px-1 text-[13px] text-[rgb(var(--sep-colour-806d55))] transition hover:text-[rgb(var(--sep-colour-d7b77f))]"
                   >
                     ×
                   </button>
@@ -1284,19 +1284,19 @@ const isRightSide =
           <button
             type="button"
             onClick={() => setOpen((value) => !value)}
-            className="w-full border border-dashed border-[#6d5336]/55 bg-[#17110d] px-3 py-3 text-left transition hover:border-[#9b7548] hover:bg-[#1c140e]"
+            className="w-full border border-dashed border-[rgb(var(--sep-colour-6d5336))]/55 bg-[rgb(var(--sep-colour-17110d))] px-3 py-3 text-left transition hover:border-[rgb(var(--sep-colour-9b7548))] hover:bg-[rgb(var(--sep-colour-1c140e))]"
           >
-            <span className="block text-[9px] uppercase tracking-[0.14em] text-[#947c5b]">
+            <span className="block text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-947c5b))]">
               Empty
             </span>
-            <span className="mt-1 block text-[7px] uppercase tracking-[0.12em] text-[#665b4c]">
+            <span className="mt-1 block text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-665b4c))]">
               Click to equip
             </span>
           </button>
 
           {open ? (
   <div
-  className={`absolute z-[200] w-[280px] border border-[#60482e]/40 bg-[#0e0a08] p-2 shadow-2xl ${
+  className={`absolute z-[200] w-[280px] border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-0e0a08))] p-2 shadow-2xl ${
     opensUp
       ? "bottom-full mb-2"
       : "top-full mt-2"
@@ -1311,7 +1311,7 @@ const isRightSide =
                   <select
                     value={selectedId}
                     onChange={(event) => setSelectedId(event.target.value)}
-                    className="w-full border border-[#60482e]/55 bg-[#100c09] px-2 py-2 text-[9px] text-[#cdb894] outline-none focus:border-[#987344]"
+                    className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-2 py-2 text-[9px] text-[rgb(var(--sep-colour-cdb894))] outline-none focus:border-[rgb(var(--sep-colour-987344))]"
                   >
                     <option value="">Choose Item...</option>
                     {available.map((row) => (
@@ -1329,7 +1329,7 @@ const isRightSide =
                   {selected ? <EquipmentCandidate row={selected} /> : null}
                 </>
               ) : (
-                <p className="text-[8px] italic leading-4 text-[#665b4c]">
+                <p className="text-[8px] italic leading-4 text-[rgb(var(--sep-colour-665b4c))]">
                   No available Items for this slot.
                 </p>
               )}
@@ -1337,7 +1337,7 @@ const isRightSide =
           ) : null}
         </div>
       ) : (
-        <p className="mt-2 text-[9px] italic text-[#665b4c]">
+        <p className="mt-2 text-[9px] italic text-[rgb(var(--sep-colour-665b4c))]">
           Empty
         </p>
       )}
@@ -1453,32 +1453,32 @@ function EquipmentFigure({
   }
 
   return (
-    <section className="relative z-10 mt-5 overflow-visible border border-[#60482e]/45 bg-[#100c09]">
+    <section className="relative z-10 mt-5 overflow-visible border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))]">
       <button
         type="button"
         onClick={onToggle}
         aria-expanded={!collapsed}
-        className="block w-full border-b border-[#59432c]/35 px-4 py-3 text-left transition hover:bg-[#17100c] sm:px-5"
+        className="block w-full border-b border-[rgb(var(--sep-colour-59432c))]/35 px-4 py-3 text-left transition hover:bg-[rgb(var(--sep-colour-17100c))] sm:px-5"
       >
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <p className="text-[7px] uppercase tracking-[0.2em] text-[#806b50]">
+            <p className="text-[7px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
               Worn &
               carried
             </p>
-            <h3 className="mt-1 font-serif text-xl text-[#d9c094]">
+            <h3 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d9c094))]">
               Equipment
             </h3>
           </div>
 
           <div className="flex items-center gap-3">
-            <p className="text-[8px] uppercase tracking-[0.12em] text-[#756958]">
+            <p className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
               {
                 equipped.length
               }{" "}
               equipped
             </p>
-            <span className="font-serif text-lg text-[#8f7757]">
+            <span className="font-serif text-lg text-[rgb(var(--sep-colour-8f7757))]">
               {collapsed ? "+" : "−"}
             </span>
           </div>
@@ -1488,7 +1488,7 @@ function EquipmentFigure({
       {!collapsed ? (
         <>
       <div className="relative hidden min-h-[800px] overflow-visible md:block">
-        <div className="absolute inset-x-[24%] top-[10%] bottom-[8%] rounded-[45%] border border-[#60482e]/15 bg-[radial-gradient(circle_at_center,rgba(92,68,42,0.10),transparent_68%)]" />
+        <div className="absolute inset-x-[24%] top-[10%] bottom-[8%] rounded-[45%] border border-[rgb(var(--sep-colour-60482e))]/15 bg-[radial-gradient(circle_at_center,rgba(var(--sep-rgb-92-68-42),0.10),transparent_68%)]" />
 
         <Silhouette />
 
@@ -1598,10 +1598,10 @@ function FilterBar({
   reset: () => void;
 }) {
   const control =
-    "border border-[#60482e]/50 bg-[#100c09] px-3 py-2.5 text-[9px] text-[#cbb89a] outline-none transition focus:border-[#987344]";
+    "border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-[9px] text-[rgb(var(--sep-colour-cbb89a))] outline-none transition focus:border-[rgb(var(--sep-colour-987344))]";
 
   return (
-    <div className="mt-5 border border-[#60482e]/40 bg-[#120e0b] p-3 sm:p-4">
+    <div className="mt-5 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-120e0b))] p-3 sm:p-4">
       <div className="grid gap-2 xl:grid-cols-[minmax(220px,2fr)_repeat(6,minmax(0,1fr))]">
         <input
           value={search}
@@ -1794,8 +1794,8 @@ function FilterBar({
         ) : null}
       </div>
 
-      <div className="mt-3 flex items-center justify-between gap-3 border-t border-[#59432c]/25 pt-3">
-        <p className="text-[7px] uppercase tracking-[0.12em] text-[#6f6252]">
+      <div className="mt-3 flex items-center justify-between gap-3 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-3">
+        <p className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))]">
           Filters update
           instantly
         </p>
@@ -1803,7 +1803,7 @@ function FilterBar({
         <button
           type="button"
           onClick={reset}
-          className="border border-[#60482e]/45 px-3 py-2 text-[7px] uppercase tracking-[0.14em] text-[#9d896a] transition hover:border-[#987344] hover:text-[#dec89f]"
+          className="border border-[rgb(var(--sep-colour-60482e))]/45 px-3 py-2 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9d896a))] transition hover:border-[rgb(var(--sep-colour-987344))] hover:text-[rgb(var(--sep-colour-dec89f))]"
         >
           Reset filters
         </button>
@@ -2226,11 +2226,11 @@ export function CharacterInventoryBrowser({
 
   if (!rows.length) {
     return (
-      <section className="border border-[#60482e]/35 bg-[#130f0c] p-6">
-        <h2 className="font-serif text-xl text-[#dfc79c]">
+      <section className="border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-130f0c))] p-6">
+        <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-dfc79c))]">
           Inventory
         </h2>
-        <p className="mt-3 text-sm italic text-[#817565]">
+        <p className="mt-3 text-sm italic text-[rgb(var(--sep-colour-817565))]">
           This character is
           not carrying any
           recorded Items.
@@ -2240,19 +2240,19 @@ export function CharacterInventoryBrowser({
   }
 
   return (
-    <section className="border border-[#60482e]/35 bg-[#130f0c] p-4 sm:p-5">
+    <section className="border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-130f0c))] p-4 sm:p-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <p className="text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+          <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
             Possessions
           </p>
 
-          <h2 className="mt-1 font-serif text-2xl text-[#dfc79c]">
+          <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dfc79c))]">
             Inventory
           </h2>
         </div>
 
-        <p className="text-[8px] uppercase tracking-[0.12em] text-[#756958]">
+        <p className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
           {
             rows.length
           }{" "}
@@ -2343,7 +2343,7 @@ export function CharacterInventoryBrowser({
                 key={
                   categoryName
                 }
-                className="overflow-hidden border border-[#60482e]/40 bg-[#100c09]"
+                className="overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))]"
               >
                 <button
                   type="button"
@@ -2352,13 +2352,13 @@ export function CharacterInventoryBrowser({
                       categoryName,
                     )
                   }
-                  className="flex w-full items-center justify-between gap-4 px-4 py-3 text-left transition hover:bg-[#17100c]"
+                  className="flex w-full items-center justify-between gap-4 px-4 py-3 text-left transition hover:bg-[rgb(var(--sep-colour-17100c))]"
                 >
                   <div>
-                    <p className="text-[7px] uppercase tracking-[0.18em] text-[#806b50]">
+                    <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
                       Category
                     </p>
-                    <h3 className="mt-1 font-serif text-lg text-[#d9c094]">
+                    <h3 className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-d9c094))]">
                       {
                         categoryName
                       }
@@ -2366,7 +2366,7 @@ export function CharacterInventoryBrowser({
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <span className="text-[8px] uppercase tracking-[0.12em] text-[#756958]">
+                    <span className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
                       {
                         categoryRows.length
                       }{" "}
@@ -2377,7 +2377,7 @@ export function CharacterInventoryBrowser({
                         : "s"}
                     </span>
 
-                    <span className="font-serif text-lg text-[#8f7757]">
+                    <span className="font-serif text-lg text-[rgb(var(--sep-colour-8f7757))]">
                       {isCollapsed
                         ? "+"
                         : "−"}
@@ -2386,7 +2386,7 @@ export function CharacterInventoryBrowser({
                 </button>
 
                 {!isCollapsed ? (
-                  <div className="grid gap-3 border-t border-[#59432c]/30 p-3 md:grid-cols-2">
+                  <div className="grid gap-3 border-t border-[rgb(var(--sep-colour-59432c))]/30 p-3 md:grid-cols-2">
                     {categoryRows.map(
                       (row) => (
                         <ItemCard
@@ -2417,7 +2417,7 @@ export function CharacterInventoryBrowser({
         )}
 
         {visibleContainers.length ? (
-          <section className="overflow-hidden border border-[#60482e]/40 bg-[#100c09]">
+          <section className="overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))]">
             <button
               type="button"
               onClick={() =>
@@ -2425,19 +2425,19 @@ export function CharacterInventoryBrowser({
                   "__containers__",
                 )
               }
-              className="flex w-full items-center justify-between gap-4 px-4 py-3 text-left transition hover:bg-[#17100c]"
+              className="flex w-full items-center justify-between gap-4 px-4 py-3 text-left transition hover:bg-[rgb(var(--sep-colour-17100c))]"
             >
               <div>
-                <p className="text-[7px] uppercase tracking-[0.18em] text-[#806b50]">
+                <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
                   Category
                 </p>
-                <h3 className="mt-1 font-serif text-lg text-[#d9c094]">
+                <h3 className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-d9c094))]">
                   Containers
                 </h3>
               </div>
 
               <div className="flex items-center gap-3">
-                <span className="text-[8px] uppercase tracking-[0.12em] text-[#756958]">
+                <span className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
                   {
                     visibleContainers.length
                   }{" "}
@@ -2448,7 +2448,7 @@ export function CharacterInventoryBrowser({
                     : "s"}
                 </span>
 
-                <span className="font-serif text-lg text-[#8f7757]">
+                <span className="font-serif text-lg text-[rgb(var(--sep-colour-8f7757))]">
                   {collapsed.has(
                     "__containers__",
                   )
@@ -2461,7 +2461,7 @@ export function CharacterInventoryBrowser({
             {!collapsed.has(
               "__containers__",
             ) ? (
-              <div className="space-y-3 border-t border-[#59432c]/30 p-3">
+              <div className="space-y-3 border-t border-[rgb(var(--sep-colour-59432c))]/30 p-3">
                 {visibleContainers.map(
                   (
                     container,
@@ -2495,7 +2495,7 @@ export function CharacterInventoryBrowser({
                         key={
                           container.record_id
                         }
-                        className="border border-[#59432c]/35 bg-[#120e0b] p-3"
+                        className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-120e0b))] p-3"
                       >
                         <div className="flex flex-wrap items-center justify-between gap-3">
                           <div className="flex items-center gap-3">
@@ -2506,10 +2506,10 @@ export function CharacterInventoryBrowser({
                             />
 
                             <div>
-                              <p className="text-[7px] uppercase tracking-[0.16em] text-[#806b50]">
+                              <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))]">
                                 Container
                               </p>
-                              <h4 className="mt-1 font-serif text-base text-[#dec89f]">
+                              <h4 className="mt-1 font-serif text-base text-[rgb(var(--sep-colour-dec89f))]">
                                 {
                                   container.name
                                 }
@@ -2517,7 +2517,7 @@ export function CharacterInventoryBrowser({
                             </div>
                           </div>
 
-                          <span className="text-[8px] uppercase tracking-[0.12em] text-[#756958]">
+                          <span className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
                             {
                               totalChildren
                             }{" "}
@@ -2530,7 +2530,7 @@ export function CharacterInventoryBrowser({
                         </div>
 
                         {container.description?.trim() ? (
-                          <p className="mt-3 text-xs leading-5 text-[#8f8271]">
+                          <p className="mt-3 text-xs leading-5 text-[rgb(var(--sep-colour-8f8271))]">
                             {
                               container.description
                             }
@@ -2566,7 +2566,7 @@ export function CharacterInventoryBrowser({
                             )}
                           </div>
                         ) : totalChildren ? (
-                          <p className="mt-3 text-[9px] italic text-[#756958]">
+                          <p className="mt-3 text-[9px] italic text-[rgb(var(--sep-colour-756958))]">
                             No
                             contained
                             Items match
@@ -2574,7 +2574,7 @@ export function CharacterInventoryBrowser({
                             filters.
                           </p>
                         ) : (
-                          <p className="mt-3 text-[9px] italic text-[#756958]">
+                          <p className="mt-3 text-[9px] italic text-[rgb(var(--sep-colour-756958))]">
                             Empty.
                           </p>
                         )}
@@ -2589,15 +2589,15 @@ export function CharacterInventoryBrowser({
 
         {!categoryGroups.length &&
         !visibleContainers.length ? (
-          <div className="border border-[#60482e]/35 bg-[#100c09] px-5 py-8 text-center">
-            <p className="font-serif text-lg text-[#bda681]">
+          <div className="border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] px-5 py-8 text-center">
+            <p className="font-serif text-lg text-[rgb(var(--sep-colour-bda681))]">
               No Items match
               these filters.
             </p>
             <button
               type="button"
               onClick={reset}
-              className="mt-3 text-[8px] uppercase tracking-[0.14em] text-[#8f7757] underline decoration-[#60482e] underline-offset-4"
+              className="mt-3 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-8f7757))] underline decoration-[rgb(var(--sep-colour-60482e))] underline-offset-4"
             >
               Reset filters
             </button>

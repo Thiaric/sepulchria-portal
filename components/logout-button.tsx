@@ -95,19 +95,19 @@ export function LogoutButton() {
       justify-center
       gap-0
       border
-      border-[#6f5233]
-      bg-[#16100c]
+      border-[rgb(var(--sep-colour-6f5233))]
+      bg-[rgb(var(--sep-colour-16100c))]
       px-4
       text-[10px]
       font-medium
       uppercase
       tracking-[0.22em]
-      text-[#d7b980]
+      text-[rgb(var(--sep-colour-d7b980))]
       transition-all
       duration-200
-      hover:border-[#a97d47]
-      hover:bg-[#241811]
-      hover:text-[#f2d8a3]
+      hover:border-[rgb(var(--sep-colour-a97d47))]
+      hover:bg-[rgb(var(--sep-colour-241811))]
+      hover:text-[rgb(var(--sep-colour-f2d8a3))]
       disabled:cursor-not-allowed
       disabled:opacity-60
     "

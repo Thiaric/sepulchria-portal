@@ -84,10 +84,10 @@ export function CharacterExpertiseTotal({
   if (expertise === null) {
     return (
       <div>
-        <p className="text-[7px] uppercase tracking-[0.18em] text-[#806b50]">
+        <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
           Expertise
         </p>
-        <dd className="mt-1 text-sm text-[#7c7163]">
+        <dd className="mt-1 text-sm text-[rgb(var(--sep-colour-7c7163))]">
           Loading…
         </dd>
       </div>
@@ -96,16 +96,16 @@ export function CharacterExpertiseTotal({
 
   return (
     <div>
-      <p className="text-[7px] uppercase tracking-[0.18em] text-[#806b50]">
+      <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
         Expertise
       </p>
 
       <dd className="mt-1 flex items-baseline gap-2">
-        <span className="font-serif text-2xl text-[#e0c79d]">
+        <span className="font-serif text-2xl text-[rgb(var(--sep-colour-e0c79d))]">
           {expertise.toFixed(1)}
         </span>
 
-        <span className="text-[9px] uppercase tracking-[0.16em] text-[#756957]">
+        <span className="text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-756957))]">
           points
         </span>
       </dd>

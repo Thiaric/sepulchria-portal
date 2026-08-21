@@ -60,8 +60,8 @@ export function AdminOrderMemberRemoveButton({
           role={error ? "alert" : "status"}
           className={
             error
-              ? "text-[10px] text-[#d8a49a]"
-              : "text-[10px] text-[#9fd0a9]"
+              ? "text-[10px] text-[rgb(var(--sep-colour-d8a49a))]"
+              : "text-[10px] text-[rgb(var(--sep-colour-9fd0a9))]"
           }
         >
           {error ? "✕ " : "✓ "}

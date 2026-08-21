@@ -172,7 +172,7 @@ export function PublicOrderRoleGraph({
 
   if (!roles.length) {
     return (
-      <p className="mt-4 text-sm italic text-[#807463]">
+      <p className="mt-4 text-sm italic text-[rgb(var(--sep-colour-807463))]">
         No Roles have been configured.
       </p>
     );
@@ -181,7 +181,7 @@ export function PublicOrderRoleGraph({
   return (
     <div
       ref={containerRef}
-      className="relative mt-5 overflow-x-auto border border-[#59432c]/35 bg-[#0d0a08] px-3 py-4 sm:px-5"
+      className="relative mt-5 overflow-x-auto border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-0d0a08))] px-3 py-4 sm:px-5"
     >
       <svg
         aria-hidden="true"
@@ -201,7 +201,7 @@ export function PublicOrderRoleGraph({
                 `${line.toX} ${line.toY}`,
               ].join(" ")}
               fill="none"
-              stroke="rgba(157, 123, 78, 0.62)"
+              stroke="rgba(157,123,78,0.62)"
               strokeWidth="1.5"
             />
           );
@@ -219,15 +219,15 @@ export function PublicOrderRoleGraph({
               className="grid grid-cols-[64px_minmax(0,1fr)] items-center gap-3"
             >
               <div className="text-center">
-                <p className="text-[7px] uppercase tracking-[0.16em] text-[#665c50]">
+                <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-665c50))]">
                   Level
                 </p>
-                <p className="font-serif text-lg text-[#c3a778]">
+                <p className="font-serif text-lg text-[rgb(var(--sep-colour-c3a778))]">
                   {level}
                 </p>
 
                 {payByLevel[level] ? (
-                  <p className="mt-1 text-[7px] uppercase tracking-[0.1em] text-[#9b815d]">
+                  <p className="mt-1 text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-9b815d))]">
                     {payByLevel[level]} / month
                   </p>
                 ) : null}
@@ -259,14 +259,14 @@ export function PublicOrderRoleGraph({
                         role.description ??
                         undefined
                       }
-                      className="w-[150px] shrink-0 border border-[#6c5031]/60 bg-[#18110d] px-3 py-2 text-center"
+                      className="w-[150px] shrink-0 border border-[rgb(var(--sep-colour-6c5031))]/60 bg-[rgb(var(--sep-colour-18110d))] px-3 py-2 text-center"
                     >
-                      <p className="truncate font-serif text-[13px] text-[#d6bd90]">
+                      <p className="truncate font-serif text-[13px] text-[rgb(var(--sep-colour-d6bd90))]">
                         {role.name}
                       </p>
 
                       {active.length ? (
-                        <p className="mt-1 truncate text-[7px] uppercase tracking-[0.08em] text-[#756958]">
+                        <p className="mt-1 truncate text-[7px] uppercase tracking-[0.08em] text-[rgb(var(--sep-colour-756958))]">
                           {active
                             .map(
                               ([label, value]) =>
@@ -279,7 +279,7 @@ export function PublicOrderRoleGraph({
                             .join(" · ")}
                         </p>
                       ) : (
-                        <p className="mt-1 text-[7px] uppercase tracking-[0.08em] text-[#554d43]">
+                        <p className="mt-1 text-[7px] uppercase tracking-[0.08em] text-[rgb(var(--sep-colour-554d43))]">
                           No modifiers
                         </p>
                       )}

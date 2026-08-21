@@ -186,10 +186,10 @@ export function CharacterDirectory({
 
   return (
     <div className="space-y-6 px-3">
-      <section className="border border-[#60482e]/45 bg-[#15100d]/95 p-5">
+      <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 p-5">
         <div className="grid gap-4 xl:grid-cols-[minmax(220px,1fr)_170px_190px_180px_150px_auto] xl:items-end">
           <label className="block">
-            <span className="text-[9px] uppercase tracking-[0.22em] text-[#876a46]">
+            <span className="text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))]">
               Search
             </span>
 
@@ -200,7 +200,7 @@ export function CharacterDirectory({
                 setSearch(event.target.value)
               }
               placeholder="Name, title, Ancestry, Association..."
-              className="mt-2 w-full border border-[#60482e]/60 bg-[#0f0b09] px-3 py-3 text-sm text-[#d5c2a4] outline-none transition placeholder:text-[#665a4c] focus:border-[#a17a49]"
+              className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-0f0b09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d5c2a4))] outline-none transition placeholder:text-[rgb(var(--sep-colour-665a4c))] focus:border-[rgb(var(--sep-colour-a17a49))]"
             />
           </label>
 
@@ -289,27 +289,27 @@ export function CharacterDirectory({
             type="button"
             onClick={resetFilters}
             disabled={!hasActiveFilters}
-            className="border border-[#765937]/70 bg-[#271c12] px-4 py-3 text-[10px] uppercase tracking-[0.18em] text-[#cfb487] transition hover:border-[#a17a49] hover:bg-[#3b2919] disabled:cursor-not-allowed disabled:opacity-40"
+            className="border border-[rgb(var(--sep-colour-765937))]/70 bg-[rgb(var(--sep-colour-271c12))] px-4 py-3 text-[10px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-cfb487))] transition hover:border-[rgb(var(--sep-colour-a17a49))] hover:bg-[rgb(var(--sep-colour-3b2919))] disabled:cursor-not-allowed disabled:opacity-40"
           >
             Reset
           </button>
         </div>
 
-        <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-[#59432c]/35 pt-4">
-          <p className="text-xs text-[#887965]">
+        <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-4">
+          <p className="text-xs text-[rgb(var(--sep-colour-887965))]">
             Showing{" "}
-            <span className="text-[#c7ad82]">
+            <span className="text-[rgb(var(--sep-colour-c7ad82))]">
               {filteredCharacters.length}
             </span>{" "}
             of{" "}
-            <span className="text-[#c7ad82]">
+            <span className="text-[rgb(var(--sep-colour-c7ad82))]">
               {characters.length}
             </span>{" "}
             approved characters
           </p>
 
           {hasActiveFilters ? (
-            <p className="text-[9px] uppercase tracking-[0.18em] text-[#75634c]">
+            <p className="text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-75634c))]">
               Filters active
             </p>
           ) : null}
@@ -336,16 +336,16 @@ export function CharacterDirectory({
 )}  
         </section>
       ) : (
-        <section className="border border-[#60482e]/45 bg-[#15100d]/95 p-10 text-center">
-          <p className="text-[10px] uppercase tracking-[0.24em] text-[#806746]">
+        <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 p-10 text-center">
+          <p className="text-[10px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806746))]">
             Character archive
           </p>
 
-          <h2 className="mt-4 font-serif text-2xl text-[#dbc59e]">
+          <h2 className="mt-4 font-serif text-2xl text-[rgb(var(--sep-colour-dbc59e))]">
             No characters found
           </h2>
 
-          <p className="mx-auto mt-3 max-w-lg text-sm leading-7 text-[#958979]">
+          <p className="mx-auto mt-3 max-w-lg text-sm leading-7 text-[rgb(var(--sep-colour-958979))]">
             No approved character matches the
             current search and filters.
           </p>
@@ -354,7 +354,7 @@ export function CharacterDirectory({
             <button
               type="button"
               onClick={resetFilters}
-              className="mt-6 border border-[#765937]/70 bg-[#271c12] px-5 py-3 text-[10px] uppercase tracking-[0.18em] text-[#cfb487] transition hover:border-[#a17a49] hover:bg-[#3b2919]"
+              className="mt-6 border border-[rgb(var(--sep-colour-765937))]/70 bg-[rgb(var(--sep-colour-271c12))] px-5 py-3 text-[10px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-cfb487))] transition hover:border-[rgb(var(--sep-colour-a17a49))] hover:bg-[rgb(var(--sep-colour-3b2919))]"
             >
               Clear filters
             </button>
@@ -381,14 +381,14 @@ function CharacterDirectoryCard({
     viewerCharacterId !== character.id;
 
   return (
-    <article className="group relative overflow-hidden border border-[#60482e]/45 bg-[#15100d]/95 transition duration-200 hover:-translate-y-0.5 hover:border-[#a17a49] hover:bg-[#1a130e]">
+    <article className="group relative overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 transition duration-200 hover:-translate-y-0.5 hover:border-[rgb(var(--sep-colour-a17a49))] hover:bg-[rgb(var(--sep-colour-1a130e))]">
       <Link
         href={`/characters/${character.public_slug}?from=characters`}
         aria-label={`Open ${character.display_name}'s profile`}
         className="absolute inset-0 z-10"
       />
 
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#b78a50]/0 to-transparent transition group-hover:via-[#b78a50]/70" />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[rgb(var(--sep-colour-b78a50))]/0 to-transparent transition group-hover:via-[rgb(var(--sep-colour-b78a50))]/70" />
 
       <div className="pointer-events-none grid min-h-[215px] grid-cols-[125px_minmax(0,1fr)]">
         <CharacterPortrait
@@ -402,17 +402,17 @@ function CharacterDirectoryCard({
               status={status}
             />
 
-            <span className="translate-x-1 text-sm text-[#785e3f] opacity-0 transition group-hover:translate-x-0 group-hover:opacity-100">
+            <span className="translate-x-1 text-sm text-[rgb(var(--sep-colour-785e3f))] opacity-0 transition group-hover:translate-x-0 group-hover:opacity-100">
               →
             </span>
           </div>
 
-          <h2 className="mt-4 truncate font-serif text-xl text-[#dfc79c] transition group-hover:text-[#efd8ad]">
+          <h2 className="mt-4 truncate font-serif text-xl text-[rgb(var(--sep-colour-dfc79c))] transition group-hover:text-[rgb(var(--sep-colour-efd8ad))]">
             {character.display_name}
           </h2>
 
           {character.title ? (
-            <p className="mt-1 line-clamp-2 font-serif text-sm italic text-[#9d8769]">
+            <p className="mt-1 line-clamp-2 font-serif text-sm italic text-[rgb(var(--sep-colour-9d8769))]">
               {character.title}
             </p>
           ) : null}
@@ -458,7 +458,7 @@ function CharacterDirectoryCard({
                       type="submit"
                       aria-label={`Send a private message to ${character.display_name}`}
                       title={`Message ${character.display_name}`}
-                      className="flex h-8 w-8 items-center justify-center border border-[#765937] bg-[#271c12] text-[13px] text-[#dfc79c] transition hover:border-[#997042] hover:bg-[#3b2919] hover:text-[#f0d5a5]"
+                      className="flex h-8 w-8 items-center justify-center border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-271c12))] text-[13px] text-[rgb(var(--sep-colour-dfc79c))] transition hover:border-[rgb(var(--sep-colour-997042))] hover:bg-[rgb(var(--sep-colour-3b2919))] hover:text-[rgb(var(--sep-colour-f0d5a5))]"
                     >
                       <span aria-hidden="true">
                         ✉
@@ -484,7 +484,7 @@ function CharacterDirectoryCard({
                       type="submit"
                       aria-label={`Go to ${character.currentRoom.name}`}
                       title={`Go to ${character.currentRoom.name}`}
-                      className="flex h-8 w-8 items-center justify-center border border-[#765937] bg-[#271c12] text-sm text-[#dfc79c] transition hover:border-[#997042] hover:bg-[#3b2919]"
+                      className="flex h-8 w-8 items-center justify-center border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-271c12))] text-sm text-[rgb(var(--sep-colour-dfc79c))] transition hover:border-[rgb(var(--sep-colour-997042))] hover:bg-[rgb(var(--sep-colour-3b2919))]"
                     >
                       <span aria-hidden="true">
                         →
@@ -513,13 +513,13 @@ function CodexBadge({
 
   return (
     <div
-      className="flex min-w-0 items-center gap-2.5 border border-[#59432c]/45 bg-black/15 px-2.5 py-2"
+      className="flex min-w-0 items-center gap-2.5 border border-[rgb(var(--sep-colour-59432c))]/45 bg-black/15 px-2.5 py-2"
       style={{
         backgroundImage: `linear-gradient(90deg, ${colour}18, transparent 55%)`,
       }}
     >
       <div
-        className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden border bg-[#0d0907] font-serif text-[11px]"
+        className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-0d0907))] font-serif text-[11px]"
         style={{
           borderColor: `${colour}88`,
           color: colour,
@@ -540,7 +540,7 @@ function CodexBadge({
       </div>
 
       <div className="min-w-0">
-        <p className="text-[7px] uppercase tracking-[0.17em] text-[#735f47]">
+        <p className="text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-735f47))]">
           {label}
         </p>
 
@@ -576,7 +576,7 @@ function CharacterPortrait({
     .join("");
 
   return (
-    <div className="relative min-h-full overflow-hidden border-r border-[#60482e]/45 bg-[#0d0907]">
+    <div className="relative min-h-full overflow-hidden border-r border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0d0907))]">
       {src ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
@@ -586,7 +586,7 @@ function CharacterPortrait({
         />
       ) : (
         <div className="flex h-full min-h-[215px] items-center justify-center bg-[radial-gradient(circle_at_top,#332316_0%,#120d09_70%)]">
-          <span className="font-serif text-3xl text-[#8d6d47]">
+          <span className="font-serif text-3xl text-[rgb(var(--sep-colour-8d6d47))]">
             {initials || "?"}
           </span>
         </div>
@@ -608,15 +608,15 @@ function CharacterDetail({
 }) {
   return (
     <div className="min-w-0">
-      <p className="text-[8px] uppercase tracking-[0.18em] text-[#735f47]">
+      <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-735f47))]">
         {label}
       </p>
 
       <p
         className={`mt-0.5 truncate text-xs ${
           muted
-            ? "italic text-[#766b5d]"
-            : "text-[#b6a58d]"
+            ? "italic text-[rgb(var(--sep-colour-766b5d))]"
+            : "text-[rgb(var(--sep-colour-b6a58d))]"
         }`}
       >
         {value}
@@ -635,23 +635,23 @@ function PresenceBadge({
   const styles = {
     online: {
       label: "Online",
-      dot: "bg-emerald-500 shadow-[0_0_7px_rgba(16,185,129,0.8)]",
+      dot: "bg-emerald-500 shadow-[0_0_7px_rgba(var(--sep-rgb-16-185-129),0.8)]",
       text: "text-emerald-500",
     },
     away: {
       label: "Away",
-      dot: "bg-amber-500 shadow-[0_0_7px_rgba(245,158,11,0.7)]",
+      dot: "bg-amber-500 shadow-[0_0_7px_rgba(var(--sep-rgb-245-158-11),0.7)]",
       text: "text-amber-500",
     },
     busy: {
       label: "Busy",
-      dot: "bg-red-500 shadow-[0_0_7px_rgba(239,68,68,0.7)]",
+      dot: "bg-red-500 shadow-[0_0_7px_rgba(var(--sep-rgb-239-68-68),0.7)]",
       text: "text-red-500",
     },
     offline: {
       label: "Offline",
       dot: "bg-stone-600",
-      text: "text-[#756b60]",
+      text: "text-[rgb(var(--sep-colour-756b60))]",
     },
   };
 
@@ -683,7 +683,7 @@ function DirectorySelect({
 }) {
   return (
     <label className="block">
-      <span className="text-[9px] uppercase tracking-[0.22em] text-[#876a46]">
+      <span className="text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))]">
         {label}
       </span>
 
@@ -692,7 +692,7 @@ function DirectorySelect({
         onChange={(event) =>
           onChange(event.target.value)
         }
-        className="mt-2 w-full border border-[#60482e]/60 bg-[#0f0b09] px-3 py-3 text-sm text-[#d5c2a4] outline-none transition focus:border-[#a17a49]"
+        className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-0f0b09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d5c2a4))] outline-none transition focus:border-[rgb(var(--sep-colour-a17a49))]"
       >
         {children}
       </select>

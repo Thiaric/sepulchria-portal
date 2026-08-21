@@ -161,22 +161,22 @@ export function AdminRulesContext() {
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <div className="border-b border-[#60482e]/35 pb-4">
-        <p className="text-[8px] uppercase tracking-[0.24em] text-[#806a4b]">
+      <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 pb-4">
+        <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806a4b))]">
           Rules management
         </p>
 
-        <h2 className="mt-1 font-serif text-xl text-[#d9c29a]">
+        <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d9c29a))]">
           Rules & Glossary
         </h2>
 
-        <p className="mt-2 text-xs leading-5 text-[#8f8271]">
+        <p className="mt-2 text-xs leading-5 text-[rgb(var(--sep-colour-8f8271))]">
           Search the existing entries and jump directly to the editor.
         </p>
       </div>
 
       {error ? (
-        <p className="mt-4 border border-[#743d35] bg-[#2a1512] p-3 text-[11px] leading-5 text-[#d8a49a]">
+        <p className="mt-4 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]">
           The Rules navigator could not be loaded.
         </p>
       ) : null}
@@ -256,13 +256,13 @@ function NavigatorSection({
   children: React.ReactNode;
 }) {
   return (
-    <section className="border-b border-[#60482e]/30 py-4 last:border-b-0">
+    <section className="border-b border-[rgb(var(--sep-colour-60482e))]/30 py-4 last:border-b-0">
       <div className="mb-2 flex items-center justify-between gap-3">
-        <h3 className="font-serif text-sm text-[#ccb58e]">
+        <h3 className="font-serif text-sm text-[rgb(var(--sep-colour-ccb58e))]">
           {title}
         </h3>
 
-        <span className="border border-[#59432c]/45 bg-[#100c09] px-2 py-0.5 text-[8px] text-[#8d795e]">
+        <span className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-2 py-0.5 text-[8px] text-[rgb(var(--sep-colour-8d795e))]">
           {count}
         </span>
       </div>
@@ -274,7 +274,7 @@ function NavigatorSection({
 
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] text-[#75644e]"
+          className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] text-[rgb(var(--sep-colour-75644e))]"
         >
           ⌕
         </span>
@@ -287,7 +287,7 @@ function NavigatorSection({
           }
           placeholder={placeholder}
           autoComplete="off"
-          className="w-full border border-[#59432c]/45 bg-[#0d0907] py-2 pl-7 pr-7 text-[10px] text-[#d1b991] outline-none placeholder:text-[#62584b] focus:border-[#8d693e] [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
+          className="w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-0d0907))] py-2 pl-7 pr-7 text-[10px] text-[rgb(var(--sep-colour-d1b991))] outline-none placeholder:text-[rgb(var(--sep-colour-62584b))] focus:border-[rgb(var(--sep-colour-8d693e))] [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
         />
 
         {search ? (
@@ -295,7 +295,7 @@ function NavigatorSection({
             type="button"
             onClick={() => onSearch("")}
             aria-label="Clear search"
-            className="absolute right-1.5 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center text-[10px] text-[#75644e] hover:text-[#d4ba8e]"
+            className="absolute right-1.5 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center text-[10px] text-[rgb(var(--sep-colour-75644e))] hover:text-[rgb(var(--sep-colour-d4ba8e))]"
           >
             ×
           </button>
@@ -330,9 +330,9 @@ function JumpButton({
     <button
       type="button"
       onClick={onClick}
-      className="group flex w-full items-center justify-between gap-2 border border-[#59432c]/35 bg-[#100c09] px-2.5 py-2 text-left transition hover:border-[#8d693e] hover:bg-[#1d150f]"
+      className="group flex w-full items-center justify-between gap-2 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] px-2.5 py-2 text-left transition hover:border-[rgb(var(--sep-colour-8d693e))] hover:bg-[rgb(var(--sep-colour-1d150f))]"
     >
-      <span className="min-w-0 truncate text-[10px] text-[#bca783] transition group-hover:text-[#ead0a0]">
+      <span className="min-w-0 truncate text-[10px] text-[rgb(var(--sep-colour-bca783))] transition group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
         {label}
       </span>
 
@@ -340,8 +340,8 @@ function JumpButton({
         <span
           className={`text-[6px] uppercase tracking-[0.12em] ${
             status === "published"
-              ? "text-[#7f9a68]"
-              : "text-[#927a59]"
+              ? "text-[rgb(var(--sep-colour-7f9a68))]"
+              : "text-[rgb(var(--sep-colour-927a59))]"
           }`}
         >
           {status}
@@ -349,7 +349,7 @@ function JumpButton({
 
         <span
           aria-hidden="true"
-          className="text-[9px] text-[#725a3d] transition group-hover:translate-y-0.5 group-hover:text-[#b88a52]"
+          className="text-[9px] text-[rgb(var(--sep-colour-725a3d))] transition group-hover:translate-y-0.5 group-hover:text-[rgb(var(--sep-colour-b88a52))]"
         >
           ↓
         </span>
@@ -360,7 +360,7 @@ function JumpButton({
 
 function LoadingRow() {
   return (
-    <div className="h-9 animate-pulse border border-[#59432c]/25 bg-[#17110d]" />
+    <div className="h-9 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/25 bg-[rgb(var(--sep-colour-17110d))]" />
   );
 }
 
@@ -370,7 +370,7 @@ function EmptyResult({
   children: React.ReactNode;
 }) {
   return (
-    <p className="border border-[#59432c]/25 bg-[#100c09]/60 p-2.5 text-[10px] leading-4 text-[#776b5b]">
+    <p className="border border-[rgb(var(--sep-colour-59432c))]/25 bg-[rgb(var(--sep-colour-100c09))]/60 p-2.5 text-[10px] leading-4 text-[rgb(var(--sep-colour-776b5b))]">
       {children}
     </p>
   );

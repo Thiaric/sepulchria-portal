@@ -38,15 +38,15 @@ export default async function MarketPage() {
   return (
     <main className="p-5 sm:p-7 lg:p-9">
       <div className="mx-auto max-w-7xl">
-        <p className="text-[9px] uppercase tracking-[0.28em] text-[#8c704b]">
+        <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
           Commerce
         </p>
 
-        <h1 className="mt-2 font-serif text-4xl text-[#ead5ac]">
+        <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">
           Market
         </h1>
 
-        <p className="mt-3 max-w-3xl text-sm leading-7 text-[#a99b89]">
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))]">
           Browse the merchants and traders of Sepulchria. Each shop maintains
           its own catalogue, prices and stock.
         </p>
@@ -57,9 +57,9 @@ export default async function MarketPage() {
               <Link
                 key={shop.id}
                 href={`/market/${shop.slug}`}
-                className="group overflow-hidden border border-[#60482e]/45 bg-[#15100d] transition hover:border-[#927047]"
+                className="group overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] transition hover:border-[rgb(var(--sep-colour-927047))]"
               >
-                <div className="relative aspect-[16/6] border-b border-[#60482e]/35 bg-[#100c09]">
+                <div className="relative aspect-[16/6] border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))]">
                   {shop.image_url ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
@@ -68,24 +68,24 @@ export default async function MarketPage() {
                       className="h-full w-full object-cover opacity-70 transition group-hover:opacity-85"
                     />
                   ) : (
-                    <div className="flex h-full items-center justify-center font-serif text-3xl text-[#4e402f]">
+                    <div className="flex h-full items-center justify-center font-serif text-3xl text-[rgb(var(--sep-colour-4e402f))]">
                       ◇
                     </div>
                   )}
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#100c09] via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[rgb(var(--sep-colour-100c09))] via-transparent to-transparent" />
                 </div>
 
                 <div className="p-5">
-                  <h2 className="font-serif text-2xl text-[#dec79d] group-hover:text-[#f0d8aa]">
+                  <h2 className="font-serif text-2xl text-[rgb(var(--sep-colour-dec79d))] group-hover:text-[rgb(var(--sep-colour-f0d8aa))]">
                     {shop.name}
                   </h2>
 
-                  <p className="mt-2 line-clamp-3 text-[11px] leading-5 text-[#8f8271]">
+                  <p className="mt-2 line-clamp-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
                     {shop.description || "A merchant of Sepulchria."}
                   </p>
 
-                  <p className="mt-4 text-[8px] uppercase tracking-[0.18em] text-[#a88658]">
+                  <p className="mt-4 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a88658))]">
                     Enter shop →
                   </p>
                 </div>
@@ -93,8 +93,8 @@ export default async function MarketPage() {
             ))}
           </div>
         ) : (
-          <section className="mt-8 border border-[#60482e]/40 bg-[#15100d] p-10 text-center">
-            <p className="font-serif text-xl text-[#a9987e]">
+          <section className="mt-8 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))] p-10 text-center">
+            <p className="font-serif text-xl text-[rgb(var(--sep-colour-a9987e))]">
               The Market has no open shops yet.
             </p>
           </section>

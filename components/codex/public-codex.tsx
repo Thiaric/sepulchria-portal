@@ -139,13 +139,13 @@ export function PublicCodex({
     orderedChapters.length === 0
   ) {
     return (
-      <main className="min-h-screen bg-[#090705] px-5 py-8 text-[#d6c3a3]">
-        <div className="mx-auto max-w-7xl border border-[#60482e]/50 bg-[#120e0b] p-6 text-center">
-          <h1 className="font-serif text-3xl text-[#ead5ac]">
+      <main className="min-h-screen bg-[rgb(var(--sep-colour-090705))] px-5 py-8 text-[rgb(var(--sep-colour-d6c3a3))]">
+        <div className="mx-auto max-w-7xl border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-120e0b))] p-6 text-center">
+          <h1 className="font-serif text-3xl text-[rgb(var(--sep-colour-ead5ac))]">
             The Codex of the First
           </h1>
 
-          <p className="mt-2 text-sm text-[#9e907d]">
+          <p className="mt-2 text-sm text-[rgb(var(--sep-colour-9e907d))]">
             No published Codex chapters
             are available yet.
           </p>
@@ -155,22 +155,22 @@ export function PublicCodex({
   }
 
   return (
-    <main className="min-h-screen bg-[#090705] text-[#d6c3a3]">
+    <main className="min-h-screen bg-[rgb(var(--sep-colour-090705))] text-[rgb(var(--sep-colour-d6c3a3))]">
       {/* COMPACT CODEX HEADER */}
-      <header className="border-b border-[#60482e]/35 bg-[#0d0a08]">
+      <header className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-0d0a08))]">
         <div className="mx-auto max-w-7xl px-5 py-5 sm:px-8">
           <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
             <div>
-              <p className="text-[7px] uppercase tracking-[0.32em] text-[#92734d]">
+              <p className="text-[7px] uppercase tracking-[0.32em] text-[rgb(var(--sep-colour-92734d))]">
                 Aureth · Public Record
               </p>
 
-              <h1 className="mt-1 font-serif text-3xl leading-none text-[#ead5ac] sm:text-4xl">
+              <h1 className="mt-1 font-serif text-3xl leading-none text-[rgb(var(--sep-colour-ead5ac))] sm:text-4xl">
                 The Codex of the First
               </h1>
             </div>
 
-            <p className="max-w-xl text-xs leading-5 text-[#8f8271] sm:text-right">
+            <p className="max-w-xl text-xs leading-5 text-[rgb(var(--sep-colour-8f8271))] sm:text-right">
               Ten chapters preserving
               the known history and lore
               of Aureth.
@@ -182,7 +182,7 @@ export function PublicCodex({
       {/* CHAPTER NAVIGATION */}
       <div
         id="codex-chapter-navigation"
-        className="scroll-mt-4 border-b border-[#60482e]/45 bg-[#100c09]"
+        className="scroll-mt-4 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))]"
       >
         <nav
           aria-label="Codex chapters"
@@ -205,10 +205,10 @@ export function PublicCodex({
                     )
                   }
                   title={`Chapter ${chapter.chapter_number}: ${chapter.title}`}
-                  className={`h-10 border-x border-[#4c3926]/25 px-1 font-serif text-sm transition ${
+                  className={`h-10 border-x border-[rgb(var(--sep-colour-4c3926))]/25 px-1 font-serif text-sm transition ${
                     active
-                      ? "bg-[#2b1f14] text-[#e6c68f]"
-                      : "text-[#796342] hover:bg-[#19120d] hover:text-[#c9ad7c]"
+                      ? "bg-[rgb(var(--sep-colour-2b1f14))] text-[rgb(var(--sep-colour-e6c68f))]"
+                      : "text-[rgb(var(--sep-colour-796342))] hover:bg-[rgb(var(--sep-colour-19120d))] hover:text-[rgb(var(--sep-colour-c9ad7c))]"
                   }`}
                 >
                   {
@@ -227,10 +227,10 @@ export function PublicCodex({
       {selectedChapter ? (
         <article id="codex-chapter">
           {/* CHAPTER TITLE */}
-          <section className="border-b border-[#60482e]/35 bg-[#100c09]">
+          <section className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))]">
             <div className="mx-auto max-w-7xl px-5 py-5 sm:px-8">
               <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-5">
-                <p className="shrink-0 text-[8px] uppercase tracking-[0.24em] text-[#997446]">
+                <p className="shrink-0 text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-997446))]">
                   Chapter{" "}
                   {
                     ROMAN_NUMERALS[
@@ -240,7 +240,7 @@ export function PublicCodex({
                   }
                 </p>
 
-                <h2 className="font-serif text-2xl leading-tight text-[#ead5ac] sm:text-3xl">
+                <h2 className="font-serif text-2xl leading-tight text-[rgb(var(--sep-colour-ead5ac))] sm:text-3xl">
                   {
                     selectedChapter.title
                   }
@@ -252,7 +252,7 @@ export function PublicCodex({
                   body={
                     selectedChapter.summary
                   }
-                  className="mt-2 max-w-5xl text-sm leading-6 text-[#a99679]"
+                  className="mt-2 max-w-5xl text-sm leading-6 text-[rgb(var(--sep-colour-a99679))]"
                 />
               ) : null}
             </div>
@@ -260,22 +260,22 @@ export function PublicCodex({
 
           {/* CHAPTER CONTENT */}
           <section className="mx-auto max-w-7xl px-5 py-5 sm:px-8">
-            <div className="border border-[#60482e]/40 bg-[#120e0b] px-5 py-6 sm:px-8 sm:py-7">
+            <div className="border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-120e0b))] px-5 py-6 sm:px-8 sm:py-7">
               {selectedChapter.description?.trim() ? (
                 <RichTextContentClient
                   body={
                     selectedChapter.description
                   }
-                  className="mx-auto max-w-5xl text-[15px] leading-8 text-[#c0af95] [&_h1]:mt-8 [&_h1]:font-serif [&_h1]:text-3xl [&_h1]:text-[#e2cba0] [&_h2]:mt-7 [&_h2]:font-serif [&_h2]:text-2xl [&_h2]:text-[#dec69c] [&_h3]:mt-6 [&_h3]:font-serif [&_h3]:text-xl [&_h3]:text-[#d2b98e] [&_p]:mb-4"
+                  className="mx-auto max-w-5xl text-[15px] leading-8 text-[rgb(var(--sep-colour-c0af95))] [&_h1]:mt-8 [&_h1]:font-serif [&_h1]:text-3xl [&_h1]:text-[rgb(var(--sep-colour-e2cba0))] [&_h2]:mt-7 [&_h2]:font-serif [&_h2]:text-2xl [&_h2]:text-[rgb(var(--sep-colour-dec69c))] [&_h3]:mt-6 [&_h3]:font-serif [&_h3]:text-xl [&_h3]:text-[rgb(var(--sep-colour-d2b98e))] [&_p]:mb-4"
                 />
               ) : (
                 <div className="py-8 text-center">
-                  <p className="font-serif text-lg text-[#a9916e]">
+                  <p className="font-serif text-lg text-[rgb(var(--sep-colour-a9916e))]">
                     This chapter is ready
                     for import.
                   </p>
 
-                  <p className="mt-1 text-xs text-[#756b5e]">
+                  <p className="mt-1 text-xs text-[rgb(var(--sep-colour-756b5e))]">
                     Its source text will
                     be imported during
                     Phase B2.
@@ -346,13 +346,13 @@ function ChapterFooterNavigation({
               true,
             )
           }
-          className="min-w-0 flex-1 border border-[#60482e]/35 bg-[#100c09] px-4 py-3 text-left transition hover:border-[#85633a] hover:bg-[#19120d]"
+          className="min-w-0 flex-1 border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-left transition hover:border-[rgb(var(--sep-colour-85633a))] hover:bg-[rgb(var(--sep-colour-19120d))]"
         >
-          <span className="block text-[7px] uppercase tracking-[0.17em] text-[#756550]">
+          <span className="block text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-756550))]">
             ← Previous
           </span>
 
-          <span className="mt-1 block truncate font-serif text-sm text-[#bca47e]">
+          <span className="mt-1 block truncate font-serif text-sm text-[rgb(var(--sep-colour-bca47e))]">
             {previous.title}
           </span>
         </button>
@@ -369,13 +369,13 @@ function ChapterFooterNavigation({
               true,
             )
           }
-          className="min-w-0 flex-1 border border-[#60482e]/35 bg-[#100c09] px-4 py-3 text-right transition hover:border-[#85633a] hover:bg-[#19120d]"
+          className="min-w-0 flex-1 border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-right transition hover:border-[rgb(var(--sep-colour-85633a))] hover:bg-[rgb(var(--sep-colour-19120d))]"
         >
-          <span className="block text-[7px] uppercase tracking-[0.17em] text-[#756550]">
+          <span className="block text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-756550))]">
             Next →
           </span>
 
-          <span className="mt-1 block truncate font-serif text-sm text-[#bca47e]">
+          <span className="mt-1 block truncate font-serif text-sm text-[rgb(var(--sep-colour-bca47e))]">
             {next.title}
           </span>
         </button>

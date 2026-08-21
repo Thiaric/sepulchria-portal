@@ -344,11 +344,11 @@ export default async function EditForumSectionPage({
       <main className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
         <nav
           aria-label="Forum breadcrumb"
-          className="mb-6 flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.16em] text-[#746653]"
+          className="mb-6 flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-746653))]"
         >
           <Link
           href="/admin"
-          className="transition hover:text-[#c7a16d]"
+          className="transition hover:text-[rgb(var(--sep-colour-c7a16d))]"
         >
           Administration
         </Link>
@@ -359,7 +359,7 @@ export default async function EditForumSectionPage({
 
           <Link
             href="/admin/forum"
-            className="transition hover:text-[#c7a16d]"
+            className="transition hover:text-[rgb(var(--sep-colour-c7a16d))]"
           >
           Forum
         </Link>
@@ -370,7 +370,7 @@ export default async function EditForumSectionPage({
 
           <Link
             href="/admin/forum/sections"
-            className="transition hover:text-[#c7a16d]"
+            className="transition hover:text-[rgb(var(--sep-colour-c7a16d))]"
           >
             Sections
           </Link>
@@ -379,13 +379,13 @@ export default async function EditForumSectionPage({
             /
           </span>
 
-          <span className="text-[#a48c6c]">
+          <span className="text-[rgb(var(--sep-colour-a48c6c))]">
             {section.name}
           </span>
         </nav>
 
-        <header className="overflow-hidden border border-[#60482e]/45 bg-[#15100d]">
-          <div className="flex flex-col gap-5 border-b border-[#60482e]/35 bg-[#1a130e] px-5 py-7 sm:px-7 lg:flex-row lg:items-start lg:justify-between">
+        <header className="overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
+          <div className="flex flex-col gap-5 border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-1a130e))] px-5 py-7 sm:px-7 lg:flex-row lg:items-start lg:justify-between">
             <div>
               <div className="flex flex-wrap items-center gap-2">
                 <p className="text-[8px] uppercase tracking-[0.22em] text-amber-500">
@@ -399,11 +399,11 @@ export default async function EditForumSectionPage({
                 />
               </div>
 
-              <h1 className="mt-3 font-serif text-3xl text-[#dec69d] sm:text-4xl">
+              <h1 className="mt-3 font-serif text-3xl text-[rgb(var(--sep-colour-dec69d))] sm:text-4xl">
                 Edit Forum Section
               </h1>
 
-              <p className="mt-3 max-w-3xl text-sm leading-6 text-[#817567]">
+              <p className="mt-3 max-w-3xl text-sm leading-6 text-[rgb(var(--sep-colour-817567))]">
                 Update the section&apos;s
                 identity, access,
                 appearance and publication
@@ -416,14 +416,14 @@ export default async function EditForumSectionPage({
                 href={`/forum/${encodeURIComponent(
                   section.slug,
                 )}`}
-                className="shrink-0 border border-[#60482e]/55 bg-[#15100d] px-5 py-3 text-center text-[8px] uppercase tracking-[0.17em] text-[#a58b68] transition hover:border-[#947047] hover:text-[#dec095]"
+                className="shrink-0 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-5 py-3 text-center text-[8px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-a58b68))] transition hover:border-[rgb(var(--sep-colour-947047))] hover:text-[rgb(var(--sep-colour-dec095))]"
               >
                 Open section
               </Link>
             ) : null}
           </div>
 
-          <dl className="grid grid-cols-2 divide-x divide-y divide-[#60482e]/30 bg-[#100c09] sm:grid-cols-4 sm:divide-y-0">
+          <dl className="grid grid-cols-2 divide-x divide-y divide-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-100c09))] sm:grid-cols-4 sm:divide-y-0">
             <Statistic
               label="Active topics"
               value={activeTopics}
@@ -482,7 +482,7 @@ export default async function EditForumSectionPage({
           action={
             updateForumSectionAction
           }
-          className="mt-6 border border-[#60482e]/45 bg-[#15100d]"
+          className="mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]"
         >
           <input
             type="hidden"
@@ -490,7 +490,7 @@ export default async function EditForumSectionPage({
             value={section.id}
           />
 
-          <section className="border-b border-[#60482e]/30 px-5 py-6 sm:px-7">
+          <section className="border-b border-[rgb(var(--sep-colour-60482e))]/30 px-5 py-6 sm:px-7">
             <SectionHeading
               eyebrow="Identity"
               title="Section details"
@@ -561,7 +561,7 @@ export default async function EditForumSectionPage({
             </div>
           </section>
 
-          <section className="border-b border-[#60482e]/30 px-5 py-6 sm:px-7">
+          <section className="border-b border-[rgb(var(--sep-colour-60482e))]/30 px-5 py-6 sm:px-7">
             <SectionHeading
               eyebrow="Classification"
               title="Type and access"
@@ -675,7 +675,7 @@ export default async function EditForumSectionPage({
             </div>
           </section>
 
-          <section className="border-b border-[#60482e]/30 px-5 py-6 sm:px-7">
+          <section className="border-b border-[rgb(var(--sep-colour-60482e))]/30 px-5 py-6 sm:px-7">
             <SectionHeading
               eyebrow="Appearance"
               title="Visual presentation"
@@ -734,7 +734,7 @@ export default async function EditForumSectionPage({
                       sectionColour
                     }
                     aria-label="Choose section colour"
-                    className="h-12 w-full cursor-pointer border border-[#60482e]/55 bg-[#100c09] p-1"
+                    className="h-12 w-full cursor-pointer border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] p-1"
                   />
 
                   <input
@@ -782,7 +782,7 @@ export default async function EditForumSectionPage({
 
             <label
               htmlFor="forum-section-active"
-              className="mt-6 flex cursor-pointer items-start gap-4 border border-[#60482e]/40 bg-[#100c09] px-4 py-4"
+              className="mt-6 flex cursor-pointer items-start gap-4 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] px-4 py-4"
             >
               <input
                 id="forum-section-active"
@@ -795,11 +795,11 @@ export default async function EditForumSectionPage({
               />
 
               <span>
-                <span className="block font-serif text-lg text-[#d2b991]">
+                <span className="block font-serif text-lg text-[rgb(var(--sep-colour-d2b991))]">
                   Active section
                 </span>
 
-                <span className="mt-1 block text-sm leading-6 text-[#817567]">
+                <span className="mt-1 block text-sm leading-6 text-[rgb(var(--sep-colour-817567))]">
                   Display this section
                   according to its
                   visibility rules.
@@ -808,10 +808,10 @@ export default async function EditForumSectionPage({
             </label>
           </section>
 
-          <footer className="flex flex-col-reverse gap-3 border-t border-[#60482e]/35 bg-[#110d0a] px-5 py-5 sm:flex-row sm:items-center sm:justify-end sm:px-7">
+          <footer className="flex flex-col-reverse gap-3 border-t border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-110d0a))] px-5 py-5 sm:flex-row sm:items-center sm:justify-end sm:px-7">
             <Link
               href="/admin/forum/sections"
-              className="border border-[#60482e]/55 bg-[#15100d] px-5 py-3 text-center text-[8px] uppercase tracking-[0.17em] text-[#927b5b] transition hover:border-[#876640] hover:text-[#d8b986]"
+              className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-5 py-3 text-center text-[8px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-927b5b))] transition hover:border-[rgb(var(--sep-colour-876640))] hover:text-[rgb(var(--sep-colour-d8b986))]"
             >
               Back
             </Link>
@@ -825,8 +825,8 @@ export default async function EditForumSectionPage({
           </footer>
         </form>
 
-        <section className="mt-7 border border-[#60482e]/45 bg-[#15100d]">
-          <div className="border-b border-[#60482e]/30 px-5 py-6 sm:px-7">
+        <section className="mt-7 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
+          <div className="border-b border-[rgb(var(--sep-colour-60482e))]/30 px-5 py-6 sm:px-7">
             <SectionHeading
               eyebrow="Publication controls"
               title={
@@ -854,7 +854,7 @@ export default async function EditForumSectionPage({
               value={section.id}
             />
 
-            <p className="max-w-2xl text-sm leading-6 text-[#817567]">
+            <p className="max-w-2xl text-sm leading-6 text-[rgb(var(--sep-colour-817567))]">
               {section.is_active
                 ? "Existing topics and posts will remain stored. Members will no longer see this section."
                 : "The section will immediately become available again to authorised users."}
@@ -958,7 +958,7 @@ export default async function EditForumSectionPage({
                     autoComplete="off"
                     pattern="DELETE"
                     placeholder="DELETE"
-                    className="w-full border border-red-950/70 bg-[#100909] px-4 py-3 text-sm text-red-100 outline-none transition placeholder:text-red-950 focus:border-red-700"
+                    className="w-full border border-red-950/70 bg-[rgb(var(--sep-colour-100909))] px-4 py-3 text-sm text-red-100 outline-none transition placeholder:text-red-950 focus:border-red-700"
                   />
                 </FieldGroup>
 
@@ -1024,7 +1024,7 @@ export default async function EditForumSectionPage({
 }
 
 const inputClassName =
-  "w-full border border-[#60482e]/55 bg-[#100c09] px-4 py-3 text-sm text-[#d5c2a4] outline-none transition placeholder:text-[#5f5447] focus:border-[#a47a44] focus:ring-1 focus:ring-[#a47a44]/40";
+  "w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-sm text-[rgb(var(--sep-colour-d5c2a4))] outline-none transition placeholder:text-[rgb(var(--sep-colour-5f5447))] focus:border-[rgb(var(--sep-colour-a47a44))] focus:ring-1 focus:ring-[rgb(var(--sep-colour-a47a44))]/40";
 
 function SectionHeading({
   eyebrow,
@@ -1037,15 +1037,15 @@ function SectionHeading({
 }) {
   return (
     <div>
-      <p className="text-[8px] uppercase tracking-[0.2em] text-[#806a4d]">
+      <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806a4d))]">
         {eyebrow}
       </p>
 
-      <h2 className="mt-2 font-serif text-2xl text-[#d8c09a]">
+      <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-d8c09a))]">
         {title}
       </h2>
 
-      <p className="mt-2 max-w-3xl text-sm leading-6 text-[#817567]">
+      <p className="mt-2 max-w-3xl text-sm leading-6 text-[rgb(var(--sep-colour-817567))]">
         {description}
       </p>
     </div>
@@ -1069,7 +1069,7 @@ function FieldGroup({
     <div>
       <label
         htmlFor={htmlFor}
-        className="block text-[8px] uppercase tracking-[0.17em] text-[#a48c6c]"
+        className="block text-[8px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-a48c6c))]"
       >
         {label}
 
@@ -1084,7 +1084,7 @@ function FieldGroup({
       </label>
 
       {description ? (
-        <p className="mt-2 min-h-10 text-xs leading-5 text-[#6f6457]">
+        <p className="mt-2 min-h-10 text-xs leading-5 text-[rgb(var(--sep-colour-6f6457))]">
           {description}
         </p>
       ) : null}
@@ -1105,11 +1105,11 @@ function Statistic({
 }) {
   return (
     <div className="px-4 py-4 text-center sm:px-5">
-      <dt className="text-[7px] uppercase tracking-[0.17em] text-[#665946]">
+      <dt className="text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-665946))]">
         {label}
       </dt>
 
-      <dd className="mt-2 font-serif text-lg text-[#bda17b]">
+      <dd className="mt-2 font-serif text-lg text-[rgb(var(--sep-colour-bda17b))]">
         {value}
       </dd>
     </div>

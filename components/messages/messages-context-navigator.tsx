@@ -543,11 +543,11 @@ export function MessagesContextNavigator({
   return (
     <div className="flex h-full min-h-0 flex-col">
       <header className="shrink-0">
-        <p className="text-[9px] uppercase tracking-[0.3em] text-[#876a46]">
+        <p className="text-[9px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-876a46))]">
           Correspondence
         </p>
 
-        <h2 className="mt-2 font-serif text-2xl text-[#d6bd91]">
+        <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-d6bd91))]">
           {currentConversation
             ? getCharacterName(
                 currentConversation.other,
@@ -556,15 +556,15 @@ export function MessagesContextNavigator({
         </h2>
 
         {currentConversation ? (
-          <div className="mt-3 flex items-center gap-2 text-[9px] uppercase tracking-[0.15em] text-[#756956]">
+          <div className="mt-3 flex items-center gap-2 text-[9px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-756956))]">
             <span
               className={`inline-flex border px-2 py-1 ${
                 currentConversation
                   .lastMessage
                   ?.message_mode ===
                 "ongame"
-                  ? "border-[#8d6a40]/60 text-[#c7a471]"
-                  : "border-[#626979]/60 text-[#aeb5c4]"
+                  ? "border-[rgb(var(--sep-colour-8d6a40))]/60 text-[rgb(var(--sep-colour-c7a471))]"
+                  : "border-[rgb(var(--sep-colour-626979))]/60 text-[rgb(var(--sep-colour-aeb5c4))]"
               }`}
             >
               {currentConversation
@@ -588,32 +588,32 @@ export function MessagesContextNavigator({
             ) : null}
           </div>
         ) : (
-          <p className="mt-3 text-xs leading-6 text-[#938673]">
+          <p className="mt-3 text-xs leading-6 text-[rgb(var(--sep-colour-938673))]">
             Switch quickly between your
             most recent conversations.
           </p>
         )}
       </header>
 
-      <div className="mt-5 flex min-h-0 flex-1 flex-col border-t border-[#59432c]/35 pt-4">
+      <div className="mt-5 flex min-h-0 flex-1 flex-col border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-4">
         <div className="flex shrink-0 items-center justify-between gap-3">
           <div>
-            <p className="text-[8px] uppercase tracking-[0.22em] text-[#876a46]">
+            <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))]">
               Recent conversations
             </p>
 
-            <p className="mt-1 text-[10px] text-[#756a5b]">
+            <p className="mt-1 text-[10px] text-[rgb(var(--sep-colour-756a5b))]">
               Most recently active
             </p>
           </div>
 
-          <span className="flex h-7 min-w-7 items-center justify-center rounded-full border border-[#59432c]/50 bg-[#100c09] px-2 text-[9px] text-[#b2956f]">
+          <span className="flex h-7 min-w-7 items-center justify-center rounded-full border border-[rgb(var(--sep-colour-59432c))]/50 bg-[rgb(var(--sep-colour-100c09))] px-2 text-[9px] text-[rgb(var(--sep-colour-b2956f))]">
             {conversations.length}
           </span>
         </div>
 
         {error ? (
-          <p className="mt-3 border border-[#743d35] bg-[#2a1512] p-3 text-[10px] leading-5 text-[#d8a49a]">
+          <p className="mt-3 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-3 text-[10px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]">
             Conversations could not be
             loaded.
           </p>
@@ -622,9 +622,9 @@ export function MessagesContextNavigator({
         <div className="mt-3 min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-contain pr-1">
           {loading ? (
             <>
-              <div className="h-16 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
-              <div className="h-16 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
-              <div className="h-16 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
+              <div className="h-16 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
+              <div className="h-16 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
+              <div className="h-16 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
             </>
           ) : (
             conversations.map(
@@ -649,11 +649,11 @@ export function MessagesContextNavigator({
                     }
                     className={`group flex items-center gap-3 border p-3 transition ${
                       isCurrent
-                        ? "border-[#987344] bg-[#2a1d12] shadow-[inset_2px_0_0_#c18b48]"
-                        : "border-[#59432c]/40 bg-[#100c09] hover:border-[#80613c] hover:bg-[#19120e]"
+                        ? "border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-2a1d12))] shadow-[inset_2px_0_0_#c18b48]"
+                        : "border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] hover:border-[rgb(var(--sep-colour-80613c))] hover:bg-[rgb(var(--sep-colour-19120e))]"
                     }`}
                   >
-                    <div className="relative h-10 w-10 shrink-0 overflow-hidden border border-[#60482e]/55 bg-[#0d0a08]">
+                    <div className="relative h-10 w-10 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0a08))]">
                       {conversation.other
                         ?.portrait_url ? (
                         // eslint-disable-next-line @next/next/no-img-element
@@ -666,7 +666,7 @@ export function MessagesContextNavigator({
                           className="h-full w-full object-cover"
                         />
                       ) : (
-                        <span className="flex h-full items-center justify-center font-serif text-sm text-[#8d724f]">
+                        <span className="flex h-full items-center justify-center font-serif text-sm text-[rgb(var(--sep-colour-8d724f))]">
                           {name
                             .charAt(0)
                             .toUpperCase()}
@@ -676,7 +676,7 @@ export function MessagesContextNavigator({
 
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
-                        <p className="min-w-0 flex-1 truncate font-serif text-sm text-[#d6bd91]">
+                        <p className="min-w-0 flex-1 truncate font-serif text-sm text-[rgb(var(--sep-colour-d6bd91))]">
                           {name}
                         </p>
 
@@ -689,7 +689,7 @@ export function MessagesContextNavigator({
                                 ? ""
                                 : "s"
                             }`}
-                            className="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] text-[7px] font-bold leading-none text-[#ffe1ac]"
+                            className="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-[rgb(var(--sep-colour-d19a4c))] bg-[rgb(var(--sep-colour-7a291f))] text-[7px] font-bold leading-none text-[rgb(var(--sep-colour-ffe1ac))]"
                           >
                             {conversation.unreadCount >
                             9
@@ -700,7 +700,7 @@ export function MessagesContextNavigator({
                       </div>
 
                       <div className="mt-1 flex items-center gap-2">
-                        <p className="min-w-0 flex-1 truncate text-[10px] text-[#817565]">
+                        <p className="min-w-0 flex-1 truncate text-[10px] text-[rgb(var(--sep-colour-817565))]">
                           {conversation
                             .lastMessage
                             ? compactText(
@@ -713,7 +713,7 @@ export function MessagesContextNavigator({
 
                         {conversation
                           .lastMessage ? (
-                          <time className="shrink-0 text-[8px] text-[#665c50]">
+                          <time className="shrink-0 text-[8px] text-[rgb(var(--sep-colour-665c50))]">
                             {formatRelativeTime(
                               conversation
                                 .lastMessage
@@ -728,8 +728,8 @@ export function MessagesContextNavigator({
                       aria-hidden="true"
                       className={`shrink-0 text-xs transition group-hover:translate-x-0.5 ${
                         isCurrent
-                          ? "text-[#d2aa72]"
-                          : "text-[#69583f] group-hover:text-[#b38d5e]"
+                          ? "text-[rgb(var(--sep-colour-d2aa72))]"
+                          : "text-[rgb(var(--sep-colour-69583f))] group-hover:text-[rgb(var(--sep-colour-b38d5e))]"
                       }`}
                     >
                       {isCurrent
@@ -745,7 +745,7 @@ export function MessagesContextNavigator({
           {!loading &&
           !error &&
           conversations.length === 0 ? (
-            <p className="border border-[#59432c]/30 bg-[#100c09]/60 p-4 text-center text-[11px] leading-5 text-[#8f8271]">
+            <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-4 text-center text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
               No private conversations
               yet.
             </p>
@@ -754,7 +754,7 @@ export function MessagesContextNavigator({
 
         <Link
           href="/messages"
-          className="mt-4 flex shrink-0 items-center justify-between border border-[#765937] bg-[#271c12] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[#dfc79c] transition hover:border-[#997042] hover:bg-[#3b2919]"
+          className="mt-4 flex shrink-0 items-center justify-between border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-271c12))] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-dfc79c))] transition hover:border-[rgb(var(--sep-colour-997042))] hover:bg-[rgb(var(--sep-colour-3b2919))]"
         >
           <span>Open full inbox</span>
           <span aria-hidden="true">→</span>

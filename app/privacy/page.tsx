@@ -6,36 +6,36 @@ import {
 
 export default function PrivacyPage() {
   return (
-    <main className="min-h-screen bg-[#090706] px-5 py-12 text-[#d8cbb5]">
-      <article className="mx-auto max-w-3xl border border-[#60482e]/55 bg-[#110d0a] p-6 shadow-[0_24px_80px_rgba(0,0,0,.45)] sm:p-10">
+    <main className="min-h-screen bg-[rgb(var(--sep-colour-090706))] px-5 py-12 text-[rgb(var(--sep-colour-d8cbb5))]">
+      <article className="mx-auto max-w-3xl border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-110d0a))] p-6 shadow-[0_24px_80px_rgba(var(--sep-rgb-0-0-0),.45)] sm:p-10">
         <Link
           href="/auth/sign-up"
-          className="text-[10px] uppercase tracking-[0.2em] text-[#b08b59] hover:text-[#e2bf88]"
+          className="text-[10px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-b08b59))] hover:text-[rgb(var(--sep-colour-e2bf88))]"
         >
           ← Return to registration
         </Link>
 
-        <p className="mt-8 text-[9px] uppercase tracking-[0.35em] text-[#876a46]">
+        <p className="mt-8 text-[9px] uppercase tracking-[0.35em] text-[rgb(var(--sep-colour-876a46))]">
           Sepulchria
         </p>
 
-        <h1 className="mt-3 font-serif text-4xl text-[#e5cfa6]">
+        <h1 className="mt-3 font-serif text-4xl text-[rgb(var(--sep-colour-e5cfa6))]">
           Privacy Policy
         </h1>
 
-        <p className="mt-3 text-xs text-[#7f7466]">
+        <p className="mt-3 text-xs text-[rgb(var(--sep-colour-7f7466))]">
           Development version: {PRIVACY_VERSION}
         </p>
 
-        <div className="mt-8 border border-[#7a5b37]/45 bg-[#21160f] p-4 text-sm leading-6 text-[#c7aa7c]">
+        <div className="mt-8 border border-[rgb(var(--sep-colour-7a5b37))]/45 bg-[rgb(var(--sep-colour-21160f))] p-4 text-sm leading-6 text-[rgb(var(--sep-colour-c7aa7c))]">
           Development notice: this page is a functional placeholder for the
           registration-consent system. Replace it with your final reviewed
           Privacy Policy before public launch.
         </div>
 
-        <div className="mt-8 space-y-7 text-sm leading-7 text-[#aa9c88]">
+        <div className="mt-8 space-y-7 text-sm leading-7 text-[rgb(var(--sep-colour-aa9c88))]">
           <section>
-            <h2 className="font-serif text-xl text-[#d7bd91]">
+            <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-d7bd91))]">
               1. Information used by the service
             </h2>
             <p className="mt-2">
@@ -47,7 +47,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="font-serif text-xl text-[#d7bd91]">
+            <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-d7bd91))]">
               2. Authentication and hosting
             </h2>
             <p className="mt-2">
@@ -58,7 +58,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="font-serif text-xl text-[#d7bd91]">
+            <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-d7bd91))]">
               3. Community content
             </h2>
             <p className="mt-2">
@@ -69,7 +69,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="font-serif text-xl text-[#d7bd91]">
+            <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-d7bd91))]">
               4. Retention and account management
             </h2>
             <p className="mt-2">
@@ -80,7 +80,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="font-serif text-xl text-[#d7bd91]">
+            <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-d7bd91))]">
               5. Contact and rights
             </h2>
             <p className="mt-2">

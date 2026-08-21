@@ -96,7 +96,7 @@ export default function MessageComposer({
     <form
       ref={formRef}
       action={action}
-      className="border-t border-[#59432c]/40 p-5 sm:p-6"
+      className="border-t border-[rgb(var(--sep-colour-59432c))]/40 p-5 sm:p-6"
     >
       <input
         type="hidden"
@@ -117,7 +117,7 @@ export default function MessageComposer({
       />
 
       <fieldset>
-        <legend className="text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+        <legend className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
           Message type
         </legend>
 
@@ -130,8 +130,8 @@ export default function MessageComposer({
             aria-pressed={isOnGame}
             className={`border px-4 py-3 text-left transition ${
               isOnGame
-                ? "border-[#a77a42] bg-[#3b2919] text-[#f0d3a1]"
-                : "border-[#59432c]/55 bg-[#100c09] text-[#8e806d] hover:border-[#80613c]"
+                ? "border-[rgb(var(--sep-colour-a77a42))] bg-[rgb(var(--sep-colour-3b2919))] text-[rgb(var(--sep-colour-f0d3a1))]"
+                : "border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-100c09))] text-[rgb(var(--sep-colour-8e806d))] hover:border-[rgb(var(--sep-colour-80613c))]"
             }`}
           >
             <span className="block text-[9px] uppercase tracking-[0.18em]">
@@ -151,8 +151,8 @@ export default function MessageComposer({
             aria-pressed={!isOnGame}
             className={`border px-4 py-3 text-left transition ${
               !isOnGame
-                ? "border-[#6d7488] bg-[#20232b] text-[#d6dae5]"
-                : "border-[#59432c]/55 bg-[#100c09] text-[#8e806d] hover:border-[#6d7488]"
+                ? "border-[rgb(var(--sep-colour-6d7488))] bg-[rgb(var(--sep-colour-20232b))] text-[rgb(var(--sep-colour-d6dae5))]"
+                : "border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-100c09))] text-[rgb(var(--sep-colour-8e806d))] hover:border-[rgb(var(--sep-colour-6d7488))]"
             }`}
           >
             <span className="block text-[9px] uppercase tracking-[0.18em]">
@@ -169,8 +169,8 @@ export default function MessageComposer({
       <div
         className={`mt-4 border-l-2 px-3 py-2 text-[10px] leading-5 ${
           isOnGame
-            ? "border-[#a77a42] bg-[#24190f] text-[#bfa37a]"
-            : "border-[#6d7488] bg-[#191b21] text-[#aeb4c2]"
+            ? "border-[rgb(var(--sep-colour-a77a42))] bg-[rgb(var(--sep-colour-24190f))] text-[rgb(var(--sep-colour-bfa37a))]"
+            : "border-[rgb(var(--sep-colour-6d7488))] bg-[rgb(var(--sep-colour-191b21))] text-[rgb(var(--sep-colour-aeb4c2))]"
         }`}
       >
         {isOnGame
@@ -202,7 +202,7 @@ export default function MessageComposer({
 
       <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="text-[10px] uppercase tracking-[0.2em] text-[#776b5c]">
+          <p className="text-[10px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-776b5c))]">
             {stripRichTextForPreview(
               body,
             ).length.toLocaleString(
@@ -218,8 +218,8 @@ export default function MessageComposer({
             <p
               className={`mt-2 text-xs ${
                 state.ok
-                  ? "text-[#8ebc87]"
-                  : "text-[#d88d79]"
+                  ? "text-[rgb(var(--sep-colour-8ebc87))]"
+                  : "text-[rgb(var(--sep-colour-d88d79))]"
               }`}
             >
               {state.message}
@@ -237,8 +237,8 @@ export default function MessageComposer({
           }
           className={`border px-5 py-3 text-xs uppercase tracking-[0.22em] disabled:cursor-not-allowed disabled:opacity-40 ${
             isOnGame
-              ? "border-[#967342] bg-[#3b2b1b] text-[#f1d9a7]"
-              : "border-[#697185] bg-[#292d36] text-[#e2e5ec]"
+              ? "border-[rgb(var(--sep-colour-967342))] bg-[rgb(var(--sep-colour-3b2b1b))] text-[rgb(var(--sep-colour-f1d9a7))]"
+              : "border-[rgb(var(--sep-colour-697185))] bg-[rgb(var(--sep-colour-292d36))] text-[rgb(var(--sep-colour-e2e5ec))]"
           }`}
         >
           {pending

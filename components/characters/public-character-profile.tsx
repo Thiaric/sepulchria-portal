@@ -68,7 +68,7 @@ export function PublicCharacterProfileView({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <Link
           href={returnHref}
-          className="inline-flex items-center gap-2 border border-[#60482e]/55 bg-[#15100d] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[#c6ab80] transition hover:border-[#987344] hover:bg-[#261b12] hover:text-[#ead2a5]"
+          className="inline-flex items-center gap-2 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-c6ab80))] transition hover:border-[rgb(var(--sep-colour-987344))] hover:bg-[rgb(var(--sep-colour-261b12))] hover:text-[rgb(var(--sep-colour-ead2a5))]"
         >
           <span aria-hidden="true">←</span>
           {returnLabel}
@@ -79,7 +79,7 @@ export function PublicCharacterProfileView({
           isInFriendList ? (
             <Link
               href="/friends"
-              className="inline-flex items-center gap-2 border border-[#668657] bg-[#172313] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[#b8d8a7] transition hover:bg-[#22321c]"
+              className="inline-flex items-center gap-2 border border-[rgb(var(--sep-colour-668657))] bg-[rgb(var(--sep-colour-172313))] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-b8d8a7))] transition hover:bg-[rgb(var(--sep-colour-22321c))]"
             >
               ✓ In Friend List
             </Link>
@@ -98,7 +98,7 @@ export function PublicCharacterProfileView({
                 name="listScope"
                 defaultValue="ingame"
                 aria-label="Friend List section"
-                className="border border-r-0 border-[#60482e]/55 bg-[#100c09] px-2 text-[9px] text-[#c8b18d] outline-none"
+                className="border border-r-0 border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-2 text-[9px] text-[rgb(var(--sep-colour-c8b18d))] outline-none"
               >
                 <option value="ingame">In-Game</option>
                 <option value="offgame">Off-Game</option>
@@ -108,7 +108,7 @@ export function PublicCharacterProfileView({
                 name="relationshipType"
                 defaultValue="friend"
                 aria-label="Relationship type"
-                className="border border-r-0 border-[#60482e]/55 bg-[#100c09] px-2 text-[9px] text-[#c8b18d] outline-none"
+                className="border border-r-0 border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-2 text-[9px] text-[rgb(var(--sep-colour-c8b18d))] outline-none"
               >
                 <option value="friend">Friend</option>
                 <option value="close_friend">Close Friend</option>
@@ -121,7 +121,7 @@ export function PublicCharacterProfileView({
 
               <button
                 type="submit"
-                className="inline-flex items-center gap-2 border border-[#668657] bg-[#172313] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[#b8d8a7] transition hover:bg-[#22321c]"
+                className="inline-flex items-center gap-2 border border-[rgb(var(--sep-colour-668657))] bg-[rgb(var(--sep-colour-172313))] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-b8d8a7))] transition hover:bg-[rgb(var(--sep-colour-22321c))]"
               >
                 Add to Friend List
               </button>
@@ -138,7 +138,7 @@ export function PublicCharacterProfileView({
 
               <button
                 type="submit"
-                className="inline-flex items-center gap-2 border border-[#987344] bg-[#3b2919] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[#efd6a8] transition hover:border-[#b98c50] hover:bg-[#50371f]"
+                className="inline-flex items-center gap-2 border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
               >
                 <span aria-hidden="true">✉</span>
                 Send private message
@@ -152,8 +152,8 @@ export function PublicCharacterProfileView({
         <div data-character-sheet-panel="short">
           <section className="grid gap-4 xl:grid-cols-[minmax(0,1.45fr)_minmax(360px,0.9fr)]">
         <div className="min-w-0">
-          <section className="grid gap-4 border border-[#654b2e]/50 bg-[#17110d] p-4 sm:p-5 lg:grid-cols-[180px_minmax(0,1fr)]">
-            <div className="relative mx-auto aspect-[3/4] w-full max-w-[180px] overflow-hidden border border-[#60482e]/50 bg-[#0d0a08] lg:mx-0">
+          <section className="grid gap-4 border border-[rgb(var(--sep-colour-654b2e))]/50 bg-[rgb(var(--sep-colour-17110d))] p-4 sm:p-5 lg:grid-cols-[180px_minmax(0,1fr)]">
+            <div className="relative mx-auto aspect-[3/4] w-full max-w-[180px] overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0d0a08))] lg:mx-0">
               {character.portrait_url ? (
                 <Image
                   src={character.portrait_url}
@@ -164,7 +164,7 @@ export function PublicCharacterProfileView({
                   priority
                 />
               ) : (
-                <div className="flex h-full items-center justify-center font-serif text-5xl text-[#5f503f]">
+                <div className="flex h-full items-center justify-center font-serif text-5xl text-[rgb(var(--sep-colour-5f503f))]">
                   {character.first_name
                     .charAt(0)
                     .toUpperCase()}
@@ -176,19 +176,19 @@ export function PublicCharacterProfileView({
             </div>
 
             <div className="min-w-0">
-              <div className="flex flex-wrap items-start justify-between gap-3 border-b border-[#5d452d]/35 pb-3">
+              <div className="flex flex-wrap items-start justify-between gap-3 border-b border-[rgb(var(--sep-colour-5d452d))]/35 pb-3">
                 <div className="min-w-0">
-                  <p className="text-[8px] uppercase tracking-[0.26em] text-[#876a46]">
+                  <p className="text-[8px] uppercase tracking-[0.26em] text-[rgb(var(--sep-colour-876a46))]">
                     Character profile
                   </p>
 
-                  <h1 className="mt-1 break-words font-serif text-3xl text-[#ecd9b2] sm:text-[2.15rem]">
+                  <h1 className="mt-1 break-words font-serif text-3xl text-[rgb(var(--sep-colour-ecd9b2))] sm:text-[2.15rem]">
                     {fullName}
                   </h1>
                 </div>
               </div>
 
-              <div className="mt-3 grid gap-px bg-[#4f3b28]/35 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="mt-3 grid gap-px bg-[rgb(var(--sep-colour-4f3b28))]/35 sm:grid-cols-2 lg:grid-cols-3">
                 <CompactDetail
   label="Gender"
   value={
@@ -210,7 +210,7 @@ export function PublicCharacterProfileView({
   }
 />
 
-                <div className="min-w-0 bg-[#17110d] px-3 py-2 [&_dt]:text-[7px] [&_dt]:uppercase [&_dt]:tracking-[0.19em] [&_dt]:text-[#796448] [&_dd]:mt-1 [&_dd]:text-[11px] [&_dd]:leading-5 [&_dd]:text-[#cab89b]">
+                <div className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 [&_dt]:text-[7px] [&_dt]:uppercase [&_dt]:tracking-[0.19em] [&_dt]:text-[rgb(var(--sep-colour-796448))] [&_dd]:mt-1 [&_dd]:text-[11px] [&_dd]:leading-5 [&_dd]:text-[rgb(var(--sep-colour-cab89b))]">
                   <PublicCharacterAgeDetail
                     characterId={character.id}
                   />
@@ -232,7 +232,7 @@ export function PublicCharacterProfileView({
                   }
                 />
 
-                <div className="min-w-0 bg-[#17110d] px-3 py-2 [&_dt]:!text-[7px] [&_dt]:!uppercase [&_dt]:!tracking-[0.19em] [&_dt]:!text-[#796448] [&_dd]:!mt-1 [&_dd]:!block [&_dd>span:first-child]:!font-sans [&_dd>span:first-child]:!text-[11px] [&_dd>span:first-child]:!font-normal [&_dd>span:first-child]:!leading-5 [&_dd>span:first-child]:!text-[#cab89b] [&_dd>span:last-child]:!hidden">
+                <div className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 [&_dt]:!text-[7px] [&_dt]:!uppercase [&_dt]:!tracking-[0.19em] [&_dt]:!text-[rgb(var(--sep-colour-796448))] [&_dd]:!mt-1 [&_dd]:!block [&_dd>span:first-child]:!font-sans [&_dd>span:first-child]:!text-[11px] [&_dd>span:first-child]:!font-normal [&_dd>span:first-child]:!leading-5 [&_dd>span:first-child]:!text-[rgb(var(--sep-colour-cab89b))] [&_dd>span:last-child]:!hidden">
                   <CharacterExpertiseTotal
                     characterId={character.id}
                   />
@@ -294,7 +294,7 @@ export function PublicCharacterProfileView({
           </section>
         </div>
 
-        <div data-character-sheet-panel="profile" className="py-2 border border-[#6b5032]/50">
+        <div data-character-sheet-panel="profile" className="py-2 border border-[rgb(var(--sep-colour-6b5032))]/50">
           <section className="grid gap-4 md:grid-cols-2 px-2">
         <ProfileSection
           title="Physical Description"
@@ -334,7 +334,7 @@ export function PublicCharacterProfileView({
           <CharacterShapesDisplay characterId={character.id} />
         </div>
 
-        <div data-character-sheet-panel="offgame"  className="py-2 border border-[#6b5032]/50">
+        <div data-character-sheet-panel="offgame"  className="py-2 border border-[rgb(var(--sep-colour-6b5032))]/50">
             <section className="grid gap-4 px-2">
           <ProfileSection
             title="Offgame"
@@ -356,12 +356,12 @@ function CompactDetail({
   value: string | null;
 }) {
   return (
-    <div className="min-w-0 bg-[#17110d] px-3 py-2">
-      <p className="text-[7px] uppercase tracking-[0.19em] text-[#796448]">
+    <div className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2">
+      <p className="text-[7px] uppercase tracking-[0.19em] text-[rgb(var(--sep-colour-796448))]">
         {label}
       </p>
 
-      <p className="mt-1 break-words text-[11px] leading-5 text-[#cab89b]">
+      <p className="mt-1 break-words text-[11px] leading-5 text-[rgb(var(--sep-colour-cab89b))]">
         {value || "Not recorded"}
       </p>
     </div>
@@ -383,7 +383,7 @@ function CompactHeritageCard({
   return (
     <Link
       href={href}
-      className="group flex h-full min-w-0 items-center gap-3 border bg-[#120e0b] p-3 transition hover:bg-[#1b140f]"
+      className="group flex h-full min-w-0 items-center gap-3 border bg-[rgb(var(--sep-colour-120e0b))] p-3 transition hover:bg-[rgb(var(--sep-colour-1b140f))]"
       style={{
         borderColor: `${colour}66`,
       }}
@@ -411,18 +411,18 @@ function CompactHeritageCard({
       </div>
 
       <div className="min-w-0 flex-1">
-        <p className="text-[7px] uppercase tracking-[0.2em] text-[#806b50]">
+        <p className="text-[7px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
           {label}
         </p>
 
-        <p className="mt-0.5 font-serif text-base text-[#e1c99f]">
+        <p className="mt-0.5 font-serif text-base text-[rgb(var(--sep-colour-e1c99f))]">
           {entry?.name ?? "Not assigned"}
         </p>
       </div>
 
       <span
         aria-hidden="true"
-        className="shrink-0 text-xs text-[#8d6d3e] transition group-hover:translate-x-0.5 group-hover:text-[#d2ad73]"
+        className="shrink-0 text-xs text-[rgb(var(--sep-colour-8d6d3e))] transition group-hover:translate-x-0.5 group-hover:text-[rgb(var(--sep-colour-d2ad73))]"
       >
         →
       </span>
@@ -445,17 +445,17 @@ function ProfileSection({
 
   return (
     <section
-      className={`h-full border border-[#6b5032]/50 p-4 sm:p-5 ${
+      className={`h-full border border-[rgb(var(--sep-colour-6b5032))]/50 p-4 sm:p-5 ${
         subtle
-          ? "bg-[#130f0c]"
-          : "bg-[#17110d]"
+          ? "bg-[rgb(var(--sep-colour-130f0c))]"
+          : "bg-[rgb(var(--sep-colour-17110d))]"
       }`}
     >
-      <h2 className="font-serif text-xl text-[#dfc79c] sm:text-2xl">
+      <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-dfc79c))] sm:text-2xl">
         {title}
       </h2>
 
-      <p className="mt-3 whitespace-pre-line break-words text-sm leading-7 text-[#b0a18d]">
+      <p className="mt-3 whitespace-pre-line break-words text-sm leading-7 text-[rgb(var(--sep-colour-b0a18d))]">
         {content}
       </p>
     </section>

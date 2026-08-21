@@ -26,7 +26,7 @@ export function CharacterReviewFields({
   return (
     <>
       <label className="block">
-        <span className="mb-2 block text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+        <span className="mb-2 block text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
           Status
         </span>
 
@@ -38,7 +38,7 @@ export function CharacterReviewFields({
               event.target.value as CharacterStatus,
             )
           }
-          className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+          className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
         >
           <option value="draft">Draft</option>
           <option value="submitted">Submitted</option>
@@ -48,15 +48,15 @@ export function CharacterReviewFields({
       </label>
 
       <label className="block">
-        <span className="mb-2 flex items-center gap-2 text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+        <span className="mb-2 flex items-center gap-2 text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
           {rejectionRequired
               ? "Required"
               : ""} reason
           <span
             className={
               rejectionRequired
-                ? "text-[#cf766b]"
-                : "text-[#5f5548]"
+                ? "text-[rgb(var(--sep-colour-cf766b))]"
+                : "text-[rgb(var(--sep-colour-5f5548))]"
             }
           >
             {rejectionRequired
@@ -79,15 +79,15 @@ export function CharacterReviewFields({
               ? "Explain what must be corrected before rejecting the sheet."
               : "Only required when the selected status is Rejected."
           }
-          className={`w-full resize-y border bg-[#100c09] px-3 py-3 text-sm leading-6 text-[#d7c4a5] outline-none placeholder:text-[#625747] ${
+          className={`w-full resize-y border bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm leading-6 text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] ${
             rejectionRequired
-              ? "border-[#8b443b]/80 focus:border-[#cf766b]"
-              : "border-[#60482e]/55 focus:border-[#a17a49]"
+              ? "border-[rgb(var(--sep-colour-8b443b))]/80 focus:border-[rgb(var(--sep-colour-cf766b))]"
+              : "border-[rgb(var(--sep-colour-60482e))]/55 focus:border-[rgb(var(--sep-colour-a17a49))]"
           }`}
         />
 
         {rejectionRequired ? (
-          <span className="mt-2 block text-[10px] leading-5 text-[#a98782]">
+          <span className="mt-2 block text-[10px] leading-5 text-[rgb(var(--sep-colour-a98782))]">
             A reason must be entered before this
             character can be rejected.
           </span>

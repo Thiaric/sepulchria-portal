@@ -54,19 +54,19 @@ export function OrderHeadGiftManager({
     );
 
   return (
-    <div className="mt-3 border-t border-[#59432c]/30 pt-3">
+    <div className="mt-3 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-3">
       <div className="flex flex-wrap items-end justify-between gap-2">
         <div>
-          <p className="text-[7px] uppercase tracking-[0.14em] text-[#756958]">
+          <p className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
             Order Feats
           </p>
 
-          <p className="mt-1 text-[9px] leading-4 text-[#6f665a]">
+          <p className="mt-1 text-[9px] leading-4 text-[rgb(var(--sep-colour-6f665a))]">
             Feats available through this member&apos;s current Role.
           </p>
         </div>
 
-        <span className="text-[7px] uppercase tracking-[0.12em] text-[#695d4d]">
+        <span className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-695d4d))]">
           {orderOwned.length} assigned by Order
         </span>
       </div>
@@ -86,15 +86,15 @@ export function OrderHeadGiftManager({
             return (
               <div
                 key={gift.id}
-                className="border border-[#59432c]/35 bg-[#0d0907] p-3"
+                className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-0d0907))] p-3"
               >
                 <div className="flex items-start justify-between gap-2">
-                  <p className="font-serif text-sm text-[#d8bf91]">
+                  <p className="font-serif text-sm text-[rgb(var(--sep-colour-d8bf91))]">
                     {gift.name}
                   </p>
 
                   {owned ? (
-                    <span className="shrink-0 text-[7px] uppercase tracking-[0.11em] text-[#8b7657]">
+                    <span className="shrink-0 text-[7px] uppercase tracking-[0.11em] text-[rgb(var(--sep-colour-8b7657))]">
                       {isOrderOwned
                         ? "Assigned"
                         : `Owned · ${owned.source}`}
@@ -103,7 +103,7 @@ export function OrderHeadGiftManager({
                 </div>
 
                 {gift.description ? (
-                  <p className="mt-2 text-[9px] leading-4 text-[#817565]">
+                  <p className="mt-2 text-[9px] leading-4 text-[rgb(var(--sep-colour-817565))]">
                     {gift.description}
                   </p>
                 ) : null}
@@ -135,7 +135,7 @@ export function OrderHeadGiftManager({
 
                     <button
                       type="submit"
-                      className="border border-[#765937]/55 bg-[#261b12] px-3 py-2 text-[7px] uppercase tracking-[0.12em] text-[#ccb083]"
+                      className="border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-261b12))] px-3 py-2 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-ccb083))]"
                     >
                       Assign Feat
                     </button>
@@ -175,7 +175,7 @@ export function OrderHeadGiftManager({
                     </button>
                   </form>
                 ) : (
-                  <p className="mt-3 text-[8px] italic leading-4 text-[#6d6254]">
+                  <p className="mt-3 text-[8px] italic leading-4 text-[rgb(var(--sep-colour-6d6254))]">
                     This character already owns this Feat through {owned.source}; the Order does not create a duplicate.
                   </p>
                 )}
@@ -184,7 +184,7 @@ export function OrderHeadGiftManager({
           })}
         </div>
       ) : (
-        <p className="mt-3 text-[9px] italic text-[#6d6254]">
+        <p className="mt-3 text-[9px] italic text-[rgb(var(--sep-colour-6d6254))]">
           No active Feats are linked to this Role.
         </p>
       )}

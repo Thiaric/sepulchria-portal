@@ -184,17 +184,17 @@ export function PrivateLocationInvitationPopup({
 
   return (
     <div className="fixed inset-0 z-[300] flex items-center justify-center bg-black/60 p-4">
-      <section className="w-full max-w-md border border-[#8d6d3e] bg-[#15100d] p-6 shadow-2xl">
-        <p className="text-[8px] uppercase tracking-[0.22em] text-[#9b7a50]">
+      <section className="w-full max-w-md border border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-15100d))] p-6 shadow-2xl">
+        <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-9b7a50))]">
           Private Location invitation
         </p>
 
-        <h2 className="mt-2 font-serif text-2xl text-[#ead1a5]">
+        <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-ead1a5))]">
           {invite.roomName}
         </h2>
 
-        <p className="mt-3 text-sm leading-6 text-[#a99a84]">
-          <span className="text-[#d9bd91]">
+        <p className="mt-3 text-sm leading-6 text-[rgb(var(--sep-colour-a99a84))]">
+          <span className="text-[rgb(var(--sep-colour-d9bd91))]">
             {invite.inviterName}
           </span>{" "}
           has invited your character into this private location.
@@ -219,7 +219,7 @@ export function PrivateLocationInvitationPopup({
 
             <button
               type="submit"
-              className="w-full border border-[#7b443b] bg-[#2a1513] px-4 py-3 text-[9px] uppercase tracking-[0.16em] text-[#d7a39a]"
+              className="w-full border border-[rgb(var(--sep-colour-7b443b))] bg-[rgb(var(--sep-colour-2a1513))] px-4 py-3 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d7a39a))]"
             >
               Refuse
             </button>
@@ -243,7 +243,7 @@ export function PrivateLocationInvitationPopup({
 
             <button
               type="submit"
-              className="w-full border border-[#668657] bg-[#172313] px-4 py-3 text-[9px] uppercase tracking-[0.16em] text-[#b8d8a7]"
+              className="w-full border border-[rgb(var(--sep-colour-668657))] bg-[rgb(var(--sep-colour-172313))] px-4 py-3 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b8d8a7))]"
             >
               Accept & enter
             </button>

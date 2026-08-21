@@ -1091,13 +1091,13 @@ function ignoreSpellingWord() {
 }
 
   const utilityButtonClass =
-    "border border-[#765937] bg-[#21190f] px-2.5 py-1.5 text-[7px] uppercase tracking-[0.12em] text-[#d6bb8d] transition hover:border-[#a17a49] hover:bg-[#2b2014] disabled:cursor-not-allowed disabled:opacity-40";
+    "border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-21190f))] px-2.5 py-1.5 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-d6bb8d))] transition hover:border-[rgb(var(--sep-colour-a17a49))] hover:bg-[rgb(var(--sep-colour-2b2014))] disabled:cursor-not-allowed disabled:opacity-40";
 
   const utilityButtonActiveClass =
-    "border border-[#a17a49] bg-[#3a2919] px-2.5 py-1.5 text-[7px] uppercase tracking-[0.12em] text-[#f0d6a7]";
+    "border border-[rgb(var(--sep-colour-a17a49))] bg-[rgb(var(--sep-colour-3a2919))] px-2.5 py-1.5 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-f0d6a7))]";
 
   const incomingExchangeButtonClass =
-    "animate-pulse border border-[#d1a45f] bg-[#4a3218] px-2.5 py-1.5 text-[7px] uppercase tracking-[0.12em] text-[#ffe0a3] shadow-[0_0_14px_rgba(209,164,95,0.55)] transition hover:border-[#efc77c] hover:bg-[#5a3b1c]";
+    "animate-pulse border border-[rgb(var(--sep-colour-d1a45f))] bg-[rgb(var(--sep-colour-4a3218))] px-2.5 py-1.5 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-ffe0a3))] shadow-[0_0_14px_rgba(var(--sep-rgb-209-164-95),0.55)] transition hover:border-[rgb(var(--sep-colour-efc77c))] hover:bg-[rgb(var(--sep-colour-5a3b1c))]";
 
   function toggleUtility(
     mode:
@@ -1115,7 +1115,7 @@ function ignoreSpellingWord() {
   }
 
   return (
-    <div className="shrink-0 border-t border-[#59432c]/40 bg-[#17110d] p-2 sm:px-3 sm:py-2">
+    <div className="shrink-0 border-t border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-17110d))] p-2 sm:px-3 sm:py-2">
       <PendingOpposedActions
   attributes={attributes}
 />
@@ -1153,7 +1153,7 @@ function ignoreSpellingWord() {
             readOnly
           />
 
-          <div className="relative h-[100px] overflow-hidden border border-[#60482e]/50 bg-[#0f0c09] transition focus-within:border-[#927047]">
+          <div className="relative h-[100px] overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0f0c09))] transition focus-within:border-[rgb(var(--sep-colour-927047))]">
             <textarea
               ref={textareaRef}
               name="message"
@@ -1188,7 +1188,7 @@ function ignoreSpellingWord() {
                 setValue(event.target.value)
               }
               placeholder="Speech outside brackets; actions, movement and descriptions inside < > or ( ) or [ ] or { }. Out-of-character messages must be preceded by //."
-              className="relative z-10 h-full w-full resize-none border-0 bg-transparent px-3 py-2 text-[13px] leading-5 text-[#d0bea1] outline-none placeholder:text-[#5f574d]"
+              className="relative z-10 h-full w-full resize-none border-0 bg-transparent px-3 py-2 text-[13px] leading-5 text-[rgb(var(--sep-colour-d0bea1))] outline-none placeholder:text-[rgb(var(--sep-colour-5f574d))]"
             />
 
             <SpellingTextareaOverlay
@@ -1200,13 +1200,13 @@ function ignoreSpellingWord() {
 
           {spellingMenu ? (
             <div
-              className="fixed z-[9999] w-[220px] border border-[#60482e]/70 bg-[#100c09] p-2 shadow-[0_12px_30px_rgba(0,0,0,0.65)]"
+              className="fixed z-[9999] w-[220px] border border-[rgb(var(--sep-colour-60482e))]/70 bg-[rgb(var(--sep-colour-100c09))] p-2 shadow-[0_12px_30px_rgba(var(--sep-rgb-0-0-0),0.65)]"
               style={{
                 left: spellingMenu.x,
                 top: spellingMenu.y,
               }}
             >
-              <p className="border-b border-[#59432c]/40 px-2 pb-2 text-[8px] uppercase tracking-[0.18em] text-[#806c52]">
+              <p className="border-b border-[rgb(var(--sep-colour-59432c))]/40 px-2 pb-2 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806c52))]">
                 Spelling
               </p>
 
@@ -1223,7 +1223,7 @@ function ignoreSpellingWord() {
                             suggestion,
                           );
                         }}
-                        className="block w-full px-2 py-1.5 text-left text-xs text-[#cdb894] transition hover:bg-[#2a1d12] hover:text-[#f0d3a2]"
+                        className="block w-full px-2 py-1.5 text-left text-xs text-[rgb(var(--sep-colour-cdb894))] transition hover:bg-[rgb(var(--sep-colour-2a1d12))] hover:text-[rgb(var(--sep-colour-f0d3a2))]"
                       >
                         {preserveWordCase(
                           spellingMenu.word,
@@ -1234,19 +1234,19 @@ function ignoreSpellingWord() {
                   )}
                 </div>
               ) : (
-                <p className="px-2 py-2 text-[10px] italic text-[#706557]">
+                <p className="px-2 py-2 text-[10px] italic text-[rgb(var(--sep-colour-706557))]">
                   No suggestions found.
                 </p>
               )}
 
-              <div className="mt-2 border-t border-[#60482e]/35 pt-2">
+              <div className="mt-2 border-t border-[rgb(var(--sep-colour-60482e))]/35 pt-2">
                 <button
                   type="button"
                   onMouseDown={(event) => {
                     event.preventDefault();
                     ignoreSpellingWord();
                   }}
-                  className="w-full border border-[#60482e]/45 bg-[#15100d] px-2 py-2 text-[8px] uppercase tracking-[0.12em] text-[#a08c70] transition hover:border-[#87663b] hover:text-[#d4bb91]"
+                  className="w-full border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-2 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a08c70))] transition hover:border-[rgb(var(--sep-colour-87663b))] hover:text-[rgb(var(--sep-colour-d4bb91))]"
                 >
                   Ignore once
                 </button>
@@ -1256,7 +1256,7 @@ function ignoreSpellingWord() {
 
           <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
             <div className="flex min-w-0 items-center gap-2">
-              <p className="shrink-0 text-[8px] uppercase tracking-[0.16em] text-[#685d50]">
+              <p className="shrink-0 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-685d50))]">
                 {value.length.toLocaleString(
                   "en-GB",
                 )}{" "}
@@ -1271,8 +1271,8 @@ function ignoreSpellingWord() {
                   aria-live="polite"
                   className={`min-w-0 truncate text-xs ${
                     transientStatusOk
-                      ? "text-[#9bb58c]"
-                      : "text-[#d58d82]"
+                      ? "text-[rgb(var(--sep-colour-9bb58c))]"
+                      : "text-[rgb(var(--sep-colour-d58d82))]"
                   }`}
                   title={transientStatusMessage}
                 >
@@ -1296,7 +1296,7 @@ function ignoreSpellingWord() {
         <form
           action={messageAction}
           ref={messageFormRef}
-          className="border border-[#59432c]/35 bg-[#100c09] p-3"
+          className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3"
         >
           <UtilityPanelHeader
             title="Whisper"
@@ -1320,7 +1320,7 @@ function ignoreSpellingWord() {
           />
 
           <label className="block">
-            <span className="mb-1.5 block text-[8px] uppercase tracking-[0.14em] text-[#806b50]">
+            <span className="mb-1.5 block text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))]">
               Whisper to
             </span>
 
@@ -1331,7 +1331,7 @@ function ignoreSpellingWord() {
                   event.target.value,
                 )
               }
-              className="w-full border border-[#654c31] bg-[#0f0c09] px-3 py-2.5 text-[10px] text-[#d8c29b] outline-none focus:border-[#a17a45]"
+              className="w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2.5 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] outline-none focus:border-[rgb(var(--sep-colour-a17a45))]"
             >
               <option value="">
                 Choose character...
@@ -1347,7 +1347,7 @@ function ignoreSpellingWord() {
             </select>
           </label>
 
-          <div className="mt-3 h-24 overflow-hidden border border-[#60482e]/50 bg-[#0f0c09]">
+          <div className="mt-3 h-24 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0f0c09))]">
             <textarea
               ref={textareaRef}
               name="message"
@@ -1384,7 +1384,7 @@ function ignoreSpellingWord() {
                   ? "Write your whisper..."
                   : "Choose a character first..."
               }
-              className="h-full w-full resize-none border-0 bg-transparent px-4 py-3 text-sm leading-6 text-[#d0bea1] outline-none placeholder:text-[#5f574d]"
+              className="h-full w-full resize-none border-0 bg-transparent px-4 py-3 text-sm leading-6 text-[rgb(var(--sep-colour-d0bea1))] outline-none placeholder:text-[rgb(var(--sep-colour-5f574d))]"
             />
           </div>
 
@@ -1392,8 +1392,8 @@ function ignoreSpellingWord() {
             <p
               className={`text-xs ${
                 messageState.ok
-                  ? "text-[#9bb58c]"
-                  : "text-[#d58d82]"
+                  ? "text-[rgb(var(--sep-colour-9bb58c))]"
+                  : "text-[rgb(var(--sep-colour-d58d82))]"
               }`}
             >
               {messageState.message}
@@ -1416,7 +1416,7 @@ function ignoreSpellingWord() {
       ) : utilityMode === "dice" ? (
         <form
           action={diceAction}
-          className="border border-[#59432c]/35 bg-[#100c09] p-3"
+          className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3"
         >
           <UtilityPanelHeader
             title="Roll Dice"
@@ -1433,13 +1433,13 @@ function ignoreSpellingWord() {
 
           <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
             <label>
-              <span className="mb-1.5 block text-[8px] uppercase tracking-[0.14em] text-[#806b50]">
+              <span className="mb-1.5 block text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))]">
                 Die
               </span>
               <select
                 name="dice_sides"
                 defaultValue="20"
-                className="w-full border border-[#654c31] bg-[#0f0c09] px-3 py-2.5 text-[10px] uppercase tracking-[0.16em] text-[#d8c29b] outline-none focus:border-[#a17a45]"
+                className="w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2.5 text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d8c29b))] outline-none focus:border-[rgb(var(--sep-colour-a17a45))]"
               >
                 {DICE_OPTIONS.map((sides) => (
                   <option
@@ -1463,8 +1463,8 @@ function ignoreSpellingWord() {
             <p
               className={`mt-3 text-xs ${
                 diceState.ok
-                  ? "text-[#9bb58c]"
-                  : "text-[#d58d82]"
+                  ? "text-[rgb(var(--sep-colour-9bb58c))]"
+                  : "text-[rgb(var(--sep-colour-d58d82))]"
               }`}
             >
               {diceState.message}
@@ -1472,7 +1472,7 @@ function ignoreSpellingWord() {
           ) : null}
         </form>
       ) : utilityMode === "attributes" ? (
-        <div className="border border-[#59432c]/35 bg-[#100c09] p-3">
+        <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3">
           <UtilityPanelHeader
             title="Atk / Def / Dodge / Resist / Use Attribute"
             description="Attack or act now; if you target another Character, their valid counter decides the result. Text targets are resolved by Fate."
@@ -1482,15 +1482,15 @@ function ignoreSpellingWord() {
           {selectedWeapon ? (
             <form
               action={weaponAction}
-              className="mb-3 border border-[#6a5032]/45 bg-[#15100d] p-3"
+              className="mb-3 border border-[rgb(var(--sep-colour-6a5032))]/45 bg-[rgb(var(--sep-colour-15100d))] p-3"
             >
-              <p className="text-[8px] uppercase tracking-[0.16em] text-[#9a7d55]">
+              <p className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-9a7d55))]">
                 Equipped Weapon Attack
               </p>
 
               <div className="mt-2 grid gap-2 md:grid-cols-2">
                 <label>
-                  <span className="mb-1 block text-[8px] uppercase tracking-[0.12em] text-[#806b50]">
+                  <span className="mb-1 block text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806b50))]">
                     Weapon
                   </span>
                   <select
@@ -1498,7 +1498,7 @@ function ignoreSpellingWord() {
                     onChange={(event) =>
                       setSelectedWeaponKey(event.target.value)
                     }
-                    className="w-full border border-[#654c31] bg-[#0f0c09] px-3 py-2.5 text-[10px] text-[#d8c29b] outline-none focus:border-[#a17a45]"
+                    className="w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2.5 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] outline-none focus:border-[rgb(var(--sep-colour-a17a45))]"
                   >
                     {weaponItems.map((item) => (
                       <option
@@ -1519,7 +1519,7 @@ function ignoreSpellingWord() {
                 </label>
 
                 <label>
-                  <span className="mb-1 block text-[8px] uppercase tracking-[0.12em] text-[#806b50]">
+                  <span className="mb-1 block text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806b50))]">
                     Character target
                   </span>
                   <select
@@ -1530,7 +1530,7 @@ function ignoreSpellingWord() {
                         setWeaponExternalTarget("");
                       }
                     }}
-                    className="w-full border border-[#654c31] bg-[#0f0c09] px-3 py-2.5 text-[10px] text-[#d8c29b] outline-none focus:border-[#a17a45]"
+                    className="w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2.5 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] outline-none focus:border-[rgb(var(--sep-colour-a17a45))]"
                   >
                     <option value="">No Character target</option>
                     {presentCharacters.map((entry) => (
@@ -1543,7 +1543,7 @@ function ignoreSpellingWord() {
               </div>
 
               <label className="mt-2 block">
-                <span className="mb-1 block text-[8px] uppercase tracking-[0.12em] text-[#806b50]">
+                <span className="mb-1 block text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806b50))]">
                   Or other target
                 </span>
                 <input
@@ -1556,12 +1556,12 @@ function ignoreSpellingWord() {
                     }
                   }}
                   placeholder="door, Monster A, guard..."
-                  className="w-full border border-[#654c31] bg-[#0f0c09] px-3 py-2.5 text-[10px] text-[#d8c29b] outline-none focus:border-[#a17a45]"
+                  className="w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2.5 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] outline-none focus:border-[rgb(var(--sep-colour-a17a45))]"
                 />
               </label>
 
-              <div className="mt-2 flex flex-wrap gap-1.5 text-[8px] uppercase tracking-[0.1em] text-[#a98b61]">
-                <span className="border border-[#59432c]/40 px-2 py-1">
+              <div className="mt-2 flex flex-wrap gap-1.5 text-[8px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-a98b61))]">
+                <span className="border border-[rgb(var(--sep-colour-59432c))]/40 px-2 py-1">
                   Attack Roll{" "}
                   {selectedWeapon.successDie
                     ? `d${selectedWeapon.successDie}${
@@ -1571,7 +1571,7 @@ function ignoreSpellingWord() {
                       }`
                     : "d20"}
                 </span>
-                <span className="border border-[#59432c]/40 px-2 py-1">
+                <span className="border border-[rgb(var(--sep-colour-59432c))]/40 px-2 py-1">
                   Damage{" "}
                   {selectedWeapon.damageDice ?? "None"}
                   {selectedWeapon.successAttribute
@@ -1581,7 +1581,7 @@ function ignoreSpellingWord() {
                     ? ` ${selectedWeapon.damageType}`
                     : ""}
                 </span>
-                <span className="border border-[#59432c]/40 px-2 py-1">
+                <span className="border border-[rgb(var(--sep-colour-59432c))]/40 px-2 py-1">
                   Counter:{" "}
                   {selectedWeapon.counterOptions?.length
                     ? selectedWeapon.counterOptions
@@ -1627,20 +1627,20 @@ function ignoreSpellingWord() {
               />
 
               <div className="mt-3 flex items-center justify-between gap-3">
-                <p className={`text-xs ${weaponState.ok ? "text-[#9bb58c]" : "text-[#d58d82]"}`}>
+                <p className={`text-xs ${weaponState.ok ? "text-[rgb(var(--sep-colour-9bb58c))]" : "text-[rgb(var(--sep-colour-d58d82))]"}`}>
                   {weaponState.message}
                 </p>
                 <button
                   type="submit"
                   disabled={!weaponTargetId && !weaponExternalTarget.trim()}
-                  className="border border-[#85653c] bg-[#342617] px-5 py-2.5 text-[9px] uppercase tracking-[0.18em] text-[#efd4a0] transition hover:bg-[#4a351f] disabled:cursor-not-allowed disabled:opacity-40"
+                  className="border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-5 py-2.5 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:bg-[rgb(var(--sep-colour-4a351f))] disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   Attack
                 </button>
               </div>
             </form>
           ) : (
-            <p className="mb-3 border border-[#59432c]/35 bg-[#15100d] px-3 py-2 text-[9px] text-[#817565]">
+            <p className="mb-3 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2 text-[9px] text-[rgb(var(--sep-colour-817565))]">
               No Weapon is equipped in Main Hand or Off Hand.
             </p>
           )}
@@ -1648,12 +1648,12 @@ function ignoreSpellingWord() {
           <div className="grid gap-3 lg:grid-cols-2">
             <form
               action={unarmedAction}
-              className="border border-[#59432c]/30 bg-[#15100d] p-3"
+              className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-15100d))] p-3"
             >
-              <p className="text-[8px] uppercase tracking-[0.14em] text-[#9a7d55]">
+              <p className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9a7d55))]">
                 Unarmed Attack
               </p>
-              <p className="mt-1 text-[9px] text-[#817565]">
+              <p className="mt-1 text-[9px] text-[rgb(var(--sep-colour-817565))]">
                 d20 + Muscles. If Dodge / Defend is lower: 1 + Muscles Damage.
               </p>
 
@@ -1665,7 +1665,7 @@ function ignoreSpellingWord() {
                     setUnarmedExternalTarget("");
                   }
                 }}
-                className="mt-2 w-full border border-[#654c31] bg-[#0f0c09] px-3 py-2 text-[10px] text-[#d8c29b]"
+                className="mt-2 w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-d8c29b))]"
               >
                 <option value="">No Character target</option>
                 {presentCharacters.map((entry) => (
@@ -1685,7 +1685,7 @@ function ignoreSpellingWord() {
                   }
                 }}
                 placeholder="Other target: door, Monster A..."
-                className="mt-2 w-full border border-[#654c31] bg-[#0f0c09] px-3 py-2 text-[10px] text-[#d8c29b]"
+                className="mt-2 w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-d8c29b))]"
               />
 
               <input type="hidden" name="opposed_target_character_id" value={unarmedTargetId} readOnly />
@@ -1693,13 +1693,13 @@ function ignoreSpellingWord() {
 
               <button
                 type="submit"
-                className="mt-2 border border-[#85653c] bg-[#342617] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[#efd4a0]"
+                className="mt-2 border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd4a0))]"
               >
                 Unarmed Attack
               </button>
 
               {unarmedState.message ? (
-                <p className={`mt-2 text-xs ${unarmedState.ok ? "text-[#9bb58c]" : "text-[#d58d82]"}`}>
+                <p className={`mt-2 text-xs ${unarmedState.ok ? "text-[rgb(var(--sep-colour-9bb58c))]" : "text-[rgb(var(--sep-colour-d58d82))]"}`}>
                   {unarmedState.message}
                 </p>
               ) : null}
@@ -1707,16 +1707,16 @@ function ignoreSpellingWord() {
 
             <form
               action={opposedAttributeAction}
-              className="border border-[#59432c]/30 bg-[#15100d] p-3"
+              className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-15100d))] p-3"
             >
-              <p className="text-[8px] uppercase tracking-[0.14em] text-[#9a7d55]">
+              <p className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9a7d55))]">
                 Attribute Action
               </p>
 
               <select
                 name="opposed_action"
                 defaultValue="use_muscles"
-                className="mt-2 w-full border border-[#654c31] bg-[#0f0c09] px-3 py-2 text-[10px] text-[#d8c29b]"
+                className="mt-2 w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-d8c29b))]"
               >
                 {CHECK_OPTIONS.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -1733,7 +1733,7 @@ function ignoreSpellingWord() {
                     setAttributeExternalTarget("");
                   }
                 }}
-                className="mt-2 w-full border border-[#654c31] bg-[#0f0c09] px-3 py-2 text-[10px] text-[#d8c29b]"
+                className="mt-2 w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-d8c29b))]"
               >
                 <option value="">No Character target</option>
                 {presentCharacters.map((entry) => (
@@ -1753,7 +1753,7 @@ function ignoreSpellingWord() {
                   }
                 }}
                 placeholder="Other target: lock, crowd, Monster A..."
-                className="mt-2 w-full border border-[#654c31] bg-[#0f0c09] px-3 py-2 text-[10px] text-[#d8c29b]"
+                className="mt-2 w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-d8c29b))]"
               />
 
               <input type="hidden" name="opposed_target_character_id" value={attributeTargetId} readOnly />
@@ -1761,13 +1761,13 @@ function ignoreSpellingWord() {
 
               <button
                 type="submit"
-                className="mt-2 border border-[#85653c] bg-[#342617] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[#efd4a0]"
+                className="mt-2 border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd4a0))]"
               >
                 Roll Action
               </button>
 
               {opposedAttributeState.message ? (
-                <p className={`mt-2 text-xs ${opposedAttributeState.ok ? "text-[#9bb58c]" : "text-[#d58d82]"}`}>
+                <p className={`mt-2 text-xs ${opposedAttributeState.ok ? "text-[rgb(var(--sep-colour-9bb58c))]" : "text-[rgb(var(--sep-colour-d58d82))]"}`}>
                   {opposedAttributeState.message}
                 </p>
               ) : null}
@@ -1775,7 +1775,7 @@ function ignoreSpellingWord() {
           </div>
         </div>
       ) : utilityMode === "feat" ? (
-        <form className="border border-[#59432c]/35 bg-[#100c09] p-3">
+        <form className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3">
           <UtilityPanelHeader
             title="Use Feat"
             description="Choose one of your Feats and use or activate it from the room."
@@ -1802,7 +1802,7 @@ function ignoreSpellingWord() {
               />
 
               <label className="block">
-                <span className="mb-1.5 block text-[8px] uppercase tracking-[0.14em] text-[#806b50]">
+                <span className="mb-1.5 block text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))]">
                   Feat
                 </span>
                 <select
@@ -1814,7 +1814,7 @@ function ignoreSpellingWord() {
                       event.target.value,
                     )
                   }
-                  className="w-full border border-[#654c31] bg-[#0f0c09] px-3 py-2.5 text-[10px] text-[#d8c29b] outline-none focus:border-[#a17a45]"
+                  className="w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2.5 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] outline-none focus:border-[rgb(var(--sep-colour-a17a45))]"
                 >
                   {gifts.map((gift) => (
                     <option
@@ -1833,7 +1833,7 @@ function ignoreSpellingWord() {
 
               {selectedGift.targetMode !== "self" ? (
                 <label className="mt-3 block">
-                  <span className="mb-1.5 block text-[8px] uppercase tracking-[0.14em] text-[#806b50]">
+                  <span className="mb-1.5 block text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))]">
                     Target character
                   </span>
                   <select
@@ -1841,7 +1841,7 @@ function ignoreSpellingWord() {
                     onChange={(event) =>
                       setGiftTargetId(event.target.value)
                     }
-                    className="w-full border border-[#654c31] bg-[#0f0c09] px-3 py-2.5 text-[10px] text-[#d8c29b] outline-none focus:border-[#a17a45]"
+                    className="w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2.5 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] outline-none focus:border-[rgb(var(--sep-colour-a17a45))]"
                   >
                     {selectedGift.targetMode === "either" ? (
                       <option value="">Self</option>
@@ -1857,18 +1857,18 @@ function ignoreSpellingWord() {
                 </label>
               ) : null}
 
-              <div className="mt-3 border border-[#59432c]/30 bg-[#15100d] p-3">
-                <p className="font-serif text-base text-[#dec89f]">
+              <div className="mt-3 border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-15100d))] p-3">
+                <p className="font-serif text-base text-[rgb(var(--sep-colour-dec89f))]">
                   {selectedGift.name}
                 </p>
                 {selectedGift.description ? (
-                  <p className="mt-1 text-[10px] leading-5 text-[#817565]">
+                  <p className="mt-1 text-[10px] leading-5 text-[rgb(var(--sep-colour-817565))]">
                     {
                       selectedGift.description
                     }
                   </p>
                 ) : null}
-                <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-[#c5a36f]">
+                <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-c5a36f))]">
                   Success:{" "}
                   {selectedGift.effectMode === "passive"
                     ? "No roll - Passive Feat"
@@ -1883,7 +1883,7 @@ function ignoreSpellingWord() {
 
                 {(selectedGift.healthDelta !== 0 ||
                   selectedGift.maxHealthModifier !== 0) ? (
-                  <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-[#aa8c61]">
+                  <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-aa8c61))]">
                     {selectedGift.healthDelta !== 0
                       ? `Health ${formatSigned(selectedGift.healthDelta)}`
                       : ""}
@@ -1906,7 +1906,7 @@ function ignoreSpellingWord() {
                   selectedGift.presenceModifier ||
                   selectedGift.warpingAffinityModifier ||
                   selectedGift.warpsPerDayModifier) ? (
-                  <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-[#aa8c61]">
+                  <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-aa8c61))]">
                     {selectedGift.damageDice
                       ? `Damage ${selectedGift.damageDice}${selectedGift.damageType ? ` ${selectedGift.damageType}` : ""}`
                       : ""}
@@ -1926,7 +1926,7 @@ function ignoreSpellingWord() {
                   </p>
                 ) : null}
 
-                <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-[#8b7657]">
+                <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-8b7657))]">
                   {selectedGift.effectMode ===
                   "passive"
                     ? "Passive effect is already active - you can show this Feat in chat"
@@ -1962,13 +1962,13 @@ function ignoreSpellingWord() {
                   className={`text-xs ${
                     giftUseState.message
                       ? giftUseState.ok
-                        ? "text-[#9bb58c]"
-                        : "text-[#d58d82]"
+                        ? "text-[rgb(var(--sep-colour-9bb58c))]"
+                        : "text-[rgb(var(--sep-colour-d58d82))]"
                       : giftState.message
                         ? giftState.ok
-                          ? "text-[#9bb58c]"
-                          : "text-[#d58d82]"
-                        : "text-[#756958]"
+                          ? "text-[rgb(var(--sep-colour-9bb58c))]"
+                          : "text-[rgb(var(--sep-colour-d58d82))]"
+                        : "text-[rgb(var(--sep-colour-756958))]"
                   }`}
                 >
                   {giftUseState.message ||
@@ -1980,7 +1980,7 @@ function ignoreSpellingWord() {
                     type="submit"
                     formAction={giftUseAction}
                     formNoValidate
-                    className="border border-[#765937] bg-[#21190f] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[#d6bb8d] transition hover:border-[#a17a49]"
+                    className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-21190f))] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d6bb8d))] transition hover:border-[rgb(var(--sep-colour-a17a49))]"
                   >
                     Show Feat
                   </button>
@@ -1990,7 +1990,7 @@ function ignoreSpellingWord() {
                     <button
                       type="button"
                       disabled
-                      className="cursor-not-allowed border border-[#59432c]/35 bg-[#17120e] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[#756958] opacity-60"
+                      className="cursor-not-allowed border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-17120e))] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))] opacity-60"
                     >
                       Active
                     </button>
@@ -1999,7 +1999,7 @@ function ignoreSpellingWord() {
                     <button
                       type="button"
                       disabled
-                      className="cursor-not-allowed border border-[#59432c]/35 bg-[#17120e] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[#756958] opacity-60"
+                      className="cursor-not-allowed border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-17120e))] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))] opacity-60"
                     >
                       Cooldown{" "}
                       {giftCooldownLabel(
@@ -2015,7 +2015,7 @@ function ignoreSpellingWord() {
                         selectedGift.targetMode === "other" &&
                         !giftTargetId
                       }
-                      className="border border-[#85653c] bg-[#342617] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[#efd4a0] transition hover:bg-[#4a351f]"
+                      className="border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:bg-[rgb(var(--sep-colour-4a351f))]"
                     >
                       Activate Feat
                     </button>
@@ -2029,7 +2029,7 @@ function ignoreSpellingWord() {
                       selectedGift.targetMode === "other" &&
                       !giftTargetId
                     }
-                    className="border border-[#765937] bg-[#21190f] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[#d6bb8d] transition hover:border-[#a17a49]"
+                    className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-21190f))] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d6bb8d))] transition hover:border-[rgb(var(--sep-colour-a17a49))]"
                   >
                     Use Feat
                   </button>
@@ -2037,7 +2037,7 @@ function ignoreSpellingWord() {
               </div>
             </>
           ) : (
-            <p className="text-sm italic text-[#756958]">
+            <p className="text-sm italic text-[rgb(var(--sep-colour-756958))]">
               You have no Feats available.
             </p>
           )}
@@ -2055,7 +2055,7 @@ function ignoreSpellingWord() {
       ) : (
         <form
           action={itemAction}
-          className="border border-[#59432c]/35 bg-[#100c09] p-3"
+          className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3"
         >
           <UtilityPanelHeader
             title="Use Item"
@@ -2091,7 +2091,7 @@ function ignoreSpellingWord() {
 
               <div className="grid gap-3 md:grid-cols-2">
                 <label>
-                  <span className="mb-1.5 block text-[8px] uppercase tracking-[0.14em] text-[#806b50]">
+                  <span className="mb-1.5 block text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))]">
                     Item
                   </span>
                   <select
@@ -2101,7 +2101,7 @@ function ignoreSpellingWord() {
                         event.target.value,
                       )
                     }
-                    className="w-full border border-[#654c31] bg-[#0f0c09] px-3 py-2.5 text-[10px] text-[#d8c29b] outline-none focus:border-[#a17a45]"
+                    className="w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2.5 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] outline-none focus:border-[rgb(var(--sep-colour-a17a45))]"
                   >
                     {regularItems.map((item) => (
                       <option
@@ -2118,7 +2118,7 @@ function ignoreSpellingWord() {
                 </label>
 
                 <label>
-                  <span className="mb-1.5 block text-[8px] uppercase tracking-[0.14em] text-[#806b50]">
+                  <span className="mb-1.5 block text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))]">
                     Target
                   </span>
                   <select
@@ -2132,7 +2132,7 @@ function ignoreSpellingWord() {
                       selectedItem.targetMode ===
                       "self"
                     }
-                    className="w-full border border-[#654c31] bg-[#0f0c09] px-3 py-2.5 text-[10px] text-[#d8c29b] outline-none focus:border-[#a17a45] disabled:opacity-55"
+                    className="w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2.5 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] outline-none focus:border-[rgb(var(--sep-colour-a17a45))] disabled:opacity-55"
                   >
                     {selectedItem.targetMode !==
                     "other" ? (
@@ -2164,20 +2164,20 @@ function ignoreSpellingWord() {
                 </label>
               </div>
 
-              <div className="mt-3 border border-[#59432c]/30 bg-[#15100d] p-3">
-                <p className="font-serif text-base text-[#dec89f]">
+              <div className="mt-3 border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-15100d))] p-3">
+                <p className="font-serif text-base text-[rgb(var(--sep-colour-dec89f))]">
                   {selectedItem.name}
                 </p>
 
                 {selectedItem.description ? (
-                  <p className="mt-1 text-[10px] leading-5 text-[#8f8271]">
+                  <p className="mt-1 text-[10px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
                     {
                       selectedItem.description
                     }
                   </p>
                 ) : null}
 
-                <div className="mt-2 flex flex-wrap gap-2 text-[8px] uppercase tracking-[0.1em] text-[#9b8768]">
+                <div className="mt-2 flex flex-wrap gap-2 text-[8px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-9b8768))]">
                   {selectedItem.effects
                     .filter(
                       (effect) =>
@@ -2257,7 +2257,7 @@ function ignoreSpellingWord() {
                       return (
                         <span
                           key={index}
-                          className="border border-[#60482e]/40 px-2 py-1"
+                          className="border border-[rgb(var(--sep-colour-60482e))]/40 px-2 py-1"
                         >
                           {parts.join(" · ") ||
                             "Use effect"}
@@ -2277,7 +2277,7 @@ function ignoreSpellingWord() {
 
                 {selectedItem.maxCharges !==
                 null ? (
-                  <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-[#8f7c61]">
+                  <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-8f7c61))]">
                     {selectedItem.chargesRemaining ??
                       selectedItem.maxCharges}
                     {" / "}
@@ -2294,8 +2294,8 @@ function ignoreSpellingWord() {
                   aria-live="polite"
                   className={`text-xs ${
                     itemState.ok
-                      ? "text-[#9bb58c]"
-                      : "text-[#d58d82]"
+                      ? "text-[rgb(var(--sep-colour-9bb58c))]"
+                      : "text-[rgb(var(--sep-colour-d58d82))]"
                   }`}
                 >
                   {itemState.message}
@@ -2314,21 +2314,21 @@ function ignoreSpellingWord() {
                       "other" &&
                       !itemTargetId)
                   }
-                  className="border border-[#85653c] bg-[#342617] px-5 py-2.5 text-[9px] uppercase tracking-[0.18em] text-[#efd4a0] transition hover:bg-[#4a351f] disabled:cursor-not-allowed disabled:opacity-40"
+                  className="border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-5 py-2.5 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:bg-[rgb(var(--sep-colour-4a351f))] disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   Use Item
                 </button>
               </div>
             </>
           ) : (
-            <p className="text-sm italic text-[#756958]">
+            <p className="text-sm italic text-[rgb(var(--sep-colour-756958))]">
               You have no usable non-Weapon Items.
             </p>
           )}
         </form>
       )}
       {utilityMode === null ? (
-      <div className="-mt-9 mx-[105px] flex flex-wrap justify-center gap-1.5 border-0 pt-0 max-lg:mx-0 max-lg:mt-2 max-lg:border-t max-lg:border-[#59432c]/30 max-lg:pt-2">
+      <div className="-mt-9 mx-[105px] flex flex-wrap justify-center gap-1.5 border-0 pt-0 max-lg:mx-0 max-lg:mt-2 max-lg:border-t max-lg:border-[rgb(var(--sep-colour-59432c))]/30 max-lg:pt-2">
         <button
           type="button"
           onClick={() =>
@@ -2432,7 +2432,7 @@ function ignoreSpellingWord() {
       </div>
       ) : null}
 
-      <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[7px] leading-3 text-[#756958]">
+      <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[7px] leading-3 text-[rgb(var(--sep-colour-756958))]">
   <p>
     Dialogue is written normally.
     Put movements and expressions
@@ -2443,7 +2443,7 @@ function ignoreSpellingWord() {
   </p>
 
   {canUseFate ? (
-    <p className="text-[#a88658]">
+    <p className="text-[rgb(var(--sep-colour-a88658))]">
       Fate action: begin the message
       with <strong>^</strong>
     </p>
@@ -2464,15 +2464,15 @@ function UtilityPanelHeader({
   onClose: () => void;
 }) {
   return (
-    <div className="mb-3 flex flex-wrap items-start justify-between gap-3 border-b border-[#59432c]/30 pb-3">
+    <div className="mb-3 flex flex-wrap items-start justify-between gap-3 border-b border-[rgb(var(--sep-colour-59432c))]/30 pb-3">
       <div>
-        <p className="text-[7px] uppercase tracking-[0.18em] text-[#806b50]">
+        <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
           Chat Utility
         </p>
-        <h3 className="mt-1 font-serif text-lg text-[#dec89f]">
+        <h3 className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-dec89f))]">
           {title}
         </h3>
-        <p className="mt-1 text-[9px] text-[#817565]">
+        <p className="mt-1 text-[9px] text-[rgb(var(--sep-colour-817565))]">
           {description}
         </p>
       </div>
@@ -2480,7 +2480,7 @@ function UtilityPanelHeader({
       <button
         type="button"
         onClick={onClose}
-        className="border border-[#60482e]/45 bg-[#15100d] px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-[#a08c70] transition hover:border-[#87663b] hover:text-[#d4bb91]"
+        className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a08c70))] transition hover:border-[rgb(var(--sep-colour-87663b))] hover:text-[rgb(var(--sep-colour-d4bb91))]"
       >
         Back to Chat
       </button>
@@ -2505,7 +2505,7 @@ function SubmitButton({
       type="submit"
       onClick={onPrepare}
       disabled={disabled || pending}
-      className="border border-[#85653c] bg-[#342617] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[#efd4a0] transition hover:bg-[#4a351f] disabled:cursor-not-allowed disabled:opacity-40"
+      className="border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:bg-[rgb(var(--sep-colour-4a351f))] disabled:cursor-not-allowed disabled:opacity-40"
     >
       {pending
         ? "Sending..."
@@ -2541,7 +2541,7 @@ function RollButton({
       formAction={formAction}
       formNoValidate
       disabled={disabled || pending}
-      className="shrink-0 border border-[#85653c] bg-[#342617] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[#efd4a0] transition hover:bg-[#4a351f] disabled:cursor-not-allowed disabled:opacity-40"
+      className="shrink-0 border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:bg-[rgb(var(--sep-colour-4a351f))] disabled:cursor-not-allowed disabled:opacity-40"
     >
       {pending
         ? "Rolling..."

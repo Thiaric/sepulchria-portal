@@ -36,12 +36,12 @@ export function ForumOrderSectionFields({
       <div>
         <label
           htmlFor="forum-section-order-owner"
-          className="block text-[9px] uppercase tracking-[0.18em] text-[#9f8765]"
+          className="block text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9f8765))]"
         >
           Order
         </label>
 
-        <p className="mt-1 text-xs leading-5 text-[#746857]">
+        <p className="mt-1 text-xs leading-5 text-[rgb(var(--sep-colour-746857))]">
           Optional exact Order connected to this section.
           Selecting an Order automatically makes the section
           an Organisation / Members section.
@@ -72,11 +72,11 @@ export function ForumOrderSectionFields({
       </div>
 
       <div>
-        <span className="block text-[9px] uppercase tracking-[0.18em] text-[#9f8765]">
+        <span className="block text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9f8765))]">
           Association
         </span>
 
-        <p className="mt-1 text-xs leading-5 text-[#746857]">
+        <p className="mt-1 text-xs leading-5 text-[rgb(var(--sep-colour-746857))]">
           Automatically determined by the selected Order.
           It cannot be selected independently.
         </p>

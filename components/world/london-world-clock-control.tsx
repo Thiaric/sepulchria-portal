@@ -109,34 +109,34 @@ export function LondonWorldClockControl() {
         }
       />
 
-      <p className="text-xs text-[#9a815f]">
+      <p className="text-xs text-[rgb(var(--sep-colour-9a815f))]">
         Game date &amp; time
       </p>
 
-      <div className="mt-2 border border-[#60482e] bg-[#0f0b09] p-4">
+      <div className="mt-2 border border-[rgb(var(--sep-colour-60482e))] bg-[rgb(var(--sep-colour-0f0b09))] p-4">
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <p className="text-[8px] uppercase tracking-[0.2em] text-[#74634f]">
+            <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-74634f))]">
               Date
             </p>
 
-            <p className="mt-1 font-serif text-lg text-[#e1cba3]">
+            <p className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-e1cba3))]">
               {dateOnly}
             </p>
           </div>
 
           <div>
-            <p className="text-[8px] uppercase tracking-[0.2em] text-[#74634f]">
+            <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-74634f))]">
               London time
             </p>
 
-            <p className="mt-1 font-serif text-lg text-[#e1cba3]">
+            <p className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-e1cba3))]">
               {timeOnly}
             </p>
           </div>
         </div>
 
-        <p className="mt-4 border-t border-[#60482e]/35 pt-3 text-[10px] leading-5 text-[#796d5e]">
+        <p className="mt-4 border-t border-[rgb(var(--sep-colour-60482e))]/35 pt-3 text-[10px] leading-5 text-[rgb(var(--sep-colour-796d5e))]">
           {display}. This clock
           updates every second and
           always uses Europe/London,

@@ -133,16 +133,16 @@ export function PendingOpposedActions({
         return (
           <section
             key={pendingAction.id}
-            className="border border-[#986a37]/60 bg-[#20140c] p-3"
+            className="border border-[rgb(var(--sep-colour-986a37))]/60 bg-[rgb(var(--sep-colour-20140c))] p-3"
           >
-            <p className="text-[7px] uppercase tracking-[0.18em] text-[#b88c55]">
+            <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-b88c55))]">
               Incoming Action
             </p>
-            <p className="mt-1 font-serif text-base text-[#efd2a0]">
+            <p className="mt-1 font-serif text-base text-[rgb(var(--sep-colour-efd2a0))]">
               {attacker?.display_name ?? "Someone"} —{" "}
               {pendingAction.action_label}
             </p>
-            <p className="mt-1 text-[9px] text-[#a18d6e]">
+            <p className="mt-1 text-[9px] text-[rgb(var(--sep-colour-a18d6e))]">
               Action total: {pendingAction.attack_total}
             </p>
 
@@ -160,7 +160,7 @@ export function PendingOpposedActions({
                   type="submit"
                   name="counter_kind"
                   value={counter}
-                  className="border border-[#765937] bg-[#2a1c11] px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-[#dfc18f] transition hover:border-[#a47b48]"
+                  className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-2a1c11))] px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-dfc18f))] transition hover:border-[rgb(var(--sep-colour-a47b48))]"
                 >
                   {COUNTER_LABELS[counter] ?? counter}
 {" "}
@@ -180,7 +180,7 @@ export function PendingOpposedActions({
                 type="submit"
                 name="counter_kind"
                 value="__do_nothing__"
-                className="border border-[#765937] bg-[#2a1c11] px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-[#dfc18f] transition hover:border-[#a47b48]"
+                className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-2a1c11))] px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-dfc18f))] transition hover:border-[rgb(var(--sep-colour-a47b48))]"
               >
                 Do nothing
               </button>
@@ -192,7 +192,7 @@ export function PendingOpposedActions({
       {state.message ? (
         <p
           className={`text-xs ${
-            state.ok ? "text-[#9bb58c]" : "text-[#d58d82]"
+            state.ok ? "text-[rgb(var(--sep-colour-9bb58c))]" : "text-[rgb(var(--sep-colour-d58d82))]"
           }`}
         >
           {state.message}

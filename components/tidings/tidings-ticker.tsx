@@ -247,19 +247,19 @@ export function TidingsTicker({
         aria-label="Tidings"
         className={`relative z-30 h-9 shrink-0 overflow-hidden border-t backdrop-blur-sm ${
           urgent
-            ? "border-[#985847]/70 bg-[#1d0e0b]/96"
-            : "border-[#765937]/65 bg-[#100c09]/96"
+            ? "border-[rgb(var(--sep-colour-985847))]/70 bg-[rgb(var(--sep-colour-1d0e0b))]/96"
+            : "border-[rgb(var(--sep-colour-765937))]/65 bg-[rgb(var(--sep-colour-100c09))]/96"
         }`}
       >
         <div className="mx-auto flex h-full w-full max-w-[1800px] items-center">
           <div
             className={`relative z-10 flex h-full shrink-0 items-center border-r px-3 sm:px-4 ${
               urgent
-                ? "border-[#985847]/70 bg-[#2b130e]"
-                : "border-[#765937]/55 bg-[#17100c]"
+                ? "border-[rgb(var(--sep-colour-985847))]/70 bg-[rgb(var(--sep-colour-2b130e))]"
+                : "border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-17100c))]"
             }`}
           >
-            <span className="font-serif text-[11px] uppercase tracking-[0.22em] text-[#e4c28e]">
+            <span className="font-serif text-[11px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-e4c28e))]">
               Tidings
             </span>
           </div>
@@ -267,15 +267,15 @@ export function TidingsTicker({
           <div className="group relative min-w-0 flex-1 overflow-hidden">
             <div
               key={tickerKey}
-              className="sepulchria-tidings-track flex w-max items-center whitespace-nowrap pl-8 text-[10px] tracking-[0.07em] text-[#c9b391] group-hover:[animation-play-state:paused]"
+              className="sepulchria-tidings-track flex w-max items-center whitespace-nowrap pl-8 text-[10px] tracking-[0.07em] text-[rgb(var(--sep-colour-c9b391))] group-hover:[animation-play-state:paused]"
               style={{
                 animationDuration: `${duration}s`,
               }}
             >
               <TickerSegment tidings={visible} />
-              <span className="mx-10 text-[#80684b]">✦</span>
+              <span className="mx-10 text-[rgb(var(--sep-colour-80684b))]">✦</span>
               <TickerSegment tidings={visible} ariaHidden />
-              <span className="mx-10 text-[#80684b]">✦</span>
+              <span className="mx-10 text-[rgb(var(--sep-colour-80684b))]">✦</span>
             </div>
           </div>
         </div>
@@ -321,22 +321,22 @@ function TickerSegment({
       {tidings.map((entry, index) => (
         <span key={`${ariaHidden ? "copy-" : ""}${entry.id}`}>
           {index > 0 ? (
-            <span className="mx-8 text-[#80684b]">✦</span>
+            <span className="mx-8 text-[rgb(var(--sep-colour-80684b))]">✦</span>
           ) : null}
 
           <span
             className={
               entry.priority === "urgent"
-                ? "text-[#e4a58d]"
+                ? "text-[rgb(var(--sep-colour-e4a58d))]"
                 : entry.priority === "important"
-                  ? "text-[#e1c28f]"
-                  : "text-[#c9b391]"
+                  ? "text-[rgb(var(--sep-colour-e1c28f))]"
+                  : "text-[rgb(var(--sep-colour-c9b391))]"
             }
           >
-            <strong className="font-serif font-normal text-[#ead1a7]">
+            <strong className="font-serif font-normal text-[rgb(var(--sep-colour-ead1a7))]">
               {entry.title}
             </strong>
-            <span className="mx-2 text-[#80684b]">—</span>
+            <span className="mx-2 text-[rgb(var(--sep-colour-80684b))]">—</span>
             {entry.message}
           </span>
         </span>

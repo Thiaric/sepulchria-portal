@@ -43,7 +43,7 @@ function one<T>(value: Relation<T>): T | null {
 }
 
 const inputClass =
-  "w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-2.5 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]";
+  "w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]";
 
 const getEquipmentOptions = cache(async () => {
   const supabase = await createClient();
@@ -136,23 +136,23 @@ export async function ItemEquipmentForm({
   );
 
   return (
-    <details className="mt-6 border border-[#59432c]/35 bg-[#15100d]">
+    <details className="mt-6 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))]">
       <summary className="cursor-pointer list-none px-4 py-3">
-        <p className="text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
+        <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
           Equipment
         </p>
-        <p className="mt-1 font-serif text-lg text-[#d8bf91]">
+        <p className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-d8bf91))]">
           Slot, layer & requirements
         </p>
       </summary>
 
       <form
         action={updateItemEquipment}
-        className="border-t border-[#59432c]/30 p-4"
+        className="border-t border-[rgb(var(--sep-colour-59432c))]/30 p-4"
       >
         <input type="hidden" name="itemId" value={item.id} />
 
-        <label className="flex items-center gap-2 text-[8px] uppercase tracking-[0.14em] text-[#9d896a]">
+        <label className="flex items-center gap-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9d896a))]">
           <input
             type="checkbox"
             name="isEquippable"
@@ -301,10 +301,10 @@ export async function ItemEquipmentForm({
           </MultiSelect>
         </div>
 
-        <div className="mt-5 flex justify-end border-t border-[#59432c]/35 pt-4">
+        <div className="mt-5 flex justify-end border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-4">
           <button
             type="submit"
-            className="border border-[#987344] bg-[#3b2919] px-5 py-3 text-[8px] uppercase tracking-[0.16em] text-[#efd6a8]"
+            className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-efd6a8))]"
           >
             Save Equipment
           </button>
@@ -323,7 +323,7 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-[8px] uppercase tracking-[0.16em] text-[#806b50]">
+      <span className="mb-1.5 block text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))]">
         {label}
       </span>
       {children}
@@ -346,7 +346,7 @@ function MultiSelect({
 }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-[8px] uppercase tracking-[0.16em] text-[#806b50]">
+      <span className="mb-1.5 block text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))]">
         {label}
       </span>
 
@@ -359,7 +359,7 @@ function MultiSelect({
         {children}
       </select>
 
-      <span className="mt-1.5 block text-[8px] leading-4 text-[#6f6252]">
+      <span className="mt-1.5 block text-[8px] leading-4 text-[rgb(var(--sep-colour-6f6252))]">
         {help}
       </span>
     </label>

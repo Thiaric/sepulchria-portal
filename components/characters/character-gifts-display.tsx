@@ -145,11 +145,11 @@ function CharacterFeatRecapBox({
   value: string;
 }) {
   return (
-    <div className="min-w-0 border border-[#59432c]/35 bg-[#120e0b] px-2.5 py-2">
-      <p className="text-[6px] uppercase tracking-[0.13em] text-[#806a4c]">
+    <div className="min-w-0 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-120e0b))] px-2.5 py-2">
+      <p className="text-[6px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-806a4c))]">
         {label}
       </p>
-      <p className="mt-1 min-w-0 break-words text-[8px] leading-4 text-[#b8a382]">
+      <p className="mt-1 min-w-0 break-words text-[8px] leading-4 text-[rgb(var(--sep-colour-b8a382))]">
         {value}
       </p>
     </div>
@@ -224,16 +224,16 @@ export async function CharacterGiftsDisplay({
     (data ?? []) as unknown as Ownership[];
 
   const shell = compact
-    ? "border border-[#60482e]/45 bg-[#100c09] p-4"
-    : "border border-[#60482e]/45 bg-[#15100d]/95 p-5 sm:p-6";
+    ? "border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] p-4"
+    : "border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 p-5 sm:p-6";
 
   if (!ownerships.length) {
     return (
       <section className={shell}>
-        <p className="text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+        <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
           Character Feats
         </p>
-        <p className="mt-2 text-[10px] italic leading-5 text-[#756957]">
+        <p className="mt-2 text-[10px] italic leading-5 text-[rgb(var(--sep-colour-756957))]">
           No Feats have been assigned.
         </p>
       </section>
@@ -246,15 +246,15 @@ export async function CharacterGiftsDisplay({
     <section className={shell}>
       <div className="flex items-end justify-between gap-3">
         <div>
-          <p className="text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+          <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
             Character Feats
           </p>
-          <h2 className="mt-1 font-serif text-xl text-[#dec89f]">
+          <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dec89f))]">
             Feats
           </h2>
         </div>
 
-        <p className="text-[7px] uppercase tracking-[0.14em] text-[#756958]">
+        <p className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
           {ownerships.length} owned
         </p>
       </div>
@@ -320,14 +320,14 @@ export async function CharacterGiftsDisplay({
           return (
             <div
               key={ownership.id}
-              className="border border-[#59432c]/35 bg-[#100c09] p-3"
+              className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3"
             >
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div>
-                  <p className="font-serif text-sm text-[#d8bf91]">
+                  <p className="font-serif text-sm text-[rgb(var(--sep-colour-d8bf91))]">
                     {gift.name}
                   </p>
-                  <p className="mt-1 text-[7px] uppercase tracking-[0.12em] text-[#756958]">
+                  <p className="mt-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
                     {sourceLabel(
                       ownership.acquisition_source,
                     )}
@@ -339,19 +339,19 @@ export async function CharacterGiftsDisplay({
                 </div>
 
                 {modifiers ? (
-                  <p className="text-[7px] uppercase tracking-[0.08em] text-[#a68a61]">
+                  <p className="text-[7px] uppercase tracking-[0.08em] text-[rgb(var(--sep-colour-a68a61))]">
                     {modifiers}
                   </p>
                 ) : null}
               </div>
 
               {gift.description ? (
-                <p className="mt-2 whitespace-pre-line text-[10px] leading-5 text-[#8f8271]">
+                <p className="mt-2 whitespace-pre-line text-[10px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
                   {gift.description}
                 </p>
               ) : null}
 
-              <div className="mt-3 grid grid-cols-2 gap-1.5 border-t border-[#59432c]/30 pt-3 md:grid-cols-3 xl:grid-cols-6">
+              <div className="mt-3 grid grid-cols-2 gap-1.5 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-3 md:grid-cols-3 xl:grid-cols-6">
                 <CharacterFeatRecapBox
                   label="Use"
                   value={`${

@@ -61,17 +61,17 @@ export function OrderHeadAddMemberForm({
   return (
     <form
       action={headAddMember}
-      className="mt-4 border border-dashed border-[#765937]/45 bg-[#100c09] p-4"
+      className="mt-4 border border-dashed border-[rgb(var(--sep-colour-765937))]/45 bg-[rgb(var(--sep-colour-100c09))] p-4"
     >
       <input type="hidden" name="orderId" value={orderId} />
 
-      <p className="text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
+      <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
         Add member
       </p>
 
       <div className="mt-3 grid gap-3 lg:grid-cols-[minmax(220px,1fr)_130px_minmax(190px,1fr)_auto] lg:items-end">
         <label>
-          <span className="mb-1 block text-[7px] uppercase tracking-[0.14em] text-[#756958]">
+          <span className="mb-1 block text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
             Character
           </span>
           <select
@@ -79,7 +79,7 @@ export function OrderHeadAddMemberForm({
             required
             defaultValue=""
             disabled={characters.length === 0}
-            className="w-full border border-[#60482e]/50 bg-[#15100d] px-2 py-2 text-xs text-[#d7c4a5] outline-none disabled:opacity-50"
+            className="w-full border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-15100d))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none disabled:opacity-50"
           >
             <option value="" disabled>
               {characters.length
@@ -96,7 +96,7 @@ export function OrderHeadAddMemberForm({
         </label>
 
         <label>
-          <span className="mb-1 block text-[7px] uppercase tracking-[0.14em] text-[#756958]">
+          <span className="mb-1 block text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
             Level
           </span>
           <select
@@ -107,7 +107,7 @@ export function OrderHeadAddMemberForm({
               setLevelId(event.target.value);
               setJobId("");
             }}
-            className="w-full border border-[#60482e]/50 bg-[#15100d] px-2 py-2 text-xs text-[#d7c4a5] outline-none"
+            className="w-full border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-15100d))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none"
           >
             {levels.map((level) => (
               <option key={level.id} value={level.id}>
@@ -118,7 +118,7 @@ export function OrderHeadAddMemberForm({
         </label>
 
         <label>
-          <span className="mb-1 block text-[7px] uppercase tracking-[0.14em] text-[#756958]">
+          <span className="mb-1 block text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
             Role
           </span>
           <select
@@ -128,7 +128,7 @@ export function OrderHeadAddMemberForm({
             onChange={(event) =>
               setJobId(event.target.value)
             }
-            className="w-full border border-[#60482e]/50 bg-[#15100d] px-2 py-2 text-xs text-[#d7c4a5] outline-none"
+            className="w-full border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-15100d))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none"
           >
             <option value="" disabled>
               Select Role
@@ -157,7 +157,7 @@ export function OrderHeadAddMemberForm({
           </select>
 
           {selectedJob ? (
-            <span className="mt-1.5 block text-[8px] leading-4 text-[#6f665a]">
+            <span className="mt-1.5 block text-[8px] leading-4 text-[rgb(var(--sep-colour-6f665a))]">
               Before:{" "}
               {selectedJob.before.length
                 ? selectedJob.before.join(", ")
@@ -174,7 +174,7 @@ export function OrderHeadAddMemberForm({
         <button
           type="submit"
           disabled={!characters.length || !levelId || !jobId}
-          className="border border-[#987344] bg-[#3b2919] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[#efd6a8] disabled:cursor-not-allowed disabled:opacity-40"
+          className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd6a8))] disabled:cursor-not-allowed disabled:opacity-40"
         >
           Add member
         </button>

@@ -500,7 +500,7 @@ export function CharacterMusicPlayer({
   return (
     <section
       ref={playerRef}
-      className="border border-[#60482e]/45 bg-[#120e0b] px-4 py-3 sm:px-5"
+      className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-120e0b))] px-4 py-3 sm:px-5"
     >
       <audio
         ref={setAudioElement}
@@ -587,7 +587,7 @@ export function CharacterMusicPlayer({
               ? "Pause"
               : "Play"
           }
-          className="flex h-9 w-9 shrink-0 items-center justify-center border border-[#765937]/70 bg-[#1b140f] text-sm text-[#d4b77f] transition hover:border-[#9a7445] hover:text-[#f0d49d] disabled:cursor-not-allowed disabled:opacity-40"
+          className="flex h-9 w-9 shrink-0 items-center justify-center border border-[rgb(var(--sep-colour-765937))]/70 bg-[rgb(var(--sep-colour-1b140f))] text-sm text-[rgb(var(--sep-colour-d4b77f))] transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:text-[rgb(var(--sep-colour-f0d49d))] disabled:cursor-not-allowed disabled:opacity-40"
         >
           {playing
             ? "Ⅱ"
@@ -597,12 +597,12 @@ export function CharacterMusicPlayer({
         <div className="min-w-[150px] flex-1">
           <div className="flex items-center justify-between gap-3">
             <div className="min-w-0">
-              <p className="text-[7px] uppercase tracking-[0.22em] text-[#806b50]">
+              <p className="text-[7px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
                 Music
               </p>
             </div>
 
-            <span className="shrink-0 text-[9px] tabular-nums text-[#776b5c]">
+            <span className="shrink-0 text-[9px] tabular-nums text-[rgb(var(--sep-colour-776b5c))]">
               {formatTime(
                 currentTime,
               )}
@@ -639,7 +639,7 @@ export function CharacterMusicPlayer({
               duration <= 0
             }
             aria-label="Seek character music"
-            className="mt-2 h-1.5 w-full cursor-pointer accent-[#a77b43] disabled:cursor-not-allowed disabled:opacity-40"
+            className="mt-2 h-1.5 w-full cursor-pointer accent-[rgb(var(--sep-colour-a77b43))] disabled:cursor-not-allowed disabled:opacity-40"
           />
         </div>
 
@@ -663,11 +663,11 @@ export function CharacterMusicPlayer({
                 ? "Unmute this track"
                 : "Mute this track"
           }
-          className={`flex h-9 w-9 shrink-0 items-center justify-center border bg-[#15100d] text-xs transition ${
+          className={`flex h-9 w-9 shrink-0 items-center justify-center border bg-[rgb(var(--sep-colour-15100d))] text-xs transition ${
             portalMuted ||
             localMuted
-              ? "border-[#65443b] text-[#a56f64]"
-              : "border-[#60482e]/60 text-[#c6a26d] hover:border-[#987344] hover:text-[#ead2a5]"
+              ? "border-[rgb(var(--sep-colour-65443b))] text-[rgb(var(--sep-colour-a56f64))]"
+              : "border-[rgb(var(--sep-colour-60482e))]/60 text-[rgb(var(--sep-colour-c6a26d))] hover:border-[rgb(var(--sep-colour-987344))] hover:text-[rgb(var(--sep-colour-ead2a5))]"
           }`}
         >
           {portalMuted ||
@@ -677,7 +677,7 @@ export function CharacterMusicPlayer({
         </button>
 
         <label className="hidden w-24 shrink-0 items-center gap-2 sm:flex">
-          <span className="text-[8px] uppercase tracking-[0.12em] text-[#6f6253]">
+          <span className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6253))]">
             Vol
           </span>
 
@@ -696,19 +696,19 @@ export function CharacterMusicPlayer({
               );
             }}
             aria-label="Character music volume"
-            className="h-1.5 min-w-0 flex-1 cursor-pointer accent-[#a77b43]"
+            className="h-1.5 min-w-0 flex-1 cursor-pointer accent-[rgb(var(--sep-colour-a77b43))]"
           />
         </label>
       </div>
 
       {portalMuted ? (
-        <p className="mt-2 text-[8px] uppercase tracking-[0.14em] text-[#7d655d]">
+        <p className="mt-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-7d655d))]">
           Muted by the portal sound control
         </p>
       ) : null}
 
       {error ? (
-        <p className="mt-2 text-xs text-[#b47c70]">
+        <p className="mt-2 text-xs text-[rgb(var(--sep-colour-b47c70))]">
           This music link could not be played. Use a direct browser-playable audio URL.
         </p>
       ) : null}

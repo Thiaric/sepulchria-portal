@@ -1317,24 +1317,9 @@ export async function GET(
       background:
         linear-gradient(
           to top,
-          rgba(
-            14,
-            10,
-            8,
-            0.92
-          ) 0%,
-          rgba(
-            14,
-            10,
-            8,
-            0.22
-          ) 55%,
-          rgba(
-            14,
-            10,
-            8,
-            0.02
-          ) 100%
+          rgba(var(--sep-rgb-14-10-8),0.92) 0%,
+          rgba(var(--sep-rgb-14-10-8),0.22) 55%,
+          rgba(var(--sep-rgb-14-10-8),0.02) 100%
         );
 
       pointer-events: none;
@@ -1397,12 +1382,7 @@ export async function GET(
 
       text-shadow:
         0 2px 8px
-        rgba(
-          0,
-          0,
-          0,
-          0.95
-        );
+        rgba(var(--sep-rgb-0-0-0),0.95);
     }
 
 
@@ -1521,12 +1501,7 @@ export async function GET(
 
       border-top:
         1px solid
-        rgba(
-          96,
-          72,
-          46,
-          0.45
-        );
+        rgba(var(--sep-rgb-96-72-46),0.45);
 
       padding-top: 8px;
     }
@@ -1581,24 +1556,14 @@ export async function GET(
       background:
         var(
           --chat-background,
-          rgba(
-            17,
-            13,
-            10,
-            0.97
-          )
+          rgba(var(--sep-rgb-17-13-10),0.97)
         );
     }
 
     .entry {
       border-bottom:
         1px solid
-        rgba(
-          75,
-          56,
-          37,
-          0.46
-        );
+        rgba(var(--sep-rgb-75-56-37),0.46);
     }
 
     .entry:last-child {
@@ -1636,12 +1601,7 @@ export async function GET(
 
       border:
         1px solid
-        rgba(
-          118,
-          89,
-          55,
-          0.65
-        );
+        rgba(var(--sep-rgb-118-89-55),0.65);
 
       background: #0b0806;
     }
@@ -1795,12 +1755,7 @@ export async function GET(
 
       border-bottom:
         1px solid
-        rgba(
-          125,
-          98,
-          143,
-          0.3
-        );
+        rgba(var(--sep-rgb-125-98-143),0.3);
 
       padding-bottom: 3px;
     }
@@ -1867,12 +1822,7 @@ export async function GET(
 
       border-bottom:
         1px solid
-        rgba(
-          98,
-          127,
-          159,
-          0.38
-        );
+        rgba(var(--sep-rgb-98-127-159),0.38);
 
       padding-bottom: 3px;
     }
@@ -1946,12 +1896,7 @@ export async function GET(
         5px 16px;
 
       background:
-        rgba(
-          31,
-          23,
-          16,
-          0.64
-        );
+        rgba(var(--sep-rgb-31-23-16),0.64);
     }
 
     .roll-symbol {
@@ -2000,18 +1945,8 @@ export async function GET(
       background:
         linear-gradient(
           90deg,
-          rgba(
-            6,
-            78,
-            59,
-            0.22
-          ),
-          rgba(
-            17,
-            13,
-            10,
-            0.8
-          )
+          rgba(var(--sep-rgb-6-78-59),0.22),
+          rgba(var(--sep-rgb-17-13-10),0.8)
         );
     }
 
@@ -2026,18 +1961,8 @@ export async function GET(
       background:
         linear-gradient(
           90deg,
-          rgba(
-            127,
-            29,
-            29,
-            0.22
-          ),
-          rgba(
-            17,
-            13,
-            10,
-            0.8
-          )
+          rgba(var(--sep-rgb-127-29-29),0.22),
+          rgba(var(--sep-rgb-17-13-10),0.8)
         );
     }
 
@@ -2070,43 +1995,18 @@ export async function GET(
 
       border-top:
         1px solid
-        rgba(
-          138,
-          102,
-          55,
-          0.5
-        );
+        rgba(var(--sep-rgb-138-102-55),0.5);
 
       border-bottom:
         1px solid
-        rgba(
-          138,
-          102,
-          55,
-          0.5
-        );
+        rgba(var(--sep-rgb-138-102-55),0.5);
 
       background:
         linear-gradient(
           90deg,
-          rgba(
-            91,
-            56,
-            24,
-            0.27
-          ),
-          rgba(
-            24,
-            16,
-            11,
-            0.72
-          ) 55%,
-          rgba(
-            91,
-            56,
-            24,
-            0.08
-          )
+          rgba(var(--sep-rgb-91-56-24),0.27),
+          rgba(var(--sep-rgb-24-16-11),0.72) 55%,
+          rgba(var(--sep-rgb-91-56-24),0.08)
         );
     }
 

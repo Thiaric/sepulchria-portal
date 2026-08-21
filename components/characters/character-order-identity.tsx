@@ -125,9 +125,9 @@ export function CharacterOrderIdentity({
     if (!loaded) {
       return (
         <span className="flex min-w-0 items-center gap-1.5">
-          <span className="h-5 w-5 shrink-0 animate-pulse border border-[#60482e]/40 bg-[#15100d]" />
+          <span className="h-5 w-5 shrink-0 animate-pulse border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))]" />
 
-          <span className="text-[8px] text-[#675e52]">
+          <span className="text-[8px] text-[rgb(var(--sep-colour-675e52))]">
             Loading Order…
           </span>
         </span>
@@ -136,7 +136,7 @@ export function CharacterOrderIdentity({
 
     if (!order) {
       return (
-        <span className="text-[8px] text-[#675e52]">
+        <span className="text-[8px] text-[rgb(var(--sep-colour-675e52))]">
           No Order
         </span>
       );
@@ -152,7 +152,7 @@ export function CharacterOrderIdentity({
         title={`Order: ${order.name}`}
       >
         <span
-          className="flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden border bg-[#0d0907] font-serif text-[8px]"
+          className="flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-0d0907))] font-serif text-[8px]"
           style={{
             borderColor: `${colour}88`,
             color: colour,
@@ -172,7 +172,7 @@ export function CharacterOrderIdentity({
           )}
         </span>
 
-        <span className="min-w-0 truncate text-[8px] text-[#9a866b]">
+        <span className="min-w-0 truncate text-[8px] text-[rgb(var(--sep-colour-9a866b))]">
           {order.name}
         </span>
       </span>
@@ -190,7 +190,7 @@ export function CharacterOrderIdentity({
       return (
         <span
           title="No Order"
-          className="flex h-6 w-6 items-center justify-center overflow-hidden border border-[#765937]/60 bg-[#0d0907] font-serif text-[8px] text-[#765937]"
+          className="flex h-6 w-6 items-center justify-center overflow-hidden border border-[rgb(var(--sep-colour-765937))]/60 bg-[rgb(var(--sep-colour-0d0907))] font-serif text-[8px] text-[rgb(var(--sep-colour-765937))]"
         >
           O
         </span>
@@ -240,7 +240,7 @@ export function CharacterOrderIdentity({
   return (
     <span
       title={`Order: ${order.name}`}
-      className={`flex shrink-0 items-center justify-center overflow-hidden border bg-[#0d0907] font-serif text-[7px] ${sizeClass}`}
+      className={`flex shrink-0 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-0d0907))] font-serif text-[7px] ${sizeClass}`}
       style={{
         borderColor: `${colour}88`,
         color: colour,

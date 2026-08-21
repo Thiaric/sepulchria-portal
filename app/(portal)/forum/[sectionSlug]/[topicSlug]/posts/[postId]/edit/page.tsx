@@ -256,11 +256,11 @@ export default async function EditPostPage({
     <main className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
       <nav
         aria-label="Forum breadcrumb"
-        className="mb-6 flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.16em] text-[#746653]"
+        className="mb-6 flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-746653))]"
       >
         <Link
           href="/forum"
-          className="transition hover:text-[#c7a16d]"
+          className="transition hover:text-[rgb(var(--sep-colour-c7a16d))]"
         >
           Forum
         </Link>
@@ -273,7 +273,7 @@ export default async function EditPostPage({
           href={`/forum/${encodeURIComponent(
             section.slug,
           )}`}
-          className="transition hover:text-[#c7a16d]"
+          className="transition hover:text-[rgb(var(--sep-colour-c7a16d))]"
         >
           {section.name}
         </Link>
@@ -288,7 +288,7 @@ export default async function EditPostPage({
           )}/${encodeURIComponent(
             topic.slug,
           )}`}
-          className="transition hover:text-[#c7a16d]"
+          className="transition hover:text-[rgb(var(--sep-colour-c7a16d))]"
         >
           {topic.title}
         </Link>
@@ -297,7 +297,7 @@ export default async function EditPostPage({
           /
         </span>
 
-        <span className="text-[#9e886a]">
+        <span className="text-[rgb(var(--sep-colour-9e886a))]">
           Edit post
         </span>
       </nav>

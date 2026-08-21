@@ -43,7 +43,7 @@ export function LoginForm() {
       <div className="space-y-2">
         <label
           htmlFor="email"
-          className="block text-[9px] uppercase tracking-[0.22em] text-[#a68a63]"
+          className="block text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-a68a63))]"
         >
           Email
         </label>
@@ -56,7 +56,7 @@ export function LoginForm() {
           required
           value={email}
           onChange={(event) => setEmail(event.target.value)}
-          className="h-12 w-full border border-[#62482f] bg-[#0b0807]/90 px-4 text-sm text-[#e8dcc4] outline-none transition placeholder:text-[#5f574d] focus:border-[#b28149] focus:ring-1 focus:ring-[#b28149]/50"
+          className="h-12 w-full border border-[rgb(var(--sep-colour-62482f))] bg-[rgb(var(--sep-colour-0b0807))]/90 px-4 text-sm text-[rgb(var(--sep-colour-e8dcc4))] outline-none transition placeholder:text-[rgb(var(--sep-colour-5f574d))] focus:border-[rgb(var(--sep-colour-b28149))] focus:ring-1 focus:ring-[rgb(var(--sep-colour-b28149))]/50"
         />
       </div>
 
@@ -64,14 +64,14 @@ export function LoginForm() {
         <div className="flex items-center justify-between gap-4">
           <label
             htmlFor="password"
-            className="block text-[9px] uppercase tracking-[0.22em] text-[#a68a63]"
+            className="block text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-a68a63))]"
           >
             Password
           </label>
 
           <Link
             href="/auth/forgot-password"
-            className="text-xs text-[#8e806d] transition hover:text-[#d4b27e]"
+            className="text-xs text-[rgb(var(--sep-colour-8e806d))] transition hover:text-[rgb(var(--sep-colour-d4b27e))]"
           >
             Forgot your password?
           </Link>
@@ -85,14 +85,14 @@ export function LoginForm() {
           required
           value={password}
           onChange={(event) => setPassword(event.target.value)}
-          className="h-12 w-full border border-[#62482f] bg-[#0b0807]/90 px-4 text-sm text-[#e8dcc4] outline-none transition focus:border-[#b28149] focus:ring-1 focus:ring-[#b28149]/50"
+          className="h-12 w-full border border-[rgb(var(--sep-colour-62482f))] bg-[rgb(var(--sep-colour-0b0807))]/90 px-4 text-sm text-[rgb(var(--sep-colour-e8dcc4))] outline-none transition focus:border-[rgb(var(--sep-colour-b28149))] focus:ring-1 focus:ring-[rgb(var(--sep-colour-b28149))]/50"
         />
       </div>
 
       {error && (
         <div
           role="alert"
-          className="border border-[#873e35]/55 bg-[#421d1a]/35 px-4 py-3 text-sm text-[#e2aaa1]"
+          className="border border-[rgb(var(--sep-colour-873e35))]/55 bg-[rgb(var(--sep-colour-421d1a))]/35 px-4 py-3 text-sm text-[rgb(var(--sep-colour-e2aaa1))]"
         >
           {error}
         </div>
@@ -101,16 +101,16 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={isLoading}
-        className="relative h-12 w-full overflow-hidden border border-[#a77a42]/80 bg-[#382313] font-serif text-base tracking-[0.05em] text-[#ead3a6] transition hover:border-[#d4a460] hover:bg-[#472c17] disabled:cursor-not-allowed disabled:opacity-60"
+        className="relative h-12 w-full overflow-hidden border border-[rgb(var(--sep-colour-a77a42))]/80 bg-[rgb(var(--sep-colour-382313))] font-serif text-base tracking-[0.05em] text-[rgb(var(--sep-colour-ead3a6))] transition hover:border-[rgb(var(--sep-colour-d4a460))] hover:bg-[rgb(var(--sep-colour-472c17))] disabled:cursor-not-allowed disabled:opacity-60"
       >
         {isLoading ? "Opening the gates..." : "Enter Sepulchria"}
       </button>
 
-      <p className="text-center text-sm text-[#897d6c]">
+      <p className="text-center text-sm text-[rgb(var(--sep-colour-897d6c))]">
         Do not yet have an account?{" "}
         <Link
           href="/auth/sign-up"
-          className="text-[#c8a46e] underline decoration-[#725636] underline-offset-4 transition hover:text-[#efd5a7]"
+          className="text-[rgb(var(--sep-colour-c8a46e))] underline decoration-[rgb(var(--sep-colour-725636))] underline-offset-4 transition hover:text-[rgb(var(--sep-colour-efd5a7))]"
         >
           Register
         </Link>

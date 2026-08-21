@@ -86,10 +86,10 @@ function characterName(character: Character) {
 }
 
 const inputClass =
-  "w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-2.5 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]";
+  "w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]";
 
 const buttonClass =
-  "border border-[#987344] bg-[#3b2919] px-4 py-2.5 text-[8px] uppercase tracking-[0.16em] text-[#efd6a8]";
+  "border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-2.5 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-efd6a8))]";
 
 export default async function AdminItemVaultPage({
   searchParams,
@@ -181,13 +181,13 @@ export default async function AdminItemVaultPage({
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p className="text-[9px] uppercase tracking-[0.28em] text-[#8c704b]">
+            <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
               Administration
             </p>
-            <h1 className="mt-2 font-serif text-4xl text-[#ead5ac]">
+            <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">
               Admin Vault
             </h1>
-            <p className="mt-3 max-w-3xl text-sm leading-7 text-[#a99b89]">
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))]">
               Ownerless Unique Items remain here until staff assigns them,
               reuses them in a plot, or deliberately destroys them.
             </p>
@@ -195,7 +195,7 @@ export default async function AdminItemVaultPage({
 
           <Link
             href="/admin/items"
-            className="border border-[#60482e]/55 bg-[#15100d] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[#ac9879]"
+            className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-ac9879))]"
           >
             Item catalogue
           </Link>
@@ -207,11 +207,11 @@ export default async function AdminItemVaultPage({
           </div>
         ) : null}
 
-        <section className="mt-7 border border-[#60482e]/45 bg-[#15100d] p-5">
-          <p className="text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+        <section className="mt-7 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5">
+          <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
             New individual Item
           </p>
-          <h2 className="mt-1 font-serif text-2xl text-[#dfc99f]">
+          <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">
             Create directly in Vault
           </h2>
 
@@ -303,15 +303,15 @@ export default async function AdminItemVaultPage({
         <section className="mt-6">
           <div className="flex items-end justify-between gap-3">
             <div>
-              <p className="text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+              <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
                 Stored Items
               </p>
-              <h2 className="mt-1 font-serif text-2xl text-[#dfc99f]">
+              <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">
                 Vault contents
               </h2>
             </div>
 
-            <p className="text-[8px] uppercase tracking-[0.12em] text-[#756958]">
+            <p className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
               {vault.length} Item{vault.length === 1 ? "" : "s"}
             </p>
           </div>
@@ -359,10 +359,10 @@ export default async function AdminItemVaultPage({
                     data-quality={quality}
                     data-transfer={transfer}
                     data-quest={quest ? "yes" : "no"}
-                    className="border border-[#59432c]/40 bg-[#100c09] p-4"
+                    className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-4"
                   >
                     <div className="flex gap-3">
-                      <div className="h-14 w-14 shrink-0 overflow-hidden border border-[#60482e]/45 bg-[#0d0907]">
+                      <div className="h-14 w-14 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0d0907))]">
                         {image ? (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img
@@ -371,17 +371,17 @@ export default async function AdminItemVaultPage({
                             className="h-full w-full object-cover"
                           />
                         ) : (
-                          <div className="flex h-full items-center justify-center font-serif text-[#756247]">
+                          <div className="flex h-full items-center justify-center font-serif text-[rgb(var(--sep-colour-756247))]">
                             ◇
                           </div>
                         )}
                       </div>
 
                       <div className="min-w-0">
-                        <p className="font-serif text-lg text-[#d8bf91]">
+                        <p className="font-serif text-lg text-[rgb(var(--sep-colour-d8bf91))]">
                           {name}
                         </p>
-                        <p className="mt-1 text-[8px] uppercase tracking-[0.13em] text-[#756958]">
+                        <p className="mt-1 text-[8px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-756958))]">
                           Unique · {quality} · {transfer}
                           {quest ? " · Quest" : ""}
                         </p>
@@ -389,17 +389,17 @@ export default async function AdminItemVaultPage({
                     </div>
 
                     {row.custom_description?.trim() ? (
-                      <p className="mt-3 text-xs leading-6 text-[#8f8271]">
+                      <p className="mt-3 text-xs leading-6 text-[rgb(var(--sep-colour-8f8271))]">
                         {row.custom_description}
                       </p>
                     ) : null}
 
-                    <details className="mt-4 border border-[#59432c]/35 bg-[#15100d]">
-                      <summary className="cursor-pointer list-none px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[#9b8768]">
+                    <details className="mt-4 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))]">
+                      <summary className="cursor-pointer list-none px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9b8768))]">
                         Edit Vault Item
                       </summary>
 
-                      <div className="border-t border-[#59432c]/30 p-3">
+                      <div className="border-t border-[rgb(var(--sep-colour-59432c))]/30 p-3">
                         <AdminActionForm
                           action={updateVaultUniqueItem}
                           className="grid gap-3 md:grid-cols-2"
@@ -519,21 +519,21 @@ export default async function AdminItemVaultPage({
                     </AdminActionForm>
 
                     {history.length ? (
-                      <details className="mt-4 border border-[#59432c]/35 bg-[#15100d]">
-                        <summary className="cursor-pointer list-none px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[#9b8768]">
+                      <details className="mt-4 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))]">
+                        <summary className="cursor-pointer list-none px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9b8768))]">
                           Provenance
                         </summary>
 
-                        <div className="space-y-2 border-t border-[#59432c]/30 p-3">
+                        <div className="space-y-2 border-t border-[rgb(var(--sep-colour-59432c))]/30 p-3">
                           {history.slice(0, 8).map((entry) => (
                             <div
                               key={entry.id}
-                              className="border-l border-[#765937]/55 pl-3"
+                              className="border-l border-[rgb(var(--sep-colour-765937))]/55 pl-3"
                             >
-                              <p className="text-[8px] uppercase tracking-[0.12em] text-[#a68a61]">
+                              <p className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a68a61))]">
                                 {entry.event_type.replace(/_/g, " ")}
                               </p>
-                              <p className="mt-1 text-[10px] leading-5 text-[#817565]">
+                              <p className="mt-1 text-[10px] leading-5 text-[rgb(var(--sep-colour-817565))]">
                                 {entry.details}
                               </p>
                             </div>
@@ -545,14 +545,14 @@ export default async function AdminItemVaultPage({
                     <AdminActionForm
                       action={destroyVaultItem}
                       confirmMessage={`Permanently destroy ${name}? The live Item will be removed, while its audit archive and provenance are retained.`}
-                      className="mt-4 border-t border-[#59432c]/35 pt-4"
+                      className="mt-4 border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-4"
                     >
                       <input type="hidden" name="instanceId" value={row.id} />
                       <input type="hidden" name="returnTo" value={returnTo} />
                       <input type="hidden" name="liveAction" value="1" />
 
                       <label className="block">
-                        <span className="text-[8px] uppercase tracking-[0.14em] text-[#8f7154]">
+                        <span className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-8f7154))]">
                           Destruction reason
                         </span>
                         <textarea
@@ -579,27 +579,27 @@ export default async function AdminItemVaultPage({
               })}
             </div>
           ) : (
-            <div className="mt-4 border border-[#59432c]/40 bg-[#100c09] p-6 text-sm italic text-[#817565]">
+            <div className="mt-4 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-6 text-sm italic text-[rgb(var(--sep-colour-817565))]">
               The Admin Vault is empty.
             </div>
           )}
         </section>
 
-        <section className="mt-8 border-t border-[#60482e]/35 pt-7">
+        <section className="mt-8 border-t border-[rgb(var(--sep-colour-60482e))]/35 pt-7">
           <div className="flex items-end justify-between gap-3">
             <div>
-              <p className="text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+              <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
                 Audit archive
               </p>
-              <h2 className="mt-1 font-serif text-2xl text-[#dfc99f]">
+              <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">
                 Destroyed Unique Items
               </h2>
-              <p className="mt-2 max-w-3xl text-xs leading-6 text-[#817565]">
+              <p className="mt-2 max-w-3xl text-xs leading-6 text-[rgb(var(--sep-colour-817565))]">
                 Destroyed Items no longer exist in live inventory, but their final
                 state, destruction reason, and complete provenance are retained here.
               </p>
             </div>
-            <p className="text-[8px] uppercase tracking-[0.12em] text-[#756958]">
+            <p className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
               {destroyed.length} archived
             </p>
           </div>
@@ -640,10 +640,10 @@ export default async function AdminItemVaultPage({
                       .join(" ")
                       .toLowerCase()}
                     data-quality={row.quality ?? ""}
-                    className="border border-red-950/45 bg-[#100c09] p-4"
+                    className="border border-red-950/45 bg-[rgb(var(--sep-colour-100c09))] p-4"
                   >
                     <div className="flex gap-3">
-                      <div className="h-14 w-14 shrink-0 overflow-hidden border border-[#60482e]/45 bg-[#0d0907] opacity-70">
+                      <div className="h-14 w-14 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0d0907))] opacity-70">
                         {row.image_url ? (
                           <img
                             src={row.image_url}
@@ -651,7 +651,7 @@ export default async function AdminItemVaultPage({
                             className="h-full w-full object-cover grayscale"
                           />
                         ) : (
-                          <div className="flex h-full items-center justify-center font-serif text-[#756247]">
+                          <div className="flex h-full items-center justify-center font-serif text-[rgb(var(--sep-colour-756247))]">
                             ◇
                           </div>
                         )}
@@ -660,14 +660,14 @@ export default async function AdminItemVaultPage({
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-start justify-between gap-2">
                           <div>
-                            <p className="font-serif text-lg text-[#bfa98a]">
+                            <p className="font-serif text-lg text-[rgb(var(--sep-colour-bfa98a))]">
                               {row.display_name || row.item_name}
                             </p>
-                            <p className="mt-1 text-[8px] uppercase tracking-[0.13em] text-[#756958]">
+                            <p className="mt-1 text-[8px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-756958))]">
                               Destroyed · {row.quality ?? "unknown quality"}
                             </p>
                           </div>
-                          <p className="text-[8px] uppercase tracking-[0.12em] text-[#6f6254]">
+                          <p className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6254))]">
                             {destroyedAt} UTC
                           </p>
                         </div>
@@ -678,48 +678,48 @@ export default async function AdminItemVaultPage({
                       <p className="text-[8px] uppercase tracking-[0.13em] text-red-300/80">
                         Destruction reason
                       </p>
-                      <p className="mt-1 text-xs leading-5 text-[#9c8e7c]">
+                      <p className="mt-1 text-xs leading-5 text-[rgb(var(--sep-colour-9c8e7c))]">
                         {row.destruction_reason}
                       </p>
                     </div>
 
                     {row.description?.trim() ? (
-                      <p className="mt-3 text-xs leading-6 text-[#817565]">
+                      <p className="mt-3 text-xs leading-6 text-[rgb(var(--sep-colour-817565))]">
                         {row.description}
                       </p>
                     ) : null}
 
-                    <details className="mt-3 border border-[#59432c]/35 bg-[#15100d]">
-                      <summary className="cursor-pointer list-none px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[#9b8768]">
+                    <details className="mt-3 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))]">
+                      <summary className="cursor-pointer list-none px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9b8768))]">
                         Retained provenance · {history.length} event
                         {history.length === 1 ? "" : "s"}
                       </summary>
-                      <div className="space-y-2 border-t border-[#59432c]/30 p-3">
+                      <div className="space-y-2 border-t border-[rgb(var(--sep-colour-59432c))]/30 p-3">
                         {history.length ? (
                           history.map((entry, index) => (
                             <div
                               key={`${row.id}-${index}`}
-                              className="border-l border-[#765937]/55 pl-3"
+                              className="border-l border-[rgb(var(--sep-colour-765937))]/55 pl-3"
                             >
-                              <p className="text-[8px] uppercase tracking-[0.12em] text-[#a68a61]">
+                              <p className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a68a61))]">
                                 {(entry.event_type ?? "unknown event").replace(/_/g, " ")}
                               </p>
                               {entry.details ? (
-                                <p className="mt-1 text-[10px] leading-5 text-[#817565]">
+                                <p className="mt-1 text-[10px] leading-5 text-[rgb(var(--sep-colour-817565))]">
                                   {entry.details}
                                 </p>
                               ) : null}
                             </div>
                           ))
                         ) : (
-                          <p className="text-xs italic text-[#756958]">
+                          <p className="text-xs italic text-[rgb(var(--sep-colour-756958))]">
                             No prior provenance records were present.
                           </p>
                         )}
                       </div>
                     </details>
 
-                    <p className="mt-3 font-mono text-[9px] text-[#5f5549]">
+                    <p className="mt-3 font-mono text-[9px] text-[rgb(var(--sep-colour-5f5549))]">
                       Original instance: {row.original_instance_id}
                     </p>
                   </article>
@@ -727,7 +727,7 @@ export default async function AdminItemVaultPage({
               })}
             </div>
           ) : (
-            <div className="mt-4 border border-[#59432c]/40 bg-[#100c09] p-6 text-sm italic text-[#817565]">
+            <div className="mt-4 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-6 text-sm italic text-[rgb(var(--sep-colour-817565))]">
               No Unique Items have been destroyed since the archive was enabled.
             </div>
           )}

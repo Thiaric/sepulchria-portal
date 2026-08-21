@@ -97,7 +97,7 @@ export function PrivateLocationInvitationMessage({
 
   if (state.status !== "pending") {
     return (
-      <div className="border border-[#60482e]/45 bg-black/10 p-3">
+      <div className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-black/10 p-3">
         <p className="font-serif text-base">
           {state.roomName}
         </p>
@@ -110,7 +110,7 @@ export function PrivateLocationInvitationMessage({
   }
 
   return (
-    <div className="border border-[#80613c]/60 bg-black/10 p-3">
+    <div className="border border-[rgb(var(--sep-colour-80613c))]/60 bg-black/10 p-3">
       <p className="text-[8px] uppercase tracking-[0.16em] opacity-60">
         Private Location invitation
       </p>
@@ -138,7 +138,7 @@ export function PrivateLocationInvitationMessage({
 
           <button
             type="submit"
-            className="border border-[#7b443b] bg-[#2a1513] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[#d7a39a]"
+            className="border border-[rgb(var(--sep-colour-7b443b))] bg-[rgb(var(--sep-colour-2a1513))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d7a39a))]"
           >
             Refuse
           </button>
@@ -162,7 +162,7 @@ export function PrivateLocationInvitationMessage({
 
           <button
             type="submit"
-            className="border border-[#668657] bg-[#172313] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[#b8d8a7]"
+            className="border border-[rgb(var(--sep-colour-668657))] bg-[rgb(var(--sep-colour-172313))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-b8d8a7))]"
           >
             Accept & enter
           </button>

@@ -40,9 +40,9 @@ type Offer = {
 };
 
 const field =
-  "w-full border border-[#654c31] bg-[#0f0c09] px-3 py-2.5 text-[10px] text-[#d8c29b] outline-none focus:border-[#a17a45]";
+  "w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2.5 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] outline-none focus:border-[rgb(var(--sep-colour-a17a45))]";
 const button =
-  "border border-[#765937] bg-[#21190f] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[#d6bb8d] transition hover:border-[#a17a49] disabled:cursor-not-allowed disabled:opacity-40";
+  "border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-21190f))] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d6bb8d))] transition hover:border-[rgb(var(--sep-colour-a17a49))] disabled:cursor-not-allowed disabled:opacity-40";
 
 function encoded(row: InventoryRecord) {
   return `${row.record_kind}|${row.record_id}`;
@@ -601,17 +601,17 @@ export function ItemExchangePanel({
     confirmed: boolean,
     own: boolean,
   ) => (
-    <div className="border border-[#59432c]/35 bg-[#0f0b08] p-3">
+    <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-0f0b08))] p-3">
       <div className="flex justify-between gap-2">
-        <p className="font-serif text-base text-[#d7bf94]">{title}</p>
-        <span className={confirmed ? "text-[7px] uppercase text-emerald-400" : "text-[7px] uppercase text-[#756958]"}>
+        <p className="font-serif text-base text-[rgb(var(--sep-colour-d7bf94))]">{title}</p>
+        <span className={confirmed ? "text-[7px] uppercase text-emerald-400" : "text-[7px] uppercase text-[rgb(var(--sep-colour-756958))]"}>
           {confirmed ? "Confirmed" : "Not confirmed"}
         </span>
       </div>
       <div className="mt-2 max-h-48 space-y-1.5 overflow-y-auto pr-1">
         {list.length ? list.map((offer) => (
-          <div key={offer.id} className="flex items-center justify-between gap-2 border border-[#59432c]/25 px-3 py-2">
-            <span className="text-[10px] text-[#cdb894]">
+          <div key={offer.id} className="flex items-center justify-between gap-2 border border-[rgb(var(--sep-colour-59432c))]/25 px-3 py-2">
+            <span className="text-[10px] text-[rgb(var(--sep-colour-cdb894))]">
               {inventoryRecords.get(
                 `${offer.record_kind}:${offer.record_id}`,
               )?.name ?? "Item"}
@@ -641,15 +641,15 @@ export function ItemExchangePanel({
             ) : null}
           </div>
         )) : (
-          <p className="text-[9px] italic text-[#756958]">No Items offered yet.</p>
+          <p className="text-[9px] italic text-[rgb(var(--sep-colour-756958))]">No Items offered yet.</p>
         )}
       </div>
-      <div className="mt-2 border-t border-[#59432c]/30 pt-2">
+      <div className="mt-2 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-2">
         <div className="flex items-center justify-between gap-3">
-          <span className="text-[8px] uppercase tracking-[0.12em] text-[#756958]">
+          <span className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
             Items · Reference Value
           </span>
-          <strong className="font-serif text-sm text-[#d1b17d]">
+          <strong className="font-serif text-sm text-[rgb(var(--sep-colour-d1b17d))]">
             {formatRemnants(
               offerReferenceTotal(
                 list,
@@ -659,21 +659,21 @@ export function ItemExchangePanel({
         </div>
 
         <div className="mt-1 flex items-center justify-between gap-3">
-          <span className="text-[8px] uppercase tracking-[0.12em] text-[#756958]">
+          <span className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
             Remnants offered
           </span>
-          <strong className="font-serif text-sm text-[#e4c589]">
+          <strong className="font-serif text-sm text-[rgb(var(--sep-colour-e4c589))]">
             {formatRemnants(
               remnants,
             )}
           </strong>
         </div>
 
-        <div className="mt-2 flex items-center justify-between gap-3 border-t border-[#59432c]/25 pt-2">
-          <span className="text-[8px] uppercase tracking-[0.12em] text-[#a18b6c]">
+        <div className="mt-2 flex items-center justify-between gap-3 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-2">
+          <span className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a18b6c))]">
             Total offered value
           </span>
-          <strong className="font-serif text-base text-[#efd09a]">
+          <strong className="font-serif text-base text-[rgb(var(--sep-colour-efd09a))]">
             {formatRemnants(
               offerReferenceTotal(
                 list,
@@ -686,11 +686,11 @@ export function ItemExchangePanel({
   );
 
   return (
-    <div className="border border-[#59432c]/35 bg-[#100c09] p-3">
-      <div className="mb-3 flex flex-wrap items-start justify-between gap-3 border-b border-[#59432c]/30 pb-3">
+    <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3">
+      <div className="mb-3 flex flex-wrap items-start justify-between gap-3 border-b border-[rgb(var(--sep-colour-59432c))]/30 pb-3">
         <div>
-          <p className="text-[7px] uppercase tracking-[0.18em] text-[#806b50]">Location Utility</p>
-          <h3 className="mt-1 font-serif text-lg text-[#dec89f]">Item Exchange</h3>
+          <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">Location Utility</p>
+          <h3 className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-dec89f))]">Item Exchange</h3>
           
         </div>
         <button type="button" onClick={onClose} className={button}>Back to Chat</button>
@@ -699,8 +699,8 @@ export function ItemExchangePanel({
       <div className="grid gap-3 lg:grid-cols-2">
         {!trade ? (
           <>
-        <section className="border border-[#59432c]/30 bg-[#15100d] p-3">
-          <p className="font-serif text-base text-[#dec89f]">Give Item as a Gift</p>
+        <section className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-15100d))] p-3">
+          <p className="font-serif text-base text-[rgb(var(--sep-colour-dec89f))]">Give Item as a Gift</p>
           <div className="mt-2 grid gap-1">
             <select className={field} value={giveChoice} onChange={(e) => setGiveChoice(e.target.value)}>
               <option value="">Choose Item...</option>
@@ -743,9 +743,9 @@ export function ItemExchangePanel({
                 value === undefined
                 ? null
                 : (
-                  <p className="border-t border-[#59432c]/25 pt-2 text-[8px] uppercase tracking-[0.12em] text-[#9b8768]">
+                  <p className="border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-9b8768))]">
                     Reference Value being given:{" "}
-                    <strong className="text-[#e1bd79]">
+                    <strong className="text-[rgb(var(--sep-colour-e1bd79))]">
                       {formatRemnants(
                         value *
                           giveQuantity,
@@ -757,17 +757,17 @@ export function ItemExchangePanel({
           </div>
         </section>
 
-        <section className="border border-[#59432c]/30 bg-[#15100d] p-3">
+        <section className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-15100d))] p-3">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="font-serif text-base text-[#dec89f]">Give Remnants</p>
-              <p className="mt-1 text-[8px] leading-4 text-[#756958]">
+              <p className="font-serif text-base text-[rgb(var(--sep-colour-dec89f))]">Give Remnants</p>
+              <p className="mt-1 text-[8px] leading-4 text-[rgb(var(--sep-colour-756958))]">
                 Give Remnants to another character currently in this location.
               </p>
             </div>
             <div className="shrink-0 text-right">
-              <p className="text-[7px] uppercase tracking-[0.12em] text-[#756958]">Wallet</p>
-              <p className="font-serif text-sm text-[#e4c589]">
+              <p className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">Wallet</p>
+              <p className="font-serif text-sm text-[rgb(var(--sep-colour-e4c589))]">
                 {walletBalance.toLocaleString("en-GB")} R
               </p>
             </div>
@@ -819,8 +819,8 @@ export function ItemExchangePanel({
           </>
         ) : null}
 
-        <section className="border border-[#59432c]/30 bg-[#15100d] p-3 lg:col-span-2">
-          <p className="font-serif text-base text-[#dec89f]">Exchange Items</p>
+        <section className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-15100d))] p-3 lg:col-span-2">
+          <p className="font-serif text-base text-[rgb(var(--sep-colour-dec89f))]">Exchange Items</p>
           {!trade ? (
             <div className="mt-3 grid gap-2">
               <select className={field} value={tradeTarget} onChange={(e) => setTradeTarget(e.target.value)}>
@@ -834,15 +834,15 @@ export function ItemExchangePanel({
               </button>
             </div>
           ) : (
-            <p className="mt-3 text-[9px] leading-5 text-[#9b8768]">
-              Live exchange with <strong className="text-[#d7bf94]">{partnerName}</strong>. Changes update automatically.
+            <p className="mt-3 text-[9px] leading-5 text-[rgb(var(--sep-colour-9b8768))]">
+              Live exchange with <strong className="text-[rgb(var(--sep-colour-d7bf94))]">{partnerName}</strong>. Changes update automatically.
             </p>
           )}
         </section>
       </div>
 
       {trade ? (
-        <section className="mt-3 border border-[#59432c]/30 bg-[#15100d] p-3">
+        <section className="mt-3 border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-15100d))] p-3">
           <div className="grid gap-3 lg:grid-cols-2">
             {offerBox(`${myName}'s Offer`, mine, mineRemnants, mineConfirmed, true)}
             {offerBox(`${partnerName}'s Offer`, theirs, theirsRemnants, theirsConfirmed, false)}
@@ -870,9 +870,9 @@ export function ItemExchangePanel({
             <button type="button" className={button} disabled={pending || !offerChoice} onClick={() => void addOffer()}>Add to Offer</button>
           </div>
 
-          <div className="mt-3 grid gap-2 border-t border-[#59432c]/30 pt-3 md:grid-cols-[minmax(0,1fr)_auto]">
+          <div className="mt-3 grid gap-2 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-3 md:grid-cols-[minmax(0,1fr)_auto]">
             <div>
-              <label className="mb-1 block text-[7px] uppercase tracking-[0.12em] text-[#756958]">
+              <label className="mb-1 block text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
                 Your Remnants offer · Wallet {walletBalance.toLocaleString("en-GB")} R
               </label>
               <input
@@ -904,14 +904,14 @@ export function ItemExchangePanel({
             </button>
           </div>
 
-          <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-[#59432c]/30 pt-3">
-            <p className="text-[8px] uppercase tracking-[0.12em] text-[#8f8271]">
-              You: <strong className={mineConfirmed ? "text-emerald-400" : "text-[#b9a386]"}>{mineConfirmed ? "Confirmed" : "Waiting"}</strong>
-              {" · "}{partnerName}: <strong className={theirsConfirmed ? "text-emerald-400" : "text-[#b9a386]"}>{theirsConfirmed ? "Confirmed" : "Waiting"}</strong>
+          <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-3">
+            <p className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-8f8271))]">
+              You: <strong className={mineConfirmed ? "text-emerald-400" : "text-[rgb(var(--sep-colour-b9a386))]"}>{mineConfirmed ? "Confirmed" : "Waiting"}</strong>
+              {" · "}{partnerName}: <strong className={theirsConfirmed ? "text-emerald-400" : "text-[rgb(var(--sep-colour-b9a386))]"}>{theirsConfirmed ? "Confirmed" : "Waiting"}</strong>
             </p>
             <div className="flex gap-2">
               <button type="button" className={`${button} border-red-900/55 text-red-300`} disabled={pending} onClick={() => void cancelExchange()}>Cancel</button>
-              <button type="button" className={`${button} border-[#85653c] bg-[#342617] text-[#efd4a0]`} disabled={pending || mineConfirmed} onClick={() => void confirmExchange()}>
+              <button type="button" className={`${button} border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] text-[rgb(var(--sep-colour-efd4a0))]`} disabled={pending || mineConfirmed} onClick={() => void confirmExchange()}>
                 {mineConfirmed ? "Confirmed" : "Confirm Exchange"}
               </button>
             </div>
@@ -923,7 +923,7 @@ export function ItemExchangePanel({
         <p className={ok ? "mt-3 text-xs text-emerald-400" : "mt-3 text-xs text-red-400"}>{message}</p>
       ) : null}
 
-      <p className="mt-3 text-[8px] leading-4 text-[#756958]">
+      <p className="mt-3 text-[8px] leading-4 text-[rgb(var(--sep-colour-756958))]">
         Only loose, unequipped, freely transferable, non-Quest Items can be given or exchanged. Item and Remnants offers are completed together. Changing either Items or Remnants resets both confirmations.
       </p>
     </div>

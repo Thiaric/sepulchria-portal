@@ -167,23 +167,23 @@ export default async function GiftsPage() {
   return (
     <main className="p-5 sm:p-7 lg:p-9">
       <div className="mx-auto max-w-7xl">
-        <header className="border border-[#60482e]/45 bg-[#15100d] px-5 py-5 sm:px-6">
-          <p className="text-[8px] uppercase tracking-[0.26em] text-[#8c704b]">
+        <header className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-5 py-5 sm:px-6">
+          <p className="text-[8px] uppercase tracking-[0.26em] text-[rgb(var(--sep-colour-8c704b))]">
             Codex
           </p>
 
           <div className="mt-1 flex flex-wrap items-end justify-between gap-4">
             <div>
-              <h1 className="font-serif text-4xl text-[#ead5ac]">
+              <h1 className="font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">
                 Feats
               </h1>
 
-              <p className="mt-2 max-w-3xl text-xs leading-6 text-[#9f927f]">
+              <p className="mt-2 max-w-3xl text-xs leading-6 text-[rgb(var(--sep-colour-9f927f))]">
                 Innate, learned and bestowed capabilities available through Ancestries, Order Roles and general assignment.
               </p>
             </div>
 
-            <p className="text-[8px] uppercase tracking-[0.14em] text-[#766a59]">
+            <p className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-766a59))]">
               {gifts.length} active Feats
             </p>
           </div>

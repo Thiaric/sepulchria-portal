@@ -11,12 +11,12 @@ export function PublicCharacterOrder({
 }) {
   if (!membership) {
     return (
-      <section className="border border-[#60482e]/45 bg-[#120e0b] p-4">
-        <p className="text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+      <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-120e0b))] p-4">
+        <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
           Order
         </p>
 
-        <p className="mt-2 text-sm text-[#8f8271]">
+        <p className="mt-2 text-sm text-[rgb(var(--sep-colour-8f8271))]">
           This character does not currently belong to an Order.
         </p>
       </section>
@@ -30,16 +30,16 @@ export function PublicCharacterOrder({
 
   return (
     <section
-      className="border bg-[#120e0b] p-4"
+      className="border bg-[rgb(var(--sep-colour-120e0b))] p-4"
       style={{
         borderColor: `${colour}66`,
       }}
     >
-      <p className="text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+      <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
         Order membership
       </p>
 
-      <div className="mt-3 grid gap-px bg-[#4f3b28]/35 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-3 grid gap-px bg-[rgb(var(--sep-colour-4f3b28))]/35 sm:grid-cols-2 lg:grid-cols-4">
         <OrderDetail
           label="Association"
           value={
@@ -92,11 +92,11 @@ function OrderDetail({
 }) {
   const content = (
     <>
-      <p className="text-[7px] uppercase tracking-[0.19em] text-[#796448]">
+      <p className="text-[7px] uppercase tracking-[0.19em] text-[rgb(var(--sep-colour-796448))]">
         {label}
       </p>
 
-      <p className="mt-1 break-words text-[11px] leading-5 text-[#cab89b]">
+      <p className="mt-1 break-words text-[11px] leading-5 text-[rgb(var(--sep-colour-cab89b))]">
         {value}
       </p>
     </>
@@ -105,12 +105,12 @@ function OrderDetail({
   return href ? (
     <Link
       href={href}
-      className="min-w-0 bg-[#17110d] px-3 py-2 transition hover:bg-[#211810]"
+      className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 transition hover:bg-[rgb(var(--sep-colour-211810))]"
     >
       {content}
     </Link>
   ) : (
-    <div className="min-w-0 bg-[#17110d] px-3 py-2">
+    <div className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2">
       {content}
     </div>
   );

@@ -220,15 +220,15 @@ export default async function AdminOrdersPage({
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-[9px] uppercase tracking-[0.28em] text-[#8c704b]">
+            <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
               Administration
             </p>
 
-            <h2 className="mt-2 font-serif text-4xl text-[#ead5ac]">
+            <h2 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">
               Order Management
             </h2>
 
-            <p className="mt-3 max-w-3xl text-sm leading-7 text-[#a99b89]">
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))]">
               Create and maintain the
               Orders operating beneath
               the Associations of
@@ -268,17 +268,17 @@ export default async function AdminOrdersPage({
 
         <section
           id="order-new"
-          className="scroll-mt-24 mt-8 border border-[#60482e]/45 bg-[#15100d] p-5 sm:p-6"
+          className="scroll-mt-24 mt-8 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6"
         >
-          <p className="text-[9px] uppercase tracking-[0.24em] text-[#8c704b]">
+          <p className="text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))]">
             New Order
           </p>
 
-          <h3 className="mt-2 font-serif text-2xl text-[#dfc99f]">
+          <h3 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">
             Create an Order
           </h3>
 
-          <p className="mt-2 max-w-3xl text-xs leading-6 text-[#8f816e]">
+          <p className="mt-2 max-w-3xl text-xs leading-6 text-[rgb(var(--sep-colour-8f816e))]">
             Every Order belongs to one
             Association. Characters will
             later become members of the
@@ -304,7 +304,7 @@ export default async function AdminOrdersPage({
                     name="associationId"
                     required
                     defaultValue=""
-                    className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                    className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                   >
                     <option
                       value=""
@@ -340,7 +340,7 @@ export default async function AdminOrdersPage({
                     name="headquartersAreaId"
                     required
                     defaultValue=""
-                    className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                    className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                   >
                     <option value="" disabled>Select Headquarters Area</option>
                     {headquartersAreas.map((area) => (
@@ -356,7 +356,7 @@ export default async function AdminOrdersPage({
                     name="headquartersOutdoors"
                     required
                     defaultValue=""
-                    className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                    className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                   >
                     <option value="" disabled>Choose Indoor or Outdoor</option>
                     <option value="false">Indoor</option>
@@ -371,7 +371,7 @@ export default async function AdminOrdersPage({
                     required
                     maxLength={120}
                     placeholder="House of Healing"
-                    className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+                    className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
                   />
                 </AdminField>
 
@@ -381,7 +381,7 @@ export default async function AdminOrdersPage({
                     name="slug"
                     maxLength={100}
                     placeholder="Generated automatically"
-                    className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+                    className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
                   />
                 </AdminField>
 
@@ -392,7 +392,7 @@ export default async function AdminOrdersPage({
                     defaultValue={0}
                     min={-9999}
                     max={9999}
-                    className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                    className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                   />
                 </AdminField>
 
@@ -401,7 +401,7 @@ export default async function AdminOrdersPage({
                     <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
                       {[1, 2, 3, 4, 5, 6].map((level) => (
                         <label key={level}>
-                          <span className="mb-1 block text-[8px] uppercase tracking-[0.12em] text-[#756958]">
+                          <span className="mb-1 block text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
                             Level {level}
                           </span>
                           <input
@@ -410,7 +410,7 @@ export default async function AdminOrdersPage({
                             min={0}
                             step={1}
                             defaultValue={0}
-                            className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                           />
                         </label>
                       ))}
@@ -424,7 +424,7 @@ export default async function AdminOrdersPage({
                     name="colour"
                     maxLength={32}
                     placeholder="#8c704b"
-                    className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+                    className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
                   />
                 </AdminField>
 
@@ -462,7 +462,7 @@ export default async function AdminOrdersPage({
                     name="imageUrl"
                     maxLength={2000}
                     placeholder="/images/orders/healing.jpg"
-                    className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+                    className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
                   />
                 </AdminField>
 
@@ -472,7 +472,7 @@ export default async function AdminOrdersPage({
                     name="bannerUrl"
                     maxLength={2000}
                     placeholder="/images/orders/healing-banner.jpg"
-                    className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+                    className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
                   />
                 </AdminField>
 
@@ -483,19 +483,19 @@ export default async function AdminOrdersPage({
                       name="iconUrl"
                       maxLength={2000}
                       placeholder="/images/orders/healing-icon.png"
-                      className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+                      className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
                     />
                   </AdminField>
                 </div>
               </div>
 
               <div className="mt-5 flex flex-wrap items-center justify-between gap-4">
-                <label className="flex items-center gap-3 text-sm text-[#bbaa90]">
+                <label className="flex items-center gap-3 text-sm text-[rgb(var(--sep-colour-bbaa90))]">
                   <input
                     type="checkbox"
                     name="isActive"
                     defaultChecked
-                    className="h-4 w-4 accent-[#8b673d]"
+                    className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))]"
                   />
 
                   Active
@@ -503,7 +503,7 @@ export default async function AdminOrdersPage({
 
                 <button
                   type="submit"
-                  className="border border-[#987344] bg-[#3b2919] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[#efd6a8] transition hover:border-[#b98c50] hover:bg-[#50371f]"
+                  className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
                 >
                   Create Order
                 </button>
@@ -528,7 +528,7 @@ export default async function AdminOrdersPage({
               >
 
                 {order.banner_url ? (
-                  <div className="relative h-44 border-b border-[#60482e]/40 bg-[#0b0807]">
+                  <div className="relative h-44 border-b border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-0b0807))]">
                     <Image
                       src={
                         order.banner_url
@@ -540,14 +540,14 @@ export default async function AdminOrdersPage({
                       unoptimized
                     />
 
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#15100d] via-transparent to-black/20" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[rgb(var(--sep-colour-15100d))] via-transparent to-black/20" />
                   </div>
                 ) : null}
 
                 <div className="grid lg:grid-cols-[260px_minmax(0,1fr)]">
-                  <aside className="border-b border-[#60482e]/35 bg-[#0f0b09] p-5 lg:border-b-0 lg:border-r">
+                  <aside className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-0f0b09))] p-5 lg:border-b-0 lg:border-r">
                     <div
-                      className="relative aspect-[4/3] overflow-hidden border border-[#765937]/55 bg-[#090706]"
+                      className="relative aspect-[4/3] overflow-hidden border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-090706))]"
                       style={
                         isValidColour(
                           order.colour,
@@ -587,7 +587,7 @@ export default async function AdminOrdersPage({
                           />
                         </div>
                       ) : (
-                        <div className="flex h-full items-center justify-center font-serif text-5xl text-[#705334]">
+                        <div className="flex h-full items-center justify-center font-serif text-5xl text-[rgb(var(--sep-colour-705334))]">
                           {order.name
                             .charAt(0)
                             .toUpperCase()}
@@ -602,22 +602,22 @@ export default async function AdminOrdersPage({
                         }
                       />
 
-                      <p className="mt-3 font-serif text-lg text-[#d7c09a]">
+                      <p className="mt-3 font-serif text-lg text-[rgb(var(--sep-colour-d7c09a))]">
                         {associationName(
                           order.association,
                         )}
                       </p>
 
-                      <p className="mt-1 text-[8px] uppercase tracking-[0.18em] text-[#746652]">
+                      <p className="mt-1 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-746652))]">
                         Association
                       </p>
 
-                      <p className="mt-4 text-[10px] uppercase tracking-[0.16em] text-[#887967]">
+                      <p className="mt-4 text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-887967))]">
                         /{order.slug}
                       </p>
 
                       {order.colour ? (
-                        <div className="mt-3 flex items-center justify-center gap-2 text-[9px] text-[#817461]">
+                        <div className="mt-3 flex items-center justify-center gap-2 text-[9px] text-[rgb(var(--sep-colour-817461))]">
                           <span
                             className="h-3 w-3 rounded-full border border-white/15"
                             style={{
@@ -641,7 +641,7 @@ export default async function AdminOrdersPage({
                         />
                       </div>
 
-                      <p className="mt-4 text-[9px] text-[#756957]">
+                      <p className="mt-4 text-[9px] text-[rgb(var(--sep-colour-756957))]">
                         Updated{" "}
                         {formatDate(
                           order.updated_at,
@@ -653,7 +653,7 @@ export default async function AdminOrdersPage({
                   <div className="p-5 sm:p-6">
                     <div className="flex flex-wrap items-start justify-between gap-4">
                       <div>
-                        <p className="text-[9px] uppercase tracking-[0.2em] text-[#8c704b]">
+                        <p className="text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-8c704b))]">
                           {
                             associationName(
                               order.association,
@@ -662,13 +662,13 @@ export default async function AdminOrdersPage({
                           · Order
                         </p>
 
-                        <h3 className="mt-1 font-serif text-3xl text-[#e3cda5]">
+                        <h3 className="mt-1 font-serif text-3xl text-[rgb(var(--sep-colour-e3cda5))]">
                           {order.name}
                         </h3>
                       </div>
 
                       {order.icon_url ? (
-                        <div className="relative h-16 w-16 border border-[#60482e]/45 bg-[#0b0807] p-2">
+                        <div className="relative h-16 w-16 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0b0807))] p-2">
                           <Image
                             src={
                               order.icon_url
@@ -688,7 +688,7 @@ export default async function AdminOrdersPage({
   body={
     order.summary
   }
-  className="text-sm leading-7 text-[#b6a58d]"
+  className="text-sm leading-7 text-[rgb(var(--sep-colour-b6a58d))]"
 />
 
                       
@@ -714,7 +714,7 @@ export default async function AdminOrdersPage({
                             defaultValue={
                               order.association_id
                             }
-                            className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                           >
                             {associations.map(
                               (
@@ -748,7 +748,7 @@ export default async function AdminOrdersPage({
                             maxLength={
                               120
                             }
-                            className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                           />
                         </AdminField>
 
@@ -762,7 +762,7 @@ export default async function AdminOrdersPage({
                             maxLength={
                               100
                             }
-                            className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                           />
                         </AdminField>
 
@@ -775,7 +775,7 @@ export default async function AdminOrdersPage({
                             }
                             min={-9999}
                             max={9999}
-                            className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                           />
                         </AdminField>
 
@@ -788,7 +788,7 @@ export default async function AdminOrdersPage({
                               ""
                             }
                             maxLength={32}
-                            className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                           />
                         </AdminField>
 
@@ -839,7 +839,7 @@ export default async function AdminOrdersPage({
                             maxLength={
                               2000
                             }
-                            className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                           />
                         </AdminField>
 
@@ -854,7 +854,7 @@ export default async function AdminOrdersPage({
                             maxLength={
                               2000
                             }
-                            className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                           />
                         </AdminField>
 
@@ -870,21 +870,21 @@ export default async function AdminOrdersPage({
                               maxLength={
                                 2000
                               }
-                              className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                              className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                             />
                           </AdminField>
                         </div>
                       </div>
 
                       <div className="mt-5 flex flex-wrap items-center justify-between gap-4">
-                        <label className="flex items-center gap-3 text-sm text-[#bbaa90]">
+                        <label className="flex items-center gap-3 text-sm text-[rgb(var(--sep-colour-bbaa90))]">
                           <input
                             type="checkbox"
                             name="isActive"
                             defaultChecked={
                               order.is_active
                             }
-                            className="h-4 w-4 accent-[#8b673d]"
+                            className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))]"
                           />
 
                           Active
@@ -892,7 +892,7 @@ export default async function AdminOrdersPage({
 
                         <button
                           type="submit"
-                          className="border border-[#987344] bg-[#3b2919] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[#efd6a8] transition hover:border-[#b98c50] hover:bg-[#50371f]"
+                          className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
                         >
                           Save Order
                         </button>
@@ -903,7 +903,7 @@ export default async function AdminOrdersPage({
 
                     <OrderMembershipManager orderId={order.id} />
 
-                    <div className="mt-7 border-t border-[#60482e]/30 pt-5">
+                    <div className="mt-7 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-5">
                       <details>
                         <summary className="cursor-pointer text-[9px] uppercase tracking-[0.2em] text-red-400">
                           Delete Order
@@ -923,10 +923,10 @@ export default async function AdminOrdersPage({
                             }
                           />
 
-                          <p className="text-xs leading-6 text-[#a88d83]">
+                          <p className="text-xs leading-6 text-[rgb(var(--sep-colour-a88d83))]">
                             Permanently
                             delete{" "}
-                            <strong className="text-[#d9b4a7]">
+                            <strong className="text-[rgb(var(--sep-colour-d9b4a7))]">
                               {
                                 order.name
                               }
@@ -942,7 +942,7 @@ export default async function AdminOrdersPage({
                               name="confirmation"
                               required
                               placeholder="DELETE"
-                              className="min-w-[180px] flex-1 border border-red-900/50 bg-[#100909] px-3 py-2 text-sm text-red-200 outline-none"
+                              className="min-w-[180px] flex-1 border border-red-900/50 bg-[rgb(var(--sep-colour-100909))] px-3 py-2 text-sm text-red-200 outline-none"
                             />
 
                             <button
@@ -963,13 +963,13 @@ export default async function AdminOrdersPage({
           )}
 
           {orders.length === 0 ? (
-            <div className="border border-[#60482e]/40 bg-[#120e0b] px-5 py-10 text-center">
-              <p className="font-serif text-xl italic text-[#9e8b70]">
+            <div className="border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-120e0b))] px-5 py-10 text-center">
+              <p className="font-serif text-xl italic text-[rgb(var(--sep-colour-9e8b70))]">
                 No Orders have yet
                 been established.
               </p>
 
-              <p className="mt-2 text-xs text-[#746957]">
+              <p className="mt-2 text-xs text-[rgb(var(--sep-colour-746957))]">
                 Create the first
                 Order above and assign
                 it to an Association.
@@ -991,7 +991,7 @@ function AdminField({
 }) {
   return (
     <div className="block">
-      <span className="mb-2 block text-[9px] uppercase tracking-[0.18em] text-[#8c7960]">
+      <span className="mb-2 block text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-8c7960))]">
         {label}
       </span>
 
@@ -1006,7 +1006,7 @@ function AdminCounter({
   children: React.ReactNode;
 }) {
   return (
-    <span className="border border-[#60482e]/45 bg-[#17110d] px-3 py-2 text-[9px] uppercase tracking-[0.16em] text-[#a78c67]">
+    <span className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-a78c67))]">
       {children}
     </span>
   );
@@ -1022,7 +1022,7 @@ function StatusBadge({
       className={
         isActive
           ? "inline-block border border-emerald-800/50 bg-emerald-950/20 px-2.5 py-1 text-[8px] uppercase tracking-[0.16em] text-emerald-400"
-          : "inline-block border border-[#5c5042] bg-[#17120e] px-2.5 py-1 text-[8px] uppercase tracking-[0.16em] text-[#817462]"
+          : "inline-block border border-[rgb(var(--sep-colour-5c5042))] bg-[rgb(var(--sep-colour-17120e))] px-2.5 py-1 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-817462))]"
       }
     >
       {isActive
@@ -1040,12 +1040,12 @@ function InfoCounter({
   value: number;
 }) {
   return (
-    <div className="border border-[#60482e]/35 bg-[#15100c] px-3 py-3 text-center">
-      <p className="font-serif text-xl text-[#d6bd94]">
+    <div className="border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-15100c))] px-3 py-3 text-center">
+      <p className="font-serif text-xl text-[rgb(var(--sep-colour-d6bd94))]">
         {value}
       </p>
 
-      <p className="mt-1 text-[7px] uppercase tracking-[0.16em] text-[#756754]">
+      <p className="mt-1 text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-756754))]">
         {label}
       </p>
     </div>

@@ -101,7 +101,7 @@ export function PmRecipientPicker({
       ))}
 
       <div>
-        <label className="mb-2 block text-[8px] uppercase tracking-[0.2em] text-[#806b50]">
+        <label className="mb-2 block text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
           Find characters
         </label>
 
@@ -114,24 +114,24 @@ export function PmRecipientPicker({
             )
           }
           placeholder="Search by character name..."
-          className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-2.5 text-xs text-[#d7c4a5] outline-none"
+          className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none"
         />
       </div>
 
       {friendListEnabled &&
       friends.length > 0 ? (
-        <details className="border border-[#60482e]/45 bg-[#100c09]">
-          <summary className="cursor-pointer px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[#c6a36f]">
+        <details className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))]">
+          <summary className="cursor-pointer px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-c6a36f))]">
             Friend List
           </summary>
 
-          <div className="border-t border-[#60482e]/35 p-3">
+          <div className="border-t border-[rgb(var(--sep-colour-60482e))]/35 p-3">
             <button
               type="button"
               onClick={
                 selectFriends
               }
-              className="mb-2 border border-[#80613b] px-2.5 py-1.5 text-[7px] uppercase tracking-[0.14em] text-[#dfbd84]"
+              className="mb-2 border border-[rgb(var(--sep-colour-80613b))] px-2.5 py-1.5 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-dfbd84))]"
             >
               Select all Friend List
             </button>
@@ -143,7 +143,7 @@ export function PmRecipientPicker({
                     key={
                       friend.id
                     }
-                    className="flex cursor-pointer items-center gap-2 border border-[#60482e]/25 px-2 py-1.5 text-[10px] text-[#bbaa90]"
+                    className="flex cursor-pointer items-center gap-2 border border-[rgb(var(--sep-colour-60482e))]/25 px-2 py-1.5 text-[10px] text-[rgb(var(--sep-colour-bbaa90))]"
                   >
                     <input
                       type="checkbox"
@@ -163,7 +163,7 @@ export function PmRecipientPicker({
                       }
                     </span>
 
-                    <span className="text-[7px] uppercase text-[#746653]">
+                    <span className="text-[7px] uppercase text-[rgb(var(--sep-colour-746653))]">
                       {friend.scope ===
                       "ingame"
                         ? "IG"
@@ -177,14 +177,14 @@ export function PmRecipientPicker({
         </details>
       ) : null}
 
-      <div className="max-h-64 space-y-1 overflow-y-auto border border-[#60482e]/35 p-2">
+      <div className="max-h-64 space-y-1 overflow-y-auto border border-[rgb(var(--sep-colour-60482e))]/35 p-2">
         {filtered.map(
           (character) => (
             <label
               key={
                 character.id
               }
-              className="flex cursor-pointer items-center gap-2 border border-[#60482e]/25 px-2 py-2 text-xs text-[#c7b394]"
+              className="flex cursor-pointer items-center gap-2 border border-[rgb(var(--sep-colour-60482e))]/25 px-2 py-2 text-xs text-[rgb(var(--sep-colour-c7b394))]"
             >
               <input
                 type="checkbox"
@@ -208,7 +208,7 @@ export function PmRecipientPicker({
         )}
       </div>
 
-      <p className="text-[9px] text-[#7e715f]">
+      <p className="text-[9px] text-[rgb(var(--sep-colour-7e715f))]">
         {selected.size} recipient
         {selected.size === 1
           ? ""

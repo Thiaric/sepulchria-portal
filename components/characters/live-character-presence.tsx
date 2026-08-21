@@ -147,25 +147,25 @@ function statusAppearance(
     online: {
       label: "Online",
       dot:
-        "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]",
+        "bg-emerald-500 shadow-[0_0_8px_rgba(var(--sep-rgb-16-185-129),0.8)]",
       text: "text-emerald-400",
     },
     away: {
       label: "Away",
       dot:
-        "bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.7)]",
+        "bg-amber-500 shadow-[0_0_8px_rgba(var(--sep-rgb-245-158-11),0.7)]",
       text: "text-amber-400",
     },
     busy: {
       label: "Busy",
       dot:
-        "bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.7)]",
+        "bg-red-500 shadow-[0_0_8px_rgba(var(--sep-rgb-239-68-68),0.7)]",
       text: "text-red-400",
     },
     offline: {
       label: "Offline",
       dot: "bg-stone-600",
-      text: "text-[#837668]",
+      text: "text-[rgb(var(--sep-colour-837668))]",
     },
   };
 
@@ -390,8 +390,8 @@ export function LiveCharacterPresence({
   if (compact) {
     return (
       <>
-        <div className="min-w-0 bg-[#17110d] px-3 py-2">
-          <p className="text-[7px] uppercase tracking-[0.19em] text-[#796448]">
+        <div className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2">
+          <p className="text-[7px] uppercase tracking-[0.19em] text-[rgb(var(--sep-colour-796448))]">
             Live record
           </p>
 
@@ -410,12 +410,12 @@ export function LiveCharacterPresence({
         </div>
 
         {showLastActivity ? (
-          <div className="min-w-0 bg-[#17110d] px-3 py-2">
-            <p className="text-[7px] uppercase tracking-[0.19em] text-[#796448]">
+          <div className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2">
+            <p className="text-[7px] uppercase tracking-[0.19em] text-[rgb(var(--sep-colour-796448))]">
               Last activity
             </p>
 
-            <p className="mt-1 break-words text-[11px] leading-5 text-[#cab89b]">
+            <p className="mt-1 break-words text-[11px] leading-5 text-[rgb(var(--sep-colour-cab89b))]">
               {formatRelativeActivity(
                 visibleLastActivity,
                 now,
@@ -424,12 +424,12 @@ export function LiveCharacterPresence({
           </div>
         ) : null}
 
-        <div className="min-w-0 bg-[#17110d] px-3 py-2 sm:col-span-2 lg:col-span-3">
-          <p className="text-[7px] uppercase tracking-[0.19em] text-[#796448]">
+        <div className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 sm:col-span-2 lg:col-span-3">
+          <p className="text-[7px] uppercase tracking-[0.19em] text-[rgb(var(--sep-colour-796448))]">
             Current location
           </p>
 
-          <p className="mt-1 break-words text-[11px] leading-5 text-[#cab89b]">
+          <p className="mt-1 break-words text-[11px] leading-5 text-[rgb(var(--sep-colour-cab89b))]">
             {location}
           </p>
         </div>
@@ -438,16 +438,16 @@ export function LiveCharacterPresence({
   }
 
   return (
-    <section className="flex h-full flex-col border border-[#60482e]/45 bg-black/15 p-5">
+    <section className="flex h-full flex-col border border-[rgb(var(--sep-colour-60482e))]/45 bg-black/15 p-5">
       <div>
-        <p className="text-[8px] uppercase tracking-[0.24em] text-[#806b50]">
+        <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
           Live record
         </p>
       </div>
 
       <div className="mt-5">
         <span
-          className={`inline-flex items-center gap-2 border border-[#60482e]/50 bg-[#0d0907]/70 px-3 py-2 text-[9px] uppercase tracking-[0.18em] ${appearance.text} ${
+          className={`inline-flex items-center gap-2 border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0d0907))]/70 px-3 py-2 text-[9px] uppercase tracking-[0.18em] ${appearance.text} ${
             cloakedForStaff
               ? "opacity-50"
               : ""
@@ -464,11 +464,11 @@ export function LiveCharacterPresence({
       <dl className="mt-6 space-y-5">
         {showLastActivity ? (
           <div>
-            <dt className="text-[8px] uppercase tracking-[0.2em] text-[#806b50]">
+            <dt className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
               Last activity
             </dt>
 
-            <dd className="mt-2 text-sm text-[#d4c4ad]">
+            <dd className="mt-2 text-sm text-[rgb(var(--sep-colour-d4c4ad))]">
               {formatRelativeActivity(
                 presence?.last_seen_at,
                 now,
@@ -478,11 +478,11 @@ export function LiveCharacterPresence({
         ) : null}
 
         <div>
-          <dt className="text-[8px] uppercase tracking-[0.2em] text-[#806b50]">
+          <dt className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
             Current location
           </dt>
 
-          <dd className="mt-2 text-sm leading-6 text-[#d4c4ad]">
+          <dd className="mt-2 text-sm leading-6 text-[rgb(var(--sep-colour-d4c4ad))]">
             {location}
           </dd>
         </div>

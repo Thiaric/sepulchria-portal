@@ -255,10 +255,10 @@ function Calendar({
         </div>
 
         <div className="text-center">
-          <p className="font-serif text-lg text-[#dfc79c]">
+          <p className="font-serif text-lg text-[rgb(var(--sep-colour-dfc79c))]">
             {aureth.monthName}
           </p>
-          <p className="text-[8px] uppercase tracking-[0.14em] text-[#806f59]">
+          <p className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806f59))]">
             {aureth.year} ADN
           </p>
         </div>
@@ -285,19 +285,19 @@ function Calendar({
         <button
           type="button"
           onClick={onToday}
-          className="border border-[#60482e]/45 bg-[#15100d] px-2 py-1 ... text-[7px] uppercase tracking-[0.16em] text-[#9d896d] transition hover:border-[#967342] hover:text-[#dfc79c]"
+          className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-2 py-1 ... text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-9d896d))] transition hover:border-[rgb(var(--sep-colour-967342))] hover:text-[rgb(var(--sep-colour-dfc79c))]"
         >
           Current month
         </button>
       </div>
 
-      <div className="mt-2 grid grid-cols-7 ... gap-px border border-[#60482e]/35 bg-[#60482e]/25">
+      <div className="mt-2 grid grid-cols-7 ... gap-px border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-60482e))]/25">
         {AURETH_WEEKDAYS.map(
           (weekday) => (
             <div
               key={weekday}
               title={weekday}
-              className="bg-[#100c09] px-0.5 py-2 text-center text-[7px] uppercase tracking-[0.04em] text-[#796a56]"
+              className="bg-[rgb(var(--sep-colour-100c09))] px-0.5 py-2 text-center text-[7px] uppercase tracking-[0.04em] text-[rgb(var(--sep-colour-796a56))]"
             >
               {weekday.slice(
                 0,
@@ -316,7 +316,7 @@ function Calendar({
               return (
                 <div
                   key={index}
-                  className="h-10 bg-[#100c09]/65 sm:h-11"
+                  className="h-10 bg-[rgb(var(--sep-colour-100c09))]/65 sm:h-11"
                 />
               );
             }
@@ -367,15 +367,15 @@ function Calendar({
                     : ""
                 }`}
                 className={[
-  "relative flex h-10 flex-col items-center justify-center gap-0.5 bg-[#15100d] text-[9px] transition sm:h-11",
+  "relative flex h-10 flex-col items-center justify-center gap-0.5 bg-[rgb(var(--sep-colour-15100d))] text-[9px] transition sm:h-11",
                   eventCount > 0
-                    ? "cursor-pointer hover:bg-[#241a11]"
+                    ? "cursor-pointer hover:bg-[rgb(var(--sep-colour-241a11))]"
                     : "cursor-default",
                   isToday
-                    ? "font-semibold text-[#f0d39f] shadow-[inset_0_0_0_1px_#a67b45]"
-                    : "text-[#a99a85]",
+                    ? "font-semibold text-[rgb(var(--sep-colour-f0d39f))] shadow-[inset_0_0_0_1px_#a67b45]"
+                    : "text-[rgb(var(--sep-colour-a99a85))]",
                   isSelected
-                    ? "bg-[#2a1d12] shadow-[inset_0_0_0_1px_#c08b4a]"
+                    ? "bg-[rgb(var(--sep-colour-2a1d12))] shadow-[inset_0_0_0_1px_#c08b4a]"
                     : "",
                 ].join(
                   " ",
@@ -403,7 +403,7 @@ function Calendar({
                         ? ""
                         : "s"
                     }`}
-                    className="absolute right-1 top-1 flex h-3 min-w-3 items-center justify-center rounded-full bg-[#a87536] px-0.5 text-[6px] font-bold leading-none text-[#160e08]"
+                    className="absolute right-1 top-1 flex h-3 min-w-3 items-center justify-center rounded-full bg-[rgb(var(--sep-colour-a87536))] px-0.5 text-[6px] font-bold leading-none text-[rgb(var(--sep-colour-160e08))]"
                   >
                     {eventCount >
                     9
@@ -435,7 +435,7 @@ function CalendarButton({
       title={title}
       aria-label={title}
       onClick={onClick}
-      className="flex h-8 w-8 items-center justify-center border border-[#60482e]/50 bg-[#17110d] font-serif text-sm text-[#bda479] transition hover:border-[#987344] hover:bg-[#271b12] hover:text-[#efd4a0]"
+      className="flex h-8 w-8 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-17110d))] font-serif text-sm text-[rgb(var(--sep-colour-bda479))] transition hover:border-[rgb(var(--sep-colour-987344))] hover:bg-[rgb(var(--sep-colour-271b12))] hover:text-[rgb(var(--sep-colour-efd4a0))]"
     >
       {label}
     </button>
@@ -467,11 +467,11 @@ function CalendarEventList({
     );
 
   return (
-    <div className="mt-4 border border-[#60482e]/40 bg-[#100c09] p-3">
-      <p className="text-[7px] uppercase tracking-[0.18em] text-[#806b50]">
+    <div className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] p-3">
+      <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
         Events
       </p>
-      <h3 className="mt-1 font-serif text-base text-[#dfc79c]">
+      <h3 className="mt-1 font-serif text-base text-[rgb(var(--sep-colour-dfc79c))]">
         {formatAurethDate(
           date,
         )}
@@ -482,15 +482,15 @@ function CalendarEventList({
           (event) => (
             <article
               key={event.id}
-              className="border border-[#59432c]/40 bg-[#15100d] p-3"
+              className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-15100d))] p-3"
             >
               <div className="flex flex-wrap items-start justify-between gap-2">
-                <h4 className="font-serif text-sm text-[#e0c79b]">
+                <h4 className="font-serif text-sm text-[rgb(var(--sep-colour-e0c79b))]">
                   {event.title}
                 </h4>
 
                 {event.start_time ? (
-                  <span className="text-[8px] uppercase tracking-[0.12em] text-[#a58c68]">
+                  <span className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a58c68))]">
                     {event.start_time.slice(
                       0,
                       5,
@@ -507,14 +507,14 @@ function CalendarEventList({
 
               {event.room?.name ||
               event.location_name ? (
-                <p className="mt-1 text-[9px] text-[#9d896d]">
+                <p className="mt-1 text-[9px] text-[rgb(var(--sep-colour-9d896d))]">
                   {event.room?.name ??
                     event.location_name}
                 </p>
               ) : null}
 
               {event.description ? (
-                <p className="mt-2 whitespace-pre-wrap text-[10px] leading-5 text-[#827563]">
+                <p className="mt-2 whitespace-pre-wrap text-[10px] leading-5 text-[rgb(var(--sep-colour-827563))]">
                   {event.description}
                 </p>
               ) : null}
@@ -813,7 +813,7 @@ export function WorldIndicator({
         onClick={() =>
           setOpen(true)
         }
-        className="relative hidden h-10 items-center gap-2 border border-[#614b31] bg-[#17120f] px-3 text-[#c9aa79] transition hover:border-[#8d6b42] hover:bg-[#201711] md:flex"
+        className="relative hidden h-10 items-center gap-2 border border-[rgb(var(--sep-colour-614b31))] bg-[rgb(var(--sep-colour-17120f))] px-3 text-[rgb(var(--sep-colour-c9aa79))] transition hover:border-[rgb(var(--sep-colour-8d6b42))] hover:bg-[rgb(var(--sep-colour-201711))] md:flex"
         title={`${fullDate} · ${lunar.name} · ${weatherLabel(
           state.weather,
         )}`}
@@ -836,7 +836,7 @@ export function WorldIndicator({
           />
         </span>
 
-        <span className="hidden text-[9px] uppercase tracking-[0.08em] text-[#a38c69] xl:inline">
+        <span className="hidden text-[9px] uppercase tracking-[0.08em] text-[rgb(var(--sep-colour-a38c69))] xl:inline">
           {
             state.temperature_c
           }
@@ -877,7 +877,7 @@ export function WorldIndicator({
               <section
   role="dialog"
   aria-modal="true"
-  className="relative w-full max-w-2xl max-h-[calc(100dvh-24px)] overflow-y-auto border border-[#765937]/70 bg-[#120d0a] p-3 shadow-[0_30px_100px_rgba(0,0,0,0.85)] sm:p-4"
+  className="relative w-full max-w-2xl max-h-[calc(100dvh-24px)] overflow-y-auto border border-[rgb(var(--sep-colour-765937))]/70 bg-[rgb(var(--sep-colour-120d0a))] p-3 shadow-[0_30px_100px_rgba(var(--sep-rgb-0-0-0),0.85)] sm:p-4"
 >
                 <button
                   type="button"
@@ -886,23 +886,23 @@ export function WorldIndicator({
                       false,
                     )
                   }
-                  className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center border border-[#60482e]/60 bg-[#17110f] text-[#c8a875]"
+                  className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-17110f))] text-[rgb(var(--sep-colour-c8a875))]"
                 >
                   ×
                 </button>
 
-                <p className="text-[8px] uppercase tracking-[0.26em] text-[#886c48]">
+                <p className="text-[8px] uppercase tracking-[0.26em] text-[rgb(var(--sep-colour-886c48))]">
                   Aureth ·
                   Reckoning After
                   the Darkest Night
                 </p>
 
                 <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 pr-10">
-  <h2 className="font-serif text-base text-[#e2cda4]">
+  <h2 className="font-serif text-base text-[rgb(var(--sep-colour-e2cda4))]">
     {fullDate}
   </h2>
 
-  <span className="text-[8px] uppercase tracking-[0.12em] text-[#8f7b60]">
+  <span className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-8f7b60))]">
     {time}
   </span>
 </div>
@@ -976,7 +976,7 @@ export function WorldIndicator({
                       />
 
                       {eventsLoading ? (
-                        <p className="mt-3 text-[9px] uppercase tracking-[0.12em] text-[#756958]">
+                        <p className="mt-3 text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
                           Loading
                           calendar
                           events…
@@ -994,9 +994,9 @@ export function WorldIndicator({
                     </div>
                   </div>
 
-                  <div className="flex flex-col border border-[#60482e]/40 bg-[#100c09] p-4">
-                    <div className="border-b border-[#60482e]/35 pb-4 text-center">
-                      <p className="text-[8px] uppercase tracking-[0.2em] text-[#806b50]">
+                  <div className="flex flex-col border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] p-4">
+                    <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 pb-4 text-center">
+                      <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
                         Current
                         weather
                       </p>
@@ -1019,13 +1019,13 @@ className="block h-11 w-11 object-contain"
                         />
                       </div>
 
-                      <p className="mt-1 font-serif text-sm capitalize text-[#dfc79c]">
+                      <p className="mt-1 font-serif text-sm capitalize text-[rgb(var(--sep-colour-dfc79c))]">
                         {weatherLabel(
                           state.weather,
                         )} <br></br> {state.temperature_c}°C
                       </p>
 
-                      <p className="mt-1 text-[9px] uppercase tracking-[0.12em] text-[#746858]">
+                      <p className="mt-1 text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-746858))]">
                         {
                           state.weather_intensity
                         }
@@ -1033,7 +1033,7 @@ className="block h-11 w-11 object-contain"
                     </div>
 
                     <div className="flex flex-1 flex-col justify-end pt-4 text-center">
-                      <p className="text-[8px] uppercase tracking-[0.2em] text-[#806b50]">
+                      <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
                         Current
                         lunar phase
                       </p>
@@ -1056,20 +1056,20 @@ className="block h-11 w-11 object-contain"
                         />
                       </div>
 
-                      <p className="mt-3 font-serif text-base text-[#dfc79c]">
+                      <p className="mt-3 font-serif text-base text-[rgb(var(--sep-colour-dfc79c))]">
                         {
                           lunar.name
                         }
                       </p>
 
-                      <p className="mt-2 text-[9px] leading-4 text-[#827563]">
+                      <p className="mt-2 text-[9px] leading-4 text-[rgb(var(--sep-colour-827563))]">
                         {
                           lunar.illumination
                         }
                         % illuminated
                       </p>
 
-                      <p className="text-[9px] leading-4 text-[#6f6456]">
+                      <p className="text-[9px] leading-4 text-[rgb(var(--sep-colour-6f6456))]">
                         Day{" "}
                         {
                           lunar.ageDays
@@ -1097,11 +1097,11 @@ function Fact({
   value: string;
 }) {
   return (
-    <div className="border border-[#60482e]/35 bg-[#15100d] p-3">
-      <p className="text-[7px] uppercase tracking-[0.18em] text-[#776650]">
+    <div className="border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-15100d))] p-3">
+      <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-776650))]">
         {label}
       </p>
-      <p className="mt-1 truncate font-serif text-sm text-[#d8bd91]">
+      <p className="mt-1 truncate font-serif text-sm text-[rgb(var(--sep-colour-d8bd91))]">
         {value}
       </p>
     </div>

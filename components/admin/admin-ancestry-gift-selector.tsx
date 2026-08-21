@@ -106,12 +106,12 @@ export function AdminAncestryGiftSelector({
   }
 
   return (
-    <div className="border border-[#60482e]/45 bg-[#100c09] p-4">
-      <p className="text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+    <div className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] p-4">
+      <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
         Ancestry Feats
       </p>
 
-      <p className="mt-2 text-xs leading-5 text-[#8f8271]">
+      <p className="mt-2 text-xs leading-5 text-[rgb(var(--sep-colour-8f8271))]">
         Choose up to two Feats available to the selected Ancestry. Changing
         Ancestry removes selections that are no longer eligible.
       </p>
@@ -139,21 +139,21 @@ export function AdminAncestryGiftSelector({
                 onClick={() => toggle(gift.id)}
                 className={`border p-3 text-left transition ${
                   checked
-                    ? "border-[#a17a49] bg-[#2b1e13]"
-                    : "border-[#59432c]/45 bg-[#0d0907] hover:border-[#765937]"
+                    ? "border-[rgb(var(--sep-colour-a17a49))] bg-[rgb(var(--sep-colour-2b1e13))]"
+                    : "border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-0d0907))] hover:border-[rgb(var(--sep-colour-765937))]"
                 } disabled:cursor-not-allowed disabled:opacity-35`}
               >
                 <div className="flex items-start justify-between gap-2">
-                  <span className="font-serif text-sm text-[#d8bf91]">
+                  <span className="font-serif text-sm text-[rgb(var(--sep-colour-d8bf91))]">
                     {gift.name}
                   </span>
-                  <span className="text-[8px] uppercase tracking-[0.12em] text-[#8a765a]">
+                  <span className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-8a765a))]">
                     {checked ? "Selected" : "Choose"}
                   </span>
                 </div>
 
                 {gift.description ? (
-                  <p className="mt-2 text-[10px] leading-5 text-[#817565]">
+                  <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-817565))]">
                     {gift.description}
                   </p>
                 ) : null}
@@ -162,12 +162,12 @@ export function AdminAncestryGiftSelector({
           })}
         </div>
       ) : (
-        <p className="mt-4 text-[10px] italic text-[#746958]">
+        <p className="mt-4 text-[10px] italic text-[rgb(var(--sep-colour-746958))]">
           No active Ancestry Feats are available for this Ancestry.
         </p>
       )}
 
-      <p className="mt-3 text-[8px] uppercase tracking-[0.14em] text-[#6f6353]">
+      <p className="mt-3 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-6f6353))]">
         {selected.length} / 2 selected
       </p>
     </div>

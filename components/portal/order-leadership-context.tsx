@@ -197,29 +197,29 @@ export function OrderLeadershipContext() {
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <div className="border-b border-[#59432c]/35 pb-4">
-        <p className="text-[8px] uppercase tracking-[0.24em] text-[#806b50]">
+      <div className="border-b border-[rgb(var(--sep-colour-59432c))]/35 pb-4">
+        <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
           Order leadership
         </p>
 
-        <h2 className="mt-2 font-serif text-2xl text-[#dfc99f]">
+        <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">
           Manage Orders
         </h2>
       </div>
 
-      <p className="mt-4 text-xs leading-6 text-[#938673]">
+      <p className="mt-4 text-xs leading-6 text-[rgb(var(--sep-colour-938673))]">
         Manage the members, Levels
         and Roles of the Orders you
         currently lead.
       </p>
 
       <div className="mt-5">
-        <p className="mb-2 text-[8px] uppercase tracking-[0.2em] text-[#75634c]">
+        <p className="mb-2 text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-75634c))]">
           Your Orders
         </p>
 
         {error ? (
-          <p className="border border-[#743d35] bg-[#2a1512] p-3 text-[11px] leading-5 text-[#d8a49a]">
+          <p className="border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]">
             The leadership list could
             not be loaded.
           </p>
@@ -233,7 +233,7 @@ export function OrderLeadershipContext() {
               (_, index) => (
                 <div
                   key={index}
-                  className="h-11 animate-pulse border border-[#59432c]/30 bg-[#19120d]"
+                  className="h-11 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]"
                 />
               ),
             )}
@@ -250,7 +250,7 @@ export function OrderLeadershipContext() {
                       order.id,
                     )
                   }
-                  className="group flex w-full items-center gap-3 border border-[#59432c]/40 bg-[#100c09] px-3 py-3 text-left transition hover:border-[#8d693e] hover:bg-[#1d150f]"
+                  className="group flex w-full items-center gap-3 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-left transition hover:border-[rgb(var(--sep-colour-8d693e))] hover:bg-[rgb(var(--sep-colour-1d150f))]"
                 >
                   <span
                     className="h-2.5 w-2.5 shrink-0 border border-black/25"
@@ -261,13 +261,13 @@ export function OrderLeadershipContext() {
                     }}
                   />
 
-                  <span className="min-w-0 flex-1 truncate font-serif text-sm text-[#cbb28a] transition group-hover:text-[#ead0a0]">
+                  <span className="min-w-0 flex-1 truncate font-serif text-sm text-[rgb(var(--sep-colour-cbb28a))] transition group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
                     {order.name}
                   </span>
 
                   <span
                     aria-hidden="true"
-                    className="shrink-0 text-[10px] text-[#725a3d] transition group-hover:translate-y-0.5 group-hover:text-[#b88a52]"
+                    className="shrink-0 text-[10px] text-[rgb(var(--sep-colour-725a3d))] transition group-hover:translate-y-0.5 group-hover:text-[rgb(var(--sep-colour-b88a52))]"
                   >
                     ↓
                   </span>
@@ -280,17 +280,17 @@ export function OrderLeadershipContext() {
         {!loading &&
         !error &&
         orders.length === 0 ? (
-          <p className="border border-[#59432c]/30 bg-[#100c09]/60 p-3 text-[11px] leading-5 text-[#8f8271]">
+          <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
             You are not currently the
             Level 6 Head of an Order.
           </p>
         ) : null}
       </div>
 
-      <div className="mt-auto space-y-2 border-t border-[#59432c]/35 pt-4">
+      <div className="mt-auto space-y-2 border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-4">
         <Link
           href="/orders"
-          className="flex w-full items-center justify-between border border-[#765937]/55 bg-[#271c12] px-3 py-3 text-[9px] uppercase tracking-[0.16em] text-[#d0b184] transition hover:border-[#9a7445] hover:bg-[#342318]"
+          className="flex w-full items-center justify-between border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-271c12))] px-3 py-3 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d0b184))] transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:bg-[rgb(var(--sep-colour-342318))]"
         >
           <span>Public Orders</span>
           <span aria-hidden="true">
@@ -300,7 +300,7 @@ export function OrderLeadershipContext() {
 
         <Link
           href="/associations"
-          className="flex w-full items-center justify-between border border-[#59432c]/40 bg-[#100c09] px-3 py-3 text-[9px] uppercase tracking-[0.16em] text-[#9f8968] transition hover:border-[#765937] hover:text-[#d0b184]"
+          className="flex w-full items-center justify-between border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-9f8968))] transition hover:border-[rgb(var(--sep-colour-765937))] hover:text-[rgb(var(--sep-colour-d0b184))]"
         >
           <span>Associations</span>
           <span aria-hidden="true">

@@ -99,6 +99,149 @@ export async function updateUserStaffRole(
 
 }
 
+function readRequiredBoolean(
+  value: FormDataEntryValue | null,
+): boolean {
+  if (value === "true") return true;
+  if (value === "false") return false;
+
+  throw new Error(
+    "The selected access value is invalid.",
+  );
+}
+
+export async function setUserPortalSkinEntitlement(
+  formData: FormData,
+) {
+  const administrator = await requireAdmin();
+
+  const userId = readRequiredUuid(formData.get("userId"));
+  const skinId = readRequiredUuid(formData.get("skinId"));
+  const enabled = readRequiredBoolean(formData.get("enabled"));
+
+  const sourceValue = formData.get("source");
+  const source =
+    sourceValue === "paid" || sourceValue === "staff"
+      ? sourceValue
+      : null;
+
+  if (!source) {
+    throw new Error(
+      "The selected portal skin unlock source is invalid.",
+    );
+  }
+
+  const noteValue = formData.get("note");
+  const note =
+    typeof noteValue === "string" && noteValue.trim()
+      ? noteValue.trim().slice(0, 1000)
+      : null;
+
+  const admin = createAdminClient();
+
+  const { data: skin, error: skinError } =
+    await admin
+      .from("portal_skins")
+      .select("id, slug, is_default")
+      .eq("id", skinId)
+      .maybeSingle();
+
+  if (skinError || !skin) {
+    throw new Error(
+      `Unable to load portal skin: ${
+        skinError?.message ?? "Skin not found."
+      }`,
+    );
+  }
+
+  if (skin.is_default) {
+    throw new Error(
+      "The default portal skin does not require an entitlement.",
+    );
+  }
+
+  const { error: entitlementError } =
+    await admin
+      .from("user_portal_skin_entitlements")
+      .upsert(
+        {
+          user_id: userId,
+          skin_id: skinId,
+          enabled,
+          source,
+          note,
+          granted_by: administrator.userId,
+          granted_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "user_id,skin_id" },
+      );
+
+  if (entitlementError) {
+    throw new Error(
+      `Unable to update portal skin access: ${entitlementError.message}`,
+    );
+  }
+
+  if (!enabled) {
+    const {
+      data: preference,
+      error: preferenceError,
+    } = await admin
+      .from("user_portal_preferences")
+      .select("selected_skin_id")
+      .eq("user_id", userId)
+      .maybeSingle();
+
+    if (preferenceError) {
+      throw new Error(
+        `Skin access changed, but the preference could not be checked: ${preferenceError.message}`,
+      );
+    }
+
+    if (preference?.selected_skin_id === skinId) {
+      const {
+        data: defaultSkin,
+        error: defaultSkinError,
+      } = await admin
+        .from("portal_skins")
+        .select("id")
+        .eq("is_default", true)
+        .eq("is_active", true)
+        .maybeSingle();
+
+      if (defaultSkinError || !defaultSkin) {
+        throw new Error(
+          `Skin access was revoked, but the default skin could not be found: ${
+            defaultSkinError?.message ?? "Default skin not found."
+          }`,
+        );
+      }
+
+      const { error: resetError } =
+        await admin
+          .from("user_portal_preferences")
+          .upsert(
+            {
+              user_id: userId,
+              selected_skin_id: defaultSkin.id,
+              updated_at: new Date().toISOString(),
+            },
+            { onConflict: "user_id" },
+          );
+
+      if (resetError) {
+        throw new Error(
+          `Skin access was revoked, but the account could not be reset to the default skin: ${resetError.message}`,
+        );
+      }
+    }
+  }
+
+  revalidatePath("/admin/users");
+  revalidatePath("/appearance");
+}
+
 function readRequiredEmail(
   value: FormDataEntryValue | null,
 ): string {

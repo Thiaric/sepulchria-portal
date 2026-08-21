@@ -255,15 +255,15 @@ export default async function AdminCharactersPage({
       <div className="mx-auto max-w-6xl">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-[9px] uppercase tracking-[0.28em] text-[#8c704b]">
+            <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
               Administration
             </p>
 
-            <h2 className="mt-2 font-serif text-4xl text-[#ead5ac]">
+            <h2 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">
               Character Management
             </h2>
 
-            <p className="mt-3 max-w-3xl text-sm leading-7 text-[#a99b89]">
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))]">
               Search the character archive,
               review submitted sheets and open
               the complete staff record of each
@@ -271,26 +271,26 @@ export default async function AdminCharactersPage({
             </p>
           </div>
 
-          <span className="border border-[#60482e]/45 bg-[#15100d] px-4 py-3 text-[10px] uppercase tracking-[0.18em] text-[#a99069]">
+          <span className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 text-[10px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a99069))]">
             {filteredCharacters.length} of{" "}
             {characters.length} characters
           </span>
         </div>
 
         {submittedCount > 0 ? (
-          <section className="mt-8 flex flex-wrap items-center justify-between gap-4 border border-[#a87532]/75 bg-[#24190f] px-5 py-4 shadow-[0_0_18px_rgba(168,117,50,0.12)]">
+          <section className="mt-8 flex flex-wrap items-center justify-between gap-4 border border-[rgb(var(--sep-colour-a87532))]/75 bg-[rgb(var(--sep-colour-24190f))] px-5 py-4 shadow-[0_0_18px_rgba(var(--sep-rgb-168-117-50),0.12)]">
             <div>
-              <p className="text-[8px] uppercase tracking-[0.24em] text-[#c28b45]">
+              <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-c28b45))]">
                 Staff attention required
               </p>
-              <p className="mt-1 font-serif text-xl text-[#efd4a2]">
+              <p className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-efd4a2))]">
                 {submittedCount} character{submittedCount === 1 ? "" : "s"} awaiting review
               </p>
             </div>
 
             <Link
               href="/admin/characters?status=submitted"
-              className="border border-[#b1844b] bg-[#3b2919] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[#f1d6a5] transition hover:border-[#d09c56] hover:bg-[#50371f]"
+              className="border border-[rgb(var(--sep-colour-b1844b))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-f1d6a5))] transition hover:border-[rgb(var(--sep-colour-d09c56))] hover:bg-[rgb(var(--sep-colour-50371f))]"
             >
               Review submitted
             </Link>
@@ -299,7 +299,7 @@ export default async function AdminCharactersPage({
 
         <form
           method="get"
-          className="mt-8 border border-[#60482e]/45 bg-[#15100d] p-5"
+          className="mt-8 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5"
         >
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             <FilterField label="Search">
@@ -308,7 +308,7 @@ export default async function AdminCharactersPage({
                 name="q"
                 defaultValue={params.q ?? ""}
                 placeholder="Name, title or slug"
-                className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+                className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
               />
             </FilterField>
 
@@ -316,7 +316,7 @@ export default async function AdminCharactersPage({
               <select
                 name="status"
                 defaultValue={statusFilter}
-                className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
               >
                 <option value="">
                   All statuses
@@ -344,7 +344,7 @@ export default async function AdminCharactersPage({
               <select
                 name="race"
                 defaultValue={raceFilter}
-                className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
               >
                 <option value="">
                   All Ancestries
@@ -367,7 +367,7 @@ export default async function AdminCharactersPage({
                 defaultValue={
                   associationFilter
                 }
-                className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
               >
                 <option value="">
                   All associations
@@ -391,7 +391,7 @@ export default async function AdminCharactersPage({
             {filtersAreActive ? (
               <Link
                 href="/admin/characters"
-                className="border border-[#60482e]/55 bg-[#100c09] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[#aa9678] transition hover:border-[#987344] hover:text-[#e7cca0]"
+                className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-aa9678))] transition hover:border-[rgb(var(--sep-colour-987344))] hover:text-[rgb(var(--sep-colour-e7cca0))]"
               >
                 Clear filters
               </Link>
@@ -399,7 +399,7 @@ export default async function AdminCharactersPage({
 
             <button
               type="submit"
-              className="border border-[#987344] bg-[#3b2919] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[#efd6a8] transition hover:border-[#b98c50] hover:bg-[#50371f]"
+              className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
             >
               Apply filters
             </button>
@@ -425,15 +425,15 @@ export default async function AdminCharactersPage({
               return (
                 <section
                   key={character.id}
-                  className={`overflow-hidden border bg-[#15100d] ${
+                  className={`overflow-hidden border bg-[rgb(var(--sep-colour-15100d))] ${
                     character.status === "submitted"
-                      ? "border-[#b17a35] shadow-[0_0_20px_rgba(177,122,53,0.18)]"
-                      : "border-[#60482e]/45"
+                      ? "border-[rgb(var(--sep-colour-b17a35))] shadow-[0_0_20px_rgba(var(--sep-rgb-177-122-53),0.18)]"
+                      : "border-[rgb(var(--sep-colour-60482e))]/45"
                   }`}
                 >
                   <div className="grid lg:grid-cols-[110px_minmax(0,1fr)_210px]">
-                    <div className="border-b border-[#60482e]/35 bg-[#0f0b09] p-4 lg:border-b-0 lg:border-r">
-                      <div className="relative mx-auto aspect-[3/4] w-[78px] overflow-hidden border border-[#765937]/55 bg-[#090706]">
+                    <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-0f0b09))] p-4 lg:border-b-0 lg:border-r">
+                      <div className="relative mx-auto aspect-[3/4] w-[78px] overflow-hidden border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-090706))]">
                         {character.portrait_url ? (
                           <Image
                             src={
@@ -445,7 +445,7 @@ export default async function AdminCharactersPage({
                             className="object-cover"
                           />
                         ) : (
-                          <div className="flex h-full items-center justify-center font-serif text-2xl text-[#705334]">
+                          <div className="flex h-full items-center justify-center font-serif text-2xl text-[rgb(var(--sep-colour-705334))]">
                             {character.first_name
                               .charAt(0)
                               .toUpperCase()}
@@ -461,19 +461,19 @@ export default async function AdminCharactersPage({
                       <div className="flex flex-wrap items-start justify-between gap-3">
                         <div>
                           <div className="flex flex-wrap items-center gap-3">
-                            <h3 className="font-serif text-2xl text-[#e3cda5]">
+                            <h3 className="font-serif text-2xl text-[rgb(var(--sep-colour-e3cda5))]">
                               {displayName}
                             </h3>
 
                             {character.status === "submitted" ? (
-                              <span className="animate-pulse border border-[#b17a35]/80 bg-[#3a2512] px-2 py-1 text-[7px] uppercase tracking-[0.18em] text-[#f0c77f]">
+                              <span className="animate-pulse border border-[rgb(var(--sep-colour-b17a35))]/80 bg-[rgb(var(--sep-colour-3a2512))] px-2 py-1 text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-f0c77f))]">
                                 Awaiting review
                               </span>
                             ) : null}
                           </div>
 
                           {character.title ? (
-                            <p className="mt-1 text-xs italic text-[#9f8968]">
+                            <p className="mt-1 text-xs italic text-[rgb(var(--sep-colour-9f8968))]">
                               {character.title}
                             </p>
                           ) : null}
@@ -512,17 +512,17 @@ export default async function AdminCharactersPage({
                       </div>
                     </div>
 
-                    <div className="flex flex-col justify-center gap-3 border-t border-[#60482e]/35 bg-[#100c09] p-5 lg:border-l lg:border-t-0">
+                    <div className="flex flex-col justify-center gap-3 border-t border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] p-5 lg:border-l lg:border-t-0">
                       <Link
                         href={`/admin/characters/${character.id}`}
-                        className="border border-[#987344] bg-[#3b2919] px-4 py-3 text-center text-[9px] uppercase tracking-[0.18em] text-[#efd6a8] transition hover:border-[#b98c50] hover:bg-[#50371f]"
+                        className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-3 text-center text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
                       >
                         Manage character
                       </Link>
 
                       <Link
                         href={`/characters/${character.public_slug}`}
-                        className="border border-[#60482e]/55 bg-[#15100d] px-4 py-3 text-center text-[9px] uppercase tracking-[0.18em] text-[#ac9879] transition hover:border-[#987344] hover:text-[#e7cca0]"
+                        className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 text-center text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-ac9879))] transition hover:border-[rgb(var(--sep-colour-987344))] hover:text-[rgb(var(--sep-colour-e7cca0))]"
                       >
                         Public profile
                       </Link>
@@ -534,8 +534,8 @@ export default async function AdminCharactersPage({
           )}
 
           {filteredCharacters.length === 0 ? (
-            <section className="border border-[#60482e]/45 bg-[#15100d] p-10 text-center">
-              <p className="font-serif text-xl text-[#b9a88f]">
+            <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-10 text-center">
+              <p className="font-serif text-xl text-[rgb(var(--sep-colour-b9a88f))]">
                 No characters match the selected
                 filters.
               </p>
@@ -543,7 +543,7 @@ export default async function AdminCharactersPage({
               {filtersAreActive ? (
                 <Link
                   href="/admin/characters"
-                  className="mt-4 inline-block text-[9px] uppercase tracking-[0.18em] text-[#b29266] hover:text-[#ead0a3]"
+                  className="mt-4 inline-block text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-b29266))] hover:text-[rgb(var(--sep-colour-ead0a3))]"
                 >
                   Clear filters →
                 </Link>
@@ -565,7 +565,7 @@ function FilterField({
 }) {
   return (
     <label className="block">
-      <span className="mb-2 block text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+      <span className="mb-2 block text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
         {label}
       </span>
 
@@ -583,11 +583,11 @@ function CharacterDetail({
 }) {
   return (
     <div>
-      <p className="text-[8px] uppercase tracking-[0.2em] text-[#806b50]">
+      <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
         {label}
       </p>
 
-      <p className="mt-2 text-sm text-[#c9b99e]">
+      <p className="mt-2 text-sm text-[rgb(var(--sep-colour-c9b99e))]">
         {value}
       </p>
     </div>

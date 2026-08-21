@@ -221,17 +221,17 @@ export default async function NewPrivateMessagePage() {
     <main className="mx-auto max-w-3xl p-5 sm:p-7">
       <Link
         href="/messages"
-        className="text-[9px] uppercase tracking-[0.18em] text-[#a98b61]"
+        className="text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a98b61))]"
       >
         ← Messages
       </Link>
 
-      <section className="mt-4 border border-[#60482e]/45 bg-[#15100d] p-5 sm:p-6">
-        <p className="text-[8px] uppercase tracking-[0.22em] text-[#8c704b]">
+      <section className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6">
+        <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-8c704b))]">
           Private correspondence
         </p>
 
-        <h1 className="mt-2 font-serif text-3xl text-[#e2c99d]">
+        <h1 className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-e2c99d))]">
           New message
         </h1>
 
@@ -252,7 +252,7 @@ export default async function NewPrivateMessagePage() {
           />
 
           <label className="block">
-            <span className="mb-2 block text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
+            <span className="mb-2 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
               Group name (optional)
             </span>
 
@@ -260,13 +260,13 @@ export default async function NewPrivateMessagePage() {
               name="groupTitle"
               maxLength={80}
               placeholder="Used only when several recipients are selected"
-              className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-2.5 text-xs text-[#d7c4a5] outline-none"
+              className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none"
             />
           </label>
 
           <button
             type="submit"
-            className="border border-[#a07742] bg-[#402a17] px-5 py-2.5 text-[9px] uppercase tracking-[0.18em] text-[#f1d5a2]"
+            className="border border-[rgb(var(--sep-colour-a07742))] bg-[rgb(var(--sep-colour-402a17))] px-5 py-2.5 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-f1d5a2))]"
           >
             Start conversation
           </button>

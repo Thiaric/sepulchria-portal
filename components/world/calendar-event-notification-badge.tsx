@@ -272,7 +272,7 @@ export function CalendarEventNotificationBadge({
           ? ""
           : "s"
       }`}
-      className="absolute -right-1.5 -top-1.5 z-20 flex h-4 min-w-4 items-center justify-center rounded-full border border-[#d6ad6b] bg-[#8f321f] px-1 text-[8px] font-bold leading-none text-[#fff1d5] shadow-[0_2px_8px_rgba(0,0,0,0.65)]"
+      className="absolute -right-1.5 -top-1.5 z-20 flex h-4 min-w-4 items-center justify-center rounded-full border border-[rgb(var(--sep-colour-d6ad6b))] bg-[rgb(var(--sep-colour-8f321f))] px-1 text-[8px] font-bold leading-none text-[rgb(var(--sep-colour-fff1d5))] shadow-[0_2px_8px_rgba(var(--sep-rgb-0-0-0),0.65)]"
     >
       {count > 99
         ? "99+"

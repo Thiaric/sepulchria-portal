@@ -95,10 +95,10 @@ function uniqueName(row: UniqueRow) {
 }
 
 const inputClass =
-  "w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-2.5 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]";
+  "w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]";
 
 const buttonClass =
-  "border border-[#987344] bg-[#3b2919] px-4 py-2.5 text-[8px] uppercase tracking-[0.16em] text-[#efd6a8]";
+  "border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-2.5 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-efd6a8))]";
 
 export default async function AdminCharacterInventoryPage({
   params,
@@ -228,16 +228,16 @@ export default async function AdminCharacterInventoryPage({
           <div>
             <Link
               href={`/admin/characters/${character.id}`}
-              className="text-[9px] uppercase tracking-[0.18em] text-[#9c805b] transition hover:text-[#e4c796]"
+              className="text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9c805b))] transition hover:text-[rgb(var(--sep-colour-e4c796))]"
             >
               ← Character administration
             </Link>
 
-            <p className="mt-5 text-[9px] uppercase tracking-[0.28em] text-[#8c704b]">
+            <p className="mt-5 text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
               Inventory administration
             </p>
 
-            <h1 className="mt-2 font-serif text-4xl text-[#ead5ac]">
+            <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">
               {characterName(character)}
             </h1>
           </div>
@@ -245,14 +245,14 @@ export default async function AdminCharacterInventoryPage({
           <div className="flex flex-wrap gap-2">
             <Link
               href={`/characters/${character.public_slug}`}
-              className="border border-[#60482e]/55 bg-[#15100d] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[#ac9879]"
+              className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-ac9879))]"
             >
               Public profile
             </Link>
 
             <Link
               href="/admin/items/vault"
-              className="border border-[#987344] bg-[#3b2919] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[#efd6a8]"
+              className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd6a8))]"
             >
               Admin Vault
             </Link>
@@ -266,11 +266,11 @@ export default async function AdminCharacterInventoryPage({
         ) : null}
 
         <div className="mt-7 grid gap-5 xl:grid-cols-2">
-          <section className="border border-[#60482e]/45 bg-[#15100d] p-5">
-            <p className="text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+          <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5">
+            <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
               Standard stock
             </p>
-            <h2 className="mt-1 font-serif text-2xl text-[#dfc99f]">
+            <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">
               Grant standard Item
             </h2>
 
@@ -312,11 +312,11 @@ export default async function AdminCharacterInventoryPage({
             </form>
           </section>
 
-          <section className="border border-[#60482e]/45 bg-[#15100d] p-5">
-            <p className="text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+          <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5">
+            <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
               Individual instance
             </p>
-            <h2 className="mt-1 font-serif text-2xl text-[#dfc99f]">
+            <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">
               Create Bespoke Unique Item
             </h2>
 
@@ -377,11 +377,11 @@ export default async function AdminCharacterInventoryPage({
           </section>
         </div>
 
-        <section className="mt-6 border border-[#60482e]/45 bg-[#15100d] p-5">
-          <p className="text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+        <section className="mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5">
+          <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
             Current Inventory
           </p>
-          <h2 className="mt-1 font-serif text-2xl text-[#dfc99f]">
+          <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">
             Standard Items
           </h2>
 
@@ -397,18 +397,18 @@ export default async function AdminCharacterInventoryPage({
                 return (
                   <article
                     key={row.id}
-                    className="border border-[#59432c]/40 bg-[#100c09] p-4"
+                    className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-4"
                   >
-                    <p className="font-serif text-lg text-[#d8bf91]">
+                    <p className="font-serif text-lg text-[rgb(var(--sep-colour-d8bf91))]">
                       {item?.name ?? "Unknown Item"}
                       {row.quantity > 1 ? (
-                        <span className="ml-2 font-sans text-[10px] text-[#8f8271]">
+                        <span className="ml-2 font-sans text-[10px] text-[rgb(var(--sep-colour-8f8271))]">
                           ×{row.quantity}
                         </span>
                       ) : null}
                     </p>
 
-                    <p className="mt-1 text-[8px] uppercase tracking-[0.13em] text-[#756958]">
+                    <p className="mt-1 text-[8px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-756958))]">
                       {category?.name ?? "Item"}
                       {parent ? ` · In ${uniqueName(parent)}` : " · Loose"}
                     </p>
@@ -459,15 +459,15 @@ export default async function AdminCharacterInventoryPage({
                 return (
                   <article
                     key={row.id}
-                    className="border border-[#59432c]/40 bg-[#100c09] p-4"
+                    className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-4"
                   >
-                    <p className="font-serif text-lg text-[#d8bf91]">
+                    <p className="font-serif text-lg text-[rgb(var(--sep-colour-d8bf91))]">
                       {item?.name ?? "Unknown Container"}
                     </p>
-                    <p className="mt-1 text-[8px] uppercase tracking-[0.13em] text-[#756958]">
+                    <p className="mt-1 text-[8px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-756958))]">
                       {category?.name ?? "Container"} · Loose
                     </p>
-                    <p className="mt-3 text-[9px] leading-5 text-[#8f8271]">
+                    <p className="mt-3 text-[9px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
                       Standard Container possession.
                     </p>
                     <AdminActionForm
@@ -490,17 +490,17 @@ export default async function AdminCharacterInventoryPage({
               })}
             </div>
           ) : (
-            <p className="mt-4 text-sm italic text-[#817565]">
+            <p className="mt-4 text-sm italic text-[rgb(var(--sep-colour-817565))]">
               No standard Items assigned.
             </p>
           )}
         </section>
 
-        <section className="mt-6 border border-[#60482e]/45 bg-[#15100d] p-5">
-          <p className="text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+        <section className="mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5">
+          <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
             Individual possessions
           </p>
-          <h2 className="mt-1 font-serif text-2xl text-[#dfc99f]">
+          <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">
             Unique Items
           </h2>
 
@@ -520,24 +520,24 @@ export default async function AdminCharacterInventoryPage({
                 return (
                   <details
                     key={row.id}
-                    className="border border-[#59432c]/40 bg-[#100c09]"
+                    className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))]"
                   >
                     <summary className="cursor-pointer list-none p-4">
                       <div className="flex items-center justify-between gap-3">
                         <div>
-                          <p className="font-serif text-lg text-[#d8bf91]">
+                          <p className="font-serif text-lg text-[rgb(var(--sep-colour-d8bf91))]">
                             {uniqueName(row)}
                           </p>
-                          <p className="mt-1 text-[8px] uppercase tracking-[0.13em] text-[#756958]">
+                          <p className="mt-1 text-[8px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-756958))]">
                             Unique · {item?.name ?? "Unknown master"}
                             {isContainer ? " · Container" : ""}
                           </p>
                         </div>
-                        <span className="text-xs text-[#806b50]">↓</span>
+                        <span className="text-xs text-[rgb(var(--sep-colour-806b50))]">↓</span>
                       </div>
                     </summary>
 
-                    <div className="border-t border-[#59432c]/35 p-4">
+                    <div className="border-t border-[rgb(var(--sep-colour-59432c))]/35 p-4">
                       <AdminActionForm action={updateUniqueItem}>
                         <input type="hidden" name="instanceId" value={row.id} />
                         <input type="hidden" name="returnTo" value={returnTo} />
@@ -605,8 +605,8 @@ export default async function AdminCharacterInventoryPage({
                         </div>
                       </AdminActionForm>
 
-                      <div className="mt-5 border-t border-[#59432c]/35 pt-4">
-                        <p className="text-[8px] uppercase tracking-[0.16em] text-[#806b50]">
+                      <div className="mt-5 border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-4">
+                        <p className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))]">
                           Provenance
                         </p>
 
@@ -615,19 +615,19 @@ export default async function AdminCharacterInventoryPage({
                             {history.slice(0, 8).map((entry) => (
                               <div
                                 key={entry.id}
-                                className="border-l border-[#765937]/55 pl-3"
+                                className="border-l border-[rgb(var(--sep-colour-765937))]/55 pl-3"
                               >
-                                <p className="text-[9px] uppercase tracking-[0.12em] text-[#a68a61]">
+                                <p className="text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a68a61))]">
                                   {entry.event_type.replace(/_/g, " ")}
                                 </p>
-                                <p className="mt-1 text-[10px] leading-5 text-[#817565]">
+                                <p className="mt-1 text-[10px] leading-5 text-[rgb(var(--sep-colour-817565))]">
                                   {entry.details}
                                 </p>
                               </div>
                             ))}
                           </div>
                         ) : (
-                          <p className="mt-2 text-xs italic text-[#756958]">
+                          <p className="mt-2 text-xs italic text-[rgb(var(--sep-colour-756958))]">
                             No provenance entries.
                           </p>
                         )}
@@ -636,7 +636,7 @@ export default async function AdminCharacterInventoryPage({
                       <AdminActionForm
                         action={sendUniqueItemToVault}
                         confirmMessage={`Move ${uniqueName(row)} to the Admin Vault?`}
-                        className="mt-5 flex justify-end border-t border-[#59432c]/35 pt-4"
+                        className="mt-5 flex justify-end border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-4"
                       >
                         <input type="hidden" name="instanceId" value={row.id} />
                         <input type="hidden" name="returnTo" value={returnTo} />
@@ -644,7 +644,7 @@ export default async function AdminCharacterInventoryPage({
 
                         <button
                           type="submit"
-                          className="border border-[#765937]/55 bg-[#20160f] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[#c8a879]"
+                          className="border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-20160f))] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-c8a879))]"
                         >
                           Move to Admin Vault
                         </button>
@@ -655,7 +655,7 @@ export default async function AdminCharacterInventoryPage({
               })}
             </div>
           ) : (
-            <p className="mt-4 text-sm italic text-[#817565]">
+            <p className="mt-4 text-sm italic text-[rgb(var(--sep-colour-817565))]">
               No Unique Items assigned.
             </p>
           )}

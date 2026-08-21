@@ -39,7 +39,7 @@ export function DeleteConversationForm({
 
       <button
         type="submit"
-        className="border border-[#7b4035] px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-[#d99b8e]"
+        className="border border-[rgb(var(--sep-colour-7b4035))] px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-d99b8e))]"
       >
         {isGroup
           ? "Leave conversation"

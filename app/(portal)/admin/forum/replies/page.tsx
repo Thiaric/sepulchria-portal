@@ -459,11 +459,11 @@ export default async function ForumRepliesManagementPage({
     <main className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <nav
         aria-label="Forum breadcrumb"
-        className="mb-6 flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.16em] text-[#746653]"
+        className="mb-6 flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-746653))]"
       >
         <Link
           href="/admin"
-          className="transition hover:text-[#c7a16d]"
+          className="transition hover:text-[rgb(var(--sep-colour-c7a16d))]"
         >
           Administration
         </Link>
@@ -472,31 +472,31 @@ export default async function ForumRepliesManagementPage({
 
         <Link
           href="/admin/forum"
-          className="transition hover:text-[#c7a16d]"
+          className="transition hover:text-[rgb(var(--sep-colour-c7a16d))]"
         >
           Forum
         </Link>
 
         <span aria-hidden="true">/</span>
 
-        <span className="text-[#a48c6c]">
+        <span className="text-[rgb(var(--sep-colour-a48c6c))]">
           Replies
         </span>
       </nav>
 
-      <header className="overflow-hidden border border-[#60482e]/45 bg-[#15100d]">
-        <div className="border-b border-[#60482e]/35 bg-[#1a130e] px-5 py-7 sm:px-7">
+      <header className="overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
+        <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-1a130e))] px-5 py-7 sm:px-7">
           <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <p className="text-[8px] uppercase tracking-[0.22em] text-amber-500">
                 Forum recycle bin
               </p>
 
-              <h1 className="mt-3 font-serif text-3xl text-[#dec69d] sm:text-4xl">
+              <h1 className="mt-3 font-serif text-3xl text-[rgb(var(--sep-colour-dec69d))] sm:text-4xl">
                 Forum Replies
               </h1>
 
-              <p className="mt-3 max-w-3xl text-sm leading-6 text-[#817567]">
+              <p className="mt-3 max-w-3xl text-sm leading-6 text-[rgb(var(--sep-colour-817567))]">
                 Review individual replies, find
                 soft-deleted records and permanently
                 erase only the ones that no longer need
@@ -507,14 +507,14 @@ export default async function ForumRepliesManagementPage({
             <div className="flex shrink-0 flex-wrap gap-2">
               <Link
                 href="/admin/forum/topics?status=deleted"
-                className="border border-[#60482e]/55 bg-[#100c09] px-4 py-3 text-[8px] uppercase tracking-[0.15em] text-[#927b5b] transition hover:border-[#876640] hover:text-[#d8b986]"
+                className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-927b5b))] transition hover:border-[rgb(var(--sep-colour-876640))] hover:text-[rgb(var(--sep-colour-d8b986))]"
               >
                 Deleted topics
               </Link>
 
               <Link
                 href="/admin/forum/moderation"
-                className="border border-[#745633]/65 bg-[#21170f] px-4 py-3 text-[8px] uppercase tracking-[0.15em] text-[#c7a470] transition hover:border-[#a47a44] hover:bg-[#2c1d12] hover:text-[#ebca93]"
+                className="border border-[rgb(var(--sep-colour-745633))]/65 bg-[rgb(var(--sep-colour-21170f))] px-4 py-3 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-c7a470))] transition hover:border-[rgb(var(--sep-colour-a47a44))] hover:bg-[rgb(var(--sep-colour-2c1d12))] hover:text-[rgb(var(--sep-colour-ebca93))]"
               >
                 Moderation log
               </Link>
@@ -522,7 +522,7 @@ export default async function ForumRepliesManagementPage({
           </div>
         </div>
 
-        <dl className="grid grid-cols-2 divide-x divide-[#60482e]/30 bg-[#100c09] sm:grid-cols-3">
+        <dl className="grid grid-cols-2 divide-x divide-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-100c09))] sm:grid-cols-3">
           <Statistic
             label="Results"
             value={totalPosts}
@@ -560,7 +560,7 @@ export default async function ForumRepliesManagementPage({
         </div>
       ) : null}
 
-      <section className="mt-6 border border-[#60482e]/45 bg-[#15100d]">
+      <section className="mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
         <form
           method="get"
           className="grid gap-4 px-5 py-5 sm:px-6 lg:grid-cols-[minmax(240px,1fr)_180px_auto]"
@@ -568,7 +568,7 @@ export default async function ForumRepliesManagementPage({
           <div>
             <label
               htmlFor="reply-search"
-              className="block text-[8px] uppercase tracking-[0.16em] text-[#927b5b]"
+              className="block text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-927b5b))]"
             >
               Search reply text
             </label>
@@ -586,7 +586,7 @@ export default async function ForumRepliesManagementPage({
           <div>
             <label
               htmlFor="reply-status"
-              className="block text-[8px] uppercase tracking-[0.16em] text-[#927b5b]"
+              className="block text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-927b5b))]"
             >
               Status
             </label>
@@ -617,7 +617,7 @@ export default async function ForumRepliesManagementPage({
 
             <Link
               href="/admin/forum/replies"
-              className="border border-[#60482e]/55 bg-[#100c09] px-4 py-3 text-center text-[8px] uppercase tracking-[0.15em] text-[#927b5b] transition hover:border-[#876640] hover:text-[#d8b986]"
+              className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-center text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-927b5b))] transition hover:border-[rgb(var(--sep-colour-876640))] hover:text-[rgb(var(--sep-colour-d8b986))]"
             >
               Reset
             </Link>
@@ -625,9 +625,9 @@ export default async function ForumRepliesManagementPage({
         </form>
       </section>
 
-      <section className="mt-6 overflow-hidden border border-[#60482e]/45 bg-[#15100d]">
+      <section className="mt-6 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
         {posts.length > 0 ? (
-          <div className="divide-y divide-[#60482e]/30">
+          <div className="divide-y divide-[rgb(var(--sep-colour-60482e))]/30">
             {posts.map((post) => {
               const topic = topicMap.get(
                 post.topic_id,
@@ -669,7 +669,7 @@ export default async function ForumRepliesManagementPage({
                 >
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
-                      <h2 className="font-serif text-lg text-[#d7bf98]">
+                      <h2 className="font-serif text-lg text-[rgb(var(--sep-colour-d7bf98))]">
                         {topic?.title ??
                           "Missing discussion"}
                       </h2>
@@ -691,16 +691,16 @@ export default async function ForumRepliesManagementPage({
                       ) : null}
                     </div>
 
-                    <p className="mt-2 text-[8px] uppercase tracking-[0.15em] text-[#6e604d]">
+                    <p className="mt-2 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-6e604d))]">
                       {section?.name ??
                         "Unknown section"}
                     </p>
 
-                    <p className="mt-4 break-words border-l border-[#6e5132]/55 pl-4 text-sm leading-6 text-[#a99a84]">
+                    <p className="mt-4 break-words border-l border-[rgb(var(--sep-colour-6e5132))]/55 pl-4 text-sm leading-6 text-[rgb(var(--sep-colour-a99a84))]">
                       {createExcerpt(post.body)}
                     </p>
 
-                    <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs text-[#817567]">
+                    <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs text-[rgb(var(--sep-colour-817567))]">
                       <span>
                         By {authorName}
                       </span>
@@ -726,7 +726,7 @@ export default async function ForumRepliesManagementPage({
                     !topic?.deleted_at ? (
                       <Link
                         href={`${publicTopicUrl}#post-${post.id}`}
-                        className="border border-[#60482e]/50 bg-[#110d0a] px-4 py-3 text-center text-[8px] uppercase tracking-[0.15em] text-[#927b5b] transition hover:border-[#876640] hover:text-[#d8b986]"
+                        className="border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-110d0a))] px-4 py-3 text-center text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-927b5b))] transition hover:border-[rgb(var(--sep-colour-876640))] hover:text-[rgb(var(--sep-colour-d8b986))]"
                       >
                         Open discussion
                       </Link>
@@ -771,7 +771,7 @@ export default async function ForumRepliesManagementPage({
                             name="confirmation"
                             required
                             autoComplete="off"
-                            className="mt-2 w-full border border-red-900/70 bg-[#100909] px-3 py-2 text-xs text-red-200 outline-none focus:border-red-600"
+                            className="mt-2 w-full border border-red-900/70 bg-[rgb(var(--sep-colour-100909))] px-3 py-2 text-xs text-red-200 outline-none focus:border-red-600"
                           />
 
                           <button
@@ -790,11 +790,11 @@ export default async function ForumRepliesManagementPage({
           </div>
         ) : (
           <div className="px-6 py-14 text-center">
-            <p className="font-serif text-xl text-[#cdb590]">
+            <p className="font-serif text-xl text-[rgb(var(--sep-colour-cdb590))]">
               No replies found
             </p>
 
-            <p className="mt-3 text-sm text-[#817567]">
+            <p className="mt-3 text-sm text-[rgb(var(--sep-colour-817567))]">
               No forum replies match the
               selected filters.
             </p>
@@ -805,9 +805,9 @@ export default async function ForumRepliesManagementPage({
       {totalPages > 1 ? (
         <nav
           aria-label="Reply pagination"
-          className="mt-6 flex flex-wrap items-center justify-between gap-4 border border-[#60482e]/45 bg-[#15100d] px-5 py-4"
+          className="mt-6 flex flex-wrap items-center justify-between gap-4 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-5 py-4"
         >
-          <p className="text-[8px] uppercase tracking-[0.15em] text-[#75644d]">
+          <p className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-75644d))]">
             Page {requestedPage} of {totalPages}
           </p>
 
@@ -819,7 +819,7 @@ export default async function ForumRepliesManagementPage({
                   status,
                   search,
                 })}
-                className="border border-[#60482e]/55 bg-[#100c09] px-4 py-3 text-[8px] uppercase tracking-[0.15em] text-[#927b5b] transition hover:border-[#876640] hover:text-[#d8b986]"
+                className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-927b5b))] transition hover:border-[rgb(var(--sep-colour-876640))] hover:text-[rgb(var(--sep-colour-d8b986))]"
               >
                 Previous
               </Link>
@@ -832,7 +832,7 @@ export default async function ForumRepliesManagementPage({
                   status,
                   search,
                 })}
-                className="border border-[#745633]/65 bg-[#21170f] px-4 py-3 text-[8px] uppercase tracking-[0.15em] text-[#c7a470] transition hover:border-[#a47a44] hover:bg-[#2c1d12] hover:text-[#ebca93]"
+                className="border border-[rgb(var(--sep-colour-745633))]/65 bg-[rgb(var(--sep-colour-21170f))] px-4 py-3 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-c7a470))] transition hover:border-[rgb(var(--sep-colour-a47a44))] hover:bg-[rgb(var(--sep-colour-2c1d12))] hover:text-[rgb(var(--sep-colour-ebca93))]"
               >
                 Next
               </Link>
@@ -845,7 +845,7 @@ export default async function ForumRepliesManagementPage({
 }
 
 const inputClassName =
-  "mt-2 w-full border border-[#60482e]/55 bg-[#100c09] px-4 py-3 text-sm text-[#d5c2a4] outline-none transition placeholder:text-[#5f5447] focus:border-[#a47a44] focus:ring-1 focus:ring-[#a47a44]/40";
+  "mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-sm text-[rgb(var(--sep-colour-d5c2a4))] outline-none transition placeholder:text-[rgb(var(--sep-colour-5f5447))] focus:border-[rgb(var(--sep-colour-a47a44))] focus:ring-1 focus:ring-[rgb(var(--sep-colour-a47a44))]/40";
 
 function Statistic({
   label,
@@ -856,11 +856,11 @@ function Statistic({
 }) {
   return (
     <div className="px-4 py-4 text-center sm:px-5">
-      <dt className="text-[7px] uppercase tracking-[0.17em] text-[#665946]">
+      <dt className="text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-665946))]">
         {label}
       </dt>
 
-      <dd className="mt-2 font-serif text-lg text-[#bda17b]">
+      <dd className="mt-2 font-serif text-lg text-[rgb(var(--sep-colour-bda17b))]">
         {value}
       </dd>
     </div>

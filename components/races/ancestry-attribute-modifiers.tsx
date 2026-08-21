@@ -35,12 +35,12 @@ export function AncestryAttributeModifiers({
     <section
       className={
         compact
-          ? "mt-5 border-t border-[#60482e]/35 pt-4"
-          : "border border-[#60482e]/45 bg-[#15100d]/95 p-5 sm:p-6"
+          ? "mt-5 border-t border-[rgb(var(--sep-colour-60482e))]/35 pt-4"
+          : "border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 p-5 sm:p-6"
       }
     >
       <div>
-        <p className="text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+        <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
           Ancestry Attributes Modifiers
         </p>
 
@@ -52,8 +52,8 @@ export function AncestryAttributeModifiers({
       <div
         className={
   compact
-    ? "mt-3 grid grid-cols-2 gap-px bg-[#4f3b28]/35 sm:grid-cols-3"
-    : "mt-5 grid grid-cols-2 gap-px bg-[#4f3b28]/35 sm:grid-cols-3 lg:grid-cols-6"
+    ? "mt-3 grid grid-cols-2 gap-px bg-[rgb(var(--sep-colour-4f3b28))]/35 sm:grid-cols-3"
+    : "mt-5 grid grid-cols-2 gap-px bg-[rgb(var(--sep-colour-4f3b28))]/35 sm:grid-cols-3 lg:grid-cols-6"
 }
       >
         {MODIFIERS.map(({ key, label }) => {
@@ -64,15 +64,15 @@ export function AncestryAttributeModifiers({
               key={key}
               className={
                 compact
-                  ? "flex items-center justify-between gap-3 bg-[#120e0b] px-3 py-2.5"
-                  : "flex items-center justify-between gap-4 bg-[#120e0b] px-4 py-4"
+                  ? "flex items-center justify-between gap-3 bg-[rgb(var(--sep-colour-120e0b))] px-3 py-2.5"
+                  : "flex items-center justify-between gap-4 bg-[rgb(var(--sep-colour-120e0b))] px-4 py-4"
               }
             >
               <span
                 className={
                   compact
-                    ? "text-[7px] uppercase tracking-[0.14em] text-[#8b7455]"
-                    : "text-[9px] uppercase tracking-[0.18em] text-[#8b7455]"
+                    ? "text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-8b7455))]"
+                    : "text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-8b7455))]"
                 }
               >
                 {label}
@@ -81,8 +81,8 @@ export function AncestryAttributeModifiers({
               <span
                 className={
                   compact
-                    ? "font-serif text-lg text-[#e1c28d]"
-                    : "font-serif text-2xl text-[#e1c28d]"
+                    ? "font-serif text-lg text-[rgb(var(--sep-colour-e1c28d))]"
+                    : "font-serif text-2xl text-[rgb(var(--sep-colour-e1c28d))]"
                 }
               >
                 {formatModifier(value)}

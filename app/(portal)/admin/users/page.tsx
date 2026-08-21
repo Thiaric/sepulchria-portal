@@ -1,7 +1,14 @@
 import Link from "next/link";
 
+import {
+  AdminUserPortalSkins,
+  type AdminPortalSkin,
+  type AdminPortalSkinEntitlement,
+} from "@/components/admin/admin-user-portal-skins";
+
 import { requireAdmin } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 import {
   deleteUserAccount,
@@ -97,7 +104,9 @@ export default async function AdminUsersPage({
   const [
     usersResult,
     charactersResult,
+    portalSkinsResult,
   ] = await Promise.all([
+
     supabase.rpc(
       "list_admin_users",
     ),
@@ -116,6 +125,19 @@ export default async function AdminUsersPage({
       .order("created_at", {
         ascending: true,
       }),
+
+    supabase
+      .from("portal_skins")
+      .select(`
+        id,
+        slug,
+        name,
+        is_default
+      `)
+      .eq("is_active", true)
+      .order("sort_order", {
+        ascending: true,
+      }),
   ]);
 
   if (usersResult.error) {
@@ -132,6 +154,40 @@ export default async function AdminUsersPage({
     );
   }
 
+
+  if (portalSkinsResult.error) {
+    throw new Error(
+      `Unable to load portal skins: ${portalSkinsResult.error.message}`,
+    );
+  }
+
+  const admin =
+    createAdminClient();
+
+  const {
+    data:
+      portalSkinEntitlementsData,
+    error:
+      portalSkinEntitlementsError,
+  } = await admin
+    .from(
+      "user_portal_skin_entitlements",
+    )
+    .select(`
+      user_id,
+      skin_id,
+      enabled,
+      source,
+      note
+    `);
+
+  if (portalSkinEntitlementsError) {
+    throw new Error(
+      `Unable to load portal skin entitlements: ${portalSkinEntitlementsError.message}`,
+    );
+  }
+
+
   const users =
     (usersResult.data ??
       []) as AdminUserRow[];
@@ -139,6 +195,55 @@ export default async function AdminUsersPage({
   const characters =
     (charactersResult.data ??
       []) as UserCharacterRow[];
+
+  const portalSkins =
+    (portalSkinsResult.data ??
+      []) as AdminPortalSkin[];
+
+  const skinEntitlementsByUser =
+    new Map<
+      string,
+      AdminPortalSkinEntitlement[]
+    >();
+
+  for (
+    const entry of
+      portalSkinEntitlementsData ??
+      []
+  ) {
+    const userId =
+      String(
+        entry.user_id,
+      );
+
+    const existing =
+      skinEntitlementsByUser.get(
+        userId,
+      ) ?? [];
+
+    existing.push({
+      skin_id:
+        String(
+          entry.skin_id,
+        ),
+      enabled:
+        entry.enabled ===
+        true,
+      source:
+        entry.source ===
+          "paid"
+          ? "paid"
+          : "staff",
+      note:
+        entry.note ?? null,
+    });
+
+    skinEntitlementsByUser.set(
+      userId,
+      existing,
+    );
+  }
+
 
   const charactersByUser =
     new Map<
@@ -170,21 +275,21 @@ export default async function AdminUsersPage({
       <div className="mx-auto max-w-6xl">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <p className="text-[8px] uppercase tracking-[0.24em] text-[#8c704b]">
+            <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))]">
               Administration
             </p>
 
-            <h2 className="mt-1 font-serif text-3xl text-[#ead5ac]">
+            <h2 className="mt-1 font-serif text-3xl text-[rgb(var(--sep-colour-ead5ac))]">
               User Management
             </h2>
 
-            <p className="mt-1 max-w-3xl text-xs leading-5 text-[#928674]">
+            <p className="mt-1 max-w-3xl text-xs leading-5 text-[rgb(var(--sep-colour-928674))]">
               Accounts, characters
               and staff permissions.
             </p>
           </div>
 
-          <span className="border border-[#60482e]/45 bg-[#15100d] px-3 py-2 text-[9px] uppercase tracking-[0.16em] text-[#a99069]">
+          <span className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-a99069))]">
             {users.length} users
           </span>
         </div>
@@ -192,7 +297,7 @@ export default async function AdminUsersPage({
         {pageParams.error ? (
           <div
             role="alert"
-            className="mt-3 border border-[#873e35]/65 bg-[#351613]/70 px-3 py-2 text-xs text-[#e0a39a]"
+            className="mt-3 border border-[rgb(var(--sep-colour-873e35))]/65 bg-[rgb(var(--sep-colour-351613))]/70 px-3 py-2 text-xs text-[rgb(var(--sep-colour-e0a39a))]"
           >
             {pageParams.error}
           </div>
@@ -201,7 +306,7 @@ export default async function AdminUsersPage({
         {pageParams.deleted ? (
           <div
             role="status"
-            className="mt-3 border border-[#4f704e]/65 bg-[#172619]/70 px-3 py-2 text-xs text-[#b7d2ae]"
+            className="mt-3 border border-[rgb(var(--sep-colour-4f704e))]/65 bg-[rgb(var(--sep-colour-172619))]/70 px-3 py-2 text-xs text-[rgb(var(--sep-colour-b7d2ae))]"
           >
             The account{" "}
             <strong>
@@ -241,24 +346,24 @@ export default async function AdminUsersPage({
                   key={
                     user.user_id
                   }
-                  className="overflow-hidden border border-[#60482e]/45 bg-[#15100d]"
+                  className="overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]"
                 >
-                  <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#60482e]/35 bg-[#110d0a] px-4 py-3">
+                  <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-110d0a))] px-4 py-3">
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
-                        <h3 className="truncate font-serif text-lg text-[#dfc99f]">
+                        <h3 className="truncate font-serif text-lg text-[rgb(var(--sep-colour-dfc99f))]">
                           {user.email ??
                             "Email unavailable"}
                         </h3>
 
                         {isCurrentUser ? (
-                          <span className="border border-[#84633c]/55 bg-[#2a1d12] px-2 py-0.5 text-[7px] uppercase tracking-[0.16em] text-[#c9aa7a]">
+                          <span className="border border-[rgb(var(--sep-colour-84633c))]/55 bg-[rgb(var(--sep-colour-2a1d12))] px-2 py-0.5 text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-c9aa7a))]">
                             You
                           </span>
                         ) : null}
                       </div>
 
-                      <p className="mt-1 text-[8px] uppercase tracking-[0.14em] text-[#756957]">
+                      <p className="mt-1 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756957))]">
                         Registered{" "}
                         {formatDate(
                           user.created_at,
@@ -299,8 +404,8 @@ export default async function AdminUsersPage({
                         />
                       </dl>
 
-                      <div className="mt-3 border-t border-[#60482e]/30 pt-3">
-                        <p className="text-[8px] uppercase tracking-[0.2em] text-[#806b50]">
+                      <div className="mt-3 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-3">
+                        <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
                           Characters
                         </p>
 
@@ -316,13 +421,13 @@ export default async function AdminUsersPage({
                                     character.id
                                   }
                                   href={`/characters/${character.public_slug}`}
-                                  className="border border-[#60482e]/50 bg-[#100c09] px-2.5 py-1.5 text-[9px] text-[#baa78c] transition hover:border-[#987344] hover:text-[#ead2a5]"
+                                  className="border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-100c09))] px-2.5 py-1.5 text-[9px] text-[rgb(var(--sep-colour-baa78c))] transition hover:border-[rgb(var(--sep-colour-987344))] hover:text-[rgb(var(--sep-colour-ead2a5))]"
                                 >
                                   {getCharacterName(
                                     character,
                                   )}
 
-                                  <span className="ml-2 text-[7px] uppercase tracking-[0.12em] text-[#746653]">
+                                  <span className="ml-2 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-746653))]">
                                     {
                                       character.status
                                     }
@@ -332,14 +437,16 @@ export default async function AdminUsersPage({
                             )}
                           </div>
                         ) : (
-                          <p className="mt-2 text-xs text-[#756957]">
+                          <p className="mt-2 text-xs text-[rgb(var(--sep-colour-756957))]">
                             No characters.
                           </p>
                         )}
                       </div>
                     </div>
 
-                    <aside className="border-t border-[#60482e]/35 bg-[#100c09] p-4 lg:border-l lg:border-t-0">
+                    
+
+                    <aside className="border-t border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] p-4 lg:border-l lg:border-t-0">
                       <form
                         action={
                           updateUserStaffRole
@@ -355,7 +462,7 @@ export default async function AdminUsersPage({
                         />
 
                         <label className="block">
-                          <span className="mb-1 block text-[8px] uppercase tracking-[0.2em] text-[#806b50]">
+                          <span className="mb-1 block text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
                             Staff role
                           </span>
 
@@ -365,7 +472,7 @@ export default async function AdminUsersPage({
                               user.staff_role ??
                               ""
                             }
-                            className="w-full border border-[#60482e]/55 bg-[#0c0907] px-3 py-2 text-xs text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0c0907))] px-3 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                           >
                             <option value="">
                               Player
@@ -391,19 +498,19 @@ export default async function AdminUsersPage({
 
                         <button
                           type="submit"
-                          className="w-full border border-[#987344] bg-[#3b2919] px-3 py-2 text-[8px] uppercase tracking-[0.18em] text-[#efd6a8] transition hover:border-[#b98c50] hover:bg-[#50371f]"
+                          className="w-full border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-3 py-2 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
                         >
                           Save role
                         </button>
                       </form>
 
-                      <details className="mt-3 border-t border-[#71352f]/45 pt-3">
-                        <summary className="cursor-pointer list-none text-[8px] uppercase tracking-[0.2em] text-[#c06d62]">
+                      <details className="mt-3 border-t border-[rgb(var(--sep-colour-71352f))]/45 pt-3">
+                        <summary className="cursor-pointer list-none text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-c06d62))]">
                           Danger zone ▾
                         </summary>
 
                         <div className="pt-3">
-                          <h4 className="font-serif text-base text-[#e1aaa2]">
+                          <h4 className="font-serif text-base text-[rgb(var(--sep-colour-e1aaa2))]">
                             Permanently
                             delete account
                           </h4>
@@ -411,7 +518,7 @@ export default async function AdminUsersPage({
                           {canDeleteAccount &&
                           user.email ? (
                             <>
-                              <p className="mt-2 text-[9px] leading-4 text-[#a98782]">
+                              <p className="mt-2 text-[9px] leading-4 text-[rgb(var(--sep-colour-a98782))]">
                                 Type the
                                 account email
                                 to confirm.
@@ -439,12 +546,12 @@ export default async function AdminUsersPage({
                                   placeholder={
                                     user.email
                                   }
-                                  className="w-full border border-[#71352f] bg-[#0c0706] px-3 py-2 text-xs text-[#dfbbb5] outline-none placeholder:text-[#684b47] focus:border-[#bd6458]"
+                                  className="w-full border border-[rgb(var(--sep-colour-71352f))] bg-[rgb(var(--sep-colour-0c0706))] px-3 py-2 text-xs text-[rgb(var(--sep-colour-dfbbb5))] outline-none placeholder:text-[rgb(var(--sep-colour-684b47))] focus:border-[rgb(var(--sep-colour-bd6458))]"
                                 />
 
                                 <button
                                   type="submit"
-                                  className="mt-2 w-full border border-[#a44c42] bg-[#481d19] px-3 py-2 text-[7px] uppercase tracking-[0.16em] text-[#f1beb6] transition hover:border-[#d66b5f] hover:bg-[#622720]"
+                                  className="mt-2 w-full border border-[rgb(var(--sep-colour-a44c42))] bg-[rgb(var(--sep-colour-481d19))] px-3 py-2 text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-f1beb6))] transition hover:border-[rgb(var(--sep-colour-d66b5f))] hover:bg-[rgb(var(--sep-colour-622720))]"
                                 >
                                   Delete
                                   permanently
@@ -452,7 +559,7 @@ export default async function AdminUsersPage({
                               </form>
                             </>
                           ) : (
-                            <p className="mt-2 text-[9px] leading-4 text-[#8c6d68]">
+                            <p className="mt-2 text-[9px] leading-4 text-[rgb(var(--sep-colour-8c6d68))]">
                               {isCurrentUser
                                 ? "You cannot delete the account currently in use."
                                 : "Only the owner may delete an owner or administrator account."}
@@ -468,8 +575,8 @@ export default async function AdminUsersPage({
           )}
 
           {users.length === 0 ? (
-            <section className="border border-[#60482e]/45 bg-[#15100d] p-6 text-center">
-              <p className="font-serif text-lg text-[#b9a88f]">
+            <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-6 text-center">
+              <p className="font-serif text-lg text-[rgb(var(--sep-colour-b9a88f))]">
                 No registered users
                 were found.
               </p>
@@ -490,11 +597,11 @@ function UserDetail({
 }) {
   return (
     <div>
-      <dt className="text-[7px] uppercase tracking-[0.18em] text-[#806b50]">
+      <dt className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
         {label}
       </dt>
 
-      <dd className="mt-1 text-xs capitalize text-[#cdbc9f]">
+      <dd className="mt-1 text-xs capitalize text-[rgb(var(--sep-colour-cdbc9f))]">
         {value}
       </dd>
     </div>

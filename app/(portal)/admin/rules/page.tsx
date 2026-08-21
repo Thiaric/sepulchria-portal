@@ -134,12 +134,12 @@ export default async function AdminRulesPage() {
   return (
     <div className="p-5 sm:p-7">
       <div className="mx-auto max-w-6xl">
-        <header className="mb-5 flex flex-wrap items-end justify-between gap-3 border-b border-[#60482e]/35 pb-4">
+        <header className="mb-5 flex flex-wrap items-end justify-between gap-3 border-b border-[rgb(var(--sep-colour-60482e))]/35 pb-4">
           <div>
-            <p className="text-[8px] uppercase tracking-[0.22em] text-[#806a4b]">
+            <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806a4b))]">
               Staff tools
             </p>
-            <h1 className="mt-1 font-serif text-3xl text-[#dfc99f]">
+            <h1 className="mt-1 font-serif text-3xl text-[rgb(var(--sep-colour-dfc99f))]">
               Rules Management
             </h1>
           </div>
@@ -148,7 +148,7 @@ export default async function AdminRulesPage() {
             href="/rules"
             target="_blank"
             rel="noreferrer"
-            className="border border-[#60482e]/45 bg-[#17110d] px-3 py-2 text-[8px] uppercase tracking-[0.15em] text-[#a78d68] hover:border-[#8d693e] hover:text-[#d8bb8a]"
+            className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-a78d68))] hover:border-[rgb(var(--sep-colour-8d693e))] hover:text-[rgb(var(--sep-colour-d8bb8a))]"
           >
             View public Rules ↗
           </a>
@@ -197,7 +197,7 @@ export default async function AdminRulesPage() {
                 />
               </AdminField>
 
-              <label className="flex items-center gap-2 text-xs text-[#9f907d]">
+              <label className="flex items-center gap-2 text-xs text-[rgb(var(--sep-colour-9f907d))]">
                 <input
                   name="is_active"
                   type="checkbox"
@@ -422,15 +422,15 @@ export default async function AdminRulesPage() {
               <details
                 key={rule.id}
                 id={`rule-${rule.slug}`}
-                className="scroll-mt-24 border border-[#60482e]/40 bg-[#15100d]"
+                className="scroll-mt-24 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))]"
               >
                 <summary className="cursor-pointer list-none px-4 py-3">
                   <div className="flex items-center justify-between gap-4">
                     <div className="min-w-0">
-                      <span className="font-serif text-base text-[#d4bd94]">
+                      <span className="font-serif text-base text-[rgb(var(--sep-colour-d4bd94))]">
                         {rule.title}
                       </span>
-                      <span className="ml-3 text-[8px] uppercase tracking-[0.15em] text-[#736653]">
+                      <span className="ml-3 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-736653))]">
                         {
                           categories.find(
                             (
@@ -455,7 +455,7 @@ export default async function AdminRulesPage() {
                   action={
                     updateRuleEntry
                   }
-                  className="space-y-3 border-t border-[#60482e]/30 p-4"
+                  className="space-y-3 border-t border-[rgb(var(--sep-colour-60482e))]/30 p-4"
                 >
                   <input
                     type="hidden"
@@ -591,7 +591,7 @@ export default async function AdminRulesPage() {
                   action={
                     deleteRuleEntry
                   }
-                  className="border-t border-[#60482e]/25 px-4 py-3 text-right"
+                  className="border-t border-[rgb(var(--sep-colour-60482e))]/25 px-4 py-3 text-right"
                 >
                   <input
                     type="hidden"
@@ -600,7 +600,7 @@ export default async function AdminRulesPage() {
                   />
                   <button
                     type="submit"
-                    className="text-[8px] uppercase tracking-[0.15em] text-[#875a50] hover:text-[#d88f80]"
+                    className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-875a50))] hover:text-[rgb(var(--sep-colour-d88f80))]"
                   >
                     Delete rule
                   </button>
@@ -633,7 +633,7 @@ export default async function AdminRulesPage() {
                     action={
                       updateRuleCategory
                     }
-                    className="grid gap-2 border border-[#60482e]/40 bg-[#15100d] p-3 sm:grid-cols-[1fr_1fr_100px_auto]"
+                    className="grid gap-2 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))] p-3 sm:grid-cols-[1fr_1fr_100px_auto]"
                   >
                     <input
                       type="hidden"
@@ -675,7 +675,7 @@ export default async function AdminRulesPage() {
                     />
 
                     <div className="flex items-center justify-end gap-2">
-                      <label className="text-[9px] text-[#8d806e]">
+                      <label className="text-[9px] text-[rgb(var(--sep-colour-8d806e))]">
                         <input
                           name="is_active"
                           type="checkbox"
@@ -689,7 +689,7 @@ export default async function AdminRulesPage() {
 
                       <button
                         type="submit"
-                        className="border border-[#765937]/55 bg-[#271c12] px-2 py-2 text-[8px] uppercase tracking-[0.13em] text-[#d4b783]"
+                        className="border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-271c12))] px-2 py-2 text-[8px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-d4b783))]"
                       >
                         Save
                       </button>
@@ -722,11 +722,11 @@ export default async function AdminRulesPage() {
                   <details
                     key={entry.id}
                     id={`glossary-${entry.slug}`}
-                    className="scroll-mt-24 border border-[#60482e]/40 bg-[#15100d]"
+                    className="scroll-mt-24 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))]"
                   >
                     <summary className="cursor-pointer list-none px-4 py-3">
                       <div className="flex items-center justify-between">
-                        <span className="font-serif text-sm text-[#d1b98e]">
+                        <span className="font-serif text-sm text-[rgb(var(--sep-colour-d1b98e))]">
                           {entry.term}
                         </span>
                         <StatusBadge
@@ -741,7 +741,7 @@ export default async function AdminRulesPage() {
                       action={
                         updateGlossaryEntry
                       }
-                      className="space-y-3 border-t border-[#60482e]/30 p-4"
+                      className="space-y-3 border-t border-[rgb(var(--sep-colour-60482e))]/30 p-4"
                     >
                       <input
                         type="hidden"
@@ -866,7 +866,7 @@ export default async function AdminRulesPage() {
                       action={
                         deleteGlossaryEntry
                       }
-                      className="border-t border-[#60482e]/25 px-4 py-3 text-right"
+                      className="border-t border-[rgb(var(--sep-colour-60482e))]/25 px-4 py-3 text-right"
                     >
                       <input
                         type="hidden"
@@ -877,7 +877,7 @@ export default async function AdminRulesPage() {
                       />
                       <button
                         type="submit"
-                        className="text-[8px] uppercase tracking-[0.15em] text-[#875a50] hover:text-[#d88f80]"
+                        className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-875a50))] hover:text-[rgb(var(--sep-colour-d88f80))]"
                       >
                         Delete
                       </button>
@@ -898,7 +898,7 @@ export default async function AdminRulesPage() {
           <div className="mt-3 grid gap-3 lg:grid-cols-[1fr_auto]">
             <AdminActionForm
               action={createRuleLink}
-              className="grid gap-2 border border-[#60482e]/40 bg-[#15100d] p-3 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_100px_auto]"
+              className="grid gap-2 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))] p-3 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_100px_auto]"
             >
               <select
                 name="source_rule_id"
@@ -986,7 +986,7 @@ export default async function AdminRulesPage() {
                     action={
                       deleteRuleLink
                     }
-                    className="flex items-center justify-between gap-3 border border-[#59432c]/30 bg-[#120e0b] px-3 py-2"
+                    className="flex items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-120e0b))] px-3 py-2"
                   >
                     <input
                       type="hidden"
@@ -994,7 +994,7 @@ export default async function AdminRulesPage() {
                       value={link.id}
                     />
 
-                    <p className="truncate text-xs text-[#958672]">
+                    <p className="truncate text-xs text-[rgb(var(--sep-colour-958672))]">
                       {source?.title ??
                         "Unknown"}{" "}
                       →{" "}
@@ -1005,7 +1005,7 @@ export default async function AdminRulesPage() {
 
                     <button
                       type="submit"
-                      className="shrink-0 text-[8px] uppercase tracking-[0.13em] text-[#875a50] hover:text-[#d88f80]"
+                      className="shrink-0 text-[8px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-875a50))] hover:text-[rgb(var(--sep-colour-d88f80))]"
                     >
                       Remove
                     </button>
@@ -1029,7 +1029,7 @@ function AdminField({
 }) {
   return (
     <div className="block">
-      <div className="mb-1.5 text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
+      <div className="mb-1.5 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
         {label}
       </div>
       {children}
@@ -1050,12 +1050,12 @@ function CompactPanel({
 }) {
   return (
     <section
-      className={`border border-[#60482e]/40 bg-[#15100d] p-4 ${className}`}
+      className={`border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))] p-4 ${className}`}
     >
-      <p className="text-[7px] uppercase tracking-[0.2em] text-[#776248]">
+      <p className="text-[7px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-776248))]">
         {eyebrow}
       </p>
-      <h2 className="mb-3 mt-1 font-serif text-xl text-[#d4bd94]">
+      <h2 className="mb-3 mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d4bd94))]">
         {title}
       </h2>
       {children}
@@ -1071,11 +1071,11 @@ function SectionHeading({
   count: number;
 }) {
   return (
-    <div className="flex items-center justify-between border-b border-[#60482e]/30 pb-2">
-      <h2 className="font-serif text-xl text-[#d4bd94]">
+    <div className="flex items-center justify-between border-b border-[rgb(var(--sep-colour-60482e))]/30 pb-2">
+      <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-d4bd94))]">
         {title}
       </h2>
-      <span className="text-[9px] text-[#716452]">
+      <span className="text-[9px] text-[rgb(var(--sep-colour-716452))]">
         {count}
       </span>
     </div>
@@ -1091,8 +1091,8 @@ function StatusBadge({
     <span
       className={`border px-2 py-1 text-[7px] uppercase tracking-[0.14em] ${
         status === "published"
-          ? "border-[#536a43]/55 bg-[#172015] text-[#90a77b]"
-          : "border-[#685843]/55 bg-[#1a1611] text-[#8e806d]"
+          ? "border-[rgb(var(--sep-colour-536a43))]/55 bg-[rgb(var(--sep-colour-172015))] text-[rgb(var(--sep-colour-90a77b))]"
+          : "border-[rgb(var(--sep-colour-685843))]/55 bg-[rgb(var(--sep-colour-1a1611))] text-[rgb(var(--sep-colour-8e806d))]"
       }`}
     >
       {status}
@@ -1108,7 +1108,7 @@ function SubmitButton({
   return (
     <button
       type="submit"
-      className="border border-[#765937]/55 bg-[#271c12] px-3 py-2 text-[8px] uppercase tracking-[0.15em] text-[#d4b783] transition hover:border-[#9a7445] hover:bg-[#342318]"
+      className="border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-271c12))] px-3 py-2 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-d4b783))] transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:bg-[rgb(var(--sep-colour-342318))]"
     >
       {children}
     </button>
@@ -1121,11 +1121,11 @@ function EmptyState({
   children: React.ReactNode;
 }) {
   return (
-    <div className="border border-[#60482e]/35 bg-[#15100d] p-5 text-sm text-[#7d7161]">
+    <div className="border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-15100d))] p-5 text-sm text-[rgb(var(--sep-colour-7d7161))]">
       {children}
     </div>
   );
 }
 
 const inputClass =
-  "h-9 w-full border border-[#59432c]/45 bg-[#100c09] px-3 text-xs text-[#cdbb9d] outline-none placeholder:text-[#5d554a] focus:border-[#8d693e]";
+  "h-9 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 text-xs text-[rgb(var(--sep-colour-cdbb9d))] outline-none placeholder:text-[rgb(var(--sep-colour-5d554a))] focus:border-[rgb(var(--sep-colour-8d693e))]";

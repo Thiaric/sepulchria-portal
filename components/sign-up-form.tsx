@@ -113,10 +113,10 @@ export function SignUpForm() {
   };
 
   const fieldClass =
-    "h-12 w-full border border-[#62482f] bg-[#0b0807]/90 px-4 text-sm text-[#e8dcc4] outline-none transition placeholder:text-[#5f574d] focus:border-[#b28149] focus:ring-1 focus:ring-[#b28149]/50";
+    "h-12 w-full border border-[rgb(var(--sep-colour-62482f))] bg-[rgb(var(--sep-colour-0b0807))]/90 px-4 text-sm text-[rgb(var(--sep-colour-e8dcc4))] outline-none transition placeholder:text-[rgb(var(--sep-colour-5f574d))] focus:border-[rgb(var(--sep-colour-b28149))] focus:ring-1 focus:ring-[rgb(var(--sep-colour-b28149))]/50";
 
   const labelClass =
-    "block text-[9px] uppercase tracking-[0.22em] text-[#a68a63]";
+    "block text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-a68a63))]";
 
   return (
     <>
@@ -201,7 +201,7 @@ export function SignUpForm() {
           />
         </div>
 
-        <div className="border border-[#62482f]/55 bg-[#0b0807]/55 px-4 py-4">
+        <div className="border border-[rgb(var(--sep-colour-62482f))]/55 bg-[rgb(var(--sep-colour-0b0807))]/55 px-4 py-4">
           <label className="flex cursor-pointer items-start gap-3">
             <input
               type="checkbox"
@@ -216,10 +216,10 @@ export function SignUpForm() {
                 )
               }
               required
-              className="mt-1 h-4 w-4 shrink-0 accent-[#a77a42]"
+              className="mt-1 h-4 w-4 shrink-0 accent-[rgb(var(--sep-colour-a77a42))]"
             />
 
-            <span className="text-xs leading-6 text-[#a99b87]">
+            <span className="text-xs leading-6 text-[rgb(var(--sep-colour-a99b87))]">
               I have read and
               agree to
               Sepulchria&apos;s{" "}
@@ -231,7 +231,7 @@ export function SignUpForm() {
                     "terms",
                   );
                 }}
-                className="text-[#d0aa72] underline decoration-[#725636] underline-offset-4 transition hover:text-[#efd5a7]"
+                className="text-[rgb(var(--sep-colour-d0aa72))] underline decoration-[rgb(var(--sep-colour-725636))] underline-offset-4 transition hover:text-[rgb(var(--sep-colour-efd5a7))]"
               >
                 Terms of Service
               </button>{" "}
@@ -244,7 +244,7 @@ export function SignUpForm() {
                     "privacy",
                   );
                 }}
-                className="text-[#d0aa72] underline decoration-[#725636] underline-offset-4 transition hover:text-[#efd5a7]"
+                className="text-[rgb(var(--sep-colour-d0aa72))] underline decoration-[rgb(var(--sep-colour-725636))] underline-offset-4 transition hover:text-[rgb(var(--sep-colour-efd5a7))]"
               >
                 Privacy Policy
               </button>
@@ -256,7 +256,7 @@ export function SignUpForm() {
         {error && (
           <div
             role="alert"
-            className="border border-[#873e35]/55 bg-[#421d1a]/35 px-4 py-3 text-sm text-[#e2aaa1]"
+            className="border border-[rgb(var(--sep-colour-873e35))]/55 bg-[rgb(var(--sep-colour-421d1a))]/35 px-4 py-3 text-sm text-[rgb(var(--sep-colour-e2aaa1))]"
           >
             {error}
           </div>
@@ -268,18 +268,18 @@ export function SignUpForm() {
             isLoading ||
             !legalAccepted
           }
-          className="h-12 w-full border border-[#a77a42]/80 bg-[#382313] font-serif text-base tracking-[0.05em] text-[#ead3a6] transition hover:border-[#d4a460] hover:bg-[#472c17] disabled:cursor-not-allowed disabled:opacity-45"
+          className="h-12 w-full border border-[rgb(var(--sep-colour-a77a42))]/80 bg-[rgb(var(--sep-colour-382313))] font-serif text-base tracking-[0.05em] text-[rgb(var(--sep-colour-ead3a6))] transition hover:border-[rgb(var(--sep-colour-d4a460))] hover:bg-[rgb(var(--sep-colour-472c17))] disabled:cursor-not-allowed disabled:opacity-45"
         >
           {isLoading
             ? "Writing your name..."
             : "Create your account"}
         </button>
 
-        <p className="text-center text-sm text-[#897d6c]">
+        <p className="text-center text-sm text-[rgb(var(--sep-colour-897d6c))]">
           Already registered?{" "}
           <Link
             href="/auth/login"
-            className="text-[#c8a46e] underline decoration-[#725636] underline-offset-4 transition hover:text-[#efd5a7]"
+            className="text-[rgb(var(--sep-colour-c8a46e))] underline decoration-[rgb(var(--sep-colour-725636))] underline-offset-4 transition hover:text-[rgb(var(--sep-colour-efd5a7))]"
           >
             Login
           </Link>
@@ -299,7 +299,7 @@ export function SignUpForm() {
       >
         <LegalDevelopmentNotice />
 
-        <div className="mt-6 space-y-6 text-sm leading-7 text-[#aa9c88]">
+        <div className="mt-6 space-y-6 text-sm leading-7 text-[rgb(var(--sep-colour-aa9c88))]">
           <LegalSection
             title="1. Use of Sepulchria"
           >
@@ -365,7 +365,7 @@ export function SignUpForm() {
             continuing.
           </LegalSection>
 
-          <p className="text-xs text-[#766b5e]">
+          <p className="text-xs text-[rgb(var(--sep-colour-766b5e))]">
             Version: {TERMS_VERSION}
           </p>
         </div>
@@ -384,7 +384,7 @@ export function SignUpForm() {
       >
         <LegalDevelopmentNotice />
 
-        <div className="mt-6 space-y-6 text-sm leading-7 text-[#aa9c88]">
+        <div className="mt-6 space-y-6 text-sm leading-7 text-[rgb(var(--sep-colour-aa9c88))]">
           <LegalSection
             title="1. Information used by the service"
           >
@@ -450,7 +450,7 @@ export function SignUpForm() {
             protection rights.
           </LegalSection>
 
-          <p className="text-xs text-[#766b5e]">
+          <p className="text-xs text-[rgb(var(--sep-colour-766b5e))]">
             Version: {PRIVACY_VERSION}
           </p>
         </div>
@@ -461,7 +461,7 @@ export function SignUpForm() {
 
 function LegalDevelopmentNotice() {
   return (
-    <div className="border border-[#7a5b37]/45 bg-[#21160f] p-4 text-sm leading-6 text-[#c7aa7c]">
+    <div className="border border-[rgb(var(--sep-colour-7a5b37))]/45 bg-[rgb(var(--sep-colour-21160f))] p-4 text-sm leading-6 text-[rgb(var(--sep-colour-c7aa7c))]">
       Development notice: this is a
       functional placeholder for the
       registration-consent system.
@@ -481,7 +481,7 @@ function LegalSection({
 }) {
   return (
     <section>
-      <h3 className="font-serif text-xl text-[#d7bd91]">
+      <h3 className="font-serif text-xl text-[rgb(var(--sep-colour-d7bd91))]">
         {title}
       </h3>
 

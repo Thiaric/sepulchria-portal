@@ -186,20 +186,20 @@ export function CharacterOrderContext({
 
   return (
     <>
-      <div className="flex justify-between gap-4 border-b border-[#59432c]/35 py-3 text-xs">
-        <span className="text-[#786b5b]">
+      <div className="flex justify-between gap-4 border-b border-[rgb(var(--sep-colour-59432c))]/35 py-3 text-xs">
+        <span className="text-[rgb(var(--sep-colour-786b5b))]">
           Order
         </span>
 
         {data.order ? (
           <Link
             href={`/orders/${data.order.slug}`}
-            className="max-w-[150px] break-words text-right text-[#c9ae84] transition hover:text-[#ead0a0]"
+            className="max-w-[150px] break-words text-right text-[rgb(var(--sep-colour-c9ae84))] transition hover:text-[rgb(var(--sep-colour-ead0a0))]"
           >
             {data.order.name}
           </Link>
         ) : (
-          <span className="max-w-[150px] break-words text-right text-[#bba98d]">
+          <span className="max-w-[150px] break-words text-right text-[rgb(var(--sep-colour-bba98d))]">
             Not assigned
           </span>
         )}
@@ -240,14 +240,14 @@ function ContextLine({
       className={`flex justify-between gap-4 py-3 text-xs ${
         last
           ? ""
-          : "border-b border-[#59432c]/35"
+          : "border-b border-[rgb(var(--sep-colour-59432c))]/35"
       }`}
     >
-      <span className="text-[#786b5b]">
+      <span className="text-[rgb(var(--sep-colour-786b5b))]">
         {label}
       </span>
 
-      <span className="max-w-[150px] break-words text-right text-[#bba98d]">
+      <span className="max-w-[150px] break-words text-right text-[rgb(var(--sep-colour-bba98d))]">
         {value}
       </span>
     </div>

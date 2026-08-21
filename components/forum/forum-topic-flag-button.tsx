@@ -377,19 +377,19 @@ export function ForumTopicFlagButton({
         }
       }}
     >
-      <div className="flex max-h-[86vh] w-full max-w-3xl flex-col overflow-hidden border border-[#765735] bg-[#100c09] shadow-[0_28px_90px_rgba(0,0,0,0.9)]">
-        <div className="flex items-start justify-between gap-4 border-b border-[#60482e]/45 bg-[#19120d] px-5 py-4">
+      <div className="flex max-h-[86vh] w-full max-w-3xl flex-col overflow-hidden border border-[rgb(var(--sep-colour-765735))] bg-[rgb(var(--sep-colour-100c09))] shadow-[0_28px_90px_rgba(var(--sep-rgb-0-0-0),0.9)]">
+        <div className="flex items-start justify-between gap-4 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-19120d))] px-5 py-4">
           <div>
-            <p className="text-[8px] uppercase tracking-[0.24em] text-[#8f6c43]">
+            <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8f6c43))]">
               Call attention
             </p>
 
-            <h2 className="mt-1 font-serif text-xl text-[#e0c89e]">
+            <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-e0c89e))]">
               Flag this topic
               for reading
             </h2>
 
-            <p className="mt-1 text-xs text-[#837565]">
+            <p className="mt-1 text-xs text-[rgb(var(--sep-colour-837565))]">
               Only characters
               who can access this
               forum section are
@@ -402,14 +402,14 @@ export function ForumTopicFlagButton({
             onClick={() =>
               setOpen(false)
             }
-            className="flex h-8 w-8 shrink-0 items-center justify-center border border-[#60482e]/55 text-[#a58b68] hover:border-[#9a7445] hover:text-[#e5c99a]"
+            className="flex h-8 w-8 shrink-0 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/55 text-[rgb(var(--sep-colour-a58b68))] hover:border-[rgb(var(--sep-colour-9a7445))] hover:text-[rgb(var(--sep-colour-e5c99a))]"
             aria-label="Close"
           >
             ×
           </button>
         </div>
 
-        <div className="border-b border-[#60482e]/35 p-4">
+        <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 p-4">
           <input
             type="search"
             value={query}
@@ -419,13 +419,13 @@ export function ForumTopicFlagButton({
               )
             }
             placeholder="Search characters, ancestries or associations…"
-            className="w-full border border-[#59432c]/55 bg-[#0b0806] px-3 py-2.5 text-xs text-[#d7c1a0] outline-none placeholder:text-[#62584b] focus:border-[#9a7445] [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
+            className="w-full border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-0b0806))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c1a0))] outline-none placeholder:text-[rgb(var(--sep-colour-62584b))] focus:border-[rgb(var(--sep-colour-9a7445))] [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
           />
         </div>
 
         <div className="min-h-0 flex-1 overflow-y-auto p-4">
           {loading ? (
-            <p className="py-10 text-center text-xs text-[#847666]">
+            <p className="py-10 text-center text-xs text-[rgb(var(--sep-colour-847666))]">
               Checking forum
               access…
             </p>
@@ -435,7 +435,7 @@ export function ForumTopicFlagButton({
             </p>
           ) : characters.length ===
             0 ? (
-            <p className="py-10 text-center text-xs text-[#847666]">
+            <p className="py-10 text-center text-xs text-[rgb(var(--sep-colour-847666))]">
               No other
               characters have
               access to this
@@ -444,9 +444,9 @@ export function ForumTopicFlagButton({
           ) : (
             <div className="space-y-5">
               {friends.length > 0 ? (
-                <section className="border border-[#59432c]/40 bg-[#0d0a08] p-3">
+                <section className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-0d0a08))] p-3">
                   <div className="mb-2 flex items-center justify-between gap-3">
-                    <h3 className="text-[8px] uppercase tracking-[0.2em] text-[#9b774b]">
+                    <h3 className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-9b774b))]">
                       Friend List
                     </h3>
 
@@ -455,7 +455,7 @@ export function ForumTopicFlagButton({
                       onClick={
                         selectAllFriends
                       }
-                      className="border border-[#765735] px-2.5 py-1.5 text-[8px] uppercase tracking-[0.13em] text-[#c4a578] hover:border-[#a47a45] hover:text-[#e3c79a]"
+                      className="border border-[rgb(var(--sep-colour-765735))] px-2.5 py-1.5 text-[8px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-c4a578))] hover:border-[rgb(var(--sep-colour-a47a45))] hover:text-[rgb(var(--sep-colour-e3c79a))]"
                     >
                       Select full Friend List
                     </button>
@@ -511,11 +511,11 @@ export function ForumTopicFlagButton({
 
               <section>
                 <div className="mb-2 flex items-center justify-between">
-                  <h3 className="text-[8px] uppercase tracking-[0.2em] text-[#9b774b]">
+                  <h3 className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-9b774b))]">
                     Characters
                   </h3>
 
-                  <span className="text-[8px] text-[#6d6255]">
+                  <span className="text-[8px] text-[rgb(var(--sep-colour-6d6255))]">
                     {
                       matchingCharacters.length
                     }{" "}
@@ -534,8 +534,8 @@ export function ForumTopicFlagButton({
                           selectedCharacters.has(
                             character.id,
                           )
-                            ? "border-[#a47a45] bg-[#2b1d12]"
-                            : "border-[#4e3a27]/60 bg-[#15100d] hover:border-[#765735]"
+                            ? "border-[rgb(var(--sep-colour-a47a45))] bg-[rgb(var(--sep-colour-2b1d12))]"
+                            : "border-[rgb(var(--sep-colour-4e3a27))]/60 bg-[rgb(var(--sep-colour-15100d))] hover:border-[rgb(var(--sep-colour-765735))]"
                         }`}
                       >
                         <input
@@ -549,10 +549,10 @@ export function ForumTopicFlagButton({
                               character.id,
                             )
                           }
-                          className="accent-[#a47a45]"
+                          className="accent-[rgb(var(--sep-colour-a47a45))]"
                         />
 
-                        <div className="h-9 w-9 shrink-0 overflow-hidden border border-[#60482e]/55 bg-[#0b0806]">
+                        <div className="h-9 w-9 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0b0806))]">
                           {character.portraitUrl ? (
                             // eslint-disable-next-line @next/next/no-img-element
                             <img
@@ -566,13 +566,13 @@ export function ForumTopicFlagButton({
                         </div>
 
                         <div className="min-w-0">
-                          <p className="truncate font-serif text-sm text-[#d7be94]">
+                          <p className="truncate font-serif text-sm text-[rgb(var(--sep-colour-d7be94))]">
                             {
                               character.name
                             }
                           </p>
 
-                          <p className="truncate text-[8px] text-[#776a5b]">
+                          <p className="truncate text-[8px] text-[rgb(var(--sep-colour-776a5b))]">
                             {[
                               character.raceName,
                               character.associationName,
@@ -597,7 +597,7 @@ export function ForumTopicFlagButton({
 
         <form
           action={formAction}
-          className="border-t border-[#60482e]/45 bg-[#15100d] p-4"
+          className="border-t border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4"
         >
           <input
             type="hidden"
@@ -663,9 +663,9 @@ export function ForumTopicFlagButton({
           ))}
 
           <label className="mb-3 block">
-            <span className="mb-1.5 block text-[8px] uppercase tracking-[0.16em] text-[#9b774b]">
+            <span className="mb-1.5 block text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-9b774b))]">
               Personal message
-              <span className="ml-1 normal-case tracking-normal text-[#6f6254]">
+              <span className="ml-1 normal-case tracking-normal text-[rgb(var(--sep-colour-6f6254))]">
                 (optional)
               </span>
             </span>
@@ -675,7 +675,7 @@ export function ForumTopicFlagButton({
               maxLength={1000}
               rows={3}
               placeholder='Example: "Read this, I found Reply number 3 quite interesting."'
-              className="w-full resize-y border border-[#59432c]/55 bg-[#0b0806] px-3 py-2.5 text-xs leading-5 text-[#d7c1a0] outline-none placeholder:text-[#62584b] focus:border-[#9a7445]"
+              className="w-full resize-y border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-0b0806))] px-3 py-2.5 text-xs leading-5 text-[rgb(var(--sep-colour-d7c1a0))] outline-none placeholder:text-[rgb(var(--sep-colour-62584b))] focus:border-[rgb(var(--sep-colour-9a7445))]"
             />
           </label>
 
@@ -683,8 +683,8 @@ export function ForumTopicFlagButton({
             <p
               className={`mb-3 text-xs ${
                 state.ok
-                  ? "text-[#93a875]"
-                  : "text-[#d18b80]"
+                  ? "text-[rgb(var(--sep-colour-93a875))]"
+                  : "text-[rgb(var(--sep-colour-d18b80))]"
               }`}
             >
               {state.message}
@@ -692,7 +692,7 @@ export function ForumTopicFlagButton({
           ) : null}
 
           <div className="flex items-center justify-between gap-4">
-            <p className="text-[9px] text-[#7b6d5d]">
+            <p className="text-[9px] text-[rgb(var(--sep-colour-7b6d5d))]">
               {resolvedCount}{" "}
               character
               {resolvedCount ===
@@ -710,7 +710,7 @@ export function ForumTopicFlagButton({
                 resolvedCount ===
                   0
               }
-              className="border border-[#8d693d] bg-[#302014] px-4 py-2.5 text-[8px] uppercase tracking-[0.17em] text-[#e0c292] transition hover:border-[#b4874e] hover:bg-[#3b2818] disabled:cursor-not-allowed disabled:opacity-40"
+              className="border border-[rgb(var(--sep-colour-8d693d))] bg-[rgb(var(--sep-colour-302014))] px-4 py-2.5 text-[8px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-e0c292))] transition hover:border-[rgb(var(--sep-colour-b4874e))] hover:bg-[rgb(var(--sep-colour-3b2818))] disabled:cursor-not-allowed disabled:opacity-40"
             >
               {pending
                 ? "Sending…"
@@ -729,7 +729,7 @@ export function ForumTopicFlagButton({
         onClick={() =>
           setOpen(true)
         }
-        className="inline-flex h-10 items-center justify-center gap-2 whitespace-nowrap border border-[#6f6755]/70 bg-[#17110d] px-4 text-[8px] uppercase tracking-[0.16em] text-[#c8ae83] transition hover:bg-[#21170f] hover:text-[#ead4ad]"
+        className="inline-flex h-10 items-center justify-center gap-2 whitespace-nowrap border border-[rgb(var(--sep-colour-6f6755))]/70 bg-[rgb(var(--sep-colour-17110d))] px-4 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-c8ae83))] transition hover:bg-[rgb(var(--sep-colour-21170f))] hover:text-[rgb(var(--sep-colour-ead4ad))]"
         title="Send selected characters a private message asking them to read this topic"
       >
         ⚑ Flag for reading
@@ -764,7 +764,7 @@ function SelectionGroup({
 
   return (
     <section>
-      <h3 className="mb-2 text-[8px] uppercase tracking-[0.2em] text-[#9b774b]">
+      <h3 className="mb-2 text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-9b774b))]">
         {title}
       </h3>
 
@@ -789,8 +789,8 @@ function SelectionGroup({
                 }
                 className={`border px-2.5 py-1.5 text-[9px] transition ${
                   active
-                    ? "border-[#a47a45] bg-[#342216] text-[#e3c79a]"
-                    : "border-[#4f3b28] bg-[#15100d] text-[#89775f] hover:border-[#765735]"
+                    ? "border-[rgb(var(--sep-colour-a47a45))] bg-[rgb(var(--sep-colour-342216))] text-[rgb(var(--sep-colour-e3c79a))]"
+                    : "border-[rgb(var(--sep-colour-4f3b28))] bg-[rgb(var(--sep-colour-15100d))] text-[rgb(var(--sep-colour-89775f))] hover:border-[rgb(var(--sep-colour-765735))]"
                 }`}
               >
                 {active

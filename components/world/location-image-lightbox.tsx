@@ -100,13 +100,13 @@ export function LocationImageLightbox({
               }
             }}
           >
-            <div className="relative flex max-h-[92vh] w-full max-w-6xl items-center justify-center border border-[#745633] bg-[#090705] p-2 shadow-[0_30px_100px_rgba(0,0,0,0.95)] sm:p-3">
+            <div className="relative flex max-h-[92vh] w-full max-w-6xl items-center justify-center border border-[rgb(var(--sep-colour-745633))] bg-[rgb(var(--sep-colour-090705))] p-2 shadow-[0_30px_100px_rgba(var(--sep-rgb-0-0-0),0.95)] sm:p-3">
               <button
                 type="button"
                 onClick={() =>
                   setOpen(false)
                 }
-                className="absolute right-3 top-3 z-20 flex h-10 w-10 items-center justify-center border border-[#8b673d] bg-[#100c09]/95 text-xl text-[#d7b47d] shadow-[0_5px_18px_rgba(0,0,0,0.7)] transition hover:border-[#c18c4e] hover:bg-[#25180f] hover:text-[#f0d6a7]"
+                className="absolute right-3 top-3 z-20 flex h-10 w-10 items-center justify-center border border-[rgb(var(--sep-colour-8b673d))] bg-[rgb(var(--sep-colour-100c09))]/95 text-xl text-[rgb(var(--sep-colour-d7b47d))] shadow-[0_5px_18px_rgba(var(--sep-rgb-0-0-0),0.7)] transition hover:border-[rgb(var(--sep-colour-c18c4e))] hover:bg-[rgb(var(--sep-colour-25180f))] hover:text-[rgb(var(--sep-colour-f0d6a7))]"
                 aria-label="Close image preview"
                 title="Close"
               >
@@ -146,7 +146,7 @@ export function LocationImageLightbox({
         aria-label={`View ${name} image`}
         title={`View ${name} image`}
       >
-        <span className="pointer-events-none absolute right-3 top-3 flex h-8 w-8 items-center justify-center border border-[#c69a60]/55 bg-[#100c09]/75 text-[#d8b57e] opacity-0 shadow-[0_4px_14px_rgba(0,0,0,0.45)] backdrop-blur-sm transition group-hover/image:opacity-100">
+        <span className="pointer-events-none absolute right-3 top-3 flex h-8 w-8 items-center justify-center border border-[rgb(var(--sep-colour-c69a60))]/55 bg-[rgb(var(--sep-colour-100c09))]/75 text-[rgb(var(--sep-colour-d8b57e))] opacity-0 shadow-[0_4px_14px_rgba(var(--sep-rgb-0-0-0),0.45)] backdrop-blur-sm transition group-hover/image:opacity-100">
           <svg
             viewBox="0 0 24 24"
             aria-hidden="true"

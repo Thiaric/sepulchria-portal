@@ -24,15 +24,15 @@ export default async function AdminMediaPage() {
       <div className="mx-auto max-w-6xl">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <p className="text-[8px] uppercase tracking-[0.24em] text-[#8c704b]">
+            <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))]">
               Administration
             </p>
 
-            <h2 className="mt-1 font-serif text-3xl text-[#ead5ac]">
+            <h2 className="mt-1 font-serif text-3xl text-[rgb(var(--sep-colour-ead5ac))]">
               Media Library
             </h2>
 
-            <p className="mt-1 max-w-3xl text-xs leading-5 text-[#928674]">
+            <p className="mt-1 max-w-3xl text-xs leading-5 text-[rgb(var(--sep-colour-928674))]">
               Stage uploads and deletions for
               the repository&apos;s public
               folder, then save the whole
@@ -42,7 +42,7 @@ export default async function AdminMediaPage() {
 
           <Link
             href="/admin"
-            className="border border-[#60482e]/45 bg-[#15100d] px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[#a99069] transition hover:border-[#987344] hover:text-[#e5c99a]"
+            className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-a99069))] transition hover:border-[rgb(var(--sep-colour-987344))] hover:text-[rgb(var(--sep-colour-e5c99a))]"
           >
             Back to administration
           </Link>
@@ -65,31 +65,31 @@ export default async function AdminMediaPage() {
           </section>
         ) : null}
 
-        <section className="mt-4 border border-[#60482e]/45 bg-[#100c09] px-4 py-3">
-          <p className="text-[8px] uppercase tracking-[0.18em] text-[#9b805a]">
+        <section className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3">
+          <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9b805a))]">
             How it works
           </p>
 
-          <p className="mt-2 text-[10px] leading-5 text-[#817567]">
+          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-817567))]">
             Adding an upload only stages its
             bytes in GitHub and marking a
             deletion changes only this page.
             Neither action changes
-            <code className="mx-1 text-[#c6ad87]">
+            <code className="mx-1 text-[rgb(var(--sep-colour-c6ad87))]">
               master
             </code>
             or triggers Vercel. When you
             click
-            <strong className="mx-1 font-normal text-[#d1b68e]">
+            <strong className="mx-1 font-normal text-[rgb(var(--sep-colour-d1b68e))]">
               Save changes
             </strong>
             the entire batch is written as
             one commit. A file stored as
-            <code className="mx-1 text-[#c6ad87]">
+            <code className="mx-1 text-[rgb(var(--sep-colour-c6ad87))]">
               public/images/map.webp
             </code>
             is used by the site as
-            <code className="ml-1 text-[#c6ad87]">
+            <code className="ml-1 text-[rgb(var(--sep-colour-c6ad87))]">
               /images/map.webp
             </code>.
           </p>

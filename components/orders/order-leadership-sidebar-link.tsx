@@ -163,8 +163,8 @@ export function OrderLeadershipSidebarLink({
         aria-label="Manage Order"
         className={`relative flex h-10 min-w-0 items-center justify-center border text-[17px] leading-none transition ${
           active
-            ? "border-[#8d6d3e] bg-[#332719] text-[#efd9aa]"
-            : "border-transparent text-[#b68b4f] hover:border-[#5d4930] hover:bg-[#1d1712] hover:text-[#efd9aa]"
+            ? "border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] text-[rgb(var(--sep-colour-efd9aa))]"
+            : "border-transparent text-[rgb(var(--sep-colour-b68b4f))] hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))] hover:text-[rgb(var(--sep-colour-efd9aa))]"
         }`}
       >
         <span aria-hidden="true">
@@ -180,11 +180,11 @@ export function OrderLeadershipSidebarLink({
       title="Manage the members, Levels and jobs of the Order you lead."
       className={`flex min-h-[var(--portal-nav-min-h)] items-center gap-2 border px-2.5 py-[var(--portal-nav-y)] text-[11px] transition lg:text-xs ${
         active
-          ? "border-[#8d6d3e] bg-[#332719] text-[#efd9aa]"
-          : "border-transparent text-[#b6a894] hover:border-[#5d4930] hover:bg-[#1d1712] hover:text-[#e8d8ba]"
+          ? "border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] text-[rgb(var(--sep-colour-efd9aa))]"
+          : "border-transparent text-[rgb(var(--sep-colour-b6a894))] hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))] hover:text-[rgb(var(--sep-colour-e8d8ba))]"
       }`}
     >
-      <span className="w-4 shrink-0 text-center text-[12px] text-[#b68b4f]">
+      <span className="w-4 shrink-0 text-center text-[12px] text-[rgb(var(--sep-colour-b68b4f))]">
         ⚜
       </span>
 

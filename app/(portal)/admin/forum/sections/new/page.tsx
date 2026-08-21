@@ -182,11 +182,11 @@ export default async function NewForumSectionPage({
       <main className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
         <nav
           aria-label="Forum breadcrumb"
-          className="mb-6 flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.16em] text-[#746653]"
+          className="mb-6 flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-746653))]"
         >
           <Link
           href="/admin"
-          className="transition hover:text-[#c7a16d]"
+          className="transition hover:text-[rgb(var(--sep-colour-c7a16d))]"
         >
           Administration
         </Link>
@@ -197,7 +197,7 @@ export default async function NewForumSectionPage({
 
           <Link
             href="/admin/forum"
-            className="transition hover:text-[#c7a16d]"
+            className="transition hover:text-[rgb(var(--sep-colour-c7a16d))]"
           >
           Forum
         </Link>
@@ -208,7 +208,7 @@ export default async function NewForumSectionPage({
 
           <Link
             href="/admin/forum/sections"
-            className="transition hover:text-[#c7a16d]"
+            className="transition hover:text-[rgb(var(--sep-colour-c7a16d))]"
           >
             Sections
           </Link>
@@ -217,22 +217,22 @@ export default async function NewForumSectionPage({
             /
           </span>
 
-          <span className="text-[#a48c6c]">
+          <span className="text-[rgb(var(--sep-colour-a48c6c))]">
             Create section
           </span>
         </nav>
 
-        <header className="overflow-hidden border border-[#60482e]/45 bg-[#15100d]">
-          <div className="border-b border-[#60482e]/35 bg-[#1a130e] px-5 py-7 sm:px-7">
+        <header className="overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
+          <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-1a130e))] px-5 py-7 sm:px-7">
             <p className="text-[8px] uppercase tracking-[0.22em] text-amber-500">
               Forum structure
             </p>
 
-            <h1 className="mt-3 font-serif text-3xl text-[#dec69d] sm:text-4xl">
+            <h1 className="mt-3 font-serif text-3xl text-[rgb(var(--sep-colour-dec69d))] sm:text-4xl">
               Create Forum Section
             </h1>
 
-            <p className="mt-3 max-w-3xl text-sm leading-6 text-[#817567]">
+            <p className="mt-3 max-w-3xl text-sm leading-6 text-[rgb(var(--sep-colour-817567))]">
               Add a new public, private or
               organisation section to the
               Sepulchria forum.
@@ -259,9 +259,9 @@ export default async function NewForumSectionPage({
           action={
             createForumSectionAction
           }
-          className="mt-6 border border-[#60482e]/45 bg-[#15100d]"
+          className="mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]"
         >
-          <section className="border-b border-[#60482e]/30 px-5 py-6 sm:px-7">
+          <section className="border-b border-[rgb(var(--sep-colour-60482e))]/30 px-5 py-6 sm:px-7">
             <SectionHeading
               eyebrow="Identity"
               title="Section details"
@@ -323,7 +323,7 @@ export default async function NewForumSectionPage({
             </div>
           </section>
 
-          <section className="border-b border-[#60482e]/30 px-5 py-6 sm:px-7">
+          <section className="border-b border-[rgb(var(--sep-colour-60482e))]/30 px-5 py-6 sm:px-7">
             <SectionHeading
               eyebrow="Classification"
               title="Type and access"
@@ -423,7 +423,7 @@ export default async function NewForumSectionPage({
             </div>
           </section>
 
-          <section className="border-b border-[#60482e]/30 px-5 py-6 sm:px-7">
+          <section className="border-b border-[rgb(var(--sep-colour-60482e))]/30 px-5 py-6 sm:px-7">
             <SectionHeading
               eyebrow="Appearance"
               title="Visual presentation"
@@ -472,7 +472,7 @@ export default async function NewForumSectionPage({
                     type="color"
                     defaultValue="#8c704b"
                     aria-label="Choose section colour"
-                    className="h-12 w-full cursor-pointer border border-[#60482e]/55 bg-[#100c09] p-1"
+                    className="h-12 w-full cursor-pointer border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] p-1"
                   />
 
                   <input
@@ -517,7 +517,7 @@ export default async function NewForumSectionPage({
 
             <label
               htmlFor="forum-section-active"
-              className="mt-6 flex cursor-pointer items-start gap-4 border border-[#60482e]/40 bg-[#100c09] px-4 py-4"
+              className="mt-6 flex cursor-pointer items-start gap-4 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] px-4 py-4"
             >
               <input
                 id="forum-section-active"
@@ -528,11 +528,11 @@ export default async function NewForumSectionPage({
               />
 
               <span>
-                <span className="block font-serif text-lg text-[#d2b991]">
+                <span className="block font-serif text-lg text-[rgb(var(--sep-colour-d2b991))]">
                   Active section
                 </span>
 
-                <span className="mt-1 block text-sm leading-6 text-[#817567]">
+                <span className="mt-1 block text-sm leading-6 text-[rgb(var(--sep-colour-817567))]">
                   Display this section on
                   the forum according to
                   its visibility rules.
@@ -541,10 +541,10 @@ export default async function NewForumSectionPage({
             </label>
           </section>
 
-          <footer className="flex flex-col-reverse gap-3 border-t border-[#60482e]/35 bg-[#110d0a] px-5 py-5 sm:flex-row sm:items-center sm:justify-end sm:px-7">
+          <footer className="flex flex-col-reverse gap-3 border-t border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-110d0a))] px-5 py-5 sm:flex-row sm:items-center sm:justify-end sm:px-7">
             <Link
               href="/admin/forum/sections"
-              className="border border-[#60482e]/55 bg-[#15100d] px-5 py-3 text-center text-[8px] uppercase tracking-[0.17em] text-[#927b5b] transition hover:border-[#876640] hover:text-[#d8b986]"
+              className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-5 py-3 text-center text-[8px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-927b5b))] transition hover:border-[rgb(var(--sep-colour-876640))] hover:text-[rgb(var(--sep-colour-d8b986))]"
             >
               Cancel
             </Link>
@@ -680,7 +680,7 @@ export default async function NewForumSectionPage({
 }
 
 const inputClassName =
-  "w-full border border-[#60482e]/55 bg-[#100c09] px-4 py-3 text-sm text-[#d5c2a4] outline-none transition placeholder:text-[#5f5447] focus:border-[#a47a44] focus:ring-1 focus:ring-[#a47a44]/40";
+  "w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-sm text-[rgb(var(--sep-colour-d5c2a4))] outline-none transition placeholder:text-[rgb(var(--sep-colour-5f5447))] focus:border-[rgb(var(--sep-colour-a47a44))] focus:ring-1 focus:ring-[rgb(var(--sep-colour-a47a44))]/40";
 
 function SectionHeading({
   eyebrow,
@@ -693,15 +693,15 @@ function SectionHeading({
 }) {
   return (
     <div>
-      <p className="text-[8px] uppercase tracking-[0.2em] text-[#806a4d]">
+      <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806a4d))]">
         {eyebrow}
       </p>
 
-      <h2 className="mt-2 font-serif text-2xl text-[#d8c09a]">
+      <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-d8c09a))]">
         {title}
       </h2>
 
-      <p className="mt-2 max-w-3xl text-sm leading-6 text-[#817567]">
+      <p className="mt-2 max-w-3xl text-sm leading-6 text-[rgb(var(--sep-colour-817567))]">
         {description}
       </p>
     </div>
@@ -725,7 +725,7 @@ function FieldGroup({
     <div>
       <label
         htmlFor={htmlFor}
-        className="block text-[8px] uppercase tracking-[0.17em] text-[#a48c6c]"
+        className="block text-[8px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-a48c6c))]"
       >
         {label}
 
@@ -740,7 +740,7 @@ function FieldGroup({
       </label>
 
       {description ? (
-        <p className="mt-2 min-h-10 text-xs leading-5 text-[#6f6457]">
+        <p className="mt-2 min-h-10 text-xs leading-5 text-[rgb(var(--sep-colour-6f6457))]">
           {description}
         </p>
       ) : null}

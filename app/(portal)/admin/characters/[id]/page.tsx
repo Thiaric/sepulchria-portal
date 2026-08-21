@@ -13,9 +13,12 @@ import { AdminCharacterRemnants } from "@/components/admin/admin-character-remna
 import {
   AdminCharacterFeatureAccess,
   type CharacterFeatureEntitlementRow,
+  type CharacterPortalSkinEntitlementRow,
+  type CharacterPortalSkinRow,
 } from "@/components/admin/admin-character-feature-access";
 import { requireStaff } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 import {
   deleteCharacterAdministration,
@@ -304,6 +307,66 @@ export default async function AdminCharacterPage({
     characterResult.data as unknown as
       CharacterRow;
 
+  const privileged =
+    createAdminClient();
+
+  const [
+    portalSkinsResult,
+    portalSkinEntitlementsResult,
+  ] = await Promise.all([
+    privileged
+      .from("portal_skins")
+      .select(`
+        id,
+        slug,
+        name,
+        description,
+        is_default
+      `)
+      .eq("is_active", true)
+      .order("sort_order", {
+        ascending: true,
+      })
+      .order("name", {
+        ascending: true,
+      }),
+
+    privileged
+      .from(
+        "user_portal_skin_entitlements",
+      )
+      .select(`
+        skin_id,
+        enabled,
+        source,
+        note
+      `)
+      .eq(
+        "user_id",
+        character.user_id,
+      ),
+  ]);
+
+  if (
+    portalSkinsResult.error ||
+    portalSkinEntitlementsResult.error
+  ) {
+    throw new Error(
+      `Unable to load portal skin access: ${
+        portalSkinsResult.error?.message ??
+        portalSkinEntitlementsResult.error?.message
+      }`,
+    );
+  }
+
+  const portalSkins =
+    (portalSkinsResult.data ??
+      []) as CharacterPortalSkinRow[];
+
+  const portalSkinEntitlements =
+    (portalSkinEntitlementsResult.data ??
+      []) as CharacterPortalSkinEntitlementRow[];
+
   const races =
     (racesResult.data ??
       []) as CodexOption[];
@@ -444,7 +507,7 @@ export default async function AdminCharacterPage({
         <div className="flex flex-wrap items-center justify-between gap-4">
           <Link
             href="/admin/characters"
-            className="text-[9px] uppercase tracking-[0.18em] text-[#9c805b] transition hover:text-[#e4c796]"
+            className="text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9c805b))] transition hover:text-[rgb(var(--sep-colour-e4c796))]"
           >
             ← Character archive
           </Link>
@@ -452,31 +515,31 @@ export default async function AdminCharacterPage({
           <div className="flex flex-wrap gap-2">
             <Link
               href={`/admin/characters/${character.id}/inventory`}
-              className="border border-[#987344] bg-[#3b2919] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[#efd6a8] transition hover:border-[#b98c50] hover:bg-[#50371f]"
+              className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
             >
               Manage inventory
             </Link>
 
             <Link
               href={`/admin/characters/${character.id}/warping`}
-              className="border border-[#987344] bg-[#3b2919] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[#efd6a8] transition hover:border-[#b98c50] hover:bg-[#50371f]"
+              className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
             >
               Manage Warping
             </Link>
 
           <Link
             href={`/characters/${character.public_slug}`}
-            className="border border-[#60482e]/55 bg-[#15100d] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[#ac9879] transition hover:border-[#987344] hover:text-[#e7cca0]"
+            className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-ac9879))] transition hover:border-[rgb(var(--sep-colour-987344))] hover:text-[rgb(var(--sep-colour-e7cca0))]"
           >
             Open public profile
           </Link>
           </div>
         </div>
 
-        <section className="mt-6 overflow-hidden border border-[#60482e]/45 bg-[#15100d]">
+        <section className="mt-6 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
           <div className="grid lg:grid-cols-[260px_minmax(0,1fr)]">
-            <div className="border-b border-[#60482e]/35 bg-[#0f0b09] p-6 lg:border-b-0 lg:border-r">
-              <div className="relative mx-auto aspect-[3/4] w-full max-w-[210px] overflow-hidden border border-[#765937]/55 bg-[#090706]">
+            <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-0f0b09))] p-6 lg:border-b-0 lg:border-r">
+              <div className="relative mx-auto aspect-[3/4] w-full max-w-[210px] overflow-hidden border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-090706))]">
                 {character.portrait_url ? (
                   <Image
                     src={
@@ -489,7 +552,7 @@ export default async function AdminCharacterPage({
                     priority
                   />
                 ) : (
-                  <div className="flex h-full items-center justify-center font-serif text-5xl text-[#705334]">
+                  <div className="flex h-full items-center justify-center font-serif text-5xl text-[rgb(var(--sep-colour-705334))]">
                     {character.first_name
                       .charAt(0)
                       .toUpperCase()}
@@ -507,21 +570,21 @@ export default async function AdminCharacterPage({
                   }
                 />
 
-                <p className="mt-4 text-[9px] uppercase tracking-[0.18em] text-[#756957]">
+                <p className="mt-4 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-756957))]">
                   Created
                 </p>
 
-                <p className="mt-1 text-xs text-[#aa987d]">
+                <p className="mt-1 text-xs text-[rgb(var(--sep-colour-aa987d))]">
                   {formatDate(
                     character.created_at,
                   )}
                 </p>
 
-                <p className="mt-4 text-[9px] uppercase tracking-[0.18em] text-[#756957]">
+                <p className="mt-4 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-756957))]">
                   Last updated
                 </p>
 
-                <p className="mt-1 text-xs text-[#aa987d]">
+                <p className="mt-1 text-xs text-[rgb(var(--sep-colour-aa987d))]">
                   {formatDate(
                     character.updated_at,
                   )}
@@ -530,15 +593,15 @@ export default async function AdminCharacterPage({
             </div>
 
             <div className="p-6 sm:p-8">
-              <p className="text-[9px] uppercase tracking-[0.28em] text-[#8c704b]">
+              <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
                 Character administration
               </p>
 
-              <h2 className="mt-2 font-serif text-4xl text-[#ead5ac]">
+              <h2 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">
                 {displayName}
               </h2>
 
-              <p className="mt-2 text-sm text-[#9f8968]">
+              <p className="mt-2 text-sm text-[rgb(var(--sep-colour-9f8968))]">
                 {race?.name ??
                   "No ancestry assigned"}
               </p>
@@ -620,7 +683,13 @@ export default async function AdminCharacterPage({
         <AdminCharacterFeatureAccess
           characterId={character.id}
           entitlements={featureEntitlements}
-        />
+          portalSkins={
+    portalSkins
+  }
+  portalSkinEntitlements={
+    portalSkinEntitlements
+  }
+/>
 
         <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
           <div className="space-y-6">
@@ -660,12 +729,12 @@ export default async function AdminCharacterPage({
             />
           </div>
 
-          <section className="h-fit border border-[#60482e]/45 bg-[#15100d] p-5 sm:p-6">
-            <p className="text-[9px] uppercase tracking-[0.24em] text-[#8c704b]">
+          <section className="h-fit border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6">
+            <p className="text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))]">
               Staff controls
             </p>
 
-            <h3 className="mt-2 font-serif text-2xl text-[#dfc99f]">
+            <h3 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">
               Review and classification
             </h3>
 
@@ -698,7 +767,7 @@ export default async function AdminCharacterPage({
                       defaultValue={
                         character.first_name
                       }
-                      className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                      className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                     />
                   </AdminField>
 
@@ -711,7 +780,7 @@ export default async function AdminCharacterPage({
                       defaultValue={
                         character.surname
                       }
-                      className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                      className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                     />
                   </AdminField>
 
@@ -724,7 +793,7 @@ export default async function AdminCharacterPage({
                         character.pronouns ??
                         ""
                       }
-                      className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                      className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                     />
                   </AdminField>
 
@@ -736,7 +805,7 @@ export default async function AdminCharacterPage({
                         character.gender ??
                         ""
                       }
-                      className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                      className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                     >
                       <option value="">
                         Choose gender
@@ -766,7 +835,7 @@ export default async function AdminCharacterPage({
                         ""
                       }
                       placeholder="Optional"
-                      className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                      className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                     />
                   </AdminField>
 
@@ -778,7 +847,7 @@ export default async function AdminCharacterPage({
                         character.date_of_birth ??
                         ""
                       }
-                      className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                      className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                     />
                   </AdminField>
 
@@ -791,7 +860,7 @@ export default async function AdminCharacterPage({
                         character.birthplace ??
                         ""
                       }
-                      className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                      className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                     />
                   </AdminField>
 
@@ -804,7 +873,7 @@ export default async function AdminCharacterPage({
                         character.origin ??
                         ""
                       }
-                      className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                      className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                     />
                   </AdminField>
 
@@ -817,7 +886,7 @@ export default async function AdminCharacterPage({
                         character.portrait_url ??
                         ""
                       }
-                      className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                      className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                     />
                   </AdminField>
 
@@ -831,7 +900,7 @@ export default async function AdminCharacterPage({
                         ""
                       }
                       placeholder="https://.../theme.mp3"
-                      className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                      className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                     />
                   </AdminField>
                 </div>
@@ -845,7 +914,7 @@ export default async function AdminCharacterPage({
                       character.physical_description ??
                       ""
                     }
-                    className="w-full resize-y border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm leading-6 text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                    className="w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm leading-6 text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                   />
                 </AdminField>
 
@@ -858,7 +927,7 @@ export default async function AdminCharacterPage({
                       character.personality ??
                       ""
                     }
-                    className="w-full resize-y border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm leading-6 text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                    className="w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm leading-6 text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                   />
                 </AdminField>
 
@@ -871,7 +940,7 @@ export default async function AdminCharacterPage({
                       character.biography ??
                       ""
                     }
-                    className="w-full resize-y border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm leading-6 text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                    className="w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm leading-6 text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                   />
                 </AdminField>
 
@@ -884,7 +953,7 @@ export default async function AdminCharacterPage({
                       character.public_notes ??
                       ""
                     }
-                    className="w-full resize-y border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm leading-6 text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                    className="w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm leading-6 text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                   />
                 </AdminField>
 
@@ -897,22 +966,22 @@ export default async function AdminCharacterPage({
                       character.offgame ??
                       ""
                     }
-                    className="w-full resize-y border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm leading-6 text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                    className="w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm leading-6 text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                   />
                 </AdminField>
 
-                <div className="border border-[#60482e]/45 bg-[#100c09] p-4">
-                  <p className="text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+                <div className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] p-4">
+                  <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
                     Character Health
                   </p>
 
-                  <p className="mt-2 text-xs leading-5 text-[#8f8271]">
+                  <p className="mt-2 text-xs leading-5 text-[rgb(var(--sep-colour-8f8271))]">
                     Maximum Health uses effective Vigour: Base + Ancestry + Order, then × 10. The editable Attribute fields below remain BASE values only.
                   </p>
 
                   <div className="mt-4 grid gap-3 sm:grid-cols-2">
                     <label className="block">
-                      <span className="text-[8px] uppercase tracking-[0.16em] text-[#806b50]">
+                      <span className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))]">
                         Current Health
                       </span>
 
@@ -927,16 +996,16 @@ export default async function AdminCharacterPage({
                             ? ""
                             : character.current_health
                         }
-                        className="mt-2 w-full border border-[#60482e]/55 bg-[#0d0907] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                        className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                       />
                     </label>
 
                     <div>
-                      <span className="text-[8px] uppercase tracking-[0.16em] text-[#806b50]">
+                      <span className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))]">
                         Maximum Health
                       </span>
 
-                      <div className="mt-2 border border-[#60482e]/45 bg-[#0d0907] px-3 py-3 text-sm text-[#bfae92]">
+                      <div className="mt-2 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-bfae92))]">
                         {maximumHealth ===
                         null
                           ? "Not available"
@@ -946,39 +1015,39 @@ export default async function AdminCharacterPage({
                   </div>
 
                   {effectiveVigour !== null ? (
-                    <div className="mt-3 border border-[#60482e]/35 bg-[#0d0907] px-3 py-3 text-[10px] leading-5 text-[#9f917c]">
+                    <div className="mt-3 border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-3 text-[10px] leading-5 text-[rgb(var(--sep-colour-9f917c))]">
                       Effective Vigour:{" "}
-                      <span className="text-[#d7c4a5]">
+                      <span className="text-[rgb(var(--sep-colour-d7c4a5))]">
                         Base {character.vigor ?? 0}
                       </span>{" "}
                       + Ancestry{" "}
-                      <span className="text-[#d7c4a5]">
+                      <span className="text-[rgb(var(--sep-colour-d7c4a5))]">
                         {formatModifier(
                           ancestryModifiers.vigor,
                         )}
                       </span>{" "}
                       + Order{" "}
-                      <span className="text-[#d7c4a5]">
+                      <span className="text-[rgb(var(--sep-colour-d7c4a5))]">
                         {formatModifier(
                           orderModifiers.vigor,
                         )}
                       </span>{" "}
                       ={" "}
-                      <span className="font-semibold text-[#e6c994]">
+                      <span className="font-semibold text-[rgb(var(--sep-colour-e6c994))]">
                         {effectiveVigour}
                       </span>
                     </div>
                   ) : null}
                 </div>
 
-                <div className="border border-[#60482e]/45 bg-[#100c09] p-4">
+                <div className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] p-4">
                   <div className="flex flex-wrap items-end justify-between gap-3">
                     <div>
-                      <p className="text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+                      <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
                         Character attributes
                       </p>
 
-                      <p className="mt-2 text-xs leading-5 text-[#8f8271]">
+                      <p className="mt-2 text-xs leading-5 text-[rgb(var(--sep-colour-8f8271))]">
                         The number field is the BASE Attribute controlled by staff. Ancestry and Order modifiers are shown separately and are never written into the base value.
                       </p>
                     </div>
@@ -1067,10 +1136,10 @@ export default async function AdminCharacterPage({
                         return (
                           <div
                             key={name}
-                            className="border border-[#60482e]/35 bg-[#0d0907] p-3"
+                            className="border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-0d0907))] p-3"
                           >
                             <label className="block">
-                              <span className="text-[8px] uppercase tracking-[0.16em] text-[#806b50]">
+                              <span className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))]">
                                 {label} — Base
                               </span>
 
@@ -1088,7 +1157,7 @@ export default async function AdminCharacterPage({
                                         value,
                                       )
                                 }
-                                className="mt-2 w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                                className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                               />
                             </label>
 
@@ -1125,7 +1194,7 @@ export default async function AdminCharacterPage({
                       character.race_id ??
                       ""
                     }
-                    className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                    className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                   >
                     <option value="">
                       No ancestry assigned
@@ -1183,7 +1252,7 @@ export default async function AdminCharacterPage({
                     }
                     maxLength={120}
                     placeholder="Optional public title"
-                    className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+                    className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
                   />
                 </AdminField>
 
@@ -1197,18 +1266,18 @@ export default async function AdminCharacterPage({
                     maxLength={10000}
                     rows={7}
                     placeholder="These notes are visible only to staff."
-                    className="w-full resize-y border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm leading-6 text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+                    className="w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm leading-6 text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
                   />
                 </AdminField>
               </div>
 
               {character.approved_at ? (
-                <div className="mt-5 border border-[#315742]/55 bg-[#102019] p-4">
-                  <p className="text-[8px] uppercase tracking-[0.18em] text-[#6fa381]">
+                <div className="mt-5 border border-[rgb(var(--sep-colour-315742))]/55 bg-[rgb(var(--sep-colour-102019))] p-4">
+                  <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-6fa381))]">
                     Approval record
                   </p>
 
-                  <p className="mt-2 text-xs leading-5 text-[#a8c2ae]">
+                  <p className="mt-2 text-xs leading-5 text-[rgb(var(--sep-colour-a8c2ae))]">
                     Approved{" "}
                     {formatDate(
                       character.approved_at,
@@ -1216,7 +1285,7 @@ export default async function AdminCharacterPage({
                   </p>
 
                   {character.approved_by ? (
-                    <p className="mt-1 break-all text-[9px] text-[#718d79]">
+                    <p className="mt-1 break-all text-[9px] text-[rgb(var(--sep-colour-718d79))]">
                       Staff ID:{" "}
                       {
                         character.approved_by
@@ -1228,24 +1297,24 @@ export default async function AdminCharacterPage({
 
               <button
                 type="submit"
-                className="mt-6 w-full border border-[#987344] bg-[#3b2919] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[#efd6a8] transition hover:border-[#b98c50] hover:bg-[#50371f]"
+                className="mt-6 w-full border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
               >
                 Save character record
               </button>
             </AdminCharacterEditForm>
 
-            <div className="mt-8 border-t border-[#6f302b]/45 pt-6">
-              <div className="border border-[#843a32]/60 bg-[#26110f]/65 p-4">
-                <p className="text-[8px] uppercase tracking-[0.22em] text-[#c06d62]">
+            <div className="mt-8 border-t border-[rgb(var(--sep-colour-6f302b))]/45 pt-6">
+              <div className="border border-[rgb(var(--sep-colour-843a32))]/60 bg-[rgb(var(--sep-colour-26110f))]/65 p-4">
+                <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-c06d62))]">
                   Danger zone
                 </p>
 
-                <h4 className="mt-2 font-serif text-xl text-[#e1aaa2]">
+                <h4 className="mt-2 font-serif text-xl text-[rgb(var(--sep-colour-e1aaa2))]">
                   Permanently delete
                   character
                 </h4>
 
-                <p className="mt-3 text-xs leading-5 text-[#a98782]">
+                <p className="mt-3 text-xs leading-5 text-[rgb(var(--sep-colour-a98782))]">
                   This removes the
                   character sheet
                   permanently but leaves
@@ -1255,9 +1324,9 @@ export default async function AdminCharacterPage({
                   character.
                 </p>
 
-                <p className="mt-3 text-xs leading-5 text-[#a98782]">
+                <p className="mt-3 text-xs leading-5 text-[rgb(var(--sep-colour-a98782))]">
                   Type{" "}
-                  <strong className="text-[#e1aaa2]">
+                  <strong className="text-[rgb(var(--sep-colour-e1aaa2))]">
                     {getDisplayName(
                       character,
                     )}
@@ -1287,12 +1356,12 @@ export default async function AdminCharacterPage({
                     placeholder={getDisplayName(
                       character,
                     )}
-                    className="w-full border border-[#71352f] bg-[#100807] px-3 py-3 text-sm text-[#dfbbb5] outline-none placeholder:text-[#684b47] focus:border-[#bd6458]"
+                    className="w-full border border-[rgb(var(--sep-colour-71352f))] bg-[rgb(var(--sep-colour-100807))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-dfbbb5))] outline-none placeholder:text-[rgb(var(--sep-colour-684b47))] focus:border-[rgb(var(--sep-colour-bd6458))]"
                   />
 
                   <button
                     type="submit"
-                    className="mt-3 w-full border border-[#a44c42] bg-[#481d19] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[#f1beb6] transition hover:border-[#d66b5f] hover:bg-[#622720]"
+                    className="mt-3 w-full border border-[rgb(var(--sep-colour-a44c42))] bg-[rgb(var(--sep-colour-481d19))] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-f1beb6))] transition hover:border-[rgb(var(--sep-colour-d66b5f))] hover:bg-[rgb(var(--sep-colour-622720))]"
                   >
                     Delete character
                     permanently
@@ -1316,7 +1385,7 @@ function AdminField({
 }) {
   return (
     <div className="block">
-      <div className="mb-2 block text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+      <div className="mb-2 block text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
         {label}
       </div>
 
@@ -1334,11 +1403,11 @@ function ReadOnlyField({
 }) {
   return (
     <div>
-      <p className="text-[8px] uppercase tracking-[0.2em] text-[#806b50]">
+      <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
         {label}
       </p>
 
-      <p className="mt-2 break-words text-sm text-[#c9b99e]">
+      <p className="mt-2 break-words text-sm text-[rgb(var(--sep-colour-c9b99e))]">
         {value?.trim() ||
           "Not provided"}
       </p>
@@ -1354,17 +1423,17 @@ function CharacterTextSection({
   content: string | null;
 }) {
   return (
-    <section className="border border-[#60482e]/45 bg-[#15100d] p-5 sm:p-6">
-      <h3 className="font-serif text-2xl text-[#dfc99f]">
+    <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6">
+      <h3 className="font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">
         {title}
       </h3>
 
       {content?.trim() ? (
-        <div className="mt-4 whitespace-pre-wrap text-sm leading-7 text-[#b8aa96]">
+        <div className="mt-4 whitespace-pre-wrap text-sm leading-7 text-[rgb(var(--sep-colour-b8aa96))]">
           {content}
         </div>
       ) : (
-        <p className="mt-4 text-sm italic text-[#756957]">
+        <p className="mt-4 text-sm italic text-[rgb(var(--sep-colour-756957))]">
           No information was
           provided.
         </p>
@@ -1391,11 +1460,11 @@ function AttributeModifierBox({
   value: number;
 }) {
   return (
-    <div className="border border-[#60482e]/30 bg-black/20 px-2 py-2">
-      <p className="text-[7px] uppercase tracking-[0.12em] text-[#746856]">
+    <div className="border border-[rgb(var(--sep-colour-60482e))]/30 bg-black/20 px-2 py-2">
+      <p className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-746856))]">
         {label}
       </p>
-      <p className="mt-1 text-xs text-[#c7b393]">
+      <p className="mt-1 text-xs text-[rgb(var(--sep-colour-c7b393))]">
         {formatModifier(value)}
       </p>
     </div>
@@ -1408,11 +1477,11 @@ function AttributeEffectiveBox({
   value: number | null;
 }) {
   return (
-    <div className="border border-[#8d6a3d]/45 bg-[#1a120c] px-2 py-2">
-      <p className="text-[7px] uppercase tracking-[0.12em] text-[#98784e]">
+    <div className="border border-[rgb(var(--sep-colour-8d6a3d))]/45 bg-[rgb(var(--sep-colour-1a120c))] px-2 py-2">
+      <p className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-98784e))]">
         Effective
       </p>
-      <p className="mt-1 text-xs font-semibold text-[#e6c994]">
+      <p className="mt-1 text-xs font-semibold text-[rgb(var(--sep-colour-e6c994))]">
         {value === null
           ? "—"
           : value}

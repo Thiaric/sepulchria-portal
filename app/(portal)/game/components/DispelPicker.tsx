@@ -46,8 +46,8 @@ export function DispelPicker({
   }, [db, castId, targetCharacterId, state.submittedAt]);
 
   return (
-    <div className="mt-3 border border-[#765937]/60 bg-[#17100b] p-3">
-      <p className="text-[8px] uppercase tracking-[0.16em] text-[#b88c55]">
+    <div className="mt-3 border border-[rgb(var(--sep-colour-765937))]/60 bg-[rgb(var(--sep-colour-17100b))] p-3">
+      <p className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b88c55))]">
         Choose effect to dispel from {targetName}
       </p>
 
@@ -66,7 +66,7 @@ export function DispelPicker({
               type="submit"
               name="effect_id"
               value={effect.id}
-              className="block w-full border border-[#60482e]/55 bg-[#21170f] px-3 py-2 text-left text-[9px] text-[#d9bd91] transition hover:border-[#9b7446]"
+              className="block w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-21170f))] px-3 py-2 text-left text-[9px] text-[rgb(var(--sep-colour-d9bd91))] transition hover:border-[rgb(var(--sep-colour-9b7446))]"
             >
               {effect.shape_name} · Level {effect.shape_level} ·{" "}
               {effect.effect_nature} ·{" "}
@@ -75,14 +75,14 @@ export function DispelPicker({
             </button>
           ))
         ) : (
-          <p className="text-[9px] text-[#887865]">
+          <p className="text-[9px] text-[rgb(var(--sep-colour-887865))]">
             No active Shape effects on this character.
           </p>
         )}
       </form>
 
       {state.message ? (
-        <p className="mt-2 text-[9px] text-[#c9b18a]">
+        <p className="mt-2 text-[9px] text-[rgb(var(--sep-colour-c9b18a))]">
           {state.message}
         </p>
       ) : null}
@@ -91,7 +91,7 @@ export function DispelPicker({
         <button
           type="button"
           onClick={onDone}
-          className="mt-2 text-[8px] uppercase text-[#d6b37d]"
+          className="mt-2 text-[8px] uppercase text-[rgb(var(--sep-colour-d6b37d))]"
         >
           Done
         </button>

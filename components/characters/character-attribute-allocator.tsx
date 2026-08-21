@@ -129,29 +129,29 @@ export function CharacterAttributeAllocator({
 
   return (
     <div>
-      <div className="flex flex-wrap items-end justify-between gap-4 border border-[#735735]/55 bg-[#21170f] p-5">
+      <div className="flex flex-wrap items-end justify-between gap-4 border border-[rgb(var(--sep-colour-735735))]/55 bg-[rgb(var(--sep-colour-21170f))] p-5">
         <div>
-          <p className="text-[9px] uppercase tracking-[0.24em] text-[#ad8753]">
+          <p className="text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-ad8753))]">
             Character attributes
           </p>
 
-          <h3 className="mt-2 font-serif text-2xl text-[#e3cba2]">
+          <h3 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-e3cba2))]">
             {locked
               ? "Permanent base attribute record"
               : "Standard starting attributes"}
           </h3>
 
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-[#998b78]">
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-[rgb(var(--sep-colour-998b78))]">
             The base value always remains separate. Your selected Ancestry modifier is applied on top of it to produce the Effective Attribute used by the game. Order modifiers may be added later through play.
           </p>
         </div>
 
-        <div className="border border-[#80603a]/55 bg-[#100c09] px-5 py-3 text-right">
-          <p className="text-[8px] uppercase tracking-[0.18em] text-[#776957]">
+        <div className="border border-[rgb(var(--sep-colour-80603a))]/55 bg-[rgb(var(--sep-colour-100c09))] px-5 py-3 text-right">
+          <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-776957))]">
             Base points
           </p>
 
-          <p className="mt-1 font-serif text-2xl text-[#e1c187]">
+          <p className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-e1c187))]">
             {locked && !hasCompleteInitialValues
               ? "—"
               : total}
@@ -172,44 +172,44 @@ export function CharacterAttributeAllocator({
             return (
               <article
                 key={key}
-                className="border border-[#60482e]/45 bg-[#120e0b] p-4"
+                className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-120e0b))] p-4"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
-                    <h4 className="font-serif text-xl text-[#dfc79c]">
+                    <h4 className="font-serif text-xl text-[rgb(var(--sep-colour-dfc79c))]">
                       {ATTRIBUTE_LABELS[key]}
                     </h4>
 
-                    <p className="mt-2 text-xs leading-5 text-[#887c6d]">
+                    <p className="mt-2 text-xs leading-5 text-[rgb(var(--sep-colour-887c6d))]">
                       {ATTRIBUTE_DESCRIPTIONS[key]}
                     </p>
                   </div>
                 </div>
 
                 <div className="mt-4 grid grid-cols-3 gap-2">
-                  <div className="border border-[#60482e]/45 bg-[#0d0907] p-3 text-center">
-                    <p className="text-[7px] uppercase tracking-[0.16em] text-[#776957]">
+                  <div className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0d0907))] p-3 text-center">
+                    <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-776957))]">
                       Base
                     </p>
-                    <p className="mt-1 font-serif text-xl text-[#d8c29e]">
+                    <p className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8c29e))]">
                       {base ?? "—"}
                     </p>
                   </div>
 
-                  <div className="border border-[#60482e]/45 bg-[#0d0907] p-3 text-center">
-                    <p className="text-[7px] uppercase tracking-[0.16em] text-[#776957]">
+                  <div className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0d0907))] p-3 text-center">
+                    <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-776957))]">
                       Ancestry
                     </p>
-                    <p className="mt-1 font-serif text-xl text-[#d8c29e]">
+                    <p className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8c29e))]">
                       {formatModifier(ancestry)}
                     </p>
                   </div>
 
-                  <div className="border border-[#8a6638]/60 bg-[#1b130d] p-3 text-center">
-                    <p className="text-[7px] uppercase tracking-[0.16em] text-[#9a794d]">
+                  <div className="border border-[rgb(var(--sep-colour-8a6638))]/60 bg-[rgb(var(--sep-colour-1b130d))] p-3 text-center">
+                    <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-9a794d))]">
                       Effective
                     </p>
-                    <p className="mt-1 font-serif text-xl text-[#e8c98e]">
+                    <p className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-e8c98e))]">
                       {effective ?? "—"}
                     </p>
                   </div>
@@ -228,15 +228,15 @@ export function CharacterAttributeAllocator({
         )}
       </div>
 
-      <div className="mt-4 border border-[#735735]/45 bg-[#17100c] px-4 py-3">
-        <p className="text-xs leading-5 text-[#9a8a74]">
-          Health uses <strong className="text-[#d8bd91]">Effective Vigour × 10</strong>. For example, Base Vigour 3 with Ancestry +2 starts at 50 / 50 Health.
+      <div className="mt-4 border border-[rgb(var(--sep-colour-735735))]/45 bg-[rgb(var(--sep-colour-17100c))] px-4 py-3">
+        <p className="text-xs leading-5 text-[rgb(var(--sep-colour-9a8a74))]">
+          Health uses <strong className="text-[rgb(var(--sep-colour-d8bd91))]">Effective Vigour × 10</strong>. For example, Base Vigour 3 with Ancestry +2 starts at 50 / 50 Health.
         </p>
       </div>
 
       {locked &&
       !hasCompleteInitialValues ? (
-        <p className="mt-4 border border-[#765937]/50 bg-[#1d150f] px-4 py-3 text-xs leading-5 text-[#b79b72]">
+        <p className="mt-4 border border-[rgb(var(--sep-colour-765937))]/50 bg-[rgb(var(--sep-colour-1d150f))] px-4 py-3 text-xs leading-5 text-[rgb(var(--sep-colour-b79b72))]">
           This legacy character does not yet have a complete base Attribute record. Staff can complete it from character administration.
         </p>
       ) : null}

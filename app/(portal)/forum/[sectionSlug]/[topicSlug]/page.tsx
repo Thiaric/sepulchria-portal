@@ -1183,11 +1183,11 @@ for (const log of moderationLogs) {
       />
       <nav
         aria-label="Forum breadcrumb"
-        className="mb-6 flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.16em] text-[#746653]"
+        className="mb-6 flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-746653))]"
       >
         <Link
           href="/forum"
-          className="transition hover:text-[#c7a16d]"
+          className="transition hover:text-[rgb(var(--sep-colour-c7a16d))]"
         >
           Forum
         </Link>
@@ -1200,7 +1200,7 @@ for (const log of moderationLogs) {
           href={`/forum/${encodeURIComponent(
             section.slug,
           )}`}
-          className="transition hover:text-[#c7a16d]"
+          className="transition hover:text-[rgb(var(--sep-colour-c7a16d))]"
         >
           {section.name}
         </Link>
@@ -1209,13 +1209,13 @@ for (const log of moderationLogs) {
           /
         </span>
 
-        <span className="text-[#a48c6c]">
+        <span className="text-[rgb(var(--sep-colour-a48c6c))]">
           {topic.title}
         </span>
       </nav>
 
-      <header className="border border-[#60482e]/45 bg-[#15100d]">
-        <div className="flex flex-col gap-5 border-b border-[#60482e]/35 bg-[#1a130e] px-5 py-6 sm:px-7 lg:flex-row lg:items-start lg:justify-between">
+      <header className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
+        <div className="flex flex-col gap-5 border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-1a130e))] px-5 py-6 sm:px-7 lg:flex-row lg:items-start lg:justify-between">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
               {topic.is_pinned ? (
@@ -1234,7 +1234,7 @@ for (const log of moderationLogs) {
             </div>
 
 
-            <h1 className="mt-3 break-words font-serif text-3xl text-[#dec69d] sm:text-1xl">
+            <h1 className="mt-3 break-words font-serif text-3xl text-[rgb(var(--sep-colour-dec69d))] sm:text-1xl">
               {topic.title}
             </h1>
 
@@ -1278,7 +1278,7 @@ for (const log of moderationLogs) {
           ) : null}
         </div></div>
 
-        <dl className="grid grid-cols-2 divide-x divide-[#60482e]/30 bg-[#100c09] sm:grid-cols-4">
+        <dl className="grid grid-cols-2 divide-x divide-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-100c09))] sm:grid-cols-4">
           <TopicStatistic
             label="Posts"
             value={mappedPosts.length}
@@ -1366,18 +1366,18 @@ for (const log of moderationLogs) {
               Discussion locked
             </p>
 
-            <p className="mt-3 font-serif text-xl text-[#c9b39a]">
+            <p className="mt-3 font-serif text-xl text-[rgb(var(--sep-colour-c9b39a))]">
               New replies are not
               currently permitted.
             </p>
           </div>
         ) : !user ? (
-          <div className="border border-[#60482e]/45 bg-[#15100d] px-5 py-7 text-center">
-            <p className="font-serif text-xl text-[#cdb590]">
+          <div className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-5 py-7 text-center">
+            <p className="font-serif text-xl text-[rgb(var(--sep-colour-cdb590))]">
               Sign in to reply
             </p>
 
-            <p className="mt-2 text-sm text-[#817567]">
+            <p className="mt-2 text-sm text-[rgb(var(--sep-colour-817567))]">
               You must be signed in
               before joining this
               discussion.
@@ -1387,19 +1387,19 @@ for (const log of moderationLogs) {
               href={`/login?redirect=${encodeURIComponent(
                 `/forum/${section.slug}/${topic.slug}#reply`,
               )}`}
-              className="mt-5 inline-block border border-[#80613b] bg-[#2c1e14] px-5 py-3 text-[9px] uppercase tracking-[0.17em] text-[#d8bd91] transition hover:border-[#a67c45] hover:bg-[#3a2819]"
+              className="mt-5 inline-block border border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-2c1e14))] px-5 py-3 text-[9px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-d8bd91))] transition hover:border-[rgb(var(--sep-colour-a67c45))] hover:bg-[rgb(var(--sep-colour-3a2819))]"
             >
               Sign in
             </Link>
           </div>
         ) : replyCharacters.length ===
           0 ? (
-          <div className="border border-[#60482e]/45 bg-[#15100d] px-5 py-7 text-center">
-            <p className="font-serif text-xl text-[#cdb590]">
+          <div className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-5 py-7 text-center">
+            <p className="font-serif text-xl text-[rgb(var(--sep-colour-cdb590))]">
               No approved character
             </p>
 
-            <p className="mt-2 text-sm leading-6 text-[#817567]">
+            <p className="mt-2 text-sm leading-6 text-[rgb(var(--sep-colour-817567))]">
               You need at least one
               approved character before
               posting in the forum.
@@ -1434,11 +1434,11 @@ function TopicStatistic({
 }) {
   return (
     <div className="px-4 py-4 text-center sm:px-5">
-      <dt className="text-[7px] uppercase tracking-[0.17em] text-[#665946]">
+      <dt className="text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-665946))]">
         {label}
       </dt>
 
-      <dd className="mt-2 font-serif text-lg text-[#bda17b]">
+      <dd className="mt-2 font-serif text-lg text-[rgb(var(--sep-colour-bda17b))]">
         {value}
       </dd>
     </div>

@@ -196,7 +196,7 @@ export default function CharacterForm({
     <form
       ref={formRef}
       action={action}
-      className="overflow-hidden border border-[#6c5132]/50 bg-[#17110d]/95"
+      className="overflow-hidden border border-[rgb(var(--sep-colour-6c5132))]/50 bg-[rgb(var(--sep-colour-17110d))]/95"
     >
       <input type="hidden" name="race_id" value={raceId} />
 
@@ -209,7 +209,7 @@ export default function CharacterForm({
         />
       ))}
 
-      <div className="grid gap-2 border-b border-[#5d452d]/40 bg-[#110d0a] p-4 sm:grid-cols-3 xl:grid-cols-6">
+      <div className="grid gap-2 border-b border-[rgb(var(--sep-colour-5d452d))]/40 bg-[rgb(var(--sep-colour-110d0a))] p-4 sm:grid-cols-3 xl:grid-cols-6">
         {steps.map(([label], index) => (
           <button
             key={label}
@@ -219,11 +219,11 @@ export default function CharacterForm({
             }}
             className={`border px-3 py-3 text-left ${
               step === index + 1
-                ? "border-[#9a7543] bg-[#382819] text-[#f0d9ae]"
-                : "border-[#4d3b29]/50 bg-[#130f0c] text-[#a99b87]"
+                ? "border-[rgb(var(--sep-colour-9a7543))] bg-[rgb(var(--sep-colour-382819))] text-[rgb(var(--sep-colour-f0d9ae))]"
+                : "border-[rgb(var(--sep-colour-4d3b29))]/50 bg-[rgb(var(--sep-colour-130f0c))] text-[rgb(var(--sep-colour-a99b87))]"
             }`}
           >
-            <span className="block text-[9px] uppercase tracking-[0.24em] text-[#806b50]">
+            <span className="block text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
               Step {index + 1}
             </span>
             <span className="mt-1 block font-serif text-sm">{label}</span>
@@ -232,20 +232,20 @@ export default function CharacterForm({
       </div>
 
       <div className="p-6 sm:p-8 lg:p-10">
-        <header className="mb-8 border-b border-[#5e4930]/35 pb-6">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-[#987447]">
+        <header className="mb-8 border-b border-[rgb(var(--sep-colour-5e4930))]/35 pb-6">
+          <p className="text-[10px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-987447))]">
             Step {step} of {steps.length}
           </p>
-          <h2 className="mt-3 font-serif text-3xl text-[#ead5ad]">
+          <h2 className="mt-3 font-serif text-3xl text-[rgb(var(--sep-colour-ead5ad))]">
             {steps[step - 1][0]}
           </h2>
-          <p className="mt-3 text-sm leading-7 text-[#998c7a]">
+          <p className="mt-3 text-sm leading-7 text-[rgb(var(--sep-colour-998c7a))]">
             {steps[step - 1][1]}
           </p>
         </header>
 
         {error ? (
-          <div className="mb-7 border border-[#8c463d] bg-[#2a1513] p-4 text-sm text-[#e4b4aa]">
+          <div className="mb-7 border border-[rgb(var(--sep-colour-8c463d))] bg-[rgb(var(--sep-colour-2a1513))] p-4 text-sm text-[rgb(var(--sep-colour-e4b4aa))]">
             {error}
           </div>
         ) : null}
@@ -258,17 +258,17 @@ export default function CharacterForm({
           )}
 
           {mode === "create" && race ? (
-            <div className="mt-6 border border-[#59432c]/40 bg-[#100c09] p-4">
+            <div className="mt-6 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-4">
               <div className="flex flex-wrap items-end justify-between gap-3">
                 <div>
-                  <p className="text-[9px] uppercase tracking-[0.22em] text-[#806b50]">
+                  <p className="text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
                     Ancestry Feats
                   </p>
-                  <p className="mt-2 text-xs leading-6 text-[#8f8271]">
+                  <p className="mt-2 text-xs leading-6 text-[rgb(var(--sep-colour-8f8271))]">
                     Choose up to two Feats available to {race.name}.
                   </p>
                 </div>
-                <p className="text-[8px] uppercase tracking-[0.14em] text-[#756958]">
+                <p className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
                   {ancestryGiftIds.length} / 2 selected
                 </p>
               </div>
@@ -287,21 +287,21 @@ export default function CharacterForm({
                         onClick={() => toggleAncestryGift(gift.id)}
                         className={`border p-4 text-left transition ${
                           selected
-                            ? "border-[#c19352] bg-[#332416]"
-                            : "border-[#5c462f]/65 bg-[#120e0b] hover:border-[#8a683f]"
+                            ? "border-[rgb(var(--sep-colour-c19352))] bg-[rgb(var(--sep-colour-332416))]"
+                            : "border-[rgb(var(--sep-colour-5c462f))]/65 bg-[rgb(var(--sep-colour-120e0b))] hover:border-[rgb(var(--sep-colour-8a683f))]"
                         } disabled:cursor-not-allowed disabled:opacity-35`}
                       >
                         <div className="flex items-start justify-between gap-2">
-                          <span className="font-serif text-base text-[#dfc79c]">
+                          <span className="font-serif text-base text-[rgb(var(--sep-colour-dfc79c))]">
                             {gift.name}
                           </span>
-                          <span className="text-[8px] uppercase tracking-[0.12em] text-[#8e7656]">
+                          <span className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-8e7656))]">
                             {selected ? "Selected" : "Choose"}
                           </span>
                         </div>
 
                         {gift.description ? (
-                          <p className="mt-2 text-[11px] leading-5 text-[#918473]">
+                          <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-918473))]">
                             {gift.description}
                           </p>
                         ) : null}
@@ -310,18 +310,18 @@ export default function CharacterForm({
                   })}
                 </div>
               ) : (
-                <p className="mt-4 text-xs italic text-[#746958]">
+                <p className="mt-4 text-xs italic text-[rgb(var(--sep-colour-746958))]">
                   No active Ancestry Feats are currently available for {race.name}.
                 </p>
               )}
             </div>
           ) : null}
 
-          <div className="mt-6 border border-[#59432c]/40 bg-[#100c09] p-4">
-            <p className="text-[9px] uppercase tracking-[0.22em] text-[#806b50]">
+          <div className="mt-6 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-4">
+            <p className="text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
               Associations & Orders
             </p>
-            <p className="mt-2 text-xs leading-6 text-[#8f8271]">
+            <p className="mt-2 text-xs leading-6 text-[rgb(var(--sep-colour-8f8271))]">
               Association and Order membership are not selected during character creation
               or editing. A character joins an Order through play; the Association is then
               inherited from that Order.
@@ -366,7 +366,7 @@ export default function CharacterForm({
                 onChange={(event) => setAge(event.target.value)}
                 className={inputClass}
               />
-              <span className="mt-2 block text-xs text-[#766b5d]">
+              <span className="mt-2 block text-xs text-[rgb(var(--sep-colour-766b5d))]">
                 {race?.min_age === null || !race
                   ? "Choose a configured ancestry first."
                   : race.max_age === null
@@ -426,19 +426,19 @@ export default function CharacterForm({
         </section>
 
         <section className={step === 6 ? "block" : "hidden"}>
-          <div className="border border-[#735735]/55 bg-[#21170f] p-5">
-            <p className="text-[10px] uppercase tracking-[0.26em] text-[#ad8753]">
+          <div className="border border-[rgb(var(--sep-colour-735735))]/55 bg-[rgb(var(--sep-colour-21170f))] p-5">
+            <p className="text-[10px] uppercase tracking-[0.26em] text-[rgb(var(--sep-colour-ad8753))]">
               Final review
             </p>
-            <h3 className="mt-3 font-serif text-2xl text-[#e3cba2]">
+            <h3 className="mt-3 font-serif text-2xl text-[rgb(var(--sep-colour-e3cba2))]">
               {mode === "create" ? "Ready to enter Sepulchria" : "Ready to save your changes"}
             </h3>
-            <p className="mt-3 text-sm leading-7 text-[#998b78]">
-              Ancestry: <span className="text-[#d6bd91]">{race?.name ?? "Not selected"}</span>.
+            <p className="mt-3 text-sm leading-7 text-[rgb(var(--sep-colour-998b78))]">
+              Ancestry: <span className="text-[rgb(var(--sep-colour-d6bd91))]">{race?.name ?? "Not selected"}</span>.
               {mode === "create" ? (
                 <>
                   {" "}Ancestry Feats:{" "}
-                  <span className="text-[#d6bd91]">
+                  <span className="text-[rgb(var(--sep-colour-d6bd91))]">
                     {selectedAncestryGifts.length
                       ? selectedAncestryGifts.map((gift) => gift.name).join(", ")
                       : "None selected"}
@@ -451,7 +451,7 @@ export default function CharacterForm({
         </section>
       </div>
 
-      <div className="flex justify-between gap-3 border-t border-[#5d452d]/40 bg-[#110d0a] p-6">
+      <div className="flex justify-between gap-3 border-t border-[rgb(var(--sep-colour-5d452d))]/40 bg-[rgb(var(--sep-colour-110d0a))] p-6">
         {step > 1 ? (
           <button type="button" onClick={() => { setError(null); setStep(step - 1); }} className={secondaryButton}>
             &larr; Previous
@@ -477,14 +477,14 @@ export default function CharacterForm({
 }
 
 const inputClass =
-  "w-full border border-[#654c31] bg-[#0f0c09] px-4 py-3 text-sm text-[#dfceb0] outline-none transition focus:border-[#a17a45]";
+  "w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-4 py-3 text-sm text-[rgb(var(--sep-colour-dfceb0))] outline-none transition focus:border-[rgb(var(--sep-colour-a17a45))]";
 const primaryButton =
-  "border border-[#ae8247] bg-[#4a321d] px-8 py-3 text-xs uppercase tracking-[0.25em] text-[#f5dca9] transition hover:bg-[#634425]";
+  "border border-[rgb(var(--sep-colour-ae8247))] bg-[rgb(var(--sep-colour-4a321d))] px-8 py-3 text-xs uppercase tracking-[0.25em] text-[rgb(var(--sep-colour-f5dca9))] transition hover:bg-[rgb(var(--sep-colour-634425))]";
 const secondaryButton =
-  "border border-[#5f4a31] px-6 py-3 text-xs uppercase tracking-[0.22em] text-[#a99a84] transition hover:bg-[#211810]";
+  "border border-[rgb(var(--sep-colour-5f4a31))] px-6 py-3 text-xs uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-a99a84))] transition hover:bg-[rgb(var(--sep-colour-211810))]";
 
 function Label({ children }: { children: React.ReactNode }) {
-  return <span className="mb-2 block text-[11px] uppercase tracking-[0.25em] text-[#a38357]">{children}</span>;
+  return <span className="mb-2 block text-[11px] uppercase tracking-[0.25em] text-[rgb(var(--sep-colour-a38357))]">{children}</span>;
 }
 
 function Field({
@@ -522,8 +522,8 @@ function RaceSelection({
 }) {
   return (
     <div>
-      <h3 className="font-serif text-2xl text-[#dfc79c]">Choose an ancestry</h3>
-      <p className="mt-2 text-sm leading-7 text-[#918473]">
+      <h3 className="font-serif text-2xl text-[rgb(var(--sep-colour-dfc79c))]">Choose an ancestry</h3>
+      <p className="mt-2 text-sm leading-7 text-[rgb(var(--sep-colour-918473))]">
         Ancestry represents inherited heritage and determines the playable age range.
       </p>
       <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
@@ -535,7 +535,7 @@ function RaceSelection({
               type="button"
               onClick={() => onSelect(race.id)}
               className={`overflow-hidden border text-left ${
-                selected ? "border-[#c19352] bg-[#332416]" : "border-[#5c462f]/65 bg-[#120e0b]"
+                selected ? "border-[rgb(var(--sep-colour-c19352))] bg-[rgb(var(--sep-colour-332416))]" : "border-[rgb(var(--sep-colour-5c462f))]/65 bg-[rgb(var(--sep-colour-120e0b))]"
               }`}
             >
               {race.banner_url ? (
@@ -543,15 +543,15 @@ function RaceSelection({
                 <img src={race.banner_url} alt="" className="aspect-[2/1] w-full object-cover" />
               ) : null}
               <div className="p-5">
-                <p className="font-serif text-xl text-[#e0c99e]">{race.name}</p>
-                <p className="mt-2 line-clamp-3 text-xs leading-6 text-[#918473]">
+                <p className="font-serif text-xl text-[rgb(var(--sep-colour-e0c99e))]">{race.name}</p>
+                <p className="mt-2 line-clamp-3 text-xs leading-6 text-[rgb(var(--sep-colour-918473))]">
                   {race.summary || "Codex information will be added soon."}
                 </p>
                 <Link
                   href={`/ancestries/${race.slug}`}
                   target="_blank"
                   onClick={(event) => event.stopPropagation()}
-                  className="mt-4 inline-block text-[9px] uppercase tracking-[0.2em] text-[#9f7b4b]"
+                  className="mt-4 inline-block text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-9f7b4b))]"
                 >
                   Read More →
                 </Link>
@@ -566,11 +566,11 @@ function RaceSelection({
 
 function LockedRace({ race }: { race: RaceOption | null }) {
   return (
-    <div className="border border-[#735735]/55 bg-[#21170f] p-5">
-      <p className="text-[10px] uppercase tracking-[0.25em] text-[#ad8753]">Permanent character information</p>
-      <p className="mt-3 text-sm leading-7 text-[#a0927f]">
+    <div className="border border-[rgb(var(--sep-colour-735735))]/55 bg-[rgb(var(--sep-colour-21170f))] p-5">
+      <p className="text-[10px] uppercase tracking-[0.25em] text-[rgb(var(--sep-colour-ad8753))]">Permanent character information</p>
+      <p className="mt-3 text-sm leading-7 text-[rgb(var(--sep-colour-a0927f))]">
         Ancestry is fixed after character creation. Current ancestry:{" "}
-        <span className="text-[#d8bf91]">{race?.name ?? "Not assigned"}</span>.
+        <span className="text-[rgb(var(--sep-colour-d8bf91))]">{race?.name ?? "Not assigned"}</span>.
       </p>
     </div>
   );

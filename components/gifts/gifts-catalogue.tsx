@@ -375,7 +375,7 @@ export function GiftsCatalogue({
 
   return (
     <>
-      <section className="mt-4 border border-[#59432c]/45 bg-[#100c09] p-3">
+      <section className="mt-4 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] p-3">
         <div className="grid gap-2 xl:grid-cols-[150px_1fr_1fr_1fr_1fr_auto]">
           <select
             value={type}
@@ -476,19 +476,19 @@ export function GiftsCatalogue({
           <button
             type="button"
             onClick={reset}
-            className="border border-[#765937]/55 bg-[#21180f] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[#c8aa7b] transition hover:border-[#9a7445]"
+            className="border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-21180f))] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-c8aa7b))] transition hover:border-[rgb(var(--sep-colour-9a7445))]"
           >
             Reset
           </button>
         </div>
 
-        <div className="mt-2 flex items-center justify-between gap-3 border-t border-[#59432c]/25 pt-2">
-          <p className="text-[7px] uppercase tracking-[0.12em] text-[#6f6353]">
+        <div className="mt-2 flex items-center justify-between gap-3 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-2">
+          <p className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6353))]">
             A Feat may belong to more
             than one category.
           </p>
 
-          <p className="text-[7px] uppercase tracking-[0.12em] text-[#8a7558]">
+          <p className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-8a7558))]">
             {filtered.length} /{" "}
             {gifts.length}
           </p>
@@ -528,7 +528,7 @@ export function GiftsCatalogue({
               <article
                 key={gift.id}
                 id={`gift-${gift.id}`}
-                className="scroll-mt-4 border border-[#59432c]/40 bg-[#100c09] px-4 py-3"
+                className="scroll-mt-4 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3"
               >
                 <div className="grid gap-3 lg:grid-cols-[minmax(200px,0.8fr)_minmax(0,2.2fr)] lg:items-start">
                   <div className="min-w-0">
@@ -537,26 +537,26 @@ export function GiftsCatalogue({
                         (label) => (
                           <span
                             key={label}
-                            className="border border-[#60482e]/40 bg-[#17110d] px-1.5 py-0.5 text-[6px] uppercase tracking-[0.1em] text-[#9b805c]"
+                            className="border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-17110d))] px-1.5 py-0.5 text-[6px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-9b805c))]"
                           >
                             {label}
                           </span>
                         ),
                       )}
 
-                      <span className="border border-[#60482e]/35 bg-[#17110d] px-1.5 py-0.5 text-[6px] uppercase tracking-[0.1em] text-[#746655]">
+                      <span className="border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-17110d))] px-1.5 py-0.5 text-[6px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-746655))]">
                         {effectLabel(
                           gift,
                         )}
                       </span>
                     </div>
 
-                    <h2 className="mt-1.5 truncate font-serif text-lg text-[#dec89f]">
+                    <h2 className="mt-1.5 truncate font-serif text-lg text-[rgb(var(--sep-colour-dec89f))]">
                       {gift.name}
                     </h2>
 
                     {modifiers.length ? (
-                      <p className="mt-1 text-[7px] uppercase tracking-[0.08em] text-[#aa8c61]">
+                      <p className="mt-1 text-[7px] uppercase tracking-[0.08em] text-[rgb(var(--sep-colour-aa8c61))]">
                         {modifiers.join(
                           " · ",
                         )}
@@ -565,7 +565,7 @@ export function GiftsCatalogue({
                   </div>
 
                   <p
-                    className="whitespace-pre-line text-[11px] leading-5 text-[#9c8e7b]"
+                    className="whitespace-pre-line text-[11px] leading-5 text-[rgb(var(--sep-colour-9c8e7b))]"
                   >
                     {gift.description ||
                       "No description."}
@@ -573,7 +573,7 @@ export function GiftsCatalogue({
 
                 </div>
 
-                <div className="mt-3 grid grid-cols-2 gap-1.5 border-t border-[#59432c]/30 pt-3 md:grid-cols-3 xl:grid-cols-6">
+                <div className="mt-3 grid grid-cols-2 gap-1.5 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-3 md:grid-cols-3 xl:grid-cols-6">
                   <RecapBox
                     label="Use"
                     value={
@@ -585,7 +585,7 @@ export function GiftsCatalogue({
                               ? "Passive"
                               : "Standard"}
                         </span>
-                        <span className="text-[#725f49]"> · </span>
+                        <span className="text-[rgb(var(--sep-colour-725f49))]"> · </span>
                         <span>{targetLabel(gift.targetMode)}</span>
                       </>
                     }
@@ -601,7 +601,7 @@ export function GiftsCatalogue({
                     value={
                       <>
                         <span>{durationLabel(gift)}</span>
-                        <span className="text-[#725f49]"> · </span>
+                        <span className="text-[rgb(var(--sep-colour-725f49))]"> · </span>
                         <span>
                           {gift.effectMode === "temporary"
                             ? gift.cooldownMinutes === 0
@@ -626,14 +626,14 @@ export function GiftsCatalogue({
                               }`
                             : "No damage"}
                         </span>
-                        <span className="text-[#725f49]"> · </span>
+                        <span className="text-[rgb(var(--sep-colour-725f49))]"> · </span>
                         <span>
                           HP{" "}
                           {gift.healthDelta !== 0
                             ? signed(gift.healthDelta)
                             : "—"}
                         </span>
-                        <span className="text-[#725f49]"> · </span>
+                        <span className="text-[rgb(var(--sep-colour-725f49))]"> · </span>
                         <span>
                           Max{" "}
                           {gift.maxHealthModifier !== 0
@@ -673,11 +673,11 @@ export function GiftsCatalogue({
 
                         {gift.roles.length ? (
                           <details className="pt-0.5">
-                            <summary className="cursor-pointer text-[#b99a6d] hover:text-[#dbc294]">
+                            <summary className="cursor-pointer text-[rgb(var(--sep-colour-b99a6d))] hover:text-[rgb(var(--sep-colour-dbc294))]">
                               Roles: {gift.roles.length}
                             </summary>
 
-                            <div className="mt-1 max-h-24 overflow-y-auto border-l border-[#59432c]/35 pl-2 text-[#8f8271]">
+                            <div className="mt-1 max-h-24 overflow-y-auto border-l border-[rgb(var(--sep-colour-59432c))]/35 pl-2 text-[rgb(var(--sep-colour-8f8271))]">
                               {gift.roles.map((role) => (
                                 <p key={role.id}>
                                   {role.orderName
@@ -703,7 +703,7 @@ export function GiftsCatalogue({
           })}
         </section>
       ) : (
-        <section className="mt-3 border border-[#59432c]/40 bg-[#100c09] p-5 text-xs italic text-[#817565]">
+        <section className="mt-3 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-5 text-xs italic text-[rgb(var(--sep-colour-817565))]">
           No Feats match the selected
           filters.
         </section>
@@ -720,11 +720,11 @@ function RecapBox({
   value: ReactNode;
 }) {
   return (
-    <div className="min-w-0 border border-[#59432c]/40 bg-[#15100d] px-2.5 py-2">
-      <p className="text-[6px] uppercase tracking-[0.13em] text-[#806a4c]">
+    <div className="min-w-0 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-15100d))] px-2.5 py-2">
+      <p className="text-[6px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-806a4c))]">
         {label}
       </p>
-      <div className="mt-1 min-w-0 break-words text-[8px] leading-4 text-[#b8a382]">
+      <div className="mt-1 min-w-0 break-words text-[8px] leading-4 text-[rgb(var(--sep-colour-b8a382))]">
         {value}
       </div>
     </div>
@@ -732,4 +732,4 @@ function RecapBox({
 }
 
 const controlClass =
-  "min-w-0 border border-[#59432c]/45 bg-[#15100d] px-3 py-2 text-[10px] text-[#d1bea0] outline-none placeholder:text-[#665b4d] focus:border-[#987344]";
+  "min-w-0 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-d1bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))]";

@@ -61,27 +61,27 @@ const MOVEMENTS = [
 
 export function WarpingReference() {
   return (
-    <details className="mt-4 border border-[#60482e]/45 bg-[#100c09]">
-      <summary className="cursor-pointer px-4 py-3 text-[9px] uppercase tracking-[0.16em] text-[#d6b37d] transition hover:bg-[#1c140e]">
+    <details className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))]">
+      <summary className="cursor-pointer px-4 py-3 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d6b37d))] transition hover:bg-[rgb(var(--sep-colour-1c140e))]">
         Word of Power & Movement Reference
       </summary>
-      <div className="border-t border-[#60482e]/35 p-4">
-        <p className="text-[10px] leading-5 text-[#8f8271]">
-          A Word of Power is always formed as <strong className="text-[#cdb48d]">Essence + Action + Law</strong>. The three words are fused continuously, for example <strong className="text-[#cdb48d]">Pyr + Creo + Ego = PyrCreoEgo</strong>. Multiple Shapes may share the same Word; Movement and Description provide the exact specification.
+      <div className="border-t border-[rgb(var(--sep-colour-60482e))]/35 p-4">
+        <p className="text-[10px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+          A Word of Power is always formed as <strong className="text-[rgb(var(--sep-colour-cdb48d))]">Essence + Action + Law</strong>. The three words are fused continuously, for example <strong className="text-[rgb(var(--sep-colour-cdb48d))]">Pyr + Creo + Ego = PyrCreoEgo</strong>. Multiple Shapes may share the same Word; Movement and Description provide the exact specification.
         </p>
 
-        <div className="mt-5 max-h-[520px] overflow-y-auto border border-[#60482e]/35">
+        <div className="mt-5 max-h-[520px] overflow-y-auto border border-[rgb(var(--sep-colour-60482e))]/35">
           <table className="w-full text-left text-[10px]">
-            <thead className="sticky top-0 bg-[#1d150f] text-[#9e825d]">
+            <thead className="sticky top-0 bg-[rgb(var(--sep-colour-1d150f))] text-[rgb(var(--sep-colour-9e825d))]">
               <tr><th className="px-3 py-2">Category</th><th className="px-3 py-2">Word</th><th className="px-3 py-2">Meaning</th><th className="px-3 py-2">Associations / Common Uses</th></tr>
             </thead>
             <tbody>
               {WORDS.map(([category, word, meaning, associations]) => (
-                <tr key={`${category}-${word}`} className="border-t border-[#60482e]/25 align-top">
-                  <td className="px-3 py-2 uppercase tracking-[0.1em] text-[#8e785a]">{category}</td>
-                  <td className="px-3 py-2 font-serif text-[#d9c29b]">{word}</td>
-                  <td className="px-3 py-2 text-[#c2ac88]">{meaning}</td>
-                  <td className="px-3 py-2 leading-5 text-[#a99b89]">{associations}</td>
+                <tr key={`${category}-${word}`} className="border-t border-[rgb(var(--sep-colour-60482e))]/25 align-top">
+                  <td className="px-3 py-2 uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-8e785a))]">{category}</td>
+                  <td className="px-3 py-2 font-serif text-[rgb(var(--sep-colour-d9c29b))]">{word}</td>
+                  <td className="px-3 py-2 text-[rgb(var(--sep-colour-c2ac88))]">{meaning}</td>
+                  <td className="px-3 py-2 leading-5 text-[rgb(var(--sep-colour-a99b89))]">{associations}</td>
                 </tr>
               ))}
             </tbody>
@@ -89,19 +89,19 @@ export function WarpingReference() {
         </div>
 
         <div className="mt-5">
-          <h4 className="font-serif text-base text-[#d8c29b]">Movements</h4>
-          <p className="mt-1 text-[9px] text-[#766a5b]">Movements are defined by motion, direction, orientation and intent rather than by the instrument used to perform them. They may be executed with hands, limbs, or a wielded weapon.</p>
-          <div className="mt-2 max-h-[520px] overflow-y-auto border border-[#60482e]/35">
+          <h4 className="font-serif text-base text-[rgb(var(--sep-colour-d8c29b))]">Movements</h4>
+          <p className="mt-1 text-[9px] text-[rgb(var(--sep-colour-766a5b))]">Movements are defined by motion, direction, orientation and intent rather than by the instrument used to perform them. They may be executed with hands, limbs, or a wielded weapon.</p>
+          <div className="mt-2 max-h-[520px] overflow-y-auto border border-[rgb(var(--sep-colour-60482e))]/35">
             <table className="w-full text-left text-[10px]">
-              <thead className="sticky top-0 bg-[#1d150f] text-[#9e825d]">
+              <thead className="sticky top-0 bg-[rgb(var(--sep-colour-1d150f))] text-[rgb(var(--sep-colour-9e825d))]">
                 <tr><th className="px-3 py-2">Movement</th><th className="px-3 py-2">Execution</th><th className="px-3 py-2">Fundamental Meaning</th></tr>
               </thead>
               <tbody>
                 {MOVEMENTS.map(([movement, execution, meaning]) => (
-                  <tr key={movement} className="border-t border-[#60482e]/25 align-top">
-                    <td className="px-3 py-2 font-serif text-[#d9c29b]">{movement}</td>
-                    <td className="px-3 py-2 leading-5 text-[#a99b89]">{execution}</td>
-                    <td className="px-3 py-2 leading-5 text-[#a99b89]">{meaning}</td>
+                  <tr key={movement} className="border-t border-[rgb(var(--sep-colour-60482e))]/25 align-top">
+                    <td className="px-3 py-2 font-serif text-[rgb(var(--sep-colour-d9c29b))]">{movement}</td>
+                    <td className="px-3 py-2 leading-5 text-[rgb(var(--sep-colour-a99b89))]">{execution}</td>
+                    <td className="px-3 py-2 leading-5 text-[rgb(var(--sep-colour-a99b89))]">{meaning}</td>
                   </tr>
                 ))}
               </tbody>

@@ -56,7 +56,7 @@ export default function GamePage(props: Props) {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-[60vh] items-center justify-center px-5 text-[#a98b61]">
+        <div className="flex min-h-[60vh] items-center justify-center px-5 text-[rgb(var(--sep-colour-a98b61))]">
           Entering Sepulchria...
         </div>
       }
@@ -194,7 +194,7 @@ async function GameContent() {
   ) {
     return (
       <div
-        className="h-full min-h-[60vh] bg-[#0d0b0a]"
+        className="h-full min-h-[60vh] bg-[rgb(var(--sep-colour-0d0b0a))]"
         aria-label="Unavailable location"
       />
     );
@@ -870,11 +870,11 @@ async function GameContent() {
       : "mx-auto flex h-full max-w-80dvh flex-col"
   }
 >
-  <div className="mb-2 flex shrink-0 items-center justify-between gap-3 border border-[#62492e]/45 bg-[#15100d] px-3 py-2">
+  <div className="mb-2 flex shrink-0 items-center justify-between gap-3 border border-[rgb(var(--sep-colour-62492e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2">
     <div className="min-w-0">
       
 
-      <p className="mt-1 truncate font-serif text-lg text-[#dec69a]">
+      <p className="mt-1 truncate font-serif text-lg text-[rgb(var(--sep-colour-dec69a))]">
         {room.name}
       </p>
     </div>
@@ -891,7 +891,7 @@ async function GameContent() {
     <Link
       href="/game/export"
       title="Export the current game session as a file"
-      className="flex min-w-0 items-center justify-center border border-[#725c3d] bg-[#21190f] px-2 py-1.5 text-center text-[8px] uppercase tracking-[0.12em] text-[#d6bb8d] transition hover:border-[#a17a49] hover:bg-[#352718] hover:text-[#f0d6a7] sm:px-3 sm:text-[9px] sm:tracking-[0.18em]"
+      className="flex min-w-0 items-center justify-center border border-[rgb(var(--sep-colour-725c3d))] bg-[rgb(var(--sep-colour-21190f))] px-2 py-1.5 text-center text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-d6bb8d))] transition hover:border-[rgb(var(--sep-colour-a17a49))] hover:bg-[rgb(var(--sep-colour-352718))] hover:text-[rgb(var(--sep-colour-f0d6a7))] sm:px-3 sm:text-[9px] sm:tracking-[0.18em]"
     >
       Export role
     </Link>
@@ -911,7 +911,7 @@ async function GameContent() {
           ? "Return to Private Locations"
           : "Return to the area page"
       }
-      className="flex min-w-0 items-center justify-center border border-[#725c3d] bg-[#21190f] px-2 py-1.5 text-center text-[8px] uppercase tracking-[0.12em] text-[#d6bb8d] transition hover:border-[#a17a49] hover:bg-[#352718] hover:text-[#f0d6a7] sm:px-3 sm:text-[9px] sm:tracking-[0.18em]"
+      className="flex min-w-0 items-center justify-center border border-[rgb(var(--sep-colour-725c3d))] bg-[rgb(var(--sep-colour-21190f))] px-2 py-1.5 text-center text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-d6bb8d))] transition hover:border-[rgb(var(--sep-colour-a17a49))] hover:bg-[rgb(var(--sep-colour-352718))] hover:text-[rgb(var(--sep-colour-f0d6a7))] sm:px-3 sm:text-[9px] sm:tracking-[0.18em]"
     >
       ← Back to{" "}
       {roomArea.slug ===
@@ -929,7 +929,7 @@ async function GameContent() {
       <button
         type="submit"
         title="Leave this location and return to the city, your presence won't be counted in locations, only in the portal"
-        className="w-full border border-[#8f3f36] bg-[#351714] px-2 py-1.5 text-[8px] uppercase tracking-[0.12em] text-[#e6a097] transition hover:border-[#c65a4d] hover:bg-[#4b1d19] hover:text-[#ffd0c9] sm:w-auto sm:px-3 sm:text-[9px] sm:tracking-[0.18em]"
+        className="w-full border border-[rgb(var(--sep-colour-8f3f36))] bg-[rgb(var(--sep-colour-351714))] px-2 py-1.5 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-e6a097))] transition hover:border-[rgb(var(--sep-colour-c65a4d))] hover:bg-[rgb(var(--sep-colour-4b1d19))] hover:text-[rgb(var(--sep-colour-ffd0c9))] sm:w-auto sm:px-3 sm:text-[9px] sm:tracking-[0.18em]"
       >
         Take Leave
       </button>
@@ -942,8 +942,8 @@ async function GameContent() {
   <article
   className={
     room.slug === "odd-jobs-bureau"
-      ? "flex shrink-0 flex-col overflow-visible border border-[#6a5032]/50 bg-[#17110d]"
-      : "flex min-h-0 flex-1 flex-col overflow-visible border border-[#6a5032]/50 bg-[#17110d] lg:overflow-hidden"
+      ? "flex shrink-0 flex-col overflow-visible border border-[rgb(var(--sep-colour-6a5032))]/50 bg-[rgb(var(--sep-colour-17110d))]"
+      : "flex min-h-0 flex-1 flex-col overflow-visible border border-[rgb(var(--sep-colour-6a5032))]/50 bg-[rgb(var(--sep-colour-17110d))] lg:overflow-hidden"
   }
 >
     {room.slug === "odd-jobs-bureau" ? (
@@ -1024,20 +1024,20 @@ function MissingLocation({
   name: string;
 }) {
   return (
-    <div className="flex min-h-[60vh] items-center justify-center p-5 text-[#e7d5b0]">
-      <section className="max-w-xl border border-[#654b2e]/50 bg-[#17110d] p-8 text-center">
-        <h1 className="font-serif text-3xl text-[#dec69a]">
+    <div className="flex min-h-[60vh] items-center justify-center p-5 text-[rgb(var(--sep-colour-e7d5b0))]">
+      <section className="max-w-xl border border-[rgb(var(--sep-colour-654b2e))]/50 bg-[rgb(var(--sep-colour-17110d))] p-8 text-center">
+        <h1 className="font-serif text-3xl text-[rgb(var(--sep-colour-dec69a))]">
           {name} has no current location
         </h1>
 
-        <p className="mt-4 text-sm leading-7 text-[#9e907d]">
+        <p className="mt-4 text-sm leading-7 text-[rgb(var(--sep-colour-9e907d))]">
           This character must be assigned to a room before
           entering the game.
         </p>
 
         <Link
           href="/"
-          className="mt-6 inline-block text-[#efd4a0] transition hover:text-white"
+          className="mt-6 inline-block text-[rgb(var(--sep-colour-efd4a0))] transition hover:text-white"
         >
           Return to dashboard
         </Link>

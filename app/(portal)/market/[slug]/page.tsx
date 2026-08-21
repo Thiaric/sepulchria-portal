@@ -445,42 +445,42 @@ export default async function MarketShopPage({ params }: Props) {
       <div className="mx-auto max-w-7xl">
         <Link
           href="/market"
-          className="inline-flex items-center gap-2 border border-[#60482e]/55 bg-[#15100d] px-4 py-3 text-[10px] uppercase tracking-[0.18em] text-[#c6ab80] transition hover:border-[#987344] hover:bg-[#261b12] hover:text-[#ead2a5]"
+          className="inline-flex items-center gap-2 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 text-[10px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-c6ab80))] transition hover:border-[rgb(var(--sep-colour-987344))] hover:bg-[rgb(var(--sep-colour-261b12))] hover:text-[rgb(var(--sep-colour-ead2a5))]"
         >
           <span aria-hidden="true">←</span>
           Back to Market
         </Link>
 
-        <section className="mt-4 overflow-hidden border border-[#60482e]/45 bg-[#15100d]">
+        <section className="mt-4 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
           {shop.image_url ? (
-            <div className="relative h-44 border-b border-[#60482e]/35">
+            <div className="relative h-44 border-b border-[rgb(var(--sep-colour-60482e))]/35">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={shop.image_url}
                 alt=""
                 className="h-full w-full object-cover opacity-65"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#15100d] via-[#15100d]/30 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[rgb(var(--sep-colour-15100d))] via-[rgb(var(--sep-colour-15100d))]/30 to-transparent" />
             </div>
           ) : null}
 
           <div className="p-5 sm:p-7">
-            <p className="text-[9px] uppercase tracking-[0.24em] text-[#8c704b]">
+            <p className="text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))]">
               Market shop
             </p>
-            <h1 className="mt-2 font-serif text-4xl text-[#ead5ac]">
+            <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">
               {shop.name}
             </h1>
             <div className="mt-3 flex flex-wrap items-end justify-between gap-5">
-              <p className="max-w-4xl text-sm leading-7 text-[#a99b89]">
+              <p className="max-w-4xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))]">
                 {shop.description}
               </p>
 
               <div className="ml-auto shrink-0 text-right">
-                <p className="text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
+                <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
                   Available Remnants
                 </p>
-                <p className="mt-1 font-serif text-2xl text-[#e3c17e]">
+                <p className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-e3c17e))]">
                   {walletBalance === null
                     ? "—"
                     : formatRemnants(walletBalance)}

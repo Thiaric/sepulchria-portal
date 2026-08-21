@@ -72,30 +72,30 @@ export function OddJobsPanel({ jobs }: { jobs: OddJobStateRow[] }) {
   }
 
   return (
-    <div className="shrink-0 border-b border-[#60482e]/45 bg-[#120e0b]">
+    <div className="shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-120e0b))]">
       <div className="flex items-center justify-between gap-3 px-3 py-2">
         <div>
-          <p className="text-[7px] uppercase tracking-[0.18em] text-[#806b50]">
+          <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
             Odd Jobs Bureau
           </p>
 
-          <p className="mt-0.5 font-serif text-sm text-[#dec89f]">
+          <p className="mt-0.5 font-serif text-sm text-[rgb(var(--sep-colour-dec89f))]">
             Today&apos;s work
           </p>
         </div>
 
         <div className="text-right">
-          <p className="text-[7px] uppercase tracking-[0.12em] text-[#756958]">
+          <p className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
             Wallet
           </p>
 
-          <p className="font-serif text-base text-[#e4c589]">
+          <p className="font-serif text-base text-[rgb(var(--sep-colour-e4c589))]">
             {formatRemnants(Number(first.wallet_balance))}
           </p>
         </div>
       </div>
 
-      <div className="border-t border-[#59432c]/30 px-3 py-3">
+      <div className="border-t border-[rgb(var(--sep-colour-59432c))]/30 px-3 py-3">
         {alreadyWorked ? (
           <p className="mb-3 border border-emerald-900/45 bg-emerald-950/10 px-3 py-2 text-[9px] text-emerald-400">
             You have already worked today
@@ -104,7 +104,7 @@ export function OddJobsPanel({ jobs }: { jobs: OddJobStateRow[] }) {
             Return tomorrow.
           </p>
         ) : (
-          <p className="mb-3 text-[9px] leading-4 text-[#8f8271]">
+          <p className="mb-3 text-[9px] leading-4 text-[rgb(var(--sep-colour-8f8271))]">
             Choose one job for today. Each job begins with a daily rate between
             10 and 50 Remnants and has 50 work slots. After every 5 completed
             shifts, that job&apos;s pay falls by 10% of its starting rate, rounded up.
@@ -119,31 +119,31 @@ export function OddJobsPanel({ jobs }: { jobs: OddJobStateRow[] }) {
             return (
               <article
                 key={job.job_id}
-                className="flex min-h-[124px] flex-col border border-[#59432c]/40 bg-[#17110d] p-3"
+                className="flex min-h-[124px] flex-col border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-17110d))] p-3"
               >
                 <div className="flex items-start justify-between gap-2">
-                  <h3 className="font-serif text-[13px] text-[#d9c29a]">
+                  <h3 className="font-serif text-[13px] text-[rgb(var(--sep-colour-d9c29a))]">
                     {job.job_name}
                   </h3>
 
-                  <span className="shrink-0 text-[10px] font-semibold text-[#d8ad69]">
+                  <span className="shrink-0 text-[10px] font-semibold text-[rgb(var(--sep-colour-d8ad69))]">
                     {formatRemnants(job.pay)}
                   </span>
                 </div>
 
-                <p className="mt-1 flex-1 text-[8px] leading-4 text-[#807463]">
+                <p className="mt-1 flex-1 text-[8px] leading-4 text-[rgb(var(--sep-colour-807463))]">
                   {job.job_description}
                 </p>
 
                 <div className="mt-2 flex items-center justify-between gap-2 text-[7px] uppercase tracking-[0.1em]">
-                  <span className={soldOut ? "text-red-400" : "text-[#8e7a60]"}>
+                  <span className={soldOut ? "text-red-400" : "text-[rgb(var(--sep-colour-8e7a60))]"}>
                     {soldOut
                       ? "Not available"
                       : `${job.claims_remaining} / ${job.max_claims} left`}
                   </span>
 
                   {job.pay < job.starting_pay ? (
-                    <span className="text-[#8f6e49]">
+                    <span className="text-[rgb(var(--sep-colour-8f6e49))]">
                       Started {formatRemnants(job.starting_pay)}
                     </span>
                   ) : null}
@@ -153,7 +153,7 @@ export function OddJobsPanel({ jobs }: { jobs: OddJobStateRow[] }) {
                   type="button"
                   onClick={() => work(job.job_id)}
                   disabled={alreadyWorked || pending || soldOut}
-                  className="mt-2 border border-[#85653c] bg-[#342617] px-3 py-1.5 text-[8px] uppercase tracking-[0.14em] text-[#efd4a0] transition hover:bg-[#4a351f] disabled:cursor-not-allowed disabled:opacity-40"
+                  className="mt-2 border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-3 py-1.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:bg-[rgb(var(--sep-colour-4a351f))] disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   {pending && pendingJobId === job.job_id
                     ? "Working..."

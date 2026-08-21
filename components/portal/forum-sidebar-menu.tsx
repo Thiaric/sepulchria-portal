@@ -436,10 +436,10 @@ export function ForumSidebarMenu({
       <div
         className={`flex min-h-9 items-center border text-[11px] transition lg:text-xs ${
           forumActive
-            ? "border-[#8d6d3e] bg-[#332719] text-[#efd9aa]"
+            ? "border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] text-[rgb(var(--sep-colour-efd9aa))]"
             : unreadCount > 0
-              ? "border-[#a87532] bg-[#24190f] text-[#efd9aa]"
-              : "border-transparent text-[#b6a894] hover:border-[#5d4930] hover:bg-[#1d1712] hover:text-[#e8d8ba]"
+              ? "border-[rgb(var(--sep-colour-a87532))] bg-[rgb(var(--sep-colour-24190f))] text-[rgb(var(--sep-colour-efd9aa))]"
+              : "border-transparent text-[rgb(var(--sep-colour-b6a894))] hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))] hover:text-[rgb(var(--sep-colour-e8d8ba))]"
         }`}
       >
         <Link
@@ -462,7 +462,7 @@ export function ForumSidebarMenu({
           {unreadCount > 0 ? (
             <span
               title={`${unreadCount} unread forum topic${unreadCount === 1 ? "" : "s"}`}
-              className="ml-auto inline-flex h-4 min-w-4 shrink-0 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] px-1 text-[7px] font-bold leading-none text-[#ffe1ac]"
+              className="ml-auto inline-flex h-4 min-w-4 shrink-0 items-center justify-center rounded-full border border-[rgb(var(--sep-colour-d19a4c))] bg-[rgb(var(--sep-colour-7a291f))] px-1 text-[7px] font-bold leading-none text-[rgb(var(--sep-colour-ffe1ac))]"
             >
               {unreadCount > 9
                 ? "9+"
@@ -482,17 +482,17 @@ export function ForumSidebarMenu({
               ? "Collapse Forum shortcuts"
               : "Expand Forum shortcuts"
           }
-          className="mr-1 flex h-7 w-7 shrink-0 items-center justify-center border-l border-[#6e5535]/30 text-sm text-[#b68b4f] transition hover:bg-[#4a3420]/45 hover:text-[#efd9aa]"
+          className="mr-1 flex h-7 w-7 shrink-0 items-center justify-center border-l border-[rgb(var(--sep-colour-6e5535))]/30 text-sm text-[rgb(var(--sep-colour-b68b4f))] transition hover:bg-[rgb(var(--sep-colour-4a3420))]/45 hover:text-[rgb(var(--sep-colour-efd9aa))]"
         >
           {open ? "−" : "+"}
         </button>
       </div>
 
       {open ? (
-        <div className="ml-4 border-l border-[#5d4930]/40 pl-2 pt-1.5">
+        <div className="ml-4 border-l border-[rgb(var(--sep-colour-5d4930))]/40 pl-2 pt-1.5">
           {currentRecent ? (
-            <div className="mb-1.5 flex items-center gap-1 border border-[#6a5033]/35 bg-[#18110d] px-2 py-1.5">
-              <span className="min-w-0 flex-1 truncate text-[9px] text-[#9f8c71]">
+            <div className="mb-1.5 flex items-center gap-1 border border-[rgb(var(--sep-colour-6a5033))]/35 bg-[rgb(var(--sep-colour-18110d))] px-2 py-1.5">
+              <span className="min-w-0 flex-1 truncate text-[9px] text-[rgb(var(--sep-colour-9f8c71))]">
                 Current:{" "}
                 {currentRecent.title}
               </span>
@@ -515,7 +515,7 @@ export function ForumSidebarMenu({
                     ? "Remove from favourites"
                     : "Add to favourites"
                 }
-                className="shrink-0 text-sm text-[#d4a65d] hover:text-[#ffe0a1] disabled:opacity-40"
+                className="shrink-0 text-sm text-[rgb(var(--sep-colour-d4a65d))] hover:text-[rgb(var(--sep-colour-ffe0a1))] disabled:opacity-40"
               >
                 {favouriteIds.has(
                   currentRecent.id,
@@ -560,7 +560,7 @@ export function ForumSidebarMenu({
                 ),
               )
             ) : (
-              <p className="px-2 py-2 text-[9px] leading-4 text-[#6f6456]">
+              <p className="px-2 py-2 text-[9px] leading-4 text-[rgb(var(--sep-colour-6f6456))]">
                 No favourite topics.
                 Use ☆ beside a recent
                 topic to save it.
@@ -602,7 +602,7 @@ export function ForumSidebarMenu({
           </ForumTopicGroup>
 
           {error ? (
-            <p className="mt-1.5 border border-[#743d35]/60 bg-[#2a1512] px-2 py-1.5 text-[8px] leading-4 text-[#d8a49a]">
+            <p className="mt-1.5 border border-[rgb(var(--sep-colour-743d35))]/60 bg-[rgb(var(--sep-colour-2a1512))] px-2 py-1.5 text-[8px] leading-4 text-[rgb(var(--sep-colour-d8a49a))]">
               {error}
             </p>
           ) : null}
@@ -631,9 +631,9 @@ function ForumTopicGroup({
         type="button"
         onClick={onToggle}
         aria-expanded={open}
-        className="flex w-full items-center gap-2 px-2 py-1.5 text-left text-[9px] uppercase tracking-[0.12em] text-[#8f795c] transition hover:bg-[#1b140f] hover:text-[#c8a36d]"
+        className="flex w-full items-center gap-2 px-2 py-1.5 text-left text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-8f795c))] transition hover:bg-[rgb(var(--sep-colour-1b140f))] hover:text-[rgb(var(--sep-colour-c8a36d))]"
       >
-        <span className="w-2 text-center text-[#aa824b]">
+        <span className="w-2 text-center text-[rgb(var(--sep-colour-aa824b))]">
           {open ? "−" : "+"}
         </span>
 
@@ -641,7 +641,7 @@ function ForumTopicGroup({
           {label}
         </span>
 
-        <span className="text-[8px] text-[#665a4b]">
+        <span className="text-[8px] text-[rgb(var(--sep-colour-665a4b))]">
           {count}
         </span>
       </button>
@@ -675,7 +675,7 @@ function TopicShortcut({
           topic.slug,
         )}`}
         title={`${topic.title} — ${topic.sectionName}`}
-        className="min-w-0 flex-1 truncate border-l border-transparent px-2 py-1.5 text-[9px] text-[#958875] transition hover:border-[#8e683d] hover:bg-[#1b140f] hover:text-[#dbc39c]"
+        className="min-w-0 flex-1 truncate border-l border-transparent px-2 py-1.5 text-[9px] text-[rgb(var(--sep-colour-958875))] transition hover:border-[rgb(var(--sep-colour-8e683d))] hover:bg-[rgb(var(--sep-colour-1b140f))] hover:text-[rgb(var(--sep-colour-dbc39c))]"
       >
         {topic.title}
       </Link>
@@ -694,7 +694,7 @@ function TopicShortcut({
             ? "Remove from favourites"
             : "Add to favourites"
         }
-        className="flex h-6 w-6 shrink-0 items-center justify-center text-sm text-[#b4874c] opacity-75 transition hover:text-[#f0c982] hover:opacity-100 disabled:opacity-30"
+        className="flex h-6 w-6 shrink-0 items-center justify-center text-sm text-[rgb(var(--sep-colour-b4874c))] opacity-75 transition hover:text-[rgb(var(--sep-colour-f0c982))] hover:opacity-100 disabled:opacity-30"
       >
         {favourite ? "★" : "☆"}
       </button>
@@ -714,7 +714,7 @@ function LoadingRows({
       }).map((_, index) => (
         <div
           key={index}
-          className="mx-2 h-6 animate-pulse bg-[#1b140f]"
+          className="mx-2 h-6 animate-pulse bg-[rgb(var(--sep-colour-1b140f))]"
         />
       ))}
     </>

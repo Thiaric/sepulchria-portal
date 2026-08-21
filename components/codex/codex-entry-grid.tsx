@@ -18,12 +18,12 @@ export function CodexEntryGrid({
 
   if (!hasEntries) {
     return (
-      <section className="border border-[#60482e]/45 bg-[#15100d]/95 p-10 text-center">
-        <h2 className="font-serif text-2xl text-[#d8c19a]">
+      <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 p-10 text-center">
+        <h2 className="font-serif text-2xl text-[rgb(var(--sep-colour-d8c19a))]">
           {emptyTitle}
         </h2>
 
-        <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-[#938673]">
+        <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-[rgb(var(--sep-colour-938673))]">
           {emptyText}
         </p>
       </section>

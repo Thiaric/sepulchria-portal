@@ -30,19 +30,19 @@ const PRESENCE_STYLES: Record<
   online: {
     label: "Online",
     dotClass:
-      "border-[#8eaa68] bg-[#86a85f] shadow-[0_0_7px_rgba(134,168,95,0.55)]",
+      "border-[rgb(var(--sep-colour-8eaa68))] bg-[rgb(var(--sep-colour-86a85f))] shadow-[0_0_7px_rgba(var(--sep-rgb-134-168-95),0.55)]",
   },
 
   away: {
     label: "Away",
     dotClass:
-      "border-[#c39a58] bg-[#b78b49] shadow-[0_0_7px_rgba(183,139,73,0.45)]",
+      "border-[rgb(var(--sep-colour-c39a58))] bg-[rgb(var(--sep-colour-b78b49))] shadow-[0_0_7px_rgba(var(--sep-rgb-183-139-73),0.45)]",
   },
 
   busy: {
     label: "Busy",
     dotClass:
-      "border-[#b4675c] bg-[#a94f45] shadow-[0_0_7px_rgba(169,79,69,0.45)]",
+      "border-[rgb(var(--sep-colour-b4675c))] bg-[rgb(var(--sep-colour-a94f45))] shadow-[0_0_7px_rgba(var(--sep-rgb-169-79-69),0.45)]",
   },
 };
 
@@ -388,7 +388,7 @@ last_seen_at:
     return (
       <Link
         href="/character/create"
-        className="hidden text-[10px] uppercase tracking-[0.16em] text-[#c59a5a] md:block 2xl:text-xs 2xl:tracking-[0.18em]"
+        className="hidden text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-c59a5a))] md:block 2xl:text-xs 2xl:tracking-[0.18em]"
       >
         Create character
       </Link>
@@ -401,7 +401,7 @@ last_seen_at:
     ];
 
   return (
-  <div className="flex min-w-0 items-center gap-1.5 border-l border-[#5c472f]/60 pl-2 lg:gap-2 lg:pl-3 2xl:pl-4">
+  <div className="flex min-w-0 items-center gap-1.5 border-l border-[rgb(var(--sep-colour-5c472f))]/60 pl-2 lg:gap-2 lg:pl-3 2xl:pl-4">
     <div className="relative h-8 w-8 shrink-0 sm:h-9 sm:w-9 2xl:h-10 2xl:w-10">
   <button
     type="button"
@@ -427,11 +427,11 @@ last_seen_at:
       justify-center
       gap-[3px]
       border
-      border-[#60482e]/60
-      bg-[#17110d]
+      border-[rgb(var(--sep-colour-60482e))]/60
+      bg-[rgb(var(--sep-colour-17110d))]
       transition
-      hover:border-[#8b6940]
-      hover:bg-[#1d160f]
+      hover:border-[rgb(var(--sep-colour-8b6940))]
+      hover:bg-[rgb(var(--sep-colour-1d160f))]
       disabled:cursor-wait
       disabled:opacity-50
     "
@@ -440,7 +440,7 @@ last_seen_at:
       className={`block h-2 w-2 rounded-full border ${presence.dotClass}`}
     />
 
-    <span className="text-[7px] uppercase leading-none tracking-[0.08em] text-[#aa9677]">
+    <span className="text-[7px] uppercase leading-none tracking-[0.08em] text-[rgb(var(--sep-colour-aa9677))]">
       {presenceStatus === "online"
         ? "Online"
         : presenceStatus === "away"
@@ -456,7 +456,7 @@ last_seen_at:
       className="flex min-w-0 items-center gap-2 lg:gap-3"
     >
       <div className="flex shrink-0 items-start gap-1.5">
-        <div className="relative h-8 w-8 shrink-0 overflow-hidden border border-[#6e5535] bg-[#15100d] sm:h-9 sm:w-9 2xl:h-10 2xl:w-10">
+        <div className="relative h-8 w-8 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-6e5535))] bg-[rgb(var(--sep-colour-15100d))] sm:h-9 sm:w-9 2xl:h-10 2xl:w-10">
           {character.portrait_url ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -467,7 +467,7 @@ last_seen_at:
               className="h-full w-full object-cover"
             />
           ) : (
-            <span className="flex h-full items-center justify-center font-serif text-[#a98b61]">
+            <span className="flex h-full items-center justify-center font-serif text-[rgb(var(--sep-colour-a98b61))]">
               {character.first_name.slice(
                 0,
                 1,
@@ -507,13 +507,13 @@ last_seen_at:
       </div>
 
       <div className="hidden min-w-0 max-w-32 lg:block 2xl:max-w-44">
-        <p className="truncate font-serif text-xs text-[#dfc79c] 2xl:text-sm">
+        <p className="truncate font-serif text-xs text-[rgb(var(--sep-colour-dfc79c))] 2xl:text-sm">
           {
             character.display_name
           }
         </p>
 
-        <p className="truncate text-[8px] uppercase tracking-[0.14em] text-[#81725f] 2xl:text-[9px] 2xl:tracking-[0.18em]">
+        <p className="truncate text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-81725f))] 2xl:text-[9px] 2xl:tracking-[0.18em]">
           {character.title ||
             character.occupation ||
             "Citizen of Sepulchria"}

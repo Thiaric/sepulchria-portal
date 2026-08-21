@@ -74,7 +74,7 @@ export function AdminOrdersCollapseEnhancer() {
         .orderCollapseToggle = "true";
 
       toggle.className =
-        "flex w-full items-center justify-between gap-4 border-b border-transparent bg-[#100c09] px-5 py-4 text-left transition hover:bg-[#18110d]";
+        "flex w-full items-center justify-between gap-4 border-b border-transparent bg-[rgb(var(--sep-colour-100c09))] px-5 py-4 text-left transition hover:bg-[rgb(var(--sep-colour-18110d))]";
 
       const label =
         document.createElement(
@@ -82,7 +82,7 @@ export function AdminOrdersCollapseEnhancer() {
         );
 
       label.className =
-        "min-w-0 truncate font-serif text-xl text-[#dec69a]";
+        "min-w-0 truncate font-serif text-xl text-[rgb(var(--sep-colour-dec69a))]";
       label.textContent = name;
 
       const arrow =
@@ -91,7 +91,7 @@ export function AdminOrdersCollapseEnhancer() {
         );
 
       arrow.className =
-        "shrink-0 text-sm text-[#9b7446] transition-transform";
+        "shrink-0 text-sm text-[rgb(var(--sep-colour-9b7446))] transition-transform";
       arrow.textContent = "▼";
 
       toggle.append(
@@ -109,7 +109,7 @@ export function AdminOrdersCollapseEnhancer() {
         );
 
         toggle.classList.toggle(
-          "border-[#60482e]/35",
+          "border-[rgb(var(--sep-colour-60482e))]/35",
           open,
         );
 

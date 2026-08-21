@@ -215,10 +215,10 @@ export default function TopicPost({
   return (
     <article
       id={`post-${post.id}`}
-      className="scroll-mt-24 overflow-hidden border border-[#60482e]/45 bg-[#15100d]"
+      className="scroll-mt-24 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]"
     >
       <div className="grid lg:grid-cols-[230px_minmax(0,1fr)]">
-        <aside className="border-b border-[#60482e]/35 bg-[#110d0a] p-5 lg:border-b-0 lg:border-r lg:p-6">
+        <aside className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-110d0a))] p-5 lg:border-b-0 lg:border-r lg:p-6">
           <div className="flex items-start gap-4 lg:block">
             <div className="shrink-0">
               <CharacterPortrait
@@ -244,13 +244,13 @@ export default function TopicPost({
     post.is_anonymous &&
     post.anonymous_identity_visible
       ? "text-red-400"
-      : "text-[#ddc59e]"
+      : "text-[rgb(var(--sep-colour-ddc59e))]"
   }`}
 >
   <ForumCharacterLink
     characterId={post.author_character?.id}
     disabled={!linkAuthorToProfile}
-    className="transition hover:text-[#efd4a0]"
+    className="transition hover:text-[rgb(var(--sep-colour-efd4a0))]"
     ariaLabel={`View ${authorName}'s character sheet`}
   >
     {authorName}
@@ -258,7 +258,7 @@ export default function TopicPost({
 </h2>
 
               {post.is_anonymous ? (
-                <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-[#f87171]">
+                <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-f87171))]">
                   {post.anonymous_identity_visible
                     ? "Anonymous"
                     : "Anonymous"}
@@ -266,11 +266,11 @@ export default function TopicPost({
               ) : null}
 
               {post.author_character?.title ? (
-                <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-[#9b7954]">
+                <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-9b7954))]">
                   {post.author_character.title}
                 </p>
               ) : !post.is_anonymous ? (
-                <p className="mt-1 text-[8px] uppercase tracking-[0.16em] text-[#776754]">
+                <p className="mt-1 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-776754))]">
                   Character
                 </p>
               ) : null}
@@ -280,17 +280,17 @@ export default function TopicPost({
         </aside>
 
         <div className="min-w-0">
-          <header className="flex flex-wrap items-center justify-between gap-3 border-b border-[#60482e]/30 bg-[#19120e] px-5 py-3 sm:px-6">
+          <header className="flex flex-wrap items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-19120e))] px-5 py-3 sm:px-6">
             <div className="flex flex-wrap items-center gap-3">
               <a
                 href={`#post-${post.id}`}
-                className="text-[8px] uppercase tracking-[0.16em] text-[#8f7859] transition hover:text-[#d0ad7a]"
+                className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-8f7859))] transition hover:text-[rgb(var(--sep-colour-d0ad7a))]"
               >
                 Post #{postNumber}
               </a>
 
               {post.is_initial ? (
-                <span className="border border-[#715433]/60 bg-[#2b1d12] px-2 py-1 text-[7px] uppercase tracking-[0.14em] text-[#c49c65]">
+                <span className="border border-[rgb(var(--sep-colour-715433))]/60 bg-[rgb(var(--sep-colour-2b1d12))] px-2 py-1 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-c49c65))]">
                   Opening post
                 </span>
               ) : null}
@@ -303,7 +303,7 @@ export default function TopicPost({
 
               {post.edited_at &&
               !isDeleted ? (
-                <span className="text-[8px] italic text-[#6d6255]">
+                <span className="text-[8px] italic text-[rgb(var(--sep-colour-6d6255))]">
                   Edited{" "}
                   {formatDate(
                     post.edited_at,
@@ -314,7 +314,7 @@ export default function TopicPost({
 
             <time
               dateTime={post.created_at}
-              className="text-[8px] uppercase tracking-[0.13em] text-[#6f6251]"
+              className="text-[8px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-6f6251))]"
             >
               {formatDate(post.created_at)}
             </time>
@@ -338,7 +338,7 @@ export default function TopicPost({
 
                 <RichTextContent
                   body={post.body}
-                  className="text-sm leading-7 text-[#cbbba3] sm:text-[15px]"
+                  className="text-sm leading-7 text-[rgb(var(--sep-colour-cbbba3))] sm:text-[15px]"
                 />
 
                 {post.images.length > 0 ? (
@@ -351,7 +351,7 @@ export default function TopicPost({
           </div>
 
           {showFooter ? (
-            <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-[#60482e]/30 bg-[#120e0b] px-5 py-3 sm:px-6">
+            <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-120e0b))] px-5 py-3 sm:px-6">
               <div className="flex flex-wrap gap-2">
                 {!isDeleted &&
                 !topicLocked ? (
@@ -359,14 +359,14 @@ export default function TopicPost({
                     <Link
                       href={rapidReplyUrl}
                       scroll={false}
-                      className="border border-[#8d6a40] bg-[#2b1d12] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[#d8bd91] transition hover:border-[#ad824d] hover:bg-[#3a2819]"
+                      className="border border-[rgb(var(--sep-colour-8d6a40))] bg-[rgb(var(--sep-colour-2b1d12))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d8bd91))] transition hover:border-[rgb(var(--sep-colour-ad824d))] hover:bg-[rgb(var(--sep-colour-3a2819))]"
                     >
                       Rapid reply
                     </Link>
 
                     <Link
                       href={quoteUrl}
-                      className="border border-[#60482e]/50 bg-[#19120e] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[#a58b68] transition hover:border-[#947047] hover:text-[#dec095]"
+                      className="border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-19120e))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-a58b68))] transition hover:border-[rgb(var(--sep-colour-947047))] hover:text-[rgb(var(--sep-colour-dec095))]"
                     >
                       Quote
                     </Link>
@@ -377,7 +377,7 @@ export default function TopicPost({
                 canEdit ? (
                   <Link
                     href={editUrl}
-                    className="border border-[#60482e]/50 bg-[#19120e] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[#a58b68] transition hover:border-[#947047] hover:text-[#dec095]"
+                    className="border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-19120e))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-a58b68))] transition hover:border-[rgb(var(--sep-colour-947047))] hover:text-[rgb(var(--sep-colour-dec095))]"
                   >
                     Edit
                   </Link>
@@ -434,7 +434,7 @@ function CharacterPortrait({
 
   if (anonymous) {
     return (
-      <div className="flex h-20 w-20 shrink-0 items-center justify-center border border-[#6b5031]/55 bg-[#1b130e] font-serif text-3xl text-[#a98a61] lg:h-44 lg:w-full lg:text-5xl">
+      <div className="flex h-20 w-20 shrink-0 items-center justify-center border border-[rgb(var(--sep-colour-6b5031))]/55 bg-[rgb(var(--sep-colour-1b130e))] font-serif text-3xl text-[rgb(var(--sep-colour-a98a61))] lg:h-44 lg:w-full lg:text-5xl">
         ?
       </div>
     );
@@ -445,7 +445,7 @@ function CharacterPortrait({
     isSafeUrl(character.portrait_url)
   ) {
     const portrait = (
-      <div className="h-20 w-20 shrink-0 overflow-hidden border border-[#6b5031]/55 bg-[#0b0806] lg:h-44 lg:w-full">
+      <div className="h-20 w-20 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-6b5031))]/55 bg-[rgb(var(--sep-colour-0b0806))] lg:h-44 lg:w-full">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={character.portrait_url}
@@ -474,7 +474,7 @@ function CharacterPortrait({
   }
 
   const fallbackPortrait = (
-    <div className="flex h-20 w-20 shrink-0 items-center justify-center border border-[#6b5031]/55 bg-[#1b130e] font-serif text-2xl text-[#a98a61] lg:h-44 lg:w-full lg:text-4xl">
+    <div className="flex h-20 w-20 shrink-0 items-center justify-center border border-[rgb(var(--sep-colour-6b5031))]/55 bg-[rgb(var(--sep-colour-1b130e))] font-serif text-2xl text-[rgb(var(--sep-colour-a98a61))] lg:h-44 lg:w-full lg:text-4xl">
       {initials}
     </div>
   );
@@ -536,7 +536,7 @@ function CharacterIdentityIcons({
     <div className="mt-2 flex items-center justify-center gap-2 lg:mt-3">
       {raceIcon ? (
         <div
-          className="flex h-8 w-8 items-center justify-center border border-[#60482e]/45 bg-[#0b0806] p-1"
+          className="flex h-8 w-8 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0b0806))] p-1"
           title={
             character.race_name ??
             "Ancestry"
@@ -572,25 +572,25 @@ function DeletedPostMessage({
     | null;
 }) {
   return (
-    <div className="flex min-h-36 items-center justify-center border border-dashed border-[#60482e]/35 bg-[#100c09] px-5 py-8 text-center">
+    <div className="flex min-h-36 items-center justify-center border border-dashed border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] px-5 py-8 text-center">
       <div className="max-w-xl">
-        <p className="text-[8px] uppercase tracking-[0.2em] text-[#a65d51]">
+        <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-a65d51))]">
           Moderated content
         </p>
 
-        <p className="mt-3 font-serif text-lg text-[#bba88a]">
+        <p className="mt-3 font-serif text-lg text-[rgb(var(--sep-colour-bba88a))]">
           {isInitial
             ? "This opening post has been deleted."
             : "This post has been deleted by the moderation team."}
         </p>
 
         {moderationReason ? (
-          <div className="mt-5 border border-[#654b32]/55 bg-[#17100c] px-4 py-3">
-            <p className="text-[8px] uppercase tracking-[0.18em] text-[#8e714d]">
+          <div className="mt-5 border border-[rgb(var(--sep-colour-654b32))]/55 bg-[rgb(var(--sep-colour-17100c))] px-4 py-3">
+            <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-8e714d))]">
               Moderation reason
             </p>
 
-            <p className="mt-2 text-sm leading-5 text-[#c8b79c]">
+            <p className="mt-2 text-sm leading-5 text-[rgb(var(--sep-colour-c8b79c))]">
               {moderationReason}
             </p>
           </div>
@@ -615,9 +615,9 @@ function QuotedPost({
         );
 
   return (
-    <blockquote className="mb-6 border-l-2 border-[#8b6840] bg-[#100c09] px-4 py-4">
+    <blockquote className="mb-6 border-l-2 border-[rgb(var(--sep-colour-8b6840))] bg-[rgb(var(--sep-colour-100c09))] px-4 py-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-[8px] uppercase tracking-[0.17em] text-[#9b7b53]">
+        <p className="text-[8px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-9b7b53))]">
           Originally posted by{" "}
           {authorName}
           {post.is_anonymous &&
@@ -628,19 +628,19 @@ function QuotedPost({
 
         <a
           href={`#post-${post.id}`}
-          className="text-[8px] uppercase tracking-[0.14em] text-[#71624f] transition hover:text-[#c9a674]"
+          className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-71624f))] transition hover:text-[rgb(var(--sep-colour-c9a674))]"
         >
           View post
         </a>
       </div>
 
       {post.deleted_at ? (
-        <p className="mt-3 text-xs italic leading-6 text-[#756b60]">
+        <p className="mt-3 text-xs italic leading-6 text-[rgb(var(--sep-colour-756b60))]">
           The quoted post has been
           deleted.
         </p>
       ) : (
-        <p className="mt-3 whitespace-pre-wrap text-xs italic leading-6 text-[#9f927f]">
+        <p className="mt-3 whitespace-pre-wrap text-xs italic leading-6 text-[rgb(var(--sep-colour-9f927f))]">
           {shortenText(
             richTextToPlainText(
               post.body,
@@ -680,7 +680,7 @@ function PostImages({
             href={image.image_url}
             target="_blank"
             rel="noreferrer"
-            className="group block overflow-hidden border border-[#60482e]/40 bg-[#0c0907]"
+            className="group block overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-0c0907))]"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img

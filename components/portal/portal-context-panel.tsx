@@ -338,7 +338,7 @@ if (
 }
 
 type PublicShapeContextEntry={id:string;name:string};
-function PublicShapesContext(){const [entries,setEntries]=useState<PublicShapeContextEntry[]>([]);const [search,setSearch]=useState("");const [visible,setVisible]=useState<Set<string>|null>(null);useEffect(()=>{const apply=(ids:unknown)=>{if(Array.isArray(ids))setVisible(new Set(ids.map(String)))};const stored=sessionStorage.getItem("sepulchria:shapes-visible-ids");if(stored)try{apply(JSON.parse(stored))}catch{};const h=(e:Event)=>apply((e as CustomEvent<{ids?:string[]}>).detail?.ids);window.addEventListener("sepulchria:shapes-filter-change",h);return()=>window.removeEventListener("sepulchria:shapes-filter-change",h)},[]);useEffect(()=>{let c=false;(async()=>{const db=createClient();const {data}=await db.from("shapes").select("id,name").eq("is_active",true).order("level").order("name");if(!c)setEntries((data??[]).map(x=>({id:String(x.id),name:String(x.name)})))})();return()=>{c=true}},[]);const q=search.trim().toLowerCase();const page=visible===null?entries:entries.filter(x=>visible.has(x.id));const filtered=page.filter(x=>!q||x.name.toLowerCase().includes(q));const jump=(id:string)=>{const el=document.getElementById(`shape-${id}`);if(el){el.scrollIntoView({behavior:"smooth",block:"start"});window.history.replaceState(null,"",`#shape-${id}`)}};return <div className="flex h-full min-h-0 flex-col"><ContextHeading eyebrow="Codex" title="Warping"/><p className="text-xs leading-6 text-[#938673]">Search Shapes and jump directly to a definition.</p><input type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search Shapes..." className="mt-4 w-full border border-[#59432c]/45 bg-[#100c09] px-3 py-2.5 text-xs text-[#d4bea0] outline-none"/><div className="my-4 h-px bg-[#59432c]/35"/><p className="mb-2 text-[8px] uppercase tracking-[.18em] text-[#806b50]">Jump to Shape · {filtered.length}</p><div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">{filtered.map(x=><button key={x.id} type="button" onClick={()=>jump(x.id)} className="flex w-full items-center justify-between border border-[#59432c]/35 bg-[#100c09] px-3 py-2.5 text-left"><span className="truncate font-serif text-[13px] text-[#cbb28a]">{x.name}</span><span className="text-[#725a3d]">→</span></button>)}</div></div>}
+function PublicShapesContext(){const [entries,setEntries]=useState<PublicShapeContextEntry[]>([]);const [search,setSearch]=useState("");const [visible,setVisible]=useState<Set<string>|null>(null);useEffect(()=>{const apply=(ids:unknown)=>{if(Array.isArray(ids))setVisible(new Set(ids.map(String)))};const stored=sessionStorage.getItem("sepulchria:shapes-visible-ids");if(stored)try{apply(JSON.parse(stored))}catch{};const h=(e:Event)=>apply((e as CustomEvent<{ids?:string[]}>).detail?.ids);window.addEventListener("sepulchria:shapes-filter-change",h);return()=>window.removeEventListener("sepulchria:shapes-filter-change",h)},[]);useEffect(()=>{let c=false;(async()=>{const db=createClient();const {data}=await db.from("shapes").select("id,name").eq("is_active",true).order("level").order("name");if(!c)setEntries((data??[]).map(x=>({id:String(x.id),name:String(x.name)})))})();return()=>{c=true}},[]);const q=search.trim().toLowerCase();const page=visible===null?entries:entries.filter(x=>visible.has(x.id));const filtered=page.filter(x=>!q||x.name.toLowerCase().includes(q));const jump=(id:string)=>{const el=document.getElementById(`shape-${id}`);if(el){el.scrollIntoView({behavior:"smooth",block:"start"});window.history.replaceState(null,"",`#shape-${id}`)}};return <div className="flex h-full min-h-0 flex-col"><ContextHeading eyebrow="Codex" title="Warping"/><p className="text-xs leading-6 text-[rgb(var(--sep-colour-938673))]">Search Shapes and jump directly to a definition.</p><input type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search Shapes..." className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none"/><div className="my-4 h-px bg-[rgb(var(--sep-colour-59432c))]/35"/><p className="mb-2 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))]">Jump to Shape · {filtered.length}</p><div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">{filtered.map(x=><button key={x.id} type="button" onClick={()=>jump(x.id)} className="flex w-full items-center justify-between border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left"><span className="truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))]">{x.name}</span><span className="text-[rgb(var(--sep-colour-725a3d))]">→</span></button>)}</div></div>}
 
 type PublicGiftContextEntry = {
   id: string;
@@ -525,13 +525,13 @@ function PublicGiftsContext() {
         title="Feats"
       />
 
-      <p className="text-xs leading-6 text-[#938673]">
+      <p className="text-xs leading-6 text-[rgb(var(--sep-colour-938673))]">
         Search the active Feats and
         jump directly to a definition.
       </p>
 
       <label className="mt-4 block">
-        <span className="text-[8px] uppercase tracking-[0.2em] text-[#806b50]">
+        <span className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
           Search Feats
         </span>
 
@@ -544,18 +544,18 @@ function PublicGiftsContext() {
             )
           }
           placeholder="Name..."
-          className="mt-2 w-full border border-[#59432c]/45 bg-[#100c09] px-3 py-2.5 text-xs text-[#d4bea0] outline-none placeholder:text-[#665b4d] focus:border-[#987344]"
+          className="mt-2 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))]"
         />
       </label>
 
-      <div className="my-4 h-px bg-[#59432c]/35" />
+      <div className="my-4 h-px bg-[rgb(var(--sep-colour-59432c))]/35" />
 
       <div className="mb-2 flex items-center justify-between gap-3">
-        <p className="text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
+        <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
           Jump to Feat
         </p>
 
-        <span className="text-[7px] uppercase tracking-[0.12em] text-[#6f6353]">
+        <span className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6353))]">
           {filteredEntries.length}
           {(query ||
             pageFilteredEntries.length !==
@@ -566,7 +566,7 @@ function PublicGiftsContext() {
       </div>
 
       {error ? (
-        <p className="mb-3 border border-[#743d35] bg-[#2a1512] p-3 text-[11px] leading-5 text-[#d8a49a]">
+        <p className="mb-3 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]">
           The Feat list could not
           be loaded.
         </p>
@@ -580,7 +580,7 @@ function PublicGiftsContext() {
             }).map((_, index) => (
               <div
                 key={index}
-                className="h-10 animate-pulse border border-[#59432c]/30 bg-[#19120d]"
+                className="h-10 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]"
               />
             ))}
           </div>
@@ -596,15 +596,15 @@ function PublicGiftsContext() {
                       entry.id,
                     )
                   }
-                  className="group flex w-full items-center justify-between gap-3 border border-[#59432c]/35 bg-[#100c09] px-3 py-2.5 text-left transition hover:border-[#8d693e] hover:bg-[#1d150f]"
+                  className="group flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8d693e))] hover:bg-[rgb(var(--sep-colour-1d150f))]"
                 >
-                  <span className="min-w-0 truncate font-serif text-[13px] text-[#cbb28a] transition group-hover:text-[#ead0a0]">
+                  <span className="min-w-0 truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] transition group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
                     {entry.name}
                   </span>
 
                   <span
                     aria-hidden="true"
-                    className="text-[9px] text-[#725a3d] transition group-hover:translate-x-0.5 group-hover:text-[#b88a52]"
+                    className="text-[9px] text-[rgb(var(--sep-colour-725a3d))] transition group-hover:translate-x-0.5 group-hover:text-[rgb(var(--sep-colour-b88a52))]"
                   >
                     →
                   </span>
@@ -617,7 +617,7 @@ function PublicGiftsContext() {
         {!loading &&
         !error &&
         filteredEntries.length === 0 ? (
-          <p className="border border-[#59432c]/30 bg-[#100c09]/60 p-3 text-[11px] leading-5 text-[#8f8271]">
+          <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
             No Feats match this
             search.
           </p>
@@ -761,7 +761,7 @@ function AdminGiftsContext() {
         title="Gifts"
       />
 
-      <p className="text-xs leading-6 text-[#938673]">
+      <p className="text-xs leading-6 text-[rgb(var(--sep-colour-938673))]">
         Jump directly to a Feat
         definition.
       </p>
@@ -769,15 +769,15 @@ function AdminGiftsContext() {
       <button
         type="button"
         onClick={jumpToCreate}
-        className="mt-4 flex w-full items-center justify-between gap-3 border border-[#765937]/55 bg-[#21180f] px-3 py-3 text-left transition hover:border-[#a17a49] hover:bg-[#2b1f14]"
+        className="mt-4 flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-21180f))] px-3 py-3 text-left transition hover:border-[rgb(var(--sep-colour-a17a49))] hover:bg-[rgb(var(--sep-colour-2b1f14))]"
       >
-        <span className="text-[8px] uppercase tracking-[0.16em] text-[#d2b383]">
+        <span className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d2b383))]">
           Create new Feat
         </span>
 
         <span
           aria-hidden="true"
-          className="text-[#8d6b43]"
+          className="text-[rgb(var(--sep-colour-8d6b43))]"
         >
           +
         </span>
@@ -785,7 +785,7 @@ function AdminGiftsContext() {
 
       <div className="mt-4">
         <label className="block">
-          <span className="text-[8px] uppercase tracking-[0.2em] text-[#806b50]">
+          <span className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
             Search
           </span>
 
@@ -798,19 +798,19 @@ function AdminGiftsContext() {
               )
             }
             placeholder="Search Feats..."
-            className="mt-2 w-full border border-[#59432c]/45 bg-[#100c09] px-3 py-2.5 text-xs text-[#d4bea0] outline-none placeholder:text-[#665b4d] focus:border-[#987344]"
+            className="mt-2 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))]"
           />
         </label>
       </div>
 
-      <div className="my-4 h-px bg-[#59432c]/35" />
+      <div className="my-4 h-px bg-[rgb(var(--sep-colour-59432c))]/35" />
 
       <div className="mb-2 flex items-center justify-between gap-3">
-        <p className="text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
+        <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
           Created Feats
         </p>
 
-        <span className="text-[7px] uppercase tracking-[0.12em] text-[#6f6353]">
+        <span className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6353))]">
           {filteredEntries.length}
           {normalisedSearch
             ? ` / ${entries.length}`
@@ -819,7 +819,7 @@ function AdminGiftsContext() {
       </div>
 
       {error ? (
-        <p className="mb-3 border border-[#743d35] bg-[#2a1512] p-3 text-[11px] leading-5 text-[#d8a49a]">
+        <p className="mb-3 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]">
           The Feat list could not
           be loaded.
         </p>
@@ -833,7 +833,7 @@ function AdminGiftsContext() {
             }).map((_, index) => (
               <div
                 key={index}
-                className="h-10 animate-pulse border border-[#59432c]/30 bg-[#19120d]"
+                className="h-10 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]"
               />
             ))}
           </div>
@@ -849,22 +849,22 @@ function AdminGiftsContext() {
                       entry.id,
                     )
                   }
-                  className="group flex w-full items-center justify-between gap-3 border border-[#59432c]/35 bg-[#100c09] px-3 py-2.5 text-left transition hover:border-[#8d693e] hover:bg-[#1d150f]"
+                  className="group flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8d693e))] hover:bg-[rgb(var(--sep-colour-1d150f))]"
                 >
-                  <span className="min-w-0 truncate font-serif text-[13px] text-[#cbb28a] transition group-hover:text-[#ead0a0]">
+                  <span className="min-w-0 truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] transition group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
                     {entry.name}
                   </span>
 
                   <span className="flex shrink-0 items-center gap-2">
                     {!entry.is_active ? (
-                      <span className="text-[6px] uppercase tracking-[0.1em] text-[#6f6353]">
+                      <span className="text-[6px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-6f6353))]">
                         Inactive
                       </span>
                     ) : null}
 
                     <span
                       aria-hidden="true"
-                      className="text-[9px] text-[#725a3d] transition group-hover:translate-x-0.5 group-hover:text-[#b88a52]"
+                      className="text-[9px] text-[rgb(var(--sep-colour-725a3d))] transition group-hover:translate-x-0.5 group-hover:text-[rgb(var(--sep-colour-b88a52))]"
                     >
                       →
                     </span>
@@ -878,7 +878,7 @@ function AdminGiftsContext() {
         {!loading &&
         !error &&
         filteredEntries.length === 0 ? (
-          <p className="border border-[#59432c]/30 bg-[#100c09]/60 p-3 text-[11px] leading-5 text-[#8f8271]">
+          <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
             No Feats match this
             search.
           </p>
@@ -977,18 +977,18 @@ function PublicCodexEntryNavigator({
         title={title}
       />
 
-      <p className="text-xs leading-6 text-[#938673]">
+      <p className="text-xs leading-6 text-[rgb(var(--sep-colour-938673))]">
         {description}
       </p>
 
-      <div className="my-4 h-px bg-[#59432c]/35" />
+      <div className="my-4 h-px bg-[rgb(var(--sep-colour-59432c))]/35" />
 
-      <p className="mb-3 text-[8px] uppercase tracking-[0.2em] text-[#806b50]">
+      <p className="mb-3 text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
         Other {title.toLowerCase()}
       </p>
 
       {error ? (
-        <p className="mb-3 border border-[#743d35] bg-[#2a1512] p-3 text-[11px] leading-5 text-[#d8a49a]">
+        <p className="mb-3 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]">
           The list could not be loaded.
         </p>
       ) : null}
@@ -1001,7 +1001,7 @@ function PublicCodexEntryNavigator({
             }).map((_, index) => (
               <div
                 key={index}
-                className="h-11 animate-pulse border border-[#59432c]/30 bg-[#19120d]"
+                className="h-11 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]"
               />
             ))}
           </div>
@@ -1011,15 +1011,15 @@ function PublicCodexEntryNavigator({
               <Link
                 key={entry.id}
                 href={`${baseHref}/${entry.slug}`}
-                className="group flex w-full items-center justify-between gap-3 border border-[#59432c]/40 bg-[#100c09] px-3 py-3 text-left transition hover:border-[#8d693e] hover:bg-[#1d150f]"
+                className="group flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-left transition hover:border-[rgb(var(--sep-colour-8d693e))] hover:bg-[rgb(var(--sep-colour-1d150f))]"
               >
-                <span className="min-w-0 truncate font-serif text-sm text-[#cbb28a] transition group-hover:text-[#ead0a0]">
+                <span className="min-w-0 truncate font-serif text-sm text-[rgb(var(--sep-colour-cbb28a))] transition group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
                   {entry.name}
                 </span>
 
                 <span
                   aria-hidden="true"
-                  className="shrink-0 text-[10px] text-[#725a3d] transition group-hover:translate-x-0.5 group-hover:text-[#b88a52]"
+                  className="shrink-0 text-[10px] text-[rgb(var(--sep-colour-725a3d))] transition group-hover:translate-x-0.5 group-hover:text-[rgb(var(--sep-colour-b88a52))]"
                 >
                   →
                 </span>
@@ -1031,7 +1031,7 @@ function PublicCodexEntryNavigator({
         {!loading &&
         !error &&
         entries.length === 0 ? (
-          <p className="border border-[#59432c]/30 bg-[#100c09]/60 p-3 text-[11px] leading-5 text-[#8f8271]">
+          <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
             No other active {itemLabel} entries
             are currently available.
           </p>
@@ -1040,7 +1040,7 @@ function PublicCodexEntryNavigator({
 
       <Link
         href={baseHref}
-        className="mt-4 flex w-full items-center justify-between gap-3 border border-[#765937]/45 bg-[#17100c] px-3 py-3 text-[8px] uppercase tracking-[0.16em] text-[#9d8869] transition hover:border-[#987344] hover:text-[#d6b786]"
+        className="mt-4 flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-765937))]/45 bg-[rgb(var(--sep-colour-17100c))] px-3 py-3 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-9d8869))] transition hover:border-[rgb(var(--sep-colour-987344))] hover:text-[rgb(var(--sep-colour-d6b786))]"
       >
         <span>
           View all {title.toLowerCase()}
@@ -1186,13 +1186,13 @@ function PublicCodexJumpContext({
         title={title}
       />
 
-      <p className="mb-4 text-xs leading-6 text-[#938673]">
+      <p className="mb-4 text-xs leading-6 text-[rgb(var(--sep-colour-938673))]">
         Jump directly to an
         entry.
       </p>
 
       {error ? (
-        <p className="mb-3 border border-[#743d35] bg-[#2a1512] p-3 text-[11px] leading-5 text-[#d8a49a]">
+        <p className="mb-3 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]">
           The list could not be
           loaded.
         </p>
@@ -1207,7 +1207,7 @@ function PublicCodexJumpContext({
               (_, index) => (
                 <div
                   key={index}
-                  className="h-11 animate-pulse border border-[#59432c]/30 bg-[#19120d]"
+                  className="h-11 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]"
                 />
               ),
             )}
@@ -1226,9 +1226,9 @@ function PublicCodexJumpContext({
                       entry.slug,
                     )
                   }
-                  className="group flex w-full items-center justify-between gap-3 border border-[#59432c]/40 bg-[#100c09] px-3 py-3 text-left transition hover:border-[#8d693e] hover:bg-[#1d150f]"
+                  className="group flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-left transition hover:border-[rgb(var(--sep-colour-8d693e))] hover:bg-[rgb(var(--sep-colour-1d150f))]"
                 >
-                  <span className="min-w-0 truncate font-serif text-sm text-[#cbb28a] transition group-hover:text-[#ead0a0]">
+                  <span className="min-w-0 truncate font-serif text-sm text-[rgb(var(--sep-colour-cbb28a))] transition group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
                     {
                       entry.name
                     }
@@ -1236,7 +1236,7 @@ function PublicCodexJumpContext({
 
                   <span
                     aria-hidden="true"
-                    className="shrink-0 text-[10px] text-[#725a3d] transition group-hover:translate-x-0.5 group-hover:text-[#b88a52]"
+                    className="shrink-0 text-[10px] text-[rgb(var(--sep-colour-725a3d))] transition group-hover:translate-x-0.5 group-hover:text-[rgb(var(--sep-colour-b88a52))]"
                   >
                     ↓
                   </span>
@@ -1249,7 +1249,7 @@ function PublicCodexJumpContext({
         {!loading &&
         !error &&
         entries.length === 0 ? (
-          <p className="border border-[#59432c]/30 bg-[#100c09]/60 p-3 text-[11px] leading-5 text-[#8f8271]">
+          <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
             No active entries
             are currently
             available.
@@ -1366,7 +1366,7 @@ function AdminCodexJumpContext({
         title="Jump to entry"
       />
 
-      <p className="mb-4 text-xs leading-6 text-[#938673]">
+      <p className="mb-4 text-xs leading-6 text-[rgb(var(--sep-colour-938673))]">
         Jump directly to the {itemLabel} you
         want to edit.
       </p>
@@ -1376,19 +1376,19 @@ function AdminCodexJumpContext({
         onClick={() =>
           jumpTo(createAnchor)
         }
-        className="mb-4 flex w-full items-center justify-between gap-3 border border-[#765937]/55 bg-[#271c12] px-3 py-3 text-left transition hover:border-[#9a7445] hover:bg-[#342318]"
+        className="mb-4 flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-271c12))] px-3 py-3 text-left transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:bg-[rgb(var(--sep-colour-342318))]"
       >
-        <span className="text-[9px] uppercase tracking-[0.18em] text-[#d6b37d]">
+        <span className="text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-d6b37d))]">
           {createLabel}
         </span>
 
-        <span className="text-sm text-[#a88451]">
+        <span className="text-sm text-[rgb(var(--sep-colour-a88451))]">
           +
         </span>
       </button>
 
       {error ? (
-        <p className="mb-3 border border-[#743d35] bg-[#2a1512] p-3 text-[11px] leading-5 text-[#d8a49a]">
+        <p className="mb-3 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]">
           The list could not be loaded:
           {" "}
           {error}
@@ -1403,7 +1403,7 @@ function AdminCodexJumpContext({
             }).map((_, index) => (
               <div
                 key={index}
-                className="h-11 animate-pulse border border-[#59432c]/30 bg-[#19120d]"
+                className="h-11 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]"
               />
             ))}
           </div>
@@ -1418,9 +1418,9 @@ function AdminCodexJumpContext({
                     `${anchorPrefix}-${entry.slug}`,
                   )
                 }
-                className="group flex w-full items-center justify-between gap-3 border border-[#59432c]/40 bg-[#100c09] px-3 py-3 text-left transition hover:border-[#8d693e] hover:bg-[#1d150f]"
+                className="group flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-left transition hover:border-[rgb(var(--sep-colour-8d693e))] hover:bg-[rgb(var(--sep-colour-1d150f))]"
               >
-                <span className="min-w-0 truncate font-serif text-sm text-[#cbb28a] transition group-hover:text-[#ead0a0]">
+                <span className="min-w-0 truncate font-serif text-sm text-[rgb(var(--sep-colour-cbb28a))] transition group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
                   {entry.name}
                 </span>
 
@@ -1438,7 +1438,7 @@ function AdminCodexJumpContext({
                   className={`h-1.5 w-1.5 shrink-0 rounded-full ${
                     entry.is_active
                       ? "bg-emerald-600"
-                      : "bg-[#66594b]"
+                      : "bg-[rgb(var(--sep-colour-66594b))]"
                   }`}
                 />
               </button>
@@ -1449,7 +1449,7 @@ function AdminCodexJumpContext({
         {!loading &&
         !error &&
         entries.length === 0 ? (
-          <p className="border border-[#59432c]/30 bg-[#100c09]/60 p-3 text-[11px] leading-5 text-[#8f8271]">
+          <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
             No {pluralLabel} have been
             created yet.
           </p>
@@ -1608,24 +1608,24 @@ function AdminCharacterHistoryContext({
         title={characterName}
       />
 
-      <div className="mb-4 flex items-center justify-between gap-3 border-y border-[#59432c]/35 py-3">
+      <div className="mb-4 flex items-center justify-between gap-3 border-y border-[rgb(var(--sep-colour-59432c))]/35 py-3">
         <div>
-          <p className="text-[8px] uppercase tracking-[0.22em] text-[#876a46]">
+          <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))]">
             Status history
           </p>
 
-          <p className="mt-1 text-[11px] text-[#8f8271]">
+          <p className="mt-1 text-[11px] text-[rgb(var(--sep-colour-8f8271))]">
             Latest recorded changes
           </p>
         </div>
 
-        <span className="flex h-7 min-w-7 items-center justify-center border border-[#59432c]/50 bg-[#100c09] px-2 text-[10px] text-[#b2956f]">
+        <span className="flex h-7 min-w-7 items-center justify-center border border-[rgb(var(--sep-colour-59432c))]/50 bg-[rgb(var(--sep-colour-100c09))] px-2 text-[10px] text-[rgb(var(--sep-colour-b2956f))]">
           {entries.length}
         </span>
       </div>
 
       {error ? (
-        <p className="border border-[#743d35] bg-[#2a1512] p-3 text-[11px] leading-5 text-[#d8a49a]">
+        <p className="border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]">
           The character history could not
           be loaded: {error}
         </p>
@@ -1646,7 +1646,7 @@ function AdminCharacterHistoryContext({
         {!loading &&
         !error &&
         entries.length === 0 ? (
-          <p className="border border-[#59432c]/30 bg-[#100c09]/60 p-3 text-[11px] leading-5 text-[#8f8271]">
+          <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
             No status changes have been
             recorded for this character yet.
           </p>
@@ -1676,7 +1676,7 @@ function StatusHistoryCard({
   };
 
   return (
-    <article className="border border-[#59432c]/40 bg-[#100c09] p-3">
+    <article className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-3">
       <div className="flex flex-wrap items-center gap-2">
         {entry.old_status ? (
           <>
@@ -1685,7 +1685,7 @@ function StatusHistoryCard({
                 statusStyles[
                   entry.old_status
                 ] ??
-                "border-[#59432c]/60 text-[#9f917e]"
+                "border-[rgb(var(--sep-colour-59432c))]/60 text-[rgb(var(--sep-colour-9f917e))]"
               }`}
             >
               {entry.old_status}
@@ -1693,7 +1693,7 @@ function StatusHistoryCard({
 
             <span
               aria-hidden="true"
-              className="text-[10px] text-[#725a3d]"
+              className="text-[10px] text-[rgb(var(--sep-colour-725a3d))]"
             >
               →
             </span>
@@ -1705,26 +1705,26 @@ function StatusHistoryCard({
             statusStyles[
               entry.new_status
             ] ??
-            "border-[#59432c]/60 text-[#9f917e]"
+            "border-[rgb(var(--sep-colour-59432c))]/60 text-[rgb(var(--sep-colour-9f917e))]"
           }`}
         >
           {entry.new_status}
         </span>
       </div>
 
-      <p className="mt-2 text-[10px] text-[#887964]">
+      <p className="mt-2 text-[10px] text-[rgb(var(--sep-colour-887964))]">
         {formatHistoryDate(
           entry.created_at,
         )}
       </p>
 
       {entry.reason ? (
-        <div className="mt-3 border-l border-[#7c493e] pl-3">
-          <p className="text-[7px] uppercase tracking-[0.18em] text-[#a8665d]">
+        <div className="mt-3 border-l border-[rgb(var(--sep-colour-7c493e))] pl-3">
+          <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a8665d))]">
             Reason
           </p>
 
-          <p className="mt-1 whitespace-pre-wrap text-[11px] leading-5 text-[#c5a39d]">
+          <p className="mt-1 whitespace-pre-wrap text-[11px] leading-5 text-[rgb(var(--sep-colour-c5a39d))]">
             {entry.reason}
           </p>
         </div>
@@ -1732,7 +1732,7 @@ function StatusHistoryCard({
 
       {entry.changed_by ? (
         <p
-          className="mt-3 truncate text-[8px] text-[#665b4d]"
+          className="mt-3 truncate text-[8px] text-[rgb(var(--sep-colour-665b4d))]"
           title={entry.changed_by}
         >
           Changed by: {entry.changed_by}
@@ -1745,9 +1745,9 @@ function StatusHistoryCard({
 function HistoryLoading() {
   return (
     <>
-      <div className="h-24 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
-      <div className="h-24 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
-      <div className="h-24 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
+      <div className="h-24 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
+      <div className="h-24 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
+      <div className="h-24 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
     </>
   );
 }
@@ -1844,13 +1844,13 @@ function CharacterContext({
         </>
       ) : (
         <>
-          <p className="text-xs leading-6 text-[#938673]">
+          <p className="text-xs leading-6 text-[rgb(var(--sep-colour-938673))]">
             Create the character who will enter Sepulchria.
           </p>
 
           <Link
             href="/character/create"
-            className="mt-5 inline-flex border border-[#765937] bg-[#271c12] px-4 py-3 text-[10px] uppercase tracking-[0.2em] text-[#dfc79c] transition hover:bg-[#3b2919]"
+            className="mt-5 inline-flex border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-271c12))] px-4 py-3 text-[10px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-dfc79c))] transition hover:bg-[rgb(var(--sep-colour-3b2919))]"
           >
             Begin creation
           </Link>
@@ -1985,13 +1985,13 @@ function CharacterArchiveContext() {
         title=""       
       />
 
-      <p className="mb-1 text-xs leading-1 text-[#938673]">
+      <p className="mb-1 text-xs leading-1 text-[rgb(var(--sep-colour-938673))]">
         Search the archive and jump
         directly to a character.
       </p>
 
       <label className="mb-1 block">
-        <span className="text-[8px] uppercase tracking-[0.2em] text-[#806b50]">
+        <span className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
           Search
         </span>
 
@@ -2004,12 +2004,12 @@ function CharacterArchiveContext() {
             )
           }
           placeholder="Character name..."
-          className="mt-2 w-full border border-[#60482e]/55 bg-[#0d0907] px-3 py-2.5 text-xs text-[#d3bea0] outline-none transition placeholder:text-[#665a4c] focus:border-[#9b7545]"
+          className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d3bea0))] outline-none transition placeholder:text-[rgb(var(--sep-colour-665a4c))] focus:border-[rgb(var(--sep-colour-9b7545))]"
         />
       </label>
 
       {error ? (
-        <p className="mb-3 border border-[#743d35] bg-[#2a1512] p-3 text-[11px] leading-5 text-[#d8a49a]">
+        <p className="mb-3 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]">
           The character list could not
           be loaded.
         </p>
@@ -2024,7 +2024,7 @@ function CharacterArchiveContext() {
               (_, index) => (
                 <div
                   key={index}
-                  className="h-11 animate-pulse border border-[#59432c]/30 bg-[#19120d]"
+                  className="h-11 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]"
                 />
               ),
             )}
@@ -2046,13 +2046,13 @@ function CharacterArchiveContext() {
                         character.public_slug,
                       )
                     }
-                    className="group flex w-full items-center justify-between gap-3 border border-[#59432c]/40 bg-[#100c09] px-3 py-2.5 text-left transition hover:border-[#8d693e] hover:bg-[#1d150f]"
+                    className="group flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8d693e))] hover:bg-[rgb(var(--sep-colour-1d150f))]"
                   >
-                    <span className="min-w-0 truncate font-serif text-sm text-[#cbb28a] transition group-hover:text-[#ead0a0]">
+                    <span className="min-w-0 truncate font-serif text-sm text-[rgb(var(--sep-colour-cbb28a))] transition group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
                       {name}
                     </span>
 
-                    <span className="shrink-0 text-[10px] text-[#725a3d] transition group-hover:text-[#b88a52]">
+                    <span className="shrink-0 text-[10px] text-[rgb(var(--sep-colour-725a3d))] transition group-hover:text-[rgb(var(--sep-colour-b88a52))]">
                       ↓
                     </span>
                   </button>
@@ -2066,7 +2066,7 @@ function CharacterArchiveContext() {
         !error &&
         filteredCharacters.length ===
           0 ? (
-          <p className="border border-[#59432c]/30 bg-[#100c09]/60 p-3 text-[11px] leading-5 text-[#8f8271]">
+          <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
             No characters match this
             search.
           </p>
@@ -2335,7 +2335,7 @@ function PublicCharacterContext({
   if (loading) {
     return (
       <div className="space-y-3">
-        <div className="h-16 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
+        <div className="h-16 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
 
         {Array.from({
           length: 8,
@@ -2343,7 +2343,7 @@ function PublicCharacterContext({
           (_, index) => (
             <div
               key={index}
-              className="h-9 animate-pulse border border-[#59432c]/30 bg-[#19120d]"
+              className="h-9 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]"
             />
           ),
         )}
@@ -2359,7 +2359,7 @@ function PublicCharacterContext({
           title="Character record"
         />
 
-        <p className="border border-[#743d35] bg-[#2a1512] p-3 text-[11px] leading-5 text-[#d8a49a]">
+        <p className="border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]">
           The character record could not
           be loaded.
         </p>
@@ -2375,7 +2375,7 @@ function PublicCharacterContext({
           title="Character record"
         />
 
-        <p className="text-xs leading-6 text-[#938673]">
+        <p className="text-xs leading-6 text-[rgb(var(--sep-colour-938673))]">
           This character is not
           available.
         </p>
@@ -2527,7 +2527,7 @@ function PublicCharacterContext({
       />
 
       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1">
-        <div className="border border-[#59432c]/40 bg-[#100c09]">
+        <div className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))]">
           {rows.map(
             (row, index) => (
               <div
@@ -2535,15 +2535,15 @@ function PublicCharacterContext({
                 className={`grid grid-cols-[92px_minmax(0,1fr)] gap-3 px-3 py-2.5 ${
                   index !==
                   rows.length - 1
-                    ? "border-b border-[#59432c]/25"
+                    ? "border-b border-[rgb(var(--sep-colour-59432c))]/25"
                     : ""
                 }`}
               >
-                <span className="text-[7px] uppercase tracking-[0.16em] text-[#75644f]">
+                <span className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-75644f))]">
                   {row.label}
                 </span>
 
-                <span className="min-w-0 break-words text-right text-[11px] text-[#c5b294]">
+                <span className="min-w-0 break-words text-right text-[11px] text-[rgb(var(--sep-colour-c5b294))]">
                   {row.value}
                 </span>
               </div>
@@ -2551,14 +2551,14 @@ function PublicCharacterContext({
           )}
         </div>
 
-        <div className="mt-4 border-y border-[#59432c]/35">
+        <div className="mt-4 border-y border-[rgb(var(--sep-colour-59432c))]/35">
           <CharacterOrderContext
             characterId={character.id}
           />
         </div>
 
         <div className="mt-4">
-          <p className="mb-2 text-[8px] uppercase tracking-[0.2em] text-[#806b50]">
+          <p className="mb-2 text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
             Attributes
           </p>
           
@@ -2569,15 +2569,15 @@ function PublicCharacterContext({
                   key={
                     attribute.label
                   }
-                  className="border border-[#59432c]/40 bg-[#100c09] px-3 py-2.5"
+                  className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5"
                 >
-                  <p className="text-[7px] uppercase tracking-[0.14em] text-[#75644f]">
+                  <p className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-75644f))]">
                     {
                       attribute.label
                     }
                   </p>
 
-                  <p className="mt-1 font-serif text-lg text-[#d7bd91]">
+                  <p className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-d7bd91))]">
                     {attribute.value ??
                       "—"}
                   </p>
@@ -2615,11 +2615,11 @@ function CodexContext({
         title={title}
       />
 
-      <p className="text-xs leading-6 text-[#938673]">
+      <p className="text-xs leading-6 text-[rgb(var(--sep-colour-938673))]">
         {description}
       </p>
 
-      <div className="mt-5 border-y border-[#59432c]/35 py-4">
+      <div className="mt-5 border-y border-[rgb(var(--sep-colour-59432c))]/35 py-4">
         <ContextRow
           label="Archive"
           value="Public"
@@ -2660,13 +2660,13 @@ function PrivateLocationsContext({
         title="Private Locations"
       />
 
-      <p className="text-[11px] leading-5 text-[#938673]">
+      <p className="text-[11px] leading-5 text-[rgb(var(--sep-colour-938673))]">
         {context.isStaff
           ? "Enabled Private Locations. Staff may enter any listed room."
           : "Private Locations currently available to your character."}
       </p>
 
-      <div className="my-4 h-px bg-[#59432c]/35" />
+      <div className="my-4 h-px bg-[rgb(var(--sep-colour-59432c))]/35" />
 
       <div className="min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-contain pr-1">
         {locations.map(
@@ -2675,15 +2675,15 @@ function PrivateLocationsContext({
               key={
                 location.roomId
               }
-              className="border border-[#59432c]/40 bg-[#100c09] p-3"
+              className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-3"
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <p className="truncate font-serif text-sm text-[#d6bd91]">
+                  <p className="truncate font-serif text-sm text-[rgb(var(--sep-colour-d6bd91))]">
                     {location.name}
                   </p>
 
-                  <p className="mt-1 text-[7px] uppercase tracking-[0.14em] text-[#75644f]">
+                  <p className="mt-1 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-75644f))]">
                     {location.role}
                   </p>
                 </div>
@@ -2705,7 +2705,7 @@ function PrivateLocationsContext({
                     type="submit"
                     title={`Enter ${location.name}`}
                     aria-label={`Enter ${location.name}`}
-                    className="flex h-7 w-7 items-center justify-center border border-[#765937] bg-[#271c12] text-[10px] text-[#dfc79c] transition hover:border-[#997042] hover:bg-[#3b2919]"
+                    className="flex h-7 w-7 items-center justify-center border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-271c12))] text-[10px] text-[rgb(var(--sep-colour-dfc79c))] transition hover:border-[rgb(var(--sep-colour-997042))] hover:bg-[rgb(var(--sep-colour-3b2919))]"
                   >
                     →
                   </button>
@@ -2717,7 +2717,7 @@ function PrivateLocationsContext({
 
         {locations.length ===
         0 ? (
-          <p className="border border-[#59432c]/30 bg-[#100c09]/60 p-3 text-[11px] leading-5 text-[#8f8271]">
+          <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
             No enabled Private Locations
             are currently available.
           </p>
@@ -2957,14 +2957,14 @@ function ForumOverviewContext() {
         title="Forum"
       />
 
-      <p className="text-[11px] leading-5 text-[#938673]">
+      <p className="text-[11px] leading-5 text-[rgb(var(--sep-colour-938673))]">
         Chronicles, discussions and the
         halls of Sepulchria&apos;s
         organisations.
       </p>
 
       {error ? (
-        <p className="mt-4 border border-[#743d35] bg-[#2a1512] p-3 text-[10px] leading-5 text-[#d8a49a]">
+        <p className="mt-4 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-3 text-[10px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]">
           Forum statistics could not be
           loaded.
         </p>
@@ -2973,44 +2973,44 @@ function ForumOverviewContext() {
       <div className="mt-4 space-y-2">
         {loading ? (
   <>
-    <div className="h-20 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
-    <div className="h-20 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
-    <div className="h-20 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
+    <div className="h-20 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
+    <div className="h-20 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
+    <div className="h-20 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
   </>
 ) : (
   groups.map((group) => (
     <article
       key={group.key}
-      className="border border-[#59432c]/40 bg-[#100c09] px-3 py-3"
+      className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3"
     >
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <h3 className="font-serif text-base text-[#d6bd91]">
+          <h3 className="font-serif text-base text-[rgb(var(--sep-colour-d6bd91))]">
             {group.label}
           </h3>
 
-          <p className="mt-1 text-[9px] leading-4 text-[#817565]">
+          <p className="mt-1 text-[9px] leading-4 text-[rgb(var(--sep-colour-817565))]">
             {group.description}
           </p>
         </div>
 
         <dl className="flex shrink-0 items-center gap-4">
           <div className="text-right">
-            <dt className="text-[6px] uppercase tracking-[0.14em] text-[#665946]">
+            <dt className="text-[6px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-665946))]">
               Sections
             </dt>
 
-            <dd className="mt-0.5 font-serif text-sm text-[#c3a67d]">
+            <dd className="mt-0.5 font-serif text-sm text-[rgb(var(--sep-colour-c3a67d))]">
               {group.sectionCount}
             </dd>
           </div>
 
           <div className="text-right">
-            <dt className="text-[6px] uppercase tracking-[0.14em] text-[#665946]">
+            <dt className="text-[6px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-665946))]">
               Posts
             </dt>
 
-            <dd className="mt-0.5 font-serif text-sm text-[#c3a67d]">
+            <dd className="mt-0.5 font-serif text-sm text-[rgb(var(--sep-colour-c3a67d))]">
               {group.postCount}
             </dd>
           </div>
@@ -3257,7 +3257,7 @@ function ForumTopicContext({
         <ForumContextLoading />
       ) : !quickReplyPostId ? (
         <>
-          <p className="text-xs leading-6 text-[#938673]">
+          <p className="text-xs leading-6 text-[rgb(var(--sep-colour-938673))]">
             Select Rapid reply beneath a
             post to answer it directly
             from this panel.
@@ -3269,7 +3269,7 @@ function ForumTopicContext({
           />
         </>
       ) : error || !post ? (
-        <p className="border border-[#743d35] bg-[#2a1512] p-3 text-[11px] leading-5 text-[#d8a49a]">
+        <p className="border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]">
           {error ??
             "The selected post could not be loaded."}
         </p>
@@ -3308,12 +3308,12 @@ function ForumTopicContext({
             value="[]"
           />
 
-          <div className="shrink-0 border-l-2 border-[#8b6840] bg-[#100c09] px-3 py-3">
-            <p className="text-[8px] uppercase tracking-[0.17em] text-[#9b7b53]">
+          <div className="shrink-0 border-l-2 border-[rgb(var(--sep-colour-8b6840))] bg-[rgb(var(--sep-colour-100c09))] px-3 py-3">
+            <p className="text-[8px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-9b7b53))]">
               Replying to {authorName}
             </p>
 
-            <p className="mt-2 line-clamp-5 text-[11px] italic leading-5 text-[#9f927f]">
+            <p className="mt-2 line-clamp-5 text-[11px] italic leading-5 text-[rgb(var(--sep-colour-9f927f))]">
               {shortenForumText(
                 post.body,
                 280,
@@ -3323,7 +3323,7 @@ function ForumTopicContext({
             <div className="mt-3 flex flex-wrap gap-3">
               <a
                 href={`#post-${post.id}`}
-                className="text-[8px] uppercase tracking-[0.14em] text-[#9c7650] transition hover:text-[#dfb982]"
+                className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9c7650))] transition hover:text-[rgb(var(--sep-colour-dfb982))]"
               >
                 View original
               </a>
@@ -3331,7 +3331,7 @@ function ForumTopicContext({
               <Link
                 href={`/forum/${sectionSlug}/${topicSlug}`}
                 scroll={false}
-                className="text-[8px] uppercase tracking-[0.14em] text-[#776957] transition hover:text-[#c8a678]"
+                className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-776957))] transition hover:text-[rgb(var(--sep-colour-c8a678))]"
               >
                 Cancel
               </Link>
@@ -3339,7 +3339,7 @@ function ForumTopicContext({
           </div>
 
           <label className="mt-4 block shrink-0">
-            <span className="text-[8px] uppercase tracking-[0.18em] text-[#9f8765]">
+            <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9f8765))]">
               Reply as
             </span>
 
@@ -3352,7 +3352,7 @@ function ForumTopicContext({
                 )
               }
               disabled={pending}
-              className="mt-2 w-full border border-[#60482e]/50 bg-[#0d0907] px-3 py-2.5 text-xs text-[#d8c4a4] outline-none focus:border-[#aa7f47]"
+              className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d8c4a4))] outline-none focus:border-[rgb(var(--sep-colour-aa7f47))]"
             >
               <option value="">
                 Account only
@@ -3393,7 +3393,7 @@ function ForumTopicContext({
             disabled={pending}
             rows={8}
             placeholder="Write a rapid reply..."
-            className="mt-4 min-h-32 w-full flex-1 resize-none border border-[#60482e]/50 bg-[#0d0907] p-3 text-xs leading-6 text-[#d2c1a7] outline-none placeholder:text-[#5f5549] focus:border-[#aa7f47]"
+            className="mt-4 min-h-32 w-full flex-1 resize-none border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0d0907))] p-3 text-xs leading-6 text-[rgb(var(--sep-colour-d2c1a7))] outline-none placeholder:text-[rgb(var(--sep-colour-5f5549))] focus:border-[rgb(var(--sep-colour-aa7f47))]"
           />
 
           <div className="mt-3 shrink-0">
@@ -3415,7 +3415,7 @@ function ForumTopicContext({
                 pending ||
                 !body.trim()
               }
-              className="w-full border border-[#a27b48] bg-[#49311d] px-4 py-3 text-[9px] uppercase tracking-[0.2em] text-[#f0d6aa] transition hover:border-[#c49555] hover:bg-[#5b3d22] disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-full border border-[rgb(var(--sep-colour-a27b48))] bg-[rgb(var(--sep-colour-49311d))] px-4 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-f0d6aa))] transition hover:border-[rgb(var(--sep-colour-c49555))] hover:bg-[rgb(var(--sep-colour-5b3d22))] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {pending
                 ? "Publishing..."
@@ -3424,7 +3424,7 @@ function ForumTopicContext({
 
             <Link
               href={`/forum/${sectionSlug}/${topicSlug}?quote=${post.id}#reply`}
-              className="mt-3 flex w-full items-center justify-between border border-[#59432c]/60 px-4 py-3 text-[9px] uppercase tracking-[0.16em] text-[#9d8c75] transition hover:border-[#765937] hover:text-[#d7c09a]"
+              className="mt-3 flex w-full items-center justify-between border border-[rgb(var(--sep-colour-59432c))]/60 px-4 py-3 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-9d8c75))] transition hover:border-[rgb(var(--sep-colour-765937))] hover:text-[rgb(var(--sep-colour-d7c09a))]"
             >
               <span>
                 Open full editor
@@ -3493,9 +3493,9 @@ function formatCompactDate(
 function ForumContextLoading() {
   return (
     <div className="space-y-2">
-      <div className="h-24 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
-      <div className="h-24 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
-      <div className="h-24 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
+      <div className="h-24 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
+      <div className="h-24 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
+      <div className="h-24 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
     </div>
   );
 }
@@ -3655,13 +3655,13 @@ function AreaContext({
         title={areaName}
       />
 
-      <p className="mb-4 text-xs leading-6 text-[#938673]">
+      <p className="mb-4 text-xs leading-6 text-[rgb(var(--sep-colour-938673))]">
         Jump directly to a
         location in this area.
       </p>
 
       {error ? (
-        <p className="mb-3 border border-[#743d35] bg-[#2a1512] p-3 text-[11px] leading-5 text-[#d8a49a]">
+        <p className="mb-3 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]">
           The locations could not
           be loaded.
         </p>
@@ -3676,7 +3676,7 @@ function AreaContext({
               (_, index) => (
                 <div
                   key={index}
-                  className="h-11 animate-pulse border border-[#59432c]/30 bg-[#19120d]"
+                  className="h-11 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]"
                 />
               ),
             )}
@@ -3693,9 +3693,9 @@ function AreaContext({
                       room.slug,
                     )
                   }
-                  className="group flex w-full items-center gap-3 overflow-hidden border border-[#59432c]/40 bg-[#100c09] p-2 text-left transition hover:border-[#8d693e] hover:bg-[#1d150f]"
+                  className="group flex w-full items-center gap-3 overflow-hidden border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-2 text-left transition hover:border-[rgb(var(--sep-colour-8d693e))] hover:bg-[rgb(var(--sep-colour-1d150f))]"
                 >
-                  <span className="relative h-11 w-16 shrink-0 overflow-hidden border border-[#59432c]/45 bg-[#0b0806]">
+                  <span className="relative h-11 w-16 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-0b0806))]">
                     {room.image_url ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
@@ -3704,19 +3704,19 @@ function AreaContext({
                         className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
                       />
                     ) : (
-                      <span className="flex h-full w-full items-center justify-center text-[6px] uppercase tracking-[0.12em] text-[#5f5446]">
+                      <span className="flex h-full w-full items-center justify-center text-[6px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-5f5446))]">
                         No image
                       </span>
                     )}
                   </span>
 
-                  <span className="min-w-0 flex-1 font-serif text-sm leading-4 text-[#cbb28a] transition group-hover:text-[#ead0a0]">
+                  <span className="min-w-0 flex-1 font-serif text-sm leading-4 text-[rgb(var(--sep-colour-cbb28a))] transition group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
                     {room.name}
                   </span>
 
                   <span
                     aria-hidden="true"
-                    className="shrink-0 pr-1 text-[10px] text-[#725a3d] transition group-hover:translate-x-0.5 group-hover:text-[#b88a52]"
+                    className="shrink-0 pr-1 text-[10px] text-[rgb(var(--sep-colour-725a3d))] transition group-hover:translate-x-0.5 group-hover:text-[rgb(var(--sep-colour-b88a52))]"
                   >
                     ↓
                   </span>
@@ -3729,7 +3729,7 @@ function AreaContext({
         {!loading &&
         !error &&
         rooms.length === 0 ? (
-          <p className="border border-[#59432c]/30 bg-[#100c09]/60 p-3 text-[11px] leading-5 text-[#8f8271]">
+          <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
             No active locations
             are currently
             available.
@@ -3739,7 +3739,7 @@ function AreaContext({
 
       <Link
         href="/?map=sepulchria"
-        className="mt-4 flex w-full shrink-0 items-center justify-between border border-[#765937] bg-[#271c12] px-4 py-3 text-[10px] uppercase tracking-[0.18em] text-[#dfc79c] transition hover:border-[#997042] hover:bg-[#3b2919]"
+        className="mt-4 flex w-full shrink-0 items-center justify-between border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-271c12))] px-4 py-3 text-[10px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-dfc79c))] transition hover:border-[rgb(var(--sep-colour-997042))] hover:bg-[rgb(var(--sep-colour-3b2919))]"
       >
         <span>
           Return to Sepulchria
@@ -3760,7 +3760,7 @@ function DefaultContext() {
         title="Context"
       />
 
-      <p className="text-xs leading-6 text-[#938673]">
+      <p className="text-xs leading-6 text-[rgb(var(--sep-colour-938673))]">
         Tools and information for this section will appear here.
       </p>
     </>
@@ -3776,11 +3776,11 @@ function ContextHeading({
 }) {
   return (
     <header className="mb-5">
-      <p className="text-[9px] uppercase tracking-[0.3em] text-[#876a46]">
+      <p className="text-[9px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-876a46))]">
         {eyebrow}
       </p>
 
-      <h2 className="mt-2 font-serif text-2xl text-[#d6bd91]">
+      <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-d6bd91))]">
         {title}
       </h2>
     </header>
@@ -3801,14 +3801,14 @@ function ContextRow({
       className={`flex justify-between gap-4 py-3 text-xs ${
         last
           ? ""
-          : "border-b border-[#59432c]/35"
+          : "border-b border-[rgb(var(--sep-colour-59432c))]/35"
       }`}
     >
-      <span className="text-[#786b5b]">
+      <span className="text-[rgb(var(--sep-colour-786b5b))]">
         {label}
       </span>
 
-      <span className="max-w-[150px] break-words text-right capitalize text-[#bba98d]">
+      <span className="max-w-[150px] break-words text-right capitalize text-[rgb(var(--sep-colour-bba98d))]">
         {value}
       </span>
     </div>
@@ -3829,8 +3829,8 @@ function ContextLink({
       href={href}
       className={`mt-3 flex w-full items-center justify-between border px-4 py-3 text-[10px] uppercase tracking-[0.18em] transition ${
         secondary
-          ? "border-[#59432c]/60 bg-transparent text-[#9d8c75] hover:border-[#765937] hover:bg-[#1f1711] hover:text-[#d7c09a]"
-          : "border-[#765937] bg-[#271c12] text-[#dfc79c] hover:border-[#997042] hover:bg-[#3b2919]"
+          ? "border-[rgb(var(--sep-colour-59432c))]/60 bg-transparent text-[rgb(var(--sep-colour-9d8c75))] hover:border-[rgb(var(--sep-colour-765937))] hover:bg-[rgb(var(--sep-colour-1f1711))] hover:text-[rgb(var(--sep-colour-d7c09a))]"
+          : "border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-271c12))] text-[rgb(var(--sep-colour-dfc79c))] hover:border-[rgb(var(--sep-colour-997042))] hover:bg-[rgb(var(--sep-colour-3b2919))]"
       }`}
     >
       <span>{label}</span>

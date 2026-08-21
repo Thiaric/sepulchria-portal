@@ -50,7 +50,7 @@ export function CharacterSheetTabs({
   role="tablist"
   className="
   flex min-w-0 flex-wrap items-end gap-1
-  border-x border-t border-[#60482e]/45
+  border-x border-t border-[rgb(var(--sep-colour-60482e))]/45
   bg-transparent
   px-2 pt-2
   rounded-t-xl
@@ -83,18 +83,18 @@ export function CharacterSheetTabs({
               ? `
                 z-10
                 -mb-px
-                border-[#8a693f]/70
-                bg-[#17110d]
-                text-[#ead3a5]
-                shadow-[0_-4px_14px_rgba(0,0,0,0.22)]
+                border-[rgb(var(--sep-colour-8a693f))]/70
+                bg-[rgb(var(--sep-colour-17110d))]
+                text-[rgb(var(--sep-colour-ead3a5))]
+                shadow-[0_-4px_14px_rgba(var(--sep-rgb-0-0-0),0.22)]
               `
               : `
-                border-[#4e3b29]/45
-                bg-[#120d0a]
-                text-[#8d7b64]
-                hover:border-[#745536]/60
-                hover:bg-[#1b130e]
-                hover:text-[#c9ad82]
+                border-[rgb(var(--sep-colour-4e3b29))]/45
+                bg-[rgb(var(--sep-colour-120d0a))]
+                text-[rgb(var(--sep-colour-8d7b64))]
+                hover:border-[rgb(var(--sep-colour-745536))]/60
+                hover:bg-[rgb(var(--sep-colour-1b130e))]
+                hover:text-[rgb(var(--sep-colour-c9ad82))]
               `
           }
         `}
@@ -107,8 +107,8 @@ export function CharacterSheetTabs({
             className="
               absolute inset-x-5 bottom-0
               h-px
-              bg-[#c29456]
-              shadow-[0_0_7px_rgba(194,148,86,0.45)]
+              bg-[rgb(var(--sep-colour-c29456))]
+              shadow-[0_0_7px_rgba(var(--sep-rgb-194-148-86),0.45)]
             "
           />
         ) : null}

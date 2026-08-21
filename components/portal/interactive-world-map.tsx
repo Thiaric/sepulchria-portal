@@ -327,17 +327,17 @@ export function InteractiveWorldMap({
       : "Map of Sepulchria";
 
   return (
-    <section className="relative z-10 overflow-visible border border-[#654c2f]/50 bg-[#100c09]">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#654c2f]/40 bg-[#17110d] px-4 py-2">
+    <section className="relative z-10 overflow-visible border border-[rgb(var(--sep-colour-654c2f))]/50 bg-[rgb(var(--sep-colour-100c09))]">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-654c2f))]/40 bg-[rgb(var(--sep-colour-17110d))] px-4 py-2">
         <div>
-          <p className="text-[8px] uppercase tracking-[0.28em] text-[#96734a]">
+          <p className="text-[8px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-96734a))]">
             Welcome to Aureth -
             Explore the World and
             choose where your story
             will continue
           </p>
 
-          <h2 className="mt-0 font-serif text-xl text-[#e4cda1]">
+          <h2 className="mt-0 font-serif text-xl text-[rgb(var(--sep-colour-e4cda1))]">
             {level ===
             "continent"
               ? "Aureth - The Godscar"
@@ -352,12 +352,12 @@ export function InteractiveWorldMap({
   setHoveredArea(null);
   router.push("/");
 }}
-            className="border border-[#765735]/80 bg-[#21170f] px-4 py-2 text-[9px] uppercase tracking-[0.2em] text-[#9c8156] transition hover:border-[#b28246] hover:bg-[#332317] hover:text-[#fad798]"
+            className="border border-[rgb(var(--sep-colour-765735))]/80 bg-[rgb(var(--sep-colour-21170f))] px-4 py-2 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-9c8156))] transition hover:border-[rgb(var(--sep-colour-b28246))] hover:bg-[rgb(var(--sep-colour-332317))] hover:text-[rgb(var(--sep-colour-fad798))]"
           >
             ← Return to Aureth
           </button>
         ) : (
-          <p className="text-[9px] uppercase tracking-[0.2em] text-[#776752]">
+          <p className="text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-776752))]">
             Select a destination
           </p>
         )}
@@ -365,7 +365,7 @@ export function InteractiveWorldMap({
 
       <div
         ref={mapAreaRef}
-        className="flex w-full min-w-0 justify-center overflow-hidden bg-[#090705]"
+        className="flex w-full min-w-0 justify-center overflow-hidden bg-[rgb(var(--sep-colour-090705))]"
       >
         <div
           className="relative min-w-0 max-w-full overflow-hidden"
@@ -442,24 +442,20 @@ export function InteractiveWorldMap({
           setHoveredArea(null)
         }
         className="cursor-pointer transition-all duration-300"
-        fill={
-          active
-            ? "rgba(178,130,70,0.20)"
-            : "rgba(178,130,70,0.045)"
-        }
-        stroke={
-          active
-            ? "rgba(238,204,143,1)"
-            : "rgba(195,154,88,0.98)"
-        }
         strokeWidth={
           active ? 5 : 3
         }
         vectorEffect="non-scaling-stroke"
         style={{
+          fill: active
+            ? "var(--portal-map-hotspot-fill-active)"
+            : "var(--portal-map-hotspot-fill)",
+          stroke: active
+            ? "var(--portal-map-hotspot-stroke-active)"
+            : "var(--portal-map-hotspot-stroke)",
           filter: active
-            ? "drop-shadow(0 0 5px rgba(238,204,143,0.95)) drop-shadow(0 0 11px rgba(178,130,70,0.75))"
-            : "drop-shadow(0 0 2px rgba(178,130,70,0.72))",
+            ? "var(--portal-map-hotspot-glow-active)"
+            : "var(--portal-map-hotspot-glow)",
         }}
       />
     );
@@ -477,7 +473,7 @@ export function InteractiveWorldMap({
     return (
       <div
         key={`continent-label-${hotspot.slug}`}
-        className="pointer-events-none absolute z-30 -translate-x-1/2 -translate-y-full whitespace-nowrap border border-[#8f6a3d] bg-[#17110d]/95 px-3 py-1.5 font-serif text-xs text-[#e7c991] shadow-[0_8px_22px_rgba(0,0,0,0.85)]"
+        className="pointer-events-none absolute z-30 -translate-x-1/2 -translate-y-full whitespace-nowrap border border-[rgb(var(--sep-colour-8f6a3d))] bg-[rgb(var(--sep-colour-17110d))]/95 px-3 py-1.5 font-serif text-xs text-[rgb(var(--sep-colour-e7c991))] shadow-[0_8px_22px_rgba(var(--sep-rgb-0-0-0),0.85)]"
         style={{
           left: `${
             (
@@ -547,13 +543,15 @@ export function InteractiveWorldMap({
                     <polygon
                       key={hotspot.slug}
                       points={hotspot.points}
-                      fill="rgba(0,0,0,0.10)"
-                      stroke="rgba(139,105,64,0.82)"
                       strokeWidth="3"
                       vectorEffect="non-scaling-stroke"
                       style={{
+                        fill:
+                          "var(--portal-map-hotspot-missing-fill)",
+                        stroke:
+                          "var(--portal-map-hotspot-missing-stroke)",
                         filter:
-                          "drop-shadow(0 0 2px rgba(139,105,64,0.55))",
+                          "var(--portal-map-hotspot-missing-glow)",
                       }}
                     />
                   );
@@ -572,14 +570,18 @@ export function InteractiveWorldMap({
                     <polygon
                       points={hotspot.points}
                       className="cursor-pointer transition-all duration-300"
-                      fill={active ? "rgba(178,130,70,0.20)" : "rgba(178,130,70,0.045)"}
-                      stroke={active ? "rgba(238,204,143,1)" : "rgba(195,154,88,0.98)"}
                       strokeWidth={active ? 5 : 3}
                       vectorEffect="non-scaling-stroke"
                       style={{
+                        fill: active
+                          ? "var(--portal-map-hotspot-fill-active)"
+                          : "var(--portal-map-hotspot-fill)",
+                        stroke: active
+                          ? "var(--portal-map-hotspot-stroke-active)"
+                          : "var(--portal-map-hotspot-stroke)",
                         filter: active
-                          ? "drop-shadow(0 0 5px rgba(238,204,143,0.95)) drop-shadow(0 0 11px rgba(178,130,70,0.75))"
-                          : "drop-shadow(0 0 2px rgba(178,130,70,0.72))",
+                          ? "var(--portal-map-hotspot-glow-active)"
+                          : "var(--portal-map-hotspot-glow)",
                       }}
                     />
                   </Link>
@@ -594,7 +596,7 @@ export function InteractiveWorldMap({
               return (
                 <div
                   key={`label-${hotspot.slug}`}
-                  className="pointer-events-none absolute z-30 -translate-x-1/2 -translate-y-full whitespace-nowrap border border-[#8f6a3d] bg-[#17110d]/95 px-3 py-1.5 font-serif text-xs text-[#e7c991] shadow-[0_8px_22px_rgba(0,0,0,0.85)]"
+                  className="pointer-events-none absolute z-30 -translate-x-1/2 -translate-y-full whitespace-nowrap border border-[rgb(var(--sep-colour-8f6a3d))] bg-[rgb(var(--sep-colour-17110d))]/95 px-3 py-1.5 font-serif text-xs text-[rgb(var(--sep-colour-e7c991))] shadow-[0_8px_22px_rgba(var(--sep-rgb-0-0-0),0.85)]"
                   style={{
                     left: `${(hotspot.labelX / 1536) * 100}%`,
                     top: `${(hotspot.labelY / 1024) * 100}%`,
@@ -608,10 +610,10 @@ export function InteractiveWorldMap({
             {hoveredDatabaseArea &&
 hoveredInfoPosition ? (
   <div
-    className="pointer-events-none absolute z-40 hidden w-[min(42%,26rem)] -translate-x-1/2 -translate-y-1/2 border border-[#8f6a3d]/80 bg-[#120b09]/95 px-4 py-3 text-center shadow-[0_12px_34px_rgba(0,0,0,0.9)] transition-[left,top] duration-200 md:block"
+    className="pointer-events-none absolute z-40 hidden w-[min(42%,26rem)] -translate-x-1/2 -translate-y-1/2 border border-[rgb(var(--sep-colour-8f6a3d))]/80 bg-[rgb(var(--sep-colour-120b09))]/95 px-4 py-3 text-center shadow-[0_12px_34px_rgba(var(--sep-rgb-0-0-0),0.9)] transition-[left,top] duration-200 md:block"
     style={hoveredInfoPosition}
   >
-    <p className="font-serif text-base text-[#f1d7aa]">
+    <p className="font-serif text-base text-[rgb(var(--sep-colour-f1d7aa))]">
       {hoveredDatabaseArea.name}
     </p>
 
@@ -620,7 +622,7 @@ hoveredInfoPosition ? (
   body={
     hoveredDatabaseArea.description
   }
-  className="mt-0.2 text-[12px] leading-[1] text-[#a99984] [&_p]:m-0 [&_p+p]:mt-0.5 [&_h1]:m-0 [&_h1]:text-[11px] [&_h2]:m-0 [&_h2]:text-[11px] [&_h3]:m-0 [&_h3]:text-[11px] [&_img]:hidden [&_table]:hidden"
+  className="mt-0.2 text-[12px] leading-[1] text-[rgb(var(--sep-colour-a99984))] [&_p]:m-0 [&_p+p]:mt-0.5 [&_h1]:m-0 [&_h1]:text-[11px] [&_h2]:m-0 [&_h2]:text-[11px] [&_h3]:m-0 [&_h3]:text-[11px] [&_img]:hidden [&_table]:hidden"
 />
     ) : null}
   </div>
@@ -649,12 +651,12 @@ hoveredInfoPosition ? (
 
       {level === "city" &&
       hoveredDatabaseArea ? (
-        <div className="border-t border-[#654c2f]/50 bg-[#17110d] px-4 py-3 md:hidden">
-          <p className="text-[8px] uppercase tracking-[0.22em] text-[#96734a]">
+        <div className="border-t border-[rgb(var(--sep-colour-654c2f))]/50 bg-[rgb(var(--sep-colour-17110d))] px-4 py-3 md:hidden">
+          <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-96734a))]">
             District
           </p>
 
-          <p className="mt-1 font-serif text-base text-[#f1d7aa]">
+          <p className="mt-1 font-serif text-base text-[rgb(var(--sep-colour-f1d7aa))]">
             {hoveredDatabaseArea.name}
           </p>
 
@@ -663,7 +665,7 @@ hoveredInfoPosition ? (
               body={
                 hoveredDatabaseArea.description
               }
-              className="mt-1 text-[11px] leading-4 text-[#a99984] [&_p]:m-0 [&_h1]:text-xs [&_h2]:text-xs [&_h3]:text-xs [&_img]:hidden [&_table]:hidden"
+              className="mt-1 text-[11px] leading-4 text-[rgb(var(--sep-colour-a99984))] [&_p]:m-0 [&_h1]:text-xs [&_h2]:text-xs [&_h3]:text-xs [&_img]:hidden [&_table]:hidden"
             />
           ) : null}
         </div>

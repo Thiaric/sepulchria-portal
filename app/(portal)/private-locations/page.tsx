@@ -45,7 +45,7 @@ function ColourField({
 }) {
   return (
     <label className="grid gap-1">
-      <span className="text-[8px] uppercase tracking-[0.15em] text-[#806b50]">
+      <span className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-806b50))]">
         {fieldLabel}
       </span>
 
@@ -53,7 +53,7 @@ function ColourField({
         type="color"
         name={name}
         defaultValue={value}
-        className="h-10 w-full border border-[#60482e]/55 bg-transparent"
+        className="h-10 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-transparent"
       />
     </label>
   );
@@ -311,16 +311,16 @@ export default async function PrivateLocationPage() {
 
   return (
     <main className="mx-auto w-full max-w-6xl p-5 sm:p-7 lg:p-9">
-      <header className="border border-[#60482e]/45 bg-[#15100d] px-5 py-4">
-        <p className="text-[8px] uppercase tracking-[0.22em] text-[#8c704b]">
+      <header className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-5 py-4">
+        <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-8c704b))]">
           Invitation-only locations
         </p>
 
-        <h1 className="mt-1 font-serif text-3xl text-[#e1c89f]">
+        <h1 className="mt-1 font-serif text-3xl text-[rgb(var(--sep-colour-e1c89f))]">
           Private Locations
         </h1>
 
-        <p className="mt-1 text-[11px] leading-5 text-[#918472]">
+        <p className="mt-1 text-[11px] leading-5 text-[rgb(var(--sep-colour-918472))]">
           These are genuine game locations. Entering one moves your character
           there, updates presence, and uses the normal room chat.
         </p>
@@ -332,7 +332,7 @@ export default async function PrivateLocationPage() {
             ({ room, role }) => (
               <article
                 key={room.id}
-                className="border border-[#60482e]/45 bg-[#17110d]"
+                className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-17110d))]"
               >
                 {room.image_url ? (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -345,16 +345,16 @@ export default async function PrivateLocationPage() {
 
                 <div className="p-4">
                   <div className="flex items-center justify-between gap-3">
-                    <h2 className="font-serif text-xl text-[#dfc79c]">
+                    <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-dfc79c))]">
                       {room.name}
                     </h2>
 
-                    <span className="text-[7px] uppercase tracking-[0.15em] text-[#8e795c]">
+                    <span className="text-[7px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-8e795c))]">
                       {role}
                     </span>
                   </div>
 
-                  <p className="mt-2 line-clamp-2 text-[11px] leading-5 text-[#887b6a]">
+                  <p className="mt-2 line-clamp-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-887b6a))]">
                     {room.description ??
                       "Private indoor location."}
                   </p>
@@ -371,7 +371,7 @@ export default async function PrivateLocationPage() {
 
                     <button
                       type="submit"
-                      className="w-full border border-[#8d6d3e] bg-[#332719] px-4 py-2 text-[9px] uppercase tracking-[0.16em] text-[#efd9aa]"
+                      className="w-full border border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] px-4 py-2 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-efd9aa))]"
                     >
                       Enter location
                     </button>
@@ -382,23 +382,23 @@ export default async function PrivateLocationPage() {
           )}
         </section>
       ) : (
-        <section className="mt-5 border border-[#60482e]/40 bg-[#15100d] p-5 text-sm text-[#887b69]">
+        <section className="mt-5 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))] p-5 text-sm text-[rgb(var(--sep-colour-887b69))]">
           You currently have no accessible Private Location.
         </section>
       )}
 
       {ownedRoom && theme ? (
-        <section className="mt-6 border border-[#60482e]/45 bg-[#15100d]">
-          <div className="border-b border-[#60482e]/35 px-5 py-4">
-            <h2 className="font-serif text-2xl text-[#dfc79c]">
+        <section className="mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
+          <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 px-5 py-4">
+            <h2 className="font-serif text-2xl text-[rgb(var(--sep-colour-dfc79c))]">
               Manage my Private Location
             </h2>
           </div>
 
-          <div className="grid gap-px bg-[#4f3b28]/35 lg:grid-cols-2">
+          <div className="grid gap-px bg-[rgb(var(--sep-colour-4f3b28))]/35 lg:grid-cols-2">
             <form
               action={updatePrivateLocation}
-              className="grid gap-3 bg-[#17110d] p-5"
+              className="grid gap-3 bg-[rgb(var(--sep-colour-17110d))] p-5"
             >
               <input
                 type="hidden"
@@ -407,19 +407,19 @@ export default async function PrivateLocationPage() {
               />
 
               <label className="grid gap-1">
-                <span className="text-[8px] uppercase tracking-[0.15em] text-[#806b50]">
+                <span className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-806b50))]">
                   Location name
                 </span>
                 <input
                   name="name"
                   maxLength={120}
                   defaultValue={ownedRoom.name}
-                  className="border border-[#60482e]/55 bg-[#0d0907] px-3 py-2 text-sm text-[#d7c4a5]"
+                  className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))]"
                 />
               </label>
 
               <label className="grid gap-1">
-                <span className="text-[8px] uppercase tracking-[0.15em] text-[#806b50]">
+                <span className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-806b50))]">
                   Info description
                 </span>
                 <textarea
@@ -430,12 +430,12 @@ export default async function PrivateLocationPage() {
                     ownedRoom.description ??
                     ""
                   }
-                  className="resize-y border border-[#60482e]/55 bg-[#0d0907] px-3 py-2 text-sm text-[#d7c4a5]"
+                  className="resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))]"
                 />
               </label>
 
               <label className="grid gap-1">
-                <span className="text-[8px] uppercase tracking-[0.15em] text-[#806b50]">
+                <span className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-806b50))]">
                   Location picture URL
                 </span>
                 <input
@@ -446,7 +446,7 @@ export default async function PrivateLocationPage() {
                     ""
                   }
                   placeholder="https://..."
-                  className="border border-[#60482e]/55 bg-[#0d0907] px-3 py-2 text-sm text-[#d7c4a5]"
+                  className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))]"
                 />
               </label>
 
@@ -516,20 +516,20 @@ export default async function PrivateLocationPage() {
                 />
               </div>
 
-              <p className="text-[8px] leading-4 text-[#6f6252]">
+              <p className="text-[8px] leading-4 text-[rgb(var(--sep-colour-6f6252))]">
                 The Voice of Fate always keeps the standard Sepulchria styling.
               </p>
 
               <button
                 type="submit"
-                className="border border-[#8d6d3e] bg-[#332719] px-4 py-2 text-[9px] uppercase tracking-[0.16em] text-[#efd9aa]"
+                className="border border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] px-4 py-2 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-efd9aa))]"
               >
                 Save location
               </button>
             </form>
 
-            <div className="bg-[#17110d] p-5">
-              <h3 className="font-serif text-xl text-[#dfc79c]">
+            <div className="bg-[rgb(var(--sep-colour-17110d))] p-5">
+              <h3 className="font-serif text-xl text-[rgb(var(--sep-colour-dfc79c))]">
                 Access
               </h3>
 
@@ -547,7 +547,7 @@ export default async function PrivateLocationPage() {
                   name="recipientId"
                   required
                   defaultValue=""
-                  className="w-full border border-[#60482e]/55 bg-[#0d0907] px-3 py-2 text-sm text-[#d7c4a5]"
+                  className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))]"
                 >
                   <option value="" disabled>
                     Select character to invite...
@@ -567,15 +567,15 @@ export default async function PrivateLocationPage() {
 
                 <button
                   type="submit"
-                  className="mt-2 w-full border border-[#668657] bg-[#172313] px-4 py-2 text-[9px] uppercase tracking-[0.16em] text-[#b8d8a7]"
+                  className="mt-2 w-full border border-[rgb(var(--sep-colour-668657))] bg-[rgb(var(--sep-colour-172313))] px-4 py-2 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b8d8a7))]"
                 >
                   Invite
                 </button>
               </form>
 
               {pendingInvitations.length > 0 ? (
-                <div className="mt-5 space-y-2 border-t border-[#60482e]/30 pt-4">
-                  <p className="text-[8px] uppercase tracking-[0.15em] text-[#806b50]">
+                <div className="mt-5 space-y-2 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-4">
+                  <p className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-806b50))]">
                     Pending invitations
                   </p>
 
@@ -595,9 +595,9 @@ export default async function PrivateLocationPage() {
                     return (
                       <div
                         key={row.id}
-                        className="flex items-center justify-between gap-3 border border-[#60482e]/35 bg-[#100c09] px-3 py-2"
+                        className="flex items-center justify-between gap-3 border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2"
                       >
-                        <span className="truncate text-xs text-[#cbb899]">
+                        <span className="truncate text-xs text-[rgb(var(--sep-colour-cbb899))]">
                           {label(recipient)}
                         </span>
 
@@ -619,7 +619,7 @@ export default async function PrivateLocationPage() {
 
                           <button
                             type="submit"
-                            className="text-[8px] uppercase tracking-[0.14em] text-[#d18f83]"
+                            className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d18f83))]"
                           >
                             Cancel
                           </button>
@@ -630,7 +630,7 @@ export default async function PrivateLocationPage() {
                 </div>
               ) : null}
 
-              <div className="mt-5 space-y-2 border-t border-[#60482e]/30 pt-4">
+              <div className="mt-5 space-y-2 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-4">
                 {members.map(
                   (row) => {
                     const relation =
@@ -648,14 +648,14 @@ export default async function PrivateLocationPage() {
                     return (
                       <div
                         key={row.character_id}
-                        className="flex items-center justify-between gap-3 border border-[#60482e]/35 bg-[#100c09] px-3 py-2"
+                        className="flex items-center justify-between gap-3 border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2"
                       >
-                        <span className="truncate text-xs text-[#cbb899]">
+                        <span className="truncate text-xs text-[rgb(var(--sep-colour-cbb899))]">
                           {label(member)}
                         </span>
 
                         {row.role === "owner" ? (
-                          <span className="text-[7px] uppercase tracking-[0.14em] text-[#806b50]">
+                          <span className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))]">
                             Owner
                           </span>
                         ) : (
@@ -677,7 +677,7 @@ export default async function PrivateLocationPage() {
 
                             <button
                               type="submit"
-                              className="text-[8px] uppercase tracking-[0.14em] text-[#d18f83]"
+                              className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d18f83))]"
                             >
                               Kick
                             </button>

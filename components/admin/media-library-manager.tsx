@@ -529,18 +529,18 @@ export function MediaLibraryManager() {
 
   return (
     <div className="mt-5 space-y-4">
-      <section className="border border-[#8b673d]/55 bg-[#17100c]">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#60482e]/35 bg-[#110d0a] px-5 py-4">
+      <section className="border border-[rgb(var(--sep-colour-8b673d))]/55 bg-[rgb(var(--sep-colour-17100c))]">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-110d0a))] px-5 py-4">
           <div>
-            <p className="text-[8px] uppercase tracking-[0.22em] text-[#a68152]">
+            <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-a68152))]">
               Pending changes
             </p>
 
-            <h3 className="mt-1 font-serif text-xl text-[#dfc99f]">
+            <h3 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dfc99f))]">
               Media Batch
             </h3>
 
-            <p className="mt-1 text-[10px] leading-5 text-[#817567]">
+            <p className="mt-1 text-[10px] leading-5 text-[rgb(var(--sep-colour-817567))]">
               Stage as many changes as you
               need. Master is updated only
               when you click Save changes.
@@ -557,7 +557,7 @@ export function MediaLibraryManager() {
               onClick={
                 discardPendingChanges
               }
-              className="border border-[#60482e]/50 px-3 py-2 text-[8px] uppercase tracking-[0.15em] text-[#a99069] disabled:opacity-40"
+              className="border border-[rgb(var(--sep-colour-60482e))]/50 px-3 py-2 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-a99069))] disabled:opacity-40"
             >
               Discard
             </button>
@@ -571,7 +571,7 @@ export function MediaLibraryManager() {
               onClick={() =>
                 void saveChanges()
               }
-              className="border border-[#a37843] bg-[#49311c] px-4 py-2 text-[8px] uppercase tracking-[0.17em] text-[#f0d5a6] transition hover:bg-[#5b3d23] disabled:opacity-40"
+              className="border border-[rgb(var(--sep-colour-a37843))] bg-[rgb(var(--sep-colour-49311c))] px-4 py-2 text-[8px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-f0d5a6))] transition hover:bg-[rgb(var(--sep-colour-5b3d23))] disabled:opacity-40"
             >
               {saving
                 ? "Saving…"
@@ -582,7 +582,7 @@ export function MediaLibraryManager() {
 
         <div className="grid gap-4 p-5 lg:grid-cols-2">
           <div>
-            <p className="text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
+            <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
               Staged uploads ·{" "}
               {pendingUploads.length}
             </p>
@@ -590,7 +590,7 @@ export function MediaLibraryManager() {
             <div className="mt-2 space-y-2">
               {pendingUploads.length ===
               0 ? (
-                <p className="text-[10px] text-[#706452]">
+                <p className="text-[10px] text-[rgb(var(--sep-colour-706452))]">
                   No images staged.
                 </p>
               ) : (
@@ -600,15 +600,15 @@ export function MediaLibraryManager() {
                       key={
                         upload.repositoryPath
                       }
-                      className="flex items-center justify-between gap-3 border border-[#60482e]/35 bg-[#0d0907] px-3 py-2"
+                      className="flex items-center justify-between gap-3 border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2"
                     >
                       <div className="min-w-0">
-                        <code className="block truncate text-[10px] text-[#c9b28e]">
+                        <code className="block truncate text-[10px] text-[rgb(var(--sep-colour-c9b28e))]">
                           {
                             upload.publicPath
                           }
                         </code>
-                        <span className="text-[8px] text-[#6f6251]">
+                        <span className="text-[8px] text-[rgb(var(--sep-colour-6f6251))]">
                           staged from{" "}
                           {
                             upload.originalName
@@ -635,7 +635,7 @@ export function MediaLibraryManager() {
           </div>
 
           <div>
-            <p className="text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
+            <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
               Marked for deletion ·{" "}
               {pendingDeletions.size}
             </p>
@@ -643,7 +643,7 @@ export function MediaLibraryManager() {
             <div className="mt-2 space-y-2">
               {pendingDeletions.size ===
               0 ? (
-                <p className="text-[10px] text-[#706452]">
+                <p className="text-[10px] text-[rgb(var(--sep-colour-706452))]">
                   No images marked.
                 </p>
               ) : (
@@ -725,20 +725,20 @@ export function MediaLibraryManager() {
       ) : null}
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
-        <section className="border border-[#60482e]/45 bg-[#15100d]">
-          <div className="border-b border-[#60482e]/35 bg-[#110d0a] px-5 py-4">
-            <p className="text-[8px] uppercase tracking-[0.22em] text-[#8c704b]">
+        <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
+          <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-110d0a))] px-5 py-4">
+            <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-8c704b))]">
               Upload
             </p>
 
-            <h3 className="mt-1 font-serif text-xl text-[#dfc99f]">
+            <h3 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dfc99f))]">
               Stage images
             </h3>
           </div>
 
           <div className="space-y-5 p-5">
             <label className="block">
-              <span className="text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
+              <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
                 Subfolder
               </span>
 
@@ -752,7 +752,7 @@ export function MediaLibraryManager() {
                 }
                 list="media-folders"
                 placeholder="images/orders"
-                className="mt-2 w-full border border-[#60482e]/55 bg-[#0c0907] px-3 py-2.5 text-xs text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+                className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0c0907))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
               />
 
               <datalist id="media-folders">
@@ -768,7 +768,7 @@ export function MediaLibraryManager() {
             </label>
 
             <label className="block">
-              <span className="text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
+              <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
                 Custom file name
               </span>
 
@@ -792,12 +792,12 @@ export function MediaLibraryManager() {
                     ? "Available for single-image staging only"
                     : "Optional — original name is used"
                 }
-                className="mt-2 w-full border border-[#60482e]/55 bg-[#0c0907] px-3 py-2.5 text-xs text-[#d7c4a5] outline-none placeholder:text-[#625747] disabled:opacity-45"
+                className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0c0907))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] disabled:opacity-45"
               />
             </label>
 
             <div>
-              <span className="text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
+              <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
                 Images
               </span>
 
@@ -821,7 +821,7 @@ export function MediaLibraryManager() {
                 onClick={() =>
                   fileInputRef.current?.click()
                 }
-                className="mt-2 w-full border border-[#60482e]/55 bg-[#100c09] px-4 py-3 text-left text-xs text-[#bba687] transition hover:border-[#9b7446]"
+                className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-left text-xs text-[rgb(var(--sep-colour-bba687))] transition hover:border-[rgb(var(--sep-colour-9b7446))]"
               >
                 {selectedFiles.length >
                 0
@@ -836,17 +836,17 @@ export function MediaLibraryManager() {
 
               {selectedFiles.length >
               0 ? (
-                <div className="mt-2 max-h-32 overflow-y-auto border border-[#60482e]/30 bg-[#0b0806]">
+                <div className="mt-2 max-h-32 overflow-y-auto border border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-0b0806))]">
                   {selectedFiles.map(
                     (file) => (
                       <div
                         key={`${file.name}-${file.size}-${file.lastModified}`}
-                        className="flex justify-between gap-3 border-b border-[#60482e]/20 px-3 py-2 text-[10px] last:border-b-0"
+                        className="flex justify-between gap-3 border-b border-[rgb(var(--sep-colour-60482e))]/20 px-3 py-2 text-[10px] last:border-b-0"
                       >
-                        <span className="truncate text-[#ae9a7c]">
+                        <span className="truncate text-[rgb(var(--sep-colour-ae9a7c))]">
                           {file.name}
                         </span>
-                        <span className="shrink-0 text-[#6d6151]">
+                        <span className="shrink-0 text-[rgb(var(--sep-colour-6d6151))]">
                           {formatBytes(
                             file.size,
                           )}
@@ -858,7 +858,7 @@ export function MediaLibraryManager() {
               ) : null}
             </div>
 
-            <label className="flex items-start gap-3 border border-[#60482e]/40 bg-[#100c09] px-4 py-3">
+            <label className="flex items-start gap-3 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3">
               <input
                 type="checkbox"
                 checked={
@@ -869,15 +869,15 @@ export function MediaLibraryManager() {
                     event.target.checked,
                   )
                 }
-                className="mt-0.5 h-4 w-4 accent-[#9b7446]"
+                className="mt-0.5 h-4 w-4 accent-[rgb(var(--sep-colour-9b7446))]"
               />
 
               <span>
-                <span className="block text-[9px] uppercase tracking-[0.15em] text-[#bca27b]">
+                <span className="block text-[9px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-bca27b))]">
                   Allow replacement
                 </span>
 
-                <span className="mt-1 block text-[9px] leading-4 text-[#756957]">
+                <span className="mt-1 block text-[9px] leading-4 text-[rgb(var(--sep-colour-756957))]">
                   Lets staged uploads replace
                   files already at the same
                   public path when the batch
@@ -896,14 +896,14 @@ export function MediaLibraryManager() {
               onClick={() =>
                 void stageSelectedFiles()
               }
-              className="w-full border border-[#987344] bg-[#3b2919] px-4 py-3 text-[8px] uppercase tracking-[0.2em] text-[#efd6a8] transition hover:border-[#b98c50] hover:bg-[#50371f] disabled:opacity-50"
+              className="w-full border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-3 text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))] disabled:opacity-50"
             >
               {staging
                 ? "Staging…"
                 : "Add to pending changes"}
             </button>
 
-            <p className="text-[9px] leading-4 text-[#756957]">
+            <p className="text-[9px] leading-4 text-[rgb(var(--sep-colour-756957))]">
               Staging uploads the image bytes
               as Git blobs only. It does not
               change master and does not
@@ -913,12 +913,12 @@ export function MediaLibraryManager() {
         </section>
 
         <aside className="space-y-4">
-          <section className="border border-[#60482e]/45 bg-[#15100d] p-4">
-            <p className="text-[8px] uppercase tracking-[0.2em] text-[#806b50]">
+          <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4">
+            <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
               Existing folders
             </p>
 
-            <p className="mt-2 text-[9px] leading-4 text-[#756957]">
+            <p className="mt-2 text-[9px] leading-4 text-[rgb(var(--sep-colour-756957))]">
               {loadingMedia
                 ? "Loading repository media…"
                 : `${folders.length} public subfolder${
@@ -931,7 +931,7 @@ export function MediaLibraryManager() {
 
             {!loadingMedia &&
             folders.length > 0 ? (
-              <div className="mt-3 max-h-64 overflow-y-auto border border-[#60482e]/30 bg-[#0c0907]">
+              <div className="mt-3 max-h-64 overflow-y-auto border border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-0c0907))]">
                 {folders.map(
                   (item) => (
                     <button
@@ -942,7 +942,7 @@ export function MediaLibraryManager() {
                           item,
                         )
                       }
-                      className="block w-full border-b border-[#60482e]/20 px-3 py-2 text-left text-[10px] text-[#a99678] last:border-b-0 hover:bg-[#1d140e] hover:text-[#dec69d]"
+                      className="block w-full border-b border-[rgb(var(--sep-colour-60482e))]/20 px-3 py-2 text-left text-[10px] text-[rgb(var(--sep-colour-a99678))] last:border-b-0 hover:bg-[rgb(var(--sep-colour-1d140e))] hover:text-[rgb(var(--sep-colour-dec69d))]"
                     >
                       /{item}
                     </button>
@@ -952,12 +952,12 @@ export function MediaLibraryManager() {
             ) : null}
           </section>
 
-          <section className="border border-[#60482e]/45 bg-[#15100d] p-4">
-            <p className="text-[8px] uppercase tracking-[0.2em] text-[#806b50]">
+          <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4">
+            <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
               Commit behaviour
             </p>
 
-            <p className="mt-2 text-[10px] leading-5 text-[#817567]">
+            <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-817567))]">
               Upload staging and deletion
               marking create no commits.
               Save changes creates exactly
@@ -968,14 +968,14 @@ export function MediaLibraryManager() {
         </aside>
       </div>
 
-      <section className="border border-[#60482e]/45 bg-[#15100d]">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#60482e]/35 bg-[#110d0a] px-5 py-4">
+      <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-110d0a))] px-5 py-4">
           <div>
-            <p className="text-[8px] uppercase tracking-[0.22em] text-[#8c704b]">
+            <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-8c704b))]">
               Library
             </p>
 
-            <h3 className="mt-1 font-serif text-xl text-[#dfc99f]">
+            <h3 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dfc99f))]">
               Existing Images
             </h3>
           </div>
@@ -988,7 +988,7 @@ export function MediaLibraryManager() {
             onClick={() =>
               void loadMedia()
             }
-            className="border border-[#60482e]/50 bg-[#18110d] px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[#bca27b] disabled:opacity-50"
+            className="border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-18110d))] px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-bca27b))] disabled:opacity-50"
           >
             Refresh
           </button>
@@ -996,11 +996,11 @@ export function MediaLibraryManager() {
 
         <div className="p-5">
           {loadingMedia ? (
-            <p className="text-xs text-[#817567]">
+            <p className="text-xs text-[rgb(var(--sep-colour-817567))]">
               Loading images from GitHub…
             </p>
           ) : images.length === 0 ? (
-            <p className="text-xs text-[#817567]">
+            <p className="text-xs text-[rgb(var(--sep-colour-817567))]">
               No supported images were found
               inside public/.
             </p>
@@ -1030,10 +1030,10 @@ export function MediaLibraryManager() {
                           ? "border-red-800/70 bg-red-950/10"
                           : replacing
                             ? "border-amber-700/60 bg-amber-950/10"
-                            : "border-[#60482e]/40 bg-[#100c09]"
+                            : "border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))]"
                       }`}
                     >
-                      <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden bg-[#090705] p-2">
+                      <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden bg-[rgb(var(--sep-colour-090705))] p-2">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={
@@ -1060,13 +1060,13 @@ export function MediaLibraryManager() {
                       </div>
 
                       <div className="p-3">
-                        <code className="block break-all text-[10px] leading-4 text-[#c4ae8d]">
+                        <code className="block break-all text-[10px] leading-4 text-[rgb(var(--sep-colour-c4ae8d))]">
                           {
                             image.publicPath
                           }
                         </code>
 
-                        <p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-[#706452]">
+                        <p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-706452))]">
                           {formatBytes(
                             image.size,
                           )}
@@ -1080,7 +1080,7 @@ export function MediaLibraryManager() {
                                 image.publicPath,
                               )
                             }
-                            className="border border-[#60482e]/50 px-2 py-2 text-[7px] uppercase tracking-[0.14em] text-[#a99069]"
+                            className="border border-[rgb(var(--sep-colour-60482e))]/50 px-2 py-2 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-a99069))]"
                           >
                             Copy path
                           </button>
@@ -1097,7 +1097,7 @@ export function MediaLibraryManager() {
                             }
                             className={`border px-2 py-2 text-[7px] uppercase tracking-[0.14em] disabled:opacity-35 ${
                               marked
-                                ? "border-[#80613e] text-[#c5a77c]"
+                                ? "border-[rgb(var(--sep-colour-80613e))] text-[rgb(var(--sep-colour-c5a77c))]"
                                 : "border-red-900/60 bg-red-950/15 text-red-300"
                             }`}
                           >

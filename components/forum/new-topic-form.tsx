@@ -336,13 +336,13 @@ export default function NewTopicForm({
         </div>
       ) : null}
 
-      <section className="border border-[#60482e]/45 bg-[#15100d]">
-        <div className="border-b border-[#60482e]/35 px-5 py-4 sm:px-6">
-          <p className="text-[8px] uppercase tracking-[0.24em] text-[#806a4d]">
+      <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
+        <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 px-5 py-4 sm:px-6">
+          <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806a4d))]">
             Publication details
           </p>
 
-          <h2 className="mt-2 font-serif text-2xl text-[#dec69d]">
+          <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dec69d))]">
             Discussion settings
           </h2>
         </div>
@@ -351,7 +351,7 @@ export default function NewTopicForm({
           <div>
             <label
               htmlFor="sectionId"
-              className="block text-[9px] uppercase tracking-[0.18em] text-[#9f8765]"
+              className="block text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9f8765))]"
             >
               Forum section
             </label>
@@ -366,7 +366,7 @@ export default function NewTopicForm({
                 )
               }
               disabled={pending}
-              className="mt-2 w-full border border-[#60482e]/50 bg-[#0d0907] px-4 py-3 text-sm text-[#d8c4a4] outline-none transition focus:border-[#aa7f47] disabled:cursor-not-allowed disabled:opacity-60"
+              className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0d0907))] px-4 py-3 text-sm text-[rgb(var(--sep-colour-d8c4a4))] outline-none transition focus:border-[rgb(var(--sep-colour-aa7f47))] disabled:cursor-not-allowed disabled:opacity-60"
             >
               {availableSections.map(
                 (section) => (
@@ -396,7 +396,7 @@ export default function NewTopicForm({
 
             {selectedSection.visibility !==
             "public" ? (
-              <p className="mt-2 text-xs leading-5 text-[#827461]">
+              <p className="mt-2 text-xs leading-5 text-[rgb(var(--sep-colour-827461))]">
                 This is a{" "}
                 {selectedSection.visibility ===
                 "members"
@@ -410,7 +410,7 @@ export default function NewTopicForm({
           <div>
             <label
               htmlFor="characterId"
-              className="block text-[9px] uppercase tracking-[0.18em] text-[#9f8765]"
+              className="block text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9f8765))]"
             >
               Publish as
             </label>
@@ -426,7 +426,7 @@ export default function NewTopicForm({
                 )
               }
               disabled={pending}
-              className="mt-2 w-full border border-[#60482e]/50 bg-[#0d0907] px-4 py-3 text-sm text-[#d8c4a4] outline-none transition focus:border-[#aa7f47] disabled:cursor-not-allowed disabled:opacity-60"
+              className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0d0907))] px-4 py-3 text-sm text-[rgb(var(--sep-colour-d8c4a4))] outline-none transition focus:border-[rgb(var(--sep-colour-aa7f47))] disabled:cursor-not-allowed disabled:opacity-60"
             >
               {compatibleCharacters.map(
                 (character) => (
@@ -465,7 +465,7 @@ export default function NewTopicForm({
                 organisation.
               </p>
             ) : (
-              <p className="mt-2 text-xs leading-5 text-[#827461]">
+              <p className="mt-2 text-xs leading-5 text-[rgb(var(--sep-colour-827461))]">
                 Only approved characters are
                 available.
               </p>
@@ -473,7 +473,7 @@ export default function NewTopicForm({
           </div>
 
           <div className="lg:col-span-2">
-            <label className="flex cursor-pointer items-center gap-3 border border-[#60482e]/45 bg-[#100c09] px-4 py-3 text-sm text-[#c8b79c] transition hover:border-[#8b6840]">
+            <label className="flex cursor-pointer items-center gap-3 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-sm text-[rgb(var(--sep-colour-c8b79c))] transition hover:border-[rgb(var(--sep-colour-8b6840))]">
               <input
                 type="checkbox"
                 name="isAnonymous"
@@ -485,14 +485,14 @@ export default function NewTopicForm({
                   )
                 }
                 disabled={pending}
-                className="h-4 w-4 accent-[#8b673d]"
+                className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))]"
               />
 
               <span>Anonymous</span>
             </label>
 
             {isAnonymous ? (
-              <p className="mt-2 border-l-2 border-[#8b6840] bg-[#100c09] px-3 py-2 text-[10px] leading-5 text-[#8f8271]">
+              <p className="mt-2 border-l-2 border-[rgb(var(--sep-colour-8b6840))] bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
                 Your identity will be hidden
                 from other players. You and
                 staff will still be able to
@@ -523,13 +523,13 @@ export default function NewTopicForm({
         </p>
       ) : null}
 
-      <section className="border border-[#60482e]/45 bg-[#15100d]">
-        <div className="border-b border-[#60482e]/35 px-5 py-4 sm:px-6">
-          <p className="text-[8px] uppercase tracking-[0.24em] text-[#806a4d]">
+      <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
+        <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 px-5 py-4 sm:px-6">
+          <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806a4d))]">
             Opening message
           </p>
 
-          <h2 className="mt-2 font-serif text-2xl text-[#dec69d]">
+          <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dec69d))]">
             Begin the discussion
           </h2>
         </div>
@@ -539,12 +539,12 @@ export default function NewTopicForm({
             <div className="flex items-center justify-between gap-4">
               <label
                 htmlFor="title"
-                className="block text-[9px] uppercase tracking-[0.18em] text-[#9f8765]"
+                className="block text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9f8765))]"
               >
                 Title
               </label>
 
-              <span className="text-[9px] text-[#716453]">
+              <span className="text-[9px] text-[rgb(var(--sep-colour-716453))]">
                 {title.length}/
                 {MAX_TITLE_LENGTH}
               </span>
@@ -567,7 +567,7 @@ export default function NewTopicForm({
               required
               disabled={pending}
               placeholder="Enter the discussion title"
-              className="mt-2 w-full border border-[#60482e]/50 bg-[#0d0907] px-4 py-3 font-serif text-lg text-[#ead5ac] outline-none transition placeholder:text-[#5f5549] focus:border-[#aa7f47] disabled:cursor-not-allowed disabled:opacity-60"
+              className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0d0907))] px-4 py-3 font-serif text-lg text-[rgb(var(--sep-colour-ead5ac))] outline-none transition placeholder:text-[rgb(var(--sep-colour-5f5549))] focus:border-[rgb(var(--sep-colour-aa7f47))] disabled:cursor-not-allowed disabled:opacity-60"
             />
 
             {state.fieldErrors?.title ? (
@@ -581,12 +581,12 @@ export default function NewTopicForm({
             <div className="flex flex-wrap items-center justify-between gap-3">
               <label
                 htmlFor="forum-topic-body"
-                className="block text-[9px] uppercase tracking-[0.18em] text-[#9f8765]"
+                className="block text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9f8765))]"
               >
                 Message
               </label>
 
-              <span className="text-[9px] text-[#716453]">
+              <span className="text-[9px] text-[rgb(var(--sep-colour-716453))]">
                 {stripRichTextForPreview(
                   body,
                 ).length.toLocaleString(
@@ -624,10 +624,10 @@ export default function NewTopicForm({
 
       
 
-      <div className="flex flex-col-reverse gap-3 border border-[#60482e]/45 bg-[#15100d] p-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col-reverse gap-3 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 sm:flex-row sm:items-center sm:justify-between">
         <Link
           href={`/forum/${currentSection.slug}`}
-          className="border border-[#60482e]/50 px-5 py-3 text-center text-[9px] uppercase tracking-[0.18em] text-[#9a876c] transition hover:border-[#8a6943] hover:text-[#d8bd91]"
+          className="border border-[rgb(var(--sep-colour-60482e))]/50 px-5 py-3 text-center text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9a876c))] transition hover:border-[rgb(var(--sep-colour-8a6943))] hover:text-[rgb(var(--sep-colour-d8bd91))]"
         >
           Cancel
         </Link>
@@ -640,7 +640,7 @@ export default function NewTopicForm({
             !title.trim() ||
             !body.trim()
           }
-          className="border border-[#a27b48] bg-[#49311d] px-6 py-3 text-[9px] uppercase tracking-[0.2em] text-[#f0d6aa] transition hover:border-[#c49555] hover:bg-[#5b3d22] disabled:cursor-not-allowed disabled:opacity-50"
+          className="border border-[rgb(var(--sep-colour-a27b48))] bg-[rgb(var(--sep-colour-49311d))] px-6 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-f0d6aa))] transition hover:border-[rgb(var(--sep-colour-c49555))] hover:bg-[rgb(var(--sep-colour-5b3d22))] disabled:cursor-not-allowed disabled:opacity-50"
         >
           {pending
             ? "Publishing..."
@@ -665,7 +665,7 @@ function EditorButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className="border border-[#60482e]/45 bg-[#17100c] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[#9f8765] transition hover:border-[#8d6a40] hover:text-[#d8bd91] disabled:cursor-not-allowed disabled:opacity-50"
+      className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-17100c))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9f8765))] transition hover:border-[rgb(var(--sep-colour-8d6a40))] hover:text-[rgb(var(--sep-colour-d8bd91))] disabled:cursor-not-allowed disabled:opacity-50"
     >
       {label}
     </button>

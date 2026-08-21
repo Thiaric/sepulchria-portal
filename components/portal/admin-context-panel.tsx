@@ -135,7 +135,7 @@ function AdminShapesJumpContext() {
   const visible=entries.filter(e=>!q||e.label.toLowerCase().includes(q)||(e.secondary??"").toLowerCase().includes(q));
   function jump(entry:JumpEntry){const el=document.getElementById(`shape-${entry.id}`);if(el instanceof HTMLDetailsElement)el.open=true;el?.scrollIntoView({behavior:"smooth",block:"start"});}
   function create(){document.getElementById("shape-new")?.scrollIntoView({behavior:"smooth",block:"start"});}
-  return <div className="flex h-full min-h-0 flex-col"><p className="text-[8px] uppercase tracking-[0.24em] text-[#806b50]">Administration</p><h2 className="mt-1 font-serif text-xl text-[#d8bf91]">Jump to Shapes</h2><p className="mt-2 text-[11px] leading-5 text-[#8f8271]">Search the Shape catalogue and jump directly to a Shape.</p><button type="button" onClick={create} className="mt-3 flex w-full items-center justify-between border border-[#765937]/55 bg-[#271c12] px-3 py-2.5 text-left text-[9px] uppercase tracking-[0.16em] text-[#d6b37d]"><span>Create new</span><span>+</span></button><label className="mt-3 block"><span className="text-[8px] uppercase tracking-[0.18em] text-[#806b50]">Search Shapes</span><input type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Name or Word of Power..." className="mt-2 w-full border border-[#59432c]/45 bg-[#100c09] px-3 py-2.5 text-xs text-[#d4bea0] outline-none"/><span className="mt-1.5 block text-right text-[7px] uppercase tracking-[0.1em] text-[#6f6353]">{visible.length}{q?` / ${entries.length}`:""} Shapes</span></label>{error?<p className="mt-3 text-[10px] text-[#d8a49a]">{error}</p>:null}<div className="mt-3 min-h-0 flex-1 overflow-y-auto pr-1">{loading?<p className="text-[10px] text-[#8f8271]">Loading...</p>:<div className="space-y-1.5">{visible.map(e=><button key={e.id} type="button" onClick={()=>jump(e)} className="group flex w-full items-center justify-between gap-2 border border-[#59432c]/40 bg-[#100c09] px-3 py-2 text-left"><span className="min-w-0"><span className="block truncate font-serif text-[13px] text-[#cbb28a]">{e.label}</span><span className="mt-0.5 block truncate text-[8px] uppercase tracking-[0.12em] text-[#6f6252]">{e.secondary}</span></span><span className={`h-1.5 w-1.5 rounded-full ${e.active?"bg-emerald-600":"bg-[#66594b]"}`}/></button>)}</div>}</div></div>;
+  return <div className="flex h-full min-h-0 flex-col"><p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">Administration</p><h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">Jump to Shapes</h2><p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">Search the Shape catalogue and jump directly to a Shape.</p><button type="button" onClick={create} className="mt-3 flex w-full items-center justify-between border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-271c12))] px-3 py-2.5 text-left text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d6b37d))]"><span>Create new</span><span>+</span></button><label className="mt-3 block"><span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">Search Shapes</span><input type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Name or Word of Power..." className="mt-2 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none"/><span className="mt-1.5 block text-right text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-6f6353))]">{visible.length}{q?` / ${entries.length}`:""} Shapes</span></label>{error?<p className="mt-3 text-[10px] text-[rgb(var(--sep-colour-d8a49a))]">{error}</p>:null}<div className="mt-3 min-h-0 flex-1 overflow-y-auto pr-1">{loading?<p className="text-[10px] text-[rgb(var(--sep-colour-8f8271))]">Loading...</p>:<div className="space-y-1.5">{visible.map(e=><button key={e.id} type="button" onClick={()=>jump(e)} className="group flex w-full items-center justify-between gap-2 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-left"><span className="min-w-0"><span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))]">{e.label}</span><span className="mt-0.5 block truncate text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))]">{e.secondary}</span></span><span className={`h-1.5 w-1.5 rounded-full ${e.active?"bg-emerald-600":"bg-[rgb(var(--sep-colour-66594b))]"}`}/></button>)}</div>}</div></div>;
 }
 
 function AdminGiftsJumpContext() {
@@ -287,15 +287,15 @@ function AdminGiftsJumpContext() {
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <p className="text-[8px] uppercase tracking-[0.24em] text-[#806b50]">
+      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
         Administration
       </p>
 
-      <h2 className="mt-1 font-serif text-xl text-[#d8bf91]">
+      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
         Jump to Feats
       </h2>
 
-      <p className="mt-2 text-[11px] leading-5 text-[#8f8271]">
+      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
         Search the Feats catalogue
         and jump directly to the
         definition you want to edit.
@@ -304,14 +304,14 @@ function AdminGiftsJumpContext() {
       <button
         type="button"
         onClick={jumpToCreate}
-        className="mt-3 flex w-full items-center justify-between border border-[#765937]/55 bg-[#271c12] px-3 py-2.5 text-left text-[9px] uppercase tracking-[0.16em] text-[#d6b37d] transition hover:border-[#9a7445] hover:bg-[#342318]"
+        className="mt-3 flex w-full items-center justify-between border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-271c12))] px-3 py-2.5 text-left text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d6b37d))] transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:bg-[rgb(var(--sep-colour-342318))]"
       >
         <span>Create new</span>
         <span>+</span>
       </button>
 
       <label className="mt-3 block">
-        <span className="text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
+        <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
           Search Feats
         </span>
 
@@ -322,10 +322,10 @@ function AdminGiftsJumpContext() {
             setSearch(event.target.value)
           }
           placeholder="Search by name..."
-          className="mt-2 w-full border border-[#59432c]/45 bg-[#100c09] px-3 py-2.5 text-xs text-[#d4bea0] outline-none placeholder:text-[#665b4d] focus:border-[#987344]"
+          className="mt-2 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))]"
         />
 
-        <span className="mt-1.5 block text-right text-[7px] uppercase tracking-[0.1em] text-[#6f6353]">
+        <span className="mt-1.5 block text-right text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-6f6353))]">
           {visibleEntries.length}
           {query
             ? ` / ${entries.length}`
@@ -335,7 +335,7 @@ function AdminGiftsJumpContext() {
       </label>
 
       {error ? (
-        <p className="mt-3 border border-[#743d35] bg-[#2a1512] p-2.5 text-[10px] leading-5 text-[#d8a49a]">
+        <p className="mt-3 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-2.5 text-[10px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]">
           {error}
         </p>
       ) : null}
@@ -349,7 +349,7 @@ function AdminGiftsJumpContext() {
               (_, index) => (
                 <div
                   key={index}
-                  className="h-10 animate-pulse border border-[#59432c]/30 bg-[#19120d]"
+                  className="h-10 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]"
                 />
               ),
             )}
@@ -364,14 +364,14 @@ function AdminGiftsJumpContext() {
                   onClick={() =>
                     jumpToGift(entry)
                   }
-                  className="group flex w-full items-center justify-between gap-2 border border-[#59432c]/40 bg-[#100c09] px-3 py-2 text-left transition hover:border-[#8d693e] hover:bg-[#1d150f]"
+                  className="group flex w-full items-center justify-between gap-2 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-left transition hover:border-[rgb(var(--sep-colour-8d693e))] hover:bg-[rgb(var(--sep-colour-1d150f))]"
                 >
                   <span className="min-w-0">
-                    <span className="block truncate font-serif text-[13px] text-[#cbb28a] group-hover:text-[#ead0a0]">
+                    <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
                       {entry.label}
                     </span>
 
-                    <span className="mt-0.5 block text-[8px] uppercase tracking-[0.12em] text-[#6f6252]">
+                    <span className="mt-0.5 block text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))]">
                       {entry.secondary}
                     </span>
                   </span>
@@ -385,7 +385,7 @@ function AdminGiftsJumpContext() {
                     className={`h-1.5 w-1.5 shrink-0 rounded-full ${
                       entry.active
                         ? "bg-emerald-600"
-                        : "bg-[#66594b]"
+                        : "bg-[rgb(var(--sep-colour-66594b))]"
                     }`}
                   />
                 </button>
@@ -398,7 +398,7 @@ function AdminGiftsJumpContext() {
         !error &&
         visibleEntries.length ===
           0 ? (
-          <p className="border border-[#59432c]/30 bg-[#100c09]/60 p-3 text-[11px] text-[#8f8271]">
+          <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-3 text-[11px] text-[rgb(var(--sep-colour-8f8271))]">
             {query
               ? "No Feats match this search."
               : "No Feats found."}
@@ -912,15 +912,15 @@ function AdminRecordJumpContext({
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <p className="text-[8px] uppercase tracking-[0.24em] text-[#806b50]">
+      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
         Administration
       </p>
 
-      <h2 className="mt-1 font-serif text-xl text-[#d8bf91]">
+      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
         Jump to {title}
       </h2>
 
-      <p className="mt-2 text-[11px] leading-5 text-[#8f8271]">
+      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
         Jump directly to the
         record you want to work
         on.
@@ -933,7 +933,7 @@ function AdminRecordJumpContext({
         <button
           type="button"
           onClick={jumpToCreate}
-          className="mt-3 flex w-full items-center justify-between border border-[#765937]/55 bg-[#271c12] px-3 py-2.5 text-left text-[9px] uppercase tracking-[0.16em] text-[#d6b37d] transition hover:border-[#9a7445] hover:bg-[#342318]"
+          className="mt-3 flex w-full items-center justify-between border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-271c12))] px-3 py-2.5 text-left text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d6b37d))] transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:bg-[rgb(var(--sep-colour-342318))]"
         >
           <span>
             Create new
@@ -943,7 +943,7 @@ function AdminRecordJumpContext({
       ) : null}
 
       {error ? (
-        <p className="mt-3 border border-[#743d35] bg-[#2a1512] p-2.5 text-[10px] leading-5 text-[#d8a49a]">
+        <p className="mt-3 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-2.5 text-[10px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]">
           {error}
         </p>
       ) : null}
@@ -957,7 +957,7 @@ function AdminRecordJumpContext({
               (_, index) => (
                 <div
                   key={index}
-                  className="h-10 animate-pulse border border-[#59432c]/30 bg-[#19120d]"
+                  className="h-10 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]"
                 />
               ),
             )}
@@ -972,15 +972,15 @@ function AdminRecordJumpContext({
                   onClick={() =>
                     jumpTo(entry)
                   }
-                  className="group flex w-full items-center justify-between gap-2 border border-[#59432c]/40 bg-[#100c09] px-3 py-2 text-left transition hover:border-[#8d693e] hover:bg-[#1d150f]"
+                  className="group flex w-full items-center justify-between gap-2 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-left transition hover:border-[rgb(var(--sep-colour-8d693e))] hover:bg-[rgb(var(--sep-colour-1d150f))]"
                 >
                   <span className="min-w-0">
-                    <span className="block truncate font-serif text-[13px] text-[#cbb28a] group-hover:text-[#ead0a0]">
+                    <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
                       {entry.label}
                     </span>
 
                     {entry.secondary ? (
-                      <span className="mt-0.5 block truncate text-[8px] uppercase tracking-[0.12em] text-[#6f6252]">
+                      <span className="mt-0.5 block truncate text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))]">
                         {
                           entry.secondary
                         }
@@ -999,11 +999,11 @@ function AdminRecordJumpContext({
                       className={`h-1.5 w-1.5 shrink-0 rounded-full ${
                         entry.active
                           ? "bg-emerald-600"
-                          : "bg-[#66594b]"
+                          : "bg-[rgb(var(--sep-colour-66594b))]"
                       }`}
                     />
                   ) : (
-                    <span className="shrink-0 text-[10px] text-[#725a3d]">
+                    <span className="shrink-0 text-[10px] text-[rgb(var(--sep-colour-725a3d))]">
                       ↓
                     </span>
                   )}
@@ -1016,34 +1016,34 @@ function AdminRecordJumpContext({
         {!loading &&
         !error &&
         entries.length === 0 ? (
-          <p className="border border-[#59432c]/30 bg-[#100c09]/60 p-3 text-[11px] text-[#8f8271]">
+          <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-3 text-[11px] text-[rgb(var(--sep-colour-8f8271))]">
             No records found.
           </p>
         ) : null}
       </div>
 
       {mode === "rooms" ? (
-        <div className="mt-3 shrink-0 border-t border-[#59432c]/35 pt-3">
-          <p className="text-[8px] uppercase tracking-[0.2em] text-[#806b50]">
+        <div className="mt-3 shrink-0 border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-3">
+          <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
             Connections
           </p>
 
           <button
             type="button"
             onClick={jumpToConnections}
-            className="mt-2 flex w-full items-center justify-between border border-[#765937]/55 bg-[#271c12] px-3 py-2.5 text-left transition hover:border-[#9a7445] hover:bg-[#342318]"
+            className="mt-2 flex w-full items-center justify-between border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-271c12))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:bg-[rgb(var(--sep-colour-342318))]"
           >
             <span>
-              <span className="block font-serif text-[13px] text-[#d6b37d]">
+              <span className="block font-serif text-[13px] text-[rgb(var(--sep-colour-d6b37d))]">
                 Room connections
               </span>
 
-              <span className="mt-0.5 block text-[8px] uppercase tracking-[0.12em] text-[#6f6252]">
+              <span className="mt-0.5 block text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))]">
                 Existing paths
               </span>
             </span>
 
-            <span className="shrink-0 text-[11px] text-[#8d693e]">
+            <span className="shrink-0 text-[11px] text-[rgb(var(--sep-colour-8d693e))]">
               ↓
             </span>
           </button>
@@ -1166,11 +1166,11 @@ function ForumModerationContext() {
         Forum administration
       </p>
 
-      <h2 className="mt-1 font-serif text-xl text-[#d8bf91]">
+      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
         Moderation Log
       </h2>
 
-      <p className="mt-2 text-[11px] leading-5 text-[#8f8271]">
+      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
         Latest recorded staff
         actions across the forum.
       </p>
@@ -1183,7 +1183,7 @@ function ForumModerationContext() {
       </Link>
 
       {error ? (
-        <p className="mt-3 border border-[#743d35] bg-[#2a1512] p-2.5 text-[10px] text-[#d8a49a]">
+        <p className="mt-3 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-2.5 text-[10px] text-[rgb(var(--sep-colour-d8a49a))]">
           The moderation log
           could not be loaded.
         </p>
@@ -1198,7 +1198,7 @@ function ForumModerationContext() {
               (_, index) => (
                 <div
                   key={index}
-                  className="h-12 animate-pulse border border-[#59432c]/30 bg-[#19120d]"
+                  className="h-12 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]"
                 />
               ),
             )}
@@ -1217,7 +1217,7 @@ function ForumModerationContext() {
               return (
                 <div
                   key={log.id}
-                  className="border border-[#59432c]/40 bg-[#100c09] px-3 py-2"
+                  className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <span className="text-[9px] uppercase tracking-[0.13em] text-amber-400">
@@ -1226,7 +1226,7 @@ function ForumModerationContext() {
                       )}
                     </span>
 
-                    <span className="shrink-0 text-[8px] text-[#665a4b]">
+                    <span className="shrink-0 text-[8px] text-[rgb(var(--sep-colour-665a4b))]">
                       {formatDate(
                         log.created_at,
                       )}
@@ -1234,7 +1234,7 @@ function ForumModerationContext() {
                   </div>
 
                   {topic ? (
-                    <p className="mt-1 truncate font-serif text-xs text-[#baa68a]">
+                    <p className="mt-1 truncate font-serif text-xs text-[rgb(var(--sep-colour-baa68a))]">
                       {topic}
                     </p>
                   ) : null}
@@ -1247,7 +1247,7 @@ function ForumModerationContext() {
         {!loading &&
         !error &&
         logs.length === 0 ? (
-          <p className="text-[11px] text-[#8f8271]">
+          <p className="text-[11px] text-[rgb(var(--sep-colour-8f8271))]">
             No moderation actions
             have been recorded yet.
           </p>

@@ -120,14 +120,14 @@ last_seen_at:
    */
 
   return (
-    <div className="border border-[#59432c]/40 bg-[#100c09] p-3">
+    <div className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-3">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <p className="text-[8px] uppercase tracking-[0.22em] text-[#876a46]">
+          <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))]">
             Your presence
           </p>
 
-          <p className="mt-1 text-xs text-[#8f8271]">
+          <p className="mt-1 text-xs text-[rgb(var(--sep-colour-8f8271))]">
             Visible activity status
           </p>
         </div>
@@ -141,7 +141,7 @@ last_seen_at:
                 .value as PresenceStatus,
             );
           }}
-          className="border border-[#765937] bg-[#271c12] px-3 py-2 text-xs capitalize text-[#dfc79c] outline-none transition focus:border-[#b28a52] disabled:cursor-wait disabled:opacity-60"
+          className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-271c12))] px-3 py-2 text-xs capitalize text-[rgb(var(--sep-colour-dfc79c))] outline-none transition focus:border-[rgb(var(--sep-colour-b28a52))] disabled:cursor-wait disabled:opacity-60"
         >
           <option value="online">
             Online
@@ -158,7 +158,7 @@ last_seen_at:
       </div>
 
       {error ? (
-        <p className="mt-3 text-xs leading-5 text-[#d18b80]">
+        <p className="mt-3 text-xs leading-5 text-[rgb(var(--sep-colour-d18b80))]">
           {error}
         </p>
       ) : null}

@@ -396,22 +396,22 @@ export function ForumSectionActivityContext({
   return (
     <div className="flex h-full min-h-0 flex-col">
       <header className="mb-5">
-        <p className="text-[9px] uppercase tracking-[0.3em] text-[#876a46]">
+        <p className="text-[9px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-876a46))]">
           Forum activity
         </p>
 
-        <h2 className="mt-2 font-serif text-2xl text-[#d6bd91]">
+        <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-d6bd91))]">
           {sectionName}
         </h2>
       </header>
 
-      <p className="mb-4 text-xs leading-6 text-[#938673]">
+      <p className="mb-4 text-xs leading-6 text-[rgb(var(--sep-colour-938673))]">
         The latest posts published in
         this section.
       </p>
 
       {error ? (
-        <p className="border border-[#743d35] bg-[#2a1512] p-3 text-[11px] leading-5 text-[#d8a49a]">
+        <p className="border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]">
           Latest activity could not be
           loaded.
         </p>
@@ -423,9 +423,9 @@ export function ForumSectionActivityContext({
       >
         {loading ? (
           <div className="space-y-2">
-            <div className="h-24 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
-            <div className="h-24 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
-            <div className="h-24 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
+            <div className="h-24 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
+            <div className="h-24 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
+            <div className="h-24 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
           </div>
         ) : (
           entries.map((entry) => {
@@ -480,7 +480,7 @@ export function ForumSectionActivityContext({
                 )}/${encodeURIComponent(
                   topic.slug,
                 )}#post-${entry.id}`}
-                className="block border border-[#59432c]/40 bg-[#100c09] p-3 transition hover:border-[#8d6a40] hover:bg-[#1a120d]"
+                className="block border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-3 transition hover:border-[rgb(var(--sep-colour-8d6a40))] hover:bg-[rgb(var(--sep-colour-1a120d))]"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
@@ -488,7 +488,7 @@ export function ForumSectionActivityContext({
                       className={`truncate font-serif text-sm ${
                         canRevealAnonymousIdentity
                           ? "text-red-400"
-                          : "text-[#d6bd91]"
+                          : "text-[rgb(var(--sep-colour-d6bd91))]"
                       }`}
                     >
                       {authorName}
@@ -501,18 +501,18 @@ export function ForumSectionActivityContext({
                     ) : null}
                   </div>
 
-                  <time className="shrink-0 text-[7px] uppercase tracking-[0.12em] text-[#665b4e]">
+                  <time className="shrink-0 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-665b4e))]">
                     {formatCompactDate(
                       entry.created_at,
                     )}
                   </time>
                 </div>
 
-                <p className="mt-1 truncate text-[8px] uppercase tracking-[0.14em] text-[#8b704d]">
+                <p className="mt-1 truncate text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-8b704d))]">
                   {topic.title}
                 </p>
 
-                <p className="mt-2 line-clamp-3 text-[11px] leading-5 text-[#918473]">
+                <p className="mt-2 line-clamp-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-918473))]">
                   {forumPreviewText(
                     entry.body,
                     150,
@@ -526,7 +526,7 @@ export function ForumSectionActivityContext({
         {!loading &&
         !error &&
         entries.length === 0 ? (
-          <p className="border border-[#59432c]/30 bg-[#100c09]/60 p-3 text-[11px] leading-5 text-[#8f8271]">
+          <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
             No posts have been published
             in this section yet.
           </p>

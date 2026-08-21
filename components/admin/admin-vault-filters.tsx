@@ -8,7 +8,7 @@ type Props = {
 };
 
 const inputClass =
-  "w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-2.5 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]";
+  "w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]";
 
 export function AdminVaultFilters({ scope, total }: Props) {
   const [search, setSearch] = useState("");
@@ -56,7 +56,7 @@ export function AdminVaultFilters({ scope, total }: Props) {
   }
 
   return (
-    <div className="mt-4 border border-[#59432c]/40 bg-[#15100d] p-3">
+    <div className="mt-4 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-15100d))] p-3">
       <div
         className={`grid gap-2 ${
           scope === "live"
@@ -118,13 +118,13 @@ export function AdminVaultFilters({ scope, total }: Props) {
         <button
           type="button"
           onClick={reset}
-          className="border border-[#60482e]/55 bg-[#100c09] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[#a99576]"
+          className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-a99576))]"
         >
           Reset
         </button>
       </div>
 
-      <p className="mt-2 text-right text-[8px] uppercase tracking-[0.12em] text-[#756958]">
+      <p className="mt-2 text-right text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
         {shown} of {total} shown
       </p>
     </div>

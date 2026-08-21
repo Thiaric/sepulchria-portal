@@ -125,15 +125,15 @@ export default async function AdminRacesPage({
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-[9px] uppercase tracking-[0.28em] text-[#8c704b]">
+            <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
               Administration
             </p>
 
-            <h2 className="mt-2 font-serif text-4xl text-[#ead5ac]">
+            <h2 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">
               Ancestry Management
             </h2>
 
-            <p className="mt-3 max-w-3xl text-sm leading-7 text-[#a99b89]">
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))]">
               Create and maintain the
               playable ancestries of
               Aureth.
@@ -170,13 +170,13 @@ export default async function AdminRacesPage({
 
         <section
           id="race-new"
-          className="scroll-mt-24 mt-8 border border-[#60482e]/45 bg-[#15100d] p-5 sm:p-6"
+          className="scroll-mt-24 mt-8 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6"
         >
-          <p className="text-[9px] uppercase tracking-[0.24em] text-[#8c704b]">
+          <p className="text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))]">
             New ancestry
           </p>
 
-          <h3 className="mt-2 font-serif text-2xl text-[#dfc99f]">
+          <h3 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">
             Create an ancestry
           </h3>
 
@@ -192,7 +192,7 @@ export default async function AdminRacesPage({
                   required
                   maxLength={120}
                   placeholder="Human"
-                  className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+                  className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
                 />
               </AdminField>
 
@@ -202,7 +202,7 @@ export default async function AdminRacesPage({
                   name="slug"
                   maxLength={100}
                   placeholder="Generated automatically"
-                  className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+                  className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
                 />
               </AdminField>
 
@@ -213,7 +213,7 @@ export default async function AdminRacesPage({
                   defaultValue={0}
                   min={-9999}
                   max={9999}
-                  className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                  className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                 />
               </AdminField>
 
@@ -223,7 +223,7 @@ export default async function AdminRacesPage({
                     type="color"
                     defaultValue="#8c704b"
                     aria-label="Race colour picker"
-                    className="h-[46px] w-full border border-[#60482e]/55 bg-[#100c09] p-1"
+                    className="h-[46px] w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] p-1"
                   />
 
                   <input
@@ -231,7 +231,7 @@ export default async function AdminRacesPage({
                     name="colour"
                     maxLength={32}
                     placeholder="#8c704b"
-                    className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+                    className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
                   />
                 </div>
               </AdminField>
@@ -270,7 +270,7 @@ export default async function AdminRacesPage({
                   name="imageUrl"
                   maxLength={2000}
                   placeholder="/images/races/human.jpg"
-                  className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+                  className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
                 />
               </AdminField>
 
@@ -280,7 +280,7 @@ export default async function AdminRacesPage({
                   name="bannerUrl"
                   maxLength={2000}
                   placeholder="/images/races/human-banner.jpg"
-                  className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+                  className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
                 />
               </AdminField>
 
@@ -291,7 +291,7 @@ export default async function AdminRacesPage({
                     name="iconUrl"
                     maxLength={2000}
                     placeholder="/images/races/human-icon.png"
-                    className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+                    className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
                   />
                 </AdminField>
               </div>
@@ -299,23 +299,23 @@ export default async function AdminRacesPage({
 
             <div className="mt-5 flex flex-wrap items-center justify-between gap-4">
               <div className="flex flex-wrap items-center gap-6">
-                <label className="flex items-center gap-3 text-sm text-[#bbaa90]">
+                <label className="flex items-center gap-3 text-sm text-[rgb(var(--sep-colour-bbaa90))]">
                   <input
                     type="checkbox"
                     name="isActive"
                     defaultChecked
-                    className="h-4 w-4 accent-[#8b673d]"
+                    className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))]"
                   />
 
                   Active
                 </label>
 
-                <label className="flex items-center gap-3 text-sm text-[#bbaa90]">
+                <label className="flex items-center gap-3 text-sm text-[rgb(var(--sep-colour-bbaa90))]">
                   <input
                     type="checkbox"
                     name="isSelectable"
                     defaultChecked
-                    className="h-4 w-4 accent-[#8b673d]"
+                    className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))]"
                   />
 
                   Selectable at character creation
@@ -324,7 +324,7 @@ export default async function AdminRacesPage({
 
               <button
                 type="submit"
-                className="border border-[#987344] bg-[#3b2919] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[#efd6a8] transition hover:border-[#b98c50] hover:bg-[#50371f]"
+                className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
               >
                 Create race
               </button>
@@ -341,8 +341,8 @@ export default async function AdminRacesPage({
           ))}
 
           {races.length === 0 ? (
-            <section className="border border-[#60482e]/45 bg-[#15100d] p-10 text-center">
-              <p className="font-serif text-xl text-[#b9a88f]">
+            <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-10 text-center">
+              <p className="font-serif text-xl text-[rgb(var(--sep-colour-b9a88f))]">
                 No ancestries were found.
               </p>
             </section>
@@ -391,12 +391,12 @@ function AttributeModifierFields({
   >;
 }) {
   return (
-    <section className="border border-[#60482e]/45 bg-[#100c09] p-4">
-      <p className="text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+    <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] p-4">
+      <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
         Attribute modifiers
       </p>
 
-      <p className="mt-2 text-[11px] leading-5 text-[#8f8271]">
+      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
         These values are added to the character&apos;s base attributes. Order Level modifiers are applied separately.
       </p>
 
@@ -407,7 +407,7 @@ function AttributeModifierFields({
               key={key}
               className="block"
             >
-              <span className="mb-1.5 block text-[8px] uppercase tracking-[0.12em] text-[#776956]">
+              <span className="mb-1.5 block text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-776956))]">
                 {label}
               </span>
 
@@ -420,14 +420,14 @@ function AttributeModifierFields({
                 defaultValue={
                   values?.[key] ?? 0
                 }
-                className="w-full border border-[#60482e]/55 bg-[#15100d] px-2 py-2 text-center text-sm text-[#d7c4a5] outline-none focus:border-[#9b7446]"
+                className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-2 py-2 text-center text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-9b7446))]"
               />
             </label>
           ),
         )}
       </div>
 
-      <p className="mt-3 text-[9px] leading-5 text-[#756957]">
+      <p className="mt-3 text-[9px] leading-5 text-[rgb(var(--sep-colour-756957))]">
         Effective attribute = Base + Ancestry modifier + Order modifier.
       </p>
     </section>
@@ -443,7 +443,7 @@ function AdminField({
 }) {
   return (
     <div className="block">
-      <div className="mb-2 block text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+      <div className="mb-2 block text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
         {label}
       </div>
 
@@ -458,7 +458,7 @@ function AdminCounter({
   children: React.ReactNode;
 }) {
   return (
-    <span className="border border-[#60482e]/45 bg-[#15100d] px-4 py-3 text-[10px] uppercase tracking-[0.18em] text-[#a99069]">
+    <span className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 text-[10px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a99069))]">
       {children}
     </span>
   );
@@ -493,7 +493,7 @@ function SelectableBadge({
     <span
       className={
         isSelectable
-          ? "inline-block border border-[#8b673d]/70 bg-black/20 px-2.5 py-1 text-[8px] uppercase tracking-[0.18em] text-[#d6b273]"
+          ? "inline-block border border-[rgb(var(--sep-colour-8b673d))]/70 bg-black/20 px-2.5 py-1 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-d6b273))]"
           : "inline-block border border-stone-600/60 bg-black/20 px-2.5 py-1 text-[8px] uppercase tracking-[0.18em] text-stone-400"
       }
     >
@@ -512,12 +512,12 @@ function InfoCounter({
   value: number;
 }) {
   return (
-    <div className="border border-[#60482e]/30 bg-[#15100d] px-2 py-3 text-center">
-      <p className="font-serif text-lg text-[#c9ad82]">
+    <div className="border border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-15100d))] px-2 py-3 text-center">
+      <p className="font-serif text-lg text-[rgb(var(--sep-colour-c9ad82))]">
         {value}
       </p>
 
-      <p className="mt-1 text-[7px] uppercase tracking-[0.12em] text-[#756957]">
+      <p className="mt-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756957))]">
         {label}
       </p>
     </div>

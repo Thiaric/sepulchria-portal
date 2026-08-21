@@ -203,17 +203,17 @@ export default function EditPostForm({
   }
 
   return (
-    <section className="border border-[#60482e]/45 bg-[#15100d]">
-      <header className="border-b border-[#60482e]/35 bg-[#1a130e] px-5 py-5 sm:px-7">
-        <p className="text-[8px] uppercase tracking-[0.22em] text-[#806a4d]">
+    <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
+      <header className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-1a130e))] px-5 py-5 sm:px-7">
+        <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806a4d))]">
           Forum post
         </p>
 
-        <h1 className="mt-2 font-serif text-3xl text-[#dec69d]">
+        <h1 className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-dec69d))]">
           Edit post
         </h1>
 
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-[#817567]">
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-[rgb(var(--sep-colour-817567))]">
           Update the message or replace
           its attached images.
         </p>
@@ -251,12 +251,12 @@ export default function EditPostForm({
           <div className="flex flex-wrap items-center justify-between gap-3">
             <label
               htmlFor="edit-forum-post-body"
-              className="block text-[9px] uppercase tracking-[0.18em] text-[#9f8765]"
+              className="block text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9f8765))]"
             >
               Message
             </label>
 
-            <span className="text-[9px] text-[#716453]">
+            <span className="text-[9px] text-[rgb(var(--sep-colour-716453))]">
               {body.length.toLocaleString(
                 "en-GB",
               )}
@@ -290,10 +290,10 @@ export default function EditPostForm({
 
         
 
-        <div className="flex flex-col-reverse justify-between gap-3 border-t border-[#60482e]/30 pt-6 sm:flex-row sm:items-center">
+        <div className="flex flex-col-reverse justify-between gap-3 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-6 sm:flex-row sm:items-center">
           <Link
             href={`${topicUrl}#post-${postId}`}
-            className="border border-[#60482e]/50 bg-[#19120e] px-5 py-3 text-center text-[9px] uppercase tracking-[0.17em] text-[#a58b68] transition hover:border-[#947047] hover:text-[#dec095]"
+            className="border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-19120e))] px-5 py-3 text-center text-[9px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-a58b68))] transition hover:border-[rgb(var(--sep-colour-947047))] hover:text-[rgb(var(--sep-colour-dec095))]"
           >
             Cancel
           </Link>
@@ -303,7 +303,7 @@ export default function EditPostForm({
             disabled={
               pending || !body.trim()
             }
-            className="border border-[#a27b48] bg-[#49311d] px-6 py-3 text-[9px] uppercase tracking-[0.2em] text-[#f0d6aa] transition hover:border-[#c49555] hover:bg-[#5b3d22] disabled:cursor-not-allowed disabled:opacity-50"
+            className="border border-[rgb(var(--sep-colour-a27b48))] bg-[rgb(var(--sep-colour-49311d))] px-6 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-f0d6aa))] transition hover:border-[rgb(var(--sep-colour-c49555))] hover:bg-[rgb(var(--sep-colour-5b3d22))] disabled:cursor-not-allowed disabled:opacity-50"
           >
             {pending
               ? "Saving..."
@@ -329,7 +329,7 @@ function EditorButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className="border border-[#60482e]/45 bg-[#17100c] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[#9f8765] transition hover:border-[#8d6a40] hover:text-[#d8bd91] disabled:cursor-not-allowed disabled:opacity-50"
+      className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-17100c))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9f8765))] transition hover:border-[rgb(var(--sep-colour-8d6a40))] hover:text-[rgb(var(--sep-colour-d8bd91))] disabled:cursor-not-allowed disabled:opacity-50"
     >
       {label}
     </button>

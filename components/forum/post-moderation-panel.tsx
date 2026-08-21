@@ -136,9 +136,9 @@ export default function PostModerationPanel({
             role="dialog"
             aria-modal="true"
             aria-labelledby="post-moderation-title"
-            className="max-h-full w-full max-w-xl overflow-y-auto border border-[#765733]/60 bg-[#15100d] shadow-2xl"
+            className="max-h-full w-full max-w-xl overflow-y-auto border border-[rgb(var(--sep-colour-765733))]/60 bg-[rgb(var(--sep-colour-15100d))] shadow-2xl"
           >
-            <header className="flex items-start justify-between gap-5 border-b border-[#60482e]/35 bg-[#1a130e] px-5 py-5 sm:px-6">
+            <header className="flex items-start justify-between gap-5 border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-1a130e))] px-5 py-5 sm:px-6">
               <div>
                 <p className="text-[8px] uppercase tracking-[0.22em] text-amber-500">
                   Staff controls
@@ -146,12 +146,12 @@ export default function PostModerationPanel({
 
                 <h2
                   id="post-moderation-title"
-                  className="mt-2 font-serif text-2xl text-[#dec69d]"
+                  className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dec69d))]"
                 >
                   Moderate post #{postNumber}
                 </h2>
 
-                <p className="mt-2 text-sm leading-6 text-[#887968]">
+                <p className="mt-2 text-sm leading-6 text-[rgb(var(--sep-colour-887968))]">
                   Posted by {authorName}
                 </p>
               </div>
@@ -163,7 +163,7 @@ export default function PostModerationPanel({
                 }
                 disabled={anyPending}
                 aria-label="Close post moderation panel"
-                className="border border-[#60482e]/50 px-3 py-2 text-xs text-[#9f8765] transition hover:border-[#967044] hover:text-[#dec095] disabled:opacity-50"
+                className="border border-[rgb(var(--sep-colour-60482e))]/50 px-3 py-2 text-xs text-[rgb(var(--sep-colour-9f8765))] transition hover:border-[rgb(var(--sep-colour-967044))] hover:text-[rgb(var(--sep-colour-dec095))] disabled:opacity-50"
               >
                 ×
               </button>
@@ -184,7 +184,7 @@ export default function PostModerationPanel({
                     Opening post
                   </p>
 
-                  <p className="mt-3 text-sm leading-6 text-[#a8957d]">
+                  <p className="mt-3 text-sm leading-6 text-[rgb(var(--sep-colour-a8957d))]">
                     The opening post cannot
                     be deleted separately.
                     Use the topic moderation
@@ -197,7 +197,7 @@ export default function PostModerationPanel({
                   <div>
                     <label
                       htmlFor={`moderation-reason-${postId}`}
-                      className="text-[8px] uppercase tracking-[0.18em] text-[#917957]"
+                      className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-917957))]"
                     >
                       Moderation note
                     </label>
@@ -214,10 +214,10 @@ export default function PostModerationPanel({
                       rows={5}
                       disabled={anyPending}
                       placeholder="Optional reason for this moderation action..."
-                      className="mt-3 w-full resize-y border border-[#60482e]/50 bg-[#0d0907] px-4 py-3 text-sm leading-6 text-[#d2bea0] outline-none placeholder:text-[#5f5548] focus:border-[#a47a44] disabled:opacity-50"
+                      className="mt-3 w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0d0907))] px-4 py-3 text-sm leading-6 text-[rgb(var(--sep-colour-d2bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-5f5548))] focus:border-[rgb(var(--sep-colour-a47a44))] disabled:opacity-50"
                     />
 
-                    <div className="mt-2 text-right text-[8px] uppercase tracking-[0.14em] text-[#665947]">
+                    <div className="mt-2 text-right text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-665947))]">
                       {reason.length}/1000
                     </div>
                   </div>
@@ -312,14 +312,14 @@ export default function PostModerationPanel({
                 </>
               )}
 
-              <div className="flex justify-end border-t border-[#60482e]/30 pt-5">
+              <div className="flex justify-end border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-5">
                 <button
                   type="button"
                   onClick={() =>
                     setIsOpen(false)
                   }
                   disabled={anyPending}
-                  className="border border-[#60482e]/55 bg-[#19120e] px-5 py-3 text-[9px] uppercase tracking-[0.17em] text-[#a58b68] transition hover:border-[#947047] hover:text-[#dec095] disabled:opacity-50"
+                  className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-19120e))] px-5 py-3 text-[9px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-a58b68))] transition hover:border-[rgb(var(--sep-colour-947047))] hover:text-[rgb(var(--sep-colour-dec095))] disabled:opacity-50"
                 >
                   Close
                 </button>

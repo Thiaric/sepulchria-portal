@@ -131,12 +131,12 @@ export function OrderRoleProgressionEditor({
   }
 
   return (
-    <div className="mt-6 border border-[#765937]/35 bg-[#0d0a08] p-4">
-      <p className="text-[8px] uppercase tracking-[0.2em] text-[#806b50]">
+    <div className="mt-6 border border-[rgb(var(--sep-colour-765937))]/35 bg-[rgb(var(--sep-colour-0d0a08))] p-4">
+      <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
         Role progression map
       </p>
 
-      <p className="mt-2 max-w-3xl text-[10px] leading-5 text-[#817565]">
+      <p className="mt-2 max-w-3xl text-[10px] leading-5 text-[rgb(var(--sep-colour-817565))]">
         Add as many links as you need. Each connection points from a Role to
         a Role on the Level immediately above it. Incoming links are derived
         automatically, so every Role can have multiple paths below and above.
@@ -158,10 +158,10 @@ export function OrderRoleProgressionEditor({
               className="grid gap-3 md:grid-cols-[90px_minmax(0,1fr)]"
             >
               <div>
-                <p className="text-[7px] uppercase tracking-[0.16em] text-[#756958]">
+                <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-756958))]">
                   Level
                 </p>
-                <p className="mt-1 font-serif text-xl text-[#d8bf91]">
+                <p className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
                   {level}
                 </p>
               </div>
@@ -211,14 +211,14 @@ export function OrderRoleProgressionEditor({
                   return (
                     <div
                       key={role.id}
-                      className="border border-[#59432c]/40 bg-[#15100d] p-3"
+                      className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-15100d))] p-3"
                     >
-                      <p className="font-serif text-sm text-[#d3ba8c]">
+                      <p className="font-serif text-sm text-[rgb(var(--sep-colour-d3ba8c))]">
                         {role.name}
                       </p>
 
                       <div className="mt-3">
-                        <p className="text-[7px] uppercase tracking-[0.12em] text-[#665c50]">
+                        <p className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-665c50))]">
                           From lower Level
                         </p>
 
@@ -227,13 +227,13 @@ export function OrderRoleProgressionEditor({
                             incoming.map(({ link, role: source }) => (
                               <span
                                 key={link.id}
-                                className="border border-[#59432c]/35 bg-[#100c09] px-2 py-1 text-[7px] text-[#a58d6a]"
+                                className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] px-2 py-1 text-[7px] text-[rgb(var(--sep-colour-a58d6a))]"
                               >
                                 L{source.level} · {source.name}
                               </span>
                             ))
                           ) : (
-                            <span className="text-[8px] italic text-[#5e554a]">
+                            <span className="text-[8px] italic text-[rgb(var(--sep-colour-5e554a))]">
                               No incoming links
                             </span>
                           )}
@@ -241,7 +241,7 @@ export function OrderRoleProgressionEditor({
                       </div>
 
                       <div className="mt-3">
-                        <p className="text-[7px] uppercase tracking-[0.12em] text-[#665c50]">
+                        <p className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-665c50))]">
                           To higher Level
                         </p>
 
@@ -249,9 +249,9 @@ export function OrderRoleProgressionEditor({
                           {outgoing.map(({ link, role: target }) => (
                             <div
                               key={link.id}
-                              className="flex items-center justify-between gap-2 border border-[#765937]/35 bg-[#1b130d] px-2 py-1.5"
+                              className="flex items-center justify-between gap-2 border border-[rgb(var(--sep-colour-765937))]/35 bg-[rgb(var(--sep-colour-1b130d))] px-2 py-1.5"
                             >
-                              <span className="min-w-0 truncate text-[7px] text-[#c0a174]">
+                              <span className="min-w-0 truncate text-[7px] text-[rgb(var(--sep-colour-c0a174))]">
                                 → L{target.level} · {target.name}
                               </span>
 
@@ -283,7 +283,7 @@ export function OrderRoleProgressionEditor({
                                 addLink(role.id, value);
                                 event.currentTarget.value = "";
                               }}
-                              className="w-full border border-[#60482e]/50 bg-[#100c09] px-2 py-2 text-[9px] text-[#d7c4a5] outline-none disabled:opacity-50"
+                              className="w-full border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-100c09))] px-2 py-2 text-[9px] text-[rgb(var(--sep-colour-d7c4a5))] outline-none disabled:opacity-50"
                             >
                               <option value="" disabled>
                                 Link to Level {level + 1} Role
@@ -299,11 +299,11 @@ export function OrderRoleProgressionEditor({
                               ))}
                             </select>
                           ) : rolesByLevel.has(level + 1) ? (
-                            <p className="text-[8px] italic text-[#5e554a]">
+                            <p className="text-[8px] italic text-[rgb(var(--sep-colour-5e554a))]">
                               All available Roles above are linked.
                             </p>
                           ) : (
-                            <p className="text-[8px] italic text-[#5e554a]">
+                            <p className="text-[8px] italic text-[rgb(var(--sep-colour-5e554a))]">
                               Highest Level
                             </p>
                           )}

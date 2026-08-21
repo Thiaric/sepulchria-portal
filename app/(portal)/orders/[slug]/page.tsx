@@ -345,7 +345,7 @@ export default async function OrderPage({
       <div className="mx-auto max-w-6xl">
         <Link
           href="/orders"
-          className="inline-flex items-center gap-2 border border-[#60482e]/55 bg-[#15100d] px-4 py-3 text-[10px] uppercase tracking-[0.18em] text-[#c6ab80] transition hover:border-[#987344] hover:bg-[#261b12] hover:text-[#ead2a5]"
+          className="inline-flex items-center gap-2 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 text-[10px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-c6ab80))] transition hover:border-[rgb(var(--sep-colour-987344))] hover:bg-[rgb(var(--sep-colour-261b12))] hover:text-[rgb(var(--sep-colour-ead2a5))]"
         >
           <span aria-hidden="true">←</span>
           Back to Orders
@@ -353,7 +353,7 @@ export default async function OrderPage({
 
         <article className="mt-5 space-y-5">
           <section
-            className="relative overflow-hidden border border-[#60482e]/55 bg-[#110d0a]"
+            className="relative overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-110d0a))]"
             style={{
               boxShadow: `inset 0 4px 0 ${colour}`,
             }}
@@ -375,8 +375,8 @@ export default async function OrderPage({
                     priority
                   />
 
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#100c09] via-[#100c09]/90 to-[#100c09]/35" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#100c09] via-transparent to-black/30" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-[rgb(var(--sep-colour-100c09))] via-[rgb(var(--sep-colour-100c09))]/90 to-[rgb(var(--sep-colour-100c09))]/35" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[rgb(var(--sep-colour-100c09))] via-transparent to-black/30" />
                 </>
               ) : (
                 <div
@@ -391,7 +391,7 @@ export default async function OrderPage({
                 <div className="w-full">
                   <div className="flex flex-wrap items-center gap-4">
                     <div
-                      className="relative flex h-20 w-20 items-center justify-center overflow-hidden border bg-[#100c09]/90"
+                      className="relative flex h-20 w-20 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-100c09))]/90"
                       style={{
                         borderColor: `${colour}bb`,
                       }}
@@ -425,14 +425,14 @@ export default async function OrderPage({
                         Order
                       </p>
 
-                      <h1 className="mt-2 font-serif text-4xl leading-tight text-[#ead6ad] sm:text-5xl lg:text-6xl">
+                      <h1 className="mt-2 font-serif text-4xl leading-tight text-[rgb(var(--sep-colour-ead6ad))] sm:text-5xl lg:text-6xl">
                         {order.name}
                       </h1>
 
                       {association ? (
                         <Link
                           href={`/associations/${association.slug}`}
-                          className="mt-2 inline-block font-serif text-base text-[#b89a6c] transition hover:text-[#e2c18e] sm:text-lg"
+                          className="mt-2 inline-block font-serif text-base text-[rgb(var(--sep-colour-b89a6c))] transition hover:text-[rgb(var(--sep-colour-e2c18e))] sm:text-lg"
                         >
                           {association.name}
                         </Link>
@@ -443,7 +443,7 @@ export default async function OrderPage({
                   {order.summary ? (
                     <RichTextContent
                       body={order.summary}
-                      className="mt-6 w-full font-serif text-sm leading-7 text-[#c7b494] sm:text-base"
+                      className="mt-6 w-full font-serif text-sm leading-7 text-[rgb(var(--sep-colour-c7b494))] sm:text-base"
                     />
                   ) : null}
                 </div>
@@ -451,27 +451,27 @@ export default async function OrderPage({
             </div>
           </section>
 
-          <div className="border border-[#60482e]/45 bg-[#15100d]/95 p-5 sm:p-7 lg:p-8">
+          <div className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 p-5 sm:p-7 lg:p-8">
             {order.description ? (
-              <section className="mt-8 border-t border-[#60482e]/35 pt-7">
-                <p className="text-[8px] uppercase tracking-[0.24em] text-[#806b50]">
+              <section className="mt-8 border-t border-[rgb(var(--sep-colour-60482e))]/35 pt-7">
+                <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
                   About this Order
                 </p>
 
                 <RichTextContent
                   body={order.description}
-                  className="mt-3 text-sm leading-7 text-[#b6a58d]"
+                  className="mt-3 text-sm leading-7 text-[rgb(var(--sep-colour-b6a58d))]"
                 />
               </section>
             ) : null}
 
-            <section className="mt-8 border-t border-[#60482e]/35 pt-7">
+            <section className="mt-8 border-t border-[rgb(var(--sep-colour-60482e))]/35 pt-7">
               <div>
-                <p className="text-[8px] uppercase tracking-[0.24em] text-[#806b50]">
+                <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
                   Order hierarchy
                 </p>
 
-                <h2 className="mt-1 font-serif text-2xl text-[#dec69a]">
+                <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dec69a))]">
                   Levels & Roles
                 </h2>
               </div>
@@ -483,19 +483,19 @@ export default async function OrderPage({
               />
             </section>
 
-            <section className="mt-8 border-t border-[#60482e]/35 pt-7">
+            <section className="mt-8 border-t border-[rgb(var(--sep-colour-60482e))]/35 pt-7">
               <div className="flex flex-wrap items-end justify-between gap-3">
                 <div>
-                  <p className="text-[8px] uppercase tracking-[0.24em] text-[#806b50]">
+                  <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
                     Order membership
                   </p>
 
-                  <h2 className="mt-1 font-serif text-2xl text-[#dec69a]">
+                  <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dec69a))]">
                     Members
                   </h2>
                 </div>
 
-                <p className="text-[9px] uppercase tracking-[0.16em] text-[#756958]">
+                <p className="text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-756958))]">
                   {members.length}{" "}
                   {members.length === 1
                     ? "member"
@@ -528,7 +528,7 @@ export default async function OrderPage({
                         <Link
                           key={membership.id}
                           href={`/characters/${character.public_slug}`}
-                          className="group flex items-center gap-4 border border-[#59432c]/45 bg-[#100c09] p-3 transition hover:border-[#8d6d3e] hover:bg-[#18110d]"
+                          className="group flex items-center gap-4 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] p-3 transition hover:border-[rgb(var(--sep-colour-8d6d3e))] hover:bg-[rgb(var(--sep-colour-18110d))]"
                         >
                           <MemberPortrait
                             src={
@@ -540,13 +540,13 @@ export default async function OrderPage({
                           />
 
                           <div className="min-w-0 flex-1">
-                            <p className="truncate font-serif text-lg text-[#d8bf91] transition group-hover:text-[#efd5a5]">
+                            <p className="truncate font-serif text-lg text-[rgb(var(--sep-colour-d8bf91))] transition group-hover:text-[rgb(var(--sep-colour-efd5a5))]">
                               {
                                 character.display_name
                               }
                             </p>
 
-                            <p className="mt-1 text-[9px] uppercase tracking-[0.14em] text-[#766956]">
+                            <p className="mt-1 text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-766956))]">
                               {level
                                 ? `Level ${level.level}`
                                 : "Level not assigned"}
@@ -558,7 +558,7 @@ export default async function OrderPage({
 
                           <span
                             aria-hidden="true"
-                            className="text-[#806746] transition group-hover:translate-x-0.5 group-hover:text-[#d2ad73]"
+                            className="text-[rgb(var(--sep-colour-806746))] transition group-hover:translate-x-0.5 group-hover:text-[rgb(var(--sep-colour-d2ad73))]"
                           >
                             →
                           </span>
@@ -568,7 +568,7 @@ export default async function OrderPage({
                   )}
                 </div>
               ) : (
-                <p className="mt-5 border border-[#59432c]/30 bg-[#100c09] p-5 text-sm italic text-[#807463]">
+                <p className="mt-5 border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))] p-5 text-sm italic text-[rgb(var(--sep-colour-807463))]">
                   This Order has no public members yet.
                 </p>
               )}
@@ -588,7 +588,7 @@ function MemberPortrait({
   name: string;
 }) {
   return (
-    <div className="relative h-14 w-14 shrink-0 overflow-hidden border border-[#60482e]/55 bg-[#0d0907]">
+    <div className="relative h-14 w-14 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))]">
       {src ? (
         <Image
           src={src}
@@ -599,7 +599,7 @@ function MemberPortrait({
           unoptimized
         />
       ) : (
-        <div className="flex h-full items-center justify-center font-serif text-lg text-[#806746]">
+        <div className="flex h-full items-center justify-center font-serif text-lg text-[rgb(var(--sep-colour-806746))]">
           {name.charAt(0).toUpperCase()}
         </div>
       )}

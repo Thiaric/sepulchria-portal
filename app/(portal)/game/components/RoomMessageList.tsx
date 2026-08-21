@@ -338,8 +338,8 @@ function ActionSpeechText({
           <span
   className={
     isAction
-      ? "italic text-[#a98a60]"
-      : "text-[#d3c2aa]"
+      ? "italic text-[rgb(var(--sep-colour-a98a60))]"
+      : "text-[rgb(var(--sep-colour-d3c2aa))]"
   }
   style={{
     lineHeight: "18px",
@@ -376,7 +376,7 @@ function CharacterPortrait({
   characterHref: string;
 }) {
   const portrait = (
-    <div className="h-9 w-9 shrink-0 overflow-hidden border border-[#60482e] bg-[#0d0a08]">
+    <div className="h-9 w-9 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))] bg-[rgb(var(--sep-colour-0d0a08))]">
       {author?.portrait_url ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
@@ -385,7 +385,7 @@ function CharacterPortrait({
           className="h-full w-full object-cover"
         />
       ) : (
-        <span className="flex h-full items-center justify-center text-[#806b4e]">
+        <span className="flex h-full items-center justify-center text-[rgb(var(--sep-colour-806b4e))]">
           ?
         </span>
       )}
@@ -661,7 +661,7 @@ export default function RoomMessageList({
 
     if(!groups.length)return null;
 
-    return <span className="mr-2 inline text-[9px] uppercase tracking-[.04em] text-[#b99765]"> | {groups.join(" | ")} | </span>;
+    return <span className="mr-2 inline text-[9px] uppercase tracking-[.04em] text-[rgb(var(--sep-colour-b99765))]"> | {groups.join(" | ")} | </span>;
   }
 
   useEffect(() => {
@@ -996,8 +996,8 @@ export default function RoomMessageList({
           className={`border-b px-5 py-2 text-center text-[9px] uppercase tracking-[0.18em] ${
             connectionStatus ===
             "connecting"
-              ? "border-[#6b5535]/40 bg-[#21190f] text-[#b89a68]"
-              : "border-[#754137]/50 bg-[#2b1714] text-[#d28e82]"
+              ? "border-[rgb(var(--sep-colour-6b5535))]/40 bg-[rgb(var(--sep-colour-21190f))] text-[rgb(var(--sep-colour-b89a68))]"
+              : "border-[rgb(var(--sep-colour-754137))]/50 bg-[rgb(var(--sep-colour-2b1714))] text-[rgb(var(--sep-colour-d28e82))]"
           }`}
         >
           {connectionStatus ===
@@ -1016,7 +1016,7 @@ export default function RoomMessageList({
 
         {liveMessages.length >
         0 ? (
-          <div className="divide-y divide-[#4f3b28]/35">
+          <div className="divide-y divide-[rgb(var(--sep-colour-4f3b28))]/35">
             {liveMessages.map(
               (item) => {
                 const author =
@@ -1046,10 +1046,10 @@ export default function RoomMessageList({
                   return (
                     <article
                       key={item.id}
-                      className="border-y border-[#8a6637]/40 bg-[linear-gradient(90deg,rgba(91,56,24,0.22),rgba(24,16,11,0.72),rgba(91,56,24,0.14))] px-5 py-2.5 sm:px-7"
+                      className="border-y border-[rgb(var(--sep-colour-8a6637))]/40 bg-[linear-gradient(90deg,rgba(var(--sep-rgb-91-56-24),0.22),rgba(var(--sep-rgb-24-16-11),0.72),rgba(var(--sep-rgb-91-56-24),0.14))] px-5 py-2.5 sm:px-7"
                     >
                       <div className="flex items-center justify-between gap-4">
-                        <span className="text-[8px] uppercase tracking-[0.24em] text-[#c99b58]">
+                        <span className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-c99b58))]">
                           The Voice of Fate
                         </span>
 
@@ -1057,13 +1057,13 @@ export default function RoomMessageList({
                           dateTime={
                             item.created_at
                           }
-                          className="text-[8px] uppercase tracking-[0.14em] text-[#776b5b]"
+                          className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-776b5b))]"
                         >
                           {time}
                         </time>
                       </div>
 
-                      <p className="mt-1.5 whitespace-pre-wrap break-words font-serif text-[13px] leading-5 text-[#d6c09a]">
+                      <p className="mt-1.5 whitespace-pre-wrap break-words font-serif text-[13px] leading-5 text-[rgb(var(--sep-colour-d6c09a))]">
                         {item.message}
                       </p>
                     </article>
@@ -1106,7 +1106,7 @@ export default function RoomMessageList({
                             ? "bg-red-950/10"
                             : privateLocationTheme
                               ? ""
-                              : "bg-[#1b140e]/55"
+                              : "bg-[rgb(var(--sep-colour-1b140e))]/55"
                       }`}
                       style={
                         privateLocationTheme
@@ -1124,7 +1124,7 @@ export default function RoomMessageList({
                             ? "text-emerald-500"
                             : isNaturalOne
                               ? "text-red-500"
-                              : "text-[#bd8d4d]"
+                              : "text-[rgb(var(--sep-colour-bd8d4d))]"
                         }`}
                         style={
                           privateLocationTheme &&
@@ -1145,7 +1145,7 @@ export default function RoomMessageList({
                           href={
                             characterHref
                           }
-                          className="shrink-0 font-serif text-sm text-[#d8bf91] transition hover:text-[#ecd29e]"
+                          className="shrink-0 font-serif text-sm text-[rgb(var(--sep-colour-d8bf91))] transition hover:text-[rgb(var(--sep-colour-ecd29e))]"
                           style={
                             privateLocationTheme
                               ? {
@@ -1162,7 +1162,7 @@ export default function RoomMessageList({
                         </Link>
                       ) : (
                         <span
-                          className="shrink-0 font-serif text-sm text-[#d8bf91]"
+                          className="shrink-0 font-serif text-sm text-[rgb(var(--sep-colour-d8bf91))]"
                           style={
                             privateLocationTheme
                               ? {
@@ -1183,7 +1183,7 @@ export default function RoomMessageList({
                             ? "text-emerald-300"
                             : isNaturalOne
                               ? "text-red-300"
-                              : "text-[#c8b89f]"
+                              : "text-[rgb(var(--sep-colour-c8b89f))]"
                         }`}
                         title={formatRollText(
                           item,
@@ -1208,7 +1208,7 @@ export default function RoomMessageList({
                         dateTime={
                           item.created_at
                         }
-                        className="shrink-0 text-[8px] uppercase tracking-[0.14em] text-[#776b5b]"
+                        className="shrink-0 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-776b5b))]"
                       >
                         {time}
                       </time>
@@ -1253,9 +1253,9 @@ export default function RoomMessageList({
   key={item.id}
   className={`flex gap-3 px-5 py-3 sm:px-7 ${
     isOutOfCharacter
-      ? "border-l-2 border-[#627f9f] bg-[#182536]/55"
+      ? "border-l-2 border-[rgb(var(--sep-colour-627f9f))] bg-[rgb(var(--sep-colour-182536))]/55"
       : isWhisper
-        ? "border-l-2 border-[#7d628f] bg-[#241b2a]/45"
+        ? "border-l-2 border-[rgb(var(--sep-colour-7d628f))] bg-[rgb(var(--sep-colour-241b2a))]/45"
         : ""
   }`}
   style={
@@ -1300,7 +1300,7 @@ export default function RoomMessageList({
       dateTime={
         item.created_at
       }
-      className="mt-1.5 block text-[7px] uppercase leading-4 tracking-[0.12em] text-[#776b5b]"
+      className="mt-1.5 block text-[7px] uppercase leading-4 tracking-[0.12em] text-[rgb(var(--sep-colour-776b5b))]"
     >
       {time}
     </time>
@@ -1312,13 +1312,13 @@ export default function RoomMessageList({
       <div
         className={`mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 border-b pb-1.5 ${
           isOutOfCharacter
-            ? "border-[#627f9f]/40"
-            : "border-[#7d628f]/35"
+            ? "border-[rgb(var(--sep-colour-627f9f))]/40"
+            : "border-[rgb(var(--sep-colour-7d628f))]/35"
         }`}
       >
         {isOutOfCharacter ? (
           <span
-            className="text-[8px] uppercase tracking-[0.2em] text-[#a9c7e6]"
+            className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-a9c7e6))]"
             style={
               privateLocationTheme
                 ? {
@@ -1334,7 +1334,7 @@ export default function RoomMessageList({
 
         {isWhisper ? (
           <span
-            className="text-[8px] uppercase tracking-[0.2em] text-[#c7add6]"
+            className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-c7add6))]"
             style={
               privateLocationTheme
                 ? {
@@ -1359,7 +1359,7 @@ export default function RoomMessageList({
       {author?.public_slug ? (
         <Link
           href={characterHref}
-          className="mr-2 inline font-serif text-sm leading-[18px] text-[#d8bf91] transition hover:text-[#ecd29e]"
+          className="mr-2 inline font-serif text-sm leading-[18px] text-[rgb(var(--sep-colour-d8bf91))] transition hover:text-[rgb(var(--sep-colour-ecd29e))]"
           style={
             privateLocationTheme &&
             (
@@ -1381,7 +1381,7 @@ export default function RoomMessageList({
         </Link>
       ) : (
         <span
-          className="mr-2 inline font-serif text-sm leading-[18px] text-[#d8bf91]"
+          className="mr-2 inline font-serif text-sm leading-[18px] text-[rgb(var(--sep-colour-d8bf91))]"
           style={
             privateLocationTheme &&
             (
@@ -1436,7 +1436,7 @@ export default function RoomMessageList({
             <div id="chat-end" />
           </div>
         ) : (
-          <div className="flex h-full min-h-0 items-center justify-center px-6 py-10 text-center font-serif italic text-[#8e7d66]">
+          <div className="flex h-full min-h-0 items-center justify-center px-6 py-10 text-center font-serif italic text-[rgb(var(--sep-colour-8e7d66))]">
           The air awaits for a story to begin...
           </div>
         )}

@@ -73,11 +73,11 @@ export function AdminJobsContext() {
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <p className="text-[8px] uppercase tracking-[0.24em] text-[#806b50]">
+      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
         Administration
       </p>
 
-      <h2 className="mt-1 font-serif text-xl text-[#d8bf91]">
+      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
         Jump to Jobs
       </h2>
 
@@ -89,7 +89,7 @@ export function AdminJobsContext() {
             block: "start",
           })
         }
-        className="mt-3 flex w-full items-center justify-between border border-[#765937]/55 bg-[#271c12] px-3 py-2.5 text-left text-[9px] uppercase tracking-[0.16em] text-[#d6b37d] transition hover:border-[#9a7445] hover:bg-[#342318]"
+        className="mt-3 flex w-full items-center justify-between border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-271c12))] px-3 py-2.5 text-left text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d6b37d))] transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:bg-[rgb(var(--sep-colour-342318))]"
       >
         <span>Create new</span>
         <span>+</span>
@@ -100,15 +100,15 @@ export function AdminJobsContext() {
         value={search}
         onChange={(event) => setSearch(event.target.value)}
         placeholder="Search jobs..."
-        className="mt-3 w-full border border-[#59432c]/45 bg-[#100c09] px-3 py-2.5 text-xs text-[#d4bea0] outline-none placeholder:text-[#665b4d] focus:border-[#987344]"
+        className="mt-3 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))]"
       />
 
-      <p className="mt-1.5 text-right text-[7px] uppercase tracking-[0.1em] text-[#6f6353]">
+      <p className="mt-1.5 text-right text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-6f6353))]">
         {visible.length}{search.trim() ? ` / ${jobs.length}` : ""} Jobs
       </p>
 
       {error ? (
-        <p className="mt-3 border border-[#743d35] bg-[#2a1512] p-2.5 text-[10px] leading-5 text-[#d8a49a]">
+        <p className="mt-3 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-2.5 text-[10px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]">
           {error}
         </p>
       ) : null}
@@ -119,7 +119,7 @@ export function AdminJobsContext() {
             {Array.from({ length: 7 }).map((_, index) => (
               <div
                 key={index}
-                className="h-11 animate-pulse border border-[#59432c]/30 bg-[#19120d]"
+                className="h-11 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]"
               />
             ))}
           </div>
@@ -130,12 +130,12 @@ export function AdminJobsContext() {
                 key={job.id}
                 type="button"
                 onClick={() => jumpTo(job.id)}
-                className="group w-full border border-[#59432c]/40 bg-[#100c09] px-3 py-2 text-left transition hover:border-[#8d693e] hover:bg-[#1d150f]"
+                className="group w-full border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-left transition hover:border-[rgb(var(--sep-colour-8d693e))] hover:bg-[rgb(var(--sep-colour-1d150f))]"
               >
-                <span className="block truncate font-serif text-[13px] text-[#cbb28a] group-hover:text-[#ead0a0]">
+                <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
                   {job.name}
                 </span>
-                <span className="mt-0.5 block truncate text-[8px] text-[#756958]">
+                <span className="mt-0.5 block truncate text-[8px] text-[rgb(var(--sep-colour-756958))]">
                   {job.description}
                 </span>
               </button>

@@ -519,12 +519,7 @@ export function AtmosphericOverlay() {
             linear-gradient(
               to bottom,
               transparent,
-              rgba(
-                210,
-                226,
-                240,
-                0.86
-              )
+              rgba(var(--sep-rgb-210-226-240),0.86)
             );
 
           transform:
@@ -584,21 +579,11 @@ export function AtmosphericOverlay() {
           border-radius: 999px;
 
           background:
-            rgba(
-              244,
-              247,
-              250,
-              0.94
-            );
+            rgba(var(--sep-rgb-244-247-250),0.94);
 
           box-shadow:
             0 0 3px
-            rgba(
-              255,
-              255,
-              255,
-              0.24
-            );
+            rgba(var(--sep-rgb-255-255-255),0.24);
 
           animation:
             sep-snow-fall
@@ -653,21 +638,11 @@ export function AtmosphericOverlay() {
           border-radius: 999px;
 
           background:
-            rgba(
-              225,
-              235,
-              241,
-              0.96
-            );
+            rgba(var(--sep-rgb-225-235-241),0.96);
 
           box-shadow:
             0 0 2px
-            rgba(
-              255,
-              255,
-              255,
-              0.5
-            );
+            rgba(var(--sep-rgb-255-255-255),0.5);
 
           animation:
             sep-hail-fall
@@ -704,18 +679,8 @@ export function AtmosphericOverlay() {
           background:
             radial-gradient(
               ellipse at center,
-              rgba(
-                210,
-                215,
-                210,
-                0.22
-              ),
-              rgba(
-                  160,
-                  170,
-                  165,
-                  0.1
-                )
+              rgba(var(--sep-rgb-210-215-210),0.22),
+              rgba(var(--sep-rgb-160-170-165),0.1)
                 38%,
               transparent 70%
             );
@@ -752,18 +717,8 @@ export function AtmosphericOverlay() {
           background:
             linear-gradient(
               to bottom,
-              rgba(
-                8,
-                13,
-                20,
-                0.18
-              ),
-              rgba(
-                5,
-                9,
-                15,
-                0.3
-              )
+              rgba(var(--sep-rgb-8-13-20),0.18),
+              rgba(var(--sep-rgb-5-9-15),0.3)
             );
         }
 

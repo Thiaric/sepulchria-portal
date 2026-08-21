@@ -90,61 +90,61 @@ export async function CharacterMechanicsDisplay({
     <div className="space-y-4">
       <ActivePriceEffects characterId={characterId} />
       <ActiveShapeEffects characterId={characterId} />
-            <section className="border border-[#60482e]/45 bg-[#15100d]/95 p-5 sm:p-6">
-        <h2 className="font-serif text-2xl text-[#dec89f]">Warping</h2>
+            <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 p-5 sm:p-6">
+        <h2 className="font-serif text-2xl text-[rgb(var(--sep-colour-dec89f))]">Warping</h2>
 
-        <div className="mt-5 grid gap-px bg-[#4f3b28]/35 sm:grid-cols-2">
-          <div className="bg-[#120e0b] px-4 py-3">
-            <p className="text-[8px] uppercase tracking-[0.16em] text-[#8b7455]">
+        <div className="mt-5 grid gap-px bg-[rgb(var(--sep-colour-4f3b28))]/35 sm:grid-cols-2">
+          <div className="bg-[rgb(var(--sep-colour-120e0b))] px-4 py-3">
+            <p className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-8b7455))]">
               Current Affinity
             </p>
-            <p className="mt-1 font-serif text-2xl text-[#e1c28d]">
+            <p className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-e1c28d))]">
               {warping.affinity}
             </p>
-            <p className="mt-1 text-[7px] uppercase tracking-[0.08em] text-[#756958]">
+            <p className="mt-1 text-[7px] uppercase tracking-[0.08em] text-[rgb(var(--sep-colour-756958))]">
               {warping.baseAffinity} Base · {signed(warping.itemAffinity)} Items · {signed(warping.featAffinity)} Feats
             </p>
           </div>
 
-          <div className="bg-[#120e0b] px-4 py-3">
-            <p className="text-[8px] uppercase tracking-[0.16em] text-[#8b7455]">
+          <div className="bg-[rgb(var(--sep-colour-120e0b))] px-4 py-3">
+            <p className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-8b7455))]">
               Shapes per day
             </p>
-            <p className="mt-1 font-serif text-2xl text-[#e1c28d]">
+            <p className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-e1c28d))]">
               {warping.warpsPerDay}
             </p>
-            <p className="mt-1 text-[7px] uppercase tracking-[0.08em] text-[#756958]">
+            <p className="mt-1 text-[7px] uppercase tracking-[0.08em] text-[rgb(var(--sep-colour-756958))]">
               {warping.baseWarpsPerDay} Base · {signed(warping.itemWarpsPerDay)} Items · {signed(warping.featWarpsPerDay)} Feats
             </p>
           </div>
         </div>
       </section>
 
-<section className="border border-[#60482e]/45 bg-[#15100d]/95 p-5 sm:p-6">
-        <h2 className="mt-[-8] font-serif text-2xl text-[#dec89f]">
+<section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 p-5 sm:p-6">
+        <h2 className="mt-[-8] font-serif text-2xl text-[rgb(var(--sep-colour-dec89f))]">
           Attributes
         </h2>
 
-        <div className="mt-5 grid gap-px bg-[#4f3b28]/35 sm:grid-cols-2">
+        <div className="mt-5 grid gap-px bg-[rgb(var(--sep-colour-4f3b28))]/35 sm:grid-cols-2">
           {DEFINITIONS.map(([key, label]) => {
             const entry = breakdown[key];
 
             return (
               <div
                 key={key}
-                className="bg-[#120e0b] px-4 py-3"
+                className="bg-[rgb(var(--sep-colour-120e0b))] px-4 py-3"
               >
                 <div className="flex items-center justify-between gap-4">
-                  <span className="text-[8px] uppercase tracking-[0.16em] text-[#8b7455]">
+                  <span className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-8b7455))]">
                     {label}
                   </span>
 
                   <span className="group relative inline-flex">
                     <span
                       tabIndex={entry.base !== null ? 0 : -1}
-                      className={`font-serif text-2xl text-[#e1c28d] ${
+                      className={`font-serif text-2xl text-[rgb(var(--sep-colour-e1c28d))] ${
                         entry.base !== null
-                          ? "cursor-help outline-none transition hover:text-[#f0d49f] focus:text-[#f0d49f]"
+                          ? "cursor-help outline-none transition hover:text-[rgb(var(--sep-colour-f0d49f))] focus:text-[rgb(var(--sep-colour-f0d49f))]"
                           : ""
                       }`}
                       aria-label={
@@ -159,15 +159,15 @@ export async function CharacterMechanicsDisplay({
                     {entry.base !== null ? (
                       <span
                         role="tooltip"
-                        className="pointer-events-none absolute bottom-full right-0 z-30 mb-2 hidden w-max max-w-[340px] border border-[#765937]/70 bg-[#0b0806] px-3 py-2 text-left shadow-xl group-hover:block group-focus-within:block"
+                        className="pointer-events-none absolute bottom-full right-0 z-30 mb-2 hidden w-max max-w-[340px] border border-[rgb(var(--sep-colour-765937))]/70 bg-[rgb(var(--sep-colour-0b0806))] px-3 py-2 text-left shadow-xl group-hover:block group-focus-within:block"
                       >
-                        <span className="block whitespace-nowrap text-[7px] uppercase leading-4 tracking-[0.08em] text-[#756958]">
+                        <span className="block whitespace-nowrap text-[7px] uppercase leading-4 tracking-[0.08em] text-[rgb(var(--sep-colour-756958))]">
                           {entry.base} Base ·{" "}
-                          <span className={entry.gifts === 0 ? "" : "text-[#b99765]"}>
+                          <span className={entry.gifts === 0 ? "" : "text-[rgb(var(--sep-colour-b99765))]"}>
                             {signed(entry.gifts)} Feats
                           </span>
                           {" · "}
-                          <span className={entry.items === 0 ? "" : "text-[#b99765]"}>
+                          <span className={entry.items === 0 ? "" : "text-[rgb(var(--sep-colour-b99765))]"}>
                             {signed(entry.items)} Items
                           </span>
                           {" · "}
@@ -175,19 +175,19 @@ export async function CharacterMechanicsDisplay({
                             {signed(entry.activeItems)} Active Item Effects
                           </span>
                           {" · "}
-                          <span className={entry.shapes === 0 ? "" : "text-[#c59ae8]"}>
+                          <span className={entry.shapes === 0 ? "" : "text-[rgb(var(--sep-colour-c59ae8))]"}>
                             {signed(entry.shapes)} Shapes
                           </span>
                           {" = "}
-                          <span className="text-[#99866a]">
+                          <span className="text-[rgb(var(--sep-colour-99866a))]">
                             {entry.adjustedBase} Adjusted Base
                           </span>
                         </span>
 
-                        <span className="mt-0.5 block whitespace-nowrap text-[7px] uppercase leading-4 tracking-[0.08em] text-[#756958]">
+                        <span className="mt-0.5 block whitespace-nowrap text-[7px] uppercase leading-4 tracking-[0.08em] text-[rgb(var(--sep-colour-756958))]">
                           {signed(entry.ancestry)} Ancestry ·{" "}
                           {signed(entry.order)} Order ={" "}
-                          <span className="text-[#c8a879]">
+                          <span className="text-[rgb(var(--sep-colour-c8a879))]">
                             {entry.effective} Effective
                           </span>
                         </span>
@@ -200,33 +200,33 @@ export async function CharacterMechanicsDisplay({
           })}
         </div>
 
-        <p className="mt-3 text-center text-[7px] uppercase tracking-[0.12em] text-[#6f6252]">
+        <p className="mt-3 text-center text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))]">
           Hover over a number to see calculations
         </p>
       </section>
 
-      <section className="border border-[#60482e]/45 bg-[#15100d]/95 p-5 sm:p-6">
+      <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 p-5 sm:p-6">
         <div className="flex items-end justify-between gap-4">
-          <h2 className="mt-[-8] font-serif text-2xl text-[#dec89f]">
+          <h2 className="mt-[-8] font-serif text-2xl text-[rgb(var(--sep-colour-dec89f))]">
             Health
           </h2>
 
-          <p className="font-serif text-2xl text-[#e1c28d]">
+          <p className="font-serif text-2xl text-[rgb(var(--sep-colour-e1c28d))]">
             {currentHealth === null || maxHealth === null
               ? "—"
               : `${currentHealth} / ${maxHealth}`}
           </p>
         </div>
 
-        <div className="mt-3 h-2 overflow-hidden border border-[#60482e]/45 bg-[#0d0907]">
+        <div className="mt-3 h-2 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0d0907))]">
           <div
-            className="h-full bg-gradient-to-r from-[#7b2f2a] via-[#a94f3f] to-[#c26a50] transition-[width] duration-300"
+            className="h-full bg-gradient-to-r from-[rgb(var(--sep-colour-7b2f2a))] via-[rgb(var(--sep-colour-a94f3f))] to-[rgb(var(--sep-colour-c26a50))] transition-[width] duration-300"
             style={{ width: `${healthPercentage}%` }}
           />
         </div>
 
         {maxHealth !== null ? (
-          <p className="mt-2 text-[8px] uppercase tracking-[0.14em] text-[#776957]">
+          <p className="mt-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-776957))]">
             Maximum Health = Effective Vigour × 10
             {breakdown.giftMaxHealth !== 0
               ? ` ${signed(breakdown.giftMaxHealth)} Feat Max Health`

@@ -36,8 +36,8 @@ function MessageModeBadge({
     <span
       className={`inline-flex border px-2 py-1 text-[7px] uppercase tracking-[0.18em] ${
         ongame
-          ? "border-[#9b7446]/70 bg-[#312215] text-[#e2bd82]"
-          : "border-[#687083]/70 bg-[#22252c] text-[#c6ccd8]"
+          ? "border-[rgb(var(--sep-colour-9b7446))]/70 bg-[rgb(var(--sep-colour-312215))] text-[rgb(var(--sep-colour-e2bd82))]"
+          : "border-[rgb(var(--sep-colour-687083))]/70 bg-[rgb(var(--sep-colour-22252c))] text-[rgb(var(--sep-colour-c6ccd8))]"
       }`}
     >
       {ongame
@@ -244,7 +244,7 @@ export function ConversationMessageList({
 
   return (
     <>
-      <section className="border-b border-[#59432c]/40 bg-[#120e0b] p-4 sm:px-6">
+      <section className="border-b border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-120e0b))] p-4 sm:px-6">
         <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_150px_150px_150px_auto]">
           <input
             type="search"
@@ -255,7 +255,7 @@ export function ConversationMessageList({
               )
             }
             placeholder="Search words in this conversation…"
-            className="min-w-0 border border-[#60482e]/55 bg-[#0d0907] px-3 py-2.5 text-xs text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49] [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
+            className="min-w-0 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))] [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
           />
 
           <select
@@ -268,7 +268,7 @@ export function ConversationMessageList({
                   | PrivateMessageMode,
               )
             }
-            className="border border-[#60482e]/55 bg-[#0d0907] px-3 py-2.5 text-xs text-[#cdbb9f] outline-none focus:border-[#a17a49]"
+            className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-cdbb9f))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
           >
             <option value="all">
               All types
@@ -284,7 +284,7 @@ export function ConversationMessageList({
           </select>
 
           <label className="grid gap-1">
-            <span className="text-[7px] uppercase tracking-[0.15em] text-[#716350]">
+            <span className="text-[7px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-716350))]">
               From
             </span>
 
@@ -296,12 +296,12 @@ export function ConversationMessageList({
                   event.target.value,
                 )
               }
-              className="border border-[#60482e]/55 bg-[#0d0907] px-2 py-2 text-[10px] text-[#cdbb9f] outline-none focus:border-[#a17a49]"
+              className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-2 py-2 text-[10px] text-[rgb(var(--sep-colour-cdbb9f))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
             />
           </label>
 
           <label className="grid gap-1">
-            <span className="text-[7px] uppercase tracking-[0.15em] text-[#716350]">
+            <span className="text-[7px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-716350))]">
               To
             </span>
 
@@ -313,7 +313,7 @@ export function ConversationMessageList({
                   event.target.value,
                 )
               }
-              className="border border-[#60482e]/55 bg-[#0d0907] px-2 py-2 text-[10px] text-[#cdbb9f] outline-none focus:border-[#a17a49]"
+              className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-2 py-2 text-[10px] text-[rgb(var(--sep-colour-cdbb9f))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
             />
           </label>
 
@@ -324,7 +324,7 @@ export function ConversationMessageList({
                 onClick={
                   clearFilters
                 }
-                className="h-9 border border-[#59432c] px-3 text-[8px] uppercase tracking-[0.15em] text-[#9e8767] transition hover:border-[#80613c] hover:text-[#d5ba8c]"
+                className="h-9 border border-[rgb(var(--sep-colour-59432c))] px-3 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-9e8767))] transition hover:border-[rgb(var(--sep-colour-80613c))] hover:text-[rgb(var(--sep-colour-d5ba8c))]"
               >
                 Clear filters
               </button>
@@ -332,9 +332,9 @@ export function ConversationMessageList({
           </div>
         </div>
 
-        <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-[#59432c]/25 pt-3">
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-3">
           <div className="flex flex-wrap items-center gap-2">
-            <p className="text-[8px] uppercase tracking-[0.15em] text-[#6f6253]">
+            <p className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-6f6253))]">
               {
                 filteredMessages.length
               }{" "}
@@ -355,7 +355,7 @@ export function ConversationMessageList({
                     selectAllVisible();
                   }
                 }}
-                className="border border-[#59432c]/65 bg-[#100c09] px-2.5 py-1.5 text-[7px] uppercase tracking-[0.14em] text-[#9e8767] transition hover:border-[#80613c] hover:text-[#d5ba8c]"
+                className="border border-[rgb(var(--sep-colour-59432c))]/65 bg-[rgb(var(--sep-colour-100c09))] px-2.5 py-1.5 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9e8767))] transition hover:border-[rgb(var(--sep-colour-80613c))] hover:text-[rgb(var(--sep-colour-d5ba8c))]"
               >
                 {allVisibleSelected
                   ? "Clear selection"
@@ -367,7 +367,7 @@ export function ConversationMessageList({
           {selectedIds.size >
           0 ? (
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-[8px] uppercase tracking-[0.14em] text-[#b79063]">
+              <span className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-b79063))]">
                 {
                   selectedIds.size
                 }{" "}
@@ -379,7 +379,7 @@ export function ConversationMessageList({
                 onClick={
                   clearSelection
                 }
-                className="border border-[#59432c] px-3 py-2 text-[8px] uppercase tracking-[0.15em] text-[#9e8767] transition hover:border-[#80613c] hover:text-[#d5ba8c]"
+                className="border border-[rgb(var(--sep-colour-59432c))] px-3 py-2 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-9e8767))] transition hover:border-[rgb(var(--sep-colour-80613c))] hover:text-[rgb(var(--sep-colour-d5ba8c))]"
               >
                 Cancel
               </button>
@@ -421,7 +421,7 @@ export function ConversationMessageList({
 
                 <button
                   type="submit"
-                  className="border border-[#a65343] bg-[#301713] px-4 py-2 text-[8px] uppercase tracking-[0.15em] text-[#e6aa9d] transition hover:border-[#c66d5b] hover:bg-[#431d18]"
+                  className="border border-[rgb(var(--sep-colour-a65343))] bg-[rgb(var(--sep-colour-301713))] px-4 py-2 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-e6aa9d))] transition hover:border-[rgb(var(--sep-colour-c66d5b))] hover:bg-[rgb(var(--sep-colour-431d18))]"
                 >
                   Delete selected (
                   {
@@ -432,7 +432,7 @@ export function ConversationMessageList({
               </form>
             </div>
           ) : (
-            <p className="text-[7px] uppercase tracking-[0.13em] text-[#655a4d]">
+            <p className="text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-655a4d))]">
               Tick messages to
               delete several at
               once
@@ -480,20 +480,20 @@ export function ConversationMessageList({
                 className={`relative max-w-[82%] border p-4 pb-10 transition ${
                   own
                     ? ongame
-                      ? "ml-auto border-[#80613c] bg-[#2c2117]"
-                      : "ml-auto border-[#687083] bg-[#252830]"
+                      ? "ml-auto border-[rgb(var(--sep-colour-80613c))] bg-[rgb(var(--sep-colour-2c2117))]"
+                      : "ml-auto border-[rgb(var(--sep-colour-687083))] bg-[rgb(var(--sep-colour-252830))]"
                     : ongame
-                      ? "border-[#514233] bg-[#100c09]"
-                      : "border-[#5c6372] bg-[#191b21]"
+                      ? "border-[rgb(var(--sep-colour-514233))] bg-[rgb(var(--sep-colour-100c09))]"
+                      : "border-[rgb(var(--sep-colour-5c6372))] bg-[rgb(var(--sep-colour-191b21))]"
                 } ${
                   selected
-                    ? "ring-1 ring-[#c18b4d]"
+                    ? "ring-1 ring-[rgb(var(--sep-colour-c18b4d))]"
                     : ""
                 }`}
               >
                 <div className="flex items-start gap-3">
                   {/* CHARACTER PORTRAIT */}
-                  <div className="h-11 w-11 shrink-0 overflow-hidden border border-[#60482e]/75 bg-[#0d0907]">
+                  <div className="h-11 w-11 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/75 bg-[rgb(var(--sep-colour-0d0907))]">
                     {sender?.portrait_url ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
@@ -504,7 +504,7 @@ export function ConversationMessageList({
                         className="h-full w-full object-cover"
                       />
                     ) : (
-                      <span className="flex h-full items-center justify-center font-serif text-sm text-[#9b805b]">
+                      <span className="flex h-full items-center justify-center font-serif text-sm text-[rgb(var(--sep-colour-9b805b))]">
                         {senderName
                           .charAt(0)
                           .toUpperCase()}
@@ -519,8 +519,8 @@ export function ConversationMessageList({
                         <p
                           className={`font-serif text-sm ${
                             ongame
-                              ? "text-[#d8bf91]"
-                              : "text-[#cbd0dc]"
+                              ? "text-[rgb(var(--sep-colour-d8bf91))]"
+                              : "text-[rgb(var(--sep-colour-cbd0dc))]"
                           }`}
                         >
                           {senderName}
@@ -534,7 +534,7 @@ export function ConversationMessageList({
                       </div>
 
                       <div className="flex flex-wrap items-center justify-end gap-2">
-                        <time className="text-[9px] uppercase tracking-[0.16em] text-[#776b5c]">
+                        <time className="text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-776b5c))]">
                           {new Date(
                             message.created_at,
                           ).toLocaleString(
@@ -544,7 +544,7 @@ export function ConversationMessageList({
 
                         <a
                           href={`/messages/forward/${message.id}`}
-                          className="border border-[#59432c]/80 bg-[#17110d] px-2.5 py-1.5 text-[7px] uppercase tracking-[0.13em] text-[#b99b70] transition hover:border-[#8b6a40] hover:text-[#e3c28d]"
+                          className="border border-[rgb(var(--sep-colour-59432c))]/80 bg-[rgb(var(--sep-colour-17110d))] px-2.5 py-1.5 text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-b99b70))] transition hover:border-[rgb(var(--sep-colour-8b6a40))] hover:text-[rgb(var(--sep-colour-e3c28d))]"
                         >
                           Forward
                         </a>
@@ -584,7 +584,7 @@ export function ConversationMessageList({
                           <button
                             type="submit"
                             title="Delete this message from your view"
-                            className="border border-[#7b4035]/80 bg-[#27120f] px-2.5 py-1.5 text-[7px] uppercase tracking-[0.13em] text-[#d99b8e] transition hover:border-[#ad5a4c] hover:bg-[#391713] hover:text-[#f1b2a5]"
+                            className="border border-[rgb(var(--sep-colour-7b4035))]/80 bg-[rgb(var(--sep-colour-27120f))] px-2.5 py-1.5 text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-d99b8e))] transition hover:border-[rgb(var(--sep-colour-ad5a4c))] hover:bg-[rgb(var(--sep-colour-391713))] hover:text-[rgb(var(--sep-colour-f1b2a5))]"
                           >
                             Delete
                           </button>
@@ -596,13 +596,13 @@ export function ConversationMessageList({
                     <div
                       className={`mt-3 break-words text-sm leading-7 ${
                         ongame
-                          ? "text-[#c7b79d]"
-                          : "text-[#c2c7d1]"
+                          ? "text-[rgb(var(--sep-colour-c7b79d))]"
+                          : "text-[rgb(var(--sep-colour-c2c7d1))]"
                       }`}
                     >
                       {message.forwarded_body ? (
-                        <div className="mb-3 border-l-2 border-[#9a7543] bg-black/20 p-3">
-                          <p className="mb-2 text-[7px] uppercase tracking-[0.16em] text-[#9b8465]">
+                        <div className="mb-3 border-l-2 border-[rgb(var(--sep-colour-9a7543))] bg-black/20 p-3">
+                          <p className="mb-2 text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-9b8465))]">
                             Forwarded from{" "}
                             {message.forwarded_sender_name ??
                               "Unknown"}
@@ -617,7 +617,7 @@ export function ConversationMessageList({
                             body={
                               message.forwarded_body
                             }
-                            className="text-xs text-[#aa9c88] [&_p]:my-1"
+                            className="text-xs text-[rgb(var(--sep-colour-aa9c88))] [&_p]:my-1"
                           />
                         </div>
                       ) : null}
@@ -661,8 +661,8 @@ export function ConversationMessageList({
                 <label
                   className={`absolute bottom-3 right-3 flex h-6 w-6 cursor-pointer items-center justify-center border transition ${
                     selected
-                      ? "border-[#b8874d] bg-[#382516]"
-                      : "border-[#6a5135] bg-[#0d0907] hover:border-[#9b7446]"
+                      ? "border-[rgb(var(--sep-colour-b8874d))] bg-[rgb(var(--sep-colour-382516))]"
+                      : "border-[rgb(var(--sep-colour-6a5135))] bg-[rgb(var(--sep-colour-0d0907))] hover:border-[rgb(var(--sep-colour-9b7446))]"
                   }`}
                   title="Select this message"
                 >
@@ -674,7 +674,7 @@ export function ConversationMessageList({
                         message.id,
                       )
                     }
-                    className="h-3.5 w-3.5 accent-[#b8874d]"
+                    className="h-3.5 w-3.5 accent-[rgb(var(--sep-colour-b8874d))]"
                     aria-label="Select message"
                   />
                 </label>
@@ -685,7 +685,7 @@ export function ConversationMessageList({
 
         {filteredMessages.length ===
         0 ? (
-          <p className="py-12 text-center text-sm text-[#8f8271]">
+          <p className="py-12 text-center text-sm text-[rgb(var(--sep-colour-8f8271))]">
             {messages.length ===
             0
               ? "Begin the conversation."

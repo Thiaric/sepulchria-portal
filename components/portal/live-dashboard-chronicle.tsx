@@ -403,7 +403,7 @@ export function LiveDashboardChronicle({
     <div className="flex h-full min-h-0 flex-col">
       <div className="mt-1 flex shrink-0 items-center justify-between gap-4">
         <div>
-          <p className="text-[8px] uppercase tracking-[0.22em] text-[#876a46]">
+          <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))]">
             People in Sepulchria
           </p>
 
@@ -416,7 +416,7 @@ export function LiveDashboardChronicle({
       ? ""
       : "s"
   }`}
-  className="flex h-8 min-w-8 items-center justify-center rounded-full border border-[#6a5637] bg-[#20170f] px-2 font-serif text-sm leading-none text-[#d9bd8d]"
+  className="flex h-8 min-w-8 items-center justify-center rounded-full border border-[rgb(var(--sep-colour-6a5637))] bg-[rgb(var(--sep-colour-20170f))] px-2 font-serif text-sm leading-none text-[rgb(var(--sep-colour-d9bd8d))]"
 >
   <span className="relative -top-[2px] leading-none">
   {activeCharacterCount}
@@ -425,7 +425,7 @@ export function LiveDashboardChronicle({
       </div>
 
       {error ? (
-        <p className="mt-4 shrink-0 border border-[#743d35] bg-[#2a1512] p-3 text-[10px] leading-5 text-[#d8a49a]">
+        <p className="mt-4 shrink-0 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-3 text-[10px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]">
           Live city activity could not be loaded:{" "}
           {error}
         </p>
@@ -454,7 +454,7 @@ export function LiveDashboardChronicle({
         {!loading &&
         !error &&
         rooms.length === 0 ? (
-          <p className="border border-[#59432c]/30 bg-[#100c09]/60 p-4 text-[11px] leading-5 text-[#8f8271]">
+          <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-4 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
             No locations are populated at the moment.
           </p>
         ) : null}
@@ -475,15 +475,15 @@ function ActiveRoomCard({
     currentRoomId === room.id;
 
   return (
-    <article className="border border-[#59432c]/40 bg-[#100c09] px-3 py-2.5">
+    <article className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5">
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
         <div className="min-w-0">
-          <h3 className="truncate font-serif text-sm text-[#d6bd91]">
+          <h3 className="truncate font-serif text-sm text-[rgb(var(--sep-colour-d6bd91))]">
             {room.name}
           </h3>
 
           {room.areaName ? (
-            <p className="mt-0.5 truncate text-[7px] uppercase tracking-[0.13em] text-[#74654f]">
+            <p className="mt-0.5 truncate text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-74654f))]">
               {room.areaName}
             </p>
           ) : null}
@@ -496,7 +496,7 @@ function ActiveRoomCard({
                 ? ""
                 : "s"
             }`}
-            className="flex h-6 min-w-6 items-center justify-center rounded-full border border-[#59432c]/60 bg-[#19120d] px-1.5 text-[9px] text-[#c3a67d]"
+            className="flex h-6 min-w-6 items-center justify-center rounded-full border border-[rgb(var(--sep-colour-59432c))]/60 bg-[rgb(var(--sep-colour-19120d))] px-1.5 text-[9px] text-[rgb(var(--sep-colour-c3a67d))]"
           >
             {room.characters.length}
           </span>
@@ -520,7 +520,7 @@ function ActiveRoomCard({
                   ? "Current room"
                   : `Join ${room.name}`
               }
-              className="flex h-6 w-6 items-center justify-center border border-[#765937] bg-[#271c12] text-[11px] text-[#dfc79c] transition hover:border-[#997042] hover:bg-[#3b2919] disabled:cursor-default disabled:border-[#4d4336] disabled:bg-[#17130f] disabled:text-[#706658]"
+              className="flex h-6 w-6 items-center justify-center border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-271c12))] text-[11px] text-[rgb(var(--sep-colour-dfc79c))] transition hover:border-[rgb(var(--sep-colour-997042))] hover:bg-[rgb(var(--sep-colour-3b2919))] disabled:cursor-default disabled:border-[rgb(var(--sep-colour-4d4336))] disabled:bg-[rgb(var(--sep-colour-17130f))] disabled:text-[rgb(var(--sep-colour-706658))]"
             >
               <span aria-hidden="true">
                 {alreadyHere ? "⊙" : "➔"}
@@ -547,14 +547,14 @@ function ContextSummaryRow({
       className={`flex justify-between gap-4 py-2.5 text-xs ${
         last
           ? ""
-          : "border-b border-[#59432c]/25"
+          : "border-b border-[rgb(var(--sep-colour-59432c))]/25"
       }`}
     >
-      <span className="text-[#786b5b]">
+      <span className="text-[rgb(var(--sep-colour-786b5b))]">
         {label}
       </span>
 
-      <span className="max-w-[150px] break-words text-right capitalize text-[#bba98d]">
+      <span className="max-w-[150px] break-words text-right capitalize text-[rgb(var(--sep-colour-bba98d))]">
         {value}
       </span>
     </div>
@@ -564,9 +564,9 @@ function ContextSummaryRow({
 function ChronicleLoading() {
   return (
     <>
-      <div className="h-16 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
-      <div className="h-16 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
-      <div className="h-16 animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
+      <div className="h-16 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
+      <div className="h-16 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
+      <div className="h-16 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
     </>
   );
 }

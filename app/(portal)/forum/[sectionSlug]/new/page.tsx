@@ -348,10 +348,10 @@ export default async function NewForumTopicPage({
   return (
     <main className="p-5 sm:p-7 lg:p-9">
       <div className="mx-auto max-w-5xl">
-        <nav className="mb-4 flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.17em] text-[#756751]">
+        <nav className="mb-4 flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-756751))]">
           <Link
             href="/forum"
-            className="transition hover:text-[#d5bd96]"
+            className="transition hover:text-[rgb(var(--sep-colour-d5bd96))]"
           >
             Forum
           </Link>
@@ -360,19 +360,19 @@ export default async function NewForumTopicPage({
 
           <Link
             href={`/forum/${currentSectionRow.slug}`}
-            className="transition hover:text-[#d5bd96]"
+            className="transition hover:text-[rgb(var(--sep-colour-d5bd96))]"
           >
             {currentSectionRow.name}
           </Link>
 
           <span>/</span>
 
-          <span className="text-[#a38b67]">
+          <span className="text-[rgb(var(--sep-colour-a38b67))]">
             New discussion
           </span>
         </nav>
 
-        <header className="relative overflow-hidden border border-[#60482e]/45 bg-[#15100d]">
+        <header className="relative overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
           {currentSectionRow.banner_url ? (
             <div className="absolute inset-0">
               <Image
@@ -387,17 +387,17 @@ export default async function NewForumTopicPage({
                 unoptimized
               />
 
-              <div className="absolute inset-0 bg-gradient-to-r from-[#15100d] via-[#15100d]/92 to-[#15100d]/70" />
+              <div className="absolute inset-0 bg-gradient-to-r from-[rgb(var(--sep-colour-15100d))] via-[rgb(var(--sep-colour-15100d))]/92 to-[rgb(var(--sep-colour-15100d))]/70" />
 
-              <div className="absolute inset-0 bg-gradient-to-t from-[#15100d] via-transparent to-black/30" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[rgb(var(--sep-colour-15100d))] via-transparent to-black/30" />
             </div>
           ) : (
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(131,91,50,0.18),transparent_45%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(var(--sep-rgb-131-91-50),0.18),transparent_45%)]" />
           )}
 
           <div className="relative flex items-center gap-5 px-6 py-8 sm:px-8 sm:py-2">
             <div
-              className="relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden border bg-[#0c0907]"
+              className="relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-0c0907))]"
               style={{
                 borderColor:
                   `${sectionColour}99`,
@@ -429,7 +429,7 @@ export default async function NewForumTopicPage({
             </div>
 
             <div className="min-w-0">
-              <p className="text-[8px] uppercase tracking-[0.26em] text-[#8c704b]">
+              <p className="text-[8px] uppercase tracking-[0.26em] text-[rgb(var(--sep-colour-8c704b))]">
                 {currentSectionRow.section_type ===
                 "ongame"
                   ? "Ongame Forum"
@@ -439,13 +439,13 @@ export default async function NewForumTopicPage({
                     : "Organisation Forum"}
               </p>
 
-              <h1 className="mt-1 font-serif text-3xl text-[#ead5ac] sm:text-3xl">
+              <h1 className="mt-1 font-serif text-3xl text-[rgb(var(--sep-colour-ead5ac))] sm:text-3xl">
                 New discussion
               </h1>
 
-              <p className="mt-1 text-sm leading-6 text-[#9e907f]">
+              <p className="mt-1 text-sm leading-6 text-[rgb(var(--sep-colour-9e907f))]">
                 Publishing in{" "}
-                <span className="text-[#d0b68d]">
+                <span className="text-[rgb(var(--sep-colour-d0b68d))]">
                   {
                     currentSectionRow.name
                   }

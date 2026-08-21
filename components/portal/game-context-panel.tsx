@@ -270,15 +270,15 @@ export function GameContextPanel({
   if (!roomId) {
     return (
       <div className="h-full overflow-y-auto">
-        <p className="text-[9px] uppercase tracking-[0.3em] text-[#876a46]">
+        <p className="text-[9px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-876a46))]">
           Play
         </p>
 
-        <h2 className="mt-2 font-serif text-2xl text-[#d6bd91]">
+        <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-d6bd91))]">
           Outside the city
         </h2>
 
-        <p className="mt-4 text-xs leading-6 text-[#938673]">
+        <p className="mt-4 text-xs leading-6 text-[rgb(var(--sep-colour-938673))]">
           Your character has not yet
           been assigned to a room.
         </p>
@@ -291,25 +291,25 @@ export function GameContextPanel({
       
 
       {error ? (
-        <p className="mt-3 shrink-0 border border-[#743d35] bg-[#2a1512] p-2.5 text-[11px] leading-5 text-[#d8a49a]">
+        <p className="mt-3 shrink-0 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-2.5 text-[11px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]">
           The room information could
           not be loaded.
         </p>
       ) : null}
 
-      <section className="mt-1 flex min-h-0 flex-1 flex-col border-[#59432c]/40 pt-0">
+      <section className="mt-1 flex min-h-0 flex-1 flex-col border-[rgb(var(--sep-colour-59432c))]/40 pt-0">
         <div className="flex shrink-0 items-center justify-between gap-3">
           <div className="min-w-0">
-            <p className="text-[8px] uppercase tracking-[0.24em] text-[#876a46]">
+            <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-876a46))]">
               Present characters
             </p>
 
-            <h3 className="mt-0.5 font-serif text-lg text-[#d6bd91]">
+            <h3 className="mt-0.5 font-serif text-lg text-[rgb(var(--sep-colour-d6bd91))]">
               In this Location
             </h3>
           </div>
 
-          <span className="flex h-6 min-w-6 shrink-0 items-center justify-center border border-[#59432c]/50 bg-[#15100d] px-1.5 text-[10px] text-[#a68b67]">
+          <span className="flex h-6 min-w-6 shrink-0 items-center justify-center border border-[rgb(var(--sep-colour-59432c))]/50 bg-[rgb(var(--sep-colour-15100d))] px-1.5 text-[10px] text-[rgb(var(--sep-colour-a68b67))]">
             {presentCharacters.length}
           </span>
         </div>
@@ -346,14 +346,14 @@ export function GameContextPanel({
                 return (
   <div
     key={presence.character_id}
-    className="group relative overflow-hidden border border-[#59432c]/40 bg-[#100c09] transition hover:border-[#9b7446] hover:bg-[#1a120c]"
+    className="group relative overflow-hidden border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] transition hover:border-[rgb(var(--sep-colour-9b7446))] hover:bg-[rgb(var(--sep-colour-1a120c))]"
   >
     <Link
       href={`/characters/${person.public_slug}?from=game`}
       title={`Open ${displayName}'s profile`}
       className="block"
     >
-      <div className="absolute inset-y-0 left-0 w-px bg-[#b88a52]/0 transition group-hover:bg-[#b88a52]/70" />
+      <div className="absolute inset-y-0 left-0 w-px bg-[rgb(var(--sep-colour-b88a52))]/0 transition group-hover:bg-[rgb(var(--sep-colour-b88a52))]/70" />
 
       <div className="flex min-h-[78px] items-center gap-3 px-3 py-2.5 pr-10">
         <div className="relative shrink-0">
@@ -369,7 +369,7 @@ export function GameContextPanel({
 
         <div className="min-w-0 flex-1">
           <div className="flex items-center justify-between gap-2">
-            <p className="truncate font-serif text-[13px] leading-4 text-[#dbc397] transition group-hover:text-[#ecd5a8]">
+            <p className="truncate font-serif text-[13px] leading-4 text-[rgb(var(--sep-colour-dbc397))] transition group-hover:text-[rgb(var(--sep-colour-ecd5a8))]">
               {displayName}
             </p>
 
@@ -379,7 +379,7 @@ export function GameContextPanel({
           </div>
 
           {person.title ? (
-            <p className="mt-0.5 truncate font-serif text-[10px] italic leading-3 text-[#9d8769]">
+            <p className="mt-0.5 truncate font-serif text-[10px] italic leading-3 text-[rgb(var(--sep-colour-9d8769))]">
               {person.title}
             </p>
           ) : null}
@@ -414,7 +414,7 @@ export function GameContextPanel({
       type="submit"
       title={`Message ${displayName}`}
       aria-label={`Message ${displayName}`}
-      className="flex h-6 w-6 items-center justify-center border border-[#60482e]/60 bg-[#17110d] text-[12px] text-[#a98b61] transition hover:border-[#9a7445] hover:bg-[#2a1d12] hover:text-[#e0c392]"
+      className="flex h-6 w-6 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-17110d))] text-[12px] text-[rgb(var(--sep-colour-a98b61))] transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:bg-[rgb(var(--sep-colour-2a1d12))] hover:text-[rgb(var(--sep-colour-e0c392))]"
     >
       ✉
     </button>
@@ -429,7 +429,7 @@ export function GameContextPanel({
           {!loading &&
           presentCharacters.length ===
             0 ? (
-            <p className="border border-[#59432c]/30 bg-[#100c09]/60 p-3 text-[11px] leading-5 text-[#8f8271]">
+            <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
               No active characters are
               currently visible here.
             </p>
@@ -437,17 +437,17 @@ export function GameContextPanel({
         </div>
       </section>
 
-      <section className="mt-4 max-h-48 shrink-0 border-t border-[#59432c]/40 pt-4">
+      <section className="mt-4 max-h-48 shrink-0 border-t border-[rgb(var(--sep-colour-59432c))]/40 pt-4">
         <div className="flex items-end justify-between gap-3">
           <div>
-            <p className="text-[8px] uppercase tracking-[0.24em] text-[#876a46]">
+            <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-876a46))]">
               Available connections
             </p>
 
             
           </div>
 
-          <span className="text-[10px] text-[#806c52]">
+          <span className="text-[10px] text-[rgb(var(--sep-colour-806c52))]">
             {exits.length}
           </span>
         </div>
@@ -481,11 +481,11 @@ export function GameContextPanel({
 
                   <button
                     type="submit"
-                    className="group w-full border border-[#765937]/60 bg-[#271c12] px-2.5 py-2 text-left transition hover:border-[#a17a49] hover:bg-[#3b2919]"
+                    className="group w-full border border-[rgb(var(--sep-colour-765937))]/60 bg-[rgb(var(--sep-colour-271c12))] px-2.5 py-2 text-left transition hover:border-[rgb(var(--sep-colour-a17a49))] hover:bg-[rgb(var(--sep-colour-3b2919))]"
                   >
                     <span className="flex items-center justify-between gap-3">
                       <span className="min-w-0">
-                        <span className="block truncate font-serif text-[13px] leading-4 text-[#d8bf91] transition group-hover:text-[#ead2a4]">
+                        <span className="block truncate font-serif text-[13px] leading-4 text-[rgb(var(--sep-colour-d8bf91))] transition group-hover:text-[rgb(var(--sep-colour-ead2a4))]">
                           {destination.name}
                         </span>
 
@@ -494,7 +494,7 @@ export function GameContextPanel({
 
                       <span
                         aria-hidden="true"
-                        className="shrink-0 text-[10px] text-[#836746] transition group-hover:translate-x-0.5"
+                        className="shrink-0 text-[10px] text-[rgb(var(--sep-colour-836746))] transition group-hover:translate-x-0.5"
                       >
                         →
                       </span>
@@ -507,7 +507,7 @@ export function GameContextPanel({
 
           {!loading &&
           exits.length === 0 ? (
-            <p className="text-[11px] leading-5 text-[#8f8271]">
+            <p className="text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
               No accessible passages
               have been recorded.
             </p>
@@ -532,7 +532,7 @@ function MiniCodexIcon({
 
   return (
     <span
-      className="flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden border bg-[#0d0907] font-serif text-[8px]"
+      className="flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-0d0907))] font-serif text-[8px]"
       style={{
         borderColor: `${colour}88`,
         color: colour,
@@ -575,13 +575,13 @@ function PresenceDot({
     string
   > = {
     online:
-      "border-[#102519] bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.75)]",
+      "border-[rgb(var(--sep-colour-102519))] bg-emerald-500 shadow-[0_0_6px_rgba(var(--sep-rgb-16-185-129),0.75)]",
 
     away:
-      "border-[#2f2511] bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.65)]",
+      "border-[rgb(var(--sep-colour-2f2511))] bg-amber-500 shadow-[0_0_6px_rgba(var(--sep-rgb-245-158-11),0.65)]",
 
     busy:
-      "border-[#321313] bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.65)]",
+      "border-[rgb(var(--sep-colour-321313))] bg-red-500 shadow-[0_0_6px_rgba(var(--sep-rgb-239-68-68),0.65)]",
   };
 
   return (
@@ -632,7 +632,7 @@ function Portrait({
     .join("");
 
   return (
-    <div className="h-9 w-9 overflow-hidden border border-[#705538] bg-[#0d0a08] shadow-inner">
+    <div className="h-9 w-9 overflow-hidden border border-[rgb(var(--sep-colour-705538))] bg-[rgb(var(--sep-colour-0d0a08))] shadow-inner">
       {src ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
@@ -641,7 +641,7 @@ function Portrait({
           className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
         />
       ) : (
-        <span className="flex h-full items-center justify-center font-serif text-[11px] text-[#a0845e]">
+        <span className="flex h-full items-center justify-center font-serif text-[11px] text-[rgb(var(--sep-colour-a0845e))]">
           {initials || "?"}
         </span>
       )}
@@ -652,9 +652,9 @@ function Portrait({
 function SidebarLoadingRows() {
   return (
     <>
-      <div className="h-[60px] animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
-      <div className="h-[60px] animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
-      <div className="h-[60px] animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
+      <div className="h-[60px] animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
+      <div className="h-[60px] animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
+      <div className="h-[60px] animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
     </>
   );
 }
@@ -662,8 +662,8 @@ function SidebarLoadingRows() {
 function CompactLoadingRows() {
   return (
     <>
-      <div className="h-[43px] animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
-      <div className="h-[43px] animate-pulse border border-[#59432c]/30 bg-[#19120d]" />
+      <div className="h-[43px] animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
+      <div className="h-[43px] animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
     </>
   );
 }

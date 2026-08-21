@@ -152,10 +152,10 @@ export function StaffAppearOfflineToggle({
       }
       aria-label={title}
       title={title}
-      className={`flex h-8 w-8 items-center justify-center border bg-[#17120f] transition sm:h-9 sm:w-9 2xl:h-10 2xl:w-10 ${
+      className={`flex h-8 w-8 items-center justify-center border bg-[rgb(var(--sep-colour-17120f))] transition sm:h-9 sm:w-9 2xl:h-10 2xl:w-10 ${
         appearOffline
-          ? "border-[#78674f] text-[#9d8d76] hover:border-[#9b8464] hover:text-[#c7b69b]"
-          : "border-[#614b31] text-[#c69b5c] hover:border-[#977242] hover:text-[#efd6a3]"
+          ? "border-[rgb(var(--sep-colour-78674f))] text-[rgb(var(--sep-colour-9d8d76))] hover:border-[rgb(var(--sep-colour-9b8464))] hover:text-[rgb(var(--sep-colour-c7b69b))]"
+          : "border-[rgb(var(--sep-colour-614b31))] text-[rgb(var(--sep-colour-c69b5c))] hover:border-[rgb(var(--sep-colour-977242))] hover:text-[rgb(var(--sep-colour-efd6a3))]"
       } disabled:cursor-wait disabled:opacity-50`}
     >
       {appearOffline ? (

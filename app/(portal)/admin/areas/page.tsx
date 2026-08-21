@@ -119,31 +119,31 @@ export default async function AdminAreasPage() {
       <div className="mx-auto max-w-6xl">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-[9px] uppercase tracking-[0.28em] text-[#8c704b]">
+            <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
               Administration
             </p>
 
-            <h2 className="mt-2 font-serif text-4xl text-[#ead5ac]">
+            <h2 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">
               Area Management
             </h2>
 
-            <p className="mt-3 max-w-3xl text-sm leading-7 text-[#a99b89]">
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))]">
               Create and organise the districts
               that contain Sepulchria&apos;s locations.
             </p>
           </div>
 
-          <span className="border border-[#60482e]/45 bg-[#15100d] px-4 py-3 text-[10px] uppercase tracking-[0.18em] text-[#a99069]">
+          <span className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 text-[10px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a99069))]">
             {areas.length} areas
           </span>
         </div>
 
-        <section className="mt-8 border border-[#60482e]/45 bg-[#15100d] p-5 sm:p-6">
-          <p className="text-[9px] uppercase tracking-[0.24em] text-[#8c704b]">
+        <section className="mt-8 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6">
+          <p className="text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))]">
             New area
           </p>
 
-          <h3 className="mt-2 font-serif text-2xl text-[#dfc99f]">
+          <h3 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">
             Create an area
           </h3>
 
@@ -159,7 +159,7 @@ export default async function AdminAreasPage() {
                   required
                   maxLength={120}
                   placeholder="Centro di Sepulchria"
-                  className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+                  className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
                 />
               </AdminField>
 
@@ -169,7 +169,7 @@ export default async function AdminAreasPage() {
                   name="slug"
                   maxLength={100}
                   placeholder="Generated automatically"
-                  className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+                  className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
                 />
               </AdminField>
 
@@ -179,7 +179,7 @@ export default async function AdminAreasPage() {
     name="imageUrl"
     maxLength={2000}
     placeholder="/places/Central-Square.png"
-    className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+    className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
   />
 </AdminField>
 
@@ -190,7 +190,7 @@ export default async function AdminAreasPage() {
                   defaultValue={0}
                   min={-9999}
                   max={9999}
-                  className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                  className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                 />
               </AdminField>
             </div>
@@ -207,12 +207,12 @@ export default async function AdminAreasPage() {
               </AdminField>
             </div>
 
-            <label className="mt-4 flex items-center gap-3 text-sm text-[#bbaa90]">
+            <label className="mt-4 flex items-center gap-3 text-sm text-[rgb(var(--sep-colour-bbaa90))]">
               <input
                 type="checkbox"
                 name="isActive"
                 defaultChecked
-                className="h-4 w-4 accent-[#8b673d]"
+                className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))]"
               />
 
               Active
@@ -221,7 +221,7 @@ export default async function AdminAreasPage() {
             <div className="mt-5 flex justify-end">
               <button
                 type="submit"
-                className="border border-[#987344] bg-[#3b2919] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[#efd6a8] transition hover:border-[#b98c50] hover:bg-[#50371f]"
+                className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
               >
                 Create area
               </button>
@@ -233,11 +233,11 @@ export default async function AdminAreasPage() {
           {areas.map((area) => (
             <section
               key={area.id}
-              className="overflow-hidden border border-[#60482e]/45 bg-[#15100d]"
+              className="overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]"
             >
               <div className="grid lg:grid-cols-[220px_minmax(0,1fr)]">
-                <div className="border-b border-[#60482e]/35 bg-[#0f0b09] p-5 lg:border-b-0 lg:border-r">
-                  <div className="relative aspect-[4/3] w-full overflow-hidden border border-[#765937]/55 bg-[#090706]">
+                <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-0f0b09))] p-5 lg:border-b-0 lg:border-r">
+                  <div className="relative aspect-[4/3] w-full overflow-hidden border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-090706))]">
                     {area.image_url ? (
                       <Image
                         src={
@@ -253,7 +253,7 @@ export default async function AdminAreasPage() {
                         className="object-cover"
                       />
                     ) : (
-                      <div className="flex h-full items-center justify-center font-serif text-4xl text-[#705334]">
+                      <div className="flex h-full items-center justify-center font-serif text-4xl text-[rgb(var(--sep-colour-705334))]">
                         {area.name
                           .charAt(0)
                           .toUpperCase()}
@@ -266,14 +266,14 @@ export default async function AdminAreasPage() {
                       isActive={area.is_active}
                     />
 
-                    <p className="text-[9px] uppercase tracking-[0.18em] text-[#756957]">
+                    <p className="text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-756957))]">
                       {area.room_count}{" "}
                       {area.room_count === 1
                         ? "room"
                         : "rooms"}
                     </p>
 
-                    <p className="text-[9px] text-[#756957]">
+                    <p className="text-[9px] text-[rgb(var(--sep-colour-756957))]">
                       Updated{" "}
                       {formatDate(area.updated_at)}
                     </p>
@@ -282,11 +282,11 @@ export default async function AdminAreasPage() {
 
                 <div className="p-5 sm:p-6">
                   <div>
-                    <h3 className="font-serif text-2xl text-[#e3cda5]">
+                    <h3 className="font-serif text-2xl text-[rgb(var(--sep-colour-e3cda5))]">
                       {area.name}
                     </h3>
 
-                    <p className="mt-1 text-[10px] text-[#887967]">
+                    <p className="mt-1 text-[10px] text-[rgb(var(--sep-colour-887967))]">
                       /{area.slug}
                     </p>
                   </div>
@@ -309,7 +309,7 @@ export default async function AdminAreasPage() {
                           required
                           maxLength={120}
                           defaultValue={area.name}
-                          className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                          className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                         />
                       </AdminField>
 
@@ -320,7 +320,7 @@ export default async function AdminAreasPage() {
                           required
                           maxLength={100}
                           defaultValue={area.slug}
-                          className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                          className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                         />
                       </AdminField>
 
@@ -331,7 +331,7 @@ export default async function AdminAreasPage() {
     maxLength={2000}
     defaultValue={area.image_url ?? ""}
     placeholder="/places/Central-Square.png"
-    className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+    className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
   />
 </AdminField>
 
@@ -344,7 +344,7 @@ export default async function AdminAreasPage() {
                           defaultValue={
                             area.sort_order
                           }
-                          className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                          className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                         />
                       </AdminField>
                     </div>
@@ -362,14 +362,14 @@ export default async function AdminAreasPage() {
                     </div>
 
                     <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
-                      <label className="flex items-center gap-3 text-sm text-[#bbaa90]">
+                      <label className="flex items-center gap-3 text-sm text-[rgb(var(--sep-colour-bbaa90))]">
                         <input
                           type="checkbox"
                           name="isActive"
                           defaultChecked={
                             area.is_active
                           }
-                          className="h-4 w-4 accent-[#8b673d]"
+                          className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))]"
                         />
 
                         Active
@@ -377,7 +377,7 @@ export default async function AdminAreasPage() {
 
                       <button
                         type="submit"
-                        className="border border-[#987344] bg-[#3b2919] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[#efd6a8] transition hover:border-[#b98c50] hover:bg-[#50371f]"
+                        className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
                       >
                         Save changes
                       </button>
@@ -386,7 +386,7 @@ export default async function AdminAreasPage() {
 
                   <AdminActionForm
                     action={deleteArea}
-                    className="mt-6 border-t border-[#60482e]/30 pt-5"
+                    className="mt-6 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-5"
                   >
                     <input
                       type="hidden"
@@ -399,7 +399,7 @@ export default async function AdminAreasPage() {
                         type="text"
                         name="confirmation"
                         placeholder='Type "DELETE"'
-                        className="w-full border border-red-900/50 bg-[#100909] px-3 py-3 text-sm text-red-200 outline-none placeholder:text-red-900/70 focus:border-red-700"
+                        className="w-full border border-red-900/50 bg-[rgb(var(--sep-colour-100909))] px-3 py-3 text-sm text-red-200 outline-none placeholder:text-red-900/70 focus:border-red-700"
                       />
 
                       <button
@@ -411,7 +411,7 @@ export default async function AdminAreasPage() {
                     </div>
 
                     {area.room_count > 0 ? (
-                      <p className="mt-3 text-[10px] leading-5 text-[#8e7462]">
+                      <p className="mt-3 text-[10px] leading-5 text-[rgb(var(--sep-colour-8e7462))]">
                         Deletion is blocked while
                         this area still contains
                         rooms.
@@ -424,8 +424,8 @@ export default async function AdminAreasPage() {
           ))}
 
           {areas.length === 0 ? (
-            <section className="border border-[#60482e]/45 bg-[#15100d] p-10 text-center">
-              <p className="font-serif text-xl text-[#b9a88f]">
+            <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-10 text-center">
+              <p className="font-serif text-xl text-[rgb(var(--sep-colour-b9a88f))]">
                 No areas were found.
               </p>
             </section>
@@ -445,7 +445,7 @@ function AdminField({
 }) {
   return (
     <div className="block">
-      <div className="mb-2 block text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+      <div className="mb-2 block text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
         {label}
       </div>
 

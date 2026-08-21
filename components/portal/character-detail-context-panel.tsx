@@ -292,7 +292,7 @@ export function CharacterDetailContextPanel({
           (_, index) => (
             <div
               key={index}
-              className="h-9 animate-pulse border border-[#59432c]/30 bg-[#19120d]"
+              className="h-9 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]"
             />
           ),
         )}
@@ -302,7 +302,7 @@ export function CharacterDetailContextPanel({
 
   if (error) {
     return (
-      <p className="border border-[#743d35] bg-[#2a1512] p-3 text-[11px] leading-5 text-[#d8a49a]">
+      <p className="border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]">
         The character context could not
         be loaded: {error}
       </p>
@@ -314,7 +314,7 @@ export function CharacterDetailContextPanel({
 
   if (!character) {
     return (
-      <p className="text-xs leading-6 text-[#938673]">
+      <p className="text-xs leading-6 text-[rgb(var(--sep-colour-938673))]">
         Character information is not
         available.
       </p>
@@ -331,17 +331,17 @@ export function CharacterDetailContextPanel({
   return (
     <div className="flex h-full min-h-0 flex-col">
       <header className="mb-5">
-        <p className="text-[9px] uppercase tracking-[0.3em] text-[#876a46]">
+        <p className="text-[9px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-876a46))]">
           Character
         </p>
 
-        <h2 className="mt-2 font-serif text-2xl text-[#d6bd91]">
+        <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-d6bd91))]">
           {displayName}
         </h2>
       </header>
 
       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1">
-        <div className="border border-[#59432c]/40 bg-[#100c09]">
+        <div className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))]">
           <Row
             label="Title"
             value={
@@ -384,9 +384,9 @@ export function CharacterDetailContextPanel({
           />
         </div>
 
-        <div className="mt-4 border border-[#59432c]/40 bg-[#100c09]">
-          <div className="flex justify-between gap-4 border-b border-[#59432c]/35 px-3 py-2.5 text-xs">
-            <span className="text-[7px] uppercase tracking-[0.16em] text-[#75644f]">
+        <div className="mt-4 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))]">
+          <div className="flex justify-between gap-4 border-b border-[rgb(var(--sep-colour-59432c))]/35 px-3 py-2.5 text-xs">
+            <span className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-75644f))]">
               Order
             </span>
 
@@ -394,12 +394,12 @@ export function CharacterDetailContextPanel({
             data.orderSlug ? (
               <Link
                 href={`/orders/${data.orderSlug}`}
-                className="max-w-[150px] break-words text-right text-[11px] text-[#c9ae84] transition hover:text-[#ead0a0]"
+                className="max-w-[150px] break-words text-right text-[11px] text-[rgb(var(--sep-colour-c9ae84))] transition hover:text-[rgb(var(--sep-colour-ead0a0))]"
               >
                 {data.orderName}
               </Link>
             ) : (
-              <span className="max-w-[150px] break-words text-right text-[11px] text-[#c5b294]">
+              <span className="max-w-[150px] break-words text-right text-[11px] text-[rgb(var(--sep-colour-c5b294))]">
                 Not assigned
               </span>
             )}
@@ -424,7 +424,7 @@ export function CharacterDetailContextPanel({
           />
         </div>
 
-        <div className="mt-4 border border-[#59432c]/40 bg-[#100c09]">
+        <div className="mt-4 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))]">
           <Row
             label="Health"
             value={String(
@@ -443,7 +443,7 @@ export function CharacterDetailContextPanel({
         </div>
 
         {ownCharacter ? (
-          <p className="mt-4 text-[10px] leading-5 text-[#766957]">
+          <p className="mt-4 text-[10px] leading-5 text-[rgb(var(--sep-colour-766957))]">
             Order membership is managed
             through the Order system and
             cannot be edited from the
@@ -469,14 +469,14 @@ function Row({
       className={`grid grid-cols-[92px_minmax(0,1fr)] gap-3 px-3 py-2.5 ${
         last
           ? ""
-          : "border-b border-[#59432c]/25"
+          : "border-b border-[rgb(var(--sep-colour-59432c))]/25"
       }`}
     >
-      <span className="text-[7px] uppercase tracking-[0.16em] text-[#75644f]">
+      <span className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-75644f))]">
         {label}
       </span>
 
-      <span className="min-w-0 break-words text-right text-[11px] text-[#c5b294]">
+      <span className="min-w-0 break-words text-right text-[11px] text-[rgb(var(--sep-colour-c5b294))]">
         {value}
       </span>
     </div>

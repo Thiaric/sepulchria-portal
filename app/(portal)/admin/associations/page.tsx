@@ -172,15 +172,15 @@ export default async function AdminAssociationsPage({
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-[9px] uppercase tracking-[0.28em] text-[#8c704b]">
+            <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
               Administration
             </p>
 
-            <h2 className="mt-2 font-serif text-4xl text-[#ead5ac]">
+            <h2 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">
               Association Management
             </h2>
 
-            <p className="mt-3 max-w-3xl text-sm leading-7 text-[#a99b89]">
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))]">
               Create and maintain the
               organisations, orders and
               factions of Sepulchria.
@@ -217,13 +217,13 @@ export default async function AdminAssociationsPage({
 
         <section
           id="association-new"
-          className="scroll-mt-24 mt-8 border border-[#60482e]/45 bg-[#15100d] p-5 sm:p-6"
+          className="scroll-mt-24 mt-8 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6"
         >
-          <p className="text-[9px] uppercase tracking-[0.24em] text-[#8c704b]">
+          <p className="text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))]">
             New association
           </p>
 
-          <h3 className="mt-2 font-serif text-2xl text-[#dfc99f]">
+          <h3 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">
             Create an association
           </h3>
 
@@ -239,7 +239,7 @@ export default async function AdminAssociationsPage({
                   required
                   maxLength={120}
                   placeholder="The Eyes"
-                  className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+                  className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
                 />
               </AdminField>
 
@@ -249,7 +249,7 @@ export default async function AdminAssociationsPage({
                   name="slug"
                   maxLength={100}
                   placeholder="Generated automatically"
-                  className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+                  className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
                 />
               </AdminField>
 
@@ -260,7 +260,7 @@ export default async function AdminAssociationsPage({
                   defaultValue={0}
                   min={-9999}
                   max={9999}
-                  className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                  className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                 />
               </AdminField>
 
@@ -270,7 +270,7 @@ export default async function AdminAssociationsPage({
                   name="colour"
                   maxLength={32}
                   placeholder="#8c704b"
-                  className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+                  className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
                 />
               </AdminField>
 
@@ -304,7 +304,7 @@ export default async function AdminAssociationsPage({
                   name="imageUrl"
                   maxLength={2000}
                   placeholder="/images/associations/eyes.jpg"
-                  className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+                  className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
                 />
               </AdminField>
 
@@ -314,7 +314,7 @@ export default async function AdminAssociationsPage({
                   name="bannerUrl"
                   maxLength={2000}
                   placeholder="/images/associations/eyes-banner.jpg"
-                  className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+                  className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
                 />
               </AdminField>
 
@@ -325,7 +325,7 @@ export default async function AdminAssociationsPage({
                     name="iconUrl"
                     maxLength={2000}
                     placeholder="/images/associations/eyes-icon.png"
-                    className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+                    className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
                   />
                 </AdminField>
               </div>
@@ -333,23 +333,23 @@ export default async function AdminAssociationsPage({
 
             <div className="mt-5 flex flex-wrap items-center justify-between gap-4">
               <div className="flex flex-wrap items-center gap-6">
-                <label className="flex items-center gap-3 text-sm text-[#bbaa90]">
+                <label className="flex items-center gap-3 text-sm text-[rgb(var(--sep-colour-bbaa90))]">
                   <input
                     type="checkbox"
                     name="isActive"
                     defaultChecked
-                    className="h-4 w-4 accent-[#8b673d]"
+                    className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))]"
                   />
 
                   Active
                 </label>
 
-                <label className="flex items-center gap-3 text-sm text-[#bbaa90]">
+                <label className="flex items-center gap-3 text-sm text-[rgb(var(--sep-colour-bbaa90))]">
                   <input
                     type="checkbox"
                     name="isSelectable"
                     defaultChecked
-                    className="h-4 w-4 accent-[#8b673d]"
+                    className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))]"
                   />
 
                   Selectable at character creation
@@ -358,7 +358,7 @@ export default async function AdminAssociationsPage({
 
               <button
                 type="submit"
-                className="border border-[#987344] bg-[#3b2919] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[#efd6a8] transition hover:border-[#b98c50] hover:bg-[#50371f]"
+                className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
               >
                 Create association
               </button>
@@ -372,10 +372,10 @@ export default async function AdminAssociationsPage({
               <section
                 key={association.id}
                 id={`association-${association.slug}`}
-                className="scroll-mt-24 overflow-hidden border border-[#60482e]/45 bg-[#15100d]"
+                className="scroll-mt-24 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]"
               >
                 {association.banner_url ? (
-                  <div className="relative h-44 border-b border-[#60482e]/40 bg-[#0b0807]">
+                  <div className="relative h-44 border-b border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-0b0807))]">
                     <Image
                       src={
                         association.banner_url
@@ -387,14 +387,14 @@ export default async function AdminAssociationsPage({
                       unoptimized
                     />
 
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#15100d] via-transparent to-black/20" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[rgb(var(--sep-colour-15100d))] via-transparent to-black/20" />
                   </div>
                 ) : null}
 
                 <div className="grid lg:grid-cols-[260px_minmax(0,1fr)]">
-                  <aside className="border-b border-[#60482e]/35 bg-[#0f0b09] p-5 lg:border-b-0 lg:border-r">
+                  <aside className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-0f0b09))] p-5 lg:border-b-0 lg:border-r">
                     <div
-                      className="relative aspect-[4/3] overflow-hidden border border-[#765937]/55 bg-[#090706]"
+                      className="relative aspect-[4/3] overflow-hidden border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-090706))]"
                       style={
                         isValidColour(
                           association.colour,
@@ -432,7 +432,7 @@ export default async function AdminAssociationsPage({
                           />
                         </div>
                       ) : (
-                        <div className="flex h-full items-center justify-center font-serif text-5xl text-[#705334]">
+                        <div className="flex h-full items-center justify-center font-serif text-5xl text-[rgb(var(--sep-colour-705334))]">
                           {association.name
                             .charAt(0)
                             .toUpperCase()}
@@ -455,12 +455,12 @@ export default async function AdminAssociationsPage({
                         />
                       </div>
 
-                      <p className="mt-3 text-[10px] uppercase tracking-[0.16em] text-[#887967]">
+                      <p className="mt-3 text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-887967))]">
                         /{association.slug}
                       </p>
 
                       {association.colour ? (
-                        <div className="mt-3 flex items-center justify-center gap-2 text-[9px] text-[#817461]">
+                        <div className="mt-3 flex items-center justify-center gap-2 text-[9px] text-[rgb(var(--sep-colour-817461))]">
                           <span
                             className="h-3 w-3 rounded-full border border-white/15"
                             style={{
@@ -489,7 +489,7 @@ export default async function AdminAssociationsPage({
                         />
                       </div>
 
-                      <p className="mt-4 text-[9px] text-[#756957]">
+                      <p className="mt-4 text-[9px] text-[rgb(var(--sep-colour-756957))]">
                         Updated{" "}
                         {formatDate(
                           association.updated_at,
@@ -501,11 +501,11 @@ export default async function AdminAssociationsPage({
                   <div className="p-5 sm:p-6">
                     <div className="flex flex-wrap items-start justify-between gap-4">
                       <div>
-                        <p className="text-[9px] uppercase tracking-[0.2em] text-[#8c704b]">
+                        <p className="text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-8c704b))]">
                           City association
                         </p>
 
-                        <h3 className="mt-1 font-serif text-3xl text-[#e3cda5]">
+                        <h3 className="mt-1 font-serif text-3xl text-[rgb(var(--sep-colour-e3cda5))]">
                           {association.name}
                         </h3>
 
@@ -513,7 +513,7 @@ export default async function AdminAssociationsPage({
                       </div>
 
                       {association.icon_url ? (
-                        <div className="relative h-16 w-16 border border-[#60482e]/45 bg-[#0f0b09]">
+                        <div className="relative h-16 w-16 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0f0b09))]">
                           <Image
                             src={
                               association.icon_url
@@ -550,7 +550,7 @@ export default async function AdminAssociationsPage({
                             defaultValue={
                               association.name
                             }
-                            className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                           />
                         </AdminField>
 
@@ -563,7 +563,7 @@ export default async function AdminAssociationsPage({
                             defaultValue={
                               association.slug
                             }
-                            className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                           />
                         </AdminField>
 
@@ -576,7 +576,7 @@ export default async function AdminAssociationsPage({
                             defaultValue={
                               association.sort_order
                             }
-                            className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none focus:border-[#a17a49]"
+                            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
                           />
                         </AdminField>
 
@@ -590,7 +590,7 @@ export default async function AdminAssociationsPage({
                               ""
                             }
                             placeholder="#8c704b"
-                            className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+                            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
                           />
                         </AdminField>
 
@@ -628,7 +628,7 @@ export default async function AdminAssociationsPage({
                               ""
                             }
                             placeholder="/images/associations/association.jpg"
-                            className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+                            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
                           />
                         </AdminField>
 
@@ -642,7 +642,7 @@ export default async function AdminAssociationsPage({
                               ""
                             }
                             placeholder="/images/associations/association-banner.jpg"
-                            className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+                            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
                           />
                         </AdminField>
 
@@ -657,7 +657,7 @@ export default async function AdminAssociationsPage({
                                 ""
                               }
                               placeholder="/images/associations/association-icon.png"
-                              className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-3 text-sm text-[#d7c4a5] outline-none placeholder:text-[#625747] focus:border-[#a17a49]"
+                              className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
                             />
                           </AdminField>
                         </div>
@@ -665,27 +665,27 @@ export default async function AdminAssociationsPage({
 
                       <div className="mt-5 flex flex-wrap items-center justify-between gap-4">
                         <div className="flex flex-wrap items-center gap-6">
-                          <label className="flex items-center gap-3 text-sm text-[#bbaa90]">
+                          <label className="flex items-center gap-3 text-sm text-[rgb(var(--sep-colour-bbaa90))]">
                             <input
                               type="checkbox"
                               name="isActive"
                               defaultChecked={
                                 association.is_active
                               }
-                              className="h-4 w-4 accent-[#8b673d]"
+                              className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))]"
                             />
 
                             Active
                           </label>
 
-                          <label className="flex items-center gap-3 text-sm text-[#bbaa90]">
+                          <label className="flex items-center gap-3 text-sm text-[rgb(var(--sep-colour-bbaa90))]">
                             <input
                               type="checkbox"
                               name="isSelectable"
                               defaultChecked={
                                 association.is_selectable
                               }
-                              className="h-4 w-4 accent-[#8b673d]"
+                              className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))]"
                             />
 
                             Selectable at character creation
@@ -694,7 +694,7 @@ export default async function AdminAssociationsPage({
 
                         <button
                           type="submit"
-                          className="border border-[#987344] bg-[#3b2919] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[#efd6a8] transition hover:border-[#b98c50] hover:bg-[#50371f]"
+                          className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
                         >
                           Save changes
                         </button>
@@ -705,7 +705,7 @@ export default async function AdminAssociationsPage({
                       action={
                         deleteAssociation
                       }
-                      className="mt-6 border-t border-[#60482e]/30 pt-5"
+                      className="mt-6 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-5"
                     >
                       <input
                         type="hidden"
@@ -718,7 +718,7 @@ export default async function AdminAssociationsPage({
                           type="text"
                           name="confirmation"
                           placeholder='Type "DELETE"'
-                          className="w-full border border-red-900/50 bg-[#100909] px-3 py-3 text-sm text-red-200 outline-none placeholder:text-red-900/70 focus:border-red-700"
+                          className="w-full border border-red-900/50 bg-[rgb(var(--sep-colour-100909))] px-3 py-3 text-sm text-red-200 outline-none placeholder:text-red-900/70 focus:border-red-700"
                         />
 
                         <button
@@ -731,7 +731,7 @@ export default async function AdminAssociationsPage({
 
                       {association.character_count >
                       0 ? (
-                        <p className="mt-3 text-[10px] leading-5 text-[#8e7462]">
+                        <p className="mt-3 text-[10px] leading-5 text-[rgb(var(--sep-colour-8e7462))]">
                           Deletion is blocked
                           because this
                           association is
@@ -755,8 +755,8 @@ export default async function AdminAssociationsPage({
           )}
 
           {associations.length === 0 ? (
-            <section className="border border-[#60482e]/45 bg-[#15100d] p-10 text-center">
-              <p className="font-serif text-xl text-[#b9a88f]">
+            <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-10 text-center">
+              <p className="font-serif text-xl text-[rgb(var(--sep-colour-b9a88f))]">
                 No associations were
                 found.
               </p>
@@ -777,7 +777,7 @@ function AdminField({
 }) {
   return (
     <div className="block">
-      <div className="mb-2 block text-[8px] uppercase tracking-[0.22em] text-[#806b50]">
+      <div className="mb-2 block text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
         {label}
       </div>
 
@@ -792,7 +792,7 @@ function AdminCounter({
   children: React.ReactNode;
 }) {
   return (
-    <span className="border border-[#60482e]/45 bg-[#15100d] px-4 py-3 text-[10px] uppercase tracking-[0.18em] text-[#a99069]">
+    <span className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 text-[10px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a99069))]">
       {children}
     </span>
   );
@@ -827,7 +827,7 @@ function SelectableBadge({
     <span
       className={
         isSelectable
-          ? "inline-block border border-[#8b673d]/70 bg-black/20 px-2.5 py-1 text-[8px] uppercase tracking-[0.18em] text-[#d6b273]"
+          ? "inline-block border border-[rgb(var(--sep-colour-8b673d))]/70 bg-black/20 px-2.5 py-1 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-d6b273))]"
           : "inline-block border border-stone-600/60 bg-black/20 px-2.5 py-1 text-[8px] uppercase tracking-[0.18em] text-stone-400"
       }
     >
@@ -846,12 +846,12 @@ function InfoCounter({
   value: number;
 }) {
   return (
-    <div className="border border-[#60482e]/30 bg-[#15100d] px-2 py-3 text-center">
-      <p className="font-serif text-lg text-[#c9ad82]">
+    <div className="border border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-15100d))] px-2 py-3 text-center">
+      <p className="font-serif text-lg text-[rgb(var(--sep-colour-c9ad82))]">
         {value}
       </p>
 
-      <p className="mt-1 text-[7px] uppercase tracking-[0.12em] text-[#756957]">
+      <p className="mt-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756957))]">
         {label}
       </p>
     </div>

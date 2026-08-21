@@ -208,8 +208,8 @@ function addFeedback(
 
   feedback.className =
     kind === "success"
-      ? "mr-3 inline-flex min-h-9 flex-1 items-center justify-end text-right text-[10px] leading-5 text-[#9fd0a9]"
-      : "mr-3 inline-flex min-h-9 flex-1 items-center justify-end text-right text-[10px] leading-5 text-[#d8a49a]";
+      ? "mr-3 inline-flex min-h-9 flex-1 items-center justify-end text-right text-[10px] leading-5 text-[rgb(var(--sep-colour-9fd0a9))]"
+      : "mr-3 inline-flex min-h-9 flex-1 items-center justify-end text-right text-[10px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]";
 
   parent.insertBefore(
     feedback,

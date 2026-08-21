@@ -539,25 +539,25 @@ export function ActiveCityCounter({
         } — click to view`}
         className={`flex h-10 items-center gap-2 border px-2 transition sm:gap-3 sm:px-3 ${
           open
-            ? "border-[#9a7445] bg-[#251a11]"
-            : "border-[#614b31] bg-[#17120f] hover:border-[#84643e] hover:bg-[#21170f]"
+            ? "border-[rgb(var(--sep-colour-9a7445))] bg-[rgb(var(--sep-colour-251a11))]"
+            : "border-[rgb(var(--sep-colour-614b31))] bg-[rgb(var(--sep-colour-17120f))] hover:border-[rgb(var(--sep-colour-84643e))] hover:bg-[rgb(var(--sep-colour-21170f))]"
         }`}
       >
-        <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-[#788d5e] shadow-[0_0_10px_rgba(120,141,94,0.55)]" />
+        <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-[rgb(var(--sep-colour-788d5e))] shadow-[0_0_10px_rgba(var(--sep-rgb-120-141-94),0.55)]" />
 
         <div className="flex items-baseline gap-2">
-          <span className="font-serif text-base text-[#d8bf91] sm:text-lg">
+          <span className="font-serif text-base text-[rgb(var(--sep-colour-d8bf91))] sm:text-lg">
             {count}
           </span>
 
-          <span className="hidden text-[8px] uppercase tracking-[0.18em] text-[#81725f] lg:inline">
+          <span className="hidden text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-81725f))] lg:inline">
             People in Sepulchria
           </span>
         </div>
 
         <span
           aria-hidden="true"
-          className={`hidden text-[8px] text-[#7e674b] transition-transform lg:inline ${
+          className={`hidden text-[8px] text-[rgb(var(--sep-colour-7e674b))] transition-transform lg:inline ${
             open
               ? "rotate-180"
               : ""
@@ -585,24 +585,24 @@ export function ActiveCityCounter({
             }
           }}
         >
-          <div className="flex h-[85vh] w-[90vw] max-w-[1700px] flex-col overflow-hidden border border-[#6e5535]/65 bg-[#090705] shadow-[0_20px_80px_rgba(0,0,0,0.65)]">
-            <div className="flex min-h-12 shrink-0 items-center justify-between gap-4 border-b border-[#60482e]/45 bg-[#100c09] px-4 sm:px-5">
+          <div className="flex h-[85vh] w-[90vw] max-w-[1700px] flex-col overflow-hidden border border-[rgb(var(--sep-colour-6e5535))]/65 bg-[rgb(var(--sep-colour-090705))] shadow-[0_20px_80px_rgba(var(--sep-rgb-0-0-0),0.65)]">
+            <div className="flex min-h-12 shrink-0 items-center justify-between gap-4 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-4 sm:px-5">
               <div className="flex min-w-0 items-center gap-3">
-                <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-[#788d5e] shadow-[0_0_10px_rgba(120,141,94,0.55)]" />
+                <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-[rgb(var(--sep-colour-788d5e))] shadow-[0_0_10px_rgba(var(--sep-rgb-120-141-94),0.55)]" />
 
                 <div className="min-w-0">
-                  <p className="text-[7px] uppercase tracking-[0.25em] text-[#806b50]">
+                  <p className="text-[7px] uppercase tracking-[0.25em] text-[rgb(var(--sep-colour-806b50))]">
                     City Presence
                   </p>
 
-                  <h2 className="truncate font-serif text-base text-[#d8c096] sm:text-lg">
+                  <h2 className="truncate font-serif text-base text-[rgb(var(--sep-colour-d8c096))] sm:text-lg">
                     People in Sepulchria
                   </h2>
                 </div>
               </div>
 
               <div className="flex shrink-0 items-center gap-2">
-                <span className="flex h-7 min-w-7 items-center justify-center border border-[#59432c]/55 bg-[#17110d] px-2 font-serif text-sm text-[#c9ab7c]">
+                <span className="flex h-7 min-w-7 items-center justify-center border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] px-2 font-serif text-sm text-[rgb(var(--sep-colour-c9ab7c))]">
                   {count}
                 </span>
 
@@ -615,14 +615,14 @@ export function ActiveCityCounter({
                   }
                   aria-label="Close People in Sepulchria"
                   title="Close"
-                  className="flex h-7 w-7 items-center justify-center border border-[#60482e]/50 bg-[#17110d] text-base leading-none text-[#aa9675] transition hover:border-[#967342] hover:text-[#f1d7a5]"
+                  className="flex h-7 w-7 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-17110d))] text-base leading-none text-[rgb(var(--sep-colour-aa9675))] transition hover:border-[rgb(var(--sep-colour-967342))] hover:text-[rgb(var(--sep-colour-f1d7a5))]"
                 >
                   ×
                 </button>
               </div>
             </div>
 
-            <div className="shrink-0 border-b border-[#59432c]/40 bg-[#0d0907] px-3 py-3 sm:px-5">
+            <div className="shrink-0 border-b border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-3 sm:px-5">
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                 <label className="relative min-w-0 flex-1">
                   <span className="sr-only">
@@ -631,7 +631,7 @@ export function ActiveCityCounter({
 
                   <span
                     aria-hidden="true"
-                    className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-[#806c52]"
+                    className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-[rgb(var(--sep-colour-806c52))]"
                   >
                     ⌕
                   </span>
@@ -652,7 +652,7 @@ export function ActiveCityCounter({
                     }
                     placeholder="Search name, ancestry, Order, location…"
                     autoComplete="off"
-                    className="w-full border border-[#59432c]/55 bg-[#100c09] py-2.5 pl-8 pr-9 text-xs text-[#d8c4a4] outline-none placeholder:text-[#62584b] focus:border-[#9a7445] [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
+                    className="w-full border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-100c09))] py-2.5 pl-8 pr-9 text-xs text-[rgb(var(--sep-colour-d8c4a4))] outline-none placeholder:text-[rgb(var(--sep-colour-62584b))] focus:border-[rgb(var(--sep-colour-9a7445))] [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
                   />
 
                   {searchQuery ? (
@@ -665,7 +665,7 @@ export function ActiveCityCounter({
                       }
                       aria-label="Clear search"
                       title="Clear search"
-                      className="absolute right-2 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center text-xs text-[#7e6b52] transition hover:text-[#d7bb8d]"
+                      className="absolute right-2 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center text-xs text-[rgb(var(--sep-colour-7e6b52))] transition hover:text-[rgb(var(--sep-colour-d7bb8d))]"
                     >
                       ×
                     </button>
@@ -673,13 +673,13 @@ export function ActiveCityCounter({
                 </label>
 
                 <div className="flex shrink-0 items-center justify-between gap-4 sm:justify-end">
-                  <p className="text-[7px] uppercase tracking-[0.17em] text-[#746450]">
+                  <p className="text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-746450))]">
                     {searchQuery
                       ? `${filteredCharacters.length} matching`
                       : `${count} present`}
                   </p>
 
-                  <p className="text-[7px] uppercase tracking-[0.14em] text-[#5f5549]">
+                  <p className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-5f5549))]">
                     Live city presence
                   </p>
                 </div>
@@ -694,7 +694,7 @@ export function ActiveCityCounter({
               ) : null}
 
               {error ? (
-                <p className="border border-[#743d35] bg-[#2a1512] p-4 text-[11px] leading-5 text-[#d8a49a]">
+                <p className="border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-4 text-[11px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]">
                   {error}
                 </p>
               ) : null}
@@ -703,7 +703,7 @@ export function ActiveCityCounter({
               !loading &&
               presentCharacters.length ===
                 0 ? (
-                <p className="border border-[#59432c]/35 bg-[#100c09] p-6 text-center text-[11px] leading-5 text-[#8f8271]">
+                <p className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-6 text-center text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
                   No characters are
                   currently active in
                   the city.
@@ -716,7 +716,7 @@ export function ActiveCityCounter({
                 0 &&
               filteredCharacters.length ===
                 0 ? (
-                <p className="border border-[#59432c]/35 bg-[#100c09] p-6 text-center text-[11px] leading-5 text-[#8f8271]">
+                <p className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-6 text-center text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
                   No active characters
                   match your search.
                 </p>
@@ -793,9 +793,9 @@ export function ActiveCityCounter({
                         key={
                           presence.character_id
                         }
-                        className="group relative min-w-0 overflow-hidden border border-[#59432c]/40 bg-[#120e0b] transition hover:border-[#8f6c43] hover:bg-[#18110d]"
+                        className="group relative min-w-0 overflow-hidden border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-120e0b))] transition hover:border-[rgb(var(--sep-colour-8f6c43))] hover:bg-[rgb(var(--sep-colour-18110d))]"
                       >
-                        <div className="absolute inset-y-0 left-0 w-px bg-[#b88a52]/0 transition group-hover:bg-[#b88a52]/70" />
+                        <div className="absolute inset-y-0 left-0 w-px bg-[rgb(var(--sep-colour-b88a52))]/0 transition group-hover:bg-[rgb(var(--sep-colour-b88a52))]/70" />
 
                         <div className="flex min-w-0 items-center gap-2.5 px-3 py-2.5">
                           <Link
@@ -841,7 +841,7 @@ export function ActiveCityCounter({
                                 title={`Open ${displayName}'s character sheet`}
                                 className="min-w-0 flex-1"
                               >
-                                <p className="truncate font-serif text-sm text-[#dbc397] transition hover:text-[#ecd5a8]">
+                                <p className="truncate font-serif text-sm text-[rgb(var(--sep-colour-dbc397))] transition hover:text-[rgb(var(--sep-colour-ecd5a8))]">
                                   {
                                     displayName
                                   }
@@ -862,7 +862,7 @@ export function ActiveCityCounter({
 
                             {(person.title ||
                               person.occupation) ? (
-                              <p className="mt-0.5 truncate text-[8px] text-[#83725d]">
+                              <p className="mt-0.5 truncate text-[8px] text-[rgb(var(--sep-colour-83725d))]">
                                 {person.title ||
                                   person.occupation}
                               </p>
@@ -884,7 +884,7 @@ export function ActiveCityCounter({
                               />
                             </div>
 
-                            <div className="mt-1.5 flex min-w-0 items-center justify-between gap-2 border-t border-[#59432c]/25 pt-1.5">
+                            <div className="mt-1.5 flex min-w-0 items-center justify-between gap-2 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-1.5">
                               {room &&
                               presence.room_id &&
                               maySeePrivateRoom ? (
@@ -914,24 +914,24 @@ export function ActiveCityCounter({
                                   >
                                     <span
                                       aria-hidden="true"
-                                      className="shrink-0 text-[9px] text-[#8f6d42]"
+                                      className="shrink-0 text-[9px] text-[rgb(var(--sep-colour-8f6d42))]"
                                     >
                                       ⌖
                                     </span>
 
-                                    <span className="truncate text-[8px] text-[#95836c] transition group-hover/location:text-[#ddc294]">
+                                    <span className="truncate text-[8px] text-[rgb(var(--sep-colour-95836c))] transition group-hover/location:text-[rgb(var(--sep-colour-ddc294))]">
                                       {
                                         room.name
                                       }
                                     </span>
 
-                                    <span className="shrink-0 text-[7px] uppercase tracking-[0.12em] text-[#725a3d] transition group-hover/location:text-[#c59b64]">
+                                    <span className="shrink-0 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-725a3d))] transition group-hover/location:text-[rgb(var(--sep-colour-c59b64))]">
                                       Go →
                                     </span>
                                   </button>
                                 </form>
                               ) : (
-                                <span className="min-w-0 flex-1 truncate text-[8px] text-[#62594d]">
+                                <span className="min-w-0 flex-1 truncate text-[8px] text-[rgb(var(--sep-colour-62594d))]">
                                   Around Sepulchria
                                 </span>
                               )}
@@ -960,7 +960,7 @@ export function ActiveCityCounter({
                                       type="submit"
                                       aria-label={`Send a private message to ${displayName}`}
                                       title={`Message ${displayName}`}
-                                      className="flex h-6 w-6 items-center justify-center border border-[#6d5132]/60 bg-[#1b130d] text-[10px] text-[#b89059] transition hover:border-[#a47b43] hover:bg-[#332318] hover:text-[#f0d09a]"
+                                      className="flex h-6 w-6 items-center justify-center border border-[rgb(var(--sep-colour-6d5132))]/60 bg-[rgb(var(--sep-colour-1b130d))] text-[10px] text-[rgb(var(--sep-colour-b89059))] transition hover:border-[rgb(var(--sep-colour-a47b43))] hover:bg-[rgb(var(--sep-colour-332318))] hover:text-[rgb(var(--sep-colour-f0d09a))]"
                                     >
                                       ✉
                                     </button>
@@ -968,7 +968,7 @@ export function ActiveCityCounter({
                                 ) : (
                                   <span
                                     title="This is your character"
-                                    className="flex h-6 min-w-6 items-center justify-center px-1 text-[7px] uppercase text-[#66594a]"
+                                    className="flex h-6 min-w-6 items-center justify-center px-1 text-[7px] uppercase text-[rgb(var(--sep-colour-66594a))]"
                                   >
                                     You
                                   </span>
@@ -983,7 +983,7 @@ export function ActiveCityCounter({
                                   }
                                   aria-label={`Open ${displayName}'s character sheet`}
                                   title={`Open ${displayName}'s character sheet`}
-                                  className="flex h-6 w-6 items-center justify-center border border-[#59432c]/35 bg-[#15100d] text-[10px] text-[#725a3d] transition hover:border-[#8f6d43] hover:text-[#c59b64]"
+                                  className="flex h-6 w-6 items-center justify-center border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))] text-[10px] text-[rgb(var(--sep-colour-725a3d))] transition hover:border-[rgb(var(--sep-colour-8f6d43))] hover:text-[rgb(var(--sep-colour-c59b64))]"
                                 >
                                   →
                                 </Link>
@@ -1015,7 +1015,7 @@ function HeritageEntry({
 }) {
   if (!entry) {
     return (
-      <span className="text-[8px] text-[#675e52]">
+      <span className="text-[8px] text-[rgb(var(--sep-colour-675e52))]">
         {fallback}
       </span>
     );
@@ -1031,7 +1031,7 @@ function HeritageEntry({
       title={entry.name}
     >
       <span
-        className="flex h-4 w-4 shrink-0 items-center justify-center overflow-hidden border bg-[#0d0907] font-serif text-[7px]"
+        className="flex h-4 w-4 shrink-0 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-0d0907))] font-serif text-[7px]"
         style={{
           borderColor:
             `${colour}88`,
@@ -1054,7 +1054,7 @@ function HeritageEntry({
         )}
       </span>
 
-      <span className="max-w-24 truncate text-[8px] text-[#9a866b]">
+      <span className="max-w-24 truncate text-[8px] text-[rgb(var(--sep-colour-9a866b))]">
         {entry.name}
       </span>
     </span>
@@ -1073,11 +1073,11 @@ function PresenceDot({
     string
   > = {
     online:
-      "border-[#102519] bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.75)]",
+      "border-[rgb(var(--sep-colour-102519))] bg-emerald-500 shadow-[0_0_6px_rgba(var(--sep-rgb-16-185-129),0.75)]",
     away:
-      "border-[#2f2511] bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.65)]",
+      "border-[rgb(var(--sep-colour-2f2511))] bg-amber-500 shadow-[0_0_6px_rgba(var(--sep-rgb-245-158-11),0.65)]",
     busy:
-      "border-[#321313] bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.65)]",
+      "border-[rgb(var(--sep-colour-321313))] bg-red-500 shadow-[0_0_6px_rgba(var(--sep-rgb-239-68-68),0.65)]",
   };
 
   return (
@@ -1143,7 +1143,7 @@ function Portrait({
     .join("");
 
   return (
-    <div className="h-10 w-10 overflow-hidden border border-[#705538] bg-[#0d0a08] shadow-inner">
+    <div className="h-10 w-10 overflow-hidden border border-[rgb(var(--sep-colour-705538))] bg-[rgb(var(--sep-colour-0d0a08))] shadow-inner">
       {src ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
@@ -1152,7 +1152,7 @@ function Portrait({
           className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
         />
       ) : (
-        <span className="flex h-full items-center justify-center font-serif text-xs text-[#a0845e]">
+        <span className="flex h-full items-center justify-center font-serif text-xs text-[rgb(var(--sep-colour-a0845e))]">
           {initials ||
             "?"}
         </span>
@@ -1169,7 +1169,7 @@ function LoadingRows() {
       }).map((_, index) => (
         <div
           key={index}
-          className="h-[88px] animate-pulse border border-[#59432c]/30 bg-[#19120d]"
+          className="h-[88px] animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]"
         />
       ))}
     </div>

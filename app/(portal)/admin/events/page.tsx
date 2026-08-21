@@ -55,7 +55,7 @@ function EventDateFields({
   return (
     <div className="grid gap-3 sm:grid-cols-[1fr_1.3fr_0.8fr]">
       <label className="block">
-        <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
+        <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
           Year ADN
         </span>
         <input
@@ -65,19 +65,19 @@ function EventDateFields({
           max={9999}
           required
           defaultValue={aureth.year}
-          className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-2 text-sm text-[#d7c4a5] outline-none focus:border-[#9b7446]"
+          className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-9b7446))]"
         />
       </label>
 
       <label className="block">
-        <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
+        <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
           Month
         </span>
         <select
           name="monthIndex"
           required
           defaultValue={aureth.monthIndex}
-          className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-2 text-sm text-[#d7c4a5] outline-none focus:border-[#9b7446]"
+          className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-9b7446))]"
         >
           {AURETH_MONTHS.map(
             (month, index) => (
@@ -93,7 +93,7 @@ function EventDateFields({
       </label>
 
       <label className="block">
-        <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
+        <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
           Day
         </span>
         <input
@@ -103,7 +103,7 @@ function EventDateFields({
           max={31}
           required
           defaultValue={aureth.day}
-          className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-2 text-sm text-[#d7c4a5] outline-none focus:border-[#9b7446]"
+          className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-9b7446))]"
         />
       </label>
     </div>
@@ -128,7 +128,7 @@ function EventFields({
   return (
     <div className="space-y-4">
       <label className="block">
-        <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
+        <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
           Event title
         </span>
         <input
@@ -139,7 +139,7 @@ function EventFields({
           defaultValue={
             event?.title ?? ""
           }
-          className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-2 text-sm text-[#d7c4a5] outline-none focus:border-[#9b7446]"
+          className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-9b7446))]"
         />
       </label>
 
@@ -149,7 +149,7 @@ function EventFields({
 
       <div className="grid gap-3 sm:grid-cols-2">
         <label className="block">
-          <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
+          <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
             Start time
           </span>
           <input
@@ -159,12 +159,12 @@ function EventFields({
               event?.start_time ??
                 null,
             )}
-            className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-2 text-sm text-[#d7c4a5] outline-none focus:border-[#9b7446]"
+            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-9b7446))]"
           />
         </label>
 
         <label className="block">
-          <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
+          <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
             End time
           </span>
           <input
@@ -174,13 +174,13 @@ function EventFields({
               event?.end_time ??
                 null,
             )}
-            className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-2 text-sm text-[#d7c4a5] outline-none focus:border-[#9b7446]"
+            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-9b7446))]"
           />
         </label>
       </div>
 
       <label className="block">
-        <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
+        <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
           Location
         </span>
 
@@ -189,7 +189,7 @@ function EventFields({
           defaultValue={
             event?.room_id ?? ""
           }
-          className="w-full border border-[#60482e]/55 bg-[#100c09] px-3 py-2 text-sm text-[#d7c4a5] outline-none focus:border-[#9b7446]"
+          className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-9b7446))]"
         >
           <option value="">
             No specific location
@@ -209,7 +209,7 @@ function EventFields({
       </label>
 
       <label className="block">
-        <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[#806b50]">
+        <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
           Description
         </span>
         <textarea
@@ -219,11 +219,11 @@ function EventFields({
             event?.description ?? ""
           }
           rows={5}
-          className="w-full resize-y border border-[#60482e]/55 bg-[#100c09] px-3 py-2 text-sm leading-6 text-[#d7c4a5] outline-none focus:border-[#9b7446]"
+          className="w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-sm leading-6 text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-9b7446))]"
         />
       </label>
 
-      <label className="flex items-center gap-3 text-sm text-[#bbaa90]">
+      <label className="flex items-center gap-3 text-sm text-[rgb(var(--sep-colour-bbaa90))]">
         <input
           type="checkbox"
           name="isActive"
@@ -232,7 +232,7 @@ function EventFields({
               ? event.is_active
               : true
           }
-          className="h-4 w-4 accent-[#8b673d]"
+          className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))]"
         />
         Visible on calendar
       </label>
@@ -359,15 +359,15 @@ export default async function EventsAdminPage() {
     <main className="mx-auto max-w-6xl space-y-5 p-4 sm:p-5 lg:p-6">
       <section
         id="event-new"
-        className="border border-[#60482e]/45 bg-[#15100d] p-4 sm:p-5"
+        className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 sm:p-5"
       >
-        <p className="text-[8px] uppercase tracking-[0.24em] text-[#806b50]">
+        <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
           Calendar
         </p>
-        <h2 className="mt-1 font-serif text-xl text-[#dec69a]">
+        <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dec69a))]">
           Create event
         </h2>
-        <p className="mt-2 text-[11px] leading-5 text-[#8f8271]">
+        <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
           Dates are entered in the Aureth calendar. The underlying database date is converted automatically.
         </p>
 
@@ -387,7 +387,7 @@ export default async function EventsAdminPage() {
           <div className="mt-5 flex justify-end">
             <button
               type="submit"
-              className="border border-[#987344] bg-[#3b2919] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[#efd6a8] transition hover:border-[#b98c50] hover:bg-[#50371f]"
+              className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
             >
               Create event
             </button>
@@ -395,18 +395,18 @@ export default async function EventsAdminPage() {
         </AdminActionForm>
       </section>
 
-      <section className="border border-[#60482e]/45 bg-[#15100d] p-4 sm:p-5">
+      <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 sm:p-5">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <p className="text-[8px] uppercase tracking-[0.24em] text-[#806b50]">
+            <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
               Existing records
             </p>
-            <h2 className="mt-1 font-serif text-xl text-[#dec69a]">
+            <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dec69a))]">
               Events
             </h2>
           </div>
 
-          <p className="text-[9px] uppercase tracking-[0.14em] text-[#756958]">
+          <p className="text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
             {events.length} total
           </p>
         </div>
@@ -424,15 +424,15 @@ export default async function EventsAdminPage() {
               <details
                 key={event.id}
                 id={`event-${event.id}`}
-                className="border border-[#59432c]/45 bg-[#100c09]"
+                className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))]"
               >
                 <summary className="cursor-pointer list-none px-4 py-3">
                   <div className="flex items-center justify-between gap-4">
                     <div className="min-w-0">
-                      <p className="truncate font-serif text-base text-[#d8bf91]">
+                      <p className="truncate font-serif text-base text-[rgb(var(--sep-colour-d8bf91))]">
                         {event.title}
                       </p>
-                      <p className="mt-1 text-[9px] uppercase tracking-[0.12em] text-[#756958]">
+                      <p className="mt-1 text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
                         {aureth.day}{" "}
                         {aureth.monthName},{" "}
                         {aureth.year} ADN
@@ -447,8 +447,8 @@ export default async function EventsAdminPage() {
                     <span
                       className={`shrink-0 text-[8px] uppercase tracking-[0.14em] ${
                         event.is_active
-                          ? "text-[#9caf7c]"
-                          : "text-[#746858]"
+                          ? "text-[rgb(var(--sep-colour-9caf7c))]"
+                          : "text-[rgb(var(--sep-colour-746858))]"
                       }`}
                     >
                       {event.is_active
@@ -458,7 +458,7 @@ export default async function EventsAdminPage() {
                   </div>
                 </summary>
 
-                <div className="border-t border-[#59432c]/35 p-4">
+                <div className="border-t border-[rgb(var(--sep-colour-59432c))]/35 p-4">
                   <AdminActionForm
                     action={
                       updateCalendarEvent
@@ -481,7 +481,7 @@ export default async function EventsAdminPage() {
                     <div className="mt-5 flex justify-end">
                       <button
                         type="submit"
-                        className="border border-[#987344] bg-[#3b2919] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[#efd6a8] transition hover:border-[#b98c50] hover:bg-[#50371f]"
+                        className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
                       >
                         Save event
                       </button>
@@ -492,7 +492,7 @@ export default async function EventsAdminPage() {
                     action={
                       deleteCalendarEvent
                     }
-                    className="mt-5 border-t border-[#743d35]/35 pt-4"
+                    className="mt-5 border-t border-[rgb(var(--sep-colour-743d35))]/35 pt-4"
                   >
                     <input
                       type="hidden"
@@ -502,20 +502,20 @@ export default async function EventsAdminPage() {
 
                     <div className="flex flex-wrap items-end justify-between gap-3">
                       <label className="block min-w-[220px] flex-1">
-                        <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[#9a6258]">
+                        <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9a6258))]">
                           Type DELETE to remove permanently
                         </span>
                         <input
                           type="text"
                           name="confirmation"
                           autoComplete="off"
-                          className="w-full border border-[#743d35]/55 bg-[#160d0b] px-3 py-2 text-sm text-[#ddb0a6] outline-none focus:border-[#a75c50]"
+                          className="w-full border border-[rgb(var(--sep-colour-743d35))]/55 bg-[rgb(var(--sep-colour-160d0b))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-ddb0a6))] outline-none focus:border-[rgb(var(--sep-colour-a75c50))]"
                         />
                       </label>
 
                       <button
                         type="submit"
-                        className="border border-[#743d35] bg-[#2a1512] px-4 py-2.5 text-[8px] uppercase tracking-[0.16em] text-[#d8a49a] transition hover:border-[#a75c50] hover:bg-[#3a1b17]"
+                        className="border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] px-4 py-2.5 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d8a49a))] transition hover:border-[rgb(var(--sep-colour-a75c50))] hover:bg-[rgb(var(--sep-colour-3a1b17))]"
                       >
                         Delete event
                       </button>
@@ -527,7 +527,7 @@ export default async function EventsAdminPage() {
           })}
 
           {events.length === 0 ? (
-            <p className="border border-[#59432c]/30 bg-[#100c09]/60 p-4 text-[11px] text-[#8f8271]">
+            <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-4 text-[11px] text-[rgb(var(--sep-colour-8f8271))]">
               No calendar events have been created yet.
             </p>
           ) : null}
