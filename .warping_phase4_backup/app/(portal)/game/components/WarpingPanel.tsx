@@ -2,14 +2,13 @@
 import {useEffect,useMemo,useState} from "react";
 import {createClient} from "@/lib/supabase/client";
 import { sendRoomMessage } from "../actions";
-import { DispelPicker } from "./DispelPicker";
 type C={id:string;display_name?:string;displayName?:string}; type S=Record<string,any>;
 const PM:Record<string,[number,number,string]>={
 cinder_eyes:[1,2,"Cinder Eyes"],luminous_veins:[1,2,"Luminous Veins"],cinderblood:[1,2,"Cinderblood"],dreamtouched:[1,2,"Dreamtouched"],beastmarked:[1,2,"Beastmarked"],
 bloomwake:[2,5,"Bloomwake"],witherwake:[2,5,"Witherwake"],upstream:[2,5,"Upstream"],unbound_shadow:[2,5,"Unbound Shadow"],starbound:[2,5,"Starbound"],false_remembrance:[2,5,"False Remembrance"],
 current_sighted:[3,10,"Current-Sighted"],godwhispered:[3,10,"Godwhispered"],realitys_misstep:[3,10,"Reality's Misstep"],unmoored:[3,10,"Unmoored"]};
 export function WarpingPanel({presentCharacters,onBack}:{presentCharacters:C[];onBack:()=>void}){
- const db=useMemo(()=>createClient(),[]),[r,setR]=useState<any>(null),[sid,setSid]=useState(""),[targets,setTargets]=useState<string[]>([]),[written,setWritten]=useState(""),[msg,setMsg]=useState(""),[busy,setBusy]=useState(false),[dispelCast,setDispelCast]=useState<string|null>(null);
+ const db=useMemo(()=>createClient(),[]),[r,setR]=useState<any>(null),[sid,setSid]=useState(""),[targets,setTargets]=useState<string[]>([]),[written,setWritten]=useState(""),[msg,setMsg]=useState(""),[busy,setBusy]=useState(false);
  async function load(){const x=await db.rpc("get_my_warping_runtime");if(x.error){setMsg(x.error.message);return}setR(x.data);if(!sid&&x.data?.shapes?.[0])setSid(x.data.shapes[0].id)}
  useEffect(()=>{void load()},[]);
  const s:S|null=r?.shapes?.find((x:S)=>x.id===sid)??r?.shapes?.[0]??null;
@@ -53,13 +52,13 @@ export function WarpingPanel({presentCharacters,onBack}:{presentCharacters:C[];o
   const components = [s.requires_verbal ? "Verbal" : "", s.requires_movement ? "Movement" : ""].filter(Boolean).join(" + ");
   if (components) parts.push(`Components: ${components}`);
   if (s.description) parts.push(`Effect: ${String(s.description).replace(/\\s+/g, " ").trim()}`);
-  const profile = self ? "self" : "other";
-  const damage=[s[`${profile}_damage_dice`] ? String(s[`${profile}_damage_dice`]) : "",s[`${profile}_damage_attribute`] ? `+ ${s[`${profile}_damage_attribute`]}` : ""].filter(Boolean).join(" ");if(damage)parts.push(`Damage: ${damage}`);
-  const healing=[s[`${profile}_heal_dice`] ? String(s[`${profile}_heal_dice`]) : "",s[`${profile}_heal_attribute`] ? `+ ${s[`${profile}_heal_attribute`]}` : ""].filter(Boolean).join(" ");if(healing)parts.push(`Healing: ${healing}`);
-  const conditions=Array.isArray(s[`${profile}_conditions`])?s[`${profile}_conditions`]:[];if(conditions.length)parts.push(`Condition${conditions.length>1?"s":""}: ${conditions.join(", ")}`);
-  const mn=[["muscles","Muscles"],["reflexes","Reflexes"],["vigour","Vigour"],["brains","Brains"],["shrewd","Shrewd"],["presence","Presence"]];const mods=mn.map(([k,l])=>[l,Number(s[`${profile}_${k}_modifier`]??0)] as const).filter(([,v])=>v!==0).map(([l,v])=>`${l} ${v>0?"+":""}${v}`);if(mods.length)parts.push(`Target: ${mods.join(", ")}`);
-  if(s[`${profile}_max_hp_change`])parts.push(`Max HP: ${s[`${profile}_max_hp_change`]}`);
-  if(s.duration_amount&&s.duration_unit)parts.push(`Duration: ${s.duration_amount} ${s.duration_unit}`);else if(s.duration_unit==="until_dispelled")parts.push("Duration: Until Dispelled");
+  const damage = [s.damage_dice ? String(s.damage_dice) : "", s.damage_attribute ? `+ ${s.damage_attribute}` : ""].filter(Boolean).join(" ");
+  if (damage) parts.push(`Damage: ${damage}`);
+  const healing = [s.healing_dice ? String(s.healing_dice) : "", s.healing_attribute ? `+ ${s.healing_attribute}` : ""].filter(Boolean).join(" ");
+  if (healing) parts.push(`Healing: ${healing}`);
+  if (Array.isArray(s.conditions) && s.conditions.length) parts.push(`Conditions: ${s.conditions.join(", ")}`);
+  if (s.duration_value && s.duration_unit) parts.push(`Duration: ${s.duration_value} ${s.duration_unit}`);
+  else if (s.duration_unit === "until_dispelled") parts.push("Duration: Until Dispelled");
   if (s.is_dispel) parts.push(`Dispel Level ${s.level}`);
   if (s.price_key && PM[String(s.price_key)]) {
     const [stage, days, label] = PM[String(s.price_key)];
@@ -80,7 +79,6 @@ export function WarpingPanel({presentCharacters,onBack}:{presentCharacters:C[];o
   if (!posted.ok) {
     throw Error(posted.message || "Shape was recorded but its room message could not be posted.");
   }
-  if(s.is_dispel)setDispelCast(cr.data.id);
 
   setTargets([]);setWritten("");setMsg(wt?"Warp recorded. Fate resolves it manually.":"Shape warped.");await load()
  }catch(e){setMsg(e instanceof Error?e.message:"Warp failed.")}finally{setBusy(false)}}
@@ -93,7 +91,6 @@ export function WarpingPanel({presentCharacters,onBack}:{presentCharacters:C[];o
    {s?.target_mode==="written"?<input value={written} onChange={e=>setWritten(e.target.value)} placeholder="Written / Fate target..." className="mt-3 w-full border border-[#60482e]/55 bg-[#0f0c09] px-3 py-2 text-[10px]"/>:s?.target_mode!=="self"?<div className="mt-3 flex flex-wrap gap-2">{s?.target_mode==="either"?<button type="button" onClick={()=>toggle(r.character_id)} className="border border-[#60482e]/55 px-3 py-2 text-[9px]">Self</button>:null}{presentCharacters.filter(c=>c.id!==r.character_id).map(c=><button key={c.id} type="button" onClick={()=>toggle(c.id)} className={"border px-3 py-2 text-[9px] "+(targets.includes(c.id)?"border-[#b88b50] bg-[#2a1d12]":"border-[#60482e]/55")}>{c.display_name??c.displayName}</button>)}</div>:<p className="mt-3 text-[10px] text-[#9e8b70]">Target: Self · automatic success.</p>}
    <button type="button" disabled={busy||r.warps_remaining<=0} onClick={()=>void warp()} className="mt-4 border border-[#9b7446] bg-[#2a1d12] px-5 py-2 text-[9px] uppercase text-[#ead1a3] disabled:opacity-40">{busy?"Warping...":`Warp ${s?.word_of_power??""}`}</button>
   </>}
-  {dispelCast&&s?.is_dispel?<DispelPicker castId={dispelCast} presentCharacters={presentCharacters} onDone={()=>setDispelCast(null)}/>:null}
   {msg?<p className="mt-3 text-[10px] text-[#c9b18a]">{msg}</p>:null}
  </div>
 }

@@ -2,7 +2,6 @@ import "server-only";
 
 import { getCharacterAttributeBreakdown } from "@/lib/characters/get-effective-character-attributes";
 import { createClient } from "@/lib/supabase/server";
-import { ActiveShapeEffects } from "@/components/characters/ActiveShapeEffects";
 
 const DEFINITIONS = [
   ["muscles", "Muscles"],
@@ -62,8 +61,7 @@ export async function CharacterMechanicsDisplay({
           breakdown.vigor.effective * 10 +
             breakdown.giftMaxHealth +
             breakdown.itemMaxHealth +
-            breakdown.activeItemMaxHealth +
-            breakdown.shapeMaxHealth,
+            breakdown.activeItemMaxHealth,
         );
 
   const currentHealth =
@@ -84,7 +82,6 @@ export async function CharacterMechanicsDisplay({
 
   return (
     <div className="space-y-4">
-      <ActiveShapeEffects characterId={characterId} />
       <section className="border border-[#60482e]/45 bg-[#15100d]/95 p-5 sm:p-6">
         <h2 className="mt-[-8] font-serif text-2xl text-[#dec89f]">
           Attributes
@@ -137,11 +134,7 @@ export async function CharacterMechanicsDisplay({
                           </span>
                           {" · "}
                           <span className={entry.activeItems === 0 ? "" : "text-emerald-400"}>
-                            {signed(entry.activeItems)} Active Item Effects
-                          </span>
-                          {" · "}
-                          <span className={entry.shapes === 0 ? "" : "text-[#c59ae8]"}>
-                            {signed(entry.shapes)} Shapes
+                            {signed(entry.activeItems)} Active Effects
                           </span>
                           {" = "}
                           <span className="text-[#99866a]">
@@ -201,9 +194,6 @@ export async function CharacterMechanicsDisplay({
               : ""}
             {breakdown.activeItemMaxHealth !== 0
               ? ` ${signed(breakdown.activeItemMaxHealth)} Active Item Max Health`
-              : ""}
-            {breakdown.shapeMaxHealth !== 0
-              ? ` ${signed(breakdown.shapeMaxHealth)} Shape Max Health`
               : ""}
           </p>
         ) : null}

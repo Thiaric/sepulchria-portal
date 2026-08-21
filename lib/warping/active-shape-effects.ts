@@ -1,0 +1,5 @@
+import "server-only";
+import { createClient } from "@/lib/supabase/server";
+export type ActiveShapeEffect={id:string;shape_id:string;shape_name:string;shape_level:number;effect_nature:string;conditions:string[];muscles_modifier:number;reflexes_modifier:number;vigour_modifier:number;brains_modifier:number;shrewd_modifier:number;presence_modifier:number;max_hp_modifier:number;starts_at:string;expires_at:string|null;source_character_id:string;source_name:string};
+export async function getCharacterActiveShapeEffects(id:string):Promise<ActiveShapeEffect[]>{const db=await createClient();const q=await db.rpc("get_character_active_shape_effects",{p_character_id:id});if(q.error)throw Error(q.error.message);return(q.data??[]) as ActiveShapeEffect[]}
+export function effectDuration(e:ActiveShapeEffect){if(!e.expires_at)return"Until Dispelled";const ms=new Date(e.expires_at).getTime()-Date.now();if(ms<=0)return"Expired";const m=Math.ceil(ms/60000);if(m<60)return`${m}m remaining`;const h=Math.ceil(m/60);if(h<48)return`${h}h remaining`;return`${Math.ceil(h/24)}d remaining`;}
