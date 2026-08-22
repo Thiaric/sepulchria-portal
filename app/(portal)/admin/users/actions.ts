@@ -474,44 +474,6 @@ export async function deleteUserAccount(
           Boolean(slug),
       );
 
-      const {
-  error: forumPostsAnonymiseError,
-} = await admin
-  .from("forum_posts")
-  .update({
-    author_user_id: null,
-    author_character_id: null,
-  })
-  .eq(
-    "author_user_id",
-    targetUserId,
-  );
-
-if (forumPostsAnonymiseError) {
-  redirectUserManagementError(
-    `Unable to anonymise forum posts: ${forumPostsAnonymiseError.message}`,
-  );
-}
-
-const {
-  error: forumTopicsAnonymiseError,
-} = await admin
-  .from("forum_topics")
-  .update({
-    author_user_id: null,
-    author_character_id: null,
-  })
-  .eq(
-    "author_user_id",
-    targetUserId,
-  );
-
-if (forumTopicsAnonymiseError) {
-  redirectUserManagementError(
-    `Unable to anonymise forum discussions: ${forumTopicsAnonymiseError.message}`,
-  );
-}
-
   if (characterIds.length > 0) {
 
     const {

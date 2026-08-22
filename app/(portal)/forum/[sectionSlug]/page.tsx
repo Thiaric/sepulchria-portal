@@ -51,6 +51,7 @@ type ForumTopicQueryRow = {
   section_id: string;
   author_user_id: string | null;
   author_character_id: string | null;
+  deleted_author_name: string | null;
   title: string;
   slug: string;
   is_pinned: boolean;
@@ -86,6 +87,7 @@ type ForumTopic = {
   section_id: string;
   author_user_id: string | null;
   author_character_id: string | null;
+  deleted_author_name: string | null;
   title: string;
   slug: string;
   is_pinned: boolean;
@@ -152,9 +154,13 @@ function formatDate(value: string): string {
 
 function getCharacterName(
   character: ForumTopic["author_character"],
+  deletedAuthorName?: string | null,
 ): string {
   if (!character) {
-    return "Unknown author";
+    return (
+      deletedAuthorName?.trim() ||
+      "Unknown author"
+    );
   }
 
   if (character.display_name?.trim()) {
@@ -314,6 +320,7 @@ export default async function ForumSectionPage({
         section_id,
         author_user_id,
         author_character_id,
+        deleted_author_name,
         title,
         slug,
         is_pinned,

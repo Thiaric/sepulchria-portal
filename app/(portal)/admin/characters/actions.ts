@@ -1199,41 +1199,6 @@ export async function deleteCharacterAdministration(
   }
 
   const {
-    error: forumPostsError,
-  } = await supabase
-    .from("forum_posts")
-    .delete()
-    .eq(
-      "author_character_id",
-      characterId,
-    );
-
-  if (forumPostsError) {
-    throw new Error(
-      `Unable to delete forum replies: ${forumPostsError.message}`,
-    );
-  }
-
-  const {
-    error: forumTopicsError,
-  } = await supabase
-    .from("forum_topics")
-    .update({
-      author_character_id:
-        null,
-    })
-    .eq(
-      "author_character_id",
-      characterId,
-    );
-
-  if (forumTopicsError) {
-    throw new Error(
-      `Unable to preserve forum topics: ${forumTopicsError.message}`,
-    );
-  }
-
-  const {
     error: presenceError,
   } = await supabase
     .from(

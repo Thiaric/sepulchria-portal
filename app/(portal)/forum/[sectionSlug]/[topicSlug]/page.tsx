@@ -55,6 +55,7 @@ type ForumPostRecord = {
   topic_id: string;
   author_user_id: string | null;
   author_character_id: string | null;
+  deleted_author_name: string | null;
   quoted_post_id: string | null;
   body: string;
   is_initial: boolean;
@@ -329,6 +330,7 @@ export default async function TopicPage({
         topic_id,
         author_user_id,
         author_character_id,
+        deleted_author_name,
         quoted_post_id,
         body,
         is_initial,
@@ -466,6 +468,7 @@ export default async function TopicPage({
               topic_id,
               author_user_id,
               author_character_id,
+              deleted_author_name,
               quoted_post_id,
               body,
               is_initial,
@@ -922,6 +925,12 @@ for (const log of moderationLogs) {
           character,
         );
       }
+    }
+
+    if (
+      post.deleted_author_name?.trim()
+    ) {
+      return post.deleted_author_name.trim();
     }
 
     return "Unknown character";
