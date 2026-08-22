@@ -123,6 +123,9 @@ const [
   const [sourceMode, setSourceMode] =
     useState(false);
 
+  const [fullscreen, setFullscreen] =
+    useState(false);
+
   const [
     textColourOpen,
     setTextColourOpen,
@@ -681,6 +684,36 @@ function applyHighlightColour(
   setHighlightColourOpen(false);
 }
 
+  function resetTextColour() {
+    restoreColourSelection();
+    runCommand("foreColor", "inherit");
+    setTextColourOpen(false);
+  }
+
+  function resetHighlightColour() {
+    restoreColourSelection();
+    runCommand("hiliteColor", "transparent");
+    setHighlightColourOpen(false);
+  }
+
+  function applyParagraphStyle(
+    property: "lineHeight" | "marginBottom",
+    value: string,
+  ) {
+    const editor = editorRef.current;
+    const selection = window.getSelection();
+    if (!editor || !selection || selection.rangeCount === 0) return;
+    const range = selection.getRangeAt(0);
+    const selector = "p,div,h1,h2,h3,h4,h5,h6,blockquote,li,pre";
+    editor.querySelectorAll<HTMLElement>(selector).forEach((block) => {
+      try {
+        if (range.intersectsNode(block)) block.style[property] = value;
+      } catch {}
+    });
+    syncFromEditor();
+    editor.focus();
+  }
+
   function createLink() {
     const url = window.prompt(
       "Paste the destination URL:",
@@ -1185,7 +1218,7 @@ function addSpellingWordToDictionary() {
   return (
     <div
       ref={editorWrapperRef}
-      className="relative overflow-visible border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))]"
+      className={`relative overflow-visible border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] ${fullscreen ? "fixed inset-3 z-[9998] flex flex-col" : ""}`}
     >
       <style jsx global>{`
         ::highlight(sepulchria-spelling-error) {
@@ -1344,6 +1377,8 @@ function addSpellingWordToDictionary() {
 
   {textColourOpen ? (
     <div className="absolute left-0 top-full z-[200] mt-1 w-[246px] border border-[rgb(var(--sep-colour-60482e))]/70 bg-[rgb(var(--sep-colour-100c09))] p-3 shadow-[0_12px_30px_rgba(var(--sep-rgb-0-0-0),0.55)]">
+      <button type="button" onMouseDown={(event) => event.preventDefault()} onClick={resetTextColour} className="mb-3 w-full border border-[rgb(var(--sep-colour-60482e))]/70 bg-[rgb(var(--sep-colour-17110d))] px-2 py-1.5 text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-cbb28a))]">Default colour</button>
+
       <p className="mb-2 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806c52))]">
         Standard
       </p>
@@ -1483,6 +1518,8 @@ function addSpellingWordToDictionary() {
 
           {highlightColourOpen ? (
             <div className="absolute left-0 top-full z-[200] mt-1 w-[246px] border border-[rgb(var(--sep-colour-60482e))]/70 bg-[rgb(var(--sep-colour-100c09))] p-3 shadow-[0_12px_30px_rgba(var(--sep-rgb-0-0-0),0.55)]">
+              <button type="button" onMouseDown={(event) => event.preventDefault()} onClick={resetHighlightColour} className="mb-3 w-full border border-[rgb(var(--sep-colour-60482e))]/70 bg-[rgb(var(--sep-colour-17110d))] px-2 py-1.5 text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-cbb28a))]">No highlight</button>
+
               <p className="mb-2 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806c52))]">
                 Standard
               </p>
@@ -1607,6 +1644,9 @@ function addSpellingWordToDictionary() {
           onClick={() => runCommand("justifyRight")}
           disabled={disabled || sourceMode}
         />
+        <ToolbarButton label="≡" title="Justify" onClick={() => runCommand("justifyFull")} disabled={disabled || sourceMode} />
+        <select aria-label="Line height" defaultValue="" disabled={disabled || sourceMode} onChange={(event) => { if (event.target.value) applyParagraphStyle("lineHeight", event.target.value === "default" ? "" : event.target.value); event.currentTarget.value = ""; }} className="h-8 border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] px-2 text-[10px] text-[rgb(var(--sep-colour-cbb28a))] outline-none"><option value="">Line height</option><option value="default">Default</option><option value="1">1.0</option><option value="1.15">1.15</option><option value="1.3">1.3</option><option value="1.5">1.5</option><option value="1.75">1.75</option><option value="2">2.0</option></select>
+        <select aria-label="Paragraph spacing" defaultValue="" disabled={disabled || sourceMode} onChange={(event) => { if (event.target.value) applyParagraphStyle("marginBottom", event.target.value === "default" ? "" : event.target.value); event.currentTarget.value = ""; }} className="h-8 border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] px-2 text-[10px] text-[rgb(var(--sep-colour-cbb28a))] outline-none"><option value="">Paragraph spacing</option><option value="default">Default</option><option value="0">None</option><option value="0.35em">Small</option><option value="0.75em">Normal</option><option value="1.25em">Large</option><option value="2em">Extra large</option></select>
         <ToolbarButton
           label="• List"
           title="Bulleted list"
@@ -1621,6 +1661,10 @@ function addSpellingWordToDictionary() {
           disabled={disabled || sourceMode}
           wide
         />
+        <ToolbarButton label="←" title="Outdent" onClick={() => runCommand("outdent")} disabled={disabled || sourceMode} />
+        <ToolbarButton label="→" title="Indent" onClick={() => runCommand("indent")} disabled={disabled || sourceMode} />
+        <ToolbarButton label="X₂" title="Subscript" onClick={() => runCommand("subscript")} disabled={disabled || sourceMode} />
+        <ToolbarButton label="X²" title="Superscript" onClick={() => runCommand("superscript")} disabled={disabled || sourceMode} />
 
         <span className="mx-1 h-6 w-px bg-[rgb(var(--sep-colour-59432c))]/45" />
 
@@ -1631,6 +1675,7 @@ function addSpellingWordToDictionary() {
           disabled={disabled || sourceMode}
           wide
         />
+        <ToolbarButton label="Unlink" title="Remove link" onClick={() => runCommand("unlink")} disabled={disabled || sourceMode} wide />
         <ToolbarButton
           label="Image"
           title="Insert image from URL"
@@ -1644,6 +1689,7 @@ function addSpellingWordToDictionary() {
           onClick={() => runCommand("insertHorizontalRule")}
           disabled={disabled || sourceMode}
         />
+        <ToolbarButton label={fullscreen ? "Exit Full" : "Full"} title={fullscreen ? "Exit fullscreen" : "Fullscreen editor"} onClick={() => setFullscreen((current) => !current)} disabled={disabled} wide />
         <ToolbarButton
           label="Clear"
           title="Remove formatting"
@@ -1836,7 +1882,7 @@ function addSpellingWordToDictionary() {
           Paste formatted content directly. Fonts, 8–24px text sizes, colours, links, lists and web images are retained. Misspellings are marked with a red wavy underline.
         </span>
         <span>
-          {textLength.toLocaleString("en-GB")} / {maxTextLength.toLocaleString("en-GB")}
+          {stripRichTextForPreview(html).trim().split(/\s+/).filter(Boolean).length.toLocaleString("en-GB")} words · {textLength.toLocaleString("en-GB")} / {maxTextLength.toLocaleString("en-GB")} characters
         </span>
       </div>
     </div>
