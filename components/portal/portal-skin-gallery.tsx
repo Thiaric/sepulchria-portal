@@ -16,6 +16,40 @@ export type AppearanceSkin = {
   source: "paid" | "staff" | null;
 };
 
+const SKIN_SWATCHES: Record<
+  string,
+  {
+    background: string;
+    accent: string;
+  }
+> = {
+  "sepulchria": { background: "#120f0d", accent: "#b68b4f" },
+  "vellum": { background: "#e7dcc2", accent: "#5d4930" },
+  "starfall": { background: "#080d1e", accent: "#758fd6" },
+  "rose-nocturne": { background: "#1a0e18", accent: "#b36d8b" },
+  "verdant-reliquary": { background: "#07140f", accent: "#4f9c70" },
+  "amethyst-veil": { background: "#120b19", accent: "#9b6ac4" },
+  "moonlit": { background: "#080d18", accent: "#8da9d4" },
+  "emberforge": { background: "#110b08", accent: "#c7773d" },
+  "deepwater": { background: "#071416", accent: "#4f969d" },
+  "blood-court": { background: "#140708", accent: "#9d3744" },
+  "ashen": { background: "#0c2030", accent: "#9fd4ef" },
+  "ivory-archive": { background: "#171615", accent: "#d1c6ad" },
+  "aelari-dawn": { background: "#0f1f2e", accent: "#e7d9a8" },
+  "dwarven-deep": { background: "#111517", accent: "#b37945" },
+  "mortal-hearth": { background: "#242627", accent: "#aaa79d" },
+  "wolfs-moon": { background: "#11191e", accent: "#9aaeb7" },
+};
+
+function getSkinSwatch(slug: string) {
+  return (
+    SKIN_SWATCHES[slug] ?? {
+      background: "#120f0d",
+      accent: "#b68b4f",
+    }
+  );
+}
+
 function priceLabel(skin: AppearanceSkin) {
   if (skin.isDefault) {
     return "Included";
@@ -103,6 +137,8 @@ export function PortalSkinGallery({
             selectedSkin === entry.slug;
           const unlocked =
             entry.isDefault || entry.owned;
+          const swatch =
+            getSkinSwatch(entry.slug);
 
           return (
             <article
@@ -143,7 +179,17 @@ export function PortalSkinGallery({
                   </p>
                 ) : null}
 
-                <div className="mt-4 flex flex-wrap justify-end gap-2">
+                <div className="mt-4 flex flex-wrap items-end justify-between gap-3">
+                  <div
+                    className="h-10 w-10 shrink-0 rounded-full border border-[rgb(var(--sep-colour-60482e))]/60 shadow-[0_0_0_2px_rgb(var(--sep-colour-0d0a08))]"
+                    style={{
+                      background: `linear-gradient(90deg, ${swatch.background} 0 50%, ${swatch.accent} 50% 100%)`,
+                    }}
+                    title={`${entry.name}: background and accent colours`}
+                    aria-label={`${entry.name} colour swatch`}
+                  />
+
+                  <div className="flex flex-wrap justify-end gap-2">
                   <button
                     type="button"
                     onClick={() => previewSkin(entry.slug)}
@@ -164,6 +210,7 @@ export function PortalSkinGallery({
                         : "Use skin"}
                     </button>
                   ) : null}
+                  </div>
                 </div>
               </div>
             </article>
