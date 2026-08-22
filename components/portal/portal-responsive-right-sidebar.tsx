@@ -284,9 +284,9 @@ export function PortalResponsiveRightSidebar({
                   />
                 ) : null}
 
-                <div className="pointer-events-none absolute inset-0 z-[6] bg-[rgb(var(--sep-colour-0b0806))]/48" />
+                <div className="pointer-events-none absolute inset-0 z-[6] bg-black/48" />
 
-                <div className="pointer-events-none absolute inset-0 z-[6] bg-gradient-to-r from-[rgb(var(--sep-colour-100b08))]/78 via-[rgb(var(--sep-colour-100b08))]/52 to-[rgb(var(--sep-colour-100b08))]/28" />
+                <div className="pointer-events-none absolute inset-0 z-[6] bg-gradient-to-r from-black/78 via-black/52 to-black/28" />
 
                 <div className="relative z-10 flex min-h-[108px] items-end p-4 xl:p-[var(--portal-section-pad,1rem)]">
                   <div className="flex w-full min-w-0 items-end justify-between gap-2">
