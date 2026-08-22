@@ -42,15 +42,19 @@ function kindForSkin(skin: string) {
 
   if (value === "starfall") return "starfall";
   if (value === "vellum") return "vellum";
-  if (value === "rose") return "rose";
+  if (value === "rose-nocturne") return "rose";
   if (value === "ashen") return "ashen";
-  if (value === "water") return "water";
-  if (value === "ember") return "ember";
-  if (value === "amethyst") return "amethyst";
-  if (value === "verdant") return "verdant";
-  if (value === "blood") return "blood";
-  if (value === "ivory") return "ivory";
+  if (value === "deepwater") return "water";
+  if (value === "emberforge") return "ember";
+  if (value === "amethyst-veil") return "amethyst";
+  if (value === "verdant-reliquary") return "verdant";
+  if (value === "blood-court") return "blood";
+  if (value === "ivory-archive") return "ivory";
   if (value === "moonlit") return "moonlit";
+  if (value === "aelari-dawn") return "starfall";
+  if (value === "dwarven-deep") return "ashen";
+  if (value === "mortal-hearth") return "ember";
+  if (value === "wolfs-moon") return "moonlit";
 
   return "sepulchria";
 }
