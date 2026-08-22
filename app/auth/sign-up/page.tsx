@@ -1,7 +1,26 @@
 import { AuthPageShell } from "@/components/auth-page-shell";
+import { RegistrationClosedNotice } from "@/components/registration-closed-notice";
 import { SignUpForm } from "@/components/sign-up-form";
+import { getRegistrationsOpen } from "@/lib/registration/get-registrations-open";
 
-export default function SignUpPage() {
+export const dynamic = "force-dynamic";
+
+export default async function SignUpPage() {
+  const registrationsOpen =
+    await getRegistrationsOpen();
+
+  if (!registrationsOpen) {
+    return (
+      <AuthPageShell
+        eyebrow="The City Gates"
+        title="Registrations Temporarily Closed"
+        description="Sepulchria is preparing to welcome its first limited group of players."
+      >
+        <RegistrationClosedNotice />
+      </AuthPageShell>
+    );
+  }
+
   return (
     <AuthPageShell
       eyebrow="Begin Your Chronicle"

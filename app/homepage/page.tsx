@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { SepulchriaHomepage } from "@/components/homepage/sepulchria-homepage";
 import { createClient } from "@/lib/supabase/server";
+import { getRegistrationsOpen } from "@/lib/registration/get-registrations-open";
 
 export const metadata: Metadata = {
   title: "Sepulchria",
@@ -18,9 +19,13 @@ export default async function HomepagePage() {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const registrationsOpen =
+    await getRegistrationsOpen();
+
   return (
     <SepulchriaHomepage
       isAuthenticated={Boolean(user)}
+      registrationsOpen={registrationsOpen}
       enterHref={user ? "/" : "/auth/login"}
     />
   );

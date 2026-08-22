@@ -127,6 +127,10 @@ export default async function AdminLayout({
                 <AdminNavigationLink href="/admin/users">
                   Users
                 </AdminNavigationLink>
+
+                <AdminNavigationLink href="/admin/new-register">
+                  Registrations
+                </AdminNavigationLink>
               </>
             ) : null}
 

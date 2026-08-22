@@ -1,0 +1,62 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+
+type Props = { skin: string };
+
+const PARTICLES = [
+  [4, 0.4, 15, -12, 2], [11, 5.2, 19, 14, 3],
+  [19, 8.1, 17, -8, 2], [28, 2.6, 21, 11, 2],
+  [38, 11.3, 20, -15, 3], [49, 6.7, 18, 9, 2],
+  [60, 1.8, 22, -10, 2], [70, 9.4, 19, 13, 3],
+  [81, 4.1, 20, -9, 2], [92, 12.5, 18, 10, 2],
+] as const;
+
+function kindFor(skin: string) {
+  const s = skin.toLowerCase();
+  if (s === "sepulchria") return "cinder";
+  if (s.includes("moon")) return "moon";
+  if (s.includes("blood") || s.includes("crimson")) return "blood";
+  if (s.includes("star") || s.includes("celest") || s.includes("astral")) return "stars";
+  if (s === "vellum" || s.includes("paper") || s.includes("ivory")) return "vellum";
+  if (s.includes("forest") || s.includes("verdant") || s.includes("green")) return "forest";
+  if (s.includes("ocean") || s.includes("tide") || s.includes("sea") || s.includes("azure")) return "ocean";
+  if (s.includes("arcane") || s.includes("violet") || s.includes("purple")) return "arcane";
+  if (s.includes("fire") || s.includes("ember") || s.includes("orange")) return "fire";
+  if (s.includes("shadow") || s.includes("void") || s.includes("obsidian")) return "shadow";
+  return "cinder";
+}
+
+export function PortalSkinAtmosphere({ skin }: Props) {
+  const [reduced, setReduced] = useState(false);
+  const kind = useMemo(() => kindFor(skin), [skin]);
+
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReduced(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
+
+  if (reduced) return null;
+
+  return (
+    <div aria-hidden="true" className="portal-skin-atmosphere" data-atmosphere={kind}>
+      {PARTICLES.map(([left, delay, duration, drift, size], index) => (
+        <span
+          key={`${kind}-${index}`}
+          className="portal-skin-atmosphere-particle"
+          style={{
+            left: `${left}%`,
+            width: size,
+            height: size,
+            animationDelay: `${delay}s`,
+            animationDuration: `${duration}s`,
+            ["--atmosphere-drift" as string]: `${drift}px`,
+          }}
+        />
+      ))}
+    </div>
+  );
+}

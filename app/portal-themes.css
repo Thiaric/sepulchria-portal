@@ -6289,3 +6289,96 @@ body[data-portal-skin="vellum"] {
 [data-map-magnifying-lens-ring] {
   border-radius: 9999px !important;
 }
+
+/* Portal skin atmosphere: decorative and intentionally independent of theme RGB variables. */
+.portal-skin-atmosphere {
+  position: fixed;
+  inset: 0;
+  z-index: 35;
+  overflow: hidden;
+  pointer-events: none;
+  contain: strict;
+}
+.portal-skin-atmosphere-particle {
+  position: absolute;
+  display: block;
+  will-change: transform, opacity;
+}
+.portal-skin-atmosphere[data-atmosphere="cinder"] .portal-skin-atmosphere-particle,
+.portal-skin-atmosphere[data-atmosphere="fire"] .portal-skin-atmosphere-particle,
+.portal-skin-atmosphere[data-atmosphere="arcane"] .portal-skin-atmosphere-particle,
+.portal-skin-atmosphere[data-atmosphere="shadow"] .portal-skin-atmosphere-particle,
+.portal-skin-atmosphere[data-atmosphere="ocean"] .portal-skin-atmosphere-particle {
+  bottom: -10px;
+  border-radius: 999px;
+  animation: portal-atmosphere-rise linear infinite;
+}
+.portal-skin-atmosphere[data-atmosphere="cinder"] .portal-skin-atmosphere-particle {
+  background: rgb(216 146 69);
+  box-shadow: 0 0 7px rgb(216 146 69 / .55);
+}
+.portal-skin-atmosphere[data-atmosphere="fire"] .portal-skin-atmosphere-particle {
+  background: rgb(238 124 48);
+  box-shadow: 0 0 8px rgb(238 124 48 / .58);
+}
+.portal-skin-atmosphere[data-atmosphere="arcane"] .portal-skin-atmosphere-particle {
+  background: rgb(188 139 232);
+  box-shadow: 0 0 8px rgb(174 116 229 / .5);
+}
+.portal-skin-atmosphere[data-atmosphere="shadow"] .portal-skin-atmosphere-particle {
+  background: rgb(125 125 135 / .4);
+  box-shadow: 0 0 12px rgb(90 90 105 / .25);
+}
+.portal-skin-atmosphere[data-atmosphere="ocean"] .portal-skin-atmosphere-particle {
+  border: 1px solid rgb(168 218 235 / .5);
+  background: rgb(168 218 235 / .06);
+}
+.portal-skin-atmosphere[data-atmosphere="moon"] .portal-skin-atmosphere-particle,
+.portal-skin-atmosphere[data-atmosphere="blood"] .portal-skin-atmosphere-particle,
+.portal-skin-atmosphere[data-atmosphere="vellum"] .portal-skin-atmosphere-particle,
+.portal-skin-atmosphere[data-atmosphere="forest"] .portal-skin-atmosphere-particle {
+  top: -8px;
+  border-radius: 999px;
+  animation: portal-atmosphere-fall linear infinite;
+}
+.portal-skin-atmosphere[data-atmosphere="moon"] .portal-skin-atmosphere-particle {
+  background: rgb(210 226 240);
+  box-shadow: 0 0 8px rgb(180 208 236 / .4);
+}
+.portal-skin-atmosphere[data-atmosphere="blood"] .portal-skin-atmosphere-particle {
+  background: rgb(118 24 30);
+  box-shadow: 0 0 5px rgb(105 16 24 / .3);
+}
+.portal-skin-atmosphere[data-atmosphere="vellum"] .portal-skin-atmosphere-particle {
+  background: rgb(112 91 65);
+}
+.portal-skin-atmosphere[data-atmosphere="forest"] .portal-skin-atmosphere-particle {
+  background: rgb(180 190 112);
+  box-shadow: 0 0 5px rgb(150 170 92 / .25);
+}
+.portal-skin-atmosphere[data-atmosphere="stars"] .portal-skin-atmosphere-particle {
+  top: calc(8% + var(--star-offset, 0%));
+  border-radius: 999px;
+  background: rgb(232 239 255);
+  box-shadow: 0 0 7px rgb(190 211 255 / .45);
+  animation: portal-atmosphere-star ease-in-out infinite alternate;
+}
+@keyframes portal-atmosphere-rise {
+  0% { transform: translate3d(0,0,0); opacity: 0; }
+  14% { opacity: .28; }
+  84% { opacity: .16; }
+  100% { transform: translate3d(var(--atmosphere-drift,0px),-108vh,0); opacity: 0; }
+}
+@keyframes portal-atmosphere-fall {
+  0% { transform: translate3d(0,-3vh,0); opacity: 0; }
+  15% { opacity: .22; }
+  85% { opacity: .13; }
+  100% { transform: translate3d(var(--atmosphere-drift,0px),108vh,0); opacity: 0; }
+}
+@keyframes portal-atmosphere-star {
+  from { transform: translate3d(0,0,0) scale(.75); opacity: .1; }
+  to { transform: translate3d(var(--atmosphere-drift,0px),8vh,0) scale(1.15); opacity: .38; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .portal-skin-atmosphere { display: none !important; }
+}

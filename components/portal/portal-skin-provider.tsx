@@ -10,6 +10,7 @@ import {
 } from "react";
 
 import { createClient } from "@/lib/supabase/client";
+import { PortalSkinAtmosphere } from "@/components/portal/portal-skin-atmosphere";
 
 export type PortalSkin = string;
 
@@ -188,6 +189,7 @@ export function PortalSkinProvider({
         data-portal-skin={skin}
       >
         {children}
+        <PortalSkinAtmosphere skin={skin} />
       </div>
     </PortalSkinContext.Provider>
   );

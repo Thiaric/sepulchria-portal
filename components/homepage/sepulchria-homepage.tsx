@@ -12,6 +12,7 @@ import {
 type SepulchriaHomepageProps = {
   enterHref: string;
   isAuthenticated: boolean;
+  registrationsOpen: boolean;
 };
 
 const EMBERS = [
@@ -75,6 +76,7 @@ const CHAPTERS = [
 export function SepulchriaHomepage({
   enterHref,
   isAuthenticated,
+  registrationsOpen,
 }: SepulchriaHomepageProps) {
   const mapRef =
     useRef<HTMLDivElement | null>(null);
@@ -329,6 +331,12 @@ useEffect(() => {
                     <HomepageButton
                       key={item.label}
                       {...item}
+                      label={
+                        item.label === "Register" &&
+                        !registrationsOpen
+                          ? "Info about Registration"
+                          : item.label
+                      }
                     />
                   ),
                 )}
