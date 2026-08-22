@@ -60,6 +60,20 @@ export async function updateShape(f:FormData){
 }
 export async function deleteShape(f:FormData){
   await requireStaff(); const db=await createClient(); const id=txt(f,"shape_id");
+
+  const {count:effectCount,error:effectError}=await db
+    .from("character_shape_effects")
+    .select("id",{count:"exact",head:true})
+    .eq("shape_id",id);
+
+  if(effectError){
+    redirect(`/admin/shapes?error=${encodeURIComponent(`Unable to inspect Shape effects: ${effectError.message}`)}`);
+  }
+
+  if((effectCount??0)>0){
+    redirect(`/admin/shapes?error=${encodeURIComponent(`This Shape cannot be deleted because ${effectCount} active or preserved character effect${effectCount===1?"":"s"} still refer to it. Remove those effects first.`)}`);
+  }
+
   const {error}=await db.from("shapes").delete().eq("id",id);
   if(error) redirect(`/admin/shapes?error=${encodeURIComponent(error.message)}`);
   revalidatePath("/admin/shapes"); redirect("/admin/shapes?success=Shape%20deleted");
@@ -110,7 +124,23 @@ export async function linkOrderLevel(f:FormData){
       "sync_character_order_shapes",
       {p_character_id:member.character_id},
     );
-    if(sync.error)throw new Error(sync.error.message);
+    if(sync.error){
+      await db.rpc("staff_unlink_shape_from_order_level",{
+        p_shape_id:shapeId,
+        p_order_level_id:txt(f,"order_level_id"),
+      });
+
+      for(const rollbackMember of members??[]){
+        await db.rpc(
+          "sync_character_order_shapes",
+          {p_character_id:rollbackMember.character_id},
+        );
+      }
+
+      throw new Error(
+        `Shape link was rolled back because character synchronisation failed: ${sync.error.message}`,
+      );
+    }
   }
 
   revalidatePath("/admin/shapes");
@@ -140,7 +170,23 @@ export async function unlinkOrderLevel(f:FormData){
       "sync_character_order_shapes",
       {p_character_id:member.character_id},
     );
-    if(sync.error)throw new Error(sync.error.message);
+    if(sync.error){
+      await db.rpc("staff_link_shape_to_order_level",{
+        p_shape_id:shapeId,
+        p_order_level_id:txt(f,"order_level_id"),
+      });
+
+      for(const rollbackMember of members??[]){
+        await db.rpc(
+          "sync_character_order_shapes",
+          {p_character_id:rollbackMember.character_id},
+        );
+      }
+
+      throw new Error(
+        `Shape unlink was rolled back because character synchronisation failed: ${sync.error.message}`,
+      );
+    }
   }
 
   revalidatePath("/admin/shapes");

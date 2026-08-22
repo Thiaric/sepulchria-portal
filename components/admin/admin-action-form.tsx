@@ -410,21 +410,35 @@ export function AdminActionForm({
           nativeEvent.submitter;
 
           if (
-  submitter instanceof HTMLButtonElement
-) {
-  const buttonConfirmMessage =
-    submitter.dataset.confirmMessage;
+            submitter instanceof HTMLButtonElement
+          ) {
+            const buttonConfirmMessage =
+              submitter.dataset.confirmMessage;
 
-  if (
-    buttonConfirmMessage &&
-    !window.confirm(
-      buttonConfirmMessage,
-    )
-  ) {
-    event.preventDefault();
-    return;
-  }
-}
+            const submitterText =
+              (submitter.textContent ?? "")
+                .trim()
+                .toLowerCase();
+
+            const isDestructive =
+              submitterText.includes("delete") ||
+              submitterText.includes("remove") ||
+              submitterText.includes("destroy");
+
+            const message =
+              buttonConfirmMessage ??
+              (isDestructive
+                ? "Are you sure you want to continue? This action may permanently delete data and cannot necessarily be undone."
+                : null);
+
+            if (
+              message &&
+              !window.confirm(message)
+            ) {
+              event.preventDefault();
+              return;
+            }
+          }
 
         if (
           submitter instanceof

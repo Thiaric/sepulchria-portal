@@ -595,6 +595,32 @@ export async function deleteRace(
       );
     }
 
+    const {
+      count: acquiredFeatCount,
+      error: acquiredFeatError,
+    } = await supabase
+      .from("character_gifts")
+      .select("id", {
+        count: "exact",
+        head: true,
+      })
+      .eq("acquisition_source", "ancestry")
+      .eq("source_race_id", raceId);
+
+    if (acquiredFeatError) {
+      throw new Error(
+        `Unable to verify Ancestry-acquired Feats: ${acquiredFeatError.message}`,
+      );
+    }
+
+    if ((acquiredFeatCount ?? 0) > 0) {
+      throw new Error(
+        `This ancestry cannot be deleted because ${acquiredFeatCount} character ${
+          acquiredFeatCount === 1 ? "Feat records it" : "Feats record it"
+        } as the acquisition source. Remove or reassign those Feats first.`,
+      );
+    }
+
     const { error: deleteError } =
       await supabase
         .from("races")

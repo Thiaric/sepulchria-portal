@@ -558,8 +558,23 @@ export async function createOrder(
           .eq("level", level);
 
       if (payError) {
+        await supabase
+          .from("order_headquarters")
+          .delete()
+          .eq("order_id", createdOrder.id);
+
+        await supabase
+          .from("rooms")
+          .delete()
+          .eq("id", headquartersRoom.id);
+
+        await supabase
+          .from("orders")
+          .delete()
+          .eq("id", createdOrder.id);
+
         throw new Error(
-          `Order created, but Level ${level} pay could not be saved: ${payError.message}`,
+          `Order creation was rolled back because Level ${level} pay could not be saved: ${payError.message}`,
         );
       }
     }

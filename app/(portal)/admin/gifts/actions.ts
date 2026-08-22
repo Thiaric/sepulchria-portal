@@ -269,13 +269,60 @@ async function replaceEligibility(
 ) {
   const supabase = await createClient();
 
+  const [oldRacesResult, oldRolesResult] = await Promise.all([
+    supabase.from("gift_races").select("race_id").eq("gift_id", giftId),
+    supabase.from("gift_order_jobs").select("order_job_id").eq("gift_id", giftId),
+  ]);
+
+  const snapshotError =
+    oldRacesResult.error ?? oldRolesResult.error;
+
+  if (snapshotError) {
+    throw new Error(
+      `Unable to preserve existing Feat eligibility: ${snapshotError.message}`,
+    );
+  }
+
+  const oldRaceIds =
+    (oldRacesResult.data ?? []).map((row) => row.race_id);
+  const oldRoleIds =
+    (oldRolesResult.data ?? []).map((row) => row.order_job_id);
+
+  const restoreEligibility = async () => {
+    await Promise.all([
+      supabase.from("gift_races").delete().eq("gift_id", giftId),
+      supabase.from("gift_order_jobs").delete().eq("gift_id", giftId),
+    ]);
+
+    if (oldRaceIds.length) {
+      await supabase.from("gift_races").insert(
+        oldRaceIds.map((raceId) => ({
+          gift_id: giftId,
+          race_id: raceId,
+        })),
+      );
+    }
+
+    if (oldRoleIds.length) {
+      await supabase.from("gift_order_jobs").insert(
+        oldRoleIds.map((roleId) => ({
+          gift_id: giftId,
+          order_job_id: roleId,
+        })),
+      );
+    }
+  };
+
   const [raceDelete, roleDelete] = await Promise.all([
     supabase.from("gift_races").delete().eq("gift_id", giftId),
     supabase.from("gift_order_jobs").delete().eq("gift_id", giftId),
   ]);
 
   const deleteError = raceDelete.error ?? roleDelete.error;
-  if (deleteError) throw new Error(deleteError.message);
+  if (deleteError) {
+    await restoreEligibility();
+    throw new Error(deleteError.message);
+  }
 
   if (raceIds.length) {
     const { error } = await supabase.from("gift_races").insert(
@@ -284,7 +331,10 @@ async function replaceEligibility(
         race_id: raceId,
       })),
     );
-    if (error) throw new Error(`Unable to save Ancestry eligibility: ${error.message}`);
+    if (error) {
+      await restoreEligibility();
+      throw new Error(`Unable to save Ancestry eligibility: ${error.message}`);
+    }
   }
 
   if (roleIds.length) {
@@ -294,7 +344,10 @@ async function replaceEligibility(
         order_job_id: roleId,
       })),
     );
-    if (error) throw new Error(`Unable to save Order Role eligibility: ${error.message}`);
+    if (error) {
+      await restoreEligibility();
+      throw new Error(`Unable to save Order Role eligibility: ${error.message}`);
+    }
   }
 }
 
@@ -424,9 +477,18 @@ export async function assignGiftToCharacter(formData: FormData) {
       );
     }
 
-    await applyGiftOwnershipHealthEffects(
-      assignment.id,
-    );
+    try {
+      await applyGiftOwnershipHealthEffects(
+        assignment.id,
+      );
+    } catch (healthError) {
+      await supabase
+        .from("character_gifts")
+        .delete()
+        .eq("id", assignment.id);
+
+      throw healthError;
+    }
   } catch (error) {
     back("error", error instanceof Error ? error.message : "Unable to assign Gift.");
   }
@@ -452,7 +514,17 @@ export async function removeGiftFromCharacter(formData: FormData) {
       .delete()
       .eq("id", assignmentId);
 
-    if (error) throw new Error(error.message);
+    if (error) {
+      try {
+        await applyGiftOwnershipHealthEffects(
+          assignmentId,
+        );
+      } catch {
+        // Keep the original delete error. The ownership row still exists.
+      }
+
+      throw new Error(error.message);
+    }
   } catch (error) {
     back("error", error instanceof Error ? error.message : "Unable to remove Gift.");
   }

@@ -525,6 +525,31 @@ export async function deleteAssociation(
       );
     }
 
+    const {
+      count: orderCount,
+      error: orderError,
+    } = await supabase
+      .from("orders")
+      .select("id", {
+        count: "exact",
+        head: true,
+      })
+      .eq("association_id", associationId);
+
+    if (orderError) {
+      throw new Error(
+        `Unable to verify linked Orders: ${orderError.message}`,
+      );
+    }
+
+    if ((orderCount ?? 0) > 0) {
+      throw new Error(
+        `This association cannot be deleted because it still contains ${orderCount} ${
+          orderCount === 1 ? "Order" : "Orders"
+        }. Delete or move those Orders first.`,
+      );
+    }
+
     const { error: deleteError } =
       await supabase
         .from("associations")

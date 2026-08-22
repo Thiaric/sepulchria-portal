@@ -251,6 +251,29 @@ export async function deleteOrderJob(formData: FormData) {
     throw new Error("Move every member out of this role before deleting it.");
   }
 
+  const {
+    count: acquiredFeatCount,
+    error: acquiredFeatError,
+  } = await supabase
+    .from("character_gifts")
+    .select("id", { count: "exact", head: true })
+    .eq("acquisition_source", "order")
+    .eq("source_order_job_id", jobId);
+
+  if (acquiredFeatError) {
+    throw new Error(
+      `Unable to verify Order-acquired Feats: ${acquiredFeatError.message}`,
+    );
+  }
+
+  if ((acquiredFeatCount ?? 0) > 0) {
+    throw new Error(
+      `This role cannot be deleted because ${acquiredFeatCount} character ${
+        acquiredFeatCount === 1 ? "Feat records it" : "Feats record it"
+      } as the acquisition source. Remove or reassign those Feats first.`,
+    );
+  }
+
   const { error } = await supabase.from("order_jobs").delete().eq("id", jobId);
   if (error) throw new Error(error.message);
   refreshStructure();

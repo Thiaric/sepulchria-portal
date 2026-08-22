@@ -464,6 +464,7 @@ export async function deleteRoom(
     messagesResult,
     outgoingConnectionsResult,
     incomingConnectionsResult,
+    headquartersResult,
   ] = await Promise.all([
     supabase
       .from("characters")
@@ -504,6 +505,14 @@ export async function deleteRoom(
         head: true,
       })
       .eq("to_room_id", roomId),
+
+    supabase
+      .from("order_headquarters")
+      .select("id", {
+        count: "exact",
+        head: true,
+      })
+      .eq("room_id", roomId),
   ]);
 
   const firstError =
@@ -511,7 +520,8 @@ export async function deleteRoom(
     presenceResult.error ??
     messagesResult.error ??
     outgoingConnectionsResult.error ??
-    incomingConnectionsResult.error;
+    incomingConnectionsResult.error ??
+    headquartersResult.error;
 
   if (firstError) {
     throw new Error(
@@ -533,6 +543,15 @@ export async function deleteRoom(
       0) +
     (incomingConnectionsResult.count ??
       0);
+
+  const headquartersCount =
+    headquartersResult.count ?? 0;
+
+  if (headquartersCount > 0) {
+    throw new Error(
+      "This room cannot be deleted because it is currently assigned as an Order Headquarters. Remove or change the Headquarters first.",
+    );
+  }
 
   if (characterCount > 0) {
     throw new Error(
