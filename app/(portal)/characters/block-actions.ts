@@ -4,6 +4,7 @@ import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { isCharacterStaff } from "@/lib/auth/is-character-staff";
 
 function adminClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -38,6 +39,17 @@ export async function toggleGlobalCharacterBlock(formData: FormData) {
 
   if (targetError) throw new Error(targetError.message);
   if (!target || target.is_system) throw new Error("That character cannot be blocked.");
+
+  if (
+    block &&
+    await isCharacterStaff(
+      targetCharacterId,
+    )
+  ) {
+    throw new Error(
+      "Staff characters cannot be blocked.",
+    );
+  }
 
   if (block) {
     const { error } = await admin.from("character_blocks").upsert(

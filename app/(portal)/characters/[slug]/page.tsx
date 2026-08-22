@@ -5,6 +5,7 @@ import { PublicCharacterProfileView } from "@/components/characters/public-chara
 import { LiveCharacterSheetRefresh } from "@/components/characters/live-character-sheet-refresh";
 import { getPublicCharacter } from "@/lib/characters/get-public-character";
 import { getStaffSession } from "@/lib/auth/require-staff";
+import { isCharacterStaff } from "@/lib/auth/is-character-staff";
 import { hasCharacterFeature } from "@/lib/features/character-feature-entitlements";
 import { createClient } from "@/lib/supabase/server";
 
@@ -96,6 +97,11 @@ export default async function PublicCharacterPage({
   let isInFriendList = false;
   let blockedByViewer = false;
   let blockedViewer = false;
+
+  const targetIsStaff =
+    await isCharacterStaff(
+      character.id,
+    );
 
   if (
     activeCharacter &&
@@ -191,9 +197,11 @@ export default async function PublicCharacterPage({
           !blockedViewer
         }
         canBlock={
-  Boolean(activeCharacter) &&
-  activeCharacter?.id !== character.id
-}
+          Boolean(activeCharacter) &&
+          activeCharacter?.id !==
+            character.id &&
+          !targetIsStaff
+        }
         blockedByViewer={blockedByViewer}
         hasGlobalBlock={blockedByViewer || blockedViewer}
         canViewLastActivity={

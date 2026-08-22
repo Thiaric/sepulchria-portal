@@ -937,7 +937,7 @@ export async function sendRoomMessage(
           return {
             ok: false,
             message:
-              "Character not at this Location",
+              resolution.message,
           };
         }
 
@@ -1010,6 +1010,9 @@ export async function sendRoomMessage(
           | WhisperRecipient
           | null = null;
 
+        let resolutionFailureMessage:
+          string | null = null;
+
         for (
           const candidate of
           matchingCharacters ?? []
@@ -1028,12 +1031,20 @@ export async function sendRoomMessage(
 
             break;
           }
+
+          if (
+            !resolutionFailureMessage
+          ) {
+            resolutionFailureMessage =
+              resolution.message;
+          }
         }
 
         if (!resolvedRecipient) {
           return {
             ok: false,
             message:
+              resolutionFailureMessage ??
               "Character not at this Location",
           };
         }

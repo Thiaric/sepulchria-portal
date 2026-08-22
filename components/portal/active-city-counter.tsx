@@ -1036,10 +1036,16 @@ export function ActiveCityCounter({
                               )}
 
                               <div className="flex shrink-0 items-center gap-1">
-                                {!isCurrentCharacter &&
-                                !blockedCharacterIds.has(
-                                  person.id,
-                                ) ? (
+                                {isCurrentCharacter ? (
+                                  <span
+                                    title="This is your character"
+                                    className="flex h-6 min-w-6 items-center justify-center px-1 text-[7px] uppercase text-[rgb(var(--sep-colour-66594a))]"
+                                  >
+                                    You
+                                  </span>
+                                ) : !blockedCharacterIds.has(
+                                    person.id,
+                                  ) ? (
                                   <form
                                     action={
                                       startConversation
@@ -1067,14 +1073,7 @@ export function ActiveCityCounter({
                                       ✉
                                     </button>
                                   </form>
-                                ) : (
-                                  <span
-                                    title="This is your character"
-                                    className="flex h-6 min-w-6 items-center justify-center px-1 text-[7px] uppercase text-[rgb(var(--sep-colour-66594a))]"
-                                  >
-                                    You
-                                  </span>
-                                )}
+                                ) : null}
 
                                 <Link
                                   href={`/characters/${person.public_slug}`}
