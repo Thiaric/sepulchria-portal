@@ -1121,17 +1121,7 @@ function ignoreSpellingWord() {
 />
       <PendingShapeResponses attributes={attributes} />
       <div className="mb-2 flex justify-end">
-        <button
-          type="button"
-          onClick={() => toggleUtility("warping")}
-          className={
-            utilityMode === "warping"
-              ? utilityButtonActiveClass
-              : utilityButtonClass
-          }
-        >
-          Warping
-        </button>
+        
       </div>
       {utilityMode === null ? (
         <form
@@ -2388,6 +2378,18 @@ function ignoreSpellingWord() {
           }
         >
           Use Feat
+        </button>
+
+        <button
+          type="button"
+          onClick={() => toggleUtility("warping")}
+          className={
+            utilityMode === "warping"
+              ? utilityButtonActiveClass
+              : utilityButtonClass
+          }
+        >
+          Warping
         </button>
 
         <button

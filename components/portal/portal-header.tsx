@@ -20,7 +20,10 @@ export async function PortalHeader({ context }: PortalHeaderProps) {
 
   return (
     <>
-      <header className="sticky top-0 z-50 h-[clamp(56px,8dvh,80px)] border-b border-[rgb(var(--sep-colour-6e5535))]/40 bg-[rgb(var(--sep-colour-0d0b0a))]/95 backdrop-blur">
+      <header
+        data-portal-header
+        className="sticky top-0 z-50 h-[clamp(56px,8dvh,80px)] border-b border-[rgb(var(--sep-colour-6e5535))]/40 bg-[rgb(var(--sep-colour-0d0b0a))]/95 backdrop-blur"
+      >
         <div className="mx-auto flex h-full w-full max-w-[1800px] items-center justify-between gap-2 px-3 sm:gap-3 sm:px-5 lg:gap-4 lg:px-6 2xl:px-8">
           <Link href="/" className="min-w-0 shrink">
             <span className="block truncate font-serif text-lg font-semibold tracking-[0.18em] text-[rgb(var(--sep-colour-d9bd82))] sm:text-xl sm:tracking-[0.22em] 2xl:text-2xl">

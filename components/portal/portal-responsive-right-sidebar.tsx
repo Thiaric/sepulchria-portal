@@ -190,6 +190,7 @@ export function PortalResponsiveRightSidebar({
       <aside
         aria-label="Unavailable location"
         data-portal-column
+        data-portal-right-sidebar
         className="hidden h-full min-h-0 border-l border-[rgb(var(--sep-colour-6e5535))]/40 bg-[rgb(var(--sep-colour-0d0b0a))] xl:block"
       />
     );
@@ -224,6 +225,7 @@ export function PortalResponsiveRightSidebar({
         aria-label="Context sidebar"
         data-portal-column
         data-portal-scroll
+        data-portal-right-sidebar
         className={[
           "z-[70] flex min-h-0 min-w-0 flex-col border-l border-[rgb(var(--sep-colour-6e5535))]/40 bg-[rgb(var(--sep-colour-100d0b))]",
           "fixed inset-y-0 right-0 w-[min(88vw,360px)] overflow-hidden overscroll-contain shadow-[-18px_0_50px_rgba(var(--sep-rgb-0-0-0),0.55)] transition-transform duration-200 ease-out",

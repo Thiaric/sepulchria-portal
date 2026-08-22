@@ -355,12 +355,9 @@ export function GameContextPanel({
     >
       <div className="absolute inset-y-0 left-0 w-px bg-[rgb(var(--sep-colour-b88a52))]/0 transition group-hover:bg-[rgb(var(--sep-colour-b88a52))]/70" />
 
-      <div className="flex min-h-[78px] items-center gap-3 px-3 py-2.5 pr-10">
-        <div className="relative shrink-0">
-          <Portrait
-            src={person.portrait_url}
-            name={displayName}
-          />
+      <div className="flex  items-center gap-3 px-3 py-2.5 pr-10">
+        <div className="relative shrink-0 py-1 px-0.5">
+          
 
           <PresenceDot
             status={presence.status}
@@ -368,32 +365,23 @@ export function GameContextPanel({
         </div>
 
         <div className="min-w-0 flex-1">
-          <div className="flex items-center justify-between gap-2">
-            <p className="truncate font-serif text-[13px] leading-4 text-[rgb(var(--sep-colour-dbc397))] transition group-hover:text-[rgb(var(--sep-colour-ecd5a8))]">
-              {displayName}
-            </p>
-
-            <PresenceLabel
-              status={presence.status}
-            />
-          </div>
-
-          {person.title ? (
-            <p className="mt-0.5 truncate font-serif text-[10px] italic leading-3 text-[rgb(var(--sep-colour-9d8769))]">
-              {person.title}
-            </p>
-          ) : null}
-
-          <div className="mt-2 min-w-0 space-y-1.5">
-            <div className="flex min-w-0 items-center gap-1.5">
+          <div className="flex min-w-0 items-center gap-1">
   <MiniCodexIcon entry={race} />
 
   <CharacterOrderIdentity
     characterId={person.id}
     variant="mini"
   />
-</div>
-          </div>
+
+            <div className="px-1 font-serif text-[11px] leading-4 text-[rgb(var(--sep-colour-dbc397))] transition group-hover:text-[rgb(var(--sep-colour-ecd5a8))]">
+              {displayName}
+            </div></div>
+
+            
+
+          
+
+          
 
         </div>
       </div>

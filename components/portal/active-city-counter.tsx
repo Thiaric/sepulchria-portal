@@ -543,7 +543,7 @@ export function ActiveCityCounter({
             : "border-[rgb(var(--sep-colour-614b31))] bg-[rgb(var(--sep-colour-17120f))] hover:border-[rgb(var(--sep-colour-84643e))] hover:bg-[rgb(var(--sep-colour-21170f))]"
         }`}
       >
-        <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-[rgb(var(--sep-colour-788d5e))] shadow-[0_0_10px_rgba(var(--sep-rgb-120-141-94),0.55)]" />
+        <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.55)]" />
 
         <div className="flex items-baseline gap-2">
           <span className="font-serif text-base text-[rgb(var(--sep-colour-d8bf91))] sm:text-lg">
@@ -588,7 +588,7 @@ export function ActiveCityCounter({
           <div className="flex h-[85vh] w-[90vw] max-w-[1700px] flex-col overflow-hidden border border-[rgb(var(--sep-colour-6e5535))]/65 bg-[rgb(var(--sep-colour-090705))] shadow-[0_20px_80px_rgba(var(--sep-rgb-0-0-0),0.65)]">
             <div className="flex min-h-12 shrink-0 items-center justify-between gap-4 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-4 sm:px-5">
               <div className="flex min-w-0 items-center gap-3">
-                <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-[rgb(var(--sep-colour-788d5e))] shadow-[0_0_10px_rgba(var(--sep-rgb-120-141-94),0.55)]" />
+                <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.55)]" />
 
                 <div className="min-w-0">
                   <p className="text-[7px] uppercase tracking-[0.25em] text-[rgb(var(--sep-colour-806b50))]">
@@ -1073,11 +1073,11 @@ function PresenceDot({
     string
   > = {
     online:
-      "border-[rgb(var(--sep-colour-102519))] bg-emerald-500 shadow-[0_0_6px_rgba(var(--sep-rgb-16-185-129),0.75)]",
+      "border-emerald-950 bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.75)]",
     away:
-      "border-[rgb(var(--sep-colour-2f2511))] bg-amber-500 shadow-[0_0_6px_rgba(var(--sep-rgb-245-158-11),0.65)]",
+      "border-amber-950 bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.65)]",
     busy:
-      "border-[rgb(var(--sep-colour-321313))] bg-red-500 shadow-[0_0_6px_rgba(var(--sep-rgb-239-68-68),0.65)]",
+      "border-red-950 bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.65)]",
   };
 
   return (
