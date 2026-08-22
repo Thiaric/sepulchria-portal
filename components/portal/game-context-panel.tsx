@@ -50,6 +50,7 @@ type CharacterSummary = {
 type PresentCharacter = {
   character_id: string;
   status: PresenceStatus;
+  appear_offline: boolean;
 
   character:
     | CharacterSummary
@@ -91,6 +92,13 @@ export function GameContextPanel({
   const [error, setError] =
     useState<string | null>(null);
 
+  const [
+    blockedCharacterIds,
+    setBlockedCharacterIds,
+  ] = useState<Set<string>>(
+    () => new Set(),
+  );
+
   const loadRoomContext =
     useCallback(async () => {
       if (!roomId) {
@@ -122,6 +130,7 @@ export function GameContextPanel({
               character_id,
               status,
               last_seen_at,
+              appear_offline,
 
               character:characters!character_presence_character_id_fkey(
                 id,
@@ -204,9 +213,60 @@ export function GameContextPanel({
         return;
       }
 
+      const blockedIds =
+        new Set<string>();
+
+      if (currentCharacterId) {
+        const {
+          data: blockRows,
+          error: blockError,
+        } = await supabase
+          .from("character_blocks")
+          .select(
+            "blocker_character_id, blocked_character_id",
+          )
+          .or(
+            [
+              `blocker_character_id.eq.${currentCharacterId}`,
+              `blocked_character_id.eq.${currentCharacterId}`,
+            ].join(","),
+          );
+
+        if (blockError) {
+          setError(blockError.message);
+          setLoading(false);
+          return;
+        }
+
+        for (const row of blockRows ?? []) {
+          const blocker = String(
+            row.blocker_character_id,
+          );
+          const blocked = String(
+            row.blocked_character_id,
+          );
+
+          blockedIds.add(
+            blocker === currentCharacterId
+              ? blocked
+              : blocker,
+          );
+        }
+      }
+
+      setBlockedCharacterIds(
+        blockedIds,
+      );
+
       setPresentCharacters(
-        (presenceResult.data ??
-          []) as unknown as PresentCharacter[],
+        (
+          (presenceResult.data ??
+            []) as unknown as PresentCharacter[]
+        ).filter(
+          (presence) =>
+            presence.appear_offline !==
+            true,
+        ),
       );
 
       setExits([
@@ -218,7 +278,10 @@ export function GameContextPanel({
       ]);
 
       setLoading(false);
-    }, [roomId]);
+    }, [
+      roomId,
+      currentCharacterId,
+    ]);
 
   useEffect(() => {
     setLoading(Boolean(roomId));
@@ -244,6 +307,18 @@ export function GameContextPanel({
           table:
             "character_presence",
           filter: `room_id=eq.${roomId}`,
+        },
+        () => {
+          void loadRoomContext();
+        },
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table:
+            "character_blocks",
         },
         () => {
           void loadRoomContext();
@@ -387,7 +462,10 @@ export function GameContextPanel({
       </div>
     </Link>
 
-    {person.id !== currentCharacterId ? (
+    {person.id !== currentCharacterId &&
+    !blockedCharacterIds.has(
+      person.id,
+    ) ? (
   <form
     action={startConversation}
     className="absolute bottom-2 right-2 z-10"

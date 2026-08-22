@@ -117,8 +117,53 @@ export default async function FriendsPage() {
     );
   }
 
+  const {
+    data: blockRows,
+    error: blockError,
+  } = await supabase
+    .from("character_blocks")
+    .select(
+      "blocker_character_id, blocked_character_id",
+    )
+    .or(
+      [
+        `blocker_character_id.eq.${character.id}`,
+        `blocked_character_id.eq.${character.id}`,
+      ].join(","),
+    );
+
+  if (blockError) {
+    throw new Error(
+      blockError.message,
+    );
+  }
+
+  const blockedCharacterIds =
+    new Set<string>();
+
+  for (const row of blockRows ?? []) {
+    const blocker = String(
+      row.blocker_character_id,
+    );
+    const blocked = String(
+      row.blocked_character_id,
+    );
+
+    blockedCharacterIds.add(
+      blocker === character.id
+        ? blocked
+        : blocker,
+    );
+  }
+
   const availableCharacters =
     ((availableCharacterData ?? []) as CharacterRow[])
+      .filter(
+        (availableCharacter) =>
+          !blockedCharacterIds.has(
+            availableCharacter.id,
+          ),
+      )
       .sort((a, b) =>
         displayName(a).localeCompare(
           displayName(b),

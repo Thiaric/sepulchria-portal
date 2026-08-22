@@ -120,6 +120,13 @@ export function ActiveCityCounter({
     setCurrentCharacterId,
   ] = useState<string | null>(null);
 
+  const [
+    blockedCharacterIds,
+    setBlockedCharacterIds,
+  ] = useState<Set<string>>(
+    () => new Set(),
+  );
+
   const visiblePrivateRoomIdSet =
     useMemo(
       () =>
@@ -311,6 +318,98 @@ export function ActiveCityCounter({
       cancelled = true;
     };
   }, []);
+
+  useEffect(() => {
+    if (!currentCharacterId) {
+      setBlockedCharacterIds(
+        new Set(),
+      );
+      return;
+    }
+
+    const supabase =
+      createClient();
+
+    let cancelled = false;
+
+    async function refreshBlocks() {
+      const {
+        data,
+        error,
+      } = await supabase
+        .from("character_blocks")
+        .select(
+          "blocker_character_id, blocked_character_id",
+        )
+        .or(
+          [
+            `blocker_character_id.eq.${currentCharacterId}`,
+            `blocked_character_id.eq.${currentCharacterId}`,
+          ].join(","),
+        );
+
+      if (
+        error ||
+        cancelled
+      ) {
+        if (error) {
+          console.error(
+            "Unable to refresh character blocks:",
+            error.message,
+          );
+        }
+        return;
+      }
+
+      const ids =
+        new Set<string>();
+
+      for (const row of data ?? []) {
+        const blocker = String(
+          row.blocker_character_id,
+        );
+        const blocked = String(
+          row.blocked_character_id,
+        );
+
+        ids.add(
+          blocker ===
+            currentCharacterId
+            ? blocked
+            : blocker,
+        );
+      }
+
+      setBlockedCharacterIds(ids);
+    }
+
+    void refreshBlocks();
+
+    const channel = supabase
+      .channel(
+        `active-city-character-blocks:${currentCharacterId}`,
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table:
+            "character_blocks",
+        },
+        () => {
+          void refreshBlocks();
+        },
+      )
+      .subscribe();
+
+    return () => {
+      cancelled = true;
+      void supabase.removeChannel(
+        channel,
+      );
+    };
+  }, [currentCharacterId]);
 
   useEffect(() => {
     void refreshPresence();
@@ -937,7 +1036,10 @@ export function ActiveCityCounter({
                               )}
 
                               <div className="flex shrink-0 items-center gap-1">
-                                {!isCurrentCharacter ? (
+                                {!isCurrentCharacter &&
+                                !blockedCharacterIds.has(
+                                  person.id,
+                                ) ? (
                                   <form
                                     action={
                                       startConversation

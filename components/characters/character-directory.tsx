@@ -1,7 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 import {
   enterRoomFromMap,
@@ -14,6 +18,7 @@ import type {
   PublicCodexReference,
   PublicPresenceStatus,
 } from "@/types/public-character";
+import { createClient } from "@/lib/supabase/client";
 
 import { CharacterDirectoryOrderBadge } from "@/components/characters/character-directory-order-badge";
 
@@ -42,6 +47,105 @@ export function CharacterDirectory({
     useState("all");
   const [presence, setPresence] =
     useState<PresenceFilter>("all");
+
+  const [
+    blockedCharacterIds,
+    setBlockedCharacterIds,
+  ] = useState<Set<string>>(
+    () => new Set(),
+  );
+
+  useEffect(() => {
+    if (!viewerCharacterId) {
+      setBlockedCharacterIds(
+        new Set(),
+      );
+      return;
+    }
+
+    const supabase =
+      createClient();
+
+    let cancelled = false;
+
+    async function loadBlocks() {
+      const {
+        data,
+        error,
+      } = await supabase
+        .from("character_blocks")
+        .select(
+          "blocker_character_id, blocked_character_id",
+        )
+        .or(
+          [
+            `blocker_character_id.eq.${viewerCharacterId}`,
+            `blocked_character_id.eq.${viewerCharacterId}`,
+          ].join(","),
+        );
+
+      if (
+        error ||
+        cancelled
+      ) {
+        if (error) {
+          console.error(
+            "Unable to load directory block state:",
+            error.message,
+          );
+        }
+        return;
+      }
+
+      const ids =
+        new Set<string>();
+
+      for (const row of data ?? []) {
+        const blocker = String(
+          row.blocker_character_id,
+        );
+        const blocked = String(
+          row.blocked_character_id,
+        );
+
+        ids.add(
+          blocker ===
+            viewerCharacterId
+            ? blocked
+            : blocker,
+        );
+      }
+
+      setBlockedCharacterIds(ids);
+    }
+
+    void loadBlocks();
+
+    const channel = supabase
+      .channel(
+        `character-directory-blocks:${viewerCharacterId}`,
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table:
+            "character_blocks",
+        },
+        () => {
+          void loadBlocks();
+        },
+      )
+      .subscribe();
+
+    return () => {
+      cancelled = true;
+      void supabase.removeChannel(
+        channel,
+      );
+    };
+  }, [viewerCharacterId]);
 
   const races = useMemo(() => {
     const entries = new Map<string, string>();
@@ -330,6 +434,9 @@ export function CharacterDirectory({
         viewerCharacterId={
           viewerCharacterId
         }
+        blockedCharacterIds={
+          blockedCharacterIds
+        }
       />
     </div>
   ),
@@ -368,9 +475,11 @@ export function CharacterDirectory({
 function CharacterDirectoryCard({
   character,
   viewerCharacterId,
+  blockedCharacterIds,
 }: {
   character: PublicCharacterListItem;
   viewerCharacterId: string | null;
+  blockedCharacterIds: Set<string>;
 }) {
   const status =
     character.presence?.status ??
@@ -378,7 +487,10 @@ function CharacterDirectoryCard({
 
   const canMessage =
     viewerCharacterId !== null &&
-    viewerCharacterId !== character.id;
+    viewerCharacterId !== character.id &&
+    !blockedCharacterIds.has(
+      character.id,
+    );
 
   return (
     <article className="group relative overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 transition duration-200 hover:-translate-y-0.5 hover:border-[rgb(var(--sep-colour-a17a49))] hover:bg-[rgb(var(--sep-colour-1a130e))]">

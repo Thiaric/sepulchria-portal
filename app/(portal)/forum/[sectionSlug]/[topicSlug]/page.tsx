@@ -1103,6 +1103,50 @@ for (const log of moderationLogs) {
 }));
   }
 
+  const blockedForumCharacterIds =
+    new Set<string>();
+
+  const replyCharacterId =
+    replyCharacters[0]?.id ?? null;
+
+  if (replyCharacterId) {
+    const {
+      data: blockRows,
+      error: blockError,
+    } = await supabase
+      .from("character_blocks")
+      .select(
+        "blocker_character_id, blocked_character_id",
+      )
+      .or(
+        [
+          `blocker_character_id.eq.${replyCharacterId}`,
+          `blocked_character_id.eq.${replyCharacterId}`,
+        ].join(","),
+      );
+
+    if (blockError) {
+      throw new Error(
+        `Unable to load forum block state: ${blockError.message}`,
+      );
+    }
+
+    for (const row of blockRows ?? []) {
+      const blocker = String(
+        row.blocker_character_id,
+      );
+      const blocked = String(
+        row.blocked_character_id,
+      );
+
+      blockedForumCharacterIds.add(
+        blocker === replyCharacterId
+          ? blocked
+          : blocker,
+      );
+    }
+  }
+
   let quotePreview:
   | {
       id: string;
@@ -1124,7 +1168,13 @@ for (const log of moderationLogs) {
 
     if (
       selectedQuote &&
-      !selectedQuote.deleted_at
+      !selectedQuote.deleted_at &&
+      !(
+        selectedQuote.author_character_id &&
+        blockedForumCharacterIds.has(
+          selectedQuote.author_character_id,
+        )
+      )
     ) {
       quotePreview = {
         id: selectedQuote.id,
@@ -1350,6 +1400,12 @@ for (const log of moderationLogs) {
                 canEdit={canEdit}
                 canDelete={
                   canDelete
+                }
+                canQuote={
+                  !post.author_character_id ||
+                  !blockedForumCharacterIds.has(
+                    post.author_character_id,
+                  )
                 }
                 canModerate={
                   isStaff

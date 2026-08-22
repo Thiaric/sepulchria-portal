@@ -67,6 +67,7 @@ type TopicPostProps = {
   postNumber: number;
   canEdit: boolean;
   canDelete: boolean;
+  canQuote: boolean;
   canModerate: boolean;
   topicLocked: boolean;
 };
@@ -168,6 +169,7 @@ export default function TopicPost({
   postNumber,
   canEdit,
   canDelete,
+  canQuote,
   canModerate,
   topicLocked,
 }: TopicPostProps) {
@@ -364,12 +366,14 @@ export default function TopicPost({
                       Rapid reply
                     </Link>
 
-                    <Link
-                      href={quoteUrl}
-                      className="border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-19120e))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-a58b68))] transition hover:border-[rgb(var(--sep-colour-947047))] hover:text-[rgb(var(--sep-colour-dec095))]"
-                    >
-                      Quote
-                    </Link>
+                    {canQuote ? (
+                      <Link
+                        href={quoteUrl}
+                        className="border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-19120e))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-a58b68))] transition hover:border-[rgb(var(--sep-colour-947047))] hover:text-[rgb(var(--sep-colour-dec095))]"
+                      >
+                        Quote
+                      </Link>
+                    ) : null}
                   </>
                 ) : null}
 

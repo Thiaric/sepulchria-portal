@@ -680,6 +680,36 @@ async function resolveWhisperRecipient(
     };
   }
 
+  const {
+    data: blockRows,
+    error: blockError,
+  } = await supabase
+    .from("character_blocks")
+    .select("blocker_character_id")
+    .or(
+      [
+        `and(blocker_character_id.eq.${senderCharacterId},blocked_character_id.eq.${recipientId})`,
+        `and(blocker_character_id.eq.${recipientId},blocked_character_id.eq.${senderCharacterId})`,
+      ].join(","),
+    )
+    .limit(1);
+
+  if (blockError) {
+    return {
+      ok: false,
+      message:
+        `Unable to verify whisper availability: ${blockError.message}`,
+    };
+  }
+
+  if ((blockRows ?? []).length > 0) {
+    return {
+      ok: false,
+      message:
+        "You cannot whisper to this Character.",
+    };
+  }
+
   const activeSince = new Date(
     Date.now() -
       5 * 60_000,
@@ -740,23 +770,6 @@ async function resolveWhisperRecipient(
           ? `Unable to load the whisper recipient: ${recipientError.message}`
           : "The selected whisper recipient no longer exists.",
     };
-  }
-
-  const { data: blockRows, error: blockError } = await supabase
-    .from("character_blocks")
-    .select("blocker_character_id")
-    .or([
-      `and(blocker_character_id.eq.${senderCharacterId},blocked_character_id.eq.${recipientId})`,
-      `and(blocker_character_id.eq.${recipientId},blocked_character_id.eq.${senderCharacterId})`,
-    ].join(","))
-    .limit(1);
-
-  if (blockError) {
-    return { ok: false, message: `Unable to verify whisper availability: ${blockError.message}` };
-  }
-
-  if ((blockRows ?? []).length > 0) {
-    return { ok: false, message: "That character is not available for whispers." };
   }
 
   return {
