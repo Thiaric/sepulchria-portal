@@ -19,6 +19,7 @@ import { startConversation } from "@/app/(portal)/messages/actions";
 type GameContextPanelProps = {
   roomId: string | null;
   currentCharacterId: string | null;
+  viewerIsStaff: boolean;
 };
 
 type CodexSummary = {
@@ -77,6 +78,7 @@ type RoomExit = {
 export function GameContextPanel({
   roomId,
   currentCharacterId,
+  viewerIsStaff,
 }: GameContextPanelProps) {
   const [
     presentCharacters,
@@ -258,14 +260,14 @@ export function GameContextPanel({
         blockedIds,
       );
 
-      setPresentCharacters(
+            setPresentCharacters(
         (
           (presenceResult.data ??
             []) as unknown as PresentCharacter[]
         ).filter(
           (presence) =>
-            presence.appear_offline !==
-            true,
+            viewerIsStaff ||
+            presence.appear_offline !== true,
         ),
       );
 
@@ -278,9 +280,10 @@ export function GameContextPanel({
       ]);
 
       setLoading(false);
-    }, [
+        }, [
       roomId,
       currentCharacterId,
+      viewerIsStaff,
     ]);
 
   useEffect(() => {
@@ -421,7 +424,16 @@ export function GameContextPanel({
                 return (
   <div
     key={presence.character_id}
-    className="group relative overflow-hidden border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] transition hover:border-[rgb(var(--sep-colour-9b7446))] hover:bg-[rgb(var(--sep-colour-1a120c))]"
+    title={
+      presence.appear_offline
+        ? "Appearing offline"
+        : undefined
+    }
+    className={
+      presence.appear_offline
+        ? "group relative overflow-hidden border border-dashed border-[rgb(var(--sep-colour-876a46))]/55 bg-[rgb(var(--sep-colour-100c09))] opacity-40 transition hover:border-[rgb(var(--sep-colour-9b7446))] hover:bg-[rgb(var(--sep-colour-1a120c))] hover:opacity-100"
+        : "group relative overflow-hidden border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] transition hover:border-[rgb(var(--sep-colour-9b7446))] hover:bg-[rgb(var(--sep-colour-1a120c))]"
+    }
   >
     <Link
       href={`/characters/${person.public_slug}?from=game`}

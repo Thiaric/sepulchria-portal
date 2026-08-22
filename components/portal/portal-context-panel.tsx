@@ -1787,13 +1787,16 @@ function GameContext({
     context.character?.currentRoom;
 
   return (
-    <GameContextPanel
+        <GameContextPanel
       roomId={
         room?.id ?? null
       }
       currentCharacterId={
-  context.character?.id ?? null
-}
+        context.character?.id ?? null
+      }
+      viewerIsStaff={
+        context.isStaff
+      }
     />
   );
 }
