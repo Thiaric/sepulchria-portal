@@ -4,6 +4,8 @@ import {
   revalidatePath,
 } from "next/cache";
 
+import { redirect } from "next/navigation";
+
 import { requireStaff } from "@/lib/auth/require-staff";
 import { sanitizeRichHtml } from "@/lib/rich-text";
 import { createClient } from "@/lib/supabase/server";
@@ -123,8 +125,14 @@ function redirectMessage(
   type: "success" | "error",
   message: string,
 ): never {
-  void type;
-  throw new Error(message);
+  const params =
+    new URLSearchParams();
+
+  params.set(type, message);
+
+  redirect(
+    `/admin/orders?${params.toString()}`,
+  );
 }
 
 async function uniqueSlug({
@@ -823,6 +831,49 @@ export async function deleteOrder(
             .filter(Boolean),
         ),
       );
+
+    const {
+      data: headquarters,
+      error: headquartersReadError,
+    } = await supabase
+      .from("order_headquarters")
+      .select("room_id")
+      .eq("order_id", orderId)
+      .maybeSingle();
+
+    if (headquartersReadError) {
+      throw new Error(
+        headquartersReadError.message,
+      );
+    }
+
+    if (headquarters) {
+      const {
+        error: headquartersDeleteError,
+      } = await supabase
+        .from("order_headquarters")
+        .delete()
+        .eq("order_id", orderId);
+
+      if (headquartersDeleteError) {
+        throw new Error(
+          headquartersDeleteError.message,
+        );
+      }
+
+      const {
+        error: roomDeleteError,
+      } = await supabase
+        .from("rooms")
+        .delete()
+        .eq("id", headquarters.room_id);
+
+      if (roomDeleteError) {
+        throw new Error(
+          `The Order Headquarters link was removed, but its room could not be deleted: ${roomDeleteError.message}`,
+        );
+      }
+    }
 
     const {
       error,
