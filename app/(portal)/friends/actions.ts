@@ -153,6 +153,20 @@ export async function addFriendListEntry(formData: FormData) {
     );
   }
 
+  const { data: blockRows, error: blockError } = await admin
+    .from("character_blocks")
+    .select("blocker_character_id")
+    .or([
+      `and(blocker_character_id.eq.${owner.id},blocked_character_id.eq.${targetCharacterId})`,
+      `and(blocker_character_id.eq.${targetCharacterId},blocked_character_id.eq.${owner.id})`,
+    ].join(","))
+    .limit(1);
+
+  if (blockError) throw new Error(blockError.message);
+  if ((blockRows ?? []).length > 0) {
+    throw new Error("This character cannot be added to your Friend List.");
+  }
+
   const { error } = await admin
     .from("character_friend_entries")
     .upsert(

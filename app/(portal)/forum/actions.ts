@@ -1035,11 +1035,12 @@ export async function createForumReplyAction(
       error: quotedPostError,
     } = await supabase
       .from("forum_posts")
-      .select("id, topic_id")
+      .select("id, topic_id, author_character_id")
       .eq("id", quotedPostId)
       .maybeSingle<{
         id: string;
         topic_id: string;
+        author_character_id: string | null;
       }>();
 
     if (quotedPostError) {
@@ -1063,6 +1064,29 @@ export async function createForumReplyAction(
             "Remove the invalid quote and try again.",
         },
       };
+    }
+
+    if (
+      quotedPost.author_character_id &&
+      quotedPost.author_character_id !== character!.id
+    ) {
+      const { data: quoteBlocks, error: quoteBlockError } = await supabase
+        .from("character_blocks")
+        .select("blocker_character_id")
+        .or([
+          `and(blocker_character_id.eq.${character!.id},blocked_character_id.eq.${quotedPost.author_character_id})`,
+          `and(blocker_character_id.eq.${quotedPost.author_character_id},blocked_character_id.eq.${character!.id})`,
+        ].join(","))
+        .limit(1);
+
+      if (quoteBlockError) return { success: false, message: quoteBlockError.message };
+      if ((quoteBlocks ?? []).length > 0) {
+        return {
+          success: false,
+          message: "You cannot quote this character.",
+          fieldErrors: { quotedPostId: "Remove the quote and try again." },
+        };
+      }
     }
   }
 

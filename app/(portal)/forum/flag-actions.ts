@@ -358,7 +358,7 @@ export async function loadForumFlagRecipients(
   }
 
   const {
-    characters,
+    characters: rawCharacters,
     races,
     associations,
   } =
@@ -366,6 +366,27 @@ export async function loadForumFlagRecipients(
       sectionId,
       senderData.id,
     );
+
+  const { data: blockRows, error: blockError } = await supabase
+    .from("character_blocks")
+    .select("blocker_character_id, blocked_character_id")
+    .or([
+      `blocker_character_id.eq.${senderData.id}`,
+      `blocked_character_id.eq.${senderData.id}`,
+    ].join(","));
+
+  if (blockError) throw new Error(`Unable to filter blocked characters: ${blockError.message}`);
+
+  const blockedIds = new Set<string>();
+  for (const row of blockRows ?? []) {
+    const blocker = String(row.blocker_character_id);
+    const blocked = String(row.blocked_character_id);
+    blockedIds.add(blocker === senderData.id ? blocked : blocker);
+  }
+
+  const characters = rawCharacters.filter(
+    (character) => !blockedIds.has(character.id),
+  );
 
   const [
     friendFeatureResult,

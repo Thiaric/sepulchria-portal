@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { startConversation } from "@/app/(portal)/messages/actions";
 import { addFriendListEntry } from "@/app/(portal)/friends/actions";
+import { toggleGlobalCharacterBlock } from "@/app/(portal)/characters/block-actions";
 import { CharacterMechanicsDisplay } from "@/components/characters/character-mechanics-display";
 import { CharacterGiftsDisplay } from "@/components/characters/character-gifts-display";
 import { CharacterInventoryDisplay } from "@/components/characters/character-inventory-display";
@@ -27,6 +28,9 @@ type PublicCharacterProfileProps = {
   viewerIsStaff: boolean;
   canUseFriendList: boolean;
   isInFriendList: boolean;
+  canBlock: boolean;
+  blockedByViewer: boolean;
+  hasGlobalBlock: boolean;
 };
 
 function formatGender(
@@ -56,6 +60,9 @@ export function PublicCharacterProfileView({
   viewerIsStaff,
   canUseFriendList,
   isInFriendList,
+  canBlock,
+  blockedByViewer,
+  hasGlobalBlock,
 }: PublicCharacterProfileProps) {
   const fullName =
     character.display_name?.trim() ||
@@ -126,6 +133,25 @@ export function PublicCharacterProfileView({
                 Add to Friend List
               </button>
             </form>
+          ) : null}
+
+          {canBlock ? (
+            <form action={toggleGlobalCharacterBlock}>
+              <input type="hidden" name="targetCharacterId" value={character.id} />
+              <input type="hidden" name="block" value={blockedByViewer ? "false" : "true"} />
+              <button
+                type="submit"
+                className="inline-flex items-center gap-2 border border-[rgb(var(--sep-colour-7b4035))] bg-[rgb(var(--sep-colour-24100d))] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-d99b8e))] transition hover:bg-[rgb(var(--sep-colour-351713))]"
+              >
+                {blockedByViewer ? "Unblock Character" : "Block Character"}
+              </button>
+            </form>
+          ) : null}
+
+          {hasGlobalBlock && !blockedByViewer ? (
+            <span className="inline-flex items-center border border-[rgb(var(--sep-colour-60482e))]/55 px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-8f8170))]">
+              Communication unavailable
+            </span>
           ) : null}
 
           {canMessage ? (

@@ -13,9 +13,7 @@ import { getStaffSession } from "@/lib/auth/require-staff";
 import type { DirectMessage } from "@/types/messages";
 
 import {
-  
   toggleArchive,
-  toggleBlock,
 } from "../actions";
 import MessageComposer from "../components/MessageComposer";
 import { ConversationMessageList } from "./components/ConversationMessageList";
@@ -346,11 +344,6 @@ export default async function ConversationPage({
     );
   }
 
-  const blockedByMe =
-    Boolean(
-      blockedByMeResult.data,
-    );
-
   const blocked =
     Boolean(
       blockedByMeResult.data ||
@@ -496,36 +489,6 @@ export default async function ConversationPage({
   conversationId={id}
 />
 
-              <form
-                action={
-                  toggleBlock
-                }
-              >
-                <input
-                  type="hidden"
-                  name="characterId"
-                  value={other.id}
-                />
-
-                <input
-                  type="hidden"
-                  name="block"
-                  value={
-                    blockedByMe
-                      ? "false"
-                      : "true"
-                  }
-                />
-
-                <button
-                  type="submit"
-                  className="border border-[rgb(var(--sep-colour-7b4035))] px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-d99b8e))]"
-                >
-                  {blockedByMe
-                    ? "Unblock"
-                    : "Block"}
-                </button>
-              </form>
             </div>
           </div>
 

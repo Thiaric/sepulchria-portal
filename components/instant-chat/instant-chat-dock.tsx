@@ -141,8 +141,29 @@ export function InstantChatDock({
         return;
       }
 
-      const rpcContacts =
+      const rawRpcContacts =
         (data ?? []) as Contact[];
+
+      const { data: blockRows, error: blockError } = await supabase
+        .from("character_blocks")
+        .select("blocker_character_id, blocked_character_id")
+        .or([
+          `blocker_character_id.eq.${characterId}`,
+          `blocked_character_id.eq.${characterId}`,
+        ].join(","));
+
+      if (blockError) console.error("Instant chat block filter:", blockError.message);
+
+      const blockedIds = new Set<string>();
+      for (const row of blockRows ?? []) {
+        const blocker = String(row.blocker_character_id);
+        const blocked = String(row.blocked_character_id);
+        blockedIds.add(blocker === characterId ? blocked : blocker);
+      }
+
+      const rpcContacts = rawRpcContacts.filter(
+        (contact) => !blockedIds.has(contact.character_id),
+      );
 
       /*
        * Do not trust the RPC's stored presence_status on its own.
@@ -544,6 +565,33 @@ export function InstantChatDock({
     setDraft("");
     setBusy(true);
     setError(null);
+
+    if (characterId) {
+      const { data: blockRows, error: blockError } = await supabase
+        .from("character_blocks")
+        .select("blocker_character_id")
+        .or([
+          `and(blocker_character_id.eq.${characterId},blocked_character_id.eq.${openChat.characterId})`,
+          `and(blocker_character_id.eq.${openChat.characterId},blocked_character_id.eq.${characterId})`,
+        ].join(","))
+        .limit(1);
+
+      if (blockError) {
+        setDraft(body);
+        setError(blockError.message);
+        setBusy(false);
+        return;
+      }
+
+      if ((blockRows ?? []).length > 0) {
+        setDraft(body);
+        setError("This character is not available for Instant Chat.");
+        setBusy(false);
+        setOpenChat(null);
+        await loadContacts();
+        return;
+      }
+    }
 
     const {
       error: sendError,

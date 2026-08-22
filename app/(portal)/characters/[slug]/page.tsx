@@ -94,16 +94,36 @@ export default async function PublicCharacterPage({
 
   let canUseFriendList = false;
   let isInFriendList = false;
+  let blockedByViewer = false;
+  let blockedViewer = false;
 
   if (
     activeCharacter &&
     activeCharacter.id !== character.id
   ) {
+    const { data: blockRows, error: blockError } = await supabase
+      .from("character_blocks")
+      .select("blocker_character_id, blocked_character_id")
+      .or([
+        `and(blocker_character_id.eq.${activeCharacter.id},blocked_character_id.eq.${character.id})`,
+        `and(blocker_character_id.eq.${character.id},blocked_character_id.eq.${activeCharacter.id})`,
+      ].join(","));
+
+    if (blockError) throw new Error(`Unable to check block state: ${blockError.message}`);
+
+    blockedByViewer = (blockRows ?? []).some((row) =>
+      row.blocker_character_id === activeCharacter.id &&
+      row.blocked_character_id === character.id
+    );
+    blockedViewer = (blockRows ?? []).some((row) =>
+      row.blocker_character_id === character.id &&
+      row.blocked_character_id === activeCharacter.id
+    );
+
     canUseFriendList =
-      await hasCharacterFeature(
-        activeCharacter.id,
-        "friend_list",
-      );
+      !blockedByViewer &&
+      !blockedViewer &&
+      (await hasCharacterFeature(activeCharacter.id, "friend_list"));
 
     if (canUseFriendList) {
       const {
@@ -166,8 +186,16 @@ export default async function PublicCharacterPage({
         returnLabel={returnLabel}
         canMessage={
           Boolean(activeCharacter) &&
-          activeCharacter?.id !== character.id
+          activeCharacter?.id !== character.id &&
+          !blockedByViewer &&
+          !blockedViewer
         }
+        canBlock={
+  Boolean(activeCharacter) &&
+  activeCharacter?.id !== character.id
+}
+        blockedByViewer={blockedByViewer}
+        hasGlobalBlock={blockedByViewer || blockedViewer}
         canViewLastActivity={
           character.show_last_activity ||
           staffSession !== null ||

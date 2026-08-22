@@ -173,7 +173,8 @@ export default async function CommunicationLogsPage({
 
   const view =
     params.view === "chat" ||
-    params.view === "instant"
+    params.view === "instant" ||
+    params.view === "blocks"
       ? params.view
       : "pm";
 
@@ -272,6 +273,11 @@ export default async function CommunicationLogsPage({
             params,
             characters,
           )
+        : view === "blocks"
+          ? await loadCharacterBlocks(
+              params,
+              characters,
+            )
         : await loadRoomMessages(
             params,
             privateRoomIds,
@@ -352,6 +358,19 @@ export default async function CommunicationLogsPage({
             )}
           >
             Instant Chats
+          </ViewLink>
+
+          <ViewLink
+            active={view === "blocks"}
+            href={buildHref(params, {
+              view: "blocks",
+              room: null,
+              kind: null,
+              type: null,
+              conversation: null,
+            })}
+          >
+            Character Blocks
           </ViewLink>
         </div>
 
@@ -1430,6 +1449,67 @@ async function loadInstantChatMessages(
       {!messages?.length ? (
         <EmptyState message="No Instant Chat messages match these filters." />
       ) : null}
+    </section>
+  );
+}
+
+
+async function loadCharacterBlocks(
+  params: SearchParams,
+  characters: CharacterOption[],
+) {
+  const supabase = createAdminClient();
+
+  let query = supabase
+    .from("character_blocks")
+    .select("blocker_character_id, blocked_character_id, created_at")
+    .order("created_at", { ascending: false })
+    .limit(250);
+
+  if (params.character?.trim()) {
+    query = query.or([
+      `blocker_character_id.eq.${params.character.trim()}`,
+      `blocked_character_id.eq.${params.character.trim()}`,
+    ].join(","));
+  }
+
+  const from = startOfDay(params.from);
+  const to = endOfDay(params.to);
+  if (from) query = query.gte("created_at", from);
+  if (to) query = query.lte("created_at", to);
+
+  const { data: rows, error } = await query;
+  if (error) throw new Error(`Unable to load Character Block logs: ${error.message}`);
+
+  const names = new Map(
+    characters.map((character) => [character.id, characterName(character)]),
+  );
+
+  return (
+    <section className="mt-4 space-y-2">
+      {(rows ?? []).map((row) => (
+        <article
+          key={`${row.blocker_character_id}:${row.blocked_character_id}`}
+          className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-15100d))] p-4"
+        >
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="font-serif text-base text-[rgb(var(--sep-colour-dcc49a))]">
+                {names.get(String(row.blocker_character_id)) ?? "Unknown character"}
+                {" → "}
+                {names.get(String(row.blocked_character_id)) ?? "Unknown character"}
+              </p>
+              <p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806f5b))]">
+                Character Block
+              </p>
+            </div>
+            <p className="text-[9px] text-[rgb(var(--sep-colour-9b8768))]">
+              {formatDateTime(String(row.created_at))}
+            </p>
+          </div>
+        </article>
+      ))}
+      {!rows?.length ? <EmptyState message="No Character Blocks match these filters." /> : null}
     </section>
   );
 }
