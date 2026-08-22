@@ -19444,3 +19444,18 @@ body[data-portal-skin="wolfs-moon"],
 [data-portal-skin="wolfs-moon"] [data-portal-navigation] img {
   filter: grayscale(.65) sepia(.12) saturate(.72) hue-rotate(150deg) brightness(1.2);
 }
+
+
+/* DARKER NEW ANCESTRY LEFT-NAV ICONS */
+[data-portal-skin="aelari-dawn"] [data-portal-navigation] img {
+  filter: sepia(.35) saturate(1.2) hue-rotate(160deg) brightness(.72) contrast(1.35) !important;
+}
+[data-portal-skin="dwarven-deep"] [data-portal-navigation] img {
+  filter: sepia(.75) saturate(1.3) hue-rotate(345deg) brightness(.66) contrast(1.45) !important;
+}
+[data-portal-skin="mortal-hearth"] [data-portal-navigation] img {
+  filter: grayscale(.9) sepia(.12) saturate(.5) brightness(.62) contrast(1.5) !important;
+}
+[data-portal-skin="wolfs-moon"] [data-portal-navigation] img {
+  filter: grayscale(.75) sepia(.12) saturate(.7) hue-rotate(150deg) brightness(.68) contrast(1.42) !important;
+}

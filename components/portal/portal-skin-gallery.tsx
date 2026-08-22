@@ -109,19 +109,7 @@ export function PortalSkinGallery({
               key={entry.id}
               className="overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]"
             >
-              {entry.previewImageUrl ? (
-                <img
-                  src={entry.previewImageUrl}
-                  alt=""
-                  className="h-36 w-full object-cover"
-                />
-              ) : (
-                <div className="flex h-28 items-center justify-center border-b border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-100c09))]">
-                  <span className="font-serif text-2xl text-[rgb(var(--sep-colour-dfc79c))]">
-                    ◐
-                  </span>
-                </div>
-              )}
+              
 
               <div className="p-5">
                 <div className="flex items-start justify-between gap-4">

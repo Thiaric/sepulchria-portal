@@ -51,10 +51,10 @@ function kindForSkin(skin: string) {
   if (value === "blood-court") return "blood";
   if (value === "ivory-archive") return "ivory";
   if (value === "moonlit") return "moonlit";
-  if (value === "aelari-dawn") return "starfall";
+  if (value === "aelari-dawn") return "aelari-dawn";
   if (value === "dwarven-deep") return "dwarven-forge";
   if (value === "mortal-hearth") return "mortal-hearth";
-  if (value === "wolfs-moon") return "moonlit";
+  if (value === "wolfs-moon") return "wolf-moon";
 
   return "sepulchria";
 }
@@ -100,7 +100,7 @@ export function PortalSkinAtmosphere({
             />
           ))}
 
-        {kind === "starfall" &&
+        {(kind === "starfall" || kind === "aelari-dawn") &&
           STARS.map((star, index) => (
             <span
               key={index}
@@ -116,7 +116,9 @@ export function PortalSkinAtmosphere({
             />
           ))}
 
-        {kind === "starfall" ? <span className="portal-shooting-star" /> : null}
+        {(kind === "starfall" || kind === "aelari-dawn") ? (
+          <span className="portal-shooting-star" />
+        ) : null}
 
         {kind === "vellum" &&
           WRITING.map((item, index) => (
@@ -178,10 +180,13 @@ export function PortalSkinAtmosphere({
           </>
         ) : null}
 
-        {kind === "moonlit" ? (
+        {(kind === "moonlit" || kind === "wolf-moon") ? (
           <>
             <span className="portal-moon-glow portal-moon-glow-a" />
             <span className="portal-moon-glow portal-moon-glow-b" />
+            {kind === "wolf-moon" ? (
+              <span className="portal-wolf-mist" />
+            ) : null}
           </>
         ) : null}
 
@@ -575,6 +580,92 @@ export function PortalSkinAtmosphere({
             transform: translate3d(var(--portal-drift,0px),-72vh,0);
             opacity: 0;
           }
+        }
+
+
+        /* Visibility pass for ancestry atmospheres. */
+
+        .portal-skin-atmosphere[data-atmosphere="ivory"] .portal-ivory-shimmer {
+          opacity: 0.22;
+          filter: blur(1px);
+          animation-duration: 12s;
+        }
+
+        .portal-skin-atmosphere[data-atmosphere="amethyst"] .portal-amethyst {
+          width: 34px;
+          height: 34px;
+          filter: drop-shadow(0 0 10px rgb(183 111 235 / 0.42));
+          animation-duration: 11s;
+        }
+
+        .portal-skin-atmosphere[data-atmosphere="bird-sky"] .portal-bird-sky {
+          opacity: 0.16;
+          filter: blur(14px);
+        }
+
+        .portal-skin-atmosphere[data-atmosphere="aelari-dawn"] .portal-star {
+          width: 2px !important;
+          height: 2px !important;
+          opacity: 0.38;
+          box-shadow:
+            0 0 6px rgb(236 244 255 / 0.82),
+            0 0 14px rgb(214 191 123 / 0.34);
+        }
+
+        .portal-skin-atmosphere[data-atmosphere="aelari-dawn"] .portal-shooting-star {
+          opacity: 0;
+          width: 92px;
+          background: linear-gradient(
+            to left,
+            rgb(255 244 206 / 0.92),
+            rgb(196 225 248 / 0.32),
+            transparent
+          );
+          animation-duration: 24s;
+        }
+
+        .portal-skin-atmosphere[data-atmosphere="dwarven-forge"] .portal-dwarven-spark {
+          width: 4px;
+          height: 4px;
+          box-shadow:
+            0 0 6px rgb(225 137 65 / 0.8),
+            0 0 13px rgb(157 74 31 / 0.38);
+        }
+
+        .portal-skin-atmosphere[data-atmosphere="dwarven-forge"] .portal-dwarven-heat {
+          opacity: 0.15;
+        }
+
+        .portal-skin-atmosphere[data-atmosphere="mortal-hearth"] .portal-mortal-ember {
+          width: 3px;
+          height: 3px;
+          box-shadow: 0 0 7px rgb(184 155 111 / 0.42);
+        }
+
+        .portal-skin-atmosphere[data-atmosphere="wolf-moon"] .portal-moon-glow {
+          opacity: 0.7;
+        }
+
+        .portal-wolf-mist {
+          position: absolute;
+          left: -15%;
+          right: -15%;
+          bottom: 7%;
+          height: 120px;
+          opacity: 0.11;
+          filter: blur(18px);
+          background: repeating-linear-gradient(
+            96deg,
+            transparent 0 48px,
+            rgb(204 215 220 / 0.28) 60px 80px,
+            transparent 92px 145px
+          );
+          animation: portal-wolf-mist-drift 26s linear infinite;
+        }
+
+        @keyframes portal-wolf-mist-drift {
+          from { transform: translate3d(-4%, 0, 0); }
+          to { transform: translate3d(8%, 0, 0); }
         }
 
         @media (prefers-reduced-motion: reduce) {
