@@ -2,33 +2,33 @@
 
 import { useEffect } from "react";
 
-type PortalSkin =
-  | "sepulchria"
-  | "moonlit";
-
 const STORAGE_KEY =
   "sepulchria:portal-skin";
 
-function isPortalSkin(
+function validSkinSlug(
   value: string | null,
-): value is PortalSkin {
+): value is string {
   return (
-    value === "sepulchria" ||
-    value === "moonlit"
+    typeof value === "string" &&
+    /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(
+      value,
+    )
   );
 }
 
 function applySkin(
-  skin: PortalSkin,
+  skin: string,
 ) {
   document.documentElement.dataset.portalSkin =
     skin;
+
   document.body.dataset.portalSkin =
     skin;
 
   document.documentElement.classList.add(
     "portal-skin-scope",
   );
+
   document.body.classList.add(
     "portal-skin-scope",
   );
@@ -42,7 +42,7 @@ export function EmbeddedPortalSkinBridge() {
       );
 
     applySkin(
-      isPortalSkin(stored)
+      validSkinSlug(stored)
         ? stored
         : "sepulchria",
     );
@@ -52,7 +52,7 @@ export function EmbeddedPortalSkinBridge() {
     ) {
       if (
         event.key !== STORAGE_KEY ||
-        !isPortalSkin(
+        !validSkinSlug(
           event.newValue,
         )
       ) {

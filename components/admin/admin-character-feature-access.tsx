@@ -148,8 +148,8 @@ export function AdminCharacterFeatureAccess({
                 <span
                   className={
                     enabled
-                      ? "shrink-0 border border-[#668657] bg-[#172313] px-2 py-1 text-[8px] uppercase tracking-[0.16em] text-[#a8cf92]"
-                      : "shrink-0 border border-[#65483e] bg-[#221512] px-2 py-1 text-[8px] uppercase tracking-[0.16em] text-[#b78378]"
+                      ? "shrink-0 border border-[rgb(var(--sep-colour-668657))] bg-[rgb(var(--sep-colour-172313))] px-2 py-1 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-a8cf92))]"
+                      : "shrink-0 border border-[rgb(var(--sep-colour-65483e))] bg-[rgb(var(--sep-colour-221512))] px-2 py-1 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b78378))]"
                   }
                 >
                   {enabled
@@ -288,8 +288,8 @@ export function AdminCharacterFeatureAccess({
                   <span
                     className={
                       enabled
-                        ? "shrink-0 border border-[#668657] bg-[#172313] px-2 py-1 text-[8px] uppercase tracking-[0.16em] text-[#a8cf92]"
-                        : "shrink-0 border border-[#65483e] bg-[#221512] px-2 py-1 text-[8px] uppercase tracking-[0.16em] text-[#b78378]"
+                        ? "shrink-0 border border-[rgb(var(--sep-colour-668657))] bg-[rgb(var(--sep-colour-172313))] px-2 py-1 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-a8cf92))]"
+                        : "shrink-0 border border-[rgb(var(--sep-colour-65483e))] bg-[rgb(var(--sep-colour-221512))] px-2 py-1 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b78378))]"
                     }
                   >
                     {enabled

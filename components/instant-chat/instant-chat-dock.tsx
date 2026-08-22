@@ -982,10 +982,10 @@ export function InstantChatDock({
               : "Enable instant chat"
           }
           className={`flex h-7 w-7 shrink-0 items-center justify-center border transition ${
-            enabled
-              ? "border-[rgb(var(--sep-colour-60482e))] bg-[rgb(var(--sep-colour-17120f))] text-[rgb(var(--sep-colour-b89a70))] hover:border-[rgb(var(--sep-colour-8b683e))] hover:text-[rgb(var(--sep-colour-e3c795))]"
-              : "border-[rgb(var(--sep-colour-6b3f36))] bg-[rgb(var(--sep-colour-261411))] text-[rgb(var(--sep-colour-a65f53))] hover:border-[rgb(var(--sep-colour-98594d))] hover:text-[rgb(var(--sep-colour-d68d80))]"
-          }`}
+  enabled
+    ? "border-[rgb(var(--sep-colour-60482e))] bg-[rgb(var(--sep-colour-17120f))] text-[rgb(var(--sep-colour-b89a70))] hover:border-[rgb(var(--sep-colour-8b683e))] hover:text-[rgb(var(--sep-colour-e3c795))]"
+    : "border-red-700 bg-red-950/70 text-red-400 hover:border-red-500 hover:bg-red-950 hover:text-red-300"
+}`}
         >
           <svg
             viewBox="0 0 24 24"

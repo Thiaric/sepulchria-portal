@@ -133,8 +133,14 @@ async function PortalLayoutContent({
         />
 
 
-        <div className="h-dvh overflow-hidden bg-[rgb(var(--sep-colour-120f0d))] text-[rgb(var(--sep-colour-e8dcc4))]">
-          <div className="flex h-full min-h-0 flex-col bg-[radial-gradient(circle_at_top,_rgba(var(--sep-rgb-116-82-42),0.16),_transparent_38%),linear-gradient(to_bottom,_#17120f,_#0d0b0a)]">
+        <div
+          data-portal-shell
+          className="h-dvh overflow-hidden bg-[rgb(var(--sep-colour-120f0d))] text-[rgb(var(--sep-colour-e8dcc4))]"
+        >
+          <div
+            data-portal-shell-inner
+            className="flex h-full min-h-0 flex-col bg-[radial-gradient(circle_at_top,_rgba(var(--sep-rgb-116-82-42),0.16),_transparent_38%),linear-gradient(to_bottom,_#17120f,_#0d0b0a)]"
+          >
             <PortalPresenceHeartbeat
               enabled={
                 presenceEnabled
@@ -460,8 +466,14 @@ async function PortalLayoutContent({
 
 function PortalLoadingShell() {
   return (
-    <div className="h-dvh overflow-hidden bg-[rgb(var(--sep-colour-120f0d))] text-[rgb(var(--sep-colour-e8dcc4))]">
-      <div className="flex h-full min-h-0 flex-col bg-[radial-gradient(circle_at_top,_rgba(var(--sep-rgb-116-82-42),0.16),_transparent_38%),linear-gradient(to_bottom,_#17120f,_#0d0b0a)]">
+    <div
+      data-portal-shell
+      className="h-dvh overflow-hidden bg-[rgb(var(--sep-colour-120f0d))] text-[rgb(var(--sep-colour-e8dcc4))]"
+    >
+      <div
+        data-portal-shell-inner
+        className="flex h-full min-h-0 flex-col bg-[radial-gradient(circle_at_top,_rgba(var(--sep-rgb-116-82-42),0.16),_transparent_38%),linear-gradient(to_bottom,_#17120f,_#0d0b0a)]"
+      >
         <header className="h-[clamp(56px,8dvh,80px)] shrink-0 animate-pulse border-b border-[rgb(var(--sep-colour-6e5535))]/40 bg-[rgb(var(--sep-colour-0d0b0a))]" />
 
         <div className="mx-auto grid min-h-0 w-full max-w-[1800px] flex-1 grid-cols-1 overflow-y-auto lg:grid-cols-[clamp(180px,14vw,230px)_minmax(0,1fr)] lg:overflow-hidden xl:grid-cols-[clamp(180px,13vw,230px)_minmax(0,1fr)_clamp(240px,18vw,300px)]">
