@@ -563,13 +563,13 @@ function PresenceDot({
     string
   > = {
     online:
-      "border-[rgb(var(--sep-colour-102519))] bg-emerald-500 shadow-[0_0_6px_rgba(var(--sep-rgb-16-185-129),0.75)]",
+      "border-emerald-400 bg-emerald-500 shadow-[0_0_7px_rgba(16,185,129,0.65)]",
 
     away:
-      "border-[rgb(var(--sep-colour-2f2511))] bg-amber-500 shadow-[0_0_6px_rgba(var(--sep-rgb-245-158-11),0.65)]",
+      "border-amber-400 bg-amber-500 shadow-[0_0_7px_rgba(245,158,11,0.60)]",
 
     busy:
-      "border-[rgb(var(--sep-colour-321313))] bg-red-500 shadow-[0_0_6px_rgba(var(--sep-rgb-239-68-68),0.65)]",
+      "border-red-400 bg-red-500 shadow-[0_0_7px_rgba(239,68,68,0.60)]",
   };
 
   return (

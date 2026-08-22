@@ -30,19 +30,22 @@ const PRESENCE_STYLES: Record<
   online: {
     label: "Online",
     dotClass:
-      "border-[rgb(var(--sep-colour-8eaa68))] bg-[rgb(var(--sep-colour-86a85f))] shadow-[0_0_7px_rgba(var(--sep-rgb-134-168-95),0.55)]",
+      
+      "border-emerald-400 bg-emerald-500 shadow-[0_0_7px_rgba(16,185,129,0.65)]",
   },
 
   away: {
     label: "Away",
     dotClass:
-      "border-[rgb(var(--sep-colour-c39a58))] bg-[rgb(var(--sep-colour-b78b49))] shadow-[0_0_7px_rgba(var(--sep-rgb-183-139-73),0.45)]",
+      
+      "border-amber-400 bg-amber-500 shadow-[0_0_7px_rgba(245,158,11,0.60)]",
   },
 
   busy: {
     label: "Busy",
     dotClass:
-      "border-[rgb(var(--sep-colour-b4675c))] bg-[rgb(var(--sep-colour-a94f45))] shadow-[0_0_7px_rgba(var(--sep-rgb-169-79-69),0.45)]",
+      
+      "border-red-400 bg-red-500 shadow-[0_0_7px_rgba(239,68,68,0.60)]",
   },
 };
 

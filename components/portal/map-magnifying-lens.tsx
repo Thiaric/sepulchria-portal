@@ -250,6 +250,7 @@ export function MapMagnifyingLens({
   return (
     <>
       <button
+        data-map-magnifying-lens-button
         type="button"
         aria-pressed={enabled}
         aria-label={
@@ -337,6 +338,7 @@ export function MapMagnifyingLens({
           mapSize.width > 0 &&
           mapSize.height > 0 ? (
             <div
+              data-map-magnifying-lens-glass
               className="pointer-events-none absolute overflow-hidden rounded-full border-[5px] border-[rgb(var(--sep-colour-6f4b28))] bg-[rgb(var(--sep-colour-090705))] shadow-[0_12px_30px_rgba(var(--sep-rgb-0-0-0),0.9),inset_0_0_0_2px_rgba(var(--sep-rgb-225-188-126),0.48),inset_0_0_18px_rgba(var(--sep-rgb-0-0-0),0.75)]"
               style={{
                 width: `${lensSize}px`,
@@ -368,7 +370,9 @@ export function MapMagnifyingLens({
               </div>
 
               {/* Inner glass edge */}
-              <div className="absolute inset-0 rounded-full ring-1 ring-inset ring-[rgb(var(--sep-colour-e1bc7e))]/35" />
+              <div
+                data-map-magnifying-lens-ring
+                className="absolute inset-0 rounded-full ring-1 ring-inset ring-[rgb(var(--sep-colour-e1bc7e))]/35" />
 
               {/* Subtle centre crosshair */}
               <div className="absolute left-1/2 top-1/2 h-px w-4 -translate-x-1/2 -translate-y-1/2 bg-[rgb(var(--sep-colour-f1d39c))]/35" />
