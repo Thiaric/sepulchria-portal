@@ -14,6 +14,7 @@ import { CharacterShapesDisplay } from "@/components/characters/character-shapes
 import { LiveCharacterPresence } from "@/components/characters/live-character-presence";
 import { PublicCharacterAgeDetail } from "@/components/characters/public-character-age-detail";
 import { PublicCharacterOrder } from "@/components/characters/public-character-order";
+import { CharacterProfileReportButton } from "@/components/reports/character-profile-report-button";
 import type {
   PublicCharacterProfile,
   PublicCodexReference,
@@ -29,6 +30,7 @@ type PublicCharacterProfileProps = {
   canUseFriendList: boolean;
   isInFriendList: boolean;
   canBlock: boolean;
+  canReport: boolean;
   blockedByViewer: boolean;
   hasGlobalBlock: boolean;
 };
@@ -61,6 +63,7 @@ export function PublicCharacterProfileView({
   canUseFriendList,
   isInFriendList,
   canBlock,
+  canReport,
   blockedByViewer,
   hasGlobalBlock,
 }: PublicCharacterProfileProps) {
@@ -146,6 +149,22 @@ export function PublicCharacterProfileView({
                 {blockedByViewer ? "Unblock Character" : "Block Character"}
               </button>
             </form>
+          ) : null}
+
+          {canReport ? (
+            <CharacterProfileReportButton
+              characterId={character.id}
+              availableFields={[
+                ...(character.personality?.trim() ? ["bio" as const] : []),
+                ...(character.physical_description?.trim() ? ["physical" as const] : []),
+                ...(character.biography?.trim() ? ["background" as const] : []),
+                ...(character.public_notes?.trim() ? ["public_notes" as const] : []),
+                ...(character.relationships?.trim() ? ["relationships" as const] : []),
+                ...(character.offgame?.trim() ? ["offgame" as const] : []),
+                ...(character.portrait_url?.trim() ? ["profile_picture" as const] : []),
+                ...(character.music_url?.trim() ? ["mp3_music" as const] : []),
+              ]}
+            />
           ) : null}
 
           {hasGlobalBlock && !blockedByViewer ? (

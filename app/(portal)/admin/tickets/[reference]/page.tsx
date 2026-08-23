@@ -55,6 +55,15 @@ function objectRecord(
     : null;
 }
 
+function characterProfileFieldLabel(
+  value: unknown,
+): string | null {
+  const record = objectRecord(value);
+  return typeof record?.character_profile_field_label === "string"
+    ? record.character_profile_field_label
+    : null;
+}
+
 type ContextMessage = {
   id?: string;
   body?: string;
@@ -372,7 +381,9 @@ export default async function AdminTicketPage({
                   {report.source_type === "forum_topic" ||
                   report.source_type === "forum_post"
                     ? "Open Original Source"
-                    : "Open Communication Logs"}
+                    : report.source_type === "character"
+                      ? "Open Character Profile"
+                      : "Open Communication Logs"}
                 </Link>
               ) : null}
             </header>
@@ -420,7 +431,7 @@ export default async function AdminTicketPage({
                   >
                     <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-60482e))]/35 px-4 py-3">
                       <p className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-b58a69))]">
-                        Evidence #{index + 1} · {sourceLabel(item.source_type)}
+                        Evidence #{index + 1} · {characterProfileFieldLabel(item.context_snapshot) ?? sourceLabel(item.source_type)}
                       </p>
                       <p className="text-[8px] text-[rgb(var(--sep-colour-756957))]">
                         Captured {fmt(item.captured_at)}
@@ -429,7 +440,9 @@ export default async function AdminTicketPage({
 
                     <div className="p-4">
                       <p className="text-[7px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-756957))]">
-                        Original content
+                        {characterProfileFieldLabel(item.context_snapshot)
+                          ? `Preserved ${characterProfileFieldLabel(item.context_snapshot)}`
+                          : "Original content"}
                         {item.author_name_snapshot
                           ? ` · ${item.author_name_snapshot}`
                           : ""}

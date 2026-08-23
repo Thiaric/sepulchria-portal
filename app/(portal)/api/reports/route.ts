@@ -9,6 +9,7 @@ const SOURCE_TYPES = [
   "direct_message",
   "room_message",
   "instant_chat_message",
+  "character",
 ] as const;
 
 type SourceType = (typeof SOURCE_TYPES)[number];
@@ -22,6 +23,64 @@ const REASONS = [
   "sexual_inappropriate",
   "other",
 ] as const;
+
+const CHARACTER_PROFILE_FIELDS = {
+  bio: {
+    label: "Bio",
+    column: "personality",
+    valueType: "text",
+  },
+  physical: {
+    label: "Physical",
+    column: "physical_description",
+    valueType: "text",
+  },
+  background: {
+    label: "Background",
+    column: "biography",
+    valueType: "text",
+  },
+  public_notes: {
+    label: "Public Notes",
+    column: "public_notes",
+    valueType: "text",
+  },
+  relationships: {
+    label: "Relationships",
+    column: "relationships",
+    valueType: "text",
+  },
+  offgame: {
+    label: "Offgame",
+    column: "offgame",
+    valueType: "text",
+  },
+  profile_picture: {
+    label: "Profile picture",
+    column: "portrait_url",
+    valueType: "image_url",
+  },
+  mp3_music: {
+    label: "MP3 music",
+    column: "music_url",
+    valueType: "audio_url",
+  },
+} as const;
+
+type CharacterProfileField =
+  keyof typeof CHARACTER_PROFILE_FIELDS;
+
+function isCharacterProfileField(
+  value: unknown,
+): value is CharacterProfileField {
+  return (
+    typeof value === "string" &&
+    Object.prototype.hasOwnProperty.call(
+      CHARACTER_PROFILE_FIELDS,
+      value,
+    )
+  );
+}
 
 function isUuid(value: unknown): value is string {
   return (
@@ -140,7 +199,135 @@ export async function POST(request: NextRequest) {
   };
   let contextSnapshot: Record<string, unknown> = {};
 
-  if (sourceType === "forum_post") {
+  let characterProfileEvidence: Array<{
+    key: CharacterProfileField;
+    label: string;
+    column: string;
+    valueType: string;
+    value: string;
+  }> = [];
+
+  if (sourceType === "character") {
+    const requestedFields: CharacterProfileField[] = [];
+
+    for (const value of Array.isArray(body?.fields) ? body.fields : []) {
+      if (
+        isCharacterProfileField(value) &&
+        !requestedFields.includes(value)
+      ) {
+        requestedFields.push(value);
+      }
+    }
+
+    if (requestedFields.length === 0) {
+      return NextResponse.json(
+        { error: "Choose at least one character profile field to report." },
+        { status: 400 },
+      );
+    }
+
+    const { data: target, error } = await admin
+      .from("characters")
+      .select(
+        "id,user_id,public_slug,display_name,first_name,surname,status,is_system,personality,physical_description,biography,public_notes,relationships,offgame,portrait_url,music_url,updated_at",
+      )
+      .eq("id", sourceId)
+      .maybeSingle();
+
+    if (
+      error ||
+      !target ||
+      target.status !== "approved" ||
+      target.is_system
+    ) {
+      return NextResponse.json(
+        { error: "This character profile is unavailable." },
+        { status: 404 },
+      );
+    }
+
+    if (
+      target.user_id === user.id ||
+      target.id === reporterCharacter.id
+    ) {
+      return NextResponse.json(
+        { error: "You cannot report your own character profile." },
+        { status: 400 },
+      );
+    }
+
+    const fieldValues: Record<CharacterProfileField, string> = {
+      bio: target.personality ?? "",
+      physical: target.physical_description ?? "",
+      background: target.biography ?? "",
+      public_notes: target.public_notes ?? "",
+      relationships: target.relationships ?? "",
+      offgame: target.offgame ?? "",
+      profile_picture: target.portrait_url ?? "",
+      mp3_music: target.music_url ?? "",
+    };
+
+    characterProfileEvidence = requestedFields.map((key) => {
+      const meta = CHARACTER_PROFILE_FIELDS[key];
+
+      return {
+        key,
+        label: meta.label,
+        column: meta.column,
+        valueType: meta.valueType,
+        value: fieldValues[key].trim(),
+      };
+    });
+
+    const emptySelection =
+      characterProfileEvidence.find(
+        (item) => !item.value,
+      );
+
+    if (emptySelection) {
+      return NextResponse.json(
+        {
+          error: `${emptySelection.label} does not currently contain reportable content.`,
+        },
+        { status: 400 },
+      );
+    }
+
+    const first = characterProfileEvidence[0];
+
+    authorUserId = target.user_id ?? null;
+    authorCharacterId = target.id;
+    authorName =
+      target.display_name?.trim() ||
+      [target.first_name, target.surname]
+        .filter(Boolean)
+        .join(" ")
+        .trim() ||
+      "Unknown character";
+
+    contentSnapshot = first.value;
+    originalCreatedAt = target.updated_at;
+
+    sourceContext = {
+      ...sourceContext,
+      character_id: target.id,
+      public_slug: target.public_slug,
+      selected_fields: characterProfileEvidence.map(
+        (item) => ({
+          key: item.key,
+          label: item.label,
+        }),
+      ),
+    };
+
+    contextSnapshot = {
+      character_profile_field: first.key,
+      character_profile_field_label: first.label,
+      character_profile_column: first.column,
+      value_type: first.valueType,
+      public_slug: target.public_slug,
+    };
+  } else if (sourceType === "forum_post") {
     const { data: post, error } = await supabase
       .from("forum_posts")
       .select(
@@ -510,6 +697,87 @@ export async function POST(request: NextRequest) {
       { error: "The report could not be created." },
       { status: 500 },
     );
+  }
+
+  if (
+    sourceType === "character" &&
+    characterProfileEvidence.length > 1
+  ) {
+    const { data: createdTicket, error: ticketLookupError } =
+      await admin
+        .from("tickets")
+        .select("id")
+        .eq("public_reference", created.public_reference)
+        .maybeSingle();
+
+    if (ticketLookupError || !createdTicket) {
+      return NextResponse.json(
+        {
+          error:
+            "The report was created, but its additional profile evidence could not be attached.",
+          reference: created.public_reference,
+        },
+        { status: 500 },
+      );
+    }
+
+    const { data: createdReport, error: reportLookupError } =
+      await admin
+        .from("reports")
+        .select("id")
+        .eq("ticket_id", createdTicket.id)
+        .maybeSingle();
+
+    if (reportLookupError || !createdReport) {
+      return NextResponse.json(
+        {
+          error:
+            "The report was created, but its additional profile evidence could not be attached.",
+          reference: created.public_reference,
+        },
+        { status: 500 },
+      );
+    }
+
+    const additionalEvidence =
+      characterProfileEvidence.slice(1).map((item) => ({
+        ticket_id: createdTicket.id,
+        report_id: createdReport.id,
+        evidence_type: "content_snapshot",
+        source_type: "character",
+        source_id: sourceId,
+        author_user_id: authorUserId,
+        author_character_id: authorCharacterId,
+        author_name_snapshot: authorName,
+        content_snapshot: item.value,
+        original_created_at: originalCreatedAt,
+        context_snapshot: {
+          character_profile_field: item.key,
+          character_profile_field_label: item.label,
+          character_profile_column: item.column,
+          value_type: item.valueType,
+          public_slug:
+            typeof sourceContext.public_slug === "string"
+              ? sourceContext.public_slug
+              : null,
+        },
+      }));
+
+    const { error: additionalEvidenceError } =
+      await admin
+        .from("report_evidence")
+        .insert(additionalEvidence);
+
+    if (additionalEvidenceError) {
+      return NextResponse.json(
+        {
+          error:
+            "The report was created, but not all selected profile evidence could be attached.",
+          reference: created.public_reference,
+        },
+        { status: 500 },
+      );
+    }
   }
 
   return NextResponse.json({

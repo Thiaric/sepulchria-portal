@@ -202,6 +202,10 @@ export default async function PublicCharacterPage({
             character.id &&
           !targetIsStaff
         }
+        canReport={
+          Boolean(activeCharacter) &&
+          activeCharacter?.id !== character.id
+        }
         blockedByViewer={blockedByViewer}
         hasGlobalBlock={blockedByViewer || blockedViewer}
         canViewLastActivity={

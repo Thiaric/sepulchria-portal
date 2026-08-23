@@ -14,6 +14,17 @@ function label(value: string | null) {
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
+function characterProfileFieldLabel(
+  value: unknown,
+): string | null {
+  if (!value || typeof value !== "object") return null;
+  const record = value as Record<string, unknown>;
+
+  return typeof record.character_profile_field_label === "string"
+    ? record.character_profile_field_label
+    : null;
+}
+
 type ContextRow = {
   id?: string;
   body?: string;
@@ -84,7 +95,7 @@ export async function SanctionEvidence({
             >
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-60482e))]/35 px-4 py-3">
                 <p className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-b58a69))]">
-                  Evidence #{index + 1} · {label(item.source_type)}
+                  Evidence #{index + 1} · {characterProfileFieldLabel(item.context_snapshot) ?? label(item.source_type)}
                 </p>
                 <p className="text-[8px] text-[rgb(var(--sep-colour-756957))]">
                   Preserved {fmt(item.captured_at)}
@@ -93,7 +104,9 @@ export async function SanctionEvidence({
 
               <div className="p-4">
                 <p className="text-[7px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-756957))]">
-                  Original content
+                  {characterProfileFieldLabel(item.context_snapshot)
+                    ? `Preserved ${characterProfileFieldLabel(item.context_snapshot)}`
+                    : "Original content"}
                   {item.author_name_snapshot
                     ? ` · ${item.author_name_snapshot}`
                     : ""}
