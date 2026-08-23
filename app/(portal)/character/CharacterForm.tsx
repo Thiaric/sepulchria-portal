@@ -331,8 +331,21 @@ export default function CharacterForm({
 
         <section className={step === 2 ? "block" : "hidden"}>
           <div className="grid gap-6 sm:grid-cols-2">
-            <Field label="First name" name="first_name" required defaultValue={character?.first_name} />
-            <Field label="Surname" name="surname" required defaultValue={character?.surname} />
+           <Field
+  label="First name"
+  name="first_name"
+  required
+  maxLength={15}
+  defaultValue={character?.first_name}
+/>
+
+<Field
+  label="Surname"
+  name="surname"
+  required
+  maxLength={15}
+  defaultValue={character?.surname}
+/>
             <Field label="Pronouns" name="pronouns" defaultValue={character?.pronouns} />
             <label>
               <Label>Gender *</Label>
@@ -498,15 +511,35 @@ function Label({ children }: { children: React.ReactNode }) {
 }
 
 function Field({
-  label, name, required = false, type = "text", defaultValue,
+  label,
+  name,
+  required = false,
+  type = "text",
+  maxLength,
+  defaultValue,
 }: {
-  label: string; name: string; required?: boolean; type?: string;
+  label: string;
+  name: string;
+  required?: boolean;
+  type?: string;
+  maxLength?: number;
   defaultValue?: string | number | null;
 }) {
   return (
     <label>
-      <Label>{label}{required ? " *" : ""}</Label>
-      <input name={name} type={type} required={required} defaultValue={defaultValue ?? ""} className={inputClass} />
+      <Label>
+        {label}
+        {required ? " *" : ""}
+      </Label>
+
+      <input
+        name={name}
+        type={type}
+        required={required}
+        maxLength={maxLength}
+        defaultValue={defaultValue ?? ""}
+        className={inputClass}
+      />
     </label>
   );
 }

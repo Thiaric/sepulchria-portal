@@ -497,7 +497,13 @@ function CharacterDirectoryCard({
     );
 
   return (
-    <article className="group relative overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 transition duration-200 hover:-translate-y-0.5 hover:border-[rgb(var(--sep-colour-a17a49))] hover:bg-[rgb(var(--sep-colour-1a130e))]">
+    <article
+      className={
+        character.presence?.appear_offline === true
+          ? "group relative overflow-hidden border border-dashed border-[rgb(var(--sep-colour-876a46))]/55 bg-[rgb(var(--sep-colour-15100d))]/95 opacity-40 transition duration-200 hover:-translate-y-0.5 hover:border-[rgb(var(--sep-colour-9b7446))] hover:bg-[rgb(var(--sep-colour-1a130e))] hover:opacity-100"
+          : "group relative overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 transition duration-200 hover:-translate-y-0.5 hover:border-[rgb(var(--sep-colour-a17a49))] hover:bg-[rgb(var(--sep-colour-1a130e))]"
+      }
+    >
       <Link
         href={`/characters/${character.public_slug}?from=characters`}
         aria-label={`Open ${character.display_name}'s profile`}

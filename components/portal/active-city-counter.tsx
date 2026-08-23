@@ -895,7 +895,12 @@ export function ActiveCityCounter({
                         key={
                           presence.character_id
                         }
-                        className="group relative min-w-0 overflow-hidden border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-120e0b))] transition hover:border-[rgb(var(--sep-colour-8f6c43))] hover:bg-[rgb(var(--sep-colour-18110d))]"
+                        className={
+                          isStaff &&
+                          presence.appear_offline === true
+                            ? "group relative min-w-0 overflow-hidden border border-dashed border-[rgb(var(--sep-colour-876a46))]/55 bg-[rgb(var(--sep-colour-120e0b))] opacity-40 transition hover:border-[rgb(var(--sep-colour-9b7446))] hover:bg-[rgb(var(--sep-colour-18110d))] hover:opacity-100"
+                            : "group relative min-w-0 overflow-hidden border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-120e0b))] transition hover:border-[rgb(var(--sep-colour-8f6c43))] hover:bg-[rgb(var(--sep-colour-18110d))]"
+                        }
                       >
                         <div className="absolute inset-y-0 left-0 w-px bg-[rgb(var(--sep-colour-b88a52))]/0 transition group-hover:bg-[rgb(var(--sep-colour-b88a52))]/70" />
 

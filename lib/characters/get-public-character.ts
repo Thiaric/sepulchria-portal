@@ -153,6 +153,8 @@ export type PublicCharacterListItem = {
   presence: {
     status: PublicPresenceStatus;
     last_seen_at: string;
+    appear_offline: boolean;
+    appeared_offline_at: string | null;
   } | null;
 
   /*

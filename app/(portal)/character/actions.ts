@@ -233,17 +233,17 @@ export async function saveCharacter(
     redirect("/auth/login");
   }
 
-  const firstName = text(
-    formData,
-    "first_name",
-    80,
-  );
+ const firstName = text(
+  formData,
+  "first_name",
+  15,
+);
 
-  const surname = text(
-    formData,
-    "surname",
-    80,
-  );
+const surname = text(
+  formData,
+  "surname",
+  15,
+);
 
   if (!firstName || !surname) {
     redirectWithError(

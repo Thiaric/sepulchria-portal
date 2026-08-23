@@ -222,7 +222,7 @@ export default function TopicPost({
       id={`post-${post.id}`}
       className="scroll-mt-24 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]"
     >
-      <div className="grid lg:grid-cols-[230px_minmax(0,1fr)]">
+      <div className="grid lg:grid-cols-[138px_minmax(0,1fr)]">
         <aside className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-110d0a))] p-5 lg:border-b-0 lg:border-r lg:p-6">
           <div className="flex items-start gap-4 lg:block">
             <div className="shrink-0">
@@ -245,7 +245,7 @@ export default function TopicPost({
 
             <div className="min-w-0 flex-1 lg:mt-4">
               <h2
-  className={`truncate font-serif text-xl ${
+  className={`font-serif text-base leading-tight ${
     post.is_anonymous &&
     post.anonymous_identity_visible
       ? "text-red-400"
@@ -255,10 +255,12 @@ export default function TopicPost({
   <ForumCharacterLink
     characterId={post.author_character?.id}
     disabled={!linkAuthorToProfile}
-    className="transition hover:text-[rgb(var(--sep-colour-efd4a0))]"
+    className="break-words transition hover:text-[rgb(var(--sep-colour-efd4a0))]"
     ariaLabel={`View ${authorName}'s character sheet`}
   >
-    {authorName}
+    {post.is_anonymous
+      ? "Anonymous"
+      : post.author_character?.first_name || authorName}
   </ForumCharacterLink>
 </h2>
 
