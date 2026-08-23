@@ -940,6 +940,37 @@ export default function RoomMessageList({
           );
         },
       )
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table:
+            "room_messages",
+          filter:
+            `room_id=eq.${roomId}`,
+        },
+        (payload) => {
+          const updated =
+            payload.new as
+              InsertedRoomMessage;
+
+          setLiveMessages(
+            (currentMessages) =>
+              currentMessages.map(
+                (message) =>
+                  message.id ===
+                  updated.id
+                    ? {
+                        ...message,
+                        message:
+                          updated.message,
+                      }
+                    : message,
+              ),
+          );
+        },
+      )
       .subscribe((status) => {
         if (
           status ===

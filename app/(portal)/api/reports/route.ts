@@ -15,6 +15,12 @@ const SOURCE_TYPES = [
 type SourceType = (typeof SOURCE_TYPES)[number];
 
 const REASONS = [
+  "child_sexual_content",
+  "child_grooming",
+  "suicide_self_harm",
+  "eating_disorder",
+  "pornographic_media",
+  "immediate_safety",
   "harassment",
   "offensive_inappropriate",
   "metagaming_rule_breach",

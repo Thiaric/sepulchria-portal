@@ -90,11 +90,13 @@ function contextRows(context: unknown): ContextMessage[] {
 
 function reportSourceHref({
   sourceType,
+  sourceId,
   sourceContext,
   evidenceContext,
   originalCreatedAt,
 }: {
   sourceType: string | null;
+  sourceId: string | null;
   sourceContext: unknown;
   evidenceContext: unknown;
   originalCreatedAt: string | null;
@@ -199,7 +201,26 @@ function reportSourceHref({
   if (from) params.set("from", from);
   if (to) params.set("to", to);
 
-  return `/admin/communication-logs?${params.toString()}`;
+  if (
+    sourceId &&
+    (
+      sourceType === "room_message" ||
+      sourceType === "direct_message" ||
+      sourceType === "instant_chat_message"
+    )
+  ) {
+    params.set(
+      "message",
+      sourceId,
+    );
+  }
+
+  const base =
+    `/admin/communication-logs?${params.toString()}`;
+
+  return sourceId
+    ? `${base}#message-${sourceId}`
+    : base;
 }
 
 export default async function AdminTicketPage({
@@ -281,15 +302,16 @@ export default async function AdminTicketPage({
   if (linkedSanctionsError) throw new Error(linkedSanctionsError.message);
 
   const sourceHref = report
-    ? reportSourceHref({
-        sourceType: report.source_type,
-        sourceContext: report.source_context,
-        evidenceContext:
-          firstEvidence?.context_snapshot ?? null,
-        originalCreatedAt:
-          firstEvidence?.original_created_at ?? null,
-      })
-    : null;
+  ? reportSourceHref({
+      sourceType: report.source_type,
+      sourceId: report.source_id,
+      sourceContext: report.source_context,
+      evidenceContext:
+        firstEvidence?.context_snapshot ?? null,
+      originalCreatedAt:
+        firstEvidence?.original_created_at ?? null,
+    })
+  : null;
 
   return (
     <main className="p-5 sm:p-7 lg:p-9">

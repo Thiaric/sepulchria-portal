@@ -6,6 +6,9 @@ import {
 import {
   createAdminClient,
 } from "@/lib/supabase/admin";
+import {
+  obscureCommunication,
+} from "./actions";
 
 type SearchParams = {
   view?: string;
@@ -17,6 +20,7 @@ type SearchParams = {
   from?: string;
   to?: string;
   type?: string;
+  message?: string;
 };
 
 type CharacterOption = {
@@ -160,6 +164,147 @@ const input =
 
 const button =
   "h-9 border border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-261b12))] px-4 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d5b785))] transition hover:border-[rgb(var(--sep-colour-ad824d))]";
+
+type CommunicationSourceType =
+  | "direct_message"
+  | "instant_chat_message"
+  | "room_message";
+
+type ModerationRecord = {
+  source_id: string;
+  original_content: string;
+  original_forwarded_body:
+    | string
+    | null;
+  reason: string;
+  moderated_at: string;
+  moderated_by_label: string;
+};
+
+async function loadModerationMap(
+  supabase: ReturnType<
+    typeof createAdminClient
+  >,
+  sourceType:
+    CommunicationSourceType,
+  sourceIds: string[],
+) {
+  if (sourceIds.length === 0) {
+    return new Map<
+      string,
+      ModerationRecord
+    >();
+  }
+
+  const {
+    data,
+    error,
+  } = await supabase
+    .from(
+      "communication_moderation_actions",
+    )
+    .select(
+      "source_id, original_content, original_forwarded_body, reason, moderated_at, moderated_by_label",
+    )
+    .eq(
+      "source_type",
+      sourceType,
+    )
+    .in(
+      "source_id",
+      sourceIds,
+    );
+
+  if (error) {
+    throw new Error(
+      `Unable to load moderation state: ${error.message}`,
+    );
+  }
+
+  return new Map(
+    (
+      (data ?? []) as
+        ModerationRecord[]
+    ).map((row) => [
+      String(row.source_id),
+      row,
+    ]),
+  );
+}
+
+function ModerationPanel({
+  sourceType,
+  sourceId,
+  moderation,
+}: {
+  sourceType:
+    CommunicationSourceType;
+  sourceId: string;
+  moderation:
+    | ModerationRecord
+    | null;
+}) {
+  if (moderation) {
+    return (
+      <div className="mt-3 border border-[rgb(var(--sep-colour-8d5b45))]/65 bg-[rgb(var(--sep-colour-241310))] px-3 py-2">
+        <p className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d49a88))]">
+          Obscured by staff
+        </p>
+        <p className="mt-1 text-[9px] leading-5 text-[rgb(var(--sep-colour-baa58b))]">
+          {moderation.moderated_by_label}
+          {" · "}
+          {formatDateTime(
+            moderation.moderated_at,
+          )}
+          {" · "}
+          {moderation.reason}
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <details className="mt-3 border border-[rgb(var(--sep-colour-70483f))]/55 bg-[rgb(var(--sep-colour-1d1110))] px-3 py-2">
+      <summary className="cursor-pointer text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d99b8e))]">
+        Obscure
+      </summary>
+
+      <form
+        action={
+          obscureCommunication
+        }
+        className="mt-3 flex flex-col gap-2 sm:flex-row"
+      >
+        <input
+          type="hidden"
+          name="sourceType"
+          value={sourceType}
+        />
+        <input
+          type="hidden"
+          name="sourceId"
+          value={sourceId}
+        />
+
+        <input
+          type="text"
+          name="reason"
+          required
+          maxLength={500}
+          placeholder="Reason for obscuring this message…"
+          className="h-9 min-w-0 flex-1 border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-0c0907))] px-3 text-[9px] text-[rgb(var(--sep-colour-d2c0a5))] outline-none"
+        />
+
+        <button
+          type="submit"
+          className="h-9 border border-[rgb(var(--sep-colour-9a5147))] bg-[rgb(var(--sep-colour-351815))] px-3 text-[8px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-e0a69a))]"
+        >
+          Confirm Obscure
+        </button>
+      </form>
+    </details>
+  );
+}
 
 export default async function CommunicationLogsPage({
   searchParams,
@@ -825,6 +970,16 @@ async function loadPrivateMessages(
       ),
     );
 
+  const moderationById =
+    await loadModerationMap(
+      supabase,
+      "direct_message",
+      (messages ?? []).map(
+        (message) =>
+          String(message.id),
+      ),
+    );
+
   return (
     <section className="mt-4 space-y-2">
       {(messages ?? []).map(
@@ -905,10 +1060,24 @@ async function loadPrivateMessages(
                 ) ||
                 "Direct conversation";
 
+          const moderation =
+            moderationById.get(
+              String(message.id),
+            ) ?? null;
+
+          const isTarget =
+            params.message ===
+            String(message.id);
+
           return (
             <article
+              id={`message-${message.id}`}
               key={message.id}
-              className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-15100d))] p-4"
+              className={`border bg-[rgb(var(--sep-colour-15100d))] p-4 ${
+                isTarget
+                  ? "border-[rgb(var(--sep-colour-c99758))] ring-1 ring-[rgb(var(--sep-colour-c99758))]/70"
+                  : "border-[rgb(var(--sep-colour-59432c))]/40"
+              }`}
             >
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="min-w-0">
@@ -953,14 +1122,18 @@ async function loadPrivateMessages(
               <div className="mt-3 whitespace-pre-wrap border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-3 text-xs leading-6 text-[rgb(var(--sep-colour-c1b198))]">
                 {plainText(
                   String(
-                    message.body ??
+                    moderation
+                      ?.original_content ??
+                      message.body ??
                       "",
                   ),
                 ) ||
                   "(empty message)"}
               </div>
 
-              {message.forwarded_body ? (
+              {(moderation
+                ?.original_forwarded_body ??
+                message.forwarded_body) ? (
                 <div className="mt-3 border-l-2 border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-100c09))] p-3 text-[10px] leading-5 text-[rgb(var(--sep-colour-9e907d))]">
                   <p className="mb-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806f5b))]">
                     Forwarded from{" "}
@@ -978,12 +1151,24 @@ async function loadPrivateMessages(
                   <p className="whitespace-pre-wrap">
                     {plainText(
                       String(
-                        message.forwarded_body,
+                        moderation
+                          ?.original_forwarded_body ??
+                          message.forwarded_body,
                       ),
                     )}
                   </p>
                 </div>
               ) : null}
+
+              <ModerationPanel
+                sourceType="direct_message"
+                sourceId={String(
+                  message.id,
+                )}
+                moderation={
+                  moderation
+                }
+              />
             </article>
           );
         },
@@ -1134,6 +1319,16 @@ async function loadRoomMessages(
       },
     );
 
+  const moderationById =
+    await loadModerationMap(
+      supabase,
+      "room_message",
+      messages.map(
+        (message) =>
+          String(message.id),
+      ),
+    );
+
   return (
     <section className="mt-4 space-y-2">
       {messages.map(
@@ -1226,10 +1421,24 @@ async function loadRoomMessages(
                 ? "Private Location"
                 : "Public Location";
 
+          const moderation =
+            moderationById.get(
+              String(message.id),
+            ) ?? null;
+
+          const isTarget =
+            params.message ===
+            String(message.id);
+
           return (
             <article
+              id={`message-${message.id}`}
               key={message.id}
-              className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-15100d))] p-4"
+              className={`border bg-[rgb(var(--sep-colour-15100d))] p-4 ${
+                isTarget
+                  ? "border-[rgb(var(--sep-colour-c99758))] ring-1 ring-[rgb(var(--sep-colour-c99758))]/70"
+                  : "border-[rgb(var(--sep-colour-59432c))]/40"
+              }`}
             >
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
@@ -1272,7 +1481,9 @@ async function loadRoomMessages(
 
               <p className="mt-3 whitespace-pre-wrap border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-3 text-xs leading-6 text-[rgb(var(--sep-colour-c1b198))]">
                 {String(
-                  message.message ??
+                  moderation
+                    ?.original_content ??
+                    message.message ??
                     "",
                 )}
               </p>
@@ -1304,6 +1515,16 @@ async function loadRoomMessages(
                     .join(" · ")}
                 </p>
               ) : null}
+
+              <ModerationPanel
+                sourceType="room_message"
+                sourceId={String(
+                  message.id,
+                )}
+                moderation={
+                  moderation
+                }
+              />
             </article>
           );
         },
@@ -1396,13 +1617,38 @@ async function loadInstantChatMessages(
       ),
     );
 
+  const moderationById =
+    await loadModerationMap(
+      supabase,
+      "instant_chat_message",
+      (messages ?? []).map(
+        (message) =>
+          String(message.id),
+      ),
+    );
+
   return (
     <section className="mt-4 space-y-2">
       {(messages ?? []).map(
-        (message) => (
+        (message) => {
+          const moderation =
+            moderationById.get(
+              String(message.id),
+            ) ?? null;
+
+          const isTarget =
+            params.message ===
+            String(message.id);
+
+          return (
           <article
+            id={`message-${message.id}`}
             key={message.id}
-            className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-15100d))] p-4"
+            className={`border bg-[rgb(var(--sep-colour-15100d))] p-4 ${
+              isTarget
+                ? "border-[rgb(var(--sep-colour-c99758))] ring-1 ring-[rgb(var(--sep-colour-c99758))]/70"
+                : "border-[rgb(var(--sep-colour-59432c))]/40"
+            }`}
           >
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
@@ -1439,11 +1685,25 @@ async function loadInstantChatMessages(
 
             <p className="mt-3 whitespace-pre-wrap border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-3 text-xs leading-6 text-[rgb(var(--sep-colour-c1b198))]">
               {String(
-                message.body ?? "",
+                moderation
+                  ?.original_content ??
+                  message.body ??
+                  "",
               )}
             </p>
+
+            <ModerationPanel
+              sourceType="instant_chat_message"
+              sourceId={String(
+                message.id,
+              )}
+              moderation={
+                moderation
+              }
+            />
           </article>
-        ),
+          );
+        },
       )}
 
       {!messages?.length ? (

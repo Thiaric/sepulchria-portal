@@ -29,12 +29,18 @@ const FIELDS: ReadonlyArray<{
 ];
 
 const REASONS = [
-  ["harassment", "Harassment"],
+  ["child_sexual_content", "Sexual content involving a minor / minor-presenting character"],
+  ["child_grooming", "Grooming or sexual solicitation of a minor"],
+  ["suicide_self_harm", "Suicide or self-harm encouragement / instructions"],
+  ["eating_disorder", "Eating-disorder encouragement / instructions"],
+  ["pornographic_media", "Pornographic visual / audiovisual content"],
+  ["immediate_safety", "Immediate safety concern"],
+  ["harassment", "Harassment / threats / stalking"],
   ["offensive_inappropriate", "Offensive / inappropriate content"],
   ["metagaming_rule_breach", "Metagaming / rule breach"],
   ["spam", "Spam"],
   ["impersonation", "Impersonation"],
-  ["sexual_inappropriate", "Sexual / inappropriate behaviour"],
+  ["sexual_inappropriate", "Other sexual / inappropriate behaviour"],
   ["other", "Other"],
 ] as const;
 

@@ -367,6 +367,34 @@ export default function ConversationRealtime({
             );
           },
         )
+        .on(
+          "postgres_changes",
+          {
+            event: "UPDATE",
+            schema: "public",
+            table:
+              "direct_messages",
+            filter:
+              `conversation_id=eq.${conversationId}`,
+          },
+          (payload) => {
+            const updated =
+              payload.new as
+                DirectMessageInsert;
+
+            window.dispatchEvent(
+              new CustomEvent(
+                PRIVATE_MESSAGE_REALTIME_EVENT,
+                {
+                  detail: {
+                    conversationId,
+                    message: updated,
+                  },
+                },
+              ),
+            );
+          },
+        )
         .subscribe();
 
     return () => {

@@ -437,6 +437,41 @@ export function InstantChatDock({
 }
           },
         )
+        .on(
+          "postgres_changes",
+          {
+            event: "UPDATE",
+            schema: "public",
+            table:
+              "instant_chat_messages",
+          },
+          (payload) => {
+            const updated =
+              payload.new as
+                ChatMessage;
+
+            const active =
+              openChatRef.current;
+
+            if (
+              active?.conversationId !==
+              updated.conversation_id
+            ) {
+              return;
+            }
+
+            setMessages(
+              (current) =>
+                current.map(
+                  (message) =>
+                    message.id ===
+                    updated.id
+                      ? updated
+                      : message,
+                ),
+            );
+          },
+        )
         .subscribe();
 
     return () => {
