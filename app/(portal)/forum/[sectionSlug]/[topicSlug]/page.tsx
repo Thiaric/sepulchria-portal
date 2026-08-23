@@ -1407,6 +1407,10 @@ for (const log of moderationLogs) {
                     post.author_character_id,
                   )
                 }
+                canReport={
+                  Boolean(user) &&
+                  !ownsPost
+                }
                 canModerate={
                   isStaff
                 }

@@ -1324,14 +1324,6 @@ export default function RoomMessageList({
       {time}
     </time>
 
-    {item.character_id &&
-    item.character_id !== viewerCharacterId ? (
-      <ReportButton
-        sourceType="room_message"
-        sourceId={item.id}
-        compact
-      />
-    ) : null}
   </div>
 
   {/* Message */}
@@ -1456,6 +1448,17 @@ export default function RoomMessageList({
       />
     </div>
   </div>
+
+  {item.character_id &&
+  item.character_id !== viewerCharacterId ? (
+    <div className="ml-auto shrink-0 pt-0.5">
+      <ReportButton
+        sourceType="room_message"
+        sourceId={item.id}
+        compact
+      />
+    </div>
+  ) : null}
 </article>
                 );
               },

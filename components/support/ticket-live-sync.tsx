@@ -35,6 +35,7 @@ export function TicketLiveSync({reference,admin=false}:{reference?:string;admin?
         const sig=signatureForPayload(await r.json());
         if(last.current===null)last.current=sig;
         else if(last.current!==sig){last.current=sig;router.refresh();}
+        if(admin&&!reference)router.refresh();
         await markRead();
         window.dispatchEvent(new Event("sepulchria:ticket-notifications-changed"));
       }finally{busy.current=false;}

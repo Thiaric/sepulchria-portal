@@ -69,6 +69,7 @@ type TopicPostProps = {
   canEdit: boolean;
   canDelete: boolean;
   canQuote: boolean;
+  canReport: boolean;
   canModerate: boolean;
   topicLocked: boolean;
 };
@@ -171,6 +172,7 @@ export default function TopicPost({
   canEdit,
   canDelete,
   canQuote,
+  canReport,
   canModerate,
   topicLocked,
 }: TopicPostProps) {
@@ -378,7 +380,7 @@ export default function TopicPost({
                   </>
                 ) : null}
 
-                {!isDeleted ? (
+                {!isDeleted && canReport ? (
                   <ReportButton
                     sourceType={
                       post.is_initial

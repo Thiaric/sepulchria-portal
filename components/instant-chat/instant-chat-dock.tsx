@@ -812,16 +812,6 @@ export function InstantChatDock({
                             }
                           </p>
 
-                          {!own ? (
-                            <div className="mt-1 text-right">
-                              <ReportButton
-                                sourceType="instant_chat_message"
-                                sourceId={message.id}
-                                compact
-                              />
-                            </div>
-                          ) : null}
-
                           <time className="mt-0.5 block text-right text-[6px] leading-none text-[rgb(var(--sep-colour-746858))]">
                             {new Date(
                               message.created_at,
@@ -835,6 +825,16 @@ export function InstantChatDock({
                             )}
                           </time>
                         </div>
+
+                        {!own ? (
+                          <div className="shrink-0 self-end pb-0.5">
+                            <ReportButton
+                              sourceType="instant_chat_message"
+                              sourceId={message.id}
+                              compact
+                            />
+                          </div>
+                        ) : null}
                       </div>
                     );
                   },

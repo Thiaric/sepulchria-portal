@@ -492,16 +492,6 @@ export function ConversationMessageList({
                     : ""
                 }`}
               >
-                {!own ? (
-                  <div className="absolute bottom-2 right-2 z-10">
-                    <ReportButton
-                      sourceType="direct_message"
-                      sourceId={message.id}
-                      compact
-                    />
-                  </div>
-                ) : null}
-
                 <div className="flex items-start gap-3">
                   {/* CHARACTER PORTRAIT */}
                   <div className="h-11 w-11 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/75 bg-[rgb(var(--sep-colour-0d0907))]">
@@ -559,6 +549,14 @@ export function ConversationMessageList({
                         >
                           Forward
                         </a>
+
+                        {!own ? (
+                          <ReportButton
+                            sourceType="direct_message"
+                            sourceId={message.id}
+                            toolbar
+                          />
+                        ) : null}
 
                         <form
                           action={
