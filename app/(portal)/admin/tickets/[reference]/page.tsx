@@ -5,6 +5,8 @@ import { TicketLiveSync } from "@/components/support/ticket-live-sync";
 import { requireStaff } from "@/lib/auth/require-staff";
 import { createAdminClient } from "@/lib/supabase/admin";
 
+import { issueSanction } from "@/app/(portal)/admin/sanctions/actions";
+
 import {
   assignTicketToSelf,
   staffTicketMessage,
@@ -223,7 +225,7 @@ export default async function AdminTicketPage({
       ? admin
           .from("reports")
           .select(
-            "id,reporter_name_snapshot,reported_name_snapshot,reason_code,explanation,source_type,source_id,source_context,created_at",
+            "id,reporter_name_snapshot,reported_name_snapshot,reported_user_id,reported_character_id,reason_code,explanation,source_type,source_id,source_context,created_at",
           )
           .eq("ticket_id", ticket.id)
           .maybeSingle()
@@ -254,6 +256,14 @@ export default async function AdminTicketPage({
   const report = reportResult.data;
   const evidence = evidenceResult.data ?? [];
   const firstEvidence = evidence[0] ?? null;
+
+  const { data: linkedSanctions, error: linkedSanctionsError } = await admin
+    .from("sanctions")
+    .select("id,sanction_type,status,target_name_snapshot,issued_at")
+    .eq("ticket_id", ticket.id)
+    .order("issued_at", { ascending: false });
+
+  if (linkedSanctionsError) throw new Error(linkedSanctionsError.message);
 
   const sourceHref = report
     ? reportSourceHref({
@@ -463,6 +473,43 @@ export default async function AdminTicketPage({
                 );
               })}
             </div>
+          </section>
+        ) : null}
+
+        {report?.reported_user_id ? (
+          <section className="mt-5 border border-[rgb(var(--sep-colour-7d493f))]/65 bg-[rgb(var(--sep-colour-18100e))] p-5">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div><p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-c98f7f))]">Disciplinary Action</p><h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-e2c99f))]">Sanctions</h2><p className="mt-2 text-xs text-[rgb(var(--sep-colour-9e8c75))]">Target: <strong>{report.reported_name_snapshot ?? "Reported account"}</strong></p></div>
+              <Link href="/admin/sanctions" className="border border-[rgb(var(--sep-colour-60482e))]/55 px-3 py-2 text-[8px] uppercase text-[rgb(var(--sep-colour-a58b68))]">All Sanctions</Link>
+            </div>
+
+            {(linkedSanctions ?? []).length>0?<div className="mt-4 space-y-2">{(linkedSanctions??[]).map(s=><Link key={s.id} href={`/admin/sanctions/${s.id}`} className="flex items-center justify-between gap-3 border border-[rgb(var(--sep-colour-60482e))]/45 bg-black/10 p-3"><span className="text-[9px] uppercase text-[rgb(var(--sep-colour-cdbb9f))]">{sourceLabel(s.sanction_type)}</span><span className="text-[8px] uppercase text-[rgb(var(--sep-colour-8f806d))]">{s.status}</span></Link>)}</div>:null}
+
+            <details className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))]">
+              <summary className="cursor-pointer px-4 py-3 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d5b785))]">Issue Sanction</summary>
+              <form action={issueSanction} className="grid gap-4 border-t border-[rgb(var(--sep-colour-60482e))]/35 p-4 lg:grid-cols-2">
+                <input type="hidden" name="ticketId" value={ticket.id}/>
+                <input type="hidden" name="targetUserId" value={report.reported_user_id}/>
+                <input type="hidden" name="targetCharacterId" value={report.reported_character_id ?? ""}/>
+                <input type="hidden" name="targetName" value={report.reported_name_snapshot ?? ""}/>
+
+                <label className="block"><span className="text-[8px] uppercase text-[rgb(var(--sep-colour-8f806d))]">Sanction type</span>
+                  <select name="sanctionType" required defaultValue="warning" className="mt-2 h-11 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0c0907))] px-3 text-sm">
+                    <option value="warning">Warning</option><option value="communication_restriction">Communication restriction</option><option value="forum_restriction">Forum restriction</option><option value="game_chat_restriction">Game chat restriction</option><option value="feature_restriction">Feature restriction</option><option value="temporary_suspension">Temporary suspension</option><option value="permanent_ban">Permanent ban</option>
+                  </select>
+                </label>
+
+                <label className="block"><span className="text-[8px] uppercase text-[rgb(var(--sep-colour-8f806d))]">Expiry · required for temporary sanctions</span><input type="datetime-local" name="expiresAt" className="mt-2 h-11 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0c0907))] px-3 text-sm"/></label>
+
+                <label className="block lg:col-span-2"><span className="text-[8px] uppercase text-[rgb(var(--sep-colour-8f806d))]">Reason code</span><input name="reasonCode" required maxLength={120} defaultValue={report.reason_code ?? ""} className="mt-2 h-11 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0c0907))] px-3 text-sm"/></label>
+
+                <label className="block lg:col-span-2"><span className="text-[8px] uppercase text-[rgb(var(--sep-colour-8f806d))]">Player-facing reason</span><textarea name="playerReason" required rows={5} maxLength={5000} placeholder="Explain the sanction clearly to the player. Do not include private staff notes." className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0c0907))] p-3 text-sm leading-6"/></label>
+
+                <label className="block lg:col-span-2"><span className="text-[8px] uppercase text-[rgb(var(--sep-colour-8f806d))]">Internal rationale · staff only</span><textarea name="internalRationale" rows={5} maxLength={10000} className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0c0907))] p-3 text-sm leading-6"/></label>
+
+                <div className="lg:col-span-2"><button className="border border-[rgb(var(--sep-colour-9a5147))] bg-[rgb(var(--sep-colour-351815))] px-5 py-3 text-[8px] uppercase text-[rgb(var(--sep-colour-e0a69a))]">Issue Sanction</button></div>
+              </form>
+            </details>
           </section>
         ) : null}
 

@@ -123,6 +123,10 @@ export default async function AdminLayout({
               <span className="flex items-center gap-2"><span>Tickets</span><TicketNotificationBadge audience="staff" variant="admin-nav" /></span>
             </AdminNavigationLink>
 
+            <AdminNavigationLink href="/admin/sanctions">
+              Sanctions
+            </AdminNavigationLink>
+
             {canManageUsers ? (
               <>
                 <AdminNavigationLink href="/admin/media">

@@ -23,25 +23,67 @@ export function TicketLiveSync({reference,admin=false}:{reference?:string;admin?
       if(!reference)return;
       await fetch("/api/support/read",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({reference,admin}),cache:"no-store"}).catch(()=>undefined);
     }
-    async function tick(){
-      if(stopped||busy.current||document.visibilityState!=="visible")return;
-      busy.current=true;
-      try{
-        const qs=new URLSearchParams();
-        if(admin)qs.set("admin","1");
-        if(reference)qs.set("reference",reference);
-        const r=await fetch(`/api/support/context?${qs.toString()}`,{cache:"no-store"});
-        if(!r.ok||stopped)return;
-        const sig=signatureForPayload(await r.json());
-        if(last.current===null)last.current=sig;
-        else if(last.current!==sig){last.current=sig;router.refresh();}
-        if(admin&&!reference)router.refresh();
+    async function tick() {
+  if (
+    stopped ||
+    busy.current ||
+    document.visibilityState !== "visible"
+  ) {
+    return;
+  }
+
+  busy.current = true;
+
+  try {
+    const qs = new URLSearchParams();
+
+    if (admin) qs.set("admin", "1");
+    if (reference) qs.set("reference", reference);
+
+    const r = await fetch(
+      `/api/support/context?${qs.toString()}`,
+      { cache: "no-store" },
+    );
+
+    if (!r.ok || stopped) return;
+
+    const sig = signatureForPayload(await r.json());
+
+    if (last.current === null) {
+      last.current = sig;
+
+      // Opening a ticket marks its existing activity as read once.
+      if (reference) {
         await markRead();
-        window.dispatchEvent(new Event("sepulchria:ticket-notifications-changed"));
-      }finally{busy.current=false;}
+
+        window.dispatchEvent(
+          new Event("sepulchria:ticket-notifications-changed"),
+        );
+      }
+
+      return;
     }
+
+    if (last.current !== sig) {
+      last.current = sig;
+
+      // Something genuinely changed on the ticket/queue.
+      router.refresh();
+
+      if (reference) {
+        await markRead();
+
+        window.dispatchEvent(
+          new Event("sepulchria:ticket-notifications-changed"),
+        );
+      }
+    }
+  } finally {
+    busy.current = false;
+  }
+}
     void tick();
-    const id=window.setInterval(()=>void tick(),2000);
+    const id=window.setInterval(()=>void tick(),3000);
     const focus=()=>void tick();
     window.addEventListener("focus",focus);
     return()=>{stopped=true;window.clearInterval(id);window.removeEventListener("focus",focus);};
