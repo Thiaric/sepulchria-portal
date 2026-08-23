@@ -9,6 +9,9 @@ import {
 } from "@/lib/rich-text";
 import { createClient } from "@/lib/supabase/server";
 import {
+  getSanctionEnforcement,
+} from "@/lib/sanctions/enforcement";
+import {
   notifyForumReplyAudience,
 } from "@/lib/forum/forum-notifications";
 import {
@@ -516,6 +519,23 @@ export async function createForumTopicAction(
     };
   }
 
+  const topicEnforcement =
+    await getSanctionEnforcement(
+      supabase,
+      "forum",
+    );
+
+  if (
+    topicEnforcement.blocked
+  ) {
+    return {
+      success: false,
+      message:
+        topicEnforcement.message ??
+        "Forum posting is currently restricted on this account.",
+    };
+  }
+
   const {
     data: section,
     error: sectionError,
@@ -917,6 +937,23 @@ export async function createForumReplyAction(
       success: false,
       message:
         "You must be signed in to reply.",
+    };
+  }
+
+  const replyEnforcement =
+    await getSanctionEnforcement(
+      supabase,
+      "forum",
+    );
+
+  if (
+    replyEnforcement.blocked
+  ) {
+    return {
+      success: false,
+      message:
+        replyEnforcement.message ??
+        "Forum posting is currently restricted on this account.",
     };
   }
 

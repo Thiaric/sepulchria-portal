@@ -12,6 +12,7 @@ import {
   sanitizeRichHtml,
 } from "@/lib/rich-text";
 import { createClient } from "@/lib/supabase/server";
+import { assertCurrentUserCan } from "@/lib/sanctions/enforcement";
 import type {
   MessageActionState,
   PrivateMessageMode,
@@ -102,6 +103,11 @@ export async function sendTypedPrivateMessage(
     if (!user) {
       redirect("/auth/login");
     }
+
+    await assertCurrentUserCan(
+      supabase,
+      "communication",
+    );
 
     const {
       data: character,

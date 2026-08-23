@@ -12,6 +12,7 @@ import {
   sanitizeRichHtml,
 } from "@/lib/rich-text";
 import { createClient } from "@/lib/supabase/server";
+import { assertCurrentUserCan } from "@/lib/sanctions/enforcement";
 import type { MessageActionState } from "@/types/messages";
 
 const MAX_BODY_HTML_LENGTH = 100_000;
@@ -41,6 +42,11 @@ export async function startConversation(formData: FormData): Promise<void> {
 
   const { supabase, character } = await getContext();
   if (recipientId === character.id) throw new Error("You cannot message yourself.");
+
+  await assertCurrentUserCan(
+    supabase,
+    "communication",
+  );
 
   const { data: conversationId, error } = await supabase.rpc(
     "start_direct_conversation",

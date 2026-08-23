@@ -14,6 +14,9 @@ import {
 } from "@/lib/game/constants";
 import { getStaffSession } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
+import {
+  getSanctionEnforcement,
+} from "@/lib/sanctions/enforcement";
 import { getEffectiveCharacterAttributes } from "@/lib/characters/get-effective-character-attributes";
 import {
   applyGiftCurrentHealthDelta,
@@ -814,6 +817,23 @@ export async function sendRoomMessage(
       supabase,
       character,
     } = await getOwnedCharacter();
+
+    const chatEnforcement =
+      await getSanctionEnforcement(
+        supabase,
+        "game_chat",
+      );
+
+    if (
+      chatEnforcement.blocked
+    ) {
+      return {
+        ok: false,
+        message:
+          chatEnforcement.message ??
+          "Game chat is currently restricted on this account.",
+      };
+    }
 
     if (!character.current_room_id) {
       return {

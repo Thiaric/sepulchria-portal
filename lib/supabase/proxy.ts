@@ -13,6 +13,28 @@ const PUBLIC_ROUTES = [
   "/auth",
 ];
 
+const SANCTION_ACCESS_ROUTES = [
+  "/sanctions",
+  "/support",
+  "/terms",
+  "/privacy",
+  "/auth",
+  "/api/sanctions",
+  "/api/support",
+];
+
+function isSanctionAccessRoute(
+  pathname: string,
+) {
+  return SANCTION_ACCESS_ROUTES.some(
+    (route) =>
+      pathname === route ||
+      pathname.startsWith(
+        `${route}/`,
+      ),
+  );
+}
+
 function isPublicRoute(pathname: string) {
   return PUBLIC_ROUTES.some((route) => {
     if (route === "/") {
@@ -67,6 +89,51 @@ export async function updateSession(request: NextRequest) {
     url.pathname = "/auth/login";
 
     return NextResponse.redirect(url);
+  }
+
+  if (
+    user &&
+    !isSanctionAccessRoute(
+      pathname,
+    )
+  ) {
+    const {
+      data: enforcement,
+      error: enforcementError,
+    } = await supabase.rpc(
+      "get_current_sanction_enforcement",
+      {
+        p_capability: "portal",
+      },
+    );
+
+    if (!enforcementError) {
+      const row =
+        Array.isArray(
+          enforcement,
+        )
+          ? enforcement[0] ?? null
+          : enforcement;
+
+      if (
+        row?.blocked === true
+      ) {
+        const url =
+          request.nextUrl.clone();
+
+        url.pathname =
+          "/sanctions";
+
+        url.searchParams.set(
+          "restricted",
+          "1",
+        );
+
+        return NextResponse.redirect(
+          url,
+        );
+      }
+    }
   }
 
   return supabaseResponse;
