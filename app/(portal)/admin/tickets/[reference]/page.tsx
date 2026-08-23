@@ -36,6 +36,21 @@ function safeInternalHref(value: unknown): string | null {
   return href.startsWith("/") && !href.startsWith("//") ? href : null;
 }
 
+function isoDay(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+  return date.toISOString().slice(0, 10);
+}
+
+function objectRecord(
+  value: unknown,
+): Record<string, unknown> | null {
+  return value && typeof value === "object"
+    ? (value as Record<string, unknown>)
+    : null;
+}
+
 type ContextMessage = {
   id?: string;
   body?: string;
@@ -60,6 +75,120 @@ function contextRows(context: unknown): ContextMessage[] {
     : [];
 }
 
+function reportSourceHref({
+  sourceType,
+  sourceContext,
+  evidenceContext,
+  originalCreatedAt,
+}: {
+  sourceType: string | null;
+  sourceContext: unknown;
+  evidenceContext: unknown;
+  originalCreatedAt: string | null;
+}): string | null {
+  const source = objectRecord(sourceContext);
+
+  if (
+    sourceType === "forum_topic" ||
+    sourceType === "forum_post"
+  ) {
+    return safeInternalHref(source?.url);
+  }
+
+  const evidence = objectRecord(evidenceContext);
+  const rows = contextRows(evidenceContext);
+
+  const dates = rows
+    .map((row) =>
+      typeof row.created_at === "string"
+        ? new Date(row.created_at)
+        : null,
+    )
+    .filter(
+  (date): date is Date =>
+    date instanceof Date &&
+    !Number.isNaN(date.getTime()),
+)
+    .sort(
+      (a, b) =>
+        a.getTime() - b.getTime(),
+    );
+
+  const from = isoDay(
+    dates[0]?.toISOString() ??
+      originalCreatedAt,
+  );
+
+  const to = isoDay(
+    dates.at(-1)?.toISOString() ??
+      originalCreatedAt,
+  );
+
+  const params = new URLSearchParams();
+
+  if (sourceType === "room_message") {
+    params.set("view", "chat");
+
+    const room = objectRecord(
+      evidence?.room,
+    );
+
+    const roomId =
+      typeof room?.id === "string"
+        ? room.id
+        : typeof source?.room_id === "string"
+          ? source.room_id
+          : null;
+
+    if (roomId) {
+      params.set("room", roomId);
+    }
+  } else if (
+    sourceType === "direct_message"
+  ) {
+    params.set("view", "pm");
+
+    const conversationId =
+      typeof evidence?.conversation_id === "string"
+        ? evidence.conversation_id
+        : typeof source?.conversation_id === "string"
+          ? source.conversation_id
+          : null;
+
+    if (conversationId) {
+      params.set(
+        "conversation",
+        conversationId,
+      );
+    }
+  } else if (
+    sourceType === "instant_chat_message"
+  ) {
+    params.set("view", "instant");
+
+    const conversationId =
+      typeof evidence?.conversation_id === "string"
+        ? evidence.conversation_id
+        : typeof source?.conversation_id === "string"
+          ? source.conversation_id
+          : null;
+
+    if (conversationId) {
+      params.set(
+        "conversation",
+        conversationId,
+      );
+    }
+  } else {
+    return safeInternalHref(source?.url);
+  }
+
+  if (from) params.set("from", from);
+  if (to) params.set("to", to);
+
+  return `/admin/communication-logs?${params.toString()}`;
+}
+
 export default async function AdminTicketPage({
   params,
 }: {
@@ -80,48 +209,62 @@ export default async function AdminTicketPage({
   if (error) throw new Error(error.message);
   if (!ticket) notFound();
 
-  const [{ data: messages, error: messageError }, reportResult] =
-    await Promise.all([
-      admin
-        .from("ticket_messages")
-        .select("id,author_user_id,visibility,body,created_at")
-        .eq("ticket_id", ticket.id)
-        .order("created_at", { ascending: true }),
-      ticket.category === "report"
-        ? admin
-            .from("reports")
-            .select(
-              "id,reporter_name_snapshot,reported_name_snapshot,reason_code,explanation,source_type,source_id,source_context,created_at",
-            )
-            .eq("ticket_id", ticket.id)
-            .maybeSingle()
-        : Promise.resolve({ data: null, error: null }),
-    ]);
+  const [
+    { data: messages, error: messageError },
+    reportResult,
+    evidenceResult,
+  ] = await Promise.all([
+    admin
+      .from("ticket_messages")
+      .select("id,author_user_id,visibility,body,created_at")
+      .eq("ticket_id", ticket.id)
+      .order("created_at", { ascending: true }),
+    ticket.category === "report"
+      ? admin
+          .from("reports")
+          .select(
+            "id,reporter_name_snapshot,reported_name_snapshot,reason_code,explanation,source_type,source_id,source_context,created_at",
+          )
+          .eq("ticket_id", ticket.id)
+          .maybeSingle()
+      : Promise.resolve({
+          data: null,
+          error: null,
+        }),
+    ticket.category === "report"
+      ? admin
+          .from("report_evidence")
+          .select(
+            "id,evidence_type,source_type,source_id,author_name_snapshot,content_snapshot,original_created_at,context_snapshot,captured_at",
+          )
+          .eq("ticket_id", ticket.id)
+          .order("captured_at", {
+            ascending: true,
+          })
+      : Promise.resolve({
+          data: [],
+          error: null,
+        }),
+  ]);
 
   if (messageError) throw new Error(messageError.message);
   if (reportResult.error) throw new Error(reportResult.error.message);
+  if (evidenceResult.error) throw new Error(evidenceResult.error.message);
 
   const report = reportResult.data;
+  const evidence = evidenceResult.data ?? [];
+  const firstEvidence = evidence[0] ?? null;
 
-  const { data: evidence, error: evidenceError } = report
-    ? await admin
-        .from("report_evidence")
-        .select(
-          "id,evidence_type,source_type,source_id,author_name_snapshot,content_snapshot,original_created_at,context_snapshot,captured_at",
-        )
-        .eq("report_id", report.id)
-        .order("captured_at", { ascending: true })
-    : { data: [], error: null };
-
-  if (evidenceError) throw new Error(evidenceError.message);
-
-  const sourceHref = safeInternalHref(
-    report &&
-      report.source_context &&
-      typeof report.source_context === "object"
-      ? (report.source_context as Record<string, unknown>).url
-      : null,
-  );
+  const sourceHref = report
+    ? reportSourceHref({
+        sourceType: report.source_type,
+        sourceContext: report.source_context,
+        evidenceContext:
+          firstEvidence?.context_snapshot ?? null,
+        originalCreatedAt:
+          firstEvidence?.original_created_at ?? null,
+      })
+    : null;
 
   return (
     <main className="p-5 sm:p-7 lg:p-9">
@@ -205,10 +348,15 @@ export default async function AdminTicketPage({
 
               {sourceHref ? (
                 <Link
-                  href={sourceHref}
-                  className="border border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-261b12))] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d5b785))]"
-                >
-                  Open Original Source
+  href={sourceHref}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="..."
+>
+                  {report.source_type === "forum_topic" ||
+                  report.source_type === "forum_post"
+                    ? "Open Original Source"
+                    : "Open Communication Logs"}
                 </Link>
               ) : null}
             </header>
