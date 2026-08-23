@@ -59,6 +59,7 @@ type CharacterRow = {
   physical_description: string | null;
   personality: string | null;
   public_notes: string | null;
+  relationships: string | null;
   offgame: string | null;
   title: string | null;
   muscles: number | null;
@@ -243,6 +244,7 @@ export const getPublicCharacter = cache(
         physical_description,
         personality,
         public_notes,
+        relationships,
         offgame,
         title,
         muscles,
@@ -441,6 +443,7 @@ export const getPublicCharacter = cache(
         row.physical_description,
       personality: row.personality,
       public_notes: row.public_notes,
+      relationships: row.relationships,
       offgame: row.offgame,
       title: row.title,
       muscles: effectiveAttributes.muscles,

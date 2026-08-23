@@ -346,6 +346,13 @@ export function PublicCharacterProfileView({
               subtle
             />
           </div>
+
+          <div className="mt-4 px-2">
+            <ProfileSection
+              title="Relationships"
+              content={character.relationships}
+            />
+          </div>
         </div>
 
         <div data-character-sheet-panel="inventory">

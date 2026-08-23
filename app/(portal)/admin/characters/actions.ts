@@ -420,6 +420,14 @@ export async function updateCharacterAdministration(
       10000,
     );
 
+  const relationships =
+    readOptionalText(
+      formData.get(
+        "relationships",
+      ),
+      10000,
+    );
+
   const offgame =
     readOptionalText(
       formData.get(
@@ -525,6 +533,7 @@ export async function updateCharacterAdministration(
       personality,
       biography,
       public_notes,
+      relationships,
       offgame,
       muscles,
       reflexes,
@@ -908,6 +917,7 @@ currentHealth =
     biography,
     public_notes:
       publicNotes,
+    relationships,
     offgame,
     ...attributes,
     current_health:
@@ -1006,6 +1016,8 @@ currentHealth =
             character.biography,
           public_notes:
             character.public_notes,
+          relationships:
+            character.relationships,
           offgame:
             character.offgame,
           muscles:

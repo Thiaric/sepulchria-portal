@@ -91,6 +91,7 @@ type CharacterRow = {
   physical_description: string | null;
   personality: string | null;
   public_notes: string | null;
+  relationships: string | null;
   offgame: string | null;
   title: string | null;
   race_id: string | null;
@@ -218,6 +219,7 @@ export default async function AdminCharacterPage({
         physical_description,
         personality,
         public_notes,
+        relationships,
         offgame,
         title,
         race_id,
@@ -644,6 +646,13 @@ export default async function AdminCharacterPage({
             />
 
             <CharacterTextSection
+              title="Relationships"
+              content={
+                character.relationships
+              }
+            />
+
+            <CharacterTextSection
               title="Offgame"
               content={
                 character.offgame
@@ -873,6 +882,19 @@ export default async function AdminCharacterPage({
                     maxLength={10000}
                     defaultValue={
                       character.public_notes ??
+                      ""
+                    }
+                    className="w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm leading-6 text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
+                  />
+                </AdminField>
+
+                <AdminField label="Relationships">
+                  <textarea
+                    name="relationships"
+                    rows={8}
+                    maxLength={10000}
+                    defaultValue={
+                      character.relationships ??
                       ""
                     }
                     className="w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm leading-6 text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"

@@ -400,6 +400,13 @@ if (
 
     ...(mode === "update"
       ? {
+          relationships:
+            text(
+              formData,
+              "relationships",
+              10000,
+            ) || null,
+
           offgame:
             text(
               formData,
@@ -734,6 +741,12 @@ export async function updateApprovedCharacterProfile(
     10000,
   );
 
+  const relationships = text(
+    formData,
+    "relationships",
+    10000,
+  );
+
   const offgame = text(
     formData,
     "offgame",
@@ -807,6 +820,9 @@ export async function updateApprovedCharacterProfile(
 
     public_notes:
       publicNotes || null,
+
+    relationships:
+      relationships || null,
 
     offgame:
       offgame || null,

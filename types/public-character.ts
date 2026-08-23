@@ -78,6 +78,7 @@ export type PublicCharacterProfile = {
   physical_description: string | null;
   personality: string | null;
   public_notes: string | null;
+  relationships: string | null;
   offgame: string | null;
   title: string | null;
   muscles: number | null;

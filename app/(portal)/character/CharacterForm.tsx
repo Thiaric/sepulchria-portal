@@ -414,13 +414,23 @@ export default function CharacterForm({
             <Area label="Public notes" name="public_notes" rows={7} maxLength={10000} defaultValue={character?.public_notes} />
 
             {mode === "update" ? (
-              <Area
-                label="Offgame"
-                name="offgame"
-                rows={7}
-                maxLength={10000}
-                defaultValue={character?.offgame}
-              />
+              <>
+                <Area
+                  label="Relationships"
+                  name="relationships"
+                  rows={9}
+                  maxLength={10000}
+                  defaultValue={character?.relationships}
+                />
+
+                <Area
+                  label="Offgame"
+                  name="offgame"
+                  rows={7}
+                  maxLength={10000}
+                  defaultValue={character?.offgame}
+                />
+              </>
             ) : null}
           </div>
         </section>

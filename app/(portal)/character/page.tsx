@@ -49,6 +49,7 @@ type CharacterProfile = {
   personality?: string | null;
   biography?: string | null;
   public_notes?: string | null;
+  relationships?: string | null;
   offgame?: string | null;
   portrait_url?: string | null;
   music_url?: string | null;
@@ -123,6 +124,7 @@ export default async function CharacterPage({
       personality,
       biography,
       public_notes,
+      relationships,
       offgame,
       portrait_url,
       music_url,
@@ -474,6 +476,13 @@ export function Profile({
                 subtle
               />
             </div>
+
+            <div className="mt-4 px-2">
+              <ProfileTextSection
+                title="Relationships"
+                value={character.relationships}
+              />
+            </div>
           </div>
 
           <div data-character-sheet-panel="inventory">
@@ -634,6 +643,15 @@ export function Profile({
                     character.public_notes
                   }
                   rows={6}
+                />
+
+                <ApprovedProfileTextArea
+                  label="Relationships"
+                  name="relationships"
+                  defaultValue={
+                    character.relationships
+                  }
+                  rows={8}
                 />
 
                 <ApprovedProfileTextArea
