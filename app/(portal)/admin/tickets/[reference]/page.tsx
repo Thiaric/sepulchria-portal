@@ -481,7 +481,7 @@ export default async function AdminTicketPage({
         ) : null}
 
         {report?.reported_user_id ? (
-          <section className="mt-5 border border-[rgb(var(--sep-colour-7d493f))]/65 bg-[rgb(var(--sep-colour-18100e))] p-5">
+          <section className="mt-5 border border-[rgb(var(--sep-colour-7d493f))]/35 bg-[rgb(var(--sep-colour-18100e))] p-5">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div><p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-c98f7f))]">Disciplinary Action</p><h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-e2c99f))]">Sanctions</h2><p className="mt-2 text-xs text-[rgb(var(--sep-colour-9e8c75))]">Target: <strong>{report.reported_name_snapshot ?? "Reported account"}</strong></p></div>
               <Link href="/admin/sanctions" className="border border-[rgb(var(--sep-colour-60482e))]/55 px-3 py-2 text-[8px] uppercase text-[rgb(var(--sep-colour-a58b68))]">All Sanctions</Link>
@@ -512,10 +512,10 @@ export default async function AdminTicketPage({
 
                 <label className="block lg:col-span-2"><span className="text-[8px] uppercase text-[rgb(var(--sep-colour-8f806d))]">Internal rationale · staff only</span><textarea name="internalRationale" rows={5} maxLength={10000} className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0c0907))] p-3 text-sm leading-6"/></label>
 
-                {sanctionError ? <div role="alert" className="lg:col-span-2 border border-red-900/60 bg-red-950/25 p-3 text-xs leading-5 text-red-300">{sanctionError}</div> : null}
                 <div className="lg:col-span-2"><button className="border border-[rgb(var(--sep-colour-9a5147))] bg-[rgb(var(--sep-colour-351815))] px-5 py-3 text-[8px] uppercase text-[rgb(var(--sep-colour-e0a69a))]">Issue Sanction</button></div>
               </form>
             </details>
+            {sanctionError ? <div role="alert" className="mt-3 border-l-2 border-red-800/70 bg-red-950/20 px-4 py-3 text-xs leading-5 text-red-300">{sanctionError}</div> : null}
           </section>
         ) : null}
 

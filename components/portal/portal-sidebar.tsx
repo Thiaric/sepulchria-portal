@@ -14,6 +14,7 @@ import {
 import { createClient } from "@/lib/supabase/client";
 import { UnreadMessageBadge } from "@/components/messages/unread-message-badge";
 import { TicketNotificationBadge } from "@/components/support/ticket-notification-badge";
+import { PlayerSanctionsSidebarLink } from "@/components/sanctions/player-sanctions-sidebar-link";
 import { ForumSidebarMenu } from "@/components/portal/forum-sidebar-menu";
 import { enterRoomFromMap } from "@/app/(portal)/game/actions";
 
@@ -1698,9 +1699,7 @@ export function PortalSidebar({
             <Link href="/support" className="flex items-center py-0.5 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9f8b70))] transition hover:text-[rgb(var(--sep-colour-d8bf91))]">
               <span>Support</span><TicketNotificationBadge audience="player" variant="sidebar" />
             </Link>
-            <Link href="/sanctions" className="flex items-center py-0.5 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9f8b70))] transition hover:text-[rgb(var(--sep-colour-d8bf91))]">
-              <span>Sanctions</span>
-            </Link>
+            <PlayerSanctionsSidebarLink />
 
             <span className="block py-0.1 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-5f5549))]">
               Staff · Coming

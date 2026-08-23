@@ -31,6 +31,7 @@ import { AdminRulesContext } from "@/components/portal/admin-rules-context";
 import { CharacterOrderContext } from "@/components/portal/character-order-context";
 import { OrderLeadershipContext } from "@/components/portal/order-leadership-context";
 import { TicketContextPanel } from "@/components/support/ticket-context-panel";
+import { SanctionContextPanel } from "@/components/sanctions/sanction-context-panel";
 
 
 type PortalContextPanelProps = {
@@ -51,6 +52,10 @@ export function PortalContextPanel({
     const match = pathname.match(/^\/support\/([^/]+)$/);
     const reference = match && match[1] !== "new" ? decodeURIComponent(match[1]) : undefined;
     return <TicketContextPanel reference={reference} />;
+  }
+
+  if (pathname === "/sanctions") {
+    return <SanctionContextPanel />;
   }
 
   if (

@@ -9,6 +9,7 @@ import {
 
 import { createClient } from "@/lib/supabase/client";
 import { TicketContextPanel } from "@/components/support/ticket-context-panel";
+import { SanctionContextPanel } from "@/components/sanctions/sanction-context-panel";
 
 type JumpEntry = {
   id: string;
@@ -28,6 +29,7 @@ type ContextMode =
   | "users"
   | "characters"
   | "tickets"
+  | "sanctions"
   | "forum";
 
 function getMode(
@@ -79,6 +81,10 @@ function getMode(
     return "tickets";
   }
 
+  if (pathname === "/admin/sanctions" || pathname.startsWith("/admin/sanctions/")) {
+    return "sanctions";
+  }
+
   if (
     pathname === "/admin/forum" ||
     pathname.startsWith(
@@ -115,6 +121,11 @@ export function AdminContextPanel({
   if (mode === "tickets") {
     const match = pathname.match(/^\/admin\/tickets\/([^/]+)$/);
     return <TicketContextPanel admin reference={match ? decodeURIComponent(match[1]) : undefined} />;
+  }
+
+  if (mode === "sanctions") {
+    const match = pathname.match(/^\/admin\/sanctions\/([^/]+)$/);
+    return <SanctionContextPanel admin sanctionId={match ? decodeURIComponent(match[1]) : undefined} />;
   }
 
   if (mode === "gifts") {

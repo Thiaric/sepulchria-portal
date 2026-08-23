@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { AdminInteractionKeeper } from "@/components/admin/admin-interaction-keeper";
 import { SubmittedCharacterBadge } from "@/components/admin/submitted-character-badge";
 import { TicketNotificationBadge } from "@/components/support/ticket-notification-badge";
+import { SanctionNotificationBadge } from "@/components/sanctions/sanction-notification-badge";
 import { requireStaff } from "@/lib/auth/require-staff";
 
 import "./admin-compact.css";
@@ -124,7 +125,7 @@ export default async function AdminLayout({
             </AdminNavigationLink>
 
             <AdminNavigationLink href="/admin/sanctions">
-              Sanctions
+              <span className="flex items-center gap-2"><span>Sanctions</span><SanctionNotificationBadge audience="staff" /></span>
             </AdminNavigationLink>
 
             {canManageUsers ? (

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { requireStaff } from "@/lib/auth/require-staff";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { SanctionLiveSync } from "@/components/sanctions/sanction-live-sync";
 
 function fmt(v:string|null){
   if(!v)return "No expiry";
@@ -24,7 +25,7 @@ export default async function AdminSanctionsPage({searchParams}:{searchParams?:P
   const {data,error}=await q;
   if(error)throw new Error(error.message);
 
-  return <main className="p-5 sm:p-7 lg:p-9"><div className="mx-auto max-w-[1400px]">
+  return <main className="p-5 sm:p-7 lg:p-9"><SanctionLiveSync audience="staff" markRead /><div className="mx-auto max-w-[1400px]">
     <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">Administration · Moderation</p>
     <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">Sanctions</h1>
     <p className="mt-3 max-w-3xl text-sm leading-6 text-[rgb(var(--sep-colour-9c8d79))]">Permanent disciplinary history. Sanctions are never deleted; revocations remain in the audit trail.</p>
