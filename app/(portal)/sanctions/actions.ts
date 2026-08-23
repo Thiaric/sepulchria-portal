@@ -41,6 +41,10 @@ export async function createSanctionAppeal(formData: FormData) {
     throw new Error("This sanction is unavailable.");
   }
 
+  if (sanction.status === "revoked") {
+    throw new Error("Revoked sanctions cannot be appealed.");
+  }
+
   const { data: existingEvents, error: existingError } = await admin
     .from("ticket_events")
     .select("ticket_id,details")
@@ -97,6 +101,26 @@ export async function createSanctionAppeal(formData: FormData) {
   if (messageError) {
     throw new Error(
       `Appeal ticket created but the appeal statement could not be saved: ${messageError.message}`,
+    );
+  }
+
+  const { error: createdEventError } = await admin
+    .from("ticket_events")
+    .insert({
+      ticket_id: ticket.id,
+      actor_user_id: identity.userId,
+      actor_character_id: identity.characterId,
+      event_type: "ticket_created",
+      details: {
+        category: "support",
+        source: "sanction_appeal",
+        sanction_id: sanction.id,
+      },
+    });
+
+  if (createdEventError) {
+    throw new Error(
+      `Appeal ticket created but its notification event could not be recorded: ${createdEventError.message}`,
     );
   }
 

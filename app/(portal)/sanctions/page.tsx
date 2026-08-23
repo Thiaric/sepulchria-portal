@@ -51,7 +51,11 @@ export default async function PlayerSanctionsPage(){
         <SanctionEvidence ticketId={s.ticket_id}/>
 
         <div className="mt-4 flex flex-wrap items-center gap-3">
-          {appealBySanction.get(s.id)?<Link href={`/support/${appealBySanction.get(s.id)!.public_reference}`} className="border border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-261b12))] px-4 py-2.5 text-[8px] uppercase text-[rgb(var(--sep-colour-d5b785))]">Open Appeal · {appealBySanction.get(s.id)!.status.replaceAll("_"," ")}</Link>:<Link href={`/sanctions/${s.id}/appeal`} className="border border-[rgb(var(--sep-colour-967342))] bg-[rgb(var(--sep-colour-3b2b1b))] px-4 py-2.5 text-[8px] uppercase text-[rgb(var(--sep-colour-f1d9a7))]">Appeal Sanction</Link>}
+          {appealBySanction.get(s.id)
+            ? <Link href={`/support/${appealBySanction.get(s.id)!.public_reference}`} className="border border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-261b12))] px-4 py-2.5 text-[8px] uppercase text-[rgb(var(--sep-colour-d5b785))]">Open Appeal · {appealBySanction.get(s.id)!.status.replaceAll("_"," ")}</Link>
+            : status !== "revoked"
+              ? <Link href={`/sanctions/${s.id}/appeal`} className="border border-[rgb(var(--sep-colour-967342))] bg-[rgb(var(--sep-colour-3b2b1b))] px-4 py-2.5 text-[8px] uppercase text-[rgb(var(--sep-colour-f1d9a7))]">Appeal Sanction</Link>
+              : null}
         </div>
       </article>})}
     </div>

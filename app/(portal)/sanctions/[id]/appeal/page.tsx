@@ -65,6 +65,10 @@ export default async function SanctionAppealPage({
     }
   }
 
+  if (sanction.status === "revoked") {
+    redirect("/sanctions");
+  }
+
   return (
     <main className="p-5 sm:p-7 lg:p-9">
       <div className="mx-auto max-w-4xl">
