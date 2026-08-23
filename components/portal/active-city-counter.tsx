@@ -1141,7 +1141,7 @@ function HeritageEntry({
       title={entry.name}
     >
       <span
-        className="flex h-4 w-4 shrink-0 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-0d0907))] font-serif text-[7px]"
+        className="flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-0d0907))] font-serif text-[8px]"
         style={{
           borderColor:
             `${colour}88`,

@@ -70,6 +70,7 @@ type CharacterIdentityRecord = {
   id: string;
   name: string;
   icon_url: string | null;
+  colour: string | null;
 };
 
 type CharacterRecord = {
@@ -430,7 +431,8 @@ export default async function TopicPage({
               race:races(
                 id,
                 name,
-                icon_url
+                icon_url,
+                colour
               ),
               association:associations(
                 id,
@@ -880,11 +882,14 @@ for (const log of moderationLogs) {
         association?.icon_url ??
         null,
       race_name:
-        race?.name ??
-        character.faction,
-      race_icon_url:
-        race?.icon_url ??
-        null,
+  race?.name ??
+  character.faction,
+race_icon_url:
+  race?.icon_url ??
+  null,
+race_colour:
+  race?.colour ??
+  null,
     };
   }
 

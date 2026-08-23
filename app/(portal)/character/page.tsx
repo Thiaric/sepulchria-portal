@@ -13,7 +13,7 @@ import {
   submitCharacterForReview,
   updateApprovedCharacterProfile,
 } from "./actions";
-import { CharacterMechanicsDisplay } from "@/components/characters/character-mechanics-display";
+import { CharacterHealthDisplay, CharacterMechanicsDisplay } from "@/components/characters/character-mechanics-display";
 import { CharacterGiftsDisplay } from "@/components/characters/character-gifts-display";
 import { CharacterShapesDisplay } from "@/components/characters/character-shapes-display";
 import { CharacterInventoryDisplay } from "@/components/characters/character-inventory-display";
@@ -407,7 +407,7 @@ export function Profile({
 
               </div>
 
-              <div className="h-full">
+              <div className="mx-auto w-full max-w-[180px] space-y-2 lg:mx-0">
                 <CompactHeritageCard
                   label="Ancestry"
                   entry={race}
@@ -417,11 +417,17 @@ export function Profile({
                       : "/ancestries"
                   }
                 />
+
+                {character.id ? (
+                  <CharacterOrderSummary
+                    characterId={character.id}
+                  />
+                ) : null}
               </div>
 
               <div className="h-full">
                 {character.id ? (
-                  <CharacterOrderSummary
+                  <CharacterHealthDisplay
                     characterId={character.id}
                   />
                 ) : null}
@@ -975,13 +981,13 @@ function CompactHeritageCard({
   return (
     <Link
       href={href}
-      className="group flex h-full min-w-0 items-center gap-3 border bg-[rgb(var(--sep-colour-120e0b))] p-3 transition hover:bg-[rgb(var(--sep-colour-1b140f))]"
+      className="group flex min-w-0 items-center gap-2.5 border bg-black/15 px-2.5 py-2 transition hover:bg-[rgb(var(--sep-colour-1b140f))]"
       style={{
         borderColor: `${colour}66`,
       }}
     >
       <div
-        className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden border bg-black/20 font-serif text-sm"
+        className="flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden border bg-black/20 font-serif text-[9px]"
         style={{
           borderColor: `${colour}88`,
           color: colour,
@@ -1006,17 +1012,17 @@ function CompactHeritageCard({
           {label}
         </p>
 
-        <p className="mt-0.5 font-serif text-base text-[rgb(var(--sep-colour-e1c99f))]">
-          {entry?.name ?? "Not assigned"}
-        </p>
+        <p
+  className="mt-0.5 break-words text-[11px] leading-4"
+  style={{
+    color: entry ? colour : "#675e52",
+  }}
+>
+  {entry?.name ?? "Not assigned"}
+</p>
       </div>
 
-      <span
-        aria-hidden="true"
-        className="shrink-0 text-xs text-[rgb(var(--sep-colour-8d6d3e))] transition group-hover:translate-x-0.5 group-hover:text-[rgb(var(--sep-colour-d2ad73))]"
-      >
-        →
-      </span>
+      
     </Link>
   );
 }

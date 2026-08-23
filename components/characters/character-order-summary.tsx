@@ -18,22 +18,12 @@ export async function CharacterOrderSummary({
   const { data, error } = await supabase
     .from("order_memberships")
     .select(`
-      id,
       order:orders!order_memberships_order_id_fkey(
         id,
         name,
         slug,
-        colour,
-        association:associations(
-          id,
-          name,
-          slug,
-          colour
-        )
-      ),
-      level:order_levels!order_memberships_order_level_id_fkey(
-        id,
-        level
+        icon_url,
+        colour
       ),
       job:order_jobs!order_memberships_order_job_id_fkey(
         id,
@@ -49,154 +39,74 @@ export async function CharacterOrderSummary({
       "Unable to load character Order:",
       error.message,
     );
-
-    return (
-      <section className="mt-3 border border-red-900/45 bg-red-950/10 p-4">
-        <p className="text-[8px] uppercase tracking-[0.22em] text-red-400">
-          Order membership unavailable
-        </p>
-      </section>
-    );
   }
 
-  if (!data) {
-    return (
-      <section className="mt-3 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-120e0b))] p-4">
-        <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
-          Order
-        </p>
+  const order = data
+    ? one(
+        data.order as Relation<{
+          id: string;
+          name: string;
+          slug: string;
+          icon_url: string | null;
+          colour: string | null;
+        }>,
+      )
+    : null;
 
-        <p className="mt-2 text-sm text-[rgb(var(--sep-colour-8f8271))]">
-          This character does not currently belong to an Order.
-        </p>
-      </section>
-    );
-  }
+  const role = data
+    ? one(
+        data.job as Relation<{
+          id: string;
+          name: string;
+        }>,
+      )
+    : null;
 
-  const order = one(
-    data.order as Relation<{
-      id: string;
-      name: string;
-      slug: string;
-      colour: string | null;
-      association: Relation<{
-        id: string;
-        name: string;
-        slug: string;
-        colour: string | null;
-      }>;
-    }>,
-  );
-
-  const level = one(
-    data.level as Relation<{
-      id: string;
-      level: number;
-    }>,
-  );
-
-  const role = one(
-    data.job as Relation<{
-      id: string;
-      name: string;
-    }>,
-  );
-
-  if (!order) {
-    return null;
-  }
-
-  const association =
-    one(order.association);
-
-  const colour =
-    order.colour ??
-    association?.colour ??
-    "#8d6d3e";
+  const colour = order?.colour ?? "#8d6d3e";
+  const display = order
+    ? role?.name ?? "No specific role"
+  : "No Order";
 
   return (
-    <section
-      className="mt-3 border bg-[rgb(var(--sep-colour-120e0b))] p-4"
+    <Link
+      href={order ? `/orders/${order.slug}` : "/orders"}
+      title={display}
+      className="group flex min-w-0 items-center gap-2.5 border border-[rgb(var(--sep-colour-59432c))]/45 bg-black/15 px-2.5 py-2 transition hover:bg-[rgb(var(--sep-colour-1b140f))]"
       style={{
         borderColor: `${colour}66`,
+        backgroundImage: `linear-gradient(90deg, ${colour}18, transparent 55%)`,
       }}
     >
-      <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
-        Order membership
-      </p>
-
-      <div className="mt-3 grid gap-px bg-[rgb(var(--sep-colour-4f3b28))]/35 sm:grid-cols-2 lg:grid-cols-4">
-        <OrderDetail
-          label="Association"
-          value={
-            association?.name ??
-            "Not assigned"
-          }
-          href={
-            association
-              ? `/associations/${association.slug}`
-              : undefined
-          }
-        />
-
-        <OrderDetail
-          label="Order"
-          value={order.name}
-          href={`/orders/${order.slug}`}
-        />
-
-        <OrderDetail
-          label="Level"
-          value={
-            level
-              ? `Level ${level.level}`
-              : "Not assigned"
-          }
-        />
-
-        <OrderDetail
-          label="Role"
-          value={
-            role?.name ??
-            "No specific role"
-          }
-        />
+      <div
+        className="flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-0d0907))] font-serif text-[9px]"
+        style={{
+          borderColor: `${colour}88`,
+          color: colour,
+        }}
+      >
+        {order?.icon_url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={order.icon_url}
+            alt=""
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          order?.name.charAt(0).toUpperCase() ?? "?"
+        )}
       </div>
-    </section>
-  );
-}
 
-function OrderDetail({
-  label,
-  value,
-  href,
-}: {
-  label: string;
-  value: string;
-  href?: string;
-}) {
-  const content = (
-    <>
-      <p className="text-[7px] uppercase tracking-[0.19em] text-[rgb(var(--sep-colour-796448))]">
-        {label}
-      </p>
-
-      <p className="mt-1 break-words text-[11px] leading-5 text-[rgb(var(--sep-colour-cab89b))]">
-        {value}
-      </p>
-    </>
-  );
-
-  return href ? (
-    <Link
-      href={href}
-      className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 transition hover:bg-[rgb(var(--sep-colour-211810))]"
-    >
-      {content}
+      <div className="min-w-0 flex-1">
+        <p className="text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-735f47))]">
+          Order
+        </p>
+        <p
+          className="mt-0.5 break-words text-[11px] leading-4"
+          style={{ color: order ? colour : "#675e52" }}
+        >
+          {display}
+        </p>
+      </div>
     </Link>
-  ) : (
-    <div className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2">
-      {content}
-    </div>
   );
 }

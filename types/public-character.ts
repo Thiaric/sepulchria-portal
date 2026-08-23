@@ -22,6 +22,7 @@ export type PublicOrderMembership = {
     id: string;
     name: string;
     slug: string;
+    icon_url: string | null;
     colour: string | null;
   };
 

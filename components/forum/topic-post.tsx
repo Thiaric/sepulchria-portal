@@ -22,6 +22,7 @@ export type ForumPostCharacter = {
   association_icon_url: string | null;
   race_name: string | null;
   race_icon_url: string | null;
+  race_colour: string | null;
 };
 
 export type ForumPostImage = {
@@ -565,12 +566,16 @@ function CharacterIdentityIcons({
     <div className="mt-2 flex items-center justify-center gap-2 lg:mt-3">
       {raceIcon ? (
         <div
-          className="flex h-8 w-8 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0b0806))] p-1"
-          title={
-            character.race_name ??
-            "Ancestry"
-          }
-        >
+  className="flex h-8 w-8 items-center justify-center border bg-[rgb(var(--sep-colour-0b0806))] p-1"
+  style={{
+    borderColor:
+      character.race_colour ?? "#8d6d3e",
+  }}
+  title={
+    character.race_name ??
+    "Ancestry"
+  }
+>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={raceIcon}

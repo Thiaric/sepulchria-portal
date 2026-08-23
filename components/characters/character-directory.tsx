@@ -635,11 +635,12 @@ function CodexBadge({
 
   return (
     <div
-      className="flex min-w-0 items-center gap-2.5 border border-[rgb(var(--sep-colour-59432c))]/45 bg-black/15 px-2.5 py-2"
-      style={{
-        backgroundImage: `linear-gradient(90deg, ${colour}18, transparent 55%)`,
-      }}
-    >
+  className="flex min-w-0 items-center gap-2.5 border bg-black/15 px-2.5 py-2"
+  style={{
+    borderColor: colour,
+    backgroundImage: `linear-gradient(90deg, ${colour}18, transparent 55%)`,
+  }}
+>
       <div
         className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-0d0907))] font-serif text-[11px]"
         style={{

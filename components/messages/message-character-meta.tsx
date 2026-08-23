@@ -80,9 +80,9 @@ function IdentityIcon({
       }
       className="flex h-6 w-6 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-0d0907))] font-serif text-[8px]"
       style={{
-        borderColor: `${colour}99`,
-        color: colour,
-      }}
+  borderColor: colour,
+  color: colour,
+}}
     >
       {entry?.icon_url ? (
         // eslint-disable-next-line @next/next/no-img-element

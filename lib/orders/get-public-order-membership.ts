@@ -26,6 +26,7 @@ export async function getPublicOrderMembership(
           id,
           name,
           slug,
+          icon_url,
           colour,
           association:associations(
             id,
@@ -66,6 +67,7 @@ export async function getPublicOrderMembership(
       id: string;
       name: string;
       slug: string;
+      icon_url: string | null;
       colour: string | null;
       association: Relation<{
         id: string;
@@ -86,6 +88,7 @@ export async function getPublicOrderMembership(
       id: order.id,
       name: order.name,
       slug: order.slug,
+      icon_url: order.icon_url,
       colour: order.colour,
     },
 

@@ -128,6 +128,7 @@ export function CharacterDirectoryOrderBadge({
     <div
       className="flex min-w-0 items-center gap-2.5 border border-[rgb(var(--sep-colour-59432c))]/45 bg-black/15 px-2.5 py-2"
       style={{
+        borderColor: `${colour}66`,
         backgroundImage: `linear-gradient(90deg, ${colour}18, transparent 55%)`,
       }}
     >

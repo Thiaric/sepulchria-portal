@@ -154,9 +154,9 @@ export function CharacterOrderIdentity({
         <span
           className="flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-0d0907))] font-serif text-[8px]"
           style={{
-            borderColor: `${colour}88`,
-            color: colour,
-          }}
+  borderColor: colour,
+  color: colour,
+}}
         >
           {order.icon_url ? (
             // eslint-disable-next-line @next/next/no-img-element

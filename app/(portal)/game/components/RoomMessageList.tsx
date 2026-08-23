@@ -1047,8 +1047,19 @@ export default function RoomMessageList({
                   return (
                     <article
                       key={item.id}
-                      className="border-y border-[rgb(var(--sep-colour-8a6637))]/40 bg-[linear-gradient(90deg,rgba(var(--sep-rgb-91-56-24),0.22),rgba(var(--sep-rgb-24-16-11),0.72),rgba(var(--sep-rgb-91-56-24),0.14))] px-5 py-2.5 sm:px-7"
+                      className="relative border-y border-[rgb(var(--sep-colour-8a6637))]/40 bg-[linear-gradient(90deg,rgba(var(--sep-rgb-91-56-24),0.22),rgba(var(--sep-rgb-24-16-11),0.72),rgba(var(--sep-rgb-91-56-24),0.14))] py-2.5 pl-5 pr-12 sm:pl-7 sm:pr-12"
                     >
+                      {item.character_id &&
+                      item.character_id !== viewerCharacterId ? (
+                        <div className="absolute right-2 top-2 z-10">
+                          <ReportButton
+                            sourceType="room_message"
+                            sourceId={item.id}
+                            compact
+                          />
+                        </div>
+                      ) : null}
+
                       <div className="flex items-center justify-between gap-4">
                         <span className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-c99b58))]">
                           The Voice of Fate
@@ -1063,14 +1074,6 @@ export default function RoomMessageList({
                           {time}
                         </time>
 
-                        {item.character_id &&
-                        item.character_id !== viewerCharacterId ? (
-                          <ReportButton
-                            sourceType="room_message"
-                            sourceId={item.id}
-                            compact
-                          />
-                        ) : null}
                       </div>
 
                       <p className="mt-1.5 whitespace-pre-wrap break-words font-serif text-[13px] leading-5 text-[rgb(var(--sep-colour-d6c09a))]">
@@ -1109,7 +1112,7 @@ export default function RoomMessageList({
                   return (
                     <article
                       key={item.id}
-                      className={`flex min-w-0 items-start gap-3 px-5 py-3 sm:px-7 ${
+                      className={`relative flex min-w-0 items-start gap-3 py-3 pl-5 pr-12 sm:pl-7 sm:pr-12 ${
                         isNaturalTwenty
                           ? "bg-emerald-950/10"
                           : isNaturalOne
@@ -1127,6 +1130,17 @@ export default function RoomMessageList({
                           : undefined
                       }
                     >
+                      {item.character_id &&
+                      item.character_id !== viewerCharacterId ? (
+                        <div className="absolute right-2 top-2 z-10">
+                          <ReportButton
+                            sourceType="room_message"
+                            sourceId={item.id}
+                            compact
+                          />
+                        </div>
+                      ) : null}
+
                       <span
                         aria-hidden="true"
                         className={`shrink-0 text-sm ${
@@ -1223,14 +1237,6 @@ export default function RoomMessageList({
                         {time}
                       </time>
 
-                      {item.character_id &&
-                      item.character_id !== viewerCharacterId ? (
-                        <ReportButton
-                          sourceType="room_message"
-                          sourceId={item.id}
-                          compact
-                        />
-                      ) : null}
                     </article>
                   );
                 }
@@ -1270,7 +1276,7 @@ export default function RoomMessageList({
                 return (
                   <article
   key={item.id}
-  className={`flex gap-3 px-5 py-3 sm:px-7 ${
+  className={`relative flex gap-3 py-3 pl-5 pr-12 sm:pl-7 sm:pr-12 ${
     isOutOfCharacter
       ? "border-l-2 border-[rgb(var(--sep-colour-627f9f))] bg-[rgb(var(--sep-colour-182536))]/55"
       : isWhisper
@@ -1300,6 +1306,17 @@ export default function RoomMessageList({
       : undefined
   }
 >
+  {item.character_id &&
+  item.character_id !== viewerCharacterId ? (
+    <div className="absolute right-2 top-2 z-10">
+      <ReportButton
+        sourceType="room_message"
+        sourceId={item.id}
+        compact
+      />
+    </div>
+  ) : null}
+
   {/* Character identity + timestamp */}
   <div className="flex w-[76px] shrink-0 flex-col">
     <div className="flex items-start gap-1.5">
@@ -1449,16 +1466,6 @@ export default function RoomMessageList({
     </div>
   </div>
 
-  {item.character_id &&
-  item.character_id !== viewerCharacterId ? (
-    <div className="ml-auto shrink-0 pt-0.5">
-      <ReportButton
-        sourceType="room_message"
-        sourceId={item.id}
-        compact
-      />
-    </div>
-  ) : null}
 </article>
                 );
               },

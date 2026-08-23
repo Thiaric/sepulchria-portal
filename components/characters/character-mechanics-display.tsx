@@ -58,33 +58,6 @@ export async function CharacterMechanicsDisplay({
     },
   );
 
-  const maxHealth =
-    breakdown.vigor.effective === null
-      ? null
-      : Math.max(
-          0,
-          breakdown.vigor.effective * 10 +
-            breakdown.giftMaxHealth +
-            breakdown.itemMaxHealth +
-            breakdown.activeItemMaxHealth +
-            breakdown.shapeMaxHealth,
-        );
-
-  const currentHealth =
-    maxHealth === null
-      ? null
-      : Math.max(
-          0,
-          Math.min(
-            character.current_health ?? maxHealth,
-            maxHealth,
-          ),
-        );
-
-  const healthPercentage =
-    maxHealth && currentHealth !== null
-      ? Math.round((currentHealth / maxHealth) * 100)
-      : 0;
 
   return (
     <div className="space-y-4">
@@ -205,44 +178,113 @@ export async function CharacterMechanicsDisplay({
         </p>
       </section>
 
-      <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 p-5 sm:p-6">
-        <div className="flex items-end justify-between gap-4">
-          <h2 className="mt-[-8] font-serif text-2xl text-[rgb(var(--sep-colour-dec89f))]">
-            Health
-          </h2>
-
-          <p className="font-serif text-2xl text-[rgb(var(--sep-colour-e1c28d))]">
-            {currentHealth === null || maxHealth === null
-              ? "—"
-              : `${currentHealth} / ${maxHealth}`}
-          </p>
-        </div>
-
-        <div className="mt-3 h-2 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0d0907))]">
-          <div
-            className="h-full bg-gradient-to-r from-[rgb(var(--sep-colour-7b2f2a))] via-[rgb(var(--sep-colour-a94f3f))] to-[rgb(var(--sep-colour-c26a50))] transition-[width] duration-300"
-            style={{ width: `${healthPercentage}%` }}
-          />
-        </div>
-
-        {maxHealth !== null ? (
-          <p className="mt-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-776957))]">
-            Maximum Health = Effective Vigour × 10
-            {breakdown.giftMaxHealth !== 0
-              ? ` ${signed(breakdown.giftMaxHealth)} Feat Max Health`
-              : ""}
-            {breakdown.itemMaxHealth !== 0
-              ? ` ${signed(breakdown.itemMaxHealth)} Passive Item Max Health`
-              : ""}
-            {breakdown.activeItemMaxHealth !== 0
-              ? ` ${signed(breakdown.activeItemMaxHealth)} Active Item Max Health`
-              : ""}
-            {breakdown.shapeMaxHealth !== 0
-              ? ` ${signed(breakdown.shapeMaxHealth)} Shape Max Health`
-              : ""}
-          </p>
-        ) : null}
-      </section>
     </div>
+  );
+}
+
+export async function CharacterHealthDisplay({
+  characterId,
+}: {
+  characterId: string;
+}) {
+  const supabase = await createClient();
+
+  const { data: character, error } = await supabase
+    .from("characters")
+    .select(
+      "muscles, reflexes, vigor, brains, shrewd, presence_score, current_health",
+    )
+    .eq("id", characterId)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(
+      `Unable to load character health: ${error.message}`,
+    );
+  }
+
+  if (!character) {
+    return null;
+  }
+
+  const breakdown = await getCharacterAttributeBreakdown(
+    characterId,
+    {
+      muscles: character.muscles,
+      reflexes: character.reflexes,
+      vigor: character.vigor,
+      brains: character.brains,
+      shrewd: character.shrewd,
+      presence_score: character.presence_score,
+    },
+  );
+
+  const maxHealth =
+    breakdown.vigor.effective === null
+      ? null
+      : Math.max(
+          0,
+          breakdown.vigor.effective * 10 +
+            breakdown.giftMaxHealth +
+            breakdown.itemMaxHealth +
+            breakdown.activeItemMaxHealth +
+            breakdown.shapeMaxHealth,
+        );
+
+  const currentHealth =
+    maxHealth === null
+      ? null
+      : Math.max(
+          0,
+          Math.min(
+            character.current_health ?? maxHealth,
+            maxHealth,
+          ),
+        );
+
+  const healthPercentage =
+    maxHealth && currentHealth !== null
+      ? Math.round((currentHealth / maxHealth) * 100)
+      : 0;
+
+  return (
+    <section className="flex h-full min-h-[88px] flex-col justify-center border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 px-4 py-3">
+      <div className="flex items-end justify-between gap-4">
+        <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+          Health
+        </p>
+
+        <p className="font-serif text-xl text-[rgb(var(--sep-colour-e1c28d))]">
+          {currentHealth === null || maxHealth === null
+            ? "—"
+            : `${currentHealth} / ${maxHealth}`}
+        </p>
+      </div>
+
+      <div className="mt-2 h-2 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0d0907))]">
+        <div
+          className="h-full bg-gradient-to-r from-[rgb(var(--sep-colour-7b2f2a))] via-[rgb(var(--sep-colour-a94f3f))] to-[rgb(var(--sep-colour-c26a50))] transition-[width] duration-300"
+          style={{ width: `${healthPercentage}%` }}
+        />
+      </div>
+
+      {maxHealth !== null ? (
+        <p className="mt-2 text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-776957))]">
+          Maximum = Effective Vigour × 10
+          {breakdown.giftMaxHealth !== 0
+            ? ` ${signed(breakdown.giftMaxHealth)} Feat`
+            : ""}
+          {breakdown.itemMaxHealth !== 0
+            ? ` ${signed(breakdown.itemMaxHealth)} Item`
+            : ""}
+          {breakdown.activeItemMaxHealth !== 0
+            ? ` ${signed(breakdown.activeItemMaxHealth)} Active Item`
+            : ""}
+          {breakdown.shapeMaxHealth !== 0
+            ? ` ${signed(breakdown.shapeMaxHealth)} Shape`
+            : ""}
+        </p>
+      ) : null}
+    </section>
   );
 }
