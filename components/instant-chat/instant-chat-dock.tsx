@@ -9,6 +9,7 @@ import {
 } from "react";
 
 import { usePortalAudio } from "@/components/audio/portal-audio-provider";
+import { ReportButton } from "@/components/reports/report-button";
 import { createClient } from "@/lib/supabase/client";
 
 type Contact = {
@@ -810,6 +811,16 @@ export function InstantChatDock({
                               message.body
                             }
                           </p>
+
+                          {!own ? (
+                            <div className="mt-1 text-right">
+                              <ReportButton
+                                sourceType="instant_chat_message"
+                                sourceId={message.id}
+                                compact
+                              />
+                            </div>
+                          ) : null}
 
                           <time className="mt-0.5 block text-right text-[6px] leading-none text-[rgb(var(--sep-colour-746858))]">
                             {new Date(

@@ -19,7 +19,7 @@ export function RegistrationClosedNotice() {
         <div className="mx-auto mt-6 h-px w-28 bg-gradient-to-r from-transparent via-[rgb(var(--sep-colour-987344))] to-transparent" />
 
         <p className="mx-auto mt-5 max-w-lg text-xs leading-6 text-[rgb(var(--sep-colour-8f8271))]">
-          Registrations are temporarily closed while Sepulchria prepares
+          Registrations will open soon. Sepulchria is preparing
           for its first limited Beta.
         </p>
       </div>

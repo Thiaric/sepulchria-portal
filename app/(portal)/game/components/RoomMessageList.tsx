@@ -9,6 +9,7 @@ import {
 } from "react";
 import Link from "next/link";
 import { CharacterOrderIdentity } from "@/components/characters/character-order-identity";
+import { ReportButton } from "@/components/reports/report-button";
 import { createClient } from "@/lib/supabase/client";
 import {
   ROOM_HISTORY_HOURS,
@@ -1061,6 +1062,15 @@ export default function RoomMessageList({
                         >
                           {time}
                         </time>
+
+                        {item.character_id &&
+                        item.character_id !== viewerCharacterId ? (
+                          <ReportButton
+                            sourceType="room_message"
+                            sourceId={item.id}
+                            compact
+                          />
+                        ) : null}
                       </div>
 
                       <p className="mt-1.5 whitespace-pre-wrap break-words font-serif text-[13px] leading-5 text-[rgb(var(--sep-colour-d6c09a))]">
@@ -1212,6 +1222,15 @@ export default function RoomMessageList({
                       >
                         {time}
                       </time>
+
+                      {item.character_id &&
+                      item.character_id !== viewerCharacterId ? (
+                        <ReportButton
+                          sourceType="room_message"
+                          sourceId={item.id}
+                          compact
+                        />
+                      ) : null}
                     </article>
                   );
                 }
@@ -1304,6 +1323,15 @@ export default function RoomMessageList({
     >
       {time}
     </time>
+
+    {item.character_id &&
+    item.character_id !== viewerCharacterId ? (
+      <ReportButton
+        sourceType="room_message"
+        sourceId={item.id}
+        compact
+      />
+    ) : null}
   </div>
 
   {/* Message */}

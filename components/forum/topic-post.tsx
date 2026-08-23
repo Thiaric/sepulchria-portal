@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CharacterOrderIdentity } from "@/components/characters/character-order-identity";
+import { ReportButton } from "@/components/reports/report-button";
 import { ForumCharacterLink } from "@/components/forum/forum-character-link";
 
 
@@ -375,6 +376,26 @@ export default function TopicPost({
                       </Link>
                     ) : null}
                   </>
+                ) : null}
+
+                {!isDeleted ? (
+                  <ReportButton
+                    sourceType={
+                      post.is_initial
+                        ? "forum_topic"
+                        : "forum_post"
+                    }
+                    sourceId={
+                      post.is_initial
+                        ? post.topic_id
+                        : post.id
+                    }
+                    label={
+                      post.is_initial
+                        ? "Report topic"
+                        : "Report"
+                    }
+                  />
                 ) : null}
 
                 {!isDeleted &&
