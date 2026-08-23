@@ -9,6 +9,7 @@ import {
   type SetStateAction,
 } from "react";
 import { createPortal } from "react-dom";
+import { SanctionRestrictionNotice, useSanctionCapability } from "@/components/sanctions/sanction-capability-ui";
 
 import {
   flagForumTopic,
@@ -44,6 +45,8 @@ export function ForumTopicFlagButton({
 }: Props) {
   const [open, setOpen] =
     useState(false);
+
+  const communication=useSanctionCapability("communication");
 
   const [mounted, setMounted] =
     useState(false);
@@ -362,6 +365,8 @@ export function ForumTopicFlagButton({
       return next;
     });
   }
+
+  if (communication.blocked) { return <SanctionRestrictionNotice message={communication.message} compact />; }
 
   const modal = open ? (
     <div

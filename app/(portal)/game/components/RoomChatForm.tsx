@@ -17,6 +17,7 @@ import {
 } from "@/components/editor/writing-assistant";
 import { ItemExchangePanel } from "./ItemExchangePanel";
 import { createClient } from "@/lib/supabase/client";
+import { SanctionRestrictionNotice, useSanctionCapability } from "@/components/sanctions/sanction-capability-ui";
 import type {
   ActionState,
   CharacterAttributeKey,
@@ -195,6 +196,8 @@ export default function RoomChatForm({
   canUseFate: boolean;
 }) {
   const router = useRouter();
+
+  const gameChatRestriction=useSanctionCapability("game_chat");
 
   const exchangeSupabase =
     useMemo(
@@ -1111,6 +1114,16 @@ function ignoreSpellingWord() {
   ) {
     setUtilityMode((current) =>
       current === mode ? null : mode,
+    );
+  }
+
+  if (gameChatRestriction.blocked) {
+    return (
+      <div className="shrink-0 border-t border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-17110d))] p-4 sm:p-5">
+        <SanctionRestrictionNotice
+          message={gameChatRestriction.message}
+        />
+      </div>
     );
   }
 

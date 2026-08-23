@@ -19,6 +19,7 @@ import type {
   PublicPresenceStatus,
 } from "@/types/public-character";
 import { createClient } from "@/lib/supabase/client";
+import { SanctionRestrictionNotice, useSanctionCapability } from "@/components/sanctions/sanction-capability-ui";
 
 import { CharacterDirectoryOrderBadge } from "@/components/characters/character-directory-order-badge";
 
@@ -485,9 +486,12 @@ function CharacterDirectoryCard({
     character.presence?.status ??
     "offline";
 
+  const communication = useSanctionCapability("communication");
+
   const canMessage =
     viewerCharacterId !== null &&
     viewerCharacterId !== character.id &&
+    !communication.blocked &&
     !blockedCharacterIds.has(
       character.id,
     );
@@ -577,7 +581,7 @@ function CharacterDirectoryCard({
                       </span>
                     </button>
                   </form>
-                ) : null}
+                ) : viewerCharacterId !== null && viewerCharacterId !== character.id && communication.blocked ? (<div className="pointer-events-auto absolute bottom-4 right-4 z-20"><SanctionRestrictionNotice message={communication.message} compact /></div>) : null}
 
                 {character.currentRoom ? (
                   <form

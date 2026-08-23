@@ -9,6 +9,8 @@ import {
 import { RichTextEditor } from "@/components/editor/rich-text-editor";
 import { stripRichTextForPreview } from "@/lib/rich-text-shared";
 
+import { SanctionRestrictionNotice, useSanctionCapability } from "@/components/sanctions/sanction-capability-ui";
+
 import {
   createForumReplyAction,
   type CreateForumReplyState,
@@ -101,6 +103,8 @@ export default function TopicReplyForm({
       initialState,
     );
 
+  const forumRestriction=useSanctionCapability("forum");
+
   const [
     selectedCharacterId,
     setSelectedCharacterId,
@@ -183,6 +187,8 @@ export default function TopicReplyForm({
 
     setImageError("");
   }
+
+  if (forumRestriction.blocked) { return <section id="reply" className="scroll-mt-24"><SanctionRestrictionNotice message={forumRestriction.message} /></section>; }
 
   return (
     <section

@@ -15,6 +15,7 @@ import {
 import { createClient } from "@/lib/supabase/client";
 import type { PresenceStatus } from "@/types/game";
 import { startConversation } from "@/app/(portal)/messages/actions";
+import { SanctionRestrictionNotice, useSanctionCapability } from "@/components/sanctions/sanction-capability-ui";
 
 type GameContextPanelProps = {
   roomId: string | null;
@@ -93,6 +94,8 @@ export function GameContextPanel({
 
   const [error, setError] =
     useState<string | null>(null);
+
+  const communication = useSanctionCapability("communication");
 
   const [
     blockedCharacterIds,
@@ -477,7 +480,7 @@ export function GameContextPanel({
     {person.id !== currentCharacterId &&
     !blockedCharacterIds.has(
       person.id,
-    ) ? (
+    ) && !communication.blocked ? (
   <form
     action={startConversation}
     className="absolute bottom-2 right-2 z-10"
@@ -497,6 +500,8 @@ export function GameContextPanel({
       ✉
     </button>
   </form>
+) : person.id !== currentCharacterId && communication.blocked ? (
+  <div className="absolute bottom-2 right-2 z-10"><SanctionRestrictionNotice message={communication.message} compact /></div>
 ) : null}
   </div>
 );

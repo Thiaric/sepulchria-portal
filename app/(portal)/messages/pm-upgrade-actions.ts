@@ -8,6 +8,7 @@ import {
   sanitizeRichHtml,
 } from "@/lib/rich-text";
 import { createClient } from "@/lib/supabase/server";
+import { assertCurrentUserCan } from "@/lib/sanctions/enforcement";
 
 const UUID =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -121,6 +122,8 @@ export async function startMultiConversation(
     character,
   } = await context();
 
+  await assertCurrentUserCan(supabase,"communication");
+
   const ids =
     await ensureRecipientsAvailable(
       recipientIds(formData),
@@ -196,6 +199,8 @@ export async function forwardPrivateMessage(
     supabase,
     character,
   } = await context();
+
+  await assertCurrentUserCan(supabase,"communication");
 
   const sourceMessageId =
     String(

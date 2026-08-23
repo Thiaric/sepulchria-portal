@@ -11,6 +11,7 @@ import {
 
 import { enterRoomFromMap } from "@/app/(portal)/game/actions";
 import { startConversation } from "@/app/(portal)/messages/actions";
+import { useSanctionCapability } from "@/components/sanctions/sanction-capability-ui";
 import { CharacterOrderIdentity } from "@/components/characters/character-order-identity";
 import {
   PRESENCE_ACTIVE_MINUTES,
@@ -111,6 +112,8 @@ export function ActiveCityCounter({
 
   const [error, setError] =
     useState<string | null>(null);
+
+  const communication = useSanctionCapability("communication");
 
   const [searchQuery, setSearchQuery] =
     useState("");
@@ -1043,7 +1046,8 @@ export function ActiveCityCounter({
                                   >
                                     You
                                   </span>
-                                ) : !blockedCharacterIds.has(
+                                ) : !communication.blocked &&
+                      !blockedCharacterIds.has(
                                     person.id,
                                   ) ? (
                                   <form

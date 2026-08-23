@@ -3,6 +3,7 @@
 import { RichTextEditor } from "@/components/editor/rich-text-editor";
 import { stripRichTextForPreview } from "@/lib/rich-text-shared";
 import { OrderLevelVisibilityFields } from "@/components/forum/order-level-visibility-fields";
+import { SanctionRestrictionNotice, useSanctionCapability } from "@/components/sanctions/sanction-capability-ui";
 import type { OrderLevel } from "@/lib/forum/order-levels";
 
 import {
@@ -102,6 +103,8 @@ export default function NewTopicForm({
       createForumTopicAction,
       initialState,
     );
+
+  const forumRestriction=useSanctionCapability("forum");
 
   const [selectedSectionId, setSelectedSectionId] =
     useState(currentSection.id);
@@ -306,6 +309,8 @@ export default function NewTopicForm({
       );
     });
   }
+
+  if (forumRestriction.blocked) { return <SanctionRestrictionNotice message={forumRestriction.message} />; }
 
   return (
     <form

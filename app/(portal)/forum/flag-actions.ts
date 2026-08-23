@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 
 import { createClient } from "@/lib/supabase/server";
+import { getSanctionEnforcement } from "@/lib/sanctions/enforcement";
 
 const FLAG_COOLDOWN_MS = 10 * 60_000;
 const MAX_RECIPIENTS_PER_FLAG = 250;
@@ -562,12 +563,11 @@ export async function flagForumTopic(
       await supabase.auth.getUser();
 
     if (!user) {
-      return {
-        ok: false,
-        message:
-          "You must be signed in to flag a topic.",
-      };
+      return { ok:false, message:"You must be signed in to flag a topic." };
     }
+
+    const communication=await getSanctionEnforcement(supabase,"communication");
+    if(communication.blocked){ return {ok:false,message:communication.message ?? "Private communication is currently restricted on this account."}; }
 
     const {
       data: senderData,

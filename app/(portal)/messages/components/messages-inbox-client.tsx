@@ -7,6 +7,7 @@ import {
 } from "react";
 
 import { RichTextContentClient } from "@/components/editor/rich-text-content-client";
+import { SanctionRestrictionNotice, useSanctionCapability } from "@/components/sanctions/sanction-capability-ui";
 import {
   MessageCharacterIcons,
   MessagePresenceStatus,
@@ -127,6 +128,8 @@ export function MessagesInboxClient({
   const [query, setQuery] =
     useState("");
 
+  const communication = useSanctionCapability("communication");
+
   const [
     newMessageOpen,
     setNewMessageOpen,
@@ -194,12 +197,11 @@ export function MessagesInboxClient({
           </div>
 
           <div className="flex flex-wrap gap-2">
-            <Link
-              href="/messages/new"
-              className="border border-[rgb(var(--sep-colour-a07742))] bg-[rgb(var(--sep-colour-402a17))] px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-f1d5a2))] transition hover:border-[rgb(var(--sep-colour-c49351))] hover:bg-[rgb(var(--sep-colour-56371c))]"
-            >
-              New message
-            </Link>
+            {communication.blocked ? (
+              <SanctionRestrictionNotice message={communication.message} compact />
+            ) : (
+              <Link href="/messages/new" className="border border-[rgb(var(--sep-colour-a07742))] bg-[rgb(var(--sep-colour-402a17))] px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-f1d5a2))] transition hover:border-[rgb(var(--sep-colour-c49351))] hover:bg-[rgb(var(--sep-colour-56371c))]">New message</Link>
+            )}
 
             <Link
               href="/messages"
