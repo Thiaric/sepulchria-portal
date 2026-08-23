@@ -15,6 +15,7 @@ type Participant = {
   display_name: string | null;
   first_name: string;
   surname: string | null;
+  portrait_url: string | null;
 };
 
 function nameOf(
@@ -58,7 +59,8 @@ export async function GroupConversationView({
           id,
           display_name,
           first_name,
-          surname
+          surname,
+          portrait_url
         )
       `)
       .eq(
@@ -187,6 +189,44 @@ export async function GroupConversationView({
       .map(nameOf)
       .join(", ");
 
+  const viewerParticipant =
+    participants.find(
+      (participant) =>
+        participant.id ===
+        viewerCharacterId,
+    );
+
+  if (!viewerParticipant) {
+    notFound();
+  }
+
+  const viewerSender = {
+    id: viewerParticipant.id,
+    display_name:
+      nameOf(viewerParticipant) ||
+      "Unknown",
+    portrait_url:
+      viewerParticipant.portrait_url ??
+      null,
+  };
+
+  const participantSenders =
+    participants
+      .filter(
+        (participant) =>
+          participant.id !==
+          viewerCharacterId,
+      )
+      .map((participant) => ({
+        id: participant.id,
+        display_name:
+          nameOf(participant) ||
+          "Unknown",
+        portrait_url:
+          participant.portrait_url ??
+          null,
+      }));
+
   return (
     <main className="min-h-screen bg-[rgb(var(--sep-colour-100d0b))] text-[rgb(var(--sep-colour-e7d5b0))]">
       <ConversationRealtime
@@ -263,6 +303,12 @@ export async function GroupConversationView({
             }
             viewerCharacterId={
               viewerCharacterId
+            }
+            viewerSender={
+              viewerSender
+            }
+            participantSenders={
+              participantSenders
             }
             messages={messages}
           />

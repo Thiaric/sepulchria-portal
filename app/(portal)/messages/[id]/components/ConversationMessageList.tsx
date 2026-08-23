@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -19,11 +20,31 @@ import {
   deletePrivateMessages,
 } from "../../actions";
 
+type SenderIdentity = {
+  id: string;
+  display_name: string;
+  portrait_url: string | null;
+};
+
+type LiveDirectMessage = DirectMessage & {
+  client_nonce?: string | null;
+  optimistic?: boolean;
+};
+
 type Props = {
   conversationId: string;
   viewerCharacterId: string;
+  viewerSender: SenderIdentity;
+  participantSenders: SenderIdentity[];
   messages: DirectMessage[];
 };
+
+const PRIVATE_MESSAGE_OPTIMISTIC_EVENT =
+  "sepulchria:private-message-optimistic";
+const PRIVATE_MESSAGE_REALTIME_EVENT =
+  "sepulchria:private-message-realtime";
+const PRIVATE_MESSAGE_SEND_RESULT_EVENT =
+  "sepulchria:private-message-send-result";
 
 function MessageModeBadge({
   mode,
@@ -89,8 +110,158 @@ function dateEnd(
 export function ConversationMessageList({
   conversationId,
   viewerCharacterId,
+  viewerSender,
+  participantSenders,
   messages,
 }: Props) {
+  const [liveMessages, setLiveMessages] =
+    useState<LiveDirectMessage[]>(messages);
+
+  useEffect(() => {
+    setLiveMessages((current) => {
+      const optimistic = current.filter(
+        (message) => message.optimistic,
+      );
+      const serverIds = new Set(
+        messages.map((message) => message.id),
+      );
+      return [
+        ...messages,
+        ...optimistic.filter(
+          (message) => !serverIds.has(message.id),
+        ),
+      ];
+    });
+  }, [messages]);
+
+  useEffect(() => {
+    const handleOptimistic = (event: Event) => {
+      const detail = (event as CustomEvent<{
+        conversationId: string;
+        nonce: string;
+        body: string;
+        messageMode: PrivateMessageMode;
+      }>).detail;
+
+      if (detail?.conversationId !== conversationId) return;
+
+      const optimistic: LiveDirectMessage = {
+        id: `optimistic:${detail.nonce}`,
+        body: detail.body,
+        created_at: new Date().toISOString(),
+        sender_character_id: viewerCharacterId,
+        message_mode: detail.messageMode,
+        sender: viewerSender,
+        client_nonce: detail.nonce,
+        optimistic: true,
+      };
+
+      setLiveMessages((current) => [
+        ...current.filter(
+          (message) => message.client_nonce !== detail.nonce,
+        ),
+        optimistic,
+      ]);
+    };
+
+    const handleRealtime = (event: Event) => {
+      const detail = (event as CustomEvent<{
+        conversationId: string;
+        message: Omit<LiveDirectMessage, "sender">;
+      }>).detail;
+
+      if (
+        detail?.conversationId !== conversationId ||
+        !detail.message?.id
+      ) return;
+
+      const row = detail.message;
+      const sender =
+        row.sender_character_id === viewerCharacterId
+          ? viewerSender
+          : participantSenders.find(
+              (participant) =>
+                participant.id === row.sender_character_id,
+            ) ?? {
+              id: row.sender_character_id,
+              display_name: "Unknown",
+              portrait_url: null,
+            };
+      const real: LiveDirectMessage = {
+        ...row,
+        sender,
+        optimistic: false,
+      };
+
+      setLiveMessages((current) => {
+        const withoutMatch = current.filter((message) => {
+          if (message.id === real.id) return false;
+          if (
+            real.client_nonce &&
+            message.client_nonce === real.client_nonce
+          ) return false;
+          return true;
+        });
+        return [...withoutMatch, real].sort(
+          (a, b) =>
+            Date.parse(a.created_at) - Date.parse(b.created_at),
+        );
+      });
+    };
+
+    const handleSendResult = (event: Event) => {
+      const detail = (event as CustomEvent<{
+        conversationId: string;
+        nonce: string;
+        ok: boolean;
+      }>).detail;
+
+      if (
+        detail?.conversationId !== conversationId ||
+        detail.ok
+      ) return;
+
+      setLiveMessages((current) =>
+        current.filter(
+          (message) => message.client_nonce !== detail.nonce,
+        ),
+      );
+    };
+
+    window.addEventListener(
+      PRIVATE_MESSAGE_OPTIMISTIC_EVENT,
+      handleOptimistic,
+    );
+    window.addEventListener(
+      PRIVATE_MESSAGE_REALTIME_EVENT,
+      handleRealtime,
+    );
+    window.addEventListener(
+      PRIVATE_MESSAGE_SEND_RESULT_EVENT,
+      handleSendResult,
+    );
+
+    return () => {
+      window.removeEventListener(
+        PRIVATE_MESSAGE_OPTIMISTIC_EVENT,
+        handleOptimistic,
+      );
+      window.removeEventListener(
+        PRIVATE_MESSAGE_REALTIME_EVENT,
+        handleRealtime,
+      );
+      window.removeEventListener(
+        PRIVATE_MESSAGE_SEND_RESULT_EVENT,
+        handleSendResult,
+      );
+    };
+  }, [
+    conversationId,
+    participantSenders,
+    viewerCharacterId,
+    viewerSender,
+  ]);
+
   const [query, setQuery] =
     useState("");
 
@@ -129,7 +300,7 @@ export function ConversationMessageList({
           endDate,
         );
 
-      return messages.filter(
+      return liveMessages.filter(
         (message) => {
           if (
             mode !== "all" &&
@@ -175,7 +346,7 @@ export function ConversationMessageList({
         },
       );
     }, [
-      messages,
+      liveMessages,
       mode,
       startDate,
       endDate,
@@ -339,7 +510,7 @@ export function ConversationMessageList({
               {
                 filteredMessages.length
               }{" "}
-              of {messages.length}{" "}
+              of {liveMessages.length}{" "}
               visible
             </p>
 
@@ -543,14 +714,14 @@ export function ConversationMessageList({
                           )}
                         </time>
 
-                        <a
+                        {!message.optimistic ? <a
                           href={`/messages/forward/${message.id}`}
                           className="border border-[rgb(var(--sep-colour-59432c))]/80 bg-[rgb(var(--sep-colour-17110d))] px-2.5 py-1.5 text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-b99b70))] transition hover:border-[rgb(var(--sep-colour-8b6a40))] hover:text-[rgb(var(--sep-colour-e3c28d))]"
                         >
                           Forward
-                        </a>
+                        </a> : null}
 
-                        {!own ? (
+                        {!own && !message.optimistic ? (
                           <ReportButton
                             sourceType="direct_message"
                             sourceId={message.id}
@@ -558,7 +729,7 @@ export function ConversationMessageList({
                           />
                         ) : null}
 
-                        <form
+                        {!message.optimistic ? <form
                           action={
                             deletePrivateMessages
                           }
@@ -597,7 +768,7 @@ export function ConversationMessageList({
                           >
                             Delete
                           </button>
-                        </form>
+                        </form> : null}
                       </div>
                     </div>
 

@@ -26,6 +26,12 @@ const initialState: MessageActionState = {
 const PRIVATE_MESSAGE_SENT_EVENT =
   "sepulchria:private-message-sent";
 
+const PRIVATE_MESSAGE_OPTIMISTIC_EVENT =
+  "sepulchria:private-message-optimistic";
+
+const PRIVATE_MESSAGE_SEND_RESULT_EVENT =
+  "sepulchria:private-message-send-result";
+
 export default function MessageComposer({
   conversationId,
 }: {
@@ -58,20 +64,36 @@ export default function MessageComposer({
   const formRef =
     useRef<HTMLFormElement>(null);
 
-  useEffect(() => {
-    if (
-      state.ok &&
-      state.submittedAt
-    ) {
-      setBody("");
-      setNonce(
-        crypto.randomUUID(),
-      );
+  const submittedNonceRef =
+    useRef<string | null>(null);
 
-      /*
-       * Tell the open conversation that a successful send just happened.
-       * ConversationRealtime owns the actual scroll behaviour.
-       */
+  useEffect(() => {
+    const submittedNonce =
+      submittedNonceRef.current;
+
+    if (!submittedNonce || !state.message) {
+      return;
+    }
+
+    window.dispatchEvent(
+      new CustomEvent(
+        PRIVATE_MESSAGE_SEND_RESULT_EVENT,
+        {
+          detail: {
+            conversationId,
+            nonce: submittedNonce,
+            ok: state.ok,
+          },
+        },
+      ),
+    );
+
+    submittedNonceRef.current = null;
+
+    if (state.ok && state.submittedAt) {
+      setBody("");
+      setNonce(crypto.randomUUID());
+
       window.dispatchEvent(
         new CustomEvent(
           PRIVATE_MESSAGE_SENT_EVENT,
@@ -91,6 +113,7 @@ export default function MessageComposer({
     }
   }, [
     conversationId,
+    state.message,
     state.ok,
     state.submittedAt,
   ]);
@@ -112,6 +135,23 @@ export default function MessageComposer({
     <form
       ref={formRef}
       action={action}
+      onSubmit={() => {
+        submittedNonceRef.current = nonce;
+
+        window.dispatchEvent(
+          new CustomEvent(
+            PRIVATE_MESSAGE_OPTIMISTIC_EVENT,
+            {
+              detail: {
+                conversationId,
+                nonce,
+                body,
+                messageMode,
+              },
+            },
+          ),
+        );
+      }}
       className="border-t border-[rgb(var(--sep-colour-59432c))]/40 p-5 sm:p-6"
     >
       <input

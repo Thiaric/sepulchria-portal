@@ -79,7 +79,7 @@ export default async function ConversationPage({
     error: characterError,
   } = await supabase
     .from("characters")
-    .select("id")
+    .select("id, display_name, portrait_url")
     .eq("user_id", user.id)
     .maybeSingle();
 
@@ -499,6 +499,22 @@ export default async function ConversationPage({
             viewerCharacterId={
               character.id
             }
+            viewerSender={{
+              id: character.id,
+              display_name:
+                character.display_name ?? "Unknown",
+              portrait_url:
+                character.portrait_url ?? null,
+            }}
+            participantSenders={[
+              {
+                id: other.id,
+                display_name:
+                  other.display_name ?? "Unknown",
+                portrait_url:
+                  other.portrait_url ?? null,
+              },
+            ]}
             messages={
               rawMessages
             }

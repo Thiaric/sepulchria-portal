@@ -5,16 +5,21 @@ import {
   useEffect,
   useRef,
 } from "react";
-import { useRouter } from "next/navigation";
-
 import { usePortalAudio } from "@/components/audio/portal-audio-provider";
 import { createClient } from "@/lib/supabase/client";
 import { markConversationRead } from "../../actions";
 
 type DirectMessageInsert = {
-  sender_character_id:
-    | string
-    | null;
+  id: string;
+  body: string;
+  created_at: string;
+  sender_character_id: string;
+  message_mode: "ongame" | "offgame";
+  client_nonce?: string | null;
+  forwarded_from_message_id?: string | null;
+  forwarded_sender_name?: string | null;
+  forwarded_created_at?: string | null;
+  forwarded_body?: string | null;
 };
 
 type PrivateMessageSentEvent =
@@ -24,6 +29,9 @@ type PrivateMessageSentEvent =
 
 const PRIVATE_MESSAGE_SENT_EVENT =
   "sepulchria:private-message-sent";
+
+const PRIVATE_MESSAGE_REALTIME_EVENT =
+  "sepulchria:private-message-realtime";
 
 function findConversationScrollBox() {
   const section =
@@ -61,20 +69,12 @@ export default function ConversationRealtime({
 }: {
   conversationId: string;
 }) {
-  const router =
-    useRouter();
-
   const {
     playPortalSound,
   } = usePortalAudio();
 
   const viewerCharacterIdRef =
     useRef<string | null>(
-      null,
-    );
-
-  const refreshTimerRef =
-    useRef<number | null>(
       null,
     );
 
@@ -329,24 +329,17 @@ export default function ConversationRealtime({
               );
             }
 
-            if (
-              refreshTimerRef.current !==
-              null
-            ) {
-              window.clearTimeout(
-                refreshTimerRef.current,
-              );
-            }
-
-            refreshTimerRef.current =
-              window.setTimeout(
-                () => {
-                  refreshTimerRef.current =
-                    null;
-                  router.refresh();
+            window.dispatchEvent(
+              new CustomEvent(
+                PRIVATE_MESSAGE_REALTIME_EVENT,
+                {
+                  detail: {
+                    conversationId,
+                    message: inserted,
+                  },
                 },
-                25,
-              );
+              ),
+            );
 
             window.setTimeout(
               keepConversationRead,
@@ -389,15 +382,6 @@ export default function ConversationRealtime({
         handleVisibilityChange,
       );
 
-      if (
-        refreshTimerRef.current !==
-        null
-      ) {
-        window.clearTimeout(
-          refreshTimerRef.current,
-        );
-      }
-
       void supabase.removeChannel(
         channel,
       );
@@ -405,7 +389,6 @@ export default function ConversationRealtime({
   }, [
     conversationId,
     playPortalSound,
-    router,
     scrollToBottom,
   ]);
 
