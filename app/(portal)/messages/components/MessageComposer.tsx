@@ -67,6 +67,9 @@ export default function MessageComposer({
   const submittedNonceRef =
     useRef<string | null>(null);
 
+  const submittedBodyRef =
+    useRef<string>("");
+
   useEffect(() => {
     const submittedNonce =
       submittedNonceRef.current;
@@ -90,8 +93,23 @@ export default function MessageComposer({
 
     submittedNonceRef.current = null;
 
-    if (state.ok && state.submittedAt) {
-      setBody("");
+    if (!state.ok) {
+      const submittedBody =
+        submittedBodyRef.current;
+
+      if (submittedBody) {
+        setBody((current) =>
+          current ? current : submittedBody,
+        );
+      }
+
+      submittedBodyRef.current = "";
+      return;
+    }
+
+    submittedBodyRef.current = "";
+
+    if (state.submittedAt) {
       setNonce(crypto.randomUUID());
 
       window.dispatchEvent(
@@ -137,6 +155,7 @@ export default function MessageComposer({
       action={action}
       onSubmit={() => {
         submittedNonceRef.current = nonce;
+        submittedBodyRef.current = body;
 
         window.dispatchEvent(
           new CustomEvent(
@@ -151,6 +170,16 @@ export default function MessageComposer({
             },
           ),
         );
+
+        setBody("");
+
+        requestAnimationFrame(() => {
+          formRef.current
+            ?.querySelector<HTMLTextAreaElement>(
+              "textarea",
+            )
+            ?.focus();
+        });
       }}
       className="border-t border-[rgb(var(--sep-colour-59432c))]/40 p-5 sm:p-6"
     >
