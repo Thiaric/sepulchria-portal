@@ -1,4 +1,10 @@
-"use client";
+#!/usr/bin/env python3
+from pathlib import Path
+import argparse
+
+TARGET = Path("components/support/ticket-live-sync.tsx")
+
+NEW = r""""use client";
 
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
@@ -143,3 +149,42 @@ export function TicketLiveSync({
 
   return null;
 }
+"""
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dry-run", action="store_true")
+    args = parser.parse_args()
+
+    if not TARGET.exists():
+        raise SystemExit(f"ERROR: missing {TARGET}. Nothing written.")
+
+    current = TARGET.read_text(encoding="utf-8")
+
+    required = [
+        'router.refresh();window.dispatchEvent',
+        'window.setInterval(()=>void tick(),2000)',
+        'fetch("/api/support/read"',
+    ]
+    missing = [anchor for anchor in required if anchor not in current]
+    if missing:
+        raise SystemExit(
+            "ERROR: file does not match the inspected 52adebc implementation. "
+            "Nothing written."
+        )
+
+    print("Baseline: 52adebc")
+    print(f"patch target: {TARGET}")
+    print("Fix: refresh ticket server pages only when polled ticket data changes.")
+
+    if args.dry_run:
+        print("\nDRY RUN ONLY — no files written.")
+        return
+
+    TARGET.write_text(NEW, encoding="utf-8", newline="\n")
+    print(f"\npatched: {TARGET}")
+    print("Applied LOCALLY only. No GitHub write was performed.")
+    print("Next: npm run build")
+
+if __name__ == "__main__":
+    main()
