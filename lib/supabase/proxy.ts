@@ -11,6 +11,7 @@ const PUBLIC_ROUTES = [
   "/terms",
   "/privacy",
   "/auth",
+  "/api/auth",
 ];
 
 const SANCTION_ACCESS_ROUTES = [

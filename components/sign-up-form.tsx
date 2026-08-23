@@ -21,6 +21,22 @@ type LegalDocument =
   | "privacy"
   | null;
 
+function isAtLeast18(dateOfBirth: string) {
+  if (!dateOfBirth) return false;
+
+  const dob = new Date(`${dateOfBirth}T00:00:00`);
+  if (Number.isNaN(dob.getTime())) return false;
+
+  const today = new Date();
+  const eighteenthBirthday = new Date(
+    dob.getFullYear() + 18,
+    dob.getMonth(),
+    dob.getDate(),
+  );
+
+  return eighteenthBirthday <= today;
+}
+
 export function SignUpForm() {
   const [email, setEmail] =
     useState("");
@@ -30,6 +46,14 @@ export function SignUpForm() {
     repeatPassword,
     setRepeatPassword,
   ] = useState("");
+  const [
+    dateOfBirth,
+    setDateOfBirth,
+  ] = useState("");
+  const [
+    ageConfirmed,
+    setAgeConfirmed,
+  ] = useState(false);
   const [
     legalAccepted,
     setLegalAccepted,
@@ -64,6 +88,27 @@ export function SignUpForm() {
       return;
     }
 
+    if (!dateOfBirth) {
+      setError(
+        "Please enter your date of birth.",
+      );
+      return;
+    }
+
+    if (!isAtLeast18(dateOfBirth)) {
+      setError(
+        "Sepulchria is only available to users aged 18 or older.",
+      );
+      return;
+    }
+
+    if (!ageConfirmed) {
+      setError(
+        "You must confirm that you are at least 18 years old.",
+      );
+      return;
+    }
+
     if (!legalAccepted) {
       setError(
         "You must accept the Terms of Service and Privacy Policy before creating an account.",
@@ -72,18 +117,53 @@ export function SignUpForm() {
     }
 
     const supabase = createClient();
-    setIsLoading(true);
-    setError(null);
+setIsLoading(true);
+setError(null);
 
-    try {
-      const { error } =
-        await supabase.auth.signUp({
+try {
+  const emailCheckResponse =
+    await fetch(
+      "/api/auth/check-email",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
+        body: JSON.stringify({
+          email,
+        }),
+      },
+    );
+
+  const emailCheck =
+    await emailCheckResponse.json();
+
+  if (!emailCheckResponse.ok) {
+    throw new Error(
+      emailCheck.error ??
+        "Unable to check this email address.",
+    );
+  }
+
+  if (emailCheck.exists) {
+    throw new Error(
+      "An account with this email address already exists. Please log in instead.",
+    );
+  }
+
+  const { error } =
+    await supabase.auth.signUp({
           email,
           password,
           options: {
             emailRedirectTo:
               `${window.location.origin}/homepage`,
             data: {
+              date_of_birth:
+                dateOfBirth,
+              age_18_confirmed:
+                true,
               legal_terms_accepted:
                 true,
               terms_version:
@@ -151,6 +231,34 @@ export function SignUpForm() {
 
         <div className="space-y-2">
           <label
+            htmlFor="date-of-birth"
+            className={labelClass}
+          >
+            Date of birth
+          </label>
+
+          <input
+            id="date-of-birth"
+            name="date-of-birth"
+            type="date"
+            autoComplete="bday"
+            required
+            value={dateOfBirth}
+            onChange={(event) =>
+              setDateOfBirth(
+                event.target.value,
+              )
+            }
+            className={fieldClass}
+          />
+
+          <p className="text-[10px] leading-5 text-[rgb(var(--sep-colour-776e63))]">
+            Sepulchria is strictly for users aged 18 or older.
+          </p>
+        </div>
+
+        <div className="space-y-2">
+          <label
             htmlFor="password"
             className={labelClass}
           >
@@ -199,6 +307,29 @@ export function SignUpForm() {
             }
             className={fieldClass}
           />
+        </div>
+
+        <div className="border border-[rgb(var(--sep-colour-7d4b3d))]/65 bg-[rgb(var(--sep-colour-1d0f0d))]/55 px-4 py-4">
+          <label className="flex cursor-pointer items-start gap-3">
+            <input
+              type="checkbox"
+              name="age-confirmation"
+              checked={
+                ageConfirmed
+              }
+              onChange={(event) =>
+                setAgeConfirmed(
+                  event.target.checked,
+                )
+              }
+              required
+              className="mt-1 h-4 w-4 shrink-0 accent-[rgb(var(--sep-colour-a77a42))]"
+            />
+
+            <span className="text-xs leading-6 text-[rgb(var(--sep-colour-c9b8a0))]">
+              I confirm that I am 18 years of age or older.
+            </span>
+          </label>
         </div>
 
         <div className="border border-[rgb(var(--sep-colour-62482f))]/55 bg-[rgb(var(--sep-colour-0b0807))]/55 px-4 py-4">
@@ -266,7 +397,9 @@ export function SignUpForm() {
           type="submit"
           disabled={
             isLoading ||
-            !legalAccepted
+            !ageConfirmed ||
+            !legalAccepted ||
+            !dateOfBirth
           }
           className="h-12 w-full border border-[rgb(var(--sep-colour-a77a42))]/80 bg-[rgb(var(--sep-colour-382313))] font-serif text-base tracking-[0.05em] text-[rgb(var(--sep-colour-ead3a6))] transition hover:border-[rgb(var(--sep-colour-d4a460))] hover:bg-[rgb(var(--sep-colour-472c17))] disabled:cursor-not-allowed disabled:opacity-45"
         >
