@@ -172,6 +172,18 @@ const messagesItem: NavigationItem = {
   activePaths: ["/messages"],
 };
 
+const communityRulesItem: NavigationItem = {
+  label: "Community Rules",
+  title:
+    "Read Sepulchria's Community Rules and safety requirements.",
+  icon: "/icons/rules.png",
+  href: "/community-rules",
+  activePaths: [
+    "/community-rules",
+  ],
+  opensModal: true,
+};
+
 const manageOrderItem: NavigationItem = {
   label: "Manage Order",
   title:
@@ -1701,10 +1713,17 @@ export function PortalSidebar({
             </Link>
             <PlayerSanctionsSidebarLink />
 
-            <span className="block py-0.1 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-5f5549))]">
-              Staff · Coming
-              soon
-            </span>
+            <button
+              type="button"
+              onClick={() =>
+                setModalItem(
+                  communityRulesItem,
+                )
+              }
+              className="block w-full py-0.5 text-left text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9f8b70))] transition hover:text-[rgb(var(--sep-colour-d8bf91))]"
+            >
+              Community Rules
+            </button>
           </div>
         </div>
       </aside>

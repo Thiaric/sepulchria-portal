@@ -19,6 +19,7 @@ import {
 type LegalDocument =
   | "terms"
   | "privacy"
+  | "community"
   | null;
 
 function isAtLeast18(dateOfBirth: string) {
@@ -351,36 +352,43 @@ try {
             />
 
             <span className="text-xs leading-6 text-[rgb(var(--sep-colour-a99b87))]">
-              I have read and
-              agree to
-              Sepulchria&apos;s{" "}
-              <button
-                type="button"
-                onClick={(event) => {
-                  event.preventDefault();
-                  setLegalDocument(
-                    "terms",
-                  );
-                }}
-                className="text-[rgb(var(--sep-colour-d0aa72))] underline decoration-[rgb(var(--sep-colour-725636))] underline-offset-4 transition hover:text-[rgb(var(--sep-colour-efd5a7))]"
-              >
-                Terms of Service
-              </button>{" "}
-              and{" "}
-              <button
-                type="button"
-                onClick={(event) => {
-                  event.preventDefault();
-                  setLegalDocument(
-                    "privacy",
-                  );
-                }}
-                className="text-[rgb(var(--sep-colour-d0aa72))] underline decoration-[rgb(var(--sep-colour-725636))] underline-offset-4 transition hover:text-[rgb(var(--sep-colour-efd5a7))]"
-              >
-                Privacy Policy
-              </button>
-              .
-            </span>
+  I have read and agree to Sepulchria&apos;s{" "}
+  <button
+    type="button"
+    onClick={(event) => {
+      event.preventDefault();
+      setLegalDocument("terms");
+    }}
+    className="text-[rgb(var(--sep-colour-d0aa72))] underline decoration-[rgb(var(--sep-colour-725636))] underline-offset-4 transition hover:text-[rgb(var(--sep-colour-efd5a7))]"
+  >
+    Terms of Service
+  </button>
+  ,{" "}
+  <button
+  type="button"
+  onClick={(event) => {
+    event.preventDefault();
+    setLegalDocument(
+      "community",
+    );
+  }}
+  className="text-[rgb(var(--sep-colour-d0aa72))] underline decoration-[rgb(var(--sep-colour-725636))] underline-offset-4 transition hover:text-[rgb(var(--sep-colour-efd5a7))]"
+>
+  Community Rules
+</button>
+  {" "}and{" "}
+  <button
+    type="button"
+    onClick={(event) => {
+      event.preventDefault();
+      setLegalDocument("privacy");
+    }}
+    className="text-[rgb(var(--sep-colour-d0aa72))] underline decoration-[rgb(var(--sep-colour-725636))] underline-offset-4 transition hover:text-[rgb(var(--sep-colour-efd5a7))]"
+  >
+    Privacy Policy
+  </button>
+  .
+</span>
           </label>
         </div>
 
@@ -503,6 +511,24 @@ try {
           </p>
         </div>
       </LegalModal>
+
+      <LegalModal
+  open={
+    legalDocument ===
+    "community"
+  }
+  onClose={
+    closeLegalModal
+  }
+  eyebrow="Sepulchria"
+  title="Community Rules"
+>
+  <iframe
+    src="/community-rules"
+    title="Community Rules"
+    className="h-[60dvh] w-full border-0 bg-[rgb(var(--sep-colour-090706))]"
+  />
+</LegalModal>
 
       <LegalModal
         open={

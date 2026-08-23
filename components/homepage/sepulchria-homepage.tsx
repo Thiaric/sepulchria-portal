@@ -485,6 +485,13 @@ useEffect(() => {
       </Link>
 
       <Link
+  href="/community-rules"
+  className="transition hover:text-[rgb(var(--sep-colour-cdb487))]"
+>
+  Community Rules
+</Link>
+
+      <Link
         href="/privacy"
         className="transition hover:text-[rgb(var(--sep-colour-cdb487))]"
       >
