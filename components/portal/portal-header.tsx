@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { SubmittedCharacterBadge } from "@/components/admin/submitted-character-badge";
+import { TicketNotificationBadge } from "@/components/support/ticket-notification-badge";
 import { PortalSoundToggle } from "@/components/audio/portal-sound-toggle";
 import { PortalSkinSwitcher } from "@/components/portal/portal-skin-switcher";
 import { LogoutButton } from "@/components/logout-button";
@@ -79,6 +80,7 @@ export async function PortalHeader({ context }: PortalHeaderProps) {
               >
                 ⚙
                 <SubmittedCharacterBadge variant="floating" />
+                <TicketNotificationBadge audience="staff" variant="floating" />
               </Link>
             ) : null}
 

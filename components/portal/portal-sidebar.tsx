@@ -13,6 +13,7 @@ import {
 
 import { createClient } from "@/lib/supabase/client";
 import { UnreadMessageBadge } from "@/components/messages/unread-message-badge";
+import { TicketNotificationBadge } from "@/components/support/ticket-notification-badge";
 import { ForumSidebarMenu } from "@/components/portal/forum-sidebar-menu";
 import { enterRoomFromMap } from "@/app/(portal)/game/actions";
 
@@ -1694,10 +1695,9 @@ export function PortalSidebar({
           </nav>
 
           <div className="mt-[var(--portal-group-gap)] border-t border-[rgb(var(--sep-colour-6e5535))]/30 pt-2">
-            <span className="block py-0.1 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-5f5549))]">
-              Support · Coming
-              soon
-            </span>
+            <Link href="/support" className="flex items-center py-0.5 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9f8b70))] transition hover:text-[rgb(var(--sep-colour-d8bf91))]">
+              <span>Support</span><TicketNotificationBadge audience="player" variant="sidebar" />
+            </Link>
 
             <span className="block py-0.1 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-5f5549))]">
               Staff · Coming

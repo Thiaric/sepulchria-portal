@@ -30,6 +30,7 @@ import { AdminOrdersContext } from "@/components/portal/admin-orders-context";
 import { AdminRulesContext } from "@/components/portal/admin-rules-context";
 import { CharacterOrderContext } from "@/components/portal/character-order-context";
 import { OrderLeadershipContext } from "@/components/portal/order-leadership-context";
+import { TicketContextPanel } from "@/components/support/ticket-context-panel";
 
 
 type PortalContextPanelProps = {
@@ -44,6 +45,12 @@ export function PortalContextPanel({
 
   if (pathname === "/") {
     return <DashboardContext context={context} />;
+  }
+
+  if (pathname === "/support" || pathname.startsWith("/support/")) {
+    const match = pathname.match(/^\/support\/([^/]+)$/);
+    const reference = match && match[1] !== "new" ? decodeURIComponent(match[1]) : undefined;
+    return <TicketContextPanel reference={reference} />;
   }
 
   if (

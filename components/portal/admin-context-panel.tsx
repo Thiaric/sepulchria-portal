@@ -8,6 +8,7 @@ import {
 } from "react";
 
 import { createClient } from "@/lib/supabase/client";
+import { TicketContextPanel } from "@/components/support/ticket-context-panel";
 
 type JumpEntry = {
   id: string;
@@ -26,6 +27,7 @@ type ContextMode =
   | "shapes"
   | "users"
   | "characters"
+  | "tickets"
   | "forum";
 
 function getMode(
@@ -73,6 +75,10 @@ function getMode(
     return "characters";
   }
 
+  if (pathname === "/admin/tickets" || pathname.startsWith("/admin/tickets/")) {
+    return "tickets";
+  }
+
   if (
     pathname === "/admin/forum" ||
     pathname.startsWith(
@@ -104,6 +110,11 @@ export function AdminContextPanel({
     return (
       <ForumModerationContext />
     );
+  }
+
+  if (mode === "tickets") {
+    const match = pathname.match(/^\/admin\/tickets\/([^/]+)$/);
+    return <TicketContextPanel admin reference={match ? decodeURIComponent(match[1]) : undefined} />;
   }
 
   if (mode === "gifts") {

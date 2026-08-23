@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 
 import { AdminInteractionKeeper } from "@/components/admin/admin-interaction-keeper";
 import { SubmittedCharacterBadge } from "@/components/admin/submitted-character-badge";
+import { TicketNotificationBadge } from "@/components/support/ticket-notification-badge";
 import { requireStaff } from "@/lib/auth/require-staff";
 
 import "./admin-compact.css";
@@ -117,6 +118,10 @@ export default async function AdminLayout({
             <AdminNavigationLink href="/admin/tidings">
               Tidings
             </AdminNavigationLink>            
+
+            <AdminNavigationLink href="/admin/tickets">
+              <span className="flex items-center gap-2"><span>Tickets</span><TicketNotificationBadge audience="staff" variant="admin-nav" /></span>
+            </AdminNavigationLink>
 
             {canManageUsers ? (
               <>
