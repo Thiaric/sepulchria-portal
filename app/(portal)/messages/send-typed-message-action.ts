@@ -1,6 +1,5 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import {
@@ -116,11 +115,6 @@ export async function sendTypedPrivateMessage(
 
     if (sendError && sendError.code !== "23505") { return { ok:false, message:sendError.message }; }
     if (!sentMessageId && !sendError) { return { ok:false, message:"The message could not be sent." }; }
-
-    revalidatePath(
-      `/messages/${conversationId}`,
-    );
-    revalidatePath("/messages");
 
     return {
       ok: true,

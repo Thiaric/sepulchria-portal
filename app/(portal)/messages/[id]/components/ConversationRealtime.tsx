@@ -73,6 +73,11 @@ export default function ConversationRealtime({
       null,
     );
 
+  const refreshTimerRef =
+    useRef<number | null>(
+      null,
+    );
+
   const scrollToBottom =
     useCallback(
       (
@@ -324,9 +329,24 @@ export default function ConversationRealtime({
               );
             }
 
-            keepConversationRead();
+            if (
+              refreshTimerRef.current !==
+              null
+            ) {
+              window.clearTimeout(
+                refreshTimerRef.current,
+              );
+            }
 
-            router.refresh();
+            refreshTimerRef.current =
+              window.setTimeout(
+                () => {
+                  refreshTimerRef.current =
+                    null;
+                  router.refresh();
+                },
+                25,
+              );
 
             window.setTimeout(
               keepConversationRead,
@@ -368,6 +388,15 @@ export default function ConversationRealtime({
         "visibilitychange",
         handleVisibilityChange,
       );
+
+      if (
+        refreshTimerRef.current !==
+        null
+      ) {
+        window.clearTimeout(
+          refreshTimerRef.current,
+        );
+      }
 
       void supabase.removeChannel(
         channel,

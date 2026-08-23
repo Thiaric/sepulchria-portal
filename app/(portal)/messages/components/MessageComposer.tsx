@@ -10,6 +10,7 @@ import {
 import { PRIVATE_MESSAGE_MAX_LENGTH } from "@/lib/messages/constants";
 import { stripRichTextForPreview } from "@/lib/rich-text-shared";
 import { RichMessageEditor } from "@/components/messages/rich-message-editor";
+import { SanctionRestrictionNotice, useSanctionCapability } from "@/components/sanctions/sanction-capability-ui";
 import type {
   MessageActionState,
   PrivateMessageMode,
@@ -34,6 +35,11 @@ export default function MessageComposer({
     useActionState(
       sendTypedPrivateMessage,
       initialState,
+    );
+
+  const communication =
+    useSanctionCapability(
+      "communication",
     );
 
   const [body, setBody] =
@@ -91,6 +97,16 @@ export default function MessageComposer({
 
   const isOnGame =
     messageMode === "ongame";
+
+  if (communication.blocked) {
+    return (
+      <div className="border-t border-[rgb(var(--sep-colour-59432c))]/40 p-5 sm:p-6">
+        <SanctionRestrictionNotice
+          message={communication.message}
+        />
+      </div>
+    );
+  }
 
   return (
     <form
