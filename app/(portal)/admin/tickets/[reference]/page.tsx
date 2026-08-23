@@ -193,11 +193,15 @@ function reportSourceHref({
 
 export default async function AdminTicketPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ reference: string }>;
+  searchParams?: Promise<{ sanctionError?: string }>;
 }) {
   const staff = await requireStaff();
   const { reference } = await params;
+  const query = (await searchParams) ?? {};
+  const sanctionError = query.sanctionError ?? null;
   const admin = createAdminClient();
 
   const { data: ticket, error } = await admin
@@ -488,6 +492,7 @@ export default async function AdminTicketPage({
             <details className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))]">
               <summary className="cursor-pointer px-4 py-3 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d5b785))]">Issue Sanction</summary>
               <form action={issueSanction} className="grid gap-4 border-t border-[rgb(var(--sep-colour-60482e))]/35 p-4 lg:grid-cols-2">
+                <input type="hidden" name="returnTo" value={`/admin/tickets/${ticket.public_reference}`}/>
                 <input type="hidden" name="ticketId" value={ticket.id}/>
                 <input type="hidden" name="targetUserId" value={report.reported_user_id}/>
                 <input type="hidden" name="targetCharacterId" value={report.reported_character_id ?? ""}/>
@@ -507,6 +512,7 @@ export default async function AdminTicketPage({
 
                 <label className="block lg:col-span-2"><span className="text-[8px] uppercase text-[rgb(var(--sep-colour-8f806d))]">Internal rationale · staff only</span><textarea name="internalRationale" rows={5} maxLength={10000} className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0c0907))] p-3 text-sm leading-6"/></label>
 
+                {sanctionError ? <div role="alert" className="lg:col-span-2 border border-red-900/60 bg-red-950/25 p-3 text-xs leading-5 text-red-300">{sanctionError}</div> : null}
                 <div className="lg:col-span-2"><button className="border border-[rgb(var(--sep-colour-9a5147))] bg-[rgb(var(--sep-colour-351815))] px-5 py-3 text-[8px] uppercase text-[rgb(var(--sep-colour-e0a69a))]">Issue Sanction</button></div>
               </form>
             </details>

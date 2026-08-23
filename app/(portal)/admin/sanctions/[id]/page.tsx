@@ -7,8 +7,8 @@ import { revokeSanction } from "../actions";
 function fmt(v:string|null){return v?new Intl.DateTimeFormat("en-GB",{dateStyle:"medium",timeStyle:"short"}).format(new Date(v)):"—";}
 function label(v:string){return v.replaceAll("_"," ").replace(/\b\w/g,l=>l.toUpperCase());}
 
-export default async function AdminSanctionPage({params}:{params:Promise<{id:string}>}){
-  const staff=await requireStaff(); const {id}=await params; const admin=createAdminClient();
+export default async function AdminSanctionPage({params,searchParams}:{params:Promise<{id:string}>;searchParams?:Promise<{sanctionError?:string;sanctionSuccess?:string}>}){
+  const staff=await requireStaff(); const {id}=await params; const query=(await searchParams)??{}; const admin=createAdminClient();
   const {data:s,error}=await admin.from("sanctions").select("id,ticket_id,target_name_snapshot,sanction_type,status,reason_code,player_reason,internal_rationale,starts_at,expires_at,issued_at,revoked_at,revocation_reason").eq("id",id).maybeSingle();
   if(error||!s)notFound();
 
@@ -42,7 +42,7 @@ export default async function AdminSanctionPage({params}:{params:Promise<{id:str
     {s.status==="revoked"?<section className="mt-5 border border-[rgb(var(--sep-colour-75624a))]/55 bg-[rgb(var(--sep-colour-17130f))] p-5"><p className="text-[8px] uppercase">Revoked {fmt(s.revoked_at)}</p><p className="mt-3 whitespace-pre-wrap text-sm leading-6">{s.revocation_reason}</p></section>:null}
 
     {canRevoke?<section className="mt-5 border border-red-900/45 bg-red-950/10 p-5"><h2 className="font-serif text-xl text-red-200">Revoke Sanction</h2><p className="mt-2 text-xs leading-5 text-red-300/75">Revocation does not delete this record.</p>
-      <form action={revokeSanction} className="mt-4 space-y-3"><input type="hidden" name="sanctionId" value={s.id}/><textarea name="revocationReason" required rows={4} maxLength={5000} placeholder="Reason for revocation..." className="w-full border border-red-900/45 bg-[rgb(var(--sep-colour-100c09))] p-3 text-sm"/><label className="block"><span className="text-[8px] uppercase text-red-300/75">Type REVOKE to confirm</span><input name="confirmation" required autoComplete="off" className="mt-2 h-10 w-full max-w-xs border border-red-900/45 bg-[rgb(var(--sep-colour-100c09))] px-3 text-sm"/></label><button className="border border-red-800 bg-red-950/30 px-4 py-2.5 text-[8px] uppercase text-red-200">Revoke Sanction</button></form>
+      <form action={revokeSanction} className="mt-4 space-y-3"><input type="hidden" name="returnTo" value={`/admin/sanctions/${s.id}`}/><input type="hidden" name="sanctionId" value={s.id}/><textarea name="revocationReason" required rows={4} maxLength={5000} placeholder="Reason for revocation..." className="w-full border border-red-900/45 bg-[rgb(var(--sep-colour-100c09))] p-3 text-sm"/><label className="block"><span className="text-[8px] uppercase text-red-300/75">Type REVOKE to confirm</span><input name="confirmation" required autoComplete="off" className="mt-2 h-10 w-full max-w-xs border border-red-900/45 bg-[rgb(var(--sep-colour-100c09))] px-3 text-sm"/></label>{query.sanctionError?<div role="alert" className="border border-red-800/60 bg-red-950/30 p-3 text-xs leading-5 text-red-200">{query.sanctionError}</div>:null}{query.sanctionSuccess?<div role="status" className="border border-[rgb(var(--sep-colour-6e7547))]/60 bg-[rgb(var(--sep-colour-182016))] p-3 text-xs leading-5 text-[rgb(var(--sep-colour-c9c99d))]">{query.sanctionSuccess}</div>:null}<button className="border border-red-800 bg-red-950/30 px-4 py-2.5 text-[8px] uppercase text-red-200">Revoke Sanction</button></form>
     </section>:null}
   </div></main>;
 }

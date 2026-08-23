@@ -29,14 +29,27 @@ function sanctionType(fd:FormData):SanctionType{
   return v as SanctionType;
 }
 
+function returnPath(fd:FormData,fallback:string){
+  const raw=read(fd,"returnTo",1000);
+  return raw.startsWith("/admin/")?raw:fallback;
+}
+
+function failTo(path:string,message:string):never{
+  const separator=path.includes("?")?"&":"?";
+  redirect(`${path}${separator}sanctionError=${encodeURIComponent(message)}`);
+}
+
 export async function issueSanction(fd:FormData){
   const staff=await requireStaff();
-  const type=sanctionType(fd);
+  const returnTo=returnPath(fd,"/admin/tickets");
+  let type:SanctionType;
+  try{ type=sanctionType(fd); }
+  catch{ failTo(returnTo,"Select a valid sanction type."); }
 
   if(
     (type==="temporary_suspension"||type==="permanent_ban") &&
     staff.role!=="owner" && staff.role!=="admin"
-  ) throw new Error("Only an administrator can issue a suspension or permanent ban.");
+  ) failTo(returnTo,"Only an administrator can issue a suspension or permanent ban.");
 
   const ticketId=uuid(fd,"ticketId");
   const targetUserId=uuid(fd,"targetUserId");
@@ -48,7 +61,7 @@ export async function issueSanction(fd:FormData){
   const internalRationale=read(fd,"internalRationale",10000)||null;
   const expiresRaw=read(fd,"expiresAt",100);
 
-  if(!reasonCode||!playerReason) throw new Error("Reason code and player-facing reason are required.");
+  if(!reasonCode||!playerReason) failTo(returnTo,"Reason code and player-facing reason are required.");
 
   const temporary=[
     "communication_restriction","forum_restriction",
@@ -58,9 +71,9 @@ export async function issueSanction(fd:FormData){
 
   let expiresAt:string|null=null;
   if(temporary){
-    if(!expiresRaw) throw new Error("An expiry date and time is required for this sanction.");
+    if(!expiresRaw) failTo(returnTo,"An expiry date and time is required for this sanction.");
     const d=new Date(expiresRaw);
-    if(Number.isNaN(d.getTime())||d<=new Date()) throw new Error("The sanction expiry must be in the future.");
+    if(Number.isNaN(d.getTime())||d<=new Date()) failTo(returnTo,"The sanction expiry must be in the future.");
     expiresAt=d.toISOString();
   }
 
@@ -70,19 +83,19 @@ export async function issueSanction(fd:FormData){
     .select("id,public_reference,category")
     .eq("id",ticketId)
     .maybeSingle();
-  if(ticketError||!ticket) throw new Error(ticketError?.message??"Ticket not found.");
+  if(ticketError||!ticket) failTo(returnTo,"The source ticket could not be loaded. Reload and try again.");
 
   const {data:targetStaff,error:staffError}=await admin
     .from("staff_members").select("role").eq("user_id",targetUserId).maybeSingle();
-  if(staffError) throw new Error(staffError.message);
-  if(targetStaff) throw new Error("Staff accounts cannot be sanctioned through the standard player sanction workflow.");
+  if(staffError) failTo(returnTo,"The target account could not be checked. Please try again.");
+  if(targetStaff) failTo(returnTo,"Staff accounts cannot be sanctioned through the standard player sanction workflow.");
 
   if(targetCharacterId){
     const {data:character,error}=await admin
       .from("characters").select("id,user_id,is_system").eq("id",targetCharacterId).maybeSingle();
-    if(error||!character) throw new Error(error?.message??"Target character not found.");
-    if(character.user_id!==targetUserId) throw new Error("The selected character does not belong to the target account.");
-    if(character.is_system===true) throw new Error("System characters cannot receive sanctions.");
+    if(error||!character) failTo(returnTo,"The target character could not be loaded. Reload and try again.");
+    if(character.user_id!==targetUserId) failTo(returnTo,"The selected character does not belong to the target account.");
+    if(character.is_system===true) failTo(returnTo,"System characters cannot receive sanctions.");
   }
 
   const {data:dup,error:dupError}=await admin
@@ -90,8 +103,8 @@ export async function issueSanction(fd:FormData){
     .eq("target_user_id",targetUserId)
     .eq("sanction_type",type)
     .in("status",["scheduled","active"]).limit(1);
-  if(dupError) throw new Error(dupError.message);
-  if((dup??[]).length) throw new Error("This account already has an active or scheduled sanction of this type.");
+  if(dupError) failTo(returnTo,"Existing sanctions could not be checked. Please try again.");
+  if((dup??[]).length) failTo(returnTo,"This account already has an active or scheduled sanction of this type.");
 
   const now=new Date().toISOString();
   const {data:sanction,error}=await admin.from("sanctions").insert({
@@ -111,7 +124,7 @@ export async function issueSanction(fd:FormData){
     issued_at:now,
   }).select("id").single();
 
-  if(error||!sanction) throw new Error(error?.message??"Unable to create sanction.");
+  if(error||!sanction) failTo(returnTo,"The sanction could not be created. Please try again.");
 
   const [audit,ticketAudit]=await Promise.all([
     admin.from("sanction_events").insert({
@@ -126,7 +139,7 @@ export async function issueSanction(fd:FormData){
 
   if(audit.error||ticketAudit.error){
     await admin.from("sanctions").delete().eq("id",sanction.id);
-    throw new Error(audit.error?.message??ticketAudit.error?.message??"Unable to record sanction audit history.");
+    failTo(returnTo,"The sanction audit record could not be completed. No sanction was kept.");
   }
 
   revalidatePath("/admin/sanctions");
@@ -136,26 +149,27 @@ export async function issueSanction(fd:FormData){
 
 export async function revokeSanction(fd:FormData){
   const staff=await requireAdmin();
+  const returnTo=returnPath(fd,"/admin/sanctions");
   const sanctionId=uuid(fd,"sanctionId");
   const reason=read(fd,"revocationReason",5000);
-  if(read(fd,"confirmation",30)!=="REVOKE") throw new Error('Type "REVOKE" to confirm revocation.');
-  if(!reason) throw new Error("A revocation reason is required.");
+  if(read(fd,"confirmation",30)!=="REVOKE") failTo(returnTo,'Type "REVOKE" to confirm revocation.');
+  if(!reason) failTo(returnTo,"A revocation reason is required.");
 
   const admin=createAdminClient();
   const {data:s,error}=await admin.from("sanctions").select("id,ticket_id,status").eq("id",sanctionId).maybeSingle();
-  if(error||!s) throw new Error(error?.message??"Sanction not found.");
-  if(s.status==="revoked") throw new Error("This sanction is already revoked.");
+  if(error||!s) failTo(returnTo,"The sanction could not be loaded. Reload and try again.");
+  if(s.status==="revoked") failTo(returnTo,"This sanction is already revoked.");
 
   const now=new Date().toISOString();
   const {error:updateError}=await admin.from("sanctions").update({
     status:"revoked",revoked_by_user_id:staff.userId,revoked_at:now,revocation_reason:reason,
   }).eq("id",s.id);
-  if(updateError) throw new Error(updateError.message);
+  if(updateError) failTo(returnTo,"The sanction could not be revoked. Please try again.");
 
   const {error:auditError}=await admin.from("sanction_events").insert({
     sanction_id:s.id,actor_user_id:staff.userId,event_type:"revoked",details:{reason},
   });
-  if(auditError) throw new Error(auditError.message);
+  if(auditError) failTo(returnTo,"The revocation was saved but its audit event could not be recorded. Contact an administrator.");
 
   if(s.ticket_id){
     await admin.from("ticket_events").insert({
@@ -166,4 +180,6 @@ export async function revokeSanction(fd:FormData){
 
   revalidatePath("/admin/sanctions");
   revalidatePath(`/admin/sanctions/${s.id}`);
+  revalidatePath("/sanctions");
+  redirect(`${returnTo}?sanctionSuccess=${encodeURIComponent("Sanction revoked successfully.")}`);
 }
