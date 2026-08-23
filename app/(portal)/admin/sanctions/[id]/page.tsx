@@ -4,6 +4,7 @@ import { requireStaff } from "@/lib/auth/require-staff";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revokeSanction } from "../actions";
 import { SanctionLiveSync } from "@/components/sanctions/sanction-live-sync";
+import { SanctionEvidence } from "@/components/sanctions/sanction-evidence";
 
 function fmt(v:string|null){return v?new Intl.DateTimeFormat("en-GB",{dateStyle:"medium",timeStyle:"short"}).format(new Date(v)):"—";}
 function label(v:string){return v.replaceAll("_"," ").replace(/\b\w/g,l=>l.toUpperCase());}
@@ -13,12 +14,21 @@ export default async function AdminSanctionPage({params,searchParams}:{params:Pr
   const {data:s,error}=await admin.from("sanctions").select("id,ticket_id,target_name_snapshot,sanction_type,status,reason_code,player_reason,internal_rationale,starts_at,expires_at,issued_at,revoked_at,revocation_reason").eq("id",id).maybeSingle();
   if(error||!s)notFound();
 
-  const [events,ticket]=await Promise.all([
+  const [events,ticket,appealEvent]=await Promise.all([
     admin.from("sanction_events").select("id,event_type,details,created_at").eq("sanction_id",s.id).order("created_at",{ascending:true}),
     s.ticket_id?admin.from("tickets").select("public_reference").eq("id",s.ticket_id).maybeSingle():Promise.resolve({data:null,error:null}),
+    admin.from("ticket_events").select("ticket_id,details,created_at").eq("event_type","sanction_appeal_created").contains("details",{sanction_id:s.id}).order("created_at",{ascending:false}).limit(1),
   ]);
   if(events.error)throw new Error(events.error.message);
   if(ticket.error)throw new Error(ticket.error.message);
+  if(appealEvent.error)throw new Error(appealEvent.error.message);
+
+  const appealTicketId=appealEvent.data?.[0]?.ticket_id??null;
+  const appealTicket=appealTicketId
+    ? await admin.from("tickets").select("public_reference,status").eq("id",appealTicketId).maybeSingle()
+    : {data:null,error:null};
+
+  if(appealTicket.error)throw new Error(appealTicket.error.message);
   const canRevoke=(staff.role==="owner"||staff.role==="admin")&&s.status!=="revoked";
 
   return <main className="p-5 sm:p-7 lg:p-9"><SanctionLiveSync audience="staff" markRead /><div className="mx-auto max-w-5xl">
@@ -32,8 +42,10 @@ export default async function AdminSanctionPage({params,searchParams}:{params:Pr
         <div className="bg-[rgb(var(--sep-colour-100c09))] p-5"><p className="text-[7px] uppercase text-[rgb(var(--sep-colour-756957))]">Player-facing reason</p><p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-[rgb(var(--sep-colour-d2bea1))]">{s.player_reason}</p></div>
         <div className="bg-[rgb(var(--sep-colour-100c09))] p-5"><p className="text-[7px] uppercase text-[rgb(var(--sep-colour-756957))]">Internal rationale</p><p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-[rgb(var(--sep-colour-b9a48b))]">{s.internal_rationale??"No internal rationale recorded."}</p></div>
       </div>
-      {ticket.data?.public_reference?<div className="border-t border-[rgb(var(--sep-colour-60482e))]/40 p-5"><Link href={`/admin/tickets/${ticket.data.public_reference}`} className="border border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-261b12))] px-4 py-2.5 text-[8px] uppercase text-[rgb(var(--sep-colour-d5b785))]">Open Source Ticket · {ticket.data.public_reference}</Link></div>:null}
+      {(ticket.data?.public_reference||appealTicket.data?.public_reference)?<div className="flex flex-wrap gap-3 border-t border-[rgb(var(--sep-colour-60482e))]/40 p-5">{ticket.data?.public_reference?<Link href={`/admin/tickets/${ticket.data.public_reference}`} className="border border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-261b12))] px-4 py-2.5 text-[8px] uppercase text-[rgb(var(--sep-colour-d5b785))]">Open Source Ticket · {ticket.data.public_reference}</Link>:null}{appealTicket.data?.public_reference?<Link href={`/admin/tickets/${appealTicket.data.public_reference}`} className="border border-[rgb(var(--sep-colour-967342))] bg-[rgb(var(--sep-colour-3b2b1b))] px-4 py-2.5 text-[8px] uppercase text-[rgb(var(--sep-colour-f1d9a7))]">Open Appeal · {appealTicket.data.status.replaceAll("_"," ")}</Link>:null}</div>:null}
     </section>
+
+    <SanctionEvidence ticketId={s.ticket_id}/>
 
     <section className="mt-5 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5">
       <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-e2c99f))]">Audit History</h2>
