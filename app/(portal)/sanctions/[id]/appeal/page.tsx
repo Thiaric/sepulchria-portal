@@ -74,7 +74,7 @@ export default async function SanctionAppealPage({
       <div className="mx-auto max-w-4xl">
         <Link
           href="/sanctions"
-          className="text-[8px] uppercase text-[rgb(var(--sep-colour-a58b68))]"
+          className="mt-4 border border-[rgb(var(--sep-colour-967342))] bg-[rgb(var(--sep-colour-3b2b1b))] px-5 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-f1d9a7))]"
         >
           ← Sanctions
         </Link>

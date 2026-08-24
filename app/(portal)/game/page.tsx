@@ -1037,7 +1037,7 @@ function MissingLocation({
 
         <Link
           href="/"
-          className="mt-6 inline-block text-[rgb(var(--sep-colour-efd4a0))] transition hover:text-white"
+          className="flex min-w-0 items-center justify-center border border-[rgb(var(--sep-colour-725c3d))] bg-[rgb(var(--sep-colour-21190f))] px-2 py-1.5 text-center text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-d6bb8d))] transition hover:border-[rgb(var(--sep-colour-a17a49))] hover:bg-[rgb(var(--sep-colour-352718))] hover:text-[rgb(var(--sep-colour-f0d6a7))] sm:px-3 sm:text-[9px] sm:tracking-[0.18em] mt-6 inline-block"
         >
           Return to dashboard
         </Link>

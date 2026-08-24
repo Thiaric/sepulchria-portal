@@ -688,7 +688,7 @@ export default async function AdminSafetyPage({
 
             <Link
               href="/admin/tickets"
-              className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-b99765))]"
+              className="h-10 border border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-261b12))] px-4 text-[8px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-d5b785))]"
             >
               Open moderation tickets →
             </Link>

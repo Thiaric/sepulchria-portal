@@ -761,7 +761,7 @@ export default async function ForumSectionPage({
 
             <Link
               href={`/forum/${section.slug}/new`}
-              className="text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-aa8b60))] transition hover:text-[rgb(var(--sep-colour-efd6a8))]"
+              className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-center text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
             >
               Create new discussion →
             </Link>

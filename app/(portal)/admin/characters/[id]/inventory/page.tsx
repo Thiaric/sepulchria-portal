@@ -228,7 +228,7 @@ export default async function AdminCharacterInventoryPage({
           <div>
             <Link
               href={`/admin/characters/${character.id}`}
-              className="text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9c805b))] transition hover:text-[rgb(var(--sep-colour-e4c796))]"
+              className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-ac9879))]"
             >
               ← Character administration
             </Link>

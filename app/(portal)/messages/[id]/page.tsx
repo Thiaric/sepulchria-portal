@@ -389,7 +389,7 @@ export default async function ConversationPage({
         <div className="mx-auto flex min-h-20 max-w-[1000px] items-center justify-between px-5">
           <Link
             href="/messages"
-            className="text-xs uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-a98b61))]"
+            className="border border-[rgb(var(--sep-colour-59432c))] px-3 py-2 text-[10px] uppercase tracking-[0.18em]"
           >
             ← Messages
           </Link>

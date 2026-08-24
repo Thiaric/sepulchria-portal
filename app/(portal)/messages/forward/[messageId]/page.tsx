@@ -275,7 +275,7 @@ export default async function ForwardMessagePage({
     <main className="mx-auto max-w-3xl p-5 sm:p-7">
       <Link
         href={`/messages/${message.conversation_id}`}
-        className="text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a98b61))]"
+        className="border border-[rgb(var(--sep-colour-a07742))] bg-[rgb(var(--sep-colour-402a17))] px-5 py-2.5 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-f1d5a2))]"
       >
         ← Conversation
       </Link>

@@ -50,7 +50,7 @@ export default async function NewPrivateMessagePage() {
 
   const communication = await getSanctionEnforcement(supabase,"communication");
   if (communication.blocked) {
-    return <main className="mx-auto max-w-3xl p-5 sm:p-7"><Link href="/messages" className="text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a98b61))]">← Messages</Link><div className="mt-5 border-l-2 border-[rgb(var(--sep-colour-9a5147))]/75 bg-[rgb(var(--sep-colour-291613))]/80 px-5 py-4 text-sm leading-7 text-[rgb(var(--sep-colour-d9a092))]">{communication.message ?? "Private communication is currently restricted on this account."}</div></main>;
+    return <main className="mx-auto max-w-3xl p-5 sm:p-7"><Link href="/messages" className="border border-[rgb(var(--sep-colour-a07742))] bg-[rgb(var(--sep-colour-402a17))] px-5 py-2.5 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-f1d5a2))]">← Messages</Link><div className="mt-5 border-l-2 border-[rgb(var(--sep-colour-9a5147))]/75 bg-[rgb(var(--sep-colour-291613))]/80 px-5 py-4 text-sm leading-7 text-[rgb(var(--sep-colour-d9a092))]">{communication.message ?? "Private communication is currently restricted on this account."}</div></main>;
   }
 
   const {
@@ -227,7 +227,7 @@ export default async function NewPrivateMessagePage() {
     <main className="mx-auto max-w-3xl p-5 sm:p-7">
       <Link
         href="/messages"
-        className="text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a98b61))]"
+        className="border border-[rgb(var(--sep-colour-a07742))] bg-[rgb(var(--sep-colour-402a17))] px-5 py-2.5 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-f1d5a2))]"
       >
         ← Messages
       </Link>

@@ -320,7 +320,7 @@ export default async function AdminTicketPage({
       <div className="mx-auto max-w-5xl">
         <Link
           href="/admin/tickets"
-          className="text-[8px] uppercase text-[rgb(var(--sep-colour-a58b68))]"
+          className="border border-[rgb(var(--sep-colour-80613b))] px-4 py-2 text-[8px] uppercase"
         >
           ← Ticket Queue
         </Link>

@@ -238,7 +238,7 @@ export async function GroupConversationView({
       <div className="mx-auto max-w-[1000px] px-5 py-8">
         <Link
           href="/messages"
-          className="text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a98b61))]"
+          className="border border-[rgb(var(--sep-colour-59432c))] px-3 py-2 text-[9px] uppercase tracking-[0.16em]"
         >
           ← Messages
         </Link>

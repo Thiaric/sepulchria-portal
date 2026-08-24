@@ -429,7 +429,7 @@ export default async function AdminCharacterPage({
         <div className="flex flex-wrap items-center justify-between gap-4">
           <Link
             href="/admin/characters"
-            className="text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9c805b))] transition hover:text-[rgb(var(--sep-colour-e4c796))]"
+            className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
           >
             ← Character archive
           </Link>
