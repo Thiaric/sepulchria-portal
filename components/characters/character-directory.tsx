@@ -291,7 +291,7 @@ export function CharacterDirectory({
 
   return (
     <div className="space-y-6 px-3">
-      <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 p-5">
+      <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 px-5 py-2">
         <div className="grid gap-4 xl:grid-cols-[minmax(220px,1fr)_170px_190px_180px_150px_auto] xl:items-end">
           <label className="block">
             <span className="text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))]">
@@ -400,25 +400,7 @@ export function CharacterDirectory({
           </button>
         </div>
 
-        <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-4">
-          <p className="text-xs text-[rgb(var(--sep-colour-887965))]">
-            Showing{" "}
-            <span className="text-[rgb(var(--sep-colour-c7ad82))]">
-              {filteredCharacters.length}
-            </span>{" "}
-            of{" "}
-            <span className="text-[rgb(var(--sep-colour-c7ad82))]">
-              {characters.length}
-            </span>{" "}
-            approved characters
-          </p>
-
-          {hasActiveFilters ? (
-            <p className="text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-75634c))]">
-              Filters active
-            </p>
-          ) : null}
-        </div>
+        
       </section>
 
       {filteredCharacters.length > 0 ? (

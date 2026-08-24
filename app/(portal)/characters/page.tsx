@@ -45,20 +45,8 @@ export default async function CharactersPage() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-7xl space-y-6">
-      <header className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 p-6 sm:p-8">
-        <p className="text-[10px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-886c48))]">
-          Sepulchria's People
-        </p>
-
-        
-
-        <p className="mt-4 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-9f9281))]">
-          Browse the people currently shaping the
-          history, politics and daily life of
-          Sepulchria.
-        </p>
-      </header>
+    <div className="mx-auto w-full max-w-7xl space-y-6 py-2 px-2">
+      
 
       <CharacterDirectory
         characters={characters}
