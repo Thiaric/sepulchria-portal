@@ -157,12 +157,12 @@ async function PortalLayoutContent({
               .sepulchria-viewport-body {
                 --portal-left-width: 230px;
                 --portal-right-width: 300px;
-                --portal-column-pad: 1rem;
-                --portal-column-gap: 0.75rem;
-                --portal-section-pad: 1rem;
-                --portal-nav-y: 0.5rem;
-                --portal-nav-min-h: 2.25rem;
-                --portal-group-gap: 1rem;
+                --portal-column-pad: 0.8rem;
+                --portal-column-gap: 0.65rem;
+                --portal-section-pad: 0.8rem;
+                --portal-nav-y: 0.26rem;
+                --portal-nav-min-h: 1.85rem;
+                --portal-group-gap: 0.62rem;
                 max-width: 1800px;
               }
 
@@ -367,12 +367,12 @@ async function PortalLayoutContent({
 
               @media (min-width: 1024px) and (max-height: 820px) {
                 .sepulchria-viewport-body {
-                  --portal-column-pad: 0.75rem;
-                  --portal-column-gap: 0.6rem;
-                  --portal-section-pad: 0.75rem;
-                  --portal-nav-y: 0.38rem;
-                  --portal-nav-min-h: 2rem;
-                  --portal-group-gap: 0.75rem;
+                  --portal-column-pad: 0.65rem;
+                  --portal-column-gap: 0.52rem;
+                  --portal-section-pad: 0.65rem;
+                  --portal-nav-y: 0.22rem;
+                  --portal-nav-min-h: 1.72rem;
+                  --portal-group-gap: 0.5rem;
                 }
               }
 
@@ -380,12 +380,12 @@ async function PortalLayoutContent({
                 .sepulchria-viewport-body {
                   --portal-left-width: 210px;
                   --portal-right-width: 275px;
-                  --portal-column-pad: 0.6rem;
-                  --portal-column-gap: 0.5rem;
-                  --portal-section-pad: 0.6rem;
-                  --portal-nav-y: 0.28rem;
-                  --portal-nav-min-h: 1.8rem;
-                  --portal-group-gap: 0.55rem;
+                  --portal-column-pad: 0.52rem;
+                  --portal-column-gap: 0.44rem;
+                  --portal-section-pad: 0.52rem;
+                  --portal-nav-y: 0.18rem;
+                  --portal-nav-min-h: 1.6rem;
+                  --portal-group-gap: 0.42rem;
                 }
               }
 
@@ -393,13 +393,30 @@ async function PortalLayoutContent({
                 .sepulchria-viewport-body {
                   --portal-left-width: 195px;
                   --portal-right-width: 255px;
-                  --portal-column-pad: 0.45rem;
-                  --portal-column-gap: 0.4rem;
-                  --portal-section-pad: 0.5rem;
-                  --portal-nav-y: 0.2rem;
-                  --portal-nav-min-h: 1.65rem;
-                  --portal-group-gap: 0.4rem;
+                  --portal-column-pad: 0.4rem;
+                  --portal-column-gap: 0.36rem;
+                  --portal-section-pad: 0.45rem;
+                  --portal-nav-y: 0.14rem;
+                  --portal-nav-min-h: 1.5rem;
+                  --portal-group-gap: 0.34rem;
                 }
+              }
+
+              /*
+               * Keep selected text clearly visible inside all rich-text
+               * contenteditable fields. This is especially important for
+               * pale/high-key skins such as Humans' Mark.
+               */
+              .portal-skin-scope [contenteditable="true"]::selection,
+              .portal-skin-scope [contenteditable="true"] *::selection {
+                background: rgba(55, 102, 224, 0.86);
+                color: #ffffff;
+              }
+
+              .portal-skin-scope [contenteditable="true"]::-moz-selection,
+              .portal-skin-scope [contenteditable="true"] *::-moz-selection {
+                background: rgba(55, 102, 224, 0.86);
+                color: #ffffff;
               }
 
               .sepulchria-viewport-body [data-portal-scroll] {

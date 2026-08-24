@@ -328,6 +328,11 @@ export function PortalSidebar({
   ] = useState(false);
 
   const [
+    servicesExpanded,
+    setServicesExpanded,
+  ] = useState(true);
+
+  const [
     currentUnreadForumCount,
     setCurrentUnreadForumCount,
   ] = useState(
@@ -1754,13 +1759,35 @@ export function PortalSidebar({
               ]}
             />
 
-            <section>
-              <p className="mb-2 text-[8px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-766754))]">
-                services and
-                utilities
-              </p>
+            <section className="mb-[var(--portal-group-gap)] border-b border-[rgb(var(--sep-colour-6e5535))]/20 pb-[var(--portal-group-gap)]">
+              <button
+                type="button"
+                onClick={() =>
+                  setServicesExpanded(
+                    (current) =>
+                      !current,
+                  )
+                }
+                aria-expanded={
+                  servicesExpanded
+                }
+                className="mb-1 flex w-full items-center justify-between text-left text-[8px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-766754))] transition hover:text-[rgb(var(--sep-colour-b4a07f))]"
+              >
+                <span>
+                  Services and Utilities
+                </span>
+                <span
+                  aria-hidden="true"
+                  className="ml-3 text-[12px] leading-none"
+                >
+                  {servicesExpanded
+                    ? "−"
+                    : "+"}
+                </span>
+              </button>
 
-              <div className="grid grid-cols-1 gap-0.1">
+              {servicesExpanded ? (
+              <div className="grid grid-cols-1 gap-0">
                 {renderNavigationItem(
                   marketItem,
                 )}
@@ -1849,6 +1876,7 @@ export function PortalSidebar({
                   messagesItem,
                 )}
               </div>
+              ) : null}
             </section>
           </nav>
 
@@ -1960,15 +1988,40 @@ function NavigationGroup({
   title: string;
   items: React.ReactNode[];
 }) {
+  const [
+    expanded,
+    setExpanded,
+  ] = useState(true);
+
   return (
     <section className="mb-[var(--portal-group-gap)] border-b border-[rgb(var(--sep-colour-6e5535))]/20 pb-[var(--portal-group-gap)]">
-      <p className="mb-2 text-[8px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-766754))]">
-        {title}
-      </p>
+      <button
+        type="button"
+        onClick={() =>
+          setExpanded(
+            (current) =>
+              !current,
+          )
+        }
+        aria-expanded={expanded}
+        className="mb-1 flex w-full items-center justify-between text-left text-[8px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-766754))] transition hover:text-[rgb(var(--sep-colour-b4a07f))]"
+      >
+        <span>{title}</span>
+        <span
+          aria-hidden="true"
+          className="ml-3 text-[12px] leading-none"
+        >
+          {expanded
+            ? "−"
+            : "+"}
+        </span>
+      </button>
 
-      <div className="grid grid-cols-1 gap-0.1">
-        {items}
-      </div>
+      {expanded ? (
+        <div className="grid grid-cols-1 gap-0">
+          {items}
+        </div>
+      ) : null}
     </section>
   );
 }
