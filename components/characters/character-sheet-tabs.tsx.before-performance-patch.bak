@@ -78,18 +78,9 @@ export function CharacterSheetTabs({
         type="button"
         role="tab"
         aria-selected={active}
-        onClick={() => {
-          setActiveTab(tab.id);
-
-          window.dispatchEvent(
-            new CustomEvent(
-              "sepulchria-character-sheet-tab",
-              {
-                detail: tab.id,
-              },
-            ),
-          );
-        }}
+        onClick={() =>
+          setActiveTab(tab.id)
+        }
         className={`
           relative min-w-0 flex-1
           rounded-t-lg

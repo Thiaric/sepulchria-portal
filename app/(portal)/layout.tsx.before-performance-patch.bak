@@ -13,8 +13,8 @@ import { PortalSkinProvider } from "@/components/portal/portal-skin-provider";
 import { TidingsTicker } from "@/components/tidings/tidings-ticker";
 import { WorldStateProvider } from "@/components/world/world-state-provider";
 import { getPortalContext } from "@/lib/portal/get-portal-context";
+import { createClient } from "@/lib/supabase/server";
 import { getActiveTidings } from "@/lib/tidings/get-active-tidings";
-import { getUnreadForumCount } from "@/lib/forum/get-unread-forum-count";
 import { getWorldState } from "@/lib/world/get-world-state";
 
 type PortalLayoutProps = {
@@ -40,13 +40,61 @@ async function PortalLayoutContent({
     context,
     worldState,
     initialTidings,
-    unreadForumCount,
   ] = await Promise.all([
     getPortalContext(),
     getWorldState(),
     getActiveTidings(),
-    getUnreadForumCount(),
   ]);
+
+  const supabase =
+    await createClient();
+
+  const {
+    data: { user },
+  } =
+    await supabase.auth.getUser();
+
+  let unreadForumCount = 0;
+
+  if (user) {
+    const {
+      data: unreadForumResult,
+      error: unreadForumError,
+    } = await supabase.rpc(
+      "get_unread_forum_topic_count",
+    );
+
+    if (!unreadForumError) {
+      if (
+        typeof unreadForumResult ===
+          "number" &&
+        Number.isFinite(
+          unreadForumResult,
+        )
+      ) {
+        unreadForumCount =
+          unreadForumResult;
+      } else if (
+        typeof unreadForumResult ===
+        "string"
+      ) {
+        const parsedCount =
+          Number.parseInt(
+            unreadForumResult,
+            10,
+          );
+
+        if (
+          Number.isFinite(
+            parsedCount,
+          )
+        ) {
+          unreadForumCount =
+            parsedCount;
+        }
+      }
+    }
+  }
 
   const presenceEnabled =
     context.character?.status ===

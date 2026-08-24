@@ -1,6 +1,5 @@
 import "server-only";
 
-import { cache } from "react";
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
@@ -158,9 +157,9 @@ export function defaultAdminPath(
   return "/admin/characters";
 }
 
-export const getStaffSession = cache(async (): Promise<
+export async function getStaffSession(): Promise<
   StaffSession | null
-> => {
+> {
   const supabase = await createClient();
 
   const {
@@ -195,7 +194,7 @@ export const getStaffSession = cache(async (): Promise<
     email: user.email ?? null,
     role: staffMember.role,
   };
-});
+}
 
 export async function requireStaff(): Promise<StaffSession> {
   const session =
