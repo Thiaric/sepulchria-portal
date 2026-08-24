@@ -1,10 +1,20 @@
 -- Sepulchria: one active portal instance per approved character.
 -- Latest successful login always wins immediately.
 -- There is deliberately NO stale timeout / lease window.
+--
+-- This intentionally removes the abandoned five-minute lease implementation
+-- first, so this script is safe even if that earlier experiment still exists.
 
 begin;
 
-create table if not exists public.portal_character_sessions (
+drop function if exists public.claim_portal_character_session(uuid, uuid, uuid);
+drop function if exists public.heartbeat_portal_character_session(uuid, uuid, uuid);
+drop function if exists public.release_portal_character_session(uuid, uuid, uuid);
+drop function if exists public.is_portal_character_session_active(uuid);
+
+drop table if exists public.portal_character_sessions;
+
+create table public.portal_character_sessions (
   character_id uuid primary key
     references public.characters(id) on delete cascade,
   user_id uuid not null,
@@ -13,7 +23,7 @@ create table if not exists public.portal_character_sessions (
   updated_at timestamptz not null default now()
 );
 
-create index if not exists portal_character_sessions_user_id_idx
+create index portal_character_sessions_user_id_idx
   on public.portal_character_sessions(user_id);
 
 alter table public.portal_character_sessions enable row level security;
@@ -22,7 +32,7 @@ alter table public.portal_character_sessions enable row level security;
 -- Claim/release is performed by server routes using the service role.
 revoke all on public.portal_character_sessions from anon, authenticated;
 
-create or replace function public.is_portal_character_session_active(
+create function public.is_portal_character_session_active(
   p_session_id uuid
 )
 returns boolean
