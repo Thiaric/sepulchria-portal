@@ -83,8 +83,17 @@ export function PortalSkinGallery({
   const [error, setError] =
     useState<string | null>(null);
 
-  const isPreviewing =
-    skin !== selectedSkin;
+  const selectedSkinEntry =
+  skins.find(
+    (entry) =>
+      entry.slug === selectedSkin,
+  ) ?? null;
+
+const selectedSkinSwatch =
+  getSkinSwatch(selectedSkin);
+
+const isPreviewing =
+  skin !== selectedSkin;
 
   async function useSkin(target: AppearanceSkin) {
     if (!target.owned && !target.isDefault) {
@@ -109,11 +118,39 @@ export function PortalSkinGallery({
 
   return (
     <div>
-      {error ? (
+            {error ? (
         <div className="mb-4 border border-red-800/55 bg-red-950/30 px-4 py-3 text-xs text-red-300">
           {error}
         </div>
       ) : null}
+
+      <div className="mb-4 flex items-center justify-between gap-4 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3">
+        <div>
+          <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806f59))]">
+            Selected skin
+          </p>
+
+          <p className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-e1c89f))]">
+            {selectedSkinEntry?.name ??
+              selectedSkin}
+          </p>
+        </div>
+
+        <div
+          className="h-11 w-11 shrink-0 rounded-full border border-[rgb(var(--sep-colour-60482e))]/60 shadow-[0_0_0_2px_rgb(var(--sep-colour-0d0a08))]"
+          style={{
+            background: `linear-gradient(90deg, ${selectedSkinSwatch.background} 0 50%, ${selectedSkinSwatch.accent} 50% 100%)`,
+          }}
+          title={`${
+            selectedSkinEntry?.name ??
+            selectedSkin
+          }: main colours`}
+          aria-label={`${
+            selectedSkinEntry?.name ??
+            selectedSkin
+          } colour swatch`}
+        />
+      </div>
 
       {isPreviewing ? (
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3">

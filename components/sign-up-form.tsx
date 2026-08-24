@@ -15,6 +15,9 @@ import {
 import {
   LegalModal,
 } from "@/components/legal-modal";
+import {
+  TurnstileWidget,
+} from "@/components/turnstile-widget";
 
 type LegalDocument =
   | "terms"
@@ -67,6 +70,14 @@ export function SignUpForm() {
     useState<string | null>(null);
   const [isLoading, setIsLoading] =
     useState(false);
+
+  const [
+    captchaToken,
+    setCaptchaToken,
+  ] = useState<string | null>(
+    null,
+  );
+
   const router = useRouter();
 
   const closeLegalModal =
@@ -117,6 +128,13 @@ export function SignUpForm() {
       return;
     }
 
+    if (!captchaToken) {
+      setError(
+        "Please complete the security verification before creating your account.",
+      );
+      return;
+    }
+
     const supabase = createClient();
 setIsLoading(true);
 setError(null);
@@ -155,25 +173,28 @@ try {
 
   const { error } =
     await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo:
-              `${window.location.origin}/homepage`,
-            data: {
-              date_of_birth:
-                dateOfBirth,
-              age_18_confirmed:
-                true,
-              legal_terms_accepted:
-                true,
-              terms_version:
-                TERMS_VERSION,
-              privacy_version:
-                PRIVACY_VERSION,
-            },
-          },
-        });
+      email,
+      password,
+      options: {
+        emailRedirectTo:
+          `${window.location.origin}/homepage`,
+
+        captchaToken,
+
+        data: {
+          date_of_birth:
+            dateOfBirth,
+          age_18_confirmed:
+            true,
+          legal_terms_accepted:
+            true,
+          terms_version:
+            TERMS_VERSION,
+          privacy_version:
+            PRIVACY_VERSION,
+        },
+      },
+    });
 
       if (error) {
         throw error;
@@ -401,13 +422,22 @@ try {
           </div>
         )}
 
+        <div className="border border-[rgb(var(--sep-colour-62482f))]/45 bg-[rgb(var(--sep-colour-0b0807))]/35 px-4 py-3">
+          <TurnstileWidget
+            onTokenChange={
+              setCaptchaToken
+            }
+          />
+        </div>
+
         <button
           type="submit"
           disabled={
             isLoading ||
             !ageConfirmed ||
             !legalAccepted ||
-            !dateOfBirth
+            !dateOfBirth ||
+            !captchaToken
           }
           className="h-12 w-full border border-[rgb(var(--sep-colour-a77a42))]/80 bg-[rgb(var(--sep-colour-382313))] font-serif text-base tracking-[0.05em] text-[rgb(var(--sep-colour-ead3a6))] transition hover:border-[rgb(var(--sep-colour-d4a460))] hover:bg-[rgb(var(--sep-colour-472c17))] disabled:cursor-not-allowed disabled:opacity-45"
         >

@@ -5036,6 +5036,214 @@ body.portal-skin-scope .font-serif {
 
 
 /* =========================================================
+   SEPULCHRIA PORTAL — SKIN FONTS
+   ========================================================= */
+
+[data-portal-skin="sepulchria"] {
+  --portal-font-body:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  --portal-font-display:
+    Georgia,
+    "Times New Roman",
+    serif;
+}
+
+[data-portal-skin="vellum"] {
+  --portal-font-body:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  --portal-font-display:
+    "Palatino Linotype",
+    Palatino,
+    "Book Antiqua",
+    Georgia,
+    serif;
+}
+
+[data-portal-skin="starfall"] {
+  --portal-font-body:
+    "Trebuchet MS",
+    "Segoe UI",
+    sans-serif;
+
+  --portal-font-display:
+    Georgia,
+    "Times New Roman",
+    serif;
+}
+
+[data-portal-skin="rose-nocturne"] {
+  --portal-font-body:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  --portal-font-display:
+    "Palatino Linotype",
+    Palatino,
+    Georgia,
+    serif;
+}
+
+[data-portal-skin="verdant-reliquary"] {
+  --portal-font-body:
+    "Trebuchet MS",
+    "Segoe UI",
+    sans-serif;
+
+  --portal-font-display:
+    Georgia,
+    "Times New Roman",
+    serif;
+}
+
+[data-portal-skin="amethyst-veil"] {
+  --portal-font-body:
+    "Segoe UI",
+    Arial,
+    sans-serif;
+
+  --portal-font-display:
+    "Palatino Linotype",
+    Palatino,
+    Georgia,
+    serif;
+}
+
+[data-portal-skin="moonlit"] {
+  --portal-font-body:
+    "Trebuchet MS",
+    "Segoe UI",
+    sans-serif;
+
+  --portal-font-display:
+    "Palatino Linotype",
+    Palatino,
+    Georgia,
+    serif;
+}
+
+[data-portal-skin="emberforge"] {
+  --portal-font-body:
+    Arial,
+    "Segoe UI",
+    sans-serif;
+
+  --portal-font-display:
+    Georgia,
+    "Times New Roman",
+    serif;
+}
+
+[data-portal-skin="deepwater"] {
+  --portal-font-body:
+    "Trebuchet MS",
+    "Segoe UI",
+    sans-serif;
+
+  --portal-font-display:
+    Georgia,
+    "Times New Roman",
+    serif;
+}
+
+[data-portal-skin="blood-court"] {
+  --portal-font-body:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  --portal-font-display:
+    "Palatino Linotype",
+    Palatino,
+    Georgia,
+    serif;
+}
+
+[data-portal-skin="ashen"] {
+  --portal-font-body:
+    "Segoe UI",
+    Arial,
+    sans-serif;
+
+  --portal-font-display:
+    Georgia,
+    "Times New Roman",
+    serif;
+}
+
+[data-portal-skin="ivory-archive"] {
+  --portal-font-body:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  --portal-font-display:
+    "Palatino Linotype",
+    Palatino,
+    Georgia,
+    serif;
+}
+
+[data-portal-skin="aelari-dawn"] {
+  --portal-font-body:
+    "Trebuchet MS",
+    "Segoe UI",
+    sans-serif;
+
+  --portal-font-display:
+    "Palatino Linotype",
+    Palatino,
+    Georgia,
+    serif;
+}
+
+[data-portal-skin="dwarven-deep"] {
+  --portal-font-body:
+    Arial,
+    "Segoe UI",
+    sans-serif;
+
+  --portal-font-display:
+    Georgia,
+    "Times New Roman",
+    serif;
+}
+
+[data-portal-skin="mortal-hearth"] {
+  --portal-font-body:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  --portal-font-display:
+    Georgia,
+    "Times New Roman",
+    serif;
+}
+
+[data-portal-skin="wolfs-moon"] {
+  --portal-font-body:
+    "Trebuchet MS",
+    "Segoe UI",
+    sans-serif;
+
+  --portal-font-display:
+    Georgia,
+    "Times New Roman",
+    serif;
+}
+
+
+/* =========================================================
    SEPULCHRIA PORTAL - SKIN EMBED AND ICON FIX V4
    ========================================================= */
 
@@ -18328,3 +18536,55 @@ body.portal-skin-scope .font-serif {
 [data-map-magnifying-lens-ring] {
   border-radius: 9999px !important;
 }
+
+/* =========================================================
+   SEPULCHRIA PORTAL — READABILITY
+   Bigger, cleaner small text without blur or glow.
+   ========================================================= */
+
+[data-portal-shell] {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Extremely small labels */
+[data-portal-shell] .text-\[7px\] {
+  font-size: 8px !important;
+  font-weight: 600;
+}
+
+[data-portal-shell] .text-\[8px\] {
+  font-size: 9px !important;
+  font-weight: 600;
+}
+
+[data-portal-shell] .text-\[9px\] {
+  font-size: 10px !important;
+  font-weight: 550;
+}
+
+/* Small UI/body text */
+[data-portal-shell] .text-\[10px\] {
+  font-size: 11px !important;
+  font-weight: 500;
+}
+
+[data-portal-shell] .text-\[11px\] {
+  font-size: 12px !important;
+  font-weight: 500;
+}
+
+/* Standard Tailwind small text */
+[data-portal-shell] .text-xs {
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+  font-weight: 500;
+}
+
+[data-portal-shell] .text-sm {
+  font-size: 15px !important;
+  line-height: 1.55 !important;
+  font-weight: 500;
+}
+

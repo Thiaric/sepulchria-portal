@@ -1,29 +1,45 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
+import { TurnstileWidget } from "@/components/turnstile-widget";
 import Link from "next/link";
 import { useState } from "react";
 
 export function ForgotPasswordForm() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+const [success, setSuccess] = useState(false);
+const [isLoading, setIsLoading] = useState(false);
+const [captchaToken, setCaptchaToken] =
+  useState<string | null>(null);
 
   const handleForgotPassword = async (
     event: React.FormEvent<HTMLFormElement>,
   ) => {
     event.preventDefault();
 
-    const supabase = createClient();
+if (!captchaToken) {
+  setError(
+    "Please complete the security verification before requesting a reset link.",
+  );
+  return;
+}
+
+const supabase = createClient();
 
     setIsLoading(true);
     setError(null);
 
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/auth/update-password`,
-      });
+      const { error } =
+  await supabase.auth.resetPasswordForEmail(
+    email,
+    {
+      redirectTo:
+        `${window.location.origin}/auth/update-password`,
+      captchaToken,
+    },
+  );
 
       if (error) {
         throw error;
@@ -96,9 +112,18 @@ export function ForgotPasswordForm() {
         </div>
       )}
 
+      <div className="border border-[rgb(var(--sep-colour-62482f))]/45 bg-[rgb(var(--sep-colour-0b0807))]/35 px-4 py-3">
+        <TurnstileWidget
+          onTokenChange={setCaptchaToken}
+        />
+      </div>
+
       <button
         type="submit"
-        disabled={isLoading}
+        disabled={
+  isLoading ||
+  !captchaToken
+}
         className="h-12 w-full border border-[rgb(var(--sep-colour-a77a42))]/80 bg-[rgb(var(--sep-colour-382313))] font-serif text-base tracking-[0.05em] text-[rgb(var(--sep-colour-ead3a6))] transition hover:border-[rgb(var(--sep-colour-d4a460))] hover:bg-[rgb(var(--sep-colour-472c17))] disabled:cursor-not-allowed disabled:opacity-60"
       >
         {isLoading ? "Sending the sealed message..." : "Send Reset Link"}
