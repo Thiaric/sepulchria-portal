@@ -2497,15 +2497,6 @@ function PublicPageModal({
                     transition: none !important;
                   }
 
-                  /*
-                   * Inside modal windows, keep ONLY the route-aware
-                   * Context section.
-                   *
-                   * Hide:
-                   * - mobile Context header
-                   * - Current Location card
-                   * - Instant Chat dock
-                   */
                   .portal-right-shell
                     > [data-portal-right-sidebar]
                     > div:first-child {
@@ -2519,21 +2510,6 @@ function PublicPageModal({
                       --portal-column-pad,
                       0.8rem
                     ) !important;
-                  }
-
-                  .portal-right-shell
-                    > [data-portal-right-sidebar]
-                    > div:nth-child(2)
-                    > div:first-child
-                    > div:first-child {
-                    display: none !important;
-                  }
-
-                  .portal-right-shell
-                    > [data-portal-right-sidebar]
-                    > div:nth-child(2)
-                    > div:last-child {
-                    display: none !important;
                   }
 
                   .portal-right-shell

@@ -2429,6 +2429,7 @@ function PublicPageModal({
                 style.textContent = `
                   [data-portal-header],
                   .portal-left-shell,
+                  .portal-right-shell,
                   footer[aria-label="Tidings"] {
                     display: none !important;
                   }
@@ -2443,9 +2444,7 @@ function PublicPageModal({
 
                   .sepulchria-viewport-body {
                     display: grid !important;
-                    grid-template-columns:
-                      minmax(0, 1fr)
-                      minmax(240px, 300px) !important;
+                    grid-template-columns: minmax(0, 1fr) !important;
                     width: 100% !important;
                     max-width: none !important;
                     height: 100% !important;
@@ -2471,80 +2470,6 @@ function PublicPageModal({
                     overflow-x: hidden !important;
                   }
 
-                  .portal-right-shell {
-                    display: block !important;
-                    grid-column: 2 !important;
-                    width: 100% !important;
-                    min-width: 0 !important;
-                    height: 100% !important;
-                    min-height: 0 !important;
-                    overflow: hidden !important;
-                  }
-
-                  .portal-right-shell
-                    > [data-portal-right-sidebar] {
-                    position: relative !important;
-                    inset: auto !important;
-                    z-index: auto !important;
-                    display: flex !important;
-                    width: 100% !important;
-                    min-width: 0 !important;
-                    height: 100% !important;
-                    min-height: 0 !important;
-                    transform: none !important;
-                    overflow: hidden !important;
-                    box-shadow: none !important;
-                    transition: none !important;
-                  }
-
-                  /*
-                   * Inside modal windows, keep ONLY the route-aware
-                   * Context section.
-                   *
-                   * Hide:
-                   * - mobile Context header
-                   * - Current Location card
-                   * - Instant Chat dock
-                   */
-                  .portal-right-shell
-                    > [data-portal-right-sidebar]
-                    > div:first-child {
-                    display: none !important;
-                  }
-
-                  .portal-right-shell
-                    > [data-portal-right-sidebar]
-                    > div:nth-child(2) {
-                    padding: var(
-                      --portal-column-pad,
-                      0.8rem
-                    ) !important;
-                  }
-
-                  .portal-right-shell
-                    > [data-portal-right-sidebar]
-                    > div:nth-child(2)
-                    > div:first-child
-                    > div:first-child {
-                    display: none !important;
-                  }
-
-                  .portal-right-shell
-                    > [data-portal-right-sidebar]
-                    > div:nth-child(2)
-                    > div:last-child {
-                    display: none !important;
-                  }
-
-                  .portal-right-shell
-                    > button {
-                    display: none !important;
-                  }
-
-                  .portal-right-collapse-toggle {
-                    display: none !important;
-                  }
-
                   @media (max-width: 639px) {
                     html,
                     body,
@@ -2557,32 +2482,6 @@ function PublicPageModal({
                       width: 100% !important;
                       max-width: 100% !important;
                       min-width: 0 !important;
-                    }
-
-                    .sepulchria-viewport-body {
-                      grid-template-columns:
-                        minmax(0, 1fr) !important;
-                      grid-template-rows:
-                        minmax(0, 1fr)
-                        minmax(220px, 42dvh) !important;
-                      overflow-y: auto !important;
-                    }
-
-                    [data-portal-centre-host] {
-                      grid-column: 1 !important;
-                      grid-row: 1 !important;
-                    }
-
-                    .portal-right-shell {
-                      grid-column: 1 !important;
-                      grid-row: 2 !important;
-                      min-height: 220px !important;
-                      max-height: 42dvh !important;
-                      border-top: 1px solid
-                        rgba(
-                          var(--sep-rgb-110-85-53),
-                          0.4
-                        ) !important;
                     }
 
                     [data-portal-centre-host]

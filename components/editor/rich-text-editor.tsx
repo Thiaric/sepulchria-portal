@@ -1,6 +1,11 @@
 "use client";
 
 import {
+  readPreferenceStorage,
+  writePreferenceStorage,
+} from "@/lib/privacy/storage-preferences";
+
+import {
   useEffect,
   useRef,
   useState,
@@ -158,7 +163,7 @@ const [
     useEffect(() => {
   try {
     const stored =
-      window.localStorage.getItem(
+      readPreferenceStorage(
         SPELLING_DICTIONARY_KEY,
       );
 
@@ -188,7 +193,7 @@ const [
   useEffect(() => {
     try {
       const storedTextColours =
-        window.localStorage.getItem(
+        readPreferenceStorage(
           RECENT_TEXT_COLOURS_KEY,
         );
 
@@ -214,7 +219,7 @@ const [
       }
 
       const storedHighlightColours =
-        window.localStorage.getItem(
+        readPreferenceStorage(
           RECENT_HIGHLIGHT_COLOURS_KEY,
         );
 
@@ -602,7 +607,7 @@ function rememberRecentTextColour(
       );
 
       try {
-        window.localStorage.setItem(
+        writePreferenceStorage(
           RECENT_TEXT_COLOURS_KEY,
           JSON.stringify(next),
         );
@@ -654,7 +659,7 @@ function rememberRecentHighlightColour(
       );
 
       try {
-        window.localStorage.setItem(
+        writePreferenceStorage(
           RECENT_HIGHLIGHT_COLOURS_KEY,
           JSON.stringify(next),
         );
@@ -1195,7 +1200,7 @@ function addSpellingWordToDictionary() {
           : [...current, word];
 
       try {
-        window.localStorage.setItem(
+        writePreferenceStorage(
           SPELLING_DICTIONARY_KEY,
           JSON.stringify(
             next,

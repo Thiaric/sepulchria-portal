@@ -1,6 +1,11 @@
 "use client";
 
 import {
+  readPreferenceStorage,
+  writePreferenceStorage,
+} from "@/lib/privacy/storage-preferences";
+
+import {
   createContext,
   useCallback,
   useContext,
@@ -127,7 +132,7 @@ export function PortalAudioProvider({
 
     try {
       initialMuted =
-        window.localStorage.getItem(
+        readPreferenceStorage(
           STORAGE_KEY,
         ) === "1";
     } catch {
@@ -309,7 +314,7 @@ export function PortalAudioProvider({
 
         if (persist) {
           try {
-            window.localStorage.setItem(
+            writePreferenceStorage(
               STORAGE_KEY,
               nextMuted
                 ? "1"

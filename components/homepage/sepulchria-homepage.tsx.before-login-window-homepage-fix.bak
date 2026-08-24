@@ -244,21 +244,17 @@ export function SepulchriaHomepage({
                   ),
                 )}
 
-                {isAuthenticated ? (
-                  <HomepageDisabledButton
-                    eyebrow="Already entered"
-                    label="Sepulchria is open"
-                    symbol="◆"
-                  />
-                ) : (
-                  <HomepageButton
-                    href={enterHref}
-                    eyebrow="Enter"
-                    label="Enter Sepulchria"
-                    symbol="◆"
-                    featured
-                  />
-                )}
+                <HomepageButton
+                  href={enterHref}
+                  eyebrow={
+                    isAuthenticated
+                      ? "Return"
+                      : "Enter"
+                  }
+                  label="Enter Sepulchria"
+                  symbol="◆"
+                  featured
+                />
               </nav>
             </div>
           </aside>
@@ -590,36 +586,6 @@ function HomepageButton({
 
       <span className="absolute bottom-0 left-0 h-px w-0 bg-[rgb(var(--sep-colour-c18d4c))] transition-all duration-500 group-hover:w-full" />
     </Link>
-  );
-}
-
-function HomepageDisabledButton({
-  eyebrow,
-  label,
-  symbol,
-}: {
-  eyebrow: string;
-  label: string;
-  symbol: string;
-}) {
-  return (
-    <div
-      aria-disabled="true"
-      title="Sepulchria is already open in the game window."
-      className="relative min-h-[64px] cursor-default overflow-hidden border border-[rgb(var(--sep-colour-654b30))]/35 bg-[rgb(var(--sep-colour-15100c))]/70 px-4 py-3 opacity-55"
-    >
-      <span className="absolute right-4 top-1/2 -translate-y-1/2 font-serif text-3xl text-[rgb(var(--sep-colour-a87c43))]/10">
-        {symbol}
-      </span>
-
-      <span className="relative block text-[7px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-6f6251))]">
-        {eyebrow}
-      </span>
-
-      <span className="relative mt-1 block font-serif text-base text-[rgb(var(--sep-colour-9c8c73))]">
-        {label}
-      </span>
-    </div>
   );
 }
 

@@ -1,6 +1,11 @@
 "use client";
 
 import {
+  readPreferenceStorage,
+  writePreferenceStorage,
+} from "@/lib/privacy/storage-preferences";
+
+import {
   type ReactNode,
   useEffect,
   useState,
@@ -28,10 +33,10 @@ export function PortalCollapsibleColumns({
 
   useEffect(() => {
     setLeftCollapsed(
-      window.localStorage.getItem(LEFT_KEY) === "1",
+      readPreferenceStorage(LEFT_KEY) === "1",
     );
     setRightCollapsed(
-      window.localStorage.getItem(RIGHT_KEY) === "1",
+      readPreferenceStorage(RIGHT_KEY) === "1",
     );
     setReady(true);
   }, []);
@@ -39,7 +44,7 @@ export function PortalCollapsibleColumns({
   function toggleLeft() {
     setLeftCollapsed((current) => {
       const next = !current;
-      window.localStorage.setItem(
+      writePreferenceStorage(
         LEFT_KEY,
         next ? "1" : "0",
       );
@@ -50,7 +55,7 @@ export function PortalCollapsibleColumns({
   function toggleRight() {
     setRightCollapsed((current) => {
       const next = !current;
-      window.localStorage.setItem(
+      writePreferenceStorage(
         RIGHT_KEY,
         next ? "1" : "0",
       );

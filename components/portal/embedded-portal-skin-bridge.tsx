@@ -1,5 +1,10 @@
 "use client";
 
+import {
+  readPreferenceStorage,
+  writePreferenceStorage,
+} from "@/lib/privacy/storage-preferences";
+
 import { useEffect } from "react";
 
 const STORAGE_KEY =
@@ -37,7 +42,7 @@ function applySkin(
 export function EmbeddedPortalSkinBridge() {
   useEffect(() => {
     const stored =
-      window.localStorage.getItem(
+      readPreferenceStorage(
         STORAGE_KEY,
       );
 

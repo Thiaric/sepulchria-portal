@@ -1,6 +1,11 @@
 "use client";
 
 import {
+  readPreferenceStorage,
+  writePreferenceStorage,
+} from "@/lib/privacy/storage-preferences";
+
+import {
   createContext,
   type ReactNode,
   useContext,
@@ -61,7 +66,7 @@ export function PortalSkinProvider({
     let cancelled = false;
 
     const cached =
-      window.localStorage.getItem(STORAGE_KEY);
+      readPreferenceStorage(STORAGE_KEY);
 
     if (validSkinSlug(cached)) {
       setSkin(cached);
@@ -120,7 +125,7 @@ export function PortalSkinProvider({
       setSkin(resolved);
       applySkinToDocument(resolved);
 
-      window.localStorage.setItem(
+      writePreferenceStorage(
         STORAGE_KEY,
         resolved,
       );
@@ -158,7 +163,7 @@ export function PortalSkinProvider({
     setSelectedSkin(nextSkin);
     setSkin(nextSkin);
     applySkinToDocument(nextSkin);
-    window.localStorage.setItem(STORAGE_KEY, nextSkin);
+    writePreferenceStorage(STORAGE_KEY, nextSkin);
   }
 
   function previewSkin(nextSkin: PortalSkin) {

@@ -74,15 +74,6 @@ export function LoginForm() {
       );
 
       portalWindow.focus();
-
-      /*
-       * The original browser tab is only the public-facing
-       * entry point. Once the dedicated game window has been
-       * launched successfully, return that tab to the homepage.
-       */
-      window.location.replace(
-        "/homepage",
-      );
     } catch (error: unknown) {
       portalWindow.close();
 
