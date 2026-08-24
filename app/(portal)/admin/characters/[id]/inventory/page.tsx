@@ -1,8 +1,11 @@
-import Link from "next/link";
-import { notFound } from "next/navigation";
 
+
+import { notFound } from "next/navigation";
 import { AdminActionForm } from "@/components/admin/admin-action-form";
-import { requireStaff } from "@/lib/auth/require-staff";
+import Link from "next/link";
+import {
+  requireStaffCapability,
+} from "@/lib/auth/require-staff";
 import {
   createUniqueItemForCharacter,
   grantStandardItem,
@@ -104,7 +107,7 @@ export default async function AdminCharacterInventoryPage({
   params,
   searchParams,
 }: Props) {
-  await requireStaff();
+  await requireStaffCapability("character_economy");
 
   const { id } = await params;
   const query = (await searchParams) ?? {};

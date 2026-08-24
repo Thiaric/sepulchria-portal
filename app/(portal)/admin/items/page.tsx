@@ -1,8 +1,11 @@
+
+
 import { AdminActionForm } from "@/components/admin/admin-action-form";
 import type { ReactNode } from "react";
-
 import { ItemEquipmentForm } from "@/components/admin/item-equipment-form";
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
 import {
@@ -103,7 +106,7 @@ const buttonClass =
   "border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-2.5 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:bg-[rgb(var(--sep-colour-4a321e))]";
 
 export default async function AdminItemsPage({ searchParams }: Props) {
-  await requireStaff();
+  await requireAdminSection("items");
   const params = (await searchParams) ?? {};
   const supabase = await createClient();
 

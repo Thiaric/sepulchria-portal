@@ -1,8 +1,12 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import {
+  revalidatePath,
+} from "next/cache";
 
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { adjustHealthForVigourModifier } from "@/lib/characters/adjust-health-for-vigour-modifier";
 import { createClient } from "@/lib/supabase/server";
 
@@ -56,7 +60,7 @@ function refreshStructure() {
 }
 
 export async function updateOrderLevel(formData: FormData) {
-  await requireStaff();
+  await requireAdminSection("orders");
   const orderId = requiredString(formData, "orderId", "Order");
   const levelId = requiredString(formData, "levelId", "Level");
   if (!isUuid(orderId) || !isUuid(levelId)) {
@@ -86,7 +90,7 @@ export async function updateOrderLevel(formData: FormData) {
 }
 
 export async function createOrderJob(formData: FormData) {
-  await requireStaff();
+  await requireAdminSection("orders");
   const orderId = requiredString(formData, "orderId", "Order");
   const levelId = requiredString(formData, "levelId", "Level");
   const name = requiredString(formData, "name", "Role title").slice(0, 120);
@@ -129,7 +133,7 @@ export async function createOrderJob(formData: FormData) {
 }
 
 export async function updateOrderJob(formData: FormData) {
-  await requireStaff();
+  await requireAdminSection("orders");
   const orderId = requiredString(formData, "orderId", "Order");
   const jobId = requiredString(formData, "jobId", "Role");
   const name = requiredString(formData, "name", "Role title").slice(0, 120);
@@ -225,7 +229,7 @@ export async function updateOrderJob(formData: FormData) {
 }
 
 export async function deleteOrderJob(formData: FormData) {
-  await requireStaff();
+  await requireAdminSection("orders");
   const orderId = requiredString(formData, "orderId", "Order");
   const jobId = requiredString(formData, "jobId", "Role");
   if (!isUuid(orderId) || !isUuid(jobId)) throw new Error("Invalid Order role.");
@@ -280,7 +284,7 @@ export async function deleteOrderJob(formData: FormData) {
 }
 
 export async function createOrderJobLink(formData: FormData) {
-  await requireStaff();
+  await requireAdminSection("orders");
   const orderId = requiredString(formData, "orderId", "Order");
   const fromJobId = requiredString(formData, "fromJobId", "From role");
   const toJobId = requiredString(formData, "toJobId", "To role");
@@ -296,7 +300,7 @@ export async function createOrderJobLink(formData: FormData) {
 }
 
 export async function deleteOrderJobLink(formData: FormData) {
-  await requireStaff();
+  await requireAdminSection("orders");
   const orderId = requiredString(formData, "orderId", "Order");
   const linkId = requiredString(formData, "linkId", "Link");
   if (!isUuid(orderId) || !isUuid(linkId)) throw new Error("Invalid role progression link.");
@@ -316,7 +320,7 @@ export async function createOrderJobLinkLive({
   toJobId: string;
 }) {
   try {
-    await requireStaff();
+    await requireAdminSection("orders");
 
     if (!isUuid(orderId) || !isUuid(fromJobId) || !isUuid(toJobId)) {
       return { ok: false as const, error: "Invalid Role progression link." };
@@ -361,7 +365,7 @@ export async function deleteOrderJobLinkLive({
   linkId: string;
 }) {
   try {
-    await requireStaff();
+    await requireAdminSection("orders");
 
     if (!isUuid(orderId) || !isUuid(linkId)) {
       return { ok: false as const, error: "Invalid Role progression link." };

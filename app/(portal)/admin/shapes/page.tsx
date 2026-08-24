@@ -1,4 +1,6 @@
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 import { ACTION_WORDS,ATTRIBUTES,ESSENCE_WORDS,LAW_WORDS,MOVEMENTS,PRICES,SAVES,WARPING_SCHOOLS } from "@/lib/warping/constants";
 import { assignShape,createShape,deleteShape,linkOrderLevel,unlinkOrderLevel,removeAssignment,updateShape } from "./actions";
@@ -64,7 +66,7 @@ function ShapeForm({s,action}:{s?:S;action:(f:FormData)=>void|Promise<void>}){
   </form>;
 }
 export default async function AdminShapesPage({searchParams}:Props){
-  await requireStaff(); const params=(await searchParams)??{}; const db=await createClient();
+  await requireAdminSection("shapes"); const params=(await searchParams)??{}; const db=await createClient();
   const [sr,cr,lr]=await Promise.all([
     db.from("shapes").select("*,assignments:character_shapes(id,character_id,acquisition_source,level_override),order_links:order_level_shapes(id,order_level_id)").order("level").order("name"),
     db.from("characters").select("id,display_name").eq("status","approved").eq("is_system",false).order("display_name"),

@@ -1,3 +1,5 @@
+
+
 import { AdminActionForm } from "@/components/admin/admin-action-form";
 import {
   AURETH_MONTHS,
@@ -5,7 +7,9 @@ import {
   fromIsoDateKey,
   getAurethDate,
 } from "@/lib/world/calendar";
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
 import {
@@ -241,7 +245,7 @@ function EventFields({
 }
 
 export default async function EventsAdminPage() {
-  await requireStaff();
+  await requireAdminSection("events");
 
   const supabase =
     await createClient();

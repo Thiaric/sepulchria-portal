@@ -1,8 +1,12 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import {
+  revalidatePath,
+} from "next/cache";
 
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 import type {
   ClimateOverrideSnapshot,
@@ -51,7 +55,7 @@ function makeSnapshot(state: WorldState): ClimateOverrideSnapshot {
 }
 
 export async function resetWeatherOverride() {
-  const staff = await requireStaff();
+  const staff = await requireAdminSection("world");
   const supabase = await createClient();
 
   const { data: before, error: beforeError } = await supabase
@@ -114,7 +118,7 @@ export async function resetWeatherOverride() {
 }
 
 export async function updateWorldState(formData: FormData) {
-  const staff = await requireStaff();
+  const staff = await requireAdminSection("world");
   const supabase = await createClient();
 
   const weather = String(formData.get("weather") ?? "clear") as WeatherKind;

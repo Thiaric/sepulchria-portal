@@ -1,12 +1,16 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import {
+  revalidatePath,
+} from "next/cache";
 
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
 export async function awardExpertise(formData: FormData): Promise<void> {
-  await requireStaff();
+  await requireAdminSection("expertise");
 
   const characterId = String(formData.get("character_id") ?? "").trim();
   const amount = Number(formData.get("amount"));

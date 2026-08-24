@@ -1,9 +1,12 @@
+
+
 import { AdminActionForm } from "@/components/admin/admin-action-form";
 import Image from "next/image";
-
 import { RichTextContent } from "@/components/editor/rich-text-content";
 import { RichTextEditor } from "@/components/editor/rich-text-editor";
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
 import {
@@ -98,7 +101,7 @@ function isValidColour(value: string | null): boolean {
 export default async function AdminAssociationsPage({
   searchParams,
 }: AdminAssociationsPageProps) {
-  await requireStaff();
+  await requireAdminSection("associations");
 
   const resolvedSearchParams =
     (await searchParams) ?? {};

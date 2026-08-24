@@ -1,9 +1,15 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
-import { requireStaff } from "@/lib/auth/require-staff";
+
+import { redirect } from "next/navigation";
+import {
+  revalidatePath,
+} from "next/cache";
+
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { sanitizeRichHtml } from "@/lib/rich-text";
 import { createClient } from "@/lib/supabase/server";
 
@@ -42,7 +48,7 @@ function refreshRules() {
 export async function createRuleCategory(
   formData: FormData,
 ) {
-  await requireStaff();
+  await requireAdminSection("rules");
 
   const name = cleanText(
     formData.get("name"),
@@ -85,7 +91,7 @@ export async function createRuleCategory(
 export async function updateRuleCategory(
   formData: FormData,
 ) {
-  await requireStaff();
+  await requireAdminSection("rules");
 
   const id = cleanText(
     formData.get("id"),
@@ -130,7 +136,7 @@ export async function updateRuleCategory(
 export async function createRuleEntry(
   formData: FormData,
 ) {
-  await requireStaff();
+  await requireAdminSection("rules");
 
   const title = cleanText(
     formData.get("title"),
@@ -197,7 +203,7 @@ export async function createRuleEntry(
 export async function updateRuleEntry(
   formData: FormData,
 ) {
-  await requireStaff();
+  await requireAdminSection("rules");
 
   const id = cleanText(
     formData.get("id"),
@@ -261,7 +267,7 @@ export async function updateRuleEntry(
 export async function deleteRuleEntry(
   formData: FormData,
 ) {
-  await requireStaff();
+  await requireAdminSection("rules");
 
   const id = cleanText(
     formData.get("id"),
@@ -284,7 +290,7 @@ export async function deleteRuleEntry(
 export async function createGlossaryEntry(
   formData: FormData,
 ) {
-  await requireStaff();
+  await requireAdminSection("rules");
 
   const term = cleanText(
     formData.get("term"),
@@ -345,7 +351,7 @@ export async function createGlossaryEntry(
 export async function updateGlossaryEntry(
   formData: FormData,
 ) {
-  await requireStaff();
+  await requireAdminSection("rules");
 
   const id = cleanText(
     formData.get("id"),
@@ -403,7 +409,7 @@ export async function updateGlossaryEntry(
 export async function deleteGlossaryEntry(
   formData: FormData,
 ) {
-  await requireStaff();
+  await requireAdminSection("rules");
 
   const id = cleanText(
     formData.get("id"),
@@ -426,7 +432,7 @@ export async function deleteGlossaryEntry(
 export async function createRuleLink(
   formData: FormData,
 ) {
-  await requireStaff();
+  await requireAdminSection("rules");
 
   const sourceRuleId = cleanText(
     formData.get("source_rule_id"),
@@ -471,7 +477,7 @@ export async function createRuleLink(
 export async function deleteRuleLink(
   formData: FormData,
 ) {
-  await requireStaff();
+  await requireAdminSection("rules");
 
   const id = cleanText(
     formData.get("id"),

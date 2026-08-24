@@ -1,6 +1,10 @@
+
+
 import { AdminActionForm } from "@/components/admin/admin-action-form";
 import { RichTextEditor } from "@/components/editor/rich-text-editor";
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
 import {
@@ -57,7 +61,7 @@ type RuleLink = {
 };
 
 export default async function AdminRulesPage() {
-  await requireStaff();
+  await requireAdminSection("rules");
 
   const supabase = await createClient();
 

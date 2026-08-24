@@ -1,8 +1,13 @@
 "use server";
 
-import { revalidatePath, updateTag } from "next/cache";
+import {
+  revalidatePath,
+  updateTag,
+} from "next/cache";
 
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { sanitizeRichHtml } from "@/lib/rich-text";
 import { createClient } from "@/lib/supabase/server";
 
@@ -245,7 +250,7 @@ async function getUniqueSlug({
 export async function createRace(
   formData: FormData,
 ): Promise<void> {
-  await requireStaff();
+  await requireAdminSection("races");
 
   const supabase = await createClient();
 
@@ -364,7 +369,7 @@ export async function createRace(
 export async function updateRace(
   formData: FormData,
 ): Promise<void> {
-  await requireStaff();
+  await requireAdminSection("races");
 
   const supabase = await createClient();
 
@@ -518,7 +523,7 @@ export async function updateRace(
 export async function deleteRace(
   formData: FormData,
 ): Promise<void> {
-  await requireStaff();
+  await requireAdminSection("races");
 
   const supabase = await createClient();
 

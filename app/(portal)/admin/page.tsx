@@ -1,10 +1,12 @@
 import Link from "next/link";
 
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function AdminPage() {
-  const staff = await requireStaff();
+  const staff = await requireAdminSection("overview");
   const supabase = await createClient();
 
   const [

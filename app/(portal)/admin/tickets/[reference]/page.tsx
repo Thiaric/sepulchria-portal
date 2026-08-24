@@ -1,10 +1,12 @@
-import Link from "next/link";
-import { notFound } from "next/navigation";
 
-export const dynamic = "force-dynamic";
 
+import { notFound, redirect } from "next/navigation";
 import { TicketLiveSync } from "@/components/support/ticket-live-sync";
-import { requireStaff } from "@/lib/auth/require-staff";
+import Link from "next/link";
+import {
+  requireAdminSection,
+  canHandleTicketCategory,
+} from "@/lib/auth/require-staff";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 import { issueSanction } from "@/app/(portal)/admin/sanctions/actions";
@@ -230,7 +232,7 @@ export default async function AdminTicketPage({
   params: Promise<{ reference: string }>;
   searchParams?: Promise<{ sanctionError?: string }>;
 }) {
-  const staff = await requireStaff();
+  const staff = await requireAdminSection("tickets");
   const { reference } = await params;
   const query = (await searchParams) ?? {};
   const sanctionError = query.sanctionError ?? null;
@@ -246,6 +248,15 @@ export default async function AdminTicketPage({
 
   if (error) throw new Error(error.message);
   if (!ticket) notFound();
+
+  if (
+    !canHandleTicketCategory(
+      staff.role,
+      ticket.category,
+    )
+  ) {
+    redirect("/admin/tickets");
+  }
 
   const [
     { data: messages, error: messageError },

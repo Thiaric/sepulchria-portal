@@ -1,10 +1,12 @@
 import Link from "next/link";
 
 import ForumStaffTools from "@/components/forum/forum-staff-tools";
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 
 export default async function AdminForumPage() {
-  await requireStaff();
+  await requireAdminSection("forum");
 
   return (
     <main className="p-5 sm:p-7 lg:p-9">

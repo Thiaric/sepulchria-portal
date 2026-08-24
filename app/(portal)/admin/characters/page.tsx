@@ -1,7 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
 type CodexOption = {
@@ -89,7 +91,7 @@ function formatDate(value: string): string {
 export default async function AdminCharactersPage({
   searchParams,
 }: AdminCharactersPageProps) {
-  await requireStaff();
+  await requireAdminSection("characters");
 
   const params =
     (await searchParams) ?? {};

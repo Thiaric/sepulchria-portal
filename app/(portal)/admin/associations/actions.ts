@@ -1,8 +1,12 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import {
+  revalidatePath,
+} from "next/cache";
 
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { sanitizeRichHtml } from "@/lib/rich-text";
 import { createClient } from "@/lib/supabase/server";
 
@@ -171,7 +175,7 @@ async function getUniqueSlug({
 export async function createAssociation(
   formData: FormData,
 ): Promise<void> {
-  await requireStaff();
+  await requireAdminSection("associations");
 
   const supabase = await createClient();
 
@@ -287,7 +291,7 @@ export async function createAssociation(
 export async function updateAssociation(
   formData: FormData,
 ): Promise<void> {
-  await requireStaff();
+  await requireAdminSection("associations");
 
   const supabase = await createClient();
 
@@ -442,7 +446,7 @@ export async function updateAssociation(
 export async function deleteAssociation(
   formData: FormData,
 ): Promise<void> {
-  await requireStaff();
+  await requireAdminSection("associations");
 
   const supabase = await createClient();
 

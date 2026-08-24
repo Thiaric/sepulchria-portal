@@ -1,5 +1,9 @@
+
+
 import { AdminActionForm } from "@/components/admin/admin-action-form";
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 import {
   createTidingAction,
@@ -12,7 +16,7 @@ export default async function TidingsAdminPage({
 }: {
   searchParams: Promise<{ created?: string }>;
 }) {
-  await requireStaff();
+  await requireAdminSection("tidings");
   const supabase = await createClient();
   const { created } = await searchParams;
 

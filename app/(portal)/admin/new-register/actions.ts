@@ -1,14 +1,18 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import {
+  revalidatePath,
+} from "next/cache";
 
-import { requireAdmin } from "@/lib/auth/require-staff";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
 export async function setRegistrationsOpenAction(
   formData: FormData,
 ) {
-  const staff = await requireAdmin();
+  const staff = await requireAdminSection("new_register");
   const supabase = await createClient();
 
   const registrationsOpen =

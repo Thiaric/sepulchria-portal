@@ -1,15 +1,19 @@
-import Image from "next/image";
+
+
 import { CharacterGiftsDisplay } from "@/components/characters/character-gifts-display";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-
 import { AdminCharacterEditForm } from "@/components/admin/admin-character-edit-form";
 import {
   AdminAncestryGiftSelector,
   type AdminAncestryGiftOption,
 } from "@/components/admin/admin-ancestry-gift-selector";
 import { CharacterReviewFields } from "@/components/admin/character-review-fields";
-import { requireStaff } from "@/lib/auth/require-staff";
+import Image from "next/image";
+import {
+  hasStaffCapability,
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
 import {
@@ -183,7 +187,34 @@ function formatGender(
 export default async function AdminCharacterPage({
   params,
 }: AdminCharacterPageProps) {
-  await requireStaff();
+  const staff =
+    await requireAdminSection(
+      "characters",
+    );
+
+  const canEditCharacter =
+    hasStaffCapability(
+      staff.role,
+      "character_edit",
+    );
+
+  const canDeleteCharacter =
+    hasStaffCapability(
+      staff.role,
+      "character_delete",
+    );
+
+  const canManageEconomy =
+    hasStaffCapability(
+      staff.role,
+      "character_economy",
+    );
+
+  const canManageWarping =
+    hasStaffCapability(
+      staff.role,
+      "character_warping",
+    );
 
   const { id } = await params;
   const supabase =
@@ -435,33 +466,41 @@ export default async function AdminCharacterPage({
           </Link>
 
           <div className="flex flex-wrap gap-2">
-            <Link
-              href={`/admin/characters/${character.id}/inventory`}
-              className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
-            >
-              Manage inventory
-            </Link>
+            {canManageEconomy ? (
+              <Link
+                href={`/admin/characters/${character.id}/inventory`}
+                className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
+              >
+                Manage inventory
+              </Link>
+            ) : null}
 
-            <Link
-              href={`/admin/characters/${character.id}/warping`}
-              className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
-            >
-              Manage Warping
-            </Link>
+            {canManageWarping ? (
+              <Link
+                href={`/admin/characters/${character.id}/warping`}
+                className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
+              >
+                Manage Warping
+              </Link>
+            ) : null}
 
-            <Link
-              href={`/admin/characters/${character.id}/premium-features`}
-              className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
-            >
-              Premium Features
-            </Link>
+            {canManageEconomy ? (
+              <Link
+                href={`/admin/characters/${character.id}/premium-features`}
+                className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
+              >
+                Premium Features
+              </Link>
+            ) : null}
 
-            <Link
-              href={`/admin/characters/${character.id}/ledger`}
-              className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
-            >
-              Ledger
-            </Link>
+            {canManageEconomy ? (
+              <Link
+                href={`/admin/characters/${character.id}/ledger`}
+                className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
+              >
+                Ledger
+              </Link>
+            ) : null}
 
           <Link
             href={`/characters/${character.public_slug}`}
@@ -669,12 +708,13 @@ export default async function AdminCharacterPage({
               Review and classification
             </h3>
 
-            <AdminCharacterEditForm
-              action={
-                updateCharacterAdministration
-              }
-              className="mt-6"
-            >
+            {canEditCharacter ? (
+              <AdminCharacterEditForm
+                action={
+                  updateCharacterAdministration
+                }
+                className="mt-6"
+              >
               <input
                 type="hidden"
                 name="characterId"
@@ -1245,8 +1285,16 @@ export default async function AdminCharacterPage({
               >
                 Save character record
               </button>
-            </AdminCharacterEditForm>
+              </AdminCharacterEditForm>
+            ) : (
+              <div className="mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] p-4 text-xs leading-6 text-[rgb(var(--sep-colour-9f917c))]">
+                Moderator access is read-only on character records.
+                You can review the sheet and moderation-relevant information,
+                but gameplay and account data cannot be changed from this role.
+              </div>
+            )}
 
+            {canDeleteCharacter ? (
             <div className="mt-8 border-t border-[rgb(var(--sep-colour-6f302b))]/45 pt-6">
               <div className="border border-[rgb(var(--sep-colour-843a32))]/60 bg-[rgb(var(--sep-colour-26110f))]/65 p-4">
                 <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-c06d62))]">
@@ -1313,6 +1361,7 @@ export default async function AdminCharacterPage({
                 </form>
               </div>
             </div>
+            ) : null}
           </section>
         </div>
       </div>

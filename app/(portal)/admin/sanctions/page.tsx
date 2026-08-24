@@ -1,5 +1,7 @@
 import Link from "next/link";
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { SanctionLiveSync } from "@/components/sanctions/sanction-live-sync";
 
@@ -10,7 +12,7 @@ function fmt(v:string|null){
 function label(v:string){return v.replaceAll("_"," ").replace(/\b\w/g,l=>l.toUpperCase());}
 
 export default async function AdminSanctionsPage({searchParams}:{searchParams?:Promise<{status?:string;type?:string;q?:string}>}){
-  await requireStaff();
+  await requireAdminSection("sanctions");
   const p=(await searchParams)??{};
   const admin=createAdminClient();
 

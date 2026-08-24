@@ -1,12 +1,15 @@
 "use server";
 
+
+
+import { redirect } from "next/navigation";
 import {
   revalidatePath,
 } from "next/cache";
 
-import { redirect } from "next/navigation";
-
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { sanitizeRichHtml } from "@/lib/rich-text";
 import { createClient } from "@/lib/supabase/server";
 
@@ -348,7 +351,7 @@ async function recalculateCharacterAssociation(
 export async function createOrder(
   formData: FormData,
 ) {
-  await requireStaff();
+  await requireAdminSection("orders");
 
   try {
     const supabase =
@@ -593,7 +596,7 @@ export async function createOrder(
 export async function updateOrder(
   formData: FormData,
 ) {
-  await requireStaff();
+  await requireAdminSection("orders");
 
   try {
     const supabase =
@@ -786,7 +789,7 @@ export async function updateOrder(
 export async function deleteOrder(
   formData: FormData,
 ) {
-  await requireStaff();
+  await requireAdminSection("orders");
 
   try {
     const supabase =

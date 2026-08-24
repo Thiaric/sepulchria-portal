@@ -1,6 +1,10 @@
+
+
 import { AdminActionForm } from "@/components/admin/admin-action-form";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 
 import { createOddJob, updateOddJob } from "./actions";
 
@@ -12,7 +16,7 @@ type OddJobRow = {
 };
 
 export default async function AdminJobsPage() {
-  await requireStaff();
+  await requireAdminSection("jobs");
 
   const supabase = createAdminClient();
 

@@ -4,7 +4,7 @@ import {
   MediaLibraryManager,
 } from "@/components/admin/media-library-manager";
 import {
-  requireAdmin,
+  requireAdminSection,
 } from "@/lib/auth/require-staff";
 
 export const dynamic =
@@ -12,7 +12,7 @@ export const dynamic =
 export const revalidate = 0;
 
 export default async function AdminMediaPage() {
-  await requireAdmin();
+  await requireAdminSection("media");
 
   const configured =
     Boolean(

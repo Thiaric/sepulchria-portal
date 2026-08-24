@@ -5,7 +5,11 @@ import { AdminInteractionKeeper } from "@/components/admin/admin-interaction-kee
 import { SubmittedCharacterBadge } from "@/components/admin/submitted-character-badge";
 import { TicketNotificationBadge } from "@/components/support/ticket-notification-badge";
 import { SanctionNotificationBadge } from "@/components/sanctions/sanction-notification-badge";
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  canAccessAdminSection,
+  requireStaff,
+  type AdminSection,
+} from "@/lib/auth/require-staff";
 
 import "./admin-compact.css";
 
@@ -18,13 +22,18 @@ export default async function AdminLayout({
 }: AdminLayoutProps) {
   const staff = await requireStaff();
 
-  const canManageUsers =
-    staff.role === "owner" ||
-    staff.role === "admin";
+  const can = (
+    section: AdminSection,
+  ) =>
+    canAccessAdminSection(
+      staff.role,
+      section,
+    );
 
   return (
     <div className="min-h-[calc(100vh-5rem)]">
       <AdminInteractionKeeper />
+
       <div className="border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-5 py-4 sm:px-7 lg:px-9">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
@@ -41,116 +50,64 @@ export default async function AdminLayout({
             aria-label="Administration"
             className="flex flex-wrap items-center gap-2"
           >
-            <AdminNavigationLink href="/admin">
-              Overview
-            </AdminNavigationLink> 
+            {can("overview") ? <AdminNavigationLink href="/admin">Overview</AdminNavigationLink> : null}
+            {can("races") ? <AdminNavigationLink href="/admin/races">Ancestries</AdminNavigationLink> : null}
+            {can("areas") ? <AdminNavigationLink href="/admin/areas">Areas</AdminNavigationLink> : null}
+            {can("associations") ? <AdminNavigationLink href="/admin/associations">Associations</AdminNavigationLink> : null}
 
-            <AdminNavigationLink href="/admin/races">
-              Ancestries
-            </AdminNavigationLink>            
+            {can("characters") ? (
+              <AdminNavigationLink href="/admin/characters">
+                <span className="flex items-center gap-2">
+                  <span>Characters</span>
+                  <SubmittedCharacterBadge variant="admin-nav" />
+                </span>
+              </AdminNavigationLink>
+            ) : null}
 
-            <AdminNavigationLink href="/admin/areas">
-              Areas
-            </AdminNavigationLink>
+            {can("events") ? <AdminNavigationLink href="/admin/events">Events</AdminNavigationLink> : null}
+            {can("expertise") ? <AdminNavigationLink href="/admin/expertise">Expertise</AdminNavigationLink> : null}
+            {can("gifts") ? <AdminNavigationLink href="/admin/gifts">Feats</AdminNavigationLink> : null}
 
-            <AdminNavigationLink href="/admin/associations">
-              Associations
-            </AdminNavigationLink>           
-
-            <AdminNavigationLink href="/admin/characters">
-              <span className="flex items-center gap-2">
-                <span>Characters</span>
-                <SubmittedCharacterBadge variant="admin-nav" />
-              </span>
-            </AdminNavigationLink>
-
-            <AdminNavigationLink href="/admin/events">
-              Events
-            </AdminNavigationLink>
-
-            <AdminNavigationLink href="/admin/expertise">
-              Expertise
-            </AdminNavigationLink>
-
-            <AdminNavigationLink href="/admin/gifts">
-              Feats
-            </AdminNavigationLink>
-
-            <AdminNavigationLink href="/admin/items">
-              Items
-            </AdminNavigationLink>
-
-            <AdminNavigationLink href="/admin/jobs">
-              Jobs
-            </AdminNavigationLink>
-
-            <AdminNavigationLink href="/admin/market">
-              Market
-            </AdminNavigationLink>
-
-            <AdminNavigationLink href="/admin/items/vault">
-              Item Vault
-            </AdminNavigationLink>
-
-            <AdminNavigationLink href="/admin/forum">
-              Forum
-            </AdminNavigationLink>            
-
-            <AdminNavigationLink href="/admin/communication-logs">
-              Logs
-            </AdminNavigationLink>
-
-            <AdminNavigationLink href="/admin/safety">
-              Safety
-            </AdminNavigationLink>
-
-            <AdminNavigationLink href="/admin/rooms">
-              Locations
-            </AdminNavigationLink>
-
-            <AdminNavigationLink href="/admin/orders">
-              Orders
-            </AdminNavigationLink>
-
-            <AdminNavigationLink href="/admin/rules">
-              Rules
-            </AdminNavigationLink>
-
-            <AdminNavigationLink href="/admin/shapes">
-              Shapes
-            </AdminNavigationLink>
-          
-            <AdminNavigationLink href="/admin/tidings">
-              Tidings
-            </AdminNavigationLink>            
-
-            <AdminNavigationLink href="/admin/tickets">
-              <span className="flex items-center gap-2"><span>Tickets</span><TicketNotificationBadge audience="staff" variant="admin-nav" /></span>
-            </AdminNavigationLink>
-
-            <AdminNavigationLink href="/admin/sanctions">
-              <span className="flex items-center gap-2"><span>Sanctions</span><SanctionNotificationBadge audience="staff" /></span>
-            </AdminNavigationLink>
-
-            {canManageUsers ? (
+            {can("items") ? (
               <>
-                <AdminNavigationLink href="/admin/media">
-                  Media
-                </AdminNavigationLink>
-
-                <AdminNavigationLink href="/admin/users">
-                  Users
-                </AdminNavigationLink>
-
-                <AdminNavigationLink href="/admin/new-register">
-                  Registrations
-                </AdminNavigationLink>
+                <AdminNavigationLink href="/admin/items">Items</AdminNavigationLink>
+                <AdminNavigationLink href="/admin/items/vault">Item Vault</AdminNavigationLink>
               </>
             ) : null}
 
-            <AdminNavigationLink href="/admin/world">
-              World
-            </AdminNavigationLink>
+            {can("jobs") ? <AdminNavigationLink href="/admin/jobs">Jobs</AdminNavigationLink> : null}
+            {can("market") ? <AdminNavigationLink href="/admin/market">Market</AdminNavigationLink> : null}
+            {can("forum") ? <AdminNavigationLink href="/admin/forum">Forum</AdminNavigationLink> : null}
+            {can("communication_logs") ? <AdminNavigationLink href="/admin/communication-logs">Logs</AdminNavigationLink> : null}
+            {can("safety") ? <AdminNavigationLink href="/admin/safety">Safety</AdminNavigationLink> : null}
+            {can("rooms") ? <AdminNavigationLink href="/admin/rooms">Locations</AdminNavigationLink> : null}
+            {can("orders") ? <AdminNavigationLink href="/admin/orders">Orders</AdminNavigationLink> : null}
+            {can("rules") ? <AdminNavigationLink href="/admin/rules">Rules</AdminNavigationLink> : null}
+            {can("shapes") ? <AdminNavigationLink href="/admin/shapes">Shapes</AdminNavigationLink> : null}
+            {can("tidings") ? <AdminNavigationLink href="/admin/tidings">Tidings</AdminNavigationLink> : null}
+
+            {can("tickets") ? (
+              <AdminNavigationLink href="/admin/tickets">
+                <span className="flex items-center gap-2">
+                  <span>Tickets</span>
+                  <TicketNotificationBadge audience="staff" variant="admin-nav" />
+                </span>
+              </AdminNavigationLink>
+            ) : null}
+
+            {can("sanctions") ? (
+              <AdminNavigationLink href="/admin/sanctions">
+                <span className="flex items-center gap-2">
+                  <span>Sanctions</span>
+                  <SanctionNotificationBadge audience="staff" />
+                </span>
+              </AdminNavigationLink>
+            ) : null}
+
+            {can("media") ? <AdminNavigationLink href="/admin/media">Media</AdminNavigationLink> : null}
+            {can("users") ? <AdminNavigationLink href="/admin/users">Users</AdminNavigationLink> : null}
+            {can("new_register") ? <AdminNavigationLink href="/admin/new-register">Registrations</AdminNavigationLink> : null}
+            {can("world") ? <AdminNavigationLink href="/admin/world">World</AdminNavigationLink> : null}
           </nav>
         </div>
 
@@ -160,8 +117,7 @@ export default async function AdminLayout({
           </span>
 
           <span className="text-[10px] text-[rgb(var(--sep-colour-8f806c))]">
-            {staff.email ??
-              "Authenticated staff member"}
+            {staff.email ?? "Authenticated staff member"}
           </span>
         </div>
       </div>

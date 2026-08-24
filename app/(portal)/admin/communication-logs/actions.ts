@@ -1,8 +1,12 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import {
+  revalidatePath,
+} from "next/cache";
 
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
 const SOURCE_TYPES = [
@@ -23,7 +27,7 @@ function isUuid(value: string) {
 export async function obscureCommunication(
   formData: FormData,
 ) {
-  await requireStaff();
+  await requireAdminSection("communication_logs");
 
   const sourceType = String(
     formData.get("sourceType") ?? "",

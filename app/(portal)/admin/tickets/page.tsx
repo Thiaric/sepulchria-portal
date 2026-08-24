@@ -1,12 +1,17 @@
-import Link from "next/link";
+
+
 import {TicketLiveSync} from "@/components/support/ticket-live-sync";
-import {requireStaff} from "@/lib/auth/require-staff";
+import Link from "next/link";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import {getTicketUnreadCounts} from "@/lib/support/ticket-unread";
 import {createAdminClient} from "@/lib/supabase/admin";
 function Badge({count}:{count:number}){return count>0?<span className="absolute -right-2 -top-2 inline-flex h-5 min-w-5 items-center justify-center rounded-full border border-[rgb(var(--sep-colour-d19a4c))] bg-[rgb(var(--sep-colour-7a291f))] px-1 text-[8px] font-bold leading-none text-[rgb(var(--sep-colour-ffe1ac))]">{count>99?"99+":count}</span>:null;}
 export default async function AdminTicketsPage({searchParams}:{searchParams?:Promise<{status?:string;priority?:string;q?:string}>}){
- const staff=await requireStaff();const p=(await searchParams)??{};const admin=createAdminClient();
+ const staff=await requireAdminSection("tickets");const p=(await searchParams)??{};const admin=createAdminClient();
  let q=admin.from("tickets").select("id,public_reference,category,status,priority,subject,assigned_staff_user_id,updated_at").order("updated_at",{ascending:false}).limit(250);
+ if(staff.role==="master")q=q.neq("category","report");
  if(p.status)q=q.eq("status",p.status);if(p.priority)q=q.eq("priority",p.priority);if(p.q?.trim())q=q.ilike("subject",`%${p.q.trim()}%`);
  const {data:tickets,error}=await q;if(error)throw new Error(error.message);
  const unread=await getTicketUnreadCounts({admin,userId:staff.userId,ticketIds:(tickets??[]).map(t=>t.id),audience:"staff"});

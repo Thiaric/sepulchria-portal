@@ -1,7 +1,12 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  revalidatePath,
+} from "next/cache";
+
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 function readText(formData: FormData, name: string) {
@@ -17,7 +22,7 @@ function validateJob(name: string, description: string) {
 }
 
 export async function createOddJob(formData: FormData) {
-  await requireStaff();
+  await requireAdminSection("jobs");
 
   const name = readText(formData, "name");
   const description = readText(formData, "description");
@@ -57,7 +62,7 @@ export async function createOddJob(formData: FormData) {
 }
 
 export async function updateOddJob(formData: FormData) {
-  await requireStaff();
+  await requireAdminSection("jobs");
 
   const jobId = readText(formData, "jobId");
   const name = readText(formData, "name");

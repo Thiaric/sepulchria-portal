@@ -1,8 +1,11 @@
-import Link from "next/link";
-import { notFound } from "next/navigation";
 
+
+import { notFound } from "next/navigation";
 import { AdminCharacterRemnants } from "@/components/admin/admin-character-remnants";
-import { requireStaff } from "@/lib/auth/require-staff";
+import Link from "next/link";
+import {
+  requireStaffCapability,
+} from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
 type Props = {
@@ -34,7 +37,7 @@ const buttonClass =
 export default async function AdminCharacterLedgerPage({
   params,
 }: Props) {
-  await requireStaff();
+  await requireStaffCapability("character_economy");
 
   const { id } = await params;
   const supabase =

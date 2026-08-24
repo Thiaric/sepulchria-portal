@@ -1,9 +1,15 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
-import { requireStaff } from "@/lib/auth/require-staff";
+
+import { redirect } from "next/navigation";
+import {
+  revalidatePath,
+} from "next/cache";
+
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import {
   applyGiftOwnershipHealthEffects,
   removeGiftOwnershipHealthEffects,
@@ -352,7 +358,7 @@ async function replaceEligibility(
 }
 
 export async function createGift(formData: FormData) {
-  await requireStaff();
+  await requireAdminSection("gifts");
   const supabase = await createClient();
 
   try {
@@ -385,7 +391,7 @@ export async function createGift(formData: FormData) {
 }
 
 export async function updateGift(formData: FormData) {
-  await requireStaff();
+  await requireAdminSection("gifts");
   const supabase = await createClient();
 
   try {
@@ -413,7 +419,7 @@ export async function updateGift(formData: FormData) {
 }
 
 export async function assignGiftToCharacter(formData: FormData) {
-  const staff = await requireStaff();
+  const staff = await requireAdminSection("gifts");
   const supabase = await createClient();
 
   try {
@@ -498,7 +504,7 @@ export async function assignGiftToCharacter(formData: FormData) {
 }
 
 export async function removeGiftFromCharacter(formData: FormData) {
-  await requireStaff();
+  await requireAdminSection("gifts");
   const supabase = await createClient();
 
   try {
@@ -534,7 +540,7 @@ export async function removeGiftFromCharacter(formData: FormData) {
 }
 
 export async function deleteGift(formData: FormData) {
-  await requireStaff();
+  await requireAdminSection("gifts");
   const supabase = await createClient();
 
   try {

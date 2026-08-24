@@ -1,6 +1,10 @@
-import Link from "next/link";
+
+
 import { notFound } from "next/navigation";
-import { requireStaff } from "@/lib/auth/require-staff";
+import Link from "next/link";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revokeSanction } from "../actions";
 import { SanctionLiveSync } from "@/components/sanctions/sanction-live-sync";
@@ -10,7 +14,7 @@ function fmt(v:string|null){return v?new Intl.DateTimeFormat("en-GB",{dateStyle:
 function label(v:string){return v.replaceAll("_"," ").replace(/\b\w/g,l=>l.toUpperCase());}
 
 export default async function AdminSanctionPage({params,searchParams}:{params:Promise<{id:string}>;searchParams?:Promise<{sanctionError?:string;sanctionSuccess?:string}>}){
-  const staff=await requireStaff(); const {id}=await params; const query=(await searchParams)??{}; const admin=createAdminClient();
+  const staff=await requireAdminSection("sanctions"); const {id}=await params; const query=(await searchParams)??{}; const admin=createAdminClient();
   const {data:s,error}=await admin.from("sanctions").select("id,ticket_id,target_name_snapshot,sanction_type,status,reason_code,player_reason,internal_rationale,starts_at,expires_at,issued_at,revoked_at,revocation_reason").eq("id",id).maybeSingle();
   if(error||!s)notFound();
 

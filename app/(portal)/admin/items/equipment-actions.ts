@@ -1,9 +1,15 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
-import { requireStaff } from "@/lib/auth/require-staff";
+
+import { redirect } from "next/navigation";
+import {
+  revalidatePath,
+} from "next/cache";
+
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
 const EQUIP_SLOTS = [
@@ -122,7 +128,7 @@ function fail(message: string): never {
 export async function updateItemEquipment(
   formData: FormData,
 ) {
-  await requireStaff();
+  await requireAdminSection("items");
 
   const supabase =
     await createClient();

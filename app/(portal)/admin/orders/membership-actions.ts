@@ -1,8 +1,12 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import {
+  revalidatePath,
+} from "next/cache";
 
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { adjustHealthForVigourModifier } from "@/lib/characters/adjust-health-for-vigour-modifier";
 import { createClient } from "@/lib/supabase/server";
 
@@ -253,7 +257,7 @@ async function adjustCharacterHealthForOrderModifier({
 export async function addOrderMember(
   formData: FormData,
 ) {
-  const staff = await requireStaff();
+  const staff = await requireAdminSection("orders");
 
   const orderId = text(
     formData,
@@ -410,7 +414,7 @@ refresh(characterId);
 export async function updateOrderMember(
   formData: FormData,
 ) {
-  await requireStaff();
+  await requireAdminSection("orders");
 
   const orderId = text(
     formData,
@@ -599,7 +603,7 @@ await syncCharacterAssociation(
 export async function removeOrderMember(
   formData: FormData,
 ) {
-  await requireStaff();
+  await requireAdminSection("orders");
 
   const orderId = text(
     formData,

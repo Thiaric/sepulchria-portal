@@ -1,8 +1,12 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import {
+  revalidatePath,
+} from "next/cache";
 
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { sanitizeRichHtml } from "@/lib/rich-text";
 import { createClient } from "@/lib/supabase/server";
 
@@ -234,7 +238,7 @@ async function assertUniqueSlug(
 export async function createRoom(
   formData: FormData,
 ) {
-  await requireStaff();
+  await requireAdminSection("rooms");
 
   const areaId = readRequiredUuid(
     formData.get("areaId"),
@@ -314,7 +318,7 @@ export async function createRoom(
 export async function updateRoom(
   formData: FormData,
 ) {
-  await requireStaff();
+  await requireAdminSection("rooms");
 
   const roomId = readRequiredUuid(
     formData.get("roomId"),
@@ -433,7 +437,7 @@ export async function updateRoom(
 export async function deleteRoom(
   formData: FormData,
 ) {
-  await requireStaff();
+  await requireAdminSection("rooms");
 
   const roomId = readRequiredUuid(
     formData.get("roomId"),
@@ -606,7 +610,7 @@ export async function deleteRoom(
 export async function createRoomConnection(
   formData: FormData,
 ) {
-  await requireStaff();
+  await requireAdminSection("rooms");
 
   const fromRoomId =
     readRequiredUuid(
@@ -689,7 +693,7 @@ export async function createRoomConnection(
 export async function updateRoomConnection(
   formData: FormData,
 ) {
-  await requireStaff();
+  await requireAdminSection("rooms");
 
   const connectionId =
     readRequiredUuid(
@@ -734,7 +738,7 @@ export async function updateRoomConnection(
 export async function deleteRoomConnection(
   formData: FormData,
 ) {
-  await requireStaff();
+  await requireAdminSection("rooms");
 
   const connectionId =
     readRequiredUuid(

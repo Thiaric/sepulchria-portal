@@ -1,6 +1,9 @@
 "use server";
 
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  requireAdminSection,
+  requireStaffCapability,
+} from "@/lib/auth/require-staff";
 import {
   applyGiftOwnershipHealthEffects,
   removeGiftOwnershipHealthEffects,
@@ -46,7 +49,7 @@ function readUuid(
 export async function getAdminCharacterAgeConfig(
   characterId: string,
 ): Promise<AdminAgeConfig> {
-  await requireStaff();
+  await requireAdminSection("characters");
 
   const supabase =
     await createClient();
@@ -108,7 +111,7 @@ export async function saveAdminCharacterAge(
   error: string;
 }> {
   try {
-    await requireStaff();
+    await requireStaffCapability("character_age_admin");
 
     const characterId = readUuid(
       formData.get("characterId"),

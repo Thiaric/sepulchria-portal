@@ -1,8 +1,12 @@
-import Link from "next/link";
+
 
 import { AdminActionForm } from "@/components/admin/admin-action-form";
 import { AdminVaultFilters } from "@/components/admin/admin-vault-filters";
-import { requireStaff } from "@/lib/auth/require-staff";
+import Link from "next/link";
+
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import {
   assignVaultItemToCharacter,
   createUniqueItemInVault,
@@ -94,7 +98,7 @@ const buttonClass =
 export default async function AdminItemVaultPage({
   searchParams,
 }: Props) {
-  await requireStaff();
+  await requireAdminSection("items");
 
   const params = (await searchParams) ?? {};
   const supabase = await createClient();

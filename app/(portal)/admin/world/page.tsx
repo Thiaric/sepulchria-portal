@@ -1,5 +1,9 @@
+
+
 import { AdminLondonClock } from "@/components/world/admin-london-clock";
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import {
   formatAurethDate,
 } from "@/lib/world/calendar";
@@ -55,7 +59,7 @@ export default async function Page({
     weatherReset?: string;
   }>;
 }) {
-  await requireStaff();
+  await requireAdminSection("world");
 
   const state = await getWorldState();
   const { saved, weatherReset } = await searchParams;

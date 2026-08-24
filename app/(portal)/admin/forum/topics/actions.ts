@@ -1,9 +1,15 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
-import { requireStaff } from "@/lib/auth/require-staff";
+
+import { redirect } from "next/navigation";
+import {
+  revalidatePath,
+} from "next/cache";
+
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
 type PurgeResult = {
@@ -96,7 +102,7 @@ function addMessage(
 async function requireForumPurgeRole(
   returnTo: string,
 ) {
-  const staff = await requireStaff();
+  const staff = await requireAdminSection("forum");
 
   if (staff.role === "master") {
     redirect(

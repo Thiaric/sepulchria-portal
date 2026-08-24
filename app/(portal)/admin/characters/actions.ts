@@ -1,14 +1,18 @@
 "use server";
 
+
+
 import {
   createClient as createAdminClient,
 } from "@supabase/supabase-js";
-import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import {
+  revalidatePath,
+} from "next/cache";
 
 import {
-  requireAdmin,
   requireStaff,
+  requireStaffCapability,
 } from "@/lib/auth/require-staff";
 import { adjustHealthForVigourModifier } from "@/lib/characters/adjust-health-for-vigour-modifier";
 import { createClient } from "@/lib/supabase/server";
@@ -264,7 +268,9 @@ export async function updateCharacterAdministration(
   formData: FormData,
 ) {
   const staff =
-    await requireStaff();
+    await requireStaffCapability(
+      "character_edit",
+    );
 
   const characterId =
     readRequiredUuid(
@@ -1140,7 +1146,9 @@ currentHealth =
 export async function deleteCharacterAdministration(
   formData: FormData,
 ) {
-  await requireAdmin();
+  await requireStaffCapability(
+    "character_delete",
+  );
 
   const characterId =
     readRequiredUuid(

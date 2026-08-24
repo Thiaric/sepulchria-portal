@@ -1,11 +1,16 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  revalidatePath,
+} from "next/cache";
+
+import {
+  requireStaffCapability,
+} from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
 export async function adjustCharacterRemnants(formData: FormData) {
-  await requireStaff();
+  await requireStaffCapability("character_economy");
 
   const characterId = String(formData.get("characterId") ?? "").trim();
   const amount = Number(String(formData.get("amount") ?? "").trim());

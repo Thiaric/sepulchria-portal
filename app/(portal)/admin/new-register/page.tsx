@@ -1,11 +1,15 @@
+
+
 import { AdminActionForm } from "@/components/admin/admin-action-form";
-import { requireAdmin } from "@/lib/auth/require-staff";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
 import { setRegistrationsOpenAction } from "./actions";
 
 export default async function RegistrationAdminPage() {
-  await requireAdmin();
+  await requireAdminSection("new_register");
 
   const supabase = await createClient();
 

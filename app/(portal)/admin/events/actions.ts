@@ -1,8 +1,12 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import {
+  revalidatePath,
+} from "next/cache";
 
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import {
   aurethDateToUtcDate,
   toIsoDateKey,
@@ -184,7 +188,7 @@ function refreshEventPages() {
 export async function createCalendarEvent(
   formData: FormData,
 ) {
-  const staff = await requireStaff();
+  const staff = await requireAdminSection("events");
 
   const title = readRequiredText(
     formData.get("title"),
@@ -260,7 +264,7 @@ export async function createCalendarEvent(
 export async function updateCalendarEvent(
   formData: FormData,
 ) {
-  await requireStaff();
+  await requireAdminSection("events");
 
   const eventId =
     readRequiredUuid(
@@ -342,7 +346,7 @@ export async function updateCalendarEvent(
 export async function deleteCalendarEvent(
   formData: FormData,
 ) {
-  await requireStaff();
+  await requireAdminSection("events");
 
   const eventId =
     readRequiredUuid(

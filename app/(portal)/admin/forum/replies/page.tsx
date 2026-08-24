@@ -1,7 +1,10 @@
-import Link from "next/link";
-import { redirect } from "next/navigation";
 
-import { requireStaff } from "@/lib/auth/require-staff";
+
+import { redirect } from "next/navigation";
+import Link from "next/link";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { richTextToPlainText } from "@/lib/rich-text";
 import { createClient } from "@/lib/supabase/server";
 
@@ -188,7 +191,7 @@ export default async function ForumRepliesManagementPage({
   const resolvedSearchParams =
     await searchParams;
 
-  const staff = await requireStaff();
+  const staff = await requireAdminSection("forum");
   const canPurge =
     staff.role !== "master";
 

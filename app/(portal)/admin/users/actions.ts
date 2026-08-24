@@ -1,9 +1,15 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
-import { requireAdmin } from "@/lib/auth/require-staff";
+
+import { redirect } from "next/navigation";
+import {
+  revalidatePath,
+} from "next/cache";
+
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
@@ -68,7 +74,7 @@ function readOptionalRole(
 export async function updateUserStaffRole(
   formData: FormData,
 ) {
-  await requireAdmin();
+  await requireAdminSection("users");
 
   const userId = readRequiredUuid(
     formData.get("userId"),
@@ -113,7 +119,7 @@ function readRequiredBoolean(
 export async function setUserPortalSkinEntitlement(
   formData: FormData,
 ) {
-  const administrator = await requireAdmin();
+  const administrator = await requireAdminSection("users");
 
   const userId = readRequiredUuid(formData.get("userId"));
   const skinId = readRequiredUuid(formData.get("skinId"));
@@ -284,7 +290,7 @@ export async function deleteUserAccount(
   formData: FormData,
 ) {
   const administrator =
-    await requireAdmin();
+    await requireAdminSection("users");
 
   const targetUserId =
     readRequiredUuid(

@@ -1,8 +1,12 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import {
+  revalidatePath,
+} from "next/cache";
 
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { sanitizeRichHtml } from "@/lib/rich-text";
 import { createClient } from "@/lib/supabase/server";
 
@@ -178,7 +182,7 @@ function refreshAreaPages() {
 export async function createArea(
   formData: FormData,
 ) {
-  await requireStaff();
+  await requireAdminSection("areas");
 
   const name = readRequiredText(
     formData.get("name"),
@@ -241,7 +245,7 @@ export async function createArea(
 export async function updateArea(
   formData: FormData,
 ) {
-  await requireStaff();
+  await requireAdminSection("areas");
 
   const areaId = readRequiredUuid(
     formData.get("areaId"),
@@ -320,7 +324,7 @@ export async function updateArea(
 export async function deleteArea(
   formData: FormData,
 ) {
-  await requireStaff();
+  await requireAdminSection("areas");
 
   const areaId = readRequiredUuid(
     formData.get("areaId"),

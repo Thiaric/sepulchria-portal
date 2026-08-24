@@ -1,8 +1,12 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import {
+  revalidatePath,
+} from "next/cache";
 
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
 const ALLOWED_PRIORITIES = [
@@ -32,7 +36,7 @@ function expiryFromDuration(value: string) {
 export async function createTidingAction(
   formData: FormData,
 ) {
-  const staff = await requireStaff();
+  const staff = await requireAdminSection("tidings");
   const supabase = await createClient();
 
   const title = String(
@@ -98,7 +102,7 @@ export async function createTidingAction(
 export async function toggleTidingAction(
   formData: FormData,
 ) {
-  await requireStaff();
+  await requireAdminSection("tidings");
   const supabase = await createClient();
 
   const id = String(formData.get("id") ?? "");
@@ -128,7 +132,7 @@ export async function toggleTidingAction(
 export async function deleteTidingAction(
   formData: FormData,
 ) {
-  await requireStaff();
+  await requireAdminSection("tidings");
   const supabase = await createClient();
 
   const id = String(formData.get("id") ?? "");

@@ -1,8 +1,11 @@
+
+
 import { AdminActionForm } from "@/components/admin/admin-action-form";
 import { AdminRaceEditor } from "@/components/admin/admin-race-editor";
-
 import { RichTextEditor } from "@/components/editor/rich-text-editor";
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { getAdminRaces } from "@/lib/races/get-admin-races";
 
 import {
@@ -109,7 +112,7 @@ function isValidColour(value: string | null): boolean {
 export default async function AdminRacesPage({
   searchParams,
 }: AdminRacesPageProps) {
-  await requireStaff();
+  await requireAdminSection("races");
 
   const resolvedSearchParams =
     (await searchParams) ?? {};

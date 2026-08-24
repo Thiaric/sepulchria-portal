@@ -1,9 +1,15 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
-import { requireAdmin, requireStaff } from "@/lib/auth/require-staff";
+
+import { redirect } from "next/navigation";
+import {
+  revalidatePath,
+} from "next/cache";
+
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 const TYPES=[
@@ -40,7 +46,7 @@ function failTo(path:string,message:string):never{
 }
 
 export async function issueSanction(fd:FormData){
-  const staff=await requireStaff();
+  const staff=await requireAdminSection("sanctions");
   const returnTo=returnPath(fd,"/admin/tickets");
   let type:SanctionType;
   try{ type=sanctionType(fd); }
@@ -148,7 +154,7 @@ export async function issueSanction(fd:FormData){
 }
 
 export async function revokeSanction(fd:FormData){
-  const staff=await requireAdmin();
+  const staff=await requireAdminSection("sanctions");
   const returnTo=returnPath(fd,"/admin/sanctions");
   const sanctionId=uuid(fd,"sanctionId");
   const reason=read(fd,"revocationReason",5000);

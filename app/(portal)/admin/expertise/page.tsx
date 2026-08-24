@@ -1,5 +1,9 @@
+
+
 import { awardExpertise } from "./actions";
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
 type Row = {
@@ -11,7 +15,7 @@ type Row = {
 };
 
 export default async function ExpertiseAdminPage() {
-  await requireStaff();
+  await requireAdminSection("expertise");
   const supabase = await createClient();
 
   const { data, error } = await supabase.rpc("staff_expertise_overview");

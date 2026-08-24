@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import {
-  requireStaff,
+  requireAdminSection,
 } from "@/lib/auth/require-staff";
 import {
   createAdminClient,
@@ -311,7 +311,7 @@ export default async function CommunicationLogsPage({
 }: {
   searchParams?: Promise<SearchParams>;
 }) {
-  await requireStaff();
+  await requireAdminSection("communication_logs");
 
   const params =
     (await searchParams) ?? {};

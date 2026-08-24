@@ -1,9 +1,12 @@
+
+
 import { AdminActionForm } from "@/components/admin/admin-action-form";
 import Image from "next/image";
-
 import { RichTextContent } from "@/components/editor/rich-text-content";
 import { RichTextEditor } from "@/components/editor/rich-text-editor";
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 import { OrderLevelStructure } from "@/components/admin/order-level-structure";
 import { OrderMembershipManager } from "@/components/admin/order-membership-manager";
@@ -124,7 +127,7 @@ function isValidColour(
 export default async function AdminOrdersPage({
   searchParams,
 }: AdminOrdersPageProps) {
-  await requireStaff();
+  await requireAdminSection("orders");
 
   const resolvedSearchParams =
     (await searchParams) ?? {};

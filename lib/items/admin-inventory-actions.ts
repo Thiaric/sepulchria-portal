@@ -1,9 +1,15 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
-import { requireStaff } from "@/lib/auth/require-staff";
+
+import { redirect } from "next/navigation";
+import {
+  revalidatePath,
+} from "next/cache";
+
+import {
+  requireStaffCapability,
+} from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
 function requiredText(formData: FormData, name: string, label: string) {
@@ -123,7 +129,7 @@ function uniqueOverrides(formData: FormData) {
 }
 
 export async function grantStandardItem(formData: FormData) {
-  const staff = await requireStaff();
+  const staff = await requireStaffCapability("character_economy");
   const supabase = await createClient();
 
   let characterId = "";
@@ -276,7 +282,7 @@ export async function grantStandardItem(formData: FormData) {
 }
 
 export async function removeStandardItem(formData: FormData) {
-  await requireStaff();
+  await requireStaffCapability("character_economy");
   const supabase = await createClient();
 
   let characterId = "";
@@ -338,7 +344,7 @@ export async function removeStandardItem(formData: FormData) {
 }
 
 export async function moveStandardItem(formData: FormData) {
-  await requireStaff();
+  await requireStaffCapability("character_economy");
   const supabase = await createClient();
 
   let characterId = "";
@@ -378,7 +384,7 @@ export async function moveStandardItem(formData: FormData) {
 }
 
 export async function createUniqueItemForCharacter(formData: FormData) {
-  const staff = await requireStaff();
+  const staff = await requireStaffCapability("character_economy");
   const supabase = await createClient();
 
   let characterId = "";
@@ -439,7 +445,7 @@ export async function createUniqueItemForCharacter(formData: FormData) {
 }
 
 export async function updateUniqueItem(formData: FormData) {
-  const staff = await requireStaff();
+  const staff = await requireStaffCapability("character_economy");
   const supabase = await createClient();
 
   let characterId = "";
@@ -517,7 +523,7 @@ async function assertContainerEmpty(instanceId: string) {
 }
 
 export async function sendUniqueItemToVault(formData: FormData) {
-  await requireStaff();
+  await requireStaffCapability("character_economy");
   const supabase = await createClient();
   let characterId = "";
   try {
@@ -535,7 +541,7 @@ export async function sendUniqueItemToVault(formData: FormData) {
 }
 
 export async function createUniqueItemInVault(formData: FormData) {
-  await requireStaff();
+  await requireStaffCapability("character_economy");
   const supabase = await createClient();
   try {
     const itemId = requiredText(formData, "itemId", "Item");
@@ -555,7 +561,7 @@ export async function createUniqueItemInVault(formData: FormData) {
 }
 
 export async function updateVaultUniqueItem(formData: FormData) {
-  await requireStaff();
+  await requireStaffCapability("character_economy");
   const supabase = await createClient();
 
   try {
@@ -590,7 +596,7 @@ export async function updateVaultUniqueItem(formData: FormData) {
 }
 
 export async function assignVaultItemToCharacter(formData: FormData) {
-  await requireStaff();
+  await requireStaffCapability("character_economy");
   const supabase = await createClient();
   let characterId = "";
   try {
@@ -609,7 +615,7 @@ export async function assignVaultItemToCharacter(formData: FormData) {
 }
 
 export async function destroyVaultItem(formData: FormData) {
-  await requireStaff();
+  await requireStaffCapability("character_economy");
   const supabase = await createClient();
 
   try {

@@ -1,14 +1,18 @@
-import Link from "next/link";
+
+
 import {notFound} from "next/navigation";
 import {AdminActionForm} from "@/components/admin/admin-action-form";
-import {requireStaff} from "@/lib/auth/require-staff";
+import Link from "next/link";
+import {
+  requireStaffCapability,
+} from "@/lib/auth/require-staff";
 import {createClient} from "@/lib/supabase/server";
 import {getEffectiveCharacterWarping} from "@/lib/warping/get-effective-character-warping";
 import {assignManualShape,removeManualShape,updateWarpingBase} from "./actions";
 const f="w-full border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none";
 const l="mb-1 block text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-756958))]";
 const b="border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-261b12))] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-ccb083))]";
-export default async function Page({params}:{params:Promise<{id:string}>}){await requireStaff();const{id}=await params,db=await createClient();const[cq,sq,aq]=await Promise.all([db.from("characters").select("id,display_name,warping_affinity,warps_per_day").eq("id",id).single(),db.from("shapes").select("id,name,level,school,word_of_power").eq("is_active",true).order("level").order("name"),db.from("character_shapes").select("shape_id,acquisition_source,level_override,shape:shapes(id,name,level,school,word_of_power)").eq("character_id",id)]);if(cq.error||!cq.data)notFound();if(sq.error)throw Error(sq.error.message);if(aq.error)throw Error(aq.error.message);const c=cq.data,effectiveWarping=await getEffectiveCharacterWarping(id),a=aq.data??[],manual=a.filter(x=>x.acquisition_source==="staff"),order=a.filter(x=>x.acquisition_source==="order");return <main className="p-5 sm:p-7 lg:p-9"><div className="mx-auto max-w-6xl">
+export default async function Page({params}:{params:Promise<{id:string}>}){await requireStaffCapability("character_warping");const{id}=await params,db=await createClient();const[cq,sq,aq]=await Promise.all([db.from("characters").select("id,display_name,warping_affinity,warps_per_day").eq("id",id).single(),db.from("shapes").select("id,name,level,school,word_of_power").eq("is_active",true).order("level").order("name"),db.from("character_shapes").select("shape_id,acquisition_source,level_override,shape:shapes(id,name,level,school,word_of_power)").eq("character_id",id)]);if(cq.error||!cq.data)notFound();if(sq.error)throw Error(sq.error.message);if(aq.error)throw Error(aq.error.message);const c=cq.data,effectiveWarping=await getEffectiveCharacterWarping(id),a=aq.data??[],manual=a.filter(x=>x.acquisition_source==="staff"),order=a.filter(x=>x.acquisition_source==="order");return <main className="p-5 sm:p-7 lg:p-9"><div className="mx-auto max-w-6xl">
 <div className="flex items-end justify-between border-b border-[rgb(var(--sep-colour-60482e))]/35 pb-5"><div><p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">Character Administration</p><h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">Manage Warping</h1><p className="mt-1 text-[11px] text-[rgb(var(--sep-colour-8f8271))]">{c.display_name}</p></div><Link href={`/admin/characters/${id}`} className={b}>Back to Character</Link></div>
 <section className="mt-7 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5">
 <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">Current Effective Warping</p>

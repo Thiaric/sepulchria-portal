@@ -1,13 +1,16 @@
-import Link from "next/link";
-import { notFound } from "next/navigation";
 
+
+import { notFound } from "next/navigation";
 import {
   AdminCharacterFeatureAccess,
   type CharacterFeatureEntitlementRow,
   type CharacterPortalSkinEntitlementRow,
   type CharacterPortalSkinRow,
 } from "@/components/admin/admin-character-feature-access";
-import { requireStaff } from "@/lib/auth/require-staff";
+import Link from "next/link";
+import {
+  requireStaffCapability,
+} from "@/lib/auth/require-staff";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
@@ -41,7 +44,7 @@ const buttonClass =
 export default async function AdminCharacterPremiumFeaturesPage({
   params,
 }: Props) {
-  await requireStaff();
+  await requireStaffCapability("character_economy");
 
   const { id } = await params;
   const supabase =

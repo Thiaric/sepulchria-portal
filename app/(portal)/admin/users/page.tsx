@@ -1,12 +1,15 @@
-import Link from "next/link";
+
 
 import {
   AdminUserPortalSkins,
   type AdminPortalSkin,
   type AdminPortalSkinEntitlement,
 } from "@/components/admin/admin-user-portal-skins";
+import Link from "next/link";
 
-import { requireAdmin } from "@/lib/auth/require-staff";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -96,7 +99,7 @@ export default async function AdminUsersPage({
     await searchParams;
 
   const session =
-    await requireAdmin();
+    await requireAdminSection("users");
 
   const supabase =
     await createClient();

@@ -53,7 +53,7 @@ const mainNavigationItems: NavigationItem[] = [
   activePaths: [],
 },
   {
-    label: "Characters",
+    label: "Sepulchria's People",
     title:
       "Browse the characters who inhabit Sepulchria.",
     icon: "/icons/characters.png",
@@ -1738,14 +1738,14 @@ export function PortalSidebar({
         <div className="hidden p-[var(--portal-column-pad)] lg:block">
           <nav aria-label="Main navigation">
             <NavigationGroup
-              title="Navigate the World"
+              title="Explore Sepulchria"
               items={mainNavigationItems.map(
                 renderNavigationItem,
               )}
             />
 
             <NavigationGroup
-              title="Codex and rules"
+              title="Lore & World-Building"
               items={[
                 renderNavigationItem(
                   codexItem,

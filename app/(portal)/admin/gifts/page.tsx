@@ -1,5 +1,9 @@
+
+
 import { AdminActionForm } from "@/components/admin/admin-action-form";
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
 import {
@@ -133,7 +137,7 @@ function adminModifierLabel(gift: Gift) {
 }
 
 export default async function AdminGiftsPage({ searchParams }: Props) {
-  await requireStaff();
+  await requireAdminSection("gifts");
   const params = (await searchParams) ?? {};
   const supabase = await createClient();
 

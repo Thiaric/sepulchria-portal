@@ -1,8 +1,15 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+
+
 import { redirect } from "next/navigation";
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  revalidatePath,
+} from "next/cache";
+
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 import { wordOfPower } from "@/lib/warping/constants";
 
@@ -45,7 +52,7 @@ function payload(f:FormData){
 }
 
 export async function createShape(f:FormData){
-  await requireStaff(); const db=await createClient(); const p=payload(f);
+  await requireAdminSection("shapes"); const db=await createClient(); const p=payload(f);
   if(!p.name||!p.description) redirect("/admin/shapes?error=Name%20and%20description%20are%20required");
   if(p.resolution_mode==="save"&&p.save_options.length===0) redirect("/admin/shapes?error=Save-based%20Shapes%20need%20a%20Save");
   const {error}=await db.from("shapes").insert(p);
@@ -53,13 +60,13 @@ export async function createShape(f:FormData){
   revalidatePath("/admin/shapes"); redirect("/admin/shapes?success=Shape%20created");
 }
 export async function updateShape(f:FormData){
-  await requireStaff(); const db=await createClient(); const id=txt(f,"shape_id");
+  await requireAdminSection("shapes"); const db=await createClient(); const id=txt(f,"shape_id");
   const {error}=await db.from("shapes").update(payload(f)).eq("id",id);
   if(error) redirect(`/admin/shapes?error=${encodeURIComponent(error.message)}#shape-${id}`);
   revalidatePath("/admin/shapes"); redirect(`/admin/shapes?success=Shape%20updated#shape-${id}`);
 }
 export async function deleteShape(f:FormData){
-  await requireStaff(); const db=await createClient(); const id=txt(f,"shape_id");
+  await requireAdminSection("shapes"); const db=await createClient(); const id=txt(f,"shape_id");
 
   const {count:effectCount,error:effectError}=await db
     .from("character_shape_effects")
@@ -79,7 +86,7 @@ export async function deleteShape(f:FormData){
   revalidatePath("/admin/shapes"); redirect("/admin/shapes?success=Shape%20deleted");
 }
 export async function assignShape(f:FormData){
-  await requireStaff();
+  await requireAdminSection("shapes");
   const db=await createClient();
   const shapeId=txt(f,"shape_id");
   const {error}=await db.rpc("staff_assign_shape_to_character",{
@@ -93,7 +100,7 @@ export async function assignShape(f:FormData){
 }
 
 export async function removeAssignment(f:FormData){
-  await requireStaff();
+  await requireAdminSection("shapes");
   const db=await createClient();
   const {error}=await db.from("character_shapes").delete().eq("id",txt(f,"assignment_id"));
   if(error){ throw new Error(error.message); }
@@ -102,7 +109,7 @@ export async function removeAssignment(f:FormData){
 }
 
 export async function linkOrderLevel(f:FormData){
-  await requireStaff();
+  await requireAdminSection("shapes");
   const db=await createClient();
   const shapeId=txt(f,"shape_id");
 
@@ -148,7 +155,7 @@ export async function linkOrderLevel(f:FormData){
 }
 
 export async function unlinkOrderLevel(f:FormData){
-  await requireStaff();
+  await requireAdminSection("shapes");
   const db=await createClient();
   const shapeId=txt(f,"shape_id");
 

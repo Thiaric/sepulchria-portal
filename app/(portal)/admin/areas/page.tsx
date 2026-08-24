@@ -1,8 +1,11 @@
+
+
 import { AdminActionForm } from "@/components/admin/admin-action-form";
 import Image from "next/image";
-
 import { RichTextEditor } from "@/components/editor/rich-text-editor";
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
 import {
@@ -66,7 +69,7 @@ function formatDate(value: string): string {
 }
 
 export default async function AdminAreasPage() {
-  await requireStaff();
+  await requireAdminSection("areas");
 
   const supabase = await createClient();
 

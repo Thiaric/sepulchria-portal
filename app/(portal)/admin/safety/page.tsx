@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import {
-  requireStaff,
+  requireAdminSection,
 } from "@/lib/auth/require-staff";
 import {
   createAdminClient,
@@ -200,7 +200,7 @@ export default async function AdminSafetyPage({
 }: {
   searchParams?: Promise<SearchParams>;
 }) {
-  await requireStaff();
+  await requireAdminSection("safety");
 
   const params =
     (await searchParams) ?? {};

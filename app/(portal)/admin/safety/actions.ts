@@ -1,8 +1,12 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import {
+  revalidatePath,
+} from "next/cache";
 
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 const REVIEW_TYPES = [
@@ -28,7 +32,7 @@ export async function recordOnlineSafetyReview(
   formData: FormData,
 ) {
   const staff =
-    await requireStaff();
+    await requireAdminSection("safety");
 
   const reviewDate = String(
     formData.get("reviewDate") ?? "",

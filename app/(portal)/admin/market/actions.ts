@@ -1,8 +1,12 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import {
+  revalidatePath,
+} from "next/cache";
 
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 function text(formData: FormData, key: string) {
@@ -48,7 +52,7 @@ function refreshMarket() {
 }
 
 export async function createMarketShop(formData: FormData) {
-  await requireStaff();
+  await requireAdminSection("market");
 
   const name = text(formData, "name");
   const slug = slugify(text(formData, "slug") || name);
@@ -84,7 +88,7 @@ export async function createMarketShop(formData: FormData) {
 }
 
 export async function updateMarketShop(formData: FormData) {
-  await requireStaff();
+  await requireAdminSection("market");
 
   const shopId = text(formData, "shopId");
   const name = text(formData, "name");
@@ -124,7 +128,7 @@ export async function updateMarketShop(formData: FormData) {
 }
 
 export async function createMarketListing(formData: FormData) {
-  await requireStaff();
+  await requireAdminSection("market");
 
   const shopId = text(formData, "shopId");
   const itemId = text(formData, "itemId");
@@ -183,7 +187,7 @@ export async function createMarketListing(formData: FormData) {
 }
 
 export async function updateMarketListing(formData: FormData) {
-  await requireStaff();
+  await requireAdminSection("market");
 
   const listingId = text(formData, "listingId");
   const buyPrice = integer(formData, "buyPrice");
@@ -219,7 +223,7 @@ export async function updateMarketListing(formData: FormData) {
 }
 
 export async function removeMarketListing(formData: FormData) {
-  await requireStaff();
+  await requireAdminSection("market");
 
   const listingId = text(formData, "listingId");
   if (!listingId) throw new Error("Listing is required.");

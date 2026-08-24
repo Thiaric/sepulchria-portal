@@ -1,9 +1,15 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
-import { requireStaff } from "@/lib/auth/require-staff";
+
+import { redirect } from "next/navigation";
+import {
+  revalidatePath,
+} from "next/cache";
+
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
 const QUALITIES = ["poor", "average", "fine", "superior", "flawless", "peerless"] as const;
@@ -330,7 +336,7 @@ if (isUsable) {
 }
 
 export async function createSubcategory(formData: FormData) {
-  await requireStaff();
+  await requireAdminSection("items");
   const supabase = await createClient();
 
   try {
@@ -358,7 +364,7 @@ export async function createSubcategory(formData: FormData) {
 }
 
 export async function updateSubcategory(formData: FormData) {
-  await requireStaff();
+  await requireAdminSection("items");
   const supabase = await createClient();
 
   try {
@@ -391,7 +397,7 @@ export async function updateSubcategory(formData: FormData) {
 }
 
 export async function deleteSubcategory(formData: FormData) {
-  await requireStaff();
+  await requireAdminSection("items");
   const supabase = await createClient();
 
   try {
@@ -412,7 +418,7 @@ export async function deleteSubcategory(formData: FormData) {
 }
 
 export async function createItem(formData: FormData) {
-  await requireStaff();
+  await requireAdminSection("items");
   const supabase = await createClient();
 
   try {
@@ -427,7 +433,7 @@ export async function createItem(formData: FormData) {
 }
 
 export async function updateItem(formData: FormData) {
-  await requireStaff();
+  await requireAdminSection("items");
   const supabase = await createClient();
 
   try {
@@ -445,7 +451,7 @@ export async function updateItem(formData: FormData) {
 }
 
 export async function deleteItem(formData: FormData) {
-  await requireStaff();
+  await requireAdminSection("items");
   const supabase = await createClient();
 
   try {
@@ -539,7 +545,7 @@ function effectValues(formData: FormData) {
 }
 
 export async function createItemEffect(formData: FormData) {
-  await requireStaff();
+  await requireAdminSection("items");
   const supabase = await createClient();
 
   try {
@@ -559,7 +565,7 @@ export async function createItemEffect(formData: FormData) {
 }
 
 export async function updateItemEffect(formData: FormData) {
-  await requireStaff();
+  await requireAdminSection("items");
   const supabase = await createClient();
 
   try {
@@ -580,7 +586,7 @@ export async function updateItemEffect(formData: FormData) {
 }
 
 export async function deleteItemEffect(formData: FormData) {
-  await requireStaff();
+  await requireAdminSection("items");
   const supabase = await createClient();
 
   try {

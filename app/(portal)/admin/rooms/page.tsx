@@ -1,8 +1,11 @@
+
+
 import { AdminActionForm } from "@/components/admin/admin-action-form";
 import Image from "next/image";
-
 import { RichTextEditor } from "@/components/editor/rich-text-editor";
-import { requireStaff } from "@/lib/auth/require-staff";
+import {
+  requireAdminSection,
+} from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
 import {
@@ -182,7 +185,7 @@ function getRoomDependencies(
 }
 
 export default async function AdminRoomsPage() {
-  await requireStaff();
+  await requireAdminSection("rooms");
 
   const supabase = await createClient();
 
