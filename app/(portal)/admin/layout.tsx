@@ -100,6 +100,10 @@ export default async function AdminLayout({
               Logs
             </AdminNavigationLink>
 
+            <AdminNavigationLink href="/admin/safety">
+              Safety
+            </AdminNavigationLink>
+
             <AdminNavigationLink href="/admin/rooms">
               Locations
             </AdminNavigationLink>
