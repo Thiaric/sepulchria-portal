@@ -2,7 +2,6 @@
 
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export function LoginForm() {
@@ -10,29 +9,79 @@ export function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
+  
 
-  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
+    const handleLogin = async (
+    event: React.FormEvent<HTMLFormElement>,
+  ) => {
     event.preventDefault();
 
-    const supabase = createClient();
+    /*
+     * Open the game window immediately from the user's click.
+     * This has to happen BEFORE awaiting Supabase or the browser
+     * may treat it as an unsolicited popup and block it.
+     */
+    const portalWindow =
+      window.open(
+        "about:blank",
+        "SepulchriaPortal",
+        [
+          "popup=yes",
+          `width=${window.screen.availWidth}`,
+          `height=${window.screen.availHeight}`,
+          "left=0",
+          "top=0",
+          "resizable=yes",
+          "scrollbars=yes",
+        ].join(","),
+      );
+
+    if (!portalWindow) {
+      setError(
+        "Sepulchria needs permission to open the game window. Please allow popups for this website and try again.",
+      );
+      return;
+    }
+
+    portalWindow.document.title =
+      "Sepulchria";
+
+    const supabase =
+      createClient();
+
     setIsLoading(true);
     setError(null);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      const { error } =
+        await supabase.auth.signInWithPassword(
+          {
+            email,
+            password,
+          },
+        );
 
       if (error) {
         throw error;
       }
 
-      router.replace("/");
-      router.refresh();
+      /*
+       * Supabase authentication is shared because the new
+       * window is on the same Sepulchria origin.
+       */
+      portalWindow.location.replace(
+        `${window.location.origin}/`,
+      );
+
+      portalWindow.focus();
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred");
+      portalWindow.close();
+
+      setError(
+        error instanceof Error
+          ? error.message
+          : "An error occurred",
+      );
     } finally {
       setIsLoading(false);
     }

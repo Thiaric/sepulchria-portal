@@ -1212,7 +1212,8 @@ function ignoreSpellingWord() {
               onChange={(event) =>
                 setValue(event.target.value)
               }
-              placeholder="Speech outside brackets; actions, movement and descriptions inside < > or ( ) or [ ] or { }. Out-of-character messages must be preceded by //."
+              
+              placeholder={`Speech outside brackets; actions, movement and descriptions inside < > or ( ) or [ ] or { }. Out-of-character messages must be preceded by //.${canUseFate ? " Fate actions start with ^." : ""}`}
               className="relative z-10 h-full w-full resize-none border-0 bg-transparent px-3 py-2 text-[13px] leading-5 text-[rgb(var(--sep-colour-d0bea1))] outline-none placeholder:text-[rgb(var(--sep-colour-5f574d))]"
             />
 
@@ -1279,7 +1280,7 @@ function ignoreSpellingWord() {
             </div>
           ) : null}
 
-          <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+          <div className="mt-2 flex flex-wrap items-center justify-between gap-2 pb-2 md:pb-0">
             <div className="flex min-w-0 items-center gap-2">
               <label className="flex shrink-0 items-center gap-1 text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-685d50))]">
                 <span>Rows</span>
@@ -1322,15 +1323,17 @@ function ignoreSpellingWord() {
               ) : null}
             </div>
 
-            <SubmitButton
-              disabled={!value.trim()}
-              onPrepare={() => {
-                if (nonceInputRef.current) {
-                  nonceInputRef.current.value =
-                    messageNonce;
-                }
-              }}
-            />
+                        <div className="relative -top-1.5">
+              <SubmitButton
+                disabled={!value.trim()}
+                onPrepare={() => {
+                  if (nonceInputRef.current) {
+                    nonceInputRef.current.value =
+                      messageNonce;
+                  }
+                }}
+              />
+            </div>
           </div>
         </form>
       ) : utilityMode === "whisper" ? (
@@ -2525,23 +2528,7 @@ function ignoreSpellingWord() {
       </div>
       ) : null}
 
-      <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[7px] leading-3 text-[rgb(var(--sep-colour-756958))]">
-  <p>
-    Dialogue is written normally.
-    Put movements and expressions
-    inside &lt; &gt; or ( ) or
-    &#91; &#93; or &#123; &#125;.
-    Out-of-character messages must
-    be preceded by //.
-  </p>
-
-  {canUseFate ? (
-    <p className="text-[rgb(var(--sep-colour-a88658))]">
-      Fate action: begin the message
-      with <strong>^</strong>
-    </p>
-  ) : null}
-</div>
+      
     </div>
   );
 }
@@ -2591,14 +2578,12 @@ function SubmitButton({
   const { pending } =
     useFormStatus();
 
-    
-
   return (
     <button
       type="submit"
       onClick={onPrepare}
       disabled={disabled || pending}
-      className="border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:bg-[rgb(var(--sep-colour-4a351f))] disabled:cursor-not-allowed disabled:opacity-40"
+      className="border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-3 py-1.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:bg-[rgb(var(--sep-colour-4a351f))] disabled:cursor-not-allowed disabled:opacity-40"
     >
       {pending
         ? "Sending..."
