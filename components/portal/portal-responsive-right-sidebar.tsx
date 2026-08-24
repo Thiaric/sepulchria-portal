@@ -280,6 +280,7 @@ export function PortalResponsiveRightSidebar({
                     alt={
                       character.currentRoom.name
                     }
+                    priority
                     sizes="300px"
                     objectFit="cover"
                     isOutdoors={

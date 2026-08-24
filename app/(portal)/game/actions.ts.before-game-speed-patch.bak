@@ -360,11 +360,7 @@ function isPresenceStatus(value: unknown): value is PresenceStatus {
   return VALID_PRESENCE_STATUSES.includes(value as PresenceStatus);
 }
 
-async function getOwnedCharacter(
-  options?: {
-    skipCurrentAccessCheck?: boolean;
-  },
-): Promise<{
+async function getOwnedCharacter(): Promise<{
   supabase: SupabaseClient;
   character: OwnedCharacter;
 }> {
@@ -416,8 +412,7 @@ async function getOwnedCharacter(
     character as OwnedCharacter;
 
   if (
-    ownedCharacter.current_room_id &&
-    options?.skipCurrentAccessCheck !== true
+    ownedCharacter.current_room_id
   ) {
     const currentAccess =
       await getPrivateLocationAccess(
@@ -585,9 +580,7 @@ export async function enterRoomFromMap(
   }
 
   const { supabase, character } =
-    await getOwnedCharacter({
-      skipCurrentAccessCheck: true,
-    });
+    await getOwnedCharacter();
 
   const {
     data: destinationRoom,

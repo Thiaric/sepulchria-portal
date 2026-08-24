@@ -989,16 +989,18 @@ export function PortalSidebar({
               void refreshForumCount();
             }
 
-            if (
+                        if (
               status ===
                 "CHANNEL_ERROR" ||
               status ===
                 "TIMED_OUT"
             ) {
-              console.error(
-                "Forum sidebar realtime error:",
-                error,
-              );
+              if (error) {
+                console.warn(
+                  "Forum sidebar realtime issue:",
+                  error,
+                );
+              }
             }
           },
         );
@@ -1008,7 +1010,7 @@ export function PortalSidebar({
         () => {
           void refreshForumCount();
         },
-        5000,
+        15000,
       );
 
     function handleFocus() {

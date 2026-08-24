@@ -4,6 +4,7 @@ import {
   stripRichTextForPreview,
 } from "@/lib/rich-text-shared";
 import type { ReactNode } from "react";
+import Image from "next/image";
 import Link from "next/link";
 
 type CodexEntryCardProps = {
@@ -83,11 +84,12 @@ export function CodexEntryCard({
       <div className="relative h-44 overflow-hidden border-b border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-0d0a08))]">
         {imageUrl ? (
           <>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+                        <Image
               src={imageUrl}
               alt=""
-              className="h-full w-full object-cover opacity-70 transition duration-500 group-hover:scale-105 group-hover:opacity-90"
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
+              className="object-cover opacity-70 transition duration-500 group-hover:scale-105 group-hover:opacity-90"
             />
 
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[rgb(var(--sep-colour-15100d))] via-transparent to-black/20" />
@@ -122,10 +124,12 @@ export function CodexEntryCard({
             }}
           >
             {iconUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+                            <Image
                 src={iconUrl}
                 alt=""
+                width={56}
+                height={56}
+                sizes="56px"
                 className="h-full w-full object-cover"
               />
             ) : (

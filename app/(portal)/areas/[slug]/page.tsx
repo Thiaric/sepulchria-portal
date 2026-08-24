@@ -138,6 +138,7 @@ export default async function AreaPage({
             <LocationAtmosphericImage
               src={safeArea.image_url}
               alt={safeArea.name}
+              priority
               sizes="(max-width: 1024px) 100vw, 70vw"
               objectFit="cover"
             />

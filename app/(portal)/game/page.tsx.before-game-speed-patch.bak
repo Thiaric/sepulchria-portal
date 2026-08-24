@@ -200,14 +200,8 @@ async function GameContent() {
     );
   }
 
-  const activeSince = new Date(
-    Date.now() -
-      PRESENCE_ACTIVE_MINUTES *
-        60_000,
-  ).toISOString();
-
-  const attributeBreakdownPromise =
-    getCharacterAttributeBreakdown(
+  const attributeBreakdown =
+    await getCharacterAttributeBreakdown(
       character.id,
       {
         muscles: character.muscles,
@@ -220,137 +214,49 @@ async function GameContent() {
       },
     );
 
-  const ownedGiftRowsPromise =
-    supabase
-      .from("character_gifts")
-      .select(`
-        id,
-        gift:gifts(
-          id,
-          name,
-          description,
-          is_active,
-          effect_mode,
-          target_mode,
-          damage_dice,
-          damage_type,
-          success_die,
-          success_threshold,
-          success_attribute,
-          duration_minutes,
-          cooldown_minutes,
-          health_delta,
-          max_health_modifier,
-          muscles_modifier,
-          reflexes_modifier,
-          vigour_modifier,
-          shrewd_modifier,
-          brains_modifier,
-          presence_modifier,
-          warping_affinity_modifier,
-          warps_per_day_modifier
-        ),
-        activations:gift_activations(
-          activated_at,
-          expires_at,
-          ended_at,
-          health_reverted_at
-        )
-      `)
-      .eq(
-        "character_id",
-        character.id,
-      );
-
-  const rawInventoryRowsPromise =
-    supabase.rpc(
-      "get_public_character_inventory",
-      {
-        p_character_id:
-          character.id,
-      },
-    );
-
-  const latestMessagePromise =
-    supabase
-      .from("room_messages")
-      .select("created_at")
-      .eq("room_id", room.id)
-      .order("created_at", {
-        ascending: false,
-      })
-      .limit(1)
-      .maybeSingle();
-
-  const presentResultPromise =
-    supabase
-      .from("character_presence")
-      .select(`
-        character_id,
-        character:characters!character_presence_character_id_fkey(
-          id,
-          display_name
-        )
-      `)
-      .eq("room_id", room.id)
-      .gte(
-        "last_seen_at",
-        activeSince,
-      );
-
-  const staffSessionPromise =
-    getStaffSession();
-
-  const headquartersManageDataPromise =
-    getOrderHeadquartersManageData(
-      room.id,
-      character.id,
-    );
-
-  const oddJobsPromise =
-    room.slug === "odd-jobs-bureau"
-      ? supabase.rpc(
-          "get_my_odd_jobs_state",
-        )
-      : Promise.resolve({
-          data: [],
-          error: null,
-        });
-
-  const [
-    attributeBreakdown,
-    ownedGiftResult,
-    rawInventoryResult,
-    latestMessageResult,
-    presentResult,
-    staffSession,
-    headquartersManageData,
-    oddJobsResult,
-  ] = await Promise.all([
-    attributeBreakdownPromise,
-    ownedGiftRowsPromise,
-    rawInventoryRowsPromise,
-    latestMessagePromise,
-    presentResultPromise,
-    staffSessionPromise,
-    headquartersManageDataPromise,
-    oddJobsPromise,
-  ]);
-
   const {
     data: ownedGiftRows,
     error: ownedGiftError,
-  } = ownedGiftResult;
-
-  const {
-    data: rawInventoryRows,
-    error: chatInventoryError,
-  } = rawInventoryResult;
-
-  const {
-    data: latestMessage,
-    error: latestMessageError,
-  } = latestMessageResult;
+  } = await supabase
+    .from("character_gifts")
+    .select(`
+      id,
+      gift:gifts(
+        id,
+        name,
+        description,
+        is_active,
+        effect_mode,
+        target_mode,
+        damage_dice,
+        damage_type,
+        success_die,
+        success_threshold,
+        success_attribute,
+        duration_minutes,
+        cooldown_minutes,
+        health_delta,
+        max_health_modifier,
+        muscles_modifier,
+        reflexes_modifier,
+        vigour_modifier,
+        shrewd_modifier,
+        brains_modifier,
+        presence_modifier,
+        warping_affinity_modifier,
+        warps_per_day_modifier
+      ),
+      activations:gift_activations(
+        activated_at,
+        expires_at,
+        ended_at,
+        health_reverted_at
+      )
+    `)
+    .eq(
+      "character_id",
+      character.id,
+    );
 
   if (ownedGiftError) {
     throw new Error(
@@ -460,6 +366,14 @@ async function GameContent() {
       ): gift is NonNullable<typeof gift> =>
         gift !== null,
     );
+
+  const {
+    data: rawInventoryRows,
+    error: chatInventoryError,
+  } = await supabase.rpc(
+    "get_public_character_inventory",
+    { p_character_id: character.id },
+  );
 
   if (chatInventoryError) {
     throw new Error(
@@ -712,6 +626,19 @@ async function GameContent() {
 )
   `;
 
+  const {
+    data: latestMessage,
+    error: latestMessageError,
+  } = await supabase
+    .from("room_messages")
+    .select("created_at")
+    .eq("room_id", room.id)
+    .order("created_at", {
+      ascending: false,
+    })
+    .limit(1)
+    .maybeSingle();
+
   if (latestMessageError) {
     throw new Error(
       `Unable to load the latest room entry: ${latestMessageError.message}`,
@@ -803,6 +730,36 @@ async function GameContent() {
     }
   }
 
+  const activeSince = new Date(
+    Date.now() -
+      PRESENCE_ACTIVE_MINUTES *
+        60_000,
+  ).toISOString();
+
+  const [
+    presentResult,
+    staffSession,
+  ] = await Promise.all([
+    supabase
+      .from(
+        "character_presence",
+      )
+      .select(`
+        character_id,
+        character:characters!character_presence_character_id_fkey(
+          id,
+          display_name
+        )
+      `)
+      .eq("room_id", room.id)
+      .gte(
+        "last_seen_at",
+        activeSince,
+      ),
+
+    getStaffSession(),
+  ]);
+
   if (presentResult.error) {
     throw new Error(
       `Unable to load present characters: ${presentResult.error.message}`,
@@ -860,19 +817,24 @@ async function GameContent() {
   const canViewAllWhispers =
     staffSession !== null;
 
-  const {
-    data: oddJobsData,
-    error: oddJobsError,
-  } = oddJobsResult;
-
-  if (oddJobsError) {
-    throw new Error(
-      `Unable to load Odd Jobs Bureau: ${oddJobsError.message}`,
+  const headquartersManageData =
+    await getOrderHeadquartersManageData(
+      room.id,
+      character.id,
     );
-  }
 
-  const oddJobs =
-    (oddJobsData ?? []) as OddJobStateRow[];
+  let oddJobs: OddJobStateRow[] = [];
+
+  if (room.slug === "odd-jobs-bureau") {
+    const { data: oddJobsData, error: oddJobsError } =
+      await supabase.rpc("get_my_odd_jobs_state");
+
+    if (oddJobsError) {
+      throw new Error(`Unable to load Odd Jobs Bureau: ${oddJobsError.message}`);
+    }
+
+    oddJobs = (oddJobsData ?? []) as OddJobStateRow[];
+  }
 
   return (
   <div
