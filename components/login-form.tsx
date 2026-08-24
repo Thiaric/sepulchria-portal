@@ -9,25 +9,24 @@ export function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-const [isLoading, setIsLoading] = useState(false);
-const [captchaToken, setCaptchaToken] =
-  useState<string | null>(null);
-  
+  const [isLoading, setIsLoading] = useState(false);
+  const [captchaToken, setCaptchaToken] =
+    useState<string | null>(null);
 
-    const handleLogin = async (
+  const handleLogin = async (
     event: React.FormEvent<HTMLFormElement>,
   ) => {
     event.preventDefault();
 
-if (!captchaToken) {
-  setError(
-    "Please complete the security verification before entering Sepulchria.",
-  );
-  return;
-}
+    if (!captchaToken) {
+      setError(
+        "Please complete the security verification before entering Sepulchria.",
+      );
+      return;
+    }
 
-/*
- * Open the game window immediately from the user's click.
+    /*
+     * Open the game window immediately from the user's click.
      * This has to happen BEFORE awaiting Supabase or the browser
      * may treat it as an unsolicited popup and block it.
      */
@@ -63,22 +62,51 @@ if (!captchaToken) {
     setError(null);
 
     try {
-      const { error } =
-  await supabase.auth.signInWithPassword({
-    email,
-    password,
-    options: {
-      captchaToken,
-    },
-  });
+      const { error: signInError } =
+        await supabase.auth.signInWithPassword({
+          email,
+          password,
+          options: {
+            captchaToken,
+          },
+        });
 
-      if (error) {
-        throw error;
+      if (signInError) {
+        throw signInError;
       }
 
       /*
-       * Supabase authentication is shared because the new
-       * window is on the same Sepulchria origin.
+       * A successful login always becomes the active portal instance
+       * for the approved character. Any previous device is displaced.
+       */
+      const claimResponse = await fetch(
+        "/api/portal-session/claim",
+        {
+          method: "POST",
+          credentials: "same-origin",
+        },
+      );
+
+      if (!claimResponse.ok) {
+        const claimBody = (await claimResponse
+          .json()
+          .catch(() => null)) as
+          | { error?: string }
+          | null;
+
+        await supabase.auth.signOut({
+          scope: "local",
+        });
+
+        throw new Error(
+          claimBody?.error ??
+            "Unable to open the portal session.",
+        );
+      }
+
+      /*
+       * Supabase authentication and the portal-session cookie are
+       * shared because the new window is on the same Sepulchria origin.
        */
       portalWindow.location.replace(
         `${window.location.origin}/`,
@@ -176,9 +204,9 @@ if (!captchaToken) {
       <button
         type="submit"
         disabled={
-  isLoading ||
-  !captchaToken
-}
+          isLoading ||
+          !captchaToken
+        }
         className="relative h-12 w-full overflow-hidden border border-[rgb(var(--sep-colour-a77a42))]/80 bg-[rgb(var(--sep-colour-382313))] font-serif text-base tracking-[0.05em] text-[rgb(var(--sep-colour-ead3a6))] transition hover:border-[rgb(var(--sep-colour-d4a460))] hover:bg-[rgb(var(--sep-colour-472c17))] disabled:cursor-not-allowed disabled:opacity-60"
       >
         {isLoading ? "Opening the gates..." : "Enter Sepulchria"}
