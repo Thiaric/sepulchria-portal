@@ -3,7 +3,6 @@ import "server-only";
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
-import { setAuditActorContext } from "@/lib/audit/actor-context";
 
 export type StaffRole =
   | "owner"
@@ -31,7 +30,6 @@ export type AdminSection =
   | "market"
   | "forum"
   | "communication_logs"
-  | "character_logs"
   | "safety"
   | "rooms"
   | "orders"
@@ -81,7 +79,6 @@ const SECTION_ROLES: Record<
   market: ["owner", "admin"],
   forum: ["owner", "admin", "moderator"],
   communication_logs: ["owner", "admin", "moderator"],
-  character_logs: ["owner", "admin", "moderator"],
   safety: ["owner"],
   rooms: ["owner"],
   orders: ["owner"],
@@ -203,11 +200,6 @@ export async function requireStaff(): Promise<StaffSession> {
   if (!session) {
     redirect("/");
   }
-
-  setAuditActorContext({
-    userId: session.userId,
-    role: session.role,
-  });
 
   return session;
 }

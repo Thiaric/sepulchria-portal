@@ -79,7 +79,6 @@ export default async function AdminLayout({
             {can("market") ? <AdminNavigationLink href="/admin/market">Market</AdminNavigationLink> : null}
             {can("forum") ? <AdminNavigationLink href="/admin/forum">Forum</AdminNavigationLink> : null}
             {can("communication_logs") ? <AdminNavigationLink href="/admin/communication-logs">Logs</AdminNavigationLink> : null}
-            {can("character_logs") ? <AdminNavigationLink href="/admin/character-audit">Character Log</AdminNavigationLink> : null}
             {can("safety") ? <AdminNavigationLink href="/admin/safety">Safety</AdminNavigationLink> : null}
             {can("rooms") ? <AdminNavigationLink href="/admin/rooms">Locations</AdminNavigationLink> : null}
             {can("orders") ? <AdminNavigationLink href="/admin/orders">Orders</AdminNavigationLink> : null}

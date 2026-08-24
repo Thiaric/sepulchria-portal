@@ -1,7 +1,5 @@
 import "server-only";
 
-import { getAuditActorContext } from "@/lib/audit/actor-context";
-
 import {
   createClient as createSupabaseClient,
   type SupabaseClient,
@@ -12,6 +10,10 @@ let adminClient:
   | null = null;
 
 export function createAdminClient(): SupabaseClient {
+  if (adminClient) {
+    return adminClient;
+  }
+
   const supabaseUrl =
     process.env.NEXT_PUBLIC_SUPABASE_URL;
 
@@ -29,35 +31,6 @@ export function createAdminClient(): SupabaseClient {
     throw new Error(
       "SUPABASE_SECRET_KEY or SUPABASE_SERVICE_ROLE_KEY is not configured.",
     );
-  }
-
-  const auditActor =
-    getAuditActorContext();
-
-  if (auditActor) {
-    return createSupabaseClient(
-      supabaseUrl,
-      supabaseAdminKey,
-      {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false,
-          detectSessionInUrl: false,
-        },
-        global: {
-          headers: {
-            "x-sepulchria-actor-user-id":
-              auditActor.userId,
-            "x-sepulchria-actor-role":
-              auditActor.role,
-          },
-        },
-      },
-    );
-  }
-
-  if (adminClient) {
-    return adminClient;
   }
 
   adminClient = createSupabaseClient(
