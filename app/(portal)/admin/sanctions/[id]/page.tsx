@@ -37,7 +37,7 @@ export default async function AdminSanctionPage({params,searchParams}:{params:Pr
 
   return <main className="p-5 sm:p-7 lg:p-9"><SanctionLiveSync audience="staff" markRead /><div className="mx-auto max-w-5xl">
     <Link href="/admin/sanctions" className="text-[8px] uppercase text-[rgb(var(--sep-colour-a58b68))]">← Sanctions</Link>
-    <section className="mt-7 border border-[rgb(var(--sep-colour-7d493f))]/35 bg-[rgb(var(--sep-colour-18100e))]">
+    <section className="mt-5 border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-1d1110))]">
       <header className="border-b border-[rgb(var(--sep-colour-60482e))]/45 p-6"><p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-c98f7f))]">Disciplinary Record</p><h1 className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-ead5ac))]">{label(s.sanction_type)}</h1><p className="mt-2 text-sm text-[rgb(var(--sep-colour-b9a48b))]">{s.target_name_snapshot??"Unknown account"}</p></header>
       <dl className="grid gap-px bg-[rgb(var(--sep-colour-60482e))]/30 sm:grid-cols-2 lg:grid-cols-4">
         {[["Status",label(s.status)],["Reason code",s.reason_code],["Starts",fmt(s.starts_at)],["Expires",s.expires_at?fmt(s.expires_at):"No expiry"]].map(([k,v])=><div key={k} className="bg-[rgb(var(--sep-colour-120e0b))] p-4"><dt className="text-[7px] uppercase text-[rgb(var(--sep-colour-756957))]">{k}</dt><dd className="mt-1 text-xs text-[rgb(var(--sep-colour-cdbb9f))]">{v}</dd></div>)}

@@ -73,7 +73,7 @@ export async function SanctionEvidence({
   if (!evidence?.length) return null;
 
   return (
-    <section className="mt-4 border border-[rgb(var(--sep-colour-70483f))]/45 bg-[rgb(var(--sep-colour-120e0b))]">
+    <section className="mt-5 border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-1d1110))]">
       <header className="border-b border-[rgb(var(--sep-colour-60482e))]/40 px-5 py-4">
         <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-c98f7f))]">
           Preserved Evidence

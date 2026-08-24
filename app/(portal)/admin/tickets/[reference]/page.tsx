@@ -363,7 +363,7 @@ export default async function AdminTicketPage({
                 key={`status-${ticket.status}`}
                 name="status"
                 defaultValue={ticket.status}
-                className="bg-[rgb(var(--sep-colour-100c09))] px-2"
+                className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-sm text-[rgb(var(--sep-colour-d5c2a4))] outline-none transition placeholder:text-[rgb(var(--sep-colour-5f5447))] focus:border-[rgb(var(--sep-colour-a47a44))] focus:ring-1 focus:ring-[rgb(var(--sep-colour-a47a44))]/40"
               >
                 <option value="open">Open</option>
                 <option value="in_progress">In Progress</option>
@@ -377,7 +377,7 @@ export default async function AdminTicketPage({
                 key={`priority-${ticket.priority}`}
                 name="priority"
                 defaultValue={ticket.priority}
-                className="bg-[rgb(var(--sep-colour-100c09))] px-2"
+                className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-sm text-[rgb(var(--sep-colour-d5c2a4))] outline-none transition placeholder:text-[rgb(var(--sep-colour-5f5447))] focus:border-[rgb(var(--sep-colour-a47a44))] focus:ring-1 focus:ring-[rgb(var(--sep-colour-a47a44))]/40"
               >
                 <option value="low">Low</option>
                 <option value="normal">Normal</option>
@@ -393,8 +393,8 @@ export default async function AdminTicketPage({
         </div>
 
         {report ? (
-          <section className="mt-5 border border-[rgb(var(--sep-colour-8d5b45))]/65 bg-[rgb(var(--sep-colour-1d1110))]">
-            <header className="flex flex-wrap items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-70483f))]/50 px-5 py-4">
+          <section className="mt-5 border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-1d1110))]">
+            <header className="flex flex-wrap items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-60482e))]/50 px-5 py-4">
               <div>
                 <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-c98f7f))]">
                   Moderation Report
@@ -529,7 +529,7 @@ export default async function AdminTicketPage({
         ) : null}
 
         {report?.reported_user_id ? (
-          <section className="mt-5 border border-[rgb(var(--sep-colour-7d493f))]/35 bg-[rgb(var(--sep-colour-18100e))] p-5">
+          <section className="mt-5 border border border-amber-900/55 bg-[rgb(var(--sep-colour-18100e))] p-5">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div><p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-c98f7f))]">Disciplinary Action</p><h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-e2c99f))]">Sanctions</h2><p className="mt-2 text-xs text-[rgb(var(--sep-colour-9e8c75))]">Target: <strong>{report.reported_name_snapshot ?? "Reported account"}</strong></p></div>
               <Link href="/admin/sanctions" className="border border-[rgb(var(--sep-colour-60482e))]/55 px-3 py-2 text-[8px] uppercase text-[rgb(var(--sep-colour-a58b68))]">All Sanctions</Link>

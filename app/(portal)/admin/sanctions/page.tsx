@@ -33,11 +33,11 @@ export default async function AdminSanctionsPage({searchParams}:{searchParams?:P
     <p className="mt-3 max-w-3xl text-sm leading-6 text-[rgb(var(--sep-colour-9c8d79))]">Permanent disciplinary history. Sanctions are never deleted; revocations remain in the audit trail.</p>
 
     <form method="get" className="mt-6 grid gap-2 border border-[rgb(var(--sep-colour-60482e))]/45 p-4 md:grid-cols-4">
-      <input name="q" defaultValue={p.q??""} placeholder="Search target name..." className="h-10 bg-[rgb(var(--sep-colour-100c09))] px-3"/>
-      <select name="status" defaultValue={p.status??""} className="h-10 bg-[rgb(var(--sep-colour-100c09))] px-3">
+      <input name="q" defaultValue={p.q??""} placeholder="Search target name..." className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-sm text-[rgb(var(--sep-colour-d5c2a4))] outline-none transition placeholder:text-[rgb(var(--sep-colour-5f5447))] focus:border-[rgb(var(--sep-colour-a47a44))] focus:ring-1 focus:ring-[rgb(var(--sep-colour-a47a44))]/40"/>
+      <select name="status" defaultValue={p.status??""} className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-sm text-[rgb(var(--sep-colour-d5c2a4))] outline-none transition placeholder:text-[rgb(var(--sep-colour-5f5447))] focus:border-[rgb(var(--sep-colour-a47a44))] focus:ring-1 focus:ring-[rgb(var(--sep-colour-a47a44))]/40">
         <option value="">All statuses</option><option value="active">Active</option><option value="scheduled">Scheduled</option><option value="expired">Expired</option><option value="revoked">Revoked</option>
       </select>
-      <select name="type" defaultValue={p.type??""} className="h-10 bg-[rgb(var(--sep-colour-100c09))] px-3">
+      <select name="type" defaultValue={p.type??""} className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-sm text-[rgb(var(--sep-colour-d5c2a4))] outline-none transition placeholder:text-[rgb(var(--sep-colour-5f5447))] focus:border-[rgb(var(--sep-colour-a47a44))] focus:ring-1 focus:ring-[rgb(var(--sep-colour-a47a44))]/40">
         <option value="">All sanction types</option>
         <option value="warning">Warning</option><option value="communication_restriction">Communication restriction</option>
         <option value="forum_restriction">Forum restriction</option><option value="game_chat_restriction">Game chat restriction</option>

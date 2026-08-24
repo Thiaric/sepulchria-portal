@@ -246,12 +246,7 @@ function ModerationPanel({
 }) {
   if (moderation) {
     return (
-      <div
-        data-communication-log-marker
-        data-source-type={sourceType}
-        data-source-id={sourceId}
-        className="mt-3 border border-[rgb(var(--sep-colour-8d5b45))]/65 bg-[rgb(var(--sep-colour-241310))] px-3 py-2"
-      >
+      <div className="mt-3 border border-[rgb(var(--sep-colour-8d5b45))]/65 bg-[rgb(var(--sep-colour-241310))] px-3 py-2">
         <p className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d49a88))]">
           Obscured by staff
         </p>
@@ -269,12 +264,7 @@ function ModerationPanel({
   }
 
   return (
-    <details
-      data-communication-log-marker
-      data-source-type={sourceType}
-      data-source-id={sourceId}
-      className="mt-3 border border-[rgb(var(--sep-colour-70483f))]/55 bg-[rgb(var(--sep-colour-1d1110))] px-3 py-2"
-    >
+    <details className="mt-3 border border-[rgb(var(--sep-colour-70483f))]/55 bg-[rgb(var(--sep-colour-1d1110))] px-3 py-2">
       <summary className="cursor-pointer text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d99b8e))]">
         Obscure
       </summary>

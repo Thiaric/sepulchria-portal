@@ -10,7 +10,6 @@ import { usePathname } from "next/navigation";
 
 import { InstantChatDock } from "@/components/instant-chat/instant-chat-dock";
 import { AdminContextPanel } from "@/components/portal/admin-context-panel";
-import { AdminCommunicationLogsContext } from "@/components/portal/admin-communication-logs-context";
 import { AdminOrdersContext } from "@/components/portal/admin-orders-context";
 import { AdminRulesContext } from "@/components/portal/admin-rules-context";
 import { AdminEventsTidingsContext } from "@/components/portal/admin-events-tidings-context";
@@ -112,9 +111,6 @@ export function PortalResponsiveRightSidebar({
 
   const isAdminUsersPath =
     pathname === "/admin/users";
-
-  const isAdminCommunicationLogsPath =
-    pathname === "/admin/communication-logs";
 
   const marketShopMatch =
     pathname.match(/^\/market\/([^/]+)$/);
@@ -377,10 +373,6 @@ export function PortalResponsiveRightSidebar({
                 <AdminRecordSearchContext
                   key={`users-${adminRevision}`}
                   mode="users"
-                />
-              ) : isAdminCommunicationLogsPath ? (
-                <AdminCommunicationLogsContext
-                  key={`communication-logs-${adminRevision}`}
                 />
               ) : isMarketPath ? (
                 <MarketShopsContext />
