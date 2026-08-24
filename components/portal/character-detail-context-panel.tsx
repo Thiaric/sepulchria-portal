@@ -442,14 +442,7 @@ export function CharacterDetailContextPanel({
           />
         </div>
 
-        {ownCharacter ? (
-          <p className="mt-4 text-[10px] leading-5 text-[rgb(var(--sep-colour-766957))]">
-            Order membership is managed
-            through the Order system and
-            cannot be edited from the
-            character sheet.
-          </p>
-        ) : null}
+        
       </div>
     </div>
   );
