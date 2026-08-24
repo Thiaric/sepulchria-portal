@@ -1,6 +1,6 @@
 "use client";
 
-import { openPortalModal } from "@/components/portal/portal-modal-button";
+import Link from "next/link";
 import {
   useCallback,
   useEffect,
@@ -484,18 +484,9 @@ export function ForumSidebarMenu({
               : "border-transparent text-[rgb(var(--sep-colour-b6a894))] hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))] hover:text-[rgb(var(--sep-colour-e8d8ba))]"
         }`}
       >
-        <button
-          type="button"
-          onClick={() =>
-            openPortalModal({
-              label: "Forum",
-              title:
-                "Open the Sepulchria community forum.",
-              icon: "/icons/forum.png",
-              href: "/forum",
-            })
-          }
-          className="flex min-w-0 flex-1 items-center gap-2 px-2.5 py-2 text-left"
+        <Link
+          href="/forum"
+          className="flex min-w-0 flex-1 items-center gap-2 px-2.5 py-2"
         >
           <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center">
   <img
@@ -520,7 +511,7 @@ export function ForumSidebarMenu({
                 : unreadCount}
             </span>
           ) : null}
-        </button>
+        </Link>
 
         <button
           type="button"
@@ -719,26 +710,17 @@ function TopicShortcut({
 }) {
   return (
     <div className="group flex items-center gap-1 px-1">
-      <button
-        type="button"
-        onClick={() =>
-          openPortalModal({
-            label: topic.title,
-            title:
-              `${topic.title} — ${topic.sectionName}`,
-            icon: "/icons/forum.png",
-            href: `/forum/${encodeURIComponent(
-              topic.sectionSlug,
-            )}/${encodeURIComponent(
-              topic.slug,
-            )}`,
-          })
-        }
+      <Link
+        href={`/forum/${encodeURIComponent(
+          topic.sectionSlug,
+        )}/${encodeURIComponent(
+          topic.slug,
+        )}`}
         title={`${topic.title} — ${topic.sectionName}`}
-        className="min-w-0 flex-1 truncate border-l border-transparent px-2 py-1.5 text-left text-[9px] text-[rgb(var(--sep-colour-958875))] transition hover:border-[rgb(var(--sep-colour-8e683d))] hover:bg-[rgb(var(--sep-colour-1b140f))] hover:text-[rgb(var(--sep-colour-dbc39c))]"
+        className="min-w-0 flex-1 truncate border-l border-transparent px-2 py-1.5 text-[9px] text-[rgb(var(--sep-colour-958875))] transition hover:border-[rgb(var(--sep-colour-8e683d))] hover:bg-[rgb(var(--sep-colour-1b140f))] hover:text-[rgb(var(--sep-colour-dbc39c))]"
       >
         {topic.title}
-      </button>
+      </Link>
 
       <button
         type="button"

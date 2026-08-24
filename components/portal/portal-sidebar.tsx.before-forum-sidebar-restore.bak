@@ -1997,11 +1997,9 @@ export function PortalSidebar({
                   </button>
                 </form>
 
-                <ForumSidebarMenu
-                  unreadCount={
-                    currentUnreadForumCount
-                  }
-                />
+                {renderNavigationItem(
+                  forumItem,
+                )}
 
                 {hasOrderLeadership
                   ? renderNavigationItem(
