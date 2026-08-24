@@ -7,7 +7,6 @@ import { CharacterExpertiseTotal } from "@/components/characters/character-exper
 import { CharacterMusicPlayer } from "@/components/characters/character-music-player";
 import { CharacterOrderSummary } from "@/components/characters/character-order-summary";
 import { CharacterSheetTabs } from "@/components/characters/character-sheet-tabs";
-import { CharacterAuditTrail } from "@/components/characters/character-audit-trail";
 
 
 import {
@@ -524,14 +523,6 @@ export function Profile({
               subtle
             />
             </section>
-          </div>
-
-          <div data-character-sheet-panel="audit">
-            {own && character.id ? (
-              <CharacterAuditTrail
-                characterId={character.id}
-              />
-            ) : null}
           </div>
 
           <div data-character-sheet-panel="edit">

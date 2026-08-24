@@ -10,7 +10,6 @@ import { CharacterInventoryDisplay } from "@/components/characters/character-inv
 import { CharacterExpertiseTotal } from "@/components/characters/character-expertise-total";
 import { CharacterMusicPlayer } from "@/components/characters/character-music-player";
 import { CharacterSheetTabs } from "@/components/characters/character-sheet-tabs";
-import { CharacterAuditTrail } from "@/components/characters/character-audit-trail";
 import { CharacterShapesDisplay } from "@/components/characters/character-shapes-display";
 import { LiveCharacterPresence } from "@/components/characters/live-character-presence";
 import { PublicCharacterAgeDetail } from "@/components/characters/public-character-age-detail";
@@ -194,9 +193,7 @@ export function PublicCharacterProfileView({
         </div>
       </div>
 
-      <CharacterSheetTabs
-        showAudit={viewerIsStaff}
-      >
+      <CharacterSheetTabs>
         <div data-character-sheet-panel="short">
           <section className="grid gap-4 xl:grid-cols-[minmax(0,1.45fr)_minmax(360px,0.9fr)]">
         <div className="min-w-0">
@@ -401,15 +398,6 @@ export function PublicCharacterProfileView({
             subtle
           />
           </section>
-        </div>
-
-        <div data-character-sheet-panel="audit">
-          {viewerIsStaff ? (
-            <CharacterAuditTrail
-              characterId={character.id}
-              staffView
-            />
-          ) : null}
         </div>
       </CharacterSheetTabs>
     </article>

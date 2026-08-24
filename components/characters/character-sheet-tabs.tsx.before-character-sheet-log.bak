@@ -11,7 +11,6 @@ type TabId =
   | "gifts"
   | "warping"
   | "offgame"
-  | "audit"
   | "edit";
 
 const PUBLIC_TABS: { id: TabId; label: string }[] = [
@@ -25,32 +24,21 @@ const PUBLIC_TABS: { id: TabId; label: string }[] = [
 
 export function CharacterSheetTabs({
   own = false,
-  showAudit = false,
   children,
 }: {
   own?: boolean;
-  showAudit?: boolean;
   children: ReactNode;
 }) {
   const [activeTab, setActiveTab] = useState<TabId>("short");
 
-  const baseTabs = own
+  const tabs = own
     ? [
         ...PUBLIC_TABS.slice(0, 3),
         { id: "ledger" as const, label: "LEDGER" },
         ...PUBLIC_TABS.slice(3),
+        { id: "edit" as const, label: "EDIT" },
       ]
-    : [...PUBLIC_TABS];
-
-  const tabs = [
-    ...baseTabs,
-    ...(own || showAudit
-      ? [{ id: "audit" as const, label: "LOG" }]
-      : []),
-    ...(own
-      ? [{ id: "edit" as const, label: "EDIT" }]
-      : []),
-  ];
+    : PUBLIC_TABS;
 
   return (
     <div
@@ -140,7 +128,6 @@ export function CharacterSheetTabs({
         .character-sheet-tabs[data-character-sheet-active-tab="gifts"] [data-character-sheet-panel="gifts"],
         .character-sheet-tabs[data-character-sheet-active-tab="warping"] [data-character-sheet-panel="warping"],
         .character-sheet-tabs[data-character-sheet-active-tab="offgame"] [data-character-sheet-panel="offgame"],
-        .character-sheet-tabs[data-character-sheet-active-tab="audit"] [data-character-sheet-panel="audit"],
         .character-sheet-tabs[data-character-sheet-active-tab="edit"] [data-character-sheet-panel="edit"] {
           display: block;
         }
