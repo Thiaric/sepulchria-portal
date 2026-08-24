@@ -98,47 +98,6 @@ function endOfDay(value: string | undefined) {
     : null;
 }
 
-function removeExpertise(
-  value: Record<string, unknown> | null,
-) {
-  if (!value) {
-    return value;
-  }
-
-  const next = { ...value };
-  delete next.expertise;
-  return next;
-}
-
-function isExpertiseOnlyUpdate(
-  row: AuditRow,
-) {
-  return (
-    row.operation === "update" &&
-    row.entity_type === "characters" &&
-    (row.changed_fields ?? []).length > 0 &&
-    (row.changed_fields ?? []).every(
-      (field) => field === "expertise",
-    )
-  );
-}
-
-function scrubExpertise(
-  row: AuditRow,
-): AuditRow {
-  return {
-    ...row,
-    changed_fields:
-      (row.changed_fields ?? []).filter(
-        (field) => field !== "expertise",
-      ),
-    old_values:
-      removeExpertise(row.old_values),
-    new_values:
-      removeExpertise(row.new_values),
-  };
-}
-
 export default async function CharacterAuditPage({
   searchParams,
 }: {
@@ -213,15 +172,7 @@ export default async function CharacterAuditPage({
     );
   }
 
-  const rawRows = (
-    (data ?? []) as AuditRow[]
-  )
-    .filter(
-      (row) =>
-        !isExpertiseOnlyUpdate(row),
-    )
-    .map(scrubExpertise);
-
+  const rawRows = (data ?? []) as AuditRow[];
   const needle = params.q?.trim().toLowerCase() ?? "";
 
   const rows = needle

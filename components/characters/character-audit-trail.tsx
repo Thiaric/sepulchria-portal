@@ -1,6 +1,10 @@
 import "server-only";
 
 import {
+  CharacterAuditTrailClient,
+  type CharacterAuditDisplayRow,
+} from "@/components/characters/character-audit-trail-client";
+import {
   getStaffSession,
 } from "@/lib/auth/require-staff";
 import {
@@ -30,65 +34,101 @@ type AuditRow = {
   created_at: string;
 };
 
-const PLAYER_HIDDEN_KEYS = new Set([
-  "user_id",
-  "actor_user_id",
-  "assigned_by",
-  "approved_by",
-  "reviewed_by",
-  "moderated_by",
-]);
-
-function formatDateTime(value: string) {
-  const date = new Date(value);
-
-  if (Number.isNaN(date.getTime())) {
-    return value;
-  }
-
-  return new Intl.DateTimeFormat("en-GB", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(date);
-}
+const PLAYER_HIDDEN_KEYS =
+  new Set([
+    "user_id",
+    "actor_user_id",
+    "assigned_by",
+    "approved_by",
+    "reviewed_by",
+    "moderated_by",
+  ]);
 
 function eventLabel(value: string) {
   return value
     .replaceAll("_", " ")
-    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+    .replace(/\b\w/g, (letter) =>
+      letter.toUpperCase(),
+    );
+}
+
+function removeExpertise(
+  value:
+    | Record<string, unknown>
+    | null,
+) {
+  if (!value) {
+    return value;
+  }
+
+  const next = {
+    ...value,
+  };
+
+  delete next.expertise;
+
+  return next;
 }
 
 function cleanForPlayer(
-  value: Record<string, unknown> | null,
+  value:
+    | Record<string, unknown>
+    | null,
 ) {
-  if (!value) return value;
+  const withoutExpertise =
+    removeExpertise(value);
+
+  if (!withoutExpertise) {
+    return withoutExpertise;
+  }
 
   return Object.fromEntries(
-    Object.entries(value).filter(
+    Object.entries(
+      withoutExpertise,
+    ).filter(
       ([key]) =>
-        !PLAYER_HIDDEN_KEYS.has(key) &&
-        !key.endsWith("_user_id"),
+        !PLAYER_HIDDEN_KEYS.has(
+          key,
+        ) &&
+        !key.endsWith(
+          "_user_id",
+        ),
     ),
   );
 }
 
-function changedFieldsForViewer(
+function visibleFields(
   fields: string[],
   staffView: boolean,
 ) {
-  if (staffView) return fields;
-
   return fields.filter(
     (key) =>
-      !PLAYER_HIDDEN_KEYS.has(key) &&
-      !key.endsWith("_user_id"),
+      key !== "expertise" &&
+      (staffView ||
+        (!PLAYER_HIDDEN_KEYS.has(
+          key,
+        ) &&
+          !key.endsWith(
+            "_user_id",
+          ))),
   );
 }
 
-function pretty(value: unknown) {
-  if (value === null || value === undefined) return "—";
-  if (typeof value === "string") return value;
-  return JSON.stringify(value, null, 2);
+function isExpertiseOnlyUpdate(
+  row: AuditRow,
+) {
+  return (
+    row.operation === "update" &&
+    row.entity_type ===
+      "characters" &&
+    (row.changed_fields ??
+      []).length > 0 &&
+    (row.changed_fields ??
+      []).every(
+      (field) =>
+        field === "expertise",
+    )
+  );
 }
 
 function actorDescription(
@@ -96,18 +136,28 @@ function actorDescription(
   staffView: boolean,
   viewerUserId: string,
 ) {
-  if (row.actor_type === "system") return "System";
+  if (
+    row.actor_type === "system"
+  ) {
+    return "System";
+  }
 
   if (
-    row.actor_type === "player" &&
-    row.actor_user_id === viewerUserId
+    row.actor_type ===
+      "player" &&
+    row.actor_user_id ===
+      viewerUserId
   ) {
     return "You";
   }
 
-  if (row.actor_type === "player") {
+  if (
+    row.actor_type ===
+    "player"
+  ) {
     return staffView
-      ? row.actor_label ?? "Player"
+      ? row.actor_label ??
+          "Player"
       : "Player";
   }
 
@@ -121,8 +171,63 @@ function actorDescription(
   }
 
   return row.actor_staff_role
-    ? `Staff · ${eventLabel(row.actor_staff_role)}`
+    ? `Staff · ${eventLabel(
+        row.actor_staff_role,
+      )}`
     : "Staff";
+}
+
+function toDisplayRow(
+  row: AuditRow,
+  staffView: boolean,
+  viewerUserId: string,
+): CharacterAuditDisplayRow {
+  return {
+    id: row.id,
+    event_type:
+      row.event_type,
+    entity_type:
+      row.entity_type,
+    entity_id:
+      row.entity_id,
+    actor_type:
+      row.actor_type,
+    actor_label:
+      actorDescription(
+        row,
+        staffView,
+        viewerUserId,
+      ),
+    actor_staff_role:
+      staffView
+        ? row.actor_staff_role
+        : null,
+    source: row.source,
+    changed_fields:
+      visibleFields(
+        row.changed_fields ?? [],
+        staffView,
+      ),
+    old_values: staffView
+      ? removeExpertise(
+          row.old_values,
+        )
+      : cleanForPlayer(
+          row.old_values,
+        ),
+    new_values: staffView
+      ? removeExpertise(
+          row.new_values,
+        )
+      : cleanForPlayer(
+          row.new_values,
+        ),
+    metadata: staffView
+      ? row.metadata
+      : null,
+    created_at:
+      row.created_at,
+  };
 }
 
 export async function CharacterAuditTrail({
@@ -132,16 +237,23 @@ export async function CharacterAuditTrail({
   characterId: string;
   staffView?: boolean;
 }) {
-  const supabase = await createClient();
+  const supabase =
+    await createClient();
 
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } =
+    await supabase.auth.getUser();
 
-  if (!user) return null;
+  if (!user) {
+    return null;
+  }
 
-  const staffSession = await getStaffSession();
-  let authorised = staffSession !== null;
+  const staffSession =
+    await getStaffSession();
+
+  let authorised =
+    staffSession !== null;
 
   if (!authorised) {
     const {
@@ -160,12 +272,16 @@ export async function CharacterAuditTrail({
       );
     }
 
-    authorised = ownedCharacter !== null;
+    authorised =
+      ownedCharacter !== null;
   }
 
-  if (!authorised) return null;
+  if (!authorised) {
+    return null;
+  }
 
-  const admin = createAdminClient();
+  const admin =
+    createAdminClient();
 
   const {
     data: characterRecord,
@@ -182,10 +298,14 @@ export async function CharacterAuditTrail({
     );
   }
 
-  if (!characterRecord) return null;
+  if (!characterRecord) {
+    return null;
+  }
 
   let query = admin
-    .from("character_audit_log")
+    .from(
+      "character_audit_log",
+    )
     .select(`
       id,
       character_id,
@@ -205,10 +325,17 @@ export async function CharacterAuditTrail({
       metadata,
       created_at
     `)
-    .order("created_at", { ascending: false })
+    .order(
+      "created_at",
+      {
+        ascending: false,
+      },
+    )
     .limit(500);
 
-  if (characterRecord.user_id) {
+  if (
+    characterRecord.user_id
+  ) {
     query = query.or(
       [
         `character_id.eq.${characterId}`,
@@ -216,10 +343,16 @@ export async function CharacterAuditTrail({
       ].join(","),
     );
   } else {
-    query = query.eq("character_id", characterId);
+    query = query.eq(
+      "character_id",
+      characterId,
+    );
   }
 
-  const { data, error } = await query;
+  const {
+    data,
+    error,
+  } = await query;
 
   if (error) {
     throw new Error(
@@ -227,7 +360,22 @@ export async function CharacterAuditTrail({
     );
   }
 
-  const rows = (data ?? []) as AuditRow[];
+  const rows = (
+    (data ?? []) as AuditRow[]
+  )
+    .filter(
+      (row) =>
+        !isExpertiseOnlyUpdate(
+          row,
+        ),
+    )
+    .map((row) =>
+      toDisplayRow(
+        row,
+        staffView,
+        user.id,
+      ),
+    );
 
   return (
     <section className="border border-[rgb(var(--sep-colour-6b5032))]/50 bg-[rgb(var(--sep-colour-17110d))] p-4 sm:p-5">
@@ -235,131 +383,20 @@ export async function CharacterAuditTrail({
         <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
           Character history
         </p>
+
         <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dfc79c))]">
           Character Log
         </h2>
+
         <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
-          Permanent history of recorded changes to this Character, newest first.
+          Permanent history of recorded material changes to this Character, newest first.
         </p>
       </div>
 
-      {rows.length === 0 ? (
-        <p className="py-6 text-sm text-[rgb(var(--sep-colour-8f8271))]">
-          No Character Log entries have been recorded yet.
-        </p>
-      ) : (
-        <div className="mt-4 space-y-3">
-          {rows.map((row) => {
-            const visibleFields =
-              changedFieldsForViewer(
-                row.changed_fields ?? [],
-                staffView,
-              );
-
-            const before = staffView
-              ? row.old_values
-              : cleanForPlayer(row.old_values);
-
-            const after = staffView
-              ? row.new_values
-              : cleanForPlayer(row.new_values);
-
-            return (
-              <article
-                key={row.id}
-                className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))]"
-              >
-                <div className="flex flex-wrap items-start justify-between gap-3 px-4 py-3">
-                  <div className="min-w-0">
-                    <p className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-a17f52))]">
-                      {eventLabel(row.event_type)}
-                    </p>
-                    <p className="mt-1 text-[10px] text-[rgb(var(--sep-colour-b8a488))]">
-                      {actorDescription(
-                        row,
-                        staffView,
-                        user.id,
-                      )}
-                    </p>
-
-                    {staffView ? (
-                      <p className="mt-1 break-words text-[8px] text-[rgb(var(--sep-colour-706658))]">
-                        {row.entity_type}
-                        {row.entity_id ? ` · ${row.entity_id}` : ""}
-                        {row.source ? ` · ${row.source}` : ""}
-                      </p>
-                    ) : null}
-                  </div>
-
-                  <time
-                    dateTime={row.created_at}
-                    className="text-right text-[9px] text-[rgb(var(--sep-colour-8c7c67))]"
-                  >
-                    {formatDateTime(row.created_at)}
-                  </time>
-                </div>
-
-                {visibleFields.length ? (
-                  <div className="border-t border-[rgb(var(--sep-colour-59432c))]/30 px-4 py-2">
-                    <p className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
-                      Changed
-                    </p>
-                    <p className="mt-1 break-words text-[9px] text-[rgb(var(--sep-colour-ae9d83))]">
-                      {visibleFields.join(", ")}
-                    </p>
-                  </div>
-                ) : null}
-
-                {before !== null || after !== null ? (
-                  <details className="border-t border-[rgb(var(--sep-colour-59432c))]/30">
-                    <summary className="cursor-pointer px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-a98d65))]">
-                      Before / after
-                    </summary>
-
-                    <div className="grid gap-3 border-t border-[rgb(var(--sep-colour-59432c))]/25 p-4 lg:grid-cols-2">
-                      <div>
-                        <p className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
-                          Before
-                        </p>
-                        <pre className="mt-2 max-h-72 overflow-auto whitespace-pre-wrap break-words text-[9px] leading-5 text-[rgb(var(--sep-colour-9f8d73))]">
-                          {pretty(before)}
-                        </pre>
-                      </div>
-
-                      <div>
-                        <p className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
-                          After
-                        </p>
-                        <pre className="mt-2 max-h-72 overflow-auto whitespace-pre-wrap break-words text-[9px] leading-5 text-[rgb(var(--sep-colour-9f8d73))]">
-                          {pretty(after)}
-                        </pre>
-                      </div>
-                    </div>
-
-                    {staffView &&
-                    Object.keys(row.metadata ?? {}).length ? (
-                      <div className="border-t border-[rgb(var(--sep-colour-59432c))]/25 p-4">
-                        <p className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
-                          Metadata
-                        </p>
-                        <pre className="mt-2 max-h-64 overflow-auto whitespace-pre-wrap break-words text-[9px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
-                          {pretty(row.metadata)}
-                        </pre>
-                      </div>
-                    ) : null}
-                  </details>
-                ) : null}
-              </article>
-            );
-          })}
-
-          {rows.length >= 500 ? (
-            <p className="pt-2 text-right text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-716654))]">
-              Showing the latest 500 entries.
-            </p>
-          ) : null}
-        </div>
-      )}
+      <CharacterAuditTrailClient
+        rows={rows}
+        staffView={staffView}
+      />
     </section>
   );
 }

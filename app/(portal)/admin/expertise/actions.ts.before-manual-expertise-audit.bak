@@ -25,14 +25,11 @@ export async function awardExpertise(formData: FormData): Promise<void> {
   }
 
   const supabase = await createClient();
-  const { error } = await supabase.rpc(
-    "staff_award_expertise_with_character_audit",
-    {
-      p_character_id: characterId,
-      p_amount: amount,
-      p_note: note || null,
-    },
-  );
+  const { error } = await supabase.rpc("staff_award_expertise", {
+    p_character_id: characterId,
+    p_amount: amount,
+    p_note: note || null,
+  });
 
   if (error) {
     throw new Error(`Unable to award Expertise: ${error.message}`);
