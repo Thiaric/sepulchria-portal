@@ -13,7 +13,7 @@ import {
 import {
   heartbeatExpertisePresence,
 } from "@/app/(portal)/game/expertise-presence-actions";
-
+import { PortalSessionGuard } from "@/components/portal/portal-session-guard";
 import { createClient } from "@/lib/supabase/client";
 
 const HEARTBEAT_INTERVAL_MS =
@@ -141,11 +141,25 @@ export function PortalPresenceHeartbeat({
           HIDDEN_SINCE_KEY,
         );
 
+        try {
+          await fetch(
+            "/api/portal-session/release",
+            {
+              method: "POST",
+              credentials: "same-origin",
+            },
+          );
+        } catch {
+          // Continue with the local sign-out if cleanup cannot be reached.
+        }
+
         const supabase =
           createClient();
 
         const { error } =
-          await supabase.auth.signOut();
+          await supabase.auth.signOut({
+            scope: "local",
+          });
 
         if (error) {
           console.error(
@@ -435,5 +449,9 @@ export function PortalPresenceHeartbeat({
     };
   }, [enabled]);
 
-  return null;
+  return (
+    <PortalSessionGuard
+      enabled={enabled}
+    />
+  );
 }
