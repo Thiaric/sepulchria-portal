@@ -4,7 +4,6 @@ import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
 import { ForumOrderSectionFields } from "@/components/admin/forum-order-section-fields";
-import { ForumStaffRoleAccessFields } from "@/components/admin/forum-staff-role-access-fields";
 
 import {
   createForumSectionAction,
@@ -385,8 +384,6 @@ export default async function NewForumSectionPage({
                   </option>
                 </select>
               </FieldGroup>
-
-              <ForumStaffRoleAccessFields />
 
               <ForumOrderSectionFields
                 orders={orderOptions}

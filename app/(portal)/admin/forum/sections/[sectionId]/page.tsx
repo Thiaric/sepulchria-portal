@@ -12,6 +12,7 @@ import {
 } from "../actions";
 import { createClient } from "@/lib/supabase/server";
 import { ForumOrderSectionFields } from "@/components/admin/forum-order-section-fields";
+import { ForumStaffRoleAccessFields } from "@/components/admin/forum-staff-role-access-fields";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -43,6 +44,8 @@ type ForumSectionRecord = {
     | "public"
     | "members"
     | "staff";
+  staff_read_roles: string[] | null;
+  staff_write_roles: string[] | null;
   icon_url: string | null;
   banner_url: string | null;
   colour: string | null;
@@ -167,6 +170,8 @@ export default async function EditForumSectionPage({
           order_id,
           parent_id,
           visibility,
+          staff_read_roles,
+          staff_write_roles,
           icon_url,
           banner_url,
           colour,
@@ -626,6 +631,11 @@ export default async function EditForumSectionPage({
                   </option>
                 </select>
               </FieldGroup>
+
+              <ForumStaffRoleAccessFields
+                defaultReadRoles={section.staff_read_roles}
+                defaultWriteRoles={section.staff_write_roles}
+              />
 
               <ForumOrderSectionFields
                 orders={orderOptions}

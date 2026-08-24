@@ -1,7 +1,6 @@
 import "server-only";
 
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { StaffRole } from "@/lib/auth/require-staff";
 
 import {
   ORDER_LEVELS,
@@ -17,7 +16,6 @@ export type ForumOrderMembership = {
 export type ForumViewerContext = {
   userId: string | null;
   isStaff: boolean;
-  staffRole: StaffRole | null;
   characterId: string | null;
   membership: ForumOrderMembership | null;
 };
@@ -142,28 +140,15 @@ export async function getForumViewerContext(
     return {
       userId: null,
       isStaff: false,
-      staffRole: null,
       characterId: null,
       membership: null,
     };
   }
 
-  const { data: staffMember } =
-    await supabase
-      .from("staff_members")
-      .select("role")
-      .eq("user_id", user.id)
-      .maybeSingle<{ role: StaffRole }>();
+  const { data: staffResult } =
+    await supabase.rpc("current_user_is_staff");
 
-  const staffRole =
-    staffMember?.role === "owner" ||
-    staffMember?.role === "admin" ||
-    staffMember?.role === "moderator" ||
-    staffMember?.role === "master"
-      ? staffMember.role
-      : null;
-
-  const isStaff = staffRole !== null;
+  const isStaff = staffResult === true;
 
   const { data: characterData } = await supabase
     .from("characters")
@@ -175,7 +160,6 @@ export async function getForumViewerContext(
     return {
       userId: user.id,
       isStaff,
-      staffRole,
       characterId: null,
       membership: null,
     };
@@ -206,7 +190,6 @@ export async function getForumViewerContext(
   return {
     userId: user.id,
     isStaff,
-    staffRole,
     characterId: characterData.id,
     membership:
       membershipData && level !== null
@@ -297,102 +280,3 @@ export function canViewOrderTopic({
     viewer.membership.level,
   );
 }
-
-export type ForumStaffSectionRole =
-  | "admin"
-  | "moderator"
-  | "master";
-
-export type ForumSectionAccessRecord = {
-  visibility: string;
-  order_id: string | null;
-  staff_read_roles?: string[] | null;
-  staff_write_roles?: string[] | null;
-};
-
-const FORUM_STAFF_SECTION_ROLES: ForumStaffSectionRole[] = [
-  "admin",
-  "moderator",
-  "master",
-];
-
-function normaliseForumStaffRoles(
-  value: string[] | null | undefined,
-): ForumStaffSectionRole[] {
-  if (value == null) {
-    return [...FORUM_STAFF_SECTION_ROLES];
-  }
-
-  return Array.from(
-    new Set(
-      value.filter(
-        (role): role is ForumStaffSectionRole =>
-          role === "admin" ||
-          role === "moderator" ||
-          role === "master",
-      ),
-    ),
-  );
-}
-
-function staffRoleAllowed(
-  viewer: ForumViewerContext,
-  roles: string[] | null | undefined,
-): boolean {
-  if (viewer.staffRole === "owner") {
-    return true;
-  }
-
-  if (
-    viewer.staffRole !== "admin" &&
-    viewer.staffRole !== "moderator" &&
-    viewer.staffRole !== "master"
-  ) {
-    return false;
-  }
-
-  return normaliseForumStaffRoles(roles).includes(
-    viewer.staffRole,
-  );
-}
-
-export function canReadForumSection(
-  viewer: ForumViewerContext,
-  section: ForumSectionAccessRecord,
-): boolean {
-  if (section.visibility === "staff") {
-    return staffRoleAllowed(
-      viewer,
-      section.staff_read_roles,
-    );
-  }
-
-  return canAccessOrderSection(
-    viewer,
-    section.order_id,
-  );
-}
-
-export function canWriteForumSection(
-  viewer: ForumViewerContext,
-  section: ForumSectionAccessRecord,
-): boolean {
-  if (section.visibility === "staff") {
-    return (
-      staffRoleAllowed(
-        viewer,
-        section.staff_read_roles,
-      ) &&
-      staffRoleAllowed(
-        viewer,
-        section.staff_write_roles,
-      )
-    );
-  }
-
-  return canAccessOrderSection(
-    viewer,
-    section.order_id,
-  );
-}
-

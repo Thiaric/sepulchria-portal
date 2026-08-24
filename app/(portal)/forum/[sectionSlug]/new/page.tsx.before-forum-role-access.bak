@@ -8,7 +8,7 @@ import {
 import NewTopicForm from "@/components/forum/new-topic-form";
 import { createClient } from "@/lib/supabase/server";
 import {
-  canWriteForumSection,
+  canAccessOrderSection,
   getForumViewerContext,
 } from "@/lib/forum/order-forum-access";
 
@@ -24,8 +24,6 @@ type ForumSectionQueryRow = {
     | "public"
     | "members"
     | "staff";
-  staff_read_roles: string[] | null;
-  staff_write_roles: string[] | null;
   association_id: string | null;
   order_id: string | null;
   description: string;
@@ -60,8 +58,6 @@ type ForumSectionOption = {
     | "public"
     | "members"
     | "staff";
-  staff_read_roles: string[] | null;
-  staff_write_roles: string[] | null;
   association_id: string | null;
   order_id: string | null;
 };
@@ -158,8 +154,6 @@ export default async function NewForumTopicPage({
       slug,
       section_type,
       visibility,
-      staff_read_roles,
-      staff_write_roles,
       association_id,
       order_id,
       description,
@@ -200,9 +194,9 @@ export default async function NewForumTopicPage({
     await getForumViewerContext(supabase);
 
   if (
-    !canWriteForumSection(
+    !canAccessOrderSection(
       viewer,
-      currentSectionRow,
+      currentSectionRow.order_id,
     )
   ) {
     notFound();
@@ -226,8 +220,6 @@ export default async function NewForumTopicPage({
         slug,
         section_type,
         visibility,
-        staff_read_roles,
-        staff_write_roles,
         association_id,
         order_id,
         is_active,
@@ -282,13 +274,13 @@ export default async function NewForumTopicPage({
       []
     ) as ForumSectionOption[]).filter(
       (section) =>
-        canWriteForumSection(
+        canAccessOrderSection(
           viewer,
-          section,
+          section.order_id,
         ),
     );
 
-    const currentSection:
+  const currentSection:
     ForumSectionOption = {
     id: currentSectionRow.id,
     name: currentSectionRow.name,
@@ -297,10 +289,6 @@ export default async function NewForumTopicPage({
       currentSectionRow.section_type,
     visibility:
       currentSectionRow.visibility,
-    staff_read_roles:
-      currentSectionRow.staff_read_roles,
-    staff_write_roles:
-      currentSectionRow.staff_write_roles,
     association_id:
       currentSectionRow.association_id,
     order_id:

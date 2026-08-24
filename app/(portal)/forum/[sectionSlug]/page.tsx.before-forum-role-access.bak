@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 import { ForumTopicFavouriteButton } from "@/components/forum/forum-topic-favourite-button";
 import { createClient } from "@/lib/supabase/server";
 import {
-  canReadForumSection,
+  canAccessOrderSection,
   canViewOrderTopic,
   getForumViewerContext,
 } from "@/lib/forum/order-forum-access";
@@ -27,8 +27,6 @@ type ForumSection = {
     | "public"
     | "members"
     | "staff";
-  staff_read_roles: string[] | null;
-  staff_write_roles: string[] | null;
   icon_url: string | null;
   banner_url: string | null;
   colour: string | null;
@@ -223,8 +221,6 @@ export default async function ForumSectionPage({
       order_id,
       parent_id,
       visibility,
-      staff_read_roles,
-      staff_write_roles,
       icon_url,
       banner_url,
       colour,
@@ -263,9 +259,9 @@ export default async function ForumSectionPage({
     await getForumViewerContext(supabase);
 
   if (
-    !canReadForumSection(
+    !canAccessOrderSection(
       viewer,
-      section,
+      section.order_id,
     )
   ) {
     notFound();
@@ -297,8 +293,6 @@ export default async function ForumSectionPage({
         order_id,
         parent_id,
         visibility,
-        staff_read_roles,
-        staff_write_roles,
         icon_url,
         banner_url,
         colour,
@@ -437,9 +431,9 @@ export default async function ForumSectionPage({
       []) as unknown as ForumSection[]
   )
     .filter((childSection) =>
-      canReadForumSection(
+      canAccessOrderSection(
         viewer,
-        childSection,
+        childSection.order_id,
       ),
     )
     .map((childSection) => ({

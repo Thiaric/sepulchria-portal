@@ -1,17 +1,61 @@
 import Link from "next/link";
 import Script from "next/script";
-import { redirect } from "next/navigation";
-
-import { createClient } from "@/lib/supabase/server";
-import { ForumOrderSectionFields } from "@/components/admin/forum-order-section-fields";
-import { ForumStaffRoleAccessFields } from "@/components/admin/forum-staff-role-access-fields";
+import {
+  notFound,
+  redirect,
+} from "next/navigation";
 
 import {
-  createForumSectionAction,
+  deleteForumSectionAction,
+  toggleForumSectionStatusAction,
+  updateForumSectionAction,
 } from "../actions";
+import { createClient } from "@/lib/supabase/server";
+import { ForumOrderSectionFields } from "@/components/admin/forum-order-section-fields";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
+
+type EditForumSectionPageProps = {
+  params: Promise<{
+    sectionId: string;
+  }>;
+
+  searchParams: Promise<{
+    error?: string | string[];
+    success?: string | string[];
+  }>;
+};
+
+type ForumSectionRecord = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  section_type:
+    | "ongame"
+    | "offgame"
+    | "organisation";
+  association_id: string | null;
+  order_id: string | null;
+  parent_id: string | null;
+  visibility:
+    | "public"
+    | "members"
+    | "staff";
+  icon_url: string | null;
+  banner_url: string | null;
+  colour: string | null;
+  is_active: boolean;
+  sort_order: number;
+};
+
+type ParentSectionRecord = {
+  id: string;
+  name: string;
+  slug: string;
+  is_active: boolean;
+};
 
 type AssociationRecord = {
   id: string;
@@ -24,25 +68,42 @@ type OrderRecord = {
   association_id: string;
 };
 
-type ForumSectionRecord = {
+type TopicRecord = {
   id: string;
-  name: string;
-  section_type:
-    | "ongame"
-    | "offgame"
-    | "organisation";
-  is_active: boolean;
+  deleted_at: string | null;
 };
 
-type PageSearchParams = Promise<{
-  error?: string | string[];
-}>;
+function getSearchParamValue(
+  value: string | string[] | undefined,
+): string | null {
+  if (Array.isArray(value)) {
+    return value[0] ?? null;
+  }
 
-export default async function NewForumSectionPage({
+  return value ?? null;
+}
+
+export default async function EditForumSectionPage({
+  params,
   searchParams,
-}: {
-  searchParams: PageSearchParams;
-}) {
+}: EditForumSectionPageProps) {
+  const {
+    sectionId,
+  } = await params;
+
+  const resolvedSearchParams =
+    await searchParams;
+
+  const errorMessage =
+    getSearchParamValue(
+      resolvedSearchParams.error,
+    );
+
+  const successMessage =
+    getSearchParamValue(
+      resolvedSearchParams.success,
+    );
+
   const supabase = await createClient();
 
   const {
@@ -52,7 +113,7 @@ export default async function NewForumSectionPage({
   if (!user) {
     redirect(
       `/login?redirect=${encodeURIComponent(
-        "/admin/forum/sections/new",
+        `/admin/forum/sections/${sectionId}`,
       )}`,
     );
   }
@@ -73,14 +134,67 @@ export default async function NewForumSectionPage({
 
   const [
     {
+      data: sectionRecord,
+      error: sectionError,
+    },
+    {
+      data: parentSectionRecords,
+      error: parentSectionsError,
+    },
+    {
       data: associationRecords,
       error: associationsError,
     },
     {
-      data: sectionRecords,
-      error: sectionsError,
+      data: topicRecords,
+      error: topicsError,
+    },
+    {
+      count: childSectionCount,
+      error: childSectionCountError,
     },
   ] = await Promise.all([
+    supabase
+      .from("forum_sections")
+      .select(
+        `
+          id,
+          name,
+          slug,
+          description,
+          section_type,
+          association_id,
+          order_id,
+          parent_id,
+          visibility,
+          icon_url,
+          banner_url,
+          colour,
+          is_active,
+          sort_order
+        `,
+      )
+      .eq("id", sectionId)
+      .maybeSingle<ForumSectionRecord>(),
+
+    supabase
+      .from("forum_sections")
+      .select(
+        `
+          id,
+          name,
+          slug,
+          is_active
+        `,
+      )
+      .neq("id", sectionId)
+      .order("sort_order", {
+        ascending: true,
+      })
+      .order("name", {
+        ascending: true,
+      }),
+
     supabase
       .from("associations")
       .select(
@@ -94,21 +208,22 @@ export default async function NewForumSectionPage({
       }),
 
     supabase
-      .from("forum_sections")
+      .from("forum_topics")
       .select(
         `
           id,
-          name,
-          section_type,
-          is_active
+          deleted_at
         `,
       )
-      .order("sort_order", {
-        ascending: true,
+      .eq("section_id", sectionId),
+
+    supabase
+      .from("forum_sections")
+      .select("id", {
+        count: "exact",
+        head: true,
       })
-      .order("name", {
-        ascending: true,
-      }),
+      .eq("parent_id", sectionId),
   ]);
 
   const {
@@ -128,25 +243,50 @@ export default async function NewForumSectionPage({
     );
   }
 
+  if (sectionError) {
+    throw new Error(
+      `Unable to load the forum section: ${sectionError.message}`,
+    );
+  }
+
+  if (!sectionRecord) {
+    notFound();
+  }
+
+  if (parentSectionsError) {
+    throw new Error(
+      `Unable to load parent sections: ${parentSectionsError.message}`,
+    );
+  }
+
   if (associationsError) {
     throw new Error(
       `Unable to load organisations: ${associationsError.message}`,
     );
   }
 
-  if (sectionsError) {
+  if (topicsError) {
     throw new Error(
-      `Unable to load forum sections: ${sectionsError.message}`,
+      `Unable to load section topics: ${topicsError.message}`,
     );
   }
+
+  if (childSectionCountError) {
+    throw new Error(
+      `Unable to inspect child sections: ${childSectionCountError.message}`,
+    );
+  }
+
+  const section =
+    sectionRecord as ForumSectionRecord;
+
+  const parentSections =
+    (parentSectionRecords ??
+      []) as ParentSectionRecord[];
 
   const associations =
     (associationRecords ??
       []) as AssociationRecord[];
-
-  const sections =
-    (sectionRecords ??
-      []) as ForumSectionRecord[];
 
   const orders =
     (orderRecords ?? []) as OrderRecord[];
@@ -167,16 +307,37 @@ export default async function NewForumSectionPage({
       ) ?? "Unassigned Association",
   }));
 
-  const resolvedSearchParams =
-    await searchParams;
+  const topics =
+    (topicRecords ??
+      []) as TopicRecord[];
 
-  const errorValue =
-    resolvedSearchParams.error;
+  const activeTopics =
+    topics.filter(
+      (topic) => !topic.deleted_at,
+    ).length;
 
-  const errorMessage =
-    Array.isArray(errorValue)
-      ? errorValue[0]
-      : errorValue;
+  const deletedTopics =
+    topics.filter(
+      (topic) =>
+        Boolean(topic.deleted_at),
+    ).length;
+
+  const numberOfChildSections =
+    typeof childSectionCount === "number"
+      ? childSectionCount
+      : 0;
+
+  const canDelete =
+    topics.length === 0 &&
+    numberOfChildSections === 0;
+
+  const sectionColour =
+    section.colour &&
+    /^#[0-9a-f]{6}$/i.test(
+      section.colour,
+    )
+      ? section.colour
+      : "#8c704b";
 
   return (
     <>
@@ -219,26 +380,72 @@ export default async function NewForumSectionPage({
           </span>
 
           <span className="text-[rgb(var(--sep-colour-a48c6c))]">
-            Create section
+            {section.name}
           </span>
         </nav>
 
         <header className="overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
-          <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-1a130e))] px-5 py-7 sm:px-7">
-            <p className="text-[8px] uppercase tracking-[0.22em] text-amber-500">
-              Forum structure
-            </p>
+          <div className="flex flex-col gap-5 border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-1a130e))] px-5 py-7 sm:px-7 lg:flex-row lg:items-start lg:justify-between">
+            <div>
+              <div className="flex flex-wrap items-center gap-2">
+                <p className="text-[8px] uppercase tracking-[0.22em] text-amber-500">
+                  Forum structure
+                </p>
 
-            <h1 className="mt-3 font-serif text-3xl text-[rgb(var(--sep-colour-dec69d))] sm:text-4xl">
-              Create Forum Section
-            </h1>
+                <StatusBadge
+                  active={
+                    section.is_active
+                  }
+                />
+              </div>
 
-            <p className="mt-3 max-w-3xl text-sm leading-6 text-[rgb(var(--sep-colour-817567))]">
-              Add a new public, private or
-              organisation section to the
-              Sepulchria forum.
-            </p>
+              <h1 className="mt-3 font-serif text-3xl text-[rgb(var(--sep-colour-dec69d))] sm:text-4xl">
+                Edit Forum Section
+              </h1>
+
+              <p className="mt-3 max-w-3xl text-sm leading-6 text-[rgb(var(--sep-colour-817567))]">
+                Update the section&apos;s
+                identity, access,
+                appearance and publication
+                status.
+              </p>
+            </div>
+
+            {section.is_active ? (
+              <Link
+                href={`/forum/${encodeURIComponent(
+                  section.slug,
+                )}`}
+                className="shrink-0 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-5 py-3 text-center text-[8px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-a58b68))] transition hover:border-[rgb(var(--sep-colour-947047))] hover:text-[rgb(var(--sep-colour-dec095))]"
+              >
+                Open section
+              </Link>
+            ) : null}
           </div>
+
+          <dl className="grid grid-cols-2 divide-x divide-y divide-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-100c09))] sm:grid-cols-4 sm:divide-y-0">
+            <Statistic
+              label="Active topics"
+              value={activeTopics}
+            />
+
+            <Statistic
+              label="Deleted topics"
+              value={deletedTopics}
+            />
+
+            <Statistic
+              label="Child sections"
+              value={
+                numberOfChildSections
+              }
+            />
+
+            <Statistic
+              label="Display order"
+              value={section.sort_order}
+            />
+          </dl>
         </header>
 
         {errorMessage ? (
@@ -247,7 +454,7 @@ export default async function NewForumSectionPage({
             className="mt-6 border border-red-900/60 bg-red-950/20 px-5 py-4"
           >
             <p className="text-[8px] uppercase tracking-[0.18em] text-red-400">
-              Section not created
+              Changes not saved
             </p>
 
             <p className="mt-2 text-sm leading-6 text-red-200/80">
@@ -256,17 +463,38 @@ export default async function NewForumSectionPage({
           </div>
         ) : null}
 
+        {successMessage ? (
+          <div
+            role="status"
+            className="mt-6 border border-emerald-900/60 bg-emerald-950/20 px-5 py-4"
+          >
+            <p className="text-[8px] uppercase tracking-[0.18em] text-emerald-400">
+              Changes saved
+            </p>
+
+            <p className="mt-2 text-sm leading-6 text-emerald-200/80">
+              {successMessage}
+            </p>
+          </div>
+        ) : null}
+
         <form
           action={
-            createForumSectionAction
+            updateForumSectionAction
           }
           className="mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]"
         >
+          <input
+            type="hidden"
+            name="section_id"
+            value={section.id}
+          />
+
           <section className="border-b border-[rgb(var(--sep-colour-60482e))]/30 px-5 py-6 sm:px-7">
             <SectionHeading
               eyebrow="Identity"
               title="Section details"
-              description="Choose the name, address and description displayed to forum members."
+              description="Update the public name, URL slug and description."
             />
 
             <div className="mt-6 grid gap-5 md:grid-cols-2">
@@ -283,7 +511,9 @@ export default async function NewForumSectionPage({
                   required
                   maxLength={120}
                   autoComplete="off"
-                  placeholder="Example: City Chronicles"
+                  defaultValue={
+                    section.name
+                  }
                   className={inputClassName}
                 />
               </FieldGroup>
@@ -291,16 +521,20 @@ export default async function NewForumSectionPage({
               <FieldGroup
                 label="Slug"
                 htmlFor="forum-section-slug"
-                description="Used in the section URL. It is generated automatically until edited manually."
+                required
+                description="Used in the section URL. Changing it changes the public address."
               >
                 <input
                   id="forum-section-slug"
                   name="slug"
                   type="text"
+                  required
                   maxLength={140}
                   autoComplete="off"
-                  placeholder="city-chronicles"
                   pattern="[a-z0-9]+(?:-[a-z0-9]+)*"
+                  defaultValue={
+                    section.slug
+                  }
                   className={inputClassName}
                 />
               </FieldGroup>
@@ -317,7 +551,10 @@ export default async function NewForumSectionPage({
                   name="description"
                   rows={5}
                   maxLength={2000}
-                  placeholder="Describe what members should use this section for..."
+                  defaultValue={
+                    section.description ??
+                    ""
+                  }
                   className={`${inputClassName} min-h-32 resize-y`}
                 />
               </FieldGroup>
@@ -328,7 +565,7 @@ export default async function NewForumSectionPage({
             <SectionHeading
               eyebrow="Classification"
               title="Type and access"
-              description="Define where the section belongs and who may access it."
+              description="Define the category, visibility and any connected Order."
             />
 
             <div className="mt-6 grid gap-5 md:grid-cols-2">
@@ -336,13 +573,15 @@ export default async function NewForumSectionPage({
                 label="Section type"
                 htmlFor="forum-section-type"
                 required
-                description="Determines the category in which the section appears."
+                description="Determines where the section appears on the forum index."
               >
                 <select
                   id="forum-section-type"
                   name="section_type"
                   required
-                  defaultValue="ongame"
+                  defaultValue={
+                    section.section_type
+                  }
                   className={inputClassName}
                 >
                   <option value="ongame">
@@ -369,7 +608,9 @@ export default async function NewForumSectionPage({
                   id="forum-section-visibility"
                   name="visibility"
                   required
-                  defaultValue="public"
+                  defaultValue={
+                    section.visibility
+                  }
                   className={inputClassName}
                 >
                   <option value="public">
@@ -386,10 +627,9 @@ export default async function NewForumSectionPage({
                 </select>
               </FieldGroup>
 
-              <ForumStaffRoleAccessFields />
-
               <ForumOrderSectionFields
                 orders={orderOptions}
+                defaultOrderId={section.order_id}
                 inputClassName={inputClassName}
               />
 
@@ -401,21 +641,30 @@ export default async function NewForumSectionPage({
                 <select
                   id="forum-section-parent"
                   name="parent_id"
-                  defaultValue=""
+                  defaultValue={
+                    section.parent_id ??
+                    ""
+                  }
                   className={inputClassName}
                 >
                   <option value="">
                     No parent section
                   </option>
 
-                  {sections.map(
-                    (section) => (
+                  {parentSections.map(
+                    (parentSection) => (
                       <option
-                        key={section.id}
-                        value={section.id}
+                        key={
+                          parentSection.id
+                        }
+                        value={
+                          parentSection.id
+                        }
                       >
-                        {section.name}
-                        {!section.is_active
+                        {
+                          parentSection.name
+                        }
+                        {!parentSection.is_active
                           ? " — Hidden"
                           : ""}
                       </option>
@@ -430,7 +679,7 @@ export default async function NewForumSectionPage({
             <SectionHeading
               eyebrow="Appearance"
               title="Visual presentation"
-              description="Add optional imagery and a colour used to distinguish the section."
+              description="Update the optional icon, banner and identifying colour."
             />
 
             <div className="mt-6 grid gap-5 md:grid-cols-2">
@@ -445,6 +694,10 @@ export default async function NewForumSectionPage({
                   type="url"
                   inputMode="url"
                   placeholder="https://..."
+                  defaultValue={
+                    section.icon_url ??
+                    ""
+                  }
                   className={inputClassName}
                 />
               </FieldGroup>
@@ -460,6 +713,10 @@ export default async function NewForumSectionPage({
                   type="url"
                   inputMode="url"
                   placeholder="https://..."
+                  defaultValue={
+                    section.banner_url ??
+                    ""
+                  }
                   className={inputClassName}
                 />
               </FieldGroup>
@@ -467,13 +724,15 @@ export default async function NewForumSectionPage({
               <FieldGroup
                 label="Section colour"
                 htmlFor="forum-section-colour"
-                description="Optional hexadecimal colour in the format #RRGGBB."
+                description="Hexadecimal colour in the format #RRGGBB."
               >
                 <div className="grid grid-cols-[70px_minmax(0,1fr)] gap-3">
                   <input
                     id="forum-section-colour-picker"
                     type="color"
-                    defaultValue="#8c704b"
+                    defaultValue={
+                      sectionColour
+                    }
                     aria-label="Choose section colour"
                     className="h-12 w-full cursor-pointer border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] p-1"
                   />
@@ -482,10 +741,11 @@ export default async function NewForumSectionPage({
                     id="forum-section-colour"
                     name="colour"
                     type="text"
-                    defaultValue="#8c704b"
                     maxLength={7}
                     pattern="#[0-9A-Fa-f]{6}"
-                    placeholder="#8c704b"
+                    defaultValue={
+                      sectionColour
+                    }
                     className={inputClassName}
                   />
                 </div>
@@ -504,7 +764,9 @@ export default async function NewForumSectionPage({
                   required
                   min={0}
                   step={1}
-                  defaultValue={0}
+                  defaultValue={
+                    section.sort_order
+                  }
                   className={inputClassName}
                 />
               </FieldGroup>
@@ -515,7 +777,7 @@ export default async function NewForumSectionPage({
             <SectionHeading
               eyebrow="Publication"
               title="Section status"
-              description="Choose whether the new section should immediately appear on the forum."
+              description="Choose whether this section should appear on the forum."
             />
 
             <label
@@ -526,7 +788,9 @@ export default async function NewForumSectionPage({
                 id="forum-section-active"
                 name="is_active"
                 type="checkbox"
-                defaultChecked
+                defaultChecked={
+                  section.is_active
+                }
                 className="mt-1 h-4 w-4 accent-amber-700"
               />
 
@@ -536,9 +800,9 @@ export default async function NewForumSectionPage({
                 </span>
 
                 <span className="mt-1 block text-sm leading-6 text-[rgb(var(--sep-colour-817567))]">
-                  Display this section on
-                  the forum according to
-                  its visibility rules.
+                  Display this section
+                  according to its
+                  visibility rules.
                 </span>
               </span>
             </label>
@@ -549,104 +813,181 @@ export default async function NewForumSectionPage({
               href="/admin/forum/sections"
               className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-5 py-3 text-center text-[8px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-927b5b))] transition hover:border-[rgb(var(--sep-colour-876640))] hover:text-[rgb(var(--sep-colour-d8b986))]"
             >
-              Cancel
+              Back
             </Link>
 
             <button
               type="submit"
               className="border border-amber-800/70 bg-amber-950/25 px-5 py-3 text-[8px] uppercase tracking-[0.17em] text-amber-300 transition hover:border-amber-600 hover:bg-amber-950/45"
             >
-              Create section
+              Save changes
             </button>
           </footer>
         </form>
+
+        <section className="mt-7 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
+          <div className="border-b border-[rgb(var(--sep-colour-60482e))]/30 px-5 py-6 sm:px-7">
+            <SectionHeading
+              eyebrow="Publication controls"
+              title={
+                section.is_active
+                  ? "Hide section"
+                  : "Activate section"
+              }
+              description={
+                section.is_active
+                  ? "Temporarily remove this section from the forum without deleting its content."
+                  : "Restore this section to the forum according to its visibility rules."
+              }
+            />
+          </div>
+
+          <form
+            action={
+              toggleForumSectionStatusAction
+            }
+            className="flex flex-col gap-4 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-7"
+          >
+            <input
+              type="hidden"
+              name="section_id"
+              value={section.id}
+            />
+
+            <p className="max-w-2xl text-sm leading-6 text-[rgb(var(--sep-colour-817567))]">
+              {section.is_active
+                ? "Existing topics and posts will remain stored. Members will no longer see this section."
+                : "The section will immediately become available again to authorised users."}
+            </p>
+
+            <button
+              type="submit"
+              className={
+                section.is_active
+                  ? "shrink-0 border border-orange-900/70 bg-orange-950/20 px-5 py-3 text-[8px] uppercase tracking-[0.17em] text-orange-300 transition hover:border-orange-700 hover:bg-orange-950/35"
+                  : "shrink-0 border border-emerald-900/70 bg-emerald-950/20 px-5 py-3 text-[8px] uppercase tracking-[0.17em] text-emerald-300 transition hover:border-emerald-700 hover:bg-emerald-950/35"
+              }
+            >
+              {section.is_active
+                ? "Hide section"
+                : "Activate section"}
+            </button>
+          </form>
+        </section>
+
+        <section className="mt-7 border border-red-950/60 bg-red-950/10">
+          <div className="border-b border-red-950/50 px-5 py-6 sm:px-7">
+            <p className="text-[8px] uppercase tracking-[0.2em] text-red-500">
+              Danger zone
+            </p>
+
+            <h2 className="mt-2 font-serif text-2xl text-red-200/90">
+              Permanently delete section
+            </h2>
+
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-red-200/55">
+              This action cannot be
+              undone. A section can only
+              be deleted when it contains
+              no topics and has no child
+              sections.
+            </p>
+          </div>
+
+          <form
+            action={
+              deleteForumSectionAction
+            }
+            className="px-5 py-6 sm:px-7"
+          >
+            <input
+              type="hidden"
+              name="section_id"
+              value={section.id}
+            />
+
+            {!canDelete ? (
+              <div className="border border-red-950/60 bg-black/15 px-4 py-4">
+                <p className="text-sm leading-6 text-red-200/70">
+                  This section cannot
+                  currently be deleted.
+                </p>
+
+                <ul className="mt-3 space-y-2 text-xs leading-5 text-red-200/50">
+                  {topics.length > 0 ? (
+                    <li>
+                      It contains{" "}
+                      {topics.length}{" "}
+                      {topics.length === 1
+                        ? "topic"
+                        : "topics"}
+                      , including deleted
+                      topics.
+                    </li>
+                  ) : null}
+
+                  {numberOfChildSections >
+                  0 ? (
+                    <li>
+                      It is the parent of{" "}
+                      {
+                        numberOfChildSections
+                      }{" "}
+                      {numberOfChildSections ===
+                      1
+                        ? "section"
+                        : "sections"}
+                      .
+                    </li>
+                  ) : null}
+                </ul>
+              </div>
+            ) : (
+              <>
+                <FieldGroup
+                  label='Type "DELETE" to confirm'
+                  htmlFor="forum-section-delete-confirmation"
+                  required
+                  description="The confirmation must be written exactly in uppercase."
+                >
+                  <input
+                    id="forum-section-delete-confirmation"
+                    name="confirmation"
+                    type="text"
+                    required
+                    autoComplete="off"
+                    pattern="DELETE"
+                    placeholder="DELETE"
+                    className="w-full border border-red-950/70 bg-[rgb(var(--sep-colour-100909))] px-4 py-3 text-sm text-red-100 outline-none transition placeholder:text-red-950 focus:border-red-700"
+                  />
+                </FieldGroup>
+
+                <div className="mt-5 flex justify-end">
+                  <button
+                    type="submit"
+                    className="border border-red-900/70 bg-red-950/30 px-5 py-3 text-[8px] uppercase tracking-[0.17em] text-red-300 transition hover:border-red-700 hover:bg-red-950/50"
+                  >
+                    Permanently delete
+                  </button>
+                </div>
+              </>
+            )}
+          </form>
+        </section>
       </main>
 
       <Script
-        id="forum-section-form-behaviour"
+        id="forum-section-edit-form-behaviour"
         strategy="afterInteractive"
       >
         {`
           (() => {
-            const nameInput = document.getElementById(
-              "forum-section-name"
-            );
-
-            const slugInput = document.getElementById(
-              "forum-section-slug"
-            );
-
             const colourInput = document.getElementById(
               "forum-section-colour"
             );
 
             const colourPicker = document.getElementById(
               "forum-section-colour-picker"
-            );
-
-            if (
-              !(nameInput instanceof HTMLInputElement) ||
-              !(slugInput instanceof HTMLInputElement)
-            ) {
-              return;
-            }
-
-            let slugWasEditedManually = false;
-
-            const makeSlug = (value) => {
-              return value
-                .normalize("NFD")
-                .replace(/[\\u0300-\\u036f]/g, "")
-                .toLowerCase()
-                .trim()
-                .replace(/['â€™]/g, "")
-                .replace(/[^a-z0-9]+/g, "-")
-                .replace(/^-+|-+$/g, "")
-                .replace(/-{2,}/g, "-");
-            };
-
-            slugInput.addEventListener(
-              "input",
-              () => {
-                slugWasEditedManually = true;
-
-                const cursorPosition =
-                  slugInput.selectionStart;
-
-                slugInput.value = makeSlug(
-                  slugInput.value
-                );
-
-                if (
-                  cursorPosition !== null
-                ) {
-                  slugInput.setSelectionRange(
-                    Math.min(
-                      cursorPosition,
-                      slugInput.value.length
-                    ),
-                    Math.min(
-                      cursorPosition,
-                      slugInput.value.length
-                    )
-                  );
-                }
-              }
-            );
-
-            nameInput.addEventListener(
-              "input",
-              () => {
-                if (
-                  slugWasEditedManually
-                ) {
-                  return;
-                }
-
-                slugInput.value = makeSlug(
-                  nameInput.value
-                );
-              }
             );
 
             if (
@@ -752,6 +1093,46 @@ function FieldGroup({
         {children}
       </div>
     </div>
+  );
+}
+
+function Statistic({
+  label,
+  value,
+}: {
+  label: string;
+  value: number;
+}) {
+  return (
+    <div className="px-4 py-4 text-center sm:px-5">
+      <dt className="text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-665946))]">
+        {label}
+      </dt>
+
+      <dd className="mt-2 font-serif text-lg text-[rgb(var(--sep-colour-bda17b))]">
+        {value}
+      </dd>
+    </div>
+  );
+}
+
+function StatusBadge({
+  active,
+}: {
+  active: boolean;
+}) {
+  return (
+    <span
+      className={
+        active
+          ? "border border-emerald-900/60 bg-emerald-950/20 px-2 py-1 text-[7px] uppercase tracking-[0.14em] text-emerald-400"
+          : "border border-red-950/60 bg-red-950/20 px-2 py-1 text-[7px] uppercase tracking-[0.14em] text-red-400"
+      }
+    >
+      {active
+        ? "Active"
+        : "Hidden"}
+    </span>
   );
 }
 

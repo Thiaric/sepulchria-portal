@@ -4,7 +4,7 @@ import Link from "next/link";
 
 import { createClient } from "@/lib/supabase/server";
 import {
-  canReadForumSection,
+  canAccessOrderSection,
   canViewOrderTopic,
   getForumViewerContext,
 } from "@/lib/forum/order-forum-access";
@@ -26,8 +26,6 @@ type ForumSection = {
     | "public"
     | "members"
     | "staff";
-  staff_read_roles: string[] | null;
-  staff_write_roles: string[] | null;
   icon_url: string | null;
   banner_url: string | null;
   colour: string | null;
@@ -158,8 +156,6 @@ export default async function ForumPage() {
         order_id,
         parent_id,
         visibility,
-        staff_read_roles,
-        staff_write_roles,
         icon_url,
         banner_url,
         colour,
@@ -237,9 +233,9 @@ export default async function ForumPage() {
 
   const sections = allSections.filter(
     (section) =>
-      canReadForumSection(
+      canAccessOrderSection(
         viewer,
-        section,
+        section.order_id,
       ),
   );
 
@@ -250,15 +246,6 @@ export default async function ForumPage() {
           sectionById.get(topic.section_id);
 
         if (!section) {
-          return false;
-        }
-
-        if (
-          !canReadForumSection(
-            viewer,
-            section,
-          )
-        ) {
           return false;
         }
 

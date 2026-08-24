@@ -12,11 +12,6 @@ import TopicPost, {
 import TopicReplyForm from "@/components/forum/topic-reply-form";
 import ForumTopicRealtime from "@/components/forum/forum-topic-realtime";
 import { createClient } from "@/lib/supabase/server";
-import {
-  canReadForumSection,
-  canWriteForumSection,
-  getForumViewerContext,
-} from "@/lib/forum/order-forum-access";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -37,10 +32,6 @@ type ForumSectionRecord = {
   name: string;
   slug: string;
   description: string | null;
-  visibility: string;
-  order_id: string | null;
-  staff_read_roles: string[] | null;
-  staff_write_roles: string[] | null;
   is_active: boolean;
 };
 
@@ -252,10 +243,6 @@ export default async function TopicPage({
         name,
         slug,
         description,
-        visibility,
-        order_id,
-        staff_read_roles,
-        staff_write_roles,
         is_active
       `,
     )
@@ -269,24 +256,6 @@ export default async function TopicPage({
   ) {
     notFound();
   }
-
-  const forumViewer =
-    await getForumViewerContext(supabase);
-
-  if (
-    !canReadForumSection(
-      forumViewer,
-      section,
-    )
-  ) {
-    notFound();
-  }
-
-  const canWriteToSection =
-    canWriteForumSection(
-      forumViewer,
-      section,
-    );
 
   const {
     data: topic,
@@ -1464,16 +1433,7 @@ race_colour:
         id="reply"
         className="mt-7 scroll-mt-24"
       >
-        {!canWriteToSection ? (
-          <div className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-5 py-7 text-center">
-            <p className="font-serif text-xl text-[rgb(var(--sep-colour-cdb590))]">
-              Read-only access
-            </p>
-            <p className="mt-2 text-sm leading-6 text-[rgb(var(--sep-colour-817567))]">
-              Your staff role may read this section but may not create discussions or replies here.
-            </p>
-          </div>
-        ) : topic.is_locked &&
+        {topic.is_locked &&
         !isStaff ? (
           <div className="border border-red-950/60 bg-red-950/10 px-5 py-6 text-center">
             <p className="text-[8px] uppercase tracking-[0.2em] text-red-500">

@@ -12,10 +12,6 @@ import {
 } from "react";
 
 import { createClient } from "@/lib/supabase/client";
-import {
-  canClientReadForumSection,
-  getClientForumAccessContext,
-} from "@/lib/forum/client-forum-access";
 import { UnreadMessageBadge } from "@/components/messages/unread-message-badge";
 import { TicketNotificationBadge } from "@/components/support/ticket-notification-badge";
 import { PlayerSanctionsSidebarLink } from "@/components/sanctions/player-sanctions-sidebar-link";
@@ -810,112 +806,23 @@ export function PortalSidebar({
         createClient();
 
       const {
-        data: { user },
-      } = await supabase.auth.getUser();
+        data,
+        error,
+      } = await supabase.rpc(
+        "get_unread_forum_topic_count",
+      );
 
-      if (!user) {
-        setCurrentUnreadForumCount(0);
-        return;
-      }
-
-      const forumAccess =
-        await getClientForumAccessContext(
-          supabase,
-          user.id,
-        );
-
-      const [
-        sectionResult,
-        topicResult,
-        readResult,
-      ] = await Promise.all([
-        supabase
-          .from("forum_sections")
-          .select(
-            "id, visibility, order_id, staff_read_roles",
-          )
-          .eq("is_active", true),
-        supabase
-          .from("forum_topics")
-          .select(
-            "id, section_id, last_post_at, deleted_at",
-          )
-          .is("deleted_at", null),
-        supabase
-          .from("forum_topic_reads")
-          .select(
-            "topic_id, last_read_at",
-          )
-          .eq("user_id", user.id),
-      ]);
-
-      if (
-        sectionResult.error ||
-        topicResult.error ||
-        readResult.error
-      ) {
+      if (error) {
         console.error(
           "Could not refresh forum unread count:",
-          sectionResult.error ??
-            topicResult.error ??
-            readResult.error,
+          error,
         );
+
         return;
       }
 
-      const accessibleSectionIds =
-        new Set(
-          (sectionResult.data ?? [])
-            .filter((section) =>
-              canClientReadForumSection(
-                forumAccess,
-                section,
-              ),
-            )
-            .map((section) => section.id),
-        );
-
-      const readMap =
-        new Map(
-          (readResult.data ?? []).map(
-            (read) => [
-              read.topic_id,
-              read.last_read_at,
-            ],
-          ),
-        );
-
-      const unreadCount =
-        (topicResult.data ?? []).filter(
-          (topic) => {
-            if (
-              !accessibleSectionIds.has(
-                topic.section_id,
-              )
-            ) {
-              return false;
-            }
-
-            const lastReadAt =
-              readMap.get(topic.id);
-
-            if (!lastReadAt) {
-              return true;
-            }
-
-            return (
-              new Date(
-                topic.last_post_at,
-              ).getTime() >
-              new Date(
-                lastReadAt,
-              ).getTime()
-            );
-          },
-        ).length;
-
       setCurrentUnreadForumCount(
-        unreadCount,
+        normalizeCount(data),
       );
     }, []);
 
@@ -961,17 +868,6 @@ export function PortalSidebar({
             schema: "public",
             table:
               "forum_topic_reads",
-          },
-          () => {
-            void refreshForumCount();
-          },
-        )
-        .on(
-          "postgres_changes",
-          {
-            event: "*",
-            schema: "public",
-            table: "forum_sections",
           },
           () => {
             void refreshForumCount();

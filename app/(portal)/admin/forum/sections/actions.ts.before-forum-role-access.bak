@@ -35,8 +35,6 @@ type ValidatedSectionData = {
   description: string | null;
   section_type: SectionType;
   visibility: SectionVisibility;
-  staff_read_roles: string[] | null;
-  staff_write_roles: string[] | null;
   association_id: string | null;
   order_id: string | null;
   parent_id: string | null;
@@ -85,37 +83,6 @@ function isValidVisibility(
 ): value is SectionVisibility {
   return VALID_VISIBILITIES.includes(
     value as SectionVisibility,
-  );
-}
-
-const VALID_STAFF_SECTION_ROLES = [
-  "admin",
-  "moderator",
-  "master",
-] as const;
-
-type StaffSectionRole =
-  (typeof VALID_STAFF_SECTION_ROLES)[number];
-
-function readStaffSectionRoles(
-  formData: FormData,
-  fieldName: string,
-): StaffSectionRole[] {
-  return Array.from(
-    new Set(
-      formData
-        .getAll(fieldName)
-        .filter(
-          (value): value is string =>
-            typeof value === "string",
-        )
-        .filter(
-          (value): value is StaffSectionRole =>
-            VALID_STAFF_SECTION_ROLES.includes(
-              value as StaffSectionRole,
-            ),
-        ),
-    ),
   );
 }
 
@@ -251,18 +218,6 @@ function validateSectionForm(
     "visibility",
   );
 
-  const staffReadRoles =
-    readStaffSectionRoles(
-      formData,
-      "staff_read_roles",
-    );
-
-  const staffWriteRoles =
-    readStaffSectionRoles(
-      formData,
-      "staff_write_roles",
-    );
-
   const associationId = getStringValue(
     formData,
     "association_id",
@@ -341,17 +296,6 @@ function validateSectionForm(
     );
   }
 
-  if (
-    visibility === "staff" &&
-    staffWriteRoles.some(
-      (role) => !staffReadRoles.includes(role),
-    )
-  ) {
-    onError(
-      "A staff role cannot have Write access without Read access.",
-    );
-  }
-
   const sortOrder =
     sortOrderValue === ""
       ? 0
@@ -397,14 +341,6 @@ function validateSectionForm(
       description || null,
     section_type: sectionType,
     visibility,
-    staff_read_roles:
-      visibility === "staff"
-        ? staffReadRoles
-        : null,
-    staff_write_roles:
-      visibility === "staff"
-        ? staffWriteRoles
-        : null,
     association_id: null,
     order_id: orderId || null,
     parent_id: parentId || null,
