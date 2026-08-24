@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+import { PORTAL_SESSION_COOKIE } from "@/lib/portal-session/constants";
 import { hasEnvVars } from "../utils";
 
 const PUBLIC_ROUTES = [
@@ -32,15 +33,48 @@ const SANCTION_ACCESS_ROUTES = [
   "/api/support",
 ];
 
+const PORTAL_SESSION_EXEMPT_ROUTES = [
+  "/homepage",
+  "/codex",
+  "/rules",
+  "/terms",
+  "/privacy",
+  "/community-rules",
+  "/safety",
+  "/age-policy",
+  "/cookies",
+  "/auth",
+  "/api/auth",
+  "/sanctions",
+  "/support",
+  "/api/sanctions",
+  "/api/support",
+  "/api/portal-session",
+];
+
+function routeMatches(
+  pathname: string,
+  route: string,
+) {
+  return (
+    pathname === route ||
+    pathname.startsWith(`${route}/`)
+  );
+}
+
 function isSanctionAccessRoute(
   pathname: string,
 ) {
   return SANCTION_ACCESS_ROUTES.some(
-    (route) =>
-      pathname === route ||
-      pathname.startsWith(
-        `${route}/`,
-      ),
+    (route) => routeMatches(pathname, route),
+  );
+}
+
+function isPortalSessionExemptRoute(
+  pathname: string,
+) {
+  return PORTAL_SESSION_EXEMPT_ROUTES.some(
+    (route) => routeMatches(pathname, route),
   );
 }
 
@@ -50,7 +84,7 @@ function isPublicRoute(pathname: string) {
       return pathname === "/";
     }
 
-    return pathname === route || pathname.startsWith(`${route}/`);
+    return routeMatches(pathname, route);
   });
 }
 
@@ -102,9 +136,7 @@ export async function updateSession(request: NextRequest) {
 
   if (
     user &&
-    !isSanctionAccessRoute(
-      pathname,
-    )
+    !isSanctionAccessRoute(pathname)
   ) {
     const {
       data: enforcement,
@@ -118,30 +150,56 @@ export async function updateSession(request: NextRequest) {
 
     if (!enforcementError) {
       const row =
-        Array.isArray(
-          enforcement,
-        )
+        Array.isArray(enforcement)
           ? enforcement[0] ?? null
           : enforcement;
 
-      if (
-        row?.blocked === true
-      ) {
-        const url =
-          request.nextUrl.clone();
+      if (row?.blocked === true) {
+        const url = request.nextUrl.clone();
 
-        url.pathname =
-          "/sanctions";
-
+        url.pathname = "/sanctions";
         url.searchParams.set(
           "restricted",
           "1",
         );
 
-        return NextResponse.redirect(
-          url,
-        );
+        return NextResponse.redirect(url);
       }
+    }
+  }
+
+  if (
+    user &&
+    !isPortalSessionExemptRoute(pathname)
+  ) {
+    const sessionId =
+      request.cookies.get(
+        PORTAL_SESSION_COOKIE,
+      )?.value ?? null;
+
+    const {
+      data: sessionActive,
+      error: sessionError,
+    } = await supabase.rpc(
+      "is_portal_character_session_active",
+      {
+        p_session_id: sessionId,
+      },
+    );
+
+    // Fail open on an infrastructure/database error so a deployment problem
+    // can never lock every player out of Sepulchria.
+    if (!sessionError && sessionActive === false) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/auth/login";
+      url.searchParams.set(
+        "reason",
+        "session_replaced",
+      );
+
+      const response = NextResponse.redirect(url);
+      response.cookies.delete(PORTAL_SESSION_COOKIE);
+      return response;
     }
   }
 
