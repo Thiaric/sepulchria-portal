@@ -518,6 +518,86 @@ export function InstantChatDock({
       return;
     }
 
+    const conversationId =
+      openChat.conversationId;
+
+    const refreshOpenConversation =
+      () => {
+        if (
+          document.visibilityState !==
+          "visible"
+        ) {
+          return;
+        }
+
+        void loadMessages(
+          conversationId,
+        );
+        void markRead(
+          conversationId,
+        );
+      };
+
+    /*
+     * Realtime remains the primary path.
+     * This recovery loop catches the occasional missed
+     * postgres_changes INSERT while a conversation is open.
+     */
+    const timer =
+      window.setInterval(
+        refreshOpenConversation,
+        5_000,
+      );
+
+    const handleFocus =
+      () =>
+        refreshOpenConversation();
+
+    const handleVisibility =
+      () => {
+        if (
+          document.visibilityState ===
+          "visible"
+        ) {
+          refreshOpenConversation();
+        }
+      };
+
+    window.addEventListener(
+      "focus",
+      handleFocus,
+    );
+    document.addEventListener(
+      "visibilitychange",
+      handleVisibility,
+    );
+
+    return () => {
+      window.clearInterval(timer);
+      window.removeEventListener(
+        "focus",
+        handleFocus,
+      );
+      document.removeEventListener(
+        "visibilitychange",
+        handleVisibility,
+      );
+    };
+  }, [
+    openChat,
+    chatMinimised,
+    loadMessages,
+    markRead,
+  ]);
+
+  useEffect(() => {
+    if (
+      !openChat ||
+      chatMinimised
+    ) {
+      return;
+    }
+
     window.requestAnimationFrame(
       () => {
         if (

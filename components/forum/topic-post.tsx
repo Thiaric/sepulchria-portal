@@ -328,6 +328,88 @@ export default function TopicPost({
             </time>
           </header>
 
+          {/* Forum actions duplicated at top for long posts. */}
+{showFooter ? (
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-120e0b))] px-5 py-3 sm:px-6">
+              <div className="flex flex-wrap gap-2">
+                {!isDeleted &&
+                !topicLocked ? (
+                  <>
+                    <Link
+                      href={rapidReplyUrl}
+                      scroll={false}
+                      className="border border-[rgb(var(--sep-colour-8d6a40))] bg-[rgb(var(--sep-colour-2b1d12))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d8bd91))] transition hover:border-[rgb(var(--sep-colour-ad824d))] hover:bg-[rgb(var(--sep-colour-3a2819))]"
+                    >
+                      Rapid reply
+                    </Link>
+
+                    {canQuote ? (
+                      <Link
+                        href={quoteUrl}
+                        className="border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-19120e))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-a58b68))] transition hover:border-[rgb(var(--sep-colour-947047))] hover:text-[rgb(var(--sep-colour-dec095))]"
+                      >
+                        Quote
+                      </Link>
+                    ) : null}
+                  </>
+                ) : null}
+
+                {!isDeleted && canReport ? (
+                  <ReportButton
+                    sourceType={
+                      post.is_initial
+                        ? "forum_topic"
+                        : "forum_post"
+                    }
+                    sourceId={
+                      post.is_initial
+                        ? post.topic_id
+                        : post.id
+                    }
+                    label={
+                      post.is_initial
+                        ? "Report topic"
+                        : "Report"
+                    }
+                  />
+                ) : null}
+
+                {!isDeleted &&
+                canEdit ? (
+                  <Link
+                    href={editUrl}
+                    className="border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-19120e))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-a58b68))] transition hover:border-[rgb(var(--sep-colour-947047))] hover:text-[rgb(var(--sep-colour-dec095))]"
+                  >
+                    Edit
+                  </Link>
+                ) : null}
+
+                {!isDeleted &&
+                canDelete ? (
+                  <DeletePostButton
+                    postId={post.id}
+                    isInitialPost={
+                      post.is_initial
+                    }
+                    disabled={false}
+                  />
+                ) : null}
+              </div>
+
+              {canModerate ? (
+                <PostModerationPanel
+                  postId={post.id}
+                  postNumber={postNumber}
+                  authorName={authorName}
+                  isDeleted={isDeleted}
+                  isInitialPost={
+                    post.is_initial
+                  }
+                />
+              ) : null}
+            </div>
+          ) : null}
+
           <div className="min-h-48 px-5 py-6 sm:px-7 sm:py-7">
             {isDeleted ? (
               <DeletedPostMessage
