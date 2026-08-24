@@ -36,13 +36,17 @@ async function getContext() {
   return { supabase, character: character as OwnedCharacter };
 }
 
-async function resolveConversationUrl(recipientId: string): Promise<string> {
+export async function startConversation(formData: FormData): Promise<void> {
+  const recipientId = String(formData.get("recipientId") ?? "").trim();
   if (!recipientId) throw new Error("Missing recipient.");
 
   const { supabase, character } = await getContext();
   if (recipientId === character.id) throw new Error("You cannot message yourself.");
 
-  await assertCurrentUserCan(supabase, "communication");
+  await assertCurrentUserCan(
+    supabase,
+    "communication",
+  );
 
   const { data: conversationId, error } = await supabase.rpc(
     "start_direct_conversation",
@@ -58,16 +62,7 @@ async function resolveConversationUrl(recipientId: string): Promise<string> {
     .eq("conversation_id", conversationId)
     .eq("character_id", character.id);
 
-  return `/messages/${conversationId}`;
-}
-
-export async function startConversationForModal(recipientId: string): Promise<string> {
-  return resolveConversationUrl(recipientId.trim());
-}
-
-export async function startConversation(formData: FormData): Promise<void> {
-  const recipientId = String(formData.get("recipientId") ?? "").trim();
-  redirect(await resolveConversationUrl(recipientId));
+  redirect(`/messages/${conversationId}`);
 }
 
 export async function sendPrivateMessage(

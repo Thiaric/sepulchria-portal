@@ -9,8 +9,6 @@ import {
 } from "react";
 import { useFormStatus } from "react-dom";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import type { ReactNode } from "react";
 
 import { CHAT_MAX_LENGTH } from "@/lib/game/constants";
 import {
@@ -33,7 +31,6 @@ import {
   sendRoomAttributeCheck,
   sendRoomDiceRoll,
   sendRoomMessage,
-  leaveCurrentRoom,
 } from "../actions";
 import {
   startAttributeOpposedAction,
@@ -190,11 +187,6 @@ export default function RoomChatForm({
   items,
   presentCharacters,
   canUseFate,
-  exportEnabled,
-  backHref,
-  backLabel,
-  canTakeLeave,
-  headquartersManageControl,
 }: {
   attributes: CharacterAttributes;
   attributeBreakdown: AttributeBreakdown;
@@ -202,11 +194,6 @@ export default function RoomChatForm({
   items: ChatItem[];
   presentCharacters: PresentRoomCharacter[];
   canUseFate: boolean;
-  exportEnabled: boolean;
-  backHref: string | null;
-  backLabel: string | null;
-  canTakeLeave: boolean;
-  headquartersManageControl?: ReactNode;
 }) {
   const router = useRouter();
 
@@ -581,12 +568,6 @@ export default function RoomChatForm({
     textareaScrollTop,
     setTextareaScrollTop,
   ] = useState(0);
-
-  const [textareaRows, setTextareaRows] =
-    useState<1 | 2 | 3 | 4>(2);
-
-  const textareaHeight =
-    textareaRows * 20 + 16;
 
   const spellingIssues =
   useSpellingIssues(value);
@@ -1175,10 +1156,7 @@ function ignoreSpellingWord() {
             readOnly
           />
 
-          <div
-            className="relative overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0f0c09))] transition focus-within:border-[rgb(var(--sep-colour-927047))]"
-            style={{ height: `${textareaHeight}px` }}
-          >
+          <div className="relative h-[100px] overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0f0c09))] transition focus-within:border-[rgb(var(--sep-colour-927047))]">
             <textarea
               ref={textareaRef}
               name="message"
@@ -1281,22 +1259,6 @@ function ignoreSpellingWord() {
 
           <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
             <div className="flex min-w-0 items-center gap-2">
-              <label className="flex shrink-0 items-center gap-1 text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-685d50))]">
-                <span>Rows</span>
-                <select
-                  value={textareaRows}
-                  onChange={(event) =>
-                    setTextareaRows(Number(event.target.value) as 1 | 2 | 3 | 4)
-                  }
-                  className="h-5 border border-[rgb(var(--sep-colour-5f4930))] bg-[rgb(var(--sep-colour-100c09))] px-1 text-[8px] text-[rgb(var(--sep-colour-bda77f))] outline-none"
-                  aria-label="Textarea rows"
-                >
-                  {[1, 2, 3, 4].map((rows) => (
-                    <option key={rows} value={rows}>{rows}</option>
-                  ))}
-                </select>
-              </label>
-
               <p className="shrink-0 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-685d50))]">
                 {value.length.toLocaleString(
                   "en-GB",
@@ -1388,10 +1350,7 @@ function ignoreSpellingWord() {
             </select>
           </label>
 
-          <div
-            className="mt-3 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0f0c09))]"
-            style={{ height: `${textareaHeight}px` }}
-          >
+          <div className="mt-3 h-24 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0f0c09))]">
             <textarea
               ref={textareaRef}
               name="message"
@@ -2372,7 +2331,7 @@ function ignoreSpellingWord() {
         </form>
       )}
       {utilityMode === null ? (
-      <div className="-mt-8 mx-[92px] flex flex-wrap justify-center gap-1 border-0 pt-0 max-lg:mx-0 max-lg:mt-2 max-lg:border-t max-lg:border-[rgb(var(--sep-colour-59432c))]/30 max-lg:pt-2">
+      <div className="-mt-9 mx-[105px] flex flex-wrap justify-center gap-1.5 border-0 pt-0 max-lg:mx-0 max-lg:mt-2 max-lg:border-t max-lg:border-[rgb(var(--sep-colour-59432c))]/30 max-lg:pt-2">
         <button
           type="button"
           onClick={() =>
@@ -2485,43 +2444,6 @@ function ignoreSpellingWord() {
         >
           Item Exchange
         </button>
-
-        {headquartersManageControl}
-
-        {exportEnabled ? (
-          <Link
-            href="/game/export"
-            title="Download current game session"
-            aria-label="Download current game session"
-            className="flex h-6 w-6 items-center justify-center border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-21190f))] text-[11px] text-[rgb(var(--sep-colour-d6bb8d))] transition hover:border-[rgb(var(--sep-colour-a17a49))] hover:text-[rgb(var(--sep-colour-f0d6a7))]"
-          >
-            <span aria-hidden="true">⇩</span>
-          </Link>
-        ) : null}
-
-        {backHref ? (
-          <Link
-            href={backHref}
-            title={`Back to ${backLabel ?? "area"}`}
-            aria-label={`Back to ${backLabel ?? "area"}`}
-            className="flex h-6 w-6 items-center justify-center border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-21190f))] p-1"
-          >
-            <img src="/icons/play.png" alt="" aria-hidden="true" className="h-full w-full object-contain" />
-          </Link>
-        ) : null}
-
-        {canTakeLeave ? (
-          <form action={leaveCurrentRoom}>
-            <button
-              type="submit"
-              title="Take Leave"
-              aria-label="Take Leave"
-              className="flex h-6 w-6 items-center justify-center border border-[rgb(var(--sep-colour-8f3f36))] bg-[rgb(var(--sep-colour-351714))] text-[11px] text-[rgb(var(--sep-colour-e6a097))] transition hover:border-[rgb(var(--sep-colour-c65a4d))] hover:text-[rgb(var(--sep-colour-ffd0c9))]"
-            >
-              <span aria-hidden="true">↪</span>
-            </button>
-          </form>
-        ) : null}
       </div>
       ) : null}
 

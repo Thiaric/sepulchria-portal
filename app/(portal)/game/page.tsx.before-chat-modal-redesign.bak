@@ -908,6 +908,75 @@ async function GameContent() {
       : "mx-auto flex h-full max-w-80dvh flex-col"
   }
 >
+  <div className="mb-2 flex shrink-0 items-center justify-between gap-3 border border-[rgb(var(--sep-colour-62492e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2">
+    <div className="min-w-0">
+      
+
+      <p className="mt-1 truncate font-serif text-lg text-[rgb(var(--sep-colour-dec69a))]">
+        {room.name}
+      </p>
+    </div>
+
+    <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:shrink-0 sm:flex-wrap sm:items-center sm:justify-end">
+
+  {headquartersManageData ? (
+    <OrderHeadquartersManageMenu
+      data={headquartersManageData}
+    />
+  ) : null}
+
+  {room.chat_enabled ? (
+    <Link
+      href="/game/export"
+      title="Export the current game session as a file"
+      className="flex min-w-0 items-center justify-center border border-[rgb(var(--sep-colour-725c3d))] bg-[rgb(var(--sep-colour-21190f))] px-2 py-1.5 text-center text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-d6bb8d))] transition hover:border-[rgb(var(--sep-colour-a17a49))] hover:bg-[rgb(var(--sep-colour-352718))] hover:text-[rgb(var(--sep-colour-f0d6a7))] sm:px-3 sm:text-[9px] sm:tracking-[0.18em]"
+    >
+      Export role
+    </Link>
+  ) : null}
+
+  {roomArea ? (
+    <Link
+      href={
+        roomArea.slug ===
+        "private-locations"
+          ? "/private-locations"
+          : `/areas/${roomArea.slug}`
+      }
+      title={
+        roomArea.slug ===
+        "private-locations"
+          ? "Return to Private Locations"
+          : "Return to the area page"
+      }
+      className="flex min-w-0 items-center justify-center border border-[rgb(var(--sep-colour-725c3d))] bg-[rgb(var(--sep-colour-21190f))] px-2 py-1.5 text-center text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-d6bb8d))] transition hover:border-[rgb(var(--sep-colour-a17a49))] hover:bg-[rgb(var(--sep-colour-352718))] hover:text-[rgb(var(--sep-colour-f0d6a7))] sm:px-3 sm:text-[9px] sm:tracking-[0.18em]"
+    >
+      ← Back to{" "}
+      {roomArea.slug ===
+      "private-locations"
+        ? "Private Locations"
+        : roomArea.name}
+    </Link>
+  ) : null}
+
+  {room.chat_enabled ? (
+    <form
+      action={leaveCurrentRoom}
+      className="col-span-2 sm:col-auto"
+    >
+      <button
+        type="submit"
+        title="Leave this location and return to the city, your presence won't be counted in locations, only in the portal"
+        className="w-full border border-[rgb(var(--sep-colour-8f3f36))] bg-[rgb(var(--sep-colour-351714))] px-2 py-1.5 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-e6a097))] transition hover:border-[rgb(var(--sep-colour-c65a4d))] hover:bg-[rgb(var(--sep-colour-4b1d19))] hover:text-[rgb(var(--sep-colour-ffd0c9))] sm:w-auto sm:px-3 sm:text-[9px] sm:tracking-[0.18em]"
+      >
+        Take Leave
+      </button>
+    </form>
+  ) : null}
+
+</div>
+  </div>
+
   <article
   className={
     room.slug === "odd-jobs-bureau"
@@ -978,29 +1047,6 @@ async function GameContent() {
         presentCharacters
       }
           canUseFate={canUseFate}
-          exportEnabled={room.chat_enabled}
-          backHref={
-            roomArea
-              ? roomArea.slug === "private-locations"
-                ? "/private-locations"
-                : `/areas/${roomArea.slug}`
-              : null
-          }
-          backLabel={
-            roomArea
-              ? roomArea.slug === "private-locations"
-                ? "Private Locations"
-                : roomArea.name
-              : null
-          }
-          canTakeLeave={room.chat_enabled}
-          headquartersManageControl={
-            headquartersManageData ? (
-              <OrderHeadquartersManageMenu
-                data={headquartersManageData}
-              />
-            ) : null
-          }
         />
       </>
     ) : null}

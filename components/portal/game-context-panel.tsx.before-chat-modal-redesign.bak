@@ -14,7 +14,7 @@ import {
 } from "@/lib/game/constants";
 import { createClient } from "@/lib/supabase/client";
 import type { PresenceStatus } from "@/types/game";
-import { MessageCharacterModalButton } from "@/components/messages/message-character-modal-button";
+import { startConversation } from "@/app/(portal)/messages/actions";
 import { SanctionRestrictionNotice, useSanctionCapability } from "@/components/sanctions/sanction-capability-ui";
 
 type GameContextPanelProps = {
@@ -481,13 +481,25 @@ export function GameContextPanel({
     !blockedCharacterIds.has(
       person.id,
     ) && !communication.blocked ? (
-  <div className="absolute bottom-2 right-2 z-10">
-    <MessageCharacterModalButton
-      recipientId={person.id}
-      recipientName={displayName}
-      className="flex h-6 w-6 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-17110d))] text-[12px] text-[rgb(var(--sep-colour-a98b61))] transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:bg-[rgb(var(--sep-colour-2a1d12))] hover:text-[rgb(var(--sep-colour-e0c392))]"
+  <form
+    action={startConversation}
+    className="absolute bottom-2 right-2 z-10"
+  >
+    <input
+      type="hidden"
+      name="recipientId"
+      value={person.id}
     />
-  </div>
+
+    <button
+      type="submit"
+      title={`Message ${displayName}`}
+      aria-label={`Message ${displayName}`}
+      className="flex h-6 w-6 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-17110d))] text-[12px] text-[rgb(var(--sep-colour-a98b61))] transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:bg-[rgb(var(--sep-colour-2a1d12))] hover:text-[rgb(var(--sep-colour-e0c392))]"
+    >
+      ✉
+    </button>
+  </form>
 ) : person.id !== currentCharacterId && communication.blocked ? (
   <div className="absolute bottom-2 right-2 z-10"><SanctionRestrictionNotice message={communication.message} compact /></div>
 ) : null}

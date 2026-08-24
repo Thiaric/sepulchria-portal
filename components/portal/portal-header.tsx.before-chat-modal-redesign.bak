@@ -10,7 +10,6 @@ import { ActiveCityCounter } from "@/components/portal/active-city-counter";
 import { HeaderCharacterIdentity } from "@/components/portal/header-character-identity";
 import { StaffAppearOfflineToggle } from "@/components/portal/staff-appear-offline-toggle";
 import { WorldIndicator } from "@/components/world/world-indicator";
-import { PortalModalButton } from "@/components/portal/portal-modal-button";
 import { getStaffSession } from "@/lib/auth/require-staff";
 import type { PortalContext } from "@/types/portal";
 
@@ -63,19 +62,14 @@ export async function PortalHeader({ context }: PortalHeaderProps) {
             <PortalSoundToggle />
             <PortalSkinSwitcher />
 
-            <PortalModalButton
-              payload={{
-                label: "Messages",
-                title: "Open your private conversations with other characters.",
-                icon: "/icons/messages.png",
-                href: "/messages",
-              }}
+            <Link
+              href="/messages"
               aria-label={`${unreadMessageCount} unread messages`}
               className="relative flex h-8 w-8 items-center justify-center border border-[rgb(var(--sep-colour-614b31))] bg-[rgb(var(--sep-colour-17120f))] text-base text-[rgb(var(--sep-colour-c69b5c))] transition hover:border-[rgb(var(--sep-colour-977242))] hover:text-[rgb(var(--sep-colour-efd6a3))] sm:h-9 sm:w-9 2xl:h-10 2xl:w-10 2xl:text-lg"
             >
               ✉
               <UnreadMessageBadge initialCount={unreadMessageCount} variant="floating" />
-            </PortalModalButton>
+            </Link>
 
             {staffSession ? (
               <Link

@@ -10,7 +10,9 @@ import {
 import {
   enterRoomFromMap,
 } from "@/app/(portal)/game/actions";
-import { MessageCharacterModalButton } from "@/components/messages/message-character-modal-button";
+import {
+  startConversation,
+} from "@/app/(portal)/messages/actions";
 import type { PublicCharacterListItem } from "@/lib/characters/get-public-character";
 import type {
   PublicCodexReference,
@@ -545,11 +547,28 @@ function CharacterDirectoryCard({
 
               <div className="pointer-events-auto relative z-20 flex shrink-0 items-center gap-1.5">
                 {canMessage ? (
-                  <MessageCharacterModalButton
-                    recipientId={character.id}
-                    recipientName={character.display_name}
-                    className="flex h-8 w-8 items-center justify-center border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-271c12))] text-[13px] text-[rgb(var(--sep-colour-dfc79c))] transition hover:border-[rgb(var(--sep-colour-997042))] hover:bg-[rgb(var(--sep-colour-3b2919))] hover:text-[rgb(var(--sep-colour-f0d5a5))]"
-                  />
+                  <form
+                    action={
+                      startConversation
+                    }
+                  >
+                    <input
+                      type="hidden"
+                      name="recipientId"
+                      value={character.id}
+                    />
+
+                    <button
+                      type="submit"
+                      aria-label={`Send a private message to ${character.display_name}`}
+                      title={`Message ${character.display_name}`}
+                      className="flex h-8 w-8 items-center justify-center border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-271c12))] text-[13px] text-[rgb(var(--sep-colour-dfc79c))] transition hover:border-[rgb(var(--sep-colour-997042))] hover:bg-[rgb(var(--sep-colour-3b2919))] hover:text-[rgb(var(--sep-colour-f0d5a5))]"
+                    >
+                      <span aria-hidden="true">
+                        ✉
+                      </span>
+                    </button>
+                  </form>
                 ) : viewerCharacterId !== null && viewerCharacterId !== character.id && communication.blocked ? (<div className="pointer-events-auto absolute bottom-4 right-4 z-20"><SanctionRestrictionNotice message={communication.message} compact /></div>) : null}
 
                 {character.currentRoom ? (
