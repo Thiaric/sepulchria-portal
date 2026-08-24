@@ -2,10 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-
-import { Button } from "@/components/ui/button";
-import { createClient } from "@/lib/supabase/client";
 import { LogOut } from "lucide-react";
+
+import { createClient } from "@/lib/supabase/client";
 
 export function LogoutButton() {
   const router = useRouter();
@@ -62,8 +61,19 @@ export function LogoutButton() {
         }
       }
 
+      try {
+        await fetch("/api/portal-session/release", {
+          method: "POST",
+          credentials: "same-origin",
+        });
+      } catch {
+        // Signing out locally is still correct if release cleanup fails.
+      }
+
       const { error: signOutError } =
-        await supabase.auth.signOut();
+        await supabase.auth.signOut({
+          scope: "local",
+        });
 
       if (signOutError) {
         throw signOutError;
@@ -84,41 +94,41 @@ export function LogoutButton() {
   };
 
   return (
-  <button
-    type="button"
-    onClick={logout}
-    disabled={isLoggingOut}
-    className="
-      inline-flex
-      h-10
-      items-center
-      justify-center
-      gap-0
-      border
-      border-[rgb(var(--sep-colour-6f5233))]
-      bg-[rgb(var(--sep-colour-16100c))]
-      px-4
-      text-[10px]
-      font-medium
-      uppercase
-      tracking-[0.22em]
-      text-[rgb(var(--sep-colour-d7b980))]
-      transition-all
-      duration-200
-      hover:border-[rgb(var(--sep-colour-a97d47))]
-      hover:bg-[rgb(var(--sep-colour-241811))]
-      hover:text-[rgb(var(--sep-colour-f2d8a3))]
-      disabled:cursor-not-allowed
-      disabled:opacity-60
-    "
-  >
-    <LogOut className="h-4 w-4" />
+    <button
+      type="button"
+      onClick={logout}
+      disabled={isLoggingOut}
+      className="
+        inline-flex
+        h-10
+        items-center
+        justify-center
+        gap-0
+        border
+        border-[rgb(var(--sep-colour-6f5233))]
+        bg-[rgb(var(--sep-colour-16100c))]
+        px-4
+        text-[10px]
+        font-medium
+        uppercase
+        tracking-[0.22em]
+        text-[rgb(var(--sep-colour-d7b980))]
+        transition-all
+        duration-200
+        hover:border-[rgb(var(--sep-colour-a97d47))]
+        hover:bg-[rgb(var(--sep-colour-241811))]
+        hover:text-[rgb(var(--sep-colour-f2d8a3))]
+        disabled:cursor-not-allowed
+        disabled:opacity-60
+      "
+    >
+      <LogOut className="h-4 w-4" />
 
-    <span>
-      {isLoggingOut
-        ? "Exiting..."
-        : ""}
-    </span>
-  </button>
-);
+      <span>
+        {isLoggingOut
+          ? "Exiting..."
+          : ""}
+      </span>
+    </button>
+  );
 }
