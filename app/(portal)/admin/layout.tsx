@@ -54,6 +54,7 @@ export default async function AdminLayout({
             {can("races") ? <AdminNavigationLink href="/admin/races">Ancestries</AdminNavigationLink> : null}
             {can("areas") ? <AdminNavigationLink href="/admin/areas">Areas</AdminNavigationLink> : null}
             {can("associations") ? <AdminNavigationLink href="/admin/associations">Associations</AdminNavigationLink> : null}
+            {can("codex") ? <AdminNavigationLink href="/admin/codex">Codex</AdminNavigationLink> : null}
 
             {can("characters") ? (
               <AdminNavigationLink href="/admin/characters">

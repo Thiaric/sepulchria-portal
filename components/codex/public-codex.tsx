@@ -33,8 +33,10 @@ export function PublicCodex({
     () =>
       [...chapters].sort(
         (a, b) =>
+          a.sort_order -
+            b.sort_order ||
           a.chapter_number -
-          b.chapter_number,
+            b.chapter_number,
       ),
     [chapters],
   );
@@ -247,38 +249,29 @@ export function PublicCodex({
                 </h2>
               </div>
 
-              {selectedChapter.summary ? (
-                <RichTextContentClient
-                  body={
-                    selectedChapter.summary
-                  }
-                  className="mt-2 max-w-5xl text-sm leading-6 text-[rgb(var(--sep-colour-a99679))]"
-                />
-              ) : null}
             </div>
           </section>
 
           {/* CHAPTER CONTENT */}
           <section className="mx-auto max-w-7xl px-5 py-5 sm:px-8">
             <div className="border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-120e0b))] px-5 py-6 sm:px-8 sm:py-7">
-              {selectedChapter.description?.trim() ? (
+              {selectedChapter.body?.trim() ? (
                 <RichTextContentClient
                   body={
-                    selectedChapter.description
+                    selectedChapter.body
                   }
                   className="mx-auto max-w-5xl text-[15px] leading-8 text-[rgb(var(--sep-colour-c0af95))] [&_h1]:mt-8 [&_h1]:font-serif [&_h1]:text-3xl [&_h1]:text-[rgb(var(--sep-colour-e2cba0))] [&_h2]:mt-7 [&_h2]:font-serif [&_h2]:text-2xl [&_h2]:text-[rgb(var(--sep-colour-dec69c))] [&_h3]:mt-6 [&_h3]:font-serif [&_h3]:text-xl [&_h3]:text-[rgb(var(--sep-colour-d2b98e))] [&_p]:mb-4"
                 />
               ) : (
                 <div className="py-8 text-center">
                   <p className="font-serif text-lg text-[rgb(var(--sep-colour-a9916e))]">
-                    This chapter is ready
-                    for import.
+                    This chapter has no
+                    published content.
                   </p>
 
                   <p className="mt-1 text-xs text-[rgb(var(--sep-colour-756b5e))]">
-                    Its source text will
-                    be imported during
-                    Phase B2.
+                    Staff can add content
+                    from Codex administration.
                   </p>
                 </div>
               )}

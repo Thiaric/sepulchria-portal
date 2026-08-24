@@ -7,11 +7,7 @@ export type PublicCodexChapter = {
   title: string;
   slug: string;
   chapter_number: number;
-  summary: string | null;
-  description: string | null;
-  banner_url: string | null;
-  image_url: string | null;
-  colour: string | null;
+  body: string;
   sort_order: number;
 };
 
@@ -27,19 +23,17 @@ export const getPublicCodexChapters = cache(
           title,
           slug,
           chapter_number,
-          summary,
-          description,
-          banner_url,
-          image_url,
-          colour,
+          body,
           sort_order
         `,
       )
-      .eq("visibility", "public")
       .eq("status", "published")
       .not("chapter_number", "is", null)
       .gte("chapter_number", 1)
       .lte("chapter_number", 10)
+      .order("sort_order", {
+        ascending: true,
+      })
       .order("chapter_number", {
         ascending: true,
       });
@@ -54,6 +48,8 @@ export const getPublicCodexChapters = cache(
       ...chapter,
       chapter_number:
         chapter.chapter_number as number,
+      body: chapter.body ?? "",
+      sort_order: chapter.sort_order ?? 0,
     })) as PublicCodexChapter[];
   },
 );

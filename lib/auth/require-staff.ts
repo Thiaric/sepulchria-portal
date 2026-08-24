@@ -23,6 +23,7 @@ export type AdminSection =
   | "races"
   | "areas"
   | "associations"
+  | "codex"
   | "characters"
   | "events"
   | "expertise"
@@ -73,6 +74,7 @@ const SECTION_ROLES: Record<
   races: ["owner"],
   areas: ["owner"],
   associations: ["owner"],
+  codex: ["owner", "admin"],
   characters: ["owner", "admin", "moderator", "master"],
   events: ["owner", "admin", "master"],
   expertise: ["owner", "admin", "master"],
