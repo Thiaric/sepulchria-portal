@@ -87,6 +87,9 @@ export function useSpellingIssues(
                 "/api/writing-assistant/spelling",
                 {
                   method: "POST",
+                  credentials:
+                    "same-origin",
+                  cache: "no-store",
                   headers: {
                     "Content-Type":
                       "application/json",
@@ -99,8 +102,28 @@ export function useSpellingIssues(
                 },
               );
 
-            if (!response.ok) {
-              setIssues([]);
+            /*
+             * Do not erase the last valid spelling result because of a
+             * transient auth/routing/network response. The next normal
+             * debounce will refresh the result.
+             */
+            if (
+              !response.ok ||
+              response.redirected
+            ) {
+              return;
+            }
+
+            const contentType =
+              response.headers.get(
+                "content-type",
+              ) ?? "";
+
+            if (
+              !contentType.includes(
+                "application/json",
+              )
+            ) {
               return;
             }
 
@@ -126,7 +149,10 @@ export function useSpellingIssues(
               return;
             }
 
-            setIssues([]);
+            /*
+             * Keep the previous successful spelling result on a transient
+             * failure. A later request will refresh it.
+             */
           }
         },
         550,

@@ -1,14 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { LogOut } from "lucide-react";
 
 export function LogoutButton() {
-  const router = useRouter();
   const [isLoggingOut, setIsLoggingOut] =
     useState(false);
 
@@ -69,8 +67,52 @@ export function LogoutButton() {
         throw signOutError;
       }
 
-      router.replace("/homepage");
-      router.refresh();
+      /*
+       * Sepulchria is normally running in the dedicated popup created
+       * by the Enter Sepulchria button. On an intentional logout, close
+       * that game window instead of turning it into another homepage.
+       */
+      sessionStorage.removeItem(
+        "sepulchria-portal-instance-id",
+      );
+
+      /*
+       * Tell the original public homepage that logout succeeded before
+       * this dedicated game window disappears.
+       */
+      if (
+        window.opener &&
+        !window.opener.closed
+      ) {
+        try {
+          window.opener.postMessage(
+            {
+              type:
+                "sepulchria:portal-logged-out",
+            },
+            window.location.origin,
+          );
+        } catch (error) {
+          console.warn(
+            "Unable to notify homepage about logout:",
+            error,
+          );
+        }
+      }
+
+      window.close();
+
+      /*
+       * Script-opened portal windows are allowed to close themselves.
+       * Keep a fallback for browsers/environments that refuse window.close().
+       */
+      window.setTimeout(() => {
+        if (!window.closed) {
+          window.location.replace(
+            "/homepage",
+          );
+        }
+      }, 150);
     } catch (error) {
       console.error(
         "Logout failed:",

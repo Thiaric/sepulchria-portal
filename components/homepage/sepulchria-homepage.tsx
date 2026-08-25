@@ -74,6 +74,39 @@ export function SepulchriaHomepage({
     useState(false);
 
   useEffect(() => {
+    function handlePortalMessage(
+      event: MessageEvent,
+    ) {
+      if (
+        event.origin !==
+          window.location.origin ||
+        event.data?.type !==
+          "sepulchria:portal-logged-out"
+      ) {
+        return;
+      }
+
+      /*
+       * isAuthenticated is server-derived, so reload the homepage
+       * after logout to recalculate it immediately.
+       */
+      window.location.reload();
+    }
+
+    window.addEventListener(
+      "message",
+      handlePortalMessage,
+    );
+
+    return () => {
+      window.removeEventListener(
+        "message",
+        handlePortalMessage,
+      );
+    };
+  }, []);
+
+  useEffect(() => {
     if (!aboutOpen) return;
 
     const previousOverflow =
