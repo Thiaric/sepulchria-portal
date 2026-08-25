@@ -75,25 +75,40 @@ function refresh() {
 }
 
 function giftValues(formData: FormData) {
-  const effectMode = requiredText(formData, "effectMode", "Effect mode");
+  const requestedEffectMode =
+    requiredText(formData, "effectMode", "Effect mode");
 
-  if (!["none", "passive", "temporary"].includes(effectMode)) {
+  const effectMode =
+    requestedEffectMode === "none"
+      ? "temporary"
+      : requestedEffectMode;
+
+  if (!["passive", "temporary"].includes(effectMode)) {
     throw new Error("Invalid Feat effect mode.");
   }
 
-  let durationMinutes: number | null = null;
+  const isPassive =
+    effectMode === "passive";
 
-  if (effectMode === "temporary") {
-    const durationMode = requiredText(formData, "durationMode", "Duration");
+  let durationMinutes: number | null = null;
+  let isInstantaneous = false;
+
+  if (!isPassive) {
+    const durationMode =
+      requiredText(formData, "durationMode", "Duration");
 
     if (!["instantaneous", "minutes"].includes(durationMode)) {
       throw new Error("Invalid Feat duration.");
     }
 
-    if (durationMode === "instantaneous") {
+    isInstantaneous =
+      durationMode === "instantaneous";
+
+    if (isInstantaneous) {
       durationMinutes = 0;
     } else {
-      durationMinutes = integer(formData, "durationMinutes", 0);
+      durationMinutes =
+        integer(formData, "durationMinutes", 0);
 
       if (durationMinutes <= 0) {
         throw new Error(
@@ -104,37 +119,37 @@ function giftValues(formData: FormData) {
   }
 
   const cooldownMinutes =
-    effectMode === "temporary"
-      ? integer(formData, "cooldownMinutes", 0)
-      : 0;
+    isPassive
+      ? 0
+      : integer(formData, "cooldownMinutes", 0);
 
   if (cooldownMinutes < 0) {
     throw new Error("Feat cooldown cannot be negative.");
   }
 
   const healthDelta =
-    effectMode === "passive"
+    isPassive
       ? 0
       : integer(formData, "healthDelta", 0);
 
-  const maxHealthModifier =
-    effectMode === "none"
-      ? 0
-      : integer(formData, "maxHealthModifier", 0);
-
   const requestedTargetMode =
-    requiredText(formData, "targetMode", "Target mode");
+    isPassive
+      ? "self"
+      : requiredText(formData, "targetMode", "Target mode");
 
   if (!["self", "other", "either"].includes(requestedTargetMode)) {
     throw new Error("Invalid Feat target mode.");
   }
 
   const targetMode =
-    effectMode === "passive" ? "self" : requestedTargetMode;
+    isPassive
+      ? "self"
+      : requestedTargetMode;
 
-  const rawDamageDice = optionalText(formData, "damageDice");
   const damageDice =
-    effectMode === "passive" ? null : rawDamageDice;
+    isPassive
+      ? null
+      : optionalText(formData, "damageDice");
 
   if (
     damageDice &&
@@ -146,9 +161,13 @@ function giftValues(formData: FormData) {
   }
 
   if (damageDice) {
-    const count = Number.parseInt(damageDice.split("d")[0] ?? "0", 10);
+    const count =
+      Number.parseInt(damageDice.split("d")[0] ?? "0", 10);
+
     if (count > 20) {
-      throw new Error("A Feat cannot roll more than 20 damage dice.");
+      throw new Error(
+        "A Feat cannot roll more than 20 damage dice.",
+      );
     }
   }
 
@@ -157,66 +176,97 @@ function giftValues(formData: FormData) {
       ? optionalText(formData, "damageType") ?? "Damage"
       : null;
 
-  const musclesModifier = attr(formData, "musclesModifier", "Muscles");
-  const reflexesModifier = attr(formData, "reflexesModifier", "Reflexes");
-  const vigourModifier = attr(formData, "vigourModifier", "Vigour");
-  const shrewdModifier = attr(formData, "shrewdModifier", "Shrewd");
-  const brainsModifier = attr(formData, "brainsModifier", "Brains");
-  const presenceModifier = attr(formData, "presenceModifier", "Presence");
-  const warpingAffinityModifier = Math.max(0, Math.min(8, integer(formData, "warpingAffinityModifier", 0)));
-  const warpsPerDayModifier = Math.max(0, Math.min(10, integer(formData, "warpsPerDayModifier", 0)));
+  const allowsPersistentModifiers =
+    isPassive ||
+    (!isPassive && !isInstantaneous);
 
-  const hasLingeringModifier =
-    maxHealthModifier !== 0 ||
-    musclesModifier !== 0 ||
-    reflexesModifier !== 0 ||
-    vigourModifier !== 0 ||
-    shrewdModifier !== 0 ||
-    brainsModifier !== 0 ||
-    presenceModifier !== 0 ||
-    warpingAffinityModifier !== 0 ||
-    warpsPerDayModifier !== 0;
+  const maxHealthModifier =
+    allowsPersistentModifiers
+      ? integer(formData, "maxHealthModifier", 0)
+      : 0;
 
-  if (
-    effectMode === "temporary" &&
-    durationMinutes === 0 &&
-    hasLingeringModifier
-  ) {
-    throw new Error(
-      "Instantaneous Activated Feats may only change Current Health or deal Damage. Attribute and Maximum Health modifiers require a timed duration.",
-    );
-  }
+  const musclesModifier =
+    allowsPersistentModifiers
+      ? attr(formData, "musclesModifier", "Muscles")
+      : 0;
 
-  if (
-    effectMode === "temporary" &&
-    durationMinutes === 0 &&
-    healthDelta === 0 &&
-    !damageDice
-  ) {
-    throw new Error(
-      "An Instantaneous Activated Feat must change Current Health or deal Damage.",
-    );
-  }
+  const reflexesModifier =
+    allowsPersistentModifiers
+      ? attr(formData, "reflexesModifier", "Reflexes")
+      : 0;
+
+  const vigourModifier =
+    allowsPersistentModifiers
+      ? attr(formData, "vigourModifier", "Vigour")
+      : 0;
+
+  const shrewdModifier =
+    allowsPersistentModifiers
+      ? attr(formData, "shrewdModifier", "Shrewd")
+      : 0;
+
+  const brainsModifier =
+    allowsPersistentModifiers
+      ? attr(formData, "brainsModifier", "Brains")
+      : 0;
+
+  const presenceModifier =
+    allowsPersistentModifiers
+      ? attr(formData, "presenceModifier", "Presence")
+      : 0;
+
+  const warpingAffinityModifier =
+    allowsPersistentModifiers
+      ? Math.max(
+          0,
+          Math.min(
+            8,
+            integer(formData, "warpingAffinityModifier", 0),
+          ),
+        )
+      : 0;
+
+  const warpsPerDayModifier =
+    allowsPersistentModifiers
+      ? Math.max(
+          0,
+          Math.min(
+            10,
+            integer(formData, "warpsPerDayModifier", 0),
+          ),
+        )
+      : 0;
 
   let successDie: number | null = null;
   let successThreshold: number | null = null;
   let successAttribute: string | null = null;
 
-  if (effectMode !== "passive") {
-    const rawSuccessDie = optionalText(formData, "successDie");
+  if (!isPassive) {
+    const rawSuccessDie =
+      optionalText(formData, "successDie");
 
     if (rawSuccessDie) {
-      const parsedSuccessDie = Number.parseInt(rawSuccessDie, 10);
+      const parsedSuccessDie =
+        Number.parseInt(rawSuccessDie, 10);
 
-      if (![4, 6, 8, 10, 12, 20, 100].includes(parsedSuccessDie)) {
+      if (
+        ![4, 6, 8, 10, 12, 20, 100].includes(
+          parsedSuccessDie,
+        )
+      ) {
         throw new Error("Invalid Success Die.");
       }
 
-      successDie = parsedSuccessDie;
-      successThreshold = integer(formData, "successThreshold", 0);
+      successDie =
+        parsedSuccessDie;
+
+      successThreshold =
+        integer(formData, "successThreshold", 0);
 
       if (successThreshold < 1) {
-        throw new Error("A Success Roll needs a threshold of at least 1.");
+        throw new Error(
+          "A Success Roll needs a threshold of at least 1.",
+        );
       }
 
       const requestedSuccessAttribute =
@@ -236,7 +286,8 @@ function giftValues(formData: FormData) {
         throw new Error("Invalid Success Attribute.");
       }
 
-      successAttribute = requestedSuccessAttribute;
+      successAttribute =
+        requestedSuccessAttribute;
     }
   }
 
@@ -262,8 +313,8 @@ function giftValues(formData: FormData) {
     shrewd_modifier: shrewdModifier,
     brains_modifier: brainsModifier,
     presence_modifier: presenceModifier,
-    warping_affinity_modifier: effectMode === "none" ? 0 : warpingAffinityModifier,
-    warps_per_day_modifier: effectMode === "none" ? 0 : warpsPerDayModifier,
+    warping_affinity_modifier: warpingAffinityModifier,
+    warps_per_day_modifier: warpsPerDayModifier,
     sort_order: integer(formData, "sortOrder", 0),
   };
 }

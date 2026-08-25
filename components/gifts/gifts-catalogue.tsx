@@ -73,12 +73,7 @@ function signed(value: number) {
 
 function effectLabel(gift: GiftCard) {
   if (gift.effectMode === "passive") return "Passive";
-  if (gift.effectMode === "temporary") {
-    return gift.durationMinutes
-      ? `${gift.durationMinutes} min`
-      : "Temporary";
-  }
-  return "Standard";
+  return "Activated";
 }
 
 function targetLabel(target: GiftCard["targetMode"]) {
@@ -100,7 +95,7 @@ function successLabel(gift: GiftCard) {
 
 function durationLabel(gift: GiftCard) {
   if (gift.effectMode === "passive") return "Permanent while owned";
-  if (gift.effectMode !== "temporary") return "Instant use";
+  if (gift.effectMode === "none") return "Instantaneous";
   if (gift.durationMinutes === 0) return "Instantaneous";
   return gift.durationMinutes ? `${gift.durationMinutes} min` : "Not set";
 }

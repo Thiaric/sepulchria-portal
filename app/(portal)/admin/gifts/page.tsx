@@ -1,6 +1,7 @@
 
 
 import { AdminActionForm } from "@/components/admin/admin-action-form";
+import { GiftEffectFormLogic } from "@/components/admin/gift-effect-form-logic";
 import {
   requireAdminSection,
 } from "@/lib/auth/require-staff";
@@ -281,7 +282,9 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
                       {gift.name}
                     </p>
                     <p className="mt-1 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-766956))]">
-                      {gift.effect_mode}
+                      {gift.effect_mode === "passive"
+                        ? "Passive"
+                        : "Activated"}
                       {gift.is_general ? " · General" : ""}
                       {" · "}
                       {gift.assignments?.length ?? 0} owners
@@ -297,11 +300,9 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
                   <AdminRecapBox
                     label="Use"
                     value={`${
-                      gift.effect_mode === "temporary"
-                        ? "Activated"
-                        : gift.effect_mode === "passive"
-                          ? "Passive"
-                          : "Standard"
+                      gift.effect_mode === "passive"
+                        ? "Passive"
+                        : "Activated"
                     } · ${adminTargetLabel(gift)}`}
                   />
 
@@ -535,6 +536,8 @@ function GiftForm({
     <AdminActionForm action={action} className="mt-5">
       {gift ? <input type="hidden" name="giftId" value={gift.id} /> : null}
 
+      <GiftEffectFormLogic />
+
       <div className="grid gap-4 md:grid-cols-2">
         <Field label="Name">
           <input
@@ -568,12 +571,15 @@ function GiftForm({
         <Field label="Effect mode">
           <select
             name="effectMode"
-            defaultValue={gift?.effect_mode ?? "none"}
+            defaultValue={
+              gift?.effect_mode === "passive"
+                ? "passive"
+                : "temporary"
+            }
             className={inputClass}
           >
-            <option value="none">None</option>
             <option value="passive">Passive</option>
-            <option value="temporary">Temporary / activated</option>
+            <option value="temporary">Activated</option>
           </select>
         </Field>
 
@@ -593,8 +599,12 @@ function GiftForm({
           <select
             name="durationMode"
             defaultValue={
-              gift?.effect_mode === "temporary" &&
-              gift.duration_minutes === 0
+              !gift ||
+              gift.effect_mode === "none" ||
+              (
+                gift.effect_mode === "temporary" &&
+                gift.duration_minutes === 0
+              )
                 ? "instantaneous"
                 : "minutes"
             }
@@ -731,10 +741,12 @@ function GiftForm({
 
         <div className="md:col-span-2 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 text-[9px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
           <strong className="text-[rgb(var(--sep-colour-c7ad83))]">Effect rules:</strong>{" "}
-          Instant Health / Damage applies whenever a non-passive Feat is used.
-          Attribute and Maximum Health modifiers are persistent for Passive Feats
-          and last for the configured duration on Temporary Feats. Warping bonuses
-          follow the same Passive/Temporary lifecycle. Passive Feats are always self-only.
+          Passive Feats are always Self-only and always active while owned. They may
+          provide persistent Attribute, Maximum Health or Warping modifiers. Activated
+          Feats may be Instantaneous or Timed. Instantaneous Feats may mechanically
+          change Current Health or deal Damage; other narrative effects belong in the
+          description. Timed Activated Feats may also apply persistent modifiers for
+          their duration. Cooldown and Success Roll settings apply only to Activated Feats.
         </div>
 
         <div className="md:col-span-2 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
