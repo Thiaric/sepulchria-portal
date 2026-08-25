@@ -23,7 +23,7 @@ function dice(x:string|null){
  if(n>20)throw Error("Too many Shape dice.");
  let t=0;for(let i=0;i<n;i++)t+=randomInt(1,d+1);return t*sign
 }
-function expiry(s:any){if(s.duration_unit==="until_dispelled")return null;const n=Math.max(1,Number(s.duration_amount??1));const m=s.duration_unit==="minutes"?60000:s.duration_unit==="hours"?3600000:86400000;return new Date(Date.now()+n*m).toISOString()}
+function expiry(s:any){if(s.is_instantaneous)return new Date().toISOString();if(s.duration_unit==="until_dispelled")return null;const n=Math.max(1,Number(s.duration_amount??1));const m=s.duration_unit==="minutes"?60000:s.duration_unit==="hours"?3600000:86400000;return new Date(Date.now()+n*m).toISOString()}
 async function mine(){const db=await createClient(),au=await db.auth.getUser();if(!au.data.user)throw Error("Authentication required.");const q=await db.from("characters").select("id,display_name,current_room_id,muscles,reflexes,vigor,brains,shrewd,presence_score").eq("user_id",au.data.user.id).maybeSingle();if(q.error||!q.data)throw Error("Character not found.");return q.data}
 async function eff(c:any,k:string){const key=ATTR[k]??k;const e=await getEffectiveCharacterAttributes(c.id,{muscles:c.muscles,reflexes:c.reflexes,vigor:c.vigor,brains:c.brains,shrewd:c.shrewd,presence_score:c.presence_score});return Number((e as any)[key]??0)}
 async function message(room:string,cid:string,text:string){const db=await createClient();const q=await db.from("room_messages").insert({room_id:room,character_id:cid,message:text,message_type:"action",client_nonce:crypto.randomUUID()});if(q.error)throw Error(q.error.message)}
@@ -34,16 +34,16 @@ async function healthSnapshot(characterId:string){
  const max=b.vigor.effective===null?0:Math.max(0,b.vigor.effective*10+b.giftMaxHealth+b.itemMaxHealth+b.activeItemMaxHealth+b.shapeMaxHealth);
  return {current:Number(q.data.current_health??max),max};
 }
-function durationLabel(s:any){if(s.duration_unit==="until_dispelled")return"Until Dispelled";return `${Number(s.duration_amount??1)} ${String(s.duration_unit??"minutes")}`}
-async function target(id:string,cid:string){const q=await admin().from("shape_cast_targets").select(`id,cast_id,target_character_id,target_kind,outcome,dispel_effect_id,cast:shape_casts!shape_cast_targets_cast_id_fkey(id,room_id,caster_character_id,caster:characters!shape_casts_caster_character_id_fkey(id,display_name,muscles,reflexes,vigor,brains,shrewd,presence_score),shape:shapes!shape_casts_shape_id_fkey(*))`).eq("id",id).eq("target_character_id",cid).maybeSingle();if(q.error||!q.data)throw Error(q.error?.message??"Incoming Shape not found.");if(q.data.outcome!=="pending")throw Error("This Shape is already resolved.");return q.data as any}
+function durationLabel(s:any){if(s.is_instantaneous)return"Instantaneous";if(s.duration_unit==="until_dispelled")return"Until Dispelled";return `${Number(s.duration_amount??1)} ${String(s.duration_unit??"minutes")}`}
+async function target(id:string,cid:string){const q=await admin().from("shape_cast_targets").select(`id,cast_id,target_character_id,target_kind,outcome,dispel_effect_id,other_effect_choice,cast:shape_casts!shape_cast_targets_cast_id_fkey(id,room_id,caster_character_id,caster:characters!shape_casts_caster_character_id_fkey(id,display_name,muscles,reflexes,vigor,brains,shrewd,presence_score),shape:shapes!shape_casts_shape_id_fkey(*))`).eq("id",id).eq("target_character_id",cid).maybeSingle();if(q.error||!q.data)throw Error(q.error?.message??"Incoming Shape not found.");if(q.data.outcome!=="pending")throw Error("This Shape is already resolved.");return q.data as any}
 async function apply(t:any,half=false){
  const cast=one(t.cast),s=one(cast?.shape),caster=one(cast?.caster);if(!cast||!s||!caster)throw Error("Shape data unavailable.");
- const self=t.target_character_id===caster.id,p=self?"self":"other",before=await healthSnapshot(t.target_character_id);
+ const self=t.target_character_id===caster.id,p=self?"self":(s.other_alternative_enabled&&t.other_effect_choice==="harmful"?"other_alt":"other"),before=await healthSnapshot(t.target_character_id);
  let dmg=dice(s[`${p}_damage_dice`])+(s[`${p}_damage_attribute`]?await eff(caster,s[`${p}_damage_attribute`]):0);if(half)dmg=Math.floor(dmg/2);
- const heal=dice(s[`${p}_heal_dice`])+(s[`${p}_heal_attribute`]?await eff(caster,s[`${p}_heal_attribute`]):0);if(heal-dmg)await applyGiftCurrentHealthDelta({characterId:t.target_character_id,healthDelta:heal-dmg});
- const conditions=Array.isArray(s[`${p}_conditions`])?s[`${p}_conditions`]:[];
- const mods={muscles:Number(s[`${p}_muscles_modifier`]??0),reflexes:Number(s[`${p}_reflexes_modifier`]??0),vigour:Number(s[`${p}_vigour_modifier`]??0),brains:Number(s[`${p}_brains_modifier`]??0),shrewd:Number(s[`${p}_shrewd_modifier`]??0),presence:Number(s[`${p}_presence_modifier`]??0)};
- const raw=String(s[`${p}_max_hp_change`]??"").trim(),maxhp=raw?dice(raw):0,hasPersistent=conditions.length||Object.values(mods).some(Boolean)||maxhp!==0;
+ const heal=half?0:(dice(s[`${p}_heal_dice`])+(s[`${p}_heal_attribute`]?await eff(caster,s[`${p}_heal_attribute`]):0));if(heal-dmg)await applyGiftCurrentHealthDelta({characterId:t.target_character_id,healthDelta:heal-dmg});
+ const conditions=half?[]:(Array.isArray(s[`${p}_conditions`])?s[`${p}_conditions`]:[]);
+ const mods=half?{muscles:0,reflexes:0,vigour:0,brains:0,shrewd:0,presence:0}:{muscles:Number(s[`${p}_muscles_modifier`]??0),reflexes:Number(s[`${p}_reflexes_modifier`]??0),vigour:Number(s[`${p}_vigour_modifier`]??0),brains:Number(s[`${p}_brains_modifier`]??0),shrewd:Number(s[`${p}_shrewd_modifier`]??0),presence:Number(s[`${p}_presence_modifier`]??0)};
+ const raw=half?"":String(s[`${p}_max_hp_change`]??"").trim(),maxhp=raw?dice(raw):0,hasPersistent=!s.is_instantaneous&&(conditions.length||Object.values(mods).some(Boolean)||maxhp!==0);
  let duplicateEffect=false;
  if(hasPersistent){
   const existing=await admin().from("character_shape_effects").select("id").eq("target_character_id",t.target_character_id).eq("shape_id",s.id).is("dispelled_at",null).or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`).limit(1);
@@ -159,7 +159,8 @@ export async function resolveImmediateShapeCast(
         target_character_id,
         target_kind,
         outcome,
-        resolved_at
+        resolved_at,
+        other_effect_choice
       `)
       .eq(
         "cast_id",
