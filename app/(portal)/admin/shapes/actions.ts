@@ -19,13 +19,29 @@ const optInt=(f:FormData,n:string)=>txt(f,n)?nint(f,n):null;
 const check=(f:FormData,n:string)=>f.get(n)==="on";
 const csv=(f:FormData,n:string)=>txt(f,n).split(",").map(v=>v.trim()).filter(Boolean);
 
+export type ShapeActionState={
+  ok:boolean;
+  message:string;
+  submittedAt?:number;
+};
+
 function payload(f:FormData){
   const essence=txt(f,"essence_word"), action=txt(f,"action_word"), law=txt(f,"law_word");
   const targetMode=txt(f,"target_mode")||"other";
   const scope=txt(f,"target_scope")||"single";
   const resolution=txt(f,"resolution_mode")||"save";
-  const instantaneous=txt(f,"is_instantaneous")==="true";
-  const unit=txt(f,"duration_unit")||"minutes";
+  const durationMode=
+    txt(f,"duration_mode")||
+    txt(f,"duration_unit")||
+    "minutes";
+
+  const instantaneous=
+    durationMode==="instantaneous";
+
+  const unit=
+    instantaneous
+      ?"minutes"
+      :durationMode;
   const dispel=check(f,"is_dispel");
   const alt=check(f,"other_alternative_enabled");
 
@@ -104,35 +120,199 @@ function payload(f:FormData){
   };
 }
 
-export async function createShape(f:FormData){
-  await requireAdminSection("shapes"); const db=await createClient(); const p=payload(f);
-  if(!p.name||!p.description) redirect("/admin/shapes?error=Name%20and%20description%20are%20required");
-  if(p.resolution_mode==="save"&&p.target_mode!=="self"&&p.target_mode!=="written"&&p.save_options.length===0) redirect("/admin/shapes?error=Save-based%20Shapes%20that%20target%20another%20Character%20need%20a%20Save");
-  const persistent=p.self_conditions.length||p.other_conditions.length||p.other_alt_conditions.length||
-    [p.self_max_hp_change,p.other_max_hp_change,p.other_alt_max_hp_change,
-     p.self_muscles_modifier,p.self_reflexes_modifier,p.self_vigour_modifier,p.self_brains_modifier,p.self_shrewd_modifier,p.self_presence_modifier,
-     p.other_muscles_modifier,p.other_reflexes_modifier,p.other_vigour_modifier,p.other_brains_modifier,p.other_shrewd_modifier,p.other_presence_modifier,
-     p.other_alt_muscles_modifier,p.other_alt_reflexes_modifier,p.other_alt_vigour_modifier,p.other_alt_brains_modifier,p.other_alt_shrewd_modifier,p.other_alt_presence_modifier]
-      .some(v=>typeof v==="number"?v!==0:Boolean(v));
-  if(p.is_instantaneous&&!p.is_dispel&&persistent) redirect("/admin/shapes?error=Instantaneous%20Shapes%20cannot%20apply%20Conditions%2C%20Attribute%20modifiers%20or%20Max%20Health%20changes");
+export async function createShape(
+  _previous:ShapeActionState,
+  f:FormData,
+):Promise<ShapeActionState>{
+  await requireAdminSection("shapes");
+
+  const db=await createClient();
+  const p=payload(f);
+
+  if(!p.name||!p.description){
+    return{
+      ok:false,
+      message:"Name and description are required.",
+      submittedAt:Date.now(),
+    };
+  }
+
+  if(
+    p.resolution_mode==="save"&&
+    p.target_mode!=="self"&&
+    p.target_mode!=="written"&&
+    p.save_options.length===0
+  ){
+    return{
+      ok:false,
+      message:"Save-based Shapes that target another Character need a Save.",
+      submittedAt:Date.now(),
+    };
+  }
+
+  const persistent=
+    p.self_conditions.length||
+    p.other_conditions.length||
+    p.other_alt_conditions.length||
+    [
+      p.self_max_hp_change,
+      p.other_max_hp_change,
+      p.other_alt_max_hp_change,
+      p.self_muscles_modifier,
+      p.self_reflexes_modifier,
+      p.self_vigour_modifier,
+      p.self_brains_modifier,
+      p.self_shrewd_modifier,
+      p.self_presence_modifier,
+      p.other_muscles_modifier,
+      p.other_reflexes_modifier,
+      p.other_vigour_modifier,
+      p.other_brains_modifier,
+      p.other_shrewd_modifier,
+      p.other_presence_modifier,
+      p.other_alt_muscles_modifier,
+      p.other_alt_reflexes_modifier,
+      p.other_alt_vigour_modifier,
+      p.other_alt_brains_modifier,
+      p.other_alt_shrewd_modifier,
+      p.other_alt_presence_modifier,
+    ].some(v=>typeof v==="number"?v!==0:Boolean(v));
+
+  if(
+    p.is_instantaneous&&
+    !p.is_dispel&&
+    persistent
+  ){
+    return{
+      ok:false,
+      message:"Instantaneous Shapes cannot apply Conditions, Attribute modifiers or Max Health changes.",
+      submittedAt:Date.now(),
+    };
+  }
+
   const {error}=await db.from("shapes").insert(p);
-  if(error) redirect(`/admin/shapes?error=${encodeURIComponent(error.message)}`);
-  revalidatePath("/admin/shapes"); redirect("/admin/shapes?success=Shape%20created");
+
+  if(error){
+    return{
+      ok:false,
+      message:error.message,
+      submittedAt:Date.now(),
+    };
+  }
+
+  revalidatePath("/admin/shapes");
+  revalidatePath("/game");
+
+  return{
+    ok:true,
+    message:"Shape created.",
+    submittedAt:Date.now(),
+  };
 }
-export async function updateShape(f:FormData){
-  await requireAdminSection("shapes"); const db=await createClient(); const id=txt(f,"shape_id"); const p=payload(f);
-  if(p.resolution_mode==="save"&&p.target_mode!=="self"&&p.target_mode!=="written"&&p.save_options.length===0) redirect(`/admin/shapes?error=${encodeURIComponent("Save-based Shapes that target another Character need a Save")}#shape-${id}`);
-  const persistent=p.self_conditions.length||p.other_conditions.length||p.other_alt_conditions.length||
-    [p.self_max_hp_change,p.other_max_hp_change,p.other_alt_max_hp_change,
-     p.self_muscles_modifier,p.self_reflexes_modifier,p.self_vigour_modifier,p.self_brains_modifier,p.self_shrewd_modifier,p.self_presence_modifier,
-     p.other_muscles_modifier,p.other_reflexes_modifier,p.other_vigour_modifier,p.other_brains_modifier,p.other_shrewd_modifier,p.other_presence_modifier,
-     p.other_alt_muscles_modifier,p.other_alt_reflexes_modifier,p.other_alt_vigour_modifier,p.other_alt_brains_modifier,p.other_alt_shrewd_modifier,p.other_alt_presence_modifier]
-      .some(v=>typeof v==="number"?v!==0:Boolean(v));
-  if(p.is_instantaneous&&!p.is_dispel&&persistent) redirect(`/admin/shapes?error=${encodeURIComponent("Instantaneous Shapes cannot apply Conditions, Attribute modifiers or Max Health changes")}#shape-${id}`);
-  const {error}=await db.from("shapes").update(p).eq("id",id);
-  if(error) redirect(`/admin/shapes?error=${encodeURIComponent(error.message)}#shape-${id}`);
-  revalidatePath("/admin/shapes"); redirect(`/admin/shapes?success=Shape%20updated#shape-${id}`);
+
+export async function updateShape(
+  _previous:ShapeActionState,
+  f:FormData,
+):Promise<ShapeActionState>{
+  await requireAdminSection("shapes");
+
+  const db=await createClient();
+  const id=txt(f,"shape_id");
+  const p=payload(f);
+
+  if(!id){
+    return{
+      ok:false,
+      message:"Shape id is missing.",
+      submittedAt:Date.now(),
+    };
+  }
+
+  if(!p.name||!p.description){
+    return{
+      ok:false,
+      message:"Name and description are required.",
+      submittedAt:Date.now(),
+    };
+  }
+
+  if(
+    p.resolution_mode==="save"&&
+    p.target_mode!=="self"&&
+    p.target_mode!=="written"&&
+    p.save_options.length===0
+  ){
+    return{
+      ok:false,
+      message:"Save-based Shapes that target another Character need a Save.",
+      submittedAt:Date.now(),
+    };
+  }
+
+  const persistent=
+    p.self_conditions.length||
+    p.other_conditions.length||
+    p.other_alt_conditions.length||
+    [
+      p.self_max_hp_change,
+      p.other_max_hp_change,
+      p.other_alt_max_hp_change,
+      p.self_muscles_modifier,
+      p.self_reflexes_modifier,
+      p.self_vigour_modifier,
+      p.self_brains_modifier,
+      p.self_shrewd_modifier,
+      p.self_presence_modifier,
+      p.other_muscles_modifier,
+      p.other_reflexes_modifier,
+      p.other_vigour_modifier,
+      p.other_brains_modifier,
+      p.other_shrewd_modifier,
+      p.other_presence_modifier,
+      p.other_alt_muscles_modifier,
+      p.other_alt_reflexes_modifier,
+      p.other_alt_vigour_modifier,
+      p.other_alt_brains_modifier,
+      p.other_alt_shrewd_modifier,
+      p.other_alt_presence_modifier,
+    ].some(v=>typeof v==="number"?v!==0:Boolean(v));
+
+  if(
+    p.is_instantaneous&&
+    !p.is_dispel&&
+    persistent
+  ){
+    return{
+      ok:false,
+      message:"Instantaneous Shapes cannot apply Conditions, Attribute modifiers or Max Health changes.",
+      submittedAt:Date.now(),
+    };
+  }
+
+  const {error}=await db
+    .from("shapes")
+    .update(p)
+    .eq("id",id);
+
+  if(error){
+    return{
+      ok:false,
+      message:error.message,
+      submittedAt:Date.now(),
+    };
+  }
+
+  revalidatePath("/admin/shapes");
+  revalidatePath("/game");
+  revalidatePath("/character");
+
+  return{
+    ok:true,
+    message:"Shape updated.",
+    submittedAt:Date.now(),
+  };
 }
+
 export async function deleteShape(f:FormData){
   await requireAdminSection("shapes"); const db=await createClient(); const id=txt(f,"shape_id");
 

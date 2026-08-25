@@ -7,6 +7,8 @@ import { assignShape,createShape,deleteShape,linkOrderLevel,unlinkOrderLevel,rem
 import { ShapeDeleteSubmit } from "@/components/admin/shape-delete-submit";
 import { WarpingReference } from "@/components/admin/warping-reference";
 import { ShapeProgression } from "./ShapeProgression";
+import { ShapeActionForm } from "./ShapeActionForm";
+import type { ShapeActionState } from "./actions";
 
 type Props={searchParams?:Promise<{success?:string;error?:string}>}; type S=Record<string,any>;
 const cls="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] outline-none";
@@ -27,9 +29,18 @@ function Profile({s,p,title}:{s?:S;p:"self"|"other"|"other_alt";title:string}){
     </div><div className="mt-3 grid gap-2 sm:grid-cols-3 lg:grid-cols-6">{mods.map(([k,l])=><label key={k}><span className={lab}>{l} +/-</span><input type="number" name={`${p}_${k}_modifier`} defaultValue={s?.[`${p}_${k}_modifier`]??0} className={cls}/></label>)}</div>
   </section>;
 }
-function ShapeForm({s,action}:{s?:S;action:(f:FormData)=>void|Promise<void>}){
+function ShapeForm({
+  s,
+  action,
+}:{
+  s?:S;
+  action:(
+    previous:ShapeActionState,
+    formData:FormData,
+  )=>Promise<ShapeActionState>;
+}){
   const saves=new Set<string>(s?.save_options??[]); const req=[["muscles","Muscles"],["reflexes","Reflexes"],["vigour","Vigour"],["brains","Brains"],["shrewd","Shrewd"],["presence","Presence"]] as const;
-  return <form action={action} className="mt-4" data-shape-form><ShapeProgression/>{s?<input type="hidden" name="shape_id" value={s.id}/>:null}
+  return <ShapeActionForm action={action} submitLabel={s?"Save Shape":"Create Shape"}><ShapeProgression/>{s?<input type="hidden" name="shape_id" value={s.id}/>:null}
     <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
       <label className="lg:col-span-2"><span className={lab}>Name</span><input required name="name" defaultValue={s?.name??""} className={cls}/></label>
       <label><span className={lab}>Level</span><select name="level" defaultValue={s?.level??1} className={cls}>{Array.from({length:9},(_,i)=>i+1).map(v=><option key={v} value={v}>Level {v}</option>)}</select></label>
@@ -67,8 +78,7 @@ function ShapeForm({s,action}:{s?:S;action:(f:FormData)=>void|Promise<void>}){
       <div className="mt-4" data-alt-other-profile><Profile s={s} p="other_alt" title="Harmful Other Effect"/></div>
     </section>
     <section className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] p-4"><h4 className="font-serif text-lg text-[rgb(var(--sep-colour-d8c29b))]">Optional Attribute Prerequisites</h4><div className="mt-3 grid gap-2 sm:grid-cols-3 lg:grid-cols-6">{req.map(([k,l])=><label key={k}><span className={lab}>{l} minimum</span><input type="number" min={1} name={`min_${k}`} defaultValue={s?.[`min_${k}`]??""} placeholder="None" className={cls}/></label>)}</div></section>
-    <button className="mt-4 border border-[rgb(var(--sep-colour-9b7446))] bg-[rgb(var(--sep-colour-2a1d12))] px-4 py-2 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-ead1a3))]">{s?"Save Shape":"Create Shape"}</button>
-  </form>;
+  </ShapeActionForm>;
 }
 export default async function AdminShapesPage({searchParams}:Props){
   await requireAdminSection("shapes"); const params=(await searchParams)??{}; const db=await createClient();
@@ -81,7 +91,6 @@ export default async function AdminShapesPage({searchParams}:Props){
   const shapes=(sr.data??[]) as S[];const chars=(cr.data??[]) as {id:string;display_name:string}[];const charMap=new Map(chars.map(c=>[c.id,c.display_name]));
   const levels=(lr.data??[]).map((r:any)=>{const o=Array.isArray(r.order)?r.order[0]:r.order;return{id:r.id,level:r.level,orderName:o?.name??"Unknown"};});
   return <main className="p-5 sm:p-7 lg:p-9"><div className="mx-auto max-w-7xl"><p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">Administration</p><h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">Warping — Shapes</h1>
-    {params.success?<div className="mt-5 border border-emerald-800/50 p-3 text-sm text-emerald-400">{params.success}</div>:null}{params.error?<div className="mt-5 border border-red-900/60 p-3 text-sm text-red-400">{params.error}</div>:null}
     <section id="shape-new" className="mt-8 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5"><h2 className="font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">Create a Shape</h2><WarpingReference/><ShapeForm action={createShape}/></section>
     <div className="mt-8 space-y-4">{shapes.map(s=><details key={s.id} id={`shape-${s.id}`} className="scroll-mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
       <summary className="cursor-pointer list-none px-5 py-4 transition hover:bg-[rgb(var(--sep-colour-1c140e))]"><div className="flex items-center justify-between gap-3"><div className="min-w-0"><p className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-8c704b))]">Level {s.level} · {s.school} · {s.word_of_power}</p><h2 className="mt-1 truncate font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">{s.name}</h2></div><span className="text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-8c704b))]">Open / Close</span></div></summary>

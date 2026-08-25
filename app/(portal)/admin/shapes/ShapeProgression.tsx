@@ -278,6 +278,15 @@ export function ShapeProgression() {
         | HTMLButtonElement
         | undefined;
 
+    const setStepVisible = (
+      step: HTMLElement,
+      visible: boolean,
+    ) => {
+      step.hidden = !visible;
+      step.style.display =
+        visible ? "" : "none";
+    };
+
     const openStep = (
       index: number,
     ) => {
@@ -286,9 +295,10 @@ export function ShapeProgression() {
           step,
           stepIndex,
         ) => {
-          step.hidden =
-            stepIndex !==
-            index;
+          setStepVisible(
+            step,
+            stepIndex === index,
+          );
         },
       );
 
@@ -387,15 +397,27 @@ export function ShapeProgression() {
               return;
             }
 
-            if (
-              step.hidden
-            ) {
+            const isOpen =
+              !step.hidden &&
+              step.style.display !==
+                "none";
+
+            if (!isOpen) {
               openStep(
                 index,
               );
             } else {
-              step.hidden =
-                true;
+              setStepVisible(
+                step,
+                false,
+              );
+
+              header.dataset.open =
+                "false";
+
+              header.classList.remove(
+                "bg-[rgb(var(--sep-colour-1c140e))]",
+              );
             }
           },
         );
@@ -479,8 +501,10 @@ export function ShapeProgression() {
     if (edit) {
       steps.forEach(
         (step) => {
-          step.hidden =
-            true;
+          setStepVisible(
+            step,
+            false,
+          );
         },
       );
     } else {
