@@ -93,29 +93,22 @@ export async function CharacterShapesDisplay({
 
   return (
     <section>
-      <header className="overflow-hidden rounded-xl border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
-        <div className="border-b border-[rgb(var(--sep-colour-60482e))]/25 bg-[rgb(var(--sep-colour-1b130e))] px-5 py-4">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <p className="text-[7px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
-                Warping
-              </p>
-
-              <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dec89f))]">
-                Known Shapes
-              </h2>
-            </div>
-
-            <p className="rounded-full border border-[rgb(var(--sep-colour-60482e))]/40 px-3 py-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-9b805c))]">
-              {shapes.length} possessed
-            </p>
+      <header className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-5 py-4">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
+        Character Warping
+      </p>
+            <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dec89f))]">
+        Shapes
+      </h2>
           </div>
-        </div>
 
-        <p className="px-5 py-3 text-[9px] leading-5 text-[rgb(var(--sep-colour-8f806c))]">
-          Each Shape lists its targeting, duration, requirements and the separate resolution and effects used for Self, Beneficial Other and Harmful Other profiles where applicable.
-        </p>
-      </header>
+          <p className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
+      {shapes.length} known
+    </p>
+  </div>
+</header>
 
       <ShapesCatalogue
         shapes={shapes}
