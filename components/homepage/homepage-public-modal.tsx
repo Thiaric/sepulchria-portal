@@ -61,7 +61,7 @@ export function HomepagePublicModal({
       : "?";
 
   const iframeSrc =
-    `${modal.href}${separator}embedded=homepage`;
+    `${modal.href}${separator}embedded=1`;
 
   return (
     <div
@@ -103,6 +103,26 @@ export function HomepagePublicModal({
           key={iframeSrc}
           src={iframeSrc}
           title={modal.title}
+          onLoad={(event) => {
+            try {
+              const frameDocument =
+                event.currentTarget
+                  .contentDocument;
+
+              frameDocument
+                ?.querySelectorAll(
+                  'a[href="/homepage"], a[href^="/homepage?"]',
+                )
+                .forEach((link) => {
+                  link.remove();
+                });
+            } catch (error) {
+              console.warn(
+                "Unable to remove homepage links from embedded public page:",
+                error,
+              );
+            }
+          }}
           className="min-h-0 flex-1 border-0 bg-[rgb(var(--sep-colour-090706))]"
         />
       </section>

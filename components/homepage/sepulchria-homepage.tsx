@@ -405,7 +405,7 @@ export function SepulchriaHomepage({
 
             <nav
               aria-label="Footer navigation"
-              className="flex flex-wrap justify-center gap-x-5 gap-y-1 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-796d5f))] sm:justify-end"
+              className="flex flex-wrap justify-center gap-x-5 gap-y-1 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-796d5f))] sm:justify-end [&_a]:uppercase [&_button]:uppercase"
             >
               <Link href="#" className="transition hover:text-[rgb(var(--sep-colour-cdb487))]">
                 Discord

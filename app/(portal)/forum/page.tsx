@@ -397,8 +397,8 @@ export default async function ForumPage() {
           />
 
           <ForumCategoryCard
-            eyebrow="Orders and Powers"
-            title="Organisations"
+            eyebrow="To Organise the game"
+            title="Organisation"
             sections={organisationSections}
             topics={topics}
             readMap={readMap}
