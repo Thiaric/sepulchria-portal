@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { CharacterReturnLink } from "@/components/characters/character-return-link";
 import { startConversation } from "@/app/(portal)/messages/actions";
 import { addFriendListEntry } from "@/app/(portal)/friends/actions";
 import { toggleGlobalCharacterBlock } from "@/app/(portal)/characters/block-actions";
@@ -23,8 +24,8 @@ import type {
 
 type PublicCharacterProfileProps = {
   character: PublicCharacterProfile;
-  returnHref: string;
-  returnLabel: string;
+  returnHref: string | null;
+  returnLabel: string | null;
   canMessage: boolean;
   canViewLastActivity: boolean;
   viewerIsStaff: boolean;
@@ -77,13 +78,13 @@ export function PublicCharacterProfileView({
   return (
     <article className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <Link
-          href={returnHref}
-          className="inline-flex items-center gap-2 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-c6ab80))] transition hover:border-[rgb(var(--sep-colour-987344))] hover:bg-[rgb(var(--sep-colour-261b12))] hover:text-[rgb(var(--sep-colour-ead2a5))]"
-        >
-          <span aria-hidden="true">←</span>
-          {returnLabel}
-        </Link>
+        {returnHref && returnLabel ? (
+  <CharacterReturnLink
+    href={returnHref}
+    label={returnLabel}
+    className="inline-flex items-center gap-2 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-c6ab80))] transition hover:border-[rgb(var(--sep-colour-987344))] hover:bg-[rgb(var(--sep-colour-261b12))] hover:text-[rgb(var(--sep-colour-ead2a5))]"
+  />
+) : null}
 
         <div className="flex flex-wrap items-center justify-end gap-2">
           {canUseFriendList &&

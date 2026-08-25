@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { openPortalModal } from "@/components/portal/portal-modal-button";
 import { CharacterOrderIdentity } from "@/components/characters/character-order-identity";
 import {
   useCallback,
@@ -438,10 +438,21 @@ export function GameContextPanel({
         : "group relative overflow-hidden border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] transition hover:border-[rgb(var(--sep-colour-9b7446))] hover:bg-[rgb(var(--sep-colour-1a120c))]"
     }
   >
-    <Link
-      href={`/characters/${person.public_slug}?from=game`}
+    <button
+      type="button"
       title={`Open ${displayName}'s profile`}
-      className="block"
+      aria-label={`Open ${displayName}'s character sheet`}
+      onClick={() =>
+        openPortalModal({
+          label: displayName,
+          title: `${displayName}'s character sheet`,
+          icon:
+            person.portrait_url ??
+            "/icons/characters.png",
+          href: `/characters/${person.public_slug}?from=game`,
+        })
+      }
+      className="block w-full text-left"
     >
       <div className="absolute inset-y-0 left-0 w-px bg-[rgb(var(--sep-colour-b88a52))]/0 transition group-hover:bg-[rgb(var(--sep-colour-b88a52))]/70" />
 
@@ -475,7 +486,7 @@ export function GameContextPanel({
 
         </div>
       </div>
-    </Link>
+    </button>
 
     {person.id !== currentCharacterId &&
     !blockedCharacterIds.has(

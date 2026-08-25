@@ -167,14 +167,14 @@ export default async function PublicCharacterPage({
   }
 
   const returnHref =
-    from === "game"
-      ? "/game"
-      : "/characters";
+  from === "game"
+    ? null
+    : "/characters";
 
-  const returnLabel =
-    from === "game"
-      ? "Back to chat"
-      : "Back to characters";
+const returnLabel =
+  from === "game"
+    ? null
+    : "Back to characters";
 
   return (
     <div className="mx-auto w-full max-w-7xl p-6">
