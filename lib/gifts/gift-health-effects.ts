@@ -396,7 +396,8 @@ export async function applyGiftCurrentHealthDelta({
     breakdown.vigor.effective * 10 +
       breakdown.giftMaxHealth +
       breakdown.itemMaxHealth +
-      breakdown.activeItemMaxHealth,
+      breakdown.activeItemMaxHealth +
+      breakdown.shapeMaxHealth,
   );
 
   const before =

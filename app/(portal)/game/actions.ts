@@ -2614,6 +2614,76 @@ function rollRoomItemDamage(
   return total;
 }
 
+async function readRoomItemHealth(
+  targetCharacterId: string,
+) {
+  const admin =
+    createPrivilegedClient();
+
+  const supabase =
+    await createClient();
+
+  const [
+    targetResult,
+    maxResult,
+  ] = await Promise.all([
+    admin
+      .from("characters")
+      .select("current_health")
+      .eq(
+        "id",
+        targetCharacterId,
+      )
+      .maybeSingle(),
+
+    supabase.rpc(
+      "get_character_current_max_health",
+      {
+        p_character_id:
+          targetCharacterId,
+      },
+    ),
+  ]);
+
+  const error =
+    targetResult.error ??
+    maxResult.error;
+
+  if (
+    error ||
+    !targetResult.data
+  ) {
+    throw new Error(
+      `Unable to verify Item Health: ${
+        error?.message ??
+        "target not found"
+      }`,
+    );
+  }
+
+  const maxHealth = Math.max(
+    0,
+    Number(maxResult.data ?? 0),
+  );
+
+  const currentHealth = Math.max(
+    0,
+    Math.min(
+      Number(
+        targetResult.data
+          .current_health ??
+          maxHealth,
+      ),
+      maxHealth,
+    ),
+  );
+
+  return {
+    currentHealth,
+    maxHealth,
+  };
+}
+
 async function applyRoomItemDamage(
   targetCharacterId: string,
   damage: number,
@@ -3319,6 +3389,38 @@ export async function useRoomItem(
       };
     }
 
+    const rawUseEffects =
+      Array.isArray(item.effects)
+        ? item.effects
+        : item.effects
+          ? [item.effects]
+          : [];
+
+    const configuredUseHealthDelta =
+      rawUseEffects.reduce(
+        (total, effect) =>
+          effect.trigger_type ===
+          "use"
+            ? total +
+              Number(
+                effect.health_delta ??
+                  0,
+              )
+            : total,
+        0,
+      );
+
+    const actualTargetId =
+      targetCharacterId ??
+      character.id;
+
+    const healthBeforeItemUse =
+      configuredUseHealthDelta !== 0
+        ? await readRoomItemHealth(
+            actualTargetId,
+          )
+        : null;
+
     const rpcResult = await supabase.rpc(
       "use_own_inventory_record_targeted",
       {
@@ -3411,6 +3513,45 @@ export async function useRoomItem(
       };
     }
 
+    if (
+      configuredUseHealthDelta !==
+        0 &&
+      healthBeforeItemUse
+    ) {
+      const healthAfterRpc =
+        await readRoomItemHealth(
+          actualTargetId,
+        );
+
+      const expectedHealth =
+        Math.max(
+          0,
+          Math.min(
+            healthAfterRpc.maxHealth,
+            healthBeforeItemUse
+              .currentHealth +
+              configuredUseHealthDelta,
+          ),
+        );
+
+      const missingDelta =
+        expectedHealth -
+        healthAfterRpc.currentHealth;
+
+      /*
+       * The database RPC remains the primary Item-effect executor.
+       * Repair only the exact Current Health movement it failed to make.
+       */
+      if (missingDelta !== 0) {
+        await applyGiftCurrentHealthDelta({
+          characterId:
+            actualTargetId,
+          healthDelta:
+            missingDelta,
+        });
+      }
+    }
+
     const baseDamage =
       rollRoomItemDamage(
         item.damage_dice ?? null,
@@ -3427,9 +3568,6 @@ export async function useRoomItem(
       baseDamage + attributeDamage,
     );
 
-    const actualTargetId =
-      targetCharacterId ?? character.id;
-
     if (damage > 0) {
       await applyRoomItemDamage(
         actualTargetId,
@@ -3437,11 +3575,8 @@ export async function useRoomItem(
       );
     }
 
-    const rawEffects = Array.isArray(item.effects)
-      ? item.effects
-      : item.effects
-        ? [item.effects]
-        : [];
+    const rawEffects =
+      rawUseEffects;
 
     const effectParts: string[] = [];
 
