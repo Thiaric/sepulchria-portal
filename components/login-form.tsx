@@ -19,6 +19,16 @@ const [captchaToken, setCaptchaToken] =
   ) => {
     event.preventDefault();
 
+const isEmbedded =
+  window.self !== window.top;
+
+if (isEmbedded) {
+  setError(
+    "The login page cannot be used inside a portal modal. Close the modal and continue from the main Sepulchria window.",
+  );
+  return;
+}    
+
 if (!captchaToken) {
   setError(
     "Please complete the security verification before entering Sepulchria.",

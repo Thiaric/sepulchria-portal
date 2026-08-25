@@ -206,17 +206,10 @@ export default function EditPostForm({
     <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
       <header className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-1a130e))] px-5 py-5 sm:px-7">
         <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806a4d))]">
-          Forum post
-        </p>
-
-        <h1 className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-dec69d))]">
           Edit post
-        </h1>
-
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-[rgb(var(--sep-colour-817567))]">
-          Update the message or replace
-          its attached images.
         </p>
+
+        
       </header>
 
       <form

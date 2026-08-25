@@ -136,15 +136,33 @@ export const getPortalContext = cache(
     const supabase =
       await createClient();
 
-    const {
-      data: { user },
-      error: userError,
-    } =
-      await supabase.auth.getUser();
+    let {
+  data: { user },
+  error: userError,
+} =
+  await supabase.auth.getUser();
 
-    if (userError || !user) {
-      redirect("/homepage");
-    }
+/*
+ * A portal modal runs the same authenticated application
+ * inside an iframe. A transient auth/network failure must
+ * not immediately throw that iframe back to /homepage.
+ *
+ * Retry once before treating the session as unavailable.
+ */
+if (userError || !user) {
+  const retryResult =
+    await supabase.auth.getUser();
+
+  user =
+    retryResult.data.user;
+
+  userError =
+    retryResult.error;
+}
+
+if (userError || !user) {
+  redirect("/homepage");
+}
 
     const [
       {

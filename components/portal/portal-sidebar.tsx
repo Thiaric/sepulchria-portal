@@ -2545,59 +2545,132 @@ function PublicPageModal({
                     display: none !important;
                   }
 
-                  @media (max-width: 639px) {
-                    html,
-                    body,
-                    [data-portal-shell],
-                    [data-portal-shell-inner],
-                    .sepulchria-viewport-body,
-                    [data-portal-centre-host],
-                    [data-portal-centre-host]
-                      > [data-portal-column] {
-                      width: 100% !important;
-                      max-width: 100% !important;
-                      min-width: 0 !important;
-                    }
+                  @media (max-width: 1279px) {
+  html,
+  body,
+  [data-portal-shell],
+  [data-portal-shell-inner],
+  .sepulchria-viewport-body,
+  [data-portal-centre-host],
+  [data-portal-centre-host]
+    > [data-portal-column] {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
 
-                    .sepulchria-viewport-body {
-                      grid-template-columns:
-                        minmax(0, 1fr) !important;
-                      grid-template-rows:
-                        minmax(0, 1fr)
-                        minmax(220px, 42dvh) !important;
-                      overflow-y: auto !important;
-                    }
+  .sepulchria-viewport-body {
+    display: grid !important;
+    grid-template-columns:
+      minmax(0, 1fr) !important;
+    grid-template-rows:
+      minmax(0, 1fr) !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    overflow: hidden !important;
+  }
 
-                    [data-portal-centre-host] {
-                      grid-column: 1 !important;
-                      grid-row: 1 !important;
-                    }
+  [data-portal-centre-host] {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+  }
 
-                    .portal-right-shell {
-                      grid-column: 1 !important;
-                      grid-row: 2 !important;
-                      min-height: 220px !important;
-                      max-height: 42dvh !important;
-                      border-top: 1px solid
-                        rgba(
-                          var(--sep-rgb-110-85-53),
-                          0.4
-                        ) !important;
-                    }
+  [data-portal-centre-host]
+    > [data-portal-column] {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: auto !important;
+  }
 
-                    [data-portal-centre-host]
-                      > [data-portal-column] {
-                      padding-left: 0 !important;
-                      padding-right: 0 !important;
-                      overflow-x: auto !important;
-                    }
+  [data-portal-centre-host]
+    > [data-portal-column]
+    > * {
+    max-width: 100% !important;
+  }
 
-                    [data-portal-centre-host]
-                      > [data-portal-column]
-                      > * {
-                      max-width: 100% !important;
-                    }
-                  }
+  .portal-right-shell {
+    display: contents !important;
+    width: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .portal-right-shell
+    > button:not(
+      .portal-right-collapse-toggle
+    ) {
+    display: flex !important;
+  }
+
+  .portal-right-collapse-toggle {
+    display: none !important;
+  }
+
+  .portal-right-shell
+    > [data-portal-right-sidebar] {
+    position: fixed !important;
+    inset: 0 0 0 auto !important;
+    z-index: 70 !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+
+    width: min(88vw, 360px) !important;
+    height: 100dvh !important;
+    min-height: 0 !important;
+    max-height: none !important;
+
+    overflow: hidden !important;
+
+    transform:
+      translateX(100%) !important;
+
+    box-shadow:
+      -18px 0 50px
+      rgba(
+        var(--sep-rgb-0-0-0),
+        0.55
+      ) !important;
+
+    transition:
+      transform 200ms ease-out !important;
+  }
+
+  .portal-right-shell
+    > [data-portal-right-sidebar].translate-x-0 {
+    transform:
+      translateX(0) !important;
+  }
+
+  .portal-right-shell
+    > [data-portal-right-sidebar].translate-x-full {
+    transform:
+      translateX(100%) !important;
+  }
+
+  .portal-right-shell
+    > [data-portal-right-sidebar]
+    > div:first-child {
+    display: flex !important;
+  }
+
+  .portal-right-shell
+    > [data-portal-right-sidebar]
+    > div:nth-child(2)
+    > div:first-child
+    > div:first-child {
+    display: none !important;
+  }
+}
                 `;
 
                 doc.head.appendChild(
