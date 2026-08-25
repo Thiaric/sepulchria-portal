@@ -74,6 +74,16 @@ export function ShapeProgression() {
         "[data-alt-other-profile]",
       ) as HTMLElement | null;
 
+    const otherMainTitle =
+      form.querySelector(
+        "[data-other-main-title]",
+      ) as HTMLElement | null;
+
+    const effectNature =
+      form.querySelector(
+        "[data-effect-nature]",
+      ) as HTMLSelectElement | null;
+
     const syncResolution = () => {
       const automatic =
         resolution?.value ===
@@ -160,12 +170,71 @@ export function ShapeProgression() {
             amount.disabled,
           );
       }
+
+      const disablePersistent =
+        value ===
+        "instantaneous";
+
+      form
+        .querySelectorAll(
+          "[data-persistent-effect]",
+        )
+        .forEach((node) => {
+          const container =
+            node as HTMLElement;
+
+          container.classList.toggle(
+            "opacity-35",
+            disablePersistent,
+          );
+
+          container
+            .querySelectorAll(
+              "input, select, textarea",
+            )
+            .forEach((control) => {
+              (
+                control as
+                  | HTMLInputElement
+                  | HTMLSelectElement
+                  | HTMLTextAreaElement
+              ).disabled =
+                disablePersistent;
+            });
+        });
     };
 
     const syncAlternative = () => {
+      const enabled =
+        Boolean(
+          altToggle?.checked,
+        );
+
       if (altProfile) {
         altProfile.hidden =
-          !altToggle?.checked;
+          !enabled;
+        altProfile.style.display =
+          enabled ? "" : "none";
+      }
+
+      if (otherMainTitle) {
+        otherMainTitle.textContent =
+          enabled
+            ? "Beneficial Other Effect"
+            : "Other Effect Profile";
+      }
+
+      if (
+        altToggle &&
+        effectNature
+      ) {
+        altToggle
+          .closest("label")
+          ?.classList.toggle(
+            "opacity-60",
+            effectNature.value !==
+              "mixed",
+          );
       }
     };
 
@@ -184,6 +253,11 @@ export function ShapeProgression() {
     );
 
     altToggle?.addEventListener(
+      "change",
+      syncAlternative,
+    );
+
+    effectNature?.addEventListener(
       "change",
       syncAlternative,
     );
@@ -525,6 +599,11 @@ export function ShapeProgression() {
       );
 
       altToggle?.removeEventListener(
+        "change",
+        syncAlternative,
+      );
+
+      effectNature?.removeEventListener(
         "change",
         syncAlternative,
       );

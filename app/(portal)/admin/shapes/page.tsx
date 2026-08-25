@@ -18,15 +18,15 @@ function Sel({name,value,options,none=false}:{name:string;value?:string|null;opt
 }
 function Profile({s,p,title}:{s?:S;p:"self"|"other"|"other_alt";title:string}){
   const mods=[["muscles","Muscles"],["reflexes","Reflexes"],["vigour","Vigour"],["brains","Brains"],["shrewd","Shrewd"],["presence","Presence"]] as const;
-  return <section className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] p-4"><h4 className="font-serif text-lg text-[rgb(var(--sep-colour-d8c29b))]">{title}</h4>
+  return <section className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] p-4"><h4 data-other-main-title={p==="other"?"true":undefined} className="font-serif text-lg text-[rgb(var(--sep-colour-d8c29b))]">{title}</h4>
     <div className="mt-3 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
       <label><span className={lab}>Damage</span><input name={`${p}_damage_dice`} defaultValue={s?.[`${p}_damage_dice`]??""} placeholder="2d6 or 5" className={cls}/></label>
       <label><span className={lab}>Damage Attribute</span><Sel name={`${p}_damage_attribute`} value={s?.[`${p}_damage_attribute`]} options={ATTRIBUTES} none/></label>
-      <label><span className={lab}>Healing</span><input name={`${p}_heal_dice`} defaultValue={s?.[`${p}_heal_dice`]??""} placeholder="1d8 or 4" className={cls}/></label>
-      <label><span className={lab}>Healing Attribute</span><Sel name={`${p}_heal_attribute`} value={s?.[`${p}_heal_attribute`]} options={ATTRIBUTES} none/></label>
-      <label><span className={lab}>Max HP change</span><input name={`${p}_max_hp_change`} defaultValue={s?.[`${p}_max_hp_change`]??""} placeholder="+5 or -2d6" className={cls}/></label>
-      <label className="md:col-span-2 lg:col-span-3"><span className={lab}>Conditions</span><input name={`${p}_conditions`} defaultValue={(s?.[`${p}_conditions`]??[]).join(", ")} placeholder="Blinded, Poisoned" className={cls}/></label>
-    </div><div className="mt-3 grid gap-2 sm:grid-cols-3 lg:grid-cols-6">{mods.map(([k,l])=><label key={k}><span className={lab}>{l} +/-</span><input type="number" name={`${p}_${k}_modifier`} defaultValue={s?.[`${p}_${k}_modifier`]??0} className={cls}/></label>)}</div>
+      <label><span className={lab}>Current Health +/-</span><input name={`${p}_heal_dice`} defaultValue={s?.[`${p}_heal_dice`]??""} placeholder="+1d8, +4, -1d6, -3" className={cls}/></label>
+      <label><span className={lab}>Current Health Attribute</span><Sel name={`${p}_heal_attribute`} value={s?.[`${p}_heal_attribute`]} options={ATTRIBUTES} none/></label>
+      <label data-persistent-effect><span className={lab}>Max HP change</span><input name={`${p}_max_hp_change`} defaultValue={s?.[`${p}_max_hp_change`]??""} placeholder="+5 or -2d6" className={cls}/></label>
+      <label data-persistent-effect className="md:col-span-2 lg:col-span-3"><span className={lab}>Conditions</span><input name={`${p}_conditions`} defaultValue={(s?.[`${p}_conditions`]??[]).join(", ")} placeholder="Blinded, Poisoned" className={cls}/></label>
+    </div><div className="mt-3 grid gap-2 sm:grid-cols-3 lg:grid-cols-6">{mods.map(([k,l])=><label data-persistent-effect key={k}><span className={lab}>{l} +/-</span><input type="number" name={`${p}_${k}_modifier`} defaultValue={s?.[`${p}_${k}_modifier`]??0} className={cls}/></label>)}</div>
   </section>;
 }
 function ShapeForm({
@@ -56,7 +56,7 @@ function ShapeForm({
         <label><span className={lab}>Resolution</span><select name="resolution_mode" data-shape-resolution defaultValue={s?.resolution_mode??"save"} className={cls}><option value="automatic">Automatic Success</option><option value="save">Save</option></select></label>
         <label><span className={lab}>DC Attribute</span><Sel name="dc_attribute" value={s?.dc_attribute} options={ATTRIBUTES} none/></label>
         <label><span className={lab}>Successful Save</span><select name="save_success_damage" defaultValue={s?.save_success_damage??"none"} className={cls}><option value="none">No damage</option><option value="half">Half damage</option></select></label>
-        <label><span className={lab}>Effect Nature</span><select name="effect_nature" defaultValue={s?.effect_nature??"harmful"} className={cls}><option value="beneficial">Beneficial</option><option value="harmful">Harmful</option><option value="mixed">Mixed</option></select></label>
+        <label><span className={lab}>Effect Nature</span><select name="effect_nature" data-effect-nature defaultValue={s?.effect_nature??"harmful"} className={cls}><option value="beneficial">Beneficial</option><option value="harmful">Harmful</option><option value="mixed">Mixed</option></select></label>
       </div><div className="mt-3 flex flex-wrap gap-3">{SAVES.map(([v,l])=><label key={v} className="text-[10px] text-[rgb(var(--sep-colour-c6ae88))]"><input className="mr-2" type="checkbox" name="save_options" value={v} defaultChecked={saves.has(v)}/>{l}</label>)}</div>
       <p className="mt-2 text-[9px] text-[rgb(var(--sep-colour-766a5b))]">Do nothing is always available in Play.</p>
       <div className="mt-3 flex flex-wrap gap-5 text-[10px] text-[rgb(var(--sep-colour-c6ae88))]"><label><input className="mr-2" type="checkbox" name="requires_verbal" defaultChecked={s?s.requires_verbal:true}/>Requires Verbal</label><label><input className="mr-2" type="checkbox" name="requires_movement" defaultChecked={s?s.requires_movement:true}/>Requires Movement</label><label><input className="mr-2" type="checkbox" name="is_dispel" defaultChecked={s?.is_dispel??false}/>Dispel Shape</label><label><input className="mr-2" type="checkbox" name="is_active" defaultChecked={s?s.is_active:true}/>Active</label></div>
@@ -75,6 +75,7 @@ function ShapeForm({
     <Profile s={s} p="self" title="Self Effect Profile"/><Profile s={s} p="other" title={s?.other_alternative_enabled?"Beneficial Other Effect":"Other Effect Profile"}/>
     <section className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] p-4">
       <label className="text-[10px] text-[rgb(var(--sep-colour-c6ae88))]"><input className="mr-2" type="checkbox" name="other_alternative_enabled" data-alt-other-toggle defaultChecked={s?.other_alternative_enabled??false}/>Separate Beneficial and Harmful effects for Other targets</label>
+      <p data-alt-other-help className="mt-2 text-[9px] text-[rgb(var(--sep-colour-806b50))]">When enabled, the normal Other profile above becomes <b>Beneficial Other Effect</b> and the additional profile below is <b>Harmful Other Effect</b>. The caster chooses which branch to use when Warping.</p>
       <div className="mt-4" data-alt-other-profile><Profile s={s} p="other_alt" title="Harmful Other Effect"/></div>
     </section>
     <section className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] p-4"><h4 className="font-serif text-lg text-[rgb(var(--sep-colour-d8c29b))]">Optional Attribute Prerequisites</h4><div className="mt-3 grid gap-2 sm:grid-cols-3 lg:grid-cols-6">{req.map(([k,l])=><label key={k}><span className={lab}>{l} minimum</span><input type="number" min={1} name={`min_${k}`} defaultValue={s?.[`min_${k}`]??""} placeholder="None" className={cls}/></label>)}</div></section>
