@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/client";
 import { HeaderOrderIcon } from "@/components/portal/header-order-icon";
+import { openPortalModal } from "@/components/portal/portal-modal-button";
 import type {
   PortalCharacter,
   PortalPresenceStatus,
@@ -453,10 +454,21 @@ last_seen_at:
   </button>
 </div>
 
-    <Link
-      href="/character"
+    <button
+      type="button"
       title="Open character sheet"
-      className="flex min-w-0 items-center gap-2 lg:gap-3"
+      aria-label={`Open ${character.display_name} character sheet`}
+      onClick={() =>
+        openPortalModal({
+          label: character.display_name,
+          title: "Your character sheet",
+          icon:
+            character.portrait_url ??
+            "/icons/characters.png",
+          href: "/character",
+        })
+      }
+      className="flex min-w-0 items-center gap-2 text-left lg:gap-3"
     >
       <div className="flex shrink-0 items-start gap-1.5">
         <div className="relative h-8 w-8 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-6e5535))] bg-[rgb(var(--sep-colour-15100d))] sm:h-9 sm:w-9 2xl:h-10 2xl:w-10">
@@ -510,7 +522,7 @@ last_seen_at:
       </div>
 
       
-    </Link>
+    </button>
   </div>
 );
 }

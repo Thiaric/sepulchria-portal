@@ -61,7 +61,7 @@ export function CharacterSheetTabs({
   aria-label="Character sheet sections"
   role="tablist"
   className="
-  flex min-w-0 flex-nowrap items-end gap-1
+  flex min-w-0 flex-wrap items-end gap-1
   border-x border-t border-[rgb(var(--sep-colour-60482e))]/45
   bg-transparent
   px-2 pt-2
@@ -91,7 +91,7 @@ export function CharacterSheetTabs({
           );
         }}
         className={`
-          relative min-w-0 flex-1
+          relative min-w-[92px] flex-1 basis-[92px]
           rounded-t-lg
           border border-b-0
           px-2 py-3
