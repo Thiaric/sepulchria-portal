@@ -10,8 +10,22 @@ export type PortalModalPayload = {
 };
 
 export function openPortalModal(payload: PortalModalPayload) {
+  if (window.self !== window.top) {
+    window.parent.postMessage(
+      {
+        type: "sepulchria:open-public-modal",
+        detail: payload,
+      },
+      window.location.origin,
+    );
+    return;
+  }
+
   window.dispatchEvent(
-    new CustomEvent("sepulchria:open-public-modal", { detail: payload }),
+    new CustomEvent(
+      "sepulchria:open-public-modal",
+      { detail: payload },
+    ),
   );
 }
 

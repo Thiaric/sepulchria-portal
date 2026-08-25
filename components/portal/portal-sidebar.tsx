@@ -1117,32 +1117,66 @@ export function PortalSidebar({
 
   useEffect(() => {
     /*
-     * A page rendered inside a portal modal still mounts the portal layout,
-     * including its hidden PortalSidebar.
-     *
-     * Only the top-level portal is allowed to own modal windows.
-     * Embedded pages forward modal requests through the iframe bridge
-     * installed by PublicPageModal instead.
+     * The outer portal is the sole owner of portal modals.
+     * Embedded pages can request a replacement modal through postMessage.
      */
     if (window.self !== window.top) {
       return;
     }
 
-    function handleExternalModalOpen(event: Event) {
-      const detail = (event as CustomEvent<{
-        label: string;
-        title: string;
-        icon: string;
-        href: string;
-      }>).detail;
+    type ExternalModalDetail = {
+      label: string;
+      title: string;
+      icon: string;
+      href: string;
+    };
 
-      if (!detail?.href) return;
+    function replaceCurrentModal(
+      detail:
+        | ExternalModalDetail
+        | null
+        | undefined,
+    ) {
+      if (!detail?.href) {
+        return;
+      }
 
-      void openModalItem({
+      setModalItem({
         ...detail,
-        activePaths: [detail.href.split("?")[0]],
+        activePaths: [
+          detail.href.split("?")[0],
+        ],
         opensModal: true,
       });
+    }
+
+    function handleExternalModalOpen(
+      event: Event,
+    ) {
+      replaceCurrentModal(
+        (
+          event as CustomEvent<ExternalModalDetail>
+        ).detail,
+      );
+    }
+
+    function handleIframeModalOpen(
+      event: MessageEvent,
+    ) {
+      if (
+        event.origin !==
+          window.location.origin ||
+        event.data?.type !==
+          "sepulchria:open-public-modal"
+      ) {
+        return;
+      }
+
+      replaceCurrentModal(
+        event.data.detail as
+          | ExternalModalDetail
+          | undefined,
+      );
     }
 
     window.addEventListener(
@@ -1150,10 +1184,20 @@ export function PortalSidebar({
       handleExternalModalOpen,
     );
 
+    window.addEventListener(
+      "message",
+      handleIframeModalOpen,
+    );
+
     return () => {
       window.removeEventListener(
         "sepulchria:open-public-modal",
         handleExternalModalOpen,
+      );
+
+      window.removeEventListener(
+        "message",
+        handleIframeModalOpen,
       );
     };
   }, []);
@@ -2071,35 +2115,52 @@ function PublicPageModal({
   item: NavigationItem;
   onClose: () => void;
 }) {
-  const [
-    collapsed,
-    setCollapsed,
-  ] = useState(false);
-
-  const [
-    modalSize,
-    setModalSize,
-  ] = useState<{
+  type ModalRect = {
+    x: number;
+    y: number;
     width: number;
     height: number;
-  } | null>(null);
+  };
 
-  const [
-    position,
-    setPosition,
-  ] = useState({
-    x: 0,
-    y: 0,
-  });
+  type DragState = {
+    pointerId: number;
+    startX: number;
+    startY: number;
+    originX: number;
+    originY: number;
+  };
 
-  const dragStateRef =
-    useRef<{
-      pointerId: number;
-      startX: number;
-      startY: number;
-      originX: number;
-      originY: number;
-    } | null>(null);
+  type ResizeState = {
+    pointerId: number;
+    startX: number;
+    startY: number;
+    originWidth: number;
+    originHeight: number;
+  };
+
+  const [collapsed, setCollapsed] =
+    useState(false);
+
+  const [rect, setRect] =
+    useState<ModalRect>({
+      x: 8,
+      y: 8,
+      width: 900,
+      height: 700,
+    });
+
+  const initialisedRef =
+    useRef(false);
+
+  const dragRef =
+    useRef<DragState | null>(
+      null,
+    );
+
+  const resizeRef =
+    useRef<ResizeState | null>(
+      null,
+    );
 
   const separator =
     item.href.includes("?")
@@ -2109,94 +2170,120 @@ function PublicPageModal({
   const iframeSrc =
     `${item.href}${separator}embedded=1`;
 
-  const isMessagesModal =
-    item.label === "Messages" ||
-    item.label.startsWith(
-      "Messages — ",
-    ) ||
+  const isLargeModal =
     item.href === "/messages" ||
     item.href.startsWith(
       "/messages/",
-    );
-
-  const isCharacterModal =
+    ) ||
     item.href === "/characters" ||
     item.href.startsWith(
       "/characters/",
-    );
-
-  const isForumModal =
+    ) ||
     item.href === "/forum" ||
     item.href.startsWith(
       "/forum/",
     );
 
-  const isLargeModal =
-    isMessagesModal ||
-    isCharacterModal ||
-    isForumModal;
+  const clampRect =
+    useCallback(
+      (
+        candidate: ModalRect,
+      ): ModalRect => {
+        const margin = 8;
 
-  const modalWindowRef =
-    useRef<HTMLDivElement>(null);
+        const viewportWidth =
+          window.innerWidth;
 
-  function rememberModalSize() {
-    const modalWindow =
-      modalWindowRef.current;
+        const viewportHeight =
+          window.innerHeight;
 
+        const maxWidth =
+          Math.max(
+            320,
+            viewportWidth -
+              margin * 2,
+          );
+
+        const maxHeight =
+          Math.max(
+            220,
+            viewportHeight -
+              margin * 2,
+          );
+
+        const minWidth =
+          Math.min(
+            420,
+            maxWidth,
+          );
+
+        const minHeight =
+          Math.min(
+            280,
+            maxHeight,
+          );
+
+        const width =
+          Math.min(
+            maxWidth,
+            Math.max(
+              minWidth,
+              candidate.width,
+            ),
+          );
+
+        const height =
+          Math.min(
+            maxHeight,
+            Math.max(
+              minHeight,
+              candidate.height,
+            ),
+          );
+
+        const x =
+          Math.min(
+            viewportWidth -
+              margin -
+              width,
+            Math.max(
+              margin,
+              candidate.x,
+            ),
+          );
+
+        const y =
+          Math.min(
+            viewportHeight -
+              margin -
+              height,
+            Math.max(
+              margin,
+              candidate.y,
+            ),
+          );
+
+        return {
+          x,
+          y,
+          width,
+          height,
+        };
+      },
+      [],
+    );
+
+  useEffect(() => {
     if (
-      !modalWindow ||
-      collapsed
+      initialisedRef.current
     ) {
       return;
     }
 
-    const rect =
-      modalWindow.getBoundingClientRect();
+    initialisedRef.current =
+      true;
 
-    const width =
-      Math.round(rect.width);
-
-    const height =
-      Math.round(rect.height);
-
-    if (
-      width <= 0 ||
-      height <= 0
-    ) {
-      return;
-    }
-
-    setModalSize((current) => {
-      if (
-        current?.width === width &&
-        current?.height === height
-      ) {
-        return current;
-      }
-
-      return {
-        width,
-        height,
-      };
-    });
-  }
-
-  function clampPosition(
-    x: number,
-    y: number,
-  ) {
-    const modalWindow =
-      modalWindowRef.current;
-
-    if (!modalWindow) {
-      return {
-        x,
-        y,
-      };
-    }
-
-    const rect =
-      modalWindow.getBoundingClientRect();
+    const margin = 8;
 
     const viewportWidth =
       window.innerWidth;
@@ -2204,114 +2291,95 @@ function PublicPageModal({
     const viewportHeight =
       window.innerHeight;
 
-    const safetyMargin = 8;
+    const preferredWidth =
+      isLargeModal
+        ? viewportWidth -
+          margin * 2
+        : Math.min(
+            viewportWidth -
+              margin * 2,
+            Math.max(
+              720,
+              viewportWidth *
+                0.76,
+            ),
+          );
 
-    const centredLeft =
-      viewportWidth / 2 -
-      rect.width / 2;
+    const preferredHeight =
+      isLargeModal
+        ? viewportHeight -
+          margin * 2
+        : Math.min(
+            viewportHeight -
+              margin * 2,
+            Math.max(
+              520,
+              viewportHeight *
+                0.76,
+            ),
+          );
 
-    const centredTop =
-      viewportHeight / 2 -
-      rect.height / 2;
-
-    const minX =
-      safetyMargin -
-      centredLeft;
-
-    const maxX =
-      viewportWidth -
-      safetyMargin -
-      rect.width -
-      centredLeft;
-
-    const minY =
-      safetyMargin -
-      centredTop;
-
-    const maxY =
-      viewportHeight -
-      safetyMargin -
-      rect.height -
-      centredTop;
-
-    return {
-      x: Math.max(
-        minX,
-        Math.min(
-          maxX,
-          x,
-        ),
-      ),
-      y: Math.max(
-        minY,
-        Math.min(
-          maxY,
-          y,
-        ),
-      ),
-    };
-  }
+    setRect(
+      clampRect({
+        x:
+          (
+            viewportWidth -
+            preferredWidth
+          ) / 2,
+        y:
+          (
+            viewportHeight -
+            preferredHeight
+          ) / 2,
+        width:
+          preferredWidth,
+        height:
+          preferredHeight,
+      }),
+    );
+  }, [
+    clampRect,
+    isLargeModal,
+  ]);
 
   useEffect(() => {
-    function keepWindowInBounds() {
-      setPosition(
+    function handleViewportResize() {
+      setRect(
         (current) =>
-          clampPosition(
-            current.x,
-            current.y,
+          clampRect(
+            current,
           ),
       );
     }
 
-    /*
-     * When the modal is collapsed or restored its dimensions change
-     * drastically. Wait until that new size has actually rendered,
-     * then clamp the new rectangle back inside the viewport.
-     */
-    const animationFrame =
-      window.requestAnimationFrame(
-        keepWindowInBounds,
-      );
-
     window.addEventListener(
       "resize",
-      keepWindowInBounds,
-    );
-
-    /*
-     * Do not observe the modal's own dimensions here.
-     *
-     * Native CSS resize already owns the size while the user drags the
-     * resize handle. React only needs to clamp the final position afterwards.
-     */
-    function finishPointerInteraction() {
-      window.requestAnimationFrame(() => {
-        rememberModalSize();
-        keepWindowInBounds();
-      });
-    }
-
-    window.addEventListener(
-      "pointerup",
-      finishPointerInteraction,
+      handleViewportResize,
     );
 
     return () => {
-      window.cancelAnimationFrame(
-        animationFrame,
-      );
-
       window.removeEventListener(
         "resize",
-        keepWindowInBounds,
-      );
-
-      window.removeEventListener(
-        "pointerup",
-        finishPointerInteraction,
+        handleViewportResize,
       );
     };
-  }, [collapsed]);
+  }, [clampRect]);
+
+  const collapsedWidth =
+    Math.min(
+      rect.width,
+      420,
+    );
+
+  const visibleWidth =
+    collapsed
+      ? collapsedWidth
+      : rect.width;
+
+  const visibleHeight =
+    collapsed
+      ? 40
+      : rect.height;
 
   return (
     <div
@@ -2321,29 +2389,13 @@ function PublicPageModal({
       className="pointer-events-none fixed inset-0 z-[9999]"
     >
       <div
-        ref={modalWindowRef}
         style={{
-          left: "50%",
-          top: "50%",
-          transform: `translate(calc(-50% + ${position.x}px), calc(-50% + ${position.y}px))`,
-          width:
-            !collapsed &&
-            modalSize
-              ? `${modalSize.width}px`
-              : undefined,
-          height:
-            !collapsed &&
-            modalSize
-              ? `${modalSize.height}px`
-              : undefined,
+          left: `${rect.x}px`,
+          top: `${rect.y}px`,
+          width: `${visibleWidth}px`,
+          height: `${visibleHeight}px`,
         }}
-        className={`pointer-events-auto fixed flex flex-col border border-[rgb(var(--sep-colour-6e5535))]/65 bg-[rgb(var(--sep-colour-090705))] shadow-[0_20px_80px_rgba(var(--sep-rgb-0-0-0),0.65)] ${
-          collapsed
-            ? "h-10 w-[calc(100vw-1rem)] max-w-[420px] overflow-hidden sm:w-[420px]"
-            : isLargeModal
-              ? "h-[calc(100dvh-1rem)] w-[calc(100vw-1rem)] min-h-0 min-w-0 max-h-[calc(100dvh-1rem)] max-w-[calc(100vw-1rem)] overflow-hidden sm:resize"
-              : "h-[calc(100dvh-1rem)] w-[calc(100vw-1rem)] min-h-0 min-w-0 max-h-[calc(100dvh-1rem)] max-w-[calc(100vw-1rem)] overflow-hidden sm:h-[76vh] sm:w-[76vw] sm:min-h-[360px] sm:min-w-[520px] sm:max-h-[94vh] sm:max-w-[94vw] sm:resize"
-        }`}
+        className="pointer-events-auto fixed flex min-h-0 min-w-0 flex-col overflow-hidden border border-[rgb(var(--sep-colour-6e5535))]/65 bg-[rgb(var(--sep-colour-090705))] shadow-[0_20px_80px_rgba(var(--sep-rgb-0-0-0),0.65)]"
       >
         <div
           className="flex h-10 shrink-0 cursor-move select-none items-center justify-between border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3"
@@ -2354,14 +2406,12 @@ function PublicPageModal({
               event.button !== 0 ||
               (
                 event.target as HTMLElement
-              ).closest(
-                "button",
-              )
+              ).closest("button")
             ) {
               return;
             }
 
-            dragStateRef.current = {
+            dragRef.current = {
               pointerId:
                 event.pointerId,
               startX:
@@ -2369,9 +2419,9 @@ function PublicPageModal({
               startY:
                 event.clientY,
               originX:
-                position.x,
+                rect.x,
               originY:
-                position.y,
+                rect.y,
             };
 
             event.currentTarget.setPointerCapture(
@@ -2382,7 +2432,7 @@ function PublicPageModal({
             event,
           ) => {
             const drag =
-              dragStateRef.current;
+              dragRef.current;
 
             if (
               !drag ||
@@ -2392,30 +2442,39 @@ function PublicPageModal({
               return;
             }
 
-            const next =
-              clampPosition(
-                drag.originX +
-                  event.clientX -
-                  drag.startX,
-                drag.originY +
-                  event.clientY -
-                  drag.startY,
-              );
+            const dx =
+              event.clientX -
+              drag.startX;
 
-            setPosition(next);
+            const dy =
+              event.clientY -
+              drag.startY;
+
+            setRect(
+              (current) =>
+                clampRect({
+                  ...current,
+                  x:
+                    drag.originX +
+                    dx,
+                  y:
+                    drag.originY +
+                    dy,
+                }),
+            );
           }}
           onPointerUp={(
             event,
           ) => {
             if (
-              dragStateRef.current
+              dragRef.current
                 ?.pointerId !==
               event.pointerId
             ) {
               return;
             }
 
-            dragStateRef.current =
+            dragRef.current =
               null;
 
             if (
@@ -2429,7 +2488,7 @@ function PublicPageModal({
             }
           }}
           onPointerCancel={() => {
-            dragStateRef.current =
+            dragRef.current =
               null;
           }}
         >
@@ -2493,39 +2552,42 @@ function PublicPageModal({
         </div>
 
         {!collapsed ? (
-          <iframe
-            src={iframeSrc}
-            title={item.label}
-            onLoad={(event) => {
-              const frame =
-                event.currentTarget;
+          <>
+            <iframe
+              src={iframeSrc}
+              title={item.label}
+              onLoad={(event) => {
+                const doc =
+                  event.currentTarget
+                    .contentDocument;
 
-              const doc =
-                frame.contentDocument;
+                if (!doc) {
+                  return;
+                }
 
-              const frameWindow =
-                frame.contentWindow;
+                const styleId =
+                  "sepulchria-stable-modal-style";
 
-              if (
-                !doc ||
-                !frameWindow
-              ) {
-                return;
-              }
+                let style =
+                  doc.getElementById(
+                    styleId,
+                  ) as
+                    | HTMLStyleElement
+                    | null;
 
-              const existing =
-                doc.getElementById(
-                  "sepulchria-centre-only-modal-style",
-                );
+                if (!style) {
+                  style =
+                    doc.createElement(
+                      "style",
+                    );
 
-              if (!existing) {
-                const style =
-                  doc.createElement(
-                    "style",
+                  style.id =
+                    styleId;
+
+                  doc.head.appendChild(
+                    style,
                   );
-
-                style.id =
-                  "sepulchria-centre-only-modal-style";
+                }
 
                 style.textContent = `
                   [data-portal-header],
@@ -2534,11 +2596,14 @@ function PublicPageModal({
                     display: none !important;
                   }
 
+                  html,
+                  body,
                   [data-portal-shell],
                   [data-portal-shell-inner] {
                     width: 100% !important;
-                    height: 100dvh !important;
-                    min-height: 100dvh !important;
+                    height: 100% !important;
+                    min-height: 100% !important;
+                    max-width: none !important;
                     overflow: hidden !important;
                   }
 
@@ -2569,7 +2634,7 @@ function PublicPageModal({
                     height: 100% !important;
                     min-height: 0 !important;
                     overflow-y: auto !important;
-                    overflow-x: hidden !important;
+                    overflow-x: auto !important;
                   }
 
                   .portal-right-shell {
@@ -2598,38 +2663,30 @@ function PublicPageModal({
                     transition: none !important;
                   }
 
-                  /*
-                   * Inside modal windows, keep ONLY the route-aware
-                   * Context section.
-                   *
-                   * Hide:
-                   * - mobile Context header
-                   * - Current Location card
-                   * - Instant Chat dock
-                   */
                   .portal-right-shell
                     > [data-portal-right-sidebar]
-                    > div:first-child {
+                    > div:first-child,
+                  .portal-right-shell
+                    > button,
+                  .portal-right-collapse-toggle {
                     display: none !important;
                   }
 
                   .portal-right-shell
                     > [data-portal-right-sidebar]
                     > div:nth-child(2) {
-                    padding: var(
-                      --portal-column-pad,
-                      0.8rem
-                    ) !important;
+                    padding:
+                      var(
+                        --portal-column-pad,
+                        0.8rem
+                      ) !important;
                   }
 
                   .portal-right-shell
                     > [data-portal-right-sidebar]
                     > div:nth-child(2)
                     > div:first-child
-                    > div:first-child {
-                    display: none !important;
-                  }
-
+                    > div:first-child,
                   .portal-right-shell
                     > [data-portal-right-sidebar]
                     > div:nth-child(2)
@@ -2637,202 +2694,124 @@ function PublicPageModal({
                     display: none !important;
                   }
 
-                  .portal-right-shell
-                    > button {
-                    display: none !important;
+                  @media (max-width: 899px) {
+                    .sepulchria-viewport-body {
+                      grid-template-columns:
+                        minmax(0, 1fr) !important;
+                    }
+
+                    .portal-right-shell {
+                      display: none !important;
+                    }
                   }
-
-                  .portal-right-collapse-toggle {
-                    display: none !important;
-                  }
-
-                  @media (max-width: 1279px) {
-  html,
-  body,
-  [data-portal-shell],
-  [data-portal-shell-inner],
-  .sepulchria-viewport-body,
-  [data-portal-centre-host],
-  [data-portal-centre-host]
-    > [data-portal-column] {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-  }
-
-  .sepulchria-viewport-body {
-    display: grid !important;
-    grid-template-columns:
-      minmax(0, 1fr) !important;
-    grid-template-rows:
-      minmax(0, 1fr) !important;
-    height: 100dvh !important;
-    min-height: 100dvh !important;
-    overflow: hidden !important;
-  }
-
-  [data-portal-centre-host] {
-    grid-column: 1 !important;
-    grid-row: 1 !important;
-    width: 100% !important;
-    height: 100% !important;
-    min-height: 0 !important;
-  }
-
-  [data-portal-centre-host]
-    > [data-portal-column] {
-    width: 100% !important;
-    height: 100% !important;
-    min-height: 0 !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    overflow-y: auto !important;
-    overflow-x: auto !important;
-  }
-
-  [data-portal-centre-host]
-    > [data-portal-column]
-    > * {
-    max-width: 100% !important;
-  }
-
-  .portal-right-shell {
-    display: contents !important;
-    width: auto !important;
-    height: auto !important;
-    min-height: 0 !important;
-    max-height: none !important;
-    overflow: visible !important;
-  }
-
-  .portal-right-shell
-    > button:not(
-      .portal-right-collapse-toggle
-    ) {
-    display: flex !important;
-  }
-
-  .portal-right-collapse-toggle {
-    display: none !important;
-  }
-
-  .portal-right-shell
-    > [data-portal-right-sidebar] {
-    position: fixed !important;
-    inset: 0 0 0 auto !important;
-    z-index: 70 !important;
-
-    display: flex !important;
-    flex-direction: column !important;
-
-    width: min(88vw, 360px) !important;
-    height: 100dvh !important;
-    min-height: 0 !important;
-    max-height: none !important;
-
-    overflow: hidden !important;
-
-    transform:
-      translateX(100%) !important;
-
-    box-shadow:
-      -18px 0 50px
-      rgba(
-        var(--sep-rgb-0-0-0),
-        0.55
-      ) !important;
-
-    transition:
-      transform 200ms ease-out !important;
-  }
-
-  .portal-right-shell
-    > [data-portal-right-sidebar].translate-x-0 {
-    transform:
-      translateX(0) !important;
-  }
-
-  .portal-right-shell
-    > [data-portal-right-sidebar].translate-x-full {
-    transform:
-      translateX(100%) !important;
-  }
-
-  .portal-right-shell
-    > [data-portal-right-sidebar]
-    > div:first-child {
-    display: flex !important;
-  }
-
-  .portal-right-shell
-    > [data-portal-right-sidebar]
-    > div:nth-child(2)
-    > div:first-child
-    > div:first-child {
-    display: none !important;
-  }
-}
                 `;
+              }}
+              className="min-h-0 w-full flex-1 border-0 bg-[rgb(var(--sep-colour-090705))]"
+            />
 
-                doc.head.appendChild(
-                  style,
-                );
-              }
+            <div
+              role="separator"
+              aria-label={`Resize ${item.label}`}
+              title="Resize window"
+              className="absolute bottom-0 right-0 z-20 h-5 w-5 cursor-se-resize"
+              onPointerDown={(
+                event,
+              ) => {
+                if (
+                  event.button !== 0
+                ) {
+                  return;
+                }
 
-              const bridgeKey =
-                "__sepulchriaModalBridgeInstalled";
+                event.preventDefault();
 
-              const bridgedWindow =
-                frameWindow as Window & {
-                  [bridgeKey]?: boolean;
+                resizeRef.current = {
+                  pointerId:
+                    event.pointerId,
+                  startX:
+                    event.clientX,
+                  startY:
+                    event.clientY,
+                  originWidth:
+                    rect.width,
+                  originHeight:
+                    rect.height,
                 };
 
-              if (
-                bridgedWindow[
-                  bridgeKey
-                ]
-              ) {
-                return;
-              }
+                event.currentTarget.setPointerCapture(
+                  event.pointerId,
+                );
+              }}
+              onPointerMove={(
+                event,
+              ) => {
+                const resize =
+                  resizeRef.current;
 
-              bridgedWindow[
-                bridgeKey
-              ] = true;
+                if (
+                  !resize ||
+                  resize.pointerId !==
+                    event.pointerId
+                ) {
+                  return;
+                }
 
-              frameWindow.addEventListener(
-                "sepulchria:open-public-modal",
-                (
-                  nestedEvent,
-                ) => {
-                  const detail =
-                    (
-                      nestedEvent as CustomEvent<{
-                        label: string;
-                        title: string;
-                        icon: string;
-                        href: string;
-                      }>
-                    ).detail;
+                const dx =
+                  event.clientX -
+                  resize.startX;
 
-                  if (
-                    !detail?.href
-                  ) {
-                    return;
-                  }
+                const dy =
+                  event.clientY -
+                  resize.startY;
 
-                  window.dispatchEvent(
-                    new CustomEvent(
-                      "sepulchria:open-public-modal",
-                      {
-                        detail,
-                      },
-                    ),
+                setRect(
+                  (current) =>
+                    clampRect({
+                      ...current,
+                      width:
+                        resize.originWidth +
+                        dx,
+                      height:
+                        resize.originHeight +
+                        dy,
+                    }),
+                );
+              }}
+              onPointerUp={(
+                event,
+              ) => {
+                if (
+                  resizeRef.current
+                    ?.pointerId !==
+                  event.pointerId
+                ) {
+                  return;
+                }
+
+                resizeRef.current =
+                  null;
+
+                if (
+                  event.currentTarget.hasPointerCapture(
+                    event.pointerId,
+                  )
+                ) {
+                  event.currentTarget.releasePointerCapture(
+                    event.pointerId,
                   );
-                },
-              );
-            }}
-            className="min-h-0 w-full flex-1 border-0 bg-[rgb(var(--sep-colour-090705))]"
-          />
+                }
+              }}
+              onPointerCancel={() => {
+                resizeRef.current =
+                  null;
+              }}
+            >
+              <span
+                aria-hidden="true"
+                className="absolute bottom-1 right-1 block h-2.5 w-2.5 border-b border-r border-[rgb(var(--sep-colour-a98b61))]/80"
+              />
+            </div>
+          </>
         ) : null}
       </div>
     </div>
