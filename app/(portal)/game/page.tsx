@@ -479,11 +479,35 @@ async function GameContent() {
       equipped_slot: string | null;
     }[];
 
-  const usableRows =
-    chatInventoryRows.filter((row) => row.is_usable);
+  /*
+   * Chat needs:
+   * - ordinary usable Items; and
+   * - equipped Main Hand / Off Hand Weapons.
+   *
+   * Weapons do not need the generic is_usable flag in order to attack.
+   * The weapon resolver validates the equipped slot, Weapon category and
+   * Opposed configuration separately.
+   */
+  const chatCandidateRows =
+    chatInventoryRows.filter(
+      (row) =>
+        row.is_usable ||
+        (
+          row.is_equipped &&
+          ["main_hand", "off_hand"].includes(
+            String(
+              row.equipped_slot ?? "",
+            ),
+          )
+        ),
+    );
 
-  const usableItemIds = [
-    ...new Set(usableRows.map((row) => row.item_id)),
+  const chatCandidateItemIds = [
+    ...new Set(
+      chatCandidateRows.map(
+        (row) => row.item_id,
+      ),
+    ),
   ];
 
   const [
@@ -491,7 +515,7 @@ async function GameContent() {
     uniqueChargesResult,
     itemCooldownsResult,
   ] = await Promise.all([
-    usableItemIds.length
+    chatCandidateItemIds.length
       ? supabase
           .from("items")
           .select(`
@@ -525,7 +549,10 @@ async function GameContent() {
               warps_per_day_modifier
             )
           `)
-          .in("id", usableItemIds)
+          .in(
+            "id",
+            chatCandidateItemIds,
+          )
       : Promise.resolve({ data: [], error: null }),
 
     supabase
@@ -571,7 +598,7 @@ async function GameContent() {
     ),
   );
 
-  const chatItems = usableRows
+  const chatItems = chatCandidateRows
     .map((row) => {
       const master = masterById.get(row.item_id);
       if (!master) return null;
@@ -581,19 +608,35 @@ async function GameContent() {
           ? `unique:${row.record_id}`
           : `standard:${row.item_id}`;
 
-      const categoryRelation = master.category ?? null;
-      const category = Array.isArray(categoryRelation)
-        ? categoryRelation[0] ?? null
-        : categoryRelation;
+      const categoryRelation =
+        master.category ?? null;
+
+      const category =
+        Array.isArray(
+          categoryRelation,
+        )
+          ? categoryRelation[0] ?? null
+          : categoryRelation;
+
+      const isEquippedHandWeapon =
+        category?.slug === "weapon" &&
+        row.is_equipped &&
+        ["main_hand", "off_hand"].includes(
+          String(
+            row.equipped_slot ?? "",
+          ),
+        );
+
+      if (
+        !row.is_usable &&
+        !isEquippedHandWeapon
+      ) {
+        return null;
+      }
 
       if (
         category?.slug === "weapon" &&
-        (
-          !row.is_equipped ||
-          !["main_hand", "off_hand"].includes(
-            String(row.equipped_slot ?? ""),
-          )
-        )
+        !isEquippedHandWeapon
       ) {
         return null;
       }

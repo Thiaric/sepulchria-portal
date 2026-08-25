@@ -2419,7 +2419,7 @@ function ignoreSpellingWord() {
               : utilityButtonClass
           }
         >
-          Atk / Def / Dodge / Resist / Use Attribute
+          ATK / Use Attributes
         </button>
 
         <button
