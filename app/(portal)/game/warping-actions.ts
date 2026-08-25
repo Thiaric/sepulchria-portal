@@ -66,6 +66,343 @@ function effectSummary(r:any){if(!r)return "";const x:string[]=[];
  return x.length?` · ${x.join(" · ")}`:""
 }
 const SAVE_NAME:Record<string,string>={dodge:"Dodge",defend:"Defend",resist_vigour:"Resist Vigour",resist_vigor:"Resist Vigour",resist_shrewd:"Resist Shrewd",resist_brains:"Resist Brains",resist_presence:"Resist Presence"};
+
+export async function resolveImmediateShapeCast(
+  castId: string,
+): Promise<WarpingActionState> {
+  try {
+    if (
+      !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+        castId,
+      )
+    ) {
+      throw Error("Invalid Shape cast.");
+    }
+
+    const caster =
+      await mine();
+
+    const a =
+      admin();
+
+    const {
+      data: castRow,
+      error: castError,
+    } = await a
+      .from("shape_casts")
+      .select(`
+        id,
+        room_id,
+        caster_character_id,
+        caster:characters!shape_casts_caster_character_id_fkey(
+          id,
+          display_name,
+          muscles,
+          reflexes,
+          vigor,
+          brains,
+          shrewd,
+          presence_score
+        ),
+        shape:shapes!shape_casts_shape_id_fkey(*)
+      `)
+      .eq("id", castId)
+      .eq(
+        "caster_character_id",
+        caster.id,
+      )
+      .maybeSingle();
+
+    if (
+      castError ||
+      !castRow
+    ) {
+      throw Error(
+        castError?.message ??
+          "Shape cast not found.",
+      );
+    }
+
+    const cast =
+      castRow as any;
+
+    const shape =
+      one(cast.shape);
+
+    if (!shape) {
+      throw Error(
+        "Shape data unavailable.",
+      );
+    }
+
+    /*
+     * Dispel has its own preparation / response resolver and must not
+     * use the ordinary Shape payload path here.
+     */
+    if (shape.is_dispel) {
+      return {
+        ok: true,
+        message: "",
+        submittedAt:
+          Date.now(),
+      };
+    }
+
+    const {
+      data: targetRows,
+      error: targetError,
+    } = await a
+      .from("shape_cast_targets")
+      .select(`
+        id,
+        cast_id,
+        target_character_id,
+        target_kind,
+        outcome,
+        resolved_at
+      `)
+      .eq(
+        "cast_id",
+        castId,
+      )
+      .eq(
+        "outcome",
+        "pending",
+      );
+
+    if (targetError) {
+      throw Error(
+        targetError.message,
+      );
+    }
+
+    const immediateRows =
+      (targetRows ?? []).filter(
+        (row) =>
+          Boolean(
+            row.target_character_id,
+          ) &&
+          (
+            row.target_character_id ===
+              caster.id ||
+            shape.resolution_mode ===
+              "automatic"
+          ),
+      );
+
+    if (!immediateRows.length) {
+      return {
+        ok: true,
+        message: "",
+        submittedAt:
+          Date.now(),
+      };
+    }
+
+    const targetIds = [
+      ...new Set(
+        immediateRows
+          .map(
+            (row) =>
+              row.target_character_id,
+          )
+          .filter(Boolean),
+      ),
+    ] as string[];
+
+    const targetNames =
+      new Map<string, string>();
+
+    if (targetIds.length) {
+      const {
+        data: characters,
+        error: characterError,
+      } = await a
+        .from("characters")
+        .select(
+          "id, display_name",
+        )
+        .in(
+          "id",
+          targetIds,
+        );
+
+      if (characterError) {
+        throw Error(
+          characterError.message,
+        );
+      }
+
+      for (
+        const character
+        of characters ?? []
+      ) {
+        targetNames.set(
+          character.id,
+          character.display_name,
+        );
+      }
+    }
+
+    const summaries:
+      string[] = [];
+
+    for (
+      const row
+      of immediateRows
+    ) {
+      const claimedAt =
+        new Date().toISOString();
+
+      /*
+       * Claim the still-pending target before applying mechanics.
+       * This makes repeated clicks/retries unable to apply damage twice.
+       */
+      const {
+        data: claimed,
+        error: claimError,
+      } = await a
+        .from(
+          "shape_cast_targets",
+        )
+        .update({
+          resolved_at:
+            claimedAt,
+        })
+        .eq(
+          "id",
+          row.id,
+        )
+        .eq(
+          "outcome",
+          "pending",
+        )
+        .is(
+          "resolved_at",
+          null,
+        )
+        .select("id")
+        .maybeSingle();
+
+      if (claimError) {
+        throw Error(
+          claimError.message,
+        );
+      }
+
+      if (!claimed) {
+        continue;
+      }
+
+      try {
+        const result =
+          await apply({
+            ...row,
+            cast,
+          });
+
+        const {
+          error: finishError,
+        } = await a
+          .from(
+            "shape_cast_targets",
+          )
+          .update({
+            response:
+              "automatic",
+            outcome:
+              "success",
+            resolved_at:
+              new Date()
+                .toISOString(),
+          })
+          .eq(
+            "id",
+            row.id,
+          );
+
+        if (finishError) {
+          throw Error(
+            finishError.message,
+          );
+        }
+
+        const label =
+          row.target_character_id ===
+            caster.id
+            ? "Self"
+            : targetNames.get(
+                String(
+                  row.target_character_id,
+                ),
+              ) ??
+              "Target";
+
+        summaries.push(
+          `${label}${effectSummary(
+            result,
+          )}`,
+        );
+      } catch (error) {
+        /*
+         * Release the claim if mechanics failed so the cast is not left
+         * permanently resolved without its effects.
+         */
+        await a
+          .from(
+            "shape_cast_targets",
+          )
+          .update({
+            resolved_at:
+              null,
+          })
+          .eq(
+            "id",
+            row.id,
+          )
+          .eq(
+            "outcome",
+            "pending",
+          );
+
+        throw error;
+      }
+    }
+
+    revalidatePath(
+      "/game",
+    );
+
+    revalidatePath(
+      "/character",
+    );
+
+    revalidatePath(
+      "/characters",
+    );
+
+    return {
+      ok: true,
+      message:
+        summaries.length
+          ? `Resolved: ${summaries.join(
+              " · ",
+            )}`
+          : "",
+      submittedAt:
+        Date.now(),
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Unable to resolve automatic Shape.",
+    };
+  }
+}
+
 export async function resolveIncomingShape(_p:WarpingActionState,f:FormData):Promise<WarpingActionState>{try{
  const c=await mine(),id=field(f,"shape_cast_target_id"),choice=field(f,"save_choice"),t=await target(id,c.id),cast=one(t.cast),s=one(cast?.shape),caster=one(cast?.caster);if(!cast||!s||!caster)throw Error("Shape data unavailable.");
  if(s.is_dispel){

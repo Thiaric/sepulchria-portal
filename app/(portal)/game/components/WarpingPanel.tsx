@@ -2,7 +2,10 @@
 import {useEffect,useMemo,useState} from "react";
 import {createClient} from "@/lib/supabase/client";
 import { sendRoomMessage } from "../actions";
-import { prepareDispelEffect } from "../warping-actions";
+import {
+  prepareDispelEffect,
+  resolveImmediateShapeCast,
+} from "../warping-actions";
 import { getShapeAccessForCurrentCharacter } from "../warping-progression-actions";
 type C={id:string;display_name?:string;displayName?:string}; type S=Record<string,any>;
 const PM:Record<string,[number,number,string]>={
@@ -32,8 +35,66 @@ export function WarpingPanel({presentCharacters,onBack}:{presentCharacters:C[];o
   if(s.is_dispel&&(!targets.length||!selectedDispelEffect))throw Error("Choose an active effect to dispel before Warping.");
   const cr=await db.from("shape_casts").insert({caster_character_id:me.data.id,shape_id:s.id,room_id:me.data.current_room_id,written_target:wt?written.trim():null}).select("id").single();if(cr.error||!cr.data)throw Error(cr.error?.message??"Cast failed.");
   if(s.price_key){const pe=await db.rpc("create_price_for_shape_cast",{p_cast_id:cr.data.id,p_shape_id:s.id});if(pe.error)throw Error(pe.error.message)}
-  const rows=wt?[{cast_id:cr.data.id,target_kind:"written",outcome:"manual"}]:self?[{cast_id:cr.data.id,target_character_id:me.data.id,target_kind:"self",outcome:"success",resolved_at:new Date().toISOString()}]:targets.map(id=>({cast_id:cr.data.id,target_character_id:id,target_kind:id===me.data.id?"self":"character",outcome:id===me.data.id||s.resolution_mode==="automatic"?"success":"pending",resolved_at:id===me.data.id||s.resolution_mode==="automatic"?new Date().toISOString():null}));
-  const tr=await db.from("shape_cast_targets").insert(rows);if(tr.error)throw Error(tr.error.message);
+  const rows=wt
+    ? [{
+        cast_id:cr.data.id,
+        target_kind:"written",
+        outcome:"manual",
+      }]
+    : self
+      ? [{
+          cast_id:cr.data.id,
+          target_character_id:me.data.id,
+          target_kind:"self",
+          outcome:"pending",
+          resolved_at:null,
+        }]
+      : targets.map(id=>({
+          cast_id:cr.data.id,
+          target_character_id:id,
+          target_kind:
+            id===me.data.id
+              ?"self"
+              :"character",
+          outcome:"pending",
+          resolved_at:null,
+        }));
+
+  const tr=
+    await db
+      .from("shape_cast_targets")
+      .insert(rows);
+
+  if(tr.error)
+    throw Error(tr.error.message);
+
+  let immediateResolutionMessage="";
+
+  if(
+    !wt &&
+    !s.is_dispel &&
+    (
+      self ||
+      s.resolution_mode==="automatic" ||
+      targets.includes(me.data.id)
+    )
+  ){
+    const immediate=
+      await resolveImmediateShapeCast(
+        cr.data.id,
+      );
+
+    if(!immediate.ok){
+      throw Error(
+        immediate.message ||
+        "Automatic Shape effects could not be applied.",
+      );
+    }
+
+    immediateResolutionMessage=
+      immediate.message;
+  }
+
   let preparedDispelMessage="";
   if(s.is_dispel){const fd=new FormData();fd.set("cast_id",cr.data.id);fd.set("target_character_id",targets[0]);fd.set("effect_id",selectedDispelEffect);const prepared=await prepareDispelEffect({ok:false,message:""},fd);if(!prepared.ok)throw Error(prepared.message||"Unable to prepare Dispel.");preparedDispelMessage=prepared.message;}
 
@@ -78,7 +139,16 @@ export function WarpingPanel({presentCharacters,onBack}:{presentCharacters:C[];o
     const [stage, days, label] = PM[String(s.price_key)];
     parts.push(`Price: ${label} · Stage ${stage} · ${days} days`);
   }
-  const castText = parts.filter(Boolean).join(" · ");
+  if(immediateResolutionMessage){
+    parts.push(
+      immediateResolutionMessage,
+    );
+  }
+
+  const castText =
+    parts
+      .filter(Boolean)
+      .join(" · ");
 
   const roomMessageData = new FormData();
   roomMessageData.set("message", castText);
