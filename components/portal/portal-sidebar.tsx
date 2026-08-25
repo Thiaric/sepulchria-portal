@@ -2551,8 +2551,13 @@ function PublicPageModal({
           </div>
         </div>
 
-        {!collapsed ? (
-          <>
+        <div
+          className={
+            collapsed
+              ? "hidden"
+              : "flex min-h-0 flex-1 flex-col"
+          }
+        >
             <iframe
               src={iframeSrc}
               title={item.label}
@@ -2694,13 +2699,112 @@ function PublicPageModal({
                     display: none !important;
                   }
 
-                  @media (max-width: 899px) {
+                  @media (max-width: 959px) {
                     .sepulchria-viewport-body {
                       grid-template-columns:
                         minmax(0, 1fr) !important;
+                      grid-template-rows:
+                        minmax(0, 1fr) !important;
                     }
 
+                    [data-portal-centre-host] {
+                      grid-column: 1 !important;
+                      grid-row: 1 !important;
+                      width: 100% !important;
+                      min-width: 0 !important;
+                    }
+
+                    /*
+                     * Match the main portal's responsive Context behaviour.
+                     * The shell itself becomes layout-transparent so its
+                     * floating button/backdrop/sidebar can sit over content.
+                     */
                     .portal-right-shell {
+                      display: contents !important;
+                    }
+
+                    /*
+                     * Re-enable the existing diamond opener and backdrop.
+                     * They are direct buttons rendered by
+                     * PortalResponsiveRightSidebar.
+                     */
+                    .portal-right-shell
+                      > button:not(
+                        .portal-right-collapse-toggle
+                      ) {
+                      display: flex !important;
+                    }
+
+                    .portal-right-collapse-toggle {
+                      display: none !important;
+                    }
+
+                    /*
+                     * Restore the component's own mobile/off-canvas drawer
+                     * semantics inside the iframe viewport.
+                     */
+                    .portal-right-shell
+                      > [data-portal-right-sidebar] {
+                      position: fixed !important;
+                      inset: 0 0 0 auto !important;
+                      z-index: 70 !important;
+                      display: flex !important;
+                      flex-direction: column !important;
+                      width: min(88vw, 360px) !important;
+                      height: 100dvh !important;
+                      min-height: 0 !important;
+                      max-height: none !important;
+                      overflow: hidden !important;
+                      transform:
+                        translateX(100%) !important;
+                      box-shadow:
+                        -18px 0 50px
+                        rgba(
+                          var(--sep-rgb-0-0-0),
+                          0.55
+                        ) !important;
+                      transition:
+                        transform 200ms ease-out !important;
+                    }
+
+                    .portal-right-shell
+                      > [data-portal-right-sidebar].translate-x-0 {
+                      transform:
+                        translateX(0) !important;
+                    }
+
+                    .portal-right-shell
+                      > [data-portal-right-sidebar].translate-x-full {
+                      transform:
+                        translateX(100%) !important;
+                    }
+
+                    /*
+                     * In drawer mode the component's own Context header and
+                     * close button must be visible again.
+                     */
+                    .portal-right-shell
+                      > [data-portal-right-sidebar]
+                      > div:first-child {
+                      display: flex !important;
+                    }
+
+                    /*
+                     * Keep the modal-specific content filtering already used
+                     * in the wide Context column.
+                     */
+                    .portal-right-shell
+                      > [data-portal-right-sidebar]
+                      > div:nth-child(2)
+                      > div:first-child
+                      > div:first-child {
+                      display: none !important;
+                    }
+
+                    .portal-right-shell
+                      > [data-portal-right-sidebar]
+                      > div:nth-child(2)
+                      > div:last-child {
                       display: none !important;
                     }
                   }
@@ -2811,8 +2915,7 @@ function PublicPageModal({
                 className="absolute bottom-1 right-1 block h-2.5 w-2.5 border-b border-r border-[rgb(var(--sep-colour-a98b61))]/80"
               />
             </div>
-          </>
-        ) : null}
+        </div>
       </div>
     </div>
   );
