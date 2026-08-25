@@ -216,54 +216,324 @@ function formatRollText(
   );
 }
 
-function renderRollText(
+function isMechanicalActionMessage(
   item: RoomMessage,
-): ReactNode {
-  const text = formatRollText(item);
-
+): boolean {
   if (
     item.message_type !== "action" ||
-    !text.includes("Success Roll:")
+    !item.message.trimStart().startsWith("◆")
   ) {
-    return text;
+    return false;
   }
 
-  const outcome =
-    text.includes(" - SUCCESS")
-      ? "SUCCESS"
-      : text.includes(" - FAILED")
-        ? "FAILED"
-        : null;
+  const text = item.message.replace(/^◆\s*/, "");
 
-  if (!outcome) {
-    return text;
+  return (
+    /^Warp\s+/i.test(text) ||
+    /^used\s+"/i.test(text) ||
+    /\battacks?\b/i.test(text) ||
+    /\buses\s+(?:dodge|defend|resist)/i.test(text) ||
+    /\bchooses\s+do nothing\b/i.test(text) ||
+    /\bawaiting\s+(?:dodge|defend|resist)/i.test(text) ||
+    /\bsuccess roll:/i.test(text) ||
+    /\bshape succeeds\b/i.test(text) ||
+    /\bno counter attempted\b/i.test(text) ||
+    /\bpotential damage:/i.test(text) ||
+    /\bfate resolves the result\b/i.test(text) ||
+    /\bcurrent hp\s+-?\d+\s*(?:->|→)\s*-?\d+/i.test(text) ||
+    /\bhealing\s+\d+/i.test(text) ||
+    /\bdamage\s+\d+/i.test(text) ||
+    /\b\d+\s+damage\b/i.test(text)
+  );
+}
+
+function mechanicalBracket(
+  value: string,
+): string {
+  const clean = value
+    .trim()
+    .replace(/^\[|\]$/g, "");
+
+  return `[${clean}]`;
+}
+
+function formatMechanicalSegment(
+  rawSegment: string,
+  index: number,
+): string {
+  const segment = rawSegment.trim();
+
+  if (!segment) {
+    return "";
   }
 
-  const colour =
-    outcome === "SUCCESS"
-      ? "text-emerald-400"
-      : "text-red-400";
+  if (
+    index === 0 &&
+    /^Warp\s+/i.test(segment)
+  ) {
+    return `warps ${mechanicalBracket(
+      segment.replace(/^Warp\s+/i, ""),
+    )}`;
+  }
 
-  const resultIndex =
-    text.indexOf("Success Roll:");
+  const used = segment.match(
+    /^used\s+"([^"]+)"\s+on\s+(.+)$/i,
+  );
 
-  const beforeResult =
-    text.slice(0, resultIndex);
+  if (used) {
+    return `uses ${mechanicalBracket(
+      used[1],
+    )} on ${mechanicalBracket(
+      used[2],
+    )}`;
+  }
 
-  const result =
-    text.slice(resultIndex);
+  const counterAgainst = segment.match(
+    /^(.+?)\s+uses\s+(.+?)\s+against\s+(.+)$/i,
+  );
+
+  if (
+    counterAgainst &&
+    /^(Dodge|Defend|Resist)/i.test(
+      counterAgainst[2],
+    )
+  ) {
+    return `${counterAgainst[1]} uses ${mechanicalBracket(
+      counterAgainst[2],
+    )} against ${mechanicalBracket(
+      counterAgainst[3],
+    )}`;
+  }
+
+  const counter = segment.match(
+    /^(.+?)\s+uses\s+(.+)$/i,
+  );
+
+  if (
+    counter &&
+    /^(Dodge|Defend|Resist)/i.test(
+      counter[2],
+    )
+  ) {
+    return `${counter[1]} uses ${mechanicalBracket(
+      counter[2],
+    )}`;
+  }
+
+  const doNothing = segment.match(
+    /^(.+?)\s+chooses\s+Do nothing$/i,
+  );
+
+  if (doNothing) {
+    return `${doNothing[1]} chooses ${mechanicalBracket(
+      "Do Nothing",
+    )}`;
+  }
+
+  const attackOn = segment.match(
+    /^attacks\s+on\s+(.+?)\s+with\s+"([^"]+)"$/i,
+  );
+
+  if (attackOn) {
+    return `attacks ${mechanicalBracket(
+      attackOn[1],
+    )} with ${mechanicalBracket(
+      attackOn[2],
+    )}`;
+  }
+
+  const attackWith = segment.match(
+    /^attacks\s+(.+?)\s+with\s+"([^"]+)"$/i,
+  );
+
+  if (attackWith) {
+    return `attacks ${mechanicalBracket(
+      attackWith[1],
+    )} with ${mechanicalBracket(
+      attackWith[2],
+    )}`;
+  }
+
+  const unarmed = segment.match(
+    /^attacks\s+(.+?)\s+Unarmed$/i,
+  );
+
+  if (unarmed) {
+    return `attacks ${mechanicalBracket(
+      unarmed[1],
+    )} with ${mechanicalBracket(
+      "Unarmed",
+    )}`;
+  }
+
+  const level = segment.match(
+    /^Level\s+(.+)$/i,
+  );
+
+  if (level) {
+    return mechanicalBracket(
+      `Level ${level[1]}`,
+    );
+  }
+
+  const labelled = segment.match(
+    /^(Target|Targets|Automatic|Save required|Movement|Components|Duration|Resolved|Condition):\s*(.+)$/i,
+  );
+
+  if (labelled) {
+    return `${labelled[1]} ${mechanicalBracket(
+      labelled[2],
+    )}`;
+  }
+
+  const successRoll = segment.match(
+    /^Success Roll:\s*(.+)$/i,
+  );
+
+  if (successRoll) {
+    return `Success Roll ${mechanicalBracket(
+      successRoll[1],
+    )}`;
+  }
+
+  const diceRoll = segment.match(
+    /^(d(?:4|6|8|10|12|20|100)\s*(?:->|→))\s*(.+)$/i,
+  );
+
+  if (diceRoll) {
+    const dcMatch = diceRoll[2].match(
+      /^(.+?)\s+vs\s+DC\s+(-?\d+)$/i,
+    );
+
+    if (dcMatch) {
+      return `${diceRoll[1]} ${mechanicalBracket(
+        dcMatch[1],
+      )} vs DC ${mechanicalBracket(
+        dcMatch[2],
+      )}`;
+    }
+
+    return `${diceRoll[1]} ${mechanicalBracket(
+      diceRoll[2],
+    )}`;
+  }
+
+  const awaiting = segment.match(
+    /^Awaiting\s+(.+)$/i,
+  );
+
+  if (awaiting) {
+    return `Awaiting ${mechanicalBracket(
+      awaiting[1],
+    )}`;
+  }
+
+  if (
+    /^(?:Current\s+)?(?:HP|Health)\s+-?\d+\s*(?:->|→)\s*-?\d+$/i.test(segment) ||
+    /^Healing\s+\d+$/i.test(segment) ||
+    /^Heal(?:ing)?\s+\d+$/i.test(segment) ||
+    /^Damage\s+\d+$/i.test(segment) ||
+    /^\d+\s+Damage$/i.test(segment) ||
+    /^Max(?:imum)?\s+(?:HP|Health)\s+.*$/i.test(segment)
+  ) {
+    return mechanicalBracket(segment);
+  }
+
+  const resolvedDamage = segment.match(
+    /^(.+?(?:→|->)\s*)(\d+\s+Damage)$/i,
+  );
+
+  if (resolvedDamage) {
+    return `${resolvedDamage[1]}${mechanicalBracket(
+      resolvedDamage[2],
+    )}`;
+  }
+
+  const potentialDamage = segment.match(
+    /^Potential Damage:\s*(.+)$/i,
+  );
+
+  if (potentialDamage) {
+    return `Potential Damage ${mechanicalBracket(
+      potentialDamage[1],
+    )}`;
+  }
+
+  return segment;
+}
+
+function formatMechanicalDisplayText(
+  item: RoomMessage,
+): string {
+  return formatRollText(item)
+    .split(/\s+·\s+/g)
+    .map((segment, index) =>
+      formatMechanicalSegment(
+        segment,
+        index,
+      ),
+    )
+    .filter(Boolean)
+    .join(" - ");
+}
+
+function renderMechanicalText(
+  item: RoomMessage,
+  actionColour?: string,
+): ReactNode {
+  const text =
+    formatMechanicalDisplayText(item);
 
   return (
     <>
-      {beforeResult}
+      {text
+        .split(/(\[[^\]]+\])/g)
+        .filter(Boolean)
+        .map((segment, index) => {
+          const highlighted =
+            segment.startsWith("[") &&
+            segment.endsWith("]");
 
-      <span
-        className={`font-semibold ${colour}`}
-      >
-        {result}
-      </span>
+          return (
+            <span
+              key={index}
+              className={
+                highlighted
+                  ? "font-bold text-[rgb(var(--sep-colour-a98a60))]"
+                  : undefined
+              }
+              style={
+                highlighted &&
+                actionColour
+                  ? {
+                      color:
+                        actionColour,
+                    }
+                  : undefined
+              }
+            >
+              {segment}
+            </span>
+          );
+        })}
     </>
   );
+}
+
+function renderRollText(
+  item: RoomMessage,
+  actionColour?: string,
+): ReactNode {
+  if (
+    isMechanicalActionMessage(item)
+  ) {
+    return renderMechanicalText(
+      item,
+      actionColour,
+    );
+  }
+
+  return formatRollText(item);
 }
 
 function formatTime(
@@ -1114,11 +1384,9 @@ export default function RoomMessageList({
                   );
                 }
 
-                const isGiftUse =
-                  item.message_type ===
-                    "action" &&
-                  item.message.startsWith(
-                    '◆ used "',
+                const isMechanicalAction =
+                  isMechanicalActionMessage(
+                    item,
                   );
 
                 if (
@@ -1126,7 +1394,7 @@ export default function RoomMessageList({
                     "dice_roll" ||
                   item.message_type ===
                     "attribute_check" ||
-                  isGiftUse
+                  isMechanicalAction
                 ) {
                   const isNaturalTwenty =
                     item.dice_sides ===
@@ -1144,13 +1412,19 @@ export default function RoomMessageList({
                     <article
                       key={item.id}
                       className={`relative flex min-w-0 items-start gap-3 py-3 pl-5 pr-12 sm:pl-7 sm:pr-12 ${
+                        isMechanicalAction
+                          ? "border-l-2 border-[rgb(var(--sep-colour-bd8d4d))]/45"
+                          : ""
+                      } ${
                         isNaturalTwenty
                           ? "bg-emerald-950/10"
                           : isNaturalOne
                             ? "bg-red-950/10"
                             : privateLocationTheme
                               ? ""
-                              : "bg-[rgb(var(--sep-colour-1b140e))]/55"
+                              : isMechanicalAction
+                                ? "bg-[rgb(var(--sep-colour-21170f))]/70"
+                                : "bg-[rgb(var(--sep-colour-1b140e))]/55"
                       }`}
                       style={
                         privateLocationTheme
@@ -1255,8 +1529,9 @@ export default function RoomMessageList({
                         }
                       >
                         {renderRollText(
-  item,
-)}
+                            item,
+                            privateLocationTheme?.actionColour,
+                          )}
                       </p>
 
                       <time

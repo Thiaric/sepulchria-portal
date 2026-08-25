@@ -505,6 +505,282 @@ function renderRollText(
   );
 }
 
+function isMechanicalActionMessage(
+  message: RoomMessage,
+): boolean {
+  if (
+    message.message_type !== "action" ||
+    !message.message.trimStart().startsWith("◆")
+  ) {
+    return false;
+  }
+
+  const text =
+    message.message.replace(/^◆\s*/, "");
+
+  return (
+    /^Warp\s+/i.test(text) ||
+    /^used\s+"/i.test(text) ||
+    /\battacks?\b/i.test(text) ||
+    /\buses\s+(?:dodge|defend|resist)/i.test(text) ||
+    /\bchooses\s+do nothing\b/i.test(text) ||
+    /\bawaiting\s+(?:dodge|defend|resist)/i.test(text) ||
+    /\bsuccess roll:/i.test(text) ||
+    /\bshape succeeds\b/i.test(text) ||
+    /\bno counter attempted\b/i.test(text) ||
+    /\bpotential damage:/i.test(text) ||
+    /\bfate resolves the result\b/i.test(text) ||
+    /\bcurrent hp\s+-?\d+\s*(?:->|→)\s*-?\d+/i.test(text) ||
+    /\bhealing\s+\d+/i.test(text) ||
+    /\bdamage\s+\d+/i.test(text) ||
+    /\b\d+\s+damage\b/i.test(text)
+  );
+}
+
+function mechanicalBracket(
+  value: string,
+): string {
+  const clean = value
+    .trim()
+    .replace(/^\[|\]$/g, "");
+
+  return `[${clean}]`;
+}
+
+function formatMechanicalSegment(
+  rawSegment: string,
+  index: number,
+): string {
+  const segment = rawSegment.trim();
+
+  if (!segment) return "";
+
+  if (
+    index === 0 &&
+    /^Warp\s+/i.test(segment)
+  ) {
+    return `warps ${mechanicalBracket(
+      segment.replace(/^Warp\s+/i, ""),
+    )}`;
+  }
+
+  const used = segment.match(
+    /^used\s+"([^"]+)"\s+on\s+(.+)$/i,
+  );
+
+  if (used) {
+    return `uses ${mechanicalBracket(
+      used[1],
+    )} on ${mechanicalBracket(
+      used[2],
+    )}`;
+  }
+
+  const counterAgainst = segment.match(
+    /^(.+?)\s+uses\s+(.+?)\s+against\s+(.+)$/i,
+  );
+
+  if (
+    counterAgainst &&
+    /^(Dodge|Defend|Resist)/i.test(
+      counterAgainst[2],
+    )
+  ) {
+    return `${counterAgainst[1]} uses ${mechanicalBracket(
+      counterAgainst[2],
+    )} against ${mechanicalBracket(
+      counterAgainst[3],
+    )}`;
+  }
+
+  const counter = segment.match(
+    /^(.+?)\s+uses\s+(.+)$/i,
+  );
+
+  if (
+    counter &&
+    /^(Dodge|Defend|Resist)/i.test(counter[2])
+  ) {
+    return `${counter[1]} uses ${mechanicalBracket(
+      counter[2],
+    )}`;
+  }
+
+  const doNothing = segment.match(
+    /^(.+?)\s+chooses\s+Do nothing$/i,
+  );
+
+  if (doNothing) {
+    return `${doNothing[1]} chooses ${mechanicalBracket(
+      "Do Nothing",
+    )}`;
+  }
+
+  const attackOn = segment.match(
+    /^attacks\s+on\s+(.+?)\s+with\s+"([^"]+)"$/i,
+  );
+
+  if (attackOn) {
+    return `attacks ${mechanicalBracket(
+      attackOn[1],
+    )} with ${mechanicalBracket(
+      attackOn[2],
+    )}`;
+  }
+
+  const attackWith = segment.match(
+    /^attacks\s+(.+?)\s+with\s+"([^"]+)"$/i,
+  );
+
+  if (attackWith) {
+    return `attacks ${mechanicalBracket(
+      attackWith[1],
+    )} with ${mechanicalBracket(
+      attackWith[2],
+    )}`;
+  }
+
+  const unarmed = segment.match(
+    /^attacks\s+(.+?)\s+Unarmed$/i,
+  );
+
+  if (unarmed) {
+    return `attacks ${mechanicalBracket(
+      unarmed[1],
+    )} with ${mechanicalBracket(
+      "Unarmed",
+    )}`;
+  }
+
+  const level = segment.match(
+    /^Level\s+(.+)$/i,
+  );
+
+  if (level) {
+    return mechanicalBracket(
+      `Level ${level[1]}`,
+    );
+  }
+
+  const labelled = segment.match(
+    /^(Target|Targets|Automatic|Save required|Movement|Components|Duration|Resolved|Condition):\s*(.+)$/i,
+  );
+
+  if (labelled) {
+    return `${labelled[1]} ${mechanicalBracket(
+      labelled[2],
+    )}`;
+  }
+
+  const successRoll = segment.match(
+    /^Success Roll:\s*(.+)$/i,
+  );
+
+  if (successRoll) {
+    return `Success Roll ${mechanicalBracket(
+      successRoll[1],
+    )}`;
+  }
+
+  const diceRoll = segment.match(
+    /^(d(?:4|6|8|10|12|20|100)\s*(?:->|→))\s*(.+)$/i,
+  );
+
+  if (diceRoll) {
+    const dcMatch = diceRoll[2].match(
+      /^(.+?)\s+vs\s+DC\s+(-?\d+)$/i,
+    );
+
+    if (dcMatch) {
+      return `${diceRoll[1]} ${mechanicalBracket(
+        dcMatch[1],
+      )} vs DC ${mechanicalBracket(
+        dcMatch[2],
+      )}`;
+    }
+
+    return `${diceRoll[1]} ${mechanicalBracket(
+      diceRoll[2],
+    )}`;
+  }
+
+  const awaiting = segment.match(
+    /^Awaiting\s+(.+)$/i,
+  );
+
+  if (awaiting) {
+    return `Awaiting ${mechanicalBracket(
+      awaiting[1],
+    )}`;
+  }
+
+  if (
+    /^(?:Current\s+)?(?:HP|Health)\s+-?\d+\s*(?:->|→)\s*-?\d+$/i.test(segment) ||
+    /^Healing\s+\d+$/i.test(segment) ||
+    /^Heal(?:ing)?\s+\d+$/i.test(segment) ||
+    /^Damage\s+\d+$/i.test(segment) ||
+    /^\d+\s+Damage$/i.test(segment) ||
+    /^Max(?:imum)?\s+(?:HP|Health)\s+.*$/i.test(segment)
+  ) {
+    return mechanicalBracket(segment);
+  }
+
+  const resolvedDamage = segment.match(
+    /^(.+?(?:→|->)\s*)(\d+\s+Damage)$/i,
+  );
+
+  if (resolvedDamage) {
+    return `${resolvedDamage[1]}${mechanicalBracket(
+      resolvedDamage[2],
+    )}`;
+  }
+
+  const potentialDamage = segment.match(
+    /^Potential Damage:\s*(.+)$/i,
+  );
+
+  if (potentialDamage) {
+    return `Potential Damage ${mechanicalBracket(
+      potentialDamage[1],
+    )}`;
+  }
+
+  return segment;
+}
+
+function formatMechanicalDisplayText(
+  message: RoomMessage,
+): string {
+  return renderRollText(message)
+    .split(/\s+·\s+/g)
+    .map((segment, index) =>
+      formatMechanicalSegment(
+        segment,
+        index,
+      ),
+    )
+    .filter(Boolean)
+    .join(" - ");
+}
+
+function renderMechanicalResultHtml(
+  message: RoomMessage,
+): string {
+  return formatMechanicalDisplayText(message)
+    .split(/(\[[^\]]+\])/g)
+    .filter(Boolean)
+    .map((segment) => {
+      const escaped = escapeHtml(segment);
+
+      return (
+        segment.startsWith("[") &&
+        segment.endsWith("]")
+      )
+        ? `<strong class="mechanical-highlight">${escaped}</strong>`
+        : escaped;
+    })
+    .join("");
+}
 
 function renderPortrait(
   name: string,
@@ -619,13 +895,14 @@ function renderMessage(
   }
 
   /*
-   * DICE / CHECK / GIFT USE
+   * DICE / CHECK / MECHANICAL GAME EVENT
+   *
+   * Includes Shapes, Feats, Items, Attacks and all target
+   * Counter / response messages.
    */
-  const isGiftUse =
-    message.message_type ===
-      "action" &&
-    message.message.startsWith(
-      '◆ used "',
+  const isMechanicalAction =
+    isMechanicalActionMessage(
+      message,
     );
 
   if (
@@ -633,7 +910,7 @@ function renderMessage(
       "dice_roll" ||
     message.message_type ===
       "attribute_check" ||
-    isGiftUse
+    isMechanicalAction
   ) {
     const naturalTwenty =
       message.dice_sides === 20 &&
@@ -651,7 +928,11 @@ function renderMessage(
           : "";
 
     return `
-      <article class="entry roll-entry${extraClass}">
+      <article class="entry roll-entry${extraClass}${
+        isMechanicalAction
+          ? " mechanical-entry"
+          : ""
+      }">
         <span class="roll-symbol">
           ◆
         </span>
@@ -663,11 +944,17 @@ function renderMessage(
         </span>
 
         <span class="roll-result">
-          ${escapeHtml(
-            renderRollText(
-              message,
-            ),
-          )}
+          ${
+            isMechanicalAction
+              ? renderMechanicalResultHtml(
+                  message,
+                )
+              : escapeHtml(
+                  renderRollText(
+                    message,
+                  ),
+                )
+          }
         </span>
 
         <time>
@@ -1232,6 +1519,22 @@ export async function GET(
 
     html {
       background: #090706;
+    }
+
+    /*
+     * MECHANICAL GAME EVENTS
+     *
+     * Normal prose uses the normal roll/system colour.
+     * Only bracketed values use Action colour + bold.
+     */
+    .mechanical-entry .roll-result {
+      font-style: normal;
+    }
+
+    .mechanical-highlight {
+      color: var(--action-colour);
+      font-weight: 700;
+      font-style: normal;
     }
 
     body {
@@ -1897,6 +2200,19 @@ export async function GET(
 
       background:
         rgba(var(--sep-rgb-31-23-16),0.64);
+    }
+
+    .mechanical-entry {
+      border-left:
+        2px solid
+        rgba(var(--sep-rgb-185-141-77),0.48);
+
+      background:
+        linear-gradient(
+          90deg,
+          rgba(var(--sep-rgb-185-141-77),0.055),
+          rgba(var(--sep-rgb-31-23-16),0.64) 18%
+        );
     }
 
     .roll-symbol {
