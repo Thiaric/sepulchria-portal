@@ -1,159 +1,17 @@
 import "server-only";
 
+import {
+  GiftsCatalogue,
+  type GiftCard,
+} from "@/components/gifts/gifts-catalogue";
 import { createClient } from "@/lib/supabase/server";
 
-type Gift = {
-  id: string;
-  name: string;
-  description: string;
-  is_active: boolean;
-  effect_mode: "none" | "passive" | "temporary";
-  target_mode: "self" | "other" | "either";
-  duration_minutes: number | null;
-  cooldown_minutes: number;
-  success_die: number | null;
-  success_threshold: number | null;
-  success_attribute:
-    | "muscles"
-    | "reflexes"
-    | "vigor"
-    | "brains"
-    | "shrewd"
-    | "presence_score"
-    | null;
-  damage_dice: string | null;
-  damage_type: string | null;
-  health_delta: number;
-  max_health_modifier: number;
-  muscles_modifier: number;
-  reflexes_modifier: number;
-  vigour_modifier: number;
-  shrewd_modifier: number;
-  brains_modifier: number;
-  presence_modifier: number;
-  warping_affinity_modifier: number;
-  warps_per_day_modifier: number;
-};
-
-type Activation = {
-  activated_at: string;
-  expires_at: string;
-  ended_at: string | null;
-  health_reverted_at: string | null;
-};
-
-type Ownership = {
-  id: string;
-  acquisition_source: "ancestry" | "order" | "staff";
-  expires_at: string | null;
-  gift: Gift | Gift[] | null;
-  activations: Activation[] | null;
-};
-
-function one<T>(value: T | T[] | null): T | null {
-  return Array.isArray(value) ? value[0] ?? null : value;
-}
-
-function signed(value: number) {
-  return value >= 0 ? `+${value}` : String(value);
-}
-
-function sourceLabel(value: Ownership["acquisition_source"]) {
-  if (value === "ancestry") return "Ancestry";
-  if (value === "order") return "Order";
-  return "Staff";
-}
-
-function modifierText(gift: Gift) {
-  return [
-    ["HP", gift.health_delta],
-    ["Max HP", gift.max_health_modifier],
-    ["Mus", gift.muscles_modifier],
-    ["Ref", gift.reflexes_modifier],
-    ["Vig", gift.vigour_modifier],
-    ["Shr", gift.shrewd_modifier],
-    ["Bra", gift.brains_modifier],
-    ["Pre", gift.presence_modifier],
-    ["Affinity", gift.warping_affinity_modifier],
-    ["Shapes/day", gift.warps_per_day_modifier],
-  ]
-    .filter(([, value]) => Number(value) !== 0)
-    .map(
-      ([label, value]) =>
-        `${label} ${signed(Number(value))}`,
-    )
-    .join(" · ");
-}
-
-const SUCCESS_ATTRIBUTE_LABELS: Record<
-  NonNullable<Gift["success_attribute"]>,
-  string
-> = {
-  muscles: "Muscles",
-  reflexes: "Reflexes",
-  vigor: "Vigour",
-  brains: "Brains",
-  shrewd: "Shrewd",
-  presence_score: "Presence",
-};
-
-function giftTargetLabel(gift: Gift) {
-  if (gift.target_mode === "other") return "Other character";
-  if (gift.target_mode === "either") return "Self or other character";
-  return "Self";
-}
-
-function giftSuccessLabel(gift: Gift) {
-  if (gift.effect_mode === "passive") {
-    return "No roll (Passive)";
-  }
-
-  if (!gift.success_die || !gift.success_threshold) {
-    return "Automatic";
-  }
-
-  const attribute = gift.success_attribute
-    ? ` + ${SUCCESS_ATTRIBUTE_LABELS[gift.success_attribute]}`
-    : "";
-
-  return `d${gift.success_die}${attribute} ≥ ${gift.success_threshold}`;
-}
-
-function giftDurationLabel(gift: Gift) {
-  if (gift.effect_mode === "passive") {
-    return "Permanent while owned";
-  }
-
-  if (gift.effect_mode !== "temporary") {
-    return "Instant use";
-  }
-
-  if (gift.duration_minutes === 0) {
-    return "Instantaneous";
-  }
-
-  return gift.duration_minutes
-    ? `${gift.duration_minutes} min`
-    : "Not set";
-}
-
-function CharacterFeatRecapBox({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}) {
-  return (
-    <div className="min-w-0 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-120e0b))] px-2.5 py-2">
-      <p className="text-[6px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-806a4c))]">
-        {label}
-      </p>
-      <p className="mt-1 min-w-0 break-words text-[8px] leading-4 text-[rgb(var(--sep-colour-b8a382))]">
-        {value}
-      </p>
-    </div>
-  );
+function one<T>(
+  value: T | T[] | null,
+): T | null {
+  return Array.isArray(value)
+    ? value[0] ?? null
+    : value;
 }
 
 export async function CharacterGiftsDisplay({
@@ -171,20 +29,22 @@ export async function CharacterGiftsDisplay({
   );
 
   if (staffExpiryError) {
-    throw new Error(`Unable to reconcile expired staff Feats: ${staffExpiryError.message}`);
+    throw new Error(
+      `Unable to reconcile expired staff Feats: ${staffExpiryError.message}`,
+    );
   }
 
   const { data, error } = await supabase
     .from("character_gifts")
     .select(`
       id,
-      acquisition_source,
       expires_at,
       gift:gifts(
         id,
         name,
         description,
         is_active,
+        is_general,
         effect_mode,
         target_mode,
         duration_minutes,
@@ -203,7 +63,20 @@ export async function CharacterGiftsDisplay({
         brains_modifier,
         presence_modifier,
         warping_affinity_modifier,
-        warps_per_day_modifier
+        warps_per_day_modifier,
+        races:gift_races(
+          race:races(id,name)
+        ),
+        roles:gift_order_jobs(
+          role:order_jobs(
+            id,
+            name,
+            level:order_levels(
+              level,
+              order:orders(id,name)
+            )
+          )
+        )
       ),
       activations:gift_activations(
         activated_at,
@@ -220,16 +93,124 @@ export async function CharacterGiftsDisplay({
     );
   }
 
-  const ownerships =
-    (data ?? []) as unknown as Ownership[];
+  const now = Date.now();
+  const gifts: GiftCard[] = [];
 
-  const shell = compact
-    ? "border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] p-4"
-    : "border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 p-5 sm:p-6";
+  for (const rawOwnership of data ?? []) {
+    const ownership = rawOwnership as any;
+    const gift = one<any>(ownership.gift);
 
-  if (!ownerships.length) {
+    if (!gift) continue;
+
+    const activations = Array.isArray(ownership.activations)
+      ? ownership.activations
+      : [];
+
+    const active =
+      activations.find(
+        (item: any) =>
+          item.ended_at === null &&
+          item.health_reverted_at === null &&
+          Date.parse(item.activated_at) <= now &&
+          Date.parse(item.expires_at) > now,
+      ) ?? null;
+
+    const latest =
+      [...activations].sort(
+        (a: any, b: any) =>
+          Date.parse(b.activated_at) -
+          Date.parse(a.activated_at),
+      )[0] ?? null;
+
+    const cooldownUntil =
+      gift.effect_mode === "temporary" &&
+      latest &&
+      Number(gift.cooldown_minutes) > 0
+        ? Date.parse(latest.activated_at) +
+          Number(gift.cooldown_minutes) * 60_000
+        : null;
+
+    let ownershipState = "Ready";
+
+    if (!gift.is_active) {
+      ownershipState = "Inactive";
+    } else if (gift.effect_mode === "passive") {
+      ownershipState = "Passive";
+    } else if (active) {
+      ownershipState = "Active";
+    } else if (cooldownUntil && cooldownUntil > now) {
+      ownershipState = `Cooldown · ${Math.ceil(
+        (cooldownUntil - now) / 60_000,
+      )} min`;
+    }
+
+    const ancestries = (gift.races ?? [])
+      .map((entry: any) => one<any>(entry.race))
+      .filter(Boolean)
+      .map((race: any) => ({
+        id: race.id,
+        name: race.name,
+      }));
+
+    const roles = (gift.roles ?? [])
+      .map((entry: any) => {
+        const role = one<any>(entry.role);
+        if (!role) return null;
+
+        const level = one<any>(role.level);
+        const order = level ? one<any>(level.order) : null;
+
+        return {
+          id: role.id,
+          name: role.name,
+          level: level?.level ?? null,
+          orderId: order?.id ?? null,
+          orderName: order?.name ?? null,
+        };
+      })
+      .filter(Boolean) as GiftCard["roles"];
+
+    gifts.push({
+      id: gift.id,
+      name: gift.name,
+      description: gift.description ?? "",
+      isGeneral: Boolean(gift.is_general),
+      effectMode: gift.effect_mode,
+      targetMode: gift.target_mode ?? "self",
+      durationMinutes: gift.duration_minutes,
+      cooldownMinutes: Number(gift.cooldown_minutes ?? 0),
+      successDie: gift.success_die ?? null,
+      successThreshold: gift.success_threshold ?? null,
+      successAttribute: gift.success_attribute ?? null,
+      damageDice: gift.damage_dice ?? null,
+      damageType: gift.damage_type ?? null,
+      healthDelta: Number(gift.health_delta ?? 0),
+      maxHealthModifier: Number(gift.max_health_modifier ?? 0),
+      warpingAffinityModifier: Number(
+        gift.warping_affinity_modifier ?? 0,
+      ),
+      warpsPerDayModifier: Number(
+        gift.warps_per_day_modifier ?? 0,
+      ),
+      modifiers: {
+        muscles: Number(gift.muscles_modifier ?? 0),
+        reflexes: Number(gift.reflexes_modifier ?? 0),
+        vigour: Number(gift.vigour_modifier ?? 0),
+        shrewd: Number(gift.shrewd_modifier ?? 0),
+        brains: Number(gift.brains_modifier ?? 0),
+        presence: Number(gift.presence_modifier ?? 0),
+      },
+      ancestries,
+      roles,
+      ownershipState,
+    });
+  }
+
+  gifts.sort((a, b) => a.name.localeCompare(b.name));
+
+  if (!gifts.length) {
     return (
-      <section className={shell}>
+      <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] p-4">
         <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
           Character Feats
         </p>
@@ -240,182 +221,29 @@ export async function CharacterGiftsDisplay({
     );
   }
 
-  const now = Date.now();
-
   return (
-    <section className={shell}>
-      <div className="flex items-end justify-between gap-3">
-        <div>
-          <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
-            Character Feats
+    <section className={compact ? "" : ""}>
+      <header className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-5 py-4">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
+              Character Feats
+            </p>
+            <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dec89f))]">
+              Feats
+            </h2>
+          </div>
+
+          <p className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
+            {gifts.length} owned
           </p>
-          <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dec89f))]">
-            Feats
-          </h2>
         </div>
+      </header>
 
-        <p className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
-          {ownerships.length} owned
-        </p>
-      </div>
-
-      <div className="mt-4 space-y-2">
-        {ownerships.map((ownership) => {
-          const gift = one(ownership.gift);
-
-          if (!gift) {
-            return null;
-          }
-
-          const activation =
-            (ownership.activations ?? []).find(
-              (item) =>
-                item.ended_at === null &&
-                item.health_reverted_at === null &&
-                Date.parse(item.activated_at) <= now &&
-                Date.parse(item.expires_at) > now,
-            ) ?? null;
-
-          let state = "Usable";
-
-          const latestActivation =
-            [...(ownership.activations ?? [])]
-              .sort(
-                (a, b) =>
-                  Date.parse(b.activated_at) -
-                  Date.parse(a.activated_at),
-              )[0] ?? null;
-
-          const cooldownUntil =
-            gift.effect_mode === "temporary" &&
-            latestActivation &&
-            gift.cooldown_minutes > 0
-              ? Date.parse(latestActivation.activated_at) +
-                gift.cooldown_minutes * 60_000
-              : null;
-
-          if (!gift.is_active) {
-            state = "Inactive";
-          } else if (gift.effect_mode === "passive") {
-            state = "Passive";
-          } else if (gift.effect_mode === "temporary") {
-            state = activation
-              ? `Active until ${new Date(
-                  activation.expires_at,
-                ).toLocaleTimeString("en-GB", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}`
-              : cooldownUntil &&
-                  cooldownUntil > now
-                ? `Cooldown · ${Math.ceil(
-                    (cooldownUntil - now) /
-                      60_000,
-                  )} min`
-                : `Ready · ${gift.duration_minutes ?? "?"} min`;
-          }
-
-          const modifiers = modifierText(gift);
-
-          return (
-            <div
-              key={ownership.id}
-              className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3"
-            >
-              <div className="flex flex-wrap items-start justify-between gap-2">
-                <div>
-                  <p className="font-serif text-sm text-[rgb(var(--sep-colour-d8bf91))]">
-                    {gift.name}
-                  </p>
-                  <p className="mt-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
-                    {sourceLabel(
-                      ownership.acquisition_source,
-                    )}
-                    {ownership.acquisition_source === "staff" && ownership.expires_at
-                      ? ` · Granted until ${new Date(ownership.expires_at).toLocaleDateString("en-GB")}`
-                      : ""}{" "}
-                    · {state}
-                  </p>
-                </div>
-
-                {modifiers ? (
-                  <p className="text-[7px] uppercase tracking-[0.08em] text-[rgb(var(--sep-colour-a68a61))]">
-                    {modifiers}
-                  </p>
-                ) : null}
-              </div>
-
-              {gift.description ? (
-                <p className="mt-2 whitespace-pre-line text-[10px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
-                  {gift.description}
-                </p>
-              ) : null}
-
-              <div className="mt-3 grid grid-cols-2 gap-1.5 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-3 md:grid-cols-3 xl:grid-cols-6">
-                <CharacterFeatRecapBox
-                  label="Use"
-                  value={`${
-                    gift.effect_mode === "temporary"
-                      ? "Activated"
-                      : gift.effect_mode === "passive"
-                        ? "Passive"
-                        : "Standard"
-                  } · ${giftTargetLabel(gift)}`}
-                />
-
-                <CharacterFeatRecapBox
-                  label="Success"
-                  value={giftSuccessLabel(gift)}
-                />
-
-                <CharacterFeatRecapBox
-                  label="Timing"
-                  value={`${
-                    giftDurationLabel(gift)
-                  } · ${
-                    gift.effect_mode === "temporary"
-                      ? gift.cooldown_minutes === 0
-                        ? "No cooldown"
-                        : `${gift.cooldown_minutes} min cooldown`
-                      : "No cooldown"
-                  }`}
-                />
-
-                <CharacterFeatRecapBox
-                  label="Health / Damage"
-                  value={`${
-                    gift.damage_dice
-                      ? `${gift.damage_dice}${
-                          gift.damage_type
-                            ? ` ${gift.damage_type}`
-                            : ""
-                        }`
-                      : "No damage"
-                  } · HP ${
-                    gift.health_delta !== 0
-                      ? signed(gift.health_delta)
-                      : "—"
-                  } · Max ${
-                    gift.max_health_modifier !== 0
-                      ? signed(gift.max_health_modifier)
-                      : "—"
-                  }`}
-                />
-
-                <CharacterFeatRecapBox
-                  label="Attributes"
-                  value={modifierText(gift) || "None"}
-                />
-
-                <CharacterFeatRecapBox
-                  label="Status"
-                  value={state}
-                />
-              </div>
-            </div>
-          );
-        })}
-      </div>
+      <GiftsCatalogue
+        gifts={gifts}
+        characterMode
+      />
     </section>
   );
 }

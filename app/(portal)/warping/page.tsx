@@ -1,2 +1,66 @@
-import {createClient} from "@/lib/supabase/server";import {ShapesCatalogue,type ShapeCard} from "@/components/warping/shapes-catalogue";
-export default async function WarpingPage(){const db=await createClient();const {data,error}=await db.from("shapes").select("*").eq("is_active",true).order("level").order("name");if(error)throw new Error(`Unable to load Shapes: ${error.message}`);const shapes=(data??[]) as ShapeCard[];return <main className="p-5 sm:p-7 lg:p-9"><div className="mx-auto max-w-7xl"><header className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-5 py-5 sm:px-6"><p className="text-[8px] uppercase tracking-[.26em] text-[rgb(var(--sep-colour-8c704b))]">Codex</p><div className="mt-1 flex flex-wrap items-end justify-between gap-4"><div><h1 className="font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">Warping</h1><p className="mt-2 max-w-3xl text-xs leading-6 text-[rgb(var(--sep-colour-9f927f))]">The known Shapes of Sepulchria: Words of Power, movements, requirements, targets, duration, Prices and mechanical effects.</p></div><p className="text-[8px] uppercase text-[rgb(var(--sep-colour-766a59))]">{shapes.length} active Shapes</p></div></header><ShapesCatalogue shapes={shapes}/></div></main>}
+import {
+  createClient,
+} from "@/lib/supabase/server";
+import {
+  ShapesCatalogue,
+  type ShapeCard,
+} from "@/components/warping/shapes-catalogue";
+
+export default async function WarpingPage() {
+  const db =
+    await createClient();
+
+  const {
+    data,
+    error,
+  } = await db
+    .from("shapes")
+    .select("*")
+    .eq(
+      "is_active",
+      true,
+    )
+    .order("level")
+    .order("name");
+
+  if (error) {
+    throw new Error(
+      `Unable to load Shapes: ${error.message}`,
+    );
+  }
+
+  const shapes =
+    (data ?? []) as ShapeCard[];
+
+  return (
+    <main className="p-5 sm:p-7 lg:p-9">
+      <div className="mx-auto max-w-7xl">
+        <header className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-5 py-5 sm:px-6">
+          <p className="text-[8px] uppercase tracking-[0.26em] text-[rgb(var(--sep-colour-8c704b))]">
+            Codex
+          </p>
+
+          <div className="mt-1 flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <h1 className="font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">
+                Warping
+              </h1>
+
+              <p className="mt-2 max-w-3xl text-xs leading-6 text-[rgb(var(--sep-colour-9f927f))]">
+                The known Shapes of Sepulchria and the ways they shape the Current.
+              </p>
+            </div>
+
+            <p className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-766a59))]">
+              {shapes.length} active Shapes
+            </p>
+          </div>
+        </header>
+
+        <ShapesCatalogue
+          shapes={shapes}
+        />
+      </div>
+    </main>
+  );
+}

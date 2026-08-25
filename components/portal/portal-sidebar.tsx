@@ -2176,6 +2176,7 @@ function PublicPageModal({
       "/messages/",
     ) ||
     item.href === "/characters" ||
+    item.href === "/character" ||
     item.href.startsWith(
       "/characters/",
     ) ||
