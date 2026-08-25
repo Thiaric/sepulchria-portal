@@ -18588,3 +18588,1165 @@ body.portal-skin-scope .font-serif {
   font-weight: 500;
 }
 
+/* === Shape School Borders + Ambient Effects === */
+
+.shape-school-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
+  border-width: 1px !important;
+  border-style: solid !important;
+
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.shape-school-card::before,
+.shape-school-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+
+  /* deliberately very faint */
+  opacity: 0.13;
+}
+
+.shape-school-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+
+/* ============================================================
+   EMBERCRAFT
+   Sparks only
+   ============================================================ */
+
+.shape-school-embercraft {
+  border-color: rgba(221, 103, 48, 0.24) !important;
+
+  box-shadow:
+    inset 0 0 8px rgba(221, 103, 48, 0.055);
+}
+
+.shape-school-embercraft::before {
+  background:
+    radial-gradient(
+      circle at 12% 88%,
+      rgba(255, 117, 55, 0.95) 0 1px,
+      transparent 2px
+    ),
+    radial-gradient(
+      circle at 34% 68%,
+      rgba(132, 205, 255, 0.85) 0 1px,
+      transparent 2px
+    ),
+    radial-gradient(
+      circle at 61% 83%,
+      rgba(255, 225, 116, 0.9) 0 1px,
+      transparent 2px
+    ),
+    radial-gradient(
+      circle at 83% 61%,
+      rgba(255, 143, 72, 0.85) 0 1px,
+      transparent 2px
+    ),
+    radial-gradient(
+      circle at 48% 95%,
+      rgba(180, 221, 255, 0.8) 0 1px,
+      transparent 2px
+    );
+
+  background-size:
+    90px 110px,
+    130px 150px,
+    110px 130px,
+    145px 165px,
+    170px 190px;
+
+  animation:
+    shapeEmberDrift 14s linear infinite;
+}
+
+/* no lightning/transversal overlay */
+.shape-school-embercraft::after {
+  display: none;
+}
+
+.shape-school-embercraft:hover {
+  border-color: rgba(255, 136, 76, 0.35) !important;
+
+  box-shadow:
+    inset 0 0 11px rgba(255, 116, 53, 0.085);
+}
+
+
+/* ============================================================
+   VITALCRAFT
+   Soft drifting leaves
+   ============================================================ */
+
+.shape-school-vitalcraft {
+  border-color: rgba(132, 176, 76, 0.24) !important;
+
+  box-shadow:
+    inset 0 0 8px rgba(116, 164, 67, 0.05);
+}
+
+.shape-school-vitalcraft::before {
+  background:
+    radial-gradient(
+      ellipse at 15% 85%,
+      rgba(150, 195, 91, 0.75) 0 2px,
+      transparent 3px
+    ),
+    radial-gradient(
+      ellipse at 42% 73%,
+      rgba(202, 205, 103, 0.65) 0 2px,
+      transparent 3px
+    ),
+    radial-gradient(
+      ellipse at 72% 91%,
+      rgba(115, 172, 77, 0.75) 0 2px,
+      transparent 3px
+    );
+
+  background-size:
+    120px 150px,
+    160px 190px,
+    140px 170px;
+
+  transform: rotate(-8deg);
+
+  animation:
+    shapeLeafDrift 20s linear infinite;
+}
+
+.shape-school-vitalcraft::after {
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(134, 177, 79, 0.15),
+      transparent 66%
+    );
+
+  animation:
+    shapeLifeBreathe 8s ease-in-out infinite alternate;
+}
+
+.shape-school-vitalcraft:hover {
+  border-color: rgba(166, 207, 103, 0.35) !important;
+
+  box-shadow:
+    inset 0 0 11px rgba(133, 183, 79, 0.08);
+}
+
+
+/* ============================================================
+   MINDCRAFT
+   Thought ripples
+   ============================================================ */
+
+.shape-school-mindcraft {
+  border-color: rgba(147, 112, 210, 0.25) !important;
+
+  box-shadow:
+    inset 0 0 8px rgba(139, 99, 205, 0.055);
+}
+
+.shape-school-mindcraft::before {
+  background:
+    repeating-radial-gradient(
+      ellipse at 50% 50%,
+      transparent 0 22px,
+      rgba(170, 126, 231, 0.12) 23px 24px,
+      transparent 25px 48px
+    );
+
+  transform: scale(1.35);
+
+  animation:
+    shapeMindPulse 12s ease-in-out infinite;
+}
+
+.shape-school-mindcraft::after {
+  background:
+    radial-gradient(
+      circle at 20% 35%,
+      rgba(175, 143, 233, 0.15),
+      transparent 18%
+    ),
+    radial-gradient(
+      circle at 78% 64%,
+      rgba(103, 78, 170, 0.15),
+      transparent 20%
+    );
+
+  animation:
+    shapeMindDrift 15s ease-in-out infinite alternate;
+}
+
+.shape-school-mindcraft:hover {
+  border-color: rgba(178, 141, 239, 0.35) !important;
+
+  box-shadow:
+    inset 0 0 11px rgba(157, 113, 225, 0.085);
+}
+
+
+/* ============================================================
+   VEILCRAFT
+   Visible but very faint moving smoke
+   ============================================================ */
+
+.shape-school-veilcraft {
+  border-color: rgba(122, 84, 151, 0.25) !important;
+
+  box-shadow:
+    inset 0 0 8px rgba(106, 68, 135, 0.055);
+}
+
+/*
+ * Slightly higher layer opacity than the others because blur
+ * naturally makes the smoke much less visible.
+ */
+.shape-school-veilcraft::before {
+  opacity: 0.17;
+
+  background:
+    radial-gradient(
+      ellipse at 5% 75%,
+      rgba(144, 94, 175, 0.34),
+      transparent 38%
+    ),
+    radial-gradient(
+      ellipse at 60% 25%,
+      rgba(104, 67, 139, 0.30),
+      transparent 42%
+    ),
+    radial-gradient(
+      ellipse at 95% 70%,
+      rgba(149, 101, 180, 0.26),
+      transparent 35%
+    );
+
+  filter: blur(18px);
+
+  transform: scale(1.25);
+
+  animation:
+    shapeVeilSmoke 18s ease-in-out infinite alternate;
+}
+
+.shape-school-veilcraft::after {
+  opacity: 0.11;
+
+  background:
+    radial-gradient(
+      ellipse at 35% 70%,
+      rgba(173, 122, 200, 0.25),
+      transparent 34%
+    ),
+    radial-gradient(
+      ellipse at 70% 35%,
+      rgba(98, 62, 128, 0.28),
+      transparent 38%
+    );
+
+  filter: blur(25px);
+
+  animation:
+    shapeVeilSmokeSecondary 23s ease-in-out infinite alternate;
+}
+
+.shape-school-veilcraft:hover {
+  border-color: rgba(155, 108, 187, 0.35) !important;
+
+  box-shadow:
+    inset 0 0 11px rgba(135, 86, 170, 0.085);
+}
+
+
+/* ============================================================
+   WAYCRAFT
+   Soft curved current only
+   No transversal lines
+   ============================================================ */
+
+.shape-school-waycraft {
+  border-color: rgba(70, 170, 177, 0.25) !important;
+
+  box-shadow:
+    inset 0 0 8px rgba(59, 151, 158, 0.055);
+}
+
+.shape-school-waycraft::before {
+  background:
+    radial-gradient(
+      ellipse at 20% 50%,
+      transparent 0 32%,
+      rgba(92, 197, 203, 0.15) 33%,
+      transparent 35% 44%,
+      rgba(72, 170, 177, 0.10) 45%,
+      transparent 47%
+    );
+
+  transform: scale(1.55);
+
+  animation:
+    shapeWayCurrent 13s ease-in-out infinite alternate;
+}
+
+.shape-school-waycraft::after {
+  background:
+    radial-gradient(
+      ellipse at 75% 45%,
+      transparent 0 38%,
+      rgba(117, 205, 210, 0.10) 39%,
+      transparent 41%
+    );
+
+  transform: scale(1.4);
+
+  animation:
+    shapeWayCurrentSecondary 17s ease-in-out infinite alternate;
+}
+
+.shape-school-waycraft:hover {
+  border-color: rgba(92, 205, 211, 0.35) !important;
+
+  box-shadow:
+    inset 0 0 11px rgba(67, 183, 190, 0.085);
+}
+
+
+/* ============================================================
+   BONDCRAFT
+   Orbiting tether-like arcs
+   ============================================================ */
+
+.shape-school-bondcraft {
+  border-color: rgba(107, 145, 190, 0.25) !important;
+
+  box-shadow:
+    inset 0 0 8px rgba(91, 130, 176, 0.05);
+}
+
+.shape-school-bondcraft::before {
+  background:
+    repeating-radial-gradient(
+      ellipse at center,
+      transparent 0 31px,
+      rgba(138, 174, 210, 0.10) 32px,
+      transparent 34px 64px
+    );
+
+  transform: scale(1.4);
+
+  animation:
+    shapeBondOrbit 20s linear infinite;
+}
+
+.shape-school-bondcraft::after {
+  background:
+    linear-gradient(
+      90deg,
+      transparent 20%,
+      rgba(150, 187, 219, 0.09) 49%,
+      rgba(190, 211, 231, 0.11) 50%,
+      rgba(150, 187, 219, 0.09) 51%,
+      transparent 80%
+    );
+
+  animation:
+    shapeBondTether 11s ease-in-out infinite alternate;
+}
+
+.shape-school-bondcraft:hover {
+  border-color: rgba(139, 180, 222, 0.35) !important;
+
+  box-shadow:
+    inset 0 0 11px rgba(110, 157, 204, 0.08);
+}
+
+
+/* ============================================================
+   RUNECRAFT
+   Sparse engraved traces
+   No circles and no square grid
+   ============================================================ */
+
+.shape-school-runecraft {
+  border-color: rgba(211, 159, 57, 0.26) !important;
+
+  box-shadow:
+    inset 0 0 8px rgba(192, 137, 37, 0.055);
+}
+
+.shape-school-runecraft::before {
+  background:
+    linear-gradient(
+      60deg,
+      transparent 0 47%,
+      rgba(225, 172, 69, 0.11) 48%,
+      transparent 49% 100%
+    ),
+    linear-gradient(
+      -60deg,
+      transparent 0 47%,
+      rgba(225, 172, 69, 0.075) 48%,
+      transparent 49% 100%
+    );
+
+  background-size:
+    180px 180px,
+    230px 230px;
+
+  animation:
+    shapeRuneTrace 24s linear infinite;
+}
+
+.shape-school-runecraft::after {
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0 43%,
+      rgba(238, 190, 93, 0.07) 44%,
+      transparent 45% 100%
+    );
+
+  background-size: 310px 100%;
+
+  animation:
+    shapeRuneSecondary 28s linear infinite;
+}
+
+.shape-school-runecraft:hover {
+  border-color: rgba(241, 188, 79, 0.36) !important;
+
+  box-shadow:
+    inset 0 0 11px rgba(222, 160, 49, 0.085);
+}
+
+
+/* ============================================================
+   FALLBACK
+   ============================================================ */
+
+.shape-school-default {
+  border-color: rgba(141, 109, 62, 0.20) !important;
+
+  box-shadow:
+    inset 0 0 6px rgba(120, 91, 50, 0.04);
+}
+
+.shape-school-default::before,
+.shape-school-default::after {
+  display: none;
+}
+
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+
+@keyframes shapeEmberDrift {
+  from {
+    background-position:
+      0 80px,
+      20px 120px,
+      40px 100px,
+      70px 130px,
+      100px 160px;
+  }
+
+  to {
+    background-position:
+      18px -120px,
+      5px -160px,
+      58px -140px,
+      45px -180px,
+      75px -200px;
+  }
+}
+
+
+@keyframes shapeLeafDrift {
+  from {
+    background-position:
+      0 150px,
+      70px 190px,
+      25px 170px;
+  }
+
+  to {
+    background-position:
+      60px -150px,
+      15px -190px,
+      95px -170px;
+  }
+}
+
+
+@keyframes shapeLifeBreathe {
+  from {
+    transform: scale(0.9);
+    opacity: 0.08;
+  }
+
+  to {
+    transform: scale(1.15);
+    opacity: 0.13;
+  }
+}
+
+
+@keyframes shapeMindPulse {
+  0%,
+  100% {
+    transform: scale(1.2);
+    opacity: 0.08;
+  }
+
+  50% {
+    transform: scale(1.5);
+    opacity: 0.13;
+  }
+}
+
+
+@keyframes shapeMindDrift {
+  from {
+    transform: translate(-5%, -3%);
+  }
+
+  to {
+    transform: translate(7%, 5%);
+  }
+}
+
+
+@keyframes shapeVeilSmoke {
+  from {
+    transform:
+      translate(-10%, 5%)
+      scale(1.2);
+  }
+
+  to {
+    transform:
+      translate(11%, -6%)
+      scale(1.45);
+  }
+}
+
+
+@keyframes shapeVeilSmokeSecondary {
+  from {
+    transform:
+      translate(9%, -5%)
+      scale(1.35);
+  }
+
+  to {
+    transform:
+      translate(-8%, 7%)
+      scale(1.15);
+  }
+}
+
+
+@keyframes shapeWayCurrent {
+  from {
+    transform:
+      translateX(-15%)
+      scale(1.45);
+  }
+
+  to {
+    transform:
+      translateX(14%)
+      scale(1.65);
+  }
+}
+
+
+@keyframes shapeWayCurrentSecondary {
+  from {
+    transform:
+      translateX(12%)
+      translateY(-3%)
+      scale(1.35);
+  }
+
+  to {
+    transform:
+      translateX(-12%)
+      translateY(3%)
+      scale(1.5);
+  }
+}
+
+
+@keyframes shapeBondOrbit {
+  from {
+    transform:
+      rotate(0deg)
+      scale(1.4);
+  }
+
+  to {
+    transform:
+      rotate(360deg)
+      scale(1.4);
+  }
+}
+
+
+@keyframes shapeBondTether {
+  from {
+    transform:
+      translateX(-18%)
+      rotate(-3deg);
+  }
+
+  to {
+    transform:
+      translateX(18%)
+      rotate(3deg);
+  }
+}
+
+
+@keyframes shapeRuneTrace {
+  from {
+    background-position:
+      -180px 80px,
+      230px -100px;
+  }
+
+  to {
+    background-position:
+      360px -120px,
+      -460px 160px;
+  }
+}
+
+
+@keyframes shapeRuneSecondary {
+  from {
+    background-position: -310px 0;
+  }
+
+  to {
+    background-position: 620px 0;
+  }
+}
+
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .shape-school-card::before,
+  .shape-school-card::after {
+    animation: none !important;
+  }
+}
+
+/* ============================================================
+   SHAPE SCHOOL EFFECTS — LIGHT SKINS
+   Darker treatment so the same effects remain visible
+   against pale backgrounds.
+
+   Light skins:
+   - Humans' Mark       = vellum
+   - Aelari's Dawn      = aelari-dawn
+   - Birdfolks' Sky     = birdfolks-sky
+   - Dwarven Deep       = dwarven-deep
+   - Mortal Hearth      = mortal-hearth
+   - Wolf's Moon        = wolfs-moon
+   ============================================================ */
+
+
+/* ============================================================
+   ALL LIGHT SKINS — AMBIENT BLEND
+   ============================================================ */
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-card::before,
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-card::after {
+  mix-blend-mode: multiply;
+}
+
+
+/* ============================================================
+   EMBERCRAFT — LIGHT SKINS
+   ============================================================ */
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-embercraft {
+  border-color: rgba(156, 59, 24, 0.30) !important;
+
+  box-shadow:
+    inset 0 0 8px rgba(156, 59, 24, 0.07);
+}
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-embercraft::before {
+  opacity: 0.24;
+
+  filter:
+    brightness(0.48)
+    saturate(1.7)
+    contrast(1.15);
+}
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-embercraft:hover {
+  border-color: rgba(156, 59, 24, 0.42) !important;
+
+  box-shadow:
+    inset 0 0 11px rgba(156, 59, 24, 0.11);
+}
+
+
+/* ============================================================
+   VITALCRAFT — LIGHT SKINS
+   ============================================================ */
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-vitalcraft {
+  border-color: rgba(70, 112, 36, 0.30) !important;
+
+  box-shadow:
+    inset 0 0 8px rgba(70, 112, 36, 0.065);
+}
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-vitalcraft::before {
+  opacity: 0.23;
+
+  filter:
+    brightness(0.48)
+    saturate(1.6)
+    contrast(1.12);
+}
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-vitalcraft::after {
+  opacity: 0.15;
+
+  filter:
+    brightness(0.50)
+    saturate(1.5);
+}
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-vitalcraft:hover {
+  border-color: rgba(70, 112, 36, 0.42) !important;
+
+  box-shadow:
+    inset 0 0 11px rgba(70, 112, 36, 0.10);
+}
+
+
+/* ============================================================
+   MINDCRAFT — LIGHT SKINS
+   ============================================================ */
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-mindcraft {
+  border-color: rgba(92, 57, 145, 0.31) !important;
+
+  box-shadow:
+    inset 0 0 8px rgba(92, 57, 145, 0.07);
+}
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-mindcraft::before {
+  opacity: 0.21;
+
+  filter:
+    brightness(0.48)
+    saturate(1.65)
+    contrast(1.15);
+}
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-mindcraft::after {
+  opacity: 0.18;
+
+  filter:
+    brightness(0.50)
+    saturate(1.55);
+}
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-mindcraft:hover {
+  border-color: rgba(92, 57, 145, 0.43) !important;
+
+  box-shadow:
+    inset 0 0 11px rgba(92, 57, 145, 0.11);
+}
+
+
+/* ============================================================
+   VEILCRAFT — LIGHT SKINS
+   ============================================================ */
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-veilcraft {
+  border-color: rgba(76, 44, 101, 0.31) !important;
+
+  box-shadow:
+    inset 0 0 8px rgba(76, 44, 101, 0.07);
+}
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-veilcraft::before {
+  opacity: 0.25;
+
+  filter:
+    blur(18px)
+    brightness(0.48)
+    saturate(1.65)
+    contrast(1.1);
+}
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-veilcraft::after {
+  opacity: 0.19;
+
+  filter:
+    blur(25px)
+    brightness(0.48)
+    saturate(1.6);
+}
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-veilcraft:hover {
+  border-color: rgba(76, 44, 101, 0.43) !important;
+
+  box-shadow:
+    inset 0 0 11px rgba(76, 44, 101, 0.11);
+}
+
+
+/* ============================================================
+   WAYCRAFT — LIGHT SKINS
+   ============================================================ */
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-waycraft {
+  border-color: rgba(27, 107, 112, 0.31) !important;
+
+  box-shadow:
+    inset 0 0 8px rgba(27, 107, 112, 0.07);
+}
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-waycraft::before {
+  opacity: 0.23;
+
+  filter:
+    brightness(0.46)
+    saturate(1.65)
+    contrast(1.12);
+}
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-waycraft::after {
+  opacity: 0.18;
+
+  filter:
+    brightness(0.48)
+    saturate(1.55);
+}
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-waycraft:hover {
+  border-color: rgba(27, 107, 112, 0.43) !important;
+
+  box-shadow:
+    inset 0 0 11px rgba(27, 107, 112, 0.11);
+}
+
+
+/* ============================================================
+   BONDCRAFT — LIGHT SKINS
+   ============================================================ */
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-bondcraft {
+  border-color: rgba(53, 84, 125, 0.31) !important;
+
+  box-shadow:
+    inset 0 0 8px rgba(53, 84, 125, 0.07);
+}
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-bondcraft::before {
+  opacity: 0.21;
+
+  filter:
+    brightness(0.46)
+    saturate(1.5)
+    contrast(1.12);
+}
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-bondcraft::after {
+  opacity: 0.17;
+
+  filter:
+    brightness(0.48)
+    saturate(1.45);
+}
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-bondcraft:hover {
+  border-color: rgba(53, 84, 125, 0.43) !important;
+
+  box-shadow:
+    inset 0 0 11px rgba(53, 84, 125, 0.11);
+}
+
+
+/* ============================================================
+   RUNECRAFT — LIGHT SKINS
+   ============================================================ */
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-runecraft {
+  border-color: rgba(139, 91, 18, 0.32) !important;
+
+  box-shadow:
+    inset 0 0 8px rgba(139, 91, 18, 0.07);
+}
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-runecraft::before {
+  opacity: 0.22;
+
+  filter:
+    brightness(0.43)
+    saturate(1.65)
+    contrast(1.15);
+}
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-runecraft::after {
+  opacity: 0.17;
+
+  filter:
+    brightness(0.45)
+    saturate(1.55);
+}
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-runecraft:hover {
+  border-color: rgba(139, 91, 18, 0.44) !important;
+
+  box-shadow:
+    inset 0 0 11px rgba(139, 91, 18, 0.11);
+}
+
+
+/* ============================================================
+   FALLBACK — LIGHT SKINS
+   ============================================================ */
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-default {
+  border-color: rgba(93, 73, 48, 0.24) !important;
+
+  box-shadow:
+    inset 0 0 6px rgba(93, 73, 48, 0.055);
+}

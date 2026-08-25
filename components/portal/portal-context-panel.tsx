@@ -32,6 +32,9 @@ import { CharacterOrderContext } from "@/components/portal/character-order-conte
 import { OrderLeadershipContext } from "@/components/portal/order-leadership-context";
 import { TicketContextPanel } from "@/components/support/ticket-context-panel";
 import { SanctionContextPanel } from "@/components/sanctions/sanction-context-panel";
+import {
+  shapeSchoolBorderClass,
+} from "@/lib/warping/shape-school-style";
 
 
 type PortalContextPanelProps = {
@@ -349,8 +352,16 @@ if (
   return <DefaultContext />;
 }
 
-type PublicShapeContextEntry={id:string;name:string};
-function PublicShapesContext(){const [entries,setEntries]=useState<PublicShapeContextEntry[]>([]);const [search,setSearch]=useState("");const [visible,setVisible]=useState<Set<string>|null>(null);useEffect(()=>{const apply=(ids:unknown)=>{if(Array.isArray(ids))setVisible(new Set(ids.map(String)))};const stored=sessionStorage.getItem("sepulchria:shapes-visible-ids");if(stored)try{apply(JSON.parse(stored))}catch{};const h=(e:Event)=>apply((e as CustomEvent<{ids?:string[]}>).detail?.ids);window.addEventListener("sepulchria:shapes-filter-change",h);return()=>window.removeEventListener("sepulchria:shapes-filter-change",h)},[]);useEffect(()=>{let c=false;(async()=>{const db=createClient();const {data}=await db.from("shapes").select("id,name").eq("is_active",true).order("level").order("name");if(!c)setEntries((data??[]).map(x=>({id:String(x.id),name:String(x.name)})))})();return()=>{c=true}},[]);const q=search.trim().toLowerCase();const page=visible===null?entries:entries.filter(x=>visible.has(x.id));const filtered=page.filter(x=>!q||x.name.toLowerCase().includes(q));const jump=(id:string)=>{const el=document.getElementById(`shape-${id}`);if(el){el.scrollIntoView({behavior:"smooth",block:"start"});window.history.replaceState(null,"",`#shape-${id}`)}};return <div className="flex h-full min-h-0 flex-col"><ContextHeading eyebrow="Codex" title="Warping"/><p className="text-xs leading-6 text-[rgb(var(--sep-colour-938673))]">Search Shapes and jump directly to a definition.</p><input type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search Shapes..." className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none"/><div className="my-4 h-px bg-[rgb(var(--sep-colour-59432c))]/35"/><p className="mb-2 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))]">Jump to Shape · {filtered.length}</p><div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">{filtered.map(x=><button key={x.id} type="button" onClick={()=>jump(x.id)} className="flex w-full items-center justify-between border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left"><span className="truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))]">{x.name}</span><span className="text-[rgb(var(--sep-colour-725a3d))]">→</span></button>)}</div></div>}
+type PublicShapeContextEntry={
+  id:string;
+  name:string;
+  school:string;
+};
+function PublicShapesContext(){const [entries,setEntries]=useState<PublicShapeContextEntry[]>([]);const [search,setSearch]=useState("");const [visible,setVisible]=useState<Set<string>|null>(null);useEffect(()=>{const apply=(ids:unknown)=>{if(Array.isArray(ids))setVisible(new Set(ids.map(String)))};const stored=sessionStorage.getItem("sepulchria:shapes-visible-ids");if(stored)try{apply(JSON.parse(stored))}catch{};const h=(e:Event)=>apply((e as CustomEvent<{ids?:string[]}>).detail?.ids);window.addEventListener("sepulchria:shapes-filter-change",h);return()=>window.removeEventListener("sepulchria:shapes-filter-change",h)},[]);useEffect(()=>{let c=false;(async()=>{const db=createClient();const {data}=await db.from("shapes").select("id,name,school").eq("is_active",true).order("level").order("name");if(!c)setEntries((data??[]).map(x=>({
+  id:String(x.id),
+  name:String(x.name),
+  school:String(x.school??""),
+})))})();return()=>{c=true}},[]);const q=search.trim().toLowerCase();const page=visible===null?entries:entries.filter(x=>visible.has(x.id));const filtered=page.filter(x=>!q||x.name.toLowerCase().includes(q));const jump=(id:string)=>{const el=document.getElementById(`shape-${id}`);if(el){el.scrollIntoView({behavior:"smooth",block:"start"});window.history.replaceState(null,"",`#shape-${id}`)}};return <div className="flex h-full min-h-0 flex-col"><ContextHeading eyebrow="Codex" title="Warping"/><p className="text-xs leading-6 text-[rgb(var(--sep-colour-938673))]">Search Shapes and jump directly to a definition.</p><input type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search Shapes..." className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none"/><div className="my-4 h-px bg-[rgb(var(--sep-colour-59432c))]/35"/><p className="mb-2 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))]">Jump to Shape · {filtered.length}</p><div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">{filtered.map(x=><button key={x.id} type="button" onClick={()=>jump(x.id)} className={`flex w-full items-center justify-between border bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition-[border-color,box-shadow] duration-200 ${shapeSchoolBorderClass(x.school)}`}><span className="truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))]">{x.name}</span><span className="text-[rgb(var(--sep-colour-725a3d))]">→</span></button>)}</div></div>}
 
 type PublicGiftContextEntry = {
   id: string;

@@ -9,6 +9,9 @@ import { WarpingReference } from "@/components/admin/warping-reference";
 import { ShapeProgression } from "./ShapeProgression";
 import { ShapeActionForm } from "./ShapeActionForm";
 import type { ShapeActionState } from "./actions";
+import {
+  shapeSchoolBorderClass,
+} from "@/lib/warping/shape-school-style";
 
 type Props={searchParams?:Promise<{success?:string;error?:string}>}; type S=Record<string,any>;
 const cls="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] outline-none";
@@ -128,7 +131,9 @@ export default async function AdminShapesPage({searchParams}:Props){
   const levels=(lr.data??[]).map((r:any)=>{const o=Array.isArray(r.order)?r.order[0]:r.order;return{id:r.id,level:r.level,orderName:o?.name??"Unknown"};});
   return <main className="p-5 sm:p-7 lg:p-9"><div className="mx-auto max-w-7xl"><p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">Administration</p><h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">Warping — Shapes</h1>
     <section id="shape-new" className="mt-8 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5"><h2 className="font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">Create a Shape</h2><WarpingReference/><ShapeForm action={createShape}/></section>
-    <div className="mt-8 space-y-4">{shapes.map(s=><details key={s.id} id={`shape-${s.id}`} className="scroll-mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
+    <div className="mt-8 space-y-4">{shapes.map(s=><details key={s.id} id={`shape-${s.id}`} className={`scroll-mt-6 border bg-[rgb(var(--sep-colour-15100d))] transition-[border-color,box-shadow] duration-200 ${shapeSchoolBorderClass(
+        s.school,
+      )}`}>
       <summary className="cursor-pointer list-none px-5 py-4 transition hover:bg-[rgb(var(--sep-colour-1c140e))]"><div className="flex items-center justify-between gap-3"><div className="min-w-0"><p className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-8c704b))]">Level {s.level} · {s.school} · {s.word_of_power}</p><h2 className="mt-1 truncate font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">{s.name}</h2></div><span className="text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-8c704b))]">Open / Close</span></div></summary>
       <div className="border-t border-[rgb(var(--sep-colour-60482e))]/35 p-5"><div className="flex justify-end"><form action={deleteShape}><input type="hidden" name="shape_id" value={s.id}/><ShapeDeleteSubmit shapeName={s.name}/></form></div>
       <ShapeForm s={s} action={updateShape}/>

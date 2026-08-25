@@ -6,6 +6,10 @@ import {
   useState,
 } from "react";
 
+import {
+  shapeSchoolBorderClass,
+} from "@/lib/warping/shape-school-style";
+
 export type ShapeCard =
   Record<string, any> & {
     id: string;
@@ -405,7 +409,9 @@ function ShapeArticle({
   return (
     <article
   id={`shape-${shape.id}`}
-  className="min-h-[430px] scroll-mt-4 border border-[rgb(var(--sep-colour-8d6d3e))]/65 bg-[rgb(var(--sep-colour-18110c))] p-4"
+  className={`min-h-[430px] scroll-mt-4 border bg-[rgb(var(--sep-colour-18110c))] p-4 transition-[border-color,box-shadow] duration-200 ${shapeSchoolBorderClass(
+    shape.school,
+  )}`}
 >
       <div className="flex gap-3">
         
