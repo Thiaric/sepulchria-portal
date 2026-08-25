@@ -48,8 +48,8 @@ const SKIN_SWATCHES: Record<
     accent: "#9b6ac4",
   },
   moonlit: {
-    background: "#080d18",
-    accent: "#8da9d4",
+    background: "#090806",
+    accent: "#b58a4c",
   },
   emberforge: {
     background: "#110b08",

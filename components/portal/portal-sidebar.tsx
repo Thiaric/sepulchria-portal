@@ -2182,6 +2182,9 @@ function PublicPageModal({
     item.href === "/forum" ||
     item.href.startsWith(
       "/forum/",
+    ) ||
+    item.href.startsWith(
+      "/rules",
     );
 
   const clampRect =

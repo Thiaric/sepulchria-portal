@@ -1,3 +1,46 @@
+from pathlib import Path
+
+ROOT = Path.cwd()
+
+PRESENCE = ROOT / "components/portal/portal-presence-heartbeat.tsx"
+SESSION = ROOT / "components/portal/portal-session-guard.tsx"
+
+
+def fail(message: str) -> None:
+    raise SystemExit(
+        f"ERROR: {message}\nNo changes were applied."
+    )
+
+
+for path in (PRESENCE, SESSION):
+    if not path.exists():
+        fail(f"Missing expected file: {path.relative_to(ROOT)}")
+
+presence_old = PRESENCE.read_text(encoding="utf-8")
+session_old = SESSION.read_text(encoding="utf-8")
+
+for marker in [
+    "const HEARTBEAT_INTERVAL_MS =",
+    "const AWAY_AFTER_MS =",
+    "const LOGOUT_AFTER_MS =",
+    "const HIDDEN_SINCE_KEY =",
+    "document.visibilityState ===",
+    "export function PortalPresenceHeartbeat({",
+]:
+    if marker not in presence_old:
+        fail(f"Presence file differs from analysed repo: missing {marker!r}")
+
+for marker in [
+    "const CHECK_INTERVAL_MS =",
+    "const STORAGE_KEY =",
+    "runningRef.current = true;",
+    '"/api/portal-session/check"',
+    "export function PortalSessionGuard()",
+]:
+    if marker not in session_old:
+        fail(f"Session guard differs from analysed repo: missing {marker!r}")
+
+presence_new = """\
 "use client";
 
 import {
@@ -436,3 +479,311 @@ export function PortalPresenceHeartbeat({
 
   return null;
 }
+"""
+
+session_new = """\
+"use client";
+
+import {
+  useCallback,
+  useEffect,
+  useRef,
+} from "react";
+
+const STORAGE_KEY =
+  "sepulchria-portal-instance-id";
+
+const CHECK_INTERVAL_MS =
+  5_000;
+
+const CHECK_TIMEOUT_MS =
+  10_000;
+
+function getPortalInstanceId() {
+  const existing =
+    sessionStorage.getItem(
+      STORAGE_KEY,
+    );
+
+  if (existing) {
+    return existing;
+  }
+
+  const created =
+    crypto.randomUUID();
+
+  sessionStorage.setItem(
+    STORAGE_KEY,
+    created,
+  );
+
+  return created;
+}
+
+export function PortalSessionGuard() {
+  const runningRef =
+    useRef(false);
+
+  const replacedRef =
+    useRef(false);
+
+  const checkCurrentLogin =
+    useCallback(async () => {
+      if (
+        runningRef.current ||
+        replacedRef.current
+      ) {
+        return;
+      }
+
+      runningRef.current = true;
+
+      const controller =
+        new AbortController();
+
+      const timeoutId =
+        window.setTimeout(
+          () => {
+            controller.abort();
+          },
+          CHECK_TIMEOUT_MS,
+        );
+
+      try {
+        const instanceId =
+          getPortalInstanceId();
+
+        const response =
+          await fetch(
+            "/api/portal-session/check",
+            {
+              method: "POST",
+              credentials:
+                "same-origin",
+              cache: "no-store",
+              signal:
+                controller.signal,
+              headers: {
+                "Content-Type":
+                  "application/json",
+              },
+              body: JSON.stringify({
+                instanceId,
+              }),
+            },
+          );
+
+        if (
+          response.status === 401
+        ) {
+          replacedRef.current =
+            true;
+
+          window.location.replace(
+            "/auth/login",
+          );
+
+          return;
+        }
+
+        if (
+          response.status === 409
+        ) {
+          replacedRef.current =
+            true;
+
+          sessionStorage.removeItem(
+            STORAGE_KEY,
+          );
+
+          if (
+            window.opener &&
+            !window.opener.closed
+          ) {
+            try {
+              window.opener.postMessage(
+                {
+                  type:
+                    "sepulchria:portal-session-replaced",
+                },
+                window.location.origin,
+              );
+            } catch (error) {
+              console.warn(
+                "Unable to notify homepage that the portal session was replaced:",
+                error,
+              );
+            }
+          }
+
+          window.close();
+
+          window.setTimeout(() => {
+            if (!window.closed) {
+              window.location.replace(
+                "/auth/login?portalSession=replaced",
+              );
+            }
+          }, 150);
+
+          return;
+        }
+
+        if (!response.ok) {
+          console.error(
+            "Unable to verify active portal login:",
+            response.status,
+          );
+        }
+      } catch (error) {
+        if (
+          error instanceof DOMException &&
+          error.name ===
+            "AbortError"
+        ) {
+          console.warn(
+            "Portal session verification timed out; it will retry.",
+          );
+        } else {
+          console.error(
+            "Unable to verify active portal login:",
+            error,
+          );
+        }
+      } finally {
+        window.clearTimeout(
+          timeoutId,
+        );
+
+        runningRef.current = false;
+      }
+    }, []);
+
+  useEffect(() => {
+    void checkCurrentLogin();
+
+    const intervalId =
+      window.setInterval(
+        () => {
+          void checkCurrentLogin();
+        },
+        CHECK_INTERVAL_MS,
+      );
+
+    function handleFocus() {
+      void checkCurrentLogin();
+    }
+
+    function handleVisibilityChange() {
+      if (
+        document.visibilityState ===
+        "visible"
+      ) {
+        void checkCurrentLogin();
+      }
+    }
+
+    function handleOnline() {
+      void checkCurrentLogin();
+    }
+
+    function handlePageShow() {
+      void checkCurrentLogin();
+    }
+
+    window.addEventListener(
+      "focus",
+      handleFocus,
+    );
+
+    window.addEventListener(
+      "online",
+      handleOnline,
+    );
+
+    window.addEventListener(
+      "pageshow",
+      handlePageShow,
+    );
+
+    document.addEventListener(
+      "visibilitychange",
+      handleVisibilityChange,
+    );
+
+    return () => {
+      window.clearInterval(
+        intervalId,
+      );
+
+      window.removeEventListener(
+        "focus",
+        handleFocus,
+      );
+
+      window.removeEventListener(
+        "online",
+        handleOnline,
+      );
+
+      window.removeEventListener(
+        "pageshow",
+        handlePageShow,
+      );
+
+      document.removeEventListener(
+        "visibilitychange",
+        handleVisibilityChange,
+      );
+    };
+  }, [checkCurrentLogin]);
+
+  return null;
+}
+"""
+
+for marker in [
+    "const LAST_ACTIVITY_KEY =",
+    "evaluateIdleState()",
+    "registerActivity()",
+    "heartbeatPresence()",
+]:
+    if marker not in presence_new:
+        fail(f"Generated presence safety check failed: {marker!r}")
+
+for marker in [
+    "const CHECK_TIMEOUT_MS =",
+    "new AbortController()",
+    '"pageshow"',
+    "runningRef.current = false;",
+]:
+    if marker not in session_new:
+        fail(f"Generated session guard safety check failed: {marker!r}")
+
+PRESENCE.write_text(
+    presence_new,
+    encoding="utf-8",
+    newline="\n",
+)
+
+SESSION.write_text(
+    session_new,
+    encoding="utf-8",
+    newline="\n",
+)
+
+print("WROTE  components/portal/portal-presence-heartbeat.tsx")
+print("WROTE  components/portal/portal-session-guard.tsx")
+print()
+print("PORTAL IDLE / WAKE RECOVERY FIX APPLIED")
+print("- Inactivity now uses real interaction, not tab visibility.")
+print("- Away after 15 minutes with no interaction.")
+print("- Logout after 60 minutes with no interaction.")
+print("- First interaction after 60 minutes cannot reset expiry.")
+print("- Presence heartbeat stops once idle.")
+print("- Return before logout restores manual presence.")
+print("- Session checks abort after 10 seconds and retry.")
+print("- Focus/online/visibility/pageshow trigger fresh validation.")
+print("- Modal code untouched.")
+print()
+print("Next: npm run build")

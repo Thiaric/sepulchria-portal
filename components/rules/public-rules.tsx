@@ -14,6 +14,7 @@ import type {
 type PublicRulesProps = {
   data: PublicRulesData;
   initialView?: "rules" | "glossary";
+  embedded?: boolean;
 };
 
 function stripHtml(value: string) {
@@ -41,6 +42,7 @@ function stripHtml(value: string) {
 export function PublicRules({
   data,
   initialView = "rules",
+  embedded = false,
 }: PublicRulesProps) {
   const firstRule =
     data.rules[0] ?? null;
@@ -155,8 +157,15 @@ export function PublicRules({
   }
 
   return (
-    <main className="min-h-screen bg-[rgb(var(--sep-colour-090705))] text-[rgb(var(--sep-colour-d7c5a7))]">
-      <header className="border-b border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-0f0b09))]">
+    <main
+      className={[
+        "bg-[rgb(var(--sep-colour-090705))] text-[rgb(var(--sep-colour-d7c5a7))]",
+        embedded
+          ? "flex h-full min-h-0 flex-col overflow-hidden"
+          : "min-h-screen",
+      ].join(" ")}
+    >
+      <header className="shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-0f0b09))]">
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-4 sm:px-6 lg:flex-row lg:items-end lg:justify-between lg:gap-5">
           <div>
             <p className="text-[7px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8f714a))]">
@@ -203,7 +212,7 @@ export function PublicRules({
       </header>
 
       {!glossaryOpen ? (
-        <nav className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))]">
+        <nav className="shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))]">
           <div className="mx-auto flex max-w-7xl flex-wrap gap-1 px-4 py-2 sm:px-6">
             <CategoryButton
               active={
@@ -240,14 +249,25 @@ export function PublicRules({
       ) : null}
 
       <div
-        className={`mx-auto grid max-w-7xl grid-cols-1 gap-4 px-4 py-4 sm:px-6 ${
+        className={[
+          "mx-auto grid w-full max-w-7xl grid-cols-1 gap-4 px-4 py-4 sm:px-6",
           glossaryOpen
             ? ""
-            : "lg:grid-cols-[280px_minmax(0,1fr)]"
-        }`}
+            : "lg:grid-cols-[280px_minmax(0,1fr)]",
+          embedded
+            ? "min-h-0 flex-1 overflow-hidden"
+            : "",
+        ].join(" ")}
       >
         {!glossaryOpen ? (
-          <aside className="min-w-0 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-120e0b))]">
+          <aside
+            className={[
+              "min-w-0 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-120e0b))]",
+              embedded
+                ? "flex min-h-0 flex-col overflow-hidden"
+                : "",
+            ].join(" ")}
+          >
             <div className="flex h-9 items-center justify-between border-b border-[rgb(var(--sep-colour-60482e))]/35 px-3">
               <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-816a4d))]">
                 Rule index
@@ -258,7 +278,13 @@ export function PublicRules({
               </span>
             </div>
 
-            <div className="max-h-[calc(100vh-190px)] overflow-y-auto p-2">
+            <div
+              className={
+                embedded
+                  ? "min-h-0 flex-1 overflow-y-auto p-2"
+                  : "max-h-[calc(100vh-190px)] overflow-y-auto p-2"
+              }
+            >
               {visibleRules.length ===
               0 ? (
                 <p className="p-3 text-xs leading-5 text-[rgb(var(--sep-colour-766b5d))]">
@@ -302,7 +328,14 @@ export function PublicRules({
           </aside>
         ) : null}
 
-        <section className="min-w-0 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-120e0b))]">
+        <section
+          className={[
+            "min-w-0 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-120e0b))]",
+            embedded
+              ? "min-h-0 overflow-y-auto"
+              : "",
+          ].join(" ")}
+        >
           {glossaryOpen ? (
             <GlossaryPanel
               data={data}

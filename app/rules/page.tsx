@@ -35,7 +35,13 @@ export default async function RulesPage({
       : "rules";
 
   return (
-    <div className="relative">
+    <div
+      className={
+        isEmbedded
+          ? "relative h-full min-h-0 overflow-hidden"
+          : "relative"
+      }
+    >
       <EmbeddedPortalSkinBridge />
       {!isEmbedded ? (
         <Link
@@ -49,6 +55,7 @@ export default async function RulesPage({
       <PublicRules
         data={data}
         initialView={initialView}
+        embedded={isEmbedded}
       />
     </div>
   );

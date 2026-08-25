@@ -12,6 +12,9 @@ const STORAGE_KEY =
 const CHECK_INTERVAL_MS =
   5_000;
 
+const CHECK_TIMEOUT_MS =
+  10_000;
+
 function getPortalInstanceId() {
   const existing =
     sessionStorage.getItem(
@@ -51,6 +54,17 @@ export function PortalSessionGuard() {
 
       runningRef.current = true;
 
+      const controller =
+        new AbortController();
+
+      const timeoutId =
+        window.setTimeout(
+          () => {
+            controller.abort();
+          },
+          CHECK_TIMEOUT_MS,
+        );
+
       try {
         const instanceId =
           getPortalInstanceId();
@@ -63,6 +77,8 @@ export function PortalSessionGuard() {
               credentials:
                 "same-origin",
               cache: "no-store",
+              signal:
+                controller.signal,
               headers: {
                 "Content-Type":
                   "application/json",
@@ -73,26 +89,25 @@ export function PortalSessionGuard() {
             },
           );
 
-        if (response.status === 401) {
-          replacedRef.current = true;
+        if (
+          response.status === 401
+        ) {
+          replacedRef.current =
+            true;
+
           window.location.replace(
             "/auth/login",
           );
+
           return;
         }
 
-        if (response.status === 409) {
-          replacedRef.current = true;
+        if (
+          response.status === 409
+        ) {
+          replacedRef.current =
+            true;
 
-          /*
-           * Do NOT call supabase.auth.signOut() here. Auth storage can be
-           * shared by windows in the same browser; signing out the losing
-           * window could also destroy the winning login.
-           *
-           * Instead, notify the homepage that THIS portal instance lost,
-           * clear only this popup's window-scoped instance id, then close
-           * the old Sepulchria window.
-           */
           sessionStorage.removeItem(
             STORAGE_KEY,
           );
@@ -119,11 +134,6 @@ export function PortalSessionGuard() {
 
           window.close();
 
-          /*
-           * A normal Enter Sepulchria popup can close itself. If a browser
-           * refuses, leave the losing instance on the login page instead
-           * of allowing it to continue using the portal.
-           */
           window.setTimeout(() => {
             if (!window.closed) {
               window.location.replace(
@@ -142,12 +152,25 @@ export function PortalSessionGuard() {
           );
         }
       } catch (error) {
-        /* Temporary network failures do not eject a valid player. */
-        console.error(
-          "Unable to verify active portal login:",
-          error,
-        );
+        if (
+          error instanceof DOMException &&
+          error.name ===
+            "AbortError"
+        ) {
+          console.warn(
+            "Portal session verification timed out; it will retry.",
+          );
+        } else {
+          console.error(
+            "Unable to verify active portal login:",
+            error,
+          );
+        }
       } finally {
+        window.clearTimeout(
+          timeoutId,
+        );
+
         runningRef.current = false;
       }
     }, []);
@@ -158,12 +181,7 @@ export function PortalSessionGuard() {
     const intervalId =
       window.setInterval(
         () => {
-          if (
-            document.visibilityState ===
-            "visible"
-          ) {
-            void checkCurrentLogin();
-          }
+          void checkCurrentLogin();
         },
         CHECK_INTERVAL_MS,
       );
@@ -185,29 +203,50 @@ export function PortalSessionGuard() {
       void checkCurrentLogin();
     }
 
+    function handlePageShow() {
+      void checkCurrentLogin();
+    }
+
     window.addEventListener(
       "focus",
       handleFocus,
     );
+
     window.addEventListener(
       "online",
       handleOnline,
     );
+
+    window.addEventListener(
+      "pageshow",
+      handlePageShow,
+    );
+
     document.addEventListener(
       "visibilitychange",
       handleVisibilityChange,
     );
 
     return () => {
-      window.clearInterval(intervalId);
+      window.clearInterval(
+        intervalId,
+      );
+
       window.removeEventListener(
         "focus",
         handleFocus,
       );
+
       window.removeEventListener(
         "online",
         handleOnline,
       );
+
+      window.removeEventListener(
+        "pageshow",
+        handlePageShow,
+      );
+
       document.removeEventListener(
         "visibilitychange",
         handleVisibilityChange,

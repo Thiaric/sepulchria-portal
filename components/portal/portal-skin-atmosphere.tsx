@@ -50,7 +50,7 @@ function kindForSkin(skin: string) {
   if (value === "verdant-reliquary") return "verdant";
   if (value === "blood-court") return "blood";
   if (value === "ivory-archive") return "ivory";
-  if (value === "moonlit") return "moonlit";
+  if (value === "moonlit") return "kareshi-night";
   if (value === "aelari-dawn") return "aelari-dawn";
   if (value === "dwarven-deep") return "dwarven-forge";
   if (value === "mortal-hearth") return "mortal-hearth";
@@ -180,13 +180,20 @@ export function PortalSkinAtmosphere({
           </>
         ) : null}
 
-        {(kind === "moonlit" || kind === "wolf-moon") ? (
+        {kind === "kareshi-night" ? (
+          <>
+            <span className="portal-kareshi-haze portal-kareshi-haze-a" />
+            <span className="portal-kareshi-haze portal-kareshi-haze-b" />
+            <span className="portal-kareshi-shadow-band portal-kareshi-shadow-one" />
+            <span className="portal-kareshi-shadow-band portal-kareshi-shadow-two" />
+          </>
+        ) : null}
+
+        {kind === "wolf-moon" ? (
           <>
             <span className="portal-moon-glow portal-moon-glow-a" />
             <span className="portal-moon-glow portal-moon-glow-b" />
-            {kind === "wolf-moon" ? (
-              <span className="portal-wolf-mist" />
-            ) : null}
+            <span className="portal-wolf-mist" />
           </>
         ) : null}
 
@@ -290,6 +297,92 @@ export function PortalSkinAtmosphere({
           background: linear-gradient(to left, rgb(235 243 255 / 0.9), transparent);
           opacity: 0;
           animation: portal-shoot 34s ease-in-out infinite;
+        }
+
+        .portal-kareshi-haze {
+          position: absolute;
+          left: -12%;
+          width: 124%;
+          height: 150px;
+          pointer-events: none;
+          opacity: 0.11;
+          filter: blur(24px);
+          background:
+            linear-gradient(
+              90deg,
+              transparent,
+              rgb(171 124 67 / 0.23) 30%,
+              rgb(105 76 43 / 0.16) 58%,
+              transparent
+            );
+          animation:
+            portal-kareshi-haze-drift
+            28s ease-in-out infinite alternate;
+        }
+
+        .portal-kareshi-haze-a {
+          top: 4%;
+        }
+
+        .portal-kareshi-haze-b {
+          bottom: 7%;
+          opacity: 0.075;
+          transform: scaleX(-1);
+          animation-delay: -11s;
+        }
+
+        .portal-kareshi-shadow-band {
+          position: absolute;
+          left: -20%;
+          width: 140%;
+          height: 32vh;
+          min-height: 180px;
+          pointer-events: none;
+          opacity: 0.12;
+          filter: blur(36px);
+          background:
+            radial-gradient(
+              ellipse at center,
+              rgb(0 0 0 / 0.78) 0%,
+              rgb(20 15 11 / 0.46) 42%,
+              transparent 72%
+            );
+          animation:
+            portal-kareshi-shadow-drift
+            34s ease-in-out infinite alternate;
+        }
+
+        .portal-kareshi-shadow-one {
+          top: 18%;
+          transform: translateX(-7%) rotate(-3deg);
+        }
+
+        .portal-kareshi-shadow-two {
+          bottom: 10%;
+          transform: translateX(8%) rotate(2deg);
+          animation-delay: -17s;
+        }
+
+        @keyframes portal-kareshi-haze-drift {
+          from {
+            transform: translate3d(-3%, 0, 0);
+          }
+
+          to {
+            transform: translate3d(4%, 8px, 0);
+          }
+        }
+
+        @keyframes portal-kareshi-shadow-drift {
+          from {
+            margin-left: -4%;
+            opacity: 0.09;
+          }
+
+          to {
+            margin-left: 5%;
+            opacity: 0.15;
+          }
         }
 
         .portal-ink-writing {
