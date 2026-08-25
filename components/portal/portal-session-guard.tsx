@@ -88,10 +88,50 @@ export function PortalSessionGuard() {
            * Do NOT call supabase.auth.signOut() here. Auth storage can be
            * shared by windows in the same browser; signing out the losing
            * window could also destroy the winning login.
+           *
+           * Instead, notify the homepage that THIS portal instance lost,
+           * clear only this popup's window-scoped instance id, then close
+           * the old Sepulchria window.
            */
-          window.location.replace(
-            "/auth/login?portalSession=replaced",
+          sessionStorage.removeItem(
+            STORAGE_KEY,
           );
+
+          if (
+            window.opener &&
+            !window.opener.closed
+          ) {
+            try {
+              window.opener.postMessage(
+                {
+                  type:
+                    "sepulchria:portal-session-replaced",
+                },
+                window.location.origin,
+              );
+            } catch (error) {
+              console.warn(
+                "Unable to notify homepage that the portal session was replaced:",
+                error,
+              );
+            }
+          }
+
+          window.close();
+
+          /*
+           * A normal Enter Sepulchria popup can close itself. If a browser
+           * refuses, leave the losing instance on the login page instead
+           * of allowing it to continue using the portal.
+           */
+          window.setTimeout(() => {
+            if (!window.closed) {
+              window.location.replace(
+                "/auth/login?portalSession=replaced",
+              );
+            }
+          }, 150);
+
           return;
         }
 

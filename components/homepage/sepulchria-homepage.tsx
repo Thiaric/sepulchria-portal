@@ -73,24 +73,49 @@ export function SepulchriaHomepage({
   const [aboutOpen, setAboutOpen] =
     useState(false);
 
+  const [
+    portalSessionReplaced,
+    setPortalSessionReplaced,
+  ] = useState(false);
+
   useEffect(() => {
     function handlePortalMessage(
       event: MessageEvent,
     ) {
       if (
         event.origin !==
-          window.location.origin ||
-        event.data?.type !==
-          "sepulchria:portal-logged-out"
+        window.location.origin
       ) {
         return;
       }
 
-      /*
-       * isAuthenticated is server-derived, so reload the homepage
-       * after logout to recalculate it immediately.
-       */
-      window.location.reload();
+      if (
+        event.data?.type ===
+          "sepulchria:portal-logged-out"
+      ) {
+        /*
+         * A normal logout really ended the Supabase session, so reload
+         * and let the server recalculate isAuthenticated.
+         */
+        window.location.reload();
+        return;
+      }
+
+      if (
+        event.data?.type ===
+          "sepulchria:portal-session-replaced"
+      ) {
+        /*
+         * A newer login won. Do NOT globally sign out here: another
+         * Sepulchria window in the same browser may share auth storage.
+         *
+         * This homepage only needs to stop claiming that its old portal
+         * window is still open and offer a fresh login.
+         */
+        setPortalSessionReplaced(
+          true,
+        );
+      }
     }
 
     window.addEventListener(
@@ -277,7 +302,8 @@ export function SepulchriaHomepage({
                   ),
                 )}
 
-                {isAuthenticated ? (
+                {isAuthenticated &&
+                !portalSessionReplaced ? (
                   <HomepageDisabledButton
                     eyebrow="Already entered"
                     label="Sepulchria is open"
@@ -285,7 +311,11 @@ export function SepulchriaHomepage({
                   />
                 ) : (
                   <HomepageButton
-                    href={enterHref}
+                    href={
+                      portalSessionReplaced
+                        ? "/auth/login?portalSession=replaced"
+                        : enterHref
+                    }
                     eyebrow="Enter"
                     label="Enter Sepulchria"
                     symbol="◆"
