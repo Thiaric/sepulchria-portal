@@ -452,7 +452,7 @@ export default async function PrivateLocationPage() {
                     ownedRoom.image_url ??
                     ""
                   }
-                  placeholder="https://..."
+                  placeholder="https://... 2:1 proportions (ex: 1774x883)"
                   className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))]"
                 />
               </label>
