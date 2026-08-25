@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { CookieSettingsButton } from "@/components/privacy/cookie-storage-controls";
+import { HomepagePublicModal } from "@/components/homepage/homepage-public-modal";
 import {
   useEffect,
   useState,
@@ -72,6 +73,14 @@ export function SepulchriaHomepage({
 }: SepulchriaHomepageProps) {
   const [aboutOpen, setAboutOpen] =
     useState(false);
+
+  const [
+    publicModal,
+    setPublicModal,
+  ] = useState<{
+    title: string;
+    href: string;
+  } | null>(null);
 
   const [
     portalSessionReplaced,
@@ -287,19 +296,32 @@ export function SepulchriaHomepage({
                 />
 
                 {PRIMARY_LINKS.map(
-                  (item) => (
-                    <HomepageButton
-                      key={item.label}
-                      {...item}
-                      label={
-                        item.label ===
-                          "Register" &&
-                        !registrationsOpen
-                          ? "Info about Registration"
-                          : item.label
-                      }
-                    />
-                  ),
+                  (item) =>
+                    item.label ===
+                    "Register" ? (
+                      <HomepageButton
+                        key={item.label}
+                        {...item}
+                        label={
+                          !registrationsOpen
+                            ? "Info about Registration"
+                            : item.label
+                        }
+                      />
+                    ) : (
+                      <HomepageActionButton
+                        key={item.label}
+                        eyebrow={item.eyebrow}
+                        label={item.label}
+                        symbol={item.symbol}
+                        onClick={() =>
+                          setPublicModal({
+                            title: item.label,
+                            href: item.href,
+                          })
+                        }
+                      />
+                    ),
                 )}
 
                 {isAuthenticated &&
@@ -391,25 +413,79 @@ export function SepulchriaHomepage({
               <Link href="#" className="transition hover:text-[rgb(var(--sep-colour-cdb487))]">
                 Credits
               </Link>
-              <Link href="/community-rules" className="transition hover:text-[rgb(var(--sep-colour-cdb487))]">
+              <button
+                type="button"
+                onClick={() =>
+                  setPublicModal({
+                    title: "Community Rules",
+                    href: "/community-rules",
+                  })
+                }
+                className="transition hover:text-[rgb(var(--sep-colour-cdb487))]"
+              >
                 Community Rules
-              </Link>
-              <Link href="/safety" className="transition hover:text-[rgb(var(--sep-colour-cdb487))]">
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  setPublicModal({
+                    title: "Safety",
+                    href: "/safety",
+                  })
+                }
+                className="transition hover:text-[rgb(var(--sep-colour-cdb487))]"
+              >
                 Safety
-              </Link>
-              <Link href="/age-policy" className="transition hover:text-[rgb(var(--sep-colour-cdb487))]">
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  setPublicModal({
+                    title: "18+ Policy",
+                    href: "/age-policy",
+                  })
+                }
+                className="transition hover:text-[rgb(var(--sep-colour-cdb487))]"
+              >
                 18+ Policy
-              </Link>
-              <Link href="/privacy" className="transition hover:text-[rgb(var(--sep-colour-cdb487))]">
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  setPublicModal({
+                    title: "Privacy",
+                    href: "/privacy",
+                  })
+                }
+                className="transition hover:text-[rgb(var(--sep-colour-cdb487))]"
+              >
                 Privacy
-              </Link>
-              <Link href="/cookies" className="transition hover:text-[rgb(var(--sep-colour-cdb487))]">
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  setPublicModal({
+                    title: "Cookies",
+                    href: "/cookies",
+                  })
+                }
+                className="transition hover:text-[rgb(var(--sep-colour-cdb487))]"
+              >
                 Cookies
-              </Link>
+              </button>
               <CookieSettingsButton className="uppercase tracking-[0.18em] transition hover:text-[rgb(var(--sep-colour-cdb487))]" />
-              <Link href="/terms" className="transition hover:text-[rgb(var(--sep-colour-cdb487))]">
+              <button
+                type="button"
+                onClick={() =>
+                  setPublicModal({
+                    title: "Terms",
+                    href: "/terms",
+                  })
+                }
+                className="transition hover:text-[rgb(var(--sep-colour-cdb487))]"
+              >
                 Terms
-              </Link>
+              </button>
             </nav>
           </div>
 
@@ -425,6 +501,13 @@ export function SepulchriaHomepage({
       </div>
 
       {/* About modal */}
+      <HomepagePublicModal
+        modal={publicModal}
+        onClose={() =>
+          setPublicModal(null)
+        }
+      />
+
       {aboutOpen ? (
         <div
           className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-8"

@@ -4,7 +4,7 @@ import nspell from "nspell";
 
 const MAX_TEXT_LENGTH = 50_000;
 const MAX_UNIQUE_WORDS = 2_500;
-const MAX_ISSUES = 30;
+const MAX_ISSUES = 250;
 const MAX_SUGGESTIONS = 12;
 
 /*
