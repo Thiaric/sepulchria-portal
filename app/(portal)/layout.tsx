@@ -5,6 +5,7 @@ import { PortalMessageSoundListener } from "@/components/audio/portal-message-so
 import { PortalCollapsibleColumns } from "@/components/portal/portal-collapsible-columns";
 import { PortalHeader } from "@/components/portal/portal-header";
 import { PortalPresenceHeartbeat } from "@/components/portal/portal-presence-heartbeat";
+import { PortalSessionGuard } from "@/components/portal/portal-session-guard";
 import { PrivateLocationInvitationPopup } from "@/components/private-location/private-location-invitation-popup";
 import { OrderHeadquartersInvitationPopup } from "@/components/orders/order-headquarters-invitation-popup";
 import { PortalResponsiveRightSidebar } from "@/components/portal/portal-responsive-right-sidebar";
@@ -98,6 +99,8 @@ async function PortalLayoutContent({
                 presenceEnabled
               }
             />
+
+            <PortalSessionGuard />
 
             <div className="shrink-0">
               <PortalHeader

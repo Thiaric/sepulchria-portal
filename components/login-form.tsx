@@ -87,6 +87,53 @@ if (!captchaToken) {
       }
 
       /*
+       * Every successful login gets its own portal-window identity.
+       * The newest successful login becomes the only active portal
+       * instance for this account.
+       */
+      const portalInstanceId =
+        crypto.randomUUID();
+
+      const claimResponse =
+        await fetch(
+          "/api/portal-session/claim",
+          {
+            method: "POST",
+            credentials: "same-origin",
+            cache: "no-store",
+            headers: {
+              "Content-Type":
+                "application/json",
+            },
+            body: JSON.stringify({
+              instanceId:
+                portalInstanceId,
+            }),
+          },
+        );
+
+      if (!claimResponse.ok) {
+        const claimResult =
+          (await claimResponse
+            .json()
+            .catch(() => null)) as
+            | {
+                message?: string;
+              }
+            | null;
+
+        throw new Error(
+          claimResult?.message ??
+            "Unable to establish the active Sepulchria login.",
+        );
+      }
+
+      portalWindow.sessionStorage.setItem(
+        "sepulchria-portal-instance-id",
+        portalInstanceId,
+      );
+
+      /*
        * Supabase authentication is shared because the new
        * window is on the same Sepulchria origin.
        */
