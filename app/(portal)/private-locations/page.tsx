@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-
+import { LocationImageLightbox } from "@/components/world/location-image-lightbox";
 import {
   cancelPrivateLocationInvitation,
   ensureOwnedPrivateLocation,
@@ -327,7 +327,7 @@ export default async function PrivateLocationPage() {
       </header>
 
       {accessible.length > 0 ? (
-        <section className="mt-5 grid gap-3 md:grid-cols-2">
+        <section className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
           {accessible.map(
             ({ room, role }) => (
               <article
@@ -335,13 +335,20 @@ export default async function PrivateLocationPage() {
                 className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-17110d))]"
               >
                 {room.image_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={room.image_url}
-                    alt=""
-                    className="h-28 w-full object-cover"
-                  />
-                ) : null}
+  <div className="relative h-56 w-full overflow-hidden">
+    {/* eslint-disable-next-line @next/next/no-img-element */}
+    <img
+      src={room.image_url}
+      alt={room.name}
+      className="h-full w-full object-cover"
+    />
+
+    <LocationImageLightbox
+      src={room.image_url}
+      name={room.name}
+    />
+  </div>
+) : null}
 
                 <div className="p-4">
                   <div className="flex items-center justify-between gap-3">

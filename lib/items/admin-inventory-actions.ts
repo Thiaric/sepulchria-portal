@@ -154,10 +154,19 @@ export async function grantStandardItem(formData: FormData) {
       throw new Error("Invalid container.");
     }
 
-    if (item.categorySlug === "container") {
-      if (containerId) {
+    if (
+      item.categorySlug === "container" ||
+      item.use_behaviour === "limited_charges"
+    ) {
+      if (item.categorySlug === "container" && containerId) {
         throw new Error(
           "A Container cannot be granted inside another Container from this panel.",
+        );
+      }
+
+      if (item.use_behaviour === "limited_charges" && containerId) {
+        throw new Error(
+          "Limited-charge Items must be granted as individual Items before being moved into Containers.",
         );
       }
 

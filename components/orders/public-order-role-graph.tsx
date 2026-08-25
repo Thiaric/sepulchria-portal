@@ -11,6 +11,7 @@ export type PublicOrderGraphRole = {
   id: string;
   name: string;
   level: number;
+  sort_order: number;
   description: string | null;
   muscles_modifier: number;
   reflexes_modifier: number;
@@ -79,11 +80,13 @@ export function PublicOrderRoleGraph({
     for (const level of levels) {
       map.set(
         level,
-        roles
-          .filter((role) => role.level === level)
-          .sort((a, b) =>
-            a.name.localeCompare(b.name),
-          ),
+       roles
+  .filter((role) => role.level === level)
+  .sort(
+    (a, b) =>
+      a.sort_order - b.sort_order ||
+      a.name.localeCompare(b.name),
+  ),
       );
     }
 

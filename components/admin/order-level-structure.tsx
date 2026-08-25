@@ -112,17 +112,18 @@ export async function OrderLevelStructure({ orderId }: { orderId: string }) {
   const jobById = new Map(allJobs.map((job) => [job.id, job]));
 
   const graphRoles = allJobs.map((job) => ({
-    id: job.id,
-    name: job.name,
-    level: job.level,
-    description: job.description,
-    muscles_modifier: job.muscles_modifier,
-    reflexes_modifier: job.reflexes_modifier,
-    vigour_modifier: job.vigour_modifier,
-    shrewd_modifier: job.shrewd_modifier,
-    brains_modifier: job.brains_modifier,
-    presence_modifier: job.presence_modifier,
-  })) satisfies PublicOrderGraphRole[];
+  id: job.id,
+  name: job.name,
+  level: job.level,
+  sort_order: job.sort_order,
+  description: job.description,
+  muscles_modifier: job.muscles_modifier,
+  reflexes_modifier: job.reflexes_modifier,
+  vigour_modifier: job.vigour_modifier,
+  shrewd_modifier: job.shrewd_modifier,
+  brains_modifier: job.brains_modifier,
+  presence_modifier: job.presence_modifier,
+}));
 
   const graphLinks = links.map((link) => ({
     id: link.id,
@@ -146,10 +147,11 @@ export async function OrderLevelStructure({ orderId }: { orderId: string }) {
       <OrderRoleProgressionEditor
         orderId={orderId}
         roles={allJobs.map((job) => ({
-          id: job.id,
-          name: job.name,
-          level: job.level,
-        }))}
+  id: job.id,
+  name: job.name,
+  level: job.level,
+  sort_order: job.sort_order,
+}))}
         initialLinks={links}
       />
 

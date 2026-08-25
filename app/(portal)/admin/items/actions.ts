@@ -155,6 +155,12 @@ if (isUsable) {
     }
 
     if (useBehaviour === "limited_charges") {
+      if (stackable) {
+        throw new Error(
+          "Limited-charge Items cannot be Stackable because each copy needs its own charge state.",
+        );
+      }
+
       maxCharges = integer(formData, "maxCharges", null);
       if (maxCharges === null || maxCharges < 1) {
         throw new Error("Limited-charge items need at least 1 charge.");
@@ -258,6 +264,14 @@ if (isUsable) {
         "Opposed Items need at least one allowed Counter.",
       );
     }
+  }
+
+  if (
+    isUsable &&
+    resolutionMode === "opposed" &&
+    targetMode !== "other"
+  ) {
+    targetMode = "other";
   }
 
   const damageDice = optionalText(formData, "damageDice");
@@ -441,6 +455,30 @@ export async function updateItem(formData: FormData) {
     if (!isUuid(itemId)) throw new Error("Invalid item.");
 
     const values = await itemValues(formData);
+
+    if (values.stackable) {
+      const {
+        data: existingItem,
+        error: existingItemError,
+      } = await supabase
+        .from("items")
+        .select("is_equippable")
+        .eq("id", itemId)
+        .maybeSingle();
+
+      if (existingItemError || !existingItem) {
+        throw new Error(
+          existingItemError?.message ?? "Unable to verify Item equipment state.",
+        );
+      }
+
+      if (existingItem.is_equippable) {
+        throw new Error(
+          "Equippable Items cannot be Stackable. Disable Equippable first.",
+        );
+      }
+    }
+
     const { error } = await supabase.from("items").update(values).eq("id", itemId);
     if (error) throw new Error(error.message);
   } catch (error) {

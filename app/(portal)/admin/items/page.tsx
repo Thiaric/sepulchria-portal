@@ -1,6 +1,8 @@
 
 
 import { AdminActionForm } from "@/components/admin/admin-action-form";
+import { ItemUseFormLogic } from "@/components/admin/item-use-form-logic";
+import { ItemEffectFormLogic } from "@/components/admin/item-effect-form-logic";
 import type { ReactNode } from "react";
 import { ItemEquipmentForm } from "@/components/admin/item-equipment-form";
 import {
@@ -503,6 +505,8 @@ function ItemForm({
     <AdminActionForm action={action} className="mt-5">
       {item ? <input type="hidden" name="itemId" value={item.id} /> : null}
 
+      <ItemUseFormLogic />
+
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <Field label="Name">
           <input name="name" required defaultValue={item?.name ?? ""} className={inputClass} />
@@ -824,10 +828,11 @@ function ItemForm({
           later rule overrides it.
         </p>
         <p className="mt-1">
-          Irrelevant settings are automatically ignored: Maximum Stack unless
-          Stackable is enabled, Use behaviour/charges/cooldown unless Usable is
-          enabled, and Container capacity unless the core category is Container.
-          Target and Success/Damage mechanics remain Item-level configuration.
+          Usable controls the generic Use Item action only. An Item may be
+          Equippable without being Usable, and equipped Weapons can still attack.
+          Use behaviour, charges, cooldown and generic Use target apply only when
+          Usable is enabled. Success/Damage fields remain Item-level mechanics
+          because Weapons also use them for combat.
         </p>
       </div>
     </AdminActionForm>
@@ -842,6 +847,8 @@ function EffectForm({ itemId, effect }: { itemId: string; effect?: Effect }) {
     >
       <input type="hidden" name="itemId" value={itemId} />
       {effect ? <input type="hidden" name="effectId" value={effect.id} /> : null}
+
+      <ItemEffectFormLogic />
 
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
         <Field label="Trigger">
@@ -866,8 +873,8 @@ function EffectForm({ itemId, effect }: { itemId: string; effect?: Effect }) {
             }
             className={inputClass}
           >
-            <option value="instant">Instant</option>
-            <option value="temporary">Temporary</option>
+            <option value="instant">Instantaneous</option>
+            <option value="temporary">Timed</option>
           </select>
         </Field>
 
@@ -943,7 +950,7 @@ function EffectForm({ itemId, effect }: { itemId: string; effect?: Effect }) {
       <p className="mt-2 text-[8px] leading-5 text-[rgb(var(--sep-colour-6f6252))]">
         Owned and Equipped effects are saved as Passive. Instant Use effects
         apply Health only; Attribute and Max Health modifiers are for
-        Temporary/Passive effects. Warping bonuses are limited to Affinity +8
+        Timed/Passive effects. Warping bonuses are limited to Affinity +8
         and Shapes/day +10.
       </p>
     </AdminActionForm>

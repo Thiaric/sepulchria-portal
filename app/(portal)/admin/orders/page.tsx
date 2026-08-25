@@ -1,5 +1,4 @@
 
-
 import { AdminActionForm } from "@/components/admin/admin-action-form";
 import Image from "next/image";
 import { RichTextContent } from "@/components/editor/rich-text-content";
@@ -530,126 +529,119 @@ export default async function AdminOrdersPage({
                 isActive={order.is_active}
               >
 
-                {order.banner_url ? (
-                  <div className="relative h-44 border-b border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-0b0807))]">
-                    <Image
-                      src={
-                        order.banner_url
-                      }
-                      alt={`${order.name} banner`}
-                      fill
-                      sizes="100vw"
-                      className="object-cover opacity-70"
-                      unoptimized
-                    />
+                
 
-                    <div className="absolute inset-0 bg-gradient-to-t from-[rgb(var(--sep-colour-15100d))] via-transparent to-black/20" />
-                  </div>
-                ) : null}
-
-                <div className="grid lg:grid-cols-[260px_minmax(0,1fr)]">
-                  <aside className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-0f0b09))] p-5 lg:border-b-0 lg:border-r">
-                    <div
-                      className="relative aspect-[4/3] overflow-hidden border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-090706))]"
-                      style={
-                        isValidColour(
-                          order.colour,
-                        )
-                          ? {
-                              borderColor:
-                                order.colour ??
-                                undefined,
-                            }
-                          : undefined
-                      }
-                    >
-                      {order.image_url ? (
-                        <Image
-                          src={
-                            order.image_url
+                <div>
+                  <aside className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-0f0b09))] p-4">
+                    <div className="flex items-start justify-start gap-8 pl-2">
+                      <div className="w-[280px] shrink-0">
+                        <div
+                          className="relative aspect-[4/3] w-full overflow-hidden border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-090706))]"
+                          style={
+                            isValidColour(
+                              order.colour,
+                            )
+                              ? {
+                                  borderColor:
+                                    order.colour ??
+                                    undefined,
+                                }
+                              : undefined
                           }
-                          alt={
-                            order.name
-                          }
-                          fill
-                          sizes="260px"
-                          className="object-cover"
-                          unoptimized
-                        />
-                      ) : order.icon_url ? (
-                        <div className="flex h-full items-center justify-center p-10">
-                          <Image
-                            src={
-                              order.icon_url
-                            }
-                            alt={`${order.name} icon`}
-                            width={110}
-                            height={110}
-                            className="max-h-full w-auto object-contain"
-                            unoptimized
-                          />
+                        >
+                          {order.image_url ? (
+                            <Image
+                              src={
+                                order.image_url
+                              }
+                              alt={
+                                order.name
+                              }
+                              fill
+                              sizes="280px"
+                              className="object-cover"
+                              unoptimized
+                            />
+                          ) : order.icon_url ? (
+                            <div className="flex h-full items-center justify-center p-10">
+                              <Image
+                                src={
+                                  order.icon_url
+                                }
+                                alt={`${order.name} icon`}
+                                width={110}
+                                height={110}
+                                className="max-h-full w-auto object-contain"
+                                unoptimized
+                              />
+                            </div>
+                          ) : (
+                            <div className="flex h-full items-center justify-center font-serif text-5xl text-[rgb(var(--sep-colour-705334))]">
+                              {order.name
+                                .charAt(0)
+                                .toUpperCase()}
+                            </div>
+                          )}
                         </div>
-                      ) : (
-                        <div className="flex h-full items-center justify-center font-serif text-5xl text-[rgb(var(--sep-colour-705334))]">
-                          {order.name
-                            .charAt(0)
-                            .toUpperCase()}
-                        </div>
-                      )}
-                    </div>
 
-                    <div className="mt-4 text-center">
-                      <StatusBadge
-                        isActive={
-                          order.is_active
-                        }
-                      />
-
-                      <p className="mt-3 font-serif text-lg text-[rgb(var(--sep-colour-d7c09a))]">
-                        {associationName(
-                          order.association,
-                        )}
-                      </p>
-
-                      <p className="mt-1 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-746652))]">
-                        Association
-                      </p>
-
-                      <p className="mt-4 text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-887967))]">
-                        /{order.slug}
-                      </p>
-
-                      {order.colour ? (
-                        <div className="mt-3 flex items-center justify-center gap-2 text-[9px] text-[rgb(var(--sep-colour-817461))]">
-                          <span
-                            className="h-3 w-3 rounded-full border border-white/15"
-                            style={{
-                              backgroundColor:
-                                order.colour,
-                            }}
-                          />
-
-                          {
-                            order.colour
-                          }
-                        </div>
-                      ) : null}
-
-                      <div className="mt-5">
-                        <InfoCounter
-                          label="Sort order"
-                          value={
-                            order.sort_order
-                          }
-                        />
+                        
                       </div>
 
-                      <p className="mt-4 text-[9px] text-[rgb(var(--sep-colour-756957))]">
-                        Updated{" "}
-                        {formatDate(
-                          order.updated_at,
-                        )}
-                      </p>
+                      <div className="min-w-0 text-left">
+                        <p className="font-serif text-2xl text-[rgb(var(--sep-colour-d7c09a))]">
+                          {associationName(
+                            order.association,
+                          )}
+                        </p>
+
+                        <p className="mt-1 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-746652))]">
+                          Association
+                        </p>
+
+                        <p className="mt-2 text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-887967))]">
+                          /{order.slug}
+                        </p>
+
+                        {order.colour ? (
+                          <div className="mt-3 flex items-center gap-2 text-[9px] text-[rgb(var(--sep-colour-817461))]">
+                            <span
+                              className="h-3 w-3 rounded-full border border-white/15"
+                              style={{
+                                backgroundColor:
+                                  order.colour,
+                              }}
+                            />
+
+                            {
+                              order.colour
+                            }
+                          </div>
+                        ) : null}
+
+                        <div className="mt-4 flex flex-wrap items-end gap-x-8 gap-y-3">
+                          <div>
+                            
+
+                            <p className="mt-1 text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-756754))]">
+                              Sort order : {order.sort_order}
+                            </p>
+                          </div>
+
+                          <p className="pb-0.5 text-[9px] text-[rgb(var(--sep-colour-756957))]">
+                            Updated{" "}
+                            {formatDate(
+                              order.updated_at,
+                            )}
+                          </p>
+                          
+                        </div><div className="mt-3 text-center">
+                          <StatusBadge
+                            isActive={
+                              order.is_active
+                            }
+                          />
+                        </div>
+                      </div>
                     </div>
                   </aside>
 

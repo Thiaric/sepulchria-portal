@@ -34,6 +34,8 @@ type OwnedCharacter = {
 type ItemMechanics = {
   id: string;
   name: string;
+  is_active: boolean;
+  is_usable: boolean;
   use_behaviour: "reusable" | "consumable" | "limited_charges" | null;
   target_mode: "self" | "other" | "either" | null;
   success_die: number | null;
@@ -132,6 +134,8 @@ async function loadAttemptRecord(
   const itemSelect = `
     id,
     name,
+    is_active,
+    is_usable,
     use_behaviour,
     target_mode,
     success_die,
@@ -667,6 +671,16 @@ export async function useInventoryItem(
       recordId,
       character.id,
     );
+
+    if (!record.item.is_active) {
+      throw new Error("This Item is inactive.");
+    }
+
+    if (!record.item.is_usable) {
+      throw new Error(
+        "This Item cannot be used through the Use Item action.",
+      );
+    }
 
     const categorySlug =
       one(record.item.category)?.slug ?? null;
