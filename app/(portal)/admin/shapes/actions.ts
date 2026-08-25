@@ -29,7 +29,12 @@ function payload(f:FormData){
   const essence=txt(f,"essence_word"), action=txt(f,"action_word"), law=txt(f,"law_word");
   const targetMode=txt(f,"target_mode")||"other";
   const scope=txt(f,"target_scope")||"single";
-  const resolution=txt(f,"resolution_mode")||"save";
+  const legacyResolution=txt(f,"resolution_mode")||"save";
+
+  const selfResolution=txt(f,"self_resolution_mode")||"automatic";
+  const otherResolution=txt(f,"other_resolution_mode")||"automatic";
+  const otherAltResolution=txt(f,"other_alt_resolution_mode")||"save";
+
   const durationMode=
     txt(f,"duration_mode")||
     txt(f,"duration_unit")||
@@ -52,10 +57,27 @@ function payload(f:FormData){
     word_of_power:wordOfPower(essence,action,law),movement:txt(f,"movement"),
     requires_verbal:check(f,"requires_verbal"),requires_movement:check(f,"requires_movement"),
 
-    resolution_mode:resolution,
-    dc_attribute:resolution==="save"?(txt(f,"dc_attribute")||null):null,
-    save_options:resolution==="save"?f.getAll("save_options").map(String):[],
-    save_success_damage:resolution==="save"?(txt(f,"save_success_damage")||"none"):"none",
+    // Legacy global columns are retained for compatibility with older code/data.
+    // The normal Other profile is used as the compatibility value.
+    resolution_mode:otherResolution,
+    dc_attribute:otherResolution==="save"?(txt(f,"other_dc_attribute")||null):null,
+    save_options:otherResolution==="save"?f.getAll("other_save_options").map(String):[],
+    save_success_damage:otherResolution==="save"?(txt(f,"other_save_success_damage")||"none"):"none",
+
+    self_resolution_mode:selfResolution,
+    self_dc_attribute:selfResolution==="save"?(txt(f,"self_dc_attribute")||null):null,
+    self_save_options:selfResolution==="save"?f.getAll("self_save_options").map(String):[],
+    self_save_success_damage:selfResolution==="save"?(txt(f,"self_save_success_damage")||"none"):"none",
+
+    other_resolution_mode:otherResolution,
+    other_dc_attribute:otherResolution==="save"?(txt(f,"other_dc_attribute")||null):null,
+    other_save_options:otherResolution==="save"?f.getAll("other_save_options").map(String):[],
+    other_save_success_damage:otherResolution==="save"?(txt(f,"other_save_success_damage")||"none"):"none",
+
+    other_alt_resolution_mode:otherAltResolution,
+    other_alt_dc_attribute:otherAltResolution==="save"?(txt(f,"other_alt_dc_attribute")||null):null,
+    other_alt_save_options:otherAltResolution==="save"?f.getAll("other_alt_save_options").map(String):[],
+    other_alt_save_success_damage:otherAltResolution==="save"?(txt(f,"other_alt_save_success_damage")||"none"):"none",
 
     target_mode:targetMode,
     target_scope:(targetMode==="self"||targetMode==="written")?"single":scope,
@@ -120,6 +142,26 @@ function payload(f:FormData){
   };
 }
 
+function validateProfileSaves(p:ReturnType<typeof payload>):string|null{
+  if(
+    (p.target_mode==="other"||p.target_mode==="either")&&
+    p.other_resolution_mode==="save"&&
+    p.other_save_options.length===0
+  ){
+    return "The normal/Beneficial Other effect requires at least one Save option.";
+  }
+
+  if(
+    p.other_alternative_enabled&&
+    p.other_alt_resolution_mode==="save"&&
+    p.other_alt_save_options.length===0
+  ){
+    return "The Harmful Other effect requires at least one Save option.";
+  }
+
+  return null;
+}
+
 export async function createShape(
   _previous:ShapeActionState,
   f:FormData,
@@ -137,15 +179,11 @@ export async function createShape(
     };
   }
 
-  if(
-    p.resolution_mode==="save"&&
-    p.target_mode!=="self"&&
-    p.target_mode!=="written"&&
-    p.save_options.length===0
-  ){
+  const saveValidation=validateProfileSaves(p);
+  if(saveValidation){
     return{
       ok:false,
-      message:"Save-based Shapes that target another Character need a Save.",
+      message:saveValidation,
       submittedAt:Date.now(),
     };
   }
@@ -236,15 +274,11 @@ export async function updateShape(
     };
   }
 
-  if(
-    p.resolution_mode==="save"&&
-    p.target_mode!=="self"&&
-    p.target_mode!=="written"&&
-    p.save_options.length===0
-  ){
+  const saveValidation=validateProfileSaves(p);
+  if(saveValidation){
     return{
       ok:false,
-      message:"Save-based Shapes that target another Character need a Save.",
+      message:saveValidation,
       submittedAt:Date.now(),
     };
   }

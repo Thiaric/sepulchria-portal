@@ -39,11 +39,6 @@ export function ShapeProgression() {
       ),
     );
 
-    const resolution =
-      form.querySelector(
-        "[data-shape-resolution]",
-      ) as HTMLSelectElement | null;
-
     const duration =
       form.querySelector(
         "[data-shape-duration]",
@@ -84,50 +79,48 @@ export function ShapeProgression() {
         "[data-effect-nature]",
       ) as HTMLSelectElement | null;
 
-    const syncResolution = () => {
+    const profileResolutions =
+      Array.from(
+        form.querySelectorAll(
+          "[data-profile-resolution]",
+        ),
+      ) as HTMLSelectElement[];
+
+    const syncProfileResolution = (
+      resolution:HTMLSelectElement,
+    ) => {
+      const profile =
+        resolution.closest(
+          "[data-resolution-profile]",
+        ) as HTMLElement | null;
+
+      if(!profile)return;
+
       const automatic =
-        resolution?.value ===
-        "automatic";
+        resolution.value==="automatic";
 
-      form
+      profile
         .querySelectorAll(
-          'input[name="save_options"]',
+          'input[type="checkbox"]',
         )
-        .forEach((node) => {
-          const input =
-            node as HTMLInputElement;
-
-          input.disabled =
-            Boolean(automatic);
-
-          if (automatic) {
-            input.checked = false;
-          }
+        .forEach((node)=>{
+          const input=node as HTMLInputElement;
+          input.disabled=automatic;
+          if(automatic)input.checked=false;
         });
 
-      const dc =
-        form.querySelector(
-          'select[name="dc_attribute"]',
-        ) as
-          | HTMLSelectElement
-          | null;
+      profile
+        .querySelectorAll(
+          'select[name$="_dc_attribute"], select[name$="_save_success_damage"]',
+        )
+        .forEach((node)=>{
+          (node as HTMLSelectElement).disabled=automatic;
+        });
 
-      const onSave =
-        form.querySelector(
-          'select[name="save_success_damage"]',
-        ) as
-          | HTMLSelectElement
-          | null;
-
-      if (dc) {
-        dc.disabled =
-          Boolean(automatic);
-      }
-
-      if (onSave) {
-        onSave.disabled =
-          Boolean(automatic);
-      }
+      profile.classList.toggle(
+        "opacity-80",
+        automatic,
+      );
     };
 
     const syncDuration = () => {
@@ -238,14 +231,16 @@ export function ShapeProgression() {
       }
     };
 
-    syncResolution();
+    profileResolutions.forEach((resolution)=>{
+      syncProfileResolution(resolution);
+      resolution.addEventListener(
+        "change",
+        ()=>syncProfileResolution(resolution),
+      );
+    });
+
     syncDuration();
     syncAlternative();
-
-    resolution?.addEventListener(
-      "change",
-      syncResolution,
-    );
 
     duration?.addEventListener(
       "change",
@@ -305,7 +300,7 @@ export function ShapeProgression() {
 
     const titles = [
       "Identity",
-      "Casting & Resolution",
+      "Casting",
       "Targeting / Duration / Price",
       "Self Effect",
       "Other Effect",
@@ -588,11 +583,6 @@ export function ShapeProgression() {
     refreshLocks();
 
     return () => {
-      resolution?.removeEventListener(
-        "change",
-        syncResolution,
-      );
-
       duration?.removeEventListener(
         "change",
         syncDuration,

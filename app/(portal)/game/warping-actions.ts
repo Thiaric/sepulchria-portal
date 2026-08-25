@@ -35,10 +35,25 @@ async function healthSnapshot(characterId:string){
  return {current:Number(q.data.current_health??max),max};
 }
 function durationLabel(s:any){if(s.is_instantaneous)return"Instantaneous";if(s.duration_unit==="until_dispelled")return"Until Dispelled";return `${Number(s.duration_amount??1)} ${String(s.duration_unit??"minutes")}`}
+function effectProfile(s:any,t:any,casterId:string):"self"|"other"|"other_alt"{
+ const self=t.target_character_id===casterId;
+ if(self)return"self";
+ if(s.other_alternative_enabled&&t.other_effect_choice==="harmful")return"other_alt";
+ return"other";
+}
+function profileResolution(s:any,p:"self"|"other"|"other_alt"){
+ const mode=String(s[`${p}_resolution_mode`]??s.resolution_mode??"save");
+ return{
+  mode,
+  dcAttribute:s[`${p}_dc_attribute`]??s.dc_attribute??null,
+  saveOptions:Array.isArray(s[`${p}_save_options`])?s[`${p}_save_options`]:(Array.isArray(s.save_options)?s.save_options:[]),
+  saveSuccessDamage:String(s[`${p}_save_success_damage`]??s.save_success_damage??"none"),
+ };
+}
 async function target(id:string,cid:string){const q=await admin().from("shape_cast_targets").select(`id,cast_id,target_character_id,target_kind,outcome,dispel_effect_id,other_effect_choice,cast:shape_casts!shape_cast_targets_cast_id_fkey(id,room_id,caster_character_id,caster:characters!shape_casts_caster_character_id_fkey(id,display_name,muscles,reflexes,vigor,brains,shrewd,presence_score),shape:shapes!shape_casts_shape_id_fkey(*))`).eq("id",id).eq("target_character_id",cid).maybeSingle();if(q.error||!q.data)throw Error(q.error?.message??"Incoming Shape not found.");if(q.data.outcome!=="pending")throw Error("This Shape is already resolved.");return q.data as any}
 async function apply(t:any,half=false){
  const cast=one(t.cast),s=one(cast?.shape),caster=one(cast?.caster);if(!cast||!s||!caster)throw Error("Shape data unavailable.");
- const self=t.target_character_id===caster.id,p=self?"self":(s.other_alternative_enabled&&t.other_effect_choice==="harmful"?"other_alt":"other"),before=await healthSnapshot(t.target_character_id);
+ const self=t.target_character_id===caster.id,p=effectProfile(s,t,caster.id),before=await healthSnapshot(t.target_character_id);
  let dmg=dice(s[`${p}_damage_dice`])+(s[`${p}_damage_attribute`]?await eff(caster,s[`${p}_damage_attribute`]):0);if(half)dmg=Math.floor(dmg/2);
  const heal=half?0:(dice(s[`${p}_heal_dice`])+(s[`${p}_heal_attribute`]?await eff(caster,s[`${p}_heal_attribute`]):0));if(heal-dmg)await applyGiftCurrentHealthDelta({characterId:t.target_character_id,healthDelta:heal-dmg});
  const conditions=half?[]:(Array.isArray(s[`${p}_conditions`])?s[`${p}_conditions`]:[]);
@@ -186,7 +201,14 @@ export async function resolveImmediateShapeCast(
           (
             row.target_character_id ===
               caster.id ||
-            shape.resolution_mode ===
+            profileResolution(
+              shape,
+              effectProfile(
+                shape,
+                row,
+                caster.id,
+              ),
+            ).mode ===
               "automatic"
           ),
       );
@@ -413,18 +435,22 @@ export async function resolveIncomingShape(_p:WarpingActionState,f:FormData):Pro
   if(Number(s.level)<Number(eq.data.shape_level))throw Error(`Level ${s.level} cannot dispel Level ${eq.data.shape_level}.`);
   const effectShape:any=one(eq.data.shape as any);
   if(choice==="__do_nothing__"){const u=await a.from("character_shape_effects").update({dispelled_at:new Date().toISOString(),dispelled_by_cast_id:cast.id}).eq("id",effectId);if(u.error)throw Error(u.error.message);await a.from("shape_cast_targets").update({response:"do_nothing",outcome:"success",resolved_at:new Date().toISOString()}).eq("id",id);await message(cast.room_id,c.id,`◆ ${c.display_name} does nothing against ${s.name} · ${effectShape?.name??"Shape effect"} dispelled · Level ${s.level} vs Level ${eq.data.shape_level}`);revalidatePath("/game");revalidatePath("/character");return{ok:true,message:"Effect dispelled.",submittedAt:Date.now()}}
-  const allowed=Array.isArray(s.save_options)?s.save_options:[];if(!allowed.includes(choice))throw Error("That Save is unavailable.");const sa=SAVE[choice];if(!sa)throw Error("Invalid Save.");const mod=await eff(c,sa),roll=randomInt(1,21),total=roll+mod,dc=11+(s.dc_attribute?await eff(caster,s.dc_attribute):0),saved=total>=dc;
+  const dispelProfile=effectProfile(s,t,caster.id),dispelResolution=profileResolution(s,dispelProfile);
+  if(dispelResolution.mode!=="save")throw Error("This Dispel effect no longer requires a Save.");
+  const allowed=dispelResolution.saveOptions;if(!allowed.includes(choice))throw Error("That Save is unavailable.");const sa=SAVE[choice];if(!sa)throw Error("Invalid Save.");const mod=await eff(c,sa),roll=randomInt(1,21),total=roll+mod,dc=11+(dispelResolution.dcAttribute?await eff(caster,dispelResolution.dcAttribute):0),saved=total>=dc;
   if(!saved){const u=await a.from("character_shape_effects").update({dispelled_at:new Date().toISOString(),dispelled_by_cast_id:cast.id}).eq("id",effectId);if(u.error)throw Error(u.error.message)}
   await a.from("shape_cast_targets").update({response:choice,save_roll:roll,save_attribute:sa,save_attribute_value:mod,save_total:total,dc,outcome:saved?"saved":"success",resolved_at:new Date().toISOString()}).eq("id",id);
   await message(cast.room_id,c.id,`◆ ${c.display_name} uses ${SAVE_NAME[choice]??choice} against ${s.name} · d20 -> ${roll} + ${LABEL[sa]??sa} (${mod>=0?"+":""}${mod}) = ${total} vs DC ${dc} · ${saved?`SUCCESS — ${effectShape?.name??"effect"} remains active`:`FAILED — ${effectShape?.name??"effect"} dispelled`}`);
   revalidatePath("/game");revalidatePath("/character");return{ok:true,message:saved?"Save successful. Effect remains active.":"Save failed. Effect dispelled.",submittedAt:Date.now()}
  }
 
+ const profile=effectProfile(s,t,caster.id),resolution=profileResolution(s,profile);
+ if(resolution.mode!=="save")throw Error("This Shape effect no longer requires a Save.");
  if(choice==="__do_nothing__"){const r=await apply(t);await admin().from("shape_cast_targets").update({response:"do_nothing",outcome:"success",resolved_at:new Date().toISOString()}).eq("id",id);await message(cast.room_id,c.id,`◆ ${c.display_name} does nothing against ${s.name} · Shape succeeds${effectSummary(r)}`);revalidatePath("/game");revalidatePath("/character");return{ok:true,message:"Shape resolved.",submittedAt:Date.now()}}
- const allowed=Array.isArray(s.save_options)?s.save_options:[];if(!allowed.includes(choice))throw Error("That Save is unavailable.");const a=SAVE[choice];if(!a)throw Error("Invalid Save.");const mod=await eff(c,a),r=randomInt(1,21),total=r+mod,dc=11+(s.dc_attribute?await eff(caster,s.dc_attribute):0),saved=total>=dc;
- let result:any=null;if(!saved)result=await apply(t);else if(s.save_success_damage==="half")result=await apply(t,true);
+ const allowed=resolution.saveOptions;if(!allowed.includes(choice))throw Error("That Save is unavailable.");const a=SAVE[choice];if(!a)throw Error("Invalid Save.");const mod=await eff(c,a),r=randomInt(1,21),total=r+mod,dc=11+(resolution.dcAttribute?await eff(caster,resolution.dcAttribute):0),saved=total>=dc;
+ let result:any=null;if(!saved)result=await apply(t);else if(resolution.saveSuccessDamage==="half")result=await apply(t,true);
  await admin().from("shape_cast_targets").update({response:choice,save_roll:r,save_attribute:a,save_attribute_value:mod,save_total:total,dc,outcome:saved?"saved":"success",resolved_at:new Date().toISOString()}).eq("id",id);
- let end=saved?"SUCCESS — no effect":"FAILED — Shape succeeds";if(saved&&s.save_success_damage==="half"&&result?.dmg)end=`SUCCESS — half damage ${result.dmg}`;if(!saved)end+=effectSummary(result);
+ let end=saved?"SUCCESS — no effect":"FAILED — Shape succeeds";if(saved&&resolution.saveSuccessDamage==="half"&&result?.dmg)end=`SUCCESS — half damage ${result.dmg}`;if(!saved)end+=effectSummary(result);
  await message(cast.room_id,c.id,`◆ ${c.display_name} uses ${SAVE_NAME[choice]??choice} against ${s.name} · d20 -> ${r} + ${LABEL[a]??a} (${mod>=0?"+":""}${mod}) = ${total} vs DC ${dc} · ${end}`);revalidatePath("/game");return{ok:true,message:"Shape resolved.",submittedAt:Date.now()}
  }catch(e){return{ok:false,message:e instanceof Error?e.message:"Unable to resolve Shape."}}}
 

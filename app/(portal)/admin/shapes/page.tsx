@@ -16,9 +16,48 @@ const lab="mb-1 block text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep
 function Sel({name,value,options,none=false}:{name:string;value?:string|null;options:readonly (readonly [string,...unknown[]])[];none?:boolean}){
   return <select name={name} defaultValue={value??""} className={cls}>{none?<option value="">None</option>:null}{options.map(o=><option key={String(o[0])} value={String(o[0])}>{String(o[1])}</option>)}</select>;
 }
+function ProfileResolution({
+  s,
+  p,
+}:{
+  s?:S;
+  p:"self"|"other"|"other_alt";
+}){
+  const defaultMode=
+    p==="other_alt"
+      ?"save"
+      :"automatic";
+
+  const mode=
+    s?.[`${p}_resolution_mode`]??
+    (
+      s?.resolution_mode??
+      defaultMode
+    );
+
+  const saves=
+    new Set<string>(
+      s?.[`${p}_save_options`]??
+      s?.save_options??
+      [],
+    );
+
+  return <div data-resolution-profile className="mb-4 border border-[rgb(var(--sep-colour-60482e))]/25 bg-[rgb(var(--sep-colour-15100d))] p-3">
+    <p className="mb-3 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))]">Resolution for this effect</p>
+    <div className="grid gap-3 md:grid-cols-3">
+      <label><span className={lab}>Resolution</span><select name={`${p}_resolution_mode`} data-profile-resolution defaultValue={mode} className={cls}><option value="automatic">Automatic Success</option><option value="save">Save Required</option></select></label>
+      <label><span className={lab}>DC Attribute</span><select name={`${p}_dc_attribute`} defaultValue={s?.[`${p}_dc_attribute`]??s?.dc_attribute??""} className={cls}><option value="">None</option>{ATTRIBUTES.map(o=><option key={String(o[0])} value={String(o[0])}>{String(o[1])}</option>)}</select></label>
+      <label><span className={lab}>Successful Save</span><select name={`${p}_save_success_damage`} defaultValue={s?.[`${p}_save_success_damage`]??s?.save_success_damage??"none"} className={cls}><option value="none">No effect</option><option value="half">Half damage only</option></select></label>
+    </div>
+    <div className="mt-3 flex flex-wrap gap-3">{SAVES.map(([v,l])=><label key={v} className="text-[10px] text-[rgb(var(--sep-colour-c6ae88))]"><input className="mr-2" type="checkbox" name={`${p}_save_options`} value={v} defaultChecked={saves.has(v)}/>{l}</label>)}</div>
+    {p==="self"?<p className="mt-2 text-[9px] text-[rgb(var(--sep-colour-766a5b))]">Self never opens a Counter popup. If Save is selected here, a self-targeted cast still succeeds immediately against Self.</p>:<p className="mt-2 text-[9px] text-[rgb(var(--sep-colour-766a5b))]">Do Nothing is always available to another Character when this effect requires a Save.</p>}
+  </div>;
+}
+
 function Profile({s,p,title}:{s?:S;p:"self"|"other"|"other_alt";title:string}){
   const mods=[["muscles","Muscles"],["reflexes","Reflexes"],["vigour","Vigour"],["brains","Brains"],["shrewd","Shrewd"],["presence","Presence"]] as const;
   return <section className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] p-4"><h4 data-other-main-title={p==="other"?"true":undefined} className="font-serif text-lg text-[rgb(var(--sep-colour-d8c29b))]">{title}</h4>
+    <div className="mt-3"><ProfileResolution s={s} p={p}/></div>
     <div className="mt-3 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
       <label><span className={lab}>Damage</span><input name={`${p}_damage_dice`} defaultValue={s?.[`${p}_damage_dice`]??""} placeholder="2d6 or 5" className={cls}/></label>
       <label><span className={lab}>Damage Attribute</span><Sel name={`${p}_damage_attribute`} value={s?.[`${p}_damage_attribute`]} options={ATTRIBUTES} none/></label>
@@ -39,7 +78,7 @@ function ShapeForm({
     formData:FormData,
   )=>Promise<ShapeActionState>;
 }){
-  const saves=new Set<string>(s?.save_options??[]); const req=[["muscles","Muscles"],["reflexes","Reflexes"],["vigour","Vigour"],["brains","Brains"],["shrewd","Shrewd"],["presence","Presence"]] as const;
+  const req=[["muscles","Muscles"],["reflexes","Reflexes"],["vigour","Vigour"],["brains","Brains"],["shrewd","Shrewd"],["presence","Presence"]] as const;
   return <ShapeActionForm action={action} submitLabel={s?"Save Shape":"Create Shape"}><ShapeProgression/>{s?<input type="hidden" name="shape_id" value={s.id}/>:null}
     <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
       <label className="lg:col-span-2"><span className={lab}>Name</span><input required name="name" defaultValue={s?.name??""} className={cls}/></label>
@@ -51,14 +90,10 @@ function ShapeForm({
       <label><span className={lab}>Movement</span><Sel name="movement" value={s?.movement??"projection"} options={MOVEMENTS}/></label>
       <label className="lg:col-span-4"><span className={lab}>Description / exact specification</span><textarea required rows={4} name="description" defaultValue={s?.description??""} className={cls}/></label>
     </div>
-    <section className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] p-4"><h4 className="font-serif text-lg text-[rgb(var(--sep-colour-d8c29b))]">Casting & Resolution</h4>
+    <section className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] p-4"><h4 className="font-serif text-lg text-[rgb(var(--sep-colour-d8c29b))]">Casting</h4>
       <div className="mt-3 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
-        <label><span className={lab}>Resolution</span><select name="resolution_mode" data-shape-resolution defaultValue={s?.resolution_mode??"save"} className={cls}><option value="automatic">Automatic Success</option><option value="save">Save</option></select></label>
-        <label><span className={lab}>DC Attribute</span><Sel name="dc_attribute" value={s?.dc_attribute} options={ATTRIBUTES} none/></label>
-        <label><span className={lab}>Successful Save</span><select name="save_success_damage" defaultValue={s?.save_success_damage??"none"} className={cls}><option value="none">No damage</option><option value="half">Half damage</option></select></label>
         <label><span className={lab}>Effect Nature</span><select name="effect_nature" data-effect-nature defaultValue={s?.effect_nature??"harmful"} className={cls}><option value="beneficial">Beneficial</option><option value="harmful">Harmful</option><option value="mixed">Mixed</option></select></label>
-      </div><div className="mt-3 flex flex-wrap gap-3">{SAVES.map(([v,l])=><label key={v} className="text-[10px] text-[rgb(var(--sep-colour-c6ae88))]"><input className="mr-2" type="checkbox" name="save_options" value={v} defaultChecked={saves.has(v)}/>{l}</label>)}</div>
-      <p className="mt-2 text-[9px] text-[rgb(var(--sep-colour-766a5b))]">Do nothing is always available in Play.</p>
+      </div>
       <div className="mt-3 flex flex-wrap gap-5 text-[10px] text-[rgb(var(--sep-colour-c6ae88))]"><label><input className="mr-2" type="checkbox" name="requires_verbal" defaultChecked={s?s.requires_verbal:true}/>Requires Verbal</label><label><input className="mr-2" type="checkbox" name="requires_movement" defaultChecked={s?s.requires_movement:true}/>Requires Movement</label><label><input className="mr-2" type="checkbox" name="is_dispel" defaultChecked={s?.is_dispel??false}/>Dispel Shape</label><label><input className="mr-2" type="checkbox" name="is_active" defaultChecked={s?s.is_active:true}/>Active</label></div>
     </section>
     <section className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] p-4"><h4 className="font-serif text-lg text-[rgb(var(--sep-colour-d8c29b))]">Targeting / Duration / Price</h4>
