@@ -1116,6 +1116,18 @@ export function PortalSidebar({
 }
 
   useEffect(() => {
+    /*
+     * A page rendered inside a portal modal still mounts the portal layout,
+     * including its hidden PortalSidebar.
+     *
+     * Only the top-level portal is allowed to own modal windows.
+     * Embedded pages forward modal requests through the iframe bridge
+     * installed by PublicPageModal instead.
+     */
+    if (window.self !== window.top) {
+      return;
+    }
+
     function handleExternalModalOpen(event: Event) {
       const detail = (event as CustomEvent<{
         label: string;
@@ -2065,6 +2077,14 @@ function PublicPageModal({
   ] = useState(false);
 
   const [
+    modalSize,
+    setModalSize,
+  ] = useState<{
+    width: number;
+    height: number;
+  } | null>(null);
+
+  const [
     position,
     setPosition,
   ] = useState({
@@ -2105,12 +2125,61 @@ function PublicPageModal({
       "/characters/",
     );
 
+  const isForumModal =
+    item.href === "/forum" ||
+    item.href.startsWith(
+      "/forum/",
+    );
+
   const isLargeModal =
     isMessagesModal ||
-    isCharacterModal;
+    isCharacterModal ||
+    isForumModal;
 
   const modalWindowRef =
     useRef<HTMLDivElement>(null);
+
+  function rememberModalSize() {
+    const modalWindow =
+      modalWindowRef.current;
+
+    if (
+      !modalWindow ||
+      collapsed
+    ) {
+      return;
+    }
+
+    const rect =
+      modalWindow.getBoundingClientRect();
+
+    const width =
+      Math.round(rect.width);
+
+    const height =
+      Math.round(rect.height);
+
+    if (
+      width <= 0 ||
+      height <= 0
+    ) {
+      return;
+    }
+
+    setModalSize((current) => {
+      if (
+        current?.width === width &&
+        current?.height === height
+      ) {
+        return current;
+      }
+
+      return {
+        width,
+        height,
+      };
+    });
+  }
 
   function clampPosition(
     x: number,
@@ -2209,26 +2278,23 @@ function PublicPageModal({
       keepWindowInBounds,
     );
 
-    const modalWindow =
-      modalWindowRef.current;
-
-    const resizeObserver =
-      modalWindow &&
-      typeof ResizeObserver !==
-        "undefined"
-        ? new ResizeObserver(() => {
-            keepWindowInBounds();
-          })
-        : null;
-
-    if (
-      resizeObserver &&
-      modalWindow
-    ) {
-      resizeObserver.observe(
-        modalWindow,
-      );
+    /*
+     * Do not observe the modal's own dimensions here.
+     *
+     * Native CSS resize already owns the size while the user drags the
+     * resize handle. React only needs to clamp the final position afterwards.
+     */
+    function finishPointerInteraction() {
+      window.requestAnimationFrame(() => {
+        rememberModalSize();
+        keepWindowInBounds();
+      });
     }
+
+    window.addEventListener(
+      "pointerup",
+      finishPointerInteraction,
+    );
 
     return () => {
       window.cancelAnimationFrame(
@@ -2240,7 +2306,10 @@ function PublicPageModal({
         keepWindowInBounds,
       );
 
-      resizeObserver?.disconnect();
+      window.removeEventListener(
+        "pointerup",
+        finishPointerInteraction,
+      );
     };
   }, [collapsed]);
 
@@ -2257,6 +2326,16 @@ function PublicPageModal({
           left: "50%",
           top: "50%",
           transform: `translate(calc(-50% + ${position.x}px), calc(-50% + ${position.y}px))`,
+          width:
+            !collapsed &&
+            modalSize
+              ? `${modalSize.width}px`
+              : undefined,
+          height:
+            !collapsed &&
+            modalSize
+              ? `${modalSize.height}px`
+              : undefined,
         }}
         className={`pointer-events-auto fixed flex flex-col border border-[rgb(var(--sep-colour-6e5535))]/65 bg-[rgb(var(--sep-colour-090705))] shadow-[0_20px_80px_rgba(var(--sep-rgb-0-0-0),0.65)] ${
           collapsed
