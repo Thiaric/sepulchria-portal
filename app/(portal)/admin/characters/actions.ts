@@ -903,65 +903,156 @@ currentHealth =
     currentHealth,
   );
 
-  const updatePayload = {
-    first_name: firstName,
-    surname,
-    pronouns,
-    gender,
-    sexual_orientation:
-      sexualOrientation,
-    date_of_birth:
-      dateOfBirth,
-    birthplace,
-    origin,
-    portrait_url:
-      portraitUrl,
-    music_url: musicUrl,
-    physical_description:
-      physicalDescription,
-    personality,
-    biography,
-    public_notes:
-      publicNotes,
-    relationships,
-    offgame,
-    ...attributes,
-    current_health:
-      currentHealth,
-    race_id: raceId,
-    status,
-    title,
-    staff_notes:
-      staffNotes,
-    rejection_reason:
-      rejectionReason,
-    approved_at:
-      approvalData.approved_at,
-    approved_by:
-      approvalData.approved_by,
-    updated_at: now,
-    ...(approvalData
-      .approval_notice_seen_at !==
-    undefined
-      ? {
-          approval_notice_seen_at:
-            approvalData
-              .approval_notice_seen_at,
-        }
-      : {}),
-  };
+  const candidatePayload:
+    Record<string, unknown> = {
+      first_name: firstName,
+      surname,
+      pronouns,
+      gender,
+      sexual_orientation:
+        sexualOrientation,
+      date_of_birth:
+        dateOfBirth,
+      birthplace,
+      origin,
+      portrait_url:
+        portraitUrl,
+      music_url: musicUrl,
+      physical_description:
+        physicalDescription,
+      personality,
+      biography,
+      public_notes:
+        publicNotes,
+      relationships,
+      offgame,
+      ...attributes,
+      current_health:
+        currentHealth,
+      race_id: raceId,
+      status,
+      title,
+      staff_notes:
+        staffNotes,
+      rejection_reason:
+        rejectionReason,
+      approved_at:
+        approvalData.approved_at,
+      approved_by:
+        approvalData.approved_by,
+      ...(approvalData
+        .approval_notice_seen_at !==
+      undefined
+        ? {
+            approval_notice_seen_at:
+              approvalData
+                .approval_notice_seen_at,
+          }
+        : {}),
+    };
 
-  const {
-    error: updateError,
-  } = await supabase
-    .from("characters")
-    .update(updatePayload)
-    .eq("id", characterId);
+  const currentValues:
+    Record<string, unknown> = {
+      first_name:
+        character.first_name,
+      surname:
+        character.surname,
+      pronouns:
+        character.pronouns,
+      gender:
+        character.gender,
+      sexual_orientation:
+        character.sexual_orientation,
+      date_of_birth:
+        character.date_of_birth,
+      birthplace:
+        character.birthplace,
+      origin:
+        character.origin,
+      portrait_url:
+        character.portrait_url,
+      music_url:
+        character.music_url,
+      physical_description:
+        character.physical_description,
+      personality:
+        character.personality,
+      biography:
+        character.biography,
+      public_notes:
+        character.public_notes,
+      relationships:
+        character.relationships,
+      offgame:
+        character.offgame,
+      muscles:
+        character.muscles,
+      reflexes:
+        character.reflexes,
+      vigor:
+        character.vigor,
+      brains:
+        character.brains,
+      shrewd:
+        character.shrewd,
+      presence_score:
+        character.presence_score,
+      current_health:
+        character.current_health,
+      race_id:
+        character.race_id,
+      status:
+        character.status,
+      title:
+        character.title,
+      staff_notes:
+        character.staff_notes,
+      rejection_reason:
+        character.rejection_reason,
+      approved_at:
+        character.approved_at,
+      approved_by:
+        character.approved_by,
+      approval_notice_seen_at:
+        character
+          .approval_notice_seen_at,
+    };
 
-  if (updateError) {
-    throw new Error(
-      `Unable to update character: ${updateError.message}`,
-    );
+  const updatePayload:
+    Record<string, unknown> =
+      Object.fromEntries(
+        Object.entries(
+          candidatePayload,
+        ).filter(
+          ([key, value]) =>
+            currentValues[key] !==
+            value,
+        ),
+      );
+
+  if (
+    Object.keys(
+      updatePayload,
+    ).length > 0
+  ) {
+    updatePayload.updated_at =
+      now;
+
+    const {
+      error: updateError,
+    } = await supabase
+      .from("characters")
+      .update(updatePayload)
+      .eq(
+        "id",
+        characterId,
+      );
+
+    if (updateError) {
+      throw new Error(
+        `Unable to update character: ${updateError.message}`,
+      );
+    }
   }
 
   if (

@@ -786,7 +786,20 @@ export async function updateApprovedCharacterProfile(
     error: characterError,
   } = await supabase
     .from("characters")
-    .select("id, status")
+    .select(`
+      id,
+      status,
+      portrait_url,
+      music_url,
+      sexual_orientation,
+      physical_description,
+      personality,
+      biography,
+      public_notes,
+      relationships,
+      offgame,
+      show_last_activity
+    `)
     .eq("user_id", user.id)
     .maybeSingle();
 
@@ -803,43 +816,114 @@ export async function updateApprovedCharacterProfile(
     );
   }
 
-  const { error } = await supabase
-  .from("characters")
-  .update({
-    portrait_url: portraitUrl || null,
-    music_url: musicUrl || null,
+  const updatePayload:
+    Record<string, unknown> = {};
 
-    sexual_orientation:
-      sexualOrientation || null,
+  function setIfChanged(
+    key: string,
+    currentValue: unknown,
+    nextValue: unknown,
+  ) {
+    if (currentValue !== nextValue) {
+      updatePayload[key] =
+        nextValue;
+    }
+  }
 
-    physical_description:
-      physicalDescription,
+  setIfChanged(
+    "portrait_url",
+    character.portrait_url,
+    portraitUrl || null,
+  );
 
+  setIfChanged(
+    "music_url",
+    character.music_url,
+    musicUrl || null,
+  );
+
+  setIfChanged(
+    "sexual_orientation",
+    character.sexual_orientation,
+    sexualOrientation || null,
+  );
+
+  setIfChanged(
+    "physical_description",
+    character.physical_description,
+    physicalDescription,
+  );
+
+  setIfChanged(
+    "personality",
+    character.personality,
     personality,
+  );
+
+  setIfChanged(
+    "biography",
+    character.biography,
     biography,
+  );
 
-    public_notes:
-      publicNotes || null,
+  setIfChanged(
+    "public_notes",
+    character.public_notes,
+    publicNotes || null,
+  );
 
-    relationships:
-      relationships || null,
+  setIfChanged(
+    "relationships",
+    character.relationships,
+    relationships || null,
+  );
 
-    offgame:
-      offgame || null,
+  setIfChanged(
+    "offgame",
+    character.offgame,
+    offgame || null,
+  );
 
-    show_last_activity:
-      showLastActivity,
+  setIfChanged(
+    "show_last_activity",
+    character.show_last_activity,
+    showLastActivity,
+  );
 
-    updated_at:
-      new Date().toISOString(),
-  })
-    .eq("id", character.id)
-    .eq("user_id", user.id)
-    .eq("status", "approved")
-      .eq("is_system", false);
+  if (
+    Object.keys(
+      updatePayload,
+    ).length > 0
+  ) {
+    updatePayload.updated_at =
+      new Date().toISOString();
 
-  if (error) {
-    redirectCharacterError(error.message);
+    const { error } =
+      await supabase
+        .from("characters")
+        .update(updatePayload)
+        .eq(
+          "id",
+          character.id,
+        )
+        .eq(
+          "user_id",
+          user.id,
+        )
+        .eq(
+          "status",
+          "approved",
+        )
+        .eq(
+          "is_system",
+          false,
+        );
+
+    if (error) {
+      redirectCharacterError(
+        error.message,
+      );
+    }
   }
 
   redirect("/character?updated=true");
