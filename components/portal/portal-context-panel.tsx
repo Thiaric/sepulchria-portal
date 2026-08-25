@@ -2699,7 +2699,7 @@ function PrivateLocationsContext({
                   </p>
 
                   <p className="mt-1 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-75644f))]">
-                    {location.role}
+                    Owner · {location.ownerName}
                   </p>
                 </div>
 

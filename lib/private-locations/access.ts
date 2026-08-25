@@ -241,6 +241,7 @@ export type VisiblePrivateLocation = {
   name: string;
   description: string | null;
   imageUrl: string | null;
+  ownerName: string;
   role: "owner" | "member" | "staff";
 };
 
@@ -283,6 +284,33 @@ export async function getVisiblePrivateLocations(
       ),
     ),
   ];
+
+  const {
+    data: ownerCharacters,
+    error: ownerCharactersError,
+  } = await admin
+    .from("characters")
+    .select(
+      "id, display_name, first_name, surname",
+    )
+    .in("id", ownerIds);
+
+  if (ownerCharactersError) {
+    throw new Error(
+      `Unable to load Private Location owners: ${ownerCharactersError.message}`,
+    );
+  }
+
+  const ownerNameById = new Map(
+    (ownerCharacters ?? []).map(
+      (owner) => [
+        owner.id,
+        owner.display_name?.trim() ||
+          `${owner.first_name ?? ""} ${owner.surname ?? ""}`.trim() ||
+          "Unknown owner",
+      ],
+    ),
+  );
 
   const {
     data: entitlements,
@@ -419,6 +447,10 @@ export async function getVisiblePrivateLocations(
             room.description,
           imageUrl:
             room.image_url,
+          ownerName:
+            ownerNameById.get(
+              row.owner_character_id,
+            ) ?? "Unknown owner",
           role:
             "staff" as const,
         };
@@ -435,6 +467,10 @@ export async function getVisiblePrivateLocations(
             room.description,
           imageUrl:
             room.image_url,
+          ownerName:
+            ownerNameById.get(
+              row.owner_character_id,
+            ) ?? "Unknown owner",
           role:
             "owner" as const,
         };
@@ -452,6 +488,10 @@ export async function getVisiblePrivateLocations(
             room.description,
           imageUrl:
             room.image_url,
+          ownerName:
+            ownerNameById.get(
+              row.owner_character_id,
+            ) ?? "Unknown owner",
           role:
             "member" as const,
         };

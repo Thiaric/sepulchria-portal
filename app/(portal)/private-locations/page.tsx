@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { LocationImageLightbox } from "@/components/world/location-image-lightbox";
+import { CollapsibleRoomDescription } from "@/components/world/collapsible-room-description";
 import {
   cancelPrivateLocationInvitation,
   ensureOwnedPrivateLocation,
@@ -76,7 +77,9 @@ export default async function PrivateLocationPage() {
     error: characterError,
   } = await supabase
     .from("characters")
-    .select("id")
+    .select(
+      "id, display_name, first_name, surname",
+    )
     .eq("user_id", user.id)
     .maybeSingle();
 
@@ -118,6 +121,7 @@ export default async function PrivateLocationPage() {
             location.imageUrl,
         },
         role: location.role,
+        ownerName: location.ownerName,
       }),
     );
 
@@ -256,6 +260,9 @@ export default async function PrivateLocationPage() {
         {
           room: ownedRoom,
           role: "owner",
+          ownerName: label(
+            character as CharacterSummary,
+          ),
         },
         ...accessible,
       ];
@@ -329,13 +336,13 @@ export default async function PrivateLocationPage() {
       {accessible.length > 0 ? (
         <section className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
           {accessible.map(
-            ({ room, role }) => (
+            ({ room, ownerName }) => (
               <article
                 key={room.id}
                 className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-17110d))]"
               >
                 {room.image_url ? (
-  <div className="relative h-56 w-full overflow-hidden">
+  <div className="relative h-40 w-full overflow-hidden">
     {/* eslint-disable-next-line @next/next/no-img-element */}
     <img
       src={room.image_url}
@@ -357,14 +364,19 @@ export default async function PrivateLocationPage() {
                     </h2>
 
                     <span className="text-[7px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-8e795c))]">
-                      {role}
+                      Owner · {ownerName}
                     </span>
                   </div>
 
-                  <p className="mt-2 line-clamp-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-887b6a))]">
-                    {room.description ??
-                      "Private indoor location."}
-                  </p>
+                  {room.description ? (
+  <CollapsibleRoomDescription
+    body={room.description}
+  />
+) : (
+  <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-887b6a))]">
+    Private indoor location.
+  </p>
+)}
 
                   <form
                     action={enterPrivateLocation}

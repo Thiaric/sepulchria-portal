@@ -62,6 +62,7 @@ export type PortalPrivateLocation = {
   name: string;
   description: string | null;
   imageUrl: string | null;
+  ownerName: string;
   role: "owner" | "member" | "staff";
 };
 
