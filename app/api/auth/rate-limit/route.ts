@@ -7,7 +7,8 @@ import {
 
 type AuthRateLimitAction =
   | "login"
-  | "password_reset";
+  | "password_reset"
+  | "signup";
 
 const RULES: Record<
   AuthRateLimitAction,
@@ -21,6 +22,10 @@ const RULES: Record<
     windowSeconds: 10 * 60,
   },
   password_reset: {
+    limit: 5,
+    windowSeconds: 60 * 60,
+  },
+  signup: {
     limit: 5,
     windowSeconds: 60 * 60,
   },
@@ -38,7 +43,8 @@ export async function POST(request: Request) {
 
   if (
     action !== "login" &&
-    action !== "password_reset"
+    action !== "password_reset" &&
+    action !== "signup"
   ) {
     return NextResponse.json(
       { error: "Invalid security request." },
@@ -62,7 +68,9 @@ export async function POST(request: Request) {
           error:
             action === "login"
               ? "Too many login attempts. Please wait before trying again."
-              : "Too many password reset requests. Please wait before trying again.",
+              : action === "password_reset"
+                ? "Too many password reset requests. Please wait before trying again."
+                : "Too many account creation attempts. Please wait before trying again.",
           retryAfterSeconds: result.retryAfterSeconds,
         },
         {

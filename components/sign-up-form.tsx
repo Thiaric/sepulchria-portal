@@ -149,6 +149,35 @@ setIsLoading(true);
 setError(null);
 
 try {
+  const rateLimitResponse =
+    await fetch(
+      "/api/auth/rate-limit",
+      {
+        method: "POST",
+        credentials: "same-origin",
+        cache: "no-store",
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
+        body: JSON.stringify({
+          action: "signup",
+        }),
+      },
+    );
+
+  const rateLimitResult =
+    await rateLimitResponse
+      .json()
+      .catch(() => null);
+
+  if (!rateLimitResponse.ok) {
+    throw new Error(
+      rateLimitResult?.error ??
+        "Unable to verify account creation security.",
+    );
+  }
+
   const emailCheckResponse =
     await fetch(
       "/api/auth/check-email",
