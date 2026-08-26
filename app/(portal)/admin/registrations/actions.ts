@@ -1,16 +1,11 @@
 "use server";
 
-import { createHash, randomBytes } from "crypto";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 
 import { requireAdminSection } from "@/lib/auth/require-staff";
 import { createAdminClient } from "@/lib/supabase/admin";
-
-function tokenHash(token: string) {
-  return createHash("sha256").update(token).digest("hex");
-}
 
 async function getSiteOrigin() {
   if (process.env.NEXT_PUBLIC_SITE_URL) {
@@ -35,101 +30,6 @@ async function getSiteOrigin() {
     (host.includes("localhost") ? "http" : "https");
 
   return `${proto}://${host}`;
-}
-
-async function sendInvitationEmail(
-  email: string,
-  name: string,
-  invitationUrl: string,
-) {
-  const apiKey = process.env.RESEND_API_KEY;
-  const from =
-    process.env.REGISTRATION_INVITE_FROM_EMAIL;
-
-  if (!apiKey || !from) {
-    return {
-      sent: false,
-      reason:
-        "Email delivery is not configured. Copy the generated invitation link and send it manually.",
-    };
-  }
-
-  const safeName = name.replace(/[<>&"]/g, "");
-
-  const response = await fetch(
-    "https://api.resend.com/emails",
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-  from,
-  to: [email],
-  subject: "Your Sepulchria registration invitation",
-
-  text: `Hello ${name},
-
-Your application for the Sepulchria Closed Alpha has been accepted.
-
-You can create your account using the link below:
-
-${invitationUrl}
-
-This invitation is linked to this email address and expires in 7 days.
-
-If you did not apply to join Sepulchria, you can ignore this email.
-
-Sepulchria
-https://sepulchria.com`,
-
-  html: `
-    <p>Hello ${safeName},</p>
-
-    <p>
-      Your application for the Sepulchria Closed Alpha has been accepted.
-    </p>
-
-    <p>
-      You can create your account using the link below:
-    </p>
-
-    <p>
-      <a href="${invitationUrl}">
-        Complete your registration
-      </a>
-    </p>
-
-    <p>
-      This invitation is linked to this email address and expires in 7 days.
-    </p>
-
-    <p>
-      If you did not apply to join Sepulchria, you can ignore this email.
-    </p>
-
-    <p>
-      Sepulchria<br />
-      <a href="https://sepulchria.com">sepulchria.com</a>
-    </p>
-  `,
-}),
-    },
-  );
-
-  if (!response.ok) {
-    const text =
-      await response.text().catch(() => "");
-
-    throw new Error(
-      `Invitation was created but the email could not be sent: ${
-        text || response.status
-      }`,
-    );
-  }
-
-  return { sent: true, reason: null };
 }
 
 export async function sendRegistrationInvitationAction(
@@ -160,55 +60,65 @@ export async function sendRegistrationInvitationAction(
     );
   }
 
-  const token =
-    randomBytes(32).toString("base64url");
-  const hash = tokenHash(token);
-
-  const expiresAt =
-    new Date(
-      Date.now() + 7 * 24 * 60 * 60 * 1000,
-    ).toISOString();
-
-  const origin = await getSiteOrigin();
-  const invitationUrl =
-    `${origin}/auth/sign-up?invite=${encodeURIComponent(token)}`;
-
-  const { error: insertError } = await admin
-    .from("registration_invitations")
-    .insert({
-      application_id: application.id,
-      email: application.email.toLowerCase(),
-      token_hash: hash,
-      invitation_url: invitationUrl,
-      expires_at: expiresAt,
-      created_by: staff.userId,
-    });
-
-  if (insertError) {
-    throw new Error(insertError.message);
+  if (
+    application.status === "registered" ||
+    application.status === "declined"
+  ) {
+    throw new Error(
+      "This application can no longer be invited.",
+    );
   }
 
-  let sent = false;
-  let warning = "";
+  const origin = await getSiteOrigin();
+  const redirectTo =
+    `${origin}/auth/complete-invitation`;
 
-  try {
-    const emailResult = await sendInvitationEmail(
-      application.email,
-      application.name,
-      invitationUrl,
+  const {
+    data: inviteData,
+    error: inviteError,
+  } = await admin.auth.admin.inviteUserByEmail(
+    application.email,
+    {
+      redirectTo,
+      data: {
+        registration_application_id: application.id,
+        registration_applicant_name: application.name,
+        registration_source: "closed_alpha",
+      },
+    },
+  );
+
+  if (inviteError) {
+    const params = new URLSearchParams();
+    params.set(
+      "inviteError",
+      inviteError.message.slice(0, 500),
     );
-    sent = emailResult.sent;
-    warning = emailResult.reason ?? "";
-  } catch (caught) {
-    warning =
-      caught instanceof Error
-        ? caught.message
-        : "Email delivery failed.";
+
+    redirect(
+      `/admin/registrations?${params.toString()}`,
+    );
   }
 
   const now = new Date().toISOString();
 
-  await admin
+  const { error: historyError } = await admin
+    .from("registration_auth_invitations")
+    .insert({
+      application_id: application.id,
+      auth_user_id: inviteData.user?.id ?? null,
+      email: application.email.toLowerCase(),
+      created_by: staff.userId,
+      sent_at: now,
+    });
+
+  if (historyError) {
+    throw new Error(
+      `Supabase sent the invitation, but invitation history could not be saved: ${historyError.message}`,
+    );
+  }
+
+  const { error: updateError } = await admin
     .from("registration_applications")
     .update({
       status: "invited",
@@ -217,24 +127,19 @@ export async function sendRegistrationInvitationAction(
     })
     .eq("id", application.id);
 
-  await admin
-    .from("registration_invitations")
-    .update({
-      sent_at: sent ? now : null,
-    })
-    .eq("token_hash", hash);
+  if (updateError) {
+    throw new Error(updateError.message);
+  }
 
   revalidatePath("/admin/registrations");
 
   const params = new URLSearchParams();
-  params.set("inviteLink", invitationUrl);
-  params.set("sent", sent ? "1" : "0");
+  params.set("inviteSent", "1");
+  params.set("inviteEmail", application.email);
 
-  if (warning) {
-    params.set("warning", warning.slice(0, 500));
-  }
-
-  redirect(`/admin/registrations?${params.toString()}`);
+  redirect(
+    `/admin/registrations?${params.toString()}`,
+  );
 }
 
 export async function declineRegistrationApplicationAction(

@@ -41,9 +41,15 @@ function isAtLeast18(dateOfBirth: string) {
   return eighteenthBirthday <= today;
 }
 
-export function SignUpForm() {
+export function SignUpForm({
+  invitedEmail = null,
+  invitationToken = null,
+}: {
+  invitedEmail?: string | null;
+  invitationToken?: string | null;
+}) {
   const [email, setEmail] =
-    useState("");
+    useState(invitedEmail ?? "");
   const [password, setPassword] =
     useState("");
   const [
@@ -79,6 +85,9 @@ export function SignUpForm() {
   );
 
   const router = useRouter();
+
+  const isInvited =
+    Boolean(invitedEmail && invitationToken);
 
   const closeLegalModal =
     useCallback(() => {
@@ -171,6 +180,17 @@ try {
     );
   }
 
+  if (
+    isInvited &&
+    invitedEmail &&
+    email.toLowerCase() !==
+      invitedEmail.toLowerCase()
+  ) {
+    throw new Error(
+      "This invitation is only valid for the email address it was sent to.",
+    );
+  }
+
   const { error } =
     await supabase.auth.signUp({
       email,
@@ -198,6 +218,40 @@ try {
 
       if (error) {
         throw error;
+      }
+
+      if (
+        isInvited &&
+        invitationToken
+      ) {
+        const consumeResponse =
+          await fetch(
+            "/api/registration-invitations/consume",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type":
+                  "application/json",
+              },
+              body: JSON.stringify({
+                token:
+                  invitationToken,
+                email,
+              }),
+            },
+          );
+
+        if (!consumeResponse.ok) {
+          const consumeResult =
+            await consumeResponse
+              .json()
+              .catch(() => null);
+
+          throw new Error(
+            consumeResult?.error ??
+              "Your account was created, but the invitation could not be marked as used. Please contact staff.",
+          );
+        }
       }
 
       router.push(
@@ -241,13 +295,18 @@ try {
             autoComplete="email"
             placeholder="name@example.com"
             required
+            readOnly={isInvited}
             value={email}
             onChange={(event) =>
               setEmail(
                 event.target.value,
               )
             }
-            className={fieldClass}
+            className={`${fieldClass} ${
+              isInvited
+                ? "cursor-not-allowed opacity-75"
+                : ""
+            }`}
           />
         </div>
 
