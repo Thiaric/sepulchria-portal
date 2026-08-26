@@ -95,7 +95,7 @@ export function RegistrationClosedNotice() {
 
           <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-[rgb(var(--sep-colour-b8aa95))]">
   Public registrations will open soon. We are now selecting an
-  initial group of up to 50 players for the Closed Alpha.
+  initial group of up to 50 players (18+ only) for the Closed Alpha.
 </p>
 
 <p className="mx-auto mt-3 max-w-xl text-xs leading-6 text-[rgb(var(--sep-colour-8f8271))]">
