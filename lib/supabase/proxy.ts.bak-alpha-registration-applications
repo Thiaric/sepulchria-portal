@@ -16,8 +16,6 @@ const PUBLIC_ROUTES = [
   "/cookies",
   "/auth",
   "/api/auth",
-  "/api/registration-applications",
-  "/api/registration-invitations",
 ];
 
 const SANCTION_ACCESS_ROUTES = [

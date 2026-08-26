@@ -36,5 +36,4 @@ export async function setRegistrationsOpenAction(
   revalidatePath("/homepage");
   revalidatePath("/auth/sign-up");
   revalidatePath("/admin/new-register");
-  revalidatePath("/admin/registrations");
 }
