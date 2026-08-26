@@ -10,7 +10,6 @@ import {
 import Link from "next/link";
 import { CharacterOrderIdentity } from "@/components/characters/character-order-identity";
 import { ReportButton } from "@/components/reports/report-button";
-import { PriceTooltip } from "@/components/warping/price-tooltip";
 import { createClient } from "@/lib/supabase/client";
 import {
   ROOM_HISTORY_HOURS,
@@ -1119,41 +1118,42 @@ export default function RoomMessageList({
     };
   },[liveMessages]);
 
-  function renderShapeTagGroups(characterId:string,trailingDivider:boolean){
+  function shapeTagText(characterId:string){
     const tags=activeShapeTags[characterId];
     if(!tags)return null;
 
-    const normalGroups:string[]=[];
-    if(tags.buffs.length)normalGroups.push(tags.buffs.join(" - "));
-    if(tags.debuffs.length)normalGroups.push(tags.debuffs.join(" - "));
-    if(tags.conditions.length)normalGroups.push(tags.conditions.join(" - "));
+    const groups:string[]=[];
+    if(tags.buffs.length)groups.push(tags.buffs.join(" - "));
+    if(tags.debuffs.length)groups.push(tags.debuffs.join(" - "));
+    if(tags.conditions.length)groups.push(tags.conditions.join(" - "));
+    if(tags.prices.length)groups.push(tags.prices.join(" - "));
 
-    if(!normalGroups.length&&!tags.prices.length)return null;
+    if(!groups.length)return null;
 
     return (
       <span className="text-[9px] uppercase tracking-[.04em] text-[rgb(var(--sep-colour-b99765))]">
-        {" | "}
-        {normalGroups.length?normalGroups.join(" | "):null}
-        {normalGroups.length&&tags.prices.length?" | ":null}
-        {tags.prices.map((price,index)=>(
-          <Fragment key={`${price}-${index}`}>
-            {index>0?" - ":null}
-            <PriceTooltip displayText={price}>
-              <span className="underline decoration-dotted underline-offset-2">{price}</span>
-            </PriceTooltip>
-          </Fragment>
-        ))}
-        {trailingDivider?" | ":null}
+        {" | "}{groups.join(" | ")}{" | "}
       </span>
     );
   }
 
-  function shapeTagText(characterId:string){
-    return renderShapeTagGroups(characterId,true);
-  }
-
   function shapeTagHeaderText(characterId:string){
-    return renderShapeTagGroups(characterId,false);
+    const tags=activeShapeTags[characterId];
+    if(!tags)return null;
+
+    const groups:string[]=[];
+    if(tags.buffs.length)groups.push(tags.buffs.join(" - "));
+    if(tags.debuffs.length)groups.push(tags.debuffs.join(" - "));
+    if(tags.conditions.length)groups.push(tags.conditions.join(" - "));
+    if(tags.prices.length)groups.push(tags.prices.join(" - "));
+
+    if(!groups.length)return null;
+
+    return (
+      <span className="text-[9px] uppercase tracking-[.04em] text-[rgb(var(--sep-colour-b99765))]">
+        {" | "}{groups.join(" | ")}
+      </span>
+    );
   }
 
   useEffect(() => {

@@ -1,5 +1,3 @@
-import { WARPING_PRICE_DEFINITIONS } from "@/lib/warping/price-definitions";
-
 const WORDS = [
   ["Essence", "Pyr", "Fire", "Heat, destruction, passion, purification"],
   ["Essence", "Gla", "Frost", "Preservation, stillness, cold"],
@@ -88,27 +86,6 @@ export function WarpingReference() {
               ))}
             </tbody>
           </table>
-        </div>
-
-        <div className="mt-5">
-          <h4 className="font-serif text-base text-[rgb(var(--sep-colour-d8c29b))]">Prices</h4>
-          <div className="mt-2 max-h-[520px] overflow-y-auto border border-[rgb(var(--sep-colour-60482e))]/35">
-            <table className="w-full text-left text-[10px]">
-              <thead className="sticky top-0 bg-[rgb(var(--sep-colour-1d150f))] text-[rgb(var(--sep-colour-9e825d))]">
-                <tr><th className="px-3 py-2">#</th><th className="px-3 py-2">Price</th><th className="px-3 py-2">Stage / Duration</th><th className="px-3 py-2">Manifestation while active</th></tr>
-              </thead>
-              <tbody>
-                {WARPING_PRICE_DEFINITIONS.map((price) => (
-                  <tr key={price.key} className="border-t border-[rgb(var(--sep-colour-60482e))]/25 align-top">
-                    <td className="px-3 py-2 text-[rgb(var(--sep-colour-8e785a))]">{price.number}</td>
-                    <td className="px-3 py-2 font-serif text-[rgb(var(--sep-colour-d9c29b))]">{price.name}</td>
-                    <td className="whitespace-nowrap px-3 py-2 text-[rgb(var(--sep-colour-c2ac88))]">{price.stageLabel} — {price.durationDays} days</td>
-                    <td className="px-3 py-2 leading-5 text-[rgb(var(--sep-colour-a99b89))]">{price.manifestation}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
         </div>
 
         <div className="mt-5">

@@ -12,9 +12,6 @@ import {
 import {
   ShapeExtendedDescription,
 } from "@/components/warping/shape-extended-description";
-import {
-  PriceTooltip,
-} from "@/components/warping/price-tooltip";
 
 export type ShapeCard =
   Record<string, any> & {
@@ -508,15 +505,10 @@ function ShapeArticle({
                 Price
               </p>
               <p className="mt-1 break-words text-[8px] leading-4 text-[rgb(var(--sep-colour-b8a382))]">
-                {shape.price_key ? (
-                  <PriceTooltip priceKey={shape.price_key}>
-                    <span className="underline decoration-dotted underline-offset-2">
-                      {PRICE_LABELS[shape.price_key] ?? pretty(shape.price_key)}
-                    </span>
-                  </PriceTooltip>
-                ) : (
-                  "None"
-                )}
+                {shape.price_key
+                  ? PRICE_LABELS[shape.price_key] ??
+                    pretty(shape.price_key)
+                  : "None"}
               </p>
             </div>
           </div>

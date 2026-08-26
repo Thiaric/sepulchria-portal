@@ -25,33 +25,37 @@ export function ShapeExtendedDescription({
   return (
     <div className="mt-2">
       <button
-        type="button"
-        aria-expanded={expanded}
-        onClick={() =>
-          setExpanded(
-            (current) =>
-              !current,
-          )
-        }
-        className="inline-flex items-center gap-1.5 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-17110d))] px-2.5 py-1.5 text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-a88d67))] transition hover:border-[rgb(var(--sep-colour-8d6d3e))]/65 hover:text-[rgb(var(--sep-colour-d3b278))]"
-      >
-        <span>
-          {expanded
-            ? "Hide Extended Description"
-            : "Show Extended Description"}
-        </span>
+  type="button"
+  aria-expanded={expanded}
+  onClick={() =>
+    setExpanded(
+      (current) =>
+        !current,
+    )
+  }
+  className="group flex w-full items-center gap-3 py-1.5"
+>
+  <span className="h-px flex-1 bg-[rgb(var(--sep-colour-60482e))]/45 transition group-hover:bg-[rgb(var(--sep-colour-8d6d3e))]/65" />
 
-        <span
-          aria-hidden="true"
-          className={`inline-block transition-transform ${
-            expanded
-              ? "rotate-180"
-              : ""
-          }`}
-        >
-          ▼
-        </span>
-      </button>
+  <span className="inline-flex shrink-0 items-center gap-1.5 text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-a88d67))] transition group-hover:text-[rgb(var(--sep-colour-d3b278))]">
+    {expanded
+      ? "Show Less Info"
+      : "Show More Info"}
+
+    <span
+      aria-hidden="true"
+      className={`inline-block transition-transform ${
+        expanded
+          ? "rotate-180"
+          : ""
+      }`}
+    >
+      ▼
+    </span>
+  </span>
+
+  <span className="h-px flex-1 bg-[rgb(var(--sep-colour-60482e))]/45 transition group-hover:bg-[rgb(var(--sep-colour-8d6d3e))]/65" />
+</button>
 
       {expanded ? (
         <div className="mt-2 border-l-2 border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-120e0b))]/55 px-3 py-2.5">

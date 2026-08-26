@@ -29,6 +29,10 @@ if (isEmbedded) {
   return;
 }    
 
+const isPortalWindow =
+  window.name ===
+  "SepulchriaPortal";
+
 if (!captchaToken) {
   setError(
     "Please complete the security verification before entering Sepulchria.",
@@ -42,7 +46,9 @@ if (!captchaToken) {
      * may treat it as an unsolicited popup and block it.
      */
     const portalWindow =
-      window.open(
+  isPortalWindow
+    ? window
+    : window.open(
         "about:blank",
         "SepulchriaPortal",
         [
@@ -56,15 +62,15 @@ if (!captchaToken) {
         ].join(","),
       );
 
-    if (!portalWindow) {
-      setError(
-        "Sepulchria needs permission to open the game window. Please allow popups for this website and try again.",
-      );
-      return;
-    }
+if (!portalWindow) {
+  setError(
+    "Sepulchria needs permission to open the game window. Please allow popups for this website and try again.",
+  );
+  return;
+}
 
-    portalWindow.document.title =
-      "Sepulchria";
+portalWindow.document.title =
+  "Sepulchria";
 
     const supabase =
       createClient();
@@ -137,22 +143,23 @@ if (!captchaToken) {
        * Supabase authentication is shared because the new
        * window is on the same Sepulchria origin.
        */
-      portalWindow.location.replace(
-        `${window.location.origin}/`,
-      );
+      if (isPortalWindow) {
+  window.location.replace("/");
+} else {
+  portalWindow.location.replace(
+    `${window.location.origin}/`,
+  );
 
-      portalWindow.focus();
+  portalWindow.focus();
 
-      /*
-       * The original browser tab is only the public-facing
-       * entry point. Once the dedicated game window has been
-       * launched successfully, return that tab to the homepage.
-       */
-      window.location.replace(
-        "/homepage",
-      );
+  window.location.replace(
+    "/homepage",
+  );
+}
     } catch (error: unknown) {
-      portalWindow.close();
+      if (!isPortalWindow) {
+  portalWindow.close();
+}
 
       setError(
         error instanceof Error
