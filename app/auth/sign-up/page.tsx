@@ -28,7 +28,7 @@ export default async function SignUpPage({
     return (
       <AuthPageShell
         eyebrow="The City Gates"
-        title="Registrations are currently closed"
+        title="Registrations will Open Soon"
         description="Sepulchria is accepting applications for its closed Alpha."
       >
         <RegistrationClosedNotice />
