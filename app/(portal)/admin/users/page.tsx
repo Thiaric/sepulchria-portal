@@ -344,6 +344,10 @@ export default async function AdminUsersPage({
                   "owner" ||
                   !protectedAccount);
 
+              const canManageStaffRole =
+                session.role === "owner" ||
+                !protectedAccount;
+
               return (
                 <section
                   key={
@@ -450,62 +454,80 @@ export default async function AdminUsersPage({
                     
 
                     <aside className="border-t border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] p-4 lg:border-l lg:border-t-0">
-                      <form
-                        action={
-                          updateUserStaffRole
-                        }
-                        className="grid gap-2"
-                      >
-                        <input
-                          type="hidden"
-                          name="userId"
-                          value={
-                            user.user_id
+                      {canManageStaffRole ? (
+                        <form
+                          action={
+                            updateUserStaffRole
                           }
-                        />
-
-                        <label className="block">
-                          <span className="mb-1 block text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
-                            Staff role
-                          </span>
-
-                          <select
-                            name="role"
-                            defaultValue={
-                              user.staff_role ??
-                              ""
-                            }
-                            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0c0907))] px-3 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
-                          >
-                            <option value="">
-                              Player
-                            </option>
-                            <option value="master">
-                              Master
-                            </option>
-                            <option value="moderator">
-                              Moderator
-                            </option>
-                            <option value="admin">
-                              Administrator
-                            </option>
-
-                            {session.role ===
-                            "owner" ? (
-                              <option value="owner">
-                                Owner
-                              </option>
-                            ) : null}
-                          </select>
-                        </label>
-
-                        <button
-                          type="submit"
-                          className="w-full border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-3 py-2 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
+                          className="grid gap-2"
                         >
-                          Save role
-                        </button>
-                      </form>
+                          <input
+                            type="hidden"
+                            name="userId"
+                            value={
+                              user.user_id
+                            }
+                          />
+
+                          <label className="block">
+                            <span className="mb-1 block text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
+                              Staff role
+                            </span>
+
+                            <select
+                              name="role"
+                              defaultValue={
+                                user.staff_role ??
+                                ""
+                              }
+                              className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0c0907))] px-3 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
+                            >
+                              <option value="">
+                                Player
+                              </option>
+                              <option value="master">
+                                Master
+                              </option>
+                              <option value="moderator">
+                                Moderator
+                              </option>
+
+                              {session.role ===
+                              "owner" ? (
+                                <>
+                                  <option value="admin">
+                                    Administrator
+                                  </option>
+                                  <option value="owner">
+                                    Owner
+                                  </option>
+                                </>
+                              ) : null}
+                            </select>
+                          </label>
+
+                          <button
+                            type="submit"
+                            className="w-full border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-3 py-2 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
+                          >
+                            Save role
+                          </button>
+                        </form>
+                      ) : (
+                        <div className="border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-0c0907))] px-3 py-2">
+                          <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+                            Staff role
+                          </p>
+                          <p className="mt-1 text-xs text-[rgb(var(--sep-colour-b9a78a))]">
+                            {user.staff_role === "owner"
+                              ? "Owner"
+                              : "Administrator"}
+                          </p>
+                          <p className="mt-1 text-[8px] leading-4 text-[rgb(var(--sep-colour-756957))]">
+                            Only an Owner can change this role.
+                          </p>
+                        </div>
+                      )}
 
                       <details className="mt-3 border-t border-[rgb(var(--sep-colour-71352f))]/45 pt-3">
                         <summary className="cursor-pointer list-none text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-c06d62))]">

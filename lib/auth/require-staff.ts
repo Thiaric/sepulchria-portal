@@ -94,7 +94,7 @@ const SECTION_ROLES: Record<
   tickets: ["owner", "admin", "moderator", "master"],
   sanctions: ["owner", "admin", "moderator"],
   media: ["owner"],
-  users: ["owner"],
+  users: ["owner", "admin"],
   new_register: ["owner"],
   world: ["owner", "admin", "master"],
 };
