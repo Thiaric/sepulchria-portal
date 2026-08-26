@@ -11,6 +11,7 @@ import {
 } from "next/cache";
 
 import {
+  requireAdmin,
   requireStaff,
   requireStaffCapability,
 } from "@/lib/auth/require-staff";
@@ -1628,7 +1629,7 @@ type CharacterFeatureSource =
 export async function setCharacterPortalSkinEntitlement(
   formData: FormData,
 ) {
-  const staff = await requireStaff();
+  const staff = await requireAdmin();
 
   const characterId =
     readRequiredUuid(
@@ -1855,7 +1856,7 @@ export async function setCharacterPortalSkinEntitlement(
 export async function setCharacterFeatureEntitlement(
   formData: FormData,
 ) {
-  const staff = await requireStaff();
+  const staff = await requireAdmin();
 
   const characterId =
     readRequiredUuid(formData.get("characterId"));
