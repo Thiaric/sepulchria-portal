@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { createClient } from "@/lib/supabase/server";
 import { getSanctionEnforcement } from "@/lib/sanctions/enforcement";
+import { consumeSecurityRateLimit } from "@/lib/security/rate-limit";
 
 const FLAG_COOLDOWN_MS = 10 * 60_000;
 const MAX_RECIPIENTS_PER_FLAG = 250;
@@ -568,6 +569,22 @@ export async function flagForumTopic(
 
     const communication=await getSanctionEnforcement(supabase,"communication");
     if(communication.blocked){ return {ok:false,message:communication.message ?? "Private communication is currently restricted on this account."}; }
+
+    const flagRateLimit =
+      await consumeSecurityRateLimit({
+        scope: "forum_flag_user",
+        identifier: `user:${user.id}`,
+        limit: 10,
+        windowSeconds: 60 * 60,
+      });
+
+    if (!flagRateLimit.allowed) {
+      return {
+        ok: false,
+        message:
+          "You are flagging forum topics too quickly. Please wait before trying again.",
+      };
+    }
 
     const {
       data: senderData,

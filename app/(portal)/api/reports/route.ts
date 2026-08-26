@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { consumeSecurityRateLimit } from "@/lib/security/rate-limit";
 
 const SOURCE_TYPES = [
   "forum_topic",
@@ -158,6 +159,51 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       { error: "This report request is invalid." },
       { status: 400 },
+    );
+  }
+
+  try {
+    const reportRateLimit =
+      await consumeSecurityRateLimit({
+        scope: "report_user",
+        identifier: `user:${user.id}`,
+        limit: 10,
+        windowSeconds: 60 * 60,
+      });
+
+    if (!reportRateLimit.allowed) {
+      return NextResponse.json(
+        {
+          error:
+            "You have submitted too many reports recently. Please wait before submitting another report.",
+          retryAfterSeconds:
+            reportRateLimit.retryAfterSeconds,
+        },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": String(
+              Math.max(
+                1,
+                reportRateLimit.retryAfterSeconds,
+              ),
+            ),
+          },
+        },
+      );
+    }
+  } catch (error) {
+    console.error(
+      "Unable to apply report rate limit:",
+      error,
+    );
+
+    return NextResponse.json(
+      {
+        error:
+          "Security verification is temporarily unavailable. Please try again shortly.",
+      },
+      { status: 503 },
     );
   }
 

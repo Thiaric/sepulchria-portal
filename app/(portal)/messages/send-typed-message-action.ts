@@ -12,6 +12,7 @@ import {
 } from "@/lib/rich-text";
 import { createClient } from "@/lib/supabase/server";
 import { assertCurrentUserCan } from "@/lib/sanctions/enforcement";
+import { consumeSecurityRateLimit } from "@/lib/security/rate-limit";
 import type {
   MessageActionState,
   PrivateMessageMode,
@@ -107,6 +108,22 @@ export async function sendTypedPrivateMessage(
       supabase,
       "communication",
     );
+
+    const messageRateLimit =
+      await consumeSecurityRateLimit({
+        scope: "private_message_user",
+        identifier: `user:${user.id}`,
+        limit: 30,
+        windowSeconds: 60,
+      });
+
+    if (!messageRateLimit.allowed) {
+      return {
+        ok: false,
+        message:
+          "You are sending messages too quickly. Please wait a moment before trying again.",
+      };
+    }
 
     const { data: sentMessageId, error: sendError } = await supabase.rpc(
       "send_direct_message_fast",

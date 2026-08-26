@@ -11,6 +11,7 @@ import { createClient } from "@/lib/supabase/server";
 import {
   getSanctionEnforcement,
 } from "@/lib/sanctions/enforcement";
+import { consumeSecurityRateLimit } from "@/lib/security/rate-limit";
 import {
   notifyForumReplyAudience,
 } from "@/lib/forum/forum-notifications";
@@ -539,6 +540,35 @@ export async function createForumTopicAction(
     };
   }
 
+  try {
+    const topicRateLimit =
+      await consumeSecurityRateLimit({
+        scope: "forum_topic_user",
+        identifier: `user:${user.id}`,
+        limit: 5,
+        windowSeconds: 10 * 60,
+      });
+
+    if (!topicRateLimit.allowed) {
+      return {
+        success: false,
+        message:
+          "You are creating discussions too quickly. Please wait before creating another one.",
+      };
+    }
+  } catch (error) {
+    console.error(
+      "Unable to apply forum topic rate limit:",
+      error,
+    );
+
+    return {
+      success: false,
+      message:
+        "Security verification is temporarily unavailable. Please try again shortly.",
+    };
+  }
+
   const {
     data: section,
     error: sectionError,
@@ -979,6 +1009,35 @@ export async function createForumReplyAction(
       message:
         replyEnforcement.message ??
         "Forum posting is currently restricted on this account.",
+    };
+  }
+
+  try {
+    const replyRateLimit =
+      await consumeSecurityRateLimit({
+        scope: "forum_reply_user",
+        identifier: `user:${user.id}`,
+        limit: 20,
+        windowSeconds: 10 * 60,
+      });
+
+    if (!replyRateLimit.allowed) {
+      return {
+        success: false,
+        message:
+          "You are posting replies too quickly. Please wait before trying again.",
+      };
+    }
+  } catch (error) {
+    console.error(
+      "Unable to apply forum reply rate limit:",
+      error,
+    );
+
+    return {
+      success: false,
+      message:
+        "Security verification is temporarily unavailable. Please try again shortly.",
     };
   }
 
