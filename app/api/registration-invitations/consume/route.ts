@@ -14,12 +14,14 @@ export async function POST(request: Request) {
     String((body as any)?.email ?? "")
       .trim()
       .toLowerCase();
+  const userId =
+    String((body as any)?.userId ?? "").trim();
 
-  if (!token || !email) {
+  if (!token || !email || !userId) {
     return NextResponse.json(
       {
         error:
-          "Invitation token and email are required.",
+          "Invitation token, email, and created account are required.",
       },
       { status: 400 },
     );
@@ -51,15 +53,41 @@ export async function POST(request: Request) {
     );
   }
 
+  const {
+    data: authUserResult,
+    error: authUserError,
+  } = await admin.auth.admin.getUserById(userId);
+
+  const authUser = authUserResult?.user ?? null;
+
+  if (
+    authUserError ||
+    !authUser ||
+    authUser.email?.toLowerCase() !== email
+  ) {
+    return NextResponse.json(
+      {
+        error:
+          "This invitation could not be linked to the account that was created.",
+      },
+      { status: 400 },
+    );
+  }
+
   const usedAt = new Date().toISOString();
 
-  const { error: useError } = await admin
+  const {
+    data: consumedInvitation,
+    error: useError,
+  } = await admin
     .from("registration_invitations")
     .update({ used_at: usedAt })
     .eq("id", invitation.id)
-    .is("used_at", null);
+    .is("used_at", null)
+    .select("id")
+    .maybeSingle();
 
-  if (useError) {
+  if (useError || !consumedInvitation) {
     return NextResponse.json(
       {
         error:

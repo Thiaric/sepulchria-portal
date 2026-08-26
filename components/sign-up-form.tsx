@@ -220,7 +220,7 @@ try {
     );
   }
 
-  const { error } =
+  const { data: signUpData, error } =
     await supabase.auth.signUp({
       email,
       password,
@@ -253,6 +253,15 @@ try {
         isInvited &&
         invitationToken
       ) {
+        const createdUserId =
+          signUpData.user?.id;
+
+        if (!createdUserId) {
+          throw new Error(
+            "Your account could not be linked to this invitation. Please contact staff.",
+          );
+        }
+
         const consumeResponse =
           await fetch(
             "/api/registration-invitations/consume",
@@ -266,6 +275,8 @@ try {
                 token:
                   invitationToken,
                 email,
+                userId:
+                  createdUserId,
               }),
             },
           );
