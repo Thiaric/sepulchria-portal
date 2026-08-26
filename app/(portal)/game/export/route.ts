@@ -39,6 +39,33 @@ type RoomRow = {
 };
 
 
+type ExportRaceIdentity = {
+  id: string;
+  name: string;
+  icon_url: string | null;
+};
+
+type ExportOrderIdentity = {
+  id: string;
+  name: string;
+  slug: string;
+  icon_url: string | null;
+  colour: string | null;
+};
+
+type ExportChatTags = {
+  buffs: string[];
+  debuffs: string[];
+  conditions: string[];
+  prices: string[];
+};
+
+type ExportRenderContext = {
+  tagsByCharacterId: Map<string, ExportChatTags>;
+  ordersByCharacterId: Map<string, ExportOrderIdentity>;
+};
+
+
 function normaliseRelation<T>(
   value: T | T[] | null,
 ): T | null {
@@ -663,11 +690,11 @@ function formatMechanicalSegment(
   }
 
   const labelled = segment.match(
-    /^(Target|Targets|Automatic|Save required|Movement|Components|Duration|Resolved|Condition):\s*(.+)$/i,
+    /^(Target|Targets|Automatic|Save required|Movement|Components|Duration|Resolved|Condition|Effect):\s*(.+)$/i,
   );
 
   if (labelled) {
-    return `${labelled[1]} ${mechanicalBracket(
+    return `${labelled[1]}: ${mechanicalBracket(
       labelled[2],
     )}`;
   }
@@ -827,14 +854,85 @@ function renderPortrait(
 }
 
 
+function renderIdentityIcons(
+  author: any,
+  characterId: string,
+  origin: string,
+  context: ExportRenderContext,
+): string {
+  const race = normaliseRelation(
+    author?.race as ExportRaceIdentity | ExportRaceIdentity[] | null,
+  );
+
+  const order =
+    context.ordersByCharacterId.get(characterId) ??
+    null;
+
+  const raceIcon = race?.icon_url
+    ? `<img class="identity-icon" src="${escapeHtml(
+        toAbsoluteAssetUrl(race.icon_url, origin) ?? race.icon_url,
+      )}" alt="${escapeHtml(race.name)}" title="${escapeHtml(race.name)}" />`
+    : "";
+
+  const orderIcon = order
+    ? order.icon_url
+      ? `<img class="identity-icon" src="${escapeHtml(
+          toAbsoluteAssetUrl(order.icon_url, origin) ?? order.icon_url,
+        )}" alt="${escapeHtml(order.name)}" title="Order: ${escapeHtml(order.name)}" />`
+      : `<span class="identity-order-fallback" title="Order: ${escapeHtml(order.name)}" style="color:${escapeHtml(
+          order.colour ?? "#8d6d3e",
+        )}">${escapeHtml(order.name.charAt(0).toUpperCase())}</span>`
+    : "";
+
+  if (!raceIcon && !orderIcon) return "";
+
+  return `<div class="identity-icons">${raceIcon}${orderIcon}</div>`;
+}
+
+function renderChatTagHeader(
+  characterId: string,
+  context: ExportRenderContext,
+): string {
+  const tags =
+    context.tagsByCharacterId.get(characterId);
+
+  if (!tags) return "";
+
+  const groups: string[] = [];
+
+  if (tags.buffs.length) {
+    groups.push(tags.buffs.join(" - "));
+  }
+
+  if (tags.debuffs.length) {
+    groups.push(tags.debuffs.join(" - "));
+  }
+
+  if (tags.conditions.length) {
+    groups.push(tags.conditions.join(" - "));
+  }
+
+  if (tags.prices.length) {
+    groups.push(tags.prices.join(" - "));
+  }
+
+  if (!groups.length) return "";
+
+  return `<span class="character-tags"> | ${groups
+    .map((group) => escapeHtml(group))
+    .join(" | ")}</span>`;
+}
+
+
 function renderMessage(
   message: RoomMessage,
   origin: string,
+  context: ExportRenderContext,
 ): string {
   const author =
     normaliseRelation(
       message.character,
-    );
+    ) as any;
 
   const recipient =
     normaliseRelation(
@@ -846,9 +944,11 @@ function renderMessage(
     "Unknown character";
 
   const shortAuthorName =
-    getFirstName(
-      authorName,
-    );
+    author?.first_name?.trim() ||
+    getFirstName(authorName);
+
+  const characterId =
+    message.character_id ?? "";
 
   const time =
     formatCompactTime(
@@ -856,7 +956,7 @@ function renderMessage(
     );
 
   /*
-   * FATE
+   * FATE stays exactly as its own special export block.
    */
   if (
     message.message_type ===
@@ -875,9 +975,7 @@ function renderMessage(
             </span>
 
             <time>
-              ${escapeHtml(
-                time,
-              )}
+              ${escapeHtml(time)}
             </time>
           </div>
 
@@ -894,81 +992,26 @@ function renderMessage(
     `;
   }
 
-  /*
-   * DICE / CHECK / MECHANICAL GAME EVENT
-   *
-   * Includes Shapes, Feats, Items, Attacks and all target
-   * Counter / response messages.
-   */
   const isMechanicalAction =
     isMechanicalActionMessage(
       message,
     );
 
-  if (
+  const isMechanicalOutput =
     message.message_type ===
       "dice_roll" ||
     message.message_type ===
       "attribute_check" ||
-    isMechanicalAction
-  ) {
-    const naturalTwenty =
-      message.dice_sides === 20 &&
-      message.dice_result === 20;
+    isMechanicalAction;
 
-    const naturalOne =
-      message.dice_sides === 20 &&
-      message.dice_result === 1;
+  const naturalTwenty =
+    message.dice_sides === 20 &&
+    message.dice_result === 20;
 
-    const extraClass =
-      naturalTwenty
-        ? " critical-success"
-        : naturalOne
-          ? " critical-failure"
-          : "";
+  const naturalOne =
+    message.dice_sides === 20 &&
+    message.dice_result === 1;
 
-    return `
-      <article class="entry roll-entry${extraClass}${
-        isMechanicalAction
-          ? " mechanical-entry"
-          : ""
-      }">
-        <span class="roll-symbol">
-          ◆
-        </span>
-
-        <span class="roll-author">
-          ${escapeHtml(
-            shortAuthorName,
-          )}
-        </span>
-
-        <span class="roll-result">
-          ${
-            isMechanicalAction
-              ? renderMechanicalResultHtml(
-                  message,
-                )
-              : escapeHtml(
-                  renderRollText(
-                    message,
-                  ),
-                )
-          }
-        </span>
-
-        <time>
-          ${escapeHtml(
-            time,
-          )}
-        </time>
-      </article>
-    `;
-  }
-
-  /*
-   * NORMAL ROLE / WHISPER
-   */
   const isOutOfCharacter =
     message.message
       .trimStart()
@@ -986,20 +1029,66 @@ function renderMessage(
         }`
       : "";
 
-  return `
-    <article class="entry role-entry${
-      isOutOfCharacter
-        ? " ooc-entry"
-        : isWhisper
-          ? " whisper-entry"
-          : ""
-    }">
+  const classes = [
+    "entry",
+    "role-entry",
+    isOutOfCharacter
+      ? "ooc-entry"
+      : "",
+    isWhisper
+      ? "whisper-entry"
+      : "",
+    isMechanicalAction
+      ? "mechanical-entry"
+      : "",
+    naturalTwenty
+      ? "critical-success"
+      : "",
+    naturalOne
+      ? "critical-failure"
+      : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
-      ${renderPortrait(
-        authorName,
-        author?.portrait_url,
-        origin,
-      )}
+  const mainBody =
+    isMechanicalOutput
+      ? isMechanicalAction
+        ? renderMechanicalResultHtml(
+            message,
+          )
+        : escapeHtml(
+            renderRollText(
+              message,
+            ),
+          )
+      : renderActionSpeech(
+          message.message,
+        );
+
+  return `
+    <article class="${classes}">
+
+      <div class="identity-column">
+        <div class="identity-top">
+          ${renderPortrait(
+            authorName,
+            author?.portrait_url,
+            origin,
+          )}
+
+          ${renderIdentityIcons(
+            author,
+            characterId,
+            origin,
+            context,
+          )}
+        </div>
+
+        <time class="identity-time">
+          ${escapeHtml(time)}
+        </time>
+      </div>
 
       <div class="message-content">
 
@@ -1034,50 +1123,29 @@ function renderMessage(
                       : ""
                   }
                 </div>
-
-                <time>
-                  ${escapeHtml(
-                    time,
-                  )}
-                </time>
               </div>
             `
             : ""
         }
 
-        <div class="compact-header">
-
-          <div class="author-line">
-            <span
-              class="author-name"
-              title="${escapeHtml(
-                authorName,
-              )}"
-            >
-              ${escapeHtml(
-                shortAuthorName,
-              )}
-            </span>
-          </div>
-
-          ${
-            !isWhisper && !isOutOfCharacter
-              ? `
-                <time>
-                  ${escapeHtml(
-                    time,
-                  )}
-                </time>
-              `
-              : ""
-          }
-
+        <div class="author-status-line">
+          <span
+            class="author-name"
+            title="${escapeHtml(authorName)}"
+          >
+            ${escapeHtml(shortAuthorName)}
+          </span>${renderChatTagHeader(
+            characterId,
+            context,
+          )}
         </div>
 
-        <div class="role-body">
-          ${renderActionSpeech(
-            message.message,
-          )}
+        <div class="role-body${
+          isMechanicalOutput
+            ? " mechanical-result"
+            : ""
+        }">
+          ${mainBody}
         </div>
 
       </div>
@@ -1190,7 +1258,12 @@ async function loadVisibleMessages(
           first_name,
           display_name,
           portrait_url,
-          public_slug
+          public_slug,
+          race:races(
+            id,
+            name,
+            icon_url
+          )
         ),
 
         whisperRecipient:characters!room_messages_whisper_recipient_character_id_fkey(
@@ -1371,6 +1444,180 @@ export async function GET(
       room.id,
     );
 
+  const characterIds =
+    Array.from(
+      new Set(
+        messages
+          .map(
+            (message) =>
+              message.character_id,
+          )
+          .filter(
+            (
+              value,
+            ): value is string =>
+              Boolean(value),
+          ),
+      ),
+    );
+
+  const tagsByCharacterId =
+    new Map<string, ExportChatTags>();
+
+  const ordersByCharacterId =
+    new Map<string, ExportOrderIdentity>();
+
+  if (characterIds.length) {
+    for (const id of characterIds) {
+      tagsByCharacterId.set(
+        id,
+        {
+          buffs: [],
+          debuffs: [],
+          conditions: [],
+          prices: [],
+        },
+      );
+    }
+
+    const [
+      shapeResult,
+      priceResult,
+      orderResult,
+    ] = await Promise.all([
+      supabase.rpc(
+        "get_active_shape_chat_tags",
+        {
+          p_character_ids:
+            characterIds,
+        },
+      ),
+      supabase.rpc(
+        "get_active_price_chat_tags",
+        {
+          p_character_ids:
+            characterIds,
+        },
+      ),
+      supabase
+        .from("order_memberships")
+        .select(`
+          character_id,
+          order:orders!order_memberships_order_id_fkey(
+            id,
+            name,
+            slug,
+            icon_url,
+            colour
+          )
+        `)
+        .in(
+          "character_id",
+          characterIds,
+        ),
+    ]);
+
+    if (shapeResult.error) {
+      console.error(
+        "Unable to load Shape chat tags for export:",
+        shapeResult.error.message,
+      );
+    } else {
+      for (
+        const row of
+          shapeResult.data ?? []
+      ) {
+        const id =
+          String(row.character_id);
+
+        const current =
+          tagsByCharacterId.get(id) ??
+          {
+            buffs: [],
+            debuffs: [],
+            conditions: [],
+            prices: [],
+          };
+
+        tagsByCharacterId.set(
+          id,
+          {
+            ...current,
+            buffs: row.buffs ?? [],
+            debuffs: row.debuffs ?? [],
+            conditions:
+              row.conditions ?? [],
+          },
+        );
+      }
+    }
+
+    if (priceResult.error) {
+      console.error(
+        "Unable to load Price chat tags for export:",
+        priceResult.error.message,
+      );
+    } else {
+      for (
+        const row of
+          priceResult.data ?? []
+      ) {
+        const id =
+          String(row.character_id);
+
+        const current =
+          tagsByCharacterId.get(id) ??
+          {
+            buffs: [],
+            debuffs: [],
+            conditions: [],
+            prices: [],
+          };
+
+        tagsByCharacterId.set(
+          id,
+          {
+            ...current,
+            prices: row.prices ?? [],
+          },
+        );
+      }
+    }
+
+    if (orderResult.error) {
+      console.error(
+        "Unable to load Order identities for export:",
+        orderResult.error.message,
+      );
+    } else {
+      for (
+        const row of
+          orderResult.data ?? []
+      ) {
+        const order =
+          normaliseRelation(
+            row.order as
+              | ExportOrderIdentity
+              | ExportOrderIdentity[]
+              | null,
+          );
+
+        if (order) {
+          ordersByCharacterId.set(
+            String(row.character_id),
+            order,
+          );
+        }
+      }
+    }
+  }
+
+  const renderContext:
+    ExportRenderContext = {
+      tagsByCharacterId,
+      ordersByCharacterId,
+    };
+
   const participants =
     Array.from(
       new Set(
@@ -1527,7 +1774,8 @@ export async function GET(
      * Normal prose uses the normal roll/system colour.
      * Only bracketed values use Action colour + bold.
      */
-    .mechanical-entry .roll-result {
+    .mechanical-entry .mechanical-result {
+      color: var(--system-colour);
       font-style: normal;
     }
 
@@ -1882,7 +2130,7 @@ export async function GET(
       display: grid;
 
       grid-template-columns:
-        36px
+        76px
         minmax(
           0,
           1fr
@@ -1935,8 +2183,63 @@ export async function GET(
       font-size: 17px;
     }
 
+    .identity-column {
+      display: flex;
+      width: 76px;
+      min-width: 76px;
+      flex-direction: column;
+      align-self: start;
+    }
+
+    .identity-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .identity-icons {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding-top: 2px;
+    }
+
+    .identity-icon,
+    .identity-order-fallback {
+      display: flex;
+      width: 16px;
+      height: 16px;
+      align-items: center;
+      justify-content: center;
+      object-fit: contain;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 7px;
+    }
+
+    .identity-time {
+      display: block;
+      margin-top: 6px;
+      font-size: 7px;
+      line-height: 16px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
     .message-content {
       min-width: 0;
+    }
+
+    .author-status-line {
+      min-width: 0;
+      line-height: 18px;
+    }
+
+    .character-tags {
+      color: #b99765;
+      font-size: 9px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
     }
 
     .compact-header {
@@ -1998,7 +2301,7 @@ export async function GET(
     }
 
     .role-body {
-      margin-top: 2px;
+      margin-top: 0;
 
       color: #c9b9a2;
 
@@ -2087,7 +2390,9 @@ export async function GET(
     .whisper-entry
     .action-text,
     .whisper-entry
-    .role-body {
+    .role-body,
+    .whisper-entry
+    .character-tags {
       color:
         var(
           --whisper-text,
@@ -2164,7 +2469,9 @@ export async function GET(
     .ooc-entry
     .action-text,
     .ooc-entry
-    .role-body {
+    .role-body,
+    .ooc-entry
+    .character-tags {
       color:
         var(
           --offgame-text,
@@ -2267,9 +2574,7 @@ export async function GET(
     }
 
     .critical-success
-    .roll-symbol,
-    .critical-success
-    .roll-result {
+    .mechanical-result {
       color: #86d9a6 !important;
     }
 
@@ -2283,9 +2588,7 @@ export async function GET(
     }
 
     .critical-failure
-    .roll-symbol,
-    .critical-failure
-    .roll-result {
+    .mechanical-result {
       color: #e99797 !important;
     }
 
@@ -2449,7 +2752,7 @@ export async function GET(
 
       .role-entry {
         grid-template-columns:
-          32px
+          68px
           minmax(
             0,
             1fr
@@ -2464,6 +2767,11 @@ export async function GET(
       .portrait-wrap {
         width: 32px;
         height: 32px;
+      }
+
+      .identity-column {
+        width: 68px;
+        min-width: 68px;
       }
 
       .role-body {
@@ -2731,6 +3039,7 @@ export async function GET(
                   renderMessage(
                     message,
                     origin,
+                    renderContext,
                   ),
               )
               .join("")

@@ -377,14 +377,15 @@ function formatMechanicalSegment(
   }
 
   const labelled = segment.match(
-    /^(Target|Targets|Automatic|Save required|Movement|Components|Duration|Resolved|Condition):\s*(.+)$/i,
-  );
+  /^(Target|Targets|Automatic|Save required|Movement|Components|Duration|Resolved|Condition|Effect):\s*(.+)$/i,
+);
 
-  if (labelled) {
-    return `${labelled[1]} ${mechanicalBracket(
-      labelled[2],
-    )}`;
-  }
+if (labelled) {
+  const label = labelled[1];
+  const value = labelled[2];
+
+  return `${label}: ${mechanicalBracket(value)}`;
+}
 
   const successRoll = segment.match(
     /^Success Roll:\s*(.+)$/i,
@@ -932,7 +933,30 @@ export default function RoomMessageList({
 
     if(!groups.length)return null;
 
-    return <span className="mr-2 inline text-[9px] uppercase tracking-[.04em] text-[rgb(var(--sep-colour-b99765))]"> | {groups.join(" | ")} | </span>;
+    return (
+      <span className="text-[9px] uppercase tracking-[.04em] text-[rgb(var(--sep-colour-b99765))]">
+        {" | "}{groups.join(" | ")}{" | "}
+      </span>
+    );
+  }
+
+  function shapeTagHeaderText(characterId:string){
+    const tags=activeShapeTags[characterId];
+    if(!tags)return null;
+
+    const groups:string[]=[];
+    if(tags.buffs.length)groups.push(tags.buffs.join(" - "));
+    if(tags.debuffs.length)groups.push(tags.debuffs.join(" - "));
+    if(tags.conditions.length)groups.push(tags.conditions.join(" - "));
+    if(tags.prices.length)groups.push(tags.prices.join(" - "));
+
+    if(!groups.length)return null;
+
+    return (
+      <span className="text-[9px] uppercase tracking-[.04em] text-[rgb(var(--sep-colour-b99765))]">
+        {" | "}{groups.join(" | ")}
+      </span>
+    );
   }
 
   useEffect(() => {
@@ -1389,163 +1413,13 @@ export default function RoomMessageList({
                     item,
                   );
 
-                if (
-                  item.message_type ===
-                    "dice_roll" ||
-                  item.message_type ===
-                    "attribute_check" ||
-                  isMechanicalAction
-                ) {
-                  const isNaturalTwenty =
-                    item.dice_sides ===
-                      20 &&
-                    item.dice_result ===
-                      20;
+                const isNaturalTwenty =
+                  item.dice_sides === 20 &&
+                  item.dice_result === 20;
 
-                  const isNaturalOne =
-                    item.dice_sides ===
-                      20 &&
-                    item.dice_result ===
-                      1;
-
-                  return (
-                    <article
-                      key={item.id}
-                      className={`relative flex min-w-0 items-start gap-3 py-3 pl-5 pr-12 sm:pl-7 sm:pr-12 ${
-                        isMechanicalAction
-                          ? "border-l-2 border-[rgb(var(--sep-colour-bd8d4d))]/45"
-                          : ""
-                      } ${
-                        isNaturalTwenty
-                          ? "bg-emerald-950/10"
-                          : isNaturalOne
-                            ? "bg-red-950/10"
-                            : privateLocationTheme
-                              ? ""
-                              : isMechanicalAction
-                                ? "bg-[rgb(var(--sep-colour-21170f))]/70"
-                                : "bg-[rgb(var(--sep-colour-1b140e))]/55"
-                      }`}
-                      style={
-                        privateLocationTheme
-                          ? {
-                              backgroundColor:
-                                privateLocationTheme.backgroundColour,
-                            }
-                          : undefined
-                      }
-                    >
-                      {item.character_id &&
-                      item.character_id !== viewerCharacterId ? (
-                        <div className="absolute right-2 top-2 z-10">
-                          <ReportButton
-                            sourceType="room_message"
-                            sourceId={item.id}
-                            compact
-                          />
-                        </div>
-                      ) : null}
-
-                      <span
-                        aria-hidden="true"
-                        className={`shrink-0 text-sm ${
-                          isNaturalTwenty
-                            ? "text-emerald-500"
-                            : isNaturalOne
-                              ? "text-red-500"
-                              : "text-[rgb(var(--sep-colour-bd8d4d))]"
-                        }`}
-                        style={
-                          privateLocationTheme &&
-                          !isNaturalTwenty &&
-                          !isNaturalOne
-                            ? {
-                                color:
-                                  privateLocationTheme.systemColour,
-                              }
-                            : undefined
-                        }
-                      >
-                        ◆
-                      </span>
-
-                      {author?.public_slug ? (
-                        <Link
-                          href={
-                            characterHref
-                          }
-                          className="shrink-0 font-serif text-sm text-[rgb(var(--sep-colour-d8bf91))] transition hover:text-[rgb(var(--sep-colour-ecd29e))]"
-                          style={
-                            privateLocationTheme
-                              ? {
-                                  color:
-                                    privateLocationTheme.systemColour,
-                                }
-                              : undefined
-                          }
-                        >
-                          {
-                            author.display_name
-                          }
-                          {shapeTagText(author.id)}
-                        </Link>
-                      ) : (
-                        <span
-                          className="shrink-0 font-serif text-sm text-[rgb(var(--sep-colour-d8bf91))]"
-                          style={
-                            privateLocationTheme
-                              ? {
-                                  color:
-                                    privateLocationTheme.systemColour,
-                                }
-                              : undefined
-                          }
-                        >
-                          {author?.display_name ??
-                            "Unknown character"}
-                        </span>
-                      )}
-
-                      <p
-                        className={`min-w-0 flex-1 whitespace-normal break-words text-xs leading-5 ${
-                          isNaturalTwenty
-                            ? "text-emerald-300"
-                            : isNaturalOne
-                              ? "text-red-300"
-                              : "text-[rgb(var(--sep-colour-c8b89f))]"
-                        }`}
-                        title={formatRollText(
-                          item,
-                        )}
-                        style={
-                          privateLocationTheme &&
-                          !isNaturalTwenty &&
-                          !isNaturalOne
-                            ? {
-                                color:
-                                  privateLocationTheme.systemColour,
-                              }
-                            : undefined
-                        }
-                      >
-                        {renderRollText(
-                            item,
-                            privateLocationTheme?.actionColour,
-                          )}
-                      </p>
-
-                      <time
-                        dateTime={
-                          item.created_at
-                        }
-                        className="shrink-0 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-776b5b))]"
-                      >
-                        {time}
-                      </time>
-
-                    </article>
-                  );
-                }
+                const isNaturalOne =
+                  item.dice_sides === 20 &&
+                  item.dice_result === 1;
 
                 const isOutOfCharacter =
                   item.message
@@ -1579,200 +1453,347 @@ export default function RoomMessageList({
                           }`
                         : "Whisper";
 
+                /*
+                 * WHISPERS + OFF-GAME:
+                 * restored to the original layout exactly:
+                 * - left portrait/icons/time
+                 * - separate label row above the message
+                 * - original whisper/off-game backgrounds and borders
+                 */
+                if (isWhisper || isOutOfCharacter) {
+                  return (
+                    <article
+                      key={item.id}
+                      className={`relative flex gap-3 py-3 pl-5 pr-12 sm:pl-7 sm:pr-12 ${
+                        isOutOfCharacter
+                          ? "border-l-2 border-[rgb(var(--sep-colour-627f9f))] bg-[rgb(var(--sep-colour-182536))]/55"
+                          : "border-l-2 border-[rgb(var(--sep-colour-7d628f))] bg-[rgb(var(--sep-colour-241b2a))]/45"
+                      }`}
+                      style={
+                        privateLocationTheme
+                          ? isOutOfCharacter
+                            ? {
+                                backgroundColor:
+                                  privateLocationTheme.offgameBackgroundColour,
+                                color:
+                                  privateLocationTheme.offgameTextColour,
+                              }
+                            : {
+                                backgroundColor:
+                                  privateLocationTheme.whisperBackgroundColour,
+                                color:
+                                  privateLocationTheme.whisperTextColour,
+                              }
+                          : undefined
+                      }
+                    >
+                      {item.character_id &&
+                      item.character_id !== viewerCharacterId ? (
+                        <div className="absolute right-2 top-2 z-10">
+                          <ReportButton
+                            sourceType="room_message"
+                            sourceId={item.id}
+                            compact
+                          />
+                        </div>
+                      ) : null}
+
+                      {/* Character identity + timestamp */}
+                      <div className="flex w-[76px] shrink-0 flex-col">
+                        <div className="flex items-start gap-1.5">
+                          <CharacterPortrait
+                            author={author}
+                            characterHref={
+                              characterHref
+                            }
+                          />
+
+                          <CharacterIdentityIcons
+                            author={author}
+                          />
+                        </div>
+
+                        <time
+                          dateTime={
+                            item.created_at
+                          }
+                          className="mt-1.5 block text-[7px] uppercase leading-4 tracking-[0.12em] text-[rgb(var(--sep-colour-776b5b))]"
+                        >
+                          {time}
+                        </time>
+                      </div>
+
+                      {/* Original whisper / off-game message layout */}
+                      <div className="min-w-0 flex-1">
+                        <div
+                          className={`mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 border-b pb-1.5 ${
+                            isOutOfCharacter
+                              ? "border-[rgb(var(--sep-colour-627f9f))]/40"
+                              : "border-[rgb(var(--sep-colour-7d628f))]/35"
+                          }`}
+                        >
+                          {isOutOfCharacter ? (
+                            <span
+                              className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-a9c7e6))]"
+                              style={
+                                privateLocationTheme
+                                  ? {
+                                      color:
+                                        privateLocationTheme.offgameTextColour,
+                                    }
+                                  : undefined
+                              }
+                            >
+                              Out of Character message
+                            </span>
+                          ) : null}
+
+                          {isWhisper ? (
+                            <span
+                              className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-c7add6))]"
+                              style={
+                                privateLocationTheme
+                                  ? {
+                                      color:
+                                        privateLocationTheme.whisperTextColour,
+                                    }
+                                  : undefined
+                              }
+                            >
+                              {whisperLabel}
+                            </span>
+                          ) : null}
+                        </div>
+
+                        <p
+                          className="min-w-0 whitespace-pre-wrap break-words text-[13px]"
+                          style={{
+                            lineHeight: "18px",
+                          }}
+                        >
+                          {author?.public_slug ? (
+                            <Link
+                              href={characterHref}
+                              className="inline font-serif text-sm leading-[18px] text-[rgb(var(--sep-colour-d8bf91))] transition hover:text-[rgb(var(--sep-colour-ecd29e))]"
+                              style={
+                                privateLocationTheme
+                                  ? {
+                                      color:
+                                        isWhisper
+                                          ? privateLocationTheme.whisperTextColour
+                                          : privateLocationTheme.offgameTextColour,
+                                    }
+                                  : undefined
+                              }
+                            >
+                              {author.first_name ??
+                                author.display_name}
+                            </Link>
+                          ) : (
+                            <span
+                              className="inline font-serif text-sm leading-[18px] text-[rgb(var(--sep-colour-d8bf91))]"
+                              style={
+                                privateLocationTheme
+                                  ? {
+                                      color:
+                                        isWhisper
+                                          ? privateLocationTheme.whisperTextColour
+                                          : privateLocationTheme.offgameTextColour,
+                                    }
+                                  : undefined
+                              }
+                            >
+                              {author?.first_name ??
+                                author?.display_name ??
+                                "Unknown character"}
+                            </span>
+                          )}
+
+                          {author
+                            ? shapeTagHeaderText(author.id)
+                            : null}
+
+                          <br />
+
+                          <ActionSpeechText
+                            content={
+                              item.message
+                            }
+                            speechColour={
+                              privateLocationTheme
+                                ? isWhisper
+                                  ? privateLocationTheme.whisperTextColour
+                                  : privateLocationTheme.offgameTextColour
+                                : undefined
+                            }
+                            actionColour={
+                              privateLocationTheme
+                                ? isWhisper
+                                  ? privateLocationTheme.whisperTextColour
+                                  : privateLocationTheme.offgameTextColour
+                                : undefined
+                            }
+                          />
+                        </p>
+                      </div>
+                    </article>
+                  );
+                }
+
+                /*
+                 * EVERY OTHER NON-FATE OUTPUT:
+                 * left portrait/icons/time;
+                 * right one single paragraph:
+                 * Character name | Conditions | output.
+                 */
+                const isMechanicalOutput =
+                  item.message_type ===
+                    "dice_roll" ||
+                  item.message_type ===
+                    "attribute_check" ||
+                  isMechanicalAction;
+
                 return (
                   <article
-  key={item.id}
-  className={`relative flex gap-3 py-3 pl-5 pr-12 sm:pl-7 sm:pr-12 ${
-    isOutOfCharacter
-      ? "border-l-2 border-[rgb(var(--sep-colour-627f9f))] bg-[rgb(var(--sep-colour-182536))]/55"
-      : isWhisper
-        ? "border-l-2 border-[rgb(var(--sep-colour-7d628f))] bg-[rgb(var(--sep-colour-241b2a))]/45"
-        : ""
-  }`}
-  style={
-    privateLocationTheme
-      ? isOutOfCharacter
-        ? {
-            backgroundColor:
-              privateLocationTheme.offgameBackgroundColour,
-            color:
-              privateLocationTheme.offgameTextColour,
-          }
-        : isWhisper
-          ? {
-              backgroundColor:
-                privateLocationTheme.whisperBackgroundColour,
-              color:
-                privateLocationTheme.whisperTextColour,
-            }
-          : {
-              backgroundColor:
-                privateLocationTheme.backgroundColour,
-            }
-      : undefined
-  }
->
-  {item.character_id &&
-  item.character_id !== viewerCharacterId ? (
-    <div className="absolute right-2 top-2 z-10">
-      <ReportButton
-        sourceType="room_message"
-        sourceId={item.id}
-        compact
-      />
-    </div>
-  ) : null}
+                    key={item.id}
+                    className={`relative flex min-w-0 gap-3 py-3 pl-5 pr-12 sm:pl-7 sm:pr-12 ${
+                      isMechanicalAction
+                        ? "border-l-2 border-[rgb(var(--sep-colour-bd8d4d))]/45 bg-[rgb(var(--sep-colour-21170f))]/70"
+                        : isNaturalTwenty
+                          ? "bg-emerald-950/10"
+                          : isNaturalOne
+                            ? "bg-red-950/10"
+                            : ""
+                    }`}
+                    style={
+                      privateLocationTheme
+                        ? {
+                            backgroundColor:
+                              privateLocationTheme.backgroundColour,
+                          }
+                        : undefined
+                    }
+                  >
+                    {item.character_id &&
+                    item.character_id !== viewerCharacterId ? (
+                      <div className="absolute right-2 top-2 z-10">
+                        <ReportButton
+                          sourceType="room_message"
+                          sourceId={item.id}
+                          compact
+                        />
+                      </div>
+                    ) : null}
 
-  {/* Character identity + timestamp */}
-  <div className="flex w-[76px] shrink-0 flex-col">
-    <div className="flex items-start gap-1.5">
-      <CharacterPortrait
-        author={author}
-        characterHref={
-          characterHref
-        }
-      />
+                    {/* Left: portrait, identity icons and timestamp */}
+                    <div className="flex w-[76px] shrink-0 flex-col">
+                      <div className="flex items-start gap-1.5">
+                        <CharacterPortrait
+                          author={author}
+                          characterHref={characterHref}
+                        />
 
-      <CharacterIdentityIcons
-        author={author}
-      />
-    </div>
+                        <CharacterIdentityIcons
+                          author={author}
+                        />
+                      </div>
 
-    <time
-      dateTime={
-        item.created_at
-      }
-      className="mt-1.5 block text-[7px] uppercase leading-4 tracking-[0.12em] text-[rgb(var(--sep-colour-776b5b))]"
-    >
-      {time}
-    </time>
+                      <time
+                        dateTime={item.created_at}
+                        className="mt-1.5 block text-[7px] uppercase leading-4 tracking-[0.12em] text-[rgb(var(--sep-colour-776b5b))]"
+                      >
+                        {time}
+                      </time>
+                    </div>
 
-  </div>
+                    {/* Right: one single paragraph */}
+                    <p
+                      className={`min-w-0 flex-1 whitespace-pre-wrap break-words text-[13px] leading-[18px] ${
+                        isNaturalTwenty
+                          ? "text-emerald-300"
+                          : isNaturalOne
+                            ? "text-red-300"
+                            : isMechanicalOutput
+                              ? "text-[rgb(var(--sep-colour-c8b89f))]"
+                              : "text-[rgb(var(--sep-colour-d3c2aa))]"
+                      }`}
+                      title={
+                        isMechanicalOutput
+                          ? formatRollText(item)
+                          : undefined
+                      }
+                      style={
+                        isMechanicalOutput &&
+                        privateLocationTheme &&
+                        !isNaturalTwenty &&
+                        !isNaturalOne
+                          ? {
+                              color:
+                                privateLocationTheme.systemColour,
+                            }
+                          : undefined
+                      }
+                    >
+                      {author?.public_slug ? (
+                        <Link
+                          href={characterHref}
+                          className="inline font-serif text-sm text-[rgb(var(--sep-colour-d8bf91))] transition hover:text-[rgb(var(--sep-colour-ecd29e))]"
+                          style={
+                            privateLocationTheme &&
+                            isMechanicalOutput
+                              ? {
+                                  color:
+                                    privateLocationTheme.systemColour,
+                                }
+                              : undefined
+                          }
+                        >
+                          {author.first_name ??
+                            author.display_name}
+                        </Link>
+                      ) : (
+                        <span
+                          className="inline font-serif text-sm text-[rgb(var(--sep-colour-d8bf91))]"
+                          style={
+                            privateLocationTheme &&
+                            isMechanicalOutput
+                              ? {
+                                  color:
+                                    privateLocationTheme.systemColour,
+                                }
+                              : undefined
+                          }
+                        >
+                          {author?.first_name ??
+                            author?.display_name ??
+                            "Unknown character"}
+                        </span>
+                      )}
 
-  {/* Message */}
-  <div className="min-w-0 flex-1">
-    {isWhisper || isOutOfCharacter ? (
-      <div
-        className={`mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 border-b pb-1.5 ${
-          isOutOfCharacter
-            ? "border-[rgb(var(--sep-colour-627f9f))]/40"
-            : "border-[rgb(var(--sep-colour-7d628f))]/35"
-        }`}
-      >
-        {isOutOfCharacter ? (
-          <span
-            className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-a9c7e6))]"
-            style={
-              privateLocationTheme
-                ? {
-                    color:
-                      privateLocationTheme.offgameTextColour,
-                  }
-                : undefined
-            }
-          >
-            Out of Character message
-          </span>
-        ) : null}
+                      {author
+                        ? shapeTagHeaderText(author.id)
+                        : null}
 
-        {isWhisper ? (
-          <span
-            className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-c7add6))]"
-            style={
-              privateLocationTheme
-                ? {
-                    color:
-                      privateLocationTheme.whisperTextColour,
-                  }
-                : undefined
-            }
-          >
-            {whisperLabel}
-          </span>
-        ) : null}
-      </div>
-    ) : null}
+                      <br />
 
-    <div
-  className="min-w-0"
-  style={{
-    lineHeight: "18px",
-  }}
->
-      {author?.public_slug ? (
-        <Link
-          href={characterHref}
-          className="mr-2 inline font-serif text-sm leading-[18px] text-[rgb(var(--sep-colour-d8bf91))] transition hover:text-[rgb(var(--sep-colour-ecd29e))]"
-          style={
-            privateLocationTheme &&
-            (
-              isWhisper ||
-              isOutOfCharacter
-            )
-              ? {
-                  color:
-                    isWhisper
-                      ? privateLocationTheme.whisperTextColour
-                      : privateLocationTheme.offgameTextColour,
-                }
-              : undefined
-          }
-        >
-          {author.first_name ??
-            author.display_name}
-          {shapeTagText(author.id)}
-        </Link>
-      ) : (
-        <span
-          className="mr-2 inline font-serif text-sm leading-[18px] text-[rgb(var(--sep-colour-d8bf91))]"
-          style={
-            privateLocationTheme &&
-            (
-              isWhisper ||
-              isOutOfCharacter
-            )
-              ? {
-                  color:
-                    isWhisper
-                      ? privateLocationTheme.whisperTextColour
-                      : privateLocationTheme.offgameTextColour,
-                }
-              : undefined
-          }
-        >
-          {author?.first_name ??
-            author?.display_name ??
-            "Unknown character"}
-        </span>
-      )}
-
-      <ActionSpeechText
-        content={
-          item.message
-        }
-        speechColour={
-          privateLocationTheme
-            ? isWhisper
-              ? privateLocationTheme.whisperTextColour
-              : isOutOfCharacter
-                ? privateLocationTheme.offgameTextColour
-                : privateLocationTheme.speechColour
-            : undefined
-        }
-        actionColour={
-          privateLocationTheme
-            ? isWhisper
-              ? privateLocationTheme.whisperTextColour
-              : isOutOfCharacter
-                ? privateLocationTheme.offgameTextColour
-                : privateLocationTheme.actionColour
-            : undefined
-        }
-      />
-    </div>
-  </div>
-
-</article>
+                      {isMechanicalOutput ? (
+                        renderRollText(
+                          item,
+                          privateLocationTheme?.actionColour,
+                        )
+                      ) : (
+                        <ActionSpeechText
+                          content={item.message}
+                          speechColour={
+                            privateLocationTheme?.speechColour
+                          }
+                          actionColour={
+                            privateLocationTheme?.actionColour
+                          }
+                        />
+                      )}
+                    </p>
+                  </article>
                 );
               },
             )}

@@ -1191,6 +1191,532 @@ async function loadPrivateMessages(
   );
 }
 
+
+type LocationChatCharacter = {
+  id: string;
+  display_name: string | null;
+  first_name: string | null;
+  surname: string | null;
+  portrait_url: string | null;
+  race:
+    | {
+        id: string;
+        name: string;
+        icon_url: string | null;
+      }
+    | {
+        id: string;
+        name: string;
+        icon_url: string | null;
+      }[]
+    | null;
+};
+
+type LocationChatTags = {
+  buffs: string[];
+  debuffs: string[];
+  conditions: string[];
+  prices: string[];
+};
+
+function locationChatFirstName(
+  character:
+    | {
+        display_name?: string | null;
+        first_name?: string | null;
+      }
+    | null
+    | undefined,
+) {
+  return (
+    character?.first_name?.trim() ||
+    character?.display_name
+      ?.trim()
+      .split(/\s+/)[0] ||
+    "Unknown character"
+  );
+}
+
+function locationChatAttributeLabel(
+  key:
+    | string
+    | null
+    | undefined,
+) {
+  const labels: Record<string, string> = {
+    muscles: "Muscles",
+    reflexes: "Reflexes",
+    vigor: "Vigor",
+    brains: "Brains",
+    shrewd: "Shrewd",
+    presence_score: "Presence",
+  };
+
+  return key
+    ? labels[key] ?? key
+    : "Attribute";
+}
+
+function locationChatRollText(
+  message: {
+    message: string;
+    message_type: string;
+    roll_label: string | null;
+    dice_sides: number | null;
+    dice_result: number | null;
+    attribute_key: string | null;
+    attribute_value: number | null;
+    roll_total: number | null;
+  },
+) {
+  if (
+    message.message_type === "dice_roll" &&
+    message.dice_sides &&
+    message.dice_result !== null
+  ) {
+    return `d${message.dice_sides} → ${message.dice_result}`;
+  }
+
+  if (
+    message.message_type === "attribute_check" &&
+    message.roll_label &&
+    message.dice_result !== null &&
+    message.attribute_value !== null &&
+    message.roll_total !== null
+  ) {
+    return `${message.roll_label} · d20(${message.dice_result}) + ${locationChatAttributeLabel(
+      message.attribute_key,
+    )}(+${message.attribute_value}) = ${message.roll_total}`;
+  }
+
+  return String(message.message ?? "").replace(
+    /^◆\s*/,
+    "",
+  );
+}
+
+function isLocationMechanicalAction(
+  message: {
+    message: string;
+    message_type: string;
+  },
+) {
+  if (
+    message.message_type !== "action" ||
+    !String(message.message ?? "")
+      .trimStart()
+      .startsWith("◆")
+  ) {
+    return false;
+  }
+
+  const value = String(
+    message.message ?? "",
+  ).replace(/^◆\s*/, "");
+
+  return (
+    /^Warp\s+/i.test(value) ||
+    /^used\s+"/i.test(value) ||
+    /\battacks?\b/i.test(value) ||
+    /\buses\s+(?:dodge|defend|resist)/i.test(value) ||
+    /\bchooses\s+do nothing\b/i.test(value) ||
+    /\bawaiting\s+(?:dodge|defend|resist)/i.test(value) ||
+    /\bsuccess roll:/i.test(value) ||
+    /\bshape succeeds\b/i.test(value) ||
+    /\bno counter attempted\b/i.test(value) ||
+    /\bpotential damage:/i.test(value) ||
+    /\bfate resolves the result\b/i.test(value) ||
+    /\bcurrent hp\s+-?\d+\s*(?:->|→)\s*-?\d+/i.test(value) ||
+    /\bhealing\s+\d+/i.test(value) ||
+    /\bdamage\s+\d+/i.test(value) ||
+    /\b\d+\s+damage\b/i.test(value)
+  );
+}
+
+function locationMechanicalBracket(
+  value: string,
+) {
+  const clean = value
+    .trim()
+    .replace(/^\[|\]$/g, "");
+
+  return `[${clean}]`;
+}
+
+function formatLocationMechanicalSegment(
+  rawSegment: string,
+  index: number,
+) {
+  const segment =
+    rawSegment.trim();
+
+  if (!segment) {
+    return "";
+  }
+
+  if (
+    index === 0 &&
+    /^Warp\s+/i.test(segment)
+  ) {
+    return `warps ${locationMechanicalBracket(
+      segment.replace(/^Warp\s+/i, ""),
+    )}`;
+  }
+
+  const used = segment.match(
+    /^used\s+"([^"]+)"\s+on\s+(.+)$/i,
+  );
+
+  if (used) {
+    return `uses ${locationMechanicalBracket(
+      used[1],
+    )} on ${locationMechanicalBracket(
+      used[2],
+    )}`;
+  }
+
+  const counterAgainst =
+    segment.match(
+      /^(.+?)\s+uses\s+(.+?)\s+against\s+(.+)$/i,
+    );
+
+  if (
+    counterAgainst &&
+    /^(Dodge|Defend|Resist)/i.test(
+      counterAgainst[2],
+    )
+  ) {
+    return `${counterAgainst[1]} uses ${locationMechanicalBracket(
+      counterAgainst[2],
+    )} against ${locationMechanicalBracket(
+      counterAgainst[3],
+    )}`;
+  }
+
+  const counter = segment.match(
+    /^(.+?)\s+uses\s+(.+)$/i,
+  );
+
+  if (
+    counter &&
+    /^(Dodge|Defend|Resist)/i.test(
+      counter[2],
+    )
+  ) {
+    return `${counter[1]} uses ${locationMechanicalBracket(
+      counter[2],
+    )}`;
+  }
+
+  const doNothing =
+    segment.match(
+      /^(.+?)\s+chooses\s+Do nothing$/i,
+    );
+
+  if (doNothing) {
+    return `${doNothing[1]} chooses ${locationMechanicalBracket(
+      "Do Nothing",
+    )}`;
+  }
+
+  const attackOn =
+    segment.match(
+      /^attacks\s+on\s+(.+?)\s+with\s+"([^"]+)"$/i,
+    );
+
+  if (attackOn) {
+    return `attacks ${locationMechanicalBracket(
+      attackOn[1],
+    )} with ${locationMechanicalBracket(
+      attackOn[2],
+    )}`;
+  }
+
+  const attackWith =
+    segment.match(
+      /^attacks\s+(.+?)\s+with\s+"([^"]+)"$/i,
+    );
+
+  if (attackWith) {
+    return `attacks ${locationMechanicalBracket(
+      attackWith[1],
+    )} with ${locationMechanicalBracket(
+      attackWith[2],
+    )}`;
+  }
+
+  const unarmed =
+    segment.match(
+      /^attacks\s+(.+?)\s+Unarmed$/i,
+    );
+
+  if (unarmed) {
+    return `attacks ${locationMechanicalBracket(
+      unarmed[1],
+    )} with ${locationMechanicalBracket(
+      "Unarmed",
+    )}`;
+  }
+
+  const level =
+    segment.match(
+      /^Level\s+(.+)$/i,
+    );
+
+  if (level) {
+    return locationMechanicalBracket(
+      `Level ${level[1]}`,
+    );
+  }
+
+  const labelled =
+    segment.match(
+      /^(Target|Targets|Automatic|Save required|Movement|Components|Duration|Resolved|Condition|Effect):\s*(.+)$/i,
+    );
+
+  if (labelled) {
+    return `${labelled[1]}: ${locationMechanicalBracket(
+      labelled[2],
+    )}`;
+  }
+
+  const successRoll =
+    segment.match(
+      /^Success Roll:\s*(.+)$/i,
+    );
+
+  if (successRoll) {
+    return `Success Roll ${locationMechanicalBracket(
+      successRoll[1],
+    )}`;
+  }
+
+  const diceRoll =
+    segment.match(
+      /^(d(?:4|6|8|10|12|20|100)\s*(?:->|→))\s*(.+)$/i,
+    );
+
+  if (diceRoll) {
+    const dcMatch =
+      diceRoll[2].match(
+        /^(.+?)\s+vs\s+DC\s+(-?\d+)$/i,
+      );
+
+    if (dcMatch) {
+      return `${diceRoll[1]} ${locationMechanicalBracket(
+        dcMatch[1],
+      )} vs DC ${locationMechanicalBracket(
+        dcMatch[2],
+      )}`;
+    }
+
+    return `${diceRoll[1]} ${locationMechanicalBracket(
+      diceRoll[2],
+    )}`;
+  }
+
+  const awaiting =
+    segment.match(
+      /^Awaiting\s+(.+)$/i,
+    );
+
+  if (awaiting) {
+    return `Awaiting ${locationMechanicalBracket(
+      awaiting[1],
+    )}`;
+  }
+
+  if (
+    /^(?:Current\s+)?(?:HP|Health)\s+-?\d+\s*(?:->|→)\s*-?\d+$/i.test(segment) ||
+    /^Healing\s+\d+$/i.test(segment) ||
+    /^Heal(?:ing)?\s+\d+$/i.test(segment) ||
+    /^Damage\s+\d+$/i.test(segment) ||
+    /^\d+\s+Damage$/i.test(segment) ||
+    /^Max(?:imum)?\s+(?:HP|Health)\s+.*$/i.test(segment)
+  ) {
+    return locationMechanicalBracket(
+      segment,
+    );
+  }
+
+  const resolvedDamage =
+    segment.match(
+      /^(.+?(?:→|->)\s*)(\d+\s+Damage)$/i,
+    );
+
+  if (resolvedDamage) {
+    return `${resolvedDamage[1]}${locationMechanicalBracket(
+      resolvedDamage[2],
+    )}`;
+  }
+
+  const potentialDamage =
+    segment.match(
+      /^Potential Damage:\s*(.+)$/i,
+    );
+
+  if (potentialDamage) {
+    return `Potential Damage ${locationMechanicalBracket(
+      potentialDamage[1],
+    )}`;
+  }
+
+  return segment;
+}
+
+function formatLocationMechanicalText(
+  message: {
+    message: string;
+    message_type: string;
+    roll_label: string | null;
+    dice_sides: number | null;
+    dice_result: number | null;
+    attribute_key: string | null;
+    attribute_value: number | null;
+    roll_total: number | null;
+  },
+) {
+  return locationChatRollText(
+    message,
+  )
+    .split(/\s+·\s+/g)
+    .map((segment, index) =>
+      formatLocationMechanicalSegment(
+        segment,
+        index,
+      ),
+    )
+    .filter(Boolean)
+    .join(" - ");
+}
+
+function renderLocationMechanicalText(
+  message: {
+    message: string;
+    message_type: string;
+    roll_label: string | null;
+    dice_sides: number | null;
+    dice_result: number | null;
+    attribute_key: string | null;
+    attribute_value: number | null;
+    roll_total: number | null;
+  },
+) {
+  return formatLocationMechanicalText(
+    message,
+  )
+    .split(/(\[[^\]]+\])/g)
+    .filter(Boolean)
+    .map((segment, index) => {
+      const highlighted =
+        segment.startsWith("[") &&
+        segment.endsWith("]");
+
+      return (
+        <span
+          key={index}
+          className={
+            highlighted
+              ? "font-bold text-[rgb(var(--sep-colour-a98a60))]"
+              : undefined
+          }
+        >
+          {segment}
+        </span>
+      );
+    });
+}
+
+function renderLocationActionSpeech(
+  content: string,
+) {
+  return content
+    .split(
+      /(<[^<>]*>|\([^()]*\)|\[[^\[\]]*\]|\{[^{}]*\})/g,
+    )
+    .filter(Boolean)
+    .map((segment, index) => {
+      const isAction =
+        (
+          segment.startsWith("<") &&
+          segment.endsWith(">")
+        ) ||
+        (
+          segment.startsWith("(") &&
+          segment.endsWith(")")
+        ) ||
+        (
+          segment.startsWith("[") &&
+          segment.endsWith("]")
+        ) ||
+        (
+          segment.startsWith("{") &&
+          segment.endsWith("}")
+        );
+
+      return (
+        <span
+          key={index}
+          className={
+            isAction
+              ? "italic text-[rgb(var(--sep-colour-a98a60))]"
+              : "text-[rgb(var(--sep-colour-d3c2aa))]"
+          }
+        >
+          {segment}
+        </span>
+      );
+    });
+}
+
+function renderLocationChatTags(
+  tags:
+    | LocationChatTags
+    | undefined,
+) {
+  if (!tags) {
+    return null;
+  }
+
+  const groups: string[] = [];
+
+  if (tags.buffs.length) {
+    groups.push(
+      tags.buffs.join(" - "),
+    );
+  }
+
+  if (tags.debuffs.length) {
+    groups.push(
+      tags.debuffs.join(" - "),
+    );
+  }
+
+  if (tags.conditions.length) {
+    groups.push(
+      tags.conditions.join(" - "),
+    );
+  }
+
+  if (tags.prices.length) {
+    groups.push(
+      tags.prices.join(" - "),
+    );
+  }
+
+  if (!groups.length) {
+    return null;
+  }
+
+  return (
+    <span className="text-[9px] uppercase tracking-[.04em] text-[rgb(var(--sep-colour-b99765))]">
+      {" | "}
+      {groups.join(" | ")}
+    </span>
+  );
+}
+
+
 async function loadRoomMessages(
   params: SearchParams,
   privateRoomIds: Set<string>,
@@ -1225,7 +1751,13 @@ async function loadRoomMessages(
           id,
           display_name,
           first_name,
-          surname
+          surname,
+          portrait_url,
+          race:races(
+            id,
+            name,
+            icon_url
+          )
         ),
         whisperRecipient:characters!room_messages_whisper_recipient_character_id_fkey(
           id,
@@ -1329,6 +1861,219 @@ async function loadRoomMessages(
       },
     );
 
+  const characterIds =
+    Array.from(
+      new Set(
+        messages
+          .map((message) =>
+            String(
+              message.character_id ??
+              "",
+            ),
+          )
+          .filter(Boolean),
+      ),
+    );
+
+  const [
+    orderResult,
+    shapeResult,
+    priceResult,
+  ] =
+    characterIds.length > 0
+      ? await Promise.all([
+          supabase
+            .from("order_memberships")
+            .select(`
+              character_id,
+              order:orders!order_memberships_order_id_fkey(
+                id,
+                name,
+                icon_url,
+                colour
+              )
+            `)
+            .in(
+              "character_id",
+              characterIds,
+            ),
+          supabase.rpc(
+            "get_active_shape_chat_tags",
+            {
+              p_character_ids:
+                characterIds,
+            },
+          ),
+          supabase.rpc(
+            "get_active_price_chat_tags",
+            {
+              p_character_ids:
+                characterIds,
+            },
+          ),
+        ])
+      : [
+          {
+            data: [],
+            error: null,
+          },
+          {
+            data: [],
+            error: null,
+          },
+          {
+            data: [],
+            error: null,
+          },
+        ];
+
+  if (orderResult.error) {
+    throw new Error(
+      `Unable to load location chat Order icons: ${orderResult.error.message}`,
+    );
+  }
+
+  if (shapeResult.error) {
+    throw new Error(
+      `Unable to load location chat Shape tags: ${shapeResult.error.message}`,
+    );
+  }
+
+  if (priceResult.error) {
+    throw new Error(
+      `Unable to load location chat Price tags: ${priceResult.error.message}`,
+    );
+  }
+
+  const orderByCharacterId =
+    new Map<
+      string,
+      {
+        name: string;
+        icon_url: string | null;
+        colour: string | null;
+      }
+    >();
+
+  for (
+    const row of
+      orderResult.data ?? []
+  ) {
+    const order =
+      one(
+        row.order as
+          | {
+              name: string;
+              icon_url:
+                | string
+                | null;
+              colour:
+                | string
+                | null;
+            }
+          | {
+              name: string;
+              icon_url:
+                | string
+                | null;
+              colour:
+                | string
+                | null;
+            }[]
+          | null,
+      );
+
+    if (!order) {
+      continue;
+    }
+
+    orderByCharacterId.set(
+      String(row.character_id),
+      order,
+    );
+  }
+
+  const tagsByCharacterId =
+    new Map<
+      string,
+      LocationChatTags
+    >();
+
+  for (
+    const characterId of
+      characterIds
+  ) {
+    tagsByCharacterId.set(
+      characterId,
+      {
+        buffs: [],
+        debuffs: [],
+        conditions: [],
+        prices: [],
+      },
+    );
+  }
+
+  for (
+    const row of
+      shapeResult.data ?? []
+  ) {
+    const id =
+      String(
+        row.character_id,
+      );
+
+    const existing =
+      tagsByCharacterId.get(id) ??
+      {
+        buffs: [],
+        debuffs: [],
+        conditions: [],
+        prices: [],
+      };
+
+    tagsByCharacterId.set(
+      id,
+      {
+        ...existing,
+        buffs:
+          row.buffs ?? [],
+        debuffs:
+          row.debuffs ?? [],
+        conditions:
+          row.conditions ?? [],
+      },
+    );
+  }
+
+  for (
+    const row of
+      priceResult.data ?? []
+  ) {
+    const id =
+      String(
+        row.character_id,
+      );
+
+    const existing =
+      tagsByCharacterId.get(id) ??
+      {
+        buffs: [],
+        debuffs: [],
+        conditions: [],
+        prices: [],
+      };
+
+    tagsByCharacterId.set(
+      id,
+      {
+        ...existing,
+        prices:
+          row.prices ?? [],
+      },
+    );
+  }
+
   const moderationById =
     await loadModerationMap(
       supabase,
@@ -1346,28 +2091,8 @@ async function loadRoomMessages(
           const sender =
             one(
               message.character as
-                | {
-                    display_name:
-                      | string
-                      | null;
-                    first_name:
-                      | string
-                      | null;
-                    surname:
-                      | string
-                      | null;
-                  }
-                | {
-                    display_name:
-                      | string
-                      | null;
-                    first_name:
-                      | string
-                      | null;
-                    surname:
-                      | string
-                      | null;
-                  }[]
+                | LocationChatCharacter
+                | LocationChatCharacter[]
                 | null,
             );
 
@@ -1440,101 +2165,338 @@ async function loadRoomMessages(
             params.message ===
             String(message.id);
 
+          const displayMessage =
+            String(
+              moderation
+                ?.original_content ??
+              message.message ??
+              "",
+            );
+
+          const messageForRendering = {
+            ...message,
+            message:
+              displayMessage,
+          };
+
+          const isOutOfCharacter =
+            displayMessage
+              .trimStart()
+              .startsWith("//");
+
+          const isWhisper =
+            message.message_type ===
+            "whisper";
+
+          const isMechanicalAction =
+            isLocationMechanicalAction(
+              messageForRendering,
+            );
+
+          const isMechanicalOutput =
+            message.message_type ===
+              "dice_roll" ||
+            message.message_type ===
+              "attribute_check" ||
+            isMechanicalAction;
+
+          const naturalTwenty =
+            message.dice_sides === 20 &&
+            message.dice_result === 20;
+
+          const naturalOne =
+            message.dice_sides === 20 &&
+            message.dice_result === 1;
+
+          const race =
+            sender
+              ? one(
+                  sender.race,
+                )
+              : null;
+
+          const order =
+            sender?.id
+              ? orderByCharacterId.get(
+                  String(
+                    sender.id,
+                  ),
+                ) ?? null
+              : null;
+
+          const tags =
+            sender?.id
+              ? tagsByCharacterId.get(
+                  String(
+                    sender.id,
+                  ),
+                )
+              : undefined;
+
+          const whisperLabel =
+            isWhisper
+              ? `Whisper to ${
+                  characterName(
+                    recipient,
+                  )
+                }`
+              : "";
+
+          if (
+            message.message_type ===
+            "fate"
+          ) {
+            return (
+              <article
+                id={`message-${message.id}`}
+                key={message.id}
+                className={`border bg-[rgb(var(--sep-colour-15100d))] ${
+                  isTarget
+                    ? "border-[rgb(var(--sep-colour-c99758))] ring-1 ring-[rgb(var(--sep-colour-c99758))]/70"
+                    : "border-[rgb(var(--sep-colour-59432c))]/40"
+                }`}
+              >
+                <div className="border-b border-[rgb(var(--sep-colour-59432c))]/25 px-4 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806f5b))]">
+                  {room?.name ??
+                    "Unknown location"}
+                  {" · "}
+                  {kind}
+                  {" · fate"}
+                </div>
+
+                <div className="border-y border-[rgb(var(--sep-colour-8a6637))]/40 bg-[linear-gradient(90deg,rgba(var(--sep-rgb-91-56-24),0.22),rgba(var(--sep-rgb-24-16-11),0.72),rgba(var(--sep-rgb-91-56-24),0.14))] px-5 py-2.5">
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-c99b58))]">
+                      The Voice of Fate
+                    </span>
+
+                    <time className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-776b5b))]">
+                      {formatDateTime(
+                        String(
+                          message.created_at,
+                        ),
+                      )}
+                    </time>
+                  </div>
+
+                  <p className="mt-1.5 whitespace-pre-wrap break-words font-serif text-[13px] leading-5 text-[rgb(var(--sep-colour-d6c09a))]">
+                    {displayMessage}
+                  </p>
+                </div>
+
+                <div className="px-4 pb-4">
+                  <ModerationPanel
+                    sourceType="room_message"
+                    sourceId={String(
+                      message.id,
+                    )}
+                    moderation={
+                      moderation
+                    }
+                  />
+                </div>
+              </article>
+            );
+          }
+
           return (
             <article
               id={`message-${message.id}`}
               key={message.id}
-              className={`border bg-[rgb(var(--sep-colour-15100d))] p-4 ${
+              className={`border bg-[rgb(var(--sep-colour-15100d))] ${
                 isTarget
                   ? "border-[rgb(var(--sep-colour-c99758))] ring-1 ring-[rgb(var(--sep-colour-c99758))]/70"
                   : "border-[rgb(var(--sep-colour-59432c))]/40"
               }`}
             >
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <p className="font-serif text-base text-[rgb(var(--sep-colour-dcc49a))]">
-                    {characterName(
-                      sender,
-                    )}
-                    {message.message_type ===
-                      "whisper" ? (
-                      <>
-                        {" "}
-                        <span className="text-[rgb(var(--sep-colour-806f5b))]">
-                          →
-                        </span>{" "}
-                        {characterName(
-                          recipient,
-                        )}
-                      </>
-                    ) : null}
-                  </p>
-
-                  <p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806f5b))]">
-                    {room?.name ??
-                      "Unknown location"}
-                    {" · "}
-                    {kind}
-                    {" · "}
-                    {message.message_type}
-                  </p>
-                </div>
-
-                <p className="text-[9px] text-[rgb(var(--sep-colour-9b8768))]">
-                  {formatDateTime(
-                    String(
-                      message.created_at,
-                    ),
-                  )}
-                </p>
+              {/* Keep the admin-only location metadata, filters and moderation context. */}
+              <div className="border-b border-[rgb(var(--sep-colour-59432c))]/25 px-4 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806f5b))]">
+                {room?.name ??
+                  "Unknown location"}
+                {" · "}
+                {kind}
+                {" · "}
+                {message.message_type}
               </div>
 
-              <p className="mt-3 whitespace-pre-wrap border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-3 text-xs leading-6 text-[rgb(var(--sep-colour-c1b198))]">
-                {String(
-                  moderation
-                    ?.original_content ??
-                    message.message ??
-                    "",
-                )}
-              </p>
+              <div
+                className={`relative flex min-w-0 gap-3 px-5 py-3 pr-12 sm:px-7 sm:pr-12 ${
+                  isOutOfCharacter
+                    ? "border-l-2 border-[rgb(var(--sep-colour-627f9f))] bg-[rgb(var(--sep-colour-182536))]/55"
+                    : isWhisper
+                      ? "border-l-2 border-[rgb(var(--sep-colour-7d628f))] bg-[rgb(var(--sep-colour-241b2a))]/45"
+                      : isMechanicalAction
+                        ? "border-l-2 border-[rgb(var(--sep-colour-bd8d4d))]/45 bg-[rgb(var(--sep-colour-21170f))]/70"
+                        : naturalTwenty
+                          ? "bg-emerald-950/10"
+                          : naturalOne
+                            ? "bg-red-950/10"
+                            : ""
+                }`}
+              >
+                {/* Left: portrait, race/Order icons, time — same structure as live location chat. */}
+                <div className="flex w-[76px] shrink-0 flex-col">
+                  <div className="flex items-start gap-1.5">
+                    <div className="h-9 w-9 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))] bg-[rgb(var(--sep-colour-0d0a08))]">
+                      {sender?.portrait_url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={
+                            sender.portrait_url
+                          }
+                          alt=""
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <span className="flex h-full items-center justify-center text-[rgb(var(--sep-colour-806b4e))]">
+                          ?
+                        </span>
+                      )}
+                    </div>
 
-              {message.roll_label ||
-              message.dice_result !==
-                null ||
-              message.roll_total !==
-                null ? (
-                <p className="mt-2 text-[8px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-786a58))]">
-                  {[
-                    message.roll_label,
-                    message.dice_sides
-                      ? `d${message.dice_sides}`
-                      : null,
-                    message.dice_result !==
-                      null
-                      ? `Roll ${message.dice_result}`
-                      : null,
-                    message.attribute_key
-                      ? `${message.attribute_key}: ${message.attribute_value ?? "?"}`
-                      : null,
-                    message.roll_total !==
-                      null
-                      ? `Total ${message.roll_total}`
-                      : null,
-                  ]
-                    .filter(Boolean)
-                    .join(" · ")}
-                </p>
-              ) : null}
+                    <div className="flex shrink-0 flex-col items-center gap-1 pt-0.5">
+                      {race?.icon_url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={
+                            race.icon_url
+                          }
+                          alt=""
+                          title={
+                            race.name
+                          }
+                          className="h-4 w-4 object-contain"
+                        />
+                      ) : null}
 
-              <ModerationPanel
-                sourceType="room_message"
-                sourceId={String(
-                  message.id,
-                )}
-                moderation={
-                  moderation
-                }
-              />
+                      {order ? (
+                        order.icon_url ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={
+                              order.icon_url
+                            }
+                            alt=""
+                            title={`Order: ${order.name}`}
+                            className="h-4 w-4 object-contain"
+                          />
+                        ) : (
+                          <span
+                            title={`Order: ${order.name}`}
+                            className="flex h-4 w-4 items-center justify-center font-serif text-[7px]"
+                            style={{
+                              color:
+                                order.colour ??
+                                "#8d6d3e",
+                            }}
+                          >
+                            {order.name
+                              .charAt(0)
+                              .toUpperCase()}
+                          </span>
+                        )
+                      ) : null}
+                    </div>
+                  </div>
+
+                  <time className="mt-1.5 block text-[7px] uppercase leading-4 tracking-[0.12em] text-[rgb(var(--sep-colour-776b5b))]">
+                    {formatDateTime(
+                      String(
+                        message.created_at,
+                      ),
+                    )}
+                  </time>
+                </div>
+
+                <div className="min-w-0 flex-1">
+                  {isWhisper ||
+                  isOutOfCharacter ? (
+                    <div
+                      className={`mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 border-b pb-1.5 ${
+                        isOutOfCharacter
+                          ? "border-[rgb(var(--sep-colour-627f9f))]/40"
+                          : "border-[rgb(var(--sep-colour-7d628f))]/35"
+                      }`}
+                    >
+                      {isOutOfCharacter ? (
+                        <span className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-a9c7e6))]">
+                          Out of Character message
+                        </span>
+                      ) : null}
+
+                      {isWhisper ? (
+                        <span className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-c7add6))]">
+                          {whisperLabel}
+                        </span>
+                      ) : null}
+                    </div>
+                  ) : null}
+
+                  {/* Main body: Name | active conditions/prices/etc, then newline, then the whole output. */}
+                  <p
+                    className={`min-w-0 whitespace-pre-wrap break-words text-[13px] leading-[18px] ${
+                      isWhisper
+                        ? "text-[rgb(var(--sep-colour-c7add6))]"
+                        : isOutOfCharacter
+                          ? "text-[rgb(var(--sep-colour-a9c7e6))]"
+                          : naturalTwenty
+                            ? "text-emerald-300"
+                            : naturalOne
+                              ? "text-red-300"
+                              : isMechanicalOutput
+                                ? "text-[rgb(var(--sep-colour-c8b89f))]"
+                                : "text-[rgb(var(--sep-colour-d3c2aa))]"
+                    }`}
+                  >
+                    <span
+                      className={`font-serif text-sm ${
+                        isWhisper
+                          ? "text-[rgb(var(--sep-colour-c7add6))]"
+                          : isOutOfCharacter
+                            ? "text-[rgb(var(--sep-colour-a9c7e6))]"
+                            : isMechanicalOutput
+                              ? "text-[rgb(var(--sep-colour-d8bf91))]"
+                              : "text-[rgb(var(--sep-colour-d8bf91))]"
+                      }`}
+                      title={
+                        characterName(
+                          sender,
+                        )
+                      }
+                    >
+                      {locationChatFirstName(
+                        sender,
+                      )}
+                    </span>
+
+                    {renderLocationChatTags(
+                      tags,
+                    )}
+
+                    <br />
+
+                    {isMechanicalOutput
+                      ? renderLocationMechanicalText(
+                          messageForRendering,
+                        )
+                      : renderLocationActionSpeech(
+                          displayMessage,
+                        )}
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-4 pb-4">
+                <ModerationPanel
+                  sourceType="room_message"
+                  sourceId={String(
+                    message.id,
+                  )}
+                  moderation={
+                    moderation
+                  }
+                />
+              </div>
             </article>
           );
         },
@@ -1546,7 +2508,6 @@ async function loadRoomMessages(
     </section>
   );
 }
-
 
 async function loadInstantChatMessages(
   params: SearchParams,

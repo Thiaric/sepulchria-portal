@@ -407,17 +407,15 @@ export default async function AdminTicketPage({
               {sourceHref ? (
                 <Link
   href={sourceHref}
-  target="_blank"
-  rel="noopener noreferrer"
-  className="..."
+  className="inline-flex h-9 items-center justify-center border border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-261b12))] px-4 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d5b785))] transition hover:border-[rgb(var(--sep-colour-ad824d))] hover:bg-[rgb(var(--sep-colour-332318))]"
 >
-                  {report.source_type === "forum_topic" ||
-                  report.source_type === "forum_post"
-                    ? "Open Original Source"
-                    : report.source_type === "character"
-                      ? "Open Character Profile"
-                      : "Open Communication Logs"}
-                </Link>
+  {report.source_type === "forum_topic" ||
+  report.source_type === "forum_post"
+    ? "Open Original Source"
+    : report.source_type === "character"
+      ? "Open Character Profile"
+      : "Open Communication Logs"}
+</Link>
               ) : null}
             </header>
 
