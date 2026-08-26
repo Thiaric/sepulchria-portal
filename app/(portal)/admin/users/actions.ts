@@ -12,6 +12,7 @@ import {
 } from "@/lib/auth/require-staff";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { recordStaffAdminAudit } from "@/lib/audit/staff-admin-audit";
 
 const STAFF_ROLES = [
   "owner",
@@ -74,7 +75,8 @@ function readOptionalRole(
 export async function updateUserStaffRole(
   formData: FormData,
 ) {
-  await requireAdminSection("users");
+  const administrator =
+    await requireAdminSection("users");
 
   const userId = readRequiredUuid(
     formData.get("userId"),
@@ -83,6 +85,26 @@ export async function updateUserStaffRole(
   const role = readOptionalRole(
     formData.get("role"),
   );
+
+  const admin = createAdminClient();
+
+  const {
+    data: previousStaff,
+    error: previousStaffError,
+  } = await admin
+    .from("staff_members")
+    .select("role")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (previousStaffError) {
+    throw new Error(
+      `Unable to inspect the current staff role: ${previousStaffError.message}`,
+    );
+  }
+
+  const previousRole =
+    previousStaff?.role ?? null;
 
   const supabase = await createClient();
 
@@ -99,6 +121,17 @@ export async function updateUserStaffRole(
       `Unable to update staff role: ${error.message}`,
     );
   }
+
+  await recordStaffAdminAudit({
+    actorUserId: administrator.userId,
+    actorStaffRole: administrator.role,
+    action: "staff_role_changed",
+    targetUserId: userId,
+    metadata: {
+      previous_role: previousRole,
+      new_role: role,
+    },
+  });
 
   revalidatePath("/admin");
   revalidatePath("/admin/users");
