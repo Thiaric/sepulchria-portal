@@ -189,6 +189,7 @@ try {
         },
         body: JSON.stringify({
           email,
+          invitationToken,
         }),
       },
     );

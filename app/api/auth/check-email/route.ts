@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 
 import { createAdminClient } from "@/lib/supabase/admin";
+import { getRegistrationsOpen } from "@/lib/registration/get-registrations-open";
+import { getValidRegistrationInvitation } from "@/lib/registration/invitations";
 
 export async function POST(
   request: Request,
@@ -12,6 +14,10 @@ export async function POST(
       typeof body.email === "string"
         ? body.email.trim().toLowerCase()
         : "";
+    const invitationToken =
+      typeof body.invitationToken === "string"
+        ? body.invitationToken.trim()
+        : "";
 
     if (!email) {
       return NextResponse.json(
@@ -21,6 +27,36 @@ export async function POST(
         },
         { status: 400 },
       );
+    }
+
+    const registrationsOpen =
+      await getRegistrationsOpen();
+
+    if (!registrationsOpen) {
+      const invitation =
+        await getValidRegistrationInvitation(
+          invitationToken,
+        );
+
+      if (
+        !invitation ||
+        invitation.email.toLowerCase() !== email
+      ) {
+        return NextResponse.json(
+          {
+            error:
+              "This registration invitation is invalid or does not match this email address.",
+          },
+          { status: 403 },
+        );
+      }
+    } else {
+      // Do not expose account-existence information on the
+      // public registration flow. Supabase handles duplicate
+      // signup attempts without this privileged lookup.
+      return NextResponse.json({
+        exists: false,
+      });
     }
 
     const supabase =
