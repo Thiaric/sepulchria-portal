@@ -2,6 +2,10 @@ import { NextResponse } from "next/server";
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getRegistrationsOpen } from "@/lib/registration/get-registrations-open";
+import {
+  consumeSecurityRateLimit,
+  getClientIp,
+} from "@/lib/security/rate-limit";
 
 function clean(value: unknown, max: number) {
   return String(value ?? "").trim().slice(0, max);
@@ -17,6 +21,53 @@ export async function POST(request: Request) {
           "Registrations are currently open. Please use the normal registration form.",
       },
       { status: 409 },
+    );
+  }
+
+  try {
+    const rateLimit =
+      await consumeSecurityRateLimit({
+        scope:
+          "registration_application_ip",
+        identifier:
+          getClientIp(request),
+        limit: 5,
+        windowSeconds: 60 * 60,
+      });
+
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        {
+          error:
+            "Too many applications have been submitted from this connection. Please try again later.",
+          retryAfterSeconds:
+            rateLimit.retryAfterSeconds,
+        },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": String(
+              Math.max(
+                1,
+                rateLimit.retryAfterSeconds,
+              ),
+            ),
+          },
+        },
+      );
+    }
+  } catch (error) {
+    console.error(
+      "Unable to apply registration application rate limit:",
+      error,
+    );
+
+    return NextResponse.json(
+      {
+        error:
+          "Security verification is temporarily unavailable. Please try again shortly.",
+      },
+      { status: 503 },
     );
   }
 

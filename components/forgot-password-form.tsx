@@ -31,6 +31,35 @@ const supabase = createClient();
     setError(null);
 
     try {
+      const rateLimitResponse =
+        await fetch(
+          "/api/auth/rate-limit",
+          {
+            method: "POST",
+            credentials: "same-origin",
+            cache: "no-store",
+            headers: {
+              "Content-Type":
+                "application/json",
+            },
+            body: JSON.stringify({
+              action: "password_reset",
+            }),
+          },
+        );
+
+      const rateLimitResult =
+        await rateLimitResponse
+          .json()
+          .catch(() => null);
+
+      if (!rateLimitResponse.ok) {
+        throw new Error(
+          rateLimitResult?.error ??
+            "Unable to verify password reset security.",
+        );
+      }
+
       const { error } =
   await supabase.auth.resetPasswordForEmail(
     email,
