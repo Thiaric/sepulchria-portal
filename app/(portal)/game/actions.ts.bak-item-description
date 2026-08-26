@@ -2947,7 +2947,6 @@ export async function useRoomItem(
       .from("items")
       .select(`
         name,
-        description,
         target_mode,
         success_die,
         success_threshold,
@@ -3234,7 +3233,6 @@ export async function useRoomItem(
           character_id: character.id,
           message:
             `◆ used "${item.name}" on ${target.display_name}` +
-            ` - Description: ${item.description?.trim() || "No description"}` +
             ` - d${die} -> ${rolled}${attributeText} = ${total}` +
             ` - Awaiting ${allowedCounters
               .map((counter) => counterLabels[counter] ?? counter)
@@ -3366,7 +3364,6 @@ export async function useRoomItem(
           character_id: character.id,
           message:
             `◆ used "${item.name}"` +
-            ` - Description: ${item.description?.trim() || "No description"}` +
             ` - ${successRoll.summary}` +
             ` - No effect applied` +
             `${spentText}` +
@@ -3660,7 +3657,6 @@ export async function useRoomItem(
         character_id: character.id,
         message:
           `◆ used "${outcome.item_name ?? item.name}"${targetLabel}` +
-          ` - Description: ${item.description?.trim() || "No description"}` +
           ` - ${successRoll.summary}` +
           `${effectParts.length ? ` - ${effectParts.join(" - ")}` : ""}`,
         message_type: "action",

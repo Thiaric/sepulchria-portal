@@ -12,9 +12,6 @@ import {
 } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 import { wordOfPower } from "@/lib/warping/constants";
-import {
-  sanitizeRichHtml,
-} from "@/lib/rich-text";
 
 const txt=(f:FormData,n:string)=>String(f.get(n)??"").trim();
 const nint=(f:FormData,n:string,d=0)=>{const v=Number.parseInt(txt(f,n),10);return Number.isFinite(v)?v:d;};
@@ -55,9 +52,6 @@ function payload(f:FormData){
 
   return {
     name:txt(f,"name"),description:txt(f,"description"),
-    extended_description:txt(f,"extended_description")
-      ?sanitizeRichHtml(txt(f,"extended_description"))
-      :null,
     level:Math.max(1,Math.min(9,nint(f,"level",1))),
     school:txt(f,"school"),essence_word:essence,action_word:action,law_word:law,
     word_of_power:wordOfPower(essence,action,law),movement:txt(f,"movement"),

@@ -521,8 +521,10 @@ function renderRollText(
       null &&
     message.roll_total !== null
   ) {
-    return `${message.roll_label} · d20(${message.dice_result}) + ${getAttributeLabel(
-      message.attribute_key,
+    return `${message.roll_label} · d20(${message.dice_result}) + ${mechanicalBracket(
+      getAttributeLabel(
+        message.attribute_key,
+      ),
     )}(+${message.attribute_value}) = ${message.roll_total}`;
   }
 
@@ -680,18 +682,28 @@ function formatMechanicalSegment(
   }
 
   const level = segment.match(
-    /^Level\s+(.+)$/i,
-  );
+  /^Level\s+(.+)$/i,
+);
 
-  if (level) {
-    return mechanicalBracket(
-      `Level ${level[1]}`,
-    );
-  }
-
-  const labelled = segment.match(
-    /^(Target|Targets|Automatic|Save required|Movement|Components|Duration|Resolved|Condition|Effect):\s*(.+)$/i,
+if (level) {
+  return mechanicalBracket(
+    `Level ${level[1]}`,
   );
+}
+
+const useAttribute = segment.match(
+  /^Use your\s+(.+)$/i,
+);
+
+if (useAttribute) {
+  return mechanicalBracket(
+    `Use your ${useAttribute[1]}`,
+  );
+}
+
+const labelled = segment.match(
+  /^(Target|Targets|Automatic|Save required|Movement|Components|Duration|Resolved|Condition|Effect):\s*(.+)$/i,
+);
 
   if (labelled) {
     return `${labelled[1]}: ${mechanicalBracket(
@@ -775,19 +787,171 @@ function formatMechanicalSegment(
   return segment;
 }
 
+function formatItemUseDisplayText(
+  rawText: string,
+): string {
+  const clean = rawText
+    .trim()
+    .replace(/^◆\s*/, "");
+
+  const head = clean.match(
+    /^used\s+"([^"]+)"(?:\s+on\s+(.+?))?(?:\s+-\s+|$)/i,
+  );
+
+  if (!head) {
+    return clean;
+  }
+
+  const itemName = head[1];
+  const target = head[2]?.trim() || "";
+  const rest = clean.slice(head[0].length).trim();
+
+  const output: string[] = [
+    `uses ${mechanicalBracket(itemName)}${
+      target
+        ? ` on ${mechanicalBracket(target)}`
+        : ""
+    }`,
+  ];
+
+  if (!rest) {
+    return output.join(" - ");
+  }
+
+  const parts = rest
+    .split(/\s+-\s+/g)
+    .map((part) => part.trim())
+    .filter(Boolean);
+
+  for (const part of parts) {
+    const description = part.match(
+      /^Description:\s*(.+)$/i,
+    );
+
+    if (description) {
+      output.push(
+        `Description: ${mechanicalBracket(
+          description[1],
+        )}`,
+      );
+      continue;
+    }
+
+    const duration = part.match(
+      /^Duration:\s*(.+)$/i,
+    );
+
+    if (duration) {
+      output.push(
+        `Duration: ${mechanicalBracket(
+          duration[1],
+        )}`,
+      );
+      continue;
+    }
+
+    const successRoll = part.match(
+      /^Success Roll:\s*(.+)$/i,
+    );
+
+    if (successRoll) {
+      output.push(
+        `Success Roll ${mechanicalBracket(
+          successRoll[1],
+        )}`,
+      );
+      continue;
+    }
+
+    const awaiting = part.match(
+      /^Awaiting\s+(.+)$/i,
+    );
+
+    if (awaiting) {
+      output.push(
+        `Awaiting ${mechanicalBracket(
+          awaiting[1],
+        )}`,
+      );
+      continue;
+    }
+
+    const diceRoll = part.match(
+      /^(d(?:4|6|8|10|12|20|100)\s*(?:->|→))\s*(.+)$/i,
+    );
+
+    if (diceRoll) {
+      output.push(
+        `${diceRoll[1]} ${mechanicalBracket(
+          diceRoll[2],
+        )}`,
+      );
+      continue;
+    }
+
+    output.push(
+      mechanicalBracket(part),
+    );
+  }
+
+  return output.join(" - ");
+}
+
 function formatMechanicalDisplayText(
   message: RoomMessage,
 ): string {
-  return renderRollText(message)
-    .split(/\s+·\s+/g)
-    .map((segment, index) =>
-      formatMechanicalSegment(
+  const raw = renderRollText(message);
+
+  const dotSegments = raw.split(/\s+·\s+/g);
+  const isFeatUse =
+    /^used\s+"[^"]+"(?:\s+on\s+.+)?$/i.test(
+      dotSegments[0]?.trim() ?? "",
+    ) &&
+    dotSegments.length > 1;
+
+  if (
+    /^used\s+"[^"]+"/i.test(raw.trim()) &&
+    !isFeatUse
+  ) {
+    return formatItemUseDisplayText(raw);
+  }
+
+  return dotSegments
+    .map((segment, index) => {
+      if (
+        isFeatUse &&
+        index === 1
+      ) {
+        return mechanicalBracket(segment);
+      }
+
+      return formatMechanicalSegment(
         segment,
         index,
-      ),
-    )
+      );
+    })
     .filter(Boolean)
     .join(" - ");
+}
+
+function renderBracketedMechanicalHtml(
+  text: string,
+): string {
+  return text
+    .split(/(\\[[^\\]]+\\])/g)
+    .filter(Boolean)
+    .map((segment) => {
+      const escaped =
+        escapeHtml(segment);
+
+      return (
+        segment.startsWith("[") &&
+        segment.endsWith("]")
+      )
+        ? `<strong class="mechanical-highlight">${escaped}</strong>`
+        : escaped;
+    })
+    .join("");
 }
 
 function renderMechanicalResultHtml(
@@ -1057,7 +1221,7 @@ function renderMessage(
         ? renderMechanicalResultHtml(
             message,
           )
-        : escapeHtml(
+        : renderBracketedMechanicalHtml(
             renderRollText(
               message,
             ),

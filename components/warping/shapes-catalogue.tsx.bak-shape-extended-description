@@ -9,16 +9,12 @@ import {
 import {
   shapeSchoolBorderClass,
 } from "@/lib/warping/shape-school-style";
-import {
-  ShapeExtendedDescription,
-} from "@/components/warping/shape-extended-description";
 
 export type ShapeCard =
   Record<string, any> & {
     id: string;
     name: string;
     description: string;
-    extended_description?: string | null;
     level: number;
     school: string;
     word_of_power: string;
@@ -467,12 +463,6 @@ function ShapeArticle({
             <p className="mt-2 whitespace-pre-wrap text-xs leading-5 text-[rgb(var(--sep-colour-9f927f))]">
               {shape.description}
             </p>
-          ) : null}
-
-          {shape.extended_description?.trim() ? (
-            <ShapeExtendedDescription
-              body={shape.extended_description}
-            />
           ) : null}
 
           <div className="mt-2 grid grid-cols-2 gap-1.5 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-2 sm:grid-cols-3">

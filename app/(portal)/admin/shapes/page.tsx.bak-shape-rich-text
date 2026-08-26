@@ -12,9 +12,6 @@ import type { ShapeActionState } from "./actions";
 import {
   shapeSchoolBorderClass,
 } from "@/lib/warping/shape-school-style";
-import {
-  RichTextEditor,
-} from "@/components/editor/rich-text-editor";
 
 type Props={searchParams?:Promise<{success?:string;error?:string}>}; type S=Record<string,any>;
 const cls="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] outline-none";
@@ -95,22 +92,6 @@ function ShapeForm({
       <label><span className={lab}>Law</span><Sel name="law_word" value={s?.law_word??"Eos"} options={LAW_WORDS}/></label>
       <label><span className={lab}>Movement</span><Sel name="movement" value={s?.movement??"projection"} options={MOVEMENTS}/></label>
       <label className="lg:col-span-4"><span className={lab}>Description / exact specification</span><textarea required rows={4} name="description" defaultValue={s?.description??""} className={cls}/></label>
-
-      <div className="lg:col-span-4">
-        <div className="mb-1 flex flex-wrap items-center justify-between gap-2">
-          <span className={lab}>Extended Description</span>
-          <span className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756957))]">Optional · not posted in chat</span>
-        </div>
-
-        <RichTextEditor
-          name="extended_description"
-          defaultValue={s?.extended_description??""}
-          minHeight={180}
-          maxTextLength={50000}
-          placeholder="Optional extended lore, explanation, examples, flavour text..."
-          variant="lore"
-        />
-      </div>
     </div>
     <section className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] p-4"><h4 className="font-serif text-lg text-[rgb(var(--sep-colour-d8c29b))]">Casting</h4>
       <div className="mt-3 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
