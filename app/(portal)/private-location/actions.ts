@@ -15,6 +15,12 @@ import {
 import {
   createClient,
 } from "@/lib/supabase/server";
+import {
+  getSanctionEnforcement,
+} from "@/lib/sanctions/enforcement";
+import {
+  consumeSecurityRateLimit,
+} from "@/lib/security/rate-limit";
 
 function adminClient() {
   const url =
@@ -547,6 +553,38 @@ export async function invitePrivateLocation(
     admin,
   } = await requireOwner(roomId);
 
+  const authenticated =
+    await createClient();
+
+  const communicationEnforcement =
+    await getSanctionEnforcement(
+      authenticated,
+      "communication",
+    );
+
+  if (communicationEnforcement.blocked) {
+    throw new Error(
+      communicationEnforcement.message ??
+        "Private communication is currently restricted on this account.",
+    );
+  }
+
+  const invitationRateLimit =
+    await consumeSecurityRateLimit({
+      scope:
+        "private_location_invite_character",
+      identifier:
+        `character:${owner.id}`,
+      limit: 10,
+      windowSeconds: 10 * 60,
+    });
+
+  if (!invitationRateLimit.allowed) {
+    throw new Error(
+      "You are sending Private Location invitations too quickly. Please wait before inviting more characters.",
+    );
+  }
+
   if (recipientId === owner.id) {
     throw new Error(
       "You cannot invite yourself.",
@@ -665,9 +703,6 @@ export async function invitePrivateLocation(
   }
 
   if (deliveryMethod === "message") {
-    const authenticated =
-      await createClient();
-
     const {
       data: conversationId,
       error: conversationError,
