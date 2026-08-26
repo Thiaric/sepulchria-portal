@@ -192,22 +192,37 @@ export async function GET(
 
     return NextResponse.json({
       events: (events ?? []).map(
-        (event) => ({
-          ...event,
-          text: text(
-            event.event_type,
-            event.details,
-            names.get(
-              event.actor_user_id,
-            ) ??
-              (
-                event.actor_user_id ===
-                ticket.opened_by_user_id
-                  ? "Player"
-                  : "Staff"
-              ),
-          ),
-        }),
+        (event) => {
+          const responseEvent =
+            isAdmin
+              ? event
+              : {
+                  id: event.id,
+                  event_type:
+                    event.event_type,
+                  details:
+                    event.details,
+                  created_at:
+                    event.created_at,
+                };
+
+          return {
+            ...responseEvent,
+            text: text(
+              event.event_type,
+              event.details,
+              names.get(
+                event.actor_user_id,
+              ) ??
+                (
+                  event.actor_user_id ===
+                  ticket.opened_by_user_id
+                    ? "Player"
+                    : "Staff"
+                ),
+            ),
+          };
+        },
       ),
     });
   }

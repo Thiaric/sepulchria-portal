@@ -12,7 +12,10 @@ import { HeaderCharacterIdentity } from "@/components/portal/header-character-id
 import { StaffAppearOfflineToggle } from "@/components/portal/staff-appear-offline-toggle";
 import { WorldIndicator } from "@/components/world/world-indicator";
 import { PortalModalButton } from "@/components/portal/portal-modal-button";
-import { getStaffSession } from "@/lib/auth/require-staff";
+import {
+  canAccessAdminSection,
+  getStaffSession,
+} from "@/lib/auth/require-staff";
 import type { PortalContext } from "@/types/portal";
 
 type PortalHeaderProps = { context: PortalContext };
@@ -86,7 +89,12 @@ export async function PortalHeader({ context }: PortalHeaderProps) {
                 className="relative flex h-8 w-8 items-center justify-center border border-[rgb(var(--sep-colour-7b5d36))] bg-[rgb(var(--sep-colour-24180f))] font-serif text-base text-[rgb(var(--sep-colour-d4ad70))] transition hover:border-[rgb(var(--sep-colour-b1844b))] hover:bg-[rgb(var(--sep-colour-382517))] hover:text-[rgb(var(--sep-colour-ffe0a6))] sm:h-9 sm:w-9 2xl:h-10 2xl:w-10 2xl:text-lg"
               >
                 ⚙
-                <RegistrationApplicationBadge variant="floating" />
+                {canAccessAdminSection(
+                  staffSession.role,
+                  "new_register",
+                ) ? (
+                  <RegistrationApplicationBadge variant="floating" />
+                ) : null}
                 <SubmittedCharacterBadge variant="floating" />
                 <TicketNotificationBadge audience="staff" variant="floating" />
               </Link>

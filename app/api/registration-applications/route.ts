@@ -142,13 +142,7 @@ export async function POST(request: Request) {
   }
 
   if (emailRegistered === true) {
-    return NextResponse.json(
-      {
-        error:
-          "An account with this email address already exists. Please log in instead.",
-      },
-      { status: 409 },
-    );
+    return NextResponse.json({ ok: true });
   }
 
   const { data: existing } = await admin

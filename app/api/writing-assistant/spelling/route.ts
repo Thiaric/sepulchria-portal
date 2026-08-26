@@ -2,6 +2,11 @@ import { NextResponse } from "next/server";
 import enGb from "dictionary-en-gb";
 import nspell from "nspell";
 
+import {
+  consumeSecurityRateLimit,
+} from "@/lib/security/rate-limit";
+import { createClient } from "@/lib/supabase/server";
+
 const MAX_TEXT_LENGTH = 50_000;
 const MAX_UNIQUE_WORDS = 2_500;
 const MAX_ISSUES = 250;
@@ -145,6 +150,71 @@ function shouldSkipWord(
 export async function POST(
   request: Request,
 ) {
+  const supabase =
+    await createClient();
+
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    return NextResponse.json(
+      {
+        error:
+          "Authentication is required.",
+      },
+      { status: 401 },
+    );
+  }
+
+  try {
+    const rateLimit =
+      await consumeSecurityRateLimit({
+        scope:
+          "writing_assistant_spelling_user",
+        identifier:
+          `user:${user.id}`,
+        limit: 60,
+        windowSeconds: 60,
+      });
+
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        {
+          error:
+            "The Writing Assistant is being used too quickly. Please wait a moment and try again.",
+          retryAfterSeconds:
+            rateLimit.retryAfterSeconds,
+        },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": String(
+              Math.max(
+                1,
+                rateLimit.retryAfterSeconds,
+              ),
+            ),
+          },
+        },
+      );
+    }
+  } catch (error) {
+    console.error(
+      "Unable to apply Writing Assistant rate limit:",
+      error,
+    );
+
+    return NextResponse.json(
+      {
+        error:
+          "Writing Assistant security verification is temporarily unavailable.",
+      },
+      { status: 503 },
+    );
+  }
+
   let payload: unknown;
 
   try {
