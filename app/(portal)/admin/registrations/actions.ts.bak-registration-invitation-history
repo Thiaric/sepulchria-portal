@@ -65,56 +65,20 @@ async function sendInvitationEmail(
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-  from,
-  to: [email],
-  subject: "Your Sepulchria registration invitation",
-
-  text: `Hello ${name},
-
-Your application for the Sepulchria Closed Alpha has been accepted.
-
-You can create your account using the link below:
-
-${invitationUrl}
-
-This invitation is linked to this email address and expires in 7 days.
-
-If you did not apply to join Sepulchria, you can ignore this email.
-
-Sepulchria
-https://sepulchria.com`,
-
-  html: `
-    <p>Hello ${safeName},</p>
-
-    <p>
-      Your application for the Sepulchria Closed Alpha has been accepted.
-    </p>
-
-    <p>
-      You can create your account using the link below:
-    </p>
-
-    <p>
-      <a href="${invitationUrl}">
-        Complete your registration
-      </a>
-    </p>
-
-    <p>
-      This invitation is linked to this email address and expires in 7 days.
-    </p>
-
-    <p>
-      If you did not apply to join Sepulchria, you can ignore this email.
-    </p>
-
-    <p>
-      Sepulchria<br />
-      <a href="https://sepulchria.com">sepulchria.com</a>
-    </p>
-  `,
-}),
+        from,
+        to: [email],
+        subject: "Your invitation to Sepulchria",
+        html: `
+          <div style="font-family:Georgia,serif;background:#100c09;color:#e8dcc4;padding:32px">
+            <h1 style="color:#e2cda4">The City Gates open for you</h1>
+            <p>Hello ${safeName},</p>
+            <p>Your application to join Sepulchria's closed Alpha has been selected.</p>
+            <p>This invitation allows this email address to register even while public registrations remain closed.</p>
+            <p><a href="${invitationUrl}" style="color:#d4a460">Complete your registration</a></p>
+            <p>This invitation expires in 7 days and can only be used once.</p>
+          </div>
+        `,
+      }),
     },
   );
 
@@ -169,17 +133,12 @@ export async function sendRegistrationInvitationAction(
       Date.now() + 7 * 24 * 60 * 60 * 1000,
     ).toISOString();
 
-  const origin = await getSiteOrigin();
-  const invitationUrl =
-    `${origin}/auth/sign-up?invite=${encodeURIComponent(token)}`;
-
   const { error: insertError } = await admin
     .from("registration_invitations")
     .insert({
       application_id: application.id,
       email: application.email.toLowerCase(),
       token_hash: hash,
-      invitation_url: invitationUrl,
       expires_at: expiresAt,
       created_by: staff.userId,
     });
@@ -187,6 +146,10 @@ export async function sendRegistrationInvitationAction(
   if (insertError) {
     throw new Error(insertError.message);
   }
+
+  const origin = await getSiteOrigin();
+  const invitationUrl =
+    `${origin}/auth/sign-up?invite=${encodeURIComponent(token)}`;
 
   let sent = false;
   let warning = "";
@@ -248,28 +211,6 @@ export async function declineRegistrationApplicationAction(
   const admin = createAdminClient();
   const now = new Date().toISOString();
 
-  const {
-    data: application,
-    error: applicationError,
-  } = await admin
-    .from("registration_applications")
-    .select("id,status")
-    .eq("id", applicationId)
-    .maybeSingle();
-
-  if (applicationError || !application) {
-    throw new Error(
-      applicationError?.message ??
-        "Registration application not found.",
-    );
-  }
-
-  if (application.status !== "pending") {
-    throw new Error(
-      "Only pending applications can be declined.",
-    );
-  }
-
   const { error } = await admin
     .from("registration_applications")
     .update({
@@ -277,8 +218,7 @@ export async function declineRegistrationApplicationAction(
       reviewed_at: now,
       updated_at: now,
     })
-    .eq("id", applicationId)
-    .eq("status", "pending");
+    .eq("id", applicationId);
 
   if (error) {
     throw new Error(error.message);

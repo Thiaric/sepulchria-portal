@@ -1,7 +1,6 @@
 import Link from "next/link";
 
 import { SubmittedCharacterBadge } from "@/components/admin/submitted-character-badge";
-import { RegistrationApplicationBadge } from "@/components/admin/registration-application-badge";
 import { TicketNotificationBadge } from "@/components/support/ticket-notification-badge";
 import { PortalSoundToggle } from "@/components/audio/portal-sound-toggle";
 import { PortalSkinSwitcher } from "@/components/portal/portal-skin-switcher";
@@ -86,7 +85,6 @@ export async function PortalHeader({ context }: PortalHeaderProps) {
                 className="relative flex h-8 w-8 items-center justify-center border border-[rgb(var(--sep-colour-7b5d36))] bg-[rgb(var(--sep-colour-24180f))] font-serif text-base text-[rgb(var(--sep-colour-d4ad70))] transition hover:border-[rgb(var(--sep-colour-b1844b))] hover:bg-[rgb(var(--sep-colour-382517))] hover:text-[rgb(var(--sep-colour-ffe0a6))] sm:h-9 sm:w-9 2xl:h-10 2xl:w-10 2xl:text-lg"
               >
                 ⚙
-                <RegistrationApplicationBadge variant="floating" />
                 <SubmittedCharacterBadge variant="floating" />
                 <TicketNotificationBadge audience="staff" variant="floating" />
               </Link>

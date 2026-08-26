@@ -65,41 +65,6 @@ export async function POST(request: Request) {
 
   const admin = createAdminClient();
 
-  const {
-    data: emailRegistered,
-    error: emailCheckError,
-  } = await admin.rpc(
-    "email_is_registered",
-    {
-      check_email: email,
-    },
-  );
-
-  if (emailCheckError) {
-    console.error(
-      "Unable to check whether application email is already registered:",
-      emailCheckError.message,
-    );
-
-    return NextResponse.json(
-      {
-        error:
-          "Unable to check this email address right now.",
-      },
-      { status: 500 },
-    );
-  }
-
-  if (emailRegistered === true) {
-    return NextResponse.json(
-      {
-        error:
-          "An account with this email address already exists. Please log in instead.",
-      },
-      { status: 409 },
-    );
-  }
-
   const { data: existing } = await admin
     .from("registration_applications")
     .select("id,status")

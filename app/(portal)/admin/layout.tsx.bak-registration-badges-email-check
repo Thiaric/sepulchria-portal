@@ -3,7 +3,6 @@ import type { ReactNode } from "react";
 
 import { AdminInteractionKeeper } from "@/components/admin/admin-interaction-keeper";
 import { SubmittedCharacterBadge } from "@/components/admin/submitted-character-badge";
-import { RegistrationApplicationBadge } from "@/components/admin/registration-application-badge";
 import { TicketNotificationBadge } from "@/components/support/ticket-notification-badge";
 import { SanctionNotificationBadge } from "@/components/sanctions/sanction-notification-badge";
 import {
@@ -170,10 +169,7 @@ export default async function AdminLayout({
 
   {can("new_register") ? (
     <AdminNavigationLink href="/admin/registrations">
-      <span className="flex items-center gap-2">
-        <span>Registrations</span>
-        <RegistrationApplicationBadge variant="admin-nav" />
-      </span>
+      Registrations
     </AdminNavigationLink>
   ) : null}
 
