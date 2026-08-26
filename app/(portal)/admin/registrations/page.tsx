@@ -11,9 +11,9 @@ import {
 
 type Props = {
   searchParams?: Promise<{
-    inviteSent?: string;
-    inviteEmail?: string;
-    inviteError?: string;
+    inviteLink?: string;
+    sent?: string;
+    warning?: string;
   }>;
 };
 
@@ -32,10 +32,6 @@ export default async function RegistrationApplicationsAdminPage({
     { data: settings, error: settingsError },
     { data: applications, error: applicationsError },
     { data: invitations, error: invitationsError },
-    {
-      data: authInvitations,
-      error: authInvitationsError,
-    },
   ] = await Promise.all([
     supabase
       .from("registration_settings")
@@ -54,20 +50,11 @@ export default async function RegistrationApplicationsAdminPage({
         "id,application_id,invitation_url,created_at,expires_at,used_at,sent_at",
       )
       .order("created_at", { ascending: false }),
-    admin
-      .from("registration_auth_invitations")
-      .select(
-        "id,application_id,email,auth_user_id,sent_at,accepted_at",
-      )
-      .order("sent_at", { ascending: false }),
   ]);
 
   if (settingsError) throw new Error(settingsError.message);
   if (applicationsError) throw new Error(applicationsError.message);
   if (invitationsError) throw new Error(invitationsError.message);
-  if (authInvitationsError) {
-    throw new Error(authInvitationsError.message);
-  }
 
   const registrationsOpen =
     settings?.registrations_open === true;
@@ -98,27 +85,6 @@ export default async function RegistrationApplicationsAdminPage({
     existing.push(invitation);
 
     invitationsByApplication.set(
-      invitation.application_id,
-      existing,
-    );
-  }
-
-  const authInvitationsByApplication = new Map<
-    string,
-    NonNullable<typeof authInvitations>
-  >();
-
-  for (
-    const invitation of authInvitations ?? []
-  ) {
-    const existing =
-      authInvitationsByApplication.get(
-        invitation.application_id,
-      ) ?? [];
-
-    existing.push(invitation);
-
-    authInvitationsByApplication.set(
       invitation.application_id,
       existing,
     );
@@ -183,28 +149,26 @@ export default async function RegistrationApplicationsAdminPage({
           </AdminActionForm>
         </section>
 
-        {params.inviteSent === "1" ? (
+        {params.inviteLink ? (
           <section className="mt-5 border border-[rgb(var(--sep-colour-987344))]/60 bg-[rgb(var(--sep-colour-21170f))] p-5">
             <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-b99765))]">
-              Invitation sent
+              Invitation created
             </p>
             <p className="mt-2 text-sm leading-6 text-[rgb(var(--sep-colour-c8b89d))]">
-              Supabase Auth sent the invitation email
-              {params.inviteEmail
-                ? ` to ${params.inviteEmail}`
-                : ""}.
+              {params.sent === "1"
+                ? "The invitation email was sent. The link is also shown below."
+                : "Email delivery is not configured or failed. Copy this link and send it to the applicant manually."}
             </p>
-          </section>
-        ) : null}
-
-        {params.inviteError ? (
-          <section className="mt-5 border border-red-900/60 bg-red-950/20 p-5">
-            <p className="text-[8px] uppercase tracking-[0.18em] text-red-400">
-              Invitation failed
-            </p>
-            <p className="mt-2 text-sm leading-6 text-red-300">
-              {params.inviteError}
-            </p>
+            {params.warning ? (
+              <p className="mt-2 text-xs leading-5 text-amber-300">
+                {params.warning}
+              </p>
+            ) : null}
+            <input
+              readOnly
+              value={params.inviteLink}
+              className="mt-3 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2 text-xs text-[rgb(var(--sep-colour-d8c29b))]"
+            />
           </section>
         ) : null}
 
@@ -270,54 +234,13 @@ export default async function RegistrationApplicationsAdminPage({
                   />
 
                   {(
-                    authInvitationsByApplication.get(
-                      application.id,
-                    ) ?? []
-                  ).length > 0 ? (
-                    <div className="mt-5 border border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-100c09))] p-4">
-                      <p className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-806a4d))]">
-                        Supabase invitation history
-                      </p>
-
-                      <div className="mt-3 space-y-2">
-                        {(
-                          authInvitationsByApplication.get(
-                            application.id,
-                          ) ?? []
-                        ).map((invitation, index) => (
-                          <div
-                            key={invitation.id}
-                            className="flex flex-wrap items-center justify-between gap-2 border border-[rgb(var(--sep-colour-60482e))]/25 bg-[rgb(var(--sep-colour-0d0a08))] p-3"
-                          >
-                            <span className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-b99765))]">
-                              {index === 0
-                                ? "Latest invitation"
-                                : "Previous invitation"}
-                              {" · "}
-                              {invitation.accepted_at
-                                ? "Accepted"
-                                : "Sent"}
-                            </span>
-
-                            <span className="text-[8px] text-[rgb(var(--sep-colour-756957))]">
-                              {new Date(
-                                invitation.sent_at,
-                              ).toLocaleString("en-GB")}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ) : null}
-
-                  {(
                     invitationsByApplication.get(
                       application.id,
                     ) ?? []
                   ).length > 0 ? (
                     <div className="mt-5 border border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-100c09))] p-4">
                       <p className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-806a4d))]">
-                        Previous custom invitation history
+                        Invitation history
                       </p>
 
                       <div className="mt-3 space-y-3">
