@@ -9,13 +9,13 @@ const contentSecurityPolicy = [
   "img-src 'self' blob: data: https:",
   "font-src 'self' data:",
   "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://challenges.cloudflare.com",
-  "frame-src https://challenges.cloudflare.com",
+  "frame-src 'self' https://challenges.cloudflare.com",
   "worker-src 'self' blob:",
   "media-src 'self' blob: https:",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
-  "frame-ancestors 'none'",
+  "frame-ancestors 'self'",
   "manifest-src 'self'",
   ...(isDev ? [] : ["upgrade-insecure-requests"]),
 ].join("; ");
@@ -43,7 +43,7 @@ const securityHeaders = [
   },
   {
     key: "X-Frame-Options",
-    value: "DENY",
+    value: "SAMEORIGIN",
   },
 ];
 
