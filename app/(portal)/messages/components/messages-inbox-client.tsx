@@ -190,9 +190,9 @@ export function MessagesInboxClient({
     ]);
 
   return (
-    <div className="p-2 sm:p-7 lg:p-6">
+    <div className="p-2 sm:p-4 lg:p-4">
       <div className="mx-auto max-w-5xl">
-        <header className="flex flex-wrap items-end justify-between gap-5 border-b border-[rgb(var(--sep-colour-654b2e))]/40 pb-6">
+        <header className="flex flex-wrap items-end justify-between gap-3 border-b border-[rgb(var(--sep-colour-654b2e))]/40 pb-3">
           <div>
             <p className="text-[10px] uppercase tracking-[0.32em] text-[rgb(var(--sep-colour-927047))]">
               Private correspondence
@@ -230,7 +230,7 @@ export function MessagesInboxClient({
           </div>
         </header>
 
-        <section className="mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4">
+        <section className="mt-3 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-3">
           <label className="block">
             <span className="mb-2 block text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
               Filter conversations
@@ -246,7 +246,7 @@ export function MessagesInboxClient({
                 )
               }
               placeholder="Search by character or message text..."
-              className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))] [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
+              className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))] [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
             />
           </label>
 
@@ -265,7 +265,7 @@ export function MessagesInboxClient({
           ) : null}
         </section>
 
-        <div className="mt-5 space-y-3">
+        <div className="mt-3 space-y-2">
           {filteredConversations.map(
             (conversation) => {
               const otherName =
@@ -284,7 +284,7 @@ export function MessagesInboxClient({
                   key={
                     conversation.id
                   }
-                  className="flex flex-col gap-4 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 transition hover:border-[rgb(var(--sep-colour-80613c))] sm:flex-row sm:items-center"
+                  className="flex flex-col gap-3 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-3 transition hover:border-[rgb(var(--sep-colour-80613c))] sm:flex-row sm:items-center"
                 >
                   <div
                     role="link"
@@ -307,7 +307,7 @@ export function MessagesInboxClient({
                     }}
                     className="flex min-w-0 flex-1 cursor-pointer items-center gap-3"
                   >
-                    <div className="h-14 w-14 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))] bg-[rgb(var(--sep-colour-0d0a08))]">
+                    <div className="h-11 w-11 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))] bg-[rgb(var(--sep-colour-0d0a08))]">
                       {conversation.other
                         ?.portrait_url ? (
                         // eslint-disable-next-line @next/next/no-img-element
@@ -344,7 +344,7 @@ export function MessagesInboxClient({
 
                     <div className="min-w-0 flex-1 pl-1">
                       <div className="flex flex-wrap items-center gap-3">
-                        <h2 className="truncate font-serif text-xl text-[rgb(var(--sep-colour-dec69a))]">
+                        <h2 className="truncate font-serif text-base text-[rgb(var(--sep-colour-dec69a))]">
                           {otherName}
                         </h2>
 
@@ -386,7 +386,7 @@ export function MessagesInboxClient({
                         </p>
                       ) : null}
 
-                      <div className="mt-2 max-h-6 overflow-hidden text-sm leading-6 text-[rgb(var(--sep-colour-9f907c))]">
+                      <div className="mt-1 max-h-5 overflow-hidden text-xs leading-5 text-[rgb(var(--sep-colour-9f907c))]">
                         {conversation.matchSnippet ? (
                           <RichTextContentClient
                             body={
@@ -415,7 +415,7 @@ export function MessagesInboxClient({
                         </p>
                       ) : null}
 
-                      <p className="mt-2 text-[9px] text-[rgb(var(--sep-colour-665c50))]">
+                      <p className="mt-1 text-[8px] text-[rgb(var(--sep-colour-665c50))]">
                         {formatDate(
                           conversation.updatedAt,
                         )}
@@ -448,7 +448,7 @@ export function MessagesInboxClient({
 
                     <button
                       type="submit"
-                      className="w-full border border-[rgb(var(--sep-colour-59432c))] px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a98b61))] transition hover:border-[rgb(var(--sep-colour-80613c))] hover:text-[rgb(var(--sep-colour-d5ba8c))] sm:w-auto"
+                      className="w-full border border-[rgb(var(--sep-colour-59432c))] px-3 py-1.5 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-a98b61))] transition hover:border-[rgb(var(--sep-colour-80613c))] hover:text-[rgb(var(--sep-colour-d5ba8c))] sm:w-auto"
                     >
                       {showArchived
                         ? "Restore"
@@ -462,7 +462,7 @@ export function MessagesInboxClient({
 
           {filteredConversations.length ===
           0 ? (
-            <p className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-8 text-center text-sm text-[rgb(var(--sep-colour-8f8271))]">
+            <p className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 text-center text-sm text-[rgb(var(--sep-colour-8f8271))]">
               {normalizedQuery
                 ? "No conversations match your search."
                 : "No conversations here yet."}

@@ -386,10 +386,10 @@ export default async function ConversationPage({
       />
 
       <header className="border-b border-[rgb(var(--sep-colour-654b2e))]/40 bg-[rgb(var(--sep-colour-0c0a08))]/90">
-        <div className="mx-auto flex min-h-20 max-w-[1000px] items-center justify-between px-5">
+        <div className="mx-auto flex min-h-14 max-w-[1000px] items-center justify-between px-4">
           <Link
             href="/messages"
-            className="border border-[rgb(var(--sep-colour-59432c))] px-3 py-2 text-[10px] uppercase tracking-[0.18em]"
+            className="border border-[rgb(var(--sep-colour-59432c))] px-3 py-1.5 text-[9px] uppercase tracking-[0.16em]"
           >
             ← Messages
           </Link>
@@ -403,14 +403,14 @@ export default async function ConversationPage({
         </div>
       </header>
 
-      <div className="mx-auto max-w-[1000px] px-5 py-8">
+      <div className="mx-auto max-w-[1000px] px-4 py-4">
         <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
-          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[rgb(var(--sep-colour-59432c))]/40 p-5 sm:p-6">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-59432c))]/40 p-3 sm:p-4">
             <Link
               href={profileHref}
               className="flex min-w-0 items-center gap-3"
             >
-              <div className="h-14 w-14 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))] bg-[rgb(var(--sep-colour-0d0a08))]">
+              <div className="h-11 w-11 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))] bg-[rgb(var(--sep-colour-0d0a08))]">
                 {other.portrait_url ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -440,12 +440,12 @@ export default async function ConversationPage({
                   Conversation with
                 </p>
 
-                <h1 className="mt-1 truncate font-serif text-2xl text-[rgb(var(--sep-colour-dec69a))]">
+                <h1 className="mt-0.5 truncate font-serif text-xl text-[rgb(var(--sep-colour-dec69a))]">
                   {other.display_name ??
                     "Unknown character"}
                 </h1>
 
-                <div className="mt-2">
+                <div className="mt-1">
                   <MessagePresenceStatus
                     characterId={
                       other.id
@@ -521,11 +521,11 @@ export default async function ConversationPage({
           />
 
           {other.is_system ? (
-            <div className="border-t border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-5 py-4 text-center text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-7f725f))]">
+            <div className="border-t border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-4 py-2.5 text-center text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-7f725f))]">
               Automated Forum notification - replies are disabled
             </div>
           ) : blocked ? (
-            <p className="border-t border-[rgb(var(--sep-colour-59432c))]/40 p-6 text-center text-sm text-[rgb(var(--sep-colour-c78f7e))]">
+            <p className="border-t border-[rgb(var(--sep-colour-59432c))]/40 p-4 text-center text-sm text-[rgb(var(--sep-colour-c78f7e))]">
               Messaging is disabled
               for this conversation.
             </p>

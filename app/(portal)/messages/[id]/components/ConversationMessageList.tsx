@@ -2,7 +2,9 @@
 
 import {
   useEffect,
+  useLayoutEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 
@@ -116,6 +118,33 @@ export function ConversationMessageList({
 }: Props) {
   const [liveMessages, setLiveMessages] =
     useState<LiveDirectMessage[]>(messages);
+
+  const scrollBoxRef =
+    useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    const scrollBox =
+      scrollBoxRef.current;
+
+    if (!scrollBox) {
+      return;
+    }
+
+    const frameId =
+      window.requestAnimationFrame(
+        () => {
+          scrollBox.scrollTop =
+            scrollBox.scrollHeight;
+        },
+      );
+
+    return () => {
+      window.cancelAnimationFrame(
+        frameId,
+      );
+    };
+  }, [liveMessages]);
+
 
   useEffect(() => {
     setLiveMessages((current) => {
@@ -416,8 +445,8 @@ export function ConversationMessageList({
 
   return (
     <>
-      <section className="border-b border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-120e0b))] p-4 sm:px-6">
-        <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_150px_150px_150px_auto]">
+      <section className="border-b border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-120e0b))] p-3 sm:px-4">
+        <div className="grid gap-2 lg:grid-cols-[minmax(0,1fr)_135px_135px_135px_auto]">
           <input
             type="search"
             value={query}
@@ -427,7 +456,7 @@ export function ConversationMessageList({
               )
             }
             placeholder="Search words in this conversation…"
-            className="min-w-0 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))] [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
+            className="min-w-0 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))] [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
           />
 
           <select
@@ -440,7 +469,7 @@ export function ConversationMessageList({
                   | PrivateMessageMode,
               )
             }
-            className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-cdbb9f))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
+            className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2 text-xs text-[rgb(var(--sep-colour-cdbb9f))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
           >
             <option value="all">
               All types
@@ -504,7 +533,7 @@ export function ConversationMessageList({
           </div>
         </div>
 
-        <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-3">
+        <div className="mt-2 flex flex-wrap items-center justify-between gap-2 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-2">
           <div className="flex flex-wrap items-center gap-2">
             <p className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-6f6253))]">
               {
@@ -614,8 +643,9 @@ export function ConversationMessageList({
       </section>
 
       <div
+        ref={scrollBoxRef}
         data-conversation-scrollbox
-        className="max-h-[58vh] space-y-4 overflow-y-auto p-5 sm:p-6"
+        className="max-h-[64vh] space-y-1.5 overflow-y-auto p-2 sm:p-3"
       >
         {filteredMessages.map(
           (message) => {
@@ -649,7 +679,7 @@ export function ConversationMessageList({
             return (
               <article
                 key={message.id}
-                className={`relative max-w-[82%] border p-4 pb-10 transition ${
+                className={`relative max-w-[92%] border px-2.5 py-2 transition ${
                   own
                     ? ongame
                       ? "ml-auto border-[rgb(var(--sep-colour-80613c))] bg-[rgb(var(--sep-colour-2c2117))]"
@@ -663,9 +693,9 @@ export function ConversationMessageList({
                     : ""
                 }`}
               >
-                <div className="flex items-start gap-3">
+                <div className="flex items-start gap-2">
                   {/* CHARACTER PORTRAIT */}
-                  <div className="h-11 w-11 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/75 bg-[rgb(var(--sep-colour-0d0907))]">
+                  <div className="h-8 w-8 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/75 bg-[rgb(var(--sep-colour-0d0907))]">
                     {sender?.portrait_url ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
@@ -705,7 +735,7 @@ export function ConversationMessageList({
                         />
                       </div>
 
-                      <div className="flex flex-wrap items-center justify-end gap-2">
+                      <div className="flex flex-wrap items-center justify-end gap-1.5">
                         <time className="text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-776b5c))]">
                           {new Date(
                             message.created_at,
@@ -716,7 +746,7 @@ export function ConversationMessageList({
 
                         {!message.optimistic ? <a
                           href={`/messages/forward/${message.id}`}
-                          className="border border-[rgb(var(--sep-colour-59432c))]/80 bg-[rgb(var(--sep-colour-17110d))] px-2.5 py-1.5 text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-b99b70))] transition hover:border-[rgb(var(--sep-colour-8b6a40))] hover:text-[rgb(var(--sep-colour-e3c28d))]"
+                          className="border border-[rgb(var(--sep-colour-59432c))]/80 bg-[rgb(var(--sep-colour-17110d))] px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-b99b70))] transition hover:border-[rgb(var(--sep-colour-8b6a40))] hover:text-[rgb(var(--sep-colour-e3c28d))]"
                         >
                           Forward
                         </a> : null}
@@ -774,14 +804,14 @@ export function ConversationMessageList({
 
                     {/* MESSAGE BODY */}
                     <div
-                      className={`mt-3 break-words text-sm leading-7 ${
+                      className={`mt-1.5 break-words text-xs leading-5 ${
                         ongame
                           ? "text-[rgb(var(--sep-colour-c7b79d))]"
                           : "text-[rgb(var(--sep-colour-c2c7d1))]"
                       }`}
                     >
                       {message.forwarded_body ? (
-                        <div className="mb-3 border-l-2 border-[rgb(var(--sep-colour-9a7543))] bg-black/20 p-3">
+                        <div className="mb-1.5 border-l-2 border-[rgb(var(--sep-colour-9a7543))] bg-black/20 p-2">
                           <p className="mb-2 text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-9b8465))]">
                             Forwarded from{" "}
                             {message.forwarded_sender_name ??
@@ -837,9 +867,9 @@ export function ConversationMessageList({
                   </div>
                 </div>
 
-                {/* CHECKBOX — BOTTOM RIGHT */}
+                {/* MESSAGE SELECTION */}
                 <label
-                  className={`absolute bottom-3 right-3 flex h-6 w-6 cursor-pointer items-center justify-center border transition ${
+                  className={`mt-1.5 ml-auto flex h-5 w-5 cursor-pointer items-center justify-center border transition ${
                     selected
                       ? "border-[rgb(var(--sep-colour-b8874d))] bg-[rgb(var(--sep-colour-382516))]"
                       : "border-[rgb(var(--sep-colour-6a5135))] bg-[rgb(var(--sep-colour-0d0907))] hover:border-[rgb(var(--sep-colour-9b7446))]"

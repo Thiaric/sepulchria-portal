@@ -141,7 +141,7 @@ export default function MessageComposer({
 
   if (communication.blocked) {
     return (
-      <div className="border-t border-[rgb(var(--sep-colour-59432c))]/40 p-5 sm:p-6">
+      <div className="border-t border-[rgb(var(--sep-colour-59432c))]/40 p-3 sm:p-4">
         <SanctionRestrictionNotice
           message={communication.message}
         />
@@ -206,14 +206,14 @@ export default function MessageComposer({
           Message type
         </legend>
 
-        <div className="mt-2 grid grid-cols-2 gap-2">
+        <div className="mt-1.5 grid grid-cols-2 gap-2">
           <button
             type="button"
             onClick={() =>
               setMessageMode("ongame")
             }
             aria-pressed={isOnGame}
-            className={`border px-4 py-3 text-left transition ${
+            className={`border px-3 py-2 text-left transition ${
               isOnGame
                 ? "border-[rgb(var(--sep-colour-a77a42))] bg-[rgb(var(--sep-colour-3b2919))] text-[rgb(var(--sep-colour-f0d3a1))]"
                 : "border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-100c09))] text-[rgb(var(--sep-colour-8e806d))] hover:border-[rgb(var(--sep-colour-80613c))]"
@@ -223,7 +223,7 @@ export default function MessageComposer({
               On-game
             </span>
 
-            <span className="mt-1 block text-[10px] leading-4 opacity-75">
+            <span className="mt-0.5 block text-[9px] leading-4 opacity-75">
               Written by the character.
             </span>
           </button>
@@ -234,7 +234,7 @@ export default function MessageComposer({
               setMessageMode("offgame")
             }
             aria-pressed={!isOnGame}
-            className={`border px-4 py-3 text-left transition ${
+            className={`border px-3 py-2 text-left transition ${
               !isOnGame
                 ? "border-[rgb(var(--sep-colour-6d7488))] bg-[rgb(var(--sep-colour-20232b))] text-[rgb(var(--sep-colour-d6dae5))]"
                 : "border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-100c09))] text-[rgb(var(--sep-colour-8e806d))] hover:border-[rgb(var(--sep-colour-6d7488))]"
@@ -244,7 +244,7 @@ export default function MessageComposer({
               Off-game
             </span>
 
-            <span className="mt-1 block text-[10px] leading-4 opacity-75">
+            <span className="mt-0.5 block text-[9px] leading-4 opacity-75">
               Written by the player.
             </span>
           </button>
@@ -252,7 +252,7 @@ export default function MessageComposer({
       </fieldset>
 
       <div
-        className={`mt-4 border-l-2 px-3 py-2 text-[10px] leading-5 ${
+        className={`mt-2 border-l-2 px-3 py-1.5 text-[9px] leading-4 ${
           isOnGame
             ? "border-[rgb(var(--sep-colour-a77a42))] bg-[rgb(var(--sep-colour-24190f))] text-[rgb(var(--sep-colour-bfa37a))]"
             : "border-[rgb(var(--sep-colour-6d7488))] bg-[rgb(var(--sep-colour-191b21))] text-[rgb(var(--sep-colour-aeb4c2))]"
@@ -263,7 +263,7 @@ export default function MessageComposer({
           : "This message is out of character and should only contain player communication."}
       </div>
 
-      <div className="mt-4">
+      <div className="mt-2">
         <RichMessageEditor
           value={body}
           onChange={setBody}
@@ -285,7 +285,7 @@ export default function MessageComposer({
         />
       </div>
 
-      <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+      <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
         <div>
           <p className="text-[10px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-776b5c))]">
             {stripRichTextForPreview(
@@ -320,7 +320,7 @@ export default function MessageComposer({
               body,
             )
           }
-          className={`border px-5 py-3 text-xs uppercase tracking-[0.22em] disabled:cursor-not-allowed disabled:opacity-40 ${
+          className={`border px-4 py-2 text-[10px] uppercase tracking-[0.18em] disabled:cursor-not-allowed disabled:opacity-40 ${
             isOnGame
               ? "border-[rgb(var(--sep-colour-967342))] bg-[rgb(var(--sep-colour-3b2b1b))] text-[rgb(var(--sep-colour-f1d9a7))]"
               : "border-[rgb(var(--sep-colour-697185))] bg-[rgb(var(--sep-colour-292d36))] text-[rgb(var(--sep-colour-e2e5ec))]"
