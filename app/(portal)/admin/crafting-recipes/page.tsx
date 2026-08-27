@@ -12,7 +12,6 @@ import {
 import { createClient } from "@/lib/supabase/server";
 
 import {
-  createCraftingRecipe,
   deleteCraftingRecipe,
   updateCraftingRecipe,
 } from "./actions";
@@ -241,11 +240,9 @@ export default async function AdminCraftingRecipesPage({
           </h1>
 
           <p className="mt-3 max-w-4xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))]">
-            Define the formulas characters can learn and craft.
-            Choose the resulting Item, its quantity, and the
-            Ingredient-category Items required to make it. Physical
-            Recipe or Pattern Items are linked separately through
-            Item Management.
+            Review and maintain existing crafting formulas. New recipes are created
+            together with their Items from Item Management; use this catalogue to
+            change ingredients, quantities, descriptions, activity and other recipe details.
           </p>
         </div>
 
@@ -255,30 +252,7 @@ export default async function AdminCraftingRecipesPage({
           </div>
         ) : null}
 
-        <section className="mt-8 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6">
-          <p className="text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))]">
-            New Formula
-          </p>
-
-          <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">
-            Create Crafting Recipe
-          </h2>
-
-          <CraftingRecipeForm
-            action={
-              createCraftingRecipe
-            }
-            resultItems={
-              resultItems
-            }
-            ingredientItems={
-              ingredientItems
-            }
-            submitLabel="Create Recipe"
-          />
-        </section>
-
-        <div className="mt-6 space-y-4">
+        <div className="mt-8 space-y-4">
           {recipes.map(
             (recipe) => {
               const ingredients =
@@ -291,7 +265,8 @@ export default async function AdminCraftingRecipesPage({
                   key={
                     recipe.id
                   }
-                  className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))]"
+                  id={`recipe-${recipe.id}`}
+                  className="scroll-mt-6 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))]"
                 >
                   <summary className="cursor-pointer list-none px-4 py-4">
                     <div className="flex flex-wrap items-center justify-between gap-4">

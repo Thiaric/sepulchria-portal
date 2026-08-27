@@ -5,6 +5,7 @@ import { ItemUseFormLogic } from "@/components/admin/item-use-form-logic";
 import { ItemEffectFormLogic } from "@/components/admin/item-effect-form-logic";
 import type { ReactNode } from "react";
 import { ItemEquipmentForm } from "@/components/admin/item-equipment-form";
+import { ItemCreateRecipeFields } from "@/components/admin/item-create-recipe-fields";
 import {
   requireAdminSection,
 } from "@/lib/auth/require-staff";
@@ -219,6 +220,25 @@ export default async function AdminItemsPage({ searchParams }: Props) {
     subcategories.map((subcategory) => [subcategory.id, subcategory]),
   );
 
+  const ingredientCategoryId =
+    categories.find(
+      (category) =>
+        category.slug === "ingredient",
+    )?.id ?? null;
+
+  const ingredientItems =
+    items
+      .filter(
+        (item) =>
+          ingredientCategoryId &&
+          item.category_id === ingredientCategoryId,
+      )
+      .map((item) => ({
+        id: item.id,
+        name: item.name,
+        is_active: item.is_active,
+      }));
+
   return (
     <main className="p-5 sm:p-7 lg:p-9">
       <div className="mx-auto max-w-7xl">
@@ -369,6 +389,7 @@ export default async function AdminItemsPage({ searchParams }: Props) {
             categories={categories}
             subcategories={subcategories}
             recipes={recipes}
+            ingredientItems={ingredientItems}
           />
         </section>
 
@@ -523,12 +544,18 @@ function ItemForm({
   categories,
   subcategories,
   recipes,
+  ingredientItems = [],
 }: {
   action: typeof createItem | typeof updateItem;
   item?: Item;
   categories: Category[];
   subcategories: Subcategory[];
   recipes: CraftingRecipeOption[];
+  ingredientItems?: {
+    id: string;
+    name: string;
+    is_active: boolean;
+  }[];
 }) {
   return (
     <AdminActionForm action={action} className="mt-5">
@@ -857,9 +884,15 @@ function ItemForm({
         <div className="flex flex-wrap gap-5">
           <Check name="isActive" label="Active" checked={item?.is_active ?? true} />
           <Check name="isQuestItem" label="Quest Item" checked={item?.is_quest_item ?? false} />
-          <Check name="stackable" label="Stackable" checked={item?.stackable ?? false} />
+          <Check name="stackable" label="Stackable" checked={item?.stackable ?? true} />
           <Check name="isUsable" label="Usable" checked={item?.is_usable ?? false} />
         </div>
+
+        {!item ? (
+          <ItemCreateRecipeFields
+            ingredientItems={ingredientItems}
+          />
+        ) : null}
 
         <button
           type="submit"

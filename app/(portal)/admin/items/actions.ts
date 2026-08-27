@@ -76,6 +76,7 @@ function refresh() {
   revalidatePath("/character");
   revalidatePath("/characters");
   revalidatePath("/crafting");
+  revalidatePath("/admin/crafting-recipes");
 }
 
 async function validateSubcategory(categoryId: string, subcategoryId: string | null) {
@@ -91,6 +92,256 @@ async function validateSubcategory(categoryId: string, subcategoryId: string | n
     throw new Error("The selected subcategory does not belong to the selected core category.");
   }
 }
+type NewRecipeIngredient = {
+  itemId: string;
+  quantity: number;
+  sortOrder: number;
+};
+
+type NewRecipeBundle = {
+  resultQuantity: number;
+  recipeDocumentReferenceValue: number | null;
+  bookCategoryId: string;
+  ingredients: NewRecipeIngredient[];
+};
+
+async function newRecipeBundleValues(
+  formData: FormData,
+): Promise<NewRecipeBundle | null> {
+  if (!checkbox(formData, "alsoCreateRecipe")) {
+    return null;
+  }
+
+  const rawResultQuantity =
+    integer(
+      formData,
+      "craftingResultQuantity",
+      1,
+    );
+
+  if (
+    rawResultQuantity === null ||
+    rawResultQuantity < 1
+  ) {
+    throw new Error(
+      "Crafted result quantity must be at least 1.",
+    );
+  }
+
+  const recipeDocumentReferenceValue =
+    integer(
+      formData,
+      "recipeDocumentReferenceValue",
+      null,
+    );
+
+  if (
+    recipeDocumentReferenceValue !== null &&
+    recipeDocumentReferenceValue < 0
+  ) {
+    throw new Error(
+      "Recipe document reference value cannot be negative.",
+    );
+  }
+
+  const itemIds =
+    formData
+      .getAll(
+        "craftingIngredientItemId",
+      )
+      .map(
+        (value) =>
+          typeof value === "string"
+            ? value.trim()
+            : "",
+      );
+
+  const quantities =
+    formData
+      .getAll(
+        "craftingIngredientQuantity",
+      )
+      .map(
+        (value) =>
+          typeof value === "string"
+            ? value.trim()
+            : "",
+      );
+
+  const ingredients:
+    NewRecipeIngredient[] = [];
+
+  for (
+    let index = 0;
+    index < itemIds.length;
+    index += 1
+  ) {
+    const itemId =
+      itemIds[index] ?? "";
+
+    const rawQuantity =
+      quantities[index] ?? "";
+
+    if (
+      !itemId &&
+      !rawQuantity
+    ) {
+      continue;
+    }
+
+    if (!isUuid(itemId)) {
+      throw new Error(
+        `Crafting ingredient ${index + 1} is invalid.`,
+      );
+    }
+
+    const parsedQuantity =
+      Number.parseInt(
+        rawQuantity,
+        10,
+      );
+
+    if (
+      !Number.isFinite(
+        parsedQuantity,
+      ) ||
+      parsedQuantity < 1
+    ) {
+      throw new Error(
+        `Crafting ingredient ${index + 1} quantity must be at least 1.`,
+      );
+    }
+
+    ingredients.push({
+      itemId,
+      quantity:
+        parsedQuantity,
+      sortOrder: index,
+    });
+  }
+
+  if (!ingredients.length) {
+    throw new Error(
+      "A crafting recipe needs at least one Ingredient.",
+    );
+  }
+
+  const uniqueIds =
+    new Set(
+      ingredients.map(
+        (ingredient) =>
+          ingredient.itemId,
+      ),
+    );
+
+  if (
+    uniqueIds.size !==
+    ingredients.length
+  ) {
+    throw new Error(
+      "The same crafting Ingredient cannot be added twice. Increase its quantity instead.",
+    );
+  }
+
+  const supabase =
+    await createClient();
+
+  const [
+    ingredientCategoryResult,
+    bookCategoryResult,
+    ingredientItemsResult,
+  ] = await Promise.all([
+    supabase
+      .from("item_categories")
+      .select("id")
+      .eq(
+        "slug",
+        "ingredient",
+      )
+      .maybeSingle(),
+
+    supabase
+      .from("item_categories")
+      .select("id")
+      .eq(
+        "slug",
+        "book-document",
+      )
+      .maybeSingle(),
+
+    supabase
+      .from("items")
+      .select(
+        "id, category_id",
+      )
+      .in(
+        "id",
+        [...uniqueIds],
+      ),
+  ]);
+
+  if (
+    ingredientCategoryResult.error ||
+    !ingredientCategoryResult.data
+  ) {
+    throw new Error(
+      "The Ingredient Item category could not be found.",
+    );
+  }
+
+  const ingredientCategoryId =
+    ingredientCategoryResult.data.id;
+
+  if (
+    bookCategoryResult.error ||
+    !bookCategoryResult.data
+  ) {
+    throw new Error(
+      "The Book / Document Item category could not be found.",
+    );
+  }
+
+  if (
+    ingredientItemsResult.error
+  ) {
+    throw new Error(
+      ingredientItemsResult.error.message,
+    );
+  }
+
+  if (
+    (ingredientItemsResult.data ?? [])
+      .length !==
+    uniqueIds.size
+  ) {
+    throw new Error(
+      "One or more crafting Ingredients could not be found.",
+    );
+  }
+
+  if (
+    (ingredientItemsResult.data ?? [])
+      .some(
+        (item) =>
+          item.category_id !==
+          ingredientCategoryId,
+      )
+  ) {
+    throw new Error(
+      "Only Items in the Ingredient category can be used in a crafting recipe.",
+    );
+  }
+
+  return {
+    resultQuantity:
+      rawResultQuantity,
+    recipeDocumentReferenceValue,
+    bookCategoryId:
+      bookCategoryResult.data.id,
+    ingredients,
+  };
+}
+
 
 async function itemValues(formData: FormData) {
   const name = requiredText(formData, "name", "Item name");
@@ -161,6 +412,17 @@ async function itemValues(formData: FormData) {
     throw new Error("Maximum stack must be at least 1.");
   }
 
+  const resolutionMode =
+    requiredText(formData, "resolutionMode", "Resolution mode");
+
+  if (
+    !RESOLUTION_MODES.includes(
+      resolutionMode as (typeof RESOLUTION_MODES)[number],
+    )
+  ) {
+    throw new Error("Invalid Resolution Mode.");
+  }
+
   let isUsable =
     checkbox(formData, "isUsable");
 
@@ -170,19 +432,24 @@ let maxCharges: number | null = null;
 let cooldownMinutes: number | null = null;
 
 if (isUsable) {
-  targetMode = requiredText(
-    formData,
-    "targetMode",
-    "Target mode",
-  );
+  if (resolutionMode === "opposed") {
+    targetMode = "other";
+  } else {
+    targetMode = requiredText(
+      formData,
+      "targetMode",
+      "Target mode",
+    );
 
-  if (
-    !TARGET_MODES.includes(
-      targetMode as (typeof TARGET_MODES)[number],
-    )
-  ) {
-    throw new Error("Invalid target mode.");
+    if (
+      !TARGET_MODES.includes(
+        targetMode as (typeof TARGET_MODES)[number],
+      )
+    ) {
+      throw new Error("Invalid target mode.");
+    }
   }
+
     useBehaviour = requiredText(formData, "useBehaviour", "Use behaviour");
 
     if (!USE_BEHAVIOURS.includes(useBehaviour as (typeof USE_BEHAVIOURS)[number])) {
@@ -228,17 +495,6 @@ if (isUsable) {
    * fixed     = die + optional Attribute vs Admin threshold.
    * opposed   = die + optional Attribute vs the target's chosen Counter.
    */
-  const resolutionMode =
-    requiredText(formData, "resolutionMode", "Resolution mode");
-
-  if (
-    !RESOLUTION_MODES.includes(
-      resolutionMode as (typeof RESOLUTION_MODES)[number],
-    )
-  ) {
-    throw new Error("Invalid Resolution Mode.");
-  }
-
   const rawCounterOptions = formData
     .getAll("counterOptions")
     .filter((value): value is string => typeof value === "string");
@@ -484,12 +740,219 @@ export async function createItem(formData: FormData) {
   await requireAdminSection("items");
   const supabase = await createClient();
 
+  let createdItemId:
+    string | null = null;
+
+  let createdRecipeId:
+    string | null = null;
+
   try {
-    const values = await itemValues(formData);
-    const { error } = await supabase.from("items").insert(values);
-    if (error) throw new Error(error.message);
+    const values =
+      await itemValues(formData);
+
+    const recipeBundle =
+      await newRecipeBundleValues(
+        formData,
+      );
+
+    const {
+      data: createdItem,
+      error: itemError,
+    } = await supabase
+      .from("items")
+      .insert(values)
+      .select(
+        "id, name, slug, description, image_url, is_active, sort_order",
+      )
+      .single();
+
+    if (
+      itemError ||
+      !createdItem
+    ) {
+      throw new Error(
+        itemError?.message ??
+          "Unable to create Item.",
+      );
+    }
+
+    createdItemId =
+      createdItem.id;
+
+    if (recipeBundle) {
+      const {
+        data: recipe,
+        error: recipeError,
+      } = await supabase
+        .from(
+          "crafting_recipes",
+        )
+        .insert({
+          name:
+            createdItem.name,
+          slug:
+            `craft-${createdItem.slug}`,
+          description:
+            createdItem.description ??
+            "",
+          result_item_id:
+            createdItem.id,
+          result_quantity:
+            recipeBundle.resultQuantity,
+          is_active:
+            createdItem.is_active,
+          sort_order:
+            createdItem.sort_order ??
+            0,
+        })
+        .select("id")
+        .single();
+
+      if (
+        recipeError ||
+        !recipe
+      ) {
+        throw new Error(
+          recipeError?.message ??
+            "Unable to create crafting recipe.",
+        );
+      }
+
+      createdRecipeId =
+        recipe.id;
+
+      const {
+        error:
+          ingredientsError,
+      } = await supabase
+        .from(
+          "crafting_recipe_ingredients",
+        )
+        .insert(
+          recipeBundle.ingredients.map(
+            (ingredient) => ({
+              recipe_id:
+                recipe.id,
+              ingredient_item_id:
+                ingredient.itemId,
+              quantity:
+                ingredient.quantity,
+              sort_order:
+                ingredient.sortOrder,
+            }),
+          ),
+        );
+
+      if (
+        ingredientsError
+      ) {
+        throw new Error(
+          ingredientsError.message,
+        );
+      }
+
+      const {
+        error:
+          recipeItemError,
+      } = await supabase
+        .from("items")
+        .insert({
+          name:
+            `Recipe: ${createdItem.name}`,
+          slug:
+            `recipe-${createdItem.slug}`,
+          description:
+            createdItem.description ??
+            "",
+          image_url:
+            createdItem.image_url,
+          category_id:
+            recipeBundle.bookCategoryId,
+          subcategory_id:
+            null,
+          quality:
+            "average",
+          transfer_policy:
+            "free",
+          is_quest_item:
+            false,
+          is_active:
+            createdItem.is_active,
+          stackable:
+            true,
+          max_stack:
+            99,
+          reference_value:
+            recipeBundle.recipeDocumentReferenceValue,
+          is_usable:
+            true,
+          use_behaviour:
+            "consumable",
+          max_charges:
+            null,
+          target_mode:
+            "self",
+          cooldown_minutes:
+            null,
+          success_die:
+            null,
+          success_threshold:
+            null,
+          success_attribute:
+            null,
+          resolution_mode:
+            "automatic",
+          counter_options:
+            [],
+          damage_dice:
+            null,
+          damage_type:
+            null,
+          container_capacity:
+            null,
+          teaches_recipe_id:
+            recipe.id,
+          sort_order:
+            createdItem.sort_order ??
+            0,
+        });
+
+      if (
+        recipeItemError
+      ) {
+        throw new Error(
+          recipeItemError.message,
+        );
+      }
+    }
   } catch (error) {
-    fail(error instanceof Error ? error.message : "Unable to create item.");
+    if (createdRecipeId) {
+      await supabase
+        .from(
+          "crafting_recipes",
+        )
+        .delete()
+        .eq(
+          "id",
+          createdRecipeId,
+        );
+    }
+
+    if (createdItemId) {
+      await supabase
+        .from("items")
+        .delete()
+        .eq(
+          "id",
+          createdItemId,
+        );
+    }
+
+    fail(
+      error instanceof Error
+        ? error.message
+        : "Unable to create item.",
+    );
   }
 
   refresh();

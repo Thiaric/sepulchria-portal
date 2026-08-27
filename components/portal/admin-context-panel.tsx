@@ -10,6 +10,7 @@ import {
 import { createClient } from "@/lib/supabase/client";
 import { TicketContextPanel } from "@/components/support/ticket-context-panel";
 import { SanctionContextPanel } from "@/components/sanctions/sanction-context-panel";
+import { CraftingRecipesContextPanel } from "@/components/admin/crafting-recipes-context-panel";
 
 type JumpEntry = {
   id: string;
@@ -25,6 +26,7 @@ type ContextMode =
   | "associations"
   | "gifts"
   | "items"
+  | "crafting_recipes"
   | "shapes"
   | "users"
   | "characters"
@@ -60,6 +62,13 @@ function getMode(
 
   if (pathname === "/admin/items") {
     return "items";
+  }
+
+  if (
+    pathname ===
+    "/admin/crafting-recipes"
+  ) {
+    return "crafting_recipes";
   }
 
   if (pathname === "/admin/shapes") {
@@ -137,6 +146,15 @@ export function AdminContextPanel({
   if (mode === "shapes") {
     return (
       <AdminShapesJumpContext />
+    );
+  }
+
+  if (
+    mode ===
+    "crafting_recipes"
+  ) {
+    return (
+      <CraftingRecipesContextPanel />
     );
   }
 
