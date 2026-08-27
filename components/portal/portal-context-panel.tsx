@@ -25,7 +25,11 @@ import {
 } from "@/app/(portal)/forum/actions";
 import { createClient } from "@/lib/supabase/client";
 import type { PortalContext } from "@/types/portal";
-import { ForumSectionActivityContext } from "@/components/portal/forum-section-activity-context";
+import {
+  ForumSectionsNavigatorContext,
+  ForumTopicsNavigatorContext,
+  ForumTopicNavigatorContext,
+} from "@/components/portal/forum-navigation-context";
 import { AdminOrdersContext } from "@/components/portal/admin-orders-context";
 import { OrderSubmissionsContext } from "@/components/admin/order-submissions-context";
 import { AdminRulesContext } from "@/components/portal/admin-rules-context";
@@ -284,7 +288,7 @@ if (
   }
 
   if (pathname === "/forum") {
-    return <ForumOverviewContext />;
+    return <ForumSectionsNavigatorContext />;
   }
 
   const forumTopicMatch =
@@ -294,18 +298,13 @@ if (
 
   if (forumTopicMatch) {
     return (
-      <ForumTopicContext
+      <ForumTopicNavigatorContext
         sectionSlug={decodeURIComponent(
           forumTopicMatch[1],
         )}
         topicSlug={decodeURIComponent(
           forumTopicMatch[2],
         )}
-        quickReplyPostId={
-          searchParams.get(
-            "quickReply",
-          )
-        }
       />
     );
   }
@@ -316,14 +315,14 @@ if (
     );
 
   if (forumSectionMatch) {
-  return (
-    <ForumSectionActivityContext
-      sectionSlug={decodeURIComponent(
-        forumSectionMatch[1],
-      )}
-    />
-  );
-}
+    return (
+      <ForumTopicsNavigatorContext
+        sectionSlug={decodeURIComponent(
+          forumSectionMatch[1],
+        )}
+      />
+    );
+  }
 
   if (
     pathname ===
