@@ -3,6 +3,7 @@
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { formatRemnants } from "@/lib/economy/currency";
+import { getAurethDate } from "@/lib/world/calendar";
 import {
   enterBreezeLodging,
   rentBreezeLodging,
@@ -36,15 +37,38 @@ const TIER_DESCRIPTIONS = {
 
 function formatRentalEnd(value: string | null) {
   if (!value) return null;
+
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return null;
-  return date.toLocaleString("en-GB", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+
+  const aureth =
+    getAurethDate(date);
+
+  const time =
+    date.toLocaleTimeString(
+      "en-GB",
+      {
+        hour: "2-digit",
+        minute: "2-digit",
+      },
+    );
+
+  const real =
+    date.toLocaleString(
+      "en-GB",
+      {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      },
+    );
+
+  return (
+    `${aureth.day} ${aureth.monthName} ${aureth.year} ADN, ${time}` +
+    ` [${real}]`
+  );
 }
 
 export function BreezeLodgingsPanel({ rooms }: { rooms: BreezeLodgingStateRow[] }) {

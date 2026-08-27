@@ -11,6 +11,7 @@ import {
 import { RichTextContentClient } from "@/components/editor/rich-text-content-client";
 import { ReportButton } from "@/components/reports/report-button";
 import { PrivateLocationInvitationMessage } from "@/components/messages/private-location-invitation-message";
+import { BreezeLodgingInvitationMessage } from "@/components/messages/breeze-lodging-invitation-message";
 import { OrderHeadquartersInvitationMessage } from "@/components/messages/order-headquarters-invitation-message";
 import { stripRichTextForPreview } from "@/lib/rich-text-shared";
 import type {
@@ -843,7 +844,18 @@ export function ConversationMessageList({
                             /ORDER_HEADQUARTERS_INVITE:([0-9a-f-]{36})/i,
                           );
 
-                        return headquartersInviteMatch ? (
+                        const breezeInviteMatch =
+                          message.body.match(
+                            /BREEZE_LODGING_INVITE:([0-9a-f-]{36})/i,
+                          );
+
+                        return breezeInviteMatch ? (
+                          <BreezeLodgingInvitationMessage
+                            invitationId={
+                              breezeInviteMatch[1]
+                            }
+                          />
+                        ) : headquartersInviteMatch ? (
                           <OrderHeadquartersInvitationMessage
                             invitationId={
                               headquartersInviteMatch[1]

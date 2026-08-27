@@ -151,10 +151,18 @@ export type BreezeLodgingGuestCharacter = {
   display_name: string;
 };
 
+export type BreezeLodgingPendingInvitation = {
+  invitation_id: string;
+  character_id: string;
+  display_name: string;
+};
+
 export type BreezeLodgingManageData = {
   roomId: string;
+  roomName: string;
   rentalId: string;
   guests: BreezeLodgingGuestCharacter[];
+  pendingInvitations: BreezeLodgingPendingInvitation[];
   candidates: BreezeLodgingGuestCharacter[];
 };
 
@@ -194,66 +202,133 @@ export async function getBreezeLodgingManageData(
     return null;
   }
 
-  const {
-    data: guestRows,
-    error: guestRowsError,
-  } = await admin
-    .from("breeze_lodging_guests")
-    .select("character_id")
-    .eq("rental_id", rental.id)
-    .eq("status", "active");
+  const [
+    roomResult,
+    guestRowsResult,
+    pendingRowsResult,
+    approvedCharactersResult,
+  ] = await Promise.all([
+    admin
+      .from("rooms")
+      .select("name")
+      .eq("id", roomId)
+      .single(),
 
-  if (guestRowsError) {
+    admin
+      .from("breeze_lodging_guests")
+      .select("character_id")
+      .eq("rental_id", rental.id)
+      .eq("status", "active"),
+
+    admin
+      .from("breeze_lodging_invitations")
+      .select(
+        "id, recipient_character_id",
+      )
+      .eq("rental_id", rental.id)
+      .eq("room_id", roomId)
+      .eq(
+        "inviter_character_id",
+        characterId,
+      )
+      .eq("status", "pending"),
+
+    admin
+      .from("characters")
+      .select("id, display_name")
+      .eq("status", "approved")
+      .neq("id", characterId)
+      .order("display_name", {
+        ascending: true,
+      }),
+  ]);
+
+  const combinedError =
+    roomResult.error ??
+    guestRowsResult.error ??
+    pendingRowsResult.error ??
+    approvedCharactersResult.error;
+
+  if (combinedError) {
     throw new Error(
-      `Unable to load Breeze Lodgings guests: ${guestRowsError.message}`,
-    );
-  }
-
-  const guestIds =
-    (guestRows ?? []).map(
-      (row) => row.character_id,
-    );
-
-  const {
-    data: approvedCharacters,
-    error: charactersError,
-  } = await admin
-    .from("characters")
-    .select("id, display_name")
-    .eq("status", "approved")
-    .neq("id", characterId)
-    .order("display_name", {
-      ascending: true,
-    });
-
-  if (charactersError) {
-    throw new Error(
-      `Unable to load characters for Breeze Lodgings invitations: ${charactersError.message}`,
+      `Unable to load Breeze Lodgings invitations: ${combinedError.message}`,
     );
   }
 
   const allCharacters =
-    (approvedCharacters ?? []).map(
-      (character) => ({
+    (approvedCharactersResult.data ?? [])
+      .map((character) => ({
         id: character.id,
         display_name:
           character.display_name,
-      }),
-    );
+      }));
 
-  const guestIdSet =
-    new Set(guestIds);
+  const byId = new Map(
+    allCharacters.map(
+      (character) => [
+        character.id,
+        character,
+      ],
+    ),
+  );
+
+  const guestIds = new Set(
+    (guestRowsResult.data ?? []).map(
+      (row) => row.character_id,
+    ),
+  );
+
+  const pendingRows =
+    (pendingRowsResult.data ?? []);
+
+  const pendingIds = new Set(
+    pendingRows.map(
+      (row) =>
+        row.recipient_character_id,
+    ),
+  );
+
+  const pendingInvitations =
+    pendingRows
+      .map((row) => {
+        const character =
+          byId.get(
+            row.recipient_character_id,
+          );
+
+        if (!character) {
+          return null;
+        }
+
+        return {
+          invitation_id: row.id,
+          character_id: character.id,
+          display_name:
+            character.display_name,
+        };
+      })
+      .filter(
+        (
+          invitation,
+        ): invitation is BreezeLodgingPendingInvitation =>
+          invitation !== null,
+      );
 
   return {
     roomId,
+    roomName:
+      roomResult.data?.name ??
+      "The Breeze Lodgings",
     rentalId: rental.id,
     guests: allCharacters.filter(
       (character) =>
-        guestIdSet.has(character.id),
+        guestIds.has(character.id),
     ),
+    pendingInvitations,
     candidates: allCharacters.filter(
       (character) =>
-        !guestIdSet.has(character.id),
+        !guestIds.has(character.id) &&
+        !pendingIds.has(character.id),
     ),
   };
 }
