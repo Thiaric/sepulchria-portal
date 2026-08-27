@@ -7,7 +7,16 @@ import {
   removeFriendListEntry,
   updateFriendListEntry,
 } from "./actions";
+import { FriendLivePresence } from "@/components/friends/friend-live-presence";
+import { MessageCharacterModalButton } from "@/components/messages/message-character-modal-button";
+import { getStaffSession } from "@/lib/auth/require-staff";
 import { hasCharacterFeature } from "@/lib/features/character-feature-entitlements";
+import {
+  getVisiblePrivateLocations,
+} from "@/lib/private-locations/access";
+import {
+  getOrderHeadquartersVisibility,
+} from "@/lib/order-headquarters/access";
 import { createClient } from "@/lib/supabase/server";
 
 type FriendEntryRow = {
@@ -218,6 +227,28 @@ export default async function FriendsPage() {
     (entry) => entry.list_scope === "offgame",
   );
 
+  const [
+    staffSession,
+    visiblePrivateLocations,
+    headquartersVisibility,
+  ] = await Promise.all([
+    getStaffSession(),
+    getVisiblePrivateLocations(
+      character.id,
+    ),
+    getOrderHeadquartersVisibility(
+      character.id,
+    ),
+  ]);
+
+  const isStaff =
+    staffSession !== null;
+
+  const visiblePrivateRoomIds =
+    visiblePrivateLocations.map(
+      (location) => location.roomId,
+    );
+
   return (
     <main className="mx-auto w-full max-w-6xl p-5 sm:p-7 lg:p-9">
       <header className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 sm:px-5">
@@ -328,6 +359,16 @@ export default async function FriendsPage() {
         subtitle="Relationships and connections belonging to your character's in-character life."
         entries={ingame}
         targetById={targetById}
+        isStaff={isStaff}
+        visiblePrivateRoomIds={
+          visiblePrivateRoomIds
+        }
+        allOrderHeadquartersRoomIds={
+          headquartersVisibility.allRoomIds
+        }
+        visibleOrderHeadquartersRoomIds={
+          headquartersVisibility.visibleRoomIds
+        }
       />
 
       <FriendSection
@@ -335,6 +376,16 @@ export default async function FriendsPage() {
         subtitle="Off-game contacts or player-side records kept separately from in-character relationships."
         entries={offgame}
         targetById={targetById}
+        isStaff={isStaff}
+        visiblePrivateRoomIds={
+          visiblePrivateRoomIds
+        }
+        allOrderHeadquartersRoomIds={
+          headquartersVisibility.allRoomIds
+        }
+        visibleOrderHeadquartersRoomIds={
+          headquartersVisibility.visibleRoomIds
+        }
       />
     </main>
   );
@@ -345,11 +396,19 @@ function FriendSection({
   subtitle,
   entries,
   targetById,
+  isStaff,
+  visiblePrivateRoomIds,
+  allOrderHeadquartersRoomIds,
+  visibleOrderHeadquartersRoomIds,
 }: {
   title: string;
   subtitle: string;
   entries: FriendEntryRow[];
   targetById: Map<string, CharacterRow>;
+  isStaff: boolean;
+  visiblePrivateRoomIds: string[];
+  allOrderHeadquartersRoomIds: string[];
+  visibleOrderHeadquartersRoomIds: string[];
 }) {
   return (
     <section className="mt-5 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-17110d))]">
@@ -405,6 +464,32 @@ function FriendSection({
                     </p>
                   </div>
                 </Link>
+
+                <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-[rgb(var(--sep-colour-60482e))]/25 pt-3">
+                  <FriendLivePresence
+                    targetCharacterId={
+                      target.id
+                    }
+                    isStaff={isStaff}
+                    visiblePrivateRoomIds={
+                      visiblePrivateRoomIds
+                    }
+                    allOrderHeadquartersRoomIds={
+                      allOrderHeadquartersRoomIds
+                    }
+                    visibleOrderHeadquartersRoomIds={
+                      visibleOrderHeadquartersRoomIds
+                    }
+                  />
+
+                  <MessageCharacterModalButton
+                    recipientId={target.id}
+                    recipientName={
+                      displayName(target)
+                    }
+                    className="inline-flex h-8 items-center justify-center gap-1.5 border border-[rgb(var(--sep-colour-725638))] bg-[rgb(var(--sep-colour-21170f))] px-3 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d6bd94))] transition hover:border-[rgb(var(--sep-colour-a47b48))] hover:text-[rgb(var(--sep-colour-f0d7aa))]"
+                  />
+                </div>
 
                 <form
                   action={updateFriendListEntry}
