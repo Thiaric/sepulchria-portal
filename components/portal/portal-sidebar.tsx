@@ -2372,7 +2372,7 @@ function PublicPageModal({
       (
         candidate: ModalRect,
       ): ModalRect => {
-        const margin = item.href === "/crafting" ? 0 : 8;
+        const margin = 8;
 
         const viewportWidth =
           window.innerWidth;
@@ -2466,7 +2466,7 @@ function PublicPageModal({
     initialisedRef.current =
       true;
 
-    const margin = item.href === "/crafting" ? 0 : 8;
+    const margin = 8;
 
     const viewportWidth =
       window.innerWidth;

@@ -583,6 +583,7 @@ async function GameContent() {
             damage_dice,
             damage_type,
             cooldown_minutes,
+            teaches_recipe_id,
             category:item_categories(slug),
             effects:item_effects(
               trigger_type,
@@ -652,7 +653,17 @@ async function GameContent() {
   const chatItems = chatCandidateRows
     .map((row) => {
       const master = masterById.get(row.item_id);
-      if (!master) return null;
+
+      /*
+       * Recipe books/patterns are learned from the Character Inventory,
+       * not used as an in-location/chat action.
+       */
+      if (
+        !master ||
+        master.teaches_recipe_id
+      ) {
+        return null;
+      }
 
       const sourceKey =
         row.record_kind === "unique"

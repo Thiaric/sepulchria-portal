@@ -46,6 +46,7 @@ type ItemMechanics = {
   damage_dice: string | null;
   damage_type: string | null;
   cooldown_minutes: number | null;
+  teaches_recipe_id: string | null;
   category: { slug: string } | { slug: string }[] | null;
 };
 
@@ -146,6 +147,7 @@ async function loadAttemptRecord(
     damage_dice,
     damage_type,
     cooldown_minutes,
+    teaches_recipe_id,
     category:item_categories(slug)
   `;
 
@@ -680,6 +682,46 @@ export async function useInventoryItem(
       throw new Error(
         "This Item cannot be used through the Use Item action.",
       );
+    }
+
+    if (record.item.teaches_recipe_id) {
+      const {
+        data: learnResult,
+        error: learnError,
+      } = await supabase.rpc(
+        "learn_recipe_from_item",
+        {
+          p_character_id:
+            character.id,
+          p_record_kind:
+            record.recordKind,
+          p_record_id:
+            record.recordId,
+        },
+      );
+
+      if (learnError) {
+        throw new Error(
+          learnError.message,
+        );
+      }
+
+      const result =
+        learnResult as
+          | {
+              success?: boolean;
+              message?: string;
+            }
+          | null;
+
+      return {
+        ok:
+          result?.success ===
+          true,
+        message:
+          result?.message ??
+          "The recipe could not be learned.",
+      };
     }
 
     const categorySlug =

@@ -13,7 +13,11 @@ type Relation<T> = T | T[] | null;
 
 type InventoryRow = Omit<
   InventoryBrowserRow,
-  "requirements" | "equipment_bonuses" | "item_effects" | "item_active"
+  | "requirements"
+  | "equipment_bonuses"
+  | "item_effects"
+  | "item_active"
+  | "teaches_recipe"
 >;
 
 type CharacterState = {
@@ -54,6 +58,7 @@ type ItemRequirementRow = {
   target_mode: string | null;
   max_charges: number | null;
   cooldown_minutes: number | null;
+  teaches_recipe_id: string | null;
   reference_value: number | null;
   success_die: number | null;
   success_threshold: number | null;
@@ -284,6 +289,10 @@ function getUseBlockReason(
     !character ||
     maxHealth === null
   ) {
+    return null;
+  }
+
+  if (item.teaches_recipe_id) {
     return null;
   }
 
@@ -575,6 +584,7 @@ export async function CharacterInventoryDisplay({
             target_mode,
             max_charges,
             cooldown_minutes,
+            teaches_recipe_id,
             reference_value,
             success_die,
             success_threshold,
@@ -855,6 +865,10 @@ export async function CharacterInventoryDisplay({
         ...row,
         item_active:
           master?.is_active === true,
+        teaches_recipe:
+          Boolean(
+            master?.teaches_recipe_id,
+          ),
         reference_value:
           master?.reference_value === null ||
           master?.reference_value === undefined

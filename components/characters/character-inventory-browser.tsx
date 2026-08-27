@@ -50,6 +50,7 @@ export type InventoryBrowserRow = {
   record_id: string;
   item_id: string;
   item_active: boolean;
+  teaches_recipe: boolean;
   parent_container_id:
     | string
     | null;
@@ -519,6 +520,26 @@ function UseControl({
   const [success, setSuccess] =
     useState(false);
 
+  useEffect(() => {
+    if (!message) {
+      return;
+    }
+
+    const timeoutId =
+      window.setTimeout(
+        () => {
+          setMessage(null);
+        },
+        5_000,
+      );
+
+    return () => {
+      window.clearTimeout(
+        timeoutId,
+      );
+    };
+  }, [message]);
+
   if (!row.is_usable) {
     return null;
   }
@@ -625,7 +646,13 @@ function UseControl({
           disabled={pending}
           className="border border-[rgb(var(--sep-colour-6f7545))] bg-[rgb(var(--sep-colour-202615))] px-3 py-1.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-cbd39a))] transition hover:bg-[rgb(var(--sep-colour-293019))] disabled:cursor-wait disabled:opacity-50"
         >
-          {pending ? "Using..." : "Use"}
+          {pending
+            ? row.teaches_recipe
+              ? "Learning..."
+              : "Using..."
+            : row.teaches_recipe
+              ? "Learn Recipe"
+              : "Use"}
         </button>
 
         {remaining !== null ? (

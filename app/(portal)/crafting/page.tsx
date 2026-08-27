@@ -253,29 +253,65 @@ export default async function CraftingPage() {
     .sort((a, b) => a.name.localeCompare(b.name));
 
   return (
-    <main className="min-h-full w-full px-5 py-4 sm:px-7 lg:px-8 lg:py-5">
-      <div className="w-full">
-        <header className="mb-5 flex flex-wrap items-end justify-between gap-4 border-b border-[rgb(var(--sep-colour-4b3927))]/25 pb-4">
-          <div className="min-w-0">
-            <p className="text-[8px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
-              Knowledge &amp; Craft
-            </p>
-            <h1 className="mt-1 font-serif text-3xl text-[rgb(var(--sep-colour-ead5ac))] sm:text-[2.1rem]">
-              Crafting Workbench
-            </h1>
-          </div>
+    <>
+      <style>{`
+        .sepulchria-viewport-body:has([data-crafting-page]) {
+          grid-template-columns:
+            minmax(0, 1fr) !important;
+          max-width: none !important;
+          width: 100% !important;
+        }
 
-          <p className="max-w-2xl text-right text-[10px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
-            Use materials carried by{" "}
-            <span className="text-[rgb(var(--sep-colour-cab89b))]">
-              {character.display_name ?? "your character"}
-            </span>{" "}
-            to create items from recipes they have learned.
-          </p>
+        .sepulchria-viewport-body:has([data-crafting-page])
+          > .portal-right-shell,
+        .sepulchria-viewport-body:has([data-crafting-page])
+          .portal-right-collapse-toggle {
+          display: none !important;
+        }
+
+        .sepulchria-viewport-body:has([data-crafting-page])
+          > [data-portal-centre-host] {
+          grid-column: 1 !important;
+          min-width: 0 !important;
+          width: 100% !important;
+        }
+      `}</style>
+
+      <main
+        data-crafting-page
+        className="mx-auto flex h-full max-h-full w-full max-w-none flex-col overflow-hidden p-5 sm:p-7 lg:p-8"
+      >
+        <header className="relative mb-4 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 px-6 py-4 sm:px-8">
+          <div className="absolute inset-0 opacity-30 [background-image:radial-gradient(circle_at_top_right,rgba(var(--sep-rgb-145-105-60),0.35),transparent_42%)]" />
+
+          <div className="relative flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
+            <div className="min-w-0">
+              <p className="text-[10px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-886c48))]">
+                Knowledge &amp; Craft
+              </p>
+
+              <h1 className="mt-1 font-serif text-3xl text-[rgb(var(--sep-colour-ead6ad))]">
+                Crafting Workbench
+              </h1>
+            </div>
+
+            <p className="max-w-2xl text-[11px] leading-6 text-[rgb(var(--sep-colour-9f9281))] sm:text-right">
+              Use materials carried by{" "}
+              <span className="text-[rgb(var(--sep-colour-d4bd94))]">
+                {character.display_name ?? "your character"}
+              </span>{" "}
+              to create items from recipes they have learned.
+            </p>
+          </div>
         </header>
 
-        <CraftingWorkbench recipes={recipes} inventory={inventory} />
-      </div>
-    </main>
+        <div className="min-h-0 flex-1 overflow-hidden">
+          <CraftingWorkbench
+            recipes={recipes}
+            inventory={inventory}
+          />
+        </div>
+      </main>
+    </>
   );
 }
