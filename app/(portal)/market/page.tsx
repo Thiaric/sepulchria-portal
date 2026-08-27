@@ -38,18 +38,29 @@ export default async function MarketPage() {
   return (
     <main className="p-5 sm:p-7 lg:p-9">
       <div className="mx-auto max-w-7xl">
-        <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
-          Commerce
-        </p>
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
+              Commerce
+            </p>
 
-        <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">
-          Market
-        </h1>
+            <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">
+              Market
+            </h1>
 
-        <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))]">
-          Browse the merchants and traders of Sepulchria. Each shop maintains
-          its own catalogue, prices and stock.
-        </p>
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))]">
+              Browse the merchants and traders of Sepulchria. Each shop maintains
+              its own catalogue, prices and stock.
+            </p>
+          </div>
+
+          <Link
+            href="/crafting"
+            className="border border-[rgb(var(--sep-colour-a47b43))] bg-[rgb(var(--sep-colour-472d18))] px-4 py-2 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-f3d7a5))] transition hover:border-[rgb(var(--sep-colour-d0a15c))] hover:bg-[rgb(var(--sep-colour-5c391d))]"
+          >
+            Open Crafting Workbench
+          </Link>
+        </div>
 
         {shops.length ? (
           <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
