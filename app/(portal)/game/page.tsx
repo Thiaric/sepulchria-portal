@@ -33,6 +33,12 @@ import {
   BreezeLodgingsPanel,
   type BreezeLodgingStateRow,
 } from "./components/BreezeLodgingsPanel";
+import {
+  BreezeLodgingGuestsPanel,
+} from "./components/BreezeLodgingGuestsPanel";
+import {
+  getBreezeLodgingManageData,
+} from "@/lib/breeze-lodgings/access";
 import { leaveCurrentRoom } from "./actions";
 
 type Props = Record<string, never>;
@@ -67,6 +73,16 @@ export default function GamePage(props: Props) {
     >
       <GameContent {...props} />
     </Suspense>
+  );
+}
+
+function roomAreaIsBreezeBedroom(
+  room: RoomRelation,
+) {
+  return (
+    room.slug.startsWith("breeze-gilded-") ||
+    room.slug.startsWith("breeze-wayfarer-") ||
+    room.slug.startsWith("breeze-hearth-")
   );
 }
 
@@ -331,6 +347,14 @@ async function GameContent() {
           error: null,
         });
 
+  const breezeManageDataPromise =
+    roomAreaIsBreezeBedroom(room)
+      ? getBreezeLodgingManageData(
+          room.id,
+          character.id,
+        )
+      : Promise.resolve(null);
+
   const [
     attributeBreakdown,
     ownedGiftResult,
@@ -341,6 +365,7 @@ async function GameContent() {
     headquartersManageData,
     oddJobsResult,
     breezeLodgingsResult,
+    breezeManageData,
   ] = await Promise.all([
     attributeBreakdownPromise,
     ownedGiftRowsPromise,
@@ -351,6 +376,7 @@ async function GameContent() {
     headquartersManageDataPromise,
     oddJobsPromise,
     breezeLodgingsPromise,
+    breezeManageDataPromise,
   ]);
 
   const {
@@ -998,6 +1024,12 @@ async function GameContent() {
 
     {room.slug === "the-breeze-lodgings" ? (
       <BreezeLodgingsPanel rooms={breezeLodgings} />
+    ) : null}
+
+    {breezeManageData ? (
+      <BreezeLodgingGuestsPanel
+        data={breezeManageData}
+      />
     ) : null}
 
     {room.chat_enabled ? (
