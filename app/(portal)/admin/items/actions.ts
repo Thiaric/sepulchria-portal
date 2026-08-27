@@ -75,6 +75,7 @@ function refresh() {
   revalidatePath("/admin/items");
   revalidatePath("/character");
   revalidatePath("/characters");
+  revalidatePath("/crafting");
 }
 
 async function validateSubcategory(categoryId: string, subcategoryId: string | null) {
@@ -106,6 +107,44 @@ async function itemValues(formData: FormData) {
   }
   await validateSubcategory(categoryId, subcategoryId);
 
+  const teachesRecipeId =
+    optionalText(
+      formData,
+      "teachesRecipeId",
+    );
+
+  if (
+    teachesRecipeId &&
+    !isUuid(teachesRecipeId)
+  ) {
+    throw new Error(
+      "Invalid crafting recipe.",
+    );
+  }
+
+  if (teachesRecipeId) {
+    const supabase =
+      await createClient();
+
+    const {
+      data: recipe,
+      error: recipeError,
+    } = await supabase
+      .from("crafting_recipes")
+      .select("id")
+      .eq("id", teachesRecipeId)
+      .maybeSingle();
+
+    if (
+      recipeError ||
+      !recipe
+    ) {
+      throw new Error(
+        "The selected crafting recipe could not be found.",
+      );
+    }
+  }
+
   const quality = requiredText(formData, "quality", "Quality");
   if (!QUALITIES.includes(quality as (typeof QUALITIES)[number])) {
     throw new Error("Invalid quality.");
@@ -122,7 +161,8 @@ async function itemValues(formData: FormData) {
     throw new Error("Maximum stack must be at least 1.");
   }
 
-  const isUsable = checkbox(formData, "isUsable");
+  let isUsable =
+    checkbox(formData, "isUsable");
 
 let useBehaviour: string | null = null;
 let targetMode: string | null = null;
@@ -166,6 +206,14 @@ if (isUsable) {
         throw new Error("Limited-charge items need at least 1 charge.");
       }
     }
+  }
+
+  if (teachesRecipeId) {
+    isUsable = true;
+    useBehaviour = "consumable";
+    targetMode = "self";
+    maxCharges = null;
+    cooldownMinutes = null;
   }
 
   const referenceValue = integer(formData, "referenceValue", null);
@@ -344,6 +392,7 @@ if (isUsable) {
     damage_dice: damageDice,
     damage_type: damageType,
     container_capacity: containerCapacity,
+    teaches_recipe_id: teachesRecipeId,
     sort_order: integer(formData, "sortOrder", 0) ?? 0,
     updated_at: new Date().toISOString(),
   };

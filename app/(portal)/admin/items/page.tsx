@@ -39,6 +39,13 @@ type Subcategory = {
   is_active: boolean;
 };
 
+type CraftingRecipeOption = {
+  id: string;
+  name: string;
+  slug: string;
+  is_active: boolean;
+};
+
 type Effect = {
   id: string;
   trigger_type: "owned" | "equipped" | "use";
@@ -93,6 +100,7 @@ type Item = {
   damage_dice: string | null;
   damage_type: string | null;
   container_capacity: number | null;
+  teaches_recipe_id: string | null;
   sort_order: number;
   effects: Effect[] | null;
 };
@@ -112,7 +120,12 @@ export default async function AdminItemsPage({ searchParams }: Props) {
   const params = (await searchParams) ?? {};
   const supabase = await createClient();
 
-  const [categoriesResult, subcategoriesResult, itemsResult] = await Promise.all([
+  const [
+    categoriesResult,
+    subcategoriesResult,
+    recipesResult,
+    itemsResult,
+  ] = await Promise.all([
     supabase
       .from("item_categories")
       .select("id, slug, name, sort_order")
@@ -121,6 +134,12 @@ export default async function AdminItemsPage({ searchParams }: Props) {
     supabase
       .from("item_subcategories")
       .select("id, category_id, name, slug, description, sort_order, is_active")
+      .order("sort_order", { ascending: true })
+      .order("name", { ascending: true }),
+
+    supabase
+      .from("crafting_recipes")
+      .select("id, name, slug, is_active")
       .order("sort_order", { ascending: true })
       .order("name", { ascending: true }),
 
@@ -154,6 +173,7 @@ export default async function AdminItemsPage({ searchParams }: Props) {
         damage_dice,
         damage_type,
         container_capacity,
+        teaches_recipe_id,
         sort_order,
         effects:item_effects(
           id,
@@ -179,7 +199,10 @@ export default async function AdminItemsPage({ searchParams }: Props) {
   ]);
 
   const firstError =
-    categoriesResult.error ?? subcategoriesResult.error ?? itemsResult.error;
+    categoriesResult.error ??
+    subcategoriesResult.error ??
+    recipesResult.error ??
+    itemsResult.error;
 
   if (firstError) {
     throw new Error(`Unable to load Item management: ${firstError.message}`);
@@ -187,6 +210,8 @@ export default async function AdminItemsPage({ searchParams }: Props) {
 
   const categories = (categoriesResult.data ?? []) as Category[];
   const subcategories = (subcategoriesResult.data ?? []) as Subcategory[];
+  const recipes =
+    (recipesResult.data ?? []) as CraftingRecipeOption[];
   const items = (itemsResult.data ?? []) as unknown as Item[];
 
   const categoryById = new Map(categories.map((category) => [category.id, category]));
@@ -343,6 +368,7 @@ export default async function AdminItemsPage({ searchParams }: Props) {
             action={createItem}
             categories={categories}
             subcategories={subcategories}
+            recipes={recipes}
           />
         </section>
 
@@ -421,6 +447,7 @@ export default async function AdminItemsPage({ searchParams }: Props) {
                         item={item}
                         categories={categories}
                         subcategories={subcategories}
+                        recipes={recipes}
                       />
                     </div>
 
@@ -495,11 +522,13 @@ function ItemForm({
   item,
   categories,
   subcategories,
+  recipes,
 }: {
   action: typeof createItem | typeof updateItem;
   item?: Item;
   categories: Category[];
   subcategories: Subcategory[];
+  recipes: CraftingRecipeOption[];
 }) {
   return (
     <AdminActionForm action={action} className="mt-5">
@@ -559,6 +588,32 @@ function ItemForm({
               );
             })}
           </select>
+        </Field>
+
+        <Field label="Teaches Recipe">
+          <select
+            name="teachesRecipeId"
+            defaultValue={item?.teaches_recipe_id ?? ""}
+            className={inputClass}
+          >
+            <option value="">None</option>
+            {recipes.map((recipe) => (
+              <option
+                key={recipe.id}
+                value={recipe.id}
+              >
+                {recipe.name}
+                {!recipe.is_active
+                  ? " (inactive)"
+                  : ""}
+              </option>
+            ))}
+          </select>
+
+          <p className="mt-1.5 text-[8px] leading-4 text-[rgb(var(--sep-colour-806b50))]">
+            When selected, this Item becomes a self-targeted consumable recipe document.
+            Using it from Inventory teaches the linked recipe.
+          </p>
         </Field>
 
         <div className="md:col-span-2 xl:col-span-4">
