@@ -717,7 +717,8 @@ created_at: room.created_at,
             return (
               <section
                 key={room.id}
-                className="overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]"
+                id={`room-${room.id}`}
+                className="scroll-mt-4 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]"
               >
                 <div className="grid lg:grid-cols-[240px_minmax(0,1fr)]">
                   <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-0f0b09))] p-5 lg:border-b-0 lg:border-r">

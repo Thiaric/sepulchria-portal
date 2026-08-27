@@ -1027,18 +1027,12 @@ async function GameContent() {
       },
     );
 
-  const hasLocationPanel =
-    room.slug === "odd-jobs-bureau" ||
-    room.slug === "the-breeze-lodgings";
-
   return (
   <div
   className={
-    hasLocationPanel
-  ? "min-h-full overflow-visible p-2 sm:p-3 lg:h-full lg:min-h-0 lg:overflow-y-auto lg:overscroll-contain lg:p-4"
-  : privateLocation
-    ? "private-location-theme h-full min-h-0 overflow-hidden p-2 sm:p-3 lg:p-4"
-    : "h-full min-h-0 overflow-hidden p-2 sm:p-3 lg:p-4"
+    privateLocation
+      ? "private-location-theme h-full min-h-0 overflow-hidden p-2 sm:p-3 lg:p-4"
+      : "h-full min-h-0 overflow-hidden p-2 sm:p-3 lg:p-4"
   }
   style={
     privateLocation
@@ -1058,20 +1052,9 @@ async function GameContent() {
     ) : null}
     <RoomRealtime roomId={room.id} />
 
-    <div
-  className={
-    hasLocationPanel
-      ? "mx-auto flex min-h-full max-w-80dvh flex-col"
-      : "mx-auto flex h-full max-w-80dvh flex-col"
-  }
->
-  <article
-  className={
-    hasLocationPanel
-      ? "flex shrink-0 flex-col overflow-visible border border-[rgb(var(--sep-colour-6a5032))]/50 bg-[rgb(var(--sep-colour-17110d))]"
-      : "flex min-h-0 flex-1 flex-col overflow-visible border border-[rgb(var(--sep-colour-6a5032))]/50 bg-[rgb(var(--sep-colour-17110d))] lg:overflow-hidden"
-  }
->
+    <div className="mx-auto flex h-full max-w-80dvh flex-col">
+  <article className="flex min-h-0 flex-1 flex-col overflow-visible border border-[rgb(var(--sep-colour-6a5032))]/50 bg-[rgb(var(--sep-colour-17110d))] lg:overflow-hidden">
+
     {room.slug === "odd-jobs-bureau" ? (
       <OddJobsPanel jobs={oddJobs} />
     ) : null}

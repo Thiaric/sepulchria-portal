@@ -72,8 +72,8 @@ export function OddJobsPanel({ jobs }: { jobs: OddJobStateRow[] }) {
   }
 
   return (
-    <div className="shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-120e0b))]">
-      <div className="flex items-center justify-between gap-3 px-3 py-2">
+    <details className="group max-h-[72%] shrink-0 overflow-y-auto border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-120e0b))]">
+      <summary className="sticky top-0 z-30 flex cursor-pointer list-none items-center justify-between gap-3 bg-[rgb(var(--sep-colour-120e0b))] px-3 py-2 [&::-webkit-details-marker]:hidden">
         <div>
           <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
             Odd Jobs Bureau
@@ -84,16 +84,22 @@ export function OddJobsPanel({ jobs }: { jobs: OddJobStateRow[] }) {
           </p>
         </div>
 
-        <div className="text-right">
-          <p className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
-            Wallet
-          </p>
+        <div className="flex items-center gap-4">
+          <div className="text-right">
+            <p className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
+              You Have
+            </p>
+            <p className="font-serif text-base text-[rgb(var(--sep-colour-e4c589))]">
+              {formatRemnants(Number(first.wallet_balance))}
+            </p>
+          </div>
 
-          <p className="font-serif text-base text-[rgb(var(--sep-colour-e4c589))]">
-            {formatRemnants(Number(first.wallet_balance))}
-          </p>
+          <span className="text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a88d65))]">
+            <span className="group-open:hidden">View Jobs ▾</span>
+            <span className="hidden group-open:inline">Hide Jobs ▴</span>
+          </span>
         </div>
-      </div>
+      </summary>
 
       <div className="border-t border-[rgb(var(--sep-colour-59432c))]/30 px-3 py-3">
         {alreadyWorked ? (
@@ -176,6 +182,6 @@ export function OddJobsPanel({ jobs }: { jobs: OddJobStateRow[] }) {
           </p>
         ) : null}
       </div>
-    </div>
+    </details>
   );
 }

@@ -798,6 +798,9 @@ function AdminRecordJumpContext({
       mode === "rooms"
     ) {
       target =
+        document.getElementById(
+          `room-${entry.id}`,
+        ) ??
         document
           .querySelector<HTMLInputElement>(
             `input[name="roomId"][value="${CSS.escape(
@@ -806,7 +809,8 @@ function AdminRecordJumpContext({
           )
           ?.closest<HTMLElement>(
             "section",
-          ) ?? null;
+          ) ??
+        null;
     } else if (
       mode === "items"
     ) {
