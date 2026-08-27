@@ -21,7 +21,6 @@ import { AdminMarketContext } from "@/components/portal/admin-market-context";
 import { MarketShopsContext } from "@/components/portal/market-shops-context";
 import { MarketItemsContext } from "@/components/portal/market-items-context";
 import { CharacterDetailContextPanel } from "@/components/portal/character-detail-context-panel";
-import { ForumSectionActivityContext } from "@/components/portal/forum-section-activity-context";
 import { PortalContextPanel } from "@/components/portal/portal-context-panel";
 import { RoomInfoButton } from "@/components/portal/room-info-button";
 import { LocationAtmosphericImage } from "@/components/world/location-atmospheric-image";
@@ -56,18 +55,6 @@ export function PortalResponsiveRightSidebar({
       ?.area?.slug ===
       "private-locations" &&
     !context.currentRoomAccessAllowed;
-
-  const forumSectionMatch =
-    pathname.match(
-      /^\/forum\/([^/]+)$/,
-    );
-
-  const forumSectionSlug =
-    forumSectionMatch
-      ? decodeURIComponent(
-          forumSectionMatch[1],
-        )
-      : null;
 
   const publicCharacterMatch =
     pathname.match(
@@ -417,12 +404,6 @@ export function PortalResponsiveRightSidebar({
                   key={`${pathname}-${adminRevision}`}
                   pathname={
                     pathname
-                  }
-                />
-              ) : forumSectionSlug ? (
-                <ForumSectionActivityContext
-                  sectionSlug={
-                    forumSectionSlug
                   }
                 />
               ) : (

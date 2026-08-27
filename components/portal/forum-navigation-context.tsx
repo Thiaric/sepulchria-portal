@@ -18,6 +18,7 @@ type JumpEntry = {
   label: string;
   elementId?: string;
   href?: string;
+  preview?: string;
 };
 
 const initialReplyState: CreateForumReplyState = {
@@ -92,9 +93,18 @@ function JumpList({
           onClick={() => onJump(entry)}
           className="flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17100c))]"
         >
-          <span className="min-w-0 truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))]">
-            {entry.label}
+          <span className="min-w-0 flex-1">
+            <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))]">
+              {entry.label}
+            </span>
+
+            {entry.preview ? (
+              <span className="mt-1 line-clamp-3 block text-[10px] leading-4 text-[rgb(var(--sep-colour-8f8271))]">
+                {entry.preview}
+              </span>
+            ) : null}
           </span>
+
           <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))]">
             →
           </span>
@@ -301,6 +311,19 @@ export function ForumTopicsNavigatorContext({
   const [search, setSearch] =
     useState("");
 
+  const [
+    replyMap,
+    setReplyMap,
+  ] = useState<
+    Record<
+      string,
+      Array<{
+        id: string;
+        preview: string;
+      }>
+    >
+  >({});
+
   const sectionHref =
     `/forum/${sectionSlug}/`;
 
@@ -342,20 +365,21 @@ export function ForumTopicsNavigatorContext({
             continue;
           }
 
-          if (seen.has(href)) {
-            continue;
-          }
-
           const heading =
             anchor.querySelector(
               "h2, h3",
             );
 
+          if (!heading) {
+            continue;
+          }
+
+          if (seen.has(href)) {
+            continue;
+          }
+
           const label =
-            heading?.textContent?.trim() ||
-            anchor.textContent
-              ?.replace(/\s+/g, " ")
-              .trim();
+            heading.textContent?.trim();
 
           if (!label) {
             continue;
@@ -373,6 +397,189 @@ export function ForumTopicsNavigatorContext({
       },
       [sectionSlug],
     );
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadReplies() {
+      if (entries.length === 0) {
+        setReplyMap({});
+        return;
+      }
+
+      const visibleTopicSlugs =
+        entries
+          .map((entry) =>
+            entry.href
+              ?.split("/")
+              .filter(Boolean)[2],
+          )
+          .filter(
+            (
+              value,
+            ): value is string =>
+              Boolean(value),
+          );
+
+      if (
+        visibleTopicSlugs.length === 0
+      ) {
+        setReplyMap({});
+        return;
+      }
+
+      const supabase =
+        createClient();
+
+      const {
+        data: section,
+        error: sectionError,
+      } = await supabase
+        .from("forum_sections")
+        .select("id")
+        .eq("slug", sectionSlug)
+        .maybeSingle();
+
+      if (
+        cancelled ||
+        sectionError ||
+        !section
+      ) {
+        return;
+      }
+
+      const {
+        data: topics,
+        error: topicsError,
+      } = await supabase
+        .from("forum_topics")
+        .select("id, slug")
+        .eq(
+          "section_id",
+          section.id,
+        )
+        .in(
+          "slug",
+          visibleTopicSlugs,
+        )
+        .is("deleted_at", null);
+
+      if (
+        cancelled ||
+        topicsError ||
+        !topics
+      ) {
+        return;
+      }
+
+      const topicIds =
+        topics.map((topic) =>
+          String(topic.id),
+        );
+
+      if (topicIds.length === 0) {
+        setReplyMap({});
+        return;
+      }
+
+      const {
+        data: posts,
+        error: postsError,
+      } = await supabase
+        .from("forum_posts")
+        .select(
+          "id, topic_id, body, is_initial, created_at",
+        )
+        .in("topic_id", topicIds)
+        .eq("is_initial", false)
+        .is("deleted_at", null)
+        .order("created_at", {
+          ascending: true,
+        });
+
+      if (
+        cancelled ||
+        postsError
+      ) {
+        return;
+      }
+
+      const slugByTopicId =
+        new Map(
+          topics.map((topic) => [
+            String(topic.id),
+            String(topic.slug),
+          ]),
+        );
+
+      const next: Record<
+        string,
+        Array<{
+          id: string;
+          preview: string;
+        }>
+      > = {};
+
+      for (const post of posts ?? []) {
+        const slug =
+          slugByTopicId.get(
+            String(post.topic_id),
+          );
+
+        if (!slug) {
+          continue;
+        }
+
+        const preview =
+          String(post.body ?? "")
+            .replace(
+              /<br\s*\/?>/gi,
+              " ",
+            )
+            .replace(
+              /<\/p>/gi,
+              " ",
+            )
+            .replace(
+              /<[^>]+>/g,
+              " ",
+            )
+            .replace(
+              /&nbsp;/gi,
+              " ",
+            )
+            .replace(
+              /&amp;/gi,
+              "&",
+            )
+            .replace(/\s+/g, " ")
+            .trim();
+
+        if (!next[slug]) {
+          next[slug] = [];
+        }
+
+        next[slug].push({
+          id: String(post.id),
+          preview:
+            preview || "Reply",
+        });
+      }
+
+      if (!cancelled) {
+        setReplyMap(next);
+      }
+    }
+
+    void loadReplies();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    entries,
+    sectionSlug,
+  ]);
 
   const filtered =
     useMemo(() => {
@@ -407,11 +614,83 @@ export function ForumTopicsNavigatorContext({
         Topics · {filtered.length}
       </p>
 
-      <JumpList
-        entries={filtered}
-        emptyLabel="No topics match your search."
-        onJump={jumpToEntry}
-      />
+      <div className="min-h-0 flex-1 space-y-2 overflow-y-auto pr-1">
+        {filtered.length === 0 ? (
+          <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+            No topics match your search.
+          </p>
+        ) : (
+          filtered.map((entry) => {
+            const topicSlug =
+              entry.href
+                ?.split("/")
+                .filter(Boolean)[2] ??
+              "";
+
+            const replies =
+              replyMap[topicSlug] ??
+              [];
+
+            return (
+              <div
+                key={entry.key}
+                className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))]"
+              >
+                <button
+                  type="button"
+                  onClick={() =>
+                    jumpToEntry(entry)
+                  }
+                  className="flex w-full items-center justify-between gap-3 px-3 py-2.5 text-left transition hover:bg-[rgb(var(--sep-colour-17100c))]"
+                >
+                  <span className="min-w-0 truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))]">
+                    {entry.label}
+                  </span>
+
+                  <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))]">
+                    →
+                  </span>
+                </button>
+
+                <details className="border-t border-[rgb(var(--sep-colour-59432c))]/30">
+                  <summary className="cursor-pointer select-none px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-8b704d))] hover:text-[rgb(var(--sep-colour-c5a474))]">
+                    Replies · {replies.length}
+                  </summary>
+
+                  <div className="space-y-1 border-t border-[rgb(var(--sep-colour-59432c))]/20 p-2">
+                    {replies.length > 0 ? (
+                      replies.map(
+                        (
+                          reply,
+                          replyIndex,
+                        ) => (
+                          <a
+                            key={reply.id}
+                            href={`${entry.href}#post-${reply.id}`}
+                            className="block border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-0d0907))] px-2.5 py-2 transition hover:border-[rgb(var(--sep-colour-80613c))]"
+                          >
+                            <span className="block text-[8px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-8b704d))]">
+                              Reply {replyIndex + 1}
+                            </span>
+
+                            <span className="mt-1 line-clamp-2 block text-[10px] leading-4 text-[rgb(var(--sep-colour-8f8271))]">
+                              {reply.preview}
+                            </span>
+                          </a>
+                        ),
+                      )
+                    ) : (
+                      <p className="px-1 py-1 text-[10px] text-[rgb(var(--sep-colour-776b5c))]">
+                        No replies yet.
+                      </p>
+                    )}
+                  </div>
+                </details>
+              </div>
+            );
+          })
+        )}
+      </div>
     </div>
   );
 }
@@ -661,10 +940,31 @@ export function ForumTopicNavigatorContext({
                   : ""
               }`;
 
+            const contentBlock =
+              Array.from(
+                article.querySelectorAll<HTMLElement>(
+                  "div",
+                ),
+              ).find((element) =>
+                element.className.includes(
+                  "min-h-48",
+                ),
+              );
+
+            const preview =
+              contentBlock?.textContent
+                ?.replace(
+                  /\s+/g,
+                  " ",
+                )
+                .trim() ??
+              "";
+
             return {
               key: article.id,
               label,
               elementId: article.id,
+              preview,
             };
           },
         );
