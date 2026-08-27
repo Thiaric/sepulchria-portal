@@ -157,6 +157,16 @@ const marketItem: NavigationItem = {
   opensModal: true,
 };
 
+const craftingItem: NavigationItem = {
+  label: "Crafting",
+  title:
+    "Open your crafting workbench and create items from known recipes.",
+  icon: "/icons/crafting.png",
+  href: "/crafting",
+  activePaths: ["/crafting"],
+  opensModal: true,
+};
+
 const privateLocationItem: NavigationItem = {
   label: "Private Location",
   title:
@@ -1856,6 +1866,7 @@ export function PortalSidebar({
   codexItem,
   ...otherCodexNavigationItems,
   marketItem,
+  craftingItem,
   ...(hasOrderLeadership
     ? [manageOrderItem]
     : []),
@@ -2104,6 +2115,10 @@ export function PortalSidebar({
                   marketItem,
                 )}
 
+                {renderNavigationItem(
+                  craftingItem,
+                )}
+
                 <form
                   action={enterRoomFromMap}
                 >
@@ -2334,6 +2349,7 @@ function PublicPageModal({
     `${item.href}${separator}embedded=1`;
 
   const isLargeModal =
+    item.href === "/crafting" ||
     item.href === "/messages" ||
     item.href.startsWith(
       "/messages/",
@@ -2356,7 +2372,7 @@ function PublicPageModal({
       (
         candidate: ModalRect,
       ): ModalRect => {
-        const margin = 8;
+        const margin = item.href === "/crafting" ? 0 : 8;
 
         const viewportWidth =
           window.innerWidth;
@@ -2450,7 +2466,7 @@ function PublicPageModal({
     initialisedRef.current =
       true;
 
-    const margin = 8;
+    const margin = item.href === "/crafting" ? 0 : 8;
 
     const viewportWidth =
       window.innerWidth;
@@ -2762,6 +2778,38 @@ function PublicPageModal({
                 }
 
                 style.textContent = `
+                  ${
+                    item.href === "/crafting"
+                      ? `
+                  .sepulchria-viewport-body {
+                    grid-template-columns:
+                      minmax(0, 1fr) !important;
+                    max-width: none !important;
+                    width: 100% !important;
+                  }
+
+                  .portal-left-shell,
+                  .portal-right-shell,
+                  .portal-left-collapse-toggle,
+                  .portal-right-collapse-toggle {
+                    display: none !important;
+                  }
+
+                  [data-portal-centre-host] {
+                    grid-column: 1 !important;
+                    min-width: 0 !important;
+                    width: 100% !important;
+                  }
+
+                  [data-portal-centre-host]
+                    > [data-portal-column] {
+                    width: 100% !important;
+                    max-width: none !important;
+                  }
+                  `
+                      : ""
+                  }
+
                   [data-portal-header],
                   .portal-left-shell,
                   footer[aria-label="Tidings"] {

@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import {
@@ -254,28 +253,26 @@ export default async function CraftingPage() {
     .sort((a, b) => a.name.localeCompare(b.name));
 
   return (
-    <main className="p-5 sm:p-7 lg:p-9">
-      <div className="mx-auto max-w-[1500px]">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
-              Knowledge &amp; craft
+    <main className="min-h-full w-full px-5 py-4 sm:px-7 lg:px-8 lg:py-5">
+      <div className="w-full">
+        <header className="mb-5 flex flex-wrap items-end justify-between gap-4 border-b border-[rgb(var(--sep-colour-4b3927))]/25 pb-4">
+          <div className="min-w-0">
+            <p className="text-[8px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
+              Knowledge &amp; Craft
             </p>
-            <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">
+            <h1 className="mt-1 font-serif text-3xl text-[rgb(var(--sep-colour-ead5ac))] sm:text-[2.1rem]">
               Crafting Workbench
             </h1>
-            <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))]">
-              Use materials carried by {character.display_name ?? "your character"} to create items from recipes they have learned.
-            </p>
           </div>
 
-          <Link
-            href="/character"
-            className="border border-[rgb(var(--sep-colour-654b2e))] bg-[rgb(var(--sep-colour-17110d))] px-4 py-2 text-[8px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-bba37e))] transition hover:border-[rgb(var(--sep-colour-927047))] hover:text-[rgb(var(--sep-colour-e3c99b))]"
-          >
-            Character inventory
-          </Link>
-        </div>
+          <p className="max-w-2xl text-right text-[10px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+            Use materials carried by{" "}
+            <span className="text-[rgb(var(--sep-colour-cab89b))]">
+              {character.display_name ?? "your character"}
+            </span>{" "}
+            to create items from recipes they have learned.
+          </p>
+        </header>
 
         <CraftingWorkbench recipes={recipes} inventory={inventory} />
       </div>
