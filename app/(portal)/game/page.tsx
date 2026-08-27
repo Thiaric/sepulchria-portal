@@ -970,8 +970,62 @@ async function GameContent() {
     );
   }
 
-  const breezeLodgings =
-    (breezeLodgingsData ?? []) as BreezeLodgingStateRow[];
+  const breezeLodgingsBase =
+    (breezeLodgingsData ?? []) as Omit<
+      BreezeLodgingStateRow,
+      "image_url" | "is_outdoors"
+    >[];
+
+  const breezeRoomIds =
+    breezeLodgingsBase.map(
+      (lodging) => lodging.room_id,
+    );
+
+  const breezeRoomImageResult =
+    breezeRoomIds.length > 0
+      ? await supabase
+          .from("rooms")
+          .select("id, image_url, is_outdoors")
+          .in("id", breezeRoomIds)
+      : {
+          data: [],
+          error: null,
+        };
+
+  if (breezeRoomImageResult.error) {
+    throw new Error(
+      `Unable to load Breeze Lodgings room images: ${breezeRoomImageResult.error.message}`,
+    );
+  }
+
+  const breezeRoomImages =
+    new Map(
+      (breezeRoomImageResult.data ?? []).map(
+        (roomImage) => [
+          roomImage.id,
+          roomImage,
+        ],
+      ),
+    );
+
+  const breezeLodgings:
+    BreezeLodgingStateRow[] =
+    breezeLodgingsBase.map(
+      (lodging) => {
+        const roomImage =
+          breezeRoomImages.get(
+            lodging.room_id,
+          );
+
+        return {
+          ...lodging,
+          image_url:
+            roomImage?.image_url ?? null,
+          is_outdoors:
+            roomImage?.is_outdoors ?? false,
+        };
+      },
+    );
 
   const hasLocationPanel =
     room.slug === "odd-jobs-bureau" ||

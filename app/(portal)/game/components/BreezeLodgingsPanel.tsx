@@ -4,6 +4,8 @@ import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { formatRemnants } from "@/lib/economy/currency";
 import { getAurethDate } from "@/lib/world/calendar";
+import { LocationAtmosphericImage } from "@/components/world/location-atmospheric-image";
+import { LocationImageLightbox } from "@/components/world/location-image-lightbox";
 import {
   enterBreezeLodging,
   rentBreezeLodging,
@@ -21,6 +23,8 @@ export type BreezeLodgingStateRow = {
   rental_ends_at: string | null;
   my_wallet_balance: number;
   viewer_is_staff: boolean;
+  image_url: string | null;
+  is_outdoors: boolean;
 };
 
 const TIER_LABELS = {
@@ -170,8 +174,8 @@ export function BreezeLodgingsPanel({ rooms }: { rooms: BreezeLodgingStateRow[] 
 
       <div className="border-t border-[rgb(var(--sep-colour-59432c))]/30 px-3 py-3">
         {viewerIsStaff ? (
-          <p className="mb-3 border border-[rgb(var(--sep-colour-6b563b))]/45 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 text-[9px] text-[rgb(var(--sep-colour-bba98c))]">
-            Staff accounts have free access to occupied rooms and cannot hold a rental.
+          <p className="mb-0.1">
+            
           </p>
         ) : myRental ? (
           <p className="mb-3 border border-emerald-900/45 bg-emerald-950/10 px-3 py-2 text-[9px] text-emerald-400">
@@ -223,21 +227,42 @@ export function BreezeLodgingsPanel({ rooms }: { rooms: BreezeLodgingStateRow[] 
                   return (
                     <article
                       key={room.room_id}
-                      className="flex min-h-[148px] flex-col border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-17110d))] p-3"
+                      className="relative flex min-h-[148px] flex-col overflow-hidden border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-17110d))]"
                     >
-                      <h4 className="font-serif text-[12px] text-[rgb(var(--sep-colour-d9c29a))]">
-                        {room.room_name}
-                      </h4>
+                      {room.image_url ? (
+                        <>
+                          <LocationAtmosphericImage
+                            src={room.image_url}
+                            alt={room.room_name}
+                            sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 20vw"
+                            objectFit="cover"
+                            isOutdoors={room.is_outdoors}
+                          />
 
-                      <p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
-                        {room.rented_by_me
-                          ? "Your room"
-                          : occupied
-                            ? "Occupied"
-                            : "Available"}
-                      </p>
+                          <LocationImageLightbox
+                            src={room.image_url}
+                            name={room.room_name}
+                          />
 
-                      <div className="mt-auto pt-3">
+                          <div className="pointer-events-none absolute inset-0 z-[6] bg-[rgb(var(--sep-colour-0d0a08))]/58" />
+                          <div className="pointer-events-none absolute inset-0 z-[7] bg-gradient-to-t from-[rgb(var(--sep-colour-0d0a08))]/92 via-[rgb(var(--sep-colour-0d0a08))]/45 to-[rgb(var(--sep-colour-0d0a08))]/18" />
+                        </>
+                      ) : null}
+
+                      <div className="pointer-events-none relative z-20 flex min-h-[148px] flex-1 flex-col p-3">
+                        <h4 className="font-serif text-[12px] text-[rgb(var(--sep-colour-e8d3ad))] [text-shadow:0_2px_4px_rgba(var(--sep-rgb-0-0-0),0.95)]">
+                          {room.room_name}
+                        </h4>
+
+                        <p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-b7a58c))] [text-shadow:0_2px_4px_rgba(var(--sep-rgb-0-0-0),0.95)]">
+                          {room.rented_by_me
+                            ? "Your room"
+                            : occupied
+                              ? "Occupied"
+                              : "Available"}
+                        </p>
+
+                        <div className="pointer-events-auto mt-auto pt-3">
                         {!occupied && !viewerIsStaff && !myRental ? (
                           <label className="block">
                             <span className="mb-1 block text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806b50))]">
@@ -288,6 +313,7 @@ export function BreezeLodgingsPanel({ rooms }: { rooms: BreezeLodgingStateRow[] 
                                     ? "One room at a time"
                                     : `Pay ${formatRemnants(total)}`}
                         </button>
+                        </div>
                       </div>
                     </article>
                   );

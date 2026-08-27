@@ -371,6 +371,11 @@ export function PortalSidebar({
   ] = useState<string | null>(null);
 
   const [
+    breezeLodgingsRoomId,
+    setBreezeLodgingsRoomId,
+  ] = useState<string | null>(null);
+
+  const [
     hasFriendListFeature,
     setHasFriendListFeature,
   ] = useState(false);
@@ -781,6 +786,51 @@ export function PortalSidebar({
     }
 
     void loadOddJobsRoom();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadBreezeLodgingsRoom() {
+      const supabase =
+        createClient();
+
+      const {
+        data: room,
+        error,
+      } = await supabase
+        .from("rooms")
+        .select("id")
+        .eq(
+          "slug",
+          "the-breeze-lodgings",
+        )
+        .eq("is_active", true)
+        .maybeSingle();
+
+      if (cancelled) {
+        return;
+      }
+
+      if (error) {
+        console.error(
+          "Unable to load The Breeze Lodgings:",
+          error,
+        );
+        setBreezeLodgingsRoomId(null);
+        return;
+      }
+
+      setBreezeLodgingsRoomId(
+        room?.id ?? null,
+      );
+    }
+
+    void loadBreezeLodgingsRoom();
 
     return () => {
       cancelled = true;
@@ -1745,6 +1795,62 @@ export function PortalSidebar({
     );
   }
 
+  function renderMobileBreezeLodgingsItem() {
+    const className = `
+      relative
+      flex
+      h-10
+      min-w-0
+      items-center
+      justify-center
+      border
+      text-[17px]
+      leading-none
+      transition
+      ${
+        breezeLodgingsRoomId
+          ? "border-transparent text-[rgb(var(--sep-colour-b68b4f))] hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))] hover:text-[rgb(var(--sep-colour-efd9aa))]"
+          : "cursor-not-allowed border-transparent text-[rgb(var(--sep-colour-51483d))] opacity-45"
+      }
+    `;
+
+    return (
+      <form
+        action={enterRoomFromMap}
+        className="min-w-0"
+      >
+        <input
+          type="hidden"
+          name="roomId"
+          value={
+            breezeLodgingsRoomId ?? ""
+          }
+        />
+
+        <button
+          type="submit"
+          disabled={!breezeLodgingsRoomId}
+          title={
+            breezeLodgingsRoomId
+              ? "The Breeze Lodgings"
+              : "The Breeze Lodgings are currently unavailable."
+          }
+          aria-label="The Breeze Lodgings"
+          className={`${className} w-full`}
+        >
+          <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center">
+            <img
+              src="/icons/lodging.png"
+              alt=""
+              aria-hidden="true"
+              className="h-full w-full object-contain"
+            />
+          </span>
+        </button>
+      </form>
+    );
+  }
+
   const mobileNavigationItems = [
   ...mainNavigationItems,
   codexItem,
@@ -1780,6 +1886,7 @@ export function PortalSidebar({
     )}
 
     {renderMobileOddJobsItem()}
+    {renderMobileBreezeLodgingsItem()}
 
     {/* RULES */}
     <div
@@ -2049,6 +2156,62 @@ export function PortalSidebar({
 
                     <span className="truncate">
                       The Odd Jobs Bureau
+                    </span>
+                  </button>
+                </form>
+
+                <form
+                  action={enterRoomFromMap}
+                >
+                  <input
+                    type="hidden"
+                    name="roomId"
+                    value={
+                      breezeLodgingsRoomId ?? ""
+                    }
+                  />
+
+                  <button
+                    type="submit"
+                    disabled={!breezeLodgingsRoomId}
+                    title={
+                      breezeLodgingsRoomId
+                        ? "Go directly to The Breeze Lodgings."
+                        : "The Breeze Lodgings are currently unavailable."
+                    }
+                    className="
+                      flex
+                      min-h-[var(--portal-nav-min-h)]
+                      w-full
+                      items-center
+                      gap-2
+                      border
+                      border-transparent
+                      px-2.5
+                      py-[var(--portal-nav-y)]
+                      text-left
+                      text-[11px]
+                      text-[rgb(var(--sep-colour-b6a894))]
+                      transition
+                      hover:border-[rgb(var(--sep-colour-5d4930))]
+                      hover:bg-[rgb(var(--sep-colour-1d1712))]
+                      hover:text-[rgb(var(--sep-colour-e8d8ba))]
+                      disabled:cursor-not-allowed
+                      disabled:opacity-45
+                      lg:text-xs
+                    "
+                  >
+                    <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center">
+                      <img
+                        src="/icons/lodging.png"
+                        alt=""
+                        aria-hidden="true"
+                        className="h-full w-full object-contain"
+                      />
+                    </span>
+
+                    <span className="truncate">
+                      The Breeze Lodgings
                     </span>
                   </button>
                 </form>
