@@ -17,6 +17,9 @@ import {
 import {
   getOrderHeadquartersVisibility,
 } from "@/lib/order-headquarters/access";
+import {
+  getBreezeLodgingVisibility,
+} from "@/lib/breeze-lodgings/access";
 import type {
   PortalCharacter,
   PortalCodexReference,
@@ -245,6 +248,9 @@ if (userError || !user) {
     let visibleOrderHeadquartersRoomIds:
       string[] = [];
 
+    let visibleBreezeLodgingRoomIds:
+      string[] = [];
+
     const activeSince =
       new Date(
         Date.now() -
@@ -343,6 +349,7 @@ if (userError || !user) {
       const [
         visiblePrivateResult,
         headquartersVisibility,
+        breezeLodgingVisibility,
         roomAccess,
         {
           data: presenceData,
@@ -362,6 +369,9 @@ if (userError || !user) {
           characterId,
         ),
         getOrderHeadquartersVisibility(
+          characterId,
+        ),
+        getBreezeLodgingVisibility(
           characterId,
         ),
         roomAccessPromise,
@@ -410,6 +420,9 @@ if (userError || !user) {
       visibleOrderHeadquartersRoomIds =
         headquartersVisibility.visibleRoomIds;
 
+      visibleBreezeLodgingRoomIds =
+        breezeLodgingVisibility.visibleRoomIds;
+
       if (roomAccess) {
         currentRoomAccessAllowed =
           !roomAccess.isPrivate ||
@@ -439,6 +452,7 @@ if (userError || !user) {
         privateLocations,
         allOrderHeadquartersRoomIds,
         visibleOrderHeadquartersRoomIds,
+        visibleBreezeLodgingRoomIds,
       };
     }
 
@@ -470,6 +484,7 @@ if (userError || !user) {
       privateLocations,
       allOrderHeadquartersRoomIds,
       visibleOrderHeadquartersRoomIds,
+      visibleBreezeLodgingRoomIds,
     };
   },
 );

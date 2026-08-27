@@ -230,10 +230,14 @@ export function LiveDashboardChronicle({
         if (
           area?.slug ===
             "private-locations" &&
+          !context.isStaff &&
           !context.privateLocations.some(
             (location) =>
               location.roomId ===
               room.id,
+          ) &&
+          !context.visibleBreezeLodgingRoomIds.includes(
+            room.id,
           )
         ) {
           continue;
@@ -333,6 +337,7 @@ export function LiveDashboardChronicle({
       context.privateLocations,
       context.allOrderHeadquartersRoomIds,
       context.visibleOrderHeadquartersRoomIds,
+      context.visibleBreezeLodgingRoomIds,
       context.isStaff,
     ]);
 

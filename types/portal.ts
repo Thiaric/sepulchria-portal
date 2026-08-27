@@ -81,4 +81,5 @@ export type PortalContext = {
   privateLocations: PortalPrivateLocation[];
   allOrderHeadquartersRoomIds: string[];
   visibleOrderHeadquartersRoomIds: string[];
+  visibleBreezeLodgingRoomIds: string[];
 };

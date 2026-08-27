@@ -64,6 +64,9 @@ export async function PortalHeader({ context }: PortalHeaderProps) {
               visibleOrderHeadquartersRoomIds={
                 context.visibleOrderHeadquartersRoomIds
               }
+              visibleBreezeLodgingRoomIds={
+                context.visibleBreezeLodgingRoomIds
+              }
             />
             <PortalSoundToggle />
             <PortalSkinSwitcher />

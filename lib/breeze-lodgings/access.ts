@@ -332,4 +332,70 @@ export async function getBreezeLodgingManageData(
     ),
   };
 }
+export type BreezeLodgingVisibility = {
+  allRoomIds: string[];
+  visibleRoomIds: string[];
+};
+
+export async function getBreezeLodgingVisibility(
+  characterId: string,
+): Promise<BreezeLodgingVisibility> {
+  const admin = createPrivilegedClient();
+  await admin.rpc("expire_breeze_lodging_rentals");
+
+  const { data: lodgingRooms, error: lodgingRoomsError } = await admin
+    .from("breeze_lodging_rooms")
+    .select("room_id");
+
+  if (lodgingRoomsError) {
+    throw new Error(`Unable to load Breeze Lodgings rooms: ${lodgingRoomsError.message}`);
+  }
+
+  const allRoomIds = [...new Set((lodgingRooms ?? []).map((row) => String(row.room_id)))];
+  const staff = await getStaffSession();
+
+  if (staff) {
+    return { allRoomIds, visibleRoomIds: allRoomIds };
+  }
+
+  const now = new Date().toISOString();
+
+  const { data: ownedRentals, error: ownedRentalsError } = await admin
+    .from("breeze_lodging_rentals")
+    .select("room_id")
+    .eq("owner_character_id", characterId)
+    .eq("status", "active")
+    .gt("ends_at", now);
+
+  if (ownedRentalsError) {
+    throw new Error(`Unable to load owned Breeze Lodgings rooms: ${ownedRentalsError.message}`);
+  }
+
+  const { data: guestRows, error: guestRowsError } = await admin
+    .from("breeze_lodging_guests")
+    .select("rental:breeze_lodging_rentals!breeze_lodging_guests_rental_id_fkey(room_id,status,ends_at)")
+    .eq("character_id", characterId)
+    .eq("status", "active");
+
+  if (guestRowsError) {
+    throw new Error(`Unable to load Breeze Lodgings guest visibility: ${guestRowsError.message}`);
+  }
+
+  const visible = new Set((ownedRentals ?? []).map((rental) => String(rental.room_id)));
+
+  for (const row of guestRows ?? []) {
+    const relation = Array.isArray(row.rental) ? row.rental[0] ?? null : row.rental;
+
+    if (
+      relation &&
+      relation.status === "active" &&
+      relation.ends_at &&
+      relation.ends_at > now
+    ) {
+      visible.add(String(relation.room_id));
+    }
+  }
+
+  return { allRoomIds, visibleRoomIds: [...visible] };
+}
 

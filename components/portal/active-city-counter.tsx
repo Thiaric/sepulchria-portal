@@ -28,6 +28,7 @@ type ActiveCityCounterProps = {
   visiblePrivateRoomIds: string[];
   allOrderHeadquartersRoomIds: string[];
   visibleOrderHeadquartersRoomIds: string[];
+  visibleBreezeLodgingRoomIds: string[];
 };
 
 type CodexSummary = {
@@ -96,6 +97,7 @@ export function ActiveCityCounter({
   visiblePrivateRoomIds,
   allOrderHeadquartersRoomIds,
   visibleOrderHeadquartersRoomIds,
+  visibleBreezeLodgingRoomIds,
 }: ActiveCityCounterProps) {
   const [count, setCount] =
     useState(initialCount);
@@ -156,6 +158,15 @@ export function ActiveCityCounter({
           visibleOrderHeadquartersRoomIds,
         ),
       [visibleOrderHeadquartersRoomIds],
+    );
+
+  const visibleBreezeLodgingRoomIdSet =
+    useMemo(
+      () =>
+        new Set(
+          visibleBreezeLodgingRoomIds,
+        ),
+      [visibleBreezeLodgingRoomIds],
     );
 
   const refreshPresence =
@@ -595,6 +606,9 @@ export function ActiveCityCounter({
                 ) ||
                 visibleOrderHeadquartersRoomIdSet.has(
                   room.id,
+                ) ||
+                visibleBreezeLodgingRoomIdSet.has(
+                  room.id,
                 )
               )
             );
@@ -626,6 +640,7 @@ export function ActiveCityCounter({
       visiblePrivateRoomIdSet,
       allOrderHeadquartersRoomIdSet,
       visibleOrderHeadquartersRoomIdSet,
+      visibleBreezeLodgingRoomIdSet,
     ]);
 
   return (
@@ -879,7 +894,10 @@ export function ActiveCityCounter({
                           ) ||
                           visibleOrderHeadquartersRoomIdSet.has(
                             room.id,
-                          )
+                          ) ||
+                visibleBreezeLodgingRoomIdSet.has(
+                  room.id,
+                )
                         )
                       );
 

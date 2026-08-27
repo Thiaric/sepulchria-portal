@@ -104,11 +104,8 @@ export function OddJobsPanel({ jobs }: { jobs: OddJobStateRow[] }) {
             Return tomorrow.
           </p>
         ) : (
-          <p className="mb-3 text-[9px] leading-4 text-[rgb(var(--sep-colour-8f8271))]">
-            Choose one job for today. Each job begins with a daily rate between
-            10 and 50 Remnants and has 50 work slots. After every 5 completed
-            shifts, that job&apos;s pay falls by 10% of its starting rate, rounded up.
-            Everything resets at midnight UK time.
+          <p className="mb-0.1 text-[9px] leading-4 text-[rgb(var(--sep-colour-8f8271))]">
+            
           </p>
         )}
 
