@@ -257,12 +257,27 @@ export function PortalResponsiveRightSidebar({
           <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto overscroll-contain xl:gap-[var(--portal-column-gap,0.75rem)]">
             {!isAdminOrderSubmissionsPath ? (
             <div className="shrink-0">
-              <p className="mb-1.5 px-1 text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-a88658))]">
-                Current location
-              </p>
+              <p className="mb-0.5 px-1 text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-a88658))]">
+  Current Location
+</p>
+<p className="mb-2 mt-0.5 break-words px-1 text-[10px] leading-snug text-[rgb(var(--sep-colour-d0c0a8))]">
+  {(
+    character
+      ?.currentRoom
+      ?.area
+      ?.name ??
+    "Your character has not entered the city yet."
+  ).replace(/\s+of Sepulchria$/i, "")}
+  {" – "}
+  {character
+    ?.currentRoom
+    ?.name ??
+    "No location"}
+</p>
 
-              <section className="relative min-h-[108px] overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
-                {character
+
+
+<section className="relative min-h-[108px] overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">{character
                   ?.currentRoom
                   ?.image_url ? (
                   <LocationAtmosphericImage
@@ -286,23 +301,8 @@ export function PortalResponsiveRightSidebar({
                 <div className="pointer-events-none absolute inset-0 z-[6] bg-gradient-to-r from-black/78 via-black/52 to-black/28" />
 
                 <div className="relative z-10 flex min-h-[108px] items-end p-4 xl:p-[var(--portal-section-pad,1rem)]">
-                  <div className="flex w-full min-w-0 items-end justify-between gap-2">
-                    <div className="min-w-0">
-                      <h2 className="break-words font-serif text-[16px] leading-tight text-[rgb(var(--sep-colour-ead2a6))] [text-shadow:0_2px_3px_rgba(var(--sep-rgb-0-0-0),1),0_0_6px_rgba(var(--sep-rgb-0-0-0),0.95)]">
-                        {character
-                          ?.currentRoom
-                          ?.name ??
-                          "No location"}
-                      </h2>
-
-                      <p className="mt-1 break-words text-[10px] leading-snug text-[rgb(var(--sep-colour-d0c0a8))] [text-shadow:0_1px_2px_rgba(var(--sep-rgb-0-0-0),1),0_0_4px_rgba(var(--sep-rgb-0-0-0),0.95)]">
-                        {character
-                          ?.currentRoom
-                          ?.area
-                          ?.name ??
-                          "Your character has not entered the city yet."}
-                      </p>
-                    </div>
+                  <div className="flex w-full items-end justify-end gap-2">
+                    
 
                     {character
                       ?.currentRoom ? (

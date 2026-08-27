@@ -38,6 +38,7 @@ import {
 } from "./components/BreezeLodgingGuestsPanel";
 import {
   getBreezeLodgingManageData,
+  getBreezeLodgingStaffOccupants,
 } from "@/lib/breeze-lodgings/access";
 import { leaveCurrentRoom } from "./actions";
 
@@ -355,6 +356,12 @@ async function GameContent() {
         )
       : Promise.resolve(null);
 
+  const breezeStaffOccupantsPromise =
+    room.slug ===
+    "the-breeze-lodgings"
+      ? getBreezeLodgingStaffOccupants()
+      : Promise.resolve([]);
+
   const [
     attributeBreakdown,
     ownedGiftResult,
@@ -366,6 +373,7 @@ async function GameContent() {
     oddJobsResult,
     breezeLodgingsResult,
     breezeManageData,
+    breezeStaffOccupants,
   ] = await Promise.all([
     attributeBreakdownPromise,
     ownedGiftRowsPromise,
@@ -377,6 +385,7 @@ async function GameContent() {
     oddJobsPromise,
     breezeLodgingsPromise,
     breezeManageDataPromise,
+    breezeStaffOccupantsPromise,
   ]);
 
   const {
@@ -973,7 +982,9 @@ async function GameContent() {
   const breezeLodgingsBase =
     (breezeLodgingsData ?? []) as Omit<
       BreezeLodgingStateRow,
-      "image_url" | "is_outdoors"
+      "image_url" |
+      "is_outdoors" |
+      "rented_by_name"
     >[];
 
   const breezeRoomIds =
@@ -1008,6 +1019,16 @@ async function GameContent() {
       ),
     );
 
+  const breezeRenterNames =
+    new Map(
+      breezeStaffOccupants.map(
+        (occupant) => [
+          occupant.roomId,
+          occupant.displayName,
+        ],
+      ),
+    );
+
   const breezeLodgings:
     BreezeLodgingStateRow[] =
     breezeLodgingsBase.map(
@@ -1023,6 +1044,10 @@ async function GameContent() {
             roomImage?.image_url ?? null,
           is_outdoors:
             roomImage?.is_outdoors ?? false,
+          rented_by_name:
+            breezeRenterNames.get(
+              lodging.room_id,
+            ) ?? null,
         };
       },
     );

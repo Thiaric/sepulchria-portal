@@ -23,6 +23,7 @@ export type BreezeLodgingStateRow = {
   rental_ends_at: string | null;
   my_wallet_balance: number;
   viewer_is_staff: boolean;
+  rented_by_name: string | null;
   image_url: string | null;
   is_outdoors: boolean;
 };
@@ -265,7 +266,10 @@ export function BreezeLodgingsPanel({ rooms }: { rooms: BreezeLodgingStateRow[] 
                           {room.rented_by_me
                             ? "Your room"
                             : occupied
-                              ? "Occupied"
+                              ? viewerIsStaff &&
+                                room.rented_by_name
+                                ? `Occupied by ${room.rented_by_name}`
+                                : "Occupied"
                               : "Available"}
                         </p>
 

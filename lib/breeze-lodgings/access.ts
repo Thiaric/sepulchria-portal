@@ -399,3 +399,108 @@ export async function getBreezeLodgingVisibility(
   return { allRoomIds, visibleRoomIds: [...visible] };
 }
 
+export type BreezeLodgingStaffOccupant = {
+  roomId: string;
+  displayName: string;
+};
+
+export async function getBreezeLodgingStaffOccupants(): Promise<
+  BreezeLodgingStaffOccupant[]
+> {
+  const staff =
+    await getStaffSession();
+
+  if (!staff) {
+    return [];
+  }
+
+  const admin =
+    createPrivilegedClient();
+
+  await admin.rpc(
+    "expire_breeze_lodging_rentals",
+  );
+
+  const now =
+    new Date().toISOString();
+
+  const {
+    data: rentals,
+    error: rentalsError,
+  } = await admin
+    .from("breeze_lodging_rentals")
+    .select(
+      "room_id, owner_character_id",
+    )
+    .eq("status", "active")
+    .gt("ends_at", now);
+
+  if (rentalsError) {
+    throw new Error(
+      `Unable to load Breeze Lodgings occupants: ${rentalsError.message}`,
+    );
+  }
+
+  const ownerIds = [
+    ...new Set(
+      (rentals ?? []).map(
+        (rental) =>
+          rental.owner_character_id,
+      ),
+    ),
+  ];
+
+  if (ownerIds.length === 0) {
+    return [];
+  }
+
+  const {
+    data: characters,
+    error: charactersError,
+  } = await admin
+    .from("characters")
+    .select("id, display_name")
+    .in("id", ownerIds);
+
+  if (charactersError) {
+    throw new Error(
+      `Unable to load Breeze Lodgings renter names: ${charactersError.message}`,
+    );
+  }
+
+  const namesById =
+    new Map(
+      (characters ?? []).map(
+        (character) => [
+          character.id,
+          character.display_name,
+        ],
+      ),
+    );
+
+  return (rentals ?? [])
+    .map((rental) => {
+      const displayName =
+        namesById.get(
+          rental.owner_character_id,
+        );
+
+      if (!displayName) {
+        return null;
+      }
+
+      return {
+        roomId:
+          String(rental.room_id),
+        displayName:
+          String(displayName),
+      };
+    })
+    .filter(
+      (
+        occupant,
+      ): occupant is BreezeLodgingStaffOccupant =>
+        occupant !== null,
+    );
+}
+
