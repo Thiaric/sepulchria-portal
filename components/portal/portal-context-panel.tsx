@@ -3928,12 +3928,17 @@ function AreaContext({
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <ContextHeading
-        eyebrow="District of Sepulchria"
-        title={areaName}
-      />
+      <div className="min-w-0">
+  <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-876a46))]">
+    District of Sepulchria
+  </p>
 
-      <p className="mb-4 text-xs leading-6 text-[rgb(var(--sep-colour-938673))]">
+  <h3 className="mt-0.5 font-serif text-lg text-[rgb(var(--sep-colour-d6bd91))]">
+    {areaName}
+  </h3>
+</div>
+
+      <p className="mb-3 text-xs leading-6 text-[rgb(var(--sep-colour-938673))]">
         Journey to a
         location in this area.
       </p>
