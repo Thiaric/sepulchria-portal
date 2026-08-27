@@ -118,7 +118,7 @@ export function SubmittedCharacterBadge({
     const intervalId =
       window.setInterval(() => {
         void refreshCount();
-      }, 5_000);
+      }, 20_000);
 
     const handleFocus = () => {
       void refreshCount();

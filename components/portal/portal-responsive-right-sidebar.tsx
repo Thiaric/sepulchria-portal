@@ -12,6 +12,7 @@ import { InstantChatDock } from "@/components/instant-chat/instant-chat-dock";
 import { AdminContextPanel } from "@/components/portal/admin-context-panel";
 import { AdminCommunicationLogsContext } from "@/components/portal/admin-communication-logs-context";
 import { AdminOrdersContext } from "@/components/portal/admin-orders-context";
+import { OrderSubmissionsContext } from "@/components/admin/order-submissions-context";
 import { AdminRulesContext } from "@/components/portal/admin-rules-context";
 import { AdminEventsTidingsContext } from "@/components/portal/admin-events-tidings-context";
 import { AdminRecordSearchContext } from "@/components/portal/admin-record-search-context";
@@ -88,6 +89,9 @@ export function PortalResponsiveRightSidebar({
 
   const isAdminOrdersPath =
     pathname === "/admin/orders";
+
+  const isAdminOrderSubmissionsPath =
+    pathname === "/admin/order-submissions";
 
   const isAdminRulesPath =
     pathname === "/admin/rules";
@@ -264,6 +268,7 @@ export function PortalResponsiveRightSidebar({
 
         <div className="flex min-h-0 flex-1 flex-col p-4 xl:p-[var(--portal-column-pad,1rem)]">
           <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto overscroll-contain xl:gap-[var(--portal-column-gap,0.75rem)]">
+            {!isAdminOrderSubmissionsPath ? (
             <div className="shrink-0">
               <p className="mb-1.5 px-1 text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-a88658))]">
                 Current location
@@ -337,9 +342,14 @@ export function PortalResponsiveRightSidebar({
                 </div>
               </section>
             </div>
+            ) : null}
 
             <section className="min-h-0 flex-1 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 xl:p-[var(--portal-section-pad,1rem)]">
-              {isAdminOrdersPath ? (
+              {isAdminOrderSubmissionsPath ? (
+                <OrderSubmissionsContext
+                  key={`order-submissions-${adminRevision}`}
+                />
+              ) : isAdminOrdersPath ? (
                 <AdminRecordSearchContext
                   key={`orders-${adminRevision}`}
                   mode="orders"
@@ -426,7 +436,8 @@ export function PortalResponsiveRightSidebar({
           </div>
 
           {character?.status ===
-          "approved" ? (
+            "approved" &&
+          !isAdminOrderSubmissionsPath ? (
             <div className="relative mt-3 shrink-0">
               <InstantChatDock
                 characterId={

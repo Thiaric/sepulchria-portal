@@ -46,7 +46,7 @@ export function RegistrationApplicationBadge({
     const intervalId =
       window.setInterval(
         () => void refresh(),
-        3_000,
+        20_000,
       );
 
     const handleFocus = () => {

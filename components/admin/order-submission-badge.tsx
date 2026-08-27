@@ -27,7 +27,7 @@ export function OrderSubmissionBadge({ variant }: Props) {
   useEffect(() => {
     void refresh();
 
-    const intervalId = window.setInterval(() => void refresh(), 30000);
+    const intervalId = window.setInterval(() => void refresh(), 20000);
     const handleFocus = () => void refresh();
 
     window.addEventListener("focus", handleFocus);
