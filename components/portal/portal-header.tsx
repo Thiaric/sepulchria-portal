@@ -13,6 +13,8 @@ import { HeaderCharacterIdentity } from "@/components/portal/header-character-id
 import { StaffAppearOfflineToggle } from "@/components/portal/staff-appear-offline-toggle";
 import { WorldIndicator } from "@/components/world/world-indicator";
 import { PortalModalButton } from "@/components/portal/portal-modal-button";
+import { ScrollText } from "lucide-react";
+import { Settings } from "lucide-react";
 import {
   canAccessAdminSection,
   getStaffSession,
@@ -81,7 +83,7 @@ export async function PortalHeader({ context }: PortalHeaderProps) {
               aria-label={`${unreadMessageCount} unread messages`}
               className="relative flex h-8 w-8 items-center justify-center border border-[rgb(var(--sep-colour-614b31))] bg-[rgb(var(--sep-colour-17120f))] text-base text-[rgb(var(--sep-colour-c69b5c))] transition hover:border-[rgb(var(--sep-colour-977242))] hover:text-[rgb(var(--sep-colour-efd6a3))] sm:h-9 sm:w-9 2xl:h-10 2xl:w-10 2xl:text-lg"
             >
-              ✉
+              <ScrollText className="h-5 w-5" />
               <UnreadMessageBadge initialCount={unreadMessageCount} variant="floating" />
             </PortalModalButton>
 
@@ -92,7 +94,7 @@ export async function PortalHeader({ context }: PortalHeaderProps) {
                 title={`Administration — ${staffSession.role}`}
                 className="relative flex h-8 w-8 items-center justify-center border border-[rgb(var(--sep-colour-7b5d36))] bg-[rgb(var(--sep-colour-24180f))] font-serif text-base text-[rgb(var(--sep-colour-d4ad70))] transition hover:border-[rgb(var(--sep-colour-b1844b))] hover:bg-[rgb(var(--sep-colour-382517))] hover:text-[rgb(var(--sep-colour-ffe0a6))] sm:h-9 sm:w-9 2xl:h-10 2xl:w-10 2xl:text-lg"
               >
-                ⚙
+                <Settings className="h-5 w-5" />
                 {canAccessAdminSection(
                   staffSession.role,
                   "new_register",

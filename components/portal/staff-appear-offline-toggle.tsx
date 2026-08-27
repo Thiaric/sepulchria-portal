@@ -161,7 +161,7 @@ export function StaffAppearOfflineToggle({
       {appearOffline ? (
         <svg
           viewBox="0 0 24 24"
-          className="h-5 w-5"
+          className="h-[24px] w-[24px]"
           aria-hidden="true"
         >
           <circle
@@ -185,7 +185,7 @@ export function StaffAppearOfflineToggle({
       ) : (
         <svg
           viewBox="0 0 24 24"
-          className="h-5 w-5"
+          className="h-[24px] w-[24px]"
           aria-hidden="true"
         >
           <circle
