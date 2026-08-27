@@ -84,6 +84,26 @@ export async function getPrivateLocationAccess(
 
   if (!privateRoom) {
     const {
+      getBreezeLodgingAccess,
+    } = await import(
+      "@/lib/breeze-lodgings/access"
+    );
+
+    const breezeAccess =
+      await getBreezeLodgingAccess(
+        roomId,
+        characterId,
+      );
+
+    if (breezeAccess.isBreezeLodging) {
+      return {
+        isPrivate: true,
+        allowed: breezeAccess.allowed,
+        metadata: null,
+      };
+    }
+
+    const {
       getOrderHeadquartersAccess,
     } = await import(
       "@/lib/order-headquarters/access"

@@ -29,6 +29,10 @@ import RoomChatForm from "./components/RoomChatForm";
 import RoomMessageList from "./components/RoomMessageList";
 import RoomRealtime from "./components/RoomRealtime";
 import { OddJobsPanel, type OddJobStateRow } from "./components/OddJobsPanel";
+import {
+  BreezeLodgingsPanel,
+  type BreezeLodgingStateRow,
+} from "./components/BreezeLodgingsPanel";
 import { leaveCurrentRoom } from "./actions";
 
 type Props = Record<string, never>;
@@ -317,6 +321,16 @@ async function GameContent() {
           error: null,
         });
 
+  const breezeLodgingsPromise =
+    room.slug === "the-breeze-lodgings"
+      ? supabase.rpc(
+          "get_my_breeze_lodgings_state",
+        )
+      : Promise.resolve({
+          data: [],
+          error: null,
+        });
+
   const [
     attributeBreakdown,
     ownedGiftResult,
@@ -326,6 +340,7 @@ async function GameContent() {
     staffSession,
     headquartersManageData,
     oddJobsResult,
+    breezeLodgingsResult,
   ] = await Promise.all([
     attributeBreakdownPromise,
     ownedGiftRowsPromise,
@@ -335,6 +350,7 @@ async function GameContent() {
     staffSessionPromise,
     headquartersManageDataPromise,
     oddJobsPromise,
+    breezeLodgingsPromise,
   ]);
 
   const {
@@ -917,10 +933,28 @@ async function GameContent() {
   const oddJobs =
     (oddJobsData ?? []) as OddJobStateRow[];
 
+  const {
+    data: breezeLodgingsData,
+    error: breezeLodgingsError,
+  } = breezeLodgingsResult;
+
+  if (breezeLodgingsError) {
+    throw new Error(
+      `Unable to load The Breeze Lodgings: ${breezeLodgingsError.message}`,
+    );
+  }
+
+  const breezeLodgings =
+    (breezeLodgingsData ?? []) as BreezeLodgingStateRow[];
+
+  const hasLocationPanel =
+    room.slug === "odd-jobs-bureau" ||
+    room.slug === "the-breeze-lodgings";
+
   return (
   <div
   className={
-    room.slug === "odd-jobs-bureau"
+    hasLocationPanel
   ? "min-h-full overflow-visible p-2 sm:p-3 lg:h-full lg:min-h-0 lg:overflow-y-auto lg:overscroll-contain lg:p-4"
   : privateLocation
     ? "private-location-theme h-full min-h-0 overflow-hidden p-2 sm:p-3 lg:p-4"
@@ -946,20 +980,24 @@ async function GameContent() {
 
     <div
   className={
-    room.slug === "odd-jobs-bureau"
+    hasLocationPanel
       ? "mx-auto flex min-h-full max-w-80dvh flex-col"
       : "mx-auto flex h-full max-w-80dvh flex-col"
   }
 >
   <article
   className={
-    room.slug === "odd-jobs-bureau"
+    hasLocationPanel
       ? "flex shrink-0 flex-col overflow-visible border border-[rgb(var(--sep-colour-6a5032))]/50 bg-[rgb(var(--sep-colour-17110d))]"
       : "flex min-h-0 flex-1 flex-col overflow-visible border border-[rgb(var(--sep-colour-6a5032))]/50 bg-[rgb(var(--sep-colour-17110d))] lg:overflow-hidden"
   }
 >
     {room.slug === "odd-jobs-bureau" ? (
       <OddJobsPanel jobs={oddJobs} />
+    ) : null}
+
+    {room.slug === "the-breeze-lodgings" ? (
+      <BreezeLodgingsPanel rooms={breezeLodgings} />
     ) : null}
 
     {room.chat_enabled ? (
