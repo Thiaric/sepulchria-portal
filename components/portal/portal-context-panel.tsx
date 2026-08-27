@@ -27,6 +27,7 @@ import { createClient } from "@/lib/supabase/client";
 import type { PortalContext } from "@/types/portal";
 import { ForumSectionActivityContext } from "@/components/portal/forum-section-activity-context";
 import { AdminOrdersContext } from "@/components/portal/admin-orders-context";
+import { OrderSubmissionsContext } from "@/components/admin/order-submissions-context";
 import { AdminRulesContext } from "@/components/portal/admin-rules-context";
 import { CharacterOrderContext } from "@/components/portal/character-order-context";
 import { OrderLeadershipContext } from "@/components/portal/order-leadership-context";
@@ -77,6 +78,10 @@ export function PortalContextPanel({
 
  if (pathname === "/characters") {
   return <CharacterArchiveContext />;
+}
+
+if (pathname === "/friends") {
+  return <FriendListContext />;
 }
 
 const publicCharacterMatch =
@@ -242,6 +247,10 @@ if (
     return <AdminOrdersContext />;
   }
 
+  if (pathname === "/admin/order-submissions") {
+    return <OrderSubmissionsContext />;
+  }
+
   if (pathname === "/feats") {
     return <PublicGiftsContext />;
   }
@@ -350,6 +359,250 @@ if (
   }
 
   return <DefaultContext />;
+}
+
+type FriendListContextEntry = {
+  id: string;
+  name: string;
+};
+
+function FriendListContext() {
+  const [entries, setEntries] =
+    useState<FriendListContextEntry[]>([]);
+  const [search, setSearch] =
+    useState("");
+  const [loading, setLoading] =
+    useState(true);
+  const [error, setError] =
+    useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadFriends() {
+      const supabase = createClient();
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user || cancelled) {
+        setLoading(false);
+        return;
+      }
+
+      const {
+        data: character,
+        error: characterError,
+      } = await supabase
+        .from("characters")
+        .select("id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (cancelled) {
+        return;
+      }
+
+      if (characterError) {
+        setError(characterError.message);
+        setLoading(false);
+        return;
+      }
+
+      if (!character) {
+        setEntries([]);
+        setLoading(false);
+        return;
+      }
+
+      const {
+        data: friendRows,
+        error: friendError,
+      } = await supabase
+        .from("character_friend_entries")
+        .select("target_character_id")
+        .eq("owner_character_id", character.id);
+
+      if (cancelled) {
+        return;
+      }
+
+      if (friendError) {
+        setError(friendError.message);
+        setLoading(false);
+        return;
+      }
+
+      const targetIds = Array.from(
+        new Set(
+          (friendRows ?? []).map(
+            (row) =>
+              String(row.target_character_id),
+          ),
+        ),
+      );
+
+      if (targetIds.length === 0) {
+        setEntries([]);
+        setError(null);
+        setLoading(false);
+        return;
+      }
+
+      const {
+        data: characters,
+        error: targetsError,
+      } = await supabase
+        .from("characters")
+        .select(
+          "id, display_name, first_name, surname",
+        )
+        .in("id", targetIds)
+        .eq("is_system", false);
+
+      if (cancelled) {
+        return;
+      }
+
+      if (targetsError) {
+        setError(targetsError.message);
+        setLoading(false);
+        return;
+      }
+
+      const mapped = (characters ?? [])
+        .map((entry) => {
+          const name =
+            entry.display_name?.trim() ||
+            `${entry.first_name ?? ""} ${entry.surname ?? ""}`.trim() ||
+            "Unknown";
+
+          return {
+            id: String(entry.id),
+            name,
+          };
+        })
+        .sort((a, b) =>
+          a.name.localeCompare(
+            b.name,
+            "en",
+            { sensitivity: "base" },
+          ),
+        );
+
+      setEntries(mapped);
+      setError(null);
+      setLoading(false);
+    }
+
+    void loadFriends();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const query =
+    search.trim().toLocaleLowerCase();
+
+  const filteredEntries =
+    entries.filter(
+      (entry) =>
+        !query ||
+        entry.name
+          .toLocaleLowerCase()
+          .includes(query),
+    );
+
+  function jumpToFriend(
+    characterId: string,
+  ) {
+    const element =
+      document.getElementById(
+        `friend-${characterId}`,
+      );
+
+    if (!element) {
+      return;
+    }
+
+    element.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
+    window.history.replaceState(
+      null,
+      "",
+      `#friend-${characterId}`,
+    );
+  }
+
+  return (
+    <div className="flex h-full min-h-0 flex-col">
+      <ContextHeading
+        eyebrow="Contacts"
+        title="Friend List"
+      />
+
+      <p className="text-xs leading-6 text-[rgb(var(--sep-colour-938673))]">
+        Search your contacts and move directly to their entry.
+      </p>
+
+      <input
+        type="search"
+        value={search}
+        onChange={(event) =>
+          setSearch(event.target.value)
+        }
+        placeholder="Search friends..."
+        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none"
+      />
+
+      <div className="my-4 h-px bg-[rgb(var(--sep-colour-59432c))]/35" />
+
+      <p className="mb-2 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))]">
+        Friends · {filteredEntries.length}
+      </p>
+
+      <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">
+        {loading ? (
+          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))]">
+            Loading friends...
+          </p>
+        ) : error ? (
+          <p className="text-xs text-[rgb(var(--sep-colour-c58d82))]">
+            Unable to load Friend List.
+          </p>
+        ) : filteredEntries.length > 0 ? (
+          filteredEntries.map(
+            (entry) => (
+              <button
+                key={entry.id}
+                type="button"
+                onClick={() =>
+                  jumpToFriend(entry.id)
+                }
+                className="flex w-full items-center justify-between border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))]"
+              >
+                <span className="truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))]">
+                  {entry.name}
+                </span>
+                <span className="text-[rgb(var(--sep-colour-725a3d))]">
+                  →
+                </span>
+              </button>
+            ),
+          )
+        ) : (
+          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))]">
+            No friends found.
+          </p>
+        )}
+      </div>
+    </div>
+  );
 }
 
 type PublicShapeContextEntry={

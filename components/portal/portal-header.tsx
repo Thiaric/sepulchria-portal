@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { SubmittedCharacterBadge } from "@/components/admin/submitted-character-badge";
 import { RegistrationApplicationBadge } from "@/components/admin/registration-application-badge";
+import { OrderSubmissionBadge } from "@/components/admin/order-submission-badge";
 import { TicketNotificationBadge } from "@/components/support/ticket-notification-badge";
 import { PortalSoundToggle } from "@/components/audio/portal-sound-toggle";
 import { PortalSkinSwitcher } from "@/components/portal/portal-skin-switcher";
@@ -96,6 +97,12 @@ export async function PortalHeader({ context }: PortalHeaderProps) {
                   <RegistrationApplicationBadge variant="floating" />
                 ) : null}
                 <SubmittedCharacterBadge variant="floating" />
+                {canAccessAdminSection(
+                  staffSession.role,
+                  "orders",
+                ) ? (
+                  <OrderSubmissionBadge variant="floating" />
+                ) : null}
                 <TicketNotificationBadge audience="staff" variant="floating" />
               </Link>
             ) : null}

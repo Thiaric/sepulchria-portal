@@ -433,7 +433,8 @@ function FriendSection({
             return (
               <article
                 key={entry.id}
-                className="bg-[rgb(var(--sep-colour-17110d))] p-5"
+                id={`friend-${target.id}`}
+                className="scroll-mt-4 bg-[rgb(var(--sep-colour-17110d))] p-5"
               >
                 <Link
                   href={`/characters/${target.public_slug}`}

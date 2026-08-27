@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { AdminInteractionKeeper } from "@/components/admin/admin-interaction-keeper";
 import { SubmittedCharacterBadge } from "@/components/admin/submitted-character-badge";
 import { RegistrationApplicationBadge } from "@/components/admin/registration-application-badge";
+import { OrderSubmissionBadge } from "@/components/admin/order-submission-badge";
 import { TicketNotificationBadge } from "@/components/support/ticket-notification-badge";
 import { SanctionNotificationBadge } from "@/components/sanctions/sanction-notification-badge";
 import {
@@ -159,6 +160,15 @@ export default async function AdminLayout({
   {can("orders") ? (
     <AdminNavigationLink href="/admin/orders">
       Orders
+    </AdminNavigationLink>
+  ) : null}
+
+  {can("orders") ? (
+    <AdminNavigationLink href="/admin/order-submissions">
+      <span className="flex items-center gap-2">
+        <span>Order Submissions</span>
+        <OrderSubmissionBadge variant="admin-nav" />
+      </span>
     </AdminNavigationLink>
   ) : null}
 

@@ -307,7 +307,7 @@ export function FriendLivePresence({
     room && maySeePrivateRoom
       ? room.name
       : privateRoom
-        ? "Private Location"
+        ? "Around Sepulchria"
         : "Location unknown";
 
   const canJump =
@@ -347,7 +347,7 @@ export function FriendLivePresence({
             type="submit"
             className="inline-flex h-8 items-center justify-center border border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-241a12))] px-3 text-[8px] font-semibold uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:border-[rgb(var(--sep-colour-b28b55))] hover:bg-[rgb(var(--sep-colour-302217))]"
           >
-            Jump
+            Journey There
           </button>
         </form>
       ) : null}

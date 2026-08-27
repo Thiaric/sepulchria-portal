@@ -10,10 +10,13 @@ const STORAGE_KEY =
   "sepulchria-portal-instance-id";
 
 const CHECK_INTERVAL_MS =
-  5_000;
+  30_000;
 
 const CHECK_TIMEOUT_MS =
-  10_000;
+  6_000;
+
+const EVENT_CHECK_COOLDOWN_MS =
+  2_000;
 
 function getPortalInstanceId() {
   const existing =
@@ -42,6 +45,9 @@ export function PortalSessionGuard() {
 
   const replacedRef =
     useRef(false);
+
+  const lastEventCheckRef =
+    useRef(0);
 
   const checkCurrentLogin =
     useCallback(async () => {
@@ -158,7 +164,7 @@ export function PortalSessionGuard() {
             "AbortError"
         ) {
           console.warn(
-            "Portal session verification timed out; it will retry.",
+            "Portal session verification timed out; the next scheduled check will retry.",
           );
         } else {
           console.error(
@@ -186,7 +192,20 @@ export function PortalSessionGuard() {
         CHECK_INTERVAL_MS,
       );
 
-    function handleFocus() {
+    function checkFromBrowserEvent() {
+      const now = Date.now();
+
+      if (
+        now -
+          lastEventCheckRef.current <
+        EVENT_CHECK_COOLDOWN_MS
+      ) {
+        return;
+      }
+
+      lastEventCheckRef.current =
+        now;
+
       void checkCurrentLogin();
     }
 
@@ -195,31 +214,17 @@ export function PortalSessionGuard() {
         document.visibilityState ===
         "visible"
       ) {
-        void checkCurrentLogin();
+        checkFromBrowserEvent();
       }
     }
 
     function handleOnline() {
-      void checkCurrentLogin();
+      checkFromBrowserEvent();
     }
-
-    function handlePageShow() {
-      void checkCurrentLogin();
-    }
-
-    window.addEventListener(
-      "focus",
-      handleFocus,
-    );
 
     window.addEventListener(
       "online",
       handleOnline,
-    );
-
-    window.addEventListener(
-      "pageshow",
-      handlePageShow,
     );
 
     document.addEventListener(
@@ -233,18 +238,8 @@ export function PortalSessionGuard() {
       );
 
       window.removeEventListener(
-        "focus",
-        handleFocus,
-      );
-
-      window.removeEventListener(
         "online",
         handleOnline,
-      );
-
-      window.removeEventListener(
-        "pageshow",
-        handlePageShow,
       );
 
       document.removeEventListener(

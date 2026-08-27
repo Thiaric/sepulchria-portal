@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import { OrderGrid } from "@/components/orders/order-grid";
 import { createClient } from "@/lib/supabase/server";
@@ -96,14 +97,23 @@ export default async function OrdersPage() {
             </p>
           </div>
 
-          <div className="shrink-0 border border-[rgb(var(--sep-colour-60482e))]/45 bg-black/20 px-5 py-3">
-            <span className="block text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
-              Current Orders
-            </span>
+          <div className="flex shrink-0 flex-col gap-2">
+            <div className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-black/20 px-5 py-3">
+              <span className="block text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
+                Current Orders
+              </span>
 
-            <span className="mt-1 block font-serif text-xl text-[rgb(var(--sep-colour-d4bd94))]">
-              {orders.length}
-            </span>
+              <span className="mt-1 block font-serif text-xl text-[rgb(var(--sep-colour-d4bd94))]">
+                {orders.length}
+              </span>
+            </div>
+
+            <Link
+              href="/orders/submit"
+              className="inline-flex items-center justify-center border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
+            >
+              Submit Your Order Idea
+            </Link>
           </div>
         </div>
       </header>

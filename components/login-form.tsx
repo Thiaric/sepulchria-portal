@@ -122,69 +122,18 @@ portalWindow.document.title =
       }
 
       /*
-       * Every successful login gets its own portal-window identity.
-       * The newest successful login becomes the only active portal
-       * instance for this account.
-       */
-      const portalInstanceId =
-        crypto.randomUUID();
-
-      const claimResponse =
-        await fetch(
-          "/api/portal-session/claim",
-          {
-            method: "POST",
-            credentials: "same-origin",
-            cache: "no-store",
-            headers: {
-              "Content-Type":
-                "application/json",
-            },
-            body: JSON.stringify({
-              instanceId:
-                portalInstanceId,
-            }),
-          },
-        );
-
-      if (!claimResponse.ok) {
-        const claimResult =
-          (await claimResponse
-            .json()
-            .catch(() => null)) as
-            | {
-                message?: string;
-              }
-            | null;
-
-        throw new Error(
-          claimResult?.message ??
-            "Unable to establish the active Sepulchria login.",
-        );
-      }
-
-      /*
-       * If the user is already signing in inside the portal window,
-       * store the instance id there directly.
-       *
-       * Otherwise, send the popup through a same-origin handoff page.
-       * That page stores the id in its own sessionStorage before the
-       * portal session guard can run. This avoids a race caused by
-       * writing sessionStorage into an about:blank popup from the
-       * opener window.
+       * Authentication is complete here. The dedicated portal window
+       * performs the active-session claim for itself on the same-origin
+       * portal-entry page. Keeping the claim in that window avoids
+       * racing server cookie visibility against a request from the opener.
        */
       if (isPortalWindow) {
-        window.sessionStorage.setItem(
-          "sepulchria-portal-instance-id",
-          portalInstanceId,
+        window.location.replace(
+          "/auth/portal-entry",
         );
-
-        window.location.replace("/");
       } else {
         portalWindow.location.replace(
-          `${window.location.origin}/auth/portal-entry#${encodeURIComponent(
-            portalInstanceId,
-          )}`,
+          `${window.location.origin}/auth/portal-entry`,
         );
 
         portalWindow.focus();

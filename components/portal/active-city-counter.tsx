@@ -1046,7 +1046,7 @@ export function ActiveCityCounter({
                                     </span>
 
                                     <span className="shrink-0 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-725a3d))] transition group-hover/location:text-[rgb(var(--sep-colour-c59b64))]">
-                                      Go →
+                                      Journey There →
                                     </span>
                                   </button>
                                 </form>
