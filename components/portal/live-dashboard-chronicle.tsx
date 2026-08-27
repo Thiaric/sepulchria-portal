@@ -406,37 +406,21 @@ export function LiveDashboardChronicle({
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <div className="mt-1 flex shrink-0 items-center justify-between gap-4">
-        <div>
-          <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))]">
+      
+        
+          <p className="px-1 text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))]">
             People in Sepulchria
           </p>
-
-          
-        </div>
-
-        <span
-  title={`${activeCharacterCount} active character${
-    activeCharacterCount === 1
-      ? ""
-      : "s"
-  }`}
-  className="flex h-8 min-w-8 items-center justify-center rounded-full border border-[rgb(var(--sep-colour-6a5637))] bg-[rgb(var(--sep-colour-20170f))] px-2 font-serif text-sm leading-none text-[rgb(var(--sep-colour-d9bd8d))]"
->
-  <span className="relative -top-[2px] leading-none">
-  {activeCharacterCount}
-</span>
-</span>
-      </div>
+      
 
       {error ? (
-        <p className="mt-4 shrink-0 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-3 text-[10px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]">
+        <p className="mt-3 shrink-0 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-3 text-[10px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]">
           Live city activity could not be loaded:{" "}
           {error}
         </p>
       ) : null}
 
-      <div className="mt-4 min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain pr-1">
+      <div className="mt-3 min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain pr-0.5">
         {loading ? (
           <ChronicleLoading />
         ) : (
