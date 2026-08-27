@@ -163,28 +163,36 @@ portalWindow.document.title =
         );
       }
 
-      portalWindow.sessionStorage.setItem(
-        "sepulchria-portal-instance-id",
-        portalInstanceId,
-      );
-
       /*
-       * Supabase authentication is shared because the new
-       * window is on the same Sepulchria origin.
+       * If the user is already signing in inside the portal window,
+       * store the instance id there directly.
+       *
+       * Otherwise, send the popup through a same-origin handoff page.
+       * That page stores the id in its own sessionStorage before the
+       * portal session guard can run. This avoids a race caused by
+       * writing sessionStorage into an about:blank popup from the
+       * opener window.
        */
       if (isPortalWindow) {
-  window.location.replace("/");
-} else {
-  portalWindow.location.replace(
-    `${window.location.origin}/`,
-  );
+        window.sessionStorage.setItem(
+          "sepulchria-portal-instance-id",
+          portalInstanceId,
+        );
 
-  portalWindow.focus();
+        window.location.replace("/");
+      } else {
+        portalWindow.location.replace(
+          `${window.location.origin}/auth/portal-entry#${encodeURIComponent(
+            portalInstanceId,
+          )}`,
+        );
 
-  window.location.replace(
-    "/homepage",
-  );
-}
+        portalWindow.focus();
+
+        window.location.replace(
+          "/homepage",
+        );
+      }
     } catch (error: unknown) {
       if (!isPortalWindow) {
   portalWindow.close();
