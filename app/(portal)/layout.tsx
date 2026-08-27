@@ -4,6 +4,7 @@ import { PortalAudioProvider } from "@/components/audio/portal-audio-provider";
 import { PortalMessageSoundListener } from "@/components/audio/portal-message-sound-listener";
 import { PortalCollapsibleColumns } from "@/components/portal/portal-collapsible-columns";
 import { PortalHeader } from "@/components/portal/portal-header";
+import { PortalNotificationCountsProvider } from "@/components/notifications/portal-notification-counts-provider";
 import { PortalPresenceHeartbeat } from "@/components/portal/portal-presence-heartbeat";
 import { PortalSessionGuard } from "@/components/portal/portal-session-guard";
 import { PrivateLocationInvitationPopup } from "@/components/private-location/private-location-invitation-popup";
@@ -13,6 +14,7 @@ import { PortalSidebar } from "@/components/portal/portal-sidebar";
 import { PortalSkinProvider } from "@/components/portal/portal-skin-provider";
 import { TidingsTicker } from "@/components/tidings/tidings-ticker";
 import { WorldStateProvider } from "@/components/world/world-state-provider";
+import { getStaffSession } from "@/lib/auth/require-staff";
 import { getPortalContext } from "@/lib/portal/get-portal-context";
 import { getActiveTidings } from "@/lib/tidings/get-active-tidings";
 import { getUnreadForumCount } from "@/lib/forum/get-unread-forum-count";
@@ -42,11 +44,13 @@ async function PortalLayoutContent({
     worldState,
     initialTidings,
     unreadForumCount,
+    staffSession,
   ] = await Promise.all([
     getPortalContext(),
     getWorldState(),
     getActiveTidings(),
     getUnreadForumCount(),
+    getStaffSession(),
   ]);
 
   const presenceEnabled =
@@ -59,6 +63,9 @@ async function PortalLayoutContent({
     >
       <PortalSkinProvider>
         <PortalAudioProvider>
+        <PortalNotificationCountsProvider
+          staffRole={staffSession?.role ?? null}
+        >
         <PortalMessageSoundListener
           characterId={
             context.character?.id ??
@@ -430,6 +437,7 @@ async function PortalLayoutContent({
             />
           </div>
         </div>
+        </PortalNotificationCountsProvider>
         </PortalAudioProvider>
       </PortalSkinProvider>
     </WorldStateProvider>

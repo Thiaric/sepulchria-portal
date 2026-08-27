@@ -1,42 +1,16 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { usePortalNotificationCounts } from "@/components/notifications/portal-notification-counts-provider";
 
 type Props = {
   variant: "floating" | "admin-nav";
 };
 
-export function OrderSubmissionBadge({ variant }: Props) {
-  const [count, setCount] = useState(0);
-
-  const refresh = useCallback(async () => {
-    const response = await fetch(
-      "/api/admin/order-submissions/pending-count",
-      { cache: "no-store" },
-    ).catch(() => null);
-
-    if (!response?.ok) {
-      setCount(0);
-      return;
-    }
-
-    const result = await response.json().catch(() => ({ count: 0 }));
-    setCount(Math.max(0, Number(result.count) || 0));
-  }, []);
-
-  useEffect(() => {
-    void refresh();
-
-    const intervalId = window.setInterval(() => void refresh(), 20000);
-    const handleFocus = () => void refresh();
-
-    window.addEventListener("focus", handleFocus);
-
-    return () => {
-      window.clearInterval(intervalId);
-      window.removeEventListener("focus", handleFocus);
-    };
-  }, [refresh]);
+export function OrderSubmissionBadge({
+  variant,
+}: Props) {
+  const { orderSubmissions: count } =
+    usePortalNotificationCounts();
 
   if (count <= 0) return null;
 
