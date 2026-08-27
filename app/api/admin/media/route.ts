@@ -14,6 +14,7 @@ import {
   type PublicMediaBatchUpload,
 } from "@/lib/github/public-media";
 import {
+  canAccessAdminSection,
   getStaffSession,
 } from "@/lib/auth/require-staff";
 
@@ -27,8 +28,10 @@ async function getApiAdmin() {
 
   if (
     !session ||
-    (session.role !== "owner" &&
-      session.role !== "admin")
+    !canAccessAdminSection(
+      session.role,
+      "media",
+    )
   ) {
     return null;
   }
@@ -44,7 +47,7 @@ export async function GET() {
     return NextResponse.json(
       {
         error:
-          "Owner or Administrator access is required.",
+          "Owner access is required.",
       },
       {
         status: 403,
@@ -81,7 +84,7 @@ export async function POST(
     return NextResponse.json(
       {
         error:
-          "Owner or Administrator access is required.",
+          "Owner access is required.",
       },
       {
         status: 403,
@@ -213,7 +216,7 @@ export async function PATCH(
     return NextResponse.json(
       {
         error:
-          "Owner or Administrator access is required.",
+          "Owner access is required.",
       },
       {
         status: 403,

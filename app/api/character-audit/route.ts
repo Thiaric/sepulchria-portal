@@ -3,6 +3,7 @@ import {
 } from "next/server";
 
 import {
+  canAccessAdminSection,
   getStaffSession,
 } from "@/lib/auth/require-staff";
 import {
@@ -334,9 +335,16 @@ export async function GET(
   const staffSession =
     await getStaffSession();
 
+  const canViewCharacterLogs =
+    staffSession !== null &&
+    canAccessAdminSection(
+      staffSession.role,
+      "character_logs",
+    );
+
   const staffView =
     requestedStaffView &&
-    staffSession !== null;
+    canViewCharacterLogs;
 
   const admin =
     createAdminClient();
@@ -376,7 +384,7 @@ export async function GET(
 
   if (
     !ownsCharacter &&
-    staffSession === null
+    !canViewCharacterLogs
   ) {
     return NextResponse.json(
       {
