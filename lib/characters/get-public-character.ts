@@ -7,6 +7,7 @@ import {
   PRESENCE_ACTIVE_MINUTES,
 } from "@/lib/game/constants";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { getPublicOrderMembership } from "@/lib/orders/get-public-order-membership";
 import { getStaffSession } from "@/lib/auth/require-staff";
 import type {
@@ -43,6 +44,7 @@ type RoomRelationRow = {
 
 type CharacterRow = {
   id: string;
+  user_id: string;
   public_slug: string;
   first_name: string;
   surname: string;
@@ -230,6 +232,7 @@ export const getPublicCharacter = cache(
       .from("characters")
       .select(`
         id,
+        user_id,
         public_slug,
         first_name,
         surname,
@@ -308,9 +311,12 @@ export const getPublicCharacter = cache(
       return null;
     }
 
+    const admin = createAdminClient();
+
     const [
       staffSession,
       presenceResult,
+      ownerAccountResult,
     ] = await Promise.all([
       getStaffSession(),
       supabase
@@ -323,12 +329,16 @@ export const getPublicCharacter = cache(
           row.id,
         )
         .maybeSingle(),
+      admin.auth.admin.getUserById(row.user_id),
     ]);
 
     const {
       data: presenceData,
       error: presenceError,
     } = presenceResult;
+
+    const sepulchriaSince =
+      ownerAccountResult.data.user?.created_at ?? null;
 
     if (presenceError) {
       throw new Error(
@@ -460,6 +470,7 @@ export const getPublicCharacter = cache(
       show_last_activity:
         row.show_last_activity,
       status: row.status,
+      sepulchria_since: sepulchriaSince,
 
       race: normaliseCodexReference(
         row.race,

@@ -55,6 +55,26 @@ function formatGender(
   return null;
 }
 
+function formatSepulchriaSince(
+  value: string | null,
+) {
+  if (!value) {
+    return "Not recorded";
+  }
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Not recorded";
+  }
+
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  }).format(date);
+}
+
 export function PublicCharacterProfileView({
   character,
   returnHref,
@@ -202,7 +222,10 @@ export function PublicCharacterProfileView({
           <section className="grid gap-4 xl:grid-cols-[minmax(0,1.45fr)_minmax(360px,0.9fr)]">
         <div className="min-w-0">
           <section className="grid gap-4 border border-[rgb(var(--sep-colour-654b2e))]/50 bg-[rgb(var(--sep-colour-17110d))] p-4 sm:p-5 lg:grid-cols-[180px_minmax(0,1fr)]">
-            <div className="relative mx-auto aspect-[3/4] w-full max-w-[180px] overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0d0a08))] lg:mx-0">
+            <div className="mx-auto w-full max-w-[180px] lg:mx-0">
+
+              <div className="relative aspect-[3/4] w-full overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0d0a08))]">
+
               {character.portrait_url ? (
                 <Image
                   src={character.portrait_url}
@@ -222,7 +245,28 @@ export function PublicCharacterProfileView({
                     .toUpperCase()}
                 </div>
               )}
+
+              </div>
+
+
+              <div className="mt-2 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5">
+
+                <p className="text-[7px] uppercase tracking-[0.19em] text-[rgb(var(--sep-colour-796448))]">
+
+                  In Sepulchria since
+
+                </p>
+
+                <p className="mt-1 text-[11px] leading-5 text-[rgb(var(--sep-colour-cab89b))]">
+
+                  {formatSepulchriaSince(character.sepulchria_since)}
+
+                </p>
+
+              </div>
+
             </div>
+
 
             <div className="min-w-0">
               <div className="flex flex-wrap items-start justify-between gap-3 border-b border-[rgb(var(--sep-colour-5d452d))]/35 pb-3">

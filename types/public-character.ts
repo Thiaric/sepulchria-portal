@@ -91,6 +91,7 @@ export type PublicCharacterProfile = {
   current_health: number | null;
   show_last_activity: boolean;
   status: PublicCharacterStatus;
+  sepulchria_since: string | null;
 
   race:
     | PublicCodexReference

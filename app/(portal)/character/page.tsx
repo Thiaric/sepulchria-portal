@@ -213,9 +213,30 @@ export default async function CharacterPage({
         }
         own
         notice={notice}
+        sepulchriaSince={user.created_at ?? null}
       />
     </>
   );
+}
+
+function formatSepulchriaSince(
+  value: string | null,
+) {
+  if (!value) {
+    return "Not recorded";
+  }
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Not recorded";
+  }
+
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  }).format(date);
 }
 
 export function Profile({
@@ -223,11 +244,13 @@ export function Profile({
   own = false,
   messageAction = null,
   notice = null,
+  sepulchriaSince = null,
 }: {
   character: CharacterProfile;
   own?: boolean;
   messageAction?: ReactNode;
   notice?: PageNotice | null;
+  sepulchriaSince?: string | null;
 }) {
   const race = normaliseRelation(
     character.race,
@@ -399,11 +422,21 @@ export function Profile({
                       characterId={character.id!}
                     />
                   </div>
-                 <div className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 sm:col-span-2 lg:col-span-2">
+                 <div className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 sm:col-span-2 lg:col-span-1">
                    
                   {own && character.id ? (
               <CharacterRemnantsWallet characterId={character.id} />
             ) : null} </div>
+                  {own ? (
+                    <div className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 sm:col-span-2 lg:col-span-1">
+                      <p className="text-[7px] uppercase tracking-[0.19em] text-[rgb(var(--sep-colour-796448))]">
+                        In Sepulchria since
+                      </p>
+                      <p className="mt-1 break-words text-[11px] leading-5 text-[rgb(var(--sep-colour-cab89b))]">
+                        {formatSepulchriaSince(sepulchriaSince)}
+                      </p>
+                    </div>
+                  ) : null}
                 </div>
 
               </div>
