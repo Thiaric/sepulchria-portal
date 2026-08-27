@@ -3934,7 +3934,7 @@ function AreaContext({
       />
 
       <p className="mb-4 text-xs leading-6 text-[rgb(var(--sep-colour-938673))]">
-        Jump directly to a
+        Journey to a
         location in this area.
       </p>
 
