@@ -11,6 +11,7 @@ import { createClient } from "@/lib/supabase/client";
 import { TicketContextPanel } from "@/components/support/ticket-context-panel";
 import { SanctionContextPanel } from "@/components/sanctions/sanction-context-panel";
 import { CraftingRecipesContextPanel } from "@/components/admin/crafting-recipes-context-panel";
+import { CharacterAuditContextPanel } from "@/components/admin/character-audit-context-panel";
 import { HouseOfChancesContextPanel } from "@/components/admin/house-of-chances-context-panel";
 import {
   canAccessAdminSection,
@@ -38,6 +39,7 @@ type ContextMode =
   | "shapes"
   | "users"
   | "characters"
+  | "character_audit"
   | "character_detail"
   | "codex"
   | "media"
@@ -105,6 +107,10 @@ function getMode(
     "/admin/characters"
   ) {
     return "characters";
+  }
+
+  if (pathname === "/admin/character-audit") {
+    return "character_audit";
   }
 
   if (pathname === "/admin/codex") {
@@ -199,6 +205,12 @@ export function AdminContextPanel({
   if (mode === "world") {
     return (
       <AdminWorldGuideContext />
+    );
+  }
+
+  if (mode === "character_audit") {
+    return (
+      <CharacterAuditContextPanel />
     );
   }
 

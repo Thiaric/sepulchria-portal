@@ -86,6 +86,123 @@ function pretty(value: unknown) {
   return JSON.stringify(value, null, 2);
 }
 
+const TECHNICAL_AUDIT_FIELDS = new Set([
+  "id",
+  "user_id",
+  "actor_user_id",
+  "character_id",
+  "created_at",
+  "updated_at",
+  "source_id",
+  "source_type",
+  "transaction_type",
+]);
+
+function humanAuditLabel(value: string) {
+  return value
+    .replaceAll("_", " ")
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function auditDisplayValue(value: unknown): string {
+  if (value === null || value === undefined || value === "") return "—";
+  if (typeof value === "boolean") return value ? "Yes" : "No";
+  if (typeof value === "number") {
+    return new Intl.NumberFormat("en-GB").format(value);
+  }
+  if (typeof value === "string") return value.replaceAll("_", " ");
+  if (Array.isArray(value)) return value.map(auditDisplayValue).join(", ");
+  return JSON.stringify(value);
+}
+
+function meaningfulAuditEntries(value: Record<string, unknown> | null) {
+  if (!value) return [];
+
+  return Object.entries(value).filter(
+    ([key, entryValue]) =>
+      !TECHNICAL_AUDIT_FIELDS.has(key) &&
+      entryValue !== null &&
+      entryValue !== undefined &&
+      entryValue !== "",
+  );
+}
+
+function auditSummary(row: AuditRow) {
+  const before = row.old_values ?? {};
+  const after = row.new_values ?? {};
+
+  if (
+    row.entity_type === "remnant_ledger" ||
+    ("amount" in after && "balance_after" in after)
+  ) {
+    const amount = Number(after.amount ?? 0);
+    const reason = String(after.reason ?? "Remnant movement");
+    const balance = Number(after.balance_after ?? 0);
+
+    const movement =
+      amount < 0
+        ? `${Math.abs(amount)} Remnants spent`
+        : amount > 0
+          ? `${amount} Remnants received`
+          : "Remnant balance recorded";
+
+    return `${movement} · ${reason} · Balance after: ${new Intl.NumberFormat(
+      "en-GB",
+    ).format(balance)} R`;
+  }
+
+  if (row.operation === "update" && row.changed_fields?.length) {
+    const fields = row.changed_fields
+      .filter((field) => field !== "updated_at")
+      .slice(0, 4)
+      .map(
+        (field) =>
+          `${humanAuditLabel(field)}: ${auditDisplayValue(
+            before[field],
+          )} → ${auditDisplayValue(after[field])}`,
+      );
+
+    if (fields.length) return fields.join(" · ");
+  }
+
+  const source = row.operation === "delete" ? before : after;
+  const entries = meaningfulAuditEntries(source).slice(0, 4);
+
+  if (entries.length) {
+    return entries
+      .map(
+        ([key, value]) =>
+          `${humanAuditLabel(key)}: ${auditDisplayValue(value)}`,
+      )
+      .join(" · ");
+  }
+
+  return humanAuditLabel(row.event_type);
+}
+
+function auditChangeRows(row: AuditRow) {
+  const before = row.old_values ?? {};
+  const after = row.new_values ?? {};
+
+  if (row.operation === "update") {
+    return (row.changed_fields ?? [])
+      .filter((field) => field !== "updated_at")
+      .map((field) => ({
+        field,
+        before: before[field],
+        after: after[field],
+      }));
+  }
+
+  const source = row.operation === "delete" ? before : after;
+
+  return meaningfulAuditEntries(source).map(([field, value]) => ({
+    field,
+    before: row.operation === "delete" ? value : null,
+    after: row.operation === "delete" ? null : value,
+  }));
+}
+
 function startOfDay(value: string | undefined) {
   return value
     ? `${value}T00:00:00.000Z`
@@ -512,102 +629,165 @@ export default async function CharacterAuditPage({
               No audit records match these filters.
             </div>
           ) : (
-            rows.map((row) => (
-              <article
-                key={row.id}
-                id={`character-audit-${row.id}`}
-                className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4"
-              >
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-96774f))]">
-                      {row.event_type.replaceAll("_", " ")}
-                    </p>
+            rows.map((row) => {
+              const summary = auditSummary(row);
+              const changes = auditChangeRows(row);
+              const characterLabel =
+                row.character_name_snapshot ?? "Account / unlinked event";
+              const actorLabel = row.actor_label ?? row.actor_type;
+              const dateLabel = formatDateTime(row.created_at);
 
-                    <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
-                      {row.character_name_snapshot ?? "Account / unlinked event"}
-                    </h2>
-
-                    <p className="mt-1 text-[9px] text-[rgb(var(--sep-colour-817567))]">
-                      {row.entity_type}
-                      {row.entity_id ? ` · ${row.entity_id}` : ""}
-                    </p>
-                  </div>
-
-                  <div className="text-right">
-                    <p className="text-[9px] text-[rgb(var(--sep-colour-b49d7b))]">
-                      {formatDateTime(row.created_at)}
-                    </p>
-                    <p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
-                      {row.source}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-3 grid gap-2 md:grid-cols-3">
-                  <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3">
-                    <p className="text-[7px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-756958))]">
-                      Actor
-                    </p>
-                    <p className="mt-1 text-[10px] text-[rgb(var(--sep-colour-b8a488))]">
-                      {row.actor_label ?? row.actor_type}
-                    </p>
-                    <p className="mt-1 text-[8px] text-[rgb(var(--sep-colour-6f6456))]">
-                      {row.actor_type}
-                      {row.actor_staff_role ? ` · ${row.actor_staff_role}` : ""}
-                    </p>
-                  </div>
-
-                  <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3 md:col-span-2">
-                    <p className="text-[7px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-756958))]">
-                      Changed fields
-                    </p>
-                    <p className="mt-1 break-words text-[10px] text-[rgb(var(--sep-colour-b8a488))]">
-                      {row.changed_fields?.length
-                        ? row.changed_fields.join(", ")
-                        : "Event record"}
-                    </p>
-                  </div>
-                </div>
-
-                <details className="mt-3 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))]">
-                  <summary className="cursor-pointer px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-a98d65))]">
-                    Full before / after details
-                  </summary>
-
-                  <div className="grid gap-3 border-t border-[rgb(var(--sep-colour-59432c))]/30 p-3 lg:grid-cols-2">
-                    <div>
-                      <p className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
-                        Before
+              return (
+                <article
+                  key={row.id}
+                  id={`character-audit-${row.id}`}
+                  data-character-audit-id={row.id}
+                  data-character-audit-character={characterLabel}
+                  data-character-audit-event={humanAuditLabel(row.event_type)}
+                  data-character-audit-actor={actorLabel}
+                  data-character-audit-source={row.source}
+                  data-character-audit-date={dateLabel}
+                  data-character-audit-summary={summary}
+                  className="scroll-mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4"
+                >
+                  <div className="flex flex-wrap items-start justify-between gap-4">
+                    <div className="min-w-0">
+                      <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-96774f))]">
+                        {humanAuditLabel(row.event_type)}
                       </p>
-                      <pre className="mt-2 max-h-80 overflow-auto whitespace-pre-wrap break-words text-[9px] leading-5 text-[rgb(var(--sep-colour-9f8d73))]">
-                        {pretty(row.old_values)}
-                      </pre>
+                      <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-d8bf91))]">
+                        {characterLabel}
+                      </h2>
                     </div>
 
-                    <div>
-                      <p className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
-                        After
+                    <div className="shrink-0 text-right">
+                      <p className="text-[9px] text-[rgb(var(--sep-colour-b49d7b))]">
+                        {dateLabel}
                       </p>
-                      <pre className="mt-2 max-h-80 overflow-auto whitespace-pre-wrap break-words text-[9px] leading-5 text-[rgb(var(--sep-colour-9f8d73))]">
-                        {pretty(row.new_values)}
-                      </pre>
+                      <p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
+                        {humanAuditLabel(row.operation)} ·{" "}
+                        {humanAuditLabel(row.entity_type)}
+                      </p>
                     </div>
                   </div>
 
-                  {Object.keys(row.metadata ?? {}).length ? (
-                    <div className="border-t border-[rgb(var(--sep-colour-59432c))]/30 p-3">
-                      <p className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
-                        Metadata
-                      </p>
-                      <pre className="mt-2 overflow-auto whitespace-pre-wrap break-words text-[9px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
-                        {pretty(row.metadata)}
-                      </pre>
+                  <div className="mt-4 border-l-2 border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-100c09))] px-4 py-3">
+                    <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))]">
+                      What happened
+                    </p>
+                    <p className="mt-1.5 text-[11px] leading-5 text-[rgb(var(--sep-colour-d4bea0))]">
+                      {summary}
+                    </p>
+                  </div>
+
+                  {changes.length ? (
+                    <div className="mt-3 overflow-hidden border border-[rgb(var(--sep-colour-59432c))]/35">
+                      <div className="grid grid-cols-[minmax(140px,0.65fr)_minmax(0,1fr)_24px_minmax(0,1fr)] gap-2 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
+                        <span>Field</span>
+                        <span>Before</span>
+                        <span />
+                        <span>After</span>
+                      </div>
+
+                      <div className="divide-y divide-[rgb(var(--sep-colour-59432c))]/25">
+                        {changes.map((change) => (
+                          <div
+                            key={change.field}
+                            className="grid grid-cols-[minmax(140px,0.65fr)_minmax(0,1fr)_24px_minmax(0,1fr)] gap-2 px-3 py-2.5 text-[9px]"
+                          >
+                            <span className="font-medium text-[rgb(var(--sep-colour-bfa77f))]">
+                              {humanAuditLabel(change.field)}
+                            </span>
+                            <span className="break-words text-[rgb(var(--sep-colour-8f8271))]">
+                              {auditDisplayValue(change.before)}
+                            </span>
+                            <span className="text-center text-[rgb(var(--sep-colour-6f6252))]">
+                              →
+                            </span>
+                            <span className="break-words text-[rgb(var(--sep-colour-cdb58d))]">
+                              {auditDisplayValue(change.after)}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   ) : null}
-                </details>
-              </article>
-            ))
+
+                  <div className="mt-3 grid gap-2 sm:grid-cols-3">
+                    <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3">
+                      <p className="text-[7px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-756958))]">
+                        Actor
+                      </p>
+                      <p className="mt-1 text-[10px] text-[rgb(var(--sep-colour-b8a488))]">
+                        {actorLabel}
+                      </p>
+                    </div>
+
+                    <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3">
+                      <p className="text-[7px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-756958))]">
+                        Source
+                      </p>
+                      <p className="mt-1 text-[10px] text-[rgb(var(--sep-colour-b8a488))]">
+                        {humanAuditLabel(row.source)}
+                      </p>
+                    </div>
+
+                    <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3">
+                      <p className="text-[7px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-756958))]">
+                        Record type
+                      </p>
+                      <p className="mt-1 text-[10px] text-[rgb(var(--sep-colour-b8a488))]">
+                        {humanAuditLabel(row.entity_type)}
+                      </p>
+                    </div>
+                  </div>
+
+                  <details className="mt-3 border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]">
+                    <summary className="cursor-pointer px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-a98d65))]">
+                      Technical details
+                    </summary>
+
+                    <div className="border-t border-[rgb(var(--sep-colour-59432c))]/25 p-3">
+                      <div className="grid gap-2 text-[8px] sm:grid-cols-2">
+                        <p>Audit ID: {row.id}</p>
+                        <p>Entity ID: {row.entity_id ?? "—"}</p>
+                      </div>
+
+                      <div className="mt-3 grid gap-3 lg:grid-cols-2">
+                        <div>
+                          <p className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
+                            Raw before
+                          </p>
+                          <pre className="mt-2 max-h-64 overflow-auto whitespace-pre-wrap break-words text-[8px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+                            {pretty(row.old_values)}
+                          </pre>
+                        </div>
+
+                        <div>
+                          <p className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
+                            Raw after
+                          </p>
+                          <pre className="mt-2 max-h-64 overflow-auto whitespace-pre-wrap break-words text-[8px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+                            {pretty(row.new_values)}
+                          </pre>
+                        </div>
+                      </div>
+
+                      {Object.keys(row.metadata ?? {}).length ? (
+                        <div className="mt-3 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-3">
+                          <p className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
+                            Raw metadata
+                          </p>
+                          <pre className="mt-2 max-h-64 overflow-auto whitespace-pre-wrap break-words text-[8px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+                            {pretty(row.metadata)}
+                          </pre>
+                        </div>
+                      ) : null}
+                    </div>
+                  </details>
+                </article>
+              );
+            })
           )}
         </div>
       </div>
