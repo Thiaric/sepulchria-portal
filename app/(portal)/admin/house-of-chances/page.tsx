@@ -390,7 +390,23 @@ export default async function AdminHouseOfChancesPage() {
             const ruleRewards = rewards.filter((reward) => reward.rule_id === rule.id);
 
             return (
-              <section key={rule.id} id={`house-of-chances-rule-${rule.id}`} className="scroll-mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6">
+              <section
+                key={rule.id}
+                id={`house-of-chances-rule-${rule.id}`}
+                data-house-rule-id={rule.id}
+                data-house-rule-name={rule.name}
+                data-house-rule-match-type={rule.match_type}
+                data-house-rule-priority={rule.priority}
+                data-house-rule-roll-1-min={rule.roll_1_min ?? ""}
+                data-house-rule-roll-1-max={rule.roll_1_max ?? ""}
+                data-house-rule-roll-2-min={rule.roll_2_min ?? ""}
+                data-house-rule-roll-2-max={rule.roll_2_max ?? ""}
+                data-house-rule-roll-3-min={rule.roll_3_min ?? ""}
+                data-house-rule-roll-3-max={rule.roll_3_max ?? ""}
+                data-house-rule-total-min={rule.total_min ?? ""}
+                data-house-rule-total-max={rule.total_max ?? ""}
+                className="scroll-mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6"
+              >
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
                     <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">Priority {rule.priority}</p>
@@ -488,7 +504,18 @@ export default async function AdminHouseOfChancesPage() {
 
           <div className="max-h-[520px] overflow-y-auto">
             {plays.length ? plays.map((play) => (
-              <div key={play.id} className="grid gap-2 border-b border-[rgb(var(--sep-colour-59432c))]/25 px-4 py-3 last:border-b-0 md:grid-cols-[minmax(180px,1fr)_150px_120px_minmax(150px,1fr)_150px] md:items-center">
+              <div
+                key={play.id}
+                id={`house-of-chances-play-${play.id}`}
+                data-house-play-id={play.id}
+                data-house-play-character={characterName(play)}
+                data-house-play-rule={play.matched_rule_name ?? "No winnings"}
+                data-house-play-date={new Date(play.created_at).toLocaleString("en-GB")}
+                data-house-play-roll-1={play.roll_1}
+                data-house-play-roll-2={play.roll_2}
+                data-house-play-roll-3={play.roll_3}
+                className="scroll-mt-6 grid gap-2 border-b border-[rgb(var(--sep-colour-59432c))]/25 px-4 py-3 last:border-b-0 md:grid-cols-[minmax(180px,1fr)_150px_120px_minmax(150px,1fr)_150px] md:items-center"
+              >
                 <span className="text-[10px] text-[rgb(var(--sep-colour-c3ad89))]">{characterName(play)}</span>
                 <span className="font-serif text-sm text-[rgb(var(--sep-colour-dfc99f))]">{play.roll_1} / {play.roll_2} / {play.roll_3}</span>
                 <span className="text-[9px] text-[rgb(var(--sep-colour-a99578))]">Cost {formatRemnants(play.cost_paid)}</span>

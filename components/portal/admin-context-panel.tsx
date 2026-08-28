@@ -11,6 +11,7 @@ import { createClient } from "@/lib/supabase/client";
 import { TicketContextPanel } from "@/components/support/ticket-context-panel";
 import { SanctionContextPanel } from "@/components/sanctions/sanction-context-panel";
 import { CraftingRecipesContextPanel } from "@/components/admin/crafting-recipes-context-panel";
+import { HouseOfChancesContextPanel } from "@/components/admin/house-of-chances-context-panel";
 import {
   canAccessAdminSection,
   type AdminSection,
@@ -32,6 +33,7 @@ type ContextMode =
   | "associations"
   | "gifts"
   | "items"
+  | "house_of_chances"
   | "crafting_recipes"
   | "shapes"
   | "users"
@@ -77,6 +79,10 @@ function getMode(
 
   if (pathname === "/admin/items") {
     return "items";
+  }
+
+  if (pathname === "/admin/house-of-chances") {
+    return "house_of_chances";
   }
 
   if (
@@ -163,6 +169,12 @@ export function AdminContextPanel({
   if (mode === "overview") {
     return (
       <AdminNavigationContext />
+    );
+  }
+
+  if (mode === "house_of_chances") {
+    return (
+      <HouseOfChancesContextPanel />
     );
   }
 
@@ -993,6 +1005,7 @@ const ADMIN_NAVIGATION_ENTRIES: AdminNavigationEntry[] = [
   { section: "expertise", label: "Expertise", href: "/admin/expertise" },
   { section: "gifts", label: "Feats", href: "/admin/gifts", aliases: ["gifts"] },
   { section: "forum", label: "Forum", href: "/admin/forum" },
+  { section: "house_of_chances", label: "House of Chances", href: "/admin/house-of-chances", aliases: ["chances", "gambling", "fortune"] },
   { section: "items", label: "Items", href: "/admin/items" },
   { section: "items", label: "Item Vault", href: "/admin/items/vault", aliases: ["vault"] },
   { section: "jobs", label: "Jobs", href: "/admin/jobs" },

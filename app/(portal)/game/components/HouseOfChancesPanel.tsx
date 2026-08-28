@@ -8,6 +8,7 @@ import {
   type HouseOfChancesPlayResult,
 } from "../house-of-chances-actions";
 import { formatRemnants } from "@/lib/economy/currency";
+import { usePortalSkin } from "@/components/portal/portal-skin-provider";
 
 export type HouseOfChancesStateRow = {
   is_open: boolean;
@@ -20,6 +21,25 @@ export type HouseOfChancesStateRow = {
 };
 
 type ReelValues = [number | null, number | null, number | null];
+
+const HOUSE_SKIN_ACCENTS: Record<string, string> = {
+  sepulchria: "#b68b4f",
+  vellum: "#5d4930",
+  starfall: "#758fd6",
+  "rose-nocturne": "#b36d8b",
+  "verdant-reliquary": "#4f9c70",
+  "amethyst-veil": "#9b6ac4",
+  moonlit: "#b58a4c",
+  emberforge: "#c7773d",
+  deepwater: "#4f969d",
+  "blood-court": "#9d3744",
+  ashen: "#9fd4ef",
+  "ivory-archive": "#d1c6ad",
+  "aelari-dawn": "#e7d9a8",
+  "dwarven-deep": "#b37945",
+  "mortal-hearth": "#aaa79d",
+  "wolfs-moon": "#9aaeb7",
+};
 
 function sleep(ms: number) {
   return new Promise((resolve) => window.setTimeout(resolve, ms));
@@ -45,6 +65,9 @@ export function HouseOfChancesPanel({
   state: HouseOfChancesStateRow;
 }) {
   const router = useRouter();
+  const { skin } = usePortalSkin();
+  const skinAccent =
+    HOUSE_SKIN_ACCENTS[skin] ?? HOUSE_SKIN_ACCENTS.sepulchria;
   const [pending, startTransition] = useTransition();
   const [spinning, setSpinning] = useState(false);
   const [reels, setReels] = useState<ReelValues>([null, null, null]);
@@ -149,7 +172,7 @@ export function HouseOfChancesPanel({
       <div className="border-t border-[rgb(var(--sep-colour-59432c))]/30 px-3 py-4">
         {!state.is_open ? (
           <p className="mb-3 border border-[rgb(var(--sep-colour-734238))]/45 bg-[rgb(var(--sep-colour-21130f))] px-3 py-2 text-[9px] text-[rgb(var(--sep-colour-cf766b))]">
-            The tables are presently closed.
+            The tables are presently closed. Come back later.
           </p>
         ) : null}
 
@@ -164,13 +187,21 @@ export function HouseOfChancesPanel({
                 key={index}
                 className={[
                   "relative flex aspect-[5/4] items-center justify-center overflow-hidden",
-                  "border border-[rgb(var(--sep-colour-987344))]",
-                  "bg-[radial-gradient(circle_at_center,rgb(var(--sep-colour-2b2117)),rgb(var(--sep-colour-100c09))_72%)]",
-                  "shadow-[inset_0_0_18px_rgba(196,150,82,0.16),0_0_10px_rgba(0,0,0,0.35)]",
+                  "border bg-[rgb(var(--sep-colour-100c09))]",
                   spinning ? "animate-pulse" : "",
                 ].join(" ")}
+                style={{
+                  borderColor: skinAccent,
+                  backgroundImage: `radial-gradient(circle at center, color-mix(in srgb, ${skinAccent} 18%, transparent), transparent 72%)`,
+                  boxShadow: `inset 0 0 24px color-mix(in srgb, ${skinAccent} 24%, transparent), 0 0 10px rgba(0,0,0,0.35)`,
+                }}
               >
-                <div className="pointer-events-none absolute inset-[3px] border border-[rgb(var(--sep-colour-987344))]/35" />
+                <div
+                  className="pointer-events-none absolute inset-[3px] border"
+                  style={{
+                    borderColor: `color-mix(in srgb, ${skinAccent} 38%, transparent)`,
+                  }}
+                />
                 <span className="font-serif text-3xl tabular-nums text-[rgb(var(--sep-colour-efd6a8))] sm:text-4xl">
                   {value ?? "?"}
                 </span>
@@ -209,7 +240,10 @@ export function HouseOfChancesPanel({
           ) : null}
 
           {result ? (
-            <div className="mt-4 border border-[rgb(var(--sep-colour-6f5435))]/55 bg-[rgb(var(--sep-colour-17110d))] p-3 text-center">
+            <div
+              className="mt-4 border bg-[rgb(var(--sep-colour-17110d))] p-3 text-center"
+              style={{ borderColor: skinAccent }}
+            >
               <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
                 Result
               </p>
