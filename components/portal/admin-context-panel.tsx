@@ -11,6 +11,11 @@ import { createClient } from "@/lib/supabase/client";
 import { TicketContextPanel } from "@/components/support/ticket-context-panel";
 import { SanctionContextPanel } from "@/components/sanctions/sanction-context-panel";
 import { CraftingRecipesContextPanel } from "@/components/admin/crafting-recipes-context-panel";
+import {
+  canAccessAdminSection,
+  type AdminSection,
+  type StaffRole,
+} from "@/lib/auth/admin-section-access";
 
 type JumpEntry = {
   id: string;
@@ -20,6 +25,7 @@ type JumpEntry = {
 };
 
 type ContextMode =
+  | "overview"
   | "areas"
   | "rooms"
   | "races"
@@ -31,6 +37,10 @@ type ContextMode =
   | "users"
   | "characters"
   | "character_detail"
+  | "codex"
+  | "media"
+  | "registrations"
+  | "world"
   | "tickets"
   | "sanctions"
   | "forum";
@@ -38,6 +48,10 @@ type ContextMode =
 function getMode(
   pathname: string,
 ): ContextMode | null {
+  if (pathname === "/admin") {
+    return "overview";
+  }
+
   if (pathname === "/admin/areas") {
     return "areas";
   }
@@ -87,6 +101,22 @@ function getMode(
     return "characters";
   }
 
+  if (pathname === "/admin/codex") {
+    return "codex";
+  }
+
+  if (pathname === "/admin/media") {
+    return "media";
+  }
+
+  if (pathname === "/admin/registrations") {
+    return "registrations";
+  }
+
+  if (pathname === "/admin/world") {
+    return "world";
+  }
+
   if (
     /^\/admin\/characters\/[0-9a-f-]+$/i.test(
       pathname,
@@ -128,6 +158,36 @@ export function AdminContextPanel({
 
   if (!mode) {
     return null;
+  }
+
+  if (mode === "overview") {
+    return (
+      <AdminNavigationContext />
+    );
+  }
+
+  if (mode === "codex") {
+    return (
+      <AdminCodexNavigatorContext />
+    );
+  }
+
+  if (mode === "media") {
+    return (
+      <AdminMediaNavigatorContext />
+    );
+  }
+
+  if (mode === "registrations") {
+    return (
+      <AdminRegistrationsNavigatorContext />
+    );
+  }
+
+  if (mode === "world") {
+    return (
+      <AdminWorldGuideContext />
+    );
   }
 
   if (mode === "character_detail") {
@@ -180,41 +240,966 @@ export function AdminContextPanel({
   );
 }
 
+
+
+
+
+
+function AdminWorldGuideContext() {
+  return (
+    <div className="flex h-full min-h-0 flex-col">
+      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+        World administration
+      </p>
+
+      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+        World Control Guide
+      </h2>
+
+      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+        Use this page to control Sepulchria&apos;s game time, weather and temperature.
+      </p>
+
+      <div className="mt-4 min-h-0 flex-1 space-y-3 overflow-y-auto pr-1">
+        <section className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] p-3">
+          <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a88658))]">
+            Normal play
+          </p>
+          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-b8aa96))]">
+            Leave Time, Weather and Temperature on <strong className="font-normal text-[rgb(var(--sep-colour-e0c89d))]">Automatic</strong>.
+            The world will manage itself.
+          </p>
+        </section>
+
+        <section className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] p-3">
+          <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a88658))]">
+            Time
+          </p>
+          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-b8aa96))]">
+            <strong className="font-normal text-[rgb(var(--sep-colour-e0c89d))]">Automatic time ON</strong> keeps time moving.
+            The Time Scale controls speed: 1× is normal, higher values are faster, and Paused stops game time.
+          </p>
+        </section>
+
+        <section className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] p-3">
+          <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a88658))]">
+            Temporary weather
+          </p>
+          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-b8aa96))]">
+            For an event, keep <strong className="font-normal text-[rgb(var(--sep-colour-e0c89d))]">Automatic weather ON</strong>,
+            choose the weather and intensity, then choose how many <strong className="font-normal text-[rgb(var(--sep-colour-e0c89d))]">game hours</strong> it should last.
+          </p>
+          <p className="mt-2 text-[9px] leading-4 text-[rgb(var(--sep-colour-817565))]">
+            Example: Storm + Heavy + 6 game hours.
+          </p>
+        </section>
+
+        <section className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] p-3">
+          <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a88658))]">
+            Temporary temperature
+          </p>
+          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-b8aa96))]">
+            Keep <strong className="font-normal text-[rgb(var(--sep-colour-e0c89d))]">Automatic temperature ON</strong>,
+            enter the temperature, then choose how many game hours it should last.
+          </p>
+          <p className="mt-2 text-[9px] leading-4 text-[rgb(var(--sep-colour-817565))]">
+            Example: -5°C for 3 game hours.
+          </p>
+        </section>
+
+        <section className="border border-[rgb(var(--sep-colour-79513f))]/50 bg-[rgb(var(--sep-colour-21130f))] p-3">
+          <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-c29a75))]">
+            Restore previous climate
+          </p>
+          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-b8aa96))]">
+            Use this to end a temporary climate event early.
+            It restores the exact weather and temperature that existed before the override.
+          </p>
+        </section>
+
+        <section className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] p-3">
+          <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a88658))]">
+            Manual control
+          </p>
+          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-b8aa96))]">
+            Turn an Automatic option <strong className="font-normal text-[rgb(var(--sep-colour-e0c89d))]">OFF</strong> only when staff want to control that setting indefinitely.
+          </p>
+        </section>
+
+        <section className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] p-3">
+          <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a88658))]">
+            Automatic information
+          </p>
+          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-b8aa96))]">
+            Moon phase, Season and the Aureth date are calculated from game time.
+            Staff do not need to set them separately.
+          </p>
+        </section>
+
+        <section className="border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-17110d))] p-3">
+          <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-d0ad78))]">
+            Simple rule
+          </p>
+          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-d4c09f))]">
+            Normal day: leave everything Automatic.
+            Event: use a timed override.
+            End it early: Restore previous climate.
+          </p>
+        </section>
+      </div>
+    </div>
+  );
+}
+
+type AdminRegistrationContextEntry = {
+  id: string;
+  name: string;
+  email: string;
+  status: string;
+};
+
+function AdminRegistrationsNavigatorContext() {
+  const [entries, setEntries] =
+    useState<AdminRegistrationContextEntry[]>([]);
+  const [search, setSearch] =
+    useState("");
+
+  useEffect(() => {
+    const readEntries = () => {
+      const nodes = Array.from(
+        document.querySelectorAll<HTMLDetailsElement>(
+          "details[data-registration-id]",
+        ),
+      );
+
+      setEntries(
+        nodes.map((node) => ({
+          id:
+            node.dataset.registrationId ??
+            "",
+          name:
+            node.dataset.registrationName ??
+            "",
+          email:
+            node.dataset.registrationEmail ??
+            "",
+          status:
+            node.dataset.registrationStatus ??
+            "",
+        })),
+      );
+    };
+
+    readEntries();
+
+    const frame =
+      window.requestAnimationFrame(
+        readEntries,
+      );
+
+    return () => {
+      window.cancelAnimationFrame(
+        frame,
+      );
+    };
+  }, []);
+
+  const query =
+    search
+      .trim()
+      .toLocaleLowerCase();
+
+  const visibleEntries =
+    entries.filter((entry) => {
+      if (!query) {
+        return true;
+      }
+
+      return `${entry.name} ${entry.email}`
+        .toLocaleLowerCase()
+        .includes(query);
+    });
+
+  function jumpToRegistration(
+    id: string,
+  ) {
+    const target =
+      document.getElementById(
+        `registration-application-${id}`,
+      );
+
+    if (
+      target instanceof
+      HTMLDetailsElement
+    ) {
+      target.open = true;
+    }
+
+    if (!target) return;
+
+    target.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
+    const oldOutline =
+      target.style.outline;
+    const oldOffset =
+      target.style.outlineOffset;
+
+    target.style.outline =
+      "1px solid rgb(var(--sep-colour-8d6d3e))";
+    target.style.outlineOffset =
+      "3px";
+
+    window.setTimeout(() => {
+      target.style.outline =
+        oldOutline;
+      target.style.outlineOffset =
+        oldOffset;
+    }, 1200);
+  }
+
+  return (
+    <div className="flex h-full min-h-0 flex-col">
+      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+        Registration administration
+      </p>
+
+      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+        Jump to Registration
+      </h2>
+
+      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+        Search applications by applicant name or email address.
+      </p>
+
+      <input
+        type="search"
+        value={search}
+        onChange={(event) =>
+          setSearch(
+            event.target.value,
+          )
+        }
+        placeholder="Search name or email..."
+        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))]"
+      />
+
+      <p className="mb-2 mt-4 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))]">
+        Applications - {visibleEntries.length}
+        {query
+          ? ` / ${entries.length}`
+          : ""}
+      </p>
+
+      <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">
+        {visibleEntries.length ? (
+          visibleEntries.map(
+            (entry) => (
+              <button
+                key={entry.id}
+                type="button"
+                onClick={() =>
+                  jumpToRegistration(
+                    entry.id,
+                  )
+                }
+                className="group flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))]"
+              >
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
+                    {entry.name}
+                  </span>
+
+                  <span className="mt-0.5 block truncate text-[9px] text-[rgb(var(--sep-colour-817565))]">
+                    {entry.email}
+                  </span>
+
+                  <span className="mt-1 block text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-6f6252))]">
+                    {entry.status}
+                  </span>
+                </span>
+
+                <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))]">
+                  →
+                </span>
+              </button>
+            ),
+          )
+        ) : (
+          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))]">
+            No matching registrations.
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+type AdminMediaContextEntry = {
+  repositoryPath: string;
+  publicPath: string;
+  previewUrl: string;
+};
+
+function adminMediaAnchorId(
+  repositoryPath: string,
+): string {
+  return `admin-media-${encodeURIComponent(
+    repositoryPath,
+  ).replace(/%/g, "_")}`;
+}
+
+function AdminMediaNavigatorContext() {
+  const [entries, setEntries] =
+    useState<AdminMediaContextEntry[]>([]);
+  const [search, setSearch] =
+    useState("");
+  const [loading, setLoading] =
+    useState(true);
+  const [error, setError] =
+    useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadMedia() {
+      try {
+        const response = await fetch(
+          "/api/admin/media",
+          {
+            cache: "no-store",
+          },
+        );
+
+        const data =
+          (await response.json()) as {
+            images?: AdminMediaContextEntry[];
+            error?: string;
+          };
+
+        if (cancelled) return;
+
+        if (!response.ok) {
+          setError(
+            data.error ??
+              "Unable to load media.",
+          );
+          setLoading(false);
+          return;
+        }
+
+        setEntries(
+          data.images ?? [],
+        );
+        setError(null);
+        setLoading(false);
+      } catch (caught) {
+        if (cancelled) return;
+
+        setError(
+          caught instanceof Error
+            ? caught.message
+            : "Unable to load media.",
+        );
+        setLoading(false);
+      }
+    }
+
+    void loadMedia();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const query =
+    search
+      .trim()
+      .toLocaleLowerCase();
+
+  const visibleEntries =
+    entries.filter((entry) => {
+      if (!query) {
+        return true;
+      }
+
+      return [
+        entry.publicPath,
+        entry.repositoryPath,
+        entry.previewUrl,
+      ]
+        .join(" ")
+        .toLocaleLowerCase()
+        .includes(query);
+    });
+
+  function jumpToMedia(
+    repositoryPath: string,
+  ) {
+    const target =
+      document.getElementById(
+        adminMediaAnchorId(
+          repositoryPath,
+        ),
+      );
+
+    if (!target) return;
+
+    target.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
+    const oldOutline =
+      target.style.outline;
+    const oldOffset =
+      target.style.outlineOffset;
+
+    target.style.outline =
+      "1px solid rgb(var(--sep-colour-8d6d3e))";
+    target.style.outlineOffset =
+      "3px";
+
+    window.setTimeout(() => {
+      target.style.outline =
+        oldOutline;
+      target.style.outlineOffset =
+        oldOffset;
+    }, 1200);
+  }
+
+  return (
+    <div className="flex h-full min-h-0 flex-col">
+      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+        Media administration
+      </p>
+
+      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+        Jump to Media
+      </h2>
+
+      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+        Search any part of an image URL or path and jump directly to that media item.
+      </p>
+
+      <input
+        type="search"
+        value={search}
+        onChange={(event) =>
+          setSearch(
+            event.target.value,
+          )
+        }
+        placeholder="Search media URL..."
+        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))]"
+      />
+
+      <p className="mb-2 mt-4 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))]">
+        Media - {visibleEntries.length}
+        {query
+          ? ` / ${entries.length}`
+          : ""}
+      </p>
+
+      <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">
+        {loading ? (
+          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))]">
+            Loading media...
+          </p>
+        ) : error ? (
+          <p className="text-xs leading-5 text-[rgb(var(--sep-colour-c58d82))]">
+            Unable to load media.
+          </p>
+        ) : visibleEntries.length ? (
+          visibleEntries.map(
+            (entry) => (
+              <button
+                key={
+                  entry.repositoryPath
+                }
+                type="button"
+                onClick={() =>
+                  jumpToMedia(
+                    entry.repositoryPath,
+                  )
+                }
+                className="group flex w-full items-center gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] p-2 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))]"
+              >
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-090705))]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={
+                      entry.previewUrl
+                    }
+                    alt=""
+                    loading="lazy"
+                    className="max-h-full max-w-full object-contain"
+                  />
+                </span>
+
+                <span className="min-w-0 flex-1">
+                  <code className="block break-all text-[9px] leading-4 text-[rgb(var(--sep-colour-cbb28a))] group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
+                    {entry.publicPath}
+                  </code>
+                </span>
+
+                <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))]">
+                  →
+                </span>
+              </button>
+            ),
+          )
+        ) : (
+          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))]">
+            No matching media.
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+type AdminCodexContextEntry = {
+  id: string;
+  title: string;
+  chapterNumber: number | null;
+  body: string;
+  status: string;
+};
+
+function normaliseCodexSearchText(value: string): string {
+  return value
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLocaleLowerCase();
+}
+
+function AdminCodexNavigatorContext() {
+  const [entries, setEntries] =
+    useState<AdminCodexContextEntry[]>([]);
+  const [search, setSearch] =
+    useState("");
+  const [loading, setLoading] =
+    useState(true);
+  const [error, setError] =
+    useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadChapters() {
+      const supabase = createClient();
+
+      const {
+        data,
+        error: loadError,
+      } = await supabase
+        .from("codex_chapters")
+        .select(
+          "id, title, chapter_number, body, status, sort_order",
+        )
+        .order("sort_order", {
+          ascending: true,
+        })
+        .order("chapter_number", {
+          ascending: true,
+        });
+
+      if (cancelled) return;
+
+      if (loadError) {
+        setError(loadError.message);
+        setLoading(false);
+        return;
+      }
+
+      setEntries(
+        (data ?? []).map((row) => ({
+          id: String(row.id),
+          title: String(
+            row.title ?? "Untitled chapter",
+          ),
+          chapterNumber:
+            row.chapter_number === null
+              ? null
+              : Number(row.chapter_number),
+          body: String(row.body ?? ""),
+          status: String(
+            row.status ?? "draft",
+          ),
+        })),
+      );
+
+      setError(null);
+      setLoading(false);
+    }
+
+    void loadChapters();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const query =
+    normaliseCodexSearchText(search);
+
+  const visibleEntries =
+    entries.filter((entry) => {
+      if (!query) {
+        return true;
+      }
+
+      const searchable =
+        normaliseCodexSearchText(
+          `${entry.title} ${entry.body}`,
+        );
+
+      return searchable.includes(query);
+    });
+
+  function jumpToChapter(id: string) {
+    const target =
+      document.getElementById(
+        `codex-chapter-${id}`,
+      );
+
+    if (!target) return;
+
+    target.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
+    const oldOutline =
+      target.style.outline;
+    const oldOffset =
+      target.style.outlineOffset;
+
+    target.style.outline =
+      "1px solid rgb(var(--sep-colour-8d6d3e))";
+    target.style.outlineOffset =
+      "3px";
+
+    window.setTimeout(() => {
+      target.style.outline =
+        oldOutline;
+      target.style.outlineOffset =
+        oldOffset;
+    }, 1200);
+  }
+
+  return (
+    <div className="flex h-full min-h-0 flex-col">
+      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+        Codex administration
+      </p>
+
+      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+        Jump to Chapter
+      </h2>
+
+      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+        Search chapter headings or text and jump directly to the matching chapter.
+      </p>
+
+      <input
+        type="search"
+        value={search}
+        onChange={(event) =>
+          setSearch(event.target.value)
+        }
+        placeholder="Search title or content..."
+        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))]"
+      />
+
+      <p className="mb-2 mt-4 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))]">
+        Chapters · {visibleEntries.length}
+        {query
+          ? ` / ${entries.length}`
+          : ""}
+      </p>
+
+      <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">
+        {loading ? (
+          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))]">
+            Loading chapters...
+          </p>
+        ) : error ? (
+          <p className="text-xs leading-5 text-[rgb(var(--sep-colour-c58d82))]">
+            Unable to load Codex chapters.
+          </p>
+        ) : visibleEntries.length ? (
+          visibleEntries.map((entry) => (
+            <button
+              key={entry.id}
+              type="button"
+              onClick={() =>
+                jumpToChapter(entry.id)
+              }
+              className="group flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))]"
+            >
+              <span className="min-w-0">
+                <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
+                  {entry.title}
+                </span>
+
+                <span className="mt-0.5 block text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))]">
+                  Chapter{" "}
+                  {entry.chapterNumber ??
+                    "—"}{" "}
+                  · {entry.status}
+                </span>
+              </span>
+
+              <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))]">
+                →
+              </span>
+            </button>
+          ))
+        ) : (
+          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))]">
+            No matching chapters.
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+type AdminNavigationEntry = {
+  section: AdminSection;
+  label: string;
+  href: string;
+  aliases?: string[];
+};
+
+const ADMIN_NAVIGATION_ENTRIES: AdminNavigationEntry[] = [
+  { section: "races", label: "Ancestries", href: "/admin/races", aliases: ["races"] },
+  { section: "areas", label: "Areas", href: "/admin/areas" },
+  { section: "associations", label: "Associations", href: "/admin/associations" },
+  { section: "character_logs", label: "Character Log", href: "/admin/character-audit", aliases: ["audit"] },
+  { section: "characters", label: "Characters", href: "/admin/characters" },
+  { section: "codex", label: "Codex", href: "/admin/codex" },
+  { section: "items", label: "Crafting Recipes", href: "/admin/crafting-recipes", aliases: ["recipes", "crafting"] },
+  { section: "events", label: "Events", href: "/admin/events" },
+  { section: "expertise", label: "Expertise", href: "/admin/expertise" },
+  { section: "gifts", label: "Feats", href: "/admin/gifts", aliases: ["gifts"] },
+  { section: "forum", label: "Forum", href: "/admin/forum" },
+  { section: "items", label: "Items", href: "/admin/items" },
+  { section: "items", label: "Item Vault", href: "/admin/items/vault", aliases: ["vault"] },
+  { section: "jobs", label: "Jobs", href: "/admin/jobs" },
+  { section: "rooms", label: "Locations", href: "/admin/rooms", aliases: ["rooms"] },
+  { section: "communication_logs", label: "Logs", href: "/admin/communication-logs", aliases: ["communication logs"] },
+  { section: "market", label: "Market", href: "/admin/market" },
+  { section: "media", label: "Media", href: "/admin/media" },
+  { section: "orders", label: "Orders", href: "/admin/orders" },
+  { section: "orders", label: "Order Submissions", href: "/admin/order-submissions", aliases: ["submissions"] },
+  { section: "overview", label: "Overview", href: "/admin" },
+  { section: "new_register", label: "Registrations", href: "/admin/registrations", aliases: ["registration"] },
+  { section: "rules", label: "Rules", href: "/admin/rules" },
+  { section: "safety", label: "Safety", href: "/admin/safety" },
+  { section: "sanctions", label: "Sanctions", href: "/admin/sanctions" },
+  { section: "shapes", label: "Shapes", href: "/admin/shapes" },
+  { section: "tickets", label: "Tickets", href: "/admin/tickets" },
+  { section: "tidings", label: "Tidings", href: "/admin/tidings" },
+  { section: "users", label: "Users", href: "/admin/users" },
+  { section: "world", label: "World", href: "/admin/world" },
+];
+
+function isStaffRole(value: unknown): value is StaffRole {
+  return (
+    value === "owner" ||
+    value === "admin" ||
+    value === "moderator" ||
+    value === "master"
+  );
+}
+
+function AdminNavigationContext() {
+  const [role, setRole] = useState<StaffRole | null>(null);
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadRole() {
+      const supabase = createClient();
+
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
+
+      if (cancelled) return;
+
+      if (userError || !user) {
+        setError("Unable to identify the current staff member.");
+        setLoading(false);
+        return;
+      }
+
+      const {
+        data: staffMember,
+        error: staffError,
+      } = await supabase
+        .from("staff_members")
+        .select("role")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (cancelled) return;
+
+      if (
+        staffError ||
+        !staffMember ||
+        !isStaffRole(staffMember.role)
+      ) {
+        setError("Unable to load staff navigation permissions.");
+        setLoading(false);
+        return;
+      }
+
+      setRole(staffMember.role);
+      setError(null);
+      setLoading(false);
+    }
+
+    void loadRole();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const query = search.trim().toLocaleLowerCase();
+
+  const visibleEntries = role
+    ? ADMIN_NAVIGATION_ENTRIES.filter((entry) => {
+        if (!canAccessAdminSection(role, entry.section)) {
+          return false;
+        }
+
+        if (!query) {
+          return true;
+        }
+
+        return [
+          entry.label,
+          entry.section,
+          ...(entry.aliases ?? []),
+        ]
+          .join(" ")
+          .toLocaleLowerCase()
+          .includes(query);
+      })
+    : [];
+
+  return (
+    <div className="flex h-full min-h-0 flex-col">
+      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+        Administration
+      </p>
+
+      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+        Admin Navigation
+      </h2>
+
+      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+        Search the sections available to your staff role and open the page directly.
+      </p>
+
+      <input
+        type="search"
+        value={search}
+        onChange={(event) => setSearch(event.target.value)}
+        placeholder="Search admin pages..."
+        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))]"
+      />
+
+      <p className="mb-2 mt-4 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))]">
+        Pages · {visibleEntries.length}
+      </p>
+
+      <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">
+        {loading ? (
+          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))]">
+            Loading admin pages...
+          </p>
+        ) : error ? (
+          <p className="text-xs leading-5 text-[rgb(var(--sep-colour-c58d82))]">
+            {error}
+          </p>
+        ) : visibleEntries.length ? (
+          visibleEntries.map((entry) => (
+            <Link
+              key={entry.href}
+              href={entry.href}
+              className="group flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))]"
+            >
+              <span className="truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
+                {entry.label}
+              </span>
+              <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))]">
+                →
+              </span>
+            </Link>
+          ))
+        ) : (
+          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))]">
+            No matching admin pages.
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
 type AdminCharacterJumpField = {
+  id: string;
   label: string;
   aliases?: string[];
 };
 
 const ADMIN_CHARACTER_JUMP_FIELDS: AdminCharacterJumpField[] = [
-  { label: "Character administration", aliases: ["summary", "overview", "identity"] },
-  { label: "Legal name", aliases: ["name"] },
-  { label: "Display name" },
-  { label: "Pronouns" },
-  { label: "Gender" },
-  { label: "Sexual orientation" },
-  { label: "Date of birth", aliases: ["dob", "birthday", "age"] },
-  { label: "Birthplace" },
-  { label: "Origin" },
-  { label: "Public slug", aliases: ["slug"] },
-  { label: "Owner user ID", aliases: ["owner", "user"] },
-  { label: "Biography", aliases: ["bio"] },
-  { label: "Physical description", aliases: ["appearance", "physical"] },
-  { label: "Personality" },
-  { label: "Public notes", aliases: ["notes"] },
-  { label: "Relationships" },
-  { label: "Offgame", aliases: ["off game", "ooc"] },
-  { label: "First name" },
-  { label: "Surname", aliases: ["last name"] },
-  { label: "Portrait URL", aliases: ["portrait", "image"] },
-  { label: "Character music URL", aliases: ["music", "theme"] },
-  { label: "Character Health", aliases: ["health", "hp"] },
-  { label: "Character attributes", aliases: ["attributes", "stats"] },
-  { label: "Ancestry", aliases: ["race"] },
-  { label: "Public title", aliases: ["title"] },
-  { label: "Private staff notes", aliases: ["staff notes", "private notes"] },
-  { label: "Review and classification", aliases: ["review", "status", "classification"] },
-  { label: "Approval record", aliases: ["approval"] },
-  { label: "Danger zone", aliases: ["delete", "deletion"] },
+  { id: "admin-character-summary", label: "Character administration", aliases: ["summary", "overview", "identity"] },
+  { id: "admin-character-summary-legal-name", label: "Legal name", aliases: ["name"] },
+  { id: "admin-character-summary-display-name", label: "Display name" },
+  { id: "admin-character-summary-pronouns", label: "Pronouns" },
+  { id: "admin-character-summary-gender", label: "Gender" },
+  { id: "admin-character-summary-sexual-orientation", label: "Sexual orientation" },
+  { id: "admin-character-summary-date-of-birth", label: "Date of birth", aliases: ["dob", "birthday", "age"] },
+  { id: "admin-character-summary-birthplace", label: "Birthplace" },
+  { id: "admin-character-summary-origin", label: "Origin" },
+  { id: "admin-character-summary-public-slug", label: "Public slug", aliases: ["slug"] },
+  { id: "admin-character-summary-owner-user-id", label: "Owner user ID", aliases: ["owner", "user"] },
+  { id: "admin-character-section-biography", label: "Biography", aliases: ["bio"] },
+  { id: "admin-character-section-physical-description", label: "Physical description", aliases: ["appearance", "physical"] },
+  { id: "admin-character-section-personality", label: "Personality" },
+  { id: "admin-character-section-public-notes", label: "Public notes", aliases: ["notes"] },
+  { id: "admin-character-section-relationships", label: "Relationships" },
+  { id: "admin-character-section-offgame", label: "Offgame", aliases: ["off game", "ooc"] },
+  { id: "admin-character-field-first-name", label: "First name" },
+  { id: "admin-character-field-surname", label: "Surname", aliases: ["last name"] },
+  { id: "admin-character-field-portrait-url", label: "Portrait URL", aliases: ["portrait", "image"] },
+  { id: "admin-character-field-character-music-url", label: "Character music URL", aliases: ["music", "theme"] },
+  { id: "admin-character-health", label: "Character Health", aliases: ["health", "hp"] },
+  { id: "admin-character-attributes", label: "Character attributes", aliases: ["attributes", "stats"] },
+  { id: "admin-character-field-ancestry", label: "Ancestry", aliases: ["race"] },
+  { id: "admin-character-field-public-title", label: "Public title", aliases: ["title"] },
+  { id: "admin-character-field-private-staff-notes", label: "Private staff notes", aliases: ["staff notes", "private notes"] },
+  { id: "admin-character-review", label: "Review and classification", aliases: ["review", "status", "classification"] },
+  { id: "admin-character-approval-record", label: "Approval record", aliases: ["approval"] },
+  { id: "admin-character-danger-zone", label: "Danger zone", aliases: ["delete", "deletion"] },
 ];
 
 function AdminCharacterFieldNavigator() {
@@ -230,32 +1215,11 @@ function AdminCharacterFieldNavigator() {
       .includes(query);
   });
 
-  function jumpToField(label: string) {
-    const wanted = label.trim().toLocaleLowerCase();
-
-    const elements = Array.from(
-      document.querySelectorAll<HTMLElement>(
-        "main h1, main h2, main h3, main h4, main p, main div",
-      ),
-    );
-
-    const exact =
-      elements.find(
-        (element) =>
-          element.children.length === 0 &&
-          element.textContent?.trim().toLocaleLowerCase() === wanted,
-      ) ??
-      elements.find(
-        (element) =>
-          element.textContent?.trim().toLocaleLowerCase() === wanted,
-      );
-
-    if (!exact) return;
-
+  function jumpToField(id: string) {
     const target =
-      exact.closest<HTMLElement>("section, label") ??
-      exact.parentElement ??
-      exact;
+      document.getElementById(id);
+
+    if (!target) return;
 
     target.scrollIntoView({
       behavior: "smooth",
@@ -307,7 +1271,7 @@ function AdminCharacterFieldNavigator() {
             <button
               key={field.label}
               type="button"
-              onClick={() => jumpToField(field.label)}
+              onClick={() => jumpToField(field.id)}
               className="flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))]"
             >
               <span className="truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))]">

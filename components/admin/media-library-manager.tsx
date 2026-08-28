@@ -38,6 +38,14 @@ const ACCEPTED_TYPES = [
   "image/avif",
 ];
 
+function mediaAnchorId(
+  repositoryPath: string,
+): string {
+  return `admin-media-${encodeURIComponent(
+    repositoryPath,
+  ).replace(/%/g, "_")}`;
+}
+
 function formatBytes(
   bytes: number | null,
 ): string {
@@ -1025,7 +1033,10 @@ export function MediaLibraryManager() {
                       key={
                         image.repositoryPath
                       }
-                      className={`overflow-hidden border ${
+                      id={mediaAnchorId(
+                        image.repositoryPath,
+                      )}
+                      className={`scroll-mt-4 overflow-hidden border ${
                         marked
                           ? "border-red-800/70 bg-red-950/10"
                           : replacing

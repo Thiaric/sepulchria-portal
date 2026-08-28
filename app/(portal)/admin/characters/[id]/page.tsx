@@ -511,7 +511,7 @@ export default async function AdminCharacterPage({
           </div>
         </div>
 
-        <section className="mt-6 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
+        <section id="admin-character-summary" className="scroll-mt-4 mt-6 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
           <div className="grid lg:grid-cols-[260px_minmax(0,1fr)]">
             <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-0f0b09))] p-6 lg:border-b-0 lg:border-r">
               <div className="relative mx-auto aspect-[3/4] w-full max-w-[210px] overflow-hidden border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-090706))]">
@@ -699,7 +699,7 @@ export default async function AdminCharacterPage({
             />
           </div>
 
-          <section className="h-fit border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6">
+          <section id="admin-character-review" className="scroll-mt-4 h-fit border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6">
             <p className="text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))]">
               Staff controls
             </p>
@@ -954,7 +954,7 @@ export default async function AdminCharacterPage({
                   />
                 </AdminField>
 
-                <div className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] p-4">
+                <div id="admin-character-health" className="scroll-mt-4 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] p-4">
                   <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
                     Character Health
                   </p>
@@ -1024,7 +1024,7 @@ export default async function AdminCharacterPage({
                   ) : null}
                 </div>
 
-                <div className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] p-4">
+                <div id="admin-character-attributes" className="scroll-mt-4 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] p-4">
                   <div className="flex flex-wrap items-end justify-between gap-3">
                     <div>
                       <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
@@ -1256,7 +1256,7 @@ export default async function AdminCharacterPage({
               </div>
 
               {character.approved_at ? (
-                <div className="mt-5 border border-[rgb(var(--sep-colour-315742))]/55 bg-[rgb(var(--sep-colour-102019))] p-4">
+                <div id="admin-character-approval-record" className="scroll-mt-4 mt-5 border border-[rgb(var(--sep-colour-315742))]/55 bg-[rgb(var(--sep-colour-102019))] p-4">
                   <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-6fa381))]">
                     Approval record
                   </p>
@@ -1295,7 +1295,7 @@ export default async function AdminCharacterPage({
             )}
 
             {canDeleteCharacter ? (
-            <div className="mt-8 border-t border-[rgb(var(--sep-colour-6f302b))]/45 pt-6">
+            <div id="admin-character-danger-zone" className="scroll-mt-4 mt-8 border-t border-[rgb(var(--sep-colour-6f302b))]/45 pt-6">
               <div className="border border-[rgb(var(--sep-colour-843a32))]/60 bg-[rgb(var(--sep-colour-26110f))]/65 p-4">
                 <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-c06d62))]">
                   Danger zone
@@ -1376,8 +1376,17 @@ function AdminField({
   label: string;
   children: React.ReactNode;
 }) {
+  const anchorId =
+    `admin-character-field-${label
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "")}`;
+
   return (
-    <div className="block">
+    <div
+      id={anchorId}
+      className="scroll-mt-4 block"
+    >
       <div className="mb-2 block text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
         {label}
       </div>
@@ -1394,8 +1403,17 @@ function ReadOnlyField({
   label: string;
   value: string | null;
 }) {
+  const anchorId =
+    `admin-character-summary-${label
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "")}`;
+
   return (
-    <div>
+    <div
+      id={anchorId}
+      className="scroll-mt-4"
+    >
       <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
         {label}
       </p>
@@ -1415,8 +1433,17 @@ function CharacterTextSection({
   title: string;
   content: string | null;
 }) {
+  const anchorId =
+    `admin-character-section-${title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "")}`;
+
   return (
-    <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6">
+    <section
+      id={anchorId}
+      className="scroll-mt-4 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6"
+    >
       <h3 className="font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">
         {title}
       </h3>

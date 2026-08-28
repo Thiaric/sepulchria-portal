@@ -190,7 +190,8 @@ export default async function AdminCodexPage() {
                 (chapter) => (
                   <article
                     key={chapter.id}
-                    className="grid gap-3 border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] p-4 lg:grid-cols-[90px_minmax(0,1fr)_auto] lg:items-center"
+                    id={`codex-chapter-${chapter.id}`}
+                    className="scroll-mt-4 grid gap-3 border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] p-4 lg:grid-cols-[90px_minmax(0,1fr)_auto] lg:items-center"
                   >
                     <div>
                       <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-756550))]">

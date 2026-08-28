@@ -195,7 +195,12 @@ export default async function RegistrationApplicationsAdminPage({
             {allApplications.map((application) => (
               <details
                 key={application.id}
-                className="border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))]"
+                id={`registration-application-${application.id}`}
+                data-registration-id={application.id}
+                data-registration-name={application.name}
+                data-registration-email={application.email}
+                data-registration-status={application.status}
+                className="scroll-mt-4 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))]"
               >
                 <summary className="cursor-pointer list-none px-4 py-3">
                   <div className="flex flex-wrap items-center justify-between gap-3">

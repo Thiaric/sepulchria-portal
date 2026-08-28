@@ -52,6 +52,13 @@ export default async function AdminLayout({
             aria-label="Administration"
             className="flex flex-wrap items-center gap-2"
           >
+
+            {can("overview") ? (
+              <AdminNavigationLink href="/admin">
+                Overview
+              </AdminNavigationLink>
+            ) : null}
+            
             {can("races") ? (
               <AdminNavigationLink href="/admin/races">
                 Ancestries
@@ -175,12 +182,6 @@ export default async function AdminLayout({
                   <span>Order Submissions</span>
                   <OrderSubmissionBadge variant="admin-nav" />
                 </span>
-              </AdminNavigationLink>
-            ) : null}
-
-            {can("overview") ? (
-              <AdminNavigationLink href="/admin">
-                Overview
               </AdminNavigationLink>
             ) : null}
 

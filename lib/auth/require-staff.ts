@@ -6,46 +6,23 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { setAuditActorContext } from "@/lib/audit/actor-context";
 
-export type StaffRole =
-  | "owner"
-  | "admin"
-  | "moderator"
-  | "master";
+import {
+  canAccessAdminSection,
+  type AdminSection,
+  type StaffRole,
+} from "@/lib/auth/admin-section-access";
+
+export {
+  canAccessAdminSection,
+  type AdminSection,
+  type StaffRole,
+} from "@/lib/auth/admin-section-access";
 
 export type StaffSession = {
   userId: string;
   email: string | null;
   role: StaffRole;
 };
-
-export type AdminSection =
-  | "overview"
-  | "races"
-  | "areas"
-  | "associations"
-  | "codex"
-  | "characters"
-  | "events"
-  | "expertise"
-  | "gifts"
-  | "items"
-  | "jobs"
-  | "market"
-  | "forum"
-  | "communication_logs"
-  | "character_logs"
-  | "safety"
-  | "rooms"
-  | "orders"
-  | "rules"
-  | "shapes"
-  | "tidings"
-  | "tickets"
-  | "sanctions"
-  | "media"
-  | "users"
-  | "new_register"
-  | "world";
 
 export type StaffCapability =
   | "character_edit"
@@ -65,39 +42,6 @@ const ADMIN_ROLES: StaffRole[] = [
   "owner",
   "admin",
 ];
-
-const SECTION_ROLES: Record<
-  AdminSection,
-  readonly StaffRole[]
-> = {
-  overview: ["owner"],
-  races: ["owner"],
-  areas: ["owner"],
-  associations: ["owner"],
-  codex: ["owner", "admin"],
-  characters: ["owner", "admin", "moderator", "master"],
-  events: ["owner", "admin", "master"],
-  expertise: ["owner", "admin", "master"],
-  gifts: ["owner"],
-  items: ["owner"],
-  jobs: ["owner"],
-  market: ["owner", "admin"],
-  forum: ["owner", "admin", "moderator"],
-  communication_logs: ["owner", "admin", "moderator"],
-  character_logs: ["owner", "admin", "moderator"],
-  safety: ["owner"],
-  rooms: ["owner"],
-  orders: ["owner"],
-  rules: ["owner"],
-  shapes: ["owner"],
-  tidings: ["owner", "admin", "moderator", "master"],
-  tickets: ["owner", "admin", "moderator", "master"],
-  sanctions: ["owner", "admin", "moderator"],
-  media: ["owner"],
-  users: ["owner", "admin"],
-  new_register: ["owner"],
-  world: ["owner", "admin", "master"],
-};
 
 const CAPABILITY_ROLES: Record<
   StaffCapability,
@@ -119,15 +63,6 @@ function isStaffRole(
       value as StaffRole,
     )
   );
-}
-
-export function canAccessAdminSection(
-  role: StaffRole,
-  section: AdminSection,
-): boolean {
-  return SECTION_ROLES[
-    section
-  ].includes(role);
 }
 
 export function hasStaffCapability(
