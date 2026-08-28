@@ -30,6 +30,10 @@ import RoomMessageList from "./components/RoomMessageList";
 import RoomRealtime from "./components/RoomRealtime";
 import { OddJobsPanel, type OddJobStateRow } from "./components/OddJobsPanel";
 import {
+  HouseOfChancesPanel,
+  type HouseOfChancesStateRow,
+} from "./components/HouseOfChancesPanel";
+import {
   BreezeLodgingsPanel,
   type BreezeLodgingStateRow,
 } from "./components/BreezeLodgingsPanel";
@@ -338,6 +342,16 @@ async function GameContent() {
           error: null,
         });
 
+  const houseOfChancesPromise =
+    room.slug === "house-of-chances"
+      ? supabase.rpc(
+          "get_my_house_of_chances_state",
+        )
+      : Promise.resolve({
+          data: [],
+          error: null,
+        });
+
   const breezeLodgingsPromise =
     room.slug === "the-breeze-lodgings"
       ? supabase.rpc(
@@ -371,6 +385,7 @@ async function GameContent() {
     staffSession,
     headquartersManageData,
     oddJobsResult,
+    houseOfChancesResult,
     breezeLodgingsResult,
     breezeManageData,
     breezeStaffOccupants,
@@ -383,6 +398,7 @@ async function GameContent() {
     staffSessionPromise,
     headquartersManageDataPromise,
     oddJobsPromise,
+    houseOfChancesPromise,
     breezeLodgingsPromise,
     breezeManageDataPromise,
     breezeStaffOccupantsPromise,
@@ -980,6 +996,22 @@ async function GameContent() {
     (oddJobsData ?? []) as OddJobStateRow[];
 
   const {
+    data: houseOfChancesData,
+    error: houseOfChancesError,
+  } = houseOfChancesResult;
+
+  if (houseOfChancesError) {
+    throw new Error(
+      `Unable to load House of Chances: ${houseOfChancesError.message}`,
+    );
+  }
+
+  const houseOfChancesState =
+    ((houseOfChancesData ?? [])[0] ?? null) as
+      | HouseOfChancesStateRow
+      | null;
+
+  const {
     data: breezeLodgingsData,
     error: breezeLodgingsError,
   } = breezeLodgingsResult;
@@ -1090,6 +1122,10 @@ async function GameContent() {
 
     <div className="mx-auto flex h-full max-w-80dvh flex-col">
   <article className="flex min-h-0 flex-1 flex-col overflow-visible border border-[rgb(var(--sep-colour-6a5032))]/50 bg-[rgb(var(--sep-colour-17110d))] lg:overflow-hidden">
+
+    {room.slug === "house-of-chances" && houseOfChancesState ? (
+      <HouseOfChancesPanel state={houseOfChancesState} />
+    ) : null}
 
     {room.slug === "odd-jobs-bureau" ? (
       <OddJobsPanel jobs={oddJobs} />
