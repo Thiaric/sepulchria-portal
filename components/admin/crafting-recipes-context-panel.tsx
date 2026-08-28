@@ -170,10 +170,23 @@ export function CraftingRecipesContextPanel() {
       setLoading(false);
     }
 
+    const handleAdminDataChanged = () => {
+      void load();
+    };
+
+    window.addEventListener(
+      "sepulchria:admin-data-changed",
+      handleAdminDataChanged,
+    );
+
     void load();
 
     return () => {
       cancelled = true;
+      window.removeEventListener(
+        "sepulchria:admin-data-changed",
+        handleAdminDataChanged,
+      );
     };
   }, []);
 
