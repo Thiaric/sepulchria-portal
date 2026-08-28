@@ -369,7 +369,7 @@ function Calendar({
                 className={[
   "relative flex h-10 flex-col items-center justify-center gap-0.5 bg-[rgb(var(--sep-colour-15100d))] text-[9px] transition sm:h-11",
                   eventCount > 0
-                    ? "cursor-pointer hover:bg-[rgb(var(--sep-colour-241a11))]"
+                    ? "cursor-pointer bg-[rgb(var(--sep-colour-2b1d12))] ring-2 ring-inset ring-[rgb(var(--sep-colour-9f7744))]/75 shadow-[inset_0_0_14px_rgba(176,128,67,0.22)] hover:bg-[rgb(var(--sep-colour-362418))] hover:ring-[rgb(var(--sep-colour-c19152))]/90"
                     : "cursor-default",
                   isToday
                     ? "font-semibold text-[rgb(var(--sep-colour-f0d39f))] shadow-[inset_0_0_0_1px_#a67b45]"
