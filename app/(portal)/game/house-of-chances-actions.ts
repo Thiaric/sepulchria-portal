@@ -14,7 +14,13 @@ export type HouseOfChancesPlayResult = {
   matched_rule_name: string | null;
   reward_snapshot: Array<
     | { type: "remnants"; amount: number }
-    | { type: "item"; item_id: string; name: string; quantity: number }
+    | {
+        type: "item";
+        item_id: string;
+        name: string;
+        quantity: number;
+        image_url: string | null;
+      }
   >;
   wallet_balance: number;
   plays_used: number;
@@ -40,6 +46,44 @@ export async function playHouseOfChances() {
   }
 
   const result = raw as HouseOfChancesPlayResult;
+
+  const itemRewardIds = Array.from(
+    new Set(
+      result.reward_snapshot
+        .filter(
+          (
+            reward,
+          ): reward is Extract<
+            HouseOfChancesPlayResult["reward_snapshot"][number],
+            { type: "item" }
+          > => reward.type === "item",
+        )
+        .map((reward) => reward.item_id),
+    ),
+  );
+
+  if (itemRewardIds.length > 0) {
+    const { data: prizeItems } = await supabase
+      .from("items")
+      .select("id, image_url")
+      .in("id", itemRewardIds);
+
+    const imageByItemId = new Map(
+      (prizeItems ?? []).map((item) => [
+        String(item.id),
+        item.image_url ? String(item.image_url) : null,
+      ]),
+    );
+
+    result.reward_snapshot = result.reward_snapshot.map((reward) =>
+      reward.type === "item"
+        ? {
+            ...reward,
+            image_url: imageByItemId.get(reward.item_id) ?? null,
+          }
+        : reward,
+    );
+  }
 
   revalidatePath("/game");
   revalidatePath("/character");
