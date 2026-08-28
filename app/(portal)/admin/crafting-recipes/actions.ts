@@ -623,49 +623,14 @@ export async function deleteCraftingRecipe(
 
   try {
     const {
-      count,
-      error: knownError,
-    } = await supabase
-      .from(
-        "character_recipes",
-      )
-      .select(
-        "id",
-        {
-          count: "exact",
-          head: true,
-        },
-      )
-      .eq(
-        "recipe_id",
-        recipeId,
-      );
-
-    if (knownError) {
-      throw new Error(
-        knownError.message,
-      );
-    }
-
-    if (
-      (count ?? 0) > 0
-    ) {
-      throw new Error(
-        "This recipe is already known by one or more characters. Mark it Inactive instead of deleting it.",
-      );
-    }
-
-    const {
       error,
-    } = await supabase
-      .from(
-        "crafting_recipes",
-      )
-      .delete()
-      .eq(
-        "id",
-        recipeId,
-      );
+    } = await supabase.rpc(
+      "delete_crafting_recipe_bundle",
+      {
+        p_recipe_id:
+          recipeId,
+      },
+    );
 
     if (error) {
       throw new Error(
@@ -686,3 +651,4 @@ export async function deleteCraftingRecipe(
     "/admin/crafting-recipes",
   );
 }
+

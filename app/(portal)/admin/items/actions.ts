@@ -1008,30 +1008,11 @@ export async function deleteItem(formData: FormData) {
     const itemId = requiredText(formData, "itemId", "Item");
     if (!isUuid(itemId)) throw new Error("Invalid item.");
 
-    const [standardResult, instanceResult] = await Promise.all([
-      supabase
-        .from("character_items")
-        .select("id", { count: "exact", head: true })
-        .eq("item_id", itemId),
-      supabase
-        .from("character_item_instances")
-        .select("id", { count: "exact", head: true })
-        .eq("item_id", itemId),
-    ]);
+    const { error } = await supabase.rpc(
+      "delete_item_with_crafting_bundle",
+      { p_item_id: itemId },
+    );
 
-    const countError = standardResult.error ?? instanceResult.error;
-    if (countError) throw new Error(countError.message);
-
-    const ownedCount = (standardResult.count ?? 0) + (instanceResult.count ?? 0);
-    if (ownedCount > 0) {
-      throw new Error(
-        `This item is already represented in ${ownedCount} inventory record${
-          ownedCount === 1 ? "" : "s"
-        }. Deactivate it instead of deleting it.`,
-      );
-    }
-
-    const { error } = await supabase.from("items").delete().eq("id", itemId);
     if (error) throw new Error(error.message);
   } catch (error) {
     fail(error instanceof Error ? error.message : "Unable to delete item.");
@@ -1039,6 +1020,7 @@ export async function deleteItem(formData: FormData) {
 
   refresh();
 }
+
 
 function effectValues(formData: FormData) {
   const triggerType = requiredText(formData, "triggerType", "Trigger");
