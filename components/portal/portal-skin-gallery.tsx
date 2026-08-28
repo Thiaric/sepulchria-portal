@@ -272,14 +272,14 @@ export function PortalSkinGallery({
                 data-portal-skin={
                   entry.slug
                 }
-                className="portal-skin-scope"
+                className="portal-skin-scope portal-skin-preview-card"
               >
-                <article className="flex h-full min-h-[200px] flex-col overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] text-[rgb(var(--sep-colour-cbbba3))]">
+                <article className="portal-skin-preview-surface flex h-full min-h-[200px] flex-col overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] text-[rgb(var(--sep-colour-cbbba3))]">
                   <div className="flex h-full flex-col p-5">
                     <div className="flex items-start justify-between gap-4">
                       <div className="min-w-0 flex-1">
                         <h2
-                          className="text-xl text-[rgb(var(--sep-colour-e1c89f))]"
+                          className="portal-skin-preview-title text-xl text-[rgb(var(--sep-colour-e1c89f))]"
                           style={{
                             fontFamily:
                               "var(--portal-font-display)",
@@ -291,7 +291,7 @@ export function PortalSkinGallery({
                         </h2>
 
                         <p
-                          className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]"
+                          className="portal-skin-preview-description mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]"
                           style={{
                             fontFamily:
                               "var(--portal-font-body)",
@@ -304,7 +304,7 @@ export function PortalSkinGallery({
                       </div>
 
                       <span
-                        className="shrink-0 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-2 py-1 text-[7px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-a99069))]"
+                        className="portal-skin-preview-badge shrink-0 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-2 py-1 text-[7px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-a99069))]"
                         style={{
                           fontFamily:
                             "var(--portal-font-body)",
@@ -328,7 +328,7 @@ export function PortalSkinGallery({
 
                     {!unlocked ? (
                       <p
-                        className="mt-4 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-3 text-[9px] leading-4 text-[rgb(var(--sep-colour-8f8271))]"
+                        className="portal-skin-preview-locked mt-4 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-3 text-[9px] leading-4 text-[rgb(var(--sep-colour-8f8271))]"
                         style={{
                           fontFamily:
                             "var(--portal-font-body)",
@@ -365,7 +365,7 @@ export function PortalSkinGallery({
                               entry.slug,
                             )
                           }
-                          className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-baa78c))] transition hover:border-[rgb(var(--sep-colour-8d693e))] hover:bg-[rgb(var(--sep-colour-19120d))] hover:text-[rgb(var(--sep-colour-d8bb8a))]"
+                          className="portal-skin-preview-secondary-button border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-baa78c))] transition hover:border-[rgb(var(--sep-colour-8d693e))] hover:bg-[rgb(var(--sep-colour-19120d))] hover:text-[rgb(var(--sep-colour-d8bb8a))]"
                           style={{
                             fontFamily:
                               "var(--portal-font-body)",
@@ -387,7 +387,7 @@ export function PortalSkinGallery({
                                 entry,
                               )
                             }
-                            className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-3 py-2 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b78b50))] hover:bg-[rgb(var(--sep-colour-4a331f))] disabled:opacity-50"
+                            className="portal-skin-preview-primary-button border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-3 py-2 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b78b50))] hover:bg-[rgb(var(--sep-colour-4a331f))] disabled:opacity-50"
                             style={{
                               fontFamily:
                                 "var(--portal-font-body)",

@@ -19750,3 +19750,63 @@ body.portal-skin-scope .font-serif {
   box-shadow:
     inset 0 0 6px rgba(93, 73, 48, 0.055);
 }
+
+/* =========================================================
+   APPEARANCE GALLERY - NESTED SKIN PREVIEW ISOLATION
+   Each preview card must render from its own data-portal-skin
+   even when the active page skin has descendant overrides.
+   ========================================================= */
+
+.portal-skin-preview-card[data-portal-skin] {
+  font-family: var(--portal-font-body) !important;
+}
+
+.portal-skin-preview-card[data-portal-skin] > .portal-skin-preview-surface {
+  border-color: rgb(var(--sep-colour-60482e) / 0.45) !important;
+  background: rgb(var(--sep-colour-15100d)) !important;
+  color: rgb(var(--sep-colour-cbbba3)) !important;
+  font-family: var(--portal-font-body) !important;
+}
+
+.portal-skin-preview-card[data-portal-skin] .portal-skin-preview-title {
+  color: rgb(var(--sep-colour-e1c89f)) !important;
+  font-family: var(--portal-font-display) !important;
+}
+
+.portal-skin-preview-card[data-portal-skin] .portal-skin-preview-description,
+.portal-skin-preview-card[data-portal-skin] .portal-skin-preview-locked {
+  color: rgb(var(--sep-colour-8f8271)) !important;
+  font-family: var(--portal-font-body) !important;
+}
+
+.portal-skin-preview-card[data-portal-skin] .portal-skin-preview-badge {
+  border-color: rgb(var(--sep-colour-60482e) / 0.45) !important;
+  background: rgb(var(--sep-colour-100c09)) !important;
+  color: rgb(var(--sep-colour-a99069)) !important;
+  font-family: var(--portal-font-body) !important;
+}
+
+.portal-skin-preview-card[data-portal-skin] .portal-skin-preview-secondary-button {
+  border-color: rgb(var(--sep-colour-60482e) / 0.55) !important;
+  background: rgb(var(--sep-colour-100c09)) !important;
+  color: rgb(var(--sep-colour-baa78c)) !important;
+  font-family: var(--portal-font-body) !important;
+}
+
+.portal-skin-preview-card[data-portal-skin] .portal-skin-preview-secondary-button:hover {
+  border-color: rgb(var(--sep-colour-8d693e)) !important;
+  background: rgb(var(--sep-colour-19120d)) !important;
+  color: rgb(var(--sep-colour-d8bb8a)) !important;
+}
+
+.portal-skin-preview-card[data-portal-skin] .portal-skin-preview-primary-button {
+  border-color: rgb(var(--sep-colour-987344)) !important;
+  background: rgb(var(--sep-colour-3b2919)) !important;
+  color: rgb(var(--sep-colour-efd6a8)) !important;
+  font-family: var(--portal-font-body) !important;
+}
+
+.portal-skin-preview-card[data-portal-skin] .portal-skin-preview-primary-button:hover {
+  border-color: rgb(var(--sep-colour-b78b50)) !important;
+  background: rgb(var(--sep-colour-4a331f)) !important;
+}
