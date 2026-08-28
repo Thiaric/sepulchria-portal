@@ -135,18 +135,7 @@ export function HouseOfChancesPanel({
     <details className="group shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0d0907))]">
       <summary className="sticky top-0 z-30 flex cursor-pointer list-none items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-59432c))]/30 bg-[linear-gradient(90deg,rgb(var(--sep-colour-100c09)),rgb(var(--sep-colour-17110d)),rgb(var(--sep-colour-100c09)))] px-3 py-2 [&::-webkit-details-marker]:hidden">
         <div className="flex min-w-0 items-center gap-3">
-          <div
-            className="relative h-8 w-8 shrink-0 rotate-45 border bg-[rgb(var(--sep-colour-100c09))]"
-            style={{
-              borderColor: skinAccent,
-              boxShadow: `0 0 16px color-mix(in srgb, ${skinAccent} 25%, transparent), inset 0 0 12px color-mix(in srgb, ${skinAccent} 12%, transparent)`,
-            }}
-          >
-            <span
-              className="absolute inset-[7px] border"
-              style={{ borderColor: `color-mix(in srgb, ${skinAccent} 55%, transparent)` }}
-            />
-          </div>
+          
 
           <div className="min-w-0">
             <p className="text-[7px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
@@ -405,7 +394,7 @@ export function HouseOfChancesPanel({
                     />
                   </div>
                   <span className="font-serif text-sm text-[rgb(var(--sep-colour-e4c589))]">
-                    {formatRemnants(Number(state.play_cost))} R
+                    {formatRemnants(Number(state.play_cost))}
                   </span>
                 </div>
 

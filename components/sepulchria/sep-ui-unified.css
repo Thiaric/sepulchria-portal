@@ -1,0 +1,560 @@
+/*
+ * SEPULCHRIA — PORTAL UI UNIFICATION
+ * ===================================
+ * Canonical references supplied by the project itself:
+ *   - Admin navigation buttons
+ *   - Admin Ancestry Management panels / fields
+ *   - Right/context sidebar navigator rows
+ *   - Existing portal modal frame language
+ *
+ * IMPORTANT:
+ *   - LEFT SIDEBAR IS EXPLICITLY EXCLUDED.
+ *   - This is a consistency pass only. No embossing / 3D additions yet.
+ *   - No new panels, dividers, pseudo-elements or layout structures.
+ *   - No gameplay / data / behaviour changes.
+ *   - Portal skin variables remain authoritative.
+ */
+
+/* ------------------------------------------------------------------ */
+/* CANONICAL TOKENS — copied from the reference UI already in repo.   */
+/* ------------------------------------------------------------------ */
+
+[data-portal-shell] {
+  --sep-unified-frame-border: rgba(var(--sep-rgb-96-72-46), 0.45);
+  --sep-unified-frame-border-strong: rgba(var(--sep-rgb-96-72-46), 0.55);
+
+  --sep-unified-control-border: rgba(var(--sep-rgb-96-72-46), 0.50);
+  --sep-unified-control-border-hover: rgb(var(--sep-colour-9b7446));
+  --sep-unified-control-bg: rgb(var(--sep-colour-18110d));
+  --sep-unified-control-bg-hover: rgb(var(--sep-colour-2b1d12));
+  --sep-unified-control-text: rgb(var(--sep-colour-bca27b));
+  --sep-unified-control-text-hover: rgb(var(--sep-colour-ecd2a3));
+
+  --sep-unified-field-border: rgba(var(--sep-rgb-96-72-46), 0.55);
+  --sep-unified-field-bg: rgb(var(--sep-colour-100c09));
+  --sep-unified-field-text: rgb(var(--sep-colour-d7c4a5));
+  --sep-unified-field-placeholder: rgb(var(--sep-colour-625747));
+  --sep-unified-field-focus: rgb(var(--sep-colour-a17a49));
+
+  --sep-unified-context-border: rgba(var(--sep-rgb-89-67-44), 0.35);
+  --sep-unified-context-border-hover: rgb(var(--sep-colour-8d693e));
+  --sep-unified-context-bg: rgb(var(--sep-colour-100c09));
+  --sep-unified-context-bg-hover: rgb(var(--sep-colour-1d150f));
+
+  --sep-unified-modal-border: var(--sep-unified-control-border);
+  --sep-unified-modal-header-border: rgba(var(--sep-rgb-96-72-46), 0.55);
+}
+
+/*
+ * Some skins expose only --sep-colour-* mappings, while the original
+ * Cinder skin also exposes the matching rgb triplets. Use colour variables
+ * as the final authoritative fallback.
+ */
+@supports (color: color-mix(in srgb, black, white)) {
+  [data-portal-shell] {
+    --sep-unified-frame-border:
+      color-mix(in srgb, rgb(var(--sep-colour-60482e)) 45%, transparent);
+    --sep-unified-frame-border-strong:
+      color-mix(in srgb, rgb(var(--sep-colour-60482e)) 55%, transparent);
+
+    --sep-unified-control-border:
+      color-mix(in srgb, rgb(var(--sep-colour-60482e)) 50%, transparent);
+
+    --sep-unified-field-border:
+      color-mix(in srgb, rgb(var(--sep-colour-60482e)) 55%, transparent);
+
+    --sep-unified-context-border:
+      color-mix(in srgb, rgb(var(--sep-colour-59432c)) 35%, transparent);
+
+    --sep-unified-modal-border:
+      var(--sep-unified-control-border);
+
+    --sep-unified-modal-header-border:
+      color-mix(in srgb, rgb(var(--sep-colour-60482e)) 55%, transparent);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* STANDARD TEXT BUTTON / LINK LANGUAGE                               */
+/* Canonical source: AdminNavigationLink.                             */
+/* ------------------------------------------------------------------ */
+
+/*
+ * Ordinary bordered text actions adopt the admin navigation language.
+ *
+ * We deliberately exclude:
+ *   - the entire left sidebar
+ *   - right/context sidebar rows (styled separately below)
+ *   - icon/aria-label controls (geometry/typography left untouched)
+ *   - semantic danger/warning/success controls
+ *   - colour-input / special controls
+ */
+[data-portal-shell]
+  :is(
+    button[class~="border"]:not([aria-label]),
+    a[class~="border"]
+  ):not(.portal-left-shell *):not(.portal-right-shell *):not(
+    [class*="red-"]
+  ):not([class*="amber-"]):not([class*="emerald-"]):not(
+    [class*="rose-"]
+  ) {
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-color: var(--sep-unified-control-border) !important;
+  background-color: var(--sep-unified-control-bg) !important;
+  color: var(--sep-unified-control-text) !important;
+  border-radius: 0 !important;
+
+  font-size: 9px;
+  font-weight: 400;
+  line-height: 1.15;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease,
+    color 150ms ease,
+    opacity 150ms ease;
+}
+
+[data-portal-shell]
+  :is(
+    button[class~="border"]:not([aria-label]),
+    a[class~="border"]
+  ):not(.portal-left-shell *):not(.portal-right-shell *):not(
+    [class*="red-"]
+  ):not([class*="amber-"]):not([class*="emerald-"]):not(
+    [class*="rose-"]
+  ):hover:not(:disabled) {
+  border-color: var(--sep-unified-control-border-hover) !important;
+  background-color: var(--sep-unified-control-bg-hover) !important;
+  color: var(--sep-unified-control-text-hover) !important;
+}
+
+/*
+ * Icon buttons use the same border/background palette, but keep their
+ * original width, height, font-size, padding and icon geometry.
+ */
+[data-portal-shell]
+  button[class~="border"][aria-label]:not(.portal-left-shell *):not(
+    .portal-right-shell *
+  ):not([class*="red-"]):not([class*="amber-"]):not(
+    [class*="emerald-"]
+  ) {
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-color: var(--sep-unified-control-border) !important;
+  background-color: var(--sep-unified-control-bg) !important;
+  border-radius: 0 !important;
+
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease,
+    color 150ms ease,
+    opacity 150ms ease;
+}
+
+[data-portal-shell]
+  button[class~="border"][aria-label]:not(.portal-left-shell *):not(
+    .portal-right-shell *
+  ):not([class*="red-"]):not([class*="amber-"]):not(
+    [class*="emerald-"]
+  ):hover:not(:disabled) {
+  border-color: var(--sep-unified-control-border-hover) !important;
+  background-color: var(--sep-unified-control-bg-hover) !important;
+}
+
+/* ------------------------------------------------------------------ */
+/* FRAMES / PANELS / CARDS                                            */
+/* Canonical source: Ancestry Management.                             */
+/* ------------------------------------------------------------------ */
+
+/*
+ * Only elements that ALREADY have a full "border" token are normalised.
+ * border-t / border-b / border-l / border-r separators are untouched.
+ * Existing backgrounds, textures, artwork and page-specific identities
+ * remain untouched.
+ */
+[data-portal-shell]
+  :is(section, article, aside, details, fieldset, div)[class~="border"]:not(
+    .portal-left-shell *
+  ):not(.portal-right-shell *) {
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-color: var(--sep-unified-frame-border) !important;
+  border-radius: 0 !important;
+}
+
+/* Nested frames use the slightly stronger field/frame line. */
+[data-portal-shell]
+  :is(section, article, fieldset, div)[class~="border"]
+  :is(section, article, fieldset, div)[class~="border"]:not(
+    .portal-left-shell *
+  ):not(.portal-right-shell *) {
+  border-color: var(--sep-unified-frame-border-strong) !important;
+}
+
+/* ------------------------------------------------------------------ */
+/* INPUTS / SELECTS / TEXTAREAS                                       */
+/* Canonical source: Ancestry Management fields.                      */
+/* ------------------------------------------------------------------ */
+
+[data-portal-shell]
+  :is(input, select, textarea)[class~="border"]:not(
+    .portal-left-shell *
+  ):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
+    [type="color"]
+  ) {
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-color: var(--sep-unified-field-border) !important;
+  background-color: var(--sep-unified-field-bg) !important;
+  color: var(--sep-unified-field-text) !important;
+  border-radius: 0 !important;
+  outline: none !important;
+
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease,
+    color 150ms ease;
+}
+
+[data-portal-shell]
+  :is(input, textarea)[class~="border"]:not(.portal-left-shell *):not(
+    [type="checkbox"]
+  ):not([type="radio"]):not([type="range"]):not([type="color"])::placeholder {
+  color: var(--sep-unified-field-placeholder) !important;
+}
+
+[data-portal-shell]
+  :is(input, select, textarea)[class~="border"]:not(
+    .portal-left-shell *
+  ):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
+    [type="color"]
+  ):focus {
+  border-color: var(--sep-unified-field-focus) !important;
+}
+
+/* ------------------------------------------------------------------ */
+/* RIGHT SIDEBAR / CONTEXT SIDEBAR                                    */
+/* Canonical source: Admin/context navigator rows supplied by user.   */
+/* ------------------------------------------------------------------ */
+
+/* Full-frame context controls only; headings/plain links are untouched. */
+[data-portal-shell]
+  .portal-right-shell
+  :is(button, a)[class~="border"] {
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-color: var(--sep-unified-context-border) !important;
+  background-color: var(--sep-unified-context-bg) !important;
+  border-radius: 0 !important;
+
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease,
+    color 150ms ease;
+}
+
+[data-portal-shell]
+  .portal-right-shell
+  :is(button, a)[class~="border"]:hover:not(:disabled) {
+  border-color: var(--sep-unified-context-border-hover) !important;
+  background-color: var(--sep-unified-context-bg-hover) !important;
+}
+
+/* Existing bordered context cards/panels use the same row line. */
+[data-portal-shell]
+  .portal-right-shell
+  :is(section, article, details, fieldset, div)[class~="border"] {
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-color: var(--sep-unified-context-border) !important;
+  border-radius: 0 !important;
+}
+
+/* Context search / select / textarea fields match main portal fields. */
+[data-portal-shell]
+  .portal-right-shell
+  :is(input, select, textarea)[class~="border"]:not([type="checkbox"]):not(
+    [type="radio"]
+  ):not([type="range"]):not([type="color"]) {
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-color: var(--sep-unified-field-border) !important;
+  background-color: var(--sep-unified-field-bg) !important;
+  color: var(--sep-unified-field-text) !important;
+  border-radius: 0 !important;
+  outline: none !important;
+}
+
+[data-portal-shell]
+  .portal-right-shell
+  :is(input, select, textarea)[class~="border"]:focus {
+  border-color: var(--sep-unified-field-focus) !important;
+}
+
+/* ------------------------------------------------------------------ */
+/* MODALS                                                             */
+/* Canonical source: existing Messages/public modal language.         */
+/* ------------------------------------------------------------------ */
+
+/*
+ * Do NOT touch the backdrop.
+ * Only already-bordered modal frames are standardised.
+ */
+[data-portal-shell]
+  :is([role="dialog"], [aria-modal="true"])
+  > :is(section, article, div)[class~="border"],
+[data-portal-shell]
+  :is([role="dialog"], [aria-modal="true"])
+  > button
+  + :is(section, article, div)[class~="border"] {
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-color: var(--sep-unified-modal-border) !important;
+  border-radius: 0 !important;
+}
+
+/* Existing modal header/footer separators use the same canonical line. */
+[data-portal-shell]
+  :is([role="dialog"], [aria-modal="true"])
+  :is(header, footer, div)[class~="border-b"],
+[data-portal-shell]
+  :is([role="dialog"], [aria-modal="true"])
+  :is(header, footer, div)[class~="border-t"] {
+  border-color: var(--sep-unified-modal-header-border) !important;
+}
+
+/* Modal text buttons use the same standard button language. */
+[data-portal-shell]
+  :is([role="dialog"], [aria-modal="true"])
+  button[class~="border"]:not([aria-label]):not([class*="red-"]):not(
+    [class*="amber-"]
+  ):not([class*="emerald-"]) {
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-color: var(--sep-unified-control-border) !important;
+  background-color: var(--sep-unified-control-bg) !important;
+  color: var(--sep-unified-control-text) !important;
+  border-radius: 0 !important;
+  font-size: 9px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+}
+
+/* ------------------------------------------------------------------ */
+/* EXPLICIT LEFT SIDEBAR PRESERVATION                                 */
+/* ------------------------------------------------------------------ */
+
+/*
+ * Nothing in this file styles .portal-left-shell descendants.
+ * These declarations intentionally exist only as documentation/safety:
+ * the left navigation remains governed by portal-sidebar.tsx exactly as now.
+ */
+
+/* ------------------------------------------------------------------ */
+/* ACCESSIBILITY                                                      */
+/* ------------------------------------------------------------------ */
+
+[data-portal-shell]
+  :is(button, a, input, select, textarea):not(.portal-left-shell *):focus-visible {
+  outline: 1px solid rgb(var(--sep-colour-9b7446));
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-portal-shell]
+    :is(button, a, input, select, textarea):not(.portal-left-shell *) {
+    transition: none !important;
+  }
+}
+
+
+/* ==================================================================
+   PORTAL MODALS — UNIFIED BORDER + MAXIMIZE / RESTORE
+   ==================================================================
+   This layer affects only real semantic modals managed by
+   PortalModalViewportManager. It does not infer ordinary panels.
+   ================================================================== */
+
+/*
+ * The modal frame now uses EXACTLY the same border family as the
+ * canonical unified buttons. This overrides feature-specific inline
+ * accent borders such as SepModalFrame's accent colour.
+ */
+body.portal-skin-scope
+  [data-sep-managed-modal-frame="true"] {
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-color:
+    color-mix(
+      in srgb,
+      rgb(var(--sep-colour-60482e)) 50%,
+      transparent
+    ) !important;
+  border-radius: 0 !important;
+}
+
+/* If a modal lives inside the shell, use the exact shared token. */
+[data-portal-shell]
+  [data-sep-managed-modal-frame="true"] {
+  border-color:
+    var(--sep-unified-control-border) !important;
+}
+
+/*
+ * Maximise the existing modal overlay/frame without changing its JSX.
+ * The 8px breathing edge follows the existing near-fullscreen portal
+ * modal language while using the entire available viewport.
+ */
+body.portal-skin-scope
+  [data-sep-managed-modal="true"][data-sep-modal-maximized="true"] {
+  align-items: stretch !important;
+  justify-content: stretch !important;
+  padding: 8px !important;
+}
+
+body.portal-skin-scope
+  [data-sep-managed-modal-frame="true"][data-sep-modal-maximized="true"] {
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+}
+
+/*
+ * Some semantic dialogs are themselves the visible frame rather than
+ * an overlay containing a frame.
+ */
+body.portal-skin-scope
+  [data-sep-managed-modal="true"][data-sep-managed-modal-frame="true"]
+  [data-sep-modal-maximized="true"] {
+  position: fixed !important;
+  inset: 8px !important;
+  width: auto !important;
+  height: auto !important;
+  max-width: none !important;
+  max-height: none !important;
+}
+
+/* Canonical maximise / restore control. */
+body.portal-skin-scope
+  .sep-modal-size-toggle {
+  /* Geometry comes from the neighbouring Minimize/Close control. */
+  flex: 0 0 auto;
+  cursor: pointer;
+  z-index: 80;
+  line-height: 1;
+  letter-spacing: 0 !important;
+}
+
+body.portal-skin-scope
+  .sep-modal-size-toggle:focus-visible {
+  outline: 1px solid
+    rgb(var(--sep-colour-9b7446));
+  outline-offset: 2px;
+}
+
+/*
+ * Fallback geometry is used only for the rare modal that has no
+ * Minimize OR Close control from which we can inherit sizing.
+ */
+body.portal-skin-scope
+  .sep-modal-size-toggle--fallback {
+  display: inline-flex;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid
+    color-mix(
+      in srgb,
+      rgb(var(--sep-colour-60482e)) 50%,
+      transparent
+    ) !important;
+  border-radius: 0 !important;
+  background: rgb(var(--sep-colour-18110d)) !important;
+  color: rgb(var(--sep-colour-bca27b)) !important;
+  font-family: Georgia, serif;
+  font-size: 15px;
+}
+
+/*
+ * Only modals with no existing minimise/close control need a floating
+ * placement. Normal modals inherit their existing header flex layout.
+ */
+body.portal-skin-scope
+  .sep-modal-size-toggle[data-sep-modal-toggle-floating="true"] {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+/*
+ * A maximised modal frame must allow its own pre-existing scroll/flex
+ * regions to calculate height correctly.
+ */
+body.portal-skin-scope
+  [data-sep-managed-modal-frame="true"][data-sep-modal-maximized="true"]
+  > * {
+  min-height: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.portal-skin-scope
+    .sep-modal-size-toggle {
+    transition: none !important;
+  }
+}
+
+
+/* ==================================================================
+   PORTAL MODAL ROOT — TRUE VIEWPORT MAXIMIZATION
+   ==================================================================
+   Some older portal modals render their semantic dialog inside a page
+   container rather than as their own fixed viewport overlay.
+   ================================================================== */
+
+body.portal-skin-scope
+  [data-sep-managed-modal="true"] {
+  position: fixed !important;
+  inset: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  z-index: 9990 !important;
+}
+
+body.portal-skin-scope
+  [data-sep-managed-modal="true"][data-sep-modal-maximized="true"] {
+  display: flex !important;
+  align-items: stretch !important;
+  justify-content: stretch !important;
+  padding: 8px !important;
+}
+
+body.portal-skin-scope
+  [data-sep-managed-modal="true"][data-sep-modal-maximized="false"] {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+body.portal-skin-scope
+  [data-sep-managed-modal="true"][data-sep-modal-maximized="false"]
+  [data-sep-managed-modal-frame="true"] {
+  max-width: revert !important;
+  max-height: revert !important;
+  margin: auto !important;
+}
