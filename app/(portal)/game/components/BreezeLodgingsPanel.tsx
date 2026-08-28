@@ -35,9 +35,9 @@ const TIER_LABELS = {
 } as const;
 
 const TIER_DESCRIPTIONS = {
-  gilded: "The finest chambers of the house.",
-  wayfarer: "Comfortable rooms for travellers.",
-  hearth: "Simple rooms with the necessities.",
+  gilded: "The finest chambers of the house. Up to 3 Guests.",
+  wayfarer: "Comfortable rooms for travellers. Up to 2 Guests.",
+  hearth: "Simple rooms with the necessities. Up to 1 Guest.",
 } as const;
 
 function formatRentalEnd(value: string | null) {

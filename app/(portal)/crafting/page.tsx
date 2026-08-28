@@ -279,7 +279,7 @@ export default async function CraftingPage() {
 
       <main
         data-crafting-page
-        className="mx-auto flex h-full max-h-full w-full max-w-none flex-col overflow-hidden p-5 sm:p-7 lg:p-8"
+        className="mx-auto flex h-full max-h-full w-full max-w-none flex-col overflow-y-auto overscroll-contain p-4 sm:p-7 lg:p-8 xl:overflow-hidden"
       >
         <header className="relative mb-4 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 px-6 py-4 sm:px-8">
           <div className="absolute inset-0 opacity-30 [background-image:radial-gradient(circle_at_top_right,rgba(var(--sep-rgb-145-105-60),0.35),transparent_42%)]" />
@@ -305,7 +305,7 @@ export default async function CraftingPage() {
           </div>
         </header>
 
-        <div className="min-h-0 flex-1 overflow-hidden">
+        <div className="min-h-0 flex-1 overflow-visible xl:overflow-hidden">
           <CraftingWorkbench
             recipes={recipes}
             inventory={inventory}

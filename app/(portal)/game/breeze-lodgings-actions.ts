@@ -206,6 +206,102 @@ export async function inviteBreezeLodgingGuest(
       };
     }
 
+    const {
+      data: lodgingRoom,
+      error: lodgingRoomError,
+    } = await admin
+      .from("breeze_lodging_rooms")
+      .select("tier")
+      .eq("room_id", roomId)
+      .maybeSingle();
+
+    if (lodgingRoomError) {
+      throw new Error(
+        lodgingRoomError.message,
+      );
+    }
+
+    if (!lodgingRoom) {
+      return {
+        ok: false,
+        message:
+          "This is not a Breeze Lodgings room.",
+      };
+    }
+
+    const guestLimitByTier = {
+      hearth: 1,
+      wayfarer: 2,
+      gilded: 3,
+    } as const;
+
+    const roomTier =
+      lodgingRoom.tier as keyof typeof guestLimitByTier;
+
+    const guestLimit =
+      guestLimitByTier[roomTier];
+
+    if (!guestLimit) {
+      return {
+        ok: false,
+        message:
+          "This room has an invalid lodging tier.",
+      };
+    }
+
+    const [
+      activeGuestCountResult,
+      pendingInvitationCountResult,
+    ] = await Promise.all([
+      admin
+        .from("breeze_lodging_guests")
+        .select("id", {
+          count: "exact",
+          head: true,
+        })
+        .eq("rental_id", rental.id)
+        .eq("status", "active"),
+
+      admin
+        .from("breeze_lodging_invitations")
+        .select("id", {
+          count: "exact",
+          head: true,
+        })
+        .eq("rental_id", rental.id)
+        .eq("room_id", roomId)
+        .eq("status", "pending"),
+    ]);
+
+    const guestCountError =
+      activeGuestCountResult.error ??
+      pendingInvitationCountResult.error;
+
+    if (guestCountError) {
+      throw new Error(
+        guestCountError.message,
+      );
+    }
+
+    const occupiedGuestSlots =
+      (activeGuestCountResult.count ?? 0) +
+      (pendingInvitationCountResult.count ?? 0);
+
+    if (occupiedGuestSlots >= guestLimit) {
+      const tierLabel =
+        roomTier === "hearth"
+          ? "Hearth Room"
+          : roomTier === "wayfarer"
+            ? "Wayfarer Room"
+            : "Gilded Chamber";
+
+      return {
+        ok: false,
+        message:
+          `This ${tierLabel} allows a maximum of ${guestLimit} invitee${guestLimit === 1 ? "" : "s"}. Remove a guest or withdraw a pending invitation first.`,
+      };
+    }
+
     const authenticated =
       await createClient();
 

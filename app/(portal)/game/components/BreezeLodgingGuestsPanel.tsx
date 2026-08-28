@@ -40,6 +40,13 @@ export function BreezeLodgingGuestsPanel({
     useState<string | null>(null);
   const [ok, setOk] = useState(false);
 
+  const usedGuestSlots =
+    data.guests.length +
+    data.pendingInvitations.length;
+
+  const guestLimitReached =
+    usedGuestSlots >= data.guestLimit;
+
   useEffect(() => {
     const channel =
       supabase
@@ -98,7 +105,10 @@ export function BreezeLodgingGuestsPanel({
   function invite(
     characterId: string,
   ) {
-    if (pending) return;
+    if (
+      pending ||
+      guestLimitReached
+    ) return;
 
     setPendingId(characterId);
     setMessage(null);
@@ -183,15 +193,28 @@ export function BreezeLodgingGuestsPanel({
           </h3>
         </div>
 
-        <span className="text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a88d65))]">
-          Invite / Withdraw ▾
-        </span>
+        <div className="text-right">
+          <p className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806b50))]">
+            Guests {usedGuestSlots} / {data.guestLimit}
+          </p>
+          <span className="mt-0.5 block text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a88d65))]">
+            Invite / Withdraw ▾
+          </span>
+        </div>
       </summary>
 
       <div className="px-3 pb-3">
         <p className="mb-2 text-[8px] text-[rgb(var(--sep-colour-8f8271))]">
           Invitations last until this rental ends. Invited characters must accept before they can enter.
+          {" "}This room allows {data.guestLimit} invitee{data.guestLimit === 1 ? "" : "s"}.
+          Pending invitations count toward the limit.
         </p>
+
+        {guestLimitReached ? (
+          <p className="mb-2 border border-[rgb(var(--sep-colour-765937))]/45 bg-[rgb(var(--sep-colour-231a12))] px-2 py-1.5 text-[8px] text-[rgb(var(--sep-colour-cab08b))]">
+            Guest limit reached. Remove a guest or withdraw a pending invitation before inviting someone else.
+          </p>
+        ) : null}
 
         <div className="mt-2 grid gap-2 lg:grid-cols-2">
           <div className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-17110d))] p-2">
@@ -201,6 +224,7 @@ export function BreezeLodgingGuestsPanel({
               </span>
               <input
                 value={query}
+                disabled={guestLimitReached}
                 onChange={(event) =>
                   setQuery(
                     event.target.value,
@@ -224,7 +248,10 @@ export function BreezeLodgingGuestsPanel({
                       </span>
                       <button
                         type="button"
-                        disabled={pending}
+                        disabled={
+                          pending ||
+                          guestLimitReached
+                        }
                         onClick={() =>
                           invite(
                             character.id,

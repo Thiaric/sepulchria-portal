@@ -161,6 +161,8 @@ export type BreezeLodgingManageData = {
   roomId: string;
   roomName: string;
   rentalId: string;
+  tier: "hearth" | "wayfarer" | "gilded";
+  guestLimit: number;
   guests: BreezeLodgingGuestCharacter[];
   pendingInvitations: BreezeLodgingPendingInvitation[];
   candidates: BreezeLodgingGuestCharacter[];
@@ -204,6 +206,7 @@ export async function getBreezeLodgingManageData(
 
   const [
     roomResult,
+    lodgingRoomResult,
     guestRowsResult,
     pendingRowsResult,
     approvedCharactersResult,
@@ -212,6 +215,12 @@ export async function getBreezeLodgingManageData(
       .from("rooms")
       .select("name")
       .eq("id", roomId)
+      .single(),
+
+    admin
+      .from("breeze_lodging_rooms")
+      .select("tier")
+      .eq("room_id", roomId)
       .single(),
 
     admin
@@ -245,6 +254,7 @@ export async function getBreezeLodgingManageData(
 
   const combinedError =
     roomResult.error ??
+    lodgingRoomResult.error ??
     guestRowsResult.error ??
     pendingRowsResult.error ??
     approvedCharactersResult.error;
@@ -252,6 +262,12 @@ export async function getBreezeLodgingManageData(
   if (combinedError) {
     throw new Error(
       `Unable to load Breeze Lodgings invitations: ${combinedError.message}`,
+    );
+  }
+
+  if (!lodgingRoomResult.data) {
+    throw new Error(
+      "Unable to load Breeze Lodgings room tier.",
     );
   }
 
@@ -314,12 +330,29 @@ export async function getBreezeLodgingManageData(
           invitation !== null,
       );
 
+  const tier =
+    lodgingRoomResult.data.tier as
+      | "hearth"
+      | "wayfarer"
+      | "gilded";
+
+  const guestLimitByTier = {
+    hearth: 1,
+    wayfarer: 2,
+    gilded: 3,
+  } as const;
+
+  const guestLimit =
+    guestLimitByTier[tier];
+
   return {
     roomId,
     roomName:
       roomResult.data?.name ??
       "The Breeze Lodgings",
     rentalId: rental.id,
+    tier,
+    guestLimit,
     guests: allCharacters.filter(
       (character) =>
         guestIds.has(character.id),

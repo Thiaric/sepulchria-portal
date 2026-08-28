@@ -379,8 +379,8 @@ export function CraftingWorkbench({
     (selectedRecipe?.ingredients.length ?? 0) <= 4;
 
   return (
-    <div className="grid h-full max-h-full min-h-0 w-full gap-4 overflow-hidden xl:grid-cols-[1fr_1fr_2fr]">
-      <section className="flex h-full min-h-0 flex-col overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95">
+    <div className="grid h-auto max-h-none min-h-0 w-full gap-4 overflow-visible xl:h-full xl:max-h-full xl:overflow-hidden xl:grid-cols-[1fr_1fr_2fr]">
+      <section className="flex min-h-0 flex-col overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 xl:h-full">
         <div className="shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/35 px-4 py-3">
           <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-886c48))]">
             Learned Knowledge
@@ -397,7 +397,7 @@ export function CraftingWorkbench({
           </div>
         </div>
 
-        <div className="min-h-0 flex-1 space-y-2 overflow-y-auto p-3">
+        <div className="min-h-0 flex-1 space-y-2 overflow-y-auto p-3 max-h-48 xl:max-h-none">
           {recipes.map(
             (recipe) => {
               const active =
@@ -462,7 +462,7 @@ export function CraftingWorkbench({
         </div>
       </section>
 
-      <section className="flex h-full min-h-0 flex-col overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95">
+      <section className="flex min-h-0 flex-col overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 xl:h-full">
         <div className="shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/35 px-4 py-3">
           <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-886c48))]">
             Materials at Hand
@@ -477,7 +477,7 @@ export function CraftingWorkbench({
           </p>
         </div>
 
-        <div className="min-h-0 flex-1 space-y-2 overflow-y-auto p-3">
+        <div className="min-h-0 flex-1 space-y-2 overflow-y-auto p-3 max-h-72 xl:max-h-none">
           {inventory.length ? (
             inventory.map(
               (item) => {
@@ -560,7 +560,7 @@ export function CraftingWorkbench({
         </div>
       </section>
 
-      <section className="flex h-full min-h-0 flex-col overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95">
+      <section className="flex min-h-0 flex-col overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 xl:h-full">
         <div className="shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/35 px-5 py-4">
           <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-886c48))]">
             Crafting Bench
