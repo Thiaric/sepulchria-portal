@@ -48,7 +48,7 @@ export async function playHouseOfChances() {
     ok: true as const,
     message: result.matched_rule_name
       ? `Fortune smiles: ${result.matched_rule_name}.`
-      : "No prize this time.",
+      : null,
     result,
   };
 }

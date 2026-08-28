@@ -134,6 +134,12 @@ export default async function AdminLayout({
               </AdminNavigationLink>
             ) : null}
 
+            {can("house_of_chances") ? (
+              <AdminNavigationLink href="/admin/house-of-chances">
+                House of Chances
+              </AdminNavigationLink>
+            ) : null}
+
             {can("items") ? (
               <AdminNavigationLink href="/admin/items/vault">
                 Item Vault

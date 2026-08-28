@@ -164,13 +164,13 @@ export function HouseOfChancesPanel({
                 key={index}
                 className={[
                   "relative flex aspect-[5/4] items-center justify-center overflow-hidden",
-                  "border border-[rgb(var(--sep-colour-8b673f))]/70",
+                  "border border-[rgb(var(--sep-colour-987344))]",
                   "bg-[radial-gradient(circle_at_center,rgb(var(--sep-colour-2b2117)),rgb(var(--sep-colour-100c09))_72%)]",
                   "shadow-[inset_0_0_18px_rgba(196,150,82,0.16),0_0_10px_rgba(0,0,0,0.35)]",
                   spinning ? "animate-pulse" : "",
                 ].join(" ")}
               >
-                <div className="pointer-events-none absolute inset-[3px] border border-[rgb(var(--sep-colour-b58a4c))]/25" />
+                <div className="pointer-events-none absolute inset-[3px] border border-[rgb(var(--sep-colour-987344))]/35" />
                 <span className="font-serif text-3xl tabular-nums text-[rgb(var(--sep-colour-efd6a8))] sm:text-4xl">
                   {value ?? "?"}
                 </span>
@@ -214,7 +214,7 @@ export function HouseOfChancesPanel({
                 Result
               </p>
               <p className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-dfc99f))]">
-                {result.matched_rule_name ?? "No Prize"}
+                {result.matched_rule_name ?? "No winnings this time"}
               </p>
 
               {result.reward_snapshot.length ? (
@@ -228,23 +228,14 @@ export function HouseOfChancesPanel({
                     </span>
                   ))}
                 </div>
-              ) : (
-                <p className="mt-2 text-[9px] text-[rgb(var(--sep-colour-756958))]">
-                  No winnings this time.
-                </p>
-              )}
+              ) : null}
             </div>
           ) : null}
 
-          {message ? (
+          {message && !result ? (
             <p
               aria-live="polite"
-              className={[
-                "mt-3 text-center text-[9px]",
-                result
-                  ? "text-[rgb(var(--sep-colour-c3a778))]"
-                  : "text-red-400",
-              ].join(" ")}
+              className="mt-3 text-center text-[9px] text-red-400"
             >
               {message}
             </p>
