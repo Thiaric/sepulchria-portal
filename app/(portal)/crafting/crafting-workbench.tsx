@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 
 import { craftRecipeAction } from "./actions";
 import { usePortalSkin } from "@/components/portal/portal-skin-provider";
+import { formatRemnants } from "@/lib/economy/currency";
 
 const CRAFTING_SKIN_ACCENTS: Record<string, string> = {
   sepulchria: "#b68b4f",
@@ -64,6 +65,14 @@ export type KnownCraftingRecipe = {
     description: string;
     image_url: string | null;
     quality: string;
+    category_name: string | null;
+    subcategory_name: string | null;
+    reference_value: number | null;
+    transfer_policy: string;
+    is_quest_item: boolean;
+    stackable: boolean;
+    max_stack: number | null;
+    is_usable: boolean;
   };
   ingredients: CraftingIngredient[];
 };
@@ -76,6 +85,12 @@ type CraftingWorkbenchProps = {
 type Notice = {
   tone: "success" | "error";
   text: string;
+};
+
+type CraftedReveal = {
+  quantity: number;
+  recipeName: string;
+  item: KnownCraftingRecipe["result"];
 };
 
 function qualityLabel(value: string) {
@@ -117,7 +132,7 @@ function ItemImage({
         <img
           src={src}
           alt=""
-          className="h-full w-full object-contain p-1"
+          className="h-full w-full object-contain p-1 transition-transform duration-500 ease-out group-hover:scale-[1.045]"
         />
       ) : (
         <span className="font-serif text-xl text-[rgb(var(--sep-colour-756247))]">
@@ -200,6 +215,13 @@ export function CraftingWorkbench({
     draggedItemId,
     setDraggedItemId,
   ] = useState<string | null>(
+    null,
+  );
+
+  const [
+    craftedReveal,
+    setCraftedReveal,
+  ] = useState<CraftedReveal | null>(
     null,
   );
 
@@ -374,6 +396,13 @@ export function CraftingWorkbench({
         });
 
         if (result.success) {
+          setCraftedReveal({
+            quantity:
+              selectedRecipe.result_quantity,
+            recipeName:
+              selectedRecipe.name,
+            item: selectedRecipe.result,
+          });
           setFilledSlots({});
           router.refresh();
         }
@@ -403,7 +432,8 @@ export function CraftingWorkbench({
     (selectedRecipe?.ingredients.length ?? 0) <= 4;
 
   return (
-    <div className="grid h-auto max-h-none min-h-0 w-full gap-3 overflow-visible xl:h-full xl:max-h-full xl:grid-cols-[0.9fr_0.9fr_2.2fr] xl:overflow-hidden">
+    <>
+      <div className="grid h-auto max-h-none min-h-0 w-full gap-3 overflow-visible xl:h-full xl:max-h-full xl:grid-cols-[0.9fr_0.9fr_2.2fr] xl:overflow-hidden">
       <section
         className="relative flex min-h-0 flex-col overflow-hidden border bg-[rgb(var(--sep-colour-120d0a))]/95 xl:h-full"
         style={{
@@ -450,21 +480,25 @@ export function CraftingWorkbench({
                 key={recipe.id}
                 type="button"
                 onClick={() => chooseRecipe(recipe.id)}
-                className="relative flex w-full items-center gap-3 overflow-hidden border px-3 py-2.5 text-left transition duration-200"
+                className="group relative flex w-full items-center gap-3 overflow-hidden border px-3 py-2.5 text-left transition duration-300 ease-out hover:-translate-y-px"
                 style={{
                   borderColor: active
                     ? craftingAccent
                     : `color-mix(in srgb, ${craftingAccent} 20%, transparent)`,
-                  background: active
-                    ? `linear-gradient(90deg, color-mix(in srgb, ${craftingAccent} 12%, rgb(var(--sep-colour-271c12))), rgb(var(--sep-colour-100c09)))`
-                    : "rgb(var(--sep-colour-100c09))",
+                  backgroundColor: "transparent",
+                  backdropFilter: "none",
                   boxShadow: active
-                    ? `inset 3px 0 0 ${craftingAccent}, 0 0 14px color-mix(in srgb, ${craftingAccent} 8%, transparent)`
-                    : "none",
+                    ? `inset 3px 0 0 ${craftingAccent}, 0 5px 14px rgba(0,0,0,0.16)`
+                    : "0 3px 10px rgba(0,0,0,0.11)",
                 }}
               >
-                <ItemImage src={recipe.result.image_url} size="sm" fallback="✦" />
-                <div className="min-w-0 flex-1">
+                <span aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 opacity-10"
+                  style={{ backgroundImage: `url("/pattern/parchment.png")`, backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}
+                />
+                <div className="relative z-10 shrink-0">
+                  <ItemImage src={recipe.result.image_url} size="sm" fallback="✦" />
+                </div>
+                <div className="relative z-10 min-w-0 flex-1">
                   <p className="line-clamp-2 font-serif text-[13px] leading-4 text-[rgb(var(--sep-colour-ead6ad))]">
                     {recipe.name}
                   </p>
@@ -531,7 +565,7 @@ export function CraftingWorkbench({
                   }}
                   onDragEnd={() => setDraggedItemId(null)}
                   onDoubleClick={() => fillIngredient(item.id)}
-                  className="flex w-full items-center gap-3 border px-3 py-2 text-left transition duration-200"
+                  className="group relative flex w-full items-center gap-3 overflow-hidden border px-3 py-2 text-left transition duration-300 ease-out hover:-translate-y-0.5 hover:scale-[1.008]"
                   style={{
                     borderColor:
                       draggedItemId === item.id
@@ -539,16 +573,20 @@ export function CraftingWorkbench({
                         : usedByRecipe
                           ? `color-mix(in srgb, ${craftingAccent} 42%, transparent)`
                           : `color-mix(in srgb, ${craftingAccent} 16%, transparent)`,
-                    background:
+                    backgroundColor: "transparent",
+                    opacity: usedByRecipe || draggedItemId === item.id ? 1 : 0.78,
+                    boxShadow:
                       draggedItemId === item.id
-                        ? `color-mix(in srgb, ${craftingAccent} 12%, rgb(var(--sep-colour-271c12)))`
+                        ? `0 0 16px color-mix(in srgb, ${craftingAccent} 16%, transparent)`
                         : usedByRecipe
-                          ? `color-mix(in srgb, ${craftingAccent} 6%, rgb(var(--sep-colour-17110d)))`
-                          : "rgb(var(--sep-colour-100c09))",
-                    opacity: usedByRecipe || draggedItemId === item.id ? 1 : 0.72,
+                          ? `0 4px 13px rgba(0,0,0,0.16), inset 0 0 12px color-mix(in srgb, ${craftingAccent} 4%, transparent)`
+                          : "0 2px 8px rgba(0,0,0,0.10)",
                   }}
                 >
-                  <ItemImage src={item.image_url} />
+                  <span aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 opacity-10"
+                    style={{ backgroundImage: `url("/pattern/sparkle.gif")`, backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}
+                  />
+                  <div className="relative z-10 shrink-0"><ItemImage src={item.image_url} /></div>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-[10px] text-[rgb(var(--sep-colour-d4bd94))]">
                       {item.name}
@@ -631,8 +669,13 @@ export function CraftingWorkbench({
             className="relative flex min-h-[260px] flex-1 items-center justify-center overflow-auto border p-2 sm:p-3 xl:min-h-[280px] 2xl:min-h-[320px]"
             style={{
               borderColor: `color-mix(in srgb, ${craftingAccent} 25%, transparent)`,
-              background: `radial-gradient(circle at center, color-mix(in srgb, ${craftingAccent} 7%, rgb(var(--sep-colour-0d0907))), rgb(var(--sep-colour-080605)) 72%)`,
-              boxShadow: "inset 0 0 42px rgba(0,0,0,0.5)",
+              backgroundColor: "transparent",
+              backgroundImage: `url("/pattern/wooden.png")`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+              boxShadow:
+                "inset 0 0 24px rgba(0,0,0,0.18)",
             }}
           >
             <div
@@ -718,21 +761,22 @@ export function CraftingWorkbench({
                       fillIngredient(itemId);
                       setDraggedItemId(null);
                     }}
-                    className={`${spatialLayout ? ingredientPosition(index, selectedRecipe.ingredients.length) : ""} relative flex h-auto min-h-[70px] w-full max-w-[160px] items-center border transition duration-200 sm:min-h-[76px] sm:max-w-[180px] xl:max-w-[190px]`}
+                    className={`${spatialLayout ? ingredientPosition(index, selectedRecipe.ingredients.length) : ""} group relative flex h-auto min-h-[70px] w-full max-w-[160px] items-center border transition duration-300 ease-out hover:-translate-y-px sm:min-h-[76px] sm:max-w-[180px] xl:max-w-[190px]`}
                     style={{
                       borderColor: filled
                         ? craftingAccent
                         : draggingMatch
                           ? `color-mix(in srgb, ${craftingAccent} 72%, transparent)`
                           : `color-mix(in srgb, ${craftingAccent} 25%, transparent)`,
-                      background: filled
-                        ? `color-mix(in srgb, ${craftingAccent} 9%, rgb(var(--sep-colour-17110d)))`
-                        : "rgb(var(--sep-colour-100c09))",
+                      backgroundColor: "transparent",
                       boxShadow: filled
                         ? `0 0 18px color-mix(in srgb, ${craftingAccent} 13%, transparent), inset 0 0 14px color-mix(in srgb, ${craftingAccent} 6%, transparent)`
                         : "none",
                     }}
                   >
+                    <span aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 opacity-10"
+                      style={{ backgroundImage: `url("/pattern/sparkle.gif")`, backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}
+                    />
                     <button
                       type="button"
                       onClick={() => {
@@ -868,6 +912,271 @@ export function CraftingWorkbench({
           </div>
         </div>
       </section>
-    </div>
+      </div>
+
+      {craftedReveal ? (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="crafted-item-title"
+          className="fixed inset-0 z-[120] flex items-center justify-center bg-black/75 p-4 backdrop-blur-[3px] sm:p-8"
+        >
+          <div
+            className="relative w-full max-w-2xl border bg-[rgb(var(--sep-colour-0d0907))] p-[5px] shadow-2xl"
+            style={{
+              borderColor: craftingAccent,
+              boxShadow: `0 24px 70px rgba(0,0,0,0.72), 0 0 34px color-mix(in srgb, ${craftingAccent} 18%, transparent)`,
+            }}
+          >
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 opacity-60"
+              style={{
+                background: `radial-gradient(circle at 50% 0%, color-mix(in srgb, ${craftingAccent} 18%, transparent), transparent 52%)`,
+              }}
+            />
+
+            <div
+              className="relative border bg-[linear-gradient(145deg,rgb(var(--sep-colour-17110d)),rgb(var(--sep-colour-0d0907)))]"
+              style={{
+                borderColor: `color-mix(in srgb, ${craftingAccent} 34%, transparent)`,
+              }}
+            >
+              <div className="flex items-center justify-between gap-4 border-b border-[rgb(var(--sep-colour-60482e))]/35 px-5 py-3">
+                <div>
+                  <p
+                    className="text-[7px] uppercase tracking-[0.3em]"
+                    style={{ color: craftingAccent }}
+                  >
+                    Craft complete
+                  </p>
+                  <p className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-e7d2aa))]">
+                    Crafting complete
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setCraftedReveal(null)
+                  }
+                  aria-label="Close crafted item"
+                  className="flex h-9 w-9 items-center justify-center border text-[12px] transition duration-200 hover:bg-[rgb(var(--sep-colour-271c12))]"
+                  style={{
+                    borderColor: `color-mix(in srgb, ${craftingAccent} 42%, transparent)`,
+                    color: craftingAccent,
+                  }}
+                >
+                  ×
+                </button>
+              </div>
+
+              <div className="p-5 sm:p-6">
+                <article
+                  className="relative overflow-hidden border bg-[rgb(var(--sep-colour-100c09))] p-4 sm:p-5"
+                  style={{
+                    borderColor: `color-mix(in srgb, ${craftingAccent} 48%, transparent)`,
+                    boxShadow: `inset 0 0 28px color-mix(in srgb, ${craftingAccent} 5%, transparent)`,
+                  }}
+                >
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute right-[-45px] top-[-45px] h-40 w-40 rotate-45 border"
+                    style={{
+                      borderColor: `color-mix(in srgb, ${craftingAccent} 12%, transparent)`,
+                    }}
+                  />
+
+                  <div className="relative grid gap-5 sm:grid-cols-[180px_1fr]">
+                    <div
+                      className="flex aspect-square items-center justify-center overflow-hidden border bg-black/25 p-3"
+                      style={{
+                        borderColor: `color-mix(in srgb, ${craftingAccent} 40%, transparent)`,
+                        boxShadow: `inset 0 0 26px rgba(0,0,0,0.48), 0 0 18px color-mix(in srgb, ${craftingAccent} 8%, transparent)`,
+                      }}
+                    >
+                      {craftedReveal.item.image_url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={
+                            craftedReveal.item
+                              .image_url
+                          }
+                          alt=""
+                          className="h-full w-full object-contain"
+                        />
+                      ) : (
+                        <span
+                          className="font-serif text-5xl"
+                          style={{
+                            color:
+                              craftingAccent,
+                          }}
+                        >
+                          ◇
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+                            {
+                              craftedReveal.recipeName
+                            }
+                          </p>
+                          <h2
+                            id="crafted-item-title"
+                            className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-ead6ad))]"
+                          >
+                            {
+                              craftedReveal.item
+                                .name
+                            }
+                          </h2>
+                        </div>
+
+                        <span
+                          className="shrink-0 border px-2.5 py-1 font-serif text-sm"
+                          style={{
+                            borderColor: `color-mix(in srgb, ${craftingAccent} 38%, transparent)`,
+                            color:
+                              craftingAccent,
+                          }}
+                        >
+                          ×
+                          {
+                            craftedReveal.quantity
+                          }
+                        </span>
+                      </div>
+
+                      <div className="mt-3 flex flex-wrap gap-1.5">
+                        <span
+                          className="border px-2 py-1 text-[7px] uppercase tracking-[0.13em]"
+                          style={{
+                            borderColor: `color-mix(in srgb, ${craftingAccent} 34%, transparent)`,
+                            color:
+                              craftingAccent,
+                          }}
+                        >
+                          {qualityLabel(
+                            craftedReveal.item
+                              .quality,
+                          )}
+                        </span>
+
+                        {craftedReveal.item
+                          .category_name ? (
+                          <span className="border border-[rgb(var(--sep-colour-60482e))]/45 px-2 py-1 text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-bba27c))]">
+                            {
+                              craftedReveal.item
+                                .category_name
+                            }
+                          </span>
+                        ) : null}
+
+                        {craftedReveal.item
+                          .subcategory_name ? (
+                          <span className="border border-[rgb(var(--sep-colour-60482e))]/45 px-2 py-1 text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-9f8a6b))]">
+                            {
+                              craftedReveal.item
+                                .subcategory_name
+                            }
+                          </span>
+                        ) : null}
+
+                        {craftedReveal.item
+                          .is_quest_item ? (
+                          <span className="border border-violet-900/55 px-2 py-1 text-[7px] uppercase tracking-[0.13em] text-violet-300">
+                            Quest item
+                          </span>
+                        ) : null}
+
+                        {craftedReveal.item
+                          .is_usable ? (
+                          <span className="border border-emerald-900/55 px-2 py-1 text-[7px] uppercase tracking-[0.13em] text-emerald-300">
+                            Usable
+                          </span>
+                        ) : null}
+
+                        {craftedReveal.item
+                          .stackable ? (
+                          <span className="border border-[rgb(var(--sep-colour-60482e))]/45 px-2 py-1 text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-9f8a6b))]">
+                            Stackable
+                            {craftedReveal.item
+                              .max_stack
+                              ? ` · ${craftedReveal.item.max_stack} max`
+                              : ""}
+                          </span>
+                        ) : null}
+                      </div>
+
+                      <p className="mt-4 text-[10px] leading-5 text-[rgb(var(--sep-colour-bbaa8f))]">
+                        {
+                          craftedReveal.item
+                            .description
+                        }
+                      </p>
+
+                      <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                        <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-black/15 px-3 py-2">
+                          <p className="text-[6px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-806b50))]">
+                            Transfer
+                          </p>
+                          <p className="mt-1 text-[9px] capitalize text-[rgb(var(--sep-colour-c8b18d))]">
+                            {
+                              craftedReveal.item
+                                .transfer_policy
+                            }
+                          </p>
+                        </div>
+
+                        <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-black/15 px-3 py-2">
+                          <p className="text-[6px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-806b50))]">
+                            Reference value
+                          </p>
+                          <p className="mt-1 font-serif text-[11px] text-[rgb(var(--sep-colour-d7bb88))]">
+                            {craftedReveal.item
+                              .reference_value !==
+                            null
+                              ? `${formatRemnants(
+                                  craftedReveal
+                                    .item
+                                    .reference_value,
+                                )} R`
+                              : "—"}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+
+                <div className="mt-4 flex justify-end">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setCraftedReveal(null)
+                    }
+                    className="border px-6 py-2.5 text-[8px] uppercase tracking-[0.18em] transition duration-200 active:translate-y-px"
+                    style={{
+                      borderColor:
+                        craftingAccent,
+                      background: `linear-gradient(180deg, color-mix(in srgb, ${craftingAccent} 14%, rgb(var(--sep-colour-3b2919))), rgb(var(--sep-colour-21170f)))`,
+                      color: `color-mix(in srgb, ${craftingAccent} 38%, rgb(var(--sep-colour-efd6a8)))`,
+                      boxShadow: `0 0 14px color-mix(in srgb, ${craftingAccent} 12%, transparent)`,
+                    }}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
+    </>
   );
 }

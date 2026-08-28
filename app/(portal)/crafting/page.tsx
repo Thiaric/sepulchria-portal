@@ -18,6 +18,11 @@ type RecipeRow = {
   sort_order: number;
 };
 
+type NamedRelation =
+  | { name: string }
+  | { name: string }[]
+  | null;
+
 type ItemRow = {
   id: string;
   name: string;
@@ -25,7 +30,22 @@ type ItemRow = {
   description: string;
   image_url: string | null;
   quality: string;
+  reference_value?: number | null;
+  transfer_policy?: string;
+  is_quest_item?: boolean;
+  stackable?: boolean;
+  max_stack?: number | null;
+  is_usable?: boolean;
+  category?: NamedRelation;
+  subcategory?: NamedRelation;
 };
+
+function relationName(value: NamedRelation | undefined) {
+  if (!value) return null;
+  return Array.isArray(value)
+    ? value[0]?.name ?? null
+    : value.name;
+}
 
 type IngredientRow = {
   recipe_id: string;
@@ -132,7 +152,22 @@ export default async function CraftingPage() {
       resultItemIds.length
         ? supabase
             .from("items")
-            .select("id, name, slug, description, image_url, quality")
+            .select(`
+              id,
+              name,
+              slug,
+              description,
+              image_url,
+              quality,
+              reference_value,
+              transfer_policy,
+              is_quest_item,
+              stackable,
+              max_stack,
+              is_usable,
+              category:item_categories(name),
+              subcategory:item_subcategories(name)
+            `)
             .in("id", resultItemIds)
         : Promise.resolve({ data: [] as ItemRow[], error: null }),
       inventoryItemIds.length && ingredientCategoryResult.data?.id
@@ -225,7 +260,22 @@ export default async function CraftingPage() {
         description: recipe.description,
         result_quantity: recipe.result_quantity,
         sort_order: recipe.sort_order,
-        result,
+        result: {
+          id: result.id,
+          name: result.name,
+          slug: result.slug,
+          description: result.description,
+          image_url: result.image_url,
+          quality: result.quality,
+          category_name: relationName(result.category),
+          subcategory_name: relationName(result.subcategory),
+          reference_value: result.reference_value ?? null,
+          transfer_policy: result.transfer_policy ?? "free",
+          is_quest_item: result.is_quest_item ?? false,
+          stackable: result.stackable ?? false,
+          max_stack: result.max_stack ?? null,
+          is_usable: result.is_usable ?? false,
+        },
         ingredients: (ingredientsByRecipe.get(recipe.id) ?? []).sort(
           (a, b) => a.sort_order - b.sort_order,
         ),
