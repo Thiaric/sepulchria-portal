@@ -119,122 +119,6 @@ function cleanFields(
   );
 }
 
-function isOddJobsDirectRow(
-  row: AuditRow,
-) {
-  const source =
-    row.source?.toLowerCase() ??
-    "";
-
-  const entityType =
-    row.entity_type
-      ?.toLowerCase() ?? "";
-
-  const changed =
-    row.changed_fields ?? [];
-
-  const values = [
-    row.old_values,
-    row.new_values,
-    row.metadata,
-  ].filter(
-    (
-      value,
-    ): value is
-      Record<string, unknown> =>
-      Boolean(value),
-  );
-
-  const hasOddJobValue =
-    values.some((value) => {
-      const sourceType =
-        String(
-          value.source_type ??
-            "",
-        ).toLowerCase();
-
-      const reason =
-        String(
-          value.reason ?? "",
-        ).toLowerCase();
-
-      return (
-        sourceType ===
-          "odd_job" ||
-        reason.includes(
-          "odd jobs bureau",
-        )
-      );
-    });
-
-  const looksLikeJobClaim =
-    changed.includes(
-      "job_id",
-    ) &&
-    changed.includes(
-      "work_date",
-    ) &&
-    changed.includes(
-      "worked_at",
-    );
-
-  return (
-    source.includes(
-      "odd_job",
-    ) ||
-    source.includes(
-      "odd jobs",
-    ) ||
-    entityType.includes(
-      "odd_job",
-    ) ||
-    hasOddJobValue ||
-    looksLikeJobClaim
-  );
-}
-
-function isNearbyOddJobCurrencyRow(
-  row: AuditRow,
-  oddJobTimes: number[],
-) {
-  if (
-    row.event_type !==
-      "currency_changed"
-  ) {
-    return false;
-  }
-
-  const changed =
-    row.changed_fields ?? [];
-
-  if (
-    !changed.includes(
-      "balance",
-    )
-  ) {
-    return false;
-  }
-
-  const rowTime =
-    new Date(
-      row.created_at,
-    ).getTime();
-
-  if (
-    !Number.isFinite(rowTime)
-  ) {
-    return false;
-  }
-
-  return oddJobTimes.some(
-    (oddJobTime) =>
-      Math.abs(
-        rowTime -
-          oddJobTime,
-      ) <= 5000,
-  );
-}
-
 function actorLabel(
   row: AuditRow,
   staffView: boolean,
@@ -460,32 +344,8 @@ export async function GET(
   const rawRows =
     (data ?? []) as AuditRow[];
 
-  const oddJobTimes =
-    rawRows
-      .filter(
-        isOddJobsDirectRow,
-      )
-      .map((row) =>
-        new Date(
-          row.created_at,
-        ).getTime(),
-      )
-      .filter(
-        Number.isFinite,
-      );
-
   const rows =
     rawRows
-      .filter(
-        (row) =>
-          !isOddJobsDirectRow(
-            row,
-          ) &&
-          !isNearbyOddJobCurrencyRow(
-            row,
-            oddJobTimes,
-          ),
-      )
       .filter((row) => {
         const visible =
           cleanFields(

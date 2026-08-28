@@ -36,6 +36,7 @@ type PrivateLocationMessageTheme = {
 
 type RoomMessageListProps = {
   roomId: string;
+  roomName: string;
   messages: RoomMessage[];
   viewerCharacterId: string;
   canViewAllWhispers: boolean;
@@ -878,6 +879,7 @@ function CharacterPortrait({
 
 export default function RoomMessageList({
   roomId,
+  roomName,
   messages,
   viewerCharacterId,
   canViewAllWhispers,
@@ -1999,7 +2001,7 @@ export default function RoomMessageList({
           </div>
         ) : (
           <div className="flex h-full min-h-0 items-center justify-center px-6 py-10 text-center font-serif italic text-[rgb(var(--sep-colour-8e7d66))]">
-          The air awaits for a story to begin...
+          The air awaits for a story to begin at {roomName}...
           </div>
         )}
       </div>

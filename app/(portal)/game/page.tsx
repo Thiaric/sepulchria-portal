@@ -1145,6 +1145,7 @@ async function GameContent() {
       <>
         <RoomMessageList
           roomId={room.id}
+          roomName={room.name}
           messages={visibleMessages}
           viewerCharacterId={
             character.id

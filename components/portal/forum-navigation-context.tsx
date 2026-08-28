@@ -99,9 +99,9 @@ function JumpList({
             </span>
 
             {entry.preview ? (
-              <span className="mt-1 line-clamp-3 block text-[10px] leading-4 text-[rgb(var(--sep-colour-8f8271))]">
-                {entry.preview}
-              </span>
+              <span className="mt-1 block max-h-12 overflow-hidden text-[10px] leading-4 text-[rgb(var(--sep-colour-8f8271))]">
+  {entry.preview}
+</span>
             ) : null}
           </span>
 
@@ -982,10 +982,11 @@ export function ForumTopicNavigatorContext({
       }
 
       return replies.filter((entry) =>
-        entry.label
-          .toLowerCase()
-          .includes(query),
-      );
+  [entry.label, entry.preview ?? ""]
+    .join(" ")
+    .toLowerCase()
+    .includes(query),
+);
     }, [replies, search]);
 
   function jumpToMainReply() {
