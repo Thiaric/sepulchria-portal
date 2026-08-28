@@ -255,7 +255,7 @@ export async function inviteBreezeLodgingGuest(
     ] = await Promise.all([
       admin
         .from("breeze_lodging_guests")
-        .select("id", {
+        .select("character_id", {
           count: "exact",
           head: true,
         })
