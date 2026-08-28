@@ -560,6 +560,26 @@ export async function headAddMember(
     const admin =
       createPrivilegedClient();
 
+    const {
+      data: targetCharacter,
+      error: targetCharacterError,
+    } = await admin
+      .from("characters")
+      .select("id")
+      .eq("id", characterId)
+      .eq("status", "approved")
+      .eq("is_system", false)
+      .maybeSingle();
+
+    if (
+      targetCharacterError ||
+      !targetCharacter
+    ) {
+      throw new Error(
+        "That character cannot be added to an Order.",
+      );
+    }
+
     const { error } = await admin
       .from("order_memberships")
       .insert({

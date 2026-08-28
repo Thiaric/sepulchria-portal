@@ -612,6 +612,21 @@ export async function assignVaultItemToCharacter(formData: FormData) {
     const instanceId = requiredText(formData, "instanceId", "Vault Item");
     characterId = requiredText(formData, "characterId", "Character");
     if (!isUuid(instanceId) || !isUuid(characterId)) throw new Error("Invalid Vault Item or character.");
+
+    const {
+      data: targetCharacter,
+      error: targetCharacterError,
+    } = await supabase
+      .from("characters")
+      .select("id")
+      .eq("id", characterId)
+      .eq("is_system", false)
+      .maybeSingle();
+
+    if (targetCharacterError || !targetCharacter) {
+      throw new Error("System characters cannot receive Vault Items.");
+    }
+
     const { error } = await supabase.rpc("admin_vault_assign_unique_item", {
       p_instance_id: instanceId, p_character_id: characterId,
     });

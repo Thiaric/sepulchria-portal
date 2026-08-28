@@ -313,6 +313,7 @@ export async function inviteBreezeLodgingGuest(
       .select("id, display_name, status")
       .eq("id", guestCharacterId)
       .eq("status", "approved")
+      .eq("is_system", false)
       .maybeSingle();
 
     if (guestError) {

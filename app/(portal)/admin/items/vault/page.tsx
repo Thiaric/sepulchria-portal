@@ -114,6 +114,7 @@ export default async function AdminItemVaultPage({
     supabase
       .from("characters")
       .select("id, display_name, first_name, surname")
+      .eq("is_system", false)
       .order("display_name", { ascending: true }),
 
     supabase

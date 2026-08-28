@@ -319,6 +319,7 @@ export async function addOrderMember(
       .from("characters")
       .select("id, display_name")
       .eq("id", characterId)
+      .eq("is_system", false)
       .maybeSingle();
 
     if (characterError) {

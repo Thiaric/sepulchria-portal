@@ -30,6 +30,7 @@ type ContextMode =
   | "shapes"
   | "users"
   | "characters"
+  | "character_detail"
   | "tickets"
   | "sanctions"
   | "forum";
@@ -86,6 +87,14 @@ function getMode(
     return "characters";
   }
 
+  if (
+    /^\/admin\/characters\/[0-9a-f-]+$/i.test(
+      pathname,
+    )
+  ) {
+    return "character_detail";
+  }
+
   if (pathname === "/admin/tickets" || pathname.startsWith("/admin/tickets/")) {
     return "tickets";
   }
@@ -119,6 +128,12 @@ export function AdminContextPanel({
 
   if (!mode) {
     return null;
+  }
+
+  if (mode === "character_detail") {
+    return (
+      <AdminCharacterFieldNavigator />
+    );
   }
 
   if (mode === "forum") {
@@ -162,6 +177,154 @@ export function AdminContextPanel({
     <AdminRecordJumpContext
       mode={mode}
     />
+  );
+}
+
+type AdminCharacterJumpField = {
+  label: string;
+  aliases?: string[];
+};
+
+const ADMIN_CHARACTER_JUMP_FIELDS: AdminCharacterJumpField[] = [
+  { label: "Character administration", aliases: ["summary", "overview", "identity"] },
+  { label: "Legal name", aliases: ["name"] },
+  { label: "Display name" },
+  { label: "Pronouns" },
+  { label: "Gender" },
+  { label: "Sexual orientation" },
+  { label: "Date of birth", aliases: ["dob", "birthday", "age"] },
+  { label: "Birthplace" },
+  { label: "Origin" },
+  { label: "Public slug", aliases: ["slug"] },
+  { label: "Owner user ID", aliases: ["owner", "user"] },
+  { label: "Biography", aliases: ["bio"] },
+  { label: "Physical description", aliases: ["appearance", "physical"] },
+  { label: "Personality" },
+  { label: "Public notes", aliases: ["notes"] },
+  { label: "Relationships" },
+  { label: "Offgame", aliases: ["off game", "ooc"] },
+  { label: "First name" },
+  { label: "Surname", aliases: ["last name"] },
+  { label: "Portrait URL", aliases: ["portrait", "image"] },
+  { label: "Character music URL", aliases: ["music", "theme"] },
+  { label: "Character Health", aliases: ["health", "hp"] },
+  { label: "Character attributes", aliases: ["attributes", "stats"] },
+  { label: "Ancestry", aliases: ["race"] },
+  { label: "Public title", aliases: ["title"] },
+  { label: "Private staff notes", aliases: ["staff notes", "private notes"] },
+  { label: "Review and classification", aliases: ["review", "status", "classification"] },
+  { label: "Approval record", aliases: ["approval"] },
+  { label: "Danger zone", aliases: ["delete", "deletion"] },
+];
+
+function AdminCharacterFieldNavigator() {
+  const [search, setSearch] = useState("");
+
+  const query = search.trim().toLocaleLowerCase();
+
+  const visibleFields = ADMIN_CHARACTER_JUMP_FIELDS.filter((field) => {
+    if (!query) return true;
+    return [field.label, ...(field.aliases ?? [])]
+      .join(" ")
+      .toLocaleLowerCase()
+      .includes(query);
+  });
+
+  function jumpToField(label: string) {
+    const wanted = label.trim().toLocaleLowerCase();
+
+    const elements = Array.from(
+      document.querySelectorAll<HTMLElement>(
+        "main h1, main h2, main h3, main h4, main p, main div",
+      ),
+    );
+
+    const exact =
+      elements.find(
+        (element) =>
+          element.children.length === 0 &&
+          element.textContent?.trim().toLocaleLowerCase() === wanted,
+      ) ??
+      elements.find(
+        (element) =>
+          element.textContent?.trim().toLocaleLowerCase() === wanted,
+      );
+
+    if (!exact) return;
+
+    const target =
+      exact.closest<HTMLElement>("section, label") ??
+      exact.parentElement ??
+      exact;
+
+    target.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
+    const oldOutline = target.style.outline;
+    const oldOffset = target.style.outlineOffset;
+
+    target.style.outline =
+      "1px solid rgb(var(--sep-colour-8d6d3e))";
+    target.style.outlineOffset = "3px";
+
+    window.setTimeout(() => {
+      target.style.outline = oldOutline;
+      target.style.outlineOffset = oldOffset;
+    }, 1200);
+  }
+
+  return (
+    <div className="flex h-full min-h-0 flex-col">
+      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+        Character administration
+      </p>
+
+      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+        Jump to Field
+      </h2>
+
+      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+        Search this character record and jump directly to the field or section you need.
+      </p>
+
+      <input
+        type="search"
+        value={search}
+        onChange={(event) => setSearch(event.target.value)}
+        placeholder="Search fields..."
+        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-655c50))] focus:border-[rgb(var(--sep-colour-8a673f))]"
+      />
+
+      <p className="mb-2 mt-4 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))]">
+        Fields · {visibleFields.length}
+      </p>
+
+      <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">
+        {visibleFields.length ? (
+          visibleFields.map((field) => (
+            <button
+              key={field.label}
+              type="button"
+              onClick={() => jumpToField(field.label)}
+              className="flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))]"
+            >
+              <span className="truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))]">
+                {field.label}
+              </span>
+              <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))]">
+                →
+              </span>
+            </button>
+          ))
+        ) : (
+          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))]">
+            No matching fields.
+          </p>
+        )}
+      </div>
+    </div>
   );
 }
 
@@ -703,6 +866,7 @@ function AdminRecordJumpContext({
               .select(
                 "id, first_name, surname, display_name, status, updated_at",
               )
+              .eq("is_system", false)
               .order(
                 "updated_at",
                 {

@@ -246,6 +246,7 @@ export async function getBreezeLodgingManageData(
       .from("characters")
       .select("id, display_name")
       .eq("status", "approved")
+      .eq("is_system", false)
       .neq("id", characterId)
       .order("display_name", {
         ascending: true,

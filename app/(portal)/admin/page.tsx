@@ -19,7 +19,8 @@ export default async function AdminPage() {
       .select("*", {
         count: "exact",
         head: true,
-      }),
+      })
+      .eq("is_system", false),
 
     supabase
       .from("characters")
@@ -27,7 +28,8 @@ export default async function AdminPage() {
         count: "exact",
         head: true,
       })
-      .eq("status", "submitted"),
+      .eq("status", "submitted")
+      .eq("is_system", false),
 
     supabase
       .from("characters")

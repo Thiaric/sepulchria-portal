@@ -256,6 +256,10 @@ export default async function ManageOrdersPage({
                       .select(
                         "id, display_name",
                       )
+                      .eq(
+                        "is_system",
+                        false,
+                      )
                       .order(
                         "display_name",
                         {

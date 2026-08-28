@@ -141,6 +141,7 @@ export default async function AdminCharactersPage({
           name
         )
       `)
+      .eq("is_system", false)
       .order("updated_at", {
         ascending: false,
       }),

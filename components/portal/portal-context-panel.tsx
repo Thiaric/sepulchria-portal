@@ -279,11 +279,7 @@ if (
 
   if (adminCharacterMatch) {
     return (
-      <AdminCharacterHistoryContext
-        characterId={
-          adminCharacterMatch[1]
-        }
-      />
+      <AdminCharacterFieldNavigator />
     );
   }
 
@@ -358,6 +354,186 @@ if (
   }
 
   return <DefaultContext />;
+}
+
+type AdminCharacterJumpField = {
+  label: string;
+  aliases?: string[];
+};
+
+const ADMIN_CHARACTER_JUMP_FIELDS: AdminCharacterJumpField[] = [
+  { label: "Character administration", aliases: ["summary", "overview", "identity"] },
+  { label: "Legal name", aliases: ["name"] },
+  { label: "Display name" },
+  { label: "Pronouns" },
+  { label: "Gender" },
+  { label: "Sexual orientation" },
+  { label: "Date of birth", aliases: ["dob", "birthday", "age"] },
+  { label: "Birthplace" },
+  { label: "Origin" },
+  { label: "Public slug", aliases: ["slug"] },
+  { label: "Owner user ID", aliases: ["user", "owner"] },
+  { label: "Biography", aliases: ["bio"] },
+  { label: "Physical description", aliases: ["appearance", "physical"] },
+  { label: "Personality" },
+  { label: "Public notes", aliases: ["notes"] },
+  { label: "Relationships" },
+  { label: "Offgame", aliases: ["off game", "ooc"] },
+  { label: "First name" },
+  { label: "Surname", aliases: ["last name"] },
+  { label: "Portrait URL", aliases: ["portrait", "image"] },
+  { label: "Character music URL", aliases: ["music", "theme"] },
+  { label: "Character Health", aliases: ["health", "hp"] },
+  { label: "Character attributes", aliases: ["attributes", "stats"] },
+  { label: "Ancestry", aliases: ["race"] },
+  { label: "Public title", aliases: ["title"] },
+  { label: "Private staff notes", aliases: ["staff notes", "private notes"] },
+  { label: "Review and classification", aliases: ["review", "status", "classification"] },
+  { label: "Approval record", aliases: ["approval"] },
+  { label: "Danger zone", aliases: ["delete", "deletion"] },
+];
+
+function AdminCharacterFieldNavigator() {
+  const [search, setSearch] = useState("");
+
+  const query =
+    search.trim().toLocaleLowerCase();
+
+  const fields =
+    ADMIN_CHARACTER_JUMP_FIELDS.filter(
+      (field) => {
+        if (!query) {
+          return true;
+        }
+
+        const haystack = [
+          field.label,
+          ...(field.aliases ?? []),
+        ]
+          .join(" ")
+          .toLocaleLowerCase();
+
+        return haystack.includes(query);
+      },
+    );
+
+  function jumpToField(label: string) {
+    const candidates =
+      Array.from(
+        document.querySelectorAll<HTMLElement>(
+          "main h1, main h2, main h3, main h4, main p, main span, main div",
+        ),
+      );
+
+    const targetLabel =
+      label.trim().toLocaleLowerCase();
+
+    const exact =
+      candidates.find(
+        (element) =>
+          element.children.length === 0 &&
+          element.textContent
+            ?.trim()
+            .toLocaleLowerCase() ===
+            targetLabel,
+      ) ??
+      candidates.find(
+        (element) =>
+          element.textContent
+            ?.trim()
+            .toLocaleLowerCase() ===
+            targetLabel,
+      );
+
+    if (!exact) {
+      return;
+    }
+
+    const target =
+      exact.closest<HTMLElement>(
+        "section, label",
+      ) ??
+      exact.parentElement ??
+      exact;
+
+    target.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
+    const previousOutline =
+      target.style.outline;
+    const previousOffset =
+      target.style.outlineOffset;
+
+    target.style.outline =
+      "1px solid rgb(var(--sep-colour-8d6d3e))";
+    target.style.outlineOffset =
+      "3px";
+
+    window.setTimeout(() => {
+      target.style.outline =
+        previousOutline;
+      target.style.outlineOffset =
+        previousOffset;
+    }, 1200);
+  }
+
+  return (
+    <div className="flex h-full min-h-0 flex-col">
+      <ContextHeading
+        eyebrow="Character administration"
+        title="Jump to Field"
+      />
+
+      <p className="text-xs leading-6 text-[rgb(var(--sep-colour-938673))]">
+        Search this character record and jump directly to the section or field you need.
+      </p>
+
+      <input
+        type="search"
+        value={search}
+        onChange={(event) =>
+          setSearch(event.target.value)
+        }
+        placeholder="Search fields..."
+        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-655c50))] focus:border-[rgb(var(--sep-colour-8a673f))]"
+      />
+
+      <div className="my-4 h-px bg-[rgb(var(--sep-colour-59432c))]/35" />
+
+      <p className="mb-2 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))]">
+        Fields · {fields.length}
+      </p>
+
+      <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">
+        {fields.length ? (
+          fields.map((field) => (
+            <button
+              key={field.label}
+              type="button"
+              onClick={() =>
+                jumpToField(field.label)
+              }
+              className="flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))]"
+            >
+              <span className="truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))]">
+                {field.label}
+              </span>
+
+              <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))]">
+                →
+              </span>
+            </button>
+          ))
+        ) : (
+          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))]">
+            No matching fields.
+          </p>
+        )}
+      </div>
+    </div>
+  );
 }
 
 type FriendListContextEntry = {
