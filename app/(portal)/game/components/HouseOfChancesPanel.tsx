@@ -172,35 +172,30 @@ export function HouseOfChancesPanel({
             <p className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
               Fortune
             </p>
-            {state.daily_play_limit <= 10 ? (
-              <div className="mt-1 flex justify-end gap-1">
-                {Array.from({ length: state.daily_play_limit }).map((_, index) => {
-                  const remaining = index < state.plays_remaining;
+            <div className="mt-1 flex max-w-[300px] flex-wrap justify-end gap-1">
+              {Array.from({ length: state.daily_play_limit }).map((_, index) => {
+                const remaining = index < state.plays_remaining;
 
-                  return (
-                    <span
-                      key={index}
-                      className="h-1.5 w-3 border"
-                      style={{
-                        borderColor: remaining
-                          ? skinAccent
-                          : `color-mix(in srgb, ${skinAccent} 22%, transparent)`,
-                        backgroundColor: remaining
-                          ? `color-mix(in srgb, ${skinAccent} 75%, transparent)`
-                          : "transparent",
-                        boxShadow: remaining
-                          ? `0 0 7px color-mix(in srgb, ${skinAccent} 50%, transparent)`
-                          : "none",
-                      }}
-                    />
-                  );
-                })}
-              </div>
-            ) : (
-              <p className="mt-0.5 font-serif text-sm" style={{ color: skinAccent }}>
-                {state.plays_remaining} / {state.daily_play_limit}
-              </p>
-            )}
+                return (
+                  <span
+                    key={index}
+                    className="h-2.5 w-2.5 rounded-full border"
+                    style={{
+                      borderColor: remaining
+                        ? skinAccent
+                        : `color-mix(in srgb, ${skinAccent} 25%, transparent)`,
+                      background: remaining
+                        ? `radial-gradient(circle at 35% 35%, color-mix(in srgb, ${skinAccent} 96%, white 10%), color-mix(in srgb, ${skinAccent} 68%, transparent) 72%)`
+                        : `radial-gradient(circle at 35% 35%, color-mix(in srgb, ${skinAccent} 14%, transparent), transparent 72%)`,
+                      boxShadow: remaining
+                        ? `0 0 8px color-mix(in srgb, ${skinAccent} 42%, transparent), inset 0 0 4px color-mix(in srgb, ${skinAccent} 25%, transparent)`
+                        : `inset 0 0 4px color-mix(in srgb, ${skinAccent} 8%, transparent)`,
+                    }}
+                    title={remaining ? "Chance available" : "Chance spent"}
+                  />
+                );
+              })}
+            </div>
           </div>
 
           <span className="text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a88d65))]">
@@ -213,7 +208,56 @@ export function HouseOfChancesPanel({
       <div className="relative overflow-hidden border-t border-[rgb(var(--sep-colour-59432c))]/20 px-3 py-3 sm:px-5">
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute left-1/2 top-0 h-40 w-[70%] -translate-x-1/2 rounded-full blur-3xl"
+          className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
+        >
+          <div
+            className="motion-safe:animate-pulse absolute -left-[5%] top-[4%] h-64 w-64 rounded-full blur-3xl"
+            style={{
+              animationDuration: "13s",
+              background: `radial-gradient(circle, color-mix(in srgb, ${skinAccent} 18%, white 5%) 0%, color-mix(in srgb, ${skinAccent} 7%, transparent) 50%, transparent 74%)`,
+              opacity: 0.42,
+            }}
+          />
+          <div
+            className="motion-safe:animate-pulse absolute -right-[6%] top-[16%] h-72 w-72 rounded-full blur-3xl"
+            style={{
+              animationDuration: "18s",
+              animationDelay: "-7s",
+              background: `radial-gradient(circle, color-mix(in srgb, ${skinAccent} 14%, white 3%) 0%, color-mix(in srgb, ${skinAccent} 5%, transparent) 50%, transparent 74%)`,
+              opacity: 0.34,
+            }}
+          />
+          <div
+            className="motion-safe:animate-pulse absolute bottom-[-20%] left-[30%] h-64 w-64 rounded-full blur-3xl"
+            style={{
+              animationDuration: "21s",
+              animationDelay: "-10s",
+              background: `radial-gradient(circle, color-mix(in srgb, ${skinAccent} 11%, transparent) 0%, color-mix(in srgb, ${skinAccent} 4%, transparent) 48%, transparent 74%)`,
+              opacity: 0.34,
+            }}
+          />
+          <div
+            className="absolute inset-[4%]"
+            style={{
+              backgroundImage: `linear-gradient(135deg, transparent 0%, transparent 49.2%, color-mix(in srgb, ${skinAccent} 7%, transparent) 49.6%, transparent 50%, transparent 100%), linear-gradient(45deg, transparent 0%, transparent 49.2%, color-mix(in srgb, ${skinAccent} 5%, transparent) 49.6%, transparent 50%, transparent 100%)`,
+              backgroundSize: "330px 330px, 285px 285px",
+              maskImage: "radial-gradient(circle at center, black 20%, transparent 78%)",
+              WebkitMaskImage: "radial-gradient(circle at center, black 20%, transparent 78%)",
+              opacity: 0.62,
+            }}
+          />
+          <div
+            className="motion-safe:animate-pulse absolute inset-0"
+            style={{
+              animationDuration: "10s",
+              backgroundImage: `radial-gradient(circle at 10% 24%, color-mix(in srgb, ${skinAccent} 26%, white 7%) 0 1px, transparent 1.25px), radial-gradient(circle at 23% 75%, color-mix(in srgb, ${skinAccent} 15%, transparent) 0 1px, transparent 1.25px), radial-gradient(circle at 49% 18%, color-mix(in srgb, ${skinAccent} 19%, transparent) 0 1px, transparent 1.2px), radial-gradient(circle at 65% 71%, color-mix(in srgb, ${skinAccent} 15%, transparent) 0 1px, transparent 1.25px), radial-gradient(circle at 83% 29%, color-mix(in srgb, ${skinAccent} 22%, transparent) 0 1px, transparent 1.2px), radial-gradient(circle at 92% 76%, color-mix(in srgb, ${skinAccent} 14%, transparent) 0 1px, transparent 1.2px)`,
+              opacity: 0.26,
+            }}
+          />
+        </div>
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute left-1/2 top-0 z-[1] h-40 w-[70%] -translate-x-1/2 rounded-full blur-3xl"
           style={{ background: `color-mix(in srgb, ${skinAccent} 10%, transparent)` }}
         />
 
@@ -323,9 +367,6 @@ export function HouseOfChancesPanel({
                           {value ?? "?"}
                         </span>
 
-                        <span className="absolute bottom-1.5 right-2 text-[6px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-5e5346))]">
-                          Turn {index + 1}
-                        </span>
                       </div>
                     </div>
                   ))}
@@ -334,17 +375,37 @@ export function HouseOfChancesPanel({
 
               <div className="mt-3 flex flex-col items-center">
                 <div
-                  className="mb-2 flex min-h-6 items-center gap-2 border px-3 py-1"
+                  className="mb-2 flex min-h-7 items-center gap-3 border px-3 py-1.5"
                   style={{
                     borderColor: `color-mix(in srgb, ${skinAccent} 28%, transparent)`,
                     background: `color-mix(in srgb, ${skinAccent} 5%, rgb(var(--sep-colour-0d0907)))`,
                   }}
                 >
-                  <span className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-756958))]">
-                    Stake
-                  </span>
+                  <div className="relative h-6 w-8 shrink-0" aria-hidden="true">
+                    <span className="absolute bottom-0 left-0 h-3.5 w-3.5 rounded-full border"
+                      style={{
+                        borderColor: `color-mix(in srgb, ${skinAccent} 62%, transparent)`,
+                        background: `radial-gradient(circle at 35% 35%, color-mix(in srgb, ${skinAccent} 96%, white 12%), color-mix(in srgb, ${skinAccent} 66%, transparent) 70%)`,
+                        boxShadow: `0 0 7px color-mix(in srgb, ${skinAccent} 26%, transparent)`,
+                      }}
+                    />
+                    <span className="absolute bottom-0.5 left-2.5 h-3.5 w-3.5 rounded-full border"
+                      style={{
+                        borderColor: `color-mix(in srgb, ${skinAccent} 62%, transparent)`,
+                        background: `radial-gradient(circle at 35% 35%, color-mix(in srgb, ${skinAccent} 96%, white 12%), color-mix(in srgb, ${skinAccent} 66%, transparent) 70%)`,
+                        boxShadow: `0 0 7px color-mix(in srgb, ${skinAccent} 26%, transparent)`,
+                      }}
+                    />
+                    <span className="absolute top-0 left-1.5 h-3.5 w-3.5 rounded-full border"
+                      style={{
+                        borderColor: `color-mix(in srgb, ${skinAccent} 62%, transparent)`,
+                        background: `radial-gradient(circle at 35% 35%, color-mix(in srgb, ${skinAccent} 96%, white 12%), color-mix(in srgb, ${skinAccent} 66%, transparent) 70%)`,
+                        boxShadow: `0 0 7px color-mix(in srgb, ${skinAccent} 26%, transparent)`,
+                      }}
+                    />
+                  </div>
                   <span className="font-serif text-sm text-[rgb(var(--sep-colour-e4c589))]">
-                    {formatRemnants(Number(state.play_cost))}
+                    {formatRemnants(Number(state.play_cost))} R
                   </span>
                 </div>
 
@@ -372,11 +433,6 @@ export function HouseOfChancesPanel({
                   </span>
                 </button>
 
-                <div className="mt-2 flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
-                  <span>Purse {formatRemnants(Number(state.wallet_balance))}</span>
-                  <span aria-hidden="true">·</span>
-                  <span>{state.plays_remaining} of {state.daily_play_limit} chances remain</span>
-                </div>
               </div>
 
               {!canAfford && state.is_open ? (
