@@ -649,7 +649,7 @@ export function MessagesContextNavigator({
                     }
                     className={`group flex items-center gap-3 border p-3 transition ${
                       isCurrent
-                        ? "border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-2a1d12))] shadow-[inset_2px_0_0_#c18b48]"
+                        ? "border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-2a1d12))] shadow-[inset_2px_0_0_rgb(var(--sep-colour-9b7446))]"
                         : "border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] hover:border-[rgb(var(--sep-colour-80613c))] hover:bg-[rgb(var(--sep-colour-19120e))]"
                     }`}
                   >

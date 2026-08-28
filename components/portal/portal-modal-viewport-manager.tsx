@@ -244,6 +244,26 @@ function scanForModals() {
   );
 
   dialogs.forEach((dialog) => {
+    /* Explicit modal exceptions retain their own original implementation. */
+    if (
+      dialog.hasAttribute(
+        "data-sep-modal-exempt",
+      )
+    ) {
+      return;
+    }
+
+    /*
+     * PublicPageModal owns its own drag/resize/minimize/maximize state.
+     * Never apply the generic viewport manager to those native windows.
+     */
+    if (
+      dialog.dataset.sepNativeWindow ===
+      "true"
+    ) {
+      return;
+    }
+
     // If an aria-modal node is inside a role=dialog parent, manage only
     // the outer modal root once.
     const parentDialog = dialog.parentElement?.closest<HTMLElement>(

@@ -343,13 +343,130 @@ export function PortalSidebar({
   setMobileForumExpanded,
 ] = useState(false);
 
+  type PortalModalWindow = {
+    id: number;
+    item: NavigationItem;
+    zIndex: number;
+  };
+
   const [
-    modalItem,
-    setModalItem,
-  ] =
-    useState<NavigationItem | null>(
-      null,
+    modalWindows,
+    setModalWindows,
+  ] = useState<PortalModalWindow[]>([]);
+
+  const nextModalWindowIdRef =
+    useRef(1);
+
+  const nextModalZIndexRef =
+    useRef(10000);
+
+  const modalItem =
+    modalWindows.length > 0
+      ? modalWindows.reduce(
+          (top, candidate) =>
+            candidate.zIndex >
+            top.zIndex
+              ? candidate
+              : top,
+        ).item
+      : null;
+
+  function setModalItem(
+    item: NavigationItem | null,
+  ) {
+    setModalWindows((current) => {
+      if (!item) {
+        if (current.length === 0) {
+          return current;
+        }
+
+        const top = current.reduce(
+          (highest, candidate) =>
+            candidate.zIndex >
+            highest.zIndex
+              ? candidate
+              : highest,
+        );
+
+        return current.filter(
+          (window) =>
+            window.id !== top.id,
+        );
+      }
+
+      const existing =
+        current.find(
+          (window) =>
+            window.item.href ===
+            item.href,
+        );
+
+      if (existing) {
+        nextModalZIndexRef.current += 1;
+
+        return current.map(
+          (window) =>
+            window.id ===
+            existing.id
+              ? {
+                  ...window,
+                  zIndex:
+                    nextModalZIndexRef.current,
+                }
+              : window,
+        );
+      }
+
+      nextModalZIndexRef.current += 1;
+
+      const nextWindow = {
+        id:
+          nextModalWindowIdRef.current,
+        item,
+        zIndex:
+          nextModalZIndexRef.current,
+      };
+
+      nextModalWindowIdRef.current += 1;
+
+      return [
+        ...current,
+        nextWindow,
+      ];
+    });
+  }
+
+  function closeModalWindow(
+    id: number,
+  ) {
+    setModalWindows((current) =>
+      current.filter(
+        (window) =>
+          window.id !== id,
+      ),
     );
+  }
+
+  function focusModalWindow(
+    id: number,
+  ) {
+    nextModalZIndexRef.current += 1;
+
+    const zIndex =
+      nextModalZIndexRef.current;
+
+    setModalWindows((current) =>
+      current.map(
+        (window) =>
+          window.id === id
+            ? {
+                ...window,
+                zIndex,
+              }
+            : window,
+      ),
+    );
+  }
 
   const [
     rulesExpanded,
@@ -2274,23 +2391,40 @@ export function PortalSidebar({
         </div>
       </aside>
 
-      {modalItem ? (
-        <PublicPageModal
-  item={modalItem}
-  onClose={() =>
-    setModalItem(null)
-  }
-/>
-      ) : null}
+      {modalWindows.map(
+        (window) => (
+          <PublicPageModal
+            key={window.id}
+            item={window.item}
+            zIndex={
+              window.zIndex
+            }
+            onFocus={() =>
+              focusModalWindow(
+                window.id,
+              )
+            }
+            onClose={() =>
+              closeModalWindow(
+                window.id,
+              )
+            }
+          />
+        ),
+      )}
     </>
   );
 }
 
 function PublicPageModal({
   item,
+  zIndex,
+  onFocus,
   onClose,
 }: {
   item: NavigationItem;
+  zIndex: number;
+  onFocus: () => void;
   onClose: () => void;
 }) {
   type ModalRect = {
@@ -2319,10 +2453,13 @@ function PublicPageModal({
   const [collapsed, setCollapsed] =
     useState(false);
 
+  const [maximized, setMaximized] =
+    useState(true);
+
   const [rect, setRect] =
     useState<ModalRect>({
-      x: 8,
-      y: 8,
+      x: 80,
+      y: 60,
       width: 900,
       height: 700,
     });
@@ -2348,35 +2485,14 @@ function PublicPageModal({
   const iframeSrc =
     `${item.href}${separator}embedded=1`;
 
-  const isLargeModal =
-    item.href === "/crafting" ||
-    item.href === "/messages" ||
-    item.href.startsWith(
-      "/messages/",
-    ) ||
-    item.href === "/characters" ||
-    item.href === "/character" ||
-    item.href.startsWith(
-      "/characters/",
-    ) ||
-    item.href === "/forum" ||
-    item.href.startsWith(
-      "/forum/",
-    ) ||
-    item.href.startsWith(
-      "/rules",
-    );
-
   const clampRect =
     useCallback(
       (
         candidate: ModalRect,
       ): ModalRect => {
         const margin = 8;
-
         const viewportWidth =
           window.innerWidth;
-
         const viewportHeight =
           window.innerHeight;
 
@@ -2424,13 +2540,30 @@ function PublicPageModal({
             ),
           );
 
+        /*
+         * Desktop-window behaviour:
+         * the body of a restored window may travel partly off-screen.
+         * Keep enough of the title bar reachable so the window can
+         * always be recovered.
+         */
+        const reachableTitleWidth =
+          Math.min(
+            180,
+            Math.max(
+              96,
+              width * 0.22,
+            ),
+          );
+
+        const titleBarHeight = 40;
+
         const x =
           Math.min(
             viewportWidth -
-              margin -
-              width,
+              reachableTitleWidth,
             Math.max(
-              margin,
+              -(width -
+                reachableTitleWidth),
               candidate.x,
             ),
           );
@@ -2438,10 +2571,9 @@ function PublicPageModal({
         const y =
           Math.min(
             viewportHeight -
-              margin -
-              height,
+              titleBarHeight,
             Math.max(
-              margin,
+              0,
               candidate.y,
             ),
           );
@@ -2467,40 +2599,30 @@ function PublicPageModal({
       true;
 
     const margin = 8;
-
     const viewportWidth =
       window.innerWidth;
-
     const viewportHeight =
       window.innerHeight;
 
     const preferredWidth =
-      isLargeModal
-        ? viewportWidth -
-          margin * 2
-        : Math.min(
-            viewportWidth -
-              margin * 2,
-            Math.max(
-              720,
-              viewportWidth *
-                0.76,
-            ),
-          );
+      Math.min(
+        viewportWidth -
+          margin * 2,
+        Math.max(
+          720,
+          viewportWidth * 0.76,
+        ),
+      );
 
     const preferredHeight =
-      isLargeModal
-        ? viewportHeight -
-          margin * 2
-        : Math.min(
-            viewportHeight -
-              margin * 2,
-            Math.max(
-              520,
-              viewportHeight *
-                0.76,
-            ),
-          );
+      Math.min(
+        viewportHeight -
+          margin * 2,
+        Math.max(
+          520,
+          viewportHeight * 0.76,
+        ),
+      );
 
     setRect(
       clampRect({
@@ -2514,16 +2636,11 @@ function PublicPageModal({
             viewportHeight -
             preferredHeight
           ) / 2,
-        width:
-          preferredWidth,
-        height:
-          preferredHeight,
+        width: preferredWidth,
+        height: preferredHeight,
       }),
     );
-  }, [
-    clampRect,
-    isLargeModal,
-  ]);
+  }, [clampRect]);
 
   useEffect(() => {
     function handleViewportResize() {
@@ -2554,31 +2671,54 @@ function PublicPageModal({
       420,
     );
 
-  const visibleWidth =
+  const frameLeft =
     collapsed
-      ? collapsedWidth
-      : rect.width;
+      ? `${rect.x}px`
+      : maximized
+        ? "8px"
+        : `${rect.x}px`;
 
-  const visibleHeight =
+  const frameTop =
     collapsed
-      ? 40
-      : rect.height;
+      ? `${rect.y}px`
+      : maximized
+        ? "8px"
+        : `${rect.y}px`;
+
+  const frameWidth =
+    collapsed
+      ? `${collapsedWidth}px`
+      : maximized
+        ? "calc(100vw - 16px)"
+        : `${rect.width}px`;
+
+  const frameHeight =
+    collapsed
+      ? "40px"
+      : maximized
+        ? "calc(100dvh - 16px)"
+        : `${rect.height}px`;
 
   return (
     <div
       role="dialog"
       aria-modal="false"
       aria-label={item.label}
-      className="pointer-events-none fixed inset-0 z-[9999]"
+      data-sep-native-window="true"
+      className="pointer-events-none fixed inset-0"
+      style={{ zIndex }}
+      onPointerDownCapture={
+        onFocus
+      }
     >
       <div
         style={{
-          left: `${rect.x}px`,
-          top: `${rect.y}px`,
-          width: `${visibleWidth}px`,
-          height: `${visibleHeight}px`,
+          left: frameLeft,
+          top: frameTop,
+          width: frameWidth,
+          height: frameHeight,
         }}
-        className="pointer-events-auto fixed flex min-h-0 min-w-0 flex-col overflow-hidden border border-[rgb(var(--sep-colour-6e5535))]/65 bg-[rgb(var(--sep-colour-090705))] shadow-[0_20px_80px_rgba(var(--sep-rgb-0-0-0),0.65)]"
+        className="pointer-events-auto fixed flex min-h-0 min-w-0 flex-col overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-090705))] shadow-[0_20px_80px_rgba(var(--sep-rgb-0-0-0),0.65)]"
       >
         <div
           className="flex h-10 shrink-0 cursor-move select-none items-center justify-between border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3"
@@ -2586,6 +2726,7 @@ function PublicPageModal({
             event,
           ) => {
             if (
+              maximized ||
               event.button !== 0 ||
               (
                 event.target as HTMLElement
@@ -2724,6 +2865,35 @@ function PublicPageModal({
 
             <button
               type="button"
+              onClick={() => {
+                setCollapsed(false);
+                setMaximized(
+                  (current) =>
+                    !current,
+                );
+              }}
+              aria-label={
+                maximized
+                  ? `Restore size of ${item.label}`
+                  : `Maximize ${item.label}`
+              }
+              title={
+                maximized
+                  ? "Restore window size"
+                  : "Maximize window"
+              }
+              aria-pressed={
+                maximized
+              }
+              className="flex h-7 w-7 cursor-pointer items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-17110d))] text-sm leading-none text-[rgb(var(--sep-colour-aa9675))] transition hover:border-[rgb(var(--sep-colour-967342))] hover:text-[rgb(var(--sep-colour-f1d7a5))]"
+            >
+              {maximized
+                ? "❐"
+                : "□"}
+            </button>
+
+            <button
+              type="button"
               onClick={onClose}
               aria-label={`Close ${item.label}`}
               title={`Close ${item.label}`}
@@ -2741,293 +2911,349 @@ function PublicPageModal({
               : "flex min-h-0 flex-1 flex-col"
           }
         >
-            <iframe
-              src={iframeSrc}
-              title={item.label}
-              onLoad={(event) => {
-                const doc =
-                  event.currentTarget
-                    .contentDocument;
+          <iframe
+            src={iframeSrc}
+            title={item.label}
+            onLoad={(event) => {
+              const doc =
+                event.currentTarget
+                  .contentDocument;
 
-                if (!doc) {
-                  return;
-                }
+              if (!doc) {
+                return;
+              }
 
-                const styleId =
-                  "sepulchria-stable-modal-style";
+              const styleId =
+                "sepulchria-stable-modal-style";
 
-                let style =
-                  doc.getElementById(
-                    styleId,
-                  ) as
-                    | HTMLStyleElement
-                    | null;
+              let style =
+                doc.getElementById(
+                  styleId,
+                ) as
+                  | HTMLStyleElement
+                  | null;
 
-                if (!style) {
-                  style =
-                    doc.createElement(
-                      "style",
-                    );
-
-                  style.id =
-                    styleId;
-
-                  doc.head.appendChild(
-                    style,
+              if (!style) {
+                style =
+                  doc.createElement(
+                    "style",
                   );
+
+                style.id =
+                  styleId;
+
+                doc.head.appendChild(
+                  style,
+                );
+              }
+
+              style.textContent = `
+                ${
+                  item.href === "/crafting"
+                    ? `
+                .sepulchria-viewport-body {
+                  grid-template-columns:
+                    minmax(0, 1fr) !important;
+                  max-width: none !important;
+                  width: 100% !important;
                 }
 
-                style.textContent = `
-                  ${
-                    item.href === "/crafting"
-                      ? `
+                .portal-left-shell,
+                .portal-right-shell,
+                .portal-left-collapse-toggle,
+                .portal-right-collapse-toggle {
+                  display: none !important;
+                }
+
+                [data-portal-centre-host] {
+                  grid-column: 1 !important;
+                  min-width: 0 !important;
+                  width: 100% !important;
+                }
+
+                [data-portal-centre-host]
+                  > [data-portal-column] {
+                  width: 100% !important;
+                  max-width: none !important;
+                }
+                `
+                    : ""
+                }
+
+                ${
+                  item.href === "/codex"
+                    ? `
+                /*
+                 * CODEX EMBEDDED WINDOW
+                 * Keep the entire Codex inside the modal height and make
+                 * the centre column the sole vertical scroll container.
+                 */
+                html,
+                body,
+                [data-portal-shell],
+                [data-portal-shell-inner] {
+                  height: 100% !important;
+                  min-height: 0 !important;
+                  max-height: 100% !important;
+                  overflow: hidden !important;
+                }
+
+                .sepulchria-viewport-body {
+                  display: grid !important;
+                  grid-template-columns:
+                    minmax(0, 1fr) !important;
+                  grid-template-rows:
+                    minmax(0, 1fr) !important;
+                  width: 100% !important;
+                  height: 100% !important;
+                  min-height: 0 !important;
+                  max-height: 100% !important;
+                  overflow: hidden !important;
+                }
+
+                .portal-left-shell,
+                .portal-right-shell,
+                .portal-left-collapse-toggle,
+                .portal-right-collapse-toggle {
+                  display: none !important;
+                }
+
+                [data-portal-centre-host] {
+                  grid-column: 1 !important;
+                  grid-row: 1 !important;
+                  width: 100% !important;
+                  height: 100% !important;
+                  min-width: 0 !important;
+                  min-height: 0 !important;
+                  max-height: 100% !important;
+                  overflow: hidden !important;
+                }
+
+                [data-portal-centre-host]
+                  > [data-portal-column] {
+                  position: relative !important;
+                  width: 100% !important;
+                  height: 100% !important;
+                  min-width: 0 !important;
+                  min-height: 0 !important;
+                  max-width: none !important;
+                  max-height: 100% !important;
+                  overflow-x: hidden !important;
+                  overflow-y: auto !important;
+                  overscroll-behavior: contain !important;
+                }
+
+                [data-portal-centre-host]
+                  > [data-portal-column]
+                  > main,
+                [data-portal-centre-host]
+                  > [data-portal-column]
+                  main {
+                  min-height: 0 !important;
+                  height: auto !important;
+                  max-height: none !important;
+                }
+                `
+                    : ""
+                }
+
+                [data-portal-header],
+                .portal-left-shell,
+                footer[aria-label="Tidings"] {
+                  display: none !important;
+                }
+
+                html,
+                body,
+                [data-portal-shell],
+                [data-portal-shell-inner] {
+                  width: 100% !important;
+                  height: 100% !important;
+                  min-height: 100% !important;
+                  max-width: none !important;
+                  overflow: hidden !important;
+                }
+
+                .sepulchria-viewport-body {
+                  display: grid !important;
+                  grid-template-columns:
+                    minmax(0, 1fr)
+                    minmax(240px, 300px) !important;
+                  width: 100% !important;
+                  max-width: none !important;
+                  height: 100% !important;
+                  min-height: 0 !important;
+                  overflow: hidden !important;
+                }
+
+                [data-portal-centre-host] {
+                  grid-column: 1 !important;
+                  width: 100% !important;
+                  min-width: 0 !important;
+                  height: 100% !important;
+                  min-height: 0 !important;
+                }
+
+                [data-portal-centre-host]
+                  > [data-portal-column] {
+                  width: 100% !important;
+                  max-width: none !important;
+                  height: 100% !important;
+                  min-height: 0 !important;
+                  overflow-y: auto !important;
+                  overflow-x: auto !important;
+                }
+
+                .portal-right-shell {
+                  display: block !important;
+                  grid-column: 2 !important;
+                  width: 100% !important;
+                  min-width: 0 !important;
+                  height: 100% !important;
+                  min-height: 0 !important;
+                  overflow: hidden !important;
+                }
+
+                .portal-right-shell
+                  > [data-portal-right-sidebar] {
+                  position: relative !important;
+                  inset: auto !important;
+                  z-index: auto !important;
+                  display: flex !important;
+                  width: 100% !important;
+                  min-width: 0 !important;
+                  height: 100% !important;
+                  min-height: 0 !important;
+                  transform: none !important;
+                  overflow: hidden !important;
+                  box-shadow: none !important;
+                  transition: none !important;
+                }
+
+                .portal-right-shell
+                  > [data-portal-right-sidebar]
+                  > div:first-child,
+                .portal-right-shell
+                  > button,
+                .portal-right-collapse-toggle {
+                  display: none !important;
+                }
+
+                .portal-right-shell
+                  > [data-portal-right-sidebar]
+                  > div:nth-child(2) {
+                  padding:
+                    var(
+                      --portal-column-pad,
+                      0.8rem
+                    ) !important;
+                }
+
+                .portal-right-shell
+                  > [data-portal-right-sidebar]
+                  > div:nth-child(2)
+                  > div:first-child
+                  > div:first-child,
+                .portal-right-shell
+                  > [data-portal-right-sidebar]
+                  > div:nth-child(2)
+                  > div:last-child {
+                  display: none !important;
+                }
+
+                @media (max-width: 959px) {
                   .sepulchria-viewport-body {
                     grid-template-columns:
                       minmax(0, 1fr) !important;
-                    max-width: none !important;
-                    width: 100% !important;
-                  }
-
-                  .portal-left-shell,
-                  .portal-right-shell,
-                  .portal-left-collapse-toggle,
-                  .portal-right-collapse-toggle {
-                    display: none !important;
+                    grid-template-rows:
+                      minmax(0, 1fr) !important;
                   }
 
                   [data-portal-centre-host] {
                     grid-column: 1 !important;
-                    min-width: 0 !important;
-                    width: 100% !important;
-                  }
-
-                  [data-portal-centre-host]
-                    > [data-portal-column] {
-                    width: 100% !important;
-                    max-width: none !important;
-                  }
-                  `
-                      : ""
-                  }
-
-                  [data-portal-header],
-                  .portal-left-shell,
-                  footer[aria-label="Tidings"] {
-                    display: none !important;
-                  }
-
-                  html,
-                  body,
-                  [data-portal-shell],
-                  [data-portal-shell-inner] {
-                    width: 100% !important;
-                    height: 100% !important;
-                    min-height: 100% !important;
-                    max-width: none !important;
-                    overflow: hidden !important;
-                  }
-
-                  .sepulchria-viewport-body {
-                    display: grid !important;
-                    grid-template-columns:
-                      minmax(0, 1fr)
-                      minmax(240px, 300px) !important;
-                    width: 100% !important;
-                    max-width: none !important;
-                    height: 100% !important;
-                    min-height: 0 !important;
-                    overflow: hidden !important;
-                  }
-
-                  [data-portal-centre-host] {
-                    grid-column: 1 !important;
+                    grid-row: 1 !important;
                     width: 100% !important;
                     min-width: 0 !important;
-                    height: 100% !important;
-                    min-height: 0 !important;
-                  }
-
-                  [data-portal-centre-host]
-                    > [data-portal-column] {
-                    width: 100% !important;
-                    max-width: none !important;
-                    height: 100% !important;
-                    min-height: 0 !important;
-                    overflow-y: auto !important;
-                    overflow-x: auto !important;
                   }
 
                   .portal-right-shell {
-                    display: block !important;
-                    grid-column: 2 !important;
-                    width: 100% !important;
-                    min-width: 0 !important;
-                    height: 100% !important;
-                    min-height: 0 !important;
-                    overflow: hidden !important;
+                    display: contents !important;
+                  }
+
+                  .portal-right-shell
+                    > button:not(
+                      .portal-right-collapse-toggle
+                    ) {
+                    display: flex !important;
+                  }
+
+                  .portal-right-collapse-toggle {
+                    display: none !important;
                   }
 
                   .portal-right-shell
                     > [data-portal-right-sidebar] {
-                    position: relative !important;
-                    inset: auto !important;
-                    z-index: auto !important;
+                    position: fixed !important;
+                    inset: 0 0 0 auto !important;
+                    z-index: 70 !important;
                     display: flex !important;
-                    width: 100% !important;
-                    min-width: 0 !important;
-                    height: 100% !important;
+                    flex-direction: column !important;
+                    width: min(88vw, 360px) !important;
+                    height: 100dvh !important;
                     min-height: 0 !important;
-                    transform: none !important;
+                    max-height: none !important;
                     overflow: hidden !important;
-                    box-shadow: none !important;
-                    transition: none !important;
-                  }
-
-                  .portal-right-shell
-                    > [data-portal-right-sidebar]
-                    > div:first-child,
-                  .portal-right-shell
-                    > button,
-                  .portal-right-collapse-toggle {
-                    display: none !important;
-                  }
-
-                  .portal-right-shell
-                    > [data-portal-right-sidebar]
-                    > div:nth-child(2) {
-                    padding:
-                      var(
-                        --portal-column-pad,
-                        0.8rem
+                    transform:
+                      translateX(100%) !important;
+                    box-shadow:
+                      -18px 0 50px
+                      rgba(
+                        var(--sep-rgb-0-0-0),
+                        0.55
                       ) !important;
+                    transition:
+                      transform 200ms ease-out !important;
+                  }
+
+                  .portal-right-shell
+                    > [data-portal-right-sidebar].translate-x-0 {
+                    transform:
+                      translateX(0) !important;
+                  }
+
+                  .portal-right-shell
+                    > [data-portal-right-sidebar].translate-x-full {
+                    transform:
+                      translateX(100%) !important;
+                  }
+
+                  .portal-right-shell
+                    > [data-portal-right-sidebar]
+                    > div:first-child {
+                    display: flex !important;
                   }
 
                   .portal-right-shell
                     > [data-portal-right-sidebar]
                     > div:nth-child(2)
                     > div:first-child
-                    > div:first-child,
+                    > div:first-child {
+                    display: none !important;
+                  }
+
                   .portal-right-shell
                     > [data-portal-right-sidebar]
                     > div:nth-child(2)
                     > div:last-child {
                     display: none !important;
                   }
+                }
+              `;
+            }}
+            className="min-h-0 w-full flex-1 border-0 bg-[rgb(var(--sep-colour-090705))]"
+          />
 
-                  @media (max-width: 959px) {
-                    .sepulchria-viewport-body {
-                      grid-template-columns:
-                        minmax(0, 1fr) !important;
-                      grid-template-rows:
-                        minmax(0, 1fr) !important;
-                    }
-
-                    [data-portal-centre-host] {
-                      grid-column: 1 !important;
-                      grid-row: 1 !important;
-                      width: 100% !important;
-                      min-width: 0 !important;
-                    }
-
-                    /*
-                     * Match the main portal's responsive Context behaviour.
-                     * The shell itself becomes layout-transparent so its
-                     * floating button/backdrop/sidebar can sit over content.
-                     */
-                    .portal-right-shell {
-                      display: contents !important;
-                    }
-
-                    /*
-                     * Re-enable the existing diamond opener and backdrop.
-                     * They are direct buttons rendered by
-                     * PortalResponsiveRightSidebar.
-                     */
-                    .portal-right-shell
-                      > button:not(
-                        .portal-right-collapse-toggle
-                      ) {
-                      display: flex !important;
-                    }
-
-                    .portal-right-collapse-toggle {
-                      display: none !important;
-                    }
-
-                    /*
-                     * Restore the component's own mobile/off-canvas drawer
-                     * semantics inside the iframe viewport.
-                     */
-                    .portal-right-shell
-                      > [data-portal-right-sidebar] {
-                      position: fixed !important;
-                      inset: 0 0 0 auto !important;
-                      z-index: 70 !important;
-                      display: flex !important;
-                      flex-direction: column !important;
-                      width: min(88vw, 360px) !important;
-                      height: 100dvh !important;
-                      min-height: 0 !important;
-                      max-height: none !important;
-                      overflow: hidden !important;
-                      transform:
-                        translateX(100%) !important;
-                      box-shadow:
-                        -18px 0 50px
-                        rgba(
-                          var(--sep-rgb-0-0-0),
-                          0.55
-                        ) !important;
-                      transition:
-                        transform 200ms ease-out !important;
-                    }
-
-                    .portal-right-shell
-                      > [data-portal-right-sidebar].translate-x-0 {
-                      transform:
-                        translateX(0) !important;
-                    }
-
-                    .portal-right-shell
-                      > [data-portal-right-sidebar].translate-x-full {
-                      transform:
-                        translateX(100%) !important;
-                    }
-
-                    /*
-                     * In drawer mode the component's own Context header and
-                     * close button must be visible again.
-                     */
-                    .portal-right-shell
-                      > [data-portal-right-sidebar]
-                      > div:first-child {
-                      display: flex !important;
-                    }
-
-                    /*
-                     * Keep the modal-specific content filtering already used
-                     * in the wide Context column.
-                     */
-                    .portal-right-shell
-                      > [data-portal-right-sidebar]
-                      > div:nth-child(2)
-                      > div:first-child
-                      > div:first-child {
-                      display: none !important;
-                    }
-
-                    .portal-right-shell
-                      > [data-portal-right-sidebar]
-                      > div:nth-child(2)
-                      > div:last-child {
-                      display: none !important;
-                    }
-                  }
-                `;
-              }}
-              className="min-h-0 w-full flex-1 border-0 bg-[rgb(var(--sep-colour-090705))]"
-            />
-
+          {!maximized ? (
             <div
               role="separator"
               aria-label={`Resize ${item.label}`}
@@ -3130,6 +3356,7 @@ function PublicPageModal({
                 className="absolute bottom-1 right-1 block h-2.5 w-2.5 border-b border-r border-[rgb(var(--sep-colour-a98b61))]/80"
               />
             </div>
+          ) : null}
         </div>
       </div>
     </div>

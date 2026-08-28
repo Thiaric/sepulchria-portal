@@ -875,7 +875,8 @@ export function WorldIndicator({
               }}
             >
               <section
-  role="dialog"
+  data-sep-modal-exempt="calendar"
+      role="dialog"
   aria-modal="true"
   className="relative w-full max-w-2xl max-h-[calc(100dvh-24px)] overflow-y-auto border border-[rgb(var(--sep-colour-765937))]/70 bg-[rgb(var(--sep-colour-120d0a))] p-3 shadow-[0_30px_100px_rgba(var(--sep-rgb-0-0-0),0.85)] sm:p-4"
 >
