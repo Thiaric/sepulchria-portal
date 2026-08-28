@@ -854,17 +854,49 @@ export function CraftingWorkbench({
                 </p>
 
                 {notice ? (
-                  <p
-                    className="mt-1 text-[9px] leading-4"
+                  <div
+                    role={notice.tone === "error" ? "alert" : "status"}
+                    className="mt-3 border px-3 py-2.5"
                     style={{
-                      color:
+                      borderColor:
                         notice.tone === "success"
-                          ? craftingAccent
-                          : "rgb(var(--sep-colour-c17b6c))",
+                          ? `color-mix(in srgb, ${craftingAccent} 55%, transparent)`
+                          : "rgba(185, 66, 66, 0.72)",
+                      background:
+                        notice.tone === "success"
+                          ? `color-mix(in srgb, ${craftingAccent} 8%, rgb(var(--sep-colour-100c09)))`
+                          : "rgba(78, 18, 18, 0.48)",
+                      boxShadow:
+                        notice.tone === "success"
+                          ? `inset 3px 0 0 ${craftingAccent}`
+                          : "inset 3px 0 0 rgb(190 72 72), 0 0 18px rgba(150,35,35,0.10)",
                     }}
                   >
-                    {notice.text}
-                  </p>
+                    <p
+                      className="text-[7px] font-semibold uppercase tracking-[0.18em]"
+                      style={{
+                        color:
+                          notice.tone === "success"
+                            ? craftingAccent
+                            : "rgb(224 117 117)",
+                      }}
+                    >
+                      {notice.tone === "success"
+                        ? "Crafting complete"
+                        : "Crafting failed"}
+                    </p>
+                    <p
+                      className="mt-1.5 text-[10px] font-medium leading-5"
+                      style={{
+                        color:
+                          notice.tone === "success"
+                            ? "rgb(var(--sep-colour-d4bd94))"
+                            : "rgb(239 170 160)",
+                      }}
+                    >
+                      {notice.text}
+                    </p>
+                  </div>
                 ) : null}
               </div>
             </div>
