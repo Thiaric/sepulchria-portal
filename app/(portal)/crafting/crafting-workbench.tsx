@@ -9,6 +9,12 @@ import { useRouter } from "next/navigation";
 
 import { craftRecipeAction } from "./actions";
 import { usePortalSkin } from "@/components/portal/portal-skin-provider";
+import {
+  SepBadge,
+  SepButton,
+  SepIconButton,
+  SepNotice,
+} from "@/components/sepulchria/sep-ui";
 import { formatRemnants } from "@/lib/economy/currency";
 
 const CRAFTING_SKIN_ACCENTS: Record<string, string> = {
@@ -454,15 +460,12 @@ export function CraftingWorkbench({
             <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-ead6ad))]">
               Known Recipes
             </h2>
-            <span
-              className="border px-2 py-0.5 font-serif text-xs"
-              style={{
-                borderColor: `color-mix(in srgb, ${craftingAccent} 30%, transparent)`,
-                color: craftingAccent,
-              }}
+            <SepBadge
+              accent={craftingAccent}
+              className="font-serif text-xs tracking-normal"
             >
               {recipes.length}
-            </span>
+            </SepBadge>
           </div>
         </div>
 
@@ -854,92 +857,45 @@ export function CraftingWorkbench({
                 </p>
 
                 {notice ? (
-                  <div
-                    role={notice.tone === "error" ? "alert" : "status"}
-                    className="mt-3 border px-3 py-2.5"
-                    style={{
-                      borderColor:
-                        notice.tone === "success"
-                          ? `color-mix(in srgb, ${craftingAccent} 55%, transparent)`
-                          : "rgba(185, 66, 66, 0.72)",
-                      background:
-                        notice.tone === "success"
-                          ? `color-mix(in srgb, ${craftingAccent} 8%, rgb(var(--sep-colour-100c09)))`
-                          : "rgba(78, 18, 18, 0.48)",
-                      boxShadow:
-                        notice.tone === "success"
-                          ? `inset 3px 0 0 ${craftingAccent}`
-                          : "inset 3px 0 0 rgb(190 72 72), 0 0 18px rgba(150,35,35,0.10)",
-                    }}
-                  >
-                    <p
-                      className="text-[7px] font-semibold uppercase tracking-[0.18em]"
-                      style={{
-                        color:
-                          notice.tone === "success"
-                            ? craftingAccent
-                            : "rgb(224 117 117)",
-                      }}
-                    >
-                      {notice.tone === "success"
+                  <SepNotice
+                    tone={notice.tone}
+                    title={
+                      notice.tone === "success"
                         ? "Crafting complete"
-                        : "Crafting failed"}
-                    </p>
-                    <p
-                      className="mt-1.5 text-[10px] font-medium leading-5"
-                      style={{
-                        color:
-                          notice.tone === "success"
-                            ? "rgb(var(--sep-colour-d4bd94))"
-                            : "rgb(239 170 160)",
-                      }}
-                    >
-                      {notice.text}
-                    </p>
-                  </div>
+                        : "Crafting failed"
+                    }
+                    accent={craftingAccent}
+                    className="mt-3"
+                  >
+                    {notice.text}
+                  </SepNotice>
                 ) : null}
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-2">
-              <button
+              <SepButton
                 type="button"
+                variant="secondary"
+                accent={craftingAccent}
                 onClick={autofill}
                 disabled={!allRequirementsOwned || isPending}
-                className="border px-4 py-2.5 text-[7px] uppercase tracking-[0.18em] transition active:translate-y-px disabled:cursor-not-allowed disabled:opacity-35"
-                style={{
-                  borderColor: `color-mix(in srgb, ${craftingAccent} 38%, transparent)`,
-                  background: "rgb(var(--sep-colour-17110d))",
-                  color: "rgb(var(--sep-colour-dfc79c))",
-                }}
               >
                 Set the Bench
-              </button>
+              </SepButton>
 
-              <button
+              <SepButton
                 type="button"
+                variant="primary"
+                accent={craftingAccent}
                 onClick={craft}
                 disabled={!allRequirementsOwned || !allSlotsFilled || isPending}
-                className="relative overflow-hidden border px-5 py-2.5 text-[7px] uppercase tracking-[0.2em] transition active:translate-y-px disabled:cursor-not-allowed disabled:opacity-35"
-                style={{
-                  borderColor: allSlotsFilled
-                    ? craftingAccent
-                    : `color-mix(in srgb, ${craftingAccent} 28%, transparent)`,
-                  background: allSlotsFilled
-                    ? `linear-gradient(180deg, color-mix(in srgb, ${craftingAccent} 16%, rgb(var(--sep-colour-3b2919))), rgb(var(--sep-colour-21170f)))`
-                    : "rgb(var(--sep-colour-17110d))",
-                  color: allSlotsFilled
-                    ? `color-mix(in srgb, ${craftingAccent} 44%, rgb(var(--sep-colour-efd6a8)))`
-                    : "rgb(var(--sep-colour-dfc79c))",
-                  boxShadow: allSlotsFilled
-                    ? `0 0 16px color-mix(in srgb, ${craftingAccent} 16%, transparent)`
-                    : "none",
-                }}
+                className="relative overflow-hidden"
               >
                 <span className="relative">
                   {isPending ? "The work takes shape..." : "Craft"}
                 </span>
-              </button>
+              </SepButton>
             </div>
           </div>
         </div>
@@ -987,20 +943,17 @@ export function CraftingWorkbench({
                   </p>
                 </div>
 
-                <button
+                <SepIconButton
                   type="button"
+                  variant="subtle"
+                  accent={craftingAccent}
                   onClick={() =>
                     setCraftedReveal(null)
                   }
                   aria-label="Close crafted item"
-                  className="flex h-9 w-9 items-center justify-center border text-[12px] transition duration-200 hover:bg-[rgb(var(--sep-colour-271c12))]"
-                  style={{
-                    borderColor: `color-mix(in srgb, ${craftingAccent} 42%, transparent)`,
-                    color: craftingAccent,
-                  }}
                 >
                   ×
-                </button>
+                </SepIconButton>
               </div>
 
               <div className="p-5 sm:p-6">
@@ -1085,19 +1038,14 @@ export function CraftingWorkbench({
                       </div>
 
                       <div className="mt-3 flex flex-wrap gap-1.5">
-                        <span
-                          className="border px-2 py-1 text-[7px] uppercase tracking-[0.13em]"
-                          style={{
-                            borderColor: `color-mix(in srgb, ${craftingAccent} 34%, transparent)`,
-                            color:
-                              craftingAccent,
-                          }}
+                        <SepBadge
+                          accent={craftingAccent}
                         >
                           {qualityLabel(
                             craftedReveal.item
                               .quality,
                           )}
-                        </span>
+                        </SepBadge>
 
                         {craftedReveal.item
                           .category_name ? (
