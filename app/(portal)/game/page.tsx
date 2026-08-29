@@ -1121,61 +1121,77 @@ async function GameContent() {
     <RoomRealtime roomId={room.id} />
 
     <div className="mx-auto flex h-full max-w-80dvh flex-col">
-  <article className="flex min-h-0 flex-1 flex-col overflow-visible border border-[rgb(var(--sep-colour-6a5032))]/50 bg-[rgb(var(--sep-colour-17110d))] lg:overflow-hidden">
+  <article
+    data-sep-interaction-fixed="true"
+    className="flex min-h-0 flex-1 flex-col overflow-visible border border-[rgb(var(--sep-colour-6a5032))]/50 bg-[rgb(var(--sep-colour-17110d))] lg:overflow-hidden"
+  >
 
     {room.slug === "house-of-chances" && houseOfChancesState ? (
-      <HouseOfChancesPanel state={houseOfChancesState} />
+      <div data-sep-interaction-ignore="true">
+        <HouseOfChancesPanel state={houseOfChancesState} />
+      </div>
     ) : null}
 
     {room.slug === "odd-jobs-bureau" ? (
-      <OddJobsPanel jobs={oddJobs} />
+      <div data-sep-interaction-ignore="true">
+        <OddJobsPanel jobs={oddJobs} />
+      </div>
     ) : null}
 
     {room.slug === "the-breeze-lodgings" ? (
-      <BreezeLodgingsPanel rooms={breezeLodgings} />
+      <div data-sep-interaction-ignore="true">
+        <BreezeLodgingsPanel rooms={breezeLodgings} />
+      </div>
     ) : null}
 
     {breezeManageData ? (
-      <BreezeLodgingGuestsPanel
-        data={breezeManageData}
-      />
+      <div data-sep-interaction-ignore="true">
+        <BreezeLodgingGuestsPanel
+          data={breezeManageData}
+        />
+      </div>
     ) : null}
 
     {room.chat_enabled ? (
       <>
-        <RoomMessageList
-          roomId={room.id}
-          roomName={room.name}
-          messages={visibleMessages}
-          viewerCharacterId={
-            character.id
-          }
-          canViewAllWhispers={
-            canViewAllWhispers
-          }
-          privateLocationTheme={
-            privateLocation
-              ? {
-                  backgroundColour:
-                    privateLocation.background_colour,
-                  speechColour:
-                    privateLocation.speech_colour,
-                  actionColour:
-                    privateLocation.action_colour,
-                  systemColour:
-                    privateLocation.system_colour,
-                  whisperBackgroundColour:
-                    privateLocation.whisper_background_colour,
-                  whisperTextColour:
-                    privateLocation.whisper_text_colour,
-                  offgameBackgroundColour:
-                    privateLocation.offgame_background_colour,
-                  offgameTextColour:
-                    privateLocation.offgame_text_colour,
-                }
-              : null
-          }
-        />
+        <div
+          data-sep-interaction-ignore="true"
+          className="contents"
+        >
+          <RoomMessageList
+            roomId={room.id}
+            roomName={room.name}
+            messages={visibleMessages}
+            viewerCharacterId={
+              character.id
+            }
+            canViewAllWhispers={
+              canViewAllWhispers
+            }
+            privateLocationTheme={
+              privateLocation
+                ? {
+                    backgroundColour:
+                      privateLocation.background_colour,
+                    speechColour:
+                      privateLocation.speech_colour,
+                    actionColour:
+                      privateLocation.action_colour,
+                    systemColour:
+                      privateLocation.system_colour,
+                    whisperBackgroundColour:
+                      privateLocation.whisper_background_colour,
+                    whisperTextColour:
+                      privateLocation.whisper_text_colour,
+                    offgameBackgroundColour:
+                      privateLocation.offgame_background_colour,
+                    offgameTextColour:
+                      privateLocation.offgame_text_colour,
+                  }
+                : null
+            }
+          />
+        </div>
 
         <RoomChatForm
           attributes={{

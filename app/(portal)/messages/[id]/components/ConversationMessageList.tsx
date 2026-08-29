@@ -624,7 +624,7 @@ export function ConversationMessageList({
                 <button
                   type="submit"
                   data-sep-danger="true"
-                  className="border border-[rgb(var(--sep-colour-a65343))] bg-[rgb(var(--sep-colour-301713))] px-4 py-2 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-e6aa9d))] transition hover:border-[rgb(var(--sep-colour-c66d5b))] hover:bg-[rgb(var(--sep-colour-431d18))]"
+                  className="red-danger border border-[rgb(var(--sep-colour-a65343))] bg-[rgb(var(--sep-colour-301713))] px-4 py-2 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-e6aa9d))] transition hover:border-[rgb(var(--sep-colour-c66d5b))] hover:bg-[rgb(var(--sep-colour-431d18))]"
                 >
                   Delete selected (
                   {
@@ -798,7 +798,7 @@ export function ConversationMessageList({
                             type="submit"
                             title="Delete this message from your view"
                             data-sep-danger="true"
-                            className="border border-[rgb(var(--sep-colour-7b4035))]/80 bg-[rgb(var(--sep-colour-27120f))] px-2.5 py-1.5 text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-d99b8e))] transition hover:border-[rgb(var(--sep-colour-ad5a4c))] hover:bg-[rgb(var(--sep-colour-391713))] hover:text-[rgb(var(--sep-colour-f1b2a5))]"
+                            className="red-danger border border-[rgb(var(--sep-colour-7b4035))]/80 bg-[rgb(var(--sep-colour-27120f))] px-2 py-1 text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-d99b8e))] transition hover:border-[rgb(var(--sep-colour-ad5a4c))] hover:bg-[rgb(var(--sep-colour-391713))] hover:text-[rgb(var(--sep-colour-f1b2a5))]"
                           >
                             Delete
                           </button>

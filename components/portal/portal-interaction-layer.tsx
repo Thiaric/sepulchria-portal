@@ -14,7 +14,7 @@ type SurfaceMatch = {
 };
 
 const CONTROL_SELECTOR = [
-  "button:not(:disabled)",
+  "button",
   "a[href]",
   '[role="button"]',
 ].join(", ");
@@ -163,6 +163,13 @@ function resolveSurface(
       '[data-sep-interaction-ignore="true"]',
     )
   ) {
+    if (
+      control.matches(":disabled") ||
+      control.getAttribute("aria-disabled") === "true"
+    ) {
+      return null;
+    }
+
     return {
       element: control,
       kind: classifyControl(control),

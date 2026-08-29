@@ -761,3 +761,78 @@ body.portal-skin-scope
   color:
     rgb(var(--sep-colour-f1b2a5)) !important;
 }
+
+
+/* ==================================================================
+   SEPULCHRIA MESSAGE + FAVOURITE CORRECTIONS
+   ================================================================== */
+
+[data-portal-shell]
+  button.red-danger[data-sep-danger="true"] {
+  border-color:
+    rgb(var(--sep-colour-7b4035)) !important;
+  background-color:
+    rgb(var(--sep-colour-27120f)) !important;
+  color:
+    rgb(var(--sep-colour-d99b8e)) !important;
+}
+
+[data-portal-shell]
+  button.red-danger[data-sep-danger="true"]:hover:not(:disabled) {
+  border-color:
+    rgb(var(--sep-colour-ad5a4c)) !important;
+  background-color:
+    rgb(var(--sep-colour-391713)) !important;
+  color:
+    rgb(var(--sep-colour-f1b2a5)) !important;
+}
+
+/*
+ * Deliberately stronger than the global unified button rule.
+ * Existing skin surface, only darkened — no new hue.
+ */
+body.portal-skin-scope
+  [data-portal-shell]
+  button[data-sep-offgame-selector="true"] {
+  background-color:
+    color-mix(
+      in srgb,
+      rgb(var(--sep-colour-100c09)) 42%,
+      black
+    ) !important;
+}
+
+body.portal-skin-scope
+  [data-portal-shell]
+  button[data-sep-offgame-selector="true"]:hover:not(:disabled) {
+  background-color:
+    color-mix(
+      in srgb,
+      rgb(var(--sep-colour-100c09)) 52%,
+      black
+    ) !important;
+}
+
+[data-portal-shell]
+  [data-forum-topic-row="true"]:has(
+    [data-forum-favourite="true"]
+  ) {
+  background-color:
+    color-mix(
+      in srgb,
+      rgb(var(--sep-colour-100c09)) 58%,
+      black
+    ) !important;
+}
+
+[data-portal-shell]
+  [data-forum-topic-row="true"]:has(
+    [data-forum-favourite="true"]
+  ):hover {
+  background-color:
+    color-mix(
+      in srgb,
+      rgb(var(--sep-colour-15100d)) 66%,
+      black
+    ) !important;
+}

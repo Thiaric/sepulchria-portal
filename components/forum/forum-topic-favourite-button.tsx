@@ -174,6 +174,7 @@ export function ForumTopicFavouriteButton({
         void toggleFavourite()
       }
       disabled={loading || saving}
+      data-forum-favourite={favourite ? "true" : "false"}
       aria-pressed={favourite}
       aria-label={
         favourite

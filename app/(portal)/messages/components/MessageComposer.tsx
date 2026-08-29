@@ -230,6 +230,7 @@ export default function MessageComposer({
 
           <button
             type="button"
+            data-sep-offgame-selector="true"
             onClick={() =>
               setMessageMode("offgame")
             }

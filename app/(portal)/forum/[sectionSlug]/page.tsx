@@ -993,6 +993,7 @@ function TopicRow({
 
   return (
     <article
+      data-forum-topic-row="true"
       className={`group relative grid gap-4 border transition md:grid-cols-[minmax(0,1fr)_110px_190px] md:items-center ${
         isUnread
           ? "border-[rgb(var(--sep-colour-a87532))] bg-[rgb(var(--sep-colour-1b130d))] px-5 py-5 shadow-[inset_0_0_0_1px_rgba(var(--sep-rgb-168-117-50),0.14),0_0_16px_rgba(var(--sep-rgb-168-117-50),0.07)] hover:bg-[rgb(var(--sep-colour-21170f))]"
