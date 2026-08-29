@@ -60,6 +60,7 @@ export function CharacterSheetTabs({
       <nav
   aria-label="Character sheet sections"
   role="tablist"
+  data-sep-interaction-ignore="true"
   className="
   flex min-w-0 flex-wrap items-end gap-1
   border-x border-t border-[rgb(var(--sep-colour-60482e))]/45

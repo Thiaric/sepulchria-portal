@@ -46,6 +46,7 @@ export function CodexEntryHero({
       </Link>
 
       <section
+        data-sep-interaction-ignore="true"
         className="relative overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-110d0a))]"
         style={{
           boxShadow: `inset 0 4px 0 ${accentColour}`,
@@ -129,8 +130,11 @@ export function CodexEntryHero({
         </div>
       </section>
 
-      {betweenHeroAndRecord}
+      <div data-sep-interaction-ignore="true">
+        {betweenHeroAndRecord}
+      </div>
 
+      <div data-sep-interaction-ignore="true">
       {recordReplacement ?? (
       <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 p-6 sm:p-8">
         <div className="flex items-center gap-4">
@@ -165,6 +169,7 @@ export function CodexEntryHero({
         )}
       </section>
       )}
+      </div>
     </article>
   );
 }

@@ -853,7 +853,7 @@ body.portal-skin-scope
   background-color:
     color-mix(
       in srgb,
-      rgb(var(--sep-colour-100c09)) 28%,
+      rgb(var(--sep-colour-100c09)) 58%,
       black
     ) !important;
 }
@@ -863,7 +863,7 @@ body.portal-skin-scope
   background-color:
     color-mix(
       in srgb,
-      rgb(var(--sep-colour-100c09)) 38%,
+      rgb(var(--sep-colour-100c09)) 66%,
       black
     ) !important;
 }

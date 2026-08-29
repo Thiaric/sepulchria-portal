@@ -352,7 +352,10 @@ export default async function OrderPage({
           Back to Orders
         </Link>
 
-        <article className="mt-5 space-y-5">
+        <article
+          data-sep-interaction-ignore="true"
+          className="mt-5 space-y-5"
+        >
           <section
             className="relative overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-110d0a))]"
             style={{

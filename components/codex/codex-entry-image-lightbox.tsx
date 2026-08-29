@@ -114,6 +114,7 @@ export function CodexEntryImageLightbox({
     <>
       <button
         type="button"
+        data-sep-interaction-pass-through="true"
         onClick={() =>
           setOpen(true)
         }

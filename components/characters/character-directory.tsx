@@ -478,6 +478,7 @@ function CharacterDirectoryCard({
 
   return (
     <article
+      data-sep-interactive-surface="card"
       className={
         character.presence?.appear_offline === true
           ? "group relative overflow-hidden border border-dashed border-[rgb(var(--sep-colour-876a46))]/55 bg-[rgb(var(--sep-colour-15100d))]/95 opacity-40 transition duration-200 hover:-translate-y-0.5 hover:border-[rgb(var(--sep-colour-9b7446))] hover:bg-[rgb(var(--sep-colour-1a130e))] hover:opacity-100"
@@ -487,6 +488,7 @@ function CharacterDirectoryCard({
       <Link
         href={`/characters/${character.public_slug}?from=characters`}
         aria-label={`Open ${character.display_name}'s profile`}
+        data-sep-interaction-pass-through="true"
         className="absolute inset-0 z-10"
       />
 

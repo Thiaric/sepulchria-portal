@@ -178,11 +178,7 @@ const returnLabel =
 
   return (
     <div
-      data-sep-public-character-sheet={
-        activeCharacter?.id !== character.id
-          ? "other"
-          : undefined
-      }
+      data-sep-public-character-sheet="other"
       className="mx-auto w-full max-w-7xl p-6"
     >
       <LiveCharacterSheetRefresh

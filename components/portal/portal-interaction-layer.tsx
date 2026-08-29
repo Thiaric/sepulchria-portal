@@ -154,7 +154,8 @@ function resolveSurface(
     portal.contains(control) &&
     !control.closest(
       '[data-sep-interaction-ignore="true"]',
-    )
+    ) &&
+    control.dataset.sepInteractionPassThrough !== "true"
   ) {
     if (
       control.matches(":disabled") ||
