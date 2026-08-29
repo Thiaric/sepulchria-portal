@@ -74,10 +74,10 @@ export function OddJobsPanel({ jobs }: { jobs: OddJobStateRow[] }) {
   return (
     <details
       data-sep-interaction-ignore="true"
-      className="group max-h-[72%] shrink-0 overflow-y-auto border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-120e0b))]"
+      className="group shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0d0907))]"
     >
       <summary
-        className="sticky top-0 z-30 flex min-h-[58px] w-full cursor-pointer list-none items-center justify-between gap-3 bg-[rgb(var(--sep-colour-120e0b))] px-3 py-2 [transform:none!important] [&::-webkit-details-marker]:hidden"
+        className="sticky top-0 z-30 flex cursor-pointer list-none items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-59432c))]/30 bg-[linear-gradient(90deg,rgb(var(--sep-colour-100c09)),rgb(var(--sep-colour-17110d)),rgb(var(--sep-colour-100c09)))] px-3 py-2 [&::-webkit-details-marker]:hidden"
       >
         <div>
           <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
@@ -106,7 +106,7 @@ export function OddJobsPanel({ jobs }: { jobs: OddJobStateRow[] }) {
         </div>
       </summary>
 
-      <div className="border-t border-[rgb(var(--sep-colour-59432c))]/30 px-3 py-3">
+      <div className="max-h-[58vh] overflow-y-auto border-t border-[rgb(var(--sep-colour-59432c))]/30 px-3 py-3">
         {alreadyWorked ? (
           <p className="mb-3 border border-emerald-900/45 bg-emerald-950/10 px-3 py-2 text-[9px] text-emerald-400">
             You have already worked today

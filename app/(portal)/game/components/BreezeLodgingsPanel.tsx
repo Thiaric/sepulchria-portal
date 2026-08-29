@@ -154,10 +154,10 @@ export function BreezeLodgingsPanel({ rooms }: { rooms: BreezeLodgingStateRow[] 
   return (
     <details
       data-sep-interaction-ignore="true"
-      className="group max-h-[72%] shrink-0 overflow-y-auto border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-120e0b))]"
+      className="group shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0d0907))]"
     >
       <summary
-        className="sticky top-0 z-30 flex min-h-[58px] w-full cursor-pointer list-none items-center justify-between gap-3 bg-[rgb(var(--sep-colour-120e0b))] px-3 py-2 [transform:none!important] [&::-webkit-details-marker]:hidden"
+        className="sticky top-0 z-30 flex cursor-pointer list-none items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-59432c))]/30 bg-[linear-gradient(90deg,rgb(var(--sep-colour-100c09)),rgb(var(--sep-colour-17110d)),rgb(var(--sep-colour-100c09)))] px-3 py-2 [&::-webkit-details-marker]:hidden"
       >
         <div>
           <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
@@ -185,7 +185,7 @@ export function BreezeLodgingsPanel({ rooms }: { rooms: BreezeLodgingStateRow[] 
         </div>
       </summary>
 
-      <div className="border-t border-[rgb(var(--sep-colour-59432c))]/30 px-3 py-3">
+      <div className="max-h-[58vh] overflow-y-auto border-t border-[rgb(var(--sep-colour-59432c))]/30 px-3 py-3">
         {viewerIsStaff ? (
           <p className="mb-0.1">
             
@@ -257,17 +257,17 @@ export function BreezeLodgingsPanel({ rooms }: { rooms: BreezeLodgingStateRow[] 
                             name={room.room_name}
                           />
 
-                          <div className="pointer-events-none absolute inset-0 z-[6] bg-[rgb(var(--sep-colour-0d0a08))]/58" />
-                          <div className="pointer-events-none absolute inset-0 z-[7] bg-gradient-to-t from-[rgb(var(--sep-colour-0d0a08))]/92 via-[rgb(var(--sep-colour-0d0a08))]/45 to-[rgb(var(--sep-colour-0d0a08))]/18" />
+                          <div className="pointer-events-none absolute inset-0 z-[6] bg-black/42" />
+                          <div className="pointer-events-none absolute inset-0 z-[7] bg-gradient-to-t from-black/82 via-black/32 to-black/10" />
                         </>
                       ) : null}
 
                       <div className="pointer-events-none relative z-20 flex min-h-[148px] flex-1 flex-col p-3">
-                        <h4 className="font-serif text-[12px] text-[rgb(var(--sep-colour-e8d3ad))] [text-shadow:0_2px_4px_rgba(var(--sep-rgb-0-0-0),0.95)]">
+                        <h4 className="font-serif text-[12px] text-[#f0dfbd] [text-shadow:0_2px_4px_rgba(0,0,0,0.95)]">
                           {room.room_name}
                         </h4>
 
-                        <p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-b7a58c))] [text-shadow:0_2px_4px_rgba(var(--sep-rgb-0-0-0),0.95)]">
+                        <p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-[#c9b99d] [text-shadow:0_2px_4px_rgba(0,0,0,0.95)]">
                           {room.rented_by_me
                             ? "Your room"
                             : occupied
