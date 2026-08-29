@@ -39,7 +39,8 @@ export function DeleteConversationForm({
 
       <button
         type="submit"
-        className="border border-[rgb(var(--sep-colour-7b4035))] px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-d99b8e))]"
+        data-sep-danger="true"
+        className="border border-[rgb(var(--sep-colour-7b4035))] bg-[rgb(var(--sep-colour-27120f))] px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-d99b8e))] transition hover:border-[rgb(var(--sep-colour-ad5a4c))] hover:bg-[rgb(var(--sep-colour-391713))] hover:text-[rgb(var(--sep-colour-f1b2a5))]"
       >
         {isGroup
           ? "Leave conversation"

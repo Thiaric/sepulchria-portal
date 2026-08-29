@@ -558,3 +558,206 @@ body.portal-skin-scope
   max-height: revert !important;
   margin: auto !important;
 }
+
+
+/* ==================================================================
+   SEPULCHRIA INTERACTIVE SURFACES — POINTER LIGHT + DEPTH
+   ================================================================== */
+
+body.portal-skin-scope
+  [data-sep-interaction-kind] {
+  --sep-interact-x: 50%;
+  --sep-interact-y: 50%;
+  --sep-interact-rx: 0deg;
+  --sep-interact-ry: 0deg;
+
+  position: relative;
+  transform-origin: 50% 50%;
+  will-change: transform;
+  transition:
+    transform 180ms
+      cubic-bezier(0.2, 0.75, 0.22, 1),
+    filter 180ms ease;
+}
+
+body.portal-skin-scope
+  [data-sep-interaction-kind]::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  opacity: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(
+      280px circle at
+        var(--sep-interact-x)
+        var(--sep-interact-y),
+      color-mix(
+        in srgb,
+        rgb(var(--sep-colour-ecd2a3))
+          15%,
+        transparent
+      ) 0%,
+      color-mix(
+        in srgb,
+        rgb(var(--sep-colour-bca27b))
+          7%,
+        transparent
+      ) 34%,
+      transparent 70%
+    );
+  transition:
+    opacity 170ms ease;
+}
+
+body.portal-skin-scope
+  [data-sep-interaction-kind="card"][data-sep-interaction-active="true"] {
+  transform:
+    perspective(1000px)
+    translateY(-2px)
+    rotateX(var(--sep-interact-rx))
+    rotateY(var(--sep-interact-ry))
+    scale(1.0025) !important;
+}
+
+body.portal-skin-scope
+  [data-sep-interaction-kind="card"][data-sep-interaction-active="true"]::after {
+  opacity: 1;
+}
+
+body.portal-skin-scope
+  [data-sep-interaction-kind="row"][data-sep-interaction-active="true"] {
+  transform:
+    perspective(1100px)
+    translateY(-1px)
+    rotateX(var(--sep-interact-rx))
+    rotateY(var(--sep-interact-ry))
+    scale(1.0015) !important;
+}
+
+body.portal-skin-scope
+  [data-sep-interaction-kind="row"]::after {
+  background:
+    radial-gradient(
+      210px circle at
+        var(--sep-interact-x)
+        var(--sep-interact-y),
+      color-mix(
+        in srgb,
+        rgb(var(--sep-colour-ecd2a3))
+          13%,
+        transparent
+      ) 0%,
+      color-mix(
+        in srgb,
+        rgb(var(--sep-colour-bca27b))
+          5%,
+        transparent
+      ) 38%,
+      transparent 72%
+    );
+}
+
+body.portal-skin-scope
+  [data-sep-interaction-kind="row"][data-sep-interaction-active="true"]::after {
+  opacity: 1;
+}
+
+body.portal-skin-scope
+  [data-sep-interaction-kind="control"][data-sep-interaction-active="true"] {
+  transform:
+    translateY(-1px)
+    scale(1.012) !important;
+}
+
+body.portal-skin-scope
+  [data-sep-interaction-kind="control"]::after {
+  background:
+    radial-gradient(
+      120px circle at
+        var(--sep-interact-x)
+        var(--sep-interact-y),
+      color-mix(
+        in srgb,
+        rgb(var(--sep-colour-ecd2a3))
+          12%,
+        transparent
+      ) 0%,
+      transparent 72%
+    );
+}
+
+body.portal-skin-scope
+  [data-sep-interaction-kind="control"][data-sep-interaction-active="true"]::after {
+  opacity: 1;
+}
+
+body.portal-skin-scope
+  [data-sep-interaction-kind="nav"][data-sep-interaction-active="true"] {
+  transform:
+    translateY(-0.5px)
+    scale(1.004) !important;
+}
+
+body.portal-skin-scope
+  [data-sep-interaction-kind="nav"]::after {
+  background:
+    radial-gradient(
+      180px circle at
+        var(--sep-interact-x)
+        var(--sep-interact-y),
+      color-mix(
+        in srgb,
+        rgb(var(--sep-colour-ecd2a3))
+          9%,
+        transparent
+      ) 0%,
+      transparent 74%
+    );
+}
+
+body.portal-skin-scope
+  [data-sep-interaction-kind="nav"][data-sep-interaction-active="true"]::after {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.portal-skin-scope
+    [data-sep-interaction-kind],
+  body.portal-skin-scope
+    [data-sep-interaction-kind][data-sep-interaction-active="true"] {
+    transform: none !important;
+  }
+
+  body.portal-skin-scope
+    [data-sep-interaction-kind]::after {
+    transition:
+      opacity 120ms ease !important;
+  }
+}
+
+
+/* ==================================================================
+   SEPULCHRIA DANGER CONTROLS - PRESERVE RED
+   ================================================================== */
+body.portal-skin-scope
+  button[data-sep-danger="true"] {
+  border-color:
+    rgb(var(--sep-colour-7b4035)) !important;
+  background:
+    rgb(var(--sep-colour-27120f)) !important;
+  color:
+    rgb(var(--sep-colour-d99b8e)) !important;
+}
+
+body.portal-skin-scope
+  button[data-sep-danger="true"]:hover {
+  border-color:
+    rgb(var(--sep-colour-ad5a4c)) !important;
+  background:
+    rgb(var(--sep-colour-391713)) !important;
+  color:
+    rgb(var(--sep-colour-f1b2a5)) !important;
+}

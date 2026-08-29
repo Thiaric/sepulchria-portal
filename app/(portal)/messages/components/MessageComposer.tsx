@@ -236,8 +236,8 @@ export default function MessageComposer({
             aria-pressed={!isOnGame}
             className={`border px-3 py-2 text-left transition ${
               !isOnGame
-                ? "border-[rgb(var(--sep-colour-6d7488))] bg-[rgb(var(--sep-colour-20232b))] text-[rgb(var(--sep-colour-d6dae5))]"
-                : "border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-100c09))] text-[rgb(var(--sep-colour-8e806d))] hover:border-[rgb(var(--sep-colour-6d7488))]"
+                ? "border-[rgb(var(--sep-colour-6d7488))] bg-[rgb(var(--sep-colour-0d0907))] text-[rgb(var(--sep-colour-d6dae5))]"
+                : "border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-0d0907))] text-[rgb(var(--sep-colour-8e806d))] hover:border-[rgb(var(--sep-colour-6d7488))]"
             }`}
           >
             <span className="block text-[9px] uppercase tracking-[0.18em]">

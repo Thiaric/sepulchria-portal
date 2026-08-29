@@ -221,6 +221,7 @@ export default function TopicPost({
   return (
     <article
       id={`post-${post.id}`}
+      data-sep-interaction-fixed="true"
       className="scroll-mt-24 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]"
     >
       <div className="grid lg:grid-cols-[138px_minmax(0,1fr)]">

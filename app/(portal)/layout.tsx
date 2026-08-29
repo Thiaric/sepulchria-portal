@@ -6,6 +6,7 @@ import { PortalAudioProvider } from "@/components/audio/portal-audio-provider";
 import { PortalMessageSoundListener } from "@/components/audio/portal-message-sound-listener";
 import { PortalCollapsibleColumns } from "@/components/portal/portal-collapsible-columns";
 import { PortalHeader } from "@/components/portal/portal-header";
+import { PortalInteractionLayer } from "@/components/portal/portal-interaction-layer";
 import { PortalNotificationCountsProvider } from "@/components/notifications/portal-notification-counts-provider";
 import { PortalPresenceHeartbeat } from "@/components/portal/portal-presence-heartbeat";
 import { PortalSessionGuard } from "@/components/portal/portal-session-guard";
@@ -111,6 +112,7 @@ async function PortalLayoutContent({
 
             <PortalSessionGuard />
 
+            <PortalInteractionLayer />
 
             <div className="shrink-0">
               <PortalHeader

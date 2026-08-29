@@ -1536,6 +1536,7 @@ export default function RoomMessageList({
   id="room-chronicle"
   ref={scrollContainerRef}
   onScroll={handleScroll}
+  data-sep-interaction-ignore="true"
   className="min-h-0 flex-none overflow-visible lg:flex-1 lg:overflow-y-auto lg:overscroll-contain"
 >
 
@@ -1571,7 +1572,7 @@ export default function RoomMessageList({
                   return (
                     <article
                       key={item.id}
-                      className="relative border-y border-[rgb(var(--sep-colour-8a6637))]/40 bg-[linear-gradient(90deg,rgba(var(--sep-rgb-91-56-24),0.22),rgba(var(--sep-rgb-24-16-11),0.72),rgba(var(--sep-rgb-91-56-24),0.14))] py-2.5 pl-5 pr-12 sm:pl-7 sm:pr-12"
+                      className="relative border-y border-[rgb(var(--sep-colour-8a6637))]/40 bg-[rgb(var(--sep-colour-0d0a08))] py-2.5 pl-5 pr-12 sm:pl-7 sm:pr-12"
                     >
                       {item.character_id &&
                       item.character_id !== viewerCharacterId ? (
