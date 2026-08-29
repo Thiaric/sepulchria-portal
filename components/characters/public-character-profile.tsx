@@ -277,14 +277,16 @@ export function PublicCharacterProfileView({
                     Character profile
                   </p>
 
-                  <div className="mt-1 flex w-full flex-wrap items-center justify-between gap-2.5">
-                    <h1 className="break-words font-serif text-3xl text-[rgb(var(--sep-colour-ecd9b2))] sm:text-[2.15rem]">
+                  <div className="mt-1 grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-4">
+                    <h1 className="min-w-0 break-words font-serif text-3xl text-[rgb(var(--sep-colour-ecd9b2))] sm:text-[2.15rem]">
                       {fullName}
                     </h1>
 
-                    <CharacterDisplayTrophies
-                      characterId={character.id}
-                    />
+                    <div className="justify-self-end">
+                      <CharacterDisplayTrophies
+                        characterId={character.id}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

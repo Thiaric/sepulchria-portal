@@ -85,7 +85,7 @@ export async function CharacterDisplayTrophies({
 
   return (
     <span
-      className="ml-auto inline-flex flex-wrap items-center justify-end gap-1.5"
+      className="inline-flex flex-wrap items-center justify-end gap-1.5"
       aria-label="Displayed Trophies"
     >
       {trophies.map(({ slot, trophy }) => (
