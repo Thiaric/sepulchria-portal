@@ -91,7 +91,7 @@
  */
 [data-portal-shell]
   :is(
-    button[class~="border"]:not([aria-label]),
+    button[class~="border"]:not([aria-label]):not([style*="background-color"]),
     a[class~="border"]
   ):not(.portal-left-shell *):not(.portal-right-shell *):not(
     [class*="red-"]
@@ -120,7 +120,7 @@
 
 [data-portal-shell]
   :is(
-    button[class~="border"]:not([aria-label]),
+    button[class~="border"]:not([aria-label]):not([style*="background-color"]),
     a[class~="border"]
   ):not(.portal-left-shell *):not(.portal-right-shell *):not(
     [class*="red-"]
@@ -137,7 +137,7 @@
  * original width, height, font-size, padding and icon geometry.
  */
 [data-portal-shell]
-  button[class~="border"][aria-label]:not(.portal-left-shell *):not(
+  button[class~="border"][aria-label]:not([style*="background-color"]):not(.portal-left-shell *):not(
     .portal-right-shell *
   ):not([class*="red-"]):not([class*="amber-"]):not(
     [class*="emerald-"]
@@ -156,7 +156,7 @@
 }
 
 [data-portal-shell]
-  button[class~="border"][aria-label]:not(.portal-left-shell *):not(
+  button[class~="border"][aria-label]:not([style*="background-color"]):not(.portal-left-shell *):not(
     .portal-right-shell *
   ):not([class*="red-"]):not([class*="amber-"]):not(
     [class*="emerald-"]
@@ -330,7 +330,7 @@
 /* Modal text buttons use the same standard button language. */
 [data-portal-shell]
   :is([role="dialog"], [aria-modal="true"])
-  button[class~="border"]:not([aria-label]):not([class*="red-"]):not(
+  button[class~="border"]:not([aria-label]):not([style*="background-color"]):not([class*="red-"]):not(
     [class*="amber-"]
   ):not([class*="emerald-"]) {
   border-width: 1px !important;
