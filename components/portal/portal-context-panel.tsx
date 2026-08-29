@@ -88,6 +88,10 @@ if (pathname === "/friends") {
   return <FriendListContext />;
 }
 
+if (pathname === "/ranking") {
+  return <HallOfRenownContext />;
+}
+
 const publicCharacterMatch =
   pathname.match(
     /^\/characters\/([^/]+)$/,
@@ -354,6 +358,100 @@ if (
   }
 
   return <DefaultContext />;
+}
+
+
+const HALL_OF_RENOWN_BOARDS = [
+  ["expertise", "Expertise", "Most Experienced"],
+  ["veterans", "Standing", "Veterans"],
+  ["earners", "Economy", "Top Earners"],
+  ["spenders", "Economy", "Biggest Spenders"],
+  ["collectors", "Inventory", "Collectors"],
+  ["shapes", "Warping", "Shape Masters"],
+  ["feats", "Feats", "Feat Masters"],
+  ["recipes", "Crafting", "Recipe Masters"],
+  ["market", "Market", "Market Regulars"],
+  ["odd-jobs", "Work", "Odd Job Workers"],
+  ["gamblers", "House of Chances", "Gamblers"],
+  ["luckiest", "House of Chances", "Luckiest"],
+  ["breeze", "The Breeze", "Breeze Residents"],
+  ["forum", "Forum", "Forum Contributors"],
+  ["correspondents", "Messages", "Correspondents"],
+  ["chatters", "Conversation", "Instant Chatters"],
+  ["premium", "Premium", "Premium Collectors"],
+] as const;
+
+function HallOfRenownContext() {
+  const searchParams =
+    useSearchParams();
+
+  const currentBoard =
+    searchParams.get("board") ??
+    "expertise";
+
+  const embedded =
+    searchParams.get("embedded") ===
+    "1";
+
+  return (
+    <div className="flex h-full min-h-0 flex-col">
+      <ContextHeading
+        eyebrow="The Hall of Renown"
+        title="Records of Renown"
+      />
+
+      <p className="text-xs leading-5 text-[rgb(var(--sep-colour-938673))]">
+        Choose the record displayed in
+        the Hall.
+      </p>
+
+      <div className="my-3 h-px bg-[rgb(var(--sep-colour-59432c))]/35" />
+
+      <div
+        data-portal-scroll
+        className="min-h-0 flex-1 space-y-1 overflow-y-auto pr-1"
+      >
+        {HALL_OF_RENOWN_BOARDS.map(
+          ([
+            key,
+            eyebrow,
+            label,
+          ]) => {
+            const active =
+              currentBoard === key;
+
+            const href =
+              `/ranking?board=${key}${
+                embedded
+                  ? "&embedded=1"
+                  : ""
+              }`;
+
+            return (
+              <Link
+                key={key}
+                href={href}
+                scroll={false}
+                className={`block px-3 py-2 transition ${
+                  active
+                    ? "bg-[rgb(var(--sep-colour-302116))] text-[rgb(var(--sep-colour-efd7a7))]"
+                    : "text-[rgb(var(--sep-colour-a7977f))] hover:bg-[rgb(var(--sep-colour-1d1611))] hover:text-[rgb(var(--sep-colour-d8c19a))]"
+                }`}
+              >
+                <span className="block text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-735f45))]">
+                  {eyebrow}
+                </span>
+
+                <span className="mt-0.5 block font-serif text-[13px]">
+                  {label}
+                </span>
+              </Link>
+            );
+          },
+        )}
+      </div>
+    </div>
+  );
 }
 
 type AdminCharacterJumpField = {

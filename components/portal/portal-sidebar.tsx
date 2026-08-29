@@ -197,12 +197,13 @@ const messagesItem: NavigationItem = {
 };
 
 const rankingItem: NavigationItem = {
-  label: "Ranking",
+  label: "Hall of Renown",
   title:
-    "View Sepulchria character rankings and lifetime achievements.",
+    "Enter the Hall of Renown and view Sepulchria's records of standing and achievement.",
   icon: "/icons/characters.png",
   href: "/ranking",
   activePaths: ["/ranking"],
+  opensModal: true,
 };
 
 const forumItem: NavigationItem = {
