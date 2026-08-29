@@ -94,6 +94,8 @@
     button[class~="border"]:not([aria-label]):not([style*="background-color"]),
     a[class~="border"]
   ):not(.portal-left-shell *):not(.portal-right-shell *):not(
+    [data-sep-ui-ignore="true"] *
+  ):not(
     [class*="red-"]
   ):not([class*="amber-"]):not([class*="emerald-"]):not(
     [class*="rose-"]
@@ -123,6 +125,8 @@
     button[class~="border"]:not([aria-label]):not([style*="background-color"]),
     a[class~="border"]
   ):not(.portal-left-shell *):not(.portal-right-shell *):not(
+    [data-sep-ui-ignore="true"] *
+  ):not(
     [class*="red-"]
   ):not([class*="amber-"]):not([class*="emerald-"]):not(
     [class*="rose-"]

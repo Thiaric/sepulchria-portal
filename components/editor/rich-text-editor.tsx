@@ -1951,6 +1951,8 @@ function addSpellingWordToDictionary() {
 
     {spellingMenu ? (
       <div
+      data-sep-interaction-ignore="true"
+      data-sep-ui-ignore="true"
         className="fixed z-[9999] w-64 border border-[rgb(var(--sep-colour-765937))]/80 bg-[rgb(var(--sep-colour-120d0a))] p-3 shadow-[0_14px_40px_rgba(var(--sep-rgb-0-0-0),0.85)]"
         style={{
           left: spellingMenu.x,
