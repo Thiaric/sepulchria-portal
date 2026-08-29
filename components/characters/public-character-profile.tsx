@@ -12,7 +12,7 @@ import { CharacterTrophiesDisplay } from "@/components/characters/character-trop
 import { CharacterDisplayTrophies } from "@/components/characters/character-display-trophies";
 import { CharacterExpertiseTotal } from "@/components/characters/character-expertise-total";
 import { CharacterMusicPlayer } from "@/components/characters/character-music-player";
-import { CharacterSheetTabs } from "@/components/characters/character-sheet-tabs";
+import { CharacterSheetTabs, type CharacterSheetTab } from "@/components/characters/character-sheet-tabs";
 import { CharacterAuditTrail } from "@/components/characters/character-audit-trail";
 import { CharacterShapesDisplay } from "@/components/characters/character-shapes-display";
 import { LiveCharacterPresence } from "@/components/characters/live-character-presence";
@@ -26,6 +26,7 @@ import type {
 
 type PublicCharacterProfileProps = {
   character: PublicCharacterProfile;
+  activeTab: CharacterSheetTab;
   returnHref: string | null;
   returnLabel: string | null;
   canMessage: boolean;
@@ -79,6 +80,7 @@ function formatSepulchriaSince(
 
 export function PublicCharacterProfileView({
   character,
+  activeTab,
   returnHref,
   returnLabel,
   canMessage,
@@ -219,8 +221,11 @@ export function PublicCharacterProfileView({
 
       <CharacterSheetTabs
         showAudit={viewerIsStaff}
-      >
+        activeTab={activeTab}
+        cacheKey={character.id}
+>
         <div data-character-sheet-panel="short">
+          {activeTab === "short" ? (
           <section className="grid gap-4 xl:grid-cols-[minmax(0,1.45fr)_minmax(360px,0.9fr)]">
         <div className="min-w-0">
           <section className="grid gap-4 border border-[rgb(var(--sep-colour-654b2e))]/50 bg-[rgb(var(--sep-colour-17110d))] p-4 sm:p-5 lg:grid-cols-[180px_minmax(0,1fr)]">
@@ -272,7 +277,7 @@ export function PublicCharacterProfileView({
 
             <div className="min-w-0">
               <div className="flex flex-wrap items-start justify-between gap-3 border-b border-[rgb(var(--sep-colour-5d452d))]/35 pb-3">
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
                   <p className="text-[8px] uppercase tracking-[0.26em] text-[rgb(var(--sep-colour-876a46))]">
                     Character profile
                   </p>
@@ -399,6 +404,8 @@ export function PublicCharacterProfileView({
               <CharacterMechanicsDisplay characterId={character.id} />
             </div>
           </section>
+        
+          ) : null}
         </div>
 
         <div data-character-sheet-panel="profile" className="py-2 border border-[rgb(var(--sep-colour-6b5032))]/50">
@@ -437,21 +444,35 @@ export function PublicCharacterProfileView({
         </div>
 
         <div data-character-sheet-panel="inventory">
-          <CharacterInventoryDisplay characterId={character.id} />
+          {activeTab === "inventory" ? (
+            <CharacterInventoryDisplay
+              characterId={character.id}
+            />
+          ) : null}
         </div>
 
         <div data-character-sheet-panel="trophies">
-          <CharacterTrophiesDisplay
-            characterId={character.id}
-          />
+          {activeTab === "trophies" ? (
+            <CharacterTrophiesDisplay
+              characterId={character.id}
+            />
+          ) : null}
         </div>
 
         <div data-character-sheet-panel="gifts">
-          <CharacterGiftsDisplay characterId={character.id} />
+          {activeTab === "gifts" ? (
+            <CharacterGiftsDisplay
+              characterId={character.id}
+            />
+          ) : null}
         </div>
 
         <div data-character-sheet-panel="warping">
-          <CharacterShapesDisplay characterId={character.id} />
+          {activeTab === "warping" ? (
+            <CharacterShapesDisplay
+              characterId={character.id}
+            />
+          ) : null}
         </div>
 
         <div data-character-sheet-panel="offgame"  className="py-2 border border-[rgb(var(--sep-colour-6b5032))]/50">
@@ -465,7 +486,8 @@ export function PublicCharacterProfileView({
         </div>
 
         <div data-character-sheet-panel="audit">
-          {viewerIsStaff ? (
+          {activeTab === "audit" &&
+          viewerIsStaff ? (
             <CharacterAuditTrail
               characterId={character.id}
               staffView

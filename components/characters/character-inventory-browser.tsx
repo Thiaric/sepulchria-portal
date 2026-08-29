@@ -1516,7 +1516,7 @@ function EquipmentFigure({
       {!collapsed ? (
         <>
       <div className="relative hidden min-h-[800px] overflow-visible md:block">
-        <div className="absolute inset-x-[24%] top-[10%] bottom-[8%] rounded-[45%] border border-[rgb(var(--sep-colour-60482e))]/15 bg-[radial-gradient(circle_at_center,rgba(var(--sep-rgb-92-68-42),0.10),transparent_68%)]" />
+        <div className="absolute inset-x-[24%] top-[10%] bottom-[8%] rounded-[45%] bg-[radial-gradient(circle_at_center,rgba(var(--sep-rgb-92-68-42),0.10),transparent_68%)]" />
 
         <Silhouette />
 

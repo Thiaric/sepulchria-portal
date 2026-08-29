@@ -6,7 +6,7 @@ import { PendingSubmitButton } from "@/components/forms/pending-submit-button";
 import { CharacterExpertiseTotal } from "@/components/characters/character-expertise-total";
 import { CharacterMusicPlayer } from "@/components/characters/character-music-player";
 import { CharacterOrderSummary } from "@/components/characters/character-order-summary";
-import { CharacterSheetTabs } from "@/components/characters/character-sheet-tabs";
+import { CharacterSheetTabs, type CharacterSheetTab } from "@/components/characters/character-sheet-tabs";
 import { CharacterAuditTrail } from "@/components/characters/character-audit-trail";
 
 
@@ -92,6 +92,7 @@ type CharacterPageProps = {
     updated?: string;
     submitted?: string;
     error?: string;
+    tab?: string;
   }>;
 };
 
@@ -99,6 +100,10 @@ export default async function CharacterPage({
   searchParams,
 }: CharacterPageProps) {
   const params = await searchParams;
+  const activeTab =
+    normaliseOwnCharacterSheetTab(
+      params.tab,
+    );
   const supabase = await createClient();
 
   const {
@@ -215,11 +220,36 @@ export default async function CharacterPage({
           characterWithEffectiveAttributes as unknown as CharacterProfile
         }
         own
+        activeTab={activeTab}
         notice={notice}
         sepulchriaSince={user.created_at ?? null}
       />
     </>
   );
+}
+
+function normaliseOwnCharacterSheetTab(
+  value: string | undefined,
+): CharacterSheetTab {
+  const allowed: CharacterSheetTab[] = [
+    "short",
+    "profile",
+    "inventory",
+    "ledger",
+    "trophies",
+    "gifts",
+    "warping",
+    "offgame",
+    "audit",
+    "edit",
+  ];
+
+  return value &&
+    allowed.includes(
+      value as CharacterSheetTab,
+    )
+    ? (value as CharacterSheetTab)
+    : "short";
 }
 
 function formatSepulchriaSince(
@@ -245,12 +275,14 @@ function formatSepulchriaSince(
 export function Profile({
   character,
   own = false,
+  activeTab = "short",
   messageAction = null,
   notice = null,
   sepulchriaSince = null,
 }: {
   character: CharacterProfile;
   own?: boolean;
+  activeTab?: CharacterSheetTab;
   messageAction?: ReactNode;
   notice?: PageNotice | null;
   sepulchriaSince?: string | null;
@@ -309,7 +341,7 @@ export function Profile({
 
   return (
     <div className="p-5 sm:p-7 lg:p-9">
-      <div className="mx-auto max-w-5xl">
+      <div className="mx-auto w-full max-w-7xl">
         {notice ? (
           <PageNoticeBanner notice={notice} />
         ) : null}
@@ -361,8 +393,11 @@ export function Profile({
           </div>
         </div>
 
-        <CharacterSheetTabs own={own}>
+        <CharacterSheetTabs own={own} activeTab={activeTab}
+        cacheKey={character.id ?? "own"}
+>
           <div data-character-sheet-panel="short">
+          {activeTab === "short" ? (
             <section className="grid gap-4 xl:grid-cols-[minmax(0,1.45fr)_minmax(360px,0.9fr)]">
           <div className="min-w-0">
             <section className="grid gap-4 border border-[rgb(var(--sep-colour-654b2e))]/50 bg-[rgb(var(--sep-colour-17110d))] p-4 sm:p-5 lg:grid-cols-[180px_minmax(0,1fr)]">
@@ -382,17 +417,28 @@ export function Profile({
                     ?
                   </div>
                 )}
+
+                {own ? (
+                  <div
+                    data-own-character-status-under-portrait
+                    className="mt-2"
+                  >
+                    <CharacterStatusBadge
+                      status={status}
+                    />
+                  </div>
+                ) : null}
               </div>
 
               <div className="min-w-0">
                 <div className="flex flex-wrap items-start justify-between gap-3 border-b border-[rgb(var(--sep-colour-5d452d))]/35 pb-3">
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex-1">
                     <p className="text-[8px] uppercase tracking-[0.26em] text-[rgb(var(--sep-colour-876a46))]">
                       Character profile
                     </p>
 
                     <div className="mt-1 grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-4">
-                      <h1 className="min-w-0 break-words font-serif text-3xl text-[rgb(var(--sep-colour-ecd9b2))] sm:text-[2.15rem]">
+                      <h1 className="min-w-0 break-words font-serif text-[1.7rem] text-[rgb(var(--sep-colour-ecd9b2))] sm:text-[1.95rem]">
                         {character.display_name ??
                           "Unnamed character"}
                       </h1>
@@ -407,11 +453,7 @@ export function Profile({
                     </div>
                   </div>
 
-                  {own ? (
-                    <CharacterStatusBadge
-                      status={status}
-                    />
-                  ) : null}
+
                 </div>
 
                 <div className="mt-3 grid gap-px bg-[rgb(var(--sep-colour-4f3b28))]/35 sm:grid-cols-2 lg:grid-cols-3">
@@ -500,7 +542,9 @@ export function Profile({
                 ) : null}
               </div>
             </section>
-          </div>
+          
+          ) : null}
+        </div>
 
           <div data-character-sheet-panel="profile" className="py-2 border border-[rgb(var(--sep-colour-6b5032))]/50">
           <section className="grid gap-4 md:grid-cols-2 px-2">
@@ -539,19 +583,28 @@ export function Profile({
           </div>
 
           <div data-character-sheet-panel="inventory">
-            {character.id ? (
-              <CharacterInventoryDisplay characterId={character.id} own />
+            {activeTab === "inventory" &&
+            character.id ? (
+              <CharacterInventoryDisplay
+                characterId={character.id}
+                own
+              />
             ) : null}
           </div>
 
           <div data-character-sheet-panel="ledger">
-            {own && character.id ? (
-              <CharacterLedger characterId={character.id} />
+            {activeTab === "ledger" &&
+            own &&
+            character.id ? (
+              <CharacterLedger
+                characterId={character.id}
+              />
             ) : null}
           </div>
 
           <div data-character-sheet-panel="trophies">
-            {character.id ? (
+            {activeTab === "trophies" &&
+            character.id ? (
               <CharacterTrophiesDisplay
                 characterId={character.id}
                 own
@@ -560,14 +613,20 @@ export function Profile({
           </div>
 
           <div data-character-sheet-panel="gifts">
-            {character.id ? (
-              <CharacterGiftsDisplay characterId={character.id} />
+            {activeTab === "gifts" &&
+            character.id ? (
+              <CharacterGiftsDisplay
+                characterId={character.id}
+              />
             ) : null}
           </div>
 
           <div data-character-sheet-panel="warping">
-            {character.id ? (
-              <CharacterShapesDisplay characterId={character.id} />
+            {activeTab === "warping" &&
+            character.id ? (
+              <CharacterShapesDisplay
+                characterId={character.id}
+              />
             ) : null}
           </div>
 
@@ -582,7 +641,9 @@ export function Profile({
           </div>
 
           <div data-character-sheet-panel="audit">
-            {own && character.id ? (
+            {activeTab === "audit" &&
+            own &&
+            character.id ? (
               <CharacterAuditTrail
                 characterId={character.id}
               />
@@ -590,7 +651,8 @@ export function Profile({
           </div>
 
           <div data-character-sheet-panel="edit">
-            {canEdit ? (
+            {activeTab === "edit" &&
+            canEdit ? (
               <section className="border border-[rgb(var(--sep-colour-6b5032))]/50 bg-[rgb(var(--sep-colour-17110d))] p-5">
                 <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">Character editing</p>
                 <h2 className="mt-2 font-serif text-xl text-[rgb(var(--sep-colour-dfc79c))]">Edit character</h2>
@@ -604,7 +666,8 @@ export function Profile({
               </section>
             ) : null}
 
-            {own &&
+            {activeTab === "edit" &&
+            own &&
             status === "approved" ? (
           <section className="mt-4 border border-[rgb(var(--sep-colour-6b5032))]/50 bg-[rgb(var(--sep-colour-17110d))]">
   <div className="px-4 py-3 sm:px-5">
@@ -768,7 +831,8 @@ export function Profile({
 </section>
             ) : null}
 
-            {own &&
+            {activeTab === "edit" &&
+            own &&
             status === "approved" &&
             character.id ? (
               <div id="display-trophies">
@@ -778,7 +842,10 @@ export function Profile({
               </div>
             ) : null}
 
-            {own && !canEdit && status !== "approved" ? (
+            {activeTab === "edit" &&
+            own &&
+            !canEdit &&
+            status !== "approved" ? (
               <section className="border border-[rgb(var(--sep-colour-6b5032))]/50 bg-[rgb(var(--sep-colour-17110d))] p-5">
                 <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-dfc79c))]">Editing unavailable</h2>
                 <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">This character cannot currently be edited while it is awaiting staff review.</p>

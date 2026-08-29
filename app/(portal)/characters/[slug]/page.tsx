@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 
 import { PublicCharacterProfileView } from "@/components/characters/public-character-profile";
+import type { CharacterSheetTab } from "@/components/characters/character-sheet-tabs";
 import { LiveCharacterSheetRefresh } from "@/components/characters/live-character-sheet-refresh";
 import { getPublicCharacter } from "@/lib/characters/get-public-character";
 import { getStaffSession } from "@/lib/auth/require-staff";
@@ -16,6 +17,7 @@ type PublicCharacterPageProps = {
 
   searchParams: Promise<{
     from?: string;
+    tab?: string;
   }>;
 };
 
@@ -44,14 +46,38 @@ export async function generateMetadata({
   };
 }
 
+function normalisePublicCharacterSheetTab(
+  value: string | undefined,
+): CharacterSheetTab {
+  const allowed: CharacterSheetTab[] = [
+    "short",
+    "profile",
+    "inventory",
+    "trophies",
+    "gifts",
+    "warping",
+    "offgame",
+    "audit",
+  ];
+
+  return value && allowed.includes(value as CharacterSheetTab)
+    ? (value as CharacterSheetTab)
+    : "short";
+}
+
 export default async function PublicCharacterPage({
   params,
   searchParams,
 }: PublicCharacterPageProps) {
-  const [{ slug }, { from }] = await Promise.all([
+  const [{ slug }, { from, tab }] = await Promise.all([
     params,
     searchParams,
   ]);
+
+  const activeTab =
+    normalisePublicCharacterSheetTab(
+      tab,
+    );
 
   const character =
     await getPublicCharacter(slug);
@@ -191,6 +217,7 @@ const returnLabel =
 
       <PublicCharacterProfileView
         character={character}
+        activeTab={activeTab}
         returnHref={returnHref}
         returnLabel={returnLabel}
         canMessage={

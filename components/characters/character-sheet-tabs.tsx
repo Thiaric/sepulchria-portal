@@ -6,7 +6,7 @@ import {
   useRouter,
   useSearchParams,
 } from "next/navigation";
-import { useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 
 export type CharacterSheetTab =
   | "short"
@@ -37,11 +37,13 @@ export function CharacterSheetTabs({
   own = false,
   showAudit = false,
   activeTab = "short",
+  cacheKey = "character",
   children,
 }: {
   own?: boolean;
   showAudit?: boolean;
   activeTab?: CharacterSheetTab;
+  cacheKey?: string;
   children: ReactNode;
 }) {
   const router = useRouter();
@@ -49,6 +51,48 @@ export function CharacterSheetTabs({
   const searchParams = useSearchParams();
   const [pending, startTransition] =
     useTransition();
+
+  const [currentTab, setCurrentTab] =
+    useState<CharacterSheetTab>(
+      activeTab,
+    );
+
+  const [cachedPanels, setCachedPanels] =
+    useState<
+      Partial<
+        Record<
+          CharacterSheetTab,
+          ReactNode
+        >
+      >
+    >({
+      [activeTab]: children,
+    });
+
+  const [activeCacheKey, setActiveCacheKey] =
+    useState(cacheKey);
+
+  useEffect(() => {
+    if (activeCacheKey !== cacheKey) {
+      setActiveCacheKey(cacheKey);
+      setCurrentTab(activeTab);
+      setCachedPanels({
+        [activeTab]: children,
+      });
+      return;
+    }
+
+    setCurrentTab(activeTab);
+    setCachedPanels((previous) => ({
+      ...previous,
+      [activeTab]: children,
+    }));
+  }, [
+    activeTab,
+    activeCacheKey,
+    cacheKey,
+    children,
+  ]);
 
   const baseTabs = own
     ? [
@@ -81,17 +125,42 @@ export function CharacterSheetTabs({
       : []),
   ];
 
+  function updateAddressBar(
+    tab: CharacterSheetTab,
+  ) {
+    const url = new URL(
+      window.location.href,
+    );
+
+    if (tab === "short") {
+      url.searchParams.delete("tab");
+    } else {
+      url.searchParams.set("tab", tab);
+    }
+
+    window.history.replaceState(
+      window.history.state,
+      "",
+      `${url.pathname}${url.search}${url.hash}`,
+    );
+  }
+
   function openTab(
     tab: CharacterSheetTab,
   ) {
-    if (tab === activeTab) {
+    if (tab === currentTab) {
       return;
     }
 
-    const params =
-      new URLSearchParams(
-        searchParams.toString(),
-      );
+    if (cachedPanels[tab]) {
+      setCurrentTab(tab);
+      updateAddressBar(tab);
+      return;
+    }
+
+    const params = new URLSearchParams(
+      searchParams.toString(),
+    );
 
     if (tab === "short") {
       params.delete("tab");
@@ -103,12 +172,8 @@ export function CharacterSheetTabs({
 
     startTransition(() => {
       router.replace(
-        query
-          ? `${pathname}?${query}`
-          : pathname,
-        {
-          scroll: false,
-        },
+        query ? `${pathname}?${query}` : pathname,
+        { scroll: false },
       );
     });
   }
@@ -117,7 +182,7 @@ export function CharacterSheetTabs({
     <div
       className="character-sheet-tabs mt-4"
       data-character-sheet-active-tab={
-        activeTab
+        currentTab
       }
       aria-busy={pending}
     >
@@ -135,7 +200,7 @@ export function CharacterSheetTabs({
       >
         {tabs.map((tab) => {
           const active =
-            activeTab === tab.id;
+            currentTab === tab.id;
 
           return (
             <button
@@ -197,7 +262,19 @@ export function CharacterSheetTabs({
       </nav>
 
       <div className="-mt-8px">
-        {children}
+        {(
+          Object.entries(cachedPanels) as [
+            CharacterSheetTab,
+            ReactNode,
+          ][]
+        ).map(([tab, panel]) => (
+          <div
+            key={`${cacheKey}-${tab}`}
+            hidden={tab !== currentTab}
+          >
+            {panel}
+          </div>
+        ))}
       </div>
 
       <style>{`

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { createClient } from "@/lib/supabase/client";
 
@@ -13,6 +13,9 @@ export function CharacterExpertiseTotal({
 }: CharacterExpertiseTotalProps) {
   const [expertise, setExpertise] =
     useState<number | null>(null);
+
+  const channelInstanceId =
+    useRef(crypto.randomUUID());
 
   useEffect(() => {
     let cancelled = false;
@@ -50,7 +53,7 @@ export function CharacterExpertiseTotal({
 
     const channel = supabase
       .channel(
-        `character-expertise-${characterId}`,
+        `character-expertise-${characterId}-${channelInstanceId.current}`,
       )
       .on(
         "postgres_changes",
