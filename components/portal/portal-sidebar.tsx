@@ -200,7 +200,7 @@ const rankingItem: NavigationItem = {
   label: "Hall of Renown",
   title:
     "Enter the Hall of Renown and view Sepulchria's records of standing and achievement.",
-  icon: "/icons/characters.png",
+  icon: "/icons/ranking.png",
   href: "/ranking",
   activePaths: ["/ranking"],
   opensModal: true,
@@ -2269,7 +2269,7 @@ export function PortalSidebar({
                     >
                       <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center">
                         <img
-                          src="/icons/market.png"
+                          src="/icons/economy.png"
                           alt=""
                           aria-hidden="true"
                           className="h-full w-full object-contain"
@@ -2894,7 +2894,7 @@ function PublicPageModal({
                 src={item.icon}
                 alt=""
                 aria-hidden="true"
-                className="h-full w-full object-contain opacity-35"
+                className="h-full w-full object-contain"
               />
             </span>
 

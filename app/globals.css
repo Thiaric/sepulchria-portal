@@ -5262,7 +5262,8 @@ body.portal-skin-scope .font-serif {
     contrast(0.92);
 }
 
-[data-portal-navigation] img[src^="/icons/"] {
+[data-portal-navigation] img[src^="/icons/"],
+[data-sep-native-window="true"] img[src^="/icons/"] {
   filter: var(--portal-navigation-icon-filter);
   transition:
     filter 180ms ease,
