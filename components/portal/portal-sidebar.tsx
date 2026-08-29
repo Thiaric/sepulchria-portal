@@ -196,6 +196,15 @@ const messagesItem: NavigationItem = {
   opensModal: true,
 };
 
+const rankingItem: NavigationItem = {
+  label: "Ranking",
+  title:
+    "View Sepulchria character rankings and lifetime achievements.",
+  icon: "/icons/characters.png",
+  href: "/ranking",
+  activePaths: ["/ranking"],
+};
+
 const forumItem: NavigationItem = {
   label: "Forum",
   title:
@@ -482,6 +491,11 @@ export function PortalSidebar({
     servicesExpanded,
     setServicesExpanded,
   ] = useState(true);
+
+  const [
+    economyCraftingExpanded,
+    setEconomyCraftingExpanded,
+  ] = useState(false);
 
   const [
     currentUnreadForumCount,
@@ -1545,7 +1559,14 @@ export function PortalSidebar({
         key="rules-menu"
         className="min-w-0"
       >
-        <div className="flex min-w-0 items-stretch">
+        <div
+          className={`flex min-h-[var(--portal-nav-min-h)] items-center border text-[11px] transition lg:text-xs ${
+            modalActive ||
+            active
+              ? "border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] text-[rgb(var(--sep-colour-efd9aa))]"
+              : "border-transparent text-[rgb(var(--sep-colour-b6a894))] hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))] hover:text-[rgb(var(--sep-colour-e8d8ba))]"
+          }`}
+        >
           <button
             type="button"
             title={
@@ -1556,30 +1577,23 @@ export function PortalSidebar({
                 rulesItem,
               )
             }
-            className={`flex min-h-[var(--portal-nav-min-h)] min-w-0 flex-1 items-center gap-2 border px-2.5 py-[var(--portal-nav-y)] text-left text-[11px] transition lg:text-xs ${
-              modalActive ||
-              active
-                ? "border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] text-[rgb(var(--sep-colour-efd9aa))]"
-                : "border-transparent text-[rgb(var(--sep-colour-b6a894))] hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))] hover:text-[rgb(var(--sep-colour-e8d8ba))]"
-            }`}
+            className="flex min-w-0 flex-1 items-center gap-2 px-2.5 py-[var(--portal-nav-y)] text-left"
             aria-haspopup="dialog"
             aria-expanded={
               modalActive
             }
           >
             <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center">
-  <img
-    src={rulesItem.icon}
-    alt=""
-    aria-hidden="true"
-    className="h-full w-full object-contain"
-  />
-</span>
+              <img
+                src={rulesItem.icon}
+                alt=""
+                aria-hidden="true"
+                className="h-full w-full object-contain"
+              />
+            </span>
 
             <span className="truncate">
-              {
-                rulesItem.label
-              }
+              {rulesItem.label}
             </span>
           </button>
 
@@ -1604,18 +1618,16 @@ export function PortalSidebar({
             aria-expanded={
               rulesExpanded
             }
-            className="ml-1 flex w-7 shrink-0 items-center justify-center gap-2 bg-transparent text-sm text-[rgb(var(--sep-colour-9e8767))] transition hover:text-[rgb(var(--sep-colour-efd9aa))]"
+            className="relative mr-1 flex h-5 w-5 shrink-0 items-center justify-center text-[11px] leading-none text-[rgb(var(--sep-colour-b68b4f))] transition hover:bg-[rgb(var(--sep-colour-4a3420))]/45 hover:text-[rgb(var(--sep-colour-efd9aa))]"
           >
             <span
               aria-hidden="true"
-              className="h-4 w-px shrink-0 bg-[rgb(var(--sep-colour-60482e))]/45"
+              className="absolute left-0 top-1/2 h-3 w-px -translate-y-1/2 bg-[rgb(var(--sep-colour-6e5535))]/30"
             />
 
-            <span>
-              {rulesExpanded
-                ? "−"
-                : "+"}
-            </span>
+            {rulesExpanded
+              ? "−"
+              : "+"}
           </button>
         </div>
 
@@ -1640,13 +1652,13 @@ export function PortalSidebar({
               aria-haspopup="dialog"
             >
               <span className="flex h-4 w-4 shrink-0 items-center justify-center">
-  <img
-    src={glossaryItem.icon}
-    alt=""
-    aria-hidden="true"
-    className="h-full w-full object-contain"
-  />
-</span>
+                <img
+                  src={glossaryItem.icon}
+                  alt=""
+                  aria-hidden="true"
+                  className="h-full w-full object-contain"
+                />
+              </span>
 
               <span className="truncate">
                 Glossary
@@ -2140,6 +2152,10 @@ export function PortalSidebar({
     {renderMobileItem(
       messagesItem,
     )}
+
+    {renderMobileItem(
+      rankingItem,
+    )}
   </nav>
 
   {rulesExpanded ? (
@@ -2228,69 +2244,114 @@ export function PortalSidebar({
 
               {servicesExpanded ? (
               <div className="grid grid-cols-1 gap-0">
-                {renderNavigationItem(
-                  marketItem,
-                )}
-
-                {renderNavigationItem(
-                  craftingItem,
-                )}
-
-                <form
-                  action={enterRoomFromMap}
-                >
-                  <input
-                    type="hidden"
-                    name="roomId"
-                    value={
-                      oddJobsRoomId ?? ""
-                    }
-                  />
-
-                  <button
-                    type="submit"
-                    disabled={!oddJobsRoomId}
-                    title={
-                      oddJobsRoomId
-                        ? "Go directly to The Odd Jobs Bureau."
-                        : "The Odd Jobs Bureau is currently unavailable."
-                    }
-                    className="
-                      flex
-                      min-h-[var(--portal-nav-min-h)]
-                      w-full
-                      items-center
-                      gap-2
-                      border
-                      border-transparent
-                      px-2.5
-                      py-[var(--portal-nav-y)]
-                      text-left
-                      text-[11px]
-                      text-[rgb(var(--sep-colour-b6a894))]
-                      transition
-                      hover:border-[rgb(var(--sep-colour-5d4930))]
-                      hover:bg-[rgb(var(--sep-colour-1d1712))]
-                      hover:text-[rgb(var(--sep-colour-e8d8ba))]
-                      disabled:cursor-not-allowed
-                      disabled:opacity-45
-                      lg:text-xs
-                    "
+                <div className="min-w-0">
+                  <div
+                    className={`flex min-h-[var(--portal-nav-min-h)] items-center border text-[11px] transition lg:text-xs ${
+                      modalItem?.href === marketItem.href ||
+                      modalItem?.href === craftingItem.href
+                        ? "border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] text-[rgb(var(--sep-colour-efd9aa))]"
+                        : "border-transparent text-[rgb(var(--sep-colour-b6a894))] hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))] hover:text-[rgb(var(--sep-colour-e8d8ba))]"
+                    }`}
                   >
-                    <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center">
-                      <img
-                        src="/icons/bureau.png"
-                        alt=""
-                        aria-hidden="true"
-                        className="h-full w-full object-contain"
-                      />
-                    </span>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setEconomyCraftingExpanded(
+                          (current) => !current,
+                        )
+                      }
+                      aria-expanded={
+                        economyCraftingExpanded
+                      }
+                      aria-controls="economy-crafting-submenu"
+                      className="flex min-w-0 flex-1 items-center gap-2 px-2.5 py-[var(--portal-nav-y)] text-left"
+                    >
+                      <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center">
+                        <img
+                          src="/icons/market.png"
+                          alt=""
+                          aria-hidden="true"
+                          className="h-full w-full object-contain"
+                        />
+                      </span>
 
-                    <span className="truncate">
-                      The Odd Jobs Bureau
-                    </span>
-                  </button>
-                </form>
+                      <span className="truncate">
+                        Economy &amp; Crafting
+                      </span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setEconomyCraftingExpanded(
+                          (current) => !current,
+                        )
+                      }
+                      aria-label={
+                        economyCraftingExpanded
+                          ? "Collapse Economy & Crafting submenu"
+                          : "Expand Economy & Crafting submenu"
+                      }
+                      aria-expanded={
+                        economyCraftingExpanded
+                      }
+                      className="relative mr-1 flex h-5 w-5 shrink-0 items-center justify-center text-[11px] leading-none text-[rgb(var(--sep-colour-b68b4f))] transition hover:bg-[rgb(var(--sep-colour-4a3420))]/45 hover:text-[rgb(var(--sep-colour-efd9aa))]"
+                    >
+                      {economyCraftingExpanded
+                        ? "−"
+                        : "+"}
+                    </button>
+                  </div>                  {economyCraftingExpanded ? (
+                    <div
+                      id="economy-crafting-submenu"
+                      className="mt-1 border-l border-[rgb(var(--sep-colour-60482e))]/40 pl-2"
+                    >
+                      {renderNavigationItem(
+                        marketItem,
+                      )}
+
+                      {renderNavigationItem(
+                        craftingItem,
+                      )}
+
+                      <form
+                        action={enterRoomFromMap}
+                      >
+                        <input
+                          type="hidden"
+                          name="roomId"
+                          value={
+                            oddJobsRoomId ?? ""
+                          }
+                        />
+
+                        <button
+                          type="submit"
+                          disabled={!oddJobsRoomId}
+                          title={
+                            oddJobsRoomId
+                              ? "Go directly to The Odd Jobs Bureau."
+                              : "The Odd Jobs Bureau is currently unavailable."
+                          }
+                          className="flex min-h-[var(--portal-nav-min-h)] w-full items-center gap-2 border border-transparent px-2.5 py-[var(--portal-nav-y)] text-left text-[11px] text-[rgb(var(--sep-colour-b6a894))] transition hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))] hover:text-[rgb(var(--sep-colour-e8d8ba))] disabled:cursor-not-allowed disabled:opacity-45 lg:text-xs"
+                        >
+                          <span className="flex h-4 w-4 shrink-0 items-center justify-center">
+                            <img
+                              src="/icons/bureau.png"
+                              alt=""
+                              aria-hidden="true"
+                              className="h-full w-full object-contain"
+                            />
+                          </span>
+
+                          <span className="truncate">
+                            The Odd Jobs Bureau
+                          </span>
+                        </button>
+                      </form>
+                    </div>
+                  ) : null}
+                </div>
 
                 <form
                   action={enterRoomFromMap}
@@ -2374,6 +2435,10 @@ export function PortalSidebar({
 
                 {renderNavigationItem(
                   messagesItem,
+                )}
+
+                {renderNavigationItem(
+                  rankingItem,
                 )}
               </div>
               ) : null}

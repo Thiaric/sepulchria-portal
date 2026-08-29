@@ -86,12 +86,12 @@ export function ForumSidebarMenu({
     useState(false);
 
   const [recentOpen, setRecentOpen] =
-    useState(true);
+    useState(false);
 
   const [
     favouritesOpen,
     setFavouritesOpen,
-  ] = useState(true);
+  ] = useState(false);
 
   const [recent, setRecent] =
     useState<RecentTopic[]>([]);
@@ -476,7 +476,7 @@ export function ForumSidebarMenu({
   return (
     <div className="min-w-0">
       <div
-        className={`flex min-h-9 items-center border text-[11px] transition lg:text-xs ${
+        className={`flex min-h-[var(--portal-nav-min-h)] items-center border text-[11px] transition lg:text-xs ${
           forumActive
             ? "border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] text-[rgb(var(--sep-colour-efd9aa))]"
             : unreadCount > 0
@@ -495,7 +495,7 @@ export function ForumSidebarMenu({
               href: "/forum",
             })
           }
-          className="flex min-w-0 flex-1 items-center gap-2 px-2.5 py-2 text-left"
+          className="flex min-w-0 flex-1 items-center gap-2 px-2.5 py-[var(--portal-nav-y)] text-left"
         >
           <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center">
   <img
@@ -533,8 +533,13 @@ export function ForumSidebarMenu({
               ? "Collapse Forum shortcuts"
               : "Expand Forum shortcuts"
           }
-          className="mr-1 flex h-7 w-7 shrink-0 items-center justify-center border-l border-[rgb(var(--sep-colour-6e5535))]/30 text-sm text-[rgb(var(--sep-colour-b68b4f))] transition hover:bg-[rgb(var(--sep-colour-4a3420))]/45 hover:text-[rgb(var(--sep-colour-efd9aa))]"
+          className="relative mr-1 flex h-5 w-5 shrink-0 items-center justify-center text-[11px] leading-none text-[rgb(var(--sep-colour-b68b4f))] transition hover:bg-[rgb(var(--sep-colour-4a3420))]/45 hover:text-[rgb(var(--sep-colour-efd9aa))]"
         >
+          <span
+            aria-hidden="true"
+            className="absolute left-0 top-1/2 h-3 w-px -translate-y-1/2 bg-[rgb(var(--sep-colour-6e5535))]/30"
+          />
+
           {open ? "−" : "+"}
         </button>
       </div>

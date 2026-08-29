@@ -148,7 +148,7 @@ export function LocationImageLightbox({
         aria-label={`View ${name} image`}
         title={`View ${name} image`}
       >
-        <span className="pointer-events-none absolute right-3 top-3 flex h-8 w-8 items-center justify-center border border-[rgb(var(--sep-colour-c69a60))]/55 bg-[rgb(var(--sep-colour-100c09))]/75 text-[rgb(var(--sep-colour-d8b57e))] opacity-0 shadow-[0_4px_14px_rgba(var(--sep-rgb-0-0-0),0.45)] backdrop-blur-sm transition group-hover/image:opacity-100">
+        <span className="pointer-events-none absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full border border-[rgb(var(--sep-colour-c69a60))]/55 bg-[rgb(var(--sep-colour-100c09))]/75 text-[rgb(var(--sep-colour-d8b57e))] opacity-0 shadow-[0_4px_14px_rgba(var(--sep-rgb-0-0-0),0.45)] backdrop-blur-sm transition group-hover/image:opacity-100">
           <svg
             viewBox="0 0 24 24"
             aria-hidden="true"
