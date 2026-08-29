@@ -1666,8 +1666,8 @@ export default function RoomMessageList({
                       key={item.id}
                       className={`relative flex gap-3 py-3 pl-5 pr-12 sm:pl-7 sm:pr-12 ${
                         isOutOfCharacter
-                          ? "border-l-2 border-[rgb(var(--sep-colour-627f9f))] bg-[rgb(var(--sep-colour-182536))]/55"
-                          : "border-l-2 border-[rgb(var(--sep-colour-7d628f))] bg-[rgb(var(--sep-colour-241b2a))]/45"
+                          ? "border-l-2 border-[#627f9f] bg-[#182536]/55"
+                          : "border-l-2 border-[#7d628f] bg-[#241b2a]/45"
                       }`}
                       style={
                         privateLocationTheme
@@ -1728,13 +1728,13 @@ export default function RoomMessageList({
                         <div
                           className={`mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 border-b pb-1.5 ${
                             isOutOfCharacter
-                              ? "border-[rgb(var(--sep-colour-627f9f))]/40"
-                              : "border-[rgb(var(--sep-colour-7d628f))]/35"
+                              ? "border-[#627f9f]/40"
+                              : "border-[#7d628f]/35"
                           }`}
                         >
                           {isOutOfCharacter ? (
                             <span
-                              className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-a9c7e6))]"
+                              className="text-[8px] uppercase tracking-[0.2em] text-[#a9c7e6]"
                               style={
                                 privateLocationTheme
                                   ? {
@@ -1750,7 +1750,7 @@ export default function RoomMessageList({
 
                           {isWhisper ? (
                             <span
-                              className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-c7add6))]"
+                              className="text-[8px] uppercase tracking-[0.2em] text-[#c7add6]"
                               style={
                                 privateLocationTheme
                                   ? {

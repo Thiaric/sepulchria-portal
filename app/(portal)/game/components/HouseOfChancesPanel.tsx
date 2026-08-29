@@ -68,6 +68,10 @@ export function HouseOfChancesPanel({
   const { skin } = usePortalSkin();
   const skinAccent =
     HOUSE_SKIN_ACCENTS[skin] ?? HOUSE_SKIN_ACCENTS.sepulchria;
+
+  const readableTokenColour =
+    "rgb(var(--sep-colour-e6cfaa))";
+
   const [pending, startTransition] = useTransition();
   const [spinning, setSpinning] = useState(false);
   const [reels, setReels] = useState<ReelValues>([null, null, null]);
@@ -152,7 +156,10 @@ export function HouseOfChancesPanel({
             <p className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
               Purse
             </p>
-            <p className="font-serif text-base text-[rgb(var(--sep-colour-e4c589))]">
+            <p
+              className="font-serif text-base"
+              style={{ color: readableTokenColour }}
+            >
               {formatRemnants(Number(state.wallet_balance))}
             </p>
           </div>
@@ -166,22 +173,34 @@ export function HouseOfChancesPanel({
                 const remaining = index < state.plays_remaining;
 
                 return (
-                  <span
+                  <svg
                     key={index}
-                    className="h-2.5 w-2.5 rounded-full border"
+                    viewBox="0 0 12 12"
+                    aria-label={
+                      remaining
+                        ? "Chance available"
+                        : "Chance spent"
+                    }
+                    role="img"
+                    className="h-2.5 w-2.5 shrink-0"
                     style={{
-                      borderColor: remaining
-                        ? skinAccent
-                        : `color-mix(in srgb, ${skinAccent} 25%, transparent)`,
-                      background: remaining
-                        ? `radial-gradient(circle at 35% 35%, color-mix(in srgb, ${skinAccent} 96%, white 10%), color-mix(in srgb, ${skinAccent} 68%, transparent) 72%)`
-                        : `radial-gradient(circle at 35% 35%, color-mix(in srgb, ${skinAccent} 14%, transparent), transparent 72%)`,
-                      boxShadow: remaining
-                        ? `0 0 8px color-mix(in srgb, ${skinAccent} 42%, transparent), inset 0 0 4px color-mix(in srgb, ${skinAccent} 25%, transparent)`
-                        : `inset 0 0 4px color-mix(in srgb, ${skinAccent} 8%, transparent)`,
+                      color:
+                        readableTokenColour,
                     }}
-                    title={remaining ? "Chance available" : "Chance spent"}
-                  />
+                  >
+                    <circle
+                      cx="6"
+                      cy="6"
+                      r="5"
+                      fill={
+                        remaining
+                          ? "currentColor"
+                          : "none"
+                      }
+                      stroke="currentColor"
+                      strokeWidth="1"
+                    />
+                  </svg>
                 );
               })}
             </div>
@@ -370,30 +389,23 @@ export function HouseOfChancesPanel({
                     background: `color-mix(in srgb, ${skinAccent} 5%, rgb(var(--sep-colour-0d0907)))`,
                   }}
                 >
-                  <div className="relative h-6 w-8 shrink-0" aria-hidden="true">
-                    <span className="absolute bottom-0 left-0 h-3.5 w-3.5 rounded-full border"
-                      style={{
-                        borderColor: `color-mix(in srgb, ${skinAccent} 62%, transparent)`,
-                        background: `radial-gradient(circle at 35% 35%, color-mix(in srgb, ${skinAccent} 96%, white 12%), color-mix(in srgb, ${skinAccent} 66%, transparent) 70%)`,
-                        boxShadow: `0 0 7px color-mix(in srgb, ${skinAccent} 26%, transparent)`,
-                      }}
-                    />
-                    <span className="absolute bottom-0.5 left-2.5 h-3.5 w-3.5 rounded-full border"
-                      style={{
-                        borderColor: `color-mix(in srgb, ${skinAccent} 62%, transparent)`,
-                        background: `radial-gradient(circle at 35% 35%, color-mix(in srgb, ${skinAccent} 96%, white 12%), color-mix(in srgb, ${skinAccent} 66%, transparent) 70%)`,
-                        boxShadow: `0 0 7px color-mix(in srgb, ${skinAccent} 26%, transparent)`,
-                      }}
-                    />
-                    <span className="absolute top-0 left-1.5 h-3.5 w-3.5 rounded-full border"
-                      style={{
-                        borderColor: `color-mix(in srgb, ${skinAccent} 62%, transparent)`,
-                        background: `radial-gradient(circle at 35% 35%, color-mix(in srgb, ${skinAccent} 96%, white 12%), color-mix(in srgb, ${skinAccent} 66%, transparent) 70%)`,
-                        boxShadow: `0 0 7px color-mix(in srgb, ${skinAccent} 26%, transparent)`,
-                      }}
-                    />
-                  </div>
-                  <span className="font-serif text-sm text-[rgb(var(--sep-colour-e4c589))]">
+                  <svg
+                    viewBox="0 0 32 24"
+                    aria-hidden="true"
+                    className="h-6 w-8 shrink-0"
+                    style={{
+                      color:
+                        readableTokenColour,
+                    }}
+                  >
+                    <circle cx="9" cy="15" r="6" fill="currentColor" />
+                    <circle cx="21" cy="15" r="6" fill="currentColor" />
+                    <circle cx="15" cy="8" r="6" fill="currentColor" />
+                  </svg>
+                  <span
+                    className="font-serif text-sm"
+                    style={{ color: readableTokenColour }}
+                  >
                     {formatRemnants(Number(state.play_cost))}
                   </span>
                 </div>
