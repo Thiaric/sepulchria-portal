@@ -275,7 +275,7 @@ export function MapMagnifyingLens({
             );
           }
         }}
-        className={`absolute left-3 top-3 z-[80] flex h-10 w-10 items-center justify-center rounded-full border backdrop-blur-sm transition ${
+        className={`absolute left-3 top-3 z-[80] flex h-10 w-10 items-center justify-center rounded-full border-[1px] border-solid backdrop-blur-sm transition ${
           enabled
             ? "border-[rgb(var(--sep-colour-d1a15e))] bg-[rgb(var(--sep-colour-3a2818))]/95 text-[rgb(var(--sep-colour-f4ddb1))] shadow-[0_0_18px_rgba(var(--sep-rgb-188-137-73),0.35)]"
             : "border-[rgb(var(--sep-colour-765735))]/75 bg-[rgb(var(--sep-colour-17110d))]/90 text-[rgb(var(--sep-colour-c9a46e))] hover:border-[rgb(var(--sep-colour-b28246))] hover:bg-[rgb(var(--sep-colour-2a1d13))] hover:text-[rgb(var(--sep-colour-f5ddb2))]"

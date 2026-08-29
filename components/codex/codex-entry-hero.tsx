@@ -36,7 +36,7 @@ export function CodexEntryHero({
   const heroImage = bannerUrl ?? imageUrl;
 
   return (
-    <article className="space-y-5">
+    <article data-sep-interaction-ignore="true" className="space-y-5">
       <Link
         href={returnHref}
         className="inline-flex items-center gap-2 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 text-[10px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-c6ab80))] transition hover:border-[rgb(var(--sep-colour-987344))] hover:bg-[rgb(var(--sep-colour-261b12))] hover:text-[rgb(var(--sep-colour-ead2a5))]"

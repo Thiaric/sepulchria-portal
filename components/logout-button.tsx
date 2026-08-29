@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { Button } from "@/components/ui/button";
+import { clearOwnPresenceForLogout } from "@/app/(portal)/logout-presence-actions";
 import { createClient } from "@/lib/supabase/client";
 import { LogOut } from "lucide-react";
 
@@ -17,47 +17,30 @@ export function LogoutButton() {
 
     setIsLoggingOut(true);
 
+    window.dispatchEvent(
+      new Event(
+        "sepulchria-logout-started",
+      ),
+    );
+
     const supabase = createClient();
 
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+      try {
+        const presenceResult =
+          await clearOwnPresenceForLogout();
 
-      if (user) {
-        const {
-          data: character,
-          error: characterError,
-        } = await supabase
-          .from("characters")
-          .select("id")
-          .eq("user_id", user.id)
-          .maybeSingle();
-
-        if (characterError) {
+        if (!presenceResult.ok) {
           console.error(
-            "Unable to find character before logout:",
-            characterError.message,
+            "Unable to remove presence before logout:",
+            presenceResult.message,
           );
         }
-
-        if (character) {
-          const { error: presenceError } =
-            await supabase
-              .from("character_presence")
-              .delete()
-              .eq(
-                "character_id",
-                character.id,
-              );
-
-          if (presenceError) {
-            console.error(
-              "Unable to remove presence before logout:",
-              presenceError.message,
-            );
-          }
-        }
+      } catch (presenceError) {
+        console.error(
+          "Unable to remove presence before logout:",
+          presenceError,
+        );
       }
 
       const { error: signOutError } =
@@ -128,6 +111,13 @@ export function LogoutButton() {
   return (
   <button
     type="button"
+    onPointerDown={() => {
+      window.dispatchEvent(
+        new Event(
+          "sepulchria-logout-started",
+        ),
+      );
+    }}
     onClick={logout}
     disabled={isLoggingOut}
     className="

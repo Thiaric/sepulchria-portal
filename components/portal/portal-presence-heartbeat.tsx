@@ -13,6 +13,9 @@ import {
 import {
   heartbeatExpertisePresence,
 } from "@/app/(portal)/game/expertise-presence-actions";
+import {
+  clearOwnPresenceForLogout,
+} from "@/app/(portal)/logout-presence-actions";
 
 import { createClient } from "@/lib/supabase/client";
 
@@ -104,6 +107,7 @@ export function PortalPresenceHeartbeat({
 
     async function sendHeartbeat() {
       if (
+        logoutStartedRef.current ||
         runningRef.current ||
         idleForMs() >=
           AWAY_AFTER_MS
@@ -127,6 +131,7 @@ export function PortalPresenceHeartbeat({
 
     async function sendExpertiseHeartbeat() {
       if (
+        logoutStartedRef.current ||
         expertiseRunningRef.current ||
         idleForMs() >=
           AWAY_AFTER_MS
@@ -222,6 +227,16 @@ export function PortalPresenceHeartbeat({
           LEGACY_HIDDEN_SINCE_KEY,
         );
 
+        const presenceResult =
+          await clearOwnPresenceForLogout();
+
+        if (!presenceResult.ok) {
+          console.error(
+            "Unable to clear inactive character presence:",
+            presenceResult.message,
+          );
+        }
+
         const supabase =
           createClient();
 
@@ -247,6 +262,10 @@ export function PortalPresenceHeartbeat({
     }
 
     function evaluateIdleState() {
+      if (logoutStartedRef.current) {
+        return false;
+      }
+
       const elapsed =
         idleForMs();
 
@@ -269,7 +288,15 @@ export function PortalPresenceHeartbeat({
       return true;
     }
 
+    function handleLogoutStarted() {
+      logoutStartedRef.current = true;
+    }
+
     function registerActivity() {
+      if (logoutStartedRef.current) {
+        return;
+      }
+
       const elapsed =
         idleForMs();
 
@@ -347,6 +374,11 @@ export function PortalPresenceHeartbeat({
     }
 
     window.addEventListener(
+      "sepulchria-logout-started",
+      handleLogoutStarted,
+    );
+
+    window.addEventListener(
       "focus",
       handleFocus,
     );
@@ -416,6 +448,11 @@ export function PortalPresenceHeartbeat({
           registerActivity,
         );
       }
+
+      window.removeEventListener(
+        "sepulchria-logout-started",
+        handleLogoutStarted,
+      );
 
       window.removeEventListener(
         "focus",

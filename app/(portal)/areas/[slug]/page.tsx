@@ -150,11 +150,7 @@ export default async function AreaPage({
 
             <div className="pointer-events-none absolute inset-0 z-[6] bg-gradient-to-t from-[rgb(var(--sep-colour-17110d))]/72 via-[rgb(var(--sep-colour-17110d))]/12 to-transparent" />
 
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 p-4 sm:p-5">
-              <h1 className="mt-1 font-serif text-2xl leading-tight text-[rgb(var(--sep-colour-d9bd82))] [text-shadow:0_2px_5px_rgba(var(--sep-rgb-0-0-0),0.95)] sm:text-3xl">
-                {safeArea.name}
-              </h1>
-            </div>
+            
           </div>
         ) : (
           <div className="p-4 sm:p-5">
@@ -168,14 +164,18 @@ export default async function AreaPage({
           </div>
         )}
 
-        {safeArea.description ? (
-          <div className="border-t border-[rgb(var(--sep-colour-6a5032))]/35 px-4 py-3 sm:px-5 sm:py-4">
-            <RichTextContentClient
-              body={safeArea.description}
-              className="max-full text-[13px] leading-6 text-[rgb(var(--sep-colour-b7a58c))] [&_p]:my-2"
-            />
-          </div>
-        ) : null}
+        <div className="border-t border-[rgb(var(--sep-colour-6a5032))]/35 px-4 py-3 sm:px-5 sm:py-4">
+  <h1 className="mb-2 font-serif text-2xl leading-tight text-[rgb(var(--sep-colour-d9bd82))] sm:text-3xl">
+    {safeArea.name}
+  </h1>
+
+  {safeArea.description ? (
+    <RichTextContentClient
+      body={safeArea.description}
+      className="max-full text-[13px] leading-6 text-[rgb(var(--sep-colour-b7a58c))] [&_p]:my-2"
+    />
+  ) : null}
+</div>
       </section>
 
       <section className="border border-[rgb(var(--sep-colour-6a5032))]/50 bg-[rgb(var(--sep-colour-17110d))] p-3 sm:p-4">

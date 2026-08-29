@@ -114,11 +114,12 @@ export function ImagePreviewButton({
     <>
       <button
         type="button"
+        data-sep-round-zoom-button="true"
         data-sep-interaction-ignore="true"
         onClick={() =>
           setOpen(true)
         }
-        className="absolute right-3 top-3 z-30 flex h-9 w-9 cursor-zoom-in items-center justify-center rounded-full border border-[rgb(var(--sep-colour-c69a60))]/55 bg-[rgb(var(--sep-colour-100c09))]/80 text-[rgb(var(--sep-colour-d8b57e))] shadow-[0_4px_14px_rgba(var(--sep-rgb-0-0-0),0.45)] backdrop-blur-sm transition hover:border-[rgb(var(--sep-colour-c18c4e))] hover:bg-[rgb(var(--sep-colour-25180f))] hover:text-[rgb(var(--sep-colour-f0d6a7))]"
+        className="absolute right-3 top-3 z-30 flex h-9 w-9 cursor-zoom-in items-center justify-center rounded-full border-[1px] border-solid border-[rgb(var(--sep-colour-c69a60))]/55 bg-[rgb(var(--sep-colour-100c09))]/80 text-[rgb(var(--sep-colour-d8b57e))] shadow-[0_4px_14px_rgba(var(--sep-rgb-0-0-0),0.45)] backdrop-blur-sm transition hover:border-[rgb(var(--sep-colour-c18c4e))] hover:bg-[rgb(var(--sep-colour-25180f))] hover:text-[rgb(var(--sep-colour-f0d6a7))]"
         aria-label={`View ${name} image`}
         title={`View ${name} image`}
       >
