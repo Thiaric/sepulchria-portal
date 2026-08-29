@@ -2908,7 +2908,7 @@ function PublicPageModal({
           className={
             collapsed
               ? "hidden"
-              : "flex min-h-0 flex-1 flex-col"
+              : "relative flex min-h-0 flex-1 flex-col"
           }
         >
           <iframe
@@ -3258,7 +3258,7 @@ function PublicPageModal({
               role="separator"
               aria-label={`Resize ${item.label}`}
               title="Resize window"
-              className="absolute bottom-0 right-0 z-20 h-5 w-5 cursor-se-resize"
+              className="absolute bottom-0 right-0 z-30 h-8 w-8 touch-none cursor-se-resize select-none"
               onPointerDown={(
                 event,
               ) => {
@@ -3353,7 +3353,7 @@ function PublicPageModal({
             >
               <span
                 aria-hidden="true"
-                className="absolute bottom-1 right-1 block h-2.5 w-2.5 border-b border-r border-[rgb(var(--sep-colour-a98b61))]/80"
+                className="pointer-events-none absolute bottom-1.5 right-1.5 block h-3.5 w-3.5 border-b border-r border-[rgb(var(--sep-colour-a98b61))]/80"
               />
             </div>
           ) : null}

@@ -31,7 +31,13 @@ export default async function CodexPage({
     resolvedSearchParams.embedded === "1";
 
   return (
-    <div className="relative">
+    <div
+      className={
+        isEmbedded
+          ? "relative h-dvh min-h-0 overflow-hidden"
+          : "relative"
+      }
+    >
       <EmbeddedPortalSkinBridge />
       {!isEmbedded ? (
         <Link
@@ -42,7 +48,10 @@ export default async function CodexPage({
         </Link>
       ) : null}
 
-      <PublicCodex chapters={chapters} />
+      <PublicCodex
+        chapters={chapters}
+        embedded={isEmbedded}
+      />
     </div>
   );
 }

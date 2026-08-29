@@ -788,7 +788,7 @@ export function ShapesCatalogue({
         </div>
       </section>
 
-      <section className="mt-3 grid items-start gap-3 md:grid-cols-2">
+      <section className="mt-3 grid grid-cols-[repeat(auto-fit,minmax(380px,1fr))] items-start gap-3">
         {filtered.map((shape) => (
           <ShapeArticle
             key={shape.id}

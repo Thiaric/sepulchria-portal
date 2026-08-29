@@ -11,6 +11,7 @@ import type { PublicCodexChapter } from "@/lib/codex/get-codex";
 
 type PublicCodexProps = {
   chapters: PublicCodexChapter[];
+  embedded?: boolean;
 };
 
 const ROMAN_NUMERALS = [
@@ -28,6 +29,7 @@ const ROMAN_NUMERALS = [
 
 export function PublicCodex({
   chapters,
+  embedded = false,
 }: PublicCodexProps) {
   const orderedChapters = useMemo(
     () =>
@@ -124,6 +126,19 @@ export function PublicCodex({
     if (scrollToNavigation) {
       window.requestAnimationFrame(
         () => {
+          if (embedded) {
+            document
+              .getElementById(
+                "codex-chapter-scroll",
+              )
+              ?.scrollTo({
+                top: 0,
+                behavior: "smooth",
+              });
+
+            return;
+          }
+
           document
             .getElementById(
               "codex-chapter-navigation",
@@ -141,7 +156,13 @@ export function PublicCodex({
     orderedChapters.length === 0
   ) {
     return (
-      <main className="min-h-screen bg-[rgb(var(--sep-colour-090705))] px-5 py-8 text-[rgb(var(--sep-colour-d6c3a3))]">
+      <main
+        className={
+          embedded
+            ? "h-full min-h-0 overflow-y-auto bg-[rgb(var(--sep-colour-090705))] px-5 py-8 text-[rgb(var(--sep-colour-d6c3a3))]"
+            : "min-h-screen bg-[rgb(var(--sep-colour-090705))] px-5 py-8 text-[rgb(var(--sep-colour-d6c3a3))]"
+        }
+      >
         <div className="mx-auto max-w-7xl border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-120e0b))] p-6 text-center">
           <h1 className="font-serif text-3xl text-[rgb(var(--sep-colour-ead5ac))]">
             The Codex of the First
@@ -157,9 +178,20 @@ export function PublicCodex({
   }
 
   return (
-    <main className="min-h-screen bg-[rgb(var(--sep-colour-090705))] text-[rgb(var(--sep-colour-d6c3a3))]">
+    <main
+      className={
+        embedded
+          ? "flex h-full min-h-0 flex-col overflow-hidden bg-[rgb(var(--sep-colour-090705))] text-[rgb(var(--sep-colour-d6c3a3))]"
+          : "min-h-screen bg-[rgb(var(--sep-colour-090705))] text-[rgb(var(--sep-colour-d6c3a3))]"
+      }
+    >
       {/* COMPACT CODEX HEADER */}
-      <header className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-0d0a08))]">
+      <header
+        className={[
+          "border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-0d0a08))]",
+          embedded ? "shrink-0" : "",
+        ].join(" ")}
+      >
         <div className="mx-auto max-w-7xl px-5 py-5 sm:px-8">
           <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
             <div>
@@ -184,7 +216,10 @@ export function PublicCodex({
       {/* CHAPTER NAVIGATION */}
       <div
         id="codex-chapter-navigation"
-        className="scroll-mt-4 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))]"
+        className={[
+          "scroll-mt-4 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))]",
+          embedded ? "shrink-0" : "",
+        ].join(" ")}
       >
         <nav
           aria-label="Codex chapters"
@@ -227,9 +262,21 @@ export function PublicCodex({
       </div>
 
       {selectedChapter ? (
-        <article id="codex-chapter">
+        <article
+          id="codex-chapter"
+          className={
+            embedded
+              ? "flex min-h-0 flex-1 flex-col overflow-hidden"
+              : undefined
+          }
+        >
           {/* CHAPTER TITLE */}
-          <section className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))]">
+          <section
+            className={[
+              "border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))]",
+              embedded ? "shrink-0" : "",
+            ].join(" ")}
+          >
             <div className="mx-auto max-w-7xl px-5 py-5 sm:px-8">
               <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-5">
                 <p className="shrink-0 text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-997446))]">
@@ -253,7 +300,18 @@ export function PublicCodex({
           </section>
 
           {/* CHAPTER CONTENT */}
-          <section className="mx-auto max-w-7xl px-5 py-5 sm:px-8">
+          <section
+            id={
+              embedded
+                ? "codex-chapter-scroll"
+                : undefined
+            }
+            className={
+              embedded
+                ? "mx-auto min-h-0 w-full max-w-7xl flex-1 overflow-y-auto overscroll-contain px-5 py-5 sm:px-8"
+                : "mx-auto max-w-7xl px-5 py-5 sm:px-8"
+            }
+          >
             <div className="border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-120e0b))] px-5 py-6 sm:px-8 sm:py-7">
               {selectedChapter.body?.trim() ? (
                 <RichTextContentClient

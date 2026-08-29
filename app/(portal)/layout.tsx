@@ -12,7 +12,6 @@ import { PortalSessionGuard } from "@/components/portal/portal-session-guard";
 import { PrivateLocationInvitationPopup } from "@/components/private-location/private-location-invitation-popup";
 import { OrderHeadquartersInvitationPopup } from "@/components/orders/order-headquarters-invitation-popup";
 import { PortalResponsiveRightSidebar } from "@/components/portal/portal-responsive-right-sidebar";
-import { PortalModalViewportManager } from "@/components/portal/portal-modal-viewport-manager";
 import { PortalSidebar } from "@/components/portal/portal-sidebar";
 import { PortalSkinProvider } from "@/components/portal/portal-skin-provider";
 import { TidingsTicker } from "@/components/tidings/tidings-ticker";
@@ -112,7 +111,6 @@ async function PortalLayoutContent({
 
             <PortalSessionGuard />
 
-            <PortalModalViewportManager />
 
             <div className="shrink-0">
               <PortalHeader
