@@ -8,6 +8,7 @@ type TabId =
   | "profile"
   | "inventory"
   | "ledger"
+  | "trophies"
   | "gifts"
   | "warping"
   | "offgame"
@@ -18,6 +19,7 @@ const PUBLIC_TABS: { id: TabId; label: string }[] = [
   { id: "short", label: "IN SHORT" },
   { id: "profile", label: "PROFILE" },
   { id: "inventory", label: "INVENTORY" },
+  { id: "trophies", label: "TROPHIES" },
   { id: "gifts", label: "FEATS" },
   { id: "warping", label: "WARPING" },
   { id: "offgame", label: "OFFGAME" },
@@ -147,6 +149,7 @@ export function CharacterSheetTabs({
         .character-sheet-tabs[data-character-sheet-active-tab="profile"] [data-character-sheet-panel="profile"],
         .character-sheet-tabs[data-character-sheet-active-tab="inventory"] [data-character-sheet-panel="inventory"],
         .character-sheet-tabs[data-character-sheet-active-tab="ledger"] [data-character-sheet-panel="ledger"],
+        .character-sheet-tabs[data-character-sheet-active-tab="trophies"] [data-character-sheet-panel="trophies"],
         .character-sheet-tabs[data-character-sheet-active-tab="gifts"] [data-character-sheet-panel="gifts"],
         .character-sheet-tabs[data-character-sheet-active-tab="warping"] [data-character-sheet-panel="warping"],
         .character-sheet-tabs[data-character-sheet-active-tab="offgame"] [data-character-sheet-panel="offgame"],

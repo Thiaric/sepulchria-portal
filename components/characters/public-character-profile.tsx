@@ -8,6 +8,7 @@ import { toggleGlobalCharacterBlock } from "@/app/(portal)/characters/block-acti
 import { CharacterHealthDisplay, CharacterMechanicsDisplay } from "@/components/characters/character-mechanics-display";
 import { CharacterGiftsDisplay } from "@/components/characters/character-gifts-display";
 import { CharacterInventoryDisplay } from "@/components/characters/character-inventory-display";
+import { CharacterTrophiesDisplay } from "@/components/characters/character-trophies-display";
 import { CharacterExpertiseTotal } from "@/components/characters/character-expertise-total";
 import { CharacterMusicPlayer } from "@/components/characters/character-music-player";
 import { CharacterSheetTabs } from "@/components/characters/character-sheet-tabs";
@@ -428,6 +429,12 @@ export function PublicCharacterProfileView({
 
         <div data-character-sheet-panel="inventory">
           <CharacterInventoryDisplay characterId={character.id} />
+        </div>
+
+        <div data-character-sheet-panel="trophies">
+          <CharacterTrophiesDisplay
+            characterId={character.id}
+          />
         </div>
 
         <div data-character-sheet-panel="gifts">
