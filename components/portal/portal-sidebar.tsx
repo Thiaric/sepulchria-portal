@@ -2840,12 +2840,23 @@ function PublicPageModal({
           <div className="flex items-center gap-1">
             <button
               type="button"
-              onClick={() =>
-                setCollapsed(
-                  (current) =>
-                    !current,
-                )
-              }
+              onClick={() => {
+                if (collapsed) {
+                  setCollapsed(false);
+                  return;
+                }
+
+                /*
+                 * A collapsed window must always restore as a normal
+                 * movable window. If it was maximized, leave maximized
+                 * mode before collapsing it.
+                 */
+                if (maximized) {
+                  setMaximized(false);
+                }
+
+                setCollapsed(true);
+              }}
               aria-label={
                 collapsed
                   ? `Restore ${item.label}`
@@ -3253,7 +3264,7 @@ function PublicPageModal({
             className="min-h-0 w-full flex-1 border-0 bg-[rgb(var(--sep-colour-090705))]"
           />
 
-          {!maximized ? (
+          {!collapsed ? (
             <div
               role="separator"
               aria-label={`Resize ${item.label}`}
@@ -3270,6 +3281,41 @@ function PublicPageModal({
 
                 event.preventDefault();
 
+                let resizeOriginWidth =
+                  rect.width;
+
+                let resizeOriginHeight =
+                  rect.height;
+
+                if (maximized) {
+                  /*
+                   * Resizing a maximized window should feel like a desktop
+                   * window: grabbing the corner immediately drops it out of
+                   * maximized mode at the same visible size, then the drag
+                   * shrinks/grows it from that exact corner.
+                   */
+                  const fullscreenRect =
+                    clampRect({
+                      x: 8,
+                      y: 8,
+                      width:
+                        window.innerWidth -
+                        16,
+                      height:
+                        window.innerHeight -
+                        16,
+                    });
+
+                  resizeOriginWidth =
+                    fullscreenRect.width;
+
+                  resizeOriginHeight =
+                    fullscreenRect.height;
+
+                  setRect(fullscreenRect);
+                  setMaximized(false);
+                }
+
                 resizeRef.current = {
                   pointerId:
                     event.pointerId,
@@ -3278,9 +3324,9 @@ function PublicPageModal({
                   startY:
                     event.clientY,
                   originWidth:
-                    rect.width,
+                    resizeOriginWidth,
                   originHeight:
-                    rect.height,
+                    resizeOriginHeight,
                 };
 
                 event.currentTarget.setPointerCapture(
