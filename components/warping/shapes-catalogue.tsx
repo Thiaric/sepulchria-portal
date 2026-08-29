@@ -416,6 +416,7 @@ function ShapeArticle({
   return (
     <article
   id={`shape-${shape.id}`}
+  data-sep-interactive-surface="card"
   className={`min-h-[430px] scroll-mt-4 border bg-[rgb(var(--sep-colour-18110c))] p-4 transition-[border-color,box-shadow] duration-200 ${shapeSchoolBorderClass(
     shape.school,
   )}`}

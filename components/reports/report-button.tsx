@@ -118,7 +118,7 @@ export function ReportButton({
           compact
             ? "inline-flex h-5 w-5 shrink-0 items-center justify-center border border-[rgb(var(--sep-colour-70483f))]/55 bg-[rgb(var(--sep-colour-17110d))] text-[rgb(var(--sep-colour-9b765e))] transition hover:border-[rgb(var(--sep-colour-a65d51))] hover:text-[rgb(var(--sep-colour-e4b0a5))]"
             : toolbar
-              ? "border border-[rgb(var(--sep-colour-7b4035))]/80 bg-[rgb(var(--sep-colour-27120f))] px-2.5 py-1.5 text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-d99b8e))] transition hover:border-[rgb(var(--sep-colour-ad5a4c))] hover:bg-[rgb(var(--sep-colour-391713))] hover:text-[rgb(var(--sep-colour-f1b2a5))]"
+              ? "inline-flex h-8 items-center justify-center border border-[rgb(var(--sep-colour-7b4035))]/80 bg-[rgb(var(--sep-colour-27120f))] px-2.5 text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-d99b8e))] transition hover:border-[rgb(var(--sep-colour-ad5a4c))] hover:bg-[rgb(var(--sep-colour-391713))] hover:text-[rgb(var(--sep-colour-f1b2a5))]"
               : "border border-[rgb(var(--sep-colour-70483f))]/65 bg-[rgb(var(--sep-colour-211311))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-c99589))] transition hover:border-[rgb(var(--sep-colour-a65d51))] hover:text-[rgb(var(--sep-colour-e4b0a5))]"
         }
       >

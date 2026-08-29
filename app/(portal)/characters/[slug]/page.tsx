@@ -177,7 +177,14 @@ const returnLabel =
     : "Back to characters";
 
   return (
-    <div className="mx-auto w-full max-w-7xl p-6">
+    <div
+      data-sep-public-character-sheet={
+        activeCharacter?.id !== character.id
+          ? "other"
+          : undefined
+      }
+      className="mx-auto w-full max-w-7xl p-6"
+    >
       <LiveCharacterSheetRefresh
         characterId={character.id}
         raceId={

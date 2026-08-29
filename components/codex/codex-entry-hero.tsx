@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { RichTextContent } from "@/components/editor/rich-text-content";
 import Link from "next/link";
+import { ImagePreviewButton } from "@/components/world/image-preview-button";
 
 type CodexEntryHeroProps = {
   name: string;
@@ -58,6 +59,11 @@ export function CodexEntryHero({
                 src={heroImage}
                 alt=""
                 className="absolute inset-0 h-full w-full object-cover opacity-45"
+              />
+
+              <ImagePreviewButton
+                src={heroImage}
+                name={name}
               />
 
               <div className="absolute inset-0 bg-gradient-to-r from-[rgb(var(--sep-colour-100c09))] via-[rgb(var(--sep-colour-100c09))]/90 to-[rgb(var(--sep-colour-100c09))]/35" />

@@ -623,8 +623,7 @@ export function ConversationMessageList({
 
                 <button
                   type="submit"
-                  data-sep-danger="true"
-                  className="red-danger border border-[rgb(var(--sep-colour-a65343))] bg-[rgb(var(--sep-colour-301713))] px-4 py-2 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-e6aa9d))] transition hover:border-[rgb(var(--sep-colour-c66d5b))] hover:bg-[rgb(var(--sep-colour-431d18))]"
+                  className="inline-flex h-9 items-center justify-center border border-red-800/80 bg-red-950/45 px-4 text-[8px] uppercase tracking-[0.15em] text-red-300 transition hover:border-red-600 hover:bg-red-950/70 hover:text-red-200"
                 >
                   Delete selected (
                   {
@@ -749,7 +748,7 @@ export function ConversationMessageList({
 
                         {!message.optimistic ? <a
                           href={`/messages/forward/${message.id}`}
-                          className="border border-[rgb(var(--sep-colour-59432c))]/80 bg-[rgb(var(--sep-colour-17110d))] px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-b99b70))] transition hover:border-[rgb(var(--sep-colour-8b6a40))] hover:text-[rgb(var(--sep-colour-e3c28d))]"
+                          className="inline-flex h-8 items-center justify-center border border-[rgb(var(--sep-colour-59432c))]/80 bg-[rgb(var(--sep-colour-17110d))] px-2.5 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-b99b70))] transition hover:border-[rgb(var(--sep-colour-8b6a40))] hover:text-[rgb(var(--sep-colour-e3c28d))]"
                         >
                           Forward
                         </a> : null}
@@ -797,8 +796,7 @@ export function ConversationMessageList({
                           <button
                             type="submit"
                             title="Delete this message from your view"
-                            data-sep-danger="true"
-                            className="red-danger border border-[rgb(var(--sep-colour-7b4035))]/80 bg-[rgb(var(--sep-colour-27120f))] px-2 py-1 text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-d99b8e))] transition hover:border-[rgb(var(--sep-colour-ad5a4c))] hover:bg-[rgb(var(--sep-colour-391713))] hover:text-[rgb(var(--sep-colour-f1b2a5))]"
+                            className="inline-flex h-8 items-center justify-center border border-red-800/80 bg-red-950/45 px-2.5 text-[7px] uppercase tracking-[0.13em] text-red-300 transition hover:border-red-600 hover:bg-red-950/70 hover:text-red-200"
                           >
                             Delete
                           </button>

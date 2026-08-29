@@ -937,6 +937,7 @@ function ItemCard({
 
   return (
     <article
+      data-sep-interactive-surface="card"
       className={`border ${
         row.is_equipped
           ? "border-[rgb(var(--sep-colour-8d6d3e))]/65 bg-[rgb(var(--sep-colour-18110c))]"

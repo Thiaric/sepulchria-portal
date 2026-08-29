@@ -170,6 +170,7 @@ export function ForumTopicFavouriteButton({
   return (
     <button
       type="button"
+      data-sep-interaction-ignore="true"
       onClick={() =>
         void toggleFavourite()
       }

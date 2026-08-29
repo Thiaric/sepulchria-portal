@@ -836,3 +836,34 @@ body.portal-skin-scope
       black
     ) !important;
 }
+
+
+/* ==================================================================
+   PRECISE MESSAGE VISUAL OVERRIDES
+   ================================================================== */
+
+/*
+ * OFF-GAME is deliberately much darker than ON-GAME.
+ * This uses the existing skin surface mixed toward black; it introduces
+ * no new hue. ID specificity intentionally beats the portal-wide unified
+ * button selector.
+ */
+body.portal-skin-scope
+  #sep-offgame-message-selector {
+  background-color:
+    color-mix(
+      in srgb,
+      rgb(var(--sep-colour-100c09)) 28%,
+      black
+    ) !important;
+}
+
+body.portal-skin-scope
+  #sep-offgame-message-selector:hover:not(:disabled) {
+  background-color:
+    color-mix(
+      in srgb,
+      rgb(var(--sep-colour-100c09)) 38%,
+      black
+    ) !important;
+}

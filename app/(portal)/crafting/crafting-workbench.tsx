@@ -910,6 +910,7 @@ export function CraftingWorkbench({
           className="fixed inset-0 z-[120] flex items-center justify-center bg-black/75 p-4 backdrop-blur-[3px] sm:p-8"
         >
           <div
+            data-sep-interaction-fixed="true"
             className="relative w-full max-w-2xl border bg-[rgb(var(--sep-colour-0d0907))] p-[5px] shadow-2xl"
             style={{
               borderColor: craftingAccent,
@@ -958,6 +959,7 @@ export function CraftingWorkbench({
 
               <div className="p-5 sm:p-6">
                 <article
+                  data-sep-interactive-surface="card"
                   className="relative overflow-hidden border bg-[rgb(var(--sep-colour-100c09))] p-4 sm:p-5"
                   style={{
                     borderColor: `color-mix(in srgb, ${craftingAccent} 48%, transparent)`,
@@ -1134,24 +1136,7 @@ export function CraftingWorkbench({
                   </div>
                 </article>
 
-                <div className="mt-4 flex justify-end">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setCraftedReveal(null)
-                    }
-                    className="border px-6 py-2.5 text-[8px] uppercase tracking-[0.18em] transition duration-200 active:translate-y-px"
-                    style={{
-                      borderColor:
-                        craftingAccent,
-                      background: `linear-gradient(180deg, color-mix(in srgb, ${craftingAccent} 14%, rgb(var(--sep-colour-3b2919))), rgb(var(--sep-colour-21170f)))`,
-                      color: `color-mix(in srgb, ${craftingAccent} 38%, rgb(var(--sep-colour-efd6a8)))`,
-                      boxShadow: `0 0 14px color-mix(in srgb, ${craftingAccent} 12%, transparent)`,
-                    }}
-                  >
-                    Close
-                  </button>
-                </div>
+
               </div>
             </div>
           </div>

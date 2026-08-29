@@ -173,6 +173,7 @@ function FeatCard({
   return (
     <article
   id={`gift-${gift.id}`}
+  data-sep-interactive-surface="card"
   className="min-h-[430px] scroll-mt-4 border border-[rgb(var(--sep-colour-8d6d3e))]/65 bg-[rgb(var(--sep-colour-18110c))] p-4"
 >
       <div className="flex gap-3">

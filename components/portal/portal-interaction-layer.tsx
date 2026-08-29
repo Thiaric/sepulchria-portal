@@ -144,13 +144,6 @@ function resolveSurface(
     return null;
   }
 
-  const explicit =
-    explicitSurface(target);
-
-  if (explicit) {
-    return explicit;
-  }
-
   const control =
     target.closest<HTMLElement>(
       CONTROL_SELECTOR,
@@ -174,6 +167,21 @@ function resolveSurface(
       element: control,
       kind: classifyControl(control),
     };
+  }
+
+  const explicit =
+    explicitSurface(target);
+
+  if (explicit) {
+    return explicit;
+  }
+
+  if (
+    target.closest(
+      '[data-sep-public-character-sheet="other"]',
+    )
+  ) {
+    return null;
   }
 
   const fixedSurface =

@@ -10,6 +10,7 @@ import {
 } from "@/components/orders/public-order-role-graph";
 import { createClient } from "@/lib/supabase/server";
 import { formatRemnants } from "@/lib/economy/currency";
+import { ImagePreviewButton } from "@/components/world/image-preview-button";
 
 type Relation<T> = T | T[] | null;
 
@@ -373,6 +374,15 @@ export default async function OrderPage({
                     className="object-cover opacity-45"
                     unoptimized
                     priority
+                  />
+
+                  <ImagePreviewButton
+                    src={
+                      order.banner_url ??
+                      order.image_url ??
+                      ""
+                    }
+                    name={order.name}
                   />
 
                   <div className="absolute inset-0 bg-gradient-to-r from-[rgb(var(--sep-colour-100c09))] via-[rgb(var(--sep-colour-100c09))]/90 to-[rgb(var(--sep-colour-100c09))]/35" />
