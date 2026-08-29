@@ -30,6 +30,9 @@ type RankingCharacter =
   CharacterRow & {
     metrics: Map<string, number>;
     accountCreatedAt: string | null;
+    marketActivity: number;
+    breezeDays: number;
+    premiumAcquisitions: number;
   };
 
 type BoardDefinition = {
@@ -41,6 +44,10 @@ type BoardDefinition = {
   hiddenValue?: boolean;
   valueLabel?: string;
   veteran?: boolean;
+  directMetric?:
+    | "market"
+    | "breeze"
+    | "premium";
 };
 
 const boards: BoardDefinition[] = [
@@ -66,7 +73,7 @@ const boards: BoardDefinition[] = [
     label: "Top Earners",
     eyebrow: "Economy",
     description:
-      "Those who have earned the most Remnants over their lifetime. Exact amounts remain private.",
+      "Those who have earned the most Remnants over their lifetime.",
     metricKeys: [
       "remnants_lifetime_earned",
     ],
@@ -77,7 +84,7 @@ const boards: BoardDefinition[] = [
     label: "Biggest Spenders",
     eyebrow: "Economy",
     description:
-      "Those who have spent the most Remnants over their lifetime. Exact amounts remain private.",
+      "Those who have spent the most Remnants over their lifetime.",
     metricKeys: [
       "remnants_lifetime_spent",
     ],
@@ -142,12 +149,7 @@ const boards: BoardDefinition[] = [
     eyebrow: "Market",
     description:
       "Those with the greatest lifetime Market activity.",
-    metricKeys: [
-      "market_transactions",
-      "market_transactions_total",
-      "market_activity_total",
-      "market_actions_total",
-    ],
+    directMetric: "market",
     valueLabel: "Transactions",
   },
   {
@@ -195,11 +197,7 @@ const boards: BoardDefinition[] = [
     eyebrow: "The Breeze",
     description:
       "Those who have rented rooms at The Breeze for the greatest total number of days.",
-    metricKeys: [
-      "breeze_days_rented",
-      "breeze_rental_days",
-      "lodging_days_rented",
-    ],
+    directMetric: "breeze",
     valueLabel: "Days",
   },
   {
@@ -247,13 +245,8 @@ const boards: BoardDefinition[] = [
     label: "Premium Collectors",
     eyebrow: "Premium",
     description:
-      "Those who have acquired the greatest number of Premium features and entitlements.",
-    metricKeys: [
-      "premium_features_ever_owned",
-      "premium_acquisitions",
-      "premium_features_owned",
-      "premium_entitlements_ever",
-    ],
+      "Those who have acquired the greatest number of Premium features and skins.",
+    directMetric: "premium",
     valueLabel: "Acquisitions",
   },
 ];
@@ -273,27 +266,35 @@ function asNumber(
     : 0;
 }
 
+function addToMap(
+  map: Map<string, number>,
+  key: string | null | undefined,
+  amount: number,
+) {
+  if (!key || !Number.isFinite(amount)) {
+    return;
+  }
+
+  map.set(
+    key,
+    (map.get(key) ?? 0) + amount,
+  );
+}
+
 function findMetric(
   character: RankingCharacter,
   keys: string[] = [],
 ) {
   for (const key of keys) {
-    if (
-      character.metrics.has(key)
-    ) {
-      return (
-        character.metrics.get(key) ??
-        0
-      );
+    if (character.metrics.has(key)) {
+      return character.metrics.get(key) ?? 0;
     }
   }
 
   return 0;
 }
 
-function formatNumber(
-  value: number,
-) {
+function formatNumber(value: number) {
   return new Intl.NumberFormat(
     "en-GB",
     {
@@ -302,20 +303,12 @@ function formatNumber(
   ).format(value);
 }
 
-function formatDate(
-  value: string | null,
-) {
-  if (!value) {
-    return "Unknown";
-  }
+function formatDate(value: string | null) {
+  if (!value) return "Unknown";
 
   const date = new Date(value);
 
-  if (
-    Number.isNaN(
-      date.getTime(),
-    )
-  ) {
+  if (Number.isNaN(date.getTime())) {
     return "Unknown";
   }
 
@@ -334,15 +327,25 @@ function rankingValue(
   board: BoardDefinition,
 ) {
   if (board.veteran) {
-    if (
-      !character.accountCreatedAt
-    ) {
+    if (!character.accountCreatedAt) {
       return Number.POSITIVE_INFINITY;
     }
 
     return new Date(
       character.accountCreatedAt,
     ).getTime();
+  }
+
+  if (board.directMetric === "market") {
+    return character.marketActivity;
+  }
+
+  if (board.directMetric === "breeze") {
+    return character.breezeDays;
+  }
+
+  if (board.directMetric === "premium") {
+    return character.premiumAcquisitions;
   }
 
   return findMetric(
@@ -363,12 +366,7 @@ function sortForBoard(
         );
       }
 
-      return (
-        rankingValue(
-          character,
-          board,
-        ) > 0
-      );
+      return rankingValue(character, board) > 0;
     })
     .sort((a, b) => {
       const aValue =
@@ -385,21 +383,17 @@ function sortForBoard(
       }
 
       return (
-        (
-          a.display_name ??
-          ""
-        ).localeCompare(
-          b.display_name ?? "",
-        )
+        (a.display_name ?? "")
+          .localeCompare(
+            b.display_name ?? "",
+          )
       );
     })
-    .slice(0, 10);
+    .slice(0, 100);
 }
 
 function rankLabel(index: number) {
-  if (index === 0) return "I";
-  if (index === 1) return "II";
-  if (index === 2) return "III";
+  
   return String(index + 1);
 }
 
@@ -415,8 +409,7 @@ export default async function RankingPage({
   const board =
     boards.find(
       (entry) =>
-        entry.key ===
-        params.board,
+        entry.key === params.board,
     ) ??
     boards[0];
 
@@ -444,11 +437,32 @@ export default async function RankingPage({
   }
 
   const characters =
-    (characterData ??
-      []) as CharacterRow[];
+    (characterData ?? []) as CharacterRow[];
 
-  const metricResults =
-    await Promise.all(
+  const characterIds =
+    characters.map(
+      (character) => character.id,
+    );
+
+  const userIds =
+    characters
+      .map(
+        (character) =>
+          character.user_id,
+      )
+      .filter(
+        (value): value is string =>
+          Boolean(value),
+      );
+
+  const [
+    metricResults,
+    featureEntitlementsResult,
+    skinEntitlementsResult,
+    breezeRentalsResult,
+    remnantAuditResult,
+  ] = await Promise.all([
+    Promise.all(
       characters.map(
         async (character) => {
           const result =
@@ -470,23 +484,16 @@ export default async function RankingPage({
               characterId:
                 character.id,
               metrics:
-                new Map<
-                  string,
-                  number
-                >(),
+                new Map<string, number>(),
             };
           }
 
           const map =
-            new Map<
-              string,
-              number
-            >();
+            new Map<string, number>();
 
           for (
             const row of
-            (result.data ??
-              []) as MetricRow[]
+            (result.data ?? []) as MetricRow[]
           ) {
             map.set(
               row.metric_key,
@@ -503,7 +510,92 @@ export default async function RankingPage({
           };
         },
       ),
+    ),
+
+    characterIds.length
+      ? admin
+          .from(
+            "character_feature_entitlements",
+          )
+          .select(
+            "character_id, feature_key, enabled",
+          )
+          .in(
+            "character_id",
+            characterIds,
+          )
+      : Promise.resolve({
+          data: [],
+          error: null,
+        }),
+
+    userIds.length
+      ? admin
+          .from(
+            "user_portal_skin_entitlements",
+          )
+          .select(
+            "user_id, skin_id, enabled",
+          )
+          .in(
+            "user_id",
+            userIds,
+          )
+      : Promise.resolve({
+          data: [],
+          error: null,
+        }),
+
+    characterIds.length
+      ? admin
+          .from(
+            "breeze_lodging_rentals",
+          )
+          .select(
+            "owner_character_id, starts_at, ends_at",
+          )
+          .in(
+            "owner_character_id",
+            characterIds,
+          )
+      : Promise.resolve({
+          data: [],
+          error: null,
+        }),
+
+    characterIds.length
+      ? admin
+          .from(
+            "character_audit_log",
+          )
+          .select(
+            "character_id, source, new_values",
+          )
+          .eq(
+            "entity_type",
+            "remnant_ledger",
+          )
+          .in(
+            "character_id",
+            characterIds,
+          )
+      : Promise.resolve({
+          data: [],
+          error: null,
+        }),
+  ]);
+
+  const directError =
+    featureEntitlementsResult.error ??
+    skinEntitlementsResult.error ??
+    breezeRentalsResult.error ??
+    remnantAuditResult.error;
+
+  if (directError) {
+    throw new Error(
+      `Unable to load Hall of Renown activity: ${directError.message}`,
     );
+  }
 
   const metricsByCharacter =
     new Map(
@@ -515,11 +607,142 @@ export default async function RankingPage({
       ),
     );
 
+  const premiumByCharacter =
+    new Map<string, number>();
+
+  for (
+    const row of
+    featureEntitlementsResult.data ?? []
+  ) {
+    if (row.enabled === true) {
+      addToMap(
+        premiumByCharacter,
+        row.character_id,
+        1,
+      );
+    }
+  }
+
+  const characterByUser =
+    new Map(
+      characters
+        .filter(
+          (character) =>
+            Boolean(
+              character.user_id,
+            ),
+        )
+        .map(
+          (character) => [
+            character.user_id as string,
+            character.id,
+          ],
+        ),
+    );
+
+  for (
+    const row of
+    skinEntitlementsResult.data ?? []
+  ) {
+    if (row.enabled !== true) {
+      continue;
+    }
+
+    addToMap(
+      premiumByCharacter,
+      characterByUser.get(
+        row.user_id,
+      ),
+      1,
+    );
+  }
+
+  const breezeByCharacter =
+    new Map<string, number>();
+
+  const DAY_MS =
+    24 * 60 * 60 * 1000;
+
+  for (
+    const row of
+    breezeRentalsResult.data ?? []
+  ) {
+    const start =
+      new Date(
+        row.starts_at,
+      ).getTime();
+
+    const end =
+      new Date(
+        row.ends_at,
+      ).getTime();
+
+    if (
+      Number.isNaN(start) ||
+      Number.isNaN(end) ||
+      end <= start
+    ) {
+      continue;
+    }
+
+    addToMap(
+      breezeByCharacter,
+      row.owner_character_id,
+      Math.max(
+        1,
+        Math.round(
+          (end - start) /
+            DAY_MS,
+        ),
+      ),
+    );
+  }
+
+  const marketByCharacter =
+    new Map<string, number>();
+
+  for (
+    const row of
+    remnantAuditResult.data ?? []
+  ) {
+    const values =
+      (
+        row.new_values ??
+        {}
+      ) as Record<
+        string,
+        unknown
+      >;
+
+    const marketHaystack =
+      [
+        row.source,
+        values.reason,
+        values.source,
+        values.source_type,
+        values.transaction_type,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+    if (
+      !marketHaystack.includes(
+        "market",
+      )
+    ) {
+      continue;
+    }
+
+    addToMap(
+      marketByCharacter,
+      row.character_id,
+      1,
+    );
+  }
+
   const createdAtByUser =
-    new Map<
-      string,
-      string
-    >();
+    new Map<string, string>();
 
   try {
     const {
@@ -571,6 +794,18 @@ export default async function RankingPage({
                 character.user_id,
               ) ?? null
             : null,
+        marketActivity:
+          marketByCharacter.get(
+            character.id,
+          ) ?? 0,
+        breezeDays:
+          breezeByCharacter.get(
+            character.id,
+          ) ?? 0,
+        premiumAcquisitions:
+          premiumByCharacter.get(
+            character.id,
+          ) ?? 0,
       }),
     );
 
@@ -581,50 +816,26 @@ export default async function RankingPage({
     );
 
   return (
-    <main
-      data-sep-interaction-ignore="true"
-      className="flex h-full min-h-0 w-full flex-col p-3 sm:p-4"
-    >
-      <header className="shrink-0 bg-[rgb(var(--sep-colour-17110d))] px-4 py-4 sm:px-5">
-        <p className="text-[8px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-8c704b))]">
-          Sepulchria remembers
-        </p>
-
-        <div className="mt-1 flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <h1 className="font-serif text-3xl text-[rgb(var(--sep-colour-ead5ac))]">
-              The Hall of Renown
-            </h1>
-
-            <p className="mt-1.5 max-w-3xl text-[10px] leading-5 text-[rgb(var(--sep-colour-928674))]">
-              The deeds, achievements
-              and standing of those
-              whose lives leave their
-              mark upon Sepulchria.
-            </p>
-          </div>
-        </div>
-      </header>
-
-      <section className="mt-3 flex min-h-0 flex-1 flex-col bg-[rgb(var(--sep-colour-120d0a))]">
-        <header className="shrink-0 bg-[rgb(var(--sep-colour-17110d))] px-4 py-3">
-          <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-836b4a))]">
-            {board.eyebrow}
+    <main className="flex h-full min-h-0 w-full flex-col p-4 sm:p-5">
+      <section className="flex min-h-0 flex-1 flex-col overflow-hidden border border-[rgb(var(--sep-colour-58432d))]/45 bg-[rgb(var(--sep-colour-15100d))]/82 shadow-[0_10px_26px_rgba(var(--sep-rgb-0-0-0),0.2)]">
+        <header className="shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-211a14))] px-4 py-4 sm:px-5">
+          <p className="text-[8px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
+            The Hall of Renown
           </p>
 
-          <div className="mt-0.5 flex flex-wrap items-end justify-between gap-3">
+          <div className="mt-1 flex flex-wrap items-end justify-between gap-3">
             <div>
-              <h2 className="font-serif text-2xl text-[rgb(var(--sep-colour-e1c99c))]">
+              <h1 className="font-serif text-3xl text-[rgb(var(--sep-colour-ead5ac))]">
                 {board.label}
-              </h2>
+              </h1>
 
-              <p className="mt-1 max-w-3xl text-[10px] leading-4 text-[rgb(var(--sep-colour-8f816e))]">
+              <p className="mt-1.5 max-w-3xl text-[11px] leading-5 text-[rgb(var(--sep-colour-9c8d79))]">
                 {board.description}
               </p>
             </div>
 
-            <span className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-6f604d))]">
-              Top 10
+            <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+              {board.eyebrow} · Top 100
             </span>
           </div>
         </header>
@@ -632,50 +843,50 @@ export default async function RankingPage({
         {ranked.length ? (
           <div
             data-portal-scroll
-            className="min-h-0 flex-1 space-y-1.5 overflow-y-auto p-3"
+            className="min-h-0 flex-1 overflow-y-auto p-3 sm:p-4"
           >
-            {ranked.map(
-              (
-                character,
-                index,
-              ) => {
-                const value =
-                  rankingValue(
-                    character,
-                    board,
-                  );
+            <div className="space-y-2">
+              {ranked.map(
+                (
+                  character,
+                  index,
+                ) => {
+                  const value =
+                    rankingValue(
+                      character,
+                      board,
+                    );
 
-                const podium =
-                  index < 3;
+                  const podium =
+                    index < 3;
 
-                return (
-                  <Link
-                    key={
-                      character.id
-                    }
-                    href={`/characters/${character.public_slug}`}
-                    data-sep-interactive-surface="row"
-                    className={`grid min-h-[46px] grid-cols-[42px_minmax(0,1fr)_auto] items-center gap-3 px-3 py-2 transition ${
-                      podium
-                        ? "bg-[rgb(var(--sep-colour-24190f))]"
-                        : "bg-[rgb(var(--sep-colour-15100d))]"
-                    }`}
-                  >
-                    <div
-                      className={`flex h-8 items-center justify-center font-serif ${
+                  return (
+                    <Link
+                      key={
+                        character.id
+                      }
+                      href={`/characters/${character.public_slug}`}
+                      data-sep-interactive-surface="row"
+                      className={`grid min-h-[44px] grid-cols-[42px_minmax(0,1fr)_auto] items-center gap-3 border px-3 py-2 transition ${
                         podium
-                          ? "text-lg text-[rgb(var(--sep-colour-e4c47f))]"
-                          : "text-sm text-[rgb(var(--sep-colour-82725f))]"
+                          ? "border-[rgb(var(--sep-colour-80613b))]/55 bg-[rgb(var(--sep-colour-24190f))]"
+                          : "border-[rgb(var(--sep-colour-58432d))]/45 bg-[rgb(var(--sep-colour-120d0a))] hover:border-[rgb(var(--sep-colour-80613b))]/55 hover:bg-[rgb(var(--sep-colour-19120d))]"
                       }`}
                     >
-                      {rankLabel(
-                        index,
-                      )}
-                    </div>
+                      <div
+                        className={`flex h-7 items-center justify-center font-serif ${
+                          podium
+                            ? "text-lg text-[rgb(var(--sep-colour-e4c47f))]"
+                            : "text-sm text-[rgb(var(--sep-colour-82725f))]"
+                        }`}
+                      >
+                        {rankLabel(
+                          index,
+                        )}
+                      </div>
 
-                    <div className="min-w-0">
                       <p
-                        className={`truncate font-serif ${
+                        className={`min-w-0 truncate font-serif ${
                           podium
                             ? "text-[16px] text-[rgb(var(--sep-colour-e5ce9f))]"
                             : "text-[14px] text-[rgb(var(--sep-colour-cbb58f))]"
@@ -684,60 +895,44 @@ export default async function RankingPage({
                         {character.display_name ??
                           "Unnamed character"}
                       </p>
-                    </div>
 
-                    <div className="min-w-[100px] text-right">
-                      {board.hiddenValue ? (
-                        <p className="text-[9px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-bda375))]">
-                          Recorded
-                        </p>
-                      ) : board.veteran ? (
-                        <p className="text-[9px] text-[rgb(var(--sep-colour-bda375))]">
-                          {formatDate(
-                            character.accountCreatedAt,
-                          )}
-                        </p>
-                      ) : (
-                        <p className="font-serif text-[15px] text-[rgb(var(--sep-colour-d0b27e))]">
-                          {formatNumber(
-                            value,
-                          )}
-                          <span className="ml-1 font-sans text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-766956))]">
-                            {board.valueLabel ??
-                              "Total"}
-                          </span>
-                        </p>
-                      )}
-                    </div>
-                  </Link>
-                );
-              },
-            )}
+                      <div className="min-w-[100px] text-right">
+                        {board.hiddenValue ? (
+                          <p className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-a98d65))]">
+                            Recorded
+                          </p>
+                        ) : board.veteran ? (
+                          <p className="text-[10px] text-[rgb(var(--sep-colour-bda375))]">
+                            {formatDate(
+                              character.accountCreatedAt,
+                            )}
+                          </p>
+                        ) : (
+                          <p className="font-serif text-[15px] text-[rgb(var(--sep-colour-d0b27e))]">
+                            {formatNumber(
+                              value,
+                            )}
+                            <span className="ml-1.5 font-sans text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-766956))]">
+                              {board.valueLabel ??
+                                "Total"}
+                            </span>
+                          </p>
+                        )}
+                      </div>
+                    </Link>
+                  );
+                },
+              )}
+            </div>
           </div>
         ) : (
-          <div className="flex min-h-0 flex-1 items-center justify-center px-5 py-10 text-center">
-            <div>
-              <p className="font-serif text-xl text-[rgb(var(--sep-colour-a98e68))]">
-                No names have yet been
-                entered into this record.
-              </p>
-
-              <p className="mt-2 text-[10px] text-[rgb(var(--sep-colour-706554))]">
-                The Hall will update as
-                characters leave their
-                mark upon Sepulchria.
-              </p>
-            </div>
+          <div className="flex min-h-0 flex-1 items-center justify-center p-8 text-center">
+            <p className="font-serif text-lg text-[rgb(var(--sep-colour-a98e68))]">
+              No entries yet.
+            </p>
           </div>
         )}
       </section>
-
-      <p className="mt-2 shrink-0 text-center text-[7px] leading-4 text-[rgb(var(--sep-colour-62594e))]">
-        Current Remnant balances are
-        never displayed. Lifetime
-        economy records reveal standing
-        only where amounts are private.
-      </p>
     </main>
   );
 }

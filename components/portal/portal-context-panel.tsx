@@ -385,6 +385,9 @@ function HallOfRenownContext() {
   const searchParams =
     useSearchParams();
 
+  const [search, setSearch] =
+    useState("");
+
   const currentBoard =
     searchParams.get("board") ??
     "expertise";
@@ -393,25 +396,58 @@ function HallOfRenownContext() {
     searchParams.get("embedded") ===
     "1";
 
+  const query =
+    search
+      .trim()
+      .toLocaleLowerCase();
+
+  const visibleBoards =
+    HALL_OF_RENOWN_BOARDS.filter(
+      ([
+        ,
+        eyebrow,
+        label,
+      ]) => {
+        if (!query) {
+          return true;
+        }
+
+        return `${eyebrow} ${label}`
+          .toLocaleLowerCase()
+          .includes(query);
+      },
+    );
+
   return (
     <div className="flex h-full min-h-0 flex-col">
       <ContextHeading
         eyebrow="The Hall of Renown"
-        title="Records of Renown"
+        title="Records"
       />
 
-      <p className="text-xs leading-5 text-[rgb(var(--sep-colour-938673))]">
-        Choose the record displayed in
-        the Hall.
-      </p>
+      <input
+        type="search"
+        value={search}
+        onChange={(event) =>
+          setSearch(
+            event.target.value,
+          )
+        }
+        placeholder="Search records..."
+        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-655c50))] focus:border-[rgb(var(--sep-colour-8a673f))]"
+      />
 
-      <div className="my-3 h-px bg-[rgb(var(--sep-colour-59432c))]/35" />
+      <div className="my-4 h-px bg-[rgb(var(--sep-colour-59432c))]/35" />
+
+      <p className="mb-2 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))]">
+        Records · {visibleBoards.length}
+      </p>
 
       <div
         data-portal-scroll
         className="min-h-0 flex-1 space-y-1 overflow-y-auto pr-1"
       >
-        {HALL_OF_RENOWN_BOARDS.map(
+        {visibleBoards.map(
           ([
             key,
             eyebrow,
@@ -432,27 +468,35 @@ function HallOfRenownContext() {
                 key={key}
                 href={href}
                 scroll={false}
-                className={`block px-3 py-2 transition ${
+                className={`block border px-3 py-2 transition ${
                   active
-                    ? "bg-[rgb(var(--sep-colour-302116))] text-[rgb(var(--sep-colour-efd7a7))]"
-                    : "text-[rgb(var(--sep-colour-a7977f))] hover:bg-[rgb(var(--sep-colour-1d1611))] hover:text-[rgb(var(--sep-colour-d8c19a))]"
+                    ? "border-[rgb(var(--sep-colour-80613b))]/55 bg-[rgb(var(--sep-colour-302116))] text-[rgb(var(--sep-colour-efd7a7))]"
+                    : "border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] text-[rgb(var(--sep-colour-a7977f))] hover:border-[rgb(var(--sep-colour-80613b))]/50 hover:bg-[rgb(var(--sep-colour-17110d))] hover:text-[rgb(var(--sep-colour-d8c19a))]"
                 }`}
               >
                 <span className="block text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-735f45))]">
                   {eyebrow}
                 </span>
 
-                <span className="mt-0.5 block font-serif text-[13px]">
+                <span className="mt-0.5 block truncate font-serif text-[13px]">
                   {label}
                 </span>
               </Link>
             );
           },
         )}
+
+        {visibleBoards.length ===
+        0 ? (
+          <p className="px-2 py-3 text-xs text-[rgb(var(--sep-colour-8f826f))]">
+            No matching records.
+          </p>
+        ) : null}
       </div>
     </div>
   );
 }
+
 
 type AdminCharacterJumpField = {
   label: string;
