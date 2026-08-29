@@ -26,6 +26,7 @@ export type AdminSection =
   | "rules"
   | "shapes"
   | "tidings"
+  | "trophies"
   | "tickets"
   | "sanctions"
   | "media"
@@ -59,6 +60,7 @@ export const ADMIN_SECTION_ROLES: Record<
   rules: ["owner"],
   shapes: ["owner"],
   tidings: ["owner", "admin", "moderator", "master"],
+  trophies: ["owner"],
   tickets: ["owner", "admin", "moderator", "master"],
   sanctions: ["owner", "admin", "moderator"],
   media: ["owner"],

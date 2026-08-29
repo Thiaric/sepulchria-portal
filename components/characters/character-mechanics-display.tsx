@@ -132,9 +132,9 @@ export async function CharacterMechanicsDisplay({
                     {entry.base !== null ? (
                       <span
                         role="tooltip"
-                        className="pointer-events-none absolute bottom-full right-0 z-30 mb-2 hidden w-max max-w-[340px] border border-[rgb(var(--sep-colour-765937))]/70 bg-[rgb(var(--sep-colour-0b0806))] px-3 py-2 text-left shadow-xl group-hover:block group-focus-within:block"
+                        className="pointer-events-none absolute bottom-full right-0 z-30 mb-2 hidden w-72 max-w-[calc(100vw-2rem)] border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2 text-left group-hover:block group-focus-within:block"
                       >
-                        <span className="block whitespace-nowrap text-[7px] uppercase leading-4 tracking-[0.08em] text-[rgb(var(--sep-colour-756958))]">
+                        <span className="block whitespace-normal break-words text-[7px] uppercase leading-4 tracking-[0.08em] text-[rgb(var(--sep-colour-756958))]">
                           {entry.base} Base ·{" "}
                           <span className={entry.gifts === 0 ? "" : "text-[rgb(var(--sep-colour-b99765))]"}>
                             {signed(entry.gifts)} Feats
@@ -157,7 +157,7 @@ export async function CharacterMechanicsDisplay({
                           </span>
                         </span>
 
-                        <span className="mt-0.5 block whitespace-nowrap text-[7px] uppercase leading-4 tracking-[0.08em] text-[rgb(var(--sep-colour-756958))]">
+                        <span className="mt-1 block whitespace-normal break-words text-[7px] uppercase leading-4 tracking-[0.08em] text-[rgb(var(--sep-colour-756958))]">
                           {signed(entry.ancestry)} Ancestry ·{" "}
                           {signed(entry.order)} Order ={" "}
                           <span className="text-[rgb(var(--sep-colour-c8a879))]">

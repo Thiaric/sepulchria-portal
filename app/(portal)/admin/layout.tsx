@@ -245,6 +245,12 @@ export default async function AdminLayout({
               </AdminNavigationLink>
             ) : null}
 
+            {can("trophies") ? (
+              <AdminNavigationLink href="/admin/trophies">
+                Trophies
+              </AdminNavigationLink>
+            ) : null}
+
             {can("users") ? (
               <AdminNavigationLink href="/admin/users">
                 Users

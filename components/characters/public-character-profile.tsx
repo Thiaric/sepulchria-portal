@@ -9,6 +9,7 @@ import { CharacterHealthDisplay, CharacterMechanicsDisplay } from "@/components/
 import { CharacterGiftsDisplay } from "@/components/characters/character-gifts-display";
 import { CharacterInventoryDisplay } from "@/components/characters/character-inventory-display";
 import { CharacterTrophiesDisplay } from "@/components/characters/character-trophies-display";
+import { CharacterDisplayTrophies } from "@/components/characters/character-display-trophies";
 import { CharacterExpertiseTotal } from "@/components/characters/character-expertise-total";
 import { CharacterMusicPlayer } from "@/components/characters/character-music-player";
 import { CharacterSheetTabs } from "@/components/characters/character-sheet-tabs";
@@ -276,9 +277,15 @@ export function PublicCharacterProfileView({
                     Character profile
                   </p>
 
-                  <h1 className="mt-1 break-words font-serif text-3xl text-[rgb(var(--sep-colour-ecd9b2))] sm:text-[2.15rem]">
-                    {fullName}
-                  </h1>
+                  <div className="mt-1 flex w-full flex-wrap items-center justify-between gap-2.5">
+                    <h1 className="break-words font-serif text-3xl text-[rgb(var(--sep-colour-ecd9b2))] sm:text-[2.15rem]">
+                      {fullName}
+                    </h1>
+
+                    <CharacterDisplayTrophies
+                      characterId={character.id}
+                    />
+                  </div>
                 </div>
               </div>
 

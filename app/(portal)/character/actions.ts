@@ -2,8 +2,10 @@
 
 import { randomUUID } from "node:crypto";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 type CharacterMode = "create" | "update";
 
@@ -927,6 +929,169 @@ export async function updateApprovedCharacterProfile(
   }
 
   redirect("/character?updated=true");
+}
+
+
+export async function saveDisplayTrophies(
+  formData: FormData,
+) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/auth/login");
+  }
+
+  const {
+    data: character,
+    error: characterError,
+  } = await supabase
+    .from("characters")
+    .select("id, status, is_system")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (characterError || !character) {
+    redirectCharacterError(
+      characterError?.message ?? "Character not found.",
+    );
+  }
+
+  if (
+    character.is_system ||
+    character.status !== "approved"
+  ) {
+    redirectCharacterError(
+      "Display Trophies can only be changed for an approved character.",
+    );
+  }
+
+  const selections = [1, 2, 3, 4, 5]
+    .map((slot) => {
+      const trophyId = String(
+        formData.get(`display_trophy_${slot}`) ?? "",
+      ).trim();
+
+      return trophyId
+        ? { slot, trophyId }
+        : null;
+    })
+    .filter(
+      (
+        entry,
+      ): entry is {
+        slot: number;
+        trophyId: string;
+      } => entry !== null,
+    );
+
+  const selectedIds = selections.map(
+    (entry) => entry.trophyId,
+  );
+
+  if (
+    new Set(selectedIds).size !==
+    selectedIds.length
+  ) {
+    redirectCharacterError(
+      "The same Trophy cannot be selected in more than one display slot.",
+    );
+  }
+
+  const admin = createAdminClient();
+
+  if (selectedIds.length) {
+    const [earnedResult, definitionsResult] =
+      await Promise.all([
+        admin
+          .from("character_trophies")
+          .select("trophy_id")
+          .eq("character_id", character.id)
+          .in("trophy_id", selectedIds),
+        admin
+          .from("trophy_definitions")
+          .select("id")
+          .in("id", selectedIds)
+          .eq("is_active", true),
+      ]);
+
+    if (earnedResult.error) {
+      redirectCharacterError(
+        earnedResult.error.message,
+      );
+    }
+
+    if (definitionsResult.error) {
+      redirectCharacterError(
+        definitionsResult.error.message,
+      );
+    }
+
+    const earnedIds = new Set(
+      (earnedResult.data ?? []).map(
+        (row) => row.trophy_id,
+      ),
+    );
+
+    const activeIds = new Set(
+      (definitionsResult.data ?? []).map(
+        (row) => row.id,
+      ),
+    );
+
+    if (
+      selectedIds.some(
+        (id) =>
+          !earnedIds.has(id) ||
+          !activeIds.has(id),
+      )
+    ) {
+      redirectCharacterError(
+        "Only active Trophies this character has earned can be displayed.",
+      );
+    }
+  }
+
+  const { error: clearError } =
+    await admin
+      .from("character_display_trophies")
+      .delete()
+      .eq("character_id", character.id);
+
+  if (clearError) {
+    redirectCharacterError(
+      clearError.message,
+    );
+  }
+
+  if (selections.length) {
+    const { error: insertError } =
+      await admin
+        .from("character_display_trophies")
+        .insert(
+          selections.map((entry) => ({
+            character_id: character.id,
+            trophy_id: entry.trophyId,
+            slot: entry.slot,
+          })),
+        );
+
+    if (insertError) {
+      redirectCharacterError(
+        insertError.message,
+      );
+    }
+  }
+
+  revalidatePath("/character");
+  revalidatePath("/characters");
+
+  redirect(
+    "/character?updated=true#display-trophies",
+  );
 }
 
 export async function submitCharacterForReview() {

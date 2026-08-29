@@ -11,6 +11,7 @@ type TrophyDefinition = {
   metric_key: string;
   threshold: number | string;
   sort_order: number;
+  icon_url: string | null;
 };
 
 type EarnedTrophy = {
@@ -164,7 +165,7 @@ export async function CharacterTrophiesDisplay({
     admin
       .from("trophy_definitions")
       .select(
-        "id, trophy_key, category, name, description, metric_key, threshold, sort_order",
+        "id, trophy_key, category, name, description, metric_key, threshold, sort_order, icon_url",
       )
       .eq("is_active", true)
       .order("sort_order", {
@@ -370,7 +371,30 @@ export async function CharacterTrophiesDisplay({
                           }`}
                         >
                           <div className="flex items-start justify-between gap-3">
-                            <div className="min-w-0">
+                            <div className="flex min-w-0 gap-3">
+                              <div
+                                aria-hidden="true"
+                                className={`flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden border ${
+                                  earned
+                                    ? "border-[rgb(var(--sep-colour-80613b))]/55 bg-[rgb(var(--sep-colour-100c09))]"
+                                    : "border-[rgb(var(--sep-colour-493a2a))]/45 bg-[rgb(var(--sep-colour-0b0807))]"
+                                }`}
+                              >
+                                {trophy.icon_url ? (
+                                  // eslint-disable-next-line @next/next/no-img-element
+                                  <img
+                                    src={trophy.icon_url}
+                                    alt=""
+                                    className="h-full w-full object-contain p-1"
+                                  />
+                                ) : (
+                                  <span className="font-serif text-lg text-[rgb(var(--sep-colour-685a49))]">
+                                    ?
+                                  </span>
+                                )}
+                              </div>
+
+                              <div className="min-w-0">
                               <p
                                 className={`font-serif text-[15px] leading-5 ${
                                   earned
@@ -384,6 +408,7 @@ export async function CharacterTrophiesDisplay({
                               <p className="mt-1 text-[10px] leading-4 text-[rgb(var(--sep-colour-8f8270))]">
                                 {trophy.description}
                               </p>
+                              </div>
                             </div>
 
                             <span

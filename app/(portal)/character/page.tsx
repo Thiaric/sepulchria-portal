@@ -21,6 +21,8 @@ import { CharacterInventoryDisplay } from "@/components/characters/character-inv
 import { CharacterRemnantsWallet } from "@/components/characters/character-remnants-wallet";
 import { CharacterLedger } from "@/components/characters/character-ledger";
 import { CharacterTrophiesDisplay } from "@/components/characters/character-trophies-display";
+import { CharacterDisplayTrophies } from "@/components/characters/character-display-trophies";
+import { DisplayTrophySelector } from "@/components/characters/display-trophy-selector";
 import { LiveCharacterSheetRefresh } from "@/components/characters/live-character-sheet-refresh";
 import { getEffectiveCharacterAttributes } from "@/lib/characters/get-effective-character-attributes";
 import { createClient } from "@/lib/supabase/server";
@@ -389,10 +391,18 @@ export function Profile({
                       Character profile
                     </p>
 
-                    <h1 className="mt-1 break-words font-serif text-3xl text-[rgb(var(--sep-colour-ecd9b2))] sm:text-[2.15rem]">
-                      {character.display_name ??
-                        "Unnamed character"}
-                    </h1>
+                    <div className="mt-1 flex w-full flex-wrap items-center justify-between gap-2.5">
+                      <h1 className="break-words font-serif text-3xl text-[rgb(var(--sep-colour-ecd9b2))] sm:text-[2.15rem]">
+                        {character.display_name ??
+                          "Unnamed character"}
+                      </h1>
+
+                      {character.id ? (
+                        <CharacterDisplayTrophies
+                          characterId={character.id}
+                        />
+                      ) : null}
+                    </div>
                   </div>
 
                   {own ? (
@@ -754,6 +764,16 @@ export function Profile({
               </form>
   </div>
 </section>
+            ) : null}
+
+            {own &&
+            status === "approved" &&
+            character.id ? (
+              <div id="display-trophies">
+                <DisplayTrophySelector
+                  characterId={character.id}
+                />
+              </div>
             ) : null}
 
             {own && !canEdit && status !== "approved" ? (
