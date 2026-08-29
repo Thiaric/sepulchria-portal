@@ -271,8 +271,8 @@ export async function CharacterTrophiesDisplay({
     groupByCategory(visibleTrophies);
 
   return (
-    <section className="border border-[rgb(var(--sep-colour-6b5032))]/50 bg-[rgb(var(--sep-colour-120d0a))]">
-      <header className="border-b border-[rgb(var(--sep-colour-5d452d))]/45 bg-[rgb(var(--sep-colour-17110d))] px-4 py-4 sm:px-5">
+    <section className="bg-[rgb(var(--sep-colour-120d0a))]">
+      <header className="bg-[rgb(var(--sep-colour-17110d))] px-4 py-4 sm:px-5">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-846b4a))]">
@@ -290,7 +290,7 @@ export async function CharacterTrophiesDisplay({
             </p>
           </div>
 
-          <div className="border border-[rgb(var(--sep-colour-665038))]/55 bg-[rgb(var(--sep-colour-0e0a08))] px-4 py-2 text-right">
+          <div className="bg-[rgb(var(--sep-colour-0e0a08))] px-4 py-2 text-right">
             <p className="text-[7px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-776449))]">
               Earned
             </p>
@@ -325,9 +325,9 @@ export async function CharacterTrophiesDisplay({
             return (
               <section
                 key={group.category}
-                className="border border-[rgb(var(--sep-colour-5b452f))]/45 bg-[rgb(var(--sep-colour-15100d))]"
+                className="bg-[rgb(var(--sep-colour-15100d))]"
               >
-                <div className="flex items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-503c29))]/40 px-3 py-2.5 sm:px-4">
+                <div className="flex items-center justify-between gap-3 px-3 py-2.5 sm:px-4">
                   <h3 className="font-serif text-base text-[rgb(var(--sep-colour-d1b583))]">
                     {group.category}
                   </h3>
@@ -364,20 +364,21 @@ export async function CharacterTrophiesDisplay({
                       return (
                         <article
                           key={trophy.id}
-                          className={`relative overflow-hidden border p-3 ${
+                          data-sep-interactive-surface="card"
+                          className={`relative overflow-hidden p-3 transition-transform duration-200 ${
                             earned
-                              ? "border-[rgb(var(--sep-colour-80613b))]/65 bg-[rgb(var(--sep-colour-21170f))]"
-                              : "border-[rgb(var(--sep-colour-493a2a))]/40 bg-[rgb(var(--sep-colour-100c09))] opacity-75"
+                              ? "bg-[rgb(var(--sep-colour-21170f))]"
+                              : "bg-[rgb(var(--sep-colour-100c09))] opacity-75"
                           }`}
                         >
                           <div className="flex items-start justify-between gap-3">
                             <div className="flex min-w-0 gap-3">
                               <div
                                 aria-hidden="true"
-                                className={`flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden border ${
+                                className={`flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden ${
                                   earned
-                                    ? "border-[rgb(var(--sep-colour-80613b))]/55 bg-[rgb(var(--sep-colour-100c09))]"
-                                    : "border-[rgb(var(--sep-colour-493a2a))]/45 bg-[rgb(var(--sep-colour-0b0807))]"
+                                    ? "bg-[rgb(var(--sep-colour-100c09))]"
+                                    : "bg-[rgb(var(--sep-colour-0b0807))]"
                                 }`}
                               >
                                 {trophy.icon_url ? (
@@ -412,10 +413,10 @@ export async function CharacterTrophiesDisplay({
                             </div>
 
                             <span
-                              className={`shrink-0 border px-2 py-1 text-[7px] uppercase tracking-[0.14em] ${
+                              className={`shrink-0 px-2 py-1 text-[7px] uppercase tracking-[0.14em] ${
                                 earned
-                                  ? "border-[rgb(var(--sep-colour-8b6a3e))]/65 text-[rgb(var(--sep-colour-d1ae72))]"
-                                  : "border-[rgb(var(--sep-colour-4c4033))]/55 text-[rgb(var(--sep-colour-6f6559))]"
+                                  ? "bg-[rgb(var(--sep-colour-2a1d12))] text-[rgb(var(--sep-colour-d1ae72))]"
+                                  : "bg-[rgb(var(--sep-colour-0b0807))] text-[rgb(var(--sep-colour-6f6559))]"
                               }`}
                             >
                               {earned

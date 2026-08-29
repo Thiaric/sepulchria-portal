@@ -101,31 +101,7 @@ export function CharacterAuditTrail({
   );
 
   useEffect(() => {
-    function handleTab(
-      event: Event,
-    ) {
-      const customEvent =
-        event as CustomEvent<string>;
-
-      if (
-        customEvent.detail ===
-        "audit"
-      ) {
-        void load();
-      }
-    }
-
-    window.addEventListener(
-      "sepulchria-character-sheet-tab",
-      handleTab,
-    );
-
-    return () => {
-      window.removeEventListener(
-        "sepulchria-character-sheet-tab",
-        handleTab,
-      );
-    };
+    void load();
   }, [load]);
 
   return (
@@ -143,12 +119,6 @@ export function CharacterAuditTrail({
           Permanent history of recorded material changes to this Character, newest first.
         </p>
       </div>
-
-      {state === "idle" ? (
-        <p className="py-6 text-sm text-[rgb(var(--sep-colour-8f8271))]">
-          Open this tab to load the Character Log.
-        </p>
-      ) : null}
 
       {state === "loading" ? (
         <p className="py-6 text-sm text-[rgb(var(--sep-colour-8f8271))]">

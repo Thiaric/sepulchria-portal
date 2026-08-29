@@ -36,7 +36,15 @@ export function LiveCharacterSheetRefresh({
       refreshTimerRef.current =
         window.setTimeout(() => {
           if (!disposed) {
-            router.refresh();
+            const currentUrl =
+              `${window.location.pathname}${window.location.search}${window.location.hash}`;
+
+            router.replace(
+              currentUrl,
+              {
+                scroll: false,
+              },
+            );
           }
         }, 250);
     }
@@ -148,10 +156,6 @@ export function LiveCharacterSheetRefresh({
       refreshWhenVisible,
     );
 
-    const fallbackInterval = window.setInterval(() => {
-      if (document.visibilityState === "visible") refreshSheet();
-    }, 5000);
-
     return () => {
       disposed = true;
 
@@ -163,8 +167,6 @@ export function LiveCharacterSheetRefresh({
         "visibilitychange",
         refreshWhenVisible,
       );
-
-      window.clearInterval(fallbackInterval);
 
       for (const channel of channels) {
         void supabase.removeChannel(channel);
