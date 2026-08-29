@@ -78,6 +78,7 @@ export function PortalCollapsibleColumns({
 
         <button
           type="button"
+          data-sep-interaction-ignore="true"
           onClick={toggleLeft}
           aria-label={
             leftCollapsed
@@ -107,6 +108,7 @@ export function PortalCollapsibleColumns({
 
         <button
           type="button"
+          data-sep-interaction-ignore="true"
           onClick={toggleRight}
           aria-label={
             rightCollapsed

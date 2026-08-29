@@ -152,8 +152,13 @@ export function BreezeLodgingsPanel({ rooms }: { rooms: BreezeLodgingStateRow[] 
   if (!rooms.length) return null;
 
   return (
-    <details className="group max-h-[72%] shrink-0 overflow-y-auto border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-120e0b))]">
-      <summary className="sticky top-0 z-30 flex cursor-pointer list-none items-center justify-between gap-3 bg-[rgb(var(--sep-colour-120e0b))] px-3 py-2 [&::-webkit-details-marker]:hidden">
+    <details
+      data-sep-interaction-ignore="true"
+      className="group max-h-[72%] shrink-0 overflow-y-auto border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-120e0b))]"
+    >
+      <summary
+        className="sticky top-0 z-30 flex min-h-[58px] w-full cursor-pointer list-none items-center justify-between gap-3 bg-[rgb(var(--sep-colour-120e0b))] px-3 py-2 [transform:none!important] [&::-webkit-details-marker]:hidden"
+      >
         <div>
           <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
             The Breeze Lodgings

@@ -17,6 +17,16 @@ import {
 } from "@/components/sepulchria/sep-ui";
 import { formatRemnants } from "@/lib/economy/currency";
 
+const LIGHT_CRAFTING_SKINS = new Set([
+  "vellum",
+  "aelari-dawn",
+  "birdfolks-sky",
+  "ashen",
+  "dwarven-deep",
+  "mortal-hearth",
+  "wolfs-moon",
+]);
+
 const CRAFTING_SKIN_ACCENTS: Record<string, string> = {
   sepulchria: "#b68b4f",
   vellum: "#5d4930",
@@ -192,6 +202,23 @@ export function CraftingWorkbench({
   const craftingAccent =
     CRAFTING_SKIN_ACCENTS[skin] ??
     CRAFTING_SKIN_ACCENTS.sepulchria;
+
+  const lightCraftingSkin =
+    LIGHT_CRAFTING_SKINS.has(skin);
+
+  const craftingLineAccent =
+    lightCraftingSkin
+      ? `color-mix(in srgb, ${craftingAccent} 38%, rgb(var(--sep-colour-4e402f)))`
+      : craftingAccent;
+
+  const craftingPanelSurface =
+    "color-mix(in srgb, rgb(var(--sep-colour-120d0a)) 88%, rgb(var(--sep-colour-4e402f)) 12%)";
+
+  const craftingCardSurface =
+    "color-mix(in srgb, rgb(var(--sep-colour-120d0a)) 82%, rgb(var(--sep-colour-4e402f)) 18%)";
+
+  const craftingBenchSurface =
+    "color-mix(in srgb, rgb(var(--sep-colour-0d0907)) 72%, rgb(var(--sep-colour-4e402f)) 28%)";
 
   const [isPending, startTransition] =
     useTransition();
@@ -443,8 +470,14 @@ export function CraftingWorkbench({
       <section
         className="relative flex min-h-0 flex-col overflow-hidden border bg-[rgb(var(--sep-colour-120d0a))]/95 xl:h-full"
         style={{
-          borderColor: `color-mix(in srgb, ${craftingAccent} 32%, transparent)`,
-          boxShadow: "0 12px 30px rgba(0,0,0,0.18)",
+          borderColor: `color-mix(in srgb, ${craftingLineAccent} 42%, transparent)`,
+          backgroundColor:
+            lightCraftingSkin
+              ? craftingPanelSurface
+              : undefined,
+          boxShadow: lightCraftingSkin
+            ? "0 12px 30px rgba(0,0,0,0.12), inset 0 0 18px rgba(0,0,0,0.035)"
+            : "0 12px 30px rgba(0,0,0,0.18)",
         }}
       >
         <div
@@ -488,11 +521,18 @@ export function CraftingWorkbench({
                   borderColor: active
                     ? craftingAccent
                     : `color-mix(in srgb, ${craftingAccent} 20%, transparent)`,
-                  backgroundColor: "transparent",
+                  backgroundColor:
+                    lightCraftingSkin
+                      ? active
+                        ? `color-mix(in srgb, ${craftingCardSurface} 88%, ${craftingLineAccent} 12%)`
+                        : craftingCardSurface
+                      : "transparent",
                   backdropFilter: "none",
                   boxShadow: active
-                    ? `inset 3px 0 0 ${craftingAccent}, 0 5px 14px rgba(0,0,0,0.16)`
-                    : "0 3px 10px rgba(0,0,0,0.11)",
+                    ? `inset 3px 0 0 ${craftingLineAccent}, 0 5px 14px rgba(0,0,0,0.16)`
+                    : lightCraftingSkin
+                      ? "0 3px 10px rgba(0,0,0,0.08), inset 0 0 10px rgba(0,0,0,0.025)"
+                      : "0 3px 10px rgba(0,0,0,0.11)",
                 }}
               >
                 <span aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 opacity-10"
@@ -528,8 +568,14 @@ export function CraftingWorkbench({
       <section
         className="relative flex min-h-0 flex-col overflow-hidden border bg-[rgb(var(--sep-colour-120d0a))]/95 xl:h-full"
         style={{
-          borderColor: `color-mix(in srgb, ${craftingAccent} 32%, transparent)`,
-          boxShadow: "0 12px 30px rgba(0,0,0,0.18)",
+          borderColor: `color-mix(in srgb, ${craftingLineAccent} 42%, transparent)`,
+          backgroundColor:
+            lightCraftingSkin
+              ? craftingPanelSurface
+              : undefined,
+          boxShadow: lightCraftingSkin
+            ? "0 12px 30px rgba(0,0,0,0.12), inset 0 0 18px rgba(0,0,0,0.035)"
+            : "0 12px 30px rgba(0,0,0,0.18)",
         }}
       >
         <div
@@ -576,14 +622,19 @@ export function CraftingWorkbench({
                         : usedByRecipe
                           ? `color-mix(in srgb, ${craftingAccent} 42%, transparent)`
                           : `color-mix(in srgb, ${craftingAccent} 16%, transparent)`,
-                    backgroundColor: "transparent",
+                    backgroundColor:
+                      lightCraftingSkin
+                        ? craftingCardSurface
+                        : "transparent",
                     opacity: usedByRecipe || draggedItemId === item.id ? 1 : 0.78,
                     boxShadow:
                       draggedItemId === item.id
-                        ? `0 0 16px color-mix(in srgb, ${craftingAccent} 16%, transparent)`
+                        ? `0 0 16px color-mix(in srgb, ${craftingLineAccent} 18%, transparent)`
                         : usedByRecipe
-                          ? `0 4px 13px rgba(0,0,0,0.16), inset 0 0 12px color-mix(in srgb, ${craftingAccent} 4%, transparent)`
-                          : "0 2px 8px rgba(0,0,0,0.10)",
+                          ? `0 4px 13px rgba(0,0,0,0.14), inset 0 0 12px color-mix(in srgb, ${craftingLineAccent} 6%, transparent)`
+                          : lightCraftingSkin
+                            ? "0 2px 8px rgba(0,0,0,0.07), inset 0 0 10px rgba(0,0,0,0.02)"
+                            : "0 2px 8px rgba(0,0,0,0.10)",
                   }}
                 >
                   <span aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 opacity-10"
@@ -623,8 +674,14 @@ export function CraftingWorkbench({
       <section
         className="relative flex min-h-0 flex-col overflow-hidden border bg-[rgb(var(--sep-colour-0d0907))] xl:h-full"
         style={{
-          borderColor: `color-mix(in srgb, ${craftingAccent} 42%, transparent)`,
-          boxShadow: `0 18px 42px rgba(0,0,0,0.24), 0 0 24px color-mix(in srgb, ${craftingAccent} 6%, transparent)`,
+          borderColor: `color-mix(in srgb, ${craftingLineAccent} 52%, transparent)`,
+          backgroundColor:
+            lightCraftingSkin
+              ? craftingPanelSurface
+              : undefined,
+          boxShadow: lightCraftingSkin
+            ? `0 18px 42px rgba(0,0,0,0.13), 0 0 24px color-mix(in srgb, ${craftingLineAccent} 7%, transparent)`
+            : `0 18px 42px rgba(0,0,0,0.24), 0 0 24px color-mix(in srgb, ${craftingAccent} 6%, transparent)`,
         }}
       >
         <div
@@ -671,25 +728,33 @@ export function CraftingWorkbench({
           <div
             className="relative flex min-h-[260px] flex-1 items-center justify-center overflow-auto border p-2 sm:p-3 xl:min-h-[280px] 2xl:min-h-[320px]"
             style={{
-              borderColor: `color-mix(in srgb, ${craftingAccent} 25%, transparent)`,
-              backgroundColor: "transparent",
+              borderColor: `color-mix(in srgb, ${craftingLineAccent} 38%, transparent)`,
+              backgroundColor:
+                lightCraftingSkin
+                  ? craftingBenchSurface
+                  : "transparent",
               backgroundImage: `url("/pattern/wooden.png")`,
               backgroundSize: "cover",
               backgroundPosition: "center",
               backgroundRepeat: "no-repeat",
-              boxShadow:
-                "inset 0 0 24px rgba(0,0,0,0.18)",
+              backgroundBlendMode:
+                lightCraftingSkin
+                  ? "multiply"
+                  : "normal",
+              boxShadow: lightCraftingSkin
+                ? `inset 0 0 34px color-mix(in srgb, ${craftingLineAccent} 16%, transparent), inset 0 0 24px rgba(0,0,0,0.12)`
+                : "inset 0 0 24px rgba(0,0,0,0.18)",
             }}
           >
             <div
               aria-hidden="true"
               className="pointer-events-none absolute left-1/2 top-1/2 h-[72%] aspect-square -translate-x-1/2 -translate-y-1/2 rotate-45 border"
-              style={{ borderColor: `color-mix(in srgb, ${craftingAccent} 13%, transparent)` }}
+              style={{ borderColor: `color-mix(in srgb, ${craftingLineAccent} ${lightCraftingSkin ? 30 : 13}%, transparent)` }}
             />
             <div
               aria-hidden="true"
               className="pointer-events-none absolute left-1/2 top-1/2 h-[52%] aspect-square -translate-x-1/2 -translate-y-1/2 rotate-45 border"
-              style={{ borderColor: `color-mix(in srgb, ${craftingAccent} 18%, transparent)` }}
+              style={{ borderColor: `color-mix(in srgb, ${craftingLineAccent} ${lightCraftingSkin ? 38 : 18}%, transparent)` }}
             />
 
             <div
@@ -704,18 +769,26 @@ export function CraftingWorkbench({
                   className="relative col-start-2 row-start-2 flex h-28 w-28 items-center justify-center border p-[4px] transition-all duration-300 sm:h-32 sm:w-32 2xl:h-36 2xl:w-36"
                   style={{
                     borderColor: allSlotsFilled
-                      ? craftingAccent
-                      : `color-mix(in srgb, ${craftingAccent} 38%, transparent)`,
-                    background: `linear-gradient(145deg, color-mix(in srgb, ${craftingAccent} ${allSlotsFilled ? 14 : 6}%, rgb(var(--sep-colour-17110d))), rgb(var(--sep-colour-080605)))`,
+                      ? craftingLineAccent
+                      : `color-mix(in srgb, ${craftingLineAccent} ${lightCraftingSkin ? 58 : 38}%, transparent)`,
+                    background: lightCraftingSkin
+                      ? `linear-gradient(145deg, color-mix(in srgb, ${craftingBenchSurface} 82%, ${craftingLineAccent} ${allSlotsFilled ? 18 : 10}%), color-mix(in srgb, ${craftingBenchSurface} 90%, rgb(var(--sep-colour-4e402f)) 10%))`
+                      : `linear-gradient(145deg, color-mix(in srgb, ${craftingAccent} ${allSlotsFilled ? 14 : 6}%, rgb(var(--sep-colour-17110d))), rgb(var(--sep-colour-080605)))`,
                     boxShadow: allSlotsFilled
-                      ? `0 0 30px color-mix(in srgb, ${craftingAccent} 22%, transparent), inset 0 0 22px color-mix(in srgb, ${craftingAccent} 10%, transparent)`
-                      : "inset 0 0 24px rgba(0,0,0,0.55)",
+                      ? lightCraftingSkin
+                        ? `0 0 30px color-mix(in srgb, ${craftingLineAccent} 24%, transparent), inset 0 0 24px color-mix(in srgb, ${craftingLineAccent} 14%, transparent), inset 0 0 34px rgba(0,0,0,0.10)`
+                        : `0 0 30px color-mix(in srgb, ${craftingAccent} 22%, transparent), inset 0 0 22px color-mix(in srgb, ${craftingAccent} 10%, transparent)`
+                      : lightCraftingSkin
+                        ? `inset 0 0 28px rgba(0,0,0,0.16), 0 4px 16px rgba(0,0,0,0.08)`
+                        : "inset 0 0 24px rgba(0,0,0,0.55)",
                   }}
                 >
                   <div
                     aria-hidden="true"
                     className="absolute inset-3 rotate-45 border"
-                    style={{ borderColor: `color-mix(in srgb, ${craftingAccent} 24%, transparent)` }}
+                    style={{
+                      borderColor: `color-mix(in srgb, ${lightCraftingSkin ? craftingLineAccent : craftingAccent} ${lightCraftingSkin ? 42 : 24}%, transparent)`,
+                    }}
                   />
                   <div className="relative flex flex-col items-center text-center">
                     <ItemImage
@@ -771,10 +844,15 @@ export function CraftingWorkbench({
                         : draggingMatch
                           ? `color-mix(in srgb, ${craftingAccent} 72%, transparent)`
                           : `color-mix(in srgb, ${craftingAccent} 25%, transparent)`,
-                      backgroundColor: "transparent",
+                      backgroundColor:
+                        lightCraftingSkin
+                          ? craftingCardSurface
+                          : "transparent",
                       boxShadow: filled
-                        ? `0 0 18px color-mix(in srgb, ${craftingAccent} 13%, transparent), inset 0 0 14px color-mix(in srgb, ${craftingAccent} 6%, transparent)`
-                        : "none",
+                        ? `0 0 18px color-mix(in srgb, ${craftingLineAccent} 16%, transparent), inset 0 0 14px color-mix(in srgb, ${craftingLineAccent} 8%, transparent)`
+                        : lightCraftingSkin
+                          ? "0 3px 10px rgba(0,0,0,0.07), inset 0 0 10px rgba(0,0,0,0.025)"
+                          : "none",
                     }}
                   >
                     <span aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 opacity-10"

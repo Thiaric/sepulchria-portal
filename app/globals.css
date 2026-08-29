@@ -19810,3 +19810,251 @@ body.portal-skin-scope .font-serif {
   border-color: rgb(var(--sep-colour-b78b50)) !important;
   background: rgb(var(--sep-colour-4a331f)) !important;
 }
+
+/* =========================================================
+   SEPULCHRIA LIGHT SKIN SURFACE HIERARCHY - GLOBALS V1
+   ========================================================= */
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="ashen"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) {
+  --sep-light-depth-ink:
+    rgb(var(--sep-colour-4e402f));
+
+  --sep-light-surface-panel:
+    color-mix(
+      in srgb,
+      rgb(var(--sep-colour-15100d)) 93%,
+      var(--sep-light-depth-ink) 7%
+    );
+
+  --sep-light-surface-card:
+    color-mix(
+      in srgb,
+      rgb(var(--sep-colour-100c09)) 86%,
+      var(--sep-light-depth-ink) 14%
+    );
+
+  --sep-light-surface-raised:
+    color-mix(
+      in srgb,
+      rgb(var(--sep-colour-17110d)) 80%,
+      var(--sep-light-depth-ink) 20%
+    );
+
+  --sep-light-surface-recessed:
+    color-mix(
+      in srgb,
+      rgb(var(--sep-colour-0d0907)) 74%,
+      var(--sep-light-depth-ink) 26%
+    );
+
+  --sep-light-surface-chat:
+    color-mix(
+      in srgb,
+      rgb(var(--sep-colour-15100d)) 89%,
+      var(--sep-light-depth-ink) 11%
+    );
+
+  --sep-light-edge:
+    color-mix(
+      in srgb,
+      rgb(var(--sep-colour-60482e)) 82%,
+      var(--sep-light-depth-ink) 18%
+    );
+}
+
+
+/* Large containing panels / sections. */
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="ashen"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+)
+[data-portal-centre-host]
+[class*="bg-[rgb(var(--sep-colour-15100d))]"] {
+  background-color:
+    var(--sep-light-surface-panel) !important;
+}
+
+
+/* Ordinary cards / forum rows / PM cards / nested content. */
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="ashen"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+)
+[data-portal-centre-host]
+[class*="bg-[rgb(var(--sep-colour-100c09))]"] {
+  background-color:
+    var(--sep-light-surface-card) !important;
+}
+
+
+/* Raised controls / stronger rows. */
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="ashen"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+)
+[data-portal-centre-host]
+:is(
+  [class*="bg-[rgb(var(--sep-colour-17110d))]"],
+  [class*="bg-[rgb(var(--sep-colour-17120f))]"],
+  [class*="bg-[rgb(var(--sep-colour-18110d))]"],
+  [class*="bg-[rgb(var(--sep-colour-21170f))]"],
+  [class*="bg-[rgb(var(--sep-colour-21190f))]"]
+) {
+  background-color:
+    var(--sep-light-surface-raised) !important;
+}
+
+
+/* Recessed / inner surfaces. */
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="ashen"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+)
+[data-portal-centre-host]
+:is(
+  [class*="bg-[rgb(var(--sep-colour-090705))]"],
+  [class*="bg-[rgb(var(--sep-colour-0d0907))]"],
+  [class*="bg-[rgb(var(--sep-colour-0d0a08))]"]
+) {
+  background-color:
+    var(--sep-light-surface-recessed) !important;
+}
+
+
+/* Stronger generic card/control surfaces. */
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="ashen"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+)
+[data-portal-centre-host]
+:is(
+  [class*="bg-[rgb(var(--sep-colour-261b12))]"],
+  [class*="bg-[rgb(var(--sep-colour-2a1d12))]"],
+  [class*="bg-[rgb(var(--sep-colour-2a1d13))]"],
+  [class*="bg-[rgb(var(--sep-colour-2b1d12))]"],
+  [class*="bg-[rgb(var(--sep-colour-332317))]"],
+  [class*="bg-[rgb(var(--sep-colour-332719))]"],
+  [class*="bg-[rgb(var(--sep-colour-3b2919))]"]
+) {
+  background-color:
+    var(--sep-light-surface-raised) !important;
+}
+
+
+/* Normal location-chat rows have no bg class, so give them one only here. */
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="ashen"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+)
+#room-chronicle
+article:not([class*="bg-"]) {
+  background-color:
+    var(--sep-light-surface-chat);
+}
+
+
+/* Strengthen only generic Sepulchria border-token families. */
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="ashen"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+)
+[data-portal-centre-host]
+:is(
+  [class*="border-[rgb(var(--sep-colour-59432c))]"],
+  [class*="border-[rgb(var(--sep-colour-60482e))]"],
+  [class*="border-[rgb(var(--sep-colour-6a5032))]"]
+) {
+  border-color:
+    var(--sep-light-edge) !important;
+}
+
+
+/* Dividers used by chat/forum chronology. */
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="ashen"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+)
+[data-portal-centre-host]
+[class*="divide-[rgb(var(--sep-colour-4f3b28))]"]
+> :not([hidden])
+~ :not([hidden]) {
+  border-color:
+    var(--sep-light-edge) !important;
+}
+
+
+/* Tiny physical separation for framed central surfaces. */
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="ashen"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+)
+[data-portal-centre-host]
+:is(section, article, fieldset, details)[class~="border"] {
+  box-shadow:
+    0 1px 0
+      color-mix(
+        in srgb,
+        rgb(var(--sep-colour-e6cfaa)) 10%,
+        transparent
+      ),
+    0 2px 5px
+      color-mix(
+        in srgb,
+        var(--sep-light-depth-ink) 10%,
+        transparent
+      );
+}
+

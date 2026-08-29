@@ -179,7 +179,7 @@
 [data-portal-shell]
   :is(section, article, aside, details, fieldset, div)[class~="border"]:not(
     .portal-left-shell *
-  ):not(.portal-right-shell *) {
+  ):not(.portal-right-shell *):not(.shape-school-card) {
   border-width: 1px !important;
   border-style: solid !important;
   border-color: var(--sep-unified-frame-border) !important;
@@ -867,3 +867,235 @@ body.portal-skin-scope
       black
     ) !important;
 }
+
+/* ==================================================================
+   SHAPE SCHOOL IDENTITY RESTORE
+   ==================================================================
+   The original ambient effects still live in globals.css.
+   This block restores the school-specific frame + inset glow after the
+   portal-wide unification layer, so generic frame rules cannot flatten
+   Shape cards again.
+   ================================================================== */
+
+[data-portal-shell] .shape-school-card {
+  border-width: 1px !important;
+  border-style: solid !important;
+}
+
+/* Embercraft */
+[data-portal-shell] .shape-school-embercraft {
+  border-color: rgba(221, 103, 48, 0.24) !important;
+  box-shadow:
+    inset 0 0 8px rgba(221, 103, 48, 0.055) !important;
+}
+
+[data-portal-shell] .shape-school-embercraft:hover {
+  border-color: rgba(255, 136, 76, 0.35) !important;
+  box-shadow:
+    inset 0 0 11px rgba(255, 116, 53, 0.085) !important;
+}
+
+/* Vitalcraft */
+[data-portal-shell] .shape-school-vitalcraft {
+  border-color: rgba(132, 176, 76, 0.24) !important;
+  box-shadow:
+    inset 0 0 8px rgba(116, 164, 67, 0.05) !important;
+}
+
+[data-portal-shell] .shape-school-vitalcraft:hover {
+  border-color: rgba(166, 207, 103, 0.35) !important;
+  box-shadow:
+    inset 0 0 11px rgba(133, 183, 79, 0.08) !important;
+}
+
+/* Mindcraft */
+[data-portal-shell] .shape-school-mindcraft {
+  border-color: rgba(147, 112, 210, 0.25) !important;
+  box-shadow:
+    inset 0 0 8px rgba(139, 99, 205, 0.055) !important;
+}
+
+[data-portal-shell] .shape-school-mindcraft:hover {
+  border-color: rgba(178, 141, 239, 0.35) !important;
+  box-shadow:
+    inset 0 0 11px rgba(157, 113, 225, 0.085) !important;
+}
+
+/* Veilcraft */
+[data-portal-shell] .shape-school-veilcraft {
+  border-color: rgba(122, 84, 151, 0.25) !important;
+  box-shadow:
+    inset 0 0 8px rgba(106, 68, 135, 0.055) !important;
+}
+
+[data-portal-shell] .shape-school-veilcraft:hover {
+  border-color: rgba(155, 108, 187, 0.35) !important;
+  box-shadow:
+    inset 0 0 11px rgba(135, 86, 170, 0.085) !important;
+}
+
+/* Waycraft */
+[data-portal-shell] .shape-school-waycraft {
+  border-color: rgba(70, 170, 177, 0.25) !important;
+  box-shadow:
+    inset 0 0 8px rgba(59, 151, 158, 0.055) !important;
+}
+
+[data-portal-shell] .shape-school-waycraft:hover {
+  border-color: rgba(92, 205, 211, 0.35) !important;
+  box-shadow:
+    inset 0 0 11px rgba(67, 183, 190, 0.085) !important;
+}
+
+/* Bondcraft */
+[data-portal-shell] .shape-school-bondcraft {
+  border-color: rgba(107, 145, 190, 0.25) !important;
+  box-shadow:
+    inset 0 0 8px rgba(91, 130, 176, 0.05) !important;
+}
+
+[data-portal-shell] .shape-school-bondcraft:hover {
+  border-color: rgba(139, 180, 222, 0.35) !important;
+  box-shadow:
+    inset 0 0 11px rgba(110, 157, 204, 0.08) !important;
+}
+
+/* Runecraft */
+[data-portal-shell] .shape-school-runecraft {
+  border-color: rgba(211, 159, 57, 0.26) !important;
+  box-shadow:
+    inset 0 0 8px rgba(192, 137, 37, 0.055) !important;
+}
+
+[data-portal-shell] .shape-school-runecraft:hover {
+  border-color: rgba(241, 188, 79, 0.36) !important;
+  box-shadow:
+    inset 0 0 11px rgba(222, 160, 49, 0.085) !important;
+}
+
+/* Default / unknown school */
+[data-portal-shell] .shape-school-default {
+  border-color: rgba(141, 109, 62, 0.20) !important;
+  box-shadow:
+    inset 0 0 6px rgba(120, 91, 50, 0.04) !important;
+}
+
+
+/* --------------------------------------------------------------
+   LIGHT SKINS
+   Original darker school treatment for pale backgrounds.
+   Includes "ashen", the live slug behind Birdfolks' Sky.
+   -------------------------------------------------------------- */
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="ashen"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-embercraft {
+  border-color: rgba(156, 59, 24, 0.30) !important;
+  box-shadow:
+    inset 0 0 8px rgba(156, 59, 24, 0.07) !important;
+}
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="ashen"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-embercraft:hover {
+  border-color: rgba(156, 59, 24, 0.42) !important;
+  box-shadow:
+    inset 0 0 11px rgba(156, 59, 24, 0.11) !important;
+}
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="ashen"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-vitalcraft {
+  border-color: rgba(70, 112, 36, 0.30) !important;
+  box-shadow:
+    inset 0 0 8px rgba(70, 112, 36, 0.065) !important;
+}
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="ashen"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-mindcraft {
+  border-color: rgba(91, 61, 151, 0.31) !important;
+  box-shadow:
+    inset 0 0 8px rgba(91, 61, 151, 0.07) !important;
+}
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="ashen"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-veilcraft {
+  border-color: rgba(84, 53, 111, 0.31) !important;
+  box-shadow:
+    inset 0 0 8px rgba(84, 53, 111, 0.07) !important;
+}
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="ashen"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-waycraft {
+  border-color: rgba(31, 105, 112, 0.32) !important;
+  box-shadow:
+    inset 0 0 8px rgba(31, 105, 112, 0.07) !important;
+}
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="ashen"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-bondcraft {
+  border-color: rgba(54, 91, 136, 0.31) !important;
+  box-shadow:
+    inset 0 0 8px rgba(54, 91, 136, 0.065) !important;
+}
+
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="ashen"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+) .shape-school-runecraft {
+  border-color: rgba(139, 91, 18, 0.32) !important;
+  box-shadow:
+    inset 0 0 8px rgba(139, 91, 18, 0.07) !important;
+}
+
