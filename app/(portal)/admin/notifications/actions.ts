@@ -48,22 +48,74 @@ function utc(value: string | null, label: string, required = false) {
 function audience(formData: FormData) {
   const targetType = String(text(formData, "targetType"));
 
-  if (!["global", "staff", "user", "character"].includes(targetType)) {
+  if (
+    ![
+      "global",
+      "staff",
+      "user",
+      "character",
+      "ancestry",
+      "association",
+      "order",
+    ].includes(targetType)
+  ) {
     throw new Error("Audience is invalid.");
   }
 
-  if (targetType === "global" || targetType === "staff") {
-    return { targetType, targetId: null };
+  if (
+    targetType === "global" ||
+    targetType === "staff"
+  ) {
+    return {
+      targetType,
+      targetId: null,
+    };
   }
 
-  const raw =
-    targetType === "character"
-      ? text(formData, "characterTargetId", false)
-      : text(formData, "userTargetId", false);
+  const fields: Record<
+    string,
+    {
+      field: string;
+      label: string;
+    }
+  > = {
+    character: {
+      field: "characterTargetId",
+      label: "Character",
+    },
+    ancestry: {
+      field: "ancestryTargetId",
+      label: "Ancestry",
+    },
+    association: {
+      field: "associationTargetId",
+      label: "Association",
+    },
+    order: {
+      field: "orderTargetId",
+      label: "Order",
+    },
+    user: {
+      field: "userTargetId",
+      label: "User",
+    },
+  };
+
+  const definition =
+    fields[targetType];
+
+  const raw = text(
+    formData,
+    definition.field,
+    false,
+  );
 
   return {
     targetType,
-    targetId: uuid(raw, targetType === "character" ? "Character" : "User"),
+    targetId: uuid(
+      raw,
+      definition.label,
+    ),
   };
 }
 

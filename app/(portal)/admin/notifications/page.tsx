@@ -1,6 +1,7 @@
 import { AdminActionForm } from "@/components/admin/admin-action-form";
 import { requireAdminSection } from "@/lib/auth/require-staff";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { AdminNotificationAudienceFields } from "@/components/notifications/admin-notification-audience-fields";
 
 import {
   createNotification,
@@ -38,6 +39,11 @@ type CharacterOption = {
   display_name: string;
 };
 
+type NamedOption = {
+  id: string;
+  name: string;
+};
+
 function dt(value: string | null) {
   if (!value) return "";
   const date = new Date(value);
@@ -53,9 +59,15 @@ function expiryDefault() {
 function Fields({
   notification,
   characters,
+  ancestries,
+  associations,
+  orders,
 }: {
   notification?: NotificationRow;
   characters: CharacterOption[];
+  ancestries: NamedOption[];
+  associations: NamedOption[];
+  orders: NamedOption[];
 }) {
   const target = notification?.notification_targets?.[0] ?? {
     target_type: "global",
@@ -114,44 +126,14 @@ function Fields({
         />
       </label>
 
-      <div className="grid gap-3 md:grid-cols-3">
-        <label>
-          <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">Audience</span>
-          <select
-            name="targetType"
-            defaultValue={target.target_type}
-            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))]"
-          >
-            <option value="global">Everyone</option>
-            <option value="staff">Staff only</option>
-            <option value="character">Specific character</option>
-            <option value="user">Specific user ID</option>
-          </select>
-        </label>
-
-        <label>
-          <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">Character target</span>
-          <select
-            name="characterTargetId"
-            defaultValue={target.target_type === "character" ? target.target_id ?? "" : ""}
-            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))]"
-          >
-            <option value="">None</option>
-            {characters.map((character) => (
-              <option key={character.id} value={character.id}>{character.display_name}</option>
-            ))}
-          </select>
-        </label>
-
-        <label>
-          <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">User UUID</span>
-          <input
-            name="userTargetId"
-            defaultValue={target.target_type === "user" ? target.target_id ?? "" : ""}
-            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))]"
-          />
-        </label>
-      </div>
+      <AdminNotificationAudienceFields
+        initialType={target.target_type}
+        initialTargetId={target.target_id}
+        characters={characters}
+        ancestries={ancestries}
+        associations={associations}
+        orders={orders}
+      />
 
       <div className="grid gap-3 md:grid-cols-3">
         <label>
@@ -205,16 +187,47 @@ export default async function NotificationsAdminPage() {
   await requireAdminSection("notifications");
   const admin = createAdminClient();
 
-  const [notificationsResult, charactersResult] = await Promise.all([
+  const [
+    notificationsResult,
+    charactersResult,
+    ancestriesResult,
+    associationsResult,
+    ordersResult,
+  ] = await Promise.all([
     admin
       .from("notifications")
       .select("id, type, title, body, href, starts_at, expires_at, expires_game_at, source_type, source_id, source_trigger, is_automatic, staff_overridden, is_active, created_at, notification_targets(target_type, target_id)")
-      .order("created_at", { ascending: false }),
+      .or(
+        "is_automatic.eq.false,source_type.eq.event",
+      )
+      .order("created_at", {
+        ascending: false,
+      }),
     admin
       .from("characters")
       .select("id, display_name")
       .eq("is_system", false)
-      .order("display_name", { ascending: true }),
+      .order("display_name", {
+        ascending: true,
+      }),
+    admin
+      .from("races")
+      .select("id, name")
+      .order("name", {
+        ascending: true,
+      }),
+    admin
+      .from("associations")
+      .select("id, name")
+      .order("name", {
+        ascending: true,
+      }),
+    admin
+      .from("orders")
+      .select("id, name")
+      .order("name", {
+        ascending: true,
+      }),
   ]);
 
   if (notificationsResult.error) {
@@ -225,8 +238,23 @@ export default async function NotificationsAdminPage() {
     throw new Error(`Unable to load characters: ${charactersResult.error.message}`);
   }
 
+  if (ancestriesResult.error) {
+    throw new Error(`Unable to load Ancestries: ${ancestriesResult.error.message}`);
+  }
+
+  if (associationsResult.error) {
+    throw new Error(`Unable to load Associations: ${associationsResult.error.message}`);
+  }
+
+  if (ordersResult.error) {
+    throw new Error(`Unable to load Orders: ${ordersResult.error.message}`);
+  }
+
   const notifications = (notificationsResult.data ?? []) as NotificationRow[];
   const characters = (charactersResult.data ?? []) as CharacterOption[];
+  const ancestries = (ancestriesResult.data ?? []) as NamedOption[];
+  const associations = (associationsResult.data ?? []) as NamedOption[];
+  const orders = (ordersResult.data ?? []) as NamedOption[];
 
   return (
     <main className="mx-auto max-w-6xl space-y-5 p-4 sm:p-5 lg:p-6">
@@ -238,7 +266,12 @@ export default async function NotificationsAdminPage() {
         <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dec69a))]">Create Notification</h2>
 
         <AdminActionForm action={createNotification} className="mt-5">
-          <Fields characters={characters} />
+          <Fields
+            characters={characters}
+            ancestries={ancestries}
+            associations={associations}
+            orders={orders}
+          />
           <div className="mt-5 flex justify-end">
             <button type="submit" className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-efd6a8))]">
               Create Notification
@@ -248,7 +281,12 @@ export default async function NotificationsAdminPage() {
       </section>
 
       <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5">
-        <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-dec69a))]">All Notifications · {notifications.length}</h2>
+        <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-dec69a))]">
+          Managed Notifications · {notifications.length}
+        </h2>
+        <p className="mt-1 text-[9px] text-[rgb(var(--sep-colour-756958))]">
+          Manual notices and automatic Event notices only. Player-specific automatic activity remains out of this catalogue.
+        </p>
 
         <div className="mt-4 space-y-3">
           {notifications.map((notification) => (
@@ -287,7 +325,13 @@ export default async function NotificationsAdminPage() {
               <div className="border-t border-[rgb(var(--sep-colour-59432c))]/35 p-4">
                 <AdminActionForm action={updateNotification}>
                   <input type="hidden" name="notificationId" value={notification.id} />
-                  <Fields notification={notification} characters={characters} />
+                  <Fields
+                    notification={notification}
+                    characters={characters}
+                    ancestries={ancestries}
+                    associations={associations}
+                    orders={orders}
+                  />
                   <div className="mt-4 flex justify-end">
                     <button type="submit" className="border border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-241a12))] px-4 py-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-efd4a0))]">Save Changes</button>
                   </div>

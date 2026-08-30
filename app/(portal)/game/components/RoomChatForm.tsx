@@ -314,7 +314,6 @@ export default function RoomChatForm({
   const [
     messageState,
     messageAction,
-    messagePending,
   ] = useActionState(
     sendRoomMessage,
     initialState,
@@ -655,8 +654,9 @@ const visibleSpellingIssues =
       return;
     }
 
-    setValue("");
-    setWhisperRecipientId("");
+    // The sent text was already cleared optimistically on submit.
+    // Do not clear again here: the player may already be writing
+    // their next action while the previous server request finishes.
     setMessageNonce(
       crypto.randomUUID(),
     );
@@ -1196,7 +1196,6 @@ function ignoreSpellingWord() {
               ref={textareaRef}
               name="message"
               required
-              disabled={messagePending}
               maxLength={CHAT_MAX_LENGTH}
               value={value}
               lang="en-GB"
@@ -1414,7 +1413,6 @@ function ignoreSpellingWord() {
               ref={textareaRef}
               name="message"
               required
-              disabled={messagePending}
               maxLength={CHAT_MAX_LENGTH}
               value={value}
               onKeyDown={(event) => {
