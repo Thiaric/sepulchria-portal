@@ -38,6 +38,10 @@ import {
   type BreezeLodgingStateRow,
 } from "./components/BreezeLodgingsPanel";
 import {
+  GatheringPanel,
+  type GatheringStateRow,
+} from "./components/GatheringPanel";
+import {
   BreezeLodgingGuestsPanel,
 } from "./components/BreezeLodgingGuestsPanel";
 import {
@@ -332,6 +336,11 @@ async function GameContent() {
       character.id,
     );
 
+  const gatheringPromise =
+    supabase.rpc(
+      "get_my_gathering_state",
+    );
+
   const oddJobsPromise =
     room.slug === "odd-jobs-bureau"
       ? supabase.rpc(
@@ -384,6 +393,7 @@ async function GameContent() {
     presentResult,
     staffSession,
     headquartersManageData,
+    gatheringResult,
     oddJobsResult,
     houseOfChancesResult,
     breezeLodgingsResult,
@@ -397,6 +407,7 @@ async function GameContent() {
     presentResultPromise,
     staffSessionPromise,
     headquartersManageDataPromise,
+    gatheringPromise,
     oddJobsPromise,
     houseOfChancesPromise,
     breezeLodgingsPromise,
@@ -982,6 +993,22 @@ async function GameContent() {
     staffSession !== null;
 
   const {
+    data: gatheringData,
+    error: gatheringError,
+  } = gatheringResult;
+
+  if (gatheringError) {
+    throw new Error(
+      `Unable to load Gathering: ${gatheringError.message}`,
+    );
+  }
+
+  const gatheringState =
+    ((gatheringData ?? [])[0] ?? null) as
+      | GatheringStateRow
+      | null;
+
+  const {
     data: oddJobsData,
     error: oddJobsError,
   } = oddJobsResult;
@@ -1125,6 +1152,12 @@ async function GameContent() {
     data-sep-interaction-fixed="true"
     className="flex min-h-0 flex-1 flex-col overflow-visible border border-[rgb(var(--sep-colour-6a5032))]/50 bg-[rgb(var(--sep-colour-17110d))] lg:overflow-hidden"
   >
+
+    {gatheringState ? (
+      <div data-sep-interaction-ignore="true">
+        <GatheringPanel state={gatheringState} />
+      </div>
+    ) : null}
 
     {room.slug === "house-of-chances" && houseOfChancesState ? (
       <div data-sep-interaction-ignore="true">

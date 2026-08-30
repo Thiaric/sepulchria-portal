@@ -585,7 +585,7 @@ export function ForumSidebarMenu({
           
 
           <ForumTopicGroup
-            label="Favourite Topics"
+            label="Favourites"
             count={favourites.length}
             open={favouritesOpen}
             onToggle={() =>
