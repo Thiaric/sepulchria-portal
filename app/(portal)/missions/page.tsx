@@ -5,6 +5,9 @@ import {
   claimDailyMilestone,
   claimDailyMission,
 } from "./actions";
+import {
+  MissionsLiveSync,
+} from "@/components/missions/missions-live-sync";
 
 export const dynamic = "force-dynamic";
 
@@ -85,6 +88,7 @@ function ProgressBeads({
         {Array.from({ length: segments }).map((_, index) => (
           <span
             key={index}
+            data-progress-bead
             className={[
               "h-2.5 min-w-[5px] flex-1 border",
               index < filled
@@ -95,7 +99,10 @@ function ProgressBeads({
         ))}
       </div>
 
-      <span className="shrink-0 font-mono text-[11px] tabular-nums text-[rgb(var(--sep-colour-d3bd97))]">
+      <span
+        data-progress-count
+        className="shrink-0 font-mono text-[11px] tabular-nums text-[rgb(var(--sep-colour-d3bd97))]"
+      >
         {Math.min(progress, safeTarget)} / {safeTarget}
       </span>
     </div>
@@ -171,6 +178,7 @@ export default async function MissionsPage() {
 
   return (
     <div className="mx-auto w-full max-w-6xl px-5 py-7 sm:px-7 lg:px-9">
+      <MissionsLiveSync dayId={String(dayId)} />
       <header className="border-b border-[rgb(var(--sep-colour-60482e))]/45 pb-5">
         <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8b704e))]">
           Daily activity
@@ -194,7 +202,10 @@ export default async function MissionsPage() {
               A Day&apos;s Progress
             </h2>
           </div>
-          <p className="text-xs text-[rgb(var(--sep-colour-9e8b70))]">
+          <p
+            data-mission-summary
+            className="text-xs text-[rgb(var(--sep-colour-9e8b70))]"
+          >
             {completedCount} / {countableTotal} missions complete
           </p>
         </div>
@@ -209,6 +220,7 @@ export default async function MissionsPage() {
             return (
               <article
                 key={milestone.id}
+                data-milestone-card={milestone.milestone_key}
                 className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4"
               >
                 <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
@@ -237,6 +249,7 @@ export default async function MissionsPage() {
                 <form action={claimDailyMilestone} className="mt-3">
                   <input type="hidden" name="claim_id" value={milestone.id} />
                   <button
+                    data-milestone-claim
                     type="submit"
                     disabled={!complete || milestone.claimed_at !== null}
                     className="w-full border border-[rgb(var(--sep-colour-765937))]/65 bg-[rgb(var(--sep-colour-21170f))] px-3 py-2 text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d9c092))] transition-colors enabled:hover:border-[rgb(var(--sep-colour-a07945))] enabled:hover:bg-[rgb(var(--sep-colour-302116))] disabled:cursor-not-allowed disabled:opacity-45"
@@ -284,25 +297,35 @@ export default async function MissionsPage() {
                     <article
                       key={mission.id}
                       id={`mission-${mission.code_snapshot}`}
+                      data-mission-card={mission.code_snapshot}
                       className="scroll-mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4"
                     >
                       <div className="flex items-start justify-between gap-4">
                         <div className="min-w-0">
                           <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
                             {mission.difficulty_snapshot}
-                            {!mission.counts_toward_milestones
-                              ? " · does not count toward milestones"
-                              : ""}
                           </p>
                           <h3 className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-dac49a))]">
                             {mission.name_snapshot}
                           </h3>
                         </div>
-                        {complete ? (
-                          <span className="shrink-0 border border-[rgb(var(--sep-colour-80613b))]/60 px-2 py-1 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d7bd8f))]">
+                        <div className="flex shrink-0 flex-col items-end gap-1.5">
+                          <span
+                            data-mission-excluded
+                            hidden={mission.counts_toward_milestones}
+                            className="border border-red-700/70 bg-red-950/45 px-2.5 py-1 text-[8px] uppercase tracking-[0.14em] text-red-300"
+                          >
+                            Does not count toward milestones
+                          </span>
+
+                          <span
+                            data-mission-complete
+                            hidden={!complete}
+                            className="border border-[rgb(var(--sep-colour-80613b))]/60 px-2 py-1 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d7bd8f))]"
+                          >
                             Complete
                           </span>
-                        ) : null}
+                        </div>
                       </div>
 
                       <p className="mt-2 text-xs leading-5 text-[rgb(var(--sep-colour-a3957d))]">
@@ -329,6 +352,7 @@ export default async function MissionsPage() {
                             value={mission.id}
                           />
                           <button
+                            data-mission-claim
                             type="submit"
                             disabled={!complete || mission.claimed_at !== null}
                             className="border border-[rgb(var(--sep-colour-765937))]/65 bg-[rgb(var(--sep-colour-21170f))] px-3 py-2 text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d9c092))] transition-colors enabled:hover:border-[rgb(var(--sep-colour-a07945))] enabled:hover:bg-[rgb(var(--sep-colour-302116))] disabled:cursor-not-allowed disabled:opacity-45"

@@ -6,6 +6,9 @@ import {
   updateDailyMilestoneDefinition,
   updateDailyMissionDefinition,
 } from "./actions";
+import {
+  AdminMissionForm,
+} from "@/components/admin/admin-mission-form";
 
 export const dynamic = "force-dynamic";
 
@@ -62,11 +65,11 @@ export default async function AdminMissionsPage() {
         </div>
 
         {missions.map((mission) => (
-          <form
+          <AdminMissionForm
             key={mission.id}
             id={`mission-${mission.code}`}
             action={updateDailyMissionDefinition}
-            className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4"
+            className="scroll-mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4"
           >
             <input type="hidden" name="id" value={mission.id} />
 
@@ -127,15 +130,13 @@ export default async function AdminMissionsPage() {
                 Active
               </label>
 
-              <button type="submit" className="border border-[rgb(var(--sep-colour-765937))]/65 bg-[rgb(var(--sep-colour-21170f))] px-4 py-2 text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d9c092))] transition-colors hover:border-[rgb(var(--sep-colour-a07945))] hover:bg-[rgb(var(--sep-colour-302116))]">
-                Save
-              </button>
+              <div aria-hidden="true" />
             </div>
 
             <p className="mt-2 text-[10px] text-[rgb(var(--sep-colour-746856))]">
               {mission.family} · {mission.objective_type} · {mission.code}
             </p>
-          </form>
+          </AdminMissionForm>
         ))}
       </section>
 
@@ -151,11 +152,11 @@ export default async function AdminMissionsPage() {
 
         <div className="grid gap-3 lg:grid-cols-2">
           {milestones.map((milestone) => (
-            <form
+            <AdminMissionForm
               key={milestone.milestone_key}
               id={`milestone-${milestone.milestone_key}`}
               action={updateDailyMilestoneDefinition}
-              className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4"
+              className="scroll-mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4"
             >
               <input type="hidden" name="milestone_key" value={milestone.milestone_key} />
 
@@ -195,11 +196,9 @@ export default async function AdminMissionsPage() {
                   Active
                 </label>
 
-                <button type="submit" className="border border-[rgb(var(--sep-colour-765937))]/65 bg-[rgb(var(--sep-colour-21170f))] px-4 py-2 text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d9c092))] transition-colors hover:border-[rgb(var(--sep-colour-a07945))] hover:bg-[rgb(var(--sep-colour-302116))]">
-                  Save
-                </button>
+                <div aria-hidden="true" />
               </div>
-            </form>
+            </AdminMissionForm>
           ))}
         </div>
       </section>
