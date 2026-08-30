@@ -12,6 +12,9 @@ import {
 import {
   createClient,
 } from "@/lib/supabase/server";
+import {
+  enrichCharacterAuditItemNames,
+} from "@/lib/audit/enrich-character-audit-items";
 
 type AuditRow = {
   id: string;
@@ -344,8 +347,13 @@ export async function GET(
   const rawRows =
     (data ?? []) as AuditRow[];
 
+  const enrichedRows =
+    await enrichCharacterAuditItemNames(
+      rawRows,
+    );
+
   const rows =
-    rawRows
+    enrichedRows
       .filter((row) => {
         const visible =
           cleanFields(
@@ -380,6 +388,10 @@ export async function GET(
           row.entity_type,
         entity_id:
           row.entity_id,
+        operation:
+          row.operation,
+        item_name:
+          row.item_name,
         actor_type:
           row.actor_type,
         actor_label:

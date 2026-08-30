@@ -4,6 +4,25 @@ import { revalidatePath } from "next/cache";
 import { requireAdminSection } from "@/lib/auth/require-staff";
 import { createAdminClient } from "@/lib/supabase/admin";
 
+export type GatheringAdminActionResult = {
+  ok: boolean;
+  message: string;
+};
+
+function ok(message: string): GatheringAdminActionResult {
+  return { ok: true, message };
+}
+
+function fail(error: unknown): GatheringAdminActionResult {
+  return {
+    ok: false,
+    message:
+      error instanceof Error
+        ? error.message
+        : "The Gathering action could not be completed.",
+  };
+}
+
 function text(formData: FormData, key: string) {
   const value = formData.get(key);
   return typeof value === "string" ? value.trim() : "";
@@ -20,18 +39,18 @@ function uuid(value: string, label: string) {
   return value;
 }
 
-function integer(formData: FormData, key: string, min: number, max: number) {
+function integer(formData: FormData, key: string, minimum: number, maximum: number) {
   const value = Number(text(formData, key));
-  if (!Number.isSafeInteger(value) || value < min || value > max) {
-    throw new Error(`${key} must be a whole number between ${min} and ${max}.`);
+  if (!Number.isSafeInteger(value) || value < minimum || value > maximum) {
+    throw new Error(`${key} must be a whole number between ${minimum} and ${maximum}.`);
   }
   return value;
 }
 
-function decimal(formData: FormData, key: string, min: number, max: number) {
+function decimal(formData: FormData, key: string, minimum: number, maximum: number) {
   const value = Number(text(formData, key));
-  if (!Number.isFinite(value) || value < min || value > max) {
-    throw new Error(`${key} must be between ${min} and ${max}.`);
+  if (!Number.isFinite(value) || value < minimum || value > maximum) {
+    throw new Error(`${key} must be between ${minimum} and ${maximum}.`);
   }
   return value;
 }
@@ -56,7 +75,6 @@ async function validateStandardGatheringItem(itemId: string) {
   if (!data.is_active) throw new Error("Inactive Items cannot be used as Gathering rewards.");
 
   const category = Array.isArray(data.category) ? data.category[0] ?? null : data.category;
-
   if (category?.slug === "container" || data.use_behaviour === "limited_charges") {
     throw new Error(
       "Gathering can only award standard inventory Items. Containers and limited-charge Items are not supported.",
@@ -64,64 +82,72 @@ async function validateStandardGatheringItem(itemId: string) {
   }
 }
 
-export async function createGatheringLocation(formData: FormData) {
+export async function createGatheringLocation(formData: FormData): Promise<GatheringAdminActionResult> {
   await requireAdminSection("gathering");
+  try {
+    const roomId = uuid(text(formData, "roomId"), "Location");
+    const name = text(formData, "name");
+    const description = text(formData, "description") || null;
+    const nothingChance = decimal(formData, "nothingChance", 0, 10);
+    const isActive = checkbox(formData, "isActive");
 
-  const roomId = uuid(text(formData, "roomId"), "Location");
-  const name = text(formData, "name");
-  const description = text(formData, "description") || null;
-  const nothingChance = decimal(formData, "nothingChance", 0, 10);
-  const isActive = checkbox(formData, "isActive");
+    if (name.length < 2) throw new Error("Gathering panel name is required.");
 
-  if (name.length < 2) throw new Error("Gathering panel name is required.");
+    const supabase = createAdminClient();
+    const { data: room, error: roomError } = await supabase
+      .from("rooms")
+      .select("id")
+      .eq("id", roomId)
+      .maybeSingle();
 
-  const supabase = createAdminClient();
-  const { data: room, error: roomError } = await supabase
-    .from("rooms")
-    .select("id")
-    .eq("id", roomId)
-    .maybeSingle();
+    if (roomError) throw new Error(roomError.message);
+    if (!room) throw new Error("Location not found.");
 
-  if (roomError) throw new Error(roomError.message);
-  if (!room) throw new Error("Location not found.");
-
-  const { error } = await supabase.from("gathering_locations").insert({
-    room_id: roomId,
-    name,
-    description,
-    nothing_chance: nothingChance,
-    is_active: isActive,
-  });
-
-  if (error) throw new Error(error.message);
-  refreshGathering();
-}
-
-export async function updateGatheringLocation(formData: FormData) {
-  await requireAdminSection("gathering");
-
-  const locationId = uuid(text(formData, "locationId"), "Gathering location");
-  const name = text(formData, "name");
-  const description = text(formData, "description") || null;
-  const nothingChance = decimal(formData, "nothingChance", 0, 10);
-  const isActive = checkbox(formData, "isActive");
-
-  if (name.length < 2) throw new Error("Gathering panel name is required.");
-
-  const supabase = createAdminClient();
-  const { error } = await supabase
-    .from("gathering_locations")
-    .update({
+    const { error } = await supabase.from("gathering_locations").insert({
+      room_id: roomId,
       name,
       description,
       nothing_chance: nothingChance,
       is_active: isActive,
-      updated_at: new Date().toISOString(),
-    })
-    .eq("id", locationId);
+    });
 
-  if (error) throw new Error(error.message);
-  refreshGathering();
+    if (error) throw new Error(error.message);
+    refreshGathering();
+    return ok("Gathering Location enabled.");
+  } catch (error) {
+    return fail(error);
+  }
+}
+
+export async function updateGatheringLocation(formData: FormData): Promise<GatheringAdminActionResult> {
+  await requireAdminSection("gathering");
+  try {
+    const locationId = uuid(text(formData, "locationId"), "Gathering location");
+    const name = text(formData, "name");
+    const description = text(formData, "description") || null;
+    const nothingChance = decimal(formData, "nothingChance", 0, 10);
+    const isActive = checkbox(formData, "isActive");
+
+    if (name.length < 2) throw new Error("Gathering panel name is required.");
+
+    const supabase = createAdminClient();
+    const { error } = await supabase
+      .from("gathering_locations")
+      .update({
+        name,
+        description,
+        nothing_chance: nothingChance,
+        is_active: isActive,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", locationId);
+
+    if (error) throw new Error(error.message);
+    refreshGathering();
+    return ok("Gathering Location saved.");
+  } catch (error) {
+    return fail(error);
+  }
 }
 
 function rewardValues(formData: FormData) {
@@ -150,9 +176,8 @@ async function rewardPayload(formData: FormData) {
     }
 
     await validateStandardGatheringItem(itemId);
-
     return {
-      reward_type: "item",
+      reward_type: "item" as const,
       item_id: itemId,
       quantity_min: quantityMin,
       quantity_max: quantityMax,
@@ -166,13 +191,12 @@ async function rewardPayload(formData: FormData) {
 
   const remnantsMin = integer(formData, "remnantsMin", 1, 100000000);
   const remnantsMax = integer(formData, "remnantsMax", 1, 100000000);
-
   if (remnantsMin > remnantsMax) {
     throw new Error("Minimum Remnants cannot exceed maximum Remnants.");
   }
 
   return {
-    reward_type: "remnants",
+    reward_type: "remnants" as const,
     item_id: null,
     quantity_min: null,
     quantity_max: null,
@@ -184,49 +208,55 @@ async function rewardPayload(formData: FormData) {
   };
 }
 
-export async function addGatheringReward(formData: FormData) {
+export async function addGatheringReward(formData: FormData): Promise<GatheringAdminActionResult> {
   await requireAdminSection("gathering");
-  const locationId = uuid(text(formData, "locationId"), "Gathering location");
-  const payload = await rewardPayload(formData);
-
-  const supabase = createAdminClient();
-  const { error } = await supabase.from("gathering_rewards").insert({
-    gathering_location_id: locationId,
-    ...payload,
-  });
-
-  if (error) throw new Error(error.message);
-  refreshGathering();
-}
-
-export async function updateGatheringReward(formData: FormData) {
-  await requireAdminSection("gathering");
-  const rewardId = uuid(text(formData, "rewardId"), "Gathering reward");
-  const payload = await rewardPayload(formData);
-
-  const supabase = createAdminClient();
-  const { error } = await supabase
-    .from("gathering_rewards")
-    .update({
+  try {
+    const locationId = uuid(text(formData, "locationId"), "Gathering location");
+    const payload = await rewardPayload(formData);
+    const supabase = createAdminClient();
+    const { error } = await supabase.from("gathering_rewards").insert({
+      gathering_location_id: locationId,
       ...payload,
-      updated_at: new Date().toISOString(),
-    })
-    .eq("id", rewardId);
+    });
 
-  if (error) throw new Error(error.message);
-  refreshGathering();
+    if (error) throw new Error(error.message);
+    refreshGathering();
+    return ok("Gathering reward added.");
+  } catch (error) {
+    return fail(error);
+  }
 }
 
-export async function deleteGatheringReward(formData: FormData) {
+export async function updateGatheringReward(formData: FormData): Promise<GatheringAdminActionResult> {
   await requireAdminSection("gathering");
-  const rewardId = uuid(text(formData, "rewardId"), "Gathering reward");
+  try {
+    const rewardId = uuid(text(formData, "rewardId"), "Gathering reward");
+    const payload = await rewardPayload(formData);
+    const supabase = createAdminClient();
+    const { error } = await supabase
+      .from("gathering_rewards")
+      .update({ ...payload, updated_at: new Date().toISOString() })
+      .eq("id", rewardId);
 
-  const supabase = createAdminClient();
-  const { error } = await supabase
-    .from("gathering_rewards")
-    .delete()
-    .eq("id", rewardId);
+    if (error) throw new Error(error.message);
+    refreshGathering();
+    return ok("Gathering reward saved.");
+  } catch (error) {
+    return fail(error);
+  }
+}
 
-  if (error) throw new Error(error.message);
-  refreshGathering();
+export async function deleteGatheringReward(formData: FormData): Promise<GatheringAdminActionResult> {
+  await requireAdminSection("gathering");
+  try {
+    const rewardId = uuid(text(formData, "rewardId"), "Gathering reward");
+    const supabase = createAdminClient();
+    const { error } = await supabase.from("gathering_rewards").delete().eq("id", rewardId);
+
+    if (error) throw new Error(error.message);
+    refreshGathering();
+    return ok("Gathering reward deleted.");
+  } catch (error) {
+    return fail(error);
+  }
 }

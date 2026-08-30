@@ -13,6 +13,7 @@ import { SanctionContextPanel } from "@/components/sanctions/sanction-context-pa
 import { CraftingRecipesContextPanel } from "@/components/admin/crafting-recipes-context-panel";
 import { CharacterAuditContextPanel } from "@/components/admin/character-audit-context-panel";
 import { HouseOfChancesContextPanel } from "@/components/admin/house-of-chances-context-panel";
+import { GatheringContextPanel } from "@/components/admin/gathering-context-panel";
 import {
   canAccessAdminSection,
   type AdminSection,
@@ -35,6 +36,7 @@ type ContextMode =
   | "gifts"
   | "items"
   | "house_of_chances"
+  | "gathering"
   | "crafting_recipes"
   | "shapes"
   | "users"
@@ -86,6 +88,10 @@ function getMode(
 
   if (pathname === "/admin/house-of-chances") {
     return "house_of_chances";
+  }
+
+  if (pathname === "/admin/gathering") {
+    return "gathering";
   }
 
   if (
@@ -186,6 +192,12 @@ export function AdminContextPanel({
   if (mode === "house_of_chances") {
     return (
       <HouseOfChancesContextPanel />
+    );
+  }
+
+  if (mode === "gathering") {
+    return (
+      <GatheringContextPanel />
     );
   }
 
