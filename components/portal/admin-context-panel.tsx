@@ -1234,10 +1234,16 @@ type AdminNotificationContextEntry = {
 function AdminNotificationsNavigatorContext() {
   const [entries, setEntries] =
     useState<AdminNotificationContextEntry[]>([]);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] =
+    useState("");
 
   useEffect(() => {
+    let frame: number | null =
+      null;
+
     const readEntries = () => {
+      frame = null;
+
       const nodes = Array.from(
         document.querySelectorAll<HTMLElement>(
           "[data-admin-notification-id]",
@@ -1246,61 +1252,121 @@ function AdminNotificationsNavigatorContext() {
 
       setEntries(
         nodes.map((node) => ({
-          id: node.dataset.adminNotificationId ?? "",
-          title: node.dataset.adminNotificationTitle ?? "Untitled Notification",
-          type: node.dataset.adminNotificationType ?? "",
-          body: node.dataset.adminNotificationBody ?? "",
-          source: node.dataset.adminNotificationSource ?? "",
-          active: node.dataset.adminNotificationActive === "true",
+          id:
+            node.dataset.adminNotificationId ??
+            "",
+          title:
+            node.dataset.adminNotificationTitle ??
+            "Untitled Notification",
+          type:
+            node.dataset.adminNotificationType ??
+            "",
+          body:
+            node.dataset.adminNotificationBody ??
+            "",
+          source:
+            node.dataset.adminNotificationSource ??
+            "",
+          active:
+            node.dataset.adminNotificationActive ===
+            "true",
         })),
       );
     };
 
-    readEntries();
-    const frame = window.requestAnimationFrame(readEntries);
+    const scheduleRead = () => {
+      if (frame !== null) {
+        window.cancelAnimationFrame(
+          frame,
+        );
+      }
 
-    const handleChanged = () => {
-      window.requestAnimationFrame(readEntries);
+      frame =
+        window.requestAnimationFrame(
+          readEntries,
+        );
     };
+
+    scheduleRead();
+
+    const observer =
+      new MutationObserver(
+        scheduleRead,
+      );
+
+    observer.observe(
+      document.body,
+      {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: [
+          "data-admin-notification-title",
+          "data-admin-notification-type",
+          "data-admin-notification-body",
+          "data-admin-notification-source",
+          "data-admin-notification-active",
+        ],
+      },
+    );
 
     window.addEventListener(
       "sepulchria:admin-data-changed",
-      handleChanged,
+      scheduleRead,
     );
 
     return () => {
-      window.cancelAnimationFrame(frame);
+      observer.disconnect();
+
+      if (frame !== null) {
+        window.cancelAnimationFrame(
+          frame,
+        );
+      }
+
       window.removeEventListener(
         "sepulchria:admin-data-changed",
-        handleChanged,
+        scheduleRead,
       );
     };
   }, []);
 
-  const query = search.trim().toLocaleLowerCase();
+  const query =
+    search
+      .trim()
+      .toLocaleLowerCase();
 
-  const visibleEntries = entries.filter((entry) => {
-    if (!query) return true;
+  const visibleEntries =
+    entries.filter((entry) => {
+      if (!query) {
+        return true;
+      }
 
-    return [
-      entry.title,
-      entry.type,
-      entry.body,
-      entry.source,
-    ]
-      .join(" ")
-      .toLocaleLowerCase()
-      .includes(query);
-  });
+      return [
+        entry.title,
+        entry.type,
+        entry.body,
+        entry.source,
+      ]
+        .join(" ")
+        .toLocaleLowerCase()
+        .includes(query);
+    });
 
-  function jumpToNotification(id: string) {
-    const target = document.getElementById(
-      `admin-notification-${id}`,
-    );
+  function jumpToNotification(
+    id: string,
+  ) {
+    const target =
+      document.getElementById(
+        `admin-notification-${id}`,
+      );
 
     if (!target) return;
 
-    if (target instanceof HTMLDetailsElement) {
+    if (
+      target instanceof
+      HTMLDetailsElement
+    ) {
       target.open = true;
     }
 
@@ -1308,11 +1374,30 @@ function AdminNotificationsNavigatorContext() {
       behavior: "smooth",
       block: "start",
     });
+
+    const oldOutline =
+      target.style.outline;
+    const oldOffset =
+      target.style.outlineOffset;
+
+    target.style.outline =
+      "1px solid rgb(var(--sep-colour-8d6d3e))";
+    target.style.outlineOffset =
+      "3px";
+
+    window.setTimeout(() => {
+      target.style.outline =
+        oldOutline;
+      target.style.outlineOffset =
+        oldOffset;
+    }, 1200);
   }
 
   function jumpToNew() {
     document
-      .getElementById("notification-new")
+      .getElementById(
+        "notification-new",
+      )
       ?.scrollIntoView({
         behavior: "smooth",
         block: "start",
@@ -1340,44 +1425,58 @@ function AdminNotificationsNavigatorContext() {
       <input
         type="search"
         value={search}
-        onChange={(event) => setSearch(event.target.value)}
+        onChange={(event) =>
+          setSearch(
+            event.target.value,
+          )
+        }
         placeholder="Search notifications..."
         className="mt-3 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))]"
       />
 
       <p className="mb-2 mt-4 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))]">
         Notifications · {visibleEntries.length}
-        {query ? ` / ${entries.length}` : ""}
+        {query
+          ? ` / ${entries.length}`
+          : ""}
       </p>
 
       <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">
         {visibleEntries.length ? (
-          visibleEntries.map((entry) => (
-            <button
-              key={entry.id}
-              type="button"
-              onClick={() => jumpToNotification(entry.id)}
-              className="group flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))]"
-            >
-              <span className="min-w-0">
-                <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
-                  {entry.title}
+          visibleEntries.map(
+            (entry) => (
+              <button
+                key={entry.id}
+                type="button"
+                onClick={() =>
+                  jumpToNotification(
+                    entry.id,
+                  )
+                }
+                className="group flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:-translate-y-[1px] hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))] hover:shadow-[0_0_10px_rgba(var(--sep-rgb-177-132-75),0.06)]"
+              >
+                <span className="min-w-0">
+                  <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
+                    {entry.title}
+                  </span>
+
+                  <span className="mt-0.5 block truncate text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))]">
+                    {entry.type}
+                    {" · "}
+                    {entry.source}
+                    {" · "}
+                    {entry.active
+                      ? "Active"
+                      : "Disabled"}
+                  </span>
                 </span>
 
-                <span className="mt-0.5 block truncate text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))]">
-                  {entry.type}
-                  {" · "}
-                  {entry.source}
-                  {" · "}
-                  {entry.active ? "Active" : "Disabled"}
+                <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))]">
+                  →
                 </span>
-              </span>
-
-              <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))]">
-                →
-              </span>
-            </button>
-          ))
+              </button>
+            ),
+          )
         ) : (
           <p className="text-xs text-[rgb(var(--sep-colour-8f826f))]">
             No matching notifications.
