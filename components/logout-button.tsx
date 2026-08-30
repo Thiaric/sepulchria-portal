@@ -129,7 +129,7 @@ export function LogoutButton() {
       border
       border-[rgb(var(--sep-colour-6f5233))]
       bg-[rgb(var(--sep-colour-16100c))]
-      px-4
+      px-2.5
       text-[10px]
       font-medium
       uppercase
@@ -144,7 +144,7 @@ export function LogoutButton() {
       disabled:opacity-60
     "
   >
-    <LogOut className="h-4 w-4" />
+    <LogOut className="pointer-events-none h-5 w-5" />
 
     <span>
       {isLoggingOut

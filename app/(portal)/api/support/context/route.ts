@@ -190,6 +190,11 @@ export async function GET(
       ),
     );
 
+    const openerName =
+      names.get(
+        ticket.opened_by_user_id,
+      ) ?? "Player";
+
     return NextResponse.json({
       events: (events ?? []).map(
         (event) => {
@@ -217,7 +222,7 @@ export async function GET(
                 (
                   event.actor_user_id ===
                   ticket.opened_by_user_id
-                    ? "Player"
+                    ? openerName
                     : "Staff"
                 ),
             ),

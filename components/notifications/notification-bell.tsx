@@ -13,6 +13,7 @@ import {
 } from "react";
 
 import { createClient } from "@/lib/supabase/client";
+import { usePortalAudio } from "@/components/audio/portal-audio-provider";
 
 type NotificationRow = {
   id: string;
@@ -32,6 +33,9 @@ type NotificationBundle = {
 
 export function NotificationBell() {
   const pathname = usePathname();
+  const {
+    playPortalSound,
+  } = usePortalAudio();
   const supabase = useMemo(
     () => createClient(),
     [],
@@ -43,6 +47,12 @@ export function NotificationBell() {
     useRef<HTMLButtonElement>(null);
   const panelRef =
     useRef<HTMLDivElement>(null);
+  const previousUnreadRef =
+    useRef(0);
+  const loadedOnceRef =
+    useRef(false);
+  const suppressNextSoundRef =
+    useRef(false);
 
   const [open, setOpen] =
     useState(false);
@@ -83,17 +93,48 @@ export function NotificationBell() {
           notifications: [],
         }) as NotificationBundle;
 
-      setMuted(bundle.muted === true);
-      setRows(
+      const nextRows =
         Array.isArray(
           bundle.notifications,
         )
           ? bundle.notifications
-          : [],
-      );
+          : [];
+
+      const nextUnread =
+        bundle.muted === true
+          ? 0
+          : nextRows.filter(
+              (row) =>
+                row.is_unread,
+            ).length;
+
+      if (
+        loadedOnceRef.current &&
+        !bundle.muted &&
+        nextUnread >
+          previousUnreadRef.current &&
+        !suppressNextSoundRef.current
+      ) {
+        playPortalSound(
+          "notification-chime",
+        );
+      }
+
+      suppressNextSoundRef.current =
+        false;
+      loadedOnceRef.current =
+        true;
+      previousUnreadRef.current =
+        nextUnread;
+
+      setMuted(bundle.muted === true);
+      setRows(nextRows);
       setLoading(false);
     },
-    [supabase],
+    [
+      playPortalSound,
+      supabase,
+    ],
   );
 
   useEffect(() => {
@@ -263,8 +304,12 @@ export function NotificationBell() {
     setMuted(next);
 
     if (next) {
+      previousUnreadRef.current =
+        0;
       setRows([]);
     } else {
+      suppressNextSoundRef.current =
+        true;
       await load();
     }
 
@@ -279,6 +324,7 @@ export function NotificationBell() {
       <button
         ref={buttonRef}
         type="button"
+        
         onClick={() =>
           void toggle()
         }
@@ -301,9 +347,9 @@ export function NotificationBell() {
         ].join(" ")}
       >
         {muted ? (
-          <BellOff className="h-5 w-5" />
+          <BellOff className="pointer-events-none h-5 w-5" />
         ) : (
-          <Bell className="h-5 w-5" />
+          <Bell className="pointer-events-none h-5 w-5" />
         )}
 
         {unreadCount > 0 ? (
@@ -374,7 +420,7 @@ export function NotificationBell() {
                       changingMute
                     }
                     className={[
-                      "flex items-center gap-1.5 border px-2.5 py-1.5 text-[8px] uppercase tracking-[0.14em] transition disabled:cursor-wait disabled:opacity-50",
+                      "flex items-center gap-1.5 border px-2.5 py-1.5 text-[8px] uppercase tracking-[0.14em] transition-all duration-150 hover:-translate-y-[1px] hover:shadow-[0_0_10px_rgba(var(--sep-rgb-177-132-75),0.08)] disabled:cursor-wait disabled:opacity-50",
                       muted
                         ? "border-red-800/70 bg-red-950/30 text-red-300 hover:border-red-600/80 hover:bg-red-950/50"
                         : "border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-17110d))] text-[rgb(var(--sep-colour-ae9570))] hover:border-[rgb(var(--sep-colour-8a673f))] hover:text-[rgb(var(--sep-colour-dbc091))]",
@@ -456,7 +502,7 @@ export function NotificationBell() {
                               </p>
 
                               {row.href ? (
-                                <span className="mt-2 block text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-b28a53))]">
+                                <span className="mt-2 inline-flex border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-21170f))] px-2 py-1 text-[8px] uppercase tracking-[0.14em] !text-[rgb(var(--sep-colour-d4ad70))] transition group-hover:border-[rgb(var(--sep-colour-a07945))] group-hover:!text-[rgb(var(--sep-colour-efd6a3))]">
                                   Open →
                                 </span>
                               ) : null}
@@ -465,7 +511,7 @@ export function NotificationBell() {
 
                         const className =
                           [
-                            "block border px-3 py-3 transition-all duration-150 hover:-translate-y-[1px] hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))] hover:shadow-[0_0_12px_rgba(var(--sep-rgb-177-132-75),0.08)]",
+                            "group block border px-3 py-3 transition-all duration-150 hover:-translate-y-[1px] hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))] hover:shadow-[0_0_12px_rgba(var(--sep-rgb-177-132-75),0.08)]",
                             row.is_unread
                               ? "border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-21170f))]"
                               : "border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))]",

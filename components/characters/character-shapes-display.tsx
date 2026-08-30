@@ -1,8 +1,8 @@
 import "server-only";
 
 import {
-  createClient,
-} from "@/lib/supabase/server";
+  createAdminClient,
+} from "@/lib/supabase/admin";
 import {
   ShapesCatalogue,
   type ShapeCard,
@@ -14,7 +14,7 @@ export async function CharacterShapesDisplay({
   characterId: string;
 }) {
   const db =
-    await createClient();
+    createAdminClient();
 
   const {
     data,

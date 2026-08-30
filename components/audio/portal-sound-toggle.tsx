@@ -35,9 +35,9 @@ export function PortalSoundToggle() {
       }`}
     >
       {muted ? (
-        <VolumeX className="h-5 w-5" />
+        <VolumeX className="pointer-events-none h-5 w-5" />
       ) : (
-        <Volume2 className="h-5 w-5" />
+        <Volume2 className="pointer-events-none h-5 w-5" />
       )}
     </button>
   );

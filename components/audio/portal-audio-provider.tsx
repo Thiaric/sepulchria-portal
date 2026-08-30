@@ -21,7 +21,8 @@ type PortalSoundKind =
   | "private-message"
   | "chat-pop"
   | "instant-bubble"
-  | "instant-swish";
+  | "instant-swish"
+  | "notification-chime";
 
 type PortalAudioContextValue = {
   muted: boolean;
@@ -874,6 +875,138 @@ export function PortalAudioProvider({
         });
     }, [ensurePigeonAudio]);
 
+  const playNotificationChime =
+    useCallback(() => {
+      if (
+        mutedRef.current
+      ) {
+        return;
+      }
+
+      const context =
+        ensureAudioContext();
+
+      const master =
+        masterGainRef.current;
+
+      if (!master) {
+        return;
+      }
+
+      const play = () => {
+        if (
+          mutedRef.current ||
+          context.state !==
+            "running"
+        ) {
+          return;
+        }
+
+        const start =
+          context.currentTime +
+          0.01;
+
+        const notes = [
+          {
+            frequency: 783.99,
+            offset: 0,
+            duration: 0.16,
+            volume: 0.022,
+          },
+          {
+            frequency: 987.77,
+            offset: 0.07,
+            duration: 0.2,
+            volume: 0.018,
+          },
+          {
+            frequency: 1174.66,
+            offset: 0.15,
+            duration: 0.24,
+            volume: 0.014,
+          },
+        ];
+
+        for (
+          const note of notes
+        ) {
+          const oscillator =
+            context.createOscillator();
+
+          const gain =
+            context.createGain();
+
+          oscillator.type =
+            "sine";
+
+          oscillator.frequency
+            .setValueAtTime(
+              note.frequency,
+              start +
+                note.offset,
+            );
+
+          gain.gain.setValueAtTime(
+            0.0001,
+            start + note.offset,
+          );
+
+          gain.gain
+            .exponentialRampToValueAtTime(
+              note.volume,
+              start +
+                note.offset +
+                0.012,
+            );
+
+          gain.gain
+            .exponentialRampToValueAtTime(
+              0.0001,
+              start +
+                note.offset +
+                note.duration,
+            );
+
+          oscillator.connect(
+            gain,
+          );
+
+          gain.connect(master);
+
+          oscillator.start(
+            start + note.offset,
+          );
+
+          oscillator.stop(
+            start +
+              note.offset +
+              note.duration +
+              0.03,
+          );
+        }
+      };
+
+      if (
+        context.state ===
+        "running"
+      ) {
+        play();
+        return;
+      }
+
+      if (
+        context.state ===
+        "suspended"
+      ) {
+        void context
+          .resume()
+          .then(play)
+          .catch(() => {
+            // Browser still requires interaction.
+          });
+      }
+    }, [ensureAudioContext]);
+
   const playPortalSound =
   useCallback(
     (
@@ -913,6 +1046,14 @@ export function PortalAudioProvider({
         return;
       }
 
+      if (
+        kind ===
+        "notification-chime"
+      ) {
+        playNotificationChime();
+        return;
+      }
+
       playBeep();
     },
     [
@@ -921,6 +1062,7 @@ export function PortalAudioProvider({
       playPop,
       playBubble,
       playSwish,
+      playNotificationChime,
     ],
   );
 

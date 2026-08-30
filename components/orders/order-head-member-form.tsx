@@ -6,6 +6,7 @@ import {
   headRemoveMember,
   headUpdateMember,
 } from "@/app/(portal)/orders/manage/actions";
+import { InlineActionForm } from "@/components/forms/inline-action-form";
 
 export type OrderHeadLevelOption = {
   id: string;
@@ -83,22 +84,19 @@ export function OrderHeadMemberForm({
     }
   }
 
-  function confirmRemoval(
-    event: React.MouseEvent<HTMLButtonElement>,
+  async function memberAction(
+    formData: FormData,
   ) {
-    const confirmed =
-      window.confirm(
-        `Remove ${characterName} from this Order?\n\nThis will remove their current Order membership.`,
-      );
-
-    if (!confirmed) {
-      event.preventDefault();
-    }
+    return formData.get("intent") ===
+      "remove"
+      ? headRemoveMember(formData)
+      : headUpdateMember(formData);
   }
 
   return (
-    <form
-      action={headUpdateMember}
+    <InlineActionForm
+      action={memberAction}
+      successMessage="Membership updated."
       className={
         embedded
           ? ""
@@ -195,6 +193,8 @@ export function OrderHeadMemberForm({
         <div className="flex gap-2">
           <button
             type="submit"
+            name="intent"
+            value="update"
             disabled={!jobId}
             className="border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-261b12))] px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-ccb083))] disabled:cursor-not-allowed disabled:opacity-40"
           >
@@ -203,14 +203,15 @@ export function OrderHeadMemberForm({
 
           <button
             type="submit"
-            formAction={headRemoveMember}
-            onClick={confirmRemoval}
+            name="intent"
+            value="remove"
+            data-confirm-message={`Remove ${characterName} from this Order? This will remove their current Order membership.`}
             className="border border-red-900/55 bg-red-950/20 px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-red-300"
           >
             Remove
           </button>
         </div>
       </div>
-    </form>
+    </InlineActionForm>
   );
 }

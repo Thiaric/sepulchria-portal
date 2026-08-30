@@ -136,7 +136,7 @@ export async function PortalHeader({ context }: PortalHeaderProps) {
                 title={`Administration — ${staffSession.role}`}
                 className="relative flex h-8 w-8 items-center justify-center border border-[rgb(var(--sep-colour-7b5d36))] bg-[rgb(var(--sep-colour-24180f))] font-serif text-base text-[rgb(var(--sep-colour-d4ad70))] transition hover:border-[rgb(var(--sep-colour-b1844b))] hover:bg-[rgb(var(--sep-colour-382517))] hover:text-[rgb(var(--sep-colour-ffe0a6))] sm:h-9 sm:w-9 2xl:h-10 2xl:w-10 2xl:text-lg"
               >
-                <Settings className="h-5 w-5" />
+                <Settings className="pointer-events-none h-5 w-5" />
                 {canAccessAdminSection(
                   staffSession.role,
                   "new_register",

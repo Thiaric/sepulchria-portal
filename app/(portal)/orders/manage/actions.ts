@@ -4,7 +4,6 @@ import {
   createClient as createAdminClient,
 } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
 import {
   adjustHealthForVigourModifier,
@@ -34,16 +33,14 @@ function req(formData: FormData, name: string) {
 }
 
 function back(
-  orderId: string,
+  _orderId: string,
   type: "success" | "error",
   message: string,
-): never {
-  const params = new URLSearchParams();
-  params.set(type, message);
-
-  redirect(
-    `/orders/manage?${params.toString()}#order-${orderId}`,
-  );
+) {
+  return {
+    ok: type === "success",
+    message,
+  };
 }
 
 async function level(
@@ -630,7 +627,7 @@ export async function headAddMember(
     refresh(characterId);
     succeeded = true;
   } catch (error) {
-    back(
+    return back(
       orderId,
       "error",
       error instanceof Error
@@ -640,7 +637,7 @@ export async function headAddMember(
   }
 
   if (succeeded) {
-    back(
+    return back(
       orderId,
       "success",
       "Member added.",
@@ -798,7 +795,7 @@ export async function headUpdateMember(
 
     succeeded = true;
   } catch (error) {
-    back(
+    return back(
       orderId,
       "error",
       error instanceof Error
@@ -808,7 +805,7 @@ export async function headUpdateMember(
   }
 
   if (succeeded) {
-    back(
+    return back(
       orderId,
       "success",
       "Member updated.",
@@ -930,7 +927,7 @@ export async function headRemoveMember(
 
     succeeded = true;
   } catch (error) {
-    back(
+    return back(
       orderId,
       "error",
       error instanceof Error
@@ -940,7 +937,7 @@ export async function headRemoveMember(
   }
 
   if (succeeded) {
-    back(
+    return back(
       orderId,
       "success",
       "Member removed.",
@@ -1125,7 +1122,7 @@ export async function headAssignOrderGift(
       membership.character_id,
     );
   } catch (error) {
-    back(
+    return back(
       orderId,
       "error",
       error instanceof Error
@@ -1134,7 +1131,7 @@ export async function headAssignOrderGift(
     );
   }
 
-  back(
+  return back(
     orderId,
     "success",
     "Order Feat assigned.",
@@ -1275,7 +1272,7 @@ export async function headRemoveOrderGift(
       membership.character_id,
     );
   } catch (error) {
-    back(
+    return back(
       orderId,
       "error",
       error instanceof Error
@@ -1284,7 +1281,7 @@ export async function headRemoveOrderGift(
     );
   }
 
-  back(
+  return back(
     orderId,
     "success",
     "Order Feat removed.",

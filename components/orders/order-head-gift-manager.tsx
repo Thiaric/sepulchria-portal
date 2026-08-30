@@ -4,6 +4,7 @@ import {
   headAssignOrderGift,
   headRemoveOrderGift,
 } from "@/app/(portal)/orders/manage/actions";
+import { InlineActionForm } from "@/components/forms/inline-action-form";
 
 export type OrderGiftOption = {
   id: string;
@@ -109,10 +110,9 @@ export function OrderHeadGiftManager({
                 ) : null}
 
                 {!owned ? (
-                  <form
-                    action={
-                      headAssignOrderGift
-                    }
+                  <InlineActionForm
+                    action={headAssignOrderGift}
+                    successMessage="Order Feat assigned."
                     className="mt-3"
                   >
                     <input
@@ -139,12 +139,11 @@ export function OrderHeadGiftManager({
                     >
                       Assign Feat
                     </button>
-                  </form>
+                  </InlineActionForm>
                 ) : isOrderOwned ? (
-                  <form
-                    action={
-                      headRemoveOrderGift
-                    }
+                  <InlineActionForm
+                    action={headRemoveOrderGift}
+                    successMessage="Order Feat removed."
                     className="mt-3"
                   >
                     <input
@@ -173,7 +172,7 @@ export function OrderHeadGiftManager({
                     >
                       Remove Feat
                     </button>
-                  </form>
+                  </InlineActionForm>
                 ) : (
                   <p className="mt-3 text-[8px] italic leading-4 text-[rgb(var(--sep-colour-6d6254))]">
                     This character already owns this Feat through {owned.source}; the Order does not create a duplicate.

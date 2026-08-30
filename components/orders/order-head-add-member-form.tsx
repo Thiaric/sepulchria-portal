@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import {
   headAddMember,
 } from "@/app/(portal)/orders/manage/actions";
+import { InlineActionForm } from "@/components/forms/inline-action-form";
 
 import type {
   OrderHeadLevelOption,
@@ -59,8 +60,9 @@ export function OrderHeadAddMemberForm({
     );
 
   return (
-    <form
+    <InlineActionForm
       action={headAddMember}
+      successMessage="Member added."
       className="mt-4 border border-dashed border-[rgb(var(--sep-colour-765937))]/45 bg-[rgb(var(--sep-colour-100c09))] p-4"
     >
       <input type="hidden" name="orderId" value={orderId} />
@@ -179,6 +181,6 @@ export function OrderHeadAddMemberForm({
           Add member
         </button>
       </div>
-    </form>
+    </InlineActionForm>
   );
 }

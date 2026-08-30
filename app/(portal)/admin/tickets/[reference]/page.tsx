@@ -258,6 +258,36 @@ export default async function AdminTicketPage({
     redirect("/admin/tickets");
   }
 
+  const {
+    data: openerCharacter,
+    error: openerCharacterError,
+  } = ticket.opened_by_character_id
+    ? await admin
+        .from("characters")
+        .select(
+          "display_name,first_name,surname",
+        )
+        .eq(
+          "id",
+          ticket.opened_by_character_id,
+        )
+        .maybeSingle()
+    : {
+        data: null,
+        error: null,
+      };
+
+  if (openerCharacterError) {
+    throw new Error(
+      openerCharacterError.message,
+    );
+  }
+
+  const openerName =
+    openerCharacter?.display_name?.trim() ||
+    `${openerCharacter?.first_name ?? ""} ${openerCharacter?.surname ?? ""}`.trim() ||
+    "Player";
+
   const [
     { data: messages, error: messageError },
     reportResult,
@@ -344,7 +374,7 @@ export default async function AdminTicketPage({
             {ticket.subject}
           </h1>
           <p className="mt-3 text-[9px] text-[rgb(var(--sep-colour-756957))]">
-            Opened {fmt(ticket.created_at)}
+            Opened by {openerName} · {fmt(ticket.created_at)}
           </p>
 
           <div className="mt-5 flex flex-wrap gap-3">
@@ -579,7 +609,7 @@ export default async function AdminTicketPage({
                 {message.visibility === "internal"
                   ? "Internal Staff Note"
                   : message.author_user_id === ticket.opened_by_user_id
-                    ? "Player"
+                    ? openerName
                     : "Staff"}{" "}
                 · {fmt(message.created_at)}
               </div>

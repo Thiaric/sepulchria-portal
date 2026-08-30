@@ -73,7 +73,10 @@ export async function SanctionEvidence({
   if (!evidence?.length) return null;
 
   return (
-    <section className="mt-5 border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-1d1110))]">
+    <section
+      data-vocabulary-static
+      className="mt-5 border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-1d1110))]"
+    >
       <header className="border-b border-[rgb(var(--sep-colour-60482e))]/40 px-5 py-4">
         <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-c98f7f))]">
           Preserved Evidence
@@ -91,7 +94,7 @@ export async function SanctionEvidence({
           return (
             <article
               key={item.id}
-              className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-black/10"
+              className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-black/10 transition-all duration-150 hover:-translate-y-[1px] hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))] hover:shadow-[0_0_10px_rgba(var(--sep-rgb-177-132-75),0.06)]"
             >
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-60482e))]/35 px-4 py-3">
                 <p className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-b58a69))]">
@@ -128,7 +131,7 @@ export async function SanctionEvidence({
                     {rows.map((row, rowIndex) => (
                       <div
                         key={row.id ?? `${item.id}-${rowIndex}`}
-                        className="border border-[rgb(var(--sep-colour-60482e))]/30 bg-black/10 p-3"
+                        className="border border-[rgb(var(--sep-colour-60482e))]/30 bg-black/10 p-3 transition-all duration-150 hover:-translate-y-[1px] hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))]"
                       >
                         <p className="text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-756957))]">
                           {row.author_name ?? row.sender_name ?? "Unknown"}

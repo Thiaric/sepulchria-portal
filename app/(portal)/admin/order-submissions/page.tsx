@@ -3,6 +3,7 @@ import { requireAdminSection } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 
 import { updateOrderSubmissionAction } from "./actions";
+import { InlineActionForm } from "@/components/forms/inline-action-form";
 
 type RoleEntry = {
   name: string;
@@ -175,8 +176,9 @@ export default async function OrderSubmissionsPage() {
                     </div>
                   </section>
 
-                  <form
+                  <InlineActionForm
                     action={updateOrderSubmissionAction}
+                    successMessage="Review saved."
                     className="lg:col-span-2 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-5"
                   >
                     <input type="hidden" name="submissionId" value={submission.id} />
@@ -216,7 +218,7 @@ export default async function OrderSubmissionsPage() {
                         Save Review
                       </button>
                     </div>
-                  </form>
+                  </InlineActionForm>
                 </div>
               </details>
             );
