@@ -167,6 +167,16 @@ const craftingItem: NavigationItem = {
   opensModal: true,
 };
 
+const missionsItem: NavigationItem = {
+  label: "Daily Missions",
+  title:
+    "Review today's missions, progress and rewards.",
+  icon: "/icons/ranking.png",
+  href: "/missions",
+  activePaths: ["/missions"],
+  opensModal: true,
+};
+
 const privateLocationItem: NavigationItem = {
   label: "Private Location",
   title:
@@ -1997,6 +2007,7 @@ export function PortalSidebar({
   ...otherCodexNavigationItems,
   marketItem,
   craftingItem,
+  missionsItem,
   ...(hasOrderLeadership
     ? [manageOrderItem]
     : []),
@@ -2353,6 +2364,10 @@ export function PortalSidebar({
                     </div>
                   ) : null}
                 </div>
+
+                {renderNavigationItem(
+                  missionsItem,
+                )}
 
                 <form
                   action={enterRoomFromMap}

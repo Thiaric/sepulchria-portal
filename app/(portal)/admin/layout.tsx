@@ -176,6 +176,12 @@ export default async function AdminLayout({
               </AdminNavigationLink>
             ) : null}
 
+            {can("missions") ? (
+              <AdminNavigationLink href="/admin/missions">
+                Daily Missions
+              </AdminNavigationLink>
+            ) : null}
+
             {can("media") ? (
               <AdminNavigationLink href="/admin/media">
                 Media

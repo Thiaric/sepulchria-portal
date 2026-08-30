@@ -18,6 +18,7 @@ import { AdminEventsTidingsContext } from "@/components/portal/admin-events-tidi
 import { AdminRecordSearchContext } from "@/components/portal/admin-record-search-context";
 import { AdminJobsContext } from "@/components/portal/admin-jobs-context";
 import { AdminMarketContext } from "@/components/portal/admin-market-context";
+import { AdminMissionsContext } from "@/components/portal/admin-missions-context";
 import { MarketShopsContext } from "@/components/portal/market-shops-context";
 import { MarketItemsContext } from "@/components/portal/market-items-context";
 import { CharacterDetailContextPanel } from "@/components/portal/character-detail-context-panel";
@@ -97,6 +98,9 @@ export function PortalResponsiveRightSidebar({
 
   const isAdminMarketPath =
     pathname === "/admin/market";
+
+  const isAdminMissionsPath =
+    pathname === "/admin/missions";
 
   const isAdminLocationsPath =
     pathname === "/admin/rooms";
@@ -366,6 +370,10 @@ export function PortalResponsiveRightSidebar({
               ) : isAdminMarketPath ? (
                 <AdminMarketContext
                   key={`market-${adminRevision}`}
+                />
+              ) : isAdminMissionsPath ? (
+                <AdminMissionsContext
+                  key={`missions-${adminRevision}`}
                 />
               ) : isAdminLocationsPath ? (
                 <AdminRecordSearchContext

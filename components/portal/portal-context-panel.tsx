@@ -14,6 +14,7 @@ import {
 } from "next/navigation";
 
 import { GameContextPanel } from "@/components/portal/game-context-panel";
+import { MissionsContextPanel } from "@/components/portal/missions-context-panel";
 import {
   enterRoomFromMap,
 } from "@/app/(portal)/game/actions";
@@ -90,6 +91,10 @@ if (pathname === "/friends") {
 
 if (pathname === "/ranking") {
   return <HallOfRenownContext />;
+}
+
+if (pathname === "/missions") {
+  return <MissionsContextPanel />;
 }
 
 const publicCharacterMatch =
