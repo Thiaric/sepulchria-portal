@@ -15,6 +15,7 @@ import {
 import {
   enrichCharacterAuditRows,
 } from "@/lib/audit/enrich-character-audit-context";
+import { collapseSemanticAuditRows } from "@/lib/audit/collapse-semantic-audit-rows";
 
 type AuditRow = {
   id: string;
@@ -352,8 +353,13 @@ export async function GET(
       rawRows,
     );
 
+  const collapsedRows =
+    collapseSemanticAuditRows(
+      enrichedRows,
+    );
+
   const rows =
-    enrichedRows
+    collapsedRows
       .filter((row) => {
         const visible =
           cleanFields(
@@ -428,6 +434,26 @@ export async function GET(
           staffView
             ? row.metadata
             : null,
+        related_mutations:
+          (row.related_mutations ?? []).map(
+            (mutation) => ({
+              ...mutation,
+              old_values:
+                cleanValues(
+                  mutation.old_values,
+                  staffView,
+                ),
+              new_values:
+                cleanValues(
+                  mutation.new_values,
+                  staffView,
+                ),
+              metadata:
+                staffView
+                  ? mutation.metadata
+                  : null,
+            }),
+          ),
         created_at:
           row.created_at,
       }));

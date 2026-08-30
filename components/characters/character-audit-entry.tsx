@@ -136,6 +136,43 @@ export function CharacterAuditEntry({
             </div>
           </div>
 
+          {row.related_mutations?.length ? (
+            <div className="mt-3 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-3">
+              <p className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
+                Raw mutations in this action
+              </p>
+
+              <div className="mt-2 space-y-2">
+                {row.related_mutations.map((mutation) => (
+                  <details
+                    key={mutation.id}
+                    className="border border-[rgb(var(--sep-colour-59432c))]/25 px-3 py-2"
+                  >
+                    <summary className="cursor-pointer text-[8px] text-[rgb(var(--sep-colour-a98d65))]">
+                      {humanAuditLabel(mutation.event_type)} · {humanAuditLabel(mutation.entity_type)}
+                    </summary>
+
+                    <div className="mt-2 grid gap-2 text-[8px] sm:grid-cols-2">
+                      <p>Audit ID: {mutation.id}</p>
+                      <p>Entity ID: {mutation.entity_id ?? "—"}</p>
+                      <p>Operation: {humanAuditLabel(mutation.operation)}</p>
+                      <p>Source: {humanAuditLabel(mutation.source)}</p>
+                    </div>
+
+                    <div className="mt-2 grid gap-3 lg:grid-cols-2">
+                      <pre className="max-h-52 overflow-auto whitespace-pre-wrap break-words text-[8px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+                        {prettyAuditValue(mutation.old_values)}
+                      </pre>
+                      <pre className="max-h-52 overflow-auto whitespace-pre-wrap break-words text-[8px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+                        {prettyAuditValue(mutation.new_values)}
+                      </pre>
+                    </div>
+                  </details>
+                ))}
+              </div>
+            </div>
+          ) : null}
+
           {row.metadata && Object.keys(row.metadata).length ? (
             <div className="mt-3 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-3">
               <p className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">

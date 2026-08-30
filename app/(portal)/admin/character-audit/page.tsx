@@ -11,6 +11,7 @@ import {
 import {
   enrichCharacterAuditRows,
 } from "@/lib/audit/enrich-character-audit-context";
+import { collapseSemanticAuditRows } from "@/lib/audit/collapse-semantic-audit-rows";
 
 import {
   requireAdminSection,
@@ -180,7 +181,10 @@ export default async function CharacterAuditPage({
       rawRows,
     );
 
-  const rows = enrichedRows;
+  const rows =
+    collapseSemanticAuditRows(
+      enrichedRows,
+    );
 
   return (
     <main className="p-5 sm:p-7 lg:p-9">

@@ -15,6 +15,7 @@ export type CharacterAuditDisplayBase = {
   created_at: string;
   item_name?: string | null;
   audit_context?: string | null;
+  related_mutations?: CharacterAuditDisplayBase[];
 };
 
 export const TECHNICAL_AUDIT_FIELDS = new Set([
@@ -93,9 +94,65 @@ function isInventory(entityType: string) {
   return entityType === "character_items" || entityType === "character_item_instances";
 }
 
+function semanticItemList(value: unknown) {
+  if (!Array.isArray(value)) return "";
+
+  return value
+    .map((entry) => {
+      if (!entry || typeof entry !== "object") return "";
+
+      const row = entry as Record<string, unknown>;
+      const name =
+        typeof row.item_name === "string"
+          ? row.item_name
+          : "Item";
+      const quantity = Number(row.quantity ?? 1);
+
+      return `${quantity} × ${name}`;
+    })
+    .filter(Boolean)
+    .join(", ");
+}
+
 export function auditSummary(row: CharacterAuditDisplayBase) {
   const before = row.old_values ?? {};
   const after = row.new_values ?? {};
+
+  if (row.operation === "event") {
+    if (row.event_type === "item_given") {
+      return `Gave ${Number(after.quantity ?? 1)} × ${String(after.item_name ?? "Item")} to ${String(after.other_character_name ?? "another character")}`;
+    }
+
+    if (row.event_type === "item_received") {
+      return `Received ${Number(after.quantity ?? 1)} × ${String(after.item_name ?? "Item")} from ${String(after.other_character_name ?? "another character")}`;
+    }
+
+    if (row.event_type === "item_exchange") {
+      const gave = semanticItemList(after.gave_items);
+      const received = semanticItemList(after.received_items);
+      const other = String(after.other_character_name ?? "another character");
+      const gaveRemnants = Number(after.gave_remnants ?? 0);
+      const receivedRemnants = Number(after.received_remnants ?? 0);
+      const parts = [`Exchange with ${other}`];
+
+      if (gave) parts.push(`Gave: ${gave}`);
+      if (gaveRemnants > 0) parts.push(`Gave: ${gaveRemnants} Remnants`);
+      if (received) parts.push(`Received: ${received}`);
+      if (receivedRemnants > 0) parts.push(`Received: ${receivedRemnants} Remnants`);
+
+      return parts.join(" · ");
+    }
+
+    if (row.event_type === "crafting") {
+      const crafted = semanticItemList(after.crafted_items);
+      const ingredients = semanticItemList(after.ingredients_used);
+
+      return [
+        crafted ? `Crafted: ${crafted}` : "Crafting completed",
+        ingredients ? `Used: ${ingredients}` : null,
+      ].filter(Boolean).join(" · ");
+    }
+  }
 
   if (
     row.audit_context === "crafting" &&
