@@ -51,9 +51,9 @@ export default async function AdminSanctionPage({params,searchParams}:{params:Pr
 
     <SanctionEvidence ticketId={s.ticket_id}/>
 
-    <section className="mt-5 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5">
+    <section data-sep-interaction-fixed="true" className="mt-5 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5">
       <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-e2c99f))]">Audit History</h2>
-      <div className="mt-4 space-y-2">{(events.data??[]).map(e=><div key={e.id} className="border border-[rgb(var(--sep-colour-4f3b28))]/45 bg-black/10 p-3"><p className="text-[8px] uppercase text-[rgb(var(--sep-colour-b58a69))]">{label(e.event_type)}</p><p className="mt-1 text-[8px] text-[rgb(var(--sep-colour-756957))]">{fmt(e.created_at)}</p></div>)}</div>
+      <div className="mt-4 space-y-2">{(events.data??[]).map(e=><div key={e.id} data-sep-interactive-surface="row" className="border border-[rgb(var(--sep-colour-4f3b28))]/45 bg-black/10 p-3 transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))]"><p className="text-[8px] uppercase text-[rgb(var(--sep-colour-b58a69))]">{label(e.event_type)}</p><p className="mt-1 text-[8px] text-[rgb(var(--sep-colour-756957))]">{fmt(e.created_at)}</p></div>)}</div>
     </section>
 
     {s.status==="revoked"?<section className="mt-5 border-l-2 border-[rgb(var(--sep-colour-75624a))]/55 bg-[rgb(var(--sep-colour-17130f))]/75 p-5"><p className="text-[8px] uppercase">Revoked {fmt(s.revoked_at)}</p><p className="mt-3 whitespace-pre-wrap text-sm leading-6">{s.revocation_reason}</p></section>:null}

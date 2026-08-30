@@ -188,6 +188,7 @@ export default async function OrderSubmissionsPage() {
                           Status
                         </span>
                         <select
+                          key={`status-${submission.id}-${submission.status}`}
                           name="status"
                           defaultValue={submission.status}
                           className="mt-2 w-full border border-[rgb(var(--sep-colour-59432c))]/50 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d8c4a4))]"

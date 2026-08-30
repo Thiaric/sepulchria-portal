@@ -718,6 +718,15 @@ const visibleSpellingIssues =
     router,
   ]);
 
+  function clearMessageComposerAfterSubmit() {
+    window.requestAnimationFrame(() => {
+      setValue("");
+      setWhisperRecipientId("");
+      setSpellingMenu(null);
+      setTextareaScrollTop(0);
+    });
+  }
+
   function handleMessageChange(
     nextValue: string,
   ) {
@@ -1159,6 +1168,7 @@ function ignoreSpellingWord() {
         <form
           action={messageAction}
           ref={messageFormRef}
+          onSubmit={clearMessageComposerAfterSubmit}
         >
           <input
             ref={nonceInputRef}
@@ -1340,6 +1350,7 @@ function ignoreSpellingWord() {
         <form
           action={messageAction}
           ref={messageFormRef}
+          onSubmit={clearMessageComposerAfterSubmit}
           className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3"
         >
           <UtilityPanelHeader

@@ -50,6 +50,7 @@ export default async function AdminLayout({
 
           <nav
             aria-label="Administration"
+            data-sep-interaction-ignore="true"
             className="flex flex-wrap items-center gap-2"
           >
 

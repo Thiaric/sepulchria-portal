@@ -420,10 +420,10 @@ export function NotificationBell() {
                       changingMute
                     }
                     className={[
-                      "flex items-center gap-1.5 border px-2.5 py-1.5 text-[8px] uppercase tracking-[0.14em] transition-all duration-150 hover:-translate-y-[1px] hover:shadow-[0_0_10px_rgba(var(--sep-rgb-177-132-75),0.08)] disabled:cursor-wait disabled:opacity-50",
+                      "flex items-center gap-1.5 border px-2.5 py-1.5 text-[8px] font-semibold uppercase tracking-[0.14em] transition-all duration-150 hover:-translate-y-[1px] hover:shadow-[0_0_12px_rgba(var(--sep-rgb-177-132-75),0.14)] disabled:cursor-wait disabled:opacity-50",
                       muted
-                        ? "border-red-800/70 bg-red-950/30 text-red-300 hover:border-red-600/80 hover:bg-red-950/50"
-                        : "border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-17110d))] text-[rgb(var(--sep-colour-ae9570))] hover:border-[rgb(var(--sep-colour-8a673f))] hover:text-[rgb(var(--sep-colour-dbc091))]",
+                        ? "border-red-700/80 bg-red-950/55 text-red-200 shadow-[inset_0_0_0_1px_rgba(185,65,55,0.18)] hover:border-red-500 hover:bg-red-900/45 hover:text-red-100"
+                        : "border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] text-[rgb(var(--sep-colour-efd6a8))] shadow-[inset_0_0_0_1px_rgba(var(--sep-rgb-152-115-68),0.12)] hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))] hover:text-[rgb(var(--sep-colour-ffe4b5))]",
                     ].join(
                       " ",
                     )}
