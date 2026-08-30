@@ -7,6 +7,9 @@ import type { ReactNode } from "react";
 import { ItemEquipmentForm } from "@/components/admin/item-equipment-form";
 import { ItemCreateRecipeFields } from "@/components/admin/item-create-recipe-fields";
 import {
+  ItemImageFrame,
+} from "@/components/items/item-image-frame";
+import {
   requireAdminSection,
 } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
@@ -411,20 +414,12 @@ export default async function AdminItemsPage({ searchParams }: Props) {
               >
                 <summary className="cursor-pointer list-none px-4 py-4">
                   <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-17110d))]">
-                      {item.image_url ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={item.image_url}
-                          alt=""
-                          className="h-full w-full object-cover"
-                        />
-                      ) : (
-                        <div className="flex h-full items-center justify-center font-serif text-lg text-[rgb(var(--sep-colour-6f6252))]">
-                          ◇
-                        </div>
-                      )}
-                    </div>
+                    <ItemImageFrame
+                      src={item.image_url}
+                      quality={item.quality}
+                      className="h-12 w-12"
+                      badgeSize="sm"
+                    />
 
                     <div className="min-w-0 flex-1">
                       <p className="truncate font-serif text-lg text-[rgb(var(--sep-colour-d8bf91))]">

@@ -5,6 +5,9 @@ import { AdminVaultFilters } from "@/components/admin/admin-vault-filters";
 import Link from "next/link";
 
 import {
+  ItemImageFrame,
+} from "@/components/items/item-image-frame";
+import {
   requireAdminSection,
 } from "@/lib/auth/require-staff";
 import {
@@ -367,20 +370,12 @@ export default async function AdminItemVaultPage({
                     className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-4"
                   >
                     <div className="flex gap-3">
-                      <div className="h-14 w-14 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0d0907))]">
-                        {image ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={image}
-                            alt=""
-                            className="h-full w-full object-cover"
-                          />
-                        ) : (
-                          <div className="flex h-full items-center justify-center font-serif text-[rgb(var(--sep-colour-756247))]">
-                            ◇
-                          </div>
-                        )}
-                      </div>
+                      <ItemImageFrame
+                        src={image}
+                        quality={quality}
+                        className="h-14 w-14"
+                        badgeSize="sm"
+                      />
 
                       <div className="min-w-0">
                         <p className="font-serif text-lg text-[rgb(var(--sep-colour-d8bf91))]">
@@ -648,19 +643,13 @@ export default async function AdminItemVaultPage({
                     className="border border-red-950/45 bg-[rgb(var(--sep-colour-100c09))] p-4"
                   >
                     <div className="flex gap-3">
-                      <div className="h-14 w-14 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0d0907))] opacity-70">
-                        {row.image_url ? (
-                          <img
-                            src={row.image_url}
-                            alt=""
-                            className="h-full w-full object-cover grayscale"
-                          />
-                        ) : (
-                          <div className="flex h-full items-center justify-center font-serif text-[rgb(var(--sep-colour-756247))]">
-                            ◇
-                          </div>
-                        )}
-                      </div>
+                      <ItemImageFrame
+                        src={row.image_url}
+                        quality={row.quality ?? "average"}
+                        className="h-14 w-14 opacity-70"
+                        badgeSize="sm"
+                        muted
+                      />
 
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-start justify-between gap-2">

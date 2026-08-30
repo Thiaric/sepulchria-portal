@@ -4,6 +4,9 @@ import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 import {
+  ItemImageFrame,
+} from "@/components/items/item-image-frame";
+import {
   playHouseOfChances,
   type HouseOfChancesPlayResult,
 } from "../house-of-chances-actions";
@@ -493,24 +496,13 @@ export function HouseOfChancesPanel({
                               }}
                             >
                               {reward.type === "item" ? (
-                                reward.image_url ? (
-                                  // eslint-disable-next-line @next/next/no-img-element
-                                  <img
-                                    src={reward.image_url}
-                                    alt=""
-                                    className="h-10 w-10 shrink-0 object-contain"
-                                  />
-                                ) : (
-                                  <span
-                                    className="flex h-10 w-10 shrink-0 items-center justify-center border font-serif text-lg"
-                                    style={{
-                                      borderColor: `color-mix(in srgb, ${skinAccent} 30%, transparent)`,
-                                      color: skinAccent,
-                                    }}
-                                  >
-                                    ◇
-                                  </span>
-                                )
+                                <ItemImageFrame
+                                  src={reward.image_url}
+                                  quality={reward.quality}
+                                  className="h-10 w-10"
+                                  badgeSize="xs"
+                                  imageClassName="h-full w-full object-contain p-0.5"
+                                />
                               ) : null}
 
                               <span className="text-left">

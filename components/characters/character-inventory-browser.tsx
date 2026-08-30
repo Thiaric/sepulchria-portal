@@ -9,6 +9,9 @@ import {
 import { useRouter } from "next/navigation";
 
 import {
+  ItemImageFrame,
+} from "@/components/items/item-image-frame";
+import {
   formatRemnants,
 } from "@/lib/economy/currency";
 import {
@@ -245,28 +248,21 @@ function ItemThumbnail({
   row: InventoryBrowserRow;
   size?: "small" | "normal";
 }) {
-  const sizeClass =
-    size === "small"
-      ? "h-8 w-8"
-      : "h-14 w-14";
-
   return (
-    <div
-      className={`shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0d0907))] ${sizeClass}`}
-    >
-      {row.image_url ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={row.image_url}
-          alt=""
-          className="h-full w-full object-cover"
-        />
-      ) : (
-        <div className="flex h-full items-center justify-center font-serif text-[rgb(var(--sep-colour-756247))]">
-          ◇
-        </div>
-      )}
-    </div>
+    <ItemImageFrame
+      src={row.image_url}
+      quality={row.quality}
+      className={
+        size === "small"
+          ? "h-8 w-8"
+          : "h-14 w-14"
+      }
+      badgeSize={
+        size === "small"
+          ? "xs"
+          : "sm"
+      }
+    />
   );
 }
 

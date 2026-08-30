@@ -4,6 +4,9 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 import {
+  ItemImageFrame,
+} from "@/components/items/item-image-frame";
+import {
   gatherAtCurrentLocation,
   type GatheringResult,
 } from "../gathering-actions";
@@ -276,11 +279,13 @@ export function GatheringPanel({
               </div>
             ) : result ? (
               <div className="w-full">
-                {result.outcome_type === "item" && result.item_image_url ? (
-                  <img
+                {result.outcome_type === "item" ? (
+                  <ItemImageFrame
                     src={result.item_image_url}
-                    alt=""
-                    className="mx-auto mb-3 h-14 w-14 object-contain"
+                    quality={result.item_quality ?? "average"}
+                    className="mx-auto mb-3 h-14 w-14"
+                    badgeSize="sm"
+                    imageClassName="h-full w-full object-contain p-1"
                   />
                 ) : null}
 

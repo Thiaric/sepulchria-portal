@@ -7,6 +7,9 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 
+import {
+  ItemImageFrame,
+} from "@/components/items/item-image-frame";
 import { craftRecipeAction } from "./actions";
 import { usePortalSkin } from "@/components/portal/portal-skin-provider";
 import {
@@ -125,10 +128,12 @@ function qualityLabel(value: string) {
 
 function ItemImage({
   src,
+  quality,
   fallback = "◇",
   size = "md",
 }: {
   src: string | null;
+  quality: string;
   fallback?: string;
   size?: "sm" | "md" | "lg";
 }) {
@@ -140,22 +145,20 @@ function ItemImage({
         : "h-12 w-12";
 
   return (
-    <div
-      className={`flex ${dimensions} shrink-0 items-center justify-center overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0d0a08))]`}
-    >
-      {src ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={src}
-          alt=""
-          className="h-full w-full object-contain p-1 transition-transform duration-500 ease-out group-hover:scale-[1.045]"
-        />
-      ) : (
-        <span className="font-serif text-xl text-[rgb(var(--sep-colour-756247))]">
-          {fallback}
-        </span>
-      )}
-    </div>
+    <ItemImageFrame
+      src={src}
+      quality={quality}
+      fallback={fallback}
+      className={dimensions}
+      badgeSize={
+  size === "lg"
+    ? "lg"
+    : size === "sm"
+      ? "xs"
+      : "sm"
+}
+      imageClassName="h-full w-full object-contain p-1 transition-transform duration-500 ease-out group-hover:scale-[1.045]"
+    />
   );
 }
 
@@ -539,7 +542,12 @@ export function CraftingWorkbench({
                   style={{ backgroundImage: `url("/pattern/parchment.png")`, backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}
                 />
                 <div className="relative z-10 shrink-0">
-                  <ItemImage src={recipe.result.image_url} size="sm" fallback="✦" />
+                  <ItemImage
+                  src={recipe.result.image_url}
+                  quality={recipe.result.quality}
+                  size="sm"
+                  fallback="✦"
+                />
                 </div>
                 <div className="relative z-10 min-w-0 flex-1">
                   <p className="line-clamp-2 font-serif text-[13px] leading-4 text-[rgb(var(--sep-colour-ead6ad))]">
@@ -640,7 +648,12 @@ export function CraftingWorkbench({
                   <span aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 opacity-10"
                     style={{ backgroundImage: `url("/pattern/sparkle.gif")`, backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}
                   />
-                  <div className="relative z-10 shrink-0"><ItemImage src={item.image_url} /></div>
+                  <div className="relative z-10 shrink-0">
+                    <ItemImage
+                      src={item.image_url}
+                      quality={item.quality}
+                    />
+                  </div>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-[10px] text-[rgb(var(--sep-colour-d4bd94))]">
                       {item.name}
@@ -793,6 +806,10 @@ export function CraftingWorkbench({
                   <div className="relative flex flex-col items-center text-center">
                     <ItemImage
                       src={selectedRecipe?.result.image_url ?? null}
+                      quality={
+                        selectedRecipe?.result.quality ??
+                        "average"
+                      }
                       size="lg"
                       fallback="✦"
                     />
@@ -872,7 +889,11 @@ export function CraftingWorkbench({
                       }}
                       className="relative z-10 flex h-full min-h-0 w-full items-center gap-2 px-2.5 py-1.5 text-left sm:gap-3 sm:px-3 sm:py-2"
                     >
-                      <ItemImage src={ingredient.image_url} size="sm" />
+                      <ItemImage
+                        src={ingredient.image_url}
+                        quality={ingredient.quality}
+                        size="sm"
+                      />
                       <div className="min-w-0 flex-1">
                         <p className="line-clamp-2 text-[9px] leading-3.5 text-[rgb(var(--sep-colour-d4bd94))] sm:text-[10px] sm:leading-4">
                           {ingredient.name}
@@ -917,6 +938,10 @@ export function CraftingWorkbench({
               {!spatialLayout ? (
                 <ItemImage
                   src={selectedRecipe?.result.image_url ?? null}
+                  quality={
+                    selectedRecipe?.result.quality ??
+                    "average"
+                  }
                   size="lg"
                   fallback="✦"
                 />
@@ -1060,27 +1085,13 @@ export function CraftingWorkbench({
                         boxShadow: `inset 0 0 26px rgba(0,0,0,0.48), 0 0 18px color-mix(in srgb, ${craftingAccent} 8%, transparent)`,
                       }}
                     >
-                      {craftedReveal.item.image_url ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={
-                            craftedReveal.item
-                              .image_url
-                          }
-                          alt=""
-                          className="h-full w-full object-contain"
-                        />
-                      ) : (
-                        <span
-                          className="font-serif text-5xl"
-                          style={{
-                            color:
-                              craftingAccent,
-                          }}
-                        >
-                          ◇
-                        </span>
-                      )}
+                      <ItemImageFrame
+                        src={craftedReveal.item.image_url}
+                        quality={craftedReveal.item.quality}
+                        className="h-full w-full"
+                        badgeSize="lg"
+                        imageClassName="h-full w-full object-contain"
+                      />
                     </div>
 
                     <div className="min-w-0">

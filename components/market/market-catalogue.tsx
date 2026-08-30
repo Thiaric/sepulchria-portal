@@ -8,6 +8,9 @@ import {
 import { useRouter } from "next/navigation";
 
 import {
+  ItemImageFrame,
+} from "@/components/items/item-image-frame";
+import {
   formatRemnants,
 } from "@/lib/economy/currency";
 import {
@@ -1166,21 +1169,12 @@ if (!confirmed) {
                 }
                 className="scroll-mt-6 flex gap-4 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))] p-4"
               >
-                <div className="h-24 w-24 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))]">
-                  {item.image_url ? (
-                    <img
-                      src={
-                        item.image_url
-                      }
-                      alt=""
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-full items-center justify-center text-[rgb(var(--sep-colour-705b3e))]">
-                      ◇
-                    </div>
-                  )}
-                </div>
+                <ItemImageFrame
+                  src={item.image_url}
+                  quality={item.quality}
+                  className="h-24 w-24"
+                  badgeSize="lg"
+                />
 
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-start justify-between gap-2">

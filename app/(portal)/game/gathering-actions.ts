@@ -11,6 +11,7 @@ export type GatheringResult = {
   item_id: string | null;
   item_name: string | null;
   item_image_url: string | null;
+  item_quality?: string | null;
   quantity: number | null;
   remnants: number | null;
   ledger_id?: string | null;
@@ -50,6 +51,23 @@ export async function gatherAtCurrentLocation() {
   }
 
   const result = raw as GatheringResult;
+
+  if (
+    result.outcome_type === "item" &&
+    result.item_id
+  ) {
+    const { data: item } =
+      await supabase
+        .from("items")
+        .select("quality")
+        .eq("id", result.item_id)
+        .maybeSingle();
+
+    result.item_quality =
+      item?.quality
+        ? String(item.quality)
+        : "average";
+  }
 
   revalidatePath("/game");
   revalidatePath("/character");

@@ -74,18 +74,58 @@ export async function PortalHeader({ context }: PortalHeaderProps) {
             <PortalSkinSwitcher />
 
             <PortalModalButton
-              payload={{
-                label: "Messages",
-                title: "Open your private conversations with other characters.",
-                icon: "/icons/messages.png",
-                href: "/messages",
-              }}
-              aria-label={`${unreadMessageCount} unread messages`}
-              className="relative flex h-8 w-8 items-center justify-center border border-[rgb(var(--sep-colour-614b31))] bg-[rgb(var(--sep-colour-17120f))] text-base text-[rgb(var(--sep-colour-c69b5c))] transition hover:border-[rgb(var(--sep-colour-977242))] hover:text-[rgb(var(--sep-colour-efd6a3))] sm:h-9 sm:w-9 2xl:h-10 2xl:w-10 2xl:text-lg"
-            >
-              <ScrollText className="h-5 w-5" />
-              <UnreadMessageBadge initialCount={unreadMessageCount} variant="floating" />
-            </PortalModalButton>
+  payload={{
+    label: "Messages",
+    title: "Open your private conversations with other characters.",
+    icon: "/icons/messages.png",
+    href: "/messages",
+  }}
+  aria-label={`${unreadMessageCount} unread messages`}
+  className="relative flex h-8 w-8 items-center justify-center border border-[rgb(var(--sep-colour-614b31))] bg-[rgb(var(--sep-colour-17120f))] text-base text-[rgb(var(--sep-colour-c69b5c))] transition hover:border-[rgb(var(--sep-colour-977242))] hover:text-[rgb(var(--sep-colour-efd6a3))] sm:h-9 sm:w-9 2xl:h-10 2xl:w-10 2xl:text-lg"
+>
+  <svg
+  aria-hidden="true"
+  viewBox="0 0 26 26"
+  className="h-6 w-6"
+  
+>
+  <defs>
+    <filter
+      id="messages-icon-colour"
+      x="0"
+      y="0"
+      width="100%"
+      height="100%"
+      colorInterpolationFilters="sRGB"
+    >
+      <feFlood
+        floodColor="currentColor"
+        result="colour"
+      />
+      <feComposite
+        in="colour"
+        in2="SourceAlpha"
+        operator="in"
+      />
+    </filter>
+  </defs>
+
+  <image
+    href="/icons/messages.png"
+    x="0"
+    y="0"
+    width="26"
+    height="26"
+    preserveAspectRatio="xMidYMid meet"
+    filter="url(#messages-icon-colour)"
+  />
+</svg>
+
+  <UnreadMessageBadge
+    initialCount={unreadMessageCount}
+    variant="floating"
+  />
+</PortalModalButton>
 
             {staffSession ? (
               <Link

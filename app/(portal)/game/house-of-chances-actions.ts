@@ -20,6 +20,7 @@ export type HouseOfChancesPlayResult = {
         name: string;
         quantity: number;
         image_url: string | null;
+        quality: string;
       }
   >;
   wallet_balance: number;
@@ -65,13 +66,22 @@ export async function playHouseOfChances() {
   if (itemRewardIds.length > 0) {
     const { data: prizeItems } = await supabase
       .from("items")
-      .select("id, image_url")
+      .select("id, image_url, quality")
       .in("id", itemRewardIds);
 
-    const imageByItemId = new Map(
+    const itemVisualById = new Map(
       (prizeItems ?? []).map((item) => [
         String(item.id),
-        item.image_url ? String(item.image_url) : null,
+        {
+          image_url:
+            item.image_url
+              ? String(item.image_url)
+              : null,
+          quality:
+            item.quality
+              ? String(item.quality)
+              : "average",
+        },
       ]),
     );
 
@@ -79,7 +89,16 @@ export async function playHouseOfChances() {
       reward.type === "item"
         ? {
             ...reward,
-            image_url: imageByItemId.get(reward.item_id) ?? null,
+            image_url:
+              itemVisualById.get(
+                reward.item_id,
+              )?.image_url ??
+              null,
+            quality:
+              itemVisualById.get(
+                reward.item_id,
+              )?.quality ??
+              "average",
           }
         : reward,
     );
