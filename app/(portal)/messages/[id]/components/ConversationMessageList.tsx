@@ -448,6 +448,10 @@ export function ConversationMessageList({
     <>
       <section className="border-b border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-120e0b))] p-3 sm:px-4">
         <div className="grid gap-2 lg:grid-cols-[minmax(0,1fr)_135px_135px_135px_auto]">
+          <label className="grid gap-1">
+          <span className="text-[7px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-716350))]">
+              Search
+            </span>
           <input
             type="search"
             value={query}
@@ -459,7 +463,12 @@ export function ConversationMessageList({
             placeholder="Search words in this conversation…"
             className="min-w-0 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))] [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
           />
-
+          </label>
+          
+          <label className="grid gap-1">
+<span className="text-[7px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-716350))]">
+              Search
+            </span>
           <select
             value={mode}
             onChange={(event) =>
@@ -484,7 +493,7 @@ export function ConversationMessageList({
               Off-game
             </option>
           </select>
-
+          </label>
           <label className="grid gap-1">
             <span className="text-[7px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-716350))]">
               From

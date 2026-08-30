@@ -232,7 +232,7 @@ export function CharacterOrderIdentity({
   variant === "forum"
     ? "h-8 w-8 p-1"
     : variant === "message"
-      ? "h-6 w-6"
+      ? "h-5 w-5"
       : variant === "mini"
         ? "h-5 w-5"
         : "h-4 w-4";

@@ -78,7 +78,7 @@ function IdentityIcon({
           ? `${labelPrefix}: ${entry.name}`
           : `No ${labelPrefix.toLowerCase()}`
       }
-      className="flex h-6 w-6 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-0d0907))] font-serif text-[8px]"
+      className="flex h-5 w-5 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-0d0907))] font-serif text-[8px]"
       style={{
   borderColor: colour,
   color: colour,

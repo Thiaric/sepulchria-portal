@@ -38,13 +38,13 @@ export function DeleteConversationForm({
       />
 
       <button
-        type="submit"
-        className="border border-red-800/80 bg-red-950/45 px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-red-300 transition hover:border-red-600 hover:bg-red-950/70 hover:text-red-200"
-      >
-        {isGroup
-          ? "Leave conversation"
-          : "Delete conversation"}
-      </button>
+  type="submit"
+  className="border border-red-800/80 bg-red-950/45 px-3 py-2 text-[9px] leading-[1.15] uppercase tracking-[0.18em] text-red-300 transition hover:border-red-600 hover:bg-red-950/70 hover:text-red-200"
+>
+  {isGroup
+    ? "Leave conversation"
+    : "Delete conversation"}
+</button>
     </form>
   );
 }

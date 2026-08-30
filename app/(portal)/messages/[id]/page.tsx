@@ -436,9 +436,7 @@ export default async function ConversationPage({
               />
 
               <div className="min-w-0 pl-1">
-                <p className="text-[9px] uppercase tracking-[0.25em] text-[rgb(var(--sep-colour-826b4d))]">
-                  Conversation with
-                </p>
+                
 
                 <h1 className="mt-0.5 truncate font-serif text-xl text-[rgb(var(--sep-colour-dec69a))]">
                   {other.display_name ??
