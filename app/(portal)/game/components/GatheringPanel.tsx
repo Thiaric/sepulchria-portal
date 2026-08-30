@@ -12,6 +12,7 @@ import {
 } from "../gathering-actions";
 import { formatRemnants } from "@/lib/economy/currency";
 import { usePortalSkin } from "@/components/portal/portal-skin-provider";
+import { usePortalAudio } from "@/components/audio/portal-audio-provider";
 
 const GATHERING_SKIN_ACCENTS: Record<string, string> = {
   sepulchria: "#b68b4f",
@@ -66,6 +67,9 @@ export function GatheringPanel({
 }) {
   const router = useRouter();
   const { skin } = usePortalSkin();
+  const {
+    playPortalSound,
+  } = usePortalAudio();
   const skinAccent =
     GATHERING_SKIN_ACCENTS[skin] ??
     GATHERING_SKIN_ACCENTS.sepulchria;
@@ -86,6 +90,25 @@ export function GatheringPanel({
     setMessage(null);
     setResult(null);
     setSearching(true);
+
+    // A short layered brush/rustle made from the portal's
+    // existing swish sound. It automatically follows the
+    // global Portal Sound mute setting.
+    playPortalSound("instant-swish");
+    window.setTimeout(
+      () =>
+        playPortalSound(
+          "instant-swish",
+        ),
+      95,
+    );
+    window.setTimeout(
+      () =>
+        playPortalSound(
+          "instant-swish",
+        ),
+      205,
+    );
 
     startTransition(async () => {
       const started = Date.now();

@@ -311,11 +311,14 @@ export default function RoomChatForm({
     };
   }, [exchangeSupabase]);
 
-  const [messageState, messageAction] =
-    useActionState(
-      sendRoomMessage,
-      initialState,
-    );
+  const [
+    messageState,
+    messageAction,
+    messagePending,
+  ] = useActionState(
+    sendRoomMessage,
+    initialState,
+  );
 
   const [diceState, diceAction] =
     useActionState(
@@ -1193,6 +1196,7 @@ function ignoreSpellingWord() {
               ref={textareaRef}
               name="message"
               required
+              disabled={messagePending}
               maxLength={CHAT_MAX_LENGTH}
               value={value}
               lang="en-GB"
@@ -1410,6 +1414,7 @@ function ignoreSpellingWord() {
               ref={textareaRef}
               name="message"
               required
+              disabled={messagePending}
               maxLength={CHAT_MAX_LENGTH}
               value={value}
               onKeyDown={(event) => {

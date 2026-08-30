@@ -94,8 +94,8 @@ export async function SanctionEvidence({
           return (
             <article
               key={item.id}
-              data-sep-interactive-surface="row"
-              className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-black/10 transition-all duration-150 hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))] hover:shadow-[0_0_10px_rgba(var(--sep-rgb-177-132-75),0.06)]"
+              data-sep-interaction-fixed="true"
+              className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-black/10"
             >
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-60482e))]/35 px-4 py-3">
                 <p className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-b58a69))]">

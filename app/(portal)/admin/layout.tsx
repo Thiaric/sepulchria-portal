@@ -36,7 +36,10 @@ export default async function AdminLayout({
     <div className="min-h-[calc(100vh-5rem)]">
       <AdminInteractionKeeper />
 
-      <div className="border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-5 py-4 sm:px-7 lg:px-9">
+      <div
+        data-sep-interaction-ignore="true"
+        className="border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-5 py-4 sm:px-7 lg:px-9"
+      >
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8b704e))]">

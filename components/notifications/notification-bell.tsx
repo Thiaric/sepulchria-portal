@@ -64,6 +64,8 @@ export function NotificationBell() {
     useState(true);
   const [changingMute, setChangingMute] =
     useState(false);
+  const [search, setSearch] =
+    useState("");
 
   const [panelPosition, setPanelPosition] =
     useState({
@@ -249,6 +251,50 @@ export function NotificationBell() {
       : rows.filter(
           (row) => row.is_unread,
         ).length;
+
+  const visibleRows =
+    useMemo(() => {
+      const query =
+        search
+          .trim()
+          .toLocaleLowerCase();
+
+      if (!query) {
+        return rows;
+      }
+
+      return rows.filter(
+        (row) => {
+          const date =
+            new Date(
+              row.starts_at,
+            );
+
+          const searchable = [
+            row.type,
+            row.title,
+            row.body,
+            row.href ?? "",
+            row.is_automatic
+              ? "automatic auto"
+              : "manual",
+            row.is_unread
+              ? "unread new"
+              : "read viewed",
+            row.starts_at,
+            date.toLocaleString(),
+            date.toLocaleDateString(),
+            date.toLocaleTimeString(),
+          ]
+            .join(" ")
+            .toLocaleLowerCase();
+
+          return searchable.includes(
+            query,
+          );
+        },
+      );
+    }, [rows, search]);
 
   async function toggle() {
     const next = !open;
@@ -441,6 +487,28 @@ export function NotificationBell() {
                     )}
                   </button>
                 </div>
+
+                {!muted ? (
+                  <div className="mt-3">
+                    <input
+                      type="search"
+                      value={search}
+                      onChange={(event) =>
+                        setSearch(
+                          event.target.value,
+                        )
+                      }
+                      placeholder="Filter notifications..."
+                      aria-label="Filter notifications"
+                      className="h-8 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-0d0907))] px-3 text-[10px] text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))]"
+                    />
+                    {search.trim() ? (
+                      <p className="mt-1 text-right text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))]">
+                        {visibleRows.length} / {rows.length}
+                      </p>
+                    ) : null}
+                  </div>
+                ) : null}
               </div>
 
               <div className="max-h-[min(65vh,560px)] overflow-y-auto p-2">
@@ -464,9 +532,9 @@ export function NotificationBell() {
                       them.
                     </p>
                   </div>
-                ) : rows.length ? (
+                ) : visibleRows.length ? (
                   <div className="space-y-1.5">
-                    {rows.map(
+                    {visibleRows.map(
                       (row) => {
                         const content =
                           (
@@ -559,8 +627,9 @@ export function NotificationBell() {
                   </div>
                 ) : (
                   <p className="px-4 py-8 text-center text-xs text-[rgb(var(--sep-colour-8f8271))]">
-                    Nothing to
-                    report.
+                    {search.trim()
+                      ? "No matching notifications."
+                      : "Nothing to report."}
                   </p>
                 )}
               </div>
