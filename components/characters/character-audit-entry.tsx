@@ -24,7 +24,7 @@ export function CharacterAuditEntry({
   const dateLabel = formatAuditDateTime(row.created_at);
 
   return (
-    <article data-sep-interaction-fixed="true" className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4">
+    <article data-sep-interaction-ignore="true" className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="min-w-0">
           <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-96774f))]">

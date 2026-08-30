@@ -370,6 +370,7 @@ const HALL_OF_RENOWN_BOARDS = [
   ["shapes", "Warping", "Shape Masters"],
   ["feats", "Feats", "Feat Masters"],
   ["recipes", "Crafting", "Recipe Masters"],
+  ["gathering", "Gathering", "Gatherers"],
   ["market", "Market", "Market Regulars"],
   ["odd-jobs", "Work", "Odd Job Workers"],
   ["gamblers", "House of Chances", "Gamblers"],

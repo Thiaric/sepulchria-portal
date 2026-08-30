@@ -152,6 +152,45 @@ export function auditSummary(row: CharacterAuditDisplayBase) {
         ingredients ? `Used: ${ingredients}` : null,
       ].filter(Boolean).join(" · ");
     }
+
+    if (row.event_type === "market_purchase") {
+      return `Bought ${Number(after.quantity ?? 1)} × ${String(after.item_name ?? "Item")} from ${String(after.shop_name ?? "the Market")} for ${Number(after.remnants_spent ?? 0)} Remnants`;
+    }
+
+    if (row.event_type === "market_sale") {
+      return `Sold ${Number(after.quantity ?? 1)} × ${String(after.item_name ?? "Item")} to ${String(after.shop_name ?? "the Market")} for ${Number(after.remnants_received ?? 0)} Remnants`;
+    }
+
+    if (row.event_type === "gathering") {
+      return `Found ${Number(after.quantity ?? 1)} × ${String(after.item_name ?? "Item")} at ${String(after.location_name ?? "a Gathering location")}`;
+    }
+
+    if (row.event_type === "house_of_chances") {
+      return `Won ${Number(after.quantity ?? 1)} × ${String(after.item_name ?? "Item")} at the House of Chances`;
+    }
+
+    if (row.event_type === "recipe_learned") {
+      return `Learned recipe: ${String(after.recipe_name ?? "Unknown recipe")}`;
+    }
+
+    if (row.event_type === "item_discarded") {
+      return `Discarded ${Number(after.quantity ?? 1)} × ${String(after.item_name ?? "Item")}`;
+    }
+
+    if (row.event_type === "item_used") {
+      const target = String(after.target_name ?? "");
+      return target && target !== "Self"
+        ? `Used ${String(after.item_name ?? "Item")} on ${target}`
+        : `Used ${String(after.item_name ?? "Item")}`;
+    }
+
+    if (row.event_type === "staff_item_grant") {
+      return `Staff granted ${Number(after.quantity ?? 1)} × ${String(after.item_name ?? "Item")}`;
+    }
+
+    if (row.event_type === "staff_item_removal") {
+      return `Staff removed ${Number(after.quantity ?? 1)} × ${String(after.item_name ?? "Item")}`;
+    }
   }
 
   if (
@@ -261,6 +300,10 @@ export function auditSummary(row: CharacterAuditDisplayBase) {
 export function auditChangeRows(row: CharacterAuditDisplayBase) {
   const before = row.old_values ?? {};
   const after = row.new_values ?? {};
+
+  if (row.operation === "event") {
+    return [];
+  }
 
   const rows =
     row.operation === "update"

@@ -144,6 +144,17 @@ const boards: BoardDefinition[] = [
     valueLabel: "Recipes",
   },
   {
+    key: "gathering",
+    label: "Gatherers",
+    eyebrow: "Gathering",
+    description:
+      "Those who have made the greatest number of Gathering attempts across Sepulchria.",
+    metricKeys: [
+      "gathering_attempts_total",
+    ],
+    valueLabel: "Attempts",
+  },
+  {
     key: "market",
     label: "Market Regulars",
     eyebrow: "Market",

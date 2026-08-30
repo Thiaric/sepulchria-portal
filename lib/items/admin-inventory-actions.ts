@@ -129,7 +129,7 @@ function uniqueOverrides(formData: FormData) {
 }
 
 export async function grantStandardItem(formData: FormData) {
-  const staff = await requireStaffCapability("character_economy");
+  await requireStaffCapability("character_economy");
   const supabase = await createClient();
 
   let characterId = "";
@@ -138,11 +138,9 @@ export async function grantStandardItem(formData: FormData) {
     characterId = requiredText(formData, "characterId", "Character");
     const itemId = requiredText(formData, "itemId", "Item");
 
-    if (!isUuid(characterId)) throw new Error("Invalid character.");
-
-    const item = await getItem(itemId);
-
-    
+    if (!isUuid(characterId) || !isUuid(itemId)) {
+      throw new Error("Invalid Character or Item.");
+    }
 
     const quantity = integer(formData, "quantity", 1) ?? 1;
     if (quantity < 1 || quantity > 9999) {
@@ -154,132 +152,17 @@ export async function grantStandardItem(formData: FormData) {
       throw new Error("Invalid container.");
     }
 
-    if (
-      item.categorySlug === "container" ||
-      item.use_behaviour === "limited_charges"
-    ) {
-      if (item.categorySlug === "container" && containerId) {
-        throw new Error(
-          "A Container cannot be granted inside another Container from this panel.",
-        );
-      }
+    const { error } = await supabase.rpc(
+      "staff_grant_inventory_item",
+      {
+        p_character_id: characterId,
+        p_item_id: itemId,
+        p_quantity: quantity,
+        p_container_instance_id: containerId,
+      },
+    );
 
-      if (item.use_behaviour === "limited_charges" && containerId) {
-        throw new Error(
-          "Limited-charge Items must be granted as individual Items before being moved into Containers.",
-        );
-      }
-
-      for (let index = 0; index < quantity; index += 1) {
-        const { error } = await supabase
-          .from("character_item_instances")
-          .insert({
-            item_id: itemId,
-            owner_character_id: characterId,
-            charges_remaining:
-              item.use_behaviour === "limited_charges"
-                ? item.max_charges
-                : null,
-            vault_status: "owned",
-            acquisition_source: "staff",
-            assigned_by: staff.userId,
-          });
-
-        if (error) throw new Error(error.message);
-      }
-    } else if (!item.stackable) {
-      const rows = Array.from({ length: quantity }).map(() => ({
-        character_id: characterId,
-        item_id: itemId,
-        quantity: 1,
-        container_instance_id: containerId,
-        acquisition_source: "staff",
-        assigned_by: staff.userId,
-      }));
-
-      const { error } = await supabase.from("character_items").insert(rows);
-      if (error) throw new Error(error.message);
-    } else {
-      let existingQuery = supabase
-        .from("character_items")
-        .select("id, quantity")
-        .eq("character_id", characterId)
-        .eq("item_id", itemId);
-
-      existingQuery = containerId
-        ? existingQuery.eq("container_instance_id", containerId)
-        : existingQuery.is("container_instance_id", null);
-
-      const { data: existing, error: existingError } =
-        await existingQuery.order("acquired_at", { ascending: true });
-
-      if (existingError) throw new Error(existingError.message);
-
-      let remaining = quantity;
-
-      for (const row of existing ?? []) {
-        if (remaining <= 0) break;
-
-        if (item.max_stack === null) {
-          const { error } = await supabase
-            .from("character_items")
-            .update({ quantity: row.quantity + remaining })
-            .eq("id", row.id);
-
-          if (error) throw new Error(error.message);
-          remaining = 0;
-          break;
-        }
-
-        const free = Math.max(0, item.max_stack - row.quantity);
-        if (!free) continue;
-
-        const add = Math.min(free, remaining);
-
-        const { error } = await supabase
-          .from("character_items")
-          .update({ quantity: row.quantity + add })
-          .eq("id", row.id);
-
-        if (error) throw new Error(error.message);
-        remaining -= add;
-      }
-
-      while (remaining > 0) {
-        const stackSize =
-          item.max_stack === null
-            ? remaining
-            : Math.min(item.max_stack, remaining);
-
-        const { error } = await supabase.from("character_items").insert({
-          character_id: characterId,
-          item_id: itemId,
-          quantity: stackSize,
-          container_instance_id: containerId,
-          acquisition_source: "staff",
-          assigned_by: staff.userId,
-        });
-
-        if (error) throw new Error(error.message);
-        remaining -= stackSize;
-      }
-    }
-
-    if (item.categorySlug !== "container") {
-      const { error: normalizeError } = await supabase.rpc(
-        "normalize_character_inventory_stacks_staff",
-        {
-          p_character_id: characterId,
-        },
-      );
-
-      if (normalizeError) {
-        throw new Error(
-          "Item granted, but stacks could not be consolidated: " +
-            normalizeError.message,
-        );
-      }
-    }
+    if (error) throw new Error(error.message);
   } catch (error) {
     fail(
       formData,
@@ -300,48 +183,25 @@ export async function removeStandardItem(formData: FormData) {
     const rowId = requiredText(formData, "rowId", "Inventory record");
     if (!isUuid(rowId)) throw new Error("Invalid Inventory record.");
 
-    const { data: row, error } = await supabase
-      .from("character_items")
-      .select("character_id, quantity")
-      .eq("id", rowId)
-      .maybeSingle();
-
-    if (error || !row) throw new Error("Inventory record not found.");
-
-    characterId = row.character_id;
     const quantity = integer(formData, "quantity", 1) ?? 1;
-
-    if (quantity < 1) throw new Error("Removal quantity must be at least 1.");
-
-    if (quantity >= row.quantity) {
-      const { error: deleteError } = await supabase
-        .from("character_items")
-        .delete()
-        .eq("id", rowId);
-
-      if (deleteError) throw new Error(deleteError.message);
-    } else {
-      const { error: updateError } = await supabase
-        .from("character_items")
-        .update({ quantity: row.quantity - quantity })
-        .eq("id", rowId);
-
-      if (updateError) throw new Error(updateError.message);
+    if (quantity < 1) {
+      throw new Error("Removal quantity must be at least 1.");
     }
 
-    const { error: normalizeError } = await supabase.rpc(
-      "normalize_character_inventory_stacks_staff",
+    const { data, error } = await supabase.rpc(
+      "staff_remove_standard_inventory_item",
       {
-        p_character_id: characterId,
+        p_record_id: rowId,
+        p_quantity: quantity,
       },
     );
 
-    if (normalizeError) {
-      throw new Error(
-        "Item removed, but remaining stacks could not be consolidated: " +
-          normalizeError.message,
-      );
+    if (error) throw new Error(error.message);
+    if (typeof data !== "string" || !isUuid(data)) {
+      throw new Error("Unable to identify the Character.");
     }
+
+    characterId = data;
   } catch (error) {
     fail(
       formData,
@@ -393,7 +253,7 @@ export async function moveStandardItem(formData: FormData) {
 }
 
 export async function createUniqueItemForCharacter(formData: FormData) {
-  const staff = await requireStaffCapability("character_economy");
+  await requireStaffCapability("character_economy");
   const supabase = await createClient();
 
   let characterId = "";
@@ -402,46 +262,34 @@ export async function createUniqueItemForCharacter(formData: FormData) {
     characterId = requiredText(formData, "characterId", "Character");
     const itemId = requiredText(formData, "itemId", "Item");
 
-    if (!isUuid(characterId)) throw new Error("Invalid character.");
+    if (!isUuid(characterId) || !isUuid(itemId)) {
+      throw new Error("Invalid Character or Item.");
+    }
 
-    const item = await getItem(itemId);
     const containerId = optionalText(formData, "containerInstanceId");
-
     if (containerId && !isUuid(containerId)) {
       throw new Error("Invalid container.");
     }
 
-    const { data: instance, error } = await supabase
-      .from("character_item_instances")
-      .insert({
-        item_id: itemId,
-        owner_character_id: characterId,
-        ...uniqueOverrides(formData),
-        charges_remaining:
-          item.use_behaviour === "limited_charges" ? item.max_charges : null,
-        container_instance_id: containerId,
-        vault_status: "owned",
-        acquisition_source: "staff",
-        assigned_by: staff.userId,
-      })
-      .select("id")
-      .single();
+    const o = uniqueOverrides(formData);
 
-    if (error || !instance) {
-      throw new Error(error?.message ?? "Unique Item could not be created.");
-    }
+    const { error } = await supabase.rpc(
+      "staff_create_unique_item_for_character",
+      {
+        p_character_id: characterId,
+        p_item_id: itemId,
+        p_container_instance_id: containerId,
+        p_custom_name: o.custom_name,
+        p_custom_description: o.custom_description,
+        p_custom_image_url: o.custom_image_url,
+        p_quality_override: o.quality_override,
+        p_transfer_policy_override: o.transfer_policy_override,
+        p_is_quest_item_override: o.is_quest_item_override,
+        p_notes: o.notes,
+      },
+    );
 
-    const { error: historyError } = await supabase
-      .from("item_instance_history")
-      .insert({
-        item_instance_id: instance.id,
-        to_character_id: characterId,
-        actor_user_id: staff.userId,
-        event_type: "created_and_granted",
-        details: "Created as an individual Item instance and granted by staff.",
-      });
-
-    if (historyError) throw new Error(historyError.message);
+    if (error) throw new Error(error.message);
   } catch (error) {
     fail(
       formData,
