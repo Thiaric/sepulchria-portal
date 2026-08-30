@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Bell } from "lucide-react";
 import { createPortal } from "react-dom";
+import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { createClient } from "@/lib/supabase/client";
@@ -19,6 +20,7 @@ type NotificationRow = {
 };
 
 export function NotificationBell() {
+  const pathname = usePathname();
   const supabase = useMemo(() => createClient(), []);
   const rootRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -46,9 +48,29 @@ export function NotificationBell() {
 
   useEffect(() => {
     void load();
-    const timer = window.setInterval(() => void load(), 60_000);
-    return () => window.clearInterval(timer);
-  }, [load]);
+
+    const handleAdminDataChanged = () => {
+      void load();
+    };
+
+    window.addEventListener(
+      "sepulchria:admin-data-changed",
+      handleAdminDataChanged,
+    );
+
+    const timer = window.setInterval(
+      () => void load(),
+      60_000,
+    );
+
+    return () => {
+      window.clearInterval(timer);
+      window.removeEventListener(
+        "sepulchria:admin-data-changed",
+        handleAdminDataChanged,
+      );
+    };
+  }, [load, pathname]);
 
   useEffect(() => {
     function updatePanelPosition() {
@@ -126,8 +148,12 @@ export function NotificationBell() {
       >
         <Bell className="h-5 w-5" />
         {unreadCount > 0 ? (
-          <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full border border-[rgb(var(--sep-colour-17120f))] bg-red-700 px-1 text-[8px] font-bold leading-none text-white">
-            {unreadCount > 99 ? "99+" : unreadCount}
+          <span
+            title={`${unreadCount} unread notification${unreadCount === 1 ? "" : "s"}`}
+            aria-label={`${unreadCount} unread notification${unreadCount === 1 ? "" : "s"}`}
+            className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full border border-[rgb(var(--sep-colour-d19a4c))] bg-[rgb(var(--sep-colour-7a291f))] text-[8px] font-bold leading-none text-[rgb(var(--sep-colour-ffe1ac))] shadow-[0_0_10px_rgba(var(--sep-rgb-209-154-76),0.32)]"
+          >
+            {unreadCount > 9 ? "9+" : unreadCount}
           </span>
         ) : null}
       </button>

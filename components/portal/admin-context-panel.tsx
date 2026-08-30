@@ -220,7 +220,7 @@ export function AdminContextPanel({
 
   if (mode === "notifications") {
     return (
-      <AdminNavigationContext />
+      <AdminNotificationsNavigatorContext />
     );
   }
 
@@ -1221,6 +1221,173 @@ function AdminCodexNavigatorContext() {
     </div>
   );
 }
+
+type AdminNotificationContextEntry = {
+  id: string;
+  title: string;
+  type: string;
+  body: string;
+  source: string;
+  active: boolean;
+};
+
+function AdminNotificationsNavigatorContext() {
+  const [entries, setEntries] =
+    useState<AdminNotificationContextEntry[]>([]);
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    const readEntries = () => {
+      const nodes = Array.from(
+        document.querySelectorAll<HTMLElement>(
+          "[data-admin-notification-id]",
+        ),
+      );
+
+      setEntries(
+        nodes.map((node) => ({
+          id: node.dataset.adminNotificationId ?? "",
+          title: node.dataset.adminNotificationTitle ?? "Untitled Notification",
+          type: node.dataset.adminNotificationType ?? "",
+          body: node.dataset.adminNotificationBody ?? "",
+          source: node.dataset.adminNotificationSource ?? "",
+          active: node.dataset.adminNotificationActive === "true",
+        })),
+      );
+    };
+
+    readEntries();
+    const frame = window.requestAnimationFrame(readEntries);
+
+    const handleChanged = () => {
+      window.requestAnimationFrame(readEntries);
+    };
+
+    window.addEventListener(
+      "sepulchria:admin-data-changed",
+      handleChanged,
+    );
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener(
+        "sepulchria:admin-data-changed",
+        handleChanged,
+      );
+    };
+  }, []);
+
+  const query = search.trim().toLocaleLowerCase();
+
+  const visibleEntries = entries.filter((entry) => {
+    if (!query) return true;
+
+    return [
+      entry.title,
+      entry.type,
+      entry.body,
+      entry.source,
+    ]
+      .join(" ")
+      .toLocaleLowerCase()
+      .includes(query);
+  });
+
+  function jumpToNotification(id: string) {
+    const target = document.getElementById(
+      `admin-notification-${id}`,
+    );
+
+    if (!target) return;
+
+    if (target instanceof HTMLDetailsElement) {
+      target.open = true;
+    }
+
+    target.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }
+
+  function jumpToNew() {
+    document
+      .getElementById("notification-new")
+      ?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+  }
+
+  return (
+    <div className="flex h-full min-h-0 flex-col">
+      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+        Notification administration
+      </p>
+
+      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+        Jump to Notification
+      </h2>
+
+      <button
+        type="button"
+        onClick={jumpToNew}
+        className="mt-4 w-full border border-[rgb(var(--sep-colour-765937))]/65 bg-[rgb(var(--sep-colour-21170f))] px-3 py-2.5 text-left text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d9c092))] transition hover:border-[rgb(var(--sep-colour-a07945))]"
+      >
+        + Create new notification
+      </button>
+
+      <input
+        type="search"
+        value={search}
+        onChange={(event) => setSearch(event.target.value)}
+        placeholder="Search notifications..."
+        className="mt-3 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))]"
+      />
+
+      <p className="mb-2 mt-4 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))]">
+        Notifications · {visibleEntries.length}
+        {query ? ` / ${entries.length}` : ""}
+      </p>
+
+      <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">
+        {visibleEntries.length ? (
+          visibleEntries.map((entry) => (
+            <button
+              key={entry.id}
+              type="button"
+              onClick={() => jumpToNotification(entry.id)}
+              className="group flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))]"
+            >
+              <span className="min-w-0">
+                <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
+                  {entry.title}
+                </span>
+
+                <span className="mt-0.5 block truncate text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))]">
+                  {entry.type}
+                  {" · "}
+                  {entry.source}
+                  {" · "}
+                  {entry.active ? "Active" : "Disabled"}
+                </span>
+              </span>
+
+              <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))]">
+                →
+              </span>
+            </button>
+          ))
+        ) : (
+          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))]">
+            No matching notifications.
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
 
 type AdminNavigationEntry = {
   section: AdminSection;

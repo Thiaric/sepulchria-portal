@@ -213,10 +213,6 @@ export async function deleteNotification(formData: FormData) {
   const admin = createAdminClient();
   const notificationId = uuid(text(formData, "notificationId"), "Notification");
 
-  if (String(text(formData, "confirmation")).toUpperCase() !== "DELETE") {
-    throw new Error('Type "DELETE" to confirm.');
-  }
-
   const { data: existing, error: loadError } = await admin
     .from("notifications")
     .select("is_automatic, source_type, source_id, source_trigger")

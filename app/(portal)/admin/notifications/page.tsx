@@ -230,7 +230,10 @@ export default async function NotificationsAdminPage() {
 
   return (
     <main className="mx-auto max-w-6xl space-y-5 p-4 sm:p-5 lg:p-6">
-      <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5">
+      <section
+        id="notification-new"
+        className="scroll-mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5"
+      >
         <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">Offgame notification centre</p>
         <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dec69a))]">Create Notification</h2>
 
@@ -249,7 +252,21 @@ export default async function NotificationsAdminPage() {
 
         <div className="mt-4 space-y-3">
           {notifications.map((notification) => (
-            <details key={notification.id} className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))]">
+            <details
+              key={notification.id}
+              id={`admin-notification-${notification.id}`}
+              data-admin-notification-id={notification.id}
+              data-admin-notification-title={notification.title}
+              data-admin-notification-type={notification.type}
+              data-admin-notification-body={notification.body}
+              data-admin-notification-source={
+                notification.is_automatic
+                  ? `${notification.source_type ?? "system"} ${notification.source_trigger ?? "generated"}`
+                  : "manual"
+              }
+              data-admin-notification-active={notification.is_active ? "true" : "false"}
+              className="scroll-mt-6 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))]"
+            >
               <summary className="cursor-pointer list-none px-4 py-3">
                 <div className="flex items-center justify-between gap-4">
                   <div className="min-w-0">
@@ -287,10 +304,13 @@ export default async function NotificationsAdminPage() {
 
                   <AdminActionForm action={deleteNotification}>
                     <input type="hidden" name="notificationId" value={notification.id} />
-                    <div className="flex gap-2">
-                      <input name="confirmation" placeholder='Type "DELETE"' className="min-w-0 flex-1 border border-red-900/60 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2 text-xs text-red-200" />
-                      <button type="submit" className="border border-red-800/70 bg-red-950/35 px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-red-300">Delete</button>
-                    </div>
+                    <button
+                      type="submit"
+                      data-confirm-message="Delete this notification permanently? Automatic notifications will also be suppressed so they are not recreated."
+                      className="w-full border border-red-800/70 bg-red-950/35 px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-red-300"
+                    >
+                      Delete
+                    </button>
                   </AdminActionForm>
                 </div>
               </div>
