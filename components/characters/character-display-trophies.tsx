@@ -94,7 +94,7 @@ export async function CharacterDisplayTrophies({
           className="group relative inline-flex"
           tabIndex={0}
         >
-          <span className="flex h-8 w-8 items-center justify-center overflow-hidden bg-transparent">
+          <span className="flex h-10 w-10 items-center justify-center overflow-hidden bg-transparent">
             {trophy.icon_url ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img

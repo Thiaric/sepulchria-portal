@@ -133,6 +133,58 @@ export default async function AdminMissionsPage() {
               <div aria-hidden="true" />
             </div>
 
+            <div className="mt-3 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-3">
+              <p className="text-[8px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-806b50))]">
+                Random secondary reward
+              </p>
+
+              <div className="mt-2 grid gap-3 md:grid-cols-[1fr_120px_120px]">
+                <label className="text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-8f7858))]">
+                  Reward pool
+                  <select
+                    name="reward_random_kind"
+                    defaultValue={mission.reward_random_kind ?? "none"}
+                    className="mt-1 w-full border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 normal-case tracking-normal text-xs text-[rgb(var(--sep-colour-d5c09b))] outline-none"
+                  >
+                    <option value="none">None</option>
+                    <option value="ingredient_common">Common Ingredient</option>
+                    <option value="ingredient_rare">Rare Ingredient</option>
+                    <option value="random_item">Random Item</option>
+                  </select>
+                </label>
+
+                <label className="text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-8f7858))]">
+                  Chance %
+                  <input
+                    name="reward_random_chance_pct"
+                    type="number"
+                    min={0}
+                    max={100}
+                    step={1}
+                    defaultValue={mission.reward_random_chance_pct ?? 0}
+                    className="mt-1 w-full border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 normal-case tracking-normal text-xs text-[rgb(var(--sep-colour-d5c09b))] outline-none"
+                  />
+                </label>
+
+                <label className="text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-8f7858))]">
+                  Quantity
+                  <input
+                    name="reward_random_quantity"
+                    type="number"
+                    min={0}
+                    step={1}
+                    defaultValue={mission.reward_random_quantity ?? 0}
+                    className="mt-1 w-full border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 normal-case tracking-normal text-xs text-[rgb(var(--sep-colour-d5c09b))] outline-none"
+                  />
+                </label>
+              </div>
+
+              <p className="mt-2 text-[10px] leading-4 text-[rgb(var(--sep-colour-746856))]">
+                Rolled once when the Character&apos;s UTC day is created and then snapshotted.
+                A fixed Reward Item takes priority over this random pool.
+              </p>
+            </div>
+
             <p className="mt-2 text-[10px] text-[rgb(var(--sep-colour-746856))]">
               {mission.family} · {mission.objective_type} · {mission.code}
             </p>
@@ -198,6 +250,58 @@ export default async function AdminMissionsPage() {
 
                 <div aria-hidden="true" />
               </div>
+            <div className="mt-3 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-3">
+              <p className="text-[8px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-806b50))]">
+                Random secondary reward
+              </p>
+
+              <div className="mt-2 grid gap-3 md:grid-cols-[1fr_120px_120px]">
+                <label className="text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-8f7858))]">
+                  Reward pool
+                  <select
+                    name="reward_random_kind"
+                    defaultValue={milestone.reward_random_kind ?? "none"}
+                    className="mt-1 w-full border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 normal-case tracking-normal text-xs text-[rgb(var(--sep-colour-d5c09b))] outline-none"
+                  >
+                    <option value="none">None</option>
+                    <option value="ingredient_common">Common Ingredient</option>
+                    <option value="ingredient_rare">Rare Ingredient</option>
+                    <option value="random_item">Random Item</option>
+                  </select>
+                </label>
+
+                <label className="text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-8f7858))]">
+                  Chance %
+                  <input
+                    name="reward_random_chance_pct"
+                    type="number"
+                    min={0}
+                    max={100}
+                    step={1}
+                    defaultValue={milestone.reward_random_chance_pct ?? 0}
+                    className="mt-1 w-full border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 normal-case tracking-normal text-xs text-[rgb(var(--sep-colour-d5c09b))] outline-none"
+                  />
+                </label>
+
+                <label className="text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-8f7858))]">
+                  Quantity
+                  <input
+                    name="reward_random_quantity"
+                    type="number"
+                    min={0}
+                    step={1}
+                    defaultValue={milestone.reward_random_quantity ?? 0}
+                    className="mt-1 w-full border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 normal-case tracking-normal text-xs text-[rgb(var(--sep-colour-d5c09b))] outline-none"
+                  />
+                </label>
+              </div>
+
+              <p className="mt-2 text-[10px] leading-4 text-[rgb(var(--sep-colour-746856))]">
+                Rolled once when the Character&apos;s UTC day is created and then snapshotted.
+                A fixed Reward Item takes priority over this random pool.
+              </p>
+            </div>
+
             </AdminMissionForm>
           ))}
         </div>

@@ -19,6 +19,13 @@ function failure(message: string): AdminMissionActionState {
   return { ok: false, message };
 }
 
+const RANDOM_REWARD_KINDS = [
+  "none",
+  "ingredient_common",
+  "ingredient_rare",
+  "random_item",
+];
+
 export async function updateDailyMissionDefinition(
   _previousState: AdminMissionActionState,
   formData: FormData,
@@ -33,6 +40,14 @@ export async function updateDailyMissionDefinition(
     const rewardRemnants = Number(text(formData, "reward_remnants"));
     const rewardItemQuantity = Number(text(formData, "reward_item_quantity"));
     const rewardItemId = text(formData, "reward_item_id") || null;
+    const rewardRandomKind =
+      text(formData, "reward_random_kind") || "none";
+    const rewardRandomChancePct = Number(
+      text(formData, "reward_random_chance_pct"),
+    );
+    const rewardRandomQuantity = Number(
+      text(formData, "reward_random_quantity"),
+    );
     const isActive = formData.get("is_active") === "on";
     const countsToward =
       formData.get("counts_toward_milestones") === "on";
@@ -54,6 +69,25 @@ export async function updateDailyMissionDefinition(
       return failure("Item quantity must be zero or more.");
     }
 
+    if (!RANDOM_REWARD_KINDS.includes(rewardRandomKind)) {
+      return failure("Random reward type is not valid.");
+    }
+
+    if (
+      !Number.isSafeInteger(rewardRandomChancePct) ||
+      rewardRandomChancePct < 0 ||
+      rewardRandomChancePct > 100
+    ) {
+      return failure("Random reward chance must be between 0 and 100.");
+    }
+
+    if (
+      !Number.isSafeInteger(rewardRandomQuantity) ||
+      rewardRandomQuantity < 0
+    ) {
+      return failure("Random reward quantity must be zero or more.");
+    }
+
     const missionName =
       text(formData, "name") || "Daily Mission";
 
@@ -67,6 +101,11 @@ export async function updateDailyMissionDefinition(
         reward_remnants: rewardRemnants,
         reward_item_id: rewardItemId,
         reward_item_quantity: rewardItemId ? rewardItemQuantity : 0,
+        reward_random_kind: rewardRandomKind,
+        reward_random_chance_pct:
+          rewardRandomKind === "none" ? 0 : rewardRandomChancePct,
+        reward_random_quantity:
+          rewardRandomKind === "none" ? 0 : rewardRandomQuantity,
         is_active: isActive,
         counts_toward_milestones: countsToward,
       })
@@ -129,6 +168,14 @@ export async function updateDailyMilestoneDefinition(
       text(formData, "reward_item_quantity"),
     );
     const rewardItemId = text(formData, "reward_item_id") || null;
+    const rewardRandomKind =
+      text(formData, "reward_random_kind") || "none";
+    const rewardRandomChancePct = Number(
+      text(formData, "reward_random_chance_pct"),
+    );
+    const rewardRandomQuantity = Number(
+      text(formData, "reward_random_quantity"),
+    );
 
     if (!milestoneKey) return failure("Milestone is required.");
 
@@ -143,6 +190,25 @@ export async function updateDailyMilestoneDefinition(
       return failure("Item quantity must be zero or more.");
     }
 
+    if (!RANDOM_REWARD_KINDS.includes(rewardRandomKind)) {
+      return failure("Random reward type is not valid.");
+    }
+
+    if (
+      !Number.isSafeInteger(rewardRandomChancePct) ||
+      rewardRandomChancePct < 0 ||
+      rewardRandomChancePct > 100
+    ) {
+      return failure("Random reward chance must be between 0 and 100.");
+    }
+
+    if (
+      !Number.isSafeInteger(rewardRandomQuantity) ||
+      rewardRandomQuantity < 0
+    ) {
+      return failure("Random reward quantity must be zero or more.");
+    }
+
     const milestoneName =
       text(formData, "name") || "Daily Milestone";
 
@@ -154,6 +220,11 @@ export async function updateDailyMilestoneDefinition(
         reward_remnants: rewardRemnants,
         reward_item_id: rewardItemId,
         reward_item_quantity: rewardItemId ? rewardItemQuantity : 0,
+        reward_random_kind: rewardRandomKind,
+        reward_random_chance_pct:
+          rewardRandomKind === "none" ? 0 : rewardRandomChancePct,
+        reward_random_quantity:
+          rewardRandomKind === "none" ? 0 : rewardRandomQuantity,
         is_active: formData.get("is_active") === "on",
       })
       .eq("milestone_key", milestoneKey);

@@ -119,6 +119,77 @@ export function auditSummary(row: CharacterAuditDisplayBase) {
   const after = row.new_values ?? {};
 
   if (row.operation === "event") {
+    if (row.event_type === "daily_mission_evidence") {
+      const evidenceType = humanAuditLabel(
+        String(after.evidence_type ?? "mission evidence"),
+      );
+      const value = Number(after.value ?? 1);
+      const source = humanAuditLabel(
+        String(after.source_kind ?? "portal activity"),
+      );
+
+      return `Daily Mission evidence · ${evidenceType} +${value} · Source: ${source}`;
+    }
+
+    if (row.event_type === "daily_mission_progress") {
+      const name = String(after.mission_name ?? "Daily Mission");
+      const beforeProgress = Number(after.progress_before ?? 0);
+      const afterProgress = Number(after.progress_after ?? 0);
+      const target = Number(after.target ?? 0);
+
+      return `${name} progress · ${beforeProgress} → ${afterProgress} / ${target}`;
+    }
+
+    if (row.event_type === "daily_mission_completed") {
+      const name = String(after.mission_name ?? "Daily Mission");
+      const progress = Number(after.progress ?? 0);
+      const target = Number(after.target ?? 0);
+
+      return `Completed Daily Mission: ${name} · ${progress} / ${target}`;
+    }
+
+    if (row.event_type === "daily_milestone_completed") {
+      const name = String(after.milestone_name ?? "Daily Milestone");
+      const completed = Number(after.completed_missions ?? 0);
+      const required = Number(after.required_missions ?? 0);
+
+      return `Completed Daily Milestone: ${name} · ${completed} / ${required} missions`;
+    }
+
+    if (row.event_type === "daily_mission_reward_claimed") {
+      const name = String(after.mission_name ?? "Daily Mission");
+      const remnants = Number(after.reward_remnants ?? 0);
+      const itemName = String(after.reward_item_name ?? "");
+      const itemQuantity = Number(after.reward_item_quantity ?? 0);
+      const rewards: string[] = [];
+
+      if (remnants > 0) rewards.push(`${remnants} Remnants`);
+      if (itemName && itemQuantity > 0) {
+        rewards.push(`${itemQuantity} × ${itemName}`);
+      }
+
+      return `Claimed Daily Mission reward: ${name}${
+        rewards.length ? ` · ${rewards.join(" · ")}` : ""
+      }`;
+    }
+
+    if (row.event_type === "daily_milestone_reward_claimed") {
+      const name = String(after.milestone_name ?? "Daily Milestone");
+      const remnants = Number(after.reward_remnants ?? 0);
+      const itemName = String(after.reward_item_name ?? "");
+      const itemQuantity = Number(after.reward_item_quantity ?? 0);
+      const rewards: string[] = [];
+
+      if (remnants > 0) rewards.push(`${remnants} Remnants`);
+      if (itemName && itemQuantity > 0) {
+        rewards.push(`${itemQuantity} × ${itemName}`);
+      }
+
+      return `Claimed Daily Milestone reward: ${name}${
+        rewards.length ? ` · ${rewards.join(" · ")}` : ""
+      }`;
+    }
+
     if (row.event_type === "item_given") {
       return `Gave ${Number(after.quantity ?? 1)} × ${String(after.item_name ?? "Item")} to ${String(after.other_character_name ?? "another character")}`;
     }
