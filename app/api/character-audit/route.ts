@@ -13,8 +13,8 @@ import {
   createClient,
 } from "@/lib/supabase/server";
 import {
-  enrichCharacterAuditItemNames,
-} from "@/lib/audit/enrich-character-audit-items";
+  enrichCharacterAuditRows,
+} from "@/lib/audit/enrich-character-audit-context";
 
 type AuditRow = {
   id: string;
@@ -348,7 +348,7 @@ export async function GET(
     (data ?? []) as AuditRow[];
 
   const enrichedRows =
-    await enrichCharacterAuditItemNames(
+    await enrichCharacterAuditRows(
       rawRows,
     );
 
@@ -392,6 +392,8 @@ export async function GET(
           row.operation,
         item_name:
           row.item_name,
+        audit_context:
+          row.audit_context,
         actor_type:
           row.actor_type,
         actor_label:

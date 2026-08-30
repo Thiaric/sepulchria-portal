@@ -33,7 +33,7 @@ function jumpToRecord(id: string) {
 function readEntries(): Entry[] {
   return Array.from(
     document.querySelectorAll<HTMLElement>("[data-character-audit-id]"),
-  ).map((node) => ({
+  ).filter((node) => !node.hidden).map((node) => ({
     id: node.dataset.characterAuditId ?? "",
     character: node.dataset.characterAuditCharacter ?? "",
     event: node.dataset.characterAuditEvent ?? "",
@@ -59,7 +59,7 @@ export function CharacterAuditContextPanel() {
     read();
 
     const observer = new MutationObserver(read);
-    observer.observe(document.body, { childList: true, subtree: true });
+    observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["hidden"] });
 
     return () => {
       observer.disconnect();

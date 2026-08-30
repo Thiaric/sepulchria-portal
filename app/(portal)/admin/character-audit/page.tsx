@@ -1,15 +1,16 @@
-import Link from "next/link";
-
 import { CharacterAuditEntry } from "@/components/characters/character-audit-entry";
+import { CharacterAuditLiveFilter } from "@/components/admin/character-audit-live-filter";
 import {
   auditChangeRows,
+  auditEventLabel,
+  auditSourceLabel,
   auditSummary,
   formatAuditDateTime,
   humanAuditLabel,
 } from "@/lib/audit/character-audit-display";
 import {
-  enrichCharacterAuditItemNames,
-} from "@/lib/audit/enrich-character-audit-items";
+  enrichCharacterAuditRows,
+} from "@/lib/audit/enrich-character-audit-context";
 
 import {
   requireAdminSection,
@@ -130,7 +131,6 @@ export default async function CharacterAuditPage({
 }) {
   await requireAdminSection("character_logs");
 
-  const params = (await searchParams) ?? {};
   const admin = createAdminClient();
 
   const { data: characters, error: characterError } =
@@ -151,43 +151,6 @@ export default async function CharacterAuditPage({
     .select("*")
     .order("created_at", { ascending: false })
     .limit(500);
-
-  if (params.character) {
-    query = query.eq("character_id", params.character);
-  }
-
-  if (params.event?.trim()) {
-    query = query.ilike(
-      "event_type",
-      `%${params.event.trim()}%`,
-    );
-  }
-
-  if (
-    params.actor === "player" ||
-    params.actor === "staff" ||
-    params.actor === "system"
-  ) {
-    query = query.eq("actor_type", params.actor);
-  }
-
-  if (params.source?.trim()) {
-    query = query.ilike(
-      "source",
-      `%${params.source.trim()}%`,
-    );
-  }
-
-  const from = startOfDay(params.from);
-  const to = endOfDay(params.to);
-
-  if (from) {
-    query = query.gte("created_at", from);
-  }
-
-  if (to) {
-    query = query.lte("created_at", to);
-  }
 
   const { data, error } = await query;
 
@@ -213,34 +176,11 @@ export default async function CharacterAuditPage({
       );
 
   const enrichedRows =
-    await enrichCharacterAuditItemNames(
+    await enrichCharacterAuditRows(
       rawRows,
     );
 
-  const needle = params.q?.trim().toLowerCase() ?? "";
-
-  const rows = needle
-    ? enrichedRows.filter((row) =>
-        [
-          row.character_name_snapshot,
-          row.event_type,
-          row.entity_type,
-          row.entity_id,
-          row.actor_label,
-          row.actor_staff_role,
-          row.source,
-          row.item_name,
-          ...(row.changed_fields ?? []),
-          JSON.stringify(row.old_values ?? {}),
-          JSON.stringify(row.new_values ?? {}),
-          JSON.stringify(row.metadata ?? {}),
-        ]
-          .filter(Boolean)
-          .join(" ")
-          .toLowerCase()
-          .includes(needle),
-      )
-    : enrichedRows;
+  const rows = enrichedRows;
 
   return (
     <main className="p-5 sm:p-7 lg:p-9">
@@ -261,94 +201,7 @@ export default async function CharacterAuditPage({
           </p>
         </div>
 
-        <form
-          method="get"
-          className="mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4"
-        >
-          <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-4">
-            <input
-              type="search"
-              name="q"
-              defaultValue={params.q ?? ""}
-              placeholder="Search values, actor, event..."
-              className={input}
-            />
-
-            <select
-              name="character"
-              defaultValue={params.character ?? ""}
-              className={input}
-            >
-              <option value="">All Characters</option>
-              {(characters ?? []).map((character) => (
-                <option key={character.id} value={character.id}>
-                  {characterName(character as CharacterOption)}
-                </option>
-              ))}
-            </select>
-
-            <input
-              name="event"
-              defaultValue={params.event ?? ""}
-              placeholder="Event type..."
-              className={input}
-            />
-
-            <select
-              name="actor"
-              defaultValue={params.actor ?? ""}
-              className={input}
-            >
-              <option value="">All actors</option>
-              <option value="player">Player</option>
-              <option value="staff">Staff</option>
-              <option value="system">System</option>
-            </select>
-
-            <input
-              name="source"
-              defaultValue={params.source ?? ""}
-              placeholder="Source..."
-              className={input}
-            />
-
-            <input
-              type="date"
-              name="from"
-              defaultValue={params.from ?? ""}
-              title="From date"
-              className={input}
-            />
-
-            <input
-              type="date"
-              name="to"
-              defaultValue={params.to ?? ""}
-              title="To date"
-              className={input}
-            />
-
-            <div className="flex gap-2">
-              <button
-                type="submit"
-                className="h-9 flex-1 border border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-261b12))] px-3 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d5b785))]"
-              >
-                Apply Filters
-              </button>
-
-              <Link
-                href="/admin/character-audit"
-                className="inline-flex h-9 items-center border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-18110d))] px-3 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-ae9a7b))]"
-              >
-                Reset
-              </Link>
-            </div>
-          </div>
-
-          <p className="mt-3 text-right text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-716654))]">
-            Newest first · maximum 500 database results
-          </p>
-        </form>
+        <CharacterAuditLiveFilter characters={(characters ?? []) as CharacterOption[]} />
 
         <div className="mt-5 space-y-3">
           {rows.length === 0 ? (
@@ -370,9 +223,12 @@ export default async function CharacterAuditPage({
                   id={`character-audit-${row.id}`}
                   data-character-audit-id={row.id}
                   data-character-audit-character={characterLabel}
-                  data-character-audit-event={humanAuditLabel(row.event_type)}
+                  data-character-audit-character-id={row.character_id ?? ""}
+                  data-character-audit-actor-type={row.actor_type}
+                  data-character-audit-date-iso={row.created_at}
+                  data-character-audit-event={auditEventLabel(row)}
                   data-character-audit-actor={actorLabel}
-                  data-character-audit-source={row.source}
+                  data-character-audit-source={auditSourceLabel(row)}
                   data-character-audit-date={dateLabel}
                   data-character-audit-summary={summary}
                   className="scroll-mt-6"

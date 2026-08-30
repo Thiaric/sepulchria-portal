@@ -14,6 +14,7 @@ export type CharacterAuditDisplayBase = {
   metadata: Record<string, unknown> | null;
   created_at: string;
   item_name?: string | null;
+  audit_context?: string | null;
 };
 
 export const TECHNICAL_AUDIT_FIELDS = new Set([
@@ -32,6 +33,24 @@ export function formatAuditDateTime(value: string) {
 
 export function humanAuditLabel(value: string) {
   return value.replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+export function auditEventLabel(row: CharacterAuditDisplayBase) {
+  return row.audit_context
+    ? humanAuditLabel(row.audit_context)
+    : humanAuditLabel(row.event_type);
+}
+
+export function auditSourceLabel(row: CharacterAuditDisplayBase) {
+  return row.audit_context
+    ? humanAuditLabel(row.audit_context)
+    : humanAuditLabel(row.source);
+}
+
+export function auditRecordTypeLabel(row: CharacterAuditDisplayBase) {
+  return row.audit_context
+    ? humanAuditLabel(row.audit_context)
+    : humanAuditLabel(row.entity_type);
 }
 
 export function auditDisplayValue(value: unknown): string {
@@ -77,6 +96,41 @@ function isInventory(entityType: string) {
 export function auditSummary(row: CharacterAuditDisplayBase) {
   const before = row.old_values ?? {};
   const after = row.new_values ?? {};
+
+  if (
+    row.audit_context === "crafting" &&
+    isInventory(row.entity_type) &&
+    row.item_name
+  ) {
+    const beforeQty = qty(row, "before");
+    const afterQty = qty(row, "after");
+    let delta: number | null = null;
+
+    if (row.entity_type === "character_item_instances") {
+      delta =
+        row.operation === "insert"
+          ? 1
+          : row.operation === "delete"
+            ? -1
+            : 0;
+    } else if (row.operation === "insert") {
+      delta = afterQty ?? 1;
+    } else if (row.operation === "delete") {
+      delta = -(beforeQty ?? 1);
+    } else if (beforeQty !== null && afterQty !== null) {
+      delta = afterQty - beforeQty;
+    }
+
+    if (delta !== null && delta > 0) {
+      return `Crafted ${delta} × ${row.item_name}`;
+    }
+
+    if (delta !== null && delta < 0) {
+      return `Used ${Math.abs(delta)} × ${row.item_name} for Crafting`;
+    }
+
+    return `${row.item_name} changed during Crafting`;
+  }
 
   if (isInventory(row.entity_type) && row.item_name) {
     const beforeQty = qty(row, "before");

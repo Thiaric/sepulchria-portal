@@ -1,6 +1,9 @@
 import {
   auditChangeRows,
   auditDisplayValue,
+  auditEventLabel,
+  auditRecordTypeLabel,
+  auditSourceLabel,
   auditSummary,
   formatAuditDateTime,
   humanAuditLabel,
@@ -21,11 +24,11 @@ export function CharacterAuditEntry({
   const dateLabel = formatAuditDateTime(row.created_at);
 
   return (
-    <article className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4">
+    <article data-sep-interaction-fixed="true" className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="min-w-0">
           <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-96774f))]">
-            {humanAuditLabel(row.event_type)}
+            {auditEventLabel(row)}
           </p>
           {characterLabel ? (
             <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-d8bf91))]">
@@ -37,7 +40,7 @@ export function CharacterAuditEntry({
         <div className="shrink-0 text-right">
           <p className="text-[9px] text-[rgb(var(--sep-colour-b49d7b))]">{dateLabel}</p>
           <p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
-            {humanAuditLabel(row.operation)} · {humanAuditLabel(row.entity_type)}
+            {humanAuditLabel(row.operation)} · {auditRecordTypeLabel(row)}
           </p>
         </div>
       </div>
@@ -81,8 +84,8 @@ export function CharacterAuditEntry({
       <div className="mt-3 grid gap-2 sm:grid-cols-3">
         {[
           ["Actor", actorLabel],
-          ["Source", humanAuditLabel(row.source)],
-          ["Record type", humanAuditLabel(row.entity_type)],
+          ["Source", auditSourceLabel(row)],
+          ["Record type", auditRecordTypeLabel(row)],
         ].map(([label, value]) => (
           <div
             key={label}
@@ -107,6 +110,9 @@ export function CharacterAuditEntry({
           <div className="grid gap-2 text-[8px] sm:grid-cols-2">
             <p>Audit ID: {row.id}</p>
             <p>Entity ID: {row.entity_id ?? "—"}</p>
+            <p>Raw event: {humanAuditLabel(row.event_type)}</p>
+            <p>Raw source: {humanAuditLabel(row.source)}</p>
+            <p>Raw record type: {humanAuditLabel(row.entity_type)}</p>
             {row.item_name ? <p>Resolved Item: {row.item_name}</p> : null}
           </div>
 
