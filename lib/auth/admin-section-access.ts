@@ -33,6 +33,7 @@ export type AdminSection =
   | "users"
   | "new_register"
   | "house_of_chances"
+  | "gathering"
   | "world";
 
 export const ADMIN_SECTION_ROLES: Record<
@@ -67,6 +68,7 @@ export const ADMIN_SECTION_ROLES: Record<
   users: ["owner", "admin"],
   new_register: ["owner"],
   house_of_chances: ["owner", "admin"],
+  gathering: ["owner", "admin"],
   world: ["owner", "admin", "master"],
 };
 

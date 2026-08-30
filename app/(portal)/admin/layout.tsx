@@ -140,6 +140,12 @@ export default async function AdminLayout({
               </AdminNavigationLink>
             ) : null}
 
+            {can("gathering") ? (
+              <AdminNavigationLink href="/admin/gathering">
+                Gathering
+              </AdminNavigationLink>
+            ) : null}
+
             {can("items") ? (
               <AdminNavigationLink href="/admin/items/vault">
                 Item Vault
