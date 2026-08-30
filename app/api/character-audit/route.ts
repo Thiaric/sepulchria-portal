@@ -46,6 +46,7 @@ type AuditRow = {
     | Record<string, unknown>
     | null;
   created_at: string;
+  related_mutations?: AuditRow[];
 };
 
 const PLAYER_HIDDEN_KEYS =
@@ -86,6 +87,7 @@ function cleanValues(
 
   delete next.expertise;
   delete next.current_room_id;
+  delete next.current_health;
 
   if (staffView) {
     return next;
@@ -113,6 +115,8 @@ function cleanFields(
       key !== "expertise" &&
       key !==
         "current_room_id" &&
+      key !==
+        "current_health" &&
       (staffView ||
         (!PLAYER_HIDDEN_KEYS.has(
           key,

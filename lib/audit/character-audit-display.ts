@@ -162,11 +162,86 @@ export function auditSummary(row: CharacterAuditDisplayBase) {
     }
 
     if (row.event_type === "gathering") {
-      return `Found ${Number(after.quantity ?? 1)} × ${String(after.item_name ?? "Item")} at ${String(after.location_name ?? "a Gathering location")}`;
+      const location = String(after.location_name ?? "a Gathering location");
+
+      if (after.outcome_type === "nothing") {
+        return `Searched ${location} · Found nothing`;
+      }
+
+      const remnants = Number(after.remnants ?? 0);
+      if (remnants > 0) {
+        return `Found ${remnants} Remnants at ${location}`;
+      }
+
+      return `Found ${Number(after.quantity ?? 1)} × ${String(after.item_name ?? "Item")} at ${location}`;
     }
 
     if (row.event_type === "house_of_chances") {
+      const cost = Number(after.cost_paid ?? 0);
+      const remnantsWon = Number(after.remnants_won ?? 0);
+      const prizeItems = Array.isArray(after.prize_items)
+        ? semanticItemList(after.prize_items)
+        : "";
+
+      if (cost > 0 || remnantsWon > 0 || prizeItems) {
+        const parts = [
+          cost > 0
+            ? `Played the House of Chances for ${cost} Remnants`
+            : "Played the House of Chances",
+        ];
+
+        if (remnantsWon > 0) parts.push(`Won ${remnantsWon} Remnants`);
+        if (prizeItems) parts.push(`Won ${prizeItems}`);
+        if (remnantsWon <= 0 && !prizeItems) parts.push("No prize");
+
+        return parts.join(" · ");
+      }
+
       return `Won ${Number(after.quantity ?? 1)} × ${String(after.item_name ?? "Item")} at the House of Chances`;
+    }
+
+    if (row.event_type === "odd_job_completed") {
+      return `Completed ${String(after.job_name ?? "Odd Job")} · Earned ${Number(after.remnants_earned ?? 0)} Remnants`;
+    }
+
+    if (row.event_type === "breeze_rental") {
+      const days = Number(after.days ?? 0);
+      const spent = Number(after.remnants_spent ?? 0);
+      const lodging = String(after.lodging_name ?? "The Breeze Lodgings");
+
+      return [
+        `Rented ${lodging}`,
+        days > 0 ? `${days} ${days === 1 ? "day" : "days"}` : null,
+        spent > 0 ? `${spent} Remnants` : null,
+      ].filter(Boolean).join(" · ");
+    }
+
+    if (row.event_type === "shape_acquired") {
+      return `Acquired Shape: ${String(after.shape_name ?? "Unknown Shape")}`;
+    }
+
+    if (row.event_type === "shape_removed") {
+      return `Lost Shape: ${String(after.shape_name ?? "Unknown Shape")}`;
+    }
+
+    if (row.event_type === "feat_acquired") {
+      return `Acquired Feat: ${String(after.feat_name ?? "Unknown Feat")}`;
+    }
+
+    if (row.event_type === "feat_removed") {
+      return `Lost Feat: ${String(after.feat_name ?? "Unknown Feat")}`;
+    }
+
+    if (row.event_type === "feature_granted") {
+      return `Feature granted: ${humanAuditLabel(String(after.feature_key ?? "feature"))}`;
+    }
+
+    if (row.event_type === "feature_removed") {
+      return `Feature removed: ${humanAuditLabel(String(after.feature_key ?? "feature"))}`;
+    }
+
+    if (row.event_type === "health_adjusted") {
+      return `Health adjusted: ${auditDisplayValue(after.before_health)} → ${auditDisplayValue(after.after_health)}`;
     }
 
     if (row.event_type === "recipe_learned") {

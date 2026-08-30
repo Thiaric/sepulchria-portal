@@ -1,6 +1,7 @@
 import "server-only";
 
 import { enrichCharacterAuditItemNames } from "@/lib/audit/enrich-character-audit-items";
+import { enrichCharacterAuditDomainNames } from "@/lib/audit/enrich-character-audit-domain";
 
 type Row = {
   id: string;
@@ -101,8 +102,11 @@ export async function enrichCharacterAuditRows<T extends Row>(
     }
   >
 > {
-  const enriched =
+  const itemEnriched =
     await enrichCharacterAuditItemNames(rows);
+
+  const enriched =
+    await enrichCharacterAuditDomainNames(itemEnriched);
 
   const groups = new Map<
     string,
