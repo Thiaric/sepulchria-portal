@@ -8,6 +8,7 @@ import { PortalSoundToggle } from "@/components/audio/portal-sound-toggle";
 import { PortalSkinSwitcher } from "@/components/portal/portal-skin-switcher";
 import { LogoutButton } from "@/components/logout-button";
 import { UnreadMessageBadge } from "@/components/messages/unread-message-badge";
+import { NotificationBell } from "@/components/notifications/notification-bell";
 import { ActiveCityCounter } from "@/components/portal/active-city-counter";
 import { HeaderCharacterIdentity } from "@/components/portal/header-character-identity";
 import { StaffAppearOfflineToggle } from "@/components/portal/staff-appear-offline-toggle";
@@ -72,6 +73,7 @@ export async function PortalHeader({ context }: PortalHeaderProps) {
             />
             <PortalSoundToggle />
             <PortalSkinSwitcher />
+            <NotificationBell />
 
             <PortalModalButton
   payload={{

@@ -28,6 +28,9 @@ type EventRow = {
   location_name: string | null;
   room_id: string | null;
   is_active: boolean;
+  notify_on_publish: boolean;
+  notify_24h: boolean;
+  notify_1h: boolean;
   created_at: string;
   updated_at: string;
 };
@@ -240,6 +243,47 @@ function EventFields({
         />
         Visible on calendar
       </label>
+
+      <div className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-0d0907))]/45 p-4">
+        <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+          Bell notifications
+        </p>
+        <p className="mt-1 text-[10px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+          Reminder timing follows Aureth game time, including pauses and time-scale changes.
+        </p>
+
+        <div className="mt-3 grid gap-2">
+          <label className="flex items-center gap-3 text-sm text-[rgb(var(--sep-colour-bbaa90))]">
+            <input
+              type="checkbox"
+              name="notifyOnPublish"
+              defaultChecked={event?.notify_on_publish ?? false}
+              className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))]"
+            />
+            Notify when published
+          </label>
+
+          <label className="flex items-center gap-3 text-sm text-[rgb(var(--sep-colour-bbaa90))]">
+            <input
+              type="checkbox"
+              name="notify24h"
+              defaultChecked={event?.notify_24h ?? false}
+              className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))]"
+            />
+            Notify 24 Aureth hours before
+          </label>
+
+          <label className="flex items-center gap-3 text-sm text-[rgb(var(--sep-colour-bbaa90))]">
+            <input
+              type="checkbox"
+              name="notify1h"
+              defaultChecked={event?.notify_1h ?? false}
+              className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))]"
+            />
+            Notify 1 Aureth hour before
+          </label>
+        </div>
+      </div>
     </div>
   );
 }
@@ -258,7 +302,7 @@ export default async function EventsAdminPage() {
     supabase
       .from("calendar_events")
       .select(
-        "id, title, description, event_date, start_time, end_time, location_name, room_id, is_active, created_at, updated_at",
+        "id, title, description, event_date, start_time, end_time, location_name, room_id, is_active, notify_on_publish, notify_24h, notify_1h, created_at, updated_at",
       )
       .order("event_date", {
         ascending: false,

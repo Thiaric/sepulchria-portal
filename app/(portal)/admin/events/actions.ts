@@ -235,6 +235,22 @@ export async function createCalendarEvent(
     formData.get("isActive"),
   );
 
+  const notifyOnPublish = readCheckbox(
+    formData.get("notifyOnPublish"),
+  );
+  const notify24h = readCheckbox(
+    formData.get("notify24h"),
+  );
+  const notify1h = readCheckbox(
+    formData.get("notify1h"),
+  );
+
+  if ((notify24h || notify1h) && !startTime) {
+    throw new Error(
+      "24-hour and 1-hour notifications require an Event start time.",
+    );
+  }
+
   const supabase =
     await createClient();
 
@@ -249,6 +265,9 @@ export async function createCalendarEvent(
       room_id: roomId,
       location_name: null,
       is_active: isActive,
+      notify_on_publish: notifyOnPublish,
+      notify_24h: notify24h,
+      notify_1h: notify1h,
       created_by: staff.userId,
     });
 
@@ -317,6 +336,22 @@ export async function updateCalendarEvent(
     formData.get("isActive"),
   );
 
+  const notifyOnPublish = readCheckbox(
+    formData.get("notifyOnPublish"),
+  );
+  const notify24h = readCheckbox(
+    formData.get("notify24h"),
+  );
+  const notify1h = readCheckbox(
+    formData.get("notify1h"),
+  );
+
+  if ((notify24h || notify1h) && !startTime) {
+    throw new Error(
+      "24-hour and 1-hour notifications require an Event start time.",
+    );
+  }
+
   const supabase =
     await createClient();
 
@@ -331,6 +366,9 @@ export async function updateCalendarEvent(
       room_id: roomId,
       location_name: null,
       is_active: isActive,
+      notify_on_publish: notifyOnPublish,
+      notify_24h: notify24h,
+      notify_1h: notify1h,
     })
     .eq("id", eventId);
 

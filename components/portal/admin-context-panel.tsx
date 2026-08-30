@@ -45,6 +45,7 @@ type ContextMode =
   | "character_detail"
   | "codex"
   | "media"
+  | "notifications"
   | "trophies"
   | "registrations"
   | "world"
@@ -126,6 +127,10 @@ function getMode(
 
   if (pathname === "/admin/media") {
     return "media";
+  }
+
+  if (pathname === "/admin/notifications") {
+    return "notifications";
   }
 
   if (pathname === "/admin/trophies") {
@@ -210,6 +215,12 @@ export function AdminContextPanel({
   if (mode === "media") {
     return (
       <AdminMediaNavigatorContext />
+    );
+  }
+
+  if (mode === "notifications") {
+    return (
+      <AdminNavigationContext />
     );
   }
 
@@ -1240,6 +1251,7 @@ const ADMIN_NAVIGATION_ENTRIES: AdminNavigationEntry[] = [
   { section: "communication_logs", label: "Logs", href: "/admin/communication-logs", aliases: ["communication logs"] },
   { section: "market", label: "Market", href: "/admin/market" },
   { section: "media", label: "Media", href: "/admin/media" },
+  { section: "notifications", label: "Notifications", href: "/admin/notifications", aliases: ["alerts", "bell"] },
   { section: "orders", label: "Orders", href: "/admin/orders" },
   { section: "orders", label: "Order Submissions", href: "/admin/order-submissions", aliases: ["submissions"] },
   { section: "overview", label: "Overview", href: "/admin" },
