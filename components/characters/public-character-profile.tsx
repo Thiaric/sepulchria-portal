@@ -31,6 +31,7 @@ type PublicCharacterProfileProps = {
   returnLabel: string | null;
   canMessage: boolean;
   canViewLastActivity: boolean;
+  canViewInventory: boolean;
   viewerIsStaff: boolean;
   canUseFriendList: boolean;
   isInFriendList: boolean;
@@ -85,6 +86,7 @@ export function PublicCharacterProfileView({
   returnLabel,
   canMessage,
   canViewLastActivity,
+  canViewInventory,
   viewerIsStaff,
   canUseFriendList,
   isInFriendList,
@@ -447,6 +449,9 @@ export function PublicCharacterProfileView({
           {activeTab === "inventory" ? (
             <CharacterInventoryDisplay
               characterId={character.id}
+              showInventoryItems={
+                canViewInventory
+              }
             />
           ) : null}
         </div>

@@ -765,6 +765,9 @@ export async function updateApprovedCharacterProfile(
   const showLastActivity =
     formData.get("show_last_activity") === "true";
 
+  const showInventory =
+    formData.get("show_inventory") === "true";
+
   if (!physicalDescription) {
     redirectCharacterError(
       "Physical description is required.",
@@ -800,7 +803,8 @@ export async function updateApprovedCharacterProfile(
       public_notes,
       relationships,
       offgame,
-      show_last_activity
+      show_last_activity,
+      show_inventory
     `)
     .eq("user_id", user.id)
     .maybeSingle();
@@ -890,6 +894,12 @@ export async function updateApprovedCharacterProfile(
     "show_last_activity",
     character.show_last_activity,
     showLastActivity,
+  );
+
+  setIfChanged(
+    "show_inventory",
+    character.show_inventory,
+    showInventory,
   );
 
   if (

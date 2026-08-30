@@ -487,9 +487,11 @@ function itemEffects(
 export async function CharacterInventoryDisplay({
   characterId,
   own = false,
+  showInventoryItems = true,
 }: {
   characterId: string;
   own?: boolean;
+  showInventoryItems?: boolean;
 }) {
   const supabase =
     await createClient();
@@ -511,8 +513,19 @@ export async function CharacterInventoryDisplay({
     );
   }
 
-  const rows =
+  const allRows =
     (data ?? []) as unknown as InventoryRow[];
+
+  const inventoryItemsVisible =
+    own || showInventoryItems;
+
+  const rows =
+    inventoryItemsVisible
+      ? allRows
+      : allRows.filter(
+          (row) =>
+            row.is_equipped === true,
+        );
 
   const itemIds = [
     ...new Set(
@@ -946,6 +959,9 @@ export async function CharacterInventoryDisplay({
       }
       own={own}
       useTargets={useTargets}
+      showInventoryItems={
+        inventoryItemsVisible
+      }
     />
   );
 }

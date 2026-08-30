@@ -171,7 +171,7 @@ const missionsItem: NavigationItem = {
   label: "Daily Missions",
   title:
     "Review today's missions, progress and rewards.",
-  icon: "/icons/ranking.png",
+  icon: "/icons/missions.png",
   href: "/missions",
   activePaths: ["/missions"],
   opensModal: true,

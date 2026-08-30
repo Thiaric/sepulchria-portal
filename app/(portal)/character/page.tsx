@@ -69,6 +69,7 @@ type CharacterProfile = {
   gender?: string | null;
   sexual_orientation?: string | null;
   show_last_activity?: boolean | null;
+  show_inventory?: boolean | null;
 
   status?: CharacterStatus | null;
   rejection_reason?: string | null;
@@ -151,6 +152,7 @@ export default async function CharacterPage({
       presence_score,
       current_health,
       show_last_activity,
+      show_inventory,
 
       race:races!characters_race_id_fkey(
         id,
@@ -815,6 +817,29 @@ export function Profile({
                     <span className="mt-1 block text-[11px] leading-5 text-[rgb(var(--sep-colour-817463))]">
                       When enabled, other players can see when this character was last active.
                       Staff can always see Last Activity regardless of this setting.
+                    </span>
+                  </span>
+                </label>
+
+                <label className="flex items-start gap-3 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3">
+                  <input
+                    type="checkbox"
+                    name="show_inventory"
+                    value="true"
+                    defaultChecked={
+                      character.show_inventory !== false
+                    }
+                    className="mt-0.5 h-4 w-4 shrink-0 accent-[rgb(var(--sep-colour-9a7543))]"
+                  />
+
+                  <span className="min-w-0">
+                    <span className="block text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-b99768))]">
+                      Show Inventory publicly
+                    </span>
+
+                    <span className="mt-1 block text-[11px] leading-5 text-[rgb(var(--sep-colour-817463))]">
+                      When disabled, other players cannot see this character&apos;s carried Inventory.
+                      Equipped Items remain visible. Staff can always see the full Inventory.
                     </span>
                   </span>
                 </label>

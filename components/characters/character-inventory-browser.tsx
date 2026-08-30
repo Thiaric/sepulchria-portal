@@ -1845,12 +1845,14 @@ export function CharacterInventoryBrowser({
   characterName,
   own = false,
   useTargets = [],
+  showInventoryItems = true,
 }: {
   rows:
     InventoryBrowserRow[];
   characterName: string;
   own?: boolean;
   useTargets?: InventoryUseTarget[];
+  showInventoryItems?: boolean;
 }) {
   const [
     search,
@@ -2251,6 +2253,48 @@ export function CharacterInventoryBrowser({
     setStatus("all");
     setRequirement("all");
   };
+
+  if (!showInventoryItems) {
+    return (
+      <section className="border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-130f0c))] p-4 sm:p-5">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
+              Possessions
+            </p>
+
+            <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dfc79c))]">
+              Inventory
+            </h2>
+          </div>
+
+          <p className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
+            Private
+          </p>
+        </div>
+
+        <EquipmentFigure
+          equipped={equipped}
+          inventory={[]}
+          own={false}
+          collapsed={equipmentCollapsed}
+          onToggle={() =>
+            setEquipmentCollapsed(
+              (value) => !value,
+            )
+          }
+        />
+
+        <div className="mt-5 border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] px-5 py-6 text-center">
+          <p className="font-serif text-lg text-[rgb(var(--sep-colour-bda681))]">
+            Inventory hidden by this character
+          </p>
+
+      
+        </div>
+      </section>
+    );
+  }
 
   if (!rows.length) {
     return (

@@ -72,6 +72,7 @@ type CharacterRow = {
   presence_score: number | null;
   current_health: number | null;
   show_last_activity: boolean;
+  show_inventory: boolean;
   status:
     | "draft"
     | "submitted"
@@ -260,6 +261,7 @@ export const getPublicCharacter = cache(
         presence_score,
         current_health,
         show_last_activity,
+        show_inventory,
         status,
         current_room_id,
 
@@ -469,6 +471,8 @@ export const getPublicCharacter = cache(
         row.current_health,
       show_last_activity:
         row.show_last_activity,
+      show_inventory:
+        row.show_inventory,
       status: row.status,
       sepulchria_since: sepulchriaSince,
 

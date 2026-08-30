@@ -243,6 +243,11 @@ const returnLabel =
           staffSession !== null ||
           activeCharacter?.id === character.id
         }
+        canViewInventory={
+          character.show_inventory ||
+          staffSession !== null ||
+          activeCharacter?.id === character.id
+        }
         viewerIsStaff={
           staffSession !== null
         }

@@ -90,6 +90,7 @@ export type PublicCharacterProfile = {
   presence_score: number | null;
   current_health: number | null;
   show_last_activity: boolean;
+  show_inventory: boolean;
   status: PublicCharacterStatus;
   sepulchria_since: string | null;
 
