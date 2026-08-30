@@ -8,6 +8,9 @@ import {
 import {
   MissionsLiveSync,
 } from "@/components/missions/missions-live-sync";
+import {
+  DailyRewardClaim,
+} from "@/components/missions/daily-reward-claim";
 
 export const dynamic = "force-dynamic";
 
@@ -246,21 +249,16 @@ export default async function MissionsPage() {
                   />
                 </div>
 
-                <form action={claimDailyMilestone} className="mt-3">
-                  <input type="hidden" name="claim_id" value={milestone.id} />
-                  <button
-                    data-milestone-claim
-                    type="submit"
-                    disabled={!complete || milestone.claimed_at !== null}
-                    className="w-full border border-[rgb(var(--sep-colour-765937))]/65 bg-[rgb(var(--sep-colour-21170f))] px-3 py-2 text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d9c092))] transition-colors enabled:hover:border-[rgb(var(--sep-colour-a07945))] enabled:hover:bg-[rgb(var(--sep-colour-302116))] disabled:cursor-not-allowed disabled:opacity-45"
-                  >
-                    {milestone.claimed_at
-                      ? "Claimed"
-                      : complete
-                        ? "Claim Reward"
-                        : "In Progress"}
-                  </button>
-                </form>
+                <DailyRewardClaim
+                  action={claimDailyMilestone}
+                  claimField="claim_id"
+                  claimId={milestone.id}
+                  complete={complete}
+                  claimed={milestone.claimed_at !== null}
+                  remnants={milestone.reward_remnants_snapshot}
+                  itemName={milestone.reward_item_name_snapshot}
+                  itemQuantity={milestone.reward_item_quantity_snapshot}
+                />
               </article>
             );
           })}
@@ -345,25 +343,17 @@ export default async function MissionsPage() {
                           itemQuantity={mission.reward_item_quantity_snapshot}
                         />
 
-                        <form action={claimDailyMission}>
-                          <input
-                            type="hidden"
-                            name="assignment_id"
-                            value={mission.id}
-                          />
-                          <button
-                            data-mission-claim
-                            type="submit"
-                            disabled={!complete || mission.claimed_at !== null}
-                            className="border border-[rgb(var(--sep-colour-765937))]/65 bg-[rgb(var(--sep-colour-21170f))] px-3 py-2 text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d9c092))] transition-colors enabled:hover:border-[rgb(var(--sep-colour-a07945))] enabled:hover:bg-[rgb(var(--sep-colour-302116))] disabled:cursor-not-allowed disabled:opacity-45"
-                          >
-                            {mission.claimed_at
-                              ? "Claimed"
-                              : complete
-                                ? "Claim"
-                                : "In Progress"}
-                          </button>
-                        </form>
+                        <DailyRewardClaim
+                          action={claimDailyMission}
+                          claimField="assignment_id"
+                          claimId={mission.id}
+                          complete={complete}
+                          claimed={mission.claimed_at !== null}
+                          remnants={mission.reward_remnants_snapshot}
+                          itemName={mission.reward_item_name_snapshot}
+                          itemQuantity={mission.reward_item_quantity_snapshot}
+                          compact
+                        />
                       </div>
                     </article>
                   );

@@ -86,7 +86,7 @@ export async function PortalHeader({ context }: PortalHeaderProps) {
   <svg
   aria-hidden="true"
   viewBox="0 0 26 26"
-  className="h-6 w-6"
+  className="pointer-events-none h-6 w-6"
   
 >
   <defs>
