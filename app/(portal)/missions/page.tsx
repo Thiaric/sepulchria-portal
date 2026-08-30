@@ -59,7 +59,7 @@ function Reward({
   }
 
   return (
-    <span className="text-[11px] text-[rgb(var(--sep-colour-bda67f))]">
+    <span className="text-sm text-[rgb(var(--sep-colour-c0af95))]">
       {parts.length ? parts.join(" · ") : "No reward configured"}
     </span>
   );
@@ -90,10 +90,10 @@ function ProgressBeads({
             key={index}
             data-progress-bead
             className={[
-              "h-2.5 min-w-[5px] flex-1 border",
+              "h-2.5 min-w-[5px] flex-1 border text-[rgb(var(--sep-colour-e6cfaa))]",
               index < filled
-                ? "border-[rgb(var(--sep-colour-a67d47))] bg-[rgb(var(--sep-colour-8f6738))]"
-                : "border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))]",
+                ? "border-current bg-current"
+                : "border-current bg-transparent opacity-55",
             ].join(" ")}
           />
         ))}
@@ -180,13 +180,13 @@ export default async function MissionsPage() {
     <div className="mx-auto w-full max-w-6xl px-5 py-7 sm:px-7 lg:px-9">
       <MissionsLiveSync dayId={String(dayId)} />
       <header className="border-b border-[rgb(var(--sep-colour-60482e))]/45 pb-5">
-        <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8b704e))]">
+        <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
           Daily activity
         </p>
-        <h1 className="mt-1 font-serif text-3xl text-[rgb(var(--sep-colour-e2cda4))]">
+        <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">
           Daily Missions
         </h1>
-        <p className="mt-2 max-w-3xl text-sm leading-6 text-[rgb(var(--sep-colour-ae9b7d))]">
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))]">
           Complete as many as you wish before midnight UTC. Rewards must be
           claimed here before the daily reset.
         </p>
@@ -204,7 +204,7 @@ export default async function MissionsPage() {
           </div>
           <p
             data-mission-summary
-            className="text-xs text-[rgb(var(--sep-colour-9e8b70))]"
+            className="text-sm text-[rgb(var(--sep-colour-c0af95))]"
           >
             {completedCount} / {countableTotal} missions complete
           </p>
@@ -226,10 +226,10 @@ export default async function MissionsPage() {
                 <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
                   Milestone
                 </p>
-                <h3 className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-dac49a))]">
+                <h3 className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-cbb28a))]">
                   {milestone.name_snapshot}
                 </h3>
-                <p className="mt-2 min-h-10 text-xs leading-5 text-[rgb(var(--sep-colour-9f9079))]">
+                <p className="mt-2 min-h-10 text-sm leading-6 text-[rgb(var(--sep-colour-c0af95))]">
                   {milestone.description_snapshot}
                 </p>
 
@@ -305,7 +305,7 @@ export default async function MissionsPage() {
                           <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
                             {mission.difficulty_snapshot}
                           </p>
-                          <h3 className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-dac49a))]">
+                          <h3 className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-cbb28a))]">
                             {mission.name_snapshot}
                           </h3>
                         </div>
@@ -321,14 +321,14 @@ export default async function MissionsPage() {
                           <span
                             data-mission-complete
                             hidden={!complete}
-                            className="border border-[rgb(var(--sep-colour-80613b))]/60 px-2 py-1 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d7bd8f))]"
+                            className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-2 py-1 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))]"
                           >
                             Complete
                           </span>
                         </div>
                       </div>
 
-                      <p className="mt-2 text-xs leading-5 text-[rgb(var(--sep-colour-a3957d))]">
+                      <p className="mt-2 text-sm leading-6 text-[rgb(var(--sep-colour-c0af95))]">
                         {mission.description_snapshot}
                         {locationName ? ` Today: ${locationName}.` : ""}
                       </p>

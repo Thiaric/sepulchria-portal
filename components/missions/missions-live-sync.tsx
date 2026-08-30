@@ -79,19 +79,15 @@ function updateBeads(
     const active = index < filled;
 
     bead.classList.toggle(
-      "border-[rgb(var(--sep-colour-a67d47))]",
+      "bg-current",
       active,
     );
     bead.classList.toggle(
-      "bg-[rgb(var(--sep-colour-8f6738))]",
-      active,
-    );
-    bead.classList.toggle(
-      "border-[rgb(var(--sep-colour-59432c))]/55",
+      "bg-transparent",
       !active,
     );
     bead.classList.toggle(
-      "bg-[rgb(var(--sep-colour-17110d))]",
+      "opacity-55",
       !active,
     );
   });

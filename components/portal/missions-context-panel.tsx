@@ -258,15 +258,15 @@ export function MissionsContextPanel() {
                     mission.code_snapshot,
                   )
                 }
-                className="block border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[rgb(var(--sep-colour-a7977f))] transition-colors hover:border-[rgb(var(--sep-colour-80613b))]/50 hover:bg-[rgb(var(--sep-colour-17110d))] hover:text-[rgb(var(--sep-colour-d8c19a))]"
+                className="block border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-[rgb(var(--sep-colour-cbb28a))] transition-colors hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))] "
               >
                 <span className="flex items-center justify-between gap-2">
                   <span className="block min-w-0">
-                    <span className="block text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-735f45))]">
+                    <span className="block text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-756550))]">
                       {mission.family_snapshot}
                     </span>
 
-                    <span className="mt-0.5 block truncate font-serif text-[13px]">
+                    <span className="mt-0.5 block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))]">
                       {mission.name_snapshot}
                     </span>
                   </span>

@@ -474,17 +474,17 @@ function HallOfRenownContext() {
                 key={key}
                 href={href}
                 scroll={false}
-                className={`block border px-3 py-2 transition ${
+                className={`block border px-3 py-2.5 transition ${
                   active
-                    ? "border-[rgb(var(--sep-colour-80613b))]/55 bg-[rgb(var(--sep-colour-302116))] text-[rgb(var(--sep-colour-efd7a7))]"
-                    : "border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] text-[rgb(var(--sep-colour-a7977f))] hover:border-[rgb(var(--sep-colour-80613b))]/50 hover:bg-[rgb(var(--sep-colour-17110d))] hover:text-[rgb(var(--sep-colour-d8c19a))]"
+                    ? "border-[rgb(var(--sep-colour-8a673f))]/70 bg-[rgb(var(--sep-colour-17110d))] text-[rgb(var(--sep-colour-cbb28a))]"
+                    : "border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] text-[rgb(var(--sep-colour-cbb28a))] hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))] "
                 }`}
               >
-                <span className="block text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-735f45))]">
+                <span className="block text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-756550))]">
                   {eyebrow}
                 </span>
 
-                <span className="mt-0.5 block truncate font-serif text-[13px]">
+                <span className="mt-0.5 block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))]">
                   {label}
                 </span>
               </Link>

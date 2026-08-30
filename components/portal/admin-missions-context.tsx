@@ -115,7 +115,7 @@ export function AdminMissionsContext() {
         </h2>
       </div>
 
-      <div className="mt-4 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3">
+      <div className="mt-4 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3">
         <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
           Daily rules
         </p>
@@ -150,13 +150,13 @@ export function AdminMissionsContext() {
           <Link
             key={mission.id}
             href={`/admin/missions#mission-${mission.code}`}
-            className="block border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[rgb(var(--sep-colour-a7977f))] transition-colors hover:border-[rgb(var(--sep-colour-80613b))]/50 hover:bg-[rgb(var(--sep-colour-17110d))] hover:text-[rgb(var(--sep-colour-d8c19a))]"
+            className="block border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-[rgb(var(--sep-colour-cbb28a))] transition-colors hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))] "
           >
-            <span className="block text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-735f45))]">
+            <span className="block text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-756550))]">
               {mission.family}
             </span>
 
-            <span className="mt-0.5 block truncate font-serif text-[13px]">
+            <span className="mt-0.5 block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))]">
               {mission.name}
             </span>
           </Link>
@@ -174,13 +174,13 @@ export function AdminMissionsContext() {
               <Link
                 key={milestone.milestone_key}
                 href={`/admin/missions#milestone-${milestone.milestone_key}`}
-                className="block border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[rgb(var(--sep-colour-a7977f))] transition-colors hover:border-[rgb(var(--sep-colour-80613b))]/50 hover:bg-[rgb(var(--sep-colour-17110d))] hover:text-[rgb(var(--sep-colour-d8c19a))]"
+                className="block border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-[rgb(var(--sep-colour-cbb28a))] transition-colors hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))] "
               >
-                <span className="block text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-735f45))]">
+                <span className="block text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-756550))]">
                   Milestone
                 </span>
 
-                <span className="mt-0.5 block truncate font-serif text-[13px]">
+                <span className="mt-0.5 block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))]">
                   {milestone.name}
                 </span>
               </Link>

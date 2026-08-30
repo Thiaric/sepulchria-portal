@@ -90,7 +90,7 @@ function PoolRow({
           <select
             value={itemId}
             onChange={(event) => setItemId(event.target.value)}
-            className="mt-1 w-full border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 normal-case tracking-normal text-xs text-[rgb(var(--sep-colour-d5c09b))] outline-none"
+            className="mt-1 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 normal-case tracking-normal text-sm text-[rgb(var(--sep-colour-c0af95))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
           >
             {items.map((item) => (
               <option key={item.id} value={item.id}>
@@ -111,7 +111,7 @@ function PoolRow({
             onChange={(event) =>
               setChancePct(Number(event.target.value))
             }
-            className="mt-1 w-full border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 normal-case tracking-normal text-xs text-[rgb(var(--sep-colour-d5c09b))] outline-none"
+            className="mt-1 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 normal-case tracking-normal text-sm text-[rgb(var(--sep-colour-c0af95))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
           />
         </label>
 
@@ -125,7 +125,7 @@ function PoolRow({
             onChange={(event) =>
               setQuantity(Number(event.target.value))
             }
-            className="mt-1 w-full border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 normal-case tracking-normal text-xs text-[rgb(var(--sep-colour-d5c09b))] outline-none"
+            className="mt-1 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 normal-case tracking-normal text-sm text-[rgb(var(--sep-colour-c0af95))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
           />
         </label>
 
@@ -227,7 +227,7 @@ export function DailyMissionRewardPoolEditor({
             Curated secondary Item pool
           </p>
 
-          <p className="mt-1 text-[10px] leading-4 text-[rgb(var(--sep-colour-746856))]">
+          <p className="mt-1 text-xs leading-5 text-[rgb(var(--sep-colour-938673))]">
             Evaluated from top to bottom. Each row gets its own chance roll;
             the first successful Item wins. At most one secondary Item is awarded.
           </p>
@@ -245,7 +245,7 @@ export function DailyMissionRewardPoolEditor({
 
       <div className="mt-3 space-y-2">
         {entries.length === 0 ? (
-          <p className="border border-dashed border-[rgb(var(--sep-colour-59432c))]/35 px-3 py-3 text-xs text-[rgb(var(--sep-colour-847663))]">
+          <p className="border border-dashed border-[rgb(var(--sep-colour-59432c))]/35 px-3 py-3 text-sm text-[rgb(var(--sep-colour-938673))]">
             No secondary Items configured.
           </p>
         ) : (
@@ -274,7 +274,7 @@ export function DailyMissionRewardPoolEditor({
         </p>
       ) : null}
 
-      <p className="mt-2 text-[10px] leading-4 text-[rgb(var(--sep-colour-746856))]">
+      <p className="mt-2 text-xs leading-5 text-[rgb(var(--sep-colour-938673))]">
         Pool changes affect future UTC Daily Mission snapshots only.
         A fixed Reward Item above takes priority over this pool.
       </p>
