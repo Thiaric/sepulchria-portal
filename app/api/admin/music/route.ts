@@ -32,41 +32,50 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   if (!(await allowed())) return bad("Not authorised.", 403);
-  const fd = await req.formData();
-  const file = fd.get("file");
-  if (!(file instanceof File)) return bad("Choose an audio file.");
-  if (!TYPES.has(file.type)) return bad("Unsupported audio type.");
-  if (file.size <= 0 || file.size > MAX) return bad("Audio files must be 30 MB or smaller.");
 
-  const key = String(fd.get("track_key") ?? "").trim().toLowerCase();
+  const body = await req.json();
+
+  const key = String(body.track_key ?? "").trim().toLowerCase();
+  const name = String(body.name ?? "").trim();
+  const mimeType = String(body.mime_type ?? "");
+  const fileSize = Number(body.file_size_bytes ?? 0);
+  const sort = Number(body.sort_order ?? 0);
+  const path = String(body.storage_path ?? "");
+
   if (!/^[a-z0-9]+(?:_[a-z0-9]+)*$/.test(key)) return bad("Invalid track key.");
-  const name = String(fd.get("name") ?? "").trim();
   if (!name) return bad("Track name is required.");
-  const sort = Number(fd.get("sort_order") ?? 0);
+  if (!TYPES.has(mimeType)) return bad("Unsupported audio type.");
+  if (!Number.isFinite(fileSize) || fileSize <= 0 || fileSize > MAX) {
+    return bad("Audio files must be 30 MB or smaller.");
+  }
   if (!Number.isInteger(sort)) return bad("Sort order must be a whole number.");
 
+  const expectedPath = `tracks/${key}.${ext(mimeType)}`;
+
+  if (path !== expectedPath) {
+    return bad("Invalid uploaded storage path.");
+  }
+
   const admin = createAdminClient();
-  const path = `tracks/${key}.${ext(file.type)}`;
-  const bytes = new Uint8Array(await file.arrayBuffer());
-  const uploaded = await admin.storage.from(BUCKET).upload(path, bytes, { contentType: file.type, upsert: false, cacheControl: "3600" });
-  if (uploaded.error) return bad(`Unable to store audio: ${uploaded.error.message}`, 500);
 
   const inserted = await admin.from("music_tracks").insert({
     track_key: key,
     name,
-    description: String(fd.get("description") ?? "").trim(),
+    description: String(body.description ?? "").trim(),
     storage_path: path,
-    original_file_name: file.name,
-    mime_type: file.type,
-    file_size_bytes: file.size,
-    is_active: fd.get("is_active") === "on",
-    is_personal_selectable: fd.get("is_personal_selectable") === "on",
+    original_file_name: String(body.original_file_name ?? "").trim() || null,
+    mime_type: mimeType,
+    file_size_bytes: fileSize,
+    is_active: body.is_active === true,
+    is_personal_selectable: body.is_personal_selectable === true,
     sort_order: sort,
   });
+
   if (inserted.error) {
     await admin.storage.from(BUCKET).remove([path]);
     return bad(inserted.error.message, 500);
   }
+
   return NextResponse.json({ ok: true });
 }
 
@@ -101,11 +110,16 @@ export async function DELETE(req: NextRequest) {
   if (!track.data) return bad("Track not found.", 404);
 
   const [rooms, owners] = await Promise.all([
-    admin.from("rooms").select("id", { count: "exact", head: true }).eq("music_track_id", id),
+    admin.from("rooms").select("id, name").eq("music_track_id", id).order("name", { ascending: true }),
     admin.from("character_music_entitlements").select("id", { count: "exact", head: true }).eq("music_track_id", id).eq("enabled", true),
   ]);
   if (rooms.error || owners.error) return bad((rooms.error ?? owners.error)!.message, 500);
-  if ((rooms.count ?? 0) > 0) return bad("Remove this track from its locations before deleting it.", 409);
+  if ((rooms.data ?? []).length > 0) {
+    return bad(
+      `Remove this track from: ${(rooms.data ?? []).map((room) => room.name).join(", ")}.`,
+      409,
+    );
+  }
   if ((owners.count ?? 0) > 0) return bad("Revoke character ownership before deleting this track.", 409);
 
   const deleted = await admin.from("music_tracks").delete().eq("id", id);

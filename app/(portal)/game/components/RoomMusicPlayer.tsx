@@ -412,10 +412,11 @@ export default function RoomMusicPlayer({
       });
 
     return () => {
-      savePosition(
-        track.id,
-        audio.currentTime,
-      );
+      /*
+       * Do not save here. During a hard reload
+       * the media element can already have reset
+       * to 0 before React cleanup runs.
+       */
       clearFade();
     };
   }, [activeTrack?.id]);
@@ -628,20 +629,44 @@ export default function RoomMusicPlayer({
     activeTrack?.id,
   ]);
 
+  useEffect(() => {
+    const saveBeforePageExit = () => {
+      const audio = audioRef.current;
+
+      if (
+        audio &&
+        activeTrack
+      ) {
+        savePosition(
+          activeTrack.id,
+          audio.currentTime,
+        );
+      }
+    };
+
+    window.addEventListener(
+      "pagehide",
+      saveBeforePageExit,
+      {
+        capture: true,
+      },
+    );
+
+    return () => {
+      window.removeEventListener(
+        "pagehide",
+        saveBeforePageExit,
+        true,
+      );
+    };
+  }, [activeTrack?.id]);
+
   useEffect(
     () => () => {
       clearFade();
-      const audio = audioRef.current;
-
-      if (audio) {
-        savePosition(
-          activeTrack?.id ?? null,
-          audio.currentTime,
-        );
-        audio.pause();
-      }
+      audioRef.current?.pause();
     },
-    [activeTrack?.id],
+    [],
   );
 
   async function togglePlayback() {

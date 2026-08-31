@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 
 export type MusicTrackAdminRow = {
   id: string;
@@ -39,6 +40,8 @@ async function responseJson(
     return {} as {
       error?: string;
       tracks?: MusicTrackAdminRow[];
+      path?: string;
+      token?: string;
     };
   }
 
@@ -46,6 +49,8 @@ async function responseJson(
     return JSON.parse(text) as {
       error?: string;
       tracks?: MusicTrackAdminRow[];
+      path?: string;
+      token?: string;
     };
   } catch {
     return {
@@ -57,7 +62,21 @@ async function responseJson(
   }
 }
 
-export function MusicFeatureManager({ initialTracks }: { initialTracks: MusicTrackAdminRow[] }) {
+type MusicLocationUsage = {
+  id: string;
+  name: string;
+};
+
+export function MusicFeatureManager({
+  initialTracks,
+  initialLocationsByTrack,
+}: {
+  initialTracks: MusicTrackAdminRow[];
+  initialLocationsByTrack: Record<
+    string,
+    MusicLocationUsage[]
+  >;
+}) {
   const router = useRouter();
   const fileRef = useRef<HTMLInputElement | null>(null);
   const [tracks, setTracks] = useState(initialTracks);
@@ -83,8 +102,15 @@ export function MusicFeatureManager({ initialTracks }: { initialTracks: MusicTra
   async function upload(fd: FormData) {
     const file = fd.get("file");
 
+    if (!(file instanceof File)) {
+      setFailed(true);
+      setMessage(
+        "Choose an audio file.",
+      );
+      return;
+    }
+
     if (
-      file instanceof File &&
       file.size > MAX_AUDIO_BYTES
     ) {
       setFailed(true);
@@ -94,18 +120,174 @@ export function MusicFeatureManager({ initialTracks }: { initialTracks: MusicTra
       return;
     }
 
-    setBusy(true); setMessage(""); setFailed(false);
+    setBusy(true);
+    setMessage("");
+    setFailed(false);
+
     try {
-      const r = await fetch("/api/admin/music", { method: "POST", body: fd });
-      const d = await responseJson(r);
-      if (!r.ok) throw new Error(d.error ?? "Unable to upload track.");
-      if (fileRef.current) fileRef.current.value = "";
-      setMessage("Music track uploaded.");
+      const metadata = {
+        track_key: String(
+          fd.get("track_key") ?? "",
+        ),
+        name: String(
+          fd.get("name") ?? "",
+        ),
+        description: String(
+          fd.get("description") ?? "",
+        ),
+        sort_order: Number(
+          fd.get("sort_order") ?? 0,
+        ),
+        is_active:
+          fd.get("is_active") === "on",
+        is_personal_selectable:
+          fd.get(
+            "is_personal_selectable",
+          ) === "on",
+        original_file_name:
+          file.name,
+        mime_type:
+          file.type,
+        file_size_bytes:
+          file.size,
+      };
+
+      const ticketResponse =
+        await fetch(
+          "/api/admin/music/upload-ticket",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type":
+                "application/json",
+            },
+            body:
+              JSON.stringify(
+                metadata,
+              ),
+          },
+        );
+
+      const ticketData =
+        await responseJson(
+          ticketResponse,
+        );
+
+      if (!ticketResponse.ok) {
+        throw new Error(
+          ticketData.error ??
+            "Unable to authorise upload.",
+        );
+      }
+
+      const path = String(
+        (
+          ticketData as {
+            path?: string;
+          }
+        ).path ?? "",
+      );
+
+      const token = String(
+        (
+          ticketData as {
+            token?: string;
+          }
+        ).token ?? "",
+      );
+
+      if (!path || !token) {
+        throw new Error(
+          "The upload ticket was incomplete.",
+        );
+      }
+
+      const supabase =
+        createClient();
+
+      const {
+        error: uploadError,
+      } = await supabase.storage
+        .from("music")
+        .uploadToSignedUrl(
+          path,
+          token,
+          file,
+          {
+            contentType:
+              file.type,
+            cacheControl:
+              "3600",
+          },
+        );
+
+      if (uploadError) {
+        throw new Error(
+          `Unable to store audio: ${uploadError.message}`,
+        );
+      }
+
+      const finalResponse =
+        await fetch(
+          "/api/admin/music",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type":
+                "application/json",
+            },
+            body:
+              JSON.stringify({
+                ...metadata,
+                storage_path:
+                  path,
+              }),
+          },
+        );
+
+      const finalData =
+        await responseJson(
+          finalResponse,
+        );
+
+      if (!finalResponse.ok) {
+        throw new Error(
+          finalData.error ??
+            "Unable to save track metadata.",
+        );
+      }
+
+      if (fileRef.current) {
+        fileRef.current.value = "";
+      }
+
+      setMessage(
+        "Music track uploaded.",
+      );
+
       await reload();
     } catch (e) {
       setFailed(true);
-      setMessage(e instanceof Error ? e.message : "Unable to upload track.");
-    } finally { setBusy(false); }
+
+      if (
+        e instanceof TypeError &&
+        /failed to fetch/i.test(
+          e.message,
+        )
+      ) {
+        setMessage(
+          "The upload request was interrupted before the server could respond.",
+        );
+      } else {
+        setMessage(
+          e instanceof Error
+            ? e.message
+            : "Unable to upload track.",
+        );
+      }
+    } finally {
+      setBusy(false);
+    }
   }
 
   async function update(track: MusicTrackAdminRow, fd: FormData) {
@@ -224,6 +406,21 @@ export function MusicFeatureManager({ initialTracks }: { initialTracks: MusicTra
                     <p className="font-serif text-lg text-[rgb(var(--sep-colour-dfc79c))]">{track.name}</p>
                     <p className="font-mono text-[9px] text-[rgb(var(--sep-colour-6f665b))]">{track.track_key}</p>
                     <p className="mt-1 text-[8px] text-[rgb(var(--sep-colour-746958))]">{track.original_file_name ?? track.storage_path} - {sizeLabel(track.file_size_bytes)}</p>
+
+                    {(initialLocationsByTrack[track.id] ?? []).length > 0 ? (
+                      <div className="mt-2 text-[8px] leading-4 text-[rgb(var(--sep-colour-9e8d73))]">
+                        <span className="uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))]">
+                          Used in:
+                        </span>{" "}
+                        {(initialLocationsByTrack[track.id] ?? [])
+                          .map((room) => room.name)
+                          .join(", ")}
+                      </div>
+                    ) : (
+                      <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-625747))]">
+                        Not assigned to any location
+                      </p>
+                    )}
                   </div>
                   <span className="text-[7px] uppercase text-[rgb(var(--sep-colour-b59b74))]">{track.is_personal_selectable ? "Personal" : "Location only"}</span>
                 </div>
