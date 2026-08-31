@@ -49,6 +49,7 @@ type ContextMode =
   | "notifications"
   | "polls"
   | "experience"
+  | "features"
   | "trophies"
   | "registrations"
   | "world"
@@ -142,6 +143,10 @@ function getMode(
 
   if (pathname === "/admin/experience") {
     return "experience";
+  }
+
+  if (pathname === "/admin/features") {
+    return "features";
   }
 
   if (pathname === "/admin/trophies") {
