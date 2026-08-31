@@ -155,6 +155,11 @@ export function MobilePortalNavigation({
   const notificationCounts =
     usePortalNotificationCounts();
 
+  const [
+    renderMobileNavigation,
+    setRenderMobileNavigation,
+  ] = useState(false);
+
   const [moreOpen, setMoreOpen] =
     useState(false);
   const [rulesExpanded, setRulesExpanded] =
@@ -192,6 +197,17 @@ export function MobilePortalNavigation({
   const mapOpen =
     searchParams.get("map") ===
     "sepulchria";
+
+  useEffect(() => {
+    /*
+     * Portal modals render portal routes inside an iframe.
+     * The mobile bottom navigation belongs only to the
+     * top-level portal, never to modal iframe content.
+     */
+    setRenderMobileNavigation(
+      window.self === window.top,
+    );
+  }, []);
 
   useEffect(() => {
     setMoreOpen(false);
@@ -708,6 +724,10 @@ export function MobilePortalNavigation({
   const closeMore = () => {
     setMoreOpen(false);
   };
+
+  if (!renderMobileNavigation) {
+    return null;
+  }
 
   return (
     <>
