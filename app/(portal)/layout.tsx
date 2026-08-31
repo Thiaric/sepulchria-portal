@@ -157,6 +157,10 @@ async function PortalLayoutContent({
                 }
 
                 .portal-left-shell {
+                  display: contents !important;
+                }
+
+                .portal-left-shell > aside {
                   display: none !important;
                 }
 
@@ -482,6 +486,9 @@ async function PortalLayoutContent({
             <MobilePortalNavigation
               unreadMessageCount={
                 context.unreadMessageCount
+              }
+              unreadForumCount={
+                unreadForumCount
               }
               isStaff={
                 context.isStaff
