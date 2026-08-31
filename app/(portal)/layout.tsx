@@ -22,6 +22,7 @@ import { getPortalContext } from "@/lib/portal/get-portal-context";
 import { getActiveTidings } from "@/lib/tidings/get-active-tidings";
 import { getUnreadForumCount } from "@/lib/forum/get-unread-forum-count";
 import { getWorldState } from "@/lib/world/get-world-state";
+import { ExperienceLogoutGuard } from "@/components/experience/experience-logout-guard";
 
 type PortalLayoutProps = {
   children: ReactNode;
@@ -34,6 +35,7 @@ export default function PortalLayout({
     <Suspense fallback={<PortalLoadingShell />}>
       <PortalLayoutContent>
         {children}
+      <ExperienceLogoutGuard />
       </PortalLayoutContent>
     </Suspense>
   );

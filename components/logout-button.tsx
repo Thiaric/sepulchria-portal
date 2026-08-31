@@ -111,6 +111,8 @@ export function LogoutButton() {
   return (
   <button
     type="button"
+    aria-label="Log out"
+    data-experience-logout="1"
     onPointerDown={() => {
       window.dispatchEvent(
         new Event(
