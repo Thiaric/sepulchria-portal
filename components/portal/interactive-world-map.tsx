@@ -650,26 +650,43 @@ hoveredInfoPosition ? (
             </div>
 
       {level === "city" &&
-      hoveredDatabaseArea ? (
-        <div className="border-t border-[rgb(var(--sep-colour-654c2f))]/50 bg-[rgb(var(--sep-colour-17110d))] px-4 py-3 md:hidden">
-          <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-96734a))]">
-            District
-          </p>
+hoveredDatabaseArea ? (
+  <div className="fixed inset-x-3 bottom-[72px] z-[80] max-h-[42dvh] overflow-hidden border border-[rgb(var(--sep-colour-8f6a3d))]/80 bg-[rgb(var(--sep-colour-120b09))]/[0.98] shadow-[0_-12px_36px_rgba(var(--sep-rgb-0-0-0),0.72)] backdrop-blur md:hidden">
+    <div className="flex items-start justify-between gap-3 border-b border-[rgb(var(--sep-colour-654c2f))]/40 px-4 py-3">
+      <div className="min-w-0">
+        <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-96734a))]">
+          District
+        </p>
 
-          <p className="mt-1 font-serif text-base text-[rgb(var(--sep-colour-f1d7aa))]">
-            {hoveredDatabaseArea.name}
-          </p>
+        <p className="mt-1 truncate font-serif text-base text-[rgb(var(--sep-colour-f1d7aa))]">
+          {hoveredDatabaseArea.name}
+        </p>
+      </div>
 
-          {hoveredDatabaseArea.description ? (
-            <RichTextContentClient
-              body={
-                hoveredDatabaseArea.description
-              }
-              className="mt-1 text-[11px] leading-4 text-[rgb(var(--sep-colour-a99984))] [&_p]:m-0 [&_h1]:text-xs [&_h2]:text-xs [&_h3]:text-xs [&_img]:hidden [&_table]:hidden"
-            />
-          ) : null}
-        </div>
-      ) : null}
+      <button
+        type="button"
+        aria-label="Close district information"
+        onClick={() =>
+          setHoveredArea(null)
+        }
+        className="flex h-7 w-7 shrink-0 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-17110d))] text-base text-[rgb(var(--sep-colour-b7a184))]"
+      >
+        ×
+      </button>
+    </div>
+
+    {hoveredDatabaseArea.description ? (
+      <div className="max-h-[calc(42dvh-58px)] overflow-y-auto overscroll-contain px-4 py-3">
+        <RichTextContentClient
+          body={
+            hoveredDatabaseArea.description
+          }
+          className="text-[11px] leading-4 text-[rgb(var(--sep-colour-a99984))] [&_p]:m-0 [&_p+p]:mt-2 [&_h1]:text-xs [&_h2]:text-xs [&_h3]:text-xs [&_img]:hidden [&_table]:hidden"
+        />
+      </div>
+    ) : null}
+  </div>
+) : null}
     </section>
   );
 }

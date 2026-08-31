@@ -76,7 +76,7 @@ const pollsItem: NavigationItem = {
   label: "Polls",
   title:
     "Open community Polls and cast your vote.",
-  icon: "/icons/polls.png",
+  icon: "/icons/forum.png",
   href: "/polls",
   activePaths: ["/polls"],
   opensModal: true,
@@ -610,9 +610,10 @@ export function PortalSidebar({
       }
 
       const [
-  entitlementResult,
-  membershipResult,
-] = await Promise.all([
+        entitlementResult,
+        membershipResult,
+        invitationResult,
+      ] = await Promise.all([
         supabase
           .from("character_feature_entitlements")
           .select("enabled")
@@ -638,14 +639,24 @@ export function PortalSidebar({
           .limit(1)
           .maybeSingle(),
 
-        
+        supabase
+          .from("private_location_invitations")
+          .select("id")
+          .eq(
+            "recipient_character_id",
+            character.id,
+          )
+          .eq("status", "pending")
+          .limit(1)
+          .maybeSingle(),
       ]);
 
       setHasPrivateLocationAccess(
-  isStaff ||
-  entitlementResult.data?.enabled === true ||
-  Boolean(membershipResult.data),
-);
+        isStaff ||
+        entitlementResult.data?.enabled === true ||
+        Boolean(membershipResult.data) ||
+        Boolean(invitationResult.data),
+      );
     }, [isStaff]);
 
   const refreshFriendListFeature =
@@ -1506,8 +1517,8 @@ export function PortalSidebar({
       lg:text-xs
       ${
         item.subItem
-  ? "lg:ml-5 lg:w-[calc(100%-1.25rem)] lg:min-h-7 lg:py-1 lg:text-[10px]"
-  : ""
+          ? "lg:ml-5 lg:min-h-7 lg:py-1 lg:text-[10px]"
+          : ""
       }
       ${
         modalActive ||
@@ -1770,7 +1781,7 @@ export function PortalSidebar({
           >
             <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center">
               <img
-                src="/icons/premium.png"
+                src="/icons/gifts.png"
                 alt=""
                 aria-hidden="true"
                 className="h-full w-full object-contain"

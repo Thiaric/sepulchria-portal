@@ -123,28 +123,27 @@ export function LogoutButton() {
     onClick={logout}
     disabled={isLoggingOut}
     className="
-      inline-flex
-      h-10
-      items-center
-      justify-center
-      gap-0
-      border
-      border-[rgb(var(--sep-colour-6f5233))]
-      bg-[rgb(var(--sep-colour-16100c))]
-      px-2.5
-      text-[10px]
-      font-medium
-      uppercase
-      tracking-[0.22em]
-      text-[rgb(var(--sep-colour-d7b980))]
-      transition-all
-      duration-200
-      hover:border-[rgb(var(--sep-colour-a97d47))]
-      hover:bg-[rgb(var(--sep-colour-241811))]
-      hover:text-[rgb(var(--sep-colour-f2d8a3))]
-      disabled:cursor-not-allowed
-      disabled:opacity-60
-    "
+  relative
+  flex
+  h-8
+  w-8
+  items-center
+  justify-center
+  border
+  border-[rgb(var(--sep-colour-614b31))]
+  bg-[rgb(var(--sep-colour-17120f))]
+  p-0
+  text-[rgb(var(--sep-colour-c69b5c))]
+  transition
+  hover:border-[rgb(var(--sep-colour-977242))]
+  hover:text-[rgb(var(--sep-colour-efd6a3))]
+  disabled:cursor-not-allowed
+  disabled:opacity-60
+  sm:h-9
+  sm:w-9
+  2xl:h-10
+  2xl:w-10
+"
   >
     <LogOut className="pointer-events-none h-5 w-5" />
 

@@ -15,6 +15,7 @@ type PollContextEntry = {
     | "closed"
     | "upcoming";
   voted: boolean;
+  isNew: boolean;
 };
 
 function readPollsFromPage():
@@ -41,6 +42,9 @@ function readPollsFromPage():
       ) as PollContextEntry["state"],
     voted:
       node.dataset.publicPollVoted ===
+      "true",
+    isNew:
+      node.dataset.publicPollNew ===
       "true",
   }));
 }
@@ -88,6 +92,7 @@ export function PollsContextPanel() {
         attributeFilter: [
           "data-public-poll-state",
           "data-public-poll-voted",
+          "data-public-poll-new",
           "data-public-poll-title",
           "data-public-poll-description",
         ],
@@ -171,6 +176,17 @@ export function PollsContextPanel() {
       null,
       "",
       `#poll-${id}`,
+    );
+
+    window.dispatchEvent(
+      new CustomEvent(
+        "sepulchria:open-poll",
+        {
+          detail: {
+            pollId: id,
+          },
+        },
+      ),
     );
 
     const oldOutline =
@@ -326,7 +342,12 @@ export function PollsContextPanel() {
                     entry.id,
                   )
                 }
-                className="group flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition duration-150 hover:-translate-y-px hover:translate-x-0.5 hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))] hover:shadow-[0_0_15px_rgba(var(--sep-rgb-177-132-75),0.13)]"
+                className={[
+                  "group flex w-full items-center justify-between gap-3 border px-3 py-2.5 text-left transition duration-150 hover:-translate-y-px hover:translate-x-0.5 hover:shadow-[0_0_15px_rgba(var(--sep-rgb-177-132-75),0.13)]",
+                  entry.isNew
+                    ? "border-[rgb(var(--sep-colour-a87532))] bg-[rgb(var(--sep-colour-24190f))] shadow-[inset_0_0_12px_rgba(var(--sep-rgb-177-132-75),0.06)] hover:border-[rgb(var(--sep-colour-c0914e))] hover:bg-[rgb(var(--sep-colour-2d1d11))]"
+                    : "border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))]",
+                ].join(" ")}
               >
                 <span className="min-w-0">
                   <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] transition group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
@@ -334,6 +355,9 @@ export function PollsContextPanel() {
                   </span>
 
                   <span className="mt-0.5 block truncate text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))]">
+                    {entry.isNew
+                      ? "New · "
+                      : ""}
                     {entry.state}
                     {" · "}
                     {entry.voted

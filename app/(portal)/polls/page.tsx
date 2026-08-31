@@ -5,6 +5,7 @@ import {
   getPollViewer,
 } from "@/lib/polls/access";
 import { closeExpiredPolls } from "@/lib/polls/lifecycle";
+import { PollSeenMarker } from "@/components/polls/poll-seen-marker";
 
 import { submitPollVote } from "./actions";
 
@@ -160,9 +161,32 @@ export default async function PollsPage() {
       ),
     );
 
+  const {
+    data: pollReads,
+    error: pollReadsError,
+  } = await admin
+    .from("poll_reads")
+    .select("poll_id")
+    .eq("user_id", user.id);
+
+  if (pollReadsError) {
+    throw new Error(
+      `Unable to load Poll seen state: ${pollReadsError.message}`,
+    );
+  }
+
+  const seenPollIds =
+    new Set(
+      (pollReads ?? []).map(
+        (row) => row.poll_id,
+      ),
+    );
+
   const now = Date.now();
 
   return (
+    <>
+      <PollSeenMarker />
     <main className="mx-auto max-w-4xl space-y-5 p-3 sm:p-5 lg:p-6">
       <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-4 py-4 sm:px-5">
         <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
@@ -292,6 +316,12 @@ export default async function PollsPage() {
           const totalBallots =
             ballots.length;
 
+          const isNew =
+            open &&
+            !seenPollIds.has(
+              poll.id,
+            );
+
           return (
             <section
               key={poll.id}
@@ -311,18 +341,36 @@ export default async function PollsPage() {
                   ? "true"
                   : "false"
               }
-              className="scroll-mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))]"
+              data-public-poll-new={
+                isNew
+                  ? "true"
+                  : "false"
+              }
+              className={[
+                "scroll-mt-6 border transition",
+                isNew
+                  ? "border-[rgb(var(--sep-colour-a87532))] bg-[rgb(var(--sep-colour-1f160e))] shadow-[0_0_22px_rgba(var(--sep-rgb-177-132-75),0.13),inset_0_0_22px_rgba(var(--sep-rgb-177-132-75),0.04)]"
+                  : "border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))]",
+              ].join(" ")}
             >
               <div className="border-b border-[rgb(var(--sep-colour-59432c))]/35 px-4 py-4 sm:px-5">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
-                    <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
-                      {open
-                        ? "Open poll"
-                        : closed
-                          ? "Closed poll"
-                          : "Upcoming poll"}
-                    </p>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+                        {open
+                          ? "Open poll"
+                          : closed
+                            ? "Closed poll"
+                            : "Upcoming poll"}
+                      </p>
+
+                      {isNew ? (
+                        <span className="inline-flex items-center border border-[rgb(var(--sep-colour-c28e45))] bg-[rgb(var(--sep-colour-6f291c))] px-1.5 py-0.5 text-[7px] font-bold uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-ffe0a8))] shadow-[0_0_10px_rgba(var(--sep-rgb-177-132-75),0.22)]">
+                          New
+                        </span>
+                      ) : null}
+                    </div>
                     <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
                       {poll.title}
                     </h2>
@@ -492,5 +540,6 @@ export default async function PollsPage() {
         })
       )}
     </main>
+    </>
   );
 }

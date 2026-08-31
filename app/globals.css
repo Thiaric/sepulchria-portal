@@ -20313,3 +20313,28 @@ article:not([class*="bg-"]) {
     max-height: 150px !important;
   }
 }
+
+/* =========================================================
+   KEEP THESE TWO UI ELEMENTS ROUNDED IN EVERY PORTAL SKIN
+   ========================================================= */
+
+/* Character sheet tab frame */
+[data-portal-shell] .character-sheet-tabs > nav {
+  border-top-left-radius: 0.75rem !important;
+  border-top-right-radius: 0.75rem !important;
+}
+
+/* Individual character sheet tabs */
+[data-portal-shell]
+  .character-sheet-tabs
+  > nav
+  > button[role="tab"] {
+  border-top-left-radius: 0.5rem !important;
+  border-top-right-radius: 0.5rem !important;
+}
+
+/* Mobile "More" bottom sheet */
+section[role="dialog"][aria-label="More Sepulchria navigation"] {
+  border-top-left-radius: 18px !important;
+  border-top-right-radius: 18px !important;
+}
