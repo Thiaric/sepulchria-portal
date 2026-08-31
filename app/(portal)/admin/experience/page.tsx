@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { ExperienceLiveFilters } from "@/components/admin/experience-live-filters";
+
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdminSection } from "@/lib/auth/require-staff";
 import {
@@ -235,24 +237,24 @@ export default async function AdminExperiencePage({
   const commentRows = filteredRows.filter((row) => row.comment?.trim());
 
   return (
-    <div className="space-y-6">
-      <header className="border border-[rgb(var(--sep-colour-5c4b35))] bg-[rgb(var(--sep-colour-140f0b))] p-5">
+    <div className="space-y-5">
+      <header data-sep-interaction-ignore="true" className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 [transform:none!important]">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <p className="text-[10px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8d775b))]">
-              Admin · Experience
+            <p className="text-[9px] tracking-[0.08em] text-[rgb(var(--sep-colour-876a46))]">
+              Player experience
             </p>
-            <h1 className="mt-1 font-serif text-3xl text-[rgb(var(--sep-colour-efd6a3))]">
-              How Was Your Experience?
+            <h1 className="mt-1 font-serif text-3xl text-[rgb(var(--sep-colour-dec89f))]">
+              Satisfaction overview
             </h1>
-            <p className="mt-2 max-w-3xl text-sm text-[rgb(var(--sep-colour-c7b493))]">
-              Satisfaction prompts shown to players when they leave Sepulchria, at most once every 7 days. Staff accounts are excluded.
+            <p className="mt-2 max-w-3xl text-sm text-[rgb(var(--sep-colour-a99b89))]">
+              Review how players are feeling over time, identify changes in satisfaction and read optional comments when more context is needed.
             </p>
           </div>
           <div className="flex gap-2">
             <Link
               href="/admin"
-              className="border border-[rgb(var(--sep-colour-5c4b35))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-cfb486))]"
+              className="border border-[rgb(var(--sep-colour-765937))]/60 bg-[rgb(var(--sep-colour-21170f))] px-3 py-2 text-[10px] tracking-[0.08em] text-[rgb(var(--sep-colour-cdb58e))] transition hover:-translate-y-[1px] hover:border-[rgb(var(--sep-colour-a07945))] hover:bg-[rgb(var(--sep-colour-2b1d12))] hover:text-[rgb(var(--sep-colour-dec89f))]"
             >
               Back to Admin
             </Link>
@@ -260,110 +262,46 @@ export default async function AdminExperiencePage({
         </div>
       </header>
 
-      <form className="grid gap-3 border border-[rgb(var(--sep-colour-5c4b35))] bg-[rgb(var(--sep-colour-140f0b))] p-4 md:grid-cols-4 xl:grid-cols-6">
-        <label className="md:col-span-2 xl:col-span-2">
-          <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
-            Search user / comment
-          </span>
-          <input
-            name="query"
-            defaultValue={asSingle(params.query)}
-            placeholder="Character, slug, user ID, comment..."
-            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))]"
-          />
-        </label>
-
-        <label>
-          <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
-            Rating
-          </span>
-          <select
-            name="rating"
-            defaultValue={String(ratingFilter || "")}
-            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))]"
-          >
-            <option value="">All</option>
-            {EXPERIENCE_RATINGS.map((rating) => (
-              <option key={rating.value} value={rating.value}>
-                {rating.label}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <label>
-          <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
-            From
-          </span>
-          <input
-            type="date"
-            name="from"
-            defaultValue={from}
-            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))]"
-          />
-        </label>
-
-        <label>
-          <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
-            To
-          </span>
-          <input
-            type="date"
-            name="to"
-            defaultValue={to}
-            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))]"
-          />
-        </label>
-
-        <div className="flex items-end gap-2">
-          <button
-            type="submit"
-            className="border border-[rgb(var(--sep-colour-d2aa63))] bg-[rgb(var(--sep-colour-2a1e14))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-f1ddb4))]"
-          >
-            Filter
-          </button>
-          <Link
-            href="/admin/experience"
-            className="border border-[rgb(var(--sep-colour-5c4b35))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-cfb486))]"
-          >
-            Reset
-          </Link>
-        </div>
-      </form>
+      <ExperienceLiveFilters
+        initialQuery={asSingle(params.query)}
+        initialRating={String(ratingFilter || "")}
+        initialFrom={from}
+        initialTo={to}
+      />
 
       <section className="grid gap-4 lg:grid-cols-4">
-        <div className="border border-[rgb(var(--sep-colour-5c4b35))] bg-[rgb(var(--sep-colour-140f0b))] p-4">
-          <p className="text-[10px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
+        <div data-sep-interaction-ignore="true" className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 [transform:none!important]">
+          <p className="text-[9px] tracking-[0.08em] text-[rgb(var(--sep-colour-756957))]">
             Prompted
           </p>
-          <p className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-efd6a3))]">
+          <p className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-dec89f))]">
             {promptedCount}
           </p>
         </div>
-        <div className="border border-[rgb(var(--sep-colour-5c4b35))] bg-[rgb(var(--sep-colour-140f0b))] p-4">
-          <p className="text-[10px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
+        <div data-sep-interaction-ignore="true" className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 [transform:none!important]">
+          <p className="text-[9px] tracking-[0.08em] text-[rgb(var(--sep-colour-756957))]">
             Answered
           </p>
-          <p className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-efd6a3))]">
+          <p className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-dec89f))]">
             {answeredCount}
           </p>
-          <p className="mt-2 text-xs text-[rgb(var(--sep-colour-8d775b))]">
+          <p className="mt-2 text-xs text-[rgb(var(--sep-colour-756957))]">
             Response rate {formatPercent(percentage(answeredCount, promptedCount))}
           </p>
         </div>
-        <div className="border border-[rgb(var(--sep-colour-5c4b35))] bg-[rgb(var(--sep-colour-140f0b))] p-4">
-          <p className="text-[10px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
+        <div data-sep-interaction-ignore="true" className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 [transform:none!important]">
+          <p className="text-[9px] tracking-[0.08em] text-[rgb(var(--sep-colour-756957))]">
             Skipped
           </p>
-          <p className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-efd6a3))]">
+          <p className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-dec89f))]">
             {skippedCount}
           </p>
         </div>
-        <div className="border border-[rgb(var(--sep-colour-5c4b35))] bg-[rgb(var(--sep-colour-140f0b))] p-4">
-          <p className="text-[10px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
+        <div data-sep-interaction-ignore="true" className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 [transform:none!important]">
+          <p className="text-[9px] tracking-[0.08em] text-[rgb(var(--sep-colour-756957))]">
             Distinct users
           </p>
-          <p className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-efd6a3))]">
+          <p className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-dec89f))]">
             {users.length}
           </p>
         </div>
@@ -376,18 +314,18 @@ export default async function AdminExperiencePage({
           return (
             <article
               key={rating.value}
-              className="border border-[rgb(var(--sep-colour-5c4b35))] bg-[rgb(var(--sep-colour-140f0b))] p-4"
+              data-sep-interaction-ignore="true" className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 [transform:none!important]"
             >
               <div className="flex items-center gap-3">
                 <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border border-[rgb(var(--sep-colour-6a5437))] bg-[rgb(var(--sep-colour-0e0a08))] p-1">
                   <img src={rating.imageSrc} alt={rating.label} className="h-full w-full object-contain" />
                 </div>
                 <div>
-                  <p className="text-sm text-[rgb(var(--sep-colour-efd6a3))]">{rating.label}</p>
-                  <p className="text-[11px] text-[rgb(var(--sep-colour-8d775b))]">{count} answers</p>
+                  <p className="text-sm text-[rgb(var(--sep-colour-dec89f))]">{rating.label}</p>
+                  <p className="text-[11px] text-[rgb(var(--sep-colour-756957))]">{count} answers</p>
                 </div>
               </div>
-              <p className="mt-4 font-serif text-2xl text-[rgb(var(--sep-colour-dec69a))]">
+              <p className="mt-4 font-serif text-2xl text-[rgb(var(--sep-colour-b79c73))]">
                 {formatPercent(percent)}
               </p>
             </article>
@@ -395,13 +333,13 @@ export default async function AdminExperiencePage({
         })}
       </section>
 
-      <section className="border border-[rgb(var(--sep-colour-5c4b35))] bg-[rgb(var(--sep-colour-140f0b))] p-4">
+      <section data-sep-interaction-ignore="true" className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 [transform:none!important]">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 className="font-serif text-2xl text-[rgb(var(--sep-colour-efd6a3))]">
+            <h2 className="font-serif text-2xl text-[rgb(var(--sep-colour-dec89f))]">
               Per-user distribution
             </h2>
-            <p className="mt-1 text-xs text-[rgb(var(--sep-colour-8d775b))]">
+            <p className="mt-1 text-xs text-[rgb(var(--sep-colour-756957))]">
               Percentages below are calculated from answered prompts only.
             </p>
           </div>
@@ -411,7 +349,7 @@ export default async function AdminExperiencePage({
           <div className="overflow-x-auto">
             <table className="min-w-full border-collapse text-sm">
               <thead>
-                <tr className="border-b border-[rgb(var(--sep-colour-4c3c2b))] text-left text-[11px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))]">
+                <tr className="border-b border-[rgb(var(--sep-colour-60482e))]/35 text-left text-[11px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-756957))]">
                   <th className="px-3 py-3">User</th>
                   <th className="px-3 py-3">Prompts</th>
                   <th className="px-3 py-3">Answered</th>
@@ -431,10 +369,10 @@ export default async function AdminExperiencePage({
                 {users.map((user) => (
                   <tr
                     key={user.userId}
-                    className="border-b border-[rgb(var(--sep-colour-241b14))] align-top text-[rgb(var(--sep-colour-d7c4a5))]"
+                    className="border-b border-[rgb(var(--sep-colour-60482e))]/25 align-top text-[rgb(var(--sep-colour-a99b89))]"
                   >
                     <td className="px-3 py-3">
-                      <div className="font-medium text-[rgb(var(--sep-colour-efd6a3))]">
+                      <div className="font-medium text-[rgb(var(--sep-colour-dec89f))]">
                         {user.publicSlug ? (
                           <Link href={`/characters/${user.publicSlug}`} className="hover:underline">
                             {user.displayName}
@@ -443,7 +381,7 @@ export default async function AdminExperiencePage({
                           user.displayName
                         )}
                       </div>
-                      <div className="mt-1 text-[11px] text-[rgb(var(--sep-colour-8d775b))]">
+                      <div className="mt-1 text-[11px] text-[rgb(var(--sep-colour-756957))]">
                         {user.userId}
                       </div>
                     </td>
@@ -459,12 +397,12 @@ export default async function AdminExperiencePage({
                             percentage(user.counts[rating.value], user.answered),
                           )}
                         </div>
-                        <div className="mt-1 text-[11px] text-[rgb(var(--sep-colour-8d775b))]">
+                        <div className="mt-1 text-[11px] text-[rgb(var(--sep-colour-756957))]">
                           {user.counts[rating.value]}
                         </div>
                       </td>
                     ))}
-                    <td className="max-w-xs px-3 py-3 text-[12px] text-[rgb(var(--sep-colour-bca788))]">
+                    <td className="max-w-xs px-3 py-3 text-[12px] text-[rgb(var(--sep-colour-9d8d79))]">
                       {user.latestComment ?? "—"}
                     </td>
                   </tr>
@@ -473,18 +411,18 @@ export default async function AdminExperiencePage({
             </table>
           </div>
         ) : (
-          <p className="text-sm text-[rgb(var(--sep-colour-8d775b))]">
+          <p className="text-sm text-[rgb(var(--sep-colour-756957))]">
             No experience feedback matches the current filters.
           </p>
         )}
       </section>
 
-      <section className="border border-[rgb(var(--sep-colour-5c4b35))] bg-[rgb(var(--sep-colour-140f0b))] p-4">
+      <section data-sep-interaction-ignore="true" className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 [transform:none!important]">
         <div className="mb-4">
-          <h2 className="font-serif text-2xl text-[rgb(var(--sep-colour-efd6a3))]">
+          <h2 className="font-serif text-2xl text-[rgb(var(--sep-colour-dec89f))]">
             Recent comments
           </h2>
-          <p className="mt-1 text-xs text-[rgb(var(--sep-colour-8d775b))]">
+          <p className="mt-1 text-xs text-[rgb(var(--sep-colour-756957))]">
             Optional notes left by players, newest prompts first.
           </p>
         </div>
@@ -497,10 +435,10 @@ export default async function AdminExperiencePage({
               return (
                 <article
                   key={row.id}
-                  className="border border-[rgb(var(--sep-colour-241b14))] bg-[rgb(var(--sep-colour-17110d))] p-3"
+                  className="border border-[rgb(var(--sep-colour-60482e))]/25 bg-[rgb(var(--sep-colour-17110d))] p-3"
                 >
-                  <div className="flex flex-wrap items-center gap-2 text-xs text-[rgb(var(--sep-colour-8d775b))]">
-                    <span className="font-medium text-[rgb(var(--sep-colour-dec69a))]">
+                  <div className="flex flex-wrap items-center gap-2 text-xs text-[rgb(var(--sep-colour-756957))]">
+                    <span className="font-medium text-[rgb(var(--sep-colour-b79c73))]">
                       {profile?.displayName ?? row.user_id}
                     </span>
                     {face ? (
@@ -511,7 +449,7 @@ export default async function AdminExperiencePage({
                     ) : null}
                     <span>{new Date(row.prompted_at).toLocaleString()}</span>
                   </div>
-                  <p className="mt-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))]">
+                  <p className="mt-2 text-sm text-[rgb(var(--sep-colour-a99b89))]">
                     {row.comment}
                   </p>
                 </article>
@@ -519,7 +457,7 @@ export default async function AdminExperiencePage({
             })}
           </div>
         ) : (
-          <p className="text-sm text-[rgb(var(--sep-colour-8d775b))]">
+          <p className="text-sm text-[rgb(var(--sep-colour-756957))]">
             No comments yet for the current filters.
           </p>
         )}

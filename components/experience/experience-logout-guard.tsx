@@ -392,10 +392,10 @@ export function ExperienceLogoutGuard() {
 
         {needsCommentStep ? (
           <div className="mt-4 border border-[rgb(var(--sep-colour-5a4630))] bg-[rgb(var(--sep-colour-17110d))] p-3 [transform:none!important]">
-            <p className="text-sm text-[rgb(var(--sep-colour-efd6a3))]">
+            <p className="text-sm text-[rgb(var(--sep-colour-c9b184))]">
               Want to tell us why?
             </p>
-            <p className="mt-1 text-[11px] text-[rgb(var(--sep-colour-8d775b))]">
+            <p className="mt-1 text-[11px] text-[rgb(var(--sep-colour-8f806c))]">
               Optional. Even a short note helps staff understand what needs attention.
             </p>
             <textarea
@@ -412,7 +412,7 @@ export function ExperienceLogoutGuard() {
                 type="button"
                 disabled={busy}
                 onClick={() => completePrompt({ rating: selectedRating ?? undefined })}
-                className="border border-[rgb(var(--sep-colour-6a5437))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-cfb486))] [transform:none!important]"
+                className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-2.5 py-1.5 text-[10px] tracking-[0.08em] text-[rgb(var(--sep-colour-a99b89))] transition-colors hover:border-[rgb(var(--sep-colour-876a46))] hover:text-[rgb(var(--sep-colour-c9b184))] [transform:none!important]"
               >
                 Skip comment
               </button>
@@ -425,7 +425,7 @@ export function ExperienceLogoutGuard() {
                     comment,
                   })
                 }
-                className="border border-[rgb(var(--sep-colour-d2aa63))] bg-[rgb(var(--sep-colour-2a1e14))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-f1ddb4))] [transform:none!important]"
+                className="border border-[rgb(var(--sep-colour-765937))]/65 bg-[rgb(var(--sep-colour-21170f))] px-2.5 py-1.5 text-[10px] tracking-[0.08em] text-[rgb(var(--sep-colour-c9b184))] transition-colors hover:border-[rgb(var(--sep-colour-a07945))] hover:text-[rgb(var(--sep-colour-dec89f))] [transform:none!important]"
               >
                 Send feedback
               </button>
@@ -438,7 +438,7 @@ export function ExperienceLogoutGuard() {
             type="button"
             disabled={busy}
             onClick={() => completePrompt({ skipped: true })}
-            className="border border-[rgb(var(--sep-colour-6a5437))] px-3 py-1.5 text-xs text-[rgb(var(--sep-colour-cfb486))] [transform:none!important]"
+            className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-2.5 py-1 text-[10px] tracking-[0.08em] text-[rgb(var(--sep-colour-8f806c))] transition-colors hover:border-[rgb(var(--sep-colour-876a46))] hover:text-[rgb(var(--sep-colour-bca27b))] [transform:none!important]"
           >
             Skip
           </button>

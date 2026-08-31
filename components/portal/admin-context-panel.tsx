@@ -231,23 +231,49 @@ export function AdminContextPanel({
 
   if (mode === "experience") {
     return (
-      <div className="flex h-full min-h-0 flex-col">
-        <p className="text-[9px] tracking-[0.08em] text-[rgb(var(--sep-colour-806b50))]">
-          Player experience
+      <div
+        data-sep-interaction-ignore="true"
+        className="flex h-full min-h-0 flex-col [transform:none!important]"
+      >
+        <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+          Experience administration
         </p>
 
-        <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
-          Satisfaction overview
+        <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-c9b184))]">
+          Read the signals
         </h2>
 
-        <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
-          Review response rate, satisfaction distribution, individual player history and optional comments.
+        <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-756957))]">
+          Watch satisfaction over time and use individual responses when you need more context.
         </p>
 
-        <div className="mt-4 space-y-2 text-[11px] text-[rgb(var(--sep-colour-b8aa96))]">
-          <p>Use the filters to isolate a date range or rating.</p>
-          <p>Staff accounts are excluded from voting and reporting.</p>
-          <p>Skipped prompts still count toward prompt tracking.</p>
+        <div className="mt-4 min-h-0 flex-1 space-y-2 overflow-y-auto pr-1">
+          <section className="border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3 [transform:none!important]">
+            <p className="text-[9px] text-[rgb(var(--sep-colour-876a46))]">
+              Live filters
+            </p>
+            <p className="mt-1 text-[10px] leading-5 text-[rgb(var(--sep-colour-9d8d79))]">
+              Search, rating and date filters update the page automatically.
+            </p>
+          </section>
+
+          <section className="border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3 [transform:none!important]">
+            <p className="text-[9px] text-[rgb(var(--sep-colour-876a46))]">
+              Reading percentages
+            </p>
+            <p className="mt-1 text-[10px] leading-5 text-[rgb(var(--sep-colour-9d8d79))]">
+              Face percentages use answered prompts only. Skips remain visible in response-rate tracking.
+            </p>
+          </section>
+
+          <section className="border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3 [transform:none!important]">
+            <p className="text-[9px] text-[rgb(var(--sep-colour-876a46))]">
+              Player-only signal
+            </p>
+            <p className="mt-1 text-[10px] leading-5 text-[rgb(var(--sep-colour-9d8d79))]">
+              Staff accounts are excluded from both voting and reporting.
+            </p>
+          </section>
         </div>
       </div>
     );
