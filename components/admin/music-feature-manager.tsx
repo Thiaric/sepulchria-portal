@@ -27,6 +27,36 @@ function sizeLabel(bytes: number | null) {
   return bytes < 1048576 ? `${(bytes / 1024).toFixed(1)} KB` : `${(bytes / 1048576).toFixed(2)} MB`;
 }
 
+const MAX_AUDIO_BYTES =
+  30 * 1024 * 1024;
+
+async function responseJson(
+  response: Response,
+) {
+  const text = await response.text();
+
+  if (!text.trim()) {
+    return {} as {
+      error?: string;
+      tracks?: MusicTrackAdminRow[];
+    };
+  }
+
+  try {
+    return JSON.parse(text) as {
+      error?: string;
+      tracks?: MusicTrackAdminRow[];
+    };
+  } catch {
+    return {
+      error:
+        response.ok
+          ? "The server returned an invalid response."
+          : `Upload failed (${response.status}). The file may be too large for the request.`,
+    };
+  }
+}
+
 export function MusicFeatureManager({ initialTracks }: { initialTracks: MusicTrackAdminRow[] }) {
   const router = useRouter();
   const fileRef = useRef<HTMLInputElement | null>(null);
@@ -37,7 +67,7 @@ export function MusicFeatureManager({ initialTracks }: { initialTracks: MusicTra
 
   async function reload() {
     const r = await fetch("/api/admin/music", { cache: "no-store" });
-    const d = await r.json();
+    const d = await responseJson(r);
     if (!r.ok) throw new Error(d.error ?? "Unable to refresh music.");
     setTracks(d.tracks ?? []);
     window.requestAnimationFrame(() => {
@@ -51,10 +81,23 @@ export function MusicFeatureManager({ initialTracks }: { initialTracks: MusicTra
   }
 
   async function upload(fd: FormData) {
+    const file = fd.get("file");
+
+    if (
+      file instanceof File &&
+      file.size > MAX_AUDIO_BYTES
+    ) {
+      setFailed(true);
+      setMessage(
+        `That file is ${(file.size / 1048576).toFixed(2)} MB. Music files must be 30 MB or smaller.`,
+      );
+      return;
+    }
+
     setBusy(true); setMessage(""); setFailed(false);
     try {
       const r = await fetch("/api/admin/music", { method: "POST", body: fd });
-      const d = await r.json();
+      const d = await responseJson(r);
       if (!r.ok) throw new Error(d.error ?? "Unable to upload track.");
       if (fileRef.current) fileRef.current.value = "";
       setMessage("Music track uploaded.");
@@ -80,7 +123,7 @@ export function MusicFeatureManager({ initialTracks }: { initialTracks: MusicTra
           is_personal_selectable: fd.get("is_personal_selectable") === "on",
         }),
       });
-      const d = await r.json();
+      const d = await responseJson(r);
       if (!r.ok) throw new Error(d.error ?? "Unable to save track.");
       setMessage("Track saved.");
       await reload();
@@ -95,7 +138,7 @@ export function MusicFeatureManager({ initialTracks }: { initialTracks: MusicTra
     setBusy(true); setMessage(""); setFailed(false);
     try {
       const r = await fetch(`/api/admin/music?id=${encodeURIComponent(track.id)}`, { method: "DELETE" });
-      const d = await r.json();
+      const d = await responseJson(r);
       if (!r.ok) throw new Error(d.error ?? "Unable to delete track.");
       setMessage("Track deleted.");
       await reload();

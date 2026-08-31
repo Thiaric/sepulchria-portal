@@ -52,6 +52,12 @@ export default function RoomMusicPlayer({
   const lastSavedSecondRef =
     useRef(-1);
 
+  const sourceLoadingRef =
+    useRef(false);
+
+  const pendingResumeRef =
+    useRef(0);
+
   const [locationName, setLocationName] =
     useState(initialLocationName);
 
@@ -85,6 +91,12 @@ export default function RoomMusicPlayer({
 
   const [playing, setPlaying] =
     useState(false);
+
+  const [currentTime, setCurrentTime] =
+    useState(0);
+
+  const [duration, setDuration] =
+    useState(0);
 
   const [
     needsGesture,
@@ -303,8 +315,7 @@ export default function RoomMusicPlayer({
     }
   }
 
-  function restorePosition(
-    audio: HTMLAudioElement,
+  function readPosition(
     trackId: string,
   ) {
     try {
@@ -315,26 +326,43 @@ export default function RoomMusicPlayer({
 
       const saved = Number(raw);
 
-      if (
-        Number.isFinite(saved) &&
-        saved > 0 &&
-        Number.isFinite(
-          audio.duration,
-        ) &&
-        audio.duration > 0
-      ) {
-        audio.currentTime =
-          Math.min(
-            saved,
-            Math.max(
-              0,
-              audio.duration - 0.25,
-            ),
-          );
-      }
+      return Number.isFinite(saved) &&
+        saved > 0
+        ? saved
+        : 0;
     } catch {
-      // Ignore unavailable local storage.
+      return 0;
     }
+  }
+
+  function restorePosition(
+    audio: HTMLAudioElement,
+    trackId: string,
+  ) {
+    const saved =
+      pendingResumeRef.current ||
+      readPosition(trackId);
+
+    if (
+      saved > 0 &&
+      Number.isFinite(audio.duration) &&
+      audio.duration > 0
+    ) {
+      const restored =
+        Math.min(
+          saved,
+          Math.max(
+            0,
+            audio.duration - 0.25,
+          ),
+        );
+
+      audio.currentTime = restored;
+      setCurrentTime(restored);
+    }
+
+    pendingResumeRef.current = 0;
+    sourceLoadingRef.current = false;
   }
 
   useEffect(() => {
@@ -355,6 +383,13 @@ export default function RoomMusicPlayer({
     }
 
     lastSavedSecondRef.current = -1;
+    pendingResumeRef.current =
+      readPosition(track.id);
+    sourceLoadingRef.current = true;
+    setCurrentTime(
+      pendingResumeRef.current,
+    );
+    setDuration(0);
 
     audio.pause();
     audio.src = track.url;
@@ -634,6 +669,37 @@ export default function RoomMusicPlayer({
     }
   }
 
+  function seek(
+    value: number,
+  ) {
+    const audio = audioRef.current;
+
+    if (
+      !audio ||
+      !Number.isFinite(value)
+    ) {
+      return;
+    }
+
+    const next = Math.max(
+      0,
+      Math.min(
+        value,
+        duration || value,
+      ),
+    );
+
+    audio.currentTime = next;
+    setCurrentTime(next);
+
+    if (activeTrack) {
+      savePosition(
+        activeTrack.id,
+        next,
+      );
+    }
+  }
+
   function chooseMode(
     personal: boolean,
   ) {
@@ -879,6 +945,41 @@ export default function RoomMusicPlayer({
             </div>
           ) : null}
 
+          <div className="mt-3">
+            <div className="mb-1.5 flex items-center justify-between gap-2 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756957))]">
+              <span>Progress</span>
+              <span className="tabular-nums">
+                {Math.floor(currentTime / 60)}:{String(
+                  Math.floor(currentTime % 60),
+                ).padStart(2, "0")}
+                {" / "}
+                {Math.floor(duration / 60)}:{String(
+                  Math.floor(duration % 60),
+                ).padStart(2, "0")}
+              </span>
+            </div>
+            <input
+              type="range"
+              min={0}
+              max={duration > 0 ? duration : 0}
+              step={0.1}
+              value={Math.min(
+                currentTime,
+                duration || 0,
+              )}
+              onChange={(event) =>
+                seek(
+                  Number(
+                    event.target.value,
+                  ),
+                )
+              }
+              disabled={duration <= 0}
+              aria-label="Music progress"
+              className="block h-1.5 w-full cursor-pointer accent-[rgb(var(--sep-colour-a77b43))] disabled:cursor-not-allowed disabled:opacity-40"
+            />
+          </div>
+
           <label className="mt-3 block">
             <span className="mb-1.5 block text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-756957))]">
               Volume
@@ -921,34 +1022,56 @@ export default function RoomMusicPlayer({
         preload="auto"
         className="hidden"
         onLoadedMetadata={(event) => {
+          const loadedDuration =
+            event.currentTarget.duration;
+
+          setDuration(
+            Number.isFinite(
+              loadedDuration,
+            )
+              ? loadedDuration
+              : 0,
+          );
+
           if (activeTrack) {
             restorePosition(
               event.currentTarget,
               activeTrack.id,
             );
+          } else {
+            sourceLoadingRef.current =
+              false;
           }
         }}
         onPlay={() => {
           setPlaying(true);
           setNeedsGesture(false);
         }}
-        onPause={() => {
+        onPause={(event) => {
           setPlaying(false);
 
-          if (activeTrack) {
+          if (
+            activeTrack &&
+            !sourceLoadingRef.current
+          ) {
             savePosition(
               activeTrack.id,
+              event.currentTarget
+                .currentTime,
             );
           }
         }}
         onTimeUpdate={(event) => {
+          const time =
+            event.currentTarget
+              .currentTime;
+
+          setCurrentTime(time);
+
           if (!activeTrack) return;
 
           const second =
-            Math.floor(
-              event.currentTarget
-                .currentTime,
-            );
+            Math.floor(time);
 
           if (
             second -
@@ -960,8 +1083,7 @@ export default function RoomMusicPlayer({
 
             savePosition(
               activeTrack.id,
-              event.currentTarget
-                .currentTime,
+              time,
             );
           }
         }}

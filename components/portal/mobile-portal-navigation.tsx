@@ -1144,7 +1144,7 @@ export function MobilePortalNavigation({
                         <MobileIcon
                           src="/icons/rules.png"
                         />
-                        <span className="min-w-0 flex-1 truncate text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b8a98f))]">
+                        <span className="min-w-0 flex-1 truncate text-[10px] uppercase tracking-[0.16em] !text-[rgb(var(--sep-colour-b6a894))]">
                           Rules
                         </span>
                       </button>
@@ -1207,7 +1207,7 @@ export function MobilePortalNavigation({
                         <MobileIcon
                           src="/icons/economy.png"
                         />
-                        <span className="min-w-0 flex-1 truncate text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b8a98f))]">
+                        <span className="min-w-0 flex-1 truncate text-[10px] uppercase tracking-[0.16em] !text-[rgb(var(--sep-colour-b6a894))]">
                           Economy & Crafting
                         </span>
                       </button>
@@ -1429,7 +1429,7 @@ export function MobilePortalNavigation({
                       <MobileIcon
                         src="/icons/rules.png"
                       />
-                      <span className="min-w-0 flex-1 text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b8a98f))]">
+                      <span className="min-w-0 flex-1 text-[10px] uppercase tracking-[0.16em] !text-[rgb(var(--sep-colour-b6a894))]">
                         Legal & Safety
                       </span>
                       <span className="text-lg text-[rgb(var(--sep-colour-b68b4f))]">
