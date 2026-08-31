@@ -85,9 +85,9 @@ export async function CharacterDisplayTrophies({
 
   return (
     <span
-      className="inline-flex flex-wrap items-center justify-end gap-1.5"
-      aria-label="Displayed Trophies"
-    >
+  className="grid grid-cols-3 justify-items-end gap-1.5 sm:inline-flex sm:flex-wrap sm:items-center sm:justify-end"
+  aria-label="Displayed Trophies"
+>
       {trophies.map(({ slot, trophy }) => (
         <span
           key={`${slot}-${trophy.id}`}

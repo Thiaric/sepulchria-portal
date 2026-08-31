@@ -4,6 +4,7 @@ import "./globals.css";
 import "./portal-themes.css";
 import { CookieStorageControls } from "@/components/privacy/cookie-storage-controls";
 import { ServiceWorkerRegistration } from "@/components/pwa/service-worker-registration";
+import { PwaInstallPrompt } from "@/components/pwa/pwa-install-prompt";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -139,6 +140,7 @@ export default function RootLayout({
         {children}
         <CookieStorageControls />
         <ServiceWorkerRegistration />
+        <PwaInstallPrompt />
       </body>
     </html>
   );

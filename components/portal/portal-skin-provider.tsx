@@ -45,22 +45,34 @@ function applySkinToDocument(skin: PortalSkin) {
     return;
   }
 
-  document.documentElement.dataset.portalSkin = skin;
-  document.body.dataset.portalSkin = skin;
-  document.documentElement.classList.add("portal-skin-scope");
-  document.body.classList.add("portal-skin-scope");
+  document.documentElement.dataset.portalSkin =
+    skin;
+
+  document.documentElement.classList.add(
+    "portal-skin-scope",
+  );
+
+  if (document.body) {
+    document.body.dataset.portalSkin =
+      skin;
+
+    document.body.classList.add(
+      "portal-skin-scope",
+    );
+  }
 }
+
 
 export function PortalSkinProvider({
   children,
 }: {
   children: ReactNode;
 }) {
-  const [skin, setSkin] =
-    useState<PortalSkin>("sepulchria");
+const [skin, setSkin] =
+  useState<PortalSkin>("sepulchria");
 
-  const [selectedSkin, setSelectedSkin] =
-    useState<PortalSkin>("sepulchria");
+const [selectedSkin, setSelectedSkin] =
+  useState<PortalSkin>("sepulchria");
 
   useEffect(() => {
     let cancelled = false;
@@ -189,13 +201,10 @@ export function PortalSkinProvider({
 
   return (
     <PortalSkinContext.Provider value={value}>
-      <div
-        className="contents portal-skin-scope"
-        data-portal-skin={skin}
-      >
-        {children}
-        <PortalSkinAtmosphere skin={skin} />
-      </div>
+      <div className="contents portal-skin-scope">
+  {children}
+  <PortalSkinAtmosphere skin={skin} />
+</div>
     </PortalSkinContext.Provider>
   );
 }
