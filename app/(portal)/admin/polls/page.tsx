@@ -9,6 +9,7 @@ import {
   createPoll,
   deletePoll,
   openPoll,
+  reopenPoll,
 } from "./actions";
 
 type NamedOption = {
@@ -440,48 +441,25 @@ export default async function AdminPollsPage() {
                   <div className="flex flex-wrap justify-end gap-2 border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-4">
                     {poll.status ===
                     "draft" ? (
-                      <>
-                        <AdminActionForm
-                          action={
-                            openPoll
+                      <AdminActionForm
+                        action={
+                          openPoll
+                        }
+                      >
+                        <input
+                          type="hidden"
+                          name="pollId"
+                          value={
+                            poll.id
                           }
+                        />
+                        <button
+                          type="submit"
+                          className="border border-emerald-800/70 bg-emerald-950/30 px-4 py-2 text-[8px] uppercase tracking-[0.16em] text-emerald-300"
                         >
-                          <input
-                            type="hidden"
-                            name="pollId"
-                            value={
-                              poll.id
-                            }
-                          />
-                          <button
-                            type="submit"
-                            className="border border-emerald-800/70 bg-emerald-950/30 px-4 py-2 text-[8px] uppercase tracking-[0.16em] text-emerald-300"
-                          >
-                            Open Poll
-                          </button>
-                        </AdminActionForm>
-
-                        <AdminActionForm
-                          action={
-                            deletePoll
-                          }
-                        >
-                          <input
-                            type="hidden"
-                            name="pollId"
-                            value={
-                              poll.id
-                            }
-                          />
-                          <button
-                            type="submit"
-                            data-confirm-message="Delete this draft poll permanently?"
-                            className="border border-red-800/70 bg-red-950/35 px-4 py-2 text-[8px] uppercase tracking-[0.16em] text-red-300"
-                          >
-                            Delete Draft
-                          </button>
-                        </AdminActionForm>
-                      </>
+                          Open Poll
+                        </button>
+                      </AdminActionForm>
                     ) : null}
 
                     {poll.status ===
@@ -507,6 +485,50 @@ export default async function AdminPollsPage() {
                         </button>
                       </AdminActionForm>
                     ) : null}
+
+                    {poll.status ===
+                    "closed" ? (
+                      <AdminActionForm
+                        action={
+                          reopenPoll
+                        }
+                      >
+                        <input
+                          type="hidden"
+                          name="pollId"
+                          value={
+                            poll.id
+                          }
+                        />
+                        <button
+                          type="submit"
+                          className="border border-emerald-800/70 bg-emerald-950/30 px-4 py-2 text-[8px] uppercase tracking-[0.16em] text-emerald-300"
+                        >
+                          Reopen Poll
+                        </button>
+                      </AdminActionForm>
+                    ) : null}
+
+                    <AdminActionForm
+                      action={
+                        deletePoll
+                      }
+                    >
+                      <input
+                        type="hidden"
+                        name="pollId"
+                        value={
+                          poll.id
+                        }
+                      />
+                      <button
+                        type="submit"
+                        data-confirm-message="Delete this Poll permanently? Its Poll notifications will also disappear."
+                        className="border border-red-800/70 bg-red-950/35 px-4 py-2 text-[8px] uppercase tracking-[0.16em] text-red-300"
+                      >
+                        Delete Poll
+                      </button>
+                    </AdminActionForm>
                   </div>
                 </div>
               </details>

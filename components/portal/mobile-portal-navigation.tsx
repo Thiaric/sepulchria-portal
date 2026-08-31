@@ -846,6 +846,19 @@ export function MobilePortalNavigation({
     },
   };
 
+  const pollsEntry: LinkEntry = {
+    href: "/polls",
+    label: "Polls",
+    icon: "/icons/forum.png",
+    modal: {
+      label: "Polls",
+      title:
+        "Open community Polls and cast your vote.",
+      icon: "/icons/forum.png",
+      href: "/polls",
+    },
+  };
+
   const rankingEntry: LinkEntry = {
     href: "/ranking",
     label: "Hall of Renown",
@@ -1305,6 +1318,10 @@ export function MobilePortalNavigation({
                   <div className="grid grid-cols-2 gap-2">
                     <EntryButton
                       entry={missionsEntry}
+                    />
+
+                    <EntryButton
+                      entry={pollsEntry}
                     />
 
                     {breezeLodgingsRoomId ? (

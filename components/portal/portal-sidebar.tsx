@@ -66,6 +66,15 @@ const mainNavigationItems: NavigationItem[] = [
     activePaths: ["/characters"],
     opensModal: true,
   },
+  {
+    label: "Polls",
+    title:
+      "Open community Polls and cast your vote.",
+    icon: "/icons/forum.png",
+    href: "/polls",
+    activePaths: ["/polls"],
+    opensModal: true,
+  },
 ];
 
 const codexItem: NavigationItem = {

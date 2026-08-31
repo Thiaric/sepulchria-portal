@@ -38,6 +38,7 @@ export default async function AdminLayout({
 
       <div
         data-sep-interaction-ignore="true"
+        data-admin-header
         className="border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-5 py-4 sm:px-7 lg:px-9"
       >
         <div className="flex flex-wrap items-center justify-between gap-4">
@@ -54,6 +55,7 @@ export default async function AdminLayout({
           <nav
             aria-label="Administration"
             data-sep-interaction-ignore="true"
+            data-admin-navigation
             className="flex flex-wrap items-center gap-2"
           >
 
@@ -301,7 +303,10 @@ export default async function AdminLayout({
           </nav>
         </div>
 
-        <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-3">
+        <div
+          data-admin-identity
+          className="mt-4 flex flex-wrap items-center gap-3 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-3"
+        >
           <span className="border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-21170f))] px-2.5 py-1 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-c1a477))]">
             {staff.role}
           </span>

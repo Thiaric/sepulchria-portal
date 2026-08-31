@@ -23,6 +23,7 @@ import { MarketShopsContext } from "@/components/portal/market-shops-context";
 import { MarketItemsContext } from "@/components/portal/market-items-context";
 import { CharacterDetailContextPanel } from "@/components/portal/character-detail-context-panel";
 import { PortalContextPanel } from "@/components/portal/portal-context-panel";
+import { PollsContextPanel } from "@/components/polls/polls-context-panel";
 import { RoomInfoButton } from "@/components/portal/room-info-button";
 import { LocationAtmosphericImage } from "@/components/world/location-atmospheric-image";
 import type { PortalContext } from "@/types/portal";
@@ -121,6 +122,9 @@ export function PortalResponsiveRightSidebar({
 
   const isMarketPath =
     pathname === "/market";
+
+  const isPollsPath =
+    pathname === "/polls";
 
   const isAdminPath =
     pathname === "/admin" ||
@@ -391,6 +395,8 @@ export function PortalResponsiveRightSidebar({
                 />
               ) : isMarketPath ? (
                 <MarketShopsContext />
+              ) : isPollsPath ? (
+                <PollsContextPanel />
               ) : marketShopSlug ? (
                 <MarketItemsContext shopSlug={marketShopSlug} />
               ) : isOwnCharacterPath ? (

@@ -1859,6 +1859,7 @@ const ADMIN_NAVIGATION_ENTRIES: AdminNavigationEntry[] = [
   { section: "market", label: "Market", href: "/admin/market" },
   { section: "media", label: "Media", href: "/admin/media" },
   { section: "notifications", label: "Notifications", href: "/admin/notifications", aliases: ["alerts", "bell"] },
+  { section: "polls", label: "Polls", href: "/admin/polls", aliases: ["poll", "votes", "voting"] },
   { section: "orders", label: "Orders", href: "/admin/orders" },
   { section: "orders", label: "Order Submissions", href: "/admin/order-submissions", aliases: ["submissions"] },
   { section: "overview", label: "Overview", href: "/admin" },

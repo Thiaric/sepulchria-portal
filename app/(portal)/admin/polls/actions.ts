@@ -595,6 +595,135 @@ export async function closePoll(
   refresh();
 }
 
+export async function reopenPoll(
+  formData: FormData,
+) {
+  const staff =
+    await requireAdminSection(
+      "polls",
+    );
+
+  const pollId =
+    uuid(
+      text(
+        formData,
+        "pollId",
+      ),
+      "Poll",
+    );
+
+  const admin =
+    createAdminClient();
+
+  const {
+    data: poll,
+    error,
+  } = await admin
+    .from("polls")
+    .select(`
+      id,
+      title,
+      status,
+      closes_at,
+      poll_targets(
+        target_type,
+        target_id
+      )
+    `)
+    .eq("id", pollId)
+    .single();
+
+  if (
+    error ||
+    !poll
+  ) {
+    throw new Error(
+      "Poll was not found.",
+    );
+  }
+
+  if (
+    poll.status !==
+    "closed"
+  ) {
+    throw new Error(
+      "Only closed polls can be reopened.",
+    );
+  }
+
+  const now =
+    new Date();
+
+  const oldCloseAt =
+    poll.closes_at
+      ? new Date(
+          poll.closes_at,
+        ).getTime()
+      : null;
+
+  const nextCloseAt =
+    oldCloseAt !== null &&
+    oldCloseAt <=
+      now.getTime()
+      ? null
+      : poll.closes_at;
+
+  /*
+   * A reopened Poll begins a fresh notification cycle.
+   * Remove old opened/closed notices for this Poll before
+   * creating the new opened notice.
+   */
+  const {
+    error: notificationDeleteError,
+  } = await admin
+    .from("notifications")
+    .delete()
+    .eq("source_type", "poll")
+    .eq("source_id", pollId);
+
+  if (
+    notificationDeleteError
+  ) {
+    throw new Error(
+      `Unable to reset Poll notifications: ${notificationDeleteError.message}`,
+    );
+  }
+
+  const {
+    error: updateError,
+  } = await admin
+    .from("polls")
+    .update({
+      status: "open",
+      opens_at:
+        now.toISOString(),
+      closes_at:
+        nextCloseAt,
+      closed_at: null,
+      updated_at:
+        now.toISOString(),
+    })
+    .eq("id", pollId);
+
+  if (updateError) {
+    throw new Error(
+      `Unable to reopen Poll: ${updateError.message}`,
+    );
+  }
+
+  await createPollNotification(
+    {
+      ...poll,
+      closes_at:
+        nextCloseAt,
+    },
+    "opened",
+    staff.userId,
+  );
+
+  refresh();
+}
+
 export async function deletePoll(
   formData: FormData,
 ) {
@@ -632,12 +761,23 @@ export async function deletePoll(
     );
   }
 
+  /*
+   * Deleted Polls must disappear from the notification panel.
+   * Closed Polls remain untouched; only deletion removes notices.
+   */
+  const {
+    error: notificationDeleteError,
+  } = await admin
+    .from("notifications")
+    .delete()
+    .eq("source_type", "poll")
+    .eq("source_id", pollId);
+
   if (
-    poll.status !==
-    "draft"
+    notificationDeleteError
   ) {
     throw new Error(
-      "Only draft polls can be deleted. Close published polls instead.",
+      `Unable to delete Poll notifications: ${notificationDeleteError.message}`,
     );
   }
 

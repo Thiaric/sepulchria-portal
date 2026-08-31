@@ -813,7 +813,7 @@ export function WorldIndicator({
         onClick={() =>
           setOpen(true)
         }
-        className="relative hidden h-10 items-center gap-2 border border-[rgb(var(--sep-colour-614b31))] bg-[rgb(var(--sep-colour-17120f))] px-3 text-[rgb(var(--sep-colour-c9aa79))] transition hover:border-[rgb(var(--sep-colour-8d6b42))] hover:bg-[rgb(var(--sep-colour-201711))] md:flex"
+        className="relative flex h-8 w-8 items-center justify-center gap-0 border border-[rgb(var(--sep-colour-614b31))] bg-[rgb(var(--sep-colour-17120f))] p-0 text-[rgb(var(--sep-colour-c9aa79))] transition hover:border-[rgb(var(--sep-colour-8d6b42))] hover:bg-[rgb(var(--sep-colour-201711))] md:h-10 md:w-auto md:gap-2 md:px-3"
         title={`${fullDate} · ${lunar.name} · ${weatherLabel(
           state.weather,
         )}`}

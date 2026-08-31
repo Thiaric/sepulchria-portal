@@ -296,6 +296,21 @@ export default async function PollsPage() {
             <section
               key={poll.id}
               id={`poll-${poll.id}`}
+              data-public-poll-id={poll.id}
+              data-public-poll-title={poll.title}
+              data-public-poll-description={poll.description}
+              data-public-poll-state={
+                open
+                  ? "open"
+                  : closed
+                    ? "closed"
+                    : "upcoming"
+              }
+              data-public-poll-voted={
+                myBallot !== null
+                  ? "true"
+                  : "false"
+              }
               className="scroll-mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))]"
             >
               <div className="border-b border-[rgb(var(--sep-colour-59432c))]/35 px-4 py-4 sm:px-5">

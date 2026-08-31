@@ -161,3 +161,78 @@
 .admin-compact main section {
   scroll-margin-top: 6rem;
 }
+
+
+/* =========================================================
+   MOBILE ADMIN DENSITY — applies to every /admin page
+   ========================================================= */
+@media (max-width: 639px) {
+  [data-admin-header] {
+    padding: 0.55rem 0.65rem !important;
+  }
+
+  [data-admin-header] > div:first-child {
+    gap: 0.45rem !important;
+  }
+
+  [data-admin-header] h1 {
+    margin-top: 0 !important;
+    font-size: 1.05rem !important;
+    line-height: 1.2rem !important;
+  }
+
+  [data-admin-header] p {
+    font-size: 0.42rem !important;
+    letter-spacing: 0.12em !important;
+  }
+
+  [data-admin-navigation] {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex-wrap: nowrap !important;
+    gap: 0.3rem !important;
+    overflow-x: auto !important;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    padding-bottom: 0.1rem;
+  }
+
+  [data-admin-navigation]::-webkit-scrollbar {
+    display: none;
+  }
+
+  [data-admin-navigation] > a {
+    flex: 0 0 auto !important;
+    padding: 0.38rem 0.55rem !important;
+    font-size: 0.43rem !important;
+    letter-spacing: 0.1em !important;
+    white-space: nowrap !important;
+  }
+
+  [data-admin-identity] {
+    display: none !important;
+  }
+
+  .admin-compact {
+    --admin-field-y: 0.4rem;
+    --admin-section-pad: 0.7rem;
+  }
+
+  .admin-compact main {
+    padding: 0.6rem !important;
+  }
+
+  .admin-compact main section {
+    scroll-margin-top: 4.5rem;
+  }
+
+  .admin-compact main textarea {
+    max-height: 32dvh;
+  }
+
+  .admin-compact .rich-wysiwyg-editor,
+  .admin-compact textarea[style*="min-height"] {
+    min-height: 105px !important;
+    max-height: 32dvh !important;
+  }
+}
