@@ -21,6 +21,27 @@ export async function POST() {
   }
 
   const admin = createAdminClient();
+
+  const staffResult = await admin
+    .from("staff_members")
+    .select("user_id")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (staffResult.error) {
+    return NextResponse.json(
+      { error: staffResult.error.message },
+      { status: 500 },
+    );
+  }
+
+  if (staffResult.data) {
+    return NextResponse.json(
+      { due: false, promptId: null },
+      { status: 200 },
+    );
+  }
+
   const latest = await admin
     .from("experience_feedback")
     .select("id, prompted_at")

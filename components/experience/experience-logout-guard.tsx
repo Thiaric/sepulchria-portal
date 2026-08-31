@@ -332,23 +332,24 @@ export function ExperienceLogoutGuard() {
   }
 
   return (
-    <div className="fixed inset-0 z-[140] flex items-center justify-center bg-black/70 px-4 py-8 backdrop-blur-sm">
-      <div className="w-full max-w-2xl border border-[rgb(var(--sep-colour-6c5434))] bg-[rgb(var(--sep-colour-120d0a))] p-5 shadow-[0_18px_60px_rgba(0,0,0,0.45)] sm:p-6">
-        <div className="mb-5 flex items-start justify-between gap-4">
-          <div>
-            <p className="text-[10px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8d775b))]">
-              Session feedback
-            </p>
-            <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-efd6a3))]">
-              How was your experience?
-            </h2>
-            <p className="mt-2 max-w-xl text-sm text-[rgb(var(--sep-colour-c7b493))]">
-              Once every 7 days, when leaving Sepulchria, players can leave a quick feeling check so staff can understand how the world is landing.
-            </p>
-          </div>
+    <div
+      data-sep-interaction-ignore="true"
+      className="fixed inset-0 z-[140] flex items-center justify-center bg-black/70 px-4 py-6 backdrop-blur-sm"
+    >
+      <div className="w-full max-w-xl border border-[rgb(var(--sep-colour-6c5434))] bg-[rgb(var(--sep-colour-120d0a))] p-4 shadow-[0_16px_46px_rgba(0,0,0,0.42)] [transform:none!important] sm:p-5">
+        <div className="mb-4">
+          <p className="text-[10px] tracking-[0.08em] text-[rgb(var(--sep-colour-8d775b))]">
+            Session feedback
+          </p>
+          <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-efd6a3))] sm:text-2xl">
+            How was your experience?
+          </h2>
+          <p className="mt-1.5 max-w-lg text-[12px] leading-5 text-[rgb(var(--sep-colour-c7b493))]">
+            A quick check-in helps us understand how your time in Sepulchria felt.
+          </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
+        <div className="grid grid-cols-5 gap-2">
           {EXPERIENCE_RATINGS.map((rating) => {
             const active = selectedRating === rating.value;
             return (
@@ -365,14 +366,14 @@ export function ExperienceLogoutGuard() {
                   completePrompt({ rating: rating.value });
                 }}
                 className={[
-                  "group flex flex-col items-center justify-center gap-2 border px-3 py-4 transition",
+                  "group flex flex-col items-center justify-center gap-1.5 border px-2 py-2.5 transition duration-150",
                   active
-                    ? "border-[rgb(var(--sep-colour-d2aa63))] bg-[rgb(var(--sep-colour-201710))]"
-                    : "border-[rgb(var(--sep-colour-5a4630))] bg-[rgb(var(--sep-colour-17110d))] hover:border-[rgb(var(--sep-colour-977242))] hover:bg-[rgb(var(--sep-colour-221912))]",
+                    ? "border-[rgb(var(--sep-colour-d2aa63))] bg-[rgb(var(--sep-colour-201710))] shadow-[0_0_16px_rgba(var(--sep-rgb-177-132-75),0.16)]"
+                    : "border-[rgb(var(--sep-colour-5a4630))] bg-[rgb(var(--sep-colour-17110d))] hover:-translate-y-[1px] hover:border-[rgb(var(--sep-colour-977242))] hover:bg-[rgb(var(--sep-colour-221912))] hover:shadow-[0_0_14px_rgba(var(--sep-rgb-177-132-75),0.12)]",
                   busy ? "cursor-wait opacity-60" : "cursor-pointer",
                 ].join(" ")}
               >
-                <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border border-[rgb(var(--sep-colour-6a5437))] bg-[rgb(var(--sep-colour-0e0a08))] p-2">
+                <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border border-[rgb(var(--sep-colour-6a5437))] bg-[rgb(var(--sep-colour-0e0a08))] p-1.5 sm:h-16 sm:w-16">
                   <img
                     src={rating.imageSrc}
                     alt={rating.label}
@@ -380,9 +381,8 @@ export function ExperienceLogoutGuard() {
                   />
                 </div>
                 <div className="text-center">
-                  <p className="text-sm text-[rgb(var(--sep-colour-efd6a3))]">{rating.label}</p>
-                  <p className="mt-1 text-[11px] text-[rgb(var(--sep-colour-8d775b))]">
-                    {rating.description}
+                  <p className="text-[11px] text-[rgb(var(--sep-colour-efd6a3))] sm:text-xs">
+                    {rating.label}
                   </p>
                 </div>
               </button>
@@ -391,7 +391,7 @@ export function ExperienceLogoutGuard() {
         </div>
 
         {needsCommentStep ? (
-          <div className="mt-5 border border-[rgb(var(--sep-colour-5a4630))] bg-[rgb(var(--sep-colour-17110d))] p-4">
+          <div className="mt-4 border border-[rgb(var(--sep-colour-5a4630))] bg-[rgb(var(--sep-colour-17110d))] p-3 [transform:none!important]">
             <p className="text-sm text-[rgb(var(--sep-colour-efd6a3))]">
               Want to tell us why?
             </p>
@@ -412,7 +412,7 @@ export function ExperienceLogoutGuard() {
                 type="button"
                 disabled={busy}
                 onClick={() => completePrompt({ rating: selectedRating ?? undefined })}
-                className="border border-[rgb(var(--sep-colour-6a5437))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-cfb486))]"
+                className="border border-[rgb(var(--sep-colour-6a5437))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-cfb486))] [transform:none!important]"
               >
                 Skip comment
               </button>
@@ -425,7 +425,7 @@ export function ExperienceLogoutGuard() {
                     comment,
                   })
                 }
-                className="border border-[rgb(var(--sep-colour-d2aa63))] bg-[rgb(var(--sep-colour-2a1e14))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-f1ddb4))]"
+                className="border border-[rgb(var(--sep-colour-d2aa63))] bg-[rgb(var(--sep-colour-2a1e14))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-f1ddb4))] [transform:none!important]"
               >
                 Send feedback
               </button>
@@ -433,15 +433,12 @@ export function ExperienceLogoutGuard() {
           </div>
         ) : null}
 
-        <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
-          <p className="text-[11px] text-[rgb(var(--sep-colour-8d775b))]">
-            Your custom face images live in <span className="font-mono text-[rgb(var(--sep-colour-bd9c68))]">/public/experience-faces/</span>. Replace them whenever you are ready.
-          </p>
+        <div className="mt-4 flex justify-end">
           <button
             type="button"
             disabled={busy}
             onClick={() => completePrompt({ skipped: true })}
-            className="border border-[rgb(var(--sep-colour-6a5437))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-cfb486))]"
+            className="border border-[rgb(var(--sep-colour-6a5437))] px-3 py-1.5 text-xs text-[rgb(var(--sep-colour-cfb486))] [transform:none!important]"
           >
             Skip
           </button>

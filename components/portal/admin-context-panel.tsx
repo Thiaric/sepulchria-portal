@@ -46,6 +46,7 @@ type ContextMode =
   | "codex"
   | "media"
   | "notifications"
+  | "experience"
   | "trophies"
   | "registrations"
   | "world"
@@ -131,6 +132,10 @@ function getMode(
 
   if (pathname === "/admin/notifications") {
     return "notifications";
+  }
+
+  if (pathname === "/admin/experience") {
+    return "experience";
   }
 
   if (pathname === "/admin/trophies") {
@@ -221,6 +226,30 @@ export function AdminContextPanel({
   if (mode === "notifications") {
     return (
       <AdminNotificationsNavigatorContext />
+    );
+  }
+
+  if (mode === "experience") {
+    return (
+      <div className="flex h-full min-h-0 flex-col">
+        <p className="text-[9px] tracking-[0.08em] text-[rgb(var(--sep-colour-806b50))]">
+          Player experience
+        </p>
+
+        <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+          Satisfaction overview
+        </h2>
+
+        <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+          Review response rate, satisfaction distribution, individual player history and optional comments.
+        </p>
+
+        <div className="mt-4 space-y-2 text-[11px] text-[rgb(var(--sep-colour-b8aa96))]">
+          <p>Use the filters to isolate a date range or rating.</p>
+          <p>Staff accounts are excluded from voting and reporting.</p>
+          <p>Skipped prompts still count toward prompt tracking.</p>
+        </div>
+      </div>
     );
   }
 
@@ -1505,6 +1534,7 @@ const ADMIN_NAVIGATION_ENTRIES: AdminNavigationEntry[] = [
   { section: "items", label: "Crafting Recipes", href: "/admin/crafting-recipes", aliases: ["recipes", "crafting"] },
   { section: "missions", label: "Daily Missions", href: "/admin/missions", aliases: ["missions", "daily"] },
   { section: "events", label: "Events", href: "/admin/events" },
+  { section: "experience", label: "Experience", href: "/admin/experience", aliases: ["feedback", "satisfaction"] },
   { section: "expertise", label: "Expertise", href: "/admin/expertise" },
   { section: "gifts", label: "Feats", href: "/admin/gifts", aliases: ["gifts"] },
   { section: "forum", label: "Forum", href: "/admin/forum" },

@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { createAdminClient } from "@/lib/supabase/admin";
+import { requireAdminSection } from "@/lib/auth/require-staff";
 import {
   EXPERIENCE_RATINGS,
   type ExperienceRating,
@@ -72,6 +73,8 @@ export default async function AdminExperiencePage({
 }: {
   searchParams?: SearchParams;
 }) {
+  await requireAdminSection("experience");
+
   const params = searchParams ? await searchParams : {};
   const query = asSingle(params.query).trim().toLowerCase();
   const ratingFilter = Number(asSingle(params.rating) || 0);
@@ -79,7 +82,7 @@ export default async function AdminExperiencePage({
   const to = asSingle(params.to);
 
   const admin = createAdminClient();
-  const [feedbackResult, charactersResult] = await Promise.all([
+  const [feedbackResult, charactersResult, staffResult] = await Promise.all([
     admin
       .from("experience_feedback")
       .select(
@@ -90,6 +93,9 @@ export default async function AdminExperiencePage({
       .from("characters")
       .select("user_id, display_name, public_slug")
       .order("display_name", { ascending: true }),
+    admin
+      .from("staff_members")
+      .select("user_id"),
   ]);
 
   if (feedbackResult.error) {
@@ -104,7 +110,19 @@ export default async function AdminExperiencePage({
     );
   }
 
-  const feedbackRows = (feedbackResult.data ?? []) as FeedbackRow[];
+  if (staffResult.error) {
+    throw new Error(
+      `Unable to load staff: ${staffResult.error.message}`,
+    );
+  }
+
+  const staffUserIds = new Set(
+    (staffResult.data ?? []).map((row) => row.user_id),
+  );
+
+  const feedbackRows = ((feedbackResult.data ?? []) as FeedbackRow[]).filter(
+    (row) => !staffUserIds.has(row.user_id),
+  );
   const characters = (charactersResult.data ?? []) as CharacterRow[];
 
   const characterByUserId = new Map(
@@ -228,7 +246,7 @@ export default async function AdminExperiencePage({
               How Was Your Experience?
             </h1>
             <p className="mt-2 max-w-3xl text-sm text-[rgb(var(--sep-colour-c7b493))]">
-              Satisfaction prompts shown when players leave Sepulchria, at most once every 7 days. Replace the placeholder face files in <span className="font-mono text-[rgb(var(--sep-colour-dec69a))]">public/experience-faces/</span> with your own art whenever you are ready.
+              Satisfaction prompts shown to players when they leave Sepulchria, at most once every 7 days. Staff accounts are excluded.
             </p>
           </div>
           <div className="flex gap-2">

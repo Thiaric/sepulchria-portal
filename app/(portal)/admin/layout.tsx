@@ -120,6 +120,12 @@ export default async function AdminLayout({
               </AdminNavigationLink>
             ) : null}
 
+            {can("experience") ? (
+              <AdminNavigationLink href="/admin/experience">
+                Experience
+              </AdminNavigationLink>
+            ) : null}
+
             {can("expertise") ? (
               <AdminNavigationLink href="/admin/expertise">
                 Expertise

@@ -18,6 +18,24 @@ export async function GET() {
   }
 
   const admin = createAdminClient();
+
+  const staffResult = await admin
+    .from("staff_members")
+    .select("user_id")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (staffResult.error) {
+    return NextResponse.json(
+      { error: staffResult.error.message },
+      { status: 500 },
+    );
+  }
+
+  if (staffResult.data) {
+    return NextResponse.json({ due: false }, { status: 200 });
+  }
+
   const result = await admin
     .from("experience_feedback")
     .select("prompted_at")

@@ -12,6 +12,7 @@ export type AdminSection =
   | "codex"
   | "characters"
   | "events"
+  | "experience"
   | "expertise"
   | "gifts"
   | "items"
@@ -49,6 +50,7 @@ export const ADMIN_SECTION_ROLES: Record<
   codex: ["owner", "admin"],
   characters: ["owner", "admin", "moderator", "master"],
   events: ["owner", "admin", "master"],
+  experience: ["owner", "admin"],
   expertise: ["owner", "admin", "master"],
   gifts: ["owner"],
   items: ["owner"],
