@@ -14,6 +14,7 @@ import { CraftingRecipesContextPanel } from "@/components/admin/crafting-recipes
 import { CharacterAuditContextPanel } from "@/components/admin/character-audit-context-panel";
 import { HouseOfChancesContextPanel } from "@/components/admin/house-of-chances-context-panel";
 import { GatheringContextPanel } from "@/components/admin/gathering-context-panel";
+import { ExperienceContextPanel } from "@/components/admin/experience-context-panel";
 import {
   canAccessAdminSection,
   type AdminSection,
@@ -231,51 +232,7 @@ export function AdminContextPanel({
 
   if (mode === "experience") {
     return (
-      <div
-        data-sep-interaction-ignore="true"
-        className="flex h-full min-h-0 flex-col [transform:none!important]"
-      >
-        <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
-          Experience administration
-        </p>
-
-        <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-c9b184))]">
-          Read the signals
-        </h2>
-
-        <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-756957))]">
-          Watch satisfaction over time and use individual responses when you need more context.
-        </p>
-
-        <div className="mt-4 min-h-0 flex-1 space-y-2 overflow-y-auto pr-1">
-          <section className="border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3 [transform:none!important]">
-            <p className="text-[9px] text-[rgb(var(--sep-colour-876a46))]">
-              Live filters
-            </p>
-            <p className="mt-1 text-[10px] leading-5 text-[rgb(var(--sep-colour-9d8d79))]">
-              Search, rating and date filters update the page automatically.
-            </p>
-          </section>
-
-          <section className="border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3 [transform:none!important]">
-            <p className="text-[9px] text-[rgb(var(--sep-colour-876a46))]">
-              Reading percentages
-            </p>
-            <p className="mt-1 text-[10px] leading-5 text-[rgb(var(--sep-colour-9d8d79))]">
-              Face percentages use answered prompts only. Skips remain visible in response-rate tracking.
-            </p>
-          </section>
-
-          <section className="border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3 [transform:none!important]">
-            <p className="text-[9px] text-[rgb(var(--sep-colour-876a46))]">
-              Player-only signal
-            </p>
-            <p className="mt-1 text-[10px] leading-5 text-[rgb(var(--sep-colour-9d8d79))]">
-              Staff accounts are excluded from both voting and reporting.
-            </p>
-          </section>
-        </div>
-      </div>
+      <ExperienceContextPanel />
     );
   }
 

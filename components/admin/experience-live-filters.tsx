@@ -157,7 +157,7 @@ export function ExperienceLiveFilters({
         </button>
       </div>
 
-      <div className="grid gap-3 md:grid-cols-4 xl:grid-cols-6">
+      <div className="grid gap-3 md:grid-cols-4 xl:grid-cols-5">
         <label className="md:col-span-2 xl:col-span-2">
           <span className="mb-1.5 block text-[9px] text-[rgb(var(--sep-colour-806b50))]">
             Search user or comment
@@ -228,11 +228,6 @@ export function ExperienceLiveFilters({
           />
         </label>
 
-        <div className="flex items-end">
-          <div className="min-h-9 text-[10px] text-[rgb(var(--sep-colour-756957))]">
-            {isPending ? "Updating…" : "Live"}
-          </div>
-        </div>
       </div>
     </section>
   );

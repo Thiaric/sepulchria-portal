@@ -237,7 +237,7 @@ export default async function AdminExperiencePage({
   const commentRows = filteredRows.filter((row) => row.comment?.trim());
 
   return (
-    <div className="space-y-5">
+    <div className="mx-auto w-full max-w-[1120px] space-y-5">
       <header data-sep-interaction-ignore="true" className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 [transform:none!important]">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
@@ -349,20 +349,20 @@ export default async function AdminExperiencePage({
           <div className="overflow-x-auto">
             <table className="min-w-full border-collapse text-sm">
               <thead>
-                <tr className="border-b border-[rgb(var(--sep-colour-60482e))]/35 text-left text-[11px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-756957))]">
-                  <th className="px-3 py-3">User</th>
-                  <th className="px-3 py-3">Prompts</th>
-                  <th className="px-3 py-3">Answered</th>
-                  <th className="px-3 py-3">Response rate</th>
+                <tr className="border-b border-[rgb(var(--sep-colour-60482e))]/35 text-left text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756957))]">
+                  <th className="px-2 py-2">User</th>
+                  <th className="px-2 py-2">Prompts</th>
+                  <th className="px-2 py-2">Answered</th>
+                  <th className="px-2 py-2">Response rate</th>
                   {EXPERIENCE_RATINGS.map((rating) => (
-                    <th key={rating.value} className="px-3 py-3 text-center">
-                      <div className="flex flex-col items-center gap-1">
-                        <img src={rating.imageSrc} alt={rating.label} className="h-8 w-8 object-contain" />
+                    <th key={rating.value} className="px-2 py-2 text-center">
+                      <div className="flex flex-col items-center gap-0.5 text-[8px] leading-tight tracking-[0.08em]">
+                        <img src={rating.imageSrc} alt={rating.label} className="h-7 w-7 object-contain" />
                         <span>{rating.label}</span>
                       </div>
                     </th>
                   ))}
-                  <th className="px-3 py-3">Latest comment</th>
+                  <th className="px-2 py-2">Latest comment</th>
                 </tr>
               </thead>
               <tbody>
