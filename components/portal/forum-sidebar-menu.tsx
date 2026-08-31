@@ -512,7 +512,7 @@ export function ForumSidebarMenu({
   />
 </span>
 
-          <span className={mobile ? "min-w-0 flex-1 truncate text-[11px] text-[rgb(var(--sep-colour-b8a98f))]" : "truncate"}>
+          <span className={mobile ? "min-w-0 flex-1 truncate text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b8a98f))]" : "truncate"}>
             Forum
           </span>
 

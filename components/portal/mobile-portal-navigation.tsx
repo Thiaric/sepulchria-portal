@@ -110,7 +110,7 @@ function EntryButton({
   const contents = (
     <>
       <MobileIcon src={entry.icon} />
-      <span className="min-w-0 flex-1 truncate text-[11px] text-[rgb(var(--sep-colour-b8a98f))]">
+      <span className="min-w-0 flex-1 truncate text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b8a98f))]">
         {entry.label}
       </span>
       {badge ?? <Badge count={badgeCount} />}
@@ -972,7 +972,7 @@ export function MobilePortalNavigation({
               src="/icons/dashboard.png"
               size={20}
             />
-            <span>Aureth</span>
+            <span className="uppercase tracking-[0.14em]">AURETH</span>
           </Link>
 
           <Link
@@ -989,7 +989,7 @@ export function MobilePortalNavigation({
               src="/icons/play.png"
               size={20}
             />
-            <span>Enter</span>
+            <span className="uppercase tracking-[0.14em]">ENTER</span>
           </Link>
 
           <button
@@ -1012,7 +1012,7 @@ export function MobilePortalNavigation({
               src="/icons/characters.png"
               size={20}
             />
-            <span>People</span>
+            <span className="uppercase tracking-[0.14em]">PEOPLE</span>
           </button>
 
           <button
@@ -1034,7 +1034,7 @@ export function MobilePortalNavigation({
               src="/icons/messages.png"
               size={20}
             />
-            <span>Messages</span>
+            <span className="uppercase tracking-[0.14em]">MESSAGES</span>
             <span className="absolute right-[18%] top-1">
               <UnreadMessageBadge
                 initialCount={
@@ -1059,7 +1059,7 @@ export function MobilePortalNavigation({
             >
               ⋯
             </span>
-            <span>More</span>
+            <span className="uppercase tracking-[0.14em]">MORE</span>
 
             {moreAttentionCount > 0 ? (
               <span
@@ -1144,7 +1144,7 @@ export function MobilePortalNavigation({
                         <MobileIcon
                           src="/icons/rules.png"
                         />
-                        <span className="min-w-0 flex-1 truncate text-[11px] text-[rgb(var(--sep-colour-b8a98f))]">
+                        <span className="min-w-0 flex-1 truncate text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b8a98f))]">
                           Rules
                         </span>
                       </button>
@@ -1207,7 +1207,7 @@ export function MobilePortalNavigation({
                         <MobileIcon
                           src="/icons/economy.png"
                         />
-                        <span className="min-w-0 flex-1 truncate text-[11px] text-[rgb(var(--sep-colour-b8a98f))]">
+                        <span className="min-w-0 flex-1 truncate text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b8a98f))]">
                           Economy & Crafting
                         </span>
                       </button>
@@ -1429,7 +1429,7 @@ export function MobilePortalNavigation({
                       <MobileIcon
                         src="/icons/rules.png"
                       />
-                      <span className="min-w-0 flex-1 text-[11px] text-[rgb(var(--sep-colour-b8a98f))]">
+                      <span className="min-w-0 flex-1 text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b8a98f))]">
                         Legal & Safety
                       </span>
                       <span className="text-lg text-[rgb(var(--sep-colour-b68b4f))]">
