@@ -2700,13 +2700,41 @@ function PublicPageModal({
       null,
     );
 
+  /*
+   * Build embedded modal URLs without corrupting hash anchors.
+   *
+   * Example:
+   *   /missions#mission-foo
+   *
+   * must become:
+   *   /missions?embedded=1#mission-foo
+   *
+   * NOT:
+   *   /missions#mission-foo?embedded=1
+   *
+   * The latter changes the actual hash target and breaks native
+   * anchor scrolling.
+   */
+  const hashIndex =
+    item.href.indexOf("#");
+
+  const hrefWithoutHash =
+    hashIndex >= 0
+      ? item.href.slice(0, hashIndex)
+      : item.href;
+
+  const hrefHash =
+    hashIndex >= 0
+      ? item.href.slice(hashIndex)
+      : "";
+
   const separator =
-    item.href.includes("?")
+    hrefWithoutHash.includes("?")
       ? "&"
       : "?";
 
   const iframeSrc =
-    `${item.href}${separator}embedded=1`;
+    `${hrefWithoutHash}${separator}embedded=1${hrefHash}`;
 
   const clampRect =
     useCallback(
@@ -3149,12 +3177,89 @@ function PublicPageModal({
             src={iframeSrc}
             title={item.label}
             onLoad={(event) => {
+              const iframe =
+                event.currentTarget;
+
               const doc =
-                event.currentTarget
-                  .contentDocument;
+                iframe.contentDocument;
 
               if (!doc) {
                 return;
+              }
+
+              /*
+               * Hash-aware modal scrolling.
+               *
+               * Native iframe anchor scrolling is usually enough once
+               * the URL is constructed correctly, but some portal pages
+               * finish rendering or rearranging content after load.
+               *
+               * Retry briefly so links such as:
+               *   /missions#mission-...
+               *   /polls#poll-...
+               *   /character?...#...
+               *   /ranking#...
+               * and any future modal hash target land on the intended
+               * element rather than at the top of the modal.
+               */
+              const rawHash =
+                iframe.contentWindow
+                  ?.location.hash
+                  .slice(1) ?? "";
+
+              if (rawHash) {
+                let targetId = rawHash;
+
+                try {
+                  targetId =
+                    decodeURIComponent(
+                      rawHash,
+                    );
+                } catch {
+                  // Keep the raw hash if decoding fails.
+                }
+
+                let scrollAttempt = 0;
+                const maxScrollAttempts = 12;
+
+                const scrollToHashTarget =
+                  () => {
+                    const target =
+                      doc.getElementById(
+                        targetId,
+                      );
+
+                    if (target) {
+                      target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center",
+                        inline: "nearest",
+                      });
+
+                      return;
+                    }
+
+                    scrollAttempt += 1;
+
+                    if (
+                      scrollAttempt <
+                      maxScrollAttempts
+                    ) {
+                      window.setTimeout(
+                        scrollToHashTarget,
+                        100,
+                      );
+                    }
+                  };
+
+                /*
+                 * Let the iframe finish the current load/layout pass
+                 * before forcing the first scroll.
+                 */
+                window.setTimeout(
+                  scrollToHashTarget,
+                  0,
+                );
               }
 
               const styleId =
