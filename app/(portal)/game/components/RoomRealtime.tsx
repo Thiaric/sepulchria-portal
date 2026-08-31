@@ -4,7 +4,6 @@ import {
   useEffect,
   useRef,
 } from "react";
-import { useRouter } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/client";
 
@@ -25,13 +24,6 @@ const LOCATION_CHANNEL =
 export default function RoomRealtime({
   roomId,
 }: RoomRealtimeProps) {
-  const router = useRouter();
-
-  const refreshTimer =
-    useRef<ReturnType<
-      typeof setTimeout
-    > | null>(null);
-
   const hardReloadingRef =
     useRef(false);
 
@@ -57,27 +49,6 @@ export default function RoomRealtime({
     let currentCharacterId:
       | string
       | null = null;
-
-    function softRefresh(
-      delay = 0,
-    ) {
-      if (
-        hardReloadingRef.current
-      ) {
-        return;
-      }
-
-      if (refreshTimer.current) {
-        clearTimeout(
-          refreshTimer.current,
-        );
-      }
-
-      refreshTimer.current =
-        setTimeout(() => {
-          router.refresh();
-        }, delay);
-    }
 
     /*
      * A room change is different from an ordinary realtime update.
@@ -297,10 +268,12 @@ export default function RoomRealtime({
             }
 
             /*
-             * Status / heartbeat / other presence updates in the
-             * same room only need a normal Server Component refresh.
+             * Status / heartbeat updates in the same room do not
+             * require a Server Component refresh. Re-rendering the
+             * whole /game tree on every presence heartbeat can disturb
+             * persistent mobile shell UI such as the bottom navigation.
              */
-            softRefresh(100);
+            return;
           },
         )
         .subscribe();
@@ -347,12 +320,6 @@ export default function RoomRealtime({
     return () => {
       cancelled = true;
 
-      if (refreshTimer.current) {
-        clearTimeout(
-          refreshTimer.current,
-        );
-      }
-
       document.removeEventListener(
         "visibilitychange",
         handleVisibilityChange,
@@ -378,7 +345,7 @@ export default function RoomRealtime({
         );
       }
     };
-  }, [roomId, router]);
+  }, [roomId]);
 
   return null;
 }

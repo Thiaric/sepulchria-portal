@@ -30,7 +30,7 @@ export function PortalSoundToggle() {
       }
       className={`flex h-8 w-8 items-center justify-center border transition sm:h-9 sm:w-9 2xl:h-10 2xl:w-10 ${
         muted
-          ? "border-[rgb(var(--sep-colour-65443b))] bg-[rgb(var(--sep-colour-211310))] text-[rgb(var(--sep-colour-a56f64))] hover:border-[rgb(var(--sep-colour-925d51))] hover:text-[rgb(var(--sep-colour-d89586))]"
+          ? "border-red-900/70 bg-red-950/35 text-red-400 hover:border-red-700/80 hover:text-red-300"
           : "border-[rgb(var(--sep-colour-614b31))] bg-[rgb(var(--sep-colour-17120f))] text-[rgb(var(--sep-colour-c69b5c))] hover:border-[rgb(var(--sep-colour-977242))] hover:text-[rgb(var(--sep-colour-efd6a3))]"
       }`}
     >

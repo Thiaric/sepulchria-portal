@@ -152,8 +152,7 @@ async function PortalLayoutContent({
                   width: 100%;
                   max-width: none;
                   overflow: hidden;
-                  padding-bottom:
-                    calc(64px + env(safe-area-inset-bottom));
+                  padding-bottom: 0;
                 }
 
                 .portal-left-shell {
@@ -166,7 +165,10 @@ async function PortalLayoutContent({
 
                 .sepulchria-viewport-body
                   > [data-portal-centre-host] {
-                  height: 100%;
+                  height:
+                    calc(
+                      100% - 64px - env(safe-area-inset-bottom)
+                    );
                   min-height: 0;
                   overflow: hidden;
                 }

@@ -418,11 +418,17 @@ export function NotificationBell() {
             <div
               ref={panelRef}
               data-vocabulary-static
-              className="fixed z-[9999] w-[min(390px,calc(100vw-24px))] !translate-x-0 !translate-y-0 !scale-100 !transform-none !animate-none !opacity-100 !transition-none !filter-none border border-[rgb(var(--sep-colour-6e5535))]/70 bg-[rgb(var(--sep-colour-100c09))] shadow-2xl"
+              className="fixed z-[9999] left-3 right-3 top-[calc(env(safe-area-inset-top)+3.75rem)] bottom-[calc(env(safe-area-inset-bottom)+4.75rem)] flex w-auto max-w-none flex-col !translate-x-0 !translate-y-0 !scale-100 !transform-none !animate-none !opacity-100 !transition-none !filter-none border border-[rgb(var(--sep-colour-6e5535))]/70 bg-[rgb(var(--sep-colour-100c09))] shadow-2xl sm:left-auto sm:bottom-auto sm:top-auto sm:w-[min(390px,calc(100vw-24px))] sm:max-w-[390px]"
               style={{
-                top: panelPosition.top,
-                right:
-                  panelPosition.right,
+                ...(typeof window !== "undefined" &&
+                window.innerWidth >= 640
+                  ? {
+                      top:
+                        panelPosition.top,
+                      right:
+                        panelPosition.right,
+                    }
+                  : undefined),
                 transform: "none",
                 filter: "none",
                 animation: "none",
@@ -511,7 +517,7 @@ export function NotificationBell() {
                 ) : null}
               </div>
 
-              <div className="max-h-[min(65vh,560px)] overflow-y-auto p-2">
+              <div className="min-h-0 flex-1 overflow-y-auto p-2 sm:max-h-[min(65vh,560px)] sm:flex-none">
                 {loading ? (
                   <p className="px-4 py-6 text-center text-xs text-[rgb(var(--sep-colour-8f8271))]">
                     Loading

@@ -415,10 +415,20 @@ export function MobilePortalNavigation({
     useMemo<LinkEntry[]>(
       () => [
         {
-          href: "/character",
-          label: "My Character",
+          href: "/characters",
+          label:
+            "Sepulchria's People",
           icon:
             "/icons/characters.png",
+          modal: {
+            label:
+              "Sepulchria's People",
+            title:
+              "Browse the characters who inhabit Sepulchria.",
+            icon:
+              "/icons/characters.png",
+            href: "/characters",
+          },
         },
         ...(hasFriendListFeature
           ? [
@@ -830,7 +840,7 @@ export function MobilePortalNavigation({
             aria-label="More Sepulchria navigation"
             data-portal-navigation
             data-sep-interaction-ignore="true"
-            className="fixed inset-x-0 bottom-0 z-[95] flex max-h-[88dvh] flex-col overflow-hidden rounded-t-[18px] border-t border-[rgb(var(--sep-colour-60482e))]/65 bg-[rgb(var(--sep-colour-100d0b))] shadow-[0_-24px_55px_rgba(var(--sep-rgb-0-0-0),0.58)] [--portal-nav-min-h:2.5rem] [--portal-nav-y:0.35rem] lg:hidden"
+            className="fixed inset-x-0 bottom-[calc(64px+env(safe-area-inset-bottom))] z-[95] flex max-h-[calc(88dvh-64px-env(safe-area-inset-bottom))] flex-col overflow-hidden rounded-t-[18px] border-t border-[rgb(var(--sep-colour-60482e))]/65 bg-[rgb(var(--sep-colour-100d0b))] shadow-[0_-24px_55px_rgba(var(--sep-rgb-0-0-0),0.58)] [--portal-nav-min-h:2.5rem] [--portal-nav-y:0.35rem] lg:hidden"
           >
             <div className="mx-auto mt-2 h-1 w-10 shrink-0 rounded-full bg-[rgb(var(--sep-colour-5c472f))]" />
 
@@ -857,7 +867,7 @@ export function MobilePortalNavigation({
             <div className="min-h-0 flex-1 space-y-5 overflow-y-auto p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
               <section>
                 <SectionTitle>
-                  My Character
+                  People & Character
                 </SectionTitle>
                 <div className="grid grid-cols-2 gap-2">
                   {personalEntries.map(
@@ -1192,25 +1202,7 @@ export function MobilePortalNavigation({
                 </div>
               </section>
 
-              {isStaff ? (
-                <section>
-                  <SectionTitle>
-                    Staff
-                  </SectionTitle>
-                  <EntryButton
-                    entry={{
-                      href: "/admin",
-                      label:
-                        "Administration",
-                      icon:
-                        "/icons/manage-orders.png",
-                    }}
-                    onBeforeOpen={
-                      closeMore
-                    }
-                  />
-                </section>
-              ) : null}
+
             </div>
           </section>
         </>

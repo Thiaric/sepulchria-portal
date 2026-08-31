@@ -1513,7 +1513,7 @@ export default function RoomMessageList({
   }
 
   return (
-    <div className="relative flex min-h-0 flex-none flex-col lg:flex-1">
+    <div className="relative flex min-h-0 flex-1 flex-col">
       {connectionStatus !==
       "connected" ? (
         <div
@@ -1537,7 +1537,7 @@ export default function RoomMessageList({
   ref={scrollContainerRef}
   onScroll={handleScroll}
   data-sep-interaction-ignore="true"
-  className="min-h-0 flex-none overflow-visible lg:flex-1 lg:overflow-y-auto lg:overscroll-contain"
+  className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
 >
 
         {liveMessages.length >

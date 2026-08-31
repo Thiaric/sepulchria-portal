@@ -391,6 +391,24 @@ export function PortalSidebar({
         ).item
       : null;
 
+  useEffect(() => {
+    const root =
+      document.documentElement;
+
+    if (modalWindows.length > 0) {
+      root.dataset.portalModalOpen =
+        "true";
+    } else {
+      delete root.dataset
+        .portalModalOpen;
+    }
+
+    return () => {
+      delete root.dataset
+        .portalModalOpen;
+    };
+  }, [modalWindows.length]);
+
   function setModalItem(
     item: NavigationItem | null,
   ) {
