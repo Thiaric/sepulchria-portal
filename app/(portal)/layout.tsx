@@ -6,6 +6,7 @@ import { PortalAudioProvider } from "@/components/audio/portal-audio-provider";
 import { PortalMessageSoundListener } from "@/components/audio/portal-message-sound-listener";
 import { PortalCollapsibleColumns } from "@/components/portal/portal-collapsible-columns";
 import { PortalHeader } from "@/components/portal/portal-header";
+import { MobilePortalNavigation } from "@/components/portal/mobile-portal-navigation";
 import { PortalInteractionLayer } from "@/components/portal/portal-interaction-layer";
 import { PortalNotificationCountsProvider } from "@/components/notifications/portal-notification-counts-provider";
 import { PortalPresenceHeartbeat } from "@/components/portal/portal-presence-heartbeat";
@@ -143,6 +144,41 @@ async function PortalLayoutContent({
               .portal-left-collapse-toggle,
               .portal-right-collapse-toggle {
                 display: none;
+              }
+
+              @media (max-width: 1023px) {
+                .sepulchria-viewport-body {
+                  display: block;
+                  width: 100%;
+                  max-width: none;
+                  overflow: hidden;
+                  padding-bottom:
+                    calc(64px + env(safe-area-inset-bottom));
+                }
+
+                .portal-left-shell {
+                  display: none !important;
+                }
+
+                .sepulchria-viewport-body
+                  > [data-portal-centre-host] {
+                  height: 100%;
+                  min-height: 0;
+                  overflow: hidden;
+                }
+
+                .sepulchria-viewport-body
+                  > [data-portal-centre-host]
+                  > [data-portal-column] {
+                  height: 100%;
+                  min-height: 0;
+                  overflow-y: auto;
+                  overscroll-behavior: contain;
+                }
+
+                [data-portal-shell] {
+                  padding-top: env(safe-area-inset-top);
+                }
               }
 
               @media (min-width: 1024px) {
@@ -440,6 +476,15 @@ async function PortalLayoutContent({
             <TidingsTicker
               initialTidings={
                 initialTidings
+              }
+            />
+
+            <MobilePortalNavigation
+              unreadMessageCount={
+                context.unreadMessageCount
+              }
+              isStaff={
+                context.isStaff
               }
             />
           </div>

@@ -205,7 +205,7 @@ export function PortalResponsiveRightSidebar({
         }
         aria-label="Open context panel"
         aria-expanded={open}
-        className="fixed bottom-5 right-5 z-40 flex h-12 w-12 items-center justify-center border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-1d160f))] font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] shadow-[0_12px_35px_rgba(var(--sep-rgb-0-0-0),0.45)] [transform:none!important] transition-colors hover:border-[rgb(var(--sep-colour-a37b45))] hover:text-[rgb(var(--sep-colour-f0d39d))] xl:hidden"
+        className="fixed bottom-[calc(4.75rem+env(safe-area-inset-bottom))] right-3 z-40 flex h-11 w-11 items-center justify-center border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-1d160f))] font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] shadow-[0_12px_35px_rgba(var(--sep-rgb-0-0-0),0.45)] [transform:none!important] transition-colors hover:border-[rgb(var(--sep-colour-a37b45))] hover:text-[rgb(var(--sep-colour-f0d39d))] xl:hidden"
       >
         ◈
       </button>
