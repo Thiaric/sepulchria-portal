@@ -6,6 +6,7 @@ import {
   useEffect,
   useMemo,
   useState,
+  type ReactNode,
 } from "react";
 import {
   usePathname,
@@ -19,6 +20,13 @@ import {
   type PortalModalPayload,
 } from "@/components/portal/portal-modal-button";
 import { usePortalNotificationCounts } from "@/components/notifications/portal-notification-counts-provider";
+import { UnreadMessageBadge } from "@/components/messages/unread-message-badge";
+import { TicketNotificationBadge } from "@/components/support/ticket-notification-badge";
+import { SanctionNotificationBadge } from "@/components/sanctions/sanction-notification-badge";
+import {
+  canClientReadForumSection,
+  getClientForumAccessContext,
+} from "@/lib/forum/client-forum-access";
 import { createClient } from "@/lib/supabase/client";
 
 type MobilePortalNavigationProps = {
@@ -75,10 +83,12 @@ function EntryButton({
   entry,
   onBeforeOpen,
   badgeCount = 0,
+  badge,
 }: {
   entry: LinkEntry;
   onBeforeOpen?: () => void;
   badgeCount?: number;
+  badge?: ReactNode;
 }) {
   const pathname = usePathname();
   const base = entry.href.split("?")[0];
@@ -102,7 +112,7 @@ function EntryButton({
       <span className="min-w-0 flex-1 truncate text-[11px] text-[rgb(var(--sep-colour-b8a98f))]">
         {entry.label}
       </span>
-      <Badge count={badgeCount} />
+      {badge ?? <Badge count={badgeCount} />}
     </>
   );
 
@@ -162,6 +172,12 @@ export function MobilePortalNavigation({
 
   const [moreOpen, setMoreOpen] =
     useState(false);
+
+  const [
+    currentUnreadForumCount,
+    setCurrentUnreadForumCount,
+  ] = useState(unreadForumCount);
+
   const [rulesExpanded, setRulesExpanded] =
     useState(false);
   const [
@@ -212,6 +228,206 @@ export function MobilePortalNavigation({
   useEffect(() => {
     setMoreOpen(false);
   }, [pathname, searchParams]);
+
+  useEffect(() => {
+    setCurrentUnreadForumCount(
+      unreadForumCount,
+    );
+  }, [unreadForumCount]);
+
+  const refreshForumCount =
+    useCallback(async () => {
+      const supabase =
+        createClient();
+
+      const {
+        data: { user },
+      } =
+        await supabase.auth.getUser();
+
+      if (!user) {
+        setCurrentUnreadForumCount(0);
+        return;
+      }
+
+      const forumAccess =
+        await getClientForumAccessContext(
+          supabase,
+          user.id,
+        );
+
+      const [
+        sectionResult,
+        topicResult,
+        readResult,
+      ] = await Promise.all([
+        supabase
+          .from("forum_sections")
+          .select(
+            "id, visibility, order_id, staff_read_roles",
+          )
+          .eq("is_active", true),
+
+        supabase
+          .from("forum_topics")
+          .select(
+            "id, section_id, last_post_at, deleted_at",
+          )
+          .is("deleted_at", null),
+
+        supabase
+          .from("forum_topic_reads")
+          .select(
+            "topic_id, last_read_at",
+          )
+          .eq("user_id", user.id),
+      ]);
+
+      if (
+        sectionResult.error ||
+        topicResult.error ||
+        readResult.error
+      ) {
+        console.error(
+          "Could not refresh mobile forum unread count:",
+          sectionResult.error ??
+            topicResult.error ??
+            readResult.error,
+        );
+        return;
+      }
+
+      const accessibleSectionIds =
+        new Set(
+          (sectionResult.data ?? [])
+            .filter((section) =>
+              canClientReadForumSection(
+                forumAccess,
+                section,
+              ),
+            )
+            .map((section) => section.id),
+        );
+
+      const readMap =
+        new Map(
+          (readResult.data ?? []).map(
+            (read) => [
+              read.topic_id,
+              read.last_read_at,
+            ],
+          ),
+        );
+
+      const nextCount =
+        (topicResult.data ?? []).filter(
+          (topic) => {
+            if (
+              !accessibleSectionIds.has(
+                topic.section_id,
+              )
+            ) {
+              return false;
+            }
+
+            const lastReadAt =
+              readMap.get(topic.id);
+
+            if (!lastReadAt) {
+              return true;
+            }
+
+            return (
+              new Date(
+                topic.last_post_at,
+              ).getTime() >
+              new Date(
+                lastReadAt,
+              ).getTime()
+            );
+          },
+        ).length;
+
+      setCurrentUnreadForumCount(
+        nextCount,
+      );
+    }, []);
+
+  useEffect(() => {
+    void refreshForumCount();
+
+    const supabase =
+      createClient();
+
+    const channel = supabase
+      .channel(
+        "mobile-forum-unread-count",
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "forum_posts",
+        },
+        () => {
+          void refreshForumCount();
+        },
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "forum_topic_reads",
+        },
+        () => {
+          void refreshForumCount();
+        },
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "forum_sections",
+        },
+        () => {
+          void refreshForumCount();
+        },
+      )
+      .subscribe();
+
+    const intervalId =
+      window.setInterval(
+        () => {
+          void refreshForumCount();
+        },
+        15_000,
+      );
+
+    const handleFocus = () => {
+      void refreshForumCount();
+    };
+
+    window.addEventListener(
+      "focus",
+      handleFocus,
+    );
+
+    return () => {
+      window.clearInterval(
+        intervalId,
+      );
+      window.removeEventListener(
+        "focus",
+        handleFocus,
+      );
+      void supabase.removeChannel(
+        channel,
+      );
+    };
+  }, [refreshForumCount]);
 
   useEffect(() => {
     if (!moreOpen) {
@@ -725,6 +941,11 @@ export function MobilePortalNavigation({
     setMoreOpen(false);
   };
 
+  const moreAttentionCount =
+    currentUnreadForumCount +
+    notificationCounts.tickets.player +
+    notificationCounts.sanctions.player;
+
   if (!renderMobileNavigation) {
     return null;
   }
@@ -816,14 +1037,14 @@ export function MobilePortalNavigation({
               size={20}
             />
             <span>Messages</span>
-            {unreadMessageCount > 0 ? (
-              <span className="absolute right-[18%] top-1 min-w-4 rounded-full bg-[rgb(var(--sep-colour-7a291f))] px-1 text-center text-[8px] leading-4 text-[rgb(var(--sep-colour-ffe1ac))]">
-                {unreadMessageCount >
-                99
-                  ? "99+"
-                  : unreadMessageCount}
-              </span>
-            ) : null}
+            <span className="absolute right-[18%] top-1">
+              <UnreadMessageBadge
+                initialCount={
+                  unreadMessageCount
+                }
+                variant="inline"
+              />
+            </span>
           </button>
 
           <button
@@ -832,7 +1053,7 @@ export function MobilePortalNavigation({
               setMoreOpen(true)
             }
             aria-expanded={moreOpen}
-            className="flex min-h-[50px] flex-col items-center justify-center gap-1 px-1 text-[9px] text-[rgb(var(--sep-colour-8f806d))]"
+            className="relative flex min-h-[50px] flex-col items-center justify-center gap-1 px-1 text-[9px] text-[rgb(var(--sep-colour-8f806d))]"
           >
             <span
               aria-hidden="true"
@@ -841,6 +1062,17 @@ export function MobilePortalNavigation({
               ⋯
             </span>
             <span>More</span>
+
+            {moreAttentionCount > 0 ? (
+              <span
+                title={`${moreAttentionCount} item${moreAttentionCount === 1 ? "" : "s"} need attention`}
+                className="absolute right-[18%] top-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full border border-[rgb(var(--sep-colour-d19a4c))] bg-[rgb(var(--sep-colour-7a291f))] px-1 text-[7px] font-bold leading-none text-[rgb(var(--sep-colour-ffe1ac))]"
+              >
+                {moreAttentionCount > 9
+                  ? "9+"
+                  : moreAttentionCount}
+              </span>
+            ) : null}
           </button>
         </div>
       </nav>
@@ -1126,7 +1358,7 @@ export function MobilePortalNavigation({
                   <div className="border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-15100d))] p-1.5">
                     <ForumSidebarMenu
                       unreadCount={
-                        unreadForumCount
+                        currentUnreadForumCount
                       }
                     />
                   </div>
@@ -1149,9 +1381,11 @@ export function MobilePortalNavigation({
                     onBeforeOpen={
                       closeMore
                     }
-                    badgeCount={
-                      notificationCounts
-                        .tickets.player
+                    badge={
+                      <TicketNotificationBadge
+                        audience="player"
+                        variant="sidebar"
+                      />
                     }
                   />
 
@@ -1170,9 +1404,10 @@ export function MobilePortalNavigation({
                       onBeforeOpen={
                         closeMore
                       }
-                      badgeCount={
-                        notificationCounts
-                          .sanctions.player
+                      badge={
+                        <SanctionNotificationBadge
+                          audience="player"
+                        />
                       }
                     />
                   ) : null}

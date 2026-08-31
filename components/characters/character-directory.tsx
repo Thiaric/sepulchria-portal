@@ -48,6 +48,11 @@ export function CharacterDirectory({
     useState<PresenceFilter>("all");
 
   const [
+    mobileFiltersOpen,
+    setMobileFiltersOpen,
+  ] = useState(false);
+
+  const [
     blockedCharacterIds,
     setBlockedCharacterIds,
   ] = useState<Set<string>>(
@@ -289,8 +294,16 @@ export function CharacterDirectory({
 
   return (
     <div className="space-y-6 px-3">
-      <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 px-5 py-2">
-        <div className="grid gap-4 xl:grid-cols-[minmax(220px,1fr)_170px_190px_180px_150px_auto] xl:items-end">
+      <section
+        data-character-directory-filters
+        data-mobile-filters-open={
+          mobileFiltersOpen
+            ? "true"
+            : "false"
+        }
+        className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 px-3 py-2 sm:px-5"
+      >
+        <div className="grid gap-2 sm:gap-4 xl:grid-cols-[minmax(220px,1fr)_170px_190px_180px_150px_auto] xl:items-end">
           <label className="block">
             <span className="text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))]">
               Search
@@ -306,6 +319,23 @@ export function CharacterDirectory({
               className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-0f0b09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d5c2a4))] outline-none transition placeholder:text-[rgb(var(--sep-colour-665a4c))] focus:border-[rgb(var(--sep-colour-a17a49))]"
             />
           </label>
+
+          <button
+            type="button"
+            onClick={() =>
+              setMobileFiltersOpen(
+                (current) => !current,
+              )
+            }
+            aria-expanded={
+              mobileFiltersOpen
+            }
+            className="border border-[rgb(var(--sep-colour-765937))]/60 bg-[rgb(var(--sep-colour-21170f))] px-3 py-2 text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-cfb487))] sm:hidden"
+          >
+            {mobileFiltersOpen
+              ? "Hide filters"
+              : "Filters"}
+          </button>
 
           <DirectorySelect
             label="Ancestry"

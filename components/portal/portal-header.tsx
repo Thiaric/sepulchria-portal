@@ -35,8 +35,18 @@ export async function PortalHeader({ context }: PortalHeaderProps) {
         className="sticky top-0 z-50 h-[clamp(56px,8dvh,80px)] border-b border-[rgb(var(--sep-colour-6e5535))]/40 bg-[rgb(var(--sep-colour-0d0b0a))]/95 backdrop-blur"
       >
         <div className="mx-auto flex h-full w-full max-w-[1800px] items-center justify-between gap-2 px-3 sm:gap-3 sm:px-5 lg:gap-4 lg:px-6 2xl:px-8">
-          <Link href="/" className="min-w-0 shrink">
-            <span className="block truncate font-serif text-lg font-semibold tracking-[0.18em] text-[rgb(var(--sep-colour-d9bd82))] sm:text-xl sm:tracking-[0.22em] 2xl:text-2xl">
+          <Link
+            href="/"
+            className="min-w-0 shrink"
+            aria-label="Sepulchria home"
+          >
+            <img
+              src="/icons/newLogo.png"
+              alt="Sepulchria"
+              className="block h-9 w-auto max-w-[96px] object-contain sm:hidden"
+            />
+
+            <span className="hidden truncate font-serif text-lg font-semibold tracking-[0.18em] text-[rgb(var(--sep-colour-d9bd82))] sm:block sm:text-xl sm:tracking-[0.22em] 2xl:text-2xl">
               SEPULCHRIA
             </span>
             <span className="mt-0.5 hidden truncate text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8f806d))] md:block lg:text-[9px] 2xl:mt-1 2xl:text-[10px] 2xl:tracking-[0.35em]">

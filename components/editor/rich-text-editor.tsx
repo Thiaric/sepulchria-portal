@@ -132,6 +132,11 @@ const [
     useState(false);
 
   const [
+    mobileToolbarExpanded,
+    setMobileToolbarExpanded,
+  ] = useState(false);
+
+  const [
     textColourOpen,
     setTextColourOpen,
   ] = useState(false);
@@ -1397,7 +1402,463 @@ function addSpellingWordToDictionary() {
 }
       `}</style>
       <div
-        className="sticky top-0 z-40 flex flex-wrap items-center gap-1.5 overflow-visible border-b border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] p-2 shadow-[0_5px_12px_rgba(var(--sep-rgb-0-0-0),0.28)]"
+        className="sticky top-0 z-40 border-b border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] shadow-[0_5px_12px_rgba(var(--sep-rgb-0-0-0),0.28)] sm:hidden"
+        style={{ isolation: "isolate" }}
+      >
+        <div className="flex items-center gap-1 overflow-x-auto p-1.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <ToolbarButton
+            label="B"
+            title="Bold"
+            onClick={() => runCommand("bold")}
+            disabled={disabled || sourceMode}
+          />
+          <ToolbarButton
+            label="I"
+            title="Italic"
+            onClick={() => runCommand("italic")}
+            disabled={disabled || sourceMode}
+            italic
+          />
+          <ToolbarButton
+            label="U"
+            title="Underline"
+            onClick={() => runCommand("underline")}
+            disabled={disabled || sourceMode}
+            underline
+          />
+
+          <select
+            aria-label="Paragraph style"
+            defaultValue="p"
+            disabled={disabled || sourceMode}
+            onChange={(event) => {
+              runCommand(
+                "formatBlock",
+                event.target.value,
+              );
+              event.currentTarget.value = "p";
+            }}
+            className="h-8 w-[104px] shrink-0 border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] px-1.5 text-[9px] text-[rgb(var(--sep-colour-cbb28a))] outline-none"
+          >
+            <option value="p">Paragraph</option>
+            <option value="h1">Title</option>
+            <option value="h2">Heading</option>
+            <option value="h3">Subheading</option>
+            <option value="blockquote">Quote</option>
+          </select>
+
+          <ToolbarButton
+            label="•"
+            title="Bulleted list"
+            onClick={() =>
+              runCommand(
+                "insertUnorderedList",
+              )
+            }
+            disabled={disabled || sourceMode}
+          />
+          <ToolbarButton
+            label="Link"
+            title="Insert link"
+            onClick={createLink}
+            disabled={disabled || sourceMode}
+            wide
+          />
+          <ToolbarButton
+            label="Image"
+            title="Insert image from URL"
+            onClick={insertImage}
+            disabled={disabled || sourceMode}
+            wide
+          />
+
+          <button
+            type="button"
+            aria-expanded={
+              mobileToolbarExpanded
+            }
+            onClick={() =>
+              setMobileToolbarExpanded(
+                (current) => !current,
+              )
+            }
+            className="h-8 shrink-0 border border-[rgb(var(--sep-colour-7c603b))]/65 bg-[rgb(var(--sep-colour-21170f))] px-2.5 text-[9px] uppercase tracking-[0.08em] text-[rgb(var(--sep-colour-d8bd8e))]"
+          >
+            {mobileToolbarExpanded
+              ? "Less"
+              : "More"}
+          </button>
+        </div>
+
+        {mobileToolbarExpanded ? (
+          <div className="grid max-h-[36dvh] grid-cols-4 gap-1.5 overflow-y-auto border-t border-[rgb(var(--sep-colour-59432c))]/35 p-1.5">
+            <ToolbarButton
+              label="S"
+              title="Strikethrough"
+              onClick={() =>
+                runCommand(
+                  "strikeThrough",
+                )
+              }
+              disabled={disabled || sourceMode}
+              strike
+            />
+
+            <select
+              aria-label="Font family"
+              defaultValue=""
+              disabled={disabled || sourceMode}
+              onChange={(event) => {
+                if (event.target.value) {
+                  runCommand(
+                    "fontName",
+                    event.target.value,
+                  );
+                }
+                event.currentTarget.value = "";
+              }}
+              className="col-span-2 h-8 min-w-0 border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] px-1.5 text-[9px] text-[rgb(var(--sep-colour-cbb28a))] outline-none"
+            >
+              <option value="">Font</option>
+              {FONT_FAMILIES.map(
+                (font) => (
+                  <option
+                    key={font}
+                    value={font}
+                  >
+                    {font}
+                  </option>
+                ),
+              )}
+            </select>
+
+            <select
+              aria-label="Font size"
+              defaultValue=""
+              disabled={disabled || sourceMode}
+              onChange={(event) => {
+                const size =
+                  Number.parseInt(
+                    event.target.value,
+                    10,
+                  );
+
+                if (
+                  Number.isInteger(size)
+                ) {
+                  applyFontSize(size);
+                }
+
+                event.currentTarget.value = "";
+              }}
+              className="h-8 min-w-0 border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] px-1 text-[9px] text-[rgb(var(--sep-colour-cbb28a))] outline-none"
+            >
+              <option value="">Size</option>
+              {FONT_SIZES.map(
+                (size) => (
+                  <option
+                    key={size}
+                    value={size}
+                  >
+                    {size}px
+                  </option>
+                ),
+              )}
+            </select>
+
+            <label
+              title="Text colour"
+              onMouseDown={() =>
+                rememberColourSelection()
+              }
+              className="relative flex h-8 cursor-pointer items-center justify-center border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] text-[8px] uppercase text-[rgb(var(--sep-colour-cbb28a))]"
+            >
+              Colour
+              <input
+                type="color"
+                defaultValue="#d7c4a5"
+                disabled={
+                  disabled || sourceMode
+                }
+                onChange={(event) =>
+                  applyTextColour(
+                    event.target.value,
+                  )
+                }
+                className="absolute inset-0 cursor-pointer opacity-0"
+              />
+            </label>
+
+            <label
+              title="Highlight colour"
+              onMouseDown={() =>
+                rememberColourSelection()
+              }
+              className="relative flex h-8 cursor-pointer items-center justify-center border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] text-[8px] uppercase text-[rgb(var(--sep-colour-cbb28a))]"
+            >
+              Highlight
+              <input
+                type="color"
+                defaultValue="#3b2919"
+                disabled={
+                  disabled || sourceMode
+                }
+                onChange={(event) =>
+                  applyHighlightColour(
+                    event.target.value,
+                  )
+                }
+                className="absolute inset-0 cursor-pointer opacity-0"
+              />
+            </label>
+
+            <ToolbarButton
+              label="≡←"
+              title="Align left"
+              onClick={() =>
+                runCommand("justifyLeft")
+              }
+              disabled={disabled || sourceMode}
+            />
+            <ToolbarButton
+              label="≡"
+              title="Align centre"
+              onClick={() =>
+                runCommand("justifyCenter")
+              }
+              disabled={disabled || sourceMode}
+            />
+
+            <ToolbarButton
+              label="→≡"
+              title="Align right"
+              onClick={() =>
+                runCommand("justifyRight")
+              }
+              disabled={disabled || sourceMode}
+            />
+            <ToolbarButton
+              label="≣"
+              title="Justify"
+              onClick={() =>
+                runCommand("justifyFull")
+              }
+              disabled={disabled || sourceMode}
+            />
+            <ToolbarButton
+              label="1."
+              title="Numbered list"
+              onClick={() =>
+                runCommand(
+                  "insertOrderedList",
+                )
+              }
+              disabled={disabled || sourceMode}
+            />
+            <ToolbarButton
+              label="←"
+              title="Outdent"
+              onClick={() =>
+                runCommand("outdent")
+              }
+              disabled={disabled || sourceMode}
+            />
+            <ToolbarButton
+              label="→"
+              title="Indent"
+              onClick={() =>
+                runCommand("indent")
+              }
+              disabled={disabled || sourceMode}
+            />
+            <ToolbarButton
+              label="X₂"
+              title="Subscript"
+              onClick={() =>
+                runCommand("subscript")
+              }
+              disabled={disabled || sourceMode}
+            />
+            <ToolbarButton
+              label="X²"
+              title="Superscript"
+              onClick={() =>
+                runCommand(
+                  "superscript",
+                )
+              }
+              disabled={disabled || sourceMode}
+            />
+            <ToolbarButton
+              label="Unlink"
+              title="Remove link"
+              onClick={() =>
+                runCommand("unlink")
+              }
+              disabled={disabled || sourceMode}
+              wide
+            />
+            <ToolbarButton
+              label="—"
+              title="Horizontal line"
+              onClick={() =>
+                runCommand(
+                  "insertHorizontalRule",
+                )
+              }
+              disabled={disabled || sourceMode}
+            />
+
+            <select
+              aria-label="Line height"
+              defaultValue=""
+              disabled={disabled || sourceMode}
+              onChange={(event) => {
+                if (event.target.value) {
+                  applyParagraphStyle(
+                    "lineHeight",
+                    event.target.value ===
+                      "default"
+                      ? ""
+                      : event.target.value,
+                  );
+                }
+                event.currentTarget.value = "";
+              }}
+              className="col-span-2 h-8 min-w-0 border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] px-1 text-[9px] text-[rgb(var(--sep-colour-cbb28a))] outline-none"
+            >
+              <option value="">
+                Line height
+              </option>
+              <option value="default">
+                Default
+              </option>
+              <option value="1">1.0</option>
+              <option value="1.15">
+                1.15
+              </option>
+              <option value="1.3">
+                1.3
+              </option>
+              <option value="1.5">
+                1.5
+              </option>
+              <option value="1.75">
+                1.75
+              </option>
+              <option value="2">2.0</option>
+            </select>
+
+            <select
+              aria-label="Paragraph spacing"
+              defaultValue=""
+              disabled={disabled || sourceMode}
+              onChange={(event) => {
+                if (event.target.value) {
+                  applyParagraphStyle(
+                    "marginBottom",
+                    event.target.value ===
+                      "default"
+                      ? ""
+                      : event.target.value,
+                  );
+                }
+                event.currentTarget.value = "";
+              }}
+              className="col-span-2 h-8 min-w-0 border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] px-1 text-[9px] text-[rgb(var(--sep-colour-cbb28a))] outline-none"
+            >
+              <option value="">
+                Paragraph spacing
+              </option>
+              <option value="default">
+                Default
+              </option>
+              <option value="0">None</option>
+              <option value="0.35em">
+                Small
+              </option>
+              <option value="0.75em">
+                Normal
+              </option>
+              <option value="1.25em">
+                Large
+              </option>
+              <option value="2em">
+                Extra large
+              </option>
+            </select>
+
+            <ToolbarButton
+              label={
+                fullscreen
+                  ? "Exit"
+                  : "Full"
+              }
+              title={
+                fullscreen
+                  ? "Exit fullscreen"
+                  : "Fullscreen editor"
+              }
+              onClick={() =>
+                setFullscreen(
+                  (current) => !current,
+                )
+              }
+              disabled={disabled}
+              wide
+            />
+            <ToolbarButton
+              label="Clear"
+              title="Remove formatting"
+              onClick={() =>
+                runCommand(
+                  "removeFormat",
+                )
+              }
+              disabled={disabled || sourceMode}
+              wide
+            />
+            <ToolbarButton
+              label="↶"
+              title="Undo"
+              onClick={() =>
+                runCommand("undo")
+              }
+              disabled={disabled || sourceMode}
+            />
+            <ToolbarButton
+              label="↷"
+              title="Redo"
+              onClick={() =>
+                runCommand("redo")
+              }
+              disabled={disabled || sourceMode}
+            />
+
+            {fullToolbar ? (
+              <ToolbarButton
+                label={
+                  sourceMode
+                    ? "Visual"
+                    : "HTML"
+                }
+                title="Toggle HTML source"
+                onClick={() =>
+                  setSourceMode(
+                    (current) =>
+                      !current,
+                  )
+                }
+                disabled={disabled}
+                wide
+              />
+            ) : null}
+          </div>
+        ) : null}
+      </div>
+
+      <div
+        className="sticky top-0 z-40 hidden flex-wrap items-center gap-1.5 overflow-visible border-b border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] p-2 shadow-[0_5px_12px_rgba(var(--sep-rgb-0-0-0),0.28)] sm:flex"
         style={{ isolation: "isolate" }}
       >
         <ToolbarButton

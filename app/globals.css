@@ -20088,3 +20088,26 @@ article:not([class*="bg-"]) {
     display: none !important;
   }
 }
+
+/* =========================================================
+   SEPULCHRIA MOBILE COMPACT CONTENT
+   ========================================================= */
+
+@media (max-width: 639px) {
+  [data-character-directory-filters]
+    [data-mobile-directory-secondary] {
+    display: block;
+  }
+
+  [data-character-directory-filters][data-mobile-filters-open="false"]
+    > div
+    > :nth-child(n + 3) {
+    display: none;
+  }
+
+  [data-character-directory-filters][data-mobile-filters-open="false"]
+    > div
+    > :nth-child(2) {
+    display: block;
+  }
+}
