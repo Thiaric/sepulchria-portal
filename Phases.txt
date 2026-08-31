@@ -59,22 +59,6 @@ Parts of this already exist. **Do not rebuild Areas or Events.**
 
 Areas already have administration.  Events also already have their own admin implementation.
 
-### 6.1 — World system audit
-
-Audit:
-
-* Areas.
-* Rooms.
-* Connections.
-* Access restrictions.
-* Navigation.
-* Private Locations.
-* Travel.
-* Images.
-* Staff editing.
-
-Then add only missing functionality.
-
 ### 6.2 — NPC system
 
 Build NPCs as proper entities:
@@ -113,77 +97,10 @@ Allow NPCs to participate in:
 * Missions.
 * Events.
 
-### 6.5 — Events completion
 
-Audit the existing Event system rather than replacing it.
-
-Extend where necessary:
-
-* Participants.
-* Locations.
-* Rewards.
-* Mission links.
-* NPC involvement.
-* Event outcomes.
-* Public results.
-
-### 6.6 — Timeline / Canon history
-
-Create structured chronology for:
-
-* Historical lore.
-* Major game events.
-* Mission outcomes that become canon.
-* Important political/world changes.
-
-Separate:
-
-* Public knowledge.
-* Staff-only history.
-
-Allow links to Codex/Event/Mission material.
 
 **Phase 6 complete when:** staff can manage the living world—locations, NPCs, events and historical consequences—from the portal.
 
----
-
-# PHASE 7 — Staff Permissions, Moderation & Administration
-
-**Goal:** stop relying on broad Admin/Moderator assumptions and prepare the portal for an actual staff team.
-
-### 7.1 — Permission audit
-
-Review existing:
-
-* Owner.
-* Admin.
-* Moderator.
-* Master.
-
-### 7.2 — Granular capabilities
-
-Define permissions such as:
-
-* Character management.
-* Lore.
-* Rules.
-* Items.
-* Economy.
-* Market.
-* World.
-* Events.
-* Missions.
-* NPCs.
-* Reports.
-* Support.
-* Moderation.
-* Staff management.
-
-### 7.3 — Staff UI restrictions
-
-Hide inaccessible tools and enforce permissions server-side.
-
-**Hiding the button is never the security mechanism.**
 
 ### 7.4 — Unified audit logging
 
@@ -201,16 +118,6 @@ Record important staff actions involving:
 * Lore/Rules.
 * Permissions.
 
-### 7.5 — Staff dashboard
-
-Give staff useful operational information:
-
-* Open reports.
-* Open tickets.
-* Pending characters.
-* Active missions/events.
-* Recent moderation.
-* Relevant system warnings.
 
 **Phase 7 complete when:** the portal can safely be operated by multiple staff members without simply giving everyone unrestricted admin access.
 
