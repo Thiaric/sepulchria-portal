@@ -257,15 +257,35 @@ export async function CharacterTrophiesDisplay({
       };
     });
 
+  /*
+   * Manual/special Trophies are hidden until actually awarded.
+   *
+   * Automatic Trophies:
+   *   - own sheet: visible whether earned or locked
+   *   - public sheet: visible only when earned
+   *
+   * Manual Trophies (metric_key starts with "manual:"):
+   *   - never appear as locked/unreachable Trophies
+   *   - appear only for characters who were actually awarded them
+   */
   const visibleTrophies = own
-    ? allWithState
+    ? allWithState.filter(
+        (trophy) =>
+          !trophy.metric_key.startsWith(
+            "manual:",
+          ) ||
+          trophy.earned !== null,
+      )
     : allWithState.filter(
-        (trophy) => trophy.earned,
+        (trophy) =>
+          trophy.earned !== null,
       );
 
-  const earnedCount = allWithState.filter(
-    (trophy) => trophy.earned,
-  ).length;
+  const earnedCount =
+    visibleTrophies.filter(
+      (trophy) =>
+        trophy.earned !== null,
+    ).length;
 
   const groups =
     groupByCategory(visibleTrophies);
@@ -297,7 +317,7 @@ export async function CharacterTrophiesDisplay({
 
             <p className="mt-0.5 font-serif text-lg text-[rgb(var(--sep-colour-d8bd8c))]">
               {own
-                ? `${earnedCount} / ${definitions.length}`
+                ? `${earnedCount} / ${visibleTrophies.length}`
                 : earnedCount}
             </p>
           </div>
@@ -364,13 +384,22 @@ export async function CharacterTrophiesDisplay({
                       return (
                         <article
                           key={trophy.id}
+                          id={`trophy-${trophy.trophy_key}`}
+                          data-trophy-id={trophy.id}
+                          data-trophy-key={trophy.trophy_key}
                           data-sep-interactive-surface="card"
-                          className={`relative overflow-hidden p-3 transition-transform duration-200 ${
+                          className={`relative scroll-mt-6 overflow-hidden p-3 transition-transform duration-200 ${
                             earned
                               ? "bg-[rgb(var(--sep-colour-21170f))]"
                               : "bg-[rgb(var(--sep-colour-100c09))] opacity-75"
                           }`}
                         >
+                          <span
+                            id={`trophy-${trophy.id}`}
+                            aria-hidden="true"
+                            className="pointer-events-none absolute left-0 top-0 h-px w-px scroll-mt-6"
+                          />
+
                           <div className="flex items-start justify-between gap-3">
                             <div className="flex min-w-0 gap-3">
                               <div

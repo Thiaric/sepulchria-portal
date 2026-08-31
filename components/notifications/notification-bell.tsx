@@ -45,6 +45,12 @@ type ModalRouteDefinition = {
 
 const MODAL_ROUTES: ModalRouteDefinition[] = [
   {
+    prefix: "/character",
+    label: "Character Sheet",
+    title: "Open your character sheet.",
+    icon: "/icons/characters.png",
+  },
+  {
     prefix: "/characters",
     label: "Sepulchria's People",
     title: "Browse the characters who inhabit Sepulchria.",
@@ -178,11 +184,55 @@ const MODAL_ROUTES: ModalRouteDefinition[] = [
   },
 ];
 
+function normaliseNotificationHref(
+  href: string,
+) {
+  try {
+    const url = new URL(
+      href,
+      "https://sepulchria.local",
+    );
+
+    if (
+      url.pathname ===
+        "/character/trophies" ||
+      url.pathname.startsWith(
+        "/character/trophies/",
+      )
+    ) {
+      url.pathname = "/character";
+      url.searchParams.set(
+        "tab",
+        "trophies",
+      );
+    }
+
+    if (
+      url.pathname === "/character" &&
+      url.hash.startsWith("#trophy-")
+    ) {
+      url.searchParams.set(
+        "tab",
+        "trophies",
+      );
+    }
+
+    return `${url.pathname}${url.search}${url.hash}`;
+  } catch {
+    return href;
+  }
+}
+
 function modalPayloadForNotificationHref(
   href: string,
 ): PortalModalPayload | null {
+  const normalisedHref =
+    normaliseNotificationHref(href);
+
   const path =
-    href.split("#")[0].split("?")[0];
+    normalisedHref
+      .split("#")[0]
+      .split("?")[0];
 
   if (
     path === "/orders/manage" ||
@@ -210,7 +260,7 @@ function modalPayloadForNotificationHref(
     label: definition.label,
     title: definition.title,
     icon: definition.icon,
-    href,
+    href: normalisedHref,
   };
 }
 
@@ -741,6 +791,13 @@ export function NotificationBell() {
                   <div className="space-y-1.5">
                     {visibleRows.map(
                       (row) => {
+                        const effectiveHref =
+                          row.href
+                            ? normaliseNotificationHref(
+                                row.href,
+                              )
+                            : null;
+
                         const content =
                           (
                             <>
@@ -798,12 +855,12 @@ export function NotificationBell() {
                               row.id
                             }
                             href={
-                              row.href
+                              effectiveHref!
                             }
                             onClick={(event) => {
                               const modalPayload =
                                 modalPayloadForNotificationHref(
-                                  row.href!,
+                                  effectiveHref!,
                                 );
 
                               if (modalPayload) {
