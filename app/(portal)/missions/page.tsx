@@ -224,7 +224,19 @@ export default async function MissionsPage() {
               <article
                 key={milestone.id}
                 data-milestone-card={milestone.milestone_key}
-                className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4"
+                data-claim-ready={
+                  complete &&
+                  milestone.claimed_at === null
+                    ? "true"
+                    : "false"
+                }
+                className={[
+                  "border p-4 transition-all duration-200",
+                  complete &&
+                  milestone.claimed_at === null
+                    ? "border-[rgb(var(--sep-colour-b98c50))] bg-[rgb(var(--sep-colour-21170f))] shadow-[0_0_18px_rgba(var(--sep-rgb-185-140-80),0.16)]"
+                    : "border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]",
+                ].join(" ")}
               >
                 <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
                   Milestone
@@ -296,7 +308,19 @@ export default async function MissionsPage() {
                       key={mission.id}
                       id={`mission-${mission.code_snapshot}`}
                       data-mission-card={mission.code_snapshot}
-                      className="scroll-mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4"
+                      data-claim-ready={
+                        complete &&
+                        mission.claimed_at === null
+                          ? "true"
+                          : "false"
+                      }
+                      className={[
+                        "scroll-mt-6 border p-4 transition-all duration-200",
+                        complete &&
+                        mission.claimed_at === null
+                          ? "border-[rgb(var(--sep-colour-b98c50))] bg-[rgb(var(--sep-colour-21170f))] shadow-[0_0_18px_rgba(var(--sep-rgb-185-140-80),0.16)]"
+                          : "border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]",
+                      ].join(" ")}
                     >
                       <div className="flex items-start justify-between gap-4">
                         <div className="min-w-0">

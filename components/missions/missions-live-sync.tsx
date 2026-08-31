@@ -211,6 +211,34 @@ export function MissionsLiveSync({
           "[data-mission-claim]",
         );
 
+      const claimReady =
+        Boolean(mission.completed_at) &&
+        !mission.claimed_at;
+
+      root.dataset.claimReady =
+        claimReady ? "true" : "false";
+
+      root.classList.toggle(
+        "border-[rgb(var(--sep-colour-b98c50))]",
+        claimReady,
+      );
+      root.classList.toggle(
+        "bg-[rgb(var(--sep-colour-21170f))]",
+        claimReady,
+      );
+      root.classList.toggle(
+        "shadow-[0_0_18px_rgba(var(--sep-rgb-185-140-80),0.16)]",
+        claimReady,
+      );
+      root.classList.toggle(
+        "border-[rgb(var(--sep-colour-60482e))]/45",
+        !claimReady,
+      );
+      root.classList.toggle(
+        "bg-[rgb(var(--sep-colour-15100d))]",
+        !claimReady,
+      );
+
       if (button) {
         button.disabled =
           !mission.completed_at ||
@@ -288,6 +316,34 @@ export function MissionsLiveSync({
         root.querySelector<HTMLButtonElement>(
           "[data-milestone-claim]",
         );
+
+      const claimReady =
+        complete &&
+        !milestone.claimed_at;
+
+      root.dataset.claimReady =
+        claimReady ? "true" : "false";
+
+      root.classList.toggle(
+        "border-[rgb(var(--sep-colour-b98c50))]",
+        claimReady,
+      );
+      root.classList.toggle(
+        "bg-[rgb(var(--sep-colour-21170f))]",
+        claimReady,
+      );
+      root.classList.toggle(
+        "shadow-[0_0_18px_rgba(var(--sep-rgb-185-140-80),0.16)]",
+        claimReady,
+      );
+      root.classList.toggle(
+        "border-[rgb(var(--sep-colour-60482e))]/45",
+        !claimReady,
+      );
+      root.classList.toggle(
+        "bg-[rgb(var(--sep-colour-15100d))]",
+        !claimReady,
+      );
 
       if (button) {
         button.disabled =

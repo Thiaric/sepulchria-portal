@@ -14,6 +14,10 @@ import {
 
 import { createClient } from "@/lib/supabase/client";
 import { usePortalAudio } from "@/components/audio/portal-audio-provider";
+import {
+  openPortalModal,
+  type PortalModalPayload,
+} from "@/components/portal/portal-modal-button";
 
 type NotificationRow = {
   id: string;
@@ -30,6 +34,185 @@ type NotificationBundle = {
   muted: boolean;
   notifications: NotificationRow[];
 };
+
+type ModalRouteDefinition = {
+  prefix: string;
+  label: string;
+  title: string;
+  icon: string;
+  exact?: boolean;
+};
+
+const MODAL_ROUTES: ModalRouteDefinition[] = [
+  {
+    prefix: "/characters",
+    label: "Sepulchria's People",
+    title: "Browse the characters who inhabit Sepulchria.",
+    icon: "/icons/characters.png",
+  },
+  {
+    prefix: "/polls",
+    label: "Polls",
+    title: "Open community Polls and cast your vote.",
+    icon: "/icons/forum.png",
+  },
+  {
+    prefix: "/codex",
+    label: "Codex",
+    title: "Explore Aureth's history, locations and lore.",
+    icon: "/icons/codex.png",
+  },
+  {
+    prefix: "/rules",
+    label: "Rules",
+    title: "Read the official game rules and documentation.",
+    icon: "/icons/rules.png",
+  },
+  {
+    prefix: "/ancestries",
+    label: "Ancestries",
+    title: "Read about the playable ancestries of Sepulchria.",
+    icon: "/icons/ancestries.png",
+  },
+  {
+    prefix: "/associations",
+    label: "Associations",
+    title: "Explore the Associations of Sepulchria.",
+    icon: "/icons/associations.png",
+  },
+  {
+    prefix: "/orders",
+    label: "Orders",
+    title: "Read about the Orders of Sepulchria.",
+    icon: "/icons/orders.png",
+  },
+  {
+    prefix: "/warping",
+    label: "Warping",
+    title: "Read about magic and Warping in Sepulchria.",
+    icon: "/icons/warping.png",
+  },
+  {
+    prefix: "/feats",
+    label: "Feats",
+    title: "Browse available Feats.",
+    icon: "/icons/gifts.png",
+  },
+  {
+    prefix: "/market",
+    label: "Market",
+    title: "Browse the Sepulchria market.",
+    icon: "/icons/market.png",
+  },
+  {
+    prefix: "/crafting",
+    label: "Crafting",
+    title: "Open your crafting workbench.",
+    icon: "/icons/crafting.png",
+  },
+  {
+    prefix: "/missions",
+    label: "Daily Missions",
+    title: "Review today's missions, progress and rewards.",
+    icon: "/icons/missions.png",
+  },
+  {
+    prefix: "/friends",
+    label: "Friend List",
+    title: "Open your character relationships.",
+    icon: "/icons/friends.png",
+  },
+  {
+    prefix: "/messages",
+    label: "Messages",
+    title: "Open your private conversations.",
+    icon: "/icons/messages.png",
+  },
+  {
+    prefix: "/ranking",
+    label: "Hall of Renown",
+    title: "View Sepulchria's records of achievement.",
+    icon: "/icons/ranking.png",
+  },
+  {
+    prefix: "/forum",
+    label: "Forum",
+    title: "Open the Sepulchria community forum.",
+    icon: "/icons/forum.png",
+  },
+  {
+    prefix: "/community-rules",
+    label: "Community Rules",
+    title: "Read Sepulchria's Community Rules.",
+    icon: "/icons/rules.png",
+  },
+  {
+    prefix: "/safety",
+    label: "Safety",
+    title: "Read Sepulchria's safety information.",
+    icon: "/icons/rules.png",
+  },
+  {
+    prefix: "/age-policy",
+    label: "18+ Policy",
+    title: "Read Sepulchria's age policy.",
+    icon: "/icons/rules.png",
+  },
+  {
+    prefix: "/privacy",
+    label: "Privacy",
+    title: "Read Sepulchria's Privacy Notice.",
+    icon: "/icons/rules.png",
+  },
+  {
+    prefix: "/cookies",
+    label: "Cookies",
+    title: "Read Sepulchria's Cookie Notice.",
+    icon: "/icons/rules.png",
+  },
+  {
+    prefix: "/terms",
+    label: "Terms",
+    title: "Read Sepulchria's Terms of Service.",
+    icon: "/icons/rules.png",
+  },
+];
+
+function modalPayloadForNotificationHref(
+  href: string,
+): PortalModalPayload | null {
+  const path =
+    href.split("#")[0].split("?")[0];
+
+  if (
+    path === "/orders/manage" ||
+    path.startsWith("/orders/manage/")
+  ) {
+    return null;
+  }
+
+  const definition =
+    MODAL_ROUTES.find(
+      (route) =>
+        route.exact
+          ? path === route.prefix
+          : path === route.prefix ||
+            path.startsWith(
+              `${route.prefix}/`,
+            ),
+    );
+
+  if (!definition) {
+    return null;
+  }
+
+  return {
+    label: definition.label,
+    title: definition.title,
+    icon: definition.icon,
+    href,
+  };
+}
 
 export function NotificationBell() {
   const pathname = usePathname();
@@ -75,6 +258,14 @@ export function NotificationBell() {
 
   const load = useCallback(
     async () => {
+      await fetch(
+        "/api/missions/notifications/sync",
+        {
+          method: "POST",
+          cache: "no-store",
+        },
+      ).catch(() => null);
+
       const { data, error } =
         await supabase.rpc(
           "get_my_notification_bundle",
@@ -151,6 +342,10 @@ export function NotificationBell() {
       "sepulchria:admin-data-changed",
       handleAdminDataChanged,
     );
+    window.addEventListener(
+      "sepulchria:notifications-changed",
+      handleAdminDataChanged,
+    );
 
     const timer =
       window.setInterval(
@@ -162,6 +357,10 @@ export function NotificationBell() {
       window.clearInterval(timer);
       window.removeEventListener(
         "sepulchria:admin-data-changed",
+        handleAdminDataChanged,
+      );
+      window.removeEventListener(
+        "sepulchria:notifications-changed",
         handleAdminDataChanged,
       );
     };
@@ -601,11 +800,21 @@ export function NotificationBell() {
                             href={
                               row.href
                             }
-                            onClick={() =>
-                              setOpen(
-                                false,
-                              )
-                            }
+                            onClick={(event) => {
+                              const modalPayload =
+                                modalPayloadForNotificationHref(
+                                  row.href!,
+                                );
+
+                              if (modalPayload) {
+                                event.preventDefault();
+                                openPortalModal(
+                                  modalPayload,
+                                );
+                              }
+
+                              setOpen(false);
+                            }}
                             className={
                               className
                             }

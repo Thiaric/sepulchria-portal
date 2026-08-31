@@ -2,6 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import {
+  removeDailyMissionNotification,
+} from "@/lib/missions/notifications";
 
 export type DailyRewardClaimState = {
   success: boolean;
@@ -37,6 +40,20 @@ export async function claimDailyMission(
       message: error.message,
     };
   }
+
+  try {
+    await removeDailyMissionNotification(
+      "daily_mission",
+      assignmentId,
+    );
+  } catch (notificationError) {
+    console.error(
+      "Unable to remove claimed Daily Mission notification:",
+      notificationError,
+    );
+  }
+
+  
 
   revalidatePath("/missions");
   revalidatePath("/character");
@@ -76,6 +93,18 @@ export async function claimDailyMilestone(
       message: error.message,
     };
   }
+
+  try {
+  await removeDailyMissionNotification(
+    "daily_milestone",
+    claimId,
+  );
+} catch (notificationError) {
+  console.error(
+    "Unable to remove claimed Daily Mission milestone notification:",
+    notificationError,
+  );
+}
 
   revalidatePath("/missions");
   revalidatePath("/character");
