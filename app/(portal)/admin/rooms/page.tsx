@@ -7,6 +7,7 @@ import {
   requireAdminSection,
 } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 import {
   createRoom,
@@ -24,6 +25,12 @@ type AreaRow = {
   is_active: boolean;
 };
 
+type MusicTrackOption = {
+  id: string;
+  name: string;
+  is_active: boolean;
+};
+
 type RoomRow = {
   id: string;
   area_id: string;
@@ -31,6 +38,7 @@ type RoomRow = {
   slug: string;
   description: string | null;
   image_url: string | null;
+  music_track_id: string | null;
   sort_order: number;
   is_active: boolean;
   is_outdoors: boolean;
@@ -50,6 +58,7 @@ type RoomQueryRow = {
   slug: string;
   description: string | null;
   image_url: string | null;
+  music_track_id: string | null;
   sort_order: number;
   is_active: boolean;
   is_outdoors: boolean;
@@ -218,6 +227,7 @@ export default async function AdminRoomsPage() {
         slug,
         description,
         image_url,
+        music_track_id,
         sort_order,
 is_active,
 is_outdoors,
@@ -288,6 +298,30 @@ created_at,
     );
   }
 
+  const privileged = createAdminClient();
+
+  const {
+    data: musicTrackData,
+    error: musicTrackError,
+  } = await privileged
+    .from("music_tracks")
+    .select("id, name, is_active")
+    .order("sort_order", {
+      ascending: true,
+    })
+    .order("name", {
+      ascending: true,
+    });
+
+  if (musicTrackError) {
+    throw new Error(
+      `Unable to load music tracks: ${musicTrackError.message}`,
+    );
+  }
+
+  const musicTracks =
+    (musicTrackData ?? []) as MusicTrackOption[];
+
   const areas =
     (areasResult.data ?? []) as AreaRow[];
 
@@ -302,6 +336,7 @@ created_at,
       slug: room.slug,
       description: room.description,
       image_url: room.image_url,
+      music_track_id: room.music_track_id,
       sort_order: room.sort_order,
       is_active: room.is_active,
 is_outdoors: room.is_outdoors,
@@ -492,6 +527,31 @@ created_at: room.created_at,
                       placeholder="/images/rooms/room-name.jpg"
                       className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
                     />
+                  </AdminField>
+                </div>
+
+                <div className="md:col-span-2">
+                  <AdminField label="Background Music">
+                    <select
+                      name="musicTrackId"
+                      defaultValue=""
+                      className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
+                    >
+                      <option value="">
+                        None
+                      </option>
+                      {musicTracks.map((track) => (
+                        <option
+                          key={track.id}
+                          value={track.id}
+                        >
+                          {track.name}
+                          {!track.is_active
+                            ? " — inactive"
+                            : ""}
+                        </option>
+                      ))}
+                    </select>
                   </AdminField>
                 </div>
               </div>
@@ -901,6 +961,34 @@ created_at: room.created_at,
                               placeholder="/images/rooms/room-name.jpg"
                               className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
                             />
+                          </AdminField>
+                        </div>
+
+                        <div className="md:col-span-2">
+                          <AdminField label="Background Music">
+                            <select
+                              name="musicTrackId"
+                              defaultValue={
+                                room.music_track_id ??
+                                ""
+                              }
+                              className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
+                            >
+                              <option value="">
+                                None
+                              </option>
+                              {musicTracks.map((track) => (
+                                <option
+                                  key={track.id}
+                                  value={track.id}
+                                >
+                                  {track.name}
+                                  {!track.is_active
+                                    ? " — inactive"
+                                    : ""}
+                                </option>
+                              ))}
+                            </select>
                           </AdminField>
                         </div>
                       </div>

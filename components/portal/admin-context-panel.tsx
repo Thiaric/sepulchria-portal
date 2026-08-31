@@ -15,6 +15,7 @@ import { CharacterAuditContextPanel } from "@/components/admin/character-audit-c
 import { HouseOfChancesContextPanel } from "@/components/admin/house-of-chances-context-panel";
 import { GatheringContextPanel } from "@/components/admin/gathering-context-panel";
 import { ExperienceContextPanel } from "@/components/admin/experience-context-panel";
+import { MusicContextPanel } from "@/components/admin/music-context-panel";
 import {
   canAccessAdminSection,
   type AdminSection,
@@ -49,7 +50,7 @@ type ContextMode =
   | "notifications"
   | "polls"
   | "experience"
-  | "features"
+  | "music"
   | "trophies"
   | "registrations"
   | "world"
@@ -145,8 +146,8 @@ function getMode(
     return "experience";
   }
 
-  if (pathname === "/admin/features") {
-    return "features";
+  if (pathname === "/admin/music") {
+    return "music";
   }
 
   if (pathname === "/admin/trophies") {
@@ -249,6 +250,12 @@ export function AdminContextPanel({
   if (mode === "experience") {
     return (
       <ExperienceContextPanel />
+    );
+  }
+
+  if (mode === "music") {
+    return (
+      <MusicContextPanel />
     );
   }
 

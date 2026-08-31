@@ -28,6 +28,8 @@ import type {
 import RoomChatForm from "./components/RoomChatForm";
 import RoomMessageList from "./components/RoomMessageList";
 import RoomRealtime from "./components/RoomRealtime";
+import RoomMusicPlayer from "./components/RoomMusicPlayer";
+import { getCharacterMusicPayload } from "@/lib/music/get-character-music";
 import { OddJobsPanel, type OddJobStateRow } from "./components/OddJobsPanel";
 import {
   HouseOfChancesPanel,
@@ -67,6 +69,7 @@ type RoomRelation = {
   description: string | null;
   image_url: string | null;
   area_id: string;
+  music_track_id: string | null;
   is_outdoors: boolean;
   areas: Area | Area[] | null;
 };
@@ -159,7 +162,7 @@ async function GameContent() {
   } = await supabase
     .from("rooms")
     .select(
-  "id, name, slug, chat_enabled, description, image_url, area_id, is_outdoors, areas(id,name,slug,description)",
+  "id, name, slug, chat_enabled, description, image_url, area_id, music_track_id, is_outdoors, areas(id,name,slug,description)",
 )
     .eq(
       "id",
@@ -228,6 +231,12 @@ async function GameContent() {
       />
     );
   }
+
+  const music =
+    await getCharacterMusicPayload(
+      character.id,
+      room.music_track_id,
+    );
 
   const activeSince = new Date(
     Date.now() -
@@ -1148,6 +1157,13 @@ async function GameContent() {
     <RoomRealtime roomId={room.id} />
 
     <div className="mx-auto flex h-full max-w-80dvh flex-col">
+      <RoomMusicPlayer
+        locationName={room.name}
+        locationTrack={music.locationTrack}
+        ownedTracks={music.ownedTracks}
+        preferences={music.preferences}
+      />
+
   <article
     data-sep-interaction-fixed="true"
     className="flex min-h-0 flex-1 flex-col overflow-visible border border-[rgb(var(--sep-colour-6a5032))]/50 bg-[rgb(var(--sep-colour-17110d))] lg:overflow-hidden"

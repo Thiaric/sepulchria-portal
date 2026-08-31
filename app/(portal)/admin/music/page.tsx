@@ -8,8 +8,8 @@ import {
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-export default async function AdminFeaturesPage() {
-  await requireAdminSection("features");
+export default async function AdminMusicPage() {
+  await requireAdminSection("music");
   const admin = createAdminClient();
 
   const { data, error } = await admin
@@ -24,8 +24,8 @@ export default async function AdminFeaturesPage() {
     <main className="p-5 sm:p-7 lg:p-9">
       <div className="mx-auto max-w-7xl">
         <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">Administration</p>
-        <h2 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">Features</h2>
-        <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))]">Manage optional and collectible portal features.</p>
+        <h2 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">Music</h2>
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))]">Manage location music and collectible personal tracks.</p>
         <MusicFeatureManager initialTracks={(data ?? []) as MusicTrackAdminRow[]} />
       </div>
     </main>

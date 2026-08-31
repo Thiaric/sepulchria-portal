@@ -35,6 +35,23 @@ function readRequiredUuid(
   return trimmed;
 }
 
+function readOptionalUuid(
+  value: FormDataEntryValue | null,
+  fieldName: string,
+): string | null {
+  if (
+    typeof value !== "string" ||
+    value.trim() === ""
+  ) {
+    return null;
+  }
+
+  return readRequiredUuid(
+    value,
+    fieldName,
+  );
+}
+
 function readRequiredText(
   value: FormDataEntryValue | null,
   fieldName: string,
@@ -270,6 +287,11 @@ export async function createRoom(
     2000,
   );
 
+  const musicTrackId = readOptionalUuid(
+    formData.get("musicTrackId"),
+    "Music track",
+  );
+
   const sortOrder = readSortOrder(
     formData.get("sortOrder"),
   );
@@ -299,6 +321,7 @@ export async function createRoom(
   slug,
   description,
   image_url: imageUrl,
+  music_track_id: musicTrackId,
   sort_order: sortOrder,
   is_active: isActive,
   is_outdoors: isOutdoors,
@@ -355,6 +378,11 @@ export async function updateRoom(
     2000,
   );
 
+  const musicTrackId = readOptionalUuid(
+    formData.get("musicTrackId"),
+    "Music track",
+  );
+
   const sortOrder = readSortOrder(
     formData.get("sortOrder"),
   );
@@ -388,6 +416,7 @@ export async function updateRoom(
   slug,
   description,
   image_url: imageUrl,
+  music_track_id: musicTrackId,
   sort_order: sortOrder,
   is_active: isActive,
   is_outdoors: isOutdoors,

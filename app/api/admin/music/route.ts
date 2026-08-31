@@ -12,7 +12,7 @@ const TYPES = new Set(["audio/mpeg","audio/ogg","audio/wav","audio/x-wav","audio
 function bad(error: string, status = 400) { return NextResponse.json({ error }, { status }); }
 async function allowed() {
   const staff = await getStaffSession();
-  return !!staff && canAccessAdminSection(staff.role, "features");
+  return !!staff && canAccessAdminSection(staff.role, "music");
 }
 function ext(type: string) {
   return ({"audio/mpeg":"mp3","audio/ogg":"ogg","audio/wav":"wav","audio/x-wav":"wav","audio/mp4":"m4a","audio/aac":"aac"} as Record<string,string>)[type] ?? "bin";

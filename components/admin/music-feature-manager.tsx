@@ -40,6 +40,13 @@ export function MusicFeatureManager({ initialTracks }: { initialTracks: MusicTra
     const d = await r.json();
     if (!r.ok) throw new Error(d.error ?? "Unable to refresh music.");
     setTracks(d.tracks ?? []);
+    window.requestAnimationFrame(() => {
+      window.dispatchEvent(
+        new Event(
+          "sepulchria:admin-data-changed",
+        ),
+      );
+    });
     router.refresh();
   }
 
@@ -110,13 +117,14 @@ export function MusicFeatureManager({ initialTracks }: { initialTracks: MusicTra
 
       <div className="grid gap-px bg-[rgb(var(--sep-colour-4f3b28))]/30 xl:grid-cols-[360px_minmax(0,1fr)]">
         <form
+          id="music-new"
+          className="scroll-mt-6 bg-[rgb(var(--sep-colour-17110d))] p-5"
           onSubmit={(event) => {
             event.preventDefault();
             void upload(
               new FormData(event.currentTarget),
             );
           }}
-          className="bg-[rgb(var(--sep-colour-17110d))] p-5"
         >
           <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-8c704b))]">Add Track</p>
           <div className="mt-4 space-y-3">
@@ -154,6 +162,12 @@ export function MusicFeatureManager({ initialTracks }: { initialTracks: MusicTra
             {tracks.map((track) => (
               <form
                 key={track.id}
+                id={`admin-music-${track.id}`}
+                data-admin-music-track-id={track.id}
+                data-admin-music-track-name={track.name}
+                data-admin-music-track-active={String(track.is_active)}
+                data-admin-music-track-personal={String(track.is_personal_selectable)}
+                className="scroll-mt-6 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-17110d))] p-4"
                 onSubmit={(event) => {
                   event.preventDefault();
                   void update(
@@ -161,7 +175,6 @@ export function MusicFeatureManager({ initialTracks }: { initialTracks: MusicTra
                     new FormData(event.currentTarget),
                   );
                 }}
-                className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-17110d))] p-4"
               >
                 <div className="flex flex-wrap justify-between gap-3">
                   <div>

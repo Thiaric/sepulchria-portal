@@ -14,7 +14,7 @@ export type AdminSection =
   | "events"
   | "experience"
   | "expertise"
-  | "features"
+  | "music"
   | "gifts"
   | "items"
   | "jobs"
@@ -54,7 +54,7 @@ export const ADMIN_SECTION_ROLES: Record<
   events: ["owner", "admin", "master"],
   experience: ["owner", "admin"],
   expertise: ["owner", "admin", "master"],
-  features: ["owner"],
+  music: ["owner"],
   gifts: ["owner"],
   items: ["owner"],
   jobs: ["owner"],

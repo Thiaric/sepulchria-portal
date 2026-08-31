@@ -9,6 +9,11 @@ import {
 } from "@/components/admin/admin-character-feature-access";
 import Link from "next/link";
 import {
+  AdminCharacterMusicAccess,
+  type CharacterMusicEntitlementRow,
+  type CharacterMusicTrackRow,
+} from "@/components/admin/admin-character-music-access";
+import {
   requireStaffCapability,
 } from "@/lib/auth/require-staff";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -79,6 +84,8 @@ export default async function AdminCharacterPremiumFeaturesPage({
     featureEntitlementsResult,
     portalSkinsResult,
     portalSkinEntitlementsResult,
+    musicTracksResult,
+    musicEntitlementsResult,
   ] = await Promise.all([
     privileged
       .from(
@@ -132,12 +139,45 @@ export default async function AdminCharacterPremiumFeaturesPage({
         "user_id",
         character.user_id,
       ),
+
+    privileged
+      .from("music_tracks")
+      .select(`
+        id,
+        name,
+        description,
+        is_active,
+        is_personal_selectable
+      `)
+      .order("sort_order", {
+        ascending: true,
+      })
+      .order("name", {
+        ascending: true,
+      }),
+
+    privileged
+      .from(
+        "character_music_entitlements",
+      )
+      .select(`
+        music_track_id,
+        enabled,
+        source,
+        note
+      `)
+      .eq(
+        "character_id",
+        id,
+      ),
   ]);
 
   const firstError =
     featureEntitlementsResult.error ??
     portalSkinsResult.error ??
-    portalSkinEntitlementsResult.error;
+    portalSkinEntitlementsResult.error ??
+    musicTracksResult.error ??
+    musicEntitlementsResult.error;
 
   if (firstError) {
     throw new Error(
@@ -156,6 +196,14 @@ export default async function AdminCharacterPremiumFeaturesPage({
   const portalSkinEntitlements =
     (portalSkinEntitlementsResult.data ??
       []) as CharacterPortalSkinEntitlementRow[];
+
+  const musicTracks =
+    (musicTracksResult.data ??
+      []) as CharacterMusicTrackRow[];
+
+  const musicEntitlements =
+    (musicEntitlementsResult.data ??
+      []) as CharacterMusicEntitlementRow[];
 
   return (
     <main className="p-5 sm:p-7 lg:p-9">
@@ -191,6 +239,14 @@ export default async function AdminCharacterPremiumFeaturesPage({
           portalSkins={portalSkins}
           portalSkinEntitlements={
             portalSkinEntitlements
+          }
+        />
+
+        <AdminCharacterMusicAccess
+          characterId={id}
+          tracks={musicTracks}
+          entitlements={
+            musicEntitlements
           }
         />
       </div>

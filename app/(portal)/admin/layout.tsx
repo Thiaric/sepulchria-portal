@@ -134,9 +134,9 @@ export default async function AdminLayout({
               </AdminNavigationLink>
             ) : null}
 
-            {can("features") ? (
-              <AdminNavigationLink href="/admin/features">
-                Features
+            {can("music") ? (
+              <AdminNavigationLink href="/admin/music">
+                Music
               </AdminNavigationLink>
             ) : null}
 
