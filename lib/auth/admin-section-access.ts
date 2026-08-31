@@ -33,6 +33,7 @@ export type AdminSection =
   | "media"
   | "missions"
   | "notifications"
+  | "polls"
   | "users"
   | "new_register"
   | "house_of_chances"
@@ -71,6 +72,7 @@ export const ADMIN_SECTION_ROLES: Record<
   media: ["owner"],
   missions: ["owner", "admin"],
   notifications: ["owner", "admin", "master"],
+  polls: ["owner", "admin", "master"],
   users: ["owner", "admin"],
   new_register: ["owner"],
   house_of_chances: ["owner", "admin"],

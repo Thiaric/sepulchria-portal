@@ -47,6 +47,7 @@ type ContextMode =
   | "codex"
   | "media"
   | "notifications"
+  | "polls"
   | "experience"
   | "trophies"
   | "registrations"
@@ -133,6 +134,10 @@ function getMode(
 
   if (pathname === "/admin/notifications") {
     return "notifications";
+  }
+
+  if (pathname === "/admin/polls") {
+    return "polls";
   }
 
   if (pathname === "/admin/experience") {
@@ -230,6 +235,12 @@ export function AdminContextPanel({
     );
   }
 
+  if (mode === "polls") {
+    return (
+      <AdminPollsNavigatorContext />
+    );
+  }
+
   if (mode === "experience") {
     return (
       <ExperienceContextPanel />
@@ -315,6 +326,323 @@ export function AdminContextPanel({
 
 
 
+
+
+type AdminPollContextEntry = {
+  id: string;
+  title: string;
+  status: string;
+  description: string;
+  ballots: number;
+};
+
+function AdminPollsNavigatorContext() {
+  const [entries, setEntries] =
+    useState<AdminPollContextEntry[]>([]);
+
+  const [search, setSearch] =
+    useState("");
+
+  const [status, setStatus] =
+    useState<
+      "all" | "draft" | "open" | "closed"
+    >("all");
+
+  useEffect(() => {
+    const readEntries = () => {
+      const nodes = Array.from(
+        document.querySelectorAll<HTMLElement>(
+          "[data-admin-poll-id]",
+        ),
+      );
+
+      setEntries(
+        nodes.map((node) => ({
+          id:
+            node.dataset.adminPollId ??
+            "",
+          title:
+            node.dataset.adminPollTitle ??
+            "Untitled Poll",
+          status:
+            node.dataset.adminPollStatus ??
+            "draft",
+          description:
+            node.dataset
+              .adminPollDescription ??
+            "",
+          ballots:
+            Number.parseInt(
+              node.dataset
+                .adminPollBallots ??
+                "0",
+              10,
+            ) || 0,
+        })),
+      );
+    };
+
+    readEntries();
+
+    const frame =
+      window.requestAnimationFrame(
+        readEntries,
+      );
+
+    const handleAdminDataChanged =
+      () => {
+        window.requestAnimationFrame(
+          readEntries,
+        );
+      };
+
+    window.addEventListener(
+      "sepulchria:admin-data-changed",
+      handleAdminDataChanged,
+    );
+
+    const observer =
+      new MutationObserver(
+        readEntries,
+      );
+
+    observer.observe(
+      document.body,
+      {
+        childList: true,
+        subtree: true,
+      },
+    );
+
+    return () => {
+      window.cancelAnimationFrame(
+        frame,
+      );
+      window.removeEventListener(
+        "sepulchria:admin-data-changed",
+        handleAdminDataChanged,
+      );
+      observer.disconnect();
+    };
+  }, []);
+
+  const query =
+    search
+      .trim()
+      .toLocaleLowerCase();
+
+  const visibleEntries =
+    entries.filter((entry) => {
+      if (
+        status !== "all" &&
+        entry.status !== status
+      ) {
+        return false;
+      }
+
+      if (!query) {
+        return true;
+      }
+
+      return [
+        entry.title,
+        entry.status,
+        entry.description,
+        String(entry.ballots),
+      ]
+        .join(" ")
+        .toLocaleLowerCase()
+        .includes(query);
+    });
+
+  function jumpToCreate() {
+    const target =
+      document.getElementById(
+        "poll-new",
+      );
+
+    if (!target) return;
+
+    target.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }
+
+  function jumpToPoll(
+    id: string,
+  ) {
+    const target =
+      document.getElementById(
+        `admin-poll-${id}`,
+      ) as HTMLDetailsElement | null;
+
+    if (!target) return;
+
+    target.open = true;
+
+    target.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
+    const oldOutline =
+      target.style.outline;
+
+    const oldOffset =
+      target.style.outlineOffset;
+
+    const oldShadow =
+      target.style.boxShadow;
+
+    target.style.outline =
+      "1px solid rgb(var(--sep-colour-8d6d3e))";
+
+    target.style.outlineOffset =
+      "3px";
+
+    target.style.boxShadow =
+      "0 0 18px rgba(var(--sep-rgb-177-132-75),0.16)";
+
+    window.setTimeout(() => {
+      target.style.outline =
+        oldOutline;
+      target.style.outlineOffset =
+        oldOffset;
+      target.style.boxShadow =
+        oldShadow;
+    }, 1200);
+  }
+
+  return (
+    <div className="flex h-full min-h-0 flex-col">
+      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+        Poll administration
+      </p>
+
+      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+        Find a Poll
+      </h2>
+
+      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+        Search the Poll archive, filter
+        by its state, or jump straight
+        to a Poll&apos;s controls.
+      </p>
+
+      <input
+        type="search"
+        value={search}
+        onChange={(event) =>
+          setSearch(
+            event.target.value,
+          )
+        }
+        placeholder="Search Polls..."
+        aria-label="Search Polls"
+        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none transition focus:border-[rgb(var(--sep-colour-987344))] focus:shadow-[0_0_14px_rgba(var(--sep-rgb-177-132-75),0.12)] placeholder:text-[rgb(var(--sep-colour-665b4d))]"
+      />
+
+      <div className="mt-2 grid grid-cols-4 gap-1">
+        {(
+          [
+            ["all", "All"],
+            ["draft", "Draft"],
+            ["open", "Open"],
+            ["closed", "Closed"],
+          ] as const
+        ).map(
+          ([value, label]) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() =>
+                setStatus(value)
+              }
+              className={[
+                "border px-1.5 py-1.5 text-[7px] uppercase tracking-[0.1em] transition duration-150",
+                status === value
+                  ? "border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-332719))] text-[rgb(var(--sep-colour-efd9aa))] shadow-[0_0_10px_rgba(var(--sep-rgb-177-132-75),0.12)]"
+                  : "border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] text-[rgb(var(--sep-colour-8f806c))] hover:-translate-y-px hover:border-[rgb(var(--sep-colour-80613b))] hover:text-[rgb(var(--sep-colour-cbb28a))]",
+              ].join(" ")}
+            >
+              {label}
+            </button>
+          ),
+        )}
+      </div>
+
+      <button
+        type="button"
+        onClick={jumpToCreate}
+        className="group mt-3 flex w-full items-center justify-between border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-21170f))] px-3 py-2.5 text-left transition duration-150 hover:-translate-y-px hover:translate-x-0.5 hover:border-[rgb(var(--sep-colour-a17a49))] hover:bg-[rgb(var(--sep-colour-2c1e13))] hover:shadow-[0_0_16px_rgba(var(--sep-rgb-177-132-75),0.14)]"
+      >
+        <span>
+          <span className="block font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] transition group-hover:text-[rgb(var(--sep-colour-efd6a8))]">
+            Create new Poll
+          </span>
+          <span className="mt-0.5 block text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))]">
+            New draft
+          </span>
+        </span>
+
+        <span className="text-[rgb(var(--sep-colour-725a3d))] transition group-hover:translate-x-0.5 group-hover:text-[rgb(var(--sep-colour-c89b5d))]">
+          +
+        </span>
+      </button>
+
+      <p className="mb-2 mt-4 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))]">
+        Polls · {visibleEntries.length}
+        {query || status !== "all"
+          ? ` / ${entries.length}`
+          : ""}
+      </p>
+
+      <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">
+        {visibleEntries.length ? (
+          visibleEntries.map(
+            (entry) => (
+              <button
+                key={entry.id}
+                type="button"
+                onClick={() =>
+                  jumpToPoll(
+                    entry.id,
+                  )
+                }
+                className="group flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition duration-150 hover:-translate-y-px hover:translate-x-0.5 hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))] hover:shadow-[0_0_15px_rgba(var(--sep-rgb-177-132-75),0.13)]"
+              >
+                <span className="min-w-0">
+                  <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] transition group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
+                    {entry.title}
+                  </span>
+
+                  <span className="mt-0.5 block truncate text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))]">
+                    {entry.status}
+                    {" · "}
+                    {entry.ballots}{" "}
+                    ballot
+                    {entry.ballots === 1
+                      ? ""
+                      : "s"}
+                  </span>
+                </span>
+
+                <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))] transition duration-150 group-hover:translate-x-1 group-hover:text-[rgb(var(--sep-colour-c89b5d))]">
+                  →
+                </span>
+              </button>
+            ),
+          )
+        ) : (
+          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))]">
+            No matching Polls.
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
 
 type AdminTrophyContextEntry = {
   id: string;

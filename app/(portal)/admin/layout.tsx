@@ -204,6 +204,12 @@ export default async function AdminLayout({
               </AdminNavigationLink>
             ) : null}
 
+            {can("polls") ? (
+              <AdminNavigationLink href="/admin/polls">
+                Polls
+              </AdminNavigationLink>
+            ) : null}
+
             {can("orders") ? (
               <AdminNavigationLink href="/admin/orders">
                 Orders
