@@ -1,5 +1,17 @@
 "use client";
 
+function isTransientTransportError(
+  error: unknown,
+) {
+  return (
+    error instanceof TypeError &&
+    /failed to fetch|networkerror|load failed/i.test(
+      error.message,
+    )
+  );
+}
+
+
 import {
   useCallback,
   useEffect,
@@ -166,7 +178,11 @@ export function PortalSessionGuard() {
           console.warn(
             "Portal session verification timed out; the next scheduled check will retry.",
           );
-        } else {
+        } else if (
+          !isTransientTransportError(
+            error,
+          )
+        ) {
           console.error(
             "Unable to verify active portal login:",
             error,

@@ -664,29 +664,6 @@ export function MobilePortalNavigation({
     };
   }, []);
 
-  const personalEntries =
-    useMemo<LinkEntry[]>(
-      () => [
-        {
-          href: "/characters",
-          label:
-            "Sepulchria's People",
-          icon:
-            "/icons/characters.png",
-          modal: {
-            label:
-              "Sepulchria's People",
-            title:
-              "Browse the characters who inhabit Sepulchria.",
-            icon:
-              "/icons/characters.png",
-            href: "/characters",
-          },
-        },
-      ],
-      [],
-    );
-
   const loreEntries: LinkEntry[] = [
     {
       href: "/codex",
@@ -1140,27 +1117,6 @@ export function MobilePortalNavigation({
             <div className="min-h-0 flex-1 space-y-5 overflow-y-auto p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
               <section>
                 <SectionTitle>
-                  People & Character
-                </SectionTitle>
-                <div className="grid grid-cols-2 gap-2">
-                  {personalEntries.map(
-                    (entry) => (
-                      <EntryButton
-                        key={entry.label}
-                        entry={entry}
-                        onBeforeOpen={
-                          entry.modal
-                            ? undefined
-                            : closeMore
-                        }
-                      />
-                    ),
-                  )}
-                </div>
-              </section>
-
-              <section>
-                <SectionTitle>
                   Lore
                 </SectionTitle>
 
@@ -1188,7 +1144,7 @@ export function MobilePortalNavigation({
                         <MobileIcon
                           src="/icons/rules.png"
                         />
-                        <span className="text-[11px] text-[rgb(var(--sep-colour-b8a98f))]">
+                        <span className="min-w-0 flex-1 truncate text-[11px] text-[rgb(var(--sep-colour-b8a98f))]">
                           Rules
                         </span>
                       </button>
@@ -1251,7 +1207,7 @@ export function MobilePortalNavigation({
                         <MobileIcon
                           src="/icons/economy.png"
                         />
-                        <span className="text-[11px] text-[rgb(var(--sep-colour-b8a98f))]">
+                        <span className="min-w-0 flex-1 truncate text-[11px] text-[rgb(var(--sep-colour-b8a98f))]">
                           Economy & Crafting
                         </span>
                       </button>
@@ -1403,6 +1359,7 @@ export function MobilePortalNavigation({
                       unreadCount={
                         currentUnreadForumCount
                       }
+                      mobile
                     />
                   </div>
                 </div>

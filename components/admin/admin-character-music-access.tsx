@@ -61,10 +61,14 @@ export function AdminCharacterMusicAccess({
           return (
             <form
               key={track.id}
+              id={`premium-feature-music-${track.id}`}
+              data-admin-premium-feature="true"
+              data-admin-feature-name={track.name}
+              data-admin-feature-type="Music Track"
               action={
                 setCharacterMusicEntitlement
               }
-              className="bg-[rgb(var(--sep-colour-17110d))] p-5"
+              className="scroll-mt-6 bg-[rgb(var(--sep-colour-17110d))] p-5"
             >
               <input
                 type="hidden"

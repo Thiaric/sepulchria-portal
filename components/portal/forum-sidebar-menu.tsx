@@ -18,6 +18,7 @@ import {
 
 type ForumSidebarMenuProps = {
   unreadCount: number;
+  mobile?: boolean;
 };
 
 type TopicRelation = {
@@ -72,6 +73,7 @@ function one<T>(
 
 export function ForumSidebarMenu({
   unreadCount,
+  mobile = false,
 }: ForumSidebarMenuProps) {
   const pathname = usePathname();
 
@@ -476,7 +478,7 @@ export function ForumSidebarMenu({
   return (
     <div className="min-w-0">
       <div
-        className={`flex min-h-[var(--portal-nav-min-h)] items-center border text-[11px] transition lg:text-xs ${
+        className={`flex ${mobile ? "min-h-[52px]" : "min-h-[var(--portal-nav-min-h)]"} items-center border text-[11px] transition lg:text-xs ${
           forumActive
             ? "border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] text-[rgb(var(--sep-colour-efd9aa))]"
             : unreadCount > 0
@@ -495,9 +497,13 @@ export function ForumSidebarMenu({
               href: "/forum",
             })
           }
-          className="flex min-w-0 flex-1 items-center gap-2 px-2.5 py-[var(--portal-nav-y)] text-left"
+          className={
+            mobile
+              ? "flex min-w-0 flex-1 items-center gap-3 px-3 py-2 text-left"
+              : "flex min-w-0 flex-1 items-center gap-2 px-2.5 py-[var(--portal-nav-y)] text-left"
+          }
         >
-          <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center">
+          <span className={mobile ? "flex h-[22px] w-[22px] shrink-0 items-center justify-center" : "flex h-[18px] w-[18px] shrink-0 items-center justify-center"}>
   <img
     src="/icons/forum.png"
     alt=""
@@ -506,7 +512,7 @@ export function ForumSidebarMenu({
   />
 </span>
 
-          <span className="truncate">
+          <span className={mobile ? "min-w-0 flex-1 truncate text-[11px] text-[rgb(var(--sep-colour-b8a98f))]" : "truncate"}>
             Forum
           </span>
 

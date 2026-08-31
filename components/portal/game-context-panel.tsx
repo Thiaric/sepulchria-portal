@@ -369,7 +369,7 @@ export function GameContextPanel({
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      
+      <div id="game-music-context-slot" className="shrink-0" />
 
       {error ? (
         <p className="mt-3 shrink-0 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-2.5 text-[11px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]">

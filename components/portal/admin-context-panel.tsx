@@ -16,6 +16,7 @@ import { HouseOfChancesContextPanel } from "@/components/admin/house-of-chances-
 import { GatheringContextPanel } from "@/components/admin/gathering-context-panel";
 import { ExperienceContextPanel } from "@/components/admin/experience-context-panel";
 import { MusicContextPanel } from "@/components/admin/music-context-panel";
+import { AdminCharacterPremiumFeaturesContext } from "@/components/admin/admin-character-premium-features-context";
 import {
   canAccessAdminSection,
   type AdminSection,
@@ -45,6 +46,7 @@ type ContextMode =
   | "characters"
   | "character_audit"
   | "character_detail"
+  | "character_premium_features"
   | "codex"
   | "media"
   | "notifications"
@@ -160,6 +162,14 @@ function getMode(
 
   if (pathname === "/admin/world") {
     return "world";
+  }
+
+  if (
+    /^\/admin\/characters\/[0-9a-f-]+\/premium-features$/i.test(
+      pathname,
+    )
+  ) {
+    return "character_premium_features";
   }
 
   if (
@@ -286,6 +296,15 @@ export function AdminContextPanel({
   if (mode === "character_detail") {
     return (
       <AdminCharacterFieldNavigator />
+    );
+  }
+
+  if (
+    mode ===
+    "character_premium_features"
+  ) {
+    return (
+      <AdminCharacterPremiumFeaturesContext />
     );
   }
 

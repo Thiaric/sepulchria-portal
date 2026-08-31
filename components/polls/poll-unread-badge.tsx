@@ -6,6 +6,18 @@ import {
   useState,
 } from "react";
 
+
+function isTransientTransportError(
+  error: unknown,
+) {
+  return (
+    error instanceof TypeError &&
+    /failed to fetch|networkerror|load failed/i.test(
+      error.message,
+    )
+  );
+}
+
 const REFRESH_MS = 15_000;
 
 type UnreadPayload = {
@@ -53,6 +65,14 @@ export function usePollUnreadCount() {
           ),
         );
       } catch (error) {
+        if (
+          isTransientTransportError(
+            error,
+          )
+        ) {
+          return;
+        }
+
         console.error(
           "Unable to refresh Poll unread count:",
           error,

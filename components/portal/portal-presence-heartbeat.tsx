@@ -1,5 +1,17 @@
 "use client";
 
+function isTransientTransportError(
+  error: unknown,
+) {
+  return (
+    error instanceof TypeError &&
+    /failed to fetch|networkerror|load failed/i.test(
+      error.message,
+    )
+  );
+}
+
+
 import {
   useEffect,
   useRef,
@@ -120,10 +132,16 @@ export function PortalPresenceHeartbeat({
       try {
         await heartbeatPresence();
       } catch (error) {
-        console.error(
-          "Unable to refresh portal presence:",
-          error,
-        );
+        if (
+          !isTransientTransportError(
+            error,
+          )
+        ) {
+          console.error(
+            "Unable to refresh portal presence:",
+            error,
+          );
+        }
       } finally {
         runningRef.current = false;
       }

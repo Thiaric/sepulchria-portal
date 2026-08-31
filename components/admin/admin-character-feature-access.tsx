@@ -117,10 +117,14 @@ export function AdminCharacterFeatureAccess({
           return (
             <form
               key={feature.key}
+              id={`premium-feature-${feature.key}`}
+              data-admin-premium-feature="true"
+              data-admin-feature-name={feature.name}
+              data-admin-feature-type="Feature"
               action={
                 setCharacterFeatureEntitlement
               }
-              className="bg-[rgb(var(--sep-colour-17110d))] p-5"
+              className="scroll-mt-6 bg-[rgb(var(--sep-colour-17110d))] p-5"
             >
               <input
                 type="hidden"
@@ -253,10 +257,14 @@ export function AdminCharacterFeatureAccess({
                 key={
                   `skin-${skin.id}`
                 }
+                id={`premium-feature-skin-${skin.id}`}
+                data-admin-premium-feature="true"
+                data-admin-feature-name={skin.name}
+                data-admin-feature-type="Portal Skin"
                 action={
                   setCharacterPortalSkinEntitlement
                 }
-                className="bg-[rgb(var(--sep-colour-17110d))] p-5"
+                className="scroll-mt-6 bg-[rgb(var(--sep-colour-17110d))] p-5"
               >
                 <input
                   type="hidden"
