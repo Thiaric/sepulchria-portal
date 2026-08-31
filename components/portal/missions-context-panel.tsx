@@ -125,6 +125,10 @@ export function MissionsContextPanel() {
       }
     }
 
+    function handleMissionStateChanged() {
+      void loadMissions();
+    }
+
     window.addEventListener(
       "focus",
       handleFocus,
@@ -135,7 +139,26 @@ export function MissionsContextPanel() {
       handleVisibility,
     );
 
+    window.addEventListener(
+      "sepulchria:notifications-changed",
+      handleMissionStateChanged,
+    );
+
+    const refreshInterval =
+      window.setInterval(() => {
+        if (
+          document.visibilityState ===
+          "visible"
+        ) {
+          void loadMissions();
+        }
+      }, 5_000);
+
     return () => {
+      window.clearInterval(
+        refreshInterval,
+      );
+
       window.removeEventListener(
         "focus",
         handleFocus,
@@ -144,6 +167,11 @@ export function MissionsContextPanel() {
       document.removeEventListener(
         "visibilitychange",
         handleVisibility,
+      );
+
+      window.removeEventListener(
+        "sepulchria:notifications-changed",
+        handleMissionStateChanged,
       );
     };
   }, [loadMissions]);
@@ -159,8 +187,15 @@ export function MissionsContextPanel() {
         return true;
       }
 
+      const statusSearch =
+        mission.claimed_at
+          ? "claimed"
+          : mission.completed_at
+            ? "ready reward ready"
+            : "";
+
       return (
-        `${mission.family_snapshot} ${mission.name_snapshot}`
+        `${mission.family_snapshot} ${mission.name_snapshot} ${statusSearch}`
           .toLocaleLowerCase()
           .includes(query)
       );
@@ -277,7 +312,7 @@ export function MissionsContextPanel() {
                     </span>
                   ) : complete ? (
                     <span className="shrink-0 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-bb9764))]">
-                      Ready
+                      Reward Ready
                     </span>
                   ) : null}
                 </span>
