@@ -18,6 +18,10 @@ const PUBLIC_ROUTES = [
   "/api/auth",
   "/api/registration-applications",
   "/api/registration-invitations",
+  "/manifest.webmanifest",
+  "/sw.js",
+  "/offline.html",
+  "/icons/pwa",
 ];
 
 const SANCTION_ACCESS_ROUTES = [
