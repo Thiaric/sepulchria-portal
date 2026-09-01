@@ -900,7 +900,23 @@ export default function RoomMessageList({
       "connecting",
     );
 
-  const [activeShapeTags,setActiveShapeTags]=useState<Record<string,{buffs:string[];debuffs:string[];conditions:string[];prices:string[]}>>({});
+  type ActivePriceChatTag = {
+  label: string;
+  price_key: string;
+  expires_at: string;
+};
+
+const [activeShapeTags,setActiveShapeTags]=useState<
+  Record<
+    string,
+    {
+      buffs:string[];
+      debuffs:string[];
+      conditions:string[];
+      prices:ActivePriceChatTag[];
+    }
+  >
+>({});
 
   const scrollContainerRef =
     useRef<HTMLDivElement>(null);
@@ -1078,7 +1094,15 @@ export default function RoomMessageList({
       }
 
       if(active){
-        const next:Record<string,{buffs:string[];debuffs:string[];conditions:string[];prices:string[]}>={};
+        const next:Record<
+  string,
+  {
+    buffs:string[];
+    debuffs:string[];
+    conditions:string[];
+    prices:ActivePriceChatTag[];
+  }
+>={};
 
         for(const id of ids){
           next[String(id)]={buffs:[],debuffs:[],conditions:[],prices:[]};
@@ -1138,13 +1162,20 @@ export default function RoomMessageList({
         {normalGroups.length?normalGroups.join(" | "):null}
         {normalGroups.length&&tags.prices.length?" | ":null}
         {tags.prices.map((price,index)=>(
-          <Fragment key={`${price}-${index}`}>
-            {index>0?" - ":null}
-            <PriceTooltip displayText={price}>
-              <span className="underline decoration-dotted underline-offset-2">{price}</span>
-            </PriceTooltip>
-          </Fragment>
-        ))}
+  <Fragment key={`${price.price_key}-${index}`}>
+    {index>0?" - ":null}
+
+    <PriceTooltip
+      priceKey={price.price_key}
+      displayText={price.label}
+      expiresAt={price.expires_at}
+    >
+      <span className="underline decoration-dotted underline-offset-2">
+        {price.label}
+      </span>
+    </PriceTooltip>
+  </Fragment>
+))}
         {trailingDivider?" | ":null}
       </span>
     );

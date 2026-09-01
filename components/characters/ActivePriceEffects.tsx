@@ -14,7 +14,11 @@ export async function ActivePriceEffects({characterId}:{characterId:string}) {
     <div className="mt-3 flex flex-wrap gap-2">
       {q.data.map(effect=>{
         const def=getWarpingPriceDefinition(effect.price_key);
-        return <PriceTooltip key={effect.id} priceKey={effect.price_key}>
+        return <PriceTooltip
+  key={effect.id}
+  priceKey={effect.price_key}
+  expiresAt={effect.expires_at}
+>
           <span className="border border-[rgb(var(--sep-colour-765937))]/70 bg-[rgb(var(--sep-colour-21170f))] px-2 py-1 text-[8px] uppercase text-[rgb(var(--sep-colour-d9b77f))] underline decoration-dotted underline-offset-2">
             {def?.name??effect.price_key} · Stage {effect.stage}
           </span>
