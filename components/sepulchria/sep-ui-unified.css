@@ -1117,3 +1117,10 @@ body.portal-skin-scope
   border-radius: 9999px !important;
 }
 
+/* Equipment item-detail popups:
+   keep the interaction glow, but disable tilt/lift/scale. */
+body.portal-skin-scope
+  [data-sep-equipment-popup="true"]
+  [data-sep-interaction-kind="card"][data-sep-interaction-active="true"] {
+  transform: none !important;
+}

@@ -1432,6 +1432,7 @@ const isRightSide =
 
           <div
             role="dialog"
+            data-sep-equipment-popup="true"
             aria-modal="true"
             aria-label={`${mobileItem.name} details`}
             className="fixed inset-x-3 top-1/2 z-[910] max-h-[calc(100dvh-32px)] -translate-y-1/2 overflow-hidden md:hidden"
@@ -1448,7 +1449,10 @@ const isRightSide =
                 ×
               </button>
 
-              <div className="-mt-11 pt-11">
+              <div
+  data-sep-equipment-popup="true"
+  className="-mt-11 pt-11"
+>
                 <ItemCard
                   row={mobileItem}
                   containers={[]}

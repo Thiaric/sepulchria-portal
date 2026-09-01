@@ -14,6 +14,11 @@ import {
   type CharacterMusicTrackRow,
 } from "@/components/admin/admin-character-music-access";
 import {
+  AdminCharacterCosmeticsAccess,
+  type CharacterCosmeticEntitlementRow,
+  type CharacterCosmeticRow,
+} from "@/components/admin/admin-character-cosmetics-access";
+import {
   requireStaffCapability,
 } from "@/lib/auth/require-staff";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -86,6 +91,8 @@ export default async function AdminCharacterPremiumFeaturesPage({
     portalSkinEntitlementsResult,
     musicTracksResult,
     musicEntitlementsResult,
+    cosmeticsResult,
+    cosmeticEntitlementsResult,
   ] = await Promise.all([
     privileged
       .from(
@@ -170,6 +177,62 @@ export default async function AdminCharacterPremiumFeaturesPage({
         "character_id",
         id,
       ),
+
+    privileged
+      .from(
+        "cosmetic_items",
+      )
+      .select(`
+        id,
+        slug,
+        name,
+        description,
+        category,
+        preview_image_url,
+        asset_url,
+        is_active
+      `)
+      .eq(
+        "is_active",
+        true,
+      )
+      .in(
+        "category",
+        [
+          "sheet_frame",
+          "chat_frame",
+        ],
+      )
+      .order(
+        "sort_order",
+        {
+          ascending: true,
+        },
+      )
+      .order(
+        "name",
+        {
+          ascending: true,
+        },
+      ),
+
+    privileged
+      .from(
+        "character_cosmetic_entitlements",
+      )
+      .select(`
+        cosmetic_item_id,
+        enabled,
+        source,
+        note,
+        granted_at,
+        granted_by,
+        updated_at
+      `)
+      .eq(
+        "character_id",
+        id,
+      ),
   ]);
 
   const firstError =
@@ -177,7 +240,9 @@ export default async function AdminCharacterPremiumFeaturesPage({
     portalSkinsResult.error ??
     portalSkinEntitlementsResult.error ??
     musicTracksResult.error ??
-    musicEntitlementsResult.error;
+    musicEntitlementsResult.error ??
+    cosmeticsResult.error ??
+    cosmeticEntitlementsResult.error;
 
   if (firstError) {
     throw new Error(
@@ -204,6 +269,14 @@ export default async function AdminCharacterPremiumFeaturesPage({
   const musicEntitlements =
     (musicEntitlementsResult.data ??
       []) as CharacterMusicEntitlementRow[];
+
+  const cosmetics =
+    (cosmeticsResult.data ??
+      []) as CharacterCosmeticRow[];
+
+  const cosmeticEntitlements =
+    (cosmeticEntitlementsResult.data ??
+      []) as CharacterCosmeticEntitlementRow[];
 
   return (
     <main className="p-5 sm:p-7 lg:p-9">
@@ -247,6 +320,14 @@ export default async function AdminCharacterPremiumFeaturesPage({
           tracks={musicTracks}
           entitlements={
             musicEntitlements
+          }
+        />
+
+        <AdminCharacterCosmeticsAccess
+          characterId={id}
+          cosmetics={cosmetics}
+          entitlements={
+            cosmeticEntitlements
           }
         />
       </div>
