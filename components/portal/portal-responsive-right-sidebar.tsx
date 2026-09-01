@@ -2,6 +2,7 @@
 
 import {
   useEffect,
+  useRef,
   useState,
 } from "react";
 import { X } from "lucide-react";
@@ -37,6 +38,25 @@ export function PortalResponsiveRightSidebar({
 }: PortalResponsiveRightSidebarProps) {
   const [open, setOpen] =
     useState(false);
+
+  const [mobileButtonTop, setMobileButtonTop] =
+  useState<number | null>(null);
+
+const mobileButtonRef =
+  useRef<HTMLButtonElement>(null);
+
+const dragStartY =
+  useRef(0);
+
+const dragStartTop =
+  useRef(0);
+
+const dragging =
+  useRef(false);
+
+const suppressClick =
+  useRef(false);
+
   const [adminRevision, setAdminRevision] =
     useState(0);
 
@@ -132,6 +152,78 @@ export function PortalResponsiveRightSidebar({
       "/admin/",
     );
 
+    useEffect(() => {
+  const saved =
+    window.localStorage.getItem(
+      "sepulchria-mobile-context-button-top",
+    );
+
+  if (saved !== null) {
+    const value =
+      Number(saved);
+
+    if (
+      Number.isFinite(value)
+    ) {
+      const maxTop =
+        Math.max(
+          8,
+          window.innerHeight -
+            44 -
+            76,
+        );
+
+      setMobileButtonTop(
+        Math.max(
+          8,
+          Math.min(
+            value,
+            maxTop,
+          ),
+        ),
+      );
+    }
+  }
+
+  const handleResize = () => {
+    setMobileButtonTop(
+      (current) => {
+        if (current === null) {
+          return null;
+        }
+
+        const maxTop =
+          Math.max(
+            8,
+            window.innerHeight -
+              44 -
+              76,
+          );
+
+        return Math.max(
+          8,
+          Math.min(
+            current,
+            maxTop,
+          ),
+        );
+      },
+    );
+  };
+
+  window.addEventListener(
+    "resize",
+    handleResize,
+  );
+
+  return () => {
+    window.removeEventListener(
+      "resize",
+      handleResize,
+    );
+  };
+}, []);
+
   useEffect(() => {
     const handleAdminDataChanged = () => {
       setAdminRevision((value) => value + 1);
@@ -202,17 +294,143 @@ export function PortalResponsiveRightSidebar({
   return (
     <>
       <button
-        type="button"
-        data-sep-interaction-ignore="true"
-        onClick={() =>
-          setOpen(true)
-        }
-        aria-label="Open context panel"
-        aria-expanded={open}
-        className="fixed bottom-[calc(4.75rem+env(safe-area-inset-bottom))] right-3 z-40 flex h-11 w-11 items-center justify-center border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-1d160f))] font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] shadow-[0_12px_35px_rgba(var(--sep-rgb-0-0-0),0.45)] [transform:none!important] transition-colors hover:border-[rgb(var(--sep-colour-a37b45))] hover:text-[rgb(var(--sep-colour-f0d39d))] xl:hidden"
-      >
-        ◈
-      </button>
+  ref={mobileButtonRef}
+  type="button"
+  data-sep-interaction-ignore="true"
+  aria-label="Open context panel"
+  aria-expanded={open}
+  onPointerDown={(event) => {
+    if (
+      event.pointerType ===
+        "mouse" &&
+      event.button !== 0
+    ) {
+      return;
+    }
+
+    const element =
+      mobileButtonRef.current;
+
+    if (!element) {
+      return;
+    }
+
+    const rect =
+      element.getBoundingClientRect();
+
+    dragStartY.current =
+      event.clientY;
+
+    dragStartTop.current =
+      rect.top;
+
+    dragging.current =
+      true;
+
+    suppressClick.current =
+      false;
+
+    event.currentTarget
+      .setPointerCapture(
+        event.pointerId,
+      );
+  }}
+  onPointerMove={(event) => {
+    if (!dragging.current) {
+      return;
+    }
+
+    const delta =
+      event.clientY -
+      dragStartY.current;
+
+    if (
+      Math.abs(delta) > 4
+    ) {
+      suppressClick.current =
+        true;
+    }
+
+    const maxTop =
+      Math.max(
+        8,
+        window.innerHeight -
+          44 -
+          76,
+      );
+
+    const nextTop =
+      Math.max(
+        8,
+        Math.min(
+          dragStartTop.current +
+            delta,
+          maxTop,
+        ),
+      );
+
+    setMobileButtonTop(
+      nextTop,
+    );
+  }}
+  onPointerUp={(event) => {
+    if (!dragging.current) {
+      return;
+    }
+
+    dragging.current =
+      false;
+
+    try {
+      event.currentTarget
+        .releasePointerCapture(
+          event.pointerId,
+        );
+    } catch {}
+
+    if (
+      mobileButtonTop !== null
+    ) {
+      window.localStorage.setItem(
+        "sepulchria-mobile-context-button-top",
+        String(
+          mobileButtonTop,
+        ),
+      );
+    }
+  }}
+  onPointerCancel={() => {
+    dragging.current =
+      false;
+  }}
+  onClick={() => {
+    if (
+      suppressClick.current
+    ) {
+      suppressClick.current =
+        false;
+      return;
+    }
+
+    setOpen(true);
+  }}
+  style={{
+    top:
+      mobileButtonTop ??
+      undefined,
+
+    bottom:
+      mobileButtonTop ===
+      null
+        ? "calc(4.75rem + env(safe-area-inset-bottom))"
+        : undefined,
+
+    touchAction: "none",
+  }}
+  className="fixed right-3 z-40 flex h-11 w-11 select-none items-center justify-center border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-1d160f))] font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] shadow-[0_12px_35px_rgba(var(--sep-rgb-0-0-0),0.45)] [transform:none!important] transition-colors hover:border-[rgb(var(--sep-colour-a37b45))] hover:text-[rgb(var(--sep-colour-f0d39d))] xl:hidden"
+>
+  ◈
+</button>
 
       {open ? (
         <button

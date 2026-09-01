@@ -5,6 +5,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -24,6 +25,7 @@ import { UnreadMessageBadge } from "@/components/messages/unread-message-badge";
 import { TicketNotificationBadge } from "@/components/support/ticket-notification-badge";
 import { SanctionNotificationBadge } from "@/components/sanctions/sanction-notification-badge";
 import { usePollUnreadCount } from "@/components/polls/poll-unread-badge";
+import { Settings } from "lucide-react";
 import {
   canClientReadForumSection,
   getClientForumAccessContext,
@@ -176,6 +178,15 @@ export function MobilePortalNavigation({
 
   const [moreOpen, setMoreOpen] =
     useState(false);
+
+  const [moreDragOffset, setMoreDragOffset] =
+  useState(0);
+
+const moreDragStartY =
+  useRef(0);
+
+const moreDragging =
+  useRef(false);  
 
   const [
     currentUnreadForumCount,
@@ -935,8 +946,9 @@ export function MobilePortalNavigation({
   ];
 
   const closeMore = () => {
-    setMoreOpen(false);
-  };
+  setMoreDragOffset(0);
+  setMoreOpen(false);
+};
 
   const moreAttentionCount =
     currentUnreadForumCount +
@@ -1085,14 +1097,93 @@ export function MobilePortalNavigation({
           />
 
           <section
-            role="dialog"
-            aria-modal="true"
-            aria-label="More Sepulchria navigation"
-            data-portal-navigation
-            data-sep-interaction-ignore="true"
-            className="fixed inset-x-0 bottom-[calc(64px+env(safe-area-inset-bottom))] z-[95] flex max-h-[calc(88dvh-64px-env(safe-area-inset-bottom))] flex-col overflow-hidden rounded-t-[18px] border-t border-[rgb(var(--sep-colour-60482e))]/65 bg-[rgb(var(--sep-colour-100d0b))] shadow-[0_-24px_55px_rgba(var(--sep-rgb-0-0-0),0.58)] [--portal-nav-min-h:2.5rem] [--portal-nav-y:0.35rem] lg:hidden"
-          >
-            <div className="mx-auto mt-2 h-1 w-10 shrink-0 rounded-full bg-[rgb(var(--sep-colour-5c472f))]" />
+  role="dialog"
+  aria-modal="true"
+  aria-label="More Sepulchria navigation"
+  data-portal-navigation
+  data-sep-interaction-ignore="true"
+  style={{
+    transform:
+      `translateY(${moreDragOffset}px)`,
+
+    transition:
+      moreDragging.current
+        ? "none"
+        : "transform 180ms ease-out",
+  }}
+  className="fixed inset-x-0 bottom-[calc(64px+env(safe-area-inset-bottom))] z-[95] flex max-h-[calc(88dvh-64px-env(safe-area-inset-bottom))] flex-col overflow-hidden rounded-t-[18px] border-t border-[rgb(var(--sep-colour-60482e))]/65 bg-[rgb(var(--sep-colour-100d0b))] shadow-[0_-24px_55px_rgba(var(--sep-rgb-0-0-0),0.58)] [--portal-nav-min-h:2.5rem] [--portal-nav-y:0.35rem] lg:hidden"
+>
+            <div
+  role="button"
+  tabIndex={0}
+  aria-label="Drag menu"
+  onPointerDown={(event) => {
+    moreDragging.current =
+      true;
+
+    moreDragStartY.current =
+      event.clientY -
+      moreDragOffset;
+
+    event.currentTarget
+      .setPointerCapture(
+        event.pointerId,
+      );
+  }}
+  onPointerMove={(event) => {
+    if (
+      !moreDragging.current
+    ) {
+      return;
+    }
+
+    const nextOffset =
+      Math.max(
+        0,
+        event.clientY -
+          moreDragStartY.current,
+      );
+
+    setMoreDragOffset(
+      nextOffset,
+    );
+  }}
+  onPointerUp={(event) => {
+    if (
+      !moreDragging.current
+    ) {
+      return;
+    }
+
+    moreDragging.current =
+      false;
+
+    try {
+      event.currentTarget
+        .releasePointerCapture(
+          event.pointerId,
+        );
+    } catch {}
+
+    if (
+      moreDragOffset >
+      120
+    ) {
+      closeMore();
+    } else {
+      setMoreDragOffset(0);
+    }
+  }}
+  onPointerCancel={() => {
+    moreDragging.current =
+      false;
+
+    setMoreDragOffset(0);
+  }}
+  className="flex h-7 shrink-0 touch-none cursor-grab items-center justify-center active:cursor-grabbing"
+>
+  <span className="h-1 w-10 rounded-full bg-[rgb(var(--sep-colour-5c472f))]" />
+</div>
 
             <div className="flex shrink-0 items-center justify-between border-b border-[rgb(var(--sep-colour-60482e))]/35 px-4 py-3">
               <div>
@@ -1352,6 +1443,22 @@ export function MobilePortalNavigation({
                     <EntryButton
                       entry={rankingEntry}
                     />
+
+                     {isStaff ? (
+    <Link
+      href="/admin"
+      onClick={closeMore}
+      className="flex min-h-[52px] w-full items-center gap-3 border border-[rgb(var(--sep-colour-7b5d36))]/55 bg-[rgb(var(--sep-colour-24180f))] px-3 py-2 text-left"
+    >
+      <Settings
+        className="h-[22px] w-[22px] shrink-0 text-[rgb(var(--sep-colour-d4ad70))]"
+      />
+
+      <span className="min-w-0 flex-1 truncate text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b8a98f))]">
+        Administration
+      </span>
+    </Link>
+  ) : null}
                   </div>
 
                   <div className="border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-15100d))] p-1.5">

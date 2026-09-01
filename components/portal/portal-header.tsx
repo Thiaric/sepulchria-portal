@@ -93,7 +93,7 @@ export async function PortalHeader({ context }: PortalHeaderProps) {
     href: "/messages",
   }}
   aria-label={`${unreadMessageCount} unread messages`}
-  className="relative flex h-8 w-8 items-center justify-center border border-[rgb(var(--sep-colour-614b31))] bg-[rgb(var(--sep-colour-17120f))] text-base text-[rgb(var(--sep-colour-c69b5c))] transition hover:border-[rgb(var(--sep-colour-977242))] hover:text-[rgb(var(--sep-colour-efd6a3))] sm:h-9 sm:w-9 2xl:h-10 2xl:w-10 2xl:text-lg"
+  className="relative hidden h-8 w-8 items-center justify-center border border-[rgb(var(--sep-colour-614b31))] bg-[rgb(var(--sep-colour-17120f))] text-base text-[rgb(var(--sep-colour-c69b5c))] transition hover:border-[rgb(var(--sep-colour-977242))] hover:text-[rgb(var(--sep-colour-efd6a3))] sm:flex sm:h-9 sm:w-9 2xl:h-10 2xl:w-10 2xl:text-lg"
 >
   <svg
   aria-hidden="true"
@@ -144,7 +144,7 @@ export async function PortalHeader({ context }: PortalHeaderProps) {
                 href="/admin"
                 aria-label="Open administration panel"
                 title={`Administration — ${staffSession.role}`}
-                className="relative flex h-8 w-8 items-center justify-center border border-[rgb(var(--sep-colour-7b5d36))] bg-[rgb(var(--sep-colour-24180f))] font-serif text-base text-[rgb(var(--sep-colour-d4ad70))] transition hover:border-[rgb(var(--sep-colour-b1844b))] hover:bg-[rgb(var(--sep-colour-382517))] hover:text-[rgb(var(--sep-colour-ffe0a6))] sm:h-9 sm:w-9 2xl:h-10 2xl:w-10 2xl:text-lg"
+                className="relative hidden h-8 w-8 items-center justify-center border border-[rgb(var(--sep-colour-7b5d36))] bg-[rgb(var(--sep-colour-24180f))] font-serif text-base text-[rgb(var(--sep-colour-d4ad70))] transition hover:border-[rgb(var(--sep-colour-b1844b))] hover:bg-[rgb(var(--sep-colour-382517))] hover:text-[rgb(var(--sep-colour-ffe0a6))] lg:flex lg:h-9 lg:w-9 2xl:h-10 2xl:w-10 2xl:text-lg"
               >
                 <Settings className="pointer-events-none h-5 w-5" />
                 {canAccessAdminSection(
