@@ -147,11 +147,7 @@ export function LogoutButton() {
   >
     <LogOut className="pointer-events-none h-5 w-5" />
 
-    <span>
-      {isLoggingOut
-        ? "Exiting..."
-        : ""}
-    </span>
+    
   </button>
 );
 }

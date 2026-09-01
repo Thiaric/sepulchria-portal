@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { requireStaffCapability } from "@/lib/auth/require-staff";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { createPremiumFeatureGrantNotification } from "@/lib/premium-features/notifications";
 
 const SOURCES = new Set([
   "paid",
@@ -34,9 +35,10 @@ function required(
 export async function setCharacterMusicEntitlement(
   formData: FormData,
 ) {
-  await requireStaffCapability(
-    "character_economy",
-  );
+  const staff =
+    await requireStaffCapability(
+      "character_economy",
+    );
 
   const characterId = required(
     formData,
@@ -72,6 +74,59 @@ export async function setCharacterMusicEntitlement(
 
   const admin = createAdminClient();
 
+  const [
+    previousEntitlementResult,
+    trackResult,
+  ] = await Promise.all([
+    admin
+      .from(
+        "character_music_entitlements",
+      )
+      .select("enabled")
+      .eq(
+        "character_id",
+        characterId,
+      )
+      .eq(
+        "music_track_id",
+        musicTrackId,
+      )
+      .maybeSingle(),
+
+    admin
+      .from("music_tracks")
+      .select("id, name")
+      .eq("id", musicTrackId)
+      .maybeSingle(),
+  ]);
+
+  if (
+    previousEntitlementResult.error
+  ) {
+    throw new Error(
+      `Unable to check existing music ownership: ${previousEntitlementResult.error.message}`,
+    );
+  }
+
+  if (
+    trackResult.error ||
+    !trackResult.data
+  ) {
+    throw new Error(
+      `Unable to load music track: ${
+        trackResult.error?.message ??
+        "Track not found."
+      }`,
+    );
+  }
+
+  const wasMusicEnabled =
+    previousEntitlementResult.data
+      ?.enabled === true;
+
+  const musicTrack =
+    trackResult.data;
+
   const { error } = await admin
     .from(
       "character_music_entitlements",
@@ -98,6 +153,28 @@ export async function setCharacterMusicEntitlement(
     );
   }
 
+  if (
+    enabled &&
+    !wasMusicEnabled
+  ) {
+    try {
+      await createPremiumFeatureGrantNotification({
+        characterId,
+        createdBy: staff.userId,
+        title:
+          `Premium feature unlocked: ${musicTrack.name}`,
+        body:
+          `You have unlocked the music track ${musicTrack.name}. You can select it from the music controls while in a location.`,
+        href: "/game",
+      });
+    } catch (notificationError) {
+      console.error(
+        "Music ownership was granted, but its notification could not be created:",
+        notificationError,
+      );
+    }
+  }
+
   if (!enabled) {
     await admin
       .from(
@@ -121,4 +198,5 @@ export async function setCharacterMusicEntitlement(
     `/admin/characters/${characterId}/premium-features`,
   );
   revalidatePath("/game");
+  revalidatePath("/", "layout");
 }

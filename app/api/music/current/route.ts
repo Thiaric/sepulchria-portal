@@ -46,6 +46,7 @@ export async function GET(
   ) {
     return NextResponse.json({
       locationName: null,
+      ownedTrackIds: [],
       music: null,
     });
   }
@@ -69,13 +70,119 @@ export async function GET(
   if (
     roomError ||
     !room ||
-    room.is_active !== true ||
-    !room.music_track_id
+    room.is_active !== true
   ) {
     return NextResponse.json({
       locationName:
         room?.name ?? null,
+      ownedTrackIds: [],
       music: null,
+    });
+  }
+
+  const {
+    data: entitlementRows,
+    error: entitlementError,
+  } = await admin
+    .from("character_music_entitlements")
+    .select("music_track_id")
+    .eq("character_id", character.id)
+    .eq("enabled", true);
+
+  if (entitlementError) {
+    return NextResponse.json(
+      {
+        error:
+          entitlementError.message,
+      },
+      { status: 500 },
+    );
+  }
+
+  const entitledIds = [
+    ...new Set(
+      (entitlementRows ?? []).map(
+        (row) =>
+          row.music_track_id,
+      ),
+    ),
+  ];
+
+  const {
+    data: playableOwnedRows,
+    error: playableOwnedError,
+  } = entitledIds.length > 0
+    ? await admin
+        .from("music_tracks")
+        .select("id")
+        .in("id", entitledIds)
+        .eq("is_active", true)
+        .eq(
+          "is_personal_selectable",
+          true,
+        )
+    : {
+        data: [],
+        error: null,
+      };
+
+  if (playableOwnedError) {
+    return NextResponse.json(
+      {
+        error:
+          playableOwnedError.message,
+      },
+      { status: 500 },
+    );
+  }
+
+  const ownedTrackIds =
+    (playableOwnedRows ?? [])
+      .map((row) => row.id)
+      .sort();
+
+  const knownOwned =
+    (
+      request.nextUrl.searchParams.get(
+        "knownOwned",
+      ) ?? ""
+    )
+      .split(",")
+      .filter(Boolean)
+      .sort();
+
+  const ownershipChanged =
+    ownedTrackIds.join(",") !==
+    knownOwned.join(",");
+
+  /*
+   * A room without location music can still expose
+   * the player's owned premium music. We return a
+   * lightweight music payload here; the page load
+   * already supplied the signed owned-track URLs.
+   */
+  if (!room.music_track_id) {
+    const music =
+      ownershipChanged
+        ? await getCharacterMusicPayload(
+            character.id,
+            null,
+          )
+        : {
+            locationTrack: null,
+            ownedTracks: [],
+            preferences: {
+              usePersonalMusic: false,
+              selectedTrackId: null,
+              volume: 0,
+              muted: false,
+            },
+          };
+
+    return NextResponse.json({
+      locationName: room.name,
+      ownedTrackIds,
+      music,
     });
   }
 
@@ -96,13 +203,37 @@ export async function GET(
     .eq("is_active", true)
     .maybeSingle();
 
-  if (
-    trackError ||
-    !track
-  ) {
+  if (trackError) {
+    return NextResponse.json(
+      {
+        error: trackError.message,
+      },
+      { status: 500 },
+    );
+  }
+
+  if (!track) {
+    const music =
+      ownershipChanged
+        ? await getCharacterMusicPayload(
+            character.id,
+            null,
+          )
+        : {
+            locationTrack: null,
+            ownedTracks: [],
+            preferences: {
+              usePersonalMusic: false,
+              selectedTrackId: null,
+              volume: 0,
+              muted: false,
+            },
+          };
+
     return NextResponse.json({
       locationName: room.name,
-      music: null,
+      ownedTrackIds,
+      music,
     });
   }
 
@@ -116,9 +247,13 @@ export async function GET(
    * track, avoid regenerating signed URLs on
    * every live heartbeat.
    */
-  if (known === track.id) {
+  if (
+    known === track.id &&
+    !ownershipChanged
+  ) {
     return NextResponse.json({
       locationName: room.name,
+      ownedTrackIds,
       music: {
         locationTrack: {
           id: track.id,
@@ -145,12 +280,17 @@ export async function GET(
   if (!music.locationTrack) {
     return NextResponse.json({
       locationName: room.name,
-      music: null,
+      ownedTrackIds,
+      music:
+        ownershipChanged
+          ? music
+          : null,
     });
   }
 
   return NextResponse.json({
     locationName: room.name,
+    ownedTrackIds,
     music,
   });
 }

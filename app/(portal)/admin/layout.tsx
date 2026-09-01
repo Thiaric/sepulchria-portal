@@ -64,7 +64,7 @@ export default async function AdminLayout({
                 Overview
               </AdminNavigationLink>
             ) : null}
-            
+
             {can("races") ? (
               <AdminNavigationLink href="/admin/races">
                 Ancestries
@@ -134,12 +134,6 @@ export default async function AdminLayout({
               </AdminNavigationLink>
             ) : null}
 
-            {can("music") ? (
-              <AdminNavigationLink href="/admin/music">
-                Music
-              </AdminNavigationLink>
-            ) : null}
-
             {can("gifts") ? (
               <AdminNavigationLink href="/admin/gifts">
                 Feats
@@ -206,21 +200,15 @@ export default async function AdminLayout({
               </AdminNavigationLink>
             ) : null}
 
+            {can("music") ? (
+              <AdminNavigationLink href="/admin/music">
+                Music
+              </AdminNavigationLink>
+            ) : null}
+
             {can("notifications") ? (
               <AdminNavigationLink href="/admin/notifications">
                 Notifications
-              </AdminNavigationLink>
-            ) : null}
-
-            {can("polls") ? (
-              <AdminNavigationLink href="/admin/polls">
-                Polls
-              </AdminNavigationLink>
-            ) : null}
-
-            {can("orders") ? (
-              <AdminNavigationLink href="/admin/orders">
-                Orders
               </AdminNavigationLink>
             ) : null}
 
@@ -233,7 +221,17 @@ export default async function AdminLayout({
               </AdminNavigationLink>
             ) : null}
 
-            
+            {can("orders") ? (
+              <AdminNavigationLink href="/admin/orders">
+                Orders
+              </AdminNavigationLink>
+            ) : null}
+
+            {can("polls") ? (
+              <AdminNavigationLink href="/admin/polls">
+                Polls
+              </AdminNavigationLink>
+            ) : null}
 
             {can("new_register") ? (
               <AdminNavigationLink href="/admin/registrations">

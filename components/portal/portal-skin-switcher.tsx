@@ -2,6 +2,7 @@
 
 import {
   useCallback,
+  useEffect,
   useState,
 } from "react";
 
@@ -18,6 +19,25 @@ export function PortalSkinSwitcher() {
 
   const [open, setOpen] =
     useState(false);
+
+    useEffect(() => {
+  const handleOpenAppearance =
+    () => {
+      setOpen(true);
+    };
+
+  window.addEventListener(
+    "sepulchria:open-portal-appearance",
+    handleOpenAppearance,
+  );
+
+  return () => {
+    window.removeEventListener(
+      "sepulchria:open-portal-appearance",
+      handleOpenAppearance,
+    );
+  };
+}, []);
 
   const close =
     useCallback(() => {

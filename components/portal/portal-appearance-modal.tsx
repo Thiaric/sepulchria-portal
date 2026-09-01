@@ -235,7 +235,7 @@ export function PortalAppearanceModal({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/80 p-3 sm:p-6"
+      className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/10 p-3 sm:p-6"
       role="presentation"
       onMouseDown={(event) => {
         if (

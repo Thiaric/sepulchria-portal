@@ -17,6 +17,7 @@ import {
 } from "@/lib/auth/require-staff";
 import { adjustHealthForVigourModifier } from "@/lib/characters/adjust-health-for-vigour-modifier";
 import { createClient } from "@/lib/supabase/server";
+import { createPremiumFeatureGrantNotification } from "@/lib/premium-features/notifications";
 
 const CHARACTER_STATUSES = [
   "draft",
@@ -1625,6 +1626,14 @@ const CHARACTER_FEATURE_SOURCES = [
 type CharacterFeatureSource =
   (typeof CHARACTER_FEATURE_SOURCES)[number];
 
+const CHARACTER_FEATURE_NAMES: Record<
+  CharacterFeatureKey,
+  string
+> = {
+  private_chat: "Private Chats",
+  friend_list: "Friend List",
+};
+
 
 export async function setCharacterPortalSkinEntitlement(
   formData: FormData,
@@ -1731,6 +1740,31 @@ export async function setCharacterPortalSkinEntitlement(
     );
   }
 
+  const {
+    data: previousSkinEntitlement,
+    error: previousSkinEntitlementError,
+  } = await admin
+    .from(
+      "user_portal_skin_entitlements",
+    )
+    .select("enabled")
+    .eq(
+      "user_id",
+      character.user_id,
+    )
+    .eq("skin_id", skinId)
+    .maybeSingle();
+
+  if (previousSkinEntitlementError) {
+    throw new Error(
+      `Unable to check existing portal skin access: ${previousSkinEntitlementError.message}`,
+    );
+  }
+
+  const wasSkinEnabled =
+    previousSkinEntitlement?.enabled ===
+    true;
+
   const now =
     new Date().toISOString();
 
@@ -1766,6 +1800,27 @@ export async function setCharacterPortalSkinEntitlement(
     throw new Error(
       `Unable to update portal skin access: ${entitlementError.message}`,
     );
+  }
+
+  if (
+    enabled &&
+    !wasSkinEnabled
+  ) {
+    try {
+      await createPremiumFeatureGrantNotification({
+        characterId,
+        createdBy: staff.userId,
+        title: `Premium feature unlocked: ${skin.name}`,
+        body:
+          `You have unlocked the ${skin.name} portal skin. You can select it from Appearance.`,
+        href: "/appearance",
+      });
+    } catch (notificationError) {
+      console.error(
+        "Portal skin was granted, but its notification could not be created:",
+        notificationError,
+      );
+    }
   }
 
   if (!enabled) {
@@ -1850,6 +1905,7 @@ export async function setCharacterPortalSkinEntitlement(
     `/admin/characters/${characterId}`,
   );
   revalidatePath("/appearance");
+  revalidatePath("/", "layout");
 }
 
 
@@ -1904,6 +1960,31 @@ export async function setCharacterFeatureEntitlement(
     );
   }
 
+  const {
+    data: previousFeatureEntitlement,
+    error: previousFeatureEntitlementError,
+  } = await admin
+    .from(
+      "character_feature_entitlements",
+    )
+    .select("enabled")
+    .eq("character_id", characterId)
+    .eq(
+      "feature_key",
+      featureKeyRaw,
+    )
+    .maybeSingle();
+
+  if (previousFeatureEntitlementError) {
+    throw new Error(
+      `Unable to check existing feature access: ${previousFeatureEntitlementError.message}`,
+    );
+  }
+
+  const wasFeatureEnabled =
+    previousFeatureEntitlement?.enabled ===
+    true;
+
   const now = new Date().toISOString();
 
   const { error } = await admin
@@ -1930,6 +2011,38 @@ export async function setCharacterFeatureEntitlement(
     );
   }
 
+  if (
+    enabled &&
+    !wasFeatureEnabled
+  ) {
+    const featureName =
+      CHARACTER_FEATURE_NAMES[
+        featureKeyRaw as CharacterFeatureKey
+      ];
+
+    try {
+      await createPremiumFeatureGrantNotification({
+        characterId,
+        createdBy: staff.userId,
+        title:
+          `Premium feature unlocked: ${featureName}`,
+        body:
+          `You now have access to ${featureName}.`,
+        href:
+          featureKeyRaw ===
+          "friend_list"
+            ? "/friends"
+            : "/game",
+      });
+    } catch (notificationError) {
+      console.error(
+        "Premium feature was granted, but its notification could not be created:",
+        notificationError,
+      );
+    }
+  }
+
   revalidatePath(`/admin/characters/${characterId}`);
+  revalidatePath("/", "layout");
 }
 

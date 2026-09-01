@@ -26,6 +26,7 @@ type Props = CharacterMusicPayload & {
 
 type CurrentMusicResponse = {
   locationName: string | null;
+  ownedTrackIds: string[];
   music: CharacterMusicPayload | null;
 };
 
@@ -165,25 +166,30 @@ export default function RoomMusicPlayer({
       ],
     );
 
-  const personalAvailable =
-    ownedTracks.length > 0;
+  const personalTrack =
+    selectedOwned ??
+    ownedTracks[0] ??
+    null;
 
-  const effectivePersonal =
-    usePersonal &&
-    personalAvailable &&
-    selectedOwned !== null;
+  const personalAvailable =
+    personalTrack !== null;
 
   /*
-   * Personal music is an override for a location
-   * that has music. No location track = silence.
+   * Personal music can be used in any active
+   * location. When the location has no assigned
+   * music, an owned personal track becomes the
+   * available music source automatically.
    */
+  const effectivePersonal =
+    personalAvailable &&
+    (usePersonal ||
+      locationTrack === null);
+
   const activeTrack:
     | PlayableMusicTrack
-    | null = locationTrack
-      ? effectivePersonal
-        ? selectedOwned
-        : locationTrack
-      : null;
+    | null = effectivePersonal
+      ? personalTrack
+      : locationTrack;
 
   async function persist(
     next: {
@@ -511,9 +517,17 @@ export default function RoomMusicPlayer({
         const known =
           locationTrack?.id ?? "";
 
+        const knownOwned =
+          ownedTracks
+            .map((track) => track.id)
+            .sort()
+            .join(",");
+
         const response = await fetch(
           `/api/music/current?known=${encodeURIComponent(
             known,
+          )}&knownOwned=${encodeURIComponent(
+            knownOwned,
           )}`,
           {
             cache: "no-store",
@@ -532,7 +546,47 @@ export default function RoomMusicPlayer({
 
         if (cancelled) return;
 
-        if (!data.music?.locationTrack) {
+        const currentOwnedIds =
+          new Set(
+            data.ownedTrackIds ?? [],
+          );
+
+        setOwnedTracks(
+          (current) => {
+            const currentIds =
+              current
+                .map(
+                  (track) =>
+                    track.id,
+                )
+                .sort()
+                .join(",");
+
+            const incomingIds =
+              [...currentOwnedIds]
+                .sort()
+                .join(",");
+
+            if (
+              currentIds ===
+              incomingIds
+            ) {
+              return current;
+            }
+
+            /*
+             * A changed ownership set is always
+             * accompanied by fresh signed tracks.
+             * Empty means the entitlement was revoked.
+             */
+            return (
+              data.music?.ownedTracks ??
+              []
+            );
+          },
+        );
+
+        if (!data.music) {
           const audio =
             audioRef.current;
 
@@ -547,6 +601,44 @@ export default function RoomMusicPlayer({
           setPlaying(false);
           setExpanded(false);
           setLocationTrack(null);
+          return;
+        }
+
+        if (!data.music.locationTrack) {
+          /*
+           * Location music was removed/disabled.
+           * Preserve personal music for premium
+           * owners; only stop the outgoing location
+           * track itself.
+           */
+          if (locationTrack) {
+            const audio =
+              audioRef.current;
+
+            if (audio) {
+              savePosition(
+                locationTrack.id,
+                audio.currentTime,
+              );
+              audio.pause();
+            }
+          }
+
+          setLocationTrack(null);
+
+          if (
+            data.music.ownedTracks.length > 0
+          ) {
+            setOwnedTracks(
+              data.music.ownedTracks,
+            );
+          }
+
+          if (ownedTracks.length === 0) {
+            setPlaying(false);
+            setExpanded(false);
+          }
+
           return;
         }
 
@@ -627,6 +719,10 @@ export default function RoomMusicPlayer({
   }, [
     locationTrack?.id,
     activeTrack?.id,
+    ownedTracks
+      .map((track) => track.id)
+      .sort()
+      .join(","),
   ]);
 
   useEffect(() => {
@@ -779,7 +875,10 @@ export default function RoomMusicPlayer({
     });
   }
 
-  if (!locationTrack) {
+  if (
+    !locationTrack &&
+    !personalAvailable
+  ) {
     return (
       <audio
         ref={audioRef}
@@ -933,8 +1032,13 @@ export default function RoomMusicPlayer({
                 }
                 className="w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-0d0907))] px-2.5 py-2 text-[9px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-d4bea0))] outline-none focus:border-[rgb(var(--sep-colour-80613b))]"
               >
-                <option value="location">
-                  Location Music
+                <option
+                  value="location"
+                  disabled={!locationTrack}
+                >
+                  {locationTrack
+                    ? "Location Music"
+                    : "Location Music — None"}
                 </option>
                 <option value="personal">
                   My Music

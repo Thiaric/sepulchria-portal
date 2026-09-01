@@ -858,20 +858,36 @@ export function NotificationBell() {
                               effectiveHref!
                             }
                             onClick={(event) => {
-                              const modalPayload =
-                                modalPayloadForNotificationHref(
-                                  effectiveHref!,
-                                );
+  if (
+    effectiveHref ===
+    "/appearance"
+  ) {
+    event.preventDefault();
 
-                              if (modalPayload) {
-                                event.preventDefault();
-                                openPortalModal(
-                                  modalPayload,
-                                );
-                              }
+    window.dispatchEvent(
+      new Event(
+        "sepulchria:open-portal-appearance",
+      ),
+    );
 
-                              setOpen(false);
-                            }}
+    setOpen(false);
+    return;
+  }
+
+  const modalPayload =
+    modalPayloadForNotificationHref(
+      effectiveHref!,
+    );
+
+  if (modalPayload) {
+    event.preventDefault();
+    openPortalModal(
+      modalPayload,
+    );
+  }
+
+  setOpen(false);
+}}
                             className={
                               className
                             }
