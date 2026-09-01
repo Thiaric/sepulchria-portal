@@ -57,6 +57,8 @@ const dragging =
 const suppressClick =
   useRef(false);
 
+  const MOBILE_CONTEXT_BUTTON_MIN_TOP = 70;
+
   const [adminRevision, setAdminRevision] =
     useState(0);
 
@@ -166,22 +168,22 @@ const suppressClick =
       Number.isFinite(value)
     ) {
       const maxTop =
-        Math.max(
-          8,
-          window.innerHeight -
-            44 -
-            76,
-        );
+  Math.max(
+    MOBILE_CONTEXT_BUTTON_MIN_TOP,
+    window.innerHeight -
+      44 -
+      76,
+  );
 
-      setMobileButtonTop(
-        Math.max(
-          8,
-          Math.min(
-            value,
-            maxTop,
-          ),
-        ),
-      );
+setMobileButtonTop(
+  Math.max(
+    MOBILE_CONTEXT_BUTTON_MIN_TOP,
+    Math.min(
+      value,
+      maxTop,
+    ),
+  ),
+);
     }
   }
 
@@ -194,7 +196,7 @@ const suppressClick =
 
         const maxTop =
           Math.max(
-            8,
+            MOBILE_CONTEXT_BUTTON_MIN_TOP,
             window.innerHeight -
               44 -
               76,
@@ -352,22 +354,22 @@ const suppressClick =
     }
 
     const maxTop =
-      Math.max(
-        8,
-        window.innerHeight -
-          44 -
-          76,
-      );
+  Math.max(
+    MOBILE_CONTEXT_BUTTON_MIN_TOP,
+    window.innerHeight -
+      44 -
+      76,
+  );
 
-    const nextTop =
-      Math.max(
-        8,
-        Math.min(
-          dragStartTop.current +
-            delta,
-          maxTop,
-        ),
-      );
+const nextTop =
+  Math.max(
+    MOBILE_CONTEXT_BUTTON_MIN_TOP,
+    Math.min(
+      dragStartTop.current +
+        delta,
+      maxTop,
+    ),
+  );
 
     setMobileButtonTop(
       nextTop,
