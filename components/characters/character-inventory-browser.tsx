@@ -1231,6 +1231,9 @@ function EquipmentSlotCard({
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState("");
 
+  const [mobileItem, setMobileItem] =
+  useState<InventoryBrowserRow | null>(null);
+
   const opensUp =
   slot === "feet" ||
   slot === "legs" ||
@@ -1262,46 +1265,96 @@ const isRightSide =
     ) ?? null;
 
   return (
-    <div className={`relative border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-120d09))]/95 p-2.5 shadow-[0_8px_24px_rgba(var(--sep-rgb-0-0-0),0.18)] ${
-  open ? "z-[80]" : "z-0"
-}`}>
+    <div
+  className={`group/slot relative border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-120d09))]/95 p-2.5 shadow-[0_8px_24px_rgba(var(--sep-rgb-0-0-0),0.18)] ${
+    open ? "z-[400]" : "z-0"
+  } hover:z-[350] focus-within:z-[350]`}
+>
       <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-876f4f))]">
         {SLOT_LABELS[slot]}
       </p>
 
       {sorted.length ? (
         <div className="mt-2 space-y-2">
-          {sorted.map((row) => (
-            <div
-              key={`${row.record_kind}-${row.record_id}`}
-              className="flex items-center gap-2 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-2 first:border-t-0 first:pt-0"
-            >
-              <ItemThumbnail row={row} size="small" />
+         {sorted.map((row) => (
+  <div
+    key={`${row.record_kind}-${row.record_id}`}
+    className="group/equipped relative flex items-center gap-2 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-2 first:border-t-0 first:pt-0"
+  >
+    <button
+  type="button"
+  onClick={() =>
+    setMobileItem(row)
+  }
+  className="flex min-w-0 flex-1 cursor-help items-center gap-2 text-left outline-none md:cursor-help"
+>
+      <ItemThumbnail
+        row={row}
+        size="small"
+      />
 
-              <div className="min-w-0 flex-1">
-                <p className="truncate font-serif text-[12px] text-[rgb(var(--sep-colour-d8c095))]">
-                  {row.name}
-                </p>
-                <p className="mt-0.5 text-[6px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756957))]">
-                  {titleCase(row.equipped_layer ?? "equipped")}
-                </p>
-              </div>
+      <div className="min-w-0 flex-1">
+        <p className="truncate font-serif text-[12px] text-[rgb(var(--sep-colour-d8c095))]">
+          {row.name}
+        </p>
 
-              {own ? (
-                <form action={unequipInventoryItem}>
-                  <input type="hidden" name="recordKind" value={row.record_kind} />
-                  <input type="hidden" name="recordId" value={row.record_id} />
-                  <button
-                    type="submit"
-                    title={`Unequip ${row.name}`}
-                    className="px-1 text-[13px] text-[rgb(var(--sep-colour-806d55))] transition hover:text-[rgb(var(--sep-colour-d7b77f))]"
-                  >
-                    ×
-                  </button>
-                </form>
-              ) : null}
-            </div>
-          ))}
+        <p className="mt-0.5 text-[6px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756957))]">
+          {titleCase(
+            row.equipped_layer ??
+              "equipped",
+          )}
+        </p>
+      </div>
+
+      <div
+        className={[
+          "pointer-events-none absolute z-[500] hidden w-[420px] max-w-[calc(100vw-32px)]",
+          "hidden md:group-hover/equipped:block md:group-focus-within/equipped:block",
+          opensUp
+            ? "bottom-full mb-2"
+            : "top-full mt-2",
+          isRightSide
+            ? "right-0"
+            : "left-0",
+        ].join(" ")}
+      >
+        <div className="pointer-events-auto shadow-[0_20px_55px_rgba(var(--sep-rgb-0-0-0),0.6)]">
+          <ItemCard
+            row={row}
+            containers={[]}
+            characterName=""
+            own={false}
+            useTargets={[]}
+          />
+        </div>
+      </div>
+    </button>
+
+    {own ? (
+      <form action={unequipInventoryItem}>
+        <input
+          type="hidden"
+          name="recordKind"
+          value={row.record_kind}
+        />
+
+        <input
+          type="hidden"
+          name="recordId"
+          value={row.record_id}
+        />
+
+        <button
+          type="submit"
+          title={`Unequip ${row.name}`}
+          className="px-1 text-[13px] text-[rgb(var(--sep-colour-806d55))] transition hover:text-[rgb(var(--sep-colour-d7b77f))]"
+        >
+          ×
+        </button>
+      </form>
+    ) : null}
+  </div>
+))}
         </div>
       ) : own ? (
         <div className="relative mt-2">
@@ -1360,11 +1413,54 @@ const isRightSide =
             </div>
           ) : null}
         </div>
-      ) : (
+            ) : (
         <p className="mt-2 text-[9px] italic text-[rgb(var(--sep-colour-665b4c))]">
           Empty
         </p>
       )}
+
+      {mobileItem ? (
+        <>
+          <button
+            type="button"
+            aria-label="Close item details"
+            onClick={() =>
+              setMobileItem(null)
+            }
+            className="fixed inset-0 z-[900] bg-black/75 backdrop-blur-[2px] md:hidden"
+          />
+
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label={`${mobileItem.name} details`}
+            className="fixed inset-x-3 top-1/2 z-[910] max-h-[calc(100dvh-32px)] -translate-y-1/2 overflow-hidden md:hidden"
+          >
+            <div className="relative max-h-[calc(100dvh-32px)] overflow-y-auto border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0e0a08))] shadow-[0_24px_70px_rgba(var(--sep-rgb-0-0-0),0.75)]">
+              <button
+                type="button"
+                aria-label="Close item details"
+                onClick={() =>
+                  setMobileItem(null)
+                }
+                className="sticky top-2 z-[920] ml-auto mr-2 mt-2 flex h-9 w-9 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-17120f))] text-lg text-[rgb(var(--sep-colour-bca47e))]"
+              >
+                ×
+              </button>
+
+              <div className="-mt-11 pt-11">
+                <ItemCard
+                  row={mobileItem}
+                  containers={[]}
+                  characterName=""
+                  own={false}
+                  useTargets={[]}
+                />
+              </div>
+            </div>
+          </div>
+        </>
+      ) : null}
     </div>
   );
 }
@@ -1539,6 +1635,8 @@ function EquipmentFigure({
             </div>
           ),
         )}
+
+        
       </div>
 
       <div className="grid gap-2 p-3 sm:grid-cols-2 md:hidden">

@@ -10,6 +10,7 @@ export type AdminSection =
   | "areas"
   | "associations"
   | "codex"
+  | "cosmetics"
   | "characters"
   | "events"
   | "experience"
@@ -50,6 +51,7 @@ export const ADMIN_SECTION_ROLES: Record<
   areas: ["owner"],
   associations: ["owner"],
   codex: ["owner", "admin"],
+  cosmetics: ["owner"],
   characters: ["owner", "admin", "moderator", "master"],
   events: ["owner", "admin", "master"],
   experience: ["owner", "admin"],

@@ -16,6 +16,7 @@ import { HouseOfChancesContextPanel } from "@/components/admin/house-of-chances-
 import { GatheringContextPanel } from "@/components/admin/gathering-context-panel";
 import { ExperienceContextPanel } from "@/components/admin/experience-context-panel";
 import { MusicContextPanel } from "@/components/admin/music-context-panel";
+import { CosmeticsContextPanel } from "@/components/admin/cosmetics-context-panel";
 import { AdminCharacterPremiumFeaturesContext } from "@/components/admin/admin-character-premium-features-context";
 import {
   canAccessAdminSection,
@@ -48,6 +49,7 @@ type ContextMode =
   | "character_detail"
   | "character_premium_features"
   | "codex"
+  | "cosmetics"
   | "media"
   | "notifications"
   | "polls"
@@ -130,6 +132,10 @@ function getMode(
 
   if (pathname === "/admin/codex") {
     return "codex";
+  }
+
+  if (pathname === "/admin/cosmetics") {
+    return "cosmetics";
   }
 
   if (pathname === "/admin/media") {
@@ -236,6 +242,12 @@ export function AdminContextPanel({
   if (mode === "codex") {
     return (
       <AdminCodexNavigatorContext />
+    );
+  }
+
+  if (mode === "cosmetics") {
+    return (
+      <CosmeticsContextPanel />
     );
   }
 
@@ -1873,6 +1885,7 @@ const ADMIN_NAVIGATION_ENTRIES: AdminNavigationEntry[] = [
   { section: "character_logs", label: "Character Log", href: "/admin/character-audit", aliases: ["audit"] },
   { section: "characters", label: "Characters", href: "/admin/characters" },
   { section: "codex", label: "Codex", href: "/admin/codex" },
+  { section: "cosmetics", label: "Cosmetics", href: "/admin/cosmetics", aliases: ["frames", "appearance"] },
   { section: "items", label: "Crafting Recipes", href: "/admin/crafting-recipes", aliases: ["recipes", "crafting"] },
   { section: "missions", label: "Daily Missions", href: "/admin/missions", aliases: ["missions", "daily"] },
   { section: "events", label: "Events", href: "/admin/events" },
