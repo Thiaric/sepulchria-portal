@@ -200,6 +200,15 @@ const privateLocationItem: NavigationItem = {
   activePaths: ["/private-locations"],
 };
 
+const cosmeticsItem: NavigationItem = {
+  label: "Cosmetics",
+  title:
+    "Manage your owned character and chat cosmetics.",
+  icon: "/icons/premium.png",
+  href: "/cosmetics",
+  activePaths: ["/cosmetics"],
+};
+
 const friendsItem: NavigationItem = {
   label: "Friend List",
   title:
@@ -577,6 +586,48 @@ export function PortalSidebar({
     setHasPrivateLocationAccess,
   ] = useState(false);
 
+  const [
+    hasCosmetics,
+    setHasCosmetics,
+  ] = useState(false);
+
+  const refreshCosmeticsAccess =
+    useCallback(async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (!user) {
+        setHasCosmetics(false);
+        return;
+      }
+
+      const { data: character } = await supabase
+        .from("characters")
+        .select("id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (!character) {
+        setHasCosmetics(false);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("character_cosmetic_entitlements")
+        .select("cosmetic_item_id")
+        .eq("character_id", character.id)
+        .eq("enabled", true)
+        .limit(1);
+
+      if (error) {
+        console.error("Unable to check Cosmetic access:", error);
+        setHasCosmetics(false);
+        return;
+      }
+
+      setHasCosmetics((data ?? []).length > 0);
+    }, []);
+
   const refreshPrivateLocationAccess =
     useCallback(async () => {
       const supabase =
@@ -804,6 +855,28 @@ export function PortalSidebar({
         ),
       );
     }, []);
+
+  useEffect(() => {
+    void refreshCosmeticsAccess();
+
+    function handleFocus() {
+      void refreshCosmeticsAccess();
+    }
+
+    function handleVisibility() {
+      if (document.visibilityState === "visible") {
+        void refreshCosmeticsAccess();
+      }
+    }
+
+    window.addEventListener("focus", handleFocus);
+    document.addEventListener("visibilitychange", handleVisibility);
+
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+      document.removeEventListener("visibilitychange", handleVisibility);
+    };
+  }, [refreshCosmeticsAccess]);
 
   useEffect(() => {
     void refreshPrivateLocationAccess();
@@ -1728,6 +1801,7 @@ export function PortalSidebar({
 
   function renderPremiumMenu() {
     const visible =
+      hasCosmetics ||
       hasFriendListFeature ||
       hasPrivateLocationAccess;
 
@@ -1736,6 +1810,10 @@ export function PortalSidebar({
     }
 
     const active =
+      isActive(
+        cosmeticsItem.activePaths,
+        cosmeticsItem,
+      ) ||
       modalItem?.href ===
         friendsItem.href ||
       isActive(
@@ -1810,6 +1888,13 @@ export function PortalSidebar({
             id="premium-submenu"
             className="mt-1 border-l border-[rgb(var(--sep-colour-60482e))]/40 pl-2"
           >
+            {hasCosmetics
+              ? renderNavigationItem({
+                  ...cosmeticsItem,
+                  subItem: true,
+                })
+              : null}
+
             {hasFriendListFeature
               ? renderNavigationItem({
                   ...friendsItem,

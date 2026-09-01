@@ -219,7 +219,7 @@ export async function setCharacterCosmeticEntitlement(
           `Premium cosmetic unlocked: ${cosmetic.name}`,
         body:
           `You have unlocked the ${cosmetic.name} ${typeLabel}. You can equip it from your Cosmetics collection once available.`,
-        href: null,
+        href: "/cosmetics",
       });
     } catch (
       notificationError
