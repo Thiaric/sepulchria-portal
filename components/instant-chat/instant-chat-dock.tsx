@@ -90,6 +90,12 @@ export function InstantChatDock({
   const openChatRef =
     useRef<OpenChat | null>(null);
 
+  const lastAutoScrolledConversationRef =
+    useRef<string | null>(null);
+
+  const lastAutoScrolledMessageIdRef =
+    useRef<string | null>(null);
+
   useEffect(() => {
     openChatRef.current = openChat;
   }, [openChat]);
@@ -597,6 +603,34 @@ export function InstantChatDock({
     ) {
       return;
     }
+
+    const lastMessageId =
+      messages.length > 0
+        ? messages[
+            messages.length - 1
+          ].id
+        : null;
+
+    const conversationChanged =
+      lastAutoScrolledConversationRef.current !==
+      openChat.conversationId;
+
+    const lastMessageChanged =
+      lastAutoScrolledMessageIdRef.current !==
+      lastMessageId;
+
+    if (
+      !conversationChanged &&
+      !lastMessageChanged
+    ) {
+      return;
+    }
+
+    lastAutoScrolledConversationRef.current =
+      openChat.conversationId;
+
+    lastAutoScrolledMessageIdRef.current =
+      lastMessageId;
 
     window.requestAnimationFrame(
       () => {
