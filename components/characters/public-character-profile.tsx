@@ -19,7 +19,7 @@ import { LiveCharacterPresence } from "@/components/characters/live-character-pr
 import { PublicCharacterAgeDetail } from "@/components/characters/public-character-age-detail";
 import { PublicCharacterOrder } from "@/components/characters/public-character-order";
 import { CharacterProfileReportButton } from "@/components/reports/character-profile-report-button";
-import { CosmeticFrameOverlay } from "@/components/cosmetics/cosmetic-frame-overlay";
+import { cosmeticFrameStyle } from "@/components/cosmetics/cosmetic-frame-overlay";
 import type {
   PublicCharacterProfile,
   PublicCodexReference,
@@ -224,7 +224,13 @@ export function PublicCharacterProfileView({
         </div>
       </div>
 
-      <div className="relative isolate">
+      <div
+        className="relative isolate"
+        style={cosmeticFrameStyle(
+          sheetFrameUrl,
+          "sheet",
+        )}
+      >
         <CharacterSheetTabs
         showAudit={viewerIsStaff}
         activeTab={activeTab}
@@ -504,10 +510,6 @@ export function PublicCharacterProfileView({
           ) : null}
         </div>
         </CharacterSheetTabs>
-
-        <CosmeticFrameOverlay
-          assetUrl={sheetFrameUrl}
-        />
       </div>
     </article>
   );

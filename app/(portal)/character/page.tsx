@@ -26,7 +26,7 @@ import { DisplayTrophySelector } from "@/components/characters/display-trophy-se
 import { LiveCharacterSheetRefresh } from "@/components/characters/live-character-sheet-refresh";
 import { getEffectiveCharacterAttributes } from "@/lib/characters/get-effective-character-attributes";
 import { createClient } from "@/lib/supabase/server";
-import { CosmeticFrameOverlay } from "@/components/cosmetics/cosmetic-frame-overlay";
+import { cosmeticFrameStyle } from "@/components/cosmetics/cosmetic-frame-overlay";
 import { getEquippedCosmetic } from "@/lib/cosmetics/get-equipped-cosmetic";
 
 type CharacterStatus =
@@ -409,7 +409,13 @@ export function Profile({
           </div>
         </div>
 
-        <div className="relative isolate">
+        <div
+          className="relative isolate"
+          style={cosmeticFrameStyle(
+            sheetFrameUrl,
+            "sheet",
+          )}
+        >
           <CharacterSheetTabs own={own} activeTab={activeTab}
           cacheKey={character.id ?? "own"}
 >
@@ -893,10 +899,6 @@ export function Profile({
             ) : null}
           </div>
           </CharacterSheetTabs>
-
-          <CosmeticFrameOverlay
-            assetUrl={sheetFrameUrl}
-          />
         </div>
       </div>
     </div>

@@ -11,7 +11,7 @@ import Link from "next/link";
 import { CharacterOrderIdentity } from "@/components/characters/character-order-identity";
 import { ReportButton } from "@/components/reports/report-button";
 import { PriceTooltip } from "@/components/warping/price-tooltip";
-import { CosmeticFrameOverlay } from "@/components/cosmetics/cosmetic-frame-overlay";
+import { cosmeticFrameStyle } from "@/components/cosmetics/cosmetic-frame-overlay";
 import { createClient } from "@/lib/supabase/client";
 import {
   ROOM_HISTORY_HOURS,
@@ -1986,12 +1986,18 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                       ] ?? null
                     : null;
 
+                const chatFrameCss =
+                  cosmeticFrameStyle(
+                    chatFrameUrl,
+                    "chat",
+                  );
+
                 return (
                   <article
                     key={item.id}
                     className={`relative flex min-w-0 gap-3 py-3 pl-5 pr-12 sm:pl-7 sm:pr-12 ${
                       chatFrameUrl
-                        ? "isolate overflow-hidden "
+                        ? "isolate "
                         : ""
                     }${
                       isMechanicalAction
@@ -2002,20 +2008,16 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                             ? "bg-red-950/10"
                             : ""
                     }`}
-                    style={
-                      privateLocationTheme
+                    style={{
+                      ...(privateLocationTheme
                         ? {
                             backgroundColor:
                               privateLocationTheme.backgroundColour,
                           }
-                        : undefined
-                    }
+                        : {}),
+                      ...(chatFrameCss ?? {}),
+                    }}
                   >
-                    <CosmeticFrameOverlay
-                      assetUrl={chatFrameUrl}
-                      layer="background"
-                    />
-
                     {item.character_id &&
                     item.character_id !== viewerCharacterId ? (
                       <div className="absolute right-2 top-2 z-10">

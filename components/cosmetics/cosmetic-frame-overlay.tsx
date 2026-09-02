@@ -1,35 +1,44 @@
-type CosmeticFrameOverlayProps = {
-  assetUrl:
-    | string
-    | null
-    | undefined;
-  layer?:
-    | "front"
-    | "background";
-};
+import type { CSSProperties } from "react";
 
-export function CosmeticFrameOverlay({
-  assetUrl,
-  layer = "front",
-}: CosmeticFrameOverlayProps) {
+export type CosmeticFrameVariant =
+  | "sheet"
+  | "chat";
+
+export function cosmeticFrameStyle(
+  assetUrl: string | null | undefined,
+  variant: CosmeticFrameVariant,
+): CSSProperties | undefined {
   if (!assetUrl) {
-    return null;
+    return undefined;
   }
 
-  return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src={assetUrl}
-      alt=""
-      aria-hidden="true"
-      draggable={false}
-      className={[
-        "pointer-events-none absolute inset-0 h-full w-full select-none object-fill",
-        layer ===
-        "front"
-          ? "z-20"
-          : "z-[1]",
-      ].join(" ")}
-    />
-  );
+  const safeUrl = assetUrl.replace(/"/g, "%22");
+
+  if (variant === "sheet") {
+    return {
+      boxSizing: "border-box",
+      borderStyle: "solid",
+      borderColor: "transparent",
+      borderWidth:
+        "clamp(20px, 2.6vw, 40px)",
+      borderImageSource:
+        `url("${safeUrl}")`,
+      borderImageSlice: "14% 9%",
+      borderImageWidth: "1",
+      borderImageRepeat: "stretch",
+    };
+  }
+
+  return {
+    boxSizing: "border-box",
+    borderStyle: "solid",
+    borderColor: "transparent",
+    borderWidth:
+      "clamp(9px, 0.9vw, 13px) clamp(11px, 1.2vw, 17px)",
+    borderImageSource:
+      `url("${safeUrl}")`,
+    borderImageSlice: "15% 9%",
+    borderImageWidth: "1",
+    borderImageRepeat: "stretch",
+  };
 }
