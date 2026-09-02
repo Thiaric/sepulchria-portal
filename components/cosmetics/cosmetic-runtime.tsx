@@ -512,67 +512,68 @@ export function CosmeticRuntime() {
 
       /* ---------------------------------------------------------------
        * WHISPER VEIL
-       * Purple transparent foreground + edge glow as in the concepts.
+       *
+       * ONE complete transparent PNG frames the entire whisper.
+       * The PNG is rendered once as a full-size overlay.
+       * Its transparent centre leaves the whisper content visible.
        * --------------------------------------------------------------- */
       [data-cosmetic-surface="whisper"] {
         position: relative;
         isolation: isolate;
+        overflow: visible;
       }
 
       [data-cosmetic-surface="whisper"][data-has-whisper-style="true"] {
-        border-left-color: rgba(173,114,220,.9) !important;
+        border-left-color: transparent !important;
+
         background:
           linear-gradient(
             100deg,
-            rgba(37,19,52,.82),
+            rgba(37,19,52,.80),
             rgba(25,18,40,.66) 55%,
             rgba(40,19,54,.74)
           ) !important;
+
         box-shadow:
-          inset 0 0 20px rgba(150,88,200,.10),
-          inset 0 1px 0 rgba(216,169,255,.08);
+          inset 0 0 20px rgba(150,88,200,.10);
       }
 
+      /*
+       * The complete uploaded frame PNG.
+       * Exactly ONE copy, covering the whole whisper article.
+       */
       [data-cosmetic-surface="whisper"][data-has-whisper-style="true"]::before {
         content: "";
         position: absolute;
-        z-index: 0;
+        z-index: 10;
+
         inset: 0;
+
         background-image:
-          linear-gradient(
-            to right,
-            rgba(179,106,221,.06),
-            transparent 25%,
-            transparent 72%,
-            rgba(179,106,221,.07)
-          ),
           var(--sep-cosmetic-whisper-style);
         background-position:
-          center,
           center;
         background-repeat:
-          no-repeat,
           no-repeat;
         background-size:
-          100% 100%,
           100% 100%;
-        opacity: .84;
+
         pointer-events: none;
         filter:
-          drop-shadow(0 0 6px rgba(155,91,207,.20));
+          drop-shadow(0 0 5px rgba(155,91,207,.20));
       }
 
+      /*
+       * No second copy. No bottom rail. No 9-slice.
+       */
       [data-cosmetic-surface="whisper"][data-has-whisper-style="true"]::after {
-        content: "";
-        position: absolute;
-        z-index: 1;
-        inset: 1px;
-        border: 1px solid rgba(174,112,218,.25);
-        box-shadow:
-          inset 0 0 12px rgba(147,79,190,.10);
-        pointer-events: none;
+        content: none;
       }
 
+      /*
+       * Content stays readable underneath the transparent centre.
+       * The frame itself remains visually above it.
+       */
       [data-cosmetic-surface="whisper"][data-has-whisper-style="true"] > * {
         position: relative;
         z-index: 2;
