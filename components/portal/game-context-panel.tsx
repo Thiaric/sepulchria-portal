@@ -382,12 +382,10 @@ export function GameContextPanel({
         <div className="flex shrink-0 items-center justify-between gap-3">
           <div className="min-w-0">
             <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-876a46))]">
-              Present characters
+              Present in this Location
             </p>
 
-            <h3 className="mt-0.5 font-serif text-lg text-[rgb(var(--sep-colour-d6bd91))]">
-              In this Location
-            </h3>
+            
           </div>
 
           <span className="flex h-6 min-w-6 shrink-0 items-center justify-center border border-[rgb(var(--sep-colour-59432c))]/50 bg-[rgb(var(--sep-colour-15100d))] px-1.5 text-[10px] text-[rgb(var(--sep-colour-a68b67))]">
@@ -523,7 +521,7 @@ export function GameContextPanel({
         <div className="flex items-end justify-between gap-3">
           <div>
             <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-876a46))]">
-              Available connections
+              Journey to...
             </p>
 
             

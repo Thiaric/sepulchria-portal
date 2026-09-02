@@ -439,6 +439,30 @@ export function CosmeticRuntime() {
           rgb(var(--sep-colour-090705) / 40%) !important;
       }
 
+      /*
+       * PROFILE BACKGROUND — COMPLETE PANEL TRANSPARENCY
+       *
+       * The requested sheet tabs contain additional dark surface tokens.
+       * Make their structural Sepulchria-colour surfaces 40% opaque
+       * (therefore 60% transparent) only on the requested tabs.
+       *
+       * Feats/gifts, Warping and Edit are intentionally not included.
+       */
+      [data-cosmetic-surface="sheet"][data-has-profile-background="true"]
+        :is(
+          [data-character-sheet-panel="short"],
+          [data-character-sheet-panel="profile"],
+          [data-character-sheet-panel="inventory"],
+          [data-character-sheet-panel="ledger"],
+          [data-character-sheet-panel="trophies"],
+          [data-character-sheet-panel="offgame"],
+          [data-character-sheet-panel="audit"]
+        )
+        :is(section, article, div)[class*="bg-[rgb(var(--sep-colour-"] {
+        background-color:
+          rgb(var(--sep-colour-090705) / 40%) !important;
+      }
+
       /* ---------------------------------------------------------------
        * SHARED ORNAMENTAL MESSAGE/POST SHELLS
        * --------------------------------------------------------------- */
