@@ -19,6 +19,7 @@ const SURFACE_RULES: Record<
   nameplate: ["nameplate", "profile_crest"],
   action: ["action_style", "action_flourish"],
   whisper: ["whisper_style"],
+  "off-character": ["off_character_message_frame"],
   pm: ["pm_frame"],
   instant: ["instant_chat_frame"],
   forum: ["forum_frame"],
@@ -575,6 +576,49 @@ export function CosmeticRuntime() {
        * The frame itself remains visually above it.
        */
       [data-cosmetic-surface="whisper"][data-has-whisper-style="true"] > * {
+        position: relative;
+        z-index: 2;
+      }
+
+
+      /* ---------------------------------------------------------------
+       * OFF-CHARACTER MESSAGE FRAME
+       * One complete transparent PNG over the whole OOC // message,
+       * using the same rendering model as Whisper Veil.
+       * --------------------------------------------------------------- */
+      [data-cosmetic-surface="off-character"] {
+        position: relative;
+        isolation: isolate;
+        overflow: visible;
+      }
+
+      [data-cosmetic-surface="off-character"][data-has-off-character-message-frame="true"] {
+        border-left-color: transparent !important;
+      }
+
+      [data-cosmetic-surface="off-character"][data-has-off-character-message-frame="true"]::before {
+        content: "";
+        position: absolute;
+        z-index: 10;
+        inset: 0;
+        background-image:
+          var(--sep-cosmetic-off-character-message-frame);
+        background-position:
+          center;
+        background-repeat:
+          no-repeat;
+        background-size:
+          101% 100%;
+        pointer-events: none;
+        filter:
+          drop-shadow(0 0 5px rgba(98,127,159,.20));
+      }
+
+      [data-cosmetic-surface="off-character"][data-has-off-character-message-frame="true"]::after {
+        content: none;
+      }
+
+      [data-cosmetic-surface="off-character"][data-has-off-character-message-frame="true"] > * {
         position: relative;
         z-index: 2;
       }

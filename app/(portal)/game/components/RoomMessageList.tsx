@@ -1795,7 +1795,7 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                     <article
                       key={item.id}
                       data-cosmetic-character-id={item.character_id}
-                      data-cosmetic-surface={isWhisper ? "whisper" : undefined}
+                      data-cosmetic-surface={isWhisper ? "whisper" : "off-character"}
                       className={`relative flex gap-3 py-3 pl-5 pr-12 sm:pl-7 sm:pr-12 ${
                         isOutOfCharacter
                           ? "border-l-2 border-[#627f9f] bg-[#182536]/55"

@@ -11,6 +11,7 @@ export const COSMETIC_CATEGORIES = [
   "profile_crest",
   "action_flourish",
   "whisper_style",
+  "off_character_message_frame",
   "header_control_frame",
   "left_panel_frame",
   "right_panel_frame",
@@ -35,6 +36,7 @@ export const PUBLIC_COSMETIC_CATEGORIES = [
   "profile_crest",
   "action_flourish",
   "whisper_style",
+  "off_character_message_frame",
 ] as const satisfies readonly CosmeticCategory[];
 
 export const PORTAL_ONLY_COSMETICS = [
@@ -63,6 +65,7 @@ export const COSMETIC_LABELS:
   profile_crest: "Profile Crest / Sigil",
   action_flourish: "Action Flourish",
   whisper_style: "Whisper Veil",
+  off_character_message_frame: "Off-Character Message Frame",
   header_control_frame: "Header Control Frame",
   left_panel_frame: "Left Panel Frame",
   right_panel_frame: "Right Panel Frame",
@@ -85,6 +88,7 @@ export const COSMETIC_PREFERENCE_COLUMN:
   profile_crest: "equipped_profile_crest_id",
   action_flourish: "equipped_action_flourish_id",
   whisper_style: "equipped_whisper_style_id",
+  off_character_message_frame: "equipped_off_character_message_frame_id",
   header_control_frame: "equipped_header_control_frame_id",
   left_panel_frame: "equipped_left_panel_frame_id",
   right_panel_frame: "equipped_right_panel_frame_id",
