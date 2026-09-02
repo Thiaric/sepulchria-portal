@@ -408,21 +408,46 @@ export function CosmeticRuntime() {
 
       /* ---------------------------------------------------------------
        * PROFILE BACKGROUND
-       * Decorative texture stays behind the existing sheet UI.
+       *
+       * The artwork is its own layer INSIDE the sheet-frame border.
+       * This makes a 2400×1600 profile background align with the same
+       * inner rectangle as the equipped sheet frame, instead of being
+       * painted underneath the border itself.
+       *
+       * Only panel BACKGROUNDS become translucent. We never set opacity
+       * on a content container, so text/icons/borders remain fully opaque.
        * --------------------------------------------------------------- */
       [data-cosmetic-surface="sheet"][data-has-profile-background="true"] {
         position: relative;
         isolation: isolate;
+        background: transparent !important;
+      }
+
+      [data-cosmetic-surface="sheet"][data-has-profile-background="true"]::before {
+        content: "";
+        position: absolute;
+        z-index: -1;
+        inset: 0;
         background-image:
           linear-gradient(
-            rgba(4,7,13,.62),
-            rgba(4,7,13,.72)
+            rgba(4,7,13,.16),
+            rgba(4,7,13,.24)
           ),
           var(--sep-cosmetic-profile-background);
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
-        background-blend-mode: normal;
+        pointer-events: none;
+      }
+
+      [data-cosmetic-surface="sheet"][data-has-profile-background="true"]
+        :is(section, article, div)[class*="bg-[rgb(var(--sep-colour-17110d))]"],
+      [data-cosmetic-surface="sheet"][data-has-profile-background="true"]
+        :is(section, article, div)[class*="bg-[rgb(var(--sep-colour-15100d))]"],
+      [data-cosmetic-surface="sheet"][data-has-profile-background="true"]
+        :is(section, article, div)[class*="bg-[rgb(var(--sep-colour-120e0b))]"] {
+        background-color:
+          rgb(var(--sep-colour-090705) / 40%) !important;
       }
 
       /* ---------------------------------------------------------------
