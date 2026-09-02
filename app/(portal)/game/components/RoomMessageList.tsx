@@ -651,7 +651,7 @@ function renderMechanicalText(
     formatMechanicalDisplayText(item);
 
   return (
-    <>
+    <span data-room-mechanical-action="true">
       {text
         .split(/(\[[^\]]+\])/g)
         .filter(Boolean)
@@ -682,7 +682,7 @@ function renderMechanicalText(
             </span>
           );
         })}
-    </>
+    </span>
   );
 }
 

@@ -20338,3 +20338,88 @@ section[role="dialog"][aria-label="More Sepulchria navigation"] {
   border-top-left-radius: 18px !important;
   border-top-right-radius: 18px !important;
 }
+
+/* SEPULCHRIA KARESHI-LOGIC SEMANTIC SKIN ROLES — 84096e0 */
+
+/*
+ * Kareshi's successful structural rule, applied to the other skins:
+ * existing background/surface family + two distinct foreground families.
+ * C1 = icons / accents / labels / character actions.
+ * C2 = spoken prose / hover / illumination.
+ * sepulchria and moonlit are intentionally not redefined.
+ */
+
+[data-portal-skin="vellum"] {
+  --sep-skin-c1: 107 35 50;
+  --sep-skin-c2: 23 21 19;
+}
+
+[data-portal-skin="aelari-dawn"] {
+  --sep-skin-c1: 141 39 28;
+  --sep-skin-c2: 181 84 32;
+}
+
+[data-portal-skin="ashen"] {
+  --sep-skin-c1: 23 75 56;
+  --sep-skin-c2: 24 47 56;
+}
+
+[data-portal-skin="dwarven-deep"] {
+  --sep-skin-c1: 91 56 35;
+  --sep-skin-c2: 21 19 17;
+}
+
+[data-portal-skin="mortal-hearth"] {
+  --sep-skin-c1: 86 54 39;
+  --sep-skin-c2: 23 24 25;
+}
+
+[data-portal-skin="wolfs-moon"] {
+  --sep-skin-c1: 112 80 59;
+  --sep-skin-c2: 20 47 72;
+}
+
+[data-portal-skin="amethyst-veil"] {
+  --sep-skin-c1: 201 154 76;
+  --sep-skin-c2: 196 174 199;
+}
+
+[data-portal-skin="ivory-archive"] {
+  --sep-skin-c1: 169 183 194;
+  --sep-skin-c2: 238 231 220;
+}
+
+[data-portal-skin="rose-nocturne"] {
+  --sep-skin-c1: 198 124 105;
+  --sep-skin-c2: 226 179 172;
+}
+
+[data-portal-skin="verdant-reliquary"] {
+  --sep-skin-c1: 147 201 136;
+  --sep-skin-c2: 228 219 158;
+}
+
+[data-portal-skin="deepwater"] {
+  --sep-skin-c1: 239 182 127;
+  --sep-skin-c2: 215 238 229;
+}
+
+[data-portal-skin="blood-court"] {
+  --sep-skin-c1: 216 136 136;
+  --sep-skin-c2: 187 199 208;
+}
+
+[data-portal-skin="starfall"] {
+  --sep-skin-c1: 127 169 220;
+  --sep-skin-c2: 226 194 125;
+}
+
+[data-portal-skin="emberforge"] {
+  --sep-skin-c1: 210 123 53;
+  --sep-skin-c2: 239 196 142;
+}
+
+[data-portal-skin="birdfolks-sky"] {
+  --sep-skin-c1: 23 75 56;
+  --sep-skin-c2: 24 47 56;
+}

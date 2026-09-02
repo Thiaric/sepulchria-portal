@@ -1125,143 +1125,8 @@ body.portal-skin-scope
   transform: none !important;
 }
 
-/* SEPULCHRIA EXPLICIT TWO-COLOUR COMPOSITION — 32f71c3 */
-
-/* Explicit visual roles: ink = prose, accent = links/controls/headings, action = <action> segments. */
-
-html[data-portal-skin="vellum"],
-body[data-portal-skin="vellum"],
-[data-portal-skin="vellum"] {
-  --sep-skin-role-ink: #34271f;
-  --sep-skin-role-accent: #702f35;
-  --sep-skin-role-action: #8c493e;
-}
-
-html[data-portal-skin="aelari-dawn"],
-body[data-portal-skin="aelari-dawn"],
-[data-portal-skin="aelari-dawn"] {
-  --sep-skin-role-ink: #18392f;
-  --sep-skin-role-accent: #76502f;
-  --sep-skin-role-action: #9a6c3b;
-}
-
-html[data-portal-skin="ashen"],
-body[data-portal-skin="ashen"],
-[data-portal-skin="ashen"] {
-  --sep-skin-role-ink: #173d34;
-  --sep-skin-role-accent: #704126;
-  --sep-skin-role-action: #9a6037;
-}
-
-html[data-portal-skin="dwarven-deep"],
-body[data-portal-skin="dwarven-deep"],
-[data-portal-skin="dwarven-deep"] {
-  --sep-skin-role-ink: #2b211b;
-  --sep-skin-role-accent: #4b5153;
-  --sep-skin-role-action: #6d5b4b;
-}
-
-html[data-portal-skin="mortal-hearth"],
-body[data-portal-skin="mortal-hearth"],
-[data-portal-skin="mortal-hearth"] {
-  --sep-skin-role-ink: #4b202b;
-  --sep-skin-role-accent: #27363a;
-  --sep-skin-role-action: #713341;
-}
-
-html[data-portal-skin="wolfs-moon"],
-body[data-portal-skin="wolfs-moon"],
-[data-portal-skin="wolfs-moon"] {
-  --sep-skin-role-ink: #10283c;
-  --sep-skin-role-accent: #5a3d2c;
-  --sep-skin-role-action: #75513a;
-}
-
-html[data-portal-skin="amethyst-veil"],
-body[data-portal-skin="amethyst-veil"],
-[data-portal-skin="amethyst-veil"] {
-  --sep-skin-role-ink: #eee1eb;
-  --sep-skin-role-accent: #c4814c;
-  --sep-skin-role-action: #e0a16c;
-}
-
-html[data-portal-skin="ivory-archive"],
-body[data-portal-skin="ivory-archive"],
-[data-portal-skin="ivory-archive"] {
-  --sep-skin-role-ink: #eeeae2;
-  --sep-skin-role-accent: #aebbc6;
-  --sep-skin-role-action: #d4dde4;
-}
-
-html[data-portal-skin="verdant-reliquary"],
-body[data-portal-skin="verdant-reliquary"],
-[data-portal-skin="verdant-reliquary"] {
-  --sep-skin-role-ink: #dce8d8;
-  --sep-skin-role-accent: #b9bea5;
-  --sep-skin-role-action: #d9dcc5;
-}
-
-html[data-portal-skin="deepwater"],
-body[data-portal-skin="deepwater"],
-[data-portal-skin="deepwater"] {
-  --sep-skin-role-ink: #d8eee7;
-  --sep-skin-role-accent: #efb078;
-  --sep-skin-role-action: #f6c79d;
-}
-
-html[data-portal-skin="blood-court"],
-body[data-portal-skin="blood-court"],
-[data-portal-skin="blood-court"] {
-  --sep-skin-role-ink: #eee5e1;
-  --sep-skin-role-accent: #aebdca;
-  --sep-skin-role-action: #d2dce4;
-}
-
-html[data-portal-skin="starfall"],
-body[data-portal-skin="starfall"],
-[data-portal-skin="starfall"] {
-  --sep-skin-role-ink: #e7e4dc;
-  --sep-skin-role-accent: #c58a35;
-  --sep-skin-role-action: #dfa852;
-}
-
-/* Normal tokenised text = readable ink. */
-:is(
-html[data-portal-skin="vellum"], body[data-portal-skin="vellum"],
-html[data-portal-skin="aelari-dawn"], body[data-portal-skin="aelari-dawn"],
-html[data-portal-skin="ashen"], body[data-portal-skin="ashen"],
-html[data-portal-skin="dwarven-deep"], body[data-portal-skin="dwarven-deep"],
-html[data-portal-skin="mortal-hearth"], body[data-portal-skin="mortal-hearth"],
-html[data-portal-skin="wolfs-moon"], body[data-portal-skin="wolfs-moon"],
-html[data-portal-skin="amethyst-veil"], body[data-portal-skin="amethyst-veil"],
-html[data-portal-skin="ivory-archive"], body[data-portal-skin="ivory-archive"],
-html[data-portal-skin="verdant-reliquary"], body[data-portal-skin="verdant-reliquary"],
-html[data-portal-skin="deepwater"], body[data-portal-skin="deepwater"],
-html[data-portal-skin="blood-court"], body[data-portal-skin="blood-court"],
-html[data-portal-skin="starfall"], body[data-portal-skin="starfall"]
-) [data-portal-shell]
-:is(p, span, time, label, li, dd, dt)[class*="text-[rgb(var(--sep-colour-"] {
-  color: var(--sep-skin-role-ink) !important;
-}
-
-/* Visible second family on major UI roles. */
-:is(
-html[data-portal-skin="vellum"], body[data-portal-skin="vellum"],
-html[data-portal-skin="aelari-dawn"], body[data-portal-skin="aelari-dawn"],
-html[data-portal-skin="ashen"], body[data-portal-skin="ashen"],
-html[data-portal-skin="dwarven-deep"], body[data-portal-skin="dwarven-deep"],
-html[data-portal-skin="mortal-hearth"], body[data-portal-skin="mortal-hearth"],
-html[data-portal-skin="wolfs-moon"], body[data-portal-skin="wolfs-moon"],
-html[data-portal-skin="amethyst-veil"], body[data-portal-skin="amethyst-veil"],
-html[data-portal-skin="ivory-archive"], body[data-portal-skin="ivory-archive"],
-html[data-portal-skin="verdant-reliquary"], body[data-portal-skin="verdant-reliquary"],
-html[data-portal-skin="deepwater"], body[data-portal-skin="deepwater"],
-html[data-portal-skin="blood-court"], body[data-portal-skin="blood-court"],
-html[data-portal-skin="starfall"], body[data-portal-skin="starfall"]
-) [data-portal-shell]
-:is(a[href], button:not(:disabled), [role="button"], h1, h2, h3, h4, h5, h6) {
-  color: var(--sep-skin-role-accent) !important;
-}
+/* SEPULCHRIA FINAL SKIN ROLE CONSUMER — 84096e0 */
+/* globals.css defines C1/C2; portal-themes.css maps existing tokens. */
 
 :is(
 html[data-portal-skin="vellum"], body[data-portal-skin="vellum"],
@@ -1272,146 +1137,145 @@ html[data-portal-skin="mortal-hearth"], body[data-portal-skin="mortal-hearth"],
 html[data-portal-skin="wolfs-moon"], body[data-portal-skin="wolfs-moon"],
 html[data-portal-skin="amethyst-veil"], body[data-portal-skin="amethyst-veil"],
 html[data-portal-skin="ivory-archive"], body[data-portal-skin="ivory-archive"],
+html[data-portal-skin="rose-nocturne"], body[data-portal-skin="rose-nocturne"],
 html[data-portal-skin="verdant-reliquary"], body[data-portal-skin="verdant-reliquary"],
 html[data-portal-skin="deepwater"], body[data-portal-skin="deepwater"],
 html[data-portal-skin="blood-court"], body[data-portal-skin="blood-court"],
-html[data-portal-skin="starfall"], body[data-portal-skin="starfall"]
-) [data-portal-shell]
-:is(span, p, div)[class*="uppercase"][class*="tracking-"] {
-  color: var(--sep-skin-role-accent) !important;
-}
-
-/* Room speech/actions are deliberately different. */
-:is(
-html[data-portal-skin="vellum"], body[data-portal-skin="vellum"],
-html[data-portal-skin="aelari-dawn"], body[data-portal-skin="aelari-dawn"],
-html[data-portal-skin="ashen"], body[data-portal-skin="ashen"],
-html[data-portal-skin="dwarven-deep"], body[data-portal-skin="dwarven-deep"],
-html[data-portal-skin="mortal-hearth"], body[data-portal-skin="mortal-hearth"],
-html[data-portal-skin="wolfs-moon"], body[data-portal-skin="wolfs-moon"],
-html[data-portal-skin="amethyst-veil"], body[data-portal-skin="amethyst-veil"],
-html[data-portal-skin="ivory-archive"], body[data-portal-skin="ivory-archive"],
-html[data-portal-skin="verdant-reliquary"], body[data-portal-skin="verdant-reliquary"],
-html[data-portal-skin="deepwater"], body[data-portal-skin="deepwater"],
-html[data-portal-skin="blood-court"], body[data-portal-skin="blood-court"],
-html[data-portal-skin="starfall"], body[data-portal-skin="starfall"]
-) [data-room-message-segment="speech"] {
-  color: var(--sep-skin-role-ink) !important;
-}
-
-:is(
-html[data-portal-skin="vellum"], body[data-portal-skin="vellum"],
-html[data-portal-skin="aelari-dawn"], body[data-portal-skin="aelari-dawn"],
-html[data-portal-skin="ashen"], body[data-portal-skin="ashen"],
-html[data-portal-skin="dwarven-deep"], body[data-portal-skin="dwarven-deep"],
-html[data-portal-skin="mortal-hearth"], body[data-portal-skin="mortal-hearth"],
-html[data-portal-skin="wolfs-moon"], body[data-portal-skin="wolfs-moon"],
-html[data-portal-skin="amethyst-veil"], body[data-portal-skin="amethyst-veil"],
-html[data-portal-skin="ivory-archive"], body[data-portal-skin="ivory-archive"],
-html[data-portal-skin="verdant-reliquary"], body[data-portal-skin="verdant-reliquary"],
-html[data-portal-skin="deepwater"], body[data-portal-skin="deepwater"],
-html[data-portal-skin="blood-court"], body[data-portal-skin="blood-court"],
-html[data-portal-skin="starfall"], body[data-portal-skin="starfall"]
-) [data-room-message-segment="action"] {
-  color: var(--sep-skin-role-action) !important;
-}
-
-/* Unified controls carry the second family too. */
-:is(
-html[data-portal-skin="vellum"], body[data-portal-skin="vellum"],
-html[data-portal-skin="aelari-dawn"], body[data-portal-skin="aelari-dawn"],
-html[data-portal-skin="ashen"], body[data-portal-skin="ashen"],
-html[data-portal-skin="dwarven-deep"], body[data-portal-skin="dwarven-deep"],
-html[data-portal-skin="mortal-hearth"], body[data-portal-skin="mortal-hearth"],
-html[data-portal-skin="wolfs-moon"], body[data-portal-skin="wolfs-moon"],
-html[data-portal-skin="amethyst-veil"], body[data-portal-skin="amethyst-veil"],
-html[data-portal-skin="ivory-archive"], body[data-portal-skin="ivory-archive"],
-html[data-portal-skin="verdant-reliquary"], body[data-portal-skin="verdant-reliquary"],
-html[data-portal-skin="deepwater"], body[data-portal-skin="deepwater"],
-html[data-portal-skin="blood-court"], body[data-portal-skin="blood-court"],
-html[data-portal-skin="starfall"], body[data-portal-skin="starfall"]
+html[data-portal-skin="starfall"], body[data-portal-skin="starfall"],
+html[data-portal-skin="emberforge"], body[data-portal-skin="emberforge"]
 ) [data-portal-shell] {
-  --sep-unified-control-text: var(--sep-skin-role-accent);
-  --sep-unified-control-text-hover: var(--sep-skin-role-action);
-  --sep-unified-control-border-hover: var(--sep-skin-role-accent);
-  --sep-unified-field-text: var(--sep-skin-role-ink);
-  --sep-unified-field-focus: var(--sep-skin-role-accent);
-  --sep-unified-context-border-hover: var(--sep-skin-role-accent);
+  --sep-unified-frame-border: rgb(var(--sep-skin-c1) / .45);
+  --sep-unified-frame-border-strong: rgb(var(--sep-skin-c1) / .55);
+  --sep-unified-control-border: rgb(var(--sep-skin-c1) / .50);
+  --sep-unified-control-border-hover: rgb(var(--sep-skin-c1));
+  --sep-unified-control-text: rgb(var(--sep-skin-c1));
+  --sep-unified-control-text-hover: rgb(var(--sep-skin-c2));
+  --sep-unified-field-border: rgb(var(--sep-skin-c1) / .55);
+  --sep-unified-field-text: rgb(var(--sep-skin-c2));
+  --sep-unified-field-focus: rgb(var(--sep-skin-c1));
+  --sep-unified-context-border: rgb(var(--sep-skin-c1) / .35);
+  --sep-unified-context-border-hover: rgb(var(--sep-skin-c1));
 }
 
-html[data-portal-skin="vellum"] [data-cosmetic-surface="off-character"] :is(p, span, a, time),
-body[data-portal-skin="vellum"] [data-cosmetic-surface="off-character"] :is(p, span, a, time) {
-  color: var(--sep-skin-role-ink) !important;
+/*
+ * Character actions are ALREADY parsed by ActionSpeechText:
+ * (), [], {}, <> => data-room-message-segment="action".
+ * The rest => data-room-message-segment="speech".
+ */
+:is(
+html[data-portal-skin="vellum"], body[data-portal-skin="vellum"],
+html[data-portal-skin="aelari-dawn"], body[data-portal-skin="aelari-dawn"],
+html[data-portal-skin="ashen"], body[data-portal-skin="ashen"],
+html[data-portal-skin="dwarven-deep"], body[data-portal-skin="dwarven-deep"],
+html[data-portal-skin="mortal-hearth"], body[data-portal-skin="mortal-hearth"],
+html[data-portal-skin="wolfs-moon"], body[data-portal-skin="wolfs-moon"],
+html[data-portal-skin="amethyst-veil"], body[data-portal-skin="amethyst-veil"],
+html[data-portal-skin="ivory-archive"], body[data-portal-skin="ivory-archive"],
+html[data-portal-skin="rose-nocturne"], body[data-portal-skin="rose-nocturne"],
+html[data-portal-skin="verdant-reliquary"], body[data-portal-skin="verdant-reliquary"],
+html[data-portal-skin="deepwater"], body[data-portal-skin="deepwater"],
+html[data-portal-skin="blood-court"], body[data-portal-skin="blood-court"],
+html[data-portal-skin="starfall"], body[data-portal-skin="starfall"],
+html[data-portal-skin="emberforge"], body[data-portal-skin="emberforge"]
+) [data-room-message-segment="action"] {
+  color: rgb(var(--sep-skin-c1)) !important;
 }
 
-html[data-portal-skin="vellum"] [data-portal-shell]
-:is(p, span, time, label, li, dd, dt)[class*="text-[rgb(var(--sep-colour-"],
-body[data-portal-skin="vellum"] [data-portal-shell]
-:is(p, span, time, label, li, dd, dt)[class*="text-[rgb(var(--sep-colour-"] {
-  color: var(--sep-skin-role-ink) !important;
+:is(
+html[data-portal-skin="vellum"], body[data-portal-skin="vellum"],
+html[data-portal-skin="aelari-dawn"], body[data-portal-skin="aelari-dawn"],
+html[data-portal-skin="ashen"], body[data-portal-skin="ashen"],
+html[data-portal-skin="dwarven-deep"], body[data-portal-skin="dwarven-deep"],
+html[data-portal-skin="mortal-hearth"], body[data-portal-skin="mortal-hearth"],
+html[data-portal-skin="wolfs-moon"], body[data-portal-skin="wolfs-moon"],
+html[data-portal-skin="amethyst-veil"], body[data-portal-skin="amethyst-veil"],
+html[data-portal-skin="ivory-archive"], body[data-portal-skin="ivory-archive"],
+html[data-portal-skin="rose-nocturne"], body[data-portal-skin="rose-nocturne"],
+html[data-portal-skin="verdant-reliquary"], body[data-portal-skin="verdant-reliquary"],
+html[data-portal-skin="deepwater"], body[data-portal-skin="deepwater"],
+html[data-portal-skin="blood-court"], body[data-portal-skin="blood-court"],
+html[data-portal-skin="starfall"], body[data-portal-skin="starfall"],
+html[data-portal-skin="emberforge"], body[data-portal-skin="emberforge"]
+) [data-room-message-segment="speech"] {
+  color: rgb(var(--sep-skin-c2)) !important;
 }
 
-html[data-portal-skin="aelari-dawn"] [data-cosmetic-surface="off-character"] :is(p, span, a, time),
-body[data-portal-skin="aelari-dawn"] [data-cosmetic-surface="off-character"] :is(p, span, a, time) {
-  color: var(--sep-skin-role-ink) !important;
+:is(
+html[data-portal-skin="vellum"], body[data-portal-skin="vellum"],
+html[data-portal-skin="aelari-dawn"], body[data-portal-skin="aelari-dawn"],
+html[data-portal-skin="ashen"], body[data-portal-skin="ashen"],
+html[data-portal-skin="dwarven-deep"], body[data-portal-skin="dwarven-deep"],
+html[data-portal-skin="mortal-hearth"], body[data-portal-skin="mortal-hearth"],
+html[data-portal-skin="wolfs-moon"], body[data-portal-skin="wolfs-moon"],
+html[data-portal-skin="amethyst-veil"], body[data-portal-skin="amethyst-veil"],
+html[data-portal-skin="ivory-archive"], body[data-portal-skin="ivory-archive"],
+html[data-portal-skin="rose-nocturne"], body[data-portal-skin="rose-nocturne"],
+html[data-portal-skin="verdant-reliquary"], body[data-portal-skin="verdant-reliquary"],
+html[data-portal-skin="deepwater"], body[data-portal-skin="deepwater"],
+html[data-portal-skin="blood-court"], body[data-portal-skin="blood-court"],
+html[data-portal-skin="starfall"], body[data-portal-skin="starfall"],
+html[data-portal-skin="emberforge"], body[data-portal-skin="emberforge"]
+) [data-room-mechanical-action="true"],
+:is(
+html[data-portal-skin="vellum"], body[data-portal-skin="vellum"],
+html[data-portal-skin="aelari-dawn"], body[data-portal-skin="aelari-dawn"],
+html[data-portal-skin="ashen"], body[data-portal-skin="ashen"],
+html[data-portal-skin="dwarven-deep"], body[data-portal-skin="dwarven-deep"],
+html[data-portal-skin="mortal-hearth"], body[data-portal-skin="mortal-hearth"],
+html[data-portal-skin="wolfs-moon"], body[data-portal-skin="wolfs-moon"],
+html[data-portal-skin="amethyst-veil"], body[data-portal-skin="amethyst-veil"],
+html[data-portal-skin="ivory-archive"], body[data-portal-skin="ivory-archive"],
+html[data-portal-skin="rose-nocturne"], body[data-portal-skin="rose-nocturne"],
+html[data-portal-skin="verdant-reliquary"], body[data-portal-skin="verdant-reliquary"],
+html[data-portal-skin="deepwater"], body[data-portal-skin="deepwater"],
+html[data-portal-skin="blood-court"], body[data-portal-skin="blood-court"],
+html[data-portal-skin="starfall"], body[data-portal-skin="starfall"],
+html[data-portal-skin="emberforge"], body[data-portal-skin="emberforge"]
+) [data-room-mechanical-action="true"] * {
+  color: rgb(var(--sep-skin-c1)) !important;
 }
 
-html[data-portal-skin="aelari-dawn"] [data-portal-shell]
-:is(p, span, time, label, li, dd, dt)[class*="text-[rgb(var(--sep-colour-"],
-body[data-portal-skin="aelari-dawn"] [data-portal-shell]
-:is(p, span, time, label, li, dd, dt)[class*="text-[rgb(var(--sep-colour-"] {
-  color: var(--sep-skin-role-ink) !important;
+:is(
+html[data-portal-skin="vellum"], body[data-portal-skin="vellum"],
+html[data-portal-skin="aelari-dawn"], body[data-portal-skin="aelari-dawn"],
+html[data-portal-skin="ashen"], body[data-portal-skin="ashen"],
+html[data-portal-skin="dwarven-deep"], body[data-portal-skin="dwarven-deep"],
+html[data-portal-skin="mortal-hearth"], body[data-portal-skin="mortal-hearth"],
+html[data-portal-skin="wolfs-moon"], body[data-portal-skin="wolfs-moon"],
+html[data-portal-skin="amethyst-veil"], body[data-portal-skin="amethyst-veil"],
+html[data-portal-skin="ivory-archive"], body[data-portal-skin="ivory-archive"],
+html[data-portal-skin="rose-nocturne"], body[data-portal-skin="rose-nocturne"],
+html[data-portal-skin="verdant-reliquary"], body[data-portal-skin="verdant-reliquary"],
+html[data-portal-skin="deepwater"], body[data-portal-skin="deepwater"],
+html[data-portal-skin="blood-court"], body[data-portal-skin="blood-court"],
+html[data-portal-skin="starfall"], body[data-portal-skin="starfall"],
+html[data-portal-skin="emberforge"], body[data-portal-skin="emberforge"]
+) [data-cosmetic-surface="off-character"]
+:is(a[href], [class*="uppercase"][class*="tracking-"]) {
+  color: rgb(var(--sep-skin-c1)) !important;
 }
 
-html[data-portal-skin="ashen"] [data-cosmetic-surface="off-character"] :is(p, span, a, time),
-body[data-portal-skin="ashen"] [data-cosmetic-surface="off-character"] :is(p, span, a, time) {
-  color: var(--sep-skin-role-ink) !important;
-}
-
-html[data-portal-skin="ashen"] [data-portal-shell]
-:is(p, span, time, label, li, dd, dt)[class*="text-[rgb(var(--sep-colour-"],
-body[data-portal-skin="ashen"] [data-portal-shell]
-:is(p, span, time, label, li, dd, dt)[class*="text-[rgb(var(--sep-colour-"] {
-  color: var(--sep-skin-role-ink) !important;
-}
-
-html[data-portal-skin="dwarven-deep"] [data-cosmetic-surface="off-character"] :is(p, span, a, time),
-body[data-portal-skin="dwarven-deep"] [data-cosmetic-surface="off-character"] :is(p, span, a, time) {
-  color: var(--sep-skin-role-ink) !important;
-}
-
-html[data-portal-skin="dwarven-deep"] [data-portal-shell]
-:is(p, span, time, label, li, dd, dt)[class*="text-[rgb(var(--sep-colour-"],
-body[data-portal-skin="dwarven-deep"] [data-portal-shell]
-:is(p, span, time, label, li, dd, dt)[class*="text-[rgb(var(--sep-colour-"] {
-  color: var(--sep-skin-role-ink) !important;
-}
-
-html[data-portal-skin="mortal-hearth"] [data-cosmetic-surface="off-character"] :is(p, span, a, time),
-body[data-portal-skin="mortal-hearth"] [data-cosmetic-surface="off-character"] :is(p, span, a, time) {
-  color: var(--sep-skin-role-ink) !important;
-}
-
-html[data-portal-skin="mortal-hearth"] [data-portal-shell]
-:is(p, span, time, label, li, dd, dt)[class*="text-[rgb(var(--sep-colour-"],
-body[data-portal-skin="mortal-hearth"] [data-portal-shell]
-:is(p, span, time, label, li, dd, dt)[class*="text-[rgb(var(--sep-colour-"] {
-  color: var(--sep-skin-role-ink) !important;
-}
-
-html[data-portal-skin="wolfs-moon"] [data-cosmetic-surface="off-character"] :is(p, span, a, time),
-body[data-portal-skin="wolfs-moon"] [data-cosmetic-surface="off-character"] :is(p, span, a, time) {
-  color: var(--sep-skin-role-ink) !important;
-}
-
-html[data-portal-skin="wolfs-moon"] [data-portal-shell]
-:is(p, span, time, label, li, dd, dt)[class*="text-[rgb(var(--sep-colour-"],
-body[data-portal-skin="wolfs-moon"] [data-portal-shell]
-:is(p, span, time, label, li, dd, dt)[class*="text-[rgb(var(--sep-colour-"] {
-  color: var(--sep-skin-role-ink) !important;
-}
-
-html[data-portal-skin="deepwater"] [data-cosmetic-surface="action"] :is(a,button,h1,h2,h3,h4,span[class*="uppercase"]),
-body[data-portal-skin="deepwater"] [data-cosmetic-surface="action"] :is(a,button,h1,h2,h3,h4,span[class*="uppercase"]) {
-  color: var(--sep-skin-role-accent) !important;
+:is(
+html[data-portal-skin="vellum"], body[data-portal-skin="vellum"],
+html[data-portal-skin="aelari-dawn"], body[data-portal-skin="aelari-dawn"],
+html[data-portal-skin="ashen"], body[data-portal-skin="ashen"],
+html[data-portal-skin="dwarven-deep"], body[data-portal-skin="dwarven-deep"],
+html[data-portal-skin="mortal-hearth"], body[data-portal-skin="mortal-hearth"],
+html[data-portal-skin="wolfs-moon"], body[data-portal-skin="wolfs-moon"],
+html[data-portal-skin="amethyst-veil"], body[data-portal-skin="amethyst-veil"],
+html[data-portal-skin="ivory-archive"], body[data-portal-skin="ivory-archive"],
+html[data-portal-skin="rose-nocturne"], body[data-portal-skin="rose-nocturne"],
+html[data-portal-skin="verdant-reliquary"], body[data-portal-skin="verdant-reliquary"],
+html[data-portal-skin="deepwater"], body[data-portal-skin="deepwater"],
+html[data-portal-skin="blood-court"], body[data-portal-skin="blood-court"],
+html[data-portal-skin="starfall"], body[data-portal-skin="starfall"],
+html[data-portal-skin="emberforge"], body[data-portal-skin="emberforge"]
+) [data-sep-interaction-kind]::after {
+  background:
+    radial-gradient(
+      240px circle at var(--sep-interact-x) var(--sep-interact-y),
+      rgb(var(--sep-skin-c2) / .15) 0%,
+      rgb(var(--sep-skin-c2) / .06) 36%,
+      transparent 72%
+    ) !important;
 }
