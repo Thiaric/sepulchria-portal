@@ -419,13 +419,14 @@ export const getPublicCharacter = cache(
           }
         : null;
 
-    const orderMembership =
-      await getPublicOrderMembership(
+    const [
+      orderMembership,
+      effectiveAttributes,
+    ] = await Promise.all([
+      getPublicOrderMembership(
         row.id,
-      );
-
-    const effectiveAttributes =
-      await getEffectiveCharacterAttributes(
+      ),
+      getEffectiveCharacterAttributes(
         row.id,
         {
           muscles: row.muscles,
@@ -436,7 +437,8 @@ export const getPublicCharacter = cache(
           presence_score:
             row.presence_score,
         },
-      );
+      ),
+    ]);
 
     return {
       id: row.id,

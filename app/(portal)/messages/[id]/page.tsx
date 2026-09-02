@@ -95,28 +95,41 @@ export default async function ConversationPage({
     );
   }
 
-  const staffSession =
-    await getStaffSession();
+  const [
+    staffSession,
+    membershipResult,
+    conversationMetaResult,
+  ] = await Promise.all([
+    getStaffSession(),
+
+    supabase
+      .from(
+        "direct_conversation_participants",
+      )
+      .select(
+        "conversation_id, deleted_at",
+      )
+      .eq(
+        "conversation_id",
+        id,
+      )
+      .eq(
+        "character_id",
+        character.id,
+      )
+      .maybeSingle(),
+
+    supabase
+      .from("direct_conversations")
+      .select("is_group, title")
+      .eq("id", id)
+      .maybeSingle(),
+  ]);
 
   const {
     data: membership,
     error: membershipError,
-  } = await supabase
-    .from(
-      "direct_conversation_participants",
-    )
-    .select(
-      "conversation_id, deleted_at",
-    )
-    .eq(
-      "conversation_id",
-      id,
-    )
-    .eq(
-      "character_id",
-      character.id,
-    )
-    .maybeSingle();
+  } = membershipResult;
 
   if (membershipError) {
     throw new Error(
@@ -134,11 +147,7 @@ export default async function ConversationPage({
   const {
     data: conversationMeta,
     error: conversationMetaError,
-  } = await supabase
-    .from("direct_conversations")
-    .select("is_group, title")
-    .eq("id", id)
-    .maybeSingle();
+  } = conversationMetaResult;
 
   if (conversationMetaError) {
     throw new Error(
@@ -289,66 +298,31 @@ export default async function ConversationPage({
     notFound();
   }
 
-  const [
-    blockedByMeResult,
-    blockedMeResult,
-  ] = await Promise.all([
-    supabase
-      .from(
-        "character_blocks",
-      )
-      .select(
-        "blocked_character_id",
-      )
-      .eq(
-        "blocker_character_id",
-        character.id,
-      )
-      .eq(
-        "blocked_character_id",
-        other.id,
-      )
-      .maybeSingle(),
-
-    supabase
-      .from(
-        "character_blocks",
-      )
-      .select(
-        "blocker_character_id",
-      )
-      .eq(
-        "blocker_character_id",
-        other.id,
-      )
-      .eq(
-        "blocked_character_id",
-        character.id,
-      )
-      .maybeSingle(),
-  ]);
-
-  if (
-    blockedByMeResult.error
-  ) {
-    throw new Error(
-      blockedByMeResult.error
-        .message,
+  const {
+    data: blockRows,
+    error: blockError,
+  } = await supabase
+    .from(
+      "character_blocks",
+    )
+    .select(
+      "blocker_character_id, blocked_character_id",
+    )
+    .or(
+      [
+        `and(blocker_character_id.eq.${character.id},blocked_character_id.eq.${other.id})`,
+        `and(blocker_character_id.eq.${other.id},blocked_character_id.eq.${character.id})`,
+      ].join(","),
     );
-  }
 
-  if (blockedMeResult.error) {
+  if (blockError) {
     throw new Error(
-      blockedMeResult.error
-        .message,
+      blockError.message,
     );
   }
 
   const blocked =
-    Boolean(
-      blockedByMeResult.data ||
-        blockedMeResult.data,
-    );
+    (blockRows ?? []).length > 0;
 
   const deletedIds =
     new Set(

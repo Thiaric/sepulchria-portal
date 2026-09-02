@@ -89,15 +89,20 @@ export default async function PublicCharacterPage({
 
   const supabase = await createClient();
 
-  const equippedSheetFrame =
-    await getEquippedCosmetic(
+  const [
+    equippedSheetFrame,
+    userResult,
+  ] = await Promise.all([
+    getEquippedCosmetic(
       character.id,
       "sheet_frame",
-    );
+    ),
+    supabase.auth.getUser(),
+  ]);
 
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = userResult;
 
   if (!user) {
     redirect("/auth/login");
@@ -106,6 +111,7 @@ export default async function PublicCharacterPage({
   const [
     activeCharacterResult,
     staffSession,
+    targetIsStaff,
   ] = await Promise.all([
     supabase
       .from("characters")
@@ -113,6 +119,9 @@ export default async function PublicCharacterPage({
       .eq("user_id", user.id)
       .maybeSingle(),
     getStaffSession(),
+    isCharacterStaff(
+      character.id,
+    ),
   ]);
 
   const {
@@ -130,11 +139,6 @@ export default async function PublicCharacterPage({
   let isInFriendList = false;
   let blockedByViewer = false;
   let blockedViewer = false;
-
-  const targetIsStaff =
-    await isCharacterStaff(
-      character.id,
-    );
 
   if (
     activeCharacter &&

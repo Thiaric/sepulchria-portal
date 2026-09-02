@@ -183,14 +183,15 @@ export default async function CharacterPage({
     redirect("/character/create");
   }
 
-  const equippedSheetFrame =
-    await getEquippedCosmetic(
+  const [
+    equippedSheetFrame,
+    effectiveAttributes,
+  ] = await Promise.all([
+    getEquippedCosmetic(
       character.id,
       "sheet_frame",
-    );
-
-  const effectiveAttributes =
-    await getEffectiveCharacterAttributes(
+    ),
+    getEffectiveCharacterAttributes(
       character.id,
       {
         muscles: character.muscles,
@@ -201,7 +202,8 @@ export default async function CharacterPage({
         presence_score:
           character.presence_score,
       },
-    );
+    ),
+  ]);
 
   const characterWithEffectiveAttributes = {
     ...character,
