@@ -29,11 +29,11 @@ const SKIN_SWATCHES: Record<
   },
   vellum: {
     background: "#d9cfb5",
-    accent: "#70372d",
+    accent: "#702f35",
   },
   starfall: {
     background: "#040816",
-    accent: "#9d611f",
+    accent: "#c58a35",
   },
   "rose-nocturne": {
     background: "#12070f",
@@ -41,11 +41,11 @@ const SKIN_SWATCHES: Record<
   },
   "verdant-reliquary": {
     background: "#040f09",
-    accent: "#91977f",
+    accent: "#b9bea5",
   },
   "amethyst-veil": {
     background: "#0d0714",
-    accent: "#975c33",
+    accent: "#c4814c",
   },
   moonlit: {
     background: "#090806",
@@ -57,35 +57,35 @@ const SKIN_SWATCHES: Record<
   },
   deepwater: {
     background: "#031012",
-    accent: "#85325b",
+    accent: "#efb078",
   },
   "blood-court": {
     background: "#120407",
-    accent: "#7e8c99",
+    accent: "#aebdca",
   },
   ashen: {
     background: "#c2d6e1",
-    accent: "#74452b",
+    accent: "#173d34",
   },
   "ivory-archive": {
     background: "#0b0c0d",
-    accent: "#8b97a2",
+    accent: "#aebbc6",
   },
   "aelari-dawn": {
     background: "#d7dcc3",
-    accent: "#69482a",
+    accent: "#76502f",
   },
   "dwarven-deep": {
     background: "#c1b197",
-    accent: "#464643",
+    accent: "#4b5153",
   },
   "mortal-hearth": {
     background: "#c3c4bd",
-    accent: "#5c3739",
+    accent: "#4b202b",
   },
   "wolfs-moon": {
     background: "#c4cdd0",
-    accent: "#6f5745",
+    accent: "#10283c",
   },
 };
 

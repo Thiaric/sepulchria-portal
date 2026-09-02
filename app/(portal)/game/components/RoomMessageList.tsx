@@ -808,6 +808,9 @@ function ActionSpeechText({
       rendered.push(
         <Fragment key={index}>
           <span
+  data-room-message-segment={
+    isAction ? "action" : "speech"
+  }
   className={
     isAction
       ? "italic text-[rgb(var(--sep-colour-a98a60))]"
