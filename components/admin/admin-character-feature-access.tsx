@@ -1,7 +1,13 @@
+"use client";
+
 import {
   setCharacterFeatureEntitlement,
   setCharacterPortalSkinEntitlement,
 } from "@/app/(portal)/admin/characters/actions";
+import {
+  AdminSaveFeedbackMessage,
+  useAdminEntitlementSubmit,
+} from "@/components/admin/admin-entitlement-submit";
 
 export type CharacterFeatureEntitlementRow = {
   feature_key:
@@ -87,6 +93,27 @@ export function AdminCharacterFeatureAccess({
         !skin.is_default,
     );
 
+  const initialEnabled =
+    Object.fromEntries([
+      ...FEATURES.map((feature) => [
+        `feature:${feature.key}`,
+        byFeature.get(feature.key)?.enabled === true,
+      ]),
+      ...premiumSkins.map((skin) => [
+        `skin:${skin.id}`,
+        bySkin.get(skin.id)?.enabled === true,
+      ]),
+    ]);
+
+  const {
+    enabledByKey,
+    pendingKey,
+    feedbackByKey,
+    submit,
+  } = useAdminEntitlementSubmit(
+    initialEnabled,
+  );
+
   return (
     <section className="mt-6 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
       <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] px-5 py-4">
@@ -110,9 +137,12 @@ export function AdminCharacterFeatureAccess({
             byFeature.get(
               feature.key,
             );
+          const formKey =
+            `feature:${feature.key}`;
+
           const enabled =
-            entitlement?.enabled ===
-            true;
+            enabledByKey[formKey] ??
+            (entitlement?.enabled === true);
 
           return (
             <form
@@ -121,9 +151,15 @@ export function AdminCharacterFeatureAccess({
               data-admin-premium-feature="true"
               data-admin-feature-name={feature.name}
               data-admin-feature-type="Feature"
-              action={
-                setCharacterFeatureEntitlement
-              }
+              onSubmit={(event) => {
+                event.preventDefault();
+                void submit(
+                  formKey,
+                  new FormData(event.currentTarget),
+                  setCharacterFeatureEntitlement,
+                  "Access saved.",
+                );
+              }}
               className="scroll-mt-6 bg-[rgb(var(--sep-colour-17110d))] p-5"
             >
               <input
@@ -230,12 +266,19 @@ export function AdminCharacterFeatureAccess({
                 </label>
               </div>
 
-              <div className="mt-5 flex justify-end border-t border-[rgb(var(--sep-colour-5d452d))]/35 pt-4">
+              <div className="mt-5 flex items-center justify-end gap-3 border-t border-[rgb(var(--sep-colour-5d452d))]/35 pt-4">
+                <AdminSaveFeedbackMessage
+                  feedback={feedbackByKey[formKey]}
+                />
+
                 <button
                   type="submit"
-                  className="border border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd9aa))]"
+                  disabled={pendingKey === formKey}
+                  className="border border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd9aa))] disabled:cursor-wait disabled:opacity-60"
                 >
-                  Save access
+                  {pendingKey === formKey
+                    ? "Saving..."
+                    : "Save access"}
                 </button>
               </div>
             </form>
@@ -248,9 +291,12 @@ export function AdminCharacterFeatureAccess({
               bySkin.get(
                 skin.id,
               );
+            const formKey =
+              `skin:${skin.id}`;
+
             const enabled =
-              entitlement?.enabled ===
-              true;
+              enabledByKey[formKey] ??
+              (entitlement?.enabled === true);
 
             return (
               <form
@@ -261,9 +307,15 @@ export function AdminCharacterFeatureAccess({
                 data-admin-premium-feature="true"
                 data-admin-feature-name={skin.name}
                 data-admin-feature-type="Portal Skin"
-                action={
-                  setCharacterPortalSkinEntitlement
-                }
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  void submit(
+                    formKey,
+                    new FormData(event.currentTarget),
+                    setCharacterPortalSkinEntitlement,
+                    "Access saved.",
+                  );
+                }}
                 className="scroll-mt-6 bg-[rgb(var(--sep-colour-17110d))] p-5"
               >
                 <input
@@ -371,12 +423,19 @@ export function AdminCharacterFeatureAccess({
                   </label>
                 </div>
 
-                <div className="mt-5 flex justify-end border-t border-[rgb(var(--sep-colour-5d452d))]/35 pt-4">
+                <div className="mt-5 flex items-center justify-end gap-3 border-t border-[rgb(var(--sep-colour-5d452d))]/35 pt-4">
+                  <AdminSaveFeedbackMessage
+                    feedback={feedbackByKey[formKey]}
+                  />
+
                   <button
                     type="submit"
-                    className="border border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd9aa))]"
+                    disabled={pendingKey === formKey}
+                    className="border border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd9aa))] disabled:cursor-wait disabled:opacity-60"
                   >
-                    Save access
+                    {pendingKey === formKey
+                      ? "Saving..."
+                      : "Save access"}
                   </button>
                 </div>
               </form>

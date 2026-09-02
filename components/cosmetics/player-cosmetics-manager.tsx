@@ -100,11 +100,17 @@ export function PlayerCosmeticsManager({
           }}
           className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-sm text-[rgb(var(--sep-colour-d7c4a5))]"
         >
-          {COSMETIC_CATEGORIES.map((value) => (
-            <option key={value} value={value}>
-              {COSMETIC_LABELS[value]}
-            </option>
-          ))}
+          {COSMETIC_CATEGORIES
+  .filter((value) =>
+    initialCosmetics.some(
+      (item) => item.category === value,
+    ),
+  )
+  .map((value) => (
+    <option key={value} value={value}>
+      {COSMETIC_LABELS[value]}
+    </option>
+  ))}
         </select>
       </div>
 

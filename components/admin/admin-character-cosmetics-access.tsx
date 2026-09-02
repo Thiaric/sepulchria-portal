@@ -1,6 +1,12 @@
+"use client";
+
 import {
   setCharacterCosmeticEntitlement,
 } from "@/app/(portal)/admin/characters/cosmetic-actions";
+import {
+  AdminSaveFeedbackMessage,
+  useAdminEntitlementSubmit,
+} from "@/components/admin/admin-entitlement-submit";
 import {
   COSMETIC_LABELS,
   type CosmeticCategory,
@@ -46,6 +52,20 @@ export function AdminCharacterCosmeticsAccess({
     entitlements.map((entry) => [entry.cosmetic_item_id, entry]),
   );
 
+  const {
+    enabledByKey,
+    pendingKey,
+    feedbackByKey,
+    submit,
+  } = useAdminEntitlementSubmit(
+    Object.fromEntries(
+      cosmetics.map((cosmetic) => [
+        cosmetic.id,
+        byCosmetic.get(cosmetic.id)?.enabled === true,
+      ]),
+    ),
+  );
+
   return (
     <section className="mt-6 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
       <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] px-5 py-4">
@@ -60,16 +80,27 @@ export function AdminCharacterCosmeticsAccess({
       <div className="grid gap-px bg-[rgb(var(--sep-colour-4f3b28))]/35 lg:grid-cols-2">
         {cosmetics.map((cosmetic) => {
           const entitlement = byCosmetic.get(cosmetic.id);
-          const enabled = entitlement?.enabled === true;
+          const enabled =
+            enabledByKey[cosmetic.id] ??
+            (entitlement?.enabled === true);
 
           return (
             <form
               key={cosmetic.id}
+              id={`premium-feature-cosmetic-${cosmetic.id}`}
               data-admin-premium-feature="true"
               data-admin-feature-name={cosmetic.name}
               data-admin-feature-type={`Cosmetic · ${COSMETIC_LABELS[cosmetic.category]}`}
-              action={setCharacterCosmeticEntitlement}
-              className="bg-[rgb(var(--sep-colour-17110d))] p-5"
+              onSubmit={(event) => {
+                event.preventDefault();
+                void submit(
+                  cosmetic.id,
+                  new FormData(event.currentTarget),
+                  setCharacterCosmeticEntitlement,
+                  "Ownership saved.",
+                );
+              }}
+              className="scroll-mt-6 bg-[rgb(var(--sep-colour-17110d))] p-5"
             >
               <input
                 type="hidden"
@@ -108,6 +139,16 @@ export function AdminCharacterCosmeticsAccess({
                     {cosmetic.description}
                   </p>
                 </div>
+
+                <span
+                  className={
+                    enabled
+                      ? "shrink-0 border border-[rgb(var(--sep-colour-668657))] bg-[rgb(var(--sep-colour-172313))] px-2 py-1 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-a8cf92))]"
+                      : "shrink-0 border border-[rgb(var(--sep-colour-65483e))] bg-[rgb(var(--sep-colour-221512))] px-2 py-1 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b78378))]"
+                  }
+                >
+                  {enabled ? "Enabled" : "Disabled"}
+                </span>
               </div>
 
               <div className="mt-5 grid gap-4">
@@ -143,12 +184,19 @@ export function AdminCharacterCosmeticsAccess({
                 />
               </div>
 
-              <div className="mt-5 flex justify-end border-t border-[rgb(var(--sep-colour-5d452d))]/35 pt-4">
+              <div className="mt-5 flex items-center justify-end gap-3 border-t border-[rgb(var(--sep-colour-5d452d))]/35 pt-4">
+                <AdminSaveFeedbackMessage
+                  feedback={feedbackByKey[cosmetic.id]}
+                />
+
                 <button
                   type="submit"
-                  className="border border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd9aa))]"
+                  disabled={pendingKey === cosmetic.id}
+                  className="border border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd9aa))] disabled:cursor-wait disabled:opacity-60"
                 >
-                  Save ownership
+                  {pendingKey === cosmetic.id
+                    ? "Saving..."
+                    : "Save ownership"}
                 </button>
               </div>
             </form>

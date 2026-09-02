@@ -1097,6 +1097,7 @@ const moreDragging =
           />
 
           <section
+  data-mobile-left-cosmetic-surface
   role="dialog"
   aria-modal="true"
   aria-label="More Sepulchria navigation"

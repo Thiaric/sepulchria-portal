@@ -27,15 +27,25 @@ export function AdminCharacterPremiumFeaturesContext() {
       );
 
       setEntries(
-        nodes.map((node) => ({
-          id: node.id,
-          name:
-            node.dataset.adminFeatureName ??
-            "Unnamed feature",
-          type:
-            node.dataset.adminFeatureType ??
-            "Feature",
-        })),
+        nodes.map((node, index) => {
+          const id =
+            node.id.trim() ||
+            `admin-premium-feature-${index}`;
+
+          if (!node.id) {
+            node.id = id;
+          }
+
+          return {
+            id,
+            name:
+              node.dataset.adminFeatureName ??
+              "Unnamed feature",
+            type:
+              node.dataset.adminFeatureType ??
+              "Feature",
+          };
+        }),
       );
     };
 

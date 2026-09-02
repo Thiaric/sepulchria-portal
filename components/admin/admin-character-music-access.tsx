@@ -1,4 +1,10 @@
+"use client";
+
 import { setCharacterMusicEntitlement } from "@/app/(portal)/admin/characters/music-actions";
+import {
+  AdminSaveFeedbackMessage,
+  useAdminEntitlementSubmit,
+} from "@/components/admin/admin-entitlement-submit";
 
 export type CharacterMusicTrackRow = {
   id: string;
@@ -37,6 +43,20 @@ export function AdminCharacterMusicAccess({
     ]),
   );
 
+  const {
+    enabledByKey,
+    pendingKey,
+    feedbackByKey,
+    submit,
+  } = useAdminEntitlementSubmit(
+    Object.fromEntries(
+      tracks.map((track) => [
+        track.id,
+        byTrack.get(track.id)?.enabled === true,
+      ]),
+    ),
+  );
+
   return (
     <section className="mt-6 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
       <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] px-5 py-4">
@@ -56,7 +76,8 @@ export function AdminCharacterMusicAccess({
           const entitlement =
             byTrack.get(track.id);
           const enabled =
-            entitlement?.enabled === true;
+            enabledByKey[track.id] ??
+            (entitlement?.enabled === true);
 
           return (
             <form
@@ -65,9 +86,15 @@ export function AdminCharacterMusicAccess({
               data-admin-premium-feature="true"
               data-admin-feature-name={track.name}
               data-admin-feature-type="Music Track"
-              action={
-                setCharacterMusicEntitlement
-              }
+              onSubmit={(event) => {
+                event.preventDefault();
+                void submit(
+                  track.id,
+                  new FormData(event.currentTarget),
+                  setCharacterMusicEntitlement,
+                  "Ownership saved.",
+                );
+              }}
               className="scroll-mt-6 bg-[rgb(var(--sep-colour-17110d))] p-5"
             >
               <input
@@ -160,12 +187,19 @@ export function AdminCharacterMusicAccess({
                 />
               </div>
 
-              <div className="mt-4 flex justify-end">
+              <div className="mt-4 flex items-center justify-end gap-3">
+                <AdminSaveFeedbackMessage
+                  feedback={feedbackByKey[track.id]}
+                />
+
                 <button
                   type="submit"
-                  className="border border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd9aa))]"
+                  disabled={pendingKey === track.id}
+                  className="border border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd9aa))] disabled:cursor-wait disabled:opacity-60"
                 >
-                  Save ownership
+                  {pendingKey === track.id
+                    ? "Saving..."
+                    : "Save ownership"}
                 </button>
               </div>
             </form>

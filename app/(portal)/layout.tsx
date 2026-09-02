@@ -195,85 +195,12 @@ async function PortalLayoutContent({
               }
 
               /*
-               * Premium portal-shell cosmetics are overlays, not layout borders.
-               * This keeps the working area the same size while allowing ornate
-               * corners and rails like the premium concept art.
+               * Location cosmetics work at every viewport size.
                */
-              @media (min-width: 1024px) {
-                [data-portal-shell-inner][data-has-cosmetic-header-controls="true"]
-                  [data-cosmetic-header-controls] :is(button,a) {
-                  position: relative;
-                  isolation: isolate;
-                  overflow: visible;
-                }
-
-                [data-portal-shell-inner][data-has-cosmetic-header-controls="true"]
-                  [data-cosmetic-header-controls] :is(button,a)::after {
-                  content: "";
-                  position: absolute;
-                  z-index: 8;
-                  inset: -3px;
-                  border: 8px solid transparent;
-                  border-image-source: var(--sep-cosmetic-header-control-frame);
-                  border-image-slice: 18%;
-                  border-image-width: 1;
-                  border-image-repeat: stretch;
-                  pointer-events: none;
-                  filter: drop-shadow(0 2px 5px rgba(0,0,0,.42));
-                }
-
-                [data-portal-shell-inner][data-has-cosmetic-left-panel="true"]
-                  .portal-left-shell > [data-portal-column],
-                [data-portal-shell-inner][data-has-cosmetic-right-panel="true"]
-                  .portal-right-shell > [data-portal-column],
-                [data-portal-shell-inner][data-has-cosmetic-centre-panel="true"]
-                  [data-portal-centre-host] > [data-portal-column] {
-                  position: relative;
-                  isolation: isolate;
-                  overflow: visible;
-                }
-
-                [data-portal-shell-inner][data-has-cosmetic-left-panel="true"]
-                  .portal-left-shell > [data-portal-column]::after,
-                [data-portal-shell-inner][data-has-cosmetic-right-panel="true"]
-                  .portal-right-shell > [data-portal-column]::after,
-                [data-portal-shell-inner][data-has-cosmetic-centre-panel="true"]
-                  [data-portal-centre-host] > [data-portal-column]::after {
-                  content: "";
-                  position: absolute;
-                  z-index: 35;
-                  inset: 1px;
-                  border: 14px solid transparent;
-                  border-image-width: 1;
-                  border-image-repeat: stretch;
-                  pointer-events: none;
-                  filter: drop-shadow(0 3px 8px rgba(0,0,0,.35));
-                }
-
-                [data-portal-shell-inner][data-has-cosmetic-left-panel="true"]
-                  .portal-left-shell > [data-portal-column]::after {
-                  border-image-source: var(--sep-cosmetic-left-panel-frame);
-                  border-image-slice: 10% 13%;
-                }
-
-                [data-portal-shell-inner][data-has-cosmetic-right-panel="true"]
-                  .portal-right-shell > [data-portal-column]::after {
-                  border-image-source: var(--sep-cosmetic-right-panel-frame);
-                  border-image-slice: 10% 13%;
-                }
-
-                [data-portal-shell-inner][data-has-cosmetic-centre-panel="true"]
-                  [data-portal-centre-host] > [data-portal-column]::after {
-                  border-image-source: var(--sep-cosmetic-centre-panel-frame);
-                  border-image-slice: 9% 7%;
-                }
-              }
-
               [data-portal-shell-inner][data-has-cosmetic-location-frame="true"]
                 [data-game-location-surface] {
                 position: relative;
                 isolation: isolate;
-                overflow: visible;
               }
 
               [data-portal-shell-inner][data-has-cosmetic-location-frame="true"]
@@ -309,7 +236,73 @@ async function PortalLayoutContent({
                 display: none;
               }
 
+              /*
+               * MOBILE
+               * Centre cosmetic frames the mobile viewport.
+               * Left cosmetic frames the More drawer.
+               * Right cosmetic frames the mobile context drawer.
+               */
               @media (max-width: 1023px) {
+                [data-portal-shell-inner][data-has-cosmetic-centre-panel="true"]
+                  [data-portal-centre-host] {
+                  position: relative;
+                  box-sizing: border-box;
+                  padding-top: 14px;
+                  padding-bottom: 14px;
+                  padding-right: 10px;
+                  padding-left: 5px;
+                  overflow: hidden;
+                }
+
+                [data-portal-shell-inner][data-has-cosmetic-centre-panel="true"]
+                  [data-portal-centre-host]::after {
+                  content: "";
+                  position: absolute;
+                  z-index: 35;
+                  inset: 1px;
+                  border: 24px solid transparent;
+                  border-image-source: var(--sep-cosmetic-centre-panel-frame);
+                  border-image-slice: 9% 7%;
+                  border-image-width: 1;
+                  border-image-repeat: stretch;
+                  pointer-events: none;
+                  filter: drop-shadow(0 3px 8px rgba(0,0,0,.35));
+                }
+
+                /*
+                 * Do NOT set position on these surfaces here.
+                 * Their components already use position: fixed on mobile.
+                 */
+                [data-portal-shell-inner][data-has-cosmetic-left-panel="true"]
+                  [data-mobile-left-cosmetic-surface]::after {
+                  content: "";
+                  position: absolute;
+                  inset: 0;
+                  z-index: 100;
+                  border: 24px solid transparent;
+                  border-image-source: var(--sep-cosmetic-left-panel-frame);
+                  border-image-slice: 10% 13%;
+                  border-image-width: 1;
+                  border-image-repeat: stretch;
+                  pointer-events: none;
+                  filter: drop-shadow(0 3px 8px rgba(0,0,0,.35));
+                }
+
+                [data-portal-shell-inner][data-has-cosmetic-right-panel="true"]
+                  [data-mobile-right-cosmetic-surface]::after {
+                  content: "";
+                  position: absolute;
+                  inset: 0;
+                  z-index: 100;
+                  border: 24px solid transparent;
+                  border-image-source: var(--sep-cosmetic-right-panel-frame);
+                  border-image-slice: 10% 13%;
+                  border-image-width: 1;
+                  border-image-repeat: stretch;
+                  pointer-events: none;
+                  filter: drop-shadow(0 3px 8px rgba(0,0,0,.35));
+                }
+
                 .sepulchria-viewport-body {
                   display: block;
                   width: 100%;
@@ -350,7 +343,108 @@ async function PortalLayoutContent({
                 }
               }
 
+              /*
+               * DESKTOP / LAPTOP
+               */
               @media (min-width: 1024px) {
+                [data-portal-shell-inner][data-has-cosmetic-header-controls="true"]
+                  [data-cosmetic-header-controls] :is(button,a) {
+                  position: relative;
+                  isolation: isolate;
+                  overflow: visible;
+                }
+
+                [data-portal-shell-inner][data-has-cosmetic-header-controls="true"]
+                  [data-cosmetic-header-controls] :is(button,a)::after {
+                  content: "";
+                  position: absolute;
+                  z-index: 8;
+                  inset: -3px;
+                  border: 8px solid transparent;
+                  border-image-source: var(--sep-cosmetic-header-control-frame);
+                  border-image-slice: 18%;
+                  border-image-width: 1;
+                  border-image-repeat: stretch;
+                  pointer-events: none;
+                  filter: drop-shadow(0 2px 5px rgba(0,0,0,.42));
+                }
+
+                /*
+                 * Panel frames live on non-scrolling shell wrappers.
+                 * The scrolling columns keep their own overflow.
+                 */
+                [data-portal-shell-inner][data-has-cosmetic-left-panel="true"]
+                  .portal-left-shell,
+                [data-portal-shell-inner][data-has-cosmetic-right-panel="true"]
+                  .portal-right-shell,
+                [data-portal-shell-inner][data-has-cosmetic-centre-panel="true"]
+                  [data-portal-centre-host] {
+                  position: relative;
+                }
+
+                [data-portal-shell-inner][data-has-cosmetic-left-panel="true"]
+                  .portal-left-shell::after,
+                [data-portal-shell-inner][data-has-cosmetic-right-panel="true"]
+                  .portal-right-shell::after,
+                [data-portal-shell-inner][data-has-cosmetic-centre-panel="true"]
+                  [data-portal-centre-host]::after {
+                  content: "";
+                  position: absolute;
+                  z-index: 35;
+                  inset: 1px;
+                  border-style: solid;
+                  border-color: transparent;
+                  border-image-width: 1;
+                  border-image-repeat: stretch;
+                  pointer-events: none;
+                  filter: drop-shadow(0 3px 8px rgba(0,0,0,.35));
+                }
+
+                [data-portal-shell-inner][data-has-cosmetic-left-panel="true"]
+                  .portal-left-shell::after {
+                  border-width: 42px;
+                  border-image-source: var(--sep-cosmetic-left-panel-frame);
+                  border-image-slice: 10% 13%;
+                }
+
+                [data-portal-shell-inner][data-has-cosmetic-right-panel="true"]
+                  .portal-right-shell::after {
+                  border-width: 42px;
+                  border-image-source: var(--sep-cosmetic-right-panel-frame);
+                  border-image-slice: 10% 13%;
+                }
+
+                [data-portal-shell-inner][data-has-cosmetic-centre-panel="true"]
+                  [data-portal-centre-host]::after {
+                  border-width: 24px;
+                  border-image-source: var(--sep-cosmetic-centre-panel-frame);
+                  border-image-slice: 9% 7%;
+                }
+
+                /*
+                 * Reserve a genuine centre safe area so scrolling content never
+                 * travels behind the fixed centre frame.
+                 */
+                [data-portal-shell-inner][data-has-cosmetic-centre-panel="true"]
+                  [data-portal-centre-host] {
+                  box-sizing: border-box;
+                  padding-top: 14px;
+                  padding-bottom: 14px;
+                  padding-right: 10px;
+                  padding-left: 5px;
+                  overflow: hidden;
+                }
+
+                .sepulchria-viewport-body[data-left-collapsed="true"]
+                  .portal-left-shell::after {
+                  display: none !important;
+                }
+
+                .sepulchria-viewport-body[data-right-collapsed="true"]
+                  .portal-right-shell::after {
+                  display: none !important;
+                }
+
                 .sepulchria-viewport-body {
                   grid-template-columns:
                     clamp(180px, 14vw, var(--portal-left-width))
@@ -387,11 +481,12 @@ async function PortalLayoutContent({
                   transform: translateY(-50%);
                   align-items: center;
                   justify-content: center;
-                  border: 1px solid rgba(var(--sep-rgb-110-85-53),0.62);
-                  background: rgba(var(--sep-rgb-16-13-11),0.96);
-                  color: rgb(var(--sep-colour-a98d65));
+                  border: 1px solid rgb(var(--sep-colour-987344));
+                  background: rgb(var(--sep-colour-17120f));
+                  color: rgb(var(--sep-colour-efd6a8));
                   font-family: Georgia, serif;
-                  font-size: 18px;
+                  font-size: 22px;
+                  font-weight: 700;
                   line-height: 1;
                   box-shadow: 4px 0 14px rgba(var(--sep-rgb-0-0-0),0.28);
                   transition:
@@ -401,9 +496,9 @@ async function PortalLayoutContent({
                 }
 
                 .portal-left-collapse-toggle:hover {
-                  border-color: rgb(var(--sep-colour-9a7445));
-                  background: rgb(var(--sep-colour-1d160f));
-                  color: rgb(var(--sep-colour-efd39f));
+                  border-color: rgb(var(--sep-colour-b98c50));
+                  background: rgb(var(--sep-colour-3b2919));
+                  color: rgb(var(--sep-colour-efd6a8));
                 }
 
                 .sepulchria-viewport-body
@@ -458,6 +553,9 @@ async function PortalLayoutContent({
                 }
               }
 
+              /*
+               * Full three-column desktop.
+               */
               @media (min-width: 1280px) {
                 .sepulchria-viewport-body {
                   grid-template-columns:
@@ -511,11 +609,12 @@ async function PortalLayoutContent({
                   transform: translateY(-50%);
                   align-items: center;
                   justify-content: center;
-                  border: 1px solid rgba(var(--sep-rgb-110-85-53),0.62);
-                  background: rgba(var(--sep-rgb-16-13-11),0.96);
-                  color: rgb(var(--sep-colour-a98d65));
+                  border: 1px solid rgb(var(--sep-colour-987344));
+                  background: rgb(var(--sep-colour-17120f));
+                  color: rgb(var(--sep-colour-efd6a8));
                   font-family: Georgia, serif;
-                  font-size: 18px;
+                  font-size: 22px;
+                  font-weight: 700;
                   line-height: 1;
                   box-shadow: -4px 0 14px rgba(var(--sep-rgb-0-0-0),0.28);
                   transition:
@@ -525,9 +624,9 @@ async function PortalLayoutContent({
                 }
 
                 .portal-right-collapse-toggle:hover {
-                  border-color: rgb(var(--sep-colour-9a7445));
-                  background: rgb(var(--sep-colour-1d160f));
-                  color: rgb(var(--sep-colour-efd39f));
+                  border-color: rgb(var(--sep-colour-b98c50));
+                  background: rgb(var(--sep-colour-3b2919));
+                  color: rgb(var(--sep-colour-efd6a8));
                 }
 
                 .sepulchria-viewport-body
@@ -578,8 +677,7 @@ async function PortalLayoutContent({
 
               /*
                * Keep selected text clearly visible inside all rich-text
-               * contenteditable fields. This is especially important for
-               * pale/high-key skins such as Humans' Mark.
+               * contenteditable fields.
                */
               .portal-skin-scope [contenteditable="true"]::selection,
               .portal-skin-scope [contenteditable="true"] *::selection {

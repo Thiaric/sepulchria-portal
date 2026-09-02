@@ -426,38 +426,39 @@ export function Profile({
             <section className="grid gap-4 xl:grid-cols-[minmax(0,1.45fr)_minmax(360px,0.9fr)]">
           <div className="min-w-0">
             <section className="grid gap-4 border border-[rgb(var(--sep-colour-654b2e))]/50 bg-[rgb(var(--sep-colour-17110d))] p-4 sm:p-5 lg:grid-cols-[180px_minmax(0,1fr)]">
-              <div
-                data-cosmetic-character-id={character.id}
-                data-cosmetic-surface="portrait"
-                className="mx-auto w-full max-w-[180px] lg:mx-0"
-              >
-                {character.portrait_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={character.portrait_url}
-                    alt={`Portrait of ${
-                      character.display_name ??
-                      "character"
-                    }`}
-                    className="aspect-[3/4] w-full border border-[rgb(var(--sep-colour-60482e))]/50 object-cover"
-                  />
-                ) : (
-                  <div className="flex aspect-[3/4] w-full items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0d0a08))] font-serif text-5xl text-[rgb(var(--sep-colour-5f503f))]">
-                    ?
-                  </div>
-                )}
+              <div className="mx-auto w-full max-w-[180px] lg:mx-0">
+  <div
+    data-cosmetic-character-id={character.id}
+    data-cosmetic-surface="portrait"
+  >
+    {character.portrait_url ? (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={character.portrait_url}
+        alt={`Portrait of ${
+          character.display_name ??
+          "character"
+        }`}
+        className="aspect-[3/4] w-full border border-[rgb(var(--sep-colour-60482e))]/50 object-cover"
+      />
+    ) : (
+      <div className="flex aspect-[3/4] w-full items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0d0a08))] font-serif text-5xl text-[rgb(var(--sep-colour-5f503f))]">
+        ?
+      </div>
+    )}
+  </div>
 
-                {own ? (
-                  <div
-                    data-own-character-status-under-portrait
-                    className="mt-2"
-                  >
-                    <CharacterStatusBadge
-                      status={status}
-                    />
-                  </div>
-                ) : null}
-              </div>
+  {own ? (
+    <div
+      data-own-character-status-under-portrait
+      className="mt-2"
+    >
+      <CharacterStatusBadge
+        status={status}
+      />
+    </div>
+  ) : null}
+</div>
 
               <div className="min-w-0">
                 <div className="flex flex-wrap items-start justify-between gap-3 border-b border-[rgb(var(--sep-colour-5d452d))]/35 pb-3">

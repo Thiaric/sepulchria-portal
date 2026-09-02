@@ -446,7 +446,8 @@ const nextTop =
       ) : null}
 
       <aside
-        aria-label="Context sidebar"
+  data-mobile-right-cosmetic-surface
+  aria-label="Context sidebar"
         data-portal-column
         data-portal-scroll
         data-portal-right-sidebar
