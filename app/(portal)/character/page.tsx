@@ -26,6 +26,8 @@ import { DisplayTrophySelector } from "@/components/characters/display-trophy-se
 import { LiveCharacterSheetRefresh } from "@/components/characters/live-character-sheet-refresh";
 import { getEffectiveCharacterAttributes } from "@/lib/characters/get-effective-character-attributes";
 import { createClient } from "@/lib/supabase/server";
+import { CosmeticFrameOverlay } from "@/components/cosmetics/cosmetic-frame-overlay";
+import { getEquippedCosmetic } from "@/lib/cosmetics/get-equipped-cosmetic";
 
 type CharacterStatus =
   | "draft"
@@ -181,6 +183,12 @@ export default async function CharacterPage({
     redirect("/character/create");
   }
 
+  const equippedSheetFrame =
+    await getEquippedCosmetic(
+      character.id,
+      "sheet_frame",
+    );
+
   const effectiveAttributes =
     await getEffectiveCharacterAttributes(
       character.id,
@@ -225,6 +233,10 @@ export default async function CharacterPage({
         activeTab={activeTab}
         notice={notice}
         sepulchriaSince={user.created_at ?? null}
+        sheetFrameUrl={
+          equippedSheetFrame?.assetUrl ??
+          null
+        }
       />
     </>
   );
@@ -281,6 +293,7 @@ export function Profile({
   messageAction = null,
   notice = null,
   sepulchriaSince = null,
+  sheetFrameUrl = null,
 }: {
   character: CharacterProfile;
   own?: boolean;
@@ -288,6 +301,7 @@ export function Profile({
   messageAction?: ReactNode;
   notice?: PageNotice | null;
   sepulchriaSince?: string | null;
+  sheetFrameUrl?: string | null;
 }) {
   const race = normaliseRelation(
     character.race,
@@ -395,8 +409,9 @@ export function Profile({
           </div>
         </div>
 
-        <CharacterSheetTabs own={own} activeTab={activeTab}
-        cacheKey={character.id ?? "own"}
+        <div className="relative isolate">
+          <CharacterSheetTabs own={own} activeTab={activeTab}
+          cacheKey={character.id ?? "own"}
 >
           <div data-character-sheet-panel="short">
           {activeTab === "short" ? (
@@ -877,7 +892,12 @@ export function Profile({
               </section>
             ) : null}
           </div>
-        </CharacterSheetTabs>
+          </CharacterSheetTabs>
+
+          <CosmeticFrameOverlay
+            assetUrl={sheetFrameUrl}
+          />
+        </div>
       </div>
     </div>
   );

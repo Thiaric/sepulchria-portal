@@ -19,6 +19,7 @@ import { LiveCharacterPresence } from "@/components/characters/live-character-pr
 import { PublicCharacterAgeDetail } from "@/components/characters/public-character-age-detail";
 import { PublicCharacterOrder } from "@/components/characters/public-character-order";
 import { CharacterProfileReportButton } from "@/components/reports/character-profile-report-button";
+import { CosmeticFrameOverlay } from "@/components/cosmetics/cosmetic-frame-overlay";
 import type {
   PublicCharacterProfile,
   PublicCodexReference,
@@ -39,6 +40,7 @@ type PublicCharacterProfileProps = {
   canReport: boolean;
   blockedByViewer: boolean;
   hasGlobalBlock: boolean;
+  sheetFrameUrl: string | null;
 };
 
 function formatGender(
@@ -94,6 +96,7 @@ export function PublicCharacterProfileView({
   canReport,
   blockedByViewer,
   hasGlobalBlock,
+  sheetFrameUrl,
 }: PublicCharacterProfileProps) {
   const fullName =
     character.display_name?.trim() ||
@@ -221,7 +224,8 @@ export function PublicCharacterProfileView({
         </div>
       </div>
 
-      <CharacterSheetTabs
+      <div className="relative isolate">
+        <CharacterSheetTabs
         showAudit={viewerIsStaff}
         activeTab={activeTab}
         cacheKey={character.id}
@@ -499,7 +503,12 @@ export function PublicCharacterProfileView({
             />
           ) : null}
         </div>
-      </CharacterSheetTabs>
+        </CharacterSheetTabs>
+
+        <CosmeticFrameOverlay
+          assetUrl={sheetFrameUrl}
+        />
+      </div>
     </article>
   );
 }

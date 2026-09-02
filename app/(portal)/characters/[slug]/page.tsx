@@ -9,6 +9,7 @@ import { getStaffSession } from "@/lib/auth/require-staff";
 import { isCharacterStaff } from "@/lib/auth/is-character-staff";
 import { hasCharacterFeature } from "@/lib/features/character-feature-entitlements";
 import { createClient } from "@/lib/supabase/server";
+import { getEquippedCosmetic } from "@/lib/cosmetics/get-equipped-cosmetic";
 
 type PublicCharacterPageProps = {
   params: Promise<{
@@ -87,6 +88,12 @@ export default async function PublicCharacterPage({
   }
 
   const supabase = await createClient();
+
+  const equippedSheetFrame =
+    await getEquippedCosmetic(
+      character.id,
+      "sheet_frame",
+    );
 
   const {
     data: { user },
@@ -256,6 +263,10 @@ const returnLabel =
         }
         isInFriendList={
           isInFriendList
+        }
+        sheetFrameUrl={
+          equippedSheetFrame?.assetUrl ??
+          null
         }
       />
     </div>

@@ -130,9 +130,10 @@ export async function DELETE(req: NextRequest) {
   if (!cosmetic.data) return bad("Cosmetic not found.", 404);
 
   const owners = await admin
-    .from("character_cosmetic_entitlements")
-    .select("character_id", { count: "exact", head: true })
-    .eq("cosmetic_item_id", id);
+  .from("character_cosmetic_entitlements")
+  .select("character_id", { count: "exact", head: true })
+  .eq("cosmetic_item_id", id)
+  .eq("enabled", true);
 
   if (owners.error) return bad(owners.error.message, 500);
   if ((owners.count ?? 0) > 0) {

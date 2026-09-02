@@ -11,6 +11,7 @@ import Link from "next/link";
 import { CharacterOrderIdentity } from "@/components/characters/character-order-identity";
 import { ReportButton } from "@/components/reports/report-button";
 import { PriceTooltip } from "@/components/warping/price-tooltip";
+import { CosmeticFrameOverlay } from "@/components/cosmetics/cosmetic-frame-overlay";
 import { createClient } from "@/lib/supabase/client";
 import {
   ROOM_HISTORY_HOURS,
@@ -906,6 +907,24 @@ export default function RoomMessageList({
   expires_at: string;
 };
 
+const [chatFrames,setChatFrames]=useState<
+  Record<string,string>
+>({});
+
+const chatCharacterIdsKey =
+  Array.from(
+    new Set(
+      liveMessages
+        .map(
+          (message) =>
+            message.character_id,
+        )
+        .filter(Boolean),
+    ),
+  )
+    .sort()
+    .join(",");
+
 const [activeShapeTags,setActiveShapeTags]=useState<
   Record<
     string,
@@ -1065,6 +1084,82 @@ const [activeShapeTags,setActiveShapeTags]=useState<
       cancelled = true;
     };
   }, [liveMessages]);
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadChatFrames() {
+      if (!chatCharacterIdsKey) {
+        if (active) {
+          setChatFrames({});
+        }
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          `/api/cosmetics/chat?ids=${encodeURIComponent(
+            chatCharacterIdsKey,
+          )}`,
+          {
+            cache: "no-store",
+          },
+        );
+
+        const data = await response.json() as {
+          error?: string;
+          frames?: Record<string,string>;
+        };
+
+        if (!response.ok) {
+          throw new Error(
+            data.error ??
+              "Unable to load chat cosmetics.",
+          );
+        }
+
+        if (active) {
+          setChatFrames(
+            data.frames ?? {},
+          );
+        }
+      } catch (error) {
+        console.error(
+          "Unable to load Chat Frames:",
+          error,
+        );
+      }
+    }
+
+    void loadChatFrames();
+
+    const timer =
+      window.setInterval(
+        () =>
+          void loadChatFrames(),
+        30000,
+      );
+
+    function handleFocus() {
+      void loadChatFrames();
+    }
+
+    window.addEventListener(
+      "focus",
+      handleFocus,
+    );
+
+    return () => {
+      active = false;
+      window.clearInterval(
+        timer,
+      );
+      window.removeEventListener(
+        "focus",
+        handleFocus,
+      );
+    };
+  }, [chatCharacterIdsKey]);
 
   useEffect(()=>{
     let active=true;
@@ -1884,10 +1979,21 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                     "attribute_check" ||
                   isMechanicalAction;
 
+                const chatFrameUrl =
+                  !isMechanicalOutput
+                    ? chatFrames[
+                        item.character_id
+                      ] ?? null
+                    : null;
+
                 return (
                   <article
                     key={item.id}
                     className={`relative flex min-w-0 gap-3 py-3 pl-5 pr-12 sm:pl-7 sm:pr-12 ${
+                      chatFrameUrl
+                        ? "isolate overflow-hidden "
+                        : ""
+                    }${
                       isMechanicalAction
                         ? "border-l-2 border-[rgb(var(--sep-colour-bd8d4d))]/45 bg-[rgb(var(--sep-colour-21170f))]/70"
                         : isNaturalTwenty
@@ -1905,6 +2011,11 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                         : undefined
                     }
                   >
+                    <CosmeticFrameOverlay
+                      assetUrl={chatFrameUrl}
+                      layer="background"
+                    />
+
                     {item.character_id &&
                     item.character_id !== viewerCharacterId ? (
                       <div className="absolute right-2 top-2 z-10">
@@ -1917,7 +2028,7 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                     ) : null}
 
                     {/* Left: portrait, identity icons and timestamp */}
-                    <div className="flex w-[76px] shrink-0 flex-col">
+                    <div className="relative z-10 flex w-[76px] shrink-0 flex-col">
                       <div className="flex items-start gap-1.5">
                         <CharacterPortrait
                           author={author}
@@ -1939,7 +2050,7 @@ const [activeShapeTags,setActiveShapeTags]=useState<
 
                     {/* Right: one single paragraph */}
                     <p
-                      className={`min-w-0 flex-1 whitespace-pre-wrap break-words text-[13px] leading-[18px] ${
+                      className={`relative z-10 min-w-0 flex-1 whitespace-pre-wrap break-words text-[13px] leading-[18px] ${
                         isNaturalTwenty
                           ? "text-emerald-300"
                           : isNaturalOne
