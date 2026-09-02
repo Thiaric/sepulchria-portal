@@ -74,12 +74,28 @@ export function CosmeticsFeatureManager({ initialItems }: { initialItems: Cosmet
     }
   }
 
-  async function uploadFile({ slug, file, kind }: { slug: string; file: File; kind: "asset" | "preview" }) {
+  async function uploadFile({
+    slug,
+    file,
+    kind,
+    replaceExisting = false,
+  }: {
+    slug: string;
+    file: File;
+    kind: "asset" | "preview";
+    replaceExisting?: boolean;
+  }) {
     validateFile(file, kind);
     const ticket = await fetch("/api/admin/cosmetics/upload-ticket", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ slug, kind, mime_type: file.type, file_size_bytes: file.size }),
+      body: JSON.stringify({
+        slug,
+        kind,
+        mime_type: file.type,
+        file_size_bytes: file.size,
+        replace_existing: replaceExisting,
+      }),
     });
     const ticketData = await responseJson(ticket);
     if (!ticket.ok) throw new Error(ticketData.error ?? "Unable to authorise cosmetic upload.");
@@ -155,7 +171,32 @@ export function CosmeticsFeatureManager({ initialItems }: { initialItems: Cosmet
     setBusy(true);
     setMessage("");
     setFailed(false);
+
     try {
+      const replacementAsset = formData.get("replacement_asset");
+      const replacementPreview = formData.get("replacement_preview");
+
+      let assetPath: string | undefined;
+      let previewPath: string | undefined;
+
+      if (replacementAsset instanceof File && replacementAsset.size > 0) {
+        assetPath = await uploadFile({
+          slug: item.slug,
+          file: replacementAsset,
+          kind: "asset",
+          replaceExisting: true,
+        });
+      }
+
+      if (replacementPreview instanceof File && replacementPreview.size > 0) {
+        previewPath = await uploadFile({
+          slug: item.slug,
+          file: replacementPreview,
+          kind: "preview",
+          replaceExisting: true,
+        });
+      }
+
       const response = await fetch("/api/admin/cosmetics", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -165,15 +206,30 @@ export function CosmeticsFeatureManager({ initialItems }: { initialItems: Cosmet
           description: String(formData.get("description") ?? ""),
           sort_order: Number(formData.get("sort_order") ?? 0),
           is_active: formData.get("is_active") === "on",
+          ...(assetPath ? { asset_storage_path: assetPath } : {}),
+          ...(previewPath ? { preview_storage_path: previewPath } : {}),
         }),
       });
+
       const data = await responseJson(response);
-      if (!response.ok) throw new Error(data.error ?? "Unable to save cosmetic.");
-      setMessage("Cosmetic saved.");
+      if (!response.ok) {
+        throw new Error(data.error ?? "Unable to save cosmetic.");
+      }
+
+      setMessage(
+        assetPath || previewPath
+          ? "Cosmetic image replaced and saved."
+          : "Cosmetic saved.",
+      );
+
       await reload();
     } catch (error) {
       setFailed(true);
-      setMessage(error instanceof Error ? error.message : "Unable to save cosmetic.");
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : "Unable to save cosmetic.",
+      );
     } finally {
       setBusy(false);
     }
@@ -331,6 +387,38 @@ export function CosmeticsFeatureManager({ initialItems }: { initialItems: Cosmet
                     </div>
 
                     <textarea name="description" rows={3} maxLength={1500} defaultValue={item.description} className={`${input} mt-3 resize-y`} />
+
+                    <div className="mt-3 grid gap-3 md:grid-cols-2">
+                      <label className="block">
+                        <span className="mb-1.5 block text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))]">
+                          Replace actual cosmetic asset
+                        </span>
+                        <input
+                          name="replacement_asset"
+                          type="file"
+                          accept="image/png,image/webp,image/svg+xml,.png,.webp,.svg"
+                          className="block w-full text-xs text-[rgb(var(--sep-colour-a99472))]"
+                        />
+                        <span className="mt-1 block text-[8px] leading-4 text-[rgb(var(--sep-colour-6f6252))]">
+                          Leave empty to keep the current asset.
+                        </span>
+                      </label>
+
+                      <label className="block">
+                        <span className="mb-1.5 block text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))]">
+                          Replace preview
+                        </span>
+                        <input
+                          name="replacement_preview"
+                          type="file"
+                          accept="image/png,image/webp,image/jpeg,image/svg+xml,.png,.webp,.jpg,.jpeg,.svg"
+                          className="block w-full text-xs text-[rgb(var(--sep-colour-a99472))]"
+                        />
+                        <span className="mt-1 block text-[8px] leading-4 text-[rgb(var(--sep-colour-6f6252))]">
+                          Leave empty to keep the current preview.
+                        </span>
+                      </label>
+                    </div>
 
                     <div className="mt-3 flex flex-wrap items-center gap-4">
                       <label className="flex gap-2 text-xs">

@@ -36,12 +36,14 @@ export async function POST(req: NextRequest) {
     kind?: "preview" | "asset";
     mime_type?: string;
     file_size_bytes?: number;
+    replace_existing?: boolean;
   };
 
   const slug = String(body.slug ?? "").trim().toLowerCase();
   const kind = String(body.kind ?? "");
   const mimeType = String(body.mime_type ?? "");
   const fileSize = Number(body.file_size_bytes ?? 0);
+  const replaceExisting = body.replace_existing === true;
 
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) return bad("Invalid cosmetic slug.");
   if (kind !== "preview" && kind !== "asset") return bad("Invalid cosmetic upload type.");
@@ -67,10 +69,17 @@ export async function POST(req: NextRequest) {
     .maybeSingle();
 
   if (existing.error) return bad(existing.error.message, 500);
-  if (existing.data) return bad("That cosmetic slug already exists.", 409);
+  if (existing.data && !replaceExisting) {
+    return bad("That cosmetic slug already exists.", 409);
+  }
+  if (!existing.data && replaceExisting) {
+    return bad("That cosmetic does not exist.", 404);
+  }
 
   const folder = kind === "asset" ? "assets" : "previews";
-  const path = `${folder}/${slug}.${extension(mimeType)}`;
+  const path = replaceExisting
+    ? `${folder}/${slug}-${Date.now()}.${extension(mimeType)}`
+    : `${folder}/${slug}.${extension(mimeType)}`;
 
   const ticket = await admin.storage
     .from(BUCKET)

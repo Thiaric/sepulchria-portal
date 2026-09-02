@@ -30,7 +30,9 @@ function validSlugPath(slug: string, kind: "asset" | "preview", path: string | n
   if (!path) return kind === "preview";
   const escaped = slug.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const extension = kind === "asset" ? "(?:png|webp|svg)" : "(?:png|webp|jpg|svg)";
-  return new RegExp(`^${kind === "asset" ? "assets" : "previews"}/${escaped}\\.${extension}$`).test(path);
+  return new RegExp(
+    `^${kind === "asset" ? "assets" : "previews"}/${escaped}(?:-\\d+)?\\.${extension}$`,
+  ).test(path);
 }
 
 function publicUrl(path: string) {
@@ -93,6 +95,7 @@ export async function POST(req: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
   if (!(await allowed())) return bad("Not authorised.", 403);
+
   const body = await req.json();
   const id = String(body.id ?? "");
   const name = String(body.name ?? "").trim();
@@ -101,17 +104,84 @@ export async function PATCH(req: NextRequest) {
   if (!id || !name) return bad("Cosmetic ID and name are required.");
   if (!Number.isInteger(sortOrder)) return bad("Sort order must be a whole number.");
 
-  const result = await createAdminClient()
+  const admin = createAdminClient();
+
+  const current = await admin
+    .from("cosmetic_items")
+    .select("id, slug, asset_storage_path, preview_storage_path")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (current.error) return bad(current.error.message, 500);
+  if (!current.data) return bad("Cosmetic not found.", 404);
+
+  const hasAssetReplacement =
+    Object.prototype.hasOwnProperty.call(body, "asset_storage_path");
+  const hasPreviewReplacement =
+    Object.prototype.hasOwnProperty.call(body, "preview_storage_path");
+
+  const assetPath = hasAssetReplacement
+    ? String(body.asset_storage_path ?? "") || null
+    : current.data.asset_storage_path;
+
+  const previewPath = hasPreviewReplacement
+    ? String(body.preview_storage_path ?? "") || null
+    : current.data.preview_storage_path;
+
+  if (!assetPath) return bad("A cosmetic asset is required.");
+  if (!validSlugPath(current.data.slug, "asset", assetPath)) {
+    return bad("Invalid cosmetic asset path.");
+  }
+  if (!validSlugPath(current.data.slug, "preview", previewPath)) {
+    return bad("Invalid cosmetic preview path.");
+  }
+
+  const assetUrl = publicUrl(assetPath);
+  const previewUrl = previewPath ? publicUrl(previewPath) : assetUrl;
+
+  const result = await admin
     .from("cosmetic_items")
     .update({
       name,
       description: String(body.description ?? "").trim(),
       is_active: body.is_active === true,
       sort_order: sortOrder,
+      asset_storage_path: assetPath,
+      asset_url: assetUrl,
+      preview_storage_path: previewPath,
+      preview_image_url: previewUrl,
     })
     .eq("id", id);
 
   if (result.error) return bad(result.error.message, 500);
+
+  const obsoletePaths = Array.from(
+    new Set(
+      [
+        hasAssetReplacement &&
+        current.data.asset_storage_path &&
+        current.data.asset_storage_path !== assetPath
+          ? current.data.asset_storage_path
+          : null,
+        hasPreviewReplacement &&
+        current.data.preview_storage_path &&
+        current.data.preview_storage_path !== previewPath
+          ? current.data.preview_storage_path
+          : null,
+      ].filter((value): value is string => Boolean(value)),
+    ),
+  );
+
+  if (obsoletePaths.length > 0) {
+    const cleanup = await admin.storage.from(BUCKET).remove(obsoletePaths);
+    if (cleanup.error) {
+      console.error(
+        "Cosmetic replacement saved, but old file cleanup failed:",
+        cleanup.error.message,
+      );
+    }
+  }
+
   return NextResponse.json({ ok: true });
 }
 
