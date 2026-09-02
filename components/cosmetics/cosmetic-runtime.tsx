@@ -414,12 +414,12 @@ export function CosmeticRuntime() {
         filter: drop-shadow(0 3px 7px rgba(0,0,0,.32));
       }
 
-      [data-cosmetic-surface="pm"][data-has-pm-frame="true"] {
-        padding: 10px 12px !important;
-      }
-
       [data-cosmetic-surface="pm"][data-has-pm-frame="true"]::after {
-        inset: 2px;
+        /*
+         * Pure overlay anchored to the OUTER PM card.
+         * Message content controls its own height and padding.
+         */
+        inset: -6px -6px;
         border: 12px solid transparent;
         border-image-source: var(--sep-cosmetic-pm-frame);
         border-image-slice: 14% 9%;

@@ -691,7 +691,7 @@ export function ConversationMessageList({
                 key={message.id}
                 data-sep-interaction-ignore="true"
                 data-cosmetic-character-id={message.sender_character_id}
-                data-cosmetic-surface={ongame ? "pm" : undefined}
+                data-cosmetic-surface="pm"
                 className={`relative max-w-[92%] border px-2.5 py-2 transition ${
                   own
                     ? ongame
