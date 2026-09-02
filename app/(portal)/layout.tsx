@@ -250,7 +250,7 @@ async function PortalLayoutContent({
                   padding-top: 14px;
                   padding-bottom: 14px;
                   padding-right: 10px;
-                  padding-left: 5px;
+                  padding-left: 10px;
                   overflow: hidden;
                 }
 
@@ -416,9 +416,10 @@ async function PortalLayoutContent({
 
                 [data-portal-shell-inner][data-has-cosmetic-centre-panel="true"]
                   [data-portal-centre-host]::after {
-                  border-width: 24px;
+                  border-width: 50px;
                   border-image-source: var(--sep-cosmetic-centre-panel-frame);
                   border-image-slice: 9% 7%;
+                  inset: -10px;
                 }
 
                 /*
@@ -431,7 +432,7 @@ async function PortalLayoutContent({
                   padding-top: 14px;
                   padding-bottom: 14px;
                   padding-right: 10px;
-                  padding-left: 5px;
+                  padding-left: 10px;
                   overflow: hidden;
                 }
 
