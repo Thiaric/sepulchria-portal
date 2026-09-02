@@ -231,6 +231,31 @@ async function PortalLayoutContent({
                 background-repeat: no-repeat;
               }
 
+              /*
+               * LOCATION ATMOSPHERE + CHAT PANEL
+               *
+               * The atmosphere lives on the outer location surface, while
+               * the main chat article normally has a fully opaque dark
+               * background. Make ONLY that panel background translucent
+               * while a location atmosphere is equipped.
+               *
+               * Text, messages, controls, borders and the location frame
+               * keep their normal opacity.
+               */
+              [data-portal-shell-inner][data-has-cosmetic-location-atmosphere="true"]
+  [data-game-location-surface]
+  article[data-sep-interaction-fixed="true"] {
+  background-color:
+    rgb(var(--sep-colour-17110d) / 60%) !important;
+}
+
+[data-portal-shell-inner][data-has-cosmetic-location-atmosphere="true"]
+  [data-game-location-surface]
+  [data-room-chat-composer] {
+  background-color:
+    rgb(var(--sep-colour-17110d) / 60%) !important;
+}
+
               .portal-left-collapse-toggle,
               .portal-right-collapse-toggle {
                 display: none;

@@ -1159,10 +1159,10 @@ function ignoreSpellingWord() {
   }
 
   return (
-    <div className="shrink-0 border-t border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-17110d))] p-2 sm:px-3 sm:py-2">
-      <PendingOpposedActions
-  attributes={attributes}
-/>
+    <div
+  data-room-chat-composer
+  className="shrink-0 border-t border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-17110d))] p-2 sm:px-3 sm:py-2"
+>
       <PendingShapeResponses attributes={attributes} />
       <div className="mb-2 flex justify-end">
         

@@ -25,19 +25,8 @@ const SURFACE_RULES: Record<
   forum: ["forum_frame"],
 };
 
-const COSMETIC_ASSET_CACHE_BUSTER =
-  Date.now().toString(36);
-
 function cssUrl(value: string) {
-  const separator =
-    value.includes("?")
-      ? "&"
-      : "?";
-
-  const freshValue =
-    `${value}${separator}sep_asset_v=${COSMETIC_ASSET_CACHE_BUSTER}`;
-
-  return `url("${freshValue.replace(/"/g, "%22")}")`;
+  return `url("${value.replace(/"/g, "%22")}")`;
 }
 
 function datasetKey(category: CosmeticCategory) {
