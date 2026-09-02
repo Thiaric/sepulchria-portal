@@ -20,7 +20,7 @@ export function cosmeticFrameStyle(
       borderStyle: "solid",
       borderColor: "transparent",
       borderWidth:
-        "clamp(20px, 2.6vw, 40px)",
+        "clamp(10px, 2.6vw, 10px)",
       borderImageSource:
         `url("${safeUrl}")`,
       borderImageSlice: "14% 9%",

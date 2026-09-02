@@ -89,6 +89,10 @@ if (pathname === "/friends") {
   return <FriendListContext />;
 }
 
+if (pathname === "/cosmetics") {
+  return <CosmeticsContextPanel />;
+}
+
 if (pathname === "/ranking") {
   return <HallOfRenownContext />;
 }
@@ -4443,5 +4447,39 @@ function ContextLink({
       <span>{label}</span>
       <span aria-hidden="true">→</span>
     </Link>
+  );
+}
+function CosmeticsContextPanel() {
+  return (
+    <div className="flex h-full min-h-0 flex-col">
+      <ContextHeading
+        eyebrow="Premium"
+        title="Cosmetics"
+      />
+
+      <p className="mt-4 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+        Manage the visual treatments your character owns and choose which cosmetic is currently equipped in each slot.
+      </p>
+
+      <div className="my-4 h-px bg-[rgb(var(--sep-colour-59432c))]/35" />
+
+      <div className="space-y-2">
+        <div className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3">
+          <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">Character Sheet</p>
+          <p className="mt-1 font-serif text-sm text-[rgb(var(--sep-colour-cbb28a))]">Sheet Frames</p>
+          <p className="mt-1 text-[9px] leading-4 text-[rgb(var(--sep-colour-756b5d))]">Frames shown around your own and public character sheet.</p>
+        </div>
+
+        <div className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3">
+          <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">Location Chronicle</p>
+          <p className="mt-1 font-serif text-sm text-[rgb(var(--sep-colour-cbb28a))]">Chat Frames</p>
+          <p className="mt-1 text-[9px] leading-4 text-[rgb(var(--sep-colour-756b5d))]">Frames shown around your normal in-character location actions.</p>
+        </div>
+      </div>
+
+      <div className="mt-auto border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-4">
+        <p className="text-[9px] leading-4 text-[rgb(var(--sep-colour-706452))]">You can own several cosmetics, but only one cosmetic can be equipped in each slot at a time.</p>
+      </div>
+    </div>
   );
 }

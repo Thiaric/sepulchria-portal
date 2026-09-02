@@ -180,7 +180,7 @@ export function CharacterSheetTabs({
 
   return (
     <div
-      className="character-sheet-tabs mt-4"
+      className="character-sheet-tabs"
       data-character-sheet-active-tab={
         currentTab
       }

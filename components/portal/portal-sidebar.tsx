@@ -207,6 +207,7 @@ const cosmeticsItem: NavigationItem = {
   icon: "/icons/premium.png",
   href: "/cosmetics",
   activePaths: ["/cosmetics"],
+  opensModal: true,
 };
 
 const friendsItem: NavigationItem = {

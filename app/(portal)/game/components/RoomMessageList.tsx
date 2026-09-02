@@ -2016,6 +2016,13 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                           }
                         : {}),
                       ...(chatFrameCss ?? {}),
+                      ...(chatFrameUrl
+                        ? {
+                            paddingLeft: "4px",
+                            paddingTop: "4px",
+                            paddingBottom: "4px",
+                          }
+                        : {}),
                     }}
                   >
                     {item.character_id &&
