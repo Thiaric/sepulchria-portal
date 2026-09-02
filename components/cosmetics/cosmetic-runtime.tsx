@@ -428,11 +428,13 @@ export function CosmeticRuntime() {
       }
 
       [data-cosmetic-surface="instant"][data-has-instant-chat-frame="true"] {
-        padding: 7px 10px !important;
+        position: relative !important;
+        isolation: isolate;
+        overflow: visible !important;
       }
 
       [data-cosmetic-surface="instant"][data-has-instant-chat-frame="true"]::after {
-        inset: -2px;
+        inset: -11px -6px;
         border: 10px solid transparent;
         border-image-source: var(--sep-cosmetic-instant-chat-frame);
         border-image-slice: 15% 10%;

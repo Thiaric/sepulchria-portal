@@ -925,30 +925,34 @@ export function InstantChatDock({
                         <div
                           data-cosmetic-character-id={message.sender_character_id}
                           data-cosmetic-surface="instant"
-                          className={`max-w-[82%] border px-2 py-1.5 text-[10px] leading-4 ${
-                            own
-                              ? "border-[rgb(var(--sep-colour-80613c))] bg-[rgb(var(--sep-colour-2c2117))] text-[rgb(var(--sep-colour-dcc8a8))]"
-                              : "border-[rgb(var(--sep-colour-514233))] bg-[rgb(var(--sep-colour-17120f))] text-[rgb(var(--sep-colour-c5b59c))]"
-                          }`}
+                          className="relative max-w-[82%] overflow-visible"
                         >
-                          <p className="whitespace-pre-wrap break-words">
-                            {
-                              message.body
-                            }
-                          </p>
-
-                          <time className="mt-0.5 block text-right text-[6px] leading-none text-[rgb(var(--sep-colour-746858))]">
-                            {new Date(
-                              message.created_at,
-                            ).toLocaleTimeString(
-                              "en-GB",
+                          <div
+                            className={`border px-2 py-1.5 text-[10px] leading-4 ${
+                              own
+                                ? "border-[rgb(var(--sep-colour-80613c))] bg-[rgb(var(--sep-colour-2c2117))] text-[rgb(var(--sep-colour-dcc8a8))]"
+                                : "border-[rgb(var(--sep-colour-514233))] bg-[rgb(var(--sep-colour-17120f))] text-[rgb(var(--sep-colour-c5b59c))]"
+                            }`}
+                          >
+                            <p className="whitespace-pre-wrap break-words">
                               {
-                                hour: "2-digit",
-                                minute:
-                                  "2-digit",
-                              },
-                            )}
-                          </time>
+                                message.body
+                              }
+                            </p>
+
+                            <time className="mt-0.5 block text-right text-[6px] leading-none text-[rgb(var(--sep-colour-746858))]">
+                              {new Date(
+                                message.created_at,
+                              ).toLocaleTimeString(
+                                "en-GB",
+                                {
+                                  hour: "2-digit",
+                                  minute:
+                                    "2-digit",
+                                },
+                              )}
+                            </time>
+                          </div>
                         </div>
 
                         {!own ? (
