@@ -258,7 +258,13 @@ async function PortalLayoutContent({
                 [data-cosmetic-header-controls] :is(button,a)::before {
                 content: "";
                 position: absolute;
-                z-index: 8;
+                /*
+                 * Keep the permanent cosmetic frame ABOVE the shared
+                 * interaction illumination (::after uses z-index: 20).
+                 * Hover may illuminate the control, but must never alter
+                 * the apparent brightness of the frame itself.
+                 */
+                z-index: 30;
                 inset: -5px;
                 border: 9px solid transparent;
                 border-image-source:
@@ -283,7 +289,7 @@ async function PortalLayoutContent({
                 [data-cosmetic-header-controls]
                 :is(button,a)
                 > [aria-label] {
-                z-index: 20 !important;
+                z-index: 40 !important;
               }
 
               @media (max-width: 1023px) {
@@ -411,30 +417,13 @@ async function PortalLayoutContent({
 
               /*
                * DESKTOP / LAPTOP
+               *
+               * Header-control cosmetics are intentionally NOT repeated
+               * here. Their permanent frame already lives on ::before
+               * above, while ::after remains available to the shared
+               * interaction/hover layer.
                */
               @media (min-width: 1024px) {
-                [data-portal-shell-inner][data-has-cosmetic-header-controls="true"]
-                  [data-cosmetic-header-controls] :is(button,a) {
-                  position: relative;
-                  isolation: isolate;
-                  overflow: visible;
-                }
-
-                [data-portal-shell-inner][data-has-cosmetic-header-controls="true"]
-                  [data-cosmetic-header-controls] :is(button,a)::after {
-                  content: "";
-                  position: absolute;
-                  z-index: 8;
-                  inset: -3px;
-                  border: 8px solid transparent;
-                  border-image-source: var(--sep-cosmetic-header-control-frame);
-                  border-image-slice: 18%;
-                  border-image-width: 1;
-                  border-image-repeat: stretch;
-                  pointer-events: none;
-                  filter: drop-shadow(0 2px 5px rgba(0,0,0,.42));
-                }
-
                 /*
                  * Panel frames live on non-scrolling shell wrappers.
                  * The scrolling columns keep their own overflow.

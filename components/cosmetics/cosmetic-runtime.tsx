@@ -346,11 +346,21 @@ export function CosmeticRuntime() {
       }
 
       [data-cosmetic-surface="nameplate"][data-has-nameplate="true"] {
+        /*
+         * Keep the protected centre around the identity text, but scale
+         * the breathing room with the display's own font size.
+         * Large profile names therefore get a complete plate while
+         * compact identity displays stay compact.
+         */
         display: inline-block;
         width: fit-content;
         max-width: 100%;
-        padding: 6px 30px 6px 16px !important;
-        margin-block: -4px 2px;
+        padding:
+          0.22em
+          clamp(16px, 1.05em, 34px)
+          0.24em
+          clamp(14px, 0.9em, 30px) !important;
+        margin-block: -0.12em 0.08em;
         overflow: visible;
       }
 
@@ -358,10 +368,21 @@ export function CosmeticRuntime() {
         content: "";
         position: absolute;
         z-index: -1;
-        inset: -2px -8px;
-        border: 11px solid transparent;
+
+        /*
+         * The 1600×320 nameplate is very wide. A deeper vertical slice
+         * and independently-sized horizontal/vertical border widths keep
+         * the top/bottom rails visible instead of leaving only the large
+         * end ornaments.
+         */
+        inset: -0.45em -0.48em;
+        border-style: solid;
+        border-color: transparent;
+        border-width:
+          clamp(8px, 0.55em, 18px)
+          clamp(14px, 0.95em, 30px);
         border-image-source: var(--sep-cosmetic-nameplate);
-        border-image-slice: 18% 10%;
+        border-image-slice: 26% 11% fill;
         border-image-width: 1;
         border-image-repeat: stretch;
         pointer-events: none;

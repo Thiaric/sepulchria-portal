@@ -471,7 +471,7 @@ export function Profile({
                       <h1
                         data-cosmetic-character-id={character.id}
                         data-cosmetic-surface="nameplate"
-                        className="min-w-0 break-words font-serif text-[1.7rem] text-[rgb(var(--sep-colour-ecd9b2))] sm:text-[1.95rem]"
+                        className="min-w-0 break-words font-serif text-[1.3rem] text-[rgb(var(--sep-colour-ecd9b2))] sm:text-[1.4rem]"
                       >
                         {character.display_name ??
                           "Unnamed character"}
