@@ -474,7 +474,7 @@ async function PortalLayoutContent({
                   border-width: 50px;
                   border-image-source: var(--sep-cosmetic-centre-panel-frame);
                   border-image-slice: 9% 7%;
-                  inset: -10px;
+                  inset: -5px -10px -10px -10px;
                 }
 
                 /*

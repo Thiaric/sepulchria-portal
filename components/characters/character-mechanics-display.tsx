@@ -64,14 +64,14 @@ export async function CharacterMechanicsDisplay({
       <ActivePriceEffects characterId={characterId} />
       <ActiveShapeEffects characterId={characterId} />
             <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 p-5 sm:p-6">
-        <h2 className="font-serif text-2xl text-[rgb(var(--sep-colour-dec89f))]">Warping</h2>
+        <h2 className="font-serif text-[0.9rem] text-[rgb(var(--sep-colour-dec89f))]">Warping</h2>
 
         <div className="mt-5 grid gap-px bg-[rgb(var(--sep-colour-4f3b28))]/35 sm:grid-cols-2">
           <div className="bg-[rgb(var(--sep-colour-120e0b))] px-4 py-3">
             <p className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-8b7455))]">
               Current Affinity
             </p>
-            <p className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-e1c28d))]">
+            <p className="mt-1 font-serif text-[0.9rem] text-[rgb(var(--sep-colour-e1c28d))]">
               {warping.affinity}
             </p>
             <p className="mt-1 text-[7px] uppercase tracking-[0.08em] text-[rgb(var(--sep-colour-756958))]">
@@ -83,7 +83,7 @@ export async function CharacterMechanicsDisplay({
             <p className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-8b7455))]">
               Shapes per day
             </p>
-            <p className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-e1c28d))]">
+            <p className="mt-1 font-serif text-[0.9rem] text-[rgb(var(--sep-colour-e1c28d))]">
               {warping.warpsPerDay}
             </p>
             <p className="mt-1 text-[7px] uppercase tracking-[0.08em] text-[rgb(var(--sep-colour-756958))]">
@@ -94,7 +94,7 @@ export async function CharacterMechanicsDisplay({
       </section>
 
 <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 p-5 sm:p-6">
-        <h2 className="mt-[-8] font-serif text-2xl text-[rgb(var(--sep-colour-dec89f))]">
+        <h2 className="mt-[-8] font-serif text-[0.9rem] text-[rgb(var(--sep-colour-dec89f))]">
           Attributes
         </h2>
 
@@ -115,7 +115,7 @@ export async function CharacterMechanicsDisplay({
                   <span className="group relative inline-flex">
                     <span
                       tabIndex={entry.base !== null ? 0 : -1}
-                      className={`font-serif text-2xl text-[rgb(var(--sep-colour-e1c28d))] ${
+                      className={`font-serif text-[0.9rem] text-[rgb(var(--sep-colour-e1c28d))] ${
                         entry.base !== null
                           ? "cursor-help outline-none transition hover:text-[rgb(var(--sep-colour-f0d49f))] focus:text-[rgb(var(--sep-colour-f0d49f))]"
                           : ""

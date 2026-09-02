@@ -304,7 +304,7 @@ export function PublicCharacterProfileView({
                     <h1
                       data-cosmetic-character-id={character.id}
                       data-cosmetic-surface="nameplate"
-                      className="min-w-0 break-words font-serif text-[rgb(var(--sep-colour-ecd9b2))] text-[1.3rem] sm:text-[1.4rem]"
+                      className="min-w-0 break-words font-serif text-[rgb(var(--sep-colour-ecd9b2))] text-[0.9rem] sm:text-[1rem]"
                     >
                       {fullName}
                     </h1>
