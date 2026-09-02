@@ -1244,7 +1244,11 @@ const [activeShapeTags,setActiveShapeTags]=useState<
     };
   },[liveMessages]);
 
-  function renderShapeTagGroups(characterId:string,trailingDivider:boolean){
+  function renderShapeTagGroups(
+    characterId:string,
+    trailingDivider:boolean,
+    metadataColour?:string,
+  ){
     const tags=activeShapeTags[characterId];
     if(!tags)return null;
 
@@ -1256,7 +1260,14 @@ const [activeShapeTags,setActiveShapeTags]=useState<
     if(!normalGroups.length&&!tags.prices.length)return null;
 
     return (
-      <span className="text-[9px] uppercase tracking-[.04em] text-[rgb(var(--sep-colour-b99765))]">
+      <span
+        className="text-[9px] uppercase tracking-[.04em] text-[rgb(var(--sep-colour-b99765))]"
+        style={
+          metadataColour
+            ? { color: metadataColour }
+            : undefined
+        }
+      >
         {" | "}
         {normalGroups.length?normalGroups.join(" | "):null}
         {normalGroups.length&&tags.prices.length?" | ":null}
@@ -1284,8 +1295,15 @@ const [activeShapeTags,setActiveShapeTags]=useState<
     return renderShapeTagGroups(characterId,true);
   }
 
-  function shapeTagHeaderText(characterId:string){
-    return renderShapeTagGroups(characterId,false);
+  function shapeTagHeaderText(
+    characterId:string,
+    metadataColour?:string,
+  ){
+    return renderShapeTagGroups(
+      characterId,
+      false,
+      metadataColour,
+    );
   }
 
   useEffect(() => {
@@ -1850,6 +1868,12 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                             item.created_at
                           }
                           className="mt-1.5 block text-[7px] uppercase leading-4 tracking-[0.12em] text-[rgb(var(--sep-colour-776b5b))]"
+                          style={{
+                            color:
+                              privateLocationTheme
+                                ? privateLocationTheme.offgameTextColour
+                                : "rgb(var(--sep-colour-d3c2aa))",
+                          }}
                         >
                           {time}
                         </time>
@@ -1908,14 +1932,12 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                               href={characterHref}
                               className="inline font-serif text-sm leading-[18px] text-[rgb(var(--sep-colour-d8bf91))] transition hover:text-[rgb(var(--sep-colour-ecd29e))]"
                               style={
-                                privateLocationTheme
-                                  ? {
-                                      color:
-                                        isWhisper
-                                          ? privateLocationTheme.whisperTextColour
-                                          : privateLocationTheme.offgameTextColour,
-                                    }
-                                  : undefined
+                                {
+                                  color:
+                                    privateLocationTheme
+                                      ? privateLocationTheme.offgameTextColour
+                                      : "rgb(var(--sep-colour-d3c2aa))",
+                                }
                               }
                             >
                               {author.first_name ??
@@ -1925,14 +1947,12 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                             <span
                               className="inline font-serif text-sm leading-[18px] text-[rgb(var(--sep-colour-d8bf91))]"
                               style={
-                                privateLocationTheme
-                                  ? {
-                                      color:
-                                        isWhisper
-                                          ? privateLocationTheme.whisperTextColour
-                                          : privateLocationTheme.offgameTextColour,
-                                    }
-                                  : undefined
+                                {
+                                  color:
+                                    privateLocationTheme
+                                      ? privateLocationTheme.offgameTextColour
+                                      : "rgb(var(--sep-colour-d3c2aa))",
+                                }
                               }
                             >
                               {author?.first_name ??
@@ -1942,7 +1962,12 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                           )}
 
                           {author
-                            ? shapeTagHeaderText(author.id)
+                            ? shapeTagHeaderText(
+                                author.id,
+                                privateLocationTheme
+                                  ? privateLocationTheme.offgameTextColour
+                                  : "rgb(var(--sep-colour-d3c2aa))",
+                              )
                             : null}
 
                           <br />
@@ -1953,17 +1978,13 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                             }
                             speechColour={
                               privateLocationTheme
-                                ? isWhisper
-                                  ? privateLocationTheme.whisperTextColour
-                                  : privateLocationTheme.offgameTextColour
-                                : undefined
+                                ? privateLocationTheme.offgameTextColour
+                                : "rgb(var(--sep-colour-d3c2aa))"
                             }
                             actionColour={
                               privateLocationTheme
-                                ? isWhisper
-                                  ? privateLocationTheme.whisperTextColour
-                                  : privateLocationTheme.offgameTextColour
-                                : undefined
+                                ? privateLocationTheme.offgameTextColour
+                                : "rgb(var(--sep-colour-d3c2aa))"
                             }
                           />
                         </p>

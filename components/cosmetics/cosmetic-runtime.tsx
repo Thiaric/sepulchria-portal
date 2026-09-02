@@ -441,11 +441,18 @@ export function CosmeticRuntime() {
       }
 
       [data-cosmetic-surface="forum"][data-has-forum-frame="true"] {
-        padding: 12px !important;
+        /*
+         * Overlay only: the cosmetic must not alter the forum-post layout.
+         */
+        padding: 0 !important;
       }
 
       [data-cosmetic-surface="forum"][data-has-forum-frame="true"]::after {
-        inset: 2px;
+        /*
+         * Move the 9-slice rail outside the post's real perimeter instead
+         * of drawing it visibly inside the authored post.
+         */
+        inset: -16px -10px;
         border: 14px solid transparent;
         border-image-source: var(--sep-cosmetic-forum-frame);
         border-image-slice: 12% 8%;

@@ -237,6 +237,72 @@ async function PortalLayoutContent({
               }
 
               /*
+               * HEADER CONTROL COSMETIC FRAME
+               *
+               * Keep the ornamental frame separate from the shared
+               * interaction layer: interaction lighting uses ::after,
+               * while the permanent cosmetic frame lives on ::before.
+               *
+               * The frame is always visible while equipped and sits
+               * slightly outside the control without changing control
+               * geometry, hover behaviour, focus behaviour, or clicks.
+               */
+              [data-portal-shell-inner][data-has-cosmetic-header-controls="true"]
+                [data-cosmetic-header-controls] :is(button,a) {
+                position: relative;
+                isolation: isolate;
+                overflow: visible;
+              }
+
+              [data-portal-shell-inner][data-has-cosmetic-header-controls="true"]
+                [data-cosmetic-header-controls] :is(button,a)::before {
+                content: "";
+                position: absolute;
+                z-index: 8;
+                inset: -5px;
+                border: 9px solid transparent;
+                border-image-source:
+                  var(--sep-cosmetic-header-control-frame);
+                border-image-slice: 16%;
+                border-image-width: 1;
+                border-image-repeat: stretch;
+                opacity: 1;
+                visibility: visible;
+                pointer-events: none;
+                filter:
+                  drop-shadow(0 2px 5px rgba(0,0,0,.42));
+              }
+
+
+              /*
+               * HEADER CONTROL BADGES
+               * Counters/notification badges must sit above the permanent
+               * cosmetic frame (::before uses z-index: 8).
+               */
+              [data-portal-shell-inner][data-has-cosmetic-header-controls="true"]
+                [data-cosmetic-header-controls]
+                :is(button,a)
+                > [aria-label] {
+                z-index: 20 !important;
+              }
+
+              @media (max-width: 1023px) {
+                [data-portal-shell-inner][data-has-cosmetic-header-controls="true"]
+                  [data-cosmetic-header-controls] :is(button,a)::before {
+                  inset: -4px;
+                  border-width: 8px;
+                }
+              }
+
+              @media (min-width: 1024px) {
+                [data-portal-shell-inner][data-has-cosmetic-header-controls="true"]
+                  [data-cosmetic-header-controls] :is(button,a)::before {
+                  inset: -7px;
+                  border-width: 10px;
+                }
+              }
+
+              /*
                * MOBILE
                * Centre cosmetic frames the mobile viewport.
                * Left cosmetic frames the More drawer.
