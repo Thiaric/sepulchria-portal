@@ -28,145 +28,306 @@ function cssUrl(value: string) {
   return `url("${value.replace(/"/g, "%22")}")`;
 }
 
+function datasetKey(category: CosmeticCategory) {
+  return `has${category
+    .split("_")
+    .map(
+      (part) =>
+        part[0].toUpperCase() +
+        part.slice(1),
+    )
+    .join("")}`;
+}
+
 function applySurface(
   element: HTMLElement,
   cosmetics: PublicCosmeticMap,
 ) {
-  const surface = element.dataset.cosmeticSurface ?? "";
-  const categories = SURFACE_RULES[surface] ?? [];
+  const surface =
+    element.dataset.cosmeticSurface ?? "";
+
+  const categories =
+    SURFACE_RULES[surface] ?? [];
 
   for (const category of categories) {
-    const asset = cosmetics[category];
-    const cssName = `--sep-cosmetic-${category.replaceAll("_", "-")}`;
+    const asset =
+      cosmetics[category];
+
+    const cssName =
+      `--sep-cosmetic-${category.replaceAll("_", "-")}`;
+
+    const flag =
+      datasetKey(category);
 
     if (asset) {
-      element.style.setProperty(cssName, cssUrl(asset));
-      element.dataset[`has${category
-        .split("_")
-        .map((part) => part[0].toUpperCase() + part.slice(1))
-        .join("")}`] = "true";
+      element.style.setProperty(
+        cssName,
+        cssUrl(asset),
+      );
+
+      element.dataset[flag] =
+        "true";
     } else {
-      element.style.removeProperty(cssName);
+      element.style.removeProperty(
+        cssName,
+      );
+
+      delete element.dataset[
+        flag
+      ];
     }
   }
 }
 
 export function CosmeticRuntime() {
-  const timer = useRef<number | null>(null);
+  const timer =
+    useRef<number | null>(null);
 
   useEffect(() => {
     let cancelled = false;
 
     async function scan() {
-      const elements = Array.from(
-        document.querySelectorAll<HTMLElement>(
-          "[data-cosmetic-character-id][data-cosmetic-surface]",
-        ),
-      );
-
-      const ids = Array.from(
-        new Set(
-          elements
-            .map((element) => element.dataset.cosmeticCharacterId ?? "")
-            .filter(Boolean),
-        ),
-      );
-
-      if (!ids.length) return;
-
-      try {
-        const response = await fetch(
-          `/api/cosmetics/equipped?ids=${encodeURIComponent(
-            ids.join(","),
-          )}&categories=${encodeURIComponent(
-            PUBLIC_COSMETIC_CATEGORIES.join(","),
-          )}`,
-          { cache: "no-store" },
+      const elements =
+        Array.from(
+          document.querySelectorAll<HTMLElement>(
+            "[data-cosmetic-character-id][data-cosmetic-surface]",
+          ),
         );
 
-        const data = (await response.json()) as {
-          cosmetics?: Record<
+      const ids =
+        Array.from(
+          new Set(
+            elements
+              .map(
+                (element) =>
+                  element.dataset
+                    .cosmeticCharacterId ??
+                  "",
+              )
+              .filter(Boolean),
+          ),
+        );
+
+      if (!ids.length) {
+        return;
+      }
+
+      try {
+        const response =
+          await fetch(
+            `/api/cosmetics/equipped?ids=${encodeURIComponent(
+              ids.join(","),
+            )}&categories=${encodeURIComponent(
+              PUBLIC_COSMETIC_CATEGORIES.join(
+                ",",
+              ),
+            )}`,
+            {
+              cache:
+                "no-store",
+            },
+          );
+
+        const data =
+          (await response.json()) as {
+            cosmetics?: Record<
+              string,
+              Record<
+                string,
+                {
+                  assetUrl?: string;
+                }
+              >
+            >;
+          };
+
+        if (
+          !response.ok ||
+          cancelled
+        ) {
+          return;
+        }
+
+        const resolved:
+          Record<
             string,
-            Record<string, { assetUrl?: string }>
-          >;
-        };
+            PublicCosmeticMap
+          > = {};
 
-        if (!response.ok || cancelled) return;
+        for (
+          const [
+            characterId,
+            entries,
+          ] of Object.entries(
+            data.cosmetics ?? {},
+          )
+        ) {
+          resolved[
+            characterId
+          ] = {};
 
-        const resolved: Record<string, PublicCosmeticMap> = {};
-
-        for (const [characterId, entries] of Object.entries(
-          data.cosmetics ?? {},
-        )) {
-          resolved[characterId] = {};
-
-          for (const [category, entry] of Object.entries(entries)) {
-            if (entry.assetUrl) {
-              resolved[characterId][
+          for (
+            const [
+              category,
+              entry,
+            ] of Object.entries(
+              entries,
+            )
+          ) {
+            if (
+              entry.assetUrl
+            ) {
+              resolved[
+                characterId
+              ][
                 category as CosmeticCategory
-              ] = entry.assetUrl;
+              ] =
+                entry.assetUrl;
             }
           }
         }
 
-        for (const element of elements) {
+        for (
+          const element of
+            elements
+        ) {
           const characterId =
-            element.dataset.cosmeticCharacterId ?? "";
+            element.dataset
+              .cosmeticCharacterId ??
+            "";
+
           applySurface(
             element,
-            resolved[characterId] ?? {},
+            resolved[
+              characterId
+            ] ?? {},
           );
         }
       } catch (error) {
-        console.error("Unable to apply cosmetics:", error);
+        console.error(
+          "Unable to apply cosmetics:",
+          error,
+        );
       }
     }
 
     function schedule() {
-      if (timer.current !== null) {
-        window.clearTimeout(timer.current);
+      if (
+        timer.current !== null
+      ) {
+        window.clearTimeout(
+          timer.current,
+        );
       }
-      timer.current = window.setTimeout(() => {
-        void scan();
-      }, 80);
+
+      timer.current =
+        window.setTimeout(
+          () => {
+            void scan();
+          },
+          80,
+        );
     }
 
-    const observer = new MutationObserver(schedule);
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-    });
+    const observer =
+      new MutationObserver(
+        schedule,
+      );
+
+    observer.observe(
+      document.body,
+      {
+        childList: true,
+        subtree: true,
+      },
+    );
 
     schedule();
 
-    const interval = window.setInterval(() => {
-      void scan();
-    }, 30000);
+    const interval =
+      window.setInterval(
+        () => {
+          void scan();
+        },
+        30000,
+      );
 
-    window.addEventListener("focus", schedule);
+    window.addEventListener(
+      "focus",
+      schedule,
+    );
 
     return () => {
       cancelled = true;
       observer.disconnect();
-      window.clearInterval(interval);
-      window.removeEventListener("focus", schedule);
-      if (timer.current !== null) {
-        window.clearTimeout(timer.current);
+
+      window.clearInterval(
+        interval,
+      );
+
+      window.removeEventListener(
+        "focus",
+        schedule,
+      );
+
+      if (
+        timer.current !== null
+      ) {
+        window.clearTimeout(
+          timer.current,
+        );
       }
     };
   }, []);
 
   return (
     <style>{`
-      [data-cosmetic-surface="portrait"][data-has-portrait-frame="true"] {
-        box-sizing: border-box;
-        border: 9px solid transparent !important;
-        border-image-source: var(--sep-cosmetic-portrait-frame);
-        border-image-slice: 12%;
-        border-image-width: 1;
-        border-image-repeat: stretch;
+      /*
+       * Cosmetic composition layer.
+       *
+       * The artwork is deliberately kept in pseudo-elements or backgrounds.
+       * Content remains real portal UI above the cosmetic layer.
+       */
+
+      [data-cosmetic-surface] {
+        --sep-cosmetic-shell-z: 4;
       }
 
+      /* ---------------------------------------------------------------
+       * PORTRAIT FRAME
+       * Ornamental shell around the portrait, without consuming the
+       * portrait's usable image area.
+       * --------------------------------------------------------------- */
+      [data-cosmetic-surface="portrait"][data-has-portrait-frame="true"] {
+        position: relative !important;
+        isolation: isolate;
+        overflow: visible !important;
+        z-index: 0;
+      }
+
+      [data-cosmetic-surface="portrait"][data-has-portrait-frame="true"]::after {
+        content: "";
+        position: absolute;
+        z-index: var(--sep-cosmetic-shell-z);
+        inset: -7px;
+        border: 12px solid transparent;
+        border-image-source: var(--sep-cosmetic-portrait-frame);
+        border-image-slice: 13% 13%;
+        border-image-width: 1;
+        border-image-repeat: stretch;
+        pointer-events: none;
+        filter: drop-shadow(0 3px 6px rgba(0,0,0,.42));
+      }
+
+      [data-cosmetic-surface="portrait"][data-has-portrait-frame="true"] > img {
+        position: relative;
+        z-index: 1;
+      }
+
+      /* ---------------------------------------------------------------
+       * NAMEPLATE + CREST
+       * A genuine identity plate rather than a tight border on text.
+       * --------------------------------------------------------------- */
       [data-cosmetic-surface="nameplate"] {
         position: relative;
         isolation: isolate;
@@ -174,20 +335,34 @@ export function CosmeticRuntime() {
 
       [data-cosmetic-surface="nameplate"][data-has-nameplate="true"] {
         display: inline-block;
-        border: 5px 9px solid transparent;
+        width: fit-content;
+        max-width: 100%;
+        padding: 6px 30px 6px 16px !important;
+        margin-block: -4px 2px;
+        overflow: visible;
+      }
+
+      [data-cosmetic-surface="nameplate"][data-has-nameplate="true"]::before {
+        content: "";
+        position: absolute;
+        z-index: -1;
+        inset: -2px -8px;
+        border: 11px solid transparent;
         border-image-source: var(--sep-cosmetic-nameplate);
         border-image-slice: 18% 10%;
         border-image-width: 1;
         border-image-repeat: stretch;
+        pointer-events: none;
+        filter: drop-shadow(0 2px 6px rgba(0,0,0,.38));
       }
 
       [data-cosmetic-surface="nameplate"][data-has-profile-crest="true"]::after {
         content: "";
         position: absolute;
-        z-index: 2;
-        width: 28px;
-        height: 28px;
-        right: -18px;
+        z-index: 5;
+        width: 30px;
+        height: 30px;
+        right: -14px;
         top: 50%;
         transform: translateY(-50%);
         background-image: var(--sep-cosmetic-profile-crest);
@@ -195,27 +370,69 @@ export function CosmeticRuntime() {
         background-position: center;
         background-repeat: no-repeat;
         pointer-events: none;
+        filter: drop-shadow(0 2px 5px rgba(0,0,0,.5));
       }
 
+      /* ---------------------------------------------------------------
+       * PROFILE BACKGROUND
+       * Decorative texture stays behind the existing sheet UI.
+       * --------------------------------------------------------------- */
       [data-cosmetic-surface="sheet"][data-has-profile-background="true"] {
+        position: relative;
+        isolation: isolate;
         background-image:
-          linear-gradient(rgba(0,0,0,.72), rgba(0,0,0,.72)),
+          linear-gradient(
+            rgba(4,7,13,.62),
+            rgba(4,7,13,.72)
+          ),
           var(--sep-cosmetic-profile-background);
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
+        background-blend-mode: normal;
+      }
+
+      /* ---------------------------------------------------------------
+       * SHARED ORNAMENTAL MESSAGE/POST SHELLS
+       * --------------------------------------------------------------- */
+      [data-cosmetic-surface="pm"][data-has-pm-frame="true"],
+      [data-cosmetic-surface="instant"][data-has-instant-chat-frame="true"],
+      [data-cosmetic-surface="forum"][data-has-forum-frame="true"] {
+        position: relative !important;
+        isolation: isolate;
+        overflow: visible !important;
+      }
+
+      [data-cosmetic-surface="pm"][data-has-pm-frame="true"]::after,
+      [data-cosmetic-surface="instant"][data-has-instant-chat-frame="true"]::after,
+      [data-cosmetic-surface="forum"][data-has-forum-frame="true"]::after {
+        content: "";
+        position: absolute;
+        z-index: var(--sep-cosmetic-shell-z);
+        pointer-events: none;
+        filter: drop-shadow(0 3px 7px rgba(0,0,0,.32));
       }
 
       [data-cosmetic-surface="pm"][data-has-pm-frame="true"] {
-        border: 8px 10px solid transparent !important;
+        padding: 10px 12px !important;
+      }
+
+      [data-cosmetic-surface="pm"][data-has-pm-frame="true"]::after {
+        inset: 2px;
+        border: 12px solid transparent;
         border-image-source: var(--sep-cosmetic-pm-frame);
-        border-image-slice: 15% 9%;
+        border-image-slice: 14% 9%;
         border-image-width: 1;
         border-image-repeat: stretch;
       }
 
       [data-cosmetic-surface="instant"][data-has-instant-chat-frame="true"] {
-        border: 6px 8px solid transparent !important;
+        padding: 7px 10px !important;
+      }
+
+      [data-cosmetic-surface="instant"][data-has-instant-chat-frame="true"]::after {
+        inset: -2px;
+        border: 10px solid transparent;
         border-image-source: var(--sep-cosmetic-instant-chat-frame);
         border-image-slice: 15% 10%;
         border-image-width: 1;
@@ -223,22 +440,58 @@ export function CosmeticRuntime() {
       }
 
       [data-cosmetic-surface="forum"][data-has-forum-frame="true"] {
-        border: 10px solid transparent !important;
+        padding: 12px !important;
+      }
+
+      [data-cosmetic-surface="forum"][data-has-forum-frame="true"]::after {
+        inset: 2px;
+        border: 14px solid transparent;
         border-image-source: var(--sep-cosmetic-forum-frame);
         border-image-slice: 12% 8%;
         border-image-width: 1;
         border-image-repeat: stretch;
       }
 
+      /* ---------------------------------------------------------------
+       * LOCATION ACTION STYLE / FLOURISH
+       * Accents never cover the prose.
+       * --------------------------------------------------------------- */
       [data-cosmetic-surface="action"] {
+        position: relative;
         isolation: isolate;
       }
 
-      [data-cosmetic-surface="action"][data-has-action-style="true"] {
-        background-image: var(--sep-cosmetic-action-style);
-        background-position: center bottom;
-        background-repeat: no-repeat;
-        background-size: 100% auto;
+      [data-cosmetic-surface="action"][data-has-action-style="true"]::before {
+        content: "";
+        position: absolute;
+        z-index: 0;
+        inset: 0;
+        background-image:
+          linear-gradient(
+            to right,
+            transparent 0%,
+            rgba(255,255,255,.018) 12%,
+            rgba(255,255,255,.026) 50%,
+            rgba(255,255,255,.018) 88%,
+            transparent 100%
+          ),
+          var(--sep-cosmetic-action-style);
+        background-position:
+          center,
+          center bottom;
+        background-repeat:
+          no-repeat,
+          no-repeat;
+        background-size:
+          100% 100%,
+          100% auto;
+        pointer-events: none;
+        opacity: .9;
+      }
+
+      [data-cosmetic-surface="action"][data-has-action-style="true"] > * {
+        position: relative;
+        z-index: 2;
       }
 
       [data-cosmetic-surface="action"][data-has-action-flourish="true"]::after {
@@ -246,36 +499,83 @@ export function CosmeticRuntime() {
         position: absolute;
         z-index: 1;
         right: 4px;
-        bottom: 0;
-        width: min(260px, 38%);
-        height: 34px;
+        bottom: 1px;
+        width: min(300px, 36%);
+        height: 38px;
         background-image: var(--sep-cosmetic-action-flourish);
         background-position: right bottom;
         background-repeat: no-repeat;
         background-size: contain;
         pointer-events: none;
+        opacity: .9;
       }
 
+      /* ---------------------------------------------------------------
+       * WHISPER VEIL
+       * Purple transparent foreground + edge glow as in the concepts.
+       * --------------------------------------------------------------- */
       [data-cosmetic-surface="whisper"] {
+        position: relative;
         isolation: isolate;
+      }
+
+      [data-cosmetic-surface="whisper"][data-has-whisper-style="true"] {
+        border-left-color: rgba(173,114,220,.9) !important;
+        background:
+          linear-gradient(
+            100deg,
+            rgba(37,19,52,.82),
+            rgba(25,18,40,.66) 55%,
+            rgba(40,19,54,.74)
+          ) !important;
+        box-shadow:
+          inset 0 0 20px rgba(150,88,200,.10),
+          inset 0 1px 0 rgba(216,169,255,.08);
       }
 
       [data-cosmetic-surface="whisper"][data-has-whisper-style="true"]::before {
         content: "";
         position: absolute;
-        inset: 0;
         z-index: 0;
-        background-image: var(--sep-cosmetic-whisper-style);
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: 100% 100%;
-        opacity: .72;
+        inset: 0;
+        background-image:
+          linear-gradient(
+            to right,
+            rgba(179,106,221,.06),
+            transparent 25%,
+            transparent 72%,
+            rgba(179,106,221,.07)
+          ),
+          var(--sep-cosmetic-whisper-style);
+        background-position:
+          center,
+          center;
+        background-repeat:
+          no-repeat,
+          no-repeat;
+        background-size:
+          100% 100%,
+          100% 100%;
+        opacity: .84;
+        pointer-events: none;
+        filter:
+          drop-shadow(0 0 6px rgba(155,91,207,.20));
+      }
+
+      [data-cosmetic-surface="whisper"][data-has-whisper-style="true"]::after {
+        content: "";
+        position: absolute;
+        z-index: 1;
+        inset: 1px;
+        border: 1px solid rgba(174,112,218,.25);
+        box-shadow:
+          inset 0 0 12px rgba(147,79,190,.10);
         pointer-events: none;
       }
 
       [data-cosmetic-surface="whisper"][data-has-whisper-style="true"] > * {
         position: relative;
-        z-index: 1;
+        z-index: 2;
       }
     `}</style>
   );

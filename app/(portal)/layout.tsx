@@ -194,58 +194,110 @@ async function PortalLayoutContent({
                 display: contents;
               }
 
+              /*
+               * Premium portal-shell cosmetics are overlays, not layout borders.
+               * This keeps the working area the same size while allowing ornate
+               * corners and rails like the premium concept art.
+               */
               @media (min-width: 1024px) {
                 [data-portal-shell-inner][data-has-cosmetic-header-controls="true"]
                   [data-cosmetic-header-controls] :is(button,a) {
-                  border-style: solid;
-                  border-color: transparent;
+                  position: relative;
+                  isolation: isolate;
+                  overflow: visible;
+                }
+
+                [data-portal-shell-inner][data-has-cosmetic-header-controls="true"]
+                  [data-cosmetic-header-controls] :is(button,a)::after {
+                  content: "";
+                  position: absolute;
+                  z-index: 8;
+                  inset: -3px;
+                  border: 8px solid transparent;
                   border-image-source: var(--sep-cosmetic-header-control-frame);
                   border-image-slice: 18%;
                   border-image-width: 1;
                   border-image-repeat: stretch;
+                  pointer-events: none;
+                  filter: drop-shadow(0 2px 5px rgba(0,0,0,.42));
                 }
 
                 [data-portal-shell-inner][data-has-cosmetic-left-panel="true"]
-                  .portal-left-shell > [data-portal-column] {
-                  border: 8px solid transparent;
-                  border-image-source: var(--sep-cosmetic-left-panel-frame);
-                  border-image-slice: 10%;
+                  .portal-left-shell > [data-portal-column],
+                [data-portal-shell-inner][data-has-cosmetic-right-panel="true"]
+                  .portal-right-shell > [data-portal-column],
+                [data-portal-shell-inner][data-has-cosmetic-centre-panel="true"]
+                  [data-portal-centre-host] > [data-portal-column] {
+                  position: relative;
+                  isolation: isolate;
+                  overflow: visible;
+                }
+
+                [data-portal-shell-inner][data-has-cosmetic-left-panel="true"]
+                  .portal-left-shell > [data-portal-column]::after,
+                [data-portal-shell-inner][data-has-cosmetic-right-panel="true"]
+                  .portal-right-shell > [data-portal-column]::after,
+                [data-portal-shell-inner][data-has-cosmetic-centre-panel="true"]
+                  [data-portal-centre-host] > [data-portal-column]::after {
+                  content: "";
+                  position: absolute;
+                  z-index: 35;
+                  inset: 1px;
+                  border: 14px solid transparent;
                   border-image-width: 1;
                   border-image-repeat: stretch;
+                  pointer-events: none;
+                  filter: drop-shadow(0 3px 8px rgba(0,0,0,.35));
+                }
+
+                [data-portal-shell-inner][data-has-cosmetic-left-panel="true"]
+                  .portal-left-shell > [data-portal-column]::after {
+                  border-image-source: var(--sep-cosmetic-left-panel-frame);
+                  border-image-slice: 10% 13%;
                 }
 
                 [data-portal-shell-inner][data-has-cosmetic-right-panel="true"]
-                  .portal-right-shell > [data-portal-column] {
-                  border: 8px solid transparent;
+                  .portal-right-shell > [data-portal-column]::after {
                   border-image-source: var(--sep-cosmetic-right-panel-frame);
-                  border-image-slice: 10%;
-                  border-image-width: 1;
-                  border-image-repeat: stretch;
+                  border-image-slice: 10% 13%;
                 }
 
                 [data-portal-shell-inner][data-has-cosmetic-centre-panel="true"]
-                  [data-portal-centre-host] > [data-portal-column] {
-                  border: 8px solid transparent;
+                  [data-portal-centre-host] > [data-portal-column]::after {
                   border-image-source: var(--sep-cosmetic-centre-panel-frame);
-                  border-image-slice: 10%;
-                  border-image-width: 1;
-                  border-image-repeat: stretch;
+                  border-image-slice: 9% 7%;
                 }
               }
 
               [data-portal-shell-inner][data-has-cosmetic-location-frame="true"]
                 [data-game-location-surface] {
-                border: 10px solid transparent;
+                position: relative;
+                isolation: isolate;
+                overflow: visible;
+              }
+
+              [data-portal-shell-inner][data-has-cosmetic-location-frame="true"]
+                [data-game-location-surface]::after {
+                content: "";
+                position: absolute;
+                z-index: 40;
+                inset: 0;
+                border: 15px solid transparent;
                 border-image-source: var(--sep-cosmetic-location-frame);
-                border-image-slice: 12% 8%;
+                border-image-slice: 11% 7%;
                 border-image-width: 1;
                 border-image-repeat: stretch;
+                pointer-events: none;
+                filter: drop-shadow(0 3px 8px rgba(0,0,0,.38));
               }
 
               [data-portal-shell-inner][data-has-cosmetic-location-atmosphere="true"]
                 [data-game-location-surface] {
                 background-image:
-                  linear-gradient(rgba(0,0,0,.54), rgba(0,0,0,.54)),
+                  linear-gradient(
+                    rgba(4,7,13,.58),
+                    rgba(4,7,13,.66)
+                  ),
                   var(--sep-cosmetic-location-atmosphere);
                 background-size: cover;
                 background-position: center;
