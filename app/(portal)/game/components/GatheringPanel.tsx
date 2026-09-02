@@ -16,21 +16,21 @@ import { usePortalAudio } from "@/components/audio/portal-audio-provider";
 
 const GATHERING_SKIN_ACCENTS: Record<string, string> = {
   sepulchria: "#b68b4f",
-  vellum: "#91652b",
-  starfall: "#c99d43",
+  vellum: "#70372d",
+  starfall: "#9d611f",
   "rose-nocturne": "#be7b5b",
-  "verdant-reliquary": "#b5964a",
-  "amethyst-veil": "#bf9749",
+  "verdant-reliquary": "#91977f",
+  "amethyst-veil": "#975c33",
   moonlit: "#b58a4c",
   emberforge: "#cf7e41",
-  deepwater: "#b8774c",
-  "blood-court": "#c4974e",
-  ashen: "#aa7c37",
-  "ivory-archive": "#bea168",
-  "aelari-dawn": "#a37933",
-  "dwarven-deep": "#a65f2e",
-  "mortal-hearth": "#936035",
-  "wolfs-moon": "#bea369",
+  deepwater: "#85325b",
+  "blood-court": "#7e8c99",
+  ashen: "#74452b",
+  "ivory-archive": "#8b97a2",
+  "aelari-dawn": "#69482a",
+  "dwarven-deep": "#464643",
+  "mortal-hearth": "#5c3739",
+  "wolfs-moon": "#6f5745",
 };
 
 export type GatheringStateRow = {

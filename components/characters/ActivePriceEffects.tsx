@@ -9,7 +9,7 @@ export async function ActivePriceEffects({characterId}:{characterId:string}) {
   if(q.error)throw Error(q.error.message);
   if(!q.data?.length)return null;
 
-  return <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 p-5 sm:p-6">
+  return <section data-profile-price-box="true" className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 p-5 sm:p-6">
     <h2 className="font-serif  text-[0.9rem] text-[rgb(var(--sep-colour-dec89f))]">The Price</h2>
     <div className="mt-3 flex flex-wrap gap-2">
       {q.data.map(effect=>{

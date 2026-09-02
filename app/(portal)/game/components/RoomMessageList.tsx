@@ -1724,7 +1724,7 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                     >
                       {item.character_id &&
                       item.character_id !== viewerCharacterId ? (
-                        <div className="absolute right-2 top-2 z-10">
+                        <div data-room-report-control="true" className="absolute right-3 top-3 z-50 pointer-events-auto">
                           <ReportButton
                             sourceType="room_message"
                             sourceId={item.id}
@@ -1839,7 +1839,7 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                     >
                       {item.character_id &&
                       item.character_id !== viewerCharacterId ? (
-                        <div className="absolute right-2 top-2 z-10">
+                        <div data-room-report-control="true" className="absolute right-3 top-3 z-50 pointer-events-auto">
                           <ReportButton
                             sourceType="room_message"
                             sourceId={item.id}
@@ -2057,8 +2057,8 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                   >
                     {item.character_id &&
                     item.character_id !== viewerCharacterId ? (
-                      <div className="absolute right-2 top-2 z-10">
-                        <ReportButton
+                      <div data-room-report-control="true" className="absolute right-3 top-3 z-50 pointer-events-auto">
+                          <ReportButton
                           sourceType="room_message"
                           sourceId={item.id}
                           compact

@@ -569,7 +569,7 @@ export function CosmeticRuntime() {
         opacity: .9;
       }
 
-      [data-cosmetic-surface="action"][data-has-action-style="true"] > * {
+      [data-cosmetic-surface="action"][data-has-action-style="true"] > *:not([data-room-report-control="true"]) {
         position: relative;
         z-index: 2;
       }
@@ -654,7 +654,7 @@ export function CosmeticRuntime() {
        * Content stays readable underneath the transparent centre.
        * The frame itself remains visually above it.
        */
-      [data-cosmetic-surface="whisper"][data-has-whisper-style="true"] > * {
+      [data-cosmetic-surface="whisper"][data-has-whisper-style="true"] > *:not([data-room-report-control="true"]) {
         position: relative;
         z-index: 2;
       }
@@ -678,7 +678,7 @@ export function CosmeticRuntime() {
       [data-cosmetic-surface="off-character"][data-has-off-character-message-frame="true"]::before {
         content: "";
         position: absolute;
-        z-index: 10;
+        z-index: 1;
         inset: 0;
         background-image:
           var(--sep-cosmetic-off-character-message-frame);
@@ -697,10 +697,48 @@ export function CosmeticRuntime() {
         content: none;
       }
 
-      [data-cosmetic-surface="off-character"][data-has-off-character-message-frame="true"] > * {
+      [data-cosmetic-surface="off-character"][data-has-off-character-message-frame="true"] > *:not([data-room-report-control="true"]) {
         position: relative;
         z-index: 2;
       }
+
+
+      /* VISUAL FOLLOW-UP — dual-tone skins / sheet / report controls */
+      [data-cosmetic-surface="sheet"][data-has-profile-background="true"]
+        [data-profile-price-box="true"] {
+        background-color: rgb(var(--sep-colour-090705) / 40%) !important;
+      }
+
+      [data-cosmetic-surface="sheet"][data-has-profile-background="true"]
+        [data-character-sheet-panel="ledger"]
+        :is(section, article, div)[class*="bg-[rgb(var(--sep-colour-"] {
+        background-color: rgb(var(--sep-colour-090705) / 50%) !important;
+      }
+
+      [data-cosmetic-surface="sheet"][data-has-profile-background="true"]
+        [data-trophy-progress-track="true"] {
+        background-color: rgb(var(--sep-colour-090706)) !important;
+      }
+
+      [data-cosmetic-surface="sheet"][data-has-profile-background="true"]
+        [data-trophy-progress-fill="true"] {
+        background-color: rgb(var(--sep-colour-9b7545)) !important;
+      }
+
+      [data-room-report-control="true"] {
+        position: absolute !important;
+        right: 12px !important;
+        top: 12px !important;
+        left: auto !important;
+        bottom: auto !important;
+        z-index: 50 !important;
+        pointer-events: auto !important;
+      }
+
+      [data-room-report-control="true"] * {
+        pointer-events: auto !important;
+      }
+
     `}</style>
   );
 }
