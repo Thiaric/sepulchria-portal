@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { canAccessAdminSection, getStaffSession } from "@/lib/auth/require-staff";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { COSMETIC_CATEGORY_SET } from "@/lib/cosmetics/catalogue";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const BUCKET = "cosmetics";
-const CATEGORIES = new Set(["sheet_frame", "chat_frame"]);
+const CATEGORIES = COSMETIC_CATEGORY_SET;
 
 function bad(error: string, status = 400) {
   return NextResponse.json({ error }, { status });
@@ -57,7 +58,7 @@ export async function POST(req: NextRequest) {
 
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) return bad("Invalid cosmetic slug.");
   if (!name) return bad("Cosmetic name is required.");
-  if (!CATEGORIES.has(category)) return bad("Only Sheet Frame and Chat Frame cosmetics are available in Phase 1.");
+  if (!CATEGORIES.has(category)) return bad("Unsupported cosmetic category.");
   if (!Number.isInteger(sortOrder)) return bad("Sort order must be a whole number.");
   if (!validSlugPath(slug, "asset", assetPath)) return bad("Invalid cosmetic asset path.");
   if (!validSlugPath(slug, "preview", previewPath)) return bad("Invalid cosmetic preview path.");

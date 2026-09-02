@@ -196,13 +196,6 @@ export default async function AdminCharacterPremiumFeaturesPage({
         "is_active",
         true,
       )
-      .in(
-        "category",
-        [
-          "sheet_frame",
-          "chat_frame",
-        ],
-      )
       .order(
         "sort_order",
         {

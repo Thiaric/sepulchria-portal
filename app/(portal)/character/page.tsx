@@ -410,6 +410,8 @@ export function Profile({
         </div>
 
         <div
+          data-cosmetic-character-id={character.id}
+          data-cosmetic-surface="sheet"
           className="relative isolate"
           style={cosmeticFrameStyle(
             sheetFrameUrl,
@@ -424,7 +426,11 @@ export function Profile({
             <section className="grid gap-4 xl:grid-cols-[minmax(0,1.45fr)_minmax(360px,0.9fr)]">
           <div className="min-w-0">
             <section className="grid gap-4 border border-[rgb(var(--sep-colour-654b2e))]/50 bg-[rgb(var(--sep-colour-17110d))] p-4 sm:p-5 lg:grid-cols-[180px_minmax(0,1fr)]">
-              <div className="mx-auto w-full max-w-[180px] lg:mx-0">
+              <div
+                data-cosmetic-character-id={character.id}
+                data-cosmetic-surface="portrait"
+                className="mx-auto w-full max-w-[180px] lg:mx-0"
+              >
                 {character.portrait_url ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -461,7 +467,11 @@ export function Profile({
                     </p>
 
                     <div className="mt-1 grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-4">
-                      <h1 className="min-w-0 break-words font-serif text-[1.7rem] text-[rgb(var(--sep-colour-ecd9b2))] sm:text-[1.95rem]">
+                      <h1
+                        data-cosmetic-character-id={character.id}
+                        data-cosmetic-surface="nameplate"
+                        className="min-w-0 break-words font-serif text-[1.7rem] text-[rgb(var(--sep-colour-ecd9b2))] sm:text-[1.95rem]"
+                      >
                         {character.display_name ??
                           "Unnamed character"}
                       </h1>

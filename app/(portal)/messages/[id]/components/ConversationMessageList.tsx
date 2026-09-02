@@ -690,6 +690,8 @@ export function ConversationMessageList({
               <article
                 key={message.id}
                 data-sep-interaction-ignore="true"
+                data-cosmetic-character-id={message.sender_character_id}
+                data-cosmetic-surface={ongame ? "pm" : undefined}
                 className={`relative max-w-[92%] border px-2.5 py-2 transition ${
                   own
                     ? ongame
@@ -706,7 +708,11 @@ export function ConversationMessageList({
               >
                 <div className="flex items-start gap-2">
                   {/* CHARACTER PORTRAIT */}
-                  <div className="h-8 w-8 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/75 bg-[rgb(var(--sep-colour-0d0907))]">
+                  <div
+                    data-cosmetic-character-id={message.sender_character_id}
+                    data-cosmetic-surface="portrait"
+                    className="h-8 w-8 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/75 bg-[rgb(var(--sep-colour-0d0907))]"
+                  >
                     {sender?.portrait_url ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
@@ -730,6 +736,8 @@ export function ConversationMessageList({
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div className="flex flex-wrap items-center gap-2">
                         <p
+                          data-cosmetic-character-id={message.sender_character_id}
+                          data-cosmetic-surface="nameplate"
                           className={`font-serif text-sm ${
                             ongame
                               ? "text-[rgb(var(--sep-colour-d8bf91))]"

@@ -1133,6 +1133,7 @@ async function GameContent() {
 
   return (
   <div
+  data-game-location-surface
   className={
     privateLocation
       ? "private-location-theme h-full min-h-0 overflow-hidden p-2 sm:p-3 lg:p-4"

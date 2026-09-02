@@ -848,7 +848,11 @@ function CharacterPortrait({
   characterHref: string;
 }) {
   const portrait = (
-    <div className="h-9 w-9 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))] bg-[rgb(var(--sep-colour-0d0a08))]">
+    <div
+      data-cosmetic-character-id={author?.id}
+      data-cosmetic-surface="portrait"
+      className="h-9 w-9 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))] bg-[rgb(var(--sep-colour-0d0a08))]"
+    >
       {author?.portrait_url ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
@@ -1790,6 +1794,8 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                   return (
                     <article
                       key={item.id}
+                      data-cosmetic-character-id={item.character_id}
+                      data-cosmetic-surface={isWhisper ? "whisper" : undefined}
                       className={`relative flex gap-3 py-3 pl-5 pr-12 sm:pl-7 sm:pr-12 ${
                         isOutOfCharacter
                           ? "border-l-2 border-[#627f9f] bg-[#182536]/55"
@@ -1995,6 +2001,8 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                 return (
                   <article
                     key={item.id}
+                    data-cosmetic-character-id={item.character_id}
+                    data-cosmetic-surface={!isMechanicalOutput ? "action" : undefined}
                     className={`relative flex min-w-0 gap-3 py-3 pl-5 pr-12 sm:pl-7 sm:pr-12 ${
                       chatFrameUrl
                         ? "isolate "
@@ -2019,6 +2027,7 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                       ...(chatFrameUrl
                         ? {
                             paddingLeft: "4px",
+                            paddingRight: "4px",
                             paddingTop: "4px",
                             paddingBottom: "4px",
                           }

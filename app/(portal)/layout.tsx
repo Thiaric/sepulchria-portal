@@ -1,4 +1,4 @@
-import { Suspense, type ReactNode } from "react";
+import { Suspense, type ReactNode, type CSSProperties } from "react";
 
 import "@/components/sepulchria/sep-ui-unified.css";
 
@@ -24,6 +24,9 @@ import { getActiveTidings } from "@/lib/tidings/get-active-tidings";
 import { getUnreadForumCount } from "@/lib/forum/get-unread-forum-count";
 import { getWorldState } from "@/lib/world/get-world-state";
 import { ExperienceLogoutGuard } from "@/components/experience/experience-logout-guard";
+import { CosmeticRuntime } from "@/components/cosmetics/cosmetic-runtime";
+import { getEquippedCosmetics } from "@/lib/cosmetics/get-equipped-cosmetic";
+import { cssImageUrl } from "@/components/cosmetics/cosmetic-frame-overlay";
 
 type PortalLayoutProps = {
   children: ReactNode;
@@ -62,6 +65,36 @@ async function PortalLayoutContent({
   const presenceEnabled =
     context.character?.status ===
     "approved";
+
+  const portalCosmetics =
+    context.character
+      ? await getEquippedCosmetics(
+          context.character.id,
+          [
+            "header_control_frame",
+            "left_panel_frame",
+            "right_panel_frame",
+            "centre_panel_frame",
+            "location_frame",
+            "location_atmosphere",
+          ],
+        )
+      : {};
+
+  const portalCosmeticStyle = {
+    "--sep-cosmetic-header-control-frame":
+      cssImageUrl(portalCosmetics.header_control_frame?.assetUrl),
+    "--sep-cosmetic-left-panel-frame":
+      cssImageUrl(portalCosmetics.left_panel_frame?.assetUrl),
+    "--sep-cosmetic-right-panel-frame":
+      cssImageUrl(portalCosmetics.right_panel_frame?.assetUrl),
+    "--sep-cosmetic-centre-panel-frame":
+      cssImageUrl(portalCosmetics.centre_panel_frame?.assetUrl),
+    "--sep-cosmetic-location-frame":
+      cssImageUrl(portalCosmetics.location_frame?.assetUrl),
+    "--sep-cosmetic-location-atmosphere":
+      cssImageUrl(portalCosmetics.location_atmosphere?.assetUrl),
+  } as CSSProperties;
 
   return (
     <WorldStateProvider
@@ -105,6 +138,25 @@ async function PortalLayoutContent({
         >
           <div
             data-portal-shell-inner
+            data-has-cosmetic-header-controls={
+              portalCosmetics.header_control_frame ? "true" : "false"
+            }
+            data-has-cosmetic-left-panel={
+              portalCosmetics.left_panel_frame ? "true" : "false"
+            }
+            data-has-cosmetic-right-panel={
+              portalCosmetics.right_panel_frame ? "true" : "false"
+            }
+            data-has-cosmetic-centre-panel={
+              portalCosmetics.centre_panel_frame ? "true" : "false"
+            }
+            data-has-cosmetic-location-frame={
+              portalCosmetics.location_frame ? "true" : "false"
+            }
+            data-has-cosmetic-location-atmosphere={
+              portalCosmetics.location_atmosphere ? "true" : "false"
+            }
+            style={portalCosmeticStyle}
             className="flex h-full min-h-0 flex-col bg-[radial-gradient(circle_at_top,_rgba(var(--sep-rgb-116-82-42),0.16),_transparent_38%),linear-gradient(to_bottom,_#17120f,_#0d0b0a)]"
           >
             <PortalPresenceHeartbeat
@@ -116,6 +168,7 @@ async function PortalLayoutContent({
             <PortalSessionGuard />
 
             <PortalInteractionLayer />
+            <CosmeticRuntime />
 
             <div className="shrink-0">
               <PortalHeader
@@ -139,6 +192,64 @@ async function PortalLayoutContent({
               .portal-left-shell,
               .portal-right-shell {
                 display: contents;
+              }
+
+              @media (min-width: 1024px) {
+                [data-portal-shell-inner][data-has-cosmetic-header-controls="true"]
+                  [data-cosmetic-header-controls] :is(button,a) {
+                  border-style: solid;
+                  border-color: transparent;
+                  border-image-source: var(--sep-cosmetic-header-control-frame);
+                  border-image-slice: 18%;
+                  border-image-width: 1;
+                  border-image-repeat: stretch;
+                }
+
+                [data-portal-shell-inner][data-has-cosmetic-left-panel="true"]
+                  .portal-left-shell > [data-portal-column] {
+                  border: 8px solid transparent;
+                  border-image-source: var(--sep-cosmetic-left-panel-frame);
+                  border-image-slice: 10%;
+                  border-image-width: 1;
+                  border-image-repeat: stretch;
+                }
+
+                [data-portal-shell-inner][data-has-cosmetic-right-panel="true"]
+                  .portal-right-shell > [data-portal-column] {
+                  border: 8px solid transparent;
+                  border-image-source: var(--sep-cosmetic-right-panel-frame);
+                  border-image-slice: 10%;
+                  border-image-width: 1;
+                  border-image-repeat: stretch;
+                }
+
+                [data-portal-shell-inner][data-has-cosmetic-centre-panel="true"]
+                  [data-portal-centre-host] > [data-portal-column] {
+                  border: 8px solid transparent;
+                  border-image-source: var(--sep-cosmetic-centre-panel-frame);
+                  border-image-slice: 10%;
+                  border-image-width: 1;
+                  border-image-repeat: stretch;
+                }
+              }
+
+              [data-portal-shell-inner][data-has-cosmetic-location-frame="true"]
+                [data-game-location-surface] {
+                border: 10px solid transparent;
+                border-image-source: var(--sep-cosmetic-location-frame);
+                border-image-slice: 12% 8%;
+                border-image-width: 1;
+                border-image-repeat: stretch;
+              }
+
+              [data-portal-shell-inner][data-has-cosmetic-location-atmosphere="true"]
+                [data-game-location-surface] {
+                background-image:
+                  linear-gradient(rgba(0,0,0,.54), rgba(0,0,0,.54)),
+                  var(--sep-cosmetic-location-atmosphere);
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
               }
 
               .portal-left-collapse-toggle,

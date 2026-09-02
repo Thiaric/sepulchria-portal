@@ -4458,7 +4458,7 @@ function CosmeticsContextPanel() {
       />
 
       <p className="mt-4 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
-        Manage the visual treatments your character owns and choose which cosmetic is currently equipped in each slot.
+        Manage character-facing and portal-facing visual treatments, including profiles, messages, panels, location styling and identity ornaments.
       </p>
 
       <div className="my-4 h-px bg-[rgb(var(--sep-colour-59432c))]/35" />

@@ -3,13 +3,14 @@
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { COSMETIC_CATEGORIES, COSMETIC_LABELS, type CosmeticCategory } from "@/lib/cosmetics/catalogue";
 
 export type CosmeticAdminRow = {
   id: string;
   slug: string;
   name: string;
   description: string;
-  category: "sheet_frame" | "chat_frame";
+  category: CosmeticCategory;
   preview_image_url: string | null;
   asset_url: string | null;
   preview_storage_path: string | null;
@@ -26,7 +27,7 @@ const input = "w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(v
 const button = "border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-2.5 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-efd6a8))] disabled:opacity-45";
 
 function categoryLabel(category: CosmeticAdminRow["category"]) {
-  return category === "sheet_frame" ? "Sheet Frame" : "Location Chat Frame";
+  return COSMETIC_LABELS[category];
 }
 
 async function responseJson(response: Response) {
@@ -203,8 +204,7 @@ export function CosmeticsFeatureManager({ initialItems }: { initialItems: Cosmet
         <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-a68152))]">Collectible feature</p>
         <h3 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">Cosmetic Catalogue</h3>
         <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
-          Phase 1 supports Sheet Frames and Location Chat Frames. The actual asset should be transparent PNG,
-          WebP or SVG; the separate store/admin preview is optional.
+          All character-facing and portal-facing cosmetic categories are supported. Transparent PNG is recommended for frames and overlays; PNG or WebP works well for backgrounds.
         </p>
       </header>
 
@@ -234,8 +234,11 @@ export function CosmeticsFeatureManager({ initialItems }: { initialItems: Cosmet
             <label className="block">
               <span className="mb-1.5 block text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))]">Cosmetic type</span>
               <select name="category" defaultValue="sheet_frame" className={input}>
-                <option value="sheet_frame">Sheet Frame</option>
-                <option value="chat_frame">Location Chat Frame</option>
+                {COSMETIC_CATEGORIES.map((category) => (
+                  <option key={category} value={category}>
+                    {COSMETIC_LABELS[category]}
+                  </option>
+                ))}
               </select>
             </label>
 

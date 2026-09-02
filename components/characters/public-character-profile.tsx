@@ -225,6 +225,8 @@ export function PublicCharacterProfileView({
       </div>
 
       <div
+        data-cosmetic-character-id={character.id}
+        data-cosmetic-surface="sheet"
         className="relative isolate"
         style={cosmeticFrameStyle(
           sheetFrameUrl,
@@ -243,7 +245,11 @@ export function PublicCharacterProfileView({
           <section className="grid gap-4 border border-[rgb(var(--sep-colour-654b2e))]/50 bg-[rgb(var(--sep-colour-17110d))] p-4 sm:p-5 lg:grid-cols-[180px_minmax(0,1fr)]">
             <div className="mx-auto w-full max-w-[180px] lg:mx-0">
 
-              <div className="relative aspect-[3/4] w-full overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0d0a08))]">
+              <div
+                data-cosmetic-character-id={character.id}
+                data-cosmetic-surface="portrait"
+                className="relative aspect-[3/4] w-full overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0d0a08))]"
+              >
 
               {character.portrait_url ? (
                 <Image
@@ -295,7 +301,11 @@ export function PublicCharacterProfileView({
                   </p>
 
                   <div className="mt-1 grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-4">
-                    <h1 className="min-w-0 break-words font-serif text-3xl text-[rgb(var(--sep-colour-ecd9b2))] sm:text-[2.15rem]">
+                    <h1
+                      data-cosmetic-character-id={character.id}
+                      data-cosmetic-surface="nameplate"
+                      className="min-w-0 break-words font-serif text-3xl text-[rgb(var(--sep-colour-ecd9b2))] sm:text-[2.15rem]"
+                    >
                       {fullName}
                     </h1>
 

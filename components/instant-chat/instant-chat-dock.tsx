@@ -823,7 +823,11 @@ export function InstantChatDock({
           ].join(" ")}
         >
           <header className="flex h-9 items-center gap-1.5 border-b border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-1d160f))] px-2">
-            <div className="h-6 w-6 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))] bg-[rgb(var(--sep-colour-0d0907))]">
+            <div
+              data-cosmetic-character-id={other.character_id}
+              data-cosmetic-surface="portrait"
+              className="h-6 w-6 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))] bg-[rgb(var(--sep-colour-0d0907))]"
+            >
               {other.portrait_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -843,7 +847,11 @@ export function InstantChatDock({
             </div>
 
             <div className="min-w-0 flex-1">
-              <p className="truncate font-serif text-[11px] leading-tight text-[rgb(var(--sep-colour-e1c89d))]">
+              <p
+                data-cosmetic-character-id={other.character_id}
+                data-cosmetic-surface="nameplate"
+                className="truncate font-serif text-[11px] leading-tight text-[rgb(var(--sep-colour-e1c89d))]"
+              >
                 {
                   other.display_name
                 }
@@ -915,6 +923,8 @@ export function InstantChatDock({
                         }`}
                       >
                         <div
+                          data-cosmetic-character-id={message.sender_character_id}
+                          data-cosmetic-surface="instant"
                           className={`max-w-[82%] border px-2 py-1.5 text-[10px] leading-4 ${
                             own
                               ? "border-[rgb(var(--sep-colour-80613c))] bg-[rgb(var(--sep-colour-2c2117))] text-[rgb(var(--sep-colour-dcc8a8))]"

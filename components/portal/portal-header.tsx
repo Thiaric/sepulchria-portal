@@ -54,7 +54,7 @@ export async function PortalHeader({ context }: PortalHeaderProps) {
             </span>
           </Link>
 
-          <div className="flex shrink-0 items-center gap-1.5 sm:gap-2 lg:gap-2.5 2xl:gap-3">
+          <div data-cosmetic-header-controls className="flex shrink-0 items-center gap-1.5 sm:gap-2 lg:gap-2.5 2xl:gap-3">
             <WorldIndicator
   characterId={
     character?.id ?? null

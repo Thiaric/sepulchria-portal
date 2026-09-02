@@ -222,6 +222,8 @@ export default function TopicPost({
     <article
       id={`post-${post.id}`}
       data-sep-interaction-fixed="true"
+      data-cosmetic-character-id={post.author_character?.id}
+      data-cosmetic-surface={!post.is_anonymous ? "forum" : undefined}
       className="scroll-mt-24 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]"
     >
       <div className="grid lg:grid-cols-[138px_minmax(0,1fr)]">
@@ -247,6 +249,8 @@ export default function TopicPost({
 
             <div className="min-w-0 flex-1 lg:mt-4">
               <h2
+  data-cosmetic-character-id={post.author_character?.id}
+  data-cosmetic-surface={!post.is_anonymous ? "nameplate" : undefined}
   className={`font-serif text-base leading-tight ${
     post.is_anonymous &&
     post.anonymous_identity_visible
@@ -558,7 +562,11 @@ function CharacterPortrait({
     isSafeUrl(character.portrait_url)
   ) {
     const portrait = (
-      <div className="h-20 w-20 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-6b5031))]/55 bg-[rgb(var(--sep-colour-0b0806))] lg:h-44 lg:w-full">
+      <div
+        data-cosmetic-character-id={character?.id}
+        data-cosmetic-surface="portrait"
+        className="h-20 w-20 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-6b5031))]/55 bg-[rgb(var(--sep-colour-0b0806))] lg:h-44 lg:w-full"
+      >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={character.portrait_url}
@@ -587,7 +595,11 @@ function CharacterPortrait({
   }
 
   const fallbackPortrait = (
-    <div className="flex h-20 w-20 shrink-0 items-center justify-center border border-[rgb(var(--sep-colour-6b5031))]/55 bg-[rgb(var(--sep-colour-1b130e))] font-serif text-2xl text-[rgb(var(--sep-colour-a98a61))] lg:h-44 lg:w-full lg:text-4xl">
+    <div
+      data-cosmetic-character-id={character?.id}
+      data-cosmetic-surface="portrait"
+      className="flex h-20 w-20 shrink-0 items-center justify-center border border-[rgb(var(--sep-colour-6b5031))]/55 bg-[rgb(var(--sep-colour-1b130e))] font-serif text-2xl text-[rgb(var(--sep-colour-a98a61))] lg:h-44 lg:w-full lg:text-4xl"
+    >
       {initials}
     </div>
   );
