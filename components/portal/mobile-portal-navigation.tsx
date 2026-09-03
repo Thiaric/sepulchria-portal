@@ -1025,11 +1025,11 @@ const moreDragging =
                 className="flex min-h-[50px] w-full flex-col items-center justify-center gap-1 px-1 text-[9px] text-[rgb(var(--sep-colour-8f806d))]"
               >
                 <MobileIcon
-                  src="/icons/orders.png"
+                  src="/icons/headquarters.png"
                   size={20}
                 />
                 <span className="uppercase tracking-[0.14em]">
-                  HQ
+                  Base
                 </span>
               </button>
             </form>
