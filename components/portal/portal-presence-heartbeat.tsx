@@ -120,9 +120,7 @@ export function PortalPresenceHeartbeat({
     async function sendHeartbeat() {
       if (
         logoutStartedRef.current ||
-        runningRef.current ||
-        idleForMs() >=
-          AWAY_AFTER_MS
+        runningRef.current
       ) {
         return;
       }
