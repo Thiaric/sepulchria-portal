@@ -4269,9 +4269,8 @@ function AreaContext({
   </h3>
 </div>
 
-      <p className="mb-3 text-xs leading-6 text-[rgb(var(--sep-colour-938673))]">
-        Journey to a
-        location in this area.
+      <p className="mb-3 text-xs leading-6 text-[rgb(var(--sep-skin-c1))]">
+        Journey to a location in this area.
       </p>
 
       {error ? (
