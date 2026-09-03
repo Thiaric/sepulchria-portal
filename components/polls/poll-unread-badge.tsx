@@ -1,11 +1,9 @@
 "use client";
 
 import {
-  useCallback,
   useEffect,
   useState,
 } from "react";
-
 
 function isTransientTransportError(
   error: unknown,
@@ -18,83 +16,128 @@ function isTransientTransportError(
   );
 }
 
-const REFRESH_MS = 15_000;
+const REFRESH_MS = 30_000;
 
 type UnreadPayload = {
   ids?: string[];
   count?: number;
 };
 
-export function usePollUnreadCount() {
-  const [count, setCount] =
-    useState(0);
+type CountListener = (
+  count: number,
+) => void;
 
-  const refresh =
-    useCallback(async () => {
-      try {
-        const response =
-          await fetch(
-            "/api/polls/unread",
-            {
-              cache: "no-store",
-            },
-          );
+let sharedCount = 0;
+let sharedTimer:
+  | number
+  | null = null;
+let sharedRunning = false;
 
-        if (!response.ok) {
-          if (
-            response.status ===
-            401
-          ) {
-            setCount(0);
-          }
-          return;
-        }
+const listeners =
+  new Set<CountListener>();
 
-        const payload =
-          (
-            await response.json()
-          ) as UnreadPayload;
+function publishCount(
+  count: number,
+) {
+  sharedCount = count;
 
-        setCount(
-          Math.max(
-            0,
-            Number(
-              payload.count ??
-                0,
-            ) || 0,
-          ),
-        );
-      } catch (error) {
-        if (
-          isTransientTransportError(
-            error,
-          )
-        ) {
-          return;
-        }
+  for (const listener of listeners) {
+    listener(count);
+  }
+}
 
-        console.error(
-          "Unable to refresh Poll unread count:",
-          error,
-        );
-      }
-    }, []);
+async function refreshSharedCount() {
+  if (sharedRunning) {
+    return;
+  }
 
-  useEffect(() => {
-    void refresh();
+  sharedRunning = true;
 
-    const timer =
-      window.setInterval(
-        () => {
-          void refresh();
+  try {
+    const response =
+      await fetch(
+        "/api/polls/unread",
+        {
+          cache: "no-store",
         },
-        REFRESH_MS,
       );
 
-    const handleRefresh =
+    if (!response.ok) {
+      if (response.status === 401) {
+        publishCount(0);
+      }
+
+      return;
+    }
+
+    const payload =
+      (await response.json()) as
+        UnreadPayload;
+
+    publishCount(
+      Math.max(
+        0,
+        Number(
+          payload.count ?? 0,
+        ) || 0,
+      ),
+    );
+  } catch (error) {
+    if (
+      !isTransientTransportError(
+        error,
+      )
+    ) {
+      console.error(
+        "Unable to refresh Poll unread count:",
+        error,
+      );
+    }
+  } finally {
+    sharedRunning = false;
+  }
+}
+
+function ensureSharedPolling() {
+  if (sharedTimer !== null) {
+    return;
+  }
+
+  void refreshSharedCount();
+
+  sharedTimer =
+    window.setInterval(
       () => {
-        void refresh();
-      };
+        void refreshSharedCount();
+      },
+      REFRESH_MS,
+    );
+}
+
+function stopSharedPollingIfUnused() {
+  if (
+    listeners.size > 0 ||
+    sharedTimer === null
+  ) {
+    return;
+  }
+
+  window.clearInterval(sharedTimer);
+  sharedTimer = null;
+}
+
+export function usePollUnreadCount() {
+  const [count, setCount] =
+    useState(sharedCount);
+
+  useEffect(() => {
+    listeners.add(setCount);
+    setCount(sharedCount);
+    ensureSharedPolling();
+
+    const handleRefresh = () => {
+      void refreshSharedCount();
+    };
 
     window.addEventListener(
       "focus",
@@ -107,9 +150,7 @@ export function usePollUnreadCount() {
     );
 
     return () => {
-      window.clearInterval(
-        timer,
-      );
+      listeners.delete(setCount);
 
       window.removeEventListener(
         "focus",
@@ -120,8 +161,10 @@ export function usePollUnreadCount() {
         "sepulchria:poll-unread-changed",
         handleRefresh,
       );
+
+      stopSharedPollingIfUnused();
     };
-  }, [refresh]);
+  }, []);
 
   return count;
 }
@@ -142,13 +185,14 @@ export function PollUnreadBadge({
   }
 
   return (
-    <span data-sep-counter-badge="true"
-      title={`${value} new open Poll${value === 1 ? "" : "s"}`}
+    <span
+      data-sep-counter-badge="true"
+      title={`${value} new open Poll${
+        value === 1 ? "" : "s"
+      }`}
       className="ml-auto inline-flex h-4 min-w-4 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] px-1 text-[7px] font-bold leading-none text-[#ffe1ac] shadow-[0_0_9px_rgba(var(--sep-rgb-177-132-75),0.18)]"
     >
-      {value > 9
-        ? "9+"
-        : value}
+      {value > 9 ? "9+" : value}
     </span>
   );
 }

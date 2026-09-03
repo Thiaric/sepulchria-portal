@@ -291,6 +291,12 @@ export function NotificationBell() {
       new Set(),
     );
 
+  const lastMissionSyncAtRef =
+    useRef(0);
+
+  const missionSyncRunningRef =
+    useRef(false);
+
   const [open, setOpen] =
     useState(false);
   const [rows, setRows] =
@@ -314,13 +320,33 @@ export function NotificationBell() {
 
   const load = useCallback(
     async () => {
-      await fetch(
-        "/api/missions/notifications/sync",
-        {
-          method: "POST",
-          cache: "no-store",
-        },
-      ).catch(() => null);
+      const now = Date.now();
+
+      if (
+        !missionSyncRunningRef.current &&
+        now -
+          lastMissionSyncAtRef.current >=
+          60_000
+      ) {
+        missionSyncRunningRef.current =
+          true;
+
+        lastMissionSyncAtRef.current =
+          now;
+
+        try {
+          await fetch(
+            "/api/missions/notifications/sync",
+            {
+              method: "POST",
+              cache: "no-store",
+            },
+          ).catch(() => null);
+        } finally {
+          missionSyncRunningRef.current =
+            false;
+        }
+      }
 
       const { data, error } =
         await supabase.rpc(
