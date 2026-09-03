@@ -1,5 +1,4 @@
 import { redirect } from "next/navigation";
-import { LocationImageLightbox } from "@/components/world/location-image-lightbox";
 import { CollapsibleRoomDescription } from "@/components/world/collapsible-room-description";
 import {
   cancelPrivateLocationInvitation,
@@ -32,31 +31,6 @@ function label(
   return (
     character.display_name?.trim() ||
     `${character.first_name} ${character.surname}`.trim()
-  );
-}
-
-function ColourField({
-  label: fieldLabel,
-  name,
-  value,
-}: {
-  label: string;
-  name: string;
-  value: string;
-}) {
-  return (
-    <label className="grid gap-1">
-      <span className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-806b50))]">
-        {fieldLabel}
-      </span>
-
-      <input
-        type="color"
-        name={name}
-        defaultValue={value}
-        className="h-10 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-transparent"
-      />
-    </label>
   );
 }
 
@@ -341,22 +315,6 @@ export default async function PrivateLocationPage() {
                 key={room.id}
                 className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-17110d))]"
               >
-                {room.image_url ? (
-  <div className="relative h-40 w-full overflow-hidden">
-    {/* eslint-disable-next-line @next/next/no-img-element */}
-    <img
-      src={room.image_url}
-      alt={room.name}
-      className="h-full w-full object-cover"
-    />
-
-    <LocationImageLightbox
-      src={room.image_url}
-      name={room.name}
-    />
-  </div>
-) : null}
-
                 <div className="p-4">
                   <div className="flex items-center justify-between gap-3">
                     <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-dfc79c))]">
@@ -427,35 +385,7 @@ export default async function PrivateLocationPage() {
 
               <label className="grid gap-1">
                 <span className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-806b50))]">
-                  Location name
-                </span>
-                <input
-                  name="name"
-                  maxLength={120}
-                  defaultValue={ownedRoom.name}
-                  className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))]"
-                />
-              </label>
-
-              <label className="grid gap-1">
-                <span className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-806b50))]">
-                  Info description
-                </span>
-                <textarea
-                  name="description"
-                  rows={6}
-                  maxLength={10000}
-                  defaultValue={
-                    ownedRoom.description ??
-                    ""
-                  }
-                  className="resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))]"
-                />
-              </label>
-
-              <label className="grid gap-1">
-                <span className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-806b50))]">
-                  Location picture URL
+                  Chat background URL
                 </span>
                 <input
                   name="imageUrl"
@@ -464,86 +394,20 @@ export default async function PrivateLocationPage() {
                     ownedRoom.image_url ??
                     ""
                   }
-                  placeholder="https://... 2:1 proportions (ex: 1774x883)"
+                  placeholder="https://..."
                   className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))]"
                 />
               </label>
 
-              <div className="grid grid-cols-2 gap-3">
-                <ColourField
-                  label="Chat background"
-                  name="backgroundColour"
-                  value={
-                    theme.background_colour
-                  }
-                />
-
-                <ColourField
-                  label="Spoken text"
-                  name="speechColour"
-                  value={
-                    theme.speech_colour
-                  }
-                />
-
-                <ColourField
-                  label="Action text"
-                  name="actionColour"
-                  value={
-                    theme.action_colour
-                  }
-                />
-
-                <ColourField
-                  label="Dice / Skills / Feats"
-                  name="systemColour"
-                  value={
-                    theme.system_colour
-                  }
-                />
-
-                <ColourField
-                  label="Whisper background"
-                  name="whisperBackgroundColour"
-                  value={
-                    theme.whisper_background_colour
-                  }
-                />
-
-                <ColourField
-                  label="Whisper text"
-                  name="whisperTextColour"
-                  value={
-                    theme.whisper_text_colour
-                  }
-                />
-
-                <ColourField
-                  label="Off-Game background"
-                  name="offgameBackgroundColour"
-                  value={
-                    theme.offgame_background_colour
-                  }
-                />
-
-                <ColourField
-                  label="Off-Game text"
-                  name="offgameTextColour"
-                  value={
-                    theme.offgame_text_colour
-                  }
-                />
-              </div>
-
               <p className="text-[8px] leading-4 text-[rgb(var(--sep-colour-6f6252))]">
-                The Voice of Fate always keeps the standard Sepulchria styling.
+                This image becomes the location chat atmosphere for everyone inside and overrides each character&apos;s equipped Location Atmosphere cosmetic while they are here. All other chat styling follows the active Portal skin.
               </p>
 
               <button
                 type="submit"
                 className="border border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] px-4 py-2 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-efd9aa))]"
               >
-                Save location
+                Save chat background
               </button>
             </form>
 

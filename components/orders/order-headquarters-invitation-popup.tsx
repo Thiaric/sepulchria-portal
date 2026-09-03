@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { respondOrderHeadquartersInvitation } from "@/app/(portal)/orders/headquarters/actions";
 import { createClient } from "@/lib/supabase/client";
 
@@ -10,6 +11,7 @@ export function OrderHeadquartersInvitationPopup({
   characterId: string | null;
 }) {
   const supabase = useMemo(() => createClient(), []);
+  const searchParams = useSearchParams();
   const [invite, setInvite] = useState<any>(null);
 
   const load = useCallback(async () => {
@@ -18,7 +20,10 @@ export function OrderHeadquartersInvitationPopup({
       return;
     }
 
-    const { data, error } = await supabase
+    const requestedInvitationId =
+      searchParams.get("orderInvite");
+
+    let query = supabase
       .from("order_headquarters_invitations")
       .select(`
         id, custom_message, access_duration_minutes, inviter_character_id,
@@ -27,11 +32,26 @@ export function OrderHeadquartersInvitationPopup({
         )
       `)
       .eq("recipient_character_id", characterId)
-      .eq("status", "pending")
-      .eq("delivery_method", "popup")
-      .order("created_at", { ascending: true })
-      .limit(1)
-      .maybeSingle();
+      .eq("status", "pending");
+
+    query = requestedInvitationId
+      ? query.eq(
+          "id",
+          requestedInvitationId,
+        )
+      : query.eq(
+          "delivery_method",
+          "popup",
+        );
+
+    const { data, error } =
+      await query
+        .order(
+          "created_at",
+          { ascending: true },
+        )
+        .limit(1)
+        .maybeSingle();
 
     if (error || !data) {
       if (error) console.error("Order Headquarters invitation:", error.message);
@@ -71,7 +91,7 @@ export function OrderHeadquartersInvitationPopup({
       customMessage: data.custom_message,
       durationLabel,
     });
-  }, [characterId, supabase]);
+  }, [characterId, searchParams, supabase]);
 
   useEffect(() => {
     void load();

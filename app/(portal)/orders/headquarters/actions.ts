@@ -5,8 +5,10 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { getOrderHeadquartersAccess } from "@/lib/order-headquarters/access";
-import { sanitizeRichHtml } from "@/lib/rich-text";
 import { createClient } from "@/lib/supabase/server";
+import {
+  createTargetedCharacterNotification,
+} from "@/lib/notifications/create-targeted-character-notification";
 
 function adminClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -29,10 +31,6 @@ function text(value: FormDataEntryValue | null, max: number) {
   return String(value ?? "").trim().slice(0, max);
 }
 
-function colour(value: FormDataEntryValue | null, fallback: string) {
-  const v = String(value ?? "").trim();
-  return /^#[0-9a-f]{6}$/i.test(v) ? v : fallback;
-}
 
 async function currentCharacter() {
   const supabase = await createClient();
@@ -59,36 +57,6 @@ async function requirePermission(roomId: string, kind: "invite" | "customize") {
   }
 
   return { character, access, admin: adminClient() };
-}
-
-async function ensureConversation(
-  recipientId: string,
-) {
-  const authenticated =
-    await createClient();
-
-  const {
-    data: conversationId,
-    error,
-  } = await authenticated.rpc(
-    "start_direct_conversation",
-    {
-      recipient_character_id:
-        recipientId,
-    },
-  );
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  if (!conversationId) {
-    throw new Error(
-      "The invitation conversation could not be created.",
-    );
-  }
-
-  return conversationId as string;
 }
 
 function duration(value: FormDataEntryValue | null) {
@@ -126,18 +94,6 @@ export async function inviteOrderHeadquarters(formData: FormData) {
 
   if (hqError) throw new Error(hqError.message);
 
-  const { data: presence } = await admin
-    .from("character_presence")
-    .select("status,last_seen_at")
-    .eq("character_id", recipientId)
-    .maybeSingle();
-
-  const seen = presence?.last_seen_at ? Date.parse(presence.last_seen_at) : Number.NaN;
-  const online =
-    presence?.status === "online" &&
-    Number.isFinite(seen) &&
-    Date.now() - seen <= 120000;
-
   const customMessage = text(formData.get("customMessage"), 1200);
   const accessDuration = duration(formData.get("accessDuration"));
 
@@ -149,65 +105,79 @@ export async function inviteOrderHeadquarters(formData: FormData) {
       recipient_character_id: recipientId,
       custom_message: customMessage || null,
       access_duration_minutes: accessDuration,
-      delivery_method: online ? "popup" : "message",
+      delivery_method: "message",
       status: "pending",
     })
     .select("id")
     .single();
 
-  if (invitationError) throw new Error(invitationError.message);
+  if (invitationError) {
+    throw new Error(invitationError.message);
+  }
 
-  if (!online) {
-    let conversationId: string;
+  const authenticated =
+    await createClient();
 
-    try {
-      conversationId =
-        await ensureConversation(
-          recipientId,
-        );
-    } catch (error) {
-      await admin
-        .from("order_headquarters_invitations")
-        .delete()
-        .eq("id", invitation.id);
+  const {
+    data: { user: invitingUser },
+  } = await authenticated.auth.getUser();
 
-      throw error;
-    }
-    const roomRelation = hq.room;
-    const room = Array.isArray(roomRelation) ? roomRelation[0] : roomRelation;
-
-    const body =
-      `<p>You have been invited to <strong>${room?.name ?? "an Order Headquarters"}</strong>.</p>` +
-      (customMessage ? `<p>${customMessage}</p>` : "") +
-      `<!--ORDER_HEADQUARTERS_INVITE:${invitation.id}-->`;
-
-    const { error: messageError } = await admin
-      .from("direct_messages")
-      .insert({
-        conversation_id: conversationId,
-        sender_character_id: character.id,
-        body,
-        message_mode: "offgame",
-        client_nonce: crypto.randomUUID(),
-      });
-
-    if (messageError) {
-      await admin
-        .from("order_headquarters_invitations")
-        .delete()
-        .eq("id", invitation.id);
-
-      throw new Error(messageError.message);
-    }
-
+  if (!invitingUser) {
     await admin
-      .from("direct_conversations")
-      .update({ updated_at: new Date().toISOString() })
-      .eq("id", conversationId);
+      .from("order_headquarters_invitations")
+      .delete()
+      .eq("id", invitation.id);
+
+    throw new Error(
+      "The invitation sender could not be identified.",
+    );
+  }
+
+  const roomRelation = hq.room;
+  const room = Array.isArray(roomRelation)
+    ? roomRelation[0]
+    : roomRelation;
+
+  try {
+    await createTargetedCharacterNotification({
+      recipientCharacterId:
+        recipientId,
+      title:
+        "Order Headquarters invitation",
+      body:
+        `You have been invited to ${room?.name ?? "an Order Headquarters"}.` +
+        (customMessage
+          ? ` ${customMessage}`
+          : ""),
+      href:
+        `/game?orderInvite=${encodeURIComponent(
+          invitation.id,
+        )}`,
+      sourceType:
+        "order_headquarters_invite",
+      sourceId:
+        invitation.id,
+      sourceTrigger:
+        "invited",
+      createdByUserId:
+        invitingUser.id,
+    });
+  } catch (error) {
+    await admin
+      .from("order_headquarters_invitations")
+      .delete()
+      .eq("id", invitation.id);
+
+    throw new Error(
+      `The invitation could not be notified: ${
+        error instanceof Error
+          ? error.message
+          : "Unknown error"
+      }`,
+    );
   }
 
   revalidatePath("/game");
-  revalidatePath("/messages");
 }
 
 export async function respondOrderHeadquartersInvitation(formData: FormData) {
@@ -335,41 +305,37 @@ export async function revokeOrderHeadquartersGuest(formData: FormData) {
 }
 
 export async function updateOrderHeadquartersPresentation(formData: FormData) {
-  const roomId = uuid(formData.get("roomId"));
-  const { admin } = await requirePermission(roomId, "customize");
+  const roomId =
+    uuid(formData.get("roomId"));
 
-  const name = text(formData.get("name"), 120) || "Order Headquarters";
-  const description = sanitizeRichHtml(String(formData.get("description") ?? "")) || null;
-  const imageUrl = text(formData.get("imageUrl"), 2000);
+  const {
+    admin,
+  } = await requirePermission(
+    roomId,
+    "customize",
+  );
 
-  const { error: roomError } = await admin
+  const imageUrl =
+    text(
+      formData.get("imageUrl"),
+      2000,
+    );
+
+  const { error } = await admin
     .from("rooms")
     .update({
-      name,
-      description,
-      image_url: imageUrl || null,
-      updated_at: new Date().toISOString(),
+      image_url:
+        imageUrl || null,
+      updated_at:
+        new Date().toISOString(),
     })
     .eq("id", roomId);
 
-  if (roomError) throw new Error(roomError.message);
-
-  const { error: themeError } = await admin
-    .from("order_headquarters")
-    .update({
-      background_colour: colour(formData.get("backgroundColour"), "#17110d"),
-      speech_colour: colour(formData.get("speechColour"), "#d3c2aa"),
-      action_colour: colour(formData.get("actionColour"), "#a98a60"),
-      system_colour: colour(formData.get("systemColour"), "#c8b89f"),
-      whisper_background_colour: colour(formData.get("whisperBackgroundColour"), "#241b2a"),
-      whisper_text_colour: colour(formData.get("whisperTextColour"), "#c7add6"),
-      offgame_background_colour: colour(formData.get("offgameBackgroundColour"), "#182536"),
-      offgame_text_colour: colour(formData.get("offgameTextColour"), "#a9c7e6"),
-      updated_at: new Date().toISOString(),
-    })
-    .eq("room_id", roomId);
-
-  if (themeError) throw new Error(themeError.message);
+  if (error) {
+    throw new Error(
+      error.message,
+    );
+  }
 
   revalidatePath("/game");
 }

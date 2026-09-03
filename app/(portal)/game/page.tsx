@@ -190,34 +190,9 @@ async function GameContent() {
       character.id,
     );
 
-  const privateLocation =
+  const ownedLocationAtmosphereUrl =
     privateAccess.metadata
-      ? {
-          background_colour:
-            privateAccess.metadata
-              .backgroundColour,
-          speech_colour:
-            privateAccess.metadata
-              .speechColour,
-          action_colour:
-            privateAccess.metadata
-              .actionColour,
-          system_colour:
-            privateAccess.metadata
-              .systemColour,
-          whisper_background_colour:
-            privateAccess.metadata
-              .whisperBackgroundColour,
-          whisper_text_colour:
-            privateAccess.metadata
-              .whisperTextColour,
-          offgame_background_colour:
-            privateAccess.metadata
-              .offgameBackgroundColour,
-          offgame_text_colour:
-            privateAccess.metadata
-              .offgameTextColour,
-        }
+      ? room.image_url
       : null;
 
   if (
@@ -1133,29 +1108,38 @@ async function GameContent() {
 
   return (
   <div
-  data-game-location-surface
-  className={
-    privateLocation
-      ? "private-location-theme h-full min-h-0 overflow-hidden p-2 sm:p-3 lg:p-4"
-      : "h-full min-h-0 overflow-hidden p-2 sm:p-3 lg:p-4"
-  }
-  style={
-    privateLocation
-      ? ({
-          "--private-location-bg":
-            privateLocation.background_colour,
-        } as CSSProperties)
-      : undefined
-  }
->
-    {privateLocation ? (
-      <style>{`
-        .private-location-theme #room-chronicle {
-          background: var(--private-location-bg);
-        }
-      `}</style>
-    ) : null}
-    <RoomRealtime roomId={room.id} />
+    data-game-location-surface
+    data-owned-location-atmosphere={
+      ownedLocationAtmosphereUrl
+        ? "true"
+        : undefined
+    }
+    className="h-full min-h-0 overflow-hidden p-2 sm:p-3 lg:p-4"
+    style={
+      ownedLocationAtmosphereUrl
+        ? ({
+            backgroundImage:
+              `linear-gradient(rgba(4,7,13,.58), rgba(4,7,13,.66)), url(${JSON.stringify(
+                ownedLocationAtmosphereUrl,
+              )})`,
+            backgroundSize:
+              "cover",
+            backgroundPosition:
+              "center",
+            backgroundRepeat:
+              "no-repeat",
+          } as CSSProperties)
+        : undefined
+    }
+  >
+    <RoomRealtime
+      roomId={room.id}
+      presentCharacterIds={
+        presentCharacters.map(
+          (entry) => entry.id,
+        )
+      }
+    />
 
     <div className="mx-auto flex h-full max-w-80dvh flex-col">
       <RoomMusicPlayer
@@ -1218,28 +1202,7 @@ async function GameContent() {
             canViewAllWhispers={
               canViewAllWhispers
             }
-            privateLocationTheme={
-              privateLocation
-                ? {
-                    backgroundColour:
-                      privateLocation.background_colour,
-                    speechColour:
-                      privateLocation.speech_colour,
-                    actionColour:
-                      privateLocation.action_colour,
-                    systemColour:
-                      privateLocation.system_colour,
-                    whisperBackgroundColour:
-                      privateLocation.whisper_background_colour,
-                    whisperTextColour:
-                      privateLocation.whisper_text_colour,
-                    offgameBackgroundColour:
-                      privateLocation.offgame_background_colour,
-                    offgameTextColour:
-                      privateLocation.offgame_text_colour,
-                  }
-                : null
-            }
+            privateLocationTheme={null}
           />
         </div>
 

@@ -4,11 +4,13 @@ import {
   useEffect,
   useRef,
 } from "react";
+import { useRouter } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/client";
 
 type RoomRealtimeProps = {
   roomId: string;
+  presentCharacterIds: string[];
 };
 
 type LocationBroadcast = {
@@ -23,9 +25,13 @@ const LOCATION_CHANNEL =
 
 export default function RoomRealtime({
   roomId,
+  presentCharacterIds,
 }: RoomRealtimeProps) {
+  const router = useRouter();
   const hardReloadingRef =
     useRef(false);
+  const knownRoomCharactersRef =
+    useRef(new Set(presentCharacterIds));
 
   useEffect(() => {
     const supabase = createClient();
@@ -276,6 +282,43 @@ export default function RoomRealtime({
             return;
           },
         )
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table:
+              "character_presence",
+            filter:
+              `room_id=eq.${roomId}`,
+          },
+          (payload) => {
+            const joinedCharacterId =
+              String(
+                (
+                  payload.new as {
+                    character_id?: string;
+                  }
+                )?.character_id ??
+                  "",
+              );
+
+            if (
+              !joinedCharacterId ||
+              knownRoomCharactersRef.current.has(
+                joinedCharacterId,
+              )
+            ) {
+              return;
+            }
+
+            knownRoomCharactersRef.current.add(
+              joinedCharacterId,
+            );
+
+            router.refresh();
+          },
+        )
         .subscribe();
     }
 
@@ -345,7 +388,12 @@ export default function RoomRealtime({
         );
       }
     };
-  }, [roomId]);
+  }, [roomId, router]);
+
+  useEffect(() => {
+    knownRoomCharactersRef.current =
+      new Set(presentCharacterIds);
+  }, [presentCharacterIds]);
 
   return null;
 }

@@ -71,17 +71,6 @@ function readText(
     .slice(0, maxLength);
 }
 
-function readColour(
-  value: FormDataEntryValue | null,
-  fallback: string,
-) {
-  const result =
-    String(value ?? "").trim();
-
-  return /^#[0-9a-f]{6}$/i.test(result)
-    ? result
-    : fallback;
-}
 
 async function getCharacter() {
   const supabase =
@@ -1008,86 +997,10 @@ export async function updatePrivateLocation(
     admin,
   } = await requireOwner(roomId);
 
-  const name =
-    readText(
-      formData.get("name"),
-      120,
-    ) || "Private Room";
-
-  const description =
-    readText(
-      formData.get("description"),
-      10000,
-    );
-
   const imageUrl =
     readText(
       formData.get("imageUrl"),
       2000,
-    );
-
-  const backgroundColour =
-    readColour(
-      formData.get(
-        "backgroundColour",
-      ),
-      "#17110d",
-    );
-
-  const speechColour =
-    readColour(
-      formData.get(
-        "speechColour",
-      ),
-      "#d3c2aa",
-    );
-
-  const actionColour =
-    readColour(
-      formData.get(
-        "actionColour",
-      ),
-      "#a98a60",
-    );
-
-  const systemColour =
-    readColour(
-      formData.get(
-        "systemColour",
-      ),
-      "#c8b89f",
-    );
-
-  const whisperBackgroundColour =
-    readColour(
-      formData.get(
-        "whisperBackgroundColour",
-      ),
-      "#241b2a",
-    );
-
-  const whisperTextColour =
-    readColour(
-      formData.get(
-        "whisperTextColour",
-      ),
-      "#c7add6",
-    );
-
-  const offgameBackgroundColour =
-    readColour(
-      formData.get(
-        "offgameBackgroundColour",
-      ),
-      "#182536",
-    );
-
-  const offgameTextColour =
-    readColour(
-      formData.get(
-        "offgameTextColour",
-      ),
-      "#a9c7e6",
     );
 
   const {
@@ -1095,52 +1008,16 @@ export async function updatePrivateLocation(
   } = await admin
     .from("rooms")
     .update({
-      name,
-      description:
-        description || null,
       image_url:
         imageUrl || null,
-      is_active: true,
-      is_outdoors: false,
-      chat_enabled: true,
       updated_at:
         new Date().toISOString(),
     })
     .eq("id", roomId);
 
   if (roomError) {
-    throw new Error(roomError.message);
-  }
-
-  const {
-    error: metadataError,
-  } = await admin
-    .from("private_location_rooms")
-    .update({
-      background_colour:
-        backgroundColour,
-      speech_colour:
-        speechColour,
-      action_colour:
-        actionColour,
-      system_colour:
-        systemColour,
-      whisper_background_colour:
-        whisperBackgroundColour,
-      whisper_text_colour:
-        whisperTextColour,
-      offgame_background_colour:
-        offgameBackgroundColour,
-      offgame_text_colour:
-        offgameTextColour,
-      updated_at:
-        new Date().toISOString(),
-    })
-    .eq("room_id", roomId);
-
-  if (metadataError) {
     throw new Error(
-      metadataError.message,
+      roomError.message,
     );
   }
 

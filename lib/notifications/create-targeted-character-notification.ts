@@ -70,7 +70,7 @@ export async function createTargetedCharacterNotification({
 
   const { error: readySignalError } = await admin
     .from("notifications")
-    .update({ starts_at: now })
+    .update({ starts_at: new Date().toISOString() })
     .eq("id", notification.id);
 
   if (readySignalError) {

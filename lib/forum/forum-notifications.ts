@@ -509,6 +509,32 @@ export async function notifyForumReplyAudience({
 
   const { data: { user: actorUser } } = await supabase.auth.getUser();
 
+  const {
+    data: actorCharacter,
+    error: actorCharacterError,
+  } = await supabase
+    .from("characters")
+    .select(
+      "display_name, first_name, surname",
+    )
+    .eq(
+      "id",
+      actorCharacterId,
+    )
+    .maybeSingle();
+
+  if (actorCharacterError) {
+    console.error(
+      "Unable to resolve Forum reply author name:",
+      actorCharacterError.message,
+    );
+  }
+
+  const actorName =
+    actorCharacter?.display_name?.trim() ||
+    `${actorCharacter?.first_name ?? ""} ${actorCharacter?.surname ?? ""}`.trim() ||
+    "A character";
+
   if (!actorUser) {
     console.error("Unable to create Forum reply bell notifications: authenticated user not found.");
     return;
@@ -521,10 +547,10 @@ export async function notifyForumReplyAudience({
           recipientCharacterId,
           title: isAnonymous
             ? "New anonymous reply to a forum topic"
-            : "New reply to a forum topic",
+            : `New reply from ${actorName}`,
           body: isAnonymous
             ? `A new anonymous reply has been posted to “${topicTitle}”.`
-            : `A new reply has been posted to “${topicTitle}”.`,
+            : `${actorName} has replied to “${topicTitle}”.`,
           href,
           sourceType: "forum_reply",
           sourceId: crypto.randomUUID(),

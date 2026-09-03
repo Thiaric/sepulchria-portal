@@ -4,30 +4,6 @@ import {
   updateOrderHeadquartersPresentation,
 } from "@/app/(portal)/orders/headquarters/actions";
 
-function Colour({
-  label,
-  name,
-  value,
-}: {
-  label: string;
-  name: string;
-  value: string;
-}) {
-  return (
-    <label className="grid gap-1">
-      <span className="text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-806b50))]">
-        {label}
-      </span>
-      <input
-        type="color"
-        name={name}
-        defaultValue={value}
-        className="h-8 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-transparent"
-      />
-    </label>
-  );
-}
-
 export function OrderHeadquartersManageMenu({
   data,
 }: {
@@ -142,55 +118,36 @@ export function OrderHeadquartersManageMenu({
         {data.canCustomize ? (
           <details className="mt-4 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-3">
             <summary className="cursor-pointer text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-8c704b))]">
-              Location appearance
+              Chat background
             </summary>
 
-            <form action={updateOrderHeadquartersPresentation} className="mt-3 grid gap-2">
-              <input type="hidden" name="roomId" value={data.roomId} />
-
+            <form
+              action={updateOrderHeadquartersPresentation}
+              className="mt-3 grid gap-2"
+            >
               <input
-                name="name"
-                maxLength={120}
-                defaultValue={data.roomName}
-                className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))]"
-              />
-
-              <textarea
-                name="description"
-                rows={5}
-                maxLength={10000}
-                defaultValue={data.description ?? ""}
-                className="resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))]"
+                type="hidden"
+                name="roomId"
+                value={data.roomId}
               />
 
               <input
                 name="imageUrl"
                 maxLength={2000}
                 defaultValue={data.imageUrl ?? ""}
-                placeholder="Location image URL"
+                placeholder="Chat background URL"
                 className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))]"
               />
 
-              <div className="grid grid-cols-2 gap-2">
-                <Colour label="Chat background" name="backgroundColour" value={data.theme.backgroundColour} />
-                <Colour label="Spoken text" name="speechColour" value={data.theme.speechColour} />
-                <Colour label="Action text" name="actionColour" value={data.theme.actionColour} />
-                <Colour label="Dice / Skills / Feats" name="systemColour" value={data.theme.systemColour} />
-                <Colour label="Whisper background" name="whisperBackgroundColour" value={data.theme.whisperBackgroundColour} />
-                <Colour label="Whisper text" name="whisperTextColour" value={data.theme.whisperTextColour} />
-                <Colour label="Off-Game background" name="offgameBackgroundColour" value={data.theme.offgameBackgroundColour} />
-                <Colour label="Off-Game text" name="offgameTextColour" value={data.theme.offgameTextColour} />
-              </div>
-
               <p className="text-[7px] leading-4 text-[rgb(var(--sep-colour-6f6252))]">
-                Fate remains fixed. Area, Active, Indoor/Outdoor and Chat Enabled are staff-only in Admin → Locations.
+                This overrides each visitor&apos;s equipped Location Atmosphere while they are inside. All other chat colours and surfaces follow their active Portal skin.
               </p>
 
               <button
                 type="submit"
                 className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd6a8))]"
               >
-                Save Headquarters
+                Save chat background
               </button>
             </form>
           </details>

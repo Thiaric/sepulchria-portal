@@ -288,6 +288,17 @@ async function PortalLayoutContent({
     ) !important;
 }
 
+[data-game-location-surface][data-owned-location-atmosphere="true"]
+  article[data-sep-interaction-fixed="true"],
+[data-game-location-surface][data-owned-location-atmosphere="true"]
+  [data-room-chat-composer] {
+  background-color:
+    rgb(
+      var(--sep-colour-17110d) /
+      var(--sep-location-message-opacity, 60%)
+    ) !important;
+}
+
               .portal-left-collapse-toggle,
               .portal-right-collapse-toggle {
                 display: none;

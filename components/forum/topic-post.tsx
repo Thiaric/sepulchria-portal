@@ -249,32 +249,37 @@ export default function TopicPost({
 
             <div className="min-w-0 flex-1 lg:mt-4">
               <h2
-  data-cosmetic-character-id={post.author_character?.id}
-  data-cosmetic-surface={!post.is_anonymous ? "nameplate" : undefined}
-  className={`font-serif text-base leading-tight ${
-    post.is_anonymous &&
-    post.anonymous_identity_visible
-      ? "text-red-400"
-      : "text-[rgb(var(--sep-colour-ddc59e))]"
-  }`}
->
-  <ForumCharacterLink
-    characterId={post.author_character?.id}
-    disabled={!linkAuthorToProfile}
-    className="break-words transition hover:text-[rgb(var(--sep-colour-efd4a0))]"
-    ariaLabel={`View ${authorName}'s character sheet`}
-  >
-    {post.is_anonymous
-      ? "Anonymous"
-      : post.author_character?.first_name || authorName}
-  </ForumCharacterLink>
-</h2>
+                data-cosmetic-character-id={post.author_character?.id}
+                data-cosmetic-surface={!post.is_anonymous ? "nameplate" : undefined}
+                data-forum-anonymous-author={
+                  post.is_anonymous &&
+                  post.anonymous_identity_visible
+                    ? "true"
+                    : undefined
+                }
+                className="font-serif text-base leading-tight text-[rgb(var(--sep-colour-ddc59e))]"
+              >
+                <ForumCharacterLink
+                  characterId={post.author_character?.id}
+                  disabled={!linkAuthorToProfile}
+                  className="break-words transition hover:text-[rgb(var(--sep-colour-efd4a0))]"
+                  ariaLabel={`View ${authorName}'s character sheet`}
+                >
+                  {post.is_anonymous
+                    ? post.anonymous_identity_visible
+                      ? post.author_character?.first_name || authorName
+                      : "Anonymous"
+                    : post.author_character?.first_name || authorName}
+                </ForumCharacterLink>
+              </h2>
 
-              {post.is_anonymous ? (
-                <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-f87171))]">
-                  {post.anonymous_identity_visible
-                    ? "Anonymous"
-                    : "Anonymous"}
+              {post.is_anonymous &&
+              post.anonymous_identity_visible ? (
+                <p
+                  data-forum-anonymous-label="true"
+                  className="mt-1 text-[10px] uppercase tracking-[0.16em]"
+                >
+                  Anonymous
                 </p>
               ) : null}
 

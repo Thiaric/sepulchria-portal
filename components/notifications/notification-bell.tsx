@@ -423,10 +423,11 @@ export function NotificationBell() {
 
     const channel = supabase
       .channel(`automatic-bell-notifications-${crypto.randomUUID()}`)
-      .on("postgres_changes", { event: "*", schema: "public", table: "notifications", filter: "source_type=eq.item_trade" }, reload)
-      .on("postgres_changes", { event: "*", schema: "public", table: "notifications", filter: "source_type=eq.private_location_invite" }, reload)
-      .on("postgres_changes", { event: "*", schema: "public", table: "notifications", filter: "source_type=eq.breeze_lodging_invite" }, reload)
-      .on("postgres_changes", { event: "*", schema: "public", table: "notifications", filter: "source_type=eq.forum_reply" }, reload)
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "notifications", filter: "source_type=eq.item_trade" }, reload)
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "notifications", filter: "source_type=eq.private_location_invite" }, reload)
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "notifications", filter: "source_type=eq.breeze_lodging_invite" }, reload)
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "notifications", filter: "source_type=eq.forum_reply" }, reload)
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "notifications", filter: "source_type=eq.order_headquarters_invite" }, reload)
       .subscribe();
 
     return () => {
