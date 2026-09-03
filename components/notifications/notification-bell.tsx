@@ -417,6 +417,40 @@ export function NotificationBell() {
   }, [load, pathname]);
 
   useEffect(() => {
+    const channel =
+      supabase
+        .channel(
+          `item-exchange-notifications-${crypto.randomUUID()}`,
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table:
+              "notifications",
+            filter:
+              "source_type=eq.item_trade",
+          },
+          () => {
+            /*
+             * Item Exchange notifications emit a final UPDATE only after
+             * notification_targets has been created, so this reload cannot
+             * race ahead of the recipient assignment.
+             */
+            void load();
+          },
+        )
+        .subscribe();
+
+    return () => {
+      void supabase.removeChannel(
+        channel,
+      );
+    };
+  }, [load, supabase]);
+
+  useEffect(() => {
     function updatePanelPosition() {
       const button =
         buttonRef.current;

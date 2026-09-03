@@ -1823,23 +1823,28 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                       key={item.id}
                       data-cosmetic-character-id={item.character_id}
                       data-cosmetic-surface={isWhisper ? "whisper" : "off-character"}
+                      data-room-message-kind={
+                        isOutOfCharacter
+                          ? "ooc"
+                          : "whisper"
+                      }
                       className={`relative flex gap-3 py-3 pl-5 pr-12 sm:pl-7 sm:pr-12 ${
                         isOutOfCharacter
-                          ? "border-l-2 border-[#627f9f] bg-[#182536]/55"
-                          : "border-l-2 border-[#7d628f] bg-[#241b2a]/45"
+                          ? ""
+                          : ""
                       }`}
                       style={
                         privateLocationTheme
                           ? isOutOfCharacter
                             ? {
                                 backgroundColor:
-                                  privateLocationTheme.offgameBackgroundColour,
+                                  privateLocationTheme.backgroundColour,
                                 color:
                                   privateLocationTheme.offgameTextColour,
                               }
                             : {
                                 backgroundColor:
-                                  privateLocationTheme.whisperBackgroundColour,
+                                  privateLocationTheme.backgroundColour,
                                 color:
                                   privateLocationTheme.whisperTextColour,
                               }

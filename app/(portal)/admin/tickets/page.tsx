@@ -7,7 +7,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 
 function Badge({ count }: { count: number }) {
   return count > 0 ? (
-    <span className="absolute -right-2 -top-2 inline-flex h-5 min-w-5 items-center justify-center rounded-full border border-[rgb(var(--sep-colour-d19a4c))] bg-[rgb(var(--sep-colour-7a291f))] px-1 text-[8px] font-bold leading-none text-[rgb(var(--sep-colour-ffe1ac))]">
+    <span data-sep-counter-badge="true" className="absolute -right-2 -top-2 inline-flex h-5 min-w-5 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] px-1 text-[8px] font-bold leading-none text-[#ffe1ac]">
       {count > 99 ? "99+" : count}
     </span>
   ) : null;

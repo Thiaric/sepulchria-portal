@@ -2113,7 +2113,7 @@ export function PortalSidebar({
           "Messages" &&
         unreadMessageCount >
           0 ? (
-          <span className="absolute right-0.5 top-0.5 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full border border-[rgb(var(--sep-colour-d19a4c))] bg-[rgb(var(--sep-colour-7a291f))] px-0.5 text-[7px] font-bold leading-none text-[rgb(var(--sep-colour-ffe1ac))]">
+          <span data-sep-counter-badge="true" className="absolute right-0.5 top-0.5 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] px-0.5 text-[7px] font-bold leading-none text-[#ffe1ac]">
             {unreadMessageCount >
             9
               ? "9+"
@@ -2353,7 +2353,7 @@ export function PortalSidebar({
 
         {currentUnreadForumCount >
         0 ? (
-          <span className="absolute right-0.5 top-0.5 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full border border-[rgb(var(--sep-colour-d19a4c))] bg-[rgb(var(--sep-colour-7a291f))] px-0.5 text-[7px] font-bold leading-none text-[rgb(var(--sep-colour-ffe1ac))]">
+          <span data-sep-counter-badge="true" className="absolute right-0.5 top-0.5 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] px-0.5 text-[7px] font-bold leading-none text-[#ffe1ac]">
             {currentUnreadForumCount >
             9
               ? "9+"

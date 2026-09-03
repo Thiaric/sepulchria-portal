@@ -1909,3 +1909,28 @@ html[data-portal-skin="wolfs-moon"], body[data-portal-skin="wolfs-moon"]
 [data-skin-widget="room-music"] button:not([class*="text-red-"]):hover {
   color: rgb(var(--sep-colour-d3c2aa)) !important;
 }
+
+/* ------------------------------------------------------------------
+ * GLOBAL NUMERIC COUNTER BADGES
+ *
+ * Counters are intentionally independent from portal skins.
+ * ------------------------------------------------------------------ */
+html [data-sep-counter-badge="true"],
+body [data-sep-counter-badge="true"],
+html[data-portal-skin] [data-sep-counter-badge="true"],
+body[data-portal-skin] [data-sep-counter-badge="true"] {
+  border-color: #d19a4c !important;
+  background-color: #7a291f !important;
+  color: #ffe1ac !important;
+  -webkit-text-fill-color: #ffe1ac !important;
+  caret-color: #ffe1ac !important;
+  opacity: 1 !important;
+}
+
+html [data-sep-counter-badge="true"] *,
+body [data-sep-counter-badge="true"] *,
+html[data-portal-skin] [data-sep-counter-badge="true"] *,
+body[data-portal-skin] [data-sep-counter-badge="true"] * {
+  color: #ffe1ac !important;
+  -webkit-text-fill-color: #ffe1ac !important;
+}

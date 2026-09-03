@@ -497,12 +497,42 @@ export function ItemExchangePanel({
     if (!tradeTarget) return;
 
     await mutate(async () => {
-      const { error } = await supabase.rpc("create_item_trade", {
-        other: tradeTarget,
-      });
-      if (error) throw new Error(error.message);
+      const response =
+        await fetch(
+          "/api/item-exchange/start",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type":
+                "application/json",
+            },
+            body: JSON.stringify({
+              other: tradeTarget,
+            }),
+          },
+        );
+
+      const payload =
+        (await response.json().catch(
+          () => null,
+        )) as
+          | {
+              tradeId?: string;
+              error?: string;
+            }
+          | null;
+
+      if (!response.ok) {
+        throw new Error(
+          payload?.error ??
+            "Unable to open Item Exchange.",
+        );
+      }
+
       setOk(true);
-      setMessage("Item Exchange opened.");
+      setMessage(
+        "Item Exchange opened. The other character has been notified.",
+      );
       setTradeTarget("");
     });
   }

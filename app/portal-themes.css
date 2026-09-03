@@ -41188,3 +41188,189 @@ body[data-portal-skin]
 button[aria-expanded]:hover *:not(img) {
   color: rgb(var(--sep-global-c2)) !important;
 }
+
+/* SEPULCHRIA FINAL FOUR UI LEAKS - a9968f0 */
+
+/* 1. PLACEHOLDERS */
+
+body[data-portal-skin]
+:is(
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  textarea
+)::placeholder {
+  color: rgb(var(--sep-global-c2)) !important;
+  -webkit-text-fill-color: rgb(var(--sep-global-c2)) !important;
+  opacity: 1 !important;
+}
+
+body[data-portal-skin]
+[contenteditable="true"][data-placeholder]:empty::before,
+[data-portal-skin]
+[contenteditable="true"][data-placeholder]:empty::before {
+  color: rgb(var(--sep-global-c2)) !important;
+  -webkit-text-fill-color: rgb(var(--sep-global-c2)) !important;
+  opacity: 1 !important;
+}
+
+
+/* 2. ENTIRE LEFT NAVIGATION, INCLUDING FORUM AND + / - */
+
+body[data-portal-skin]
+[data-portal-navigation]
+:is(a[href], button) {
+  color:
+    rgb(
+      var(
+        --sep-skin-nav-link,
+        var(--sep-global-c2)
+      )
+    ) !important;
+}
+
+body[data-portal-skin]
+[data-portal-navigation]
+:is(a[href], button)
+*:not(img) {
+  color: inherit !important;
+}
+
+body[data-portal-skin]
+[data-portal-navigation]
+:is(a[href], button):hover,
+body[data-portal-skin]
+[data-portal-navigation]
+:is(a[href], button):hover
+*:not(img) {
+  color:
+    rgb(
+      var(
+        --sep-skin-nav-link,
+        var(--sep-global-c2)
+      )
+    ) !important;
+}
+
+
+/* 3. ADMIN COG IN HEADER */
+
+body[data-portal-skin]
+[data-portal-header]
+a[aria-label="Open administration panel"],
+body[data-portal-skin]
+[data-portal-header]
+a[aria-label="Open administration panel"] * {
+  color: rgb(var(--sep-global-c2)) !important;
+  stroke: currentColor !important;
+}
+
+body[data-portal-skin]
+[data-portal-header]
+a[aria-label="Open administration panel"]:hover,
+body[data-portal-skin]
+[data-portal-header]
+a[aria-label="Open administration panel"]:hover * {
+  color: rgb(var(--sep-global-c2)) !important;
+  stroke: currentColor !important;
+}
+
+
+/* 4. LEFT / RIGHT COLLAPSE ARROWS */
+
+body[data-portal-skin]
+:is(
+  .portal-left-collapse-toggle,
+  .portal-right-collapse-toggle
+) {
+  color: rgb(var(--sep-global-c1)) !important;
+  border-color: rgb(var(--sep-global-c1) / .65) !important;
+}
+
+body[data-portal-skin]
+:is(
+  .portal-left-collapse-toggle,
+  .portal-right-collapse-toggle
+):hover {
+  color: rgb(var(--sep-global-c2)) !important;
+  border-color: rgb(var(--sep-global-c2) / .78) !important;
+}
+
+/* SEPULCHRIA LEFT NAV ONE TEXT COLOUR - a9968f0 */
+
+body[data-portal-skin]
+[data-portal-navigation]
+:is(
+  a[href],
+  button
+) {
+  color: rgb(var(--sep-global-c2)) !important;
+}
+
+body[data-portal-skin]
+[data-portal-navigation]
+:is(
+  a[href],
+  button
+)
+*:not(img) {
+  color: rgb(var(--sep-global-c2)) !important;
+}
+
+body[data-portal-skin]
+[data-portal-navigation]
+:is(
+  a[href],
+  button
+):is(
+  :hover,
+  :focus-visible,
+  [aria-expanded="true"],
+  [aria-expanded="false"]
+),
+body[data-portal-skin]
+[data-portal-navigation]
+:is(
+  a[href],
+  button
+):is(
+  :hover,
+  :focus-visible,
+  [aria-expanded="true"],
+  [aria-expanded="false"]
+)
+*:not(img) {
+  color: rgb(var(--sep-global-c2)) !important;
+}
+
+body[data-portal-skin]
+[data-portal-navigation]
+button[aria-expanded],
+body[data-portal-skin]
+[data-portal-navigation]
+button[aria-expanded] *:not(img) {
+  color: rgb(var(--sep-global-c2)) !important;
+}
+
+/* ------------------------------------------------------------------
+ * GLOBAL NUMERIC COUNTER BADGES
+ *
+ * Counters are intentionally independent from portal skins.
+ * ------------------------------------------------------------------ */
+html [data-sep-counter-badge="true"],
+body [data-sep-counter-badge="true"],
+html[data-portal-skin] [data-sep-counter-badge="true"],
+body[data-portal-skin] [data-sep-counter-badge="true"] {
+  border-color: #d19a4c !important;
+  background-color: #7a291f !important;
+  color: #ffe1ac !important;
+  -webkit-text-fill-color: #ffe1ac !important;
+  caret-color: #ffe1ac !important;
+  opacity: 1 !important;
+}
+
+html [data-sep-counter-badge="true"] *,
+body [data-sep-counter-badge="true"] *,
+html[data-portal-skin] [data-sep-counter-badge="true"] *,
+body[data-portal-skin] [data-sep-counter-badge="true"] * {
+  color: #ffe1ac !important;
+  -webkit-text-fill-color: #ffe1ac !important;
+}

@@ -517,9 +517,9 @@ export function ForumSidebarMenu({
           </span>
 
           {unreadCount > 0 ? (
-            <span
+            <span data-sep-counter-badge="true"
               title={`${unreadCount} unread forum topic${unreadCount === 1 ? "" : "s"}`}
-              className="ml-auto inline-flex h-4 min-w-4 shrink-0 items-center justify-center rounded-full border border-[rgb(var(--sep-colour-d19a4c))] bg-[rgb(var(--sep-colour-7a291f))] px-1 text-[7px] font-bold leading-none text-[rgb(var(--sep-colour-ffe1ac))]"
+              className="ml-auto inline-flex h-4 min-w-4 shrink-0 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] px-1 text-[7px] font-bold leading-none text-[#ffe1ac]"
             >
               {unreadCount > 9
                 ? "9+"

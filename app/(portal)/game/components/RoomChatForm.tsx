@@ -8,7 +8,10 @@ import {
   useState,
 } from "react";
 import { useFormStatus } from "react-dom";
-import { useRouter } from "next/navigation";
+import {
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
@@ -218,98 +221,8 @@ export default function RoomChatForm({
       [],
     );
 
-  const [
-    hasIncomingExchange,
-    setHasIncomingExchange,
-  ] = useState(false);
-
-  useEffect(() => {
-    let active = true;
-    let myCharacterId:
-      string | null = null;
-
-    async function checkIncomingExchange() {
-      const {
-        data: characterId,
-        error: characterError,
-      } = await exchangeSupabase.rpc(
-        "my_character_id",
-      );
-
-      if (
-        !active ||
-        characterError ||
-        !characterId
-      ) {
-        return;
-      }
-
-      myCharacterId =
-        String(characterId);
-
-      const {
-        data,
-        error,
-      } = await exchangeSupabase
-        .from("item_trades")
-        .select("id")
-        .eq(
-          "status",
-          "open",
-        )
-        .eq(
-          "character_two_id",
-          myCharacterId,
-        )
-        .limit(1);
-
-      if (!active || error) {
-        return;
-      }
-
-      setHasIncomingExchange(
-        Boolean(data?.length),
-      );
-    }
-
-    void checkIncomingExchange();
-
-    const channel =
-      exchangeSupabase
-        .channel(
-          `incoming-item-exchange-${crypto.randomUUID()}`,
-        )
-        .on(
-          "postgres_changes",
-          {
-            event: "*",
-            schema: "public",
-            table: "item_trades",
-          },
-          () => {
-            void checkIncomingExchange();
-          },
-        )
-        .subscribe();
-
-    const fallback =
-      window.setInterval(
-        () => {
-          void checkIncomingExchange();
-        },
-        3000,
-      );
-
-    return () => {
-      active = false;
-      window.clearInterval(
-        fallback,
-      );
-      void exchangeSupabase.removeChannel(
-        channel,
-      );
-    };
-  }, [exchangeSupabase]);
+  const searchParams =
+    useSearchParams();
 
   const [
     messageState,
@@ -374,6 +287,116 @@ export default function RoomChatForm({
       | "warping"
       | null
     >(null);
+
+  const requestedExchangeId =
+    searchParams.get("exchange");
+
+  useEffect(() => {
+    if (!requestedExchangeId) {
+      return;
+    }
+
+    let active = true;
+
+    function clearExchangeQuery() {
+      const url =
+        new URL(window.location.href);
+
+      url.searchParams.delete(
+        "exchange",
+      );
+
+      window.history.replaceState(
+        window.history.state,
+        "",
+        `${url.pathname}${url.search}${url.hash}`,
+      );
+    }
+
+    async function openRequestedExchange() {
+      const {
+        data: characterId,
+        error: characterError,
+      } = await exchangeSupabase.rpc(
+        "my_character_id",
+      );
+
+      if (
+        !active ||
+        characterError ||
+        !characterId
+      ) {
+        clearExchangeQuery();
+        return;
+      }
+
+      const myCharacterId =
+        String(characterId);
+
+      const {
+        data: requestedTrade,
+        error: tradeError,
+      } = await exchangeSupabase
+        .from("item_trades")
+        .select(
+          "id, character_one_id, character_two_id, status",
+        )
+        .eq(
+          "id",
+          requestedExchangeId,
+        )
+        .eq("status", "open")
+        .maybeSingle();
+
+      if (
+        !active ||
+        tradeError ||
+        !requestedTrade
+      ) {
+        clearExchangeQuery();
+        return;
+      }
+
+      const isParticipant =
+        requestedTrade.character_one_id ===
+          myCharacterId ||
+        requestedTrade.character_two_id ===
+          myCharacterId;
+
+      if (!isParticipant) {
+        clearExchangeQuery();
+        return;
+      }
+
+      const partnerId =
+        requestedTrade.character_one_id ===
+        myCharacterId
+          ? requestedTrade.character_two_id
+          : requestedTrade.character_one_id;
+
+      const partnerStillHere =
+        presentCharacters.some(
+          (entry) =>
+            entry.id === partnerId,
+        );
+
+      if (partnerStillHere) {
+        setUtilityMode("exchange");
+      }
+
+      clearExchangeQuery();
+    }
+
+    void openRequestedExchange();
+
+    return () => {
+      active = false;
+    };
+  }, [
+    exchangeSupabase,
+    presentCharacters,
+    requestedExchangeId,
+  ]);
 
   const [itemState, itemAction] =
     useActionState(
@@ -1130,8 +1153,6 @@ function ignoreSpellingWord() {
   const utilityButtonActiveClass =
     "border border-[rgb(var(--sep-colour-a17a49))] bg-[rgb(var(--sep-colour-3a2919))] px-2.5 py-1.5 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-f0d6a7))]";
 
-  const incomingExchangeButtonClass =
-    "animate-pulse border border-[rgb(var(--sep-colour-d1a45f))] bg-[rgb(var(--sep-colour-4a3218))] px-2.5 py-1.5 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-ffe0a3))] shadow-[0_0_14px_rgba(var(--sep-rgb-209-164-95),0.55)] transition hover:border-[rgb(var(--sep-colour-efc77c))] hover:bg-[rgb(var(--sep-colour-5a3b1c))]";
 
   function toggleUtility(
     mode:
@@ -2486,18 +2507,11 @@ function ignoreSpellingWord() {
           disabled={
             presentCharacters.length === 0
           }
-          title={
-            hasIncomingExchange &&
-            utilityMode !== "exchange"
-              ? "Incoming Item Exchange"
-              : "Item Exchange"
-          }
+          title="Item Exchange"
           className={
             utilityMode === "exchange"
               ? utilityButtonActiveClass
-              : hasIncomingExchange
-                ? incomingExchangeButtonClass
-                : utilityButtonClass
+              : utilityButtonClass
           }
         >
           Item Exchange

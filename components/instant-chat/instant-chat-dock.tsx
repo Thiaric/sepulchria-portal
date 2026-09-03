@@ -1257,7 +1257,7 @@ export function InstantChatDock({
 
           <div className="flex shrink-0 items-center gap-1.5">
             {totalUnread > 0 ? (
-              <span className="flex min-w-4 items-center justify-center rounded-full bg-[rgb(var(--sep-colour-8b3c32))] px-1 py-0.5 text-[7px] font-bold leading-none text-[rgb(var(--sep-colour-ffe1ac))]">
+              <span data-sep-counter-badge="true" className="flex min-w-4 items-center justify-center rounded-full bg-[rgb(var(--sep-colour-8b3c32))] px-1 py-0.5 text-[7px] font-bold leading-none text-[rgb(var(--sep-colour-ffe1ac))]">
                 {totalUnread >
                 99
                   ? "99+"
@@ -1331,7 +1331,7 @@ function ContactButton({
       </div>
 
       {unread > 0 ? (
-        <span className="flex min-w-4 items-center justify-center rounded-full bg-[rgb(var(--sep-colour-8b3c32))] px-1 py-0.5 text-[7px] font-bold leading-none text-[rgb(var(--sep-colour-ffe1ac))]">
+        <span data-sep-counter-badge="true" className="flex min-w-4 items-center justify-center rounded-full bg-[rgb(var(--sep-colour-8b3c32))] px-1 py-0.5 text-[7px] font-bold leading-none text-[rgb(var(--sep-colour-ffe1ac))]">
           {unread > 99
             ? "99+"
             : unread}

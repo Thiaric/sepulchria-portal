@@ -601,10 +601,11 @@ export function CosmeticRuntime() {
         position: relative;
         isolation: isolate;
         overflow: visible;
+        border: 1px solid #7d628f !important;
       }
 
       [data-cosmetic-surface="whisper"][data-has-whisper-style="true"] {
-        border-left-color: transparent !important;
+        border-color: #7d628f !important;
 
         background:
           linear-gradient(
@@ -669,10 +670,11 @@ export function CosmeticRuntime() {
         position: relative;
         isolation: isolate;
         overflow: visible;
+        border: 1px solid #627f9f !important;
       }
 
       [data-cosmetic-surface="off-character"][data-has-off-character-message-frame="true"] {
-        border-left-color: transparent !important;
+        border-color: #627f9f !important;
       }
 
       [data-cosmetic-surface="off-character"][data-has-off-character-message-frame="true"]::before {

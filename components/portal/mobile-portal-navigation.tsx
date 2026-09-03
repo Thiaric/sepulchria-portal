@@ -76,7 +76,7 @@ function Badge({
   }
 
   return (
-    <span className="ml-auto inline-flex min-w-4 items-center justify-center rounded-full border border-[rgb(var(--sep-colour-d19a4c))] bg-[rgb(var(--sep-colour-7a291f))] px-1 text-[8px] font-bold leading-4 text-[rgb(var(--sep-colour-ffe1ac))]">
+    <span data-sep-counter-badge="true" className="ml-auto inline-flex min-w-4 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] px-1 text-[8px] font-bold leading-4 text-[#ffe1ac]">
       {count > 99 ? "99+" : count}
     </span>
   );
@@ -1074,9 +1074,9 @@ const moreDragging =
             <span className="uppercase tracking-[0.14em]">MORE</span>
 
             {moreAttentionCount > 0 ? (
-              <span
+              <span data-sep-counter-badge="true"
                 title={`${moreAttentionCount} item${moreAttentionCount === 1 ? "" : "s"} need attention`}
-                className="absolute right-[18%] top-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full border border-[rgb(var(--sep-colour-d19a4c))] bg-[rgb(var(--sep-colour-7a291f))] px-1 text-[7px] font-bold leading-none text-[rgb(var(--sep-colour-ffe1ac))]"
+                className="absolute right-[18%] top-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] px-1 text-[7px] font-bold leading-none text-[#ffe1ac]"
               >
                 {moreAttentionCount > 9
                   ? "9+"
