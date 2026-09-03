@@ -41307,3 +41307,26 @@ footer[aria-label="Tidings"]
 }
 
 /* END SEPULCHRIA CASE-SPECIFIC HEADER + TIDINGS ROLES - 1d7e9b1 */
+
+/* SEPULCHRIA CANONICAL COUNTER BADGE — CINDER ORIGINAL */
+html [data-sep-counter-badge="true"],
+body [data-sep-counter-badge="true"],
+html[data-portal-skin] [data-sep-counter-badge="true"],
+body[data-portal-skin] [data-sep-counter-badge="true"] {
+  border-color: #d19a4c !important;
+  background: #7a291f !important;
+  background-color: #7a291f !important;
+  color: #ffe1ac !important;
+  -webkit-text-fill-color: #ffe1ac !important;
+  opacity: 1 !important;
+  box-shadow: 0 0 9px rgba(177, 132, 75, 0.18) !important;
+}
+
+html [data-sep-counter-badge="true"] *,
+body [data-sep-counter-badge="true"] *,
+html[data-portal-skin] [data-sep-counter-badge="true"] *,
+body[data-portal-skin] [data-sep-counter-badge="true"] * {
+  color: #ffe1ac !important;
+  -webkit-text-fill-color: #ffe1ac !important;
+}
+/* END SEPULCHRIA CANONICAL COUNTER BADGE — CINDER ORIGINAL */

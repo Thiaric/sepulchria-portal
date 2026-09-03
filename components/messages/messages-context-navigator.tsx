@@ -683,13 +683,14 @@ export function MessagesContextNavigator({
                         {conversation.unreadCount >
                         0 ? (
                           <span
+                            data-sep-counter-badge="true"
                             title={`${conversation.unreadCount} unread message${
                               conversation.unreadCount ===
                               1
                                 ? ""
                                 : "s"
                             }`}
-                            className="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-[rgb(var(--sep-colour-d19a4c))] bg-[rgb(var(--sep-colour-7a291f))] text-[7px] font-bold leading-none text-[rgb(var(--sep-colour-ffe1ac))]"
+                            className="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border text-[7px] font-bold leading-none"
                           >
                             {conversation.unreadCount >
                             9

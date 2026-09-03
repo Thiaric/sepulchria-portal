@@ -2,6 +2,7 @@
 
 import {
   useEffect,
+  useRef,
   useState,
 } from "react";
 import {
@@ -38,6 +39,20 @@ export function PortalAppearanceModal({
   const [error, setError] =
     useState<string | null>(null);
 
+  const modalRef =
+    useRef<HTMLElement | null>(null);
+
+  const dragStateRef = useRef<{
+    pointerId: number;
+    startX: number;
+    startY: number;
+    originX: number;
+    originY: number;
+  } | null>(null);
+
+  const [dragOffset, setDragOffset] =
+    useState({ x: 0, y: 0 });
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -46,6 +61,12 @@ export function PortalAppearanceModal({
     if (!open) {
       return;
     }
+
+    setDragOffset({
+      x: 0,
+      y: 0,
+    });
+    dragStateRef.current = null;
 
     const previous =
       document.body.style.overflow;
@@ -224,6 +245,135 @@ export function PortalAppearanceModal({
     };
   }, [open]);
 
+  function clampDragOffset(
+    nextX: number,
+    nextY: number,
+  ) {
+    const modal =
+      modalRef.current;
+
+    if (!modal) {
+      return {
+        x: nextX,
+        y: nextY,
+      };
+    }
+
+    const rect =
+      modal.getBoundingClientRect();
+
+    const visibleHorizontal = 72;
+    const titleBarHeight = 64;
+
+    const minX =
+      -rect.left -
+      rect.width +
+      visibleHorizontal;
+    const maxX =
+      window.innerWidth -
+      rect.left -
+      visibleHorizontal;
+
+    const minY =
+      -rect.top;
+    const maxY =
+      window.innerHeight -
+      rect.top -
+      titleBarHeight;
+
+    return {
+      x: Math.min(
+        maxX,
+        Math.max(minX, nextX),
+      ),
+      y: Math.min(
+        maxY,
+        Math.max(minY, nextY),
+      ),
+    };
+  }
+
+  function beginDrag(
+    event: React.PointerEvent<HTMLElement>,
+  ) {
+    if (
+      event.button !== 0 ||
+      (
+        event.target as HTMLElement
+      ).closest(
+        "button, a, input, select, textarea",
+      )
+    ) {
+      return;
+    }
+
+    dragStateRef.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      originX: dragOffset.x,
+      originY: dragOffset.y,
+    };
+
+    event.currentTarget.setPointerCapture(
+      event.pointerId,
+    );
+  }
+
+  function moveDrag(
+    event: React.PointerEvent<HTMLElement>,
+  ) {
+    const drag =
+      dragStateRef.current;
+
+    if (
+      !drag ||
+      drag.pointerId !==
+        event.pointerId
+    ) {
+      return;
+    }
+
+    const next =
+      clampDragOffset(
+        drag.originX +
+          event.clientX -
+          drag.startX,
+        drag.originY +
+          event.clientY -
+          drag.startY,
+      );
+
+    setDragOffset(next);
+  }
+
+  function endDrag(
+    event: React.PointerEvent<HTMLElement>,
+  ) {
+    const drag =
+      dragStateRef.current;
+
+    if (
+      !drag ||
+      drag.pointerId !==
+        event.pointerId
+    ) {
+      return;
+    }
+
+    dragStateRef.current = null;
+
+    if (
+      event.currentTarget.hasPointerCapture(
+        event.pointerId,
+      )
+    ) {
+      event.currentTarget.releasePointerCapture(
+        event.pointerId,
+      );
+    }
+  }
+
   if (!mounted || !open) {
     return null;
   }
@@ -247,12 +397,24 @@ export function PortalAppearanceModal({
       }}
     >
       <section
+        ref={modalRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="portal-appearance-title"
-        className="flex max-h-[90vh] w-full max-w-6xl flex-col overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/65 bg-[rgb(var(--sep-colour-0d0a08))] shadow-2xl"
+        className="flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/65 bg-[rgb(var(--sep-colour-0d0a08))] shadow-2xl"
+        style={{
+          transform:
+            `translate3d(${dragOffset.x}px, ${dragOffset.y}px, 0)`,
+        }}
       >
-        <header className="flex shrink-0 items-start justify-between gap-4 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-5 py-4 sm:px-6">
+        <header
+          className="flex shrink-0 cursor-move touch-none select-none items-start justify-between gap-4 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-5 py-4 sm:px-6"
+          onPointerDown={beginDrag}
+          onPointerMove={moveDrag}
+          onPointerUp={endDrag}
+          onPointerCancel={endDrag}
+          title="Drag to move Portal Appearance"
+        >
           <div>
             
             <h2

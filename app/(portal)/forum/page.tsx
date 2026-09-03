@@ -556,7 +556,10 @@ function CompactForumSection({
               </h2>
 
               {hasUnreadTopics ? (
-                <span className="rounded-full bg-[rgb(var(--sep-colour-7a291f))] px-2 py-1 text-[7px] font-semibold uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-ffe1ac))]">
+                <span
+                  data-sep-counter-badge="true"
+                  className="inline-flex items-center justify-center rounded-full border px-2 py-1 text-[7px] font-semibold uppercase tracking-[0.13em]"
+                >
                   {statistics.unreadTopics} new
                 </span>
               ) : null}

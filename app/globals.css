@@ -20019,6 +20019,38 @@ article:not([class*="bg-"]) {
 }
 
 
+/*
+ * LIGHT-SKIN LOCATION MECHANICAL OUTPUT
+ *
+ * Rolls, checks, Feats, Warps, Items and other mechanical rows carry
+ * authored bg-* classes. The light-skin surface hierarchy remaps those
+ * classes to opaque raised cards. Inside #room-chronicle they should
+ * instead remain transparent over the shared atmospheric chat surface.
+ */
+:is(
+  [data-portal-skin="vellum"],
+  [data-portal-skin="aelari-dawn"],
+  [data-portal-skin="birdfolks-sky"],
+  [data-portal-skin="ashen"],
+  [data-portal-skin="dwarven-deep"],
+  [data-portal-skin="mortal-hearth"],
+  [data-portal-skin="wolfs-moon"]
+)
+#room-chronicle
+article[data-room-mechanical-output="true"] {
+  /*
+   * Match the subtle darker mechanical band used visually by dark skins,
+   * while keeping the location artwork visible.
+   */
+  background-color:
+    color-mix(
+      in srgb,
+      var(--sep-light-depth-ink) 12%,
+      transparent
+    ) !important;
+}
+
+
 /* Strengthen only generic Sepulchria border-token families. */
 :is(
   [data-portal-skin="vellum"],
@@ -20429,3 +20461,34 @@ section[role="dialog"][aria-label="More Sepulchria navigation"] {
   --sep-skin-c1: 23 75 56;
   --sep-skin-c2: 24 47 56;
 }
+
+/* SEPULCHRIA DARK LOCATION ROLL TINT - 94b1bb4 */
+/*
+ * Plain dice rolls and attribute checks do not enter the
+ * isMechanicalAction branch, so dark skins otherwise show no darker
+ * mechanical band. Give only those roll rows the same visual hierarchy.
+ *
+ * Light skins are excluded because they already receive their own
+ * --sep-light-depth-ink mechanical treatment.
+ */
+[data-portal-skin]:not(
+  [data-portal-skin="vellum"]
+):not(
+  [data-portal-skin="aelari-dawn"]
+):not(
+  [data-portal-skin="birdfolks-sky"]
+):not(
+  [data-portal-skin="ashen"]
+):not(
+  [data-portal-skin="dwarven-deep"]
+):not(
+  [data-portal-skin="mortal-hearth"]
+):not(
+  [data-portal-skin="wolfs-moon"]
+)
+#room-chronicle
+article[data-room-roll-output="true"] {
+  background-color:
+    rgb(var(--sep-colour-21170f) / 70%) !important;
+}
+/* END SEPULCHRIA DARK LOCATION ROLL TINT - 94b1bb4 */

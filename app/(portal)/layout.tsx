@@ -234,8 +234,9 @@ async function PortalLayoutContent({
               /*
                * LOCATION MESSAGE TRANSPARENCY BY SKIN
                *
-               * Dark skins keep the existing 60% surface opacity.
-               * Light surfaces use 32% so the location artwork remains visible.
+               * Dark skins use the shared 60% fallback.
+               * Light skins use 75% for stronger readability while still
+               * allowing the location artwork to show through.
                */
               :is(
                 html[data-portal-skin="vellum"],
@@ -244,6 +245,8 @@ async function PortalLayoutContent({
                 body[data-portal-skin="ashen"],
                 html[data-portal-skin="aelari-dawn"],
                 body[data-portal-skin="aelari-dawn"],
+                html[data-portal-skin="birdfolks-sky"],
+                body[data-portal-skin="birdfolks-sky"],
                 html[data-portal-skin="dwarven-deep"],
                 body[data-portal-skin="dwarven-deep"],
                 html[data-portal-skin="mortal-hearth"],
@@ -251,7 +254,7 @@ async function PortalLayoutContent({
                 html[data-portal-skin="wolfs-moon"],
                 body[data-portal-skin="wolfs-moon"]
               ) {
-                --sep-location-message-opacity: 32%;
+                --sep-location-message-opacity: 70%;
               }
 
               /*

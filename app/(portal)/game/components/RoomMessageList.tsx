@@ -2035,6 +2035,17 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                     key={item.id}
                     data-cosmetic-character-id={item.character_id}
                     data-cosmetic-surface={!isMechanicalOutput ? "action" : undefined}
+                    data-room-mechanical-output={
+                      isMechanicalOutput
+                        ? "true"
+                        : undefined
+                    }
+                    data-room-roll-output={
+                      item.message_type === "dice_roll" ||
+                      item.message_type === "attribute_check"
+                        ? "true"
+                        : undefined
+                    }
                     className={`relative flex min-w-0 gap-3 py-3 pl-5 pr-12 sm:pl-7 sm:pr-12 ${
                       chatFrameUrl
                         ? "isolate "

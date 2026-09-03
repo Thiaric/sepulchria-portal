@@ -364,7 +364,10 @@ export function MessagesInboxClient({
 
                         {conversation.unreadCount >
                         0 ? (
-                          <span className="rounded-full bg-[rgb(var(--sep-colour-8b3c32))] px-2 py-1 text-[10px] font-bold text-[rgb(var(--sep-colour-ffe1ac))]">
+                          <span
+                            data-sep-counter-badge="true"
+                            className="inline-flex items-center justify-center rounded-full border px-2 py-1 text-[10px] font-bold"
+                          >
                             {
                               conversation.unreadCount
                             }

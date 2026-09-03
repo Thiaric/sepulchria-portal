@@ -591,19 +591,39 @@ export function NotificationBell() {
       return;
     }
 
+    /*
+     * Opening the notification panel is the read boundary.
+     * Clear the badge immediately instead of waiting for network latency.
+     */
+    previousUnreadRef.current = 0;
+
+    setRows((current) =>
+      current.map((row) => ({
+        ...row,
+        is_unread: false,
+      })),
+    );
+
     const { error } =
       await supabase.rpc(
         "mark_my_notifications_viewed",
       );
 
-    if (!error) {
-      setRows((current) =>
-        current.map((row) => ({
-          ...row,
-          is_unread: false,
-        })),
+    if (error) {
+      console.warn(
+        "Mark notifications viewed:",
+        error.message,
       );
+
+      await load();
+      return;
     }
+
+    window.dispatchEvent(
+      new Event(
+        "sepulchria:notifications-changed",
+      ),
+    );
   }
 
   async function toggleMute() {
@@ -683,9 +703,10 @@ export function NotificationBell() {
 
         {unreadCount > 0 ? (
           <span
+            data-sep-counter-badge="true"
             title={`${unreadCount} unread notification${unreadCount === 1 ? "" : "s"}`}
             aria-label={`${unreadCount} unread notification${unreadCount === 1 ? "" : "s"}`}
-            className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full border border-[rgb(var(--sep-colour-d19a4c))] bg-[rgb(var(--sep-colour-7a291f))] text-[8px] font-bold leading-none text-[rgb(var(--sep-colour-ffe1ac))] shadow-[0_0_10px_rgba(var(--sep-rgb-209-154-76),0.32)]"
+            className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full border px-1 text-[8px] font-bold leading-none"
           >
             {unreadCount > 9
               ? "9+"
