@@ -2193,6 +2193,56 @@ body.portal-skin-scope
       )
     ) !important;
 }
+[data-room-message-kind="whisper"] {
+  border: 2px solid rgb(111 76 143 / 0.8) !important;
 
+  background:
+    linear-gradient(
+      to right,
+      rgb(111 76 143 / 0.16),
+      transparent 18%
+    ),
+    linear-gradient(
+      to left,
+      rgb(111 76 143 / 0.16),
+      transparent 18%
+    ),
+    linear-gradient(
+      to bottom,
+      rgb(111 76 143 / 0.12),
+      transparent 22%
+    ),
+    linear-gradient(
+      to top,
+      rgb(111 76 143 / 0.12),
+      transparent 22%
+    ) !important;
+}
+
+[data-room-message-kind="ooc"] {
+  border: 2px solid rgb(72 112 157 / 0.8) !important;
+
+  background:
+    linear-gradient(
+      to right,
+      rgb(72 112 157 / 0.16),
+      transparent 18%
+    ),
+    linear-gradient(
+      to left,
+      rgb(72 112 157 / 0.16),
+      transparent 18%
+    ),
+    linear-gradient(
+      to bottom,
+      rgb(72 112 157 / 0.12),
+      transparent 22%
+    ),
+    linear-gradient(
+      to top,
+      rgb(72 112 157 / 0.12),
+      transparent 22%
+    ) !important;
+}
 
 /* END SEPULCHRIA NOTIFICATION + MODAL SEMANTICS - 914abb5 */

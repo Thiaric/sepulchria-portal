@@ -298,18 +298,13 @@ export default async function PrivateLocationPage() {
   return (
     <main className="mx-auto w-full max-w-6xl p-5 sm:p-7 lg:p-9">
       <header className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-5 py-4">
-        <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-8c704b))]">
-          Invitation-only locations
-        </p>
+        
 
-        <h1 className="mt-1 font-serif text-3xl text-[rgb(var(--sep-colour-e1c89f))]">
+        <h1 className="mt-1 font-serif text-3xl text-[rgb(var(--sep-colour-8c704b))]">
           Private Locations
         </h1>
 
-        <p className="mt-1 text-[11px] leading-5 text-[rgb(var(--sep-colour-918472))]">
-          These are genuine game locations. Entering one moves your character
-          there, updates presence, and uses the normal room chat.
-        </p>
+        
       </header>
 
       {accessible.length > 0 ? (
