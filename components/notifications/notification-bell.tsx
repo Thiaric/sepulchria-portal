@@ -355,36 +355,46 @@ export function NotificationBell() {
       if (
         nextRows.length > 0
       ) {
-        const {
-          data: readRows,
-          error: readError,
-        } = await supabase
-          .from(
-            "notification_reads",
-          )
-          .select(
-            "notification_id",
-          )
-          .in(
-            "notification_id",
-            nextRows.map(
-              (row) => row.id,
-            ),
-          );
+        const response =
+          await fetch(
+            "/api/notifications/read",
+            {
+              method: "POST",
+              cache: "no-store",
+              headers: {
+                "Content-Type":
+                  "application/json",
+              },
+              body:
+                JSON.stringify({
+                  action:
+                    "status",
+                  notificationIds:
+                    nextRows.map(
+                      (row) => row.id,
+                    ),
+                }),
+            },
+          ).catch(() => null);
 
-        if (readError) {
-          console.warn(
-            "Notification individual read state:",
-            readError.message,
-          );
-        } else {
+        if (response?.ok) {
+          const result =
+            (await response.json()) as {
+              readIds?: string[];
+            };
+
           individuallyReadIds =
             new Set(
-              (readRows ?? []).map(
-                (row) =>
-                  row.notification_id,
-              ),
+              Array.isArray(
+                result.readIds,
+              )
+                ? result.readIds
+                : [],
             );
+        } else {
+          console.warn(
+            "Notification individual read state could not be loaded.",
+          );
         }
       }
 
@@ -510,6 +520,10 @@ export function NotificationBell() {
       | number
       | null = null;
 
+    let forumRetryTimer:
+      | number
+      | null = null;
+
     function reloadFromReadySignal() {
       /*
        * The targeted-notification helper creates notification_targets
@@ -533,6 +547,39 @@ export function NotificationBell() {
             void load();
           },
           180,
+        );
+    }
+
+    function reloadFromForumReplyInsert() {
+      /*
+       * A forum reply is inserted before the server resolves the topic
+       * author/favourite audience and creates the targeted notification.
+       * Wake immediately, then retry after that recipient work has had
+       * time to finish.
+       */
+      void load();
+
+      if (
+        forumRetryTimer !== null
+      ) {
+        window.clearTimeout(
+          forumRetryTimer,
+        );
+      }
+
+      window.setTimeout(
+        () => {
+          void load();
+        },
+        250,
+      );
+
+      forumRetryTimer =
+        window.setTimeout(
+          () => {
+            void load();
+          },
+          900,
         );
     }
 
@@ -604,6 +651,35 @@ export function NotificationBell() {
             .subscribe(),
       );
 
+    const forumReplyChannel =
+      supabase
+        .channel(
+          `bell-forum-replies-${crypto.randomUUID()}`,
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "forum_posts",
+          },
+          (payload) => {
+            const isInitial =
+              Boolean(
+                (
+                  payload.new as {
+                    is_initial?: boolean;
+                  }
+                )?.is_initial,
+              );
+
+            if (!isInitial) {
+              reloadFromForumReplyInsert();
+            }
+          },
+        )
+        .subscribe();
+
     return () => {
       if (
         retryTimer !== null
@@ -613,8 +689,20 @@ export function NotificationBell() {
         );
       }
 
+      if (
+        forumRetryTimer !== null
+      ) {
+        window.clearTimeout(
+          forumRetryTimer,
+        );
+      }
+
       void supabase.removeChannel(
         channel,
+      );
+
+      void supabase.removeChannel(
+        forumReplyChannel,
       );
 
       for (
@@ -769,13 +857,10 @@ export function NotificationBell() {
     const target =
       rows.find(
         (row) =>
-          row.id ===
-          notificationId,
+          row.id === notificationId,
       );
 
-    if (
-      !target?.is_unread
-    ) {
+    if (!target?.is_unread) {
       return;
     }
 
@@ -783,12 +868,10 @@ export function NotificationBell() {
       (current) =>
         current.map(
           (row) =>
-            row.id ===
-            notificationId
+            row.id === notificationId
               ? {
                   ...row,
-                  is_unread:
-                    false,
+                  is_unread: false,
                 }
               : row,
         ),
@@ -797,51 +880,30 @@ export function NotificationBell() {
     previousUnreadRef.current =
       Math.max(
         0,
-        previousUnreadRef.current -
-          1,
+        previousUnreadRef.current - 1,
       );
 
-    const {
-      data: { user },
-      error: userError,
-    } =
-      await supabase.auth.getUser();
-
-    if (
-      userError ||
-      !user
-    ) {
-      await load();
-      return;
-    }
-
-    const {
-      error,
-    } = await supabase
-      .from(
-        "notification_reads",
-      )
-      .upsert(
+    const response =
+      await fetch(
+        "/api/notifications/read",
         {
-          user_id:
-            user.id,
-          notification_id:
-            notificationId,
-          read_at:
-            new Date().toISOString(),
+          method: "POST",
+          cache: "no-store",
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+          body: JSON.stringify({
+            action: "read",
+            notificationIds: [notificationId],
+          }),
         },
-        {
-          onConflict:
-            "user_id,notification_id",
-        },
-      );
+      ).catch(() => null);
 
-    if (error) {
+    if (!response?.ok) {
       console.warn(
-        "Mark notification read:",
-        error.message,
+        "Mark notification read: server persistence failed.",
       );
-
       await load();
       return;
     }
@@ -861,10 +923,17 @@ export function NotificationBell() {
       return;
     }
 
-    setMarkingAllRead(true);
+    const unreadIds =
+      rows
+        .filter((row) => row.is_unread)
+        .map((row) => row.id);
 
-    previousUnreadRef.current =
-      0;
+    if (unreadIds.length === 0) {
+      return;
+    }
+
+    setMarkingAllRead(true);
+    previousUnreadRef.current = 0;
 
     setRows(
       (current) =>
@@ -876,22 +945,48 @@ export function NotificationBell() {
         ),
     );
 
-    const {
-      error,
-    } = await supabase.rpc(
-      "mark_my_notifications_viewed",
-    );
+    const [
+      readResponse,
+      viewedResult,
+    ] = await Promise.all([
+      fetch(
+        "/api/notifications/read",
+        {
+          method: "POST",
+          cache: "no-store",
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+          body: JSON.stringify({
+            action: "read",
+            notificationIds: unreadIds,
+          }),
+        },
+      ).catch(() => null),
+      supabase.rpc(
+        "mark_my_notifications_viewed",
+      ),
+    ]);
 
-    if (error) {
-      console.warn(
-        "Mark all notifications read:",
-        error.message,
-      );
+    if (
+      !readResponse?.ok ||
+      viewedResult.error
+    ) {
+      if (viewedResult.error) {
+        console.warn(
+          "Mark all notifications read:",
+          viewedResult.error.message,
+        );
+      }
+      if (!readResponse?.ok) {
+        console.warn(
+          "Mark all notifications read: ID persistence failed.",
+        );
+      }
 
       await load();
-      setMarkingAllRead(
-        false,
-      );
+      setMarkingAllRead(false);
       return;
     }
 
@@ -901,9 +996,7 @@ export function NotificationBell() {
       ),
     );
 
-    setMarkingAllRead(
-      false,
-    );
+    setMarkingAllRead(false);
   }
 
   async function toggleMute() {
@@ -1271,9 +1364,30 @@ export function NotificationBell() {
                             key={
                               row.id
                             }
-                            className={
-                              className
-                            }
+                            role="button"
+                            tabIndex={0}
+                            onClick={() => {
+                              void markNotificationRead(
+                                row.id,
+                              );
+                            }}
+                            onKeyDown={(event) => {
+                              if (
+                                event.key === "Enter" ||
+                                event.key === " "
+                              ) {
+                                event.preventDefault();
+                                void markNotificationRead(
+                                  row.id,
+                                );
+                              }
+                            }}
+                            className={[
+                              className,
+                              row.is_unread
+                                ? "cursor-pointer"
+                                : "",
+                            ].join(" ")}
                           >
                             {
                               content

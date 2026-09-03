@@ -1108,7 +1108,7 @@ export default function RoomMusicPlayer({
               }
               disabled={duration <= 0}
               aria-label="Music progress"
-              className="block h-1.5 w-full cursor-pointer accent-[rgb(var(--sep-colour-a77b43))] disabled:cursor-not-allowed disabled:opacity-40"
+              className="block h-1.5 w-full cursor-pointer accent-[rgb(var(--sep-skin-c1,var(--sep-colour-a98a60)))] disabled:cursor-not-allowed disabled:opacity-40"
             />
           </div>
 
@@ -1139,7 +1139,7 @@ export default function RoomMusicPlayer({
                   volume,
                 })
               }
-              className="block h-1.5 w-full cursor-pointer accent-[rgb(var(--sep-colour-a77b43))]"
+              className="block h-1.5 w-full cursor-pointer accent-[rgb(var(--sep-skin-c1,var(--sep-colour-a98a60)))]"
             />
           </label>
         </div>

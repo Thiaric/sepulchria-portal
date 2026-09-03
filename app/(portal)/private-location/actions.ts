@@ -258,7 +258,7 @@ async function markPrivateLocationInvitationNotificationRead(
           user_id: userId,
           notification_id:
             notificationId,
-          read_at: readAt,
+          viewed_at: readAt,
         }),
       ),
       {
