@@ -315,10 +315,20 @@ export default async function PrivateLocationPage() {
           {accessible.map(
             ({ room, ownerName }) => (
               <article
-                key={room.id}
-                className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-17110d))]"
-              >
-                <div className="p-4">
+  key={room.id}
+  className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-17110d))]"
+>
+  {room.image_url ? (
+    <div className="h-40 overflow-hidden border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-0d0907))]">
+      <img
+        src={room.image_url}
+        alt=""
+        className="h-full w-full object-cover"
+      />
+    </div>
+  ) : null}
+
+  <div className="p-4">
                   <div className="flex items-center justify-between gap-3">
                     <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-dfc79c))]">
                       {room.name}
