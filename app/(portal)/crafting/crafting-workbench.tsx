@@ -46,7 +46,7 @@ const CRAFTING_SKIN_ACCENTS: Record<string, string> = {
   "aelari-dawn": "#8d271c",
   "dwarven-deep": "#5b3823",
   "mortal-hearth": "#563627",
-  "wolfs-moon": "#70503b",
+  "wolfs-moon": "#d9bd78",
 };
 
 export type CraftingInventoryItem = {

@@ -820,8 +820,14 @@ function ActionSpeechText({
     lineHeight: "18px",
     color:
       isAction
-        ? actionColour
-        : speechColour,
+        ? (
+            actionColour ??
+            "rgb(var(--sep-skin-c1, var(--sep-colour-a98a60)))"
+          )
+        : (
+            speechColour ??
+            "rgb(var(--sep-skin-c2, var(--sep-colour-d3c2aa)))"
+          ),
   }}
 >
   {displayText}
@@ -1893,6 +1899,7 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                         >
                           {isOutOfCharacter ? (
                             <span
+                              data-room-ooc-label="true"
                               className="text-[8px] uppercase tracking-[0.2em] text-[#a9c7e6]"
                               style={
                                 privateLocationTheme
@@ -1980,14 +1987,10 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                               item.message
                             }
                             speechColour={
-                              privateLocationTheme
-                                ? privateLocationTheme.offgameTextColour
-                                : "rgb(var(--sep-colour-d3c2aa))"
+                              privateLocationTheme?.speechColour
                             }
                             actionColour={
-                              privateLocationTheme
-                                ? privateLocationTheme.offgameTextColour
-                                : "rgb(var(--sep-colour-d3c2aa))"
+                              privateLocationTheme?.actionColour
                             }
                           />
                         </p>

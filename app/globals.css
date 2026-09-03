@@ -20356,7 +20356,7 @@ section[role="dialog"][aria-label="More Sepulchria navigation"] {
 
 [data-portal-skin="aelari-dawn"] {
   --sep-skin-c1: 141 39 28;
-  --sep-skin-c2: 181 84 32;
+  --sep-skin-c2: 154 67 28;
 }
 
 [data-portal-skin="ashen"] {
@@ -20375,8 +20375,8 @@ section[role="dialog"][aria-label="More Sepulchria navigation"] {
 }
 
 [data-portal-skin="wolfs-moon"] {
-  --sep-skin-c1: 112 80 59;
-  --sep-skin-c2: 20 47 72;
+  --sep-skin-c1: 217 189 120;
+  --sep-skin-c2: 199 217 227;
 }
 
 [data-portal-skin="amethyst-veil"] {

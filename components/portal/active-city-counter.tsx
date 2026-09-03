@@ -647,6 +647,7 @@ export function ActiveCityCounter({
     <>
       <button
         type="button"
+        data-skin-widget="city-counter"
         onClick={toggleOpen}
         aria-expanded={open}
         aria-haspopup="dialog"
@@ -664,16 +665,17 @@ export function ActiveCityCounter({
         <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.55)]" />
 
         <div className="flex items-baseline gap-2">
-          <span className="font-serif text-base text-[rgb(var(--sep-colour-d8bf91))] sm:text-lg">
+          <span data-skin-role="secondary" className="font-serif text-base text-[rgb(var(--sep-colour-d8bf91))] sm:text-lg">
             {count}
           </span>
 
-          <span className="hidden text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-81725f))] lg:inline">
+          <span data-skin-role="primary" className="hidden text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-81725f))] lg:inline">
             People in Sepulchria
           </span>
         </div>
 
         <span
+          data-skin-role="primary"
           aria-hidden="true"
           className={`hidden text-[8px] text-[rgb(var(--sep-colour-7e674b))] transition-transform lg:inline ${
             open

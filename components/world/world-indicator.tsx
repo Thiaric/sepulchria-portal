@@ -810,6 +810,7 @@ export function WorldIndicator({
     <>
       <button
         type="button"
+        data-skin-widget="world-indicator"
         onClick={() =>
           setOpen(true)
         }
@@ -836,7 +837,7 @@ export function WorldIndicator({
           />
         </span>
 
-        <span className="hidden text-[9px] uppercase tracking-[0.08em] text-[rgb(var(--sep-colour-a38c69))] xl:inline">
+        <span data-skin-role="secondary" className="hidden text-[9px] uppercase tracking-[0.08em] text-[rgb(var(--sep-colour-a38c69))] xl:inline">
           {
             state.temperature_c
           }

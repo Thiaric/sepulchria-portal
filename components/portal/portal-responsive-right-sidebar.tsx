@@ -486,11 +486,11 @@ const nextTop =
         <div className="flex min-h-0 flex-1 flex-col p-4 xl:p-[var(--portal-column-pad,1rem)]">
           <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto overscroll-contain xl:gap-[var(--portal-column-gap,0.75rem)]">
             {!isAdminOrderSubmissionsPath ? (
-            <div className="shrink-0">
-              <p className="mb-0.5 px-1 text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-a88658))]">
+            <div data-skin-widget="current-location" className="shrink-0">
+              <p data-skin-role="primary" className="mb-0.5 px-1 text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-a88658))]">
   Current Location
 </p>
-<p className="mb-2 mt-0.5 break-words px-1 text-[10px] leading-snug text-[rgb(var(--sep-colour-d0c0a8))]">
+<p data-skin-role="secondary" className="mb-2 mt-0.5 break-words px-1 text-[10px] leading-snug text-[rgb(var(--sep-colour-d0c0a8))]">
   {(
     character
       ?.currentRoom
@@ -547,6 +547,7 @@ const nextTop =
 
                         <Link
                           href="/game"
+                          data-skin-role="primary-control"
                           aria-label="Enter current location"
                           title="Enter current location"
                           className="flex h-8 w-8 shrink-0 items-center justify-center border border-[rgb(var(--sep-colour-765937))]/70 bg-[rgb(var(--sep-colour-160f0a))]/80 text-[11px] text-[rgb(var(--sep-colour-d8bc8d))] backdrop-blur-sm transition hover:border-[rgb(var(--sep-colour-a07945))] hover:bg-[rgb(var(--sep-colour-332217))] hover:text-[rgb(var(--sep-colour-f0d4a2))]"

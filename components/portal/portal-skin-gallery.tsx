@@ -85,7 +85,7 @@ const SKIN_SWATCHES: Record<
   },
   "wolfs-moon": {
     background: "#c4cdd0",
-    accent: "#70503b",
+    accent: "#d9bd78",
   },
 };
 

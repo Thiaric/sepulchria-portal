@@ -40877,3 +40877,314 @@ body[data-portal-skin="birdfolks-sky"],
   color: rgb(var(--sep-skin-c2)) !important;
 }
 
+/* SEPULCHRIA GLOBAL SKIN FOREGROUND ROLES - 3cbe365 */
+
+html[data-portal-skin],
+body[data-portal-skin] {
+  --sep-global-c1:
+    var(--sep-skin-c1, var(--sep-colour-a98a60));
+  --sep-global-c2:
+    var(--sep-skin-c2, var(--sep-colour-d3c2aa));
+}
+
+/* Legacy explicit text classes default to C2, excluding chat semantics. */
+body[data-portal-skin]
+[class*="sep-colour-"]:not(
+  [data-room-message-segment]
+):not(
+  [data-room-mechanical-action]
+) {
+  color: rgb(var(--sep-global-c2)) !important;
+}
+
+body[data-portal-skin]
+[class*="text-[#"]:not(
+  [data-room-message-segment]
+):not(
+  [data-room-mechanical-action]
+) {
+  color: rgb(var(--sep-global-c2)) !important;
+}
+
+body[data-portal-skin]
+:is([class~="text-white"], [class~="text-black"]):not(
+  [data-room-message-segment]
+) {
+  color: rgb(var(--sep-global-c2)) !important;
+}
+
+/* Semantic primary content = C1. */
+body[data-portal-skin]
+:is(
+  h1,h2,h3,h4,h5,h6,
+  label,
+  legend,
+  summary,
+  th
+) {
+  color: rgb(var(--sep-global-c1)) !important;
+}
+
+body[data-portal-skin]
+:is(
+  [class*="uppercase"],
+  [class*="tracking-"]
+):not(
+  [data-room-message-segment]
+) {
+  color: rgb(var(--sep-global-c1)) !important;
+}
+
+body[data-portal-skin]
+:is(
+  a[href],
+  button,
+  [role="button"],
+  [role="tab"],
+  [role="menuitem"]
+) {
+  color: rgb(var(--sep-global-c1)) !important;
+}
+
+body[data-portal-skin]
+:is(
+  a[href],
+  button,
+  [role="button"],
+  [role="tab"],
+  [role="menuitem"]
+)
+* {
+  color: inherit !important;
+  stroke: currentColor !important;
+}
+
+/* Form values and placeholders = C2. */
+body[data-portal-skin]
+:is(input,textarea,select) {
+  color: rgb(var(--sep-global-c2)) !important;
+}
+
+body[data-portal-skin]
+:is(input,textarea)::placeholder {
+  color: rgb(var(--sep-global-c2) / .62) !important;
+  opacity: 1 !important;
+}
+
+body[data-portal-skin]
+:is(input,textarea,select):focus {
+  border-color: rgb(var(--sep-global-c1)) !important;
+}
+
+/* Hover = C2, without forcing a border in the resting state. */
+body[data-portal-skin]
+:is(
+  a[href],
+  button:not(:disabled),
+  [role="button"],
+  [role="tab"],
+  [role="menuitem"]
+):hover,
+body[data-portal-skin]
+:is(
+  a[href],
+  button:not(:disabled),
+  [role="button"],
+  [role="tab"],
+  [role="menuitem"]
+):hover
+* {
+  color: rgb(var(--sep-global-c2)) !important;
+  stroke: currentColor !important;
+}
+
+/* Left sidebar: per-skin link/icon role, no permanent outline. */
+body[data-portal-skin]
+[data-portal-navigation]
+:is(a[href],button) {
+  color:
+    rgb(
+      var(
+        --sep-skin-nav-link,
+        var(--sep-global-c1)
+      )
+    ) !important;
+  border-color: transparent !important;
+}
+
+body[data-portal-skin]
+[data-portal-navigation]
+:is(a[href],button)
+*:not(img) {
+  color: inherit !important;
+}
+
+body[data-portal-skin]
+[data-portal-navigation] img {
+  filter: var(--sep-skin-nav-icon-filter) !important;
+}
+
+body[data-portal-skin]
+[data-portal-navigation]
+:is(a[href],button):is(
+  :hover,
+  :focus-visible,
+  [aria-current="page"]
+) {
+  border-color: rgb(var(--sep-global-c1) / .62) !important;
+}
+
+body[data-portal-skin]
+[data-portal-navigation]
+:is(
+  [class*="uppercase"],
+  [class*="tracking-"]
+):not(a):not(button) {
+  color: rgb(var(--sep-global-c1)) !important;
+}
+
+/* Known widget semantic markers. */
+body[data-portal-skin]
+[data-skin-role="primary"],
+body[data-portal-skin]
+[data-skin-role="primary-control"] {
+  color: rgb(var(--sep-global-c1)) !important;
+}
+
+body[data-portal-skin]
+[data-skin-role="secondary"] {
+  color: rgb(var(--sep-global-c2)) !important;
+}
+
+body[data-portal-skin]
+[data-skin-role="secondary-bars"] > span {
+  background-color: rgb(var(--sep-global-c2)) !important;
+}
+
+/* Chat remains authoritative. */
+body[data-portal-skin]
+[data-room-message-segment="action"],
+body[data-portal-skin]
+[data-cosmetic-surface="off-character"]
+[data-room-message-segment="action"] {
+  color: rgb(var(--sep-global-c1)) !important;
+}
+
+body[data-portal-skin]
+[data-room-message-segment="speech"],
+body[data-portal-skin]
+[data-cosmetic-surface="off-character"]
+[data-room-message-segment="speech"] {
+  color: rgb(var(--sep-global-c2)) !important;
+}
+
+body[data-portal-skin]
+[data-room-mechanical-action="true"],
+body[data-portal-skin]
+[data-room-mechanical-action="true"] * {
+  color: rgb(var(--sep-global-c1)) !important;
+}
+
+/* SEPULCHRIA APPEARANCE SCOPE + INPUT FINISH - 3cbe365 */
+
+[data-portal-skin] {
+  --sep-global-c1:
+    var(--sep-skin-c1, var(--sep-colour-a98a60));
+  --sep-global-c2:
+    var(--sep-skin-c2, var(--sep-colour-d3c2aa));
+}
+
+body[data-portal-skin]
+:is(
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  textarea,
+  select
+) {
+  color: rgb(var(--sep-global-c2)) !important;
+}
+
+body[data-portal-skin]
+:is(
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  textarea
+)::placeholder {
+  color: rgb(var(--sep-global-c2)) !important;
+  opacity: 1 !important;
+}
+
+.portal-skin-preview-card[data-portal-skin] {
+  --sep-global-c1:
+    var(--sep-skin-c1, var(--sep-colour-a98a60));
+  --sep-global-c2:
+    var(--sep-skin-c2, var(--sep-colour-d3c2aa));
+}
+
+.portal-skin-preview-card[data-portal-skin]
+:is(
+  .portal-skin-preview-title,
+  .portal-skin-preview-badge,
+  .portal-skin-preview-primary-button,
+  .portal-skin-preview-secondary-button
+) {
+  color: rgb(var(--sep-global-c1)) !important;
+}
+
+.portal-skin-preview-card[data-portal-skin]
+:is(
+  .portal-skin-preview-description,
+  .portal-skin-preview-locked
+) {
+  color: rgb(var(--sep-global-c2)) !important;
+}
+
+.portal-skin-preview-card[data-portal-skin]
+:is(
+  .portal-skin-preview-primary-button,
+  .portal-skin-preview-secondary-button
+) * {
+  color: inherit !important;
+}
+
+.portal-skin-preview-card[data-portal-skin]
+.portal-skin-preview-surface,
+.portal-skin-preview-card[data-portal-skin]
+.portal-skin-preview-surface
+:is(
+  .portal-skin-preview-badge,
+  .portal-skin-preview-primary-button,
+  .portal-skin-preview-secondary-button
+) {
+  border-color: rgb(var(--sep-global-c1) / .45) !important;
+}
+
+.portal-skin-preview-card[data-portal-skin]
+:is(
+  .portal-skin-preview-primary-button,
+  .portal-skin-preview-secondary-button
+):hover {
+  color: rgb(var(--sep-global-c2)) !important;
+  border-color: rgb(var(--sep-global-c2) / .72) !important;
+}
+
+/* SEPULCHRIA SIDEBAR EXPANDER COLOUR FINISH - 3cbe365 */
+
+body[data-portal-skin]
+[data-portal-navigation]
+button[aria-expanded] {
+  color: rgb(var(--sep-global-c2)) !important;
+}
+
+body[data-portal-skin]
+[data-portal-navigation]
+button[aria-expanded] *:not(img) {
+  color: inherit !important;
+}
+
+body[data-portal-skin]
+[data-portal-navigation]
+button[aria-expanded]:hover,
+body[data-portal-skin]
+[data-portal-navigation]
+button[aria-expanded]:hover *:not(img) {
+  color: rgb(var(--sep-global-c2)) !important;
+}

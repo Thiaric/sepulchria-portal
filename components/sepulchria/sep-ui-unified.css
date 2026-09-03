@@ -1279,3 +1279,633 @@ html[data-portal-skin="emberforge"], body[data-portal-skin="emberforge"]
       transparent 72%
     ) !important;
 }
+
+/* SEPULCHRIA SKIN REFINEMENT — 3cbe365 */
+
+/* User-requested three-colour cleanup: background + C1 + C2 only. */
+
+html[data-portal-skin="vellum"],
+body[data-portal-skin="vellum"] {
+  --sep-skin-c1: 107 35 50;
+  --sep-skin-c2: 23 21 19;
+  --sep-skin-nav-link: 107 35 50;
+  --sep-skin-nav-icon-filter: brightness(0) saturate(100%) invert(21%) sepia(57%) saturate(1162%) hue-rotate(317deg) brightness(68%) contrast(91%);
+
+  --sep-colour-d9bd82: var(--sep-skin-c1);
+  --sep-colour-8f806d: var(--sep-skin-c2);
+  --sep-colour-5f574d: var(--sep-skin-c2);
+  --sep-colour-dbc397: var(--sep-skin-c2);
+  --sep-colour-ecd5a8: var(--sep-skin-c2);
+  --sep-colour-d8bc8d: var(--sep-skin-c2);
+  --sep-colour-d8c09a: var(--sep-skin-c2);
+  --sep-colour-e1c89d: var(--sep-skin-c1);
+  --sep-colour-876a46: var(--sep-skin-c1);
+}
+html[data-portal-skin="aelari-dawn"],
+body[data-portal-skin="aelari-dawn"] {
+  --sep-skin-c1: 141 39 28;
+  --sep-skin-c2: 154 67 28;
+  --sep-skin-nav-link: 141 39 28;
+  --sep-skin-nav-icon-filter: brightness(0) saturate(100%) invert(32.9%) sepia(73.6%) saturate(609.9%) hue-rotate(317.5deg) brightness(67.9%) contrast(109.9%);
+
+  --sep-colour-d9bd82: var(--sep-skin-c1);
+  --sep-colour-8f806d: var(--sep-skin-c2);
+  --sep-colour-5f574d: var(--sep-skin-c2);
+  --sep-colour-dbc397: var(--sep-skin-c2);
+  --sep-colour-ecd5a8: var(--sep-skin-c2);
+  --sep-colour-d8bc8d: var(--sep-skin-c2);
+  --sep-colour-d8c09a: var(--sep-skin-c2);
+  --sep-colour-e1c89d: var(--sep-skin-c1);
+  --sep-colour-876a46: var(--sep-skin-c1);
+}
+html[data-portal-skin="ashen"],
+body[data-portal-skin="ashen"] {
+  --sep-skin-c1: 23 75 56;
+  --sep-skin-c2: 24 47 56;
+  --sep-skin-nav-link: 23 75 56;
+  --sep-skin-nav-icon-filter: brightness(0) saturate(100%) invert(78.3%) sepia(21.8%) saturate(1286.9%) hue-rotate(106.6deg) brightness(26%) contrast(88.8%);
+
+  --sep-colour-d9bd82: var(--sep-skin-c1);
+  --sep-colour-8f806d: var(--sep-skin-c2);
+  --sep-colour-5f574d: var(--sep-skin-c2);
+  --sep-colour-dbc397: var(--sep-skin-c2);
+  --sep-colour-ecd5a8: var(--sep-skin-c2);
+  --sep-colour-d8bc8d: var(--sep-skin-c2);
+  --sep-colour-d8c09a: var(--sep-skin-c2);
+  --sep-colour-e1c89d: var(--sep-skin-c1);
+  --sep-colour-876a46: var(--sep-skin-c1);
+}
+html[data-portal-skin="ivory-archive"],
+body[data-portal-skin="ivory-archive"] {
+  --sep-skin-c1: 169 183 194;
+  --sep-skin-c2: 238 231 220;
+  --sep-skin-nav-link: 169 183 194;
+  --sep-skin-nav-icon-filter: brightness(0) saturate(100%) invert(53.5%) sepia(7.5%) saturate(463.4%) hue-rotate(164.1deg) brightness(135.3%) contrast(88.9%);
+
+  --sep-colour-d9bd82: var(--sep-skin-c1);
+  --sep-colour-8f806d: var(--sep-skin-c2);
+  --sep-colour-5f574d: var(--sep-skin-c2);
+  --sep-colour-dbc397: var(--sep-skin-c2);
+  --sep-colour-ecd5a8: var(--sep-skin-c2);
+  --sep-colour-d8bc8d: var(--sep-skin-c2);
+  --sep-colour-d8c09a: var(--sep-skin-c2);
+  --sep-colour-e1c89d: var(--sep-skin-c1);
+  --sep-colour-876a46: var(--sep-skin-c1);
+}
+html[data-portal-skin="dwarven-deep"],
+body[data-portal-skin="dwarven-deep"] {
+  --sep-skin-c1: 91 56 35;
+  --sep-skin-c2: 21 19 17;
+  --sep-skin-nav-link: 91 56 35;
+  --sep-skin-nav-icon-filter: brightness(0) saturate(100%) invert(29.1%) sepia(64.3%) saturate(875.7%) hue-rotate(338.8deg) brightness(42.7%) contrast(71.7%);
+
+  --sep-colour-d9bd82: var(--sep-skin-c1);
+  --sep-colour-8f806d: var(--sep-skin-c2);
+  --sep-colour-5f574d: var(--sep-skin-c2);
+  --sep-colour-dbc397: var(--sep-skin-c2);
+  --sep-colour-ecd5a8: var(--sep-skin-c2);
+  --sep-colour-d8bc8d: var(--sep-skin-c2);
+  --sep-colour-d8c09a: var(--sep-skin-c2);
+  --sep-colour-e1c89d: var(--sep-skin-c1);
+  --sep-colour-876a46: var(--sep-skin-c1);
+}
+html[data-portal-skin="amethyst-veil"],
+body[data-portal-skin="amethyst-veil"] {
+  --sep-skin-c1: 201 154 76;
+  --sep-skin-c2: 196 174 199;
+  --sep-skin-nav-link: 201 154 76;
+  --sep-skin-nav-icon-filter: brightness(0) saturate(100%) invert(32.3%) sepia(27.1%) saturate(329.6%) hue-rotate(245.9deg) brightness(343.1%) contrast(30.9%);
+
+  --sep-colour-d9bd82: var(--sep-skin-c1);
+  --sep-colour-8f806d: var(--sep-skin-c2);
+  --sep-colour-5f574d: var(--sep-skin-c2);
+  --sep-colour-dbc397: var(--sep-skin-c2);
+  --sep-colour-ecd5a8: var(--sep-skin-c2);
+  --sep-colour-d8bc8d: var(--sep-skin-c2);
+  --sep-colour-d8c09a: var(--sep-skin-c2);
+  --sep-colour-e1c89d: var(--sep-skin-c1);
+  --sep-colour-876a46: var(--sep-skin-c1);
+}
+html[data-portal-skin="emberforge"],
+body[data-portal-skin="emberforge"] {
+  --sep-skin-c1: 210 123 53;
+  --sep-skin-c2: 239 196 142;
+  --sep-skin-nav-link: 210 123 53;
+  --sep-skin-nav-icon-filter: brightness(0) saturate(100%) invert(32.2%) sepia(23.5%) saturate(756.4%) hue-rotate(353.5deg) brightness(329.2%) contrast(47.2%);
+
+  --sep-colour-d9bd82: var(--sep-skin-c1);
+  --sep-colour-8f806d: var(--sep-skin-c2);
+  --sep-colour-5f574d: var(--sep-skin-c2);
+  --sep-colour-dbc397: var(--sep-skin-c2);
+  --sep-colour-ecd5a8: var(--sep-skin-c2);
+  --sep-colour-d8bc8d: var(--sep-skin-c2);
+  --sep-colour-d8c09a: var(--sep-skin-c2);
+  --sep-colour-e1c89d: var(--sep-skin-c1);
+  --sep-colour-876a46: var(--sep-skin-c1);
+}
+html[data-portal-skin="rose-nocturne"],
+body[data-portal-skin="rose-nocturne"] {
+  --sep-skin-c1: 198 124 105;
+  --sep-skin-c2: 226 179 172;
+  --sep-skin-nav-link: 198 124 105;
+  --sep-skin-nav-icon-filter: brightness(0) saturate(100%) invert(53.6%) sepia(53%) saturate(1531%) hue-rotate(325.2deg) brightness(130.7%) contrast(15.2%);
+
+  --sep-colour-d9bd82: var(--sep-skin-c1);
+  --sep-colour-8f806d: var(--sep-skin-c2);
+  --sep-colour-5f574d: var(--sep-skin-c2);
+  --sep-colour-dbc397: var(--sep-skin-c2);
+  --sep-colour-ecd5a8: var(--sep-skin-c2);
+  --sep-colour-d8bc8d: var(--sep-skin-c2);
+  --sep-colour-d8c09a: var(--sep-skin-c2);
+  --sep-colour-e1c89d: var(--sep-skin-c1);
+  --sep-colour-876a46: var(--sep-skin-c1);
+}
+html[data-portal-skin="mortal-hearth"],
+body[data-portal-skin="mortal-hearth"] {
+  --sep-skin-c1: 86 54 39;
+  --sep-skin-c2: 23 24 25;
+  --sep-skin-nav-link: 86 54 39;
+  --sep-skin-nav-icon-filter: brightness(0) saturate(100%) invert(37.8%) sepia(73%) saturate(856.9%) hue-rotate(334.3deg) brightness(26%) contrast(68.8%);
+
+  --sep-colour-d9bd82: var(--sep-skin-c1);
+  --sep-colour-8f806d: var(--sep-skin-c2);
+  --sep-colour-5f574d: var(--sep-skin-c2);
+  --sep-colour-dbc397: var(--sep-skin-c2);
+  --sep-colour-ecd5a8: var(--sep-skin-c2);
+  --sep-colour-d8bc8d: var(--sep-skin-c2);
+  --sep-colour-d8c09a: var(--sep-skin-c2);
+  --sep-colour-e1c89d: var(--sep-skin-c1);
+  --sep-colour-876a46: var(--sep-skin-c1);
+}
+html[data-portal-skin="verdant-reliquary"],
+body[data-portal-skin="verdant-reliquary"] {
+  --sep-skin-c1: 147 201 136;
+  --sep-skin-c2: 228 219 158;
+  --sep-skin-nav-link: 228 219 158;
+  --sep-skin-nav-icon-filter: brightness(0) saturate(100%) invert(75%) sepia(12%) saturate(829%) hue-rotate(62deg) brightness(91%) contrast(81%);
+
+  --sep-colour-d9bd82: var(--sep-skin-c1);
+  --sep-colour-8f806d: var(--sep-skin-c2);
+  --sep-colour-5f574d: var(--sep-skin-c2);
+  --sep-colour-dbc397: var(--sep-skin-c2);
+  --sep-colour-ecd5a8: var(--sep-skin-c2);
+  --sep-colour-d8bc8d: var(--sep-skin-c2);
+  --sep-colour-d8c09a: var(--sep-skin-c2);
+  --sep-colour-e1c89d: var(--sep-skin-c1);
+  --sep-colour-876a46: var(--sep-skin-c1);
+}
+html[data-portal-skin="deepwater"],
+body[data-portal-skin="deepwater"] {
+  --sep-skin-c1: 239 182 127;
+  --sep-skin-c2: 215 238 229;
+  --sep-skin-nav-link: 239 182 127;
+  --sep-skin-nav-icon-filter: brightness(0) saturate(100%) invert(87%) sepia(6.4%) saturate(555.7%) hue-rotate(104.8deg) brightness(159.9%) contrast(45.2%);
+
+  --sep-colour-d9bd82: var(--sep-skin-c1);
+  --sep-colour-8f806d: var(--sep-skin-c2);
+  --sep-colour-5f574d: var(--sep-skin-c2);
+  --sep-colour-dbc397: var(--sep-skin-c2);
+  --sep-colour-ecd5a8: var(--sep-skin-c2);
+  --sep-colour-d8bc8d: var(--sep-skin-c2);
+  --sep-colour-d8c09a: var(--sep-skin-c2);
+  --sep-colour-e1c89d: var(--sep-skin-c1);
+  --sep-colour-876a46: var(--sep-skin-c1);
+}
+html[data-portal-skin="blood-court"],
+body[data-portal-skin="blood-court"] {
+  --sep-skin-c1: 216 136 136;
+  --sep-skin-c2: 187 199 208;
+  --sep-skin-nav-link: 216 136 136;
+  --sep-skin-nav-icon-filter: brightness(0) saturate(100%) invert(57.7%) sepia(48.8%) saturate(1092.5%) hue-rotate(311.1deg) brightness(188.6%) contrast(14.2%);
+
+  --sep-colour-d9bd82: var(--sep-skin-c1);
+  --sep-colour-8f806d: var(--sep-skin-c2);
+  --sep-colour-5f574d: var(--sep-skin-c2);
+  --sep-colour-dbc397: var(--sep-skin-c2);
+  --sep-colour-ecd5a8: var(--sep-skin-c2);
+  --sep-colour-d8bc8d: var(--sep-skin-c2);
+  --sep-colour-d8c09a: var(--sep-skin-c2);
+  --sep-colour-e1c89d: var(--sep-skin-c1);
+  --sep-colour-876a46: var(--sep-skin-c1);
+}
+html[data-portal-skin="starfall"],
+body[data-portal-skin="starfall"] {
+  --sep-skin-c1: 127 169 220;
+  --sep-skin-c2: 226 194 125;
+  --sep-skin-nav-link: 226 194 125;
+  --sep-skin-nav-icon-filter: brightness(0) saturate(100%) invert(89.4%) sepia(43%) saturate(768.3%) hue-rotate(172.8deg) brightness(103.3%) contrast(27.9%);
+
+  --sep-colour-d9bd82: var(--sep-skin-c1);
+  --sep-colour-8f806d: var(--sep-skin-c2);
+  --sep-colour-5f574d: var(--sep-skin-c2);
+  --sep-colour-dbc397: var(--sep-skin-c2);
+  --sep-colour-ecd5a8: var(--sep-skin-c2);
+  --sep-colour-d8bc8d: var(--sep-skin-c2);
+  --sep-colour-d8c09a: var(--sep-skin-c2);
+  --sep-colour-e1c89d: var(--sep-skin-c1);
+  --sep-colour-876a46: var(--sep-skin-c1);
+}
+html[data-portal-skin="wolfs-moon"],
+body[data-portal-skin="wolfs-moon"] {
+  --sep-skin-c1: 217 189 120;
+  --sep-skin-c2: 199 217 227;
+  --sep-skin-nav-link: 217 189 120;
+  --sep-skin-nav-icon-filter: brightness(0) saturate(100%) invert(94%) sepia(4%) saturate(500%) hue-rotate(158deg) brightness(84%) contrast(125%);
+
+  --sep-colour-d9bd82: var(--sep-skin-c1);
+  --sep-colour-8f806d: var(--sep-skin-c2);
+  --sep-colour-5f574d: var(--sep-skin-c2);
+  --sep-colour-dbc397: var(--sep-skin-c2);
+  --sep-colour-ecd5a8: var(--sep-skin-c2);
+  --sep-colour-d8bc8d: var(--sep-skin-c2);
+  --sep-colour-d8c09a: var(--sep-skin-c2);
+  --sep-colour-e1c89d: var(--sep-skin-c1);
+  --sep-colour-876a46: var(--sep-skin-c1);
+}
+
+:is(
+html[data-portal-skin="vellum"], body[data-portal-skin="vellum"],
+html[data-portal-skin="aelari-dawn"], body[data-portal-skin="aelari-dawn"],
+html[data-portal-skin="ashen"], body[data-portal-skin="ashen"],
+html[data-portal-skin="ivory-archive"], body[data-portal-skin="ivory-archive"],
+html[data-portal-skin="dwarven-deep"], body[data-portal-skin="dwarven-deep"],
+html[data-portal-skin="amethyst-veil"], body[data-portal-skin="amethyst-veil"],
+html[data-portal-skin="emberforge"], body[data-portal-skin="emberforge"],
+html[data-portal-skin="rose-nocturne"], body[data-portal-skin="rose-nocturne"],
+html[data-portal-skin="mortal-hearth"], body[data-portal-skin="mortal-hearth"],
+html[data-portal-skin="verdant-reliquary"], body[data-portal-skin="verdant-reliquary"],
+html[data-portal-skin="deepwater"], body[data-portal-skin="deepwater"],
+html[data-portal-skin="blood-court"], body[data-portal-skin="blood-court"],
+html[data-portal-skin="starfall"], body[data-portal-skin="starfall"],
+html[data-portal-skin="wolfs-moon"], body[data-portal-skin="wolfs-moon"]
+) [data-portal-navigation] :is(a, button) {
+  color: rgb(var(--sep-skin-nav-link)) !important;
+}
+
+:is(
+html[data-portal-skin="vellum"], body[data-portal-skin="vellum"],
+html[data-portal-skin="aelari-dawn"], body[data-portal-skin="aelari-dawn"],
+html[data-portal-skin="ashen"], body[data-portal-skin="ashen"],
+html[data-portal-skin="ivory-archive"], body[data-portal-skin="ivory-archive"],
+html[data-portal-skin="dwarven-deep"], body[data-portal-skin="dwarven-deep"],
+html[data-portal-skin="amethyst-veil"], body[data-portal-skin="amethyst-veil"],
+html[data-portal-skin="emberforge"], body[data-portal-skin="emberforge"],
+html[data-portal-skin="rose-nocturne"], body[data-portal-skin="rose-nocturne"],
+html[data-portal-skin="mortal-hearth"], body[data-portal-skin="mortal-hearth"],
+html[data-portal-skin="verdant-reliquary"], body[data-portal-skin="verdant-reliquary"],
+html[data-portal-skin="deepwater"], body[data-portal-skin="deepwater"],
+html[data-portal-skin="blood-court"], body[data-portal-skin="blood-court"],
+html[data-portal-skin="starfall"], body[data-portal-skin="starfall"],
+html[data-portal-skin="wolfs-moon"], body[data-portal-skin="wolfs-moon"]
+) [data-portal-navigation] :is(a, button) *:not(img) {
+  color: inherit !important;
+}
+
+:is(
+html[data-portal-skin="vellum"], body[data-portal-skin="vellum"],
+html[data-portal-skin="aelari-dawn"], body[data-portal-skin="aelari-dawn"],
+html[data-portal-skin="ashen"], body[data-portal-skin="ashen"],
+html[data-portal-skin="ivory-archive"], body[data-portal-skin="ivory-archive"],
+html[data-portal-skin="dwarven-deep"], body[data-portal-skin="dwarven-deep"],
+html[data-portal-skin="amethyst-veil"], body[data-portal-skin="amethyst-veil"],
+html[data-portal-skin="emberforge"], body[data-portal-skin="emberforge"],
+html[data-portal-skin="rose-nocturne"], body[data-portal-skin="rose-nocturne"],
+html[data-portal-skin="mortal-hearth"], body[data-portal-skin="mortal-hearth"],
+html[data-portal-skin="verdant-reliquary"], body[data-portal-skin="verdant-reliquary"],
+html[data-portal-skin="deepwater"], body[data-portal-skin="deepwater"],
+html[data-portal-skin="blood-court"], body[data-portal-skin="blood-court"],
+html[data-portal-skin="starfall"], body[data-portal-skin="starfall"],
+html[data-portal-skin="wolfs-moon"], body[data-portal-skin="wolfs-moon"]
+) [data-portal-navigation] img {
+  filter: var(--sep-skin-nav-icon-filter) !important;
+}
+
+:is(
+html[data-portal-skin="vellum"], body[data-portal-skin="vellum"],
+html[data-portal-skin="aelari-dawn"], body[data-portal-skin="aelari-dawn"],
+html[data-portal-skin="ashen"], body[data-portal-skin="ashen"],
+html[data-portal-skin="ivory-archive"], body[data-portal-skin="ivory-archive"],
+html[data-portal-skin="dwarven-deep"], body[data-portal-skin="dwarven-deep"],
+html[data-portal-skin="amethyst-veil"], body[data-portal-skin="amethyst-veil"],
+html[data-portal-skin="emberforge"], body[data-portal-skin="emberforge"],
+html[data-portal-skin="rose-nocturne"], body[data-portal-skin="rose-nocturne"],
+html[data-portal-skin="mortal-hearth"], body[data-portal-skin="mortal-hearth"],
+html[data-portal-skin="verdant-reliquary"], body[data-portal-skin="verdant-reliquary"],
+html[data-portal-skin="deepwater"], body[data-portal-skin="deepwater"],
+html[data-portal-skin="blood-court"], body[data-portal-skin="blood-court"],
+html[data-portal-skin="starfall"], body[data-portal-skin="starfall"],
+html[data-portal-skin="wolfs-moon"], body[data-portal-skin="wolfs-moon"]
+) [data-portal-header] a[aria-label="Sepulchria home"] > span:first-of-type {
+  color: rgb(var(--sep-skin-c1)) !important;
+}
+
+:is(
+html[data-portal-skin="vellum"], body[data-portal-skin="vellum"],
+html[data-portal-skin="aelari-dawn"], body[data-portal-skin="aelari-dawn"],
+html[data-portal-skin="ashen"], body[data-portal-skin="ashen"],
+html[data-portal-skin="ivory-archive"], body[data-portal-skin="ivory-archive"],
+html[data-portal-skin="dwarven-deep"], body[data-portal-skin="dwarven-deep"],
+html[data-portal-skin="amethyst-veil"], body[data-portal-skin="amethyst-veil"],
+html[data-portal-skin="emberforge"], body[data-portal-skin="emberforge"],
+html[data-portal-skin="rose-nocturne"], body[data-portal-skin="rose-nocturne"],
+html[data-portal-skin="mortal-hearth"], body[data-portal-skin="mortal-hearth"],
+html[data-portal-skin="verdant-reliquary"], body[data-portal-skin="verdant-reliquary"],
+html[data-portal-skin="deepwater"], body[data-portal-skin="deepwater"],
+html[data-portal-skin="blood-court"], body[data-portal-skin="blood-court"],
+html[data-portal-skin="starfall"], body[data-portal-skin="starfall"],
+html[data-portal-skin="wolfs-moon"], body[data-portal-skin="wolfs-moon"]
+) [data-portal-header] a[aria-label="Sepulchria home"] > span:last-of-type {
+  color: rgb(var(--sep-skin-c2)) !important;
+}
+
+:is(
+html[data-portal-skin="vellum"], body[data-portal-skin="vellum"],
+html[data-portal-skin="aelari-dawn"], body[data-portal-skin="aelari-dawn"],
+html[data-portal-skin="ashen"], body[data-portal-skin="ashen"],
+html[data-portal-skin="ivory-archive"], body[data-portal-skin="ivory-archive"],
+html[data-portal-skin="dwarven-deep"], body[data-portal-skin="dwarven-deep"],
+html[data-portal-skin="amethyst-veil"], body[data-portal-skin="amethyst-veil"],
+html[data-portal-skin="emberforge"], body[data-portal-skin="emberforge"],
+html[data-portal-skin="rose-nocturne"], body[data-portal-skin="rose-nocturne"],
+html[data-portal-skin="mortal-hearth"], body[data-portal-skin="mortal-hearth"],
+html[data-portal-skin="verdant-reliquary"], body[data-portal-skin="verdant-reliquary"],
+html[data-portal-skin="deepwater"], body[data-portal-skin="deepwater"],
+html[data-portal-skin="blood-court"], body[data-portal-skin="blood-court"],
+html[data-portal-skin="starfall"], body[data-portal-skin="starfall"],
+html[data-portal-skin="wolfs-moon"], body[data-portal-skin="wolfs-moon"]
+) [data-room-chat-composer] textarea {
+  color: rgb(var(--sep-skin-c2)) !important;
+}
+
+:is(
+html[data-portal-skin="vellum"], body[data-portal-skin="vellum"],
+html[data-portal-skin="aelari-dawn"], body[data-portal-skin="aelari-dawn"],
+html[data-portal-skin="ashen"], body[data-portal-skin="ashen"],
+html[data-portal-skin="ivory-archive"], body[data-portal-skin="ivory-archive"],
+html[data-portal-skin="dwarven-deep"], body[data-portal-skin="dwarven-deep"],
+html[data-portal-skin="amethyst-veil"], body[data-portal-skin="amethyst-veil"],
+html[data-portal-skin="emberforge"], body[data-portal-skin="emberforge"],
+html[data-portal-skin="rose-nocturne"], body[data-portal-skin="rose-nocturne"],
+html[data-portal-skin="mortal-hearth"], body[data-portal-skin="mortal-hearth"],
+html[data-portal-skin="verdant-reliquary"], body[data-portal-skin="verdant-reliquary"],
+html[data-portal-skin="deepwater"], body[data-portal-skin="deepwater"],
+html[data-portal-skin="blood-court"], body[data-portal-skin="blood-court"],
+html[data-portal-skin="starfall"], body[data-portal-skin="starfall"],
+html[data-portal-skin="wolfs-moon"], body[data-portal-skin="wolfs-moon"]
+) [data-room-chat-composer] textarea::placeholder {
+  color: rgb(var(--sep-skin-c2) / .68) !important;
+}
+
+:is(
+html[data-portal-skin="vellum"], body[data-portal-skin="vellum"],
+html[data-portal-skin="aelari-dawn"], body[data-portal-skin="aelari-dawn"],
+html[data-portal-skin="ashen"], body[data-portal-skin="ashen"],
+html[data-portal-skin="ivory-archive"], body[data-portal-skin="ivory-archive"],
+html[data-portal-skin="dwarven-deep"], body[data-portal-skin="dwarven-deep"],
+html[data-portal-skin="amethyst-veil"], body[data-portal-skin="amethyst-veil"],
+html[data-portal-skin="emberforge"], body[data-portal-skin="emberforge"],
+html[data-portal-skin="rose-nocturne"], body[data-portal-skin="rose-nocturne"],
+html[data-portal-skin="mortal-hearth"], body[data-portal-skin="mortal-hearth"],
+html[data-portal-skin="verdant-reliquary"], body[data-portal-skin="verdant-reliquary"],
+html[data-portal-skin="deepwater"], body[data-portal-skin="deepwater"],
+html[data-portal-skin="blood-court"], body[data-portal-skin="blood-court"],
+html[data-portal-skin="starfall"], body[data-portal-skin="starfall"],
+html[data-portal-skin="wolfs-moon"], body[data-portal-skin="wolfs-moon"]
+) [data-room-message-segment="action"] {
+  color: rgb(var(--sep-skin-c1)) !important;
+}
+
+:is(
+html[data-portal-skin="vellum"], body[data-portal-skin="vellum"],
+html[data-portal-skin="aelari-dawn"], body[data-portal-skin="aelari-dawn"],
+html[data-portal-skin="ashen"], body[data-portal-skin="ashen"],
+html[data-portal-skin="ivory-archive"], body[data-portal-skin="ivory-archive"],
+html[data-portal-skin="dwarven-deep"], body[data-portal-skin="dwarven-deep"],
+html[data-portal-skin="amethyst-veil"], body[data-portal-skin="amethyst-veil"],
+html[data-portal-skin="emberforge"], body[data-portal-skin="emberforge"],
+html[data-portal-skin="rose-nocturne"], body[data-portal-skin="rose-nocturne"],
+html[data-portal-skin="mortal-hearth"], body[data-portal-skin="mortal-hearth"],
+html[data-portal-skin="verdant-reliquary"], body[data-portal-skin="verdant-reliquary"],
+html[data-portal-skin="deepwater"], body[data-portal-skin="deepwater"],
+html[data-portal-skin="blood-court"], body[data-portal-skin="blood-court"],
+html[data-portal-skin="starfall"], body[data-portal-skin="starfall"],
+html[data-portal-skin="wolfs-moon"], body[data-portal-skin="wolfs-moon"]
+) [data-room-message-segment="speech"] {
+  color: rgb(var(--sep-skin-c2)) !important;
+}
+
+:is(
+html[data-portal-skin="vellum"], body[data-portal-skin="vellum"],
+html[data-portal-skin="aelari-dawn"], body[data-portal-skin="aelari-dawn"],
+html[data-portal-skin="ashen"], body[data-portal-skin="ashen"],
+html[data-portal-skin="ivory-archive"], body[data-portal-skin="ivory-archive"],
+html[data-portal-skin="dwarven-deep"], body[data-portal-skin="dwarven-deep"],
+html[data-portal-skin="amethyst-veil"], body[data-portal-skin="amethyst-veil"],
+html[data-portal-skin="emberforge"], body[data-portal-skin="emberforge"],
+html[data-portal-skin="rose-nocturne"], body[data-portal-skin="rose-nocturne"],
+html[data-portal-skin="mortal-hearth"], body[data-portal-skin="mortal-hearth"],
+html[data-portal-skin="verdant-reliquary"], body[data-portal-skin="verdant-reliquary"],
+html[data-portal-skin="deepwater"], body[data-portal-skin="deepwater"],
+html[data-portal-skin="blood-court"], body[data-portal-skin="blood-court"],
+html[data-portal-skin="starfall"], body[data-portal-skin="starfall"],
+html[data-portal-skin="wolfs-moon"], body[data-portal-skin="wolfs-moon"]
+) [data-room-ooc-label="true"] {
+  color: rgb(var(--sep-skin-c1)) !important;
+}
+
+:is(
+html[data-portal-skin="vellum"], body[data-portal-skin="vellum"],
+html[data-portal-skin="aelari-dawn"], body[data-portal-skin="aelari-dawn"],
+html[data-portal-skin="ashen"], body[data-portal-skin="ashen"],
+html[data-portal-skin="ivory-archive"], body[data-portal-skin="ivory-archive"],
+html[data-portal-skin="dwarven-deep"], body[data-portal-skin="dwarven-deep"],
+html[data-portal-skin="amethyst-veil"], body[data-portal-skin="amethyst-veil"],
+html[data-portal-skin="emberforge"], body[data-portal-skin="emberforge"],
+html[data-portal-skin="rose-nocturne"], body[data-portal-skin="rose-nocturne"],
+html[data-portal-skin="mortal-hearth"], body[data-portal-skin="mortal-hearth"],
+html[data-portal-skin="verdant-reliquary"], body[data-portal-skin="verdant-reliquary"],
+html[data-portal-skin="deepwater"], body[data-portal-skin="deepwater"],
+html[data-portal-skin="blood-court"], body[data-portal-skin="blood-court"],
+html[data-portal-skin="starfall"], body[data-portal-skin="starfall"],
+html[data-portal-skin="wolfs-moon"], body[data-portal-skin="wolfs-moon"]
+) [data-cosmetic-surface="off-character"] :is(a[href], time) {
+  color: rgb(var(--sep-skin-c2)) !important;
+}
+
+:is(
+html[data-portal-skin="vellum"], body[data-portal-skin="vellum"],
+html[data-portal-skin="aelari-dawn"], body[data-portal-skin="aelari-dawn"],
+html[data-portal-skin="ashen"], body[data-portal-skin="ashen"],
+html[data-portal-skin="ivory-archive"], body[data-portal-skin="ivory-archive"],
+html[data-portal-skin="dwarven-deep"], body[data-portal-skin="dwarven-deep"],
+html[data-portal-skin="amethyst-veil"], body[data-portal-skin="amethyst-veil"],
+html[data-portal-skin="emberforge"], body[data-portal-skin="emberforge"],
+html[data-portal-skin="rose-nocturne"], body[data-portal-skin="rose-nocturne"],
+html[data-portal-skin="mortal-hearth"], body[data-portal-skin="mortal-hearth"],
+html[data-portal-skin="verdant-reliquary"], body[data-portal-skin="verdant-reliquary"],
+html[data-portal-skin="deepwater"], body[data-portal-skin="deepwater"],
+html[data-portal-skin="blood-court"], body[data-portal-skin="blood-court"],
+html[data-portal-skin="starfall"], body[data-portal-skin="starfall"],
+html[data-portal-skin="wolfs-moon"], body[data-portal-skin="wolfs-moon"]
+) [data-cosmetic-surface="off-character"]
+[data-room-message-segment="action"] {
+  color: rgb(var(--sep-skin-c1)) !important;
+}
+
+:is(
+html[data-portal-skin="vellum"], body[data-portal-skin="vellum"],
+html[data-portal-skin="aelari-dawn"], body[data-portal-skin="aelari-dawn"],
+html[data-portal-skin="ashen"], body[data-portal-skin="ashen"],
+html[data-portal-skin="ivory-archive"], body[data-portal-skin="ivory-archive"],
+html[data-portal-skin="dwarven-deep"], body[data-portal-skin="dwarven-deep"],
+html[data-portal-skin="amethyst-veil"], body[data-portal-skin="amethyst-veil"],
+html[data-portal-skin="emberforge"], body[data-portal-skin="emberforge"],
+html[data-portal-skin="rose-nocturne"], body[data-portal-skin="rose-nocturne"],
+html[data-portal-skin="mortal-hearth"], body[data-portal-skin="mortal-hearth"],
+html[data-portal-skin="verdant-reliquary"], body[data-portal-skin="verdant-reliquary"],
+html[data-portal-skin="deepwater"], body[data-portal-skin="deepwater"],
+html[data-portal-skin="blood-court"], body[data-portal-skin="blood-court"],
+html[data-portal-skin="starfall"], body[data-portal-skin="starfall"],
+html[data-portal-skin="wolfs-moon"], body[data-portal-skin="wolfs-moon"]
+) [data-room-mechanical-action="true"],
+:is(
+html[data-portal-skin="vellum"], body[data-portal-skin="vellum"],
+html[data-portal-skin="aelari-dawn"], body[data-portal-skin="aelari-dawn"],
+html[data-portal-skin="ashen"], body[data-portal-skin="ashen"],
+html[data-portal-skin="ivory-archive"], body[data-portal-skin="ivory-archive"],
+html[data-portal-skin="dwarven-deep"], body[data-portal-skin="dwarven-deep"],
+html[data-portal-skin="amethyst-veil"], body[data-portal-skin="amethyst-veil"],
+html[data-portal-skin="emberforge"], body[data-portal-skin="emberforge"],
+html[data-portal-skin="rose-nocturne"], body[data-portal-skin="rose-nocturne"],
+html[data-portal-skin="mortal-hearth"], body[data-portal-skin="mortal-hearth"],
+html[data-portal-skin="verdant-reliquary"], body[data-portal-skin="verdant-reliquary"],
+html[data-portal-skin="deepwater"], body[data-portal-skin="deepwater"],
+html[data-portal-skin="blood-court"], body[data-portal-skin="blood-court"],
+html[data-portal-skin="starfall"], body[data-portal-skin="starfall"],
+html[data-portal-skin="wolfs-moon"], body[data-portal-skin="wolfs-moon"]
+) [data-room-mechanical-action="true"] * {
+  color: rgb(var(--sep-skin-c1)) !important;
+}
+
+:is(
+  html[data-portal-skin="sepulchria"],
+  body[data-portal-skin="sepulchria"],
+  html[data-portal-skin="moonlit"],
+  body[data-portal-skin="moonlit"]
+) [data-room-message-segment="action"] {
+  color: rgb(var(--sep-colour-a98a60)) !important;
+}
+
+:is(
+  html[data-portal-skin="sepulchria"],
+  body[data-portal-skin="sepulchria"],
+  html[data-portal-skin="moonlit"],
+  body[data-portal-skin="moonlit"]
+) [data-room-message-segment="speech"] {
+  color: rgb(var(--sep-colour-d3c2aa)) !important;
+}
+
+/* SEPULCHRIA FINAL WIDGET ROLE CLEANUP — 3cbe365 */
+
+/*
+ * Remaining circled widgets consume the same semantic pair as room chat:
+ * primary = normal character-action colour
+ * secondary = normal spoken-text colour
+ */
+
+[data-skin-widget="world-indicator"],
+[data-skin-widget="city-counter"],
+[data-skin-widget="presence-status"],
+[data-skin-widget="room-info-button"],
+[data-skin-widget="room-music"] {
+  border-color: rgb(var(--sep-colour-a98a60) / .55) !important;
+}
+
+[data-skin-widget] [data-skin-role="primary"],
+[data-skin-widget] [data-skin-role="primary-control"],
+[data-skin-widget="room-info-button"] {
+  color: rgb(var(--sep-colour-a98a60)) !important;
+}
+
+[data-skin-widget] [data-skin-role="secondary"] {
+  color: rgb(var(--sep-colour-d3c2aa)) !important;
+}
+
+[data-skin-widget] [data-skin-role="primary-control"] {
+  border-color: rgb(var(--sep-colour-a98a60) / .65) !important;
+}
+
+[data-skin-widget] [data-skin-role="primary-control"]:hover,
+[data-skin-widget="room-info-button"]:hover {
+  color: rgb(var(--sep-colour-d3c2aa)) !important;
+  border-color: rgb(var(--sep-colour-d3c2aa) / .75) !important;
+}
+
+[data-skin-widget="world-indicator"] {
+  color: rgb(var(--sep-colour-a98a60)) !important;
+}
+
+[data-skin-widget="world-indicator"]:hover {
+  color: rgb(var(--sep-colour-d3c2aa)) !important;
+  border-color: rgb(var(--sep-colour-d3c2aa) / .75) !important;
+}
+
+[data-skin-widget="city-counter"] [data-skin-role="primary"] {
+  color: rgb(var(--sep-colour-a98a60)) !important;
+}
+
+[data-skin-widget="city-counter"] [data-skin-role="secondary"] {
+  color: rgb(var(--sep-colour-d3c2aa)) !important;
+}
+
+[data-skin-widget="presence-status"] [data-skin-role="primary"] {
+  color: rgb(var(--sep-colour-a98a60)) !important;
+}
+
+[data-skin-widget="current-location"] > [data-skin-role="primary"] {
+  color: rgb(var(--sep-colour-a98a60)) !important;
+}
+
+[data-skin-widget="current-location"] > [data-skin-role="secondary"] {
+  color: rgb(var(--sep-colour-d3c2aa)) !important;
+}
+
+[data-skin-widget="current-location"] [data-skin-role="primary-control"] {
+  color: rgb(var(--sep-colour-a98a60)) !important;
+  border-color: rgb(var(--sep-colour-a98a60) / .65) !important;
+}
+
+[data-skin-widget="current-location"] [data-skin-role="primary-control"]:hover {
+  color: rgb(var(--sep-colour-d3c2aa)) !important;
+  border-color: rgb(var(--sep-colour-d3c2aa) / .75) !important;
+}
+
+[data-skin-widget="room-info-button"] {
+  color: rgb(var(--sep-colour-a98a60)) !important;
+  border-color: rgb(var(--sep-colour-a98a60) / .65) !important;
+}
+
+[data-skin-widget="room-music"] [data-skin-role="primary"] {
+  color: rgb(var(--sep-colour-a98a60)) !important;
+}
+
+[data-skin-widget="room-music"] [data-skin-role="secondary-bars"] > span {
+  background-color: rgb(var(--sep-colour-d3c2aa)) !important;
+}
+
+[data-skin-widget="room-music"] [data-skin-role="primary-control"] {
+  color: rgb(var(--sep-colour-a98a60)) !important;
+  border-color: rgb(var(--sep-colour-a98a60) / .45) !important;
+}
+
+[data-skin-widget="room-music"] [data-skin-role="primary-control"]:hover {
+  color: rgb(var(--sep-colour-d3c2aa)) !important;
+}
+
+[data-skin-widget="room-music"] button:not([class*="text-red-"]) {
+  color: rgb(var(--sep-colour-a98a60)) !important;
+}
+
+[data-skin-widget="room-music"] button:not([class*="text-red-"]):hover {
+  color: rgb(var(--sep-colour-d3c2aa)) !important;
+}

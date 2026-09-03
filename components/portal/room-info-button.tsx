@@ -299,6 +299,7 @@ area:areas!rooms_area_id_fkey(
     <>
       <button
         type="button"
+        data-skin-widget="room-info-button"
         onClick={openModal}
         aria-label="Open room information"
         title="Room information"

@@ -409,6 +409,7 @@ last_seen_at:
     <div className="relative h-8 w-8 shrink-0 sm:h-9 sm:w-9 2xl:h-10 2xl:w-10">
   <button
     type="button"
+    data-skin-widget="presence-status"
     disabled={saving}
     aria-label={`Presence: ${presence.label}`}
     title={`Presence: ${presence.label}`}
@@ -444,7 +445,7 @@ last_seen_at:
       className={`block h-2 w-2 rounded-full border ${presence.dotClass}`}
     />
 
-    <span className="text-[7px] uppercase leading-none tracking-[0.08em] text-[rgb(var(--sep-colour-aa9677))]">
+    <span data-skin-role="primary" className="text-[7px] uppercase leading-none tracking-[0.08em] text-[rgb(var(--sep-colour-aa9677))]">
       {presenceStatus === "online"
         ? "Online"
         : presenceStatus === "away"

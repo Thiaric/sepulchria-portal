@@ -890,6 +890,7 @@ export default function RoomMusicPlayer({
   const panel = (
     <section
       data-sep-interaction-ignore="true"
+      data-skin-widget="room-music"
       className="mb-3 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))]"
     >
       <div className="flex h-10 items-center">
@@ -903,17 +904,18 @@ export default function RoomMusicPlayer({
           aria-expanded={expanded}
           className="flex min-w-0 flex-1 items-center gap-2 px-3 text-left"
         >
-          <span className="text-[10px] text-[rgb(var(--sep-colour-a68b67))]">
+          <span data-skin-role="primary" className="text-[10px] text-[rgb(var(--sep-colour-a68b67))]">
             ♫
           </span>
 
-          <span className="min-w-0 flex-1 truncate text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-876a46))]">
+          <span data-skin-role="primary" className="min-w-0 flex-1 truncate text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-876a46))]">
             {activeTrack?.name ??
               "Location Music"}
           </span>
 
           {playing ? (
             <span
+              data-skin-role="secondary-bars"
               className="flex h-4 shrink-0 items-end gap-[1px]"
               aria-hidden="true"
             >
@@ -934,6 +936,7 @@ export default function RoomMusicPlayer({
 
         <button
           type="button"
+          data-skin-role="primary-control"
           onClick={() =>
             void togglePlayback()
           }
