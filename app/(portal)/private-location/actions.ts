@@ -90,7 +90,7 @@ async function getCharacter() {
   } = await supabase
     .from("characters")
     .select(
-      "id, display_name, first_name, surname, current_room_id, status",
+      "id, user_id, display_name, first_name, surname, current_room_id, status",
     )
     .eq("user_id", user.id)
     .maybeSingle();
@@ -124,6 +124,154 @@ function displayName(character: {
     character.display_name?.trim() ||
     `${character.first_name} ${character.surname}`.trim()
   );
+}
+
+
+async function logPrivateLocationInvitationEvents(
+  admin: ReturnType<
+    typeof adminClient
+  >,
+  rows: Array<{
+    characterId: string;
+    eventType:
+      | "private_location_invited"
+      | "private_location_invitation_refused"
+      | "private_location_invitation_accepted";
+    invitationId: string;
+    actorUserId: string | null;
+    actorLabel: string;
+    summary: string;
+    roomId: string;
+    roomName: string;
+    otherCharacterId: string;
+    otherCharacterName: string;
+  }>,
+) {
+  if (!rows.length) {
+    return;
+  }
+
+  const { error } = await admin
+    .from("character_audit_log")
+    .insert(
+      rows.map((row) => ({
+        character_id:
+          row.characterId,
+        event_type:
+          row.eventType,
+        entity_type:
+          "private_location_invitation",
+        entity_id:
+          row.invitationId,
+        operation: "event",
+        actor_user_id:
+          row.actorUserId,
+        actor_type: "player",
+        actor_staff_role: null,
+        actor_label:
+          row.actorLabel,
+        source:
+          "private_location_invitation",
+        changed_fields: [],
+        old_values: null,
+        new_values: {
+          summary:
+            row.summary,
+          room_id:
+            row.roomId,
+          room_name:
+            row.roomName,
+          other_character_id:
+            row.otherCharacterId,
+          other_character_name:
+            row.otherCharacterName,
+        },
+        metadata: {},
+      })),
+    );
+
+  if (error) {
+    throw new Error(
+      `Unable to write Private Location Character Log: ${error.message}`,
+    );
+  }
+}
+
+async function markPrivateLocationInvitationNotificationRead(
+  admin: ReturnType<
+    typeof adminClient
+  >,
+  invitationId: string,
+  recipientCharacterId: string,
+) {
+  const [
+    recipientResult,
+    notificationResult,
+  ] = await Promise.all([
+    admin
+      .from("characters")
+      .select("user_id")
+      .eq(
+        "id",
+        recipientCharacterId,
+      )
+      .maybeSingle(),
+    admin
+      .from("notifications")
+      .select("id")
+      .eq(
+        "source_type",
+        "private_location_invite",
+      )
+      .eq(
+        "source_id",
+        invitationId,
+      ),
+  ]);
+
+  const userId =
+    recipientResult.data?.user_id;
+
+  const notificationIds =
+    (
+      notificationResult.data ??
+      []
+    ).map(
+      (row) => row.id,
+    );
+
+  if (
+    !userId ||
+    notificationIds.length === 0
+  ) {
+    return;
+  }
+
+  const readAt =
+    new Date().toISOString();
+
+  const { error } = await admin
+    .from("notification_reads")
+    .upsert(
+      notificationIds.map(
+        (notificationId) => ({
+          user_id: userId,
+          notification_id:
+            notificationId,
+          read_at: readAt,
+        }),
+      ),
+      {
+        onConflict:
+          "user_id,notification_id",
+      },
+    );
+
+  if (error) {
+    throw new Error(
+      `Unable to close the invitation notification: ${error.message}`,
+    );
+  }
 }
 
 async function touchPresence(
@@ -692,6 +840,59 @@ export async function invitePrivateLocation(
     throw new Error(`The invitation could not be notified: ${error instanceof Error ? error.message : "Unknown error"}`);
   }
 
+  const ownerName =
+    displayName(owner);
+  const recipientName =
+    displayName(recipient);
+
+  await logPrivateLocationInvitationEvents(
+    admin,
+    [
+      {
+        characterId:
+          owner.id,
+        eventType:
+          "private_location_invited",
+        invitationId:
+          invitation.id,
+        actorUserId:
+          owner.user_id,
+        actorLabel:
+          ownerName,
+        summary:
+          `Invited ${recipientName} to ${room.name}.`,
+        roomId,
+        roomName:
+          room.name,
+        otherCharacterId:
+          recipient.id,
+        otherCharacterName:
+          recipientName,
+      },
+      {
+        characterId:
+          recipient.id,
+        eventType:
+          "private_location_invited",
+        invitationId:
+          invitation.id,
+        actorUserId:
+          owner.user_id,
+        actorLabel:
+          ownerName,
+        summary:
+          `${ownerName} invited you to ${room.name}.`,
+        roomId,
+        roomName:
+          room.name,
+        otherCharacterId:
+          owner.id,
+        otherCharacterName:
+          ownerName,
+      },
+    ],
+  );
+
   revalidatePath("/private-locations");
 }
 
@@ -799,7 +1000,7 @@ export async function respondPrivateLocationInvitation(
   } = await admin
     .from("private_location_invitations")
     .select(
-      "id, room_id, recipient_character_id, status",
+      "id, room_id, inviter_character_id, recipient_character_id, status",
     )
     .eq("id", invitationId)
     .maybeSingle();
@@ -816,6 +1017,52 @@ export async function respondPrivateLocationInvitation(
         "This invitation is no longer available.",
     );
   }
+
+  const [
+    roomResult,
+    inviterResult,
+  ] = await Promise.all([
+    admin
+      .from("rooms")
+      .select("name")
+      .eq(
+        "id",
+        invitation.room_id,
+      )
+      .maybeSingle(),
+    admin
+      .from("characters")
+      .select(
+        "id, display_name, first_name, surname",
+      )
+      .eq(
+        "id",
+        invitation.inviter_character_id,
+      )
+      .maybeSingle(),
+  ]);
+
+  if (
+    roomResult.error ||
+    !roomResult.data ||
+    inviterResult.error ||
+    !inviterResult.data
+  ) {
+    throw new Error(
+      roomResult.error?.message ??
+        inviterResult.error?.message ??
+        "Invitation context is no longer available.",
+    );
+  }
+
+  const roomName =
+    roomResult.data.name;
+  const inviterName =
+    displayName(
+      inviterResult.data,
+    );
+  const responderName =
+    displayName(character);
 
   if (response === "accept") {
     const {
@@ -866,7 +1113,59 @@ export async function respondPrivateLocationInvitation(
     );
   }
 
+  await markPrivateLocationInvitationNotificationRead(
+    admin,
+    invitationId,
+    character.id,
+  );
+
   if (response === "accept") {
+    await logPrivateLocationInvitationEvents(
+      admin,
+      [
+        {
+          characterId:
+            character.id,
+          eventType:
+            "private_location_invitation_accepted",
+          invitationId,
+          actorUserId:
+            character.user_id,
+          actorLabel:
+            responderName,
+          summary:
+            `Accepted ${inviterName}'s invitation to ${roomName}.`,
+          roomId:
+            invitation.room_id,
+          roomName,
+          otherCharacterId:
+            invitation.inviter_character_id,
+          otherCharacterName:
+            inviterName,
+        },
+        {
+          characterId:
+            invitation.inviter_character_id,
+          eventType:
+            "private_location_invitation_accepted",
+          invitationId,
+          actorUserId:
+            character.user_id,
+          actorLabel:
+            responderName,
+          summary:
+            `${responderName} accepted your invitation to ${roomName}.`,
+          roomId:
+            invitation.room_id,
+          roomName,
+          otherCharacterId:
+            character.id,
+          otherCharacterName:
+            responderName,
+        },
+      ],
+    );
+
     const enterData =
       new FormData();
 
@@ -881,6 +1180,32 @@ export async function respondPrivateLocationInvitation(
 
     return;
   }
+
+  await logPrivateLocationInvitationEvents(
+    admin,
+    [
+      {
+        characterId:
+          character.id,
+        eventType:
+          "private_location_invitation_refused",
+        invitationId,
+        actorUserId:
+          character.user_id,
+        actorLabel:
+          responderName,
+        summary:
+          `Refused ${inviterName}'s invitation to ${roomName}.`,
+        roomId:
+          invitation.room_id,
+        roomName,
+        otherCharacterId:
+          invitation.inviter_character_id,
+        otherCharacterName:
+          inviterName,
+      },
+    ],
+  );
 
   revalidatePath("/private-locations");
   revalidatePath("/messages");

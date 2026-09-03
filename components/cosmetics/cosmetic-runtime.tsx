@@ -601,22 +601,14 @@ export function CosmeticRuntime() {
         position: relative;
         isolation: isolate;
         overflow: visible;
-        border: 1px solid #7d628f !important;
       }
 
+      /*
+       * Whisper cosmetics are FRAME-ONLY. Do not replace the authored
+       * room-message border/background/hue supplied by the shared skin.
+       */
       [data-cosmetic-surface="whisper"][data-has-whisper-style="true"] {
-        border-color: #7d628f !important;
-
-        background:
-          linear-gradient(
-            100deg,
-            rgba(37,19,52,.80),
-            rgba(25,18,40,.66) 55%,
-            rgba(40,19,54,.74)
-          ) !important;
-
-        box-shadow:
-          inset 0 0 20px rgba(150,88,200,.10);
+        background-color: inherit;
       }
 
       /*
@@ -641,7 +633,7 @@ export function CosmeticRuntime() {
 
         pointer-events: none;
         filter:
-          drop-shadow(0 0 5px rgba(155,91,207,.20));
+          drop-shadow(0 3px 7px rgba(0,0,0,.32));
       }
 
       /*

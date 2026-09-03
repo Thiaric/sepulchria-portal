@@ -286,6 +286,10 @@ export function NotificationBell() {
     useRef(false);
   const suppressNextSoundRef =
     useRef(false);
+  const knownNotificationIdsRef =
+    useRef<Set<string>>(
+      new Set(),
+    );
 
   const [open, setOpen] =
     useState(false);
@@ -396,23 +400,46 @@ export function NotificationBell() {
           }),
         );
 
-      const nextUnread =
+      const unreadRows =
         bundle.muted === true
-          ? 0
+          ? []
           : hydratedRows.filter(
               (row) =>
                 row.is_unread,
-            ).length;
+            );
+
+      const nextUnread =
+        unreadRows.length;
+
+      /*
+       * Sound only for a notification ID this mounted bell has never seen.
+       * Previously the chime was driven by "unread count increased", so an
+       * old invitation could replay its sound after a refresh.
+       */
+      const hasGenuinelyNewUnread =
+        loadedOnceRef.current &&
+        unreadRows.some(
+          (row) =>
+            !knownNotificationIdsRef.current.has(
+              row.id,
+            ),
+        );
 
       if (
-        loadedOnceRef.current &&
         !bundle.muted &&
-        nextUnread >
-          previousUnreadRef.current &&
+        hasGenuinelyNewUnread &&
         !suppressNextSoundRef.current
       ) {
         playPortalSound(
           "notification-chime",
+        );
+      }
+
+      for (
+        const row of hydratedRows
+      ) {
+        knownNotificationIdsRef.current.add(
+          row.id,
         );
       }
 
@@ -517,7 +544,7 @@ export function NotificationBell() {
         .on(
           "postgres_changes",
           {
-            event: "UPDATE",
+            event: "*",
             schema: "public",
             table:
               "notifications",
@@ -544,6 +571,39 @@ export function NotificationBell() {
         )
         .subscribe();
 
+    /*
+     * Invitation rows exist before their targeted notification is created.
+     * Listening to the invitation INSERT itself wakes the recipient's bell
+     * immediately even if the generic notifications Realtime signal is late.
+     * The existing retry then catches notification_targets after creation.
+     */
+    const invitationTables = [
+      "private_location_invitations",
+      "breeze_lodging_invitations",
+      "order_headquarters_invitations",
+    ] as const;
+
+    const invitationChannels =
+      invitationTables.map(
+        (table) =>
+          supabase
+            .channel(
+              `bell-invitation-${table}-${crypto.randomUUID()}`,
+            )
+            .on(
+              "postgres_changes",
+              {
+                event: "INSERT",
+                schema: "public",
+                table,
+              },
+              () => {
+                reloadFromReadySignal();
+              },
+            )
+            .subscribe(),
+      );
+
     return () => {
       if (
         retryTimer !== null
@@ -556,6 +616,15 @@ export function NotificationBell() {
       void supabase.removeChannel(
         channel,
       );
+
+      for (
+        const invitationChannel of
+          invitationChannels
+      ) {
+        void supabase.removeChannel(
+          invitationChannel,
+        );
+      }
     };
   }, [load, supabase]);
 
@@ -978,6 +1047,7 @@ export function NotificationBell() {
                     </p>
                   </div>
 
+                  <div className="flex items-center gap-2">
                   <button
                     type="button"
                     onClick={() =>
@@ -1007,11 +1077,8 @@ export function NotificationBell() {
                       </>
                     )}
                   </button>
-                </div>
 
-                {!muted ? (
-                  <div className="mt-3">
-                    <div className="mb-2 flex justify-end">
+                    {!muted ? (
                       <button
                         type="button"
                         onClick={() =>
@@ -1027,8 +1094,12 @@ export function NotificationBell() {
                           ? "Marking..."
                           : "Mark all read"}
                       </button>
-                    </div>
+                    ) : null}
+                  </div>
+                </div>
 
+                {!muted ? (
+                  <div className="mt-3">
                     <input
                       type="search"
                       value={search}

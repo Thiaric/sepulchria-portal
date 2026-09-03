@@ -695,8 +695,8 @@ export function ConversationMessageList({
                 className={`relative max-w-[92%] border px-2.5 py-2 transition ${
                   own
                     ? ongame
-                      ? "ml-auto border-[rgb(var(--sep-colour-80613c))] bg-[rgb(var(--sep-colour-2c2117))]"
-                      : "ml-auto border-[rgb(var(--sep-colour-687083))] bg-[rgb(var(--sep-colour-252830))]"
+                      ? "ml-auto border-[rgb(var(--sep-colour-514233))] bg-[rgb(var(--sep-colour-100c09))]"
+                      : "ml-auto border-[rgb(var(--sep-colour-5c6372))] bg-[rgb(var(--sep-colour-191b21))]"
                     : ongame
                       ? "border-[rgb(var(--sep-colour-514233))] bg-[rgb(var(--sep-colour-100c09))]"
                       : "border-[rgb(var(--sep-colour-5c6372))] bg-[rgb(var(--sep-colour-191b21))]"
