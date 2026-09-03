@@ -68,6 +68,7 @@ type RoomRelation = {
   chat_enabled: boolean;
   description: string | null;
   image_url: string | null;
+  background_image_url: string | null;
   area_id: string;
   music_track_id: string | null;
   is_outdoors: boolean;
@@ -162,7 +163,7 @@ async function GameContent() {
   } = await supabase
     .from("rooms")
     .select(
-  "id, name, slug, chat_enabled, description, image_url, area_id, music_track_id, is_outdoors, areas(id,name,slug,description)",
+  "id, name, slug, chat_enabled, description, image_url, background_image_url, area_id, music_track_id, is_outdoors, areas(id,name,slug,description)",
 )
     .eq(
       "id",
@@ -192,7 +193,7 @@ async function GameContent() {
 
   const ownedLocationAtmosphereUrl =
     privateAccess.metadata
-      ? room.image_url
+      ? room.background_image_url
       : null;
 
   if (

@@ -396,7 +396,10 @@ export function PortalSkinGallery({
                       </p>
                     ) : null}
 
-                    <div className="mt-auto flex flex-wrap items-end justify-between gap-3 border-t border-[rgb(var(--sep-colour-60482e))]/25 pt-4">
+                    <div
+                      data-portal-skin-preview-divider="true"
+                      className="mt-auto flex flex-wrap items-end justify-between gap-3 border-t border-[rgb(var(--sep-colour-60482e))]/25 pt-4"
+                    >
                       <div
                         className="h-10 w-10 shrink-0 rounded-full border border-[rgb(var(--sep-colour-60482e))]/60 shadow-[0_0_0_2px_rgb(var(--sep-colour-0d0a08))]"
                         style={{

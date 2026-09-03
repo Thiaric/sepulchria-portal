@@ -14,6 +14,9 @@ import {
   useState,
 } from "react";
 import { createPortal } from "react-dom";
+import {
+  LocationImageSaveForm,
+} from "@/components/world/location-image-save-form";
 
 export function OrderHeadquartersManageMenu({
   data,
@@ -274,38 +277,60 @@ export function OrderHeadquartersManageMenu({
         {data.canCustomize ? (
           <details className="mt-4 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-3">
             <summary className="cursor-pointer text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-8c704b))]">
-              Chat background
+              Location images
             </summary>
 
-            <form
-              action={updateOrderHeadquartersPresentation}
-              className="mt-3 grid gap-2"
-            >
+            <LocationImageSaveForm
+  action={updateOrderHeadquartersPresentation}
+  className="mt-3 grid gap-2"
+>
               <input
                 type="hidden"
                 name="roomId"
                 value={data.roomId}
               />
 
-              <input
-                name="imageUrl"
-                maxLength={2000}
-                defaultValue={data.imageUrl ?? ""}
-                placeholder="Chat background / Location URL"
-                className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))]"
-              />
+              <label className="grid gap-1">
+                <span className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))]">
+                  Location Image URL
+                </span>
+                <input
+                  name="imageUrl"
+                  maxLength={2000}
+                  defaultValue={data.imageUrl ?? ""}
+                  placeholder="https://..."
+                  className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))]"
+                />
+              </label>
 
               <p className="text-[7px] leading-4 text-[rgb(var(--sep-colour-6f6252))]">
-                This overrides each visitor&apos;s equipped Location Atmosphere while they are inside. All other chat colours and surfaces follow their active Portal skin.
+                Shown as the Headquarters location image outside the room.
+              </p>
+
+              <label className="grid gap-1">
+                <span className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))]">
+                  Background Image URL
+                </span>
+                <input
+                  name="backgroundImageUrl"
+                  maxLength={2000}
+                  defaultValue={data.backgroundImageUrl ?? ""}
+                  placeholder="https://..."
+                  className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))]"
+                />
+              </label>
+
+              <p className="text-[7px] leading-4 text-[rgb(var(--sep-colour-6f6252))]">
+                Used only as the in-room chat background. It overrides each visitor&apos;s equipped Location Atmosphere while they are inside.
               </p>
 
               <button
                 type="submit"
                 className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd6a8))]"
               >
-                Save chat background
+                Save location images
               </button>
-            </form>
+            </LocationImageSaveForm>
           </details>
         ) : null}
       </div>,

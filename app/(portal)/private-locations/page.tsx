@@ -3,6 +3,9 @@ import { CollapsibleRoomDescription } from "@/components/world/collapsible-room-
 import { LocationAtmosphericImage } from "@/components/world/location-atmospheric-image";
 import { LocationImageLightbox } from "@/components/world/location-image-lightbox";
 import {
+  LocationImageSaveForm,
+} from "@/components/world/location-image-save-form";
+import {
   InvitationOwnerStateRefresh,
 } from "@/components/invitations/invitation-owner-state-refresh";
 import {
@@ -110,6 +113,7 @@ export default async function PrivateLocationPage() {
         name: string;
         description: string | null;
         image_url: string | null;
+        background_image_url: string | null;
       }
     | null = null;
 
@@ -158,7 +162,7 @@ export default async function PrivateLocationPage() {
       supabase
         .from("rooms")
         .select(
-          "id, name, description, image_url",
+          "id, name, description, image_url, background_image_url",
         )
         .eq("id", ownedRoomId)
         .single(),
@@ -400,10 +404,10 @@ export default async function PrivateLocationPage() {
           </div>
 
           <div className="grid gap-px bg-[rgb(var(--sep-colour-4f3b28))]/35 lg:grid-cols-2">
-            <form
-              action={updatePrivateLocation}
-              className="grid gap-3 bg-[rgb(var(--sep-colour-17110d))] p-5"
-            >
+            <LocationImageSaveForm
+  action={updatePrivateLocation}
+  className="grid gap-3 bg-[rgb(var(--sep-colour-17110d))] p-5"
+>
               <input
                 type="hidden"
                 name="roomId"
@@ -412,7 +416,7 @@ export default async function PrivateLocationPage() {
 
               <label className="grid gap-1">
                 <span className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-806b50))]">
-                  Chat background / Location URL
+                  Location Image URL
                 </span>
                 <input
                   name="imageUrl"
@@ -427,16 +431,36 @@ export default async function PrivateLocationPage() {
               </label>
 
               <p className="text-[8px] leading-4 text-[rgb(var(--sep-colour-6f6252))]">
-                This image becomes the location chat atmosphere for everyone inside and overrides each character&apos;s equipped Location Atmosphere cosmetic while they are here. All other chat styling follows the active Portal skin.
+                Shown on the Private Locations page as this location&apos;s image.
+              </p>
+
+              <label className="grid gap-1">
+                <span className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-806b50))]">
+                  Background Image URL
+                </span>
+                <input
+                  name="backgroundImageUrl"
+                  maxLength={2000}
+                  defaultValue={
+                    ownedRoom.background_image_url ??
+                    ""
+                  }
+                  placeholder="https://..."
+                  className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))]"
+                />
+              </label>
+
+              <p className="text-[8px] leading-4 text-[rgb(var(--sep-colour-6f6252))]">
+                Used only as the chat background while characters are inside this Private Location. It overrides each character&apos;s equipped Location Atmosphere cosmetic while they are here.
               </p>
 
               <button
                 type="submit"
                 className="border border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] px-4 py-2 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-efd9aa))]"
               >
-                Save chat background
+                Save location images
               </button>
-            </form>
+            </LocationImageSaveForm>
 
             <div className="bg-[rgb(var(--sep-colour-17110d))] p-5">
               <h3 className="font-serif text-xl text-[rgb(var(--sep-colour-dfc79c))]">

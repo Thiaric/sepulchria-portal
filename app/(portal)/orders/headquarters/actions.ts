@@ -342,11 +342,19 @@ export async function updateOrderHeadquartersPresentation(formData: FormData) {
       2000,
     );
 
+  const backgroundImageUrl =
+    text(
+      formData.get("backgroundImageUrl"),
+      2000,
+    );
+
   const { error } = await admin
     .from("rooms")
     .update({
       image_url:
         imageUrl || null,
+      background_image_url:
+        backgroundImageUrl || null,
       updated_at:
         new Date().toISOString(),
     })

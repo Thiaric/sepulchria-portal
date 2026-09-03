@@ -99,6 +99,96 @@ export async function createTidingAction(
   revalidatePath("/", "layout");
 }
 
+export async function editTidingAction(
+  formData: FormData,
+) {
+  await requireAdminSection("tidings");
+  const supabase = await createClient();
+
+  const id = String(
+    formData.get("id") ?? "",
+  ).trim();
+
+  const title = String(
+    formData.get("title") ?? "",
+  ).trim();
+
+  const message = String(
+    formData.get("message") ?? "",
+  ).trim();
+
+  const priority = String(
+    formData.get("priority") ?? "normal",
+  );
+
+  const duration = String(
+    formData.get("duration") ?? "keep",
+  );
+
+  if (!id) {
+    throw new Error("Missing Tidings entry.");
+  }
+
+  if (!title || title.length > 80) {
+    throw new Error(
+      "Tidings title must be between 1 and 80 characters.",
+    );
+  }
+
+  if (!message || message.length > 300) {
+    throw new Error(
+      "Tidings message must be between 1 and 300 characters.",
+    );
+  }
+
+  if (
+    !ALLOWED_PRIORITIES.includes(
+      priority as (typeof ALLOWED_PRIORITIES)[number],
+    )
+  ) {
+    throw new Error("Invalid Tidings priority.");
+  }
+
+  const updates: {
+    title: string;
+    message: string;
+    priority: string;
+    priority_rank: number;
+    updated_at: string;
+    expires_at?: string | null;
+  } = {
+    title,
+    message,
+    priority,
+    priority_rank:
+      priority === "urgent"
+        ? 2
+        : priority === "important"
+          ? 1
+          : 0,
+    updated_at: new Date().toISOString(),
+  };
+
+  if (duration !== "keep") {
+    updates.expires_at =
+      expiryFromDuration(duration);
+  }
+
+  const { error } = await supabase
+    .from("tidings")
+    .update(updates)
+    .eq("id", id);
+
+  if (error) {
+    throw new Error(
+      `Unable to edit Tidings: ${error.message}`,
+    );
+  }
+
+  revalidatePath("/", "layout");
+  revalidatePath("/admin/tidings");
+}
+
 export async function toggleTidingAction(
   formData: FormData,
 ) {

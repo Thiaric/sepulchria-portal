@@ -1334,6 +1334,12 @@ export async function updatePrivateLocation(
       2000,
     );
 
+  const backgroundImageUrl =
+    readText(
+      formData.get("backgroundImageUrl"),
+      2000,
+    );
+
   const {
     error: roomError,
   } = await admin
@@ -1341,6 +1347,8 @@ export async function updatePrivateLocation(
     .update({
       image_url:
         imageUrl || null,
+      background_image_url:
+        backgroundImageUrl || null,
       updated_at:
         new Date().toISOString(),
     })

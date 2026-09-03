@@ -2246,3 +2246,82 @@ body.portal-skin-scope
 }
 
 /* END SEPULCHRIA NOTIFICATION + MODAL SEMANTICS - 914abb5 */
+
+
+/* SEPULCHRIA APPEARANCE PREVIEW DIVIDER ISOLATION */
+.portal-skin-preview-card[data-portal-skin]
+  [data-portal-skin-preview-divider="true"] {
+  border-top-color:
+    rgb(var(--sep-skin-c1, var(--sep-colour-a98a60)) / 0.34) !important;
+}
+
+.portal-skin-preview-card[data-portal-skin] hr {
+  border-color:
+    rgb(var(--sep-skin-c1, var(--sep-colour-a98a60)) / 0.34) !important;
+}
+
+/* Tidings edit summary should look exactly like a normal button */
+.tiding-edit-summary {
+  list-style: none !important;
+}
+
+.tiding-edit-summary::marker {
+  content: "" !important;
+  display: none !important;
+}
+
+.tiding-edit-summary::-webkit-details-marker {
+  display: none !important;
+}
+
+/* Tidings Edit summary — exact same visual language as normal portal buttons */
+[data-portal-shell] .tiding-edit-summary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-color: var(--sep-unified-control-border) !important;
+  background-color: var(--sep-unified-control-bg) !important;
+  color: var(--sep-unified-control-text) !important;
+  border-radius: 0 !important;
+
+  padding: 0.5rem 0.75rem;
+
+  font-size: 9px;
+  font-weight: 400;
+  line-height: 1.15;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+
+  cursor: pointer;
+  list-style: none !important;
+
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease,
+    color 150ms ease,
+    opacity 150ms ease;
+}
+
+[data-portal-shell] .tiding-edit-summary:hover {
+  border-color: var(--sep-unified-control-border-hover) !important;
+  background-color: var(--sep-unified-control-bg-hover) !important;
+  color: var(--sep-unified-control-text-hover) !important;
+}
+
+[data-portal-shell] .tiding-edit-summary::marker {
+  content: "";
+}
+
+[data-portal-shell] .tiding-edit-summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Tidings cards keep pointer illumination, but do not tilt/lift */
+body.portal-skin-scope
+  [data-tidings-static-card="true"][data-sep-interaction-active="true"] {
+  transform: none !important;
+}
+/* END SEPULCHRIA APPEARANCE PREVIEW DIVIDER ISOLATION */
