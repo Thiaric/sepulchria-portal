@@ -19996,7 +19996,14 @@ body.portal-skin-scope .font-serif {
 }
 
 
-/* Normal location-chat rows have no bg class, so give them one only here. */
+/*
+ * Normal location-chat rows must stay transparent over the shared
+ * atmospheric chat surface, exactly like they do on dark skins.
+ *
+ * Previously light skins painted every ordinary row with the opaque
+ * --sep-light-surface-chat colour, which hid the location artwork even
+ * when the outer chat panel itself was translucent.
+ */
 :is(
   [data-portal-skin="vellum"],
   [data-portal-skin="aelari-dawn"],
@@ -20008,8 +20015,7 @@ body.portal-skin-scope .font-serif {
 )
 #room-chronicle
 article:not([class*="bg-"]) {
-  background-color:
-    var(--sep-light-surface-chat);
+  background-color: transparent !important;
 }
 
 

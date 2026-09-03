@@ -232,6 +232,29 @@ async function PortalLayoutContent({
               }
 
               /*
+               * LOCATION MESSAGE TRANSPARENCY BY SKIN
+               *
+               * Dark skins keep the existing 60% surface opacity.
+               * Light surfaces use 32% so the location artwork remains visible.
+               */
+              :is(
+                html[data-portal-skin="vellum"],
+                body[data-portal-skin="vellum"],
+                html[data-portal-skin="ashen"],
+                body[data-portal-skin="ashen"],
+                html[data-portal-skin="aelari-dawn"],
+                body[data-portal-skin="aelari-dawn"],
+                html[data-portal-skin="dwarven-deep"],
+                body[data-portal-skin="dwarven-deep"],
+                html[data-portal-skin="mortal-hearth"],
+                body[data-portal-skin="mortal-hearth"],
+                html[data-portal-skin="wolfs-moon"],
+                body[data-portal-skin="wolfs-moon"]
+              ) {
+                --sep-location-message-opacity: 32%;
+              }
+
+              /*
                * LOCATION ATMOSPHERE + CHAT PANEL
                *
                * The atmosphere lives on the outer location surface, while
@@ -246,14 +269,20 @@ async function PortalLayoutContent({
   [data-game-location-surface]
   article[data-sep-interaction-fixed="true"] {
   background-color:
-    rgb(var(--sep-colour-17110d) / 60%) !important;
+    rgb(
+      var(--sep-colour-17110d) /
+      var(--sep-location-message-opacity, 60%)
+    ) !important;
 }
 
 [data-portal-shell-inner][data-has-cosmetic-location-atmosphere="true"]
   [data-game-location-surface]
   [data-room-chat-composer] {
   background-color:
-    rgb(var(--sep-colour-17110d) / 60%) !important;
+    rgb(
+      var(--sep-colour-17110d) /
+      var(--sep-location-message-opacity, 60%)
+    ) !important;
 }
 
               .portal-left-collapse-toggle,
@@ -418,10 +447,12 @@ async function PortalLayoutContent({
 
                 .sepulchria-viewport-body
                   > [data-portal-centre-host] {
-                  height:
-                    calc(
-                      100% - 64px - env(safe-area-inset-bottom)
-                    );
+                  /*
+                   * The parent viewport is already flex-1.
+                   * Mobile nav space is reserved by the Tidings footer below,
+                   * so the centre should use its full allocated height.
+                   */
+                  height: 100%;
                   min-height: 0;
                   overflow: hidden;
                 }
@@ -437,6 +468,25 @@ async function PortalLayoutContent({
 
                 [data-portal-shell] {
                   padding-top: env(safe-area-inset-top);
+                }
+
+                /*
+                 * Mobile navigation is fixed, so it occupies no flex space.
+                 * Give Tidings its real 36px height plus a 64px bottom margin
+                 * for the fixed navigation bar. This keeps Tidings visible
+                 * immediately above the nav instead of underneath it.
+                 */
+                footer[aria-label="Tidings"] {
+                  display: block !important;
+                  flex: 0 0 36px;
+                  height: 36px;
+                  min-height: 36px;
+                  max-height: 36px;
+                  margin-bottom:
+                    calc(
+                      64px + env(safe-area-inset-bottom)
+                    );
+                  z-index: 84;
                 }
               }
 

@@ -360,7 +360,7 @@ export default async function ConversationPage({
       />
 
       <header className="border-b border-[rgb(var(--sep-colour-654b2e))]/40 bg-[rgb(var(--sep-colour-0c0a08))]/90">
-        <div className="mx-auto flex min-h-14 max-w-[1000px] items-center justify-between px-4">
+        <div className="mx-auto flex min-h-14 max-w-[1200px] items-center justify-between px-4">
           <Link
             href="/messages"
             className="border border-[rgb(var(--sep-colour-59432c))] px-3 py-1.5 text-[9px] uppercase tracking-[0.16em]"
@@ -377,7 +377,7 @@ export default async function ConversationPage({
         </div>
       </header>
 
-      <div className="mx-auto max-w-[1000px] px-4 py-4">
+      <div className="mx-auto max-w-[1200px] px-4 py-4">
         <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-59432c))]/40 p-3 sm:p-4">
             <Link

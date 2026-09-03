@@ -191,7 +191,7 @@ export function MessagesInboxClient({
 
   return (
     <div className="p-2 sm:p-4 lg:p-4">
-      <div className="mx-auto max-w-5xl">
+      <div className="mx-auto max-w-[1200px]">
         <header className="flex flex-wrap items-end justify-between gap-3 border-b border-[rgb(var(--sep-colour-654b2e))]/40 pb-3">
           <div>
             <p className="text-[10px] uppercase tracking-[0.32em] text-[rgb(var(--sep-colour-927047))]">
