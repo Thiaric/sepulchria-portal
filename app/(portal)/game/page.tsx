@@ -1249,8 +1249,9 @@ async function GameContent() {
           headquartersManageControl={
             headquartersManageData ? (
               <OrderHeadquartersManageMenu
-                data={headquartersManageData}
-              />
+  key={`headquarters-manage-${headquartersManageData.headquartersId}`}
+  data={headquartersManageData}
+/>
             ) : null
           }
         />

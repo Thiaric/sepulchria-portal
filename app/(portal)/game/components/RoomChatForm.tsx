@@ -602,6 +602,11 @@ export default function RoomChatForm({
   const messageFormRef =
   useRef<HTMLFormElement>(null);
 
+  const submittedMessageModeRef =
+    useRef<
+      "whisper" | "chat" | null
+    >(null);
+
   const [
     textareaScrollTop,
     setTextareaScrollTop,
@@ -677,12 +682,41 @@ const visibleSpellingIssues =
       return;
     }
 
+    const submittedMode =
+      submittedMessageModeRef.current;
+
+    submittedMessageModeRef.current =
+      null;
+
     // The sent text was already cleared optimistically on submit.
     // Do not clear again here: the player may already be writing
     // their next action while the previous server request finishes.
     setMessageNonce(
       crypto.randomUUID(),
     );
+
+    if (
+      submittedMode ===
+      "whisper"
+    ) {
+      setUtilityMode(null);
+
+      /*
+       * Closing Whisper replaces its textarea with the normal chat
+       * textarea. Wait for that render before restoring keyboard focus.
+       */
+      window.requestAnimationFrame(
+        () => {
+          window.requestAnimationFrame(
+            () => {
+              textareaRef.current?.focus();
+            },
+          );
+        },
+      );
+
+      return;
+    }
 
     textareaRef.current?.focus();
   }, [
@@ -745,13 +779,32 @@ const visibleSpellingIssues =
   ]);
 
   function clearMessageComposerAfterSubmit() {
-    window.requestAnimationFrame(() => {
-      setValue("");
-      setWhisperRecipientId("");
-      setSpellingMenu(null);
-      setTextareaScrollTop(0);
-    });
+  const wasWhisper =
+    utilityMode === "whisper";
+
+  submittedMessageModeRef.current =
+    wasWhisper
+      ? "whisper"
+      : "chat";
+
+  if (wasWhisper) {
+    // Close immediately on Send Action / Enter.
+    setUtilityMode(null);
   }
+
+  window.requestAnimationFrame(() => {
+    setValue("");
+    setWhisperRecipientId("");
+    setSpellingMenu(null);
+    setTextareaScrollTop(0);
+
+    if (wasWhisper) {
+      window.requestAnimationFrame(() => {
+        textareaRef.current?.focus();
+      });
+    }
+  });
+}
 
   function handleMessageChange(
     nextValue: string,
