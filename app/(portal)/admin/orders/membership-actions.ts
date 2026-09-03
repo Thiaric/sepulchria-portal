@@ -9,6 +9,9 @@ import {
 } from "@/lib/auth/require-staff";
 import { adjustHealthForVigourModifier } from "@/lib/characters/adjust-health-for-vigour-modifier";
 import { createClient } from "@/lib/supabase/server";
+import {
+  evictOrderMemberFromHeadquarters,
+} from "@/lib/order-headquarters/evict-member";
 
 function text(
   formData: FormData,
@@ -675,6 +678,14 @@ const oldVigourModifier =
   oldRoleRelation
     ?.vigour_modifier ?? 0;
 
+await evictOrderMemberFromHeadquarters({
+  orderId,
+  characterId:
+    membership.character_id,
+  returnRoomId:
+    membership.return_room_id ?? null,
+});
+
     const { error } = await supabase
   .from("order_memberships")
   .delete()
@@ -744,7 +755,11 @@ if (removedHeadquarters?.room_id) {
       );
     }
 
+    const now =
+      new Date().toISOString();
+
     const {
+      data: updatedPresence,
       error: presenceUpdateError,
     } = await supabase
       .from("character_presence")
@@ -752,17 +767,74 @@ if (removedHeadquarters?.room_id) {
         room_id:
           fallbackRoomId,
         last_seen_at:
-          new Date().toISOString(),
+          now,
       })
       .eq(
         "character_id",
         membership.character_id,
-      );
+      )
+      .select("character_id")
+      .maybeSingle();
 
     if (presenceUpdateError) {
       throw new Error(
         presenceUpdateError.message,
       );
+    }
+
+    if (!updatedPresence) {
+      const {
+        error: presenceInsertError,
+      } = await supabase
+        .from("character_presence")
+        .insert({
+          character_id:
+            membership.character_id,
+          room_id:
+            fallbackRoomId,
+          status:
+            "online",
+          manual_status:
+            "online",
+          last_seen_at:
+            now,
+        });
+
+      if (
+        presenceInsertError &&
+        presenceInsertError.code !==
+          "23505"
+      ) {
+        throw new Error(
+          presenceInsertError.message,
+        );
+      }
+
+      if (
+        presenceInsertError?.code ===
+        "23505"
+      ) {
+        const {
+          error: retryPresenceError,
+        } = await supabase
+          .from("character_presence")
+          .update({
+            room_id:
+              fallbackRoomId,
+            last_seen_at:
+              now,
+          })
+          .eq(
+            "character_id",
+            membership.character_id,
+          );
+
+        if (retryPresenceError) {
+          throw new Error(
+            retryPresenceError.message,
+          );
+        }
+      }
     }
   }
 }

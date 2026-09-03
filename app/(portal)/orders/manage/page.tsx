@@ -656,7 +656,7 @@ export default async function ManageOrdersPage({
                           </p>
                         </div>
 
-                        <span className="border border-[rgb(var(--sep-colour-765937))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-a98c65))]">
+                        <span className="border border-[rgb(var(--sep-skin-c1,var(--sep-colour-765937)))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-a98c65))]">
                           {
                             members.length
                           }{" "}

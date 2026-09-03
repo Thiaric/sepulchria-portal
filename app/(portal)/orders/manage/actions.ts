@@ -18,6 +18,9 @@ import {
 import {
   createClient,
 } from "@/lib/supabase/server";
+import {
+  evictOrderMemberFromHeadquarters,
+} from "@/lib/order-headquarters/evict-member";
 
 function req(formData: FormData, name: string) {
   const value = formData.get(name);
@@ -841,6 +844,7 @@ export async function headRemoveMember(
       .from("order_memberships")
       .select(`
         character_id,
+        return_room_id,
         level:order_levels!order_memberships_order_level_id_fkey(
           level
         ),
@@ -892,6 +896,14 @@ export async function headRemoveMember(
       characterId:
         target.character_id,
       orderId,
+    });
+
+    await evictOrderMemberFromHeadquarters({
+      orderId,
+      characterId:
+        target.character_id,
+      returnRoomId:
+        target.return_room_id ?? null,
     });
 
     const {

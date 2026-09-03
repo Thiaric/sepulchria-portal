@@ -63,7 +63,7 @@ export function OrderHeadAddMemberForm({
     <InlineActionForm
       action={headAddMember}
       successMessage="Member added."
-      className="mt-4 border border-dashed border-[rgb(var(--sep-colour-765937))]/45 bg-[rgb(var(--sep-colour-100c09))] p-4"
+      className="mt-4 border border-dashed border-[rgb(var(--sep-skin-c1,var(--sep-colour-765937)))]/45 bg-[rgb(var(--sep-colour-100c09))] p-4"
     >
       <input type="hidden" name="orderId" value={orderId} />
 

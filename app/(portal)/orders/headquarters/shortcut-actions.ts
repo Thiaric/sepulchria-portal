@@ -3,6 +3,9 @@
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
+import {
+  rememberOrderHeadquartersReturnRoom,
+} from "@/lib/order-headquarters/return-room";
 
 type RoomRelation =
   | {
@@ -117,6 +120,15 @@ export async function enterOwnOrderHeadquarters() {
       "Your Order Headquarters is currently unavailable.",
     );
   }
+
+  await rememberOrderHeadquartersReturnRoom({
+    characterId:
+      character.id,
+    destinationRoomId:
+      headquarters.room_id,
+    currentRoomId:
+      character.current_room_id,
+  });
 
   const {
   error: moveError,

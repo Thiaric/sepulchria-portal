@@ -25,6 +25,9 @@ import {
 import {
   getPrivateLocationAccess,
 } from "@/lib/private-locations/access";
+import {
+  rememberOrderHeadquartersReturnRoom,
+} from "@/lib/order-headquarters/return-room";
 import type {
   ActionState,
   CharacterAttributeKey,
@@ -625,6 +628,15 @@ export async function enterRoomFromMap(
       "This location is not available.",
     );
   }
+
+  await rememberOrderHeadquartersReturnRoom({
+    characterId:
+      character.id,
+    destinationRoomId:
+      roomId,
+    currentRoomId:
+      character.current_room_id,
+  });
 
   const { error: moveError } = await supabase
     .from("characters")
