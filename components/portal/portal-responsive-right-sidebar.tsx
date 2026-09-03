@@ -134,6 +134,9 @@ const suppressClick =
   const isAdminCommunicationLogsPath =
     pathname === "/admin/communication-logs";
 
+  const isAdminExpertisePath =
+    pathname === "/admin/expertise";
+
   const marketShopMatch =
     pathname.match(/^\/market\/([^/]+)$/);
 
@@ -614,6 +617,11 @@ const nextTop =
               ) : isAdminCommunicationLogsPath ? (
                 <AdminCommunicationLogsContext
                   key={`communication-logs-${adminRevision}`}
+                />
+              ) : isAdminExpertisePath ? (
+                <AdminRecordSearchContext
+                  key={`expertise-${adminRevision}`}
+                  mode="expertise"
                 />
               ) : isMarketPath ? (
                 <MarketShopsContext />

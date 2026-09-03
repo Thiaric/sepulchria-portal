@@ -10,7 +10,8 @@ type Mode =
   | "orders"
   | "users"
   | "events"
-  | "tidings";
+  | "tidings"
+  | "expertise";
 
 type Entry = {
   id: string;
@@ -236,6 +237,38 @@ export function AdminRecordSearchContext({ mode }: { mode: Mode }) {
           });
         }
 
+
+        if (mode === "expertise") {
+          const { data, error } = await supabase.rpc(
+            "staff_expertise_overview",
+          );
+
+          if (error) throw error;
+
+          next = (
+            (data ?? []) as Array<{
+              character_id: string;
+              display_name: string;
+              expertise: number | string;
+            }>
+          )
+            .map((row) => {
+              const expertise = Number(row.expertise);
+
+              return {
+                id: String(row.character_id),
+                label: String(row.display_name),
+                secondary:
+                  `${Number.isFinite(expertise) ? expertise.toFixed(1) : "0.0"} Expertise`,
+                searchText:
+                  `${String(row.display_name)} ${String(row.character_id)} ${String(row.expertise)}`,
+              };
+            })
+            .sort((a, b) =>
+              a.label.localeCompare(b.label),
+            );
+        }
+
         if (!cancelled) {
           setEntries(next);
           setError(null);
@@ -366,6 +399,13 @@ export function AdminRecordSearchContext({ mode }: { mode: Mode }) {
           ?.closest<HTMLElement>("article, details, section") ?? null;
     }
 
+
+    if (mode === "expertise") {
+      target = document.getElementById(
+        `expertise-character-${entry.id}`,
+      );
+    }
+
     if (target instanceof HTMLDetailsElement) {
       target.open = true;
     }
@@ -405,7 +445,9 @@ export function AdminRecordSearchContext({ mode }: { mode: Mode }) {
   const title =
     mode === "locations"
       ? "Locations"
-      : mode.charAt(0).toUpperCase() + mode.slice(1);
+      : mode === "expertise"
+        ? "Character"
+        : mode.charAt(0).toUpperCase() + mode.slice(1);
 
   return (
     <div className="flex h-full min-h-0 flex-col">
@@ -414,10 +456,12 @@ export function AdminRecordSearchContext({ mode }: { mode: Mode }) {
       </p>
       <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">Jump to {title}</h2>
       <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
-        Search the catalogue and jump directly to the record you want to edit.
+        {mode === "expertise"
+          ? "Search characters live and jump directly to their Expertise row."
+          : "Search the catalogue and jump directly to the record you want to edit."}
       </p>
 
-      {mode !== "users" ? (
+      {mode !== "users" && mode !== "expertise" ? (
         <button
           type="button"
           onClick={jumpToCreate}

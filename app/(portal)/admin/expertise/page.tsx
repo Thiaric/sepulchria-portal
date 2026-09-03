@@ -53,7 +53,7 @@ export default async function ExpertiseAdminPage() {
                   const seconds = Number(row.online_seconds_progress);
                   const chars = Number(row.action_characters_progress);
                   return (
-                    <tr key={row.character_id} className="border-b border-[rgb(var(--sep-colour-60482e))]/25 align-top">
+                    <tr id={`expertise-character-${row.character_id}`} key={row.character_id} className="scroll-mt-6 border-b border-[rgb(var(--sep-colour-60482e))]/25 align-top">
                       <td className="px-4 py-4 font-serif text-[rgb(var(--sep-colour-dcc49b))]">{row.display_name}</td>
                       <td className="px-4 py-4 text-[rgb(var(--sep-colour-ead3a6))]">{Number(row.expertise).toFixed(1)}</td>
                       <td className="px-4 py-4 text-xs text-[rgb(var(--sep-colour-a99b89))]">

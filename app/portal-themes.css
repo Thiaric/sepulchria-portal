@@ -40889,7 +40889,7 @@ body[data-portal-skin] {
 
 /* Legacy explicit text classes default to C2, excluding chat semantics. */
 body[data-portal-skin]
-[class*="sep-colour-"]:not(
+:where([class*="sep-colour-"]):not(
   [data-room-message-segment]
 ):not(
   [data-room-mechanical-action]
@@ -40898,7 +40898,7 @@ body[data-portal-skin]
 }
 
 body[data-portal-skin]
-[class*="text-[#"]:not(
+:where([class*="text-[#"]):not(
   [data-room-message-segment]
 ):not(
   [data-room-mechanical-action]
@@ -40907,7 +40907,7 @@ body[data-portal-skin]
 }
 
 body[data-portal-skin]
-:is([class~="text-white"], [class~="text-black"]):not(
+:where([class~="text-white"], [class~="text-black"]):not(
   [data-room-message-segment]
 ) {
   color: rgb(var(--sep-global-c2)) !important;
@@ -41189,111 +41189,6 @@ button[aria-expanded]:hover *:not(img) {
   color: rgb(var(--sep-global-c2)) !important;
 }
 
-/* SEPULCHRIA FINAL FOUR UI LEAKS - a9968f0 */
-
-/* 1. PLACEHOLDERS */
-
-body[data-portal-skin]
-:is(
-  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
-  textarea
-)::placeholder {
-  color: rgb(var(--sep-global-c2)) !important;
-  -webkit-text-fill-color: rgb(var(--sep-global-c2)) !important;
-  opacity: 1 !important;
-}
-
-body[data-portal-skin]
-[contenteditable="true"][data-placeholder]:empty::before,
-[data-portal-skin]
-[contenteditable="true"][data-placeholder]:empty::before {
-  color: rgb(var(--sep-global-c2)) !important;
-  -webkit-text-fill-color: rgb(var(--sep-global-c2)) !important;
-  opacity: 1 !important;
-}
-
-
-/* 2. ENTIRE LEFT NAVIGATION, INCLUDING FORUM AND + / - */
-
-body[data-portal-skin]
-[data-portal-navigation]
-:is(a[href], button) {
-  color:
-    rgb(
-      var(
-        --sep-skin-nav-link,
-        var(--sep-global-c2)
-      )
-    ) !important;
-}
-
-body[data-portal-skin]
-[data-portal-navigation]
-:is(a[href], button)
-*:not(img) {
-  color: inherit !important;
-}
-
-body[data-portal-skin]
-[data-portal-navigation]
-:is(a[href], button):hover,
-body[data-portal-skin]
-[data-portal-navigation]
-:is(a[href], button):hover
-*:not(img) {
-  color:
-    rgb(
-      var(
-        --sep-skin-nav-link,
-        var(--sep-global-c2)
-      )
-    ) !important;
-}
-
-
-/* 3. ADMIN COG IN HEADER */
-
-body[data-portal-skin]
-[data-portal-header]
-a[aria-label="Open administration panel"],
-body[data-portal-skin]
-[data-portal-header]
-a[aria-label="Open administration panel"] * {
-  color: rgb(var(--sep-global-c2)) !important;
-  stroke: currentColor !important;
-}
-
-body[data-portal-skin]
-[data-portal-header]
-a[aria-label="Open administration panel"]:hover,
-body[data-portal-skin]
-[data-portal-header]
-a[aria-label="Open administration panel"]:hover * {
-  color: rgb(var(--sep-global-c2)) !important;
-  stroke: currentColor !important;
-}
-
-
-/* 4. LEFT / RIGHT COLLAPSE ARROWS */
-
-body[data-portal-skin]
-:is(
-  .portal-left-collapse-toggle,
-  .portal-right-collapse-toggle
-) {
-  color: rgb(var(--sep-global-c1)) !important;
-  border-color: rgb(var(--sep-global-c1) / .65) !important;
-}
-
-body[data-portal-skin]
-:is(
-  .portal-left-collapse-toggle,
-  .portal-right-collapse-toggle
-):hover {
-  color: rgb(var(--sep-global-c2)) !important;
-  border-color: rgb(var(--sep-global-c2) / .78) !important;
-}
-
 /* SEPULCHRIA LEFT NAV ONE TEXT COLOUR - a9968f0 */
 
 body[data-portal-skin]
@@ -41374,3 +41269,41 @@ body[data-portal-skin] [data-sep-counter-badge="true"] * {
   color: #ffe1ac !important;
   -webkit-text-fill-color: #ffe1ac !important;
 }
+
+/* SEPULCHRIA CASE-SPECIFIC HEADER + TIDINGS ROLES - 1d7e9b1 */
+
+/* Admin cog: normal header utility colour = C2; hover = C1. */
+body[data-portal-skin]
+[data-skin-role="header-secondary-control"],
+body[data-portal-skin]
+[data-skin-role="header-secondary-control"] > svg {
+  color: rgb(var(--sep-global-c2)) !important;
+  stroke: rgb(var(--sep-global-c2)) !important;
+  -webkit-text-fill-color: rgb(var(--sep-global-c2)) !important;
+}
+
+body[data-portal-skin]
+[data-skin-role="header-secondary-control"]:hover,
+body[data-portal-skin]
+[data-skin-role="header-secondary-control"]:hover > svg {
+  color: rgb(var(--sep-global-c1)) !important;
+  stroke: rgb(var(--sep-global-c1)) !important;
+  -webkit-text-fill-color: rgb(var(--sep-global-c1)) !important;
+}
+
+/* Tidings title and description keep distinct semantic skin roles. */
+body[data-portal-skin]
+footer[aria-label="Tidings"]
+[data-tidings-role="title"] {
+  color: rgb(var(--sep-global-c1)) !important;
+  -webkit-text-fill-color: rgb(var(--sep-global-c1)) !important;
+}
+
+body[data-portal-skin]
+footer[aria-label="Tidings"]
+[data-tidings-role="description"] {
+  color: rgb(var(--sep-global-c2)) !important;
+  -webkit-text-fill-color: rgb(var(--sep-global-c2)) !important;
+}
+
+/* END SEPULCHRIA CASE-SPECIFIC HEADER + TIDINGS ROLES - 1d7e9b1 */

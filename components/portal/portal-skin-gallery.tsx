@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import type { CSSProperties } from "react";
 import { selectPortalSkin } from "@/app/(portal)/appearance/actions";
 import { usePortalSkin } from "@/components/portal/portal-skin-provider";
 
@@ -96,6 +97,42 @@ function getSkinSwatch(slug: string) {
       accent: "#b68b4f",
     }
   );
+}
+
+type SkinPreviewCss = CSSProperties & {
+  "--sep-skin-c1"?: string;
+  "--sep-skin-c2"?: string;
+  "--sep-global-c1"?: string;
+  "--sep-global-c2"?: string;
+};
+
+function getLegacyPreviewVariables(
+  slug: string,
+): SkinPreviewCss | undefined {
+  if (
+    slug !== "sepulchria" &&
+    slug !== "moonlit"
+  ) {
+    return undefined;
+  }
+
+  return {
+    "--sep-skin-c1": "169 138 96",
+    "--sep-skin-c2": "211 194 170",
+    "--sep-global-c1": "169 138 96",
+    "--sep-global-c2": "211 194 170",
+  };
+}
+
+function threeColourSwatch(
+  background: string,
+): string {
+  return `conic-gradient(
+    from -90deg,
+    ${background} 0deg 120deg,
+    rgb(var(--sep-skin-c1, var(--sep-colour-a98a60))) 120deg 240deg,
+    rgb(var(--sep-skin-c2, var(--sep-colour-d3c2aa))) 240deg 360deg
+  )`;
 }
 
 function priceLabel(
@@ -215,14 +252,21 @@ export function PortalSkinGallery({
         </div>
 
         <div
-          className="h-11 w-11 shrink-0 rounded-full border border-[rgb(var(--sep-colour-60482e))]/60 shadow-[0_0_0_2px_rgb(var(--sep-colour-0d0a08))]"
+          data-portal-skin={selectedSkin}
+          className="portal-skin-scope h-11 w-11 shrink-0 rounded-full border border-[rgb(var(--sep-colour-60482e))]/60 shadow-[0_0_0_2px_rgb(var(--sep-colour-0d0a08))]"
           style={{
-            background: `linear-gradient(90deg, ${selectedSkinSwatch.background} 0 50%, ${selectedSkinSwatch.accent} 50% 100%)`,
+            ...getLegacyPreviewVariables(
+              selectedSkin,
+            ),
+            background:
+              threeColourSwatch(
+                selectedSkinSwatch.background,
+              ),
           }}
           title={`${
             selectedSkinEntry?.name ??
             selectedSkin
-          }: main colours`}
+          }: background, C1 and C2 colours`}
           aria-label={`${
             selectedSkinEntry?.name ??
             selectedSkin
@@ -273,6 +317,11 @@ export function PortalSkinGallery({
                   entry.slug
                 }
                 className="portal-skin-scope portal-skin-preview-card"
+                style={
+                  getLegacyPreviewVariables(
+                    entry.slug,
+                  )
+                }
               >
                 <article className="portal-skin-preview-surface flex h-full min-h-[200px] flex-col overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] text-[rgb(var(--sep-colour-cbbba3))]">
                   <div className="flex h-full flex-col p-5">
@@ -351,9 +400,12 @@ export function PortalSkinGallery({
                       <div
                         className="h-10 w-10 shrink-0 rounded-full border border-[rgb(var(--sep-colour-60482e))]/60 shadow-[0_0_0_2px_rgb(var(--sep-colour-0d0a08))]"
                         style={{
-                          background: `linear-gradient(90deg, ${swatch.background} 0 50%, ${swatch.accent} 50% 100%)`,
+                          background:
+                            threeColourSwatch(
+                              swatch.background,
+                            ),
                         }}
-                        title={`${entry.name}: background and accent colours`}
+                        title={`${entry.name}: background, C1 and C2 colours`}
                         aria-label={`${entry.name} colour swatch`}
                       />
 

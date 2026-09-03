@@ -333,11 +333,16 @@ function TickerSegment({
                   : "text-[rgb(var(--sep-colour-c9b391))]"
             }
           >
-            <strong className="font-serif font-normal text-[rgb(var(--sep-colour-ead1a7))]">
+            <strong
+              data-tidings-role="title"
+              className="font-serif font-normal text-[rgb(var(--sep-colour-ead1a7))]"
+            >
               {entry.title}
             </strong>
             <span className="mx-2 text-[rgb(var(--sep-colour-80684b))]">—</span>
-            {entry.message}
+            <span data-tidings-role="description">
+              {entry.message}
+            </span>
           </span>
         </span>
       ))}

@@ -3408,8 +3408,7 @@ function PublicPageModal({
                 }
 
                 [data-portal-header],
-                .portal-left-shell,
-                footer[aria-label="Tidings"] {
+                .portal-left-shell {
                   display: none !important;
                 }
 
