@@ -15,6 +15,8 @@ import {
 } from "next/navigation";
 
 import { enterRoomFromMap } from "@/app/(portal)/game/actions";
+import { enterOwnOrderHeadquarters } from "@/app/(portal)/orders/headquarters/shortcut-actions";
+import { useOrderHeadquartersRoomId } from "@/components/portal/use-order-headquarters-room";
 import { ForumSidebarMenu } from "@/components/portal/forum-sidebar-menu";
 import {
   openPortalModal,
@@ -165,6 +167,8 @@ export function MobilePortalNavigation({
 }: MobilePortalNavigationProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const orderHeadquartersRoomId =
+    useOrderHeadquartersRoomId();
   const notificationCounts =
     usePortalNotificationCounts();
 
@@ -969,7 +973,13 @@ const moreDragging =
         aria-label="Mobile portal navigation"
         className="fixed inset-x-0 bottom-0 z-[85] border-t border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0b0a))]/[0.97] px-2 pb-[max(0.45rem,env(safe-area-inset-bottom))] pt-1.5 shadow-[0_-10px_32px_rgba(var(--sep-rgb-0-0-0),0.42)] backdrop-blur lg:hidden"
       >
-        <div className="mx-auto grid max-w-md grid-cols-5 gap-1">
+        <div
+          className={`mx-auto grid max-w-md gap-1 ${
+            orderHeadquartersRoomId
+              ? "grid-cols-6"
+              : "grid-cols-5"
+          }`}
+        >
           <Link
             href="/"
             className={[
@@ -1003,6 +1013,27 @@ const moreDragging =
             />
             <span className="uppercase tracking-[0.14em]">ENTER</span>
           </Link>
+
+          {orderHeadquartersRoomId ? (
+            <form
+              action={enterOwnOrderHeadquarters}
+              className="min-w-0"
+            >
+              <button
+                type="submit"
+                title="Enter your Order Headquarters."
+                className="flex min-h-[50px] w-full flex-col items-center justify-center gap-1 px-1 text-[9px] text-[rgb(var(--sep-colour-8f806d))]"
+              >
+                <MobileIcon
+                  src="/icons/orders.png"
+                  size={20}
+                />
+                <span className="uppercase tracking-[0.14em]">
+                  HQ
+                </span>
+              </button>
+            </form>
+          ) : null}
 
           <button
             type="button"

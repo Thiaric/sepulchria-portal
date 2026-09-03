@@ -639,6 +639,7 @@ export async function removeOrderMember(
       .select(`
   id,
   character_id,
+  return_room_id,
   role:order_jobs!order_memberships_order_job_id_fkey(
     vigour_modifier
   ),
@@ -675,12 +676,95 @@ const oldVigourModifier =
     ?.vigour_modifier ?? 0;
 
     const { error } = await supabase
-      .from("order_memberships")
-      .delete()
-      .eq("id", membershipId);
+  .from("order_memberships")
+  .delete()
+  .eq("id", membershipId);
 
-    if (error) {
+if (error) {
   throw new Error(error.message);
+}
+
+const {
+  data: removedHeadquarters,
+  error: headquartersError,
+} = await supabase
+  .from("order_headquarters")
+  .select("room_id")
+  .eq("order_id", orderId)
+  .maybeSingle();
+
+if (headquartersError) {
+  throw new Error(
+    headquartersError.message,
+  );
+}
+
+if (removedHeadquarters?.room_id) {
+  const {
+    data: removedCharacter,
+    error: characterRoomError,
+  } = await supabase
+    .from("characters")
+    .select("current_room_id")
+    .eq(
+      "id",
+      membership.character_id,
+    )
+    .maybeSingle();
+
+  if (characterRoomError) {
+    throw new Error(
+      characterRoomError.message,
+    );
+  }
+
+  if (
+    removedCharacter?.current_room_id ===
+    removedHeadquarters.room_id
+  ) {
+    const fallbackRoomId =
+      membership.return_room_id ?? null;
+
+    const {
+      error: characterUpdateError,
+    } = await supabase
+      .from("characters")
+      .update({
+        current_room_id:
+          fallbackRoomId,
+      })
+      .eq(
+        "id",
+        membership.character_id,
+      );
+
+    if (characterUpdateError) {
+      throw new Error(
+        characterUpdateError.message,
+      );
+    }
+
+    const {
+      error: presenceUpdateError,
+    } = await supabase
+      .from("character_presence")
+      .update({
+        room_id:
+          fallbackRoomId,
+        last_seen_at:
+          new Date().toISOString(),
+      })
+      .eq(
+        "character_id",
+        membership.character_id,
+      );
+
+    if (presenceUpdateError) {
+      throw new Error(
+        presenceUpdateError.message,
+      );
+    }
+  }
 }
 
 await adjustCharacterHealthForOrderModifier({

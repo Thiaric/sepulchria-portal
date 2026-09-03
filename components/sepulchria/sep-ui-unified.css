@@ -2324,4 +2324,12 @@ body.portal-skin-scope
   [data-tidings-static-card="true"][data-sep-interaction-active="true"] {
   transform: none !important;
 }
+
+/* Rich text emphasis should remain clearly visible on every skin */
+body[data-portal-skin]
+  .sep-rich-text
+  :is(strong, b) {
+  color: rgb(var(--sep-skin-c1)) !important;
+  font-weight: 700 !important;
+}
 /* END SEPULCHRIA APPEARANCE PREVIEW DIVIDER ISOLATION */

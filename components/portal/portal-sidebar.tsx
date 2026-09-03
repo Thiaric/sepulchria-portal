@@ -26,6 +26,8 @@ import {
   usePollUnreadCount,
 } from "@/components/polls/poll-unread-badge";
 import { enterRoomFromMap } from "@/app/(portal)/game/actions";
+import { enterOwnOrderHeadquarters } from "@/app/(portal)/orders/headquarters/shortcut-actions";
+import { useOrderHeadquartersRoomId } from "@/components/portal/use-order-headquarters-room";
 
 type PortalSidebarProps = {
   unreadMessageCount: number;
@@ -370,6 +372,9 @@ export function PortalSidebar({
 }: PortalSidebarProps) {
   const pathname = usePathname();
 
+  const orderHeadquartersRoomId =
+    useOrderHeadquartersRoomId();
+
   const searchParams =
     useSearchParams();
 
@@ -544,6 +549,21 @@ export function PortalSidebar({
     servicesExpanded,
     setServicesExpanded,
   ] = useState(true);
+
+  useEffect(() => {
+  const stored =
+    window.localStorage.getItem(
+      "sepulchria-sidebar-services",
+    );
+
+  if (stored === "collapsed") {
+    setServicesExpanded(false);
+  }
+
+  if (stored === "expanded") {
+    setServicesExpanded(true);
+  }
+}, []);
 
   const [
     economyCraftingExpanded,
@@ -2441,15 +2461,50 @@ export function PortalSidebar({
         <div className="hidden p-[var(--portal-column-pad)] lg:block">
           <nav aria-label="Main navigation">
             <NavigationGroup
-              title="Explore Sepulchria"
-              items={mainNavigationItems.map(
-                renderNavigationItem,
-              )}
+  title="Explore Sepulchria"
+  storageKey="sepulchria-sidebar-explore"
+  items={[
+                ...mainNavigationItems
+                  .slice(0, 2)
+                  .map(renderNavigationItem),
+
+                orderHeadquartersRoomId ? (
+                  <form
+                    key="order-headquarters"
+                    action={enterOwnOrderHeadquarters}
+                    className="min-w-0"
+                  >
+                    <button
+                      type="submit"
+                      title="Enter your Order Headquarters."
+                      className="flex min-h-[var(--portal-nav-min-h)] w-full items-center gap-2 border border-transparent px-2.5 py-[var(--portal-nav-y)] text-left text-[11px] text-[rgb(var(--sep-colour-b6a894))] transition hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))] hover:text-[rgb(var(--sep-colour-e8d8ba))] lg:text-xs"
+                    >
+                      <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center">
+                        <img
+                          src="/icons/headquarters.png"
+                          alt=""
+                          aria-hidden="true"
+                          className="h-full w-full object-contain"
+                        />
+                      </span>
+
+                      <span className="truncate">
+                        Order Headquarters
+                      </span>
+                    </button>
+                  </form>
+                ) : null,
+
+                ...mainNavigationItems
+                  .slice(2)
+                  .map(renderNavigationItem),
+              ]}
             />
 
             <NavigationGroup
-              title="Lore & World-Building"
-              items={[
+  title="Lore & World-Building"
+  storageKey="sepulchria-sidebar-lore"
+  items={[
                 renderNavigationItem(
                   codexItem,
                 ),
@@ -2466,11 +2521,21 @@ export function PortalSidebar({
               <button
                 type="button"
                 onClick={() =>
-                  setServicesExpanded(
-                    (current) =>
-                      !current,
-                  )
-                }
+  setServicesExpanded(
+    (current) => {
+      const next = !current;
+
+      window.localStorage.setItem(
+        "sepulchria-sidebar-services",
+        next
+          ? "expanded"
+          : "collapsed",
+      );
+
+      return next;
+    },
+  )
+}
                 aria-expanded={
                   servicesExpanded
                 }
@@ -3871,30 +3936,64 @@ function PublicPageModal({
 function NavigationGroup({
   title,
   items,
+  storageKey,
 }: {
   title: string;
   items: React.ReactNode[];
+  storageKey?: string;
 }) {
   const [
     expanded,
     setExpanded,
   ] = useState(true);
 
+  useEffect(() => {
+    if (!storageKey) {
+      return;
+    }
+
+    const stored =
+      window.localStorage.getItem(
+        storageKey,
+      );
+
+    if (stored === "collapsed") {
+      setExpanded(false);
+    }
+
+    if (stored === "expanded") {
+      setExpanded(true);
+    }
+  }, [storageKey]);
+
+  function toggleExpanded() {
+    setExpanded((current) => {
+      const next = !current;
+
+      if (storageKey) {
+        window.localStorage.setItem(
+          storageKey,
+          next
+            ? "expanded"
+            : "collapsed",
+        );
+      }
+
+      return next;
+    });
+  }
+
   return (
     <section className="mb-[var(--portal-group-gap)] border-b border-[rgb(var(--sep-colour-6e5535))]/20 pb-[var(--portal-group-gap)]">
       <button
         type="button"
-        onClick={() =>
-          setExpanded(
-            (current) =>
-              !current,
-          )
-        }
+        onClick={toggleExpanded}
         aria-expanded={expanded}
         data-left-sidebar-section-heading="true"
         className="mb-1 flex w-full items-center justify-between text-left text-[8px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-766754))] transition hover:text-[rgb(var(--sep-colour-b4a07f))]"
       >
         <span>{title}</span>
+
         <span
           aria-hidden="true"
           className="ml-3 text-[12px] leading-none"
@@ -3908,7 +4007,6 @@ function NavigationGroup({
       {expanded ? (
         <div className="grid grid-cols-1 gap-0">
           {items}
-          
         </div>
       ) : null}
     </section>
