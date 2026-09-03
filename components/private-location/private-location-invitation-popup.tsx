@@ -7,7 +7,10 @@ import {
   useState,
   useTransition,
 } from "react";
-import { useRouter } from "next/navigation";
+import {
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 
 import {
   respondPrivateLocationInvitation,
@@ -34,6 +37,7 @@ export function PrivateLocationInvitationPopup({
   characterId: string | null;
 }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const supabase =
     useMemo(
       () => createClient(),
@@ -54,6 +58,56 @@ export function PrivateLocationInvitationPopup({
       async () => {
         if (!characterId) {
           setInvite(null);
+          return;
+        }
+
+        const requestedPrivateId = searchParams.get("privateInvite");
+        const requestedBreezeId = searchParams.get("breezeInvite");
+
+        if (requestedPrivateId || requestedBreezeId) {
+          const requestedKind = requestedPrivateId ? ("private" as const) : ("breeze" as const);
+          const requestedId = requestedPrivateId ?? requestedBreezeId!;
+          const requestedResult = requestedKind === "private"
+            ? await supabase
+                .from("private_location_invitations")
+                .select("id, room_id, inviter_character_id, created_at")
+                .eq("id", requestedId)
+                .eq("recipient_character_id", characterId)
+                .eq("status", "pending")
+                .maybeSingle()
+            : await supabase
+                .from("breeze_lodging_invitations")
+                .select("id, room_id, inviter_character_id, created_at")
+                .eq("id", requestedId)
+                .eq("recipient_character_id", characterId)
+                .eq("status", "pending")
+                .maybeSingle();
+
+          const requested = requestedResult.data;
+          if (!requested) {
+            setInvite(null);
+            return;
+          }
+
+          const [roomResult, inviterResult] = await Promise.all([
+            supabase.from("rooms").select("name").eq("id", requested.room_id).maybeSingle(),
+            supabase
+              .from("characters")
+              .select("display_name, first_name, surname")
+              .eq("id", requested.inviter_character_id)
+              .maybeSingle(),
+          ]);
+
+          const inviter = inviterResult.data;
+          setInvite({
+            id: requested.id,
+            roomName: roomResult.data?.name ?? (requestedKind === "breeze" ? "The Breeze Lodgings" : "a Private Location"),
+            inviterName:
+              inviter?.display_name?.trim() ||
+              `${inviter?.first_name ?? ""} ${inviter?.surname ?? ""}`.trim() ||
+              "A character",
+            kind: requestedKind,
+          });
           return;
         }
 
@@ -197,6 +251,7 @@ export function PrivateLocationInvitationPopup({
       },
       [
         characterId,
+        searchParams,
         supabase,
       ],
     );

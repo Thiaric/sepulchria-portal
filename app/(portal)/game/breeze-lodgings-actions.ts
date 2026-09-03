@@ -5,6 +5,9 @@ import {
   createClient as createAdminClient,
 } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
+import {
+  createTargetedCharacterNotification,
+} from "@/lib/notifications/create-targeted-character-notification";
 
 export async function rentBreezeLodging(roomId: string, days: number) {
   if (!roomId) return { ok: false, message: "Choose a room." };
@@ -379,143 +382,62 @@ export async function inviteBreezeLodgingGuest(
       };
     }
 
-    const {
-      data: presence,
-    } = await admin
-      .from("character_presence")
-      .select("status, last_seen_at")
-      .eq("character_id", guest.id)
-      .maybeSingle();
+    const deliveryMethod = "message";
 
-    const lastSeen =
-      presence?.last_seen_at
-        ? Date.parse(
-            presence.last_seen_at,
-          )
-        : Number.NaN;
-
-    const online =
-      presence?.status === "online" &&
-      Number.isFinite(lastSeen) &&
-      Date.now() - lastSeen <=
-        2 * 60 * 1000;
-
-    const deliveryMethod =
-      online
-        ? "popup"
-        : "message";
-
-    const {
-      data: invitation,
-      error: invitationError,
-    } = await admin
+    const { data: invitation, error: invitationError } = await admin
       .from("breeze_lodging_invitations")
       .insert({
         rental_id: rental.id,
         room_id: roomId,
-        inviter_character_id:
-          characterId,
-        recipient_character_id:
-          guest.id,
-        delivery_method:
-          deliveryMethod,
+        inviter_character_id: characterId,
+        recipient_character_id: guest.id,
+        delivery_method: deliveryMethod,
       })
       .select("id")
       .single();
 
     if (invitationError) {
-      throw new Error(
-        invitationError.message,
-      );
+      throw new Error(invitationError.message);
     }
 
-    if (deliveryMethod === "message") {
-      const {
-        data: conversationId,
-        error: conversationError,
-      } = await authenticated.rpc(
-        "start_direct_conversation",
-        {
-          recipient_character_id:
-            guest.id,
-        },
-      );
+    const { data: room, error: roomError } = await admin
+      .from("rooms")
+      .select("name")
+      .eq("id", roomId)
+      .single();
 
-      if (
-        conversationError ||
-        !conversationId
-      ) {
-        await admin
-          .from(
-            "breeze_lodging_invitations",
-          )
-          .delete()
-          .eq("id", invitation.id);
+    if (roomError) {
+      await admin.from("breeze_lodging_invitations").delete().eq("id", invitation.id);
+      throw new Error(roomError.message);
+    }
 
-        throw new Error(
-          conversationError?.message ??
-            "The invitation conversation could not be created.",
-        );
-      }
+    const { data: { user: invitingUser } } = await authenticated.auth.getUser();
+    if (!invitingUser) {
+      await admin.from("breeze_lodging_invitations").delete().eq("id", invitation.id);
+      throw new Error("The invitation sender could not be identified.");
+    }
 
-      const {
-        data: room,
-        error: roomError,
-      } = await admin
-        .from("rooms")
-        .select("name")
-        .eq("id", roomId)
-        .single();
-
-      if (roomError) {
-        throw new Error(roomError.message);
-      }
-
-      const { error: messageError } =
-        await admin
-          .from("direct_messages")
-          .insert({
-            conversation_id:
-              conversationId,
-            sender_character_id:
-              characterId,
-            message_mode: "offgame",
-            body:
-              `<p>You have been invited to <strong>${room.name}</strong> at The Breeze Lodgings. Accept or refuse the invitation below.</p>` +
-              `<!--BREEZE_LODGING_INVITE:${invitation.id}-->`,
-            client_nonce:
-              crypto.randomUUID(),
-          });
-
-      if (messageError) {
-        await admin
-          .from(
-            "breeze_lodging_invitations",
-          )
-          .delete()
-          .eq("id", invitation.id);
-
-        throw new Error(
-          messageError.message,
-        );
-      }
-
-      await admin
-        .from("direct_conversations")
-        .update({
-          updated_at:
-            new Date().toISOString(),
-        })
-        .eq("id", conversationId);
+    try {
+      await createTargetedCharacterNotification({
+        recipientCharacterId: guest.id,
+        title: "Breeze Lodgings invitation",
+        body: `You have been invited to ${room.name} at The Breeze Lodgings. Open the invitation to accept or refuse.`,
+        href: `/game?breezeInvite=${encodeURIComponent(invitation.id)}`,
+        sourceType: "breeze_lodging_invite",
+        sourceId: invitation.id,
+        sourceTrigger: "invited",
+        createdByUserId: invitingUser.id,
+      });
+    } catch (error) {
+      await admin.from("breeze_lodging_invitations").delete().eq("id", invitation.id);
+      throw new Error(`The invitation could not be notified: ${error instanceof Error ? error.message : "Unknown error"}`);
     }
 
     revalidatePath("/game");
-    revalidatePath("/messages");
 
     return {
       ok: true,
-      message:
-        `${guest.display_name} has been invited and must accept before entering.`,
+      message: `${guest.display_name} has been invited and must accept before entering.`,
     };
   } catch (error) {
     return {

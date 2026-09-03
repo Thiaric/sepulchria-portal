@@ -21,6 +21,9 @@ import {
 import {
   consumeSecurityRateLimit,
 } from "@/lib/security/rate-limit";
+import {
+  createTargetedCharacterNotification,
+} from "@/lib/notifications/create-targeted-character-notification";
 
 function adminClient() {
   const url =
@@ -650,138 +653,57 @@ export async function invitePrivateLocation(
     );
   }
 
-  const {
-    data: presence,
-  } = await admin
-    .from("character_presence")
-    .select("status, last_seen_at")
-    .eq(
-      "character_id",
-      recipientId,
-    )
-    .maybeSingle();
+  const deliveryMethod = "message";
 
-  const lastSeen =
-    presence?.last_seen_at
-      ? Date.parse(
-          presence.last_seen_at,
-        )
-      : Number.NaN;
-
-  const online =
-    presence?.status === "online" &&
-    Number.isFinite(lastSeen) &&
-    Date.now() - lastSeen <=
-      2 * 60 * 1000;
-
-  const deliveryMethod =
-    online
-      ? "popup"
-      : "message";
-
-  const {
-    data: invitation,
-    error: invitationError,
-  } = await admin
+  const { data: invitation, error: invitationError } = await admin
     .from("private_location_invitations")
     .insert({
       room_id: roomId,
-      inviter_character_id:
-        owner.id,
-      recipient_character_id:
-        recipientId,
-      delivery_method:
-        deliveryMethod,
+      inviter_character_id: owner.id,
+      recipient_character_id: recipientId,
+      delivery_method: deliveryMethod,
     })
     .select("id")
     .single();
 
   if (invitationError) {
-    throw new Error(
-      invitationError.message,
-    );
+    throw new Error(invitationError.message);
   }
 
-  if (deliveryMethod === "message") {
-    const {
-      data: conversationId,
-      error: conversationError,
-    } = await authenticated.rpc(
-      "start_direct_conversation",
-      {
-        recipient_character_id:
-          recipientId,
-      },
-    );
+  const { data: room, error: roomError } = await admin
+    .from("rooms")
+    .select("name")
+    .eq("id", roomId)
+    .single();
 
-    if (
-      conversationError ||
-      !conversationId
-    ) {
-      await admin
-        .from("private_location_invitations")
-        .delete()
-        .eq("id", invitation.id);
+  if (roomError) {
+    await admin.from("private_location_invitations").delete().eq("id", invitation.id);
+    throw new Error(roomError.message);
+  }
 
-      throw new Error(
-        conversationError?.message ??
-          "The invitation conversation could not be created.",
-      );
-    }
+  const { data: { user: invitingUser } } = await authenticated.auth.getUser();
+  if (!invitingUser) {
+    await admin.from("private_location_invitations").delete().eq("id", invitation.id);
+    throw new Error("The invitation sender could not be identified.");
+  }
 
-    const {
-      data: room,
-      error: roomError,
-    } = await admin
-      .from("rooms")
-      .select("name")
-      .eq("id", roomId)
-      .single();
-
-    if (roomError) {
-      throw new Error(roomError.message);
-    }
-
-    const {
-      error: messageError,
-    } = await admin
-      .from("direct_messages")
-      .insert({
-        conversation_id:
-          conversationId,
-        sender_character_id:
-          owner.id,
-        message_mode:
-          "offgame",
-        body:
-          `<p>You have been invited to <strong>${room.name}</strong>.</p>` +
-          `<!--PRIVATE_LOCATION_INVITE:${invitation.id}-->`,
-        client_nonce:
-          crypto.randomUUID(),
-      });
-
-    if (messageError) {
-      await admin
-        .from("private_location_invitations")
-        .delete()
-        .eq("id", invitation.id);
-
-      throw new Error(
-        messageError.message,
-      );
-    }
-
-    await admin
-      .from("direct_conversations")
-      .update({
-        updated_at:
-          new Date().toISOString(),
-      })
-      .eq("id", conversationId);
+  try {
+    await createTargetedCharacterNotification({
+      recipientCharacterId: recipientId,
+      title: "Private Location invitation",
+      body: `${displayName(owner)} has invited you to ${room.name}. Open the invitation to accept or refuse.`,
+      href: `/game?privateInvite=${encodeURIComponent(invitation.id)}`,
+      sourceType: "private_location_invite",
+      sourceId: invitation.id,
+      sourceTrigger: "invited",
+      createdByUserId: invitingUser.id,
+    });
+  } catch (error) {
+    await admin.from("private_location_invitations").delete().eq("id", invitation.id);
+    throw new Error(`The invitation could not be notified: ${error instanceof Error ? error.message : "Unknown error"}`);
   }
 
   revalidatePath("/private-locations");
-  revalidatePath("/messages");
 }
 
 export async function cancelPrivateLocationInvitation(

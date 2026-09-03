@@ -4,6 +4,9 @@ import {
   createClient as createAdminClient,
   type SupabaseClient,
 } from "@supabase/supabase-js";
+import {
+  createTargetedCharacterNotification,
+} from "@/lib/notifications/create-targeted-character-notification";
 
 const FORUM_SYSTEM_CHARACTER_ID =
   "00000000-0000-4000-8000-00000000f001";
@@ -504,32 +507,36 @@ export async function notifyForumReplyAudience({
     }
   }
 
+  const { data: { user: actorUser } } = await supabase.auth.getUser();
+
+  if (!actorUser) {
+    console.error("Unable to create Forum reply bell notifications: authenticated user not found.");
+    return;
+  }
+
   await Promise.all(
-    [...recipients].map(
-      (recipientCharacterId) =>
-        isAnonymous
-          ? sendAnonymousForumNotification({
-              recipientCharacterId,
-              heading:
-                "New anonymous reply to a forum topic",
-              message:
-                `A new anonymous reply has been posted to “${topicTitle}”.`,
-              href,
-              linkLabel:
-                "Open reply",
-            })
-          : sendForumNotification({
-              supabase,
-              actorCharacterId,
-              recipientCharacterId,
-              heading:
-                "New reply to a forum topic",
-              message:
-                `A new reply has been posted to “${topicTitle}”.`,
-              href,
-              linkLabel:
-                "Open reply",
-            }),
-    ),
+    [...recipients].map(async (recipientCharacterId) => {
+      try {
+        await createTargetedCharacterNotification({
+          recipientCharacterId,
+          title: isAnonymous
+            ? "New anonymous reply to a forum topic"
+            : "New reply to a forum topic",
+          body: isAnonymous
+            ? `A new anonymous reply has been posted to “${topicTitle}”.`
+            : `A new reply has been posted to “${topicTitle}”.`,
+          href,
+          sourceType: "forum_reply",
+          sourceId: crypto.randomUUID(),
+          sourceTrigger: "reply_posted",
+          createdByUserId: actorUser.id,
+        });
+      } catch (error) {
+        console.error(
+          "Unable to create Forum reply bell notification:",
+          error instanceof Error ? error.message : error,
+        );
+      }
+    }),
   );
 }
