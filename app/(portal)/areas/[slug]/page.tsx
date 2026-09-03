@@ -165,9 +165,9 @@ export default async function AreaPage({
         )}
 
         <div className="border-t border-[rgb(var(--sep-colour-6a5032))]/35 px-4 py-3 sm:px-5 sm:py-4">
-  <h1 className="mb-2 font-serif text-2xl leading-tight text-[rgb(var(--sep-colour-d9bd82))] sm:text-3xl">
-    {safeArea.name}
-  </h1>
+  <h1 className="mb-2 font-serif text-2xl leading-tight text-[rgb(var(--sep-skin-c2))] sm:text-3xl">
+  {safeArea.name}
+</h1>
 
   {safeArea.description ? (
     <RichTextContentClient
@@ -232,9 +232,9 @@ export default async function AreaPage({
                   ) : null}
 
                   <div className="flex min-h-0 flex-col p-3">
-                    <h3 className="font-serif text-base leading-tight text-[rgb(var(--sep-colour-d9bd82))]">
-                      {room.name}
-                    </h3>
+                    <h3 className="font-serif text-base leading-tight text-[rgb(var(--sep-skin-c2))]">
+  {room.name}
+</h3>
 
                     {canSeeDetails &&
                     room.description ? (

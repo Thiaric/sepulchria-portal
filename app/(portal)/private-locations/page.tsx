@@ -1,5 +1,7 @@
 import { redirect } from "next/navigation";
 import { CollapsibleRoomDescription } from "@/components/world/collapsible-room-description";
+import { LocationAtmosphericImage } from "@/components/world/location-atmospheric-image";
+import { LocationImageLightbox } from "@/components/world/location-image-lightbox";
 import {
   InvitationOwnerStateRefresh,
 } from "@/components/invitations/invitation-owner-state-refresh";
@@ -318,21 +320,29 @@ export default async function PrivateLocationPage() {
   key={room.id}
   className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-17110d))]"
 >
-  {room.image_url ? (
-    <div className="h-40 overflow-hidden border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-0d0907))]">
-      <img
-        src={room.image_url}
-        alt=""
-        className="h-full w-full object-cover"
-      />
-    </div>
-  ) : null}
+  
+{room.image_url ? (
+  <div className="relative aspect-[16/7] w-full overflow-hidden border-b border-[rgb(var(--sep-colour-584128))]/45 bg-[rgb(var(--sep-colour-0b0806))]">
+    <LocationAtmosphericImage
+      src={room.image_url}
+      alt={room.name}
+      sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
+      objectFit="cover"
+    />
 
+    <LocationImageLightbox
+      src={room.image_url}
+      name={room.name}
+    />
+
+    <div className="pointer-events-none absolute inset-0 z-[6] bg-gradient-to-t from-[rgb(var(--sep-colour-120e0b))]/65 via-transparent to-transparent" />
+  </div>
+) : null}
   <div className="p-4">
                   <div className="flex items-center justify-between gap-3">
-                    <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-dfc79c))]">
-                      {room.name}
-                    </h2>
+                    <h2 className="font-serif text-xl text-[rgb(var(--sep-skin-c2))]">
+  {room.name}
+</h2>
 
                     <span className="text-[7px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-8e795c))]">
                       Owner · {ownerName}

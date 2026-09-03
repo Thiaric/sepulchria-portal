@@ -473,7 +473,7 @@ export function InteractiveWorldMap({
     return (
       <div
         key={`continent-label-${hotspot.slug}`}
-        className="pointer-events-none absolute z-30 -translate-x-1/2 -translate-y-full whitespace-nowrap border border-[rgb(var(--sep-colour-8f6a3d))] bg-[rgb(var(--sep-colour-17110d))]/95 px-3 py-1.5 font-serif text-xs text-[rgb(var(--sep-colour-e7c991))] shadow-[0_8px_22px_rgba(var(--sep-rgb-0-0-0),0.85)]"
+        className="pointer-events-none absolute z-30 -translate-x-1/2 -translate-y-full whitespace-nowrap border border-[rgb(var(--sep-colour-8f6a3d))] bg-[rgb(var(--sep-colour-17110d))]/95 px-3 py-1.5 font-serif text-xs text-[rgb(var(--sep-skin-c1))] shadow-[0_8px_22px_rgba(var(--sep-rgb-0-0-0),0.85)]"
         style={{
           left: `${
             (
@@ -595,15 +595,17 @@ export function InteractiveWorldMap({
 
               return (
                 <div
-                  key={`label-${hotspot.slug}`}
-                  className="pointer-events-none absolute z-30 -translate-x-1/2 -translate-y-full whitespace-nowrap border border-[rgb(var(--sep-colour-8f6a3d))] bg-[rgb(var(--sep-colour-17110d))]/95 px-3 py-1.5 font-serif text-xs text-[rgb(var(--sep-colour-e7c991))] shadow-[0_8px_22px_rgba(var(--sep-rgb-0-0-0),0.85)]"
-                  style={{
-                    left: `${(hotspot.labelX / 1536) * 100}%`,
-                    top: `${(hotspot.labelY / 1024) * 100}%`,
-                  }}
-                >
-                  {area.name}
-                </div>
+  key={`label-${hotspot.slug}`}
+  className="pointer-events-none absolute z-30 -translate-x-1/2 -translate-y-full whitespace-nowrap border border-[rgb(var(--sep-colour-8f6a3d))] bg-[rgb(var(--sep-colour-17110d))]/95 px-3 py-1.5 font-serif text-xs shadow-[0_8px_22px_rgba(var(--sep-rgb-0-0-0),0.85)]"
+  style={{
+    left: `${(hotspot.labelX / 1536) * 100}%`,
+    top: `${(hotspot.labelY / 1024) * 100}%`,
+  }}
+>
+  <span data-skin-role="primary">
+    {area.name}
+  </span>
+</div>
               );
             })}
 
@@ -613,7 +615,7 @@ hoveredInfoPosition ? (
     className="pointer-events-none absolute z-40 hidden w-[min(42%,26rem)] -translate-x-1/2 -translate-y-1/2 border border-[rgb(var(--sep-colour-8f6a3d))]/80 bg-[rgb(var(--sep-colour-120b09))]/95 px-4 py-3 text-center shadow-[0_12px_34px_rgba(var(--sep-rgb-0-0-0),0.9)] transition-[left,top] duration-200 md:block"
     style={hoveredInfoPosition}
   >
-    <p className="font-serif text-base text-[rgb(var(--sep-colour-f1d7aa))]">
+    <p className="font-serif text-base text-[rgb(var(--sep-skin-c1))]">
       {hoveredDatabaseArea.name}
     </p>
 
@@ -658,7 +660,7 @@ hoveredDatabaseArea ? (
           District
         </p>
 
-        <p className="mt-1 truncate font-serif text-base text-[rgb(var(--sep-colour-f1d7aa))]">
+        <p className="mt-1 truncate font-serif text-base text-[rgb(var(--sep-skin-c1))]">
           {hoveredDatabaseArea.name}
         </p>
       </div>
