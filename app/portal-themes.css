@@ -41330,3 +41330,17 @@ body[data-portal-skin] [data-sep-counter-badge="true"] * {
   -webkit-text-fill-color: #ffe1ac !important;
 }
 /* END SEPULCHRIA CANONICAL COUNTER BADGE — CINDER ORIGINAL */
+
+/* SEPULCHRIA LEFT SIDEBAR SECTION HEADINGS = C1 - a6a25d5 */
+.portal-left-shell [data-left-sidebar-section-heading="true"],
+.portal-left-shell [data-left-sidebar-section-heading="true"]:hover,
+.portal-left-shell [data-left-sidebar-section-heading="true"]:focus-visible {
+  color: rgb(var(--sep-skin-c1, var(--sep-colour-876a46))) !important;
+  -webkit-text-fill-color: rgb(var(--sep-skin-c1, var(--sep-colour-876a46))) !important;
+}
+
+.portal-left-shell [data-left-sidebar-section-heading="true"] > span {
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+}
+/* END SEPULCHRIA LEFT SIDEBAR SECTION HEADINGS = C1 - a6a25d5 */

@@ -33,7 +33,13 @@
   --sep-unified-field-border: rgba(var(--sep-rgb-96-72-46), 0.55);
   --sep-unified-field-bg: rgb(var(--sep-colour-100c09));
   --sep-unified-field-text: rgb(var(--sep-colour-d7c4a5));
-  --sep-unified-field-placeholder: rgb(var(--sep-colour-625747));
+  --sep-unified-field-placeholder:
+    rgb(
+      var(
+        --sep-skin-c1,
+        var(--sep-colour-a98a60)
+      ) / 0.68
+    );
   --sep-unified-field-focus: rgb(var(--sep-colour-a17a49));
 
   --sep-unified-context-border: rgba(var(--sep-rgb-89-67-44), 0.35);
@@ -1932,3 +1938,26 @@ body[data-portal-skin] [data-sep-counter-badge="true"] * {
   -webkit-text-fill-color: #ffe1ac !important;
 }
 /* END SEPULCHRIA CANONICAL COUNTER BADGE — CINDER ORIGINAL */
+
+/* SEPULCHRIA FINAL SEMANTIC PLACEHOLDER COLOUR - a6a25d5 */
+/*
+ * Placeholder text follows the active skin C1 semantic accent.
+ * C1 is softened to 68% so it reads as placeholder text, not entered text.
+ *
+ * Examples:
+ *   Cinder Original -> bronze/brown
+ *   Vellum / Human-style -> burgundy
+ *   Verdant / Reptilian -> green
+ */
+[data-portal-shell]
+:is(input, textarea)::placeholder {
+  color:
+    rgb(
+      var(
+        --sep-skin-c1,
+        var(--sep-colour-a98a60)
+      ) / 0.68
+    ) !important;
+  opacity: 1 !important;
+}
+/* END SEPULCHRIA FINAL SEMANTIC PLACEHOLDER COLOUR - a6a25d5 */

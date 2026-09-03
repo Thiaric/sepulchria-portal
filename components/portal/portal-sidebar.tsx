@@ -1937,6 +1937,7 @@ export function PortalSidebar({
             legalSafetyExpanded
           }
           aria-controls="legal-safety-submenu"
+          data-left-sidebar-section-heading="true"
           className={`flex w-full items-center justify-between py-0.5 text-left text-[9px] uppercase tracking-[0.18em] transition ${
             anyModalOpen
               ? "text-[rgb(var(--sep-colour-d8bf91))]"
@@ -2473,6 +2474,7 @@ export function PortalSidebar({
                 aria-expanded={
                   servicesExpanded
                 }
+                data-left-sidebar-section-heading="true"
                 className="mb-1 flex w-full items-center justify-between text-left text-[8px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-766754))] transition hover:text-[rgb(var(--sep-colour-b4a07f))]"
               >
                 <span>
@@ -2690,7 +2692,10 @@ export function PortalSidebar({
           </nav>
 
           <div className="mt-[var(--portal-group-gap)] border-t border-[rgb(var(--sep-colour-6e5535))]/30 pt-2">
-            <Link href="/support" className="flex items-center py-0.5 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9f8b70))] transition hover:text-[rgb(var(--sep-colour-d8bf91))]">
+            <Link
+              href="/support"
+              data-left-sidebar-section-heading="true"
+              className="flex items-center py-0.5 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9f8b70))] transition hover:text-[rgb(var(--sep-colour-d8bf91))]">
               <span>Support</span><TicketNotificationBadge audience="player" variant="sidebar" />
             </Link>
             <PlayerSanctionsSidebarLink />
@@ -3886,6 +3891,7 @@ function NavigationGroup({
           )
         }
         aria-expanded={expanded}
+        data-left-sidebar-section-heading="true"
         className="mb-1 flex w-full items-center justify-between text-left text-[8px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-766754))] transition hover:text-[rgb(var(--sep-colour-b4a07f))]"
       >
         <span>{title}</span>
