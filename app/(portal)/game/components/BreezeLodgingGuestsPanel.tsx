@@ -1,15 +1,15 @@
 "use client";
 
 import {
-  useEffect,
   useMemo,
   useState,
   useTransition,
 } from "react";
 import { useRouter } from "next/navigation";
+
 import {
-  createClient,
-} from "@/lib/supabase/client";
+  InvitationOwnerStateRefresh,
+} from "@/components/invitations/invitation-owner-state-refresh";
 
 import type {
   BreezeLodgingManageData,
@@ -26,10 +26,6 @@ export function BreezeLodgingGuestsPanel({
   data: BreezeLodgingManageData;
 }) {
   const router = useRouter();
-  const supabase = useMemo(
-    () => createClient(),
-    [],
-  );
   const [query, setQuery] =
     useState("");
   const [pendingId, setPendingId] =
@@ -46,40 +42,6 @@ export function BreezeLodgingGuestsPanel({
 
   const guestLimitReached =
     usedGuestSlots >= data.guestLimit;
-
-  useEffect(() => {
-    const channel =
-      supabase
-        .channel(
-          `breeze-room-owner-invitations-${data.rentalId}`,
-        )
-        .on(
-          "postgres_changes",
-          {
-            event: "*",
-            schema: "public",
-            table:
-              "breeze_lodging_invitations",
-            filter:
-              `rental_id=eq.${data.rentalId}`,
-          },
-          () => {
-            setMessage(null);
-            router.refresh();
-          },
-        )
-        .subscribe();
-
-    return () => {
-      void supabase.removeChannel(
-        channel,
-      );
-    };
-  }, [
-    data.rentalId,
-    router,
-    supabase,
-  ]);
 
   const filteredCandidates =
     useMemo(() => {
@@ -183,6 +145,16 @@ export function BreezeLodgingGuestsPanel({
 
   return (
     <details className="shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-120e0b))]">
+      <InvitationOwnerStateRefresh
+        kind="breeze"
+        scopeId={data.roomId}
+        pendingIds={
+          data.pendingInvitations.map(
+            (invitation) =>
+              invitation.invitation_id,
+          )
+        }
+      />
       <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-2.5">
         <div>
           <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">

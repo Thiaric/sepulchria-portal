@@ -272,16 +272,37 @@ export async function revokeOrderHeadquartersGuest(formData: FormData) {
 
   const { data: invitation, error } = await admin
     .from("order_headquarters_invitations")
-    .select("recipient_character_id")
+    .select("recipient_character_id,status")
     .eq("id", invitationId)
     .maybeSingle();
 
-  if (error || !invitation) throw new Error(error?.message ?? "Invitation not found.");
+  if (error || !invitation) {
+    throw new Error(
+      error?.message ??
+        "Invitation not found.",
+    );
+  }
+
+  if (
+    invitation.status !== "pending" &&
+    invitation.status !== "accepted"
+  ) {
+    revalidatePath("/game");
+    return;
+  }
 
   const { error: revokeError } = await admin
     .from("order_headquarters_invitations")
-    .update({ status: "revoked", responded_at: new Date().toISOString() })
-    .eq("id", invitationId);
+    .update({
+      status: "revoked",
+      responded_at:
+        new Date().toISOString(),
+    })
+    .eq("id", invitationId)
+    .in(
+      "status",
+      ["pending", "accepted"],
+    );
 
   if (revokeError) throw new Error(revokeError.message);
 

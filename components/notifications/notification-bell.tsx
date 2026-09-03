@@ -297,6 +297,8 @@ export function NotificationBell() {
     useState(true);
   const [changingMute, setChangingMute] =
     useState(false);
+  const [markingAllRead, setMarkingAllRead] =
+    useState(false);
   const [search, setSearch] =
     useState("");
 
@@ -343,10 +345,61 @@ export function NotificationBell() {
           ? bundle.notifications
           : [];
 
+      let individuallyReadIds =
+        new Set<string>();
+
+      if (
+        nextRows.length > 0
+      ) {
+        const {
+          data: readRows,
+          error: readError,
+        } = await supabase
+          .from(
+            "notification_reads",
+          )
+          .select(
+            "notification_id",
+          )
+          .in(
+            "notification_id",
+            nextRows.map(
+              (row) => row.id,
+            ),
+          );
+
+        if (readError) {
+          console.warn(
+            "Notification individual read state:",
+            readError.message,
+          );
+        } else {
+          individuallyReadIds =
+            new Set(
+              (readRows ?? []).map(
+                (row) =>
+                  row.notification_id,
+              ),
+            );
+        }
+      }
+
+      const hydratedRows =
+        nextRows.map(
+          (row) => ({
+            ...row,
+            is_unread:
+              row.is_unread &&
+              !individuallyReadIds.has(
+                row.id,
+              ),
+          }),
+        );
+
       const nextUnread =
         bundle.muted === true
           ? 0
-          : nextRows.filter(
+          : hydratedRows.filter(
               (row) =>
                 row.is_unread,
             ).length;
@@ -371,7 +424,7 @@ export function NotificationBell() {
         nextUnread;
 
       setMuted(bundle.muted === true);
-      setRows(nextRows);
+      setRows(hydratedRows);
       setLoading(false);
     },
     [
@@ -417,21 +470,92 @@ export function NotificationBell() {
   }, [load, pathname]);
 
   useEffect(() => {
-    const reload = () => {
-      void load();
-    };
+    const automaticSources =
+      new Set([
+        "item_trade",
+        "private_location_invite",
+        "breeze_lodging_invite",
+        "forum_reply",
+        "order_headquarters_invite",
+      ]);
 
-    const channel = supabase
-      .channel(`automatic-bell-notifications-${crypto.randomUUID()}`)
-      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "notifications", filter: "source_type=eq.item_trade" }, reload)
-      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "notifications", filter: "source_type=eq.private_location_invite" }, reload)
-      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "notifications", filter: "source_type=eq.breeze_lodging_invite" }, reload)
-      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "notifications", filter: "source_type=eq.forum_reply" }, reload)
-      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "notifications", filter: "source_type=eq.order_headquarters_invite" }, reload)
-      .subscribe();
+    let retryTimer:
+      | number
+      | null = null;
+
+    function reloadFromReadySignal() {
+      /*
+       * The targeted-notification helper creates notification_targets
+       * BEFORE it emits its final UPDATE on notifications. Load now,
+       * then once more shortly afterwards as a transaction-visibility
+       * safety net.
+       */
+      void load();
+
+      if (
+        retryTimer !== null
+      ) {
+        window.clearTimeout(
+          retryTimer,
+        );
+      }
+
+      retryTimer =
+        window.setTimeout(
+          () => {
+            void load();
+          },
+          180,
+        );
+    }
+
+    const channel =
+      supabase
+        .channel(
+          `automatic-bell-notifications-${crypto.randomUUID()}`,
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "UPDATE",
+            schema: "public",
+            table:
+              "notifications",
+          },
+          (payload) => {
+            const sourceType =
+              String(
+                (
+                  payload.new as {
+                    source_type?: string;
+                  }
+                )?.source_type ??
+                  "",
+              );
+
+            if (
+              automaticSources.has(
+                sourceType,
+              )
+            ) {
+              reloadFromReadySignal();
+            }
+          },
+        )
+        .subscribe();
 
     return () => {
-      void supabase.removeChannel(channel);
+      if (
+        retryTimer !== null
+      ) {
+        window.clearTimeout(
+          retryTimer,
+        );
+      }
+
+      void supabase.removeChannel(
+        channel,
+      );
     };
   }, [load, supabase]);
 
@@ -564,39 +688,88 @@ export function NotificationBell() {
       );
     }, [rows, search]);
 
-  async function toggle() {
-    const next = !open;
-    setOpen(next);
+  function toggle() {
+    setOpen(
+      (current) => !current,
+    );
+  }
+
+  async function markNotificationRead(
+    notificationId: string,
+  ) {
+    const target =
+      rows.find(
+        (row) =>
+          row.id ===
+          notificationId,
+      );
 
     if (
-      !next ||
-      muted ||
-      unreadCount === 0
+      !target?.is_unread
     ) {
       return;
     }
 
-    /*
-     * Opening the notification panel is the read boundary.
-     * Clear the badge immediately instead of waiting for network latency.
-     */
-    previousUnreadRef.current = 0;
-
-    setRows((current) =>
-      current.map((row) => ({
-        ...row,
-        is_unread: false,
-      })),
+    setRows(
+      (current) =>
+        current.map(
+          (row) =>
+            row.id ===
+            notificationId
+              ? {
+                  ...row,
+                  is_unread:
+                    false,
+                }
+              : row,
+        ),
     );
 
-    const { error } =
-      await supabase.rpc(
-        "mark_my_notifications_viewed",
+    previousUnreadRef.current =
+      Math.max(
+        0,
+        previousUnreadRef.current -
+          1,
+      );
+
+    const {
+      data: { user },
+      error: userError,
+    } =
+      await supabase.auth.getUser();
+
+    if (
+      userError ||
+      !user
+    ) {
+      await load();
+      return;
+    }
+
+    const {
+      error,
+    } = await supabase
+      .from(
+        "notification_reads",
+      )
+      .upsert(
+        {
+          user_id:
+            user.id,
+          notification_id:
+            notificationId,
+          read_at:
+            new Date().toISOString(),
+        },
+        {
+          onConflict:
+            "user_id,notification_id",
+        },
       );
 
     if (error) {
       console.warn(
-        "Mark notifications viewed:",
+        "Mark notification read:",
         error.message,
       );
 
@@ -608,6 +781,59 @@ export function NotificationBell() {
       new Event(
         "sepulchria:notifications-changed",
       ),
+    );
+  }
+
+  async function markAllRead() {
+    if (
+      markingAllRead ||
+      unreadCount === 0
+    ) {
+      return;
+    }
+
+    setMarkingAllRead(true);
+
+    previousUnreadRef.current =
+      0;
+
+    setRows(
+      (current) =>
+        current.map(
+          (row) => ({
+            ...row,
+            is_unread: false,
+          }),
+        ),
+    );
+
+    const {
+      error,
+    } = await supabase.rpc(
+      "mark_my_notifications_viewed",
+    );
+
+    if (error) {
+      console.warn(
+        "Mark all notifications read:",
+        error.message,
+      );
+
+      await load();
+      setMarkingAllRead(
+        false,
+      );
+      return;
+    }
+
+    window.dispatchEvent(
+      new Event(
+        "sepulchria:notifications-changed",
+      ),
+    );
+
+    setMarkingAllRead(
+      false,
     );
   }
 
@@ -785,6 +1011,24 @@ export function NotificationBell() {
 
                 {!muted ? (
                   <div className="mt-3">
+                    <div className="mb-2 flex justify-end">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          void markAllRead()
+                        }
+                        disabled={
+                          markingAllRead ||
+                          unreadCount === 0
+                        }
+                        className="border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-18110d))] px-2.5 py-1.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-bca27b))] transition disabled:cursor-default disabled:opacity-40"
+                      >
+                        {markingAllRead
+                          ? "Marking..."
+                          : "Mark all read"}
+                      </button>
+                    </div>
+
                     <input
                       type="search"
                       value={search}
@@ -852,6 +1096,15 @@ export function NotificationBell() {
                                     : ""}
                                 </span>
 
+                                {row.is_unread ? (
+                                  <span
+                                    data-sep-notification-new="true"
+                                    className="ml-auto shrink-0 border px-1.5 py-0.5 text-[7px] font-semibold uppercase tracking-[0.12em]"
+                                  >
+                                    New
+                                  </span>
+                                ) : null}
+
                                 <span className="shrink-0 text-[8px] text-[rgb(var(--sep-colour-6f6252))]">
                                   {new Date(
                                     row.starts_at,
@@ -872,7 +1125,10 @@ export function NotificationBell() {
                               </p>
 
                               {row.href ? (
-                                <span className="mt-2 inline-flex border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-21170f))] px-2 py-1 text-[8px] uppercase tracking-[0.14em] !text-[rgb(var(--sep-colour-d4ad70))] transition group-hover:border-[rgb(var(--sep-colour-a07945))] group-hover:!text-[rgb(var(--sep-colour-efd6a3))]">
+                                <span
+                                  data-sep-notification-open="true"
+                                  className="mt-2 inline-flex border px-2 py-1 text-[8px] uppercase tracking-[0.14em] transition"
+                                >
                                   Open →
                                 </span>
                               ) : null}
@@ -883,8 +1139,8 @@ export function NotificationBell() {
                           [
                             "group block border px-3 py-3 transition-all duration-150 hover:-translate-y-[1px] hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))] hover:shadow-[0_0_12px_rgba(var(--sep-rgb-177-132-75),0.08)]",
                             row.is_unread
-                              ? "border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-21170f))]"
-                              : "border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))]",
+                              ? "sep-notification-unread border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-21170f))]"
+                              : "sep-notification-read border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))]",
                           ].join(
                             " ",
                           );
@@ -898,6 +1154,9 @@ export function NotificationBell() {
                               effectiveHref!
                             }
                             onClick={(event) => {
+                              void markNotificationRead(
+                                row.id,
+                              );
   if (
     effectiveHref ===
     "/appearance"

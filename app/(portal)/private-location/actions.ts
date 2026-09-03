@@ -731,9 +731,15 @@ export async function cancelPrivateLocationInvitation(
   }
 
   if (invitation.status !== "pending") {
-    throw new Error(
-      "Only pending invitations can be cancelled.",
+    /*
+     * The owner's page can be a fraction of a second behind a response
+     * from the invitee. Treat a stale Cancel click as a harmless no-op;
+     * the live owner-state refresher will replace/remove the row.
+     */
+    revalidatePath(
+      "/private-locations",
     );
+    return;
   }
 
   const {

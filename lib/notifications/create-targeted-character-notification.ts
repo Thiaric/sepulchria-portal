@@ -70,7 +70,16 @@ export async function createTargetedCharacterNotification({
 
   const { error: readySignalError } = await admin
     .from("notifications")
-    .update({ starts_at: new Date().toISOString() })
+    .update({
+      /*
+       * Guarantee the ready UPDATE changes a persisted value even when
+       * creation and targeting complete inside the same millisecond.
+       */
+      starts_at:
+        new Date(
+          Date.parse(now) + 1,
+        ).toISOString(),
+    })
     .eq("id", notification.id);
 
   if (readySignalError) {

@@ -3,6 +3,9 @@ import {
   revokeOrderHeadquartersGuest,
   updateOrderHeadquartersPresentation,
 } from "@/app/(portal)/orders/headquarters/actions";
+import {
+  InvitationOwnerStateRefresh,
+} from "@/components/invitations/invitation-owner-state-refresh";
 
 export function OrderHeadquartersManageMenu({
   data,
@@ -11,6 +14,22 @@ export function OrderHeadquartersManageMenu({
 }) {
   return (
     <details className="relative col-span-2 sm:col-auto">
+      <InvitationOwnerStateRefresh
+        kind="order"
+        scopeId={data.headquartersId}
+        pendingIds={
+          data.externalGuests
+            .filter(
+              (guest: any) =>
+                guest.status ===
+                "pending",
+            )
+            .map(
+              (guest: any) =>
+                guest.invitationId,
+            )
+        }
+      />
       <summary className="flex cursor-pointer list-none items-center justify-center border border-[rgb(var(--sep-colour-725c3d))] bg-[rgb(var(--sep-colour-21190f))] px-2 py-1.5 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-d6bb8d))] transition hover:border-[rgb(var(--sep-colour-a17a49))] hover:bg-[rgb(var(--sep-colour-352718))] hover:text-[rgb(var(--sep-colour-f0d6a7))] sm:px-3 sm:text-[9px] sm:tracking-[0.18em] [&::-webkit-details-marker]:hidden">
         Manage Headquarters
       </summary>
@@ -135,7 +154,7 @@ export function OrderHeadquartersManageMenu({
                 name="imageUrl"
                 maxLength={2000}
                 defaultValue={data.imageUrl ?? ""}
-                placeholder="Chat background URL"
+                placeholder="Chat background / Location URL"
                 className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))]"
               />
 

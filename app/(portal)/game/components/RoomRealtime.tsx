@@ -289,34 +289,68 @@ export default function RoomRealtime({
             schema: "public",
             table:
               "character_presence",
-            filter:
-              `room_id=eq.${roomId}`,
           },
           (payload) => {
-            const joinedCharacterId =
+            const next =
+              payload.new as {
+                character_id?: string;
+                room_id?:
+                  | string
+                  | null;
+              };
+
+            const previous =
+              payload.old as {
+                character_id?: string;
+                room_id?:
+                  | string
+                  | null;
+              };
+
+            const changedCharacterId =
               String(
-                (
-                  payload.new as {
-                    character_id?: string;
-                  }
-                )?.character_id ??
+                next?.character_id ??
+                  previous?.character_id ??
                   "",
               );
 
             if (
-              !joinedCharacterId ||
-              knownRoomCharactersRef.current.has(
-                joinedCharacterId,
-              )
+              !changedCharacterId
             ) {
               return;
             }
 
-            knownRoomCharactersRef.current.add(
-              joinedCharacterId,
-            );
+            const isKnown =
+              knownRoomCharactersRef.current.has(
+                changedCharacterId,
+              );
 
-            router.refresh();
+            const isNowHere =
+              next?.room_id ===
+              roomId;
+
+            if (
+              isNowHere &&
+              !isKnown
+            ) {
+              knownRoomCharactersRef.current.add(
+                changedCharacterId,
+              );
+
+              router.refresh();
+              return;
+            }
+
+            if (
+              !isNowHere &&
+              isKnown
+            ) {
+              knownRoomCharactersRef.current.delete(
+                changedCharacterId,
+              );
+
+              router.refresh();
+            }
           },
         )
         .subscribe();

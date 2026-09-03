@@ -1,6 +1,9 @@
 import { redirect } from "next/navigation";
 import { CollapsibleRoomDescription } from "@/components/world/collapsible-room-description";
 import {
+  InvitationOwnerStateRefresh,
+} from "@/components/invitations/invitation-owner-state-refresh";
+import {
   cancelPrivateLocationInvitation,
   ensureOwnedPrivateLocation,
   enterPrivateLocation,
@@ -366,6 +369,15 @@ export default async function PrivateLocationPage() {
 
       {ownedRoom && theme ? (
         <section className="mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
+          <InvitationOwnerStateRefresh
+            kind="private"
+            scopeId={ownedRoom.id}
+            pendingIds={
+              pendingInvitations.map(
+                (row) => row.id,
+              )
+            }
+          />
           <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 px-5 py-4">
             <h2 className="font-serif text-2xl text-[rgb(var(--sep-colour-dfc79c))]">
               Manage my Private Location
@@ -385,7 +397,7 @@ export default async function PrivateLocationPage() {
 
               <label className="grid gap-1">
                 <span className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-806b50))]">
-                  Chat background URL
+                  Chat background / Location URL
                 </span>
                 <input
                   name="imageUrl"

@@ -1961,3 +1961,237 @@ body[data-portal-skin] [data-sep-counter-badge="true"] * {
   opacity: 1 !important;
 }
 /* END SEPULCHRIA FINAL SEMANTIC PLACEHOLDER COLOUR - a6a25d5 */
+
+/* SEPULCHRIA NOTIFICATION + MODAL SEMANTICS - 914abb5 */
+
+/*
+ * Unread notifications must remain visibly different after skin remapping.
+ * C1 supplies the skin-specific accent: green, burgundy, bronze, etc.
+ */
+body.portal-skin-scope
+  .sep-notification-unread {
+  border-color:
+    rgb(
+      var(
+        --sep-skin-c1,
+        var(--sep-colour-a98a60)
+      )
+    ) !important;
+  background-color:
+    color-mix(
+      in srgb,
+      rgb(
+        var(
+          --sep-skin-c1,
+          var(--sep-colour-a98a60)
+        )
+      ) 14%,
+      rgb(var(--sep-colour-100c09))
+    ) !important;
+  box-shadow:
+    inset 3px 0 0
+      rgb(
+        var(
+          --sep-skin-c1,
+          var(--sep-colour-a98a60)
+        )
+      ),
+    0 0 12px
+      color-mix(
+        in srgb,
+        rgb(
+          var(
+            --sep-skin-c1,
+            var(--sep-colour-a98a60)
+          )
+        ) 16%,
+        transparent
+      ) !important;
+}
+
+body.portal-skin-scope
+  .sep-notification-read {
+  box-shadow: none !important;
+}
+
+body.portal-skin-scope
+  [data-sep-notification-new="true"] {
+  border-color:
+    color-mix(
+      in srgb,
+      rgb(
+        var(
+          --sep-skin-c1,
+          var(--sep-colour-a98a60)
+        )
+      ) 65%,
+      transparent
+    ) !important;
+  color:
+    rgb(
+      var(
+        --sep-skin-c1,
+        var(--sep-colour-a98a60)
+      )
+    ) !important;
+  -webkit-text-fill-color:
+    rgb(
+      var(
+        --sep-skin-c1,
+        var(--sep-colour-a98a60)
+      )
+    ) !important;
+}
+
+/*
+ * Notification OPEN follows the active skin rather than Cinder's
+ * hard-coded gold control palette.
+ */
+body.portal-skin-scope
+  [data-sep-notification-open="true"] {
+  border-color:
+    color-mix(
+      in srgb,
+      rgb(
+        var(
+          --sep-skin-c1,
+          var(--sep-colour-a98a60)
+        )
+      ) 50%,
+      transparent
+    ) !important;
+  background-color:
+    var(
+      --sep-unified-control-bg,
+      rgb(var(--sep-colour-18110d))
+    ) !important;
+  color:
+    rgb(
+      var(
+        --sep-skin-c1,
+        var(--sep-colour-a98a60)
+      )
+    ) !important;
+  -webkit-text-fill-color:
+    rgb(
+      var(
+        --sep-skin-c1,
+        var(--sep-colour-a98a60)
+      )
+    ) !important;
+}
+
+body.portal-skin-scope
+  a:hover
+  [data-sep-notification-open="true"] {
+  border-color:
+    rgb(
+      var(
+        --sep-skin-c1,
+        var(--sep-colour-a98a60)
+      )
+    ) !important;
+  background-color:
+    color-mix(
+      in srgb,
+      rgb(
+        var(
+          --sep-skin-c1,
+          var(--sep-colour-a98a60)
+        )
+      ) 10%,
+      var(
+        --sep-unified-control-bg,
+        rgb(var(--sep-colour-18110d))
+      )
+    ) !important;
+}
+
+/*
+ * Both native draggable portal windows and managed semantic modal controls
+ * use the active skin C1 instead of the old fixed gold hover border.
+ */
+body.portal-skin-scope
+  [data-sep-native-window="true"]
+  button[aria-label],
+body.portal-skin-scope
+  [data-sep-managed-modal-frame="true"]
+  :is(
+    button[aria-label*="close" i],
+    button[aria-label*="minimize" i],
+    button[aria-label*="minimise" i],
+    button[aria-label*="maximize" i],
+    button[aria-label*="maximise" i],
+    button[aria-label*="restore" i],
+    .sep-modal-size-toggle
+  ) {
+  border-color:
+    color-mix(
+      in srgb,
+      rgb(
+        var(
+          --sep-skin-c1,
+          var(--sep-colour-a98a60)
+        )
+      ) 45%,
+      transparent
+    ) !important;
+  background-color:
+    var(
+      --sep-unified-control-bg,
+      rgb(var(--sep-colour-18110d))
+    ) !important;
+  color:
+    rgb(
+      var(
+        --sep-skin-c1,
+        var(--sep-colour-a98a60)
+      )
+    ) !important;
+  -webkit-text-fill-color:
+    rgb(
+      var(
+        --sep-skin-c1,
+        var(--sep-colour-a98a60)
+      )
+    ) !important;
+}
+
+body.portal-skin-scope
+  [data-sep-native-window="true"]
+  button[aria-label]:hover,
+body.portal-skin-scope
+  [data-sep-managed-modal-frame="true"]
+  :is(
+    button[aria-label*="close" i],
+    button[aria-label*="minimize" i],
+    button[aria-label*="minimise" i],
+    button[aria-label*="maximize" i],
+    button[aria-label*="maximise" i],
+    button[aria-label*="restore" i],
+    .sep-modal-size-toggle
+  ):hover {
+  border-color:
+    rgb(
+      var(
+        --sep-skin-c1,
+        var(--sep-colour-a98a60)
+      )
+    ) !important;
+  background-color:
+    color-mix(
+      in srgb,
+      rgb(
+        var(
+          --sep-skin-c1,
+          var(--sep-colour-a98a60)
+        )
+      ) 10%,
+      var(
+        --sep-unified-control-bg,
+        rgb(var(--sep-colour-18110d))
+      )
+    ) !important;
+}
+
+/* END SEPULCHRIA NOTIFICATION + MODAL SEMANTICS - 914abb5 */
