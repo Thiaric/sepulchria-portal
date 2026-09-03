@@ -39,6 +39,9 @@ import { OrderLeadershipContext } from "@/components/portal/order-leadership-con
 import { TicketContextPanel } from "@/components/support/ticket-context-panel";
 import { SanctionContextPanel } from "@/components/sanctions/sanction-context-panel";
 import {
+  PlayerCosmeticsContextPanel,
+} from "@/components/cosmetics/player-cosmetics-context-panel";
+import {
   shapeSchoolBorderClass,
 } from "@/lib/warping/shape-school-style";
 
@@ -90,7 +93,7 @@ if (pathname === "/friends") {
 }
 
 if (pathname === "/cosmetics") {
-  return <CosmeticsContextPanel />;
+  return <PlayerCosmeticsContextPanel />;
 }
 
 if (pathname === "/ranking") {
