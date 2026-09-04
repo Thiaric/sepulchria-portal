@@ -616,35 +616,35 @@ async function PortalLayoutContent({
                 }
 
                 .portal-left-collapse-toggle {
-                  position: absolute;
-                  top: 50%;
-                  right: -11px;
-                  z-index: 45;
-                  display: flex;
-                  width: 22px;
-                  height: 52px;
-                  transform: translateY(-50%);
-                  align-items: center;
-                  justify-content: center;
-                  border: 1px solid rgb(var(--sep-colour-987344));
-                  background: rgb(var(--sep-colour-17120f));
-                  color: rgb(var(--sep-colour-efd6a8));
-                  font-family: Georgia, serif;
-                  font-size: 22px;
-                  font-weight: 700;
-                  line-height: 1;
-                  box-shadow: 4px 0 14px rgba(var(--sep-rgb-0-0-0),0.28);
-                  transition:
-                    color 150ms ease,
-                    border-color 150ms ease,
-                    background 150ms ease;
-                }
+  position: absolute;
+  top: 50%;
+  right: -11px;
+  z-index: 45;
+  display: flex;
+  width: 22px;
+  height: 52px;
+  transform: translateY(-50%);
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgb(var(--sep-skin-c1));
+  background: rgb(var(--sep-colour-17120f));
+  color: rgb(var(--sep-skin-c1));
+  font-family: Georgia, serif;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: 4px 0 14px rgba(var(--sep-rgb-0-0-0),0.28);
+  transition:
+    color 150ms ease,
+    border-color 150ms ease,
+    background 150ms ease;
+}
 
-                .portal-left-collapse-toggle:hover {
-                  border-color: rgb(var(--sep-colour-b98c50));
-                  background: rgb(var(--sep-colour-3b2919));
-                  color: rgb(var(--sep-colour-efd6a8));
-                }
+.portal-left-collapse-toggle:hover {
+  border-color: rgb(var(--sep-skin-c2));
+  background: rgb(var(--sep-colour-3b2919));
+  color: rgb(var(--sep-skin-c2));
+}
 
                 .sepulchria-viewport-body
                   > [data-portal-centre-host],
@@ -744,35 +744,35 @@ async function PortalLayoutContent({
                 }
 
                 .portal-right-collapse-toggle {
-                  position: absolute;
-                  top: 50%;
-                  left: -11px;
-                  z-index: 45;
-                  display: flex;
-                  width: 22px;
-                  height: 52px;
-                  transform: translateY(-50%);
-                  align-items: center;
-                  justify-content: center;
-                  border: 1px solid rgb(var(--sep-colour-987344));
-                  background: rgb(var(--sep-colour-17120f));
-                  color: rgb(var(--sep-colour-efd6a8));
-                  font-family: Georgia, serif;
-                  font-size: 22px;
-                  font-weight: 700;
-                  line-height: 1;
-                  box-shadow: -4px 0 14px rgba(var(--sep-rgb-0-0-0),0.28);
-                  transition:
-                    color 150ms ease,
-                    border-color 150ms ease,
-                    background 150ms ease;
-                }
+  position: absolute;
+  top: 50%;
+  left: -11px;
+  z-index: 45;
+  display: flex;
+  width: 22px;
+  height: 52px;
+  transform: translateY(-50%);
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgb(var(--sep-skin-c1));
+  background: rgb(var(--sep-colour-17120f));
+  color: rgb(var(--sep-skin-c1));
+  font-family: Georgia, serif;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: -4px 0 14px rgba(var(--sep-rgb-0-0-0),0.28);
+  transition:
+    color 150ms ease,
+    border-color 150ms ease,
+    background 150ms ease;
+}
 
-                .portal-right-collapse-toggle:hover {
-                  border-color: rgb(var(--sep-colour-b98c50));
-                  background: rgb(var(--sep-colour-3b2919));
-                  color: rgb(var(--sep-colour-efd6a8));
-                }
+.portal-right-collapse-toggle:hover {
+  border-color: rgb(var(--sep-skin-c2));
+  background: rgb(var(--sep-colour-3b2919));
+  color: rgb(var(--sep-skin-c2));
+}
 
                 .sepulchria-viewport-body
                   > .portal-right-shell
