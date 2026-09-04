@@ -868,15 +868,6 @@ async function PortalLayoutContent({
                 color: #ffffff;
               }
 
-              /* MOBILE + TIDINGS: only while ticker exists */
-              @media (max-width: 1023px) {
-                [data-portal-shell-inner]:has([data-tidings-ticker="true"]) [data-portal-centre-host] > main[data-portal-column] {
-                  overflow-y: auto !important;
-                  overflow-x: visible !important;
-                  overscroll-behavior-y: contain;
-                }
-              }
-
               .sepulchria-viewport-body [data-portal-scroll] {
                 scrollbar-width: thin;
                 scrollbar-color: rgb(var(--sep-colour-5c472f)) transparent;

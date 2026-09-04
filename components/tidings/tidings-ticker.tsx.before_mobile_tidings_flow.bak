@@ -300,7 +300,6 @@ export function TidingsTicker({
 
   return (
     <footer
-      data-tidings-ticker="true"
       role="status"
       aria-live="polite"
       aria-label="Tidings"
