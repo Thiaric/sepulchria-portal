@@ -1,5 +1,4 @@
 import { Suspense, type ReactNode, type CSSProperties } from "react";
-import { headers } from "next/headers";
 
 import "@/components/sepulchria/sep-ui-unified.css";
 
@@ -49,37 +48,6 @@ export default function PortalLayout({
 async function PortalLayoutContent({
   children,
 }: PortalLayoutProps) {
-  const requestHeaders =
-    await headers();
-
-  if (
-    requestHeaders.get(
-      "x-sepulchria-embedded",
-    ) === "1"
-  ) {
-    const [
-      context,
-      worldState,
-      staffSession,
-    ] = await Promise.all([
-      getPortalContext(),
-      getWorldState(),
-      getStaffSession(),
-    ]);
-
-    return (
-      <EmbeddedPortalLayout
-        context={context}
-        worldState={worldState}
-        staffRole={
-          staffSession?.role ?? null
-        }
-      >
-        {children}
-      </EmbeddedPortalLayout>
-    );
-  }
-
   const [
     context,
     worldState,
@@ -937,73 +905,6 @@ async function PortalLayoutContent({
           </div>
         </div>
         </PortalNotificationCountsProvider>
-        </PortalAudioProvider>
-      </PortalSkinProvider>
-    </WorldStateProvider>
-  );
-}
-
-
-function EmbeddedPortalLayout({
-  children,
-  context,
-  worldState,
-  staffRole,
-}: PortalLayoutProps & {
-  context: Awaited<
-    ReturnType<
-      typeof getPortalContext
-    >
-  >;
-  worldState: Awaited<
-    ReturnType<
-      typeof getWorldState
-    >
-  >;
-  staffRole:
-    | "owner"
-    | "admin"
-    | "moderator"
-    | "master"
-    | null;
-}) {
-  return (
-    <WorldStateProvider
-      initialState={worldState}
-    >
-      <PortalSkinProvider>
-        <PortalAudioProvider>
-          <PortalNotificationCountsProvider
-            staffRole={staffRole}
-          >
-            <div
-              data-portal-shell
-              data-portal-modal-shell="true"
-              className="h-dvh overflow-hidden bg-[rgb(var(--sep-colour-120f0d))] text-[rgb(var(--sep-colour-e8dcc4))]"
-            >
-              <div
-                data-portal-shell-inner
-                className="grid h-full min-h-0 grid-cols-1 overflow-hidden xl:grid-cols-[minmax(0,1fr)_clamp(240px,18vw,300px)]"
-              >
-                <main
-                  data-portal-centre-host
-                  data-portal-column
-                  data-portal-scroll
-                  className="min-h-0 min-w-0 overflow-y-auto overscroll-contain"
-                >
-                  {children}
-                </main>
-
-                <div
-                  className="portal-right-shell relative min-h-0 min-w-0"
-                >
-                  <PortalResponsiveRightSidebar
-                    context={context}
-                  />
-                </div>
-              </div>
-            </div>
-          </PortalNotificationCountsProvider>
         </PortalAudioProvider>
       </PortalSkinProvider>
     </WorldStateProvider>

@@ -1,20 +1,7 @@
 import { updateSession } from "@/lib/supabase/proxy";
 import { type NextRequest } from "next/server";
 
-export async function proxy(
-  request: NextRequest,
-) {
-  if (
-    request.nextUrl.searchParams.get(
-      "embedded",
-    ) === "1"
-  ) {
-    request.headers.set(
-      "x-sepulchria-embedded",
-      "1",
-    );
-  }
-
+export async function proxy(request: NextRequest) {
   return await updateSession(request);
 }
 
