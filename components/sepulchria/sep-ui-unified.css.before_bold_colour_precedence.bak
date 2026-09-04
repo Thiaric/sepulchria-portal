@@ -2383,32 +2383,8 @@ body[data-portal-skin]
   color: inherit;
 }
 
-/*
- * Rich-text bold defaults to skin C1, but it is only a DEFAULT.
- * Explicit author/editor colours must win.
- *
- * Low specificity means an explicit class or inline colour on <strong>/<b>
- * overrides the skin default naturally.
- */
-:where(
-  body[data-portal-skin]
-    .rich-text-content
-    :is(strong, b)
-) {
-  color: rgb(var(--sep-skin-c1));
-}
-
-/*
- * The rich editor can place a colour on an ancestor (for example
- * <font color="..."><strong>...</strong></font> or a styled span).
- * In that case bold inherits the explicitly assigned colour instead of
- * forcing C1.
- */
-:where(
-  body[data-portal-skin]
-    .rich-text-content
-    :is(font[color], [style*="color" i])
-    :is(strong, b)
-) {
-  color: inherit;
+body[data-portal-skin]
+  .rich-text-content
+  :is(strong, b) {
+  color: rgb(var(--sep-skin-c1)) !important;
 }
