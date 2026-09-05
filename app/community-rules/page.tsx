@@ -135,7 +135,6 @@ export default function CommunityRulesPage() {
                   key={rule.title}
                   title={rule.title}
                   text={rule.text}
-                  critical
                 />
               ))}
             </div>
