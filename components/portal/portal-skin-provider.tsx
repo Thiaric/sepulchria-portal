@@ -15,6 +15,7 @@ import {
 } from "react";
 
 import { createClient } from "@/lib/supabase/client";
+import { CosmeticRuntime } from "@/components/cosmetics/cosmetic-runtime";
 import { PortalSkinAtmosphere } from "@/components/portal/portal-skin-atmosphere";
 
 export type PortalSkin = string;
@@ -73,6 +74,19 @@ const [skin, setSkin] =
 
 const [selectedSkin, setSelectedSkin] =
   useState<PortalSkin>("sepulchria");
+
+const [isEmbeddedPortal, setIsEmbeddedPortal] =
+  useState(false);
+
+  useEffect(() => {
+    setIsEmbeddedPortal(
+      Boolean(
+        document.querySelector(
+          '[data-portal-modal-shell="true"]',
+        ),
+      ),
+    );
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -203,6 +217,7 @@ const [selectedSkin, setSelectedSkin] =
     <PortalSkinContext.Provider value={value}>
       <div className="contents portal-skin-scope">
   {children}
+  {isEmbeddedPortal ? <CosmeticRuntime /> : null}
   <PortalSkinAtmosphere skin={skin} />
 </div>
     </PortalSkinContext.Provider>
