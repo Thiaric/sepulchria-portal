@@ -92,10 +92,7 @@ export default function CommunityRulesPage() {
     <>
       <EmbeddedPortalSkinBridge />
 
-      <main
-        data-public-skin-surface="true"
-        className="min-h-screen bg-[rgb(var(--sep-colour-090706))] px-4 py-10 text-[rgb(var(--sep-colour-e8dcc4))] sm:px-6 lg:px-8"
-      >
+      <main className="min-h-screen bg-[rgb(var(--sep-colour-090706))] px-4 py-10 text-[rgb(var(--sep-colour-e8dcc4))] sm:px-6 lg:px-8">
       <div className="mx-auto max-w-5xl">
         <header className="border border-[rgb(var(--sep-colour-62482f))]/60 bg-[rgb(var(--sep-colour-0d0a08))]/90 px-6 py-8 sm:px-9">
           <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-9a7547))]">

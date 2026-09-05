@@ -22,7 +22,6 @@ export function RegistrationApplicationBadge({
   if (variant === "floating") {
     return (
       <span
-        data-sep-counter-badge="true"
         title={title}
         className={`absolute -left-2 -top-2 h-5 min-w-5 px-1 text-[8px] ${baseClass}`}
       >
@@ -33,7 +32,6 @@ export function RegistrationApplicationBadge({
 
   return (
     <span
-      data-sep-counter-badge="true"
       title={title}
       className={`ml-auto h-4 min-w-4 px-1 text-[7px] ${baseClass}`}
     >

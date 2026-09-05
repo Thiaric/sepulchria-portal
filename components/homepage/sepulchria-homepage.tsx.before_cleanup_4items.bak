@@ -174,12 +174,9 @@ export function SepulchriaHomepage({
   }, [aboutOpen]);
 
   return (
-    <main
-      data-public-skin-surface="true"
-      className="relative min-h-[100dvh] overflow-x-hidden bg-[rgb(var(--sep-colour-090706))] text-[rgb(var(--sep-colour-e8dcc4))] lg:h-[100dvh] lg:min-h-0 lg:overflow-hidden"
-    >
+    <main className="relative min-h-[100dvh] overflow-x-hidden bg-[rgb(var(--sep-colour-090706))] text-[rgb(var(--sep-colour-e8dcc4))] lg:h-[100dvh] lg:min-h-0 lg:overflow-hidden">
       {/* Atmospheric background */}
-      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_50%_-10%,rgba(var(--sep-rgb-135-91-42),0.24),transparent_38%),radial-gradient(circle_at_15%_45%,rgba(var(--sep-rgb-78-42-25),0.14),transparent_28%),linear-gradient(to_bottom,rgb(var(--sep-colour-130e0b))_0%,rgb(var(--sep-colour-0b0807))_50%,rgb(var(--sep-colour-090706))_100%)]" />
+      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_50%_-10%,rgba(var(--sep-rgb-135-91-42),0.24),transparent_38%),radial-gradient(circle_at_15%_45%,rgba(var(--sep-rgb-78-42-25),0.14),transparent_28%),linear-gradient(to_bottom,#130e0b_0%,#0b0807_50%,#070605_100%)]" />
 
       <div className="pointer-events-none fixed inset-0 opacity-[0.13] [background-image:linear-gradient(rgba(var(--sep-rgb-255-255-255),.025)_1px,transparent_1px),linear-gradient(90deg,rgba(var(--sep-rgb-255-255-255),.018)_1px,transparent_1px)] [background-size:72px_72px]" />
 

@@ -96,7 +96,6 @@ export function CookieStorageControls() {
     <>
       {bannerOpen ? (
         <section
-          data-public-skin-surface="true"
           aria-label="Cookie and storage notice"
           className="fixed inset-x-3 bottom-3 z-[10000] mx-auto max-w-[760px] border border-[rgb(var(--sep-colour-6b5032))]/55 bg-[rgb(var(--sep-colour-100c09))]/[0.98] p-4 text-[rgb(var(--sep-colour-d8cbb5))] shadow-[0_18px_70px_rgba(0,0,0,0.78)] backdrop-blur-md sm:bottom-5 sm:p-5"
         >
@@ -173,10 +172,7 @@ export function CookieStorageControls() {
             className="absolute inset-0 bg-black/75 backdrop-blur-sm"
           />
 
-          <section
-            data-public-skin-surface="true"
-            className="relative z-10 max-h-[90dvh] w-full max-w-[620px] overflow-y-auto border border-[rgb(var(--sep-colour-6b5032))]/55 bg-[rgb(var(--sep-colour-100c09))] p-5 text-[rgb(var(--sep-colour-d8cbb5))] shadow-[0_25px_90px_rgba(0,0,0,0.9)] sm:p-7"
-          >
+          <section className="relative z-10 max-h-[90dvh] w-full max-w-[620px] overflow-y-auto border border-[rgb(var(--sep-colour-6b5032))]/55 bg-[rgb(var(--sep-colour-100c09))] p-5 text-[rgb(var(--sep-colour-d8cbb5))] shadow-[0_25px_90px_rgba(0,0,0,0.9)] sm:p-7">
             <div className="pointer-events-none absolute inset-1 border border-[rgb(var(--sep-colour-9a7547))]/10" />
 
             <div className="relative">

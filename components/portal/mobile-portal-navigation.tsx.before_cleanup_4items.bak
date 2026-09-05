@@ -958,11 +958,7 @@ const moreDragging =
     currentUnreadForumCount +
     unreadPollCount +
     notificationCounts.tickets.player +
-    notificationCounts.sanctions.player +
-    (isStaff
-      ? notificationCounts
-          .registrationApplications
-      : 0);
+    notificationCounts.sanctions.player;
 
   if (!renderMobileNavigation) {
     return null;
@@ -1488,22 +1484,11 @@ const moreDragging =
     >
       <Settings
         className="h-[22px] w-[22px] shrink-0 text-[rgb(var(--sep-colour-d4ad70))]"
-        style={{
-          filter:
-            "var(--sep-skin-nav-icon-filter, none)",
-        }}
       />
 
       <span className="min-w-0 flex-1 truncate text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b8a98f))]">
         Administration
       </span>
-
-      <Badge
-        count={
-          notificationCounts
-            .registrationApplications
-        }
-      />
     </Link>
   ) : null}
                   </div>

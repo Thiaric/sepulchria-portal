@@ -139,23 +139,6 @@ export function InteractiveWorldMap({
   const [isMobile, setIsMobile] =
     useState(false);
 
-  const [
-    mobilePopupOffsetY,
-    setMobilePopupOffsetY,
-  ] = useState(0);
-
-  const [
-    mobileTidingsHeight,
-    setMobileTidingsHeight,
-  ] = useState(0);
-
-  const mobilePopupDragRef =
-    useRef<{
-      pointerId: number;
-      startY: number;
-      startOffsetY: number;
-    } | null>(null);
-
   const [isNight, setIsNight] =
     useState(false);
 
@@ -175,57 +158,6 @@ export function InteractiveWorldMap({
       media.removeEventListener("change", update);
     };
   }, []);
-
-  useEffect(() => {
-    function measureTidings() {
-      const ticker =
-        document.querySelector<HTMLElement>(
-          'footer[aria-label="Tidings"]',
-        );
-
-      setMobileTidingsHeight(
-        ticker
-          ? Math.ceil(
-              ticker.getBoundingClientRect()
-                .height,
-            )
-          : 0,
-      );
-    }
-
-    measureTidings();
-
-    const observer =
-      new MutationObserver(
-        measureTidings,
-      );
-
-    observer.observe(
-      document.body,
-      {
-        childList: true,
-        subtree: true,
-      },
-    );
-
-    window.addEventListener(
-      "resize",
-      measureTidings,
-    );
-
-    return () => {
-      observer.disconnect();
-
-      window.removeEventListener(
-        "resize",
-        measureTidings,
-      );
-    };
-  }, []);
-
-  useEffect(() => {
-    setMobilePopupOffsetY(0);
-  }, [hoveredArea]);
 
   useEffect(() => {
     function updateTimeOfDay() {
@@ -721,108 +653,8 @@ hoveredInfoPosition ? (
 
       {level === "city" &&
 hoveredDatabaseArea ? (
-  <div
-    className="fixed inset-x-3 z-[80] max-h-[42dvh] overflow-hidden border border-[rgb(var(--sep-colour-8f6a3d))]/80 bg-[rgb(var(--sep-colour-120b09))]/[0.98] shadow-[0_-12px_36px_rgba(var(--sep-rgb-0-0-0),0.72)] backdrop-blur md:hidden"
-    style={{
-      bottom:
-        `${72 + mobileTidingsHeight}px`,
-      transform:
-        `translateY(${mobilePopupOffsetY}px)`,
-    }}
-  >
-    <div
-      onPointerDown={(event) => {
-        const target =
-          event.target as HTMLElement;
-
-        if (
-          target.closest(
-            "button, a, input, textarea, select",
-          )
-        ) {
-          return;
-        }
-
-        mobilePopupDragRef.current = {
-          pointerId: event.pointerId,
-          startY: event.clientY,
-          startOffsetY:
-            mobilePopupOffsetY,
-        };
-
-        event.currentTarget
-          .setPointerCapture(
-            event.pointerId,
-          );
-      }}
-      onPointerMove={(event) => {
-        const drag =
-          mobilePopupDragRef.current;
-
-        if (
-          !drag ||
-          drag.pointerId !==
-            event.pointerId
-        ) {
-          return;
-        }
-
-        const deltaY =
-          event.clientY -
-          drag.startY;
-
-        const maxLift =
-          Math.max(
-            140,
-            Math.floor(
-              window.innerHeight *
-                0.5,
-            ),
-          );
-
-        setMobilePopupOffsetY(
-          Math.max(
-            -maxLift,
-            Math.min(
-              0,
-              drag.startOffsetY +
-                deltaY,
-            ),
-          ),
-        );
-      }}
-      onPointerUp={(event) => {
-        const drag =
-          mobilePopupDragRef.current;
-
-        if (
-          !drag ||
-          drag.pointerId !==
-            event.pointerId
-        ) {
-          return;
-        }
-
-        mobilePopupDragRef.current =
-          null;
-
-        try {
-          event.currentTarget
-            .releasePointerCapture(
-              event.pointerId,
-            );
-        } catch {}
-      }}
-      onPointerCancel={() => {
-        mobilePopupDragRef.current =
-          null;
-      }}
-      className="relative flex touch-none select-none items-start justify-between gap-3 border-b border-[rgb(var(--sep-colour-654c2f))]/40 px-4 pb-3 pt-5 cursor-grab active:cursor-grabbing"
-    >
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-1.5 h-1 w-12 -translate-x-1/2 rounded-full bg-[rgb(var(--sep-colour-8f7757))]/70"
-      />
+  <div className="fixed inset-x-3 bottom-[72px] z-[80] max-h-[42dvh] overflow-hidden border border-[rgb(var(--sep-colour-8f6a3d))]/80 bg-[rgb(var(--sep-colour-120b09))]/[0.98] shadow-[0_-12px_36px_rgba(var(--sep-rgb-0-0-0),0.72)] backdrop-blur md:hidden">
+    <div className="flex items-start justify-between gap-3 border-b border-[rgb(var(--sep-colour-654c2f))]/40 px-4 py-3">
       <div className="min-w-0">
         <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-96734a))]">
           District
