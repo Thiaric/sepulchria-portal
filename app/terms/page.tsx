@@ -12,11 +12,18 @@ export default function TermsPage() {
   return (
     <>
       <EmbeddedPortalSkinBridge />
-      <main className="min-h-screen bg-[rgb(var(--sep-colour-090706))] px-5 py-12 text-[rgb(var(--sep-colour-d8cbb5))]">
+      <main
+        data-public-skin-surface="true"
+        className="min-h-screen bg-[rgb(var(--sep-colour-090706))] px-5 py-12 text-[rgb(var(--sep-colour-d8cbb5))]"
+      >
         <article className="mx-auto max-w-4xl border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-110d0a))] p-6 shadow-[0_24px_80px_rgba(var(--sep-rgb-0-0-0),.45)] sm:p-10">
           <PolicyHeader eyebrow="Sepulchria · Legal" title="Terms of Service" effective="24 August 2026" />
 
-          <div className="mt-8 space-y-8 text-sm leading-7 text-[rgb(var(--sep-colour-aa9c88))]">
+          <div className="mt-5 border-l-2 border-[rgb(var(--sep-colour-a77a42))] bg-[rgb(var(--sep-colour-18110d))] px-4 py-3 text-sm leading-6 text-[rgb(var(--sep-colour-c9b08b))]">
+            These Terms set the rules for using Sepulchria, including account eligibility, community conduct, moderation, service access and your responsibilities as a player.
+          </div>
+
+          <div className="mt-8 space-y-4 text-sm leading-7 text-[rgb(var(--sep-colour-aa9c88))]">
             <Section title="1. About these Terms">
               <p>These Terms govern your access to and use of Sepulchria, an online fantasy roleplaying service operated as Sepulchria (&quot;Sepulchria&quot;, &quot;we&quot;, &quot;us&quot; or &quot;our&quot;). By creating an account or using the service, you agree to these Terms, our Community Rules, Privacy Notice and other policies that expressly apply to the service.</p>
               <p>Questions about these Terms may be sent to <a className="text-[rgb(var(--sep-colour-d2ae78))] underline" href={`mailto:${contactEmail}`}>{contactEmail}</a>.</p>
@@ -60,7 +67,16 @@ function PolicyHeader({ eyebrow, title, effective }: { eyebrow: string; title: s
   return <header><Link href="/homepage" className="text-[10px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-b08b59))] hover:text-[rgb(var(--sep-colour-e2bf88))]">← Homepage</Link><p className="mt-8 text-[9px] uppercase tracking-[0.35em] text-[rgb(var(--sep-colour-876a46))]">{eyebrow}</p><h1 className="mt-3 font-serif text-4xl text-[rgb(var(--sep-colour-e5cfa6))]">{title}</h1><p className="mt-3 text-xs text-[rgb(var(--sep-colour-7f7466))]">Effective: {effective}</p></header>;
 }
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return <section><h2 className="font-serif text-xl text-[rgb(var(--sep-colour-d7bd91))]">{title}</h2><div className="mt-2 space-y-3">{children}</div></section>;
+  return (
+    <section className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-black/10 p-4 sm:p-5">
+      <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-d7bd91))]">
+        {title}
+      </h2>
+      <div className="mt-2 space-y-3">
+        {children}
+      </div>
+    </section>
+  );
 }
 function PolicyFooter() {
   return <footer className="mt-10 flex flex-wrap gap-x-5 gap-y-2 border-t border-[rgb(var(--sep-colour-60482e))]/40 pt-5 text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-8e7b61))]"><Link href="/community-rules">Community Rules</Link><Link href="/safety">Safety</Link><Link href="/age-policy">Age Policy</Link><Link href="/privacy">Privacy</Link><Link href="/cookies">Cookies</Link></footer>;
