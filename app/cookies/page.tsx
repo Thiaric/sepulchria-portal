@@ -20,7 +20,12 @@ export default function CookiesPage() {
           <p className="mt-8 text-[9px] uppercase tracking-[0.35em] text-[rgb(var(--sep-colour-876a46))]">Sepulchria · Privacy</p>
           <h1 className="mt-3 font-serif text-4xl text-[rgb(var(--sep-colour-e5cfa6))]">Cookie Notice</h1>
           <p className="mt-3 text-xs text-[rgb(var(--sep-colour-7f7466))]">Effective: 24 August 2026</p>
-          <div className="mt-8 space-y-8 text-sm leading-7 text-[rgb(var(--sep-colour-aa9c88))]">
+
+          <div className="mt-5 border-l-2 border-[rgb(var(--sep-colour-a77a42))] bg-[rgb(var(--sep-colour-18110d))] px-4 py-3 text-sm leading-6 text-[rgb(var(--sep-colour-c9b08b))]">
+            Sepulchria uses necessary browser storage for account security and optional interface-preference storage for choices such as your portal appearance.
+          </div>
+
+          <div className="mt-8 space-y-4 text-sm leading-7 text-[rgb(var(--sep-colour-aa9c88))]">
             <Section title="1. What this Notice covers"><p>This Notice explains cookies and similar technologies used when you access Sepulchria. Similar technologies include browser local storage, which can remember information on your device without using a traditional cookie.</p></Section>
             <Section title="2. Strictly necessary authentication"><p>Sepulchria uses Supabase authentication. Authentication and session cookies or equivalent storage are used to keep you signed in, maintain account sessions, protect authenticated areas and support security. These technologies are necessary for the account service you request.</p></Section>
             <Section title="3. Interface and preference storage"><p>The portal uses browser local storage to remember interface choices such as portal appearance, collapsed sidebars, sound preference, recent editor colours and spelling-dictionary choices. Under the current UK PECR appearance/functionality exception, this type of storage may be used without prior consent where the legal conditions are met, but you must be given a simple way to object.</p><p>Sepulchria provides that control through the Cookie &amp; Storage Settings panel. Choosing “Necessary only” disables and removes the listed interface-preference values from this browser.</p></Section>
@@ -37,7 +42,16 @@ export default function CookiesPage() {
   );
 }
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return <section><h2 className="font-serif text-xl text-[rgb(var(--sep-colour-d7bd91))]">{title}</h2><div className="mt-2 space-y-3">{children}</div></section>;
+  return (
+    <section className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-black/10 p-4 sm:p-5">
+      <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-d7bd91))]">
+        {title}
+      </h2>
+      <div className="mt-2 space-y-3">
+        {children}
+      </div>
+    </section>
+  );
 }
 function PolicyFooter() {
   return <footer className="mt-10 flex flex-wrap gap-x-5 gap-y-2 border-t border-[rgb(var(--sep-colour-60482e))]/40 pt-5 text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-8e7b61))]"><Link href="/terms">Terms</Link><Link href="/community-rules">Community Rules</Link><Link href="/safety">Safety</Link><Link href="/age-policy">Age Policy</Link><Link href="/privacy">Privacy</Link></footer>;
