@@ -235,4 +235,61 @@
     min-height: 105px !important;
     max-height: 32dvh !important;
   }
+
+  /*
+   * MOBILE HORIZONTAL CONTAINMENT
+   * Admin edit pages contain deeply nested grids, flex rows, rich editors,
+   * selects and legacy min-width utilities. On phones those descendants must
+   * be allowed to shrink inside the portal's centre column instead of forcing
+   * that column wider than the viewport.
+   */
+  .admin-compact,
+  .admin-compact main,
+  .admin-compact main > *,
+  .admin-compact main form,
+  .admin-compact main fieldset,
+  .admin-compact main section,
+  .admin-compact main article,
+  .admin-compact main details {
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .admin-compact main [class*="grid"] > *,
+  .admin-compact main [class*="flex"] > * {
+    min-width: 0 !important;
+    max-width: 100%;
+  }
+
+  .admin-compact main input:not([type="checkbox"]):not([type="radio"]):not([type="color"]),
+  .admin-compact main select,
+  .admin-compact main textarea {
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  /*
+   * RichTextEditor keeps overflow-visible for its menus, so constrain the
+   * editor shell itself rather than clipping it. The toolbar already scrolls
+   * horizontally on mobile.
+   */
+  .admin-compact main div:has(> .rich-wysiwyg-editor),
+  .admin-compact .rich-wysiwyg-editor {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  /* Legacy fixed/min-width controls (for example Feats character selectors)
+     may shrink instead of escaping the allocated centre column. */
+  .admin-compact main [class*="min-w-["] {
+    min-width: 0 !important;
+  }
+
+  /* Intentional wide data tables stay locally scrollable when their page
+     already provides an overflow-x-auto wrapper. */
+  .admin-compact main [class*="overflow-x-auto"] {
+    max-width: 100% !important;
+    overscroll-behavior-x: contain;
+  }
 }
