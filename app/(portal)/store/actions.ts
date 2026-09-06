@@ -17,6 +17,7 @@ export type StorePaddleState = {
   ok: boolean;
   error: string | null;
   checkoutUrl: string | null;
+  transactionId: string | null;
 };
 
 function paddleApiBase() {
@@ -95,11 +96,11 @@ export async function startStorePaddleCheckout(
   const apiKey = process.env.PADDLE_API_KEY;
 
   if (!productId) {
-    return { ok: false, error: "Store product is missing.", checkoutUrl: null };
+    return { ok: false, error: "Store product is missing.", checkoutUrl: null, transactionId: null };
   }
 
   if (!apiKey) {
-    return { ok: false, error: "Paddle is not configured yet.", checkoutUrl: null };
+    return { ok: false, error: "Paddle is not configured yet.", checkoutUrl: null, transactionId: null };
   }
 
   const supabase = await createClient();
@@ -107,7 +108,7 @@ export async function startStorePaddleCheckout(
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
-    return { ok: false, error: "You must be signed in.", checkoutUrl: null };
+    return { ok: false, error: "You must be signed in.", checkoutUrl: null, transactionId: null };
   }
 
   const [characterResult, productResult, priceResult, grantsResult] =
@@ -131,16 +132,16 @@ export async function startStorePaddleCheckout(
     ]);
 
   if (characterResult.error || !characterResult.data) {
-    return { ok: false, error: characterResult.error?.message ?? "Character not found.", checkoutUrl: null };
+    return { ok: false, error: characterResult.error?.message ?? "Character not found.", checkoutUrl: null, transactionId: null };
   }
   if (productResult.error || !productResult.data || productResult.data.is_active !== true) {
-    return { ok: false, error: productResult.error?.message ?? "This Store product is not available.", checkoutUrl: null };
+    return { ok: false, error: productResult.error?.message ?? "This Store product is not available.", checkoutUrl: null, transactionId: null };
   }
   if (priceResult.error || !priceResult.data) {
-    return { ok: false, error: priceResult.error?.message ?? "This product does not have an active Paddle price.", checkoutUrl: null };
+    return { ok: false, error: priceResult.error?.message ?? "This product does not have an active Paddle price.", checkoutUrl: null, transactionId: null };
   }
   if (grantsResult.error || !(grantsResult.data ?? []).length) {
-    return { ok: false, error: grantsResult.error?.message ?? "This Store product has no fulfilment grants.", checkoutUrl: null };
+    return { ok: false, error: grantsResult.error?.message ?? "This Store product has no fulfilment grants.", checkoutUrl: null, transactionId: null };
   }
 
   const product = productResult.data;
@@ -166,7 +167,7 @@ export async function startStorePaddleCheckout(
     .single();
 
   if (orderError || !order) {
-    return { ok: false, error: orderError?.message ?? "Unable to create Store order.", checkoutUrl: null };
+    return { ok: false, error: orderError?.message ?? "Unable to create Store order.", checkoutUrl: null, transactionId: null };
   }
 
   const { data: item, error: itemError } = await admin
@@ -189,7 +190,7 @@ export async function startStorePaddleCheckout(
 
   if (itemError || !item) {
     await admin.from("store_orders").delete().eq("id", order.id);
-    return { ok: false, error: itemError?.message ?? "Unable to create Store order item.", checkoutUrl: null };
+    return { ok: false, error: itemError?.message ?? "Unable to create Store order item.", checkoutUrl: null, transactionId: null };
   }
 
   const snapshots = (grantsResult.data ?? []).map((grant) => ({
@@ -209,7 +210,7 @@ export async function startStorePaddleCheckout(
 
   if (snapshotError) {
     await admin.from("store_orders").delete().eq("id", order.id);
-    return { ok: false, error: snapshotError.message, checkoutUrl: null };
+    return { ok: false, error: snapshotError.message, checkoutUrl: null, transactionId: null };
   }
 
   const response = await fetch(`${paddleApiBase()}/transactions`, {
@@ -250,6 +251,7 @@ export async function startStorePaddleCheckout(
       ok: false,
       error: payload?.error?.detail ?? "Paddle could not create the checkout.",
       checkoutUrl: null,
+      transactionId: null,
     };
   }
 
@@ -259,8 +261,13 @@ export async function startStorePaddleCheckout(
     .eq("id", order.id);
 
   if (linkError) {
-    return { ok: false, error: linkError.message, checkoutUrl: null };
+    return { ok: false, error: linkError.message, checkoutUrl: null, transactionId: null };
   }
 
-  return { ok: true, error: null, checkoutUrl: payload.data.checkout.url };
+  return {
+    ok: true,
+    error: null,
+    checkoutUrl: payload.data.checkout.url,
+    transactionId: payload.data.id,
+  };
 }
