@@ -284,7 +284,6 @@ export function MessagesInboxClient({
                   key={
                     conversation.id
                   }
-                  data-message-conversation-row="true"
                   className="flex flex-col gap-3 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-3 transition hover:border-[rgb(var(--sep-colour-80613c))] sm:flex-row sm:items-center"
                 >
                   <div

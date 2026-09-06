@@ -696,77 +696,7 @@ function applyHighlightColour(
 
   function resetTextColour() {
     restoreColourSelection();
-
-    const editor = editorRef.current;
-
-    if (!editor) {
-      setTextColourOpen(false);
-      return;
-    }
-
-    /*
-     * execCommand("foreColor", "inherit") is not a reliable reset.
-     * Chromium can interpret that invalid colour value unpredictably.
-     *
-     * Instead:
-     * 1. colour ONLY the current selection with a temporary sentinel;
-     * 2. find the nodes created/changed by that operation;
-     * 3. remove only their explicit colour declaration;
-     * 4. leave every other inline style (bold/italic/font-size/etc.) intact.
-     *
-     * With no explicit colour left, the text inherits the editor's real
-     * default colour from the active skin.
-     */
-    const sentinelHex = "#010203";
-    const sentinelRgb = "rgb(1, 2, 3)";
-
-    runCommand(
-      "foreColor",
-      sentinelHex,
-    );
-
-    editor
-      .querySelectorAll<HTMLElement>(
-        "font[color], span[style], [style]",
-      )
-      .forEach((node) => {
-        const fontColour =
-          node.getAttribute("color")
-            ?.toLowerCase();
-
-        const inlineColour =
-          node.style.color
-            ?.toLowerCase();
-
-        const isSentinel =
-          fontColour === sentinelHex ||
-          inlineColour === sentinelHex ||
-          inlineColour === sentinelRgb;
-
-        if (!isSentinel) {
-          return;
-        }
-
-        node.removeAttribute("color");
-        node.style.removeProperty("color");
-
-        if (
-          node.getAttribute("style") === ""
-        ) {
-          node.removeAttribute("style");
-        }
-
-        if (
-          node.tagName === "FONT" &&
-          node.attributes.length === 0
-        ) {
-          node.replaceWith(
-            ...Array.from(node.childNodes),
-          );
-        }
-      });
-
-    syncFromEditor();
+    runCommand("foreColor", "inherit");
     setTextColourOpen(false);
   }
 

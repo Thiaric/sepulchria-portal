@@ -32,6 +32,7 @@ export default async function CodexPage({
 
   return (
     <div
+      data-public-skin-surface="true"
       className={
         isEmbedded
           ? "relative h-dvh min-h-0 overflow-hidden"

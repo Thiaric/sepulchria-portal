@@ -10,6 +10,20 @@ import { useEffect } from "react";
 const STORAGE_KEY =
   "sepulchria:portal-skin";
 
+const SKIN_COOKIE_NAME =
+  "sepulchria:portal-skin";
+
+function writeSkinCookie(
+  skin: string,
+) {
+  if (!validSkinSlug(skin)) {
+    return;
+  }
+
+  document.cookie =
+    `${SKIN_COOKIE_NAME}=${encodeURIComponent(skin)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+}
+
 function validSkinSlug(
   value: string | null,
 ): value is string {
@@ -37,6 +51,8 @@ function applySkin(
   document.body.classList.add(
     "portal-skin-scope",
   );
+
+  writeSkinCookie(skin);
 }
 
 export function EmbeddedPortalSkinBridge() {

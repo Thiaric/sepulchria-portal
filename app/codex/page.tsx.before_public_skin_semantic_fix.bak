@@ -2,26 +2,27 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { EmbeddedPortalSkinBridge } from "@/components/portal/embedded-portal-skin-bridge";
 
-import { PublicRules } from "@/components/rules/public-rules";
-import { getPublicRules } from "@/lib/rules/get-public-rules";
+import { PublicCodex } from "@/components/codex/public-codex";
+import { getPublicCodexChapters } from "@/lib/codex/get-codex";
 
 export const metadata: Metadata = {
-  title: "Rules | Sepulchria",
+  title:
+    "The Codex of the First | Sepulchria",
   description:
-    "Official offgame rules and gameplay documentation for Sepulchria.",
+    "The ten chapters of the Codex of the First, the public lore record of Aureth and Sepulchria.",
 };
 
-type RulesPageProps = {
+type CodexPageProps = {
   searchParams?: Promise<{
     embedded?: string;
-    view?: string;
   }>;
 };
 
-export default async function RulesPage({
+export default async function CodexPage({
   searchParams,
-}: RulesPageProps) {
-  const data = await getPublicRules();
+}: CodexPageProps) {
+  const chapters =
+    await getPublicCodexChapters();
 
   const resolvedSearchParams =
     (await searchParams) ?? {};
@@ -29,17 +30,11 @@ export default async function RulesPage({
   const isEmbedded =
     resolvedSearchParams.embedded === "1";
 
-  const initialView =
-    resolvedSearchParams.view === "glossary"
-      ? "glossary"
-      : "rules";
-
   return (
     <div
-      data-public-skin-surface="true"
       className={
         isEmbedded
-          ? "relative h-full min-h-0 overflow-hidden"
+          ? "relative h-dvh min-h-0 overflow-hidden"
           : "relative"
       }
     >
@@ -53,9 +48,8 @@ export default async function RulesPage({
         </Link>
       ) : null}
 
-      <PublicRules
-        data={data}
-        initialView={initialView}
+      <PublicCodex
+        chapters={chapters}
         embedded={isEmbedded}
       />
     </div>

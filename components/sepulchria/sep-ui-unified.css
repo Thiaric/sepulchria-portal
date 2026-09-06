@@ -1329,9 +1329,9 @@ body[data-portal-skin="aelari-dawn"],
 html[data-portal-skin="ashen"],
 body[data-portal-skin="ashen"],
 .portal-skin-scope[data-portal-skin="ashen"] {
-  --sep-skin-c1: 41, 32, 82;
+  --sep-skin-c1: 41 32 82;
   --sep-skin-c2: 24 47 56;
-  --sep-skin-nav-link: 41, 32, 82;
+  --sep-skin-nav-link: 41 32 82;
   --sep-skin-nav-icon-filter: brightness(0) saturate(100%) invert(78.3%) sepia(21.8%) saturate(1286.9%) hue-rotate(106.6deg) brightness(26%) contrast(88.8%);
 
   --sep-colour-d9bd82: var(--sep-skin-c1);
@@ -1348,7 +1348,7 @@ html[data-portal-skin="ivory-archive"],
 body[data-portal-skin="ivory-archive"],
 .portal-skin-scope[data-portal-skin="ivory-archive"] {
   --sep-skin-c1: 169 183 194;
-  --sep-skin-c2: 204, 186, 191;
+  --sep-skin-c2: 204 186 191;
   --sep-skin-nav-link: 169 183 194;
   --sep-skin-nav-icon-filter: brightness(0) saturate(100%) invert(53.5%) sepia(7.5%) saturate(463.4%) hue-rotate(164.1deg) brightness(135.3%) contrast(88.9%);
 
@@ -2714,3 +2714,603 @@ body[data-portal-skin]:not([data-portal-skin="sepulchria"])
   }
 }
 
+/* =====================================================================
+   SEPULCHRIA SURGICAL PORTAL + PUBLIC SKIN AUTHORITY
+   =====================================================================
+   Cinder Original remains untouched.
+   Every other skin uses its C1/C2.
+   Authenticated portal and public/homepage surfaces are styled separately.
+   Background layers are NEVER flattened into C1/C2.
+   ===================================================================== */
+
+/* AUTHENTICATED PORTAL ONLY */
+
+:is(
+  html[data-portal-skin]:not([data-portal-skin="sepulchria"]),
+  body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+) [data-portal-shell] [data-portal-header] {
+  border-bottom-color: rgb(var(--sep-skin-c1) / .48) !important;
+}
+
+:is(
+  html[data-portal-skin]:not([data-portal-skin="sepulchria"]),
+  body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+) [data-portal-shell] [data-portal-navigation] {
+  border-color: rgb(var(--sep-skin-c1) / .42) !important;
+}
+
+:is(
+  html[data-portal-skin]:not([data-portal-skin="sepulchria"]),
+  body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+) [data-portal-shell] :is(
+  [data-portal-right-sidebar],
+  aside[aria-label="Context sidebar"][data-portal-column],
+  aside[aria-label="Context panel"]
+) {
+  border-color: rgb(var(--sep-skin-c1) / .42) !important;
+}
+
+:is(
+  html[data-portal-skin]:not([data-portal-skin="sepulchria"]),
+  body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+) [data-portal-shell] [data-skin-widget] {
+  border-color: rgb(var(--sep-skin-c1) / .55) !important;
+}
+
+:is(
+  html[data-portal-skin]:not([data-portal-skin="sepulchria"]),
+  body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+) [data-portal-shell]
+[data-skin-widget] [data-skin-role="primary"] {
+  color: rgb(var(--sep-skin-c1)) !important;
+  -webkit-text-fill-color: rgb(var(--sep-skin-c1)) !important;
+}
+
+:is(
+  html[data-portal-skin]:not([data-portal-skin="sepulchria"]),
+  body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+) [data-portal-shell]
+[data-skin-widget] [data-skin-role="secondary"] {
+  color: rgb(var(--sep-skin-c2)) !important;
+  -webkit-text-fill-color: rgb(var(--sep-skin-c2)) !important;
+}
+
+:is(
+  html[data-portal-skin="moonlit"],
+  body[data-portal-skin="moonlit"]
+) [data-portal-shell] [data-room-message-segment="action"] {
+  color: rgb(var(--sep-skin-c1)) !important;
+}
+
+:is(
+  html[data-portal-skin="moonlit"],
+  body[data-portal-skin="moonlit"]
+) [data-portal-shell] [data-room-message-segment="speech"] {
+  color: rgb(var(--sep-skin-c2)) !important;
+}
+
+:is(
+  html[data-portal-skin]:not([data-portal-skin="sepulchria"]),
+  body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+) [data-portal-shell]
+:is(
+  [class*="border-[rgb(var(--sep-colour-60482e))]"],
+  [class*="border-[rgb(var(--sep-colour-614b31))]"],
+  [class*="border-[rgb(var(--sep-colour-654c2f))]"],
+  [class*="border-[rgb(var(--sep-colour-6e5535))]"],
+  [class*="border-[rgb(var(--sep-colour-765937))]"],
+  [class*="border-[rgb(var(--sep-colour-765735))]"],
+  [class*="border-[rgb(var(--sep-colour-59432c))]"],
+  [class*="border-[rgb(var(--sep-colour-8d6d3e))]"],
+  [class*="border-[rgb(var(--sep-colour-8f6a3d))]"],
+  [class*="border-[rgb(var(--sep-colour-80603a))]"],
+  [class*="border-[rgb(var(--sep-colour-5c472f))]"],
+  [class*="border-[rgb(var(--sep-colour-7b5d36))]"]
+) {
+  border-color: rgb(var(--sep-skin-c1) / .52) !important;
+}
+
+/* PUBLIC / HOMEPAGE / LEGAL / AUTH / CODEX / RULES
+   Preserve all dark backgrounds and visual depth. */
+
+/* Major frames: subdued C1. */
+:is(
+  html[data-portal-skin]:not([data-portal-skin="sepulchria"]),
+  body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+) [data-public-skin-surface="true"]
+:is(
+  [class*="border-[rgb(var(--sep-colour-60482e))]"],
+  [class*="border-[rgb(var(--sep-colour-6b5032))]"],
+  [class*="border-[rgb(var(--sep-colour-654c2f))]"],
+  [class*="border-[rgb(var(--sep-colour-795a34))]"]
+) {
+  border-color: rgb(var(--sep-skin-c1) / .34) !important;
+}
+
+/* Inner frame detail: even softer C1. */
+:is(
+  html[data-portal-skin]:not([data-portal-skin="sepulchria"]),
+  body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+) [data-public-skin-surface="true"]
+:is(
+  [class*="border-[rgb(var(--sep-colour-9a7547))]"],
+  [class*="border-[rgb(var(--sep-colour-89653b))]"],
+  [class*="border-[rgb(var(--sep-colour-765a36))]"]
+) {
+  border-color: rgb(var(--sep-skin-c1) / .20) !important;
+}
+
+/* Active controls/cards. */
+:is(
+  html[data-portal-skin]:not([data-portal-skin="sepulchria"]),
+  body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+) [data-public-skin-surface="true"]
+:is(
+  [class*="border-[rgb(var(--sep-colour-9b7443))]"],
+  [class*="border-[rgb(var(--sep-colour-9a7445))]"],
+  [class*="border-[rgb(var(--sep-colour-987344))]"],
+  [class*="border-[rgb(var(--sep-colour-8d6d3e))]"]
+) {
+  border-color: rgb(var(--sep-skin-c1) / .58) !important;
+}
+
+/* Primary display/headline text. */
+:is(
+  html[data-portal-skin]:not([data-portal-skin="sepulchria"]),
+  body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+) [data-public-skin-surface="true"]
+:is(
+  [class*="text-[rgb(var(--sep-colour-ead8b4))]"],
+  [class*="text-[rgb(var(--sep-colour-ead3a6))]"],
+  [class*="text-[rgb(var(--sep-colour-e5cda2))]"],
+  [class*="text-[rgb(var(--sep-colour-e4cda1))]"],
+  [class*="text-[rgb(var(--sep-colour-e0c99e))]"],
+  [class*="text-[rgb(var(--sep-colour-d7bd91))]"],
+  [class*="text-[rgb(var(--sep-colour-e2c38e))]"],
+  [class*="text-[rgb(var(--sep-colour-f1d7a5))]"]
+) {
+  color: rgb(var(--sep-skin-c1)) !important;
+  -webkit-text-fill-color: rgb(var(--sep-skin-c1)) !important;
+}
+
+/* Eyebrows/small ornament. */
+:is(
+  html[data-portal-skin]:not([data-portal-skin="sepulchria"]),
+  body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+) [data-public-skin-surface="true"]
+:is(
+  [class*="text-[rgb(var(--sep-colour-896b45))]"],
+  [class*="text-[rgb(var(--sep-colour-89653b))]"],
+  [class*="text-[rgb(var(--sep-colour-a47a43))]"],
+  [class*="text-[rgb(var(--sep-colour-80684c))]"],
+  [class*="text-[rgb(var(--sep-colour-b89a6c))]"]
+) {
+  color: rgb(var(--sep-skin-c1) / .74) !important;
+  -webkit-text-fill-color: rgb(var(--sep-skin-c1) / .74) !important;
+}
+
+/* Body/supporting copy. */
+:is(
+  html[data-portal-skin]:not([data-portal-skin="sepulchria"]),
+  body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+) [data-public-skin-surface="true"]
+:is(
+  [class*="text-[rgb(var(--sep-colour-e8dcc4))]"],
+  [class*="text-[rgb(var(--sep-colour-d8cbb5))]"],
+  [class*="text-[rgb(var(--sep-colour-b7a78f))]"],
+  [class*="text-[rgb(var(--sep-colour-bda57f))]"],
+  [class*="text-[rgb(var(--sep-colour-8e7b61))]"]
+) {
+  color: rgb(var(--sep-skin-c2) / .88) !important;
+  -webkit-text-fill-color: rgb(var(--sep-skin-c2) / .88) !important;
+}
+
+/* Homepage atmosphere follows the skin without replacing backgrounds. */
+:is(
+  html[data-portal-skin]:not([data-portal-skin="sepulchria"]),
+  body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+) [data-public-skin-surface="true"] .homepage-ember {
+  background-color: rgb(var(--sep-skin-c1) / .82) !important;
+  box-shadow: 0 0 8px rgb(var(--sep-skin-c1) / .42) !important;
+}
+
+:is(
+  html[data-portal-skin]:not([data-portal-skin="sepulchria"]),
+  body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+) [data-public-skin-surface="true"] .homepage-fog {
+  background-image:
+    radial-gradient(
+      ellipse at center,
+      rgb(var(--sep-skin-c2) / .055),
+      transparent 67%
+    ) !important;
+}
+
+/* Public fields/buttons keep dark fills; only their accents change. */
+:is(
+  html[data-portal-skin]:not([data-portal-skin="sepulchria"]),
+  body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+) [data-public-skin-surface="true"]
+:is(input, select, textarea, button, a)[class*="border"] {
+  border-color: rgb(var(--sep-skin-c1) / .46) !important;
+}
+
+:is(
+  html[data-portal-skin]:not([data-portal-skin="sepulchria"]),
+  body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+) [data-public-skin-surface="true"]
+:is(input, select, textarea):focus {
+  border-color: rgb(var(--sep-skin-c1)) !important;
+}
+
+/* Public modal frame hierarchy. */
+:is(
+  html[data-portal-skin]:not([data-portal-skin="sepulchria"]),
+  body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+) [data-public-skin-surface="true"] > section[class*="border"] {
+  border-color: rgb(var(--sep-skin-c1) / .38) !important;
+}
+
+:is(
+  html[data-portal-skin]:not([data-portal-skin="sepulchria"]),
+  body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+) [data-public-skin-surface="true"] > section[class*="border"]
+> div[class*="border-b"] {
+  border-bottom-color: rgb(var(--sep-skin-c1) / .30) !important;
+}
+
+/* Cinder Original is intentionally untouched. */
+
+
+/* =====================================================================
+   CINDER ORIGINAL EXPLICIT PUBLIC SKIN AUTHORITY
+   =====================================================================
+   Cinder is the default skin, but it must still participate in the SAME
+   public/homepage skin system as every other skin.
+
+   Canonical Cinder semantic palette:
+     C1 = 169 138 96
+     C2 = 211 194 170
+
+   This block does NOT flatten backgrounds. It mirrors the semantic public
+   hierarchy used by the other skins while preserving Cinder's original
+   dark layered surfaces.
+   ===================================================================== */
+
+:is(
+  html[data-portal-skin="sepulchria"],
+  body[data-portal-skin="sepulchria"]
+) {
+  --sep-skin-c1: 169 138 96;
+  --sep-skin-c2: 211 194 170;
+  --sep-global-c1: 169 138 96;
+  --sep-global-c2: 211 194 170;
+  --sep-skin-nav-link: 169 138 96;
+}
+
+/* Major public frames. */
+:is(
+  html[data-portal-skin="sepulchria"],
+  body[data-portal-skin="sepulchria"]
+) [data-public-skin-surface="true"]
+:is(
+  [class*="border-[rgb(var(--sep-colour-60482e))]"],
+  [class*="border-[rgb(var(--sep-colour-6b5032))]"],
+  [class*="border-[rgb(var(--sep-colour-654c2f))]"],
+  [class*="border-[rgb(var(--sep-colour-795a34))]"]
+) {
+  border-color: rgb(var(--sep-skin-c1) / .34) !important;
+}
+
+/* Inner decorative frame details. */
+:is(
+  html[data-portal-skin="sepulchria"],
+  body[data-portal-skin="sepulchria"]
+) [data-public-skin-surface="true"]
+:is(
+  [class*="border-[rgb(var(--sep-colour-9a7547))]"],
+  [class*="border-[rgb(var(--sep-colour-89653b))]"],
+  [class*="border-[rgb(var(--sep-colour-765a36))]"]
+) {
+  border-color: rgb(var(--sep-skin-c1) / .20) !important;
+}
+
+/* Active controls/cards. */
+:is(
+  html[data-portal-skin="sepulchria"],
+  body[data-portal-skin="sepulchria"]
+) [data-public-skin-surface="true"]
+:is(
+  [class*="border-[rgb(var(--sep-colour-9b7443))]"],
+  [class*="border-[rgb(var(--sep-colour-9a7445))]"],
+  [class*="border-[rgb(var(--sep-colour-987344))]"],
+  [class*="border-[rgb(var(--sep-colour-8d6d3e))]"]
+) {
+  border-color: rgb(var(--sep-skin-c1) / .58) !important;
+}
+
+/* Primary display/headline text. */
+:is(
+  html[data-portal-skin="sepulchria"],
+  body[data-portal-skin="sepulchria"]
+) [data-public-skin-surface="true"]
+:is(
+  [class*="text-[rgb(var(--sep-colour-ead8b4))]"],
+  [class*="text-[rgb(var(--sep-colour-ead3a6))]"],
+  [class*="text-[rgb(var(--sep-colour-e5cda2))]"],
+  [class*="text-[rgb(var(--sep-colour-e4cda1))]"],
+  [class*="text-[rgb(var(--sep-colour-e0c99e))]"],
+  [class*="text-[rgb(var(--sep-colour-d7bd91))]"],
+  [class*="text-[rgb(var(--sep-colour-e2c38e))]"],
+  [class*="text-[rgb(var(--sep-colour-f1d7a5))]"]
+) {
+  color: rgb(var(--sep-skin-c1)) !important;
+  -webkit-text-fill-color: rgb(var(--sep-skin-c1)) !important;
+}
+
+/* Eyebrows and small ornament. */
+:is(
+  html[data-portal-skin="sepulchria"],
+  body[data-portal-skin="sepulchria"]
+) [data-public-skin-surface="true"]
+:is(
+  [class*="text-[rgb(var(--sep-colour-896b45))]"],
+  [class*="text-[rgb(var(--sep-colour-89653b))]"],
+  [class*="text-[rgb(var(--sep-colour-a47a43))]"],
+  [class*="text-[rgb(var(--sep-colour-80684c))]"],
+  [class*="text-[rgb(var(--sep-colour-b89a6c))]"]
+) {
+  color: rgb(var(--sep-skin-c1) / .74) !important;
+  -webkit-text-fill-color: rgb(var(--sep-skin-c1) / .74) !important;
+}
+
+/* Supporting/body copy. */
+:is(
+  html[data-portal-skin="sepulchria"],
+  body[data-portal-skin="sepulchria"]
+) [data-public-skin-surface="true"]
+:is(
+  [class*="text-[rgb(var(--sep-colour-e8dcc4))]"],
+  [class*="text-[rgb(var(--sep-colour-d8cbb5))]"],
+  [class*="text-[rgb(var(--sep-colour-b7a78f))]"],
+  [class*="text-[rgb(var(--sep-colour-bda57f))]"],
+  [class*="text-[rgb(var(--sep-colour-8e7b61))]"]
+) {
+  color: rgb(var(--sep-skin-c2) / .88) !important;
+  -webkit-text-fill-color: rgb(var(--sep-skin-c2) / .88) !important;
+}
+
+/* Homepage atmosphere. */
+:is(
+  html[data-portal-skin="sepulchria"],
+  body[data-portal-skin="sepulchria"]
+) [data-public-skin-surface="true"] .homepage-ember {
+  background-color: rgb(var(--sep-skin-c1) / .82) !important;
+  box-shadow: 0 0 8px rgb(var(--sep-skin-c1) / .42) !important;
+}
+
+:is(
+  html[data-portal-skin="sepulchria"],
+  body[data-portal-skin="sepulchria"]
+) [data-public-skin-surface="true"] .homepage-fog {
+  background-image:
+    radial-gradient(
+      ellipse at center,
+      rgb(var(--sep-skin-c2) / .055),
+      transparent 67%
+    ) !important;
+}
+
+/* Public controls/fields. */
+:is(
+  html[data-portal-skin="sepulchria"],
+  body[data-portal-skin="sepulchria"]
+) [data-public-skin-surface="true"]
+:is(input, select, textarea, button, a)[class*="border"] {
+  border-color: rgb(var(--sep-skin-c1) / .46) !important;
+}
+
+:is(
+  html[data-portal-skin="sepulchria"],
+  body[data-portal-skin="sepulchria"]
+) [data-public-skin-surface="true"]
+:is(input, select, textarea):focus {
+  border-color: rgb(var(--sep-skin-c1)) !important;
+}
+
+/* Public modal outer frame/header. */
+:is(
+  html[data-portal-skin="sepulchria"],
+  body[data-portal-skin="sepulchria"]
+) [data-public-skin-surface="true"] > section[class*="border"] {
+  border-color: rgb(var(--sep-skin-c1) / .38) !important;
+}
+
+:is(
+  html[data-portal-skin="sepulchria"],
+  body[data-portal-skin="sepulchria"]
+) [data-public-skin-surface="true"] > section[class*="border"]
+> div[class*="border-b"] {
+  border-bottom-color: rgb(var(--sep-skin-c1) / .30) !important;
+}
+
+/* Authenticated portal widgets still use canonical Cinder C1/C2 variables. */
+:is(
+  html[data-portal-skin="sepulchria"],
+  body[data-portal-skin="sepulchria"]
+) [data-portal-shell] [data-skin-widget] [data-skin-role="primary"] {
+  color: rgb(var(--sep-skin-c1)) !important;
+}
+
+:is(
+  html[data-portal-skin="sepulchria"],
+  body[data-portal-skin="sepulchria"]
+) [data-portal-shell] [data-skin-widget] [data-skin-role="secondary"] {
+  color: rgb(var(--sep-skin-c2)) !important;
+}
+
+
+/* =====================================================================
+   ROBUST SEMANTIC ROW HOVERS - LOCAL CLASS SIGNATURES
+   =====================================================================
+   Uses the actual row class signatures instead of modifying TSX markup,
+   so it survives local formatting/code drift.
+
+   Cinder keeps its existing hand-tuned hover.
+   Every non-Cinder skin derives hover from its own C1.
+   ===================================================================== */
+
+/* Conversations */
+:is(
+  html[data-portal-skin]:not([data-portal-skin="sepulchria"]),
+  body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+)
+[data-portal-shell]
+a[class*="group flex items-center gap-3 border p-3 transition"]:hover {
+  background-color:
+    color-mix(
+      in srgb,
+      rgb(var(--sep-skin-c1)) 10%,
+      rgb(var(--sep-colour-100c09))
+    ) !important;
+  border-color:
+    rgb(var(--sep-skin-c1) / .52) !important;
+  box-shadow:
+    inset 2px 0 0 rgb(var(--sep-skin-c1) / .28) !important;
+}
+
+/* Forum sections */
+:is(
+  html[data-portal-skin]:not([data-portal-skin="sepulchria"]),
+  body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+)
+[data-portal-shell]
+a[class*="group relative block overflow-hidden px-5 py-5 transition"]:hover {
+  background-color:
+    color-mix(
+      in srgb,
+      rgb(var(--sep-skin-c1)) 10%,
+      rgb(var(--sep-colour-15100d))
+    ) !important;
+  box-shadow:
+    inset 2px 0 0 rgb(var(--sep-skin-c1) / .28) !important;
+}
+
+/* Forum topics */
+:is(
+  html[data-portal-skin]:not([data-portal-skin="sepulchria"]),
+  body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+)
+[data-portal-shell]
+a[class*="group relative grid gap-4 border transition"]:hover {
+  background-color:
+    color-mix(
+      in srgb,
+      rgb(var(--sep-skin-c1)) 10%,
+      rgb(var(--sep-colour-100c09))
+    ) !important;
+  border-color:
+    rgb(var(--sep-skin-c1) / .42) !important;
+  box-shadow:
+    inset 2px 0 0 rgb(var(--sep-skin-c1) / .28) !important;
+}
+
+
+/* =====================================================================
+   REGISTRATION APPLICATION BADGE - FLOATING STACK AUTHORITY
+   =====================================================================
+   Keep the /admin/registrations header counter on the TOP-RIGHT like the
+   other floating counters, fully opaque, and above decorative frames.
+   ===================================================================== */
+
+[data-registration-application-badge="floating"] {
+  right: -0.5rem !important;
+  left: auto !important;
+  top: -0.5rem !important;
+  z-index: 200 !important;
+  isolation: isolate !important;
+  opacity: 1 !important;
+  background-color: #7a291f !important;
+  border-color: #e1a14d !important;
+  color: #ffe1ac !important;
+  -webkit-text-fill-color: #ffe1ac !important;
+  box-shadow:
+    0 0 0 1px rgb(0 0 0 / .22),
+    0 0 10px rgb(225 161 77 / .45) !important;
+}
+
+
+/* =====================================================================
+   FORUM TOPIC ROW HOVER - ARTICLE TARGET FIX
+   =====================================================================
+   Topic rows are <article data-forum-topic-row="true">, not <a>.
+   The previous semantic hover patch therefore never matched them.
+   Cinder keeps its existing hand-tuned hover.
+   Every non-Cinder skin derives the topic hover from its own C1.
+   ===================================================================== */
+
+:is(
+  html[data-portal-skin]:not([data-portal-skin="sepulchria"]),
+  body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+)
+[data-portal-shell]
+[data-forum-topic-row="true"]:hover {
+  background-color:
+    color-mix(
+      in srgb,
+      rgb(var(--sep-skin-c1)) 11%,
+      rgb(var(--sep-colour-100c09))
+    ) !important;
+
+  border-color:
+    rgb(var(--sep-skin-c1) / .44) !important;
+
+  box-shadow:
+    inset 2px 0 0 rgb(var(--sep-skin-c1) / .30) !important;
+}
+
+/* Unread topic rows keep a slightly stronger hover so their unread state
+   remains visually distinct while still following the active skin. */
+:is(
+  html[data-portal-skin]:not([data-portal-skin="sepulchria"]),
+  body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+)
+[data-portal-shell]
+[data-forum-topic-row="true"][class*="bg-[rgb(var(--sep-colour-1b130d))]"]:hover {
+  background-color:
+    color-mix(
+      in srgb,
+      rgb(var(--sep-skin-c1)) 14%,
+      rgb(var(--sep-colour-1b130d))
+    ) !important;
+
+  border-color:
+    rgb(var(--sep-skin-c1) / .58) !important;
+}
+
+
+/* =====================================================================
+   PRIVATE MESSAGES CONVERSATION LIST - SEMANTIC HOVER
+   =====================================================================
+   Applies to EVERY skin, including Cinder Original.
+   Hover derives from the active skin C1 instead of fixed legacy tokens.
+   ===================================================================== */
+
+:is(
+  html[data-portal-skin],
+  body[data-portal-skin]
+) [data-portal-shell] [data-message-conversation-row="true"]:hover {
+  background-color:
+    color-mix(
+      in srgb,
+      rgb(var(--sep-skin-c1, 169 138 96)) 10%,
+      rgb(var(--sep-colour-15100d))
+    ) !important;
+
+  border-color:
+    rgb(var(--sep-skin-c1, 169 138 96) / .52) !important;
+
+  box-shadow:
+    inset 2px 0 0
+      rgb(var(--sep-skin-c1, 169 138 96) / .30) !important;
+}

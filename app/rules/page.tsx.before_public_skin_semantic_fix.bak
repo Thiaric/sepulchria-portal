@@ -36,7 +36,6 @@ export default async function RulesPage({
 
   return (
     <div
-      data-public-skin-surface="true"
       className={
         isEmbedded
           ? "relative h-full min-h-0 overflow-hidden"

@@ -23,9 +23,8 @@ export function RegistrationApplicationBadge({
     return (
       <span
         data-sep-counter-badge="true"
-        data-registration-application-badge="floating"
         title={title}
-        className={`absolute -right-2 -top-2 z-[200] h-5 min-w-5 px-1 text-[8px] shadow-[0_0_10px_rgba(225,161,77,0.45)] ${baseClass}`}
+        className={`absolute -left-2 -top-2 h-5 min-w-5 px-1 text-[8px] ${baseClass}`}
       >
         {label}
       </span>
@@ -35,7 +34,6 @@ export function RegistrationApplicationBadge({
   return (
     <span
       data-sep-counter-badge="true"
-      data-registration-application-badge="admin-nav"
       title={title}
       className={`ml-auto h-4 min-w-4 px-1 text-[7px] ${baseClass}`}
     >

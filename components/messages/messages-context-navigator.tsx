@@ -543,7 +543,7 @@ export function MessagesContextNavigator({
   return (
     <div className="flex h-full min-h-0 flex-col">
       <header className="shrink-0">
-        <p className="text-[9px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-876a46))]">
+        <p className="text-[9px] uppercase tracking-[0.3em] text-[rgb(var(--sep-skin-c2,211_194_170))]">
           Correspondence
         </p>
 
@@ -598,7 +598,7 @@ export function MessagesContextNavigator({
       <div className="mt-5 flex min-h-0 flex-1 flex-col border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-4">
         <div className="flex shrink-0 items-center justify-between gap-3">
           <div>
-            <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))]">
+            <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-skin-c2,211_194_170))]">
               Recent conversations
             </p>
 

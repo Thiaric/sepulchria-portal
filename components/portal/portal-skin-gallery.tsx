@@ -133,6 +133,7 @@ export function PortalSkinGallery({
 
         <div
           data-portal-skin={selectedSkin}
+          data-selected-skin-swatch="true"
           className="portal-skin-scope h-11 w-11 shrink-0 rounded-full"
           style={{
             background: swatchBackground(),
@@ -301,6 +302,11 @@ export function PortalSkinGallery({
          *   primary    = --sep-skin-c1
          *   secondary  = --sep-skin-c2
          */
+        [data-selected-skin-swatch="true"][data-portal-skin="sepulchria"] {
+          --sep-skin-c1: 169 138 96 !important;
+          --sep-skin-c2: 211 194 170 !important;
+        }
+
         /* CINDER ORIGINAL PREVIEW DEFAULT TOKENS
          * sepulchria is the default skin, so it does not have the same
          * explicit nested skin block as the non-default skins. Without this,

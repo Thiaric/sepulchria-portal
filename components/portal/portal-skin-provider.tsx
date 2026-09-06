@@ -31,6 +31,23 @@ type PortalSkinContextValue = {
 const STORAGE_KEY =
   "sepulchria:portal-skin";
 
+const SKIN_COOKIE_NAME =
+  "sepulchria:portal-skin";
+
+function writeSkinCookie(
+  skin: PortalSkin,
+) {
+  if (
+    typeof document === "undefined" ||
+    !validSkinSlug(skin)
+  ) {
+    return;
+  }
+
+  document.cookie =
+    `${SKIN_COOKIE_NAME}=${encodeURIComponent(skin)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+}
+
 const PortalSkinContext =
   createContext<PortalSkinContextValue | null>(null);
 
@@ -97,8 +114,10 @@ const [isEmbeddedPortal, setIsEmbeddedPortal] =
     if (validSkinSlug(cached)) {
       setSkin(cached);
       applySkinToDocument(cached);
+      writeSkinCookie(cached);
     } else {
       applySkinToDocument("sepulchria");
+      writeSkinCookie("sepulchria");
     }
 
     async function loadAccountSkin() {
@@ -150,6 +169,7 @@ const [isEmbeddedPortal, setIsEmbeddedPortal] =
       setSelectedSkin(resolved);
       setSkin(resolved);
       applySkinToDocument(resolved);
+      writeSkinCookie(resolved);
 
       writePreferenceStorage(
         STORAGE_KEY,
@@ -176,6 +196,7 @@ const [isEmbeddedPortal, setIsEmbeddedPortal] =
       setSelectedSkin(event.newValue);
       setSkin(event.newValue);
       applySkinToDocument(event.newValue);
+      writeSkinCookie(event.newValue);
     }
 
     window.addEventListener("storage", onStorage);
@@ -189,6 +210,7 @@ const [isEmbeddedPortal, setIsEmbeddedPortal] =
     setSelectedSkin(nextSkin);
     setSkin(nextSkin);
     applySkinToDocument(nextSkin);
+    writeSkinCookie(nextSkin);
     writePreferenceStorage(STORAGE_KEY, nextSkin);
   }
 

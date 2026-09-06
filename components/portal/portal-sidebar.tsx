@@ -1905,29 +1905,26 @@ export function PortalSidebar({
         </div>
 
         {premiumExpanded ? (
-          <div
+          <div data-premium-submenu="true"
             id="premium-submenu"
             className="mt-1 border-l border-[rgb(var(--sep-colour-60482e))]/40 pl-2"
           >
             {hasCosmetics
-              ? renderNavigationItem({
-                  ...cosmeticsItem,
-                  subItem: true,
-                })
+              ? renderNavigationItem(
+                  cosmeticsItem,
+                )
               : null}
 
             {hasFriendListFeature
-              ? renderNavigationItem({
-                  ...friendsItem,
-                  subItem: true,
-                })
+              ? renderNavigationItem(
+                  friendsItem,
+                )
               : null}
 
             {hasPrivateLocationAccess
-              ? renderNavigationItem({
-                  ...privateLocationItem,
-                  subItem: true,
-                })
+              ? renderNavigationItem(
+                  privateLocationItem,
+                )
               : null}
           </div>
         ) : null}
