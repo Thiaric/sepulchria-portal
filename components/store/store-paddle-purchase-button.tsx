@@ -13,6 +13,7 @@ const initialState: StorePaddleState = {
   error: null,
   checkoutUrl: null,
   transactionId: null,
+  customerEmail: null,
 };
 
 let paddlePromise: Promise<Paddle | undefined> | null = null;
@@ -51,7 +52,7 @@ export function StorePaddlePurchaseButton({
   const openedTransactionRef = useRef<string | null>(null);
 
   useEffect(() => {
-    if (!state.ok || !state.transactionId) return;
+    if (!state.ok || !state.transactionId || !state.customerEmail) return;
     if (openedTransactionRef.current === state.transactionId) return;
 
     openedTransactionRef.current = state.transactionId;
@@ -65,6 +66,12 @@ export function StorePaddlePurchaseButton({
 
         paddle.Checkout.open({
           transactionId: state.transactionId!,
+          customer: {
+            email: state.customerEmail!,
+          },
+          settings: {
+            allowLogout: false,
+          },
         });
       })
       .catch((error) => {
@@ -75,7 +82,7 @@ export function StorePaddlePurchaseButton({
             : "Paddle checkout could not be opened.",
         );
       });
-  }, [state.ok, state.transactionId]);
+  }, [state.ok, state.transactionId, state.customerEmail]);
 
   return (
     <form action={action} className="mt-2">

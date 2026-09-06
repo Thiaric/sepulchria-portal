@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import { StoreLiveFilterBar } from "@/components/store/store-live-filter-bar";
 import { StorePaddlePurchaseButton } from "@/components/store/store-paddle-purchase-button";
 import { StoreRemnantPurchaseButton } from "@/components/store/store-remnant-purchase-button";
+import { StoreMusicPreview } from "@/components/store/store-music-preview";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
 type StoreProduct = {
@@ -58,6 +60,7 @@ type Cosmetic = {
 type MusicTrack = {
   id: string;
   name: string;
+  storage_path: string;
 };
 
 const CATEGORY_LABELS: Record<StoreProduct["category"], string> = {
@@ -97,6 +100,8 @@ export default async function StorePage() {
   if (!user) {
     redirect("/auth/login");
   }
+
+  const admin = createAdminClient();
 
   const { data: character } = await supabase
     .from("characters")
@@ -146,9 +151,9 @@ export default async function StorePage() {
       .from("cosmetic_items")
       .select("id, name, category"),
 
-    supabase
+    admin
       .from("music_tracks")
-      .select("id, name")
+      .select("id, name, storage_path")
       .eq("is_active", true)
       .eq("is_personal_selectable", true)
       .order("sort_order", { ascending: true })
@@ -221,6 +226,21 @@ export default async function StorePage() {
 
   const musicTracks =
     (musicResult.data ?? []) as MusicTrack[];
+
+  const musicPreviewUrls = new Map<string, string>();
+  await Promise.all(
+    musicTracks.map(async (track) => {
+      if (!track.storage_path) return;
+
+      const { data, error } = await admin.storage
+        .from("music")
+        .createSignedUrl(track.storage_path, 15 * 60);
+
+      if (!error && data?.signedUrl) {
+        musicPreviewUrls.set(track.id, data.signedUrl);
+      }
+    }),
+  );
 
   const ownedSkinIds = new Set(
     (skinEntitlementsResult.data ?? []).map(
@@ -371,6 +391,7 @@ export default async function StorePage() {
                     skinDetails={skinDetails}
                     cosmeticNames={cosmeticNames}
                     musicNames={musicNames}
+                    musicPreviewUrls={musicPreviewUrls}
                     featured
                   />
                 ))}
@@ -413,6 +434,7 @@ export default async function StorePage() {
                     skinDetails={skinDetails}
                     cosmeticNames={cosmeticNames}
                     musicNames={musicNames}
+                    musicPreviewUrls={musicPreviewUrls}
                   />
                 ))}
               </div>
@@ -439,6 +461,7 @@ function StoreProductCard({
   skinDetails,
   cosmeticNames,
   musicNames,
+  musicPreviewUrls,
   featured = false,
 }: {
   product: StoreProduct;
@@ -449,6 +472,7 @@ function StoreProductCard({
   skinDetails: Map<string, Skin>;
   cosmeticNames: Map<string, string>;
   musicNames: Map<string, string>;
+  musicPreviewUrls: Map<string, string>;
   featured?: boolean;
 }) {
   const skinGrant = grants.find(
@@ -461,6 +485,22 @@ function StoreProductCard({
     skinGrant?.portal_skin_id
       ? skinDetails.get(skinGrant.portal_skin_id)
       : null;
+
+  const musicGrant = grants.find(
+    (grant) =>
+      grant.grant_type === "music" &&
+      grant.music_track_id,
+  );
+
+  const musicPreviewUrl =
+    musicGrant?.music_track_id
+      ? musicPreviewUrls.get(musicGrant.music_track_id) ?? null
+      : null;
+
+  const musicPreviewName =
+    musicGrant?.music_track_id
+      ? musicNames.get(musicGrant.music_track_id) ?? product.name
+      : product.name;
 
   const grantLabels = grants.map((grant) => {
     if (
@@ -585,6 +625,13 @@ function StoreProductCard({
           {product.description ||
             "A premium unlock from the Sepulchria Store."}
         </p>
+
+        {product.category === "music" && musicPreviewUrl ? (
+          <StoreMusicPreview
+            src={musicPreviewUrl}
+            title={musicPreviewName}
+          />
+        ) : null}
 
         {grantLabels.length ? (
           <div className="mt-3 border-t border-[rgb(var(--sep-colour-60482e))]/25 pt-3">

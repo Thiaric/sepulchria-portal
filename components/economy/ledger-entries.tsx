@@ -6,15 +6,45 @@ import { formatRemnants, formatSignedRemnants } from "@/lib/economy/currency";
 export type LedgerFilterEntry = {
   id: string;
   amount: number | string;
-  balance_after: number | string;
+  balance_after: number | string | null;
   reason: string;
   created_at: string;
+  kind?: "remnants" | "money";
+  currency?: string | null;
+  money_amount_minor?: number | string | null;
 };
 
 type Props = {
   entries: LedgerFilterEntry[];
   compact?: boolean;
 };
+
+function moneyLabel(entry: LedgerFilterEntry) {
+  const amountMinor = Math.abs(Number(entry.money_amount_minor ?? entry.amount ?? 0));
+  const currency = entry.currency ?? "GBP";
+
+  try {
+    return new Intl.NumberFormat("en-GB", {
+      style: "currency",
+      currency,
+    }).format(amountMinor / 100);
+  } catch {
+    return `${currency} ${(amountMinor / 100).toFixed(2)}`;
+  }
+}
+
+function amountLabel(entry: LedgerFilterEntry) {
+  if (entry.kind === "money") {
+    return `−${moneyLabel(entry)}`;
+  }
+
+  return formatSignedRemnants(Number(entry.amount));
+}
+
+function movementValue(entry: LedgerFilterEntry) {
+  if (entry.kind === "money") return -Math.abs(Number(entry.money_amount_minor ?? 0));
+  return Number(entry.amount);
+}
 
 export function LedgerEntries({ entries, compact = false }: Props) {
   const [search, setSearch] = useState("");
@@ -25,7 +55,7 @@ export function LedgerEntries({ entries, compact = false }: Props) {
     const needle = search.trim().toLowerCase();
 
     return entries.filter((entry) => {
-      const amount = Number(entry.amount);
+      const amount = movementValue(entry);
       if (movement === "positive" && amount <= 0) return false;
       if (movement === "negative" && amount >= 0) return false;
 
@@ -51,7 +81,7 @@ export function LedgerEntries({ entries, compact = false }: Props) {
           type="search"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search shop, Item, type, reason..."
+          placeholder="Search shop, item, type, reason..."
           className="min-w-0 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0a08))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
         />
         <input
@@ -84,27 +114,30 @@ export function LedgerEntries({ entries, compact = false }: Props) {
 
       <div className={compact ? "max-h-[230px] space-y-1.5 overflow-y-auto p-1 pr-1" : "max-h-[520px] overflow-y-auto"}>
         {filtered.length ? (
-          filtered.map((entry) =>
-            compact ? (
-              <div key={entry.id} className="grid gap-1 border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 sm:grid-cols-[90px_minmax(0,1fr)_110px_120px]">
-                <span className={Number(entry.amount) > 0 ? "text-[10px] text-emerald-400" : "text-[10px] text-red-400"}>
-                  {formatSignedRemnants(Number(entry.amount))}
-                </span>
+          filtered.map((entry) => {
+            const isMoney = entry.kind === "money";
+            const amount = movementValue(entry);
+            const amountClass = amount > 0 ? "text-emerald-400" : "text-red-400";
+            const balanceText = isMoney
+              ? "Real-money Store purchase"
+              : `Balance ${formatRemnants(Number(entry.balance_after ?? 0))}`;
+
+            return compact ? (
+              <div key={entry.id} className="grid gap-1 border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 sm:grid-cols-[90px_minmax(0,1fr)_135px_120px]">
+                <span className={`text-[10px] ${amountClass}`}>{amountLabel(entry)}</span>
                 <span className="min-w-0 text-[9px] text-[rgb(var(--sep-colour-a99578))]">{entry.reason}</span>
-                <span className="text-right text-[8px] text-[rgb(var(--sep-colour-756958))]">Balance {formatRemnants(Number(entry.balance_after))}</span>
+                <span className="text-right text-[8px] text-[rgb(var(--sep-colour-756958))]">{balanceText}</span>
                 <time className="text-right text-[8px] text-[rgb(var(--sep-colour-665b4d))]">{new Date(entry.created_at).toLocaleString("en-GB")}</time>
               </div>
             ) : (
-              <div key={entry.id} className="grid gap-2 border-b border-[rgb(var(--sep-colour-59432c))]/25 px-4 py-3 last:border-b-0 sm:grid-cols-[120px_minmax(0,1fr)_130px_145px] sm:items-center sm:px-5">
-                <span className={Number(entry.amount) > 0 ? "text-[11px] text-emerald-400" : "text-[11px] text-red-400"}>
-                  {formatSignedRemnants(Number(entry.amount))}
-                </span>
+              <div key={entry.id} className="grid gap-2 border-b border-[rgb(var(--sep-colour-59432c))]/25 px-4 py-3 last:border-b-0 sm:grid-cols-[120px_minmax(0,1fr)_150px_145px] sm:items-center sm:px-5">
+                <span className={`text-[11px] ${amountClass}`}>{amountLabel(entry)}</span>
                 <span className="min-w-0 text-[10px] leading-5 text-[rgb(var(--sep-colour-a99578))]">{entry.reason}</span>
-                <span className="text-[9px] text-[rgb(var(--sep-colour-756958))] sm:text-right">Balance {formatRemnants(Number(entry.balance_after))}</span>
+                <span className="text-[9px] text-[rgb(var(--sep-colour-756958))] sm:text-right">{balanceText}</span>
                 <time className="text-[8px] text-[rgb(var(--sep-colour-665b4d))] sm:text-right">{new Date(entry.created_at).toLocaleString("en-GB")}</time>
               </div>
-            ),
-          )
+            );
+          })
         ) : (
           <p className="px-5 py-8 text-center text-[10px] text-[rgb(var(--sep-colour-756958))]">No Ledger transactions match these filters.</p>
         )}
