@@ -692,8 +692,9 @@ export function PortalSidebar({
       }
 
       const [
-  entitlementResult,
-] = await Promise.all([
+        entitlementResult,
+        membershipResult,
+      ] = await Promise.all([
         supabase
           .from("character_feature_entitlements")
           .select("enabled")
@@ -707,12 +708,22 @@ export function PortalSidebar({
           )
           .maybeSingle(),
 
-        
+        supabase
+          .from("private_location_members")
+          .select("room_id")
+          .eq(
+            "character_id",
+            character.id,
+          )
+          .eq("status", "active")
+          .limit(1)
+          .maybeSingle(),
       ]);
 
       setHasPrivateLocationAccess(
         isStaff ||
-          entitlementResult.data?.enabled === true,
+          entitlementResult.data?.enabled === true ||
+          Boolean(membershipResult.data),
       );
     }, [isStaff]);
 

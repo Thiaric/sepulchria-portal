@@ -498,6 +498,7 @@ const moreDragging =
       const [
         friendResult,
         privateEntitlementResult,
+        privateMembershipResult,
         orderMembershipResult,
       ] = await Promise.all([
         supabase
@@ -531,6 +532,19 @@ const moreDragging =
           .maybeSingle(),
 
         supabase
+          .from(
+            "private_location_members",
+          )
+          .select("room_id")
+          .eq(
+            "character_id",
+            character.id,
+          )
+          .eq("status", "active")
+          .limit(1)
+          .maybeSingle(),
+
+        supabase
           .from("order_memberships")
           .select(`
             id,
@@ -551,7 +565,10 @@ const moreDragging =
       setHasPrivateLocationAccess(
         isStaff ||
           privateEntitlementResult.data
-            ?.enabled === true,
+            ?.enabled === true ||
+          Boolean(
+            privateMembershipResult.data,
+          ),
       );
 
       setHasOrderLeadership(
