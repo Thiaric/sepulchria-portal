@@ -1,5 +1,7 @@
 import { redirect } from "next/navigation";
 
+import { StoreLiveFilterBar } from "@/components/store/store-live-filter-bar";
+import { StoreRemnantPurchaseButton } from "@/components/store/store-remnant-purchase-button";
 import { createClient } from "@/lib/supabase/server";
 
 type StoreProduct = {
@@ -40,7 +42,9 @@ type StoreGrant = {
 
 type Skin = {
   id: string;
+  slug: string;
   name: string;
+  description: string;
 };
 
 type Cosmetic = {
@@ -134,7 +138,7 @@ export default async function StorePage() {
 
     supabase
       .from("portal_skins")
-      .select("id, name"),
+      .select("id, slug, name, description"),
 
     supabase
       .from("cosmetic_items")
@@ -244,6 +248,10 @@ export default async function StorePage() {
     skins.map((skin) => [skin.id, skin.name]),
   );
 
+  const skinDetails = new Map(
+    skins.map((skin) => [skin.id, skin]),
+  );
+
   const cosmeticNames = new Map(
     cosmetics.map((item) => [item.id, item.name]),
   );
@@ -316,7 +324,7 @@ export default async function StorePage() {
               </h1>
 
               <p className="mt-2 max-w-3xl text-[11px] leading-5 text-[rgb(var(--sep-colour-a99b89))]">
-                Unlock skins, cosmetics, Friend List access, Private Locations
+                Unlock skins, cosmetics, music, Friend List access, Private Locations
                 and curated bundles using real money or Remnants.
               </p>
             </div>
@@ -329,6 +337,10 @@ export default async function StorePage() {
                 Applied during checkout
               </p>
             </div>
+          </div>
+
+          <div className="mt-4">
+            <StoreLiveFilterBar />
           </div>
         </header>
 
@@ -354,6 +366,7 @@ export default async function StorePage() {
                     )}
                     owned={productOwned(product.id)}
                     skinNames={skinNames}
+                    skinDetails={skinDetails}
                     cosmeticNames={cosmeticNames}
                     musicNames={musicNames}
                     featured
@@ -395,6 +408,7 @@ export default async function StorePage() {
                     )}
                     owned={productOwned(product.id)}
                     skinNames={skinNames}
+                    skinDetails={skinDetails}
                     cosmeticNames={cosmeticNames}
                     musicNames={musicNames}
                   />
@@ -420,6 +434,7 @@ function StoreProductCard({
   grants,
   owned,
   skinNames,
+  skinDetails,
   cosmeticNames,
   musicNames,
   featured = false,
@@ -429,10 +444,22 @@ function StoreProductCard({
   grants: StoreGrant[];
   owned: boolean;
   skinNames: Map<string, string>;
+  skinDetails: Map<string, Skin>;
   cosmeticNames: Map<string, string>;
   musicNames: Map<string, string>;
   featured?: boolean;
 }) {
+  const skinGrant = grants.find(
+    (grant) =>
+      grant.grant_type === "portal_skin" &&
+      grant.portal_skin_id,
+  );
+
+  const skin =
+    skinGrant?.portal_skin_id
+      ? skinDetails.get(skinGrant.portal_skin_id)
+      : null;
+
   const grantLabels = grants.map((grant) => {
     if (
       grant.grant_type === "portal_skin" &&
@@ -496,20 +523,27 @@ function StoreProductCard({
 
   return (
     <article
+      id={featured ? undefined : `store-product-${product.id}`}
+      data-store-product={featured ? undefined : "true"}
+      data-store-filter-card
+      data-store-name={product.name}
+      data-store-category={product.category}
       className={[
-        "group flex min-w-0 flex-col overflow-hidden border bg-[rgb(var(--sep-colour-100c09))]",
+        "group flex h-full min-h-[390px] min-w-0 flex-col overflow-hidden border bg-[rgb(var(--sep-colour-100c09))]",
         featured
           ? "border-[rgb(var(--sep-colour-987344))]/70"
           : "border-[rgb(var(--sep-colour-60482e))]/40",
       ].join(" ")}
     >
-      <div className="relative aspect-[16/7] shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-0d0b0a))]">
-        {product.image_url ? (
+      <div className="relative h-36 shrink-0 overflow-hidden border-b border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-0d0b0a))]">
+        {skin ? (
+          <StoreSkinMiniPreview skin={skin} />
+        ) : product.image_url ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={product.image_url}
             alt=""
-            className="h-full w-full object-cover opacity-75 transition group-hover:opacity-90"
+            className="h-full w-full object-contain p-3 opacity-80 transition group-hover:opacity-100"
           />
         ) : (
           <div className="flex h-full items-center justify-center">
@@ -590,25 +624,72 @@ function StoreProductCard({
             ) : null}
           </div>
 
-          <button
-            type="button"
-            disabled
-            title={
-              owned
-                ? "Already owned"
-                : "Checkout will be enabled in the next Store phase."
-            }
-            className={[
-              "mt-3 w-full border px-3 py-2 text-[8px] uppercase tracking-[0.16em]",
-              owned
-                ? "cursor-default border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-15100d))] text-[rgb(var(--sep-colour-756958))]"
-                : "cursor-not-allowed border-[rgb(var(--sep-colour-80613b))]/45 bg-[rgb(var(--sep-colour-21170f))] text-[rgb(var(--sep-colour-a99069))]",
-            ].join(" ")}
-          >
-            {owned ? "Owned" : "Checkout coming next"}
-          </button>
+          {owned ? (
+            <button
+              type="button"
+              disabled
+              className="mt-3 w-full cursor-default border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-756958))]"
+            >
+              Owned
+            </button>
+          ) : remnantPrices.length ? (
+            <StoreRemnantPurchaseButton
+              productId={product.id}
+              amount={remnantPrices[0].amount}
+            />
+          ) : moneyPrices.length ? (
+            <button
+              type="button"
+              disabled
+              className="mt-3 w-full cursor-not-allowed border border-[rgb(var(--sep-colour-80613b))]/45 bg-[rgb(var(--sep-colour-21170f))] px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-a99069))]"
+            >
+              Paddle checkout next
+            </button>
+          ) : null}
         </div>
       </div>
     </article>
+  );
+}
+
+
+function StoreSkinMiniPreview({ skin }: { skin: Skin }) {
+  return (
+    <div
+      data-portal-skin={skin.slug}
+      className="portal-skin-scope flex h-full w-full items-center justify-center p-3"
+    >
+      <div
+        className="flex h-full w-full flex-col border p-3"
+        style={{
+          background: "rgb(var(--sep-colour-120f0d))",
+          borderColor: "rgb(var(--sep-skin-c1) / .48)",
+          color: "rgb(var(--sep-skin-c2))",
+        }}
+      >
+        <div className="flex items-start justify-between gap-2">
+          <p className="font-serif text-base" style={{ color: "rgb(var(--sep-skin-c1))" }}>
+            {skin.name}
+          </p>
+          <div
+            className="h-7 w-7 shrink-0 rounded-full"
+            style={{
+              background: "conic-gradient(from -90deg, rgb(var(--sep-colour-120f0d)) 0deg 120deg, rgb(var(--sep-skin-c1)) 120deg 240deg, rgb(var(--sep-skin-c2)) 240deg 360deg)",
+              border: "1px solid rgb(var(--sep-skin-c1) / .60)",
+            }}
+          />
+        </div>
+        <p className="mt-2 line-clamp-2 text-[9px] leading-4">{skin.description}</p>
+        <div
+          className="mt-auto pt-2 text-[7px] uppercase tracking-[0.14em]"
+          style={{
+            borderTop: "1px solid rgb(var(--sep-skin-c1) / .28)",
+            color: "rgb(var(--sep-skin-c1))",
+          }}
+        >
+          Portal skin preview
+        </div>
+      </div>
+    </div>
   );
 }

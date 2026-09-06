@@ -1,3 +1,4 @@
+import { StoreLiveFilterBar } from "@/components/store/store-live-filter-bar";
 import { requireAdminSection } from "@/lib/auth/require-staff";
 import { createAdminClient } from "@/lib/supabase/admin";
 import {
@@ -96,6 +97,10 @@ export default async function AdminStorePage() {
           and Remnant prices, and manage promotion codes.
         </p>
 
+        <div className="mt-4">
+          <StoreLiveFilterBar placeholder="Filter Store products by name..." />
+        </div>
+
         <section
           id="store-catalogue-sync"
           className="mt-8 scroll-mt-6 border border-[rgb(var(--sep-skin-c1,169_138_96))]/35 bg-[rgb(var(--sep-colour-15100d))] p-4 sm:p-5"
@@ -191,7 +196,12 @@ export default async function AdminStorePage() {
               return (
                 <details
                   key={product.id}
-                  className="border border-[rgb(var(--sep-skin-c1,169_138_96))]/30 bg-[rgb(var(--sep-colour-120e0b))]"
+                  id={`admin-store-product-${product.id}`}
+                  data-store-product="true"
+                  data-store-filter-card
+                  data-store-name={product.name}
+                  data-store-category={product.category}
+                  className="scroll-mt-4 border border-[rgb(var(--sep-skin-c1,169_138_96))]/30 bg-[rgb(var(--sep-colour-120e0b))]"
                 >
                   <summary className="cursor-pointer px-4 py-4 sm:px-5">
                     <div className="flex flex-wrap items-center justify-between gap-3">

@@ -25,6 +25,7 @@ import { MarketItemsContext } from "@/components/portal/market-items-context";
 import { CharacterDetailContextPanel } from "@/components/portal/character-detail-context-panel";
 import { PortalContextPanel } from "@/components/portal/portal-context-panel";
 import { PollsContextPanel } from "@/components/polls/polls-context-panel";
+import { StoreContextPanel } from "@/components/portal/store-context-panel";
 import { RoomInfoButton } from "@/components/portal/room-info-button";
 import { LocationAtmosphericImage } from "@/components/world/location-atmospheric-image";
 import type { PortalContext } from "@/types/portal";
@@ -124,6 +125,12 @@ const suppressClick =
 
   const isAdminMissionsPath =
     pathname === "/admin/missions";
+
+  const isAdminStorePath =
+    pathname === "/admin/store";
+
+  const isStorePath =
+    pathname === "/store";
 
   const isAdminLocationsPath =
     pathname === "/admin/rooms";
@@ -604,6 +611,13 @@ const nextTop =
                 <AdminMissionsContext
                   key={`missions-${adminRevision}`}
                 />
+              ) : isAdminStorePath ? (
+                <StoreContextPanel
+                  key={`admin-store-${adminRevision}`}
+                  admin
+                />
+              ) : isStorePath ? (
+                <StoreContextPanel />
               ) : isAdminLocationsPath ? (
                 <AdminRecordSearchContext
                   key={`locations-${adminRevision}`}

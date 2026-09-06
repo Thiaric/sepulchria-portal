@@ -397,13 +397,27 @@ export async function saveStorePrice(formData: FormData) {
   const admin = createAdminClient();
 
   const productId = str(formData, "product_id");
-  const currency = nullableStr(formData, "currency")?.toUpperCase() ?? null;
+  const requestedCurrency =
+    nullableStr(formData, "currency")?.toUpperCase() ?? null;
   const moneyAmountMinor = intOrNull(formData, "money_amount_minor");
   const remnantsAmount = intOrNull(formData, "remnants_amount");
+  const requestedPaddlePriceId =
+    nullableStr(formData, "paddle_price_id");
 
   if (moneyAmountMinor === null && remnantsAmount === null) {
     throw new Error("Enter a real-money price, a Remnant price, or both.");
   }
+
+  const currency =
+    moneyAmountMinor !== null
+      ? requestedCurrency
+      : null;
+
+  const paddlePriceId =
+    moneyAmountMinor !== null
+      ? requestedPaddlePriceId
+      : null;
+
   if (moneyAmountMinor !== null && !currency) {
     throw new Error("Currency is required for a real-money price.");
   }
@@ -427,7 +441,7 @@ export async function saveStorePrice(formData: FormData) {
     currency,
     money_amount_minor: moneyAmountMinor,
     remnants_amount: remnantsAmount,
-    paddle_price_id: nullableStr(formData, "paddle_price_id"),
+    paddle_price_id: paddlePriceId,
     is_active: true,
   });
 

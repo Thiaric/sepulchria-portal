@@ -203,7 +203,7 @@ const privateLocationItem: NavigationItem = {
 };
 
 const storeItem: NavigationItem = {
-  label: "Store",
+  label: "Sepulchria's Shop",
   title:
     "Browse Sepulchria Store products, bundles and premium unlocks.",
   icon: "/icons/store.png",
