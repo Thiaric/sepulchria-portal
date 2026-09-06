@@ -129,6 +129,31 @@ const MODAL_ROUTES: ModalRouteDefinition[] = [
     icon: "/icons/friends.png",
   },
   {
+    prefix: "/cosmetics",
+    label: "Cosmetics",
+    title: "Open your Cosmetics collection.",
+    icon: "/icons/cosmetics.png",
+  },
+  {
+    prefix: "/private-locations",
+    label: "Private Locations",
+    title: "Open your Private Locations.",
+    icon: "/icons/private.png",
+  },
+  {
+    prefix: "/store",
+    label: "Sepulchria Store",
+    title: "Open the Sepulchria Store.",
+    icon: "/icons/store.png",
+  },
+  {
+    prefix: "/game",
+    label: "Music",
+    title: "Enter a location and manage your personal music.",
+    icon: "/icons/music.png",
+    exact: true,
+  },
+  {
     prefix: "/messages",
     label: "Messages",
     title: "Open your private conversations.",

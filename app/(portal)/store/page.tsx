@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { StoreLiveFilterBar } from "@/components/store/store-live-filter-bar";
+import { StorePaddlePurchaseButton } from "@/components/store/store-paddle-purchase-button";
 import { StoreRemnantPurchaseButton } from "@/components/store/store-remnant-purchase-button";
 import { createClient } from "@/lib/supabase/server";
 
@@ -28,6 +29,7 @@ type StorePrice = {
   currency: string | null;
   money_amount_minor: number | null;
   remnants_amount: number | null;
+  paddle_price_id: string | null;
 };
 
 type StoreGrant = {
@@ -126,7 +128,7 @@ export default async function StorePage() {
     supabase
       .from("store_product_prices")
       .select(
-        "id, product_id, currency, money_amount_minor, remnants_amount",
+        "id, product_id, currency, money_amount_minor, remnants_amount, paddle_price_id",
       )
       .eq("is_active", true),
 
@@ -632,20 +634,24 @@ function StoreProductCard({
             >
               Owned
             </button>
-          ) : remnantPrices.length ? (
-            <StoreRemnantPurchaseButton
-              productId={product.id}
-              amount={remnantPrices[0].amount}
-            />
-          ) : moneyPrices.length ? (
-            <button
-              type="button"
-              disabled
-              className="mt-3 w-full cursor-not-allowed border border-[rgb(var(--sep-colour-80613b))]/45 bg-[rgb(var(--sep-colour-21170f))] px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-a99069))]"
-            >
-              Paddle checkout next
-            </button>
-          ) : null}
+          ) : (
+            <>
+              {remnantPrices.length ? (
+                <StoreRemnantPurchaseButton
+                  productId={product.id}
+                  amount={remnantPrices[0].amount}
+                />
+              ) : null}
+
+              {moneyPrices.length &&
+              prices.some((price) => Boolean(price.paddle_price_id) && price.money_amount_minor !== null) ? (
+                <StorePaddlePurchaseButton
+                  productId={product.id}
+                  label={moneyPrices[0].label}
+                />
+              ) : null}
+            </>
+          )}
         </div>
       </div>
     </article>
