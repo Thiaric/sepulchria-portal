@@ -740,7 +740,8 @@ const moreDragging =
         label: "Warping",
         title:
           "Read about magic in Sepulchria, including Warping.",
-        icon: "/icons/warping.png",
+        icon:
+          "/icons/warping.png",
         href: "/warping",
       },
     },
@@ -890,6 +891,13 @@ const moreDragging =
     href: "/store",
     label: "Sepulchria's Shop",
     icon: "/icons/store.png",
+    modal: {
+      label: "Sepulchria's Shop",
+      title:
+        "Browse Sepulchria Store products, bundles and premium unlocks.",
+      icon: "/icons/store.png",
+      href: "/store",
+    },
   };
 
   const legalEntries: LinkEntry[] = [
