@@ -251,18 +251,20 @@ export function PortalSkinGallery({
                   />
 
                   <div className="flex flex-wrap justify-end gap-2">
-                    <button
-                      data-skin-preview-role="button"
-                      type="button"
-                      onClick={() =>
-                        previewSkin(
-                          entry.slug,
-                        )
-                      }
-                      className="px-3 py-2 text-[8px] uppercase tracking-[0.15em] transition"
-                    >
-                      Preview
-                    </button>
+                    {!current ? (
+  <button
+    data-skin-preview-role="button"
+    type="button"
+    onClick={() =>
+      previewSkin(
+        entry.slug,
+      )
+    }
+    className="px-3 py-2 text-[8px] uppercase tracking-[0.15em] transition"
+  >
+    Preview
+  </button>
+) : null}
 
                     {unlocked &&
                     !current ? (

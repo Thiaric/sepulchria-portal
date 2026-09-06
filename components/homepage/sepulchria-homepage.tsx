@@ -368,9 +368,9 @@ export function SepulchriaHomepage({
                 {CHAPTERS.map(
                   (chapter) => (
                     <article
-                      key={chapter.number}
-                      className="group py-4 first:pt-1 last:pb-1"
-                    >
+  key={chapter.number}
+  className="group py-4 transition-transform duration-300 ease-out hover:translate-x-1.5 first:pt-1 last:pb-1"
+>
                       <div className="flex items-start gap-3">
                         <span className="font-serif text-2xl text-[rgb(var(--sep-colour-8e6737))]/65 transition group-hover:text-[rgb(var(--sep-colour-c18d4c))]">
                           {chapter.number}
@@ -407,13 +407,14 @@ export function SepulchriaHomepage({
             </p>
 
             <nav
-              aria-label="Footer navigation"
-              className="flex flex-wrap justify-center gap-x-5 gap-y-1 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-796d5f))] sm:justify-end [&_a]:uppercase [&_button]:uppercase"
-            >
-              <Link href="#" className="transition hover:text-[rgb(var(--sep-colour-cdb487))]">
+  data-homepage-footer-nav="true"
+  aria-label="Footer navigation"
+  className="flex flex-wrap justify-center gap-x-5 gap-y-1 text-[8px] uppercase tracking-[0.18em] sm:justify-end [&_a]:uppercase [&_button]:uppercase"
+>
+              <Link href="#">
                 Discord
               </Link>
-              <Link href="#" className="transition hover:text-[rgb(var(--sep-colour-cdb487))]">
+              <Link href="#">
                 Credits
               </Link>
               <button
@@ -424,7 +425,7 @@ export function SepulchriaHomepage({
                     href: "/community-rules",
                   })
                 }
-                className="transition hover:text-[rgb(var(--sep-colour-cdb487))]"
+                
               >
                 Community Rules
               </button>
@@ -436,7 +437,7 @@ export function SepulchriaHomepage({
                     href: "/safety",
                   })
                 }
-                className="transition hover:text-[rgb(var(--sep-colour-cdb487))]"
+                
               >
                 Safety
               </button>
@@ -448,7 +449,7 @@ export function SepulchriaHomepage({
                     href: "/age-policy",
                   })
                 }
-                className="transition hover:text-[rgb(var(--sep-colour-cdb487))]"
+                
               >
                 18+ Policy
               </button>
@@ -460,7 +461,7 @@ export function SepulchriaHomepage({
                     href: "/privacy",
                   })
                 }
-                className="transition hover:text-[rgb(var(--sep-colour-cdb487))]"
+                
               >
                 Privacy
               </button>
@@ -472,11 +473,11 @@ export function SepulchriaHomepage({
                     href: "/cookies",
                   })
                 }
-                className="transition hover:text-[rgb(var(--sep-colour-cdb487))]"
+                
               >
                 Cookies
               </button>
-              <CookieSettingsButton className="uppercase tracking-[0.18em] transition hover:text-[rgb(var(--sep-colour-cdb487))]" />
+              <CookieSettingsButton className="uppercase tracking-[0.18em]" />
               <button
                 type="button"
                 onClick={() =>
@@ -485,7 +486,7 @@ export function SepulchriaHomepage({
                     href: "/terms",
                   })
                 }
-                className="transition hover:text-[rgb(var(--sep-colour-cdb487))]"
+                
               >
                 Terms
               </button>
@@ -527,7 +528,7 @@ export function SepulchriaHomepage({
             className="absolute inset-0 cursor-default bg-[rgb(var(--sep-colour-050403))]/88 backdrop-blur-[4px]"
           />
 
-          <section className="relative z-10 max-h-[90dvh] w-full max-w-[720px] overflow-y-auto border border-[rgb(var(--sep-colour-765937))]/80 bg-[rgb(var(--sep-colour-100c09))] shadow-[0_30px_100px_rgba(var(--sep-rgb-0-0-0),0.92)]">
+          <section className="relative z-10 max-h-[90dvh] w-full max-w-[720px] overflow-y-auto border border-[rgb(var(--sep-skin-c1,169_138_96))]/80 bg-[rgb(var(--sep-colour-100c09))] shadow-[0_30px_100px_rgba(var(--sep-rgb-0-0-0),0.92)]">
             <div className="pointer-events-none absolute inset-1 border border-[rgb(var(--sep-colour-a27a49))]/10" />
 
             <header className="relative border-b border-[rgb(var(--sep-colour-60482e))]/45 px-6 py-5 text-center sm:px-9">
@@ -585,21 +586,119 @@ export function SepulchriaHomepage({
               </div>
 
               <div className="mt-6 grid gap-2 sm:grid-cols-3">
-                <AboutFeature
-                  symbol="I"
-                  title="Create"
-                  text="Build a character and choose who they are within Aureth."
-                />
-                <AboutFeature
-                  symbol="II"
-                  title="Roleplay"
-                  text="Write their actions and interact live with other characters."
-                />
-                <AboutFeature
-                  symbol="III"
-                  title="Shape"
-                  text="Let their decisions and relationships become part of the story."
-                />
+                <div className="border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))] px-3 py-3 text-center">
+                  <span
+                    className="font-serif text-lg"
+                    style={{
+                      color:
+                        "rgb(var(--sep-skin-c1, 169 138 96))",
+                      WebkitTextFillColor:
+                        "rgb(var(--sep-skin-c1, 169 138 96))",
+                    }}
+                  >
+                    I
+                  </span>
+
+                  <p
+                    className="mt-1 font-serif text-sm"
+                    style={{
+                      color:
+                        "rgb(var(--sep-skin-c1, 169 138 96))",
+                      WebkitTextFillColor:
+                        "rgb(var(--sep-skin-c1, 169 138 96))",
+                    }}
+                  >
+                    Create
+                  </p>
+
+                  <p
+                    className="mt-1.5 text-[9px] leading-4"
+                    style={{
+                      color:
+                        "rgb(var(--sep-skin-c2, 211 194 170))",
+                      WebkitTextFillColor:
+                        "rgb(var(--sep-skin-c2, 211 194 170))",
+                    }}
+                  >
+                    Build a character and choose who they are within Aureth.
+                  </p>
+                </div>
+
+                <div className="border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))] px-3 py-3 text-center">
+                  <span
+                    className="font-serif text-lg"
+                    style={{
+                      color:
+                        "rgb(var(--sep-skin-c1, 169 138 96))",
+                      WebkitTextFillColor:
+                        "rgb(var(--sep-skin-c1, 169 138 96))",
+                    }}
+                  >
+                    II
+                  </span>
+
+                  <p
+                    className="mt-1 font-serif text-sm"
+                    style={{
+                      color:
+                        "rgb(var(--sep-skin-c1, 169 138 96))",
+                      WebkitTextFillColor:
+                        "rgb(var(--sep-skin-c1, 169 138 96))",
+                    }}
+                  >
+                    Roleplay
+                  </p>
+
+                  <p
+                    className="mt-1.5 text-[9px] leading-4"
+                    style={{
+                      color:
+                        "rgb(var(--sep-skin-c2, 211 194 170))",
+                      WebkitTextFillColor:
+                        "rgb(var(--sep-skin-c2, 211 194 170))",
+                    }}
+                  >
+                    Write their actions and interact live with other characters.
+                  </p>
+                </div>
+
+                <div className="border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))] px-3 py-3 text-center">
+                  <span
+                    className="font-serif text-lg"
+                    style={{
+                      color:
+                        "rgb(var(--sep-skin-c1, 169 138 96))",
+                      WebkitTextFillColor:
+                        "rgb(var(--sep-skin-c1, 169 138 96))",
+                    }}
+                  >
+                    III
+                  </span>
+
+                  <p
+                    className="mt-1 font-serif text-sm"
+                    style={{
+                      color:
+                        "rgb(var(--sep-skin-c1, 169 138 96))",
+                      WebkitTextFillColor:
+                        "rgb(var(--sep-skin-c1, 169 138 96))",
+                    }}
+                  >
+                    Shape
+                  </p>
+
+                  <p
+                    className="mt-1.5 text-[9px] leading-4"
+                    style={{
+                      color:
+                        "rgb(var(--sep-skin-c2, 211 194 170))",
+                      WebkitTextFillColor:
+                        "rgb(var(--sep-skin-c2, 211 194 170))",
+                    }}
+                  >
+                    Let their decisions and relationships become part of the story.
+                  </p>
+                </div>
               </div>
 
               <div className="mt-6 grid gap-2 sm:grid-cols-2">
@@ -610,10 +709,26 @@ export function SepulchriaHomepage({
                   }
                   className="border border-[rgb(var(--sep-colour-765937))]/65 bg-[rgb(var(--sep-colour-1a120d))] px-4 py-3 text-center transition hover:border-[rgb(var(--sep-colour-a17a48))] hover:bg-[rgb(var(--sep-colour-25180f))]"
                 >
-                  <span className="block text-[7px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806d55))]">
+                  <span
+                    className="block text-[7px] uppercase tracking-[0.22em]"
+                    style={{
+                      color:
+                        "rgb(var(--sep-skin-c1, 169 138 96))",
+                      WebkitTextFillColor:
+                        "rgb(var(--sep-skin-c1, 169 138 96))",
+                    }}
+                  >
                     Explore the setting
                   </span>
-                  <span className="mt-1 block font-serif text-sm text-[rgb(var(--sep-colour-d9bd91))]">
+                  <span
+                    className="mt-1 block font-serif text-sm"
+                    style={{
+                      color:
+                        "rgb(var(--sep-skin-c2, 211 194 170))",
+                      WebkitTextFillColor:
+                        "rgb(var(--sep-skin-c2, 211 194 170))",
+                    }}
+                  >
                     Read the Codex →
                   </span>
                 </Link>
@@ -625,10 +740,26 @@ export function SepulchriaHomepage({
                   }
                   className="border border-[rgb(var(--sep-colour-765937))]/65 bg-[rgb(var(--sep-colour-1a120d))] px-4 py-3 text-center transition hover:border-[rgb(var(--sep-colour-a17a48))] hover:bg-[rgb(var(--sep-colour-25180f))]"
                 >
-                  <span className="block text-[7px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806d55))]">
+                  <span
+                    className="block text-[7px] uppercase tracking-[0.22em]"
+                    style={{
+                      color:
+                        "rgb(var(--sep-skin-c1, 169 138 96))",
+                      WebkitTextFillColor:
+                        "rgb(var(--sep-skin-c1, 169 138 96))",
+                    }}
+                  >
                     Learn the game
                   </span>
-                  <span className="mt-1 block font-serif text-sm text-[rgb(var(--sep-colour-d9bd91))]">
+                  <span
+                    className="mt-1 block font-serif text-sm"
+                    style={{
+                      color:
+                        "rgb(var(--sep-skin-c2, 211 194 170))",
+                      WebkitTextFillColor:
+                        "rgb(var(--sep-skin-c2, 211 194 170))",
+                    }}
+                  >
                     Read the Rules →
                   </span>
                 </Link>
@@ -637,6 +768,26 @@ export function SepulchriaHomepage({
           </section>
         </div>
       ) : null}
+
+      <style jsx global>{`
+  [data-homepage-footer-nav="true"] a,
+  [data-homepage-footer-nav="true"] button {
+    color: rgb(var(--sep-skin-c2, 211 194 170)) !important;
+    -webkit-text-fill-color:
+      rgb(var(--sep-skin-c2, 211 194 170)) !important;
+
+    transition:
+      color 180ms ease,
+      -webkit-text-fill-color 180ms ease;
+  }
+
+  [data-homepage-footer-nav="true"] a:hover,
+  [data-homepage-footer-nav="true"] button:hover {
+    color: rgb(var(--sep-skin-c1, 169 138 96)) !important;
+    -webkit-text-fill-color:
+      rgb(var(--sep-skin-c1, 169 138 96)) !important;
+  }
+`}</style>
 
       <style jsx>{`
         .homepage-ember {
@@ -805,31 +956,5 @@ function HomepageActionButton({
 
       <span data-homepage-nav-role="accent" className="absolute bottom-0 left-0 h-px w-0 bg-[rgb(var(--sep-colour-c18d4c))] transition-all duration-500 group-hover:w-full" />
     </button>
-  );
-}
-
-function AboutFeature({
-  symbol,
-  title,
-  text,
-}: {
-  symbol: string;
-  title: string;
-  text: string;
-}) {
-  return (
-    <div className="border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))] px-3 py-3 text-center">
-      <span className="font-serif text-lg text-[rgb(var(--sep-colour-9d7443))]">
-        {symbol}
-      </span>
-
-      <p className="mt-1 font-serif text-sm text-[rgb(var(--sep-colour-d6bd91))]">
-        {title}
-      </p>
-
-      <p className="mt-1.5 text-[9px] leading-4 text-[rgb(var(--sep-colour-827564))]">
-        {text}
-      </p>
-    </div>
   );
 }

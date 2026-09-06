@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+
 import { createClient } from "@/lib/supabase/server";
 
 export async function selectPortalSkin(
@@ -74,6 +74,6 @@ export async function selectPortalSkin(
     return { ok: false, error: preferenceError.message };
   }
 
-  revalidatePath("/appearance");
+  
   return { ok: true };
 }
