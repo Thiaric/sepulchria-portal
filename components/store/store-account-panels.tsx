@@ -1,5 +1,7 @@
 import "server-only";
 
+import Link from "next/link";
+
 import { createAdminClient } from "@/lib/supabase/admin";
 
 function moneyLabel(minor: number, currency: string | null) {
@@ -93,7 +95,10 @@ export async function StoreAccountPanels({ userId }: { userId: string }) {
                   </div>
                   <span className="text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a99578))]">{order.status.replaceAll("_", " ")}</span>
                   <span className="text-[10px] text-[rgb(var(--sep-colour-e2cda4))]">{total}</span>
-                  <time className="text-[8px] text-[rgb(var(--sep-colour-756958))]">{new Date(order.paid_at ?? order.created_at).toLocaleString("en-GB")}</time>
+                  <div className="flex flex-col gap-1">
+                    <time className="text-[8px] text-[rgb(var(--sep-colour-756958))]">{new Date(order.paid_at ?? order.created_at).toLocaleString("en-GB")}</time>
+                    <Link href={`/store/orders/${order.id}`} className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-c69b5c))] underline">View receipt</Link>
+                  </div>
                 </div>
               );
             })}

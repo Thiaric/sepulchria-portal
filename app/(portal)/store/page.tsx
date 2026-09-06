@@ -693,13 +693,16 @@ function StoreProductCard({
                 />
               ) : null}
 
-              {moneyPrices.length &&
-              prices.some((price) => Boolean(price.paddle_price_id) && price.money_amount_minor !== null) ? (
-                <StorePaddlePurchaseButton
-                  productId={product.id}
-                  label={moneyPrices[0].label}
-                />
-              ) : null}
+              {moneyPrices.length
+                ? moneyPrices.map((moneyPrice) => (
+                    <StorePaddlePurchaseButton
+                      key={moneyPrice.id}
+                      productId={product.id}
+                      priceId={moneyPrice.id}
+                      label={moneyPrice.label}
+                    />
+                  ))
+                : null}
             </>
           )}
         </div>

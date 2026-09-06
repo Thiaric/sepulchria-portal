@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { createPremiumFeatureGrantNotification } from "@/lib/premium-features/notifications";
 import { storeDestinationForCategory } from "@/lib/store/store-destination";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { ensureStorePriceReadyForCheckout } from "@/lib/store/paddle-server";
 import { createClient } from "@/lib/supabase/server";
 
 export type StorePurchaseState = {
@@ -95,6 +96,7 @@ export async function startStorePaddleCheckout(
   formData: FormData,
 ): Promise<StorePaddleState> {
   const productId = String(formData.get("productId") ?? "").trim();
+  const priceId = String(formData.get("priceId") ?? "").trim();
   const discountCode = String(formData.get("discountCode") ?? "").trim();
   const apiKey = process.env.PADDLE_API_KEY;
 
@@ -135,10 +137,9 @@ export async function startStorePaddleCheckout(
       admin.from("store_product_prices")
         .select("id, currency, money_amount_minor, paddle_price_id, is_active")
         .eq("product_id", productId)
+        .eq("id", priceId)
         .eq("is_active", true)
         .not("money_amount_minor", "is", null)
-        .not("paddle_price_id", "is", null)
-        .limit(1)
         .maybeSingle(),
       admin.from("store_product_grants")
         .select("grant_type, portal_skin_id, cosmetic_item_id, music_track_id, feature_key, quantity")
@@ -161,6 +162,20 @@ export async function startStorePaddleCheckout(
   const product = productResult.data;
   const price = priceResult.data;
   const character = characterResult.data;
+
+  let syncedPaddlePriceId: string;
+  try {
+    const synced = await ensureStorePriceReadyForCheckout(price.id);
+    syncedPaddlePriceId = synced.paddlePriceId;
+  } catch (error) {
+    return {
+      ok: false,
+      error: error instanceof Error ? error.message : "Paddle price synchronization failed.",
+      checkoutUrl: null,
+      transactionId: null,
+      customerEmail: null,
+    };
+  }
 
   const { data: allOwned, error: allOwnedError } = await admin.rpc("store_product_all_owned", {
     p_user_id: user.id,
@@ -270,8 +285,7 @@ export async function startStorePaddleCheckout(
       "Paddle-Version": "1",
     },
     body: JSON.stringify({
-      items: [{ price_id: price.paddle_price_id, quantity: 1 }],
-      currency_code: price.currency,
+      items: [{ price_id: syncedPaddlePriceId, quantity: 1 }],
       ...(discount ? {
         discount: {
           type: discount.discount_type === "percentage" ? "percentage" : "flat",

@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { requireAdminSection } from "@/lib/auth/require-staff";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { ensurePaddleWebhookEvents, requestPaddleRefund, syncAllStoreProductsToPaddle, syncStoreProductToPaddle } from "@/lib/store/paddle-server";
 
 const STORE_PATH = "/admin/store";
 
@@ -376,6 +377,7 @@ export async function updateStoreProduct(formData: FormData) {
     .eq("id", str(formData, "id"));
 
   if (error) throw new Error(`Unable to update store product: ${error.message}`);
+  await syncStoreProductToPaddle(str(formData, "id"));
   refresh();
 }
 
@@ -401,8 +403,6 @@ export async function saveStorePrice(formData: FormData) {
     nullableStr(formData, "currency")?.toUpperCase() ?? null;
   const moneyAmountMinor = intOrNull(formData, "money_amount_minor");
   const remnantsAmount = intOrNull(formData, "remnants_amount");
-  const requestedPaddlePriceId =
-    nullableStr(formData, "paddle_price_id");
 
   if (moneyAmountMinor === null && remnantsAmount === null) {
     throw new Error("Enter a real-money price, a Remnant price, or both.");
@@ -411,11 +411,6 @@ export async function saveStorePrice(formData: FormData) {
   const currency =
     moneyAmountMinor !== null
       ? requestedCurrency
-      : null;
-
-  const paddlePriceId =
-    moneyAmountMinor !== null
-      ? requestedPaddlePriceId
       : null;
 
   if (moneyAmountMinor !== null && !currency) {
@@ -441,11 +436,13 @@ export async function saveStorePrice(formData: FormData) {
     currency,
     money_amount_minor: moneyAmountMinor,
     remnants_amount: remnantsAmount,
-    paddle_price_id: paddlePriceId,
+    paddle_price_id: null,
+    paddle_sync_status: moneyAmountMinor !== null ? "not_synced" : "synced",
     is_active: true,
   });
 
   if (error) throw new Error(`Unable to save store price: ${error.message}`);
+  if (moneyAmountMinor !== null) await syncStoreProductToPaddle(productId);
   refresh();
 }
 
@@ -572,5 +569,84 @@ export async function toggleStorePostPurchaseOffer(formData: FormData) {
   const admin = createAdminClient();
   const { error } = await admin.from("store_post_purchase_offers").update({ is_active: str(formData, "next") === "true" }).eq("id", str(formData, "id"));
   if (error) throw new Error(`Unable to update post-purchase offer: ${error.message}`);
+  refresh();
+}
+
+
+export async function syncOneStoreProductPaddle(formData: FormData) {
+  await requireAdminSection("store");
+  await syncStoreProductToPaddle(str(formData, "product_id"));
+  refresh();
+}
+
+export async function syncAllStorePaddle() {
+  await requireAdminSection("store");
+  const result = await syncAllStoreProductsToPaddle();
+  if (result.failed) {
+    throw new Error(`Paddle sync completed with ${result.failed} failure(s): ${result.errors.join(" | ")}`);
+  }
+  refresh();
+}
+
+export async function configureStorePaddleWebhook() {
+  await requireAdminSection("store");
+  await ensurePaddleWebhookEvents();
+  refresh();
+}
+
+export async function saveStoreRegionOverride(formData: FormData) {
+  await requireAdminSection("store");
+  const admin = createAdminClient();
+  const priceId = str(formData, "price_id");
+  const productId = str(formData, "product_id");
+  const countryCodes = str(formData, "country_codes")
+    .split(",")
+    .map((code) => code.trim().toUpperCase())
+    .filter(Boolean);
+
+  if (!countryCodes.length || countryCodes.some((code) => code.length !== 2)) {
+    throw new Error("Enter ISO-2 country codes separated by commas.");
+  }
+
+  const currency = str(formData, "currency").toUpperCase();
+  const amount = intOrNull(formData, "money_amount_minor");
+  if (currency.length !== 3 || amount === null || amount < 0) {
+    throw new Error("Enter a valid currency and regional price.");
+  }
+
+  const { error } = await admin.from("store_price_region_overrides").insert({
+    price_id: priceId,
+    country_codes: countryCodes,
+    currency,
+    money_amount_minor: amount,
+    is_active: true,
+  });
+
+  if (error) throw new Error(error.message);
+  await syncStoreProductToPaddle(productId);
+  refresh();
+}
+
+export async function deleteStoreRegionOverride(formData: FormData) {
+  await requireAdminSection("store");
+  const admin = createAdminClient();
+  const { error } = await admin
+    .from("store_price_region_overrides")
+    .delete()
+    .eq("id", str(formData, "id"));
+
+  if (error) throw new Error(error.message);
+  await syncStoreProductToPaddle(str(formData, "product_id"));
+  refresh();
+}
+
+export async function refundStoreOrder(formData: FormData) {
+  await requireAdminSection("store");
+  const rawAmount = str(formData, "amount_minor");
+  await requestPaddleRefund({
+    orderId: str(formData, "order_id"),
+    amountMinor: rawAmount ? Number(rawAmount) : null,
+    reason: str(formData, "reason") || "Customer request",
+  });
   refresh();
 }

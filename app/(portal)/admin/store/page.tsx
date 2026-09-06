@@ -1,5 +1,6 @@
 import { StoreLiveFilterBar } from "@/components/store/store-live-filter-bar";
 import { StorePostPurchaseOffersAdmin } from "@/components/admin/store-post-purchase-offers";
+import { StoreCommerceOperationsAdmin } from "@/components/admin/store-commerce-operations";
 import { requireAdminSection } from "@/lib/auth/require-staff";
 import { createAdminClient } from "@/lib/supabase/admin";
 import {
@@ -127,6 +128,8 @@ export default async function AdminStorePage() {
             </form>
           </div>
         </section>
+
+        <StoreCommerceOperationsAdmin />
 
         <section id="store-create-product" className="mt-8 scroll-mt-6 border border-[rgb(var(--sep-skin-c1,169_138_96))]/35 bg-[rgb(var(--sep-colour-15100d))] p-4 sm:p-5">
           <h3 className="font-serif text-2xl text-[rgb(var(--sep-skin-c1,169_138_96))]">
@@ -308,10 +311,7 @@ export default async function AdminStorePage() {
                             <span className={label}>Remnants</span>
                             <input name="remnants_amount" type="number" min="0" className={field} />
                           </label>
-                          <label>
-                            <span className={label}>Paddle Price ID</span>
-                            <input name="paddle_price_id" placeholder="later" className={field} />
-                          </label>
+                          <div className="border border-[rgb(var(--sep-colour-60482e))]/25 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[9px] text-[rgb(var(--sep-colour-756958))]">Paddle IDs are created and maintained automatically.</div>
                           <div className="sm:col-span-2">
                             <button className={button}>Save price</button>
                           </div>
