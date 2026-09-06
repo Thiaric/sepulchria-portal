@@ -32,6 +32,7 @@ export async function purchaseStoreProductWithRemnants(
   formData: FormData,
 ): Promise<StorePurchaseState> {
   const productId = String(formData.get("productId") ?? "").trim();
+  const discountCode = String(formData.get("discountCode") ?? "").trim();
   if (!productId) return { ok: false, error: "Store product is missing.", orderId: null };
 
   const supabase = await createClient();
@@ -49,7 +50,7 @@ export async function purchaseStoreProductWithRemnants(
 
   const { data, error } = await supabase.rpc(
     "purchase_store_product_with_remnants",
-    { p_product_id: productId },
+    { p_product_id: productId, p_discount_code: discountCode || null },
   );
 
   if (error) return { ok: false, error: error.message, orderId: null };
@@ -94,6 +95,7 @@ export async function startStorePaddleCheckout(
   formData: FormData,
 ): Promise<StorePaddleState> {
   const productId = String(formData.get("productId") ?? "").trim();
+  const discountCode = String(formData.get("discountCode") ?? "").trim();
   const apiKey = process.env.PADDLE_API_KEY;
 
   if (!productId) {
@@ -160,6 +162,39 @@ export async function startStorePaddleCheckout(
   const price = priceResult.data;
   const character = characterResult.data;
 
+  const { data: allOwned, error: allOwnedError } = await admin.rpc("store_product_all_owned", {
+    p_user_id: user.id,
+    p_character_id: character.id,
+    p_product_id: product.id,
+  });
+  if (allOwnedError) return { ok: false, error: allOwnedError.message, checkoutUrl: null, transactionId: null, customerEmail: null };
+  if (allOwned === true) return { ok: false, error: "You already own everything included in this product.", checkoutUrl: null, transactionId: null, customerEmail: null };
+
+  let discount: { discount_code_id: string; user_discount_code_id: string | null; discount_type: "percentage" | "fixed_money"; discount_value: number; discount_money_minor: number } | null = null;
+  if (discountCode) {
+    const { data: discountRows, error: discountError } = await admin.rpc("resolve_store_discount", {
+      p_user_id: user.id,
+      p_product_id: product.id,
+      p_code: discountCode,
+      p_payment_method: "paddle",
+      p_subtotal_money_minor: price.money_amount_minor,
+      p_subtotal_remnants: 0,
+      p_currency: price.currency,
+    });
+    if (discountError) return { ok: false, error: discountError.message, checkoutUrl: null, transactionId: null, customerEmail: null };
+    const row = Array.isArray(discountRows) ? discountRows[0] ?? null : discountRows;
+    if (!row) return { ok: false, error: "Discount code is invalid or expired.", checkoutUrl: null, transactionId: null, customerEmail: null };
+    discount = row as {
+      discount_code_id: string;
+      user_discount_code_id: string | null;
+      discount_type: "percentage" | "fixed_money";
+      discount_value: number;
+      discount_money_minor: number;
+    };
+  }
+  const discountMoneyMinor = Number(discount?.discount_money_minor ?? 0);
+  const expectedTotalMoneyMinor = Math.max(0, Number(price.money_amount_minor) - discountMoneyMinor);
+
   const { data: order, error: orderError } = await admin
     .from("store_orders")
     .insert({
@@ -169,11 +204,13 @@ export async function startStorePaddleCheckout(
       payment_method: "paddle",
       currency: price.currency,
       subtotal_money_minor: price.money_amount_minor,
-      discount_money_minor: 0,
-      total_money_minor: price.money_amount_minor,
+      discount_money_minor: discountMoneyMinor,
+      total_money_minor: expectedTotalMoneyMinor,
       subtotal_remnants: 0,
       discount_remnants: 0,
       total_remnants: 0,
+      discount_code_id: discount?.discount_code_id ?? null,
+      user_discount_code_id: discount?.user_discount_code_id ?? null,
     })
     .select("id")
     .single();
@@ -234,6 +271,14 @@ export async function startStorePaddleCheckout(
     },
     body: JSON.stringify({
       items: [{ price_id: price.paddle_price_id, quantity: 1 }],
+      currency_code: price.currency,
+      ...(discount ? {
+        discount: {
+          type: discount.discount_type === "percentage" ? "percentage" : "flat",
+          description: `Sepulchria Store code ${discountCode.toUpperCase()}`,
+          amount: String(discount.discount_value),
+        },
+      } : {}),
       custom_data: {
         store_order_id: order.id,
         store_product_id: product.id,

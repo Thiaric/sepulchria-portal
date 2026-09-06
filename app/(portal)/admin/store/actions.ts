@@ -503,29 +503,38 @@ export async function createStoreDiscount(formData: FormData) {
   const discountType = str(formData, "discount_type");
   const scopeType = str(formData, "scope_type");
 
-  const { error } = await admin.from("store_discount_codes").insert({
+  const { data: discount, error } = await admin.from("store_discount_codes").insert({
     code: nullableStr(formData, "code")?.toUpperCase() ?? null,
     name: str(formData, "name"),
     description: str(formData, "description"),
     discount_type: discountType,
     discount_value: intOrNull(formData, "discount_value"),
-    currency:
-      discountType === "fixed_money"
-        ? (nullableStr(formData, "currency")?.toUpperCase() ?? "GBP")
-        : null,
+    currency: discountType === "fixed_money" ? (nullableStr(formData, "currency")?.toUpperCase() ?? "GBP") : null,
     scope_type: scopeType,
-    scope_category:
-      scopeType === "category" ? nullableStr(formData, "scope_category") : null,
+    scope_category: scopeType === "category" ? nullableStr(formData, "scope_category") : null,
     max_redemptions: intOrNull(formData, "max_redemptions"),
-    max_redemptions_per_user:
-      intOrNull(formData, "max_redemptions_per_user") ?? 1,
+    max_redemptions_per_user: intOrNull(formData, "max_redemptions_per_user") ?? 1,
+    minimum_money_minor: intOrNull(formData, "minimum_money_minor"),
+    minimum_remnants: intOrNull(formData, "minimum_remnants"),
     is_public: bool(formData, "is_public"),
     is_active: bool(formData, "is_active"),
     starts_at: nullableStr(formData, "starts_at"),
     ends_at: nullableStr(formData, "ends_at"),
-  });
+  }).select("id").single();
 
-  if (error) throw new Error(`Unable to create discount: ${error.message}`);
+  if (error || !discount) throw new Error(`Unable to create discount: ${error?.message ?? "No discount returned."}`);
+  if (scopeType === "products") {
+    const productIds = formData.getAll("product_ids").map((value) => String(value).trim()).filter(Boolean);
+    if (!productIds.length) {
+      await admin.from("store_discount_codes").delete().eq("id", discount.id);
+      throw new Error("Select at least one product for a product-scoped discount.");
+    }
+    const { error: scopeError } = await admin.from("store_discount_code_products").insert(productIds.map((productId) => ({ discount_code_id: discount.id, product_id: productId })));
+    if (scopeError) {
+      await admin.from("store_discount_codes").delete().eq("id", discount.id);
+      throw new Error(`Unable to save discount product scope: ${scopeError.message}`);
+    }
+  }
   refresh();
 }
 
@@ -539,5 +548,29 @@ export async function toggleStoreDiscount(formData: FormData) {
     .eq("id", str(formData, "id"));
 
   if (error) throw new Error(`Unable to update discount: ${error.message}`);
+  refresh();
+}
+
+
+export async function createStorePostPurchaseOffer(formData: FormData) {
+  await requireAdminSection("store");
+  const admin = createAdminClient();
+  const triggerProductId = nullableStr(formData, "trigger_product_id");
+  const triggerCategory = nullableStr(formData, "trigger_category");
+  if (!triggerProductId && !triggerCategory) throw new Error("Choose a trigger product or trigger category.");
+  const { error } = await admin.from("store_post_purchase_offers").insert({
+    name: str(formData, "name"), description: str(formData, "description"), trigger_product_id: triggerProductId, trigger_category: triggerCategory,
+    discount_code_template_id: str(formData, "discount_code_template_id"), valid_for_days: intOrNull(formData, "valid_for_days") ?? 14,
+    is_active: bool(formData, "is_active"), starts_at: nullableStr(formData, "starts_at"), ends_at: nullableStr(formData, "ends_at"),
+  });
+  if (error) throw new Error(`Unable to create post-purchase offer: ${error.message}`);
+  refresh();
+}
+
+export async function toggleStorePostPurchaseOffer(formData: FormData) {
+  await requireAdminSection("store");
+  const admin = createAdminClient();
+  const { error } = await admin.from("store_post_purchase_offers").update({ is_active: str(formData, "next") === "true" }).eq("id", str(formData, "id"));
+  if (error) throw new Error(`Unable to update post-purchase offer: ${error.message}`);
   refresh();
 }

@@ -216,21 +216,7 @@ export function PortalSkinGallery({
                   </span>
                 </div>
 
-                {!unlocked ? (
-                  <p
-                    data-skin-preview-role="description"
-                    className="mt-4 pt-3 text-[9px] leading-4"
-                    style={{
-                      borderTop:
-                        "1px solid rgb(var(--sep-skin-c1) / .28)",
-                    }}
-                  >
-                    Premium skins are unlocked
-                    after a real-money purchase
-                    is confirmed by staff, or may
-                    be granted directly by staff.
-                  </p>
-                ) : null}
+                
 
                 <div
                   data-skin-preview-role="divider"

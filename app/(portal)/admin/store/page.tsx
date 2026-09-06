@@ -1,4 +1,5 @@
 import { StoreLiveFilterBar } from "@/components/store/store-live-filter-bar";
+import { StorePostPurchaseOffersAdmin } from "@/components/admin/store-post-purchase-offers";
 import { requireAdminSection } from "@/lib/auth/require-staff";
 import { createAdminClient } from "@/lib/supabase/admin";
 import {
@@ -447,6 +448,7 @@ export default async function AdminStorePage() {
               <span className={label}>Scope</span>
               <select name="scope_type" defaultValue="all" className={field}>
                 <option value="all">Everything</option>
+                <option value="products">Selected products</option>
                 <option value="category">Category</option>
               </select>
             </label>
@@ -461,6 +463,20 @@ export default async function AdminStorePage() {
                 <option value="private_location">Private Location</option>
                 <option value="bundle">Bundle</option>
               </select>
+            </label>
+            <label>
+              <span className={label}>Product scope</span>
+              <select name="product_ids" multiple size={5} className={field}>
+                {products.map((product) => <option key={product.id} value={product.id}>{product.name}</option>)}
+              </select>
+            </label>
+            <label>
+              <span className={label}>Minimum money (minor units)</span>
+              <input name="minimum_money_minor" type="number" min="0" className={field} />
+            </label>
+            <label>
+              <span className={label}>Minimum Remnants</span>
+              <input name="minimum_remnants" type="number" min="0" className={field} />
             </label>
             <label>
               <span className={label}>Max total uses</span>
@@ -518,6 +534,8 @@ export default async function AdminStorePage() {
             ))}
           </div>
         </section>
+
+        <StorePostPurchaseOffersAdmin />
       </div>
     </main>
   );

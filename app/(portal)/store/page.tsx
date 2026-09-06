@@ -4,6 +4,7 @@ import { StoreLiveFilterBar } from "@/components/store/store-live-filter-bar";
 import { StorePaddlePurchaseButton } from "@/components/store/store-paddle-purchase-button";
 import { StoreRemnantPurchaseButton } from "@/components/store/store-remnant-purchase-button";
 import { StoreMusicPreview } from "@/components/store/store-music-preview";
+import { StoreAccountPanels } from "@/components/store/store-account-panels";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
@@ -446,6 +447,8 @@ export default async function StorePage() {
               </div>
             )}
           </section>
+
+          <StoreAccountPanels userId={user.id} />
         </div>
       </section>
     </main>
