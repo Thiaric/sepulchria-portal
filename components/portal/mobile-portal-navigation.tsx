@@ -886,6 +886,12 @@ const moreDragging =
     },
   };
 
+  const storeEntry: LinkEntry = {
+    href: "/store",
+    label: "Sepulchria's Shop",
+    icon: "/icons/store.png",
+  };
+
   const legalEntries: LinkEntry[] = [
     {
       href: "/community-rules",
@@ -1496,6 +1502,11 @@ const moreDragging =
 
                     <EntryButton
                       entry={cosmeticsEntry}
+                    />
+
+                    <EntryButton
+                      entry={storeEntry}
+                      onBeforeOpen={closeMore}
                     />
 
                      {isStaff ? (
