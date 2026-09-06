@@ -8,6 +8,7 @@ import {
   deleteStorePrice,
   deleteStoreProduct,
   saveStorePrice,
+  syncExistingPremiumCatalogueToStore,
   toggleStoreDiscount,
   updateStoreProduct,
 } from "./actions";
@@ -42,6 +43,7 @@ export default async function AdminStorePage() {
     grantsResult,
     skinsResult,
     cosmeticsResult,
+    musicResult,
     discountsResult,
   ] = await Promise.all([
     admin.from("store_products").select("*").order("sort_order").order("name"),
@@ -49,6 +51,8 @@ export default async function AdminStorePage() {
     admin.from("store_product_grants").select("*").order("created_at"),
     admin.from("portal_skins").select("id, slug, name, is_active").order("name"),
     admin.from("cosmetic_items").select("id, slug, name, category, is_active").order("category").order("name"),
+    admin.from("music_tracks")
+      .select("id, track_key, name, description, is_active, is_personal_selectable, sort_order").order("sort_order").order("name"),
     admin.from("store_discount_codes").select("*").order("created_at", { ascending: false }),
   ]);
 
@@ -58,6 +62,7 @@ export default async function AdminStorePage() {
     grantsResult,
     skinsResult,
     cosmeticsResult,
+    musicResult,
     discountsResult,
   ]) {
     if (result.error) throw new Error(result.error.message);
@@ -68,10 +73,12 @@ export default async function AdminStorePage() {
   const grants = grantsResult.data ?? [];
   const skins = skinsResult.data ?? [];
   const cosmetics = cosmeticsResult.data ?? [];
+  const musicTracks = musicResult.data ?? [];
   const discounts = discountsResult.data ?? [];
 
   const skinById = new Map(skins.map((x) => [x.id, x.name]));
   const cosmeticById = new Map(cosmetics.map((x) => [x.id, x.name]));
+  const musicById = new Map(musicTracks.map((x) => [x.id, x.name]));
 
   return (
     <main className="admin-compact h-full min-h-0 max-h-full overflow-y-auto p-5 sm:p-7 lg:p-9">
@@ -88,6 +95,32 @@ export default async function AdminStorePage() {
           Create products and bundles, choose what they unlock, set real-money
           and Remnant prices, and manage promotion codes.
         </p>
+
+        <section
+          id="store-catalogue-sync"
+          className="mt-8 scroll-mt-6 border border-[rgb(var(--sep-skin-c1,169_138_96))]/35 bg-[rgb(var(--sep-colour-15100d))] p-4 sm:p-5"
+        >
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <h3 className="font-serif text-2xl text-[rgb(var(--sep-skin-c1,169_138_96))]">
+                Existing premium catalogue
+              </h3>
+
+              <p className="mt-2 max-w-3xl text-xs leading-5 text-[rgb(var(--sep-skin-c2,211_194_170))]">
+                Import or refresh every existing cosmetic, every premium skin,
+                every music track, Friend List and Private Location as Store
+                products. Cinder Original is excluded because it is the default
+                skin. No prices are created or changed.
+              </p>
+            </div>
+
+            <form action={syncExistingPremiumCatalogueToStore}>
+              <button className={button}>
+                Sync catalogue to Store
+              </button>
+            </form>
+          </div>
+        </section>
 
         <section id="store-create-product" className="mt-8 scroll-mt-6 border border-[rgb(var(--sep-skin-c1,169_138_96))]/35 bg-[rgb(var(--sep-colour-15100d))] p-4 sm:p-5">
           <h3 className="font-serif text-2xl text-[rgb(var(--sep-skin-c1,169_138_96))]">
@@ -108,6 +141,7 @@ export default async function AdminStorePage() {
               <select name="category" defaultValue="cosmetic" className={field}>
                 <option value="skin">Skin</option>
                 <option value="cosmetic">Cosmetic</option>
+                <option value="music">Music</option>
                 <option value="friend_list">Friend List</option>
                 <option value="private_location">Private Location</option>
                 <option value="bundle">Bundle</option>
@@ -191,6 +225,7 @@ export default async function AdminStorePage() {
                         <select name="category" defaultValue={product.category} className={field}>
                           <option value="skin">Skin</option>
                           <option value="cosmetic">Cosmetic</option>
+                          <option value="music">Music</option>
                           <option value="friend_list">Friend List</option>
                           <option value="private_location">Private Location</option>
                           <option value="bundle">Bundle</option>
@@ -284,7 +319,9 @@ export default async function AdminStorePage() {
                                 ? `Skin · ${skinById.get(grant.portal_skin_id) ?? grant.portal_skin_id}`
                                 : grant.grant_type === "cosmetic"
                                   ? `Cosmetic · ${cosmeticById.get(grant.cosmetic_item_id) ?? grant.cosmetic_item_id}`
-                                  : `Feature · ${grant.feature_key === "private_chat" ? "Private Location" : "Friend List"}`;
+                                  : grant.grant_type === "music"
+                                    ? `Music · ${musicById.get(grant.music_track_id) ?? grant.music_track_id}`
+                                    : `Feature · ${grant.feature_key === "private_chat" ? "Private Location" : "Friend List"}`;
 
                             return (
                               <div key={grant.id} className="flex flex-wrap items-center justify-between gap-3 border-b border-[rgb(var(--sep-skin-c1,169_138_96))]/15 pb-2 text-xs text-[rgb(var(--sep-skin-c2,211_194_170))]">
@@ -321,6 +358,19 @@ export default async function AdminStorePage() {
                               ))}
                             </select>
                             <button className={button}>Add cosmetic</button>
+                          </form>
+
+                          <form action={addStoreGrant} className="grid gap-2 sm:grid-cols-[1fr_auto]">
+                            <input type="hidden" name="product_id" value={product.id} />
+                            <input type="hidden" name="grant_type" value="music" />
+                            <select name="target" className={field}>
+                              {musicTracks.filter((x) => x.is_active && x.is_personal_selectable).map((track) => (
+                                <option key={track.id} value={track.id}>
+                                  {track.name}
+                                </option>
+                              ))}
+                            </select>
+                            <button className={button}>Add music</button>
                           </form>
 
                           <form action={addStoreGrant} className="grid gap-2 sm:grid-cols-[1fr_auto]">
@@ -396,6 +446,7 @@ export default async function AdminStorePage() {
                 <option value="">—</option>
                 <option value="skin">Skin</option>
                 <option value="cosmetic">Cosmetic</option>
+                <option value="music">Music</option>
                 <option value="friend_list">Friend List</option>
                 <option value="private_location">Private Location</option>
                 <option value="bundle">Bundle</option>

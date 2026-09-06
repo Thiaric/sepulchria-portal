@@ -202,6 +202,16 @@ const privateLocationItem: NavigationItem = {
   activePaths: ["/private-locations"],
 };
 
+const storeItem: NavigationItem = {
+  label: "Store",
+  title:
+    "Browse Sepulchria Store products, bundles and premium unlocks.",
+  icon: "/icons/store.png",
+  href: "/store",
+  activePaths: ["/store"],
+  opensModal: true,
+};
+
 const cosmeticsItem: NavigationItem = {
   label: "Cosmetics",
   title:
@@ -1821,16 +1831,13 @@ export function PortalSidebar({
 
 
   function renderPremiumMenu() {
-    const visible =
-      hasCosmetics ||
-      hasFriendListFeature ||
-      hasPrivateLocationAccess;
-
-    if (!visible) {
-      return null;
-    }
-
     const active =
+      modalItem?.href ===
+        storeItem.href ||
+      isActive(
+        storeItem.activePaths,
+        storeItem,
+      ) ||
       isActive(
         cosmeticsItem.activePaths,
         cosmeticsItem,
@@ -1909,6 +1916,10 @@ export function PortalSidebar({
             id="premium-submenu"
             className="mt-1 border-l border-[rgb(var(--sep-colour-60482e))]/40 pl-2"
           >
+            {renderNavigationItem(
+              storeItem,
+            )}
+
             {hasCosmetics
               ? renderNavigationItem(
                   cosmeticsItem,
@@ -2400,6 +2411,10 @@ export function PortalSidebar({
           : "+"}
       </button>
     </div>
+
+    {renderMobileItem(
+      storeItem,
+    )}
 
     {hasPrivateLocationAccess
       ? renderMobileItem(
