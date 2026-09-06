@@ -1291,7 +1291,8 @@ html[data-portal-skin="emberforge"], body[data-portal-skin="emberforge"]
 /* User-requested three-colour cleanup: background + C1 + C2 only. */
 
 html[data-portal-skin="vellum"],
-body[data-portal-skin="vellum"] {
+body[data-portal-skin="vellum"],
+.portal-skin-scope[data-portal-skin="vellum"] {
   --sep-skin-c1: 107 35 50;
   --sep-skin-c2: 23 21 19;
   --sep-skin-nav-link: 107 35 50;
@@ -1308,10 +1309,11 @@ body[data-portal-skin="vellum"] {
   --sep-colour-876a46: var(--sep-skin-c1);
 }
 html[data-portal-skin="aelari-dawn"],
-body[data-portal-skin="aelari-dawn"] {
-  --sep-skin-c1: 141 39 28;
+body[data-portal-skin="aelari-dawn"],
+.portal-skin-scope[data-portal-skin="aelari-dawn"] {
+  --sep-skin-c1: 16 32 84;
   --sep-skin-c2: 154 67 28;
-  --sep-skin-nav-link: 141 39 28;
+  --sep-skin-nav-link: 16 32 84;
   --sep-skin-nav-icon-filter: brightness(0) saturate(100%) invert(32.9%) sepia(73.6%) saturate(609.9%) hue-rotate(317.5deg) brightness(67.9%) contrast(109.9%);
 
   --sep-colour-d9bd82: var(--sep-skin-c1);
@@ -1325,10 +1327,11 @@ body[data-portal-skin="aelari-dawn"] {
   --sep-colour-876a46: var(--sep-skin-c1);
 }
 html[data-portal-skin="ashen"],
-body[data-portal-skin="ashen"] {
-  --sep-skin-c1: 23 75 56;
+body[data-portal-skin="ashen"],
+.portal-skin-scope[data-portal-skin="ashen"] {
+  --sep-skin-c1: 41, 32, 82;
   --sep-skin-c2: 24 47 56;
-  --sep-skin-nav-link: 23 75 56;
+  --sep-skin-nav-link: 41, 32, 82;
   --sep-skin-nav-icon-filter: brightness(0) saturate(100%) invert(78.3%) sepia(21.8%) saturate(1286.9%) hue-rotate(106.6deg) brightness(26%) contrast(88.8%);
 
   --sep-colour-d9bd82: var(--sep-skin-c1);
@@ -1342,9 +1345,10 @@ body[data-portal-skin="ashen"] {
   --sep-colour-876a46: var(--sep-skin-c1);
 }
 html[data-portal-skin="ivory-archive"],
-body[data-portal-skin="ivory-archive"] {
+body[data-portal-skin="ivory-archive"],
+.portal-skin-scope[data-portal-skin="ivory-archive"] {
   --sep-skin-c1: 169 183 194;
-  --sep-skin-c2: 238 231 220;
+  --sep-skin-c2: 204, 186, 191;
   --sep-skin-nav-link: 169 183 194;
   --sep-skin-nav-icon-filter: brightness(0) saturate(100%) invert(53.5%) sepia(7.5%) saturate(463.4%) hue-rotate(164.1deg) brightness(135.3%) contrast(88.9%);
 
@@ -1359,7 +1363,8 @@ body[data-portal-skin="ivory-archive"] {
   --sep-colour-876a46: var(--sep-skin-c1);
 }
 html[data-portal-skin="dwarven-deep"],
-body[data-portal-skin="dwarven-deep"] {
+body[data-portal-skin="dwarven-deep"],
+.portal-skin-scope[data-portal-skin="dwarven-deep"] {
   --sep-skin-c1: 91 56 35;
   --sep-skin-c2: 21 19 17;
   --sep-skin-nav-link: 91 56 35;
@@ -1376,7 +1381,8 @@ body[data-portal-skin="dwarven-deep"] {
   --sep-colour-876a46: var(--sep-skin-c1);
 }
 html[data-portal-skin="amethyst-veil"],
-body[data-portal-skin="amethyst-veil"] {
+body[data-portal-skin="amethyst-veil"],
+.portal-skin-scope[data-portal-skin="amethyst-veil"] {
   --sep-skin-c1: 201 154 76;
   --sep-skin-c2: 196 174 199;
   --sep-skin-nav-link: 201 154 76;
@@ -1393,7 +1399,8 @@ body[data-portal-skin="amethyst-veil"] {
   --sep-colour-876a46: var(--sep-skin-c1);
 }
 html[data-portal-skin="emberforge"],
-body[data-portal-skin="emberforge"] {
+body[data-portal-skin="emberforge"],
+.portal-skin-scope[data-portal-skin="emberforge"] {
   --sep-skin-c1: 210 123 53;
   --sep-skin-c2: 239 196 142;
   --sep-skin-nav-link: 210 123 53;
@@ -1410,7 +1417,8 @@ body[data-portal-skin="emberforge"] {
   --sep-colour-876a46: var(--sep-skin-c1);
 }
 html[data-portal-skin="rose-nocturne"],
-body[data-portal-skin="rose-nocturne"] {
+body[data-portal-skin="rose-nocturne"],
+.portal-skin-scope[data-portal-skin="rose-nocturne"] {
   --sep-skin-c1: 198 124 105;
   --sep-skin-c2: 226 179 172;
   --sep-skin-nav-link: 198 124 105;
@@ -1427,7 +1435,8 @@ body[data-portal-skin="rose-nocturne"] {
   --sep-colour-876a46: var(--sep-skin-c1);
 }
 html[data-portal-skin="mortal-hearth"],
-body[data-portal-skin="mortal-hearth"] {
+body[data-portal-skin="mortal-hearth"],
+.portal-skin-scope[data-portal-skin="mortal-hearth"] {
   --sep-skin-c1: 86 54 39;
   --sep-skin-c2: 23 24 25;
   --sep-skin-nav-link: 86 54 39;
@@ -1444,7 +1453,8 @@ body[data-portal-skin="mortal-hearth"] {
   --sep-colour-876a46: var(--sep-skin-c1);
 }
 html[data-portal-skin="verdant-reliquary"],
-body[data-portal-skin="verdant-reliquary"] {
+body[data-portal-skin="verdant-reliquary"],
+.portal-skin-scope[data-portal-skin="verdant-reliquary"] {
   --sep-skin-c1: 147 201 136;
   --sep-skin-c2: 228 219 158;
   --sep-skin-nav-link: 228 219 158;
@@ -1461,7 +1471,8 @@ body[data-portal-skin="verdant-reliquary"] {
   --sep-colour-876a46: var(--sep-skin-c1);
 }
 html[data-portal-skin="deepwater"],
-body[data-portal-skin="deepwater"] {
+body[data-portal-skin="deepwater"],
+.portal-skin-scope[data-portal-skin="deepwater"] {
   --sep-skin-c1: 239 182 127;
   --sep-skin-c2: 215 238 229;
   --sep-skin-nav-link: 239 182 127;
@@ -1478,7 +1489,8 @@ body[data-portal-skin="deepwater"] {
   --sep-colour-876a46: var(--sep-skin-c1);
 }
 html[data-portal-skin="blood-court"],
-body[data-portal-skin="blood-court"] {
+body[data-portal-skin="blood-court"],
+.portal-skin-scope[data-portal-skin="blood-court"] {
   --sep-skin-c1: 216 136 136;
   --sep-skin-c2: 187 199 208;
   --sep-skin-nav-link: 216 136 136;
@@ -1495,7 +1507,8 @@ body[data-portal-skin="blood-court"] {
   --sep-colour-876a46: var(--sep-skin-c1);
 }
 html[data-portal-skin="starfall"],
-body[data-portal-skin="starfall"] {
+body[data-portal-skin="starfall"],
+.portal-skin-scope[data-portal-skin="starfall"] {
   --sep-skin-c1: 127 169 220;
   --sep-skin-c2: 226 194 125;
   --sep-skin-nav-link: 226 194 125;
@@ -1512,7 +1525,8 @@ body[data-portal-skin="starfall"] {
   --sep-colour-876a46: var(--sep-skin-c1);
 }
 html[data-portal-skin="wolfs-moon"],
-body[data-portal-skin="wolfs-moon"] {
+body[data-portal-skin="wolfs-moon"],
+.portal-skin-scope[data-portal-skin="wolfs-moon"] {
   --sep-skin-c1: 217 189 120;
   --sep-skin-c2: 199 217 227;
   --sep-skin-nav-link: 217 189 120;
@@ -2431,3 +2445,272 @@ body[data-portal-skin] [aria-label="Displayed Trophies"] [role="tooltip"] > span
 body[data-portal-skin] [aria-label="Displayed Trophies"] [role="tooltip"] > span:nth-child(2) {
   color: rgb(var(--sep-skin-c2)) !important;
 }
+
+/* ==================================================================
+   SKIN SEMANTIC ACCENT FINAL AUTHORITY - FULL LEGACY ACCENT SWEEP
+   ==================================================================
+   C1 = primary accent / headings / borders / strong identity lines
+   C2 = secondary accent / body-support text / muted ornament
+
+   Neutral dark backgrounds remain neutral.
+   Semantic danger/success/warning colours remain semantic.
+   This layer intentionally comes LAST so old gold/brown accent utilities
+   cannot leak through a selected portal skin.
+   ================================================================== */
+
+body[data-portal-skin]:not([data-portal-skin="sepulchria"]) [data-portal-shell] {
+  --sep-unified-frame-border:
+    rgb(var(--sep-skin-c1) / 0.45);
+  --sep-unified-frame-border-strong:
+    rgb(var(--sep-skin-c1) / 0.58);
+
+  --sep-unified-control-border:
+    rgb(var(--sep-skin-c1) / 0.52);
+  --sep-unified-control-border-hover:
+    rgb(var(--sep-skin-c1));
+  --sep-unified-control-text:
+    rgb(var(--sep-skin-c2));
+  --sep-unified-control-text-hover:
+    rgb(var(--sep-skin-c1));
+
+  --sep-unified-field-border:
+    rgb(var(--sep-skin-c1) / 0.55);
+  --sep-unified-field-text:
+    rgb(var(--sep-skin-c2));
+  --sep-unified-field-placeholder:
+    rgb(var(--sep-skin-c2) / 0.68);
+  --sep-unified-field-focus:
+    rgb(var(--sep-skin-c1));
+
+  --sep-unified-context-border:
+    rgb(var(--sep-skin-c1) / 0.38);
+  --sep-unified-context-border-hover:
+    rgb(var(--sep-skin-c1));
+
+  --sep-unified-modal-border:
+    rgb(var(--sep-skin-c1) / 0.52);
+  --sep-unified-modal-header-border:
+    rgb(var(--sep-skin-c1) / 0.55);
+}
+
+/* Legacy standard structural borders -> skin C1. */
+body[data-portal-skin]:not([data-portal-skin="sepulchria"]) [data-portal-shell]
+:is(
+  [class^="border-[rgb(var(--sep-colour-60482e))]"],
+  [class*=" border-[rgb(var(--sep-colour-60482e))]"],
+  [class^="border-[rgb(var(--sep-colour-614b31))]"],
+  [class*=" border-[rgb(var(--sep-colour-614b31))]"],
+  [class^="border-[rgb(var(--sep-colour-62482f))]"],
+  [class*=" border-[rgb(var(--sep-colour-62482f))]"],
+  [class^="border-[rgb(var(--sep-colour-654b2e))]"],
+  [class*=" border-[rgb(var(--sep-colour-654b2e))]"],
+  [class^="border-[rgb(var(--sep-colour-6b5032))]"],
+  [class*=" border-[rgb(var(--sep-colour-6b5032))]"],
+  [class^="border-[rgb(var(--sep-colour-765937))]"],
+  [class*=" border-[rgb(var(--sep-colour-765937))]"],
+  [class^="border-[rgb(var(--sep-colour-5d452d))]"],
+  [class*=" border-[rgb(var(--sep-colour-5d452d))]"],
+  [class^="border-[rgb(var(--sep-colour-59432c))]"],
+  [class*=" border-[rgb(var(--sep-colour-59432c))]"],
+  [class^="border-[rgb(var(--sep-colour-8d6d3e))]"],
+  [class*=" border-[rgb(var(--sep-colour-8d6d3e))]"],
+  [class^="border-[rgb(var(--sep-colour-8f6a3d))]"],
+  [class*=" border-[rgb(var(--sep-colour-8f6a3d))]"]
+) {
+  border-color: rgb(var(--sep-skin-c1) / 0.55) !important;
+}
+
+/* Old primary gold/light accent text -> C1. */
+body[data-portal-skin]:not([data-portal-skin="sepulchria"]) [data-portal-shell]
+:is(
+  [class^="text-[rgb(var(--sep-colour-ead1a7))]"],
+  [class*=" text-[rgb(var(--sep-colour-ead1a7))]"],
+  [class^="text-[rgb(var(--sep-colour-e4c28e))]"],
+  [class*=" text-[rgb(var(--sep-colour-e4c28e))]"],
+  [class^="text-[rgb(var(--sep-colour-e1c28f))]"],
+  [class*=" text-[rgb(var(--sep-colour-e1c28f))]"],
+  [class^="text-[rgb(var(--sep-colour-dfc79c))]"],
+  [class*=" text-[rgb(var(--sep-colour-dfc79c))]"],
+  [class^="text-[rgb(var(--sep-colour-ecd9b2))]"],
+  [class*=" text-[rgb(var(--sep-colour-ecd9b2))]"],
+  [class^="text-[rgb(var(--sep-colour-efd6a8))]"],
+  [class*=" text-[rgb(var(--sep-colour-efd6a8))]"],
+  [class^="text-[rgb(var(--sep-colour-efd6a3))]"],
+  [class*=" text-[rgb(var(--sep-colour-efd6a3))]"],
+  [class^="text-[rgb(var(--sep-colour-b08b59))]"],
+  [class*=" text-[rgb(var(--sep-colour-b08b59))]"],
+  [class^="text-[rgb(var(--sep-colour-a98a60))]"],
+  [class*=" text-[rgb(var(--sep-colour-a98a60))]"]
+) {
+  color: rgb(var(--sep-skin-c1)) !important;
+}
+
+/* Old secondary/muted gold text -> C2. */
+body[data-portal-skin]:not([data-portal-skin="sepulchria"]) [data-portal-shell]
+:is(
+  [class^="text-[rgb(var(--sep-colour-c9b391))]"],
+  [class*=" text-[rgb(var(--sep-colour-c9b391))]"],
+  [class^="text-[rgb(var(--sep-colour-cab89b))]"],
+  [class*=" text-[rgb(var(--sep-colour-cab89b))]"],
+  [class^="text-[rgb(var(--sep-colour-b0a18d))]"],
+  [class*=" text-[rgb(var(--sep-colour-b0a18d))]"],
+  [class^="text-[rgb(var(--sep-colour-bca27b))]"],
+  [class*=" text-[rgb(var(--sep-colour-bca27b))]"],
+  [class^="text-[rgb(var(--sep-colour-c6ab80))]"],
+  [class*=" text-[rgb(var(--sep-colour-c6ab80))]"],
+  [class^="text-[rgb(var(--sep-colour-876a46))]"],
+  [class*=" text-[rgb(var(--sep-colour-876a46))]"],
+  [class^="text-[rgb(var(--sep-colour-80684b))]"],
+  [class*=" text-[rgb(var(--sep-colour-80684b))]"],
+  [class^="text-[rgb(var(--sep-colour-796448))]"],
+  [class*=" text-[rgb(var(--sep-colour-796448))]"],
+  [class^="text-[rgb(var(--sep-colour-c8b18d))]"],
+  [class*=" text-[rgb(var(--sep-colour-c8b18d))]"]
+) {
+  color: rgb(var(--sep-skin-c2)) !important;
+}
+
+/*
+ * Tidings historically bypassed the unified frame layer with border-t /
+ * border-r and hard-coded accent colours. Give it an explicit semantic
+ * contract. Urgent red remains red.
+ */
+body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+[data-portal-shell]
+[data-tidings-ticker="true"] {
+  border-color: rgb(var(--sep-skin-c1) / 0.65) !important;
+}
+
+body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+[data-portal-shell]
+[data-tidings-ticker="true"]
+> div
+> div:first-child {
+  border-color: rgb(var(--sep-skin-c1) / 0.55) !important;
+}
+
+body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+[data-portal-shell]
+[data-tidings-ticker="true"]
+> div
+> div:first-child
+> span {
+  color: rgb(var(--sep-skin-c1)) !important;
+}
+
+body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+[data-portal-shell]
+[data-tidings-ticker="true"]
+.sepulchria-tidings-track {
+  color: rgb(var(--sep-skin-c2)) !important;
+}
+
+body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+[data-portal-shell]
+[data-tidings-ticker="true"]
+[data-tidings-role="title"] {
+  color: rgb(var(--sep-skin-c1)) !important;
+}
+
+body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+[data-portal-shell]
+[data-tidings-ticker="true"]
+[data-tidings-role="description"] {
+  color: rgb(var(--sep-skin-c2)) !important;
+}
+
+/*
+ * Restore semantic urgent colouring after the generic Tidings skin layer.
+ * The component already exposes the urgent legacy red token in its class.
+ */
+body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+[data-portal-shell]
+[data-tidings-ticker="true"][class*="sep-colour-985847"] {
+  border-color: rgb(var(--sep-colour-985847) / 0.70) !important;
+}
+
+body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+[data-portal-shell]
+[data-tidings-ticker="true"][class*="sep-colour-985847"]
+> div
+> div:first-child {
+  border-color: rgb(var(--sep-colour-985847) / 0.70) !important;
+}
+
+/* Focus rings belong to the active skin accent system too. */
+body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+[data-portal-shell]
+:is(button, a, input, select, textarea):not(.portal-left-shell *):focus-visible {
+  outline-color: rgb(var(--sep-skin-c1)) !important;
+}
+
+/* PREVIEW CARDS RECEIVE THEIR OWN SKIN VARIABLES
+   Appearance preview cards and the selected-skin swatch carry both
+   .portal-skin-scope and data-portal-skin="<slug>". The skin variable
+   definition blocks above now include that nested scope, so --sep-skin-c1,
+   --sep-skin-c2 and mapped skin colour variables resolve from the card's
+   own skin instead of inheriting the active page skin. */
+
+/* KARESHI NIGHT OWN SKIN TOKENS
+   Kareshi's Night is NOT Cinder Original. It keeps its own bronze-gold
+   accent and participates in the normal skin semantic border/text sweep. */
+html[data-portal-skin="moonlit"],
+body[data-portal-skin="moonlit"],
+.portal-skin-scope[data-portal-skin="moonlit"] {
+  --sep-skin-c1: 181 138 76;
+  --sep-skin-c2: 211 194 170;
+  --sep-global-c1: 181 138 76;
+  --sep-global-c2: 211 194 170;
+  --sep-skin-nav-link: 181 138 76;
+}
+
+
+/* ==================================================================
+   PORTAL SHELL PANEL SEPARATORS FOLLOW ACTIVE SKIN
+   ------------------------------------------------------------------
+   These are the structural lines separating:
+   - header from viewport
+   - left navigation from centre
+   - centre from right/context sidebar
+
+   Cinder Original (sepulchria) deliberately keeps its canonical
+   dark bronze/gold separators. Every actual skin uses its own C1.
+   ================================================================== */
+
+body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+  [data-portal-header] {
+  border-bottom-color: rgb(var(--sep-skin-c1) / 0.48) !important;
+}
+
+body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+  [data-portal-navigation] {
+  border-color: rgb(var(--sep-skin-c1) / 0.42) !important;
+}
+
+body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+  [data-portal-right-sidebar] {
+  border-left-color: rgb(var(--sep-skin-c1) / 0.42) !important;
+}
+
+body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+  aside[aria-label="Context sidebar"][data-portal-column] {
+  border-left-color: rgb(var(--sep-skin-c1) / 0.42) !important;
+}
+
+/* Desktop left/centre separator. */
+@media (min-width: 1024px) {
+  body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+    [data-portal-navigation] {
+    border-right-color: rgb(var(--sep-skin-c1) / 0.42) !important;
+    border-bottom-color: transparent !important;
+  }
+}
+
+/* Mobile/tablet left navigation sits above centre, so its separator is bottom. */
+@media (max-width: 1023px) {
+  body[data-portal-skin]:not([data-portal-skin="sepulchria"])
+    [data-portal-navigation] {
+    border-bottom-color: rgb(var(--sep-skin-c1) / 0.42) !important;
+  }
+}
+

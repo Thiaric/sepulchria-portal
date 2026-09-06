@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
 import "./portal-themes.css";
-import "@/components/sepulchria/sep-ui-unified.css";
 import { CookieStorageControls } from "@/components/privacy/cookie-storage-controls";
 import { ServiceWorkerRegistration } from "@/components/pwa/service-worker-registration";
 import { PwaInstallPrompt } from "@/components/pwa/pwa-install-prompt";

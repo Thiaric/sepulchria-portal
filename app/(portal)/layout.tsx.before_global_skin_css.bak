@@ -1,6 +1,7 @@
 import { Suspense, type ReactNode, type CSSProperties } from "react";
 import { headers } from "next/headers";
 
+import "@/components/sepulchria/sep-ui-unified.css";
 
 import { PortalAudioProvider } from "@/components/audio/portal-audio-provider";
 import { PortalMessageSoundListener } from "@/components/audio/portal-message-sound-listener";

@@ -628,11 +628,11 @@ function ProfileSection({
           : "bg-[rgb(var(--sep-colour-17110d))]"
       }`}
     >
-      <h2 className="font-serif text-xl text-[rgb(var(--sep-skin-c1,var(--sep-colour-dfc79c)))] sm:text-2xl">
+      <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-dfc79c))] sm:text-2xl">
         {title}
       </h2>
 
-      <p className="mt-3 whitespace-pre-line break-words text-sm leading-7 text-[rgb(var(--sep-skin-c2,var(--sep-colour-b0a18d)))]">
+      <p className="mt-3 whitespace-pre-line break-words text-sm leading-7 text-[rgb(var(--sep-colour-b0a18d))]">
         {content}
       </p>
     </section>

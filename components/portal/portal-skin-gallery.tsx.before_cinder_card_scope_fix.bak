@@ -301,18 +301,6 @@ export function PortalSkinGallery({
          *   primary    = --sep-skin-c1
          *   secondary  = --sep-skin-c2
          */
-        /* CINDER ORIGINAL PREVIEW DEFAULT TOKENS
-         * sepulchria is the default skin, so it does not have the same
-         * explicit nested skin block as the non-default skins. Without this,
-         * its card inherits C1/C2 from whichever skin is currently active.
-         */
-        [data-skin-preview-card="true"][data-portal-skin="sepulchria"] {
-          --sep-skin-c1: 169 138 96 !important;
-          --sep-skin-c2: 211 194 170 !important;
-          --sep-global-c1: 169 138 96 !important;
-          --sep-global-c2: 211 194 170 !important;
-        }
-
         [data-skin-preview-card="true"] {
           background:
             rgb(var(--sep-colour-120f0d)) !important;
