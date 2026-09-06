@@ -872,20 +872,6 @@ const moreDragging =
     },
   };
 
-  const cosmeticsEntry: LinkEntry = {
-    href: "/cosmetics",
-    label: "Cosmetics",
-    icon: "/icons/premium.png",
-    modal: {
-      label: "Cosmetics",
-      title:
-        "Manage your owned character and chat cosmetics.",
-      icon:
-        "/icons/premium.png",
-      href: "/cosmetics",
-    },
-  };
-
   const legalEntries: LinkEntry[] = [
     {
       href: "/community-rules",
@@ -1492,10 +1478,6 @@ const moreDragging =
 
                     <EntryButton
                       entry={rankingEntry}
-                    />
-
-                    <EntryButton
-                      entry={cosmeticsEntry}
                     />
 
                      {isStaff ? (

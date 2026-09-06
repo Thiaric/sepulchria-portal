@@ -985,15 +985,6 @@ function EmbeddedPortalLayout({
           <PortalNotificationCountsProvider
             staffRole={staffRole}
           >
-            {/*
-              Embedded/modal portal pages must mount the same cosmetic runtime
-              as the full portal. This restores equipped cosmetics on every
-              data-cosmetic surface rendered inside modals: character/profile
-              portrait frame, nameplate, crest, profile background, PM frames,
-              instant-chat frames, forum frames, action/whisper cosmetics, etc.
-            */}
-            <CosmeticRuntime />
-
             <div
               data-portal-shell
               data-portal-modal-shell="true"

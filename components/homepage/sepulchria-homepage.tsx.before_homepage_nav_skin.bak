@@ -719,26 +719,25 @@ function HomepageButton({
   return (
     <Link
       href={href}
-      data-homepage-nav-button="true"
       className={`group relative min-h-[64px] overflow-hidden border px-4 py-3 transition duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--sep-colour-d4a460))] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--sep-colour-090706))] ${
         featured
           ? "border-[rgb(var(--sep-colour-a77a42))]/90 bg-[rgb(var(--sep-colour-382313))] shadow-[0_0_24px_rgba(var(--sep-rgb-159-105-46),0.16)] hover:-translate-y-0.5 hover:border-[rgb(var(--sep-colour-d4a460))] hover:bg-[rgb(var(--sep-colour-472c17))]"
           : "border-[rgb(var(--sep-colour-654b30))]/55 bg-[rgb(var(--sep-colour-15100c))]/92 hover:-translate-y-0.5 hover:border-[rgb(var(--sep-colour-987044))] hover:bg-[rgb(var(--sep-colour-21170f))]"
       }`}
     >
-      <span data-homepage-nav-role="symbol" className="absolute right-4 top-1/2 -translate-y-1/2 font-serif text-3xl text-[rgb(var(--sep-colour-a87c43))]/15 transition duration-500 group-hover:scale-125 group-hover:text-[rgb(var(--sep-colour-c99a58))]/25">
+      <span className="absolute right-4 top-1/2 -translate-y-1/2 font-serif text-3xl text-[rgb(var(--sep-colour-a87c43))]/15 transition duration-500 group-hover:scale-125 group-hover:text-[rgb(var(--sep-colour-c99a58))]/25">
         {symbol}
       </span>
 
-      <span data-homepage-nav-role="eyebrow" className="relative block text-[7px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-836c50))]">
+      <span className="relative block text-[7px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-836c50))]">
         {eyebrow}
       </span>
 
-      <span data-homepage-nav-role="label" className="relative mt-1 block font-serif text-base text-[rgb(var(--sep-colour-dfc89d))] transition group-hover:text-[rgb(var(--sep-colour-f0d7a6))]">
+      <span className="relative mt-1 block font-serif text-base text-[rgb(var(--sep-colour-dfc89d))] transition group-hover:text-[rgb(var(--sep-colour-f0d7a6))]">
         {label}
       </span>
 
-      <span data-homepage-nav-role="accent" className="absolute bottom-0 left-0 h-px w-0 bg-[rgb(var(--sep-colour-c18d4c))] transition-all duration-500 group-hover:w-full" />
+      <span className="absolute bottom-0 left-0 h-px w-0 bg-[rgb(var(--sep-colour-c18d4c))] transition-all duration-500 group-hover:w-full" />
     </Link>
   );
 }
@@ -788,22 +787,21 @@ function HomepageActionButton({
     <button
       type="button"
       onClick={onClick}
-      data-homepage-nav-button="true"
       className="group relative min-h-[64px] overflow-hidden border border-[rgb(var(--sep-colour-654b30))]/55 bg-[rgb(var(--sep-colour-15100c))]/92 px-4 py-3 text-left transition duration-300 hover:-translate-y-0.5 hover:border-[rgb(var(--sep-colour-987044))] hover:bg-[rgb(var(--sep-colour-21170f))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--sep-colour-d4a460))] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--sep-colour-090706))]"
     >
-      <span data-homepage-nav-role="symbol" className="absolute right-4 top-1/2 -translate-y-1/2 font-serif text-3xl text-[rgb(var(--sep-colour-a87c43))]/15 transition duration-500 group-hover:scale-125 group-hover:text-[rgb(var(--sep-colour-c99a58))]/25">
+      <span className="absolute right-4 top-1/2 -translate-y-1/2 font-serif text-3xl text-[rgb(var(--sep-colour-a87c43))]/15 transition duration-500 group-hover:scale-125 group-hover:text-[rgb(var(--sep-colour-c99a58))]/25">
         {symbol}
       </span>
 
-      <span data-homepage-nav-role="eyebrow" className="relative block text-[7px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-836c50))]">
+      <span className="relative block text-[7px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-836c50))]">
         {eyebrow}
       </span>
 
-      <span data-homepage-nav-role="label" className="relative mt-1 block font-serif text-base text-[rgb(var(--sep-colour-dfc89d))] transition group-hover:text-[rgb(var(--sep-colour-f0d7a6))]">
+      <span className="relative mt-1 block font-serif text-base text-[rgb(var(--sep-colour-dfc89d))] transition group-hover:text-[rgb(var(--sep-colour-f0d7a6))]">
         {label}
       </span>
 
-      <span data-homepage-nav-role="accent" className="absolute bottom-0 left-0 h-px w-0 bg-[rgb(var(--sep-colour-c18d4c))] transition-all duration-500 group-hover:w-full" />
+      <span className="absolute bottom-0 left-0 h-px w-0 bg-[rgb(var(--sep-colour-c18d4c))] transition-all duration-500 group-hover:w-full" />
     </button>
   );
 }

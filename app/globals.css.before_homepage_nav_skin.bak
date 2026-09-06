@@ -20577,28 +20577,3 @@ html[data-portal-skin]
     ) !important;
 }
 
-
-
-/* HOMEPAGE NAVIGATION - SEMANTIC SKIN C1/C2 */
-html[data-portal-skin] [data-homepage-nav-button="true"] {
-  border-color: color-mix(in srgb, rgb(var(--sep-skin-c1)) 55%, transparent) !important;
-}
-html[data-portal-skin] [data-homepage-nav-button="true"]:hover {
-  border-color: rgb(var(--sep-skin-c1)) !important;
-}
-html[data-portal-skin] [data-homepage-nav-button="true"] [data-homepage-nav-role="eyebrow"] {
-  color: rgb(var(--sep-skin-c2)) !important;
-}
-html[data-portal-skin] [data-homepage-nav-button="true"] [data-homepage-nav-role="label"] {
-  color: rgb(var(--sep-skin-c1)) !important;
-}
-html[data-portal-skin] [data-homepage-nav-button="true"] [data-homepage-nav-role="symbol"] {
-  color: rgb(var(--sep-skin-c2)) !important;
-  opacity: .55;
-}
-html[data-portal-skin] [data-homepage-nav-button="true"]:hover [data-homepage-nav-role="symbol"] {
-  opacity: .8;
-}
-html[data-portal-skin] [data-homepage-nav-button="true"] [data-homepage-nav-role="accent"] {
-  background: rgb(var(--sep-skin-c1)) !important;
-}

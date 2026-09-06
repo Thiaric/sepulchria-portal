@@ -2412,22 +2412,3 @@ body[data-portal-skin]
 ) {
   color: inherit;
 }
-
-/* CHARACTER SHEET SEMANTIC C1/C2 */
-body[data-portal-skin] [data-character-sheet-panel="profile"] section > h2,
-body[data-portal-skin] [data-character-sheet-panel="offgame"] section > h2 {
-  color: rgb(var(--sep-skin-c1)) !important;
-}
-
-body[data-portal-skin] [data-character-sheet-panel="profile"] section > p,
-body[data-portal-skin] [data-character-sheet-panel="offgame"] section > p {
-  color: rgb(var(--sep-skin-c2)) !important;
-}
-
-body[data-portal-skin] [aria-label="Displayed Trophies"] [role="tooltip"] > span:first-child {
-  color: rgb(var(--sep-skin-c1)) !important;
-}
-
-body[data-portal-skin] [aria-label="Displayed Trophies"] [role="tooltip"] > span:nth-child(2) {
-  color: rgb(var(--sep-skin-c2)) !important;
-}
