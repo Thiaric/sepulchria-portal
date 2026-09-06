@@ -522,10 +522,10 @@ async function PortalLayoutContent({
                  * immediately above the nav instead of underneath it.
                  */
                 footer[aria-label="Tidings"] {
-                  display: block !important;
-                  flex: 0 0 36px;
-                  height: 36px;
-                  min-height: 36px;
+  display: block !important;
+  flex: 0 0 36px;
+  height: 36px;
+  min-height: 36px;
                   max-height: 36px;
                   margin-bottom:
                     calc(

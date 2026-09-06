@@ -17,6 +17,7 @@ import { GatheringContextPanel } from "@/components/admin/gathering-context-pane
 import { ExperienceContextPanel } from "@/components/admin/experience-context-panel";
 import { MusicContextPanel } from "@/components/admin/music-context-panel";
 import { CosmeticsContextPanel } from "@/components/admin/cosmetics-context-panel";
+import { StoreContextPanel } from "@/components/admin/store-context-panel";
 import { AdminCharacterPremiumFeaturesContext } from "@/components/admin/admin-character-premium-features-context";
 import {
   canAccessAdminSection,
@@ -50,6 +51,7 @@ type ContextMode =
   | "character_premium_features"
   | "codex"
   | "cosmetics"
+  | "store"
   | "media"
   | "notifications"
   | "polls"
@@ -136,6 +138,10 @@ function getMode(
 
   if (pathname === "/admin/cosmetics") {
     return "cosmetics";
+  }
+
+  if (pathname === "/admin/store") {
+    return "store";
   }
 
   if (pathname === "/admin/media") {
@@ -248,6 +254,12 @@ export function AdminContextPanel({
   if (mode === "cosmetics") {
     return (
       <CosmeticsContextPanel />
+    );
+  }
+
+  if (mode === "store") {
+    return (
+      <StoreContextPanel />
     );
   }
 
@@ -1901,6 +1913,7 @@ const ADMIN_NAVIGATION_ENTRIES: AdminNavigationEntry[] = [
   { section: "rooms", label: "Locations", href: "/admin/rooms", aliases: ["rooms"] },
   { section: "communication_logs", label: "Logs", href: "/admin/communication-logs", aliases: ["communication logs"] },
   { section: "market", label: "Market", href: "/admin/market" },
+  { section: "store", label: "Store", href: "/admin/store", aliases: ["shop", "commerce", "paddle"] },
   { section: "media", label: "Media", href: "/admin/media" },
   { section: "music", label: "Music", href: "/admin/music" },
   { section: "notifications", label: "Notifications", href: "/admin/notifications", aliases: ["alerts", "bell"] },

@@ -275,6 +275,12 @@ export default async function AdminLayout({
               </AdminNavigationLink>
             ) : null}
 
+            {can("store") ? (
+              <AdminNavigationLink href="/admin/store">
+                Store
+              </AdminNavigationLink>
+            ) : null}
+
             {can("tickets") ? (
               <AdminNavigationLink href="/admin/tickets">
                 <span className="flex items-center gap-2">

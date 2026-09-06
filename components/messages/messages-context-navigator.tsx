@@ -641,7 +641,7 @@ export function MessagesContextNavigator({
                 return (
                   <Link
                     key={conversation.id}
-                    href={`/messages/${conversation.id}`}
+                    href={`/messages/${conversation.id}?embedded=1`}
                     aria-current={
                       isCurrent
                         ? "page"
@@ -754,7 +754,7 @@ export function MessagesContextNavigator({
         </div>
 
         <Link
-          href="/messages"
+          href="/messages?embedded=1"
           className="mt-4 flex shrink-0 items-center justify-between border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-271c12))] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-dfc79c))] transition hover:border-[rgb(var(--sep-colour-997042))] hover:bg-[rgb(var(--sep-colour-3b2919))]"
         >
           <span>Open full inbox</span>

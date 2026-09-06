@@ -95,6 +95,25 @@ export default async function AdminPage() {
           </Link>
         </section>
 
+        <section className="mt-4 border border-[rgb(var(--sep-skin-c1,169_138_96))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6">
+          <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-skin-c2,211_194_170))]">
+            Commerce
+          </p>
+          <h3 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-skin-c1,169_138_96))]">
+            Sepulchria Store
+          </h3>
+          <p className="mt-3 max-w-2xl text-sm leading-7 text-[rgb(var(--sep-skin-c2,211_194_170))]">
+            Manage products, bundles, prices, entitlement grants and discount codes.
+          </p>
+          <Link
+            href="/admin/store"
+            className="mt-6 inline-flex items-center gap-3 border border-[rgb(var(--sep-skin-c1,169_138_96))]/60 bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[10px] uppercase tracking-[0.18em] text-[rgb(var(--sep-skin-c1,169_138_96))] transition hover:border-[rgb(var(--sep-skin-c1,169_138_96))]"
+          >
+            Manage Store
+            <span aria-hidden="true">→</span>
+          </Link>
+        </section>
+
         <p className="mt-6 text-[10px] text-[rgb(var(--sep-colour-756957))]">
           Signed in with staff role:{" "}
           <span className="uppercase text-[rgb(var(--sep-colour-b79c73))]">

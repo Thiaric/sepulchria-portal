@@ -20,6 +20,7 @@ export type AdminSection =
   | "items"
   | "jobs"
   | "market"
+  | "store"
   | "forum"
   | "communication_logs"
   | "character_logs"
@@ -61,6 +62,7 @@ export const ADMIN_SECTION_ROLES: Record<
   items: ["owner"],
   jobs: ["owner"],
   market: ["owner", "admin"],
+  store: ["owner", "admin"],
   forum: ["owner", "admin", "moderator"],
   communication_logs: ["owner", "admin", "moderator"],
   character_logs: ["owner", "admin", "moderator"],

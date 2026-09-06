@@ -368,12 +368,7 @@ export default async function ConversationPage({
             ← Messages
           </Link>
 
-          <Link
-            href="/"
-            className="font-serif text-xl tracking-[0.22em] text-[rgb(var(--sep-colour-d9bd82))]"
-          >
-            SEPULCHRIA
-          </Link>
+          
         </div>
       </header>
 

@@ -292,8 +292,8 @@ export function MessagesInboxClient({
                     tabIndex={0}
                     onClick={() =>
                       router.push(
-                        `/messages/${conversation.id}`,
-                      )
+  `/messages/${conversation.id}?embedded=1`,
+)
                     }
                     onKeyDown={(event) => {
                       if (
@@ -302,8 +302,8 @@ export function MessagesInboxClient({
                       ) {
                         event.preventDefault();
                         router.push(
-                          `/messages/${conversation.id}`,
-                        );
+  `/messages/${conversation.id}?embedded=1`,
+);
                       }
                     }}
                     className="flex min-w-0 flex-1 cursor-pointer items-center gap-3"
