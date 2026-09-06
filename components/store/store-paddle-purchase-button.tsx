@@ -1,25 +1,12 @@
 "use client";
 
+import { initializePaddle, type Paddle } from "@paddle/paddle-js";
 import { useActionState, useEffect, useRef, useState } from "react";
 
 import {
   startStorePaddleCheckout,
   type StorePaddleState,
 } from "@/app/(portal)/store/actions";
-
-declare global {
-  interface Window {
-    Paddle?: {
-      Environment: {
-        set(environment: "sandbox" | "production"): void;
-      };
-      Initialize(options: { token: string }): void;
-      Checkout: {
-        open(options: { transactionId: string }): void;
-      };
-    };
-  }
-}
 
 const initialState: StorePaddleState = {
   ok: false,
@@ -28,73 +15,25 @@ const initialState: StorePaddleState = {
   transactionId: null,
 };
 
-let paddleInitializationPromise: Promise<void> | null = null;
+let paddlePromise: Promise<Paddle | undefined> | null = null;
 
-function loadPaddle(): Promise<void> {
-  if (paddleInitializationPromise) return paddleInitializationPromise;
+function getPaddle(): Promise<Paddle | undefined> {
+  if (paddlePromise) return paddlePromise;
 
-  paddleInitializationPromise = new Promise((resolve, reject) => {
-    const token = process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN?.trim();
+  const token = process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN?.trim();
 
-    if (!token) {
-      reject(new Error("Paddle client-side token is not configured."));
-      return;
-    }
-
-    const initialize = () => {
-      if (!window.Paddle) {
-        reject(new Error("Paddle.js did not load."));
-        return;
-      }
-
-      try {
-        if (token.startsWith("test_")) {
-          window.Paddle.Environment.set("sandbox");
-        }
-
-        window.Paddle.Initialize({ token });
-        resolve();
-      } catch (error) {
-        reject(
-          error instanceof Error
-            ? error
-            : new Error("Paddle could not initialize."),
-        );
-      }
-    };
-
-    if (window.Paddle) {
-      initialize();
-      return;
-    }
-
-    const src = "https://cdn.paddle.com/paddle/v2/paddle.js";
-    const existing =
-      document.querySelector<HTMLScriptElement>(`script[src="${src}"]`);
-
-    if (existing) {
-      existing.addEventListener("load", initialize, { once: true });
-      existing.addEventListener(
-        "error",
-        () => reject(new Error("Paddle.js could not be loaded.")),
-        { once: true },
-      );
-      return;
-    }
-
-    const script = document.createElement("script");
-    script.src = src;
-    script.async = true;
-    script.addEventListener("load", initialize, { once: true });
-    script.addEventListener(
-      "error",
-      () => reject(new Error("Paddle.js could not be loaded.")),
-      { once: true },
+  if (!token) {
+    return Promise.reject(
+      new Error("Paddle client-side token is not configured."),
     );
-    document.head.appendChild(script);
+  }
+
+  paddlePromise = initializePaddle({
+    token,
+    environment: token.startsWith("test_") ? "sandbox" : "production",
   });
 
-  return paddleInitializationPromise;
+  return paddlePromise;
 }
 
 export function StorePaddlePurchaseButton({
@@ -118,13 +57,13 @@ export function StorePaddlePurchaseButton({
     openedTransactionRef.current = state.transactionId;
     setClientError(null);
 
-    void loadPaddle()
-      .then(() => {
-        if (!window.Paddle) {
+    void getPaddle()
+      .then((paddle) => {
+        if (!paddle) {
           throw new Error("Paddle.js did not initialize.");
         }
 
-        window.Paddle.Checkout.open({
+        paddle.Checkout.open({
           transactionId: state.transactionId!,
         });
       })
