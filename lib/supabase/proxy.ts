@@ -18,6 +18,7 @@ const PUBLIC_ROUTES = [
   "/api/auth",
   "/api/registration-applications",
   "/api/registration-invitations",
+  "/api/store/paddle/webhook",
   "/manifest.webmanifest",
   "/sw.js",
   "/offline.html",
