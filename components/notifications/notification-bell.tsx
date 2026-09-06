@@ -254,6 +254,29 @@ function modalPayloadForNotificationHref(
   const normalisedHref =
     normaliseNotificationHref(href);
 
+  try {
+    const invitationUrl = new URL(
+      normalisedHref,
+      "https://sepulchria.local",
+    );
+
+    if (
+      invitationUrl.pathname === "/game" &&
+      (
+        invitationUrl.searchParams.has(
+          "privateInvite",
+        ) ||
+        invitationUrl.searchParams.has(
+          "breezeInvite",
+        )
+      )
+    ) {
+      return null;
+    }
+  } catch {
+    // Fall through to normal notification routing.
+  }
+
   const path =
     normalisedHref
       .split("#")[0]

@@ -142,29 +142,38 @@ export async function syncStoreProductToPaddle(
 
   try {
     const productPayload = {
-      name: product.name,
-      description: product.description || null,
-      tax_category: "standard",
-      image_url: publicImageUrl(product.image_url),
-      status: product.is_active ? "active" : "archived",
-      custom_data: {
-        sepulchria_store_product_id: product.id,
-        sepulchria_store_slug: product.slug,
-      },
-    };
+  name: product.name,
+  description: product.description || null,
+  tax_category: "standard",
+  image_url: publicImageUrl(product.image_url),
+  custom_data: {
+    sepulchria_store_product_id: product.id,
+    sepulchria_store_slug: product.slug,
+  },
+};
 
     if (paddleProductId) {
-      await paddleRequest<{ data: { id: string } }>(
-        `/products/${paddleProductId}`,
-        { method: "PATCH", body: JSON.stringify(productPayload) },
-      );
-    } else {
-      const created = await paddleRequest<{ data: { id: string } }>(
-        "/products",
-        { method: "POST", body: JSON.stringify(productPayload) },
-      );
-      paddleProductId = created.data.id;
-    }
+  await paddleRequest<{ data: { id: string } }>(
+    `/products/${paddleProductId}`,
+    {
+      method: "PATCH",
+      body: JSON.stringify({
+        ...productPayload,
+        status: product.is_active ? "active" : "archived",
+      }),
+    },
+  );
+} else {
+  const created = await paddleRequest<{ data: { id: string } }>(
+    "/products",
+    {
+      method: "POST",
+      body: JSON.stringify(productPayload),
+    },
+  );
+
+  paddleProductId = created.data.id;
+}
 
     await admin
       .from("store_products")
