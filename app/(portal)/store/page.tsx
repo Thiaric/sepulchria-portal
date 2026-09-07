@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 
 import { StoreLiveFilterBar } from "@/components/store/store-live-filter-bar";
 import { StoreStripePurchaseButton } from "@/components/store/store-stripe-purchase-button";
+import { StoreStripeCheckoutBridge } from "@/components/store/store-stripe-checkout-bridge";
 import { StoreRemnantPurchaseButton } from "@/components/store/store-remnant-purchase-button";
 import { StoreMusicPreview } from "@/components/store/store-music-preview";
 import { StoreAccountPanels } from "@/components/store/store-account-panels";
@@ -346,6 +347,7 @@ export default async function StorePage() {
       data-store-page
       className="flex h-full min-h-0 w-full flex-col p-2 sm:p-5"
     >
+      <StoreStripeCheckoutBridge />
       <section className="flex min-h-0 flex-1 flex-col overflow-hidden border border-[rgb(var(--sep-colour-58432d))]/45 bg-[rgb(var(--sep-colour-15100d))]/82 shadow-[0_10px_26px_rgba(var(--sep-rgb-0-0-0),0.2)]">
         <header className="shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-211a14))] px-4 py-4 sm:px-5">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end">

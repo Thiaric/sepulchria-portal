@@ -148,12 +148,12 @@ export async function sendStoreOrderReceiptEmail(orderId: string) {
     .join(", ");
 
   const amount =
-    order.payment_method === "stripe"
-      ? new Intl.NumberFormat("en-GB", {
+    order.payment_method === "remnants"
+      ? `${Number(order.total_remnants ?? 0)} Remnants`
+      : new Intl.NumberFormat("en-GB", {
           style: "currency",
           currency: order.currency || "GBP",
-        }).format(Number(order.total_money_minor ?? 0) / 100)
-      : `${Number(order.total_remnants ?? 0)} Remnants`;
+        }).format(Number(order.total_money_minor ?? 0) / 100);
 
   await sendStoreEmail({
     orderId,

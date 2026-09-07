@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useRef, useState, type FormEvent } from "react";
 
 import {
   startStoreStripeCheckout,
@@ -28,13 +28,64 @@ export function StoreStripePurchaseButton({
     initialState,
   );
 
+  const checkoutWindowRef = useRef<Window | null>(null);
+  const [popupError, setPopupError] = useState<string | null>(null);
+
+  function prepareCheckoutWindow(event: FormEvent<HTMLFormElement>) {
+    setPopupError(null);
+
+    const checkoutWindow = window.open(
+      "about:blank",
+      "sepulchria-stripe-checkout",
+    );
+
+    if (!checkoutWindow) {
+      event.preventDefault();
+      setPopupError(
+        "Your browser blocked the secure checkout window. Allow pop-ups for Sepulchria and try again.",
+      );
+      return;
+    }
+
+    checkoutWindowRef.current = checkoutWindow;
+
+    try {
+      checkoutWindow.document.title = "Sepulchria Checkout";
+      checkoutWindow.document.body.innerHTML =
+        '<p style="font-family:serif;padding:24px">Opening secure checkout...</p>';
+    } catch {
+      // Checkout can continue without the temporary loading message.
+    }
+  }
+
   useEffect(() => {
+    if (state.error) {
+      const checkoutWindow = checkoutWindowRef.current;
+
+      if (checkoutWindow && !checkoutWindow.closed) {
+        checkoutWindow.close();
+      }
+
+      checkoutWindowRef.current = null;
+      return;
+    }
+
     if (!state.ok || !state.checkoutUrl) return;
-    window.top?.location.assign(state.checkoutUrl);
-  }, [state.ok, state.checkoutUrl]);
+
+    const checkoutWindow = checkoutWindowRef.current;
+
+    if (!checkoutWindow || checkoutWindow.closed) {
+      setPopupError(
+        "The secure checkout window was closed. Please try the purchase again.",
+      );
+      return;
+    }
+
+    checkoutWindow.location.replace(state.checkoutUrl);
+  }, [state.error, state.ok, state.checkoutUrl]);
 
   return (
-    <form action={action} className="mt-2">
+    <form action={action} onSubmit={prepareCheckoutWindow} className="mt-2">
       <input type="hidden" name="productId" value={productId} />
       <input type="hidden" name="priceId" value={priceId} />
 
@@ -56,9 +107,9 @@ export function StoreStripePurchaseButton({
         </button>
       </div>
 
-      {state.error ? (
+      {state.error || popupError ? (
         <p className="mt-2 text-[9px] leading-4 text-red-300">
-          {state.error}
+          {state.error ?? popupError}
         </p>
       ) : null}
     </form>

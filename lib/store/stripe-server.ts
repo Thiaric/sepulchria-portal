@@ -538,8 +538,9 @@ export async function createManagedStoreCheckout(input: {
       : {}),
     customer_email: input.customerEmail,
     success_url:
-      `${storeSiteUrl()}/store?stripe=success&session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${storeSiteUrl()}/store?stripe=cancelled`,
+      `${storeSiteUrl()}/store-checkout-return?stripe=success&session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url:
+      `${storeSiteUrl()}/store-checkout-return?stripe=cancelled`,
     metadata: {
       store_order_id: input.orderId,
       store_product_id: input.productId,
