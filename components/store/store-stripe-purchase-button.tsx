@@ -14,6 +14,7 @@ import {
 } from "react";
 
 import {
+  getStoreStripeCheckoutStatus,
   startStoreStripeCheckout,
   type StoreStripeState,
 } from "@/app/(portal)/store/actions";
@@ -34,18 +35,44 @@ const stripePromise = publishableKey
 
 function StripeEmbeddedCheckoutModal({
   clientSecret,
+  checkoutSessionId,
   onClose,
 }: {
   clientSecret: string;
+  checkoutSessionId: string;
   onClose: () => void;
 }) {
-  const handleComplete = useCallback(() => {
-    onClose();
+  const [finalising, setFinalising] = useState(false);
+  const [finaliseError, setFinaliseError] = useState<string | null>(null);
 
-    window.setTimeout(() => {
-      window.location.reload();
-    }, 1200);
-  }, [onClose]);
+  const handleComplete = useCallback(() => {
+    setFinalising(true);
+    setFinaliseError(null);
+
+    void (async () => {
+      const deadline = Date.now() + 20000;
+
+      while (Date.now() < deadline) {
+        try {
+          const result =
+            await getStoreStripeCheckoutStatus(checkoutSessionId);
+
+          if (result.fulfilled) {
+            window.location.reload();
+            return;
+          }
+        } catch {
+          // A transient status-check failure should not interrupt fulfilment.
+        }
+
+        await new Promise((resolve) => window.setTimeout(resolve, 350));
+      }
+
+      setFinaliseError(
+        "Payment completed, but Sepulchria is still applying your purchase. Please wait a few seconds and refresh the Store.",
+      );
+    })();
+  }, [checkoutSessionId]);
 
   return (
     <div
@@ -74,7 +101,7 @@ function StripeEmbeddedCheckoutModal({
           </button>
         </div>
 
-        <div className="min-h-0 flex-1 overflow-y-auto bg-white">
+        <div className="relative min-h-0 flex-1 overflow-y-auto bg-white">
           <EmbeddedCheckoutProvider
             stripe={stripePromise}
             options={{
@@ -84,6 +111,39 @@ function StripeEmbeddedCheckoutModal({
           >
             <EmbeddedCheckout />
           </EmbeddedCheckoutProvider>
+
+          {finalising ? (
+            <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/95 p-6 text-center">
+              <div className="max-w-sm">
+                <p className="font-serif text-2xl text-[#24180f]">
+                  Finalising Purchase
+                </p>
+                <p className="mt-3 text-sm leading-6 text-[#6a5849]">
+                  Your payment is complete. Sepulchria is applying the purchase
+                  to your character now.
+                </p>
+
+                {finaliseError ? (
+                  <>
+                    <p className="mt-4 text-sm leading-6 text-red-700">
+                      {finaliseError}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => window.location.reload()}
+                      className="mt-4 border border-[#6f5436] px-4 py-2 text-[10px] uppercase tracking-[0.14em] text-[#3d2a1c]"
+                    >
+                      Refresh Store
+                    </button>
+                  </>
+                ) : (
+                  <p className="mt-4 text-[10px] uppercase tracking-[0.16em] text-[#8b735f]">
+                    Please wait...
+                  </p>
+                )}
+              </div>
+            </div>
+          ) : null}
         </div>
       </div>
     </div>
@@ -166,6 +226,7 @@ export function StoreStripePurchaseButton({
       {checkoutOpen && state.clientSecret ? (
         <StripeEmbeddedCheckoutModal
           clientSecret={state.clientSecret}
+          checkoutSessionId={state.checkoutSessionId!}
           onClose={closeCheckout}
         />
       ) : null}

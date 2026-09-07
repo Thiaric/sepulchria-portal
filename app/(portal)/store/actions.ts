@@ -106,6 +106,46 @@ export type StoreStripeState = {
   checkoutSessionId: string | null;
 };
 
+export async function getStoreStripeCheckoutStatus(
+  checkoutSessionId: string,
+): Promise<{
+  status: string | null;
+  fulfilled: boolean;
+}> {
+  const sessionId = checkoutSessionId.trim();
+
+  if (!sessionId) {
+    return { status: null, fulfilled: false };
+  }
+
+  const supabase = await createClient();
+  const admin = createAdminClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { status: null, fulfilled: false };
+  }
+
+  const { data: order, error } = await admin
+    .from("store_orders")
+    .select("status")
+    .eq("user_id", user.id)
+    .eq("stripe_checkout_session_id", sessionId)
+    .maybeSingle();
+
+  if (error || !order) {
+    return { status: null, fulfilled: false };
+  }
+
+  return {
+    status: order.status,
+    fulfilled: order.status === "fulfilled",
+  };
+}
+
 export async function startStoreStripeCheckout(
   _previousState: StoreStripeState,
   formData: FormData,

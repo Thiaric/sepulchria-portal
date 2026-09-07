@@ -55,23 +55,22 @@ async function fulfilPaidOrder(
     );
   }
 
+  if (
+    order.status === "refunded" ||
+    order.status === "partially_refunded"
+  ) {
+    // Stripe may retry or manually/automatically resend an old successful
+    // Checkout event long after a refund. A refunded order is terminal and
+    // must never be resurrected by an older checkout.session.completed event.
+    return NextResponse.json({ ok: true });
+  }
+
   if (order.status === "fulfilled") {
+    // Duplicate successful Checkout delivery: fulfilment is already complete.
+    // Do not send another receipt or grant anything again.
     await admin.rpc("finalize_store_discount_redemption", {
       p_order_id: orderId,
     });
-
-    try {
-      await issueStorePostPurchaseOffersAndNotify({
-        orderId,
-        characterId: order.character_id,
-        userId: order.user_id,
-      });
-    } catch (offerError) {
-      console.error(
-        "Store order was already fulfilled, but post-purchase rewards could not be processed:",
-        offerError,
-      );
-    }
 
     return NextResponse.json({ ok: true });
   }
@@ -324,10 +323,12 @@ export async function POST(request: Request) {
     const orderId = session.metadata?.store_order_id;
 
     if (orderId) {
+      // Do not let a late async-failure event overwrite a terminal order.
       const { error } = await admin
         .from("store_orders")
         .update({ status: "failed" })
-        .eq("id", orderId);
+        .eq("id", orderId)
+        .in("status", ["pending", "paid"]);
 
       if (error) {
         return NextResponse.json(
