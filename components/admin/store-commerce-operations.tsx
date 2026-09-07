@@ -41,12 +41,13 @@ export async function StoreCommerceOperationsAdmin() {
   const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000).toISOString();
 
   const [
-    productsResult,
-    pricesResult,
-    overridesResult,
-    ordersResult,
-    logsResult,
-  ] = await Promise.all([
+  productsResult,
+  pricesResult,
+  overridesResult,
+  ordersResult,
+  logsResult,
+  orderItemsResult,
+] = await Promise.all([
     admin
       .from("store_products")
       .select("id, name, paddle_sync_status, paddle_sync_error, paddle_synced_at")
@@ -65,7 +66,7 @@ export async function StoreCommerceOperationsAdmin() {
     admin
       .from("store_orders")
       .select(
-        "id, status, payment_method, currency, total_money_minor, total_remnants, paddle_transaction_id, created_at, paid_at",
+        "id, character_id, status, payment_method, currency, total_money_minor, total_remnants, paddle_transaction_id, created_at, paid_at",
       )
       .gte("created_at", thirtyDaysAgo)
       .order("created_at", { ascending: false }),
@@ -74,14 +75,20 @@ export async function StoreCommerceOperationsAdmin() {
       .select("*")
       .order("created_at", { ascending: false })
       .limit(30),
+
+      admin
+  .from("store_order_items")
+  .select("order_id, product_name_snapshot")
+  .order("created_at", { ascending: true }),
   ]);
 
   const error =
-    productsResult.error ??
-    pricesResult.error ??
-    overridesResult.error ??
-    ordersResult.error ??
-    logsResult.error;
+  productsResult.error ??
+  pricesResult.error ??
+  overridesResult.error ??
+  ordersResult.error ??
+  logsResult.error ??
+  orderItemsResult.error;
 
   if (error) throw new Error(error.message);
 
@@ -90,7 +97,56 @@ export async function StoreCommerceOperationsAdmin() {
   const overrides = overridesResult.data ?? [];
   const orders = ordersResult.data ?? [];
   const logs = logsResult.data ?? [];
+  const orderItems = orderItemsResult.data ?? [];
+
+const productNamesByOrder = new Map<string, string[]>();
+
+for (const item of orderItems) {
+  const names = productNamesByOrder.get(String(item.order_id)) ?? [];
+  names.push(String(item.product_name_snapshot));
+  productNamesByOrder.set(String(item.order_id), names);
+}
   const productById = new Map(products.map((product) => [product.id, product]));
+
+  const characterIds = [
+    ...new Set(
+      orders
+        .map((order) => order.character_id)
+        .filter(Boolean),
+    ),
+  ] as string[];
+
+  const charactersResult = characterIds.length
+    ? await admin
+        .from("characters")
+        .select("id, display_name, first_name, surname")
+        .in("id", characterIds)
+    : { data: [], error: null };
+
+  if (charactersResult.error) {
+    throw new Error(charactersResult.error.message);
+  }
+
+  const purchaserByCharacterId = new Map(
+    (charactersResult.data ?? []).map((character) => [
+      String(character.id),
+      character.display_name?.trim() ||
+        [character.first_name, character.surname]
+          .filter(Boolean)
+          .join(" ")
+          .trim() ||
+        "Unknown character",
+    ]),
+  );
+
+  const refundableOrders = orders
+    .filter(
+      (order) =>
+        order.payment_method === "paddle" &&
+        order.paddle_transaction_id &&
+        ["fulfilled", "partially_refunded"].includes(order.status),
+    )
+    .slice(0, 20);
 
   let webhook:
     | {
@@ -291,24 +347,33 @@ export async function StoreCommerceOperationsAdmin() {
         </p>
 
         <div className="mt-4 space-y-2">
-          {orders
-            .filter((order) =>
-              order.payment_method === "paddle" &&
-              order.paddle_transaction_id &&
-              ["fulfilled", "partially_refunded"].includes(order.status),
-            )
-            .slice(0, 20)
-            .map((order) => (
-              <AdminActionForm action={refundStoreOrder} successMessage="Refund request sent to Paddle."
+          {refundableOrders.map((order) => (
+              <AdminActionForm
+                action={refundStoreOrder}
+                successMessage="Refund request sent to Paddle."
+                refreshDelaysMs={[3000, 8000, 15000]}
                 key={order.id}
                 className="grid gap-2 border border-[rgb(var(--sep-colour-60482e))]/25 p-3 md:grid-cols-[minmax(0,1fr)_150px_180px_auto]"
               >
                 <div>
-                  <p className="text-[10px] text-[rgb(var(--sep-colour-d7c4a5))]">{order.id}</p>
-                  <p className="mt-1 text-[8px] text-[rgb(var(--sep-colour-756958))]">
-                    {money(Number(order.total_money_minor ?? 0), order.currency ?? "GBP")} · {order.status}
-                  </p>
-                </div>
+  <p className="text-[10px] text-[rgb(var(--sep-colour-d7c4a5))]">
+    {order.character_id
+      ? purchaserByCharacterId.get(String(order.character_id)) ?? "Unknown character"
+      : "Unknown character"}
+  </p>
+
+  <p className="mt-1 text-[10px] text-[rgb(var(--sep-skin-c1,169_138_96))]">
+    {(productNamesByOrder.get(String(order.id)) ?? ["Unknown product"]).join(" + ")}
+  </p>
+
+  <p className="mt-1 text-[8px] text-[rgb(var(--sep-colour-8c704b))]">
+    {order.id}
+  </p>
+
+  <p className="mt-1 text-[8px] text-[rgb(var(--sep-colour-756958))]">
+    {money(Number(order.total_money_minor ?? 0), order.currency ?? "GBP")} · {order.status}
+  </p>
+</div>
                 <input type="hidden" name="order_id" value={order.id} />
                 <label>
                   <span className={label}>Partial amount</span>

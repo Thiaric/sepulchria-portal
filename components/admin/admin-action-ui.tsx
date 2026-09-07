@@ -25,15 +25,18 @@ export function AdminActionForm({
   action,
   successMessage,
   className,
+  refreshDelaysMs = [],
   children,
 }: {
   action: ServerFormAction;
   successMessage: string;
   className?: string;
+  refreshDelaysMs?: number[];
   children: ReactNode;
 }) {
   const router = useRouter();
   const timerRef = useRef<number | null>(null);
+  const refreshTimerRefs = useRef<number[]>([]);
   const [pending, setPending] = useState(false);
   const [feedback, setFeedback] = useState<Feedback | null>(null);
   const [mounted, setMounted] = useState(false);
@@ -42,6 +45,8 @@ export function AdminActionForm({
     setMounted(true);
     return () => {
       if (timerRef.current !== null) window.clearTimeout(timerRef.current);
+      refreshTimerRefs.current.forEach((timer) => window.clearTimeout(timer));
+      refreshTimerRefs.current = [];
     };
   }, []);
 
@@ -75,6 +80,11 @@ export function AdminActionForm({
       await action(new FormData(form));
       showFeedback("success", successMessage, submitter);
       router.refresh();
+
+      refreshTimerRefs.current.forEach((timer) => window.clearTimeout(timer));
+      refreshTimerRefs.current = refreshDelaysMs.map((delay) =>
+        window.setTimeout(() => router.refresh(), delay),
+      );
     } catch (error) {
       const message = error instanceof Error && error.message ? error.message : "The action failed.";
       showFeedback("error", message, submitter);

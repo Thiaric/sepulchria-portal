@@ -336,8 +336,8 @@ export default async function StorePage() {
     >
       <section className="flex min-h-0 flex-1 flex-col overflow-hidden border border-[rgb(var(--sep-colour-58432d))]/45 bg-[rgb(var(--sep-colour-15100d))]/82 shadow-[0_10px_26px_rgba(var(--sep-rgb-0-0-0),0.2)]">
         <header className="shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-211a14))] px-4 py-4 sm:px-5">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <div>
+          <div className="flex flex-wrap items-end gap-4">
+  <div className="min-w-0 flex-1">
               <p className="text-[8px] uppercase tracking-[0.26em] text-[rgb(var(--sep-colour-8c704b))]">
                 Premium
               </p>
@@ -346,18 +346,18 @@ export default async function StorePage() {
                 Sepulchria Store
               </h1>
 
-              <p className="mt-2 max-w-3xl text-[11px] leading-5 text-[rgb(var(--sep-colour-a99b89))]">
-                Unlock skins, cosmetics, music, Friend List access, Private Locations
-                and curated bundles using real money or Remnants.
+              <p className="mt-2 max-w-none text-[11px] leading-5 text-[rgb(var(--sep-colour-a99b89))]">
+                Unlock Portal Skins, Cosmetic frames and backgrounds, Locations' Musics, Friend List access, Private Locations
+                and curated bundles using real money or Remnants. Refunds are available on request within 14 days of purchase only for real currency purchases. Refunds are not available for Remnant purchases.
               </p>
             </div>
 
-            <div className="border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2">
+            <div className="shrink-0 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2">
               <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))]">
-                Discount code
+                Discount codes
               </p>
               <p className="mt-1 text-[9px] text-[rgb(var(--sep-colour-a99b89))]">
-                Applied during checkout
+                are applied during checkout
               </p>
             </div>
           </div>

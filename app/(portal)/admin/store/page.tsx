@@ -274,6 +274,13 @@ export default async function AdminStorePage() {
                       <label>
                         <span className={label}>Image URL</span>
                         <input name="image_url" defaultValue={product.image_url ?? ""} className={field} />
+                        {product.image_url ? (
+                          <img
+                            src={product.image_url}
+                            alt={`${product.name} preview`}
+                            className="mt-2 max-h-28 max-w-full border border-[rgb(var(--sep-skin-c1,169_138_96))]/25 bg-[rgb(var(--sep-colour-100c09))] object-contain p-1"
+                          />
+                        ) : null}
                       </label>
 
                       <label className="flex items-center gap-2 text-xs text-[rgb(var(--sep-skin-c2,211_194_170))]">
