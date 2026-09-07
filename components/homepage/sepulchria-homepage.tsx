@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { CookieSettingsButton } from "@/components/privacy/cookie-storage-controls";
 import { HomepagePublicModal } from "@/components/homepage/homepage-public-modal";
+import { HomepageContactModal } from "@/components/homepage/homepage-contact-modal";
 import {
   useEffect,
   useState,
@@ -72,6 +73,9 @@ export function SepulchriaHomepage({
   registrationsOpen,
 }: SepulchriaHomepageProps) {
   const [aboutOpen, setAboutOpen] =
+    useState(false);
+
+  const [contactOpen, setContactOpen] =
     useState(false);
 
   const [
@@ -407,88 +411,129 @@ export function SepulchriaHomepage({
             </p>
 
             <nav
-  data-homepage-footer-nav="true"
-  aria-label="Footer navigation"
-  className="flex flex-wrap justify-center gap-x-5 gap-y-1 text-[8px] uppercase tracking-[0.18em] sm:justify-end [&_a]:uppercase [&_button]:uppercase"
->
+              data-homepage-footer-nav="true"
+              aria-label="Footer navigation"
+              className="flex flex-wrap justify-center gap-x-5 gap-y-1 text-[8px] uppercase tracking-[0.18em] sm:justify-end [&_a]:uppercase [&_button]:uppercase"
+            >
               <Link href="#">
                 Discord
               </Link>
+
               <Link href="#">
                 Credits
               </Link>
-              <button
-                type="button"
-                onClick={() =>
+
+              <Link
+                href="/purchases"
+                onClick={(event) => {
+                  event.preventDefault();
+                  setPublicModal({
+                    title: "Optional Purchases",
+                    href: "/purchases",
+                  });
+                }}
+              >
+                Optional Purchases
+              </Link>
+
+              <Link
+                href="/refund-policy"
+                onClick={(event) => {
+                  event.preventDefault();
+                  setPublicModal({
+                    title: "Refund Policy",
+                    href: "/refund-policy",
+                  });
+                }}
+              >
+                Refund Policy
+              </Link>
+
+              <Link
+                href="/community-rules"
+                onClick={(event) => {
+                  event.preventDefault();
                   setPublicModal({
                     title: "Community Rules",
                     href: "/community-rules",
-                  })
-                }
-                
+                  });
+                }}
               >
                 Community Rules
-              </button>
-              <button
-                type="button"
-                onClick={() =>
+              </Link>
+
+              <Link
+                href="/safety"
+                onClick={(event) => {
+                  event.preventDefault();
                   setPublicModal({
                     title: "Safety",
                     href: "/safety",
-                  })
-                }
-                
+                  });
+                }}
               >
                 Safety
-              </button>
-              <button
-                type="button"
-                onClick={() =>
+              </Link>
+
+              <Link
+                href="/age-policy"
+                onClick={(event) => {
+                  event.preventDefault();
                   setPublicModal({
                     title: "18+ Policy",
                     href: "/age-policy",
-                  })
-                }
-                
+                  });
+                }}
               >
                 18+ Policy
-              </button>
-              <button
-                type="button"
-                onClick={() =>
+              </Link>
+
+              <Link
+                href="/privacy"
+                onClick={(event) => {
+                  event.preventDefault();
                   setPublicModal({
                     title: "Privacy",
                     href: "/privacy",
-                  })
-                }
-                
+                  });
+                }}
               >
                 Privacy
-              </button>
-              <button
-                type="button"
-                onClick={() =>
+              </Link>
+
+              <Link
+                href="/cookies"
+                onClick={(event) => {
+                  event.preventDefault();
                   setPublicModal({
                     title: "Cookies",
                     href: "/cookies",
-                  })
-                }
-                
+                  });
+                }}
               >
                 Cookies
-              </button>
+              </Link>
+
               <CookieSettingsButton className="uppercase tracking-[0.18em]" />
-              <button
-                type="button"
-                onClick={() =>
+
+              <Link
+                href="/terms"
+                onClick={(event) => {
+                  event.preventDefault();
                   setPublicModal({
                     title: "Terms",
                     href: "/terms",
-                  })
-                }
-                
+                  });
+                }}
               >
                 Terms
+              </Link>
+
+              <button
+                type="button"
+                onClick={() => setContactOpen(true)}
+              >
+                Contact
               </button>
             </nav>
           </div>
@@ -509,6 +554,13 @@ export function SepulchriaHomepage({
         modal={publicModal}
         onClose={() =>
           setPublicModal(null)
+        }
+      />
+
+      <HomepageContactModal
+        open={contactOpen}
+        onClose={() =>
+          setContactOpen(false)
         }
       />
 
@@ -582,6 +634,10 @@ export function SepulchriaHomepage({
 
                 <p>
                   Sepulchria is a persistent shared setting. Stories grow through interaction between characters, events and the consequences of what happens in play.
+                </p>
+
+                <p>
+                  Sepulchria is free to join and play. Registered players may optionally purchase digital cosmetic items, interface themes, music and premium game features through the in-game Store. These purchases are optional and are not required to take part in the roleplaying game.
                 </p>
               </div>
 
