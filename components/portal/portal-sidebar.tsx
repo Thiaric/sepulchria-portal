@@ -13,6 +13,7 @@ import {
 } from "react";
 
 import { createClient } from "@/lib/supabase/client";
+import { hasCurrentCharacterPrivateLocationAccess } from "@/app/(portal)/private-locations/access-actions";
 import {
   canClientReadForumSection,
   getClientForumAccessContext,
@@ -691,39 +692,11 @@ export function PortalSidebar({
         return;
       }
 
-      const [
-        entitlementResult,
-        membershipResult,
-      ] = await Promise.all([
-        supabase
-          .from("character_feature_entitlements")
-          .select("enabled")
-          .eq(
-            "character_id",
-            character.id,
-          )
-          .eq(
-            "feature_key",
-            "private_chat",
-          )
-          .maybeSingle(),
-
-        supabase
-          .from("private_location_members")
-          .select("room_id")
-          .eq(
-            "character_id",
-            character.id,
-          )
-          .eq("status", "active")
-          .limit(1)
-          .maybeSingle(),
-      ]);
+      const hasAccess =
+        await hasCurrentCharacterPrivateLocationAccess();
 
       setHasPrivateLocationAccess(
-        isStaff ||
-          entitlementResult.data?.enabled === true ||
-          Boolean(membershipResult.data),
+        hasAccess,
       );
     }, [isStaff]);
 
@@ -909,7 +882,10 @@ export function PortalSidebar({
   useEffect(() => {
     void refreshPrivateLocationAccess();
 
-    function handleFocus() {
+    const supabase =
+      createClient();
+
+    function refresh() {
       void refreshPrivateLocationAccess();
     }
 
@@ -917,13 +893,43 @@ export function PortalSidebar({
       if (
         document.visibilityState === "visible"
       ) {
-        void refreshPrivateLocationAccess();
+        refresh();
       }
     }
 
+    const membershipChannel = supabase
+      .channel(
+        "portal-private-location-access",
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "private_location_members",
+        },
+        refresh,
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "private_location_rooms",
+        },
+        refresh,
+      )
+      .subscribe();
+
+    const intervalId =
+      window.setInterval(
+        refresh,
+        30_000,
+      );
+
     window.addEventListener(
       "focus",
-      handleFocus,
+      refresh,
     );
 
     document.addEventListener(
@@ -932,14 +938,20 @@ export function PortalSidebar({
     );
 
     return () => {
+      window.clearInterval(intervalId);
+
       window.removeEventListener(
         "focus",
-        handleFocus,
+        refresh,
       );
 
       document.removeEventListener(
         "visibilitychange",
         handleVisibility,
+      );
+
+      void supabase.removeChannel(
+        membershipChannel,
       );
     };
   }, [refreshPrivateLocationAccess]);

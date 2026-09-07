@@ -33,6 +33,7 @@ import {
   getClientForumAccessContext,
 } from "@/lib/forum/client-forum-access";
 import { createClient } from "@/lib/supabase/client";
+import { hasCurrentCharacterPrivateLocationAccess } from "@/app/(portal)/private-locations/access-actions";
 
 type MobilePortalNavigationProps = {
   unreadMessageCount: number;
@@ -497,8 +498,7 @@ const moreDragging =
 
       const [
         friendResult,
-        privateEntitlementResult,
-        privateMembershipResult,
+        privateLocationAccess,
         orderMembershipResult,
       ] = await Promise.all([
         supabase
@@ -516,33 +516,7 @@ const moreDragging =
           )
           .maybeSingle(),
 
-        supabase
-          .from(
-            "character_feature_entitlements",
-          )
-          .select("enabled")
-          .eq(
-            "character_id",
-            character.id,
-          )
-          .eq(
-            "feature_key",
-            "private_chat",
-          )
-          .maybeSingle(),
-
-        supabase
-          .from(
-            "private_location_members",
-          )
-          .select("room_id")
-          .eq(
-            "character_id",
-            character.id,
-          )
-          .eq("status", "active")
-          .limit(1)
-          .maybeSingle(),
+        hasCurrentCharacterPrivateLocationAccess(),
 
         supabase
           .from("order_memberships")
@@ -563,12 +537,7 @@ const moreDragging =
       );
 
       setHasPrivateLocationAccess(
-        isStaff ||
-          privateEntitlementResult.data
-            ?.enabled === true ||
-          Boolean(
-            privateMembershipResult.data,
-          ),
+        privateLocationAccess,
       );
 
       setHasOrderLeadership(
@@ -591,19 +560,76 @@ const moreDragging =
   useEffect(() => {
     void refreshAccess();
 
-    const handleFocus = () => {
+    const supabase =
+      createClient();
+
+    const refresh = () => {
       void refreshAccess();
     };
 
+    const handleVisibility = () => {
+      if (
+        document.visibilityState === "visible"
+      ) {
+        refresh();
+      }
+    };
+
+    const membershipChannel = supabase
+      .channel(
+        "mobile-private-location-access",
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "private_location_members",
+        },
+        refresh,
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "private_location_rooms",
+        },
+        refresh,
+      )
+      .subscribe();
+
+    const intervalId =
+      window.setInterval(
+        refresh,
+        30_000,
+      );
+
     window.addEventListener(
       "focus",
-      handleFocus,
+      refresh,
+    );
+
+    document.addEventListener(
+      "visibilitychange",
+      handleVisibility,
     );
 
     return () => {
+      window.clearInterval(intervalId);
+
       window.removeEventListener(
         "focus",
-        handleFocus,
+        refresh,
+      );
+
+      document.removeEventListener(
+        "visibilitychange",
+        handleVisibility,
+      );
+
+      void supabase.removeChannel(
+        membershipChannel,
       );
     };
   }, [refreshAccess]);
