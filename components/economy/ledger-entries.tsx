@@ -35,14 +35,15 @@ function moneyLabel(entry: LedgerFilterEntry) {
 
 function amountLabel(entry: LedgerFilterEntry) {
   if (entry.kind === "money") {
-    return `−${moneyLabel(entry)}`;
+    const amount = Number(entry.amount);
+    const sign = amount > 0 ? "+" : amount < 0 ? "−" : "";
+    return `${sign}${moneyLabel(entry)}`;
   }
 
   return formatSignedRemnants(Number(entry.amount));
 }
 
 function movementValue(entry: LedgerFilterEntry) {
-  if (entry.kind === "money") return -Math.abs(Number(entry.money_amount_minor ?? 0));
   return Number(entry.amount);
 }
 
@@ -119,7 +120,9 @@ export function LedgerEntries({ entries, compact = false }: Props) {
             const amount = movementValue(entry);
             const amountClass = amount > 0 ? "text-emerald-400" : "text-red-400";
             const balanceText = isMoney
-              ? "Real-money Store purchase"
+              ? amount > 0
+                ? "Real-money Store refund"
+                : "Real-money Store purchase"
               : `Balance ${formatRemnants(Number(entry.balance_after ?? 0))}`;
 
             return compact ? (

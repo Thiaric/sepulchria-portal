@@ -8,12 +8,14 @@ import {
   addStoreGrant,
   createStoreDiscount,
   createStoreProduct,
+  deleteStoreDiscount,
   deleteStoreGrant,
   deleteStorePrice,
   deleteStoreProduct,
   saveStorePrice,
   syncExistingPremiumCatalogueToStore,
   toggleStoreDiscount,
+  updateStoreDiscount,
   updateStoreProduct,
 } from "./actions";
 
@@ -49,6 +51,7 @@ export default async function AdminStorePage() {
     cosmeticsResult,
     musicResult,
     discountsResult,
+    discountProductScopesResult,
   ] = await Promise.all([
     admin.from("store_products").select("*").order("sort_order").order("name"),
     admin.from("store_product_prices").select("*").order("created_at"),
@@ -58,6 +61,7 @@ export default async function AdminStorePage() {
     admin.from("music_tracks")
       .select("id, track_key, name, description, is_active, is_personal_selectable, sort_order").order("sort_order").order("name"),
     admin.from("store_discount_codes").select("*").order("created_at", { ascending: false }),
+    admin.from("store_discount_code_products").select("discount_code_id, product_id"),
   ]);
 
   for (const result of [
@@ -68,6 +72,7 @@ export default async function AdminStorePage() {
     cosmeticsResult,
     musicResult,
     discountsResult,
+    discountProductScopesResult,
   ]) {
     if (result.error) throw new Error(result.error.message);
   }
@@ -79,6 +84,16 @@ export default async function AdminStorePage() {
   const cosmetics = cosmeticsResult.data ?? [];
   const musicTracks = musicResult.data ?? [];
   const discounts = discountsResult.data ?? [];
+  const discountProductScopes = discountProductScopesResult.data ?? [];
+
+  const productIdsByDiscount = new Map<string, Set<string>>();
+  for (const row of discountProductScopes) {
+    const current =
+      productIdsByDiscount.get(String(row.discount_code_id)) ??
+      new Set<string>();
+    current.add(String(row.product_id));
+    productIdsByDiscount.set(String(row.discount_code_id), current);
+  }
 
   const skinById = new Map(skins.map((x) => [x.id, x.name]));
   const cosmeticById = new Map(cosmetics.map((x) => [x.id, x.name]));
@@ -512,27 +527,80 @@ export default async function AdminStorePage() {
           </AdminActionForm>
 
           <div className="mt-5 space-y-2">
-            {discounts.map((discount) => (
-              <div key={discount.id} className="flex flex-wrap items-center justify-between gap-3 border border-[rgb(var(--sep-skin-c1,169_138_96))]/20 px-3 py-3">
-                <div>
-                  <p className="text-sm text-[rgb(var(--sep-skin-c1,169_138_96))]">
-                    {discount.code ?? discount.name}
-                  </p>
-                  <p className="mt-1 text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-skin-c2,211_194_170))]">
-                    {discount.discount_type} · {discount.discount_value}
-                    {discount.is_active ? " · active" : " · disabled"}
-                  </p>
-                </div>
+            {discounts.map((discount) => {
+              const selectedProductIds =
+                productIdsByDiscount.get(String(discount.id)) ??
+                new Set<string>();
 
-                <AdminActionForm action={toggleStoreDiscount} successMessage="Discount updated.">
-                  <input type="hidden" name="id" value={discount.id} />
-                  <input type="hidden" name="next" value={discount.is_active ? "false" : "true"} />
-                  <button className={button}>
-                    {discount.is_active ? "Disable" : "Enable"}
-                  </button>
-                </AdminActionForm>
-              </div>
-            ))}
+              return (
+                <details
+                  key={discount.id}
+                  className="border border-[rgb(var(--sep-skin-c1,169_138_96))]/20"
+                >
+                  <summary className="cursor-pointer px-3 py-3">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <div>
+                        <p className="text-sm text-[rgb(var(--sep-skin-c1,169_138_96))]">
+                          {discount.code ?? discount.name}
+                        </p>
+                        <p className="mt-1 text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-skin-c2,211_194_170))]">
+                          {discount.discount_type} · {discount.discount_value}
+                          {discount.is_active ? " · active" : " · disabled"}
+                        </p>
+                      </div>
+                      <span className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))]">
+                        Edit
+                      </span>
+                    </div>
+                  </summary>
+
+                  <div className="border-t border-[rgb(var(--sep-skin-c1,169_138_96))]/20 p-3 sm:p-4">
+                    <AdminActionForm
+                      action={updateStoreDiscount}
+                      successMessage="Discount saved."
+                      className="grid gap-3 md:grid-cols-2 xl:grid-cols-4"
+                    >
+                      <input type="hidden" name="id" value={discount.id} />
+
+                      <label><span className={label}>Name</span><input name="name" required defaultValue={discount.name ?? ""} className={field} /></label>
+                      <label><span className={label}>Code</span><input name="code" defaultValue={discount.code ?? ""} className={field} /></label>
+                      <label><span className={label}>Type</span><select name="discount_type" defaultValue={discount.discount_type} className={field}><option value="percentage">Percentage</option><option value="fixed_money">Fixed real money</option><option value="fixed_remnants">Fixed Remnants</option></select></label>
+                      <label><span className={label}>Value</span><input name="discount_value" type="number" min="1" required defaultValue={discount.discount_value ?? ""} className={field} /></label>
+                      <label><span className={label}>Currency</span><input name="currency" defaultValue={discount.currency ?? "GBP"} maxLength={3} className={field} /></label>
+                      <label><span className={label}>Scope</span><select name="scope_type" defaultValue={discount.scope_type} className={field}><option value="all">Everything</option><option value="products">Selected products</option><option value="category">Category</option></select></label>
+                      <label><span className={label}>Category scope</span><select name="scope_category" className={field} defaultValue={discount.scope_category ?? ""}><option value="">—</option><option value="skin">Skin</option><option value="cosmetic">Cosmetic</option><option value="music">Music</option><option value="friend_list">Friend List</option><option value="private_location">Private Location</option><option value="bundle">Bundle</option></select></label>
+                      <label><span className={label}>Product scope</span><select name="product_ids" multiple size={5} className={field} defaultValue={[...selectedProductIds]}>{products.map((product) => <option key={product.id} value={product.id}>{product.name}</option>)}</select></label>
+                      <label><span className={label}>Minimum money (minor units)</span><input name="minimum_money_minor" type="number" min="0" defaultValue={discount.minimum_money_minor ?? ""} className={field} /></label>
+                      <label><span className={label}>Minimum Remnants</span><input name="minimum_remnants" type="number" min="0" defaultValue={discount.minimum_remnants ?? ""} className={field} /></label>
+                      <label><span className={label}>Max total uses</span><input name="max_redemptions" type="number" min="1" defaultValue={discount.max_redemptions ?? ""} className={field} /></label>
+                      <label><span className={label}>Max uses / user</span><input name="max_redemptions_per_user" type="number" min="1" defaultValue={discount.max_redemptions_per_user ?? 1} className={field} /></label>
+                      <label><span className={label}>Starts</span><input name="starts_at" type="datetime-local" defaultValue={discount.starts_at ? String(discount.starts_at).slice(0, 16) : ""} className={field} /></label>
+                      <label><span className={label}>Ends</span><input name="ends_at" type="datetime-local" defaultValue={discount.ends_at ? String(discount.ends_at).slice(0, 16) : ""} className={field} /></label>
+
+                      <div className="flex flex-wrap items-end gap-4">
+                        <label className="flex items-center gap-2 text-xs text-[rgb(var(--sep-skin-c2,211_194_170))]"><input name="is_public" type="checkbox" defaultChecked={discount.is_public} />Public code</label>
+                        <label className="flex items-center gap-2 text-xs text-[rgb(var(--sep-skin-c2,211_194_170))]"><input name="is_active" type="checkbox" defaultChecked={discount.is_active} />Active</label>
+                      </div>
+
+                      <div className="md:col-span-2 xl:col-span-4"><button className={button}>Save discount</button></div>
+                    </AdminActionForm>
+
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <AdminActionForm action={toggleStoreDiscount} successMessage="Discount updated.">
+                        <input type="hidden" name="id" value={discount.id} />
+                        <input type="hidden" name="next" value={discount.is_active ? "false" : "true"} />
+                        <button className={button}>{discount.is_active ? "Disable" : "Enable"}</button>
+                      </AdminActionForm>
+
+                      <AdminActionForm action={deleteStoreDiscount} successMessage="Discount deleted.">
+                        <input type="hidden" name="id" value={discount.id} />
+                        <button className={dangerButton}>Delete discount</button>
+                      </AdminActionForm>
+                    </div>
+                  </div>
+                </details>
+              );
+            })}
           </div>
         </section>
 

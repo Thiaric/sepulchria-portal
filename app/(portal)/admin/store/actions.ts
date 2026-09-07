@@ -535,6 +535,101 @@ export async function createStoreDiscount(formData: FormData) {
   refresh();
 }
 
+export async function updateStoreDiscount(formData: FormData) {
+  await requireAdminSection("store");
+  const admin = createAdminClient();
+
+  const id = str(formData, "id");
+  const discountType = str(formData, "discount_type");
+  const scopeType = str(formData, "scope_type");
+  const productIds = formData
+    .getAll("product_ids")
+    .map((value) => String(value).trim())
+    .filter(Boolean);
+
+  if (scopeType === "products" && !productIds.length) {
+    throw new Error("Select at least one product for a product-scoped discount.");
+  }
+
+  const { error } = await admin
+    .from("store_discount_codes")
+    .update({
+      code: nullableStr(formData, "code")?.toUpperCase() ?? null,
+      name: str(formData, "name"),
+      description: str(formData, "description"),
+      discount_type: discountType,
+      discount_value: intOrNull(formData, "discount_value"),
+      currency:
+        discountType === "fixed_money"
+          ? (nullableStr(formData, "currency")?.toUpperCase() ?? "GBP")
+          : null,
+      scope_type: scopeType,
+      scope_category:
+        scopeType === "category"
+          ? nullableStr(formData, "scope_category")
+          : null,
+      max_redemptions: intOrNull(formData, "max_redemptions"),
+      max_redemptions_per_user:
+        intOrNull(formData, "max_redemptions_per_user") ?? 1,
+      minimum_money_minor: intOrNull(formData, "minimum_money_minor"),
+      minimum_remnants: intOrNull(formData, "minimum_remnants"),
+      is_public: bool(formData, "is_public"),
+      is_active: bool(formData, "is_active"),
+      starts_at: nullableStr(formData, "starts_at"),
+      ends_at: nullableStr(formData, "ends_at"),
+    })
+    .eq("id", id);
+
+  if (error) throw new Error(`Unable to update discount: ${error.message}`);
+
+  const { error: clearScopeError } = await admin
+    .from("store_discount_code_products")
+    .delete()
+    .eq("discount_code_id", id);
+
+  if (clearScopeError) {
+    throw new Error(`Unable to update discount product scope: ${clearScopeError.message}`);
+  }
+
+  if (scopeType === "products") {
+    const { error: scopeError } = await admin
+      .from("store_discount_code_products")
+      .insert(
+        productIds.map((productId) => ({
+          discount_code_id: id,
+          product_id: productId,
+        })),
+      );
+
+    if (scopeError) {
+      throw new Error(`Unable to save discount product scope: ${scopeError.message}`);
+    }
+  }
+
+  refresh();
+}
+
+export async function deleteStoreDiscount(formData: FormData) {
+  await requireAdminSection("store");
+  const admin = createAdminClient();
+  const id = str(formData, "id");
+
+  const { error: scopeError } = await admin
+    .from("store_discount_code_products")
+    .delete()
+    .eq("discount_code_id", id);
+
+  if (scopeError) throw new Error(`Unable to remove discount scope: ${scopeError.message}`);
+
+  const { error } = await admin
+    .from("store_discount_codes")
+    .delete()
+    .eq("id", id);
+
+  if (error) throw new Error(`Unable to delete discount: ${error.message}`);
+  refresh();
+}
+
 export async function toggleStoreDiscount(formData: FormData) {
   await requireAdminSection("store");
   const admin = createAdminClient();
