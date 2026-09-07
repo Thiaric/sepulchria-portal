@@ -3,7 +3,11 @@
 import { revalidatePath } from "next/cache";
 import { requireAdminSection } from "@/lib/auth/require-staff";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { ensurePaddleWebhookEvents, requestPaddleRefund, syncAllStoreProductsToPaddle, syncStoreProductToPaddle } from "@/lib/store/paddle-server";
+import {
+  requestStripeRefund,
+  syncAllStoreProductsToStripe,
+  syncStoreProductToStripe,
+} from "@/lib/store/stripe-server";
 
 const STORE_PATH = "/admin/store";
 
@@ -377,7 +381,7 @@ export async function updateStoreProduct(formData: FormData) {
     .eq("id", str(formData, "id"));
 
   if (error) throw new Error(`Unable to update store product: ${error.message}`);
-  await syncStoreProductToPaddle(str(formData, "id"));
+  await syncStoreProductToStripe(str(formData, "id"));
   refresh();
 }
 
@@ -436,13 +440,14 @@ export async function saveStorePrice(formData: FormData) {
     currency,
     money_amount_minor: moneyAmountMinor,
     remnants_amount: remnantsAmount,
-    paddle_price_id: null,
-    paddle_sync_status: moneyAmountMinor !== null ? "not_synced" : "synced",
+    stripe_price_id_test: null,
+    stripe_price_id_live: null,
+    stripe_sync_status: moneyAmountMinor !== null ? "not_synced" : "synced",
     is_active: true,
   });
 
   if (error) throw new Error(`Unable to save store price: ${error.message}`);
-  if (moneyAmountMinor !== null) await syncStoreProductToPaddle(productId);
+  if (moneyAmountMinor !== null) await syncStoreProductToStripe(productId);
   refresh();
 }
 
@@ -668,24 +673,20 @@ export async function toggleStorePostPurchaseOffer(formData: FormData) {
 }
 
 
-export async function syncOneStoreProductPaddle(formData: FormData) {
+export async function syncOneStoreProductStripe(formData: FormData) {
   await requireAdminSection("store");
-  await syncStoreProductToPaddle(str(formData, "product_id"));
+  await syncStoreProductToStripe(str(formData, "product_id"));
   refresh();
 }
 
-export async function syncAllStorePaddle() {
+export async function syncAllStoreStripe() {
   await requireAdminSection("store");
-  const result = await syncAllStoreProductsToPaddle();
+  const result = await syncAllStoreProductsToStripe();
   if (result.failed) {
-    throw new Error(`Paddle sync completed with ${result.failed} failure(s): ${result.errors.join(" | ")}`);
+    throw new Error(
+      `Stripe sync completed with ${result.failed} failure(s): ${result.errors.join(" | ")}`,
+    );
   }
-  refresh();
-}
-
-export async function configureStorePaddleWebhook() {
-  await requireAdminSection("store");
-  await ensurePaddleWebhookEvents();
   refresh();
 }
 
@@ -718,7 +719,7 @@ export async function saveStoreRegionOverride(formData: FormData) {
   });
 
   if (error) throw new Error(error.message);
-  await syncStoreProductToPaddle(productId);
+  await syncStoreProductToStripe(productId);
   refresh();
 }
 
@@ -731,14 +732,14 @@ export async function deleteStoreRegionOverride(formData: FormData) {
     .eq("id", str(formData, "id"));
 
   if (error) throw new Error(error.message);
-  await syncStoreProductToPaddle(str(formData, "product_id"));
+  await syncStoreProductToStripe(str(formData, "product_id"));
   refresh();
 }
 
 export async function refundStoreOrder(formData: FormData) {
   await requireAdminSection("store");
   const rawAmount = str(formData, "amount_minor");
-  await requestPaddleRefund({
+  await requestStripeRefund({
     orderId: str(formData, "order_id"),
     amountMinor: rawAmount ? Number(rawAmount) : null,
     reason: str(formData, "reason") || "Customer request",
