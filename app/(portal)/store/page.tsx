@@ -364,7 +364,7 @@ export default async function StorePage() {
                   <div className="absolute right-0 top-full z-30 mt-2 w-[280px] max-w-[80vw] border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] p-3 shadow-xl">
                     <p className="text-[10px] leading-5 text-[rgb(var(--sep-colour-a99b89))]">
                       Unlock Portal Skins, Cosmetic frames and backgrounds, Locations&apos; Musics, Friend List access, Private Locations
-                      and curated bundles using real money or Remnants. Refunds are available on request within 14 days of purchase only for real currency purchases. Refunds are not available for Remnant purchases.
+                      and curated bundles using real money or Remnants. Refunds are available on request within 14 days of purchase only for real currency purchases (Support - New Ticket - Premium / Support - quote Order Number found on Receipt in Store). Refunds are not available for Remnant purchases.
                     </p>
                   </div>
                 </details>
@@ -372,7 +372,7 @@ export default async function StorePage() {
 
               <p className="mt-2 hidden max-w-none text-[11px] leading-5 text-[rgb(var(--sep-colour-a99b89))] sm:block">
                 Unlock Portal Skins, Cosmetic frames and backgrounds, Locations&apos; Musics, Friend List access, Private Locations
-                and curated bundles using real money or Remnants. Refunds are available on request within 14 days of purchase only for real currency purchases. Refunds are not available for Remnant purchases.
+                and curated bundles using real money or Remnants. Refunds are available on request within 14 days of purchase only for real currency purchases (Support - New Ticket - Premium / Support - quote Order Number found on Receipt in Store). Refunds are not available for Remnant purchases.
               </p>
             </div>
 

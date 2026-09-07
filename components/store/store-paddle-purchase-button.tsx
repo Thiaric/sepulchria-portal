@@ -72,6 +72,7 @@ export function StorePaddlePurchaseButton({
             email: state.customerEmail!,
           },
           settings: {
+            theme: "dark",
             allowLogout: false,
             showAddDiscounts: false,
           },
