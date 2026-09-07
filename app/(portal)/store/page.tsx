@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { StoreLiveFilterBar } from "@/components/store/store-live-filter-bar";
-import { StorePaddlePurchaseButton } from "@/components/store/store-paddle-purchase-button";
+import { StoreStripePurchaseButton } from "@/components/store/store-stripe-purchase-button";
 import { StoreRemnantPurchaseButton } from "@/components/store/store-remnant-purchase-button";
 import { StoreMusicPreview } from "@/components/store/store-music-preview";
 import { StoreAccountPanels } from "@/components/store/store-account-panels";
@@ -32,7 +32,6 @@ type StorePrice = {
   currency: string | null;
   money_amount_minor: number | null;
   remnants_amount: number | null;
-  paddle_price_id: string | null;
 };
 
 type StoreGrant = {
@@ -134,7 +133,7 @@ export default async function StorePage() {
     supabase
       .from("store_product_prices")
       .select(
-        "id, product_id, currency, money_amount_minor, remnants_amount, paddle_price_id",
+        "id, product_id, currency, money_amount_minor, remnants_amount",
       )
       .eq("is_active", true),
 
@@ -797,7 +796,7 @@ function StoreProductCard({
 
               {moneyPrices.length
                 ? moneyPrices.map((moneyPrice) => (
-                    <StorePaddlePurchaseButton
+                    <StoreStripePurchaseButton
                       key={moneyPrice.id}
                       productId={product.id}
                       priceId={moneyPrice.id}

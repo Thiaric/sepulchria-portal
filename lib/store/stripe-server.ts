@@ -38,6 +38,15 @@ function stripeClient() {
   return new Stripe(stripeSecretKey());
 }
 
+function storeSiteUrl() {
+  const value =
+    process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
+    process.env.SITE_URL?.trim() ||
+    "https://sepulchria.com";
+
+  return value.replace(/\/+$/, "");
+}
+
 async function logSync(
   admin: SupabaseAdmin,
   input: {
@@ -479,4 +488,80 @@ export async function requestStripeRefund(input: {
 
     throw error;
   }
+}
+
+export async function createManagedStoreCheckout(input: {
+  stripePriceId: string;
+  customerEmail: string;
+  currency: string;
+  discountMoneyMinor: number;
+  orderId: string;
+  productId: string;
+  userId: string;
+  characterId: string;
+  discountDescription?: string | null;
+}) {
+  const stripe = stripeClient();
+
+  let couponId: string | null = null;
+
+  if (input.discountMoneyMinor > 0) {
+    const coupon = await stripe.coupons.create({
+      amount_off: Math.trunc(input.discountMoneyMinor),
+      currency: input.currency.toLowerCase(),
+      duration: "once",
+      name: input.discountDescription?.trim() || "Sepulchria Store discount",
+      metadata: {
+        sepulchria_store_order_id: input.orderId,
+      },
+    });
+
+    couponId = coupon.id;
+  }
+
+  const params = {
+    mode: "payment",
+    line_items: [
+      {
+        price: input.stripePriceId,
+        quantity: 1,
+      },
+    ],
+    ...(couponId
+      ? {
+          discounts: [
+            {
+              coupon: couponId,
+            },
+          ],
+        }
+      : {}),
+    customer_email: input.customerEmail,
+    success_url:
+      `${storeSiteUrl()}/store?stripe=success&session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${storeSiteUrl()}/store?stripe=cancelled`,
+    metadata: {
+      store_order_id: input.orderId,
+      store_product_id: input.productId,
+      sepulchria_user_id: input.userId,
+      sepulchria_character_id: input.characterId,
+    },
+    managed_payments: {
+      enabled: true,
+    },
+  } as Stripe.Checkout.SessionCreateParams & {
+    managed_payments: { enabled: true };
+  };
+
+  const session = await stripe.checkout.sessions.create(params);
+
+  if (!session.url) {
+    throw new Error("Stripe created a Checkout Session without a checkout URL.");
+  }
+
+  return {
+    checkoutUrl: session.url,
+    checkoutSessionId: session.id,
+    couponId,
+  };
 }

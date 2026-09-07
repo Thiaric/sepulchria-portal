@@ -6,7 +6,10 @@ import { createPremiumFeatureGrantNotification } from "@/lib/premium-features/no
 import { storeDestinationForCategory } from "@/lib/store/store-destination";
 import { issueStorePostPurchaseOffersAndNotify } from "@/lib/store/post-purchase-offers";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { ensureStorePriceReadyForCheckout } from "@/lib/store/paddle-server";
+import {
+  createManagedStoreCheckout,
+  ensureStorePriceReadyForCheckout,
+} from "@/lib/store/stripe-server";
 import { createClient } from "@/lib/supabase/server";
 
 export type StorePurchaseState = {
@@ -14,20 +17,6 @@ export type StorePurchaseState = {
   error: string | null;
   orderId: string | null;
 };
-
-export type StorePaddleState = {
-  ok: boolean;
-  error: string | null;
-  checkoutUrl: string | null;
-  transactionId: string | null;
-  customerEmail: string | null;
-};
-
-function paddleApiBase() {
-  return process.env.PADDLE_ENVIRONMENT === "sandbox"
-    ? "https://sandbox-api.paddle.com"
-    : "https://api.paddle.com";
-}
 
 export async function purchaseStoreProductWithRemnants(
   _previousState: StorePurchaseState,
@@ -110,72 +99,112 @@ export async function purchaseStoreProductWithRemnants(
   };
 }
 
-export async function startStorePaddleCheckout(
-  _previousState: StorePaddleState,
+export type StoreStripeState = {
+  ok: boolean;
+  error: string | null;
+  checkoutUrl: string | null;
+  checkoutSessionId: string | null;
+};
+
+export async function startStoreStripeCheckout(
+  _previousState: StoreStripeState,
   formData: FormData,
-): Promise<StorePaddleState> {
+): Promise<StoreStripeState> {
   const productId = String(formData.get("productId") ?? "").trim();
   const priceId = String(formData.get("priceId") ?? "").trim();
   const discountCode = String(formData.get("discountCode") ?? "").trim();
-  const apiKey = process.env.PADDLE_API_KEY;
+
+  const failure = (error: string): StoreStripeState => ({
+    ok: false,
+    error,
+    checkoutUrl: null,
+    checkoutSessionId: null,
+  });
 
   if (!productId) {
-    return { ok: false, error: "Store product is missing.", checkoutUrl: null, transactionId: null, customerEmail: null };
+    return failure("Store product is missing.");
   }
 
-  if (!apiKey) {
-    return { ok: false, error: "Paddle is not configured yet.", checkoutUrl: null, transactionId: null, customerEmail: null };
+  if (!process.env.STRIPE_SECRET_KEY?.trim()) {
+    return failure("Stripe is not configured yet.");
   }
 
   const supabase = await createClient();
   const admin = createAdminClient();
-  const { data: { user } } = await supabase.auth.getUser();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
-    return { ok: false, error: "You must be signed in.", checkoutUrl: null, transactionId: null, customerEmail: null };
+    return failure("You must be signed in.");
   }
 
   const customerEmail = user.email?.trim() ?? "";
+
   if (!customerEmail) {
-    return {
-      ok: false,
-      error: "Your account does not have an email address for Paddle receipts.",
-      checkoutUrl: null,
-      transactionId: null,
-      customerEmail: null,
-    };
+    return failure(
+      "Your account does not have an email address for the payment receipt.",
+    );
   }
 
   const [characterResult, productResult, priceResult, grantsResult] =
     await Promise.all([
-      admin.from("characters").select("id").eq("user_id", user.id).maybeSingle(),
-      admin.from("store_products")
+      admin
+        .from("characters")
+        .select("id")
+        .eq("user_id", user.id)
+        .maybeSingle(),
+      admin
+        .from("store_products")
         .select("id, slug, name, product_type, category, is_active")
         .eq("id", productId)
         .maybeSingle(),
-      admin.from("store_product_prices")
-        .select("id, currency, money_amount_minor, paddle_price_id, is_active")
+      admin
+        .from("store_product_prices")
+        .select("id, currency, money_amount_minor, is_active")
         .eq("product_id", productId)
         .eq("id", priceId)
         .eq("is_active", true)
         .not("money_amount_minor", "is", null)
         .maybeSingle(),
-      admin.from("store_product_grants")
-        .select("grant_type, portal_skin_id, cosmetic_item_id, music_track_id, feature_key, quantity")
+      admin
+        .from("store_product_grants")
+        .select(
+          "grant_type, portal_skin_id, cosmetic_item_id, music_track_id, feature_key, quantity",
+        )
         .eq("product_id", productId),
     ]);
 
   if (characterResult.error || !characterResult.data) {
-    return { ok: false, error: characterResult.error?.message ?? "Character not found.", checkoutUrl: null, transactionId: null, customerEmail: null };
+    return failure(
+      characterResult.error?.message ?? "Character not found.",
+    );
   }
-  if (productResult.error || !productResult.data || productResult.data.is_active !== true) {
-    return { ok: false, error: productResult.error?.message ?? "This Store product is not available.", checkoutUrl: null, transactionId: null, customerEmail: null };
+
+  if (
+    productResult.error ||
+    !productResult.data ||
+    productResult.data.is_active !== true
+  ) {
+    return failure(
+      productResult.error?.message ??
+        "This Store product is not available.",
+    );
   }
+
   if (priceResult.error || !priceResult.data) {
-    return { ok: false, error: priceResult.error?.message ?? "This product does not have an active Paddle price.", checkoutUrl: null, transactionId: null, customerEmail: null };
+    return failure(
+      priceResult.error?.message ??
+        "This product does not have an active Stripe price.",
+    );
   }
+
   if (grantsResult.error || !(grantsResult.data ?? []).length) {
-    return { ok: false, error: grantsResult.error?.message ?? "This Store product has no fulfilment grants.", checkoutUrl: null, transactionId: null, customerEmail: null };
+    return failure(
+      grantsResult.error?.message ??
+        "This Store product has no fulfilment grants.",
+    );
   }
 
   const product = productResult.data;
@@ -218,20 +247,12 @@ export async function startStorePaddleCheckout(
     featureEntitlementsResult,
   ]) {
     if (result.error) {
-      return {
-        ok: false,
-        error: result.error.message,
-        checkoutUrl: null,
-        transactionId: null,
-        customerEmail: null,
-      };
+      return failure(result.error.message);
     }
   }
 
   const ownedSkinIds = new Set(
-    (skinEntitlementsResult.data ?? []).map(
-      (entry) => entry.skin_id,
-    ),
+    (skinEntitlementsResult.data ?? []).map((entry) => entry.skin_id),
   );
   const ownedCosmeticIds = new Set(
     (cosmeticEntitlementsResult.data ?? []).map(
@@ -250,31 +271,19 @@ export async function startStorePaddleCheckout(
   );
 
   const grantIsOwned = (grant: (typeof allGrants)[number]) => {
-    if (
-      grant.grant_type === "portal_skin" &&
-      grant.portal_skin_id
-    ) {
+    if (grant.grant_type === "portal_skin" && grant.portal_skin_id) {
       return ownedSkinIds.has(grant.portal_skin_id);
     }
 
-    if (
-      grant.grant_type === "cosmetic" &&
-      grant.cosmetic_item_id
-    ) {
+    if (grant.grant_type === "cosmetic" && grant.cosmetic_item_id) {
       return ownedCosmeticIds.has(grant.cosmetic_item_id);
     }
 
-    if (
-      grant.grant_type === "music" &&
-      grant.music_track_id
-    ) {
+    if (grant.grant_type === "music" && grant.music_track_id) {
       return ownedMusicIds.has(grant.music_track_id);
     }
 
-    if (
-      grant.grant_type === "feature" &&
-      grant.feature_key
-    ) {
+    if (grant.grant_type === "feature" && grant.feature_key) {
       return ownedFeatures.has(grant.feature_key);
     }
 
@@ -286,79 +295,84 @@ export async function startStorePaddleCheckout(
   );
 
   if (missingGrants.length === 0) {
-    return {
-      ok: false,
-      error: "You already own everything included in this product.",
-      checkoutUrl: null,
-      transactionId: null,
-      customerEmail: null,
-    };
+    return failure(
+      "You already own everything included in this product.",
+    );
   }
 
   const bundleItemCount =
-    product.product_type === "bundle"
-      ? allGrants.length
-      : 0;
+    product.product_type === "bundle" ? allGrants.length : 0;
   const ownedBundleItemCount =
     product.product_type === "bundle"
       ? allGrants.length - missingGrants.length
       : 0;
 
-  const baseMoneyMinor = Number(
-    price.money_amount_minor ?? 0,
-  );
+  const baseMoneyMinor = Number(price.money_amount_minor ?? 0);
 
   const ownershipDiscountMoneyMinor =
-    bundleItemCount > 0 &&
-    ownedBundleItemCount > 0
+    bundleItemCount > 0 && ownedBundleItemCount > 0
       ? Math.round(
           (baseMoneyMinor * ownedBundleItemCount) /
             bundleItemCount,
         )
       : 0;
 
-  const ownershipAdjustedSubtotalMoneyMinor =
-    Math.max(
-      0,
-      baseMoneyMinor - ownershipDiscountMoneyMinor,
-    );
+  const ownershipAdjustedSubtotalMoneyMinor = Math.max(
+    0,
+    baseMoneyMinor - ownershipDiscountMoneyMinor,
+  );
 
-  let syncedPaddlePriceId: string;
+  let syncedStripePriceId: string;
+
   try {
     const synced = await ensureStorePriceReadyForCheckout(price.id);
-    syncedPaddlePriceId = synced.paddlePriceId;
+    syncedStripePriceId = synced.stripePriceId;
   } catch (error) {
-    return {
-      ok: false,
-      error: error instanceof Error ? error.message : "Paddle price synchronization failed.",
-      checkoutUrl: null,
-      transactionId: null,
-      customerEmail: null,
-    };
+    return failure(
+      error instanceof Error
+        ? error.message
+        : "Stripe price synchronization failed.",
+    );
   }
 
-  let discount: { discount_code_id: string; user_discount_code_id: string | null; discount_type: "percentage" | "fixed_money"; discount_value: number; discount_money_minor: number } | null = null;
+  type StoreMoneyDiscount = {
+    discount_code_id: string;
+    user_discount_code_id: string | null;
+    discount_type: "percentage" | "fixed_money";
+    discount_value: number;
+    discount_money_minor: number;
+  };
+
+  let discount: StoreMoneyDiscount | null = null;
+
   if (discountCode) {
-    const { data: discountRows, error: discountError } = await admin.rpc("resolve_store_discount", {
-      p_user_id: user.id,
-      p_product_id: product.id,
-      p_code: discountCode,
-      p_payment_method: "paddle",
-      p_subtotal_money_minor: ownershipAdjustedSubtotalMoneyMinor,
-      p_subtotal_remnants: 0,
-      p_currency: price.currency,
-    });
-    if (discountError) return { ok: false, error: discountError.message, checkoutUrl: null, transactionId: null, customerEmail: null };
-    const row = Array.isArray(discountRows) ? discountRows[0] ?? null : discountRows;
-    if (!row) return { ok: false, error: "Discount code is invalid or expired.", checkoutUrl: null, transactionId: null, customerEmail: null };
-    discount = row as {
-      discount_code_id: string;
-      user_discount_code_id: string | null;
-      discount_type: "percentage" | "fixed_money";
-      discount_value: number;
-      discount_money_minor: number;
-    };
+    const { data: discountRows, error: discountError } =
+      await admin.rpc("resolve_store_discount", {
+        p_user_id: user.id,
+        p_product_id: product.id,
+        p_code: discountCode,
+        p_payment_method: "stripe",
+        p_subtotal_money_minor:
+          ownershipAdjustedSubtotalMoneyMinor,
+        p_subtotal_remnants: 0,
+        p_currency: price.currency,
+      });
+
+    if (discountError) {
+      return failure(discountError.message);
+    }
+
+    const row = Array.isArray(discountRows)
+      ? discountRows[0] ?? null
+      : discountRows;
+
+    if (!row) {
+      return failure("Discount code is invalid or expired.");
+    }
+
+    discount = row as StoreMoneyDiscount;
   }
+
   const codeDiscountMoneyMinor = Math.min(
     ownershipAdjustedSubtotalMoneyMinor,
     Math.max(
@@ -369,8 +383,7 @@ export async function startStorePaddleCheckout(
 
   const discountMoneyMinor = Math.min(
     baseMoneyMinor,
-    ownershipDiscountMoneyMinor +
-      codeDiscountMoneyMinor,
+    ownershipDiscountMoneyMinor + codeDiscountMoneyMinor,
   );
 
   const expectedTotalMoneyMinor = Math.max(
@@ -384,7 +397,7 @@ export async function startStorePaddleCheckout(
       user_id: user.id,
       character_id: character.id,
       status: "pending",
-      payment_method: "paddle",
+      payment_method: "stripe",
       currency: price.currency,
       subtotal_money_minor: baseMoneyMinor,
       discount_money_minor: discountMoneyMinor,
@@ -393,13 +406,16 @@ export async function startStorePaddleCheckout(
       discount_remnants: 0,
       total_remnants: 0,
       discount_code_id: discount?.discount_code_id ?? null,
-      user_discount_code_id: discount?.user_discount_code_id ?? null,
+      user_discount_code_id:
+        discount?.user_discount_code_id ?? null,
     })
     .select("id")
     .single();
 
   if (orderError || !order) {
-    return { ok: false, error: orderError?.message ?? "Unable to create Store order.", checkoutUrl: null, transactionId: null, customerEmail: null };
+    return failure(
+      orderError?.message ?? "Unable to create Store order.",
+    );
   }
 
   const { data: item, error: itemError } = await admin
@@ -422,11 +438,11 @@ export async function startStorePaddleCheckout(
 
   if (itemError || !item) {
     await admin.from("store_orders").delete().eq("id", order.id);
-    return { ok: false, error: itemError?.message ?? "Unable to create Store order item.", checkoutUrl: null, transactionId: null, customerEmail: null };
+    return failure(
+      itemError?.message ?? "Unable to create Store order item.",
+    );
   }
 
-  // Snapshot only entitlements the buyer does not already own.
-  // This also prevents a refund from touching a pre-owned entitlement.
   const snapshots = missingGrants.map((grant) => ({
     order_id: order.id,
     order_item_id: item.id,
@@ -444,85 +460,64 @@ export async function startStorePaddleCheckout(
 
   if (snapshotError) {
     await admin.from("store_orders").delete().eq("id", order.id);
-    return { ok: false, error: snapshotError.message, checkoutUrl: null, transactionId: null, customerEmail: null };
+    return failure(snapshotError.message);
   }
 
-  const response = await fetch(`${paddleApiBase()}/transactions`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-      "Paddle-Version": "1",
-    },
-    body: JSON.stringify({
-      items: [{ price_id: syncedPaddlePriceId, quantity: 1 }],
-      ...(discountMoneyMinor > 0
-        ? {
-            currency_code: String(price.currency).toUpperCase(),
-            discount: {
-              type: "flat",
-              description: [
-                ownershipDiscountMoneyMinor > 0
-                  ? `Bundle ownership ${ownedBundleItemCount}/${bundleItemCount}`
-                  : null,
-                discount
-                  ? `Store code ${discountCode.toUpperCase()}`
-                  : null,
-              ]
-                .filter(Boolean)
-                .join(" + "),
-              amount: String(discountMoneyMinor),
-            },
-          }
-        : {}),
-      custom_data: {
-        store_order_id: order.id,
-        store_product_id: product.id,
-        sepulchria_user_id: user.id,
-        sepulchria_character_id: character.id,
-      },
-      checkout: {
-        url: process.env.PADDLE_CHECKOUT_URL?.trim() || null,
-      },
-    }),
-    cache: "no-store",
-  });
+  const discountDescription = [
+    ownershipDiscountMoneyMinor > 0
+      ? `Bundle ownership ${ownedBundleItemCount}/${bundleItemCount}`
+      : null,
+    discount ? `Store code ${discountCode.toUpperCase()}` : null,
+  ]
+    .filter(Boolean)
+    .join(" + ");
 
-  const payload = await response.json().catch(() => null) as
-    | {
-        data?: {
-          id?: string;
-          checkout?: { url?: string | null } | null;
-        };
-        error?: { detail?: string };
-      }
-    | null;
+  try {
+    const checkout = await createManagedStoreCheckout({
+      stripePriceId: syncedStripePriceId,
+      customerEmail,
+      currency: String(price.currency).toUpperCase(),
+      discountMoneyMinor,
+      orderId: order.id,
+      productId: product.id,
+      userId: user.id,
+      characterId: character.id,
+      discountDescription,
+    });
 
-  if (!response.ok || !payload?.data?.id || !payload.data.checkout?.url) {
-    await admin.from("store_orders").update({ status: "failed" }).eq("id", order.id);
+    const { error: linkError } = await admin
+      .from("store_orders")
+      .update({
+        stripe_checkout_session_id:
+          checkout.checkoutSessionId,
+      })
+      .eq("id", order.id);
+
+    if (linkError) {
+      await admin
+        .from("store_orders")
+        .update({ status: "failed" })
+        .eq("id", order.id);
+
+      return failure(linkError.message);
+    }
+
     return {
-      ok: false,
-      error: payload?.error?.detail ?? "Paddle could not create the checkout.",
-      checkoutUrl: null,
-      transactionId: null,
-      customerEmail: null,
+      ok: true,
+      error: null,
+      checkoutUrl: checkout.checkoutUrl,
+      checkoutSessionId: checkout.checkoutSessionId,
     };
+  } catch (error) {
+    await admin
+      .from("store_orders")
+      .update({ status: "failed" })
+      .eq("id", order.id);
+
+    return failure(
+      error instanceof Error
+        ? error.message
+        : "Stripe could not create the checkout.",
+    );
   }
-
-  const { error: linkError } = await admin
-    .from("store_orders")
-    .update({ paddle_transaction_id: payload.data.id })
-    .eq("id", order.id);
-
-  if (linkError) {
-    return { ok: false, error: linkError.message, checkoutUrl: null, transactionId: null, customerEmail: null };
-  }
-
-  return {
-    ok: true,
-    error: null,
-    checkoutUrl: payload.data.checkout.url,
-    transactionId: payload.data.id,
-    customerEmail,
-  };
 }
