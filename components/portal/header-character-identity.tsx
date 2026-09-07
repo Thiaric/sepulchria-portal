@@ -392,7 +392,7 @@ last_seen_at:
     return (
       <Link
         href="/character/create"
-        className="hidden text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-c59a5a))] md:block 2xl:text-xs 2xl:tracking-[0.18em]"
+        className="text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-c59a5a))] 2xl:text-xs 2xl:tracking-[0.18em]"
       >
         Create character
       </Link>
