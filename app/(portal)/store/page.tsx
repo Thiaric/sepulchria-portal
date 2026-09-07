@@ -340,7 +340,7 @@ export default async function StorePage() {
             <div className="min-w-0 flex-1">
               <div className="mt-1 flex items-center justify-between gap-3">
                 <h1 className="font-serif text-2xl text-[rgb(var(--sep-skin-c2))] sm:text-3xl">
-                  Sepulchria Store
+                  Sepulchria's Store
                 </h1>
 
                 <details className="relative sm:hidden">

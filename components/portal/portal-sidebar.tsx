@@ -204,7 +204,7 @@ const privateLocationItem: NavigationItem = {
 };
 
 const storeItem: NavigationItem = {
-  label: "Sepulchria's Shop",
+  label: "Sepulchria's Store",
   title:
     "Browse Sepulchria Store products, bundles and premium unlocks.",
   icon: "/icons/store.png",

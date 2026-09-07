@@ -897,10 +897,10 @@ const moreDragging =
 
   const storeEntry: LinkEntry = {
     href: "/store",
-    label: "Sepulchria's Shop",
+    label: "Store",
     icon: "/icons/store.png",
     modal: {
-      label: "Sepulchria's Shop",
+      label: "Sepulchria's Store",
       title:
         "Browse Sepulchria Store products, bundles and premium unlocks.",
       icon: "/icons/store.png",
@@ -1490,7 +1490,7 @@ const moreDragging =
                             src="/icons/lodging.png"
                           />
                           <span className="text-[11px] text-[rgb(var(--sep-colour-b8a98f))]">
-                            Breeze Lodgings
+                            Lodgings
                           </span>
                         </button>
                       </form>
@@ -1540,7 +1540,7 @@ const moreDragging =
       />
 
       <span className="min-w-0 flex-1 truncate text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b8a98f))]">
-        Administration
+        Staff
       </span>
 
       <Badge
