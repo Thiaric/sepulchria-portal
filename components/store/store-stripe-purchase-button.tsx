@@ -30,7 +30,7 @@ export function StoreStripePurchaseButton({
 
   useEffect(() => {
     if (!state.ok || !state.checkoutUrl) return;
-    window.location.assign(state.checkoutUrl);
+    window.top?.location.assign(state.checkoutUrl);
   }, [state.ok, state.checkoutUrl]);
 
   return (

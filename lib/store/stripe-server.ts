@@ -42,7 +42,7 @@ function storeSiteUrl() {
   const value =
     process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
     process.env.SITE_URL?.trim() ||
-    "https://sepulchria.com";
+    "https://www.sepulchria.com";
 
   return value.replace(/\/+$/, "");
 }
