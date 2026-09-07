@@ -84,17 +84,27 @@ export async function StoreAccountPanels({ userId }: { userId: string }) {
       ) : null}
 
       <details className="mb-5 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))]">
-        <summary className="cursor-pointer px-4 py-3 sm:px-5">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-8c704b))]">Purchase history</p>
-              <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">Orders & receipts</h2>
-            </div>
-            <span className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
-              {orders.length} shown - pending retained 7 days
-            </span>
-          </div>
-        </summary>
+        <summary className="relative cursor-pointer list-none px-4 py-3 pr-10 sm:px-5 [&::-webkit-details-marker]:hidden">
+  <div className="flex flex-wrap items-center justify-between gap-3">
+    <div>
+      <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-d8bf91))]">
+        Purchase history
+      </p>
+
+    </div>
+
+    <span className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))] px-2">
+      {orders.length} shown - pending retained 7 days
+    </span>
+  </div>
+
+  <span
+    aria-hidden="true"
+    className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-[rgb(var(--sep-colour-c69b5c))]"
+  >
+    ▼
+  </span>
+</summary>
         <div className="border-t border-[rgb(var(--sep-colour-60482e))]/30 p-3 sm:p-4">
         {orders.length ? (
           <div className="max-h-[520px] overflow-y-auto border border-[rgb(var(--sep-colour-60482e))]/35">

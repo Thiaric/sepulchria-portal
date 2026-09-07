@@ -332,42 +332,70 @@ export default async function StorePage() {
   return (
     <main
       data-store-page
-      className="flex h-full min-h-0 w-full flex-col p-4 sm:p-5"
+      className="flex h-full min-h-0 w-full flex-col p-2 sm:p-5"
     >
       <section className="flex min-h-0 flex-1 flex-col overflow-hidden border border-[rgb(var(--sep-colour-58432d))]/45 bg-[rgb(var(--sep-colour-15100d))]/82 shadow-[0_10px_26px_rgba(var(--sep-rgb-0-0-0),0.2)]">
         <header className="shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-211a14))] px-4 py-4 sm:px-5">
-          <div className="flex flex-wrap items-end gap-4">
-  <div className="min-w-0 flex-1">
-              <p className="text-[8px] uppercase tracking-[0.26em] text-[rgb(var(--sep-colour-8c704b))]">
-                Premium
-              </p>
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
+            <div className="min-w-0 flex-1">
+              <div className="mt-1 flex items-center justify-between gap-3">
+                <h1 className="font-serif text-2xl text-[rgb(var(--sep-skin-c2))] sm:text-3xl">
+                  Sepulchria Store
+                </h1>
 
-              <h1 className="mt-1 font-serif text-3xl text-[rgb(var(--sep-colour-ead5ac))]">
-                Sepulchria Store
-              </h1>
+                <details className="relative sm:hidden">
+                  <summary className="cursor-pointer list-none whitespace-nowrap text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-c69b5c))] [&::-webkit-details-marker]:hidden">
+                    More ▼
+                  </summary>
 
-              <p className="mt-2 max-w-none text-[11px] leading-5 text-[rgb(var(--sep-colour-a99b89))]">
-                Unlock Portal Skins, Cosmetic frames and backgrounds, Locations' Musics, Friend List access, Private Locations
+                  <div className="absolute right-0 top-full z-30 mt-2 w-[280px] max-w-[80vw] border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] p-3 shadow-xl">
+                    <p className="text-[10px] leading-5 text-[rgb(var(--sep-colour-a99b89))]">
+                      Unlock Portal Skins, Cosmetic frames and backgrounds, Locations&apos; Musics, Friend List access, Private Locations
+                      and curated bundles using real money or Remnants. Refunds are available on request within 14 days of purchase only for real currency purchases. Refunds are not available for Remnant purchases.
+                    </p>
+                  </div>
+                </details>
+              </div>
+
+              <p className="mt-2 hidden max-w-none text-[11px] leading-5 text-[rgb(var(--sep-colour-a99b89))] sm:block">
+                Unlock Portal Skins, Cosmetic frames and backgrounds, Locations&apos; Musics, Friend List access, Private Locations
                 and curated bundles using real money or Remnants. Refunds are available on request within 14 days of purchase only for real currency purchases. Refunds are not available for Remnant purchases.
               </p>
             </div>
 
-            <div className="shrink-0 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2">
+            <div className="hidden border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 sm:block sm:w-auto sm:shrink-0">
               <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))]">
                 Discount codes
               </p>
+
               <p className="mt-1 text-[9px] text-[rgb(var(--sep-colour-a99b89))]">
                 are applied during checkout
               </p>
             </div>
           </div>
 
-          <div className="mt-4">
+          <div className="mt-3 grid grid-cols-[0.85fr_1.35fr] gap-2 sm:hidden">
+            <div className="flex min-w-0 flex-col justify-center border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2">
+              <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))]">
+                Discount codes
+              </p>
+
+              <p className="mt-1 text-[8px] leading-4 text-[rgb(var(--sep-colour-a99b89))]">
+                Applied at checkout
+              </p>
+            </div>
+
+            <div className="min-w-0">
+              <StoreLiveFilterBar />
+            </div>
+          </div>
+
+          <div className="mt-4 hidden sm:block">
             <StoreLiveFilterBar />
           </div>
         </header>
 
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-4 sm:p-5">
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-2 sm:p-5">
           <StoreAccountPanels userId={user.id} />
 
           {featured.length > 0 ? (
@@ -405,9 +433,7 @@ export default async function StorePage() {
           <section className={featured.length ? "mt-6" : ""}>
             <div className="flex flex-wrap items-end justify-between gap-3">
               <div>
-                <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-8c704b))]">
-                  Catalogue
-                </p>
+                
                 <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
                   Available in the Store
                 </h2>
@@ -575,50 +601,59 @@ function StoreProductCard({
       data-store-name={product.name}
       data-store-category={product.category}
       className={[
-        "group flex h-full min-h-[390px] min-w-0 flex-col overflow-hidden border bg-[rgb(var(--sep-colour-100c09))]",
+        "group flex h-full min-h-[290px] min-w-0 flex-col overflow-hidden border bg-[rgb(var(--sep-colour-100c09))]",
         featured
           ? "border-[rgb(var(--sep-colour-987344))]/70"
           : "border-[rgb(var(--sep-colour-60482e))]/40",
       ].join(" ")}
     >
       <div className="relative h-36 shrink-0 overflow-hidden border-b border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-0d0b0a))]">
-        {skin ? (
-          <StoreSkinMiniPreview skin={skin} />
-        ) : product.image_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={product.image_url}
-            alt=""
-            className="h-full w-full object-contain p-3 opacity-80 transition group-hover:opacity-100"
-          />
-        ) : (
-          <div className="flex h-full items-center justify-center">
-            <span className="font-serif text-4xl text-[rgb(var(--sep-colour-4e402f))]">
-              ◇
-            </span>
-          </div>
-        )}
+  {skin ? (
+    <StoreSkinMiniPreview skin={skin} />
+  ) : product.category === "music" && musicPreviewUrl ? (
+    <div className="flex h-full w-full items-center justify-center p-3">
+      <StoreMusicPreview
+        src={musicPreviewUrl}
+        title={musicPreviewName}
+      />
+    </div>
+  ) : product.image_url ? (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={product.image_url}
+      alt=""
+      className="h-full w-full object-contain p-3 opacity-80 transition group-hover:opacity-100"
+    />
+  ) : (
+    <div className="flex h-full items-center justify-center">
+      <span className="font-serif text-4xl text-[rgb(var(--sep-colour-4e402f))]">
+        ◇
+      </span>
+    </div>
+  )}
 
-        <div className="absolute inset-0 bg-gradient-to-t from-[rgb(var(--sep-colour-100c09))] via-transparent to-transparent" />
+  {product.category !== "music" ? (
+    <div className="absolute inset-0 bg-gradient-to-t from-[rgb(var(--sep-colour-100c09))] via-transparent to-transparent" />
+  ) : null}
 
-        <div className="absolute left-3 top-3 flex flex-wrap gap-2">
-          <span className="border border-[rgb(var(--sep-colour-80613b))]/60 bg-[rgb(var(--sep-colour-100c09))]/90 px-2 py-1 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-c6a979))]">
-            {CATEGORY_LABELS[product.category]}
-          </span>
+  <div className="absolute left-3 top-3 flex flex-wrap gap-2">
+    <span className="border border-[rgb(var(--sep-colour-80613b))]/60 bg-[rgb(var(--sep-colour-100c09))]/90 px-2 py-1 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-c6a979))]">
+      {CATEGORY_LABELS[product.category]}
+    </span>
 
-          {product.product_type === "bundle" ? (
-            <span className="border border-[rgb(var(--sep-colour-80613b))]/60 bg-[rgb(var(--sep-colour-100c09))]/90 px-2 py-1 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-c6a979))]">
-              Bundle
-            </span>
-          ) : null}
-        </div>
+    {product.product_type === "bundle" ? (
+      <span className="border border-[rgb(var(--sep-colour-80613b))]/60 bg-[rgb(var(--sep-colour-100c09))]/90 px-2 py-1 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-c6a979))]">
+        Bundle
+      </span>
+    ) : null}
+  </div>
 
-        {owned ? (
-          <span className="absolute right-3 top-3 border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-332719))] px-2 py-1 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd9aa))]">
-            Owned
-          </span>
-        ) : null}
-      </div>
+  {owned ? (
+    <span className="absolute right-3 top-3 border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-332719))] px-2 py-1 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd9aa))]">
+      Owned
+    </span>
+  ) : null}
+</div>
 
       <div className="flex flex-1 flex-col p-4">
         <h3 className="font-serif text-xl text-[rgb(var(--sep-colour-dec79d))]">
@@ -630,12 +665,7 @@ function StoreProductCard({
             "A premium unlock from the Sepulchria Store."}
         </p>
 
-        {product.category === "music" && musicPreviewUrl ? (
-          <StoreMusicPreview
-            src={musicPreviewUrl}
-            title={musicPreviewName}
-          />
-        ) : null}
+        
 
         {grantLabels.length ? (
           <div className="mt-3 border-t border-[rgb(var(--sep-colour-60482e))]/25 pt-3">
@@ -650,41 +680,16 @@ function StoreProductCard({
         ) : null}
 
         <div className="mt-auto pt-4">
-          <div className="flex flex-wrap items-center gap-2">
-            {moneyPrices.map((price) => (
-              <span
-                key={price.id}
-                className="border border-[rgb(var(--sep-colour-80613b))]/50 bg-[rgb(var(--sep-colour-21170f))] px-2.5 py-1.5 text-[9px] text-[rgb(var(--sep-colour-e2cda4))]"
-              >
-                {price.label}
-              </span>
-            ))}
-
-            {remnantPrices.map((price) => (
-              <span
-                key={`remnants-${price.id}`}
-                className="border border-[rgb(var(--sep-colour-80613b))]/50 bg-[rgb(var(--sep-colour-21170f))] px-2.5 py-1.5 text-[9px] text-[rgb(var(--sep-colour-e2cda4))]"
-              >
-                🝈 {price.amount} Remnants
-              </span>
-            ))}
-
-            {!moneyPrices.length &&
-            !remnantPrices.length ? (
-              <span className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
-                Price coming soon
-              </span>
-            ) : null}
-          </div>
+          
 
           {owned ? (
             <button
-              type="button"
-              disabled
-              className="mt-3 w-full cursor-default border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-756958))]"
-            >
-              Owned
-            </button>
+  type="button"
+  disabled
+  className="mt-0 w-full cursor-default border border-emerald-600/70 bg-emerald-950/60 px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-emerald-300"
+>
+  Owned
+</button>
           ) : (
             <>
               {remnantPrices.length ? (

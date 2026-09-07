@@ -54,7 +54,7 @@ export function StoreMusicPreview({
   };
 
   return (
-    <div className="mt-3 border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-15100d))] p-3">
+    <div className="w-full border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-15100d))] p-3">
       <audio
         ref={audioRef}
         src={src}

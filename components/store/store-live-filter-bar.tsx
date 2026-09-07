@@ -1,23 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
-type StoreFilterDetail = { query: string; category: string };
-
-function applyFilter(detail: StoreFilterDetail) {
-  const query = detail.query.trim().toLowerCase();
-  const category = detail.category;
-
-  document.querySelectorAll<HTMLElement>("[data-store-filter-card]").forEach((element) => {
-    const name = (element.dataset.storeName ?? "").toLowerCase();
-    const productCategory = element.dataset.storeCategory ?? "";
-    const matchesName = !query || name.includes(query);
-    const matchesCategory = category === "all" || productCategory === category;
-    element.hidden = !(matchesName && matchesCategory);
-  });
-
-  window.dispatchEvent(new CustomEvent("sepulchria:store-filter-state", { detail }));
-}
+import { useState } from "react";
 
 export function StoreLiveFilterBar({
   placeholder = "Search Store products...",
@@ -26,24 +9,41 @@ export function StoreLiveFilterBar({
 }) {
   const [query, setQuery] = useState("");
 
-  useEffect(() => {
-    const onExternal = (event: Event) => {
-      const detail = (event as CustomEvent<StoreFilterDetail>).detail;
-      if (detail && typeof detail.query === "string") setQuery(detail.query);
-    };
-    window.addEventListener("sepulchria:store-filter-request", onExternal);
-    return () => window.removeEventListener("sepulchria:store-filter-request", onExternal);
-  }, []);
+  function filterProducts(value: string) {
+    const search = value.trim().toLowerCase();
+
+    const storePage = document.querySelector<HTMLElement>(
+      "[data-store-page]",
+    );
+
+    if (!storePage) return;
+
+    const cards =
+      storePage.querySelectorAll<HTMLElement>(
+        "[data-store-filter-card]",
+      );
+
+    cards.forEach((card) => {
+      const productName = (
+        card.dataset.storeName ?? ""
+      ).toLowerCase();
+
+      const matches =
+        search === "" || productName.includes(search);
+
+      card.style.display = matches ? "" : "none";
+    });
+  }
 
   return (
     <input
       type="search"
       value={query}
       onChange={(event) => {
-        const detail = { query: event.target.value, category: "all" };
-        setQuery(detail.query);
-        applyFilter(detail);
-        window.dispatchEvent(new CustomEvent("sepulchria:store-filter-request", { detail }));
+        const value = event.target.value;
+
+        setQuery(value);
+        filterProducts(value);
       }}
       placeholder={placeholder}
       aria-label={placeholder}
