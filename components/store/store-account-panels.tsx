@@ -17,7 +17,7 @@ export async function StoreAccountPanels({ userId }: { userId: string }) {
   const admin = createAdminClient();
   const [ordersResult, issuedResult] = await Promise.all([
     admin.from("store_orders")
-      .select("id, status, payment_method, currency, subtotal_money_minor, discount_money_minor, total_money_minor, subtotal_remnants, discount_remnants, total_remnants, paddle_transaction_id, created_at, paid_at, fulfilled_at, refunded_at")
+      .select("id, status, payment_method, currency, subtotal_money_minor, discount_money_minor, total_money_minor, subtotal_remnants, discount_remnants, total_remnants, stripe_payment_intent_id, created_at, paid_at, fulfilled_at, refunded_at")
       .eq("user_id", userId).order("created_at", { ascending: false }).limit(50),
     admin.from("store_user_discount_codes")
       .select("id, discount_code_id, post_purchase_offer_id, source_order_id, code, expires_at, used_at, created_at")
@@ -110,14 +110,14 @@ export async function StoreAccountPanels({ userId }: { userId: string }) {
           <div className="max-h-[520px] overflow-y-auto border border-[rgb(var(--sep-colour-60482e))]/35">
             {orders.map((order) => {
               const names = itemNames.get(order.id) ?? ["Sepulchria Store purchase"];
-              const money = order.payment_method === "paddle";
+              const money = order.payment_method === "stripe";
               const total = money ? moneyLabel(Number(order.total_money_minor ?? 0), order.currency) : `🝈 ${Number(order.total_remnants ?? 0)} Remnants`;
               const discount = money ? Number(order.discount_money_minor ?? 0) : Number(order.discount_remnants ?? 0);
               return (
                 <div key={order.id} className="grid gap-2 border-b border-[rgb(var(--sep-colour-60482e))]/25 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 last:border-b-0 md:grid-cols-[minmax(0,1fr)_120px_130px_165px]">
                   <div className="min-w-0">
                     <p className="text-[10px] text-[rgb(var(--sep-colour-cab38d))]">{names.join(" · ")}</p>
-                    <p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">{money ? "Real money" : "Remnants"}{discount > 0 ? " · discount applied" : ""}{order.paddle_transaction_id ? ` · ${order.paddle_transaction_id}` : ""}</p>
+                    <p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">{money ? "Real money" : "Remnants"}{discount > 0 ? " · discount applied" : ""}{order.stripe_payment_intent_id ? ` · ${order.stripe_payment_intent_id}` : ""}</p>
                   </div>
                   <span className="text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a99578))]">{order.status.replaceAll("_", " ")}</span>
                   <span className="text-[10px] text-[rgb(var(--sep-colour-e2cda4))]">{total}</span>

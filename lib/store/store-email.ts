@@ -148,7 +148,7 @@ export async function sendStoreOrderReceiptEmail(orderId: string) {
     .join(", ");
 
   const amount =
-    order.payment_method === "paddle"
+    order.payment_method === "stripe"
       ? new Intl.NumberFormat("en-GB", {
           style: "currency",
           currency: order.currency || "GBP",

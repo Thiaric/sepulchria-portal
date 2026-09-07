@@ -33,7 +33,7 @@ export default async function AdminCosmeticsPage() {
         </h2>
         <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))]">
           Manage collectible visual treatments for character sheets and location chat.
-          Store pricing and Paddle fulfilment come later.
+          Store pricing and Stripe fulfilment are managed through the Store system.
         </p>
         <CosmeticsFeatureManager initialItems={(data ?? []) as CosmeticAdminRow[]} />
       </div>

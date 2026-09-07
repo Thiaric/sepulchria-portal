@@ -124,9 +124,9 @@ export default function PurchasesPage() {
               </h2>
               <div className="mt-2 space-y-3">
                 <p>
-                  Real-money purchases are processed through Paddle, which acts as Merchant of
-                  Record for Paddle-processed transactions. Paddle handles checkout and payment
-                  processing.
+                  Real-money purchases are processed through Stripe Managed Payments. Stripe acts
+                  as Merchant of Record for these transactions and handles checkout, payment
+                  processing and applicable transaction taxes.
                 </p>
                 <p>
                   Successful purchases are fulfilled digitally to the eligible Sepulchria account

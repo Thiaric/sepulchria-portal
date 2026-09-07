@@ -21,7 +21,6 @@ const PUBLIC_ROUTES = [
   "/api/auth",
   "/api/registration-applications",
   "/api/registration-invitations",
-  "/api/store/paddle/webhook",
   "/api/store/stripe/webhook",
   "/api/cron/store-abandoned-checkouts",
   "/manifest.webmanifest",

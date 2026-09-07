@@ -40,9 +40,9 @@ export default function RefundPolicyPage() {
           <div className="mt-8 space-y-4 text-sm leading-7 text-[rgb(var(--sep-colour-aa9c88))]">
             <Section title="1. Payment processor and Merchant of Record">
               <p>
-                Paddle processes Sepulchria real-money purchases and acts as Merchant of Record
-                for Paddle-processed transactions. Approved refunds are returned through Paddle
-                to the payment method used for the purchase.
+                Stripe Managed Payments processes Sepulchria real-money purchases, with Stripe
+                acting as Merchant of Record. Approved refunds are returned through Stripe to the
+                payment method used for the purchase.
               </p>
             </Section>
 
@@ -64,7 +64,7 @@ export default function RefundPolicyPage() {
             <Section title="3. Review of requests">
               <p>
                 Refund requests are reviewed in accordance with applicable consumer rights,
-                Paddle&apos;s buyer and refund rules, and the circumstances of the purchase.
+                Stripe&apos;s applicable Managed Payments and refund rules, and the circumstances of the purchase.
                 Submission of a request does not remove any mandatory rights you may have under
                 applicable law.
               </p>

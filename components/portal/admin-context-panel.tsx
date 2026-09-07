@@ -1913,7 +1913,7 @@ const ADMIN_NAVIGATION_ENTRIES: AdminNavigationEntry[] = [
   { section: "rooms", label: "Locations", href: "/admin/rooms", aliases: ["rooms"] },
   { section: "communication_logs", label: "Logs", href: "/admin/communication-logs", aliases: ["communication logs"] },
   { section: "market", label: "Market", href: "/admin/market" },
-  { section: "store", label: "Store", href: "/admin/store", aliases: ["shop", "commerce", "paddle"] },
+  { section: "store", label: "Store", href: "/admin/store", aliases: ["shop", "commerce", "stripe"] },
   { section: "media", label: "Media", href: "/admin/media" },
   { section: "music", label: "Music", href: "/admin/music" },
   { section: "notifications", label: "Notifications", href: "/admin/notifications", aliases: ["alerts", "bell"] },

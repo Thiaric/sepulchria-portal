@@ -35,7 +35,7 @@ export async function CharacterLedger({ characterId }: { characterId: string }) 
         "id, currency, total_money_minor, status, paid_at, refunded_at, created_at",
       )
       .eq("character_id", characterId)
-      .eq("payment_method", "paddle")
+      .eq("payment_method", "stripe")
       .in("status", ["fulfilled", "refunded", "partially_refunded"])
       .order("created_at", { ascending: false })
       .limit(250),

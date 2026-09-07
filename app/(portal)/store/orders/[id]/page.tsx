@@ -55,7 +55,7 @@ export default async function StoreReceiptPage({
     throw new Error(itemsError?.message ?? emailsError?.message ?? "Unable to load receipt.");
   }
 
-  const realMoney = order.payment_method === "paddle";
+  const realMoney = order.payment_method === "stripe";
   const subtotal = realMoney
     ? money(Number(order.subtotal_money_minor ?? 0), order.currency)
     : `${Number(order.subtotal_remnants ?? 0)} Remnants`;
@@ -89,11 +89,11 @@ export default async function StoreReceiptPage({
         <div className="mt-5 grid gap-3 text-xs sm:grid-cols-2">
           <p><span className="text-[rgb(var(--sep-colour-756958))]">Order:</span> {order.id}</p>
           <p><span className="text-[rgb(var(--sep-colour-756958))]">Status:</span> {String(order.status).replaceAll("_", " ")}</p>
-          <p><span className="text-[rgb(var(--sep-colour-756958))]">Payment:</span> {realMoney ? "Paddle" : "Remnants"}</p>
+          <p><span className="text-[rgb(var(--sep-colour-756958))]">Payment:</span> {realMoney ? "Stripe" : "Remnants"}</p>
           <p><span className="text-[rgb(var(--sep-colour-756958))]">Date:</span> {new Date(order.paid_at ?? order.created_at).toLocaleString("en-GB")}</p>
-          {order.paddle_transaction_id ? (
+          {order.stripe_payment_intent_id ? (
             <p className="sm:col-span-2 break-all">
-              <span className="text-[rgb(var(--sep-colour-756958))]">Paddle transaction:</span> {order.paddle_transaction_id}
+              <span className="text-[rgb(var(--sep-colour-756958))]">Stripe payment:</span> {order.stripe_payment_intent_id}
             </p>
           ) : null}
         </div>

@@ -334,7 +334,7 @@ export default async function AdminStorePage() {
                             <span className={label}>Remnants</span>
                             <input name="remnants_amount" type="number" min="0" className={field} />
                           </label>
-                          <div className="border border-[rgb(var(--sep-colour-60482e))]/25 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[9px] text-[rgb(var(--sep-colour-756958))]">Paddle IDs are created and maintained automatically.</div>
+                          <div className="border border-[rgb(var(--sep-colour-60482e))]/25 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[9px] text-[rgb(var(--sep-colour-756958))]">Stripe IDs are created and maintained automatically.</div>
                           <div className="sm:col-span-2">
                             <button className={button}>Save price</button>
                           </div>
