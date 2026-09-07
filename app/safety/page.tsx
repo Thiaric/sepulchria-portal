@@ -16,8 +16,8 @@ export default function SafetyPage() {
         className="min-h-screen bg-[rgb(var(--sep-colour-090706))] px-5 py-12 text-[rgb(var(--sep-colour-d8cbb5))]"
       >
         <article className="mx-auto max-w-4xl border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-110d0a))] p-6 sm:p-10">
-          <Link href="/homepage" className="text-[10px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-b08b59))]">← Homepage</Link>
-          <p className="mt-8 text-[9px] uppercase tracking-[0.35em] text-[rgb(var(--sep-colour-876a46))]">Sepulchria · Community & Safety</p>
+          
+          <p className="mt-1 text-[9px] uppercase tracking-[0.35em] text-[rgb(var(--sep-colour-876a46))]">Sepulchria · Community & Safety</p>
           <h1 className="mt-3 font-serif text-4xl text-[rgb(var(--sep-colour-e5cfa6))]">Safety & Reporting</h1>
           <p className="mt-3 text-xs text-[rgb(var(--sep-colour-7f7466))]">Effective: 24 August 2026</p>
 
@@ -36,7 +36,6 @@ export default function SafetyPage() {
             <Section title="Immediate danger"><p>Sepulchria is not an emergency service. If you believe someone is in immediate real-world danger, contact the appropriate emergency service in your location rather than waiting for a response from Sepulchria.</p></Section>
             <Section title="Community standards"><p>Our Community Rules contain the detailed rules on prohibited content, harassment, sexual content, consent, minors, harmful content and enforcement.</p><Link href="/community-rules" className="inline-block text-[rgb(var(--sep-colour-d2ae78))] underline">Read the Community Rules →</Link></Section>
           </div>
-          <PolicyFooter />
         </article>
       </main>
     </>

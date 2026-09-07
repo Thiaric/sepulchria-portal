@@ -270,24 +270,7 @@ export default function CommunityRulesPage() {
           <span>Sepulchria Community Rules · Version 1.0</span>
 
           <div className="flex flex-wrap gap-4">
-            <Link
-              href="/terms"
-              className="transition hover:text-[rgb(var(--sep-colour-d0aa72))]"
-            >
-              Terms
-            </Link>
-            <Link
-              href="/privacy"
-              className="transition hover:text-[rgb(var(--sep-colour-d0aa72))]"
-            >
-              Privacy
-            </Link>
-            <Link
-              href="/homepage"
-              className="transition hover:text-[rgb(var(--sep-colour-d0aa72))]"
-            >
-              Homepage
-            </Link>
+            
           </div>
         </footer>
                   </div>

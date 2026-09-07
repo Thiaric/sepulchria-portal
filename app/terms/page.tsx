@@ -69,7 +69,7 @@ export default function TermsPage() {
 }
 
 function PolicyHeader({ eyebrow, title, effective }: { eyebrow: string; title: string; effective: string }) {
-  return <header><Link href="/homepage" className="text-[10px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-b08b59))] hover:text-[rgb(var(--sep-colour-e2bf88))]">← Homepage</Link><p className="mt-8 text-[9px] uppercase tracking-[0.35em] text-[rgb(var(--sep-colour-876a46))]">{eyebrow}</p><h1 className="mt-3 font-serif text-4xl text-[rgb(var(--sep-colour-e5cfa6))]">{title}</h1><p className="mt-3 text-xs text-[rgb(var(--sep-colour-7f7466))]">Effective: {effective}</p></header>;
+  return <header><p className="mt-1 text-[9px] uppercase tracking-[0.35em] text-[rgb(var(--sep-colour-876a46))]">{eyebrow}</p><h1 className="mt-3 font-serif text-4xl text-[rgb(var(--sep-colour-e5cfa6))]">{title}</h1><p className="mt-3 text-xs text-[rgb(var(--sep-colour-7f7466))]">Effective: {effective}</p></header>;
 }
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -84,5 +84,5 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   );
 }
 function PolicyFooter() {
-  return <footer className="mt-10 flex flex-wrap gap-x-5 gap-y-2 border-t border-[rgb(var(--sep-colour-60482e))]/40 pt-5 text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-8e7b61))]"><Link href="/purchases">Optional Purchases</Link><Link href="/refund-policy">Refund Policy</Link><Link href="/community-rules">Community Rules</Link><Link href="/safety">Safety</Link><Link href="/age-policy">Age Policy</Link><Link href="/privacy">Privacy</Link><Link href="/cookies">Cookies</Link></footer>;
+  return <footer className="mt-10 flex flex-wrap gap-x-5 gap-y-2 border-t border-[rgb(var(--sep-colour-60482e))]/40 pt-5 text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-8e7b61))]"></footer>;
 }

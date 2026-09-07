@@ -51,12 +51,7 @@ export default function PurchasesPage() {
         className="min-h-screen bg-[rgb(var(--sep-colour-090706))] px-5 py-12 text-[rgb(var(--sep-colour-d8cbb5))]"
       >
         <article className="mx-auto max-w-4xl border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-110d0a))] p-6 shadow-[0_24px_80px_rgba(var(--sep-rgb-0-0-0),.45)] sm:p-10">
-          <Link
-            href="/homepage"
-            className="text-[10px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-b08b59))] hover:text-[rgb(var(--sep-colour-e2bf88))]"
-          >
-            ← Homepage
-          </Link>
+          
 
           <p className="mt-8 text-[9px] uppercase tracking-[0.35em] text-[rgb(var(--sep-colour-876a46))]">
             Sepulchria · Optional Purchases
@@ -169,12 +164,7 @@ export default function PurchasesPage() {
             </section>
           </div>
 
-          <footer className="mt-10 flex flex-wrap gap-x-5 gap-y-2 border-t border-[rgb(var(--sep-colour-60482e))]/40 pt-5 text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-8e7b61))]">
-            <Link href="/terms">Terms</Link>
-            <Link href="/refund-policy">Refund Policy</Link>
-            <Link href="/privacy">Privacy</Link>
-            <Link href="/cookies">Cookies</Link>
-          </footer>
+          
         </article>
       </main>
     </>
