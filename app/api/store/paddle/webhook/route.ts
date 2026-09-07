@@ -7,6 +7,7 @@ import {
   sendStoreRefundEmail,
 } from "@/lib/store/store-email";
 import { storeDestinationForCategory } from "@/lib/store/store-destination";
+import { issueStorePostPurchaseOffersAndNotify } from "@/lib/store/post-purchase-offers";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export const runtime = "nodejs";
@@ -153,7 +154,20 @@ export async function POST(request: Request) {
 
   if (order.status === "fulfilled") {
     await admin.rpc("finalize_store_discount_redemption", { p_order_id: orderId });
-    await admin.rpc("issue_store_post_purchase_offers", { p_order_id: orderId });
+
+    try {
+      await issueStorePostPurchaseOffersAndNotify({
+        orderId,
+        characterId: order.character_id,
+        userId: order.user_id,
+      });
+    } catch (offerError) {
+      console.error(
+        "Store order was already fulfilled, but post-purchase rewards could not be processed:",
+        offerError,
+      );
+    }
+
     return NextResponse.json({ ok: true });
   }
 
@@ -179,6 +193,19 @@ export async function POST(request: Request) {
 
   const { error: fulfilError } = await admin.rpc("fulfil_store_order", { p_order_id: orderId });
   if (fulfilError) return NextResponse.json({ error: fulfilError.message }, { status: 500 });
+
+  try {
+    await issueStorePostPurchaseOffersAndNotify({
+      orderId,
+      characterId: order.character_id,
+      userId: order.user_id,
+    });
+  } catch (offerError) {
+    console.error(
+      "Store purchase was fulfilled, but post-purchase rewards could not be processed:",
+      offerError,
+    );
+  }
 
   const { data: item } = await admin
     .from("store_order_items")

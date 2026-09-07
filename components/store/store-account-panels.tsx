@@ -28,8 +28,13 @@ export async function StoreAccountPanels({ userId }: { userId: string }) {
     throw new Error(ordersResult.error?.message ?? issuedResult.error?.message ?? "Unable to load Store account history.");
   }
 
-  const orders = ordersResult.data ?? [];
+  const allOrders = ordersResult.data ?? [];
   const issued = issuedResult.data ?? [];
+  const pendingCutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
+  const orders = allOrders.filter((order) => {
+    if (order.status !== "pending") return true;
+    return new Date(order.created_at).getTime() >= pendingCutoff;
+  });
   const orderIds = orders.map((order) => order.id);
   const discountIds = [...new Set(issued.map((row) => row.discount_code_id))];
   const offerIds = [...new Set(issued.map((row) => row.post_purchase_offer_id).filter(Boolean))] as string[];
@@ -55,9 +60,10 @@ export async function StoreAccountPanels({ userId }: { userId: string }) {
   return (
     <>
       {issued.length ? (
-        <section className="mt-7 border border-[rgb(var(--sep-colour-987344))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4">
-          <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-8c704b))]">Your offers</p>
-          <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">Post-purchase rewards</h2>
+        <section className="mb-4 border border-[rgb(var(--sep-colour-c69b5c))]/70 bg-[rgb(var(--sep-colour-21170f))] p-4 shadow-[0_0_18px_rgba(var(--sep-rgb-198-155-92),0.08)] sm:p-5">
+          <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-c69b5c))]">Unlocked Store reward</p>
+          <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-efd9aa))]">Your private discount codes</h2>
+          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-a99b89))]">These codes were unlocked by your purchases. Use them in the discount-code field on an eligible Store item before they expire.</p>
           <div className="mt-3 grid gap-2 md:grid-cols-2">
             {issued.map((row) => {
               const discount = discountById.get(row.discount_code_id);
@@ -77,11 +83,21 @@ export async function StoreAccountPanels({ userId }: { userId: string }) {
         </section>
       ) : null}
 
-      <section className="mt-7 border-t border-[rgb(var(--sep-colour-60482e))]/35 pt-5">
-        <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-8c704b))]">Purchase history</p>
-        <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">Orders & receipts</h2>
+      <details className="mb-5 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))]">
+        <summary className="cursor-pointer px-4 py-3 sm:px-5">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-8c704b))]">Purchase history</p>
+              <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">Orders & receipts</h2>
+            </div>
+            <span className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
+              {orders.length} shown - pending retained 7 days
+            </span>
+          </div>
+        </summary>
+        <div className="border-t border-[rgb(var(--sep-colour-60482e))]/30 p-3 sm:p-4">
         {orders.length ? (
-          <div className="mt-3 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/35">
+          <div className="max-h-[520px] overflow-y-auto border border-[rgb(var(--sep-colour-60482e))]/35">
             {orders.map((order) => {
               const names = itemNames.get(order.id) ?? ["Sepulchria Store purchase"];
               const money = order.payment_method === "paddle";
@@ -103,8 +119,9 @@ export async function StoreAccountPanels({ userId }: { userId: string }) {
               );
             })}
           </div>
-        ) : <p className="mt-3 text-[10px] text-[rgb(var(--sep-colour-756958))]">No Store orders yet.</p>}
-      </section>
+        ) : <p className="text-[10px] text-[rgb(var(--sep-colour-756958))]">No Store orders yet.</p>}
+        </div>
+      </details>
     </>
   );
 }

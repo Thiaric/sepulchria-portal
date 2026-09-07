@@ -368,6 +368,8 @@ export default async function StorePage() {
         </header>
 
         <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-4 sm:p-5">
+          <StoreAccountPanels userId={user.id} />
+
           {featured.length > 0 ? (
             <section>
               <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-8c704b))]">
@@ -448,7 +450,6 @@ export default async function StorePage() {
             )}
           </section>
 
-          <StoreAccountPanels userId={user.id} />
         </div>
       </section>
     </main>

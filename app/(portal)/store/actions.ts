@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { createPremiumFeatureGrantNotification } from "@/lib/premium-features/notifications";
 import { storeDestinationForCategory } from "@/lib/store/store-destination";
+import { issueStorePostPurchaseOffersAndNotify } from "@/lib/store/post-purchase-offers";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { ensureStorePriceReadyForCheckout } from "@/lib/store/paddle-server";
 import { createClient } from "@/lib/supabase/server";
@@ -56,6 +57,24 @@ export async function purchaseStoreProductWithRemnants(
 
   if (error) return { ok: false, error: error.message, orderId: null };
 
+  const completedOrderId =
+    typeof data === "string" ? data : String(data ?? "");
+
+  if (completedOrderId) {
+    try {
+      await issueStorePostPurchaseOffersAndNotify({
+        orderId: completedOrderId,
+        characterId: characterResult.data.id,
+        userId: user.id,
+      });
+    } catch (offerError) {
+      console.error(
+        "Remnants Store purchase succeeded, but post-purchase rewards could not be processed:",
+        offerError,
+      );
+    }
+  }
+
   try {
     await createPremiumFeatureGrantNotification({
       characterId: characterResult.data.id,
@@ -87,7 +106,7 @@ export async function purchaseStoreProductWithRemnants(
   return {
     ok: true,
     error: null,
-    orderId: typeof data === "string" ? data : String(data ?? ""),
+    orderId: completedOrderId,
   };
 }
 
