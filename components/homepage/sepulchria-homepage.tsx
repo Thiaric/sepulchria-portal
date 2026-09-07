@@ -250,7 +250,7 @@ export function SepulchriaHomepage({
             DESKTOP:
             Navigation | Video | First Pages
         */}
-        <section className="grid flex-1 items-center gap-4 py-5 lg:min-h-0 lg:grid-cols-[230px_auto_285px] lg:justify-center lg:gap-6 lg:py-3 xl:grid-cols-[245px_auto_305px] xl:gap-7">
+        <section className="grid flex-1 items-center gap-4 py-5 lg:min-h-0 lg:grid-cols-[285px_auto_285px] lg:justify-center lg:gap-6 lg:py-3 xl:grid-cols-[305px_auto_305px] xl:gap-7">
           {/* VIDEO — first on mobile; centred and fully contained on desktop */}
           <section className="order-1 flex min-h-0 min-w-0 items-center justify-center lg:order-2 lg:h-full">
             <div className="relative flex min-h-0 max-h-[72dvh] w-full items-center justify-center lg:h-full lg:max-h-full">
@@ -278,7 +278,7 @@ export function SepulchriaHomepage({
 
           {/* Navigation — second on mobile */}
           <aside className="order-2 min-w-0 lg:order-1">
-            <div className="relative border border-[rgb(var(--sep-colour-6b5032))]/45 bg-[rgb(var(--sep-colour-110c09))]/84 p-3 shadow-[0_18px_60px_rgba(var(--sep-rgb-0-0-0),0.38)] backdrop-blur-sm">
+            <div className="relative border border-[rgb(var(--sep-colour-6b5032))]/45 bg-[rgb(var(--sep-colour-110c09))]/84 p-3 shadow-[0_18px_60px_rgba(var(--sep-rgb-0-0-0),0.38)] backdrop-blur-sm lg:min-h-[405px] xl:min-h-[430px]">
               <div className="pointer-events-none absolute inset-1 border border-[rgb(var(--sep-colour-9a7547))]/10" />
 
               <div className="relative mb-3 text-center">
