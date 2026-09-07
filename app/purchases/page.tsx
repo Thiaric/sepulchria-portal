@@ -53,7 +53,7 @@ export default function PurchasesPage() {
         <article className="mx-auto max-w-4xl border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-110d0a))] p-6 shadow-[0_24px_80px_rgba(var(--sep-rgb-0-0-0),.45)] sm:p-10">
           
 
-          <p className="mt-8 text-[9px] uppercase tracking-[0.35em] text-[rgb(var(--sep-colour-876a46))]">
+          <p className="mt-1 text-[9px] uppercase tracking-[0.35em] text-[rgb(var(--sep-colour-876a46))]">
             Sepulchria · Optional Purchases
           </p>
 

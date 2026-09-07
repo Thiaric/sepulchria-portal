@@ -362,7 +362,7 @@ export function SepulchriaHomepage({
 
               <div className="relative text-center">
                 <p className="text-[8px] uppercase tracking-[0.34em] text-[rgb(var(--sep-colour-80684c))]">
-                  The First Pages
+                  The First Steps
                 </p>
 
                 <div className="mx-auto mt-2 h-px w-20 bg-gradient-to-r from-transparent via-[rgb(var(--sep-colour-89653b))] to-transparent" />
