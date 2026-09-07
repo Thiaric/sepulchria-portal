@@ -283,60 +283,47 @@ export default async function StorePage() {
     musicTracks.map((track) => [track.id, track.name]),
   );
 
-  const grantOwned = (grant: StoreGrant) => {
-    if (
-      grant.grant_type === "portal_skin" &&
-      grant.portal_skin_id
-    ) {
-      return ownedSkinIds.has(grant.portal_skin_id);
-    }
-
-    if (
-      grant.grant_type === "cosmetic" &&
-      grant.cosmetic_item_id
-    ) {
-      return ownedCosmeticIds.has(grant.cosmetic_item_id);
-    }
-
-    if (
-      grant.grant_type === "music" &&
-      grant.music_track_id
-    ) {
-      return ownedMusicIds.has(grant.music_track_id);
-    }
-
-    if (
-      grant.grant_type === "feature" &&
-      grant.feature_key
-    ) {
-      return ownedFeatures.has(grant.feature_key);
-    }
-
-    return false;
-  };
-
   const productOwned = (productId: string) => {
     const productGrants = grants.filter(
       (grant) => grant.product_id === productId,
     );
 
-    return (
-      productGrants.length > 0 &&
-      productGrants.every(grantOwned)
-    );
+    if (productGrants.length === 0) {
+      return false;
+    }
+
+    return productGrants.every((grant) => {
+      if (
+        grant.grant_type === "portal_skin" &&
+        grant.portal_skin_id
+      ) {
+        return ownedSkinIds.has(grant.portal_skin_id);
+      }
+
+      if (
+        grant.grant_type === "cosmetic" &&
+        grant.cosmetic_item_id
+      ) {
+        return ownedCosmeticIds.has(grant.cosmetic_item_id);
+      }
+
+      if (
+        grant.grant_type === "music" &&
+        grant.music_track_id
+      ) {
+        return ownedMusicIds.has(grant.music_track_id);
+      }
+
+      if (
+        grant.grant_type === "feature" &&
+        grant.feature_key
+      ) {
+        return ownedFeatures.has(grant.feature_key);
+      }
+
+      return false;
+    });
   };
-
-  const ownedGrantCountForProduct = (productId: string) =>
-    grants.filter(
-      (grant) =>
-        grant.product_id === productId &&
-        grantOwned(grant),
-    ).length;
-
-  const grantCountForProduct = (productId: string) =>
-    grants.filter(
-      (grant) => grant.product_id === productId,
-    ).length;
 
   const featured = products.filter(
     (product) => product.is_featured,
@@ -431,8 +418,6 @@ export default async function StorePage() {
                         grant.product_id === product.id,
                     )}
                     owned={productOwned(product.id)}
-                    ownedGrantCount={ownedGrantCountForProduct(product.id)}
-                    totalGrantCount={grantCountForProduct(product.id)}
                     skinNames={skinNames}
                     skinDetails={skinDetails}
                     cosmeticNames={cosmeticNames}
@@ -474,8 +459,6 @@ export default async function StorePage() {
                         grant.product_id === product.id,
                     )}
                     owned={productOwned(product.id)}
-                    ownedGrantCount={ownedGrantCountForProduct(product.id)}
-                    totalGrantCount={grantCountForProduct(product.id)}
                     skinNames={skinNames}
                     skinDetails={skinDetails}
                     cosmeticNames={cosmeticNames}
@@ -504,8 +487,6 @@ function StoreProductCard({
   prices,
   grants,
   owned,
-  ownedGrantCount,
-  totalGrantCount,
   skinNames,
   skinDetails,
   cosmeticNames,
@@ -517,8 +498,6 @@ function StoreProductCard({
   prices: StorePrice[];
   grants: StoreGrant[];
   owned: boolean;
-  ownedGrantCount: number;
-  totalGrantCount: number;
   skinNames: Map<string, string>;
   skinDetails: Map<string, Skin>;
   cosmeticNames: Map<string, string>;
@@ -592,63 +571,18 @@ function StoreProductCard({
     return "Premium unlock";
   });
 
-  const isPartiallyOwnedBundle =
-    product.product_type === "bundle" &&
-    totalGrantCount > 0 &&
-    ownedGrantCount > 0 &&
-    ownedGrantCount < totalGrantCount;
-
-  const bundleOwnershipDiscountPercent =
-    isPartiallyOwnedBundle
-      ? (ownedGrantCount / totalGrantCount) * 100
-      : 0;
-
-  const bundleOwnershipDiscountLabel =
-    Number.isInteger(bundleOwnershipDiscountPercent)
-      ? bundleOwnershipDiscountPercent.toFixed(0)
-      : bundleOwnershipDiscountPercent.toFixed(1);
-
-  const moneyPrices = prices.flatMap((price) => {
-    if (
-      price.money_amount_minor === null ||
-      !price.currency
-    ) {
-      return [];
-    }
-
-    const originalAmountMinor = price.money_amount_minor;
-    const adjustedAmountMinor = isPartiallyOwnedBundle
-      ? Math.max(
-          0,
-          originalAmountMinor -
-            Math.round(
-              (originalAmountMinor * ownedGrantCount) /
-                totalGrantCount,
-            ),
-        )
-      : originalAmountMinor;
-
-    const label = moneyLabel(
-      adjustedAmountMinor,
-      price.currency,
+  const moneyPrices = prices
+    .map((price) => ({
+      id: price.id,
+      label: moneyLabel(
+        price.money_amount_minor,
+        price.currency,
+      ),
+    }))
+    .filter(
+      (price): price is { id: string; label: string } =>
+        Boolean(price.label),
     );
-    const originalLabel = moneyLabel(
-      originalAmountMinor,
-      price.currency,
-    );
-
-    if (!label || !originalLabel) {
-      return [];
-    }
-
-    return [
-      {
-        id: price.id,
-        label,
-        originalLabel,
-      },
-    ];
-  });
 
   const remnantPrices = prices
     .filter(
@@ -746,37 +680,7 @@ function StoreProductCard({
         ) : null}
 
         <div className="mt-auto pt-4">
-
-          {isPartiallyOwnedBundle && moneyPrices[0] ? (
-
-            <div className="mb-2 border border-[rgb(var(--sep-colour-80613b))]/45 bg-[rgb(var(--sep-colour-17120f))] px-3 py-2">
-
-              <p className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-c6a979))]">
-
-                Bundle ownership discount · {ownedGrantCount}/{totalGrantCount} already owned · {bundleOwnershipDiscountLabel}% off
-
-              </p>
-
-              <p className="mt-1 text-[10px] text-[rgb(var(--sep-colour-d7c4a5))]">
-
-                <span className="mr-2 text-[rgb(var(--sep-colour-756958))] line-through">
-
-                  {moneyPrices[0].originalLabel}
-
-                </span>
-
-                <span className="font-semibold text-[rgb(var(--sep-colour-efd9aa))]">
-
-                  {moneyPrices[0].label}
-
-                </span>
-
-              </p>
-
-            </div>
-
-          ) : null}
-
+          
 
           {owned ? (
             <button

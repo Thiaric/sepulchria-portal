@@ -181,6 +181,147 @@ export async function startStorePaddleCheckout(
   const product = productResult.data;
   const price = priceResult.data;
   const character = characterResult.data;
+  const allGrants = grantsResult.data ?? [];
+
+  const [
+    skinEntitlementsResult,
+    cosmeticEntitlementsResult,
+    musicEntitlementsResult,
+    featureEntitlementsResult,
+  ] = await Promise.all([
+    admin
+      .from("user_portal_skin_entitlements")
+      .select("skin_id")
+      .eq("user_id", user.id)
+      .eq("enabled", true),
+    admin
+      .from("character_cosmetic_entitlements")
+      .select("cosmetic_item_id")
+      .eq("character_id", character.id)
+      .eq("enabled", true),
+    admin
+      .from("character_music_entitlements")
+      .select("music_track_id")
+      .eq("character_id", character.id)
+      .eq("enabled", true),
+    admin
+      .from("character_feature_entitlements")
+      .select("feature_key")
+      .eq("character_id", character.id)
+      .eq("enabled", true),
+  ]);
+
+  for (const result of [
+    skinEntitlementsResult,
+    cosmeticEntitlementsResult,
+    musicEntitlementsResult,
+    featureEntitlementsResult,
+  ]) {
+    if (result.error) {
+      return {
+        ok: false,
+        error: result.error.message,
+        checkoutUrl: null,
+        transactionId: null,
+        customerEmail: null,
+      };
+    }
+  }
+
+  const ownedSkinIds = new Set(
+    (skinEntitlementsResult.data ?? []).map(
+      (entry) => entry.skin_id,
+    ),
+  );
+  const ownedCosmeticIds = new Set(
+    (cosmeticEntitlementsResult.data ?? []).map(
+      (entry) => entry.cosmetic_item_id,
+    ),
+  );
+  const ownedMusicIds = new Set(
+    (musicEntitlementsResult.data ?? []).map(
+      (entry) => entry.music_track_id,
+    ),
+  );
+  const ownedFeatures = new Set(
+    (featureEntitlementsResult.data ?? []).map(
+      (entry) => entry.feature_key,
+    ),
+  );
+
+  const grantIsOwned = (grant: (typeof allGrants)[number]) => {
+    if (
+      grant.grant_type === "portal_skin" &&
+      grant.portal_skin_id
+    ) {
+      return ownedSkinIds.has(grant.portal_skin_id);
+    }
+
+    if (
+      grant.grant_type === "cosmetic" &&
+      grant.cosmetic_item_id
+    ) {
+      return ownedCosmeticIds.has(grant.cosmetic_item_id);
+    }
+
+    if (
+      grant.grant_type === "music" &&
+      grant.music_track_id
+    ) {
+      return ownedMusicIds.has(grant.music_track_id);
+    }
+
+    if (
+      grant.grant_type === "feature" &&
+      grant.feature_key
+    ) {
+      return ownedFeatures.has(grant.feature_key);
+    }
+
+    return false;
+  };
+
+  const missingGrants = allGrants.filter(
+    (grant) => !grantIsOwned(grant),
+  );
+
+  if (missingGrants.length === 0) {
+    return {
+      ok: false,
+      error: "You already own everything included in this product.",
+      checkoutUrl: null,
+      transactionId: null,
+      customerEmail: null,
+    };
+  }
+
+  const bundleItemCount =
+    product.product_type === "bundle"
+      ? allGrants.length
+      : 0;
+  const ownedBundleItemCount =
+    product.product_type === "bundle"
+      ? allGrants.length - missingGrants.length
+      : 0;
+
+  const baseMoneyMinor = Number(
+    price.money_amount_minor ?? 0,
+  );
+
+  const ownershipDiscountMoneyMinor =
+    bundleItemCount > 0 &&
+    ownedBundleItemCount > 0
+      ? Math.round(
+          (baseMoneyMinor * ownedBundleItemCount) /
+            bundleItemCount,
+        )
+      : 0;
+
+  const ownershipAdjustedSubtotalMoneyMinor =
+    Math.max(
+      0,
+      baseMoneyMinor - ownershipDiscountMoneyMinor,
+    );
 
   let syncedPaddlePriceId: string;
   try {
@@ -196,14 +337,6 @@ export async function startStorePaddleCheckout(
     };
   }
 
-  const { data: allOwned, error: allOwnedError } = await admin.rpc("store_product_all_owned", {
-    p_user_id: user.id,
-    p_character_id: character.id,
-    p_product_id: product.id,
-  });
-  if (allOwnedError) return { ok: false, error: allOwnedError.message, checkoutUrl: null, transactionId: null, customerEmail: null };
-  if (allOwned === true) return { ok: false, error: "You already own everything included in this product.", checkoutUrl: null, transactionId: null, customerEmail: null };
-
   let discount: { discount_code_id: string; user_discount_code_id: string | null; discount_type: "percentage" | "fixed_money"; discount_value: number; discount_money_minor: number } | null = null;
   if (discountCode) {
     const { data: discountRows, error: discountError } = await admin.rpc("resolve_store_discount", {
@@ -211,7 +344,7 @@ export async function startStorePaddleCheckout(
       p_product_id: product.id,
       p_code: discountCode,
       p_payment_method: "paddle",
-      p_subtotal_money_minor: price.money_amount_minor,
+      p_subtotal_money_minor: ownershipAdjustedSubtotalMoneyMinor,
       p_subtotal_remnants: 0,
       p_currency: price.currency,
     });
@@ -226,8 +359,24 @@ export async function startStorePaddleCheckout(
       discount_money_minor: number;
     };
   }
-  const discountMoneyMinor = Number(discount?.discount_money_minor ?? 0);
-  const expectedTotalMoneyMinor = Math.max(0, Number(price.money_amount_minor) - discountMoneyMinor);
+  const codeDiscountMoneyMinor = Math.min(
+    ownershipAdjustedSubtotalMoneyMinor,
+    Math.max(
+      0,
+      Number(discount?.discount_money_minor ?? 0),
+    ),
+  );
+
+  const discountMoneyMinor = Math.min(
+    baseMoneyMinor,
+    ownershipDiscountMoneyMinor +
+      codeDiscountMoneyMinor,
+  );
+
+  const expectedTotalMoneyMinor = Math.max(
+    0,
+    baseMoneyMinor - discountMoneyMinor,
+  );
 
   const { data: order, error: orderError } = await admin
     .from("store_orders")
@@ -237,7 +386,7 @@ export async function startStorePaddleCheckout(
       status: "pending",
       payment_method: "paddle",
       currency: price.currency,
-      subtotal_money_minor: price.money_amount_minor,
+      subtotal_money_minor: baseMoneyMinor,
       discount_money_minor: discountMoneyMinor,
       total_money_minor: expectedTotalMoneyMinor,
       subtotal_remnants: 0,
@@ -263,8 +412,8 @@ export async function startStorePaddleCheckout(
       product_type_snapshot: product.product_type,
       category_snapshot: product.category,
       quantity: 1,
-      unit_money_minor_snapshot: price.money_amount_minor,
-      total_money_minor_snapshot: price.money_amount_minor,
+      unit_money_minor_snapshot: baseMoneyMinor,
+      total_money_minor_snapshot: baseMoneyMinor,
       unit_remnants_snapshot: null,
       total_remnants_snapshot: null,
     })
@@ -276,7 +425,9 @@ export async function startStorePaddleCheckout(
     return { ok: false, error: itemError?.message ?? "Unable to create Store order item.", checkoutUrl: null, transactionId: null, customerEmail: null };
   }
 
-  const snapshots = (grantsResult.data ?? []).map((grant) => ({
+  // Snapshot only entitlements the buyer does not already own.
+  // This also prevents a refund from touching a pre-owned entitlement.
+  const snapshots = missingGrants.map((grant) => ({
     order_id: order.id,
     order_item_id: item.id,
     grant_type: grant.grant_type,
@@ -305,18 +456,22 @@ export async function startStorePaddleCheckout(
     },
     body: JSON.stringify({
       items: [{ price_id: syncedPaddlePriceId, quantity: 1 }],
-      ...(discount?.discount_type === "fixed_money"
-        ? { currency_code: String(price.currency).toUpperCase() }
-        : {}),
-      ...(discount
+      ...(discountMoneyMinor > 0
         ? {
+            currency_code: String(price.currency).toUpperCase(),
             discount: {
-              type:
-                discount.discount_type === "percentage"
-                  ? "percentage"
-                  : "flat",
-              description: `Sepulchria Store code ${discountCode.toUpperCase()}`,
-              amount: String(discount.discount_value),
+              type: "flat",
+              description: [
+                ownershipDiscountMoneyMinor > 0
+                  ? `Bundle ownership ${ownedBundleItemCount}/${bundleItemCount}`
+                  : null,
+                discount
+                  ? `Store code ${discountCode.toUpperCase()}`
+                  : null,
+              ]
+                .filter(Boolean)
+                .join(" + "),
+              amount: String(discountMoneyMinor),
             },
           }
         : {}),
