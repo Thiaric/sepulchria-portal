@@ -225,6 +225,14 @@ export async function syncStoreProductToPaddle(
 
     let paddlePriceId = currentPriceId(price);
 
+    const unitPriceOverrides = (overrides ?? []).map((override) => ({
+      country_codes: override.country_codes,
+      unit_price: {
+        amount: String(override.money_amount_minor),
+        currency_code: String(override.currency).toUpperCase(),
+      },
+    }));
+
     const pricePayload = {
       description: `Sepulchria Store · ${product.name} · ${price.currency}`,
       name: `${product.name} · ${price.currency}`,
@@ -232,13 +240,9 @@ export async function syncStoreProductToPaddle(
         amount: String(price.money_amount_minor),
         currency_code: String(price.currency).toUpperCase(),
       },
-      unit_price_overrides: (overrides ?? []).map((override) => ({
-        country_codes: override.country_codes,
-        unit_price: {
-          amount: String(override.money_amount_minor),
-          currency_code: String(override.currency).toUpperCase(),
-        },
-      })),
+      ...(unitPriceOverrides.length
+        ? { unit_price_overrides: unitPriceOverrides }
+        : {}),
       tax_mode: "account_setting",
       quantity: { minimum: 1, maximum: 1 },
       status: price.is_active ? "active" : "archived",
@@ -261,7 +265,15 @@ export async function syncStoreProductToPaddle(
             method: "POST",
             body: JSON.stringify({
               product_id: paddleProductId,
-              ...pricePayload,
+              description: pricePayload.description,
+              name: pricePayload.name,
+              unit_price: pricePayload.unit_price,
+              ...(unitPriceOverrides.length
+                ? { unit_price_overrides: unitPriceOverrides }
+                : {}),
+              tax_mode: pricePayload.tax_mode,
+              quantity: pricePayload.quantity,
+              custom_data: pricePayload.custom_data,
             }),
           },
         );

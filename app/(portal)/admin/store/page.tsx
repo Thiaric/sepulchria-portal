@@ -1,3 +1,4 @@
+import { AdminActionForm } from "@/components/admin/admin-action-ui";
 import { StoreLiveFilterBar } from "@/components/store/store-live-filter-bar";
 import { StorePostPurchaseOffersAdmin } from "@/components/admin/store-post-purchase-offers";
 import { StoreCommerceOperationsAdmin } from "@/components/admin/store-commerce-operations";
@@ -121,11 +122,11 @@ export default async function AdminStorePage() {
               </p>
             </div>
 
-            <form action={syncExistingPremiumCatalogueToStore}>
+            <AdminActionForm action={syncExistingPremiumCatalogueToStore} successMessage="Catalogue synced to Store.">
               <button className={button}>
                 Sync catalogue to Store
               </button>
-            </form>
+            </AdminActionForm>
           </div>
         </section>
 
@@ -136,7 +137,7 @@ export default async function AdminStorePage() {
             Create product
           </h3>
 
-          <form action={createStoreProduct} className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+          <AdminActionForm action={createStoreProduct} successMessage="Product created." className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
             <label>
               <span className={label}>Name</span>
               <input name="name" required className={field} />
@@ -184,7 +185,7 @@ export default async function AdminStorePage() {
             <div className="md:col-span-2 xl:col-span-4">
               <button className={button}>Create product</button>
             </div>
-          </form>
+          </AdminActionForm>
         </section>
 
         <section id="store-products" className="mt-6 scroll-mt-6">
@@ -224,7 +225,7 @@ export default async function AdminStorePage() {
                   </summary>
 
                   <div className="border-t border-[rgb(var(--sep-skin-c1,169_138_96))]/20 p-4 sm:p-5">
-                    <form action={updateStoreProduct} className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+                    <AdminActionForm action={updateStoreProduct} successMessage="Product saved." className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
                       <input type="hidden" name="id" value={product.id} />
                       <label>
                         <span className={label}>Name</span>
@@ -273,7 +274,7 @@ export default async function AdminStorePage() {
                       <div className="md:col-span-2 xl:col-span-4">
                         <button className={button}>Save product</button>
                       </div>
-                    </form>
+                    </AdminActionForm>
 
                     <div className="mt-6 grid gap-5 xl:grid-cols-2">
                       <div className="border border-[rgb(var(--sep-skin-c1,169_138_96))]/20 p-4">
@@ -289,15 +290,15 @@ export default async function AdminStorePage() {
                                 {price.money_amount_minor !== null && price.remnants_amount !== null ? " · " : ""}
                                 {price.remnants_amount !== null ? `${price.remnants_amount} Remnants` : ""}
                               </span>
-                              <form action={deleteStorePrice}>
+                              <AdminActionForm action={deleteStorePrice} successMessage="Price removed.">
                                 <input type="hidden" name="id" value={price.id} />
                                 <button className={dangerButton}>Remove</button>
-                              </form>
+                              </AdminActionForm>
                             </div>
                           ))}
                         </div>
 
-                        <form action={saveStorePrice} className="mt-4 grid gap-3 sm:grid-cols-2">
+                        <AdminActionForm action={saveStorePrice} successMessage="Price saved and synced." className="mt-4 grid gap-3 sm:grid-cols-2">
                           <input type="hidden" name="product_id" value={product.id} />
                           <label>
                             <span className={label}>Currency</span>
@@ -315,7 +316,7 @@ export default async function AdminStorePage() {
                           <div className="sm:col-span-2">
                             <button className={button}>Save price</button>
                           </div>
-                        </form>
+                        </AdminActionForm>
                       </div>
 
                       <div className="border border-[rgb(var(--sep-skin-c1,169_138_96))]/20 p-4">
@@ -337,17 +338,17 @@ export default async function AdminStorePage() {
                             return (
                               <div key={grant.id} className="flex flex-wrap items-center justify-between gap-3 border-b border-[rgb(var(--sep-skin-c1,169_138_96))]/15 pb-2 text-xs text-[rgb(var(--sep-skin-c2,211_194_170))]">
                                 <span>{text}</span>
-                                <form action={deleteStoreGrant}>
+                                <AdminActionForm action={deleteStoreGrant} successMessage="Unlock removed.">
                                   <input type="hidden" name="id" value={grant.id} />
                                   <button className={dangerButton}>Remove</button>
-                                </form>
+                                </AdminActionForm>
                               </div>
                             );
                           })}
                         </div>
 
                         <div className="mt-4 grid gap-3">
-                          <form action={addStoreGrant} className="grid gap-2 sm:grid-cols-[1fr_auto]">
+                          <AdminActionForm action={addStoreGrant} successMessage="Unlock added." className="grid gap-2 sm:grid-cols-[1fr_auto]">
                             <input type="hidden" name="product_id" value={product.id} />
                             <input type="hidden" name="grant_type" value="portal_skin" />
                             <select name="target" className={field}>
@@ -356,9 +357,9 @@ export default async function AdminStorePage() {
                               ))}
                             </select>
                             <button className={button}>Add skin</button>
-                          </form>
+                          </AdminActionForm>
 
-                          <form action={addStoreGrant} className="grid gap-2 sm:grid-cols-[1fr_auto]">
+                          <AdminActionForm action={addStoreGrant} successMessage="Unlock added." className="grid gap-2 sm:grid-cols-[1fr_auto]">
                             <input type="hidden" name="product_id" value={product.id} />
                             <input type="hidden" name="grant_type" value="cosmetic" />
                             <select name="target" className={field}>
@@ -369,9 +370,9 @@ export default async function AdminStorePage() {
                               ))}
                             </select>
                             <button className={button}>Add cosmetic</button>
-                          </form>
+                          </AdminActionForm>
 
-                          <form action={addStoreGrant} className="grid gap-2 sm:grid-cols-[1fr_auto]">
+                          <AdminActionForm action={addStoreGrant} successMessage="Unlock added." className="grid gap-2 sm:grid-cols-[1fr_auto]">
                             <input type="hidden" name="product_id" value={product.id} />
                             <input type="hidden" name="grant_type" value="music" />
                             <select name="target" className={field}>
@@ -382,9 +383,9 @@ export default async function AdminStorePage() {
                               ))}
                             </select>
                             <button className={button}>Add music</button>
-                          </form>
+                          </AdminActionForm>
 
-                          <form action={addStoreGrant} className="grid gap-2 sm:grid-cols-[1fr_auto]">
+                          <AdminActionForm action={addStoreGrant} successMessage="Unlock added." className="grid gap-2 sm:grid-cols-[1fr_auto]">
                             <input type="hidden" name="product_id" value={product.id} />
                             <input type="hidden" name="grant_type" value="feature" />
                             <select name="target" className={field}>
@@ -392,15 +393,15 @@ export default async function AdminStorePage() {
                               <option value="private_chat">Private Location</option>
                             </select>
                             <button className={button}>Add feature</button>
-                          </form>
+                          </AdminActionForm>
                         </div>
                       </div>
                     </div>
 
-                    <form action={deleteStoreProduct} className="mt-5">
+                    <AdminActionForm action={deleteStoreProduct} successMessage="Product deleted." className="mt-5">
                       <input type="hidden" name="id" value={product.id} />
                       <button className={dangerButton}>Delete product</button>
-                    </form>
+                    </AdminActionForm>
                   </div>
                 </details>
               );
@@ -419,7 +420,7 @@ export default async function AdminStorePage() {
             Discount codes
           </h3>
 
-          <form action={createStoreDiscount} className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+          <AdminActionForm action={createStoreDiscount} successMessage="Discount created." className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
             <label>
               <span className={label}>Name</span>
               <input name="name" required className={field} />
@@ -508,7 +509,7 @@ export default async function AdminStorePage() {
             <div className="md:col-span-2 xl:col-span-4">
               <button className={button}>Create discount</button>
             </div>
-          </form>
+          </AdminActionForm>
 
           <div className="mt-5 space-y-2">
             {discounts.map((discount) => (
@@ -523,13 +524,13 @@ export default async function AdminStorePage() {
                   </p>
                 </div>
 
-                <form action={toggleStoreDiscount}>
+                <AdminActionForm action={toggleStoreDiscount} successMessage="Discount updated.">
                   <input type="hidden" name="id" value={discount.id} />
                   <input type="hidden" name="next" value={discount.is_active ? "false" : "true"} />
                   <button className={button}>
                     {discount.is_active ? "Disable" : "Enable"}
                   </button>
-                </form>
+                </AdminActionForm>
               </div>
             ))}
           </div>

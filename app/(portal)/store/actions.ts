@@ -286,13 +286,21 @@ export async function startStorePaddleCheckout(
     },
     body: JSON.stringify({
       items: [{ price_id: syncedPaddlePriceId, quantity: 1 }],
-      ...(discount ? {
-        discount: {
-          type: discount.discount_type === "percentage" ? "percentage" : "flat",
-          description: `Sepulchria Store code ${discountCode.toUpperCase()}`,
-          amount: String(discount.discount_value),
-        },
-      } : {}),
+      ...(discount?.discount_type === "fixed_money"
+        ? { currency_code: String(price.currency).toUpperCase() }
+        : {}),
+      ...(discount
+        ? {
+            discount: {
+              type:
+                discount.discount_type === "percentage"
+                  ? "percentage"
+                  : "flat",
+              description: `Sepulchria Store code ${discountCode.toUpperCase()}`,
+              amount: String(discount.discount_value),
+            },
+          }
+        : {}),
       custom_data: {
         store_order_id: order.id,
         store_product_id: product.id,

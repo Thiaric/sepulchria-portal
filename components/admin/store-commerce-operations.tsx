@@ -1,5 +1,7 @@
 import "server-only";
 
+import { AdminActionForm, AdminCollapsibleSection } from "@/components/admin/admin-action-ui";
+
 import {
   configureStorePaddleWebhook,
   deleteStoreRegionOverride,
@@ -142,26 +144,23 @@ export async function StoreCommerceOperationsAdmin() {
 
   return (
     <section className="mt-8 space-y-6">
-      <div className="border border-[rgb(var(--sep-skin-c1,169_138_96))]/35 bg-[rgb(var(--sep-colour-15100d))] p-4 sm:p-5">
+      <AdminCollapsibleSection title="Paddle sync & launch readiness">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-8c704b))]">
               Production operations
             </p>
-            <h3 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-skin-c1,169_138_96))]">
-              Paddle sync & launch readiness
-            </h3>
             <p className="mt-2 text-xs text-[rgb(var(--sep-skin-c2,211_194_170))]">
               Current environment: <strong>{env}</strong>. Sepulchria Store prices are the source of truth.
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <form action={syncAllStorePaddle}>
+            <AdminActionForm action={syncAllStorePaddle} successMessage="Paddle sync completed.">
               <button className={button}>Sync all to Paddle</button>
-            </form>
-            <form action={configureStorePaddleWebhook}>
+            </AdminActionForm>
+            <AdminActionForm action={configureStorePaddleWebhook} successMessage="Webhook settings updated.">
               <button className={button}>Ensure webhook events</button>
-            </form>
+            </AdminActionForm>
           </div>
         </div>
 
@@ -206,20 +205,17 @@ export async function StoreCommerceOperationsAdmin() {
                     <p className="mt-1 max-w-2xl text-[9px] text-red-300">{product.paddle_sync_error}</p>
                   ) : null}
                 </div>
-                <form action={syncOneStoreProductPaddle}>
+                <AdminActionForm action={syncOneStoreProductPaddle} successMessage="Product synced to Paddle.">
                   <input type="hidden" name="product_id" value={product.id} />
                   <button className={button}>Sync</button>
-                </form>
+                </AdminActionForm>
               </div>
             );
           })}
         </div>
-      </div>
+      </AdminCollapsibleSection>
 
-      <div className="border border-[rgb(var(--sep-skin-c1,169_138_96))]/35 bg-[rgb(var(--sep-colour-15100d))] p-4 sm:p-5">
-        <h3 className="font-serif text-2xl text-[rgb(var(--sep-skin-c1,169_138_96))]">
-          Regional pricing & currencies
-        </h3>
+      <AdminCollapsibleSection title="Regional pricing & currencies">
         <p className="mt-2 text-xs text-[rgb(var(--sep-skin-c2,211_194_170))]">
           Add Paddle location overrides. Country codes are ISO-2 values such as GB, US, FR, DE.
         </p>
@@ -238,16 +234,16 @@ export async function StoreCommerceOperationsAdmin() {
                     <span>
                       {row.country_codes.join(", ")} → {money(row.money_amount_minor, row.currency)}
                     </span>
-                    <form action={deleteStoreRegionOverride}>
+                    <AdminActionForm action={deleteStoreRegionOverride} successMessage="Regional price removed.">
                       <input type="hidden" name="id" value={row.id} />
                       <input type="hidden" name="product_id" value={price.product_id} />
                       <button className={danger}>Remove</button>
-                    </form>
+                    </AdminActionForm>
                   </div>
                 ))}
               </div>
 
-              <form action={saveStoreRegionOverride} className="mt-3 grid gap-2 sm:grid-cols-4">
+              <AdminActionForm action={saveStoreRegionOverride} successMessage="Regional price saved and synced." className="mt-3 grid gap-2 sm:grid-cols-4">
                 <input type="hidden" name="price_id" value={price.id} />
                 <input type="hidden" name="product_id" value={price.product_id} />
                 <label>
@@ -265,11 +261,11 @@ export async function StoreCommerceOperationsAdmin() {
                 <div className="flex items-end">
                   <button className={button}>Add & sync</button>
                 </div>
-              </form>
+              </AdminActionForm>
             </div>
           ))}
         </div>
-      </div>
+      </AdminCollapsibleSection>
 
       <div className="border border-[rgb(var(--sep-skin-c1,169_138_96))]/35 bg-[rgb(var(--sep-colour-15100d))] p-4 sm:p-5">
         <h3 className="font-serif text-2xl text-[rgb(var(--sep-skin-c1,169_138_96))]">
@@ -289,10 +285,7 @@ export async function StoreCommerceOperationsAdmin() {
         </div>
       </div>
 
-      <div className="border border-[rgb(var(--sep-skin-c1,169_138_96))]/35 bg-[rgb(var(--sep-colour-15100d))] p-4 sm:p-5">
-        <h3 className="font-serif text-2xl text-[rgb(var(--sep-skin-c1,169_138_96))]">
-          Refunds
-        </h3>
+      <AdminCollapsibleSection title="Refunds">
         <p className="mt-2 text-xs text-[rgb(var(--sep-skin-c2,211_194_170))]">
           Full refunds revoke paid Store entitlements after Paddle approves the refund. Partial refunds keep the entitlement.
         </p>
@@ -306,9 +299,8 @@ export async function StoreCommerceOperationsAdmin() {
             )
             .slice(0, 20)
             .map((order) => (
-              <form
+              <AdminActionForm action={refundStoreOrder} successMessage="Refund request sent to Paddle."
                 key={order.id}
-                action={refundStoreOrder}
                 className="grid gap-2 border border-[rgb(var(--sep-colour-60482e))]/25 p-3 md:grid-cols-[minmax(0,1fr)_150px_180px_auto]"
               >
                 <div>
@@ -329,15 +321,12 @@ export async function StoreCommerceOperationsAdmin() {
                 <div className="flex items-end">
                   <button className={danger}>Request refund</button>
                 </div>
-              </form>
+              </AdminActionForm>
             ))}
         </div>
-      </div>
+      </AdminCollapsibleSection>
 
-      <div className="border border-[rgb(var(--sep-skin-c1,169_138_96))]/35 bg-[rgb(var(--sep-colour-15100d))] p-4 sm:p-5">
-        <h3 className="font-serif text-2xl text-[rgb(var(--sep-skin-c1,169_138_96))]">
-          Paddle audit log
-        </h3>
+      <AdminCollapsibleSection title="Paddle audit log">
         <div className="mt-3 space-y-1">
           {logs.map((log) => (
             <div key={log.id} className="grid gap-2 border-b border-[rgb(var(--sep-colour-60482e))]/20 py-2 text-[9px] text-[rgb(var(--sep-colour-a99b89))] md:grid-cols-[150px_100px_120px_minmax(0,1fr)]">
@@ -350,7 +339,7 @@ export async function StoreCommerceOperationsAdmin() {
             </div>
           ))}
         </div>
-      </div>
+      </AdminCollapsibleSection>
     </section>
   );
 }

@@ -7,7 +7,9 @@ type StoreOrder = {
   id: string;
   currency: string | null;
   total_money_minor: number | null;
+  status: string;
   paid_at: string | null;
+  refunded_at: string | null;
   created_at: string;
 };
 
@@ -29,10 +31,12 @@ export async function CharacterLedger({ characterId }: { characterId: string }) 
 
     supabase
       .from("store_orders")
-      .select("id, currency, total_money_minor, paid_at, created_at")
+      .select(
+        "id, currency, total_money_minor, status, paid_at, refunded_at, created_at",
+      )
       .eq("character_id", characterId)
       .eq("payment_method", "paddle")
-      .eq("status", "fulfilled")
+      .in("status", ["fulfilled", "refunded", "partially_refunded"])
       .order("created_at", { ascending: false })
       .limit(250),
   ]);
@@ -71,20 +75,39 @@ export async function CharacterLedger({ characterId }: { characterId: string }) 
     }),
   );
 
-  const moneyEntries: LedgerFilterEntry[] = orders.map((order) => {
+  const moneyEntries: LedgerFilterEntry[] = orders.flatMap((order) => {
     const productNames = itemNamesByOrder.get(order.id) ?? [];
     const totalMinor = Number(order.total_money_minor ?? 0);
+    const productLabel =
+      productNames.join(" + ") || "Sepulchria Store";
 
-    return {
+    const purchaseEntry: LedgerFilterEntry = {
       id: `store-${order.id}`,
       amount: -Math.abs(totalMinor),
       balance_after: null,
-      reason: `Store purchase · ${productNames.join(" + ") || "Sepulchria Store"}`,
+      reason: `Store purchase · ${productLabel}`,
       created_at: order.paid_at ?? order.created_at,
       kind: "money",
       currency: order.currency,
       money_amount_minor: totalMinor,
     };
+
+    if (order.status !== "refunded" || !order.refunded_at) {
+      return [purchaseEntry];
+    }
+
+    const refundEntry: LedgerFilterEntry = {
+      id: `store-refund-${order.id}`,
+      amount: Math.abs(totalMinor),
+      balance_after: null,
+      reason: `Store refund · ${productLabel}`,
+      created_at: order.refunded_at,
+      kind: "money",
+      currency: order.currency,
+      money_amount_minor: totalMinor,
+    };
+
+    return [purchaseEntry, refundEntry];
   });
 
   const entries = [...remnantEntries, ...moneyEntries]

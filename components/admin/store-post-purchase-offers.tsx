@@ -1,5 +1,7 @@
 import "server-only";
 
+import { AdminActionForm } from "@/components/admin/admin-action-ui";
+
 import { createStorePostPurchaseOffer, toggleStorePostPurchaseOffer } from "@/app/(portal)/admin/store/actions";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -26,7 +28,7 @@ export async function StorePostPurchaseOffersAdmin() {
     <section className="mt-6 border border-[rgb(var(--sep-skin-c1,169_138_96))]/35 bg-[rgb(var(--sep-colour-15100d))] p-4 sm:p-5">
       <h3 className="font-serif text-2xl text-[rgb(var(--sep-skin-c1,169_138_96))]">Post-purchase offers</h3>
       <p className="mt-2 text-xs leading-5 text-[rgb(var(--sep-skin-c2,211_194_170))]">Issue a private, expiring discount code automatically after a qualifying Store purchase.</p>
-      <form action={createStorePostPurchaseOffer} className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+      <AdminActionForm action={createStorePostPurchaseOffer} successMessage="Post-purchase offer created." className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
         <label><span className={label}>Name</span><input name="name" required className={field} /></label>
         <label><span className={label}>Discount template</span><select name="discount_code_template_id" required className={field} defaultValue=""><option value="" disabled>Choose discount…</option>{discounts.map((d) => <option key={d.id} value={d.id}>{d.code ?? d.name} · {d.discount_type} {d.discount_value}</option>)}</select></label>
         <label><span className={label}>Trigger product</span><select name="trigger_product_id" className={field} defaultValue=""><option value="">Use category instead</option>{products.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}</select></label>
@@ -37,12 +39,12 @@ export async function StorePostPurchaseOffersAdmin() {
         <label><span className={label}>Starts</span><input name="starts_at" type="datetime-local" className={field} /></label>
         <label><span className={label}>Ends</span><input name="ends_at" type="datetime-local" className={field} /></label>
         <div className="md:col-span-2 xl:col-span-4"><button className={button}>Create post-purchase offer</button></div>
-      </form>
+      </AdminActionForm>
       <div className="mt-5 space-y-2">
         {offers.map((offer) => (
           <div key={offer.id} className="flex flex-wrap items-center justify-between gap-3 border border-[rgb(var(--sep-skin-c1,169_138_96))]/20 px-3 py-3">
             <div><p className="text-sm text-[rgb(var(--sep-skin-c1,169_138_96))]">{offer.name}</p><p className="mt-1 text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-skin-c2,211_194_170))]">{offer.trigger_product_id ? `after ${productName.get(offer.trigger_product_id) ?? "product"}` : `after ${offer.trigger_category}`} · {discountName.get(offer.discount_code_template_id) ?? "discount"} · {offer.valid_for_days} days{offer.is_active ? " · active" : " · disabled"}</p></div>
-            <form action={toggleStorePostPurchaseOffer}><input type="hidden" name="id" value={offer.id} /><input type="hidden" name="next" value={offer.is_active ? "false" : "true"} /><button className={button}>{offer.is_active ? "Disable" : "Enable"}</button></form>
+            <AdminActionForm action={toggleStorePostPurchaseOffer} successMessage="Post-purchase offer updated."><input type="hidden" name="id" value={offer.id} /><input type="hidden" name="next" value={offer.is_active ? "false" : "true"} /><button className={button}>{offer.is_active ? "Disable" : "Enable"}</button></AdminActionForm>
           </div>
         ))}
       </div>
