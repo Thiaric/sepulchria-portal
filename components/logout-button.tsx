@@ -26,32 +26,11 @@ export function LogoutButton() {
     const supabase = createClient();
 
     try {
-      /*
-       * Start presence cleanup, but never let it hold logout hostage.
-       * The server action has already been dispatched, so it can finish
-       * even if we proceed to sign out after the short grace period.
-       */
-      try {
-        const presenceCleanup =
-          clearOwnPresenceForLogout();
-
+            try {
         const presenceResult =
-          await Promise.race([
-            presenceCleanup,
-            new Promise<null>(
-              (resolve) => {
-                window.setTimeout(
-                  () => resolve(null),
-                  800,
-                );
-              },
-            ),
-          ]);
+          await clearOwnPresenceForLogout();
 
-        if (
-          presenceResult &&
-          !presenceResult.ok
-        ) {
+        if (!presenceResult.ok) {
           console.error(
             "Unable to remove presence before logout:",
             presenceResult.message,
