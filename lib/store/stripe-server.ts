@@ -38,15 +38,6 @@ function stripeClient() {
   return new Stripe(stripeSecretKey());
 }
 
-function storeSiteUrl() {
-  const value =
-    process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
-    process.env.SITE_URL?.trim() ||
-    "https://www.sepulchria.com";
-
-  return value.replace(/\/+$/, "");
-}
-
 async function logSync(
   admin: SupabaseAdmin,
   input: {
@@ -521,6 +512,8 @@ export async function createManagedStoreCheckout(input: {
 
   const params = {
     mode: "payment",
+    ui_mode: "embedded_page",
+    redirect_on_completion: "never",
     line_items: [
       {
         price: input.stripePriceId,
@@ -537,10 +530,6 @@ export async function createManagedStoreCheckout(input: {
         }
       : {}),
     customer_email: input.customerEmail,
-    success_url:
-      `${storeSiteUrl()}/store-checkout-return?stripe=success&session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url:
-      `${storeSiteUrl()}/store-checkout-return?stripe=cancelled`,
     metadata: {
       store_order_id: input.orderId,
       store_product_id: input.productId,
@@ -556,12 +545,14 @@ export async function createManagedStoreCheckout(input: {
 
   const session = await stripe.checkout.sessions.create(params);
 
-  if (!session.url) {
-    throw new Error("Stripe created a Checkout Session without a checkout URL.");
+  if (!session.client_secret) {
+    throw new Error(
+      "Stripe created an embedded Checkout Session without a client secret.",
+    );
   }
 
   return {
-    checkoutUrl: session.url,
+    clientSecret: session.client_secret,
     checkoutSessionId: session.id,
     couponId,
   };

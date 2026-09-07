@@ -102,7 +102,7 @@ export async function purchaseStoreProductWithRemnants(
 export type StoreStripeState = {
   ok: boolean;
   error: string | null;
-  checkoutUrl: string | null;
+  clientSecret: string | null;
   checkoutSessionId: string | null;
 };
 
@@ -117,7 +117,7 @@ export async function startStoreStripeCheckout(
   const failure = (error: string): StoreStripeState => ({
     ok: false,
     error,
-    checkoutUrl: null,
+    clientSecret: null,
     checkoutSessionId: null,
   });
 
@@ -505,7 +505,7 @@ export async function startStoreStripeCheckout(
     return {
       ok: true,
       error: null,
-      checkoutUrl: checkout.checkoutUrl,
+      clientSecret: checkout.clientSecret,
       checkoutSessionId: checkout.checkoutSessionId,
     };
   } catch (error) {
