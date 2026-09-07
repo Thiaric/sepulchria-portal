@@ -181,8 +181,14 @@ const suppressClick =
   Math.max(
     MOBILE_CONTEXT_BUTTON_MIN_TOP,
     window.innerHeight -
-      44 -
-      76,
+  44 -
+  64 -
+  (
+    document.querySelector(
+      'footer[data-tidings-ticker="true"]',
+    )?.getBoundingClientRect()
+      .height ?? 0
+  )
   );
 
 setMobileButtonTop(
@@ -209,7 +215,13 @@ setMobileButtonTop(
             MOBILE_CONTEXT_BUTTON_MIN_TOP,
             window.innerHeight -
               44 -
-              76,
+              64 -
+              (
+                document.querySelector(
+                  'footer[data-tidings-ticker="true"]',
+                )?.getBoundingClientRect()
+                  .height ?? 0
+              ),
           );
 
         return Math.max(
@@ -368,7 +380,13 @@ setMobileButtonTop(
     MOBILE_CONTEXT_BUTTON_MIN_TOP,
     window.innerHeight -
       44 -
-      76,
+      64 -
+      (
+        document.querySelector(
+          'footer[data-tidings-ticker="true"]',
+        )?.getBoundingClientRect()
+          .height ?? 0
+      ),
   );
 
 const nextTop =
@@ -463,7 +481,7 @@ const nextTop =
         data-portal-right-sidebar
         className={[
           "z-[70] flex min-h-0 min-w-0 flex-col border-l border-[rgb(var(--sep-colour-6e5535))]/40 bg-[rgb(var(--sep-colour-100d0b))]",
-          "fixed inset-y-0 right-0 w-[min(88vw,360px)] overflow-hidden overscroll-contain shadow-[-18px_0_50px_rgba(var(--sep-rgb-0-0-0),0.55)] transition-transform duration-200 ease-out",
+          "fixed top-0 bottom-[calc(64px+var(--sep-mobile-tidings-height,0px)+env(safe-area-inset-bottom))] right-0 w-[min(88vw,360px)] overflow-hidden overscroll-contain shadow-[-18px_0_50px_rgba(var(--sep-rgb-0-0-0),0.55)] transition-transform duration-200 ease-out",
           open
             ? "translate-x-0"
             : "translate-x-full",

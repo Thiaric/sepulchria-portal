@@ -874,6 +874,16 @@ async function PortalLayoutContent({
                   overflow-x: visible !important;
                   overscroll-behavior-y: contain;
                 }
+
+                [data-portal-shell-inner] {
+  --sep-mobile-tidings-height: 0px;
+}
+
+[data-portal-shell-inner]:has(
+  footer[data-tidings-ticker="true"]
+) {
+  --sep-mobile-tidings-height: 36px;
+}
               }
 
               .sepulchria-viewport-body [data-portal-scroll] {
