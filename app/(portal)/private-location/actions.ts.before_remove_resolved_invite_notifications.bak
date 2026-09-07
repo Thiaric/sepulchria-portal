@@ -197,33 +197,79 @@ async function logPrivateLocationInvitationEvents(
   }
 }
 
-async function removePrivateLocationInvitationNotification(
+async function markPrivateLocationInvitationNotificationRead(
   admin: ReturnType<
     typeof adminClient
   >,
   invitationId: string,
-  _recipientCharacterId: string,
+  recipientCharacterId: string,
 ) {
-  /*
-   * Once the recipient accepts or refuses the invitation,
-   * the notification has no further purpose.
-   * Delete it outright, matching Daily Mission reward behaviour.
-   */
+  const [
+    recipientResult,
+    notificationResult,
+  ] = await Promise.all([
+    admin
+      .from("characters")
+      .select("user_id")
+      .eq(
+        "id",
+        recipientCharacterId,
+      )
+      .maybeSingle(),
+    admin
+      .from("notifications")
+      .select("id")
+      .eq(
+        "source_type",
+        "private_location_invite",
+      )
+      .eq(
+        "source_id",
+        invitationId,
+      ),
+  ]);
+
+  const userId =
+    recipientResult.data?.user_id;
+
+  const notificationIds =
+    (
+      notificationResult.data ??
+      []
+    ).map(
+      (row) => row.id,
+    );
+
+  if (
+    !userId ||
+    notificationIds.length === 0
+  ) {
+    return;
+  }
+
+  const readAt =
+    new Date().toISOString();
+
   const { error } = await admin
-    .from("notifications")
-    .delete()
-    .eq(
-      "source_type",
-      "private_location_invite",
-    )
-    .eq(
-      "source_id",
-      invitationId,
+    .from("notification_reads")
+    .upsert(
+      notificationIds.map(
+        (notificationId) => ({
+          user_id: userId,
+          notification_id:
+            notificationId,
+          viewed_at: readAt,
+        }),
+      ),
+      {
+        onConflict:
+          "user_id,notification_id",
+      },
     );
 
   if (error) {
     throw new Error(
-      `Unable to remove the invitation notification: ${error.message}`,
+      `Unable to close the invitation notification: ${error.message}`,
     );
   }
 }
@@ -1067,7 +1113,7 @@ export async function respondPrivateLocationInvitation(
     );
   }
 
-  await removePrivateLocationInvitationNotification(
+  await markPrivateLocationInvitationNotificationRead(
     admin,
     invitationId,
     character.id,

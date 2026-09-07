@@ -27,8 +27,12 @@ export async function sendStoreEmail(input: {
   orderId: string;
   kind: StoreEmailKind;
   recipient: string;
-  subject: string;
-  html: string;
+  subject?: string;
+  html?: string;
+  template?: {
+    id: string;
+    variables: Record<string, string | number>;
+  };
 }) {
   const apiKey = process.env.RESEND_API_KEY?.trim();
   const from = process.env.STORE_EMAIL_FROM?.trim();
@@ -51,12 +55,20 @@ export async function sendStoreEmail(input: {
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        from,
-        to: [input.recipient],
-        subject: input.subject,
-        html: input.html,
-      }),
+      body: JSON.stringify(
+        input.template
+          ? {
+              from,
+              to: [input.recipient],
+              template: input.template,
+            }
+          : {
+              from,
+              to: [input.recipient],
+              subject: input.subject,
+              html: input.html,
+            },
+      ),
       cache: "no-store",
     });
 
@@ -96,7 +108,7 @@ export async function sendStoreOrderReceiptEmail(orderId: string) {
   const { data: order, error } = await admin
     .from("store_orders")
     .select(
-      "id, user_id, payment_method, currency, total_money_minor, total_remnants, status, paid_at, created_at",
+      "id, user_id, character_id, payment_method, currency, total_money_minor, total_remnants, status, paid_at, created_at",
     )
     .eq("id", orderId)
     .single();
@@ -106,6 +118,20 @@ export async function sendStoreOrderReceiptEmail(orderId: string) {
   const { data: userData } = await admin.auth.admin.getUserById(order.user_id);
   const email = userData.user?.email?.trim();
   if (!email) return;
+
+  const { data: character } = await admin
+    .from("characters")
+    .select("display_name, first_name, surname")
+    .eq("id", order.character_id)
+    .maybeSingle();
+
+  const characterName =
+    character?.display_name?.trim() ||
+    [character?.first_name, character?.surname]
+      .filter(Boolean)
+      .join(" ")
+      .trim() ||
+    "your character";
 
   const { data: items } = await admin
     .from("store_order_items")
@@ -133,16 +159,16 @@ export async function sendStoreOrderReceiptEmail(orderId: string) {
     orderId,
     kind: "receipt",
     recipient: email,
-    subject: "Your Sepulchria Store receipt",
-    html: `
-      <h1>Sepulchria Store</h1>
-      <p>Thank you for your purchase.</p>
-      <p><strong>Order:</strong> ${order.id}</p>
-      <p><strong>Items:</strong> ${names || "Sepulchria Store purchase"}</p>
-      <p><strong>Total:</strong> ${amount}</p>
-      <p><strong>Status:</strong> ${order.status}</p>
-      <p>You can review this order in your Sepulchria Store purchase history.</p>
-    `,
+    template: {
+      id: "2533c5d2-670e-4232-8c52-d43149f23840",
+      variables: {
+        CHARACTER_NAME: characterName,
+        PRODUCT_NAME:
+          names || "Sepulchria Store purchase",
+        PRICE: amount,
+        ORDER_ID: order.id,
+      },
+    },
   });
 }
 
