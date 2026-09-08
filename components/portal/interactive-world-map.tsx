@@ -425,9 +425,17 @@ export function InteractiveWorldMap({
             ← Return to Aureth
           </button>
         ) : (
-          <p className="text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-776752))]">
-            Select a destination
-          </p>
+          <button
+            type="button"
+            onClick={() => {
+  setHoveredArea(null);
+  router.push("/?map=sepulchria");
+}}
+            className="border border-[rgb(var(--sep-colour-765735))]/80 bg-[rgb(var(--sep-colour-21170f))] px-4 py-2 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-9c8156))] transition hover:border-[rgb(var(--sep-colour-b28246))] hover:bg-[rgb(var(--sep-colour-332317))] hover:text-[rgb(var(--sep-colour-fad798))]"
+          >
+             Go to Sepulchria →
+          </button>
+          
         )}
       </div>
 
