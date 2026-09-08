@@ -245,9 +245,12 @@ const moreDragging =
     );
   }, []);
 
+  const navigationLocationKey =
+    `${pathname}?${searchParams.toString()}`;
+
   useEffect(() => {
     setMoreOpen(false);
-  }, [pathname, searchParams]);
+  }, [navigationLocationKey]);
 
   useEffect(() => {
     setCurrentUnreadForumCount(
@@ -947,6 +950,30 @@ const moreDragging =
         href: "/age-policy",
       },
     },
+    {
+  href: "/purchases",
+  label: "Optional Purchases",
+  icon: "/icons/rules.png",
+  modal: {
+    label: "Optional Purchases",
+    title:
+      "Read information about Sepulchria's optional real-money digital purchases.",
+    icon: "/icons/rules.png",
+    href: "/purchases",
+  },
+},
+{
+  href: "/refund-policy",
+  label: "Refund Policy",
+  icon: "/icons/rules.png",
+  modal: {
+    label: "Refund Policy",
+    title:
+      "Read Sepulchria's refund policy for optional real-money purchases.",
+    icon: "/icons/rules.png",
+    href: "/refund-policy",
+  },
+},
     {
       href: "/privacy",
       label: "Privacy",

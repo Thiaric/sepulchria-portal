@@ -297,6 +297,28 @@ const agePolicyItem: NavigationItem = {
   subItem: true,
 };
 
+const optionalPurchasesItem: NavigationItem = {
+  label: "Optional Purchases",
+  title:
+    "Read information about Sepulchria's optional real-money digital purchases.",
+  icon: "/icons/rules.png",
+  href: "/purchases",
+  activePaths: ["/purchases"],
+  opensModal: true,
+  subItem: true,
+};
+
+const refundPolicyItem: NavigationItem = {
+  label: "Refund Policy",
+  title:
+    "Read Sepulchria's refund policy for optional real-money purchases.",
+  icon: "/icons/rules.png",
+  href: "/refund-policy",
+  activePaths: ["/refund-policy"],
+  opensModal: true,
+  subItem: true,
+};
+
 const privacyItem: NavigationItem = {
   label: "Privacy",
   title:
@@ -334,6 +356,8 @@ const legalSafetyItems: NavigationItem[] = [
   communityRulesItem,
   safetyItem,
   agePolicyItem,
+  optionalPurchasesItem,
+  refundPolicyItem,
   privacyItem,
   cookiesItem,
   termsItem,
@@ -3667,6 +3691,35 @@ function PublicPageModal({
                     display: none !important;
                   }
                 }
+                  ${[
+  "/community-rules",
+  "/safety",
+  "/age-policy",
+  "/purchases",
+  "/refund-policy",
+  "/privacy",
+  "/cookies",
+  "/terms",
+].includes(item.href)
+  ? `
+    html,
+    body {
+      height: auto !important;
+      min-height: 100% !important;
+      max-height: none !important;
+      overflow-x: hidden !important;
+      overflow-y: auto !important;
+    }
+
+    main[data-public-skin-surface="true"] {
+      min-height: 100% !important;
+      height: auto !important;
+      max-height: none !important;
+      overflow: visible !important;
+    }
+  `
+  : ""
+}
               `;
 
               /*
