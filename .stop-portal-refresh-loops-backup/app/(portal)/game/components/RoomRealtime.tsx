@@ -4,6 +4,8 @@ import {
   useEffect,
   useRef,
 } from "react";
+import { useRouter } from "next/navigation";
+
 import { createClient } from "@/lib/supabase/client";
 
 type RoomRealtimeProps = {
@@ -25,6 +27,7 @@ export default function RoomRealtime({
   roomId,
   presentCharacterIds,
 }: RoomRealtimeProps) {
+  const router = useRouter();
   const hardReloadingRef =
     useRef(false);
   const knownRoomCharactersRef =
@@ -334,16 +337,7 @@ export default function RoomRealtime({
                 changedCharacterId,
               );
 
-              window.dispatchEvent(
-                new CustomEvent(
-                  "sepulchria:room-presence-changed",
-                  {
-                    detail: {
-                      roomId,
-                    },
-                  },
-                ),
-              );
+              router.refresh();
               return;
             }
 
@@ -355,16 +349,7 @@ export default function RoomRealtime({
                 changedCharacterId,
               );
 
-              window.dispatchEvent(
-                new CustomEvent(
-                  "sepulchria:room-presence-changed",
-                  {
-                    detail: {
-                      roomId,
-                    },
-                  },
-                ),
-              );
+              router.refresh();
             }
           },
         )
@@ -437,7 +422,7 @@ export default function RoomRealtime({
         );
       }
     };
-  }, [roomId]);
+  }, [roomId, router]);
 
   useEffect(() => {
     knownRoomCharactersRef.current =

@@ -225,36 +225,6 @@ async function PortalLayoutContent({
                 display: contents;
               }
 
-
-              /* PIONEERS' LAND — SHELL CHARCOAL OVERRIDE START */
-              html[data-portal-skin="pioneers-land"] [data-portal-shell],
-              body[data-portal-skin="pioneers-land"] [data-portal-shell] {
-                background: rgb(14 15 17) !important;
-              }
-
-              html[data-portal-skin="pioneers-land"] [data-portal-shell-inner],
-              body[data-portal-skin="pioneers-land"] [data-portal-shell-inner] {
-                background:
-                  radial-gradient(
-                    circle at top,
-                    rgb(var(--sep-skin-c1) / 0.055),
-                    transparent 38%
-                  ),
-                  linear-gradient(
-                    to bottom,
-                    rgb(23 24 27),
-                    rgb(11 12 14)
-                  ) !important;
-              }
-
-              html[data-portal-skin="pioneers-land"] .portal-left-shell > aside,
-              body[data-portal-skin="pioneers-land"] .portal-left-shell > aside,
-              html[data-portal-skin="pioneers-land"] .portal-right-shell > aside,
-              body[data-portal-skin="pioneers-land"] .portal-right-shell > aside {
-                background-color: rgb(14 15 17) !important;
-              }
-              /* PIONEERS' LAND — SHELL CHARCOAL OVERRIDE END */
-
               /*
                * Location cosmetics work at every viewport size.
                */

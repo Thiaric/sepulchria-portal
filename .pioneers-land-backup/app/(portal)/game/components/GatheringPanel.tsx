@@ -19,7 +19,6 @@ const GATHERING_SKIN_ACCENTS: Record<string, string> = {
   vellum: "#6b2332",
   starfall: "#7fa9dc",
   "rose-nocturne": "#c67c69",
-  "pioneers-land": "#d6ad5b",
   "verdant-reliquary": "#93c988",
   "amethyst-veil": "#c99a4c",
   moonlit: "#b58a4c",

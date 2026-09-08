@@ -79,44 +79,19 @@ export function HeaderCharacterIdentity({
 
     let cancelled = false;
     let initialised = false;
-    let lastSignature:
-      | string
-      | null = null;
+    let lastId: string | null =
+      character?.id ?? null;
+    let lastUpdatedAt: string | null =
+      null;
 
-    function identitySignature(
-      data:
-        | {
-            id?: string | null;
-            first_name?: string | null;
-            display_name?: string | null;
-            portrait_url?: string | null;
-            status?: string | null;
-            race_id?: string | null;
-          }
-        | null,
-    ) {
-      if (!data) {
-        return "no-character";
-      }
-
-      return JSON.stringify([
-        data.id ?? null,
-        data.first_name ?? null,
-        data.display_name ?? null,
-        data.portrait_url ?? null,
-        data.status ?? null,
-        data.race_id ?? null,
-      ]);
-    }
-
-    async function checkCharacterIdentity() {
+    async function checkCharacterRecord() {
       const {
         data,
         error,
       } = await supabase
         .from("characters")
         .select(
-          "id, first_name, display_name, portrait_url, status, race_id",
+          "id, updated_at",
         )
         .eq(
           "user_id",
@@ -138,20 +113,22 @@ export function HeaderCharacterIdentity({
         return;
       }
 
-      const nextSignature =
-        identitySignature(
-          data,
-        );
+      const nextId =
+        data?.id ?? null;
+      const nextUpdatedAt =
+        data?.updated_at ?? null;
 
       if (!initialised) {
         initialised = true;
-        lastSignature =
-          nextSignature;
 
-        if (
-          (data?.id ?? null) !==
-          (character?.id ?? null)
-        ) {
+        const identityChanged =
+          nextId !== lastId;
+
+        lastId = nextId;
+        lastUpdatedAt =
+          nextUpdatedAt;
+
+        if (identityChanged) {
           router.refresh();
         }
 
@@ -159,17 +136,19 @@ export function HeaderCharacterIdentity({
       }
 
       if (
-        nextSignature !==
-        lastSignature
+        nextId !== lastId ||
+        nextUpdatedAt !==
+          lastUpdatedAt
       ) {
-        lastSignature =
-          nextSignature;
+        lastId = nextId;
+        lastUpdatedAt =
+          nextUpdatedAt;
 
         router.refresh();
       }
     }
 
-    void checkCharacterIdentity();
+    void checkCharacterRecord();
 
     const channel =
       supabase
@@ -186,18 +165,44 @@ export function HeaderCharacterIdentity({
             filter:
               `user_id=eq.${userId}`,
           },
-          () => {
-            void checkCharacterIdentity();
+          (payload) => {
+            const next =
+              payload.new as {
+                id?: string;
+                updated_at?: string;
+              };
+
+            if (next?.id) {
+              lastId =
+                next.id;
+            }
+
+            if (
+              next?.updated_at
+            ) {
+              lastUpdatedAt =
+                next.updated_at;
+            }
+
+            router.refresh();
           },
         )
         .subscribe();
+
+    const interval =
+      window.setInterval(
+        () => {
+          void checkCharacterRecord();
+        },
+        5000,
+      );
 
     function handleVisibilityChange() {
       if (
         document.visibilityState ===
         "visible"
       ) {
-        void checkCharacterIdentity();
+        void checkCharacterRecord();
       }
     }
 
@@ -208,6 +213,10 @@ export function HeaderCharacterIdentity({
 
     return () => {
       cancelled = true;
+
+      window.clearInterval(
+        interval,
+      );
 
       document.removeEventListener(
         "visibilitychange",

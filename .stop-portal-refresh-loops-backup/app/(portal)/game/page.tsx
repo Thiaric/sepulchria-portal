@@ -778,7 +778,6 @@ async function GameContent() {
         </div>
 
         <RoomChatForm
-      roomId={room.id}
       presentCharacters={
         presentCharacters
       }

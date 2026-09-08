@@ -15,10 +15,7 @@ import {
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-import {
-  CHAT_MAX_LENGTH,
-  PRESENCE_ACTIVE_MINUTES,
-} from "@/lib/game/constants";
+import { CHAT_MAX_LENGTH } from "@/lib/game/constants";
 import {
   SpellingTextareaOverlay,
   useSpellingIssues,
@@ -195,8 +192,7 @@ function formatSigned(
 }
 
 export default function RoomChatForm({
-  roomId,
-  presentCharacters: initialPresentCharacters,
+  presentCharacters,
   canUseFate,
   exportEnabled,
   backHref,
@@ -204,7 +200,6 @@ export default function RoomChatForm({
   canTakeLeave,
   headquartersManageControl,
 }: {
-  roomId: string;
   presentCharacters: PresentRoomCharacter[];
   canUseFate: boolean;
   exportEnabled: boolean;
@@ -214,188 +209,6 @@ export default function RoomChatForm({
   headquartersManageControl?: ReactNode;
 }) {
   const router = useRouter();
-
-  const presenceSupabase =
-    useMemo(
-      () => createClient(),
-      [],
-    );
-
-  const [
-    presentCharacters,
-    setPresentCharacters,
-  ] = useState<PresentRoomCharacter[]>(
-    initialPresentCharacters,
-  );
-
-  useEffect(() => {
-    setPresentCharacters(
-      initialPresentCharacters,
-    );
-  }, [initialPresentCharacters]);
-
-  useEffect(() => {
-    let active = true;
-    let refreshTimer:
-      | number
-      | null = null;
-
-    async function refreshPresentCharacters() {
-      const activeSince =
-        new Date(
-          Date.now() -
-            PRESENCE_ACTIVE_MINUTES *
-              60_000,
-        ).toISOString();
-
-      const {
-        data,
-        error,
-      } = await presenceSupabase
-        .from("character_presence")
-        .select(`
-          character_id,
-          character:characters!character_presence_character_id_fkey(
-            id,
-            display_name
-          )
-        `)
-        .eq(
-          "room_id",
-          roomId,
-        )
-        .gte(
-          "last_seen_at",
-          activeSince,
-        );
-
-      if (
-        !active ||
-        error
-      ) {
-        if (
-          active &&
-          error
-        ) {
-          console.error(
-            "Unable to refresh room presence:",
-            error.message,
-          );
-        }
-
-        return;
-      }
-
-      const next =
-        (data ?? [])
-          .map((row) => {
-            const relation =
-              Array.isArray(
-                row.character,
-              )
-                ? row.character[0]
-                : row.character;
-
-            if (!relation) {
-              return null;
-            }
-
-            return {
-              id:
-                String(
-                  relation.id,
-                ),
-              display_name:
-                String(
-                  relation.display_name,
-                ),
-            } satisfies PresentRoomCharacter;
-          })
-          .filter(
-            (
-              entry,
-            ): entry is PresentRoomCharacter =>
-              entry !== null,
-          );
-
-      setPresentCharacters(
-        (current) => {
-          if (
-            current.length ===
-              next.length &&
-            current.every(
-              (entry, index) =>
-                entry.id ===
-                  next[index]?.id &&
-                entry.display_name ===
-                  next[index]
-                    ?.display_name,
-            )
-          ) {
-            return current;
-          }
-
-          return next;
-        },
-      );
-    }
-
-    function handlePresenceChanged(
-      event: Event,
-    ) {
-      const detail =
-        (
-          event as CustomEvent<{
-            roomId?: string;
-          }>
-        ).detail;
-
-      if (
-        detail?.roomId !==
-        roomId
-      ) {
-        return;
-      }
-
-      if (refreshTimer) {
-        window.clearTimeout(
-          refreshTimer,
-        );
-      }
-
-      refreshTimer =
-        window.setTimeout(
-          () => {
-            refreshTimer = null;
-            void refreshPresentCharacters();
-          },
-          80,
-        );
-    }
-
-    window.addEventListener(
-      "sepulchria:room-presence-changed",
-      handlePresenceChanged,
-    );
-
-    return () => {
-      active = false;
-
-      if (refreshTimer) {
-        window.clearTimeout(
-          refreshTimer,
-        );
-      }
-
-      window.removeEventListener(
-        "sepulchria:room-presence-changed",
-        handlePresenceChanged,
-      );
-    };
-  }, [
-    presenceSupabase,
-    roomId,
-  ]);
 
   const [attributes, setAttributes] = useState<CharacterAttributes>({
     muscles: null,
