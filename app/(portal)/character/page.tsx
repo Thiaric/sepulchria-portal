@@ -22,6 +22,7 @@ import { CharacterRemnantsWallet } from "@/components/characters/character-remna
 import { CharacterLedger } from "@/components/characters/character-ledger";
 import { CharacterTrophiesDisplay } from "@/components/characters/character-trophies-display";
 import { CharacterDisplayTrophies } from "@/components/characters/character-display-trophies";
+import { AutoFitCharacterName } from "@/components/characters/auto-fit-character-name";
 import { DisplayTrophySelector } from "@/components/characters/display-trophy-selector";
 import { LiveCharacterSheetRefresh } from "@/components/characters/live-character-sheet-refresh";
 import { getEffectiveCharacterAttributes } from "@/lib/characters/get-effective-character-attributes";
@@ -470,14 +471,13 @@ export function Profile({
                     </p>
 
                     <div className="mt-1 grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-4">
-                      <h1
-                        data-cosmetic-character-id={character.id}
-                        data-cosmetic-surface="nameplate"
-                        className="min-w-0 break-words font-serif text-[1.1rem] text-[rgb(var(--sep-colour-ecd9b2))] sm:text-[1.2rem]"
+                      <AutoFitCharacterName
+                        characterId={character.id}
+                        className="text-[1.1rem] text-[rgb(var(--sep-colour-ecd9b2))] sm:text-[1.2rem]"
                       >
                         {character.display_name ??
                           "Unnamed character"}
-                      </h1>
+                      </AutoFitCharacterName>
 
                       {character.id ? (
                         <div className="justify-self-end">

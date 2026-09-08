@@ -2489,6 +2489,39 @@ export function PortalSidebar({
                   .slice(0, 2)
                   .map(renderNavigationItem),
 
+                  breezeLodgingsRoomId ? (
+  <form
+    key="breeze-lodgings"
+    action={enterRoomFromMap}
+    className="min-w-0"
+  >
+    <input
+      type="hidden"
+      name="roomId"
+      value={breezeLodgingsRoomId}
+    />
+
+    <button
+      type="submit"
+      title="Go directly to The Breeze Lodgings."
+      className="flex min-h-[var(--portal-nav-min-h)] w-full items-center gap-2 border border-transparent px-2.5 py-[var(--portal-nav-y)] text-left text-[11px] text-[rgb(var(--sep-colour-b6a894))] transition hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))] hover:text-[rgb(var(--sep-colour-e8d8ba))] lg:text-xs"
+    >
+      <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center">
+        <img
+          src="/icons/lodging.png"
+          alt=""
+          aria-hidden="true"
+          className="h-full w-full object-contain"
+        />
+      </span>
+
+      <span className="truncate">
+        The Breeze Lodgings
+      </span>
+    </button>
+  </form>
+) : null,
+
                 orderHeadquartersRoomId ? (
                   <form
                     key="order-headquarters"
@@ -2691,61 +2724,7 @@ export function PortalSidebar({
                   missionsItem,
                 )}
 
-                <form
-                  action={enterRoomFromMap}
-                >
-                  <input
-                    type="hidden"
-                    name="roomId"
-                    value={
-                      breezeLodgingsRoomId ?? ""
-                    }
-                  />
-
-                  <button
-                    type="submit"
-                    disabled={!breezeLodgingsRoomId}
-                    title={
-                      breezeLodgingsRoomId
-                        ? "Go directly to The Breeze Lodgings."
-                        : "The Breeze Lodgings are currently unavailable."
-                    }
-                    className="
-                      flex
-                      min-h-[var(--portal-nav-min-h)]
-                      w-full
-                      items-center
-                      gap-2
-                      border
-                      border-transparent
-                      px-2.5
-                      py-[var(--portal-nav-y)]
-                      text-left
-                      text-[11px]
-                      text-[rgb(var(--sep-colour-b6a894))]
-                      transition
-                      hover:border-[rgb(var(--sep-colour-5d4930))]
-                      hover:bg-[rgb(var(--sep-colour-1d1712))]
-                      hover:text-[rgb(var(--sep-colour-e8d8ba))]
-                      disabled:cursor-not-allowed
-                      disabled:opacity-45
-                      lg:text-xs
-                    "
-                  >
-                    <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center">
-                      <img
-                        src="/icons/lodging.png"
-                        alt=""
-                        aria-hidden="true"
-                        className="h-full w-full object-contain"
-                      />
-                    </span>
-
-                    <span className="truncate">
-                      The Breeze Lodgings
-                    </span>
-                  </button>
-                </form>
+                
 
                 <ForumSidebarMenu
                   unreadCount={

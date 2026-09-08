@@ -46,6 +46,11 @@ import {
 import { PendingOpposedActions } from "./PendingOpposedActions";
 import { PendingShapeResponses } from "./PendingShapeResponses";
 import { WarpingPanel } from "./WarpingPanel";
+import {
+  loadRoomCombatData,
+  loadRoomFeats,
+  loadRoomItems,
+} from "../deferred-actions";
 
 const initialState: ActionState = {
   ok: false,
@@ -187,10 +192,6 @@ function formatSigned(
 }
 
 export default function RoomChatForm({
-  attributes,
-  attributeBreakdown,
-  gifts,
-  items,
   presentCharacters,
   canUseFate,
   exportEnabled,
@@ -199,10 +200,6 @@ export default function RoomChatForm({
   canTakeLeave,
   headquartersManageControl,
 }: {
-  attributes: CharacterAttributes;
-  attributeBreakdown: AttributeBreakdown;
-  gifts: ChatGift[];
-  items: ChatItem[];
   presentCharacters: PresentRoomCharacter[];
   canUseFate: boolean;
   exportEnabled: boolean;
@@ -212,6 +209,34 @@ export default function RoomChatForm({
   headquartersManageControl?: ReactNode;
 }) {
   const router = useRouter();
+
+  const [attributes, setAttributes] = useState<CharacterAttributes>({
+    muscles: null,
+    reflexes: null,
+    vigor: null,
+    brains: null,
+    shrewd: null,
+    presence_score: null,
+  });
+
+  const [attributeBreakdown, setAttributeBreakdown] =
+    useState<AttributeBreakdown>({
+      muscles: { base: null, gifts: 0, adjustedBase: null, ancestry: 0, order: 0, effective: null },
+      reflexes: { base: null, gifts: 0, adjustedBase: null, ancestry: 0, order: 0, effective: null },
+      vigor: { base: null, gifts: 0, adjustedBase: null, ancestry: 0, order: 0, effective: null },
+      brains: { base: null, gifts: 0, adjustedBase: null, ancestry: 0, order: 0, effective: null },
+      shrewd: { base: null, gifts: 0, adjustedBase: null, ancestry: 0, order: 0, effective: null },
+      presence_score: { base: null, gifts: 0, adjustedBase: null, ancestry: 0, order: 0, effective: null },
+    });
+
+  const [gifts, setGifts] = useState<ChatGift[]>([]);
+  const [items, setItems] = useState<ChatItem[]>([]);
+  const [combatDataLoaded, setCombatDataLoaded] = useState(false);
+  const [itemsLoaded, setItemsLoaded] = useState(false);
+  const [featsLoaded, setFeatsLoaded] = useState(false);
+  const [utilityLoadingMode, setUtilityLoadingMode] =
+    useState<"attributes" | "feat" | "items" | null>(null);
+  const [utilityLoadError, setUtilityLoadError] = useState<string | null>(null);
 
   const gameChatRestriction=useSanctionCapability("game_chat");
 
@@ -1217,9 +1242,70 @@ function ignoreSpellingWord() {
       | "exchange"
       | "warping",
   ) {
-    setUtilityMode((current) =>
-      current === mode ? null : mode,
-    );
+    if (utilityLoadingMode) return;
+
+    if (utilityMode === mode) {
+      setUtilityMode(null);
+      return;
+    }
+
+    setUtilityLoadError(null);
+
+    if (mode === "attributes" && !combatDataLoaded) {
+      setUtilityLoadingMode("attributes");
+      void loadRoomCombatData()
+        .then((result) => {
+          setAttributes(result.attributes);
+          setAttributeBreakdown(result.attributeBreakdown as AttributeBreakdown);
+          setItems(result.items as ChatItem[]);
+          setCombatDataLoaded(true);
+          setItemsLoaded(true);
+          setUtilityMode("attributes");
+        })
+        .catch((error) => {
+          setUtilityLoadError(
+            error instanceof Error ? error.message : "Unable to load combat data.",
+          );
+        })
+        .finally(() => setUtilityLoadingMode(null));
+      return;
+    }
+
+    if (mode === "items" && !itemsLoaded) {
+      setUtilityLoadingMode("items");
+      void loadRoomItems()
+        .then((result) => {
+          setItems(result as ChatItem[]);
+          setItemsLoaded(true);
+          setUtilityMode("items");
+        })
+        .catch((error) => {
+          setUtilityLoadError(
+            error instanceof Error ? error.message : "Unable to load Items.",
+          );
+        })
+        .finally(() => setUtilityLoadingMode(null));
+      return;
+    }
+
+    if (mode === "feat" && !featsLoaded) {
+      setUtilityLoadingMode("feat");
+      void loadRoomFeats()
+        .then((result) => {
+          setGifts(result as ChatGift[]);
+          setFeatsLoaded(true);
+          setUtilityMode("feat");
+        })
+        .catch((error) => {
+          setUtilityLoadError(
+            error instanceof Error ? error.message : "Unable to load Feats.",
+          );
+        })
+        .finally(() => setUtilityLoadingMode(null));
+      return;
+    }
+
+    setUtilityMode(mode);
   }
 
   if (gameChatRestriction.blocked) {
@@ -1237,7 +1323,7 @@ function ignoreSpellingWord() {
   data-room-chat-composer
   className="shrink-0 border-t border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-17110d))] p-2 sm:px-3 sm:py-2"
 >
-      <PendingShapeResponses attributes={attributes} />
+      <PendingShapeResponses />
       <div className="mb-2 flex justify-end">
         
       </div>
@@ -2462,6 +2548,24 @@ function ignoreSpellingWord() {
           )}
         </form>
       )}
+      {utilityMode === null && (utilityLoadingMode || utilityLoadError) ? (
+        <p
+          aria-live="polite"
+          className={`mb-1 text-center text-[8px] ${
+            utilityLoadError
+              ? "text-[rgb(var(--sep-colour-d58d82))]"
+              : "text-[rgb(var(--sep-colour-a98b61))]"
+          }`}
+        >
+          {utilityLoadError
+            ? utilityLoadError
+            : utilityLoadingMode === "attributes"
+              ? "Loading combat data..."
+              : utilityLoadingMode === "feat"
+                ? "Loading Feats..."
+                : "Loading Items..."}
+        </p>
+      ) : null}
       {utilityMode === null ? (
       <div className="-mt-8 mx-[92px] flex flex-wrap justify-center gap-1 border-0 pt-0 max-lg:mx-0 max-lg:mt-2 max-lg:border-t max-lg:border-[rgb(var(--sep-colour-59432c))]/30 max-lg:pt-2">
         <button
@@ -2500,7 +2604,6 @@ function ignoreSpellingWord() {
           onClick={() =>
             toggleUtility("attributes")
           }
-          disabled={!attributesComplete}
           className={
             utilityMode === "attributes"
               ? utilityButtonActiveClass
@@ -2515,7 +2618,6 @@ function ignoreSpellingWord() {
           onClick={() =>
             toggleUtility("feat")
           }
-          disabled={!gifts.length}
           className={
             utilityMode === "feat"
               ? utilityButtonActiveClass
@@ -2542,7 +2644,6 @@ function ignoreSpellingWord() {
           onClick={() =>
             toggleUtility("items")
           }
-          disabled={!items.length}
           className={
             utilityMode === "items"
               ? utilityButtonActiveClass

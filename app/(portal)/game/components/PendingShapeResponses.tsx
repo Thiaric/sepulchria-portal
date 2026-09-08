@@ -2,6 +2,7 @@
 import {useActionState,useEffect,useMemo,useState} from "react";
 import {createClient} from "@/lib/supabase/client";
 import type {CharacterAttributes} from "@/types/game";
+import {loadMyEffectiveAttributes} from "../deferred-actions";
 import {resolveIncomingShape,type WarpingActionState} from "../warping-actions";
 
 const initial:WarpingActionState={ok:false,message:""};
@@ -23,9 +24,10 @@ function resolutionFor(row:any,s:any,caster:any){
  };
 }
 
-export function PendingShapeResponses({attributes}:{attributes:CharacterAttributes}){
+export function PendingShapeResponses(){
  const db=useMemo(()=>createClient(),[]);
  const [rows,setRows]=useState<any[]>([]);
+ const [attributes,setAttributes]=useState<CharacterAttributes|null>(null);
  const [state,action]=useActionState(resolveIncomingShape,initial);
 
  useEffect(()=>{
@@ -47,6 +49,17 @@ export function PendingShapeResponses({attributes}:{attributes:CharacterAttribut
   return()=>{live=false;window.clearInterval(timer);void db.removeChannel(ch)};
  },[db,state.submittedAt]);
 
+ useEffect(()=>{
+  if(!rows.length||attributes)return;
+  let active=true;
+  void loadMyEffectiveAttributes()
+    .then(result=>{
+      if(active)setAttributes(result.attributes);
+    })
+    .catch(()=>{});
+  return()=>{active=false};
+ },[rows.length,attributes]);
+
  if(!rows.length)return null;
 
  return <div className="mb-2 space-y-2">{rows.map(row=>{
@@ -61,7 +74,7 @@ export function PendingShapeResponses({attributes}:{attributes:CharacterAttribut
    <p className="mt-1 text-[10px] text-[rgb(var(--sep-colour-b6a58d))]">{s.description}</p>
    <form action={action} className="mt-3 flex flex-wrap gap-2">
     <input type="hidden" name="shape_cast_target_id" value={row.id}/>
-    {resolution.saves.map((x:string)=><button key={x} type="submit" name="save_choice" value={x} className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-2a1c11))] px-3 py-2 text-[8px] uppercase text-[rgb(var(--sep-colour-dfc18f))]">{L[x]??x} ({sign(Number(attributes[A[x]]??0))})</button>)}
+    {resolution.saves.map((x:string)=><button key={x} type="submit" name="save_choice" value={x} className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-2a1c11))] px-3 py-2 text-[8px] uppercase text-[rgb(var(--sep-colour-dfc18f))]">{L[x]??x} ({sign(Number(attributes?.[A[x]]??0))})</button>)}
     <button type="submit" name="save_choice" value="__do_nothing__" className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-2a1c11))] px-3 py-2 text-[8px] uppercase text-[rgb(var(--sep-colour-dfc18f))]">Do nothing</button>
    </form>
   </section>

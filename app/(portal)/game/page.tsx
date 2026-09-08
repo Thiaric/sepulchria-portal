@@ -1,5 +1,4 @@
 import { Suspense, type CSSProperties } from "react";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import {
@@ -16,10 +15,9 @@ import {
   getOrderHeadquartersManageData,
 } from "@/lib/order-headquarters/access";
 import {
-  OrderHeadquartersManageMenu,
-} from "@/components/orders/order-headquarters-manage-menu";
+  OrderHeadquartersPanel,
+} from "@/components/orders/order-headquarters-panel";
 import { createClient } from "@/lib/supabase/server";
-import { getCharacterAttributeBreakdown } from "@/lib/characters/get-effective-character-attributes";
 import type {
   PresentRoomCharacter,
   RoomMessage,
@@ -150,12 +148,8 @@ async function GameContent() {
   }
 
   if (!character.current_room_id) {
-    return (
-      <MissingLocation
-        name={character.display_name}
-      />
-    );
-  }
+  redirect("/?map=sepulchria");
+}
 
   const {
     data: rawRoom,
@@ -176,12 +170,8 @@ async function GameContent() {
   }
 
   if (!rawRoom) {
-    return (
-      <MissingLocation
-        name={character.display_name}
-      />
-    );
-  }
+  redirect("/?map=sepulchria");
+}
 
   const room = rawRoom as RoomRelation;
 
@@ -208,8 +198,8 @@ async function GameContent() {
     );
   }
 
-  const music =
-    await getCharacterMusicPayload(
+  const musicPromise =
+    getCharacterMusicPayload(
       character.id,
       room.music_track_id,
     );
@@ -219,71 +209,6 @@ async function GameContent() {
       PRESENCE_ACTIVE_MINUTES *
         60_000,
   ).toISOString();
-
-  const attributeBreakdownPromise =
-    getCharacterAttributeBreakdown(
-      character.id,
-      {
-        muscles: character.muscles,
-        reflexes: character.reflexes,
-        vigor: character.vigor,
-        brains: character.brains,
-        shrewd: character.shrewd,
-        presence_score:
-          character.presence_score,
-      },
-    );
-
-  const ownedGiftRowsPromise =
-    supabase
-      .from("character_gifts")
-      .select(`
-        id,
-        gift:gifts(
-          id,
-          name,
-          description,
-          is_active,
-          effect_mode,
-          target_mode,
-          damage_dice,
-          damage_type,
-          success_die,
-          success_threshold,
-          success_attribute,
-          duration_minutes,
-          cooldown_minutes,
-          health_delta,
-          max_health_modifier,
-          muscles_modifier,
-          reflexes_modifier,
-          vigour_modifier,
-          shrewd_modifier,
-          brains_modifier,
-          presence_modifier,
-          warping_affinity_modifier,
-          warps_per_day_modifier
-        ),
-        activations:gift_activations(
-          activated_at,
-          expires_at,
-          ended_at,
-          health_reverted_at
-        )
-      `)
-      .eq(
-        "character_id",
-        character.id,
-      );
-
-  const rawInventoryRowsPromise =
-    supabase.rpc(
-      "get_public_character_inventory",
-      {
-        p_character_id:
-          character.id,
-      },
-    );
 
   const latestMessagePromise =
     supabase
@@ -371,9 +296,7 @@ async function GameContent() {
       : Promise.resolve([]);
 
   const [
-    attributeBreakdown,
-    ownedGiftResult,
-    rawInventoryResult,
+    music,
     latestMessageResult,
     presentResult,
     staffSession,
@@ -385,9 +308,7 @@ async function GameContent() {
     breezeManageData,
     breezeStaffOccupants,
   ] = await Promise.all([
-    attributeBreakdownPromise,
-    ownedGiftRowsPromise,
-    rawInventoryRowsPromise,
+    musicPromise,
     latestMessagePromise,
     presentResultPromise,
     staffSessionPromise,
@@ -401,369 +322,9 @@ async function GameContent() {
   ]);
 
   const {
-    data: ownedGiftRows,
-    error: ownedGiftError,
-  } = ownedGiftResult;
-
-  const {
-    data: rawInventoryRows,
-    error: chatInventoryError,
-  } = rawInventoryResult;
-
-  const {
     data: latestMessage,
     error: latestMessageError,
   } = latestMessageResult;
-
-  if (ownedGiftError) {
-    throw new Error(
-      `Unable to load character Feats: ${ownedGiftError.message}`,
-    );
-  }
-
-  const giftNow = Date.now();
-
-  const chatGifts = (ownedGiftRows ?? [])
-    .map((ownership) => {
-      const relation = ownership.gift ?? null;
-      const gift = Array.isArray(relation)
-        ? relation[0] ?? null
-        : relation;
-
-      if (!gift || !gift.is_active) {
-        return null;
-      }
-
-      const activations =
-        ownership.activations ?? [];
-
-      const activeActivation =
-        activations.find(
-          (activation) =>
-            activation.ended_at === null &&
-            Date.parse(activation.activated_at) <= giftNow &&
-            Date.parse(activation.expires_at) > giftNow,
-        ) ?? null;
-
-      const latestActivation =
-        [...activations]
-          .sort(
-            (a, b) =>
-              Date.parse(b.activated_at) -
-              Date.parse(a.activated_at),
-          )[0] ?? null;
-
-      const cooldownUntil =
-        gift.effect_mode === "temporary" &&
-        latestActivation
-          ? new Date(
-              Date.parse(
-                latestActivation.activated_at,
-              ) +
-                (gift.cooldown_minutes ?? 0) *
-                  60 *
-                  1000,
-            ).toISOString()
-          : null;
-
-      return {
-        characterGiftId: ownership.id,
-        giftId: gift.id,
-        name: gift.name,
-        description: gift.description ?? "",
-        effectMode: gift.effect_mode as
-          | "none"
-          | "passive"
-          | "temporary",
-        targetMode:
-          (gift.target_mode ?? "self") as
-            | "self"
-            | "other"
-            | "either",
-        damageDice: gift.damage_dice ?? null,
-        damageType: gift.damage_type ?? null,
-        successDie: gift.success_die ?? null,
-        successThreshold: gift.success_threshold ?? null,
-        successAttribute:
-          (gift.success_attribute ?? null) as
-            | "muscles"
-            | "reflexes"
-            | "vigor"
-            | "brains"
-            | "shrewd"
-            | "presence_score"
-            | null,
-        durationMinutes: gift.duration_minutes,
-        cooldownMinutes:
-          gift.cooldown_minutes ?? 0,
-        healthDelta:
-          gift.health_delta ?? 0,
-        maxHealthModifier:
-          gift.max_health_modifier ?? 0,
-        musclesModifier: gift.muscles_modifier ?? 0,
-        reflexesModifier: gift.reflexes_modifier ?? 0,
-        vigourModifier: gift.vigour_modifier ?? 0,
-        shrewdModifier: gift.shrewd_modifier ?? 0,
-        brainsModifier: gift.brains_modifier ?? 0,
-        presenceModifier: gift.presence_modifier ?? 0,
-        warpingAffinityModifier: gift.warping_affinity_modifier ?? 0,
-        warpsPerDayModifier: gift.warps_per_day_modifier ?? 0,
-        activeUntil:
-          activeActivation?.expires_at ?? null,
-        cooldownUntil:
-          cooldownUntil &&
-          Date.parse(cooldownUntil) > giftNow
-            ? cooldownUntil
-            : null,
-      };
-    })
-    .filter(
-      (
-        gift,
-      ): gift is NonNullable<typeof gift> =>
-        gift !== null,
-    );
-
-  if (chatInventoryError) {
-    throw new Error(
-      `Unable to load usable Items for chat: ${chatInventoryError.message}`,
-    );
-  }
-
-  const chatInventoryRows =
-    (rawInventoryRows ?? []) as {
-      record_kind: "standard" | "unique";
-      record_id: string;
-      item_id: string;
-      name: string;
-      quantity: number;
-      is_usable: boolean;
-      is_equipped: boolean;
-      equipped_slot: string | null;
-    }[];
-
-  /*
-   * Chat needs:
-   * - ordinary usable Items; and
-   * - equipped Main Hand / Off Hand Weapons.
-   *
-   * Weapons do not need the generic is_usable flag in order to attack.
-   * The weapon resolver validates the equipped slot, Weapon category and
-   * Opposed configuration separately.
-   */
-  const chatCandidateRows =
-    chatInventoryRows.filter(
-      (row) =>
-        row.is_usable ||
-        (
-          row.is_equipped &&
-          ["main_hand", "off_hand"].includes(
-            String(
-              row.equipped_slot ?? "",
-            ),
-          )
-        ),
-    );
-
-  const chatCandidateItemIds = [
-    ...new Set(
-      chatCandidateRows.map(
-        (row) => row.item_id,
-      ),
-    ),
-  ];
-
-  const [
-    usableMastersResult,
-    uniqueChargesResult,
-    itemCooldownsResult,
-  ] = await Promise.all([
-    chatCandidateItemIds.length
-      ? supabase
-          .from("items")
-          .select(`
-            id,
-            name,
-            description,
-            target_mode,
-            max_charges,
-            success_die,
-            success_threshold,
-            resolution_mode,
-            counter_options,
-            success_attribute,
-            damage_dice,
-            damage_type,
-            cooldown_minutes,
-            teaches_recipe_id,
-            category:item_categories(slug),
-            effects:item_effects(
-              trigger_type,
-              effect_mode,
-              duration_minutes,
-              muscles_modifier,
-              reflexes_modifier,
-              vigour_modifier,
-              shrewd_modifier,
-              brains_modifier,
-              presence_modifier,
-              health_delta,
-              max_health_modifier,
-              warping_affinity_modifier,
-              warps_per_day_modifier
-            )
-          `)
-          .in(
-            "id",
-            chatCandidateItemIds,
-          )
-      : Promise.resolve({ data: [], error: null }),
-
-    supabase
-      .from("character_item_instances")
-      .select("id, charges_remaining")
-      .eq("owner_character_id", character.id),
-
-    supabase
-      .from("character_item_use_cooldowns")
-      .select("source_key, ready_at")
-      .eq("character_id", character.id),
-  ]);
-
-  const chatItemError =
-    usableMastersResult.error ??
-    uniqueChargesResult.error ??
-    itemCooldownsResult.error;
-
-  if (chatItemError) {
-    throw new Error(
-      `Unable to prepare usable Items for chat: ${chatItemError.message}`,
-    );
-  }
-
-  const masterById = new Map(
-    (usableMastersResult.data ?? []).map(
-      (item) => [item.id, item],
-    ),
-  );
-
-  const chargesByInstance = new Map(
-    (uniqueChargesResult.data ?? []).map(
-      (instance) => [
-        instance.id,
-        instance.charges_remaining,
-      ],
-    ),
-  );
-
-  const cooldownByKey = new Map(
-    (itemCooldownsResult.data ?? []).map(
-      (entry) => [entry.source_key, entry.ready_at],
-    ),
-  );
-
-  const chatItems = chatCandidateRows
-    .map((row) => {
-      const master = masterById.get(row.item_id);
-
-      /*
-       * Recipe books/patterns are learned from the Character Inventory,
-       * not used as an in-location/chat action.
-       */
-      if (
-        !master ||
-        master.teaches_recipe_id
-      ) {
-        return null;
-      }
-
-      const sourceKey =
-        row.record_kind === "unique"
-          ? `unique:${row.record_id}`
-          : `standard:${row.item_id}`;
-
-      const categoryRelation =
-        master.category ?? null;
-
-      const category =
-        Array.isArray(
-          categoryRelation,
-        )
-          ? categoryRelation[0] ?? null
-          : categoryRelation;
-
-      const isEquippedHandWeapon =
-        category?.slug === "weapon" &&
-        row.is_equipped &&
-        ["main_hand", "off_hand"].includes(
-          String(
-            row.equipped_slot ?? "",
-          ),
-        );
-
-      if (
-        !row.is_usable &&
-        !isEquippedHandWeapon
-      ) {
-        return null;
-      }
-
-      if (
-        category?.slug === "weapon" &&
-        !isEquippedHandWeapon
-      ) {
-        return null;
-      }
-
-      return {
-        recordKind: row.record_kind,
-        recordId: row.record_id,
-        itemId: row.item_id,
-        name: row.name,
-        description: master.description ?? "",
-        quantity: row.quantity,
-        targetMode:
-          (master.target_mode ?? "self") as
-            | "self"
-            | "other"
-            | "either",
-        maxCharges: master.max_charges,
-        chargesRemaining:
-          row.record_kind === "unique"
-            ? chargesByInstance.get(row.record_id) ?? null
-            : null,
-        cooldownReadyAt:
-          cooldownByKey.get(sourceKey) ?? null,
-        successDie: master.success_die ?? null,
-        successThreshold: master.success_threshold ?? null,
-        resolutionMode:
-          (master.resolution_mode ?? "automatic") as
-            | "automatic"
-            | "fixed"
-            | "opposed",
-        counterOptions:
-          Array.isArray(master.counter_options)
-            ? master.counter_options
-            : [],
-        successAttribute: master.success_attribute ?? null,
-        damageDice: master.damage_dice ?? null,
-        damageType: master.damage_type ?? null,
-        categorySlug: category?.slug ?? null,
-        isEquipped: row.is_equipped ?? false,
-        equippedSlot: row.equipped_slot ?? null,
-        effects: Array.isArray(master.effects)
-          ? master.effects
-          : master.effects
-            ? [master.effects]
-            : [],
-      };
-    })
-    .filter(
-      (
-        item,
-      ): item is NonNullable<typeof item> =>
-        item !== null,
-    );
 
   const roomArea =
   Array.isArray(room.areas)
@@ -1155,6 +716,15 @@ async function GameContent() {
     className="flex min-h-0 flex-1 flex-col overflow-visible border border-[rgb(var(--sep-colour-6a5032))]/50 bg-[rgb(var(--sep-colour-17110d))] lg:overflow-hidden"
   >
 
+    {headquartersManageData ? (
+      <div data-sep-interaction-ignore="true">
+        <OrderHeadquartersPanel
+          key={`headquarters-panel-${headquartersManageData.headquartersId}`}
+          data={headquartersManageData}
+        />
+      </div>
+    ) : null}
+
     {gatheringState ? (
       <div data-sep-interaction-ignore="true">
         <GatheringPanel state={gatheringState} />
@@ -1208,25 +778,6 @@ async function GameContent() {
         </div>
 
         <RoomChatForm
-          attributes={{
-        muscles:
-          attributeBreakdown.muscles.effective,
-        reflexes:
-          attributeBreakdown.reflexes.effective,
-        vigor:
-          attributeBreakdown.vigor.effective,
-        brains:
-          attributeBreakdown.brains.effective,
-        shrewd:
-          attributeBreakdown.shrewd.effective,
-        presence_score:
-          attributeBreakdown.presence_score.effective,
-      }}
-      attributeBreakdown={
-        attributeBreakdown
-      }
-      gifts={chatGifts}
-      items={chatItems}
       presentCharacters={
         presentCharacters
       }
@@ -1247,14 +798,6 @@ async function GameContent() {
               : null
           }
           canTakeLeave={room.chat_enabled}
-          headquartersManageControl={
-            headquartersManageData ? (
-              <OrderHeadquartersManageMenu
-  key={`headquarters-manage-${headquartersManageData.headquartersId}`}
-  data={headquartersManageData}
-/>
-            ) : null
-          }
         />
       </>
     ) : null}
@@ -1264,30 +807,3 @@ async function GameContent() {
 );
 }
 
-function MissingLocation({
-  name,
-}: {
-  name: string;
-}) {
-  return (
-    <div className="flex min-h-[60vh] items-center justify-center p-5 text-[rgb(var(--sep-colour-e7d5b0))]">
-      <section className="max-w-xl border border-[rgb(var(--sep-colour-654b2e))]/50 bg-[rgb(var(--sep-colour-17110d))] p-8 text-center">
-        <h1 className="font-serif text-3xl text-[rgb(var(--sep-colour-dec69a))]">
-          {name} has no current location
-        </h1>
-
-        <p className="mt-4 text-sm leading-7 text-[rgb(var(--sep-colour-9e907d))]">
-          This character must be assigned to a room before
-          entering the game.
-        </p>
-
-        <Link
-          href="/"
-          className="flex min-w-0 items-center justify-center border border-[rgb(var(--sep-colour-725c3d))] bg-[rgb(var(--sep-colour-21190f))] px-2 py-1.5 text-center text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-d6bb8d))] transition hover:border-[rgb(var(--sep-colour-a17a49))] hover:bg-[rgb(var(--sep-colour-352718))] hover:text-[rgb(var(--sep-colour-f0d6a7))] sm:px-3 sm:text-[9px] sm:tracking-[0.18em] mt-6 inline-block"
-        >
-          Return to dashboard
-        </Link>
-      </section>
-    </div>
-  );
-}

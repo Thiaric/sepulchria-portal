@@ -10,6 +10,7 @@ import { CharacterGiftsDisplay } from "@/components/characters/character-gifts-d
 import { CharacterInventoryDisplay } from "@/components/characters/character-inventory-display";
 import { CharacterTrophiesDisplay } from "@/components/characters/character-trophies-display";
 import { CharacterDisplayTrophies } from "@/components/characters/character-display-trophies";
+import { AutoFitCharacterName } from "@/components/characters/auto-fit-character-name";
 import { CharacterExpertiseTotal } from "@/components/characters/character-expertise-total";
 import { CharacterMusicPlayer } from "@/components/characters/character-music-player";
 import { CharacterSheetTabs, type CharacterSheetTab } from "@/components/characters/character-sheet-tabs";
@@ -301,13 +302,12 @@ export function PublicCharacterProfileView({
                   </p>
 
                   <div className="mt-1 grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-4">
-                    <h1
-                      data-cosmetic-character-id={character.id}
-                      data-cosmetic-surface="nameplate"
-                      className="min-w-0 break-words font-serif text-[rgb(var(--sep-colour-ecd9b2))] text-[0.9rem] sm:text-[1rem]"
+                    <AutoFitCharacterName
+                      characterId={character.id}
+                      className="text-[0.9rem] text-[rgb(var(--sep-colour-ecd9b2))] sm:text-[1rem]"
                     >
                       {fullName}
-                    </h1>
+                    </AutoFitCharacterName>
 
                     <div className="justify-self-end">
                       <CharacterDisplayTrophies
