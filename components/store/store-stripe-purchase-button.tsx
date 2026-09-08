@@ -212,7 +212,7 @@ export function StoreStripePurchaseButton({
             disabled={pending}
             className="whitespace-nowrap border border-[rgb(var(--sep-colour-987344))]/70 bg-[rgb(var(--sep-colour-2a1d12))] px-4 py-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-efd9aa))] transition hover:border-[rgb(var(--sep-colour-b78b50))] disabled:cursor-wait disabled:opacity-55"
           >
-            {pending ? "Opening..." : `Buy for ${label}`}
+            {pending ? "Opening..." : `Buy for ${label} · tax incl.`}
           </button>
         </div>
 

@@ -189,8 +189,15 @@ for (const item of orderItems) {
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <AdminActionForm action={syncAllStoreStripe} successMessage="Stripe sync completed.">
-              <button className={button}>Sync all to Stripe</button>
+            <AdminActionForm
+              action={syncAllStoreStripe}
+              successMessage="Stripe sync completed."
+              pendingLabel="Syncing..."
+              busyCursor
+            >
+              <button className={`${button} disabled:cursor-wait disabled:opacity-60`}>
+                Sync all to Stripe
+              </button>
             </AdminActionForm>
           </div>
         </div>

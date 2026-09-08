@@ -26,12 +26,16 @@ export function AdminActionForm({
   successMessage,
   className,
   refreshDelaysMs = [],
+  pendingLabel,
+  busyCursor = false,
   children,
 }: {
   action: ServerFormAction;
   successMessage: string;
   className?: string;
   refreshDelaysMs?: number[];
+  pendingLabel?: string;
+  busyCursor?: boolean;
   children: ReactNode;
 }) {
   const router = useRouter();
@@ -71,7 +75,21 @@ export function AdminActionForm({
       form.querySelectorAll<HTMLButtonElement>('button[type="submit"], button:not([type])'),
     );
     const previouslyDisabled = buttons.map((button) => button.disabled);
+    const previousSubmitterText = submitter?.textContent ?? null;
+    const previousHtmlCursor = document.documentElement.style.cursor;
+    const previousBodyCursor = document.body.style.cursor;
+
     buttons.forEach((button) => { button.disabled = true; });
+
+    if (submitter && pendingLabel) {
+      submitter.textContent = pendingLabel;
+    }
+
+    if (busyCursor) {
+      document.documentElement.style.cursor = "wait";
+      document.body.style.cursor = "wait";
+    }
+
     submitter?.setAttribute("aria-busy", "true");
     setPending(true);
     setFeedback(null);
@@ -90,6 +108,16 @@ export function AdminActionForm({
       showFeedback("error", message, submitter);
     } finally {
       buttons.forEach((button, index) => { button.disabled = previouslyDisabled[index]; });
+
+      if (submitter && pendingLabel && previousSubmitterText !== null) {
+        submitter.textContent = previousSubmitterText;
+      }
+
+      if (busyCursor) {
+        document.documentElement.style.cursor = previousHtmlCursor;
+        document.body.style.cursor = previousBodyCursor;
+      }
+
       submitter?.removeAttribute("aria-busy");
       setPending(false);
     }
