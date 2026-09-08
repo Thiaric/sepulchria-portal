@@ -342,7 +342,6 @@ async function GameContent() {
     attribute_value,
     roll_total,
     whisper_recipient_character_id,
-    condition_snapshot,
     created_at,
     character_id,
 
@@ -780,8 +779,6 @@ async function GameContent() {
 
         <RoomChatForm
       roomId={room.id}
-      viewerCharacterId={character.id}
-      viewerDisplayName={character.display_name}
       presentCharacters={
         presentCharacters
       }

@@ -9,7 +9,6 @@ import {
   type AdminAncestryGiftOption,
 } from "@/components/admin/admin-ancestry-gift-selector";
 import { CharacterReviewFields } from "@/components/admin/character-review-fields";
-import { CharacterConditionsEditor } from "@/components/characters/character-conditions-editor";
 import Image from "next/image";
 import {
   hasStaffCapability,
@@ -654,33 +653,6 @@ export default async function AdminCharacterPage({
             </div>
           </div>
         </section>
-
-        {canEditCharacter ? (
-          <section
-            id="admin-character-conditions"
-            className="mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6"
-          >
-            <p className="text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))]">
-              Character state
-            </p>
-
-            <h3 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">
-              Conditions
-            </h3>
-
-            <p className="mt-2 max-w-3xl text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
-              Owner, Administrators and Masters may add or remove visible Conditions on this Character.
-            </p>
-
-            <div className="mt-4">
-              <CharacterConditionsEditor
-                scope="admin"
-                characterId={character.id}
-                characterName={displayName}
-              />
-            </div>
-          </section>
-        ) : null}
 
         <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
           <div className="space-y-6">

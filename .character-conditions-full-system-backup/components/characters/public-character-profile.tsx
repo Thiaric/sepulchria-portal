@@ -10,7 +10,6 @@ import { CharacterGiftsDisplay } from "@/components/characters/character-gifts-d
 import { CharacterInventoryDisplay } from "@/components/characters/character-inventory-display";
 import { CharacterTrophiesDisplay } from "@/components/characters/character-trophies-display";
 import { CharacterDisplayTrophies } from "@/components/characters/character-display-trophies";
-import { CharacterConditionsDisplay } from "@/components/characters/character-conditions-display";
 import { AutoFitCharacterName } from "@/components/characters/auto-fit-character-name";
 import { CharacterExpertiseTotal } from "@/components/characters/character-expertise-total";
 import { CharacterMusicPlayer } from "@/components/characters/character-music-player";
@@ -316,10 +315,6 @@ export function PublicCharacterProfileView({
                       />
                     </div>
                   </div>
-
-                  <CharacterConditionsDisplay
-                    characterId={character.id}
-                  />
                 </div>
               </div>
 

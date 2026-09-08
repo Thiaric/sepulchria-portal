@@ -34,13 +34,7 @@ export type CharacterCondition = {
   id: string;
   character_id: string;
   label: string;
-  created_by_role:
-    | "player"
-    | "master"
-    | "admin"
-    | "owner";
   created_at: string;
-  can_remove?: boolean;
 };
 
 export type RoomConditionSnapshot = {

@@ -30,23 +30,6 @@ export type PresentRoomCharacter = {
   display_name: string;
 };
 
-export type CharacterCondition = {
-  id: string;
-  character_id: string;
-  label: string;
-  created_by_role:
-    | "player"
-    | "master"
-    | "admin"
-    | "owner";
-  created_at: string;
-  can_remove?: boolean;
-};
-
-export type RoomConditionSnapshot = {
-  label: string;
-};
-
 export type CharacterAttributeKey =
   | "muscles"
   | "reflexes"
@@ -88,7 +71,6 @@ export type RoomMessage = {
     | null;
   created_at: string;
   character_id: string;
-  condition_snapshot: RoomConditionSnapshot[];
   character:
     | CharacterSummary
     | CharacterSummary[]

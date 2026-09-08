@@ -63,9 +63,6 @@ type InsertedRoomMessage = {
   whisper_recipient_character_id:
     | string
     | null;
-  condition_snapshot: {
-    label: string;
-  }[];
   created_at: string;
 };
 
@@ -1318,47 +1315,6 @@ const [activeShapeTags,setActiveShapeTags]=useState<
     );
   }
 
-  function conditionSnapshotHeaderText(
-    snapshot:
-      | {
-          label: string;
-        }[]
-      | null
-      | undefined,
-    metadataColour?: string,
-  ) {
-    const labels =
-      (snapshot ?? [])
-        .map((entry) =>
-          String(
-            entry?.label ?? "",
-          ).trim(),
-        )
-        .filter(Boolean);
-
-    if (!labels.length) {
-      return null;
-    }
-
-    return (
-      <span
-        data-room-condition-snapshot="true"
-        className="text-[9px] tracking-[.04em] text-[rgb(var(--sep-colour-b99765))]"
-        style={
-          metadataColour
-            ? {
-                color:
-                  metadataColour,
-              }
-            : undefined
-        }
-      >
-        {" | "}
-        {labels.join(" - ")}
-      </span>
-    );
-  }
-
   useEffect(() => {
     const container =
       scrollContainerRef.current;
@@ -1611,12 +1567,6 @@ const [activeShapeTags,setActiveShapeTags]=useState<
               whisper_recipient_character_id:
                 inserted
                   .whisper_recipient_character_id,
-              condition_snapshot:
-                Array.isArray(
-                  inserted.condition_snapshot,
-                )
-                  ? inserted.condition_snapshot
-                  : [],
               created_at:
                 inserted.created_at,
               character_id:
@@ -2035,13 +1985,6 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                               )
                             : null}
 
-                          {conditionSnapshotHeaderText(
-                            item.condition_snapshot,
-                            privateLocationTheme
-                              ? privateLocationTheme.offgameTextColour
-                              : "rgb(var(--sep-colour-d3c2aa))",
-                          )}
-
                           <br />
 
                           <ActionSpeechText
@@ -2233,10 +2176,6 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                       {author
                         ? shapeTagHeaderText(author.id)
                         : null}
-
-                      {conditionSnapshotHeaderText(
-                        item.condition_snapshot,
-                      )}
 
                       <br />
 

@@ -49,7 +49,6 @@ import {
 import { PendingOpposedActions } from "./PendingOpposedActions";
 import { PendingShapeResponses } from "./PendingShapeResponses";
 import { WarpingPanel } from "./WarpingPanel";
-import { CharacterConditionsEditor } from "@/components/characters/character-conditions-editor";
 import {
   loadRoomCombatData,
   loadRoomFeats,
@@ -197,8 +196,6 @@ function formatSigned(
 
 export default function RoomChatForm({
   roomId,
-  viewerCharacterId,
-  viewerDisplayName,
   presentCharacters: initialPresentCharacters,
   canUseFate,
   exportEnabled,
@@ -208,8 +205,6 @@ export default function RoomChatForm({
   headquartersManageControl,
 }: {
   roomId: string;
-  viewerCharacterId: string;
-  viewerDisplayName: string;
   presentCharacters: PresentRoomCharacter[];
   canUseFate: boolean;
   exportEnabled: boolean;
@@ -502,7 +497,6 @@ export default function RoomChatForm({
       | "items"
       | "exchange"
       | "warping"
-      | "conditions"
       | null
     >(null);
 
@@ -1433,8 +1427,7 @@ function ignoreSpellingWord() {
       | "feat"
       | "items"
       | "exchange"
-      | "warping"
-      | "conditions",
+      | "warping",
   ) {
     if (utilityLoadingMode) return;
 
@@ -1703,25 +1696,6 @@ function ignoreSpellingWord() {
             </div>
           </div>
         </form>
-       ) : utilityMode === "conditions" ? (
-        <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3">
-          <UtilityPanelHeader
-            title="Conditions"
-            description="Add or remove visible Conditions. Staff may select another Character currently in this Location."
-            onClose={() => setUtilityMode(null)}
-          />
-
-          <CharacterConditionsEditor
-            scope="location"
-            characterId={viewerCharacterId}
-            characterName={viewerDisplayName}
-            selectableCharacters={
-              canUseFate
-                ? presentCharacters
-                : []
-            }
-          />
-        </div>
       ) : utilityMode === "whisper" ? (
         <form
           action={messageAction}
@@ -2782,20 +2756,6 @@ function ignoreSpellingWord() {
       {utilityMode === null ? (
       <div className="-mt-8 mx-[92px] flex flex-wrap justify-center gap-1 border-0 pt-0 max-lg:mx-0 max-lg:mt-2 max-lg:border-t max-lg:border-[rgb(var(--sep-colour-59432c))]/30 max-lg:pt-2">
         <button
-  type="button"
-  onClick={() =>
-    toggleUtility("conditions")
-  }
-  className={
-    utilityMode === "conditions"
-      ? utilityButtonActiveClass
-      : utilityButtonClass
-  }
->
-  Conditions
-</button>
-
-<button
           type="button"
           onClick={() =>
             toggleUtility("whisper")

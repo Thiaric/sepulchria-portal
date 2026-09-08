@@ -22,8 +22,6 @@ import { CharacterRemnantsWallet } from "@/components/characters/character-remna
 import { CharacterLedger } from "@/components/characters/character-ledger";
 import { CharacterTrophiesDisplay } from "@/components/characters/character-trophies-display";
 import { CharacterDisplayTrophies } from "@/components/characters/character-display-trophies";
-import { CharacterConditionsDisplay } from "@/components/characters/character-conditions-display";
-import { CharacterConditionsEditor } from "@/components/characters/character-conditions-editor";
 import { AutoFitCharacterName } from "@/components/characters/auto-fit-character-name";
 import { DisplayTrophySelector } from "@/components/characters/display-trophy-selector";
 import { LiveCharacterSheetRefresh } from "@/components/characters/live-character-sheet-refresh";
@@ -489,12 +487,6 @@ export function Profile({
                         </div>
                       ) : null}
                     </div>
-
-                    {character.id ? (
-                      <CharacterConditionsDisplay
-                        characterId={character.id}
-                      />
-                    ) : null}
                   </div>
 
 
@@ -695,19 +687,6 @@ export function Profile({
           </div>
 
           <div data-character-sheet-panel="edit">
-            {activeTab === "edit" &&
-            own &&
-            character.id ? (
-              <CharacterConditionsEditor
-                scope="self"
-                characterId={character.id}
-                characterName={
-                  character.display_name ??
-                  "Your Character"
-                }
-              />
-            ) : null}
-
             {activeTab === "edit" &&
             canEdit ? (
               <section className="border border-[rgb(var(--sep-colour-6b5032))]/50 bg-[rgb(var(--sep-colour-17110d))] p-5">
