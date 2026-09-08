@@ -20664,18 +20664,6 @@ html[data-portal-skin] [data-homepage-nav-button="true"] [data-homepage-nav-role
   animation-delay: 0s;
 }
 
-.t5 {
-  left: calc(50% + 8px);
-  top: calc(50% - 5px);
-  animation-delay: 0s;
-}
-
-.t9 {
-  left: calc(50% + 3px);
-  top: calc(50% + 8px);
-  animation-delay: 0s;
-}
-
 .t13 {
   left: calc(50% - 10px);
   top: calc(50% + 3px);
@@ -20683,11 +20671,7 @@ html[data-portal-skin] [data-homepage-nav-button="true"] [data-homepage-nav-role
 }
 
 /* GROUP 2 */
-.t2 {
-  left: calc(50% + 4px);
-  top: calc(50% - 7px);
-  animation-delay: -2s;
-}
+
 
 .t6 {
   left: calc(50% + 12px);
@@ -20701,18 +20685,7 @@ html[data-portal-skin] [data-homepage-nav-button="true"] [data-homepage-nav-role
   animation-delay: -2s;
 }
 
-.t14 {
-  left: calc(50% - 6px);
-  top: calc(50% - 3px);
-  animation-delay: -2s;
-}
-
 /* GROUP 3 */
-.t3 {
-  left: calc(50% - 9px);
-  top: calc(50% - 10px);
-  animation-delay: -4s;
-}
 
 .t7 {
   left: calc(50% + 5px);
@@ -20726,11 +20699,6 @@ html[data-portal-skin] [data-homepage-nav-button="true"] [data-homepage-nav-role
   animation-delay: -4s;
 }
 
-.t15 {
-  left: calc(50% + 13px);
-  top: calc(50% - 3px);
-  animation-delay: -4s;
-}
 
 /* GROUP 4 */
 .t4 {
@@ -20739,17 +20707,9 @@ html[data-portal-skin] [data-homepage-nav-button="true"] [data-homepage-nav-role
   animation-delay: -6s;
 }
 
-.t8 {
-  left: calc(50% + 10px);
-  top: calc(50% + 10px);
-  animation-delay: -6s;
-}
 
-.t12 {
-  left: calc(50% - 13px);
-  top: calc(50% - 2px);
-  animation-delay: -6s;
-}
+
+
 
 .t16 {
   left: calc(50% - 7px);
@@ -20763,27 +20723,27 @@ html[data-portal-skin] [data-homepage-nav-button="true"] [data-homepage-nav-role
     transform: scale(0.35);
   }
 
+  10% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+
   20% {
     opacity: 1;
     transform: scale(1.1);
   }
 
   40% {
-    opacity: 1;
-    transform: scale(1.1);
-  }
-
-  60% {
     opacity: 0.5;
     transform: scale(0.75);
   }
 
-  80% {
+  50% {
     opacity: 0;
     transform: scale(0.35);
   }
 
-  100% {
+  65% {
     opacity: 0;
     transform: scale(0.35);
   }

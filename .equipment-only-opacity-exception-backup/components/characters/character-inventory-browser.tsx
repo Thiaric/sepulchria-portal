@@ -1307,7 +1307,6 @@ const isRightSide =
       </div>
 
       <div
-        data-sep-equipment-popup="true"
         className={[
           "pointer-events-none absolute z-[500] hidden w-[420px] max-w-[calc(100vw-32px)]",
           "hidden md:group-hover/equipped:block md:group-focus-within/equipped:block",
@@ -1374,6 +1373,7 @@ const isRightSide =
 
           {open ? (
   <div
+  data-sep-equipment-popup="true"
   className={`absolute z-[200] w-[280px] border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-0e0a08))] p-2 shadow-2xl ${
     opensUp
       ? "bottom-full mb-2"

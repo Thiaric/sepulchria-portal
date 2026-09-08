@@ -463,31 +463,6 @@ export function CosmeticRuntime() {
           rgb(var(--sep-colour-090705) / 40%) !important;
       }
 
-
-      /* EQUIPMENT POPUP — SAME SOLID EXCEPTION AS FEATS/WARPING START */
-
-      [data-cosmetic-surface="sheet"][data-has-profile-background="true"]
-        [data-sep-equipment-popup="true"] {
-        background-color:
-          rgb(var(--sep-colour-0e0a08)) !important;
-      }
-
-      [data-cosmetic-surface="sheet"][data-has-profile-background="true"]
-        [data-sep-equipment-popup="true"]
-        article[class*="bg-[rgb(var(--sep-colour-18110c))]"] {
-        background-color:
-          rgb(var(--sep-colour-18110c)) !important;
-      }
-
-      [data-cosmetic-surface="sheet"][data-has-profile-background="true"]
-        [data-sep-equipment-popup="true"]
-        div[class*="bg-[rgb(var(--sep-colour-100c09))]"] {
-        background-color:
-          rgb(var(--sep-colour-100c09)) !important;
-      }
-
-      /* EQUIPMENT POPUP — SAME SOLID EXCEPTION AS FEATS/WARPING END */
-
       /* ---------------------------------------------------------------
        * SHARED ORNAMENTAL MESSAGE/POST SHELLS
        * --------------------------------------------------------------- */

@@ -69,19 +69,11 @@ export async function PortalHeader({ context }: PortalHeaderProps) {
   <span className="sep-store-sparkle-orbit">
   <span className="sep-metal-twinkle t1" />
   <span className="sep-metal-twinkle t2" />
-  <span className="sep-metal-twinkle t3" />
   <span className="sep-metal-twinkle t4" />
-  <span className="sep-metal-twinkle t5" />
   <span className="sep-metal-twinkle t6" />
   <span className="sep-metal-twinkle t7" />
-  <span className="sep-metal-twinkle t8" />
-  <span className="sep-metal-twinkle t9" />
-  <span className="sep-metal-twinkle t10" />
   <span className="sep-metal-twinkle t11" />
-  <span className="sep-metal-twinkle t12" />
   <span className="sep-metal-twinkle t13" />
-  <span className="sep-metal-twinkle t14" />
-  <span className="sep-metal-twinkle t15" />
   <span className="sep-metal-twinkle t16" />
 
   <svg

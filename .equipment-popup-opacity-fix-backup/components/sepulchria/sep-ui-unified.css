@@ -5325,20 +5325,3 @@ body[data-portal-skin="pioneers-land"] [data-portal-navigation]
 }
 
 /* PIONEERS' LAND — FULL PORTAL PALETTE END */
-
-/* EQUIPMENT POPUP — OPAQUE SURFACE FIX */
-body.portal-skin-scope [data-sep-equipment-popup="true"] {
-  background-color: rgb(var(--sep-colour-0e0a08)) !important;
-  opacity: 1 !important;
-  isolation: isolate;
-}
-
-body.portal-skin-scope [data-sep-equipment-popup="true"] > * {
-  opacity: 1 !important;
-}
-
-body.portal-skin-scope
-  [data-sep-equipment-popup="true"]
-  [class*="bg-[rgb(var(--sep-colour-"] {
-  opacity: 1 !important;
-}

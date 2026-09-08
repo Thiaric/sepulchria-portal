@@ -1307,7 +1307,6 @@ const isRightSide =
       </div>
 
       <div
-        data-sep-equipment-popup="true"
         className={[
           "pointer-events-none absolute z-[500] hidden w-[420px] max-w-[calc(100vw-32px)]",
           "hidden md:group-hover/equipped:block md:group-focus-within/equipped:block",

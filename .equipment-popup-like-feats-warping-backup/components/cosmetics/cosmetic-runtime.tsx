@@ -464,8 +464,7 @@ export function CosmeticRuntime() {
       }
 
 
-      /* EQUIPMENT POPUP — SAME SOLID EXCEPTION AS FEATS/WARPING START */
-
+      /* EQUIPMENT-ONLY PROFILE-BACKGROUND EXCEPTION START */
       [data-cosmetic-surface="sheet"][data-has-profile-background="true"]
         [data-sep-equipment-popup="true"] {
         background-color:
@@ -485,8 +484,7 @@ export function CosmeticRuntime() {
         background-color:
           rgb(var(--sep-colour-100c09)) !important;
       }
-
-      /* EQUIPMENT POPUP — SAME SOLID EXCEPTION AS FEATS/WARPING END */
+      /* EQUIPMENT-ONLY PROFILE-BACKGROUND EXCEPTION END */
 
       /* ---------------------------------------------------------------
        * SHARED ORNAMENTAL MESSAGE/POST SHELLS

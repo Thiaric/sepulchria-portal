@@ -430,11 +430,17 @@ export function CosmeticRuntime() {
       }
 
       [data-cosmetic-surface="sheet"][data-has-profile-background="true"]
-        :is(section, article, div)[class*="bg-[rgb(var(--sep-colour-17110d))]"],
+        :is(section, article, div)[class*="bg-[rgb(var(--sep-colour-17110d))]"]
+        :not([data-sep-equipment-popup="true"])
+        :not([data-sep-equipment-popup="true"] *),
       [data-cosmetic-surface="sheet"][data-has-profile-background="true"]
-        :is(section, article, div)[class*="bg-[rgb(var(--sep-colour-15100d))]"],
+        :is(section, article, div)[class*="bg-[rgb(var(--sep-colour-15100d))]"]
+        :not([data-sep-equipment-popup="true"])
+        :not([data-sep-equipment-popup="true"] *),
       [data-cosmetic-surface="sheet"][data-has-profile-background="true"]
-        :is(section, article, div)[class*="bg-[rgb(var(--sep-colour-120e0b))]"] {
+        :is(section, article, div)[class*="bg-[rgb(var(--sep-colour-120e0b))]"]
+        :not([data-sep-equipment-popup="true"])
+        :not([data-sep-equipment-popup="true"] *) {
         background-color:
           rgb(var(--sep-colour-090705) / 40%) !important;
       }
@@ -458,35 +464,12 @@ export function CosmeticRuntime() {
           [data-character-sheet-panel="offgame"],
           [data-character-sheet-panel="audit"]
         )
-        :is(section, article, div)[class*="bg-[rgb(var(--sep-colour-"] {
+        :is(section, article, div)[class*="bg-[rgb(var(--sep-colour-"]
+        :not([data-sep-equipment-popup="true"])
+        :not([data-sep-equipment-popup="true"] *) {
         background-color:
           rgb(var(--sep-colour-090705) / 40%) !important;
       }
-
-
-      /* EQUIPMENT POPUP — SAME SOLID EXCEPTION AS FEATS/WARPING START */
-
-      [data-cosmetic-surface="sheet"][data-has-profile-background="true"]
-        [data-sep-equipment-popup="true"] {
-        background-color:
-          rgb(var(--sep-colour-0e0a08)) !important;
-      }
-
-      [data-cosmetic-surface="sheet"][data-has-profile-background="true"]
-        [data-sep-equipment-popup="true"]
-        article[class*="bg-[rgb(var(--sep-colour-18110c))]"] {
-        background-color:
-          rgb(var(--sep-colour-18110c)) !important;
-      }
-
-      [data-cosmetic-surface="sheet"][data-has-profile-background="true"]
-        [data-sep-equipment-popup="true"]
-        div[class*="bg-[rgb(var(--sep-colour-100c09))]"] {
-        background-color:
-          rgb(var(--sep-colour-100c09)) !important;
-      }
-
-      /* EQUIPMENT POPUP — SAME SOLID EXCEPTION AS FEATS/WARPING END */
 
       /* ---------------------------------------------------------------
        * SHARED ORNAMENTAL MESSAGE/POST SHELLS
