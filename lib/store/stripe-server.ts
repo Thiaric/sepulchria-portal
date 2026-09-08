@@ -227,7 +227,8 @@ export async function syncStoreProductToStripe(
         remote &&
         remote.unit_amount === desiredAmount &&
         remote.currency.toLowerCase() === desiredCurrency &&
-        remoteProductId(remote.product) === stripeProductId;
+        remoteProductId(remote.product) === stripeProductId &&
+        remote.tax_behavior === "inclusive";
 
       if (!matches) {
         if (remote?.active) {
@@ -238,6 +239,7 @@ export async function syncStoreProductToStripe(
           product: stripeProductId,
           currency: desiredCurrency,
           unit_amount: desiredAmount,
+          tax_behavior: "inclusive",
           active: price.is_active === true,
           nickname: `Sepulchria Store · ${product.name}`,
           metadata: {
@@ -378,6 +380,7 @@ export async function ensureStorePriceReadyForCheckout(priceId: string) {
   if (
     remote.unit_amount !== Number(refreshed.money_amount_minor) ||
     remote.currency.toUpperCase() !== String(refreshed.currency).toUpperCase() ||
+    remote.tax_behavior !== "inclusive" ||
     remote.active !== true
   ) {
     throw new Error(

@@ -33,7 +33,7 @@ async function fulfilPaidOrder(
   const { data: order, error: orderError } = await admin
     .from("store_orders")
     .select(
-      "id, character_id, user_id, status, stripe_checkout_session_id, subtotal_money_minor",
+      "id, character_id, user_id, status, stripe_checkout_session_id, subtotal_money_minor, discount_money_minor",
     )
     .eq("id", orderId)
     .maybeSingle();
@@ -98,14 +98,45 @@ async function fulfilPaidOrder(
     }
   }
 
-  const subtotal = Number(order.subtotal_money_minor ?? 0);
-  const actualTotal =
+  const originalSubtotalMoneyMinor = Math.max(
+    0,
+    Number(order.subtotal_money_minor ?? 0),
+  );
+  const originalDiscountMoneyMinor = Math.max(
+    0,
+    Number(order.discount_money_minor ?? 0),
+  );
+  const expectedTotalMoneyMinor = Math.max(
+    0,
+    originalSubtotalMoneyMinor - originalDiscountMoneyMinor,
+  );
+
+  const totalMoneyMinor = Math.max(
+    0,
     typeof session.amount_total === "number"
       ? session.amount_total
-      : subtotal;
+      : expectedTotalMoneyMinor,
+  );
 
-  const totalMoneyMinor = Math.max(0, actualTotal);
-  const discountMoneyMinor = Math.max(0, subtotal - totalMoneyMinor);
+  // Preserve store_orders_money_math:
+  // subtotal_money_minor - discount_money_minor = total_money_minor.
+  //
+  // With tax-inclusive Stripe Prices, Stripe's amount_total should equal
+  // the Store total. For an older/exclusive-tax session that already charged
+  // more, expand the persisted subtotal while preserving the Store discount.
+  let subtotalMoneyMinor = originalSubtotalMoneyMinor;
+  let discountMoneyMinor = originalDiscountMoneyMinor;
+
+  if (totalMoneyMinor !== expectedTotalMoneyMinor) {
+    if (totalMoneyMinor <= originalSubtotalMoneyMinor) {
+      discountMoneyMinor = Math.max(
+        0,
+        originalSubtotalMoneyMinor - totalMoneyMinor,
+      );
+    } else {
+      subtotalMoneyMinor = totalMoneyMinor + originalDiscountMoneyMinor;
+    }
+  }
 
   const { error: paidError } = await admin
     .from("store_orders")
@@ -119,6 +150,7 @@ async function fulfilPaidOrder(
         typeof session.customer === "string"
           ? session.customer
           : session.customer?.id ?? null,
+      subtotal_money_minor: subtotalMoneyMinor,
       total_money_minor: totalMoneyMinor,
       discount_money_minor: discountMoneyMinor,
     })
