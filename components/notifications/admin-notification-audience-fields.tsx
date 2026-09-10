@@ -101,9 +101,9 @@ export function AdminNotificationAudienceFields({
     "w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))] disabled:cursor-not-allowed disabled:opacity-35";
 
   return (
-    <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-      <label>
-        <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+    <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3 components_notifications_admin_notification_audience_fields_div_container">
+      <label className="components_notifications_admin_notification_audience_fields_label_label">
+        <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_notifications_admin_notification_audience_fields_span_text">
           Audience
         </span>
 
@@ -115,40 +115,40 @@ export function AdminNotificationAudienceFields({
               event.target.value,
             )
           }
-          className={selectClass}
+          className={[((selectClass)), "components_notifications_admin_notification_audience_fields_select_select"].filter(Boolean).join(" ")}
         >
-          <option value="global">
+          <option className="components_notifications_admin_notification_audience_fields_option_global" value="global">
             Everyone
           </option>
 
-          <option value="staff">
+          <option className="components_notifications_admin_notification_audience_fields_option_staff" value="staff">
             Staff only
           </option>
 
-          <option value="character">
+          <option className="components_notifications_admin_notification_audience_fields_option_character" value="character">
             Specific character
           </option>
 
-          <option value="ancestry">
+          <option className="components_notifications_admin_notification_audience_fields_option_ancestry" value="ancestry">
             Ancestry
           </option>
 
-          <option value="association">
+          <option className="components_notifications_admin_notification_audience_fields_option_association" value="association">
             Association
           </option>
 
-          <option value="order">
+          <option className="components_notifications_admin_notification_audience_fields_option_order" value="order">
             Order
           </option>
 
-          <option value="user">
+          <option className="components_notifications_admin_notification_audience_fields_option_user" value="user">
             Specific user ID
           </option>
         </select>
       </label>
 
-      <label>
-        <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+      <label className="components_notifications_admin_notification_audience_fields_label_label_2">
+        <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_notifications_admin_notification_audience_fields_span_text_2">
           Character target
         </span>
 
@@ -164,15 +164,15 @@ export function AdminNotificationAudienceFields({
               event.target.value,
             )
           }
-          className={selectClass}
+          className={[((selectClass)), "components_notifications_admin_notification_audience_fields_select_select_2"].filter(Boolean).join(" ")}
         >
-          <option value="">
+          <option className="components_notifications_admin_notification_audience_fields_option_option" value="">
             None
           </option>
 
           {characters.map(
             (character) => (
-              <option
+              <option className="components_notifications_admin_notification_audience_fields_option_option_2"
                 key={character.id}
                 value={character.id}
               >
@@ -185,8 +185,8 @@ export function AdminNotificationAudienceFields({
         </select>
       </label>
 
-      <label>
-        <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+      <label className="components_notifications_admin_notification_audience_fields_label_label_3">
+        <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_notifications_admin_notification_audience_fields_span_text_3">
           Ancestry target
         </span>
 
@@ -202,15 +202,15 @@ export function AdminNotificationAudienceFields({
               event.target.value,
             )
           }
-          className={selectClass}
+          className={[((selectClass)), "components_notifications_admin_notification_audience_fields_select_select_3"].filter(Boolean).join(" ")}
         >
-          <option value="">
+          <option className="components_notifications_admin_notification_audience_fields_option_option_3" value="">
             None
           </option>
 
           {ancestries.map(
             (ancestry) => (
-              <option
+              <option className="components_notifications_admin_notification_audience_fields_option_option_4"
                 key={ancestry.id}
                 value={ancestry.id}
               >
@@ -221,8 +221,8 @@ export function AdminNotificationAudienceFields({
         </select>
       </label>
 
-      <label>
-        <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+      <label className="components_notifications_admin_notification_audience_fields_label_label_4">
+        <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_notifications_admin_notification_audience_fields_span_text_4">
           Association target
         </span>
 
@@ -238,15 +238,15 @@ export function AdminNotificationAudienceFields({
               event.target.value,
             )
           }
-          className={selectClass}
+          className={[((selectClass)), "components_notifications_admin_notification_audience_fields_select_select_4"].filter(Boolean).join(" ")}
         >
-          <option value="">
+          <option className="components_notifications_admin_notification_audience_fields_option_option_5" value="">
             None
           </option>
 
           {associations.map(
             (association) => (
-              <option
+              <option className="components_notifications_admin_notification_audience_fields_option_option_6"
                 key={association.id}
                 value={
                   association.id
@@ -259,8 +259,8 @@ export function AdminNotificationAudienceFields({
         </select>
       </label>
 
-      <label>
-        <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+      <label className="components_notifications_admin_notification_audience_fields_label_label_5">
+        <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_notifications_admin_notification_audience_fields_span_text_5">
           Order target
         </span>
 
@@ -275,14 +275,14 @@ export function AdminNotificationAudienceFields({
               event.target.value,
             )
           }
-          className={selectClass}
+          className={[((selectClass)), "components_notifications_admin_notification_audience_fields_select_select_5"].filter(Boolean).join(" ")}
         >
-          <option value="">
+          <option className="components_notifications_admin_notification_audience_fields_option_option_7" value="">
             None
           </option>
 
           {orders.map((order) => (
-            <option
+            <option className="components_notifications_admin_notification_audience_fields_option_option_8"
               key={order.id}
               value={order.id}
             >
@@ -292,8 +292,8 @@ export function AdminNotificationAudienceFields({
         </select>
       </label>
 
-      <label>
-        <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+      <label className="components_notifications_admin_notification_audience_fields_label_label_6">
+        <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_notifications_admin_notification_audience_fields_span_text_6">
           User UUID
         </span>
 
@@ -313,7 +313,7 @@ export function AdminNotificationAudienceFields({
               ? "User UUID"
               : "None"
           }
-          className={selectClass}
+          className={[((selectClass)), "components_notifications_admin_notification_audience_fields_input_field"].filter(Boolean).join(" ")}
         />
       </label>
     </div>

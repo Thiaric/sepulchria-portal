@@ -103,21 +103,21 @@ export function OrderHeadMemberForm({
           : "border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-3"
       }
     >
-      <input type="hidden" name="orderId" value={orderId} />
-      <input type="hidden" name="membershipId" value={membershipId} />
+      <input className="components_orders_order_head_member_form_input_order_id" type="hidden" name="orderId" value={orderId} />
+      <input className="components_orders_order_head_member_form_input_membership_id" type="hidden" name="membershipId" value={membershipId} />
 
-      <div className="grid gap-3 lg:grid-cols-[minmax(180px,1fr)_130px_minmax(190px,1fr)_auto] lg:items-end">
-        <div>
-          <p className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
+      <div className="grid gap-3 lg:grid-cols-[minmax(180px,1fr)_130px_minmax(190px,1fr)_auto] lg:items-end components_orders_order_head_member_form_div_container">
+        <div className="components_orders_order_head_member_form_div_container_2">
+          <p className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))] components_orders_order_head_member_form_p_text">
             Character
           </p>
-          <p className="mt-1 font-serif text-sm text-[rgb(var(--sep-colour-d8bf91))]">
+          <p className="mt-1 font-serif text-sm text-[rgb(var(--sep-colour-d8bf91))] components_orders_order_head_member_form_p_text_2">
             {characterName}
           </p>
         </div>
 
-        <label>
-          <span className="mb-1 block text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
+        <label className="components_orders_order_head_member_form_label_label">
+          <span className="mb-1 block text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))] components_orders_order_head_member_form_span_text">
             Level
           </span>
           <select
@@ -126,18 +126,18 @@ export function OrderHeadMemberForm({
             onChange={(event) =>
               changeLevel(event.target.value)
             }
-            className="w-full border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-15100d))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none"
+            className="w-full border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-15100d))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none components_orders_order_head_member_form_select_level_id"
           >
             {levels.map((level) => (
-              <option key={level.id} value={level.id}>
+              <option className="components_orders_order_head_member_form_option_option" key={level.id} value={level.id}>
                 Level {level.level}{level.monthlyPay !== undefined ? ` · ${level.monthlyPay.toLocaleString("en-GB")} R/month` : ""}
               </option>
             ))}
           </select>
         </label>
 
-        <label>
-          <span className="mb-1 block text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
+        <label className="components_orders_order_head_member_form_label_label_2">
+          <span className="mb-1 block text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))] components_orders_order_head_member_form_span_text_2">
             Role
           </span>
           <select
@@ -147,9 +147,9 @@ export function OrderHeadMemberForm({
             onChange={(event) =>
               setJobId(event.target.value)
             }
-            className="w-full border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-15100d))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none"
+            className="w-full border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-15100d))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none components_orders_order_head_member_form_select_job_id"
           >
-            <option value="" disabled>
+            <option className="components_orders_order_head_member_form_option_job_id" value="" disabled>
               Select Role
             </option>
 
@@ -165,7 +165,7 @@ export function OrderHeadMemberForm({
                   : "final";
 
               return (
-                <option
+                <option className="components_orders_order_head_member_form_option_option_2"
                   key={job.id}
                   value={job.id}
                 >
@@ -176,7 +176,7 @@ export function OrderHeadMemberForm({
           </select>
 
           {selectedJob ? (
-            <span className="mt-1.5 block text-[8px] leading-4 text-[rgb(var(--sep-colour-6f665a))]">
+            <span className="mt-1.5 block text-[8px] leading-4 text-[rgb(var(--sep-colour-6f665a))] components_orders_order_head_member_form_span_text_3">
               Before:{" "}
               {selectedJob.before.length
                 ? selectedJob.before.join(", ")
@@ -190,13 +190,13 @@ export function OrderHeadMemberForm({
           ) : null}
         </label>
 
-        <div className="flex gap-2">
+        <div className="flex gap-2 components_orders_order_head_member_form_div_container_3">
           <button
             type="submit"
             name="intent"
             value="update"
             disabled={!jobId}
-            className="border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-261b12))] px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-ccb083))] disabled:cursor-not-allowed disabled:opacity-40"
+            className="border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-261b12))] px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-ccb083))] disabled:cursor-not-allowed disabled:opacity-40 components_orders_order_head_member_form_button_save"
           >
             Save
           </button>
@@ -206,7 +206,7 @@ export function OrderHeadMemberForm({
             name="intent"
             value="remove"
             data-confirm-message={`Remove ${characterName} from this Order? This will remove their current Order membership.`}
-            className="border border-red-900/55 bg-red-950/20 px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-red-300"
+            className="border border-red-900/55 bg-red-950/20 px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-red-300 components_orders_order_head_member_form_button_remove"
           >
             Remove
           </button>

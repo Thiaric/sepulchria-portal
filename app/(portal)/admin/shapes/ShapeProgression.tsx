@@ -601,7 +601,7 @@ export function ShapeProgression() {
   }, []);
 
   return (
-    <span
+    <span className="admin_shapes_shapeprogression_span_text"
       ref={anchorRef}
       data-shape-progression-anchor="true"
       hidden

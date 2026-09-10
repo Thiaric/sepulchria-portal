@@ -79,12 +79,12 @@ export async function CharacterShapesDisplay({
 
   if (!shapes.length) {
     return (
-      <section className="rounded-xl border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 p-5">
-        <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+      <section className="rounded-xl border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 p-5 components_characters_character_shapes_display_section_section">
+        <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_characters_character_shapes_display_p_text">
           Warping
         </p>
 
-        <p className="mt-2 text-[10px] italic text-[rgb(var(--sep-colour-756957))]">
+        <p className="mt-2 text-[10px] italic text-[rgb(var(--sep-colour-756957))] components_characters_character_shapes_display_p_text_2">
           No Shapes are possessed.
         </p>
       </section>
@@ -92,19 +92,19 @@ export async function CharacterShapesDisplay({
   }
 
   return (
-    <section>
-      <header className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-5 py-4">
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
+    <section className="components_characters_character_shapes_display_section_section_2">
+      <header className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-5 py-4 components_characters_character_shapes_display_header_header">
+        <div className="flex flex-wrap items-end justify-between gap-3 components_characters_character_shapes_display_div_container">
+          <div className="components_characters_character_shapes_display_div_shapes">
+            <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))] components_characters_character_shapes_display_p_shapes">
         Character Warping
       </p>
-            <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dec89f))]">
+            <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dec89f))] components_characters_character_shapes_display_h2_shapes">
         Shapes
       </h2>
           </div>
 
-          <p className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
+          <p className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))] components_characters_character_shapes_display_p_text_3">
       {shapes.length} known
     </p>
   </div>

@@ -390,32 +390,32 @@ export function LiveCharacterPresence({
   if (compact) {
     return (
       <>
-        <div className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2">
-          <p className="text-[7px] uppercase tracking-[0.19em] text-[rgb(var(--sep-colour-796448))]">
+        <div className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 components_characters_live_character_presence_div_container">
+          <p className="text-[7px] uppercase tracking-[0.19em] text-[rgb(var(--sep-colour-796448))] components_characters_live_character_presence_p_text">
             Live record
           </p>
 
           <p
-            className={`mt-1 flex items-center gap-1.5 text-[11px] leading-5 ${appearance.text} ${
+            className={[((`mt-1 flex items-center gap-1.5 text-[11px] leading-5 ${appearance.text} ${
               cloakedForStaff
                 ? "opacity-50"
                 : ""
-            }`}
+            }`)), "components_characters_live_character_presence_p_text_2"].filter(Boolean).join(" ")}
           >
             <span
-              className={`h-1.5 w-1.5 shrink-0 rounded-full ${appearance.dot}`}
+              className={[((`h-1.5 w-1.5 shrink-0 rounded-full ${appearance.dot}`)), "components_characters_live_character_presence_span_text"].filter(Boolean).join(" ")}
             />
             {appearance.label}
           </p>
         </div>
 
         {showLastActivity ? (
-          <div className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2">
-            <p className="text-[7px] uppercase tracking-[0.19em] text-[rgb(var(--sep-colour-796448))]">
+          <div className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 components_characters_live_character_presence_div_container_2">
+            <p className="text-[7px] uppercase tracking-[0.19em] text-[rgb(var(--sep-colour-796448))] components_characters_live_character_presence_p_text_3">
               Last activity
             </p>
 
-            <p className="mt-1 break-words text-[11px] leading-5 text-[rgb(var(--sep-colour-cab89b))]">
+            <p className="mt-1 break-words text-[11px] leading-5 text-[rgb(var(--sep-colour-cab89b))] components_characters_live_character_presence_p_text_4">
               {formatRelativeActivity(
                 visibleLastActivity,
                 now,
@@ -424,12 +424,12 @@ export function LiveCharacterPresence({
           </div>
         ) : null}
 
-        <div className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 sm:col-span-2 lg:col-span-3">
-          <p className="text-[7px] uppercase tracking-[0.19em] text-[rgb(var(--sep-colour-796448))]">
+        <div className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 sm:col-span-2 lg:col-span-3 components_characters_live_character_presence_div_container_3">
+          <p className="text-[7px] uppercase tracking-[0.19em] text-[rgb(var(--sep-colour-796448))] components_characters_live_character_presence_p_text_5">
             Current location
           </p>
 
-          <p className="mt-1 break-words text-[11px] leading-5 text-[rgb(var(--sep-colour-cab89b))]">
+          <p className="mt-1 break-words text-[11px] leading-5 text-[rgb(var(--sep-colour-cab89b))] components_characters_live_character_presence_p_text_6">
             {location}
           </p>
         </div>
@@ -438,23 +438,23 @@ export function LiveCharacterPresence({
   }
 
   return (
-    <section className="flex h-full flex-col border border-[rgb(var(--sep-colour-60482e))]/45 bg-black/15 p-5">
-      <div>
-        <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+    <section className="flex h-full flex-col border border-[rgb(var(--sep-colour-60482e))]/45 bg-black/15 p-5 components_characters_live_character_presence_section_section">
+      <div className="components_characters_live_character_presence_div_container_4">
+        <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_characters_live_character_presence_p_text_7">
           Live record
         </p>
       </div>
 
-      <div className="mt-5">
+      <div className="mt-5 components_characters_live_character_presence_div_container_5">
         <span
-          className={`inline-flex items-center gap-2 border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0d0907))]/70 px-3 py-2 text-[9px] uppercase tracking-[0.18em] ${appearance.text} ${
+          className={[((`inline-flex items-center gap-2 border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0d0907))]/70 px-3 py-2 text-[9px] uppercase tracking-[0.18em] ${appearance.text} ${
             cloakedForStaff
               ? "opacity-50"
               : ""
-          }`}
+          }`)), "components_characters_live_character_presence_span_text_2"].filter(Boolean).join(" ")}
         >
           <span
-            className={`h-2 w-2 rounded-full ${appearance.dot}`}
+            className={[((`h-2 w-2 rounded-full ${appearance.dot}`)), "components_characters_live_character_presence_span_text_3"].filter(Boolean).join(" ")}
           />
 
           {appearance.label}
@@ -463,7 +463,7 @@ export function LiveCharacterPresence({
 
       <dl className="mt-6 space-y-5">
         {showLastActivity ? (
-          <div>
+          <div className="components_characters_live_character_presence_div_container_6">
             <dt className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
               Last activity
             </dt>
@@ -477,7 +477,7 @@ export function LiveCharacterPresence({
           </div>
         ) : null}
 
-        <div>
+        <div className="components_characters_live_character_presence_div_container_7">
           <dt className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
             Current location
           </dt>

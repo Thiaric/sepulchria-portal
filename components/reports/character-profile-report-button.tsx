@@ -145,25 +145,25 @@ export function CharacterProfileReportButton({
         onClick={() => setOpen(true)}
         title="Report character"
         aria-label="Report character"
-        className="inline-flex h-[34px] w-[34px] items-center justify-center border border-[rgb(var(--sep-colour-7b4035))] bg-[rgb(var(--sep-colour-24100d))] text-[rgb(var(--sep-colour-d99b8e))] transition hover:bg-[rgb(var(--sep-colour-351713))] hover:text-[rgb(var(--sep-colour-f1b2a5))]"
+        className="inline-flex h-[34px] w-[34px] items-center justify-center border border-[rgb(var(--sep-colour-7b4035))] bg-[rgb(var(--sep-colour-24100d))] text-[rgb(var(--sep-colour-d99b8e))] transition hover:bg-[rgb(var(--sep-colour-351713))] hover:text-[rgb(var(--sep-colour-f1b2a5))] components_reports_character_profile_report_button_button_report_character"
       >
         <Flag aria-hidden="true" className="h-3.5 w-3.5" />
       </button>
 
       {open ? (
         <div
-          className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/75 p-4"
+          className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/75 p-4 components_reports_character_profile_report_button_div_report_character_profile"
           role="dialog"
           aria-modal="true"
           aria-label="Report character profile"
         >
-          <div className="w-full max-w-xl border border-[rgb(var(--sep-colour-73513a))] bg-[rgb(var(--sep-colour-100c09))] shadow-2xl">
-            <div className="flex items-start justify-between gap-4 border-b border-[rgb(var(--sep-colour-59432c))]/45 px-5 py-4">
-              <div>
-                <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-8c704b))]">
+          <div className="w-full max-w-xl border border-[rgb(var(--sep-colour-73513a))] bg-[rgb(var(--sep-colour-100c09))] shadow-2xl components_reports_character_profile_report_button_div_report_character_profile_2">
+            <div className="flex items-start justify-between gap-4 border-b border-[rgb(var(--sep-colour-59432c))]/45 px-5 py-4 components_reports_character_profile_report_button_div_report_character_profile_3">
+              <div className="components_reports_character_profile_report_button_div_report_character_profile_4">
+                <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-8c704b))] components_reports_character_profile_report_button_p_report_character_profile">
                   Moderation Report
                 </p>
-                <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-e2c99f))]">
+                <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-e2c99f))] components_reports_character_profile_report_button_h2_report_character_profile">
                   Report character profile
                 </h2>
               </div>
@@ -172,7 +172,7 @@ export function CharacterProfileReportButton({
                 type="button"
                 onClick={close}
                 disabled={busy}
-                className="text-lg text-[rgb(var(--sep-colour-907c63))] hover:text-[rgb(var(--sep-colour-d6bf9d))]"
+                className="text-lg text-[rgb(var(--sep-colour-907c63))] hover:text-[rgb(var(--sep-colour-d6bf9d))] components_reports_character_profile_report_button_button_close"
                 aria-label="Close"
               >
                 ×
@@ -180,13 +180,13 @@ export function CharacterProfileReportButton({
             </div>
 
             {reference ? (
-              <div className="p-5">
-                <div className="border border-[rgb(var(--sep-colour-6e7547))]/60 bg-[rgb(var(--sep-colour-182016))] p-4 text-sm leading-6 text-[rgb(var(--sep-colour-c9c99d))]">
-                  Your report has been submitted as <strong>{reference}</strong>.
+              <div className="p-5 components_reports_character_profile_report_button_div_container">
+                <div className="border border-[rgb(var(--sep-colour-6e7547))]/60 bg-[rgb(var(--sep-colour-182016))] p-4 text-sm leading-6 text-[rgb(var(--sep-colour-c9c99d))] components_reports_character_profile_report_button_div_container_2">
+                  Your report has been submitted as <strong className="components_reports_character_profile_report_button_strong_emphasis">{reference}</strong>.
                   Every selected profile field has been preserved for staff review.
                 </div>
 
-                <div className="mt-5 flex flex-wrap gap-2">
+                <div className="mt-5 flex flex-wrap gap-2 components_reports_character_profile_report_button_div_container_3">
                   <Link
                     href={`/support/${reference}`}
                     onClick={close}
@@ -197,20 +197,20 @@ export function CharacterProfileReportButton({
                   <button
                     type="button"
                     onClick={close}
-                    className="border border-[rgb(var(--sep-colour-59432c))] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-a58b68))]"
+                    className="border border-[rgb(var(--sep-colour-59432c))] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-a58b68))] components_reports_character_profile_report_button_button_close_2"
                   >
                     Close
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="space-y-5 p-5">
-                <p className="text-xs leading-6 text-[rgb(var(--sep-colour-9e8c75))]">
+              <div className="space-y-5 p-5 components_reports_character_profile_report_button_div_container_4">
+                <p className="text-xs leading-6 text-[rgb(var(--sep-colour-9e8c75))] components_reports_character_profile_report_button_p_text">
                   Select every profile field that should be reviewed. The current
                   value of each selected field will be preserved as evidence.
                 </p>
 
-                <div className="grid gap-2 sm:grid-cols-2">
+                <div className="grid gap-2 sm:grid-cols-2 components_reports_character_profile_report_button_div_container_5">
                   {FIELDS.map((field) => {
                     const enabled = available.has(field.key);
                     const checked = selected.includes(field.key);
@@ -218,20 +218,20 @@ export function CharacterProfileReportButton({
                     return (
                       <label
                         key={field.key}
-                        className={`flex items-center gap-3 border px-3 py-3 ${
+                        className={[((`flex items-center gap-3 border px-3 py-3 ${
                           enabled
                             ? "cursor-pointer border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))]"
                             : "cursor-not-allowed border-[rgb(var(--sep-colour-40362d))]/35 bg-black/10 opacity-40"
-                        }`}
+                        }`)), "components_reports_character_profile_report_button_label_label"].filter(Boolean).join(" ")}
                       >
                         <input
                           type="checkbox"
                           checked={checked}
                           disabled={!enabled || busy}
                           onChange={() => toggle(field.key)}
-                          className="h-4 w-4 accent-[rgb(var(--sep-colour-9a5147))]"
+                          className="h-4 w-4 accent-[rgb(var(--sep-colour-9a5147))] components_reports_character_profile_report_button_input_field"
                         />
-                        <span className="text-[9px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-c8b18d))]">
+                        <span className="text-[9px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-c8b18d))] components_reports_character_profile_report_button_span_text">
                           {field.label}
                         </span>
                       </label>
@@ -240,30 +240,30 @@ export function CharacterProfileReportButton({
                 </div>
 
                 {availableFields.length === 0 ? (
-                  <p className="text-xs text-[rgb(var(--sep-colour-8f8170))]">
+                  <p className="text-xs text-[rgb(var(--sep-colour-8f8170))] components_reports_character_profile_report_button_p_text_2">
                     This character currently has no reportable profile content.
                   </p>
                 ) : null}
 
-                <label className="block">
-                  <span className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-9d8464))]">
+                <label className="block components_reports_character_profile_report_button_label_label_2">
+                  <span className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-9d8464))] components_reports_character_profile_report_button_span_text_2">
                     Reason
                   </span>
                   <select
                     value={reason}
                     onChange={(event) => setReason(event.target.value)}
-                    className="mt-2 h-11 w-full border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-0c0907))] px-3 text-sm text-[rgb(var(--sep-colour-d2c0a5))]"
+                    className="mt-2 h-11 w-full border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-0c0907))] px-3 text-sm text-[rgb(var(--sep-colour-d2c0a5))] components_reports_character_profile_report_button_select_select"
                   >
                     {REASONS.map(([value, text]) => (
-                      <option key={value} value={value}>
+                      <option className="components_reports_character_profile_report_button_option_option" key={value} value={value}>
                         {text}
                       </option>
                     ))}
                   </select>
                 </label>
 
-                <label className="block">
-                  <span className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-9d8464))]">
+                <label className="block components_reports_character_profile_report_button_label_label_3">
+                  <span className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-9d8464))] components_reports_character_profile_report_button_span_text_3">
                     Additional details · Optional
                   </span>
                   <textarea
@@ -271,7 +271,7 @@ export function CharacterProfileReportButton({
                     onChange={(event) => setExplanation(event.target.value)}
                     maxLength={5000}
                     rows={5}
-                    className="mt-2 w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-0c0907))] p-3 text-sm leading-6 text-[rgb(var(--sep-colour-d2c0a5))]"
+                    className="mt-2 w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-0c0907))] p-3 text-sm leading-6 text-[rgb(var(--sep-colour-d2c0a5))] components_reports_character_profile_report_button_textarea_anything_staff_should_know_about"
                     placeholder="Anything staff should know about the selected profile content?"
                   />
                 </label>
@@ -279,18 +279,18 @@ export function CharacterProfileReportButton({
                 {error ? (
                   <p
                     role="alert"
-                    className="border border-red-900/60 bg-red-950/25 p-3 text-xs leading-5 text-red-300"
+                    className="border border-red-900/60 bg-red-950/25 p-3 text-xs leading-5 text-red-300 components_reports_character_profile_report_button_p_alert"
                   >
                     {error}
                   </p>
                 ) : null}
 
-                <div className="flex justify-end gap-2">
+                <div className="flex justify-end gap-2 components_reports_character_profile_report_button_div_container_6">
                   <button
                     type="button"
                     onClick={close}
                     disabled={busy}
-                    className="border border-[rgb(var(--sep-colour-59432c))] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-a58b68))]"
+                    className="border border-[rgb(var(--sep-colour-59432c))] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-a58b68))] components_reports_character_profile_report_button_button_cancel"
                   >
                     Cancel
                   </button>
@@ -298,7 +298,7 @@ export function CharacterProfileReportButton({
                     type="button"
                     onClick={() => void submit()}
                     disabled={busy || selected.length === 0 || availableFields.length === 0}
-                    className="border border-[rgb(var(--sep-colour-9a5147))] bg-[rgb(var(--sep-colour-351815))] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-e0a69a))] disabled:opacity-50"
+                    className="border border-[rgb(var(--sep-colour-9a5147))] bg-[rgb(var(--sep-colour-351815))] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-e0a69a))] disabled:opacity-50 components_reports_character_profile_report_button_button_action"
                   >
                     {busy ? "Submitting…" : "Create Report Ticket"}
                   </button>

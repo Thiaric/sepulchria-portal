@@ -23,15 +23,15 @@ export default async function AdminCosmeticsPage() {
   }
 
   return (
-    <main className="p-5 sm:p-7 lg:p-9">
-      <div className="mx-auto max-w-7xl">
-        <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
+    <main className="p-5 sm:p-7 lg:p-9 admin_cosmetics_page_main_main">
+      <div className="mx-auto max-w-7xl admin_cosmetics_page_div_cosmetics">
+        <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))] admin_cosmetics_page_p_cosmetics">
           Administration
         </p>
-        <h2 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">
+        <h2 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))] admin_cosmetics_page_h2_cosmetics">
           Cosmetics
         </h2>
-        <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))]">
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))] admin_cosmetics_page_p_cosmetics_2">
           Manage collectible visual treatments for character sheets and location chat.
           Store pricing and Stripe fulfilment are managed through the Store system.
         </p>

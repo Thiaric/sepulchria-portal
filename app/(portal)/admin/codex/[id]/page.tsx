@@ -81,10 +81,10 @@ export default async function AdminCodexEditPage({
     data as CodexChapter;
 
   return (
-    <div className="p-5 sm:p-7">
-      <div className="mx-auto max-w-6xl">
-        <header className="mb-5 flex flex-wrap items-end justify-between gap-3 border-b border-[rgb(var(--sep-colour-60482e))]/35 pb-4">
-          <div>
+    <div className="p-5 sm:p-7 admin_codex_id_page_div_container">
+      <div className="mx-auto max-w-6xl admin_codex_id_page_div_container_2">
+        <header className="mb-5 flex flex-wrap items-end justify-between gap-3 border-b border-[rgb(var(--sep-colour-60482e))]/35 pb-4 admin_codex_id_page_header_header">
+          <div className="admin_codex_id_page_div_container_3">
             <Link
               href="/admin/codex"
               className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806a4b))] hover:text-[rgb(var(--sep-colour-d8bb8a))]"
@@ -92,16 +92,16 @@ export default async function AdminCodexEditPage({
               ← Codex administration
             </Link>
 
-            <h1 className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-dfc99f))]">
+            <h1 className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-dfc99f))] admin_codex_id_page_h1_title">
               {chapter.title}
             </h1>
 
-            <div className="mt-2 flex flex-wrap items-center gap-2">
+            <div className="mt-2 flex flex-wrap items-center gap-2 admin_codex_id_page_div_container_4">
               <StatusBadge
                 status={chapter.status}
               />
 
-              <span className="text-[9px] text-[rgb(var(--sep-colour-746958))]">
+              <span className="text-[9px] text-[rgb(var(--sep-colour-746958))] admin_codex_id_page_span_text">
                 Chapter{" "}
                 {chapter.chapter_number ?? "—"}
                 {" · "}
@@ -110,7 +110,7 @@ export default async function AdminCodexEditPage({
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 admin_codex_id_page_div_container_5">
             <CodexPreviewButton
               chapterId={chapter.id}
             />
@@ -119,14 +119,14 @@ export default async function AdminCodexEditPage({
               <AdminActionForm
                 action={unpublishCodexChapter}
               >
-                <input
+                <input className="admin_codex_id_page_input_id"
                   type="hidden"
                   name="id"
                   value={chapter.id}
                 />
                 <button
                   type="submit"
-                  className={secondaryButtonClass}
+                  className={[((secondaryButtonClass)), "admin_codex_id_page_button_unpublish"].filter(Boolean).join(" ")}
                 >
                   Unpublish
                 </button>
@@ -135,14 +135,14 @@ export default async function AdminCodexEditPage({
               <AdminActionForm
                 action={publishCodexChapter}
               >
-                <input
+                <input className="admin_codex_id_page_input_id_2"
                   type="hidden"
                   name="id"
                   value={chapter.id}
                 />
                 <button
                   type="submit"
-                  className={primaryButtonClass}
+                  className={[((primaryButtonClass)), "admin_codex_id_page_button_publish"].filter(Boolean).join(" ")}
                 >
                   Publish
                 </button>
@@ -155,19 +155,19 @@ export default async function AdminCodexEditPage({
           action={updateCodexChapter}
           className="grid gap-5"
         >
-          <input
+          <input className="admin_codex_id_page_input_id_3"
             type="hidden"
             name="id"
             value={chapter.id}
           />
 
-          <section className="grid gap-3 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-120e0b))] p-4 sm:grid-cols-2 lg:grid-cols-4 sm:p-5">
+          <section className="grid gap-3 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-120e0b))] p-4 sm:grid-cols-2 lg:grid-cols-4 sm:p-5 admin_codex_id_page_section_section">
             <AdminField label="Title">
               <input
                 name="title"
                 required
                 defaultValue={chapter.title}
-                className={inputClass}
+                className={[((inputClass)), "admin_codex_id_page_input_title"].filter(Boolean).join(" ")}
               />
             </AdminField>
 
@@ -176,7 +176,7 @@ export default async function AdminCodexEditPage({
                 name="slug"
                 required
                 defaultValue={chapter.slug}
-                className={inputClass}
+                className={[((inputClass)), "admin_codex_id_page_input_slug"].filter(Boolean).join(" ")}
               />
             </AdminField>
 
@@ -190,7 +190,7 @@ export default async function AdminCodexEditPage({
                 defaultValue={
                   chapter.chapter_number ?? ""
                 }
-                className={inputClass}
+                className={[((inputClass)), "admin_codex_id_page_input_chapter_number"].filter(Boolean).join(" ")}
               />
             </AdminField>
 
@@ -199,12 +199,12 @@ export default async function AdminCodexEditPage({
                 name="sort_order"
                 type="number"
                 defaultValue={chapter.sort_order}
-                className={inputClass}
+                className={[((inputClass)), "admin_codex_id_page_input_sort_order"].filter(Boolean).join(" ")}
               />
             </AdminField>
           </section>
 
-          <section className="border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-120e0b))] p-4 sm:p-5">
+          <section className="border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-120e0b))] p-4 sm:p-5 admin_codex_id_page_section_section_2">
             <AdminField label="Chapter body">
               <RichTextEditor
                 name="body"
@@ -217,17 +217,17 @@ export default async function AdminCodexEditPage({
             </AdminField>
           </section>
 
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="text-[9px] leading-5 text-[rgb(var(--sep-colour-6f6457))]">
-              <p>
+          <div className="flex flex-wrap items-center justify-between gap-3 admin_codex_id_page_div_container_6">
+            <div className="text-[9px] leading-5 text-[rgb(var(--sep-colour-6f6457))] admin_codex_id_page_div_container_7">
+              <p className="admin_codex_id_page_p_text">
                 Created:{" "}
                 {formatDate(chapter.created_at)}
               </p>
-              <p>
+              <p className="admin_codex_id_page_p_text_2">
                 Updated:{" "}
                 {formatDate(chapter.updated_at)}
               </p>
-              <p>
+              <p className="admin_codex_id_page_p_text_3">
                 Published:{" "}
                 {formatDate(chapter.published_at)}
               </p>
@@ -235,7 +235,7 @@ export default async function AdminCodexEditPage({
 
             <button
               type="submit"
-              className={primaryButtonClass}
+              className={[((primaryButtonClass)), "admin_codex_id_page_button_save_chapter"].filter(Boolean).join(" ")}
             >
               Save chapter
             </button>
@@ -254,8 +254,8 @@ function AdminField({
   children: React.ReactNode;
 }) {
   return (
-    <div className="grid gap-1.5">
-      <span className="text-[8px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-806e59))]">
+    <div className="grid gap-1.5 admin_codex_id_page_div_container_8">
+      <span className="text-[8px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-806e59))] admin_codex_id_page_span_text_2">
         {label}
       </span>
       {children}
@@ -270,11 +270,9 @@ function StatusBadge({
 }) {
   return (
     <span
-      className={
-        status === "published"
+      className={[((status === "published"
           ? "border border-emerald-800/55 bg-emerald-950/30 px-2 py-1 text-[8px] uppercase tracking-[0.15em] text-emerald-300"
-          : "border border-[rgb(var(--sep-colour-5d472e))]/55 bg-[rgb(var(--sep-colour-18110d))] px-2 py-1 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-9f907d))]"
-      }
+          : "border border-[rgb(var(--sep-colour-5d472e))]/55 bg-[rgb(var(--sep-colour-18110d))] px-2 py-1 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-9f907d))]")), "admin_codex_id_page_span_text_3"].filter(Boolean).join(" ")}
     >
       {status}
     </span>

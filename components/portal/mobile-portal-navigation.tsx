@@ -60,7 +60,7 @@ function MobileIcon({
       src={src}
       alt=""
       aria-hidden="true"
-      className="shrink-0 object-contain"
+      className="shrink-0 object-contain components_portal_mobile_portal_navigation_img_image"
       style={{
         width: size,
         height: size,
@@ -79,7 +79,7 @@ function Badge({
   }
 
   return (
-    <span data-sep-counter-badge="true" className="ml-auto inline-flex min-w-4 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] px-1 text-[8px] font-bold leading-4 text-[#ffe1ac]">
+    <span data-sep-counter-badge="true" className="ml-auto inline-flex min-w-4 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] px-1 text-[8px] font-bold leading-4 text-[#ffe1ac] components_portal_mobile_portal_navigation_span_text">
       {count > 99 ? "99+" : count}
     </span>
   );
@@ -115,7 +115,7 @@ function EntryButton({
   const contents = (
     <>
       <MobileIcon src={entry.icon} />
-      <span className="min-w-0 flex-1 truncate text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b8a98f))]">
+      <span className="min-w-0 flex-1 truncate text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b8a98f))] components_portal_mobile_portal_navigation_span_text_2">
         {entry.label}
       </span>
       {badge ?? <Badge count={badgeCount} />}
@@ -126,7 +126,7 @@ function EntryButton({
     return (
       <button
         type="button"
-        className={className}
+        className={[((className)), "components_portal_mobile_portal_navigation_button_action"].filter(Boolean).join(" ")}
         aria-haspopup="dialog"
         onClick={() => {
           onBeforeOpen?.();
@@ -155,7 +155,7 @@ function SectionTitle({
   children: React.ReactNode;
 }) {
   return (
-    <p className="mb-2 px-1 text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-756957))]">
+    <p className="mb-2 px-1 text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-756957))] components_portal_mobile_portal_navigation_p_text">
       {children}
     </p>
   );
@@ -1038,14 +1038,14 @@ const moreDragging =
         data-portal-navigation
         data-sep-interaction-ignore="true"
         aria-label="Mobile portal navigation"
-        className="fixed inset-x-0 bottom-0 z-[85] border-t border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0b0a))]/[0.97] px-2 pb-[max(0.45rem,env(safe-area-inset-bottom))] pt-1.5 shadow-[0_-10px_32px_rgba(var(--sep-rgb-0-0-0),0.42)] backdrop-blur lg:hidden"
+        className="fixed inset-x-0 bottom-0 z-[85] border-t border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0b0a))]/[0.97] px-2 pb-[max(0.45rem,env(safe-area-inset-bottom))] pt-1.5 shadow-[0_-10px_32px_rgba(var(--sep-rgb-0-0-0),0.42)] backdrop-blur lg:hidden components_portal_mobile_portal_navigation_nav_mobile_portal_navigation"
       >
         <div
-          className={`mx-auto grid max-w-md gap-1 ${
+          className={[((`mx-auto grid max-w-md gap-1 ${
             orderHeadquartersRoomId
               ? "grid-cols-6"
               : "grid-cols-5"
-          }`}
+          }`)), "components_portal_mobile_portal_navigation_div_mobile_portal_navigation"].filter(Boolean).join(" ")}
         >
           <Link
             href="/"
@@ -1061,7 +1061,7 @@ const moreDragging =
               src="/icons/dashboard.png"
               size={20}
             />
-            <span className="uppercase tracking-[0.14em]">AURETH</span>
+            <span className="uppercase tracking-[0.14em] components_portal_mobile_portal_navigation_span_mobile_portal_navigation">AURETH</span>
           </Link>
 
           <Link
@@ -1078,24 +1078,24 @@ const moreDragging =
               src="/icons/play.png"
               size={20}
             />
-            <span className="uppercase tracking-[0.14em]">ENTER</span>
+            <span className="uppercase tracking-[0.14em] components_portal_mobile_portal_navigation_span_mobile_portal_navigation_2">ENTER</span>
           </Link>
 
           {orderHeadquartersRoomId ? (
             <form
               action={enterOwnOrderHeadquarters}
-              className="min-w-0"
+              className="min-w-0 components_portal_mobile_portal_navigation_form_enter_own_order_headquarters"
             >
               <button
                 type="submit"
                 title="Enter your Order Headquarters."
-                className="flex min-h-[50px] w-full flex-col items-center justify-center gap-1 px-1 text-[9px] text-[rgb(var(--sep-colour-8f806d))]"
+                className="flex min-h-[50px] w-full flex-col items-center justify-center gap-1 px-1 text-[9px] text-[rgb(var(--sep-colour-8f806d))] components_portal_mobile_portal_navigation_button_enter_order_headquarters"
               >
                 <MobileIcon
                   src="/icons/headquarters.png"
                   size={20}
                 />
-                <span className="uppercase tracking-[0.14em]">
+                <span className="uppercase tracking-[0.14em] components_portal_mobile_portal_navigation_span_enter_order_headquarters">
                   Base
                 </span>
               </button>
@@ -1116,13 +1116,13 @@ const moreDragging =
                 href: "/characters",
               })
             }
-            className="flex min-h-[50px] flex-col items-center justify-center gap-1 px-1 text-[9px] text-[rgb(var(--sep-colour-8f806d))]"
+            className="flex min-h-[50px] flex-col items-center justify-center gap-1 px-1 text-[9px] text-[rgb(var(--sep-colour-8f806d))] components_portal_mobile_portal_navigation_button_mobile_portal_navigation"
           >
             <MobileIcon
               src="/icons/characters.png"
               size={20}
             />
-            <span className="uppercase tracking-[0.14em]">PEOPLE</span>
+            <span className="uppercase tracking-[0.14em] components_portal_mobile_portal_navigation_span_mobile_portal_navigation_3">PEOPLE</span>
           </button>
 
           <button
@@ -1138,14 +1138,14 @@ const moreDragging =
                 href: "/messages",
               })
             }
-            className="relative flex min-h-[50px] flex-col items-center justify-center gap-1 px-1 text-[9px] text-[rgb(var(--sep-colour-8f806d))]"
+            className="relative flex min-h-[50px] flex-col items-center justify-center gap-1 px-1 text-[9px] text-[rgb(var(--sep-colour-8f806d))] components_portal_mobile_portal_navigation_button_mobile_portal_navigation_2"
           >
             <MobileIcon
               src="/icons/messages.png"
               size={20}
             />
-            <span className="uppercase tracking-[0.14em]">MESSAGES</span>
-            <span className="absolute right-[18%] top-1">
+            <span className="uppercase tracking-[0.14em] components_portal_mobile_portal_navigation_span_mobile_portal_navigation_4">MESSAGES</span>
+            <span className="absolute right-[18%] top-1 components_portal_mobile_portal_navigation_span_mobile_portal_navigation_5">
               <UnreadMessageBadge
                 initialCount={
                   unreadMessageCount
@@ -1161,20 +1161,20 @@ const moreDragging =
               setMoreOpen(true)
             }
             aria-expanded={moreOpen}
-            className="relative flex min-h-[50px] flex-col items-center justify-center gap-1 px-1 text-[9px] text-[rgb(var(--sep-colour-8f806d))]"
+            className="relative flex min-h-[50px] flex-col items-center justify-center gap-1 px-1 text-[9px] text-[rgb(var(--sep-colour-8f806d))] components_portal_mobile_portal_navigation_button_mobile_portal_navigation_3"
           >
             <span
               aria-hidden="true"
-              className="text-[22px] leading-none"
+              className="text-[22px] leading-none components_portal_mobile_portal_navigation_span_mobile_portal_navigation_6"
             >
               ⋯
             </span>
-            <span className="uppercase tracking-[0.14em]">MORE</span>
+            <span className="uppercase tracking-[0.14em] components_portal_mobile_portal_navigation_span_mobile_portal_navigation_7">MORE</span>
 
             {moreAttentionCount > 0 ? (
               <span data-sep-counter-badge="true"
                 title={`${moreAttentionCount} item${moreAttentionCount === 1 ? "" : "s"} need attention`}
-                className="absolute right-[18%] top-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] px-1 text-[7px] font-bold leading-none text-[#ffe1ac]"
+                className="absolute right-[18%] top-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] px-1 text-[7px] font-bold leading-none text-[#ffe1ac] components_portal_mobile_portal_navigation_span_text_3"
               >
                 {moreAttentionCount > 9
                   ? "9+"
@@ -1191,7 +1191,7 @@ const moreDragging =
             type="button"
             aria-label="Close mobile menu"
             onClick={closeMore}
-            className="fixed inset-0 z-[90] bg-black/70 backdrop-blur-[2px] lg:hidden"
+            className="fixed inset-0 z-[90] bg-black/70 backdrop-blur-[2px] lg:hidden components_portal_mobile_portal_navigation_button_close_mobile_menu"
           />
 
           <section
@@ -1210,7 +1210,7 @@ const moreDragging =
         ? "none"
         : "transform 180ms ease-out",
   }}
-  className="fixed inset-x-0 bottom-[calc(64px+env(safe-area-inset-bottom))] z-[95] flex max-h-[calc(88dvh-64px-env(safe-area-inset-bottom))] flex-col overflow-hidden rounded-t-[18px] border-t border-[rgb(var(--sep-colour-60482e))]/65 bg-[rgb(var(--sep-colour-100d0b))] shadow-[0_-24px_55px_rgba(var(--sep-rgb-0-0-0),0.58)] [--portal-nav-min-h:2.5rem] [--portal-nav-y:0.35rem] lg:hidden"
+  className="fixed inset-x-0 bottom-[calc(64px+env(safe-area-inset-bottom))] z-[95] flex max-h-[calc(88dvh-64px-env(safe-area-inset-bottom))] flex-col overflow-hidden rounded-t-[18px] border-t border-[rgb(var(--sep-colour-60482e))]/65 bg-[rgb(var(--sep-colour-100d0b))] shadow-[0_-24px_55px_rgba(var(--sep-rgb-0-0-0),0.58)] [--portal-nav-min-h:2.5rem] [--portal-nav-y:0.35rem] lg:hidden components_portal_mobile_portal_navigation_section_more_sepulchria_navigation"
 >
             <div
   role="button"
@@ -1279,17 +1279,17 @@ const moreDragging =
 
     setMoreDragOffset(0);
   }}
-  className="flex h-7 shrink-0 touch-none cursor-grab items-center justify-center active:cursor-grabbing"
+  className="flex h-7 shrink-0 touch-none cursor-grab items-center justify-center active:cursor-grabbing components_portal_mobile_portal_navigation_div_drag_menu"
 >
-  <span className="h-1 w-10 rounded-full bg-[rgb(var(--sep-colour-5c472f))]" />
+  <span className="h-1 w-10 rounded-full bg-[rgb(var(--sep-colour-5c472f))] components_portal_mobile_portal_navigation_span_drag_menu" />
 </div>
 
-            <div className="flex shrink-0 items-center justify-between border-b border-[rgb(var(--sep-colour-60482e))]/35 px-4 py-3">
-              <div>
-                <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-756957))]">
+            <div className="flex shrink-0 items-center justify-between border-b border-[rgb(var(--sep-colour-60482e))]/35 px-4 py-3 components_portal_mobile_portal_navigation_div_more_sepulchria_navigation">
+              <div className="components_portal_mobile_portal_navigation_div_more">
+                <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-756957))] components_portal_mobile_portal_navigation_p_more">
                   Sepulchria
                 </p>
-                <h2 className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-c9b184))]">
+                <h2 className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-c9b184))] components_portal_mobile_portal_navigation_h2_more">
                   More
                 </h2>
               </div>
@@ -1298,19 +1298,19 @@ const moreDragging =
                 type="button"
                 onClick={closeMore}
                 aria-label="Close"
-                className="flex h-9 w-9 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-17120f))] text-lg text-[rgb(var(--sep-colour-a99b89))]"
+                className="flex h-9 w-9 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-17120f))] text-lg text-[rgb(var(--sep-colour-a99b89))] components_portal_mobile_portal_navigation_button_close"
               >
                 ×
               </button>
             </div>
 
-            <div className="min-h-0 flex-1 space-y-5 overflow-y-auto p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
-              <section>
+            <div className="min-h-0 flex-1 space-y-5 overflow-y-auto p-4 pb-[max(1rem,env(safe-area-inset-bottom))] components_portal_mobile_portal_navigation_div_more_sepulchria_navigation_2">
+              <section className="components_portal_mobile_portal_navigation_section_more_sepulchria_navigation_2">
                 <SectionTitle>
                   Lore
                 </SectionTitle>
 
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-2 gap-2 components_portal_mobile_portal_navigation_div_more_sepulchria_navigation_3">
                   {loreEntries.map(
                     (entry) => (
                       <EntryButton
@@ -1320,11 +1320,11 @@ const moreDragging =
                     ),
                   )}
 
-                  <div className="col-span-2 border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-15100d))]">
-                    <div className="flex min-h-[52px] items-stretch">
+                  <div className="col-span-2 border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-15100d))] components_portal_mobile_portal_navigation_div_more_sepulchria_navigation_4">
+                    <div className="flex min-h-[52px] items-stretch components_portal_mobile_portal_navigation_div_container">
                       <button
                         type="button"
-                        className="flex min-w-0 flex-1 items-center gap-3 px-3 py-2 text-left"
+                        className="flex min-w-0 flex-1 items-center gap-3 px-3 py-2 text-left components_portal_mobile_portal_navigation_button_action_2"
                         onClick={() =>
                           openPortalModal(
                             ruleEntry.modal!,
@@ -1334,7 +1334,7 @@ const moreDragging =
                         <MobileIcon
                           src="/icons/rules.png"
                         />
-                        <span className="min-w-0 flex-1 truncate text-[10px] uppercase tracking-[0.16em] !text-[rgb(var(--sep-colour-b6a894))]">
+                        <span className="min-w-0 flex-1 truncate text-[10px] uppercase tracking-[0.16em] !text-[rgb(var(--sep-colour-b6a894))] components_portal_mobile_portal_navigation_span_text_4">
                           Rules
                         </span>
                       </button>
@@ -1355,7 +1355,7 @@ const moreDragging =
                               !value,
                           )
                         }
-                        className="w-10 shrink-0 border-l border-[rgb(var(--sep-colour-60482e))]/45 text-lg text-[rgb(var(--sep-colour-b68b4f))]"
+                        className="w-10 shrink-0 border-l border-[rgb(var(--sep-colour-60482e))]/45 text-lg text-[rgb(var(--sep-colour-b68b4f))] components_portal_mobile_portal_navigation_button_action_3"
                       >
                         {rulesExpanded
                           ? "−"
@@ -1364,7 +1364,7 @@ const moreDragging =
                     </div>
 
                     {rulesExpanded ? (
-                      <div className="border-t border-[rgb(var(--sep-colour-60482e))]/35 p-2">
+                      <div className="border-t border-[rgb(var(--sep-colour-60482e))]/35 p-2 components_portal_mobile_portal_navigation_div_container_2">
                         <EntryButton
                           entry={
                             glossaryEntry
@@ -1376,14 +1376,14 @@ const moreDragging =
                 </div>
               </section>
 
-              <section>
+              <section className="components_portal_mobile_portal_navigation_section_more_sepulchria_navigation_3">
                 <SectionTitle>
                   Services & Utilities
                 </SectionTitle>
 
-                <div className="space-y-2">
-                  <div className="border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-15100d))]">
-                    <div className="flex min-h-[52px] items-stretch">
+                <div className="space-y-2 components_portal_mobile_portal_navigation_div_more_sepulchria_navigation_5">
+                  <div className="border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-15100d))] components_portal_mobile_portal_navigation_div_more_sepulchria_navigation_6">
+                    <div className="flex min-h-[52px] items-stretch components_portal_mobile_portal_navigation_div_container_3">
                       <button
                         type="button"
                         onClick={() =>
@@ -1392,12 +1392,12 @@ const moreDragging =
                               !value,
                           )
                         }
-                        className="flex min-w-0 flex-1 items-center gap-3 px-3 py-2 text-left"
+                        className="flex min-w-0 flex-1 items-center gap-3 px-3 py-2 text-left components_portal_mobile_portal_navigation_button_action_4"
                       >
                         <MobileIcon
                           src="/icons/economy.png"
                         />
-                        <span className="min-w-0 flex-1 truncate text-[10px] uppercase tracking-[0.16em] !text-[rgb(var(--sep-colour-b6a894))]">
+                        <span className="min-w-0 flex-1 truncate text-[10px] uppercase tracking-[0.16em] !text-[rgb(var(--sep-colour-b6a894))] components_portal_mobile_portal_navigation_span_text_5">
                           Economy & Crafting
                         </span>
                       </button>
@@ -1418,7 +1418,7 @@ const moreDragging =
                               !value,
                           )
                         }
-                        className="w-10 shrink-0 border-l border-[rgb(var(--sep-colour-60482e))]/45 text-lg text-[rgb(var(--sep-colour-b68b4f))]"
+                        className="w-10 shrink-0 border-l border-[rgb(var(--sep-colour-60482e))]/45 text-lg text-[rgb(var(--sep-colour-b68b4f))] components_portal_mobile_portal_navigation_button_action_5"
                       >
                         {economyExpanded
                           ? "−"
@@ -1427,7 +1427,7 @@ const moreDragging =
                     </div>
 
                     {economyExpanded ? (
-                      <div className="grid grid-cols-2 gap-2 border-t border-[rgb(var(--sep-colour-60482e))]/35 p-2">
+                      <div className="grid grid-cols-2 gap-2 border-t border-[rgb(var(--sep-colour-60482e))]/35 p-2 components_portal_mobile_portal_navigation_div_container_4">
                         <EntryButton
                           entry={
                             marketEntry
@@ -1440,12 +1440,12 @@ const moreDragging =
                         />
 
                         {oddJobsRoomId ? (
-                          <form
+                          <form className="components_portal_mobile_portal_navigation_form_form"
                             action={
                               enterRoomFromMap
                             }
                           >
-                            <input
+                            <input className="components_portal_mobile_portal_navigation_input_room_id"
                               type="hidden"
                               name="roomId"
                               value={
@@ -1454,12 +1454,12 @@ const moreDragging =
                             />
                             <button
                               type="submit"
-                              className="flex min-h-[52px] w-full items-center gap-3 border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2 text-left"
+                              className="flex min-h-[52px] w-full items-center gap-3 border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2 text-left components_portal_mobile_portal_navigation_button_action_6"
                             >
                               <MobileIcon
                                 src="/icons/bureau.png"
                               />
-                              <span className="text-[11px] text-[rgb(var(--sep-colour-b8a98f))]">
+                              <span className="text-[11px] text-[rgb(var(--sep-colour-b8a98f))] components_portal_mobile_portal_navigation_span_text_6">
                                 Odd Jobs Bureau
                               </span>
                             </button>
@@ -1469,7 +1469,7 @@ const moreDragging =
                     ) : null}
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-2 gap-2 components_portal_mobile_portal_navigation_div_more_sepulchria_navigation_7">
                     <EntryButton
                       entry={missionsEntry}
                     />
@@ -1497,12 +1497,12 @@ const moreDragging =
                     />
 
                     {breezeLodgingsRoomId ? (
-                      <form
+                      <form className="components_portal_mobile_portal_navigation_form_form_2"
                         action={
                           enterRoomFromMap
                         }
                       >
-                        <input
+                        <input className="components_portal_mobile_portal_navigation_input_room_id_2"
                           type="hidden"
                           name="roomId"
                           value={
@@ -1511,12 +1511,12 @@ const moreDragging =
                         />
                         <button
                           type="submit"
-                          className="flex min-h-[52px] w-full items-center gap-3 border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2 text-left"
+                          className="flex min-h-[52px] w-full items-center gap-3 border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2 text-left components_portal_mobile_portal_navigation_button_action_7"
                         >
                           <MobileIcon
                             src="/icons/lodging.png"
                           />
-                          <span className="text-[11px] text-[rgb(var(--sep-colour-b8a98f))]">
+                          <span className="text-[11px] text-[rgb(var(--sep-colour-b8a98f))] components_portal_mobile_portal_navigation_span_text_7">
                             Lodgings
                           </span>
                         </button>
@@ -1566,7 +1566,7 @@ const moreDragging =
         }}
       />
 
-      <span className="min-w-0 flex-1 truncate text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b8a98f))]">
+      <span className="min-w-0 flex-1 truncate text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b8a98f))] components_portal_mobile_portal_navigation_span_text_8">
         Staff
       </span>
 
@@ -1580,7 +1580,7 @@ const moreDragging =
   ) : null}
                   </div>
 
-                  <div className="border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-15100d))] p-1.5">
+                  <div className="border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-15100d))] p-1.5 components_portal_mobile_portal_navigation_div_more_sepulchria_navigation_8">
                     <ForumSidebarMenu
                       unreadCount={
                         currentUnreadForumCount
@@ -1591,12 +1591,12 @@ const moreDragging =
                 </div>
               </section>
 
-              <section>
+              <section className="components_portal_mobile_portal_navigation_section_more_sepulchria_navigation_4">
                 <SectionTitle>
                   Help & Safety
                 </SectionTitle>
 
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-2 gap-2 components_portal_mobile_portal_navigation_div_more_sepulchria_navigation_9">
                   <EntryButton
                     entry={{
                       href: "/support",
@@ -1638,7 +1638,7 @@ const moreDragging =
                     />
                   ) : null}
 
-                  <div className="col-span-2 border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-15100d))]">
+                  <div className="col-span-2 border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-15100d))] components_portal_mobile_portal_navigation_div_more_sepulchria_navigation_10">
                     <button
                       type="button"
                       onClick={() =>
@@ -1650,15 +1650,15 @@ const moreDragging =
                       aria-expanded={
                         legalExpanded
                       }
-                      className="flex min-h-[52px] w-full items-center gap-3 px-3 py-2 text-left"
+                      className="flex min-h-[52px] w-full items-center gap-3 px-3 py-2 text-left components_portal_mobile_portal_navigation_button_action_8"
                     >
                       <MobileIcon
                         src="/icons/rules.png"
                       />
-                      <span className="min-w-0 flex-1 text-[10px] uppercase tracking-[0.16em] !text-[rgb(var(--sep-colour-b6a894))]">
+                      <span className="min-w-0 flex-1 text-[10px] uppercase tracking-[0.16em] !text-[rgb(var(--sep-colour-b6a894))] components_portal_mobile_portal_navigation_span_text_9">
                         Legal & Safety
                       </span>
-                      <span className="text-lg text-[rgb(var(--sep-colour-b68b4f))]">
+                      <span className="text-lg text-[rgb(var(--sep-colour-b68b4f))] components_portal_mobile_portal_navigation_span_text_10">
                         {legalExpanded
                           ? "−"
                           : "+"}
@@ -1666,7 +1666,7 @@ const moreDragging =
                     </button>
 
                     {legalExpanded ? (
-                      <div className="grid grid-cols-2 gap-2 border-t border-[rgb(var(--sep-colour-60482e))]/35 p-2">
+                      <div className="grid grid-cols-2 gap-2 border-t border-[rgb(var(--sep-colour-60482e))]/35 p-2 components_portal_mobile_portal_navigation_div_container_5">
                         {legalEntries.map(
                           (entry) => (
                             <EntryButton

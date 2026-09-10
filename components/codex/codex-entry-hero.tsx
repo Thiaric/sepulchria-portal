@@ -36,30 +36,30 @@ export function CodexEntryHero({
   const heroImage = bannerUrl ?? imageUrl;
 
   return (
-    <article data-sep-interaction-ignore="true" className="space-y-5">
+    <article data-sep-interaction-ignore="true" className="space-y-5 components_codex_codex_entry_hero_article_article">
       <Link
         href={returnHref}
         className="inline-flex items-center gap-2 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 text-[10px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-c6ab80))] transition hover:border-[rgb(var(--sep-colour-987344))] hover:bg-[rgb(var(--sep-colour-261b12))] hover:text-[rgb(var(--sep-colour-ead2a5))]"
       >
-        <span aria-hidden="true">←</span>
+        <span className="components_codex_codex_entry_hero_span_text" aria-hidden="true">←</span>
         {returnLabel}
       </Link>
 
       <section
         data-sep-interaction-ignore="true"
-        className="relative overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-110d0a))]"
+        className="relative overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-110d0a))] components_codex_codex_entry_hero_section_section"
         style={{
           boxShadow: `inset 0 4px 0 ${accentColour}`,
         }}
       >
-        <div className="relative min-h-[360px] overflow-hidden">
+        <div className="relative min-h-[360px] overflow-hidden components_codex_codex_entry_hero_div_container">
           {heroImage ? (
             <>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={heroImage}
                 alt=""
-                className="absolute inset-0 h-full w-full object-cover opacity-45"
+                className="absolute inset-0 h-full w-full object-cover opacity-45 components_codex_codex_entry_hero_img_image"
               />
 
               <ImagePreviewButton
@@ -67,23 +67,23 @@ export function CodexEntryHero({
                 name={name}
               />
 
-              <div className="absolute inset-0 bg-gradient-to-r from-[rgb(var(--sep-colour-100c09))] via-[rgb(var(--sep-colour-100c09))]/90 to-[rgb(var(--sep-colour-100c09))]/35" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[rgb(var(--sep-colour-100c09))] via-transparent to-black/30" />
+              <div className="absolute inset-0 bg-gradient-to-r from-[rgb(var(--sep-colour-100c09))] via-[rgb(var(--sep-colour-100c09))]/90 to-[rgb(var(--sep-colour-100c09))]/35 components_codex_codex_entry_hero_div_container_2" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[rgb(var(--sep-colour-100c09))] via-transparent to-black/30 components_codex_codex_entry_hero_div_container_3" />
             </>
           ) : (
             <div
-              className="absolute inset-0"
+              className="absolute inset-0 components_codex_codex_entry_hero_div_container_4"
               style={{
                 background: `radial-gradient(circle at top right, ${accentColour}55 0%, #17100c 42%, #0d0907 100%)`,
               }}
             />
           )}
 
-          <div className="relative flex min-h-[360px] items-end p-6 sm:p-8 lg:p-10">
-            <div className="w-full">
-              <div className="flex flex-wrap items-center gap-4">
+          <div className="relative flex min-h-[360px] items-end p-6 sm:p-8 lg:p-10 components_codex_codex_entry_hero_div_container_5">
+            <div className="w-full components_codex_codex_entry_hero_div_container_6">
+              <div className="flex flex-wrap items-center gap-4 components_codex_codex_entry_hero_div_container_7">
                 <div
-                  className="flex h-20 w-20 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-100c09))]/90"
+                  className="flex h-20 w-20 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-100c09))]/90 components_codex_codex_entry_hero_div_container_8"
                   style={{
                     borderColor: `${accentColour}bb`,
                   }}
@@ -93,11 +93,11 @@ export function CodexEntryHero({
                     <img
                       src={iconUrl}
                       alt=""
-                      className="h-full w-full object-cover"
+                      className="h-full w-full object-cover components_codex_codex_entry_hero_img_image_2"
                     />
                   ) : (
                     <span
-                      className="font-serif text-4xl"
+                      className="font-serif text-4xl components_codex_codex_entry_hero_span_text_2"
                       style={{ color: accentColour }}
                     >
                       {name.slice(0, 1).toUpperCase()}
@@ -105,15 +105,15 @@ export function CodexEntryHero({
                   )}
                 </div>
 
-                <div>
+                <div className="components_codex_codex_entry_hero_div_container_9">
                   <p
-                    className="text-[10px] uppercase tracking-[0.3em]"
+                    className="text-[10px] uppercase tracking-[0.3em] components_codex_codex_entry_hero_p_text"
                     style={{ color: accentColour }}
                   >
                     {categoryLabel}
                   </p>
 
-                  <h1 className="mt-2 font-serif text-4xl leading-tight text-[rgb(var(--sep-colour-ead6ad))] sm:text-5xl lg:text-6xl">
+                  <h1 className="mt-2 font-serif text-4xl leading-tight text-[rgb(var(--sep-colour-ead6ad))] sm:text-5xl lg:text-6xl components_codex_codex_entry_hero_h1_title">
                     {name}
                   </h1>
                 </div>
@@ -130,27 +130,27 @@ export function CodexEntryHero({
         </div>
       </section>
 
-      <div data-sep-interaction-ignore="true">
+      <div className="components_codex_codex_entry_hero_div_container_10" data-sep-interaction-ignore="true">
         {betweenHeroAndRecord}
       </div>
 
-      <div data-sep-interaction-ignore="true">
+      <div className="components_codex_codex_entry_hero_div_container_11" data-sep-interaction-ignore="true">
       {recordReplacement ?? (
-      <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 p-6 sm:p-8">
-        <div className="flex items-center gap-4">
+      <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 p-6 sm:p-8 components_codex_codex_entry_hero_section_section_2">
+        <div className="flex items-center gap-4 components_codex_codex_entry_hero_div_container_12">
           <span
-            className="h-px flex-1"
+            className="h-px flex-1 components_codex_codex_entry_hero_span_text_3"
             style={{
               background: `linear-gradient(to right, ${accentColour}, transparent)`,
             }}
           />
 
-          <p className="text-[9px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-8d7759))]">
+          <p className="text-[9px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-8d7759))] components_codex_codex_entry_hero_p_text_2">
             Codex record
           </p>
 
           <span
-            className="h-px flex-1"
+            className="h-px flex-1 components_codex_codex_entry_hero_span_text_4"
             style={{
               background: `linear-gradient(to left, ${accentColour}, transparent)`,
             }}
@@ -163,7 +163,7 @@ export function CodexEntryHero({
             className="mt-7 w-full text-sm leading-8 text-[rgb(var(--sep-colour-b9aa96))] sm:text-[15px]"
           />
         ) : (
-          <p className="mx-auto mt-7 max-w-3xl text-center text-sm leading-7 text-[rgb(var(--sep-colour-8f8373))]">
+          <p className="mx-auto mt-7 max-w-3xl text-center text-sm leading-7 text-[rgb(var(--sep-colour-8f8373))] components_codex_codex_entry_hero_p_text_3">
             A complete description has not yet been added to this Codex entry.
           </p>
         )}

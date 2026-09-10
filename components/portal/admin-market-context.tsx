@@ -70,12 +70,12 @@ export function AdminMarketContext() {
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+    <div className="flex h-full min-h-0 flex-col components_portal_admin_market_context_div_jump_shops">
+      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_market_context_p_jump_shops">
         Administration
       </p>
 
-      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_portal_admin_market_context_h2_jump_shops">
         Jump to Shops
       </h2>
 
@@ -87,10 +87,10 @@ export function AdminMarketContext() {
             block: "start",
           })
         }
-        className="mt-3 flex w-full items-center justify-between border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-271c12))] px-3 py-2.5 text-left text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d6b37d))]"
+        className="mt-3 flex w-full items-center justify-between border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-271c12))] px-3 py-2.5 text-left text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d6b37d))] components_portal_admin_market_context_button_jump_shops"
       >
-        <span>Create new</span>
-        <span>+</span>
+        <span className="components_portal_admin_market_context_span_jump_shops">Create new</span>
+        <span className="components_portal_admin_market_context_span_jump_shops_2">+</span>
       </button>
 
       <input
@@ -98,42 +98,42 @@ export function AdminMarketContext() {
         value={search}
         onChange={(event) => setSearch(event.target.value)}
         placeholder="Search shops..."
-        className="mt-3 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))]"
+        className="mt-3 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))] components_portal_admin_market_context_input_search_shops"
       />
 
-      <p className="mt-1.5 text-right text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-6f6353))]">
+      <p className="mt-1.5 text-right text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-6f6353))] components_portal_admin_market_context_p_jump_shops_2">
         {visible.length}{search.trim() ? ` / ${shops.length}` : ""} Shops
       </p>
 
       {error ? (
-        <p className="mt-3 text-[10px] text-red-400">{error}</p>
+        <p className="mt-3 text-[10px] text-red-400 components_portal_admin_market_context_p_jump_shops_3">{error}</p>
       ) : null}
 
-      <div className="mt-3 min-h-0 flex-1 overflow-y-auto pr-1">
+      <div className="mt-3 min-h-0 flex-1 overflow-y-auto pr-1 components_portal_admin_market_context_div_jump_shops_2">
         {loading ? (
-          <p className="text-[10px] text-[rgb(var(--sep-colour-756958))]">Loading shops...</p>
+          <p className="text-[10px] text-[rgb(var(--sep-colour-756958))] components_portal_admin_market_context_p_text">Loading shops...</p>
         ) : (
-          <div className="space-y-1.5">
+          <div className="space-y-1.5 components_portal_admin_market_context_div_container">
             {visible.map((shop) => (
               <button
                 key={shop.id}
                 type="button"
                 onClick={() => jump(shop.id)}
-                className="flex w-full items-center justify-between gap-2 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-left hover:border-[rgb(var(--sep-colour-8d693e))]"
+                className="flex w-full items-center justify-between gap-2 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-left hover:border-[rgb(var(--sep-colour-8d693e))] components_portal_admin_market_context_button_action"
               >
-                <span className="min-w-0">
-                  <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))]">
+                <span className="min-w-0 components_portal_admin_market_context_span_text">
+                  <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] components_portal_admin_market_context_span_text_2">
                     {shop.name}
                   </span>
-                  <span className="mt-0.5 block truncate text-[8px] text-[rgb(var(--sep-colour-6f6252))]">
+                  <span className="mt-0.5 block truncate text-[8px] text-[rgb(var(--sep-colour-6f6252))] components_portal_admin_market_context_span_text_3">
                     {shop.slug}
                   </span>
                 </span>
 
                 <span
-                  className={`h-1.5 w-1.5 shrink-0 rounded-full ${
+                  className={[((`h-1.5 w-1.5 shrink-0 rounded-full ${
                     shop.is_active ? "bg-emerald-600" : "bg-[rgb(var(--sep-colour-66594b))]"
-                  }`}
+                  }`)), "components_portal_admin_market_context_span_text_4"].filter(Boolean).join(" ")}
                 />
               </button>
             ))}

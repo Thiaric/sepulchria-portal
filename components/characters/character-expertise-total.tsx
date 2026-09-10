@@ -86,8 +86,8 @@ export function CharacterExpertiseTotal({
 
   if (expertise === null) {
     return (
-      <div>
-        <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+      <div className="components_characters_character_expertise_total_div_container">
+        <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_characters_character_expertise_total_p_text">
           Expertise
         </p>
         <dd className="mt-1 text-sm text-[rgb(var(--sep-colour-7c7163))]">
@@ -98,17 +98,17 @@ export function CharacterExpertiseTotal({
   }
 
   return (
-    <div>
-      <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+    <div className="components_characters_character_expertise_total_div_container_2">
+      <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_characters_character_expertise_total_p_text_2">
         Expertise
       </p>
 
       <dd className="mt-1 flex items-baseline gap-2">
-        <span className="font-serif text-2xl text-[rgb(var(--sep-colour-e0c79d))]">
+        <span className="font-serif text-2xl text-[rgb(var(--sep-colour-e0c79d))] components_characters_character_expertise_total_span_text">
           {expertise.toFixed(1)}
         </span>
 
-        <span className="text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-756957))]">
+        <span className="text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-756957))] components_characters_character_expertise_total_span_text_2">
           points
         </span>
       </dd>

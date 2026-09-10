@@ -362,8 +362,8 @@ export function Profile({
 
 
   return (
-    <div className="p-5 sm:p-7 lg:p-9">
-      <div className="mx-auto w-full max-w-7xl">
+    <div className="p-5 sm:p-7 lg:p-9 character_page_div_container">
+      <div className="mx-auto w-full max-w-7xl character_page_div_container_2">
         {notice ? (
           <PageNoticeBanner notice={notice} />
         ) : null}
@@ -389,14 +389,14 @@ export function Profile({
           />
         ) : null}
 
-        <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-3 character_page_div_container_3">
           
 
-          <div className="flex flex-wrap items-center justify-end gap-2">
+          <div className="flex flex-wrap items-center justify-end gap-2 character_page_div_container_4">
             {messageAction}
 
             {canSubmit ? (
-              <form action={submitCharacterForReview}>
+              <form className="character_page_form_submit_character_review" action={submitCharacterForReview}>
                 <PendingSubmitButton
                   idleText={
                     status === "rejected"
@@ -418,7 +418,7 @@ export function Profile({
         <div
           data-cosmetic-character-id={character.id}
           data-cosmetic-surface="sheet"
-          className="relative isolate"
+          className="relative isolate character_page_div_container_5"
           style={cosmeticFrameStyle(
             sheetFrameUrl,
             "sheet",
@@ -427,13 +427,13 @@ export function Profile({
           <CharacterSheetTabs own={own} activeTab={activeTab}
           cacheKey={character.id ?? "own"}
 >
-          <div data-character-sheet-panel="short">
+          <div className="character_page_div_container_6" data-character-sheet-panel="short">
           {activeTab === "short" ? (
-            <section className="grid gap-4 xl:grid-cols-[minmax(0,1.45fr)_minmax(360px,0.9fr)]">
-          <div className="min-w-0">
-            <section className="grid gap-4 border border-[rgb(var(--sep-colour-654b2e))]/50 bg-[rgb(var(--sep-colour-17110d))] p-4 sm:p-5 lg:grid-cols-[180px_minmax(0,1fr)]">
-              <div className="mx-auto w-full max-w-[180px] lg:mx-0">
-  <div
+            <section className="grid gap-4 xl:grid-cols-[minmax(0,1.45fr)_minmax(360px,0.9fr)] character_page_section_section">
+          <div className="min-w-0 character_page_div_container_7">
+            <section className="grid gap-4 border border-[rgb(var(--sep-colour-654b2e))]/50 bg-[rgb(var(--sep-colour-17110d))] p-4 sm:p-5 lg:grid-cols-[180px_minmax(0,1fr)] character_page_section_section_2">
+              <div className="mx-auto w-full max-w-[180px] lg:mx-0 character_page_div_container_8">
+  <div className="character_page_div_container_9"
     data-cosmetic-character-id={character.id}
     data-cosmetic-surface="portrait"
   >
@@ -445,10 +445,10 @@ export function Profile({
           character.display_name ??
           "character"
         }`}
-        className="aspect-[3/4] w-full border border-[rgb(var(--sep-colour-60482e))]/50 object-cover"
+        className="aspect-[3/4] w-full border border-[rgb(var(--sep-colour-60482e))]/50 object-cover character_page_img_image"
       />
     ) : (
-      <div className="flex aspect-[3/4] w-full items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0d0a08))] font-serif text-5xl text-[rgb(var(--sep-colour-5f503f))]">
+      <div className="flex aspect-[3/4] w-full items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0d0a08))] font-serif text-5xl text-[rgb(var(--sep-colour-5f503f))] character_page_div_container_10">
         ?
       </div>
     )}
@@ -457,7 +457,7 @@ export function Profile({
   {own ? (
     <div
       data-own-character-status-under-portrait
-      className="mt-2"
+      className="mt-2 character_page_div_container_11"
     >
       <CharacterStatusBadge
         status={status}
@@ -466,14 +466,14 @@ export function Profile({
   ) : null}
 </div>
 
-              <div className="min-w-0">
-                <div className="flex flex-wrap items-start justify-between gap-3 border-b border-[rgb(var(--sep-colour-5d452d))]/35 pb-3">
-                  <div className="min-w-0 flex-1">
-                    <p className="text-[8px] uppercase tracking-[0.26em] text-[rgb(var(--sep-colour-876a46))]">
+              <div className="min-w-0 character_page_div_container_12">
+                <div className="flex flex-wrap items-start justify-between gap-3 border-b border-[rgb(var(--sep-colour-5d452d))]/35 pb-3 character_page_div_container_13">
+                  <div className="min-w-0 flex-1 character_page_div_container_14">
+                    <p className="text-[8px] uppercase tracking-[0.26em] text-[rgb(var(--sep-colour-876a46))] character_page_p_text">
                       Character profile
                     </p>
 
-                    <div className="mt-1 grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-4">
+                    <div className="mt-1 grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-4 character_page_div_container_15">
                       <AutoFitCharacterName
                         characterId={character.id}
                         className="text-[1.1rem] text-[rgb(var(--sep-colour-ecd9b2))] sm:text-[1.2rem]"
@@ -483,7 +483,7 @@ export function Profile({
                       </AutoFitCharacterName>
 
                       {character.id ? (
-                        <div className="justify-self-end">
+                        <div className="justify-self-end character_page_div_container_16">
                           <CharacterDisplayTrophies
                             characterId={character.id}
                           />
@@ -506,38 +506,38 @@ export function Profile({
 
                 </div>
 
-                <div className="mt-3 grid gap-px bg-[rgb(var(--sep-colour-4f3b28))]/35 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="mt-3 grid gap-px bg-[rgb(var(--sep-colour-4f3b28))]/35 sm:grid-cols-2 lg:grid-cols-3 character_page_div_container_17">
                   {items.map(([label, value]) => (
                     <div
                       key={label}
-                      className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2"
+                      className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 character_page_div_container_18"
                     >
-                      <p className="text-[7px] uppercase tracking-[0.19em] text-[rgb(var(--sep-colour-796448))]">
+                      <p className="text-[7px] uppercase tracking-[0.19em] text-[rgb(var(--sep-colour-796448))] character_page_p_text_2">
                         {label}
                       </p>
 
-                      <p className="mt-1 break-words text-[11px] leading-5 text-[rgb(var(--sep-colour-cab89b))]">
+                      <p className="mt-1 break-words text-[11px] leading-5 text-[rgb(var(--sep-colour-cab89b))] character_page_p_text_3">
                         {value || "Not recorded"}
                       </p>
                     </div>
                   ))}
 
-                  <div className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 sm:col-span-2 lg:col-span-1">
+                  <div className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 sm:col-span-2 lg:col-span-1 character_page_div_container_19">
                     <CharacterExpertiseTotal
                       characterId={character.id!}
                     />
                   </div>
-                 <div className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 sm:col-span-2 lg:col-span-1">
+                 <div className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 sm:col-span-2 lg:col-span-1 character_page_div_container_20">
                    
                   {own && character.id ? (
               <CharacterRemnantsWallet characterId={character.id} />
             ) : null} </div>
                   {own ? (
-                    <div className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 sm:col-span-2 lg:col-span-1">
-                      <p className="text-[7px] uppercase tracking-[0.19em] text-[rgb(var(--sep-colour-796448))]">
+                    <div className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 sm:col-span-2 lg:col-span-1 character_page_div_container_21">
+                      <p className="text-[7px] uppercase tracking-[0.19em] text-[rgb(var(--sep-colour-796448))] character_page_p_text_4">
                         In Sepulchria since
                       </p>
-                      <p className="mt-1 break-words text-[11px] leading-5 text-[rgb(var(--sep-colour-cab89b))]">
+                      <p className="mt-1 break-words text-[11px] leading-5 text-[rgb(var(--sep-colour-cab89b))] character_page_p_text_5">
                         {formatSepulchriaSince(sepulchriaSince)}
                       </p>
                     </div>
@@ -546,7 +546,7 @@ export function Profile({
 
               </div>
 
-              <div className="mx-auto w-full max-w-[180px] space-y-2 lg:mx-0">
+              <div className="mx-auto w-full max-w-[180px] space-y-2 lg:mx-0 character_page_div_container_22">
                 <CompactHeritageCard
                   label="Ancestry"
                   entry={race}
@@ -564,7 +564,7 @@ export function Profile({
                 ) : null}
               </div>
 
-              <div className="h-full">
+              <div className="h-full character_page_div_container_23">
                 {character.id ? (
                   <CharacterHealthDisplay
                     characterId={character.id}
@@ -576,7 +576,7 @@ export function Profile({
             
 
             {character.music_url ? (
-              <div className="mt-4">
+              <div className="mt-4 character_page_div_container_24">
                 <CharacterMusicPlayer
                   src={character.music_url}
                 />
@@ -584,7 +584,7 @@ export function Profile({
             ) : null}
           </div>
 
-              <div className="min-w-0">
+              <div className="min-w-0 character_page_div_container_25">
                 {character.id ? (
                   <CharacterMechanicsDisplay
                     characterId={character.id}
@@ -596,8 +596,8 @@ export function Profile({
           ) : null}
         </div>
 
-          <div data-character-sheet-panel="profile" className="py-2 border border-[rgb(var(--sep-colour-6b5032))]/50">
-          <section className="grid gap-4 md:grid-cols-2 px-2">
+          <div data-character-sheet-panel="profile" className="py-2 border border-[rgb(var(--sep-colour-6b5032))]/50 character_page_div_container_26">
+          <section className="grid gap-4 md:grid-cols-2 px-2 character_page_section_section_3">
           <ProfileTextSection
             title="Physical description"
             value={character.physical_description}
@@ -609,14 +609,14 @@ export function Profile({
           />
         </section>
 
-            <div className="mt-4 px-2">
+            <div className="mt-4 px-2 character_page_div_container_27">
               <ProfileTextSection
                 title="Biography"
                 value={character.biography}
               />
             </div>
 
-            <div className="mt-4 px-2">
+            <div className="mt-4 px-2 character_page_div_container_28">
               <ProfileTextSection
                 title="Public notes"
                 value={character.public_notes}
@@ -624,7 +624,7 @@ export function Profile({
               />
             </div>
 
-            <div className="mt-4 px-2">
+            <div className="mt-4 px-2 character_page_div_container_29">
               <ProfileTextSection
                 title="Relationships"
                 value={character.relationships}
@@ -632,7 +632,7 @@ export function Profile({
             </div>
           </div>
 
-          <div data-character-sheet-panel="inventory">
+          <div className="character_page_div_container_30" data-character-sheet-panel="inventory">
             {activeTab === "inventory" &&
             character.id ? (
               <CharacterInventoryDisplay
@@ -642,7 +642,7 @@ export function Profile({
             ) : null}
           </div>
 
-          <div data-character-sheet-panel="ledger">
+          <div className="character_page_div_container_31" data-character-sheet-panel="ledger">
             {activeTab === "ledger" &&
             own &&
             character.id ? (
@@ -652,7 +652,7 @@ export function Profile({
             ) : null}
           </div>
 
-          <div data-character-sheet-panel="trophies">
+          <div className="character_page_div_container_32" data-character-sheet-panel="trophies">
             {activeTab === "trophies" &&
             character.id ? (
               <CharacterTrophiesDisplay
@@ -662,7 +662,7 @@ export function Profile({
             ) : null}
           </div>
 
-          <div data-character-sheet-panel="gifts">
+          <div className="character_page_div_container_33" data-character-sheet-panel="gifts">
             {activeTab === "gifts" &&
             character.id ? (
               <CharacterGiftsDisplay
@@ -671,7 +671,7 @@ export function Profile({
             ) : null}
           </div>
 
-          <div data-character-sheet-panel="warping">
+          <div className="character_page_div_container_34" data-character-sheet-panel="warping">
             {activeTab === "warping" &&
             character.id ? (
               <CharacterShapesDisplay
@@ -680,8 +680,8 @@ export function Profile({
             ) : null}
           </div>
 
-          <div data-character-sheet-panel="offgame"  className="py-2 border border-[rgb(var(--sep-colour-6b5032))]/50">
-            <section className="grid gap-4 px-2">
+          <div data-character-sheet-panel="offgame"  className="py-2 border border-[rgb(var(--sep-colour-6b5032))]/50 character_page_div_container_35">
+            <section className="grid gap-4 px-2 character_page_section_section_4">
             <ProfileTextSection
               title="Offgame"
               value={character.offgame}
@@ -690,7 +690,7 @@ export function Profile({
             </section>
           </div>
 
-          <div data-character-sheet-panel="audit">
+          <div className="character_page_div_container_36" data-character-sheet-panel="audit">
             {activeTab === "audit" &&
             own &&
             character.id ? (
@@ -700,7 +700,7 @@ export function Profile({
             ) : null}
           </div>
 
-          <div data-character-sheet-panel="edit">
+          <div className="character_page_div_container_37" data-character-sheet-panel="edit">
             {activeTab === "edit" &&
             own &&
             character.id ? (
@@ -716,10 +716,10 @@ export function Profile({
 
             {activeTab === "edit" &&
             canEdit ? (
-              <section className="border border-[rgb(var(--sep-colour-6b5032))]/50 bg-[rgb(var(--sep-colour-17110d))] p-5">
-                <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">Character editing</p>
-                <h2 className="mt-2 font-serif text-xl text-[rgb(var(--sep-colour-dfc79c))]">Edit character</h2>
-                <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">This character is still editable through the full character editor.</p>
+              <section className="border border-[rgb(var(--sep-colour-6b5032))]/50 bg-[rgb(var(--sep-colour-17110d))] p-5 character_page_section_edit_character">
+                <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))] character_page_p_edit_character">Character editing</p>
+                <h2 className="mt-2 font-serif text-xl text-[rgb(var(--sep-colour-dfc79c))] character_page_h2_edit_character">Edit character</h2>
+                <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] character_page_p_edit_character_2">This character is still editable through the full character editor.</p>
                 <Link
                   href="/character/edit"
                   className="mt-4 inline-flex border border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd9aa))] transition hover:bg-[rgb(var(--sep-colour-49351f))]"
@@ -732,24 +732,24 @@ export function Profile({
             {activeTab === "edit" &&
             own &&
             status === "approved" ? (
-          <section className="mt-4 border border-[rgb(var(--sep-colour-6b5032))]/50 bg-[rgb(var(--sep-colour-17110d))]">
-  <div className="px-4 py-3 sm:px-5">
-    <h2 className="font-serif text-lg text-[rgb(var(--sep-colour-dfc79c))] sm:text-xl">
+          <section className="mt-4 border border-[rgb(var(--sep-colour-6b5032))]/50 bg-[rgb(var(--sep-colour-17110d))] character_page_section_section_5">
+  <div className="px-4 py-3 sm:px-5 character_page_div_edit_profile">
+    <h2 className="font-serif text-lg text-[rgb(var(--sep-colour-dfc79c))] sm:text-xl character_page_h2_edit_profile">
       Edit profile
     </h2>
 
-    <p className="mt-1 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+    <p className="mt-1 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] character_page_p_edit_profile">
       Update portrait and public character information without staff review.
     </p>
   </div>
 
-  <div className="border-t border-[rgb(var(--sep-colour-5d452d))]/40 px-4 py-5 sm:px-5">
+  <div className="border-t border-[rgb(var(--sep-colour-5d452d))]/40 px-4 py-5 sm:px-5 character_page_div_container_38">
     <form
                 action={updateApprovedCharacterProfile}
-                className="space-y-5"
+                className="space-y-5 character_page_form_update_approved_character_profile"
               >
-                <label className="block">
-                  <span className="text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
+                <label className="block character_page_label_label">
+                  <span className="text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))] character_page_span_text">
                     Portrait URL
                   </span>
 
@@ -760,12 +760,12 @@ export function Profile({
                       character.portrait_url ?? ""
                     }
                     placeholder="https://..."
-                    className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
+                    className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] character_page_input_portrait_url"
                   />
                 </label>
 
-                <label className="block">
-                  <span className="text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
+                <label className="block character_page_label_label_2">
+                  <span className="text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))] character_page_span_text_2">
                     Character music URL
                   </span>
 
@@ -776,14 +776,14 @@ export function Profile({
                       character.music_url ?? ""
                     }
                     placeholder="https://.../theme.mp3"
-                    className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
+                    className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] character_page_input_music_url"
                   />
 
                 
                 </label>
 
-                <label className="block">
-  <span className="text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
+                <label className="block character_page_label_label_3">
+  <span className="text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))] character_page_span_text_3">
     Sexual orientation
   </span>
 
@@ -796,11 +796,11 @@ export function Profile({
       ""
     }
     placeholder="Optional"
-    className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
+    className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] character_page_input_sexual_orientation"
   />
 </label>
 
-                <div className="grid gap-5 md:grid-cols-2">
+                <div className="grid gap-5 md:grid-cols-2 character_page_div_container_39">
                   <ApprovedProfileTextArea
                     label="Physical description"
                     name="physical_description"
@@ -859,7 +859,7 @@ export function Profile({
                   rows={6}
                 />
 
-                <label className="flex items-start gap-3 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3">
+                <label className="flex items-start gap-3 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 character_page_label_label_4">
                   <input
                     type="checkbox"
                     name="show_last_activity"
@@ -867,22 +867,22 @@ export function Profile({
                     defaultChecked={
                       character.show_last_activity === true
                     }
-                    className="mt-0.5 h-4 w-4 shrink-0 accent-[rgb(var(--sep-colour-9a7543))]"
+                    className="mt-0.5 h-4 w-4 shrink-0 accent-[rgb(var(--sep-colour-9a7543))] character_page_input_show_last_activity"
                   />
 
-                  <span className="min-w-0">
-                    <span className="block text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-b99768))]">
+                  <span className="min-w-0 character_page_span_text_4">
+                    <span className="block text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-b99768))] character_page_span_text_5">
                       Show Last Activity publicly
                     </span>
 
-                    <span className="mt-1 block text-[11px] leading-5 text-[rgb(var(--sep-colour-817463))]">
+                    <span className="mt-1 block text-[11px] leading-5 text-[rgb(var(--sep-colour-817463))] character_page_span_text_6">
                       When enabled, other players can see when this character was last active.
                       Staff can always see Last Activity regardless of this setting.
                     </span>
                   </span>
                 </label>
 
-                <label className="flex items-start gap-3 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3">
+                <label className="flex items-start gap-3 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 character_page_label_label_5">
                   <input
                     type="checkbox"
                     name="show_inventory"
@@ -890,22 +890,22 @@ export function Profile({
                     defaultChecked={
                       character.show_inventory !== false
                     }
-                    className="mt-0.5 h-4 w-4 shrink-0 accent-[rgb(var(--sep-colour-9a7543))]"
+                    className="mt-0.5 h-4 w-4 shrink-0 accent-[rgb(var(--sep-colour-9a7543))] character_page_input_show_inventory"
                   />
 
-                  <span className="min-w-0">
-                    <span className="block text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-b99768))]">
+                  <span className="min-w-0 character_page_span_text_7">
+                    <span className="block text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-b99768))] character_page_span_text_8">
                       Show Inventory publicly
                     </span>
 
-                    <span className="mt-1 block text-[11px] leading-5 text-[rgb(var(--sep-colour-817463))]">
+                    <span className="mt-1 block text-[11px] leading-5 text-[rgb(var(--sep-colour-817463))] character_page_span_text_9">
                       When disabled, other players cannot see this character&apos;s carried Inventory.
                       Equipped Items remain visible. Staff can always see the full Inventory.
                     </span>
                   </span>
                 </label>
 
-                <div className="flex justify-end border-t border-[rgb(var(--sep-colour-5d452d))]/40 pt-4">
+                <div className="flex justify-end border-t border-[rgb(var(--sep-colour-5d452d))]/40 pt-4 character_page_div_container_40">
                   <PendingSubmitButton
                     idleText="Save profile changes"
                     pendingText="Saving changes..."
@@ -921,7 +921,7 @@ export function Profile({
             own &&
             status === "approved" &&
             character.id ? (
-              <div id="display-trophies">
+              <div className="character_page_div_display_trophies" id="display-trophies">
                 <DisplayTrophySelector
                   characterId={character.id}
                 />
@@ -932,9 +932,9 @@ export function Profile({
             own &&
             !canEdit &&
             status !== "approved" ? (
-              <section className="border border-[rgb(var(--sep-colour-6b5032))]/50 bg-[rgb(var(--sep-colour-17110d))] p-5">
-                <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-dfc79c))]">Editing unavailable</h2>
-                <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">This character cannot currently be edited while it is awaiting staff review.</p>
+              <section className="border border-[rgb(var(--sep-colour-6b5032))]/50 bg-[rgb(var(--sep-colour-17110d))] p-5 character_page_section_editing_unavailable">
+                <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-dfc79c))] character_page_h2_editing_unavailable">Editing unavailable</h2>
+                <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] character_page_p_editing_unavailable">This character cannot currently be edited while it is awaiting staff review.</p>
               </section>
             ) : null}
           </div>
@@ -977,8 +977,8 @@ function ApprovedProfileTextArea({
   rows?: number;
 }) {
   return (
-    <label className="block">
-      <span className="text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
+    <label className="block character_page_label_label_6">
+      <span className="text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))] character_page_span_text_10">
         {label}
       </span>
       <textarea
@@ -986,7 +986,7 @@ function ApprovedProfileTextArea({
         defaultValue={defaultValue ?? ""}
         required={required}
         rows={rows}
-        className="mt-2 w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-3 text-sm leading-7 text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
+        className="mt-2 w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-3 text-sm leading-7 text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] character_page_textarea_field"
       />
     </label>
   );
@@ -1005,17 +1005,17 @@ function CharacterStatusPanel({
 }) {
   if (status === "submitted") {
     return (
-      <section className="mb-6 border border-[rgb(var(--sep-colour-75613d))]/65 bg-[rgb(var(--sep-colour-282112))]/75 p-5">
-        <p className="text-[9px] uppercase tracking-[0.25em] text-[rgb(var(--sep-colour-c0a166))]">
+      <section className="mb-6 border border-[rgb(var(--sep-colour-75613d))]/65 bg-[rgb(var(--sep-colour-282112))]/75 p-5 character_page_section_character_submitted">
+        <p className="text-[9px] uppercase tracking-[0.25em] text-[rgb(var(--sep-colour-c0a166))] character_page_p_character_submitted">
           Awaiting staff review
         </p>
 
-        <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-ead3a4))]">
+        <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-ead3a4))] character_page_h2_character_submitted">
           Your character has been
           submitted
         </h2>
 
-        <p className="mt-3 text-sm leading-6 text-[rgb(var(--sep-colour-aa9c84))]">
+        <p className="mt-3 text-sm leading-6 text-[rgb(var(--sep-colour-aa9c84))] character_page_p_character_submitted_2">
           The character sheet is
           currently locked while the
           staff reviews it. You will be
@@ -1024,7 +1024,7 @@ function CharacterStatusPanel({
         </p>
 
         {submittedAt ? (
-          <p className="mt-3 text-xs text-[rgb(var(--sep-colour-837661))]">
+          <p className="mt-3 text-xs text-[rgb(var(--sep-colour-837661))] character_page_p_character_submitted_3">
             Submitted{" "}
             {formatDateTime(
               submittedAt,
@@ -1041,17 +1041,17 @@ function CharacterStatusPanel({
 
   if (status === "rejected") {
     return (
-      <section className="mb-6 border border-[rgb(var(--sep-colour-853e35))]/70 bg-[rgb(var(--sep-colour-2d1512))]/75 p-5">
-        <p className="text-[9px] uppercase tracking-[0.25em] text-[rgb(var(--sep-colour-d2786d))]">
+      <section className="mb-6 border border-[rgb(var(--sep-colour-853e35))]/70 bg-[rgb(var(--sep-colour-2d1512))]/75 p-5 character_page_section_character_not_approved">
+        <p className="text-[9px] uppercase tracking-[0.25em] text-[rgb(var(--sep-colour-d2786d))] character_page_p_character_not_approved">
           Corrections requested
         </p>
 
-        <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-efb4aa))]">
+        <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-efb4aa))] character_page_h2_character_not_approved">
           Your character was not
           approved
         </h2>
 
-        <p className="mt-3 text-sm leading-6 text-[rgb(var(--sep-colour-bd958e))]">
+        <p className="mt-3 text-sm leading-6 text-[rgb(var(--sep-colour-bd958e))] character_page_p_character_not_approved_2">
           Review the staff feedback
           below, edit the character
           sheet, and submit it again
@@ -1059,12 +1059,12 @@ function CharacterStatusPanel({
           have been completed.
         </p>
 
-        <div className="mt-4 border border-[rgb(var(--sep-colour-70352f))]/55 bg-[rgb(var(--sep-colour-170b0a))]/60 p-4">
-          <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-aa655d))]">
+        <div className="mt-4 border border-[rgb(var(--sep-colour-70352f))]/55 bg-[rgb(var(--sep-colour-170b0a))]/60 p-4 character_page_div_character_not_approved">
+          <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-aa655d))] character_page_p_character_not_approved_3">
             Staff reason
           </p>
 
-          <p className="mt-2 whitespace-pre-line text-sm leading-6 text-[rgb(var(--sep-colour-ddb2aa))]">
+          <p className="mt-2 whitespace-pre-line text-sm leading-6 text-[rgb(var(--sep-colour-ddb2aa))] character_page_p_character_not_approved_4">
             {rejectionReason ||
               "No rejection reason was provided. Contact the staff for clarification."}
           </p>
@@ -1074,16 +1074,16 @@ function CharacterStatusPanel({
   }
 
   return (
-    <section className="mb-6 border border-[rgb(var(--sep-colour-615039))]/60 bg-[rgb(var(--sep-colour-1b1710))]/75 p-5">
-      <p className="text-[9px] uppercase tracking-[0.25em] text-[rgb(var(--sep-colour-a58b61))]">
+    <section className="mb-6 border border-[rgb(var(--sep-colour-615039))]/60 bg-[rgb(var(--sep-colour-1b1710))]/75 p-5 character_page_section_complete_character_sheet">
+      <p className="text-[9px] uppercase tracking-[0.25em] text-[rgb(var(--sep-colour-a58b61))] character_page_p_complete_character_sheet">
         Draft character
       </p>
 
-      <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dfc79c))]">
+      <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dfc79c))] character_page_h2_complete_character_sheet">
         Complete your character sheet
       </h2>
 
-      <p className="mt-3 text-sm leading-6 text-[rgb(var(--sep-colour-a89a84))]">
+      <p className="mt-3 text-sm leading-6 text-[rgb(var(--sep-colour-a89a84))] character_page_p_complete_character_sheet_2">
         You may continue editing this
         record. When every required
         section is complete, submit it
@@ -1114,7 +1114,7 @@ function CharacterStatusBadge({
 
   return (
     <span
-      className={`inline-flex border px-3 py-2 text-[8px] uppercase tracking-[0.22em] ${styles[status]}`}
+      className={[((`inline-flex border px-3 py-2 text-[8px] uppercase tracking-[0.22em] ${styles[status]}`)), "character_page_span_text_11"].filter(Boolean).join(" ")}
     >
       {status}
     </span>
@@ -1143,7 +1143,7 @@ function PageNoticeBanner({
           ? "alert"
           : "status"
       }
-      className={`mb-6 border px-4 py-3 text-sm ${classes}`}
+      className={[((`mb-6 border px-4 py-3 text-sm ${classes}`)), "character_page_div_container_41"].filter(Boolean).join(" ")}
     >
       {notice.message}
     </div>
@@ -1215,7 +1215,7 @@ function CompactHeritageCard({
       }}
     >
       <div
-        className="flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden border bg-black/20 font-serif text-[9px]"
+        className="flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden border bg-black/20 font-serif text-[9px] character_page_div_container_42"
         style={{
           borderColor: `${colour}88`,
           color: colour,
@@ -1226,7 +1226,7 @@ function CompactHeritageCard({
           <img
             src={entry.icon_url}
             alt=""
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover character_page_img_image_2"
           />
         ) : (
           entry?.name
@@ -1235,13 +1235,13 @@ function CompactHeritageCard({
         )}
       </div>
 
-      <div className="min-w-0 flex-1">
-        <p className="text-[7px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
+      <div className="min-w-0 flex-1 character_page_div_container_43">
+        <p className="text-[7px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))] character_page_p_text_6">
           {label}
         </p>
 
         <p
-  className="mt-0.5 break-words text-[11px] leading-4"
+  className="mt-0.5 break-words text-[11px] leading-4 character_page_p_text_7"
   style={{
     color: entry ? colour : "#675e52",
   }}
@@ -1266,17 +1266,17 @@ function ProfileTextSection({
 }) {
   return (
     <article
-      className={`h-full border border-[rgb(var(--sep-colour-6b5032))]/50 p-4 sm:p-5 ${
+      className={[((`h-full border border-[rgb(var(--sep-colour-6b5032))]/50 p-4 sm:p-5 ${
         subtle
           ? "bg-[rgb(var(--sep-colour-130f0c))]"
           : "bg-[rgb(var(--sep-colour-17110d))]"
-      }`}
+      }`)), "character_page_article_article"].filter(Boolean).join(" ")}
     >
-      <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-dfc79c))] sm:text-2xl">
+      <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-dfc79c))] sm:text-2xl character_page_h2_heading">
         {title}
       </h2>
 
-      <p className="mt-3 whitespace-pre-line break-words text-sm leading-7 text-[rgb(var(--sep-colour-b0a18d))]">
+      <p className="mt-3 whitespace-pre-line break-words text-sm leading-7 text-[rgb(var(--sep-colour-b0a18d))] character_page_p_text_8">
         {value ||
           "No information has been added yet."}
       </p>

@@ -180,22 +180,22 @@ export function SepulchriaHomepage({
   return (
     <main
       data-public-skin-surface="true"
-      className="relative min-h-[100dvh] overflow-x-hidden bg-[rgb(var(--sep-colour-090706))] text-[rgb(var(--sep-colour-e8dcc4))] lg:h-[100dvh] lg:min-h-0 lg:overflow-hidden"
+      className="relative min-h-[100dvh] overflow-x-hidden bg-[rgb(var(--sep-colour-090706))] text-[rgb(var(--sep-colour-e8dcc4))] lg:h-[100dvh] lg:min-h-0 lg:overflow-hidden components_homepage_sepulchria_homepage_main_main"
     >
       {/* Atmospheric background */}
-      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_50%_-10%,rgba(var(--sep-rgb-135-91-42),0.24),transparent_38%),radial-gradient(circle_at_15%_45%,rgba(var(--sep-rgb-78-42-25),0.14),transparent_28%),linear-gradient(to_bottom,rgb(var(--sep-colour-130e0b))_0%,rgb(var(--sep-colour-0b0807))_50%,rgb(var(--sep-colour-090706))_100%)]" />
+      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_50%_-10%,rgba(var(--sep-rgb-135-91-42),0.24),transparent_38%),radial-gradient(circle_at_15%_45%,rgba(var(--sep-rgb-78-42-25),0.14),transparent_28%),linear-gradient(to_bottom,rgb(var(--sep-colour-130e0b))_0%,rgb(var(--sep-colour-0b0807))_50%,rgb(var(--sep-colour-090706))_100%)] components_homepage_sepulchria_homepage_div_container" />
 
-      <div className="pointer-events-none fixed inset-0 opacity-[0.13] [background-image:linear-gradient(rgba(var(--sep-rgb-255-255-255),.025)_1px,transparent_1px),linear-gradient(90deg,rgba(var(--sep-rgb-255-255-255),.018)_1px,transparent_1px)] [background-size:72px_72px]" />
+      <div className="pointer-events-none fixed inset-0 opacity-[0.13] [background-image:linear-gradient(rgba(var(--sep-rgb-255-255-255),.025)_1px,transparent_1px),linear-gradient(90deg,rgba(var(--sep-rgb-255-255-255),.018)_1px,transparent_1px)] [background-size:72px_72px] components_homepage_sepulchria_homepage_div_container_2" />
 
       <div
         aria-hidden="true"
-        className="pointer-events-none fixed inset-0 overflow-hidden"
+        className="pointer-events-none fixed inset-0 overflow-hidden components_homepage_sepulchria_homepage_div_container_3"
       >
         {EMBERS.map(
           (ember, index) => (
             <span
               key={`${ember.left}-${index}`}
-              className="homepage-ember absolute bottom-[-2rem] rounded-full bg-[rgb(var(--sep-colour-d89245))] shadow-[0_0_8px_rgba(var(--sep-rgb-216-146-69),0.7)]"
+              className="homepage-ember absolute bottom-[-2rem] rounded-full bg-[rgb(var(--sep-colour-d89245))] shadow-[0_0_8px_rgba(var(--sep-rgb-216-146-69),0.7)] components_homepage_sepulchria_homepage_span_text"
               style={{
                 left: `${ember.left}%`,
                 width: ember.size,
@@ -214,29 +214,29 @@ export function SepulchriaHomepage({
 
       <div
         aria-hidden="true"
-        className="homepage-fog pointer-events-none fixed -left-[20%] top-[10%] h-[36rem] w-[140%] bg-[radial-gradient(ellipse_at_center,rgba(var(--sep-rgb-194-171-136),0.08),transparent_67%)] blur-3xl"
+        className="homepage-fog pointer-events-none fixed -left-[20%] top-[10%] h-[36rem] w-[140%] bg-[radial-gradient(ellipse_at_center,rgba(var(--sep-rgb-194-171-136),0.08),transparent_67%)] blur-3xl components_homepage_sepulchria_homepage_div_container_4"
       />
 
-      <div className="relative z-10 mx-auto flex min-h-[100dvh] w-full max-w-[1600px] flex-col px-3 py-4 sm:px-6 lg:h-full lg:min-h-0 lg:px-8">
+      <div className="relative z-10 mx-auto flex min-h-[100dvh] w-full max-w-[1600px] flex-col px-3 py-4 sm:px-6 lg:h-full lg:min-h-0 lg:px-8 components_homepage_sepulchria_homepage_div_container_5">
         {/* Header */}
-        <header className="shrink-0 text-center">
-          <p className="text-[8px] uppercase tracking-[0.42em] text-[rgb(var(--sep-colour-896b45))]">
+        <header className="shrink-0 text-center components_homepage_sepulchria_homepage_header_sepulchria">
+          <p className="text-[8px] uppercase tracking-[0.42em] text-[rgb(var(--sep-colour-896b45))] components_homepage_sepulchria_homepage_p_sepulchria">
             The Living World of Aureth
           </p>
 
-          <h1 className="mt-1 font-serif text-4xl tracking-[0.13em] text-[rgb(var(--sep-colour-ead8b4))] drop-shadow-[0_8px_30px_rgba(var(--sep-rgb-0-0-0),0.9)] sm:text-5xl lg:text-6xl">
+          <h1 className="mt-1 font-serif text-4xl tracking-[0.13em] text-[rgb(var(--sep-colour-ead8b4))] drop-shadow-[0_8px_30px_rgba(var(--sep-rgb-0-0-0),0.9)] sm:text-5xl lg:text-6xl components_homepage_sepulchria_homepage_h1_sepulchria">
             SEPULCHRIA
           </h1>
 
-          <div className="mx-auto mt-2 flex max-w-sm items-center gap-3">
-            <span className="h-px flex-1 bg-gradient-to-r from-transparent to-[rgb(var(--sep-colour-765a36))]" />
-            <span className="text-[10px] text-[rgb(var(--sep-colour-a47a43))]">
+          <div className="mx-auto mt-2 flex max-w-sm items-center gap-3 components_homepage_sepulchria_homepage_div_sepulchria">
+            <span className="h-px flex-1 bg-gradient-to-r from-transparent to-[rgb(var(--sep-colour-765a36))] components_homepage_sepulchria_homepage_span_sepulchria" />
+            <span className="text-[10px] text-[rgb(var(--sep-colour-a47a43))] components_homepage_sepulchria_homepage_span_sepulchria_2">
               ✦
             </span>
-            <span className="h-px flex-1 bg-gradient-to-l from-transparent to-[rgb(var(--sep-colour-765a36))]" />
+            <span className="h-px flex-1 bg-gradient-to-l from-transparent to-[rgb(var(--sep-colour-765a36))] components_homepage_sepulchria_homepage_span_sepulchria_3" />
           </div>
 
-          <p className="mx-auto mt-2 max-w-2xl font-serif text-sm italic text-[rgb(var(--sep-colour-b7a78f))] sm:text-base">
+          <p className="mx-auto mt-2 max-w-2xl font-serif text-sm italic text-[rgb(var(--sep-colour-b7a78f))] sm:text-base components_homepage_sepulchria_homepage_p_sepulchria_2">
             A living world forged from the remains of fallen gods.
           </p>
         </header>
@@ -250,16 +250,16 @@ export function SepulchriaHomepage({
             DESKTOP:
             Navigation | Video | First Pages
         */}
-        <section className="grid flex-1 items-center gap-4 py-5 lg:min-h-0 lg:grid-cols-[285px_auto_285px] lg:justify-center lg:gap-6 lg:py-3 xl:grid-cols-[305px_auto_305px] xl:gap-7">
+        <section className="grid flex-1 items-center gap-4 py-5 lg:min-h-0 lg:grid-cols-[285px_auto_285px] lg:justify-center lg:gap-6 lg:py-3 xl:grid-cols-[305px_auto_305px] xl:gap-7 components_homepage_sepulchria_homepage_section_section">
           {/* VIDEO — first on mobile; centred and fully contained on desktop */}
-          <section className="order-1 flex min-h-0 min-w-0 items-center justify-center lg:order-2 lg:h-full">
-            <div className="relative flex min-h-0 max-h-[72dvh] w-full items-center justify-center lg:h-full lg:max-h-full">
-              <div className="pointer-events-none absolute inset-x-[20%] inset-y-[2%] bg-[radial-gradient(ellipse_at_center,rgba(var(--sep-rgb-169-112-49),0.20),transparent_70%)] blur-3xl" />
+          <section className="order-1 flex min-h-0 min-w-0 items-center justify-center lg:order-2 lg:h-full components_homepage_sepulchria_homepage_section_section_2">
+            <div className="relative flex min-h-0 max-h-[72dvh] w-full items-center justify-center lg:h-full lg:max-h-full components_homepage_sepulchria_homepage_div_container_6">
+              <div className="pointer-events-none absolute inset-x-[20%] inset-y-[2%] bg-[radial-gradient(ellipse_at_center,rgba(var(--sep-rgb-169-112-49),0.20),transparent_70%)] blur-3xl components_homepage_sepulchria_homepage_div_container_7" />
 
-              <div className="relative flex aspect-[9/16] max-h-[72dvh] max-w-full items-center justify-center overflow-hidden border border-[rgb(var(--sep-colour-6b5032))]/45 bg-[rgb(var(--sep-colour-110c09))]/84 p-[3px] shadow-[0_18px_60px_rgba(var(--sep-rgb-0-0-0),0.38)] lg:h-[90%] lg:max-h-[90%] lg:w-auto">
-                <div className="pointer-events-none absolute inset-1 z-20 border border-[rgb(var(--sep-colour-9a7547))]/10" />
+              <div className="relative flex aspect-[9/16] max-h-[72dvh] max-w-full items-center justify-center overflow-hidden border border-[rgb(var(--sep-colour-6b5032))]/45 bg-[rgb(var(--sep-colour-110c09))]/84 p-[3px] shadow-[0_18px_60px_rgba(var(--sep-rgb-0-0-0),0.38)] lg:h-[90%] lg:max-h-[90%] lg:w-auto components_homepage_sepulchria_homepage_div_container_8">
+                <div className="pointer-events-none absolute inset-1 z-20 border border-[rgb(var(--sep-colour-9a7547))]/10 components_homepage_sepulchria_homepage_div_container_9" />
 
-                <div className="relative h-full w-full">
+                <div className="relative h-full w-full components_homepage_sepulchria_homepage_div_container_10">
     <video
       className="block h-full max-h-full w-full max-w-full object-contain"
       src="/videos/Sepulchria_Promo.mp4"
@@ -288,21 +288,21 @@ export function SepulchriaHomepage({
           </section>
 
           {/* Navigation — second on mobile */}
-          <aside className="order-2 min-w-0 lg:order-1">
-            <div className="relative border border-[rgb(var(--sep-colour-6b5032))]/45 bg-[rgb(var(--sep-colour-110c09))]/84 p-3 shadow-[0_18px_60px_rgba(var(--sep-rgb-0-0-0),0.38)] backdrop-blur-sm lg:min-h-[405px] xl:min-h-[430px]">
-              <div className="pointer-events-none absolute inset-1 border border-[rgb(var(--sep-colour-9a7547))]/10" />
+          <aside className="order-2 min-w-0 lg:order-1 components_homepage_sepulchria_homepage_aside_sidebar">
+            <div className="relative border border-[rgb(var(--sep-colour-6b5032))]/45 bg-[rgb(var(--sep-colour-110c09))]/84 p-3 shadow-[0_18px_60px_rgba(var(--sep-rgb-0-0-0),0.38)] backdrop-blur-sm lg:min-h-[405px] xl:min-h-[430px] components_homepage_sepulchria_homepage_div_container_11">
+              <div className="pointer-events-none absolute inset-1 border border-[rgb(var(--sep-colour-9a7547))]/10 components_homepage_sepulchria_homepage_div_container_12" />
 
-              <div className="relative mb-3 text-center">
-                <p className="text-[8px] uppercase tracking-[0.34em] text-[rgb(var(--sep-colour-80684c))]">
+              <div className="relative mb-3 text-center components_homepage_sepulchria_homepage_div_container_13">
+                <p className="text-[8px] uppercase tracking-[0.34em] text-[rgb(var(--sep-colour-80684c))] components_homepage_sepulchria_homepage_p_text">
                   Navigation
                 </p>
 
-                <div className="mx-auto mt-2 h-px w-16 bg-gradient-to-r from-transparent via-[rgb(var(--sep-colour-89653b))] to-transparent" />
+                <div className="mx-auto mt-2 h-px w-16 bg-gradient-to-r from-transparent via-[rgb(var(--sep-colour-89653b))] to-transparent components_homepage_sepulchria_homepage_div_container_14" />
               </div>
 
               <nav
                 aria-label="Public navigation"
-                className="relative grid gap-2 sm:grid-cols-2 lg:grid-cols-1"
+                className="relative grid gap-2 sm:grid-cols-2 lg:grid-cols-1 components_homepage_sepulchria_homepage_nav_public_navigation"
               >
                 <HomepageActionButton
                   eyebrow="Introduction"
@@ -367,41 +367,41 @@ export function SepulchriaHomepage({
           </aside>
 
           {/* First Pages */}
-          <aside className="order-3 min-w-0">
-            <div className="relative border border-[rgb(var(--sep-colour-6b5032))]/45 bg-[rgb(var(--sep-colour-110c09))]/84 px-5 py-4 shadow-[0_18px_60px_rgba(var(--sep-rgb-0-0-0),0.38)] backdrop-blur-sm">
-              <div className="pointer-events-none absolute inset-1 border border-[rgb(var(--sep-colour-9a7547))]/10" />
+          <aside className="order-3 min-w-0 components_homepage_sepulchria_homepage_aside_sidebar_2">
+            <div className="relative border border-[rgb(var(--sep-colour-6b5032))]/45 bg-[rgb(var(--sep-colour-110c09))]/84 px-5 py-4 shadow-[0_18px_60px_rgba(var(--sep-rgb-0-0-0),0.38)] backdrop-blur-sm components_homepage_sepulchria_homepage_div_container_15">
+              <div className="pointer-events-none absolute inset-1 border border-[rgb(var(--sep-colour-9a7547))]/10 components_homepage_sepulchria_homepage_div_container_16" />
 
-              <div className="relative text-center">
-                <p className="text-[8px] uppercase tracking-[0.34em] text-[rgb(var(--sep-colour-80684c))]">
+              <div className="relative text-center components_homepage_sepulchria_homepage_div_container_17">
+                <p className="text-[8px] uppercase tracking-[0.34em] text-[rgb(var(--sep-colour-80684c))] components_homepage_sepulchria_homepage_p_text_2">
                   The First Steps
                 </p>
 
-                <div className="mx-auto mt-2 h-px w-20 bg-gradient-to-r from-transparent via-[rgb(var(--sep-colour-89653b))] to-transparent" />
+                <div className="mx-auto mt-2 h-px w-20 bg-gradient-to-r from-transparent via-[rgb(var(--sep-colour-89653b))] to-transparent components_homepage_sepulchria_homepage_div_container_18" />
               </div>
 
-              <div className="relative mt-4 divide-y divide-[rgb(var(--sep-colour-5d472e))]/45">
+              <div className="relative mt-4 divide-y divide-[rgb(var(--sep-colour-5d472e))]/45 components_homepage_sepulchria_homepage_div_container_19">
                 {CHAPTERS.map(
                   (chapter) => (
                     <article
   key={chapter.number}
-  className="group py-4 transition-transform duration-300 ease-out hover:translate-x-1.5 first:pt-1 last:pb-1"
+  className="group py-4 transition-transform duration-300 ease-out hover:translate-x-1.5 first:pt-1 last:pb-1 components_homepage_sepulchria_homepage_article_article"
 >
-                      <div className="flex items-start gap-3">
-                        <span className="font-serif text-2xl text-[rgb(var(--sep-colour-8e6737))]/65 transition group-hover:text-[rgb(var(--sep-colour-c18d4c))]">
+                      <div className="flex items-start gap-3 components_homepage_sepulchria_homepage_div_container_20">
+                        <span className="font-serif text-2xl text-[rgb(var(--sep-colour-8e6737))]/65 transition group-hover:text-[rgb(var(--sep-colour-c18d4c))] components_homepage_sepulchria_homepage_span_text_2">
                           {chapter.number}
                         </span>
 
-                        <div className="min-w-0">
-                          <p className="text-[8px] uppercase tracking-[0.26em] text-[rgb(var(--sep-colour-8f704b))]">
+                        <div className="min-w-0 components_homepage_sepulchria_homepage_div_container_21">
+                          <p className="text-[8px] uppercase tracking-[0.26em] text-[rgb(var(--sep-colour-8f704b))] components_homepage_sepulchria_homepage_p_text_3">
                             Chapter{" "}
                             {chapter.number}
                           </p>
 
-                          <h2 className="mt-1 font-serif text-lg leading-tight text-[rgb(var(--sep-colour-dfc89e))] transition group-hover:text-[rgb(var(--sep-colour-efd8aa))]">
+                          <h2 className="mt-1 font-serif text-lg leading-tight text-[rgb(var(--sep-colour-dfc89e))] transition group-hover:text-[rgb(var(--sep-colour-efd8aa))] components_homepage_sepulchria_homepage_h2_heading">
                             {chapter.title}
                           </h2>
 
-                          <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-968875))]">
+                          <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-968875))] components_homepage_sepulchria_homepage_p_text_4">
                             {chapter.text}
                           </p>
                         </div>
@@ -415,16 +415,16 @@ export function SepulchriaHomepage({
         </section>
 
         {/* Footer */}
-        <footer className="shrink-0 border-t border-[rgb(var(--sep-colour-57412a))]/35 pt-3">
-          <div className="flex flex-col items-center justify-between gap-2 sm:flex-row">
-            <p className="font-serif text-sm italic text-[rgb(var(--sep-colour-a9987d))] sm:text-base">
+        <footer className="shrink-0 border-t border-[rgb(var(--sep-colour-57412a))]/35 pt-3 components_homepage_sepulchria_homepage_footer_footer">
+          <div className="flex flex-col items-center justify-between gap-2 sm:flex-row components_homepage_sepulchria_homepage_div_container_22">
+            <p className="font-serif text-sm italic text-[rgb(var(--sep-colour-a9987d))] sm:text-base components_homepage_sepulchria_homepage_p_text_5">
               “The Current remembers every choice.”
             </p>
 
             <nav
               data-homepage-footer-nav="true"
               aria-label="Footer navigation"
-              className="flex flex-wrap justify-center gap-x-5 gap-y-1 text-[8px] uppercase tracking-[0.18em] sm:justify-end [&_a]:uppercase [&_button]:uppercase"
+              className="flex flex-wrap justify-center gap-x-5 gap-y-1 text-[8px] uppercase tracking-[0.18em] sm:justify-end [&_a]:uppercase [&_button]:uppercase components_homepage_sepulchria_homepage_nav_footer_navigation"
             >
               <Link href="#">
                 Discord
@@ -540,7 +540,7 @@ export function SepulchriaHomepage({
                 Terms
               </Link>
 
-              <button
+              <button className="components_homepage_sepulchria_homepage_button_contact"
                 type="button"
                 onClick={() => setContactOpen(true)}
               >
@@ -549,9 +549,9 @@ export function SepulchriaHomepage({
             </nav>
           </div>
 
-          <div className="mt-3 border-t border-[rgb(var(--sep-colour-57412a))]/20 pt-2 pb-2 text-center">
-            <p className="mx-auto max-w-4xl text-[8px] leading-4 text-[rgb(var(--sep-colour-706659))]">
-              <span className="uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-8b7659))]">
+          <div className="mt-3 border-t border-[rgb(var(--sep-colour-57412a))]/20 pt-2 pb-2 text-center components_homepage_sepulchria_homepage_div_container_23">
+            <p className="mx-auto max-w-4xl text-[8px] leading-4 text-[rgb(var(--sep-colour-706659))] components_homepage_sepulchria_homepage_p_text_6">
+              <span className="uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-8b7659))] components_homepage_sepulchria_homepage_span_text_3">
                 AI Content Disclosure —
               </span>{" "}
               Generative artificial intelligence tools have been used in the development of Sepulchria to assist with certain visual assets, written content, and technical development. All creative direction, worldbuilding, editorial decisions and final published content are reviewed and curated by the Sepulchria team.
@@ -577,7 +577,7 @@ export function SepulchriaHomepage({
 
       {aboutOpen ? (
         <div
-          className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-8"
+          className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-8 components_homepage_sepulchria_homepage_div_dialog"
           role="dialog"
           aria-modal="true"
           aria-labelledby="about-sepulchria-title"
@@ -588,13 +588,13 @@ export function SepulchriaHomepage({
             onClick={() =>
               setAboutOpen(false)
             }
-            className="absolute inset-0 cursor-default bg-[rgb(var(--sep-colour-050403))]/88 backdrop-blur-[4px]"
+            className="absolute inset-0 cursor-default bg-[rgb(var(--sep-colour-050403))]/88 backdrop-blur-[4px] components_homepage_sepulchria_homepage_button_close_about_sepulchria"
           />
 
-          <section className="relative z-10 max-h-[90dvh] w-full max-w-[720px] overflow-y-auto border border-[rgb(var(--sep-skin-c1,169_138_96))]/80 bg-[rgb(var(--sep-colour-100c09))] shadow-[0_30px_100px_rgba(var(--sep-rgb-0-0-0),0.92)]">
-            <div className="pointer-events-none absolute inset-1 border border-[rgb(var(--sep-colour-a27a49))]/10" />
+          <section className="relative z-10 max-h-[90dvh] w-full max-w-[720px] overflow-y-auto border border-[rgb(var(--sep-skin-c1,169_138_96))]/80 bg-[rgb(var(--sep-colour-100c09))] shadow-[0_30px_100px_rgba(var(--sep-rgb-0-0-0),0.92)] components_homepage_sepulchria_homepage_section_section_3">
+            <div className="pointer-events-none absolute inset-1 border border-[rgb(var(--sep-colour-a27a49))]/10 components_homepage_sepulchria_homepage_div_container_24" />
 
-            <header className="relative border-b border-[rgb(var(--sep-colour-60482e))]/45 px-6 py-5 text-center sm:px-9">
+            <header className="relative border-b border-[rgb(var(--sep-colour-60482e))]/45 px-6 py-5 text-center sm:px-9 components_homepage_sepulchria_homepage_header_sepulchria_2">
               <button
                 type="button"
                 onClick={() =>
@@ -602,60 +602,60 @@ export function SepulchriaHomepage({
                 }
                 aria-label="Close"
                 title="Close"
-                className="absolute right-3 top-3 flex h-7 w-7 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-17120f))] text-sm text-[rgb(var(--sep-colour-a98c67))] transition hover:border-[rgb(var(--sep-colour-987044))] hover:text-[rgb(var(--sep-colour-efd3a1))]"
+                className="absolute right-3 top-3 flex h-7 w-7 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-17120f))] text-sm text-[rgb(var(--sep-colour-a98c67))] transition hover:border-[rgb(var(--sep-colour-987044))] hover:text-[rgb(var(--sep-colour-efd3a1))] components_homepage_sepulchria_homepage_button_close"
               >
                 ×
               </button>
 
-              <p className="text-[7px] uppercase tracking-[0.34em] text-[rgb(var(--sep-colour-987344))]">
+              <p className="text-[7px] uppercase tracking-[0.34em] text-[rgb(var(--sep-colour-987344))] components_homepage_sepulchria_homepage_p_sepulchria_3">
                 Welcome to Aureth
               </p>
 
               <h2
                 id="about-sepulchria-title"
-                className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-e5cda2))] sm:text-4xl"
+                className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-e5cda2))] sm:text-4xl components_homepage_sepulchria_homepage_h2_about_sepulchria_title"
               >
                 What is Sepulchria?
               </h2>
 
-              <div className="mx-auto mt-3 h-px w-28 bg-gradient-to-r from-transparent via-[rgb(var(--sep-colour-89653b))] to-transparent" />
+              <div className="mx-auto mt-3 h-px w-28 bg-gradient-to-r from-transparent via-[rgb(var(--sep-colour-89653b))] to-transparent components_homepage_sepulchria_homepage_div_sepulchria_2" />
             </header>
 
-            <div className="relative px-6 py-6 sm:px-10 sm:py-8">
-              <p className="text-center font-serif text-base leading-7 text-[rgb(var(--sep-colour-c6b294))] sm:text-lg">
+            <div className="relative px-6 py-6 sm:px-10 sm:py-8 components_homepage_sepulchria_homepage_div_container_25">
+              <p className="text-center font-serif text-base leading-7 text-[rgb(var(--sep-colour-c6b294))] sm:text-lg components_homepage_sepulchria_homepage_p_text_7">
                 Sepulchria is an English-language fantasy play-by-chat roleplaying game set in Aureth, a world forever changed by the fall of its gods.
               </p>
 
-              <div className="mx-auto my-5 flex max-w-xs items-center gap-3">
-                <span className="h-px flex-1 bg-gradient-to-r from-transparent to-[rgb(var(--sep-colour-60482e))]" />
-                <span className="text-[8px] text-[rgb(var(--sep-colour-9e7443))]">
+              <div className="mx-auto my-5 flex max-w-xs items-center gap-3 components_homepage_sepulchria_homepage_div_container_26">
+                <span className="h-px flex-1 bg-gradient-to-r from-transparent to-[rgb(var(--sep-colour-60482e))] components_homepage_sepulchria_homepage_span_text_4" />
+                <span className="text-[8px] text-[rgb(var(--sep-colour-9e7443))] components_homepage_sepulchria_homepage_span_text_5">
                   ✦
                 </span>
-                <span className="h-px flex-1 bg-gradient-to-l from-transparent to-[rgb(var(--sep-colour-60482e))]" />
+                <span className="h-px flex-1 bg-gradient-to-l from-transparent to-[rgb(var(--sep-colour-60482e))] components_homepage_sepulchria_homepage_span_text_6" />
               </div>
 
-              <div className="space-y-4 text-[12px] leading-6 text-[rgb(var(--sep-colour-9f907b))] sm:text-[13px]">
-                <p>
+              <div className="space-y-4 text-[12px] leading-6 text-[rgb(var(--sep-colour-9f907b))] sm:text-[13px] components_homepage_sepulchria_homepage_div_container_27">
+                <p className="components_homepage_sepulchria_homepage_p_text_8">
                   You create a character and enter the city of Sepulchria, where their relationships, ambitions, loyalties and choices are played out through written roleplay with other players.
                 </p>
 
-                <p>
+                <p className="components_homepage_sepulchria_homepage_p_text_9">
                   There is no predetermined protagonist. Your character is one of the people who inhabits this world. They can form relationships, pursue a profession, explore the city, become involved in its conflicts and mysteries, and leave their own mark on its history.
                 </p>
 
-                <p>
+                <p className="components_homepage_sepulchria_homepage_p_text_10">
                   Sepulchria is a persistent shared setting. Stories grow through interaction between characters, events and the consequences of what happens in play.
                 </p>
 
-                <p>
+                <p className="components_homepage_sepulchria_homepage_p_text_11">
                   Sepulchria is free to join and play. Registered players may optionally purchase digital cosmetic items, interface themes, music and premium game features through the in-game Store. These purchases are optional and are not required to take part in the roleplaying game.
                 </p>
               </div>
 
-              <div className="mt-6 grid gap-2 sm:grid-cols-3">
-                <div className="border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))] px-3 py-3 text-center">
+              <div className="mt-6 grid gap-2 sm:grid-cols-3 components_homepage_sepulchria_homepage_div_container_28">
+                <div className="border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))] px-3 py-3 text-center components_homepage_sepulchria_homepage_div_container_29">
                   <span
-                    className="font-serif text-lg"
+                    className="font-serif text-lg components_homepage_sepulchria_homepage_span_text_7"
                     style={{
                       color:
                         "rgb(var(--sep-skin-c1, 169 138 96))",
@@ -667,7 +667,7 @@ export function SepulchriaHomepage({
                   </span>
 
                   <p
-                    className="mt-1 font-serif text-sm"
+                    className="mt-1 font-serif text-sm components_homepage_sepulchria_homepage_p_text_12"
                     style={{
                       color:
                         "rgb(var(--sep-skin-c1, 169 138 96))",
@@ -679,7 +679,7 @@ export function SepulchriaHomepage({
                   </p>
 
                   <p
-                    className="mt-1.5 text-[9px] leading-4"
+                    className="mt-1.5 text-[9px] leading-4 components_homepage_sepulchria_homepage_p_text_13"
                     style={{
                       color:
                         "rgb(var(--sep-skin-c2, 211 194 170))",
@@ -691,9 +691,9 @@ export function SepulchriaHomepage({
                   </p>
                 </div>
 
-                <div className="border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))] px-3 py-3 text-center">
+                <div className="border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))] px-3 py-3 text-center components_homepage_sepulchria_homepage_div_container_30">
                   <span
-                    className="font-serif text-lg"
+                    className="font-serif text-lg components_homepage_sepulchria_homepage_span_text_8"
                     style={{
                       color:
                         "rgb(var(--sep-skin-c1, 169 138 96))",
@@ -705,7 +705,7 @@ export function SepulchriaHomepage({
                   </span>
 
                   <p
-                    className="mt-1 font-serif text-sm"
+                    className="mt-1 font-serif text-sm components_homepage_sepulchria_homepage_p_text_14"
                     style={{
                       color:
                         "rgb(var(--sep-skin-c1, 169 138 96))",
@@ -717,7 +717,7 @@ export function SepulchriaHomepage({
                   </p>
 
                   <p
-                    className="mt-1.5 text-[9px] leading-4"
+                    className="mt-1.5 text-[9px] leading-4 components_homepage_sepulchria_homepage_p_text_15"
                     style={{
                       color:
                         "rgb(var(--sep-skin-c2, 211 194 170))",
@@ -729,9 +729,9 @@ export function SepulchriaHomepage({
                   </p>
                 </div>
 
-                <div className="border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))] px-3 py-3 text-center">
+                <div className="border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))] px-3 py-3 text-center components_homepage_sepulchria_homepage_div_container_31">
                   <span
-                    className="font-serif text-lg"
+                    className="font-serif text-lg components_homepage_sepulchria_homepage_span_text_9"
                     style={{
                       color:
                         "rgb(var(--sep-skin-c1, 169 138 96))",
@@ -743,7 +743,7 @@ export function SepulchriaHomepage({
                   </span>
 
                   <p
-                    className="mt-1 font-serif text-sm"
+                    className="mt-1 font-serif text-sm components_homepage_sepulchria_homepage_p_text_16"
                     style={{
                       color:
                         "rgb(var(--sep-skin-c1, 169 138 96))",
@@ -755,7 +755,7 @@ export function SepulchriaHomepage({
                   </p>
 
                   <p
-                    className="mt-1.5 text-[9px] leading-4"
+                    className="mt-1.5 text-[9px] leading-4 components_homepage_sepulchria_homepage_p_text_17"
                     style={{
                       color:
                         "rgb(var(--sep-skin-c2, 211 194 170))",
@@ -768,7 +768,7 @@ export function SepulchriaHomepage({
                 </div>
               </div>
 
-              <div className="mt-6 grid gap-2 sm:grid-cols-2">
+              <div className="mt-6 grid gap-2 sm:grid-cols-2 components_homepage_sepulchria_homepage_div_container_32">
                 <Link
                   href="/codex"
                   onClick={() =>
@@ -777,7 +777,7 @@ export function SepulchriaHomepage({
                   className="border border-[rgb(var(--sep-colour-765937))]/65 bg-[rgb(var(--sep-colour-1a120d))] px-4 py-3 text-center transition hover:border-[rgb(var(--sep-colour-a17a48))] hover:bg-[rgb(var(--sep-colour-25180f))]"
                 >
                   <span
-                    className="block text-[7px] uppercase tracking-[0.22em]"
+                    className="block text-[7px] uppercase tracking-[0.22em] components_homepage_sepulchria_homepage_span_text_10"
                     style={{
                       color:
                         "rgb(var(--sep-skin-c1, 169 138 96))",
@@ -788,7 +788,7 @@ export function SepulchriaHomepage({
                     Explore the setting
                   </span>
                   <span
-                    className="mt-1 block font-serif text-sm"
+                    className="mt-1 block font-serif text-sm components_homepage_sepulchria_homepage_span_text_11"
                     style={{
                       color:
                         "rgb(var(--sep-skin-c2, 211 194 170))",
@@ -808,7 +808,7 @@ export function SepulchriaHomepage({
                   className="border border-[rgb(var(--sep-colour-765937))]/65 bg-[rgb(var(--sep-colour-1a120d))] px-4 py-3 text-center transition hover:border-[rgb(var(--sep-colour-a17a48))] hover:bg-[rgb(var(--sep-colour-25180f))]"
                 >
                   <span
-                    className="block text-[7px] uppercase tracking-[0.22em]"
+                    className="block text-[7px] uppercase tracking-[0.22em] components_homepage_sepulchria_homepage_span_text_12"
                     style={{
                       color:
                         "rgb(var(--sep-skin-c1, 169 138 96))",
@@ -819,7 +819,7 @@ export function SepulchriaHomepage({
                     Learn the game
                   </span>
                   <span
-                    className="mt-1 block font-serif text-sm"
+                    className="mt-1 block font-serif text-sm components_homepage_sepulchria_homepage_span_text_13"
                     style={{
                       color:
                         "rgb(var(--sep-skin-c2, 211 194 170))",
@@ -944,19 +944,19 @@ function HomepageButton({
           : "border-[rgb(var(--sep-colour-654b30))]/55 bg-[rgb(var(--sep-colour-15100c))]/92 hover:-translate-y-0.5 hover:border-[rgb(var(--sep-colour-987044))] hover:bg-[rgb(var(--sep-colour-21170f))]"
       }`}
     >
-      <span data-homepage-nav-role="symbol" className="absolute right-4 top-1/2 -translate-y-1/2 font-serif text-3xl text-[rgb(var(--sep-colour-a87c43))]/15 transition duration-500 group-hover:scale-125 group-hover:text-[rgb(var(--sep-colour-c99a58))]/25">
+      <span data-homepage-nav-role="symbol" className="absolute right-4 top-1/2 -translate-y-1/2 font-serif text-3xl text-[rgb(var(--sep-colour-a87c43))]/15 transition duration-500 group-hover:scale-125 group-hover:text-[rgb(var(--sep-colour-c99a58))]/25 components_homepage_sepulchria_homepage_span_text_14">
         {symbol}
       </span>
 
-      <span data-homepage-nav-role="eyebrow" className="relative block text-[7px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-836c50))]">
+      <span data-homepage-nav-role="eyebrow" className="relative block text-[7px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-836c50))] components_homepage_sepulchria_homepage_span_text_15">
         {eyebrow}
       </span>
 
-      <span data-homepage-nav-role="label" className="relative mt-1 block font-serif text-base text-[rgb(var(--sep-colour-dfc89d))] transition group-hover:text-[rgb(var(--sep-colour-f0d7a6))]">
+      <span data-homepage-nav-role="label" className="relative mt-1 block font-serif text-base text-[rgb(var(--sep-colour-dfc89d))] transition group-hover:text-[rgb(var(--sep-colour-f0d7a6))] components_homepage_sepulchria_homepage_span_text_16">
         {label}
       </span>
 
-      <span data-homepage-nav-role="accent" className="absolute bottom-0 left-0 h-px w-0 bg-[rgb(var(--sep-colour-c18d4c))] transition-all duration-500 group-hover:w-full" />
+      <span data-homepage-nav-role="accent" className="absolute bottom-0 left-0 h-px w-0 bg-[rgb(var(--sep-colour-c18d4c))] transition-all duration-500 group-hover:w-full components_homepage_sepulchria_homepage_span_text_17" />
     </Link>
   );
 }
@@ -974,17 +974,17 @@ function HomepageDisabledButton({
     <div
       aria-disabled="true"
       title="Sepulchria is already open in the game window."
-      className="relative min-h-[64px] cursor-default overflow-hidden border border-[rgb(var(--sep-colour-654b30))]/35 bg-[rgb(var(--sep-colour-15100c))]/70 px-4 py-3 opacity-55"
+      className="relative min-h-[64px] cursor-default overflow-hidden border border-[rgb(var(--sep-colour-654b30))]/35 bg-[rgb(var(--sep-colour-15100c))]/70 px-4 py-3 opacity-55 components_homepage_sepulchria_homepage_div_sepulchria_already_open_game_window"
     >
-      <span className="absolute right-4 top-1/2 -translate-y-1/2 font-serif text-3xl text-[rgb(var(--sep-colour-a87c43))]/10">
+      <span className="absolute right-4 top-1/2 -translate-y-1/2 font-serif text-3xl text-[rgb(var(--sep-colour-a87c43))]/10 components_homepage_sepulchria_homepage_span_sepulchria_already_open_game_window">
         {symbol}
       </span>
 
-      <span className="relative block text-[7px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-6f6251))]">
+      <span className="relative block text-[7px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-6f6251))] components_homepage_sepulchria_homepage_span_sepulchria_already_open_game_window_2">
         {eyebrow}
       </span>
 
-      <span className="relative mt-1 block font-serif text-base text-[rgb(var(--sep-colour-9c8c73))]">
+      <span className="relative mt-1 block font-serif text-base text-[rgb(var(--sep-colour-9c8c73))] components_homepage_sepulchria_homepage_span_sepulchria_already_open_game_window_3">
         {label}
       </span>
     </div>
@@ -1007,21 +1007,21 @@ function HomepageActionButton({
       type="button"
       onClick={onClick}
       data-homepage-nav-button="true"
-      className="group relative min-h-[64px] overflow-hidden border border-[rgb(var(--sep-colour-654b30))]/55 bg-[rgb(var(--sep-colour-15100c))]/92 px-4 py-3 text-left transition duration-300 hover:-translate-y-0.5 hover:border-[rgb(var(--sep-colour-987044))] hover:bg-[rgb(var(--sep-colour-21170f))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--sep-colour-d4a460))] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--sep-colour-090706))]"
+      className="group relative min-h-[64px] overflow-hidden border border-[rgb(var(--sep-colour-654b30))]/55 bg-[rgb(var(--sep-colour-15100c))]/92 px-4 py-3 text-left transition duration-300 hover:-translate-y-0.5 hover:border-[rgb(var(--sep-colour-987044))] hover:bg-[rgb(var(--sep-colour-21170f))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--sep-colour-d4a460))] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--sep-colour-090706))] components_homepage_sepulchria_homepage_button_click"
     >
-      <span data-homepage-nav-role="symbol" className="absolute right-4 top-1/2 -translate-y-1/2 font-serif text-3xl text-[rgb(var(--sep-colour-a87c43))]/15 transition duration-500 group-hover:scale-125 group-hover:text-[rgb(var(--sep-colour-c99a58))]/25">
+      <span data-homepage-nav-role="symbol" className="absolute right-4 top-1/2 -translate-y-1/2 font-serif text-3xl text-[rgb(var(--sep-colour-a87c43))]/15 transition duration-500 group-hover:scale-125 group-hover:text-[rgb(var(--sep-colour-c99a58))]/25 components_homepage_sepulchria_homepage_span_text_18">
         {symbol}
       </span>
 
-      <span data-homepage-nav-role="eyebrow" className="relative block text-[7px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-836c50))]">
+      <span data-homepage-nav-role="eyebrow" className="relative block text-[7px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-836c50))] components_homepage_sepulchria_homepage_span_text_19">
         {eyebrow}
       </span>
 
-      <span data-homepage-nav-role="label" className="relative mt-1 block font-serif text-base text-[rgb(var(--sep-colour-dfc89d))] transition group-hover:text-[rgb(var(--sep-colour-f0d7a6))]">
+      <span data-homepage-nav-role="label" className="relative mt-1 block font-serif text-base text-[rgb(var(--sep-colour-dfc89d))] transition group-hover:text-[rgb(var(--sep-colour-f0d7a6))] components_homepage_sepulchria_homepage_span_text_20">
         {label}
       </span>
 
-      <span data-homepage-nav-role="accent" className="absolute bottom-0 left-0 h-px w-0 bg-[rgb(var(--sep-colour-c18d4c))] transition-all duration-500 group-hover:w-full" />
+      <span data-homepage-nav-role="accent" className="absolute bottom-0 left-0 h-px w-0 bg-[rgb(var(--sep-colour-c18d4c))] transition-all duration-500 group-hover:w-full components_homepage_sepulchria_homepage_span_text_21" />
     </button>
   );
 }

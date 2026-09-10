@@ -88,11 +88,11 @@ export function PmRecipientPicker({
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 messages_components_pm_recipient_picker_div_container">
       {[
         ...selected,
       ].map((id) => (
-        <input
+        <input className="messages_components_pm_recipient_picker_input_recipient_ids"
           key={id}
           type="hidden"
           name="recipientIds"
@@ -100,8 +100,8 @@ export function PmRecipientPicker({
         />
       ))}
 
-      <div>
-        <label className="mb-2 block text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
+      <div className="messages_components_pm_recipient_picker_div_container_2">
+        <label className="mb-2 block text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))] messages_components_pm_recipient_picker_label_label">
           Find characters
         </label>
 
@@ -114,38 +114,38 @@ export function PmRecipientPicker({
             )
           }
           placeholder="Search by character name..."
-          className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none"
+          className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none messages_components_pm_recipient_picker_input_search_character_name"
         />
       </div>
 
       {friendListEnabled &&
       friends.length > 0 ? (
-        <details className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))]">
-          <summary className="cursor-pointer px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-c6a36f))]">
+        <details className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] messages_components_pm_recipient_picker_details_friend_list">
+          <summary className="cursor-pointer px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-c6a36f))] messages_components_pm_recipient_picker_summary_friend_list">
             Friend List
           </summary>
 
-          <div className="border-t border-[rgb(var(--sep-colour-60482e))]/35 p-3">
+          <div className="border-t border-[rgb(var(--sep-colour-60482e))]/35 p-3 messages_components_pm_recipient_picker_div_friend_list">
             <button
               type="button"
               onClick={
                 selectFriends
               }
-              className="mb-2 border border-[rgb(var(--sep-colour-80613b))] px-2.5 py-1.5 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-dfbd84))]"
+              className="mb-2 border border-[rgb(var(--sep-colour-80613b))] px-2.5 py-1.5 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-dfbd84))] messages_components_pm_recipient_picker_button_select_all_friend_list"
             >
               Select all Friend List
             </button>
 
-            <div className="grid gap-1 sm:grid-cols-2">
+            <div className="grid gap-1 sm:grid-cols-2 messages_components_pm_recipient_picker_div_friend_list_2">
               {friends.map(
                 (friend) => (
                   <label
                     key={
                       friend.id
                     }
-                    className="flex cursor-pointer items-center gap-2 border border-[rgb(var(--sep-colour-60482e))]/25 px-2 py-1.5 text-[10px] text-[rgb(var(--sep-colour-bbaa90))]"
+                    className="flex cursor-pointer items-center gap-2 border border-[rgb(var(--sep-colour-60482e))]/25 px-2 py-1.5 text-[10px] text-[rgb(var(--sep-colour-bbaa90))] messages_components_pm_recipient_picker_label_label_2"
                   >
-                    <input
+                    <input className="messages_components_pm_recipient_picker_input_field"
                       type="checkbox"
                       checked={selected.has(
                         friend.id,
@@ -157,13 +157,13 @@ export function PmRecipientPicker({
                       }
                     />
 
-                    <span className="min-w-0 flex-1 truncate">
+                    <span className="min-w-0 flex-1 truncate messages_components_pm_recipient_picker_span_text">
                       {
                         friend.name
                       }
                     </span>
 
-                    <span className="text-[7px] uppercase text-[rgb(var(--sep-colour-746653))]">
+                    <span className="text-[7px] uppercase text-[rgb(var(--sep-colour-746653))] messages_components_pm_recipient_picker_span_text_2">
                       {friend.scope ===
                       "ingame"
                         ? "IG"
@@ -177,16 +177,16 @@ export function PmRecipientPicker({
         </details>
       ) : null}
 
-      <div className="max-h-64 space-y-1 overflow-y-auto border border-[rgb(var(--sep-colour-60482e))]/35 p-2">
+      <div className="max-h-64 space-y-1 overflow-y-auto border border-[rgb(var(--sep-colour-60482e))]/35 p-2 messages_components_pm_recipient_picker_div_container_3">
         {filtered.map(
           (character) => (
             <label
               key={
                 character.id
               }
-              className="flex cursor-pointer items-center gap-2 border border-[rgb(var(--sep-colour-60482e))]/25 px-2 py-2 text-xs text-[rgb(var(--sep-colour-c7b394))]"
+              className="flex cursor-pointer items-center gap-2 border border-[rgb(var(--sep-colour-60482e))]/25 px-2 py-2 text-xs text-[rgb(var(--sep-colour-c7b394))] messages_components_pm_recipient_picker_label_label_3"
             >
-              <input
+              <input className="messages_components_pm_recipient_picker_input_field_2"
                 type="checkbox"
                 checked={selected.has(
                   character.id,
@@ -198,7 +198,7 @@ export function PmRecipientPicker({
                 }
               />
 
-              <span className="min-w-0 flex-1 truncate">
+              <span className="min-w-0 flex-1 truncate messages_components_pm_recipient_picker_span_text_3">
                 {
                   character.name
                 }
@@ -208,7 +208,7 @@ export function PmRecipientPicker({
         )}
       </div>
 
-      <p className="text-[9px] text-[rgb(var(--sep-colour-7e715f))]">
+      <p className="text-[9px] text-[rgb(var(--sep-colour-7e715f))] messages_components_pm_recipient_picker_p_text">
         {selected.size} recipient
         {selected.size === 1
           ? ""

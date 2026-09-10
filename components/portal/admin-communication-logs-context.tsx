@@ -189,16 +189,16 @@ export function AdminCommunicationLogsContext() {
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+    <div className="flex h-full min-h-0 flex-col components_portal_admin_communication_logs_context_div_container">
+      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_communication_logs_context_p_text">
         Administration · Logs
       </p>
 
-      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_portal_admin_communication_logs_context_h2_heading">
         {labelForView(view)}
       </h2>
 
-      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_communication_logs_context_p_text_2">
         Search the communication entries already loaded by the current filters, then jump directly to a result.
       </p>
 
@@ -207,16 +207,16 @@ export function AdminCommunicationLogsContext() {
         value={search}
         onChange={(event) => setSearch(event.target.value)}
         placeholder="Search loaded messages..."
-        className="mt-3 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))]"
+        className="mt-3 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))] components_portal_admin_communication_logs_context_input_search_loaded_messages"
       />
 
       {activeFilters.length > 0 ? (
-        <div className="mt-2 flex max-h-16 flex-wrap gap-1 overflow-y-auto">
+        <div className="mt-2 flex max-h-16 flex-wrap gap-1 overflow-y-auto components_portal_admin_communication_logs_context_div_container_2">
           {activeFilters.map((filter) => (
             <span
               key={filter}
               title={filter}
-              className="max-w-full truncate border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-18120e))] px-2 py-1 text-[7px] uppercase tracking-[0.08em] text-[rgb(var(--sep-colour-8e7a61))]"
+              className="max-w-full truncate border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-18120e))] px-2 py-1 text-[7px] uppercase tracking-[0.08em] text-[rgb(var(--sep-colour-8e7a61))] components_portal_admin_communication_logs_context_span_text"
             >
               {filter}
             </span>
@@ -224,19 +224,19 @@ export function AdminCommunicationLogsContext() {
         </div>
       ) : null}
 
-      <div className="mt-3 flex items-center justify-between border-b border-[rgb(var(--sep-colour-59432c))]/35 pb-2">
-        <span className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-786a58))]">
+      <div className="mt-3 flex items-center justify-between border-b border-[rgb(var(--sep-colour-59432c))]/35 pb-2 components_portal_admin_communication_logs_context_div_container_3">
+        <span className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-786a58))] components_portal_admin_communication_logs_context_span_text_2">
           Results
         </span>
-        <span className="text-[8px] text-[rgb(var(--sep-colour-9a856a))]">
+        <span className="text-[8px] text-[rgb(var(--sep-colour-9a856a))] components_portal_admin_communication_logs_context_span_text_3">
           {visibleEntries.length}
           {search ? ` / ${entries.length}` : ""}
         </span>
       </div>
 
-      <div className="mt-2 min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">
+      <div className="mt-2 min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1 components_portal_admin_communication_logs_context_div_container_4">
         {visibleEntries.length === 0 ? (
-          <p className="px-1 py-3 text-[10px] leading-5 text-[rgb(var(--sep-colour-736858))]">
+          <p className="px-1 py-3 text-[10px] leading-5 text-[rgb(var(--sep-colour-736858))] components_portal_admin_communication_logs_context_p_text_3">
             {entries.length === 0
               ? "No communication entries are loaded for this view."
               : "No loaded messages match this search."}
@@ -248,19 +248,19 @@ export function AdminCommunicationLogsContext() {
               type="button"
               onClick={() => jumpTo(entry)}
               title={entry.summary}
-              className="block w-full border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-120e0b))] px-2.5 py-2 text-left transition hover:border-[rgb(var(--sep-colour-80613b))]/70 hover:bg-[rgb(var(--sep-colour-21170f))]"
+              className="block w-full border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-120e0b))] px-2.5 py-2 text-left transition hover:border-[rgb(var(--sep-colour-80613b))]/70 hover:bg-[rgb(var(--sep-colour-21170f))] components_portal_admin_communication_logs_context_button_action"
             >
-              <div className="flex items-center justify-between gap-2">
-                <span className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-987344))]">
+              <div className="flex items-center justify-between gap-2 components_portal_admin_communication_logs_context_div_container_5">
+                <span className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-987344))] components_portal_admin_communication_logs_context_span_text_4">
                   {sourceLabel(entry.sourceType)}
                 </span>
 
-                <span className="max-w-[78px] truncate text-[7px] text-[rgb(var(--sep-colour-655b4f))]">
+                <span className="max-w-[78px] truncate text-[7px] text-[rgb(var(--sep-colour-655b4f))] components_portal_admin_communication_logs_context_span_text_5">
                   {entry.sourceId}
                 </span>
               </div>
 
-              <p className="mt-1 line-clamp-2 text-[10px] leading-4 text-[rgb(var(--sep-colour-b8a488))]">
+              <p className="mt-1 line-clamp-2 text-[10px] leading-4 text-[rgb(var(--sep-colour-b8a488))] components_portal_admin_communication_logs_context_p_text_4">
                 {entry.summary}
               </p>
             </button>

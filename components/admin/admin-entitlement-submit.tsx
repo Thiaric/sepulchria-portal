@@ -162,11 +162,9 @@ export function AdminSaveFeedbackMessage({
           ? "alert"
           : "status"
       }
-      className={
-        feedback.tone === "success"
+      className={[((feedback.tone === "success"
           ? "text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-a8cf92))]"
-          : "text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d89486))]"
-      }
+          : "text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d89486))]")), "components_admin_admin_entitlement_submit_span_text"].filter(Boolean).join(" ")}
     >
       {feedback.message}
     </span>

@@ -158,32 +158,32 @@ export default async function AdminMissionsPage() {
     rewardPoolResult.data ?? [];
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-5 py-7 sm:px-7 lg:px-9">
-      <header className="border-b border-[rgb(var(--sep-colour-60482e))]/45 pb-5">
-        <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
+    <div className="mx-auto w-full max-w-6xl px-5 py-7 sm:px-7 lg:px-9 admin_missions_page_div_container">
+      <header className="border-b border-[rgb(var(--sep-colour-60482e))]/45 pb-5 admin_missions_page_header_daily_missions">
+        <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))] admin_missions_page_p_daily_missions">
           Mission management
         </p>
 
-        <h2 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">
+        <h2 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))] admin_missions_page_h2_daily_missions">
           Daily Missions
         </h2>
 
-        <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-938673))]">
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-938673))] admin_missions_page_p_daily_missions_2">
           Configure targets, availability,
           milestone eligibility and rewards.
         </p>
       </header>
 
-      <section className="mt-7 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4">
-        <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))]">
+      <section className="mt-7 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 admin_missions_page_section_create_daily_mission">
+        <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))] admin_missions_page_p_create_daily_mission">
           Catalogue management
         </p>
 
-        <h3 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dcc59a))]">
+        <h3 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dcc59a))] admin_missions_page_h3_create_daily_mission">
           Create Daily Mission
         </h3>
 
-        <p className="mt-1 text-xs leading-5 text-[rgb(var(--sep-colour-938673))]">
+        <p className="mt-1 text-xs leading-5 text-[rgb(var(--sep-colour-938673))] admin_missions_page_p_create_daily_mission_2">
           Active missions are included in
           today&apos;s Daily Mission set.
           After creation, configure its
@@ -194,37 +194,37 @@ export default async function AdminMissionsPage() {
           action={createDailyMissionDefinition}
           className="mt-4 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-4"
         >
-          <div className="grid gap-3 lg:grid-cols-2">
-            <label className={labelClass}>
+          <div className="grid gap-3 lg:grid-cols-2 admin_missions_page_div_name">
+            <label className={[((labelClass)), "admin_missions_page_label_name"].filter(Boolean).join(" ")}>
               Name
               <input
                 name="name"
                 required
-                className={inputClass}
+                className={[((inputClass)), "admin_missions_page_input_name"].filter(Boolean).join(" ")}
               />
             </label>
 
-            <label className={labelClass}>
+            <label className={[((labelClass)), "admin_missions_page_label_name_2"].filter(Boolean).join(" ")}>
               Description
               <input
                 name="description"
                 required
-                className={inputClass}
+                className={[((inputClass)), "admin_missions_page_input_description"].filter(Boolean).join(" ")}
               />
             </label>
           </div>
 
-          <div className="mt-3 grid gap-3 md:grid-cols-[1fr_1.4fr_100px_120px]">
-            <label className={labelClass}>
+          <div className="mt-3 grid gap-3 md:grid-cols-[1fr_1.4fr_100px_120px] admin_missions_page_div_family">
+            <label className={[((labelClass)), "admin_missions_page_label_family"].filter(Boolean).join(" ")}>
               Family
               <select
                 name="family"
                 defaultValue="Gathering"
-                className={inputClass}
+                className={[((inputClass)), "admin_missions_page_select_family"].filter(Boolean).join(" ")}
               >
                 {MISSION_FAMILIES.map(
                   (family) => (
-                    <option
+                    <option className="admin_missions_page_option_option"
                       key={family}
                       value={family}
                     >
@@ -235,16 +235,16 @@ export default async function AdminMissionsPage() {
               </select>
             </label>
 
-            <label className={labelClass}>
+            <label className={[((labelClass)), "admin_missions_page_label_family_2"].filter(Boolean).join(" ")}>
               Objective
               <select
                 name="objective_type"
                 defaultValue="gather_attempts"
-                className={inputClass}
+                className={[((inputClass)), "admin_missions_page_select_objective_type"].filter(Boolean).join(" ")}
               >
                 {OBJECTIVES.map(
                   ([value, label]) => (
-                    <option
+                    <option className="admin_missions_page_option_option_2"
                       key={value}
                       value={value}
                     >
@@ -255,7 +255,7 @@ export default async function AdminMissionsPage() {
               </select>
             </label>
 
-            <label className={labelClass}>
+            <label className={[((labelClass)), "admin_missions_page_label_family_3"].filter(Boolean).join(" ")}>
               Target
               <input
                 name="target_value"
@@ -263,32 +263,32 @@ export default async function AdminMissionsPage() {
                 min={1}
                 step={1}
                 defaultValue={1}
-                className={inputClass}
+                className={[((inputClass)), "admin_missions_page_input_family"].filter(Boolean).join(" ")}
               />
             </label>
 
-            <label className={labelClass}>
+            <label className={[((labelClass)), "admin_missions_page_label_family_4"].filter(Boolean).join(" ")}>
               Difficulty
               <select
                 name="difficulty"
                 defaultValue="easy"
-                className={inputClass}
+                className={[((inputClass)), "admin_missions_page_select_difficulty"].filter(Boolean).join(" ")}
               >
-                <option value="easy">
+                <option className="admin_missions_page_option_easy" value="easy">
                   Easy
                 </option>
-                <option value="medium">
+                <option className="admin_missions_page_option_medium" value="medium">
                   Medium
                 </option>
-                <option value="hard">
+                <option className="admin_missions_page_option_hard" value="hard">
                   Hard
                 </option>
               </select>
             </label>
           </div>
 
-          <div className="mt-3 grid gap-3 md:grid-cols-[110px_1fr_100px_100px_auto_auto] md:items-end">
-            <label className={labelClass}>
+          <div className="mt-3 grid gap-3 md:grid-cols-[110px_1fr_100px_100px_auto_auto] md:items-end admin_missions_page_div_remnants">
+            <label className={[((labelClass)), "admin_missions_page_label_remnants"].filter(Boolean).join(" ")}>
               Remnants
               <input
                 name="reward_remnants"
@@ -296,23 +296,23 @@ export default async function AdminMissionsPage() {
                 min={0}
                 step={1}
                 defaultValue={0}
-                className={inputClass}
+                className={[((inputClass)), "admin_missions_page_input_reward_remnants"].filter(Boolean).join(" ")}
               />
             </label>
 
-            <label className={labelClass}>
+            <label className={[((labelClass)), "admin_missions_page_label_remnants_2"].filter(Boolean).join(" ")}>
               Fixed Reward Item
               <select
                 name="reward_item_id"
                 defaultValue=""
-                className={inputClass}
+                className={[((inputClass)), "admin_missions_page_select_reward_item_id"].filter(Boolean).join(" ")}
               >
-                <option value="">
+                <option className="admin_missions_page_option_reward_item_id" value="">
                   None
                 </option>
 
                 {items.map((item) => (
-                  <option
+                  <option className="admin_missions_page_option_option_3"
                     key={item.id}
                     value={item.id}
                   >
@@ -322,7 +322,7 @@ export default async function AdminMissionsPage() {
               </select>
             </label>
 
-            <label className={labelClass}>
+            <label className={[((labelClass)), "admin_missions_page_label_remnants_3"].filter(Boolean).join(" ")}>
               Quantity
               <input
                 name="reward_item_quantity"
@@ -330,11 +330,11 @@ export default async function AdminMissionsPage() {
                 min={0}
                 step={1}
                 defaultValue={0}
-                className={inputClass}
+                className={[((inputClass)), "admin_missions_page_input_reward_item_quantity"].filter(Boolean).join(" ")}
               />
             </label>
 
-            <label className={labelClass}>
+            <label className={[((labelClass)), "admin_missions_page_label_remnants_4"].filter(Boolean).join(" ")}>
               Sort
               <input
                 name="sort_order"
@@ -342,12 +342,12 @@ export default async function AdminMissionsPage() {
                 min={0}
                 step={1}
                 defaultValue={1000}
-                className={inputClass}
+                className={[((inputClass)), "admin_missions_page_input_sort_order"].filter(Boolean).join(" ")}
               />
             </label>
 
-            <label className="flex items-center gap-2 pb-2 text-xs text-[rgb(var(--sep-colour-bca886))]">
-              <input
+            <label className="flex items-center gap-2 pb-2 text-xs text-[rgb(var(--sep-colour-bca886))] admin_missions_page_label_remnants_5">
+              <input className="admin_missions_page_input_counts_toward_milestones"
                 name="counts_toward_milestones"
                 type="checkbox"
                 defaultChecked
@@ -355,8 +355,8 @@ export default async function AdminMissionsPage() {
               Milestones
             </label>
 
-            <label className="flex items-center gap-2 pb-2 text-xs text-[rgb(var(--sep-colour-bca886))]">
-              <input
+            <label className="flex items-center gap-2 pb-2 text-xs text-[rgb(var(--sep-colour-bca886))] admin_missions_page_label_remnants_6">
+              <input className="admin_missions_page_input_active"
                 name="is_active"
                 type="checkbox"
                 defaultChecked
@@ -367,12 +367,12 @@ export default async function AdminMissionsPage() {
         </AdminMissionForm>
       </section>
 
-      <section className="mt-5 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4">
-        <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))]">
+      <section className="mt-5 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 admin_missions_page_section_create_daily_milestone">
+        <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))] admin_missions_page_p_create_daily_milestone">
           Completion rewards
         </p>
 
-        <h3 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dcc59a))]">
+        <h3 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dcc59a))] admin_missions_page_h3_create_daily_milestone">
           Create Daily Milestone
         </h3>
 
@@ -380,28 +380,28 @@ export default async function AdminMissionsPage() {
           action={createDailyMilestoneDefinition}
           className="mt-4 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-4"
         >
-          <div className="grid gap-3 lg:grid-cols-2">
-            <label className={labelClass}>
+          <div className="grid gap-3 lg:grid-cols-2 admin_missions_page_div_name_2">
+            <label className={[((labelClass)), "admin_missions_page_label_name_3"].filter(Boolean).join(" ")}>
               Name
               <input
                 name="name"
                 required
-                className={inputClass}
+                className={[((inputClass)), "admin_missions_page_input_name_2"].filter(Boolean).join(" ")}
               />
             </label>
 
-            <label className={labelClass}>
+            <label className={[((labelClass)), "admin_missions_page_label_name_4"].filter(Boolean).join(" ")}>
               Description
               <input
                 name="description"
                 required
-                className={inputClass}
+                className={[((inputClass)), "admin_missions_page_input_description_2"].filter(Boolean).join(" ")}
               />
             </label>
           </div>
 
-          <div className="mt-3 grid gap-3 md:grid-cols-[130px_110px_1fr_100px_100px_auto] md:items-end">
-            <label className={labelClass}>
+          <div className="mt-3 grid gap-3 md:grid-cols-[130px_110px_1fr_100px_100px_auto] md:items-end admin_missions_page_div_missions_required">
+            <label className={[((labelClass)), "admin_missions_page_label_missions_required"].filter(Boolean).join(" ")}>
               Missions Required
               <input
                 name="target_count"
@@ -409,11 +409,11 @@ export default async function AdminMissionsPage() {
                 min={1}
                 step={1}
                 defaultValue={3}
-                className={inputClass}
+                className={[((inputClass)), "admin_missions_page_input_missions_required"].filter(Boolean).join(" ")}
               />
             </label>
 
-            <label className={labelClass}>
+            <label className={[((labelClass)), "admin_missions_page_label_missions_required_2"].filter(Boolean).join(" ")}>
               Remnants
               <input
                 name="reward_remnants"
@@ -421,23 +421,23 @@ export default async function AdminMissionsPage() {
                 min={0}
                 step={1}
                 defaultValue={0}
-                className={inputClass}
+                className={[((inputClass)), "admin_missions_page_input_reward_remnants_2"].filter(Boolean).join(" ")}
               />
             </label>
 
-            <label className={labelClass}>
+            <label className={[((labelClass)), "admin_missions_page_label_missions_required_3"].filter(Boolean).join(" ")}>
               Fixed Reward Item
               <select
                 name="reward_item_id"
                 defaultValue=""
-                className={inputClass}
+                className={[((inputClass)), "admin_missions_page_select_reward_item_id_2"].filter(Boolean).join(" ")}
               >
-                <option value="">
+                <option className="admin_missions_page_option_reward_item_id_2" value="">
                   None
                 </option>
 
                 {items.map((item) => (
-                  <option
+                  <option className="admin_missions_page_option_option_4"
                     key={item.id}
                     value={item.id}
                   >
@@ -447,7 +447,7 @@ export default async function AdminMissionsPage() {
               </select>
             </label>
 
-            <label className={labelClass}>
+            <label className={[((labelClass)), "admin_missions_page_label_missions_required_4"].filter(Boolean).join(" ")}>
               Quantity
               <input
                 name="reward_item_quantity"
@@ -455,11 +455,11 @@ export default async function AdminMissionsPage() {
                 min={0}
                 step={1}
                 defaultValue={0}
-                className={inputClass}
+                className={[((inputClass)), "admin_missions_page_input_reward_item_quantity_2"].filter(Boolean).join(" ")}
               />
             </label>
 
-            <label className={labelClass}>
+            <label className={[((labelClass)), "admin_missions_page_label_missions_required_5"].filter(Boolean).join(" ")}>
               Sort
               <input
                 name="sort_order"
@@ -467,21 +467,21 @@ export default async function AdminMissionsPage() {
                 min={0}
                 step={1}
                 defaultValue={1000}
-                className={inputClass}
+                className={[((inputClass)), "admin_missions_page_input_sort_order_2"].filter(Boolean).join(" ")}
               />
             </label>
 
-            <div className="space-y-2 pb-1">
-              <label className="flex items-center gap-2 text-xs text-[rgb(var(--sep-colour-bca886))]">
-                <input
+            <div className="space-y-2 pb-1 admin_missions_page_div_complete_all">
+              <label className="flex items-center gap-2 text-xs text-[rgb(var(--sep-colour-bca886))] admin_missions_page_label_complete_all">
+                <input className="admin_missions_page_input_all"
                   name="is_all"
                   type="checkbox"
                 />
                 Complete All
               </label>
 
-              <label className="flex items-center gap-2 text-xs text-[rgb(var(--sep-colour-bca886))]">
-                <input
+              <label className="flex items-center gap-2 text-xs text-[rgb(var(--sep-colour-bca886))] admin_missions_page_label_complete_all_2">
+                <input className="admin_missions_page_input_active_2"
                   name="is_active"
                   type="checkbox"
                   defaultChecked
@@ -491,7 +491,7 @@ export default async function AdminMissionsPage() {
             </div>
           </div>
 
-          <p className="mt-2 text-xs leading-5 text-[rgb(var(--sep-colour-938673))]">
+          <p className="mt-2 text-xs leading-5 text-[rgb(var(--sep-colour-938673))] admin_missions_page_p_create_daily_milestone_2">
             If Complete All is checked,
             Missions Required is ignored by
             completion logic.
@@ -501,14 +501,14 @@ export default async function AdminMissionsPage() {
 
       <section
         id="mission-catalogue"
-        className="mt-7 space-y-3"
+        className="mt-7 space-y-3 admin_missions_page_section_mission_catalogue"
       >
-        <div className="mb-3">
-          <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))]">
+        <div className="mb-3 admin_missions_page_div_normal_daily_missions">
+          <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))] admin_missions_page_p_normal_daily_missions">
             Catalogue
           </p>
 
-          <h3 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dcc59a))]">
+          <h3 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dcc59a))] admin_missions_page_h3_normal_daily_missions">
             Normal Daily Missions
           </h3>
         </div>
@@ -522,34 +522,34 @@ export default async function AdminMissionsPage() {
             }
             className="scroll-mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4"
           >
-            <input
+            <input className="admin_missions_page_input_id"
               type="hidden"
               name="id"
               value={mission.id}
             />
 
-            <div className="grid gap-3 lg:grid-cols-[1fr_1.5fr_110px_120px]">
-              <label className={labelClass}>
+            <div className="grid gap-3 lg:grid-cols-[1fr_1.5fr_110px_120px] admin_missions_page_div_name_3">
+              <label className={[((labelClass)), "admin_missions_page_label_name_5"].filter(Boolean).join(" ")}>
                 Name
                 <input
                   name="name"
                   defaultValue={mission.name}
-                  className={inputClass}
+                  className={[((inputClass)), "admin_missions_page_input_name_3"].filter(Boolean).join(" ")}
                 />
               </label>
 
-              <label className={labelClass}>
+              <label className={[((labelClass)), "admin_missions_page_label_name_6"].filter(Boolean).join(" ")}>
                 Description
                 <input
                   name="description"
                   defaultValue={
                     mission.description
                   }
-                  className={inputClass}
+                  className={[((inputClass)), "admin_missions_page_input_description_3"].filter(Boolean).join(" ")}
                 />
               </label>
 
-              <label className={labelClass}>
+              <label className={[((labelClass)), "admin_missions_page_label_name_7"].filter(Boolean).join(" ")}>
                 Target
                 <input
                   name="target_value"
@@ -559,34 +559,34 @@ export default async function AdminMissionsPage() {
                   defaultValue={
                     mission.target_value
                   }
-                  className={inputClass}
+                  className={[((inputClass)), "admin_missions_page_input_name_4"].filter(Boolean).join(" ")}
                 />
               </label>
 
-              <label className={labelClass}>
+              <label className={[((labelClass)), "admin_missions_page_label_name_8"].filter(Boolean).join(" ")}>
                 Difficulty
                 <select
                   name="difficulty"
                   defaultValue={
                     mission.difficulty
                   }
-                  className={inputClass}
+                  className={[((inputClass)), "admin_missions_page_select_difficulty_2"].filter(Boolean).join(" ")}
                 >
-                  <option value="easy">
+                  <option className="admin_missions_page_option_easy_2" value="easy">
                     Easy
                   </option>
-                  <option value="medium">
+                  <option className="admin_missions_page_option_medium_2" value="medium">
                     Medium
                   </option>
-                  <option value="hard">
+                  <option className="admin_missions_page_option_hard_2" value="hard">
                     Hard
                   </option>
                 </select>
               </label>
             </div>
 
-            <div className="mt-3 grid gap-3 md:grid-cols-[120px_1fr_110px_auto_auto_auto] md:items-end">
-              <label className={labelClass}>
+            <div className="mt-3 grid gap-3 md:grid-cols-[120px_1fr_110px_auto_auto_auto] md:items-end admin_missions_page_div_remnants_2">
+              <label className={[((labelClass)), "admin_missions_page_label_remnants_7"].filter(Boolean).join(" ")}>
                 Remnants
                 <input
                   name="reward_remnants"
@@ -596,11 +596,11 @@ export default async function AdminMissionsPage() {
                   defaultValue={
                     mission.reward_remnants
                   }
-                  className={inputClass}
+                  className={[((inputClass)), "admin_missions_page_input_reward_remnants_3"].filter(Boolean).join(" ")}
                 />
               </label>
 
-              <label className={labelClass}>
+              <label className={[((labelClass)), "admin_missions_page_label_remnants_8"].filter(Boolean).join(" ")}>
                 Reward Item
                 <select
                   name="reward_item_id"
@@ -608,14 +608,14 @@ export default async function AdminMissionsPage() {
                     mission.reward_item_id ??
                     ""
                   }
-                  className={inputClass}
+                  className={[((inputClass)), "admin_missions_page_select_reward_item_id_3"].filter(Boolean).join(" ")}
                 >
-                  <option value="">
+                  <option className="admin_missions_page_option_reward_item_id_3" value="">
                     None
                   </option>
 
                   {items.map((item) => (
-                    <option
+                    <option className="admin_missions_page_option_option_5"
                       key={item.id}
                       value={item.id}
                     >
@@ -625,7 +625,7 @@ export default async function AdminMissionsPage() {
                 </select>
               </label>
 
-              <label className={labelClass}>
+              <label className={[((labelClass)), "admin_missions_page_label_remnants_9"].filter(Boolean).join(" ")}>
                 Quantity
                 <input
                   name="reward_item_quantity"
@@ -635,12 +635,12 @@ export default async function AdminMissionsPage() {
                   defaultValue={
                     mission.reward_item_quantity
                   }
-                  className={inputClass}
+                  className={[((inputClass)), "admin_missions_page_input_reward_item_quantity_3"].filter(Boolean).join(" ")}
                 />
               </label>
 
-              <label className="flex items-center gap-2 pb-2 text-xs text-[rgb(var(--sep-colour-bca886))]">
-                <input
+              <label className="flex items-center gap-2 pb-2 text-xs text-[rgb(var(--sep-colour-bca886))] admin_missions_page_label_remnants_10">
+                <input className="admin_missions_page_input_counts_toward_milestones_2"
                   name="counts_toward_milestones"
                   type="checkbox"
                   defaultChecked={
@@ -650,8 +650,8 @@ export default async function AdminMissionsPage() {
                 Milestones
               </label>
 
-              <label className="flex items-center gap-2 pb-2 text-xs text-[rgb(var(--sep-colour-bca886))]">
-                <input
+              <label className="flex items-center gap-2 pb-2 text-xs text-[rgb(var(--sep-colour-bca886))] admin_missions_page_label_remnants_11">
+                <input className="admin_missions_page_input_active_3"
                   name="is_active"
                   type="checkbox"
                   defaultChecked={
@@ -661,7 +661,7 @@ export default async function AdminMissionsPage() {
                 Active
               </label>
 
-              <div aria-hidden="true" />
+              <div className="admin_missions_page_div_remnants_3" aria-hidden="true" />
             </div>
 
             <DailyMissionRewardPoolEditor
@@ -677,7 +677,7 @@ export default async function AdminMissionsPage() {
               )}
             />
 
-            <p className="mt-2 text-[10px] text-[rgb(var(--sep-colour-938673))]">
+            <p className="mt-2 text-[10px] text-[rgb(var(--sep-colour-938673))] admin_missions_page_p_text">
               {mission.family} ·{" "}
               {mission.objective_type} ·{" "}
               {mission.code}
@@ -688,19 +688,19 @@ export default async function AdminMissionsPage() {
 
       <section
         id="mission-milestones"
-        className="mt-9"
+        className="mt-9 admin_missions_page_section_mission_milestones"
       >
-        <div className="mb-3">
-          <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))]">
+        <div className="mb-3 admin_missions_page_div_daily_milestones">
+          <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))] admin_missions_page_p_daily_milestones">
             Completion rewards
           </p>
 
-          <h3 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dcc59a))]">
+          <h3 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dcc59a))] admin_missions_page_h3_daily_milestones">
             Daily Milestones
           </h3>
         </div>
 
-        <div className="grid gap-3 lg:grid-cols-2">
+        <div className="grid gap-3 lg:grid-cols-2 admin_missions_page_div_mission_milestones">
           {milestones.map(
             (milestone) => (
               <AdminMissionForm
@@ -713,7 +713,7 @@ export default async function AdminMissionsPage() {
                 }
                 className="scroll-mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4"
               >
-                <input
+                <input className="admin_missions_page_input_field"
                   type="hidden"
                   name="milestone_key"
                   value={
@@ -722,7 +722,7 @@ export default async function AdminMissionsPage() {
                 />
 
                 <label
-                  className={`block ${labelClass}`}
+                  className={[((`block ${labelClass}`)), "admin_missions_page_label_label"].filter(Boolean).join(" ")}
                 >
                   Name
                   <input
@@ -730,12 +730,12 @@ export default async function AdminMissionsPage() {
                     defaultValue={
                       milestone.name
                     }
-                    className={inputClass}
+                    className={[((inputClass)), "admin_missions_page_input_name_5"].filter(Boolean).join(" ")}
                   />
                 </label>
 
                 <label
-                  className={`mt-3 block ${labelClass}`}
+                  className={[((`mt-3 block ${labelClass}`)), "admin_missions_page_label_label_2"].filter(Boolean).join(" ")}
                 >
                   Description
                   <input
@@ -743,15 +743,13 @@ export default async function AdminMissionsPage() {
                     defaultValue={
                       milestone.description
                     }
-                    className={inputClass}
+                    className={[((inputClass)), "admin_missions_page_input_description_4"].filter(Boolean).join(" ")}
                   />
                 </label>
 
-                <div className="mt-3 grid gap-3 md:grid-cols-[130px_110px_1fr_100px_auto_auto] md:items-end">
+                <div className="mt-3 grid gap-3 md:grid-cols-[130px_110px_1fr_100px_auto_auto] md:items-end admin_missions_page_div_missions_required_2">
                   <label
-                    className={
-                      labelClass
-                    }
+                    className={[((labelClass)), "admin_missions_page_label_missions_required_6"].filter(Boolean).join(" ")}
                   >
                     Missions Required
                     <input
@@ -763,16 +761,12 @@ export default async function AdminMissionsPage() {
                         milestone.target_count ??
                         1
                       }
-                      className={
-                        inputClass
-                      }
+                      className={[((inputClass)), "admin_missions_page_input_missions_required_2"].filter(Boolean).join(" ")}
                     />
                   </label>
 
                   <label
-                    className={
-                      labelClass
-                    }
+                    className={[((labelClass)), "admin_missions_page_label_missions_required_7"].filter(Boolean).join(" ")}
                   >
                     Remnants
                     <input
@@ -783,16 +777,12 @@ export default async function AdminMissionsPage() {
                       defaultValue={
                         milestone.reward_remnants
                       }
-                      className={
-                        inputClass
-                      }
+                      className={[((inputClass)), "admin_missions_page_input_reward_remnants_4"].filter(Boolean).join(" ")}
                     />
                   </label>
 
                   <label
-                    className={
-                      labelClass
-                    }
+                    className={[((labelClass)), "admin_missions_page_label_missions_required_8"].filter(Boolean).join(" ")}
                   >
                     Reward Item
                     <select
@@ -801,17 +791,15 @@ export default async function AdminMissionsPage() {
                         milestone.reward_item_id ??
                         ""
                       }
-                      className={
-                        inputClass
-                      }
+                      className={[((inputClass)), "admin_missions_page_select_reward_item_id_4"].filter(Boolean).join(" ")}
                     >
-                      <option value="">
+                      <option className="admin_missions_page_option_reward_item_id_4" value="">
                         None
                       </option>
 
                       {items.map(
                         (item) => (
-                          <option
+                          <option className="admin_missions_page_option_option_6"
                             key={
                               item.id
                             }
@@ -829,9 +817,7 @@ export default async function AdminMissionsPage() {
                   </label>
 
                   <label
-                    className={
-                      labelClass
-                    }
+                    className={[((labelClass)), "admin_missions_page_label_missions_required_9"].filter(Boolean).join(" ")}
                   >
                     Quantity
                     <input
@@ -842,14 +828,12 @@ export default async function AdminMissionsPage() {
                       defaultValue={
                         milestone.reward_item_quantity
                       }
-                      className={
-                        inputClass
-                      }
+                      className={[((inputClass)), "admin_missions_page_input_reward_item_quantity_4"].filter(Boolean).join(" ")}
                     />
                   </label>
 
-                  <label className="flex items-center gap-2 pb-2 text-xs text-[rgb(var(--sep-colour-bca886))]">
-                    <input
+                  <label className="flex items-center gap-2 pb-2 text-xs text-[rgb(var(--sep-colour-bca886))] admin_missions_page_label_missions_required_10">
+                    <input className="admin_missions_page_input_all_2"
                       name="is_all"
                       type="checkbox"
                       defaultChecked={
@@ -859,8 +843,8 @@ export default async function AdminMissionsPage() {
                     Complete All
                   </label>
 
-                  <label className="flex items-center gap-2 pb-2 text-xs text-[rgb(var(--sep-colour-bca886))]">
-                    <input
+                  <label className="flex items-center gap-2 pb-2 text-xs text-[rgb(var(--sep-colour-bca886))] admin_missions_page_label_missions_required_11">
+                    <input className="admin_missions_page_input_active_4"
                       name="is_active"
                       type="checkbox"
                       defaultChecked={

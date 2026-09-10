@@ -18,7 +18,7 @@ export function PlayerSanctionsSidebarLink() {
       href="/sanctions"
       className="flex items-center py-0.5 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9f8b70))] transition hover:text-[rgb(var(--sep-colour-d8bf91))]"
     >
-      <span>Sanctions</span>
+      <span className="components_sanctions_player_sanctions_sidebar_link_span_text">Sanctions</span>
       <SanctionNotificationBadge audience="player" />
     </Link>
   );

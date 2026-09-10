@@ -476,15 +476,15 @@ export function ForumSidebarMenu({
       : null;
 
   return (
-    <div className="min-w-0">
+    <div className="min-w-0 components_portal_forum_sidebar_menu_div_container">
       <div
-        className={`flex ${mobile ? "min-h-[52px]" : "min-h-[var(--portal-nav-min-h)]"} items-center border text-[11px] transition lg:text-xs ${
+        className={[((`flex ${mobile ? "min-h-[52px]" : "min-h-[var(--portal-nav-min-h)]"} items-center border text-[11px] transition lg:text-xs ${
           forumActive
             ? "border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] text-[rgb(var(--sep-colour-efd9aa))]"
             : unreadCount > 0
               ? "border-[rgb(var(--sep-colour-a87532))] bg-[rgb(var(--sep-colour-24190f))] text-[rgb(var(--sep-colour-efd9aa))]"
               : "border-transparent text-[rgb(var(--sep-colour-b6a894))] hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))] hover:text-[rgb(var(--sep-colour-e8d8ba))]"
-        }`}
+        }`)), "components_portal_forum_sidebar_menu_div_container_2"].filter(Boolean).join(" ")}
       >
         <button
           type="button"
@@ -497,29 +497,27 @@ export function ForumSidebarMenu({
               href: "/forum",
             })
           }
-          className={
-            mobile
+          className={[((mobile
               ? "flex min-w-0 flex-1 items-center gap-3 px-3 py-2 text-left"
-              : "flex min-w-0 flex-1 items-center gap-2 px-2.5 py-[var(--portal-nav-y)] text-left"
-          }
+              : "flex min-w-0 flex-1 items-center gap-2 px-2.5 py-[var(--portal-nav-y)] text-left")), "components_portal_forum_sidebar_menu_button_action"].filter(Boolean).join(" ")}
         >
-          <span className={mobile ? "flex h-[22px] w-[22px] shrink-0 items-center justify-center" : "flex h-[18px] w-[18px] shrink-0 items-center justify-center"}>
+          <span className={[((mobile ? "flex h-[22px] w-[22px] shrink-0 items-center justify-center" : "flex h-[18px] w-[18px] shrink-0 items-center justify-center")), "components_portal_forum_sidebar_menu_span_text"].filter(Boolean).join(" ")}>
   <img
     src="/icons/forum.png"
     alt=""
     aria-hidden="true"
-    className="h-full w-full object-contain"
+    className="h-full w-full object-contain components_portal_forum_sidebar_menu_img_image"
   />
 </span>
 
-          <span className={mobile ? "min-w-0 flex-1 truncate text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b8a98f))]" : "truncate"}>
+          <span className={[((mobile ? "min-w-0 flex-1 truncate text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b8a98f))]" : "truncate")), "components_portal_forum_sidebar_menu_span_text_2"].filter(Boolean).join(" ")}>
             Forum
           </span>
 
           {unreadCount > 0 ? (
             <span data-sep-counter-badge="true"
               title={`${unreadCount} unread forum topic${unreadCount === 1 ? "" : "s"}`}
-              className="ml-auto inline-flex h-4 min-w-4 shrink-0 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] px-1 text-[7px] font-bold leading-none text-[#ffe1ac]"
+              className="ml-auto inline-flex h-4 min-w-4 shrink-0 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] px-1 text-[7px] font-bold leading-none text-[#ffe1ac] components_portal_forum_sidebar_menu_span_text_3"
             >
               {unreadCount > 9
                 ? "9+"
@@ -539,11 +537,11 @@ export function ForumSidebarMenu({
               ? "Collapse Forum shortcuts"
               : "Expand Forum shortcuts"
           }
-          className="relative mr-1 flex h-5 w-5 shrink-0 items-center justify-center text-[11px] leading-none text-[rgb(var(--sep-colour-b68b4f))] transition hover:bg-[rgb(var(--sep-colour-4a3420))]/45 hover:text-[rgb(var(--sep-colour-efd9aa))]"
+          className="relative mr-1 flex h-5 w-5 shrink-0 items-center justify-center text-[11px] leading-none text-[rgb(var(--sep-colour-b68b4f))] transition hover:bg-[rgb(var(--sep-colour-4a3420))]/45 hover:text-[rgb(var(--sep-colour-efd9aa))] components_portal_forum_sidebar_menu_button_action_2"
         >
           <span
             aria-hidden="true"
-            className="absolute left-0 top-1/2 h-3 w-px -translate-y-1/2 bg-[rgb(var(--sep-colour-6e5535))]/30"
+            className="absolute left-0 top-1/2 h-3 w-px -translate-y-1/2 bg-[rgb(var(--sep-colour-6e5535))]/30 components_portal_forum_sidebar_menu_span_text_4"
           />
 
           {open ? "−" : "+"}
@@ -551,10 +549,10 @@ export function ForumSidebarMenu({
       </div>
 
       {open ? (
-        <div className="ml-4 border-l border-[rgb(var(--sep-colour-5d4930))]/40 pl-2 pt-1.5">
+        <div className="ml-4 border-l border-[rgb(var(--sep-colour-5d4930))]/40 pl-2 pt-1.5 components_portal_forum_sidebar_menu_div_container_3">
           {currentRecent ? (
-            <div className="mb-1.5 flex items-center gap-1 border border-[rgb(var(--sep-colour-6a5033))]/35 bg-[rgb(var(--sep-colour-18110d))] px-2 py-1.5">
-              <span className="min-w-0 flex-1 truncate text-[9px] text-[rgb(var(--sep-colour-9f8c71))]">
+            <div className="mb-1.5 flex items-center gap-1 border border-[rgb(var(--sep-colour-6a5033))]/35 bg-[rgb(var(--sep-colour-18110d))] px-2 py-1.5 components_portal_forum_sidebar_menu_div_container_4">
+              <span className="min-w-0 flex-1 truncate text-[9px] text-[rgb(var(--sep-colour-9f8c71))] components_portal_forum_sidebar_menu_span_text_5">
                 Current:{" "}
                 {currentRecent.title}
               </span>
@@ -577,7 +575,7 @@ export function ForumSidebarMenu({
                     ? "Remove from favourites"
                     : "Add to favourites"
                 }
-                className="shrink-0 text-sm text-[rgb(var(--sep-colour-d4a65d))] hover:text-[rgb(var(--sep-colour-ffe0a1))] disabled:opacity-40"
+                className="shrink-0 text-sm text-[rgb(var(--sep-colour-d4a65d))] hover:text-[rgb(var(--sep-colour-ffe0a1))] disabled:opacity-40 components_portal_forum_sidebar_menu_button_action_3"
               >
                 {favouriteIds.has(
                   currentRecent.id,
@@ -622,7 +620,7 @@ export function ForumSidebarMenu({
                 ),
               )
             ) : (
-              <p className="px-2 py-2 text-[9px] leading-4 text-[rgb(var(--sep-colour-6f6456))]">
+              <p className="px-2 py-2 text-[9px] leading-4 text-[rgb(var(--sep-colour-6f6456))] components_portal_forum_sidebar_menu_p_text">
                 No favourite topics.
                 Use ☆ beside a recent
                 topic to save it.
@@ -664,7 +662,7 @@ export function ForumSidebarMenu({
           </ForumTopicGroup>
 
           {error ? (
-            <p className="mt-1.5 border border-[rgb(var(--sep-colour-743d35))]/60 bg-[rgb(var(--sep-colour-2a1512))] px-2 py-1.5 text-[8px] leading-4 text-[rgb(var(--sep-colour-d8a49a))]">
+            <p className="mt-1.5 border border-[rgb(var(--sep-colour-743d35))]/60 bg-[rgb(var(--sep-colour-2a1512))] px-2 py-1.5 text-[8px] leading-4 text-[rgb(var(--sep-colour-d8a49a))] components_portal_forum_sidebar_menu_p_text_2">
               {error}
             </p>
           ) : null}
@@ -688,28 +686,28 @@ function ForumTopicGroup({
   children: React.ReactNode;
 }) {
   return (
-    <div className="mb-1">
+    <div className="mb-1 components_portal_forum_sidebar_menu_div_container_5">
       <button
         type="button"
         onClick={onToggle}
         aria-expanded={open}
-        className="flex w-full items-center gap-2 px-2 py-1.5 text-left text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-8f795c))] transition hover:bg-[rgb(var(--sep-colour-1b140f))] hover:text-[rgb(var(--sep-colour-c8a36d))]"
+        className="flex w-full items-center gap-2 px-2 py-1.5 text-left text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-8f795c))] transition hover:bg-[rgb(var(--sep-colour-1b140f))] hover:text-[rgb(var(--sep-colour-c8a36d))] components_portal_forum_sidebar_menu_button_toggle"
       >
-        <span className="w-2 text-center text-[rgb(var(--sep-colour-aa824b))]">
+        <span className="w-2 text-center text-[rgb(var(--sep-colour-aa824b))] components_portal_forum_sidebar_menu_span_text_6">
           {open ? "−" : "+"}
         </span>
 
-        <span className="min-w-0 flex-1 truncate">
+        <span className="min-w-0 flex-1 truncate components_portal_forum_sidebar_menu_span_text_7">
           {label}
         </span>
 
-        <span className="text-[8px] text-[rgb(var(--sep-colour-665a4b))]">
+        <span className="text-[8px] text-[rgb(var(--sep-colour-665a4b))] components_portal_forum_sidebar_menu_span_text_8">
           {count}
         </span>
       </button>
 
       {open ? (
-        <div className="space-y-0.5 pb-1">
+        <div className="space-y-0.5 pb-1 components_portal_forum_sidebar_menu_div_container_6">
           {children}
         </div>
       ) : null}
@@ -729,7 +727,7 @@ function TopicShortcut({
   onToggleFavourite: () => void;
 }) {
   return (
-    <div className="group flex items-center gap-1 px-1">
+    <div className="group flex items-center gap-1 px-1 components_portal_forum_sidebar_menu_div_container_7">
       <button
         type="button"
         onClick={() =>
@@ -746,7 +744,7 @@ function TopicShortcut({
           })
         }
         title={`${topic.title} — ${topic.sectionName}`}
-        className="min-w-0 flex-1 truncate border-l border-transparent px-2 py-1.5 text-left text-[9px] text-[rgb(var(--sep-colour-958875))] transition hover:border-[rgb(var(--sep-colour-8e683d))] hover:bg-[rgb(var(--sep-colour-1b140f))] hover:text-[rgb(var(--sep-colour-dbc39c))]"
+        className="min-w-0 flex-1 truncate border-l border-transparent px-2 py-1.5 text-left text-[9px] text-[rgb(var(--sep-colour-958875))] transition hover:border-[rgb(var(--sep-colour-8e683d))] hover:bg-[rgb(var(--sep-colour-1b140f))] hover:text-[rgb(var(--sep-colour-dbc39c))] components_portal_forum_sidebar_menu_button_action_4"
       >
         {topic.title}
       </button>
@@ -765,7 +763,7 @@ function TopicShortcut({
             ? "Remove from favourites"
             : "Add to favourites"
         }
-        className="flex h-6 w-6 shrink-0 items-center justify-center text-sm text-[rgb(var(--sep-colour-b4874c))] opacity-75 transition hover:text-[rgb(var(--sep-colour-f0c982))] hover:opacity-100 disabled:opacity-30"
+        className="flex h-6 w-6 shrink-0 items-center justify-center text-sm text-[rgb(var(--sep-colour-b4874c))] opacity-75 transition hover:text-[rgb(var(--sep-colour-f0c982))] hover:opacity-100 disabled:opacity-30 components_portal_forum_sidebar_menu_button_toggle_favourite"
       >
         {favourite ? "★" : "☆"}
       </button>
@@ -785,7 +783,7 @@ function LoadingRows({
       }).map((_, index) => (
         <div
           key={index}
-          className="mx-2 h-6 animate-pulse bg-[rgb(var(--sep-colour-1b140f))]"
+          className="mx-2 h-6 animate-pulse bg-[rgb(var(--sep-colour-1b140f))] components_portal_forum_sidebar_menu_div_container_8"
         />
       ))}
     </>

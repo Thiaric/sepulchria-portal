@@ -459,10 +459,10 @@ export default async function ForumRepliesManagementPage({
   });
 
   return (
-    <main className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <main className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8 admin_forum_replies_page_main_main">
       <nav
         aria-label="Forum breadcrumb"
-        className="mb-6 flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-746653))]"
+        className="mb-6 flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-746653))] admin_forum_replies_page_nav_forum_breadcrumb"
       >
         <Link
           href="/admin"
@@ -471,7 +471,7 @@ export default async function ForumRepliesManagementPage({
           Administration
         </Link>
 
-        <span aria-hidden="true">/</span>
+        <span className="admin_forum_replies_page_span_forum_breadcrumb" aria-hidden="true">/</span>
 
         <Link
           href="/admin/forum"
@@ -480,26 +480,26 @@ export default async function ForumRepliesManagementPage({
           Forum
         </Link>
 
-        <span aria-hidden="true">/</span>
+        <span className="admin_forum_replies_page_span_forum_breadcrumb_2" aria-hidden="true">/</span>
 
-        <span className="text-[rgb(var(--sep-colour-a48c6c))]">
+        <span className="text-[rgb(var(--sep-colour-a48c6c))] admin_forum_replies_page_span_forum_breadcrumb_3">
           Replies
         </span>
       </nav>
 
-      <header className="overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
-        <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-1a130e))] px-5 py-7 sm:px-7">
-          <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
-            <div>
-              <p className="text-[8px] uppercase tracking-[0.22em] text-amber-500">
+      <header className="overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] admin_forum_replies_page_header_header">
+        <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-1a130e))] px-5 py-7 sm:px-7 admin_forum_replies_page_div_container">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between admin_forum_replies_page_div_container_2">
+            <div className="admin_forum_replies_page_div_forum_replies">
+              <p className="text-[8px] uppercase tracking-[0.22em] text-amber-500 admin_forum_replies_page_p_forum_replies">
                 Forum recycle bin
               </p>
 
-              <h1 className="mt-3 font-serif text-3xl text-[rgb(var(--sep-colour-dec69d))] sm:text-4xl">
+              <h1 className="mt-3 font-serif text-3xl text-[rgb(var(--sep-colour-dec69d))] sm:text-4xl admin_forum_replies_page_h1_forum_replies">
                 Forum Replies
               </h1>
 
-              <p className="mt-3 max-w-3xl text-sm leading-6 text-[rgb(var(--sep-colour-817567))]">
+              <p className="mt-3 max-w-3xl text-sm leading-6 text-[rgb(var(--sep-colour-817567))] admin_forum_replies_page_p_forum_replies_2">
                 Review individual replies, find
                 soft-deleted records and permanently
                 erase only the ones that no longer need
@@ -507,7 +507,7 @@ export default async function ForumRepliesManagementPage({
               </p>
             </div>
 
-            <div className="flex shrink-0 flex-wrap gap-2">
+            <div className="flex shrink-0 flex-wrap gap-2 admin_forum_replies_page_div_container_3">
               <Link
                 href="/admin/forum/topics?status=deleted"
                 className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-927b5b))] transition hover:border-[rgb(var(--sep-colour-876640))] hover:text-[rgb(var(--sep-colour-d8b986))]"
@@ -544,34 +544,34 @@ export default async function ForumRepliesManagementPage({
       </header>
 
       {successMessage ? (
-        <div className="mt-6 border border-emerald-900/60 bg-emerald-950/20 px-5 py-4 text-sm leading-6 text-emerald-300">
+        <div className="mt-6 border border-emerald-900/60 bg-emerald-950/20 px-5 py-4 text-sm leading-6 text-emerald-300 admin_forum_replies_page_div_container_4">
           {successMessage}
         </div>
       ) : null}
 
       {errorMessage ? (
-        <div className="mt-6 border border-red-900/70 bg-red-950/20 px-5 py-4 text-sm leading-6 text-red-300">
+        <div className="mt-6 border border-red-900/70 bg-red-950/20 px-5 py-4 text-sm leading-6 text-red-300 admin_forum_replies_page_div_container_5">
           {errorMessage}
         </div>
       ) : null}
 
       {!canPurge ? (
-        <div className="mt-6 border border-amber-900/60 bg-amber-950/15 px-5 py-4 text-sm leading-6 text-amber-300">
+        <div className="mt-6 border border-amber-900/60 bg-amber-950/15 px-5 py-4 text-sm leading-6 text-amber-300 admin_forum_replies_page_div_container_6">
           Masters may inspect and moderate forum
           content, but permanent deletion is restricted
           to owners, administrators and moderators.
         </div>
       ) : null}
 
-      <section className="mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
+      <section className="mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] admin_forum_replies_page_section_section">
         <form
           method="get"
-          className="grid gap-4 px-5 py-5 sm:px-6 lg:grid-cols-[minmax(240px,1fr)_180px_auto]"
+          className="grid gap-4 px-5 py-5 sm:px-6 lg:grid-cols-[minmax(240px,1fr)_180px_auto] admin_forum_replies_page_form_form"
         >
-          <div>
+          <div className="admin_forum_replies_page_div_search_reply_text">
             <label
               htmlFor="reply-search"
-              className="block text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-927b5b))]"
+              className="block text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-927b5b))] admin_forum_replies_page_label_reply_search"
             >
               Search reply text
             </label>
@@ -582,14 +582,14 @@ export default async function ForumRepliesManagementPage({
               type="search"
               defaultValue={search}
               placeholder="Search deleted replies..."
-              className={inputClassName}
+              className={[((inputClassName)), "admin_forum_replies_page_input_search"].filter(Boolean).join(" ")}
             />
           </div>
 
-          <div>
+          <div className="admin_forum_replies_page_div_status">
             <label
               htmlFor="reply-status"
-              className="block text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-927b5b))]"
+              className="block text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-927b5b))] admin_forum_replies_page_label_reply_status"
             >
               Status
             </label>
@@ -598,22 +598,22 @@ export default async function ForumRepliesManagementPage({
               id="reply-status"
               name="status"
               defaultValue={status}
-              className={inputClassName}
+              className={[((inputClassName)), "admin_forum_replies_page_select_status"].filter(Boolean).join(" ")}
             >
-              <option value="deleted">
+              <option className="admin_forum_replies_page_option_deleted" value="deleted">
                 Deleted replies
               </option>
 
-              <option value="all">
+              <option className="admin_forum_replies_page_option_all" value="all">
                 All replies
               </option>
             </select>
           </div>
 
-          <div className="flex items-end gap-2">
+          <div className="flex items-end gap-2 admin_forum_replies_page_div_container_7">
             <button
               type="submit"
-              className="flex-1 border border-amber-800/70 bg-amber-950/25 px-5 py-3 text-[8px] uppercase tracking-[0.17em] text-amber-300 transition hover:border-amber-600 hover:bg-amber-950/45"
+              className="flex-1 border border-amber-800/70 bg-amber-950/25 px-5 py-3 text-[8px] uppercase tracking-[0.17em] text-amber-300 transition hover:border-amber-600 hover:bg-amber-950/45 admin_forum_replies_page_button_apply_filters"
             >
               Apply filters
             </button>
@@ -628,9 +628,9 @@ export default async function ForumRepliesManagementPage({
         </form>
       </section>
 
-      <section className="mt-6 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
+      <section className="mt-6 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] admin_forum_replies_page_section_section_2">
         {posts.length > 0 ? (
-          <div className="divide-y divide-[rgb(var(--sep-colour-60482e))]/30">
+          <div className="divide-y divide-[rgb(var(--sep-colour-60482e))]/30 admin_forum_replies_page_div_container_8">
             {posts.map((post) => {
               const topic = topicMap.get(
                 post.topic_id,
@@ -668,54 +668,54 @@ export default async function ForumRepliesManagementPage({
               return (
                 <article
                   key={post.id}
-                  className="grid gap-5 px-5 py-5 sm:px-6 lg:grid-cols-[minmax(0,1fr)_230px]"
+                  className="grid gap-5 px-5 py-5 sm:px-6 lg:grid-cols-[minmax(0,1fr)_230px] admin_forum_replies_page_article_article"
                 >
-                  <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h2 className="font-serif text-lg text-[rgb(var(--sep-colour-d7bf98))]">
+                  <div className="min-w-0 admin_forum_replies_page_div_container_9">
+                    <div className="flex flex-wrap items-center gap-2 admin_forum_replies_page_div_container_10">
+                      <h2 className="font-serif text-lg text-[rgb(var(--sep-colour-d7bf98))] admin_forum_replies_page_h2_heading">
                         {topic?.title ??
                           "Missing discussion"}
                       </h2>
 
                       {post.deleted_at ? (
-                        <span className="border border-red-950/60 bg-red-950/20 px-2 py-1 text-[7px] uppercase tracking-[0.14em] text-red-400">
+                        <span className="border border-red-950/60 bg-red-950/20 px-2 py-1 text-[7px] uppercase tracking-[0.14em] text-red-400 admin_forum_replies_page_span_text">
                           Deleted reply
                         </span>
                       ) : (
-                        <span className="border border-emerald-950/60 bg-emerald-950/20 px-2 py-1 text-[7px] uppercase tracking-[0.14em] text-emerald-400">
+                        <span className="border border-emerald-950/60 bg-emerald-950/20 px-2 py-1 text-[7px] uppercase tracking-[0.14em] text-emerald-400 admin_forum_replies_page_span_text_2">
                           Active reply
                         </span>
                       )}
 
                       {topic?.deleted_at ? (
-                        <span className="border border-orange-950/60 bg-orange-950/20 px-2 py-1 text-[7px] uppercase tracking-[0.14em] text-orange-400">
+                        <span className="border border-orange-950/60 bg-orange-950/20 px-2 py-1 text-[7px] uppercase tracking-[0.14em] text-orange-400 admin_forum_replies_page_span_text_3">
                           Topic deleted
                         </span>
                       ) : null}
                     </div>
 
-                    <p className="mt-2 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-6e604d))]">
+                    <p className="mt-2 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-6e604d))] admin_forum_replies_page_p_text">
                       {section?.name ??
                         "Unknown section"}
                     </p>
 
-                    <p className="mt-4 break-words border-l border-[rgb(var(--sep-colour-6e5132))]/55 pl-4 text-sm leading-6 text-[rgb(var(--sep-colour-a99a84))]">
+                    <p className="mt-4 break-words border-l border-[rgb(var(--sep-colour-6e5132))]/55 pl-4 text-sm leading-6 text-[rgb(var(--sep-colour-a99a84))] admin_forum_replies_page_p_text_2">
                       {createExcerpt(post.body)}
                     </p>
 
-                    <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs text-[rgb(var(--sep-colour-817567))]">
-                      <span>
+                    <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs text-[rgb(var(--sep-colour-817567))] admin_forum_replies_page_div_container_11">
+                      <span className="admin_forum_replies_page_span_text_4">
                         By {authorName}
                       </span>
 
-                      <span>
+                      <span className="admin_forum_replies_page_span_text_5">
                         Posted {formatDate(
                           post.created_at,
                         )}
                       </span>
 
                       {post.deleted_at ? (
-                        <span>
+                        <span className="admin_forum_replies_page_span_text_6">
                           Deleted {formatDate(
                             post.deleted_at,
                           )}
@@ -724,7 +724,7 @@ export default async function ForumRepliesManagementPage({
                     </div>
                   </div>
 
-                  <div className="flex flex-col items-stretch gap-2 lg:items-end">
+                  <div className="flex flex-col items-stretch gap-2 lg:items-end admin_forum_replies_page_div_container_12">
                     {publicTopicUrl &&
                     !topic?.deleted_at ? (
                       <Link
@@ -737,28 +737,28 @@ export default async function ForumRepliesManagementPage({
 
                     {post.deleted_at &&
                     canPurge ? (
-                      <details className="w-full border border-red-950/60 bg-red-950/10 lg:max-w-[230px]">
-                        <summary className="cursor-pointer list-none px-4 py-3 text-center text-[8px] uppercase tracking-[0.15em] text-red-400 transition hover:bg-red-950/20 hover:text-red-300">
+                      <details className="w-full border border-red-950/60 bg-red-950/10 lg:max-w-[230px] admin_forum_replies_page_details_permanently_delete">
+                        <summary className="cursor-pointer list-none px-4 py-3 text-center text-[8px] uppercase tracking-[0.15em] text-red-400 transition hover:bg-red-950/20 hover:text-red-300 admin_forum_replies_page_summary_permanently_delete">
                           Permanently delete
                         </summary>
 
                         <form
                           action={permanentlyDeleteForumReplyAction}
-                          className="border-t border-red-950/50 p-4"
+                          className="border-t border-red-950/50 p-4 admin_forum_replies_page_form_permanently_delete_forum_reply_action"
                         >
-                          <input
+                          <input className="admin_forum_replies_page_input_post_id"
                             type="hidden"
                             name="postId"
                             value={post.id}
                           />
 
-                          <input
+                          <input className="admin_forum_replies_page_input_return"
                             type="hidden"
                             name="returnTo"
                             value={returnTo}
                           />
 
-                          <p className="text-[10px] leading-5 text-red-300/80">
+                          <p className="text-[10px] leading-5 text-red-300/80 admin_forum_replies_page_p_type_delete">
                             This erases the reply and
                             its attached images. Quotes
                             pointing to it will be
@@ -766,7 +766,7 @@ export default async function ForumRepliesManagementPage({
                             undone.
                           </p>
 
-                          <label className="mt-3 block text-[7px] uppercase tracking-[0.14em] text-red-400">
+                          <label className="mt-3 block text-[7px] uppercase tracking-[0.14em] text-red-400 admin_forum_replies_page_label_type_delete">
                             Type DELETE
                           </label>
 
@@ -774,12 +774,12 @@ export default async function ForumRepliesManagementPage({
                             name="confirmation"
                             required
                             autoComplete="off"
-                            className="mt-2 w-full border border-red-900/70 bg-[rgb(var(--sep-colour-100909))] px-3 py-2 text-xs text-red-200 outline-none focus:border-red-600"
+                            className="mt-2 w-full border border-red-900/70 bg-[rgb(var(--sep-colour-100909))] px-3 py-2 text-xs text-red-200 outline-none focus:border-red-600 admin_forum_replies_page_input_confirmation"
                           />
 
                           <button
                             type="submit"
-                            className="mt-3 w-full border border-red-800 bg-red-950/30 px-3 py-2.5 text-[8px] uppercase tracking-[0.14em] text-red-300 transition hover:border-red-600 hover:bg-red-950/55"
+                            className="mt-3 w-full border border-red-800 bg-red-950/30 px-3 py-2.5 text-[8px] uppercase tracking-[0.14em] text-red-300 transition hover:border-red-600 hover:bg-red-950/55 admin_forum_replies_page_button_erase_reply_forever"
                           >
                             Erase reply forever
                           </button>
@@ -792,12 +792,12 @@ export default async function ForumRepliesManagementPage({
             })}
           </div>
         ) : (
-          <div className="px-6 py-14 text-center">
-            <p className="font-serif text-xl text-[rgb(var(--sep-colour-cdb590))]">
+          <div className="px-6 py-14 text-center admin_forum_replies_page_div_container_13">
+            <p className="font-serif text-xl text-[rgb(var(--sep-colour-cdb590))] admin_forum_replies_page_p_text_3">
               No replies found
             </p>
 
-            <p className="mt-3 text-sm text-[rgb(var(--sep-colour-817567))]">
+            <p className="mt-3 text-sm text-[rgb(var(--sep-colour-817567))] admin_forum_replies_page_p_text_4">
               No forum replies match the
               selected filters.
             </p>
@@ -808,13 +808,13 @@ export default async function ForumRepliesManagementPage({
       {totalPages > 1 ? (
         <nav
           aria-label="Reply pagination"
-          className="mt-6 flex flex-wrap items-center justify-between gap-4 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-5 py-4"
+          className="mt-6 flex flex-wrap items-center justify-between gap-4 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-5 py-4 admin_forum_replies_page_nav_reply_pagination"
         >
-          <p className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-75644d))]">
+          <p className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-75644d))] admin_forum_replies_page_p_reply_pagination">
             Page {requestedPage} of {totalPages}
           </p>
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 admin_forum_replies_page_div_reply_pagination">
             {requestedPage > 1 ? (
               <Link
                 href={createRepliesUrl({
@@ -858,7 +858,7 @@ function Statistic({
   value: number;
 }) {
   return (
-    <div className="px-4 py-4 text-center sm:px-5">
+    <div className="px-4 py-4 text-center sm:px-5 admin_forum_replies_page_div_container_14">
       <dt className="text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-665946))]">
         {label}
       </dt>

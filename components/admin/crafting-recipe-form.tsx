@@ -157,14 +157,14 @@ export function CraftingRecipeForm({
       className="mt-5"
     >
       {recipeId ? (
-        <input
+        <input className="components_admin_crafting_recipe_form_input_recipe_id"
           type="hidden"
           name="recipeId"
           value={recipeId}
         />
       ) : null}
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4 components_admin_crafting_recipe_form_div_container">
         <Field label="Crafted result Item">
           <select
             name="resultItemId"
@@ -179,11 +179,9 @@ export function CraftingRecipeForm({
                 event.target.value,
               )
             }
-            className={
-              inputClass
-            }
+            className={[((inputClass)), "components_admin_crafting_recipe_form_select_result_item_id"].filter(Boolean).join(" ")}
           >
-            <option
+            <option className="components_admin_crafting_recipe_form_option_result_item_id"
               value=""
               disabled
             >
@@ -192,7 +190,7 @@ export function CraftingRecipeForm({
 
             {resultItems.map(
               (item) => (
-                <option
+                <option className="components_admin_crafting_recipe_form_option_option"
                   key={
                     item.id
                   }
@@ -218,10 +216,10 @@ export function CraftingRecipeForm({
             }
             readOnly
             placeholder="Select an Item first"
-            className={`${inputClass} cursor-default opacity-80`}
+            className={[((`${inputClass} cursor-default opacity-80`)), "components_admin_crafting_recipe_form_input_select_item_first"].filter(Boolean).join(" ")}
           />
 
-          <input
+          <input className="components_admin_crafting_recipe_form_input_name"
             type="hidden"
             name="name"
             value={
@@ -238,9 +236,7 @@ export function CraftingRecipeForm({
               defaultSlug
             }
             placeholder="Auto from Item name"
-            className={
-              inputClass
-            }
+            className={[((inputClass)), "components_admin_crafting_recipe_form_input_slug"].filter(Boolean).join(" ")}
           />
         </Field>
 
@@ -253,13 +249,11 @@ export function CraftingRecipeForm({
             defaultValue={
               defaultResultQuantity
             }
-            className={
-              inputClass
-            }
+            className={[((inputClass)), "components_admin_crafting_recipe_form_input_result_quantity"].filter(Boolean).join(" ")}
           />
         </Field>
 
-        <div className="md:col-span-2 xl:col-span-4">
+        <div className="md:col-span-2 xl:col-span-4 components_admin_crafting_recipe_form_div_container_2">
           <Field label="Description">
             <textarea
               name="description"
@@ -267,9 +261,7 @@ export function CraftingRecipeForm({
               defaultValue={
                 defaultDescription
               }
-              className={
-                inputClass
-              }
+              className={[((inputClass)), "components_admin_crafting_recipe_form_textarea_description"].filter(Boolean).join(" ")}
             />
           </Field>
         </div>
@@ -281,15 +273,13 @@ export function CraftingRecipeForm({
             defaultValue={
               defaultSortOrder
             }
-            className={
-              inputClass
-            }
+            className={[((inputClass)), "components_admin_crafting_recipe_form_input_sort_order"].filter(Boolean).join(" ")}
           />
         </Field>
 
-        <div className="flex items-end pb-2">
-          <label className="flex items-center gap-2 text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-aa9473))]">
-            <input
+        <div className="flex items-end pb-2 components_admin_crafting_recipe_form_div_active">
+          <label className="flex items-center gap-2 text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-aa9473))] components_admin_crafting_recipe_form_label_active">
+            <input className="components_admin_crafting_recipe_form_input_active"
               type="checkbox"
               name="isActive"
               defaultChecked={
@@ -301,14 +291,14 @@ export function CraftingRecipeForm({
         </div>
       </div>
 
-      <div className="mt-6 border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-5">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-8c704b))]">
+      <div className="mt-6 border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-5 components_admin_crafting_recipe_form_div_container_3">
+        <div className="flex flex-wrap items-center justify-between gap-3 components_admin_crafting_recipe_form_div_container_4">
+          <div className="components_admin_crafting_recipe_form_div_required_ingredients">
+            <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-8c704b))] components_admin_crafting_recipe_form_p_required_ingredients">
               Formula
             </p>
 
-            <h3 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+            <h3 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_admin_crafting_recipe_form_h3_required_ingredients">
               Required Ingredients
             </h3>
           </div>
@@ -318,15 +308,13 @@ export function CraftingRecipeForm({
             onClick={
               addIngredient
             }
-            className={
-              buttonClass
-            }
+            className={[((buttonClass)), "components_admin_crafting_recipe_form_button_ingredient"].filter(Boolean).join(" ")}
           >
             + Ingredient
           </button>
         </div>
 
-        <div className="mt-4 space-y-2">
+        <div className="mt-4 space-y-2 components_admin_crafting_recipe_form_div_container_5">
           {ingredients.map(
             (
               ingredient,
@@ -334,7 +322,7 @@ export function CraftingRecipeForm({
             ) => (
               <div
                 key={index}
-                className="grid gap-2 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3 sm:grid-cols-[minmax(0,1fr)_110px_auto]"
+                className="grid gap-2 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3 sm:grid-cols-[minmax(0,1fr)_110px_auto] components_admin_crafting_recipe_form_div_container_6"
               >
                 <select
                   name="ingredientItemId"
@@ -355,11 +343,9 @@ export function CraftingRecipeForm({
                       },
                     )
                   }
-                  className={
-                    inputClass
-                  }
+                  className={[((inputClass)), "components_admin_crafting_recipe_form_select_ingredient_item_id"].filter(Boolean).join(" ")}
                 >
-                  <option
+                  <option className="components_admin_crafting_recipe_form_option_ingredient_item_id"
                     value=""
                     disabled
                   >
@@ -368,7 +354,7 @@ export function CraftingRecipeForm({
 
                   {ingredientItems.map(
                     (item) => (
-                      <option
+                      <option className="components_admin_crafting_recipe_form_option_option_2"
                         key={
                           item.id
                         }
@@ -410,9 +396,7 @@ export function CraftingRecipeForm({
                       },
                     )
                   }
-                  className={
-                    inputClass
-                  }
+                  className={[((inputClass)), "components_admin_crafting_recipe_form_input_ingredient_quantity"].filter(Boolean).join(" ")}
                   aria-label={`Ingredient ${index + 1} quantity`}
                 />
 
@@ -423,7 +407,7 @@ export function CraftingRecipeForm({
                       index,
                     )
                   }
-                  className="border border-red-900/55 bg-red-950/20 px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-red-300"
+                  className="border border-red-900/55 bg-red-950/20 px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-red-300 components_admin_crafting_recipe_form_button_remove"
                 >
                   Remove
                 </button>
@@ -433,12 +417,10 @@ export function CraftingRecipeForm({
         </div>
       </div>
 
-      <div className="mt-5 flex justify-end border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-5">
+      <div className="mt-5 flex justify-end border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-5 components_admin_crafting_recipe_form_div_container_7">
         <button
           type="submit"
-          className={
-            buttonClass
-          }
+          className={[((buttonClass)), "components_admin_crafting_recipe_form_button_action"].filter(Boolean).join(" ")}
         >
           {submitLabel}
         </button>
@@ -455,8 +437,8 @@ function Field({
   children: React.ReactNode;
 }) {
   return (
-    <label className="block">
-      <span className="mb-2 block text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))]">
+    <label className="block components_admin_crafting_recipe_form_label_label">
+      <span className="mb-2 block text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))] components_admin_crafting_recipe_form_span_text">
         {label}
       </span>
 

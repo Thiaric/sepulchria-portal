@@ -284,7 +284,7 @@ function Badge({
   children: React.ReactNode;
 }) {
   return (
-    <span className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-17110d))] px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a88d67))]">
+    <span className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-17110d))] px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a88d67))] components_warping_shapes_catalogue_span_text">
       {children}
     </span>
   );
@@ -308,26 +308,26 @@ function ProfileCard({
     resolutionFor(shape, profile);
 
   return (
-    <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3">
-      <div className="flex flex-wrap items-start justify-between gap-2">
-        <div>
-          <p className="font-serif text-base text-[rgb(var(--sep-colour-dec89f))]">
+    <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3 components_warping_shapes_catalogue_div_container">
+      <div className="flex flex-wrap items-start justify-between gap-2 components_warping_shapes_catalogue_div_container_2">
+        <div className="components_warping_shapes_catalogue_div_container_3">
+          <p className="font-serif text-base text-[rgb(var(--sep-colour-dec89f))] components_warping_shapes_catalogue_p_text">
             {title}
           </p>
 
           {subtitle ? (
-            <p className="mt-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-776957))]">
+            <p className="mt-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-776957))] components_warping_shapes_catalogue_p_text_2">
               {subtitle}
             </p>
           ) : null}
         </div>
 
         <span
-          className={`border px-2 py-1 text-[7px] uppercase tracking-[0.12em] ${
+          className={[((`border px-2 py-1 text-[7px] uppercase tracking-[0.12em] ${
             resolution.mode === "automatic"
               ? "border-emerald-900/65 bg-emerald-950/20 text-emerald-400"
               : "border-[rgb(var(--sep-colour-8d6d3e))]/55 bg-[rgb(var(--sep-colour-21180f))] text-[rgb(var(--sep-colour-d3b278))]"
-          }`}
+          }`)), "components_warping_shapes_catalogue_span_text_2"].filter(Boolean).join(" ")}
         >
           {resolution.mode === "automatic"
             ? "Automatic"
@@ -336,12 +336,12 @@ function ProfileCard({
       </div>
 
       {resolution.mode === "save" ? (
-        <div className="mt-2 grid grid-cols-2 gap-1.5 sm:grid-cols-3">
-          <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-120e0b))] px-2.5 py-2">
-            <p className="text-[6px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-806a4c))]">
+        <div className="mt-2 grid grid-cols-2 gap-1.5 sm:grid-cols-3 components_warping_shapes_catalogue_div_container_4">
+          <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-120e0b))] px-2.5 py-2 components_warping_shapes_catalogue_div_container_5">
+            <p className="text-[6px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-806a4c))] components_warping_shapes_catalogue_p_text_3">
               DC
             </p>
-            <p className="mt-1 text-[8px] leading-4 text-[rgb(var(--sep-colour-b8a382))]">
+            <p className="mt-1 text-[8px] leading-4 text-[rgb(var(--sep-colour-b8a382))] components_warping_shapes_catalogue_p_text_4">
               11 +{" "}
               {resolution.dc
                 ? ATTRIBUTE_LABELS[resolution.dc] ??
@@ -350,11 +350,11 @@ function ProfileCard({
             </p>
           </div>
 
-          <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-120e0b))] px-2.5 py-2">
-            <p className="text-[6px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-806a4c))]">
+          <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-120e0b))] px-2.5 py-2 components_warping_shapes_catalogue_div_container_6">
+            <p className="text-[6px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-806a4c))] components_warping_shapes_catalogue_p_text_5">
               Saves
             </p>
-            <p className="mt-1 text-[8px] leading-4 text-[rgb(var(--sep-colour-b8a382))]">
+            <p className="mt-1 text-[8px] leading-4 text-[rgb(var(--sep-colour-b8a382))] components_warping_shapes_catalogue_p_text_6">
               {resolution.saves
                 .map(
                   (save: string) =>
@@ -364,11 +364,11 @@ function ProfileCard({
             </p>
           </div>
 
-          <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-120e0b))] px-2.5 py-2">
-            <p className="text-[6px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-806a4c))]">
+          <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-120e0b))] px-2.5 py-2 components_warping_shapes_catalogue_div_container_7">
+            <p className="text-[6px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-806a4c))] components_warping_shapes_catalogue_p_text_7">
               Success
             </p>
-            <p className="mt-1 text-[8px] leading-4 text-[rgb(var(--sep-colour-b8a382))]">
+            <p className="mt-1 text-[8px] leading-4 text-[rgb(var(--sep-colour-b8a382))] components_warping_shapes_catalogue_p_text_8">
               {resolution.saveResult === "half"
                 ? "Half damage only"
                 : "No effect"}
@@ -378,18 +378,18 @@ function ProfileCard({
       ) : null}
 
       {effects.length ? (
-        <div className="mt-2 flex flex-wrap gap-1.5">
+        <div className="mt-2 flex flex-wrap gap-1.5 components_warping_shapes_catalogue_div_container_8">
           {effects.map((effect, index) => (
             <span
               key={`${effect.label}-${index}`}
-              className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-17110d))] px-2 py-1 text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-a88d67))]"
+              className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-17110d))] px-2 py-1 text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-a88d67))] components_warping_shapes_catalogue_span_text_3"
             >
               {effect.label} · {effect.value}
             </span>
           ))}
         </div>
       ) : (
-        <p className="mt-2 text-[8px] italic leading-4 text-[rgb(var(--sep-colour-756957))]">
+        <p className="mt-2 text-[8px] italic leading-4 text-[rgb(var(--sep-colour-756957))] components_warping_shapes_catalogue_p_text_9">
           No mechanical effect configured.
         </p>
       )}
@@ -417,21 +417,21 @@ function ShapeArticle({
     <article
   id={`shape-${shape.id}`}
   data-sep-interactive-surface="card"
-  className={`min-h-[430px] scroll-mt-4 border bg-[rgb(var(--sep-colour-18110c))] p-4 transition-[border-color,box-shadow] duration-200 ${shapeSchoolBorderClass(
+  className={[((`min-h-[430px] scroll-mt-4 border bg-[rgb(var(--sep-colour-18110c))] p-4 transition-[border-color,box-shadow] duration-200 ${shapeSchoolBorderClass(
     shape.school,
-  )}`}
+  )}`)), "components_warping_shapes_catalogue_article_article"].filter(Boolean).join(" ")}
 >
-      <div className="flex gap-3">
+      <div className="flex gap-3 components_warping_shapes_catalogue_div_container_9">
         
 
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-start justify-between gap-2">
-            <div className="min-w-0">
-              <p className="font-serif text-base text-[rgb(var(--sep-colour-dec89f))]">
+        <div className="min-w-0 flex-1 components_warping_shapes_catalogue_div_container_10">
+          <div className="flex flex-wrap items-start justify-between gap-2 components_warping_shapes_catalogue_div_container_11">
+            <div className="min-w-0 components_warping_shapes_catalogue_div_container_12">
+              <p className="font-serif text-base text-[rgb(var(--sep-colour-dec89f))] components_warping_shapes_catalogue_p_text_10">
                 {shape.name}
               </p>
 
-              <p className="mt-1 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-776957))]">
+              <p className="mt-1 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-776957))] components_warping_shapes_catalogue_p_text_11">
                 Level {shape.level}
                 {" · "}
                 {pretty(shape.school)}
@@ -439,28 +439,28 @@ function ShapeArticle({
                 {shape.word_of_power}
               </p>
 
-              <p className="mt-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-9b815d))]">
+              <p className="mt-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-9b815d))] components_warping_shapes_catalogue_p_text_12">
                 {pretty(shape.movement)}
                 {" · "}
                 {durationLabel(shape)}
               </p>
             </div>
 
-            <div className="flex flex-wrap gap-1.5">
-              <span className="border border-[rgb(var(--sep-colour-8d6d3e))]/55 bg-[rgb(var(--sep-colour-21180f))] px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-d3b278))]">
+            <div className="flex flex-wrap gap-1.5 components_warping_shapes_catalogue_div_container_13">
+              <span className="border border-[rgb(var(--sep-colour-8d6d3e))]/55 bg-[rgb(var(--sep-colour-21180f))] px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-d3b278))] components_warping_shapes_catalogue_span_text_4">
                 Level {shape.level}
               </span>
 
-              <span className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-17110d))] px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a88d67))]">
+              <span className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-17110d))] px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a88d67))] components_warping_shapes_catalogue_span_text_5">
                 {pretty(shape.effect_nature)}
               </span>
 
-              <span className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-17110d))] px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a88d67))]">
+              <span className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-17110d))] px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a88d67))] components_warping_shapes_catalogue_span_text_6">
                 {targetLabel(shape)}
               </span>
 
               {shape.is_dispel ? (
-                <span className="border border-[rgb(var(--sep-colour-65456f))]/55 px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-bda0c7))]">
+                <span className="border border-[rgb(var(--sep-colour-65456f))]/55 px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-bda0c7))] components_warping_shapes_catalogue_span_text_7">
                   Dispel
                 </span>
               ) : null}
@@ -468,7 +468,7 @@ function ShapeArticle({
           </div>
 
           {shape.description?.trim() ? (
-            <p className="mt-2 whitespace-pre-wrap text-xs leading-5 text-[rgb(var(--sep-colour-9f927f))]">
+            <p className="mt-2 whitespace-pre-wrap text-xs leading-5 text-[rgb(var(--sep-colour-9f927f))] components_warping_shapes_catalogue_p_text_13">
               {shape.description}
             </p>
           ) : null}
@@ -479,12 +479,12 @@ function ShapeArticle({
             />
           ) : null}
 
-          <div className="mt-2 grid grid-cols-2 gap-1.5 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-2 sm:grid-cols-3">
-            <div className="min-w-0 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] px-2.5 py-2">
-              <p className="text-[6px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-806a4c))]">
+          <div className="mt-2 grid grid-cols-2 gap-1.5 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-2 sm:grid-cols-3 components_warping_shapes_catalogue_div_container_14">
+            <div className="min-w-0 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] px-2.5 py-2 components_warping_shapes_catalogue_div_container_15">
+              <p className="text-[6px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-806a4c))] components_warping_shapes_catalogue_p_text_14">
                 Words
               </p>
-              <p className="mt-1 break-words text-[8px] leading-4 text-[rgb(var(--sep-colour-b8a382))]">
+              <p className="mt-1 break-words text-[8px] leading-4 text-[rgb(var(--sep-colour-b8a382))] components_warping_shapes_catalogue_p_text_15">
                 {[
                   pretty(shape.essence_word),
                   pretty(shape.action_word),
@@ -493,25 +493,25 @@ function ShapeArticle({
               </p>
             </div>
 
-            <div className="min-w-0 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] px-2.5 py-2">
-              <p className="text-[6px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-806a4c))]">
+            <div className="min-w-0 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] px-2.5 py-2 components_warping_shapes_catalogue_div_container_16">
+              <p className="text-[6px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-806a4c))] components_warping_shapes_catalogue_p_text_16">
                 Components
               </p>
-              <p className="mt-1 break-words text-[8px] leading-4 text-[rgb(var(--sep-colour-b8a382))]">
+              <p className="mt-1 break-words text-[8px] leading-4 text-[rgb(var(--sep-colour-b8a382))] components_warping_shapes_catalogue_p_text_17">
                 {shape.requires_verbal ? "Verbal" : "No verbal"}
                 {" · "}
                 {shape.requires_movement ? "Movement" : "No movement"}
               </p>
             </div>
 
-            <div className="min-w-0 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] px-2.5 py-2">
-              <p className="text-[6px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-806a4c))]">
+            <div className="min-w-0 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] px-2.5 py-2 components_warping_shapes_catalogue_div_container_17">
+              <p className="text-[6px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-806a4c))] components_warping_shapes_catalogue_p_text_18">
                 Price
               </p>
-              <p className="mt-1 break-words text-[8px] leading-4 text-[rgb(var(--sep-colour-b8a382))]">
+              <p className="mt-1 break-words text-[8px] leading-4 text-[rgb(var(--sep-colour-b8a382))] components_warping_shapes_catalogue_p_text_19">
                 {shape.price_key ? (
                   <PriceTooltip priceKey={shape.price_key}>
-                    <span className="underline decoration-dotted underline-offset-2">
+                    <span className="underline decoration-dotted underline-offset-2 components_warping_shapes_catalogue_span_text_8">
                       {PRICE_LABELS[shape.price_key] ?? pretty(shape.price_key)}
                     </span>
                   </PriceTooltip>
@@ -522,12 +522,12 @@ function ShapeArticle({
             </div>
           </div>
 
-          <div className="mt-3 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-2.5">
-            <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))]">
+          <div className="mt-3 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-2.5 components_warping_shapes_catalogue_div_container_18">
+            <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))] components_warping_shapes_catalogue_p_text_20">
               Effects
             </p>
 
-            <div className="mt-2 grid gap-2">
+            <div className="mt-2 grid gap-2 components_warping_shapes_catalogue_div_container_19">
               {hasSelf ? (
                 <ProfileCard
                   shape={shape}
@@ -564,11 +564,11 @@ function ShapeArticle({
               ) : null}
 
               {shape.target_mode === "written" ? (
-                <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5">
-                  <p className="font-serif text-base text-[rgb(var(--sep-colour-dec89f))]">
+                <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 components_warping_shapes_catalogue_div_container_20">
+                  <p className="font-serif text-base text-[rgb(var(--sep-colour-dec89f))] components_warping_shapes_catalogue_p_text_21">
                     Written / Fate
                   </p>
-                  <p className="mt-1 text-[8px] leading-4 text-[rgb(var(--sep-colour-b8a382))]">
+                  <p className="mt-1 text-[8px] leading-4 text-[rgb(var(--sep-colour-b8a382))] components_warping_shapes_catalogue_p_text_22">
                     Resolved narratively through its Written / Fate target.
                   </p>
                 </div>
@@ -576,20 +576,20 @@ function ShapeArticle({
             </div>
           </div>
 
-          <div className="mt-3 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-2.5">
-            <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))]">
+          <div className="mt-3 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-2.5 components_warping_shapes_catalogue_div_container_21">
+            <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))] components_warping_shapes_catalogue_p_text_23">
               Requirements
             </p>
 
-            <div className="mt-2 flex flex-wrap gap-1.5">
-              <span className="border border-emerald-900/65 bg-emerald-950/20 px-2 py-1 text-[7px] uppercase tracking-[0.1em] text-emerald-400">
+            <div className="mt-2 flex flex-wrap gap-1.5 components_warping_shapes_catalogue_div_container_22">
+              <span className="border border-emerald-900/65 bg-emerald-950/20 px-2 py-1 text-[7px] uppercase tracking-[0.1em] text-emerald-400 components_warping_shapes_catalogue_span_text_9">
                 Affinity {shape.level}
               </span>
 
               {requirements.map((requirement) => (
                 <span
                   key={requirement}
-                  className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-17110d))] px-2 py-1 text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-a88d67))]"
+                  className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-17110d))] px-2 py-1 text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-a88d67))] components_warping_shapes_catalogue_span_text_10"
                 >
                   {requirement}
                 </span>
@@ -676,10 +676,10 @@ export function ShapesCatalogue({
 
   return (
     <>
-      <section className="mt-5 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-120e0b))] p-3 sm:p-4">
-        <div className="grid gap-2 lg:grid-cols-2 xl:grid-cols-[1.5fr_repeat(5,1fr)_auto]">
+      <section className="mt-5 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-120e0b))] p-3 sm:p-4 components_warping_shapes_catalogue_section_section">
+        <div className="grid gap-2 lg:grid-cols-2 xl:grid-cols-[1.5fr_repeat(5,1fr)_auto] components_warping_shapes_catalogue_div_container_23">
           <input
-            className={ctl}
+            className={[((ctl)), "components_warping_shapes_catalogue_input_search_name_word_description"].filter(Boolean).join(" ")}
             type="search"
             value={q}
             onChange={(event) => setQ(event.target.value)}
@@ -687,79 +687,79 @@ export function ShapesCatalogue({
           />
 
           <select
-            className={ctl}
+            className={[((ctl)), "components_warping_shapes_catalogue_select_select"].filter(Boolean).join(" ")}
             value={level}
             onChange={(event) =>
               setLevel(event.target.value)
             }
           >
-            <option value="">All Levels</option>
+            <option className="components_warping_shapes_catalogue_option_option" value="">All Levels</option>
             {Array.from(
               new Set(shapes.map((shape) => shape.level)),
             )
               .sort((a, b) => a - b)
               .map((value) => (
-                <option key={value} value={value}>
+                <option className="components_warping_shapes_catalogue_option_option_2" key={value} value={value}>
                   Level {value}
                 </option>
               ))}
           </select>
 
           <select
-            className={ctl}
+            className={[((ctl)), "components_warping_shapes_catalogue_select_select_2"].filter(Boolean).join(" ")}
             value={school}
             onChange={(event) =>
               setSchool(event.target.value)
             }
           >
-            <option value="">All Schools</option>
+            <option className="components_warping_shapes_catalogue_option_option_3" value="">All Schools</option>
             {schools.map((value) => (
-              <option key={value} value={value}>
+              <option className="components_warping_shapes_catalogue_option_option_4" key={value} value={value}>
                 {pretty(value)}
               </option>
             ))}
           </select>
 
           <select
-            className={ctl}
+            className={[((ctl)), "components_warping_shapes_catalogue_select_select_3"].filter(Boolean).join(" ")}
             value={movement}
             onChange={(event) =>
               setMovement(event.target.value)
             }
           >
-            <option value="">All Movements</option>
+            <option className="components_warping_shapes_catalogue_option_option_5" value="">All Movements</option>
             {movements.map((value) => (
-              <option key={value} value={value}>
+              <option className="components_warping_shapes_catalogue_option_option_6" key={value} value={value}>
                 {pretty(value)}
               </option>
             ))}
           </select>
 
           <select
-            className={ctl}
+            className={[((ctl)), "components_warping_shapes_catalogue_select_select_4"].filter(Boolean).join(" ")}
             value={target}
             onChange={(event) =>
               setTarget(event.target.value)
             }
           >
-            <option value="">All Targets</option>
-            <option value="self">Self</option>
-            <option value="other">Other</option>
-            <option value="either">Either</option>
-            <option value="written">Written / Fate</option>
+            <option className="components_warping_shapes_catalogue_option_option_7" value="">All Targets</option>
+            <option className="components_warping_shapes_catalogue_option_self" value="self">Self</option>
+            <option className="components_warping_shapes_catalogue_option_other" value="other">Other</option>
+            <option className="components_warping_shapes_catalogue_option_either" value="either">Either</option>
+            <option className="components_warping_shapes_catalogue_option_written" value="written">Written / Fate</option>
           </select>
 
           <select
-            className={ctl}
+            className={[((ctl)), "components_warping_shapes_catalogue_select_select_5"].filter(Boolean).join(" ")}
             value={nature}
             onChange={(event) =>
               setNature(event.target.value)
             }
           >
-            <option value="">All Natures</option>
-            <option value="beneficial">Beneficial</option>
-            <option value="harmful">Harmful</option>
-            <option value="mixed">Mixed</option>
+            <option className="components_warping_shapes_catalogue_option_option_8" value="">All Natures</option>
+            <option className="components_warping_shapes_catalogue_option_beneficial" value="beneficial">Beneficial</option>
+            <option className="components_warping_shapes_catalogue_option_harmful" value="harmful">Harmful</option>
+            <option className="components_warping_shapes_catalogue_option_mixed" value="mixed">Mixed</option>
           </select>
 
           <button
@@ -772,24 +772,24 @@ export function ShapesCatalogue({
               setTarget("");
               setNature("");
             }}
-            className="border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-21180f))] px-4 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-c8aa7b))] transition hover:border-[rgb(var(--sep-colour-9b7446))]/70"
+            className="border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-21180f))] px-4 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-c8aa7b))] transition hover:border-[rgb(var(--sep-colour-9b7446))]/70 components_warping_shapes_catalogue_button_reset"
           >
             Reset
           </button>
         </div>
 
-        <div className="mt-3 flex items-center justify-between gap-3 border-t border-[rgb(var(--sep-colour-59432c))]/20 pt-3">
-          <p className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6353))]">
+        <div className="mt-3 flex items-center justify-between gap-3 border-t border-[rgb(var(--sep-colour-59432c))]/20 pt-3 components_warping_shapes_catalogue_div_container_24">
+          <p className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6353))] components_warping_shapes_catalogue_p_text_24">
             Live Filtering
           </p>
 
-          <p className="shrink-0 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9a7c54))]">
+          <p className="shrink-0 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9a7c54))] components_warping_shapes_catalogue_p_text_25">
             {filtered.length} / {shapes.length}
           </p>
         </div>
       </section>
 
-      <section className="mt-3 grid grid-cols-[repeat(auto-fit,minmax(380px,1fr))] items-start gap-3">
+      <section className="mt-3 grid grid-cols-[repeat(auto-fit,minmax(380px,1fr))] items-start gap-3 components_warping_shapes_catalogue_section_section_2">
         {filtered.map((shape) => (
           <ShapeArticle
             key={shape.id}
@@ -798,7 +798,7 @@ export function ShapesCatalogue({
         ))}
 
         {!filtered.length ? (
-          <p className="rounded-lg border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))] p-5 text-[11px] text-[rgb(var(--sep-colour-8f8271))]">
+          <p className="rounded-lg border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))] p-5 text-[11px] text-[rgb(var(--sep-colour-8f8271))] components_warping_shapes_catalogue_p_text_26">
             No Shapes match these filters.
           </p>
         ) : null}

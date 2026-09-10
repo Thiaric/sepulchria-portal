@@ -66,7 +66,7 @@ export function HomepagePublicModal({
   return (
     <div
       data-public-skin-surface="true"
-      className="fixed inset-0 z-[9990] flex items-center justify-center p-2 sm:p-5"
+      className="fixed inset-0 z-[9990] flex items-center justify-center p-2 sm:p-5 components_homepage_homepage_public_modal_div_dialog"
       role="dialog"
       aria-modal="true"
       aria-label={modal.title}
@@ -75,17 +75,17 @@ export function HomepagePublicModal({
         type="button"
         aria-label={`Close ${modal.title}`}
         onClick={onClose}
-        className="absolute inset-0 bg-[rgb(var(--sep-colour-050403))]/85 backdrop-blur-[2px]"
+        className="absolute inset-0 bg-[rgb(var(--sep-colour-050403))]/85 backdrop-blur-[2px] components_homepage_homepage_public_modal_button_close"
       />
 
-      <section className="relative z-10 flex h-[92dvh] w-[96vw] max-w-[1280px] flex-col overflow-hidden border border-[rgb(var(--sep-colour-795a34))]/70 bg-[rgb(var(--sep-colour-0d0907))] shadow-[0_30px_100px_rgba(var(--sep-rgb-0-0-0),0.88)] sm:h-[88dvh] sm:w-[92vw]">
-        <div className="flex shrink-0 items-center justify-between gap-4 border-b border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-120d0a))] px-4 py-3 sm:px-5">
-          <div className="min-w-0">
-            <p className="text-[7px] uppercase tracking-[0.26em] text-[rgb(var(--sep-colour-80684c))]">
+      <section className="relative z-10 flex h-[92dvh] w-[96vw] max-w-[1280px] flex-col overflow-hidden border border-[rgb(var(--sep-colour-795a34))]/70 bg-[rgb(var(--sep-colour-0d0907))] shadow-[0_30px_100px_rgba(var(--sep-rgb-0-0-0),0.88)] sm:h-[88dvh] sm:w-[92vw] components_homepage_homepage_public_modal_section_section">
+        <div className="flex shrink-0 items-center justify-between gap-4 border-b border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-120d0a))] px-4 py-3 sm:px-5 components_homepage_homepage_public_modal_div_container">
+          <div className="min-w-0 components_homepage_homepage_public_modal_div_container_2">
+            <p className="text-[7px] uppercase tracking-[0.26em] text-[rgb(var(--sep-colour-80684c))] components_homepage_homepage_public_modal_p_text">
               Sepulchria
             </p>
 
-            <h2 className="truncate font-serif text-lg text-[rgb(var(--sep-colour-e0c99e))] sm:text-xl">
+            <h2 className="truncate font-serif text-lg text-[rgb(var(--sep-colour-e0c99e))] sm:text-xl components_homepage_homepage_public_modal_h2_heading">
               {modal.title}
             </h2>
           </div>
@@ -94,7 +94,7 @@ export function HomepagePublicModal({
             type="button"
             onClick={onClose}
             aria-label={`Close ${modal.title}`}
-            className="flex h-9 w-9 shrink-0 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-17110d))] text-lg text-[rgb(var(--sep-colour-bda57f))] transition hover:border-[rgb(var(--sep-colour-9b7443))] hover:text-[rgb(var(--sep-colour-f1d7a5))]"
+            className="flex h-9 w-9 shrink-0 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-17110d))] text-lg text-[rgb(var(--sep-colour-bda57f))] transition hover:border-[rgb(var(--sep-colour-9b7443))] hover:text-[rgb(var(--sep-colour-f1d7a5))] components_homepage_homepage_public_modal_button_close_2"
           >
             ×
           </button>

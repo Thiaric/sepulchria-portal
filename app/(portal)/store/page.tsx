@@ -344,24 +344,24 @@ export default async function StorePage() {
   return (
     <main
       data-store-page
-      className="flex h-full min-h-0 w-full flex-col p-2 sm:p-5"
+      className="flex h-full min-h-0 w-full flex-col p-2 sm:p-5 store_page_main_main"
     >
-      <section className="flex min-h-0 flex-1 flex-col overflow-hidden border border-[rgb(var(--sep-colour-58432d))]/45 bg-[rgb(var(--sep-colour-15100d))]/82 shadow-[0_10px_26px_rgba(var(--sep-rgb-0-0-0),0.2)]">
-        <header className="shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-211a14))] px-4 py-4 sm:px-5">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
-            <div className="min-w-0 flex-1">
-              <div className="mt-1 flex items-center justify-between gap-3">
-                <h1 className="font-serif text-2xl text-[rgb(var(--sep-skin-c2))] sm:text-3xl">
+      <section className="flex min-h-0 flex-1 flex-col overflow-hidden border border-[rgb(var(--sep-colour-58432d))]/45 bg-[rgb(var(--sep-colour-15100d))]/82 shadow-[0_10px_26px_rgba(var(--sep-rgb-0-0-0),0.2)] store_page_section_section">
+        <header className="shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-211a14))] px-4 py-4 sm:px-5 store_page_header_header">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end store_page_div_container">
+            <div className="min-w-0 flex-1 store_page_div_container_2">
+              <div className="mt-1 flex items-center justify-between gap-3 store_page_div_sepulchria_s_store">
+                <h1 className="font-serif text-2xl text-[rgb(var(--sep-skin-c2))] sm:text-3xl store_page_h1_sepulchria_s_store">
                   Sepulchria's Store
                 </h1>
 
-                <details className="relative sm:hidden">
-                  <summary className="cursor-pointer list-none whitespace-nowrap text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-c69b5c))] [&::-webkit-details-marker]:hidden">
+                <details className="relative sm:hidden store_page_details_more">
+                  <summary className="cursor-pointer list-none whitespace-nowrap text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-c69b5c))] [&::-webkit-details-marker]:hidden store_page_summary_more">
                     More ▼
                   </summary>
 
-                  <div className="absolute right-0 top-full z-30 mt-2 w-[280px] max-w-[80vw] border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] p-3 shadow-xl">
-                    <p className="text-[10px] leading-5 text-[rgb(var(--sep-colour-a99b89))]">
+                  <div className="absolute right-0 top-full z-30 mt-2 w-[280px] max-w-[80vw] border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] p-3 shadow-xl store_page_div_more">
+                    <p className="text-[10px] leading-5 text-[rgb(var(--sep-colour-a99b89))] store_page_p_more">
                       Unlock Portal Skins, Cosmetic frames and backgrounds, Locations&apos; Musics, Friend List access, Private Locations
                       and curated bundles using real money or Remnants. Refunds are available on request within 14 days of purchase only for real currency purchases (Support - New Ticket - Premium / Support - quote Order Number found on Receipt in Store). Refunds are not available for Remnant purchases.
                     </p>
@@ -369,54 +369,54 @@ export default async function StorePage() {
                 </details>
               </div>
 
-              <p className="mt-2 hidden max-w-none text-[11px] leading-5 text-[rgb(var(--sep-colour-a99b89))] sm:block">
+              <p className="mt-2 hidden max-w-none text-[11px] leading-5 text-[rgb(var(--sep-colour-a99b89))] sm:block store_page_p_text">
                 Unlock Portal Skins, Cosmetic frames and backgrounds, Locations&apos; Musics, Friend List access, Private Locations
                 and curated bundles using real money or Remnants. Refunds are available on request within 14 days of purchase only for real currency purchases (Support - New Ticket - Premium / Support - quote Order Number found on Receipt in Store). Refunds are not available for Remnant purchases.
               </p>
             </div>
 
-            <div className="hidden border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 sm:block sm:w-auto sm:shrink-0">
-              <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))]">
+            <div className="hidden border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 sm:block sm:w-auto sm:shrink-0 store_page_div_container_3">
+              <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))] store_page_p_text_2">
                 Discount codes
               </p>
 
-              <p className="mt-1 text-[9px] text-[rgb(var(--sep-colour-a99b89))]">
+              <p className="mt-1 text-[9px] text-[rgb(var(--sep-colour-a99b89))] store_page_p_text_3">
                 are applied during checkout
               </p>
             </div>
           </div>
 
-          <div className="mt-3 grid grid-cols-[0.85fr_1.35fr] gap-2 sm:hidden">
-            <div className="flex min-w-0 flex-col justify-center border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2">
-              <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))]">
+          <div className="mt-3 grid grid-cols-[0.85fr_1.35fr] gap-2 sm:hidden store_page_div_container_4">
+            <div className="flex min-w-0 flex-col justify-center border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 store_page_div_container_5">
+              <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))] store_page_p_text_4">
                 Discount codes
               </p>
 
-              <p className="mt-1 text-[8px] leading-4 text-[rgb(var(--sep-colour-a99b89))]">
+              <p className="mt-1 text-[8px] leading-4 text-[rgb(var(--sep-colour-a99b89))] store_page_p_text_5">
                 Applied at checkout
               </p>
             </div>
 
-            <div className="min-w-0">
+            <div className="min-w-0 store_page_div_container_6">
               <StoreLiveFilterBar />
             </div>
           </div>
 
-          <div className="mt-4 hidden sm:block">
+          <div className="mt-4 hidden sm:block store_page_div_container_7">
             <StoreLiveFilterBar />
           </div>
         </header>
 
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-2 sm:p-5">
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-2 sm:p-5 store_page_div_container_8">
           <StoreAccountPanels userId={user.id} />
 
           {featured.length > 0 ? (
-            <section>
-              <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-8c704b))]">
+            <section className="store_page_section_section_2">
+              <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-8c704b))] store_page_p_text_6">
                 Featured
               </p>
 
-              <div className="mt-3 grid gap-3 md:grid-cols-2">
+              <div className="mt-3 grid gap-3 md:grid-cols-2 store_page_div_container_9">
                 {featured.map((product) => (
                   <StoreProductCard
                     key={`featured-${product.id}`}
@@ -444,22 +444,22 @@ export default async function StorePage() {
             </section>
           ) : null}
 
-          <section className={featured.length ? "mt-6" : ""}>
-            <div className="flex flex-wrap items-end justify-between gap-3">
-              <div>
+          <section className={[((featured.length ? "mt-6" : "")), "store_page_section_section_3"].filter(Boolean).join(" ")}>
+            <div className="flex flex-wrap items-end justify-between gap-3 store_page_div_container_10">
+              <div className="store_page_div_available_store">
                 
-                <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+                <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] store_page_h2_available_store">
                   Available in the Store
                 </h2>
               </div>
 
-              <span className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
+              <span className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))] store_page_span_text">
                 {products.length} product{products.length === 1 ? "" : "s"}
               </span>
             </div>
 
             {products.length ? (
-              <div className="mt-3 grid gap-3 sm:grid-cols-2 2xl:grid-cols-3">
+              <div className="mt-3 grid gap-3 sm:grid-cols-2 2xl:grid-cols-3 store_page_div_container_11">
                 {products.map((product) => (
                   <StoreProductCard
                     key={product.id}
@@ -484,8 +484,8 @@ export default async function StorePage() {
                 ))}
               </div>
             ) : (
-              <div className="mt-4 border border-dashed border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] p-8 text-center">
-                <p className="font-serif text-lg text-[rgb(var(--sep-colour-a9987e))]">
+              <div className="mt-4 border border-dashed border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] p-8 text-center store_page_div_container_12">
+                <p className="font-serif text-lg text-[rgb(var(--sep-colour-a9987e))] store_page_p_text_7">
                   The Store has no active products yet.
                 </p>
               </div>
@@ -665,18 +665,18 @@ function StoreProductCard({
       data-store-filter-card
       data-store-name={product.name}
       data-store-category={product.category}
-      className={[
+      className={[(([
         "group flex h-full min-h-[290px] min-w-0 flex-col overflow-hidden border bg-[rgb(var(--sep-colour-100c09))]",
         featured
           ? "border-[rgb(var(--sep-colour-987344))]/70"
           : "border-[rgb(var(--sep-colour-60482e))]/40",
-      ].join(" ")}
+      ].join(" "))), "store_page_article_article"].filter(Boolean).join(" ")}
     >
-      <div className="relative h-36 shrink-0 overflow-hidden border-b border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-0d0b0a))]">
+      <div className="relative h-36 shrink-0 overflow-hidden border-b border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-0d0b0a))] store_page_div_container_13">
   {skin ? (
     <StoreSkinMiniPreview skin={skin} />
   ) : product.category === "music" && musicPreviewUrl ? (
-    <div className="flex h-full w-full items-center justify-center p-3">
+    <div className="flex h-full w-full items-center justify-center p-3 store_page_div_container_14">
       <StoreMusicPreview
         src={musicPreviewUrl}
         title={musicPreviewName}
@@ -687,45 +687,45 @@ function StoreProductCard({
     <img
       src={product.image_url}
       alt=""
-      className="h-full w-full object-contain p-3 opacity-80 transition group-hover:opacity-100"
+      className="h-full w-full object-contain p-3 opacity-80 transition group-hover:opacity-100 store_page_img_image"
     />
   ) : (
-    <div className="flex h-full items-center justify-center">
-      <span className="font-serif text-4xl text-[rgb(var(--sep-colour-4e402f))]">
+    <div className="flex h-full items-center justify-center store_page_div_container_15">
+      <span className="font-serif text-4xl text-[rgb(var(--sep-colour-4e402f))] store_page_span_text_2">
         ◇
       </span>
     </div>
   )}
 
   {product.category !== "music" ? (
-    <div className="absolute inset-0 bg-gradient-to-t from-[rgb(var(--sep-colour-100c09))] via-transparent to-transparent" />
+    <div className="absolute inset-0 bg-gradient-to-t from-[rgb(var(--sep-colour-100c09))] via-transparent to-transparent store_page_div_container_16" />
   ) : null}
 
-  <div className="absolute left-3 top-3 flex flex-wrap gap-2">
-    <span className="border border-[rgb(var(--sep-colour-80613b))]/60 bg-[rgb(var(--sep-colour-100c09))]/90 px-2 py-1 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-c6a979))]">
+  <div className="absolute left-3 top-3 flex flex-wrap gap-2 store_page_div_container_17">
+    <span className="border border-[rgb(var(--sep-colour-80613b))]/60 bg-[rgb(var(--sep-colour-100c09))]/90 px-2 py-1 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-c6a979))] store_page_span_text_3">
       {CATEGORY_LABELS[product.category]}
     </span>
 
     {product.product_type === "bundle" ? (
-      <span className="border border-[rgb(var(--sep-colour-80613b))]/60 bg-[rgb(var(--sep-colour-100c09))]/90 px-2 py-1 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-c6a979))]">
+      <span className="border border-[rgb(var(--sep-colour-80613b))]/60 bg-[rgb(var(--sep-colour-100c09))]/90 px-2 py-1 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-c6a979))] store_page_span_text_4">
         Bundle
       </span>
     ) : null}
   </div>
 
   {owned ? (
-    <span className="absolute right-3 top-3 border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-332719))] px-2 py-1 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd9aa))]">
+    <span className="absolute right-3 top-3 border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-332719))] px-2 py-1 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd9aa))] store_page_span_text_5">
       Owned
     </span>
   ) : null}
 </div>
 
-      <div className="flex flex-1 flex-col p-4">
-        <h3 className="font-serif text-xl text-[rgb(var(--sep-colour-dec79d))]">
+      <div className="flex flex-1 flex-col p-4 store_page_div_container_18">
+        <h3 className="font-serif text-xl text-[rgb(var(--sep-colour-dec79d))] store_page_h3_heading">
           {product.name}
         </h3>
 
-        <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+        <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-8f8271))] store_page_p_text_8">
           {product.description ||
             "A premium unlock from the Sepulchria Store."}
         </p>
@@ -733,38 +733,38 @@ function StoreProductCard({
         
 
         {grantLabels.length ? (
-          <div className="mt-3 border-t border-[rgb(var(--sep-colour-60482e))]/25 pt-3">
-            <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-756958))]">
+          <div className="mt-3 border-t border-[rgb(var(--sep-colour-60482e))]/25 pt-3 store_page_div_container_19">
+            <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-756958))] store_page_p_text_9">
               Includes
             </p>
 
-            <p className="mt-1 text-[9px] leading-4 text-[rgb(var(--sep-colour-a99b89))]">
+            <p className="mt-1 text-[9px] leading-4 text-[rgb(var(--sep-colour-a99b89))] store_page_p_text_10">
               {grantLabels.join(" · ")}
             </p>
           </div>
         ) : null}
 
-        <div className="mt-auto pt-4">
+        <div className="mt-auto pt-4 store_page_div_container_20">
 
           {isPartiallyOwnedBundle && moneyPrices[0] ? (
 
-            <div className="mb-2 border border-[rgb(var(--sep-colour-80613b))]/45 bg-[rgb(var(--sep-colour-17120f))] px-3 py-2">
+            <div className="mb-2 border border-[rgb(var(--sep-colour-80613b))]/45 bg-[rgb(var(--sep-colour-17120f))] px-3 py-2 store_page_div_container_21">
 
-              <p className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-c6a979))]">
+              <p className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-c6a979))] store_page_p_text_11">
 
                 Bundle ownership discount · {ownedGrantCount}/{totalGrantCount} already owned · {bundleOwnershipDiscountLabel}% off
 
               </p>
 
-              <p className="mt-1 text-[10px] text-[rgb(var(--sep-colour-d7c4a5))]">
+              <p className="mt-1 text-[10px] text-[rgb(var(--sep-colour-d7c4a5))] store_page_p_text_12">
 
-                <span className="mr-2 text-[rgb(var(--sep-colour-756958))] line-through">
+                <span className="mr-2 text-[rgb(var(--sep-colour-756958))] line-through store_page_span_text_6">
 
                   {moneyPrices[0].originalLabel}
 
                 </span>
 
-                <span className="font-semibold text-[rgb(var(--sep-colour-efd9aa))]">
+                <span className="font-semibold text-[rgb(var(--sep-colour-efd9aa))] store_page_span_text_7">
 
                   {moneyPrices[0].label}
 
@@ -781,7 +781,7 @@ function StoreProductCard({
             <button
   type="button"
   disabled
-  className="mt-0 w-full cursor-default border border-emerald-600/70 bg-emerald-950/60 px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-emerald-300"
+  className="mt-0 w-full cursor-default border border-emerald-600/70 bg-emerald-950/60 px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-emerald-300 store_page_button_owned"
 >
   Owned
 </button>
@@ -817,31 +817,31 @@ function StoreSkinMiniPreview({ skin }: { skin: Skin }) {
   return (
     <div
       data-portal-skin={skin.slug}
-      className="portal-skin-scope flex h-full w-full items-center justify-center p-3"
+      className="portal-skin-scope flex h-full w-full items-center justify-center p-3 store_page_div_container_22"
     >
       <div
-        className="flex h-full w-full flex-col border p-3"
+        className="flex h-full w-full flex-col border p-3 store_page_div_container_23"
         style={{
           background: "rgb(var(--sep-colour-120f0d))",
           borderColor: "rgb(var(--sep-skin-c1) / .48)",
           color: "rgb(var(--sep-skin-c2))",
         }}
       >
-        <div className="flex items-start justify-between gap-2">
-          <p className="font-serif text-base" style={{ color: "rgb(var(--sep-skin-c1))" }}>
+        <div className="flex items-start justify-between gap-2 store_page_div_container_24">
+          <p className="font-serif text-base store_page_p_text_13" style={{ color: "rgb(var(--sep-skin-c1))" }}>
             {skin.name}
           </p>
           <div
-            className="h-7 w-7 shrink-0 rounded-full"
+            className="h-7 w-7 shrink-0 rounded-full store_page_div_container_25"
             style={{
               background: "conic-gradient(from -90deg, rgb(var(--sep-colour-120f0d)) 0deg 120deg, rgb(var(--sep-skin-c1)) 120deg 240deg, rgb(var(--sep-skin-c2)) 240deg 360deg)",
               border: "1px solid rgb(var(--sep-skin-c1) / .60)",
             }}
           />
         </div>
-        <p className="mt-2 line-clamp-2 text-[9px] leading-4">{skin.description}</p>
+        <p className="mt-2 line-clamp-2 text-[9px] leading-4 store_page_p_text_14">{skin.description}</p>
         <div
-          className="mt-auto pt-2 text-[7px] uppercase tracking-[0.14em]"
+          className="mt-auto pt-2 text-[7px] uppercase tracking-[0.14em] store_page_div_container_26"
           style={{
             borderTop: "1px solid rgb(var(--sep-skin-c1) / .28)",
             color: "rgb(var(--sep-skin-c1))",

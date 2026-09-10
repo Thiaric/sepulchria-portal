@@ -314,15 +314,15 @@ export function AtmosphericOverlay() {
 
   return (
     <div
-      className="pointer-events-none absolute inset-0 z-[5] overflow-hidden"
+      className="pointer-events-none absolute inset-0 z-[5] overflow-hidden components_world_atmospheric_image_div_container"
       aria-hidden="true"
     >
       
 
       {fog ? (
         <>
-          <div className="sep-fog" />
-          <div className="sep-fog sep-fog-b" />
+          <div className="sep-fog components_world_atmospheric_image_div_container_2" />
+          <div className="sep-fog sep-fog-b components_world_atmospheric_image_div_container_3" />
         </>
       ) : null}
 
@@ -511,8 +511,8 @@ export function AtmosphericOverlay() {
       {/* STORM */}
       {weather === "storm" ? (
         <>
-          <div className="sep-storm-darkening" />
-          <div className="sep-lightning" />
+          <div className="sep-storm-darkening components_world_atmospheric_image_div_container_4" />
+          <div className="sep-lightning components_world_atmospheric_image_div_container_5" />
         </>
       ) : null}
 

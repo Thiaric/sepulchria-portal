@@ -1459,7 +1459,7 @@ function addSpellingWordToDictionary() {
   return (
     <div
       ref={editorWrapperRef}
-      className={`relative overflow-visible border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] ${fullscreen ? "fixed inset-3 z-[9998] flex flex-col" : ""}`}
+      className={[((`relative overflow-visible border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] ${fullscreen ? "fixed inset-3 z-[9998] flex flex-col" : ""}`)), "components_editor_rich_text_editor_div_container"].filter(Boolean).join(" ")}
     >
       <style jsx global>{`
         ::highlight(sepulchria-spelling-error) {
@@ -1472,10 +1472,10 @@ function addSpellingWordToDictionary() {
 }
       `}</style>
       <div
-        className="sticky top-0 z-40 border-b border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] shadow-[0_5px_12px_rgba(var(--sep-rgb-0-0-0),0.28)] sm:hidden"
+        className="sticky top-0 z-40 border-b border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] shadow-[0_5px_12px_rgba(var(--sep-rgb-0-0-0),0.28)] sm:hidden components_editor_rich_text_editor_div_container_2"
         style={{ isolation: "isolate" }}
       >
-        <div className="flex items-center gap-1 overflow-x-auto p-1.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="flex items-center gap-1 overflow-x-auto p-1.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden components_editor_rich_text_editor_div_container_3">
           <ToolbarButton
             label="B"
             title="Bold"
@@ -1508,13 +1508,13 @@ function addSpellingWordToDictionary() {
               );
               event.currentTarget.value = "p";
             }}
-            className="h-8 w-[104px] shrink-0 border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] px-1.5 text-[9px] text-[rgb(var(--sep-colour-cbb28a))] outline-none"
+            className="h-8 w-[104px] shrink-0 border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] px-1.5 text-[9px] text-[rgb(var(--sep-colour-cbb28a))] outline-none components_editor_rich_text_editor_select_paragraph_style"
           >
-            <option value="p">Paragraph</option>
-            <option value="h1">Title</option>
-            <option value="h2">Heading</option>
-            <option value="h3">Subheading</option>
-            <option value="blockquote">Quote</option>
+            <option className="components_editor_rich_text_editor_option_p" value="p">Paragraph</option>
+            <option className="components_editor_rich_text_editor_option_h1" value="h1">Title</option>
+            <option className="components_editor_rich_text_editor_option_h2" value="h2">Heading</option>
+            <option className="components_editor_rich_text_editor_option_h3" value="h3">Subheading</option>
+            <option className="components_editor_rich_text_editor_option_blockquote" value="blockquote">Quote</option>
           </select>
 
           <ToolbarButton
@@ -1552,7 +1552,7 @@ function addSpellingWordToDictionary() {
                 (current) => !current,
               )
             }
-            className="h-8 shrink-0 border border-[rgb(var(--sep-colour-7c603b))]/65 bg-[rgb(var(--sep-colour-21170f))] px-2.5 text-[9px] uppercase tracking-[0.08em] text-[rgb(var(--sep-colour-d8bd8e))]"
+            className="h-8 shrink-0 border border-[rgb(var(--sep-colour-7c603b))]/65 bg-[rgb(var(--sep-colour-21170f))] px-2.5 text-[9px] uppercase tracking-[0.08em] text-[rgb(var(--sep-colour-d8bd8e))] components_editor_rich_text_editor_button_action"
           >
             {mobileToolbarExpanded
               ? "Less"
@@ -1561,7 +1561,7 @@ function addSpellingWordToDictionary() {
         </div>
 
         {mobileToolbarExpanded ? (
-          <div className="grid max-h-[36dvh] grid-cols-4 gap-1.5 overflow-y-auto border-t border-[rgb(var(--sep-colour-59432c))]/35 p-1.5">
+          <div className="grid max-h-[36dvh] grid-cols-4 gap-1.5 overflow-y-auto border-t border-[rgb(var(--sep-colour-59432c))]/35 p-1.5 components_editor_rich_text_editor_div_colour">
             <ToolbarButton
               label="S"
               title="Strikethrough"
@@ -1587,12 +1587,12 @@ function addSpellingWordToDictionary() {
                 }
                 event.currentTarget.value = "";
               }}
-              className="col-span-2 h-8 min-w-0 border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] px-1.5 text-[9px] text-[rgb(var(--sep-colour-cbb28a))] outline-none"
+              className="col-span-2 h-8 min-w-0 border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] px-1.5 text-[9px] text-[rgb(var(--sep-colour-cbb28a))] outline-none components_editor_rich_text_editor_select_font_family"
             >
-              <option value="">Font</option>
+              <option className="components_editor_rich_text_editor_option_font_family" value="">Font</option>
               {FONT_FAMILIES.map(
                 (font) => (
-                  <option
+                  <option className="components_editor_rich_text_editor_option_option"
                     key={font}
                     value={font}
                   >
@@ -1621,12 +1621,12 @@ function addSpellingWordToDictionary() {
 
                 event.currentTarget.value = "";
               }}
-              className="h-8 min-w-0 border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] px-1 text-[9px] text-[rgb(var(--sep-colour-cbb28a))] outline-none"
+              className="h-8 min-w-0 border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] px-1 text-[9px] text-[rgb(var(--sep-colour-cbb28a))] outline-none components_editor_rich_text_editor_select_font_size"
             >
-              <option value="">Size</option>
+              <option className="components_editor_rich_text_editor_option_font_size" value="">Size</option>
               {FONT_SIZES.map(
                 (size) => (
-                  <option
+                  <option className="components_editor_rich_text_editor_option_option_2"
                     key={size}
                     value={size}
                   >
@@ -1641,7 +1641,7 @@ function addSpellingWordToDictionary() {
               onMouseDown={() =>
                 rememberColourSelection()
               }
-              className="relative flex h-8 cursor-pointer items-center justify-center border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] text-[8px] uppercase text-[rgb(var(--sep-colour-cbb28a))]"
+              className="relative flex h-8 cursor-pointer items-center justify-center border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] text-[8px] uppercase text-[rgb(var(--sep-colour-cbb28a))] components_editor_rich_text_editor_label_text_colour"
             >
               Colour
               <input
@@ -1655,7 +1655,7 @@ function addSpellingWordToDictionary() {
                     event.target.value,
                   )
                 }
-                className="absolute inset-0 cursor-pointer opacity-0"
+                className="absolute inset-0 cursor-pointer opacity-0 components_editor_rich_text_editor_input_text_colour"
               />
             </label>
 
@@ -1664,7 +1664,7 @@ function addSpellingWordToDictionary() {
               onMouseDown={() =>
                 rememberColourSelection()
               }
-              className="relative flex h-8 cursor-pointer items-center justify-center border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] text-[8px] uppercase text-[rgb(var(--sep-colour-cbb28a))]"
+              className="relative flex h-8 cursor-pointer items-center justify-center border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] text-[8px] uppercase text-[rgb(var(--sep-colour-cbb28a))] components_editor_rich_text_editor_label_highlight_colour"
             >
               Highlight
               <input
@@ -1678,7 +1678,7 @@ function addSpellingWordToDictionary() {
                     event.target.value,
                   )
                 }
-                className="absolute inset-0 cursor-pointer opacity-0"
+                className="absolute inset-0 cursor-pointer opacity-0 components_editor_rich_text_editor_input_highlight_colour"
               />
             </label>
 
@@ -1795,28 +1795,28 @@ function addSpellingWordToDictionary() {
                 }
                 event.currentTarget.value = "";
               }}
-              className="col-span-2 h-8 min-w-0 border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] px-1 text-[9px] text-[rgb(var(--sep-colour-cbb28a))] outline-none"
+              className="col-span-2 h-8 min-w-0 border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] px-1 text-[9px] text-[rgb(var(--sep-colour-cbb28a))] outline-none components_editor_rich_text_editor_select_line_height"
             >
-              <option value="">
+              <option className="components_editor_rich_text_editor_option_line_height" value="">
                 Line height
               </option>
-              <option value="default">
+              <option className="components_editor_rich_text_editor_option_default" value="default">
                 Default
               </option>
-              <option value="1">1.0</option>
-              <option value="1.15">
+              <option className="components_editor_rich_text_editor_option_1" value="1">1.0</option>
+              <option className="components_editor_rich_text_editor_option_1_15" value="1.15">
                 1.15
               </option>
-              <option value="1.3">
+              <option className="components_editor_rich_text_editor_option_1_3" value="1.3">
                 1.3
               </option>
-              <option value="1.5">
+              <option className="components_editor_rich_text_editor_option_1_5" value="1.5">
                 1.5
               </option>
-              <option value="1.75">
+              <option className="components_editor_rich_text_editor_option_1_75" value="1.75">
                 1.75
               </option>
-              <option value="2">2.0</option>
+              <option className="components_editor_rich_text_editor_option_2" value="2">2.0</option>
             </select>
 
             <select
@@ -1835,25 +1835,25 @@ function addSpellingWordToDictionary() {
                 }
                 event.currentTarget.value = "";
               }}
-              className="col-span-2 h-8 min-w-0 border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] px-1 text-[9px] text-[rgb(var(--sep-colour-cbb28a))] outline-none"
+              className="col-span-2 h-8 min-w-0 border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] px-1 text-[9px] text-[rgb(var(--sep-colour-cbb28a))] outline-none components_editor_rich_text_editor_select_paragraph_spacing"
             >
-              <option value="">
+              <option className="components_editor_rich_text_editor_option_paragraph_spacing" value="">
                 Paragraph spacing
               </option>
-              <option value="default">
+              <option className="components_editor_rich_text_editor_option_default_2" value="default">
                 Default
               </option>
-              <option value="0">None</option>
-              <option value="0.35em">
+              <option className="components_editor_rich_text_editor_option_0" value="0">None</option>
+              <option className="components_editor_rich_text_editor_option_0_35em" value="0.35em">
                 Small
               </option>
-              <option value="0.75em">
+              <option className="components_editor_rich_text_editor_option_0_75em" value="0.75em">
                 Normal
               </option>
-              <option value="1.25em">
+              <option className="components_editor_rich_text_editor_option_1_25em" value="1.25em">
                 Large
               </option>
-              <option value="2em">
+              <option className="components_editor_rich_text_editor_option_2em" value="2em">
                 Extra large
               </option>
             </select>
@@ -1928,7 +1928,7 @@ function addSpellingWordToDictionary() {
       </div>
 
       <div
-        className="sticky top-0 z-40 hidden flex-wrap items-center gap-1.5 overflow-visible border-b border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] p-2 shadow-[0_5px_12px_rgba(var(--sep-rgb-0-0-0),0.28)] sm:flex"
+        className="sticky top-0 z-40 hidden flex-wrap items-center gap-1.5 overflow-visible border-b border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] p-2 shadow-[0_5px_12px_rgba(var(--sep-rgb-0-0-0),0.28)] sm:flex components_editor_rich_text_editor_div_container_4"
         style={{ isolation: "isolate" }}
       >
         <ToolbarButton
@@ -1959,7 +1959,7 @@ function addSpellingWordToDictionary() {
           strike
         />
 
-        <span className="mx-1 h-6 w-px bg-[rgb(var(--sep-colour-59432c))]/45" />
+        <span className="mx-1 h-6 w-px bg-[rgb(var(--sep-colour-59432c))]/45 components_editor_rich_text_editor_span_text" />
 
         <select
           aria-label="Paragraph style"
@@ -1972,13 +1972,13 @@ function addSpellingWordToDictionary() {
             );
             event.currentTarget.value = "p";
           }}
-          className="h-8 border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] px-2 text-[10px] text-[rgb(var(--sep-colour-cbb28a))] outline-none"
+          className="h-8 border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] px-2 text-[10px] text-[rgb(var(--sep-colour-cbb28a))] outline-none components_editor_rich_text_editor_select_paragraph_style_2"
         >
-          <option value="p">Paragraph</option>
-          <option value="h1">Title</option>
-          <option value="h2">Heading</option>
-          <option value="h3">Subheading</option>
-          <option value="blockquote">Quote</option>
+          <option className="components_editor_rich_text_editor_option_p_2" value="p">Paragraph</option>
+          <option className="components_editor_rich_text_editor_option_h1_2" value="h1">Title</option>
+          <option className="components_editor_rich_text_editor_option_h2_2" value="h2">Heading</option>
+          <option className="components_editor_rich_text_editor_option_h3_2" value="h3">Subheading</option>
+          <option className="components_editor_rich_text_editor_option_blockquote_2" value="blockquote">Quote</option>
         </select>
 
         <select
@@ -1994,11 +1994,11 @@ function addSpellingWordToDictionary() {
             }
             event.currentTarget.value = "";
           }}
-          className="h-8 max-w-40 border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] px-2 text-[10px] text-[rgb(var(--sep-colour-cbb28a))] outline-none"
+          className="h-8 max-w-40 border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] px-2 text-[10px] text-[rgb(var(--sep-colour-cbb28a))] outline-none components_editor_rich_text_editor_select_font_family_2"
         >
-          <option value="">Font</option>
+          <option className="components_editor_rich_text_editor_option_font_family_2" value="">Font</option>
           {FONT_FAMILIES.map((font) => (
-            <option key={font} value={font}>
+            <option className="components_editor_rich_text_editor_option_option_3" key={font} value={font}>
               {font}
             </option>
           ))}
@@ -2023,13 +2023,13 @@ function addSpellingWordToDictionary() {
 
             event.currentTarget.value = "";
           }}
-          className="h-8 border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] px-2 text-[10px] text-[rgb(var(--sep-colour-cbb28a))] outline-none"
+          className="h-8 border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] px-2 text-[10px] text-[rgb(var(--sep-colour-cbb28a))] outline-none components_editor_rich_text_editor_select_font_size_2"
         >
-          <option value="">Size</option>
+          <option className="components_editor_rich_text_editor_option_font_size_2" value="">Size</option>
 
           {FONT_SIZES.map(
             (size) => (
-              <option
+              <option className="components_editor_rich_text_editor_option_option_4"
                 key={size}
                 value={size}
               >
@@ -2039,7 +2039,7 @@ function addSpellingWordToDictionary() {
           )}
         </select>
 
-        <div className="relative">
+        <div className="relative components_editor_rich_text_editor_div_container_5">
   <button
     type="button"
     title="Text colour"
@@ -2060,27 +2060,27 @@ function addSpellingWordToDictionary() {
           !current,
       );
     }}
-    className="flex h-8 items-center gap-2 border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] px-2 text-[9px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-cbb28a))] transition hover:border-[rgb(var(--sep-colour-967342))] hover:text-[rgb(var(--sep-colour-f1d7a5))] disabled:cursor-not-allowed disabled:opacity-40"
+    className="flex h-8 items-center gap-2 border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] px-2 text-[9px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-cbb28a))] transition hover:border-[rgb(var(--sep-colour-967342))] hover:text-[rgb(var(--sep-colour-f1d7a5))] disabled:cursor-not-allowed disabled:opacity-40 components_editor_rich_text_editor_button_colour"
   >
     Colour
 
     <span
       aria-hidden="true"
-      className="text-[8px] text-[rgb(var(--sep-colour-8f7653))]"
+      className="text-[8px] text-[rgb(var(--sep-colour-8f7653))] components_editor_rich_text_editor_span_text_colour"
     >
       ▼
     </span>
   </button>
 
   {textColourOpen ? (
-    <div className="absolute left-0 top-full z-[200] mt-1 w-[246px] border border-[rgb(var(--sep-colour-60482e))]/70 bg-[rgb(var(--sep-colour-100c09))] p-3 shadow-[0_12px_30px_rgba(var(--sep-rgb-0-0-0),0.55)]">
-      <button type="button" onMouseDown={(event) => event.preventDefault()} onClick={resetTextColour} className="mb-3 w-full border border-[rgb(var(--sep-colour-60482e))]/70 bg-[rgb(var(--sep-colour-17110d))] px-2 py-1.5 text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-cbb28a))]">Default colour</button>
+    <div className="absolute left-0 top-full z-[200] mt-1 w-[246px] border border-[rgb(var(--sep-colour-60482e))]/70 bg-[rgb(var(--sep-colour-100c09))] p-3 shadow-[0_12px_30px_rgba(var(--sep-rgb-0-0-0),0.55)] components_editor_rich_text_editor_div_container_6">
+      <button type="button" onMouseDown={(event) => event.preventDefault()} onClick={resetTextColour} className="mb-3 w-full border border-[rgb(var(--sep-colour-60482e))]/70 bg-[rgb(var(--sep-colour-17110d))] px-2 py-1.5 text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-cbb28a))] components_editor_rich_text_editor_button_default_colour">Default colour</button>
 
-      <p className="mb-2 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806c52))]">
+      <p className="mb-2 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806c52))] components_editor_rich_text_editor_p_text">
         Standard
       </p>
 
-      <div className="grid grid-cols-11 gap-1.5">
+      <div className="grid grid-cols-11 gap-1.5 components_editor_rich_text_editor_div_container_7">
         {STANDARD_TEXT_COLOURS.map(
           (colour) => (
             <button
@@ -2098,7 +2098,7 @@ function addSpellingWordToDictionary() {
                   colour,
                 )
               }
-              className="h-5 w-5 border border-[rgb(var(--sep-colour-77634b))]/70 transition hover:scale-110 hover:border-[rgb(var(--sep-colour-d4b178))]"
+              className="h-5 w-5 border border-[rgb(var(--sep-colour-77634b))]/70 transition hover:scale-110 hover:border-[rgb(var(--sep-colour-d4b178))] components_editor_rich_text_editor_button_action_2"
               style={{
                 backgroundColor:
                   colour,
@@ -2108,13 +2108,13 @@ function addSpellingWordToDictionary() {
         )}
       </div>
 
-      <div className="my-3 h-px bg-[rgb(var(--sep-colour-59432c))]/40" />
+      <div className="my-3 h-px bg-[rgb(var(--sep-colour-59432c))]/40 components_editor_rich_text_editor_div_container_8" />
 
-      <p className="mb-2 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806c52))]">
+      <p className="mb-2 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806c52))] components_editor_rich_text_editor_p_text_2">
         Recently used
       </p>
 
-      <div className="flex min-h-5 flex-wrap items-center gap-1.5">
+      <div className="flex min-h-5 flex-wrap items-center gap-1.5 components_editor_rich_text_editor_div_container_9">
         {recentTextColours.length >
         0 ? (
           recentTextColours.map(
@@ -2134,7 +2134,7 @@ function addSpellingWordToDictionary() {
                     colour,
                   )
                 }
-                className="h-5 w-5 border border-[rgb(var(--sep-colour-77634b))]/70 transition hover:scale-110 hover:border-[rgb(var(--sep-colour-d4b178))]"
+                className="h-5 w-5 border border-[rgb(var(--sep-colour-77634b))]/70 transition hover:scale-110 hover:border-[rgb(var(--sep-colour-d4b178))] components_editor_rich_text_editor_button_action_3"
                 style={{
                   backgroundColor:
                     colour,
@@ -2143,14 +2143,14 @@ function addSpellingWordToDictionary() {
             ),
           )
         ) : (
-          <span className="text-[9px] italic text-[rgb(var(--sep-colour-655b4e))]">
+          <span className="text-[9px] italic text-[rgb(var(--sep-colour-655b4e))] components_editor_rich_text_editor_span_text_2">
             No recent colours
           </span>
         )}
 
         <label
           title="Choose custom colour"
-          className="relative flex h-5 w-5 cursor-pointer items-center justify-center border border-dashed border-[rgb(var(--sep-colour-77634b))]/70 bg-[rgb(var(--sep-colour-17110d))] text-[12px] leading-none text-[rgb(var(--sep-colour-b99a70))] transition hover:border-[rgb(var(--sep-colour-d4b178))] hover:text-[rgb(var(--sep-colour-efd5a5))]"
+          className="relative flex h-5 w-5 cursor-pointer items-center justify-center border border-dashed border-[rgb(var(--sep-colour-77634b))]/70 bg-[rgb(var(--sep-colour-17110d))] text-[12px] leading-none text-[rgb(var(--sep-colour-b99a70))] transition hover:border-[rgb(var(--sep-colour-d4b178))] hover:text-[rgb(var(--sep-colour-efd5a5))] components_editor_rich_text_editor_label_choose_custom_colour"
           onMouseDown={() =>
             rememberColourSelection()
           }
@@ -2172,7 +2172,7 @@ function addSpellingWordToDictionary() {
                   .value,
               )
             }
-            className="absolute inset-0 cursor-pointer opacity-0"
+            className="absolute inset-0 cursor-pointer opacity-0 components_editor_rich_text_editor_input_choose_custom_colour"
           />
         </label>
       </div>
@@ -2180,7 +2180,7 @@ function addSpellingWordToDictionary() {
   ) : null}
 </div>
 
-        <div className="relative">
+        <div className="relative components_editor_rich_text_editor_div_container_10">
           <button
             type="button"
             title="Highlight colour"
@@ -2201,27 +2201,27 @@ function addSpellingWordToDictionary() {
                   !current,
               );
             }}
-            className="flex h-8 items-center gap-2 border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] px-2 text-[9px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-cbb28a))] transition hover:border-[rgb(var(--sep-colour-967342))] hover:text-[rgb(var(--sep-colour-f1d7a5))] disabled:cursor-not-allowed disabled:opacity-40"
+            className="flex h-8 items-center gap-2 border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] px-2 text-[9px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-cbb28a))] transition hover:border-[rgb(var(--sep-colour-967342))] hover:text-[rgb(var(--sep-colour-f1d7a5))] disabled:cursor-not-allowed disabled:opacity-40 components_editor_rich_text_editor_button_highlight"
           >
             Highlight
 
             <span
               aria-hidden="true"
-              className="text-[8px] text-[rgb(var(--sep-colour-8f7653))]"
+              className="text-[8px] text-[rgb(var(--sep-colour-8f7653))] components_editor_rich_text_editor_span_highlight_colour"
             >
               ▼
             </span>
           </button>
 
           {highlightColourOpen ? (
-            <div className="absolute left-0 top-full z-[200] mt-1 w-[246px] border border-[rgb(var(--sep-colour-60482e))]/70 bg-[rgb(var(--sep-colour-100c09))] p-3 shadow-[0_12px_30px_rgba(var(--sep-rgb-0-0-0),0.55)]">
-              <button type="button" onMouseDown={(event) => event.preventDefault()} onClick={resetHighlightColour} className="mb-3 w-full border border-[rgb(var(--sep-colour-60482e))]/70 bg-[rgb(var(--sep-colour-17110d))] px-2 py-1.5 text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-cbb28a))]">No highlight</button>
+            <div className="absolute left-0 top-full z-[200] mt-1 w-[246px] border border-[rgb(var(--sep-colour-60482e))]/70 bg-[rgb(var(--sep-colour-100c09))] p-3 shadow-[0_12px_30px_rgba(var(--sep-rgb-0-0-0),0.55)] components_editor_rich_text_editor_div_container_11">
+              <button type="button" onMouseDown={(event) => event.preventDefault()} onClick={resetHighlightColour} className="mb-3 w-full border border-[rgb(var(--sep-colour-60482e))]/70 bg-[rgb(var(--sep-colour-17110d))] px-2 py-1.5 text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-cbb28a))] components_editor_rich_text_editor_button_no_highlight">No highlight</button>
 
-              <p className="mb-2 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806c52))]">
+              <p className="mb-2 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806c52))] components_editor_rich_text_editor_p_text_3">
                 Standard
               </p>
 
-              <div className="grid grid-cols-11 gap-1.5">
+              <div className="grid grid-cols-11 gap-1.5 components_editor_rich_text_editor_div_container_12">
                 {STANDARD_TEXT_COLOURS.map(
                   (colour) => (
                     <button
@@ -2239,7 +2239,7 @@ function addSpellingWordToDictionary() {
                           colour,
                         )
                       }
-                      className="h-5 w-5 border border-[rgb(var(--sep-colour-77634b))]/70 transition hover:scale-110 hover:border-[rgb(var(--sep-colour-d4b178))]"
+                      className="h-5 w-5 border border-[rgb(var(--sep-colour-77634b))]/70 transition hover:scale-110 hover:border-[rgb(var(--sep-colour-d4b178))] components_editor_rich_text_editor_button_action_4"
                       style={{
                         backgroundColor:
                           colour,
@@ -2249,13 +2249,13 @@ function addSpellingWordToDictionary() {
                 )}
               </div>
 
-              <div className="my-3 h-px bg-[rgb(var(--sep-colour-59432c))]/40" />
+              <div className="my-3 h-px bg-[rgb(var(--sep-colour-59432c))]/40 components_editor_rich_text_editor_div_container_13" />
 
-              <p className="mb-2 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806c52))]">
+              <p className="mb-2 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806c52))] components_editor_rich_text_editor_p_text_4">
                 Recently used
               </p>
 
-              <div className="flex min-h-5 flex-wrap items-center gap-1.5">
+              <div className="flex min-h-5 flex-wrap items-center gap-1.5 components_editor_rich_text_editor_div_container_14">
                 {recentHighlightColours.length >
                 0 ? (
                   recentHighlightColours.map(
@@ -2275,7 +2275,7 @@ function addSpellingWordToDictionary() {
                             colour,
                           )
                         }
-                        className="h-5 w-5 border border-[rgb(var(--sep-colour-77634b))]/70 transition hover:scale-110 hover:border-[rgb(var(--sep-colour-d4b178))]"
+                        className="h-5 w-5 border border-[rgb(var(--sep-colour-77634b))]/70 transition hover:scale-110 hover:border-[rgb(var(--sep-colour-d4b178))] components_editor_rich_text_editor_button_action_5"
                         style={{
                           backgroundColor:
                             colour,
@@ -2284,14 +2284,14 @@ function addSpellingWordToDictionary() {
                     ),
                   )
                 ) : (
-                  <span className="text-[9px] italic text-[rgb(var(--sep-colour-655b4e))]">
+                  <span className="text-[9px] italic text-[rgb(var(--sep-colour-655b4e))] components_editor_rich_text_editor_span_text_3">
                     No recent colours
                   </span>
                 )}
 
                 <label
                   title="Choose custom highlight"
-                  className="relative flex h-5 w-5 cursor-pointer items-center justify-center border border-dashed border-[rgb(var(--sep-colour-77634b))]/70 bg-[rgb(var(--sep-colour-17110d))] text-[12px] leading-none text-[rgb(var(--sep-colour-b99a70))] transition hover:border-[rgb(var(--sep-colour-d4b178))] hover:text-[rgb(var(--sep-colour-efd5a5))]"
+                  className="relative flex h-5 w-5 cursor-pointer items-center justify-center border border-dashed border-[rgb(var(--sep-colour-77634b))]/70 bg-[rgb(var(--sep-colour-17110d))] text-[12px] leading-none text-[rgb(var(--sep-colour-b99a70))] transition hover:border-[rgb(var(--sep-colour-d4b178))] hover:text-[rgb(var(--sep-colour-efd5a5))] components_editor_rich_text_editor_label_choose_custom_highlight"
                   onMouseDown={() =>
                     rememberColourSelection()
                   }
@@ -2313,7 +2313,7 @@ function addSpellingWordToDictionary() {
                           .value,
                       )
                     }
-                    className="absolute inset-0 cursor-pointer opacity-0"
+                    className="absolute inset-0 cursor-pointer opacity-0 components_editor_rich_text_editor_input_choose_custom_highlight"
                   />
                 </label>
               </div>
@@ -2321,7 +2321,7 @@ function addSpellingWordToDictionary() {
           ) : null}
         </div>
 
-        <span className="mx-1 h-6 w-px bg-[rgb(var(--sep-colour-59432c))]/45" />
+        <span className="mx-1 h-6 w-px bg-[rgb(var(--sep-colour-59432c))]/45 components_editor_rich_text_editor_span_text_4" />
 
         <ToolbarButton
           label="≡←"
@@ -2342,8 +2342,8 @@ function addSpellingWordToDictionary() {
           disabled={disabled || sourceMode}
         />
         <ToolbarButton label="≡" title="Justify" onClick={() => runCommand("justifyFull")} disabled={disabled || sourceMode} />
-        <select aria-label="Line height" defaultValue="" disabled={disabled || sourceMode} onChange={(event) => { if (event.target.value) applyParagraphStyle("lineHeight", event.target.value === "default" ? "" : event.target.value); event.currentTarget.value = ""; }} className="h-8 border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] px-2 text-[10px] text-[rgb(var(--sep-colour-cbb28a))] outline-none"><option value="">Line height</option><option value="default">Default</option><option value="1">1.0</option><option value="1.15">1.15</option><option value="1.3">1.3</option><option value="1.5">1.5</option><option value="1.75">1.75</option><option value="2">2.0</option></select>
-        <select aria-label="Paragraph spacing" defaultValue="" disabled={disabled || sourceMode} onChange={(event) => { if (event.target.value) applyParagraphStyle("marginBottom", event.target.value === "default" ? "" : event.target.value); event.currentTarget.value = ""; }} className="h-8 border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] px-2 text-[10px] text-[rgb(var(--sep-colour-cbb28a))] outline-none"><option value="">Paragraph spacing</option><option value="default">Default</option><option value="0">None</option><option value="0.35em">Small</option><option value="0.75em">Normal</option><option value="1.25em">Large</option><option value="2em">Extra large</option></select>
+        <select aria-label="Line height" defaultValue="" disabled={disabled || sourceMode} onChange={(event) => { if (event.target.value) applyParagraphStyle("lineHeight", event.target.value === "default" ? "" : event.target.value); event.currentTarget.value = ""; }} className="h-8 border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] px-2 text-[10px] text-[rgb(var(--sep-colour-cbb28a))] outline-none components_editor_rich_text_editor_select_line_height_2"><option className="components_editor_rich_text_editor_option_line_height_2" value="">Line height</option><option className="components_editor_rich_text_editor_option_default_3" value="default">Default</option><option className="components_editor_rich_text_editor_option_1_2" value="1">1.0</option><option className="components_editor_rich_text_editor_option_1_15_2" value="1.15">1.15</option><option className="components_editor_rich_text_editor_option_1_3_2" value="1.3">1.3</option><option className="components_editor_rich_text_editor_option_1_5_2" value="1.5">1.5</option><option className="components_editor_rich_text_editor_option_1_75_2" value="1.75">1.75</option><option className="components_editor_rich_text_editor_option_2_2" value="2">2.0</option></select>
+        <select aria-label="Paragraph spacing" defaultValue="" disabled={disabled || sourceMode} onChange={(event) => { if (event.target.value) applyParagraphStyle("marginBottom", event.target.value === "default" ? "" : event.target.value); event.currentTarget.value = ""; }} className="h-8 border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] px-2 text-[10px] text-[rgb(var(--sep-colour-cbb28a))] outline-none components_editor_rich_text_editor_select_paragraph_spacing_2"><option className="components_editor_rich_text_editor_option_paragraph_spacing_2" value="">Paragraph spacing</option><option className="components_editor_rich_text_editor_option_default_4" value="default">Default</option><option className="components_editor_rich_text_editor_option_0_2" value="0">None</option><option className="components_editor_rich_text_editor_option_0_35em_2" value="0.35em">Small</option><option className="components_editor_rich_text_editor_option_0_75em_2" value="0.75em">Normal</option><option className="components_editor_rich_text_editor_option_1_25em_2" value="1.25em">Large</option><option className="components_editor_rich_text_editor_option_2em_2" value="2em">Extra large</option></select>
         <ToolbarButton
           label="• List"
           title="Bulleted list"
@@ -2363,7 +2363,7 @@ function addSpellingWordToDictionary() {
         <ToolbarButton label="X₂" title="Subscript" onClick={() => runCommand("subscript")} disabled={disabled || sourceMode} />
         <ToolbarButton label="X²" title="Superscript" onClick={() => runCommand("superscript")} disabled={disabled || sourceMode} />
 
-        <span className="mx-1 h-6 w-px bg-[rgb(var(--sep-colour-59432c))]/45" />
+        <span className="mx-1 h-6 w-px bg-[rgb(var(--sep-colour-59432c))]/45 components_editor_rich_text_editor_span_text_5" />
 
         <ToolbarButton
           label="Link"
@@ -2409,7 +2409,7 @@ function addSpellingWordToDictionary() {
 
         {fullToolbar ? (
           <>
-            <span className="mx-1 h-6 w-px bg-[rgb(var(--sep-colour-59432c))]/45" />
+            <span className="mx-1 h-6 w-px bg-[rgb(var(--sep-colour-59432c))]/45 components_editor_rich_text_editor_span_text_6" />
             <ToolbarButton
               label={sourceMode ? "Visual" : "HTML"}
               title="Toggle HTML source"
@@ -2432,7 +2432,7 @@ function addSpellingWordToDictionary() {
     }
     disabled={disabled}
     spellCheck={false}
-    className="block w-full resize-none overflow-y-auto bg-[rgb(var(--sep-colour-090706))] px-4 py-4 font-mono text-xs leading-6 text-[rgb(var(--sep-colour-d7c4a5))] outline-none"
+    className="block w-full resize-none overflow-y-auto bg-[rgb(var(--sep-colour-090706))] px-4 py-4 font-mono text-xs leading-6 text-[rgb(var(--sep-colour-d7c4a5))] outline-none components_editor_rich_text_editor_textarea_field"
     style={{
       minHeight,
       maxHeight:
@@ -2470,7 +2470,7 @@ function addSpellingWordToDictionary() {
       onContextMenu={
         handleSpellingContextMenu
       }
-      className="rich-wysiwyg-editor relative z-0 block w-full overflow-auto px-4 py-4 text-sm font-normal leading-7 text-[rgb(var(--sep-colour-d7c4a5))] outline-none selection:bg-[rgb(var(--sep-colour-6b4b2c))] selection:text-[rgb(var(--sep-colour-fff0d0))] empty:before:pointer-events-none empty:before:text-[rgb(var(--sep-colour-625747))] empty:before:content-[attr(data-placeholder)] [&_a]:text-[rgb(var(--sep-colour-d3a762))] [&_a]:underline [&_blockquote]:border-l-2 [&_blockquote]:border-[rgb(var(--sep-colour-8d6d3e))] [&_blockquote]:pl-4 [&_h1]:font-serif [&_h1]:text-4xl [&_h2]:font-serif [&_h2]:text-3xl [&_h3]:font-serif [&_h3]:text-2xl [&_img]:my-3 [&_img]:max-h-[620px] [&_img]:max-w-full [&_ol]:list-decimal [&_ol]:pl-7 [&_table]:max-w-full [&_table]:border-collapse [&_td]:border [&_td]:border-[rgb(var(--sep-colour-60482e))]/45 [&_td]:p-2 [&_th]:border [&_th]:border-[rgb(var(--sep-colour-60482e))]/45 [&_th]:p-2 [&_ul]:list-disc [&_ul]:pl-7"
+      className="rich-wysiwyg-editor relative z-0 block w-full overflow-auto px-4 py-4 text-sm font-normal leading-7 text-[rgb(var(--sep-colour-d7c4a5))] outline-none selection:bg-[rgb(var(--sep-colour-6b4b2c))] selection:text-[rgb(var(--sep-colour-fff0d0))] empty:before:pointer-events-none empty:before:text-[rgb(var(--sep-colour-625747))] empty:before:content-[attr(data-placeholder)] [&_a]:text-[rgb(var(--sep-colour-d3a762))] [&_a]:underline [&_blockquote]:border-l-2 [&_blockquote]:border-[rgb(var(--sep-colour-8d6d3e))] [&_blockquote]:pl-4 [&_h1]:font-serif [&_h1]:text-4xl [&_h2]:font-serif [&_h2]:text-3xl [&_h3]:font-serif [&_h3]:text-2xl [&_img]:my-3 [&_img]:max-h-[620px] [&_img]:max-w-full [&_ol]:list-decimal [&_ol]:pl-7 [&_table]:max-w-full [&_table]:border-collapse [&_td]:border [&_td]:border-[rgb(var(--sep-colour-60482e))]/45 [&_td]:p-2 [&_th]:border [&_th]:border-[rgb(var(--sep-colour-60482e))]/45 [&_th]:p-2 [&_ul]:list-disc [&_ul]:pl-7 components_editor_rich_text_editor_div_textbox"
       style={{
         minHeight,
         maxHeight:
@@ -2484,7 +2484,7 @@ function addSpellingWordToDictionary() {
       <div
       data-sep-interaction-ignore="true"
       data-sep-ui-ignore="true"
-        className="fixed z-[9999] w-64 border border-[rgb(var(--sep-colour-765937))]/80 bg-[rgb(var(--sep-colour-120d0a))] p-3 shadow-[0_14px_40px_rgba(var(--sep-rgb-0-0-0),0.85)]"
+        className="fixed z-[9999] w-64 border border-[rgb(var(--sep-colour-765937))]/80 bg-[rgb(var(--sep-colour-120d0a))] p-3 shadow-[0_14px_40px_rgba(var(--sep-rgb-0-0-0),0.85)] components_editor_rich_text_editor_div_container_15"
         style={{
           left: spellingMenu.x,
           top: spellingMenu.y,
@@ -2494,13 +2494,13 @@ function addSpellingWordToDictionary() {
           event.stopPropagation();
         }}
       >
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <p className="text-[7px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
+        <div className="flex items-start justify-between gap-3 components_editor_rich_text_editor_div_container_16">
+          <div className="components_editor_rich_text_editor_div_container_17">
+            <p className="text-[7px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))] components_editor_rich_text_editor_p_text_5">
               Spelling
             </p>
 
-            <p className="mt-1 font-serif text-base text-[rgb(var(--sep-colour-dfc79c))]">
+            <p className="mt-1 font-serif text-base text-[rgb(var(--sep-colour-dfc79c))] components_editor_rich_text_editor_p_text_6">
               {spellingMenu.issue.word}
             </p>
           </div>
@@ -2510,7 +2510,7 @@ function addSpellingWordToDictionary() {
             onClick={() =>
               setSpellingMenu(null)
             }
-            className="text-sm text-[rgb(var(--sep-colour-887760))] transition hover:text-[rgb(var(--sep-colour-e2c99d))]"
+            className="text-sm text-[rgb(var(--sep-colour-887760))] transition hover:text-[rgb(var(--sep-colour-e2c99d))] components_editor_rich_text_editor_button_action_6"
           >
             ×
           </button>
@@ -2518,8 +2518,8 @@ function addSpellingWordToDictionary() {
 
         {spellingMenu.issue.suggestions
           .length > 0 ? (
-          <div className="mt-3 max-h-48 space-y-1 overflow-y-auto pr-1">
-            <p className="mb-2 text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-756651))]">
+          <div className="mt-3 max-h-48 space-y-1 overflow-y-auto pr-1 components_editor_rich_text_editor_div_container_18">
+            <p className="mb-2 text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-756651))] components_editor_rich_text_editor_p_text_7">
               Suggestions
             </p>
 
@@ -2533,7 +2533,7 @@ function addSpellingWordToDictionary() {
                       suggestion,
                     )
                   }
-                  className="block w-full border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 text-left font-serif text-sm text-[rgb(var(--sep-colour-d7bf96))] transition hover:border-[rgb(var(--sep-colour-987344))] hover:bg-[rgb(var(--sep-colour-241a11))] hover:text-[rgb(var(--sep-colour-f0d49d))]"
+                  className="block w-full border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 text-left font-serif text-sm text-[rgb(var(--sep-colour-d7bf96))] transition hover:border-[rgb(var(--sep-colour-987344))] hover:bg-[rgb(var(--sep-colour-241a11))] hover:text-[rgb(var(--sep-colour-f0d49d))] components_editor_rich_text_editor_button_action_7"
                 >
                   {suggestion}
                 </button>
@@ -2541,18 +2541,18 @@ function addSpellingWordToDictionary() {
             )}
           </div>
         ) : (
-          <p className="mt-3 text-xs text-[rgb(var(--sep-colour-827565))]">
+          <p className="mt-3 text-xs text-[rgb(var(--sep-colour-827565))] components_editor_rich_text_editor_p_text_8">
             No replacement suggestions found.
           </p>
         )}
 
-        <div className="mt-3 grid grid-cols-2 gap-2 border-t border-[rgb(var(--sep-colour-60482e))]/35 pt-3">
+        <div className="mt-3 grid grid-cols-2 gap-2 border-t border-[rgb(var(--sep-colour-60482e))]/35 pt-3 components_editor_rich_text_editor_div_container_19">
           <button
             type="button"
             onClick={
               ignoreSpellingWord
             }
-            className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-2 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a08c70))] transition hover:border-[rgb(var(--sep-colour-87663b))] hover:text-[rgb(var(--sep-colour-d4bb91))]"
+            className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-2 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a08c70))] transition hover:border-[rgb(var(--sep-colour-87663b))] hover:text-[rgb(var(--sep-colour-d4bb91))] components_editor_rich_text_editor_button_ignore_once"
           >
             Ignore once
           </button>
@@ -2562,7 +2562,7 @@ function addSpellingWordToDictionary() {
             onClick={
               addSpellingWordToDictionary
             }
-            className="border border-[rgb(var(--sep-colour-87663b))]/70 bg-[rgb(var(--sep-colour-251a10))] px-2 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-d3af76))] transition hover:border-[rgb(var(--sep-colour-aa8148))] hover:text-[rgb(var(--sep-colour-efd09b))]"
+            className="border border-[rgb(var(--sep-colour-87663b))]/70 bg-[rgb(var(--sep-colour-251a10))] px-2 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-d3af76))] transition hover:border-[rgb(var(--sep-colour-aa8148))] hover:text-[rgb(var(--sep-colour-efd09b))] components_editor_rich_text_editor_button_add_word"
           >
             Add word
           </button>
@@ -2573,17 +2573,17 @@ function addSpellingWordToDictionary() {
 )}
 
 {name ? (
-  <input
+  <input className="components_editor_rich_text_editor_input_field"
     type="hidden"
     name={name}
     value={html}
   />
 ) : null}
 
-<div className="flex flex-wrap items-center justify-between gap-3 border-t border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-0b0806))] px-3 py-2 text-[9px] leading-4 text-[rgb(var(--sep-colour-756958))]"><span>
+<div className="flex flex-wrap items-center justify-between gap-3 border-t border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-0b0806))] px-3 py-2 text-[9px] leading-4 text-[rgb(var(--sep-colour-756958))] components_editor_rich_text_editor_div_container_20"><span className="components_editor_rich_text_editor_span_text_7">
           Paste formatted content directly. Fonts, 8–24px text sizes, colours, links, lists and web images are retained. Misspellings are marked with a red wavy underline.
         </span>
-        <span>
+        <span className="components_editor_rich_text_editor_span_text_8">
           {stripRichTextForPreview(html).trim().split(/\s+/).filter(Boolean).length.toLocaleString("en-GB")} words · {textLength.toLocaleString("en-GB")} / {maxTextLength.toLocaleString("en-GB")} characters
         </span>
       </div>
@@ -2636,11 +2636,11 @@ function ToolbarButton({
         pointerEvents: "auto",
         zIndex: 1,
       }}
-      className={`items-center justify-center overflow-hidden border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] px-2 text-[10px] text-[rgb(var(--sep-colour-cbb28a))] transition hover:border-[rgb(var(--sep-colour-967342))] hover:text-[rgb(var(--sep-colour-f1d7a5))] disabled:cursor-not-allowed disabled:opacity-40 ${
+      className={[((`items-center justify-center overflow-hidden border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-17110d))] px-2 text-[10px] text-[rgb(var(--sep-colour-cbb28a))] transition hover:border-[rgb(var(--sep-colour-967342))] hover:text-[rgb(var(--sep-colour-f1d7a5))] disabled:cursor-not-allowed disabled:opacity-40 ${
         wide ? "min-w-12" : "min-w-8"
       } ${italic ? "italic" : ""} ${
         underline ? "underline" : ""
-      } ${strike ? "line-through" : ""}`}
+      } ${strike ? "line-through" : ""}`)), "components_editor_rich_text_editor_button_click"].filter(Boolean).join(" ")}
     >
       {label}
     </button>

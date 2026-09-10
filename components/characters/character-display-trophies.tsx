@@ -85,27 +85,27 @@ export async function CharacterDisplayTrophies({
 
   return (
     <span
-  className="grid grid-cols-3 justify-items-end gap-[0.5] sm:inline-flex sm:flex-wrap sm:items-center sm:justify-end"
+  className="grid grid-cols-3 justify-items-end gap-[0.5] sm:inline-flex sm:flex-wrap sm:items-center sm:justify-end components_characters_character_display_trophies_span_displayed_trophies"
   aria-label="Displayed Trophies"
 >
       {trophies.map(({ slot, trophy }) => (
         <span
           key={`${slot}-${trophy.id}`}
-          className="group relative inline-flex"
+          className="group relative inline-flex components_characters_character_display_trophies_span_text"
           tabIndex={0}
         >
-          <span className="flex h-10 w-10 items-center justify-center overflow-hidden bg-transparent">
+          <span className="flex h-10 w-10 items-center justify-center overflow-hidden bg-transparent components_characters_character_display_trophies_span_text_2">
             {trophy.icon_url ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={trophy.icon_url}
                 alt=""
-                className="h-full w-full object-contain p-0.5"
+                className="h-full w-full object-contain p-0.5 components_characters_character_display_trophies_img_image"
               />
             ) : (
               <span
                 aria-hidden="true"
-                className="font-serif text-sm text-[rgb(var(--sep-colour-806e57))]"
+                className="font-serif text-sm text-[rgb(var(--sep-colour-806e57))] components_characters_character_display_trophies_span_text_3"
               >
                 ?
               </span>
@@ -114,13 +114,13 @@ export async function CharacterDisplayTrophies({
 
           <span
             role="tooltip"
-            className="pointer-events-none absolute bottom-full right-0 z-40 mb-2 hidden w-56 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2.5 text-left group-hover:block group-focus:block group-focus-within:block"
+            className="pointer-events-none absolute bottom-full right-0 z-40 mb-2 hidden w-56 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2.5 text-left group-hover:block group-focus:block group-focus-within:block components_characters_character_display_trophies_span_tooltip"
           >
-            <span className="block font-serif text-sm leading-5 text-[rgb(var(--sep-colour-e3c99a))]">
+            <span className="block font-serif text-sm leading-5 text-[rgb(var(--sep-colour-e3c99a))] components_characters_character_display_trophies_span_text_4">
               {trophy.name}
             </span>
 
-            <span className="mt-1 block text-[10px] leading-4 text-[rgb(var(--sep-colour-a99a84))]">
+            <span className="mt-1 block text-[10px] leading-4 text-[rgb(var(--sep-colour-a99a84))] components_characters_character_display_trophies_span_text_5">
               {trophy.description}
             </span>
           </span>

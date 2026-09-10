@@ -250,12 +250,12 @@ function ModerationPanel({
         data-communication-log-marker
         data-source-type={sourceType}
         data-source-id={sourceId}
-        className="mt-3 border border-[rgb(var(--sep-colour-8d5b45))]/65 bg-[rgb(var(--sep-colour-241310))] px-3 py-2"
+        className="mt-3 border border-[rgb(var(--sep-colour-8d5b45))]/65 bg-[rgb(var(--sep-colour-241310))] px-3 py-2 admin_communication_logs_page_div_container"
       >
-        <p className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d49a88))]">
+        <p className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d49a88))] admin_communication_logs_page_p_text">
           Obscured by staff
         </p>
-        <p className="mt-1 text-[9px] leading-5 text-[rgb(var(--sep-colour-baa58b))]">
+        <p className="mt-1 text-[9px] leading-5 text-[rgb(var(--sep-colour-baa58b))] admin_communication_logs_page_p_text_2">
           {moderation.moderated_by_label}
           {" · "}
           {formatDateTime(
@@ -273,9 +273,9 @@ function ModerationPanel({
       data-communication-log-marker
       data-source-type={sourceType}
       data-source-id={sourceId}
-      className="mt-3 border border-[rgb(var(--sep-colour-70483f))]/55 bg-[rgb(var(--sep-colour-1d1110))] px-3 py-2"
+      className="mt-3 border border-[rgb(var(--sep-colour-70483f))]/55 bg-[rgb(var(--sep-colour-1d1110))] px-3 py-2 admin_communication_logs_page_details_obscure"
     >
-      <summary className="cursor-pointer text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d99b8e))]">
+      <summary className="cursor-pointer text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d99b8e))] admin_communication_logs_page_summary_obscure">
         Obscure
       </summary>
 
@@ -283,14 +283,14 @@ function ModerationPanel({
         action={
           obscureCommunication
         }
-        className="mt-3 flex flex-col gap-2 sm:flex-row"
+        className="mt-3 flex flex-col gap-2 sm:flex-row admin_communication_logs_page_form_obscure_communication"
       >
-        <input
+        <input className="admin_communication_logs_page_input_source_type"
           type="hidden"
           name="sourceType"
           value={sourceType}
         />
-        <input
+        <input className="admin_communication_logs_page_input_source_id"
           type="hidden"
           name="sourceId"
           value={sourceId}
@@ -302,12 +302,12 @@ function ModerationPanel({
           required
           maxLength={500}
           placeholder="Reason for obscuring this message…"
-          className="h-9 min-w-0 flex-1 border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-0c0907))] px-3 text-[9px] text-[rgb(var(--sep-colour-d2c0a5))] outline-none"
+          className="h-9 min-w-0 flex-1 border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-0c0907))] px-3 text-[9px] text-[rgb(var(--sep-colour-d2c0a5))] outline-none admin_communication_logs_page_input_reason"
         />
 
         <button
           type="submit"
-          className="h-9 border border-[rgb(var(--sep-colour-9a5147))] bg-[rgb(var(--sep-colour-351815))] px-3 text-[8px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-e0a69a))]"
+          className="h-9 border border-[rgb(var(--sep-colour-9a5147))] bg-[rgb(var(--sep-colour-351815))] px-3 text-[8px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-e0a69a))] admin_communication_logs_page_button_confirm_obscure"
         >
           Confirm Obscure
         </button>
@@ -440,18 +440,18 @@ export default async function CommunicationLogsPage({
           );
 
   return (
-    <main className="p-5 sm:p-7 lg:p-9">
-      <div className="mx-auto max-w-[1500px]">
-        <div>
-          <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
+    <main className="p-5 sm:p-7 lg:p-9 admin_communication_logs_page_main_main">
+      <div className="mx-auto max-w-[1500px] admin_communication_logs_page_div_container_2">
+        <div className="admin_communication_logs_page_div_communication_logs">
+          <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))] admin_communication_logs_page_p_communication_logs">
             Administration · Moderation
           </p>
 
-          <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">
+          <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))] admin_communication_logs_page_h1_communication_logs">
             Communication Logs
           </h1>
 
-          <p className="mt-3 max-w-4xl text-sm leading-7 text-[rgb(var(--sep-colour-9c8d79))]">
+          <p className="mt-3 max-w-4xl text-sm leading-7 text-[rgb(var(--sep-colour-9c8d79))] admin_communication_logs_page_p_communication_logs_2">
             Staff-only read access to historical Private Messages,
             complete location chat logs (including whispers), and the
             bottom-right off-game Instant Chat. Viewing a log does not
@@ -460,7 +460,7 @@ export default async function CommunicationLogsPage({
           </p>
         </div>
 
-        <div className="mt-6 flex flex-wrap gap-2">
+        <div className="mt-6 flex flex-wrap gap-2 admin_communication_logs_page_div_container_3">
           <ViewLink
             active={
               view === "pm"
@@ -531,15 +531,15 @@ export default async function CommunicationLogsPage({
 
         <form
           method="get"
-          className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4"
+          className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 admin_communication_logs_page_form_form"
         >
-          <input
+          <input className="admin_communication_logs_page_input_view"
             type="hidden"
             name="view"
             value={view}
           />
 
-          <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-6">
+          <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-6 admin_communication_logs_page_div_container_4">
             <input
               type="search"
               name="q"
@@ -547,7 +547,7 @@ export default async function CommunicationLogsPage({
                 params.q ?? ""
               }
               placeholder="Search message content..."
-              className={`${input} xl:col-span-2`}
+              className={[((`${input} xl:col-span-2`)), "admin_communication_logs_page_input_q"].filter(Boolean).join(" ")}
             />
 
             <select
@@ -556,15 +556,15 @@ export default async function CommunicationLogsPage({
                 params.character ??
                 ""
               }
-              className={input}
+              className={[((input)), "admin_communication_logs_page_select_character"].filter(Boolean).join(" ")}
             >
-              <option value="">
+              <option className="admin_communication_logs_page_option_character" value="">
                 All characters
               </option>
 
               {characters.map(
                 (character) => (
-                  <option
+                  <option className="admin_communication_logs_page_option_option"
                     key={
                       character.id
                     }
@@ -593,7 +593,7 @@ export default async function CommunicationLogsPage({
                     ? "Instant Chat UUID..."
                     : "Conversation UUID..."
                 }
-                className={input}
+                className={[((input)), "admin_communication_logs_page_input_conversation"].filter(Boolean).join(" ")}
               />
             ) : (
               <select
@@ -602,15 +602,15 @@ export default async function CommunicationLogsPage({
                   params.room ??
                   ""
                 }
-                className={input}
+                className={[((input)), "admin_communication_logs_page_select_room"].filter(Boolean).join(" ")}
               >
-                <option value="">
+                <option className="admin_communication_logs_page_option_room" value="">
                   All locations
                 </option>
 
                 {rooms.map(
                   (room) => (
-                    <option
+                    <option className="admin_communication_logs_page_option_option_2"
                       key={
                         room.id
                       }
@@ -631,7 +631,7 @@ export default async function CommunicationLogsPage({
               defaultValue={
                 params.from ?? ""
               }
-              className={input}
+              className={[((input)), "admin_communication_logs_page_input_date"].filter(Boolean).join(" ")}
               title="From date"
             />
 
@@ -641,31 +641,31 @@ export default async function CommunicationLogsPage({
               defaultValue={
                 params.to ?? ""
               }
-              className={input}
+              className={[((input)), "admin_communication_logs_page_input_date_2"].filter(Boolean).join(" ")}
               title="To date"
             />
           </div>
 
           {view === "chat" ? (
-            <div className="mt-2 grid gap-2 md:grid-cols-2 xl:grid-cols-6">
+            <div className="mt-2 grid gap-2 md:grid-cols-2 xl:grid-cols-6 admin_communication_logs_page_div_container_5">
               <select
                 name="kind"
                 defaultValue={
                   params.kind ??
                   ""
                 }
-                className={input}
+                className={[((input)), "admin_communication_logs_page_select_kind"].filter(Boolean).join(" ")}
               >
-                <option value="">
+                <option className="admin_communication_logs_page_option_kind" value="">
                   All location types
                 </option>
-                <option value="public">
+                <option className="admin_communication_logs_page_option_public" value="public">
                   Public Locations
                 </option>
-                <option value="private">
+                <option className="admin_communication_logs_page_option_private" value="private">
                   Private Locations
                 </option>
-                <option value="headquarters">
+                <option className="admin_communication_logs_page_option_headquarters" value="headquarters">
                   Order Headquarters
                 </option>
               </select>
@@ -676,34 +676,34 @@ export default async function CommunicationLogsPage({
                   params.type ??
                   ""
                 }
-                className={input}
+                className={[((input)), "admin_communication_logs_page_select_type"].filter(Boolean).join(" ")}
               >
-                <option value="">
+                <option className="admin_communication_logs_page_option_type" value="">
                   All chat entries
                 </option>
-                <option value="action">
+                <option className="admin_communication_logs_page_option_action" value="action">
                   Actions / Dialogue
                 </option>
-                <option value="dice_roll">
+                <option className="admin_communication_logs_page_option_dice_roll" value="dice_roll">
                   Dice Rolls
                 </option>
-                <option value="attribute_check">
+                <option className="admin_communication_logs_page_option_attribute_check" value="attribute_check">
                   Attribute Checks
                 </option>
-                <option value="fate">
+                <option className="admin_communication_logs_page_option_fate" value="fate">
                   Fate
                 </option>
-                <option value="whisper">
+                <option className="admin_communication_logs_page_option_whisper" value="whisper">
                   Whispers
                 </option>
               </select>
             </div>
           ) : null}
 
-          <div className="mt-3 flex flex-wrap items-center gap-2">
+          <div className="mt-3 flex flex-wrap items-center gap-2 admin_communication_logs_page_div_container_6">
             <button
               type="submit"
-              className={button}
+              className={[((button)), "admin_communication_logs_page_button_apply_filters"].filter(Boolean).join(" ")}
             >
               Apply Filters
             </button>
@@ -715,7 +715,7 @@ export default async function CommunicationLogsPage({
               Reset
             </Link>
 
-            <span className="ml-auto text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-716654))]">
+            <span className="ml-auto text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-716654))] admin_communication_logs_page_span_text">
               Newest first · maximum 250 results
             </span>
           </div>
@@ -991,7 +991,7 @@ async function loadPrivateMessages(
     );
 
   return (
-    <section className="mt-4 space-y-2">
+    <section className="mt-4 space-y-2 admin_communication_logs_page_section_section">
       {(messages ?? []).map(
         (message) => {
           const sender =
@@ -1083,15 +1083,15 @@ async function loadPrivateMessages(
             <article
               id={`message-${message.id}`}
               key={message.id}
-              className={`border bg-[rgb(var(--sep-colour-15100d))] p-4 ${
+              className={[((`border bg-[rgb(var(--sep-colour-15100d))] p-4 ${
                 isTarget
                   ? "border-[rgb(var(--sep-colour-c99758))] ring-1 ring-[rgb(var(--sep-colour-c99758))]/70"
                   : "border-[rgb(var(--sep-colour-59432c))]/40"
-              }`}
+              }`)), "admin_communication_logs_page_article_article"].filter(Boolean).join(" ")}
             >
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <p className="font-serif text-base text-[rgb(var(--sep-colour-dcc49a))]">
+              <div className="flex flex-wrap items-start justify-between gap-3 admin_communication_logs_page_div_container_7">
+                <div className="min-w-0 admin_communication_logs_page_div_container_8">
+                  <p className="font-serif text-base text-[rgb(var(--sep-colour-dcc49a))] admin_communication_logs_page_p_text_3">
                     {sender
                       ? characterName(
                           sender,
@@ -1104,7 +1104,7 @@ async function loadPrivateMessages(
                         "Deleted / unknown sender"}
                   </p>
 
-                  <p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806f5b))]">
+                  <p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806f5b))] admin_communication_logs_page_p_text_4">
                     {conversationLabel}
                     {" · "}
                     {message.message_mode ??
@@ -1112,8 +1112,8 @@ async function loadPrivateMessages(
                   </p>
                 </div>
 
-                <div className="shrink-0 text-right">
-                  <p className="text-[9px] text-[rgb(var(--sep-colour-9b8768))]">
+                <div className="shrink-0 text-right admin_communication_logs_page_div_container_9">
+                  <p className="text-[9px] text-[rgb(var(--sep-colour-9b8768))] admin_communication_logs_page_p_text_5">
                     {formatDateTime(
                       String(
                         message.created_at,
@@ -1121,7 +1121,7 @@ async function loadPrivateMessages(
                     )}
                   </p>
 
-                  <p className="mt-1 font-mono text-[7px] text-[rgb(var(--sep-colour-62584b))]">
+                  <p className="mt-1 font-mono text-[7px] text-[rgb(var(--sep-colour-62584b))] admin_communication_logs_page_p_text_6">
                     {
                       message.conversation_id
                     }
@@ -1129,7 +1129,7 @@ async function loadPrivateMessages(
                 </div>
               </div>
 
-              <div className="mt-3 whitespace-pre-wrap border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-3 text-xs leading-6 text-[rgb(var(--sep-colour-c1b198))]">
+              <div className="mt-3 whitespace-pre-wrap border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-3 text-xs leading-6 text-[rgb(var(--sep-colour-c1b198))] admin_communication_logs_page_div_container_10">
                 {plainText(
                   String(
                     moderation
@@ -1144,8 +1144,8 @@ async function loadPrivateMessages(
               {(moderation
                 ?.original_forwarded_body ??
                 message.forwarded_body) ? (
-                <div className="mt-3 border-l-2 border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-100c09))] p-3 text-[10px] leading-5 text-[rgb(var(--sep-colour-9e907d))]">
-                  <p className="mb-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806f5b))]">
+                <div className="mt-3 border-l-2 border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-100c09))] p-3 text-[10px] leading-5 text-[rgb(var(--sep-colour-9e907d))] admin_communication_logs_page_div_container_11">
+                  <p className="mb-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806f5b))] admin_communication_logs_page_p_text_7">
                     Forwarded from{" "}
                     {message.forwarded_sender_name ??
                       "Unknown"}
@@ -1158,7 +1158,7 @@ async function loadPrivateMessages(
                       : ""}
                   </p>
 
-                  <p className="whitespace-pre-wrap">
+                  <p className="whitespace-pre-wrap admin_communication_logs_page_p_text_8">
                     {plainText(
                       String(
                         moderation
@@ -1615,11 +1615,9 @@ function renderLocationMechanicalText(
       return (
         <span
           key={index}
-          className={
-            highlighted
+          className={[((highlighted
               ? "font-bold text-[rgb(var(--sep-colour-a98a60))]"
-              : undefined
-          }
+              : undefined)), "admin_communication_logs_page_span_text_2"].filter(Boolean).join(" ")}
         >
           {segment}
         </span>
@@ -1657,11 +1655,9 @@ function renderLocationActionSpeech(
       return (
         <span
           key={index}
-          className={
-            isAction
+          className={[((isAction
               ? "italic text-[rgb(var(--sep-colour-a98a60))]"
-              : "text-[rgb(var(--sep-colour-d3c2aa))]"
-          }
+              : "text-[rgb(var(--sep-colour-d3c2aa))]")), "admin_communication_logs_page_span_text_3"].filter(Boolean).join(" ")}
         >
           {segment}
         </span>
@@ -1709,7 +1705,7 @@ function renderLocationChatTags(
   }
 
   return (
-    <span className="text-[9px] uppercase tracking-[.04em] text-[rgb(var(--sep-colour-b99765))]">
+    <span className="text-[9px] uppercase tracking-[.04em] text-[rgb(var(--sep-colour-b99765))] admin_communication_logs_page_span_text_4">
       {" | "}
       {groups.join(" | ")}
     </span>
@@ -2085,7 +2081,7 @@ async function loadRoomMessages(
     );
 
   return (
-    <section className="mt-4 space-y-2">
+    <section className="mt-4 space-y-2 admin_communication_logs_page_section_section_2">
       {messages.map(
         (message) => {
           const sender =
@@ -2250,13 +2246,13 @@ async function loadRoomMessages(
               <article
                 id={`message-${message.id}`}
                 key={message.id}
-                className={`border bg-[rgb(var(--sep-colour-15100d))] ${
+                className={[((`border bg-[rgb(var(--sep-colour-15100d))] ${
                   isTarget
                     ? "border-[rgb(var(--sep-colour-c99758))] ring-1 ring-[rgb(var(--sep-colour-c99758))]/70"
                     : "border-[rgb(var(--sep-colour-59432c))]/40"
-                }`}
+                }`)), "admin_communication_logs_page_article_article_2"].filter(Boolean).join(" ")}
               >
-                <div className="border-b border-[rgb(var(--sep-colour-59432c))]/25 px-4 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806f5b))]">
+                <div className="border-b border-[rgb(var(--sep-colour-59432c))]/25 px-4 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806f5b))] admin_communication_logs_page_div_container_12">
                   {room?.name ??
                     "Unknown location"}
                   {" · "}
@@ -2264,9 +2260,9 @@ async function loadRoomMessages(
                   {" · fate"}
                 </div>
 
-                <div className="border-y border-[rgb(var(--sep-colour-8a6637))]/40 bg-[linear-gradient(90deg,rgba(var(--sep-rgb-91-56-24),0.22),rgba(var(--sep-rgb-24-16-11),0.72),rgba(var(--sep-rgb-91-56-24),0.14))] px-5 py-2.5">
-                  <div className="flex items-center justify-between gap-4">
-                    <span className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-c99b58))]">
+                <div className="border-y border-[rgb(var(--sep-colour-8a6637))]/40 bg-[linear-gradient(90deg,rgba(var(--sep-rgb-91-56-24),0.22),rgba(var(--sep-rgb-24-16-11),0.72),rgba(var(--sep-rgb-91-56-24),0.14))] px-5 py-2.5 admin_communication_logs_page_div_container_13">
+                  <div className="flex items-center justify-between gap-4 admin_communication_logs_page_div_container_14">
+                    <span className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-c99b58))] admin_communication_logs_page_span_text_5">
                       The Voice of Fate
                     </span>
 
@@ -2279,12 +2275,12 @@ async function loadRoomMessages(
                     </time>
                   </div>
 
-                  <p className="mt-1.5 whitespace-pre-wrap break-words font-serif text-[13px] leading-5 text-[rgb(var(--sep-colour-d6c09a))]">
+                  <p className="mt-1.5 whitespace-pre-wrap break-words font-serif text-[13px] leading-5 text-[rgb(var(--sep-colour-d6c09a))] admin_communication_logs_page_p_text_9">
                     {displayMessage}
                   </p>
                 </div>
 
-                <div className="px-4 pb-4">
+                <div className="px-4 pb-4 admin_communication_logs_page_div_container_15">
                   <ModerationPanel
                     sourceType="room_message"
                     sourceId={String(
@@ -2303,14 +2299,14 @@ async function loadRoomMessages(
             <article
               id={`message-${message.id}`}
               key={message.id}
-              className={`border bg-[rgb(var(--sep-colour-15100d))] ${
+              className={[((`border bg-[rgb(var(--sep-colour-15100d))] ${
                 isTarget
                   ? "border-[rgb(var(--sep-colour-c99758))] ring-1 ring-[rgb(var(--sep-colour-c99758))]/70"
                   : "border-[rgb(var(--sep-colour-59432c))]/40"
-              }`}
+              }`)), "admin_communication_logs_page_article_article_3"].filter(Boolean).join(" ")}
             >
               {/* Keep the admin-only location metadata, filters and moderation context. */}
-              <div className="border-b border-[rgb(var(--sep-colour-59432c))]/25 px-4 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806f5b))]">
+              <div className="border-b border-[rgb(var(--sep-colour-59432c))]/25 px-4 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806f5b))] admin_communication_logs_page_div_container_16">
                 {room?.name ??
                   "Unknown location"}
                 {" · "}
@@ -2320,7 +2316,7 @@ async function loadRoomMessages(
               </div>
 
               <div
-                className={`relative flex min-w-0 gap-3 px-5 py-3 pr-12 sm:px-7 sm:pr-12 ${
+                className={[((`relative flex min-w-0 gap-3 px-5 py-3 pr-12 sm:px-7 sm:pr-12 ${
                   isOutOfCharacter
                     ? "border-l-2 border-[rgb(var(--sep-colour-627f9f))] bg-[rgb(var(--sep-colour-182536))]/55"
                     : isWhisper
@@ -2332,12 +2328,12 @@ async function loadRoomMessages(
                           : naturalOne
                             ? "bg-red-950/10"
                             : ""
-                }`}
+                }`)), "admin_communication_logs_page_div_container_17"].filter(Boolean).join(" ")}
               >
                 {/* Left: portrait, race/Order icons, time — same structure as live location chat. */}
-                <div className="flex w-[76px] shrink-0 flex-col">
-                  <div className="flex items-start gap-1.5">
-                    <div className="h-9 w-9 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))] bg-[rgb(var(--sep-colour-0d0a08))]">
+                <div className="flex w-[76px] shrink-0 flex-col admin_communication_logs_page_div_container_18">
+                  <div className="flex items-start gap-1.5 admin_communication_logs_page_div_container_19">
+                    <div className="h-9 w-9 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))] bg-[rgb(var(--sep-colour-0d0a08))] admin_communication_logs_page_div_container_20">
                       {sender?.portrait_url ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
@@ -2345,16 +2341,16 @@ async function loadRoomMessages(
                             sender.portrait_url
                           }
                           alt=""
-                          className="h-full w-full object-cover"
+                          className="h-full w-full object-cover admin_communication_logs_page_img_image"
                         />
                       ) : (
-                        <span className="flex h-full items-center justify-center text-[rgb(var(--sep-colour-806b4e))]">
+                        <span className="flex h-full items-center justify-center text-[rgb(var(--sep-colour-806b4e))] admin_communication_logs_page_span_text_6">
                           ?
                         </span>
                       )}
                     </div>
 
-                    <div className="flex shrink-0 flex-col items-center gap-1 pt-0.5">
+                    <div className="flex shrink-0 flex-col items-center gap-1 pt-0.5 admin_communication_logs_page_div_container_21">
                       {race?.icon_url ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
@@ -2365,7 +2361,7 @@ async function loadRoomMessages(
                           title={
                             race.name
                           }
-                          className="h-4 w-4 object-contain"
+                          className="h-4 w-4 object-contain admin_communication_logs_page_img_image_2"
                         />
                       ) : null}
 
@@ -2378,12 +2374,12 @@ async function loadRoomMessages(
                             }
                             alt=""
                             title={`Order: ${order.name}`}
-                            className="h-4 w-4 object-contain"
+                            className="h-4 w-4 object-contain admin_communication_logs_page_img_image_3"
                           />
                         ) : (
                           <span
                             title={`Order: ${order.name}`}
-                            className="flex h-4 w-4 items-center justify-center font-serif text-[7px]"
+                            className="flex h-4 w-4 items-center justify-center font-serif text-[7px] admin_communication_logs_page_span_text_7"
                             style={{
                               color:
                                 order.colour ??
@@ -2408,24 +2404,24 @@ async function loadRoomMessages(
                   </time>
                 </div>
 
-                <div className="min-w-0 flex-1">
+                <div className="min-w-0 flex-1 admin_communication_logs_page_div_container_22">
                   {isWhisper ||
                   isOutOfCharacter ? (
                     <div
-                      className={`mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 border-b pb-1.5 ${
+                      className={[((`mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 border-b pb-1.5 ${
                         isOutOfCharacter
                           ? "border-[rgb(var(--sep-colour-627f9f))]/40"
                           : "border-[rgb(var(--sep-colour-7d628f))]/35"
-                      }`}
+                      }`)), "admin_communication_logs_page_div_container_23"].filter(Boolean).join(" ")}
                     >
                       {isOutOfCharacter ? (
-                        <span className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-a9c7e6))]">
+                        <span className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-a9c7e6))] admin_communication_logs_page_span_text_8">
                           Out of Character message
                         </span>
                       ) : null}
 
                       {isWhisper ? (
-                        <span className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-c7add6))]">
+                        <span className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-c7add6))] admin_communication_logs_page_span_text_9">
                           {whisperLabel}
                         </span>
                       ) : null}
@@ -2434,7 +2430,7 @@ async function loadRoomMessages(
 
                   {/* Main body: Name | active conditions/prices/etc, then newline, then the whole output. */}
                   <p
-                    className={`min-w-0 whitespace-pre-wrap break-words text-[13px] leading-[18px] ${
+                    className={[((`min-w-0 whitespace-pre-wrap break-words text-[13px] leading-[18px] ${
                       isWhisper
                         ? "text-[rgb(var(--sep-colour-c7add6))]"
                         : isOutOfCharacter
@@ -2446,10 +2442,10 @@ async function loadRoomMessages(
                               : isMechanicalOutput
                                 ? "text-[rgb(var(--sep-colour-c8b89f))]"
                                 : "text-[rgb(var(--sep-colour-d3c2aa))]"
-                    }`}
+                    }`)), "admin_communication_logs_page_p_text_10"].filter(Boolean).join(" ")}
                   >
                     <span
-                      className={`font-serif text-sm ${
+                      className={[((`font-serif text-sm ${
                         isWhisper
                           ? "text-[rgb(var(--sep-colour-c7add6))]"
                           : isOutOfCharacter
@@ -2457,7 +2453,7 @@ async function loadRoomMessages(
                             : isMechanicalOutput
                               ? "text-[rgb(var(--sep-colour-d8bf91))]"
                               : "text-[rgb(var(--sep-colour-d8bf91))]"
-                      }`}
+                      }`)), "admin_communication_logs_page_span_text_10"].filter(Boolean).join(" ")}
                       title={
                         characterName(
                           sender,
@@ -2486,7 +2482,7 @@ async function loadRoomMessages(
                 </div>
               </div>
 
-              <div className="px-4 pb-4">
+              <div className="px-4 pb-4 admin_communication_logs_page_div_container_24">
                 <ModerationPanel
                   sourceType="room_message"
                   sourceId={String(
@@ -2599,7 +2595,7 @@ async function loadInstantChatMessages(
     );
 
   return (
-    <section className="mt-4 space-y-2">
+    <section className="mt-4 space-y-2 admin_communication_logs_page_section_section_3">
       {(messages ?? []).map(
         (message) => {
           const moderation =
@@ -2615,15 +2611,15 @@ async function loadInstantChatMessages(
           <article
             id={`message-${message.id}`}
             key={message.id}
-            className={`border bg-[rgb(var(--sep-colour-15100d))] p-4 ${
+            className={[((`border bg-[rgb(var(--sep-colour-15100d))] p-4 ${
               isTarget
                 ? "border-[rgb(var(--sep-colour-c99758))] ring-1 ring-[rgb(var(--sep-colour-c99758))]/70"
                 : "border-[rgb(var(--sep-colour-59432c))]/40"
-            }`}
+            }`)), "admin_communication_logs_page_article_article_4"].filter(Boolean).join(" ")}
           >
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div>
-                <p className="font-serif text-base text-[rgb(var(--sep-colour-dcc49a))]">
+            <div className="flex flex-wrap items-start justify-between gap-3 admin_communication_logs_page_div_container_25">
+              <div className="admin_communication_logs_page_div_container_26">
+                <p className="font-serif text-base text-[rgb(var(--sep-colour-dcc49a))] admin_communication_logs_page_p_text_11">
                   {characterById.get(
                     String(
                       message.sender_character_id,
@@ -2632,13 +2628,13 @@ async function loadInstantChatMessages(
                     "Unknown character"}
                 </p>
 
-                <p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806f5b))]">
+                <p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806f5b))] admin_communication_logs_page_p_text_12">
                   Instant Chat · Off-game
                 </p>
               </div>
 
-              <div className="text-right">
-                <p className="text-[9px] text-[rgb(var(--sep-colour-9b8768))]">
+              <div className="text-right admin_communication_logs_page_div_container_27">
+                <p className="text-[9px] text-[rgb(var(--sep-colour-9b8768))] admin_communication_logs_page_p_text_13">
                   {formatDateTime(
                     String(
                       message.created_at,
@@ -2646,7 +2642,7 @@ async function loadInstantChatMessages(
                   )}
                 </p>
 
-                <p className="mt-1 font-mono text-[7px] text-[rgb(var(--sep-colour-62584b))]">
+                <p className="mt-1 font-mono text-[7px] text-[rgb(var(--sep-colour-62584b))] admin_communication_logs_page_p_text_14">
                   {String(
                     message.conversation_id,
                   )}
@@ -2654,7 +2650,7 @@ async function loadInstantChatMessages(
               </div>
             </div>
 
-            <p className="mt-3 whitespace-pre-wrap border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-3 text-xs leading-6 text-[rgb(var(--sep-colour-c1b198))]">
+            <p className="mt-3 whitespace-pre-wrap border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-3 text-xs leading-6 text-[rgb(var(--sep-colour-c1b198))] admin_communication_logs_page_p_text_15">
               {String(
                 moderation
                   ?.original_content ??
@@ -2717,24 +2713,24 @@ async function loadCharacterBlocks(
   );
 
   return (
-    <section className="mt-4 space-y-2">
+    <section className="mt-4 space-y-2 admin_communication_logs_page_section_section_4">
       {(rows ?? []).map((row) => (
         <article
           key={`${row.blocker_character_id}:${row.blocked_character_id}`}
-          className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-15100d))] p-4"
+          className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-15100d))] p-4 admin_communication_logs_page_article_article_5"
         >
-          <div className="flex flex-wrap items-start justify-between gap-3">
-            <div>
-              <p className="font-serif text-base text-[rgb(var(--sep-colour-dcc49a))]">
+          <div className="flex flex-wrap items-start justify-between gap-3 admin_communication_logs_page_div_container_28">
+            <div className="admin_communication_logs_page_div_container_29">
+              <p className="font-serif text-base text-[rgb(var(--sep-colour-dcc49a))] admin_communication_logs_page_p_text_16">
                 {names.get(String(row.blocker_character_id)) ?? "Unknown character"}
                 {" → "}
                 {names.get(String(row.blocked_character_id)) ?? "Unknown character"}
               </p>
-              <p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806f5b))]">
+              <p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806f5b))] admin_communication_logs_page_p_text_17">
                 Character Block
               </p>
             </div>
-            <p className="text-[9px] text-[rgb(var(--sep-colour-9b8768))]">
+            <p className="text-[9px] text-[rgb(var(--sep-colour-9b8768))] admin_communication_logs_page_p_text_18">
               {formatDateTime(String(row.created_at))}
             </p>
           </div>
@@ -2775,7 +2771,7 @@ function EmptyState({
   message: string;
 }) {
   return (
-    <div className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-8 text-center text-sm italic text-[rgb(var(--sep-colour-776b5b))]">
+    <div className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-8 text-center text-sm italic text-[rgb(var(--sep-colour-776b5b))] admin_communication_logs_page_div_container_30">
       {message}
     </div>
   );

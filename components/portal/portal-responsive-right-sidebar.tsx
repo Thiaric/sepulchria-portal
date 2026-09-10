@@ -310,7 +310,7 @@ setMobileButtonTop(
         aria-label="Unavailable location"
         data-portal-column
         data-portal-right-sidebar
-        className="hidden h-full min-h-0 border-l border-[rgb(var(--sep-colour-6e5535))]/40 bg-[rgb(var(--sep-colour-0d0b0a))] xl:block"
+        className="hidden h-full min-h-0 border-l border-[rgb(var(--sep-colour-6e5535))]/40 bg-[rgb(var(--sep-colour-0d0b0a))] xl:block components_portal_portal_responsive_right_sidebar_aside_unavailable_location"
       />
     );
   }
@@ -457,7 +457,7 @@ const nextTop =
 
     touchAction: "none",
   }}
-  className="fixed right-3 z-40 flex h-11 w-11 select-none items-center justify-center border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-1d160f))] font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] shadow-[0_12px_35px_rgba(var(--sep-rgb-0-0-0),0.45)] [transform:none!important] transition-colors hover:border-[rgb(var(--sep-colour-a37b45))] hover:text-[rgb(var(--sep-colour-f0d39d))] xl:hidden"
+  className="fixed right-3 z-40 flex h-11 w-11 select-none items-center justify-center border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-1d160f))] font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] shadow-[0_12px_35px_rgba(var(--sep-rgb-0-0-0),0.45)] [transform:none!important] transition-colors hover:border-[rgb(var(--sep-colour-a37b45))] hover:text-[rgb(var(--sep-colour-f0d39d))] xl:hidden components_portal_portal_responsive_right_sidebar_button_open_context_panel"
 >
   ◈
 </button>
@@ -469,7 +469,7 @@ const nextTop =
           onClick={() =>
             setOpen(false)
           }
-          className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-[2px] xl:hidden"
+          className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-[2px] xl:hidden components_portal_portal_responsive_right_sidebar_button_close_context_panel"
         />
       ) : null}
 
@@ -479,22 +479,22 @@ const nextTop =
         data-portal-column
         data-portal-scroll
         data-portal-right-sidebar
-        className={[
+        className={[(([
           "z-[70] flex min-h-0 min-w-0 flex-col border-l border-[rgb(var(--sep-colour-6e5535))]/40 bg-[rgb(var(--sep-colour-100d0b))]",
           "fixed top-0 bottom-[calc(64px+var(--sep-mobile-tidings-height,0px)+env(safe-area-inset-bottom))] right-0 w-[min(88vw,360px)] overflow-hidden overscroll-contain shadow-[-18px_0_50px_rgba(var(--sep-rgb-0-0-0),0.55)] transition-transform duration-200 ease-out",
           open
             ? "translate-x-0"
             : "translate-x-full",
           "xl:relative xl:inset-auto xl:z-auto xl:h-full xl:w-auto xl:translate-x-0 xl:self-stretch xl:overflow-hidden xl:shadow-none xl:transition-none",
-        ].join(" ")}
+        ].join(" "))), "components_portal_portal_responsive_right_sidebar_aside_context_sidebar"].filter(Boolean).join(" ")}
       >
-        <div className="flex h-16 shrink-0 items-center justify-between border-b border-[rgb(var(--sep-colour-6e5535))]/40 px-4 xl:hidden">
-          <div>
-            <p className="text-[8px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-876a46))]">
+        <div className="flex h-16 shrink-0 items-center justify-between border-b border-[rgb(var(--sep-colour-6e5535))]/40 px-4 xl:hidden components_portal_portal_responsive_right_sidebar_div_context_sidebar">
+          <div className="components_portal_portal_responsive_right_sidebar_div_context_sidebar_2">
+            <p className="text-[8px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-876a46))] components_portal_portal_responsive_right_sidebar_p_context_sidebar">
               Context
             </p>
 
-            <p className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-d6bd91))]">
+            <p className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-d6bd91))] components_portal_portal_responsive_right_sidebar_p_context_sidebar_2">
               Sepulchria
             </p>
           </div>
@@ -505,20 +505,20 @@ const nextTop =
               setOpen(false)
             }
             aria-label="Close context panel"
-            className="flex h-9 w-9 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-17120f))] text-[rgb(var(--sep-colour-bca47e))] transition hover:border-[rgb(var(--sep-colour-977242))] hover:text-[rgb(var(--sep-colour-efd6a3))]"
+            className="flex h-9 w-9 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-17120f))] text-[rgb(var(--sep-colour-bca47e))] transition hover:border-[rgb(var(--sep-colour-977242))] hover:text-[rgb(var(--sep-colour-efd6a3))] components_portal_portal_responsive_right_sidebar_button_close_context_panel_2"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
-        <div className="flex min-h-0 flex-1 flex-col p-4 xl:p-[var(--portal-column-pad,1rem)]">
-          <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto overscroll-contain xl:gap-[var(--portal-column-gap,0.75rem)]">
+        <div className="flex min-h-0 flex-1 flex-col p-4 xl:p-[var(--portal-column-pad,1rem)] components_portal_portal_responsive_right_sidebar_div_context_sidebar_3">
+          <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto overscroll-contain xl:gap-[var(--portal-column-gap,0.75rem)] components_portal_portal_responsive_right_sidebar_div_context_sidebar_4">
             {!isAdminOrderSubmissionsPath ? (
-            <div data-skin-widget="current-location" className="shrink-0">
-              <p data-skin-role="primary" className="mb-0.5 px-1 text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-a88658))]">
+            <div data-skin-widget="current-location" className="shrink-0 components_portal_portal_responsive_right_sidebar_div_container">
+              <p data-skin-role="primary" className="mb-0.5 px-1 text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-a88658))] components_portal_portal_responsive_right_sidebar_p_text">
   Current Location
 </p>
-<p data-skin-role="secondary" className="mb-2 mt-0.5 break-words px-1 text-[10px] leading-snug text-[rgb(var(--sep-colour-d0c0a8))]">
+<p data-skin-role="secondary" className="mb-2 mt-0.5 break-words px-1 text-[10px] leading-snug text-[rgb(var(--sep-colour-d0c0a8))] components_portal_portal_responsive_right_sidebar_p_text_2">
   {(
     character
       ?.currentRoom
@@ -535,7 +535,7 @@ const nextTop =
 
 
 
-<section className="relative min-h-[108px] overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">{character
+<section className="relative min-h-[108px] overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] components_portal_portal_responsive_right_sidebar_section_section">{character
                   ?.currentRoom
                   ?.image_url ? (
                   <LocationAtmosphericImage
@@ -554,17 +554,17 @@ const nextTop =
                   />
                 ) : null}
 
-                <div className="pointer-events-none absolute inset-0 z-[6] bg-black/48" />
+                <div className="pointer-events-none absolute inset-0 z-[6] bg-black/48 components_portal_portal_responsive_right_sidebar_div_container_2" />
 
-                <div className="pointer-events-none absolute inset-0 z-[6] bg-gradient-to-r from-black/78 via-black/52 to-black/28" />
+                <div className="pointer-events-none absolute inset-0 z-[6] bg-gradient-to-r from-black/78 via-black/52 to-black/28 components_portal_portal_responsive_right_sidebar_div_container_3" />
 
-                <div className="relative z-10 flex min-h-[108px] items-end p-4 xl:p-[var(--portal-section-pad,1rem)]">
-                  <div className="flex w-full items-end justify-end gap-2">
+                <div className="relative z-10 flex min-h-[108px] items-end p-4 xl:p-[var(--portal-section-pad,1rem)] components_portal_portal_responsive_right_sidebar_div_container_4">
+                  <div className="flex w-full items-end justify-end gap-2 components_portal_portal_responsive_right_sidebar_div_container_5">
                     
 
                     {character
                       ?.currentRoom ? (
-                      <div className="flex shrink-0 items-end gap-1.5">
+                      <div className="flex shrink-0 items-end gap-1.5 components_portal_portal_responsive_right_sidebar_div_container_6">
                         <RoomInfoButton
                           roomId={
                             character
@@ -590,7 +590,7 @@ const nextTop =
             </div>
             ) : null}
 
-            <section className="min-h-0 flex-1 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 xl:p-[var(--portal-section-pad,1rem)]">
+            <section className="min-h-0 flex-1 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 xl:p-[var(--portal-section-pad,1rem)] components_portal_portal_responsive_right_sidebar_section_context_sidebar">
               {isAdminOrderSubmissionsPath ? (
                 <OrderSubmissionsContext
                   key={`order-submissions-${adminRevision}`}
@@ -696,7 +696,7 @@ const nextTop =
           {character?.status ===
             "approved" &&
           !isAdminOrderSubmissionsPath ? (
-            <div className="relative mt-3 shrink-0">
+            <div className="relative mt-3 shrink-0 components_portal_portal_responsive_right_sidebar_div_container_7">
               <InstantChatDock
                 characterId={
                   character.id

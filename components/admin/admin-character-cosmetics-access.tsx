@@ -67,17 +67,17 @@ export function AdminCharacterCosmeticsAccess({
   );
 
   return (
-    <section className="mt-6 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
-      <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] px-5 py-4">
-        <p className="text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))]">
+    <section className="mt-6 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] components_admin_admin_character_cosmetics_access_section_section">
+      <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] px-5 py-4 components_admin_admin_character_cosmetics_access_div_premium_cosmetics">
+        <p className="text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))] components_admin_admin_character_cosmetics_access_p_premium_cosmetics">
           Cosmetic access
         </p>
-        <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-e1c89f))]">
+        <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-e1c89f))] components_admin_admin_character_cosmetics_access_h2_premium_cosmetics">
           Premium Cosmetics
         </h2>
       </div>
 
-      <div className="grid gap-px bg-[rgb(var(--sep-colour-4f3b28))]/35 lg:grid-cols-2">
+      <div className="grid gap-px bg-[rgb(var(--sep-colour-4f3b28))]/35 lg:grid-cols-2 components_admin_admin_character_cosmetics_access_div_container">
         {cosmetics.map((cosmetic) => {
           const entitlement = byCosmetic.get(cosmetic.id);
           const enabled =
@@ -100,21 +100,21 @@ export function AdminCharacterCosmeticsAccess({
                   "Ownership saved.",
                 );
               }}
-              className="scroll-mt-6 bg-[rgb(var(--sep-colour-17110d))] p-5"
+              className="scroll-mt-6 bg-[rgb(var(--sep-colour-17110d))] p-5 components_admin_admin_character_cosmetics_access_form_form"
             >
-              <input
+              <input className="components_admin_admin_character_cosmetics_access_input_character_id"
                 type="hidden"
                 name="characterId"
                 value={characterId}
               />
-              <input
+              <input className="components_admin_admin_character_cosmetics_access_input_cosmetic_item_id"
                 type="hidden"
                 name="cosmeticItemId"
                 value={cosmetic.id}
               />
 
-              <div className="flex items-start gap-4">
-                <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-0d0907))] p-2">
+              <div className="flex items-start gap-4 components_admin_admin_character_cosmetics_access_div_container_2">
+                <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-0d0907))] p-2 components_admin_admin_character_cosmetics_access_div_container_3">
                   {cosmetic.preview_image_url ?? cosmetic.asset_url ? (
                     <img
                       src={
@@ -123,55 +123,53 @@ export function AdminCharacterCosmeticsAccess({
                         ""
                       }
                       alt=""
-                      className="max-h-full max-w-full object-contain"
+                      className="max-h-full max-w-full object-contain components_admin_admin_character_cosmetics_access_img_image"
                     />
                   ) : null}
                 </div>
 
-                <div className="min-w-0 flex-1">
-                  <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+                <div className="min-w-0 flex-1 components_admin_admin_character_cosmetics_access_div_container_4">
+                  <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_admin_admin_character_cosmetics_access_p_text">
                     {COSMETIC_LABELS[cosmetic.category]}
                   </p>
-                  <h3 className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-dfc79c))]">
+                  <h3 className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-dfc79c))] components_admin_admin_character_cosmetics_access_h3_heading">
                     {cosmetic.name}
                   </h3>
-                  <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+                  <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_admin_admin_character_cosmetics_access_p_text_2">
                     {cosmetic.description}
                   </p>
                 </div>
 
                 <span
-                  className={
-                    enabled
+                  className={[((enabled
                       ? "shrink-0 border border-[rgb(var(--sep-colour-668657))] bg-[rgb(var(--sep-colour-172313))] px-2 py-1 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-a8cf92))]"
-                      : "shrink-0 border border-[rgb(var(--sep-colour-65483e))] bg-[rgb(var(--sep-colour-221512))] px-2 py-1 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b78378))]"
-                  }
+                      : "shrink-0 border border-[rgb(var(--sep-colour-65483e))] bg-[rgb(var(--sep-colour-221512))] px-2 py-1 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b78378))]")), "components_admin_admin_character_cosmetics_access_span_text"].filter(Boolean).join(" ")}
                 >
                   {enabled ? "Enabled" : "Disabled"}
                 </span>
               </div>
 
-              <div className="mt-5 grid gap-4">
+              <div className="mt-5 grid gap-4 components_admin_admin_character_cosmetics_access_div_container_5">
                 <select
                   name="enabled"
                   defaultValue={enabled ? "true" : "false"}
-                  className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-sm text-[rgb(var(--sep-colour-d7c4a5))]"
+                  className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-sm text-[rgb(var(--sep-colour-d7c4a5))] components_admin_admin_character_cosmetics_access_select_enabled"
                 >
-                  <option value="false">Disabled</option>
-                  <option value="true">Enabled</option>
+                  <option className="components_admin_admin_character_cosmetics_access_option_enabled" value="false">Disabled</option>
+                  <option className="components_admin_admin_character_cosmetics_access_option_enabled_2" value="true">Enabled</option>
                 </select>
 
                 <select
                   name="source"
                   defaultValue={entitlement?.source ?? "staff"}
-                  className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-sm text-[rgb(var(--sep-colour-d7c4a5))]"
+                  className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-sm text-[rgb(var(--sep-colour-d7c4a5))] components_admin_admin_character_cosmetics_access_select_source"
                 >
-                  <option value="paid">Real-money purchase</option>
-                  <option value="staff">Staff grant</option>
-                  <option value="reward">Reward</option>
-                  <option value="promotion">Promotion</option>
-                  <option value="gift">Gift</option>
-                  <option value="event">Event</option>
+                  <option className="components_admin_admin_character_cosmetics_access_option_paid" value="paid">Real-money purchase</option>
+                  <option className="components_admin_admin_character_cosmetics_access_option_staff" value="staff">Staff grant</option>
+                  <option className="components_admin_admin_character_cosmetics_access_option_reward" value="reward">Reward</option>
+                  <option className="components_admin_admin_character_cosmetics_access_option_promotion" value="promotion">Promotion</option>
+                  <option className="components_admin_admin_character_cosmetics_access_option_gift" value="gift">Gift</option>
+                  <option className="components_admin_admin_character_cosmetics_access_option_source" value="event">Event</option>
                 </select>
 
                 <textarea
@@ -180,11 +178,11 @@ export function AdminCharacterCosmeticsAccess({
                   maxLength={1000}
                   defaultValue={entitlement?.note ?? ""}
                   placeholder="Optional staff note"
-                  className="w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-sm text-[rgb(var(--sep-colour-d7c4a5))]"
+                  className="w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-sm text-[rgb(var(--sep-colour-d7c4a5))] components_admin_admin_character_cosmetics_access_textarea_note"
                 />
               </div>
 
-              <div className="mt-5 flex items-center justify-end gap-3 border-t border-[rgb(var(--sep-colour-5d452d))]/35 pt-4">
+              <div className="mt-5 flex items-center justify-end gap-3 border-t border-[rgb(var(--sep-colour-5d452d))]/35 pt-4 components_admin_admin_character_cosmetics_access_div_container_6">
                 <AdminSaveFeedbackMessage
                   feedback={feedbackByKey[cosmetic.id]}
                 />
@@ -192,7 +190,7 @@ export function AdminCharacterCosmeticsAccess({
                 <button
                   type="submit"
                   disabled={pendingKey === cosmetic.id}
-                  className="border border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd9aa))] disabled:cursor-wait disabled:opacity-60"
+                  className="border border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd9aa))] disabled:cursor-wait disabled:opacity-60 components_admin_admin_character_cosmetics_access_button_action"
                 >
                   {pendingKey === cosmetic.id
                     ? "Saving..."

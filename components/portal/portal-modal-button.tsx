@@ -34,7 +34,7 @@ export function PortalModalButton({ payload, children, ...props }: {
   children: ReactNode;
 } & ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
-    <button
+    <button className="components_portal_portal_modal_button_button_action"
       type="button"
       {...props}
       onClick={(event) => {

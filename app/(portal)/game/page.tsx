@@ -77,7 +77,7 @@ export default function GamePage(props: Props) {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-[60vh] items-center justify-center px-5 text-[rgb(var(--sep-colour-a98b61))]">
+        <div className="flex min-h-[60vh] items-center justify-center px-5 text-[rgb(var(--sep-colour-a98b61))] game_page_div_container">
           Entering Sepulchria...
         </div>
       }
@@ -192,7 +192,7 @@ async function GameContent() {
   ) {
     return (
       <div
-        className="h-full min-h-[60vh] bg-[rgb(var(--sep-colour-0d0b0a))]"
+        className="h-full min-h-[60vh] bg-[rgb(var(--sep-colour-0d0b0a))] game_page_div_unavailable_location"
         aria-label="Unavailable location"
       />
     );
@@ -680,7 +680,7 @@ async function GameContent() {
         ? "true"
         : undefined
     }
-    className="h-full min-h-0 overflow-hidden"
+    className="h-full min-h-0 overflow-hidden game_page_div_container_2"
     style={
       ownedLocationAtmosphereUrl
         ? ({
@@ -707,7 +707,7 @@ async function GameContent() {
       }
     />
 
-    <div className="mx-auto flex h-full max-w-80dvh flex-col">
+    <div className="mx-auto flex h-full max-w-80dvh flex-col game_page_div_container_3">
       <RoomMusicPlayer
         locationName={room.name}
         locationTrack={music.locationTrack}
@@ -717,11 +717,11 @@ async function GameContent() {
 
   <article
     data-sep-interaction-fixed="true"
-    className="flex min-h-0 flex-1 flex-col overflow-visible border border-[rgb(var(--sep-colour-6a5032))]/50 bg-[rgb(var(--sep-colour-17110d))] lg:overflow-hidden"
+    className="flex min-h-0 flex-1 flex-col overflow-visible border border-[rgb(var(--sep-colour-6a5032))]/50 bg-[rgb(var(--sep-colour-17110d))] lg:overflow-hidden game_page_article_article"
   >
 
     {headquartersManageData ? (
-      <div data-sep-interaction-ignore="true">
+      <div className="game_page_div_container_4" data-sep-interaction-ignore="true">
         <OrderHeadquartersPanel
           key={`headquarters-panel-${headquartersManageData.headquartersId}`}
           data={headquartersManageData}
@@ -730,31 +730,31 @@ async function GameContent() {
     ) : null}
 
     {gatheringState ? (
-      <div data-sep-interaction-ignore="true">
+      <div className="game_page_div_container_5" data-sep-interaction-ignore="true">
         <GatheringPanel state={gatheringState} />
       </div>
     ) : null}
 
     {room.slug === "house-of-chances" && houseOfChancesState ? (
-      <div data-sep-interaction-ignore="true">
+      <div className="game_page_div_container_6" data-sep-interaction-ignore="true">
         <HouseOfChancesPanel state={houseOfChancesState} />
       </div>
     ) : null}
 
     {room.slug === "odd-jobs-bureau" ? (
-      <div data-sep-interaction-ignore="true">
+      <div className="game_page_div_container_7" data-sep-interaction-ignore="true">
         <OddJobsPanel jobs={oddJobs} />
       </div>
     ) : null}
 
     {room.slug === "the-breeze-lodgings" ? (
-      <div data-sep-interaction-ignore="true">
+      <div className="game_page_div_container_8" data-sep-interaction-ignore="true">
         <BreezeLodgingsPanel rooms={breezeLodgings} />
       </div>
     ) : null}
 
     {breezeManageData ? (
-      <div data-sep-interaction-ignore="true">
+      <div className="game_page_div_container_9" data-sep-interaction-ignore="true">
         <BreezeLodgingGuestsPanel
           data={breezeManageData}
         />
@@ -765,7 +765,7 @@ async function GameContent() {
       <>
         <div
           data-sep-interaction-ignore="true"
-          className="contents"
+          className="contents game_page_div_container_10"
         >
           <RoomMessageList
             roomId={room.id}

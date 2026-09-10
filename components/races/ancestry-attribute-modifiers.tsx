@@ -33,14 +33,12 @@ export function AncestryAttributeModifiers({
 }) {
   return (
     <section
-      className={
-        compact
+      className={[((compact
           ? "mt-5 border-t border-[rgb(var(--sep-colour-60482e))]/35 pt-4"
-          : "border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 p-5 sm:p-6"
-      }
+          : "border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 p-5 sm:p-6")), "components_races_ancestry_attribute_modifiers_section_section"].filter(Boolean).join(" ")}
     >
-      <div>
-        <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
+      <div className="components_races_ancestry_attribute_modifiers_div_container">
+        <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))] components_races_ancestry_attribute_modifiers_p_text">
           Ancestry Attributes Modifiers
         </p>
 
@@ -50,11 +48,9 @@ export function AncestryAttributeModifiers({
       </div>
 
       <div
-        className={
-  compact
+        className={[((compact
     ? "mt-3 grid grid-cols-2 gap-px bg-[rgb(var(--sep-colour-4f3b28))]/35 sm:grid-cols-3"
-    : "mt-5 grid grid-cols-2 gap-px bg-[rgb(var(--sep-colour-4f3b28))]/35 sm:grid-cols-3 lg:grid-cols-6"
-}
+    : "mt-5 grid grid-cols-2 gap-px bg-[rgb(var(--sep-colour-4f3b28))]/35 sm:grid-cols-3 lg:grid-cols-6")), "components_races_ancestry_attribute_modifiers_div_container_2"].filter(Boolean).join(" ")}
       >
         {MODIFIERS.map(({ key, label }) => {
           const value = modifiers[key] ?? 0;
@@ -62,28 +58,22 @@ export function AncestryAttributeModifiers({
           return (
             <div
               key={key}
-              className={
-                compact
+              className={[((compact
                   ? "flex items-center justify-between gap-3 bg-[rgb(var(--sep-colour-120e0b))] px-3 py-2.5"
-                  : "flex items-center justify-between gap-4 bg-[rgb(var(--sep-colour-120e0b))] px-4 py-4"
-              }
+                  : "flex items-center justify-between gap-4 bg-[rgb(var(--sep-colour-120e0b))] px-4 py-4")), "components_races_ancestry_attribute_modifiers_div_container_3"].filter(Boolean).join(" ")}
             >
               <span
-                className={
-                  compact
+                className={[((compact
                     ? "text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-8b7455))]"
-                    : "text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-8b7455))]"
-                }
+                    : "text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-8b7455))]")), "components_races_ancestry_attribute_modifiers_span_text"].filter(Boolean).join(" ")}
               >
                 {label}
               </span>
 
               <span
-                className={
-                  compact
+                className={[((compact
                     ? "font-serif text-lg text-[rgb(var(--sep-colour-e1c28d))]"
-                    : "font-serif text-2xl text-[rgb(var(--sep-colour-e1c28d))]"
-                }
+                    : "font-serif text-2xl text-[rgb(var(--sep-colour-e1c28d))]")), "components_races_ancestry_attribute_modifiers_span_text_2"].filter(Boolean).join(" ")}
               >
                 {formatModifier(value)}
               </span>

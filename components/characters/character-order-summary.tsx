@@ -78,7 +78,7 @@ export async function CharacterOrderSummary({
       }}
     >
       <div
-        className="flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-0d0907))] font-serif text-[9px]"
+        className="flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-0d0907))] font-serif text-[9px] components_characters_character_order_summary_div_container"
         style={{
           borderColor: `${colour}88`,
           color: colour,
@@ -89,19 +89,19 @@ export async function CharacterOrderSummary({
           <img
             src={order.icon_url}
             alt=""
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover components_characters_character_order_summary_img_image"
           />
         ) : (
           order?.name.charAt(0).toUpperCase() ?? "?"
         )}
       </div>
 
-      <div className="min-w-0 flex-1">
-        <p className="text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-735f47))]">
+      <div className="min-w-0 flex-1 components_characters_character_order_summary_div_container_2">
+        <p className="text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-735f47))] components_characters_character_order_summary_p_text">
           Order
         </p>
         <p
-          className="mt-0.5 break-words text-[11px] leading-4"
+          className="mt-0.5 break-words text-[11px] leading-4 components_characters_character_order_summary_p_text_2"
           style={{ color: order ? colour : "#675e52" }}
         >
           {display}

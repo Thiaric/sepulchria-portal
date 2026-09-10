@@ -56,13 +56,13 @@ export function AdminVaultFilters({ scope, total }: Props) {
   }
 
   return (
-    <div className="mt-4 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-15100d))] p-3">
+    <div className="mt-4 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-15100d))] p-3 components_admin_admin_vault_filters_div_container">
       <div
-        className={`grid gap-2 ${
+        className={[((`grid gap-2 ${
           scope === "live"
             ? "sm:grid-cols-2 xl:grid-cols-5"
             : "sm:grid-cols-2 xl:grid-cols-3"
-        }`}
+        }`)), "components_admin_admin_vault_filters_div_container_2"].filter(Boolean).join(" ")}
       >
         <input
           type="search"
@@ -73,21 +73,21 @@ export function AdminVaultFilters({ scope, total }: Props) {
               ? "Search name, master Item, description or notes..."
               : "Search destroyed Item, reason or instance ID..."
           }
-          className={inputClass}
+          className={[((inputClass)), "components_admin_admin_vault_filters_input_field"].filter(Boolean).join(" ")}
         />
 
         <select
           value={quality}
           onChange={(event) => setQuality(event.target.value)}
-          className={inputClass}
+          className={[((inputClass)), "components_admin_admin_vault_filters_select_select"].filter(Boolean).join(" ")}
         >
-          <option value="">All qualities</option>
-          <option value="poor">Poor</option>
-          <option value="average">Average</option>
-          <option value="fine">Fine</option>
-          <option value="superior">Superior</option>
-          <option value="flawless">Flawless</option>
-          <option value="peerless">Peerless</option>
+          <option className="components_admin_admin_vault_filters_option_option" value="">All qualities</option>
+          <option className="components_admin_admin_vault_filters_option_poor" value="poor">Poor</option>
+          <option className="components_admin_admin_vault_filters_option_average" value="average">Average</option>
+          <option className="components_admin_admin_vault_filters_option_fine" value="fine">Fine</option>
+          <option className="components_admin_admin_vault_filters_option_superior" value="superior">Superior</option>
+          <option className="components_admin_admin_vault_filters_option_flawless" value="flawless">Flawless</option>
+          <option className="components_admin_admin_vault_filters_option_peerless" value="peerless">Peerless</option>
         </select>
 
         {scope === "live" ? (
@@ -95,22 +95,22 @@ export function AdminVaultFilters({ scope, total }: Props) {
             <select
               value={transfer}
               onChange={(event) => setTransfer(event.target.value)}
-              className={inputClass}
+              className={[((inputClass)), "components_admin_admin_vault_filters_select_select_2"].filter(Boolean).join(" ")}
             >
-              <option value="">All transfer policies</option>
-              <option value="free">Free</option>
-              <option value="restricted">Restricted</option>
-              <option value="bound">Bound</option>
+              <option className="components_admin_admin_vault_filters_option_option_2" value="">All transfer policies</option>
+              <option className="components_admin_admin_vault_filters_option_free" value="free">Free</option>
+              <option className="components_admin_admin_vault_filters_option_restricted" value="restricted">Restricted</option>
+              <option className="components_admin_admin_vault_filters_option_bound" value="bound">Bound</option>
             </select>
 
             <select
               value={quest}
               onChange={(event) => setQuest(event.target.value)}
-              className={inputClass}
+              className={[((inputClass)), "components_admin_admin_vault_filters_select_select_3"].filter(Boolean).join(" ")}
             >
-              <option value="">All Quest states</option>
-              <option value="yes">Quest Item</option>
-              <option value="no">Not Quest Item</option>
+              <option className="components_admin_admin_vault_filters_option_option_3" value="">All Quest states</option>
+              <option className="components_admin_admin_vault_filters_option_option_4" value="yes">Quest Item</option>
+              <option className="components_admin_admin_vault_filters_option_option_5" value="no">Not Quest Item</option>
             </select>
           </>
         ) : null}
@@ -118,13 +118,13 @@ export function AdminVaultFilters({ scope, total }: Props) {
         <button
           type="button"
           onClick={reset}
-          className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-a99576))]"
+          className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-a99576))] components_admin_admin_vault_filters_button_reset"
         >
           Reset
         </button>
       </div>
 
-      <p className="mt-2 text-right text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
+      <p className="mt-2 text-right text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))] components_admin_admin_vault_filters_p_text">
         {shown} of {total} shown
       </p>
     </div>

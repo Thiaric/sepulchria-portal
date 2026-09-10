@@ -189,8 +189,8 @@ export function PlayerCosmeticsManager({
     initialCosmetics.length === 0
   ) {
     return (
-      <section className="mt-7 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-8">
-        <p className="text-center font-serif text-lg text-[rgb(var(--sep-colour-bba17a))]">
+      <section className="mt-7 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-8 components_cosmetics_player_cosmetics_manager_section_section">
+        <p className="text-center font-serif text-lg text-[rgb(var(--sep-colour-bba17a))] components_cosmetics_player_cosmetics_manager_p_text">
           You do not own any cosmetics yet.
         </p>
       </section>
@@ -198,21 +198,21 @@ export function PlayerCosmeticsManager({
   }
 
   return (
-    <section className="mt-7">
+    <section className="mt-7 components_cosmetics_player_cosmetics_manager_section_section_2">
       {message ? (
         <div
-          className={[
+          className={[(([
             "mb-5 border px-4 py-3 text-xs",
             failed
               ? "border-red-800/55 text-red-200"
               : "border-[rgb(var(--sep-colour-56754f))]/55 text-[rgb(var(--sep-colour-c5d7bd))]",
-          ].join(" ")}
+          ].join(" "))), "components_cosmetics_player_cosmetics_manager_div_container"].filter(Boolean).join(" ")}
         >
           {message}
         </div>
       ) : null}
 
-      <div className="space-y-8">
+      <div className="space-y-8 components_cosmetics_player_cosmetics_manager_div_container_2">
         {grouped.map(
           ({
             category,
@@ -230,15 +230,15 @@ export function PlayerCosmeticsManager({
                 data-cosmetic-category={
                   category
                 }
-                className="scroll-mt-6 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]"
+                className="scroll-mt-6 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] components_cosmetics_player_cosmetics_manager_section_section_3"
               >
-                <header className="flex flex-wrap items-end justify-between gap-3 border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] px-5 py-4">
-                  <div>
-                    <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-a68152))]">
+                <header className="flex flex-wrap items-end justify-between gap-3 border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] px-5 py-4 components_cosmetics_player_cosmetics_manager_header_header">
+                  <div className="components_cosmetics_player_cosmetics_manager_div_container_3">
+                    <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-a68152))] components_cosmetics_player_cosmetics_manager_p_text_2">
                       Cosmetic type
                     </p>
 
-                    <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">
+                    <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))] components_cosmetics_player_cosmetics_manager_h2_heading">
                       {
                         COSMETIC_LABELS[
                           category
@@ -247,12 +247,12 @@ export function PlayerCosmeticsManager({
                     </h2>
                   </div>
 
-                  <span className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))]">
+                  <span className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))] components_cosmetics_player_cosmetics_manager_span_text">
                     {items.length} owned
                   </span>
                 </header>
 
-                <div className="grid gap-4 p-5 sm:grid-cols-2 xl:grid-cols-3">
+                <div className="grid gap-4 p-5 sm:grid-cols-2 xl:grid-cols-3 components_cosmetics_player_cosmetics_manager_div_container_4">
                   {items.map(
                     (item) => {
                       const isEquipped =
@@ -271,18 +271,18 @@ export function PlayerCosmeticsManager({
                           data-cosmetic-name={
                             item.name
                           }
-                          className={[
+                          className={[(([
                             "scroll-mt-6 overflow-hidden border bg-[rgb(var(--sep-colour-100c09))] transition-[border-color,box-shadow,outline] duration-300",
                             isEquipped
                               ? "border-[rgb(var(--sep-colour-987344))] shadow-[0_0_18px_rgba(var(--sep-rgb-177-132-75),0.08)]"
                               : "border-[rgb(var(--sep-colour-59432c))]/45",
                           ].join(
                             " ",
-                          )}
+                          ))), "components_cosmetics_player_cosmetics_manager_article_article"].filter(Boolean).join(" ")}
                         >
-                          <div className="relative flex h-44 items-center justify-center bg-[rgb(var(--sep-colour-0d0a08))] p-4">
+                          <div className="relative flex h-44 items-center justify-center bg-[rgb(var(--sep-colour-0d0a08))] p-4 components_cosmetics_player_cosmetics_manager_div_container_5">
                             {isEquipped ? (
-                              <span className="absolute right-2 top-2 border border-[rgb(var(--sep-colour-987344))]/65 bg-[rgb(var(--sep-colour-21170f))] px-2 py-1 text-[7px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-dfc99f))]">
+                              <span className="absolute right-2 top-2 border border-[rgb(var(--sep-colour-987344))]/65 bg-[rgb(var(--sep-colour-21170f))] px-2 py-1 text-[7px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-dfc99f))] components_cosmetics_player_cosmetics_manager_span_text_2">
                                 Equipped
                               </span>
                             ) : null}
@@ -296,17 +296,17 @@ export function PlayerCosmeticsManager({
                                   ""
                                 }
                                 alt=""
-                                className="max-h-full max-w-full object-contain"
+                                className="max-h-full max-w-full object-contain components_cosmetics_player_cosmetics_manager_img_image"
                               />
                             ) : (
-                              <span className="text-[9px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-665a4c))]">
+                              <span className="text-[9px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-665a4c))] components_cosmetics_player_cosmetics_manager_span_text_3">
                                 No preview
                               </span>
                             )}
                           </div>
 
-                          <div className="p-4">
-                            <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+                          <div className="p-4 components_cosmetics_player_cosmetics_manager_div_container_6">
+                            <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_cosmetics_player_cosmetics_manager_p_text_3">
                               {
                                 COSMETIC_LABELS[
                                   item.category
@@ -314,13 +314,13 @@ export function PlayerCosmeticsManager({
                               }
                             </p>
 
-                            <h3 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dfc99f))]">
+                            <h3 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dfc99f))] components_cosmetics_player_cosmetics_manager_h3_heading">
                               {
                                 item.name
                               }
                             </h3>
 
-                            <p className="mt-2 min-h-10 text-[10px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+                            <p className="mt-2 min-h-10 text-[10px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_cosmetics_player_cosmetics_manager_p_text_4">
                               {item.description ||
                                 "Collectible Sepulchria cosmetic."}
                             </p>
@@ -338,14 +338,14 @@ export function PlayerCosmeticsManager({
                                     : item.id,
                                 )
                               }
-                              className={[
+                              className={[(([
                                 "mt-4 w-full border px-4 py-2.5 text-[8px] uppercase tracking-[0.16em] disabled:cursor-wait disabled:opacity-45",
                                 isEquipped
                                   ? "border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-17110d))] text-[rgb(var(--sep-colour-cbb28a))]"
                                   : "border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] text-[rgb(var(--sep-colour-efd6a8))]",
                               ].join(
                                 " ",
-                              )}
+                              ))), "components_cosmetics_player_cosmetics_manager_button_action"].filter(Boolean).join(" ")}
                             >
                               {pending
                                 ? "Working..."

@@ -9,11 +9,11 @@ export default async function AdminForumPage() {
   await requireAdminSection("forum");
 
   return (
-    <main className="p-5 sm:p-7 lg:p-9">
-      <div className="mx-auto max-w-7xl">
+    <main className="p-5 sm:p-7 lg:p-9 admin_forum_page_main_main">
+      <div className="mx-auto max-w-7xl admin_forum_page_div_container">
         <nav
           aria-label="Administration breadcrumb"
-          className="mb-6 flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-746653))]"
+          className="mb-6 flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-746653))] admin_forum_page_nav_administration_breadcrumb"
         >
           <Link
             href="/admin"
@@ -22,33 +22,33 @@ export default async function AdminForumPage() {
             Administration
           </Link>
 
-          <span aria-hidden="true">/</span>
+          <span className="admin_forum_page_span_administration_breadcrumb" aria-hidden="true">/</span>
 
-          <span className="text-[rgb(var(--sep-colour-a48c6c))]">
+          <span className="text-[rgb(var(--sep-colour-a48c6c))] admin_forum_page_span_administration_breadcrumb_2">
             Forum
           </span>
         </nav>
 
         
 
-        <div className="mt-6">
+        <div className="mt-6 admin_forum_page_div_container_2">
           <ForumStaffTools />
         </div>
 
-        <section className="mt-6 grid gap-4 md:grid-cols-2">
+        <section className="mt-6 grid gap-4 md:grid-cols-2 admin_forum_page_section_section">
           <Link
             href="/admin/forum/topics?status=deleted"
             className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 transition hover:border-[rgb(var(--sep-colour-8d673d))] hover:bg-[rgb(var(--sep-colour-1a130e))]"
           >
-            <p className="text-[8px] uppercase tracking-[0.2em] text-red-400">
+            <p className="text-[8px] uppercase tracking-[0.2em] text-red-400 admin_forum_page_p_text">
               Recycle bin
             </p>
 
-            <h2 className="mt-3 font-serif text-xl text-[rgb(var(--sep-colour-d7bf98))]">
+            <h2 className="mt-3 font-serif text-xl text-[rgb(var(--sep-colour-d7bf98))] admin_forum_page_h2_heading">
               Deleted discussions
             </h2>
 
-            <p className="mt-2 text-sm leading-6 text-[rgb(var(--sep-colour-817567))]">
+            <p className="mt-2 text-sm leading-6 text-[rgb(var(--sep-colour-817567))] admin_forum_page_p_text_2">
               Inspect soft-deleted topics and permanently erase selected records.
             </p>
           </Link>
@@ -57,15 +57,15 @@ export default async function AdminForumPage() {
             href="/admin/forum/replies"
             className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 transition hover:border-[rgb(var(--sep-colour-8d673d))] hover:bg-[rgb(var(--sep-colour-1a130e))]"
           >
-            <p className="text-[8px] uppercase tracking-[0.2em] text-red-400">
+            <p className="text-[8px] uppercase tracking-[0.2em] text-red-400 admin_forum_page_p_text_3">
               Recycle bin
             </p>
 
-            <h2 className="mt-3 font-serif text-xl text-[rgb(var(--sep-colour-d7bf98))]">
+            <h2 className="mt-3 font-serif text-xl text-[rgb(var(--sep-colour-d7bf98))] admin_forum_page_h2_heading_2">
               Deleted replies
             </h2>
 
-            <p className="mt-2 text-sm leading-6 text-[rgb(var(--sep-colour-817567))]">
+            <p className="mt-2 text-sm leading-6 text-[rgb(var(--sep-colour-817567))] admin_forum_page_p_text_4">
               Review individual deleted replies and choose which ones to remove forever.
             </p>
           </Link>

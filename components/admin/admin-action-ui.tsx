@@ -124,17 +124,17 @@ export function AdminActionForm({
   }
 
   return (
-    <form className={className} onSubmit={handleSubmit} aria-busy={pending}>
+    <form className={[((className)), "components_admin_admin_action_ui_form_submit"].filter(Boolean).join(" ")} onSubmit={handleSubmit} aria-busy={pending}>
       {children}
       {mounted && feedback
         ? createPortal(
             <div
               role={feedback.kind === "error" ? "alert" : "status"}
-              className={`fixed z-[9999] max-w-[340px] border px-3 py-2 text-[10px] shadow-xl ${
+              className={[((`fixed z-[9999] max-w-[340px] border px-3 py-2 text-[10px] shadow-xl ${
                 feedback.kind === "success"
                   ? "border-emerald-700/70 bg-emerald-950 text-emerald-200"
                   : "border-red-800/70 bg-red-950 text-red-200"
-              }`}
+              }`)), "components_admin_admin_action_ui_div_container"].filter(Boolean).join(" ")}
               style={{ left: feedback.left, top: feedback.top }}
             >
               {feedback.text}
@@ -149,20 +149,20 @@ export function AdminActionForm({
 export function AdminCollapsibleSection({ title, children }: { title: string; children: ReactNode }) {
   const [open, setOpen] = useState(false);
   return (
-    <section className="border border-[rgb(var(--sep-skin-c1,169_138_96))]/35 bg-[rgb(var(--sep-colour-15100d))]">
+    <section className="border border-[rgb(var(--sep-skin-c1,169_138_96))]/35 bg-[rgb(var(--sep-colour-15100d))] components_admin_admin_action_ui_section_section">
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
-        className="flex w-full items-center justify-between gap-4 px-4 py-4 text-left sm:px-5"
+        className="flex w-full items-center justify-between gap-4 px-4 py-4 text-left sm:px-5 components_admin_admin_action_ui_button_action"
       >
-        <span className="font-serif text-2xl text-[rgb(var(--sep-skin-c1,169_138_96))]">{title}</span>
-        <span aria-hidden="true" className="text-lg text-[rgb(var(--sep-skin-c1,169_138_96))]">
+        <span className="font-serif text-2xl text-[rgb(var(--sep-skin-c1,169_138_96))] components_admin_admin_action_ui_span_text">{title}</span>
+        <span aria-hidden="true" className="text-lg text-[rgb(var(--sep-skin-c1,169_138_96))] components_admin_admin_action_ui_span_text_2">
           {open ? "−" : "+"}
         </span>
       </button>
       {open ? (
-        <div className="border-t border-[rgb(var(--sep-skin-c1,169_138_96))]/20 p-4 sm:p-5">
+        <div className="border-t border-[rgb(var(--sep-skin-c1,169_138_96))]/20 p-4 sm:p-5 components_admin_admin_action_ui_div_container_2">
           {children}
         </div>
       ) : null}

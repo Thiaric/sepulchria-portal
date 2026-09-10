@@ -293,7 +293,7 @@ export function CharacterDirectory({
   }
 
   return (
-    <div className="space-y-6 px-3">
+    <div className="space-y-6 px-3 components_characters_character_directory_div_container">
       <section
         data-character-directory-filters
         data-mobile-filters-open={
@@ -301,11 +301,11 @@ export function CharacterDirectory({
             ? "true"
             : "false"
         }
-        className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 px-3 py-2 sm:px-5"
+        className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 px-3 py-2 sm:px-5 components_characters_character_directory_section_section"
       >
-        <div className="grid gap-2 sm:gap-4 xl:grid-cols-[minmax(220px,1fr)_170px_190px_180px_150px_auto] xl:items-end">
-          <label className="block">
-            <span className="text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))]">
+        <div className="grid gap-2 sm:gap-4 xl:grid-cols-[minmax(220px,1fr)_170px_190px_180px_150px_auto] xl:items-end components_characters_character_directory_div_container_2">
+          <label className="block components_characters_character_directory_label_label">
+            <span className="text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))] components_characters_character_directory_span_text">
               Search
             </span>
 
@@ -316,7 +316,7 @@ export function CharacterDirectory({
                 setSearch(event.target.value)
               }
               placeholder="Name, title, Ancestry, Association..."
-              className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-0f0b09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d5c2a4))] outline-none transition placeholder:text-[rgb(var(--sep-colour-665a4c))] focus:border-[rgb(var(--sep-colour-a17a49))]"
+              className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-0f0b09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d5c2a4))] outline-none transition placeholder:text-[rgb(var(--sep-colour-665a4c))] focus:border-[rgb(var(--sep-colour-a17a49))] components_characters_character_directory_input_name_title_ancestry_association"
             />
           </label>
 
@@ -330,7 +330,7 @@ export function CharacterDirectory({
             aria-expanded={
               mobileFiltersOpen
             }
-            className="border border-[rgb(var(--sep-colour-765937))]/60 bg-[rgb(var(--sep-colour-21170f))] px-3 py-2 text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-cfb487))] sm:hidden"
+            className="border border-[rgb(var(--sep-colour-765937))]/60 bg-[rgb(var(--sep-colour-21170f))] px-3 py-2 text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-cfb487))] sm:hidden components_characters_character_directory_button_action"
           >
             {mobileFiltersOpen
               ? "Hide filters"
@@ -342,12 +342,12 @@ export function CharacterDirectory({
             value={race}
             onChange={setRace}
           >
-            <option value="all">
+            <option className="components_characters_character_directory_option_all" value="all">
               All ancestries
             </option>
 
             {races.map(([id, name]) => (
-              <option key={id} value={id}>
+              <option className="components_characters_character_directory_option_option" key={id} value={id}>
                 {name}
               </option>
             ))}
@@ -358,13 +358,13 @@ export function CharacterDirectory({
             value={association}
             onChange={setAssociation}
           >
-            <option value="all">
+            <option className="components_characters_character_directory_option_all_2" value="all">
               All Associations
             </option>
 
             {associations.map(
               ([id, name]) => (
-                <option key={id} value={id}>
+                <option className="components_characters_character_directory_option_option_2" key={id} value={id}>
                   {name}
                 </option>
               ),
@@ -376,13 +376,13 @@ export function CharacterDirectory({
             value={location}
             onChange={setLocation}
           >
-            <option value="all">
+            <option className="components_characters_character_directory_option_all_3" value="all">
               All locations
             </option>
 
             {locations.map(
               ([id, name]) => (
-                <option
+                <option className="components_characters_character_directory_option_option_3"
                   key={id}
                   value={id}
                 >
@@ -401,19 +401,19 @@ export function CharacterDirectory({
               )
             }
           >
-            <option value="all">
+            <option className="components_characters_character_directory_option_all_4" value="all">
               All statuses
             </option>
-            <option value="online">
+            <option className="components_characters_character_directory_option_line" value="online">
               Online
             </option>
-            <option value="away">
+            <option className="components_characters_character_directory_option_away" value="away">
               Away
             </option>
-            <option value="busy">
+            <option className="components_characters_character_directory_option_busy" value="busy">
               Busy
             </option>
-            <option value="offline">
+            <option className="components_characters_character_directory_option_offline" value="offline">
               Offline
             </option>
           </DirectorySelect>
@@ -422,7 +422,7 @@ export function CharacterDirectory({
             type="button"
             onClick={resetFilters}
             disabled={!hasActiveFilters}
-            className="border border-[rgb(var(--sep-colour-765937))]/70 bg-[rgb(var(--sep-colour-271c12))] px-4 py-3 text-[10px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-cfb487))] transition hover:border-[rgb(var(--sep-colour-a17a49))] hover:bg-[rgb(var(--sep-colour-3b2919))] disabled:cursor-not-allowed disabled:opacity-40"
+            className="border border-[rgb(var(--sep-colour-765937))]/70 bg-[rgb(var(--sep-colour-271c12))] px-4 py-3 text-[10px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-cfb487))] transition hover:border-[rgb(var(--sep-colour-a17a49))] hover:bg-[rgb(var(--sep-colour-3b2919))] disabled:cursor-not-allowed disabled:opacity-40 components_characters_character_directory_button_reset"
           >
             Reset
           </button>
@@ -432,13 +432,13 @@ export function CharacterDirectory({
       </section>
 
       {filteredCharacters.length > 0 ? (
-        <section className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
+        <section className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3 components_characters_character_directory_section_section_2">
         {filteredCharacters.map(
   (character) => (
     <div
       key={character.id}
       id={`character-${character.public_slug}`}
-      className="scroll-mt-6"
+      className="scroll-mt-6 components_characters_character_directory_div_container_3"
     >
       <CharacterDirectoryCard
         character={character}
@@ -454,16 +454,16 @@ export function CharacterDirectory({
 )}  
         </section>
       ) : (
-        <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 p-10 text-center">
-          <p className="text-[10px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806746))]">
+        <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 p-10 text-center components_characters_character_directory_section_no_characters_found">
+          <p className="text-[10px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806746))] components_characters_character_directory_p_no_characters_found">
             Character archive
           </p>
 
-          <h2 className="mt-4 font-serif text-2xl text-[rgb(var(--sep-colour-dbc59e))]">
+          <h2 className="mt-4 font-serif text-2xl text-[rgb(var(--sep-colour-dbc59e))] components_characters_character_directory_h2_no_characters_found">
             No characters found
           </h2>
 
-          <p className="mx-auto mt-3 max-w-lg text-sm leading-7 text-[rgb(var(--sep-colour-958979))]">
+          <p className="mx-auto mt-3 max-w-lg text-sm leading-7 text-[rgb(var(--sep-colour-958979))] components_characters_character_directory_p_no_characters_found_2">
             No approved character matches the
             current search and filters.
           </p>
@@ -472,7 +472,7 @@ export function CharacterDirectory({
             <button
               type="button"
               onClick={resetFilters}
-              className="mt-6 border border-[rgb(var(--sep-colour-765937))]/70 bg-[rgb(var(--sep-colour-271c12))] px-5 py-3 text-[10px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-cfb487))] transition hover:border-[rgb(var(--sep-colour-a17a49))] hover:bg-[rgb(var(--sep-colour-3b2919))]"
+              className="mt-6 border border-[rgb(var(--sep-colour-765937))]/70 bg-[rgb(var(--sep-colour-271c12))] px-5 py-3 text-[10px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-cfb487))] transition hover:border-[rgb(var(--sep-colour-a17a49))] hover:bg-[rgb(var(--sep-colour-3b2919))] components_characters_character_directory_button_clear_filters"
             >
               Clear filters
             </button>
@@ -509,11 +509,9 @@ function CharacterDirectoryCard({
   return (
     <article
       data-sep-interactive-surface="card"
-      className={
-        character.presence?.appear_offline === true
+      className={[((character.presence?.appear_offline === true
           ? "group relative overflow-hidden border border-dashed border-[rgb(var(--sep-colour-876a46))]/55 bg-[rgb(var(--sep-colour-15100d))]/95 opacity-40 transition duration-200 hover:-translate-y-0.5 hover:border-[rgb(var(--sep-colour-9b7446))] hover:bg-[rgb(var(--sep-colour-1a130e))] hover:opacity-100"
-          : "group relative overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 transition duration-200 hover:-translate-y-0.5 hover:border-[rgb(var(--sep-colour-a17a49))] hover:bg-[rgb(var(--sep-colour-1a130e))]"
-      }
+          : "group relative overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 transition duration-200 hover:-translate-y-0.5 hover:border-[rgb(var(--sep-colour-a17a49))] hover:bg-[rgb(var(--sep-colour-1a130e))]")), "components_characters_character_directory_article_article"].filter(Boolean).join(" ")}
     >
       <Link
         href={`/characters/${character.public_slug}?from=characters`}
@@ -522,36 +520,36 @@ function CharacterDirectoryCard({
         className="absolute inset-0 z-10"
       />
 
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[rgb(var(--sep-colour-b78a50))]/0 to-transparent transition group-hover:via-[rgb(var(--sep-colour-b78a50))]/70" />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[rgb(var(--sep-colour-b78a50))]/0 to-transparent transition group-hover:via-[rgb(var(--sep-colour-b78a50))]/70 components_characters_character_directory_div_container_4" />
 
-      <div className="pointer-events-none grid min-h-[215px] grid-cols-[125px_minmax(0,1fr)]">
+      <div className="pointer-events-none grid min-h-[215px] grid-cols-[125px_minmax(0,1fr)] components_characters_character_directory_div_container_5">
         <CharacterPortrait
           src={character.portrait_url}
           name={character.display_name}
         />
 
-        <div className="flex min-w-0 flex-col p-4">
-          <div className="flex items-start justify-between gap-3">
+        <div className="flex min-w-0 flex-col p-4 components_characters_character_directory_div_container_6">
+          <div className="flex items-start justify-between gap-3 components_characters_character_directory_div_container_7">
             <PresenceBadge
               status={status}
             />
 
-            <span className="translate-x-1 text-sm text-[rgb(var(--sep-colour-785e3f))] opacity-0 transition group-hover:translate-x-0 group-hover:opacity-100">
+            <span className="translate-x-1 text-sm text-[rgb(var(--sep-colour-785e3f))] opacity-0 transition group-hover:translate-x-0 group-hover:opacity-100 components_characters_character_directory_span_text_2">
               →
             </span>
           </div>
 
-          <h2 className="mt-4 truncate font-serif text-xl text-[rgb(var(--sep-colour-dfc79c))] transition group-hover:text-[rgb(var(--sep-colour-efd8ad))]">
+          <h2 className="mt-4 truncate font-serif text-xl text-[rgb(var(--sep-colour-dfc79c))] transition group-hover:text-[rgb(var(--sep-colour-efd8ad))] components_characters_character_directory_h2_heading">
             {character.display_name}
           </h2>
 
           {character.title ? (
-            <p className="mt-1 line-clamp-2 font-serif text-sm italic text-[rgb(var(--sep-colour-9d8769))]">
+            <p className="mt-1 line-clamp-2 font-serif text-sm italic text-[rgb(var(--sep-colour-9d8769))] components_characters_character_directory_p_text">
               {character.title}
             </p>
           ) : null}
 
-          <div className="mt-5 space-y-2">
+          <div className="mt-5 space-y-2 components_characters_character_directory_div_container_8">
             <CodexBadge
               label="Ancestry"
               entry={character.race}
@@ -562,8 +560,8 @@ function CharacterDirectoryCard({
             />
           </div>
 
-          <div className="mt-auto pt-5">
-            <div className="flex items-end justify-between gap-3">
+          <div className="mt-auto pt-5 components_characters_character_directory_div_container_9">
+            <div className="flex items-end justify-between gap-3 components_characters_character_directory_div_container_10">
               <CharacterDetail
                 label="Current location"
                 value={
@@ -575,20 +573,20 @@ function CharacterDirectoryCard({
                 }
               />
 
-              <div className="pointer-events-auto relative z-20 flex shrink-0 items-center gap-1.5">
+              <div className="pointer-events-auto relative z-20 flex shrink-0 items-center gap-1.5 components_characters_character_directory_div_container_11">
                 {canMessage ? (
                   <MessageCharacterModalButton
                     recipientId={character.id}
                     recipientName={character.display_name}
                     className="flex h-8 w-8 items-center justify-center border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-271c12))] text-[13px] text-[rgb(var(--sep-colour-dfc79c))] transition hover:border-[rgb(var(--sep-colour-997042))] hover:bg-[rgb(var(--sep-colour-3b2919))] hover:text-[rgb(var(--sep-colour-f0d5a5))]"
                   />
-                ) : viewerCharacterId !== null && viewerCharacterId !== character.id && communication.blocked ? (<div className="pointer-events-auto absolute bottom-4 right-4 z-20"><SanctionRestrictionNotice message={communication.message} compact /></div>) : null}
+                ) : viewerCharacterId !== null && viewerCharacterId !== character.id && communication.blocked ? (<div className="pointer-events-auto absolute bottom-4 right-4 z-20 components_characters_character_directory_div_container_12"><SanctionRestrictionNotice message={communication.message} compact /></div>) : null}
 
                 {character.currentRoom ? (
-                  <form
+                  <form className="components_characters_character_directory_form_form"
                     action={enterRoomFromMap}
                   >
-                    <input
+                    <input className="components_characters_character_directory_input_room_id"
                       type="hidden"
                       name="roomId"
                       value={
@@ -601,9 +599,9 @@ function CharacterDirectoryCard({
                       type="submit"
                       aria-label={`Go to ${character.currentRoom.name}`}
                       title={`Go to ${character.currentRoom.name}`}
-                      className="flex h-8 w-8 items-center justify-center border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-271c12))] text-sm text-[rgb(var(--sep-colour-dfc79c))] transition hover:border-[rgb(var(--sep-colour-997042))] hover:bg-[rgb(var(--sep-colour-3b2919))]"
+                      className="flex h-8 w-8 items-center justify-center border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-271c12))] text-sm text-[rgb(var(--sep-colour-dfc79c))] transition hover:border-[rgb(var(--sep-colour-997042))] hover:bg-[rgb(var(--sep-colour-3b2919))] components_characters_character_directory_button_action_2"
                     >
-                      <span aria-hidden="true">
+                      <span className="components_characters_character_directory_span_text_3" aria-hidden="true">
                         →
                       </span>
                     </button>
@@ -630,14 +628,14 @@ function CodexBadge({
 
   return (
     <div
-  className="flex min-w-0 items-center gap-2.5 border bg-black/15 px-2.5 py-2"
+  className="flex min-w-0 items-center gap-2.5 border bg-black/15 px-2.5 py-2 components_characters_character_directory_div_container_13"
   style={{
     borderColor: colour,
     backgroundImage: `linear-gradient(90deg, ${colour}18, transparent 55%)`,
   }}
 >
       <div
-        className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-0d0907))] font-serif text-[11px]"
+        className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-0d0907))] font-serif text-[11px] components_characters_character_directory_div_container_14"
         style={{
           borderColor: `${colour}88`,
           color: colour,
@@ -648,7 +646,7 @@ function CodexBadge({
           <img
             src={entry.icon_url}
             alt=""
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover components_characters_character_directory_img_image"
           />
         ) : (
           entry?.name
@@ -657,13 +655,13 @@ function CodexBadge({
         )}
       </div>
 
-      <div className="min-w-0">
-        <p className="text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-735f47))]">
+      <div className="min-w-0 components_characters_character_directory_div_container_15">
+        <p className="text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-735f47))] components_characters_character_directory_p_text_2">
           {label}
         </p>
 
         <p
-  className="mt-0.5 truncate text-[11px]"
+  className="mt-0.5 truncate text-[11px] components_characters_character_directory_p_text_3"
   style={{
     color: entry
       ? colour
@@ -694,23 +692,23 @@ function CharacterPortrait({
     .join("");
 
   return (
-    <div className="relative min-h-full overflow-hidden border-r border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0d0907))]">
+    <div className="relative min-h-full overflow-hidden border-r border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0d0907))] components_characters_character_directory_div_container_16">
       {src ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={src}
           alt={`Portrait of ${name}`}
-          className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105"
+          className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105 components_characters_character_directory_img_image_2"
         />
       ) : (
-        <div className="flex h-full min-h-[215px] items-center justify-center bg-[radial-gradient(circle_at_top,#332316_0%,#120d09_70%)]">
-          <span className="font-serif text-3xl text-[rgb(var(--sep-colour-8d6d47))]">
+        <div className="flex h-full min-h-[215px] items-center justify-center bg-[radial-gradient(circle_at_top,#332316_0%,#120d09_70%)] components_characters_character_directory_div_container_17">
+          <span className="font-serif text-3xl text-[rgb(var(--sep-colour-8d6d47))] components_characters_character_directory_span_text_4">
             {initials || "?"}
           </span>
         </div>
       )}
 
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/10" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/10 components_characters_character_directory_div_container_18" />
     </div>
   );
 }
@@ -725,17 +723,17 @@ function CharacterDetail({
   muted?: boolean;
 }) {
   return (
-    <div className="min-w-0">
-      <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-735f47))]">
+    <div className="min-w-0 components_characters_character_directory_div_container_19">
+      <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-735f47))] components_characters_character_directory_p_text_4">
         {label}
       </p>
 
       <p
-        className={`mt-0.5 truncate text-xs ${
+        className={[((`mt-0.5 truncate text-xs ${
           muted
             ? "italic text-[rgb(var(--sep-colour-766b5d))]"
             : "text-[rgb(var(--sep-colour-b6a58d))]"
-        }`}
+        }`)), "components_characters_character_directory_p_text_5"].filter(Boolean).join(" ")}
       >
         {value}
       </p>
@@ -777,10 +775,10 @@ function PresenceBadge({
 
   return (
     <span
-      className={`inline-flex items-center gap-2 text-[8px] uppercase tracking-[0.18em] ${style.text}`}
+      className={[((`inline-flex items-center gap-2 text-[8px] uppercase tracking-[0.18em] ${style.text}`)), "components_characters_character_directory_span_text_5"].filter(Boolean).join(" ")}
     >
       <span
-        className={`h-2 w-2 rounded-full ${style.dot}`}
+        className={[((`h-2 w-2 rounded-full ${style.dot}`)), "components_characters_character_directory_span_text_6"].filter(Boolean).join(" ")}
       />
 
       {style.label}
@@ -800,8 +798,8 @@ function DirectorySelect({
   children: React.ReactNode;
 }) {
   return (
-    <label className="block">
-      <span className="text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))]">
+    <label className="block components_characters_character_directory_label_label_2">
+      <span className="text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))] components_characters_character_directory_span_text_7">
         {label}
       </span>
 
@@ -810,7 +808,7 @@ function DirectorySelect({
         onChange={(event) =>
           onChange(event.target.value)
         }
-        className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-0f0b09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d5c2a4))] outline-none transition focus:border-[rgb(var(--sep-colour-a17a49))]"
+        className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-0f0b09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d5c2a4))] outline-none transition focus:border-[rgb(var(--sep-colour-a17a49))] components_characters_character_directory_select_select"
       >
         {children}
       </select>

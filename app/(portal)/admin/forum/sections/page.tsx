@@ -241,10 +241,10 @@ export default async function ForumSectionsManagementPage() {
     ).length;
 
   return (
-    <main className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <main className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8 admin_forum_sections_page_main_main">
       <nav
         aria-label="Forum breadcrumb"
-        className="mb-6 flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-746653))]"
+        className="mb-6 flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-746653))] admin_forum_sections_page_nav_forum_breadcrumb"
       >
         <Link
           href="/admin"
@@ -253,7 +253,7 @@ export default async function ForumSectionsManagementPage() {
           Administration
         </Link>
 
-        <span aria-hidden="true">
+        <span className="admin_forum_sections_page_span_forum_breadcrumb" aria-hidden="true">
           /
         </span>
 
@@ -264,27 +264,27 @@ export default async function ForumSectionsManagementPage() {
           Forum
         </Link>
 
-        <span aria-hidden="true">
+        <span className="admin_forum_sections_page_span_forum_breadcrumb_2" aria-hidden="true">
           /
         </span>
 
-        <span className="text-[rgb(var(--sep-colour-a48c6c))]">
+        <span className="text-[rgb(var(--sep-colour-a48c6c))] admin_forum_sections_page_span_forum_breadcrumb_3">
           Sections
         </span>
       </nav>
 
-      <header className="overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
-        <div className="flex flex-col gap-5 border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-1a130e))] px-5 py-7 sm:px-7 lg:flex-row lg:items-start lg:justify-between">
-          <div>
-            <p className="text-[8px] uppercase tracking-[0.22em] text-amber-500">
+      <header className="overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] admin_forum_sections_page_header_header">
+        <div className="flex flex-col gap-5 border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-1a130e))] px-5 py-7 sm:px-7 lg:flex-row lg:items-start lg:justify-between admin_forum_sections_page_div_container">
+          <div className="admin_forum_sections_page_div_forum_sections">
+            <p className="text-[8px] uppercase tracking-[0.22em] text-amber-500 admin_forum_sections_page_p_forum_sections">
               Forum structure
             </p>
 
-            <h1 className="mt-3 font-serif text-3xl text-[rgb(var(--sep-colour-dec69d))] sm:text-4xl">
+            <h1 className="mt-3 font-serif text-3xl text-[rgb(var(--sep-colour-dec69d))] sm:text-4xl admin_forum_sections_page_h1_forum_sections">
               Forum Sections
             </h1>
 
-            <p className="mt-3 max-w-3xl text-sm leading-6 text-[rgb(var(--sep-colour-817567))]">
+            <p className="mt-3 max-w-3xl text-sm leading-6 text-[rgb(var(--sep-colour-817567))] admin_forum_sections_page_p_forum_sections_2">
               Review every section,
               inspect its access level and
               open its configuration page.
@@ -327,7 +327,7 @@ export default async function ForumSectionsManagementPage() {
         </dl>
       </header>
 
-      <section className="mt-7">
+      <section className="mt-7 admin_forum_sections_page_section_section">
         <SectionGroup
           title="Active Sections"
           description="These sections are currently available according to their visibility rules."
@@ -341,7 +341,7 @@ export default async function ForumSectionsManagementPage() {
         />
       </section>
 
-      <section className="mt-9">
+      <section className="mt-9 admin_forum_sections_page_section_section_2">
         <SectionGroup
           title="Hidden Sections"
           description="These sections remain stored but are not currently displayed to members."
@@ -377,18 +377,18 @@ function SectionGroup({
 }) {
   return (
     <>
-      <div className="mb-4 flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h2 className="font-serif text-3xl text-[rgb(var(--sep-colour-dec69d))]">
+      <div className="mb-4 flex flex-wrap items-end justify-between gap-4 admin_forum_sections_page_div_container_2">
+        <div className="admin_forum_sections_page_div_container_3">
+          <h2 className="font-serif text-3xl text-[rgb(var(--sep-colour-dec69d))] admin_forum_sections_page_h2_heading">
             {title}
           </h2>
 
-          <p className="mt-2 max-w-3xl text-sm leading-6 text-[rgb(var(--sep-colour-817567))]">
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-[rgb(var(--sep-colour-817567))] admin_forum_sections_page_p_text">
             {description}
           </p>
         </div>
 
-        <span className="border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-8f795b))]">
+        <span className="border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-8f795b))] admin_forum_sections_page_span_text">
           {sections.length}{" "}
           {sections.length === 1
             ? "section"
@@ -396,9 +396,9 @@ function SectionGroup({
         </span>
       </div>
 
-      <div className="overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
+      <div className="overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] admin_forum_sections_page_div_container_4">
         {sections.length > 0 ? (
-          <div className="divide-y divide-[rgb(var(--sep-colour-60482e))]/30">
+          <div className="divide-y divide-[rgb(var(--sep-colour-60482e))]/30 admin_forum_sections_page_div_container_5">
             {sections.map((section) => {
               const activeTopicCount =
                 topics.filter(
@@ -435,11 +435,11 @@ function SectionGroup({
               return (
                 <article
                   key={section.id}
-                  className="grid gap-5 px-5 py-5 sm:px-6 lg:grid-cols-[minmax(0,1fr)_220px_auto] lg:items-center"
+                  className="grid gap-5 px-5 py-5 sm:px-6 lg:grid-cols-[minmax(0,1fr)_220px_auto] lg:items-center admin_forum_sections_page_article_article"
                 >
-                  <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="font-serif text-xl text-[rgb(var(--sep-colour-d7bf98))]">
+                  <div className="min-w-0 admin_forum_sections_page_div_container_6">
+                    <div className="flex flex-wrap items-center gap-2 admin_forum_sections_page_div_container_7">
+                      <h3 className="font-serif text-xl text-[rgb(var(--sep-colour-d7bf98))] admin_forum_sections_page_h3_heading">
                         {section.name}
                       </h3>
 
@@ -462,30 +462,30 @@ function SectionGroup({
                       </Tag>
                     </div>
 
-                    <p className="mt-2 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-6e604d))]">
+                    <p className="mt-2 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-6e604d))] admin_forum_sections_page_p_text_2">
                       /forum/{section.slug}
                     </p>
 
-                    <p className="mt-3 line-clamp-2 text-sm leading-6 text-[rgb(var(--sep-colour-817567))]">
+                    <p className="mt-3 line-clamp-2 text-sm leading-6 text-[rgb(var(--sep-colour-817567))] admin_forum_sections_page_p_text_3">
                       {section.description ||
                         "No description has been provided."}
                     </p>
 
-                    <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-6e604d))]">
-                      <span>
+                    <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-6e604d))] admin_forum_sections_page_div_container_8">
+                      <span className="admin_forum_sections_page_span_text_2">
                         Order{" "}
                         {section.sort_order}
                       </span>
 
                       {associationName ? (
-                        <span>
+                        <span className="admin_forum_sections_page_span_text_3">
                           Organisation:{" "}
                           {associationName}
                         </span>
                       ) : null}
 
                       {parentSectionName ? (
-                        <span>
+                        <span className="admin_forum_sections_page_span_text_4">
                           Parent:{" "}
                           {parentSectionName}
                         </span>
@@ -509,7 +509,7 @@ function SectionGroup({
                     />
                   </dl>
 
-                  <div className="flex flex-wrap gap-2 lg:justify-end">
+                  <div className="flex flex-wrap gap-2 lg:justify-end admin_forum_sections_page_div_container_9">
                     {section.is_active ? (
                       <Link
                         href={`/forum/${encodeURIComponent(
@@ -535,8 +535,8 @@ function SectionGroup({
             })}
           </div>
         ) : (
-          <div className="px-6 py-12 text-center">
-            <p className="font-serif text-xl text-[rgb(var(--sep-colour-cdb590))]">
+          <div className="px-6 py-12 text-center admin_forum_sections_page_div_container_10">
+            <p className="font-serif text-xl text-[rgb(var(--sep-colour-cdb590))] admin_forum_sections_page_p_text_4">
               {emptyMessage}
             </p>
           </div>
@@ -554,7 +554,7 @@ function Statistic({
   value: number;
 }) {
   return (
-    <div className="px-4 py-4 text-center sm:px-5">
+    <div className="px-4 py-4 text-center sm:px-5 admin_forum_sections_page_div_container_11">
       <dt className="text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-665946))]">
         {label}
       </dt>
@@ -574,7 +574,7 @@ function MiniStatistic({
   value: number;
 }) {
   return (
-    <div className="border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-center">
+    <div className="border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-center admin_forum_sections_page_div_container_12">
       <dt className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-665946))]">
         {label}
       </dt>
@@ -592,7 +592,7 @@ function Tag({
   children: React.ReactNode;
 }) {
   return (
-    <span className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-2 py-1 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-8e7859))]">
+    <span className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-2 py-1 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-8e7859))] admin_forum_sections_page_span_text_5">
       {children}
     </span>
   );
@@ -605,11 +605,9 @@ function StatusBadge({
 }) {
   return (
     <span
-      className={
-        active
+      className={[((active
           ? "border border-emerald-900/60 bg-emerald-950/20 px-2 py-1 text-[7px] uppercase tracking-[0.14em] text-emerald-400"
-          : "border border-red-950/60 bg-red-950/20 px-2 py-1 text-[7px] uppercase tracking-[0.14em] text-red-400"
-      }
+          : "border border-red-950/60 bg-red-950/20 px-2 py-1 text-[7px] uppercase tracking-[0.14em] text-red-400")), "admin_forum_sections_page_span_text_6"].filter(Boolean).join(" ")}
     >
       {active
         ? "Active"

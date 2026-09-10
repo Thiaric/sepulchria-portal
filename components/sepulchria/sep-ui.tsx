@@ -133,7 +133,7 @@ export function SepNotice({
   return (
     <div
       role={tone === "error" ? "alert" : "status"}
-      className={cn("border px-3 py-2.5", className)}
+      className={[((cn("border px-3 py-2.5", className))), "components_sepulchria_sep_ui_div_container"].filter(Boolean).join(" ")}
       style={
         {
           "--sep-ui-accent": accent,
@@ -144,13 +144,13 @@ export function SepNotice({
       }
     >
       <p
-        className="text-[7px] font-semibold uppercase tracking-[0.18em]"
+        className="text-[7px] font-semibold uppercase tracking-[0.18em] components_sepulchria_sep_ui_p_text"
         style={{ color: treatment.title }}
       >
         {title ?? treatment.label}
       </p>
       <div
-        className="mt-1.5 text-[10px] font-medium leading-5"
+        className="mt-1.5 text-[10px] font-medium leading-5 components_sepulchria_sep_ui_div_container_2"
         style={{ color: treatment.body }}
       >
         {children}
@@ -172,10 +172,10 @@ export function SepBadge({
 }) {
   return (
     <span
-      className={cn(
+      className={[((cn(
         "inline-flex min-h-6 items-center justify-center border px-2 py-1 text-[7px] uppercase tracking-[0.13em]",
         className,
-      )}
+      ))), "components_sepulchria_sep_ui_span_text"].filter(Boolean).join(" ")}
       style={{
         borderColor:
           tone === "danger"
@@ -209,13 +209,13 @@ export function SepPanel({
 }) {
   return (
     <section
-      className={cn(
+      className={[((cn(
         "relative border",
         level === "surface" && "bg-[rgb(var(--sep-colour-120d0a))]/95",
         level === "inset" && "bg-[rgb(var(--sep-colour-100c09))]",
         level === "raised" && "bg-[rgb(var(--sep-colour-0d0907))]",
         className,
-      )}
+      ))), "components_sepulchria_sep_ui_section_section"].filter(Boolean).join(" ")}
       style={{
         borderColor: `color-mix(in srgb, ${accent} ${
           level === "raised" ? 42 : level === "inset" ? 24 : 32
@@ -240,16 +240,16 @@ export function SepSectionHeader({
 }) {
   return (
     <header
-      className={cn(
+      className={[((cn(
         "border-b border-[rgb(var(--sep-colour-60482e))]/35 px-4 py-3",
         className,
-      )}
+      ))), "components_sepulchria_sep_ui_header_header"].filter(Boolean).join(" ")}
     >
-      <p className="text-[7px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-806b50))]">
+      <p className="text-[7px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-806b50))] components_sepulchria_sep_ui_p_text_2">
         {eyebrow}
       </p>
-      <div className="mt-1 flex items-end justify-between gap-3">
-        <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-ead6ad))]">
+      <div className="mt-1 flex items-end justify-between gap-3 components_sepulchria_sep_ui_div_container_3">
+        <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-ead6ad))] components_sepulchria_sep_ui_h2_heading">
           {title}
         </h2>
         {trailing}
@@ -274,13 +274,13 @@ export function SepModalFrame({
       role="dialog"
       aria-modal="true"
       aria-labelledby={labelledBy}
-      className="fixed inset-0 z-[120] flex items-center justify-center bg-black/75 p-4 backdrop-blur-[3px] sm:p-8"
+      className="fixed inset-0 z-[120] flex items-center justify-center bg-black/75 p-4 backdrop-blur-[3px] sm:p-8 components_sepulchria_sep_ui_div_dialog"
     >
       <div
-        className={cn(
+        className={[((cn(
           "relative w-full max-w-2xl border bg-[rgb(var(--sep-colour-0d0907))] p-[5px] shadow-2xl",
           className,
-        )}
+        ))), "components_sepulchria_sep_ui_div_container_4"].filter(Boolean).join(" ")}
         style={{
           borderColor: accent,
           boxShadow: `0 24px 70px rgba(0,0,0,0.72), 0 0 34px color-mix(in srgb, ${accent} 18%, transparent)`,

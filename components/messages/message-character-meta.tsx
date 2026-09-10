@@ -44,7 +44,7 @@ export function MessageCharacterIcons({
     normaliseMessageRelation(race);
 
   return (
-    <div className="flex shrink-0 flex-col gap-1">
+    <div className="flex shrink-0 flex-col gap-1 components_messages_message_character_meta_div_container">
       <IdentityIcon
         entry={raceEntry}
         fallback="A"
@@ -78,7 +78,7 @@ function IdentityIcon({
           ? `${labelPrefix}: ${entry.name}`
           : `No ${labelPrefix.toLowerCase()}`
       }
-      className="flex h-5 w-5 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-0d0907))] font-serif text-[8px]"
+      className="flex h-5 w-5 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-0d0907))] font-serif text-[8px] components_messages_message_character_meta_span_text"
       style={{
   borderColor: colour,
   color: colour,
@@ -89,7 +89,7 @@ function IdentityIcon({
         <img
           src={entry.icon_url}
           alt=""
-          className="h-full w-full object-cover"
+          className="h-full w-full object-cover components_messages_message_character_meta_img_image"
         />
       ) : (
         fallback
@@ -283,14 +283,14 @@ export function MessagePresenceStatus({
   return (
     <span
       title={presentation.label}
-      className={`inline-flex items-center gap-1.5 text-[8px] uppercase tracking-[0.15em] ${presentation.textClass} ${
+      className={[((`inline-flex items-center gap-1.5 text-[8px] uppercase tracking-[0.15em] ${presentation.textClass} ${
         cloaked
           ? "opacity-50"
           : ""
-      }`}
+      }`)), "components_messages_message_character_meta_span_text_2"].filter(Boolean).join(" ")}
     >
       <span
-        className={`h-2 w-2 rounded-full ${presentation.dotClass}`}
+        className={[((`h-2 w-2 rounded-full ${presentation.dotClass}`)), "components_messages_message_character_meta_span_text_3"].filter(Boolean).join(" ")}
       />
 
       {presentation.label}

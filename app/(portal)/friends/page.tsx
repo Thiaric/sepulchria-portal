@@ -86,19 +86,19 @@ export default async function FriendsPage() {
 
   if (!enabled) {
     return (
-      <main className="mx-auto w-full max-w-5xl p-5 sm:p-7 lg:p-9">
-        <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-6 sm:p-8">
-          <p className="text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))]">
+      <main className="mx-auto w-full max-w-5xl p-5 sm:p-7 lg:p-9 friends_page_main_main">
+        <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-6 sm:p-8 friends_page_section_friend_list">
+          <p className="text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))] friends_page_p_friend_list">
             Character feature
           </p>
-          <h1 className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-e1c89f))]">
+          <h1 className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-e1c89f))] friends_page_h1_friend_list">
             Friend List
           </h1>
-          <div className="mt-6 border border-[rgb(var(--sep-colour-6b4e35))]/55 bg-[rgb(var(--sep-colour-21160f))] p-5">
-            <p className="font-serif text-xl text-[rgb(var(--sep-colour-d9bf94))]">
+          <div className="mt-6 border border-[rgb(var(--sep-colour-6b4e35))]/55 bg-[rgb(var(--sep-colour-21160f))] p-5 friends_page_div_friend_list">
+            <p className="font-serif text-xl text-[rgb(var(--sep-colour-d9bf94))] friends_page_p_friend_list_2">
               This feature is not enabled.
             </p>
-            <p className="mt-2 text-sm leading-7 text-[rgb(var(--sep-colour-9b8b75))]">
+            <p className="mt-2 text-sm leading-7 text-[rgb(var(--sep-colour-9b8b75))] friends_page_p_friend_list_3">
               Friend List access can be enabled for this character by staff
               through a reward, real-money purchase, or staff grant.
             </p>
@@ -250,20 +250,20 @@ export default async function FriendsPage() {
     );
 
   return (
-    <main className="mx-auto w-full max-w-6xl p-5 sm:p-7 lg:p-9">
-      <header className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 sm:px-5">
-        <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
-          <div className="min-w-0">
-            <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-8c704b))]">
+    <main className="mx-auto w-full max-w-6xl p-5 sm:p-7 lg:p-9 friends_page_main_main_2">
+      <header className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 sm:px-5 friends_page_header_header">
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 friends_page_div_container">
+          <div className="min-w-0 friends_page_div_friend_list_2">
+            <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-8c704b))] friends_page_p_friend_list_4">
               Personal character record
             </p>
 
-            <h1 className="mt-0.5 font-serif text-2xl leading-none text-[rgb(var(--sep-colour-e1c89f))]">
+            <h1 className="mt-0.5 font-serif text-2xl leading-none text-[rgb(var(--sep-colour-e1c89f))] friends_page_h1_friend_list_2">
               Friend List
             </h1>
           </div>
 
-          <p className="min-w-[220px] flex-1 text-[11px] leading-5 text-[rgb(var(--sep-colour-928572))]">
+          <p className="min-w-[220px] flex-1 text-[11px] leading-5 text-[rgb(var(--sep-colour-928572))] friends_page_p_text">
             Your private In-Game and Off-Game contact record. Adding someone
             does not notify them or require approval.
           </p>
@@ -271,9 +271,9 @@ export default async function FriendsPage() {
 
         <form
           action={addFriendListEntry}
-          className="mt-3 grid gap-2 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-3 sm:grid-cols-[minmax(180px,1fr)_130px_150px_auto]"
+          className="mt-3 grid gap-2 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-3 sm:grid-cols-[minmax(180px,1fr)_130px_150px_auto] friends_page_form_add_friend_list_entry"
         >
-          <label className="sr-only" htmlFor="friend-list-character">
+          <label className="sr-only friends_page_label_friend_list_character" htmlFor="friend-list-character">
             Character
           </label>
 
@@ -282,15 +282,15 @@ export default async function FriendsPage() {
             name="targetCharacterId"
             required
             defaultValue=""
-            className="min-w-0 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-c8b18d))] outline-none focus:border-[rgb(var(--sep-colour-9a7543))]"
+            className="min-w-0 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-c8b18d))] outline-none focus:border-[rgb(var(--sep-colour-9a7543))] friends_page_select_friend_list_character"
           >
-            <option value="" disabled>
+            <option className="friends_page_option_friend_list_character" value="" disabled>
               Select character...
             </option>
 
             {availableCharacters.map(
               (availableCharacter) => (
-                <option
+                <option className="friends_page_option_option"
                   key={availableCharacter.id}
                   value={availableCharacter.id}
                 >
@@ -306,12 +306,12 @@ export default async function FriendsPage() {
             name="listScope"
             defaultValue="ingame"
             aria-label="Friend List section"
-            className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-c8b18d))] outline-none focus:border-[rgb(var(--sep-colour-9a7543))]"
+            className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-c8b18d))] outline-none focus:border-[rgb(var(--sep-colour-9a7543))] friends_page_select_list_scope"
           >
-            <option value="ingame">
+            <option className="friends_page_option_ingame" value="ingame">
               In-Game
             </option>
-            <option value="offgame">
+            <option className="friends_page_option_offgame" value="offgame">
               Off-Game
             </option>
           </select>
@@ -320,34 +320,34 @@ export default async function FriendsPage() {
             name="relationshipType"
             defaultValue="friend"
             aria-label="Relationship type"
-            className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-c8b18d))] outline-none focus:border-[rgb(var(--sep-colour-9a7543))]"
+            className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-c8b18d))] outline-none focus:border-[rgb(var(--sep-colour-9a7543))] friends_page_select_relationship_type"
           >
-            <option value="friend">
+            <option className="friends_page_option_friend" value="friend">
               Friend
             </option>
-            <option value="close_friend">
+            <option className="friends_page_option_close_friend" value="close_friend">
               Close Friend
             </option>
-            <option value="family">
+            <option className="friends_page_option_family" value="family">
               Family
             </option>
-            <option value="romance">
+            <option className="friends_page_option_romance" value="romance">
               Romance
             </option>
-            <option value="lover">
+            <option className="friends_page_option_lover" value="lover">
               Lover
             </option>
-            <option value="partner">
+            <option className="friends_page_option_partner" value="partner">
               Partner
             </option>
-            <option value="spouse">
+            <option className="friends_page_option_spouse" value="spouse">
               Spouse
             </option>
           </select>
 
           <button
             type="submit"
-            className="border border-[rgb(var(--sep-colour-668657))] bg-[rgb(var(--sep-colour-172313))] px-4 py-2 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b8d8a7))] transition hover:bg-[rgb(var(--sep-colour-22321c))]"
+            className="border border-[rgb(var(--sep-colour-668657))] bg-[rgb(var(--sep-colour-172313))] px-4 py-2 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b8d8a7))] transition hover:bg-[rgb(var(--sep-colour-22321c))] friends_page_button_add"
           >
             Add
           </button>
@@ -411,18 +411,18 @@ function FriendSection({
   visibleOrderHeadquartersRoomIds: string[];
 }) {
   return (
-    <section className="mt-5 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-17110d))]">
-      <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 px-5 py-4">
-        <h2 className="font-serif text-2xl text-[rgb(var(--sep-colour-dfc79c))]">
+    <section className="mt-5 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-17110d))] friends_page_section_section">
+      <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 px-5 py-4 friends_page_div_container_2">
+        <h2 className="font-serif text-2xl text-[rgb(var(--sep-colour-dfc79c))] friends_page_h2_heading">
           {title}
         </h2>
-        <p className="mt-1 text-[11px] leading-5 text-[rgb(var(--sep-colour-837665))]">
+        <p className="mt-1 text-[11px] leading-5 text-[rgb(var(--sep-colour-837665))] friends_page_p_text_2">
           {subtitle}
         </p>
       </div>
 
       {entries.length > 0 ? (
-        <div className="grid gap-px bg-[rgb(var(--sep-colour-4f3b28))]/35 md:grid-cols-2">
+        <div className="grid gap-px bg-[rgb(var(--sep-colour-4f3b28))]/35 md:grid-cols-2 friends_page_div_container_3">
           {entries.map((entry) => {
             const target = targetById.get(
               entry.target_character_id,
@@ -434,13 +434,13 @@ function FriendSection({
               <article
                 key={entry.id}
                 id={`friend-${target.id}`}
-                className="scroll-mt-4 bg-[rgb(var(--sep-colour-17110d))] p-5"
+                className="scroll-mt-4 bg-[rgb(var(--sep-colour-17110d))] p-5 friends_page_article_article"
               >
                 <Link
                   href={`/characters/${target.public_slug}`}
                   className="group flex min-w-0 items-center gap-3"
                 >
-                  <div className="relative h-12 w-12 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0d0907))]">
+                  <div className="relative h-12 w-12 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0d0907))] friends_page_div_container_4">
                     {target.portrait_url ? (
                       <Image
                         src={target.portrait_url}
@@ -450,23 +450,23 @@ function FriendSection({
                         className="object-cover"
                       />
                     ) : (
-                      <div className="flex h-full items-center justify-center font-serif text-lg text-[rgb(var(--sep-colour-7b6549))]">
+                      <div className="flex h-full items-center justify-center font-serif text-lg text-[rgb(var(--sep-colour-7b6549))] friends_page_div_container_5">
                         {target.first_name.charAt(0).toUpperCase()}
                       </div>
                     )}
                   </div>
 
-                  <div className="min-w-0">
-                    <p className="truncate font-serif text-lg text-[rgb(var(--sep-colour-dcc399))] transition group-hover:text-[rgb(var(--sep-colour-f0d7aa))]">
+                  <div className="min-w-0 friends_page_div_container_6">
+                    <p className="truncate font-serif text-lg text-[rgb(var(--sep-colour-dcc399))] transition group-hover:text-[rgb(var(--sep-colour-f0d7aa))] friends_page_p_text_3">
                       {displayName(target)}
                     </p>
-                    <p className="mt-1 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-756958))]">
+                    <p className="mt-1 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-756958))] friends_page_p_text_4">
                       {relationshipLabel(entry.relationship_type)}
                     </p>
                   </div>
                 </Link>
 
-                <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-[rgb(var(--sep-colour-60482e))]/25 pt-3">
+                <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-[rgb(var(--sep-colour-60482e))]/25 pt-3 friends_page_div_container_7">
                   <FriendLivePresence
                     targetCharacterId={
                       target.id
@@ -494,9 +494,9 @@ function FriendSection({
 
                 <form
                   action={updateFriendListEntry}
-                  className="mt-4 grid gap-2 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-4 sm:grid-cols-2"
+                  className="mt-4 grid gap-2 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-4 sm:grid-cols-2 friends_page_form_update_friend_list_entry"
                 >
-                  <input
+                  <input className="friends_page_input_entry_id"
                     type="hidden"
                     name="entryId"
                     value={entry.id}
@@ -505,29 +505,29 @@ function FriendSection({
                   <select
                     name="relationshipType"
                     defaultValue={entry.relationship_type}
-                    className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-2 py-2 text-[10px] text-[rgb(var(--sep-colour-c8b18d))] outline-none"
+                    className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-2 py-2 text-[10px] text-[rgb(var(--sep-colour-c8b18d))] outline-none friends_page_select_relationship_type_2"
                   >
-                    <option value="friend">Friend</option>
-                    <option value="close_friend">Close Friend</option>
-                    <option value="family">Family</option>
-                    <option value="romance">Romance</option>
-                    <option value="lover">Lover</option>
-                    <option value="partner">Partner</option>
-                    <option value="spouse">Spouse</option>
+                    <option className="friends_page_option_friend_2" value="friend">Friend</option>
+                    <option className="friends_page_option_close_friend_2" value="close_friend">Close Friend</option>
+                    <option className="friends_page_option_family_2" value="family">Family</option>
+                    <option className="friends_page_option_romance_2" value="romance">Romance</option>
+                    <option className="friends_page_option_lover_2" value="lover">Lover</option>
+                    <option className="friends_page_option_partner_2" value="partner">Partner</option>
+                    <option className="friends_page_option_spouse_2" value="spouse">Spouse</option>
                   </select>
 
                   <select
                     name="listScope"
                     defaultValue={entry.list_scope}
-                    className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-2 py-2 text-[10px] text-[rgb(var(--sep-colour-c8b18d))] outline-none"
+                    className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-2 py-2 text-[10px] text-[rgb(var(--sep-colour-c8b18d))] outline-none friends_page_select_list_scope_2"
                   >
-                    <option value="ingame">In-Game</option>
-                    <option value="offgame">Off-Game</option>
+                    <option className="friends_page_option_ingame_2" value="ingame">In-Game</option>
+                    <option className="friends_page_option_offgame_2" value="offgame">Off-Game</option>
                   </select>
 
                   <button
                     type="submit"
-                    className="border border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-efd9aa))] sm:col-span-2"
+                    className="border border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-efd9aa))] sm:col-span-2 friends_page_button_save_changes"
                   >
                     Save changes
                   </button>
@@ -535,16 +535,16 @@ function FriendSection({
 
                 <form
                   action={removeFriendListEntry}
-                  className="mt-2 text-right"
+                  className="mt-2 text-right friends_page_form_remove_friend_list_entry"
                 >
-                  <input
+                  <input className="friends_page_input_entry_id_2"
                     type="hidden"
                     name="entryId"
                     value={entry.id}
                   />
                   <button
                     type="submit"
-                    className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-9e675e))] transition hover:text-[rgb(var(--sep-colour-db9d93))]"
+                    className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-9e675e))] transition hover:text-[rgb(var(--sep-colour-db9d93))] friends_page_button_remove_friend_list"
                   >
                     Remove from Friend List
                   </button>
@@ -554,7 +554,7 @@ function FriendSection({
           })}
         </div>
       ) : (
-        <p className="p-5 text-sm text-[rgb(var(--sep-colour-807463))]">
+        <p className="p-5 text-sm text-[rgb(var(--sep-colour-807463))] friends_page_p_text_5">
           Nothing recorded in this section yet.
         </p>
       )}

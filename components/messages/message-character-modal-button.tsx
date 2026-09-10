@@ -17,7 +17,7 @@ export function MessageCharacterModalButton({ recipientId, recipientName, classN
       disabled={pending}
       aria-label={`Send a private message to ${recipientName}`}
       title={`Message ${recipientName}`}
-      className={className}
+      className={[((className)), "components_messages_message_character_modal_button_button_action"].filter(Boolean).join(" ")}
       onClick={async () => {
         if (pending) return;
         setPending(true);
@@ -34,7 +34,7 @@ export function MessageCharacterModalButton({ recipientId, recipientName, classN
         }
       }}
     >
-      <span aria-hidden="true">✉</span>
+      <span className="components_messages_message_character_modal_button_span_text" aria-hidden="true">✉</span>
     </button>
   );
 }

@@ -25,19 +25,19 @@ export function AssociationHero({
       returnHref="/associations"
       returnLabel="Back to associations"
       recordReplacement={
-        <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 p-6 sm:p-8">
-          <div className="flex items-center gap-4">
+        <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 p-6 sm:p-8 components_associations_association_hero_section_section">
+          <div className="flex items-center gap-4 components_associations_association_hero_div_container">
             <span
-              className="h-px flex-1"
+              className="h-px flex-1 components_associations_association_hero_span_text"
               style={{
                 background: `linear-gradient(to right, ${association.colour ?? "#8a6840"}, transparent)`,
               }}
             />
-            <p className="text-[9px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-8d7759))]">
+            <p className="text-[9px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-8d7759))] components_associations_association_hero_p_text">
               Orders
             </p>
             <span
-              className="h-px flex-1"
+              className="h-px flex-1 components_associations_association_hero_span_text_2"
               style={{
                 background: `linear-gradient(to left, ${association.colour ?? "#8a6840"}, transparent)`,
               }}
@@ -45,11 +45,11 @@ export function AssociationHero({
           </div>
 
           {orders.length ? (
-            <div className="mt-7">
+            <div className="mt-7 components_associations_association_hero_div_container_2">
               <OrderGrid orders={orders} />
             </div>
           ) : (
-            <p className="mt-7 text-center text-sm italic text-[rgb(var(--sep-colour-8f8373))]">
+            <p className="mt-7 text-center text-sm italic text-[rgb(var(--sep-colour-8f8373))] components_associations_association_hero_p_text_2">
               No active Orders currently belong to this Association.
             </p>
           )}

@@ -62,7 +62,7 @@ function Reward({
   }
 
   return (
-    <span className="text-sm text-[rgb(var(--sep-colour-c0af95))]">
+    <span className="text-sm text-[rgb(var(--sep-colour-c0af95))] missions_page_span_text">
       {parts.length ? parts.join(" · ") : "No reward configured"}
     </span>
   );
@@ -83,28 +83,28 @@ function ProgressBeads({
   );
 
   return (
-    <div className="mt-3 flex items-center gap-3">
+    <div className="mt-3 flex items-center gap-3 missions_page_div_container">
       <div
-        className="flex min-w-0 flex-1 gap-[3px]"
+        className="flex min-w-0 flex-1 gap-[3px] missions_page_div_container_2"
         aria-label={`${Math.min(progress, safeTarget)} of ${safeTarget}`}
       >
         {Array.from({ length: segments }).map((_, index) => (
           <span
             key={index}
             data-progress-bead
-            className={[
+            className={[(([
               "h-2.5 min-w-[5px] flex-1 border text-[rgb(var(--sep-colour-e6cfaa))]",
               index < filled
                 ? "border-current bg-current"
                 : "border-current bg-transparent opacity-55",
-            ].join(" ")}
+            ].join(" "))), "missions_page_span_text_2"].filter(Boolean).join(" ")}
           />
         ))}
       </div>
 
       <span
         data-progress-count
-        className="shrink-0 font-mono text-[11px] tabular-nums text-[rgb(var(--sep-colour-d3bd97))]"
+        className="shrink-0 font-mono text-[11px] tabular-nums text-[rgb(var(--sep-colour-d3bd97))] missions_page_span_text_3"
       >
         {Math.min(progress, safeTarget)} / {safeTarget}
       </span>
@@ -180,40 +180,40 @@ export default async function MissionsPage() {
   });
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-5 py-7 sm:px-7 lg:px-9">
+    <div className="mx-auto w-full max-w-6xl px-5 py-7 sm:px-7 lg:px-9 missions_page_div_container_3">
       <MissionsLiveSync dayId={String(dayId)} />
-      <header className="border-b border-[rgb(var(--sep-colour-60482e))]/45 pb-5">
-        <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
+      <header className="border-b border-[rgb(var(--sep-colour-60482e))]/45 pb-5 missions_page_header_daily_missions">
+        <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))] missions_page_p_daily_missions">
           Daily activity
         </p>
-        <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">
+        <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))] missions_page_h1_daily_missions">
           Daily Missions
         </h1>
-        <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))]">
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))] missions_page_p_daily_missions_2">
           Complete as many as you wish before midnight UTC. Rewards must be
           claimed here before the daily reset.
         </p>
       </header>
 
-      <section id="daily-milestones" className="mt-7">
-        <div className="mb-3 flex items-end justify-between gap-4">
-          <div>
-            <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))]">
+      <section id="daily-milestones" className="mt-7 missions_page_section_daily_milestones">
+        <div className="mb-3 flex items-end justify-between gap-4 missions_page_div_daily_milestones">
+          <div className="missions_page_div_day_apos_s_progress">
+            <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))] missions_page_p_day_apos_s_progress">
               Daily Milestones
             </p>
-            <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dcc59a))]">
+            <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dcc59a))] missions_page_h2_day_apos_s_progress">
               A Day&apos;s Progress
             </h2>
           </div>
           <p
             data-mission-summary
-            className="text-sm text-[rgb(var(--sep-colour-c0af95))]"
+            className="text-sm text-[rgb(var(--sep-colour-c0af95))] missions_page_p_daily_milestones"
           >
             {completedCount} / {countableTotal} missions complete
           </p>
         </div>
 
-        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4 missions_page_div_daily_milestones_2">
           {sortedMilestones.map((milestone) => {
             const required = milestone.is_all_snapshot
               ? countableTotal
@@ -230,21 +230,21 @@ export default async function MissionsPage() {
                     ? "true"
                     : "false"
                 }
-                className={[
+                className={[(([
                   "border p-4 transition-all duration-200",
                   complete &&
                   milestone.claimed_at === null
                     ? "border-[rgb(var(--sep-colour-b98c50))] bg-[rgb(var(--sep-colour-21170f))] shadow-[0_0_18px_rgba(var(--sep-rgb-185-140-80),0.16)]"
                     : "border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]",
-                ].join(" ")}
+                ].join(" "))), "missions_page_article_article"].filter(Boolean).join(" ")}
               >
-                <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+                <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] missions_page_p_text">
                   Milestone
                 </p>
-                <h3 className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-cbb28a))]">
+                <h3 className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-cbb28a))] missions_page_h3_heading">
                   {milestone.name_snapshot}
                 </h3>
-                <p className="mt-2 min-h-10 text-sm leading-6 text-[rgb(var(--sep-colour-c0af95))]">
+                <p className="mt-2 min-h-10 text-sm leading-6 text-[rgb(var(--sep-colour-c0af95))] missions_page_p_text_2">
                   {milestone.description_snapshot}
                 </p>
 
@@ -253,7 +253,7 @@ export default async function MissionsPage() {
                   target={Math.max(required, 1)}
                 />
 
-                <div className="mt-3 border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-3">
+                <div className="mt-3 border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-3 missions_page_div_container_4">
                   <Reward
                     remnants={milestone.reward_remnants_snapshot}
                     itemName={milestone.reward_item_name_snapshot}
@@ -277,23 +277,23 @@ export default async function MissionsPage() {
         </div>
       </section>
 
-      <section id="daily-missions" className="mt-9">
+      <section id="daily-missions" className="mt-9 missions_page_section_daily_missions">
         {familyOrder.map((family) => (
           <div
             key={family}
             id={`family-${family.toLowerCase().replaceAll(" ", "-")}`}
-            className="mb-8"
+            className="mb-8 missions_page_div_container_5"
           >
-            <div className="mb-3 border-b border-[rgb(var(--sep-colour-59432c))]/35 pb-2">
-              <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))]">
+            <div className="mb-3 border-b border-[rgb(var(--sep-colour-59432c))]/35 pb-2 missions_page_div_container_6">
+              <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))] missions_page_p_text_3">
                 Daily Missions
               </p>
-              <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dcc59a))]">
+              <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dcc59a))] missions_page_h2_heading">
                 {family}
               </h2>
             </div>
 
-            <div className="grid gap-3 lg:grid-cols-2">
+            <div className="grid gap-3 lg:grid-cols-2 missions_page_div_container_7">
               {missions
                 .filter((mission) => mission.family_snapshot === family)
                 .map((mission) => {
@@ -314,28 +314,28 @@ export default async function MissionsPage() {
                           ? "true"
                           : "false"
                       }
-                      className={[
+                      className={[(([
                         "scroll-mt-6 border p-4 transition-all duration-200",
                         complete &&
                         mission.claimed_at === null
                           ? "border-[rgb(var(--sep-colour-b98c50))] bg-[rgb(var(--sep-colour-21170f))] shadow-[0_0_18px_rgba(var(--sep-rgb-185-140-80),0.16)]"
                           : "border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]",
-                      ].join(" ")}
+                      ].join(" "))), "missions_page_article_article_2"].filter(Boolean).join(" ")}
                     >
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="min-w-0">
-                          <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+                      <div className="flex items-start justify-between gap-4 missions_page_div_container_8">
+                        <div className="min-w-0 missions_page_div_container_9">
+                          <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] missions_page_p_text_4">
                             {mission.difficulty_snapshot}
                           </p>
-                          <h3 className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-cbb28a))]">
+                          <h3 className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-cbb28a))] missions_page_h3_heading_2">
                             {mission.name_snapshot}
                           </h3>
                         </div>
-                        <div className="flex shrink-0 flex-col items-end gap-1.5">
+                        <div className="flex shrink-0 flex-col items-end gap-1.5 missions_page_div_container_10">
                           <span
                             data-mission-excluded
                             hidden={mission.counts_toward_milestones}
-                            className="border border-red-700/70 bg-red-950/45 px-2.5 py-1 text-[8px] uppercase tracking-[0.14em] text-red-300"
+                            className="border border-red-700/70 bg-red-950/45 px-2.5 py-1 text-[8px] uppercase tracking-[0.14em] text-red-300 missions_page_span_text_4"
                           >
                             Does not count toward milestones
                           </span>
@@ -343,14 +343,14 @@ export default async function MissionsPage() {
                           <span
                             data-mission-complete
                             hidden={!complete}
-                            className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-2 py-1 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))]"
+                            className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-2 py-1 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))] missions_page_span_text_5"
                           >
                             Complete
                           </span>
                         </div>
                       </div>
 
-                      <p className="mt-2 text-sm leading-6 text-[rgb(var(--sep-colour-c0af95))]">
+                      <p className="mt-2 text-sm leading-6 text-[rgb(var(--sep-colour-c0af95))] missions_page_p_text_5">
                         {mission.description_snapshot}
                         {locationName ? ` Today: ${locationName}.` : ""}
                       </p>
@@ -360,7 +360,7 @@ export default async function MissionsPage() {
                         target={mission.target_snapshot}
                       />
 
-                      <div className="mt-3 flex items-center justify-between gap-4 border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-3">
+                      <div className="mt-3 flex items-center justify-between gap-4 border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-3 missions_page_div_container_11">
                         <Reward
                           remnants={mission.reward_remnants_snapshot}
                           itemName={mission.reward_item_name_snapshot}

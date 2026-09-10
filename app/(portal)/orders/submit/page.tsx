@@ -29,15 +29,15 @@ export default async function SubmitOrderIdeaPage() {
     `${character.first_name ?? ""} ${character.surname ?? ""}`.trim();
 
   return (
-    <main className="mx-auto w-full max-w-5xl p-5 sm:p-7 lg:p-9">
-      <header className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-5 py-5 sm:px-7">
-        <p className="text-[9px] uppercase tracking-[0.26em] text-[rgb(var(--sep-colour-8c704b))]">
+    <main className="mx-auto w-full max-w-5xl p-5 sm:p-7 lg:p-9 orders_submit_page_main_main">
+      <header className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-5 py-5 sm:px-7 orders_submit_page_header_submit_order_idea">
+        <p className="text-[9px] uppercase tracking-[0.26em] text-[rgb(var(--sep-colour-8c704b))] orders_submit_page_p_submit_order_idea">
           Orders of Sepulchria
         </p>
-        <h1 className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-e1c89f))]">
+        <h1 className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-e1c89f))] orders_submit_page_h1_submit_order_idea">
           Submit Your Order Idea
         </h1>
-        <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))]">
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))] orders_submit_page_p_submit_order_idea_2">
           Propose a new Order, its identity, visual direction and roles across all six levels.
           Your submission will be attached to {characterName}.
         </p>

@@ -234,7 +234,7 @@ export function GiftEffectFormLogic() {
   return (
     <span
       ref={anchorRef}
-      className="hidden"
+      className="hidden components_admin_gift_effect_form_logic_span_text"
       aria-hidden="true"
     />
   );

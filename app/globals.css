@@ -20759,3 +20759,60 @@ html[data-portal-skin] [data-homepage-nav-button="true"] [data-homepage-nav-role
   justify-content: center;
   overflow: visible;
 }
+
+/* =========================================
+   LEFT + RIGHT SIDEBAR BACKGROUND
+   Same mechanism as Location Atmosphere
+   ========================================= */
+
+.components_portal_portal_sidebar_aside_sidebar,
+.components_portal_portal_responsive_right_sidebar_aside_context_sidebar,
+.components_portal_portal_header_div_container,
+.components_portal_portal_collapsible_columns_div_container_3,
+.components_portal_portal_responsive_right_sidebar_section_context_sidebar,
+.areas_slug_page_section_section_2,
+.layout_main_main_2,
+.missions_page_article_article_2,
+.components_codex_codex_entry_card_article_article,
+.messages_id_page_main_main,
+.store_page_section_section,
+.missions_page_div_container_3 {
+  background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 70%),
+      rgb(var(--sep-colour-100d0b) / 70%)
+    ),
+    url("/backgrounds/portal_background.png") !important;
+
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+
+.components_portal_portal_responsive_right_sidebar_section_context_sidebar, 
+.components_portal_admin_context_panel_div_admin_navigation_2,
+.components_world_world_indicator_button_open_game_calendar,
+.admin_layout_div_container_2,
+.components_portal_active_city_counter_button_toggle_open,
+.components_audio_portal_sound_toggle_button_toggle_muted,
+.components_portal_portal_skin_switcher_button_portal_appearance,
+.components_portal_staff_appear_offline_toggle_button_action,
+.components_portal_header_character_identity_button_action,
+.components_logout_button_button_log_out,
+.components_notifications_notification_bell_button_action,
+.components_portal_portal_sidebar_div_container_18
+ {
+opacity: 0.6 !important;
+
+}
+
+
+.components_portal_interactive_world_map_div_container {
+  background: rgb(var(--sep-colour-17110d) / 30%) !important;
+}
+
+button[aria-label$="unread messages"], 
+a[aria-label$="Open administration panel"] {
+  opacity: 0.6 !important;
+}

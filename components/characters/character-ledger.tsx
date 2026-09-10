@@ -119,18 +119,18 @@ export async function CharacterLedger({ characterId }: { characterId: string }) 
     .slice(0, 500);
 
   return (
-    <section className="border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-130f0c))]">
-      <div className="border-b border-[rgb(var(--sep-colour-59432c))]/30 px-4 py-3 sm:px-5">
-        <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">Economy</p>
-        <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dfc79c))]">Immutable Ledger</h2>
-        <p className="mt-1 text-[10px] leading-5 text-[rgb(var(--sep-colour-827564))]">
+    <section className="border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-130f0c))] components_characters_character_ledger_section_section">
+      <div className="border-b border-[rgb(var(--sep-colour-59432c))]/30 px-4 py-3 sm:px-5 components_characters_character_ledger_div_immutable_ledger">
+        <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))] components_characters_character_ledger_p_immutable_ledger">Economy</p>
+        <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dfc79c))] components_characters_character_ledger_h2_immutable_ledger">Immutable Ledger</h2>
+        <p className="mt-1 text-[10px] leading-5 text-[rgb(var(--sep-colour-827564))] components_characters_character_ledger_p_immutable_ledger_2">
           Every Remnant gained or spent, and every completed real-money Store purchase, is recorded here.
         </p>
       </div>
       {entries.length ? (
         <LedgerEntries entries={entries} />
       ) : (
-        <p className="px-5 py-8 text-center text-[10px] text-[rgb(var(--sep-colour-756958))]">No Ledger transactions yet.</p>
+        <p className="px-5 py-8 text-center text-[10px] text-[rgb(var(--sep-colour-756958))] components_characters_character_ledger_p_text">No Ledger transactions yet.</p>
       )}
     </section>
   );

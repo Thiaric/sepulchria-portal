@@ -74,84 +74,84 @@ export function OddJobsPanel({ jobs }: { jobs: OddJobStateRow[] }) {
   return (
     <details
       data-sep-interaction-ignore="true"
-      className="group shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0d0907))]"
+      className="group shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0d0907))] game_components_oddjobspanel_details_details"
     >
       <summary
-        className="sticky top-0 z-30 flex cursor-pointer list-none items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-59432c))]/30 bg-[linear-gradient(90deg,rgb(var(--sep-colour-100c09)),rgb(var(--sep-colour-17110d)),rgb(var(--sep-colour-100c09)))] px-3 py-2 [&::-webkit-details-marker]:hidden"
+        className="sticky top-0 z-30 flex cursor-pointer list-none items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-59432c))]/30 bg-[linear-gradient(90deg,rgb(var(--sep-colour-100c09)),rgb(var(--sep-colour-17110d)),rgb(var(--sep-colour-100c09)))] px-3 py-2 [&::-webkit-details-marker]:hidden game_components_oddjobspanel_summary_summary"
       >
-        <div>
-          <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+        <div className="game_components_oddjobspanel_div_container">
+          <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] game_components_oddjobspanel_p_text">
             Odd Jobs Bureau
           </p>
 
-          <p className="mt-0.5 font-serif text-sm text-[rgb(var(--sep-colour-dec89f))]">
+          <p className="mt-0.5 font-serif text-sm text-[rgb(var(--sep-colour-dec89f))] game_components_oddjobspanel_p_text_2">
             Today&apos;s work
           </p>
         </div>
 
-        <div className="flex items-center gap-4">
-          <div className="text-right">
-            <p className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
+        <div className="flex items-center gap-4 game_components_oddjobspanel_div_container_2">
+          <div className="text-right game_components_oddjobspanel_div_container_3">
+            <p className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))] game_components_oddjobspanel_p_text_3">
               You Have
             </p>
-            <p className="font-serif text-base text-[rgb(var(--sep-colour-e4c589))]">
+            <p className="font-serif text-base text-[rgb(var(--sep-colour-e4c589))] game_components_oddjobspanel_p_text_4">
               {formatRemnants(Number(first.wallet_balance))}
             </p>
           </div>
 
-          <span className="text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a88d65))]">
-            <span className="group-open:hidden">View Jobs ▾</span>
-            <span className="hidden group-open:inline">Hide Jobs ▴</span>
+          <span className="text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a88d65))] game_components_oddjobspanel_span_text">
+            <span className="group-open:hidden game_components_oddjobspanel_span_text_2">View Jobs ▾</span>
+            <span className="hidden group-open:inline game_components_oddjobspanel_span_text_3">Hide Jobs ▴</span>
           </span>
         </div>
       </summary>
 
-      <div className="max-h-[58vh] overflow-y-auto border-t border-[rgb(var(--sep-colour-59432c))]/30 px-3 py-3">
+      <div className="max-h-[58vh] overflow-y-auto border-t border-[rgb(var(--sep-colour-59432c))]/30 px-3 py-3 game_components_oddjobspanel_div_container_4">
         {alreadyWorked ? (
-          <p className="mb-3 border border-emerald-900/45 bg-emerald-950/10 px-3 py-2 text-[9px] text-emerald-400">
+          <p className="mb-3 border border-emerald-900/45 bg-emerald-950/10 px-3 py-2 text-[9px] text-emerald-400 game_components_oddjobspanel_p_text_5">
             You have already worked today
             {first.claimed_job_name ? ` — ${first.claimed_job_name}` : ""}
             {first.claimed_pay !== null ? ` (+${formatRemnants(first.claimed_pay)})` : ""}.
             Return tomorrow.
           </p>
         ) : (
-          <p className="mb-0.1 text-[9px] leading-4 text-[rgb(var(--sep-colour-8f8271))]">
+          <p className="mb-0.1 text-[9px] leading-4 text-[rgb(var(--sep-colour-8f8271))] game_components_oddjobspanel_p_text_6">
             
           </p>
         )}
 
-        <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4 game_components_oddjobspanel_div_container_5">
           {jobs.map((job) => {
             const soldOut = Number(job.claims_remaining) <= 0;
 
             return (
               <article
                 key={job.job_id}
-                className="flex min-h-[124px] flex-col border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-17110d))] p-3"
+                className="flex min-h-[124px] flex-col border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-17110d))] p-3 game_components_oddjobspanel_article_article"
               >
-                <div className="flex items-start justify-between gap-2">
-                  <h3 className="font-serif text-[13px] text-[rgb(var(--sep-colour-d9c29a))]">
+                <div className="flex items-start justify-between gap-2 game_components_oddjobspanel_div_container_6">
+                  <h3 className="font-serif text-[13px] text-[rgb(var(--sep-colour-d9c29a))] game_components_oddjobspanel_h3_heading">
                     {job.job_name}
                   </h3>
 
-                  <span className="shrink-0 text-[10px] font-semibold text-[rgb(var(--sep-colour-d8ad69))]">
+                  <span className="shrink-0 text-[10px] font-semibold text-[rgb(var(--sep-colour-d8ad69))] game_components_oddjobspanel_span_text_4">
                     {formatRemnants(job.pay)}
                   </span>
                 </div>
 
-                <p className="mt-1 flex-1 text-[8px] leading-4 text-[rgb(var(--sep-colour-807463))]">
+                <p className="mt-1 flex-1 text-[8px] leading-4 text-[rgb(var(--sep-colour-807463))] game_components_oddjobspanel_p_text_7">
                   {job.job_description}
                 </p>
 
-                <div className="mt-2 flex items-center justify-between gap-2 text-[7px] uppercase tracking-[0.1em]">
-                  <span className={soldOut ? "text-red-400" : "text-[rgb(var(--sep-colour-8e7a60))]"}>
+                <div className="mt-2 flex items-center justify-between gap-2 text-[7px] uppercase tracking-[0.1em] game_components_oddjobspanel_div_container_7">
+                  <span className={[((soldOut ? "text-red-400" : "text-[rgb(var(--sep-colour-8e7a60))]")), "game_components_oddjobspanel_span_text_5"].filter(Boolean).join(" ")}>
                     {soldOut
                       ? "Not available"
                       : `${job.claims_remaining} / ${job.max_claims} left`}
                   </span>
 
                   {job.pay < job.starting_pay ? (
-                    <span className="text-[rgb(var(--sep-colour-8f6e49))]">
+                    <span className="text-[rgb(var(--sep-colour-8f6e49))] game_components_oddjobspanel_span_text_6">
                       Started {formatRemnants(job.starting_pay)}
                     </span>
                   ) : null}
@@ -161,7 +161,7 @@ export function OddJobsPanel({ jobs }: { jobs: OddJobStateRow[] }) {
                   type="button"
                   onClick={() => work(job.job_id)}
                   disabled={alreadyWorked || pending || soldOut}
-                  className="mt-2 border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-3 py-1.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:bg-[rgb(var(--sep-colour-4a351f))] disabled:cursor-not-allowed disabled:opacity-40"
+                  className="mt-2 border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-3 py-1.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:bg-[rgb(var(--sep-colour-4a351f))] disabled:cursor-not-allowed disabled:opacity-40 game_components_oddjobspanel_button_action"
                 >
                   {pending && pendingJobId === job.job_id
                     ? "Working..."
@@ -179,9 +179,9 @@ export function OddJobsPanel({ jobs }: { jobs: OddJobStateRow[] }) {
         {message ? (
           <p
             aria-live="polite"
-            className={`mt-3 text-[9px] ${
+            className={[((`mt-3 text-[9px] ${
               ok ? "text-emerald-400" : "text-red-400"
-            }`}
+            }`)), "game_components_oddjobspanel_p_text_8"].filter(Boolean).join(" ")}
           >
             {message}
           </p>

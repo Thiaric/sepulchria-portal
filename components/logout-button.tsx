@@ -123,8 +123,7 @@ export function LogoutButton() {
     }}
     onClick={logout}
     disabled={isLoggingOut}
-    className="
-  relative
+    className="relative
   flex
   h-8
   w-8
@@ -144,7 +143,7 @@ export function LogoutButton() {
   sm:w-9
   2xl:h-10
   2xl:w-10
-"
+ components_logout_button_button_log_out"
   >
     <LogOut className="pointer-events-none h-5 w-5" />
 

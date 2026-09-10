@@ -304,29 +304,29 @@ export function TidingsTicker({
       role="status"
       aria-live="polite"
       aria-label="Tidings"
-      className={`relative z-30 h-9 shrink-0 overflow-hidden border-t backdrop-blur-sm ${
+      className={[((`relative z-30 h-9 shrink-0 overflow-hidden border-t backdrop-blur-sm ${
         urgent
           ? "border-[rgb(var(--sep-colour-985847))]/70 bg-[rgb(var(--sep-colour-1d0e0b))]/96"
           : "border-[rgb(var(--sep-colour-765937))]/65 bg-[rgb(var(--sep-colour-100c09))]/96"
-      }`}
+      }`)), "components_tidings_tidings_ticker_footer_tidings"].filter(Boolean).join(" ")}
     >
-      <div className="flex h-full w-full items-stretch">
+      <div className="flex h-full w-full items-stretch components_tidings_tidings_ticker_div_tidings">
         <div
-          className={`relative z-20 flex h-full shrink-0 items-center border-r px-3 sm:px-4 ${
+          className={[((`relative z-20 flex h-full shrink-0 items-center border-r px-3 sm:px-4 ${
             urgent
               ? "border-[rgb(var(--sep-colour-985847))]/70 bg-[rgb(var(--sep-colour-2b130e))]"
               : "border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-17100c))]"
-          }`}
+          }`)), "components_tidings_tidings_ticker_div_tidings_2"].filter(Boolean).join(" ")}
         >
-          <span className="font-serif text-[11px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-e4c28e))]">
+          <span className="font-serif text-[11px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-e4c28e))] components_tidings_tidings_ticker_span_tidings">
             Tidings
           </span>
         </div>
 
-        <div className="group relative min-w-0 flex-1 overflow-hidden">
+        <div className="group relative min-w-0 flex-1 overflow-hidden components_tidings_tidings_ticker_div_tidings_3">
           <div
             key={tickerKey}
-            className="sepulchria-tidings-track absolute top-1/2 w-max whitespace-nowrap text-[10px] tracking-[0.07em] text-[rgb(var(--sep-colour-c9b391))] group-hover:[animation-play-state:paused]"
+            className="sepulchria-tidings-track absolute top-1/2 w-max whitespace-nowrap text-[10px] tracking-[0.07em] text-[rgb(var(--sep-colour-c9b391))] group-hover:[animation-play-state:paused] components_tidings_tidings_ticker_div_tidings_4"
             style={{
               animationDuration: `${duration}s`,
             }}
@@ -381,39 +381,37 @@ function TickerSegment({
   tidings: Tiding[];
 }) {
   return (
-    <span>
+    <span className="components_tidings_tidings_ticker_span_text">
       {tidings.map(
         (entry, index) => (
-          <span key={entry.id}>
+          <span className="components_tidings_tidings_ticker_span_text_2" key={entry.id}>
             {index > 0 ? (
-              <span className="mx-8 text-[rgb(var(--sep-colour-80684b))]">
+              <span className="mx-8 text-[rgb(var(--sep-colour-80684b))] components_tidings_tidings_ticker_span_text_3">
                 ✦
               </span>
             ) : null}
 
             <span
-              className={
-                entry.priority ===
+              className={[((entry.priority ===
                 "urgent"
                   ? "text-[rgb(var(--sep-colour-e4a58d))]"
                   : entry.priority ===
                       "important"
                     ? "text-[rgb(var(--sep-colour-e1c28f))]"
-                    : "text-[rgb(var(--sep-colour-c9b391))]"
-              }
+                    : "text-[rgb(var(--sep-colour-c9b391))]")), "components_tidings_tidings_ticker_span_text_4"].filter(Boolean).join(" ")}
             >
               <strong
                 data-tidings-role="title"
-                className="font-serif font-normal text-[rgb(var(--sep-colour-ead1a7))]"
+                className="font-serif font-normal text-[rgb(var(--sep-colour-ead1a7))] components_tidings_tidings_ticker_strong_emphasis"
               >
                 {entry.title}
               </strong>
 
-              <span className="mx-2 text-[rgb(var(--sep-colour-80684b))]">
+              <span className="mx-2 text-[rgb(var(--sep-colour-80684b))] components_tidings_tidings_ticker_span_text_5">
                 —
               </span>
 
-              <span data-tidings-role="description">
+              <span className="components_tidings_tidings_ticker_span_text_6" data-tidings-role="description">
                 {entry.message}
               </span>
             </span>

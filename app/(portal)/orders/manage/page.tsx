@@ -140,17 +140,17 @@ export default async function ManageOrdersPage({
   }
 
   return (
-    <main className="p-5 sm:p-7 lg:p-9">
-      <div className="mx-auto max-w-6xl">
-        <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
+    <main className="p-5 sm:p-7 lg:p-9 orders_manage_page_main_main">
+      <div className="mx-auto max-w-6xl orders_manage_page_div_manage_order">
+        <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))] orders_manage_page_p_manage_order">
           Order leadership
         </p>
 
-        <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">
+        <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))] orders_manage_page_h1_manage_order">
           Manage Your Order
         </h1>
 
-        <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))]">
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))] orders_manage_page_p_manage_order_2">
           Admit members, assign jobs
           and manage Levels 1–5.
           Appointment or removal of a
@@ -171,7 +171,7 @@ export default async function ManageOrdersPage({
           />
         ) : null}
 
-        <div className="mt-8 space-y-8">
+        <div className="mt-8 space-y-8 orders_manage_page_div_manage_order_2">
           {await Promise.all(
             leaderships.map(
               async (
@@ -623,7 +623,7 @@ export default async function ManageOrdersPage({
                       order.id
                     }
                     id={`managed-order-${order.id}`}
-                    className="scroll-mt-6 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]"
+                    className="scroll-mt-6 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] orders_manage_page_section_section"
 
                     style={
                       order.colour
@@ -633,22 +633,22 @@ export default async function ManageOrdersPage({
                         : undefined
                     }
                   >
-                    <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 px-5 py-5 sm:px-6">
-                      <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
+                    <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 px-5 py-5 sm:px-6 orders_manage_page_div_container">
+                      <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))] orders_manage_page_p_text">
                         Level 6 · Head
                       </p>
 
-                      <div className="mt-1 flex flex-wrap items-end justify-between gap-3">
-                        <div>
-                          <h2 className="font-serif text-3xl text-[rgb(var(--sep-colour-dfc99f))]">
+                      <div className="mt-1 flex flex-wrap items-end justify-between gap-3 orders_manage_page_div_container_2">
+                        <div className="orders_manage_page_div_container_3">
+                          <h2 className="font-serif text-3xl text-[rgb(var(--sep-colour-dfc99f))] orders_manage_page_h2_heading">
                             {
                               order.name
                             }
                           </h2>
 
-                          <p className="mt-1 text-[10px] text-[rgb(var(--sep-colour-8f8271))]">
+                          <p className="mt-1 text-[10px] text-[rgb(var(--sep-colour-8f8271))] orders_manage_page_p_text_2">
                             Managed by{" "}
-                            <span className="text-[rgb(var(--sep-colour-c4a97f))]">
+                            <span className="text-[rgb(var(--sep-colour-c4a97f))] orders_manage_page_span_text">
                               {
                                 character.display_name
                               }
@@ -656,7 +656,7 @@ export default async function ManageOrdersPage({
                           </p>
                         </div>
 
-                        <span className="border border-[rgb(var(--sep-skin-c1,var(--sep-colour-765937)))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-a98c65))]">
+                        <span className="border border-[rgb(var(--sep-skin-c1,var(--sep-colour-765937)))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-a98c65))] orders_manage_page_span_text_2">
                           {
                             members.length
                           }{" "}
@@ -668,8 +668,8 @@ export default async function ManageOrdersPage({
                       </div>
                     </div>
 
-                    <div className="p-5 sm:p-6">
-                      <div className="space-y-2">
+                    <div className="p-5 sm:p-6 orders_manage_page_div_container_4">
+                      <div className="space-y-2 orders_manage_page_div_container_5">
                         {members.map(
                           (
                             member,
@@ -704,14 +704,14 @@ export default async function ManageOrdersPage({
                                   key={
                                     member.id
                                   }
-                                  className="grid gap-3 border border-[rgb(var(--sep-colour-765937))]/45 bg-[rgb(var(--sep-colour-18110d))] p-3 lg:grid-cols-[minmax(180px,1fr)_130px_minmax(190px,1fr)_auto] lg:items-center"
+                                  className="grid gap-3 border border-[rgb(var(--sep-colour-765937))]/45 bg-[rgb(var(--sep-colour-18110d))] p-3 lg:grid-cols-[minmax(180px,1fr)_130px_minmax(190px,1fr)_auto] lg:items-center orders_manage_page_div_container_6"
                                 >
-                                  <div>
-                                    <p className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
+                                  <div className="orders_manage_page_div_container_7">
+                                    <p className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))] orders_manage_page_p_text_3">
                                       Character
                                     </p>
 
-                                    <p className="mt-1 font-serif text-sm text-[rgb(var(--sep-colour-e0c798))]">
+                                    <p className="mt-1 font-serif text-sm text-[rgb(var(--sep-colour-e0c798))] orders_manage_page_p_text_4">
                                       {
                                         c.display_name
                                       }
@@ -722,16 +722,16 @@ export default async function ManageOrdersPage({
                                     </p>
                                   </div>
 
-                                  <p className="text-xs text-[rgb(var(--sep-colour-b49b74))]">
+                                  <p className="text-xs text-[rgb(var(--sep-colour-b49b74))] orders_manage_page_p_text_5">
                                     Level 6
                                   </p>
 
-                                  <p className="text-xs text-[rgb(var(--sep-colour-b49b74))]">
+                                  <p className="text-xs text-[rgb(var(--sep-colour-b49b74))] orders_manage_page_p_text_6">
                                     {currentJob ??
                                       "Head"}
                                   </p>
 
-                                  <span className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
+                                  <span className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))] orders_manage_page_span_text_3">
                                     Staff
                                     controlled
                                   </span>
@@ -745,7 +745,7 @@ export default async function ManageOrdersPage({
                             return (
                               <div
                                 key={member.id}
-                                className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-3"
+                                className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-3 orders_manage_page_div_container_8"
                               >
                                 <OrderHeadMemberForm
                                   orderId={
@@ -828,11 +828,11 @@ function Notice({
 }) {
   return (
     <div
-      className={`mt-5 border px-4 py-3 text-sm ${
+      className={[((`mt-5 border px-4 py-3 text-sm ${
         error
           ? "border-red-900/60 bg-red-950/20 text-red-400"
           : "border-emerald-800/50 bg-emerald-950/20 text-emerald-400"
-      }`}
+      }`)), "orders_manage_page_div_container_9"].filter(Boolean).join(" ")}
     >
       {text}
     </div>

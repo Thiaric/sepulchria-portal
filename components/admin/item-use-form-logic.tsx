@@ -281,7 +281,7 @@ export function ItemUseFormLogic() {
   return (
     <span
       ref={anchorRef}
-      className="hidden"
+      className="hidden components_admin_item_use_form_logic_span_text"
       aria-hidden="true"
     />
   );

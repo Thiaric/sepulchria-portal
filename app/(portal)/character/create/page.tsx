@@ -89,8 +89,8 @@ export default async function CreateCharacterPage({
     }));
 
   return (
-    <main className="min-h-screen bg-[rgb(var(--sep-colour-100d0b))] px-5 py-8 text-[rgb(var(--sep-colour-e7d5b0))] sm:py-10">
-      <div className="mx-auto max-w-7xl">
+    <main className="min-h-screen bg-[rgb(var(--sep-colour-100d0b))] px-5 py-8 text-[rgb(var(--sep-colour-e7d5b0))] sm:py-10 character_create_page_main_main">
+      <div className="mx-auto max-w-7xl character_create_page_div_container">
         <Link
           href="/"
           className="text-sm text-[rgb(var(--sep-colour-b8945d))] transition hover:text-[rgb(var(--sep-colour-e3c28c))]"
@@ -98,14 +98,14 @@ export default async function CreateCharacterPage({
           ← Return to dashboard
         </Link>
 
-        <header className="my-8 max-w-3xl">
-          <p className="text-[10px] uppercase tracking-[0.34em] text-[rgb(var(--sep-colour-957448))]">
+        <header className="my-8 max-w-3xl character_create_page_header_create_character">
+          <p className="text-[10px] uppercase tracking-[0.34em] text-[rgb(var(--sep-colour-957448))] character_create_page_p_create_character">
             Character creator
           </p>
-          <h1 className="mt-3 font-serif text-4xl text-[rgb(var(--sep-colour-ecd9b2))] sm:text-5xl">
+          <h1 className="mt-3 font-serif text-4xl text-[rgb(var(--sep-colour-ecd9b2))] sm:text-5xl character_create_page_h1_create_character">
             Create your character
           </h1>
-          <p className="mt-4 text-sm leading-7 text-[rgb(var(--sep-colour-9e907d))] sm:text-base">
+          <p className="mt-4 text-sm leading-7 text-[rgb(var(--sep-colour-9e907d))] sm:text-base character_create_page_p_create_character_2">
             Choose your ancestry and build the person who will enter Sepulchria.
             Associations and Orders are not chosen here: they are earned and
             assigned through play.
@@ -113,7 +113,7 @@ export default async function CreateCharacterPage({
         </header>
 
         {error ? (
-          <p className="mb-6 border border-[rgb(var(--sep-colour-8c463d))] bg-[rgb(var(--sep-colour-2a1513))] p-4 text-[rgb(var(--sep-colour-e4b4aa))]">
+          <p className="mb-6 border border-[rgb(var(--sep-colour-8c463d))] bg-[rgb(var(--sep-colour-2a1513))] p-4 text-[rgb(var(--sep-colour-e4b4aa))] character_create_page_p_text">
             {error}
           </p>
         ) : null}

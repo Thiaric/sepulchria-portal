@@ -79,7 +79,7 @@ export function PortalSkinAtmosphere({
     <>
       <div
         aria-hidden="true"
-        className="portal-skin-atmosphere"
+        className="portal-skin-atmosphere components_portal_portal_skin_atmosphere_div_container"
         data-atmosphere={kind}
       >
         {(kind === "sepulchria" ||
@@ -88,7 +88,7 @@ export function PortalSkinAtmosphere({
           FLOATERS.map((particle, index) => (
             <span
               key={`${kind}-${index}`}
-              className="portal-skin-float"
+              className="portal-skin-float components_portal_portal_skin_atmosphere_span_text"
               style={{
                 left: `${particle.left}%`,
                 width: particle.size,
@@ -104,7 +104,7 @@ export function PortalSkinAtmosphere({
           STARS.map((star, index) => (
             <span
               key={index}
-              className="portal-star"
+              className="portal-star components_portal_portal_skin_atmosphere_span_text_2"
               style={{
                 left: `${star.left}%`,
                 top: `${star.top}%`,
@@ -117,14 +117,14 @@ export function PortalSkinAtmosphere({
           ))}
 
         {(kind === "starfall" || kind === "aelari-dawn") ? (
-          <span className="portal-shooting-star" />
+          <span className="portal-shooting-star components_portal_portal_skin_atmosphere_span_text_3" />
         ) : null}
 
         {kind === "vellum" &&
           WRITING.map((item, index) => (
             <span
               key={index}
-              className={`portal-ink-writing portal-ink-${item.side}`}
+              className={[((`portal-ink-writing portal-ink-${item.side}`)), "components_portal_portal_skin_atmosphere_span_text_4"].filter(Boolean).join(" ")}
               style={{
                 top: `${item.top}%`,
                 animationDelay: `${item.delay}s`,
@@ -136,26 +136,26 @@ export function PortalSkinAtmosphere({
 
         {kind === "rose" ? (
           <>
-            <span className="portal-vine portal-vine-left" />
-            <span className="portal-vine portal-vine-right" />
-            <span className="portal-petal portal-petal-one" />
-            <span className="portal-petal portal-petal-two" />
-            <span className="portal-petal portal-petal-three" />
+            <span className="portal-vine portal-vine-left components_portal_portal_skin_atmosphere_span_text_5" />
+            <span className="portal-vine portal-vine-right components_portal_portal_skin_atmosphere_span_text_6" />
+            <span className="portal-petal portal-petal-one components_portal_portal_skin_atmosphere_span_text_7" />
+            <span className="portal-petal portal-petal-two components_portal_portal_skin_atmosphere_span_text_8" />
+            <span className="portal-petal portal-petal-three components_portal_portal_skin_atmosphere_span_text_9" />
           </>
         ) : null}
 
         {kind === "water" ? (
           <>
-            <span className="portal-water-reflection portal-water-a" />
-            <span className="portal-water-reflection portal-water-b" />
+            <span className="portal-water-reflection portal-water-a components_portal_portal_skin_atmosphere_span_text_10" />
+            <span className="portal-water-reflection portal-water-b components_portal_portal_skin_atmosphere_span_text_11" />
           </>
         ) : null}
 
         {kind === "amethyst" ? (
           <>
-            <span className="portal-amethyst portal-amethyst-one" />
-            <span className="portal-amethyst portal-amethyst-two" />
-            <span className="portal-amethyst portal-amethyst-three" />
+            <span className="portal-amethyst portal-amethyst-one components_portal_portal_skin_atmosphere_span_text_12" />
+            <span className="portal-amethyst portal-amethyst-two components_portal_portal_skin_atmosphere_span_text_13" />
+            <span className="portal-amethyst portal-amethyst-three components_portal_portal_skin_atmosphere_span_text_14" />
           </>
         ) : null}
 
@@ -163,7 +163,7 @@ export function PortalSkinAtmosphere({
           STARS.map((star, index) => (
             <span
               key={index}
-              className="portal-emerald-speck"
+              className="portal-emerald-speck components_portal_portal_skin_atmosphere_span_text_15"
               style={{
                 left: `${star.left}%`,
                 top: `${star.top}%`,
@@ -175,32 +175,32 @@ export function PortalSkinAtmosphere({
 
         {kind === "ivory" ? (
           <>
-            <span className="portal-ivory-shimmer portal-ivory-top" />
-            <span className="portal-ivory-shimmer portal-ivory-side" />
+            <span className="portal-ivory-shimmer portal-ivory-top components_portal_portal_skin_atmosphere_span_text_16" />
+            <span className="portal-ivory-shimmer portal-ivory-side components_portal_portal_skin_atmosphere_span_text_17" />
           </>
         ) : null}
 
         {kind === "kareshi-night" ? (
           <>
-            <span className="portal-kareshi-haze portal-kareshi-haze-a" />
-            <span className="portal-kareshi-haze portal-kareshi-haze-b" />
-            <span className="portal-kareshi-shadow-band portal-kareshi-shadow-one" />
-            <span className="portal-kareshi-shadow-band portal-kareshi-shadow-two" />
+            <span className="portal-kareshi-haze portal-kareshi-haze-a components_portal_portal_skin_atmosphere_span_text_18" />
+            <span className="portal-kareshi-haze portal-kareshi-haze-b components_portal_portal_skin_atmosphere_span_text_19" />
+            <span className="portal-kareshi-shadow-band portal-kareshi-shadow-one components_portal_portal_skin_atmosphere_span_text_20" />
+            <span className="portal-kareshi-shadow-band portal-kareshi-shadow-two components_portal_portal_skin_atmosphere_span_text_21" />
           </>
         ) : null}
 
         {kind === "wolf-moon" ? (
           <>
-            <span className="portal-moon-glow portal-moon-glow-a" />
-            <span className="portal-moon-glow portal-moon-glow-b" />
-            <span className="portal-wolf-mist" />
+            <span className="portal-moon-glow portal-moon-glow-a components_portal_portal_skin_atmosphere_span_text_22" />
+            <span className="portal-moon-glow portal-moon-glow-b components_portal_portal_skin_atmosphere_span_text_23" />
+            <span className="portal-wolf-mist components_portal_portal_skin_atmosphere_span_text_24" />
           </>
         ) : null}
 
         {kind === "bird-sky" ? (
           <>
-            <span className="portal-bird-sky portal-bird-sky-a" />
-            <span className="portal-bird-sky portal-bird-sky-b" />
+            <span className="portal-bird-sky portal-bird-sky-a components_portal_portal_skin_atmosphere_span_text_25" />
+            <span className="portal-bird-sky portal-bird-sky-b components_portal_portal_skin_atmosphere_span_text_26" />
           </>
         ) : null}
 
@@ -209,7 +209,7 @@ export function PortalSkinAtmosphere({
             {FLOATERS.slice(0, 7).map((particle, index) => (
               <span
                 key={`dwarven-${index}`}
-                className="portal-dwarven-spark"
+                className="portal-dwarven-spark components_portal_portal_skin_atmosphere_span_text_27"
                 style={{
                   left: `${particle.left}%`,
                   animationDelay: `${particle.delay}s`,
@@ -218,7 +218,7 @@ export function PortalSkinAtmosphere({
                 }}
               />
             ))}
-            <span className="portal-dwarven-heat" />
+            <span className="portal-dwarven-heat components_portal_portal_skin_atmosphere_span_text_28" />
           </>
         ) : null}
 
@@ -226,7 +226,7 @@ export function PortalSkinAtmosphere({
           FLOATERS.slice(0, 5).map((particle, index) => (
             <span
               key={`mortal-${index}`}
-              className="portal-mortal-ember"
+              className="portal-mortal-ember components_portal_portal_skin_atmosphere_span_text_29"
               style={{
                 left: `${particle.left}%`,
                 animationDelay: `${particle.delay + 2}s`,

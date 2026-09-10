@@ -90,24 +90,24 @@ export function CharacterAuditTrailClient({
 
   return (
     <>
-      <div className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-3">
-        <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-3">
+      <div className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-3 components_characters_character_audit_trail_client_div_container">
+        <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-3 components_characters_character_audit_trail_client_div_container_2">
           <input
             type="search"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search Character Log..."
-            className={controlClass}
+            className={[((controlClass)), "components_characters_character_audit_trail_client_input_search_character_log"].filter(Boolean).join(" ")}
           />
 
           <select
             value={eventType}
             onChange={(event) => setEventType(event.target.value)}
-            className={controlClass}
+            className={[((controlClass)), "components_characters_character_audit_trail_client_select_select"].filter(Boolean).join(" ")}
           >
-            <option value="">All events</option>
+            <option className="components_characters_character_audit_trail_client_option_option" value="">All events</option>
             {eventOptions.map((value) => (
-              <option key={value} value={value}>
+              <option className="components_characters_character_audit_trail_client_option_option_2" key={value} value={value}>
                 {humanAuditLabel(value)}
               </option>
             ))}
@@ -116,70 +116,70 @@ export function CharacterAuditTrailClient({
           <select
             value={actorType}
             onChange={(event) => setActorType(event.target.value)}
-            className={controlClass}
+            className={[((controlClass)), "components_characters_character_audit_trail_client_select_select_2"].filter(Boolean).join(" ")}
           >
-            <option value="">All actors</option>
-            <option value="player">Player</option>
-            <option value="staff">Staff</option>
-            <option value="system">System</option>
+            <option className="components_characters_character_audit_trail_client_option_option_3" value="">All actors</option>
+            <option className="components_characters_character_audit_trail_client_option_player" value="player">Player</option>
+            <option className="components_characters_character_audit_trail_client_option_staff" value="staff">Staff</option>
+            <option className="components_characters_character_audit_trail_client_option_system" value="system">System</option>
           </select>
 
           <select
             value={source}
             onChange={(event) => setSource(event.target.value)}
-            className={controlClass}
+            className={[((controlClass)), "components_characters_character_audit_trail_client_select_select_3"].filter(Boolean).join(" ")}
           >
-            <option value="">All sources</option>
+            <option className="components_characters_character_audit_trail_client_option_option_4" value="">All sources</option>
             {sourceOptions.map((value) => (
-              <option key={value} value={value}>
+              <option className="components_characters_character_audit_trail_client_option_option_5" key={value} value={value}>
                 {humanAuditLabel(value)}
               </option>
             ))}
           </select>
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-2 components_characters_character_audit_trail_client_div_container_3">
             <input
               type="date"
               value={fromDate}
               onChange={(event) => setFromDate(event.target.value)}
               title="From date"
-              className={controlClass}
+              className={[((controlClass)), "components_characters_character_audit_trail_client_input_date"].filter(Boolean).join(" ")}
             />
             <input
               type="date"
               value={toDate}
               onChange={(event) => setToDate(event.target.value)}
               title="To date"
-              className={controlClass}
+              className={[((controlClass)), "components_characters_character_audit_trail_client_input_date_2"].filter(Boolean).join(" ")}
             />
           </div>
 
-          <div className="flex items-center justify-between gap-2">
-            <p className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-716654))]">
+          <div className="flex items-center justify-between gap-2 components_characters_character_audit_trail_client_div_container_4">
+            <p className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-716654))] components_characters_character_audit_trail_client_p_text">
               {filteredRows.length} / {rows.length} entries
             </p>
             <button
               type="button"
               onClick={resetFilters}
               disabled={!hasFilters}
-              className="h-9 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-18110d))] px-3 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-ae9a7b))] disabled:cursor-not-allowed disabled:opacity-40"
+              className="h-9 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-18110d))] px-3 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-ae9a7b))] disabled:cursor-not-allowed disabled:opacity-40 components_characters_character_audit_trail_client_button_reset"
             >
               Reset
             </button>
           </div>
         </div>
 
-        <p className="mt-2 text-[8px] text-[rgb(var(--sep-colour-756958))]">
+        <p className="mt-2 text-[8px] text-[rgb(var(--sep-colour-756958))] components_characters_character_audit_trail_client_p_text_2">
           Filters update immediately. No reload required.
         </p>
       </div>
 
       {filteredRows.length === 0 ? (
-        <p className="py-6 text-sm text-[rgb(var(--sep-colour-8f8271))]">
+        <p className="py-6 text-sm text-[rgb(var(--sep-colour-8f8271))] components_characters_character_audit_trail_client_p_text_3">
           No Character Log entries match these filters.
         </p>
       ) : (
-        <div className="mt-4 space-y-3">
+        <div className="mt-4 space-y-3 components_characters_character_audit_trail_client_div_container_5">
           {filteredRows.map((row) => (
             <CharacterAuditEntry key={row.id} row={row} />
           ))}

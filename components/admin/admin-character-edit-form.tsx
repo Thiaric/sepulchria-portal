@@ -575,13 +575,13 @@ export function AdminCharacterEditForm({
       onSubmit={(event) => {
         void handleSubmit(event);
       }}
-      className={className}
+      className={[((className)), "components_admin_admin_character_edit_form_form_action"].filter(Boolean).join(" ")}
       noValidate
     >
       {attributeError ? (
         <div
           role="alert"
-          className="mb-5 border border-[rgb(var(--sep-colour-8c463d))] bg-[rgb(var(--sep-colour-2a1513))] p-4 text-sm leading-6 text-[rgb(var(--sep-colour-e4b4aa))]"
+          className="mb-5 border border-[rgb(var(--sep-colour-8c463d))] bg-[rgb(var(--sep-colour-2a1513))] p-4 text-sm leading-6 text-[rgb(var(--sep-colour-e4b4aa))] components_admin_admin_character_edit_form_div_alert"
         >
           {attributeError}
         </div>
@@ -590,14 +590,14 @@ export function AdminCharacterEditForm({
       {ageError ? (
         <div
           role="alert"
-          className="mb-5 border border-[rgb(var(--sep-colour-8c463d))] bg-[rgb(var(--sep-colour-2a1513))] p-4 text-sm leading-6 text-[rgb(var(--sep-colour-e4b4aa))]"
+          className="mb-5 border border-[rgb(var(--sep-colour-8c463d))] bg-[rgb(var(--sep-colour-2a1513))] p-4 text-sm leading-6 text-[rgb(var(--sep-colour-e4b4aa))] components_admin_admin_character_edit_form_div_alert_2"
         >
           {ageError}
         </div>
       ) : null}
 
-      <section className="mb-5 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] p-4">
-        <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
+      <section className="mb-5 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] p-4 components_admin_admin_character_edit_form_section_section">
+        <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))] components_admin_admin_character_edit_form_p_text">
           Age
         </p>
 
@@ -625,10 +625,10 @@ export function AdminCharacterEditForm({
             selectedRace.min_age ===
               null
           }
-          className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] disabled:cursor-not-allowed disabled:opacity-45"
+          className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] disabled:cursor-not-allowed disabled:opacity-45 components_admin_admin_character_edit_form_input_age"
         />
 
-        <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+        <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_admin_admin_character_edit_form_p_text_2">
           {loadingAge
             ? "Loading ancestry age rules..."
             : !selectedRace

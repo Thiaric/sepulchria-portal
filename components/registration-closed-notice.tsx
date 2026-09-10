@@ -83,26 +83,26 @@ export function RegistrationClosedNotice() {
 
   return (
     <>
-      <div className="space-y-6">
-        <div className="border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-21170f))]/70 p-6 text-center sm:p-8">
-          <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-a88658))]">
+      <div className="space-y-6 components_registration_closed_notice_div_container">
+        <div className="border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-21170f))]/70 p-6 text-center sm:p-8 components_registration_closed_notice_div_closed_alpha_access">
+          <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-a88658))] components_registration_closed_notice_p_closed_alpha_access">
             The City Gates Will Open Soon
           </p>
 
-          <h2 className="mt-3 font-serif text-2xl text-[rgb(var(--sep-colour-e6cfa3))] sm:text-3xl">
+          <h2 className="mt-3 font-serif text-2xl text-[rgb(var(--sep-colour-e6cfa3))] sm:text-3xl components_registration_closed_notice_h2_closed_alpha_access">
             Closed Alpha access
           </h2>
 
-          <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-[rgb(var(--sep-colour-b8aa95))]">
+          <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-[rgb(var(--sep-colour-b8aa95))] components_registration_closed_notice_p_closed_alpha_access_2">
   Public registrations will open soon. We are now selecting an
   initial group of up to 50 players (18+ only) for the Closed Alpha.
 </p>
 
-<p className="mx-auto mt-3 max-w-xl text-xs leading-6 text-[rgb(var(--sep-colour-8f8271))]">
+<p className="mx-auto mt-3 max-w-xl text-xs leading-6 text-[rgb(var(--sep-colour-8f8271))] components_registration_closed_notice_p_closed_alpha_access_3">
   Applications are reviewed individually and invitations are limited.
 </p>
 
-          <div className="mx-auto mt-6 h-px w-28 bg-gradient-to-r from-transparent via-[rgb(var(--sep-colour-987344))] to-transparent" />
+          <div className="mx-auto mt-6 h-px w-28 bg-gradient-to-r from-transparent via-[rgb(var(--sep-colour-987344))] to-transparent components_registration_closed_notice_div_closed_alpha_access_2" />
 
           <button
             type="button"
@@ -110,13 +110,13 @@ export function RegistrationClosedNotice() {
               setOpen(true);
               setError(null);
             }}
-            className="mt-6 border border-[rgb(var(--sep-colour-a77a42))]/80 bg-[rgb(var(--sep-colour-382313))] px-6 py-3 font-serif text-base text-[rgb(var(--sep-colour-ead3a6))] transition hover:border-[rgb(var(--sep-colour-d4a460))] hover:bg-[rgb(var(--sep-colour-472c17))]"
+            className="mt-6 border border-[rgb(var(--sep-colour-a77a42))]/80 bg-[rgb(var(--sep-colour-382313))] px-6 py-3 font-serif text-base text-[rgb(var(--sep-colour-ead3a6))] transition hover:border-[rgb(var(--sep-colour-d4a460))] hover:bg-[rgb(var(--sep-colour-472c17))] components_registration_closed_notice_button_apply_closed_alpha"
           >
             Apply for Closed Alpha
           </button>
         </div>
 
-        <p className="text-center text-sm text-[rgb(var(--sep-colour-897d6c))]">
+        <p className="text-center text-sm text-[rgb(var(--sep-colour-897d6c))] components_registration_closed_notice_p_text">
           Already registered?{" "}
           <Link
             href="/auth/login"
@@ -129,7 +129,7 @@ export function RegistrationClosedNotice() {
 
       {open ? (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/75 p-4"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/75 p-4 components_registration_closed_notice_div_dialog"
           role="dialog"
           aria-modal="true"
           aria-labelledby="alpha-application-title"
@@ -139,15 +139,15 @@ export function RegistrationClosedNotice() {
             }
           }}
         >
-          <div className="max-h-[90dvh] w-full max-w-2xl overflow-y-auto border border-[rgb(var(--sep-colour-765937))]/70 bg-[rgb(var(--sep-colour-120d09))] p-5 shadow-2xl sm:p-7">
-            <div className="flex items-start justify-between gap-5">
-              <div>
-                <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8b704e))]">
+          <div className="max-h-[90dvh] w-full max-w-2xl overflow-y-auto border border-[rgb(var(--sep-colour-765937))]/70 bg-[rgb(var(--sep-colour-120d09))] p-5 shadow-2xl sm:p-7 components_registration_closed_notice_div_container_2">
+            <div className="flex items-start justify-between gap-5 components_registration_closed_notice_div_container_3">
+              <div className="components_registration_closed_notice_div_application">
+                <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8b704e))] components_registration_closed_notice_p_application">
                   Closed Alpha
                 </p>
                 <h2
                   id="alpha-application-title"
-                  className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-e2cda4))]"
+                  className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-e2cda4))] components_registration_closed_notice_h2_alpha_application_title"
                 >
                   Application
                 </h2>
@@ -156,7 +156,7 @@ export function RegistrationClosedNotice() {
               <button
                 type="button"
                 onClick={() => !loading && setOpen(false)}
-                className="text-xl text-[rgb(var(--sep-colour-9b876a))] hover:text-[rgb(var(--sep-colour-e0c99d))]"
+                className="text-xl text-[rgb(var(--sep-colour-9b876a))] hover:text-[rgb(var(--sep-colour-e0c99d))] components_registration_closed_notice_button_close"
                 aria-label="Close"
               >
                 ×
@@ -164,27 +164,27 @@ export function RegistrationClosedNotice() {
             </div>
 
             {success ? (
-              <div className="mt-6 border border-emerald-800/55 bg-emerald-950/15 p-5 text-sm leading-7 text-emerald-300">
+              <div className="mt-6 border border-emerald-800/55 bg-emerald-950/15 p-5 text-sm leading-7 text-emerald-300 components_registration_closed_notice_div_container_4">
                 Thank you. Your application has been received. If selected,
                 you will receive an invitation at the email address you
                 provided.
               </div>
             ) : (
-              <form onSubmit={submit} className="mt-6 space-y-5">
-                <div className="space-y-2">
-                  <label htmlFor="alpha-name" className={label}>Name</label>
+              <form onSubmit={submit} className="mt-6 space-y-5 components_registration_closed_notice_form_submit">
+                <div className="space-y-2 components_registration_closed_notice_div_name">
+                  <label htmlFor="alpha-name" className={[((label)), "components_registration_closed_notice_label_alpha_name"].filter(Boolean).join(" ")}>Name</label>
                   <input
                     id="alpha-name"
                     required
                     maxLength={120}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className={field}
+                    className={[((field)), "components_registration_closed_notice_input_alpha_name"].filter(Boolean).join(" ")}
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <label htmlFor="alpha-email" className={label}>Email</label>
+                <div className="space-y-2 components_registration_closed_notice_div_email">
+                  <label htmlFor="alpha-email" className={[((label)), "components_registration_closed_notice_label_alpha_email"].filter(Boolean).join(" ")}>Email</label>
                   <input
                     id="alpha-email"
                     type="email"
@@ -192,13 +192,13 @@ export function RegistrationClosedNotice() {
                     maxLength={320}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className={field}
+                    className={[((field)), "components_registration_closed_notice_input_alpha_email"].filter(Boolean).join(" ")}
                   />
                 </div>
 
-                <div className="hidden" aria-hidden="true">
-                  <label htmlFor="alpha-website">Website</label>
-                  <input
+                <div className="hidden components_registration_closed_notice_div_website" aria-hidden="true">
+                  <label className="components_registration_closed_notice_label_alpha_website" htmlFor="alpha-website">Website</label>
+                  <input className="components_registration_closed_notice_input_alpha_website"
                     id="alpha-website"
                     tabIndex={-1}
                     autoComplete="off"
@@ -207,8 +207,8 @@ export function RegistrationClosedNotice() {
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <label htmlFor="alpha-heard" className={label}>
+                <div className="space-y-2 components_registration_closed_notice_div_how_did_hear_about">
+                  <label htmlFor="alpha-heard" className={[((label)), "components_registration_closed_notice_label_alpha_heard"].filter(Boolean).join(" ")}>
                     How did you hear about the closed Alpha?
                   </label>
                   <textarea
@@ -218,12 +218,12 @@ export function RegistrationClosedNotice() {
                     maxLength={3000}
                     value={heardAbout}
                     onChange={(e) => setHeardAbout(e.target.value)}
-                    className={field}
+                    className={[((field)), "components_registration_closed_notice_textarea_alpha_heard"].filter(Boolean).join(" ")}
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <label htmlFor="alpha-enjoy" className={label}>
+                <div className="space-y-2 components_registration_closed_notice_div_do_enjoy_about_roleplay">
+                  <label htmlFor="alpha-enjoy" className={[((label)), "components_registration_closed_notice_label_alpha_enjoy"].filter(Boolean).join(" ")}>
                     What do you enjoy about roleplay?
                   </label>
                   <textarea
@@ -233,12 +233,12 @@ export function RegistrationClosedNotice() {
                     maxLength={6000}
                     value={roleplayEnjoyment}
                     onChange={(e) => setRoleplayEnjoyment(e.target.value)}
-                    className={field}
+                    className={[((field)), "components_registration_closed_notice_textarea_alpha_enjoy"].filter(Boolean).join(" ")}
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <label htmlFor="alpha-experience" className={label}>
+                <div className="space-y-2 components_registration_closed_notice_div_previous_rpg_experience">
+                  <label htmlFor="alpha-experience" className={[((label)), "components_registration_closed_notice_label_alpha_experience"].filter(Boolean).join(" ")}>
                     Previous RPG experience
                   </label>
                   <textarea
@@ -248,12 +248,12 @@ export function RegistrationClosedNotice() {
                     maxLength={6000}
                     value={rpgExperience}
                     onChange={(e) => setRpgExperience(e.target.value)}
-                    className={field}
+                    className={[((field)), "components_registration_closed_notice_textarea_alpha_experience"].filter(Boolean).join(" ")}
                   />
                 </div>
 
                 {error ? (
-                  <div className="border border-red-900/55 bg-red-950/20 px-4 py-3 text-sm text-red-300">
+                  <div className="border border-red-900/55 bg-red-950/20 px-4 py-3 text-sm text-red-300 components_registration_closed_notice_div_container_5">
                     {error}
                   </div>
                 ) : null}
@@ -261,7 +261,7 @@ export function RegistrationClosedNotice() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full border border-[rgb(var(--sep-colour-a77a42))]/80 bg-[rgb(var(--sep-colour-382313))] px-6 py-3 font-serif text-base text-[rgb(var(--sep-colour-ead3a6))] transition hover:border-[rgb(var(--sep-colour-d4a460))] hover:bg-[rgb(var(--sep-colour-472c17))] disabled:opacity-50"
+                  className="w-full border border-[rgb(var(--sep-colour-a77a42))]/80 bg-[rgb(var(--sep-colour-382313))] px-6 py-3 font-serif text-base text-[rgb(var(--sep-colour-ead3a6))] transition hover:border-[rgb(var(--sep-colour-d4a460))] hover:bg-[rgb(var(--sep-colour-472c17))] disabled:opacity-50 components_registration_closed_notice_button_action"
                 >
                   {loading ? "Submitting..." : "Submit application"}
                 </button>

@@ -77,28 +77,28 @@ export function LedgerEntries({ entries, compact = false }: Props) {
 
   return (
     <>
-      <div className="grid gap-2 border-b border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))] p-3 sm:grid-cols-[minmax(180px,1fr)_150px_150px_auto]">
+      <div className="grid gap-2 border-b border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))] p-3 sm:grid-cols-[minmax(180px,1fr)_150px_150px_auto] components_economy_ledger_entries_div_container">
         <input
           type="search"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search shop, item, type, reason..."
-          className="min-w-0 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0a08))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
+          className="min-w-0 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0a08))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))] components_economy_ledger_entries_input_search_shop_item_type_reason"
         />
         <input
           type="date"
           value={date}
           onChange={(e) => setDate(e.target.value)}
-          className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0a08))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-bba98c))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
+          className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0a08))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-bba98c))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] components_economy_ledger_entries_input_field"
         />
         <select
           value={movement}
           onChange={(e) => setMovement(e.target.value as "all" | "positive" | "negative")}
-          className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0a08))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-bba98c))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
+          className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0a08))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-bba98c))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] components_economy_ledger_entries_select_select"
         >
-          <option value="all">All movements</option>
-          <option value="positive">Positive only</option>
-          <option value="negative">Negative only</option>
+          <option className="components_economy_ledger_entries_option_all" value="all">All movements</option>
+          <option className="components_economy_ledger_entries_option_positive" value="positive">Positive only</option>
+          <option className="components_economy_ledger_entries_option_negative" value="negative">Negative only</option>
         </select>
         <button
           type="button"
@@ -107,13 +107,13 @@ export function LedgerEntries({ entries, compact = false }: Props) {
             setDate("");
             setMovement("all");
           }}
-          className="border border-[rgb(var(--sep-colour-60482e))]/55 px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-a99578))] hover:border-[rgb(var(--sep-colour-8c6b43))] hover:text-[rgb(var(--sep-colour-dfc79c))]"
+          className="border border-[rgb(var(--sep-colour-60482e))]/55 px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-a99578))] hover:border-[rgb(var(--sep-colour-8c6b43))] hover:text-[rgb(var(--sep-colour-dfc79c))] components_economy_ledger_entries_button_clear"
         >
           Clear
         </button>
       </div>
 
-      <div className={compact ? "max-h-[230px] space-y-1.5 overflow-y-auto p-1 pr-1" : "max-h-[520px] overflow-y-auto"}>
+      <div className={[((compact ? "max-h-[230px] space-y-1.5 overflow-y-auto p-1 pr-1" : "max-h-[520px] overflow-y-auto")), "components_economy_ledger_entries_div_container_2"].filter(Boolean).join(" ")}>
         {filtered.length ? (
           filtered.map((entry) => {
             const isMoney = entry.kind === "money";
@@ -126,23 +126,23 @@ export function LedgerEntries({ entries, compact = false }: Props) {
               : `Balance ${formatRemnants(Number(entry.balance_after ?? 0))}`;
 
             return compact ? (
-              <div key={entry.id} className="grid gap-1 border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 sm:grid-cols-[90px_minmax(0,1fr)_135px_120px]">
-                <span className={`text-[10px] ${amountClass}`}>{amountLabel(entry)}</span>
-                <span className="min-w-0 text-[9px] text-[rgb(var(--sep-colour-a99578))]">{entry.reason}</span>
-                <span className="text-right text-[8px] text-[rgb(var(--sep-colour-756958))]">{balanceText}</span>
+              <div key={entry.id} className="grid gap-1 border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 sm:grid-cols-[90px_minmax(0,1fr)_135px_120px] components_economy_ledger_entries_div_container_3">
+                <span className={[((`text-[10px] ${amountClass}`)), "components_economy_ledger_entries_span_text"].filter(Boolean).join(" ")}>{amountLabel(entry)}</span>
+                <span className="min-w-0 text-[9px] text-[rgb(var(--sep-colour-a99578))] components_economy_ledger_entries_span_text_2">{entry.reason}</span>
+                <span className="text-right text-[8px] text-[rgb(var(--sep-colour-756958))] components_economy_ledger_entries_span_text_3">{balanceText}</span>
                 <time className="text-right text-[8px] text-[rgb(var(--sep-colour-665b4d))]">{new Date(entry.created_at).toLocaleString("en-GB")}</time>
               </div>
             ) : (
-              <div key={entry.id} className="grid gap-2 border-b border-[rgb(var(--sep-colour-59432c))]/25 px-4 py-3 last:border-b-0 sm:grid-cols-[120px_minmax(0,1fr)_150px_145px] sm:items-center sm:px-5">
-                <span className={`text-[11px] ${amountClass}`}>{amountLabel(entry)}</span>
-                <span className="min-w-0 text-[10px] leading-5 text-[rgb(var(--sep-colour-a99578))]">{entry.reason}</span>
-                <span className="text-[9px] text-[rgb(var(--sep-colour-756958))] sm:text-right">{balanceText}</span>
+              <div key={entry.id} className="grid gap-2 border-b border-[rgb(var(--sep-colour-59432c))]/25 px-4 py-3 last:border-b-0 sm:grid-cols-[120px_minmax(0,1fr)_150px_145px] sm:items-center sm:px-5 components_economy_ledger_entries_div_container_4">
+                <span className={[((`text-[11px] ${amountClass}`)), "components_economy_ledger_entries_span_text_4"].filter(Boolean).join(" ")}>{amountLabel(entry)}</span>
+                <span className="min-w-0 text-[10px] leading-5 text-[rgb(var(--sep-colour-a99578))] components_economy_ledger_entries_span_text_5">{entry.reason}</span>
+                <span className="text-[9px] text-[rgb(var(--sep-colour-756958))] sm:text-right components_economy_ledger_entries_span_text_6">{balanceText}</span>
                 <time className="text-[8px] text-[rgb(var(--sep-colour-665b4d))] sm:text-right">{new Date(entry.created_at).toLocaleString("en-GB")}</time>
               </div>
             );
           })
         ) : (
-          <p className="px-5 py-8 text-center text-[10px] text-[rgb(var(--sep-colour-756958))]">No Ledger transactions match these filters.</p>
+          <p className="px-5 py-8 text-center text-[10px] text-[rgb(var(--sep-colour-756958))] components_economy_ledger_entries_p_text">No Ledger transactions match these filters.</p>
         )}
       </div>
     </>

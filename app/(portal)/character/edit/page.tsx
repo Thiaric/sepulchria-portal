@@ -34,8 +34,8 @@ export default async function EditCharacterPage({
   const races = await getRaces();
 
   return (
-    <main className="min-h-screen bg-[rgb(var(--sep-colour-100d0b))] px-5 py-8 text-[rgb(var(--sep-colour-e7d5b0))] sm:py-10">
-      <div className="mx-auto max-w-7xl">
+    <main className="min-h-screen bg-[rgb(var(--sep-colour-100d0b))] px-5 py-8 text-[rgb(var(--sep-colour-e7d5b0))] sm:py-10 character_edit_page_main_main">
+      <div className="mx-auto max-w-7xl character_edit_page_div_container">
         <Link
           href="/character"
           className="text-sm text-[rgb(var(--sep-colour-b8945d))] transition hover:text-[rgb(var(--sep-colour-e3c28c))]"
@@ -43,21 +43,21 @@ export default async function EditCharacterPage({
           ← Cancel editing
         </Link>
 
-        <header className="my-8 max-w-3xl">
-          <p className="text-[10px] uppercase tracking-[0.34em] text-[rgb(var(--sep-colour-957448))]">
+        <header className="my-8 max-w-3xl character_edit_page_header_edit">
+          <p className="text-[10px] uppercase tracking-[0.34em] text-[rgb(var(--sep-colour-957448))] character_edit_page_p_edit">
             Character record
           </p>
-          <h1 className="mt-3 break-words font-serif text-4xl text-[rgb(var(--sep-colour-ecd9b2))] sm:text-5xl">
+          <h1 className="mt-3 break-words font-serif text-4xl text-[rgb(var(--sep-colour-ecd9b2))] sm:text-5xl character_edit_page_h1_edit">
             Edit {character.display_name}
           </h1>
-          <p className="mt-4 text-sm leading-7 text-[rgb(var(--sep-colour-9e907d))] sm:text-base">
+          <p className="mt-4 text-sm leading-7 text-[rgb(var(--sep-colour-9e907d))] sm:text-base character_edit_page_p_edit_2">
             Review and update the character record. Ancestry remains locked;
             Association and Order membership are controlled by the Order system.
           </p>
         </header>
 
         {error ? (
-          <p className="mb-6 border border-[rgb(var(--sep-colour-8c463d))] bg-[rgb(var(--sep-colour-2a1513))] p-4 text-[rgb(var(--sep-colour-e4b4aa))]">
+          <p className="mb-6 border border-[rgb(var(--sep-colour-8c463d))] bg-[rgb(var(--sep-colour-2a1513))] p-4 text-[rgb(var(--sep-colour-e4b4aa))] character_edit_page_p_text">
             {error}
           </p>
         ) : null}

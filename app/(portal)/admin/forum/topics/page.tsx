@@ -496,10 +496,10 @@ export default async function ForumTopicsManagementPage({
   });
 
   return (
-    <main className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <main className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8 admin_forum_topics_page_main_main">
       <nav
         aria-label="Forum breadcrumb"
-        className="mb-6 flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-746653))]"
+        className="mb-6 flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-746653))] admin_forum_topics_page_nav_forum_breadcrumb"
       >
         <Link
           href="/admin"
@@ -508,7 +508,7 @@ export default async function ForumTopicsManagementPage({
           Administration
         </Link>
 
-        <span aria-hidden="true">
+        <span className="admin_forum_topics_page_span_forum_breadcrumb" aria-hidden="true">
           /
         </span>
 
@@ -519,28 +519,28 @@ export default async function ForumTopicsManagementPage({
           Forum
         </Link>
 
-        <span aria-hidden="true">
+        <span className="admin_forum_topics_page_span_forum_breadcrumb_2" aria-hidden="true">
           /
         </span>
 
-        <span className="text-[rgb(var(--sep-colour-a48c6c))]">
+        <span className="text-[rgb(var(--sep-colour-a48c6c))] admin_forum_topics_page_span_forum_breadcrumb_3">
           Topics
         </span>
       </nav>
 
-      <header className="overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
-        <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-1a130e))] px-5 py-7 sm:px-7">
-          <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
-            <div>
-              <p className="text-[8px] uppercase tracking-[0.22em] text-amber-500">
+      <header className="overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] admin_forum_topics_page_header_header">
+        <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-1a130e))] px-5 py-7 sm:px-7 admin_forum_topics_page_div_container">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between admin_forum_topics_page_div_container_2">
+            <div className="admin_forum_topics_page_div_forum_topics">
+              <p className="text-[8px] uppercase tracking-[0.22em] text-amber-500 admin_forum_topics_page_p_forum_topics">
                 Forum discussions
               </p>
 
-              <h1 className="mt-3 font-serif text-3xl text-[rgb(var(--sep-colour-dec69d))] sm:text-4xl">
+              <h1 className="mt-3 font-serif text-3xl text-[rgb(var(--sep-colour-dec69d))] sm:text-4xl admin_forum_topics_page_h1_forum_topics">
                 Forum Topics
               </h1>
 
-              <p className="mt-3 max-w-3xl text-sm leading-6 text-[rgb(var(--sep-colour-817567))]">
+              <p className="mt-3 max-w-3xl text-sm leading-6 text-[rgb(var(--sep-colour-817567))] admin_forum_topics_page_p_forum_topics_2">
                 Search and inspect active,
                 locked, pinned and deleted
                 discussions across every
@@ -548,7 +548,7 @@ export default async function ForumTopicsManagementPage({
               </p>
             </div>
 
-            <div className="flex shrink-0 flex-wrap gap-2">
+            <div className="flex shrink-0 flex-wrap gap-2 admin_forum_topics_page_div_container_3">
               <Link
                 href="/admin/forum/replies"
                 className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-927b5b))] transition hover:border-[rgb(var(--sep-colour-876640))] hover:text-[rgb(var(--sep-colour-d8b986))]"
@@ -595,34 +595,34 @@ export default async function ForumTopicsManagementPage({
       </header>
 
       {successMessage ? (
-        <div className="mt-6 border border-emerald-900/60 bg-emerald-950/20 px-5 py-4 text-sm leading-6 text-emerald-300">
+        <div className="mt-6 border border-emerald-900/60 bg-emerald-950/20 px-5 py-4 text-sm leading-6 text-emerald-300 admin_forum_topics_page_div_container_4">
           {successMessage}
         </div>
       ) : null}
 
       {errorMessage ? (
-        <div className="mt-6 border border-red-900/70 bg-red-950/20 px-5 py-4 text-sm leading-6 text-red-300">
+        <div className="mt-6 border border-red-900/70 bg-red-950/20 px-5 py-4 text-sm leading-6 text-red-300 admin_forum_topics_page_div_container_5">
           {errorMessage}
         </div>
       ) : null}
 
       {!canPurge ? (
-        <div className="mt-6 border border-amber-900/60 bg-amber-950/15 px-5 py-4 text-sm leading-6 text-amber-300">
+        <div className="mt-6 border border-amber-900/60 bg-amber-950/15 px-5 py-4 text-sm leading-6 text-amber-300 admin_forum_topics_page_div_container_6">
           Masters may inspect and moderate forum
           content, but permanent deletion is restricted
           to owners, administrators and moderators.
         </div>
       ) : null}
 
-      <section className="mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
+      <section className="mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] admin_forum_topics_page_section_section">
         <form
           method="get"
-          className="grid gap-4 px-5 py-5 sm:px-6 lg:grid-cols-[minmax(220px,1fr)_220px_180px_auto]"
+          className="grid gap-4 px-5 py-5 sm:px-6 lg:grid-cols-[minmax(220px,1fr)_220px_180px_auto] admin_forum_topics_page_form_form"
         >
-          <div>
+          <div className="admin_forum_topics_page_div_search_title">
             <label
               htmlFor="topic-search"
-              className="block text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-927b5b))]"
+              className="block text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-927b5b))] admin_forum_topics_page_label_topic_search"
             >
               Search title
             </label>
@@ -633,14 +633,14 @@ export default async function ForumTopicsManagementPage({
               type="search"
               defaultValue={search}
               placeholder="Search discussions..."
-              className={inputClassName}
+              className={[((inputClassName)), "admin_forum_topics_page_input_search"].filter(Boolean).join(" ")}
             />
           </div>
 
-          <div>
+          <div className="admin_forum_topics_page_div_section">
             <label
               htmlFor="topic-section"
-              className="block text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-927b5b))]"
+              className="block text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-927b5b))] admin_forum_topics_page_label_topic_section"
             >
               Section
             </label>
@@ -651,15 +651,15 @@ export default async function ForumTopicsManagementPage({
               defaultValue={
                 selectedSectionId
               }
-              className={inputClassName}
+              className={[((inputClassName)), "admin_forum_topics_page_select_section"].filter(Boolean).join(" ")}
             >
-              <option value="">
+              <option className="admin_forum_topics_page_option_topic_section" value="">
                 All sections
               </option>
 
               {sections.map(
                 (section) => (
-                  <option
+                  <option className="admin_forum_topics_page_option_option"
                     key={section.id}
                     value={section.id}
                   >
@@ -673,10 +673,10 @@ export default async function ForumTopicsManagementPage({
             </select>
           </div>
 
-          <div>
+          <div className="admin_forum_topics_page_div_status">
             <label
               htmlFor="topic-status"
-              className="block text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-927b5b))]"
+              className="block text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-927b5b))] admin_forum_topics_page_label_topic_status"
             >
               Status
             </label>
@@ -685,34 +685,34 @@ export default async function ForumTopicsManagementPage({
               id="topic-status"
               name="status"
               defaultValue={status}
-              className={inputClassName}
+              className={[((inputClassName)), "admin_forum_topics_page_select_status"].filter(Boolean).join(" ")}
             >
-              <option value="all">
+              <option className="admin_forum_topics_page_option_all" value="all">
                 All topics
               </option>
 
-              <option value="active">
+              <option className="admin_forum_topics_page_option_active" value="active">
                 Active
               </option>
 
-              <option value="locked">
+              <option className="admin_forum_topics_page_option_locked" value="locked">
                 Locked
               </option>
 
-              <option value="pinned">
+              <option className="admin_forum_topics_page_option_pinned" value="pinned">
                 Pinned
               </option>
 
-              <option value="deleted">
+              <option className="admin_forum_topics_page_option_deleted" value="deleted">
                 Deleted
               </option>
             </select>
           </div>
 
-          <div className="flex items-end gap-2">
+          <div className="flex items-end gap-2 admin_forum_topics_page_div_container_7">
             <button
               type="submit"
-              className="flex-1 border border-amber-800/70 bg-amber-950/25 px-5 py-3 text-[8px] uppercase tracking-[0.17em] text-amber-300 transition hover:border-amber-600 hover:bg-amber-950/45"
+              className="flex-1 border border-amber-800/70 bg-amber-950/25 px-5 py-3 text-[8px] uppercase tracking-[0.17em] text-amber-300 transition hover:border-amber-600 hover:bg-amber-950/45 admin_forum_topics_page_button_apply_filters"
             >
               Apply filters
             </button>
@@ -727,9 +727,9 @@ export default async function ForumTopicsManagementPage({
         </form>
       </section>
 
-      <section className="mt-6 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
+      <section className="mt-6 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] admin_forum_topics_page_section_section_2">
         {topics.length > 0 ? (
-          <div className="divide-y divide-[rgb(var(--sep-colour-60482e))]/30">
+          <div className="divide-y divide-[rgb(var(--sep-colour-60482e))]/30 admin_forum_topics_page_div_container_8">
             {topics.map((topic) => {
               const section =
                 sectionMap.get(
@@ -757,11 +757,11 @@ export default async function ForumTopicsManagementPage({
               return (
                 <article
                   key={topic.id}
-                  className="grid gap-5 px-5 py-5 sm:px-6 lg:grid-cols-[minmax(0,1fr)_200px_auto] lg:items-center"
+                  className="grid gap-5 px-5 py-5 sm:px-6 lg:grid-cols-[minmax(0,1fr)_200px_auto] lg:items-center admin_forum_topics_page_article_article"
                 >
-                  <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h2 className="break-words font-serif text-xl text-[rgb(var(--sep-colour-d7bf98))]">
+                  <div className="min-w-0 admin_forum_topics_page_div_container_9">
+                    <div className="flex flex-wrap items-center gap-2 admin_forum_topics_page_div_container_10">
+                      <h2 className="break-words font-serif text-xl text-[rgb(var(--sep-colour-d7bf98))] admin_forum_topics_page_h2_heading">
                         {topic.title}
                       </h2>
 
@@ -786,25 +786,25 @@ export default async function ForumTopicsManagementPage({
                       ) : null}
                     </div>
 
-                    <p className="mt-2 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-6e604d))]">
+                    <p className="mt-2 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-6e604d))] admin_forum_topics_page_p_text">
                       {section?.name ??
                         "Unknown section"}
                     </p>
 
-                    <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-xs text-[rgb(var(--sep-colour-817567))]">
-                      <span>
+                    <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-xs text-[rgb(var(--sep-colour-817567))] admin_forum_topics_page_div_container_11">
+                      <span className="admin_forum_topics_page_span_text">
                         Started by{" "}
                         {authorName}
                       </span>
 
-                      <span>
+                      <span className="admin_forum_topics_page_span_text_2">
                         Created{" "}
                         {formatDate(
                           topic.created_at,
                         )}
                       </span>
 
-                      <span>
+                      <span className="admin_forum_topics_page_span_text_3">
                         Last activity{" "}
                         {formatDate(
                           topic.last_post_at,
@@ -829,10 +829,10 @@ export default async function ForumTopicsManagementPage({
                     />
                   </dl>
 
-                  <div className="flex flex-col items-stretch gap-2 lg:items-end">
+                  <div className="flex flex-col items-stretch gap-2 lg:items-end admin_forum_topics_page_div_container_12">
                     {publicTopicUrl &&
                     !topic.deleted_at ? (
-                      <div className="flex flex-wrap gap-2 lg:justify-end">
+                      <div className="flex flex-wrap gap-2 lg:justify-end admin_forum_topics_page_div_container_13">
                         <Link
                           href={publicTopicUrl}
                           className="border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-110d0a))] px-4 py-3 text-center text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-927b5b))] transition hover:border-[rgb(var(--sep-colour-876640))] hover:text-[rgb(var(--sep-colour-d8b986))]"
@@ -850,14 +850,14 @@ export default async function ForumTopicsManagementPage({
                     ) : null}
 
                     {!publicTopicUrl ? (
-                      <span className="border border-red-950/50 bg-red-950/10 px-4 py-3 text-center text-[8px] uppercase tracking-[0.15em] text-red-500">
+                      <span className="border border-red-950/50 bg-red-950/10 px-4 py-3 text-center text-[8px] uppercase tracking-[0.15em] text-red-500 admin_forum_topics_page_span_text_4">
                         Missing section
                       </span>
                     ) : null}
 
                     {topic.deleted_at ? (
-  <details className="w-full border border-emerald-950/60 bg-emerald-950/10 lg:max-w-[260px]">
-    <summary className="cursor-pointer list-none px-4 py-3 text-center text-[8px] uppercase tracking-[0.15em] text-emerald-400 transition hover:bg-emerald-950/20 hover:text-emerald-300">
+  <details className="w-full border border-emerald-950/60 bg-emerald-950/10 lg:max-w-[260px] admin_forum_topics_page_details_restore_discussion">
+    <summary className="cursor-pointer list-none px-4 py-3 text-center text-[8px] uppercase tracking-[0.15em] text-emerald-400 transition hover:bg-emerald-950/20 hover:text-emerald-300 admin_forum_topics_page_summary_restore_discussion">
       Restore discussion
     </summary>
 
@@ -865,28 +865,28 @@ export default async function ForumTopicsManagementPage({
       action={
         restoreTopicAction
       }
-      className="border-t border-emerald-950/50 p-4"
+      className="border-t border-emerald-950/50 p-4 admin_forum_topics_page_form_restore_topic_action"
     >
-      <input
+      <input className="admin_forum_topics_page_input_topic_id"
         type="hidden"
         name="topicId"
         value={topic.id}
       />
 
-      <input
+      <input className="admin_forum_topics_page_input_return"
         type="hidden"
         name="returnTo"
         value={returnTo}
       />
 
-      <p className="text-[10px] leading-5 text-emerald-300/80">
+      <p className="text-[10px] leading-5 text-emerald-300/80 admin_forum_topics_page_p_restoration_note">
         Restore this discussion
         together with the posts
         removed when the discussion
         was deleted.
       </p>
 
-      <label className="mt-3 block text-[7px] uppercase tracking-[0.14em] text-emerald-400">
+      <label className="mt-3 block text-[7px] uppercase tracking-[0.14em] text-emerald-400 admin_forum_topics_page_label_restoration_note">
         Restoration note
       </label>
 
@@ -895,12 +895,12 @@ export default async function ForumTopicsManagementPage({
         maxLength={1000}
         rows={3}
         placeholder="Optional reason for restoration..."
-        className="mt-2 w-full resize-y border border-emerald-900/70 bg-[rgb(var(--sep-colour-09100b))] px-3 py-2 text-xs text-emerald-200 outline-none placeholder:text-emerald-900 focus:border-emerald-600"
+        className="mt-2 w-full resize-y border border-emerald-900/70 bg-[rgb(var(--sep-colour-09100b))] px-3 py-2 text-xs text-emerald-200 outline-none placeholder:text-emerald-900 focus:border-emerald-600 admin_forum_topics_page_textarea_reason"
       />
 
       <button
         type="submit"
-        className="mt-3 w-full border border-emerald-800 bg-emerald-950/30 px-3 py-2.5 text-[8px] uppercase tracking-[0.14em] text-emerald-300 transition hover:border-emerald-600 hover:bg-emerald-950/55"
+        className="mt-3 w-full border border-emerald-800 bg-emerald-950/30 px-3 py-2.5 text-[8px] uppercase tracking-[0.14em] text-emerald-300 transition hover:border-emerald-600 hover:bg-emerald-950/55 admin_forum_topics_page_button_restore_discussion"
       >
         Restore discussion
       </button>
@@ -910,35 +910,35 @@ export default async function ForumTopicsManagementPage({
 
                     {topic.deleted_at &&
                     canPurge ? (
-                      <details className="w-full border border-red-950/60 bg-red-950/10 lg:max-w-[260px]">
-                        <summary className="cursor-pointer list-none px-4 py-3 text-center text-[8px] uppercase tracking-[0.15em] text-red-400 transition hover:bg-red-950/20 hover:text-red-300">
+                      <details className="w-full border border-red-950/60 bg-red-950/10 lg:max-w-[260px] admin_forum_topics_page_details_permanently_delete">
+                        <summary className="cursor-pointer list-none px-4 py-3 text-center text-[8px] uppercase tracking-[0.15em] text-red-400 transition hover:bg-red-950/20 hover:text-red-300 admin_forum_topics_page_summary_permanently_delete">
                           Permanently delete
                         </summary>
 
                         <form
                           action={permanentlyDeleteForumTopicAction}
-                          className="border-t border-red-950/50 p-4"
+                          className="border-t border-red-950/50 p-4 admin_forum_topics_page_form_permanently_delete_forum_topic_action"
                         >
-                          <input
+                          <input className="admin_forum_topics_page_input_topic_id_2"
                             type="hidden"
                             name="topicId"
                             value={topic.id}
                           />
 
-                          <input
+                          <input className="admin_forum_topics_page_input_return_2"
                             type="hidden"
                             name="returnTo"
                             value={returnTo}
                           />
 
-                          <p className="text-[10px] leading-5 text-red-300/80">
+                          <p className="text-[10px] leading-5 text-red-300/80 admin_forum_topics_page_p_type_complete_title">
                             This erases the discussion,
                             every reply, attached image
                             and read-history record. It
                             cannot be undone.
                           </p>
 
-                          <label className="mt-3 block text-[7px] uppercase tracking-[0.14em] text-red-400">
+                          <label className="mt-3 block text-[7px] uppercase tracking-[0.14em] text-red-400 admin_forum_topics_page_label_type_complete_title">
                             Type the complete title
                           </label>
 
@@ -947,12 +947,12 @@ export default async function ForumTopicsManagementPage({
                             required
                             autoComplete="off"
                             aria-label={`Type “${topic.title}” to confirm permanent deletion`}
-                            className="mt-2 w-full border border-red-900/70 bg-[rgb(var(--sep-colour-100909))] px-3 py-2 text-xs text-red-200 outline-none focus:border-red-600"
+                            className="mt-2 w-full border border-red-900/70 bg-[rgb(var(--sep-colour-100909))] px-3 py-2 text-xs text-red-200 outline-none focus:border-red-600 admin_forum_topics_page_input_confirmation"
                           />
 
                           <button
                             type="submit"
-                            className="mt-3 w-full border border-red-800 bg-red-950/30 px-3 py-2.5 text-[8px] uppercase tracking-[0.14em] text-red-300 transition hover:border-red-600 hover:bg-red-950/55"
+                            className="mt-3 w-full border border-red-800 bg-red-950/30 px-3 py-2.5 text-[8px] uppercase tracking-[0.14em] text-red-300 transition hover:border-red-600 hover:bg-red-950/55 admin_forum_topics_page_button_erase_discussion_forever"
                           >
                             Erase discussion forever
                           </button>
@@ -965,12 +965,12 @@ export default async function ForumTopicsManagementPage({
             })}
           </div>
         ) : (
-          <div className="px-6 py-14 text-center">
-            <p className="font-serif text-xl text-[rgb(var(--sep-colour-cdb590))]">
+          <div className="px-6 py-14 text-center admin_forum_topics_page_div_container_14">
+            <p className="font-serif text-xl text-[rgb(var(--sep-colour-cdb590))] admin_forum_topics_page_p_text_2">
               No topics found
             </p>
 
-            <p className="mt-3 text-sm text-[rgb(var(--sep-colour-817567))]">
+            <p className="mt-3 text-sm text-[rgb(var(--sep-colour-817567))] admin_forum_topics_page_p_text_3">
               No discussions match the
               selected filters.
             </p>
@@ -981,14 +981,14 @@ export default async function ForumTopicsManagementPage({
       {totalPages > 1 ? (
         <nav
           aria-label="Topic pagination"
-          className="mt-6 flex flex-wrap items-center justify-between gap-4 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-5 py-4"
+          className="mt-6 flex flex-wrap items-center justify-between gap-4 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-5 py-4 admin_forum_topics_page_nav_topic_pagination"
         >
-          <p className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-75644d))]">
+          <p className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-75644d))] admin_forum_topics_page_p_topic_pagination">
             Page {requestedPage} of{" "}
             {totalPages}
           </p>
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 admin_forum_topics_page_div_topic_pagination">
             {requestedPage > 1 ? (
               <Link
                 href={createTopicsUrl({
@@ -1039,7 +1039,7 @@ function Statistic({
   value: number;
 }) {
   return (
-    <div className="px-4 py-4 text-center sm:px-5">
+    <div className="px-4 py-4 text-center sm:px-5 admin_forum_topics_page_div_container_15">
       <dt className="text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-665946))]">
         {label}
       </dt>
@@ -1059,7 +1059,7 @@ function MiniStatistic({
   value: number;
 }) {
   return (
-    <div className="border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-center">
+    <div className="border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-center admin_forum_topics_page_div_container_16">
       <dt className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-665946))]">
         {label}
       </dt>
@@ -1090,7 +1090,7 @@ function TopicBadge({
 
   return (
     <span
-      className={`border px-2 py-1 text-[7px] uppercase tracking-[0.14em] ${className}`}
+      className={[((`border px-2 py-1 text-[7px] uppercase tracking-[0.14em] ${className}`)), "admin_forum_topics_page_span_text_5"].filter(Boolean).join(" ")}
     >
       {children}
     </span>

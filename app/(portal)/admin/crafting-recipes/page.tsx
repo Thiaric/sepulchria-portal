@@ -228,18 +228,18 @@ export default async function AdminCraftingRecipesPage({
     );
 
   return (
-    <main className="p-5 sm:p-7 lg:p-9">
-      <div className="mx-auto max-w-7xl">
-        <div>
-          <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
+    <main className="p-5 sm:p-7 lg:p-9 admin_crafting_recipes_page_main_main">
+      <div className="mx-auto max-w-7xl admin_crafting_recipes_page_div_container">
+        <div className="admin_crafting_recipes_page_div_crafting_recipes">
+          <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))] admin_crafting_recipes_page_p_crafting_recipes">
             Administration
           </p>
 
-          <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">
+          <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))] admin_crafting_recipes_page_h1_crafting_recipes">
             Crafting Recipes
           </h1>
 
-          <p className="mt-3 max-w-4xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))]">
+          <p className="mt-3 max-w-4xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))] admin_crafting_recipes_page_p_crafting_recipes_2">
             Review and maintain existing crafting formulas. New recipes are created
             together with their Items from Item Management; use this catalogue to
             change ingredients, quantities, descriptions, activity and other recipe details.
@@ -247,12 +247,12 @@ export default async function AdminCraftingRecipesPage({
         </div>
 
         {params.error ? (
-          <div className="mt-6 border border-red-900/60 bg-red-950/20 px-4 py-3 text-sm text-red-400">
+          <div className="mt-6 border border-red-900/60 bg-red-950/20 px-4 py-3 text-sm text-red-400 admin_crafting_recipes_page_div_container_2">
             {params.error}
           </div>
         ) : null}
 
-        <div className="mt-8 space-y-4">
+        <div className="mt-8 space-y-4 admin_crafting_recipes_page_div_container_3">
           {recipes.map(
             (recipe) => {
               const ingredients =
@@ -266,18 +266,18 @@ export default async function AdminCraftingRecipesPage({
                     recipe.id
                   }
                   id={`recipe-${recipe.id}`}
-                  className="scroll-mt-6 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))]"
+                  className="scroll-mt-6 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] admin_crafting_recipes_page_details_details"
                 >
-                  <summary className="cursor-pointer list-none px-4 py-4">
-                    <div className="flex flex-wrap items-center justify-between gap-4">
-                      <div className="min-w-0">
-                        <p className="font-serif text-lg text-[rgb(var(--sep-colour-d8bf91))]">
+                  <summary className="cursor-pointer list-none px-4 py-4 admin_crafting_recipes_page_summary_summary">
+                    <div className="flex flex-wrap items-center justify-between gap-4 admin_crafting_recipes_page_div_container_4">
+                      <div className="min-w-0 admin_crafting_recipes_page_div_container_5">
+                        <p className="font-serif text-lg text-[rgb(var(--sep-colour-d8bf91))] admin_crafting_recipes_page_p_text">
                           {
                             recipe.name
                           }
                         </p>
 
-                        <p className="mt-1 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-766956))]">
+                        <p className="mt-1 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-766956))] admin_crafting_recipes_page_p_text_2">
                           Produces{" "}
                           {
                             recipe.result_quantity
@@ -299,7 +299,7 @@ export default async function AdminCraftingRecipesPage({
                         </p>
                       </div>
 
-                      <span className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9b8768))]">
+                      <span className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9b8768))] admin_crafting_recipes_page_span_text">
                         {recipe.is_active
                           ? "Active"
                           : "Inactive"}
@@ -307,7 +307,7 @@ export default async function AdminCraftingRecipesPage({
                     </div>
                   </summary>
 
-                  <div className="border-t border-[rgb(var(--sep-colour-59432c))]/35 p-4 sm:p-5">
+                  <div className="border-t border-[rgb(var(--sep-colour-59432c))]/35 p-4 sm:p-5 admin_crafting_recipes_page_div_container_6">
                     <CraftingRecipeForm
                       action={
                         updateCraftingRecipe
@@ -348,14 +348,14 @@ export default async function AdminCraftingRecipesPage({
                       submitLabel="Save Recipe"
                     />
 
-                    <div className="mt-5 flex justify-end border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-5">
+                    <div className="mt-5 flex justify-end border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-5 admin_crafting_recipes_page_div_container_7">
                       <AdminActionForm
                         action={
                           deleteCraftingRecipe
                         }
                         confirmMessage={`Are you sure you want to permanently delete "${recipe.name}"?`}
                       >
-                        <input
+                        <input className="admin_crafting_recipes_page_input_recipe_id"
                           type="hidden"
                           name="recipeId"
                           value={
@@ -365,7 +365,7 @@ export default async function AdminCraftingRecipesPage({
 
                         <button
                           type="submit"
-                          className="border border-red-900/55 bg-red-950/20 px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-red-300"
+                          className="border border-red-900/55 bg-red-950/20 px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-red-300 admin_crafting_recipes_page_button_delete_recipe"
                         >
                           Delete Recipe
                         </button>

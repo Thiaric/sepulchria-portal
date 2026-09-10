@@ -41,7 +41,7 @@ export default async function RacePage({
   }
 
   return (
-    <div className="mx-auto w-full max-w-7xl p-5 sm:p-7 lg:p-9">
+    <div className="mx-auto w-full max-w-7xl p-5 sm:p-7 lg:p-9 ancestries_slug_page_div_container">
       <RaceHero race={race} />
     </div>
   );

@@ -160,19 +160,19 @@ export function ExperienceContextPanel() {
   return (
     <div
       data-sep-interaction-ignore="true"
-      className="flex h-full min-h-0 flex-col [transform:none!important]"
+      className="flex h-full min-h-0 flex-col [transform:none!important] components_admin_experience_context_panel_div_container"
     >
-      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-756957))]">
+      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-756957))] components_admin_experience_context_panel_p_text">
         Experience
       </p>
 
-      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-c9b184))]">
+      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-c9b184))] components_admin_experience_context_panel_h2_heading">
         Find satisfaction
       </h2>
 
-      <div className="mt-3">
-        <div className="flex items-center justify-between gap-2">
-          <p className="text-[9px] text-[rgb(var(--sep-colour-756957))]">
+      <div className="mt-3 components_admin_experience_context_panel_div_container_2">
+        <div className="flex items-center justify-between gap-2 components_admin_experience_context_panel_div_container_3">
+          <p className="text-[9px] text-[rgb(var(--sep-colour-756957))] components_admin_experience_context_panel_p_text_2">
             Rating
           </p>
 
@@ -185,14 +185,14 @@ export function ExperienceContextPanel() {
                   rating: null,
                 })
               }
-              className="text-[9px] text-[rgb(var(--sep-colour-876a46))] transition-colors hover:text-[rgb(var(--sep-colour-b79c73))]"
+              className="text-[9px] text-[rgb(var(--sep-colour-876a46))] transition-colors hover:text-[rgb(var(--sep-colour-b79c73))] components_admin_experience_context_panel_button_clear"
             >
               Clear
             </button>
           ) : null}
         </div>
 
-        <div className="mt-2 grid grid-cols-5 gap-1.5">
+        <div className="mt-2 grid grid-cols-5 gap-1.5 components_admin_experience_context_panel_div_container_4">
           {EXPERIENCE_RATINGS.map(
             (rating) => {
               const active =
@@ -211,17 +211,17 @@ export function ExperienceContextPanel() {
                   }
                   title={rating.label}
                   aria-label={`Filter by ${rating.label}`}
-                  className={[
+                  className={[(([
                     "flex aspect-square items-center justify-center border bg-[rgb(var(--sep-colour-100c09))] p-1 transition",
                     active
                       ? "border-[rgb(var(--sep-colour-a07945))] bg-[rgb(var(--sep-colour-21170f))] shadow-[0_0_10px_rgba(var(--sep-rgb-177-132-75),0.12)]"
                       : "border-[rgb(var(--sep-colour-60482e))]/35 hover:-translate-y-[1px] hover:border-[rgb(var(--sep-colour-876a46))]",
-                  ].join(" ")}
+                  ].join(" "))), "components_admin_experience_context_panel_button_action"].filter(Boolean).join(" ")}
                 >
                   <img
                     src={rating.imageSrc}
                     alt=""
-                    className="h-full w-full object-contain"
+                    className="h-full w-full object-contain components_admin_experience_context_panel_img_image"
                   />
                 </button>
               );
@@ -230,9 +230,9 @@ export function ExperienceContextPanel() {
         </div>
       </div>
 
-      <div className="mt-4 flex min-h-0 flex-1 flex-col">
-        <div className="flex items-center justify-between gap-2">
-          <p className="text-[9px] text-[rgb(var(--sep-colour-756957))]">
+      <div className="mt-4 flex min-h-0 flex-1 flex-col components_admin_experience_context_panel_div_container_5">
+        <div className="flex items-center justify-between gap-2 components_admin_experience_context_panel_div_container_6">
+          <p className="text-[9px] text-[rgb(var(--sep-colour-756957))] components_admin_experience_context_panel_p_text_3">
             Characters
           </p>
 
@@ -245,7 +245,7 @@ export function ExperienceContextPanel() {
                   query: null,
                 })
               }
-              className="text-[9px] text-[rgb(var(--sep-colour-876a46))] transition-colors hover:text-[rgb(var(--sep-colour-b79c73))]"
+              className="text-[9px] text-[rgb(var(--sep-colour-876a46))] transition-colors hover:text-[rgb(var(--sep-colour-b79c73))] components_admin_experience_context_panel_button_clear_2"
             >
               Clear
             </button>
@@ -261,16 +261,16 @@ export function ExperienceContextPanel() {
             )
           }
           placeholder="Search characters..."
-          className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-a99b89))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-876a46))]"
+          className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-a99b89))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-876a46))] components_admin_experience_context_panel_input_search_characters"
         />
 
-        <p className="mb-2 mt-3 text-[8px] text-[rgb(var(--sep-colour-665b4d))]">
+        <p className="mb-2 mt-3 text-[8px] text-[rgb(var(--sep-colour-665b4d))] components_admin_experience_context_panel_p_text_4">
           {visibleCharacters.length} characters
         </p>
 
-        <div className="min-h-0 flex-1 space-y-1 overflow-y-auto pr-1">
+        <div className="min-h-0 flex-1 space-y-1 overflow-y-auto pr-1 components_admin_experience_context_panel_div_container_7">
           {loading ? (
-            <p className="px-1 py-2 text-[10px] text-[rgb(var(--sep-colour-756957))]">
+            <p className="px-1 py-2 text-[10px] text-[rgb(var(--sep-colour-756957))] components_admin_experience_context_panel_p_text_5">
               Loading characters…
             </p>
           ) : visibleCharacters.length ? (
@@ -294,26 +294,26 @@ export function ExperienceContextPanel() {
                         character,
                       )
                     }
-                    className={[
+                    className={[(([
                       "group flex w-full items-center justify-between gap-3 border px-3 py-2 text-left transition",
                       active
                         ? "border-[rgb(var(--sep-colour-876a46))] bg-[rgb(var(--sep-colour-21170f))]"
                         : "border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-100c09))] hover:-translate-y-[1px] hover:border-[rgb(var(--sep-colour-765937))]/70 hover:bg-[rgb(var(--sep-colour-17110d))]",
-                    ].join(" ")}
+                    ].join(" "))), "components_admin_experience_context_panel_button_action_2"].filter(Boolean).join(" ")}
                   >
-                    <span className="min-w-0">
-                      <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-b79c73))] group-hover:text-[rgb(var(--sep-colour-c9b184))]">
+                    <span className="min-w-0 components_admin_experience_context_panel_span_text">
+                      <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-b79c73))] group-hover:text-[rgb(var(--sep-colour-c9b184))] components_admin_experience_context_panel_span_text_2">
                         {label}
                       </span>
 
                       {character.public_slug ? (
-                        <span className="mt-0.5 block truncate text-[8px] text-[rgb(var(--sep-colour-665b4d))]">
+                        <span className="mt-0.5 block truncate text-[8px] text-[rgb(var(--sep-colour-665b4d))] components_admin_experience_context_panel_span_text_3">
                           {character.public_slug}
                         </span>
                       ) : null}
                     </span>
 
-                    <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))]">
+                    <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))] components_admin_experience_context_panel_span_text_4">
                       →
                     </span>
                   </button>
@@ -321,7 +321,7 @@ export function ExperienceContextPanel() {
               },
             )
           ) : (
-            <p className="px-1 py-2 text-[10px] text-[rgb(var(--sep-colour-756957))]">
+            <p className="px-1 py-2 text-[10px] text-[rgb(var(--sep-colour-756957))] components_admin_experience_context_panel_p_text_6">
               No matching characters.
             </p>
           )}

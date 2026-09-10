@@ -275,11 +275,11 @@ export function MapMagnifyingLens({
             );
           }
         }}
-        className={`absolute left-3 top-3 z-[80] flex h-10 w-10 items-center justify-center rounded-full border-[1px] border-solid backdrop-blur-sm transition ${
+        className={[((`absolute left-3 top-3 z-[80] flex h-10 w-10 items-center justify-center rounded-full border-[1px] border-solid backdrop-blur-sm transition ${
           enabled
             ? "border-[rgb(var(--sep-colour-d1a15e))] bg-[rgb(var(--sep-colour-3a2818))]/95 text-[rgb(var(--sep-colour-f4ddb1))] shadow-[0_0_18px_rgba(var(--sep-rgb-188-137-73),0.35)]"
             : "border-[rgb(var(--sep-colour-765735))]/75 bg-[rgb(var(--sep-colour-17110d))]/90 text-[rgb(var(--sep-colour-c9a46e))] hover:border-[rgb(var(--sep-colour-b28246))] hover:bg-[rgb(var(--sep-colour-2a1d13))] hover:text-[rgb(var(--sep-colour-f5ddb2))]"
-        }`}
+        }`)), "components_portal_map_magnifying_lens_button_action"].filter(Boolean).join(" ")}
       >
         <svg
           viewBox="0 0 24 24"
@@ -324,11 +324,11 @@ export function MapMagnifyingLens({
               );
             }
           }}
-          className="absolute inset-0 z-[70] cursor-crosshair touch-none overflow-hidden"
+          className="absolute inset-0 z-[70] cursor-crosshair touch-none overflow-hidden components_portal_map_magnifying_lens_div_container"
           aria-label="Map magnifying lens active"
         >
           {!hasPosition ? (
-            <div className="pointer-events-none absolute left-1/2 top-4 -translate-x-1/2 border border-[rgb(var(--sep-colour-765735))]/60 bg-[rgb(var(--sep-colour-120d09))]/90 px-3 py-1.5 text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-c9a46e))] shadow-[0_6px_20px_rgba(var(--sep-rgb-0-0-0),0.45)]">
+            <div className="pointer-events-none absolute left-1/2 top-4 -translate-x-1/2 border border-[rgb(var(--sep-colour-765735))]/60 bg-[rgb(var(--sep-colour-120d09))]/90 px-3 py-1.5 text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-c9a46e))] shadow-[0_6px_20px_rgba(var(--sep-rgb-0-0-0),0.45)] components_portal_map_magnifying_lens_div_container_2">
               Move or tap over the
               map
             </div>
@@ -339,7 +339,7 @@ export function MapMagnifyingLens({
           mapSize.height > 0 ? (
             <div
               data-map-magnifying-lens-glass
-              className="pointer-events-none absolute overflow-hidden rounded-full border-[5px] border-[rgb(var(--sep-colour-6f4b28))] bg-[rgb(var(--sep-colour-090705))] shadow-[0_12px_30px_rgba(var(--sep-rgb-0-0-0),0.9),inset_0_0_0_2px_rgba(var(--sep-rgb-225-188-126),0.48),inset_0_0_18px_rgba(var(--sep-rgb-0-0-0),0.75)]"
+              className="pointer-events-none absolute overflow-hidden rounded-full border-[5px] border-[rgb(var(--sep-colour-6f4b28))] bg-[rgb(var(--sep-colour-090705))] shadow-[0_12px_30px_rgba(var(--sep-rgb-0-0-0),0.9),inset_0_0_0_2px_rgba(var(--sep-rgb-225-188-126),0.48),inset_0_0_18px_rgba(var(--sep-rgb-0-0-0),0.75)] components_portal_map_magnifying_lens_div_container_3"
               style={{
                 width: `${lensSize}px`,
                 height: `${lensSize}px`,
@@ -350,7 +350,7 @@ export function MapMagnifyingLens({
               }}
             >
               <div
-                className="absolute"
+                className="absolute components_portal_map_magnifying_lens_div_container_4"
                 style={{
                   width: `${magnifiedWidth}px`,
                   height: `${magnifiedHeight}px`,
@@ -372,12 +372,12 @@ export function MapMagnifyingLens({
               {/* Inner glass edge */}
               <div
                 data-map-magnifying-lens-ring
-                className="absolute inset-0 rounded-full ring-1 ring-inset ring-[rgb(var(--sep-colour-e1bc7e))]/35" />
+                className="absolute inset-0 rounded-full ring-1 ring-inset ring-[rgb(var(--sep-colour-e1bc7e))]/35 components_portal_map_magnifying_lens_div_container_5" />
 
               {/* Subtle centre crosshair */}
-              <div className="absolute left-1/2 top-1/2 h-px w-4 -translate-x-1/2 -translate-y-1/2 bg-[rgb(var(--sep-colour-f1d39c))]/35" />
+              <div className="absolute left-1/2 top-1/2 h-px w-4 -translate-x-1/2 -translate-y-1/2 bg-[rgb(var(--sep-colour-f1d39c))]/35 components_portal_map_magnifying_lens_div_container_6" />
 
-              <div className="absolute left-1/2 top-1/2 h-4 w-px -translate-x-1/2 -translate-y-1/2 bg-[rgb(var(--sep-colour-f1d39c))]/35" />
+              <div className="absolute left-1/2 top-1/2 h-4 w-px -translate-x-1/2 -translate-y-1/2 bg-[rgb(var(--sep-colour-f1d39c))]/35 components_portal_map_magnifying_lens_div_container_7" />
             </div>
           ) : null}
         </div>

@@ -366,18 +366,18 @@ export function PrivateLocationInvitationPopup({
   }
 
   return (
-    <div className="fixed inset-0 z-[300] flex items-center justify-center bg-black/60 p-4">
-      <section className="w-full max-w-md border border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-15100d))] p-6 shadow-2xl">
-        <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-9b7a50))]">
+    <div className="fixed inset-0 z-[300] flex items-center justify-center bg-black/60 p-4 components_private_location_private_location_invitation_popup_div_container">
+      <section className="w-full max-w-md border border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-15100d))] p-6 shadow-2xl components_private_location_private_location_invitation_popup_section_section">
+        <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-9b7a50))] components_private_location_private_location_invitation_popup_p_text">
           Invitation
         </p>
 
-        <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-ead1a5))]">
+        <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-ead1a5))] components_private_location_private_location_invitation_popup_h2_heading">
           {invite.roomName}
         </h2>
 
-        <p className="mt-3 text-sm leading-6 text-[rgb(var(--sep-colour-a99a84))]">
-          <span className="text-[rgb(var(--sep-colour-d9bd91))]">
+        <p className="mt-3 text-sm leading-6 text-[rgb(var(--sep-colour-a99a84))] components_private_location_private_location_invitation_popup_p_text_2">
+          <span className="text-[rgb(var(--sep-colour-d9bd91))] components_private_location_private_location_invitation_popup_span_text">
             {invite.inviterName}
           </span>{" "}
           has invited your character to enter this location.
@@ -385,18 +385,18 @@ export function PrivateLocationInvitationPopup({
 
         {invite.kind ===
         "private" ? (
-          <div className="mt-6 grid grid-cols-2 gap-3">
-            <form
+          <div className="mt-6 grid grid-cols-2 gap-3 components_private_location_private_location_invitation_popup_div_container_2">
+            <form className="components_private_location_private_location_invitation_popup_form_respond_private_location_invitation"
               action={
                 respondPrivateLocationInvitation
               }
             >
-              <input
+              <input className="components_private_location_private_location_invitation_popup_input_invitation_id"
                 type="hidden"
                 name="invitationId"
                 value={invite.id}
               />
-              <input
+              <input className="components_private_location_private_location_invitation_popup_input_response"
                 type="hidden"
                 name="response"
                 value="refuse"
@@ -404,23 +404,23 @@ export function PrivateLocationInvitationPopup({
 
               <button
                 type="submit"
-                className="w-full border border-[rgb(var(--sep-colour-7b443b))] bg-[rgb(var(--sep-colour-2a1513))] px-4 py-3 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d7a39a))]"
+                className="w-full border border-[rgb(var(--sep-colour-7b443b))] bg-[rgb(var(--sep-colour-2a1513))] px-4 py-3 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d7a39a))] components_private_location_private_location_invitation_popup_button_refuse"
               >
                 Refuse
               </button>
             </form>
 
-            <form
+            <form className="components_private_location_private_location_invitation_popup_form_respond_private_location_invitation_2"
               action={
                 respondPrivateLocationInvitation
               }
             >
-              <input
+              <input className="components_private_location_private_location_invitation_popup_input_invitation_id_2"
                 type="hidden"
                 name="invitationId"
                 value={invite.id}
               />
-              <input
+              <input className="components_private_location_private_location_invitation_popup_input_response_2"
                 type="hidden"
                 name="response"
                 value="accept"
@@ -428,14 +428,14 @@ export function PrivateLocationInvitationPopup({
 
               <button
                 type="submit"
-                className="w-full border border-[rgb(var(--sep-colour-668657))] bg-[rgb(var(--sep-colour-172313))] px-4 py-3 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b8d8a7))]"
+                className="w-full border border-[rgb(var(--sep-colour-668657))] bg-[rgb(var(--sep-colour-172313))] px-4 py-3 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b8d8a7))] components_private_location_private_location_invitation_popup_button_accept_enter"
               >
                 Accept & enter
               </button>
             </form>
           </div>
         ) : (
-          <div className="mt-6 grid grid-cols-2 gap-3">
+          <div className="mt-6 grid grid-cols-2 gap-3 components_private_location_private_location_invitation_popup_div_container_3">
             <button
               type="button"
               disabled={pending}
@@ -444,7 +444,7 @@ export function PrivateLocationInvitationPopup({
                   "refuse",
                 )
               }
-              className="w-full border border-[rgb(var(--sep-colour-7b443b))] bg-[rgb(var(--sep-colour-2a1513))] px-4 py-3 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d7a39a))] disabled:opacity-40"
+              className="w-full border border-[rgb(var(--sep-colour-7b443b))] bg-[rgb(var(--sep-colour-2a1513))] px-4 py-3 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d7a39a))] disabled:opacity-40 components_private_location_private_location_invitation_popup_button_refuse_2"
             >
               Refuse
             </button>
@@ -457,7 +457,7 @@ export function PrivateLocationInvitationPopup({
                   "accept",
                 )
               }
-              className="w-full border border-[rgb(var(--sep-colour-668657))] bg-[rgb(var(--sep-colour-172313))] px-4 py-3 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b8d8a7))] disabled:opacity-40"
+              className="w-full border border-[rgb(var(--sep-colour-668657))] bg-[rgb(var(--sep-colour-172313))] px-4 py-3 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b8d8a7))] disabled:opacity-40 components_private_location_private_location_invitation_popup_button_accept_enter_2"
             >
               Accept & enter
             </button>
@@ -465,7 +465,7 @@ export function PrivateLocationInvitationPopup({
         )}
 
         {message ? (
-          <p className="mt-3 text-[9px] text-[rgb(var(--sep-colour-a99a84))]">
+          <p className="mt-3 text-[9px] text-[rgb(var(--sep-colour-a99a84))] components_private_location_private_location_invitation_popup_p_text_3">
             {message}
           </p>
         ) : null}

@@ -827,25 +827,25 @@ export default async function RankingPage({
     );
 
   return (
-    <main className="flex h-full min-h-0 w-full flex-col p-4 sm:p-5">
-      <section className="flex min-h-0 flex-1 flex-col overflow-hidden border border-[rgb(var(--sep-colour-58432d))]/45 bg-[rgb(var(--sep-colour-15100d))]/82 shadow-[0_10px_26px_rgba(var(--sep-rgb-0-0-0),0.2)]">
-        <header className="shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-211a14))] px-4 py-4 sm:px-5">
-          <p className="text-[8px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
+    <main className="flex h-full min-h-0 w-full flex-col p-4 sm:p-5 ranking_page_main_main">
+      <section className="flex min-h-0 flex-1 flex-col overflow-hidden border border-[rgb(var(--sep-colour-58432d))]/45 bg-[rgb(var(--sep-colour-15100d))]/82 shadow-[0_10px_26px_rgba(var(--sep-rgb-0-0-0),0.2)] ranking_page_section_section">
+        <header className="shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-211a14))] px-4 py-4 sm:px-5 ranking_page_header_header">
+          <p className="text-[8px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))] ranking_page_p_text">
             The Hall of Renown
           </p>
 
-          <div className="mt-1 flex flex-wrap items-end justify-between gap-3">
-            <div>
-              <h1 className="font-serif text-3xl text-[rgb(var(--sep-colour-ead5ac))]">
+          <div className="mt-1 flex flex-wrap items-end justify-between gap-3 ranking_page_div_container">
+            <div className="ranking_page_div_container_2">
+              <h1 className="font-serif text-3xl text-[rgb(var(--sep-colour-ead5ac))] ranking_page_h1_title">
                 {board.label}
               </h1>
 
-              <p className="mt-1.5 max-w-3xl text-[11px] leading-5 text-[rgb(var(--sep-colour-9c8d79))]">
+              <p className="mt-1.5 max-w-3xl text-[11px] leading-5 text-[rgb(var(--sep-colour-9c8d79))] ranking_page_p_text_2">
                 {board.description}
               </p>
             </div>
 
-            <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+            <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] ranking_page_span_text">
               {board.eyebrow} · Top 100
             </span>
           </div>
@@ -854,9 +854,9 @@ export default async function RankingPage({
         {ranked.length ? (
           <div
             data-portal-scroll
-            className="min-h-0 flex-1 overflow-y-auto p-3 sm:p-4"
+            className="min-h-0 flex-1 overflow-y-auto p-3 sm:p-4 ranking_page_div_container_3"
           >
-            <div className="space-y-2">
+            <div className="space-y-2 ranking_page_div_container_4">
               {ranked.map(
                 (
                   character,
@@ -885,11 +885,11 @@ export default async function RankingPage({
                       }`}
                     >
                       <div
-                        className={`flex h-7 items-center justify-center font-serif ${
+                        className={[((`flex h-7 items-center justify-center font-serif ${
                           podium
                             ? "text-lg text-[rgb(var(--sep-colour-e4c47f))]"
                             : "text-sm text-[rgb(var(--sep-colour-82725f))]"
-                        }`}
+                        }`)), "ranking_page_div_container_5"].filter(Boolean).join(" ")}
                       >
                         {rankLabel(
                           index,
@@ -897,33 +897,33 @@ export default async function RankingPage({
                       </div>
 
                       <p
-                        className={`min-w-0 truncate font-serif ${
+                        className={[((`min-w-0 truncate font-serif ${
                           podium
                             ? "text-[16px] text-[rgb(var(--sep-colour-e5ce9f))]"
                             : "text-[14px] text-[rgb(var(--sep-colour-cbb58f))]"
-                        }`}
+                        }`)), "ranking_page_p_text_3"].filter(Boolean).join(" ")}
                       >
                         {character.display_name ??
                           "Unnamed character"}
                       </p>
 
-                      <div className="min-w-[100px] text-right">
+                      <div className="min-w-[100px] text-right ranking_page_div_container_6">
                         {board.hiddenValue ? (
-                          <p className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-a98d65))]">
+                          <p className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-a98d65))] ranking_page_p_text_4">
                             Recorded
                           </p>
                         ) : board.veteran ? (
-                          <p className="text-[10px] text-[rgb(var(--sep-colour-bda375))]">
+                          <p className="text-[10px] text-[rgb(var(--sep-colour-bda375))] ranking_page_p_text_5">
                             {formatDate(
                               character.accountCreatedAt,
                             )}
                           </p>
                         ) : (
-                          <p className="font-serif text-[15px] text-[rgb(var(--sep-colour-d0b27e))]">
+                          <p className="font-serif text-[15px] text-[rgb(var(--sep-colour-d0b27e))] ranking_page_p_text_6">
                             {formatNumber(
                               value,
                             )}
-                            <span className="ml-1.5 font-sans text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-766956))]">
+                            <span className="ml-1.5 font-sans text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-766956))] ranking_page_span_text_2">
                               {board.valueLabel ??
                                 "Total"}
                             </span>
@@ -937,8 +937,8 @@ export default async function RankingPage({
             </div>
           </div>
         ) : (
-          <div className="flex min-h-0 flex-1 items-center justify-center p-8 text-center">
-            <p className="font-serif text-lg text-[rgb(var(--sep-colour-a98e68))]">
+          <div className="flex min-h-0 flex-1 items-center justify-center p-8 text-center ranking_page_div_container_7">
+            <p className="font-serif text-lg text-[rgb(var(--sep-colour-a98e68))] ranking_page_p_text_7">
               No entries yet.
             </p>
           </div>

@@ -95,9 +95,9 @@ export function ItemCreateRecipeFields({
   }
 
   return (
-    <div className="mt-4 w-full border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-4">
-      <label className="flex items-center gap-2 text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-aa9473))]">
-        <input
+    <div className="mt-4 w-full border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-4 components_admin_item_create_recipe_fields_div_also_create_recipe">
+      <label className="flex items-center gap-2 text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-aa9473))] components_admin_item_create_recipe_fields_label_also_create_recipe">
+        <input className="components_admin_item_create_recipe_fields_input_also_create_recipe"
           type="checkbox"
           name="alsoCreateRecipe"
           checked={enabled}
@@ -112,19 +112,19 @@ export function ItemCreateRecipeFields({
       </label>
 
       {!enabled ? null : (
-        <div className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4">
-          <div>
-            <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-8c704b))]">
+        <div className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 components_admin_item_create_recipe_fields_div_also_create_recipe_2">
+          <div className="components_admin_item_create_recipe_fields_div_create_recipe_item">
+            <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-8c704b))] components_admin_item_create_recipe_fields_p_create_recipe_item">
               Crafting
             </p>
 
-            <h3 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+            <h3 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_admin_item_create_recipe_fields_h3_create_recipe_item">
               Create recipe with Item
             </h3>
 
-            <p className="mt-2 max-w-4xl text-[10px] leading-5 text-[rgb(var(--sep-colour-817361))]">
+            <p className="mt-2 max-w-4xl text-[10px] leading-5 text-[rgb(var(--sep-colour-817361))] components_admin_item_create_recipe_fields_p_create_recipe_item_2">
               Creating this Item will also create its crafting formula and a physical
-              <span className="text-[rgb(var(--sep-colour-bba17a))]">
+              <span className="text-[rgb(var(--sep-colour-bba17a))] components_admin_item_create_recipe_fields_span_create_recipe_item">
                 {" "}Recipe: Item Name{" "}
               </span>
               Book / Document that teaches it. The document is automatically Average quality,
@@ -132,9 +132,9 @@ export function ItemCreateRecipeFields({
             </p>
           </div>
 
-          <div className="mt-4 grid gap-4 md:grid-cols-2">
-            <label className="block">
-              <span className="mb-2 block text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))]">
+          <div className="mt-4 grid gap-4 md:grid-cols-2 components_admin_item_create_recipe_fields_div_container">
+            <label className="block components_admin_item_create_recipe_fields_label_label">
+              <span className="mb-2 block text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))] components_admin_item_create_recipe_fields_span_text">
                 Crafted result quantity
               </span>
 
@@ -144,12 +144,12 @@ export function ItemCreateRecipeFields({
                 min={1}
                 required={enabled}
                 defaultValue={1}
-                className={inputClass}
+                className={[((inputClass)), "components_admin_item_create_recipe_fields_input_crafting_result_quantity"].filter(Boolean).join(" ")}
               />
             </label>
 
-            <label className="block">
-              <span className="mb-2 block text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))]">
+            <label className="block components_admin_item_create_recipe_fields_label_label_2">
+              <span className="mb-2 block text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))] components_admin_item_create_recipe_fields_span_text_2">
                 Recipe document reference value
               </span>
 
@@ -158,17 +158,17 @@ export function ItemCreateRecipeFields({
                 name="recipeDocumentReferenceValue"
                 min={0}
                 placeholder="Blank = no reference value"
-                className={inputClass}
+                className={[((inputClass)), "components_admin_item_create_recipe_fields_input_recipe_document_reference_value"].filter(Boolean).join(" ")}
               />
             </label>
           </div>
 
-          <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-4">
-            <div>
-              <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+          <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-4 components_admin_item_create_recipe_fields_div_container_2">
+            <div className="components_admin_item_create_recipe_fields_div_container_3">
+              <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_admin_item_create_recipe_fields_p_text">
                 Required Ingredients
               </p>
-              <p className="mt-1 text-[9px] text-[rgb(var(--sep-colour-766956))]">
+              <p className="mt-1 text-[9px] text-[rgb(var(--sep-colour-766956))] components_admin_item_create_recipe_fields_p_text_2">
                 Only Items in the Ingredient category are available.
               </p>
             </div>
@@ -176,18 +176,18 @@ export function ItemCreateRecipeFields({
             <button
               type="button"
               onClick={addIngredient}
-              className={buttonClass}
+              className={[((buttonClass)), "components_admin_item_create_recipe_fields_button_ingredient"].filter(Boolean).join(" ")}
             >
               + Ingredient
             </button>
           </div>
 
-          <div className="mt-3 space-y-2">
+          <div className="mt-3 space-y-2 components_admin_item_create_recipe_fields_div_container_4">
             {ingredients.map(
               (ingredient, index) => (
                 <div
                   key={index}
-                  className="grid gap-2 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3 sm:grid-cols-[minmax(0,1fr)_110px_auto]"
+                  className="grid gap-2 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3 sm:grid-cols-[minmax(0,1fr)_110px_auto] components_admin_item_create_recipe_fields_div_container_5"
                 >
                   <select
                     name="craftingIngredientItemId"
@@ -202,15 +202,15 @@ export function ItemCreateRecipeFields({
                         },
                       )
                     }
-                    className={inputClass}
+                    className={[((inputClass)), "components_admin_item_create_recipe_fields_select_crafting_ingredient_item_id"].filter(Boolean).join(" ")}
                   >
-                    <option value="" disabled>
+                    <option className="components_admin_item_create_recipe_fields_option_crafting_ingredient_item_id" value="" disabled>
                       Select Ingredient
                     </option>
 
                     {ingredientItems.map(
                       (item) => (
-                        <option
+                        <option className="components_admin_item_create_recipe_fields_option_option"
                           key={item.id}
                           value={item.id}
                         >
@@ -241,7 +241,7 @@ export function ItemCreateRecipeFields({
                         },
                       )
                     }
-                    className={inputClass}
+                    className={[((inputClass)), "components_admin_item_create_recipe_fields_input_crafting_ingredient_quantity"].filter(Boolean).join(" ")}
                     aria-label={`Ingredient ${index + 1} quantity`}
                   />
 
@@ -250,7 +250,7 @@ export function ItemCreateRecipeFields({
                     onClick={() =>
                       removeIngredient(index)
                     }
-                    className="border border-red-900/55 bg-red-950/20 px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-red-300"
+                    className="border border-red-900/55 bg-red-950/20 px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-red-300 components_admin_item_create_recipe_fields_button_remove"
                   >
                     Remove
                   </button>

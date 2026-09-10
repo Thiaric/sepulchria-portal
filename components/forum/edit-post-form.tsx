@@ -203,9 +203,9 @@ export default function EditPostForm({
   }
 
   return (
-    <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
-      <header className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-1a130e))] px-5 py-5 sm:px-7">
-        <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806a4d))]">
+    <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] components_forum_edit_post_form_section_section">
+      <header className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-1a130e))] px-5 py-5 sm:px-7 components_forum_edit_post_form_header_header">
+        <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806a4d))] components_forum_edit_post_form_p_text">
           Edit post
         </p>
 
@@ -214,15 +214,15 @@ export default function EditPostForm({
 
       <form
         action={formAction}
-        className="space-y-7 p-5 sm:p-7"
+        className="space-y-7 p-5 sm:p-7 components_forum_edit_post_form_form_form_action"
       >
-        <input
+        <input className="components_forum_edit_post_form_input_post_id"
           type="hidden"
           name="postId"
           value={postId}
         />
 
-        <input
+        <input className="components_forum_edit_post_form_input_image_urls"
           type="hidden"
           name="imageUrls"
           value={JSON.stringify(images)}
@@ -230,26 +230,24 @@ export default function EditPostForm({
 
         {state.message ? (
           <div
-            className={
-              state.success
+            className={[((state.success
                 ? "border border-emerald-900/60 bg-emerald-950/20 px-4 py-3 text-sm text-emerald-300"
-                : "border border-red-900/60 bg-red-950/20 px-4 py-3 text-sm text-red-300"
-            }
+                : "border border-red-900/60 bg-red-950/20 px-4 py-3 text-sm text-red-300")), "components_forum_edit_post_form_div_container"].filter(Boolean).join(" ")}
           >
             {state.message}
           </div>
         ) : null}
 
-        <div>
-          <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="components_forum_edit_post_form_div_container_2">
+          <div className="flex flex-wrap items-center justify-between gap-3 components_forum_edit_post_form_div_message">
             <label
               htmlFor="edit-forum-post-body"
-              className="block text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9f8765))]"
+              className="block text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9f8765))] components_forum_edit_post_form_label_edit_forum_post_body"
             >
               Message
             </label>
 
-            <span className="text-[9px] text-[rgb(var(--sep-colour-716453))]">
+            <span className="text-[9px] text-[rgb(var(--sep-colour-716453))] components_forum_edit_post_form_span_message">
               {body.length.toLocaleString(
                 "en-GB",
               )}
@@ -260,7 +258,7 @@ export default function EditPostForm({
             </span>
           </div>
 
-          <div className="mt-2">
+          <div className="mt-2 components_forum_edit_post_form_div_container_3">
               <RichTextEditor
                 id="edit-forum-post-body"
                 name="body"
@@ -275,7 +273,7 @@ export default function EditPostForm({
             </div>
 
           {state.fieldErrors?.body ? (
-            <p className="mt-2 text-xs text-red-400">
+            <p className="mt-2 text-xs text-red-400 components_forum_edit_post_form_p_text_2">
               {state.fieldErrors.body}
             </p>
           ) : null}
@@ -283,7 +281,7 @@ export default function EditPostForm({
 
         
 
-        <div className="flex flex-col-reverse justify-between gap-3 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-6 sm:flex-row sm:items-center">
+        <div className="flex flex-col-reverse justify-between gap-3 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-6 sm:flex-row sm:items-center components_forum_edit_post_form_div_container_4">
           <Link
             href={`${topicUrl}#post-${postId}`}
             className="border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-19120e))] px-5 py-3 text-center text-[9px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-a58b68))] transition hover:border-[rgb(var(--sep-colour-947047))] hover:text-[rgb(var(--sep-colour-dec095))]"
@@ -296,7 +294,7 @@ export default function EditPostForm({
             disabled={
               pending || !body.trim()
             }
-            className="border border-[rgb(var(--sep-colour-a27b48))] bg-[rgb(var(--sep-colour-49311d))] px-6 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-f0d6aa))] transition hover:border-[rgb(var(--sep-colour-c49555))] hover:bg-[rgb(var(--sep-colour-5b3d22))] disabled:cursor-not-allowed disabled:opacity-50"
+            className="border border-[rgb(var(--sep-colour-a27b48))] bg-[rgb(var(--sep-colour-49311d))] px-6 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-f0d6aa))] transition hover:border-[rgb(var(--sep-colour-c49555))] hover:bg-[rgb(var(--sep-colour-5b3d22))] disabled:cursor-not-allowed disabled:opacity-50 components_forum_edit_post_form_button_action"
           >
             {pending
               ? "Saving..."
@@ -322,7 +320,7 @@ function EditorButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-17100c))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9f8765))] transition hover:border-[rgb(var(--sep-colour-8d6a40))] hover:text-[rgb(var(--sep-colour-d8bd91))] disabled:cursor-not-allowed disabled:opacity-50"
+      className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-17100c))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9f8765))] transition hover:border-[rgb(var(--sep-colour-8d6a40))] hover:text-[rgb(var(--sep-colour-d8bd91))] disabled:cursor-not-allowed disabled:opacity-50 components_forum_edit_post_form_button_click"
     >
       {label}
     </button>

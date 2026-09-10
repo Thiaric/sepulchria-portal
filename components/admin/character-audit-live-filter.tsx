@@ -186,25 +186,25 @@ export function CharacterAuditLiveFilter({
   return (
     <div
       data-sep-interaction-fixed="true"
-      className="mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4"
+      className="mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 components_admin_character_audit_live_filter_div_container"
     >
-      <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-4 components_admin_character_audit_live_filter_div_container_2">
         <input
           type="search"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search values, Item, actor, event..."
-          className={controlClass}
+          className={[((controlClass)), "components_admin_character_audit_live_filter_input_search_values_item_actor"].filter(Boolean).join(" ")}
         />
 
         <select
           value={character}
           onChange={(e) => setCharacter(e.target.value)}
-          className={controlClass}
+          className={[((controlClass)), "components_admin_character_audit_live_filter_select_select"].filter(Boolean).join(" ")}
         >
-          <option value="">All Characters</option>
+          <option className="components_admin_character_audit_live_filter_option_option" value="">All Characters</option>
           {sortedCharacters.map((entry) => (
-            <option key={entry.id} value={entry.id}>
+            <option className="components_admin_character_audit_live_filter_option_option_2" key={entry.id} value={entry.id}>
               {name(entry)}
             </option>
           ))}
@@ -213,11 +213,11 @@ export function CharacterAuditLiveFilter({
         <select
           value={event}
           onChange={(e) => setEvent(e.target.value)}
-          className={controlClass}
+          className={[((controlClass)), "components_admin_character_audit_live_filter_select_select_2"].filter(Boolean).join(" ")}
         >
-          <option value="">All events</option>
+          <option className="components_admin_character_audit_live_filter_option_option_3" value="">All events</option>
           {events.map((value) => (
-            <option key={value} value={value}>
+            <option className="components_admin_character_audit_live_filter_option_option_4" key={value} value={value}>
               {value}
             </option>
           ))}
@@ -226,22 +226,22 @@ export function CharacterAuditLiveFilter({
         <select
           value={actor}
           onChange={(e) => setActor(e.target.value)}
-          className={controlClass}
+          className={[((controlClass)), "components_admin_character_audit_live_filter_select_select_3"].filter(Boolean).join(" ")}
         >
-          <option value="">All actors</option>
-          <option value="player">Player</option>
-          <option value="staff">Staff</option>
-          <option value="system">System</option>
+          <option className="components_admin_character_audit_live_filter_option_option_5" value="">All actors</option>
+          <option className="components_admin_character_audit_live_filter_option_player" value="player">Player</option>
+          <option className="components_admin_character_audit_live_filter_option_staff" value="staff">Staff</option>
+          <option className="components_admin_character_audit_live_filter_option_system" value="system">System</option>
         </select>
 
         <select
           value={source}
           onChange={(e) => setSource(e.target.value)}
-          className={controlClass}
+          className={[((controlClass)), "components_admin_character_audit_live_filter_select_select_4"].filter(Boolean).join(" ")}
         >
-          <option value="">All sources</option>
+          <option className="components_admin_character_audit_live_filter_option_option_6" value="">All sources</option>
           {sources.map((value) => (
-            <option key={value} value={value}>
+            <option className="components_admin_character_audit_live_filter_option_option_7" key={value} value={value}>
               {value}
             </option>
           ))}
@@ -252,7 +252,7 @@ export function CharacterAuditLiveFilter({
           value={from}
           onChange={(e) => setFrom(e.target.value)}
           title="From date"
-          className={controlClass}
+          className={[((controlClass)), "components_admin_character_audit_live_filter_input_date"].filter(Boolean).join(" ")}
         />
 
         <input
@@ -260,11 +260,11 @@ export function CharacterAuditLiveFilter({
           value={to}
           onChange={(e) => setTo(e.target.value)}
           title="To date"
-          className={controlClass}
+          className={[((controlClass)), "components_admin_character_audit_live_filter_input_date_2"].filter(Boolean).join(" ")}
         />
 
-        <div className="flex items-center justify-between gap-2">
-          <p className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-716654))]">
+        <div className="flex items-center justify-between gap-2 components_admin_character_audit_live_filter_div_container_3">
+          <p className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-716654))] components_admin_character_audit_live_filter_p_text">
             {visible} / {total} records
           </p>
 
@@ -272,14 +272,14 @@ export function CharacterAuditLiveFilter({
             type="button"
             onClick={reset}
             disabled={!hasFilters}
-            className="h-9 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-18110d))] px-3 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-ae9a7b))] disabled:cursor-not-allowed disabled:opacity-40"
+            className="h-9 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-18110d))] px-3 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-ae9a7b))] disabled:cursor-not-allowed disabled:opacity-40 components_admin_character_audit_live_filter_button_reset"
           >
             Reset
           </button>
         </div>
       </div>
 
-      <p className="mt-3 text-right text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-716654))]">
+      <p className="mt-3 text-right text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-716654))] components_admin_character_audit_live_filter_p_text_2">
         Live filters · newest first · maximum 500 database results
       </p>
     </div>

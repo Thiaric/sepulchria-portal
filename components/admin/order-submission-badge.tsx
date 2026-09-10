@@ -23,7 +23,7 @@ export function OrderSubmissionBadge({
     return (
       <span
         title={title}
-        className={`absolute -right-2 -top-2 h-5 min-w-5 px-1 text-[8px] ${baseClass}`}
+        className={[((`absolute -right-2 -top-2 h-5 min-w-5 px-1 text-[8px] ${baseClass}`)), "components_admin_order_submission_badge_span_text"].filter(Boolean).join(" ")}
       >
         {label}
       </span>
@@ -33,7 +33,7 @@ export function OrderSubmissionBadge({
   return (
     <span
       title={title}
-      className={`ml-auto h-4 min-w-4 px-1 text-[7px] ${baseClass}`}
+      className={[((`ml-auto h-4 min-w-4 px-1 text-[7px] ${baseClass}`)), "components_admin_order_submission_badge_span_text_2"].filter(Boolean).join(" ")}
     >
       {label}
     </span>

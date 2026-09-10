@@ -224,12 +224,12 @@ export default function TopicPost({
       data-sep-interaction-fixed="true"
       data-cosmetic-character-id={post.author_character?.id}
       data-cosmetic-surface={!post.is_anonymous ? "forum" : undefined}
-      className="scroll-mt-24 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]"
+      className="scroll-mt-24 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] components_forum_topic_post_article_article"
     >
-      <div className="grid lg:grid-cols-[138px_minmax(0,1fr)]">
-        <aside className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-110d0a))] p-5 lg:border-b-0 lg:border-r lg:p-6">
-          <div className="flex items-start gap-4 lg:block">
-            <div className="shrink-0">
+      <div className="grid lg:grid-cols-[138px_minmax(0,1fr)] components_forum_topic_post_div_container">
+        <aside className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-110d0a))] p-5 lg:border-b-0 lg:border-r lg:p-6 components_forum_topic_post_aside_sidebar">
+          <div className="flex items-start gap-4 lg:block components_forum_topic_post_div_container_2">
+            <div className="shrink-0 components_forum_topic_post_div_container_3">
               <CharacterPortrait
                 character={post.author_character}
                 fallbackName={post.author_name}
@@ -247,7 +247,7 @@ export default function TopicPost({
               />
             </div>
 
-            <div className="min-w-0 flex-1 lg:mt-4">
+            <div className="min-w-0 flex-1 lg:mt-4 components_forum_topic_post_div_container_4">
               <h2
                 data-cosmetic-character-id={post.author_character?.id}
                 data-cosmetic-surface={!post.is_anonymous ? "nameplate" : undefined}
@@ -257,7 +257,7 @@ export default function TopicPost({
                     ? "true"
                     : undefined
                 }
-                className="font-serif text-base leading-tight text-[rgb(var(--sep-colour-ddc59e))]"
+                className="font-serif text-base leading-tight text-[rgb(var(--sep-colour-ddc59e))] components_forum_topic_post_h2_heading"
               >
                 <ForumCharacterLink
                   characterId={post.author_character?.id}
@@ -277,18 +277,18 @@ export default function TopicPost({
               post.anonymous_identity_visible ? (
                 <p
                   data-forum-anonymous-label="true"
-                  className="mt-1 text-[10px] uppercase tracking-[0.16em]"
+                  className="mt-1 text-[10px] uppercase tracking-[0.16em] components_forum_topic_post_p_text"
                 >
                   Anonymous
                 </p>
               ) : null}
 
               {post.author_character?.title ? (
-                <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-9b7954))]">
+                <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-9b7954))] components_forum_topic_post_p_text_2">
                   {post.author_character.title}
                 </p>
               ) : !post.is_anonymous ? (
-                <p className="mt-1 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-776754))]">
+                <p className="mt-1 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-776754))] components_forum_topic_post_p_text_3">
                   Character
                 </p>
               ) : null}
@@ -297,31 +297,31 @@ export default function TopicPost({
 
         </aside>
 
-        <div className="min-w-0">
-          <header className="flex flex-wrap items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-19120e))] px-5 py-3 sm:px-6">
-            <div className="flex flex-wrap items-center gap-3">
+        <div className="min-w-0 components_forum_topic_post_div_container_5">
+          <header className="flex flex-wrap items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-19120e))] px-5 py-3 sm:px-6 components_forum_topic_post_header_header">
+            <div className="flex flex-wrap items-center gap-3 components_forum_topic_post_div_container_6">
               <a
                 href={`#post-${post.id}`}
-                className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-8f7859))] transition hover:text-[rgb(var(--sep-colour-d0ad7a))]"
+                className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-8f7859))] transition hover:text-[rgb(var(--sep-colour-d0ad7a))] components_forum_topic_post_a_post"
               >
                 Post #{postNumber}
               </a>
 
               {post.is_initial ? (
-                <span className="border border-[rgb(var(--sep-colour-715433))]/60 bg-[rgb(var(--sep-colour-2b1d12))] px-2 py-1 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-c49c65))]">
+                <span className="border border-[rgb(var(--sep-colour-715433))]/60 bg-[rgb(var(--sep-colour-2b1d12))] px-2 py-1 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-c49c65))] components_forum_topic_post_span_text">
                   Opening post
                 </span>
               ) : null}
 
               {isDeleted ? (
-                <span className="border border-red-950/60 bg-red-950/20 px-2 py-1 text-[7px] uppercase tracking-[0.14em] text-red-400">
+                <span className="border border-red-950/60 bg-red-950/20 px-2 py-1 text-[7px] uppercase tracking-[0.14em] text-red-400 components_forum_topic_post_span_text_2">
                   Deleted
                 </span>
               ) : null}
 
               {post.edited_at &&
               !isDeleted ? (
-                <span className="text-[8px] italic text-[rgb(var(--sep-colour-6d6255))]">
+                <span className="text-[8px] italic text-[rgb(var(--sep-colour-6d6255))] components_forum_topic_post_span_text_3">
                   Edited{" "}
                   {formatDate(
                     post.edited_at,
@@ -340,8 +340,8 @@ export default function TopicPost({
 
           {/* Forum actions duplicated at top for long posts. */}
 {showFooter ? (
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-120e0b))] px-5 py-3 sm:px-6">
-              <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-120e0b))] px-5 py-3 sm:px-6 components_forum_topic_post_div_container_7">
+              <div className="flex flex-wrap gap-2 components_forum_topic_post_div_container_8">
                 {!isDeleted &&
                 !topicLocked ? (
                   <>
@@ -420,7 +420,7 @@ export default function TopicPost({
             </div>
           ) : null}
 
-          <div className="min-h-48 px-5 py-6 sm:px-7 sm:py-7">
+          <div className="min-h-48 px-5 py-6 sm:px-7 sm:py-7 components_forum_topic_post_div_container_9">
             {isDeleted ? (
               <DeletedPostMessage
   isInitial={post.is_initial}
@@ -451,8 +451,8 @@ export default function TopicPost({
           </div>
 
           {showFooter ? (
-            <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-120e0b))] px-5 py-3 sm:px-6">
-              <div className="flex flex-wrap gap-2">
+            <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-120e0b))] px-5 py-3 sm:px-6 components_forum_topic_post_footer_footer">
+              <div className="flex flex-wrap gap-2 components_forum_topic_post_div_container_10">
                 {!isDeleted &&
                 !topicLocked ? (
                   <>
@@ -556,7 +556,7 @@ function CharacterPortrait({
 
   if (anonymous) {
     return (
-      <div className="flex h-20 w-20 shrink-0 items-center justify-center border border-[rgb(var(--sep-colour-6b5031))]/55 bg-[rgb(var(--sep-colour-1b130e))] font-serif text-3xl text-[rgb(var(--sep-colour-a98a61))] lg:h-44 lg:w-full lg:text-5xl">
+      <div className="flex h-20 w-20 shrink-0 items-center justify-center border border-[rgb(var(--sep-colour-6b5031))]/55 bg-[rgb(var(--sep-colour-1b130e))] font-serif text-3xl text-[rgb(var(--sep-colour-a98a61))] lg:h-44 lg:w-full lg:text-5xl components_forum_topic_post_div_container_11">
         ?
       </div>
     );
@@ -570,7 +570,7 @@ function CharacterPortrait({
       <div
         data-cosmetic-character-id={character?.id}
         data-cosmetic-surface="portrait"
-        className="h-20 w-20 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-6b5031))]/55 bg-[rgb(var(--sep-colour-0b0806))] lg:h-44 lg:w-full"
+        className="h-20 w-20 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-6b5031))]/55 bg-[rgb(var(--sep-colour-0b0806))] lg:h-44 lg:w-full components_forum_topic_post_div_container_12"
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -579,7 +579,7 @@ function CharacterPortrait({
             character,
             fallbackName,
           )}
-          className="h-full w-full object-cover"
+          className="h-full w-full object-cover components_forum_topic_post_img_image"
         />
       </div>
     );
@@ -603,7 +603,7 @@ function CharacterPortrait({
     <div
       data-cosmetic-character-id={character?.id}
       data-cosmetic-surface="portrait"
-      className="flex h-20 w-20 shrink-0 items-center justify-center border border-[rgb(var(--sep-colour-6b5031))]/55 bg-[rgb(var(--sep-colour-1b130e))] font-serif text-2xl text-[rgb(var(--sep-colour-a98a61))] lg:h-44 lg:w-full lg:text-4xl"
+      className="flex h-20 w-20 shrink-0 items-center justify-center border border-[rgb(var(--sep-colour-6b5031))]/55 bg-[rgb(var(--sep-colour-1b130e))] font-serif text-2xl text-[rgb(var(--sep-colour-a98a61))] lg:h-44 lg:w-full lg:text-4xl components_forum_topic_post_div_container_13"
     >
       {initials}
     </div>
@@ -663,10 +663,10 @@ function CharacterIdentityIcons({
   }
 
   return (
-    <div className="mt-2 flex items-center justify-center gap-2 lg:mt-3">
+    <div className="mt-2 flex items-center justify-center gap-2 lg:mt-3 components_forum_topic_post_div_container_14">
       {raceIcon ? (
         <div
-  className="flex h-8 w-8 items-center justify-center border bg-[rgb(var(--sep-colour-0b0806))] p-1"
+  className="flex h-8 w-8 items-center justify-center border bg-[rgb(var(--sep-colour-0b0806))] p-1 components_forum_topic_post_div_container_15"
   style={{
     borderColor:
       character.race_colour ?? "#8d6d3e",
@@ -683,7 +683,7 @@ function CharacterIdentityIcons({
               character.race_name ??
               "Ancestry"
             }
-            className="h-full w-full object-contain"
+            className="h-full w-full object-contain components_forum_topic_post_img_image_2"
           />
         </div>
       ) : null}
@@ -706,25 +706,25 @@ function DeletedPostMessage({
     | null;
 }) {
   return (
-    <div className="flex min-h-36 items-center justify-center border border-dashed border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] px-5 py-8 text-center">
-      <div className="max-w-xl">
-        <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-a65d51))]">
+    <div className="flex min-h-36 items-center justify-center border border-dashed border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] px-5 py-8 text-center components_forum_topic_post_div_container_16">
+      <div className="max-w-xl components_forum_topic_post_div_container_17">
+        <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-a65d51))] components_forum_topic_post_p_text_4">
           Moderated content
         </p>
 
-        <p className="mt-3 font-serif text-lg text-[rgb(var(--sep-colour-bba88a))]">
+        <p className="mt-3 font-serif text-lg text-[rgb(var(--sep-colour-bba88a))] components_forum_topic_post_p_text_5">
           {isInitial
             ? "This opening post has been deleted."
             : "This post has been deleted by the moderation team."}
         </p>
 
         {moderationReason ? (
-          <div className="mt-5 border border-[rgb(var(--sep-colour-654b32))]/55 bg-[rgb(var(--sep-colour-17100c))] px-4 py-3">
-            <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-8e714d))]">
+          <div className="mt-5 border border-[rgb(var(--sep-colour-654b32))]/55 bg-[rgb(var(--sep-colour-17100c))] px-4 py-3 components_forum_topic_post_div_container_18">
+            <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-8e714d))] components_forum_topic_post_p_text_6">
               Moderation reason
             </p>
 
-            <p className="mt-2 text-sm leading-5 text-[rgb(var(--sep-colour-c8b79c))]">
+            <p className="mt-2 text-sm leading-5 text-[rgb(var(--sep-colour-c8b79c))] components_forum_topic_post_p_text_7">
               {moderationReason}
             </p>
           </div>
@@ -750,8 +750,8 @@ function QuotedPost({
 
   return (
     <blockquote className="mb-6 border-l-2 border-[rgb(var(--sep-colour-8b6840))] bg-[rgb(var(--sep-colour-100c09))] px-4 py-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-[8px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-9b7b53))]">
+      <div className="flex flex-wrap items-center justify-between gap-3 components_forum_topic_post_div_container_19">
+        <p className="text-[8px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-9b7b53))] components_forum_topic_post_p_text_8">
           Originally posted by{" "}
           {authorName}
           {post.is_anonymous &&
@@ -762,19 +762,19 @@ function QuotedPost({
 
         <a
           href={`#post-${post.id}`}
-          className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-71624f))] transition hover:text-[rgb(var(--sep-colour-c9a674))]"
+          className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-71624f))] transition hover:text-[rgb(var(--sep-colour-c9a674))] components_forum_topic_post_a_view_post"
         >
           View post
         </a>
       </div>
 
       {post.deleted_at ? (
-        <p className="mt-3 text-xs italic leading-6 text-[rgb(var(--sep-colour-756b60))]">
+        <p className="mt-3 text-xs italic leading-6 text-[rgb(var(--sep-colour-756b60))] components_forum_topic_post_p_text_9">
           The quoted post has been
           deleted.
         </p>
       ) : (
-        <p className="mt-3 whitespace-pre-wrap text-xs italic leading-6 text-[rgb(var(--sep-colour-9f927f))]">
+        <p className="mt-3 whitespace-pre-wrap text-xs italic leading-6 text-[rgb(var(--sep-colour-9f927f))] components_forum_topic_post_p_text_10">
           {shortenText(
             richTextToPlainText(
               post.body,
@@ -806,7 +806,7 @@ function PostImages({
   }
 
   return (
-    <div className="mt-7 grid gap-3 md:grid-cols-2">
+    <div className="mt-7 grid gap-3 md:grid-cols-2 components_forum_topic_post_div_container_20">
       {validImages.map(
         (image, index) => (
           <a
@@ -814,7 +814,7 @@ function PostImages({
             href={image.image_url}
             target="_blank"
             rel="noreferrer"
-            className="group block overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-0c0907))]"
+            className="group block overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-0c0907))] components_forum_topic_post_a_link"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -823,7 +823,7 @@ function PostImages({
                 image.alt_text ??
                 `Attached image ${index + 1}`
               }
-              className="max-h-[520px] w-full object-contain transition duration-300 group-hover:scale-[1.01]"
+              className="max-h-[520px] w-full object-contain transition duration-300 group-hover:scale-[1.01] components_forum_topic_post_img_image_3"
             />
           </a>
         ),

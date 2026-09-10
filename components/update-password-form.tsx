@@ -43,7 +43,7 @@ export function UpdatePasswordForm({
   };
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className={[((cn("flex flex-col gap-6", className))), "components_update_password_form_div_container"].filter(Boolean).join(" ")} {...props}>
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl">Reset Your Password</CardTitle>
@@ -52,9 +52,9 @@ export function UpdatePasswordForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleForgotPassword}>
-            <div className="flex flex-col gap-6">
-              <div className="grid gap-2">
+          <form className="components_update_password_form_form_forgot_password" onSubmit={handleForgotPassword}>
+            <div className="flex flex-col gap-6 components_update_password_form_div_container_2">
+              <div className="grid gap-2 components_update_password_form_div_container_3">
                 <Label htmlFor="password">New password</Label>
                 <Input
                   id="password"
@@ -65,7 +65,7 @@ export function UpdatePasswordForm({
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
-              {error && <p className="text-sm text-red-500">{error}</p>}
+              {error && <p className="text-sm text-red-500 components_update_password_form_p_text">{error}</p>}
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? "Saving..." : "Save new password"}
               </Button>

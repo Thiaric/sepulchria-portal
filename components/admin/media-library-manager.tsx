@@ -536,26 +536,26 @@ export function MediaLibraryManager() {
     pendingDeletions.size;
 
   return (
-    <div className="mt-5 space-y-4">
-      <section className="border border-[rgb(var(--sep-colour-8b673d))]/55 bg-[rgb(var(--sep-colour-17100c))]">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-110d0a))] px-5 py-4">
-          <div>
-            <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-a68152))]">
+    <div className="mt-5 space-y-4 components_admin_media_library_manager_div_container">
+      <section className="border border-[rgb(var(--sep-colour-8b673d))]/55 bg-[rgb(var(--sep-colour-17100c))] components_admin_media_library_manager_section_section">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-110d0a))] px-5 py-4 components_admin_media_library_manager_div_container_2">
+          <div className="components_admin_media_library_manager_div_media_batch">
+            <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-a68152))] components_admin_media_library_manager_p_media_batch">
               Pending changes
             </p>
 
-            <h3 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dfc99f))]">
+            <h3 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dfc99f))] components_admin_media_library_manager_h3_media_batch">
               Media Batch
             </h3>
 
-            <p className="mt-1 text-[10px] leading-5 text-[rgb(var(--sep-colour-817567))]">
+            <p className="mt-1 text-[10px] leading-5 text-[rgb(var(--sep-colour-817567))] components_admin_media_library_manager_p_media_batch_2">
               Stage as many changes as you
               need. Master is updated only
               when you click Save changes.
             </p>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 components_admin_media_library_manager_div_container_3">
             <button
               type="button"
               disabled={
@@ -565,7 +565,7 @@ export function MediaLibraryManager() {
               onClick={
                 discardPendingChanges
               }
-              className="border border-[rgb(var(--sep-colour-60482e))]/50 px-3 py-2 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-a99069))] disabled:opacity-40"
+              className="border border-[rgb(var(--sep-colour-60482e))]/50 px-3 py-2 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-a99069))] disabled:opacity-40 components_admin_media_library_manager_button_discard"
             >
               Discard
             </button>
@@ -579,7 +579,7 @@ export function MediaLibraryManager() {
               onClick={() =>
                 void saveChanges()
               }
-              className="border border-[rgb(var(--sep-colour-a37843))] bg-[rgb(var(--sep-colour-49311c))] px-4 py-2 text-[8px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-f0d5a6))] transition hover:bg-[rgb(var(--sep-colour-5b3d23))] disabled:opacity-40"
+              className="border border-[rgb(var(--sep-colour-a37843))] bg-[rgb(var(--sep-colour-49311c))] px-4 py-2 text-[8px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-f0d5a6))] transition hover:bg-[rgb(var(--sep-colour-5b3d23))] disabled:opacity-40 components_admin_media_library_manager_button_action"
             >
               {saving
                 ? "Saving…"
@@ -588,17 +588,17 @@ export function MediaLibraryManager() {
           </div>
         </div>
 
-        <div className="grid gap-4 p-5 lg:grid-cols-2">
-          <div>
-            <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+        <div className="grid gap-4 p-5 lg:grid-cols-2 components_admin_media_library_manager_div_container_4">
+          <div className="components_admin_media_library_manager_div_container_5">
+            <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_admin_media_library_manager_p_text">
               Staged uploads ·{" "}
               {pendingUploads.length}
             </p>
 
-            <div className="mt-2 space-y-2">
+            <div className="mt-2 space-y-2 components_admin_media_library_manager_div_container_6">
               {pendingUploads.length ===
               0 ? (
-                <p className="text-[10px] text-[rgb(var(--sep-colour-706452))]">
+                <p className="text-[10px] text-[rgb(var(--sep-colour-706452))] components_admin_media_library_manager_p_text_2">
                   No images staged.
                 </p>
               ) : (
@@ -608,15 +608,15 @@ export function MediaLibraryManager() {
                       key={
                         upload.repositoryPath
                       }
-                      className="flex items-center justify-between gap-3 border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2"
+                      className="flex items-center justify-between gap-3 border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2 components_admin_media_library_manager_div_container_7"
                     >
-                      <div className="min-w-0">
+                      <div className="min-w-0 components_admin_media_library_manager_div_container_8">
                         <code className="block truncate text-[10px] text-[rgb(var(--sep-colour-c9b28e))]">
                           {
                             upload.publicPath
                           }
                         </code>
-                        <span className="text-[8px] text-[rgb(var(--sep-colour-6f6251))]">
+                        <span className="text-[8px] text-[rgb(var(--sep-colour-6f6251))] components_admin_media_library_manager_span_text">
                           staged from{" "}
                           {
                             upload.originalName
@@ -631,7 +631,7 @@ export function MediaLibraryManager() {
                             upload.repositoryPath,
                           )
                         }
-                        className="shrink-0 text-[8px] uppercase tracking-[0.12em] text-red-300"
+                        className="shrink-0 text-[8px] uppercase tracking-[0.12em] text-red-300 components_admin_media_library_manager_button_remove"
                       >
                         Remove
                       </button>
@@ -642,16 +642,16 @@ export function MediaLibraryManager() {
             </div>
           </div>
 
-          <div>
-            <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+          <div className="components_admin_media_library_manager_div_container_9">
+            <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_admin_media_library_manager_p_text_3">
               Marked for deletion ·{" "}
               {pendingDeletions.size}
             </p>
 
-            <div className="mt-2 space-y-2">
+            <div className="mt-2 space-y-2 components_admin_media_library_manager_div_container_10">
               {pendingDeletions.size ===
               0 ? (
-                <p className="text-[10px] text-[rgb(var(--sep-colour-706452))]">
+                <p className="text-[10px] text-[rgb(var(--sep-colour-706452))] components_admin_media_library_manager_p_text_4">
                   No images marked.
                 </p>
               ) : (
@@ -663,7 +663,7 @@ export function MediaLibraryManager() {
                       key={
                         repositoryPath
                       }
-                      className="flex items-center justify-between gap-3 border border-red-900/35 bg-red-950/10 px-3 py-2"
+                      className="flex items-center justify-between gap-3 border border-red-900/35 bg-red-950/10 px-3 py-2 components_admin_media_library_manager_div_container_11"
                     >
                       <code className="min-w-0 truncate text-[10px] text-red-200/80">
                         {repositoryPath.replace(
@@ -679,7 +679,7 @@ export function MediaLibraryManager() {
                             repositoryPath,
                           )
                         }
-                        className="shrink-0 text-[8px] uppercase tracking-[0.12em] text-red-300"
+                        className="shrink-0 text-[8px] uppercase tracking-[0.12em] text-red-300 components_admin_media_library_manager_button_undo"
                       >
                         Undo
                       </button>
@@ -695,19 +695,19 @@ export function MediaLibraryManager() {
       {error ? (
         <div
           role="alert"
-          className="border border-red-900/60 bg-red-950/20 px-4 py-3 text-xs text-red-300"
+          className="border border-red-900/60 bg-red-950/20 px-4 py-3 text-xs text-red-300 components_admin_media_library_manager_div_alert"
         >
           {error}
         </div>
       ) : null}
 
       {saveResult ? (
-        <section className="border border-emerald-900/50 bg-emerald-950/15 px-4 py-3">
-          <p className="text-[8px] uppercase tracking-[0.18em] text-emerald-400">
+        <section className="border border-emerald-900/50 bg-emerald-950/15 px-4 py-3 components_admin_media_library_manager_section_section_2">
+          <p className="text-[8px] uppercase tracking-[0.18em] text-emerald-400 components_admin_media_library_manager_p_text_5">
             Batch saved
           </p>
 
-          <p className="mt-2 text-xs text-emerald-100/75">
+          <p className="mt-2 text-xs text-emerald-100/75 components_admin_media_library_manager_p_text_6">
             {
               saveResult.changedCount
             }{" "}
@@ -725,28 +725,28 @@ export function MediaLibraryManager() {
             }
             target="_blank"
             rel="noreferrer"
-            className="mt-3 inline-block border border-emerald-800/50 px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-emerald-300"
+            className="mt-3 inline-block border border-emerald-800/50 px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-emerald-300 components_admin_media_library_manager_a_open_git_hub_commit"
           >
             Open GitHub commit
           </a>
         </section>
       ) : null}
 
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
-        <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
-          <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-110d0a))] px-5 py-4">
-            <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-8c704b))]">
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px] components_admin_media_library_manager_div_container_12">
+        <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] components_admin_media_library_manager_section_section_3">
+          <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-110d0a))] px-5 py-4 components_admin_media_library_manager_div_stage_images">
+            <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-8c704b))] components_admin_media_library_manager_p_stage_images">
               Upload
             </p>
 
-            <h3 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dfc99f))]">
+            <h3 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dfc99f))] components_admin_media_library_manager_h3_stage_images">
               Stage images
             </h3>
           </div>
 
-          <div className="space-y-5 p-5">
-            <label className="block">
-              <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+          <div className="space-y-5 p-5 components_admin_media_library_manager_div_container_13">
+            <label className="block components_admin_media_library_manager_label_label">
+              <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_admin_media_library_manager_span_text_2">
                 Subfolder
               </span>
 
@@ -760,13 +760,13 @@ export function MediaLibraryManager() {
                 }
                 list="media-folders"
                 placeholder="images/orders"
-                className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0c0907))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
+                className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0c0907))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))] components_admin_media_library_manager_input_images_orders"
               />
 
               <datalist id="media-folders">
                 {folders.map(
                   (item) => (
-                    <option
+                    <option className="components_admin_media_library_manager_option_media_folders"
                       key={item}
                       value={item}
                     />
@@ -775,8 +775,8 @@ export function MediaLibraryManager() {
               </datalist>
             </label>
 
-            <label className="block">
-              <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+            <label className="block components_admin_media_library_manager_label_label_2">
+              <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_admin_media_library_manager_span_text_3">
                 Custom file name
               </span>
 
@@ -800,12 +800,12 @@ export function MediaLibraryManager() {
                     ? "Available for single-image staging only"
                     : "Optional — original name is used"
                 }
-                className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0c0907))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] disabled:opacity-45"
+                className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0c0907))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] disabled:opacity-45 components_admin_media_library_manager_input_field"
               />
             </label>
 
-            <div>
-              <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+            <div className="components_admin_media_library_manager_div_container_14">
+              <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_admin_media_library_manager_span_text_4">
                 Images
               </span>
 
@@ -821,7 +821,7 @@ export function MediaLibraryManager() {
                     event.target.files,
                   )
                 }
-                className="hidden"
+                className="hidden components_admin_media_library_manager_input_field_2"
               />
 
               <button
@@ -829,7 +829,7 @@ export function MediaLibraryManager() {
                 onClick={() =>
                   fileInputRef.current?.click()
                 }
-                className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-left text-xs text-[rgb(var(--sep-colour-bba687))] transition hover:border-[rgb(var(--sep-colour-9b7446))]"
+                className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-left text-xs text-[rgb(var(--sep-colour-bba687))] transition hover:border-[rgb(var(--sep-colour-9b7446))] components_admin_media_library_manager_button_action_2"
               >
                 {selectedFiles.length >
                 0
@@ -844,17 +844,17 @@ export function MediaLibraryManager() {
 
               {selectedFiles.length >
               0 ? (
-                <div className="mt-2 max-h-32 overflow-y-auto border border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-0b0806))]">
+                <div className="mt-2 max-h-32 overflow-y-auto border border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-0b0806))] components_admin_media_library_manager_div_container_15">
                   {selectedFiles.map(
                     (file) => (
                       <div
                         key={`${file.name}-${file.size}-${file.lastModified}`}
-                        className="flex justify-between gap-3 border-b border-[rgb(var(--sep-colour-60482e))]/20 px-3 py-2 text-[10px] last:border-b-0"
+                        className="flex justify-between gap-3 border-b border-[rgb(var(--sep-colour-60482e))]/20 px-3 py-2 text-[10px] last:border-b-0 components_admin_media_library_manager_div_container_16"
                       >
-                        <span className="truncate text-[rgb(var(--sep-colour-ae9a7c))]">
+                        <span className="truncate text-[rgb(var(--sep-colour-ae9a7c))] components_admin_media_library_manager_span_text_5">
                           {file.name}
                         </span>
-                        <span className="shrink-0 text-[rgb(var(--sep-colour-6d6151))]">
+                        <span className="shrink-0 text-[rgb(var(--sep-colour-6d6151))] components_admin_media_library_manager_span_text_6">
                           {formatBytes(
                             file.size,
                           )}
@@ -866,7 +866,7 @@ export function MediaLibraryManager() {
               ) : null}
             </div>
 
-            <label className="flex items-start gap-3 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3">
+            <label className="flex items-start gap-3 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 components_admin_media_library_manager_label_label_3">
               <input
                 type="checkbox"
                 checked={
@@ -877,15 +877,15 @@ export function MediaLibraryManager() {
                     event.target.checked,
                   )
                 }
-                className="mt-0.5 h-4 w-4 accent-[rgb(var(--sep-colour-9b7446))]"
+                className="mt-0.5 h-4 w-4 accent-[rgb(var(--sep-colour-9b7446))] components_admin_media_library_manager_input_field_3"
               />
 
-              <span>
-                <span className="block text-[9px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-bca27b))]">
+              <span className="components_admin_media_library_manager_span_text_7">
+                <span className="block text-[9px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-bca27b))] components_admin_media_library_manager_span_text_8">
                   Allow replacement
                 </span>
 
-                <span className="mt-1 block text-[9px] leading-4 text-[rgb(var(--sep-colour-756957))]">
+                <span className="mt-1 block text-[9px] leading-4 text-[rgb(var(--sep-colour-756957))] components_admin_media_library_manager_span_text_9">
                   Lets staged uploads replace
                   files already at the same
                   public path when the batch
@@ -904,14 +904,14 @@ export function MediaLibraryManager() {
               onClick={() =>
                 void stageSelectedFiles()
               }
-              className="w-full border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-3 text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))] disabled:opacity-50"
+              className="w-full border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-3 text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))] disabled:opacity-50 components_admin_media_library_manager_button_action_3"
             >
               {staging
                 ? "Staging…"
                 : "Add to pending changes"}
             </button>
 
-            <p className="text-[9px] leading-4 text-[rgb(var(--sep-colour-756957))]">
+            <p className="text-[9px] leading-4 text-[rgb(var(--sep-colour-756957))] components_admin_media_library_manager_p_text_7">
               Staging uploads the image bytes
               as Git blobs only. It does not
               change master and does not
@@ -920,13 +920,13 @@ export function MediaLibraryManager() {
           </div>
         </section>
 
-        <aside className="space-y-4">
-          <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4">
-            <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
+        <aside className="space-y-4 components_admin_media_library_manager_aside_sidebar">
+          <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 components_admin_media_library_manager_section_section_4">
+            <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))] components_admin_media_library_manager_p_text_8">
               Existing folders
             </p>
 
-            <p className="mt-2 text-[9px] leading-4 text-[rgb(var(--sep-colour-756957))]">
+            <p className="mt-2 text-[9px] leading-4 text-[rgb(var(--sep-colour-756957))] components_admin_media_library_manager_p_text_9">
               {loadingMedia
                 ? "Loading repository media…"
                 : `${folders.length} public subfolder${
@@ -939,7 +939,7 @@ export function MediaLibraryManager() {
 
             {!loadingMedia &&
             folders.length > 0 ? (
-              <div className="mt-3 max-h-64 overflow-y-auto border border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-0c0907))]">
+              <div className="mt-3 max-h-64 overflow-y-auto border border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-0c0907))] components_admin_media_library_manager_div_container_17">
                 {folders.map(
                   (item) => (
                     <button
@@ -950,7 +950,7 @@ export function MediaLibraryManager() {
                           item,
                         )
                       }
-                      className="block w-full border-b border-[rgb(var(--sep-colour-60482e))]/20 px-3 py-2 text-left text-[10px] text-[rgb(var(--sep-colour-a99678))] last:border-b-0 hover:bg-[rgb(var(--sep-colour-1d140e))] hover:text-[rgb(var(--sep-colour-dec69d))]"
+                      className="block w-full border-b border-[rgb(var(--sep-colour-60482e))]/20 px-3 py-2 text-left text-[10px] text-[rgb(var(--sep-colour-a99678))] last:border-b-0 hover:bg-[rgb(var(--sep-colour-1d140e))] hover:text-[rgb(var(--sep-colour-dec69d))] components_admin_media_library_manager_button_action_4"
                     >
                       /{item}
                     </button>
@@ -960,12 +960,12 @@ export function MediaLibraryManager() {
             ) : null}
           </section>
 
-          <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4">
-            <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
+          <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 components_admin_media_library_manager_section_section_5">
+            <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))] components_admin_media_library_manager_p_text_10">
               Commit behaviour
             </p>
 
-            <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-817567))]">
+            <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-817567))] components_admin_media_library_manager_p_text_11">
               Upload staging and deletion
               marking create no commits.
               Save changes creates exactly
@@ -976,14 +976,14 @@ export function MediaLibraryManager() {
         </aside>
       </div>
 
-      <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-110d0a))] px-5 py-4">
-          <div>
-            <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-8c704b))]">
+      <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] components_admin_media_library_manager_section_section_6">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-110d0a))] px-5 py-4 components_admin_media_library_manager_div_container_18">
+          <div className="components_admin_media_library_manager_div_existing_images">
+            <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-8c704b))] components_admin_media_library_manager_p_existing_images">
               Library
             </p>
 
-            <h3 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dfc99f))]">
+            <h3 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dfc99f))] components_admin_media_library_manager_h3_existing_images">
               Existing Images
             </h3>
           </div>
@@ -996,24 +996,24 @@ export function MediaLibraryManager() {
             onClick={() =>
               void loadMedia()
             }
-            className="border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-18110d))] px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-bca27b))] disabled:opacity-50"
+            className="border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-18110d))] px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-bca27b))] disabled:opacity-50 components_admin_media_library_manager_button_refresh"
           >
             Refresh
           </button>
         </div>
 
-        <div className="p-5">
+        <div className="p-5 components_admin_media_library_manager_div_container_19">
           {loadingMedia ? (
-            <p className="text-xs text-[rgb(var(--sep-colour-817567))]">
+            <p className="text-xs text-[rgb(var(--sep-colour-817567))] components_admin_media_library_manager_p_text_12">
               Loading images from GitHub…
             </p>
           ) : images.length === 0 ? (
-            <p className="text-xs text-[rgb(var(--sep-colour-817567))]">
+            <p className="text-xs text-[rgb(var(--sep-colour-817567))] components_admin_media_library_manager_p_text_13">
               No supported images were found
               inside public/.
             </p>
           ) : (
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 components_admin_media_library_manager_div_container_20">
               {images.map(
                 (image) => {
                   const marked =
@@ -1036,15 +1036,15 @@ export function MediaLibraryManager() {
                       id={mediaAnchorId(
                         image.repositoryPath,
                       )}
-                      className={`scroll-mt-4 overflow-hidden border ${
+                      className={[((`scroll-mt-4 overflow-hidden border ${
                         marked
                           ? "border-red-800/70 bg-red-950/10"
                           : replacing
                             ? "border-amber-700/60 bg-amber-950/10"
                             : "border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))]"
-                      }`}
+                      }`)), "components_admin_media_library_manager_article_article"].filter(Boolean).join(" ")}
                     >
-                      <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden bg-[rgb(var(--sep-colour-090705))] p-2">
+                      <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden bg-[rgb(var(--sep-colour-090705))] p-2 components_admin_media_library_manager_div_container_21">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={
@@ -1052,38 +1052,38 @@ export function MediaLibraryManager() {
                           }
                           alt=""
                           loading="lazy"
-                          className={`max-h-full max-w-full object-contain ${
+                          className={[((`max-h-full max-w-full object-contain ${
                             marked
                               ? "opacity-35"
                               : ""
-                          }`}
+                          }`)), "components_admin_media_library_manager_img_image"].filter(Boolean).join(" ")}
                         />
 
                         {marked ? (
-                          <span className="absolute inset-x-3 top-3 border border-red-800/60 bg-red-950/90 px-2 py-1 text-center text-[7px] uppercase tracking-[0.14em] text-red-200">
+                          <span className="absolute inset-x-3 top-3 border border-red-800/60 bg-red-950/90 px-2 py-1 text-center text-[7px] uppercase tracking-[0.14em] text-red-200 components_admin_media_library_manager_span_text_10">
                             Pending deletion
                           </span>
                         ) : replacing ? (
-                          <span className="absolute inset-x-3 top-3 border border-amber-700/60 bg-amber-950/90 px-2 py-1 text-center text-[7px] uppercase tracking-[0.14em] text-amber-200">
+                          <span className="absolute inset-x-3 top-3 border border-amber-700/60 bg-amber-950/90 px-2 py-1 text-center text-[7px] uppercase tracking-[0.14em] text-amber-200 components_admin_media_library_manager_span_text_11">
                             Pending replacement
                           </span>
                         ) : null}
                       </div>
 
-                      <div className="p-3">
+                      <div className="p-3 components_admin_media_library_manager_div_container_22">
                         <code className="block break-all text-[10px] leading-4 text-[rgb(var(--sep-colour-c4ae8d))]">
                           {
                             image.publicPath
                           }
                         </code>
 
-                        <p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-706452))]">
+                        <p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-706452))] components_admin_media_library_manager_p_text_14">
                           {formatBytes(
                             image.size,
                           )}
                         </p>
 
-                        <div className="mt-3 grid grid-cols-2 gap-2">
+                        <div className="mt-3 grid grid-cols-2 gap-2 components_admin_media_library_manager_div_container_23">
                           <button
                             type="button"
                             onClick={() =>
@@ -1091,7 +1091,7 @@ export function MediaLibraryManager() {
                                 image.publicPath,
                               )
                             }
-                            className="border border-[rgb(var(--sep-colour-60482e))]/50 px-2 py-2 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-a99069))]"
+                            className="border border-[rgb(var(--sep-colour-60482e))]/50 px-2 py-2 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-a99069))] components_admin_media_library_manager_button_copy_path"
                           >
                             Copy path
                           </button>
@@ -1106,11 +1106,11 @@ export function MediaLibraryManager() {
                                 image.repositoryPath,
                               )
                             }
-                            className={`border px-2 py-2 text-[7px] uppercase tracking-[0.14em] disabled:opacity-35 ${
+                            className={[((`border px-2 py-2 text-[7px] uppercase tracking-[0.14em] disabled:opacity-35 ${
                               marked
                                 ? "border-[rgb(var(--sep-colour-80613e))] text-[rgb(var(--sep-colour-c5a77c))]"
                                 : "border-red-900/60 bg-red-950/15 text-red-300"
-                            }`}
+                            }`)), "components_admin_media_library_manager_button_action_5"].filter(Boolean).join(" ")}
                           >
                             {marked
                               ? "Undo delete"

@@ -38,18 +38,18 @@ export default async function ForumStaffTools({
   return (
     <aside
       aria-label="Forum staff tools"
-      className={`border border-amber-900/55 bg-amber-950/10 ${className}`}
+      className={[((`border border-amber-900/55 bg-amber-950/10 ${className}`)), "components_forms_forum_staff_tools_aside_forum_staff_tools"].filter(Boolean).join(" ")}
     >
-      <div className="border-b border-amber-900/35 px-5 py-5 sm:px-6">
-        <p className="text-[8px] uppercase tracking-[0.22em] text-amber-500">
+      <div className="border-b border-amber-900/35 px-5 py-5 sm:px-6 components_forms_forum_staff_tools_div_forum_administration">
+        <p className="text-[8px] uppercase tracking-[0.22em] text-amber-500 components_forms_forum_staff_tools_p_forum_administration">
           Staff tools
         </p>
 
-        <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dec69d))]">
+        <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dec69d))] components_forms_forum_staff_tools_h2_forum_administration">
           Forum Administration
         </h2>
 
-        <p className="mt-2 max-w-3xl text-sm leading-6 text-[rgb(var(--sep-colour-a99880))]">
+        <p className="mt-2 max-w-3xl text-sm leading-6 text-[rgb(var(--sep-colour-a99880))] components_forms_forum_staff_tools_p_forum_administration_2">
           Manage forum sections,
           discussions and moderation
           history from the administration
@@ -58,11 +58,11 @@ export default async function ForumStaffTools({
       </div>
 
       <div
-        className={`grid gap-3 px-5 py-5 sm:px-6 ${
+        className={[((`grid gap-3 px-5 py-5 sm:px-6 ${
           showOverviewLink
             ? "sm:grid-cols-3"
             : "sm:grid-cols-2"
-        }`}
+        }`)), "components_forms_forum_staff_tools_div_forum_staff_tools"].filter(Boolean).join(" ")}
       >
         {showOverviewLink ? (
           <StaffLink
@@ -116,22 +116,22 @@ function StaffLink({
   label: string;
 }) {
   return (
-    <article className="flex h-full flex-col border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
-      <div className="flex-1 px-4 py-4">
-        <p className="text-[7px] uppercase tracking-[0.18em] text-amber-500">
+    <article className="flex h-full flex-col border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] components_forms_forum_staff_tools_article_article">
+      <div className="flex-1 px-4 py-4 components_forms_forum_staff_tools_div_container">
+        <p className="text-[7px] uppercase tracking-[0.18em] text-amber-500 components_forms_forum_staff_tools_p_text">
           {eyebrow}
         </p>
 
-        <h3 className="mt-2 font-serif text-lg text-[rgb(var(--sep-colour-d8c09a))]">
+        <h3 className="mt-2 font-serif text-lg text-[rgb(var(--sep-colour-d8c09a))] components_forms_forum_staff_tools_h3_heading">
           {title}
         </h3>
 
-        <p className="mt-2 text-xs leading-5 text-[rgb(var(--sep-colour-817567))]">
+        <p className="mt-2 text-xs leading-5 text-[rgb(var(--sep-colour-817567))] components_forms_forum_staff_tools_p_text_2">
           {description}
         </p>
       </div>
 
-      <div className="border-t border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-110d0a))] px-4 py-3">
+      <div className="border-t border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-110d0a))] px-4 py-3 components_forms_forum_staff_tools_div_container_2">
         <Link
           href={href}
           className="block border border-amber-800/60 bg-amber-950/20 px-4 py-3 text-center text-[8px] uppercase tracking-[0.16em] text-amber-300 transition hover:border-amber-600 hover:bg-amber-950/40"

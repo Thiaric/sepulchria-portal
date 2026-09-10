@@ -141,7 +141,7 @@ export function PriceTooltip({
     <>
       <span
         ref={triggerRef}
-        className={`inline-flex cursor-help ${className}`}
+        className={[((`inline-flex cursor-help ${className}`)), "components_warping_price_tooltip_span_show_tooltip"].filter(Boolean).join(" ")}
         tabIndex={0}
         onMouseEnter={showTooltip}
         onMouseLeave={hideTooltip}
@@ -164,20 +164,20 @@ export function PriceTooltip({
                 left: position.left,
                 width: "280px",
               }}
-              className="pointer-events-none z-[9999] border border-[rgb(var(--sep-colour-765937))]/70 bg-[rgb(var(--sep-colour-0b0806))] px-3 py-2.5 text-left normal-case tracking-normal shadow-xl"
+              className="pointer-events-none z-[9999] border border-[rgb(var(--sep-colour-765937))]/70 bg-[rgb(var(--sep-colour-0b0806))] px-3 py-2.5 text-left normal-case tracking-normal shadow-xl components_warping_price_tooltip_span_tooltip"
             >
-              <span className="block font-serif text-[12px] text-[rgb(var(--sep-colour-dec89f))]">
+              <span className="block font-serif text-[12px] text-[rgb(var(--sep-colour-dec89f))] components_warping_price_tooltip_span_text">
                 {price.name}
               </span>
 
-              <span className="mt-1 block text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-b99765))]">
+              <span className="mt-1 block text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-b99765))] components_warping_price_tooltip_span_text_2">
                 Stage{" "}
                 {price.stageLabel} ·{" "}
                 {price.durationDays} days
               </span>
 
               {expiresAt ? (
-                <span className="mt-1 block text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-d9b77f))]">
+                <span className="mt-1 block text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-d9b77f))] components_warping_price_tooltip_span_text_3">
                   Expires{" "}
                   {formatExpiry(
                     expiresAt,
@@ -185,7 +185,7 @@ export function PriceTooltip({
                 </span>
               ) : null}
 
-              <span className="mt-2 block text-[9px] leading-4 text-[rgb(var(--sep-colour-b9aa94))]">
+              <span className="mt-2 block text-[9px] leading-4 text-[rgb(var(--sep-colour-b9aa94))] components_warping_price_tooltip_span_text_4">
                 {price.manifestation}
               </span>
             </span>,

@@ -111,7 +111,7 @@ function CharacterIdentityIcons({
   }
 
   return (
-    <div className="flex shrink-0 flex-col items-center gap-1 pt-0.5">
+    <div className="flex shrink-0 flex-col items-center gap-1 pt-0.5 game_components_roommessagelist_div_container">
       <CharacterLifeIcon
         characterId={author.id}
         raceIconUrl={race?.icon_url ?? null}
@@ -666,7 +666,7 @@ function renderMechanicalText(
     formatMechanicalDisplayText(item);
 
   return (
-    <span data-room-mechanical-action="true">
+    <span className="game_components_roommessagelist_span_text" data-room-mechanical-action="true">
       {text
         .split(/(\[[^\]]+\])/g)
         .filter(Boolean)
@@ -683,11 +683,9 @@ function renderMechanicalText(
                   ? "true"
                   : undefined
               }
-              className={
-                highlighted
+              className={[((highlighted
                   ? "font-bold"
-                  : undefined
-              }
+                  : undefined)), "game_components_roommessagelist_span_text_2"].filter(Boolean).join(" ")}
 
             >
               {segment}
@@ -731,11 +729,9 @@ function renderRollText(
                   ? "true"
                   : undefined
               }
-              className={
-                highlighted
+              className={[((highlighted
                   ? "font-bold"
-                  : undefined
-              }
+                  : undefined)), "game_components_roommessagelist_span_text_3"].filter(Boolean).join(" ")}
 
             >
               {segment}
@@ -820,11 +816,9 @@ function ActionSpeechText({
   data-room-message-segment={
     isAction ? "action" : "speech"
   }
-  className={
-    isAction
+  className={[((isAction
       ? "italic text-[rgb(var(--sep-colour-a98a60))]"
-      : "text-[rgb(var(--sep-colour-d3c2aa))]"
-  }
+      : "text-[rgb(var(--sep-colour-d3c2aa))]")), "game_components_roommessagelist_span_text_4"].filter(Boolean).join(" ")}
   style={{
     lineHeight: "18px",
     color:
@@ -848,7 +842,7 @@ function ActionSpeechText({
 
   return (
     <span
-  className="whitespace-pre-wrap break-words text-[13px]"
+  className="whitespace-pre-wrap break-words text-[13px] game_components_roommessagelist_span_text_5"
   style={{
     lineHeight: "18px",
   }}
@@ -869,17 +863,17 @@ function CharacterPortrait({
     <div
       data-cosmetic-character-id={author?.id}
       data-cosmetic-surface="portrait"
-      className="h-9 w-9 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))] bg-[rgb(var(--sep-colour-0d0a08))]"
+      className="h-9 w-9 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))] bg-[rgb(var(--sep-colour-0d0a08))] game_components_roommessagelist_div_container_2"
     >
       {author?.portrait_url ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={author.portrait_url}
           alt={`Portrait of ${author.first_name}`}
-          className="h-full w-full object-cover"
+          className="h-full w-full object-cover game_components_roommessagelist_img_image"
         />
       ) : (
-        <span className="flex h-full items-center justify-center text-[rgb(var(--sep-colour-806b4e))]">
+        <span className="flex h-full items-center justify-center text-[rgb(var(--sep-colour-806b4e))] game_components_roommessagelist_span_text_6">
           ?
         </span>
       )}
@@ -1279,7 +1273,7 @@ const [activeShapeTags,setActiveShapeTags]=useState<
 
     return (
       <span
-        className="text-[9px] uppercase tracking-[.04em] text-[rgb(var(--sep-colour-b99765))]"
+        className="text-[9px] uppercase tracking-[.04em] text-[rgb(var(--sep-colour-b99765))] game_components_roommessagelist_span_text_7"
         style={
           metadataColour
             ? { color: metadataColour }
@@ -1298,7 +1292,7 @@ const [activeShapeTags,setActiveShapeTags]=useState<
       displayText={price.label}
       expiresAt={price.expires_at}
     >
-      <span className="underline decoration-dotted underline-offset-2">
+      <span className="underline decoration-dotted underline-offset-2 game_components_roommessagelist_span_text_8">
         {price.label}
       </span>
     </PriceTooltip>
@@ -1349,7 +1343,7 @@ const [activeShapeTags,setActiveShapeTags]=useState<
     return (
       <span
         data-room-condition-snapshot="true"
-        className="text-[9px] tracking-[.04em] text-[rgb(var(--sep-colour-b99765))]"
+        className="text-[9px] tracking-[.04em] text-[rgb(var(--sep-colour-b99765))] game_components_roommessagelist_span_text_9"
         style={
           metadataColour
             ? {
@@ -1735,17 +1729,17 @@ const [activeShapeTags,setActiveShapeTags]=useState<
   }
 
   return (
-    <div className="relative flex min-h-0 flex-1 flex-col">
+    <div className="relative flex min-h-0 flex-1 flex-col game_components_roommessagelist_div_container_3">
       {connectionStatus !==
       "connected" ? (
         <div
           aria-live="polite"
-          className={`border-b px-5 py-2 text-center text-[9px] uppercase tracking-[0.18em] ${
+          className={[((`border-b px-5 py-2 text-center text-[9px] uppercase tracking-[0.18em] ${
             connectionStatus ===
             "connecting"
               ? "border-[rgb(var(--sep-colour-6b5535))]/40 bg-[rgb(var(--sep-colour-21190f))] text-[rgb(var(--sep-colour-b89a68))]"
               : "border-[rgb(var(--sep-colour-754137))]/50 bg-[rgb(var(--sep-colour-2b1714))] text-[rgb(var(--sep-colour-d28e82))]"
-          }`}
+          }`)), "game_components_roommessagelist_div_container_4"].filter(Boolean).join(" ")}
         >
           {connectionStatus ===
           "connecting"
@@ -1759,12 +1753,12 @@ const [activeShapeTags,setActiveShapeTags]=useState<
   ref={scrollContainerRef}
   onScroll={handleScroll}
   data-sep-interaction-ignore="true"
-  className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
+  className="min-h-0 flex-1 overflow-y-auto overscroll-contain game_components_roommessagelist_div_room_chronicle"
 >
 
         {liveMessages.length >
         0 ? (
-          <div className="divide-y divide-[rgb(var(--sep-colour-4f3b28))]/35">
+          <div className="divide-y divide-[rgb(var(--sep-colour-4f3b28))]/35 game_components_roommessagelist_div_room_chronicle_2">
             {liveMessages.map(
               (item) => {
                 const controllerAuthor =
@@ -1814,11 +1808,11 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                   return (
                     <article
                       key={item.id}
-                      className="relative border-y border-[rgb(var(--sep-colour-8a6637))]/40 bg-[rgb(var(--sep-colour-0d0a08))] py-2.5 pl-5 pr-12 sm:pl-7 sm:pr-12"
+                      className="relative border-y border-[rgb(var(--sep-colour-8a6637))]/40 bg-[rgb(var(--sep-colour-0d0a08))] py-2.5 pl-5 pr-12 sm:pl-7 sm:pr-12 game_components_roommessagelist_article_article"
                     >
                       {item.character_id &&
                       item.character_id !== viewerCharacterId ? (
-                        <div data-room-report-control="true" className="absolute right-3 top-3 z-50 pointer-events-auto">
+                        <div data-room-report-control="true" className="absolute right-3 top-3 z-50 pointer-events-auto game_components_roommessagelist_div_container_5">
                           <ReportButton
                             sourceType="room_message"
                             sourceId={item.id}
@@ -1827,8 +1821,8 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                         </div>
                       ) : null}
 
-                      <div className="flex items-center justify-between gap-4">
-                        <span className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-c99b58))]">
+                      <div className="flex items-center justify-between gap-4 game_components_roommessagelist_div_container_6">
+                        <span className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-c99b58))] game_components_roommessagelist_span_text_10">
                           The Voice of Fate
                         </span>
 
@@ -1843,7 +1837,7 @@ const [activeShapeTags,setActiveShapeTags]=useState<
 
                       </div>
 
-                      <p className="mt-1.5 whitespace-pre-wrap break-words font-serif text-[13px] leading-5 text-[rgb(var(--sep-colour-d6c09a))]">
+                      <p className="mt-1.5 whitespace-pre-wrap break-words font-serif text-[13px] leading-5 text-[rgb(var(--sep-colour-d6c09a))] game_components_roommessagelist_p_text">
                         {item.message}
                       </p>
                     </article>
@@ -1914,11 +1908,11 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                           ? "ooc"
                           : "whisper"
                       }
-                      className={`relative flex gap-3 py-3 pl-5 pr-12 sm:pl-7 sm:pr-12 ${
+                      className={[((`relative flex gap-3 py-3 pl-5 pr-12 sm:pl-7 sm:pr-12 ${
                         isOutOfCharacter
                           ? ""
                           : ""
-                      }`}
+                      }`)), "game_components_roommessagelist_article_article_2"].filter(Boolean).join(" ")}
                       style={
                         privateLocationTheme
                           ? isOutOfCharacter
@@ -1939,7 +1933,7 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                     >
                       {item.character_id &&
                       item.character_id !== viewerCharacterId ? (
-                        <div data-room-report-control="true" className="absolute right-3 top-3 z-50 pointer-events-auto">
+                        <div data-room-report-control="true" className="absolute right-3 top-3 z-50 pointer-events-auto game_components_roommessagelist_div_container_7">
                           <ReportButton
                             sourceType="room_message"
                             sourceId={item.id}
@@ -1949,8 +1943,8 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                       ) : null}
 
                       {/* Character identity + timestamp */}
-                      <div className="flex w-[76px] shrink-0 flex-col">
-                        <div className="flex items-start gap-1.5">
+                      <div className="flex w-[76px] shrink-0 flex-col game_components_roommessagelist_div_container_8">
+                        <div className="flex items-start gap-1.5 game_components_roommessagelist_div_container_9">
                           <CharacterPortrait
                             author={author}
                             characterHref={
@@ -1981,18 +1975,18 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                       </div>
 
                       {/* Original whisper / off-game message layout */}
-                      <div className="min-w-0 flex-1">
+                      <div className="min-w-0 flex-1 game_components_roommessagelist_div_container_10">
                         <div
-                          className={`mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 border-b pb-1.5 ${
+                          className={[((`mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 border-b pb-1.5 ${
                             isOutOfCharacter
                               ? "border-[#627f9f]/40"
                               : "border-[#7d628f]/35"
-                          }`}
+                          }`)), "game_components_roommessagelist_div_container_11"].filter(Boolean).join(" ")}
                         >
                           {isOutOfCharacter ? (
                             <span
                               data-room-ooc-label="true"
-                              className="text-[8px] uppercase tracking-[0.2em] text-[#a9c7e6]"
+                              className="text-[8px] uppercase tracking-[0.2em] text-[#a9c7e6] game_components_roommessagelist_span_text_11"
                               style={
                                 privateLocationTheme
                                   ? {
@@ -2008,7 +2002,7 @@ const [activeShapeTags,setActiveShapeTags]=useState<
 
                           {isWhisper ? (
                             <span
-                              className="text-[8px] uppercase tracking-[0.2em] text-[#c7add6]"
+                              className="text-[8px] uppercase tracking-[0.2em] text-[#c7add6] game_components_roommessagelist_span_text_12"
                               style={
                                 privateLocationTheme
                                   ? {
@@ -2024,7 +2018,7 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                         </div>
 
                         <p
-                          className="min-w-0 whitespace-pre-wrap break-words text-[13px]"
+                          className="min-w-0 whitespace-pre-wrap break-words text-[13px] game_components_roommessagelist_p_text_2"
                           style={{
                             lineHeight: "18px",
                           }}
@@ -2047,7 +2041,7 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                             </Link>
                           ) : (
                             <span
-                              className="inline font-serif text-sm leading-[18px] text-[rgb(var(--sep-colour-d8bf91))]"
+                              className="inline font-serif text-sm leading-[18px] text-[rgb(var(--sep-colour-d8bf91))] game_components_roommessagelist_span_text_13"
                               style={
                                 {
                                   color:
@@ -2141,7 +2135,7 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                         ? "true"
                         : undefined
                     }
-                    className={`relative flex min-w-0 gap-3 py-3 pl-5 pr-12 sm:pl-7 sm:pr-12 ${
+                    className={[((`relative flex min-w-0 gap-3 py-3 pl-5 pr-12 sm:pl-7 sm:pr-12 ${
                       chatFrameUrl
                         ? "isolate "
                         : ""
@@ -2153,7 +2147,7 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                           : isNaturalOne
                             ? "bg-red-950/10"
                             : ""
-                    }`}
+                    }`)), "game_components_roommessagelist_article_article_3"].filter(Boolean).join(" ")}
                     style={{
                       ...(privateLocationTheme
                         ? {
@@ -2174,7 +2168,7 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                   >
                     {item.character_id &&
                     item.character_id !== viewerCharacterId ? (
-                      <div data-room-report-control="true" className="absolute right-3 top-3 z-50 pointer-events-auto">
+                      <div data-room-report-control="true" className="absolute right-3 top-3 z-50 pointer-events-auto game_components_roommessagelist_div_container_12">
                           <ReportButton
                           sourceType="room_message"
                           sourceId={item.id}
@@ -2184,8 +2178,8 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                     ) : null}
 
                     {/* Left: portrait, identity icons and timestamp */}
-                    <div className="relative z-10 flex w-[76px] shrink-0 flex-col">
-                      <div className="flex items-start gap-1.5">
+                    <div className="relative z-10 flex w-[76px] shrink-0 flex-col game_components_roommessagelist_div_container_13">
+                      <div className="flex items-start gap-1.5 game_components_roommessagelist_div_container_14">
                         <CharacterPortrait
                           author={author}
                           characterHref={characterHref}
@@ -2207,7 +2201,7 @@ const [activeShapeTags,setActiveShapeTags]=useState<
 
                     {/* Right: one single paragraph */}
                     <p
-                      className={`relative z-10 min-w-0 flex-1 whitespace-pre-wrap break-words text-[13px] leading-[18px] ${
+                      className={[((`relative z-10 min-w-0 flex-1 whitespace-pre-wrap break-words text-[13px] leading-[18px] ${
                         isNaturalTwenty
                           ? "text-emerald-300"
                           : isNaturalOne
@@ -2215,7 +2209,7 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                             : isMechanicalOutput
                               ? "text-[rgb(var(--sep-colour-c8b89f))]"
                               : "text-[rgb(var(--sep-colour-d3c2aa))]"
-                      }`}
+                      }`)), "game_components_roommessagelist_p_text_3"].filter(Boolean).join(" ")}
                       title={
                         isMechanicalOutput
                           ? formatRollText(item)
@@ -2252,7 +2246,7 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                         </Link>
                       ) : (
                         <span
-                          className="inline font-serif text-sm text-[rgb(var(--sep-colour-d8bf91))]"
+                          className="inline font-serif text-sm text-[rgb(var(--sep-colour-d8bf91))] game_components_roommessagelist_span_text_14"
                           style={
                             privateLocationTheme &&
                             isMechanicalOutput
@@ -2270,7 +2264,7 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                       )}
 
                       {isNpcMessage ? (
-                        <span className="ml-1.5 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-8f8170))]">
+                        <span className="ml-1.5 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-8f8170))] game_components_roommessagelist_span_text_15">
                           NPC
                         </span>
                       ) : null}
@@ -2309,10 +2303,10 @@ const [activeShapeTags,setActiveShapeTags]=useState<
               },
             )}
 
-            <div id="chat-end" />
+            <div className="game_components_roommessagelist_div_chat_end" id="chat-end" />
           </div>
         ) : (
-          <div className="flex h-full min-h-0 items-center justify-center px-6 py-10 text-center font-serif italic text-[rgb(var(--sep-colour-8e7d66))]">
+          <div className="flex h-full min-h-0 items-center justify-center px-6 py-10 text-center font-serif italic text-[rgb(var(--sep-colour-8e7d66))] game_components_roommessagelist_div_room_chronicle_3">
           The air awaits for a story to begin at {roomName}...
           </div>
         )}

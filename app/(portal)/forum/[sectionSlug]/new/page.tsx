@@ -358,9 +358,9 @@ export default async function NewForumTopicPage({
       : "#8c704b";
 
   return (
-    <main className="p-5 sm:p-7 lg:p-9">
-      <div className="mx-auto max-w-5xl">
-        <nav className="mb-4 flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-756751))]">
+    <main className="p-5 sm:p-7 lg:p-9 forum_sectionslug_new_page_main_main">
+      <div className="mx-auto max-w-5xl forum_sectionslug_new_page_div_container">
+        <nav className="mb-4 flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-756751))] forum_sectionslug_new_page_nav_navigation">
           <Link
             href="/forum"
             className="transition hover:text-[rgb(var(--sep-colour-d5bd96))]"
@@ -368,7 +368,7 @@ export default async function NewForumTopicPage({
             Forum
           </Link>
 
-          <span>/</span>
+          <span className="forum_sectionslug_new_page_span_text">/</span>
 
           <Link
             href={`/forum/${currentSectionRow.slug}`}
@@ -377,16 +377,16 @@ export default async function NewForumTopicPage({
             {currentSectionRow.name}
           </Link>
 
-          <span>/</span>
+          <span className="forum_sectionslug_new_page_span_text_2">/</span>
 
-          <span className="text-[rgb(var(--sep-colour-a38b67))]">
+          <span className="text-[rgb(var(--sep-colour-a38b67))] forum_sectionslug_new_page_span_text_3">
             New discussion
           </span>
         </nav>
 
-        <header className="relative overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
+        <header className="relative overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] forum_sectionslug_new_page_header_header">
           {currentSectionRow.banner_url ? (
-            <div className="absolute inset-0">
+            <div className="absolute inset-0 forum_sectionslug_new_page_div_container_2">
               <Image
                 src={
                   currentSectionRow.banner_url
@@ -399,17 +399,17 @@ export default async function NewForumTopicPage({
                 unoptimized
               />
 
-              <div className="absolute inset-0 bg-gradient-to-r from-[rgb(var(--sep-colour-15100d))] via-[rgb(var(--sep-colour-15100d))]/92 to-[rgb(var(--sep-colour-15100d))]/70" />
+              <div className="absolute inset-0 bg-gradient-to-r from-[rgb(var(--sep-colour-15100d))] via-[rgb(var(--sep-colour-15100d))]/92 to-[rgb(var(--sep-colour-15100d))]/70 forum_sectionslug_new_page_div_container_3" />
 
-              <div className="absolute inset-0 bg-gradient-to-t from-[rgb(var(--sep-colour-15100d))] via-transparent to-black/30" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[rgb(var(--sep-colour-15100d))] via-transparent to-black/30 forum_sectionslug_new_page_div_container_4" />
             </div>
           ) : (
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(var(--sep-rgb-131-91-50),0.18),transparent_45%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(var(--sep-rgb-131-91-50),0.18),transparent_45%)] forum_sectionslug_new_page_div_container_5" />
           )}
 
-          <div className="relative flex items-center gap-5 px-6 py-8 sm:px-8 sm:py-2">
+          <div className="relative flex items-center gap-5 px-6 py-8 sm:px-8 sm:py-2 forum_sectionslug_new_page_div_container_6">
             <div
-              className="relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-0c0907))]"
+              className="relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-0c0907))] forum_sectionslug_new_page_div_container_7"
               style={{
                 borderColor:
                   `${sectionColour}99`,
@@ -428,7 +428,7 @@ export default async function NewForumTopicPage({
                 />
               ) : (
                 <span
-                  className="font-serif text-3xl"
+                  className="font-serif text-3xl forum_sectionslug_new_page_span_text_4"
                   style={{
                     color: sectionColour,
                   }}
@@ -440,8 +440,8 @@ export default async function NewForumTopicPage({
               )}
             </div>
 
-            <div className="min-w-0">
-              <p className="text-[8px] uppercase tracking-[0.26em] text-[rgb(var(--sep-colour-8c704b))]">
+            <div className="min-w-0 forum_sectionslug_new_page_div_new_discussion">
+              <p className="text-[8px] uppercase tracking-[0.26em] text-[rgb(var(--sep-colour-8c704b))] forum_sectionslug_new_page_p_new_discussion">
                 {currentSectionRow.section_type ===
                 "ongame"
                   ? "Ongame Forum"
@@ -451,13 +451,13 @@ export default async function NewForumTopicPage({
                     : "Organisation Forum"}
               </p>
 
-              <h1 className="mt-1 font-serif text-3xl text-[rgb(var(--sep-colour-ead5ac))] sm:text-3xl">
+              <h1 className="mt-1 font-serif text-3xl text-[rgb(var(--sep-colour-ead5ac))] sm:text-3xl forum_sectionslug_new_page_h1_new_discussion">
                 New discussion
               </h1>
 
-              <p className="mt-1 text-sm leading-6 text-[rgb(var(--sep-colour-9e907f))]">
+              <p className="mt-1 text-sm leading-6 text-[rgb(var(--sep-colour-9e907f))] forum_sectionslug_new_page_p_new_discussion_2">
                 Publishing in{" "}
-                <span className="text-[rgb(var(--sep-colour-d0b68d))]">
+                <span className="text-[rgb(var(--sep-colour-d0b68d))] forum_sectionslug_new_page_span_new_discussion">
                   {
                     currentSectionRow.name
                   }
@@ -471,12 +471,12 @@ export default async function NewForumTopicPage({
         </header>
 
         {characters.length === 0 ? (
-          <div className="mt-6 border border-amber-900/50 bg-amber-950/15 px-5 py-4">
-            <p className="font-serif text-lg text-amber-300">
+          <div className="mt-6 border border-amber-900/50 bg-amber-950/15 px-5 py-4 forum_sectionslug_new_page_div_container_8">
+            <p className="font-serif text-lg text-amber-300 forum_sectionslug_new_page_p_text">
               No approved characters
             </p>
 
-            <p className="mt-2 text-sm leading-6 text-amber-200/70">
+            <p className="mt-2 text-sm leading-6 text-amber-200/70 forum_sectionslug_new_page_p_text_2">
               You need at least one approved
               character before you can publish
               in the forum. Account-only
@@ -486,7 +486,7 @@ export default async function NewForumTopicPage({
         ) : null}
 
         {characters.length > 0 ? (
-          <div className="mt-6">
+          <div className="mt-6 forum_sectionslug_new_page_div_container_9">
             <NewTopicForm
               currentSection={
                 currentSection

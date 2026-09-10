@@ -121,9 +121,9 @@ export function CharacterConditionsDisplay({
   return (
     <div
       data-character-conditions-display="true"
-      className="mt-2 flex flex-wrap items-center gap-1.5"
+      className="mt-2 flex flex-wrap items-center gap-1.5 components_characters_character_conditions_display_div_container"
     >
-      <span className="mr-1 text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-796448))]">
+      <span className="mr-1 text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-796448))] components_characters_character_conditions_display_span_text">
         Conditions
       </span>
 
@@ -132,7 +132,7 @@ export function CharacterConditionsDisplay({
           (condition) => (
             <span
               key={condition.id}
-              className="border border-[rgb(var(--sep-skin-c1))]/35 bg-[rgb(var(--sep-colour-100c09))] px-2 py-1 text-[8px] text-[rgb(var(--sep-skin-c2))]"
+              className="border border-[rgb(var(--sep-skin-c1))]/35 bg-[rgb(var(--sep-colour-100c09))] px-2 py-1 text-[8px] text-[rgb(var(--sep-skin-c2))] components_characters_character_conditions_display_span_text_2"
             >
               {
                 condition.label
@@ -141,7 +141,7 @@ export function CharacterConditionsDisplay({
           ),
         )
       ) : (
-        <span className="text-[8px] italic text-[rgb(var(--sep-colour-756957))]">
+        <span className="text-[8px] italic text-[rgb(var(--sep-colour-756957))] components_characters_character_conditions_display_span_text_3">
           None
         </span>
       )}

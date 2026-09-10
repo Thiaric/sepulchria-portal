@@ -354,13 +354,13 @@ export default async function ConversationPage({
       : "/messages";
 
   return (
-    <main className="min-h-screen bg-[rgb(var(--sep-colour-100d0b))] text-[rgb(var(--sep-colour-e7d5b0))]">
+    <main className="min-h-screen bg-[rgb(var(--sep-colour-100d0b))] text-[rgb(var(--sep-colour-e7d5b0))] messages_id_page_main_main">
       <ConversationRealtime
         conversationId={id}
       />
 
-      <header className="border-b border-[rgb(var(--sep-colour-654b2e))]/40 bg-[rgb(var(--sep-colour-0c0a08))]/90">
-        <div className="mx-auto flex min-h-14 max-w-[1200px] items-center justify-between px-4">
+      <header className="border-b border-[rgb(var(--sep-colour-654b2e))]/40 bg-[rgb(var(--sep-colour-0c0a08))]/90 messages_id_page_header_header">
+        <div className="mx-auto flex min-h-14 max-w-[1200px] items-center justify-between px-4 messages_id_page_div_container">
           <Link
             href="/messages"
             className="border border-[rgb(var(--sep-colour-59432c))] px-3 py-1.5 text-[9px] uppercase tracking-[0.16em]"
@@ -372,14 +372,14 @@ export default async function ConversationPage({
         </div>
       </header>
 
-      <div className="mx-auto max-w-[1200px] px-4 py-4">
-        <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-59432c))]/40 p-3 sm:p-4">
+      <div className="mx-auto max-w-[1200px] px-4 py-4 messages_id_page_div_container_2">
+        <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] messages_id_page_section_section">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-59432c))]/40 p-3 sm:p-4 messages_id_page_div_container_3">
             <Link
               href={profileHref}
               className="flex min-w-0 items-center gap-3"
             >
-              <div className="h-11 w-11 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))] bg-[rgb(var(--sep-colour-0d0a08))]">
+              <div className="h-11 w-11 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))] bg-[rgb(var(--sep-colour-0d0a08))] messages_id_page_div_container_4">
                 {other.portrait_url ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -390,10 +390,10 @@ export default async function ConversationPage({
                       other.display_name ??
                       "character"
                     }`}
-                    className="h-full w-full object-cover"
+                    className="h-full w-full object-cover messages_id_page_img_image"
                   />
                 ) : (
-                  <span className="flex h-full items-center justify-center font-serif text-lg text-[rgb(var(--sep-colour-947a59))]">
+                  <span className="flex h-full items-center justify-center font-serif text-lg text-[rgb(var(--sep-colour-947a59))] messages_id_page_span_text">
                     ?
                   </span>
                 )}
@@ -404,15 +404,15 @@ export default async function ConversationPage({
                 race={other.race}
               />
 
-              <div className="min-w-0 pl-1">
+              <div className="min-w-0 pl-1 messages_id_page_div_container_5">
                 
 
-                <h1 className="mt-0.5 truncate font-serif text-xl text-[rgb(var(--sep-colour-dec69a))]">
+                <h1 className="mt-0.5 truncate font-serif text-xl text-[rgb(var(--sep-colour-dec69a))] messages_id_page_h1_title">
                   {other.display_name ??
                     "Unknown character"}
                 </h1>
 
-                <div className="mt-1">
+                <div className="mt-1 messages_id_page_div_container_6">
                   <MessagePresenceStatus
                     characterId={
                       other.id
@@ -426,19 +426,19 @@ export default async function ConversationPage({
               </div>
             </Link>
 
-            <div className="flex flex-wrap gap-2">
-              <form
+            <div className="flex flex-wrap gap-2 messages_id_page_div_container_7">
+              <form className="messages_id_page_form_toggle_archive"
                 action={
                   toggleArchive
                 }
               >
-                <input
+                <input className="messages_id_page_input_conversation_id"
                   type="hidden"
                   name="conversationId"
                   value={id}
                 />
 
-                <input
+                <input className="messages_id_page_input_archive"
                   type="hidden"
                   name="archive"
                   value="true"
@@ -446,7 +446,7 @@ export default async function ConversationPage({
 
                 <button
                   type="submit"
-                  className="border border-[rgb(var(--sep-colour-59432c))] px-3 py-2 text-[10px] uppercase tracking-[0.18em]"
+                  className="border border-[rgb(var(--sep-colour-59432c))] px-3 py-2 text-[10px] uppercase tracking-[0.18em] messages_id_page_button_archive"
                 >
                   Archive
                 </button>
@@ -488,11 +488,11 @@ export default async function ConversationPage({
           />
 
           {other.is_system ? (
-            <div className="border-t border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-4 py-2.5 text-center text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-7f725f))]">
+            <div className="border-t border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-4 py-2.5 text-center text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-7f725f))] messages_id_page_div_container_8">
               Automated Forum notification - replies are disabled
             </div>
           ) : blocked ? (
-            <p className="border-t border-[rgb(var(--sep-colour-59432c))]/40 p-4 text-center text-sm text-[rgb(var(--sep-colour-c78f7e))]">
+            <p className="border-t border-[rgb(var(--sep-colour-59432c))]/40 p-4 text-center text-sm text-[rgb(var(--sep-colour-c78f7e))] messages_id_page_p_text">
               Messaging is disabled
               for this conversation.
             </p>

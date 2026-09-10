@@ -360,18 +360,18 @@ export function PlayerCosmeticsContextPanel() {
     );
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <div>
-        <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-876a46))]">
+    <div className="flex h-full min-h-0 flex-col components_cosmetics_player_cosmetics_context_panel_div_container">
+      <div className="components_cosmetics_player_cosmetics_context_panel_div_cosmetics">
+        <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-876a46))] components_cosmetics_player_cosmetics_context_panel_p_cosmetics">
           Premium
         </p>
 
-        <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-d6bd91))]">
+        <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-d6bd91))] components_cosmetics_player_cosmetics_context_panel_h2_cosmetics">
           Cosmetics
         </h2>
       </div>
 
-      <p className="mt-3 text-xs leading-6 text-[rgb(var(--sep-colour-938673))]">
+      <p className="mt-3 text-xs leading-6 text-[rgb(var(--sep-colour-938673))] components_cosmetics_player_cosmetics_context_panel_p_text">
         Search your collection by type or cosmetic name and jump directly to it.
       </p>
 
@@ -384,7 +384,7 @@ export function PlayerCosmeticsContextPanel() {
           )
         }
         placeholder="Search cosmetics..."
-        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-655c50))] focus:border-[rgb(var(--sep-colour-8a673f))]"
+        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-655c50))] focus:border-[rgb(var(--sep-colour-8a673f))] components_cosmetics_player_cosmetics_context_panel_input_search_cosmetics"
       />
 
       <select
@@ -394,15 +394,15 @@ export function PlayerCosmeticsContextPanel() {
             event.target.value,
           )
         }
-        className="mt-2 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none focus:border-[rgb(var(--sep-colour-8a673f))]"
+        className="mt-2 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none focus:border-[rgb(var(--sep-colour-8a673f))] components_cosmetics_player_cosmetics_context_panel_select_select"
       >
-        <option value="all">
+        <option className="components_cosmetics_player_cosmetics_context_panel_option_all" value="all">
           All cosmetic types
         </option>
 
         {categories.map(
           ([key, label]) => (
-            <option
+            <option className="components_cosmetics_player_cosmetics_context_panel_option_option"
               key={key}
               value={key}
             >
@@ -412,20 +412,20 @@ export function PlayerCosmeticsContextPanel() {
         )}
       </select>
 
-      <div className="my-4 h-px bg-[rgb(var(--sep-colour-59432c))]/35" />
+      <div className="my-4 h-px bg-[rgb(var(--sep-colour-59432c))]/35 components_cosmetics_player_cosmetics_context_panel_div_container_2" />
 
       <div
         data-portal-scroll
-        className="min-h-0 flex-1 overflow-y-auto pr-1"
+        className="min-h-0 flex-1 overflow-y-auto pr-1 components_cosmetics_player_cosmetics_context_panel_div_container_3"
       >
         {visibleCategories.length >
         0 ? (
-          <div className="mb-4">
-            <p className="mb-2 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+          <div className="mb-4 components_cosmetics_player_cosmetics_context_panel_div_container_4">
+            <p className="mb-2 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_cosmetics_player_cosmetics_context_panel_p_text_2">
               Types
             </p>
 
-            <div className="space-y-1.5">
+            <div className="space-y-1.5 components_cosmetics_player_cosmetics_context_panel_div_container_5">
               {visibleCategories.map(
                 ([
                   key,
@@ -439,13 +439,13 @@ export function PlayerCosmeticsContextPanel() {
                         `cosmetic-type-${key}`,
                       )
                     }
-                    className="flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))]"
+                    className="flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))] components_cosmetics_player_cosmetics_context_panel_button_action"
                   >
-                    <span className="truncate text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-a98b61))]">
+                    <span className="truncate text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-a98b61))] components_cosmetics_player_cosmetics_context_panel_span_text">
                       {label}
                     </span>
 
-                    <span className="text-[rgb(var(--sep-colour-725a3d))]">
+                    <span className="text-[rgb(var(--sep-colour-725a3d))] components_cosmetics_player_cosmetics_context_panel_span_text_2">
                       ↓
                     </span>
                   </button>
@@ -455,13 +455,13 @@ export function PlayerCosmeticsContextPanel() {
           </div>
         ) : null}
 
-        <p className="mb-2 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+        <p className="mb-2 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_cosmetics_player_cosmetics_context_panel_p_text_3">
           Cosmetics · {
             filtered.length
           }
         </p>
 
-        <div className="space-y-1.5">
+        <div className="space-y-1.5 components_cosmetics_player_cosmetics_context_panel_div_container_6">
           {filtered.map(
             (entry) => (
               <button
@@ -472,21 +472,21 @@ export function PlayerCosmeticsContextPanel() {
                     `cosmetic-${entry.id}`,
                   )
                 }
-                className="flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))]"
+                className="flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))] components_cosmetics_player_cosmetics_context_panel_button_action_2"
               >
-                <span className="min-w-0">
-                  <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))]">
+                <span className="min-w-0 components_cosmetics_player_cosmetics_context_panel_span_text_3">
+                  <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] components_cosmetics_player_cosmetics_context_panel_span_text_4">
                     {entry.name}
                   </span>
 
-                  <span className="mt-0.5 block truncate text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-756550))]">
+                  <span className="mt-0.5 block truncate text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-756550))] components_cosmetics_player_cosmetics_context_panel_span_text_5">
                     {
                       entry.categoryLabel
                     }
                   </span>
                 </span>
 
-                <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))]">
+                <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))] components_cosmetics_player_cosmetics_context_panel_span_text_6">
                   →
                 </span>
               </button>
@@ -495,7 +495,7 @@ export function PlayerCosmeticsContextPanel() {
 
           {filtered.length ===
           0 ? (
-            <p className="px-2 py-3 text-xs text-[rgb(var(--sep-colour-8f826f))]">
+            <p className="px-2 py-3 text-xs text-[rgb(var(--sep-colour-8f826f))] components_cosmetics_player_cosmetics_context_panel_p_text_4">
               No matching owned cosmetics.
             </p>
           ) : null}

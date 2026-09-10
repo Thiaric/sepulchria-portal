@@ -112,20 +112,20 @@ export function PortalSkinGallery({
   }
 
   return (
-    <div>
+    <div className="components_portal_portal_skin_gallery_div_container">
       {error ? (
-        <div className="mb-4 border border-red-800/55 bg-red-950/30 px-4 py-3 text-xs text-red-300">
+        <div className="mb-4 border border-red-800/55 bg-red-950/30 px-4 py-3 text-xs text-red-300 components_portal_portal_skin_gallery_div_container_2">
           {error}
         </div>
       ) : null}
 
-      <div className="mb-4 flex items-center justify-between gap-4 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3">
-        <div>
-          <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806f59))]">
+      <div className="mb-4 flex items-center justify-between gap-4 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 components_portal_portal_skin_gallery_div_container_3">
+        <div className="components_portal_portal_skin_gallery_div_container_4">
+          <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806f59))] components_portal_portal_skin_gallery_p_text">
             Selected skin
           </p>
 
-          <p className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-e1c89f))]">
+          <p className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-e1c89f))] components_portal_portal_skin_gallery_p_text_2">
             {selectedSkinEntry?.name ??
               selectedSkin}
           </p>
@@ -134,7 +134,7 @@ export function PortalSkinGallery({
         <div
           data-portal-skin={selectedSkin}
           data-selected-skin-swatch="true"
-          className="portal-skin-scope h-11 w-11 shrink-0 rounded-full"
+          className="portal-skin-scope h-11 w-11 shrink-0 rounded-full components_portal_portal_skin_gallery_div_container_5"
           style={{
             background: swatchBackground(),
             border:
@@ -154,23 +154,23 @@ export function PortalSkinGallery({
       </div>
 
       {isPreviewing ? (
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3">
-          <p className="text-xs text-[rgb(var(--sep-colour-baa78c))]">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 components_portal_portal_skin_gallery_div_container_6">
+          <p className="text-xs text-[rgb(var(--sep-colour-baa78c))] components_portal_portal_skin_gallery_p_text_3">
             Previewing{" "}
-            <strong>{skin}</strong>.
+            <strong className="components_portal_portal_skin_gallery_strong_emphasis">{skin}</strong>.
           </p>
 
           <button
             type="button"
             onClick={endPreview}
-            className="border border-[rgb(var(--sep-colour-765735))] bg-[rgb(var(--sep-colour-21170f))] px-3 py-2 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-dfc79c))]"
+            className="border border-[rgb(var(--sep-colour-765735))] bg-[rgb(var(--sep-colour-21170f))] px-3 py-2 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-dfc79c))] components_portal_portal_skin_gallery_button_end_preview"
           >
             End preview
           </button>
         </div>
       ) : null}
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid gap-4 lg:grid-cols-2 components_portal_portal_skin_gallery_div_container_7">
         {skins.map((entry) => {
           const current =
             selectedSkin === entry.slug;
@@ -184,21 +184,21 @@ export function PortalSkinGallery({
               key={entry.id}
               data-portal-skin={entry.slug}
               data-skin-preview-card="true"
-              className="portal-skin-scope flex h-full min-h-[200px] flex-col overflow-hidden"
+              className="portal-skin-scope flex h-full min-h-[200px] flex-col overflow-hidden components_portal_portal_skin_gallery_article_article"
             >
-              <div className="flex h-full flex-col p-5">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="min-w-0 flex-1">
+              <div className="flex h-full flex-col p-5 components_portal_portal_skin_gallery_div_container_8">
+                <div className="flex items-start justify-between gap-4 components_portal_portal_skin_gallery_div_container_9">
+                  <div className="min-w-0 flex-1 components_portal_portal_skin_gallery_div_container_10">
                     <h2
                       data-skin-preview-role="title"
-                      className="text-xl"
+                      className="text-xl components_portal_portal_skin_gallery_h2_heading"
                     >
                       {entry.name}
                     </h2>
 
                     <p
                       data-skin-preview-role="description"
-                      className="mt-2 text-[11px] leading-5"
+                      className="mt-2 text-[11px] leading-5 components_portal_portal_skin_gallery_p_text_4"
                     >
                       {entry.description}
                     </p>
@@ -206,7 +206,7 @@ export function PortalSkinGallery({
 
                   <span
                     data-skin-preview-role="badge"
-                    className="shrink-0 px-2 py-1 text-[7px] uppercase tracking-[0.15em]"
+                    className="shrink-0 px-2 py-1 text-[7px] uppercase tracking-[0.15em] components_portal_portal_skin_gallery_span_text"
                   >
                     {statusLabel(
                       entry,
@@ -220,10 +220,10 @@ export function PortalSkinGallery({
 
                 <div
                   data-skin-preview-role="divider"
-                  className="mt-auto flex flex-wrap items-end justify-between gap-3 pt-4"
+                  className="mt-auto flex flex-wrap items-end justify-between gap-3 pt-4 components_portal_portal_skin_gallery_div_container_11"
                 >
                   <div
-                    className="h-10 w-10 shrink-0 rounded-full"
+                    className="h-10 w-10 shrink-0 rounded-full components_portal_portal_skin_gallery_div_container_12"
                     style={{
                       background:
                         swatchBackground(),
@@ -236,7 +236,7 @@ export function PortalSkinGallery({
                     aria-label={`${entry.name} colour swatch`}
                   />
 
-                  <div className="flex flex-wrap justify-end gap-2">
+                  <div className="flex flex-wrap justify-end gap-2 components_portal_portal_skin_gallery_div_container_13">
                     {!current ? (
   <button
     data-skin-preview-role="button"
@@ -246,7 +246,7 @@ export function PortalSkinGallery({
         entry.slug,
       )
     }
-    className="px-3 py-2 text-[8px] uppercase tracking-[0.15em] transition"
+    className="px-3 py-2 text-[8px] uppercase tracking-[0.15em] transition components_portal_portal_skin_gallery_button_preview"
   >
     Preview
   </button>
@@ -266,7 +266,7 @@ export function PortalSkinGallery({
                             entry,
                           )
                         }
-                        className="px-3 py-2 text-[8px] uppercase tracking-[0.15em] transition disabled:opacity-50"
+                        className="px-3 py-2 text-[8px] uppercase tracking-[0.15em] transition disabled:opacity-50 components_portal_portal_skin_gallery_button_action"
                       >
                         {workingSlug ===
                         entry.slug

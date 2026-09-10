@@ -33,11 +33,9 @@ export default async function CodexPage({
   return (
     <div
       data-public-skin-surface="true"
-      className={
-        isEmbedded
+      className={[((isEmbedded
           ? "relative h-dvh min-h-0 overflow-hidden"
-          : "relative"
-      }
+          : "relative")), "codex_page_div_container"].filter(Boolean).join(" ")}
     >
       <EmbeddedPortalSkinBridge />
       {!isEmbedded ? (

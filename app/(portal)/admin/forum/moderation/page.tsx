@@ -325,10 +325,10 @@ export default async function ForumModerationPage({
       : null;
 
   return (
-    <main className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <main className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8 admin_forum_moderation_page_main_main">
       <nav
         aria-label="Forum breadcrumb"
-        className="mb-6 flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-746653))]"
+        className="mb-6 flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-746653))] admin_forum_moderation_page_nav_forum_breadcrumb"
       >
         <Link
           href="/admin"
@@ -337,26 +337,26 @@ export default async function ForumModerationPage({
           Administration
         </Link>
 
-        <span aria-hidden="true">
+        <span className="admin_forum_moderation_page_span_forum_breadcrumb" aria-hidden="true">
           /
         </span>
 
-        <span className="text-[rgb(var(--sep-colour-a48c6c))]">
+        <span className="text-[rgb(var(--sep-colour-a48c6c))] admin_forum_moderation_page_span_forum_breadcrumb_2">
           Moderation log
         </span>
       </nav>
 
-      <header className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
-        <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-1a130e))] px-5 py-6 sm:px-7">
-          <p className="text-[8px] uppercase tracking-[0.22em] text-amber-500">
+      <header className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] admin_forum_moderation_page_header_header">
+        <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-1a130e))] px-5 py-6 sm:px-7 admin_forum_moderation_page_div_moderation_log">
+          <p className="text-[8px] uppercase tracking-[0.22em] text-amber-500 admin_forum_moderation_page_p_moderation_log">
             Staff area
           </p>
 
-          <h1 className="mt-3 font-serif text-3xl text-[rgb(var(--sep-colour-dec69d))] sm:text-4xl">
+          <h1 className="mt-3 font-serif text-3xl text-[rgb(var(--sep-colour-dec69d))] sm:text-4xl admin_forum_moderation_page_h1_moderation_log">
             Moderation Log
           </h1>
 
-          <p className="mt-3 max-w-3xl text-sm leading-6 text-[rgb(var(--sep-colour-817567))]">
+          <p className="mt-3 max-w-3xl text-sm leading-6 text-[rgb(var(--sep-colour-817567))] admin_forum_moderation_page_p_moderation_log_2">
             A chronological record of
             staff actions performed
             across forum topics and
@@ -377,20 +377,20 @@ export default async function ForumModerationPage({
         </dl>
       </header>
 
-      <section className="mt-6">
+      <section className="mt-6 admin_forum_moderation_page_section_section">
         {logs.length === 0 ? (
-          <div className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-5 py-12 text-center">
-            <p className="font-serif text-2xl text-[rgb(var(--sep-colour-cdb590))]">
+          <div className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-5 py-12 text-center admin_forum_moderation_page_div_container">
+            <p className="font-serif text-2xl text-[rgb(var(--sep-colour-cdb590))] admin_forum_moderation_page_p_text">
               No moderation actions
             </p>
 
-            <p className="mt-3 text-sm text-[rgb(var(--sep-colour-817567))]">
+            <p className="mt-3 text-sm text-[rgb(var(--sep-colour-817567))] admin_forum_moderation_page_p_text_2">
               The moderation log is
               currently empty.
             </p>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-4 admin_forum_moderation_page_div_container_2">
             {logs.map((log) => {
               const moderator =
                 profileMap.get(
@@ -454,17 +454,17 @@ export default async function ForumModerationPage({
               return (
                 <article
                   key={log.id}
-                  className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]"
+                  className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] admin_forum_moderation_page_article_article"
                 >
-                  <header className="flex flex-col gap-3 border-b border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-19120e))] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="flex flex-wrap items-center gap-3">
-                      <span className="border border-amber-900/60 bg-amber-950/15 px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-amber-400">
+                  <header className="flex flex-col gap-3 border-b border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-19120e))] px-5 py-4 sm:flex-row sm:items-center sm:justify-between admin_forum_moderation_page_header_header_2">
+                    <div className="flex flex-wrap items-center gap-3 admin_forum_moderation_page_div_container_3">
+                      <span className="border border-amber-900/60 bg-amber-950/15 px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-amber-400 admin_forum_moderation_page_span_text">
                         {formatAction(
                           log.action,
                         )}
                       </span>
 
-                      <span className="text-sm text-[rgb(var(--sep-colour-baa68a))]">
+                      <span className="text-sm text-[rgb(var(--sep-colour-baa68a))] admin_forum_moderation_page_span_text_2">
                         {getProfileName(
                           moderator,
                         )}
@@ -483,9 +483,9 @@ export default async function ForumModerationPage({
                     </time>
                   </header>
 
-                  <div className="space-y-4 px-5 py-5 sm:px-6">
-                    <div>
-                      <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-665947))]">
+                  <div className="space-y-4 px-5 py-5 sm:px-6 admin_forum_moderation_page_div_container_4">
+                    <div className="admin_forum_moderation_page_div_container_5">
+                      <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-665947))] admin_forum_moderation_page_p_text_3">
                         Discussion
                       </p>
 
@@ -497,37 +497,37 @@ export default async function ForumModerationPage({
                           {topicTitle}
                         </Link>
                       ) : (
-                        <p className="mt-2 font-serif text-xl text-[rgb(var(--sep-colour-968572))]">
+                        <p className="mt-2 font-serif text-xl text-[rgb(var(--sep-colour-968572))] admin_forum_moderation_page_p_text_4">
                           {topicTitle}
                         </p>
                       )}
 
                       {sectionName ? (
-                        <p className="mt-2 text-xs text-[rgb(var(--sep-colour-786b5a))]">
+                        <p className="mt-2 text-xs text-[rgb(var(--sep-colour-786b5a))] admin_forum_moderation_page_p_text_5">
                           {sectionName}
                         </p>
                       ) : null}
                     </div>
 
                     {reason ? (
-                      <div className="border-l-2 border-[rgb(var(--sep-colour-755535))] bg-[rgb(var(--sep-colour-100c09))] px-4 py-3">
-                        <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))]">
+                      <div className="border-l-2 border-[rgb(var(--sep-colour-755535))] bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 admin_forum_moderation_page_div_container_6">
+                        <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))] admin_forum_moderation_page_p_text_6">
                           Moderation note
                         </p>
 
-                        <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-[rgb(var(--sep-colour-aa9a83))]">
+                        <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-[rgb(var(--sep-colour-aa9a83))] admin_forum_moderation_page_p_text_7">
                           {reason}
                         </p>
                       </div>
                     ) : null}
 
                     {log.post_id ? (
-                      <p className="text-[8px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-625747))]">
+                      <p className="text-[8px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-625747))] admin_forum_moderation_page_p_text_8">
                         Action applied to
                         an individual post
                       </p>
                     ) : (
-                      <p className="text-[8px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-625747))]">
+                      <p className="text-[8px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-625747))] admin_forum_moderation_page_p_text_9">
                         Action applied to
                         the entire topic
                       </p>
@@ -543,7 +543,7 @@ export default async function ForumModerationPage({
       {totalPages > 1 ? (
         <nav
           aria-label="Moderation log pagination"
-          className="mt-7 flex items-center justify-between gap-4 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))] px-4 py-4"
+          className="mt-7 flex items-center justify-between gap-4 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))] px-4 py-4 admin_forum_moderation_page_nav_moderation_log_pagination"
         >
           {previousPage ? (
             <Link
@@ -553,12 +553,12 @@ export default async function ForumModerationPage({
               Previous
             </Link>
           ) : (
-            <span className="border border-[rgb(var(--sep-colour-403426))]/40 px-4 py-3 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-4f463b))]">
+            <span className="border border-[rgb(var(--sep-colour-403426))]/40 px-4 py-3 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-4f463b))] admin_forum_moderation_page_span_moderation_log_pagination">
               Previous
             </span>
           )}
 
-          <span className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-756653))]">
+          <span className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-756653))] admin_forum_moderation_page_span_moderation_log_pagination_2">
             Page {currentPage} of{" "}
             {totalPages}
           </span>
@@ -571,7 +571,7 @@ export default async function ForumModerationPage({
               Next
             </Link>
           ) : (
-            <span className="border border-[rgb(var(--sep-colour-403426))]/40 px-4 py-3 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-4f463b))]">
+            <span className="border border-[rgb(var(--sep-colour-403426))]/40 px-4 py-3 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-4f463b))] admin_forum_moderation_page_span_moderation_log_pagination_3">
               Next
             </span>
           )}
@@ -589,7 +589,7 @@ function Statistic({
   value: string | number;
 }) {
   return (
-    <div className="px-4 py-4 text-center sm:px-5">
+    <div className="px-4 py-4 text-center sm:px-5 admin_forum_moderation_page_div_container_7">
       <dt className="text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-665946))]">
         {label}
       </dt>

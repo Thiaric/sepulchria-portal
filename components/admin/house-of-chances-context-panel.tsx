@@ -205,13 +205,13 @@ export function HouseOfChancesContextPanel() {
   );
 
   return (
-    <div className="grid h-full min-h-0 grid-rows-2 gap-4">
-      <section className="flex min-h-0 flex-col">
-        <div className="shrink-0">
-          <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+    <div className="grid h-full min-h-0 grid-rows-2 gap-4 components_admin_house_of_chances_context_panel_div_container">
+      <section className="flex min-h-0 flex-col components_admin_house_of_chances_context_panel_section_section">
+        <div className="shrink-0 components_admin_house_of_chances_context_panel_div_jump_rule">
+          <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_admin_house_of_chances_context_panel_p_jump_rule">
             Prize rules
           </p>
-          <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+          <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_admin_house_of_chances_context_panel_h2_jump_rule">
             Jump to Rule
           </h2>
 
@@ -220,16 +220,16 @@ export function HouseOfChancesContextPanel() {
             value={ruleSearch}
             onChange={(event) => setRuleSearch(event.target.value)}
             placeholder="Search rules or numbers..."
-            className={`${searchClass} mt-3`}
+            className={[((`${searchClass} mt-3`)), "components_admin_house_of_chances_context_panel_input_search_rules_numbers"].filter(Boolean).join(" ")}
           />
 
-          <p className="mb-2 mt-3 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+          <p className="mb-2 mt-3 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_admin_house_of_chances_context_panel_p_jump_rule_2">
             Rules · {visibleRules.length}
             {ruleQuery ? ` / ${rules.length}` : ""}
           </p>
         </div>
 
-        <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">
+        <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1 components_admin_house_of_chances_context_panel_div_container_2">
           {visibleRules.length ? (
             visibleRules.map((rule) => (
               <button
@@ -238,23 +238,23 @@ export function HouseOfChancesContextPanel() {
                 onClick={() =>
                   jumpTo(`house-of-chances-rule-${rule.id}`)
                 }
-                className="group w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))]"
+                className="group w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))] components_admin_house_of_chances_context_panel_button_action"
               >
-                <span className="flex items-start justify-between gap-2">
-                  <span className="min-w-0 truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
+                <span className="flex items-start justify-between gap-2 components_admin_house_of_chances_context_panel_span_text">
+                  <span className="min-w-0 truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] group-hover:text-[rgb(var(--sep-colour-ead0a0))] components_admin_house_of_chances_context_panel_span_text_2">
                     {rule.name}
                   </span>
 
-                  <span className="shrink-0 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-725a3d))]">
+                  <span className="shrink-0 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-725a3d))] components_admin_house_of_chances_context_panel_span_text_3">
                     P{rule.priority}
                   </span>
                 </span>
 
-                <span className="mt-2 flex flex-wrap gap-1">
+                <span className="mt-2 flex flex-wrap gap-1 components_admin_house_of_chances_context_panel_span_text_4">
                   {conditionTokens(rule).map((token, index) => (
                     <span
                       key={`${rule.id}-${token}-${index}`}
-                      className="border border-[rgb(var(--sep-colour-765735))]/55 bg-[rgb(var(--sep-colour-17110d))] px-1.5 py-0.5 font-mono text-[8px] text-[rgb(var(--sep-colour-c7aa7b))]"
+                      className="border border-[rgb(var(--sep-colour-765735))]/55 bg-[rgb(var(--sep-colour-17110d))] px-1.5 py-0.5 font-mono text-[8px] text-[rgb(var(--sep-colour-c7aa7b))] components_admin_house_of_chances_context_panel_span_text_5"
                     >
                       {token}
                     </span>
@@ -263,19 +263,19 @@ export function HouseOfChancesContextPanel() {
               </button>
             ))
           ) : (
-            <p className="text-xs text-[rgb(var(--sep-colour-8f826f))]">
+            <p className="text-xs text-[rgb(var(--sep-colour-8f826f))] components_admin_house_of_chances_context_panel_p_text">
               No matching rules.
             </p>
           )}
         </div>
       </section>
 
-      <section className="flex min-h-0 flex-col border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-4">
-        <div className="shrink-0">
-          <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+      <section className="flex min-h-0 flex-col border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-4 components_admin_house_of_chances_context_panel_section_section_2">
+        <div className="shrink-0 components_admin_house_of_chances_context_panel_div_container_3">
+          <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_admin_house_of_chances_context_panel_p_text_2">
             Recent plays
           </p>
-          <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+          <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_admin_house_of_chances_context_panel_h2_heading">
             Find a Play
           </h2>
 
@@ -284,16 +284,16 @@ export function HouseOfChancesContextPanel() {
             value={playSearch}
             onChange={(event) => setPlaySearch(event.target.value)}
             placeholder="Name, rule or date..."
-            className={`${searchClass} mt-3`}
+            className={[((`${searchClass} mt-3`)), "components_admin_house_of_chances_context_panel_input_name_rule_date"].filter(Boolean).join(" ")}
           />
 
-          <p className="mb-2 mt-3 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+          <p className="mb-2 mt-3 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_admin_house_of_chances_context_panel_p_text_3">
             Plays · {visiblePlays.length}
             {playQuery ? ` / ${plays.length}` : ""}
           </p>
         </div>
 
-        <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">
+        <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1 components_admin_house_of_chances_context_panel_div_container_4">
           {visiblePlays.length ? (
             visiblePlays.map((play) => (
               <button
@@ -302,34 +302,34 @@ export function HouseOfChancesContextPanel() {
                 onClick={() =>
                   jumpTo(`house-of-chances-play-${play.id}`)
                 }
-                className="group w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))]"
+                className="group w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))] components_admin_house_of_chances_context_panel_button_action_2"
               >
-                <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
+                <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] group-hover:text-[rgb(var(--sep-colour-ead0a0))] components_admin_house_of_chances_context_panel_span_text_6">
                   {play.character}
                 </span>
 
-                <span className="mt-1 block truncate text-[8px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-7f705d))]">
+                <span className="mt-1 block truncate text-[8px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-7f705d))] components_admin_house_of_chances_context_panel_span_text_7">
                   {play.rule}
                 </span>
 
-                <span className="mt-2 flex flex-wrap items-center gap-1">
+                <span className="mt-2 flex flex-wrap items-center gap-1 components_admin_house_of_chances_context_panel_span_text_8">
                   {[play.roll1, play.roll2, play.roll3].map((roll, index) => (
                     <span
                       key={`${play.id}-roll-${index}`}
-                      className="min-w-6 border border-[rgb(var(--sep-colour-765735))]/55 bg-[rgb(var(--sep-colour-17110d))] px-1.5 py-0.5 text-center font-mono text-[8px] text-[rgb(var(--sep-colour-c7aa7b))]"
+                      className="min-w-6 border border-[rgb(var(--sep-colour-765735))]/55 bg-[rgb(var(--sep-colour-17110d))] px-1.5 py-0.5 text-center font-mono text-[8px] text-[rgb(var(--sep-colour-c7aa7b))] components_admin_house_of_chances_context_panel_span_text_9"
                     >
                       {roll}
                     </span>
                   ))}
 
-                  <span className="ml-auto text-[7px] text-[rgb(var(--sep-colour-665b4d))]">
+                  <span className="ml-auto text-[7px] text-[rgb(var(--sep-colour-665b4d))] components_admin_house_of_chances_context_panel_span_text_10">
                     {play.date}
                   </span>
                 </span>
               </button>
             ))
           ) : (
-            <p className="text-xs text-[rgb(var(--sep-colour-8f826f))]">
+            <p className="text-xs text-[rgb(var(--sep-colour-8f826f))] components_admin_house_of_chances_context_panel_p_text_4">
               No matching plays.
             </p>
           )}

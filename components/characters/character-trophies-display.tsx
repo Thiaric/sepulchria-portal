@@ -291,31 +291,31 @@ export async function CharacterTrophiesDisplay({
     groupByCategory(visibleTrophies);
 
   return (
-    <section className="bg-[rgb(var(--sep-colour-120d0a))]">
-      <header className="bg-[rgb(var(--sep-colour-17110d))] px-4 py-4 sm:px-5">
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-846b4a))]">
+    <section className="bg-[rgb(var(--sep-colour-120d0a))] components_characters_character_trophies_display_section_section">
+      <header className="bg-[rgb(var(--sep-colour-17110d))] px-4 py-4 sm:px-5 components_characters_character_trophies_display_header_header">
+        <div className="flex flex-wrap items-end justify-between gap-3 components_characters_character_trophies_display_div_container">
+          <div className="components_characters_character_trophies_display_div_trophies">
+            <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-846b4a))] components_characters_character_trophies_display_p_trophies">
               Achievements
             </p>
 
-            <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-e4cfaa))]">
+            <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-e4cfaa))] components_characters_character_trophies_display_h2_trophies">
               Trophies
             </h2>
 
-            <p className="mt-2 max-w-2xl text-[11px] leading-5 text-[rgb(var(--sep-colour-958772))]">
+            <p className="mt-2 max-w-2xl text-[11px] leading-5 text-[rgb(var(--sep-colour-958772))] components_characters_character_trophies_display_p_trophies_2">
               {own
                 ? "Permanent milestones earned through your life and activity in Sepulchria."
                 : "Permanent milestones this character has earned in Sepulchria."}
             </p>
           </div>
 
-          <div className="bg-[rgb(var(--sep-colour-0e0a08))] px-4 py-2 text-right">
-            <p className="text-[7px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-776449))]">
+          <div className="bg-[rgb(var(--sep-colour-0e0a08))] px-4 py-2 text-right components_characters_character_trophies_display_div_container_2">
+            <p className="text-[7px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-776449))] components_characters_character_trophies_display_p_text">
               Earned
             </p>
 
-            <p className="mt-0.5 font-serif text-lg text-[rgb(var(--sep-colour-d8bd8c))]">
+            <p className="mt-0.5 font-serif text-lg text-[rgb(var(--sep-colour-d8bd8c))] components_characters_character_trophies_display_p_text_2">
               {own
                 ? `${earnedCount} / ${visibleTrophies.length}`
                 : earnedCount}
@@ -325,17 +325,17 @@ export async function CharacterTrophiesDisplay({
       </header>
 
       {groups.length === 0 ? (
-        <div className="px-5 py-10 text-center">
-          <p className="font-serif text-lg text-[rgb(var(--sep-colour-a99472))]">
+        <div className="px-5 py-10 text-center components_characters_character_trophies_display_div_container_3">
+          <p className="font-serif text-lg text-[rgb(var(--sep-colour-a99472))] components_characters_character_trophies_display_p_text_3">
             No Trophies earned yet.
           </p>
 
-          <p className="mt-2 text-[11px] text-[rgb(var(--sep-colour-746958))]">
+          <p className="mt-2 text-[11px] text-[rgb(var(--sep-colour-746958))] components_characters_character_trophies_display_p_text_4">
             New milestones will appear here as they are achieved.
           </p>
         </div>
       ) : (
-        <div className="space-y-5 p-3 sm:p-4">
+        <div className="space-y-5 p-3 sm:p-4 components_characters_character_trophies_display_div_container_4">
           {groups.map((group) => {
             const categoryEarned =
               group.trophies.filter(
@@ -345,14 +345,14 @@ export async function CharacterTrophiesDisplay({
             return (
               <section
                 key={group.category}
-                className="bg-[rgb(var(--sep-colour-15100d))]"
+                className="bg-[rgb(var(--sep-colour-15100d))] components_characters_character_trophies_display_section_section_2"
               >
-                <div className="flex items-center justify-between gap-3 px-3 py-2.5 sm:px-4">
-                  <h3 className="font-serif text-base text-[rgb(var(--sep-colour-d1b583))]">
+                <div className="flex items-center justify-between gap-3 px-3 py-2.5 sm:px-4 components_characters_character_trophies_display_div_container_5">
+                  <h3 className="font-serif text-base text-[rgb(var(--sep-colour-d1b583))] components_characters_character_trophies_display_h3_heading">
                     {group.category}
                   </h3>
 
-                  <span className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-78684f))]">
+                  <span className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-78684f))] components_characters_character_trophies_display_span_text">
                     {categoryEarned}
                     {own
                       ? ` / ${group.trophies.length}`
@@ -360,7 +360,7 @@ export async function CharacterTrophiesDisplay({
                   </span>
                 </div>
 
-                <div className="grid gap-2 p-2.5 sm:grid-cols-2 sm:p-3 xl:grid-cols-3">
+                <div className="grid gap-2 p-2.5 sm:grid-cols-2 sm:p-3 xl:grid-cols-3 components_characters_character_trophies_display_div_container_6">
                   {group.trophies.map(
                     (trophy) => {
                       const earned =
@@ -388,65 +388,65 @@ export async function CharacterTrophiesDisplay({
                           data-trophy-id={trophy.id}
                           data-trophy-key={trophy.trophy_key}
                           data-sep-interactive-surface="card"
-                          className={`relative scroll-mt-6 overflow-hidden p-3 transition-transform duration-200 ${
+                          className={[((`relative scroll-mt-6 overflow-hidden p-3 transition-transform duration-200 ${
                             earned
                               ? "bg-[rgb(var(--sep-colour-21170f))]"
                               : "bg-[rgb(var(--sep-colour-100c09))] opacity-75"
-                          }`}
+                          }`)), "components_characters_character_trophies_display_article_article"].filter(Boolean).join(" ")}
                         >
                           <span
                             id={`trophy-${trophy.id}`}
                             aria-hidden="true"
-                            className="pointer-events-none absolute left-0 top-0 h-px w-px scroll-mt-6"
+                            className="pointer-events-none absolute left-0 top-0 h-px w-px scroll-mt-6 components_characters_character_trophies_display_span_text_2"
                           />
 
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="flex min-w-0 gap-3">
+                          <div className="flex items-start justify-between gap-3 components_characters_character_trophies_display_div_container_7">
+                            <div className="flex min-w-0 gap-3 components_characters_character_trophies_display_div_container_8">
                               <div
                                 aria-hidden="true"
-                                className={`flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden ${
+                                className={[((`flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden ${
                                   earned
                                     ? "bg-[rgb(var(--sep-colour-100c09))]"
                                     : "bg-[rgb(var(--sep-colour-0b0807))]"
-                                }`}
+                                }`)), "components_characters_character_trophies_display_div_container_9"].filter(Boolean).join(" ")}
                               >
                                 {trophy.icon_url ? (
                                   // eslint-disable-next-line @next/next/no-img-element
                                   <img
                                     src={trophy.icon_url}
                                     alt=""
-                                    className="h-full w-full object-contain p-1"
+                                    className="h-full w-full object-contain p-1 components_characters_character_trophies_display_img_image"
                                   />
                                 ) : (
-                                  <span className="font-serif text-lg text-[rgb(var(--sep-colour-685a49))]">
+                                  <span className="font-serif text-lg text-[rgb(var(--sep-colour-685a49))] components_characters_character_trophies_display_span_text_3">
                                     ?
                                   </span>
                                 )}
                               </div>
 
-                              <div className="min-w-0">
+                              <div className="min-w-0 components_characters_character_trophies_display_div_container_10">
                               <p
-                                className={`font-serif text-[15px] leading-5 ${
+                                className={[((`font-serif text-[15px] leading-5 ${
                                   earned
                                     ? "text-[rgb(var(--sep-colour-e0c796))]"
                                     : "text-[rgb(var(--sep-colour-8f806b))]"
-                                }`}
+                                }`)), "components_characters_character_trophies_display_p_text_5"].filter(Boolean).join(" ")}
                               >
                                 {trophy.name}
                               </p>
 
-                              <p className="mt-1 text-[10px] leading-4 text-[rgb(var(--sep-colour-8f8270))]">
+                              <p className="mt-1 text-[10px] leading-4 text-[rgb(var(--sep-colour-8f8270))] components_characters_character_trophies_display_p_text_6">
                                 {trophy.description}
                               </p>
                               </div>
                             </div>
 
                             <span
-                              className={`shrink-0 px-2 py-1 text-[7px] uppercase tracking-[0.14em] ${
+                              className={[((`shrink-0 px-2 py-1 text-[7px] uppercase tracking-[0.14em] ${
                                 earned
                                   ? "bg-[rgb(var(--sep-colour-2a1d12))] text-[rgb(var(--sep-colour-d1ae72))]"
                                   : "bg-[rgb(var(--sep-colour-0b0807))] text-[rgb(var(--sep-colour-6f6559))]"
-                              }`}
+                              }`)), "components_characters_character_trophies_display_span_text_4"].filter(Boolean).join(" ")}
                             >
                               {earned
                                 ? "Earned"
@@ -455,18 +455,16 @@ export async function CharacterTrophiesDisplay({
                           </div>
 
                           {own ? (
-                            <div className="mt-3">
-                              <div className="flex items-center justify-between gap-3 text-[8px]">
-                                <span className="uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-6f6250))]">
+                            <div className="mt-3 components_characters_character_trophies_display_div_container_11">
+                              <div className="flex items-center justify-between gap-3 text-[8px] components_characters_character_trophies_display_div_container_12">
+                                <span className="uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-6f6250))] components_characters_character_trophies_display_span_text_5">
                                   Progress
                                 </span>
 
                                 <span
-                                  className={
-                                    earned
+                                  className={[((earned
                                       ? "text-[rgb(var(--sep-colour-bda170))]"
-                                      : "text-[rgb(var(--sep-colour-827563))]"
-                                  }
+                                      : "text-[rgb(var(--sep-colour-827563))]")), "components_characters_character_trophies_display_span_text_6"].filter(Boolean).join(" ")}
                                 >
                                   {earned
                                     ? "Completed"
@@ -480,11 +478,11 @@ export async function CharacterTrophiesDisplay({
 
                               <div
                                 data-trophy-progress-track="true"
-                                className="mt-1.5 h-1 overflow-hidden bg-[rgb(var(--sep-colour-090706))]"
+                                className="mt-1.5 h-1 overflow-hidden bg-[rgb(var(--sep-colour-090706))] components_characters_character_trophies_display_div_container_13"
                               >
                                 <span
   data-trophy-progress-fill="true"
-  className="block h-full bg-[rgb(var(--sep-colour-9b7545))]"
+  className="block h-full bg-[rgb(var(--sep-colour-9b7545))] components_characters_character_trophies_display_span_text_7"
   style={{
     width: `${earned ? 100 : percentage}%`,
   }}
@@ -493,13 +491,13 @@ export async function CharacterTrophiesDisplay({
 
                               {earned &&
                               trophy.earned ? (
-                                <p className="mt-2 text-[8px] text-[rgb(var(--sep-colour-6f6456))]">
+                                <p className="mt-2 text-[8px] text-[rgb(var(--sep-colour-6f6456))] components_characters_character_trophies_display_p_text_7">
                                   {formatEarnedDate(
                                     trophy.earned.earned_at,
                                   )}
                                 </p>
                               ) : (
-                                <p className="mt-2 text-[8px] text-[rgb(var(--sep-colour-655c50))]">
+                                <p className="mt-2 text-[8px] text-[rgb(var(--sep-colour-655c50))] components_characters_character_trophies_display_p_text_8">
                                   Current:{" "}
                                   {formatMetricValue(
                                     trophy.metric_key,
@@ -509,7 +507,7 @@ export async function CharacterTrophiesDisplay({
                               )}
                             </div>
                           ) : trophy.earned ? (
-                            <p className="mt-3 text-[8px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-6f6456))]">
+                            <p className="mt-3 text-[8px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-6f6456))] components_characters_character_trophies_display_p_text_9">
                               {formatEarnedDate(
                                 trophy.earned.earned_at,
                               )}

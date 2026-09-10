@@ -180,10 +180,10 @@ export default async function NewForumSectionPage({
 
   return (
     <>
-      <main className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
+      <main className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6 lg:px-8 admin_forum_sections_new_page_main_main">
         <nav
           aria-label="Forum breadcrumb"
-          className="mb-6 flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-746653))]"
+          className="mb-6 flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-746653))] admin_forum_sections_new_page_nav_forum_breadcrumb"
         >
           <Link
           href="/admin"
@@ -192,7 +192,7 @@ export default async function NewForumSectionPage({
           Administration
         </Link>
 
-          <span aria-hidden="true">
+          <span className="admin_forum_sections_new_page_span_forum_breadcrumb" aria-hidden="true">
             /
           </span>
 
@@ -203,7 +203,7 @@ export default async function NewForumSectionPage({
           Forum
         </Link>
 
-          <span aria-hidden="true">
+          <span className="admin_forum_sections_new_page_span_forum_breadcrumb_2" aria-hidden="true">
             /
           </span>
 
@@ -214,26 +214,26 @@ export default async function NewForumSectionPage({
             Sections
           </Link>
 
-          <span aria-hidden="true">
+          <span className="admin_forum_sections_new_page_span_forum_breadcrumb_3" aria-hidden="true">
             /
           </span>
 
-          <span className="text-[rgb(var(--sep-colour-a48c6c))]">
+          <span className="text-[rgb(var(--sep-colour-a48c6c))] admin_forum_sections_new_page_span_forum_breadcrumb_4">
             Create section
           </span>
         </nav>
 
-        <header className="overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
-          <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-1a130e))] px-5 py-7 sm:px-7">
-            <p className="text-[8px] uppercase tracking-[0.22em] text-amber-500">
+        <header className="overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] admin_forum_sections_new_page_header_header">
+          <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-1a130e))] px-5 py-7 sm:px-7 admin_forum_sections_new_page_div_create_forum_section">
+            <p className="text-[8px] uppercase tracking-[0.22em] text-amber-500 admin_forum_sections_new_page_p_create_forum_section">
               Forum structure
             </p>
 
-            <h1 className="mt-3 font-serif text-3xl text-[rgb(var(--sep-colour-dec69d))] sm:text-4xl">
+            <h1 className="mt-3 font-serif text-3xl text-[rgb(var(--sep-colour-dec69d))] sm:text-4xl admin_forum_sections_new_page_h1_create_forum_section">
               Create Forum Section
             </h1>
 
-            <p className="mt-3 max-w-3xl text-sm leading-6 text-[rgb(var(--sep-colour-817567))]">
+            <p className="mt-3 max-w-3xl text-sm leading-6 text-[rgb(var(--sep-colour-817567))] admin_forum_sections_new_page_p_create_forum_section_2">
               Add a new public, private or
               organisation section to the
               Sepulchria forum.
@@ -244,13 +244,13 @@ export default async function NewForumSectionPage({
         {errorMessage ? (
           <div
             role="alert"
-            className="mt-6 border border-red-900/60 bg-red-950/20 px-5 py-4"
+            className="mt-6 border border-red-900/60 bg-red-950/20 px-5 py-4 admin_forum_sections_new_page_div_alert"
           >
-            <p className="text-[8px] uppercase tracking-[0.18em] text-red-400">
+            <p className="text-[8px] uppercase tracking-[0.18em] text-red-400 admin_forum_sections_new_page_p_text">
               Section not created
             </p>
 
-            <p className="mt-2 text-sm leading-6 text-red-200/80">
+            <p className="mt-2 text-sm leading-6 text-red-200/80 admin_forum_sections_new_page_p_text_2">
               {errorMessage}
             </p>
           </div>
@@ -260,16 +260,16 @@ export default async function NewForumSectionPage({
           action={
             createForumSectionAction
           }
-          className="mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]"
+          className="mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] admin_forum_sections_new_page_form_create_forum_section_action"
         >
-          <section className="border-b border-[rgb(var(--sep-colour-60482e))]/30 px-5 py-6 sm:px-7">
+          <section className="border-b border-[rgb(var(--sep-colour-60482e))]/30 px-5 py-6 sm:px-7 admin_forum_sections_new_page_section_section">
             <SectionHeading
               eyebrow="Identity"
               title="Section details"
               description="Choose the name, address and description displayed to forum members."
             />
 
-            <div className="mt-6 grid gap-5 md:grid-cols-2">
+            <div className="mt-6 grid gap-5 md:grid-cols-2 admin_forum_sections_new_page_div_container">
               <FieldGroup
                 label="Section name"
                 htmlFor="forum-section-name"
@@ -284,7 +284,7 @@ export default async function NewForumSectionPage({
                   maxLength={120}
                   autoComplete="off"
                   placeholder="Example: City Chronicles"
-                  className={inputClassName}
+                  className={[((inputClassName)), "admin_forum_sections_new_page_input_name"].filter(Boolean).join(" ")}
                 />
               </FieldGroup>
 
@@ -301,12 +301,12 @@ export default async function NewForumSectionPage({
                   autoComplete="off"
                   placeholder="city-chronicles"
                   pattern="[a-z0-9]+(?:-[a-z0-9]+)*"
-                  className={inputClassName}
+                  className={[((inputClassName)), "admin_forum_sections_new_page_input_slug"].filter(Boolean).join(" ")}
                 />
               </FieldGroup>
             </div>
 
-            <div className="mt-5">
+            <div className="mt-5 admin_forum_sections_new_page_div_container_2">
               <FieldGroup
                 label="Description"
                 htmlFor="forum-section-description"
@@ -318,20 +318,20 @@ export default async function NewForumSectionPage({
                   rows={5}
                   maxLength={2000}
                   placeholder="Describe what members should use this section for..."
-                  className={`${inputClassName} min-h-32 resize-y`}
+                  className={[((`${inputClassName} min-h-32 resize-y`)), "admin_forum_sections_new_page_textarea_description"].filter(Boolean).join(" ")}
                 />
               </FieldGroup>
             </div>
           </section>
 
-          <section className="border-b border-[rgb(var(--sep-colour-60482e))]/30 px-5 py-6 sm:px-7">
+          <section className="border-b border-[rgb(var(--sep-colour-60482e))]/30 px-5 py-6 sm:px-7 admin_forum_sections_new_page_section_section_2">
             <SectionHeading
               eyebrow="Classification"
               title="Type and access"
               description="Define where the section belongs and who may access it."
             />
 
-            <div className="mt-6 grid gap-5 md:grid-cols-2">
+            <div className="mt-6 grid gap-5 md:grid-cols-2 admin_forum_sections_new_page_div_container_3">
               <FieldGroup
                 label="Section type"
                 htmlFor="forum-section-type"
@@ -343,17 +343,17 @@ export default async function NewForumSectionPage({
                   name="section_type"
                   required
                   defaultValue="ongame"
-                  className={inputClassName}
+                  className={[((inputClassName)), "admin_forum_sections_new_page_select_section_type"].filter(Boolean).join(" ")}
                 >
-                  <option value="ongame">
+                  <option className="admin_forum_sections_new_page_option_game" value="ongame">
                     Ongame
                   </option>
 
-                  <option value="offgame">
+                  <option className="admin_forum_sections_new_page_option_offgame" value="offgame">
                     Offgame
                   </option>
 
-                  <option value="organisation">
+                  <option className="admin_forum_sections_new_page_option_organisation" value="organisation">
                     Organisation
                   </option>
                 </select>
@@ -370,17 +370,17 @@ export default async function NewForumSectionPage({
                   name="visibility"
                   required
                   defaultValue="public"
-                  className={inputClassName}
+                  className={[((inputClassName)), "admin_forum_sections_new_page_select_visibility"].filter(Boolean).join(" ")}
                 >
-                  <option value="public">
+                  <option className="admin_forum_sections_new_page_option_public" value="public">
                     Public
                   </option>
 
-                  <option value="members">
+                  <option className="admin_forum_sections_new_page_option_members" value="members">
                     Organisation members
                   </option>
 
-                  <option value="staff">
+                  <option className="admin_forum_sections_new_page_option_staff" value="staff">
                     Staff only
                   </option>
                 </select>
@@ -402,15 +402,15 @@ export default async function NewForumSectionPage({
                   id="forum-section-parent"
                   name="parent_id"
                   defaultValue=""
-                  className={inputClassName}
+                  className={[((inputClassName)), "admin_forum_sections_new_page_select_parent_id"].filter(Boolean).join(" ")}
                 >
-                  <option value="">
+                  <option className="admin_forum_sections_new_page_option_forum_section_parent" value="">
                     No parent section
                   </option>
 
                   {sections.map(
                     (section) => (
-                      <option
+                      <option className="admin_forum_sections_new_page_option_option"
                         key={section.id}
                         value={section.id}
                       >
@@ -426,14 +426,14 @@ export default async function NewForumSectionPage({
             </div>
           </section>
 
-          <section className="border-b border-[rgb(var(--sep-colour-60482e))]/30 px-5 py-6 sm:px-7">
+          <section className="border-b border-[rgb(var(--sep-colour-60482e))]/30 px-5 py-6 sm:px-7 admin_forum_sections_new_page_section_section_3">
             <SectionHeading
               eyebrow="Appearance"
               title="Visual presentation"
               description="Add optional imagery and a colour used to distinguish the section."
             />
 
-            <div className="mt-6 grid gap-5 md:grid-cols-2">
+            <div className="mt-6 grid gap-5 md:grid-cols-2 admin_forum_sections_new_page_div_container_4">
               <FieldGroup
                 label="Icon URL"
                 htmlFor="forum-section-icon"
@@ -445,7 +445,7 @@ export default async function NewForumSectionPage({
                   type="url"
                   inputMode="url"
                   placeholder="https://..."
-                  className={inputClassName}
+                  className={[((inputClassName)), "admin_forum_sections_new_page_input_icon_url"].filter(Boolean).join(" ")}
                 />
               </FieldGroup>
 
@@ -460,7 +460,7 @@ export default async function NewForumSectionPage({
                   type="url"
                   inputMode="url"
                   placeholder="https://..."
-                  className={inputClassName}
+                  className={[((inputClassName)), "admin_forum_sections_new_page_input_banner_url"].filter(Boolean).join(" ")}
                 />
               </FieldGroup>
 
@@ -469,13 +469,13 @@ export default async function NewForumSectionPage({
                 htmlFor="forum-section-colour"
                 description="Optional hexadecimal colour in the format #RRGGBB."
               >
-                <div className="grid grid-cols-[70px_minmax(0,1fr)] gap-3">
+                <div className="grid grid-cols-[70px_minmax(0,1fr)] gap-3 admin_forum_sections_new_page_div_container_5">
                   <input
                     id="forum-section-colour-picker"
                     type="color"
                     defaultValue="#8c704b"
                     aria-label="Choose section colour"
-                    className="h-12 w-full cursor-pointer border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] p-1"
+                    className="h-12 w-full cursor-pointer border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] p-1 admin_forum_sections_new_page_input_forum_section_colour_picker"
                   />
 
                   <input
@@ -486,7 +486,7 @@ export default async function NewForumSectionPage({
                     maxLength={7}
                     pattern="#[0-9A-Fa-f]{6}"
                     placeholder="#8c704b"
-                    className={inputClassName}
+                    className={[((inputClassName)), "admin_forum_sections_new_page_input_colour"].filter(Boolean).join(" ")}
                   />
                 </div>
               </FieldGroup>
@@ -505,13 +505,13 @@ export default async function NewForumSectionPage({
                   min={0}
                   step={1}
                   defaultValue={0}
-                  className={inputClassName}
+                  className={[((inputClassName)), "admin_forum_sections_new_page_input_sort_order"].filter(Boolean).join(" ")}
                 />
               </FieldGroup>
             </div>
           </section>
 
-          <section className="px-5 py-6 sm:px-7">
+          <section className="px-5 py-6 sm:px-7 admin_forum_sections_new_page_section_section_4">
             <SectionHeading
               eyebrow="Publication"
               title="Section status"
@@ -520,22 +520,22 @@ export default async function NewForumSectionPage({
 
             <label
               htmlFor="forum-section-active"
-              className="mt-6 flex cursor-pointer items-start gap-4 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] px-4 py-4"
+              className="mt-6 flex cursor-pointer items-start gap-4 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] px-4 py-4 admin_forum_sections_new_page_label_forum_section_active"
             >
               <input
                 id="forum-section-active"
                 name="is_active"
                 type="checkbox"
                 defaultChecked
-                className="mt-1 h-4 w-4 accent-amber-700"
+                className="mt-1 h-4 w-4 accent-amber-700 admin_forum_sections_new_page_input_active"
               />
 
-              <span>
-                <span className="block font-serif text-lg text-[rgb(var(--sep-colour-d2b991))]">
+              <span className="admin_forum_sections_new_page_span_text">
+                <span className="block font-serif text-lg text-[rgb(var(--sep-colour-d2b991))] admin_forum_sections_new_page_span_text_2">
                   Active section
                 </span>
 
-                <span className="mt-1 block text-sm leading-6 text-[rgb(var(--sep-colour-817567))]">
+                <span className="mt-1 block text-sm leading-6 text-[rgb(var(--sep-colour-817567))] admin_forum_sections_new_page_span_text_3">
                   Display this section on
                   the forum according to
                   its visibility rules.
@@ -544,7 +544,7 @@ export default async function NewForumSectionPage({
             </label>
           </section>
 
-          <footer className="flex flex-col-reverse gap-3 border-t border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-110d0a))] px-5 py-5 sm:flex-row sm:items-center sm:justify-end sm:px-7">
+          <footer className="flex flex-col-reverse gap-3 border-t border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-110d0a))] px-5 py-5 sm:flex-row sm:items-center sm:justify-end sm:px-7 admin_forum_sections_new_page_footer_footer">
             <Link
               href="/admin/forum/sections"
               className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-5 py-3 text-center text-[8px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-927b5b))] transition hover:border-[rgb(var(--sep-colour-876640))] hover:text-[rgb(var(--sep-colour-d8b986))]"
@@ -554,7 +554,7 @@ export default async function NewForumSectionPage({
 
             <button
               type="submit"
-              className="border border-amber-800/70 bg-amber-950/25 px-5 py-3 text-[8px] uppercase tracking-[0.17em] text-amber-300 transition hover:border-amber-600 hover:bg-amber-950/45"
+              className="border border-amber-800/70 bg-amber-950/25 px-5 py-3 text-[8px] uppercase tracking-[0.17em] text-amber-300 transition hover:border-amber-600 hover:bg-amber-950/45 admin_forum_sections_new_page_button_create_section"
             >
               Create section
             </button>
@@ -695,16 +695,16 @@ function SectionHeading({
   description: string;
 }) {
   return (
-    <div>
-      <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806a4d))]">
+    <div className="admin_forum_sections_new_page_div_container_6">
+      <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806a4d))] admin_forum_sections_new_page_p_text_3">
         {eyebrow}
       </p>
 
-      <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-d8c09a))]">
+      <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-d8c09a))] admin_forum_sections_new_page_h2_heading">
         {title}
       </h2>
 
-      <p className="mt-2 max-w-3xl text-sm leading-6 text-[rgb(var(--sep-colour-817567))]">
+      <p className="mt-2 max-w-3xl text-sm leading-6 text-[rgb(var(--sep-colour-817567))] admin_forum_sections_new_page_p_text_4">
         {description}
       </p>
     </div>
@@ -725,17 +725,17 @@ function FieldGroup({
   children: React.ReactNode;
 }) {
   return (
-    <div>
+    <div className="admin_forum_sections_new_page_div_container_7">
       <label
         htmlFor={htmlFor}
-        className="block text-[8px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-a48c6c))]"
+        className="block text-[8px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-a48c6c))] admin_forum_sections_new_page_label_label"
       >
         {label}
 
         {required ? (
           <span
             aria-hidden="true"
-            className="ml-1 text-amber-500"
+            className="ml-1 text-amber-500 admin_forum_sections_new_page_span_text_4"
           >
             *
           </span>
@@ -743,12 +743,12 @@ function FieldGroup({
       </label>
 
       {description ? (
-        <p className="mt-2 min-h-10 text-xs leading-5 text-[rgb(var(--sep-colour-6f6457))]">
+        <p className="mt-2 min-h-10 text-xs leading-5 text-[rgb(var(--sep-colour-6f6457))] admin_forum_sections_new_page_p_text_5">
           {description}
         </p>
       ) : null}
 
-      <div className="mt-2">
+      <div className="mt-2 admin_forum_sections_new_page_div_container_8">
         {children}
       </div>
     </div>

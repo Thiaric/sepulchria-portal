@@ -147,14 +147,14 @@ export function AutoFitCharacterName({
       ref={headingRef}
       data-cosmetic-character-id={characterId}
       data-cosmetic-surface="nameplate"
-      className={[
+      className={[(([
         "min-w-0 whitespace-nowrap font-serif",
         className ?? "",
-      ].join(" ")}
+      ].join(" "))), "components_characters_auto_fit_character_name_h1_title"].filter(Boolean).join(" ")}
     >
       <span
         ref={textRef}
-        className="inline-block whitespace-nowrap"
+        className="inline-block whitespace-nowrap components_characters_auto_fit_character_name_span_text"
       >
         {children}
       </span>

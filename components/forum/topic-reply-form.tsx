@@ -188,44 +188,44 @@ export default function TopicReplyForm({
     setImageError("");
   }
 
-  if (forumRestriction.blocked) { return <section id="reply" className="scroll-mt-24"><SanctionRestrictionNotice message={forumRestriction.message} /></section>; }
+  if (forumRestriction.blocked) { return <section id="reply" className="scroll-mt-24 components_forum_topic_reply_form_section_reply"><SanctionRestrictionNotice message={forumRestriction.message} /></section>; }
 
   return (
     <section
       id="reply"
-      className="scroll-mt-24 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]"
+      className="scroll-mt-24 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] components_forum_topic_reply_form_section_reply_2"
     >
       
 
       <form
         action={formAction}
-        className="space-y-1 p-5 sm:p-6"
+        className="space-y-1 p-5 sm:p-6 components_forum_topic_reply_form_form_form_action"
       >
-        <input
+        <input className="components_forum_topic_reply_form_input_topic_id"
           type="hidden"
           name="topicId"
           value={topicId}
         />
 
-        <input
+        <input className="components_forum_topic_reply_form_input_section_slug"
           type="hidden"
           name="sectionSlug"
           value={sectionSlug}
         />
 
-        <input
+        <input className="components_forum_topic_reply_form_input_topic_slug"
           type="hidden"
           name="topicSlug"
           value={topicSlug}
         />
 
-        <input
+        <input className="components_forum_topic_reply_form_input_quoted_post_id"
           type="hidden"
           name="quotedPostId"
           value={quotedPost?.id ?? ""}
         />
 
-        <input
+        <input className="components_forum_topic_reply_form_input_image_urls"
           type="hidden"
           name="imageUrls"
           value={JSON.stringify(images)}
@@ -233,33 +233,31 @@ export default function TopicReplyForm({
 
         {state.message ? (
           <div
-            className={
-              state.success
+            className={[((state.success
                 ? "border border-emerald-900/60 bg-emerald-950/20 px-4 py-3 text-sm text-emerald-300"
-                : "border border-red-900/60 bg-red-950/20 px-4 py-3 text-sm text-red-300"
-            }
+                : "border border-red-900/60 bg-red-950/20 px-4 py-3 text-sm text-red-300")), "components_forum_topic_reply_form_div_container"].filter(Boolean).join(" ")}
           >
             {state.message}
           </div>
         ) : null}
 
         {quotedPost ? (
-          <div className="border-l-2 border-[rgb(var(--sep-colour-8b6840))] bg-[rgb(var(--sep-colour-100c09))] px-4 py-4">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <p className="text-[8px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-9b7b53))]">
+          <div className="border-l-2 border-[rgb(var(--sep-colour-8b6840))] bg-[rgb(var(--sep-colour-100c09))] px-4 py-4 components_forum_topic_reply_form_div_container_2">
+            <div className="flex flex-wrap items-center justify-between gap-3 components_forum_topic_reply_form_div_container_3">
+              <p className="text-[8px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-9b7b53))] components_forum_topic_reply_form_p_text">
                 Replying to{" "}
                 {quotedPost.author_name}
               </p>
 
               <a
                 href={`#post-${quotedPost.id}`}
-                className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-71624f))] transition hover:text-[rgb(var(--sep-colour-c9a674))]"
+                className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-71624f))] transition hover:text-[rgb(var(--sep-colour-c9a674))] components_forum_topic_reply_form_a_view_original"
               >
                 View original
               </a>
             </div>
 
-            <p className="mt-3 text-xs italic leading-6 text-[rgb(var(--sep-colour-9f927f))]">
+            <p className="mt-3 text-xs italic leading-6 text-[rgb(var(--sep-colour-9f927f))] components_forum_topic_reply_form_p_text_2">
               {shortenQuote(
                 quotedPost.body,
               )}
@@ -267,17 +265,17 @@ export default function TopicReplyForm({
 
             <a
               href={`/forum/${sectionSlug}/${topicSlug}#reply`}
-              className="mt-3 inline-block text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9c7650))] transition hover:text-[rgb(var(--sep-colour-dfb982))]"
+              className="mt-3 inline-block text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9c7650))] transition hover:text-[rgb(var(--sep-colour-dfb982))] components_forum_topic_reply_form_a_remove_quote"
             >
               Remove quote
             </a>
           </div>
         ) : null}
 
-        <div>
+        <div className="components_forum_topic_reply_form_div_reply">
           <label
             htmlFor="reply-character"
-            className="block text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9f8765))]"
+            className="block text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9f8765))] components_forum_topic_reply_form_label_reply_character"
           >
             Reply as
           </label>
@@ -293,13 +291,13 @@ export default function TopicReplyForm({
               )
             }
             disabled={pending}
-            className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0d0907))] px-4 py-3 text-sm text-[rgb(var(--sep-colour-d8c4a4))] outline-none transition focus:border-[rgb(var(--sep-colour-aa7f47))] disabled:cursor-not-allowed disabled:opacity-60"
+            className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0d0907))] px-4 py-3 text-sm text-[rgb(var(--sep-colour-d8c4a4))] outline-none transition focus:border-[rgb(var(--sep-colour-aa7f47))] disabled:cursor-not-allowed disabled:opacity-60 components_forum_topic_reply_form_select_character_id"
           >
             
 
             {characters.map(
               (character) => (
-                <option
+                <option className="components_forum_topic_reply_form_option_option"
                   key={character.id}
                   value={character.id}
                 >
@@ -316,7 +314,7 @@ export default function TopicReplyForm({
 
           {state.fieldErrors
             ?.characterId ? (
-            <p className="mt-2 text-xs text-red-400">
+            <p className="mt-2 text-xs text-red-400 components_forum_topic_reply_form_p_reply">
               {
                 state.fieldErrors
                   .characterId
@@ -325,8 +323,8 @@ export default function TopicReplyForm({
           ) : null}
         </div>
 
-        <div>
-          <label className="flex cursor-pointer items-center gap-3 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-sm text-[rgb(var(--sep-colour-c8b79c))] transition hover:border-[rgb(var(--sep-colour-8b6840))]">
+        <div className="components_forum_topic_reply_form_div_reply_2">
+          <label className="flex cursor-pointer items-center gap-3 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-sm text-[rgb(var(--sep-colour-c8b79c))] transition hover:border-[rgb(var(--sep-colour-8b6840))] components_forum_topic_reply_form_label_reply">
             <input
               type="checkbox"
               name="isAnonymous"
@@ -338,14 +336,14 @@ export default function TopicReplyForm({
                 )
               }
               disabled={pending}
-              className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))]"
+              className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))] components_forum_topic_reply_form_input_anonymous"
             />
 
-            <span>Anonymous</span>
+            <span className="components_forum_topic_reply_form_span_reply">Anonymous</span>
           </label>
 
           {isAnonymous ? (
-            <p className="mt-2 border-l-2 border-[rgb(var(--sep-colour-8b6840))] bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+            <p className="mt-2 border-l-2 border-[rgb(var(--sep-colour-8b6840))] bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_forum_topic_reply_form_p_text_3">
               Your identity will be hidden
               from other players. You and
               staff will still be able to
@@ -354,15 +352,15 @@ export default function TopicReplyForm({
           ) : null}
         </div>
 
-        <div>
+        <div className="components_forum_topic_reply_form_div_message">
           <label
             htmlFor="forum-reply-body"
-            className="block text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9f8765))]"
+            className="block text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9f8765))] components_forum_topic_reply_form_label_forum_reply_body"
           >
             Message
           </label>
 
-          <div className="mt-2">
+          <div className="mt-2 components_forum_topic_reply_form_div_message_2">
             <RichTextEditor
               id="forum-reply-body"
               name="body"
@@ -377,7 +375,7 @@ export default function TopicReplyForm({
           </div>
 
           {state.fieldErrors?.body ? (
-            <p className="mt-2 text-xs text-red-400">
+            <p className="mt-2 text-xs text-red-400 components_forum_topic_reply_form_p_message">
               {state.fieldErrors.body}
             </p>
           ) : null}
@@ -385,7 +383,7 @@ export default function TopicReplyForm({
 
         
 
-        <div className="flex justify-end border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-5">
+        <div className="flex justify-end border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-5 components_forum_topic_reply_form_div_reply_3">
           <button
             type="submit"
             disabled={
@@ -393,7 +391,7 @@ export default function TopicReplyForm({
               !selectedCharacterId ||
               !body.trim()
             }
-            className="border border-[rgb(var(--sep-colour-a27b48))] bg-[rgb(var(--sep-colour-49311d))] px-6 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-f0d6aa))] transition hover:border-[rgb(var(--sep-colour-c49555))] hover:bg-[rgb(var(--sep-colour-5b3d22))] disabled:cursor-not-allowed disabled:opacity-50"
+            className="border border-[rgb(var(--sep-colour-a27b48))] bg-[rgb(var(--sep-colour-49311d))] px-6 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-f0d6aa))] transition hover:border-[rgb(var(--sep-colour-c49555))] hover:bg-[rgb(var(--sep-colour-5b3d22))] disabled:cursor-not-allowed disabled:opacity-50 components_forum_topic_reply_form_button_reply"
           >
             {pending
               ? "Publishing..."

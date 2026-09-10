@@ -238,16 +238,16 @@ export function PollsContextPanel() {
   };
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+    <div className="flex h-full min-h-0 flex-col components_polls_polls_context_panel_div_container">
+      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_polls_polls_context_panel_p_text">
         Community Polls
       </p>
 
-      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_polls_polls_context_panel_h2_heading">
         Find a Poll
       </h2>
 
-      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_polls_polls_context_panel_p_text_2">
         Search the Polls available
         to you and jump directly
         to the question you want
@@ -264,10 +264,10 @@ export function PollsContextPanel() {
         }
         placeholder="Search Polls..."
         aria-label="Search Polls"
-        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none transition placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))] focus:shadow-[0_0_14px_rgba(var(--sep-rgb-177-132-75),0.12)]"
+        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none transition placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))] focus:shadow-[0_0_14px_rgba(var(--sep-rgb-177-132-75),0.12)] components_polls_polls_context_panel_input_search_polls"
       />
 
-      <div className="mt-2 grid grid-cols-4 gap-1">
+      <div className="mt-2 grid grid-cols-4 gap-1 components_polls_polls_context_panel_div_container_2">
         {(
           [
             [
@@ -303,17 +303,17 @@ export function PollsContextPanel() {
               onClick={() =>
                 setState(value)
               }
-              className={[
+              className={[(([
                 "min-w-0 border px-1 py-1.5 text-[6px] uppercase tracking-[0.06em] transition duration-150",
                 state === value
                   ? "border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-332719))] text-[rgb(var(--sep-colour-efd9aa))] shadow-[0_0_10px_rgba(var(--sep-rgb-177-132-75),0.12)]"
                   : "border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] text-[rgb(var(--sep-colour-8f806c))] hover:-translate-y-px hover:border-[rgb(var(--sep-colour-80613b))] hover:text-[rgb(var(--sep-colour-cbb28a))]",
-              ].join(" ")}
+              ].join(" "))), "components_polls_polls_context_panel_button_action"].filter(Boolean).join(" ")}
             >
-              <span className="block truncate">
+              <span className="block truncate components_polls_polls_context_panel_span_text">
                 {label}
               </span>
-              <span className="mt-0.5 block font-serif text-[9px] normal-case tracking-normal">
+              <span className="mt-0.5 block font-serif text-[9px] normal-case tracking-normal components_polls_polls_context_panel_span_text_2">
                 {count}
               </span>
             </button>
@@ -321,7 +321,7 @@ export function PollsContextPanel() {
         )}
       </div>
 
-      <p className="mb-2 mt-4 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))]">
+      <p className="mb-2 mt-4 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))] components_polls_polls_context_panel_p_text_3">
         Polls ·{" "}
         {visibleEntries.length}
         {query ||
@@ -330,7 +330,7 @@ export function PollsContextPanel() {
           : ""}
       </p>
 
-      <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">
+      <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1 components_polls_polls_context_panel_div_container_3">
         {visibleEntries.length ? (
           visibleEntries.map(
             (entry) => (
@@ -342,19 +342,19 @@ export function PollsContextPanel() {
                     entry.id,
                   )
                 }
-                className={[
+                className={[(([
                   "group flex w-full items-center justify-between gap-3 border px-3 py-2.5 text-left transition duration-150 hover:-translate-y-px hover:translate-x-0.5 hover:shadow-[0_0_15px_rgba(var(--sep-rgb-177-132-75),0.13)]",
                   entry.isNew
                     ? "border-[rgb(var(--sep-colour-a87532))] bg-[rgb(var(--sep-colour-24190f))] shadow-[inset_0_0_12px_rgba(var(--sep-rgb-177-132-75),0.06)] hover:border-[rgb(var(--sep-colour-c0914e))] hover:bg-[rgb(var(--sep-colour-2d1d11))]"
                     : "border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))]",
-                ].join(" ")}
+                ].join(" "))), "components_polls_polls_context_panel_button_action_2"].filter(Boolean).join(" ")}
               >
-                <span className="min-w-0">
-                  <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] transition group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
+                <span className="min-w-0 components_polls_polls_context_panel_span_text_3">
+                  <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] transition group-hover:text-[rgb(var(--sep-colour-ead0a0))] components_polls_polls_context_panel_span_text_4">
                     {entry.title}
                   </span>
 
-                  <span className="mt-0.5 block truncate text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))]">
+                  <span className="mt-0.5 block truncate text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))] components_polls_polls_context_panel_span_text_5">
                     {entry.isNew
                       ? "New · "
                       : ""}
@@ -369,14 +369,14 @@ export function PollsContextPanel() {
                   </span>
                 </span>
 
-                <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))] transition duration-150 group-hover:translate-x-1 group-hover:text-[rgb(var(--sep-colour-c89b5d))]">
+                <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))] transition duration-150 group-hover:translate-x-1 group-hover:text-[rgb(var(--sep-colour-c89b5d))] components_polls_polls_context_panel_span_text_6">
                   →
                 </span>
               </button>
             ),
           )
         ) : (
-          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))]">
+          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))] components_polls_polls_context_panel_p_text_4">
             No matching Polls.
           </p>
         )}

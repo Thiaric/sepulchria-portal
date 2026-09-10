@@ -21,7 +21,7 @@ export function PendingSubmitButton({
       disabled={pending}
       aria-disabled={pending}
       aria-busy={pending}
-      className={className}
+      className={[((className)), "components_forms_pending_submit_button_button_action"].filter(Boolean).join(" ")}
     >
       {pending ? pendingText : idleText}
     </button>

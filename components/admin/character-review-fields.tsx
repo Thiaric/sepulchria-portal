@@ -25,8 +25,8 @@ export function CharacterReviewFields({
 
   return (
     <>
-      <label className="block">
-        <span className="mb-2 block text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
+      <label className="block components_admin_character_review_fields_label_label">
+        <span className="mb-2 block text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))] components_admin_character_review_fields_span_text">
           Status
         </span>
 
@@ -38,26 +38,24 @@ export function CharacterReviewFields({
               event.target.value as CharacterStatus,
             )
           }
-          className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
+          className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] components_admin_character_review_fields_select_status"
         >
-          <option value="draft">Draft</option>
-          <option value="submitted">Submitted</option>
-          <option value="approved">Approved</option>
-          <option value="rejected">Rejected</option>
+          <option className="components_admin_character_review_fields_option_draft" value="draft">Draft</option>
+          <option className="components_admin_character_review_fields_option_submitted" value="submitted">Submitted</option>
+          <option className="components_admin_character_review_fields_option_approved" value="approved">Approved</option>
+          <option className="components_admin_character_review_fields_option_rejected" value="rejected">Rejected</option>
         </select>
       </label>
 
-      <label className="block">
-        <span className="mb-2 flex items-center gap-2 text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
+      <label className="block components_admin_character_review_fields_label_label_2">
+        <span className="mb-2 flex items-center gap-2 text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))] components_admin_character_review_fields_span_text_2">
           {rejectionRequired
               ? "Required"
               : ""} reason
           <span
-            className={
-              rejectionRequired
+            className={[((rejectionRequired
                 ? "text-[rgb(var(--sep-colour-cf766b))]"
-                : "text-[rgb(var(--sep-colour-5f5548))]"
-            }
+                : "text-[rgb(var(--sep-colour-5f5548))]")), "components_admin_character_review_fields_span_text_3"].filter(Boolean).join(" ")}
           >
             {rejectionRequired
               ? "Required"
@@ -79,15 +77,15 @@ export function CharacterReviewFields({
               ? "Explain what must be corrected before rejecting the sheet."
               : "Only required when the selected status is Rejected."
           }
-          className={`w-full resize-y border bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm leading-6 text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] ${
+          className={[((`w-full resize-y border bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm leading-6 text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] ${
             rejectionRequired
               ? "border-[rgb(var(--sep-colour-8b443b))]/80 focus:border-[rgb(var(--sep-colour-cf766b))]"
               : "border-[rgb(var(--sep-colour-60482e))]/55 focus:border-[rgb(var(--sep-colour-a17a49))]"
-          }`}
+          }`)), "components_admin_character_review_fields_textarea_rejection_reason"].filter(Boolean).join(" ")}
         />
 
         {rejectionRequired ? (
-          <span className="mt-2 block text-[10px] leading-5 text-[rgb(var(--sep-colour-a98782))]">
+          <span className="mt-2 block text-[10px] leading-5 text-[rgb(var(--sep-colour-a98782))] components_admin_character_review_fields_span_text_4">
             A reason must be entered before this
             character can be rejected.
           </span>

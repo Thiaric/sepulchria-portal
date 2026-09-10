@@ -54,15 +54,13 @@ export function AdminOrderMemberRemoveButton({
   }
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 components_admin_admin_order_member_remove_button_div_container">
       {message ? (
         <span
           role={error ? "alert" : "status"}
-          className={
-            error
+          className={[((error
               ? "text-[10px] text-[rgb(var(--sep-colour-d8a49a))]"
-              : "text-[10px] text-[rgb(var(--sep-colour-9fd0a9))]"
-          }
+              : "text-[10px] text-[rgb(var(--sep-colour-9fd0a9))]")), "components_admin_admin_order_member_remove_button_span_text"].filter(Boolean).join(" ")}
         >
           {error ? "✕ " : "✓ "}
           {message}
@@ -73,7 +71,7 @@ export function AdminOrderMemberRemoveButton({
         type="button"
         onClick={remove}
         disabled={pending}
-        className="border border-red-900/55 bg-red-950/20 px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-red-300 disabled:cursor-wait disabled:opacity-60"
+        className="border border-red-900/55 bg-red-950/20 px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-red-300 disabled:cursor-wait disabled:opacity-60 components_admin_admin_order_member_remove_button_button_remove"
       >
         {pending ? "Removing..." : "Remove"}
       </button>

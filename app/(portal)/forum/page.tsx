@@ -353,17 +353,17 @@ export default async function ForumPage() {
 
 
   return (
-    <main className="p-5 sm:p-7 lg:p-9">
-      <div className="mx-auto max-w-7xl">
+    <main className="p-5 sm:p-7 lg:p-9 forum_page_main_main">
+      <div className="mx-auto max-w-7xl forum_page_div_container">
         {user && totalUnreadTopics > 0 ? (
-          <div className="flex justify-end">
-            <form action={markAllTopicsAsRead}>
+          <div className="flex justify-end forum_page_div_container_2">
+            <form className="forum_page_form_mark_all_topics_read" action={markAllTopicsAsRead}>
               <button
                 type="submit"
-                className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
+                className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))] forum_page_button_mark_all_read"
               >
                 Mark all as read
-                <span className="ml-2 font-serif text-sm">
+                <span className="ml-2 font-serif text-sm forum_page_span_text">
                   ({totalUnreadTopics})
                 </span>
               </button>
@@ -371,11 +371,11 @@ export default async function ForumPage() {
           </div>
         ) : null}
 
-        <div className={`space-y-6 ${
+        <div className={[((`space-y-6 ${
           user && totalUnreadTopics > 0
             ? "mt-6"
             : ""
-        }`}>
+        }`)), "forum_page_div_container_3"].filter(Boolean).join(" ")}>
           <ForumCategoryCard
             eyebrow="The World of Aureth"
             title="Ongame"
@@ -429,18 +429,18 @@ function ForumCategoryCard({
   emptyMessage: string;
 }) {
   return (
-    <section className="overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-15100d))] shadow-[0_14px_35px_rgba(var(--sep-rgb-0-0-0),0.18)]">
-      <header className="border-b border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-1a130e))] px-5 py-5">
-        <p className="text-[8px] uppercase tracking-[0.26em] text-[rgb(var(--sep-colour-806a4d))]">
+    <section className="overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-15100d))] shadow-[0_14px_35px_rgba(var(--sep-rgb-0-0-0),0.18)] forum_page_section_section">
+      <header className="border-b border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-1a130e))] px-5 py-5 forum_page_header_header">
+        <p className="text-[8px] uppercase tracking-[0.26em] text-[rgb(var(--sep-colour-806a4d))] forum_page_p_text">
           {eyebrow}
         </p>
 
-        <div className="mt-2 flex items-center justify-between gap-4">
-          <h1 className="font-serif text-3xl text-[rgb(var(--sep-colour-dec69d))]">
+        <div className="mt-2 flex items-center justify-between gap-4 forum_page_div_container_4">
+          <h1 className="font-serif text-3xl text-[rgb(var(--sep-colour-dec69d))] forum_page_h1_title">
             {title}
           </h1>
 
-          <span className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-2.5 py-1.5 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-9c835f))]">
+          <span className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-2.5 py-1.5 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-9c835f))] forum_page_span_text_2">
             {sections.length}{" "}
             {sections.length === 1
               ? "section"
@@ -450,7 +450,7 @@ function ForumCategoryCard({
       </header>
 
       {sections.length > 0 ? (
-        <div className="divide-y divide-[rgb(var(--sep-colour-60482e))]/30">
+        <div className="divide-y divide-[rgb(var(--sep-colour-60482e))]/30 forum_page_div_container_5">
           {sections.map((section) => (
             <CompactForumSection
               key={section.id}
@@ -465,8 +465,8 @@ function ForumCategoryCard({
           ))}
         </div>
       ) : (
-        <div className="px-5 py-10 text-center">
-          <p className="font-serif text-lg text-[rgb(var(--sep-colour-aa9982))]">
+        <div className="px-5 py-10 text-center forum_page_div_container_6">
+          <p className="font-serif text-lg text-[rgb(var(--sep-colour-aa9982))] forum_page_p_text_2">
             {emptyMessage}
           </p>
         </div>
@@ -504,7 +504,7 @@ function CompactForumSection({
       }`}
     >
       {section.banner_url ? (
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 forum_page_div_container_7">
           <Image
             src={section.banner_url}
             alt=""
@@ -514,14 +514,14 @@ function CompactForumSection({
             unoptimized
           />
 
-          <div className="absolute inset-0 bg-gradient-to-r from-[rgb(var(--sep-colour-15100d))] via-[rgb(var(--sep-colour-15100d))]/96 to-[rgb(var(--sep-colour-15100d))]/84" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[rgb(var(--sep-colour-15100d))] via-[rgb(var(--sep-colour-15100d))]/96 to-[rgb(var(--sep-colour-15100d))]/84 forum_page_div_container_8" />
         </div>
       ) : null}
 
-      <div className="relative grid gap-5 md:grid-cols-[minmax(0,1fr)_220px] md:items-center">
-        <div className="flex min-w-0 items-start gap-4">
+      <div className="relative grid gap-5 md:grid-cols-[minmax(0,1fr)_220px] md:items-center forum_page_div_container_9">
+        <div className="flex min-w-0 items-start gap-4 forum_page_div_container_10">
           <div
-            className="relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-0d0907))]"
+            className="relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-0d0907))] forum_page_div_container_11"
             style={{
               borderColor: `${sectionColour}88`,
             }}
@@ -537,7 +537,7 @@ function CompactForumSection({
               />
             ) : (
               <span
-                className="font-serif text-2xl"
+                className="font-serif text-2xl forum_page_span_text_3"
                 style={{
                   color: sectionColour,
                 }}
@@ -549,23 +549,23 @@ function CompactForumSection({
             )}
           </div>
 
-          <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-2">
-              <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-d9c39d))] transition group-hover:text-[rgb(var(--sep-colour-f0d8aa))]">
+          <div className="min-w-0 flex-1 forum_page_div_container_12">
+            <div className="flex flex-wrap items-center gap-2 forum_page_div_container_13">
+              <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-d9c39d))] transition group-hover:text-[rgb(var(--sep-colour-f0d8aa))] forum_page_h2_heading">
                 {section.name}
               </h2>
 
               {hasUnreadTopics ? (
                 <span
                   data-sep-counter-badge="true"
-                  className="inline-flex items-center justify-center rounded-full border px-2 py-1 text-[7px] font-semibold uppercase tracking-[0.13em]"
+                  className="inline-flex items-center justify-center rounded-full border px-2 py-1 text-[7px] font-semibold uppercase tracking-[0.13em] forum_page_span_text_4"
                 >
                   {statistics.unreadTopics} new
                 </span>
               ) : null}
 
               {section.visibility !== "public" ? (
-                <span className="border border-[rgb(var(--sep-colour-675036))]/60 bg-black/15 px-2 py-1 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9e8767))]">
+                <span className="border border-[rgb(var(--sep-colour-675036))]/60 bg-black/15 px-2 py-1 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9e8767))] forum_page_span_text_5">
                   {section.visibility ===
                   "members"
                     ? "Members"
@@ -575,43 +575,43 @@ function CompactForumSection({
             </div>
 
             {section.association ? (
-              <p className="mt-1 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-7e684c))]">
+              <p className="mt-1 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-7e684c))] forum_page_p_text_3">
                 {section.association.name}
               </p>
             ) : null}
 
-            <p className="mt-2 line-clamp-2 text-xs leading-5 text-[rgb(var(--sep-colour-918474))]">
+            <p className="mt-2 line-clamp-2 text-xs leading-5 text-[rgb(var(--sep-colour-918474))] forum_page_p_text_4">
               {section.description ||
                 "No description has been provided for this section."}
             </p>
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-px border border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-60482e))]/30 md:self-stretch">
-          <div className="flex flex-col items-center justify-center bg-[rgb(var(--sep-colour-100c09))]/95 px-3 py-3 text-center">
-            <span className="font-serif text-lg text-[rgb(var(--sep-colour-c6aa80))]">
+        <div className="grid grid-cols-3 gap-px border border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-60482e))]/30 md:self-stretch forum_page_div_container_14">
+          <div className="flex flex-col items-center justify-center bg-[rgb(var(--sep-colour-100c09))]/95 px-3 py-3 text-center forum_page_div_container_15">
+            <span className="font-serif text-lg text-[rgb(var(--sep-colour-c6aa80))] forum_page_span_text_6">
               {statistics.topics}
             </span>
 
-            <span className="mt-1 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-766654))]">
+            <span className="mt-1 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-766654))] forum_page_span_text_7">
               Topics
             </span>
           </div>
 
-          <div className="flex flex-col items-center justify-center bg-[rgb(var(--sep-colour-100c09))]/95 px-3 py-3 text-center">
-            <span className="font-serif text-lg text-[rgb(var(--sep-colour-c6aa80))]">
+          <div className="flex flex-col items-center justify-center bg-[rgb(var(--sep-colour-100c09))]/95 px-3 py-3 text-center forum_page_div_container_16">
+            <span className="font-serif text-lg text-[rgb(var(--sep-colour-c6aa80))] forum_page_span_text_8">
               {statistics.replies}
             </span>
 
-            <span className="mt-1 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-766654))]">
+            <span className="mt-1 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-766654))] forum_page_span_text_9">
               Replies
             </span>
           </div>
 
-          <div className="flex items-center justify-center bg-[rgb(var(--sep-colour-100c09))]/95 px-3 py-3 text-[rgb(var(--sep-colour-775f42))] transition group-hover:text-[rgb(var(--sep-colour-c7a675))]">
+          <div className="flex items-center justify-center bg-[rgb(var(--sep-colour-100c09))]/95 px-3 py-3 text-[rgb(var(--sep-colour-775f42))] transition group-hover:text-[rgb(var(--sep-colour-c7a675))] forum_page_div_container_17">
             <span
               aria-hidden="true"
-              className="transition group-hover:translate-x-1"
+              className="transition group-hover:translate-x-1 forum_page_span_text_10"
             >
               →
             </span>

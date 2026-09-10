@@ -159,15 +159,15 @@ export default async function AdminPollsPage() {
     pollsResult.data ?? [];
 
   return (
-    <main className="mx-auto max-w-6xl space-y-5 p-4 sm:p-5 lg:p-6">
+    <main className="mx-auto max-w-6xl space-y-5 p-4 sm:p-5 lg:p-6 admin_polls_page_main_main">
       <section
         id="poll-new"
-        className="scroll-mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5"
+        className="scroll-mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 admin_polls_page_section_poll_new"
       >
-        <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+        <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] admin_polls_page_p_poll_new">
           Community feedback
         </p>
-        <h1 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dec69a))]">
+        <h1 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dec69a))] admin_polls_page_h1_poll_new">
           Create Poll
         </h1>
 
@@ -175,31 +175,31 @@ export default async function AdminPollsPage() {
           action={createPoll}
           className="mt-5 space-y-4"
         >
-          <label className="block">
-            <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+          <label className="block admin_polls_page_label_poll_new">
+            <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] admin_polls_page_span_poll_new">
               Title
             </span>
             <input
               name="title"
               required
               maxLength={180}
-              className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))]"
+              className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))] admin_polls_page_input_title"
             />
           </label>
 
-          <label className="block">
-            <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+          <label className="block admin_polls_page_label_poll_new_2">
+            <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] admin_polls_page_span_poll_new_2">
               Description
             </span>
             <textarea
               name="description"
               rows={3}
-              className="w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-sm leading-6 text-[rgb(var(--sep-colour-d7c4a5))]"
+              className="w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-sm leading-6 text-[rgb(var(--sep-colour-d7c4a5))] admin_polls_page_textarea_description"
             />
           </label>
 
-          <label className="block">
-            <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+          <label className="block admin_polls_page_label_poll_new_3">
+            <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] admin_polls_page_span_poll_new_3">
               Options · one per line
             </span>
             <textarea
@@ -207,31 +207,31 @@ export default async function AdminPollsPage() {
               required
               rows={5}
               placeholder={"Yes\nNo\nPerhaps"}
-              className="w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-sm leading-6 text-[rgb(var(--sep-colour-d7c4a5))]"
+              className="w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-sm leading-6 text-[rgb(var(--sep-colour-d7c4a5))] admin_polls_page_textarea_options"
             />
           </label>
 
-          <div className="grid gap-3 md:grid-cols-3">
-            <label>
-              <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+          <div className="grid gap-3 md:grid-cols-3 admin_polls_page_div_poll_new">
+            <label className="admin_polls_page_label_poll_new_4">
+              <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] admin_polls_page_span_poll_new_4">
                 Selection
               </span>
               <select
                 name="selectionMode"
                 defaultValue="single"
-                className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))]"
+                className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))] admin_polls_page_select_selection_mode"
               >
-                <option value="single">
+                <option className="admin_polls_page_option_single" value="single">
                   Single choice
                 </option>
-                <option value="multiple">
+                <option className="admin_polls_page_option_multiple" value="multiple">
                   Multiple choice
                 </option>
               </select>
             </label>
 
-            <label>
-              <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+            <label className="admin_polls_page_label_poll_new_5">
+              <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] admin_polls_page_span_poll_new_5">
                 Max choices
               </span>
               <input
@@ -240,29 +240,29 @@ export default async function AdminPollsPage() {
                 min={1}
                 max={20}
                 defaultValue={1}
-                className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))]"
+                className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))] admin_polls_page_input_poll_new"
               />
             </label>
 
-            <label>
-              <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+            <label className="admin_polls_page_label_poll_new_6">
+              <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] admin_polls_page_span_poll_new_6">
                 Results
               </span>
               <select
                 name="resultsVisibility"
                 defaultValue="after_vote"
-                className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))]"
+                className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))] admin_polls_page_select_results_visibility"
               >
-                <option value="live">
+                <option className="admin_polls_page_option_live" value="live">
                   Live
                 </option>
-                <option value="after_vote">
+                <option className="admin_polls_page_option_after_vote" value="after_vote">
                   After voting
                 </option>
-                <option value="after_close">
+                <option className="admin_polls_page_option_after_close" value="after_close">
                   After close
                 </option>
-                <option value="staff_only">
+                <option className="admin_polls_page_option_staff_only" value="staff_only">
                   Staff only
                 </option>
               </select>
@@ -278,43 +278,43 @@ export default async function AdminPollsPage() {
             orders={orders}
           />
 
-          <div className="grid gap-3 md:grid-cols-3">
-            <label>
-              <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+          <div className="grid gap-3 md:grid-cols-3 admin_polls_page_div_allow_vote_changes">
+            <label className="admin_polls_page_label_allow_vote_changes">
+              <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] admin_polls_page_span_allow_vote_changes">
                 Closing date · UTC
               </span>
               <input
                 type="datetime-local"
                 name="closesAt"
-                className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))]"
+                className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))] admin_polls_page_input_closes"
               />
             </label>
 
-            <label className="flex items-center gap-3 self-end border border-[rgb(var(--sep-colour-59432c))]/40 px-3 py-2 text-sm text-[rgb(var(--sep-colour-bbaa90))]">
+            <label className="flex items-center gap-3 self-end border border-[rgb(var(--sep-colour-59432c))]/40 px-3 py-2 text-sm text-[rgb(var(--sep-colour-bbaa90))] admin_polls_page_label_allow_vote_changes_2">
               <input
                 type="checkbox"
                 name="allowVoteChange"
                 defaultChecked
-                className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))]"
+                className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))] admin_polls_page_input_allow_vote_change"
               />
               Allow vote changes
             </label>
 
-            <label className="flex items-center gap-3 self-end border border-[rgb(var(--sep-colour-59432c))]/40 px-3 py-2 text-sm text-[rgb(var(--sep-colour-bbaa90))]">
+            <label className="flex items-center gap-3 self-end border border-[rgb(var(--sep-colour-59432c))]/40 px-3 py-2 text-sm text-[rgb(var(--sep-colour-bbaa90))] admin_polls_page_label_allow_vote_changes_3">
               <input
                 type="checkbox"
                 name="isAnonymous"
                 defaultChecked
-                className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))]"
+                className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))] admin_polls_page_input_anonymous"
               />
               Anonymous results
             </label>
           </div>
 
-          <div className="flex justify-end">
+          <div className="flex justify-end admin_polls_page_div_poll_new_2">
             <button
               type="submit"
-              className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-efd6a8))]"
+              className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-efd6a8))] admin_polls_page_button_create_draft_poll"
             >
               Create Draft Poll
             </button>
@@ -322,12 +322,12 @@ export default async function AdminPollsPage() {
         </AdminActionForm>
       </section>
 
-      <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5">
-        <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-dec69a))]">
+      <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 admin_polls_page_section_polls">
+        <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-dec69a))] admin_polls_page_h2_polls">
           Polls · {polls.length}
         </h2>
 
-        <div className="mt-4 space-y-3">
+        <div className="mt-4 space-y-3 admin_polls_page_div_polls">
           {polls.map((poll) => {
             const options =
               [...(
@@ -382,15 +382,15 @@ export default async function AdminPollsPage() {
                   poll.poll_ballots?.length ??
                   0
                 }
-                className="scroll-mt-6 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))]"
+                className="scroll-mt-6 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] admin_polls_page_details_details"
               >
-                <summary className="cursor-pointer list-none px-4 py-3">
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="min-w-0">
-                      <p className="truncate font-serif text-base text-[rgb(var(--sep-colour-d8bf91))]">
+                <summary className="cursor-pointer list-none px-4 py-3 admin_polls_page_summary_summary">
+                  <div className="flex items-center justify-between gap-4 admin_polls_page_div_container">
+                    <div className="min-w-0 admin_polls_page_div_container_2">
+                      <p className="truncate font-serif text-base text-[rgb(var(--sep-colour-d8bf91))] admin_polls_page_p_text">
                         {poll.title}
                       </p>
-                      <p className="mt-1 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
+                      <p className="mt-1 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))] admin_polls_page_p_text_2">
                         {poll.status}
                         {" · "}
                         {poll.poll_ballots?.length ??
@@ -398,7 +398,7 @@ export default async function AdminPollsPage() {
                       </p>
                     </div>
 
-                    <span className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9caf7c))]">
+                    <span className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9caf7c))] admin_polls_page_span_text">
                       {poll.results_visibility.replaceAll(
                         "_",
                         " ",
@@ -407,28 +407,28 @@ export default async function AdminPollsPage() {
                   </div>
                 </summary>
 
-                <div className="space-y-4 border-t border-[rgb(var(--sep-colour-59432c))]/35 p-4">
+                <div className="space-y-4 border-t border-[rgb(var(--sep-colour-59432c))]/35 p-4 admin_polls_page_div_container_3">
                   {poll.description ? (
-                    <p className="whitespace-pre-wrap text-[11px] leading-5 text-[rgb(var(--sep-colour-a99b89))]">
+                    <p className="whitespace-pre-wrap text-[11px] leading-5 text-[rgb(var(--sep-colour-a99b89))] admin_polls_page_p_text_3">
                       {poll.description}
                     </p>
                   ) : null}
 
-                  <div className="space-y-2">
+                  <div className="space-y-2 admin_polls_page_div_container_4">
                     {options.map(
                       (option) => (
                         <div
                           key={
                             option.id
                           }
-                          className="flex items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/35 px-3 py-2"
+                          className="flex items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/35 px-3 py-2 admin_polls_page_div_container_5"
                         >
-                          <span className="text-sm text-[rgb(var(--sep-colour-d5c2a4))]">
+                          <span className="text-sm text-[rgb(var(--sep-colour-d5c2a4))] admin_polls_page_span_text_2">
                             {
                               option.label
                             }
                           </span>
-                          <span className="text-[9px] text-[rgb(var(--sep-colour-8f806c))]">
+                          <span className="text-[9px] text-[rgb(var(--sep-colour-8f806c))] admin_polls_page_span_text_3">
                             {counts.get(
                               option.id,
                             ) ?? 0}
@@ -438,7 +438,7 @@ export default async function AdminPollsPage() {
                     )}
                   </div>
 
-                  <div className="flex flex-wrap justify-end gap-2 border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-4">
+                  <div className="flex flex-wrap justify-end gap-2 border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-4 admin_polls_page_div_container_6">
                     {poll.status ===
                     "draft" ? (
                       <AdminActionForm
@@ -446,7 +446,7 @@ export default async function AdminPollsPage() {
                           openPoll
                         }
                       >
-                        <input
+                        <input className="admin_polls_page_input_poll_id"
                           type="hidden"
                           name="pollId"
                           value={
@@ -455,7 +455,7 @@ export default async function AdminPollsPage() {
                         />
                         <button
                           type="submit"
-                          className="border border-emerald-800/70 bg-emerald-950/30 px-4 py-2 text-[8px] uppercase tracking-[0.16em] text-emerald-300"
+                          className="border border-emerald-800/70 bg-emerald-950/30 px-4 py-2 text-[8px] uppercase tracking-[0.16em] text-emerald-300 admin_polls_page_button_open_poll"
                         >
                           Open Poll
                         </button>
@@ -469,7 +469,7 @@ export default async function AdminPollsPage() {
                           closePoll
                         }
                       >
-                        <input
+                        <input className="admin_polls_page_input_poll_id_2"
                           type="hidden"
                           name="pollId"
                           value={
@@ -479,7 +479,7 @@ export default async function AdminPollsPage() {
                         <button
                           type="submit"
                           data-confirm-message="Close this poll now? Voting will stop."
-                          className="border border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-241a12))] px-4 py-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-efd4a0))]"
+                          className="border border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-241a12))] px-4 py-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-efd4a0))] admin_polls_page_button_close_poll"
                         >
                           Close Poll
                         </button>
@@ -493,7 +493,7 @@ export default async function AdminPollsPage() {
                           reopenPoll
                         }
                       >
-                        <input
+                        <input className="admin_polls_page_input_poll_id_3"
                           type="hidden"
                           name="pollId"
                           value={
@@ -502,7 +502,7 @@ export default async function AdminPollsPage() {
                         />
                         <button
                           type="submit"
-                          className="border border-emerald-800/70 bg-emerald-950/30 px-4 py-2 text-[8px] uppercase tracking-[0.16em] text-emerald-300"
+                          className="border border-emerald-800/70 bg-emerald-950/30 px-4 py-2 text-[8px] uppercase tracking-[0.16em] text-emerald-300 admin_polls_page_button_reopen_poll"
                         >
                           Reopen Poll
                         </button>
@@ -514,7 +514,7 @@ export default async function AdminPollsPage() {
                         deletePoll
                       }
                     >
-                      <input
+                      <input className="admin_polls_page_input_poll_id_4"
                         type="hidden"
                         name="pollId"
                         value={
@@ -524,7 +524,7 @@ export default async function AdminPollsPage() {
                       <button
                         type="submit"
                         data-confirm-message="Delete this Poll permanently? Its Poll notifications will also disappear."
-                        className="border border-red-800/70 bg-red-950/35 px-4 py-2 text-[8px] uppercase tracking-[0.16em] text-red-300"
+                        className="border border-red-800/70 bg-red-950/35 px-4 py-2 text-[8px] uppercase tracking-[0.16em] text-red-300 admin_polls_page_button_delete_poll"
                       >
                         Delete Poll
                       </button>

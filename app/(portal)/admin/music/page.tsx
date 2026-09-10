@@ -60,11 +60,11 @@ export default async function AdminMusicPage() {
   }
 
   return (
-    <main className="p-5 sm:p-7 lg:p-9">
-      <div className="mx-auto max-w-7xl">
-        <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">Administration</p>
-        <h2 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">Music</h2>
-        <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))]">Manage location music and collectible personal tracks.</p>
+    <main className="p-5 sm:p-7 lg:p-9 admin_music_page_main_main">
+      <div className="mx-auto max-w-7xl admin_music_page_div_music">
+        <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))] admin_music_page_p_music">Administration</p>
+        <h2 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))] admin_music_page_h2_music">Music</h2>
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))] admin_music_page_p_music_2">Manage location music and collectible personal tracks.</p>
         <MusicFeatureManager
           initialTracks={
             (trackResult.data ?? []) as MusicTrackAdminRow[]

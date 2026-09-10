@@ -23,7 +23,7 @@ export function TicketNotificationBadge({
   if (variant === "floating") {
     return (
       <span
-        className={`absolute -right-2 -top-2 h-5 min-w-5 px-1 text-[8px] ${badgeClass}`}
+        className={[((`absolute -right-2 -top-2 h-5 min-w-5 px-1 text-[8px] ${badgeClass}`)), "components_support_ticket_notification_badge_span_text"].filter(Boolean).join(" ")}
       >
         {label}
       </span>
@@ -32,7 +32,7 @@ export function TicketNotificationBadge({
 
   return (
     <span
-      className={`ml-auto h-4 min-w-4 px-1 text-[7px] ${badgeClass}`}
+      className={[((`ml-auto h-4 min-w-4 px-1 text-[7px] ${badgeClass}`)), "components_support_ticket_notification_badge_span_text_2"].filter(Boolean).join(" ")}
     >
       {label}
     </span>

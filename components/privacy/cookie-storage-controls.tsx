@@ -98,30 +98,30 @@ export function CookieStorageControls() {
         <section
           data-public-skin-surface="true"
           aria-label="Cookie and storage notice"
-          className="fixed inset-x-3 bottom-3 z-[10000] mx-auto max-w-[760px] border border-[rgb(var(--sep-colour-6b5032))]/55 bg-[rgb(var(--sep-colour-100c09))]/[0.98] p-4 text-[rgb(var(--sep-colour-d8cbb5))] shadow-[0_18px_70px_rgba(0,0,0,0.78)] backdrop-blur-md sm:bottom-5 sm:p-5"
+          className="fixed inset-x-3 bottom-3 z-[10000] mx-auto max-w-[760px] border border-[rgb(var(--sep-colour-6b5032))]/55 bg-[rgb(var(--sep-colour-100c09))]/[0.98] p-4 text-[rgb(var(--sep-colour-d8cbb5))] shadow-[0_18px_70px_rgba(0,0,0,0.78)] backdrop-blur-md sm:bottom-5 sm:p-5 components_privacy_cookie_storage_controls_section_cookie_storage_notice"
         >
-          <div className="pointer-events-none absolute inset-1 border border-[rgb(var(--sep-colour-9a7547))]/10" />
+          <div className="pointer-events-none absolute inset-1 border border-[rgb(var(--sep-colour-9a7547))]/10 components_privacy_cookie_storage_controls_div_cookie_storage_notice" />
 
-          <div className="relative">
-            <p className="text-[8px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-94744e))]">
+          <div className="relative components_privacy_cookie_storage_controls_div_sepulchria_uses_necessary_storage">
+            <p className="text-[8px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-94744e))] components_privacy_cookie_storage_controls_p_sepulchria_uses_necessary_storage">
               Privacy &amp; browser storage
             </p>
 
-            <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-e4cda3))]">
+            <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-e4cda3))] components_privacy_cookie_storage_controls_h2_sepulchria_uses_necessary_storage">
               Sepulchria uses necessary storage and interface preferences.
             </h2>
 
-            <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-a39784))] sm:text-xs">
+            <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-a39784))] sm:text-xs components_privacy_cookie_storage_controls_p_sepulchria_uses_necessary_storage_2">
               Necessary storage keeps accounts secure and signed in. Interface storage remembers choices such as your portal skin, sidebar layout, sound preference and editor preferences. Sepulchria currently does not use advertising or behavioural tracking cookies.
             </p>
 
-            <div className="mt-3 flex flex-wrap items-center gap-2">
+            <div className="mt-3 flex flex-wrap items-center gap-2 components_privacy_cookie_storage_controls_div_sepulchria_uses_necessary_storage_2">
               <button
                 type="button"
                 onClick={
                   chooseNecessaryOnly
                 }
-                className="border border-[rgb(var(--sep-colour-765937))]/65 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-c8b28e))] transition hover:border-[rgb(var(--sep-colour-a17a49))] hover:text-[rgb(var(--sep-colour-efd7aa))]"
+                className="border border-[rgb(var(--sep-colour-765937))]/65 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-c8b28e))] transition hover:border-[rgb(var(--sep-colour-a17a49))] hover:text-[rgb(var(--sep-colour-efd7aa))] components_privacy_cookie_storage_controls_button_necessary_only"
               >
                 Necessary only
               </button>
@@ -131,7 +131,7 @@ export function CookieStorageControls() {
                 onClick={() =>
                   setSettingsOpen(true)
                 }
-                className="border border-[rgb(var(--sep-colour-765937))]/65 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-c8b28e))] transition hover:border-[rgb(var(--sep-colour-a17a49))] hover:text-[rgb(var(--sep-colour-efd7aa))]"
+                className="border border-[rgb(var(--sep-colour-765937))]/65 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-c8b28e))] transition hover:border-[rgb(var(--sep-colour-a17a49))] hover:text-[rgb(var(--sep-colour-efd7aa))] components_privacy_cookie_storage_controls_button_storage_settings"
               >
                 Storage settings
               </button>
@@ -141,7 +141,7 @@ export function CookieStorageControls() {
                 onClick={
                   choosePreferences
                 }
-                className="border border-[rgb(var(--sep-colour-a77a42))]/80 bg-[rgb(var(--sep-colour-382313))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-ead3a6))] transition hover:border-[rgb(var(--sep-colour-d4a460))] hover:bg-[rgb(var(--sep-colour-472c17))]"
+                className="border border-[rgb(var(--sep-colour-a77a42))]/80 bg-[rgb(var(--sep-colour-382313))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-ead3a6))] transition hover:border-[rgb(var(--sep-colour-d4a460))] hover:bg-[rgb(var(--sep-colour-472c17))] components_privacy_cookie_storage_controls_button_keep_preferences"
               >
                 Keep preferences
               </button>
@@ -159,7 +159,7 @@ export function CookieStorageControls() {
 
       {settingsOpen ? (
         <div
-          className="fixed inset-0 z-[10001] flex items-center justify-center p-3 sm:p-6"
+          className="fixed inset-0 z-[10001] flex items-center justify-center p-3 sm:p-6 components_privacy_cookie_storage_controls_div_dialog"
           role="dialog"
           aria-modal="true"
           aria-labelledby="storage-settings-title"
@@ -170,25 +170,25 @@ export function CookieStorageControls() {
             onClick={() =>
               setSettingsOpen(false)
             }
-            className="absolute inset-0 bg-black/75 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/75 backdrop-blur-sm components_privacy_cookie_storage_controls_button_close_storage_settings"
           />
 
           <section
             data-public-skin-surface="true"
-            className="relative z-10 max-h-[90dvh] w-full max-w-[620px] overflow-y-auto border border-[rgb(var(--sep-colour-6b5032))]/55 bg-[rgb(var(--sep-colour-100c09))] p-5 text-[rgb(var(--sep-colour-d8cbb5))] shadow-[0_25px_90px_rgba(0,0,0,0.9)] sm:p-7"
+            className="relative z-10 max-h-[90dvh] w-full max-w-[620px] overflow-y-auto border border-[rgb(var(--sep-colour-6b5032))]/55 bg-[rgb(var(--sep-colour-100c09))] p-5 text-[rgb(var(--sep-colour-d8cbb5))] shadow-[0_25px_90px_rgba(0,0,0,0.9)] sm:p-7 components_privacy_cookie_storage_controls_section_section"
           >
-            <div className="pointer-events-none absolute inset-1 border border-[rgb(var(--sep-colour-9a7547))]/10" />
+            <div className="pointer-events-none absolute inset-1 border border-[rgb(var(--sep-colour-9a7547))]/10 components_privacy_cookie_storage_controls_div_container" />
 
-            <div className="relative">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-[8px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-94744e))]">
+            <div className="relative components_privacy_cookie_storage_controls_div_container_2">
+              <div className="flex items-start justify-between gap-4 components_privacy_cookie_storage_controls_div_container_3">
+                <div className="components_privacy_cookie_storage_controls_div_cookie_amp_storage_settings">
+                  <p className="text-[8px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-94744e))] components_privacy_cookie_storage_controls_p_cookie_amp_storage_settings">
                     Privacy controls
                   </p>
 
                   <h2
                     id="storage-settings-title"
-                    className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-e4cda3))]"
+                    className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-e4cda3))] components_privacy_cookie_storage_controls_h2_storage_settings_title"
                   >
                     Cookie &amp; Storage Settings
                   </h2>
@@ -199,13 +199,13 @@ export function CookieStorageControls() {
                   onClick={() =>
                     setSettingsOpen(false)
                   }
-                  className="flex h-7 w-7 shrink-0 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/55 text-sm text-[rgb(var(--sep-colour-a98c67))]"
+                  className="flex h-7 w-7 shrink-0 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/55 text-sm text-[rgb(var(--sep-colour-a98c67))] components_privacy_cookie_storage_controls_button_action"
                 >
                   ×
                 </button>
               </div>
 
-              <div className="mt-5 space-y-3">
+              <div className="mt-5 space-y-3 components_privacy_cookie_storage_controls_div_container_4">
                 <SettingRow
                   title="Strictly necessary"
                   description="Authentication, session security, inactivity handling and privacy-choice storage required to operate the service."
@@ -235,17 +235,17 @@ export function CookieStorageControls() {
                 />
               </div>
 
-              <p className="mt-4 text-[10px] leading-5 text-[rgb(var(--sep-colour-8d816f))]">
+              <p className="mt-4 text-[10px] leading-5 text-[rgb(var(--sep-colour-8d816f))] components_privacy_cookie_storage_controls_p_text">
                 You can change this choice at any time using “Cookie Settings” in the homepage footer. Disabling interface storage removes the stored preference values from this browser.
               </p>
 
-              <div className="mt-5 flex flex-wrap justify-end gap-2">
+              <div className="mt-5 flex flex-wrap justify-end gap-2 components_privacy_cookie_storage_controls_div_container_5">
                 <button
                   type="button"
                   onClick={
                     chooseNecessaryOnly
                   }
-                  className="border border-[rgb(var(--sep-colour-765937))]/65 bg-[rgb(var(--sep-colour-15100d))] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-c8b28e))]"
+                  className="border border-[rgb(var(--sep-colour-765937))]/65 bg-[rgb(var(--sep-colour-15100d))] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-c8b28e))] components_privacy_cookie_storage_controls_button_necessary_only_2"
                 >
                   Necessary only
                 </button>
@@ -255,7 +255,7 @@ export function CookieStorageControls() {
                   onClick={
                     saveSettings
                   }
-                  className="border border-[rgb(var(--sep-colour-a77a42))]/80 bg-[rgb(var(--sep-colour-382313))] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-ead3a6))]"
+                  className="border border-[rgb(var(--sep-colour-a77a42))]/80 bg-[rgb(var(--sep-colour-382313))] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-ead3a6))] components_privacy_cookie_storage_controls_button_save_settings"
                 >
                   Save settings
                 </button>
@@ -282,12 +282,12 @@ function SettingRow({
   onChange?: (value: boolean) => void;
 }) {
   return (
-    <label className="flex items-start justify-between gap-4 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))] p-3">
-      <span>
-        <span className="block font-serif text-sm text-[rgb(var(--sep-colour-d6bd91))]">
+    <label className="flex items-start justify-between gap-4 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))] p-3 components_privacy_cookie_storage_controls_label_label">
+      <span className="components_privacy_cookie_storage_controls_span_text">
+        <span className="block font-serif text-sm text-[rgb(var(--sep-colour-d6bd91))] components_privacy_cookie_storage_controls_span_text_2">
           {title}
         </span>
-        <span className="mt-1 block text-[9px] leading-4 text-[rgb(var(--sep-colour-827564))]">
+        <span className="mt-1 block text-[9px] leading-4 text-[rgb(var(--sep-colour-827564))] components_privacy_cookie_storage_controls_span_text_3">
           {description}
         </span>
       </span>
@@ -301,7 +301,7 @@ function SettingRow({
             event.target.checked,
           )
         }
-        className="mt-1 h-4 w-4 shrink-0 accent-[rgb(var(--sep-colour-a77a42))]"
+        className="mt-1 h-4 w-4 shrink-0 accent-[rgb(var(--sep-colour-a77a42))] components_privacy_cookie_storage_controls_input_field"
       />
     </label>
   );
@@ -315,17 +315,17 @@ function UnavailableRow({
   description: string;
 }) {
   return (
-    <div className="flex items-start justify-between gap-4 border border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-100c09))] p-3 opacity-70">
-      <span>
-        <span className="block font-serif text-sm text-[rgb(var(--sep-colour-b9a584))]">
+    <div className="flex items-start justify-between gap-4 border border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-100c09))] p-3 opacity-70 components_privacy_cookie_storage_controls_div_container_6">
+      <span className="components_privacy_cookie_storage_controls_span_text_4">
+        <span className="block font-serif text-sm text-[rgb(var(--sep-colour-b9a584))] components_privacy_cookie_storage_controls_span_text_5">
           {title}
         </span>
-        <span className="mt-1 block text-[9px] leading-4 text-[rgb(var(--sep-colour-74695b))]">
+        <span className="mt-1 block text-[9px] leading-4 text-[rgb(var(--sep-colour-74695b))] components_privacy_cookie_storage_controls_span_text_6">
           {description}
         </span>
       </span>
 
-      <span className="shrink-0 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-74695b))]">
+      <span className="shrink-0 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-74695b))] components_privacy_cookie_storage_controls_span_text_7">
         Not in use
       </span>
     </div>
@@ -341,7 +341,7 @@ export function CookieSettingsButton({
     <button
       type="button"
       onClick={openStorageSettings}
-      className={className}
+      className={[((className)), "components_privacy_cookie_storage_controls_button_cookie_settings"].filter(Boolean).join(" ")}
     >
       Cookie Settings
     </button>

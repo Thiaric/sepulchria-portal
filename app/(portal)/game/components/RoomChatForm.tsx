@@ -1523,7 +1523,7 @@ function ignoreSpellingWord() {
 
   if (gameChatRestriction.blocked) {
     return (
-      <div className="shrink-0 border-t border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-17110d))] p-4 sm:p-5">
+      <div className="shrink-0 border-t border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-17110d))] p-4 sm:p-5 game_components_roomchatform_div_container">
         <SanctionRestrictionNotice
           message={gameChatRestriction.message}
         />
@@ -1534,21 +1534,21 @@ function ignoreSpellingWord() {
   return (
     <div
   data-room-chat-composer
-  className="shrink-0 border-t border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-17110d))] p-2 sm:px-3 sm:py-2"
+  className="shrink-0 border-t border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-17110d))] p-2 sm:px-3 sm:py-2 game_components_roomchatform_div_container_2"
 >
       <PendingOpposedActions />
       <PendingShapeResponses />
       <CharacterDeathGate characterId={viewerCharacterId} />
-      <div className="mb-2 flex justify-end">
+      <div className="mb-2 flex justify-end game_components_roomchatform_div_container_3">
         
       </div>
       {utilityMode === null ? (
-        <form
+        <form className="game_components_roomchatform_form_message_action"
           action={messageAction}
           ref={messageFormRef}
           onSubmit={clearMessageComposerAfterSubmit}
         >
-          <input
+          <input className="game_components_roomchatform_input_client_nonce"
             ref={nonceInputRef}
             type="hidden"
             name="client_nonce"
@@ -1556,7 +1556,7 @@ function ignoreSpellingWord() {
             readOnly
           />
 
-          <input
+          <input className="game_components_roomchatform_input_whisper_recipient_id"
             type="hidden"
             name="whisper_recipient_id"
             value=""
@@ -1564,7 +1564,7 @@ function ignoreSpellingWord() {
           />
 
           <div
-            className="relative overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0f0c09))] transition focus-within:border-[rgb(var(--sep-colour-927047))]"
+            className="relative overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0f0c09))] transition focus-within:border-[rgb(var(--sep-colour-927047))] game_components_roomchatform_div_container_4"
             style={{ height: `${textareaHeight}px` }}
           >
             <textarea
@@ -1602,7 +1602,7 @@ function ignoreSpellingWord() {
               }
               
               placeholder={`Speech outside brackets; actions, movement and descriptions inside < > or ( ) or [ ] or { }. Out-of-character messages must be preceded by //.${canUseFate ? " Fate actions start with ^." : ""}`}
-              className="relative z-10 h-full w-full resize-none border-0 bg-transparent px-3 py-2 text-[13px] leading-5 text-[rgb(var(--sep-colour-d0bea1))] outline-none placeholder:text-[rgb(var(--sep-colour-5f574d))]"
+              className="relative z-10 h-full w-full resize-none border-0 bg-transparent px-3 py-2 text-[13px] leading-5 text-[rgb(var(--sep-colour-d0bea1))] outline-none placeholder:text-[rgb(var(--sep-colour-5f574d))] game_components_roomchatform_textarea_message"
             />
 
             <SpellingTextareaOverlay
@@ -1614,18 +1614,18 @@ function ignoreSpellingWord() {
 
           {spellingMenu ? (
             <div
-              className="fixed z-[9999] w-[220px] border border-[rgb(var(--sep-colour-60482e))]/70 bg-[rgb(var(--sep-colour-100c09))] p-2 shadow-[0_12px_30px_rgba(var(--sep-rgb-0-0-0),0.65)]"
+              className="fixed z-[9999] w-[220px] border border-[rgb(var(--sep-colour-60482e))]/70 bg-[rgb(var(--sep-colour-100c09))] p-2 shadow-[0_12px_30px_rgba(var(--sep-rgb-0-0-0),0.65)] game_components_roomchatform_div_container_5"
               style={{
                 left: spellingMenu.x,
                 top: spellingMenu.y,
               }}
             >
-              <p className="border-b border-[rgb(var(--sep-colour-59432c))]/40 px-2 pb-2 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806c52))]">
+              <p className="border-b border-[rgb(var(--sep-colour-59432c))]/40 px-2 pb-2 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806c52))] game_components_roomchatform_p_text">
                 Spelling
               </p>
 
               {spellingMenu.suggestions.length > 0 ? (
-                <div className="mt-1 max-h-52 overflow-y-auto">
+                <div className="mt-1 max-h-52 overflow-y-auto game_components_roomchatform_div_container_6">
                   {spellingMenu.suggestions.map(
                     (suggestion) => (
                       <button
@@ -1637,7 +1637,7 @@ function ignoreSpellingWord() {
                             suggestion,
                           );
                         }}
-                        className="block w-full px-2 py-1.5 text-left text-xs text-[rgb(var(--sep-colour-cdb894))] transition hover:bg-[rgb(var(--sep-colour-2a1d12))] hover:text-[rgb(var(--sep-colour-f0d3a2))]"
+                        className="block w-full px-2 py-1.5 text-left text-xs text-[rgb(var(--sep-colour-cdb894))] transition hover:bg-[rgb(var(--sep-colour-2a1d12))] hover:text-[rgb(var(--sep-colour-f0d3a2))] game_components_roomchatform_button_action"
                       >
                         {preserveWordCase(
                           spellingMenu.word,
@@ -1648,19 +1648,19 @@ function ignoreSpellingWord() {
                   )}
                 </div>
               ) : (
-                <p className="px-2 py-2 text-[10px] italic text-[rgb(var(--sep-colour-706557))]">
+                <p className="px-2 py-2 text-[10px] italic text-[rgb(var(--sep-colour-706557))] game_components_roomchatform_p_text_2">
                   No suggestions found.
                 </p>
               )}
 
-              <div className="mt-2 border-t border-[rgb(var(--sep-colour-60482e))]/35 pt-2">
+              <div className="mt-2 border-t border-[rgb(var(--sep-colour-60482e))]/35 pt-2 game_components_roomchatform_div_container_7">
                 <button
                   type="button"
                   onMouseDown={(event) => {
                     event.preventDefault();
                     ignoreSpellingWord();
                   }}
-                  className="w-full border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-2 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a08c70))] transition hover:border-[rgb(var(--sep-colour-87663b))] hover:text-[rgb(var(--sep-colour-d4bb91))]"
+                  className="w-full border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-2 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a08c70))] transition hover:border-[rgb(var(--sep-colour-87663b))] hover:text-[rgb(var(--sep-colour-d4bb91))] game_components_roomchatform_button_ignore_once"
                 >
                   Ignore once
                 </button>
@@ -1668,25 +1668,25 @@ function ignoreSpellingWord() {
             </div>
           ) : null}
 
-          <div className="mt-2 flex flex-wrap items-center justify-between gap-2 pb-2 md:pb-0">
-            <div className="flex min-w-0 items-center gap-2">
-              <label className="flex shrink-0 items-center gap-1 text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-685d50))]">
-                <span>Rows</span>
+          <div className="mt-2 flex flex-wrap items-center justify-between gap-2 pb-2 md:pb-0 game_components_roomchatform_div_container_8">
+            <div className="flex min-w-0 items-center gap-2 game_components_roomchatform_div_container_9">
+              <label className="flex shrink-0 items-center gap-1 text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-685d50))] game_components_roomchatform_label_label">
+                <span className="game_components_roomchatform_span_text">Rows</span>
                 <select
                   value={textareaRows}
                   onChange={(event) =>
                     setTextareaRows(Number(event.target.value) as 1 | 2 | 3 | 4)
                   }
-                  className="h-5 border border-[rgb(var(--sep-colour-5f4930))] bg-[rgb(var(--sep-colour-100c09))] px-1 text-[8px] text-[rgb(var(--sep-colour-bda77f))] outline-none"
+                  className="h-5 border border-[rgb(var(--sep-colour-5f4930))] bg-[rgb(var(--sep-colour-100c09))] px-1 text-[8px] text-[rgb(var(--sep-colour-bda77f))] outline-none game_components_roomchatform_select_textarea_rows"
                   aria-label="Textarea rows"
                 >
                   {[1, 2, 3, 4].map((rows) => (
-                    <option key={rows} value={rows}>{rows}</option>
+                    <option className="game_components_roomchatform_option_option" key={rows} value={rows}>{rows}</option>
                   ))}
                 </select>
               </label>
 
-              <p className="shrink-0 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-685d50))]">
+              <p className="shrink-0 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-685d50))] game_components_roomchatform_p_text_3">
                 {value.length.toLocaleString(
                   "en-GB",
                 )}{" "}
@@ -1699,11 +1699,11 @@ function ignoreSpellingWord() {
               {transientStatusMessage ? (
                 <p
                   aria-live="polite"
-                  className={`min-w-0 truncate text-xs ${
+                  className={[((`min-w-0 truncate text-xs ${
                     transientStatusOk
                       ? "text-[rgb(var(--sep-colour-9bb58c))]"
                       : "text-[rgb(var(--sep-colour-d58d82))]"
-                  }`}
+                  }`)), "game_components_roomchatform_p_text_4"].filter(Boolean).join(" ")}
                   title={transientStatusMessage}
                 >
                   {transientStatusMessage}
@@ -1711,7 +1711,7 @@ function ignoreSpellingWord() {
               ) : null}
             </div>
 
-                        <div className="relative -top-1.5">
+                        <div className="relative -top-1.5 game_components_roomchatform_div_container_10">
               <SubmitButton
                 disabled={!value.trim()}
                 onPrepare={() => {
@@ -1725,7 +1725,7 @@ function ignoreSpellingWord() {
           </div>
         </form>
        ) : utilityMode === "npc" ? (
-        <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3">
+        <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3 game_components_roomchatform_div_container_11">
           <UtilityPanelHeader
             title="NPC Control"
             description="Create, manage and speak as NPCs. Your staff identity is retained only for internal audit."
@@ -1734,7 +1734,7 @@ function ignoreSpellingWord() {
           <NpcControlPanel roomId={roomId} />
         </div>
       ) : utilityMode === "conditions" ? (
-        <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3">
+        <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3 game_components_roomchatform_div_container_12">
           <UtilityPanelHeader
             title="Conditions"
             description="Add or remove visible Conditions. Staff may select another Character currently in this Location."
@@ -1757,7 +1757,7 @@ function ignoreSpellingWord() {
           action={messageAction}
           ref={messageFormRef}
           onSubmit={clearMessageComposerAfterSubmit}
-          className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3"
+          className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3 game_components_roomchatform_form_message_action_2"
         >
           <UtilityPanelHeader
             title="Whisper"
@@ -1765,7 +1765,7 @@ function ignoreSpellingWord() {
             onClose={() => setUtilityMode(null)}
           />
 
-          <input
+          <input className="game_components_roomchatform_input_client_nonce_2"
             ref={nonceInputRef}
             type="hidden"
             name="client_nonce"
@@ -1773,15 +1773,15 @@ function ignoreSpellingWord() {
             readOnly
           />
 
-          <input
+          <input className="game_components_roomchatform_input_whisper_recipient_id_2"
             type="hidden"
             name="whisper_recipient_id"
             value={whisperRecipientId ?? ""}
             readOnly
           />
 
-          <label className="block">
-            <span className="mb-1.5 block text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))]">
+          <label className="block game_components_roomchatform_label_label_2">
+            <span className="mb-1.5 block text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))] game_components_roomchatform_span_text_2">
               Whisper to
             </span>
 
@@ -1792,13 +1792,13 @@ function ignoreSpellingWord() {
                   event.target.value,
                 )
               }
-              className="w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2.5 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] outline-none focus:border-[rgb(var(--sep-colour-a17a45))]"
+              className="w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2.5 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] outline-none focus:border-[rgb(var(--sep-colour-a17a45))] game_components_roomchatform_select_select"
             >
-              <option value="">
+              <option className="game_components_roomchatform_option_option_2" value="">
                 Choose character...
               </option>
               {presentCharacters.map((entry) => (
-                <option
+                <option className="game_components_roomchatform_option_option_3"
                   key={entry.id}
                   value={entry.id}
                 >
@@ -1809,7 +1809,7 @@ function ignoreSpellingWord() {
           </label>
 
           <div
-            className="mt-3 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0f0c09))]"
+            className="mt-3 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0f0c09))] game_components_roomchatform_div_container_13"
             style={{ height: `${textareaHeight}px` }}
           >
             <textarea
@@ -1848,17 +1848,17 @@ function ignoreSpellingWord() {
                   ? "Write your whisper..."
                   : "Choose a character first..."
               }
-              className="h-full w-full resize-none border-0 bg-transparent px-4 py-3 text-sm leading-6 text-[rgb(var(--sep-colour-d0bea1))] outline-none placeholder:text-[rgb(var(--sep-colour-5f574d))]"
+              className="h-full w-full resize-none border-0 bg-transparent px-4 py-3 text-sm leading-6 text-[rgb(var(--sep-colour-d0bea1))] outline-none placeholder:text-[rgb(var(--sep-colour-5f574d))] game_components_roomchatform_textarea_message_2"
             />
           </div>
 
-          <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+          <div className="mt-3 flex flex-wrap items-center justify-between gap-3 game_components_roomchatform_div_container_14">
             <p
-              className={`text-xs ${
+              className={[((`text-xs ${
                 messageState.ok
                   ? "text-[rgb(var(--sep-colour-9bb58c))]"
                   : "text-[rgb(var(--sep-colour-d58d82))]"
-              }`}
+              }`)), "game_components_roomchatform_p_text_5"].filter(Boolean).join(" ")}
             >
               {messageState.message}
             </p>
@@ -1880,7 +1880,7 @@ function ignoreSpellingWord() {
       ) : utilityMode === "dice" ? (
         <form
           action={diceAction}
-          className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3"
+          className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3 game_components_roomchatform_form_dice_action"
         >
           <UtilityPanelHeader
             title="Roll Dice"
@@ -1888,25 +1888,25 @@ function ignoreSpellingWord() {
             onClose={() => setUtilityMode(null)}
           />
 
-          <input
+          <input className="game_components_roomchatform_input_client_nonce_3"
             type="hidden"
             name="client_nonce"
             value={diceNonce ?? ""}
             readOnly
           />
 
-          <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
-            <label>
-              <span className="mb-1.5 block text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))]">
+          <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end game_components_roomchatform_div_container_15">
+            <label className="game_components_roomchatform_label_label_3">
+              <span className="mb-1.5 block text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))] game_components_roomchatform_span_text_3">
                 Die
               </span>
               <select
                 name="dice_sides"
                 defaultValue="20"
-                className="w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2.5 text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d8c29b))] outline-none focus:border-[rgb(var(--sep-colour-a17a45))]"
+                className="w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2.5 text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d8c29b))] outline-none focus:border-[rgb(var(--sep-colour-a17a45))] game_components_roomchatform_select_dice_sides"
               >
                 {DICE_OPTIONS.map((sides) => (
-                  <option
+                  <option className="game_components_roomchatform_option_option_4"
                     key={sides}
                     value={sides}
                   >
@@ -1925,18 +1925,18 @@ function ignoreSpellingWord() {
 
           {diceState.message ? (
             <p
-              className={`mt-3 text-xs ${
+              className={[((`mt-3 text-xs ${
                 diceState.ok
                   ? "text-[rgb(var(--sep-colour-9bb58c))]"
                   : "text-[rgb(var(--sep-colour-d58d82))]"
-              }`}
+              }`)), "game_components_roomchatform_p_text_6"].filter(Boolean).join(" ")}
             >
               {diceState.message}
             </p>
           ) : null}
         </form>
       ) : utilityMode === "attributes" ? (
-        <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3">
+        <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3 game_components_roomchatform_div_container_16">
           <UtilityPanelHeader
             title="Atk / Def / Dodge / Resist / Use Attribute"
             description="Attack or act now; if you target another Character, their valid counter decides the result. Text targets are resolved by Fate."
@@ -1946,15 +1946,15 @@ function ignoreSpellingWord() {
           {selectedWeapon ? (
             <form
               action={weaponAction}
-              className="mb-3 border border-[rgb(var(--sep-colour-6a5032))]/45 bg-[rgb(var(--sep-colour-15100d))] p-3"
+              className="mb-3 border border-[rgb(var(--sep-colour-6a5032))]/45 bg-[rgb(var(--sep-colour-15100d))] p-3 game_components_roomchatform_form_weapon_action"
             >
-              <p className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-9a7d55))]">
+              <p className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-9a7d55))] game_components_roomchatform_p_text_7">
                 Equipped Weapon Attack
               </p>
 
-              <div className="mt-2 grid gap-2 md:grid-cols-2">
-                <label>
-                  <span className="mb-1 block text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806b50))]">
+              <div className="mt-2 grid gap-2 md:grid-cols-2 game_components_roomchatform_div_container_17">
+                <label className="game_components_roomchatform_label_label_4">
+                  <span className="mb-1 block text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806b50))] game_components_roomchatform_span_text_4">
                     Weapon
                   </span>
                   <select
@@ -1962,10 +1962,10 @@ function ignoreSpellingWord() {
                     onChange={(event) =>
                       setSelectedWeaponKey(event.target.value)
                     }
-                    className="w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2.5 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] outline-none focus:border-[rgb(var(--sep-colour-a17a45))]"
+                    className="w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2.5 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] outline-none focus:border-[rgb(var(--sep-colour-a17a45))] game_components_roomchatform_select_select_2"
                   >
                     {weaponItems.map((item) => (
-                      <option
+                      <option className="game_components_roomchatform_option_option_5"
                         key={`${item.recordKind}:${item.recordId}`}
                         value={`${item.recordKind}:${item.recordId}`}
                       >
@@ -1982,8 +1982,8 @@ function ignoreSpellingWord() {
                   </select>
                 </label>
 
-                <label>
-                  <span className="mb-1 block text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806b50))]">
+                <label className="game_components_roomchatform_label_label_5">
+                  <span className="mb-1 block text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806b50))] game_components_roomchatform_span_text_5">
                     Character target
                   </span>
                   <select
@@ -1994,11 +1994,11 @@ function ignoreSpellingWord() {
                         setWeaponExternalTarget("");
                       }
                     }}
-                    className="w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2.5 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] outline-none focus:border-[rgb(var(--sep-colour-a17a45))]"
+                    className="w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2.5 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] outline-none focus:border-[rgb(var(--sep-colour-a17a45))] game_components_roomchatform_select_select_3"
                   >
-                    <option value="">No Character target</option>
+                    <option className="game_components_roomchatform_option_option_6" value="">No Character target</option>
                     {presentCharacters.map((entry) => (
-                      <option key={entry.id} value={entry.id}>
+                      <option className="game_components_roomchatform_option_option_7" key={entry.id} value={entry.id}>
                         {entry.display_name}
                       </option>
                     ))}
@@ -2006,8 +2006,8 @@ function ignoreSpellingWord() {
                 </label>
               </div>
 
-              <label className="mt-2 block">
-                <span className="mb-1 block text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806b50))]">
+              <label className="mt-2 block game_components_roomchatform_label_label_6">
+                <span className="mb-1 block text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806b50))] game_components_roomchatform_span_text_6">
                   Or other target
                 </span>
                 <input
@@ -2020,12 +2020,12 @@ function ignoreSpellingWord() {
                     }
                   }}
                   placeholder="door, Monster A, guard..."
-                  className="w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2.5 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] outline-none focus:border-[rgb(var(--sep-colour-a17a45))]"
+                  className="w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2.5 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] outline-none focus:border-[rgb(var(--sep-colour-a17a45))] game_components_roomchatform_input_door_monster_guard"
                 />
               </label>
 
-              <div className="mt-2 flex flex-wrap gap-1.5 text-[8px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-a98b61))]">
-                <span className="border border-[rgb(var(--sep-colour-59432c))]/40 px-2 py-1">
+              <div className="mt-2 flex flex-wrap gap-1.5 text-[8px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-a98b61))] game_components_roomchatform_div_container_18">
+                <span className="border border-[rgb(var(--sep-colour-59432c))]/40 px-2 py-1 game_components_roomchatform_span_text_7">
                   Attack Roll{" "}
                   {selectedWeapon.successDie
                     ? `d${selectedWeapon.successDie}${
@@ -2035,7 +2035,7 @@ function ignoreSpellingWord() {
                       }`
                     : "d20"}
                 </span>
-                <span className="border border-[rgb(var(--sep-colour-59432c))]/40 px-2 py-1">
+                <span className="border border-[rgb(var(--sep-colour-59432c))]/40 px-2 py-1 game_components_roomchatform_span_text_8">
                   Damage{" "}
                   {selectedWeapon.damageDice ?? "None"}
                   {selectedWeapon.successAttribute
@@ -2045,7 +2045,7 @@ function ignoreSpellingWord() {
                     ? ` ${selectedWeapon.damageType}`
                     : ""}
                 </span>
-                <span className="border border-[rgb(var(--sep-colour-59432c))]/40 px-2 py-1">
+                <span className="border border-[rgb(var(--sep-colour-59432c))]/40 px-2 py-1 game_components_roomchatform_span_text_9">
                   Counter:{" "}
                   {selectedWeapon.counterOptions?.length
                     ? selectedWeapon.counterOptions
@@ -2065,59 +2065,59 @@ function ignoreSpellingWord() {
                 </span>
               </div>
 
-              <input
+              <input className="game_components_roomchatform_input_item_record_kind"
                 type="hidden"
                 name="item_record_kind"
                 value={selectedWeapon.recordKind}
                 readOnly
               />
-              <input
+              <input className="game_components_roomchatform_input_item_record_id"
                 type="hidden"
                 name="item_record_id"
                 value={selectedWeapon.recordId}
                 readOnly
               />
-              <input
+              <input className="game_components_roomchatform_input_field"
                 type="hidden"
                 name="opposed_target_character_id"
                 value={weaponTargetId}
                 readOnly
               />
-              <input
+              <input className="game_components_roomchatform_input_field_2"
                 type="hidden"
                 name="opposed_external_target"
                 value={weaponExternalTarget}
                 readOnly
               />
 
-              <div className="mt-3 flex items-center justify-between gap-3">
-                <p className={`text-xs ${weaponState.ok ? "text-[rgb(var(--sep-colour-9bb58c))]" : "text-[rgb(var(--sep-colour-d58d82))]"}`}>
+              <div className="mt-3 flex items-center justify-between gap-3 game_components_roomchatform_div_container_19">
+                <p className={[((`text-xs ${weaponState.ok ? "text-[rgb(var(--sep-colour-9bb58c))]" : "text-[rgb(var(--sep-colour-d58d82))]"}`)), "game_components_roomchatform_p_text_8"].filter(Boolean).join(" ")}>
                   {weaponState.message}
                 </p>
                 <button
                   type="submit"
                   disabled={!weaponTargetId && !weaponExternalTarget.trim()}
-                  className="border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-5 py-2.5 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:bg-[rgb(var(--sep-colour-4a351f))] disabled:cursor-not-allowed disabled:opacity-40"
+                  className="border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-5 py-2.5 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:bg-[rgb(var(--sep-colour-4a351f))] disabled:cursor-not-allowed disabled:opacity-40 game_components_roomchatform_button_attack"
                 >
                   Attack
                 </button>
               </div>
             </form>
           ) : (
-            <p className="mb-3 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2 text-[9px] text-[rgb(var(--sep-colour-817565))]">
+            <p className="mb-3 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2 text-[9px] text-[rgb(var(--sep-colour-817565))] game_components_roomchatform_p_text_9">
               No Weapon is equipped in Main Hand or Off Hand.
             </p>
           )}
 
-          <div className="grid gap-3 lg:grid-cols-2">
+          <div className="grid gap-3 lg:grid-cols-2 game_components_roomchatform_div_container_20">
             <form
               action={unarmedAction}
-              className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-15100d))] p-3"
+              className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-15100d))] p-3 game_components_roomchatform_form_unarmed_action"
             >
-              <p className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9a7d55))]">
+              <p className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9a7d55))] game_components_roomchatform_p_text_10">
                 Unarmed Attack
               </p>
-              <p className="mt-1 text-[9px] text-[rgb(var(--sep-colour-817565))]">
+              <p className="mt-1 text-[9px] text-[rgb(var(--sep-colour-817565))] game_components_roomchatform_p_text_11">
                 d20 + Muscles. If Dodge / Defend is lower: 1 + Muscles Damage.
               </p>
 
@@ -2129,11 +2129,11 @@ function ignoreSpellingWord() {
                     setUnarmedExternalTarget("");
                   }
                 }}
-                className="mt-2 w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-d8c29b))]"
+                className="mt-2 w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] game_components_roomchatform_select_select_4"
               >
-                <option value="">No Character target</option>
+                <option className="game_components_roomchatform_option_option_8" value="">No Character target</option>
                 {presentCharacters.map((entry) => (
-                  <option key={entry.id} value={entry.id}>
+                  <option className="game_components_roomchatform_option_option_9" key={entry.id} value={entry.id}>
                     {entry.display_name}
                   </option>
                 ))}
@@ -2149,21 +2149,21 @@ function ignoreSpellingWord() {
                   }
                 }}
                 placeholder="Other target: door, Monster A..."
-                className="mt-2 w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-d8c29b))]"
+                className="mt-2 w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] game_components_roomchatform_input_field_3"
               />
 
-              <input type="hidden" name="opposed_target_character_id" value={unarmedTargetId} readOnly />
-              <input type="hidden" name="opposed_external_target" value={unarmedExternalTarget} readOnly />
+              <input className="game_components_roomchatform_input_field_4" type="hidden" name="opposed_target_character_id" value={unarmedTargetId} readOnly />
+              <input className="game_components_roomchatform_input_field_5" type="hidden" name="opposed_external_target" value={unarmedExternalTarget} readOnly />
 
               <button
                 type="submit"
-                className="mt-2 border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd4a0))]"
+                className="mt-2 border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd4a0))] game_components_roomchatform_button_unarmed_attack"
               >
                 Unarmed Attack
               </button>
 
               {unarmedState.message ? (
-                <p className={`mt-2 text-xs ${unarmedState.ok ? "text-[rgb(var(--sep-colour-9bb58c))]" : "text-[rgb(var(--sep-colour-d58d82))]"}`}>
+                <p className={[((`mt-2 text-xs ${unarmedState.ok ? "text-[rgb(var(--sep-colour-9bb58c))]" : "text-[rgb(var(--sep-colour-d58d82))]"}`)), "game_components_roomchatform_p_text_12"].filter(Boolean).join(" ")}>
                   {unarmedState.message}
                 </p>
               ) : null}
@@ -2171,19 +2171,19 @@ function ignoreSpellingWord() {
 
             <form
               action={opposedAttributeAction}
-              className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-15100d))] p-3"
+              className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-15100d))] p-3 game_components_roomchatform_form_opposed_attribute_action"
             >
-              <p className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9a7d55))]">
+              <p className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9a7d55))] game_components_roomchatform_p_text_13">
                 Attribute Action
               </p>
 
               <select
                 name="opposed_action"
                 defaultValue="use_muscles"
-                className="mt-2 w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-d8c29b))]"
+                className="mt-2 w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] game_components_roomchatform_select_opposed_action"
               >
                 {CHECK_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
+                  <option className="game_components_roomchatform_option_option_10" key={option.value} value={option.value}>
                     {option.label} — {ATTRIBUTE_LABELS[option.attribute]}: {formatSigned(Number(attributes[option.attribute] ?? 0))}
                   </option>
                 ))}
@@ -2197,11 +2197,11 @@ function ignoreSpellingWord() {
                     setAttributeExternalTarget("");
                   }
                 }}
-                className="mt-2 w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-d8c29b))]"
+                className="mt-2 w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] game_components_roomchatform_select_select_5"
               >
-                <option value="">No Character target</option>
+                <option className="game_components_roomchatform_option_option_11" value="">No Character target</option>
                 {presentCharacters.map((entry) => (
-                  <option key={entry.id} value={entry.id}>
+                  <option className="game_components_roomchatform_option_option_12" key={entry.id} value={entry.id}>
                     {entry.display_name}
                   </option>
                 ))}
@@ -2217,21 +2217,21 @@ function ignoreSpellingWord() {
                   }
                 }}
                 placeholder="Other target: lock, crowd, Monster A..."
-                className="mt-2 w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-d8c29b))]"
+                className="mt-2 w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] game_components_roomchatform_input_field_6"
               />
 
-              <input type="hidden" name="opposed_target_character_id" value={attributeTargetId} readOnly />
-              <input type="hidden" name="opposed_external_target" value={attributeExternalTarget} readOnly />
+              <input className="game_components_roomchatform_input_field_7" type="hidden" name="opposed_target_character_id" value={attributeTargetId} readOnly />
+              <input className="game_components_roomchatform_input_field_8" type="hidden" name="opposed_external_target" value={attributeExternalTarget} readOnly />
 
               <button
                 type="submit"
-                className="mt-2 border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd4a0))]"
+                className="mt-2 border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd4a0))] game_components_roomchatform_button_roll_action"
               >
                 Roll Action
               </button>
 
               {opposedAttributeState.message ? (
-                <p className={`mt-2 text-xs ${opposedAttributeState.ok ? "text-[rgb(var(--sep-colour-9bb58c))]" : "text-[rgb(var(--sep-colour-d58d82))]"}`}>
+                <p className={[((`mt-2 text-xs ${opposedAttributeState.ok ? "text-[rgb(var(--sep-colour-9bb58c))]" : "text-[rgb(var(--sep-colour-d58d82))]"}`)), "game_components_roomchatform_p_text_14"].filter(Boolean).join(" ")}>
                   {opposedAttributeState.message}
                 </p>
               ) : null}
@@ -2239,7 +2239,7 @@ function ignoreSpellingWord() {
           </div>
         </div>
       ) : utilityMode === "feat" ? (
-        <form className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3">
+        <form className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3 game_components_roomchatform_form_form">
           <UtilityPanelHeader
             title="Use Feat"
             description="Choose one of your Feats and use or activate it from the room."
@@ -2248,7 +2248,7 @@ function ignoreSpellingWord() {
 
           {selectedGift ? (
             <>
-              <input
+              <input className="game_components_roomchatform_input_character_gift_id"
                 type="hidden"
                 name="character_gift_id"
                 value={
@@ -2258,15 +2258,15 @@ function ignoreSpellingWord() {
                 readOnly
               />
 
-              <input
+              <input className="game_components_roomchatform_input_field_9"
                 type="hidden"
                 name="gift_target_character_id"
                 value={giftTargetId}
                 readOnly
               />
 
-              <label className="block">
-                <span className="mb-1.5 block text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))]">
+              <label className="block game_components_roomchatform_label_label_7">
+                <span className="mb-1.5 block text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))] game_components_roomchatform_span_text_10">
                   Feat
                 </span>
                 <select
@@ -2278,10 +2278,10 @@ function ignoreSpellingWord() {
                       event.target.value,
                     )
                   }
-                  className="w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2.5 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] outline-none focus:border-[rgb(var(--sep-colour-a17a45))]"
+                  className="w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2.5 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] outline-none focus:border-[rgb(var(--sep-colour-a17a45))] game_components_roomchatform_select_select_6"
                 >
                   {gifts.map((gift) => (
-                    <option
+                    <option className="game_components_roomchatform_option_option_13"
                       key={
                         gift.characterGiftId
                       }
@@ -2296,8 +2296,8 @@ function ignoreSpellingWord() {
               </label>
 
               {selectedGift.targetMode !== "self" ? (
-                <label className="mt-3 block">
-                  <span className="mb-1.5 block text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))]">
+                <label className="mt-3 block game_components_roomchatform_label_label_8">
+                  <span className="mb-1.5 block text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))] game_components_roomchatform_span_text_11">
                     Target character
                   </span>
                   <select
@@ -2305,15 +2305,15 @@ function ignoreSpellingWord() {
                     onChange={(event) =>
                       setGiftTargetId(event.target.value)
                     }
-                    className="w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2.5 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] outline-none focus:border-[rgb(var(--sep-colour-a17a45))]"
+                    className="w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2.5 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] outline-none focus:border-[rgb(var(--sep-colour-a17a45))] game_components_roomchatform_select_select_7"
                   >
                     {selectedGift.targetMode === "either" ? (
-                      <option value="">Self</option>
+                      <option className="game_components_roomchatform_option_option_14" value="">Self</option>
                     ) : (
-                      <option value="">Choose character...</option>
+                      <option className="game_components_roomchatform_option_option_15" value="">Choose character...</option>
                     )}
                     {presentCharacters.map((entry) => (
-                      <option key={entry.id} value={entry.id}>
+                      <option className="game_components_roomchatform_option_option_16" key={entry.id} value={entry.id}>
                         {entry.display_name}
                       </option>
                     ))}
@@ -2321,18 +2321,18 @@ function ignoreSpellingWord() {
                 </label>
               ) : null}
 
-              <div className="mt-3 border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-15100d))] p-3">
-                <p className="font-serif text-base text-[rgb(var(--sep-colour-dec89f))]">
+              <div className="mt-3 border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-15100d))] p-3 game_components_roomchatform_div_container_21">
+                <p className="font-serif text-base text-[rgb(var(--sep-colour-dec89f))] game_components_roomchatform_p_text_15">
                   {selectedGift.name}
                 </p>
                 {selectedGift.description ? (
-                  <p className="mt-1 text-[10px] leading-5 text-[rgb(var(--sep-colour-817565))]">
+                  <p className="mt-1 text-[10px] leading-5 text-[rgb(var(--sep-colour-817565))] game_components_roomchatform_p_text_16">
                     {
                       selectedGift.description
                     }
                   </p>
                 ) : null}
-                <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-c5a36f))]">
+                <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-c5a36f))] game_components_roomchatform_p_text_17">
                   Success:{" "}
                   {selectedGift.effectMode === "passive"
                     ? "No roll - Passive Feat"
@@ -2347,7 +2347,7 @@ function ignoreSpellingWord() {
 
                 {(selectedGift.healthDelta !== 0 ||
                   selectedGift.maxHealthModifier !== 0) ? (
-                  <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-aa8c61))]">
+                  <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-aa8c61))] game_components_roomchatform_p_text_18">
                     {selectedGift.healthDelta !== 0
                       ? `Health ${formatSigned(selectedGift.healthDelta)}`
                       : ""}
@@ -2370,7 +2370,7 @@ function ignoreSpellingWord() {
                   selectedGift.presenceModifier ||
                   selectedGift.warpingAffinityModifier ||
                   selectedGift.warpsPerDayModifier) ? (
-                  <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-aa8c61))]">
+                  <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-aa8c61))] game_components_roomchatform_p_text_19">
                     {selectedGift.damageDice
                       ? `Damage ${selectedGift.damageDice}${selectedGift.damageType ? ` ${selectedGift.damageType}` : ""}`
                       : ""}
@@ -2390,7 +2390,7 @@ function ignoreSpellingWord() {
                   </p>
                 ) : null}
 
-                <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-8b7657))]">
+                <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-8b7657))] game_components_roomchatform_p_text_20">
                   {selectedGift.effectMode ===
                   "passive"
                     ? "Passive effect is already active - you can show this Feat in chat"
@@ -2421,9 +2421,9 @@ function ignoreSpellingWord() {
                 </p>
               </div>
 
-              <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-3 game_components_roomchatform_div_container_22">
                 <p
-                  className={`text-xs ${
+                  className={[((`text-xs ${
                     giftUseState.message
                       ? giftUseState.ok
                         ? "text-[rgb(var(--sep-colour-9bb58c))]"
@@ -2433,7 +2433,7 @@ function ignoreSpellingWord() {
                           ? "text-[rgb(var(--sep-colour-9bb58c))]"
                           : "text-[rgb(var(--sep-colour-d58d82))]"
                         : "text-[rgb(var(--sep-colour-756958))]"
-                  }`}
+                  }`)), "game_components_roomchatform_p_text_21"].filter(Boolean).join(" ")}
                 >
                   {giftUseState.message ||
                     giftState.message}
@@ -2444,7 +2444,7 @@ function ignoreSpellingWord() {
                     type="submit"
                     formAction={giftUseAction}
                     formNoValidate
-                    className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-21190f))] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d6bb8d))] transition hover:border-[rgb(var(--sep-colour-a17a49))]"
+                    className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-21190f))] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d6bb8d))] transition hover:border-[rgb(var(--sep-colour-a17a49))] game_components_roomchatform_button_show_feat"
                   >
                     Show Feat
                   </button>
@@ -2454,7 +2454,7 @@ function ignoreSpellingWord() {
                     <button
                       type="button"
                       disabled
-                      className="cursor-not-allowed border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-17120e))] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))] opacity-60"
+                      className="cursor-not-allowed border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-17120e))] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))] opacity-60 game_components_roomchatform_button_active"
                     >
                       Active
                     </button>
@@ -2463,7 +2463,7 @@ function ignoreSpellingWord() {
                     <button
                       type="button"
                       disabled
-                      className="cursor-not-allowed border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-17120e))] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))] opacity-60"
+                      className="cursor-not-allowed border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-17120e))] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))] opacity-60 game_components_roomchatform_button_cooldown"
                     >
                       Cooldown{" "}
                       {giftCooldownLabel(
@@ -2479,7 +2479,7 @@ function ignoreSpellingWord() {
                         selectedGift.targetMode === "other" &&
                         !giftTargetId
                       }
-                      className="border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:bg-[rgb(var(--sep-colour-4a351f))]"
+                      className="border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:bg-[rgb(var(--sep-colour-4a351f))] game_components_roomchatform_button_activate_feat"
                     >
                       Activate Feat
                     </button>
@@ -2493,7 +2493,7 @@ function ignoreSpellingWord() {
                       selectedGift.targetMode === "other" &&
                       !giftTargetId
                     }
-                    className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-21190f))] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d6bb8d))] transition hover:border-[rgb(var(--sep-colour-a17a49))]"
+                    className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-21190f))] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d6bb8d))] transition hover:border-[rgb(var(--sep-colour-a17a49))] game_components_roomchatform_button_use_feat"
                   >
                     Use Feat
                   </button>
@@ -2501,7 +2501,7 @@ function ignoreSpellingWord() {
               </div>
             </>
           ) : (
-            <p className="text-sm italic text-[rgb(var(--sep-colour-756958))]">
+            <p className="text-sm italic text-[rgb(var(--sep-colour-756958))] game_components_roomchatform_p_text_22">
               You have no Feats available.
             </p>
           )}
@@ -2519,7 +2519,7 @@ function ignoreSpellingWord() {
       ) : (
         <form
           action={itemAction}
-          className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3"
+          className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3 game_components_roomchatform_form_item_action"
         >
           <UtilityPanelHeader
             title="Use Item"
@@ -2529,7 +2529,7 @@ function ignoreSpellingWord() {
 
           {selectedItem ? (
             <>
-              <input
+              <input className="game_components_roomchatform_input_item_record_kind_2"
                 type="hidden"
                 name="item_record_kind"
                 value={
@@ -2538,7 +2538,7 @@ function ignoreSpellingWord() {
                 }
                 readOnly
               />
-              <input
+              <input className="game_components_roomchatform_input_item_record_id_2"
                 type="hidden"
                 name="item_record_id"
                 value={
@@ -2546,16 +2546,16 @@ function ignoreSpellingWord() {
                 }
                 readOnly
               />
-              <input
+              <input className="game_components_roomchatform_input_field_10"
                 type="hidden"
                 name="item_target_character_id"
                 value={itemTargetId ?? ""}
                 readOnly
               />
 
-              <div className="grid gap-3 md:grid-cols-2">
-                <label>
-                  <span className="mb-1.5 block text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))]">
+              <div className="grid gap-3 md:grid-cols-2 game_components_roomchatform_div_container_23">
+                <label className="game_components_roomchatform_label_label_9">
+                  <span className="mb-1.5 block text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))] game_components_roomchatform_span_text_12">
                     Item
                   </span>
                   <select
@@ -2565,10 +2565,10 @@ function ignoreSpellingWord() {
                         event.target.value,
                       )
                     }
-                    className="w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2.5 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] outline-none focus:border-[rgb(var(--sep-colour-a17a45))]"
+                    className="w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2.5 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] outline-none focus:border-[rgb(var(--sep-colour-a17a45))] game_components_roomchatform_select_select_8"
                   >
                     {regularItems.map((item) => (
-                      <option
+                      <option className="game_components_roomchatform_option_option_17"
                         key={`${item.recordKind}:${item.recordId}`}
                         value={`${item.recordKind}:${item.recordId}`}
                       >
@@ -2581,8 +2581,8 @@ function ignoreSpellingWord() {
                   </select>
                 </label>
 
-                <label>
-                  <span className="mb-1.5 block text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))]">
+                <label className="game_components_roomchatform_label_label_10">
+                  <span className="mb-1.5 block text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))] game_components_roomchatform_span_text_13">
                     Target
                   </span>
                   <select
@@ -2596,15 +2596,15 @@ function ignoreSpellingWord() {
                       selectedItem.targetMode ===
                       "self"
                     }
-                    className="w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2.5 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] outline-none focus:border-[rgb(var(--sep-colour-a17a45))] disabled:opacity-55"
+                    className="w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2.5 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] outline-none focus:border-[rgb(var(--sep-colour-a17a45))] disabled:opacity-55 game_components_roomchatform_select_select_9"
                   >
                     {selectedItem.targetMode !==
                     "other" ? (
-                      <option value="">
+                      <option className="game_components_roomchatform_option_option_18" value="">
                         Self
                       </option>
                     ) : (
-                      <option value="">
+                      <option className="game_components_roomchatform_option_option_19" value="">
                         Choose character...
                       </option>
                     )}
@@ -2613,7 +2613,7 @@ function ignoreSpellingWord() {
                     "self"
                       ? presentCharacters.map(
                           (entry) => (
-                            <option
+                            <option className="game_components_roomchatform_option_option_20"
                               key={entry.id}
                               value={entry.id}
                             >
@@ -2628,20 +2628,20 @@ function ignoreSpellingWord() {
                 </label>
               </div>
 
-              <div className="mt-3 border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-15100d))] p-3">
-                <p className="font-serif text-base text-[rgb(var(--sep-colour-dec89f))]">
+              <div className="mt-3 border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-15100d))] p-3 game_components_roomchatform_div_container_24">
+                <p className="font-serif text-base text-[rgb(var(--sep-colour-dec89f))] game_components_roomchatform_p_text_23">
                   {selectedItem.name}
                 </p>
 
                 {selectedItem.description ? (
-                  <p className="mt-1 text-[10px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+                  <p className="mt-1 text-[10px] leading-5 text-[rgb(var(--sep-colour-8f8271))] game_components_roomchatform_p_text_24">
                     {
                       selectedItem.description
                     }
                   </p>
                 ) : null}
 
-                <div className="mt-2 flex flex-wrap gap-2 text-[8px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-9b8768))]">
+                <div className="mt-2 flex flex-wrap gap-2 text-[8px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-9b8768))] game_components_roomchatform_div_container_25">
                   {selectedItem.effects
                     .filter(
                       (effect) =>
@@ -2721,7 +2721,7 @@ function ignoreSpellingWord() {
                       return (
                         <span
                           key={index}
-                          className="border border-[rgb(var(--sep-colour-60482e))]/40 px-2 py-1"
+                          className="border border-[rgb(var(--sep-colour-60482e))]/40 px-2 py-1 game_components_roomchatform_span_text_14"
                         >
                           {parts.join(" · ") ||
                             "Use effect"}
@@ -2734,14 +2734,14 @@ function ignoreSpellingWord() {
                 Date.parse(
                   selectedItem.cooldownReadyAt,
                 ) > Date.now() ? (
-                  <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-amber-400">
+                  <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-amber-400 game_components_roomchatform_p_text_25">
                     On cooldown
                   </p>
                 ) : null}
 
                 {selectedItem.maxCharges !==
                 null ? (
-                  <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-8f7c61))]">
+                  <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-8f7c61))] game_components_roomchatform_p_text_26">
                     {selectedItem.chargesRemaining ??
                       selectedItem.maxCharges}
                     {" / "}
@@ -2753,14 +2753,14 @@ function ignoreSpellingWord() {
                 ) : null}
               </div>
 
-              <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-3 game_components_roomchatform_div_container_26">
                 <p
                   aria-live="polite"
-                  className={`text-xs ${
+                  className={[((`text-xs ${
                     itemState.ok
                       ? "text-[rgb(var(--sep-colour-9bb58c))]"
                       : "text-[rgb(var(--sep-colour-d58d82))]"
-                  }`}
+                  }`)), "game_components_roomchatform_p_text_27"].filter(Boolean).join(" ")}
                 >
                   {itemState.message}
                 </p>
@@ -2778,14 +2778,14 @@ function ignoreSpellingWord() {
                       "other" &&
                       !itemTargetId)
                   }
-                  className="border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-5 py-2.5 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:bg-[rgb(var(--sep-colour-4a351f))] disabled:cursor-not-allowed disabled:opacity-40"
+                  className="border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-5 py-2.5 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:bg-[rgb(var(--sep-colour-4a351f))] disabled:cursor-not-allowed disabled:opacity-40 game_components_roomchatform_button_use_item"
                 >
                   Use Item
                 </button>
               </div>
             </>
           ) : (
-            <p className="text-sm italic text-[rgb(var(--sep-colour-756958))]">
+            <p className="text-sm italic text-[rgb(var(--sep-colour-756958))] game_components_roomchatform_p_text_28">
               You have no usable non-Weapon Items.
             </p>
           )}
@@ -2794,11 +2794,11 @@ function ignoreSpellingWord() {
       {utilityMode === null && (utilityLoadingMode || utilityLoadError) ? (
         <p
           aria-live="polite"
-          className={`mb-1 text-center text-[8px] ${
+          className={[((`mb-1 text-center text-[8px] ${
             utilityLoadError
               ? "text-[rgb(var(--sep-colour-d58d82))]"
               : "text-[rgb(var(--sep-colour-a98b61))]"
-          }`}
+          }`)), "game_components_roomchatform_p_text_29"].filter(Boolean).join(" ")}
         >
           {utilityLoadError
             ? utilityLoadError
@@ -2810,12 +2810,12 @@ function ignoreSpellingWord() {
         </p>
       ) : null}
       {utilityMode === null ? (
-      <div className="-mt-8 mx-[92px] flex flex-wrap justify-center gap-1 border-0 pt-0 max-lg:mx-0 max-lg:mt-2 max-lg:border-t max-lg:border-[rgb(var(--sep-colour-59432c))]/30 max-lg:pt-2">
+      <div className="-mt-8 mx-[92px] flex flex-wrap justify-center gap-1 border-0 pt-0 max-lg:mx-0 max-lg:mt-2 max-lg:border-t max-lg:border-[rgb(var(--sep-colour-59432c))]/30 max-lg:pt-2 game_components_roomchatform_div_container_27">
         {canUseFate ? (
           <button
             type="button"
             onClick={() => toggleUtility("npc")}
-            className={utilityMode === "npc" ? utilityButtonActiveClass : utilityButtonClass}
+            className={[((utilityMode === "npc" ? utilityButtonActiveClass : utilityButtonClass)), "game_components_roomchatform_button_npcs"].filter(Boolean).join(" ")}
           >
             NPCs
           </button>
@@ -2826,11 +2826,9 @@ function ignoreSpellingWord() {
   onClick={() =>
     toggleUtility("conditions")
   }
-  className={
-    utilityMode === "conditions"
+  className={[((utilityMode === "conditions"
       ? utilityButtonActiveClass
-      : utilityButtonClass
-  }
+      : utilityButtonClass)), "game_components_roomchatform_button_conditions"].filter(Boolean).join(" ")}
 >
   Conditions
 </button>
@@ -2843,11 +2841,9 @@ function ignoreSpellingWord() {
           disabled={
             presentCharacters.length === 0
           }
-          className={
-            utilityMode === "whisper"
+          className={[((utilityMode === "whisper"
               ? utilityButtonActiveClass
-              : utilityButtonClass
-          }
+              : utilityButtonClass)), "game_components_roomchatform_button_whisper"].filter(Boolean).join(" ")}
         >
           Whisper
         </button>
@@ -2857,11 +2853,9 @@ function ignoreSpellingWord() {
           onClick={() =>
             toggleUtility("dice")
           }
-          className={
-            utilityMode === "dice"
+          className={[((utilityMode === "dice"
               ? utilityButtonActiveClass
-              : utilityButtonClass
-          }
+              : utilityButtonClass)), "game_components_roomchatform_button_roll_dice"].filter(Boolean).join(" ")}
         >
           Roll Dice
         </button>
@@ -2871,11 +2865,9 @@ function ignoreSpellingWord() {
           onClick={() =>
             toggleUtility("attributes")
           }
-          className={
-            utilityMode === "attributes"
+          className={[((utilityMode === "attributes"
               ? utilityButtonActiveClass
-              : utilityButtonClass
-          }
+              : utilityButtonClass)), "game_components_roomchatform_button_atk_use_attributes"].filter(Boolean).join(" ")}
         >
           ATK / Use Attributes
         </button>
@@ -2885,11 +2877,9 @@ function ignoreSpellingWord() {
           onClick={() =>
             toggleUtility("feat")
           }
-          className={
-            utilityMode === "feat"
+          className={[((utilityMode === "feat"
               ? utilityButtonActiveClass
-              : utilityButtonClass
-          }
+              : utilityButtonClass)), "game_components_roomchatform_button_use_feat_2"].filter(Boolean).join(" ")}
         >
           Use Feat
         </button>
@@ -2897,11 +2887,9 @@ function ignoreSpellingWord() {
         <button
           type="button"
           onClick={() => toggleUtility("warping")}
-          className={
-            utilityMode === "warping"
+          className={[((utilityMode === "warping"
               ? utilityButtonActiveClass
-              : utilityButtonClass
-          }
+              : utilityButtonClass)), "game_components_roomchatform_button_warping"].filter(Boolean).join(" ")}
         >
           Warping
         </button>
@@ -2911,11 +2899,9 @@ function ignoreSpellingWord() {
           onClick={() =>
             toggleUtility("items")
           }
-          className={
-            utilityMode === "items"
+          className={[((utilityMode === "items"
               ? utilityButtonActiveClass
-              : utilityButtonClass
-          }
+              : utilityButtonClass)), "game_components_roomchatform_button_use_items"].filter(Boolean).join(" ")}
         >
           Use Items
         </button>
@@ -2929,11 +2915,9 @@ function ignoreSpellingWord() {
             presentCharacters.length === 0
           }
           title="Item Exchange"
-          className={
-            utilityMode === "exchange"
+          className={[((utilityMode === "exchange"
               ? utilityButtonActiveClass
-              : utilityButtonClass
-          }
+              : utilityButtonClass)), "game_components_roomchatform_button_item_exchange"].filter(Boolean).join(" ")}
         >
           Item Exchange
         </button>
@@ -2947,7 +2931,7 @@ function ignoreSpellingWord() {
             aria-label="Download current game session"
             className="flex h-6 w-6 items-center justify-center border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-21190f))] text-[11px] text-[rgb(var(--sep-colour-d6bb8d))] transition hover:border-[rgb(var(--sep-colour-a17a49))] hover:text-[rgb(var(--sep-colour-f0d6a7))]"
           >
-            <span aria-hidden="true">⇩</span>
+            <span className="game_components_roomchatform_span_text_15" aria-hidden="true">⇩</span>
           </Link>
         ) : null}
 
@@ -2958,19 +2942,19 @@ function ignoreSpellingWord() {
             aria-label={`Back to ${backLabel ?? "area"}`}
             className="flex h-6 w-6 items-center justify-center border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-21190f))] p-1"
           >
-            <img src="/icons/play.png" alt="" aria-hidden="true" className="h-full w-full object-contain" />
+            <img src="/icons/play.png" alt="" aria-hidden="true" className="h-full w-full object-contain game_components_roomchatform_img_image" />
           </Link>
         ) : null}
 
         {canTakeLeave ? (
-          <form action={leaveCurrentRoom}>
+          <form className="game_components_roomchatform_form_form_2" action={leaveCurrentRoom}>
             <button
               type="submit"
               title="Take Leave"
               aria-label="Take Leave"
-              className="flex h-6 w-6 items-center justify-center border border-[rgb(var(--sep-colour-8f3f36))] bg-[rgb(var(--sep-colour-351714))] text-[11px] text-[rgb(var(--sep-colour-e6a097))] transition hover:border-[rgb(var(--sep-colour-c65a4d))] hover:text-[rgb(var(--sep-colour-ffd0c9))]"
+              className="flex h-6 w-6 items-center justify-center border border-[rgb(var(--sep-colour-8f3f36))] bg-[rgb(var(--sep-colour-351714))] text-[11px] text-[rgb(var(--sep-colour-e6a097))] transition hover:border-[rgb(var(--sep-colour-c65a4d))] hover:text-[rgb(var(--sep-colour-ffd0c9))] game_components_roomchatform_button_take_leave"
             >
-              <span aria-hidden="true">↪</span>
+              <span className="game_components_roomchatform_span_take_leave" aria-hidden="true">↪</span>
             </button>
           </form>
         ) : null}
@@ -2993,15 +2977,15 @@ function UtilityPanelHeader({
   onClose: () => void;
 }) {
   return (
-    <div className="mb-3 flex flex-wrap items-start justify-between gap-3 border-b border-[rgb(var(--sep-colour-59432c))]/30 pb-3">
-      <div>
-        <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+    <div className="mb-3 flex flex-wrap items-start justify-between gap-3 border-b border-[rgb(var(--sep-colour-59432c))]/30 pb-3 game_components_roomchatform_div_container_28">
+      <div className="game_components_roomchatform_div_container_29">
+        <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] game_components_roomchatform_p_text_30">
           Chat Utility
         </p>
-        <h3 className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-dec89f))]">
+        <h3 className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-dec89f))] game_components_roomchatform_h3_heading">
           {title}
         </h3>
-        <p className="mt-1 text-[9px] text-[rgb(var(--sep-colour-817565))]">
+        <p className="mt-1 text-[9px] text-[rgb(var(--sep-colour-817565))] game_components_roomchatform_p_text_31">
           {description}
         </p>
       </div>
@@ -3009,7 +2993,7 @@ function UtilityPanelHeader({
       <button
         type="button"
         onClick={onClose}
-        className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a08c70))] transition hover:border-[rgb(var(--sep-colour-87663b))] hover:text-[rgb(var(--sep-colour-d4bb91))]"
+        className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a08c70))] transition hover:border-[rgb(var(--sep-colour-87663b))] hover:text-[rgb(var(--sep-colour-d4bb91))] game_components_roomchatform_button_back_chat"
       >
         Back to Chat
       </button>
@@ -3032,7 +3016,7 @@ function SubmitButton({
       type="submit"
       onClick={onPrepare}
       disabled={disabled || pending}
-      className="border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-3 py-1.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:bg-[rgb(var(--sep-colour-4a351f))] disabled:cursor-not-allowed disabled:opacity-40"
+      className="border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-3 py-1.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:bg-[rgb(var(--sep-colour-4a351f))] disabled:cursor-not-allowed disabled:opacity-40 game_components_roomchatform_button_prepare"
     >
       {pending
         ? "Sending..."
@@ -3068,7 +3052,7 @@ function RollButton({
       formAction={formAction}
       formNoValidate
       disabled={disabled || pending}
-      className="shrink-0 border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:bg-[rgb(var(--sep-colour-4a351f))] disabled:cursor-not-allowed disabled:opacity-40"
+      className="shrink-0 border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:bg-[rgb(var(--sep-colour-4a351f))] disabled:cursor-not-allowed disabled:opacity-40 game_components_roomchatform_button_prepare_2"
     >
       {pending
         ? "Rolling..."

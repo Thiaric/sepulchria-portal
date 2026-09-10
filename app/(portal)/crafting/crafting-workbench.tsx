@@ -449,16 +449,16 @@ export function CraftingWorkbench({
 
   if (!recipes.length) {
     return (
-      <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 p-10 text-center">
-        <p className="text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-886c48))]">
+      <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 p-10 text-center crafting_crafting_workbench_section_no_recipes_known">
+        <p className="text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-886c48))] crafting_crafting_workbench_p_no_recipes_known">
           Recipe Book
         </p>
 
-        <h2 className="mt-3 font-serif text-2xl text-[rgb(var(--sep-colour-ead6ad))]">
+        <h2 className="mt-3 font-serif text-2xl text-[rgb(var(--sep-colour-ead6ad))] crafting_crafting_workbench_h2_no_recipes_known">
           No recipes known
         </h2>
 
-        <p className="mx-auto mt-3 max-w-xl text-[11px] leading-6 text-[rgb(var(--sep-colour-9f9281))]">
+        <p className="mx-auto mt-3 max-w-xl text-[11px] leading-6 text-[rgb(var(--sep-colour-9f9281))] crafting_crafting_workbench_p_no_recipes_known_2">
           This character has not learned any crafting recipes yet.
         </p>
       </section>
@@ -470,9 +470,9 @@ export function CraftingWorkbench({
 
   return (
     <>
-      <div className="grid h-auto max-h-none min-h-0 w-full gap-3 overflow-visible xl:h-full xl:max-h-full xl:grid-cols-[0.9fr_0.9fr_2.2fr] xl:overflow-hidden">
+      <div className="grid h-auto max-h-none min-h-0 w-full gap-3 overflow-visible xl:h-full xl:max-h-full xl:grid-cols-[0.9fr_0.9fr_2.2fr] xl:overflow-hidden crafting_crafting_workbench_div_container">
       <section
-        className="relative flex min-h-0 flex-col overflow-hidden border bg-[rgb(var(--sep-colour-120d0a))]/95 xl:h-full"
+        className="relative flex min-h-0 flex-col overflow-hidden border bg-[rgb(var(--sep-colour-120d0a))]/95 xl:h-full crafting_crafting_workbench_section_section"
         style={{
           borderColor: `color-mix(in srgb, ${craftingLineAccent} 42%, transparent)`,
           backgroundColor:
@@ -486,15 +486,15 @@ export function CraftingWorkbench({
       >
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 top-0 h-px"
+          className="pointer-events-none absolute inset-x-0 top-0 h-px crafting_crafting_workbench_div_container_2"
           style={{ background: `linear-gradient(90deg, transparent, ${craftingAccent}, transparent)` }}
         />
-        <div className="shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/35 px-4 py-3">
-          <p className="text-[7px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-806b50))]">
+        <div className="shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/35 px-4 py-3 crafting_crafting_workbench_div_container_3">
+          <p className="text-[7px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-806b50))] crafting_crafting_workbench_p_text">
             The Maker&apos;s Folio
           </p>
-          <div className="mt-1 flex items-end justify-between gap-3">
-            <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-ead6ad))]">
+          <div className="mt-1 flex items-end justify-between gap-3 crafting_crafting_workbench_div_known_recipes">
+            <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-ead6ad))] crafting_crafting_workbench_h2_known_recipes">
               Known Recipes
             </h2>
             <SepBadge
@@ -506,7 +506,7 @@ export function CraftingWorkbench({
           </div>
         </div>
 
-        <div className="min-h-0 flex-1 space-y-2 overflow-y-auto p-3 max-h-48 xl:max-h-none">
+        <div className="min-h-0 flex-1 space-y-2 overflow-y-auto p-3 max-h-48 xl:max-h-none crafting_crafting_workbench_div_container_4">
           {recipes.map((recipe) => {
             const active = recipe.id === selectedRecipeId;
             const available = recipe.ingredients.every(
@@ -520,7 +520,7 @@ export function CraftingWorkbench({
                 key={recipe.id}
                 type="button"
                 onClick={() => chooseRecipe(recipe.id)}
-                className="group relative flex w-full items-center gap-3 overflow-hidden border px-3 py-2.5 text-left transition duration-300 ease-out hover:-translate-y-px"
+                className="group relative flex w-full items-center gap-3 overflow-hidden border px-3 py-2.5 text-left transition duration-300 ease-out hover:-translate-y-px crafting_crafting_workbench_button_action"
                 style={{
                   borderColor: active
                     ? craftingAccent
@@ -539,10 +539,10 @@ export function CraftingWorkbench({
                       : "0 3px 10px rgba(0,0,0,0.11)",
                 }}
               >
-                <span aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 opacity-10"
+                <span aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 opacity-10 crafting_crafting_workbench_span_text"
                   style={{ backgroundImage: `url("/pattern/parchment.png")`, backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}
                 />
-                <div className="relative z-10 shrink-0">
+                <div className="relative z-10 shrink-0 crafting_crafting_workbench_div_container_5">
                   <ItemImage
                   src={recipe.result.image_url}
                   quality={recipe.result.quality}
@@ -550,12 +550,12 @@ export function CraftingWorkbench({
                   fallback="✦"
                 />
                 </div>
-                <div className="relative z-10 min-w-0 flex-1">
-                  <p className="line-clamp-2 font-serif text-[13px] leading-4 text-[rgb(var(--sep-colour-ead6ad))]">
+                <div className="relative z-10 min-w-0 flex-1 crafting_crafting_workbench_div_container_6">
+                  <p className="line-clamp-2 font-serif text-[13px] leading-4 text-[rgb(var(--sep-colour-ead6ad))] crafting_crafting_workbench_p_text_2">
                     {recipe.name}
                   </p>
                   <p
-                    className="mt-1 text-[6px] uppercase tracking-[0.16em]"
+                    className="mt-1 text-[6px] uppercase tracking-[0.16em] crafting_crafting_workbench_p_text_3"
                     style={{
                       color: available
                         ? craftingAccent
@@ -565,7 +565,7 @@ export function CraftingWorkbench({
                     {available ? "Materials ready" : "Materials missing"}
                   </p>
                 </div>
-                <span aria-hidden="true" className="text-xs" style={{ color: active ? craftingAccent : "rgb(var(--sep-colour-59432c))" }}>
+                <span aria-hidden="true" className="text-xs crafting_crafting_workbench_span_text_2" style={{ color: active ? craftingAccent : "rgb(var(--sep-colour-59432c))" }}>
                   ◆
                 </span>
               </button>
@@ -575,7 +575,7 @@ export function CraftingWorkbench({
       </section>
 
       <section
-        className="relative flex min-h-0 flex-col overflow-hidden border bg-[rgb(var(--sep-colour-120d0a))]/95 xl:h-full"
+        className="relative flex min-h-0 flex-col overflow-hidden border bg-[rgb(var(--sep-colour-120d0a))]/95 xl:h-full crafting_crafting_workbench_section_section_2"
         style={{
           borderColor: `color-mix(in srgb, ${craftingLineAccent} 42%, transparent)`,
           backgroundColor:
@@ -589,22 +589,22 @@ export function CraftingWorkbench({
       >
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 top-0 h-px"
+          className="pointer-events-none absolute inset-x-0 top-0 h-px crafting_crafting_workbench_div_container_7"
           style={{ background: `linear-gradient(90deg, transparent, ${craftingAccent}, transparent)` }}
         />
-        <div className="shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/35 px-4 py-3">
-          <p className="text-[7px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-806b50))]">
+        <div className="shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/35 px-4 py-3 crafting_crafting_workbench_div_ingredients_hand">
+          <p className="text-[7px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-806b50))] crafting_crafting_workbench_p_ingredients_hand">
             Material Tray
           </p>
-          <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-ead6ad))]">
+          <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-ead6ad))] crafting_crafting_workbench_h2_ingredients_hand">
             Ingredients at Hand
           </h2>
-          <p className="mt-1 text-[6px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-806b50))]">
+          <p className="mt-1 text-[6px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-806b50))] crafting_crafting_workbench_p_ingredients_hand_2">
             Drag · double-click · or autofill
           </p>
         </div>
 
-        <div className="min-h-0 flex-1 space-y-2 overflow-y-auto p-3 max-h-72 xl:max-h-none">
+        <div className="min-h-0 flex-1 space-y-2 overflow-y-auto p-3 max-h-72 xl:max-h-none crafting_crafting_workbench_div_container_8">
           {inventory.length ? (
             inventory.map((item) => {
               const usedByRecipe = selectedRecipe?.ingredients.some(
@@ -623,7 +623,7 @@ export function CraftingWorkbench({
                   }}
                   onDragEnd={() => setDraggedItemId(null)}
                   onDoubleClick={() => fillIngredient(item.id)}
-                  className="group relative flex w-full items-center gap-3 overflow-hidden border px-3 py-2 text-left transition duration-300 ease-out hover:-translate-y-0.5 hover:scale-[1.008]"
+                  className="group relative flex w-full items-center gap-3 overflow-hidden border px-3 py-2 text-left transition duration-300 ease-out hover:-translate-y-0.5 hover:scale-[1.008] crafting_crafting_workbench_button_action_2"
                   style={{
                     borderColor:
                       draggedItemId === item.id
@@ -646,25 +646,25 @@ export function CraftingWorkbench({
                             : "0 2px 8px rgba(0,0,0,0.10)",
                   }}
                 >
-                  <span aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 opacity-10"
+                  <span aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 opacity-10 crafting_crafting_workbench_span_text_3"
                     style={{ backgroundImage: `url("/pattern/sparkle.gif")`, backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}
                   />
-                  <div className="relative z-10 shrink-0">
+                  <div className="relative z-10 shrink-0 crafting_crafting_workbench_div_container_9">
                     <ItemImage
                       src={item.image_url}
                       quality={item.quality}
                     />
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-[10px] text-[rgb(var(--sep-colour-d4bd94))]">
+                  <div className="min-w-0 flex-1 crafting_crafting_workbench_div_container_10">
+                    <p className="truncate text-[10px] text-[rgb(var(--sep-colour-d4bd94))] crafting_crafting_workbench_p_text_4">
                       {item.name}
                     </p>
-                    <p className="mt-1 text-[6px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-806b50))]">
+                    <p className="mt-1 text-[6px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-806b50))] crafting_crafting_workbench_p_text_5">
                       {qualityLabel(item.quality)}
                     </p>
                   </div>
                   <span
-                    className="shrink-0 border bg-black/20 px-2 py-1 font-serif text-[11px]"
+                    className="shrink-0 border bg-black/20 px-2 py-1 font-serif text-[11px] crafting_crafting_workbench_span_text_4"
                     style={{
                       borderColor: `color-mix(in srgb, ${craftingAccent} 22%, transparent)`,
                       color: usedByRecipe
@@ -678,7 +678,7 @@ export function CraftingWorkbench({
               );
             })
           ) : (
-            <p className="px-2 py-4 text-[10px] leading-5 text-[rgb(var(--sep-colour-9f9281))]">
+            <p className="px-2 py-4 text-[10px] leading-5 text-[rgb(var(--sep-colour-9f9281))] crafting_crafting_workbench_p_text_6">
               No crafting materials carried.
             </p>
           )}
@@ -686,7 +686,7 @@ export function CraftingWorkbench({
       </section>
 
       <section
-        className="relative flex min-h-0 flex-col overflow-hidden border bg-[rgb(var(--sep-colour-0d0907))] xl:h-full"
+        className="relative flex min-h-0 flex-col overflow-hidden border bg-[rgb(var(--sep-colour-0d0907))] xl:h-full crafting_crafting_workbench_section_section_3"
         style={{
           borderColor: `color-mix(in srgb, ${craftingLineAccent} 52%, transparent)`,
           backgroundColor:
@@ -700,26 +700,26 @@ export function CraftingWorkbench({
       >
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute left-1/2 top-[-70px] h-40 w-[65%] -translate-x-1/2 rounded-full blur-3xl"
+          className="pointer-events-none absolute left-1/2 top-[-70px] h-40 w-[65%] -translate-x-1/2 rounded-full blur-3xl crafting_crafting_workbench_div_container_11"
           style={{ background: `color-mix(in srgb, ${craftingAccent} 10%, transparent)` }}
         />
 
-        <div className="relative shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/35 px-5 py-3">
-          <p className="text-[7px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-806b50))]">
+        <div className="relative shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/35 px-5 py-3 crafting_crafting_workbench_div_container_12">
+          <p className="text-[7px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-806b50))] crafting_crafting_workbench_p_text_7">
             Sepulchrian Workbench
           </p>
-          <div className="mt-1 flex flex-wrap items-end justify-between gap-3">
-            <div>
-              <h2 className="font-serif text-2xl text-[rgb(var(--sep-colour-ead6ad))]">
+          <div className="mt-1 flex flex-wrap items-end justify-between gap-3 crafting_crafting_workbench_div_container_13">
+            <div className="crafting_crafting_workbench_div_container_14">
+              <h2 className="font-serif text-2xl text-[rgb(var(--sep-colour-ead6ad))] crafting_crafting_workbench_h2_heading">
                 {selectedRecipe?.name}
               </h2>
-              <p className="mt-1 max-w-3xl text-[9px] leading-4 text-[rgb(var(--sep-colour-9f9281))]">
+              <p className="mt-1 max-w-3xl text-[9px] leading-4 text-[rgb(var(--sep-colour-9f9281))] crafting_crafting_workbench_p_text_8">
                 {selectedRecipe?.description}
               </p>
             </div>
 
             <span
-              className="border px-2.5 py-1 text-[6px] uppercase tracking-[0.18em]"
+              className="border px-2.5 py-1 text-[6px] uppercase tracking-[0.18em] crafting_crafting_workbench_span_text_5"
               style={{
                 borderColor: allRequirementsOwned
                   ? `color-mix(in srgb, ${craftingAccent} 55%, transparent)`
@@ -738,9 +738,9 @@ export function CraftingWorkbench({
           </div>
         </div>
 
-        <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden p-3">
+        <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden p-3 crafting_crafting_workbench_div_container_15">
           <div
-            className="relative flex min-h-[260px] flex-1 items-center justify-center overflow-auto border p-2 sm:p-3 xl:min-h-[280px] 2xl:min-h-[320px]"
+            className="relative flex min-h-[260px] flex-1 items-center justify-center overflow-auto border p-2 sm:p-3 xl:min-h-[280px] 2xl:min-h-[320px] crafting_crafting_workbench_div_container_16"
             style={{
               borderColor: `color-mix(in srgb, ${craftingLineAccent} 38%, transparent)`,
               backgroundColor:
@@ -762,25 +762,23 @@ export function CraftingWorkbench({
           >
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute left-1/2 top-1/2 h-[72%] aspect-square -translate-x-1/2 -translate-y-1/2 rotate-45 border"
+              className="pointer-events-none absolute left-1/2 top-1/2 h-[72%] aspect-square -translate-x-1/2 -translate-y-1/2 rotate-45 border crafting_crafting_workbench_div_container_17"
               style={{ borderColor: `color-mix(in srgb, ${craftingLineAccent} ${lightCraftingSkin ? 30 : 13}%, transparent)` }}
             />
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute left-1/2 top-1/2 h-[52%] aspect-square -translate-x-1/2 -translate-y-1/2 rotate-45 border"
+              className="pointer-events-none absolute left-1/2 top-1/2 h-[52%] aspect-square -translate-x-1/2 -translate-y-1/2 rotate-45 border crafting_crafting_workbench_div_container_18"
               style={{ borderColor: `color-mix(in srgb, ${craftingLineAccent} ${lightCraftingSkin ? 38 : 18}%, transparent)` }}
             />
 
             <div
-              className={
-                spatialLayout
+              className={[((spatialLayout
                   ? "relative grid h-full min-h-[240px] max-h-full w-full max-w-[720px] grid-cols-[minmax(0,1fr)_minmax(140px,0.9fr)_minmax(0,1fr)] grid-rows-[minmax(72px,0.9fr)_minmax(128px,1.15fr)_minmax(72px,0.9fr)] items-center justify-items-center gap-2 sm:min-h-[260px] sm:max-w-[740px] sm:grid-cols-[minmax(0,1fr)_minmax(160px,1fr)_minmax(0,1fr)] sm:grid-rows-[minmax(80px,1fr)_minmax(148px,1.2fr)_minmax(80px,1fr)] sm:gap-3"
-                  : "relative grid h-full min-h-0 w-full max-w-[760px] auto-rows-fr grid-cols-2 items-center gap-2 2xl:grid-cols-3"
-              }
+                  : "relative grid h-full min-h-0 w-full max-w-[760px] auto-rows-fr grid-cols-2 items-center gap-2 2xl:grid-cols-3")), "crafting_crafting_workbench_div_container_19"].filter(Boolean).join(" ")}
             >
               {spatialLayout ? (
                 <div
-                  className="relative col-start-2 row-start-2 flex h-28 w-28 items-center justify-center border p-[4px] transition-all duration-300 sm:h-32 sm:w-32 2xl:h-36 2xl:w-36"
+                  className="relative col-start-2 row-start-2 flex h-28 w-28 items-center justify-center border p-[4px] transition-all duration-300 sm:h-32 sm:w-32 2xl:h-36 2xl:w-36 crafting_crafting_workbench_div_container_20"
                   style={{
                     borderColor: allSlotsFilled
                       ? craftingLineAccent
@@ -799,12 +797,12 @@ export function CraftingWorkbench({
                 >
                   <div
                     aria-hidden="true"
-                    className="absolute inset-3 rotate-45 border"
+                    className="absolute inset-3 rotate-45 border crafting_crafting_workbench_div_container_21"
                     style={{
                       borderColor: `color-mix(in srgb, ${lightCraftingSkin ? craftingLineAccent : craftingAccent} ${lightCraftingSkin ? 42 : 24}%, transparent)`,
                     }}
                   />
-                  <div className="relative flex flex-col items-center text-center">
+                  <div className="relative flex flex-col items-center text-center crafting_crafting_workbench_div_container_22">
                     <ItemImage
                       src={selectedRecipe?.result.image_url ?? null}
                       quality={
@@ -814,11 +812,11 @@ export function CraftingWorkbench({
                       size="lg"
                       fallback="✦"
                     />
-                    <p className="mt-2 max-w-[120px] truncate font-serif text-[11px] text-[rgb(var(--sep-colour-d4bd94))]">
+                    <p className="mt-2 max-w-[120px] truncate font-serif text-[11px] text-[rgb(var(--sep-colour-d4bd94))] crafting_crafting_workbench_p_text_9">
                       {selectedRecipe?.result.name}
                     </p>
                     <p
-                      className="mt-1 text-[6px] uppercase tracking-[0.16em]"
+                      className="mt-1 text-[6px] uppercase tracking-[0.16em] crafting_crafting_workbench_p_text_10"
                       style={{
                         color: allSlotsFilled
                           ? craftingAccent
@@ -855,7 +853,7 @@ export function CraftingWorkbench({
                       fillIngredient(itemId);
                       setDraggedItemId(null);
                     }}
-                    className={`${spatialLayout ? ingredientPosition(index, selectedRecipe.ingredients.length) : ""} group relative flex h-auto min-h-[70px] w-full max-w-[160px] items-center border transition duration-300 ease-out hover:-translate-y-px sm:min-h-[76px] sm:max-w-[180px] xl:max-w-[190px]`}
+                    className={[((`${spatialLayout ? ingredientPosition(index, selectedRecipe.ingredients.length) : ""} group relative flex h-auto min-h-[70px] w-full max-w-[160px] items-center border transition duration-300 ease-out hover:-translate-y-px sm:min-h-[76px] sm:max-w-[180px] xl:max-w-[190px]`)), "crafting_crafting_workbench_div_container_23"].filter(Boolean).join(" ")}
                     style={{
                       borderColor: filled
                         ? craftingAccent
@@ -873,7 +871,7 @@ export function CraftingWorkbench({
                           : "none",
                     }}
                   >
-                    <span aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 opacity-10"
+                    <span aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 opacity-10 crafting_crafting_workbench_span_text_6"
                       style={{ backgroundImage: `url("/pattern/sparkle.gif")`, backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}
                     />
                     <button
@@ -888,19 +886,19 @@ export function CraftingWorkbench({
                           fillIngredient(ingredient.item_id);
                         }
                       }}
-                      className="relative z-10 flex h-full min-h-0 w-full items-center gap-2 px-2.5 py-1.5 text-left sm:gap-3 sm:px-3 sm:py-2"
+                      className="relative z-10 flex h-full min-h-0 w-full items-center gap-2 px-2.5 py-1.5 text-left sm:gap-3 sm:px-3 sm:py-2 crafting_crafting_workbench_button_action_3"
                     >
                       <ItemImage
                         src={ingredient.image_url}
                         quality={ingredient.quality}
                         size="sm"
                       />
-                      <div className="min-w-0 flex-1">
-                        <p className="line-clamp-2 text-[9px] leading-3.5 text-[rgb(var(--sep-colour-d4bd94))] sm:text-[10px] sm:leading-4">
+                      <div className="min-w-0 flex-1 crafting_crafting_workbench_div_container_24">
+                        <p className="line-clamp-2 text-[9px] leading-3.5 text-[rgb(var(--sep-colour-d4bd94))] sm:text-[10px] sm:leading-4 crafting_crafting_workbench_p_text_11">
                           {ingredient.name}
                         </p>
                         <p
-                          className="mt-0.5 font-serif text-[8px] sm:text-[9px]"
+                          className="mt-0.5 font-serif text-[8px] sm:text-[9px] crafting_crafting_workbench_p_text_12"
                           style={{
                             color: enough
                               ? craftingAccent
@@ -909,13 +907,13 @@ export function CraftingWorkbench({
                         >
                           {owned} / {ingredient.quantity}
                         </p>
-                        <p className="mt-0.5 text-[6px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))]">
+                        <p className="mt-0.5 text-[6px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))] crafting_crafting_workbench_p_text_13">
                           {filled ? "Placed" : enough ? "Place material" : "Missing"}
                         </p>
                       </div>
                       <span
                         aria-hidden="true"
-                        className="text-xs"
+                        className="text-xs crafting_crafting_workbench_span_text_7"
                         style={{
                           color: filled
                             ? craftingAccent
@@ -932,10 +930,10 @@ export function CraftingWorkbench({
           </div>
 
           <div
-            className="mt-3 grid shrink-0 gap-3 border bg-[rgb(var(--sep-colour-100c09))] p-3 lg:grid-cols-[1fr_auto] lg:items-center"
+            className="mt-3 grid shrink-0 gap-3 border bg-[rgb(var(--sep-colour-100c09))] p-3 lg:grid-cols-[1fr_auto] lg:items-center crafting_crafting_workbench_div_container_25"
             style={{ borderColor: `color-mix(in srgb, ${craftingAccent} 28%, transparent)` }}
           >
-            <div className="flex min-w-0 items-center gap-3">
+            <div className="flex min-w-0 items-center gap-3 crafting_crafting_workbench_div_container_26">
               {!spatialLayout ? (
                 <ItemImage
                   src={selectedRecipe?.result.image_url ?? null}
@@ -948,11 +946,11 @@ export function CraftingWorkbench({
                 />
               ) : null}
 
-              <div className="min-w-0">
-                <p className="text-[7px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+              <div className="min-w-0 crafting_crafting_workbench_div_container_27">
+                <p className="text-[7px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] crafting_crafting_workbench_p_text_14">
                   {spatialLayout ? "Workbench state" : "Result"}
                 </p>
-                <p className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-d4bd94))]">
+                <p className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-d4bd94))] crafting_crafting_workbench_p_text_15">
                   {spatialLayout
                     ? allSlotsFilled
                       ? `${selectedRecipe?.result_quantity ?? 1} × ${selectedRecipe?.result.name ?? ""} ready`
@@ -977,7 +975,7 @@ export function CraftingWorkbench({
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-2 crafting_crafting_workbench_div_container_28">
               <SepButton
                 type="button"
                 variant="secondary"
@@ -996,7 +994,7 @@ export function CraftingWorkbench({
                 disabled={!allRequirementsOwned || !allSlotsFilled || isPending}
                 className="relative overflow-hidden"
               >
-                <span className="relative">
+                <span className="relative crafting_crafting_workbench_span_text_8">
                   {isPending ? "The work takes shape..." : "Craft"}
                 </span>
               </SepButton>
@@ -1011,11 +1009,11 @@ export function CraftingWorkbench({
           role="dialog"
           aria-modal="true"
           aria-labelledby="crafted-item-title"
-          className="fixed inset-0 z-[120] flex items-center justify-center bg-black/75 p-4 backdrop-blur-[3px] sm:p-8"
+          className="fixed inset-0 z-[120] flex items-center justify-center bg-black/75 p-4 backdrop-blur-[3px] sm:p-8 crafting_crafting_workbench_div_dialog"
         >
           <div
             data-sep-interaction-fixed="true"
-            className="relative w-full max-w-2xl border bg-[rgb(var(--sep-colour-0d0907))] p-[5px] shadow-2xl"
+            className="relative w-full max-w-2xl border bg-[rgb(var(--sep-colour-0d0907))] p-[5px] shadow-2xl crafting_crafting_workbench_div_container_29"
             style={{
               borderColor: craftingAccent,
               boxShadow: `0 24px 70px rgba(0,0,0,0.72), 0 0 34px color-mix(in srgb, ${craftingAccent} 18%, transparent)`,
@@ -1023,27 +1021,27 @@ export function CraftingWorkbench({
           >
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-0 opacity-60"
+              className="pointer-events-none absolute inset-0 opacity-60 crafting_crafting_workbench_div_container_30"
               style={{
                 background: `radial-gradient(circle at 50% 0%, color-mix(in srgb, ${craftingAccent} 18%, transparent), transparent 52%)`,
               }}
             />
 
             <div
-              className="relative border bg-[linear-gradient(145deg,rgb(var(--sep-colour-17110d)),rgb(var(--sep-colour-0d0907)))]"
+              className="relative border bg-[linear-gradient(145deg,rgb(var(--sep-colour-17110d)),rgb(var(--sep-colour-0d0907)))] crafting_crafting_workbench_div_container_31"
               style={{
                 borderColor: `color-mix(in srgb, ${craftingAccent} 34%, transparent)`,
               }}
             >
-              <div className="flex items-center justify-between gap-4 border-b border-[rgb(var(--sep-colour-60482e))]/35 px-5 py-3">
-                <div>
+              <div className="flex items-center justify-between gap-4 border-b border-[rgb(var(--sep-colour-60482e))]/35 px-5 py-3 crafting_crafting_workbench_div_container_32">
+                <div className="crafting_crafting_workbench_div_container_33">
                   <p
-                    className="text-[7px] uppercase tracking-[0.3em]"
+                    className="text-[7px] uppercase tracking-[0.3em] crafting_crafting_workbench_p_text_16"
                     style={{ color: craftingAccent }}
                   >
                     Craft complete
                   </p>
-                  <p className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-e7d2aa))]">
+                  <p className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-e7d2aa))] crafting_crafting_workbench_p_text_17">
                     Crafting complete
                   </p>
                 </div>
@@ -1061,10 +1059,10 @@ export function CraftingWorkbench({
                 </SepIconButton>
               </div>
 
-              <div className="p-5 sm:p-6">
+              <div className="p-5 sm:p-6 crafting_crafting_workbench_div_container_34">
                 <article
                   data-sep-interactive-surface="card"
-                  className="relative overflow-hidden border bg-[rgb(var(--sep-colour-100c09))] p-4 sm:p-5"
+                  className="relative overflow-hidden border bg-[rgb(var(--sep-colour-100c09))] p-4 sm:p-5 crafting_crafting_workbench_article_article"
                   style={{
                     borderColor: `color-mix(in srgb, ${craftingAccent} 48%, transparent)`,
                     boxShadow: `inset 0 0 28px color-mix(in srgb, ${craftingAccent} 5%, transparent)`,
@@ -1072,15 +1070,15 @@ export function CraftingWorkbench({
                 >
                   <div
                     aria-hidden="true"
-                    className="pointer-events-none absolute right-[-45px] top-[-45px] h-40 w-40 rotate-45 border"
+                    className="pointer-events-none absolute right-[-45px] top-[-45px] h-40 w-40 rotate-45 border crafting_crafting_workbench_div_container_35"
                     style={{
                       borderColor: `color-mix(in srgb, ${craftingAccent} 12%, transparent)`,
                     }}
                   />
 
-                  <div className="relative grid gap-5 sm:grid-cols-[180px_1fr]">
+                  <div className="relative grid gap-5 sm:grid-cols-[180px_1fr] crafting_crafting_workbench_div_container_36">
                     <div
-                      className="flex aspect-square items-center justify-center overflow-hidden border bg-black/25 p-3"
+                      className="flex aspect-square items-center justify-center overflow-hidden border bg-black/25 p-3 crafting_crafting_workbench_div_container_37"
                       style={{
                         borderColor: `color-mix(in srgb, ${craftingAccent} 40%, transparent)`,
                         boxShadow: `inset 0 0 26px rgba(0,0,0,0.48), 0 0 18px color-mix(in srgb, ${craftingAccent} 8%, transparent)`,
@@ -1095,17 +1093,17 @@ export function CraftingWorkbench({
                       />
                     </div>
 
-                    <div className="min-w-0">
-                      <div className="flex flex-wrap items-start justify-between gap-3">
-                        <div className="min-w-0">
-                          <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+                    <div className="min-w-0 crafting_crafting_workbench_div_container_38">
+                      <div className="flex flex-wrap items-start justify-between gap-3 crafting_crafting_workbench_div_container_39">
+                        <div className="min-w-0 crafting_crafting_workbench_div_container_40">
+                          <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] crafting_crafting_workbench_p_text_18">
                             {
                               craftedReveal.recipeName
                             }
                           </p>
                           <h2
                             id="crafted-item-title"
-                            className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-ead6ad))]"
+                            className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-ead6ad))] crafting_crafting_workbench_h2_crafted_item_title"
                           >
                             {
                               craftedReveal.item
@@ -1115,7 +1113,7 @@ export function CraftingWorkbench({
                         </div>
 
                         <span
-                          className="shrink-0 border px-2.5 py-1 font-serif text-sm"
+                          className="shrink-0 border px-2.5 py-1 font-serif text-sm crafting_crafting_workbench_span_text_9"
                           style={{
                             borderColor: `color-mix(in srgb, ${craftingAccent} 38%, transparent)`,
                             color:
@@ -1129,7 +1127,7 @@ export function CraftingWorkbench({
                         </span>
                       </div>
 
-                      <div className="mt-3 flex flex-wrap gap-1.5">
+                      <div className="mt-3 flex flex-wrap gap-1.5 crafting_crafting_workbench_div_container_41">
                         <SepBadge
                           accent={craftingAccent}
                         >
@@ -1141,7 +1139,7 @@ export function CraftingWorkbench({
 
                         {craftedReveal.item
                           .category_name ? (
-                          <span className="border border-[rgb(var(--sep-colour-60482e))]/45 px-2 py-1 text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-bba27c))]">
+                          <span className="border border-[rgb(var(--sep-colour-60482e))]/45 px-2 py-1 text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-bba27c))] crafting_crafting_workbench_span_text_10">
                             {
                               craftedReveal.item
                                 .category_name
@@ -1151,7 +1149,7 @@ export function CraftingWorkbench({
 
                         {craftedReveal.item
                           .subcategory_name ? (
-                          <span className="border border-[rgb(var(--sep-colour-60482e))]/45 px-2 py-1 text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-9f8a6b))]">
+                          <span className="border border-[rgb(var(--sep-colour-60482e))]/45 px-2 py-1 text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-9f8a6b))] crafting_crafting_workbench_span_text_11">
                             {
                               craftedReveal.item
                                 .subcategory_name
@@ -1161,21 +1159,21 @@ export function CraftingWorkbench({
 
                         {craftedReveal.item
                           .is_quest_item ? (
-                          <span className="border border-violet-900/55 px-2 py-1 text-[7px] uppercase tracking-[0.13em] text-violet-300">
+                          <span className="border border-violet-900/55 px-2 py-1 text-[7px] uppercase tracking-[0.13em] text-violet-300 crafting_crafting_workbench_span_text_12">
                             Quest item
                           </span>
                         ) : null}
 
                         {craftedReveal.item
                           .is_usable ? (
-                          <span className="border border-emerald-900/55 px-2 py-1 text-[7px] uppercase tracking-[0.13em] text-emerald-300">
+                          <span className="border border-emerald-900/55 px-2 py-1 text-[7px] uppercase tracking-[0.13em] text-emerald-300 crafting_crafting_workbench_span_text_13">
                             Usable
                           </span>
                         ) : null}
 
                         {craftedReveal.item
                           .stackable ? (
-                          <span className="border border-[rgb(var(--sep-colour-60482e))]/45 px-2 py-1 text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-9f8a6b))]">
+                          <span className="border border-[rgb(var(--sep-colour-60482e))]/45 px-2 py-1 text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-9f8a6b))] crafting_crafting_workbench_span_text_14">
                             Stackable
                             {craftedReveal.item
                               .max_stack
@@ -1185,19 +1183,19 @@ export function CraftingWorkbench({
                         ) : null}
                       </div>
 
-                      <p className="mt-4 text-[10px] leading-5 text-[rgb(var(--sep-colour-bbaa8f))]">
+                      <p className="mt-4 text-[10px] leading-5 text-[rgb(var(--sep-colour-bbaa8f))] crafting_crafting_workbench_p_text_19">
                         {
                           craftedReveal.item
                             .description
                         }
                       </p>
 
-                      <div className="mt-4 grid gap-2 sm:grid-cols-2">
-                        <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-black/15 px-3 py-2">
-                          <p className="text-[6px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-806b50))]">
+                      <div className="mt-4 grid gap-2 sm:grid-cols-2 crafting_crafting_workbench_div_container_42">
+                        <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-black/15 px-3 py-2 crafting_crafting_workbench_div_container_43">
+                          <p className="text-[6px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-806b50))] crafting_crafting_workbench_p_text_20">
                             Transfer
                           </p>
-                          <p className="mt-1 text-[9px] capitalize text-[rgb(var(--sep-colour-c8b18d))]">
+                          <p className="mt-1 text-[9px] capitalize text-[rgb(var(--sep-colour-c8b18d))] crafting_crafting_workbench_p_text_21">
                             {
                               craftedReveal.item
                                 .transfer_policy
@@ -1205,11 +1203,11 @@ export function CraftingWorkbench({
                           </p>
                         </div>
 
-                        <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-black/15 px-3 py-2">
-                          <p className="text-[6px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-806b50))]">
+                        <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-black/15 px-3 py-2 crafting_crafting_workbench_div_container_44">
+                          <p className="text-[6px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-806b50))] crafting_crafting_workbench_p_text_22">
                             Reference value
                           </p>
-                          <p className="mt-1 font-serif text-[11px] text-[rgb(var(--sep-colour-d7bb88))]">
+                          <p className="mt-1 font-serif text-[11px] text-[rgb(var(--sep-colour-d7bb88))] crafting_crafting_workbench_p_text_23">
                             {craftedReveal.item
                               .reference_value !==
                             null

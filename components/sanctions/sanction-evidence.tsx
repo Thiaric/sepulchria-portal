@@ -75,19 +75,19 @@ export async function SanctionEvidence({
   return (
     <section
       data-sep-interaction-fixed="true"
-      className="mt-5 border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-1d1110))]"
+      className="mt-5 border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-1d1110))] components_sanctions_sanction_evidence_section_section"
     >
-      <header className="border-b border-[rgb(var(--sep-colour-60482e))]/40 px-5 py-4">
-        <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-c98f7f))]">
+      <header className="border-b border-[rgb(var(--sep-colour-60482e))]/40 px-5 py-4 components_sanctions_sanction_evidence_header_header">
+        <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-c98f7f))] components_sanctions_sanction_evidence_p_text">
           Preserved Evidence
         </p>
-        <p className="mt-2 max-w-3xl text-[10px] leading-5 text-[rgb(var(--sep-colour-887a67))]">
+        <p className="mt-2 max-w-3xl text-[10px] leading-5 text-[rgb(var(--sep-colour-887a67))] components_sanctions_sanction_evidence_p_text_2">
           This contains only evidence preserved for the moderation case.
           The original ticket discussion and internal staff notes are not included.
         </p>
       </header>
 
-      <div className="space-y-4 p-5">
+      <div className="space-y-4 p-5 components_sanctions_sanction_evidence_div_container">
         {evidence.map((item, index) => {
           const rows = contextRows(item.context_snapshot);
 
@@ -95,19 +95,19 @@ export async function SanctionEvidence({
             <article
               key={item.id}
               data-sep-interaction-fixed="true"
-              className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-black/10"
+              className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-black/10 components_sanctions_sanction_evidence_article_article"
             >
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-60482e))]/35 px-4 py-3">
-                <p className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-b58a69))]">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-60482e))]/35 px-4 py-3 components_sanctions_sanction_evidence_div_container_2">
+                <p className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-b58a69))] components_sanctions_sanction_evidence_p_text_3">
                   Evidence #{index + 1} · {characterProfileFieldLabel(item.context_snapshot) ?? label(item.source_type)}
                 </p>
-                <p className="text-[8px] text-[rgb(var(--sep-colour-756957))]">
+                <p className="text-[8px] text-[rgb(var(--sep-colour-756957))] components_sanctions_sanction_evidence_p_text_4">
                   Preserved {fmt(item.captured_at)}
                 </p>
               </div>
 
-              <div className="p-4">
-                <p className="text-[7px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-756957))]">
+              <div className="p-4 components_sanctions_sanction_evidence_div_container_3">
+                <p className="text-[7px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-756957))] components_sanctions_sanction_evidence_p_text_5">
                   {characterProfileFieldLabel(item.context_snapshot)
                     ? `Preserved ${characterProfileFieldLabel(item.context_snapshot)}`
                     : "Original content"}
@@ -119,13 +119,13 @@ export async function SanctionEvidence({
                     : ""}
                 </p>
 
-                <div className="mt-2 whitespace-pre-wrap break-words border-l-2 border-[rgb(var(--sep-colour-a65343))] bg-black/20 p-4 text-sm leading-6 text-[rgb(var(--sep-colour-d6c3aa))]">
+                <div className="mt-2 whitespace-pre-wrap break-words border-l-2 border-[rgb(var(--sep-colour-a65343))] bg-black/20 p-4 text-sm leading-6 text-[rgb(var(--sep-colour-d6c3aa))] components_sanctions_sanction_evidence_div_container_4">
                   {item.content_snapshot || "(No text snapshot)"}
                 </div>
 
                 {rows.length > 0 ? (
-                  <div className="mt-5 space-y-2">
-                    <p className="text-[7px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-756957))]">
+                  <div className="mt-5 space-y-2 components_sanctions_sanction_evidence_div_container_5">
+                    <p className="text-[7px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-756957))] components_sanctions_sanction_evidence_p_text_6">
                       Preserved context
                     </p>
 
@@ -133,13 +133,13 @@ export async function SanctionEvidence({
                       <div
                         key={row.id ?? `${item.id}-${rowIndex}`}
                         data-sep-interactive-surface="row"
-                        className="border border-[rgb(var(--sep-colour-60482e))]/30 bg-black/10 p-3 transition-all duration-150 hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))]"
+                        className="border border-[rgb(var(--sep-colour-60482e))]/30 bg-black/10 p-3 transition-all duration-150 hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))] components_sanctions_sanction_evidence_div_container_6"
                       >
-                        <p className="text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-756957))]">
+                        <p className="text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-756957))] components_sanctions_sanction_evidence_p_text_7">
                           {row.author_name ?? row.sender_name ?? "Unknown"}
                           {row.created_at ? ` · ${fmt(row.created_at)}` : ""}
                         </p>
-                        <p className="mt-2 whitespace-pre-wrap break-words text-xs leading-5 text-[rgb(var(--sep-colour-bdac93))]">
+                        <p className="mt-2 whitespace-pre-wrap break-words text-xs leading-5 text-[rgb(var(--sep-colour-bdac93))] components_sanctions_sanction_evidence_p_text_8">
                           {row.body ?? row.message ?? "(No text snapshot)"}
                         </p>
                       </div>

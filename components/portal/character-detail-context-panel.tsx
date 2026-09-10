@@ -285,14 +285,14 @@ export function CharacterDetailContextPanel({
 
   if (loading) {
     return (
-      <div className="space-y-2">
+      <div className="space-y-2 components_portal_character_detail_context_panel_div_container">
         {Array.from({
           length: 8,
         }).map(
           (_, index) => (
             <div
               key={index}
-              className="h-9 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]"
+              className="h-9 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))] components_portal_character_detail_context_panel_div_container_2"
             />
           ),
         )}
@@ -302,7 +302,7 @@ export function CharacterDetailContextPanel({
 
   if (error) {
     return (
-      <p className="border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]">
+      <p className="border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-d8a49a))] components_portal_character_detail_context_panel_p_text">
         The character context could not
         be loaded: {error}
       </p>
@@ -314,7 +314,7 @@ export function CharacterDetailContextPanel({
 
   if (!character) {
     return (
-      <p className="text-xs leading-6 text-[rgb(var(--sep-colour-938673))]">
+      <p className="text-xs leading-6 text-[rgb(var(--sep-colour-938673))] components_portal_character_detail_context_panel_p_text_2">
         Character information is not
         available.
       </p>
@@ -329,19 +329,19 @@ export function CharacterDetailContextPanel({
     `${character.first_name} ${character.surname}`.trim();
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <header className="mb-5">
-        <p className="text-[9px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-876a46))]">
+    <div className="flex h-full min-h-0 flex-col components_portal_character_detail_context_panel_div_container_3">
+      <header className="mb-5 components_portal_character_detail_context_panel_header_header">
+        <p className="text-[9px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-876a46))] components_portal_character_detail_context_panel_p_text_3">
           Character
         </p>
 
-        <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-d6bd91))]">
+        <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-d6bd91))] components_portal_character_detail_context_panel_h2_heading">
           {displayName}
         </h2>
       </header>
 
-      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1">
-        <div className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))]">
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1 components_portal_character_detail_context_panel_div_container_4">
+        <div className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] components_portal_character_detail_context_panel_div_container_5">
           <Row
             label="Title"
             value={
@@ -384,9 +384,9 @@ export function CharacterDetailContextPanel({
           />
         </div>
 
-        <div className="mt-4 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))]">
-          <div className="flex justify-between gap-4 border-b border-[rgb(var(--sep-colour-59432c))]/35 px-3 py-2.5 text-xs">
-            <span className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-75644f))]">
+        <div className="mt-4 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] components_portal_character_detail_context_panel_div_container_6">
+          <div className="flex justify-between gap-4 border-b border-[rgb(var(--sep-colour-59432c))]/35 px-3 py-2.5 text-xs components_portal_character_detail_context_panel_div_container_7">
+            <span className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-75644f))] components_portal_character_detail_context_panel_span_text">
               Order
             </span>
 
@@ -399,7 +399,7 @@ export function CharacterDetailContextPanel({
                 {data.orderName}
               </Link>
             ) : (
-              <span className="max-w-[150px] break-words text-right text-[11px] text-[rgb(var(--sep-colour-c5b294))]">
+              <span className="max-w-[150px] break-words text-right text-[11px] text-[rgb(var(--sep-colour-c5b294))] components_portal_character_detail_context_panel_span_text_2">
                 Not assigned
               </span>
             )}
@@ -424,7 +424,7 @@ export function CharacterDetailContextPanel({
           />
         </div>
 
-        <div className="mt-4 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))]">
+        <div className="mt-4 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] components_portal_character_detail_context_panel_div_container_8">
           <Row
             label="Health"
             value={String(
@@ -459,17 +459,17 @@ function Row({
 }) {
   return (
     <div
-      className={`grid grid-cols-[92px_minmax(0,1fr)] gap-3 px-3 py-2.5 ${
+      className={[((`grid grid-cols-[92px_minmax(0,1fr)] gap-3 px-3 py-2.5 ${
         last
           ? ""
           : "border-b border-[rgb(var(--sep-colour-59432c))]/25"
-      }`}
+      }`)), "components_portal_character_detail_context_panel_div_container_9"].filter(Boolean).join(" ")}
     >
-      <span className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-75644f))]">
+      <span className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-75644f))] components_portal_character_detail_context_panel_span_text_3">
         {label}
       </span>
 
-      <span className="min-w-0 break-words text-right text-[11px] text-[rgb(var(--sep-colour-c5b294))]">
+      <span className="min-w-0 break-words text-right text-[11px] text-[rgb(var(--sep-colour-c5b294))] components_portal_character_detail_context_panel_span_text_4">
         {value}
       </span>
     </div>

@@ -108,8 +108,8 @@ export function PublicCharacterProfileView({
 
 
   return (
-    <article className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+    <article className="space-y-4 components_characters_public_character_profile_article_article">
+      <div className="flex flex-wrap items-center justify-between gap-3 components_characters_public_character_profile_div_container">
         {returnHref && returnLabel ? (
   <CharacterReturnLink
     href={returnHref}
@@ -118,7 +118,7 @@ export function PublicCharacterProfileView({
   />
 ) : null}
 
-        <div className="flex flex-wrap items-center justify-end gap-2">
+        <div className="flex flex-wrap items-center justify-end gap-2 components_characters_public_character_profile_div_container_2">
           {canUseFriendList &&
           isInFriendList ? (
             <Link
@@ -130,9 +130,9 @@ export function PublicCharacterProfileView({
           ) : canUseFriendList ? (
             <form
               action={addFriendListEntry}
-              className="flex flex-wrap items-stretch"
+              className="flex flex-wrap items-stretch components_characters_public_character_profile_form_add_friend_list_entry"
             >
-              <input
+              <input className="components_characters_public_character_profile_input_field"
                 type="hidden"
                 name="targetCharacterId"
                 value={character.id}
@@ -142,30 +142,30 @@ export function PublicCharacterProfileView({
                 name="listScope"
                 defaultValue="ingame"
                 aria-label="Friend List section"
-                className="border border-r-0 border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-2 text-[9px] text-[rgb(var(--sep-colour-c8b18d))] outline-none"
+                className="border border-r-0 border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-2 text-[9px] text-[rgb(var(--sep-colour-c8b18d))] outline-none components_characters_public_character_profile_select_list_scope"
               >
-                <option value="ingame">In-Game</option>
-                <option value="offgame">Off-Game</option>
+                <option className="components_characters_public_character_profile_option_ingame" value="ingame">In-Game</option>
+                <option className="components_characters_public_character_profile_option_offgame" value="offgame">Off-Game</option>
               </select>
 
               <select
                 name="relationshipType"
                 defaultValue="friend"
                 aria-label="Relationship type"
-                className="border border-r-0 border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-2 text-[9px] text-[rgb(var(--sep-colour-c8b18d))] outline-none"
+                className="border border-r-0 border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-2 text-[9px] text-[rgb(var(--sep-colour-c8b18d))] outline-none components_characters_public_character_profile_select_relationship_type"
               >
-                <option value="friend">Friend</option>
-                <option value="close_friend">Close Friend</option>
-                <option value="family">Family</option>
-                <option value="romance">Romance</option>
-                <option value="lover">Lover</option>
-                <option value="partner">Partner</option>
-                <option value="spouse">Spouse</option>
+                <option className="components_characters_public_character_profile_option_friend" value="friend">Friend</option>
+                <option className="components_characters_public_character_profile_option_close_friend" value="close_friend">Close Friend</option>
+                <option className="components_characters_public_character_profile_option_family" value="family">Family</option>
+                <option className="components_characters_public_character_profile_option_romance" value="romance">Romance</option>
+                <option className="components_characters_public_character_profile_option_lover" value="lover">Lover</option>
+                <option className="components_characters_public_character_profile_option_partner" value="partner">Partner</option>
+                <option className="components_characters_public_character_profile_option_spouse" value="spouse">Spouse</option>
               </select>
 
               <button
                 type="submit"
-                className="inline-flex items-center gap-2 border border-[rgb(var(--sep-colour-668657))] bg-[rgb(var(--sep-colour-172313))] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-b8d8a7))] transition hover:bg-[rgb(var(--sep-colour-22321c))]"
+                className="inline-flex items-center gap-2 border border-[rgb(var(--sep-colour-668657))] bg-[rgb(var(--sep-colour-172313))] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-b8d8a7))] transition hover:bg-[rgb(var(--sep-colour-22321c))] components_characters_public_character_profile_button_add_friend_list"
               >
                 Add to Friend List
               </button>
@@ -173,12 +173,12 @@ export function PublicCharacterProfileView({
           ) : null}
 
           {canBlock ? (
-            <form action={toggleGlobalCharacterBlock}>
-              <input type="hidden" name="targetCharacterId" value={character.id} />
-              <input type="hidden" name="block" value={blockedByViewer ? "false" : "true"} />
+            <form className="components_characters_public_character_profile_form_toggle_global_character_block" action={toggleGlobalCharacterBlock}>
+              <input className="components_characters_public_character_profile_input_field_2" type="hidden" name="targetCharacterId" value={character.id} />
+              <input className="components_characters_public_character_profile_input_block" type="hidden" name="block" value={blockedByViewer ? "false" : "true"} />
               <button
                 type="submit"
-                className="inline-flex items-center gap-2 border border-[rgb(var(--sep-colour-7b4035))] bg-[rgb(var(--sep-colour-24100d))] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-d99b8e))] transition hover:bg-[rgb(var(--sep-colour-351713))]"
+                className="inline-flex items-center gap-2 border border-[rgb(var(--sep-colour-7b4035))] bg-[rgb(var(--sep-colour-24100d))] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-d99b8e))] transition hover:bg-[rgb(var(--sep-colour-351713))] components_characters_public_character_profile_button_action"
               >
                 {blockedByViewer ? "Unblock Character" : "Block Character"}
               </button>
@@ -202,14 +202,14 @@ export function PublicCharacterProfileView({
           ) : null}
 
           {hasGlobalBlock && !blockedByViewer ? (
-            <span className="inline-flex items-center border border-[rgb(var(--sep-colour-60482e))]/55 px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-8f8170))]">
+            <span className="inline-flex items-center border border-[rgb(var(--sep-colour-60482e))]/55 px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-8f8170))] components_characters_public_character_profile_span_text">
               Communication unavailable
             </span>
           ) : null}
 
           {canMessage ? (
-            <form action={startConversation}>
-              <input
+            <form className="components_characters_public_character_profile_form_start_conversation" action={startConversation}>
+              <input className="components_characters_public_character_profile_input_recipient_id"
                 type="hidden"
                 name="recipientId"
                 value={character.id}
@@ -217,9 +217,9 @@ export function PublicCharacterProfileView({
 
               <button
                 type="submit"
-                className="inline-flex items-center gap-2 border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
+                className="inline-flex items-center gap-2 border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))] components_characters_public_character_profile_button_send_private_message"
               >
-                <span aria-hidden="true">✉</span>
+                <span className="components_characters_public_character_profile_span_text_2" aria-hidden="true">✉</span>
                 Send private message
               </button>
             </form>
@@ -230,7 +230,7 @@ export function PublicCharacterProfileView({
       <div
         data-cosmetic-character-id={character.id}
         data-cosmetic-surface="sheet"
-        className="relative isolate"
+        className="relative isolate components_characters_public_character_profile_div_container_3"
         style={cosmeticFrameStyle(
           sheetFrameUrl,
           "sheet",
@@ -241,17 +241,17 @@ export function PublicCharacterProfileView({
         activeTab={activeTab}
         cacheKey={character.id}
 >
-        <div data-character-sheet-panel="short">
+        <div className="components_characters_public_character_profile_div_container_4" data-character-sheet-panel="short">
           {activeTab === "short" ? (
-          <section className="grid gap-4 xl:grid-cols-[minmax(0,1.45fr)_minmax(360px,0.9fr)]">
-        <div className="min-w-0">
-          <section className="grid gap-4 border border-[rgb(var(--sep-colour-654b2e))]/50 bg-[rgb(var(--sep-colour-17110d))] p-4 sm:p-5 lg:grid-cols-[180px_minmax(0,1fr)]">
-            <div className="mx-auto w-full max-w-[180px] lg:mx-0">
+          <section className="grid gap-4 xl:grid-cols-[minmax(0,1.45fr)_minmax(360px,0.9fr)] components_characters_public_character_profile_section_section">
+        <div className="min-w-0 components_characters_public_character_profile_div_container_5">
+          <section className="grid gap-4 border border-[rgb(var(--sep-colour-654b2e))]/50 bg-[rgb(var(--sep-colour-17110d))] p-4 sm:p-5 lg:grid-cols-[180px_minmax(0,1fr)] components_characters_public_character_profile_section_section_2">
+            <div className="mx-auto w-full max-w-[180px] lg:mx-0 components_characters_public_character_profile_div_container_6">
 
               <div
                 data-cosmetic-character-id={character.id}
                 data-cosmetic-surface="portrait"
-                className="relative aspect-[3/4] w-full overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0d0a08))]"
+                className="relative aspect-[3/4] w-full overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0d0a08))] components_characters_public_character_profile_div_container_7"
               >
 
               {character.portrait_url ? (
@@ -264,7 +264,7 @@ export function PublicCharacterProfileView({
                   priority
                 />
               ) : (
-                <div className="flex h-full items-center justify-center font-serif text-5xl text-[rgb(var(--sep-colour-5f503f))]">
+                <div className="flex h-full items-center justify-center font-serif text-5xl text-[rgb(var(--sep-colour-5f503f))] components_characters_public_character_profile_div_container_8">
                   {character.first_name
                     .charAt(0)
                     .toUpperCase()}
@@ -277,15 +277,15 @@ export function PublicCharacterProfileView({
               </div>
 
 
-              <div className="mt-2 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5">
+              <div className="mt-2 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 components_characters_public_character_profile_div_container_9">
 
-                <p className="text-[7px] uppercase tracking-[0.19em] text-[rgb(var(--sep-colour-796448))]">
+                <p className="text-[7px] uppercase tracking-[0.19em] text-[rgb(var(--sep-colour-796448))] components_characters_public_character_profile_p_text">
 
                   In Sepulchria since
 
                 </p>
 
-                <p className="mt-1 text-[11px] leading-5 text-[rgb(var(--sep-colour-cab89b))]">
+                <p className="mt-1 text-[11px] leading-5 text-[rgb(var(--sep-colour-cab89b))] components_characters_public_character_profile_p_text_2">
 
                   {formatSepulchriaSince(character.sepulchria_since)}
 
@@ -296,14 +296,14 @@ export function PublicCharacterProfileView({
             </div>
 
 
-            <div className="min-w-0">
-              <div className="flex flex-wrap items-start justify-between gap-3 border-b border-[rgb(var(--sep-colour-5d452d))]/35 pb-3">
-                <div className="min-w-0 flex-1">
-                  <p className="text-[8px] uppercase tracking-[0.26em] text-[rgb(var(--sep-colour-876a46))]">
+            <div className="min-w-0 components_characters_public_character_profile_div_container_10">
+              <div className="flex flex-wrap items-start justify-between gap-3 border-b border-[rgb(var(--sep-colour-5d452d))]/35 pb-3 components_characters_public_character_profile_div_container_11">
+                <div className="min-w-0 flex-1 components_characters_public_character_profile_div_container_12">
+                  <p className="text-[8px] uppercase tracking-[0.26em] text-[rgb(var(--sep-colour-876a46))] components_characters_public_character_profile_p_text_3">
                     Character profile
                   </p>
 
-                  <div className="mt-1 grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-4">
+                  <div className="mt-1 grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-4 components_characters_public_character_profile_div_container_13">
                     <AutoFitCharacterName
                       characterId={character.id}
                       className="text-[0.9rem] text-[rgb(var(--sep-colour-ecd9b2))] sm:text-[1rem]"
@@ -311,7 +311,7 @@ export function PublicCharacterProfileView({
                       {fullName}
                     </AutoFitCharacterName>
 
-                    <div className="justify-self-end">
+                    <div className="justify-self-end components_characters_public_character_profile_div_container_14">
                       <CharacterDisplayTrophies
                         characterId={character.id}
                       />
@@ -329,7 +329,7 @@ export function PublicCharacterProfileView({
                 </div>
               </div>
 
-              <div className="mt-3 grid gap-px bg-[rgb(var(--sep-colour-4f3b28))]/35 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="mt-3 grid gap-px bg-[rgb(var(--sep-colour-4f3b28))]/35 sm:grid-cols-2 lg:grid-cols-3 components_characters_public_character_profile_div_container_15">
                 <CompactDetail
   label="Gender"
   value={
@@ -351,7 +351,7 @@ export function PublicCharacterProfileView({
   }
 />
 
-                <div className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 [&_dt]:text-[7px] [&_dt]:uppercase [&_dt]:tracking-[0.19em] [&_dt]:text-[rgb(var(--sep-colour-796448))] [&_dd]:mt-1 [&_dd]:text-[11px] [&_dd]:leading-5 [&_dd]:text-[rgb(var(--sep-colour-cab89b))]">
+                <div className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 [&_dt]:text-[7px] [&_dt]:uppercase [&_dt]:tracking-[0.19em] [&_dt]:text-[rgb(var(--sep-colour-796448))] [&_dd]:mt-1 [&_dd]:text-[11px] [&_dd]:leading-5 [&_dd]:text-[rgb(var(--sep-colour-cab89b))] components_characters_public_character_profile_div_container_16">
                   <PublicCharacterAgeDetail
                     characterId={character.id}
                   />
@@ -373,7 +373,7 @@ export function PublicCharacterProfileView({
                   }
                 />
 
-                <div className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 [&_dt]:!text-[7px] [&_dt]:!uppercase [&_dt]:!tracking-[0.19em] [&_dt]:!text-[rgb(var(--sep-colour-796448))] [&_dd]:!mt-1 [&_dd]:!block [&_dd>span:first-child]:!font-sans [&_dd>span:first-child]:!text-[11px] [&_dd>span:first-child]:!font-normal [&_dd>span:first-child]:!leading-5 [&_dd>span:first-child]:!text-[rgb(var(--sep-colour-cab89b))] [&_dd>span:last-child]:!hidden">
+                <div className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 [&_dt]:!text-[7px] [&_dt]:!uppercase [&_dt]:!tracking-[0.19em] [&_dt]:!text-[rgb(var(--sep-colour-796448))] [&_dd]:!mt-1 [&_dd]:!block [&_dd>span:first-child]:!font-sans [&_dd>span:first-child]:!text-[11px] [&_dd>span:first-child]:!font-normal [&_dd>span:first-child]:!leading-5 [&_dd>span:first-child]:!text-[rgb(var(--sep-colour-cab89b))] [&_dd>span:last-child]:!hidden components_characters_public_character_profile_div_container_17">
                   <CharacterExpertiseTotal
                     characterId={character.id}
                   />
@@ -399,7 +399,7 @@ export function PublicCharacterProfileView({
 
             </div>
 
-            <div className="mx-auto w-full max-w-[180px] space-y-2 lg:mx-0">
+            <div className="mx-auto w-full max-w-[180px] space-y-2 lg:mx-0 components_characters_public_character_profile_div_container_18">
               <CompactHeritageCard
                 label="Ancestry"
                 entry={character.race}
@@ -417,7 +417,7 @@ export function PublicCharacterProfileView({
               />
             </div>
 
-            <div className="h-full">
+            <div className="h-full components_characters_public_character_profile_div_container_19">
               <CharacterHealthDisplay
                 characterId={character.id}
               />
@@ -425,7 +425,7 @@ export function PublicCharacterProfileView({
           </section>
 
           {character.music_url ? (
-            <div className="mt-4">
+            <div className="mt-4 components_characters_public_character_profile_div_container_20">
               <CharacterMusicPlayer
                 src={character.music_url}
               />
@@ -433,7 +433,7 @@ export function PublicCharacterProfileView({
           ) : null}
         </div>
 
-            <div className="min-w-0">
+            <div className="min-w-0 components_characters_public_character_profile_div_container_21">
               <CharacterMechanicsDisplay characterId={character.id} />
             </div>
           </section>
@@ -441,8 +441,8 @@ export function PublicCharacterProfileView({
           ) : null}
         </div>
 
-        <div data-character-sheet-panel="profile" className="py-2 border border-[rgb(var(--sep-colour-6b5032))]/50">
-          <section className="grid gap-4 md:grid-cols-2 px-2">
+        <div data-character-sheet-panel="profile" className="py-2 border border-[rgb(var(--sep-colour-6b5032))]/50 components_characters_public_character_profile_div_container_22">
+          <section className="grid gap-4 md:grid-cols-2 px-2 components_characters_public_character_profile_section_section_3">
         <ProfileSection
           title="Physical Description"
           content={
@@ -456,11 +456,11 @@ export function PublicCharacterProfileView({
         />
       </section>
 
-          <div className="mt-4 px-2">
+          <div className="mt-4 px-2 components_characters_public_character_profile_div_container_23">
             <ProfileSection title="Biography" content={character.biography} />
           </div>
 
-          <div className="mt-4 px-2">
+          <div className="mt-4 px-2 components_characters_public_character_profile_div_container_24">
             <ProfileSection
               title="Public Notes"
               content={character.public_notes}
@@ -468,7 +468,7 @@ export function PublicCharacterProfileView({
             />
           </div>
 
-          <div className="mt-4 px-2">
+          <div className="mt-4 px-2 components_characters_public_character_profile_div_container_25">
             <ProfileSection
               title="Relationships"
               content={character.relationships}
@@ -476,7 +476,7 @@ export function PublicCharacterProfileView({
           </div>
         </div>
 
-        <div data-character-sheet-panel="inventory">
+        <div className="components_characters_public_character_profile_div_container_26" data-character-sheet-panel="inventory">
           {activeTab === "inventory" ? (
             <CharacterInventoryDisplay
               characterId={character.id}
@@ -487,7 +487,7 @@ export function PublicCharacterProfileView({
           ) : null}
         </div>
 
-        <div data-character-sheet-panel="trophies">
+        <div className="components_characters_public_character_profile_div_container_27" data-character-sheet-panel="trophies">
           {activeTab === "trophies" ? (
             <CharacterTrophiesDisplay
               characterId={character.id}
@@ -495,7 +495,7 @@ export function PublicCharacterProfileView({
           ) : null}
         </div>
 
-        <div data-character-sheet-panel="gifts">
+        <div className="components_characters_public_character_profile_div_container_28" data-character-sheet-panel="gifts">
           {activeTab === "gifts" ? (
             <CharacterGiftsDisplay
               characterId={character.id}
@@ -503,7 +503,7 @@ export function PublicCharacterProfileView({
           ) : null}
         </div>
 
-        <div data-character-sheet-panel="warping">
+        <div className="components_characters_public_character_profile_div_container_29" data-character-sheet-panel="warping">
           {activeTab === "warping" ? (
             <CharacterShapesDisplay
               characterId={character.id}
@@ -511,8 +511,8 @@ export function PublicCharacterProfileView({
           ) : null}
         </div>
 
-        <div data-character-sheet-panel="offgame"  className="py-2 border border-[rgb(var(--sep-colour-6b5032))]/50">
-            <section className="grid gap-4 px-2">
+        <div data-character-sheet-panel="offgame"  className="py-2 border border-[rgb(var(--sep-colour-6b5032))]/50 components_characters_public_character_profile_div_container_30">
+            <section className="grid gap-4 px-2 components_characters_public_character_profile_section_section_4">
           <ProfileSection
             title="Offgame"
             content={character.offgame}
@@ -521,7 +521,7 @@ export function PublicCharacterProfileView({
           </section>
         </div>
 
-        <div data-character-sheet-panel="audit">
+        <div className="components_characters_public_character_profile_div_container_31" data-character-sheet-panel="audit">
           {activeTab === "audit" &&
           viewerIsStaff ? (
             <CharacterAuditTrail
@@ -544,12 +544,12 @@ function CompactDetail({
   value: string | null;
 }) {
   return (
-    <div className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2">
-      <p className="text-[7px] uppercase tracking-[0.19em] text-[rgb(var(--sep-colour-796448))]">
+    <div className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 components_characters_public_character_profile_div_container_32">
+      <p className="text-[7px] uppercase tracking-[0.19em] text-[rgb(var(--sep-colour-796448))] components_characters_public_character_profile_p_text_4">
         {label}
       </p>
 
-      <p className="mt-1 break-words text-[11px] leading-5 text-[rgb(var(--sep-colour-cab89b))]">
+      <p className="mt-1 break-words text-[11px] leading-5 text-[rgb(var(--sep-colour-cab89b))] components_characters_public_character_profile_p_text_5">
         {value || "Not recorded"}
       </p>
     </div>
@@ -577,7 +577,7 @@ function CompactHeritageCard({
       }}
     >
       <div
-        className="relative flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden border bg-black/20 font-serif text-[10px]"
+        className="relative flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden border bg-black/20 font-serif text-[10px] components_characters_public_character_profile_div_container_33"
         style={{
           borderColor: `${colour}88`,
           color: colour,
@@ -598,13 +598,13 @@ function CompactHeritageCard({
         )}
       </div>
 
-      <div className="min-w-0 flex-1">
-        <p className="text-[7px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
+      <div className="min-w-0 flex-1 components_characters_public_character_profile_div_container_34">
+        <p className="text-[7px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))] components_characters_public_character_profile_p_text_6">
           {label}
         </p>
 
         <p
-  className="mt-0.5 break-words text-[11px] leading-4"
+  className="mt-0.5 break-words text-[11px] leading-4 components_characters_public_character_profile_p_text_7"
   style={{
     color: entry ? colour : "#675e52",
   }}
@@ -633,17 +633,17 @@ function ProfileSection({
 
   return (
     <section
-      className={`h-full border border-[rgb(var(--sep-colour-6b5032))]/50 p-4 sm:p-5 ${
+      className={[((`h-full border border-[rgb(var(--sep-colour-6b5032))]/50 p-4 sm:p-5 ${
         subtle
           ? "bg-[rgb(var(--sep-colour-130f0c))]"
           : "bg-[rgb(var(--sep-colour-17110d))]"
-      }`}
+      }`)), "components_characters_public_character_profile_section_section_5"].filter(Boolean).join(" ")}
     >
-      <h2 className="font-serif text-xl text-[rgb(var(--sep-skin-c1,var(--sep-colour-dfc79c)))] sm:text-2xl">
+      <h2 className="font-serif text-xl text-[rgb(var(--sep-skin-c1,var(--sep-colour-dfc79c)))] sm:text-2xl components_characters_public_character_profile_h2_heading">
         {title}
       </h2>
 
-      <p className="mt-3 whitespace-pre-line break-words text-sm leading-7 text-[rgb(var(--sep-skin-c2,var(--sep-colour-b0a18d)))]">
+      <p className="mt-3 whitespace-pre-line break-words text-sm leading-7 text-[rgb(var(--sep-skin-c2,var(--sep-colour-b0a18d)))] components_characters_public_character_profile_p_text_8">
         {content}
       </p>
     </section>

@@ -187,27 +187,25 @@ export function ForumTopicFavouriteButton({
           ? "Remove from favourites"
           : "Add to favourites"
       }
-      className={[
+      className={[(([
         compact
           ? "flex h-8 w-8 items-center justify-center"
           : "inline-flex h-10 items-center justify-center gap-2 whitespace-nowrap border border-[rgb(var(--sep-colour-9a7445))]/70 bg-[rgb(var(--sep-colour-17110d))] px-4 text-[8px] uppercase tracking-[0.16em]",
         "text-[rgb(var(--sep-colour-c8ae83))] transition hover:bg-[rgb(var(--sep-colour-21170f))] hover:text-[rgb(var(--sep-colour-ead4ad))] disabled:cursor-wait disabled:opacity-45",
         className,
-      ].join(" ")}
+      ].join(" "))), "components_forum_forum_topic_favourite_button_button_action"].filter(Boolean).join(" ")}
     >
       <span
         aria-hidden="true"
-        className={
-          compact
+        className={[((compact
             ? "text-xl leading-none"
-            : "text-base leading-none"
-        }
+            : "text-base leading-none")), "components_forum_forum_topic_favourite_button_span_text"].filter(Boolean).join(" ")}
       >
         {favourite ? "★" : "☆"}
       </span>
 
       {!compact ? (
-        <span>Favourite</span>
+        <span className="components_forum_forum_topic_favourite_button_span_text_2">Favourite</span>
       ) : null}
     </button>
   );

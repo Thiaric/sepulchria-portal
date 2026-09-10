@@ -144,7 +144,7 @@ export function BreezeLodgingGuestsPanel({
   }
 
   return (
-    <details className="shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-120e0b))]">
+    <details className="shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-120e0b))] game_components_breezelodgingguestspanel_details_details">
       <InvitationOwnerStateRefresh
         kind="breeze"
         scopeId={data.roomId}
@@ -155,43 +155,43 @@ export function BreezeLodgingGuestsPanel({
           )
         }
       />
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-2.5">
-        <div>
-          <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-2.5 game_components_breezelodgingguestspanel_summary_summary">
+        <div className="game_components_breezelodgingguestspanel_div_room_guests">
+          <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] game_components_breezelodgingguestspanel_p_room_guests">
             {data.roomName}
           </p>
-          <h3 className="mt-0.5 font-serif text-[13px] text-[rgb(var(--sep-colour-dec89f))]">
+          <h3 className="mt-0.5 font-serif text-[13px] text-[rgb(var(--sep-colour-dec89f))] game_components_breezelodgingguestspanel_h3_room_guests">
             Room Guests
           </h3>
         </div>
 
-        <div className="text-right">
-          <p className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806b50))]">
+        <div className="text-right game_components_breezelodgingguestspanel_div_container">
+          <p className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806b50))] game_components_breezelodgingguestspanel_p_text">
             Guests {usedGuestSlots} / {data.guestLimit}
           </p>
-          <span className="mt-0.5 block text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a88d65))]">
+          <span className="mt-0.5 block text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a88d65))] game_components_breezelodgingguestspanel_span_text">
             Invite / Withdraw ▾
           </span>
         </div>
       </summary>
 
-      <div className="px-3 pb-3">
-        <p className="mb-2 text-[8px] text-[rgb(var(--sep-colour-8f8271))]">
+      <div className="px-3 pb-3 game_components_breezelodgingguestspanel_div_container_2">
+        <p className="mb-2 text-[8px] text-[rgb(var(--sep-colour-8f8271))] game_components_breezelodgingguestspanel_p_text_2">
           Invitations last until this rental ends. Invited characters must accept before they can enter.
           {" "}This room allows {data.guestLimit} invitee{data.guestLimit === 1 ? "" : "s"}.
           Pending invitations count toward the limit.
         </p>
 
         {guestLimitReached ? (
-          <p className="mb-2 border border-[rgb(var(--sep-colour-765937))]/45 bg-[rgb(var(--sep-colour-231a12))] px-2 py-1.5 text-[8px] text-[rgb(var(--sep-colour-cab08b))]">
+          <p className="mb-2 border border-[rgb(var(--sep-colour-765937))]/45 bg-[rgb(var(--sep-colour-231a12))] px-2 py-1.5 text-[8px] text-[rgb(var(--sep-colour-cab08b))] game_components_breezelodgingguestspanel_p_text_3">
             Guest limit reached. Remove a guest or withdraw a pending invitation before inviting someone else.
           </p>
         ) : null}
 
-        <div className="mt-2 grid gap-2 lg:grid-cols-2">
-          <div className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-17110d))] p-2">
-            <label className="block">
-              <span className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))]">
+        <div className="mt-2 grid gap-2 lg:grid-cols-2 game_components_breezelodgingguestspanel_div_container_3">
+          <div className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-17110d))] p-2 game_components_breezelodgingguestspanel_div_container_4">
+            <label className="block game_components_breezelodgingguestspanel_label_label">
+              <span className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))] game_components_breezelodgingguestspanel_span_text_2">
                 Invite someone to the room
               </span>
               <input
@@ -203,19 +203,19 @@ export function BreezeLodgingGuestsPanel({
                   )
                 }
                 placeholder="Search approved characters..."
-                className="mt-1.5 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0a08))] px-2 py-1.5 text-[9px] text-[rgb(var(--sep-colour-bba98c))] outline-none placeholder:text-[rgb(var(--sep-colour-655c50))] focus:border-[rgb(var(--sep-colour-a17a49))]"
+                className="mt-1.5 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0a08))] px-2 py-1.5 text-[9px] text-[rgb(var(--sep-colour-bba98c))] outline-none placeholder:text-[rgb(var(--sep-colour-655c50))] focus:border-[rgb(var(--sep-colour-a17a49))] game_components_breezelodgingguestspanel_input_search_approved_characters"
               />
             </label>
 
-            <div className="mt-1.5 max-h-28 space-y-1 overflow-y-auto">
+            <div className="mt-1.5 max-h-28 space-y-1 overflow-y-auto game_components_breezelodgingguestspanel_div_container_5">
               {filteredCandidates.length ? (
                 filteredCandidates.map(
                   (character) => (
                     <div
                       key={character.id}
-                      className="flex items-center justify-between gap-2 bg-[rgb(var(--sep-colour-0d0a08))]/45 px-2 py-1.5"
+                      className="flex items-center justify-between gap-2 bg-[rgb(var(--sep-colour-0d0a08))]/45 px-2 py-1.5 game_components_breezelodgingguestspanel_div_container_6"
                     >
-                      <span className="min-w-0 truncate text-[9px] text-[rgb(var(--sep-colour-c6b496))]">
+                      <span className="min-w-0 truncate text-[9px] text-[rgb(var(--sep-colour-c6b496))] game_components_breezelodgingguestspanel_span_text_3">
                         {character.display_name}
                       </span>
                       <button
@@ -229,7 +229,7 @@ export function BreezeLodgingGuestsPanel({
                             character.id,
                           )
                         }
-                        className="shrink-0 border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-2 py-1 text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:bg-[rgb(var(--sep-colour-4a351f))] disabled:opacity-40"
+                        className="shrink-0 border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-2 py-1 text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:bg-[rgb(var(--sep-colour-4a351f))] disabled:opacity-40 game_components_breezelodgingguestspanel_button_action"
                       >
                         {pending &&
                         pendingId ===
@@ -241,30 +241,30 @@ export function BreezeLodgingGuestsPanel({
                   ),
                 )
               ) : (
-                <p className="px-1 py-2 text-[8px] text-[rgb(var(--sep-colour-756958))]">
+                <p className="px-1 py-2 text-[8px] text-[rgb(var(--sep-colour-756958))] game_components_breezelodgingguestspanel_p_text_4">
                   No matching characters.
                 </p>
               )}
             </div>
           </div>
 
-          <div className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-17110d))] p-2">
-            <p className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))]">
+          <div className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-17110d))] p-2 game_components_breezelodgingguestspanel_div_container_7">
+            <p className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))] game_components_breezelodgingguestspanel_p_text_5">
               People invited
             </p>
 
-            <div className="mt-1.5 max-h-36 space-y-1 overflow-y-auto">
+            <div className="mt-1.5 max-h-36 space-y-1 overflow-y-auto game_components_breezelodgingguestspanel_div_container_8">
               {data.pendingInvitations.map(
                 (invitation) => (
                   <div
                     key={invitation.invitation_id}
-                    className="flex items-center justify-between gap-2 bg-[rgb(var(--sep-colour-0d0a08))]/45 px-2 py-1.5"
+                    className="flex items-center justify-between gap-2 bg-[rgb(var(--sep-colour-0d0a08))]/45 px-2 py-1.5 game_components_breezelodgingguestspanel_div_container_9"
                   >
-                    <div className="min-w-0">
-                      <p className="truncate text-[9px] text-[rgb(var(--sep-colour-c6b496))]">
+                    <div className="min-w-0 game_components_breezelodgingguestspanel_div_container_10">
+                      <p className="truncate text-[9px] text-[rgb(var(--sep-colour-c6b496))] game_components_breezelodgingguestspanel_p_text_6">
                         {invitation.display_name}
                       </p>
-                      <p className="text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-8f7757))]">
+                      <p className="text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-8f7757))] game_components_breezelodgingguestspanel_p_text_7">
                         Awaiting reply
                       </p>
                     </div>
@@ -276,7 +276,7 @@ export function BreezeLodgingGuestsPanel({
                           invitation.invitation_id,
                         )
                       }
-                      className="shrink-0 border border-[rgb(var(--sep-colour-765c3d))] bg-[rgb(var(--sep-colour-231a12))] px-2 py-1 text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-cab08b))] transition hover:bg-[rgb(var(--sep-colour-342617))] disabled:opacity-40"
+                      className="shrink-0 border border-[rgb(var(--sep-colour-765c3d))] bg-[rgb(var(--sep-colour-231a12))] px-2 py-1 text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-cab08b))] transition hover:bg-[rgb(var(--sep-colour-342617))] disabled:opacity-40 game_components_breezelodgingguestspanel_button_action_2"
                     >
                       {pending &&
                       pendingId ===
@@ -292,13 +292,13 @@ export function BreezeLodgingGuestsPanel({
                 (guest) => (
                   <div
                     key={guest.id}
-                    className="flex items-center justify-between gap-2 bg-[rgb(var(--sep-colour-0d0a08))]/45 px-2 py-1.5"
+                    className="flex items-center justify-between gap-2 bg-[rgb(var(--sep-colour-0d0a08))]/45 px-2 py-1.5 game_components_breezelodgingguestspanel_div_container_11"
                   >
-                    <div className="min-w-0">
-                      <p className="truncate text-[9px] text-[rgb(var(--sep-colour-c6b496))]">
+                    <div className="min-w-0 game_components_breezelodgingguestspanel_div_container_12">
+                      <p className="truncate text-[9px] text-[rgb(var(--sep-colour-c6b496))] game_components_breezelodgingguestspanel_p_text_8">
                         {guest.display_name}
                       </p>
-                      <p className="text-[7px] uppercase tracking-[0.1em] text-emerald-500">
+                      <p className="text-[7px] uppercase tracking-[0.1em] text-emerald-500 game_components_breezelodgingguestspanel_p_text_9">
                         Accepted
                       </p>
                     </div>
@@ -308,7 +308,7 @@ export function BreezeLodgingGuestsPanel({
                       onClick={() =>
                         remove(guest.id)
                       }
-                      className="shrink-0 border border-red-900/55 bg-red-950/15 px-2 py-1 text-[7px] uppercase tracking-[0.1em] text-red-300 transition hover:bg-red-950/35 disabled:opacity-40"
+                      className="shrink-0 border border-red-900/55 bg-red-950/15 px-2 py-1 text-[7px] uppercase tracking-[0.1em] text-red-300 transition hover:bg-red-950/35 disabled:opacity-40 game_components_breezelodgingguestspanel_button_action_3"
                     >
                       {pending &&
                       pendingId ===
@@ -322,7 +322,7 @@ export function BreezeLodgingGuestsPanel({
 
               {!data.pendingInvitations.length &&
               !data.guests.length ? (
-                <p className="px-1 py-2 text-[8px] text-[rgb(var(--sep-colour-756958))]">
+                <p className="px-1 py-2 text-[8px] text-[rgb(var(--sep-colour-756958))] game_components_breezelodgingguestspanel_p_text_10">
                   Nobody has been invited yet.
                 </p>
               ) : null}
@@ -333,11 +333,11 @@ export function BreezeLodgingGuestsPanel({
         {message ? (
           <p
             aria-live="polite"
-            className={`mt-2 text-[8px] ${
+            className={[((`mt-2 text-[8px] ${
               ok
                 ? "text-emerald-400"
                 : "text-red-400"
-            }`}
+            }`)), "game_components_breezelodgingguestspanel_p_text_11"].filter(Boolean).join(" ")}
           >
             {message}
           </p>

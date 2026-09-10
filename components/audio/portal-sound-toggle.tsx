@@ -28,11 +28,11 @@ export function PortalSoundToggle() {
           ? "Sound off — click to enable all portal sounds"
           : "Sound on — click to mute all portal sounds"
       }
-      className={`flex h-8 w-8 items-center justify-center border transition sm:h-9 sm:w-9 2xl:h-10 2xl:w-10 ${
+      className={[((`flex h-8 w-8 items-center justify-center border transition sm:h-9 sm:w-9 2xl:h-10 2xl:w-10 ${
         muted
           ? "border-red-900/70 bg-red-950/35 text-red-400 hover:border-red-700/80 hover:text-red-300"
           : "border-[rgb(var(--sep-colour-614b31))] bg-[rgb(var(--sep-colour-17120f))] text-[rgb(var(--sep-colour-c69b5c))] hover:border-[rgb(var(--sep-colour-977242))] hover:text-[rgb(var(--sep-colour-efd6a3))]"
-      }`}
+      }`)), "components_audio_portal_sound_toggle_button_toggle_muted"].filter(Boolean).join(" ")}
     >
       {muted ? (
         <VolumeX className="pointer-events-none h-5 w-5" />

@@ -32,9 +32,9 @@ export async function PortalHeader({ context }: PortalHeaderProps) {
     <>
       <header
         data-portal-header
-        className="sticky top-0 z-50 h-[clamp(56px,8dvh,80px)] border-b border-[rgb(var(--sep-colour-6e5535))]/40 bg-[rgb(var(--sep-colour-0d0b0a))]/95 backdrop-blur"
+        className="sticky top-0 z-50 h-[clamp(56px,8dvh,80px)] border-b border-[rgb(var(--sep-colour-6e5535))]/40 bg-[rgb(var(--sep-colour-0d0b0a))]/95 backdrop-blur components_portal_portal_header_header_header"
       >
-        <div className="mx-auto flex h-full w-full max-w-[1800px] items-center justify-between gap-2 px-3 sm:gap-3 sm:px-5 lg:gap-4 lg:px-6 2xl:px-8">
+        <div className="mx-auto flex h-full w-full max-w-[1800px] items-center justify-between gap-2 px-3 sm:gap-3 sm:px-5 lg:gap-4 lg:px-6 2xl:px-8 components_portal_portal_header_div_container">
           <Link
             href="/"
             className="min-w-0 shrink"
@@ -43,18 +43,18 @@ export async function PortalHeader({ context }: PortalHeaderProps) {
             <img
               src="/icons/newLogo.png"
               alt="Sepulchria"
-              className="block h-9 w-auto max-w-[96px] object-contain sm:hidden"
+              className="block h-9 w-auto max-w-[96px] object-contain sm:hidden components_portal_portal_header_img_sepulchria"
             />
 
-            <span className="hidden truncate font-serif text-lg font-semibold tracking-[0.18em] text-[rgb(var(--sep-colour-d9bd82))] sm:block sm:text-xl sm:tracking-[0.22em] 2xl:text-2xl">
+            <span className="hidden truncate font-serif text-lg font-semibold tracking-[0.18em] text-[rgb(var(--sep-colour-d9bd82))] sm:block sm:text-xl sm:tracking-[0.22em] 2xl:text-2xl components_portal_portal_header_span_text">
               SEPULCHRIA
             </span>
-            <span className="mt-0.5 hidden truncate text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8f806d))] md:block lg:text-[9px] 2xl:mt-1 2xl:text-[10px] 2xl:tracking-[0.35em]">
+            <span className="mt-0.5 hidden truncate text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8f806d))] md:block lg:text-[9px] 2xl:mt-1 2xl:text-[10px] 2xl:tracking-[0.35em] components_portal_portal_header_span_text_2">
               Built upon the remains of The First, shaped by your choices.
             </span>
           </Link>
 
-          <div data-cosmetic-header-controls className="flex shrink-0 items-center gap-1.5 sm:gap-2 lg:gap-2.5 2xl:gap-3">
+          <div data-cosmetic-header-controls className="flex shrink-0 items-center gap-1.5 sm:gap-2 lg:gap-2.5 2xl:gap-3 components_portal_portal_header_div_container_2">
             <PortalModalButton
   payload={{
     label: "Store",
@@ -66,15 +66,15 @@ export async function PortalHeader({ context }: PortalHeaderProps) {
   title="Sepulchria Store"
   className="relative overflow-visible flex h-8 w-8 items-center justify-center border border-[rgb(var(--sep-colour-614b31))] bg-[rgb(var(--sep-colour-17120f))] text-[rgb(var(--sep-colour-c69b5c))] transition hover:border-[rgb(var(--sep-colour-977242))] hover:text-[rgb(var(--sep-colour-efd6a3))] sm:h-9 sm:w-9 2xl:h-10 2xl:w-10"
 >
-  <span className="sep-store-sparkle-orbit">
-  <span className="sep-metal-twinkle t1" />
-  <span className="sep-metal-twinkle t2" />
-  <span className="sep-metal-twinkle t4" />
-  <span className="sep-metal-twinkle t6" />
-  <span className="sep-metal-twinkle t7" />
-  <span className="sep-metal-twinkle t11" />
-  <span className="sep-metal-twinkle t13" />
-  <span className="sep-metal-twinkle t16" />
+  <span className="sep-store-sparkle-orbit components_portal_portal_header_span_text_3">
+  <span className="sep-metal-twinkle t1 components_portal_portal_header_span_text_4" />
+  <span className="sep-metal-twinkle t2 components_portal_portal_header_span_text_5" />
+  <span className="sep-metal-twinkle t4 components_portal_portal_header_span_text_6" />
+  <span className="sep-metal-twinkle t6 components_portal_portal_header_span_text_7" />
+  <span className="sep-metal-twinkle t7 components_portal_portal_header_span_text_8" />
+  <span className="sep-metal-twinkle t11 components_portal_portal_header_span_text_9" />
+  <span className="sep-metal-twinkle t13 components_portal_portal_header_span_text_10" />
+  <span className="sep-metal-twinkle t16 components_portal_portal_header_span_text_11" />
 
   <svg
     aria-hidden="true"

@@ -83,10 +83,10 @@ export function ItemImageFrame({
 
   return (
     <div
-      className={[
+      className={[(([
         "relative shrink-0 overflow-hidden border-2 bg-[rgb(var(--sep-colour-0d0907))]",
         className,
-      ].join(" ")}
+      ].join(" "))), "components_items_item_image_frame_div_container"].filter(Boolean).join(" ")}
       style={{
         borderColor: visual.colour,
       }}
@@ -98,20 +98,20 @@ export function ItemImageFrame({
         <img
           src={src}
           alt={alt}
-          className={[
+          className={[(([
             imageClassName,
             muted ? "grayscale opacity-75" : "",
-          ].join(" ")}
+          ].join(" "))), "components_items_item_image_frame_img_image"].filter(Boolean).join(" ")}
         />
       ) : (
-        <div className="flex h-full w-full items-center justify-center font-serif text-[rgb(var(--sep-colour-756247))]">
+        <div className="flex h-full w-full items-center justify-center font-serif text-[rgb(var(--sep-colour-756247))] components_items_item_image_frame_div_container_2">
           {fallback}
         </div>
       )}
 
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0"
+        className="pointer-events-none absolute inset-0 components_items_item_image_frame_div_container_3"
         style={{
           boxShadow: `
   inset 0 0 0 1px ${visual.colour},
@@ -123,10 +123,10 @@ export function ItemImageFrame({
 
       <span
         aria-label={`${visual.label} quality`}
-        className={[
+        className={[(([
           "absolute -bottom-[2px] -right-[2px] z-10 flex items-center justify-center font-serif font-bold leading-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.95)]",
           BADGE_CLASSES[badgeSize],
-        ].join(" ")}
+        ].join(" "))), "components_items_item_image_frame_span_text"].filter(Boolean).join(" ")}
         style={{
           color: visual.colour,
         }}

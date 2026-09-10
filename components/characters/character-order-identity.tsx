@@ -124,10 +124,10 @@ export function CharacterOrderIdentity({
   if (variant === "inline") {
     if (!loaded) {
       return (
-        <span className="flex min-w-0 items-center gap-1.5">
-          <span className="h-5 w-5 shrink-0 animate-pulse border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))]" />
+        <span className="flex min-w-0 items-center gap-1.5 components_characters_character_order_identity_span_text">
+          <span className="h-5 w-5 shrink-0 animate-pulse border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))] components_characters_character_order_identity_span_text_2" />
 
-          <span className="text-[8px] text-[rgb(var(--sep-colour-675e52))]">
+          <span className="text-[8px] text-[rgb(var(--sep-colour-675e52))] components_characters_character_order_identity_span_text_3">
             Loading Order…
           </span>
         </span>
@@ -136,7 +136,7 @@ export function CharacterOrderIdentity({
 
     if (!order) {
       return (
-        <span className="text-[8px] text-[rgb(var(--sep-colour-675e52))]">
+        <span className="text-[8px] text-[rgb(var(--sep-colour-675e52))] components_characters_character_order_identity_span_text_4">
           No Order
         </span>
       );
@@ -148,11 +148,11 @@ export function CharacterOrderIdentity({
 
     return (
       <span
-        className="flex min-w-0 items-center gap-1.5"
+        className="flex min-w-0 items-center gap-1.5 components_characters_character_order_identity_span_text_5"
         title={`Order: ${order.name}`}
       >
         <span
-          className="flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-0d0907))] font-serif text-[8px]"
+          className="flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-0d0907))] font-serif text-[8px] components_characters_character_order_identity_span_text_6"
           style={{
   borderColor: colour,
   color: colour,
@@ -163,7 +163,7 @@ export function CharacterOrderIdentity({
             <img
               src={order.icon_url}
               alt=""
-              className="h-full w-full object-cover"
+              className="h-full w-full object-cover components_characters_character_order_identity_img_image"
             />
           ) : (
             order.name
@@ -172,7 +172,7 @@ export function CharacterOrderIdentity({
           )}
         </span>
 
-        <span className="min-w-0 truncate text-[8px] text-[rgb(var(--sep-colour-9a866b))]">
+        <span className="min-w-0 truncate text-[8px] text-[rgb(var(--sep-colour-9a866b))] components_characters_character_order_identity_span_text_7">
           {order.name}
         </span>
       </span>
@@ -190,7 +190,7 @@ export function CharacterOrderIdentity({
       return (
         <span
           title="No Order"
-          className="flex h-6 w-6 items-center justify-center overflow-hidden border border-[rgb(var(--sep-colour-765937))]/60 bg-[rgb(var(--sep-colour-0d0907))] font-serif text-[8px] text-[rgb(var(--sep-colour-765937))]"
+          className="flex h-6 w-6 items-center justify-center overflow-hidden border border-[rgb(var(--sep-colour-765937))]/60 bg-[rgb(var(--sep-colour-0d0907))] font-serif text-[8px] text-[rgb(var(--sep-colour-765937))] components_characters_character_order_identity_span_no_order"
         >
           O
         </span>
@@ -211,12 +211,12 @@ export function CharacterOrderIdentity({
         src={order.icon_url}
         alt={order.name}
         title={`Order: ${order.name}`}
-        className="h-4 w-4 object-contain"
+        className="h-4 w-4 object-contain components_characters_character_order_identity_img_image_2"
       />
     ) : (
       <span
         title={`Order: ${order.name}`}
-        className="flex h-4 w-4 items-center justify-center font-serif text-[7px]"
+        className="flex h-4 w-4 items-center justify-center font-serif text-[7px] components_characters_character_order_identity_span_text_8"
         style={{
           color: colour,
         }}
@@ -240,7 +240,7 @@ export function CharacterOrderIdentity({
   return (
     <span
       title={`Order: ${order.name}`}
-      className={`flex shrink-0 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-0d0907))] font-serif text-[7px] ${sizeClass}`}
+      className={[((`flex shrink-0 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-0d0907))] font-serif text-[7px] ${sizeClass}`)), "components_characters_character_order_identity_span_text_9"].filter(Boolean).join(" ")}
       style={{
         borderColor: `${colour}88`,
         color: colour,
@@ -251,7 +251,7 @@ export function CharacterOrderIdentity({
         <img
           src={order.icon_url}
           alt=""
-          className="h-full w-full object-contain"
+          className="h-full w-full object-contain components_characters_character_order_identity_img_image_3"
         />
       ) : (
         order.name

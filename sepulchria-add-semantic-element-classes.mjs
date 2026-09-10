@@ -397,7 +397,7 @@ function replaceExistingClassName(attr, sf, token) {
     if (exprText.includes(token)) return null;
     return {
       start: init.getStart(sf), end: init.getEnd(),
-      text: "{`" + "${(" + exprText + ') ?? ""} ' + token + "`}",
+      text: `{[((${exprText})), "${token}"].filter(Boolean).join(" ")}`,
     };
   }
   return null;

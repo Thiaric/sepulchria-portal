@@ -114,14 +114,14 @@ export default function PostModerationPanel({
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="border border-amber-900/60 bg-amber-950/10 px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-amber-400 transition hover:border-amber-700 hover:bg-amber-950/25"
+        className="border border-amber-900/60 bg-amber-950/10 px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-amber-400 transition hover:border-amber-700 hover:bg-amber-950/25 components_forum_post_moderation_panel_button_moderate"
       >
         Moderate
       </button>
 
       {isOpen ? (
         <div
-          className="fixed inset-0 z-[120] flex items-center justify-center bg-black/85 px-4 py-8 backdrop-blur-sm"
+          className="fixed inset-0 z-[120] flex items-center justify-center bg-black/85 px-4 py-8 backdrop-blur-sm components_forum_post_moderation_panel_div_container"
           onMouseDown={(event) => {
             if (
               event.target ===
@@ -136,22 +136,22 @@ export default function PostModerationPanel({
             role="dialog"
             aria-modal="true"
             aria-labelledby="post-moderation-title"
-            className="max-h-full w-full max-w-xl overflow-y-auto border border-[rgb(var(--sep-colour-765733))]/60 bg-[rgb(var(--sep-colour-15100d))] shadow-2xl"
+            className="max-h-full w-full max-w-xl overflow-y-auto border border-[rgb(var(--sep-colour-765733))]/60 bg-[rgb(var(--sep-colour-15100d))] shadow-2xl components_forum_post_moderation_panel_section_dialog"
           >
-            <header className="flex items-start justify-between gap-5 border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-1a130e))] px-5 py-5 sm:px-6">
-              <div>
-                <p className="text-[8px] uppercase tracking-[0.22em] text-amber-500">
+            <header className="flex items-start justify-between gap-5 border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-1a130e))] px-5 py-5 sm:px-6 components_forum_post_moderation_panel_header_header">
+              <div className="components_forum_post_moderation_panel_div_moderate_post">
+                <p className="text-[8px] uppercase tracking-[0.22em] text-amber-500 components_forum_post_moderation_panel_p_moderate_post">
                   Staff controls
                 </p>
 
                 <h2
                   id="post-moderation-title"
-                  className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dec69d))]"
+                  className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dec69d))] components_forum_post_moderation_panel_h2_post_moderation_title"
                 >
                   Moderate post #{postNumber}
                 </h2>
 
-                <p className="mt-2 text-sm leading-6 text-[rgb(var(--sep-colour-887968))]">
+                <p className="mt-2 text-sm leading-6 text-[rgb(var(--sep-colour-887968))] components_forum_post_moderation_panel_p_moderate_post_2">
                   Posted by {authorName}
                 </p>
               </div>
@@ -163,13 +163,13 @@ export default function PostModerationPanel({
                 }
                 disabled={anyPending}
                 aria-label="Close post moderation panel"
-                className="border border-[rgb(var(--sep-colour-60482e))]/50 px-3 py-2 text-xs text-[rgb(var(--sep-colour-9f8765))] transition hover:border-[rgb(var(--sep-colour-967044))] hover:text-[rgb(var(--sep-colour-dec095))] disabled:opacity-50"
+                className="border border-[rgb(var(--sep-colour-60482e))]/50 px-3 py-2 text-xs text-[rgb(var(--sep-colour-9f8765))] transition hover:border-[rgb(var(--sep-colour-967044))] hover:text-[rgb(var(--sep-colour-dec095))] disabled:opacity-50 components_forum_post_moderation_panel_button_close_post_moderation_panel"
               >
                 ×
               </button>
             </header>
 
-            <div className="space-y-5 p-5 sm:p-6">
+            <div className="space-y-5 p-5 sm:p-6 components_forum_post_moderation_panel_div_container_2">
               <ModerationMessage
                 state={deleteState}
               />
@@ -179,12 +179,12 @@ export default function PostModerationPanel({
               />
 
               {isInitialPost ? (
-                <div className="border border-amber-900/55 bg-amber-950/10 px-4 py-4">
-                  <p className="text-[8px] uppercase tracking-[0.18em] text-amber-500">
+                <div className="border border-amber-900/55 bg-amber-950/10 px-4 py-4 components_forum_post_moderation_panel_div_container_3">
+                  <p className="text-[8px] uppercase tracking-[0.18em] text-amber-500 components_forum_post_moderation_panel_p_text">
                     Opening post
                   </p>
 
-                  <p className="mt-3 text-sm leading-6 text-[rgb(var(--sep-colour-a8957d))]">
+                  <p className="mt-3 text-sm leading-6 text-[rgb(var(--sep-colour-a8957d))] components_forum_post_moderation_panel_p_text_2">
                     The opening post cannot
                     be deleted separately.
                     Use the topic moderation
@@ -194,10 +194,10 @@ export default function PostModerationPanel({
                 </div>
               ) : (
                 <>
-                  <div>
+                  <div className="components_forum_post_moderation_panel_div_moderation_note">
                     <label
                       htmlFor={`moderation-reason-${postId}`}
-                      className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-917957))]"
+                      className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-917957))] components_forum_post_moderation_panel_label_moderation_note"
                     >
                       Moderation note
                     </label>
@@ -214,10 +214,10 @@ export default function PostModerationPanel({
                       rows={5}
                       disabled={anyPending}
                       placeholder="Optional reason for this moderation action..."
-                      className="mt-3 w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0d0907))] px-4 py-3 text-sm leading-6 text-[rgb(var(--sep-colour-d2bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-5f5548))] focus:border-[rgb(var(--sep-colour-a47a44))] disabled:opacity-50"
+                      className="mt-3 w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0d0907))] px-4 py-3 text-sm leading-6 text-[rgb(var(--sep-colour-d2bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-5f5548))] focus:border-[rgb(var(--sep-colour-a47a44))] disabled:opacity-50 components_forum_post_moderation_panel_textarea_optional_reason_moderation_action"
                     />
 
-                    <div className="mt-2 text-right text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-665947))]">
+                    <div className="mt-2 text-right text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-665947))] components_forum_post_moderation_panel_div_moderation_note_2">
                       {reason.length}/1000
                     </div>
                   </div>
@@ -225,29 +225,29 @@ export default function PostModerationPanel({
                   {isDeleted ? (
                     <form
                       action={restoreAction}
-                      className="border border-emerald-950/65 bg-emerald-950/10 p-5"
+                      className="border border-emerald-950/65 bg-emerald-950/10 p-5 components_forum_post_moderation_panel_form_restore_action"
                     >
-                      <input
+                      <input className="components_forum_post_moderation_panel_input_post_id"
                         type="hidden"
                         name="postId"
                         value={postId}
                       />
 
-                      <input
+                      <input className="components_forum_post_moderation_panel_input_reason"
                         type="hidden"
                         name="reason"
                         value={reason}
                       />
 
-                      <p className="text-[8px] uppercase tracking-[0.18em] text-emerald-500">
+                      <p className="text-[8px] uppercase tracking-[0.18em] text-emerald-500 components_forum_post_moderation_panel_p_restore_post">
                         Restore content
                       </p>
 
-                      <h3 className="mt-2 font-serif text-xl text-emerald-200">
+                      <h3 className="mt-2 font-serif text-xl text-emerald-200 components_forum_post_moderation_panel_h3_restore_post">
                         Restore this post
                       </h3>
 
-                      <p className="mt-3 text-xs leading-6 text-emerald-200/70">
+                      <p className="mt-3 text-xs leading-6 text-emerald-200/70 components_forum_post_moderation_panel_p_restore_post_2">
                         Make the post visible
                         again and return its
                         original content to the
@@ -257,7 +257,7 @@ export default function PostModerationPanel({
                       <button
                         type="submit"
                         disabled={anyPending}
-                        className="mt-5 w-full border border-emerald-800 bg-emerald-950/35 px-5 py-3 text-[8px] uppercase tracking-[0.16em] text-emerald-300 transition hover:border-emerald-600 hover:bg-emerald-950/55 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="mt-5 w-full border border-emerald-800 bg-emerald-950/35 px-5 py-3 text-[8px] uppercase tracking-[0.16em] text-emerald-300 transition hover:border-emerald-600 hover:bg-emerald-950/55 disabled:cursor-not-allowed disabled:opacity-50 components_forum_post_moderation_panel_button_restore_post"
                       >
                         {restorePending
                           ? "Restoring..."
@@ -267,29 +267,29 @@ export default function PostModerationPanel({
                   ) : (
                     <form
                       action={deleteAction}
-                      className="border border-red-950/65 bg-red-950/10 p-5"
+                      className="border border-red-950/65 bg-red-950/10 p-5 components_forum_post_moderation_panel_form_delete_action"
                     >
-                      <input
+                      <input className="components_forum_post_moderation_panel_input_post_id_2"
                         type="hidden"
                         name="postId"
                         value={postId}
                       />
 
-                      <input
+                      <input className="components_forum_post_moderation_panel_input_reason_2"
                         type="hidden"
                         name="reason"
                         value={reason}
                       />
 
-                      <p className="text-[8px] uppercase tracking-[0.18em] text-red-500">
+                      <p className="text-[8px] uppercase tracking-[0.18em] text-red-500 components_forum_post_moderation_panel_p_delete_post">
                         Remove content
                       </p>
 
-                      <h3 className="mt-2 font-serif text-xl text-red-200">
+                      <h3 className="mt-2 font-serif text-xl text-red-200 components_forum_post_moderation_panel_h3_delete_post">
                         Delete this post
                       </h3>
 
-                      <p className="mt-3 text-xs leading-6 text-red-300/75">
+                      <p className="mt-3 text-xs leading-6 text-red-300/75 components_forum_post_moderation_panel_p_delete_post_2">
                         Hide the post from
                         members while keeping
                         its place in the
@@ -301,7 +301,7 @@ export default function PostModerationPanel({
                       <button
                         type="submit"
                         disabled={anyPending}
-                        className="mt-5 w-full border border-red-800 bg-red-950/35 px-5 py-3 text-[8px] uppercase tracking-[0.16em] text-red-300 transition hover:border-red-600 hover:bg-red-950/60 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="mt-5 w-full border border-red-800 bg-red-950/35 px-5 py-3 text-[8px] uppercase tracking-[0.16em] text-red-300 transition hover:border-red-600 hover:bg-red-950/60 disabled:cursor-not-allowed disabled:opacity-50 components_forum_post_moderation_panel_button_delete_post"
                       >
                         {deletePending
                           ? "Deleting..."
@@ -312,14 +312,14 @@ export default function PostModerationPanel({
                 </>
               )}
 
-              <div className="flex justify-end border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-5">
+              <div className="flex justify-end border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-5 components_forum_post_moderation_panel_div_container_4">
                 <button
                   type="button"
                   onClick={() =>
                     setIsOpen(false)
                   }
                   disabled={anyPending}
-                  className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-19120e))] px-5 py-3 text-[9px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-a58b68))] transition hover:border-[rgb(var(--sep-colour-947047))] hover:text-[rgb(var(--sep-colour-dec095))] disabled:opacity-50"
+                  className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-19120e))] px-5 py-3 text-[9px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-a58b68))] transition hover:border-[rgb(var(--sep-colour-947047))] hover:text-[rgb(var(--sep-colour-dec095))] disabled:opacity-50 components_forum_post_moderation_panel_button_close"
                 >
                   Close
                 </button>
@@ -343,11 +343,9 @@ function ModerationMessage({
 
   return (
     <div
-      className={
-        state.success
+      className={[((state.success
           ? "border border-emerald-900/60 bg-emerald-950/20 px-4 py-3 text-sm text-emerald-300"
-          : "border border-red-900/60 bg-red-950/20 px-4 py-3 text-sm text-red-300"
-      }
+          : "border border-red-900/60 bg-red-950/20 px-4 py-3 text-sm text-red-300")), "components_forum_post_moderation_panel_div_container_5"].filter(Boolean).join(" ")}
     >
       {state.message}
     </div>

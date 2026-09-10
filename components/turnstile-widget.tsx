@@ -108,7 +108,7 @@ export function TurnstileWidget({
 
   if (!siteKey) {
     return (
-      <div className="border border-red-800/60 bg-red-950/30 px-4 py-3 text-sm text-red-200">
+      <div className="border border-red-800/60 bg-red-950/30 px-4 py-3 text-sm text-red-200 components_turnstile_widget_div_container">
         Turnstile site key is
         missing.
       </div>
@@ -125,7 +125,7 @@ export function TurnstileWidget({
 
       <div
         ref={containerRef}
-        className="flex min-h-[70px] justify-center"
+        className="flex min-h-[70px] justify-center components_turnstile_widget_div_container_2"
       />
     </>
   );

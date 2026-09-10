@@ -155,7 +155,7 @@ function NumberField({
       max={max}
       placeholder={placeholder}
       defaultValue={defaultValue ?? ""}
-      className={inputClass}
+      className={[((inputClass)), "admin_house_of_chances_page_input_field"].filter(Boolean).join(" ")}
     />
   );
 }
@@ -168,20 +168,20 @@ function RuleFields({ rule }: { rule?: Rule }) {
         required
         defaultValue={rule?.name ?? ""}
         placeholder="Rule name"
-        className={inputClass}
+        className={[((inputClass)), "admin_house_of_chances_page_input_name"].filter(Boolean).join(" ")}
       />
 
       <select
         name="matchType"
         required
         defaultValue={rule?.match_type ?? "exact"}
-        className={inputClass}
+        className={[((inputClass)), "admin_house_of_chances_page_select_match_type"].filter(Boolean).join(" ")}
       >
-        <option value="exact">Exact three rolls</option>
-        <option value="all_equal">All three equal</option>
-        <option value="all_in_range">All three in shared range</option>
-        <option value="total_range">Combined total range</option>
-        <option value="ordered_ranges">Separate range per reel</option>
+        <option className="admin_house_of_chances_page_option_exact" value="exact">Exact three rolls</option>
+        <option className="admin_house_of_chances_page_option_all_equal" value="all_equal">All three equal</option>
+        <option className="admin_house_of_chances_page_option_all_range" value="all_in_range">All three in shared range</option>
+        <option className="admin_house_of_chances_page_option_total_range" value="total_range">Combined total range</option>
+        <option className="admin_house_of_chances_page_option_ordered_ranges" value="ordered_ranges">Separate range per reel</option>
       </select>
 
       <input
@@ -191,7 +191,7 @@ function RuleFields({ rule }: { rule?: Rule }) {
         min={-100000}
         max={100000}
         placeholder="Priority"
-        className={inputClass}
+        className={[((inputClass)), "admin_house_of_chances_page_input_priority"].filter(Boolean).join(" ")}
       />
 
       <input
@@ -201,7 +201,7 @@ function RuleFields({ rule }: { rule?: Rule }) {
         min={0}
         max={100000}
         placeholder="Sort order"
-        className={inputClass}
+        className={[((inputClass)), "admin_house_of_chances_page_input_sort_order"].filter(Boolean).join(" ")}
       />
 
       <textarea
@@ -209,10 +209,10 @@ function RuleFields({ rule }: { rule?: Rule }) {
         rows={2}
         defaultValue={rule?.description ?? ""}
         placeholder="Optional staff description"
-        className={`${inputClass} md:col-span-2 xl:col-span-4`}
+        className={[((`${inputClass} md:col-span-2 xl:col-span-4`)), "admin_house_of_chances_page_textarea_description"].filter(Boolean).join(" ")}
       />
 
-      <div className="grid gap-2 md:col-span-2 md:grid-cols-3 xl:col-span-4 xl:grid-cols-6">
+      <div className="grid gap-2 md:col-span-2 md:grid-cols-3 xl:col-span-4 xl:grid-cols-6 admin_house_of_chances_page_div_container">
         <NumberField name="roll1Min" placeholder="Roll 1 min / exact" defaultValue={rule?.roll_1_min} />
         <NumberField name="roll1Max" placeholder="Roll 1 max" defaultValue={rule?.roll_1_max} />
         <NumberField name="roll2Min" placeholder="Roll 2 min / exact" defaultValue={rule?.roll_2_min} />
@@ -221,17 +221,17 @@ function RuleFields({ rule }: { rule?: Rule }) {
         <NumberField name="roll3Max" placeholder="Roll 3 max" defaultValue={rule?.roll_3_max} />
       </div>
 
-      <div className="grid gap-2 md:col-span-2 md:grid-cols-2 xl:col-span-4">
+      <div className="grid gap-2 md:col-span-2 md:grid-cols-2 xl:col-span-4 admin_house_of_chances_page_div_container_2">
         <NumberField name="totalMin" placeholder="Total min" defaultValue={rule?.total_min} min={3} max={300} />
         <NumberField name="totalMax" placeholder="Total max" defaultValue={rule?.total_max} min={3} max={300} />
       </div>
 
-      <label className="flex items-center gap-2 text-xs text-[rgb(var(--sep-colour-aa987e))]">
+      <label className="flex items-center gap-2 text-xs text-[rgb(var(--sep-colour-aa987e))] admin_house_of_chances_page_label_label">
         <input
           type="checkbox"
           name="isActive"
           defaultChecked={rule?.is_active ?? true}
-          className="accent-[rgb(var(--sep-colour-8b673d))]"
+          className="accent-[rgb(var(--sep-colour-8b673d))] admin_house_of_chances_page_input_active"
         />
         Active
       </label>
@@ -327,65 +327,65 @@ export default async function AdminHouseOfChancesPage() {
   const plays = (playsResult.data ?? []) as unknown as Play[];
 
   return (
-    <main className="p-5 sm:p-7 lg:p-9">
-      <div className="mx-auto max-w-7xl">
-        <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
+    <main className="p-5 sm:p-7 lg:p-9 admin_house_of_chances_page_main_main">
+      <div className="mx-auto max-w-7xl admin_house_of_chances_page_div_house_chances">
+        <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))] admin_house_of_chances_page_p_house_chances">
           Administration
         </p>
-        <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">
+        <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))] admin_house_of_chances_page_h1_house_chances">
           House of Chances
         </h1>
-        <p className="mt-3 max-w-4xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))]">
+        <p className="mt-3 max-w-4xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))] admin_house_of_chances_page_p_house_chances_2">
           Control the House, define winning combinations and decide exactly what fortune pays.
         </p>
 
-        <section id="house-of-chances-settings" className="mt-8 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6">
-          <div className="flex flex-wrap items-start justify-between gap-3">
-            <div>
-              <p className="text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">Global controls</p>
-              <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">House Settings</h2>
+        <section id="house-of-chances-settings" className="mt-8 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6 admin_house_of_chances_page_section_house_chances_settings">
+          <div className="flex flex-wrap items-start justify-between gap-3 admin_house_of_chances_page_div_house_chances_settings">
+            <div className="admin_house_of_chances_page_div_house_settings">
+              <p className="text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))] admin_house_of_chances_page_p_house_settings">Global controls</p>
+              <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))] admin_house_of_chances_page_h2_house_settings">House Settings</h2>
             </div>
-            <span className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
+            <span className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))] admin_house_of_chances_page_span_house_chances_settings">
               Room: {settings.room_slug}
             </span>
           </div>
 
           <AdminActionForm action={updateHouseOfChancesSettings} className="mt-5 grid gap-3 md:grid-cols-[160px_160px_minmax(180px,1fr)_auto]">
-            <label>
-              <span className="mb-1.5 block text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))]">Cost per play</span>
-              <input type="number" name="playCost" min={0} defaultValue={settings.play_cost} className={inputClass} />
+            <label className="admin_house_of_chances_page_label_house_chances_settings">
+              <span className="mb-1.5 block text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))] admin_house_of_chances_page_span_house_chances_settings_2">Cost per play</span>
+              <input type="number" name="playCost" min={0} defaultValue={settings.play_cost} className={[((inputClass)), "admin_house_of_chances_page_input_play_cost"].filter(Boolean).join(" ")} />
             </label>
 
-            <label>
-              <span className="mb-1.5 block text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))]">Daily limit</span>
-              <input type="number" name="dailyPlayLimit" min={1} max={100} defaultValue={settings.daily_play_limit} className={inputClass} />
+            <label className="admin_house_of_chances_page_label_house_chances_settings_2">
+              <span className="mb-1.5 block text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))] admin_house_of_chances_page_span_house_chances_settings_3">Daily limit</span>
+              <input type="number" name="dailyPlayLimit" min={1} max={100} defaultValue={settings.daily_play_limit} className={[((inputClass)), "admin_house_of_chances_page_input_daily_play_limit"].filter(Boolean).join(" ")} />
             </label>
 
-            <label className="flex items-end gap-2 pb-2 text-xs text-[rgb(var(--sep-colour-aa987e))]">
-              <input type="checkbox" name="isOpen" defaultChecked={settings.is_open} className="accent-[rgb(var(--sep-colour-8b673d))]" />
+            <label className="flex items-end gap-2 pb-2 text-xs text-[rgb(var(--sep-colour-aa987e))] admin_house_of_chances_page_label_house_chances_settings_3">
+              <input type="checkbox" name="isOpen" defaultChecked={settings.is_open} className="accent-[rgb(var(--sep-colour-8b673d))] admin_house_of_chances_page_input_open" />
               House open to players
             </label>
 
-            <button type="submit" className={buttonClass}>Save Settings</button>
+            <button type="submit" className={[((buttonClass)), "admin_house_of_chances_page_button_save_settings"].filter(Boolean).join(" ")}>Save Settings</button>
           </AdminActionForm>
         </section>
 
-        <section id="house-of-chances-new-rule" className="mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6">
-          <p className="text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">Prize rules</p>
-          <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">Create Winning Rule</h2>
-          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+        <section id="house-of-chances-new-rule" className="mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6 admin_house_of_chances_page_section_house_chances_new_rule">
+          <p className="text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))] admin_house_of_chances_page_p_house_chances_new_rule">Prize rules</p>
+          <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))] admin_house_of_chances_page_h2_house_chances_new_rule">Create Winning Rule</h2>
+          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-8f8271))] admin_house_of_chances_page_p_house_chances_new_rule_2">
             If several rules match the same roll, the highest Priority wins. Exact rules use the three “min / exact” fields. All-equal may optionally use Roll 1 min/max as a permitted range.
           </p>
 
           <AdminActionForm action={createHouseOfChancesRule} className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
             <RuleFields />
-            <div className="flex justify-end md:col-span-2 xl:col-span-3">
-              <button type="submit" className={buttonClass}>Create Rule</button>
+            <div className="flex justify-end md:col-span-2 xl:col-span-3 admin_house_of_chances_page_div_house_chances_new_rule">
+              <button type="submit" className={[((buttonClass)), "admin_house_of_chances_page_button_create_rule"].filter(Boolean).join(" ")}>Create Rule</button>
             </div>
           </AdminActionForm>
         </section>
 
-        <div className="mt-6 space-y-5">
+        <div className="mt-6 space-y-5 admin_house_of_chances_page_div_house_chances_2">
           {rules.length ? rules.map((rule) => {
             const ruleRewards = rewards.filter((reward) => reward.rule_id === rule.id);
 
@@ -405,104 +405,104 @@ export default async function AdminHouseOfChancesPage() {
                 data-house-rule-roll-3-max={rule.roll_3_max ?? ""}
                 data-house-rule-total-min={rule.total_min ?? ""}
                 data-house-rule-total-max={rule.total_max ?? ""}
-                className="scroll-mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6"
+                className="scroll-mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6 admin_house_of_chances_page_section_section"
               >
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div>
-                    <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">Priority {rule.priority}</p>
-                    <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">{rule.name}</h2>
-                    <p className="mt-1 text-[10px] text-[rgb(var(--sep-colour-a99578))]">{ruleSummary(rule)}</p>
+                <div className="flex flex-wrap items-start justify-between gap-3 admin_house_of_chances_page_div_container_3">
+                  <div className="admin_house_of_chances_page_div_container_4">
+                    <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] admin_house_of_chances_page_p_text">Priority {rule.priority}</p>
+                    <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))] admin_house_of_chances_page_h2_heading">{rule.name}</h2>
+                    <p className="mt-1 text-[10px] text-[rgb(var(--sep-colour-a99578))] admin_house_of_chances_page_p_text_2">{ruleSummary(rule)}</p>
                   </div>
 
-                  <span className={["border px-2 py-1 text-[8px] uppercase tracking-[0.14em]", rule.is_active ? "border-emerald-900/50 text-emerald-400" : "border-[rgb(var(--sep-colour-60482e))]/45 text-[rgb(var(--sep-colour-756958))]"].join(" ")}>
+                  <span className={[((["border px-2 py-1 text-[8px] uppercase tracking-[0.14em]", rule.is_active ? "border-emerald-900/50 text-emerald-400" : "border-[rgb(var(--sep-colour-60482e))]/45 text-[rgb(var(--sep-colour-756958))]"].join(" "))), "admin_house_of_chances_page_span_text"].filter(Boolean).join(" ")}>
                     {rule.is_active ? "Active" : "Inactive"}
                   </span>
                 </div>
 
                 <AdminActionForm action={updateHouseOfChancesRule} className="mt-5 grid gap-3 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-5 md:grid-cols-2 xl:grid-cols-4">
-                  <input type="hidden" name="ruleId" value={rule.id} />
+                  <input className="admin_house_of_chances_page_input_rule_id" type="hidden" name="ruleId" value={rule.id} />
                   <RuleFields rule={rule} />
-                  <div className="flex justify-end md:col-span-2 xl:col-span-3">
-                    <button type="submit" className={buttonClass}>Save Rule</button>
+                  <div className="flex justify-end md:col-span-2 xl:col-span-3 admin_house_of_chances_page_div_container_5">
+                    <button type="submit" className={[((buttonClass)), "admin_house_of_chances_page_button_save_rule"].filter(Boolean).join(" ")}>Save Rule</button>
                   </div>
                 </AdminActionForm>
 
-                <div className="mt-6 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-5">
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <div>
-                      <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">Rewards</p>
-                      <p className="mt-1 text-[10px] text-[rgb(var(--sep-colour-8f8271))]">A winning rule may grant several rewards together.</p>
+                <div className="mt-6 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-5 admin_house_of_chances_page_div_container_6">
+                  <div className="flex flex-wrap items-center justify-between gap-3 admin_house_of_chances_page_div_container_7">
+                    <div className="admin_house_of_chances_page_div_container_8">
+                      <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] admin_house_of_chances_page_p_text_3">Rewards</p>
+                      <p className="mt-1 text-[10px] text-[rgb(var(--sep-colour-8f8271))] admin_house_of_chances_page_p_text_4">A winning rule may grant several rewards together.</p>
                     </div>
-                    <span className="text-[8px] text-[rgb(var(--sep-colour-756958))]">{ruleRewards.length} reward{ruleRewards.length === 1 ? "" : "s"}</span>
+                    <span className="text-[8px] text-[rgb(var(--sep-colour-756958))] admin_house_of_chances_page_span_text_2">{ruleRewards.length} reward{ruleRewards.length === 1 ? "" : "s"}</span>
                   </div>
 
                   {ruleRewards.length ? (
-                    <div className="mt-3 space-y-2">
+                    <div className="mt-3 space-y-2 admin_house_of_chances_page_div_container_9">
                       {ruleRewards.map((reward) => {
                         const item = one(reward.item);
                         return (
-                          <div key={reward.id} className="flex flex-wrap items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2">
-                            <span className="text-[10px] text-[rgb(var(--sep-colour-c3ad89))]">
+                          <div key={reward.id} className="flex flex-wrap items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 admin_house_of_chances_page_div_container_10">
+                            <span className="text-[10px] text-[rgb(var(--sep-colour-c3ad89))] admin_house_of_chances_page_span_text_3">
                               {reward.reward_type === "remnants"
                                 ? `${formatRemnants(Number(reward.remnants_amount ?? 0))} Remnants`
                                 : `${item?.name ?? "Unknown Item"} × ${reward.quantity}`}
                             </span>
                             <AdminActionForm action={deleteHouseOfChancesReward}>
-                              <input type="hidden" name="rewardId" value={reward.id} />
-                              <button type="submit" className={dangerClass}>Remove</button>
+                              <input className="admin_house_of_chances_page_input_reward_id" type="hidden" name="rewardId" value={reward.id} />
+                              <button type="submit" className={[((dangerClass)), "admin_house_of_chances_page_button_remove"].filter(Boolean).join(" ")}>Remove</button>
                             </AdminActionForm>
                           </div>
                         );
                       })}
                     </div>
                   ) : (
-                    <p className="mt-3 text-[10px] italic text-[rgb(var(--sep-colour-756958))]">This rule currently wins nothing.</p>
+                    <p className="mt-3 text-[10px] italic text-[rgb(var(--sep-colour-756958))] admin_house_of_chances_page_p_text_5">This rule currently wins nothing.</p>
                   )}
 
                   <AdminActionForm action={addHouseOfChancesReward} className="mt-4 grid gap-2 lg:grid-cols-[130px_minmax(190px,1fr)_130px_110px_90px_auto]">
-                    <input type="hidden" name="ruleId" value={rule.id} />
+                    <input className="admin_house_of_chances_page_input_rule_id_2" type="hidden" name="ruleId" value={rule.id} />
 
-                    <select name="rewardType" defaultValue="remnants" className={inputClass}>
-                      <option value="remnants">Remnants</option>
-                      <option value="item">Item / Ingredient</option>
+                    <select name="rewardType" defaultValue="remnants" className={[((inputClass)), "admin_house_of_chances_page_select_reward_type"].filter(Boolean).join(" ")}>
+                      <option className="admin_house_of_chances_page_option_remnants" value="remnants">Remnants</option>
+                      <option className="admin_house_of_chances_page_option_item" value="item">Item / Ingredient</option>
                     </select>
 
-                    <select name="itemId" defaultValue="" className={inputClass}>
-                      <option value="">Choose Item when needed</option>
+                    <select name="itemId" defaultValue="" className={[((inputClass)), "admin_house_of_chances_page_select_item_id"].filter(Boolean).join(" ")}>
+                      <option className="admin_house_of_chances_page_option_item_id" value="">Choose Item when needed</option>
                       {items.map((item) => (
-                        <option key={item.id} value={item.id}>{item.name} · {item.quality}</option>
+                        <option className="admin_house_of_chances_page_option_option" key={item.id} value={item.id}>{item.name} · {item.quality}</option>
                       ))}
                     </select>
 
-                    <input type="number" name="remnantsAmount" min={1} placeholder="Remnants" className={inputClass} />
-                    <input type="number" name="quantity" min={1} max={9999} defaultValue={1} placeholder="Quantity" className={inputClass} />
-                    <input type="number" name="sortOrder" min={0} defaultValue={0} placeholder="Order" className={inputClass} />
-                    <button type="submit" className={buttonClass}>Add Reward</button>
+                    <input type="number" name="remnantsAmount" min={1} placeholder="Remnants" className={[((inputClass)), "admin_house_of_chances_page_input_remnants_amount"].filter(Boolean).join(" ")} />
+                    <input type="number" name="quantity" min={1} max={9999} defaultValue={1} placeholder="Quantity" className={[((inputClass)), "admin_house_of_chances_page_input_quantity"].filter(Boolean).join(" ")} />
+                    <input type="number" name="sortOrder" min={0} defaultValue={0} placeholder="Order" className={[((inputClass)), "admin_house_of_chances_page_input_sort_order_2"].filter(Boolean).join(" ")} />
+                    <button type="submit" className={[((buttonClass)), "admin_house_of_chances_page_button_add_reward"].filter(Boolean).join(" ")}>Add Reward</button>
                   </AdminActionForm>
                 </div>
 
-                <div className="mt-6 flex justify-end border-t border-red-950/40 pt-4">
+                <div className="mt-6 flex justify-end border-t border-red-950/40 pt-4 admin_house_of_chances_page_div_container_11">
                   <AdminActionForm action={deleteHouseOfChancesRule}>
-                    <input type="hidden" name="ruleId" value={rule.id} />
-                    <button type="submit" className={dangerClass}>Delete Rule</button>
+                    <input className="admin_house_of_chances_page_input_rule_id_3" type="hidden" name="ruleId" value={rule.id} />
+                    <button type="submit" className={[((dangerClass)), "admin_house_of_chances_page_button_delete_rule"].filter(Boolean).join(" ")}>Delete Rule</button>
                   </AdminActionForm>
                 </div>
               </section>
             );
           }) : (
-            <div className="border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-15100d))] px-5 py-8 text-center text-[10px] text-[rgb(var(--sep-colour-756958))]">
+            <div className="border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-15100d))] px-5 py-8 text-center text-[10px] text-[rgb(var(--sep-colour-756958))] admin_house_of_chances_page_div_container_12">
               No prize rules yet. Every successful play currently results in no winnings.
             </div>
           )}
         </div>
 
-        <section id="house-of-chances-history" className="mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
-          <div className="border-b border-[rgb(var(--sep-colour-60482e))]/30 p-5 sm:p-6">
-            <p className="text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">Audit</p>
-            <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">Recent Plays</h2>
+        <section id="house-of-chances-history" className="mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] admin_house_of_chances_page_section_house_chances_history">
+          <div className="border-b border-[rgb(var(--sep-colour-60482e))]/30 p-5 sm:p-6 admin_house_of_chances_page_div_recent_plays">
+            <p className="text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))] admin_house_of_chances_page_p_recent_plays">Audit</p>
+            <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))] admin_house_of_chances_page_h2_recent_plays">Recent Plays</h2>
           </div>
 
-          <div className="max-h-[520px] overflow-y-auto">
+          <div className="max-h-[520px] overflow-y-auto admin_house_of_chances_page_div_house_chances_history">
             {plays.length ? plays.map((play) => (
               <div
                 key={play.id}
@@ -514,16 +514,16 @@ export default async function AdminHouseOfChancesPage() {
                 data-house-play-roll-1={play.roll_1}
                 data-house-play-roll-2={play.roll_2}
                 data-house-play-roll-3={play.roll_3}
-                className="scroll-mt-6 grid gap-2 border-b border-[rgb(var(--sep-colour-59432c))]/25 px-4 py-3 last:border-b-0 md:grid-cols-[minmax(180px,1fr)_150px_120px_minmax(150px,1fr)_150px] md:items-center"
+                className="scroll-mt-6 grid gap-2 border-b border-[rgb(var(--sep-colour-59432c))]/25 px-4 py-3 last:border-b-0 md:grid-cols-[minmax(180px,1fr)_150px_120px_minmax(150px,1fr)_150px] md:items-center admin_house_of_chances_page_div_container_13"
               >
-                <span className="text-[10px] text-[rgb(var(--sep-colour-c3ad89))]">{characterName(play)}</span>
-                <span className="font-serif text-sm text-[rgb(var(--sep-colour-dfc99f))]">{play.roll_1} / {play.roll_2} / {play.roll_3}</span>
-                <span className="text-[9px] text-[rgb(var(--sep-colour-a99578))]">Cost {formatRemnants(play.cost_paid)}</span>
-                <span className="text-[9px] text-[rgb(var(--sep-colour-a99578))]">{play.matched_rule_name ?? "No winnings"}</span>
+                <span className="text-[10px] text-[rgb(var(--sep-colour-c3ad89))] admin_house_of_chances_page_span_text_4">{characterName(play)}</span>
+                <span className="font-serif text-sm text-[rgb(var(--sep-colour-dfc99f))] admin_house_of_chances_page_span_text_5">{play.roll_1} / {play.roll_2} / {play.roll_3}</span>
+                <span className="text-[9px] text-[rgb(var(--sep-colour-a99578))] admin_house_of_chances_page_span_text_6">Cost {formatRemnants(play.cost_paid)}</span>
+                <span className="text-[9px] text-[rgb(var(--sep-colour-a99578))] admin_house_of_chances_page_span_text_7">{play.matched_rule_name ?? "No winnings"}</span>
                 <time className="text-[8px] text-[rgb(var(--sep-colour-665b4d))] md:text-right">{new Date(play.created_at).toLocaleString("en-GB")}</time>
               </div>
             )) : (
-              <p className="px-5 py-8 text-center text-[10px] text-[rgb(var(--sep-colour-756958))]">No House of Chances plays recorded yet.</p>
+              <p className="px-5 py-8 text-center text-[10px] text-[rgb(var(--sep-colour-756958))] admin_house_of_chances_page_p_text_6">No House of Chances plays recorded yet.</p>
             )}
           </div>
         </section>

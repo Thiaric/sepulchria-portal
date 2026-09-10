@@ -190,16 +190,16 @@ export function MessagesInboxClient({
     ]);
 
   return (
-    <div className="p-2 sm:p-4 lg:p-4">
-      <div className="mx-auto max-w-[1200px]">
-        <header className="flex flex-wrap items-end justify-between gap-2 border-b border-[rgb(var(--sep-colour-654b2e))]/40 pb-2 sm:gap-3 sm:pb-3">
-          <div>
-            <p className="text-[10px] uppercase tracking-[0.32em] text-[rgb(var(--sep-colour-927047))]">
+    <div className="p-2 sm:p-4 lg:p-4 messages_components_messages_inbox_client_div_container">
+      <div className="mx-auto max-w-[1200px] messages_components_messages_inbox_client_div_container_2">
+        <header className="flex flex-wrap items-end justify-between gap-2 border-b border-[rgb(var(--sep-colour-654b2e))]/40 pb-2 sm:gap-3 sm:pb-3 messages_components_messages_inbox_client_header_header">
+          <div className="messages_components_messages_inbox_client_div_container_3">
+            <p className="text-[10px] uppercase tracking-[0.32em] text-[rgb(var(--sep-colour-927047))] messages_components_messages_inbox_client_p_text">
               Private correspondence
             </p>
           </div>
 
-          <div className="grid w-full grid-cols-3 gap-1.5 sm:flex sm:w-auto sm:flex-wrap sm:gap-2">
+          <div className="grid w-full grid-cols-3 gap-1.5 sm:flex sm:w-auto sm:flex-wrap sm:gap-2 messages_components_messages_inbox_client_div_container_4">
             {communication.blocked ? (
               <SanctionRestrictionNotice message={communication.message} compact />
             ) : (
@@ -230,9 +230,9 @@ export function MessagesInboxClient({
           </div>
         </header>
 
-        <section className="mt-2 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-2 sm:mt-3 sm:p-3">
-          <label className="block">
-            <span className="mb-1 block text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] sm:mb-2 sm:text-[8px] sm:tracking-[0.22em]">
+        <section className="mt-2 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-2 sm:mt-3 sm:p-3 messages_components_messages_inbox_client_section_section">
+          <label className="block messages_components_messages_inbox_client_label_label">
+            <span className="mb-1 block text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] sm:mb-2 sm:text-[8px] sm:tracking-[0.22em] messages_components_messages_inbox_client_span_text">
               Filter conversations
             </span>
 
@@ -246,12 +246,12 @@ export function MessagesInboxClient({
                 )
               }
               placeholder="Search by character or message text..."
-              className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-2.5 py-1.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))] sm:px-3 sm:py-2 sm:text-sm [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
+              className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-2.5 py-1.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))] sm:px-3 sm:py-2 sm:text-sm [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden messages_components_messages_inbox_client_input_search_character_message_text"
             />
           </label>
 
           {normalizedQuery ? (
-            <p className="mt-2 text-[9px] text-[rgb(var(--sep-colour-887a67))] sm:mt-3 sm:text-[10px]">
+            <p className="mt-2 text-[9px] text-[rgb(var(--sep-colour-887a67))] sm:mt-3 sm:text-[10px] messages_components_messages_inbox_client_p_text_2">
               {
                 filteredConversations.length
               }{" "}
@@ -265,7 +265,7 @@ export function MessagesInboxClient({
           ) : null}
         </section>
 
-        <div className="mt-2 space-y-2 sm:mt-3">
+        <div className="mt-2 space-y-2 sm:mt-3 messages_components_messages_inbox_client_div_container_5">
           {filteredConversations.map(
             (conversation) => {
               const otherName =
@@ -285,7 +285,7 @@ export function MessagesInboxClient({
                     conversation.id
                   }
                   data-message-conversation-row="true"
-                  className="flex flex-col gap-3 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-3 transition hover:border-[rgb(var(--sep-colour-80613c))] sm:flex-row sm:items-center"
+                  className="flex flex-col gap-3 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-3 transition hover:border-[rgb(var(--sep-colour-80613c))] sm:flex-row sm:items-center messages_components_messages_inbox_client_article_article"
                 >
                   <div
                     role="link"
@@ -306,9 +306,9 @@ export function MessagesInboxClient({
 );
                       }
                     }}
-                    className="flex min-w-0 flex-1 cursor-pointer items-center gap-3"
+                    className="flex min-w-0 flex-1 cursor-pointer items-center gap-3 messages_components_messages_inbox_client_div_link"
                   >
-                    <div className="h-11 w-11 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))] bg-[rgb(var(--sep-colour-0d0a08))]">
+                    <div className="h-11 w-11 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))] bg-[rgb(var(--sep-colour-0d0a08))] messages_components_messages_inbox_client_div_container_6">
                       {conversation.other
                         ?.portrait_url ? (
                         // eslint-disable-next-line @next/next/no-img-element
@@ -318,10 +318,10 @@ export function MessagesInboxClient({
                               .portrait_url
                           }
                           alt={`Portrait of ${otherName}`}
-                          className="h-full w-full object-cover"
+                          className="h-full w-full object-cover messages_components_messages_inbox_client_img_image"
                         />
                       ) : (
-                        <span className="flex h-full items-center justify-center font-serif text-lg text-[rgb(var(--sep-colour-806b4e))]">
+                        <span className="flex h-full items-center justify-center font-serif text-lg text-[rgb(var(--sep-colour-806b4e))] messages_components_messages_inbox_client_span_text_2">
                           {otherName
                             .charAt(0)
                             .toUpperCase()}
@@ -343,9 +343,9 @@ export function MessagesInboxClient({
                       />
                     ) : null}
 
-                    <div className="min-w-0 flex-1 pl-1">
-                      <div className="flex flex-wrap items-center gap-3">
-                        <h2 className="truncate font-serif text-base text-[rgb(var(--sep-colour-dec69a))]">
+                    <div className="min-w-0 flex-1 pl-1 messages_components_messages_inbox_client_div_container_7">
+                      <div className="flex flex-wrap items-center gap-3 messages_components_messages_inbox_client_div_container_8">
+                        <h2 className="truncate font-serif text-base text-[rgb(var(--sep-colour-dec69a))] messages_components_messages_inbox_client_h2_heading">
                           {otherName}
                         </h2>
 
@@ -367,7 +367,7 @@ export function MessagesInboxClient({
                         0 ? (
                           <span
                             data-sep-counter-badge="true"
-                            className="inline-flex items-center justify-center rounded-full border px-2 py-1 text-[10px] font-bold"
+                            className="inline-flex items-center justify-center rounded-full border px-2 py-1 text-[10px] font-bold messages_components_messages_inbox_client_span_text_3"
                           >
                             {
                               conversation.unreadCount
@@ -381,7 +381,7 @@ export function MessagesInboxClient({
                       !conversation.other.is_system &&
                       conversation.other
                         .title ? (
-                        <p className="mt-1 truncate text-[10px] italic text-[rgb(var(--sep-colour-8d7b63))]">
+                        <p className="mt-1 truncate text-[10px] italic text-[rgb(var(--sep-colour-8d7b63))] messages_components_messages_inbox_client_p_text_3">
                           {
                             conversation
                               .other
@@ -390,7 +390,7 @@ export function MessagesInboxClient({
                         </p>
                       ) : null}
 
-                      <div className="mt-1 max-h-5 overflow-hidden text-xs leading-5 text-[rgb(var(--sep-colour-9f907c))]">
+                      <div className="mt-1 max-h-5 overflow-hidden text-xs leading-5 text-[rgb(var(--sep-colour-9f907c))] messages_components_messages_inbox_client_div_container_9">
                         {conversation.matchSnippet ? (
                           <RichTextContentClient
                             body={
@@ -414,12 +414,12 @@ export function MessagesInboxClient({
                       </div>
 
                       {conversation.matchSnippet ? (
-                        <p className="mt-1 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-ad7d42))]">
+                        <p className="mt-1 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-ad7d42))] messages_components_messages_inbox_client_p_text_4">
                           Matching message
                         </p>
                       ) : null}
 
-                      <p className="mt-1 text-[8px] text-[rgb(var(--sep-colour-665c50))]">
+                      <p className="mt-1 text-[8px] text-[rgb(var(--sep-colour-665c50))] messages_components_messages_inbox_client_p_text_5">
                         {formatDate(
                           conversation.updatedAt,
                         )}
@@ -427,12 +427,12 @@ export function MessagesInboxClient({
                     </div>
                   </div>
 
-                  <form
+                  <form className="messages_components_messages_inbox_client_form_toggle_archive"
                     action={
                       toggleArchive
                     }
                   >
-                    <input
+                    <input className="messages_components_messages_inbox_client_input_conversation_id"
                       type="hidden"
                       name="conversationId"
                       value={
@@ -440,7 +440,7 @@ export function MessagesInboxClient({
                       }
                     />
 
-                    <input
+                    <input className="messages_components_messages_inbox_client_input_archive"
                       type="hidden"
                       name="archive"
                       value={
@@ -452,7 +452,7 @@ export function MessagesInboxClient({
 
                     <button
                       type="submit"
-                      className="w-full border border-[rgb(var(--sep-colour-59432c))] px-3 py-1.5 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-a98b61))] transition hover:border-[rgb(var(--sep-colour-80613c))] hover:text-[rgb(var(--sep-colour-d5ba8c))] sm:w-auto"
+                      className="w-full border border-[rgb(var(--sep-colour-59432c))] px-3 py-1.5 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-a98b61))] transition hover:border-[rgb(var(--sep-colour-80613c))] hover:text-[rgb(var(--sep-colour-d5ba8c))] sm:w-auto messages_components_messages_inbox_client_button_action"
                     >
                       {showArchived
                         ? "Restore"
@@ -466,7 +466,7 @@ export function MessagesInboxClient({
 
           {filteredConversations.length ===
           0 ? (
-            <p className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 text-center text-sm text-[rgb(var(--sep-colour-8f8271))]">
+            <p className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 text-center text-sm text-[rgb(var(--sep-colour-8f8271))] messages_components_messages_inbox_client_p_text_6">
               {normalizedQuery
                 ? "No conversations match your search."
                 : "No conversations here yet."}
@@ -545,7 +545,7 @@ function NewMessageModal({
 
   return (
     <div
-      className="fixed inset-0 z-[130] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-[130] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm messages_components_messages_inbox_client_div_container_10"
       onMouseDown={(event) => {
         if (
           event.target ===
@@ -559,17 +559,17 @@ function NewMessageModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby="new-message-title"
-        className="flex max-h-[85dvh] w-full max-w-xl flex-col overflow-hidden border border-[rgb(var(--sep-colour-80603a))]/70 bg-[rgb(var(--sep-colour-120d0a))] shadow-[0_30px_100px_rgba(var(--sep-rgb-0-0-0),0.8)]"
+        className="flex max-h-[85dvh] w-full max-w-xl flex-col overflow-hidden border border-[rgb(var(--sep-colour-80603a))]/70 bg-[rgb(var(--sep-colour-120d0a))] shadow-[0_30px_100px_rgba(var(--sep-rgb-0-0-0),0.8)] messages_components_messages_inbox_client_section_dialog"
       >
-        <header className="flex items-start justify-between gap-4 border-b border-[rgb(var(--sep-colour-60482e))]/45 p-5">
-          <div>
-            <p className="text-[8px] uppercase tracking-[0.25em] text-[rgb(var(--sep-colour-8c704b))]">
+        <header className="flex items-start justify-between gap-4 border-b border-[rgb(var(--sep-colour-60482e))]/45 p-5 messages_components_messages_inbox_client_header_header_2">
+          <div className="messages_components_messages_inbox_client_div_new_message">
+            <p className="text-[8px] uppercase tracking-[0.25em] text-[rgb(var(--sep-colour-8c704b))] messages_components_messages_inbox_client_p_new_message">
               Private correspondence
             </p>
 
             <h2
               id="new-message-title"
-              className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-e6cea3))]"
+              className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-e6cea3))] messages_components_messages_inbox_client_h2_new_message_title"
             >
               New message
             </h2>
@@ -580,15 +580,15 @@ function NewMessageModal({
             onClick={
               onClose
             }
-            className="flex h-9 w-9 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/55 text-lg text-[rgb(var(--sep-colour-b99a6d))] transition hover:border-[rgb(var(--sep-colour-9b7446))] hover:text-[rgb(var(--sep-colour-edd1a0))]"
+            className="flex h-9 w-9 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/55 text-lg text-[rgb(var(--sep-colour-b99a6d))] transition hover:border-[rgb(var(--sep-colour-9b7446))] hover:text-[rgb(var(--sep-colour-edd1a0))] messages_components_messages_inbox_client_button_close"
           >
             ×
           </button>
         </header>
 
-        <div className="min-h-0 flex-1 overflow-y-auto p-5">
-          <label className="block">
-            <span className="mb-2 block text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
+        <div className="min-h-0 flex-1 overflow-y-auto p-5 messages_components_messages_inbox_client_div_container_11">
+          <label className="block messages_components_messages_inbox_client_label_label_2">
+            <span className="mb-2 block text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))] messages_components_messages_inbox_client_span_text_4">
               Find a character
             </span>
 
@@ -603,11 +603,11 @@ function NewMessageModal({
               }
               autoFocus
               placeholder="Type a character name..."
-              className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))] [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
+              className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))] [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden messages_components_messages_inbox_client_input_type_character_name"
             />
           </label>
 
-          <div className="mt-4 space-y-2">
+          <div className="mt-4 space-y-2 messages_components_messages_inbox_client_div_container_12">
             {filteredCharacters.map(
               (character) => {
                 const name =
@@ -630,13 +630,13 @@ function NewMessageModal({
                         character.id,
                       )
                     }
-                    className={`flex w-full items-center gap-3 border p-3 text-left transition ${
+                    className={[((`flex w-full items-center gap-3 border p-3 text-left transition ${
                       selected
                         ? "border-[rgb(var(--sep-colour-a77a42))] bg-[rgb(var(--sep-colour-382313))]"
                         : "border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-100c09))] hover:border-[rgb(var(--sep-colour-80613c))] hover:bg-[rgb(var(--sep-colour-1b130e))]"
-                    }`}
+                    }`)), "messages_components_messages_inbox_client_button_action_2"].filter(Boolean).join(" ")}
                   >
-                    <div className="h-11 w-11 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))] bg-[rgb(var(--sep-colour-0d0a08))]">
+                    <div className="h-11 w-11 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))] bg-[rgb(var(--sep-colour-0d0a08))] messages_components_messages_inbox_client_div_container_13">
                       {character.portrait_url ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
@@ -645,10 +645,10 @@ function NewMessageModal({
                               .portrait_url
                           }
                           alt=""
-                          className="h-full w-full object-cover"
+                          className="h-full w-full object-cover messages_components_messages_inbox_client_img_image_2"
                         />
                       ) : (
-                        <span className="flex h-full items-center justify-center font-serif text-[rgb(var(--sep-colour-9b805b))]">
+                        <span className="flex h-full items-center justify-center font-serif text-[rgb(var(--sep-colour-9b805b))] messages_components_messages_inbox_client_span_text_5">
                           {name
                             .charAt(
                               0,
@@ -667,9 +667,9 @@ function NewMessageModal({
                       }
                     />
 
-                    <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <p className="truncate font-serif text-lg text-[rgb(var(--sep-colour-dcc397))]">
+                    <div className="min-w-0 flex-1 messages_components_messages_inbox_client_div_container_14">
+                      <div className="flex flex-wrap items-center gap-2 messages_components_messages_inbox_client_div_container_15">
+                        <p className="truncate font-serif text-lg text-[rgb(var(--sep-colour-dcc397))] messages_components_messages_inbox_client_p_text_7">
                           {name}
                         </p>
 
@@ -680,7 +680,7 @@ function NewMessageModal({
                         />
                       </div>
 
-                      <p className="mt-1 truncate text-[9px] text-[rgb(var(--sep-colour-7d7060))]">
+                      <p className="mt-1 truncate text-[9px] text-[rgb(var(--sep-colour-7d7060))] messages_components_messages_inbox_client_p_text_8">
                         {character.title ??
                           "Citizen of Sepulchria"}
                       </p>
@@ -692,7 +692,7 @@ function NewMessageModal({
 
             {filteredCharacters.length ===
             0 ? (
-              <p className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-5 text-center text-sm text-[rgb(var(--sep-colour-817565))]">
+              <p className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-5 text-center text-sm text-[rgb(var(--sep-colour-817565))] messages_components_messages_inbox_client_p_text_9">
                 No available
                 characters match
                 your search.
@@ -701,23 +701,23 @@ function NewMessageModal({
           </div>
         </div>
 
-        <footer className="flex justify-end gap-3 border-t border-[rgb(var(--sep-colour-60482e))]/45 p-5">
+        <footer className="flex justify-end gap-3 border-t border-[rgb(var(--sep-colour-60482e))]/45 p-5 messages_components_messages_inbox_client_footer_footer">
           <button
             type="button"
             onClick={
               onClose
             }
-            className="border border-[rgb(var(--sep-colour-59432c))] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a98b61))]"
+            className="border border-[rgb(var(--sep-colour-59432c))] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a98b61))] messages_components_messages_inbox_client_button_cancel"
           >
             Cancel
           </button>
 
-          <form
+          <form className="messages_components_messages_inbox_client_form_start_conversation_directory"
             action={
               startConversationFromDirectory
             }
           >
-            <input
+            <input className="messages_components_messages_inbox_client_input_recipient_id"
               type="hidden"
               name="recipientId"
               value={
@@ -730,7 +730,7 @@ function NewMessageModal({
               disabled={
                 !selectedId
               }
-              className="border border-[rgb(var(--sep-colour-a07742))] bg-[rgb(var(--sep-colour-402a17))] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-f1d5a2))] transition hover:border-[rgb(var(--sep-colour-c49351))] hover:bg-[rgb(var(--sep-colour-56371c))] disabled:cursor-not-allowed disabled:opacity-40"
+              className="border border-[rgb(var(--sep-colour-a07742))] bg-[rgb(var(--sep-colour-402a17))] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-f1d5a2))] transition hover:border-[rgb(var(--sep-colour-c49351))] hover:bg-[rgb(var(--sep-colour-56371c))] disabled:cursor-not-allowed disabled:opacity-40 messages_components_messages_inbox_client_button_start_conversation"
             >
               Start conversation
             </button>

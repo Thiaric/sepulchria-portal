@@ -33,21 +33,21 @@ export default async function AdminLayout({
     );
 
   return (
-    <div className="min-h-[calc(100vh-5rem)]">
+    <div className="min-h-[calc(100vh-5rem)] admin_layout_div_container">
       <AdminInteractionKeeper />
 
       <div
         data-sep-interaction-ignore="true"
         data-admin-header
-        className="border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-5 py-4 sm:px-7 lg:px-9"
+        className="border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-5 py-4 sm:px-7 lg:px-9 admin_layout_div_container_2"
       >
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8b704e))]">
+        <div className="flex flex-wrap items-center justify-between gap-4 admin_layout_div_container_3">
+          <div className="admin_layout_div_administration">
+            <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8b704e))] admin_layout_p_administration">
               Sepulchria staff
             </p>
 
-            <h1 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-e2cda4))]">
+            <h1 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-e2cda4))] admin_layout_h1_administration">
               Administration
             </h1>
           </div>
@@ -56,7 +56,7 @@ export default async function AdminLayout({
             aria-label="Administration"
             data-sep-interaction-ignore="true"
             data-admin-navigation
-            className="flex flex-wrap items-center gap-2"
+            className="flex flex-wrap items-center gap-2 admin_layout_nav_administration"
           >
 
             {can("overview") ? (
@@ -91,8 +91,8 @@ export default async function AdminLayout({
 
             {can("characters") ? (
               <AdminNavigationLink href="/admin/characters">
-                <span className="flex items-center gap-2">
-                  <span>Characters</span>
+                <span className="flex items-center gap-2 admin_layout_span_text">
+                  <span className="admin_layout_span_text_2">Characters</span>
                   <SubmittedCharacterBadge variant="admin-nav" />
                 </span>
               </AdminNavigationLink>
@@ -220,8 +220,8 @@ export default async function AdminLayout({
 
             {can("orders") ? (
               <AdminNavigationLink href="/admin/order-submissions">
-                <span className="flex items-center gap-2">
-                  <span>Order Submissions</span>
+                <span className="flex items-center gap-2 admin_layout_span_text_3">
+                  <span className="admin_layout_span_text_4">Order Submissions</span>
                   <OrderSubmissionBadge variant="admin-nav" />
                 </span>
               </AdminNavigationLink>
@@ -241,8 +241,8 @@ export default async function AdminLayout({
 
             {can("new_register") ? (
               <AdminNavigationLink href="/admin/registrations">
-                <span className="flex items-center gap-2">
-                  <span>Registrations</span>
+                <span className="flex items-center gap-2 admin_layout_span_text_5">
+                  <span className="admin_layout_span_text_6">Registrations</span>
                   <RegistrationApplicationBadge variant="admin-nav" />
                 </span>
               </AdminNavigationLink>
@@ -262,8 +262,8 @@ export default async function AdminLayout({
 
             {can("sanctions") ? (
               <AdminNavigationLink href="/admin/sanctions">
-                <span className="flex items-center gap-2">
-                  <span>Sanctions</span>
+                <span className="flex items-center gap-2 admin_layout_span_text_7">
+                  <span className="admin_layout_span_text_8">Sanctions</span>
                   <SanctionNotificationBadge audience="staff" />
                 </span>
               </AdminNavigationLink>
@@ -283,8 +283,8 @@ export default async function AdminLayout({
 
             {can("tickets") ? (
               <AdminNavigationLink href="/admin/tickets">
-                <span className="flex items-center gap-2">
-                  <span>Tickets</span>
+                <span className="flex items-center gap-2 admin_layout_span_text_9">
+                  <span className="admin_layout_span_text_10">Tickets</span>
                   <TicketNotificationBadge
                     audience="staff"
                     variant="admin-nav"
@@ -321,19 +321,19 @@ export default async function AdminLayout({
 
         <div
           data-admin-identity
-          className="mt-4 flex flex-wrap items-center gap-3 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-3"
+          className="mt-4 flex flex-wrap items-center gap-3 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-3 admin_layout_div_container_4"
         >
-          <span className="border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-21170f))] px-2.5 py-1 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-c1a477))]">
+          <span className="border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-21170f))] px-2.5 py-1 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-c1a477))] admin_layout_span_text_11">
             {staff.role}
           </span>
 
-          <span className="text-[10px] text-[rgb(var(--sep-colour-8f806c))]">
+          <span className="text-[10px] text-[rgb(var(--sep-colour-8f806c))] admin_layout_span_text_12">
             {staff.email ?? "Authenticated staff member"}
           </span>
         </div>
       </div>
 
-      <div className="admin-compact">
+      <div className="admin-compact admin_layout_div_container_5">
         {children}
       </div>
     </div>

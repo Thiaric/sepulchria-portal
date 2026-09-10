@@ -407,26 +407,26 @@ created_at: room.created_at,
   }
 
   return (
-    <main className="p-5 sm:p-7 lg:p-9">
-      <div className="mx-auto max-w-7xl">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
+    <main className="p-5 sm:p-7 lg:p-9 admin_rooms_page_main_main">
+      <div className="mx-auto max-w-7xl admin_rooms_page_div_container">
+        <div className="flex flex-wrap items-end justify-between gap-4 admin_rooms_page_div_container_2">
+          <div className="admin_rooms_page_div_room_management">
+            <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))] admin_rooms_page_p_room_management">
               Administration
             </p>
 
-            <h2 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">
+            <h2 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))] admin_rooms_page_h2_room_management">
               Room Management
             </h2>
 
-            <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))]">
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))] admin_rooms_page_p_room_management_2">
               Create locations, move them
               between areas and control the
               paths connecting Sepulchria.
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 admin_rooms_page_div_container_3">
             <AdminCounter>
               {rooms.length}{" "}
               {rooms.length === 1
@@ -443,12 +443,12 @@ created_at: room.created_at,
           </div>
         </div>
 
-        <section className="mt-8 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6">
-          <p className="text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))]">
+        <section className="mt-8 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6 admin_rooms_page_section_create_room">
+          <p className="text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))] admin_rooms_page_p_create_room">
             New room
           </p>
 
-          <h3 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">
+          <h3 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))] admin_rooms_page_h3_create_room">
             Create a room
           </h3>
 
@@ -457,7 +457,7 @@ created_at: room.created_at,
               action={createRoom}
               className="mt-6"
             >
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid gap-4 md:grid-cols-2 admin_rooms_page_div_container_4">
                 <AdminField label="Name">
                   <input
                     type="text"
@@ -465,7 +465,7 @@ created_at: room.created_at,
                     required
                     maxLength={120}
                     placeholder="The Ashen Market"
-                    className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
+                    className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))] admin_rooms_page_input_name"
                   />
                 </AdminField>
 
@@ -474,9 +474,9 @@ created_at: room.created_at,
                     name="areaId"
                     required
                     defaultValue=""
-                    className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
+                    className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] admin_rooms_page_select_area_id"
                   >
-                    <option
+                    <option className="admin_rooms_page_option_area_id"
                       value=""
                       disabled
                     >
@@ -484,7 +484,7 @@ created_at: room.created_at,
                     </option>
 
                     {areas.map((area) => (
-                      <option
+                      <option className="admin_rooms_page_option_option"
                         key={area.id}
                         value={area.id}
                       >
@@ -503,7 +503,7 @@ created_at: room.created_at,
                     name="slug"
                     maxLength={100}
                     placeholder="Generated automatically"
-                    className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
+                    className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))] admin_rooms_page_input_slug"
                   />
                 </AdminField>
 
@@ -514,34 +514,34 @@ created_at: room.created_at,
                     defaultValue={0}
                     min={-9999}
                     max={9999}
-                    className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
+                    className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] admin_rooms_page_input_sort_order"
                   />
                 </AdminField>
 
-                <div className="md:col-span-2">
+                <div className="md:col-span-2 admin_rooms_page_div_container_5">
                   <AdminField label="Image URL">
                     <input
                       type="text"
                       name="imageUrl"
                       maxLength={2000}
                       placeholder="/images/rooms/room-name.jpg"
-                      className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
+                      className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))] admin_rooms_page_input_image_url"
                     />
                   </AdminField>
                 </div>
 
-                <div className="md:col-span-2">
+                <div className="md:col-span-2 admin_rooms_page_div_container_6">
                   <AdminField label="Background Music">
                     <select
                       name="musicTrackId"
                       defaultValue=""
-                      className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
+                      className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] admin_rooms_page_select_music_track_id"
                     >
-                      <option value="">
+                      <option className="admin_rooms_page_option_music_track_id" value="">
                         None
                       </option>
                       {musicTracks.map((track) => (
-                        <option
+                        <option className="admin_rooms_page_option_option_2"
                           key={track.id}
                           value={track.id}
                         >
@@ -556,7 +556,7 @@ created_at: room.created_at,
                 </div>
               </div>
 
-              <div className="mt-4">
+              <div className="mt-4 admin_rooms_page_div_container_7">
                 <AdminField label="Description">
                   <RichTextEditor
                             name="description"
@@ -568,36 +568,36 @@ created_at: room.created_at,
                 </AdminField>
               </div>
 
-              <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
-  <div className="flex flex-wrap items-center gap-6">
-    <label className="flex items-center gap-3 text-sm text-[rgb(var(--sep-colour-bbaa90))]">
+              <div className="mt-4 flex flex-wrap items-center justify-between gap-4 admin_rooms_page_div_container_8">
+  <div className="flex flex-wrap items-center gap-6 admin_rooms_page_div_active">
+    <label className="flex items-center gap-3 text-sm text-[rgb(var(--sep-colour-bbaa90))] admin_rooms_page_label_active">
       <input
         type="checkbox"
         name="isActive"
         defaultChecked
-        className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))]"
+        className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))] admin_rooms_page_input_active"
       />
 
       Active
     </label>
 
-    <label className="flex items-center gap-3 text-sm text-[rgb(var(--sep-colour-bbaa90))]">
+    <label className="flex items-center gap-3 text-sm text-[rgb(var(--sep-colour-bbaa90))] admin_rooms_page_label_active_2">
       <input
         type="checkbox"
         name="isOutdoors"
         defaultChecked
-        className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))]"
+        className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))] admin_rooms_page_input_outdoors"
       />
 
       Outdoor location
     </label>
 
-    <label className="flex items-center gap-3 text-sm text-[rgb(var(--sep-colour-bbaa90))]">
+    <label className="flex items-center gap-3 text-sm text-[rgb(var(--sep-colour-bbaa90))] admin_rooms_page_label_active_3">
       <input
         type="checkbox"
         name="chatEnabled"
         defaultChecked
-        className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))]"
+        className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))] admin_rooms_page_input_chat_enabled"
       />
 
       Chat enabled
@@ -606,26 +606,26 @@ created_at: room.created_at,
 
   <button
     type="submit"
-    className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
+    className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))] admin_rooms_page_button_create_location"
   >
     Create location
   </button>
 </div>
             </AdminActionForm>
           ) : (
-            <p className="mt-5 border border-amber-900/40 bg-amber-950/10 p-4 text-sm leading-6 text-amber-500">
+            <p className="mt-5 border border-amber-900/40 bg-amber-950/10 p-4 text-sm leading-6 text-amber-500 admin_rooms_page_p_create_room_2">
               Create at least one area
               before creating locations.
             </p>
           )}
         </section>
 
-        <section className="mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6">
-          <p className="text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))]">
+        <section className="mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6 admin_rooms_page_section_create_location_connection">
+          <p className="text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))] admin_rooms_page_p_create_location_connection">
             Paths
           </p>
 
-          <h3 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">
+          <h3 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))] admin_rooms_page_h3_create_location_connection">
             Create a location connection
           </h3>
 
@@ -636,15 +636,15 @@ created_at: room.created_at,
               }
               className="mt-6"
             >
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid gap-4 md:grid-cols-2 admin_rooms_page_div_container_9">
                 <AdminField label="Starting room">
   <select
     name="fromRoomId"
     required
     defaultValue=""
-    className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
+    className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] admin_rooms_page_select_room_id"
   >
-    <option value="" disabled>
+    <option className="admin_rooms_page_option_room_id" value="" disabled>
       Select a room
     </option>
 
@@ -662,7 +662,7 @@ created_at: room.created_at,
     return a.name.localeCompare(b.name);
   })
   .map((room) => (
-    <option
+    <option className="admin_rooms_page_option_option_3"
       key={room.id}
       value={room.id}
     >
@@ -680,9 +680,9 @@ created_at: room.created_at,
     name="toRoomId"
     required
     defaultValue=""
-    className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
+    className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] admin_rooms_page_select_room_id_2"
   >
-    <option value="" disabled>
+    <option className="admin_rooms_page_option_room_id_2" value="" disabled>
       Select a room
     </option>
 
@@ -700,7 +700,7 @@ created_at: room.created_at,
         return a.name.localeCompare(b.name);
       })
       .map((room) => (
-        <option
+        <option className="admin_rooms_page_option_option_4"
           key={room.id}
           value={room.id}
         >
@@ -719,7 +719,7 @@ created_at: room.created_at,
                     name="connectionName"
                     maxLength={120}
                     placeholder="Stone staircase"
-                    className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
+                    className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))] admin_rooms_page_input_connection_name"
                   />
                 </AdminField>
 
@@ -730,18 +730,18 @@ created_at: room.created_at,
                     defaultValue={0}
                     min={-9999}
                     max={9999}
-                    className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
+                    className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] admin_rooms_page_input_sort_order_2"
                   />
                 </AdminField>
               </div>
 
-              <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
-                <label className="flex items-center gap-3 text-sm text-[rgb(var(--sep-colour-bbaa90))]">
+              <div className="mt-4 flex flex-wrap items-center justify-between gap-4 admin_rooms_page_div_two_way_connection">
+                <label className="flex items-center gap-3 text-sm text-[rgb(var(--sep-colour-bbaa90))] admin_rooms_page_label_two_way_connection">
                   <input
                     type="checkbox"
                     name="isTwoWay"
                     defaultChecked
-                    className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))]"
+                    className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))] admin_rooms_page_input_two_way"
                   />
 
                   Two-way connection
@@ -749,14 +749,14 @@ created_at: room.created_at,
 
                 <button
                   type="submit"
-                  className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
+                  className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))] admin_rooms_page_button_create_connection"
                 >
                   Create connection
                 </button>
               </div>
             </AdminActionForm>
           ) : (
-            <p className="mt-5 border border-amber-900/40 bg-amber-950/10 p-4 text-sm leading-6 text-amber-500">
+            <p className="mt-5 border border-amber-900/40 bg-amber-950/10 p-4 text-sm leading-6 text-amber-500 admin_rooms_page_p_create_location_connection_2">
               At least two locations are
               required to create a
               connection.
@@ -764,7 +764,7 @@ created_at: room.created_at,
           )}
         </section>
 
-        <div className="mt-6 space-y-5">
+        <div className="mt-6 space-y-5 admin_rooms_page_div_container_10">
           {rooms.map((room) => {
             const connectionCount =
               connectionsByRoom.get(
@@ -778,11 +778,11 @@ created_at: room.created_at,
               <section
                 key={room.id}
                 id={`room-${room.id}`}
-                className="scroll-mt-4 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]"
+                className="scroll-mt-4 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] admin_rooms_page_section_section"
               >
-                <div className="grid lg:grid-cols-[240px_minmax(0,1fr)]">
-                  <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-0f0b09))] p-5 lg:border-b-0 lg:border-r">
-                    <div className="relative aspect-[4/3] w-full overflow-hidden border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-090706))]">
+                <div className="grid lg:grid-cols-[240px_minmax(0,1fr)] admin_rooms_page_div_container_11">
+                  <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-0f0b09))] p-5 lg:border-b-0 lg:border-r admin_rooms_page_div_container_12">
+                    <div className="relative aspect-[4/3] w-full overflow-hidden border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-090706))] admin_rooms_page_div_container_13">
                       {room.image_url ? (
                         <Image
                           src={
@@ -795,7 +795,7 @@ created_at: room.created_at,
                           unoptimized
                         />
                       ) : (
-                        <div className="flex h-full items-center justify-center font-serif text-4xl text-[rgb(var(--sep-colour-705334))]">
+                        <div className="flex h-full items-center justify-center font-serif text-4xl text-[rgb(var(--sep-colour-705334))] admin_rooms_page_div_container_14">
                           {room.name
                             .charAt(0)
                             .toUpperCase()}
@@ -803,26 +803,26 @@ created_at: room.created_at,
                       )}
                     </div>
 
-                    <div className="mt-4 space-y-2 text-center">
+                    <div className="mt-4 space-y-2 text-center admin_rooms_page_div_container_15">
                       <StatusBadge
                         isActive={
                           room.is_active
                         }
                       />
 
-                      <p className="text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-887967))]">
+                      <p className="text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-887967))] admin_rooms_page_p_text">
                         {room.area?.name ??
                           "No area"}
                       </p>
 
-                      <p className="text-[9px] text-[rgb(var(--sep-colour-756957))]">
+                      <p className="text-[9px] text-[rgb(var(--sep-colour-756957))] admin_rooms_page_p_text_2">
                         {connectionCount}{" "}
                         {connectionCount === 1
                           ? "connection"
                           : "connections"}
                       </p>
 
-                      <p className="text-[9px] text-[rgb(var(--sep-colour-756957))]">
+                      <p className="text-[9px] text-[rgb(var(--sep-colour-756957))] admin_rooms_page_p_text_3">
                         Updated{" "}
                         {formatDate(
                           room.updated_at,
@@ -830,7 +830,7 @@ created_at: room.created_at,
                       </p>
                     </div>
 
-                    <div className="mt-5 grid grid-cols-3 gap-2">
+                    <div className="mt-5 grid grid-cols-3 gap-2 admin_rooms_page_div_container_16">
                       <DependencyCounter
                         label="Characters"
                         value={
@@ -854,13 +854,13 @@ created_at: room.created_at,
                     </div>
                   </div>
 
-                  <div className="p-5 sm:p-6">
-                    <div>
-                      <h3 className="font-serif text-2xl text-[rgb(var(--sep-colour-e3cda5))]">
+                  <div className="p-5 sm:p-6 admin_rooms_page_div_container_17">
+                    <div className="admin_rooms_page_div_container_18">
+                      <h3 className="font-serif text-2xl text-[rgb(var(--sep-colour-e3cda5))] admin_rooms_page_h3_heading">
                         {room.name}
                       </h3>
 
-                      <p className="mt-1 text-[10px] text-[rgb(var(--sep-colour-887967))]">
+                      <p className="mt-1 text-[10px] text-[rgb(var(--sep-colour-887967))] admin_rooms_page_p_text_4">
                         /{room.slug}
                       </p>
                     </div>
@@ -869,13 +869,13 @@ created_at: room.created_at,
                       action={updateRoom}
                       className="mt-6"
                     >
-                      <input
+                      <input className="admin_rooms_page_input_room_id"
                         type="hidden"
                         name="roomId"
                         value={room.id}
                       />
 
-                      <div className="grid gap-4 md:grid-cols-2">
+                      <div className="grid gap-4 md:grid-cols-2 admin_rooms_page_div_container_19">
                         <AdminField label="Name">
                           <input
                             type="text"
@@ -885,7 +885,7 @@ created_at: room.created_at,
                             defaultValue={
                               room.name
                             }
-                            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
+                            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] admin_rooms_page_input_name_2"
                           />
                         </AdminField>
 
@@ -896,11 +896,11 @@ created_at: room.created_at,
                             defaultValue={
                               room.area_id
                             }
-                            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
+                            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] admin_rooms_page_select_area_id_2"
                           >
                             {areas.map(
                               (area) => (
-                                <option
+                                <option className="admin_rooms_page_option_option_5"
                                   key={
                                     area.id
                                   }
@@ -929,7 +929,7 @@ created_at: room.created_at,
                             defaultValue={
                               room.slug
                             }
-                            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
+                            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] admin_rooms_page_input_slug_2"
                           />
                         </AdminField>
 
@@ -942,11 +942,11 @@ created_at: room.created_at,
                             defaultValue={
                               room.sort_order
                             }
-                            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
+                            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] admin_rooms_page_input_sort_order_3"
                           />
                         </AdminField>
 
-                        <div className="md:col-span-2">
+                        <div className="md:col-span-2 admin_rooms_page_div_container_20">
                           <AdminField label="Image URL">
                             <input
                               type="text"
@@ -959,12 +959,12 @@ created_at: room.created_at,
                                 ""
                               }
                               placeholder="/images/rooms/room-name.jpg"
-                              className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
+                              className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))] admin_rooms_page_input_image_url_2"
                             />
                           </AdminField>
                         </div>
 
-                        <div className="md:col-span-2">
+                        <div className="md:col-span-2 admin_rooms_page_div_container_21">
                           <AdminField label="Background Music">
                             <select
                               name="musicTrackId"
@@ -972,13 +972,13 @@ created_at: room.created_at,
                                 room.music_track_id ??
                                 ""
                               }
-                              className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
+                              className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] admin_rooms_page_select_music_track_id_2"
                             >
-                              <option value="">
+                              <option className="admin_rooms_page_option_music_track_id_2" value="">
                                 None
                               </option>
                               {musicTracks.map((track) => (
-                                <option
+                                <option className="admin_rooms_page_option_option_6"
                                   key={track.id}
                                   value={track.id}
                                 >
@@ -993,7 +993,7 @@ created_at: room.created_at,
                         </div>
                       </div>
 
-                      <div className="mt-4">
+                      <div className="mt-4 admin_rooms_page_div_container_22">
                         <AdminField label="Description">
                           <RichTextEditor
                             name="description"
@@ -1006,36 +1006,36 @@ created_at: room.created_at,
                         </AdminField>
                       </div>
 
-                      <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
-  <div className="flex flex-wrap items-center gap-6">
-    <label className="flex items-center gap-3 text-sm text-[rgb(var(--sep-colour-bbaa90))]">
+                      <div className="mt-4 flex flex-wrap items-center justify-between gap-4 admin_rooms_page_div_container_23">
+  <div className="flex flex-wrap items-center gap-6 admin_rooms_page_div_active_2">
+    <label className="flex items-center gap-3 text-sm text-[rgb(var(--sep-colour-bbaa90))] admin_rooms_page_label_active_4">
       <input
         type="checkbox"
         name="isActive"
         defaultChecked={room.is_active}
-        className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))]"
+        className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))] admin_rooms_page_input_active_2"
       />
 
       Active
     </label>
 
-    <label className="flex items-center gap-3 text-sm text-[rgb(var(--sep-colour-bbaa90))]">
+    <label className="flex items-center gap-3 text-sm text-[rgb(var(--sep-colour-bbaa90))] admin_rooms_page_label_active_5">
       <input
         type="checkbox"
         name="isOutdoors"
         defaultChecked={room.is_outdoors}
-        className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))]"
+        className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))] admin_rooms_page_input_outdoors_2"
       />
 
       Outdoor location
     </label>
 
-    <label className="flex items-center gap-3 text-sm text-[rgb(var(--sep-colour-bbaa90))]">
+    <label className="flex items-center gap-3 text-sm text-[rgb(var(--sep-colour-bbaa90))] admin_rooms_page_label_active_6">
       <input
         type="checkbox"
         name="chatEnabled"
         defaultChecked={room.chat_enabled}
-        className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))]"
+        className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))] admin_rooms_page_input_chat_enabled_2"
       />
 
       Chat enabled
@@ -1044,7 +1044,7 @@ created_at: room.created_at,
 
   <button
     type="submit"
-    className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
+    className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))] admin_rooms_page_button_save_location"
   >
     Save location
   </button>
@@ -1055,23 +1055,23 @@ created_at: room.created_at,
                       action={deleteRoom}
                       className="mt-6 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-5"
                     >
-                      <input
+                      <input className="admin_rooms_page_input_room_id_2"
                         type="hidden"
                         name="roomId"
                         value={room.id}
                       />
 
-                      <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
+                      <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] admin_rooms_page_div_container_24">
                         <input
                           type="text"
                           name="confirmation"
                           placeholder='Type "DELETE"'
-                          className="w-full border border-red-900/50 bg-[rgb(var(--sep-colour-100909))] px-3 py-3 text-sm text-red-200 outline-none placeholder:text-red-900/70 focus:border-red-700"
+                          className="w-full border border-red-900/50 bg-[rgb(var(--sep-colour-100909))] px-3 py-3 text-sm text-red-200 outline-none placeholder:text-red-900/70 focus:border-red-700 admin_rooms_page_input_confirmation"
                         />
 
                         <button
                           type="submit"
-                          className="border border-red-900/60 bg-red-950/20 px-5 py-3 text-[9px] uppercase tracking-[0.18em] text-red-500 transition hover:border-red-700 hover:bg-red-950/40"
+                          className="border border-red-900/60 bg-red-950/20 px-5 py-3 text-[9px] uppercase tracking-[0.18em] text-red-500 transition hover:border-red-700 hover:bg-red-950/40 admin_rooms_page_button_delete_room"
                         >
                           Delete room
                         </button>
@@ -1080,7 +1080,7 @@ created_at: room.created_at,
                       {dependencyCount > 0 ||
                       connectionCount >
                         0 ? (
-                        <p className="mt-3 text-[10px] leading-5 text-[rgb(var(--sep-colour-8e7462))]">
+                        <p className="mt-3 text-[10px] leading-5 text-[rgb(var(--sep-colour-8e7462))] admin_rooms_page_p_text_5">
                           Deletion is
                           blocked while
                           characters,
@@ -1098,8 +1098,8 @@ created_at: room.created_at,
           })}
 
           {rooms.length === 0 ? (
-            <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-10 text-center">
-              <p className="font-serif text-xl text-[rgb(var(--sep-colour-b9a88f))]">
+            <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-10 text-center admin_rooms_page_section_section_2">
+              <p className="font-serif text-xl text-[rgb(var(--sep-colour-b9a88f))] admin_rooms_page_p_text_6">
                 No locations were found.
               </p>
             </section>
@@ -1108,15 +1108,15 @@ created_at: room.created_at,
 
         <section
           id="room-connections"
-          className="mt-8 scroll-mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6"
+          className="mt-8 scroll-mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6 admin_rooms_page_section_room_connections"
         >
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <p className="text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))]">
+          <div className="flex flex-wrap items-end justify-between gap-4 admin_rooms_page_div_room_connections">
+            <div className="admin_rooms_page_div_room_connections_2">
+              <p className="text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))] admin_rooms_page_p_room_connections">
                 Existing paths
               </p>
 
-              <h3 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">
+              <h3 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))] admin_rooms_page_h3_room_connections">
                 Room connections
               </h3>
             </div>
@@ -1126,23 +1126,23 @@ created_at: room.created_at,
             </AdminCounter>
           </div>
 
-          <div className="mt-6 space-y-3">
+          <div className="mt-6 space-y-3 admin_rooms_page_div_room_connections_3">
             {connections.map(
               (connection) => (
                 <details
                   key={connection.id}
-                  className="group border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))]"
+                  className="group border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] admin_rooms_page_details_details"
                 >
-                  <summary className="cursor-pointer list-none px-4 py-3.5 sm:px-5 [&::-webkit-details-marker]:hidden">
-                    <div className="flex flex-wrap items-center justify-between gap-4">
-                      <div className="min-w-0">
-                        <p className="font-serif text-lg text-[rgb(var(--sep-colour-dfc99f))]">
+                  <summary className="cursor-pointer list-none px-4 py-3.5 sm:px-5 [&::-webkit-details-marker]:hidden admin_rooms_page_summary_summary">
+                    <div className="flex flex-wrap items-center justify-between gap-4 admin_rooms_page_div_container_25">
+                      <div className="min-w-0 admin_rooms_page_div_container_26">
+                        <p className="font-serif text-lg text-[rgb(var(--sep-colour-dfc99f))] admin_rooms_page_p_text_7">
                           {connection
                             .from_room
                             ?.name ??
                             "Unknown room"}
 
-                          <span className="mx-3 text-[rgb(var(--sep-colour-7d6040))]">
+                          <span className="mx-3 text-[rgb(var(--sep-colour-7d6040))] admin_rooms_page_span_text">
                             {connection.is_two_way
                               ? "↔"
                               : "→"}
@@ -1154,14 +1154,14 @@ created_at: room.created_at,
                             "Unknown room"}
                         </p>
 
-                        <p className="mt-1 text-[9px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-817461))]">
+                        <p className="mt-1 text-[9px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-817461))] admin_rooms_page_p_text_8">
                           {connection.connection_name ??
                             "Unnamed connection"}
                         </p>
                       </div>
 
-                      <div className="flex shrink-0 items-center gap-3">
-                        <span className="border border-[rgb(var(--sep-colour-60482e))]/50 px-2.5 py-1 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9e8969))]">
+                      <div className="flex shrink-0 items-center gap-3 admin_rooms_page_div_container_27">
+                        <span className="border border-[rgb(var(--sep-colour-60482e))]/50 px-2.5 py-1 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9e8969))] admin_rooms_page_span_text_2">
                           {connection.is_two_way
                             ? "Two-way"
                             : "One-way"}
@@ -1169,7 +1169,7 @@ created_at: room.created_at,
 
                         <span
                           title="Expand connection"
-                          className="text-sm text-[rgb(var(--sep-colour-9a7445))] transition-transform duration-200 group-open:rotate-180"
+                          className="text-sm text-[rgb(var(--sep-colour-9a7445))] transition-transform duration-200 group-open:rotate-180 admin_rooms_page_span_expand_connection"
                         >
                           ▾
                         </span>
@@ -1177,19 +1177,19 @@ created_at: room.created_at,
                     </div>
                   </summary>
 
-                  <div className="border-t border-[rgb(var(--sep-colour-60482e))]/30 px-4 pb-4 pt-4 sm:px-5 sm:pb-5">
+                  <div className="border-t border-[rgb(var(--sep-colour-60482e))]/30 px-4 pb-4 pt-4 sm:px-5 sm:pb-5 admin_rooms_page_div_container_28">
                     <AdminActionForm
                       action={
                         updateRoomConnection
                       }
                     >
-                      <input
+                      <input className="admin_rooms_page_input_connection_id"
                         type="hidden"
                         name="connectionId"
                         value={connection.id}
                       />
 
-                      <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_160px]">
+                      <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_160px] admin_rooms_page_div_container_29">
                         <AdminField label="Connection name">
                           <input
                             type="text"
@@ -1199,7 +1199,7 @@ created_at: room.created_at,
                               connection.connection_name ??
                               ""
                             }
-                            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0c0907))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
+                            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0c0907))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] admin_rooms_page_input_connection_name_2"
                           />
                         </AdminField>
 
@@ -1212,20 +1212,20 @@ created_at: room.created_at,
                             defaultValue={
                               connection.sort_order
                             }
-                            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0c0907))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
+                            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0c0907))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] admin_rooms_page_input_sort_order_4"
                           />
                         </AdminField>
                       </div>
 
-                      <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
-                        <label className="flex items-center gap-3 text-sm text-[rgb(var(--sep-colour-bbaa90))]">
+                      <div className="mt-4 flex flex-wrap items-center justify-between gap-4 admin_rooms_page_div_two_way_connection_2">
+                        <label className="flex items-center gap-3 text-sm text-[rgb(var(--sep-colour-bbaa90))] admin_rooms_page_label_two_way_connection_2">
                           <input
                             type="checkbox"
                             name="isTwoWay"
                             defaultChecked={
                               connection.is_two_way
                             }
-                            className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))]"
+                            className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))] admin_rooms_page_input_two_way_2"
                           />
 
                           Two-way connection
@@ -1233,7 +1233,7 @@ created_at: room.created_at,
 
                         <button
                           type="submit"
-                          className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-2.5 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
+                          className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-2.5 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))] admin_rooms_page_button_save_connection"
                         >
                           Save connection
                         </button>
@@ -1246,7 +1246,7 @@ created_at: room.created_at,
                       }
                       className="mt-4 border-t border-[rgb(var(--sep-colour-60482e))]/25 pt-4 text-right"
                     >
-                      <input
+                      <input className="admin_rooms_page_input_connection_id_2"
                         type="hidden"
                         name="connectionId"
                         value={connection.id}
@@ -1254,7 +1254,7 @@ created_at: room.created_at,
 
                       <button
                         type="submit"
-                        className="border border-red-900/60 bg-red-950/20 px-4 py-2.5 text-[8px] uppercase tracking-[0.18em] text-red-500 transition hover:border-red-700 hover:bg-red-950/40"
+                        className="border border-red-900/60 bg-red-950/20 px-4 py-2.5 text-[8px] uppercase tracking-[0.18em] text-red-500 transition hover:border-red-700 hover:bg-red-950/40 admin_rooms_page_button_delete_connection"
                       >
                         Delete connection
                       </button>
@@ -1265,8 +1265,8 @@ created_at: room.created_at,
             )}
 
             {connections.length === 0 ? (
-              <div className="border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] p-8 text-center">
-                <p className="text-sm text-[rgb(var(--sep-colour-92836f))]">
+              <div className="border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] p-8 text-center admin_rooms_page_div_container_30">
+                <p className="text-sm text-[rgb(var(--sep-colour-92836f))] admin_rooms_page_p_text_9">
                   No room connections
                   have been created yet.
                 </p>
@@ -1287,8 +1287,8 @@ function AdminField({
   children: React.ReactNode;
 }) {
   return (
-    <div className="block">
-      <div className="mb-2 block text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
+    <div className="block admin_rooms_page_div_container_31">
+      <div className="mb-2 block text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))] admin_rooms_page_div_container_32">
         {label}
       </div>
 
@@ -1303,7 +1303,7 @@ function AdminCounter({
   children: React.ReactNode;
 }) {
   return (
-    <span className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 text-[10px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a99069))]">
+    <span className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 text-[10px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a99069))] admin_rooms_page_span_text_3">
       {children}
     </span>
   );
@@ -1316,11 +1316,9 @@ function StatusBadge({
 }) {
   return (
     <span
-      className={
-        isActive
+      className={[((isActive
           ? "inline-block border border-emerald-800/60 bg-black/20 px-2.5 py-1 text-[8px] uppercase tracking-[0.18em] text-emerald-500"
-          : "inline-block border border-stone-600/60 bg-black/20 px-2.5 py-1 text-[8px] uppercase tracking-[0.18em] text-stone-400"
-      }
+          : "inline-block border border-stone-600/60 bg-black/20 px-2.5 py-1 text-[8px] uppercase tracking-[0.18em] text-stone-400")), "admin_rooms_page_span_text_4"].filter(Boolean).join(" ")}
     >
       {isActive
         ? "Active"
@@ -1337,12 +1335,12 @@ function DependencyCounter({
   value: number;
 }) {
   return (
-    <div className="border border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-15100d))] px-2 py-3 text-center">
-      <p className="font-serif text-lg text-[rgb(var(--sep-colour-c9ad82))]">
+    <div className="border border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-15100d))] px-2 py-3 text-center admin_rooms_page_div_container_33">
+      <p className="font-serif text-lg text-[rgb(var(--sep-colour-c9ad82))] admin_rooms_page_p_text_10">
         {value}
       </p>
 
-      <p className="mt-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756957))]">
+      <p className="mt-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756957))] admin_rooms_page_p_text_11">
         {label}
       </p>
     </div>

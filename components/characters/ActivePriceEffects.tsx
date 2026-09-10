@@ -9,9 +9,9 @@ export async function ActivePriceEffects({characterId}:{characterId:string}) {
   if(q.error)throw Error(q.error.message);
   if(!q.data?.length)return null;
 
-  return <section data-profile-price-box="true" className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 p-5 sm:p-6">
-    <h2 className="font-serif  text-[0.9rem] text-[rgb(var(--sep-colour-dec89f))]">The Price</h2>
-    <div className="mt-3 flex flex-wrap gap-2">
+  return <section data-profile-price-box="true" className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 p-5 sm:p-6 components_characters_activepriceeffects_section_price">
+    <h2 className="font-serif  text-[0.9rem] text-[rgb(var(--sep-colour-dec89f))] components_characters_activepriceeffects_h2_price">The Price</h2>
+    <div className="mt-3 flex flex-wrap gap-2 components_characters_activepriceeffects_div_price">
       {q.data.map(effect=>{
         const def=getWarpingPriceDefinition(effect.price_key);
         return <PriceTooltip
@@ -19,7 +19,7 @@ export async function ActivePriceEffects({characterId}:{characterId:string}) {
   priceKey={effect.price_key}
   expiresAt={effect.expires_at}
 >
-          <span className="border border-[rgb(var(--sep-colour-765937))]/70 bg-[rgb(var(--sep-colour-21170f))] px-2 py-1 text-[8px] uppercase text-[rgb(var(--sep-colour-d9b77f))] underline decoration-dotted underline-offset-2">
+          <span className="border border-[rgb(var(--sep-colour-765937))]/70 bg-[rgb(var(--sep-colour-21170f))] px-2 py-1 text-[8px] uppercase text-[rgb(var(--sep-colour-d9b77f))] underline decoration-dotted underline-offset-2 components_characters_activepriceeffects_span_text">
             {def?.name??effect.price_key} · Stage {effect.stage}
           </span>
         </PriceTooltip>;

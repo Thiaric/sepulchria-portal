@@ -237,21 +237,21 @@ export default async function AdminExperiencePage({
   const commentRows = filteredRows.filter((row) => row.comment?.trim());
 
   return (
-    <div className="mx-auto w-full max-w-[1120px] space-y-5">
-      <header data-sep-interaction-ignore="true" className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 [transform:none!important]">
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div>
-            <p className="text-[9px] tracking-[0.08em] text-[rgb(var(--sep-colour-876a46))]">
+    <div className="mx-auto w-full max-w-[1120px] space-y-5 admin_experience_page_div_container">
+      <header data-sep-interaction-ignore="true" className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 [transform:none!important] admin_experience_page_header_header">
+        <div className="flex flex-wrap items-start justify-between gap-3 admin_experience_page_div_container_2">
+          <div className="admin_experience_page_div_satisfaction_overview">
+            <p className="text-[9px] tracking-[0.08em] text-[rgb(var(--sep-colour-876a46))] admin_experience_page_p_satisfaction_overview">
               Player experience
             </p>
-            <h1 className="mt-1 font-serif text-3xl text-[rgb(var(--sep-colour-dec89f))]">
+            <h1 className="mt-1 font-serif text-3xl text-[rgb(var(--sep-colour-dec89f))] admin_experience_page_h1_satisfaction_overview">
               Satisfaction overview
             </h1>
-            <p className="mt-2 max-w-3xl text-sm text-[rgb(var(--sep-colour-a99b89))]">
+            <p className="mt-2 max-w-3xl text-sm text-[rgb(var(--sep-colour-a99b89))] admin_experience_page_p_satisfaction_overview_2">
               Review how players are feeling over time, identify changes in satisfaction and read optional comments when more context is needed.
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 admin_experience_page_div_container_3">
             <Link
               href="/admin"
               className="border border-[rgb(var(--sep-colour-765937))]/60 bg-[rgb(var(--sep-colour-21170f))] px-3 py-2 text-[10px] tracking-[0.08em] text-[rgb(var(--sep-colour-cdb58e))] transition hover:-translate-y-[1px] hover:border-[rgb(var(--sep-colour-a07945))] hover:bg-[rgb(var(--sep-colour-2b1d12))] hover:text-[rgb(var(--sep-colour-dec89f))]"
@@ -269,63 +269,63 @@ export default async function AdminExperiencePage({
         initialTo={to}
       />
 
-      <section className="grid gap-4 lg:grid-cols-4">
-        <div data-sep-interaction-ignore="true" className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 [transform:none!important]">
-          <p className="text-[9px] tracking-[0.08em] text-[rgb(var(--sep-colour-756957))]">
+      <section className="grid gap-4 lg:grid-cols-4 admin_experience_page_section_section">
+        <div data-sep-interaction-ignore="true" className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 [transform:none!important] admin_experience_page_div_container_4">
+          <p className="text-[9px] tracking-[0.08em] text-[rgb(var(--sep-colour-756957))] admin_experience_page_p_text">
             Prompted
           </p>
-          <p className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-dec89f))]">
+          <p className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-dec89f))] admin_experience_page_p_text_2">
             {promptedCount}
           </p>
         </div>
-        <div data-sep-interaction-ignore="true" className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 [transform:none!important]">
-          <p className="text-[9px] tracking-[0.08em] text-[rgb(var(--sep-colour-756957))]">
+        <div data-sep-interaction-ignore="true" className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 [transform:none!important] admin_experience_page_div_container_5">
+          <p className="text-[9px] tracking-[0.08em] text-[rgb(var(--sep-colour-756957))] admin_experience_page_p_text_3">
             Answered
           </p>
-          <p className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-dec89f))]">
+          <p className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-dec89f))] admin_experience_page_p_text_4">
             {answeredCount}
           </p>
-          <p className="mt-2 text-xs text-[rgb(var(--sep-colour-756957))]">
+          <p className="mt-2 text-xs text-[rgb(var(--sep-colour-756957))] admin_experience_page_p_text_5">
             Response rate {formatPercent(percentage(answeredCount, promptedCount))}
           </p>
         </div>
-        <div data-sep-interaction-ignore="true" className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 [transform:none!important]">
-          <p className="text-[9px] tracking-[0.08em] text-[rgb(var(--sep-colour-756957))]">
+        <div data-sep-interaction-ignore="true" className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 [transform:none!important] admin_experience_page_div_container_6">
+          <p className="text-[9px] tracking-[0.08em] text-[rgb(var(--sep-colour-756957))] admin_experience_page_p_text_6">
             Skipped
           </p>
-          <p className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-dec89f))]">
+          <p className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-dec89f))] admin_experience_page_p_text_7">
             {skippedCount}
           </p>
         </div>
-        <div data-sep-interaction-ignore="true" className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 [transform:none!important]">
-          <p className="text-[9px] tracking-[0.08em] text-[rgb(var(--sep-colour-756957))]">
+        <div data-sep-interaction-ignore="true" className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 [transform:none!important] admin_experience_page_div_container_7">
+          <p className="text-[9px] tracking-[0.08em] text-[rgb(var(--sep-colour-756957))] admin_experience_page_p_text_8">
             Distinct users
           </p>
-          <p className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-dec89f))]">
+          <p className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-dec89f))] admin_experience_page_p_text_9">
             {users.length}
           </p>
         </div>
       </section>
 
-      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-5 admin_experience_page_section_section_2">
         {EXPERIENCE_RATINGS.map((rating) => {
           const count = overallCounts[rating.value] ?? 0;
           const percent = percentage(count, answeredCount);
           return (
             <article
               key={rating.value}
-              data-sep-interaction-ignore="true" className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 [transform:none!important]"
+              data-sep-interaction-ignore="true" className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 [transform:none!important] admin_experience_page_article_article"
             >
-              <div className="flex items-center gap-3">
-                <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border border-[rgb(var(--sep-colour-6a5437))] bg-[rgb(var(--sep-colour-0e0a08))] p-1">
-                  <img src={rating.imageSrc} alt={rating.label} className="h-full w-full object-contain" />
+              <div className="flex items-center gap-3 admin_experience_page_div_container_8">
+                <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border border-[rgb(var(--sep-colour-6a5437))] bg-[rgb(var(--sep-colour-0e0a08))] p-1 admin_experience_page_div_container_9">
+                  <img src={rating.imageSrc} alt={rating.label} className="h-full w-full object-contain admin_experience_page_img_image" />
                 </div>
-                <div>
-                  <p className="text-sm text-[rgb(var(--sep-colour-dec89f))]">{rating.label}</p>
-                  <p className="text-[11px] text-[rgb(var(--sep-colour-756957))]">{count} answers</p>
+                <div className="admin_experience_page_div_container_10">
+                  <p className="text-sm text-[rgb(var(--sep-colour-dec89f))] admin_experience_page_p_text_10">{rating.label}</p>
+                  <p className="text-[11px] text-[rgb(var(--sep-colour-756957))] admin_experience_page_p_text_11">{count} answers</p>
                 </div>
               </div>
-              <p className="mt-4 font-serif text-2xl text-[rgb(var(--sep-colour-b79c73))]">
+              <p className="mt-4 font-serif text-2xl text-[rgb(var(--sep-colour-b79c73))] admin_experience_page_p_text_12">
                 {formatPercent(percent)}
               </p>
             </article>
@@ -333,32 +333,32 @@ export default async function AdminExperiencePage({
         })}
       </section>
 
-      <section data-sep-interaction-ignore="true" className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 [transform:none!important]">
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h2 className="font-serif text-2xl text-[rgb(var(--sep-colour-dec89f))]">
+      <section data-sep-interaction-ignore="true" className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 [transform:none!important] admin_experience_page_section_section_3">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 admin_experience_page_div_container_11">
+          <div className="admin_experience_page_div_per_user_distribution">
+            <h2 className="font-serif text-2xl text-[rgb(var(--sep-colour-dec89f))] admin_experience_page_h2_per_user_distribution">
               Per-user distribution
             </h2>
-            <p className="mt-1 text-xs text-[rgb(var(--sep-colour-756957))]">
+            <p className="mt-1 text-xs text-[rgb(var(--sep-colour-756957))] admin_experience_page_p_per_user_distribution">
               Percentages below are calculated from answered prompts only.
             </p>
           </div>
         </div>
 
         {users.length ? (
-          <div className="overflow-x-auto">
-            <table className="min-w-full border-collapse text-sm">
+          <div className="overflow-x-auto admin_experience_page_div_container_12">
+            <table className="min-w-full border-collapse text-sm admin_experience_page_table_table">
               <thead>
-                <tr className="border-b border-[rgb(var(--sep-colour-60482e))]/35 text-left text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756957))]">
+                <tr className="border-b border-[rgb(var(--sep-colour-60482e))]/35 text-left text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756957))] admin_experience_page_tr_row">
                   <th className="px-2 py-2">User</th>
                   <th className="px-2 py-2">Prompts</th>
                   <th className="px-2 py-2">Answered</th>
                   <th className="px-2 py-2">Response rate</th>
                   {EXPERIENCE_RATINGS.map((rating) => (
                     <th key={rating.value} className="px-2 py-2 text-center">
-                      <div className="flex flex-col items-center gap-0.5 text-[8px] leading-tight tracking-[0.08em]">
-                        <img src={rating.imageSrc} alt={rating.label} className="h-7 w-7 object-contain" />
-                        <span>{rating.label}</span>
+                      <div className="flex flex-col items-center gap-0.5 text-[8px] leading-tight tracking-[0.08em] admin_experience_page_div_container_13">
+                        <img src={rating.imageSrc} alt={rating.label} className="h-7 w-7 object-contain admin_experience_page_img_image_2" />
+                        <span className="admin_experience_page_span_text">{rating.label}</span>
                       </div>
                     </th>
                   ))}
@@ -369,10 +369,10 @@ export default async function AdminExperiencePage({
                 {users.map((user) => (
                   <tr
                     key={user.userId}
-                    className="border-b border-[rgb(var(--sep-colour-60482e))]/25 align-top text-[rgb(var(--sep-colour-a99b89))]"
+                    className="border-b border-[rgb(var(--sep-colour-60482e))]/25 align-top text-[rgb(var(--sep-colour-a99b89))] admin_experience_page_tr_row_2"
                   >
-                    <td className="px-3 py-3">
-                      <div className="font-medium text-[rgb(var(--sep-colour-dec89f))]">
+                    <td className="px-3 py-3 admin_experience_page_td_cell">
+                      <div className="font-medium text-[rgb(var(--sep-colour-dec89f))] admin_experience_page_div_container_14">
                         {user.publicSlug ? (
                           <Link href={`/characters/${user.publicSlug}`} className="hover:underline">
                             {user.displayName}
@@ -381,28 +381,28 @@ export default async function AdminExperiencePage({
                           user.displayName
                         )}
                       </div>
-                      <div className="mt-1 text-[11px] text-[rgb(var(--sep-colour-756957))]">
+                      <div className="mt-1 text-[11px] text-[rgb(var(--sep-colour-756957))] admin_experience_page_div_container_15">
                         {user.userId}
                       </div>
                     </td>
-                    <td className="px-3 py-3">{user.prompts}</td>
-                    <td className="px-3 py-3">{user.answered}</td>
-                    <td className="px-3 py-3">
+                    <td className="px-3 py-3 admin_experience_page_td_cell_2">{user.prompts}</td>
+                    <td className="px-3 py-3 admin_experience_page_td_cell_3">{user.answered}</td>
+                    <td className="px-3 py-3 admin_experience_page_td_cell_4">
                       {formatPercent(percentage(user.answered, user.prompts))}
                     </td>
                     {EXPERIENCE_RATINGS.map((rating) => (
-                      <td key={rating.value} className="px-3 py-3 text-center">
-                        <div className="font-medium">
+                      <td key={rating.value} className="px-3 py-3 text-center admin_experience_page_td_cell_5">
+                        <div className="font-medium admin_experience_page_div_container_16">
                           {formatPercent(
                             percentage(user.counts[rating.value], user.answered),
                           )}
                         </div>
-                        <div className="mt-1 text-[11px] text-[rgb(var(--sep-colour-756957))]">
+                        <div className="mt-1 text-[11px] text-[rgb(var(--sep-colour-756957))] admin_experience_page_div_container_17">
                           {user.counts[rating.value]}
                         </div>
                       </td>
                     ))}
-                    <td className="max-w-xs px-3 py-3 text-[12px] text-[rgb(var(--sep-colour-9d8d79))]">
+                    <td className="max-w-xs px-3 py-3 text-[12px] text-[rgb(var(--sep-colour-9d8d79))] admin_experience_page_td_cell_6">
                       {user.latestComment ?? "—"}
                     </td>
                   </tr>
@@ -411,45 +411,45 @@ export default async function AdminExperiencePage({
             </table>
           </div>
         ) : (
-          <p className="text-sm text-[rgb(var(--sep-colour-756957))]">
+          <p className="text-sm text-[rgb(var(--sep-colour-756957))] admin_experience_page_p_text_13">
             No experience feedback matches the current filters.
           </p>
         )}
       </section>
 
-      <section data-sep-interaction-ignore="true" className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 [transform:none!important]">
-        <div className="mb-4">
-          <h2 className="font-serif text-2xl text-[rgb(var(--sep-colour-dec89f))]">
+      <section data-sep-interaction-ignore="true" className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 [transform:none!important] admin_experience_page_section_section_4">
+        <div className="mb-4 admin_experience_page_div_recent_comments">
+          <h2 className="font-serif text-2xl text-[rgb(var(--sep-colour-dec89f))] admin_experience_page_h2_recent_comments">
             Recent comments
           </h2>
-          <p className="mt-1 text-xs text-[rgb(var(--sep-colour-756957))]">
+          <p className="mt-1 text-xs text-[rgb(var(--sep-colour-756957))] admin_experience_page_p_recent_comments">
             Optional notes left by players, newest prompts first.
           </p>
         </div>
 
         {commentRows.length ? (
-          <div className="space-y-3">
+          <div className="space-y-3 admin_experience_page_div_container_18">
             {commentRows.slice(0, 25).map((row) => {
               const profile = characterByUserId.get(row.user_id);
               const face = row.rating ? getFace(row.rating) : null;
               return (
                 <article
                   key={row.id}
-                  className="border border-[rgb(var(--sep-colour-60482e))]/25 bg-[rgb(var(--sep-colour-17110d))] p-3"
+                  className="border border-[rgb(var(--sep-colour-60482e))]/25 bg-[rgb(var(--sep-colour-17110d))] p-3 admin_experience_page_article_article_2"
                 >
-                  <div className="flex flex-wrap items-center gap-2 text-xs text-[rgb(var(--sep-colour-756957))]">
-                    <span className="font-medium text-[rgb(var(--sep-colour-b79c73))]">
+                  <div className="flex flex-wrap items-center gap-2 text-xs text-[rgb(var(--sep-colour-756957))] admin_experience_page_div_container_19">
+                    <span className="font-medium text-[rgb(var(--sep-colour-b79c73))] admin_experience_page_span_text_2">
                       {profile?.displayName ?? row.user_id}
                     </span>
                     {face ? (
-                      <span className="inline-flex items-center gap-1">
-                        <img src={face.imageSrc} alt={face.label} className="h-5 w-5 object-contain" />
+                      <span className="inline-flex items-center gap-1 admin_experience_page_span_text_3">
+                        <img src={face.imageSrc} alt={face.label} className="h-5 w-5 object-contain admin_experience_page_img_image_3" />
                         {face.label}
                       </span>
                     ) : null}
-                    <span>{new Date(row.prompted_at).toLocaleString()}</span>
+                    <span className="admin_experience_page_span_text_4">{new Date(row.prompted_at).toLocaleString()}</span>
                   </div>
-                  <p className="mt-2 text-sm text-[rgb(var(--sep-colour-a99b89))]">
+                  <p className="mt-2 text-sm text-[rgb(var(--sep-colour-a99b89))] admin_experience_page_p_text_14">
                     {row.comment}
                   </p>
                 </article>
@@ -457,7 +457,7 @@ export default async function AdminExperiencePage({
             })}
           </div>
         ) : (
-          <p className="text-sm text-[rgb(var(--sep-colour-756957))]">
+          <p className="text-sm text-[rgb(var(--sep-colour-756957))] admin_experience_page_p_text_15">
             No comments yet for the current filters.
           </p>
         )}

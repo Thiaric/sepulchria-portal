@@ -90,7 +90,7 @@ export function ForumContextHtmlSanitizer() {
     <div
       ref={rootRef}
       aria-hidden="true"
-      className="hidden"
+      className="hidden components_portal_forum_context_html_sanitizer_div_container"
     />
   );
 }

@@ -278,7 +278,7 @@ export function InlineActionForm({
   ]);
 
   return (
-    <form
+    <form className="components_forms_inline_action_form_form_form"
       {...props}
       action={dispatch}
       onSubmit={(event) => {
@@ -334,13 +334,13 @@ export function InlineActionForm({
               ? "alert"
               : "status"
           }
-          className={[
+          className={[(([
             "mt-2 text-[10px] leading-5",
             state.kind ===
             "success"
               ? "text-[rgb(var(--sep-colour-9fd0a9))]"
               : "text-[rgb(var(--sep-colour-d8a49a))]",
-          ].join(" ")}
+          ].join(" "))), "components_forms_inline_action_form_p_text"].filter(Boolean).join(" ")}
         >
           {state.kind ===
           "success"

@@ -76,12 +76,12 @@ export function CodexEntryCard({
   return (
     <article
       id={anchorId}
-      className="group relative flex scroll-mt-6 flex-col overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-15100d))] transition duration-300 hover:-translate-y-1 hover:border-[rgb(var(--sep-colour-9a7344))]/80 hover:shadow-[0_20px_45px_rgba(var(--sep-rgb-0-0-0),0.35)]"
+      className="group relative flex scroll-mt-6 flex-col overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-15100d))] transition duration-300 hover:-translate-y-1 hover:border-[rgb(var(--sep-colour-9a7344))]/80 hover:shadow-[0_20px_45px_rgba(var(--sep-rgb-0-0-0),0.35)] components_codex_codex_entry_card_article_article"
       style={{
         boxShadow: `inset 0 3px 0 ${accentColour}`,
       }}
     >
-      <div className="relative h-44 overflow-hidden border-b border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-0d0a08))]">
+      <div className="relative h-44 overflow-hidden border-b border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-0d0a08))] components_codex_codex_entry_card_div_container">
         {imageUrl ? (
           <>
                         <Image
@@ -92,7 +92,7 @@ export function CodexEntryCard({
               className="object-cover opacity-70 transition duration-500 group-hover:scale-105 group-hover:opacity-90"
             />
 
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[rgb(var(--sep-colour-15100d))] via-transparent to-black/20" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[rgb(var(--sep-colour-15100d))] via-transparent to-black/20 components_codex_codex_entry_card_div_container_2" />
 
             {enableImagePreview ? (
               <CodexEntryImageLightbox
@@ -103,22 +103,22 @@ export function CodexEntryCard({
           </>
         ) : (
           <div
-            className="absolute inset-0 opacity-60"
+            className="absolute inset-0 opacity-60 components_codex_codex_entry_card_div_container_3"
             style={{
               background: `radial-gradient(circle at top, ${accentColour}55 0%, #17100c 45%, #0d0907 100%)`,
             }}
           />
         )}
 
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex items-end justify-between gap-4 p-5">
-          <div>
-  <h2 className="font-serif text-2xl text-[rgb(var(--sep-colour-ead6ad))]">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex items-end justify-between gap-4 p-5 components_codex_codex_entry_card_div_container_4">
+          <div className="components_codex_codex_entry_card_div_container_5">
+  <h2 className="font-serif text-2xl text-[rgb(var(--sep-colour-ead6ad))] components_codex_codex_entry_card_h2_heading">
     {name}
   </h2>
 </div>
 
           <div
-            className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-100c09))]/90"
+            className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-100c09))]/90 components_codex_codex_entry_card_div_container_6"
             style={{
               borderColor: `${accentColour}aa`,
             }}
@@ -134,7 +134,7 @@ export function CodexEntryCard({
               />
             ) : (
               <span
-                className="font-serif text-2xl"
+                className="font-serif text-2xl components_codex_codex_entry_card_span_text"
                 style={{
                   color:
                     accentColour,
@@ -149,16 +149,16 @@ export function CodexEntryCard({
         </div>
       </div>
 
-      <div className="flex flex-col p-5">
+      <div className="flex flex-col p-5 components_codex_codex_entry_card_div_container_7">
         {summary ? (
-          <details className="group/details">
-            <div className="group-open/details:hidden">
-              <p className="text-sm leading-6 text-[rgb(var(--sep-colour-a99b89))]">
+          <details className="group/details components_codex_codex_entry_card_details_details">
+            <div className="group-open/details:hidden components_codex_codex_entry_card_div_container_8">
+              <p className="text-sm leading-6 text-[rgb(var(--sep-colour-a99b89))] components_codex_codex_entry_card_p_text">
                 {preview}
               </p>
             </div>
 
-            <div className="hidden group-open/details:block">
+            <div className="hidden group-open/details:block components_codex_codex_entry_card_div_container_9">
               <RichTextContent
                 body={summary}
                 className="text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))]"
@@ -167,18 +167,18 @@ export function CodexEntryCard({
               {expandedExtra}
             </div>
 
-            <summary className="mt-3 cursor-pointer list-none text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-b88d54))] transition hover:text-[rgb(var(--sep-colour-e0bb7f))]">
-              <span className="group-open/details:hidden">
+            <summary className="mt-3 cursor-pointer list-none text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-b88d54))] transition hover:text-[rgb(var(--sep-colour-e0bb7f))] components_codex_codex_entry_card_summary_summary">
+              <span className="group-open/details:hidden components_codex_codex_entry_card_span_text_2">
                 Read more ↓
               </span>
 
-              <span className="hidden group-open/details:inline">
+              <span className="hidden group-open/details:inline components_codex_codex_entry_card_span_text_3">
                 Show less ↑
               </span>
             </summary>
           </details>
         ) : (
-          <p className="text-sm leading-6 text-[rgb(var(--sep-colour-a99b89))]">
+          <p className="text-sm leading-6 text-[rgb(var(--sep-colour-a99b89))] components_codex_codex_entry_card_p_text_2">
             No summary is currently
             available.
           </p>
@@ -188,11 +188,11 @@ export function CodexEntryCard({
           href={`${hrefBase}/${slug}`}
           className="mt-5 inline-flex items-center justify-between border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-271c12))] px-4 py-3 text-[10px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-dfc79c))] transition hover:border-[rgb(var(--sep-colour-a17a45))] hover:bg-[rgb(var(--sep-colour-3b2919))]"
         >
-          <span>
+          <span className="components_codex_codex_entry_card_span_text_4">
             Open full entry
           </span>
 
-          <span aria-hidden="true">
+          <span className="components_codex_codex_entry_card_span_text_5" aria-hidden="true">
             →
           </span>
         </Link>

@@ -94,42 +94,42 @@ export default function CommunityRulesPage() {
 
       <main
         data-public-skin-surface="true"
-        className="min-h-screen bg-[rgb(var(--sep-colour-090706))] px-4 py-10 text-[rgb(var(--sep-colour-e8dcc4))] sm:px-6 lg:px-8"
+        className="min-h-screen bg-[rgb(var(--sep-colour-090706))] px-4 py-10 text-[rgb(var(--sep-colour-e8dcc4))] sm:px-6 lg:px-8 community_rules_page_main_main"
       >
-      <div className="mx-auto max-w-5xl">
-        <header className="border border-[rgb(var(--sep-colour-62482f))]/60 bg-[rgb(var(--sep-colour-0d0a08))]/90 px-6 py-8 sm:px-9">
-          <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-9a7547))]">
+      <div className="mx-auto max-w-5xl community_rules_page_div_container">
+        <header className="border border-[rgb(var(--sep-colour-62482f))]/60 bg-[rgb(var(--sep-colour-0d0a08))]/90 px-6 py-8 sm:px-9 community_rules_page_header_community_rules">
+          <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-9a7547))] community_rules_page_p_community_rules">
             Sepulchria · Community & Safety
           </p>
 
-          <h1 className="mt-3 font-serif text-4xl text-[rgb(var(--sep-colour-ead3a6))] sm:text-5xl">
+          <h1 className="mt-3 font-serif text-4xl text-[rgb(var(--sep-colour-ead3a6))] sm:text-5xl community_rules_page_h1_community_rules">
             Community Rules
           </h1>
 
-          <p className="mt-4 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b87))]">
+          <p className="mt-4 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b87))] community_rules_page_p_community_rules_2">
             These rules apply to every Sepulchria user and to all user-generated
             content and communication on the service.
           </p>
 
-          <div className="mt-5 border-l-2 border-[rgb(var(--sep-colour-a77a42))] bg-[rgb(var(--sep-colour-18110d))] px-4 py-3 text-sm leading-6 text-[rgb(var(--sep-colour-c9b08b))]">
-            Sepulchria is an <strong>18+ service</strong>. Mature fantasy themes,
+          <div className="mt-5 border-l-2 border-[rgb(var(--sep-colour-a77a42))] bg-[rgb(var(--sep-colour-18110d))] px-4 py-3 text-sm leading-6 text-[rgb(var(--sep-colour-c9b08b))] community_rules_page_div_community_rules">
+            Sepulchria is an <strong className="community_rules_page_strong_community_rules">18+ service</strong>. Mature fantasy themes,
             violence, horror, profanity, romance and adult relationships may
             appear. Being adult-only does not make every form of adult content
             acceptable.
           </div>
 
-          <p className="mt-4 text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-766b5e))]">
+          <p className="mt-4 text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-766b5e))] community_rules_page_p_community_rules_3">
             Effective: 24 August 2026 · Version 1.0
           </p>
         </header>
 
-        <div className="mt-5 space-y-5">
+        <div className="mt-5 space-y-5 community_rules_page_div_container_2">
           <RuleSection
             number="01"
             title="Content prohibited for everyone"
             intro="The following content is prohibited across the entire service, including private communications."
           >
-            <div className="grid gap-3">
+            <div className="grid gap-3 community_rules_page_div_container_3">
               {prohibited.map((rule) => (
                 <RuleCard
                   key={rule.title}
@@ -145,7 +145,7 @@ export default function CommunityRulesPage() {
             title="Safety and conduct"
             intro="These rules protect users and the community from abuse, exploitation and illegal or seriously harmful behaviour."
           >
-            <div className="grid gap-3 md:grid-cols-2">
+            <div className="grid gap-3 md:grid-cols-2 community_rules_page_div_container_4">
               {safetyRules.map((rule) => (
                 <RuleCard
                   key={rule.title}
@@ -161,11 +161,11 @@ export default function CommunityRulesPage() {
             title="Roleplay consent and player boundaries"
             intro="Sepulchria permits conflict, dark themes and consensual adult sexual roleplay in text. Player boundaries and the private-only rule still apply."
           >
-            <ul className="space-y-3">
+            <ul className="space-y-3 community_rules_page_ul_list">
               {roleplayRules.map((rule) => (
                 <li
                   key={rule}
-                  className="border-l border-[rgb(var(--sep-colour-73513a))] pl-4 text-sm leading-7 text-[rgb(var(--sep-colour-b9aa94))]"
+                  className="border-l border-[rgb(var(--sep-colour-73513a))] pl-4 text-sm leading-7 text-[rgb(var(--sep-colour-b9aa94))] community_rules_page_li_item"
                 >
                   {rule}
                 </li>
@@ -177,13 +177,13 @@ export default function CommunityRulesPage() {
             number="04"
             title="Private does not mean unmoderated"
           >
-            <div className="space-y-3 text-sm leading-7 text-[rgb(var(--sep-colour-b9aa94))]">
-              <p>
+            <div className="space-y-3 text-sm leading-7 text-[rgb(var(--sep-colour-b9aa94))] community_rules_page_div_container_5">
+              <p className="community_rules_page_p_text">
                 These Community Rules apply equally to location chat, Whispers,
                 Instant Chat, Private Messages, forum content, character
                 profiles, Private Locations and any other user-to-user feature.
               </p>
-              <p>
+              <p className="community_rules_page_p_text_2">
                 Private Messages, Whispers and Private Locations are not
                 publicly visible. Consensual explicit sexual roleplay in text
                 may take place only in private communication spaces, only
@@ -191,7 +191,7 @@ export default function CommunityRulesPage() {
                 presented as aged 18 or older. Pornographic visual or
                 audiovisual material remains prohibited everywhere.
               </p>
-              <p>
+              <p className="community_rules_page_p_text_3">
                 Authorised staff may access reported content and relevant
                 surrounding context where reasonably necessary to investigate
                 a safety report, enforce these rules, protect users, maintain
@@ -204,24 +204,24 @@ export default function CommunityRulesPage() {
             number="05"
             title="Reporting and moderation"
           >
-            <div className="space-y-3 text-sm leading-7 text-[rgb(var(--sep-colour-b9aa94))]">
-              <p>
+            <div className="space-y-3 text-sm leading-7 text-[rgb(var(--sep-colour-b9aa94))] community_rules_page_div_container_6">
+              <p className="community_rules_page_p_text_4">
                 Use the Report control attached to content whenever possible.
                 Reports may preserve a snapshot of the reported content and
                 relevant context for staff review.
               </p>
-              <p>
+              <p className="community_rules_page_p_text_5">
                 Depending on severity and context, staff may take no action,
                 remove content, issue a warning, restrict features, temporarily
                 suspend an account or permanently remove an account from the
                 service.
               </p>
-              <p>
+              <p className="community_rules_page_p_text_6">
                 Serious child-safety concerns, credible threats and other
                 potentially illegal or immediately dangerous content may be
                 restricted or escalated urgently.
               </p>
-              <p>
+              <p className="community_rules_page_p_text_7">
                 Moderation decisions may be appealed through the appeal or
                 support process made available by Sepulchria.
               </p>
@@ -232,13 +232,13 @@ export default function CommunityRulesPage() {
             number="06"
             title="User-submitted images and intellectual property"
           >
-            <div className="space-y-3 text-sm leading-7 text-[rgb(var(--sep-colour-b9aa94))]">
-              <p>
+            <div className="space-y-3 text-sm leading-7 text-[rgb(var(--sep-colour-b9aa94))] community_rules_page_div_container_7">
+              <p className="community_rules_page_p_text_8">
                 You must have the right or permission to use images, artwork,
                 text and other material you submit or link to through
                 Sepulchria.
               </p>
-              <p>
+              <p className="community_rules_page_p_text_9">
                 Copyright and intellectual-property concerns may be reported
                 for review. A report does not automatically determine
                 ownership, but content may be restricted while a legitimate
@@ -251,13 +251,13 @@ export default function CommunityRulesPage() {
             number="07"
             title="Enforcement and evasion"
           >
-            <div className="space-y-3 text-sm leading-7 text-[rgb(var(--sep-colour-b9aa94))]">
-              <p>
+            <div className="space-y-3 text-sm leading-7 text-[rgb(var(--sep-colour-b9aa94))] community_rules_page_div_container_8">
+              <p className="community_rules_page_p_text_10">
                 Attempts to evade a restriction, suspension or ban through
                 alternate accounts or other means may result in further
                 enforcement.
               </p>
-              <p>
+              <p className="community_rules_page_p_text_11">
                 Malicious or knowingly false reports may themselves be treated
                 as abuse of the reporting system. Good-faith reports will not
                 be penalised merely because staff ultimately take no action.
@@ -266,10 +266,10 @@ export default function CommunityRulesPage() {
           </RuleSection>
         </div>
 
-        <footer className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-[rgb(var(--sep-colour-59432c))]/45 pt-5 text-[10px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-766b5e))]">
-          <span>Sepulchria Community Rules · Version 1.0</span>
+        <footer className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-[rgb(var(--sep-colour-59432c))]/45 pt-5 text-[10px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-766b5e))] community_rules_page_footer_footer">
+          <span className="community_rules_page_span_text">Sepulchria Community Rules · Version 1.0</span>
 
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap gap-4 community_rules_page_div_container_9">
             
           </div>
         </footer>
@@ -291,26 +291,26 @@ function RuleSection({
   children: React.ReactNode;
 }) {
   return (
-    <section className="border border-[rgb(var(--sep-colour-59432c))]/50 bg-[rgb(var(--sep-colour-0d0a08))]/75 p-5 sm:p-7">
-      <div className="flex items-start gap-4">
-        <span className="font-serif text-2xl text-[rgb(var(--sep-colour-80613b))]">
+    <section className="border border-[rgb(var(--sep-colour-59432c))]/50 bg-[rgb(var(--sep-colour-0d0a08))]/75 p-5 sm:p-7 community_rules_page_section_section">
+      <div className="flex items-start gap-4 community_rules_page_div_container_10">
+        <span className="font-serif text-2xl text-[rgb(var(--sep-colour-80613b))] community_rules_page_span_text_2">
           {number}
         </span>
 
-        <div className="min-w-0 flex-1">
-          <h2 className="font-serif text-2xl text-[rgb(var(--sep-colour-d7bd91))]">
+        <div className="min-w-0 flex-1 community_rules_page_div_container_11">
+          <h2 className="font-serif text-2xl text-[rgb(var(--sep-colour-d7bd91))] community_rules_page_h2_heading">
             {title}
           </h2>
 
           {intro ? (
-            <p className="mt-2 text-sm leading-6 text-[rgb(var(--sep-colour-8f8374))]">
+            <p className="mt-2 text-sm leading-6 text-[rgb(var(--sep-colour-8f8374))] community_rules_page_p_text_12">
               {intro}
             </p>
           ) : null}
         </div>
       </div>
 
-      <div className="mt-5">{children}</div>
+      <div className="mt-5 community_rules_page_div_container_12">{children}</div>
     </section>
   );
 }
@@ -326,23 +326,19 @@ function RuleCard({
 }) {
   return (
     <div
-      className={
-        critical
+      className={[((critical
           ? "border border-[rgb(var(--sep-colour-873e35))]/55 bg-[rgb(var(--sep-colour-281411))]/40 p-4"
-          : "border border-[rgb(var(--sep-colour-59432c))]/45 bg-black/10 p-4"
-      }
+          : "border border-[rgb(var(--sep-colour-59432c))]/45 bg-black/10 p-4")), "community_rules_page_div_container_13"].filter(Boolean).join(" ")}
     >
       <h3
-        className={
-          critical
+        className={[((critical
             ? "font-serif text-lg text-[rgb(var(--sep-colour-e2aaa1))]"
-            : "font-serif text-lg text-[rgb(var(--sep-colour-cdb58e))]"
-        }
+            : "font-serif text-lg text-[rgb(var(--sep-colour-cdb58e))]")), "community_rules_page_h3_heading"].filter(Boolean).join(" ")}
       >
         {title}
       </h3>
 
-      <p className="mt-2 text-sm leading-6 text-[rgb(var(--sep-colour-a99b87))]">
+      <p className="mt-2 text-sm leading-6 text-[rgb(var(--sep-colour-a99b87))] community_rules_page_p_text_13">
         {text}
       </p>
     </div>

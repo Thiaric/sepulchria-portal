@@ -1115,7 +1115,7 @@ export function NotificationBell() {
   return (
     <div
       ref={rootRef}
-      className="relative"
+      className="relative components_notifications_notification_bell_div_container"
     >
       <button
         ref={buttonRef}
@@ -1135,12 +1135,12 @@ export function NotificationBell() {
             ? "Notifications muted"
             : "Notifications"
         }
-        className={[
+        className={[(([
           "relative flex h-8 w-8 items-center justify-center border transition sm:h-9 sm:w-9 2xl:h-10 2xl:w-10",
           muted
             ? "border-red-900/70 bg-red-950/35 text-red-400 hover:border-red-700/80 hover:text-red-300"
             : "border-[rgb(var(--sep-colour-614b31))] bg-[rgb(var(--sep-colour-17120f))] text-[rgb(var(--sep-colour-c69b5c))] hover:border-[rgb(var(--sep-colour-977242))] hover:text-[rgb(var(--sep-colour-efd6a3))]",
-        ].join(" ")}
+        ].join(" "))), "components_notifications_notification_bell_button_action"].filter(Boolean).join(" ")}
       >
         {muted ? (
           <BellOff className="pointer-events-none h-5 w-5" />
@@ -1153,7 +1153,7 @@ export function NotificationBell() {
             data-sep-counter-badge="true"
             title={`${unreadCount} unread notification${unreadCount === 1 ? "" : "s"}`}
             aria-label={`${unreadCount} unread notification${unreadCount === 1 ? "" : "s"}`}
-            className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full border px-1 text-[8px] font-bold leading-none"
+            className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full border px-1 text-[8px] font-bold leading-none components_notifications_notification_bell_span_text"
           >
             {unreadCount > 9
               ? "9+"
@@ -1169,7 +1169,7 @@ export function NotificationBell() {
             <div
               ref={panelRef}
               data-vocabulary-static
-              className="fixed z-[9999] left-3 right-3 top-[calc(env(safe-area-inset-top)+3.75rem)] bottom-[calc(env(safe-area-inset-bottom)+4.75rem)] flex w-auto max-w-none flex-col !translate-x-0 !translate-y-0 !scale-100 !transform-none !animate-none !opacity-100 !transition-none !filter-none border border-[rgb(var(--sep-colour-6e5535))]/70 bg-[rgb(var(--sep-colour-100c09))] shadow-2xl sm:left-auto sm:bottom-auto sm:top-auto sm:w-[min(390px,calc(100vw-24px))] sm:max-w-[390px]"
+              className="fixed z-[9999] left-3 right-3 top-[calc(env(safe-area-inset-top)+3.75rem)] bottom-[calc(env(safe-area-inset-bottom)+4.75rem)] flex w-auto max-w-none flex-col !translate-x-0 !translate-y-0 !scale-100 !transform-none !animate-none !opacity-100 !transition-none !filter-none border border-[rgb(var(--sep-colour-6e5535))]/70 bg-[rgb(var(--sep-colour-100c09))] shadow-2xl sm:left-auto sm:bottom-auto sm:top-auto sm:w-[min(390px,calc(100vw-24px))] sm:max-w-[390px] components_notifications_notification_bell_div_container_2"
               style={{
                 ...(typeof window !== "undefined" &&
                 window.innerWidth >= 640
@@ -1187,26 +1187,26 @@ export function NotificationBell() {
                 opacity: 1,
               }}
             >
-              <div className="border-b border-[rgb(var(--sep-colour-59432c))]/45 px-4 py-3">
-                <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+              <div className="border-b border-[rgb(var(--sep-colour-59432c))]/45 px-4 py-3 components_notifications_notification_bell_div_container_3">
+                <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_notifications_notification_bell_p_text">
                   Offgame
                 </p>
 
-                <div className="mt-1 flex items-center justify-between gap-3">
-                  <div>
-                    <h2 className="font-serif text-lg text-[rgb(var(--sep-colour-d8bf91))]">
+                <div className="mt-1 flex items-center justify-between gap-3 components_notifications_notification_bell_div_container_4">
+                  <div className="components_notifications_notification_bell_div_notifications">
+                    <h2 className="font-serif text-lg text-[rgb(var(--sep-colour-d8bf91))] components_notifications_notification_bell_h2_notifications">
                       Notifications
                     </h2>
 
                     <p
-                      className={[
+                      className={[(([
                         "mt-0.5 text-[8px] uppercase tracking-[0.14em]",
                         muted
                           ? "text-red-400"
                           : "text-[rgb(var(--sep-colour-756958))]",
                       ].join(
                         " ",
-                      )}
+                      ))), "components_notifications_notification_bell_p_notifications"].filter(Boolean).join(" ")}
                     >
                       {muted
                         ? "Muted"
@@ -1214,7 +1214,7 @@ export function NotificationBell() {
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 components_notifications_notification_bell_div_container_5">
                   <button
                     type="button"
                     onClick={() =>
@@ -1223,14 +1223,14 @@ export function NotificationBell() {
                     disabled={
                       changingMute
                     }
-                    className={[
+                    className={[(([
                       "flex items-center gap-1.5 border px-2.5 py-1.5 text-[8px] font-semibold uppercase tracking-[0.14em] transition-all duration-150 hover:-translate-y-[1px] hover:shadow-[0_0_12px_rgba(var(--sep-rgb-177-132-75),0.14)] disabled:cursor-wait disabled:opacity-50",
                       muted
                         ? "border-red-700/80 bg-red-950/55 text-red-200 shadow-[inset_0_0_0_1px_rgba(185,65,55,0.18)] hover:border-red-500 hover:bg-red-900/45 hover:text-red-100"
                         : "border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] text-[rgb(var(--sep-colour-efd6a8))] shadow-[inset_0_0_0_1px_rgba(var(--sep-rgb-152-115-68),0.12)] hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))] hover:text-[rgb(var(--sep-colour-ffe4b5))]",
                     ].join(
                       " ",
-                    )}
+                    ))), "components_notifications_notification_bell_button_action_2"].filter(Boolean).join(" ")}
                   >
                     {muted ? (
                       <>
@@ -1255,7 +1255,7 @@ export function NotificationBell() {
                           markingAllRead ||
                           unreadCount === 0
                         }
-                        className="border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-18110d))] px-2.5 py-1.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-bca27b))] transition disabled:cursor-default disabled:opacity-40"
+                        className="border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-18110d))] px-2.5 py-1.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-bca27b))] transition disabled:cursor-default disabled:opacity-40 components_notifications_notification_bell_button_action_3"
                       >
                         {markingAllRead
                           ? "Marking..."
@@ -1266,7 +1266,7 @@ export function NotificationBell() {
                 </div>
 
                 {!muted ? (
-                  <div className="mt-3">
+                  <div className="mt-3 components_notifications_notification_bell_div_container_6">
                     <input
                       type="search"
                       value={search}
@@ -1277,10 +1277,10 @@ export function NotificationBell() {
                       }
                       placeholder="Filter notifications..."
                       aria-label="Filter notifications"
-                      className="h-8 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-0d0907))] px-3 text-[10px] text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))]"
+                      className="h-8 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-0d0907))] px-3 text-[10px] text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))] components_notifications_notification_bell_input_field"
                     />
                     {search.trim() ? (
-                      <p className="mt-1 text-right text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))]">
+                      <p className="mt-1 text-right text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))] components_notifications_notification_bell_p_text_2">
                         {visibleRows.length} / {rows.length}
                       </p>
                     ) : null}
@@ -1288,20 +1288,20 @@ export function NotificationBell() {
                 ) : null}
               </div>
 
-              <div className="min-h-0 flex-1 overflow-y-auto p-2 sm:max-h-[min(65vh,560px)] sm:flex-none">
+              <div className="min-h-0 flex-1 overflow-y-auto p-2 sm:max-h-[min(65vh,560px)] sm:flex-none components_notifications_notification_bell_div_container_7">
                 {loading ? (
-                  <p className="px-4 py-6 text-center text-xs text-[rgb(var(--sep-colour-8f8271))]">
+                  <p className="px-4 py-6 text-center text-xs text-[rgb(var(--sep-colour-8f8271))] components_notifications_notification_bell_p_text_3">
                     Loading
                     notifications...
                   </p>
                 ) : muted ? (
-                  <div className="border border-red-950/55 bg-red-950/15 px-4 py-6 text-center">
+                  <div className="border border-red-950/55 bg-red-950/15 px-4 py-6 text-center components_notifications_notification_bell_div_container_8">
                     <BellOff className="mx-auto h-5 w-5 text-red-500/80" />
-                    <p className="mt-3 font-serif text-sm text-[rgb(var(--sep-colour-c5aa83))]">
+                    <p className="mt-3 font-serif text-sm text-[rgb(var(--sep-colour-c5aa83))] components_notifications_notification_bell_p_text_4">
                       Notifications
                       are muted.
                     </p>
-                    <p className="mt-1 text-[10px] leading-5 text-[rgb(var(--sep-colour-7f7466))]">
+                    <p className="mt-1 text-[10px] leading-5 text-[rgb(var(--sep-colour-7f7466))] components_notifications_notification_bell_p_text_5">
                       New notices
                       will remain
                       waiting until
@@ -1310,7 +1310,7 @@ export function NotificationBell() {
                     </p>
                   </div>
                 ) : visibleRows.length ? (
-                  <div className="space-y-1.5">
+                  <div className="space-y-1.5 components_notifications_notification_bell_div_container_9">
                     {visibleRows.map(
                       (row) => {
                         const effectiveHref =
@@ -1323,8 +1323,8 @@ export function NotificationBell() {
                         const content =
                           (
                             <>
-                              <div className="flex items-start justify-between gap-3">
-                                <span className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))]">
+                              <div className="flex items-start justify-between gap-3 components_notifications_notification_bell_div_container_10">
+                                <span className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))] components_notifications_notification_bell_span_text_2">
                                   {row.type.replaceAll(
                                     "_",
                                     " ",
@@ -1337,26 +1337,26 @@ export function NotificationBell() {
                                 {row.is_unread ? (
                                   <span
                                     data-sep-notification-new="true"
-                                    className="ml-auto shrink-0 border px-1.5 py-0.5 text-[7px] font-semibold uppercase tracking-[0.12em]"
+                                    className="ml-auto shrink-0 border px-1.5 py-0.5 text-[7px] font-semibold uppercase tracking-[0.12em] components_notifications_notification_bell_span_text_3"
                                   >
                                     New
                                   </span>
                                 ) : null}
 
-                                <span className="shrink-0 text-[8px] text-[rgb(var(--sep-colour-6f6252))]">
+                                <span className="shrink-0 text-[8px] text-[rgb(var(--sep-colour-6f6252))] components_notifications_notification_bell_span_text_4">
                                   {new Date(
                                     row.starts_at,
                                   ).toLocaleString()}
                                 </span>
                               </div>
 
-                              <p className="mt-1 font-serif text-[15px] text-[rgb(var(--sep-colour-d8bf91))]">
+                              <p className="mt-1 font-serif text-[15px] text-[rgb(var(--sep-colour-d8bf91))] components_notifications_notification_bell_p_text_6">
                                 {
                                   row.title
                                 }
                               </p>
 
-                              <p className="mt-1 text-[11px] leading-5 text-[rgb(var(--sep-colour-a99b89))]">
+                              <p className="mt-1 text-[11px] leading-5 text-[rgb(var(--sep-colour-a99b89))] components_notifications_notification_bell_p_text_7">
                                 {
                                   row.body
                                 }
@@ -1365,7 +1365,7 @@ export function NotificationBell() {
                               {row.href ? (
                                 <span
                                   data-sep-notification-open="true"
-                                  className="mt-2 inline-flex border px-2 py-1 text-[8px] uppercase tracking-[0.14em] transition"
+                                  className="mt-2 inline-flex border px-2 py-1 text-[8px] uppercase tracking-[0.14em] transition components_notifications_notification_bell_span_text_5"
                                 >
                                   Open →
                                 </span>
@@ -1456,12 +1456,12 @@ export function NotificationBell() {
                                 );
                               }
                             }}
-                            className={[
+                            className={[(([
                               className,
                               row.is_unread
                                 ? "cursor-pointer"
                                 : "",
-                            ].join(" ")}
+                            ].join(" "))), "components_notifications_notification_bell_div_container_11"].filter(Boolean).join(" ")}
                           >
                             {
                               content
@@ -1472,7 +1472,7 @@ export function NotificationBell() {
                     )}
                   </div>
                 ) : (
-                  <p className="px-4 py-8 text-center text-xs text-[rgb(var(--sep-colour-8f8271))]">
+                  <p className="px-4 py-8 text-center text-xs text-[rgb(var(--sep-colour-8f8271))] components_notifications_notification_bell_p_text_8">
                     {search.trim()
                       ? "No matching notifications."
                       : "Nothing to report."}

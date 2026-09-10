@@ -105,30 +105,30 @@ export function CharacterAuditTrail({
   }, [load]);
 
   return (
-    <section className="border border-[rgb(var(--sep-colour-6b5032))]/50 bg-[rgb(var(--sep-colour-17110d))] p-4 sm:p-5">
-      <div className="border-b border-[rgb(var(--sep-colour-5d452d))]/35 pb-4">
-        <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+    <section className="border border-[rgb(var(--sep-colour-6b5032))]/50 bg-[rgb(var(--sep-colour-17110d))] p-4 sm:p-5 components_characters_character_audit_trail_section_section">
+      <div className="border-b border-[rgb(var(--sep-colour-5d452d))]/35 pb-4 components_characters_character_audit_trail_div_character_log">
+        <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_characters_character_audit_trail_p_character_log">
           Character history
         </p>
 
-        <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dfc79c))]">
+        <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dfc79c))] components_characters_character_audit_trail_h2_character_log">
           Character Log
         </h2>
 
-        <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+        <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_characters_character_audit_trail_p_character_log_2">
           Permanent history of recorded material changes to this Character, newest first.
         </p>
       </div>
 
       {state === "loading" ? (
-        <p className="py-6 text-sm text-[rgb(var(--sep-colour-8f8271))]">
+        <p className="py-6 text-sm text-[rgb(var(--sep-colour-8f8271))] components_characters_character_audit_trail_p_text">
           Loading Character Log…
         </p>
       ) : null}
 
       {state === "error" ? (
-        <div className="py-6">
-          <p className="text-sm text-red-300">
+        <div className="py-6 components_characters_character_audit_trail_div_container">
+          <p className="text-sm text-red-300 components_characters_character_audit_trail_p_text_2">
             {errorMessage}
           </p>
 
@@ -143,7 +143,7 @@ export function CharacterAuditTrail({
                 0,
               );
             }}
-            className="mt-3 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-18110d))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-ae9a7b))]"
+            className="mt-3 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-18110d))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-ae9a7b))] components_characters_character_audit_trail_button_retry"
           >
             Retry
           </button>

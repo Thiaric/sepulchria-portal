@@ -233,24 +233,24 @@ export async function OrderMembershipManager({
       );
 
   return (
-    <section className="mt-8 border-t border-[rgb(var(--sep-colour-60482e))]/35 pt-6">
-      <div>
-        <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+    <section className="mt-8 border-t border-[rgb(var(--sep-colour-60482e))]/35 pt-6 components_admin_order_membership_manager_section_section">
+      <div className="components_admin_order_membership_manager_div_members">
+        <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_admin_order_membership_manager_p_members">
           Order membership
         </p>
 
-        <h4 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dec69a))]">
+        <h4 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dec69a))] components_admin_order_membership_manager_h4_members">
           Members
         </h4>
 
-        <p className="mt-2 max-w-3xl text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+        <p className="mt-2 max-w-3xl text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_admin_order_membership_manager_p_members_2">
           Staff can place characters
           into this Order and assign
           their current level and job.
         </p>
       </div>
 
-      <div className="mt-5 space-y-2">
+      <div className="mt-5 space-y-2 components_admin_order_membership_manager_div_container">
         {memberships.map(
           (membership) => {
             const character =
@@ -282,13 +282,13 @@ export async function OrderMembershipManager({
                 }
                 className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-3"
               >
-                <input
+                <input className="components_admin_order_membership_manager_input_order_id"
                   type="hidden"
                   name="orderId"
                   value={orderId}
                 />
 
-                <input
+                <input className="components_admin_order_membership_manager_input_membership_id"
                   type="hidden"
                   name="membershipId"
                   value={
@@ -296,21 +296,21 @@ export async function OrderMembershipManager({
                   }
                 />
 
-                <div className="grid gap-3 lg:grid-cols-[minmax(180px,1fr)_140px_minmax(180px,1fr)_auto] lg:items-end">
-                  <div>
-                    <p className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
+                <div className="grid gap-3 lg:grid-cols-[minmax(180px,1fr)_140px_minmax(180px,1fr)_auto] lg:items-end components_admin_order_membership_manager_div_container_2">
+                  <div className="components_admin_order_membership_manager_div_container_3">
+                    <p className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))] components_admin_order_membership_manager_p_text">
                       Character
                     </p>
 
-                    <p className="mt-1 font-serif text-sm text-[rgb(var(--sep-colour-d8bf91))]">
+                    <p className="mt-1 font-serif text-sm text-[rgb(var(--sep-colour-d8bf91))] components_admin_order_membership_manager_p_text_2">
                       {
                         character.display_name
                       }
                     </p>
                   </div>
 
-                  <label>
-                    <span className="mb-1 block text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
+                  <label className="components_admin_order_membership_manager_label_label">
+                    <span className="mb-1 block text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))] components_admin_order_membership_manager_span_text">
                       Level
                     </span>
 
@@ -319,11 +319,11 @@ export async function OrderMembershipManager({
                       defaultValue={
                         membership.order_level_id
                       }
-                      className="w-full border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-15100d))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none"
+                      className="w-full border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-15100d))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none components_admin_order_membership_manager_select_level_id"
                     >
                       {levels.map(
                         (level) => (
-                          <option
+                          <option className="components_admin_order_membership_manager_option_option"
                             key={
                               level.id
                             }
@@ -341,8 +341,8 @@ export async function OrderMembershipManager({
                     </select>
                   </label>
 
-                  <label>
-                    <span className="mb-1 block text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
+                  <label className="components_admin_order_membership_manager_label_label_2">
+                    <span className="mb-1 block text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))] components_admin_order_membership_manager_span_text_2">
                       Role
                     </span>
 
@@ -353,9 +353,9 @@ export async function OrderMembershipManager({
                         membership.order_job_id ??
                         ""
                       }
-                      className="w-full border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-15100d))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none"
+                      className="w-full border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-15100d))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none components_admin_order_membership_manager_select_job_id"
                     >
-                      <option value="" disabled>
+                      <option className="components_admin_order_membership_manager_option_job_id" value="" disabled>
                         Select Role
                       </option>
 
@@ -366,7 +366,7 @@ export async function OrderMembershipManager({
                             []
                           ).map(
                             (job) => (
-                              <option
+                              <option className="components_admin_order_membership_manager_option_option_2"
                                 key={
                                   job.id
                                 }
@@ -387,10 +387,10 @@ export async function OrderMembershipManager({
                     </select>
                   </label>
 
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 components_admin_order_membership_manager_div_container_4">
                     <button
                       type="submit"
-                      className="border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-261b12))] px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-ccb083))]"
+                      className="border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-261b12))] px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-ccb083))] components_admin_order_membership_manager_button_save"
                     >
                       Save
                     </button>
@@ -406,7 +406,7 @@ export async function OrderMembershipManager({
                 </div>
 
                 {currentLevel ? (
-                  <p className="mt-2 text-[8px] text-[rgb(var(--sep-colour-716554))]">
+                  <p className="mt-2 text-[8px] text-[rgb(var(--sep-colour-716554))] components_admin_order_membership_manager_p_text_3">
                     Current: Level{" "}
                     {
                       currentLevel.level
@@ -423,7 +423,7 @@ export async function OrderMembershipManager({
 
         {memberships.length ===
         0 ? (
-          <p className="border border-[rgb(var(--sep-colour-59432c))]/25 bg-[rgb(var(--sep-colour-100c09))] p-4 text-[10px] italic text-[rgb(var(--sep-colour-746858))]">
+          <p className="border border-[rgb(var(--sep-colour-59432c))]/25 bg-[rgb(var(--sep-colour-100c09))] p-4 text-[10px] italic text-[rgb(var(--sep-colour-746858))] components_admin_order_membership_manager_p_text_4">
             This Order has no members
             yet.
           </p>
@@ -434,19 +434,19 @@ export async function OrderMembershipManager({
         action={addOrderMember}
         className="mt-4 border border-dashed border-[rgb(var(--sep-colour-765937))]/45 bg-[rgb(var(--sep-colour-100c09))] p-4"
       >
-        <input
+        <input className="components_admin_order_membership_manager_input_order_id_2"
           type="hidden"
           name="orderId"
           value={orderId}
         />
 
-        <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+        <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_admin_order_membership_manager_p_text_5">
           Add member
         </p>
 
-        <div className="mt-3 grid gap-3 lg:grid-cols-[minmax(220px,1fr)_140px_minmax(200px,1fr)_auto] lg:items-end">
-          <label>
-            <span className="mb-1 block text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
+        <div className="mt-3 grid gap-3 lg:grid-cols-[minmax(220px,1fr)_140px_minmax(200px,1fr)_auto] lg:items-end components_admin_order_membership_manager_div_container_5">
+          <label className="components_admin_order_membership_manager_label_label_3">
+            <span className="mb-1 block text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))] components_admin_order_membership_manager_span_text_3">
               Character
             </span>
 
@@ -454,9 +454,9 @@ export async function OrderMembershipManager({
               name="characterId"
               required
               defaultValue=""
-              className="w-full border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-15100d))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none"
+              className="w-full border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-15100d))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none components_admin_order_membership_manager_select_character_id"
             >
-              <option
+              <option className="components_admin_order_membership_manager_option_character_id"
                 value=""
                 disabled
               >
@@ -465,7 +465,7 @@ export async function OrderMembershipManager({
 
               {availableCharacters.map(
                 (character) => (
-                  <option
+                  <option className="components_admin_order_membership_manager_option_option_3"
                     key={
                       character.id
                     }
@@ -482,8 +482,8 @@ export async function OrderMembershipManager({
             </select>
           </label>
 
-          <label>
-            <span className="mb-1 block text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
+          <label className="components_admin_order_membership_manager_label_label_4">
+            <span className="mb-1 block text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))] components_admin_order_membership_manager_span_text_4">
               Level
             </span>
 
@@ -501,11 +501,11 @@ export async function OrderMembershipManager({
                 ]?.id ??
                 ""
               }
-              className="w-full border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-15100d))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none"
+              className="w-full border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-15100d))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none components_admin_order_membership_manager_select_level_id_2"
             >
               {levels.map(
                 (level) => (
-                  <option
+                  <option className="components_admin_order_membership_manager_option_option_4"
                     key={
                       level.id
                     }
@@ -521,8 +521,8 @@ export async function OrderMembershipManager({
             </select>
           </label>
 
-          <label>
-            <span className="mb-1 block text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
+          <label className="components_admin_order_membership_manager_label_label_5">
+            <span className="mb-1 block text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))] components_admin_order_membership_manager_span_text_5">
               Role
             </span>
 
@@ -530,9 +530,9 @@ export async function OrderMembershipManager({
               name="jobId"
               required
               defaultValue=""
-              className="w-full border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-15100d))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none"
+              className="w-full border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-15100d))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none components_admin_order_membership_manager_select_job_id_2"
             >
-              <option value="" disabled>
+              <option className="components_admin_order_membership_manager_option_job_id_2" value="" disabled>
                 Select Role
               </option>
 
@@ -542,7 +542,7 @@ export async function OrderMembershipManager({
                     level.jobs ??
                     []
                   ).map((job) => (
-                    <option
+                    <option className="components_admin_order_membership_manager_option_option_5"
                       key={job.id}
                       value={job.id}
                     >
@@ -564,7 +564,7 @@ export async function OrderMembershipManager({
               availableCharacters.length ===
               0
             }
-            className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd6a8))] disabled:cursor-not-allowed disabled:opacity-40"
+            className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd6a8))] disabled:cursor-not-allowed disabled:opacity-40 components_admin_order_membership_manager_button_add_member"
           >
             Add member
           </button>
@@ -580,7 +580,7 @@ function ErrorPanel({
   message: string;
 }) {
   return (
-    <div className="mt-7 border border-red-900/50 bg-red-950/15 p-4 text-sm text-red-300">
+    <div className="mt-7 border border-red-900/50 bg-red-950/15 p-4 text-sm text-red-300 components_admin_order_membership_manager_div_container_6">
       {message}
     </div>
   );

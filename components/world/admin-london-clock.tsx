@@ -86,37 +86,37 @@ export function AdminLondonClock() {
     now.toISOString();
 
   return (
-    <div className="mt-5">
-      <input
+    <div className="mt-5 components_world_admin_london_clock_div_container">
+      <input className="components_world_admin_london_clock_input_game_datetime"
         type="hidden"
         name="gameDatetime"
         value={submitValue}
       />
 
-      <p className="text-xs text-[rgb(var(--sep-colour-9a815f))]">
+      <p className="text-xs text-[rgb(var(--sep-colour-9a815f))] components_world_admin_london_clock_p_text">
         Game date &amp; time
       </p>
 
-      <div className="mt-2 border border-[rgb(var(--sep-colour-60482e))] bg-[rgb(var(--sep-colour-0f0b09))] p-4">
-        <div className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-end">
-          <div>
-            <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-74634f))]">
+      <div className="mt-2 border border-[rgb(var(--sep-colour-60482e))] bg-[rgb(var(--sep-colour-0f0b09))] p-4 components_world_admin_london_clock_div_container_2">
+        <div className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-end components_world_admin_london_clock_div_container_3">
+          <div className="components_world_admin_london_clock_div_container_4">
+            <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-74634f))] components_world_admin_london_clock_p_text_2">
               Date
             </p>
 
-            <p className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-e1cba3))]">
+            <p className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-e1cba3))] components_world_admin_london_clock_p_text_3">
               {parts.day}/
               {parts.month}/
               {parts.year}
             </p>
           </div>
 
-          <div className="sm:text-right">
-            <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-74634f))]">
+          <div className="sm:text-right components_world_admin_london_clock_div_container_5">
+            <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-74634f))] components_world_admin_london_clock_p_text_4">
               Time
             </p>
 
-            <p className="mt-1 font-serif text-2xl tabular-nums text-[rgb(var(--sep-colour-efd5a8))]">
+            <p className="mt-1 font-serif text-2xl tabular-nums text-[rgb(var(--sep-colour-efd5a8))] components_world_admin_london_clock_p_text_5">
               {parts.hour}:
               {parts.minute}:
               {parts.second}

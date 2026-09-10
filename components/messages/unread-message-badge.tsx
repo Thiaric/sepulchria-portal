@@ -519,7 +519,7 @@ export function UnreadMessageBadge({
       <span data-sep-counter-badge="true"
         title={title}
         aria-label={title}
-        className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] text-[8px] font-bold leading-none text-[#ffe1ac] shadow-[0_0_10px_rgba(209,154,76,0.32)]"
+        className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] text-[8px] font-bold leading-none text-[#ffe1ac] shadow-[0_0_10px_rgba(209,154,76,0.32)] components_messages_unread_message_badge_span_text"
       >
         {label}
       </span>
@@ -530,7 +530,7 @@ export function UnreadMessageBadge({
     <span data-sep-counter-badge="true"
       title={title}
       aria-label={title}
-      className="ml-auto inline-flex h-4 w-4 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] text-[7px] font-bold leading-none text-[#ffe1ac]"
+      className="ml-auto inline-flex h-4 w-4 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] text-[7px] font-bold leading-none text-[#ffe1ac] components_messages_unread_message_badge_span_text_2"
     >
       {label}
     </span>

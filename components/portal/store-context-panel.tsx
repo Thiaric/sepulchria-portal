@@ -74,43 +74,43 @@ export function StoreContextPanel({ admin = false }: { admin?: boolean }) {
   });
 
   return (
-    <div className="flex min-h-0 flex-col">
-      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))]">
+    <div className="flex min-h-0 flex-col components_portal_store_context_panel_div_container">
+      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))] components_portal_store_context_panel_p_text">
         {admin ? "Store Administration" : "Sepulchria Store"}
       </p>
-      <h3 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">Find a product</h3>
+      <h3 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_portal_store_context_panel_h3_heading">Find a product</h3>
 
       <input
         type="search"
         value={query}
         onChange={(event) => apply(event.target.value, category)}
         placeholder="Live search..."
-        className="mt-3 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-d7c4a5))] outline-none"
+        className="mt-3 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-d7c4a5))] outline-none components_portal_store_context_panel_input_live_search"
       />
 
-      <div className="mt-3 flex flex-wrap gap-1.5">
-        <button type="button" onClick={() => apply(query, "all")} className="border border-[rgb(var(--sep-colour-60482e))]/45 px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a99b89))]">All</button>
+      <div className="mt-3 flex flex-wrap gap-1.5 components_portal_store_context_panel_div_container_2">
+        <button type="button" onClick={() => apply(query, "all")} className="border border-[rgb(var(--sep-colour-60482e))]/45 px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a99b89))] components_portal_store_context_panel_button_all">All</button>
         {categories.map((key) => (
-          <button key={key} type="button" onClick={() => apply(query, key)} className="border border-[rgb(var(--sep-colour-60482e))]/45 px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a99b89))]">
+          <button key={key} type="button" onClick={() => apply(query, key)} className="border border-[rgb(var(--sep-colour-60482e))]/45 px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a99b89))] components_portal_store_context_panel_button_action">
             {LABELS[key] ?? key}
           </button>
         ))}
       </div>
 
-      <div className="mt-4 min-h-0 flex-1 space-y-4 overflow-y-auto">
+      <div className="mt-4 min-h-0 flex-1 space-y-4 overflow-y-auto components_portal_store_context_panel_div_container_3">
         {categories.map((group) => {
           const groupProducts = filtered.filter((product) => product.category === group);
           if (!groupProducts.length) return null;
           return (
-            <section key={group}>
-              <p className="mb-2 text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">{LABELS[group] ?? group}</p>
-              <div className="space-y-1.5">
+            <section className="components_portal_store_context_panel_section_section" key={group}>
+              <p className="mb-2 text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_portal_store_context_panel_p_text_2">{LABELS[group] ?? group}</p>
+              <div className="space-y-1.5 components_portal_store_context_panel_div_container_4">
                 {groupProducts.map((product) => (
                   <button
                     key={product.id}
                     type="button"
                     onClick={() => document.getElementById(product.id)?.scrollIntoView({ behavior: "smooth", block: "start" })}
-                    className="w-full border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] px-2.5 py-2 text-left text-[9px] text-[rgb(var(--sep-colour-b9a98f))] transition hover:border-[rgb(var(--sep-colour-987344))]/70 hover:text-[rgb(var(--sep-colour-efd9aa))]"
+                    className="w-full border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] px-2.5 py-2 text-left text-[9px] text-[rgb(var(--sep-colour-b9a98f))] transition hover:border-[rgb(var(--sep-colour-987344))]/70 hover:text-[rgb(var(--sep-colour-efd9aa))] components_portal_store_context_panel_button_action_2"
                   >
                     {product.name}
                   </button>
@@ -119,7 +119,7 @@ export function StoreContextPanel({ admin = false }: { admin?: boolean }) {
             </section>
           );
         })}
-        {!filtered.length ? <p className="text-[9px] leading-4 text-[rgb(var(--sep-colour-756958))]">No products match this filter.</p> : null}
+        {!filtered.length ? <p className="text-[9px] leading-4 text-[rgb(var(--sep-colour-756958))] components_portal_store_context_panel_p_text_3">No products match this filter.</p> : null}
       </div>
     </div>
   );

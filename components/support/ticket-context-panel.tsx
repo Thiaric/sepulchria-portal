@@ -144,31 +144,31 @@ export function TicketContextPanel({
 
   if (reference) {
     return (
-      <div className="flex h-full min-h-0 flex-col">
-        <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+      <div className="flex h-full min-h-0 flex-col components_support_ticket_context_panel_div_container">
+        <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_support_ticket_context_panel_p_text">
           Ticket activity
         </p>
 
-        <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+        <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_support_ticket_context_panel_h2_heading">
           {reference}
         </h2>
 
         <div
           data-sep-interaction-fixed="true"
-          className="mt-3 min-h-0 flex-1 space-y-2 overflow-y-auto pr-1"
+          className="mt-3 min-h-0 flex-1 space-y-2 overflow-y-auto pr-1 components_support_ticket_context_panel_div_container_2"
         >
           {events.length ? (
             events.map((event) => (
               <div
                 key={event.id}
                 data-sep-interactive-surface="row"
-                className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))]"
+                className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))] components_support_ticket_context_panel_div_container_3"
               >
-                <p className="text-[10px] leading-4 text-[rgb(var(--sep-colour-cbb28a))]">
+                <p className="text-[10px] leading-4 text-[rgb(var(--sep-colour-cbb28a))] components_support_ticket_context_panel_p_text_2">
                   {event.text}
                 </p>
 
-                <p className="mt-2 text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-6f6353))]">
+                <p className="mt-2 text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-6f6353))] components_support_ticket_context_panel_p_text_3">
                   {fmt(
                     event.created_at,
                   )}
@@ -176,7 +176,7 @@ export function TicketContextPanel({
               </div>
             ))
           ) : (
-            <p className="text-xs text-[rgb(var(--sep-colour-8f8271))]">
+            <p className="text-xs text-[rgb(var(--sep-colour-8f8271))] components_support_ticket_context_panel_p_text_4">
               No Ticket activity.
             </p>
           )}
@@ -186,14 +186,14 @@ export function TicketContextPanel({
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+    <div className="flex h-full min-h-0 flex-col components_support_ticket_context_panel_div_jump_ticket">
+      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_support_ticket_context_panel_p_jump_ticket">
         {admin
           ? "Administration"
           : "Support"}
       </p>
 
-      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_support_ticket_context_panel_h2_jump_ticket">
         Jump to Ticket
       </h2>
 
@@ -206,10 +206,10 @@ export function TicketContextPanel({
           )
         }
         placeholder="Number, status, title, body, priority, assignee..."
-        className="mt-3 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs outline-none"
+        className="mt-3 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs outline-none components_support_ticket_context_panel_input_number_status_title_body_priority"
       />
 
-      <div className="mt-3 min-h-0 flex-1 space-y-1.5 overflow-y-auto">
+      <div className="mt-3 min-h-0 flex-1 space-y-1.5 overflow-y-auto components_support_ticket_context_panel_div_jump_ticket_2">
         {visible.map(
           (ticket) => (
             <Link
@@ -217,11 +217,11 @@ export function TicketContextPanel({
               href={`${admin ? "/admin/tickets" : "/support"}/${ticket.public_reference}`}
               className="block border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))]"
             >
-              <span className="block font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))]">
+              <span className="block font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] components_support_ticket_context_panel_span_text">
                 {ticket.subject}
               </span>
 
-              <span className="mt-1 block text-[7px] uppercase text-[rgb(var(--sep-colour-6f6353))]">
+              <span className="mt-1 block text-[7px] uppercase text-[rgb(var(--sep-colour-6f6353))] components_support_ticket_context_panel_span_text_2">
                 {
                   ticket.public_reference
                 }{" "}

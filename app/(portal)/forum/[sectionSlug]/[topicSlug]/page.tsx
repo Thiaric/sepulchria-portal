@@ -1272,13 +1272,13 @@ race_colour:
     ).length;
 
   return (
-    <main className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <main className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8 forum_sectionslug_topicslug_page_main_main">
       <ForumTopicRealtime
         topicId={topic.id}
       />
       <nav
         aria-label="Forum breadcrumb"
-        className="mb-6 flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-746653))]"
+        className="mb-6 flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-746653))] forum_sectionslug_topicslug_page_nav_forum_breadcrumb"
       >
         <Link
           href="/forum"
@@ -1287,7 +1287,7 @@ race_colour:
           Forum
         </Link>
 
-        <span aria-hidden="true">
+        <span className="forum_sectionslug_topicslug_page_span_forum_breadcrumb" aria-hidden="true">
           /
         </span>
 
@@ -1300,27 +1300,27 @@ race_colour:
           {section.name}
         </Link>
 
-        <span aria-hidden="true">
+        <span className="forum_sectionslug_topicslug_page_span_forum_breadcrumb_2" aria-hidden="true">
           /
         </span>
 
-        <span className="text-[rgb(var(--sep-colour-a48c6c))]">
+        <span className="text-[rgb(var(--sep-colour-a48c6c))] forum_sectionslug_topicslug_page_span_forum_breadcrumb_3">
           {topic.title}
         </span>
       </nav>
 
-      <header className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
-        <div className="flex flex-col gap-5 border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-1a130e))] px-5 py-6 sm:px-7 lg:flex-row lg:items-start lg:justify-between">
-          <div className="min-w-0">
-            <div className="flex flex-wrap items-center gap-2">
+      <header className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] forum_sectionslug_topicslug_page_header_header">
+        <div className="flex flex-col gap-5 border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-1a130e))] px-5 py-6 sm:px-7 lg:flex-row lg:items-start lg:justify-between forum_sectionslug_topicslug_page_div_container">
+          <div className="min-w-0 forum_sectionslug_topicslug_page_div_container_2">
+            <div className="flex flex-wrap items-center gap-2 forum_sectionslug_topicslug_page_div_container_3">
               {topic.is_pinned ? (
-                <span className="border border-amber-800/60 bg-amber-950/20 px-2 py-1 text-[7px] uppercase tracking-[0.15em] text-amber-400">
+                <span className="border border-amber-800/60 bg-amber-950/20 px-2 py-1 text-[7px] uppercase tracking-[0.15em] text-amber-400 forum_sectionslug_topicslug_page_span_text">
                   Pinned
                 </span>
               ) : null}
 
               {topic.is_locked ? (
-                <span className="border border-red-900/60 bg-red-950/20 px-2 py-1 text-[7px] uppercase tracking-[0.15em] text-red-400">
+                <span className="border border-red-900/60 bg-red-950/20 px-2 py-1 text-[7px] uppercase tracking-[0.15em] text-red-400 forum_sectionslug_topicslug_page_span_text_2">
                   Locked
                 </span>
               ) : null}
@@ -1329,13 +1329,13 @@ race_colour:
             </div>
 
 
-            <h1 className="mt-3 break-words font-serif text-3xl text-[rgb(var(--sep-colour-dec69d))] sm:text-1xl">
+            <h1 className="mt-3 break-words font-serif text-3xl text-[rgb(var(--sep-colour-dec69d))] sm:text-1xl forum_sectionslug_topicslug_page_h1_title">
               {topic.title}
             </h1>
 
             
           </div>
-<div className="flex flex-wrap items-center justify-end gap-2">
+<div className="flex flex-wrap items-center justify-end gap-2 forum_sectionslug_topicslug_page_div_container_4">
                     <ForumTopicFavouriteButton
             topicId={topic.id}
           />
@@ -1400,7 +1400,7 @@ race_colour:
         </dl>
       </header>
 
-      <section className="mt-6 space-y-5">
+      <section className="mt-6 space-y-5 forum_sectionslug_topicslug_page_section_section">
         {mappedPosts.map(
           (post, index) => {
             const ownsPost =
@@ -1462,36 +1462,36 @@ race_colour:
 
       <section
         id="reply"
-        className="mt-7 scroll-mt-24"
+        className="mt-7 scroll-mt-24 forum_sectionslug_topicslug_page_section_reply"
       >
         {!canWriteToSection ? (
-          <div className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-5 py-7 text-center">
-            <p className="font-serif text-xl text-[rgb(var(--sep-colour-cdb590))]">
+          <div className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-5 py-7 text-center forum_sectionslug_topicslug_page_div_reply">
+            <p className="font-serif text-xl text-[rgb(var(--sep-colour-cdb590))] forum_sectionslug_topicslug_page_p_text">
               Read-only access
             </p>
-            <p className="mt-2 text-sm leading-6 text-[rgb(var(--sep-colour-817567))]">
+            <p className="mt-2 text-sm leading-6 text-[rgb(var(--sep-colour-817567))] forum_sectionslug_topicslug_page_p_text_2">
               Your staff role may read this section but may not create discussions or replies here.
             </p>
           </div>
         ) : topic.is_locked &&
         !isStaff ? (
-          <div className="border border-red-950/60 bg-red-950/10 px-5 py-6 text-center">
-            <p className="text-[8px] uppercase tracking-[0.2em] text-red-500">
+          <div className="border border-red-950/60 bg-red-950/10 px-5 py-6 text-center forum_sectionslug_topicslug_page_div_container_5">
+            <p className="text-[8px] uppercase tracking-[0.2em] text-red-500 forum_sectionslug_topicslug_page_p_text_3">
               Discussion locked
             </p>
 
-            <p className="mt-3 font-serif text-xl text-[rgb(var(--sep-colour-c9b39a))]">
+            <p className="mt-3 font-serif text-xl text-[rgb(var(--sep-colour-c9b39a))] forum_sectionslug_topicslug_page_p_text_4">
               New replies are not
               currently permitted.
             </p>
           </div>
         ) : !user ? (
-          <div className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-5 py-7 text-center">
-            <p className="font-serif text-xl text-[rgb(var(--sep-colour-cdb590))]">
+          <div className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-5 py-7 text-center forum_sectionslug_topicslug_page_div_container_6">
+            <p className="font-serif text-xl text-[rgb(var(--sep-colour-cdb590))] forum_sectionslug_topicslug_page_p_text_5">
               Sign in to reply
             </p>
 
-            <p className="mt-2 text-sm text-[rgb(var(--sep-colour-817567))]">
+            <p className="mt-2 text-sm text-[rgb(var(--sep-colour-817567))] forum_sectionslug_topicslug_page_p_text_6">
               You must be signed in
               before joining this
               discussion.
@@ -1508,12 +1508,12 @@ race_colour:
           </div>
         ) : replyCharacters.length ===
           0 ? (
-          <div className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-5 py-7 text-center">
-            <p className="font-serif text-xl text-[rgb(var(--sep-colour-cdb590))]">
+          <div className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-5 py-7 text-center forum_sectionslug_topicslug_page_div_container_7">
+            <p className="font-serif text-xl text-[rgb(var(--sep-colour-cdb590))] forum_sectionslug_topicslug_page_p_text_7">
               No approved character
             </p>
 
-            <p className="mt-2 text-sm leading-6 text-[rgb(var(--sep-colour-817567))]">
+            <p className="mt-2 text-sm leading-6 text-[rgb(var(--sep-colour-817567))] forum_sectionslug_topicslug_page_p_text_8">
               You need at least one
               approved character before
               posting in the forum.
@@ -1547,7 +1547,7 @@ function TopicStatistic({
   value: string | number;
 }) {
   return (
-    <div className="px-4 py-4 text-center sm:px-5">
+    <div className="px-4 py-4 text-center sm:px-5 forum_sectionslug_topicslug_page_div_container_8">
       <dt className="text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-665946))]">
         {label}
       </dt>

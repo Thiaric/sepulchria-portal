@@ -135,23 +135,23 @@ export function GatheringPanel({
   }
 
   return (
-    <details className="group shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0d0907))]">
-      <summary className="sticky top-0 z-30 flex cursor-pointer list-none items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-59432c))]/30 bg-[linear-gradient(90deg,rgb(var(--sep-colour-100c09)),rgb(var(--sep-colour-17110d)),rgb(var(--sep-colour-100c09)))] px-3 py-2 [&::-webkit-details-marker]:hidden">
-        <div className="min-w-0">
-          <p className="text-[7px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
+    <details className="group shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0d0907))] game_components_gatheringpanel_details_details">
+      <summary className="sticky top-0 z-30 flex cursor-pointer list-none items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-59432c))]/30 bg-[linear-gradient(90deg,rgb(var(--sep-colour-100c09)),rgb(var(--sep-colour-17110d)),rgb(var(--sep-colour-100c09)))] px-3 py-2 [&::-webkit-details-marker]:hidden game_components_gatheringpanel_summary_summary">
+        <div className="min-w-0 game_components_gatheringpanel_div_container">
+          <p className="text-[7px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))] game_components_gatheringpanel_p_text">
             Gathering
           </p>
-          <p className="mt-0.5 truncate font-serif text-sm text-[rgb(var(--sep-colour-dec89f))]">
+          <p className="mt-0.5 truncate font-serif text-sm text-[rgb(var(--sep-colour-dec89f))] game_components_gatheringpanel_p_text_2">
             {state.location_name}
           </p>
         </div>
 
-        <div className="flex items-center gap-4 sm:gap-6">
-          <div className="text-right">
-            <p className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
+        <div className="flex items-center gap-4 sm:gap-6 game_components_gatheringpanel_div_container_2">
+          <div className="text-right game_components_gatheringpanel_div_container_3">
+            <p className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))] game_components_gatheringpanel_p_text_3">
               Attempts
             </p>
-            <div className="mt-1 flex max-w-[220px] flex-wrap justify-end gap-1">
+            <div className="mt-1 flex max-w-[220px] flex-wrap justify-end gap-1 game_components_gatheringpanel_div_container_4">
               {Array.from({ length: state.daily_limit }).map((_, index) => {
                 const remaining = index < state.attempts_remaining;
 
@@ -182,20 +182,20 @@ export function GatheringPanel({
             </div>
           </div>
 
-          <span className="text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a88d65))]">
-            <span className="group-open:hidden">Search ▾</span>
-            <span className="hidden group-open:inline">Close ▴</span>
+          <span className="text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a88d65))] game_components_gatheringpanel_span_text">
+            <span className="group-open:hidden game_components_gatheringpanel_span_text_2">Search ▾</span>
+            <span className="hidden group-open:inline game_components_gatheringpanel_span_text_3">Close ▴</span>
           </span>
         </div>
       </summary>
 
-      <div className="relative overflow-hidden border-t border-[rgb(var(--sep-colour-59432c))]/20 px-3 py-4 sm:px-5">
+      <div className="relative overflow-hidden border-t border-[rgb(var(--sep-colour-59432c))]/20 px-3 py-4 sm:px-5 game_components_gatheringpanel_div_container_5">
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
+          className="pointer-events-none absolute inset-0 z-0 overflow-hidden game_components_gatheringpanel_div_container_6"
         >
           <div
-            className="motion-safe:animate-pulse absolute -left-[5%] top-[4%] h-56 w-56 rounded-full blur-3xl"
+            className="motion-safe:animate-pulse absolute -left-[5%] top-[4%] h-56 w-56 rounded-full blur-3xl game_components_gatheringpanel_div_container_7"
             style={{
               animationDuration: "15s",
               background: `radial-gradient(circle, color-mix(in srgb, ${skinAccent} 17%, white 4%) 0%, color-mix(in srgb, ${skinAccent} 6%, transparent) 52%, transparent 74%)`,
@@ -203,7 +203,7 @@ export function GatheringPanel({
             }}
           />
           <div
-            className="motion-safe:animate-pulse absolute -right-[7%] bottom-[-18%] h-64 w-64 rounded-full blur-3xl"
+            className="motion-safe:animate-pulse absolute -right-[7%] bottom-[-18%] h-64 w-64 rounded-full blur-3xl game_components_gatheringpanel_div_container_8"
             style={{
               animationDuration: "20s",
               animationDelay: "-8s",
@@ -212,7 +212,7 @@ export function GatheringPanel({
             }}
           />
           <div
-            className="motion-safe:animate-pulse absolute inset-0"
+            className="motion-safe:animate-pulse absolute inset-0 game_components_gatheringpanel_div_container_9"
             style={{
               animationDuration: "12s",
               backgroundImage: `radial-gradient(circle at 14% 30%, color-mix(in srgb, ${skinAccent} 22%, white 5%) 0 1px, transparent 1.25px), radial-gradient(circle at 32% 72%, color-mix(in srgb, ${skinAccent} 14%, transparent) 0 1px, transparent 1.25px), radial-gradient(circle at 64% 24%, color-mix(in srgb, ${skinAccent} 18%, transparent) 0 1px, transparent 1.2px), radial-gradient(circle at 86% 68%, color-mix(in srgb, ${skinAccent} 15%, transparent) 0 1px, transparent 1.2px)`,
@@ -223,15 +223,15 @@ export function GatheringPanel({
 
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute left-1/2 top-0 z-[1] h-32 w-[68%] -translate-x-1/2 rounded-full blur-3xl"
+          className="pointer-events-none absolute left-1/2 top-0 z-[1] h-32 w-[68%] -translate-x-1/2 rounded-full blur-3xl game_components_gatheringpanel_div_container_10"
           style={{
             background: `color-mix(in srgb, ${skinAccent} 10%, transparent)`,
           }}
         />
 
-        <div className="relative z-10 mx-auto grid max-w-4xl gap-4 lg:grid-cols-[minmax(0,1fr)_260px] lg:items-stretch">
+        <div className="relative z-10 mx-auto grid max-w-4xl gap-4 lg:grid-cols-[minmax(0,1fr)_260px] lg:items-stretch game_components_gatheringpanel_div_container_11">
           <section
-            className="relative overflow-hidden border bg-[linear-gradient(180deg,rgb(var(--sep-colour-17110d)),rgb(var(--sep-colour-0d0907)))] p-4 sm:p-5"
+            className="relative overflow-hidden border bg-[linear-gradient(180deg,rgb(var(--sep-colour-17110d)),rgb(var(--sep-colour-0d0907)))] p-4 sm:p-5 game_components_gatheringpanel_section_uncover"
             style={{
               borderColor: `color-mix(in srgb, ${skinAccent} 52%, transparent)`,
               boxShadow: `0 16px 34px rgba(0,0,0,0.32), 0 0 22px color-mix(in srgb, ${skinAccent} 10%, transparent), inset 0 1px 0 color-mix(in srgb, ${skinAccent} 12%, transparent)`,
@@ -239,31 +239,31 @@ export function GatheringPanel({
           >
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute left-1/2 top-[-48px] h-24 w-[70%] -translate-x-1/2 rounded-full blur-3xl"
+              className="pointer-events-none absolute left-1/2 top-[-48px] h-24 w-[70%] -translate-x-1/2 rounded-full blur-3xl game_components_gatheringpanel_div_uncover"
               style={{
                 background: `color-mix(in srgb, ${skinAccent} 9%, transparent)`,
               }}
             />
-            <p className="text-[7px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+            <p className="text-[7px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] game_components_gatheringpanel_p_uncover">
               Search the surroundings
             </p>
 
-            <h3 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-e6cfaa))]">
+            <h3 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-e6cfaa))] game_components_gatheringpanel_h3_uncover">
               What will you uncover?
             </h3>
 
             {state.location_description ? (
-              <p className="mt-2 max-w-2xl text-[10px] leading-5 text-[rgb(var(--sep-colour-948675))]">
+              <p className="mt-2 max-w-2xl text-[10px] leading-5 text-[rgb(var(--sep-colour-948675))] game_components_gatheringpanel_p_uncover_2">
                 {state.location_description}
               </p>
             ) : null}
 
-            <div className="mt-4 flex flex-wrap items-center gap-3">
+            <div className="mt-4 flex flex-wrap items-center gap-3 game_components_gatheringpanel_div_uncover_2">
               <button
                 type="button"
                 onClick={gather}
                 disabled={!canGather}
-                className="border border-[rgb(var(--sep-colour-8c6a3f))] bg-[rgb(var(--sep-colour-342617))] px-5 py-2.5 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-4a351f))] disabled:cursor-not-allowed disabled:opacity-40"
+                className="border border-[rgb(var(--sep-colour-8c6a3f))] bg-[rgb(var(--sep-colour-342617))] px-5 py-2.5 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-4a351f))] disabled:cursor-not-allowed disabled:opacity-40 game_components_gatheringpanel_button_gather"
               >
                 {searching
                   ? "Searching..."
@@ -272,14 +272,14 @@ export function GatheringPanel({
                     : "No attempts left"}
               </button>
 
-              <p className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
+              <p className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))] game_components_gatheringpanel_p_uncover_3">
                 {state.attempts_remaining} / {state.daily_limit} remaining
               </p>
             </div>
           </section>
 
           <section
-            className="relative flex min-h-[150px] items-center justify-center overflow-hidden border bg-[linear-gradient(180deg,rgb(var(--sep-colour-17110d)),rgb(var(--sep-colour-0d0907)))] p-4 text-center"
+            className="relative flex min-h-[150px] items-center justify-center overflow-hidden border bg-[linear-gradient(180deg,rgb(var(--sep-colour-17110d)),rgb(var(--sep-colour-0d0907)))] p-4 text-center game_components_gatheringpanel_section_section"
             style={{
               borderColor: `color-mix(in srgb, ${skinAccent} 58%, transparent)`,
               boxShadow: result
@@ -289,20 +289,20 @@ export function GatheringPanel({
           >
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute left-1/2 top-[-42px] h-24 w-[80%] -translate-x-1/2 rounded-full blur-3xl"
+              className="pointer-events-none absolute left-1/2 top-[-42px] h-24 w-[80%] -translate-x-1/2 rounded-full blur-3xl game_components_gatheringpanel_div_container_12"
               style={{
                 background: `color-mix(in srgb, ${skinAccent} ${result ? 15 : 8}%, transparent)`,
               }}
             />
             {searching ? (
-              <div className="w-full">
-                <div className="mx-auto h-10 w-10 animate-spin rounded-full border border-[rgb(var(--sep-colour-655744))] border-t-[rgb(var(--sep-colour-d1aa71))]" />
-                <p className="mt-3 text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-8f8271))]">
+              <div className="w-full game_components_gatheringpanel_div_container_13">
+                <div className="mx-auto h-10 w-10 animate-spin rounded-full border border-[rgb(var(--sep-colour-655744))] border-t-[rgb(var(--sep-colour-d1aa71))] game_components_gatheringpanel_div_container_14" />
+                <p className="mt-3 text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-8f8271))] game_components_gatheringpanel_p_text_4">
                   Searching...
                 </p>
               </div>
             ) : result ? (
-              <div className="w-full">
+              <div className="w-full game_components_gatheringpanel_div_container_15">
                 {result.outcome_type === "item" ? (
                   <ItemImageFrame
                     src={result.item_image_url}
@@ -313,37 +313,37 @@ export function GatheringPanel({
                   />
                 ) : null}
 
-                <p className="text-[7px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
+                <p className="text-[7px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))] game_components_gatheringpanel_p_text_5">
                   Found
                 </p>
 
-                <p className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-e6cfaa))]">
+                <p className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-e6cfaa))] game_components_gatheringpanel_p_text_6">
                   {resultTitle(result)}
                 </p>
 
                 {result.outcome_type === "item" && result.quantity ? (
-                  <p className="mt-1 text-[9px] text-[rgb(var(--sep-colour-a99b89))]">
+                  <p className="mt-1 text-[9px] text-[rgb(var(--sep-colour-a99b89))] game_components_gatheringpanel_p_text_7">
                     Quantity: {result.quantity}
                   </p>
                 ) : null}
 
-                <p className="mt-3 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
+                <p className="mt-3 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))] game_components_gatheringpanel_p_text_8">
                   {result.attempts_remaining} attempts remain today
                 </p>
               </div>
             ) : (
-              <div>
-                <p className="font-serif text-lg text-[rgb(var(--sep-colour-bca884))]">
+              <div className="game_components_gatheringpanel_div_container_16">
+                <p className="font-serif text-lg text-[rgb(var(--sep-colour-bca884))] game_components_gatheringpanel_p_text_9">
                   Search when ready
                 </p>
-                <p className="mt-2 text-[8px] leading-4 text-[rgb(var(--sep-colour-756958))]">
+                <p className="mt-2 text-[8px] leading-4 text-[rgb(var(--sep-colour-756958))] game_components_gatheringpanel_p_text_10">
                   Each search spends one of your shared daily Gathering attempts.
                 </p>
               </div>
             )}
 
             {message && !result && !searching ? (
-              <div className="absolute inset-x-3 bottom-3 border border-[rgb(var(--sep-colour-734238))]/45 bg-[rgb(var(--sep-colour-21130f))] px-3 py-2 text-[9px] text-[rgb(var(--sep-colour-cf766b))]">
+              <div className="absolute inset-x-3 bottom-3 border border-[rgb(var(--sep-colour-734238))]/45 bg-[rgb(var(--sep-colour-21130f))] px-3 py-2 text-[9px] text-[rgb(var(--sep-colour-cf766b))] game_components_gatheringpanel_div_container_17">
                 {message}
               </div>
             ) : null}

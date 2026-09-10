@@ -394,24 +394,24 @@ export function ForumSectionActivityContext({
   ]);
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <header className="mb-5">
-        <p className="text-[9px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-876a46))]">
+    <div className="flex h-full min-h-0 flex-col components_portal_forum_section_activity_context_div_container">
+      <header className="mb-5 components_portal_forum_section_activity_context_header_header">
+        <p className="text-[9px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-876a46))] components_portal_forum_section_activity_context_p_text">
           Forum activity
         </p>
 
-        <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-d6bd91))]">
+        <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-d6bd91))] components_portal_forum_section_activity_context_h2_heading">
           {sectionName}
         </h2>
       </header>
 
-      <p className="mb-4 text-xs leading-6 text-[rgb(var(--sep-colour-938673))]">
+      <p className="mb-4 text-xs leading-6 text-[rgb(var(--sep-colour-938673))] components_portal_forum_section_activity_context_p_text_2">
         The latest posts published in
         this section.
       </p>
 
       {error ? (
-        <p className="border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]">
+        <p className="border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-d8a49a))] components_portal_forum_section_activity_context_p_text_3">
           Latest activity could not be
           loaded.
         </p>
@@ -419,13 +419,13 @@ export function ForumSectionActivityContext({
 
       <div
         ref={scrollContainerRef}
-        className="min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-contain pr-1"
+        className="min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-contain pr-1 components_portal_forum_section_activity_context_div_container_2"
       >
         {loading ? (
-          <div className="space-y-2">
-            <div className="h-24 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
-            <div className="h-24 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
-            <div className="h-24 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
+          <div className="space-y-2 components_portal_forum_section_activity_context_div_container_3">
+            <div className="h-24 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))] components_portal_forum_section_activity_context_div_container_4" />
+            <div className="h-24 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))] components_portal_forum_section_activity_context_div_container_5" />
+            <div className="h-24 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))] components_portal_forum_section_activity_context_div_container_6" />
           </div>
         ) : (
           entries.map((entry) => {
@@ -482,20 +482,20 @@ export function ForumSectionActivityContext({
                 )}#post-${entry.id}`}
                 className="block border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-3 transition hover:border-[rgb(var(--sep-colour-8d6a40))] hover:bg-[rgb(var(--sep-colour-1a120d))]"
               >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
+                <div className="flex items-start justify-between gap-3 components_portal_forum_section_activity_context_div_container_7">
+                  <div className="min-w-0 components_portal_forum_section_activity_context_div_container_8">
                     <p
-                      className={`truncate font-serif text-sm ${
+                      className={[((`truncate font-serif text-sm ${
                         canRevealAnonymousIdentity
                           ? "text-red-400"
                           : "text-[rgb(var(--sep-colour-d6bd91))]"
-                      }`}
+                      }`)), "components_portal_forum_section_activity_context_p_text_4"].filter(Boolean).join(" ")}
                     >
                       {authorName}
                     </p>
 
                     {canRevealAnonymousIdentity ? (
-                      <p className="mt-0.5 text-[7px] uppercase tracking-[0.13em] text-red-400">
+                      <p className="mt-0.5 text-[7px] uppercase tracking-[0.13em] text-red-400 components_portal_forum_section_activity_context_p_text_5">
                         Anonymous
                       </p>
                     ) : null}
@@ -508,11 +508,11 @@ export function ForumSectionActivityContext({
                   </time>
                 </div>
 
-                <p className="mt-1 truncate text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-8b704d))]">
+                <p className="mt-1 truncate text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-8b704d))] components_portal_forum_section_activity_context_p_text_6">
                   {topic.title}
                 </p>
 
-                <p className="mt-2 line-clamp-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-918473))]">
+                <p className="mt-2 line-clamp-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-918473))] components_portal_forum_section_activity_context_p_text_7">
                   {forumPreviewText(
                     entry.body,
                     150,
@@ -526,7 +526,7 @@ export function ForumSectionActivityContext({
         {!loading &&
         !error &&
         entries.length === 0 ? (
-          <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+          <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_forum_section_activity_context_p_text_8">
             No posts have been published
             in this section yet.
           </p>

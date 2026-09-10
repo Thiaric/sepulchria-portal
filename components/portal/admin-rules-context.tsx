@@ -160,28 +160,28 @@ export function AdminRulesContext() {
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 pb-4">
-        <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806a4b))]">
+    <div className="flex h-full min-h-0 flex-col components_portal_admin_rules_context_div_container">
+      <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 pb-4 components_portal_admin_rules_context_div_rules_glossary">
+        <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806a4b))] components_portal_admin_rules_context_p_rules_glossary">
           Rules management
         </p>
 
-        <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d9c29a))]">
+        <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d9c29a))] components_portal_admin_rules_context_h2_rules_glossary">
           Rules & Glossary
         </h2>
 
-        <p className="mt-2 text-xs leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+        <p className="mt-2 text-xs leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_rules_context_p_rules_glossary_2">
           Search the existing entries and jump directly to the editor.
         </p>
       </div>
 
       {error ? (
-        <p className="mt-4 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]">
+        <p className="mt-4 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-d8a49a))] components_portal_admin_rules_context_p_text">
           The Rules navigator could not be loaded.
         </p>
       ) : null}
 
-      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1">
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1 components_portal_admin_rules_context_div_container_2">
         <NavigatorSection
           title="Rules"
           count={rules.length}
@@ -256,25 +256,25 @@ function NavigatorSection({
   children: React.ReactNode;
 }) {
   return (
-    <section className="border-b border-[rgb(var(--sep-colour-60482e))]/30 py-4 last:border-b-0">
-      <div className="mb-2 flex items-center justify-between gap-3">
-        <h3 className="font-serif text-sm text-[rgb(var(--sep-colour-ccb58e))]">
+    <section className="border-b border-[rgb(var(--sep-colour-60482e))]/30 py-4 last:border-b-0 components_portal_admin_rules_context_section_section">
+      <div className="mb-2 flex items-center justify-between gap-3 components_portal_admin_rules_context_div_container_3">
+        <h3 className="font-serif text-sm text-[rgb(var(--sep-colour-ccb58e))] components_portal_admin_rules_context_h3_heading">
           {title}
         </h3>
 
-        <span className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-2 py-0.5 text-[8px] text-[rgb(var(--sep-colour-8d795e))]">
+        <span className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-2 py-0.5 text-[8px] text-[rgb(var(--sep-colour-8d795e))] components_portal_admin_rules_context_span_text">
           {count}
         </span>
       </div>
 
-      <label className="relative block">
-        <span className="sr-only">
+      <label className="relative block components_portal_admin_rules_context_label_label">
+        <span className="sr-only components_portal_admin_rules_context_span_text_2">
           {placeholder}
         </span>
 
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] text-[rgb(var(--sep-colour-75644e))]"
+          className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] text-[rgb(var(--sep-colour-75644e))] components_portal_admin_rules_context_span_text_3"
         >
           ⌕
         </span>
@@ -287,7 +287,7 @@ function NavigatorSection({
           }
           placeholder={placeholder}
           autoComplete="off"
-          className="w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-0d0907))] py-2 pl-7 pr-7 text-[10px] text-[rgb(var(--sep-colour-d1b991))] outline-none placeholder:text-[rgb(var(--sep-colour-62584b))] focus:border-[rgb(var(--sep-colour-8d693e))] [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
+          className="w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-0d0907))] py-2 pl-7 pr-7 text-[10px] text-[rgb(var(--sep-colour-d1b991))] outline-none placeholder:text-[rgb(var(--sep-colour-62584b))] focus:border-[rgb(var(--sep-colour-8d693e))] [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden components_portal_admin_rules_context_input_field"
         />
 
         {search ? (
@@ -295,14 +295,14 @@ function NavigatorSection({
             type="button"
             onClick={() => onSearch("")}
             aria-label="Clear search"
-            className="absolute right-1.5 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center text-[10px] text-[rgb(var(--sep-colour-75644e))] hover:text-[rgb(var(--sep-colour-d4ba8e))]"
+            className="absolute right-1.5 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center text-[10px] text-[rgb(var(--sep-colour-75644e))] hover:text-[rgb(var(--sep-colour-d4ba8e))] components_portal_admin_rules_context_button_clear_search"
           >
             ×
           </button>
         ) : null}
       </label>
 
-      <div className="mt-2 space-y-1.5">
+      <div className="mt-2 space-y-1.5 components_portal_admin_rules_context_div_container_4">
         {loading ? (
           <>
             <LoadingRow />
@@ -330,26 +330,26 @@ function JumpButton({
     <button
       type="button"
       onClick={onClick}
-      className="group flex w-full items-center justify-between gap-2 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] px-2.5 py-2 text-left transition hover:border-[rgb(var(--sep-colour-8d693e))] hover:bg-[rgb(var(--sep-colour-1d150f))]"
+      className="group flex w-full items-center justify-between gap-2 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] px-2.5 py-2 text-left transition hover:border-[rgb(var(--sep-colour-8d693e))] hover:bg-[rgb(var(--sep-colour-1d150f))] components_portal_admin_rules_context_button_click"
     >
-      <span className="min-w-0 truncate text-[10px] text-[rgb(var(--sep-colour-bca783))] transition group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
+      <span className="min-w-0 truncate text-[10px] text-[rgb(var(--sep-colour-bca783))] transition group-hover:text-[rgb(var(--sep-colour-ead0a0))] components_portal_admin_rules_context_span_text_4">
         {label}
       </span>
 
-      <span className="flex shrink-0 items-center gap-1.5">
+      <span className="flex shrink-0 items-center gap-1.5 components_portal_admin_rules_context_span_text_5">
         <span
-          className={`text-[6px] uppercase tracking-[0.12em] ${
+          className={[((`text-[6px] uppercase tracking-[0.12em] ${
             status === "published"
               ? "text-[rgb(var(--sep-colour-7f9a68))]"
               : "text-[rgb(var(--sep-colour-927a59))]"
-          }`}
+          }`)), "components_portal_admin_rules_context_span_text_6"].filter(Boolean).join(" ")}
         >
           {status}
         </span>
 
         <span
           aria-hidden="true"
-          className="text-[9px] text-[rgb(var(--sep-colour-725a3d))] transition group-hover:translate-y-0.5 group-hover:text-[rgb(var(--sep-colour-b88a52))]"
+          className="text-[9px] text-[rgb(var(--sep-colour-725a3d))] transition group-hover:translate-y-0.5 group-hover:text-[rgb(var(--sep-colour-b88a52))] components_portal_admin_rules_context_span_text_7"
         >
           ↓
         </span>
@@ -360,7 +360,7 @@ function JumpButton({
 
 function LoadingRow() {
   return (
-    <div className="h-9 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/25 bg-[rgb(var(--sep-colour-17110d))]" />
+    <div className="h-9 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/25 bg-[rgb(var(--sep-colour-17110d))] components_portal_admin_rules_context_div_container_5" />
   );
 }
 
@@ -370,7 +370,7 @@ function EmptyResult({
   children: React.ReactNode;
 }) {
   return (
-    <p className="border border-[rgb(var(--sep-colour-59432c))]/25 bg-[rgb(var(--sep-colour-100c09))]/60 p-2.5 text-[10px] leading-4 text-[rgb(var(--sep-colour-776b5b))]">
+    <p className="border border-[rgb(var(--sep-colour-59432c))]/25 bg-[rgb(var(--sep-colour-100c09))]/60 p-2.5 text-[10px] leading-4 text-[rgb(var(--sep-colour-776b5b))] components_portal_admin_rules_context_p_text_2">
       {children}
     </p>
   );

@@ -114,31 +114,29 @@ export function ReportButton({
         onClick={() => setOpen(true)}
         title={compact ? "Report this content" : undefined}
         aria-label={compact ? "Report this content" : undefined}
-        className={
-          compact
+        className={[((compact
             ? "inline-flex h-5 w-5 shrink-0 items-center justify-center border border-[rgb(var(--sep-colour-70483f))]/55 bg-[rgb(var(--sep-colour-17110d))] text-[rgb(var(--sep-colour-9b765e))] transition hover:border-[rgb(var(--sep-colour-a65d51))] hover:text-[rgb(var(--sep-colour-e4b0a5))]"
             : toolbar
               ? "inline-flex h-8 items-center justify-center border border-[rgb(var(--sep-colour-7b4035))]/80 bg-[rgb(var(--sep-colour-27120f))] px-2.5 text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-d99b8e))] transition hover:border-[rgb(var(--sep-colour-ad5a4c))] hover:bg-[rgb(var(--sep-colour-391713))] hover:text-[rgb(var(--sep-colour-f1b2a5))]"
-              : "border border-[rgb(var(--sep-colour-70483f))]/65 bg-[rgb(var(--sep-colour-211311))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-c99589))] transition hover:border-[rgb(var(--sep-colour-a65d51))] hover:text-[rgb(var(--sep-colour-e4b0a5))]"
-        }
+              : "border border-[rgb(var(--sep-colour-70483f))]/65 bg-[rgb(var(--sep-colour-211311))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-c99589))] transition hover:border-[rgb(var(--sep-colour-a65d51))] hover:text-[rgb(var(--sep-colour-e4b0a5))]")), "components_reports_report_button_button_action"].filter(Boolean).join(" ")}
       >
         {compact ? <Flag aria-hidden="true" className="h-2.5 w-2.5" /> : label}
       </button>
 
       {open ? (
         <div
-          className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/75 p-4"
+          className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/75 p-4 components_reports_report_button_div_report_content"
           role="dialog"
           aria-modal="true"
           aria-label="Report content"
         >
-          <div className="w-full max-w-lg border border-[rgb(var(--sep-colour-73513a))] bg-[rgb(var(--sep-colour-100c09))] shadow-2xl">
-            <div className="flex items-start justify-between gap-4 border-b border-[rgb(var(--sep-colour-59432c))]/45 px-5 py-4">
-              <div>
-                <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-8c704b))]">
+          <div className="w-full max-w-lg border border-[rgb(var(--sep-colour-73513a))] bg-[rgb(var(--sep-colour-100c09))] shadow-2xl components_reports_report_button_div_report_content_2">
+            <div className="flex items-start justify-between gap-4 border-b border-[rgb(var(--sep-colour-59432c))]/45 px-5 py-4 components_reports_report_button_div_report_content_3">
+              <div className="components_reports_report_button_div_report_content_4">
+                <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-8c704b))] components_reports_report_button_p_report_content">
                   Moderation Report
                 </p>
-                <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-e2c99f))]">
+                <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-e2c99f))] components_reports_report_button_h2_report_content">
                   Report this content
                 </h2>
               </div>
@@ -147,7 +145,7 @@ export function ReportButton({
                 type="button"
                 onClick={close}
                 disabled={busy}
-                className="text-lg text-[rgb(var(--sep-colour-907c63))] hover:text-[rgb(var(--sep-colour-d6bf9d))]"
+                className="text-lg text-[rgb(var(--sep-colour-907c63))] hover:text-[rgb(var(--sep-colour-d6bf9d))] components_reports_report_button_button_close"
                 aria-label="Close"
               >
                 ×
@@ -155,13 +153,13 @@ export function ReportButton({
             </div>
 
             {reference ? (
-              <div className="p-5">
-                <div className="border border-[rgb(var(--sep-colour-6e7547))]/60 bg-[rgb(var(--sep-colour-182016))] p-4 text-sm leading-6 text-[rgb(var(--sep-colour-c9c99d))]">
-                  Your report has been submitted as <strong>{reference}</strong>.
+              <div className="p-5 components_reports_report_button_div_container">
+                <div className="border border-[rgb(var(--sep-colour-6e7547))]/60 bg-[rgb(var(--sep-colour-182016))] p-4 text-sm leading-6 text-[rgb(var(--sep-colour-c9c99d))] components_reports_report_button_div_container_2">
+                  Your report has been submitted as <strong className="components_reports_report_button_strong_emphasis">{reference}</strong>.
                   The reported content has been preserved for staff review.
                 </div>
 
-                <div className="mt-5 flex flex-wrap gap-2">
+                <div className="mt-5 flex flex-wrap gap-2 components_reports_report_button_div_container_3">
                   <Link
                     href={`/support/${reference}`}
                     onClick={close}
@@ -172,38 +170,38 @@ export function ReportButton({
                   <button
                     type="button"
                     onClick={close}
-                    className="border border-[rgb(var(--sep-colour-59432c))] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-a58b68))]"
+                    className="border border-[rgb(var(--sep-colour-59432c))] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-a58b68))] components_reports_report_button_button_close_2"
                   >
                     Close
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="space-y-5 p-5">
-                <p className="text-xs leading-6 text-[rgb(var(--sep-colour-9e8c75))]">
+              <div className="space-y-5 p-5 components_reports_report_button_div_container_4">
+                <p className="text-xs leading-6 text-[rgb(var(--sep-colour-9e8c75))] components_reports_report_button_p_text">
                   Choose the reason that best describes the problem. Staff will
                   receive a preserved snapshot of the content as it exists now.
                 </p>
 
-                <label className="block">
-                  <span className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-9d8464))]">
+                <label className="block components_reports_report_button_label_label">
+                  <span className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-9d8464))] components_reports_report_button_span_text">
                     Reason
                   </span>
                   <select
                     value={reason}
                     onChange={(event) => setReason(event.target.value)}
-                    className="mt-2 h-11 w-full border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-0c0907))] px-3 text-sm text-[rgb(var(--sep-colour-d2c0a5))]"
+                    className="mt-2 h-11 w-full border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-0c0907))] px-3 text-sm text-[rgb(var(--sep-colour-d2c0a5))] components_reports_report_button_select_select"
                   >
                     {REASONS.map(([value, text]) => (
-                      <option key={value} value={value}>
+                      <option className="components_reports_report_button_option_option" key={value} value={value}>
                         {text}
                       </option>
                     ))}
                   </select>
                 </label>
 
-                <label className="block">
-                  <span className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-9d8464))]">
+                <label className="block components_reports_report_button_label_label_2">
+                  <span className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-9d8464))] components_reports_report_button_span_text_2">
                     Additional details · Optional
                   </span>
                   <textarea
@@ -211,7 +209,7 @@ export function ReportButton({
                     onChange={(event) => setExplanation(event.target.value)}
                     maxLength={5000}
                     rows={6}
-                    className="mt-2 w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-0c0907))] p-3 text-sm leading-6 text-[rgb(var(--sep-colour-d2c0a5))]"
+                    className="mt-2 w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-0c0907))] p-3 text-sm leading-6 text-[rgb(var(--sep-colour-d2c0a5))] components_reports_report_button_textarea_anything_staff_should_know_about"
                     placeholder="Anything staff should know about why you are reporting this?"
                   />
                 </label>
@@ -219,18 +217,18 @@ export function ReportButton({
                 {error ? (
                   <p
                     role="alert"
-                    className="border border-red-900/60 bg-red-950/25 p-3 text-xs leading-5 text-red-300"
+                    className="border border-red-900/60 bg-red-950/25 p-3 text-xs leading-5 text-red-300 components_reports_report_button_p_alert"
                   >
                     {error}
                   </p>
                 ) : null}
 
-                <div className="flex justify-end gap-2">
+                <div className="flex justify-end gap-2 components_reports_report_button_div_container_5">
                   <button
                     type="button"
                     onClick={close}
                     disabled={busy}
-                    className="border border-[rgb(var(--sep-colour-59432c))] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-a58b68))]"
+                    className="border border-[rgb(var(--sep-colour-59432c))] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-a58b68))] components_reports_report_button_button_cancel"
                   >
                     Cancel
                   </button>
@@ -238,7 +236,7 @@ export function ReportButton({
                     type="button"
                     onClick={() => void submit()}
                     disabled={busy}
-                    className="border border-[rgb(var(--sep-colour-9a5147))] bg-[rgb(var(--sep-colour-351815))] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-e0a69a))] disabled:opacity-50"
+                    className="border border-[rgb(var(--sep-colour-9a5147))] bg-[rgb(var(--sep-colour-351815))] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-e0a69a))] disabled:opacity-50 components_reports_report_button_button_action_2"
                   >
                     {busy ? "Submitting…" : "Submit Report"}
                   </button>

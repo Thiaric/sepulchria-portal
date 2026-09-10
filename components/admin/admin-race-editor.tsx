@@ -12,7 +12,7 @@ const RichTextEditor = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="min-h-[150px] animate-pulse border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))]" />
+      <div className="min-h-[150px] animate-pulse border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] components_admin_admin_race_editor_div_container" />
     ),
   },
 );
@@ -66,8 +66,8 @@ function formatDate(value: string) {
 
 function AdminField({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="block">
-      <div className="mb-2 block text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">{label}</div>
+    <div className="block components_admin_admin_race_editor_div_container_2">
+      <div className="mb-2 block text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))] components_admin_admin_race_editor_div_container_3">{label}</div>
       {children}
     </div>
   );
@@ -84,15 +84,15 @@ function AttributeModifierFields({ race }: { race: AdminRaceEditorRow }) {
   };
 
   return (
-    <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] p-4">
-      <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">Attribute modifiers</p>
-      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+    <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] p-4 components_admin_admin_race_editor_section_section">
+      <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))] components_admin_admin_race_editor_p_text">Attribute modifiers</p>
+      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_admin_admin_race_editor_p_text_2">
         These values are added to the character&apos;s base attributes. Order Level modifiers are applied separately.
       </p>
-      <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+      <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6 components_admin_admin_race_editor_div_container_4">
         {ATTRIBUTE_MODIFIER_FIELDS.map(({ key, label }) => (
-          <label key={key} className="block">
-            <span className="mb-1.5 block text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-776956))]">{label}</span>
+          <label key={key} className="block components_admin_admin_race_editor_label_label">
+            <span className="mb-1.5 block text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-776956))] components_admin_admin_race_editor_span_text">{label}</span>
             <input
               type="number"
               name={`${key}Modifier`}
@@ -100,21 +100,21 @@ function AttributeModifierFields({ race }: { race: AdminRaceEditorRow }) {
               max={10}
               step={1}
               defaultValue={values[key]}
-              className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-2 py-2 text-center text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-9b7446))]"
+              className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-2 py-2 text-center text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-9b7446))] components_admin_admin_race_editor_input_field"
             />
           </label>
         ))}
       </div>
-      <p className="mt-3 text-[9px] leading-5 text-[rgb(var(--sep-colour-756957))]">Effective attribute = Base + Ancestry modifier + Order modifier.</p>
+      <p className="mt-3 text-[9px] leading-5 text-[rgb(var(--sep-colour-756957))] components_admin_admin_race_editor_p_text_3">Effective attribute = Base + Ancestry modifier + Order modifier.</p>
     </section>
   );
 }
 
 function StatusBadge({ active }: { active: boolean }) {
   return (
-    <span className={active
+    <span className={[((active
       ? "inline-block border border-emerald-800/60 bg-black/20 px-2.5 py-1 text-[8px] uppercase tracking-[0.18em] text-emerald-500"
-      : "inline-block border border-stone-600/60 bg-black/20 px-2.5 py-1 text-[8px] uppercase tracking-[0.18em] text-stone-400"}>
+      : "inline-block border border-stone-600/60 bg-black/20 px-2.5 py-1 text-[8px] uppercase tracking-[0.18em] text-stone-400")), "components_admin_admin_race_editor_span_text_2"].filter(Boolean).join(" ")}>
       {active ? "Active" : "Inactive"}
     </span>
   );
@@ -122,9 +122,9 @@ function StatusBadge({ active }: { active: boolean }) {
 
 function SelectableBadge({ selectable }: { selectable: boolean }) {
   return (
-    <span className={selectable
+    <span className={[((selectable
       ? "inline-block border border-[rgb(var(--sep-colour-8b673d))]/70 bg-black/20 px-2.5 py-1 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-d6b273))]"
-      : "inline-block border border-stone-600/60 bg-black/20 px-2.5 py-1 text-[8px] uppercase tracking-[0.18em] text-stone-400"}>
+      : "inline-block border border-stone-600/60 bg-black/20 px-2.5 py-1 text-[8px] uppercase tracking-[0.18em] text-stone-400")), "components_admin_admin_race_editor_span_text_3"].filter(Boolean).join(" ")}>
       {selectable ? "Selectable" : "Not selectable"}
     </span>
   );
@@ -132,9 +132,9 @@ function SelectableBadge({ selectable }: { selectable: boolean }) {
 
 function InfoCounter({ label, value }: { label: string; value: number }) {
   return (
-    <div className="border border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-15100d))] px-2 py-3 text-center">
-      <p className="font-serif text-lg text-[rgb(var(--sep-colour-c9ad82))]">{value}</p>
-      <p className="mt-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756957))]">{label}</p>
+    <div className="border border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-15100d))] px-2 py-3 text-center components_admin_admin_race_editor_div_container_5">
+      <p className="font-serif text-lg text-[rgb(var(--sep-colour-c9ad82))] components_admin_admin_race_editor_p_text_4">{value}</p>
+      <p className="mt-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756957))] components_admin_admin_race_editor_p_text_5">{label}</p>
     </div>
   );
 }
@@ -147,41 +147,41 @@ export function AdminRaceEditor({ race }: { race: AdminRaceEditorRow }) {
       id={`race-${race.slug}`}
       open={open}
       onToggle={(event) => setOpen(event.currentTarget.open)}
-      className="group scroll-mt-24 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]"
+      className="group scroll-mt-24 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] components_admin_admin_race_editor_details_details"
     >
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-4 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 transition hover:bg-[rgb(var(--sep-colour-18110d))] group-open:border-b group-open:border-[rgb(var(--sep-colour-60482e))]/35 [&::-webkit-details-marker]:hidden sm:px-5">
-        <div className="flex min-w-0 items-center gap-3">
-          <div className="relative h-11 w-11 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-090706))]">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-4 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 transition hover:bg-[rgb(var(--sep-colour-18110d))] group-open:border-b group-open:border-[rgb(var(--sep-colour-60482e))]/35 [&::-webkit-details-marker]:hidden sm:px-5 components_admin_admin_race_editor_summary_summary">
+        <div className="flex min-w-0 items-center gap-3 components_admin_admin_race_editor_div_container_6">
+          <div className="relative h-11 w-11 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-090706))] components_admin_admin_race_editor_div_container_7">
             {race.icon_url ? (
               <Image src={race.icon_url} alt="" fill sizes="44px" className="object-contain p-1.5" />
             ) : race.image_url ? (
               <Image src={race.image_url} alt="" fill sizes="44px" className="object-cover" />
             ) : (
-              <div className="flex h-full items-center justify-center font-serif text-lg text-[rgb(var(--sep-colour-705334))]">
+              <div className="flex h-full items-center justify-center font-serif text-lg text-[rgb(var(--sep-colour-705334))] components_admin_admin_race_editor_div_container_8">
                 {race.name.charAt(0).toUpperCase()}
               </div>
             )}
           </div>
-          <div className="min-w-0">
-            <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">Playable ancestry</p>
-            <h3 className="mt-0.5 truncate font-serif text-lg text-[rgb(var(--sep-colour-dec69a))]">{race.name}</h3>
-            <p className="mt-0.5 truncate text-[8px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-756957))]">
+          <div className="min-w-0 components_admin_admin_race_editor_div_container_9">
+            <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_admin_admin_race_editor_p_text_6">Playable ancestry</p>
+            <h3 className="mt-0.5 truncate font-serif text-lg text-[rgb(var(--sep-colour-dec69a))] components_admin_admin_race_editor_h3_heading">{race.name}</h3>
+            <p className="mt-0.5 truncate text-[8px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-756957))] components_admin_admin_race_editor_p_text_7">
               /{race.slug} · {race.character_count} {race.character_count === 1 ? "character" : "characters"}
             </p>
           </div>
         </div>
-        <div className="flex shrink-0 items-center gap-3">
-          <span className={race.is_active ? "text-[8px] uppercase tracking-[0.14em] text-emerald-500" : "text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-746858))]"}>
+        <div className="flex shrink-0 items-center gap-3 components_admin_admin_race_editor_div_container_10">
+          <span className={[((race.is_active ? "text-[8px] uppercase tracking-[0.14em] text-emerald-500" : "text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-746858))]")), "components_admin_admin_race_editor_span_text_4"].filter(Boolean).join(" ")}>
             {race.is_active ? "Active" : "Inactive"}
           </span>
-          <span className="text-sm text-[rgb(var(--sep-colour-9b7446))] transition-transform group-open:rotate-180" aria-hidden="true">▼</span>
+          <span className="text-sm text-[rgb(var(--sep-colour-9b7446))] transition-transform group-open:rotate-180 components_admin_admin_race_editor_span_text_5" aria-hidden="true">▼</span>
         </div>
       </summary>
 
       {open ? (
-        <div>
+        <div className="components_admin_admin_race_editor_div_container_11">
           {race.banner_url ? (
-            <div className="relative h-44 border-b border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-0b0807))]">
+            <div className="relative h-44 border-b border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-0b0807))] components_admin_admin_race_editor_div_container_12">
               <Image
                 src={race.banner_url}
                 alt={`${race.name} banner`}
@@ -190,122 +190,122 @@ export function AdminRaceEditor({ race }: { race: AdminRaceEditorRow }) {
                 quality={70}
                 className="object-cover opacity-70"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[rgb(var(--sep-colour-15100d))] via-transparent to-black/20" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[rgb(var(--sep-colour-15100d))] via-transparent to-black/20 components_admin_admin_race_editor_div_container_13" />
             </div>
           ) : null}
 
-          <div className="grid lg:grid-cols-[260px_minmax(0,1fr)]">
-            <aside className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-0f0b09))] p-5 lg:border-b-0 lg:border-r">
+          <div className="grid lg:grid-cols-[260px_minmax(0,1fr)] components_admin_admin_race_editor_div_container_14">
+            <aside className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-0f0b09))] p-5 lg:border-b-0 lg:border-r components_admin_admin_race_editor_aside_sidebar">
               <div
-                className="relative aspect-[4/3] overflow-hidden border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-090706))]"
+                className="relative aspect-[4/3] overflow-hidden border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-090706))] components_admin_admin_race_editor_div_container_15"
                 style={isValidColour(race.colour) ? { borderColor: race.colour ?? undefined } : undefined}
               >
                 {race.image_url ? (
                   <Image src={race.image_url} alt={race.name} fill sizes="260px" quality={70} className="object-cover" />
                 ) : race.icon_url ? (
-                  <div className="flex h-full items-center justify-center p-10">
+                  <div className="flex h-full items-center justify-center p-10 components_admin_admin_race_editor_div_container_16">
                     <Image src={race.icon_url} alt={`${race.name} icon`} width={110} height={110} className="max-h-full w-auto object-contain" />
                   </div>
                 ) : (
-                  <div className="flex h-full items-center justify-center font-serif text-5xl text-[rgb(var(--sep-colour-705334))]">{race.name.charAt(0).toUpperCase()}</div>
+                  <div className="flex h-full items-center justify-center font-serif text-5xl text-[rgb(var(--sep-colour-705334))] components_admin_admin_race_editor_div_container_17">{race.name.charAt(0).toUpperCase()}</div>
                 )}
               </div>
 
-              <div className="mt-4 text-center">
-                <div className="flex flex-wrap justify-center gap-2">
+              <div className="mt-4 text-center components_admin_admin_race_editor_div_container_18">
+                <div className="flex flex-wrap justify-center gap-2 components_admin_admin_race_editor_div_container_19">
                   <StatusBadge active={race.is_active} />
                   <SelectableBadge selectable={race.is_selectable} />
                 </div>
-                <p className="mt-3 text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-887967))]">/{race.slug}</p>
+                <p className="mt-3 text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-887967))] components_admin_admin_race_editor_p_text_8">/{race.slug}</p>
                 {race.colour ? (
-                  <div className="mt-3 flex items-center justify-center gap-2 text-[9px] text-[rgb(var(--sep-colour-817461))]">
-                    <span className="h-3 w-3 rounded-full border border-white/15" style={{ backgroundColor: race.colour }} />
+                  <div className="mt-3 flex items-center justify-center gap-2 text-[9px] text-[rgb(var(--sep-colour-817461))] components_admin_admin_race_editor_div_container_20">
+                    <span className="h-3 w-3 rounded-full border border-white/15 components_admin_admin_race_editor_span_text_6" style={{ backgroundColor: race.colour }} />
                     {race.colour}
                   </div>
                 ) : null}
-                <div className="mt-5 grid grid-cols-2 gap-2">
+                <div className="mt-5 grid grid-cols-2 gap-2 components_admin_admin_race_editor_div_container_21">
                   <InfoCounter label="Characters" value={race.character_count} />
                   <InfoCounter label="Order" value={race.sort_order} />
                 </div>
-                <p className="mt-4 text-[9px] text-[rgb(var(--sep-colour-756957))]">Updated {formatDate(race.updated_at)}</p>
+                <p className="mt-4 text-[9px] text-[rgb(var(--sep-colour-756957))] components_admin_admin_race_editor_p_text_9">Updated {formatDate(race.updated_at)}</p>
               </div>
             </aside>
 
-            <div className="p-5 sm:p-6">
-              <div className="flex flex-wrap items-start justify-between gap-4">
-                <div>
-                  <p className="text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-8c704b))]">Playable ancestry</p>
-                  <h3 className="mt-1 font-serif text-3xl text-[rgb(var(--sep-colour-e3cda5))]">{race.name}</h3>
+            <div className="p-5 sm:p-6 components_admin_admin_race_editor_div_container_22">
+              <div className="flex flex-wrap items-start justify-between gap-4 components_admin_admin_race_editor_div_container_23">
+                <div className="components_admin_admin_race_editor_div_container_24">
+                  <p className="text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-8c704b))] components_admin_admin_race_editor_p_text_10">Playable ancestry</p>
+                  <h3 className="mt-1 font-serif text-3xl text-[rgb(var(--sep-colour-e3cda5))] components_admin_admin_race_editor_h3_heading_2">{race.name}</h3>
                 </div>
                 {race.icon_url ? (
-                  <div className="relative h-16 w-16 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0f0b09))] p-2">
+                  <div className="relative h-16 w-16 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0f0b09))] p-2 components_admin_admin_race_editor_div_container_25">
                     <Image src={race.icon_url} alt={`${race.name} icon`} fill sizes="64px" className="object-contain p-2" />
                   </div>
                 ) : null}
               </div>
 
               <AdminActionForm action={updateRace} className="mt-6">
-                <input type="hidden" name="raceId" value={race.id} />
-                <div className="grid gap-4 md:grid-cols-2">
+                <input className="components_admin_admin_race_editor_input_race_id" type="hidden" name="raceId" value={race.id} />
+                <div className="grid gap-4 md:grid-cols-2 components_admin_admin_race_editor_div_container_26">
                   <AdminField label="Name">
-                    <input type="text" name="name" required maxLength={120} defaultValue={race.name} className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]" />
+                    <input type="text" name="name" required maxLength={120} defaultValue={race.name} className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] components_admin_admin_race_editor_input_name" />
                   </AdminField>
                   <AdminField label="Slug">
-                    <input type="text" name="slug" required maxLength={100} defaultValue={race.slug} className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]" />
+                    <input type="text" name="slug" required maxLength={100} defaultValue={race.slug} className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] components_admin_admin_race_editor_input_slug" />
                   </AdminField>
                   <AdminField label="Sort order">
-                    <input type="number" name="sortOrder" min={-9999} max={9999} defaultValue={race.sort_order} className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]" />
+                    <input type="number" name="sortOrder" min={-9999} max={9999} defaultValue={race.sort_order} className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] components_admin_admin_race_editor_input_sort_order" />
                   </AdminField>
                   <AdminField label="Colour">
-                    <input type="text" name="colour" maxLength={32} defaultValue={race.colour ?? ""} placeholder="#8c704b" className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]" />
+                    <input type="text" name="colour" maxLength={32} defaultValue={race.colour ?? ""} placeholder="#8c704b" className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))] components_admin_admin_race_editor_input_colour" />
                   </AdminField>
-                  <div className="md:col-span-2"><AttributeModifierFields race={race} /></div>
-                  <div className="md:col-span-2">
+                  <div className="md:col-span-2 components_admin_admin_race_editor_div_container_27"><AttributeModifierFields race={race} /></div>
+                  <div className="md:col-span-2 components_admin_admin_race_editor_div_container_28">
                     <AdminField label="Summary">
                       <RichTextEditor name="summary" defaultValue={race.summary} maxTextLength={1100} minHeight={150} variant="lore" />
                     </AdminField>
                   </div>
-                  <div className="md:col-span-2">
+                  <div className="md:col-span-2 components_admin_admin_race_editor_div_container_29">
                     <AdminField label="Full description">
                       <RichTextEditor name="description" defaultValue={race.description} maxTextLength={80000} minHeight={320} variant="lore" />
                     </AdminField>
                   </div>
                   <AdminField label="Main image URL">
-                    <input type="text" name="imageUrl" maxLength={2000} defaultValue={race.image_url ?? ""} placeholder="/images/races/race.jpg" className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]" />
+                    <input type="text" name="imageUrl" maxLength={2000} defaultValue={race.image_url ?? ""} placeholder="/images/races/race.jpg" className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))] components_admin_admin_race_editor_input_image_url" />
                   </AdminField>
                   <AdminField label="Banner URL">
-                    <input type="text" name="bannerUrl" maxLength={2000} defaultValue={race.banner_url ?? ""} placeholder="/images/races/race-banner.jpg" className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]" />
+                    <input type="text" name="bannerUrl" maxLength={2000} defaultValue={race.banner_url ?? ""} placeholder="/images/races/race-banner.jpg" className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))] components_admin_admin_race_editor_input_banner_url" />
                   </AdminField>
-                  <div className="md:col-span-2">
+                  <div className="md:col-span-2 components_admin_admin_race_editor_div_container_30">
                     <AdminField label="Icon URL">
-                      <input type="text" name="iconUrl" maxLength={2000} defaultValue={race.icon_url ?? ""} placeholder="/images/races/race-icon.png" className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]" />
+                      <input type="text" name="iconUrl" maxLength={2000} defaultValue={race.icon_url ?? ""} placeholder="/images/races/race-icon.png" className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))] components_admin_admin_race_editor_input_icon_url" />
                     </AdminField>
                   </div>
                 </div>
 
-                <div className="mt-5 flex flex-wrap items-center justify-between gap-4">
-                  <div className="flex flex-wrap items-center gap-6">
-                    <label className="flex items-center gap-3 text-sm text-[rgb(var(--sep-colour-bbaa90))]">
-                      <input type="checkbox" name="isActive" defaultChecked={race.is_active} className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))]" />
+                <div className="mt-5 flex flex-wrap items-center justify-between gap-4 components_admin_admin_race_editor_div_container_31">
+                  <div className="flex flex-wrap items-center gap-6 components_admin_admin_race_editor_div_active">
+                    <label className="flex items-center gap-3 text-sm text-[rgb(var(--sep-colour-bbaa90))] components_admin_admin_race_editor_label_active">
+                      <input type="checkbox" name="isActive" defaultChecked={race.is_active} className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))] components_admin_admin_race_editor_input_active" />
                       Active
                     </label>
-                    <label className="flex items-center gap-3 text-sm text-[rgb(var(--sep-colour-bbaa90))]">
-                      <input type="checkbox" name="isSelectable" defaultChecked={race.is_selectable} className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))]" />
+                    <label className="flex items-center gap-3 text-sm text-[rgb(var(--sep-colour-bbaa90))] components_admin_admin_race_editor_label_active_2">
+                      <input type="checkbox" name="isSelectable" defaultChecked={race.is_selectable} className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))] components_admin_admin_race_editor_input_selectable" />
                       Selectable at character creation
                     </label>
                   </div>
-                  <button type="submit" className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]">Save changes</button>
+                  <button type="submit" className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))] components_admin_admin_race_editor_button_save_changes">Save changes</button>
                 </div>
               </AdminActionForm>
 
               <AdminActionForm action={deleteRace} className="mt-6 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-5">
-                <input type="hidden" name="raceId" value={race.id} />
-                <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
-                  <input type="text" name="confirmation" placeholder='Type "DELETE"' className="w-full border border-red-900/50 bg-[rgb(var(--sep-colour-100909))] px-3 py-3 text-sm text-red-200 outline-none placeholder:text-red-900/70 focus:border-red-700" />
-                  <button type="submit" className="border border-red-900/60 bg-red-950/20 px-5 py-3 text-[9px] uppercase tracking-[0.18em] text-red-500 transition hover:border-red-700 hover:bg-red-950/40">Delete race</button>
+                <input className="components_admin_admin_race_editor_input_race_id_2" type="hidden" name="raceId" value={race.id} />
+                <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] components_admin_admin_race_editor_div_container_32">
+                  <input type="text" name="confirmation" placeholder='Type "DELETE"' className="w-full border border-red-900/50 bg-[rgb(var(--sep-colour-100909))] px-3 py-3 text-sm text-red-200 outline-none placeholder:text-red-900/70 focus:border-red-700 components_admin_admin_race_editor_input_confirmation" />
+                  <button type="submit" className="border border-red-900/60 bg-red-950/20 px-5 py-3 text-[9px] uppercase tracking-[0.18em] text-red-500 transition hover:border-red-700 hover:bg-red-950/40 components_admin_admin_race_editor_button_delete_race">Delete race</button>
                 </div>
                 {race.character_count > 0 ? (
-                  <p className="mt-3 text-[10px] leading-5 text-[rgb(var(--sep-colour-8e7462))]">Deletion is blocked because this race is currently assigned to {race.character_count} {race.character_count === 1 ? "character" : "characters"}.</p>
+                  <p className="mt-3 text-[10px] leading-5 text-[rgb(var(--sep-colour-8e7462))] components_admin_admin_race_editor_p_text_11">Deletion is blocked because this race is currently assigned to {race.character_count} {race.character_count === 1 ? "character" : "characters"}.</p>
                 ) : null}
               </AdminActionForm>
             </div>

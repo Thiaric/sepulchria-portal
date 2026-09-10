@@ -841,8 +841,8 @@ if (!confirmed) {
 
   return (
     <>
-      <section className="mt-5 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2.5">
-        <div className="grid gap-1.5 lg:grid-cols-[minmax(170px,1.35fr)_130px_130px_110px_130px_90px_90px_auto]">
+      <section className="mt-5 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2.5 components_market_market_catalogue_section_section">
+        <div className="grid gap-1.5 lg:grid-cols-[minmax(170px,1.35fr)_130px_130px_110px_130px_90px_90px_auto] components_market_market_catalogue_div_container">
           <input
             type="search"
             value={search}
@@ -852,9 +852,7 @@ if (!confirmed) {
               )
             }
             placeholder="Search name / description..."
-            className={
-              compactInput
-            }
+            className={[((compactInput)), "components_market_market_catalogue_input_search_name_description"].filter(Boolean).join(" ")}
           />
 
           <select
@@ -865,17 +863,15 @@ if (!confirmed) {
               );
               setSubcategory("");
             }}
-            className={
-              compactInput
-            }
+            className={[((compactInput)), "components_market_market_catalogue_select_select"].filter(Boolean).join(" ")}
           >
-            <option value="">
+            <option className="components_market_market_catalogue_option_option" value="">
               All categories
             </option>
 
             {categories.map(
               (value) => (
-                <option
+                <option className="components_market_market_catalogue_option_option_2"
                   key={value}
                   value={value}
                 >
@@ -892,17 +888,15 @@ if (!confirmed) {
                 event.target.value,
               )
             }
-            className={
-              compactInput
-            }
+            className={[((compactInput)), "components_market_market_catalogue_select_select_2"].filter(Boolean).join(" ")}
           >
-            <option value="">
+            <option className="components_market_market_catalogue_option_option_3" value="">
               All subcategories
             </option>
 
             {subcategories.map(
               (value) => (
-                <option
+                <option className="components_market_market_catalogue_option_option_4"
                   key={value}
                   value={value}
                 >
@@ -919,17 +913,15 @@ if (!confirmed) {
                 event.target.value,
               )
             }
-            className={
-              compactInput
-            }
+            className={[((compactInput)), "components_market_market_catalogue_select_select_3"].filter(Boolean).join(" ")}
           >
-            <option value="">
+            <option className="components_market_market_catalogue_option_option_5" value="">
               Any quality
             </option>
 
             {qualityOrder.map(
               (value) => (
-                <option
+                <option className="components_market_market_catalogue_option_option_6"
                   key={value}
                   value={value}
                 >
@@ -949,20 +941,18 @@ if (!confirmed) {
                 event.target.value,
               )
             }
-            className={
-              compactInput
-            }
+            className={[((compactInput)), "components_market_market_catalogue_select_select_4"].filter(Boolean).join(" ")}
           >
-            <option value="">
+            <option className="components_market_market_catalogue_option_option_7" value="">
               Any function
             </option>
-            <option value="usable">
+            <option className="components_market_market_catalogue_option_usable" value="usable">
               Usable
             </option>
-            <option value="equippable">
+            <option className="components_market_market_catalogue_option_equippable" value="equippable">
               Equippable
             </option>
-            <option value="both">
+            <option className="components_market_market_catalogue_option_both" value="both">
               Usable + Equippable
             </option>
           </select>
@@ -977,9 +967,7 @@ if (!confirmed) {
               )
             }
             placeholder="From 🝈"
-            className={
-              compactInput
-            }
+            className={[((compactInput)), "components_market_market_catalogue_input_field"].filter(Boolean).join(" ")}
           />
 
           <input
@@ -992,22 +980,20 @@ if (!confirmed) {
               )
             }
             placeholder="To 🝈"
-            className={
-              compactInput
-            }
+            className={[((compactInput)), "components_market_market_catalogue_input_field_2"].filter(Boolean).join(" ")}
           />
 
           <button
             type="button"
             onClick={resetFilters}
-            className="h-8 border border-[rgb(var(--sep-colour-6b5235))] bg-[rgb(var(--sep-colour-21170f))] px-3 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-b89a70))] transition hover:border-[rgb(var(--sep-colour-927047))]"
+            className="h-8 border border-[rgb(var(--sep-colour-6b5235))] bg-[rgb(var(--sep-colour-21170f))] px-3 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-b89a70))] transition hover:border-[rgb(var(--sep-colour-927047))] components_market_market_catalogue_button_reset"
           >
             Reset
           </button>
         </div>
 
-        <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-1.5">
-          <span className="mr-0.5 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))]">
+        <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-1.5 components_market_market_catalogue_div_stock">
+          <span className="mr-0.5 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))] components_market_market_catalogue_span_stock">
             Effects
           </span>
 
@@ -1018,7 +1004,7 @@ if (!confirmed) {
             ]) => (
               <label
                 key={value}
-                className="flex cursor-pointer items-center gap-1 text-[8px] text-[rgb(var(--sep-colour-9a886f))]"
+                className="flex cursor-pointer items-center gap-1 text-[8px] text-[rgb(var(--sep-colour-9a886f))] components_market_market_catalogue_label_label"
               >
                 <input
                   type="checkbox"
@@ -1032,7 +1018,7 @@ if (!confirmed) {
                       value,
                     )
                   }
-                  className="h-3 w-3 accent-[rgb(var(--sep-colour-8b673d))]"
+                  className="h-3 w-3 accent-[rgb(var(--sep-colour-8b673d))] components_market_market_catalogue_input_field_3"
                 />
 
                 {label}
@@ -1040,9 +1026,9 @@ if (!confirmed) {
             ),
           )}
 
-          <span className="mx-1 hidden h-3 w-px bg-[rgb(var(--sep-colour-59432c))]/40 sm:block" />
+          <span className="mx-1 hidden h-3 w-px bg-[rgb(var(--sep-colour-59432c))]/40 sm:block components_market_market_catalogue_span_stock_2" />
 
-          <label className="flex cursor-pointer items-center gap-1 text-[8px] text-[rgb(var(--sep-colour-9a886f))]">
+          <label className="flex cursor-pointer items-center gap-1 text-[8px] text-[rgb(var(--sep-colour-9a886f))] components_market_market_catalogue_label_stock">
             <input
               type="checkbox"
               checked={
@@ -1056,14 +1042,14 @@ if (!confirmed) {
                     .checked,
                 )
               }
-              className="h-3 w-3 accent-[rgb(var(--sep-colour-8b673d))]"
+              className="h-3 w-3 accent-[rgb(var(--sep-colour-8b673d))] components_market_market_catalogue_input_stock"
             />
             In stock
           </label>
 
           {walletBalance !==
           null ? (
-            <label className="flex cursor-pointer items-center gap-1 text-[8px] text-[rgb(var(--sep-colour-9a886f))]">
+            <label className="flex cursor-pointer items-center gap-1 text-[8px] text-[rgb(var(--sep-colour-9a886f))] components_market_market_catalogue_label_stock_2">
               <input
                 type="checkbox"
                 checked={
@@ -1077,7 +1063,7 @@ if (!confirmed) {
                       .checked,
                   )
                 }
-                className="h-3 w-3 accent-[rgb(var(--sep-colour-8b673d))]"
+                className="h-3 w-3 accent-[rgb(var(--sep-colour-8b673d))] components_market_market_catalogue_input_stock_2"
               />
 
               Affordable (
@@ -1088,14 +1074,14 @@ if (!confirmed) {
             </label>
           ) : null}
 
-          <span className="ml-auto text-[7px] uppercase tracking-[0.11em] text-[rgb(var(--sep-colour-6f6252))]">
+          <span className="ml-auto text-[7px] uppercase tracking-[0.11em] text-[rgb(var(--sep-colour-6f6252))] components_market_market_catalogue_span_stock_3">
             {visible.length} /{" "}
             {listings.length}
           </span>
         </div>
       </section>
 
-      <div className="mt-4 grid gap-3 lg:grid-cols-2">
+      <div className="mt-4 grid gap-3 lg:grid-cols-2 components_market_market_catalogue_div_container_2">
         {visible.map(
           (listing) => {
             const item =
@@ -1167,7 +1153,7 @@ if (!confirmed) {
                 key={
                   listing.id
                 }
-                className="scroll-mt-6 flex gap-4 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))] p-4"
+                className="scroll-mt-6 flex gap-4 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))] p-4 components_market_market_catalogue_article_article"
               >
                 <ItemImageFrame
                   src={item.image_url}
@@ -1176,14 +1162,14 @@ if (!confirmed) {
                   badgeSize="lg"
                 />
 
-                <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-start justify-between gap-2">
-                    <div>
-                      <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-dcc49a))]">
+                <div className="min-w-0 flex-1 components_market_market_catalogue_div_container_3">
+                  <div className="flex flex-wrap items-start justify-between gap-2 components_market_market_catalogue_div_container_4">
+                    <div className="components_market_market_catalogue_div_container_5">
+                      <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-dcc49a))] components_market_market_catalogue_h2_heading">
                         {item.name}
                       </h2>
 
-                      <p className="mt-1 text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-756958))]">
+                      <p className="mt-1 text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-756958))] components_market_market_catalogue_p_text">
                         {[
                           item.category,
                           item.subcategory,
@@ -1198,22 +1184,22 @@ if (!confirmed) {
                       </p>
                     </div>
 
-                    <span className="text-sm font-semibold text-[rgb(var(--sep-colour-e1bd79))]">
+                    <span className="text-sm font-semibold text-[rgb(var(--sep-colour-e1bd79))] components_market_market_catalogue_span_text">
                       {formatRemnants(
                         listing.buy_price,
                       )}
                     </span>
                   </div>
 
-                  <p className="mt-2 line-clamp-3 text-[10px] leading-5 text-[rgb(var(--sep-colour-958775))]">
+                  <p className="mt-2 line-clamp-3 text-[10px] leading-5 text-[rgb(var(--sep-colour-958775))] components_market_market_catalogue_p_text_2">
                     {
                       item.description
                     }
                   </p>
 
-                  <div className="mt-3 flex flex-wrap gap-1.5">
+                  <div className="mt-3 flex flex-wrap gap-1.5 components_market_market_catalogue_div_container_6">
                     {item.is_equippable ? (
-                      <span className="border border-[rgb(var(--sep-colour-6c5739))]/55 bg-[rgb(var(--sep-colour-1d160f))] px-2 py-1 text-[7px] uppercase tracking-[0.11em] text-[rgb(var(--sep-colour-c3a778))]">
+                      <span className="border border-[rgb(var(--sep-colour-6c5739))]/55 bg-[rgb(var(--sep-colour-1d160f))] px-2 py-1 text-[7px] uppercase tracking-[0.11em] text-[rgb(var(--sep-colour-c3a778))] components_market_market_catalogue_span_text_2">
                         Equippable
                         {" · "}
                         {slotLabel(
@@ -1235,7 +1221,7 @@ if (!confirmed) {
                     {useLabel(
                       item,
                     ) ? (
-                      <span className="border border-[rgb(var(--sep-colour-6c5739))]/55 bg-[rgb(var(--sep-colour-1d160f))] px-2 py-1 text-[7px] uppercase tracking-[0.11em] text-[rgb(var(--sep-colour-c3a778))]">
+                      <span className="border border-[rgb(var(--sep-colour-6c5739))]/55 bg-[rgb(var(--sep-colour-1d160f))] px-2 py-1 text-[7px] uppercase tracking-[0.11em] text-[rgb(var(--sep-colour-c3a778))] components_market_market_catalogue_span_text_3">
                         {useLabel(
                           item,
                         )}
@@ -1243,17 +1229,17 @@ if (!confirmed) {
                     ) : null}
 
                     {item.is_quest_item ? (
-                      <span className="border border-[rgb(var(--sep-colour-6c5739))]/55 bg-[rgb(var(--sep-colour-1d160f))] px-2 py-1 text-[7px] uppercase tracking-[0.11em] text-[rgb(var(--sep-colour-c3a778))]">
+                      <span className="border border-[rgb(var(--sep-colour-6c5739))]/55 bg-[rgb(var(--sep-colour-1d160f))] px-2 py-1 text-[7px] uppercase tracking-[0.11em] text-[rgb(var(--sep-colour-c3a778))] components_market_market_catalogue_span_text_4">
                         Quest Item
                       </span>
                     ) : null}
                   </div>
 
-                  <div className="mt-2 flex flex-wrap gap-1.5">
+                  <div className="mt-2 flex flex-wrap gap-1.5 components_market_market_catalogue_div_container_7">
                     {mechanicsLabels(item).map((label) => (
                       <span
                         key={`${listing.id}-${label}`}
-                        className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-2 py-1 text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-b99d72))]"
+                        className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-2 py-1 text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-b99d72))] components_market_market_catalogue_span_text_5"
                       >
                         {label}
                       </span>
@@ -1263,7 +1249,7 @@ if (!confirmed) {
                   {effectLines(
                     item.effects,
                   ).length ? (
-                    <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
+                    <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 components_market_market_catalogue_div_container_8">
                       {effectLines(
                         item.effects,
                       ).map(
@@ -1273,7 +1259,7 @@ if (!confirmed) {
                         ) => (
                           <span
                             key={`${listing.id}-effect-${index}`}
-                            className="text-[8px] leading-4 text-[rgb(var(--sep-colour-b69a72))]"
+                            className="text-[8px] leading-4 text-[rgb(var(--sep-colour-b69a72))] components_market_market_catalogue_span_text_6"
                           >
                             {
                               effect
@@ -1284,13 +1270,11 @@ if (!confirmed) {
                     </div>
                   ) : null}
 
-                  <div className="mt-3 flex flex-wrap items-center gap-2">
+                  <div className="mt-3 flex flex-wrap items-center gap-2 components_market_market_catalogue_div_container_9">
                     <span
-                      className={
-                        outOfStock
+                      className={[((outOfStock
                           ? "border border-red-900/45 bg-red-950/10 px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-red-400"
-                          : "border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-947e61))]"
-                      }
+                          : "border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-947e61))]")), "components_market_market_catalogue_span_text_7"].filter(Boolean).join(" ")}
                     >
                       {listing.stock_mode ===
                       "unlimited"
@@ -1302,7 +1286,7 @@ if (!confirmed) {
 
                     {listing.sell_price !==
                     null ? (
-                      <span className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806f5b))]">
+                      <span className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806f5b))] components_market_market_catalogue_span_text_8">
                         Shop Buyback{" "}
                         {formatRemnants(
                           listing.sell_price,
@@ -1311,7 +1295,7 @@ if (!confirmed) {
                     ) : null}
                   </div>
 
-                  <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-2.5">
+                  <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-2.5 components_market_market_catalogue_div_container_10">
                     <input
                       type="number"
                       min={1}
@@ -1365,7 +1349,7 @@ if (!confirmed) {
                           }),
                         );
                       }}
-                      className="h-8 w-16 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-2 text-center text-[10px] text-[rgb(var(--sep-colour-d4bea0))] outline-none focus:border-[rgb(var(--sep-colour-987344))]"
+                      className="h-8 w-16 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-2 text-center text-[10px] text-[rgb(var(--sep-colour-d4bea0))] outline-none focus:border-[rgb(var(--sep-colour-987344))] components_market_market_catalogue_input_field_4"
                       aria-label={`Quantity of ${item.name}`}
                     />
 
@@ -1382,7 +1366,7 @@ if (!confirmed) {
                         cannotAfford ||
                         exceedsStock
                       }
-                      className="h-8 border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-4 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:bg-[rgb(var(--sep-colour-4a351f))] disabled:cursor-not-allowed disabled:opacity-40"
+                      className="h-8 border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-4 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:bg-[rgb(var(--sep-colour-4a351f))] disabled:cursor-not-allowed disabled:opacity-40 components_market_market_catalogue_button_action"
                     >
                       {pending &&
                       pendingListingId ===
@@ -1393,7 +1377,7 @@ if (!confirmed) {
                         : "Buy"}
                     </button>
 
-                    <span className="text-[8px] text-[rgb(var(--sep-colour-8e7a60))]">
+                    <span className="text-[8px] text-[rgb(var(--sep-colour-8e7a60))] components_market_market_catalogue_span_text_9">
                       Total{" "}
                       {formatRemnants(
                         total,
@@ -1401,14 +1385,14 @@ if (!confirmed) {
                     </span>
 
                     {cannotAfford ? (
-                      <span className="text-[8px] text-red-400">
+                      <span className="text-[8px] text-red-400 components_market_market_catalogue_span_text_10">
                         Insufficient
                         Remnants
                       </span>
                     ) : null}
 
                     {exceedsStock ? (
-                      <span className="text-[8px] text-red-400">
+                      <span className="text-[8px] text-red-400 components_market_market_catalogue_span_text_11">
                         Not enough
                         stock
                       </span>
@@ -1417,8 +1401,8 @@ if (!confirmed) {
 
                   {listing.sell_price !==
                   null ? (
-                    <div className="mt-2 flex flex-wrap items-center gap-2 border-t border-[rgb(var(--sep-colour-59432c))]/20 pt-2">
-                      <span className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
+                    <div className="mt-2 flex flex-wrap items-center gap-2 border-t border-[rgb(var(--sep-colour-59432c))]/20 pt-2 components_market_market_catalogue_div_container_11">
+                      <span className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))] components_market_market_catalogue_span_text_12">
                         You own{" "}
                         {
                           listing
@@ -1476,7 +1460,7 @@ if (!confirmed) {
                         disabled={
                           !canSell
                         }
-                        className="h-8 w-16 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-2 text-center text-[10px] text-[rgb(var(--sep-colour-d4bea0))] outline-none focus:border-[rgb(var(--sep-colour-987344))] disabled:opacity-35"
+                        className="h-8 w-16 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-2 text-center text-[10px] text-[rgb(var(--sep-colour-d4bea0))] outline-none focus:border-[rgb(var(--sep-colour-987344))] disabled:opacity-35 components_market_market_catalogue_input_field_5"
                         aria-label={`Quantity of ${item.name} to sell`}
                       />
 
@@ -1492,7 +1476,7 @@ if (!confirmed) {
                           !canSell ||
                           exceedsOwned
                         }
-                        className="h-8 border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-4 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:bg-[rgb(var(--sep-colour-4a351f))] disabled:cursor-not-allowed disabled:opacity-40"
+                        className="h-8 border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-4 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:bg-[rgb(var(--sep-colour-4a351f))] disabled:cursor-not-allowed disabled:opacity-40 components_market_market_catalogue_button_action_2"
                       >
                         {pending &&
                         pendingListingId ===
@@ -1503,7 +1487,7 @@ if (!confirmed) {
                           : "Sell"}
                       </button>
 
-                      <span className="text-[8px] text-[rgb(var(--sep-colour-8e7a60))]">
+                      <span className="text-[8px] text-[rgb(var(--sep-colour-8e7a60))] components_market_market_catalogue_span_text_13">
                         Receive{" "}
                         {formatRemnants(
                           sellTotal,
@@ -1511,14 +1495,14 @@ if (!confirmed) {
                       </span>
 
                       {!canSell ? (
-                        <span className="text-[8px] text-[rgb(var(--sep-colour-6f6252))]">
+                        <span className="text-[8px] text-[rgb(var(--sep-colour-6f6252))] components_market_market_catalogue_span_text_14">
                           No eligible
                           copies
                         </span>
                       ) : null}
 
                       {exceedsOwned ? (
-                        <span className="text-[8px] text-red-400">
+                        <span className="text-[8px] text-red-400 components_market_market_catalogue_span_text_15">
                           You do not own
                           that many
                         </span>
@@ -1529,11 +1513,11 @@ if (!confirmed) {
                   {status ? (
                     <p
                       aria-live="polite"
-                      className={`mt-2 text-[8px] ${
+                      className={[((`mt-2 text-[8px] ${
                         status.ok
                           ? "text-emerald-400"
                           : "text-red-400"
-                      }`}
+                      }`)), "components_market_market_catalogue_p_text_3"].filter(Boolean).join(" ")}
                     >
                       {
                         status.message
@@ -1548,7 +1532,7 @@ if (!confirmed) {
       </div>
 
       {!visible.length ? (
-        <section className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))] p-6 text-center text-sm text-[rgb(var(--sep-colour-8f8271))]">
+        <section className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))] p-6 text-center text-sm text-[rgb(var(--sep-colour-8f8271))] components_market_market_catalogue_section_section_2">
           No Items match the
           selected filters.
         </section>

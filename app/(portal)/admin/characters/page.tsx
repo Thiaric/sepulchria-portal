@@ -254,19 +254,19 @@ export default async function AdminCharactersPage({
   );
 
   return (
-    <main className="p-5 sm:p-7 lg:p-9">
-      <div className="mx-auto max-w-6xl">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
+    <main className="p-5 sm:p-7 lg:p-9 admin_characters_page_main_main">
+      <div className="mx-auto max-w-6xl admin_characters_page_div_container">
+        <div className="flex flex-wrap items-end justify-between gap-4 admin_characters_page_div_container_2">
+          <div className="admin_characters_page_div_character_management">
+            <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))] admin_characters_page_p_character_management">
               Administration
             </p>
 
-            <h2 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">
+            <h2 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))] admin_characters_page_h2_character_management">
               Character Management
             </h2>
 
-            <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))]">
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))] admin_characters_page_p_character_management_2">
               Search the character archive,
               review submitted sheets and open
               the complete staff record of each
@@ -274,19 +274,19 @@ export default async function AdminCharactersPage({
             </p>
           </div>
 
-          <span className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 text-[10px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a99069))]">
+          <span className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 text-[10px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a99069))] admin_characters_page_span_text">
             {filteredCharacters.length} of{" "}
             {characters.length} characters
           </span>
         </div>
 
         {submittedCount > 0 ? (
-          <section className="mt-8 flex flex-wrap items-center justify-between gap-4 border border-[rgb(var(--sep-colour-a87532))]/75 bg-[rgb(var(--sep-colour-24190f))] px-5 py-4 shadow-[0_0_18px_rgba(var(--sep-rgb-168-117-50),0.12)]">
-            <div>
-              <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-c28b45))]">
+          <section className="mt-8 flex flex-wrap items-center justify-between gap-4 border border-[rgb(var(--sep-colour-a87532))]/75 bg-[rgb(var(--sep-colour-24190f))] px-5 py-4 shadow-[0_0_18px_rgba(var(--sep-rgb-168-117-50),0.12)] admin_characters_page_section_section">
+            <div className="admin_characters_page_div_container_3">
+              <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-c28b45))] admin_characters_page_p_text">
                 Staff attention required
               </p>
-              <p className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-efd4a2))]">
+              <p className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-efd4a2))] admin_characters_page_p_text_2">
                 {submittedCount} character{submittedCount === 1 ? "" : "s"} awaiting review
               </p>
             </div>
@@ -302,16 +302,16 @@ export default async function AdminCharactersPage({
 
         <form
           method="get"
-          className="mt-8 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5"
+          className="mt-8 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 admin_characters_page_form_form"
         >
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4 admin_characters_page_div_container_4">
             <FilterField label="Search">
               <input
                 type="search"
                 name="q"
                 defaultValue={params.q ?? ""}
                 placeholder="Name, title or slug"
-                className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
+                className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))] admin_characters_page_input_q"
               />
             </FilterField>
 
@@ -319,25 +319,25 @@ export default async function AdminCharactersPage({
               <select
                 name="status"
                 defaultValue={statusFilter}
-                className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
+                className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] admin_characters_page_select_status"
               >
-                <option value="">
+                <option className="admin_characters_page_option_status" value="">
                   All statuses
                 </option>
 
-                <option value="draft">
+                <option className="admin_characters_page_option_draft" value="draft">
                   Draft
                 </option>
 
-                <option value="submitted">
+                <option className="admin_characters_page_option_submitted" value="submitted">
                   Submitted
                 </option>
 
-                <option value="approved">
+                <option className="admin_characters_page_option_approved" value="approved">
                   Approved
                 </option>
 
-                <option value="rejected">
+                <option className="admin_characters_page_option_rejected" value="rejected">
                   Rejected
                 </option>
               </select>
@@ -347,14 +347,14 @@ export default async function AdminCharactersPage({
               <select
                 name="race"
                 defaultValue={raceFilter}
-                className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
+                className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] admin_characters_page_select_race"
               >
-                <option value="">
+                <option className="admin_characters_page_option_race" value="">
                   All Ancestries
                 </option>
 
                 {races.map((race) => (
-                  <option
+                  <option className="admin_characters_page_option_option"
                     key={race.id}
                     value={race.id}
                   >
@@ -370,15 +370,15 @@ export default async function AdminCharactersPage({
                 defaultValue={
                   associationFilter
                 }
-                className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
+                className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] admin_characters_page_select_association"
               >
-                <option value="">
+                <option className="admin_characters_page_option_association" value="">
                   All associations
                 </option>
 
                 {associations.map(
                   (association) => (
-                    <option
+                    <option className="admin_characters_page_option_option_2"
                       key={association.id}
                       value={association.id}
                     >
@@ -390,7 +390,7 @@ export default async function AdminCharactersPage({
             </FilterField>
           </div>
 
-          <div className="mt-4 flex flex-wrap justify-end gap-3">
+          <div className="mt-4 flex flex-wrap justify-end gap-3 admin_characters_page_div_container_5">
             {filtersAreActive ? (
               <Link
                 href="/admin/characters"
@@ -402,14 +402,14 @@ export default async function AdminCharactersPage({
 
             <button
               type="submit"
-              className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
+              className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))] admin_characters_page_button_apply_filters"
             >
               Apply filters
             </button>
           </div>
         </form>
 
-        <div className="mt-6 space-y-4">
+        <div className="mt-6 space-y-4 admin_characters_page_div_container_6">
           {filteredCharacters.map(
             (character) => {
               const displayName =
@@ -428,15 +428,15 @@ export default async function AdminCharactersPage({
               return (
                 <section
                   key={character.id}
-                  className={`overflow-hidden border bg-[rgb(var(--sep-colour-15100d))] ${
+                  className={[((`overflow-hidden border bg-[rgb(var(--sep-colour-15100d))] ${
                     character.status === "submitted"
                       ? "border-[rgb(var(--sep-colour-b17a35))] shadow-[0_0_20px_rgba(var(--sep-rgb-177-122-53),0.18)]"
                       : "border-[rgb(var(--sep-colour-60482e))]/45"
-                  }`}
+                  }`)), "admin_characters_page_section_section_2"].filter(Boolean).join(" ")}
                 >
-                  <div className="grid lg:grid-cols-[110px_minmax(0,1fr)_210px]">
-                    <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-0f0b09))] p-4 lg:border-b-0 lg:border-r">
-                      <div className="relative mx-auto aspect-[3/4] w-[78px] overflow-hidden border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-090706))]">
+                  <div className="grid lg:grid-cols-[110px_minmax(0,1fr)_210px] admin_characters_page_div_container_7">
+                    <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-0f0b09))] p-4 lg:border-b-0 lg:border-r admin_characters_page_div_container_8">
+                      <div className="relative mx-auto aspect-[3/4] w-[78px] overflow-hidden border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-090706))] admin_characters_page_div_container_9">
                         {character.portrait_url ? (
                           <Image
                             src={
@@ -448,7 +448,7 @@ export default async function AdminCharactersPage({
                             className="object-cover"
                           />
                         ) : (
-                          <div className="flex h-full items-center justify-center font-serif text-2xl text-[rgb(var(--sep-colour-705334))]">
+                          <div className="flex h-full items-center justify-center font-serif text-2xl text-[rgb(var(--sep-colour-705334))] admin_characters_page_div_container_10">
                             {character.first_name
                               .charAt(0)
                               .toUpperCase()}
@@ -460,23 +460,23 @@ export default async function AdminCharactersPage({
                       </div>
                     </div>
 
-                    <div className="p-5">
-                      <div className="flex flex-wrap items-start justify-between gap-3">
-                        <div>
-                          <div className="flex flex-wrap items-center gap-3">
-                            <h3 className="font-serif text-2xl text-[rgb(var(--sep-colour-e3cda5))]">
+                    <div className="p-5 admin_characters_page_div_container_11">
+                      <div className="flex flex-wrap items-start justify-between gap-3 admin_characters_page_div_container_12">
+                        <div className="admin_characters_page_div_container_13">
+                          <div className="flex flex-wrap items-center gap-3 admin_characters_page_div_container_14">
+                            <h3 className="font-serif text-2xl text-[rgb(var(--sep-colour-e3cda5))] admin_characters_page_h3_heading">
                               {displayName}
                             </h3>
 
                             {character.status === "submitted" ? (
-                              <span className="animate-pulse border border-[rgb(var(--sep-colour-b17a35))]/80 bg-[rgb(var(--sep-colour-3a2512))] px-2 py-1 text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-f0c77f))]">
+                              <span className="animate-pulse border border-[rgb(var(--sep-colour-b17a35))]/80 bg-[rgb(var(--sep-colour-3a2512))] px-2 py-1 text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-f0c77f))] admin_characters_page_span_text_2">
                                 Awaiting review
                               </span>
                             ) : null}
                           </div>
 
                           {character.title ? (
-                            <p className="mt-1 text-xs italic text-[rgb(var(--sep-colour-9f8968))]">
+                            <p className="mt-1 text-xs italic text-[rgb(var(--sep-colour-9f8968))] admin_characters_page_p_text_3">
                               {character.title}
                             </p>
                           ) : null}
@@ -489,7 +489,7 @@ export default async function AdminCharactersPage({
                         />
                       </div>
 
-                      <div className="mt-5 grid gap-4 sm:grid-cols-3">
+                      <div className="mt-5 grid gap-4 sm:grid-cols-3 admin_characters_page_div_container_15">
                         <CharacterDetail
                           label="Ancestry"
                           value={
@@ -515,7 +515,7 @@ export default async function AdminCharactersPage({
                       </div>
                     </div>
 
-                    <div className="flex flex-col justify-center gap-3 border-t border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] p-5 lg:border-l lg:border-t-0">
+                    <div className="flex flex-col justify-center gap-3 border-t border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] p-5 lg:border-l lg:border-t-0 admin_characters_page_div_container_16">
                       <Link
                         href={`/admin/characters/${character.id}`}
                         className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-3 text-center text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))]"
@@ -537,8 +537,8 @@ export default async function AdminCharactersPage({
           )}
 
           {filteredCharacters.length === 0 ? (
-            <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-10 text-center">
-              <p className="font-serif text-xl text-[rgb(var(--sep-colour-b9a88f))]">
+            <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-10 text-center admin_characters_page_section_section_3">
+              <p className="font-serif text-xl text-[rgb(var(--sep-colour-b9a88f))] admin_characters_page_p_text_4">
                 No characters match the selected
                 filters.
               </p>
@@ -567,8 +567,8 @@ function FilterField({
   children: React.ReactNode;
 }) {
   return (
-    <label className="block">
-      <span className="mb-2 block text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
+    <label className="block admin_characters_page_label_label">
+      <span className="mb-2 block text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))] admin_characters_page_span_text_3">
         {label}
       </span>
 
@@ -585,12 +585,12 @@ function CharacterDetail({
   value: string;
 }) {
   return (
-    <div>
-      <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
+    <div className="admin_characters_page_div_container_17">
+      <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))] admin_characters_page_p_text_5">
         {label}
       </p>
 
-      <p className="mt-2 text-sm text-[rgb(var(--sep-colour-c9b99e))]">
+      <p className="mt-2 text-sm text-[rgb(var(--sep-colour-c9b99e))] admin_characters_page_p_text_6">
         {value}
       </p>
     </div>
@@ -615,7 +615,7 @@ function StatusBadge({
 
   return (
     <span
-      className={`border bg-black/20 px-2.5 py-1 text-[8px] uppercase tracking-[0.18em] ${classes[status]}`}
+      className={[((`border bg-black/20 px-2.5 py-1 text-[8px] uppercase tracking-[0.18em] ${classes[status]}`)), "admin_characters_page_span_text_4"].filter(Boolean).join(" ")}
     >
       {status}
     </span>

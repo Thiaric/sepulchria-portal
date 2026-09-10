@@ -157,18 +157,16 @@ export function PublicCodex({
   ) {
     return (
       <main
-        className={
-          embedded
+        className={[((embedded
             ? "h-full min-h-0 overflow-y-auto bg-[rgb(var(--sep-colour-090705))] px-5 py-8 text-[rgb(var(--sep-colour-d6c3a3))]"
-            : "min-h-screen bg-[rgb(var(--sep-colour-090705))] px-5 py-8 text-[rgb(var(--sep-colour-d6c3a3))]"
-        }
+            : "min-h-screen bg-[rgb(var(--sep-colour-090705))] px-5 py-8 text-[rgb(var(--sep-colour-d6c3a3))]")), "components_codex_public_codex_main_main"].filter(Boolean).join(" ")}
       >
-        <div className="mx-auto max-w-7xl border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-120e0b))] p-6 text-center">
-          <h1 className="font-serif text-3xl text-[rgb(var(--sep-colour-ead5ac))]">
+        <div className="mx-auto max-w-7xl border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-120e0b))] p-6 text-center components_codex_public_codex_div_codex_first">
+          <h1 className="font-serif text-3xl text-[rgb(var(--sep-colour-ead5ac))] components_codex_public_codex_h1_codex_first">
             The Codex of the First
           </h1>
 
-          <p className="mt-2 text-sm text-[rgb(var(--sep-colour-9e907d))]">
+          <p className="mt-2 text-sm text-[rgb(var(--sep-colour-9e907d))] components_codex_public_codex_p_codex_first">
             No published Codex chapters
             are available yet.
           </p>
@@ -179,32 +177,30 @@ export function PublicCodex({
 
   return (
     <main
-      className={
-        embedded
+      className={[((embedded
           ? "flex h-full min-h-0 flex-col overflow-hidden bg-[rgb(var(--sep-colour-090705))] text-[rgb(var(--sep-colour-d6c3a3))]"
-          : "min-h-screen bg-[rgb(var(--sep-colour-090705))] text-[rgb(var(--sep-colour-d6c3a3))]"
-      }
+          : "min-h-screen bg-[rgb(var(--sep-colour-090705))] text-[rgb(var(--sep-colour-d6c3a3))]")), "components_codex_public_codex_main_main_2"].filter(Boolean).join(" ")}
     >
       {/* COMPACT CODEX HEADER */}
       <header
-        className={[
+        className={[(([
           "border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-0d0a08))]",
           embedded ? "shrink-0" : "",
-        ].join(" ")}
+        ].join(" "))), "components_codex_public_codex_header_header"].filter(Boolean).join(" ")}
       >
-        <div className="mx-auto max-w-7xl px-5 py-5 sm:px-8">
-          <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
-            <div>
-              <p className="text-[7px] uppercase tracking-[0.32em] text-[rgb(var(--sep-colour-92734d))]">
+        <div className="mx-auto max-w-7xl px-5 py-5 sm:px-8 components_codex_public_codex_div_container">
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between sm:gap-6 components_codex_public_codex_div_container_2">
+            <div className="components_codex_public_codex_div_codex_first_2">
+              <p className="text-[7px] uppercase tracking-[0.32em] text-[rgb(var(--sep-colour-92734d))] components_codex_public_codex_p_codex_first_2">
                 Aureth · Public Record
               </p>
 
-              <h1 className="mt-1 font-serif text-3xl leading-none text-[rgb(var(--sep-colour-ead5ac))] sm:text-4xl">
+              <h1 className="mt-1 font-serif text-3xl leading-none text-[rgb(var(--sep-colour-ead5ac))] sm:text-4xl components_codex_public_codex_h1_codex_first_2">
                 The Codex of the First
               </h1>
             </div>
 
-            <p className="max-w-xl text-xs leading-5 text-[rgb(var(--sep-colour-8f8271))] sm:text-right">
+            <p className="max-w-xl text-xs leading-5 text-[rgb(var(--sep-colour-8f8271))] sm:text-right components_codex_public_codex_p_text">
               Ten chapters preserving
               the known history and lore
               of Aureth.
@@ -216,14 +212,14 @@ export function PublicCodex({
       {/* CHAPTER NAVIGATION */}
       <div
         id="codex-chapter-navigation"
-        className={[
+        className={[(([
           "scroll-mt-4 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))]",
           embedded ? "shrink-0" : "",
-        ].join(" ")}
+        ].join(" "))), "components_codex_public_codex_div_codex_chapter_navigation"].filter(Boolean).join(" ")}
       >
         <nav
           aria-label="Codex chapters"
-          className="mx-auto grid max-w-7xl grid-cols-5 px-3 sm:grid-cols-10 sm:px-5"
+          className="mx-auto grid max-w-7xl grid-cols-5 px-3 sm:grid-cols-10 sm:px-5 components_codex_public_codex_nav_codex_chapters"
         >
           {orderedChapters.map(
             (chapter) => {
@@ -242,11 +238,11 @@ export function PublicCodex({
                     )
                   }
                   title={`Chapter ${chapter.chapter_number}: ${chapter.title}`}
-                  className={`h-10 border-x border-[rgb(var(--sep-colour-4c3926))]/25 px-1 font-serif text-sm transition ${
+                  className={[((`h-10 border-x border-[rgb(var(--sep-colour-4c3926))]/25 px-1 font-serif text-sm transition ${
                     active
                       ? "bg-[rgb(var(--sep-colour-2b1f14))] text-[rgb(var(--sep-colour-e6c68f))]"
                       : "text-[rgb(var(--sep-colour-796342))] hover:bg-[rgb(var(--sep-colour-19120d))] hover:text-[rgb(var(--sep-colour-c9ad7c))]"
-                  }`}
+                  }`)), "components_codex_public_codex_button_action"].filter(Boolean).join(" ")}
                 >
                   {
                     ROMAN_NUMERALS[
@@ -264,22 +260,20 @@ export function PublicCodex({
       {selectedChapter ? (
         <article
           id="codex-chapter"
-          className={
-            embedded
+          className={[((embedded
               ? "flex min-h-0 flex-1 flex-col overflow-hidden"
-              : undefined
-          }
+              : undefined)), "components_codex_public_codex_article_codex_chapter"].filter(Boolean).join(" ")}
         >
           {/* CHAPTER TITLE */}
           <section
-            className={[
+            className={[(([
               "border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))]",
               embedded ? "shrink-0" : "",
-            ].join(" ")}
+            ].join(" "))), "components_codex_public_codex_section_codex_chapter"].filter(Boolean).join(" ")}
           >
-            <div className="mx-auto max-w-7xl px-5 py-5 sm:px-8">
-              <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-5">
-                <p className="shrink-0 text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-997446))]">
+            <div className="mx-auto max-w-7xl px-5 py-5 sm:px-8 components_codex_public_codex_div_codex_chapter">
+              <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-5 components_codex_public_codex_div_codex_chapter_2">
+                <p className="shrink-0 text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-997446))] components_codex_public_codex_p_codex_chapter">
                   Chapter{" "}
                   {
                     ROMAN_NUMERALS[
@@ -289,7 +283,7 @@ export function PublicCodex({
                   }
                 </p>
 
-                <h2 className="font-serif text-2xl leading-tight text-[rgb(var(--sep-colour-ead5ac))] sm:text-3xl">
+                <h2 className="font-serif text-2xl leading-tight text-[rgb(var(--sep-colour-ead5ac))] sm:text-3xl components_codex_public_codex_h2_codex_chapter">
                   {
                     selectedChapter.title
                   }
@@ -306,13 +300,11 @@ export function PublicCodex({
                 ? "codex-chapter-scroll"
                 : undefined
             }
-            className={
-              embedded
+            className={[((embedded
                 ? "mx-auto min-h-0 w-full max-w-7xl flex-1 overflow-y-auto overscroll-contain px-5 py-5 sm:px-8"
-                : "mx-auto max-w-7xl px-5 py-5 sm:px-8"
-            }
+                : "mx-auto max-w-7xl px-5 py-5 sm:px-8")), "components_codex_public_codex_section_codex_chapter_2"].filter(Boolean).join(" ")}
           >
-            <div className="border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-120e0b))] px-5 py-6 sm:px-8 sm:py-7">
+            <div className="border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-120e0b))] px-5 py-6 sm:px-8 sm:py-7 components_codex_public_codex_div_codex_chapter_3">
               {selectedChapter.body?.trim() ? (
                 <RichTextContentClient
                   body={
@@ -321,13 +313,13 @@ export function PublicCodex({
                   className="mx-auto max-w-5xl text-[15px] leading-8 text-[rgb(var(--sep-colour-c0af95))] [&_h1]:mt-8 [&_h1]:font-serif [&_h1]:text-3xl [&_h1]:text-[rgb(var(--sep-colour-e2cba0))] [&_h2]:mt-7 [&_h2]:font-serif [&_h2]:text-2xl [&_h2]:text-[rgb(var(--sep-colour-dec69c))] [&_h3]:mt-6 [&_h3]:font-serif [&_h3]:text-xl [&_h3]:text-[rgb(var(--sep-colour-d2b98e))] [&_p]:mb-4"
                 />
               ) : (
-                <div className="py-8 text-center">
-                  <p className="font-serif text-lg text-[rgb(var(--sep-colour-a9916e))]">
+                <div className="py-8 text-center components_codex_public_codex_div_container_3">
+                  <p className="font-serif text-lg text-[rgb(var(--sep-colour-a9916e))] components_codex_public_codex_p_text_2">
                     This chapter has no
                     published content.
                   </p>
 
-                  <p className="mt-1 text-xs text-[rgb(var(--sep-colour-756b5e))]">
+                  <p className="mt-1 text-xs text-[rgb(var(--sep-colour-756b5e))] components_codex_public_codex_p_text_3">
                     Staff can add content
                     from Codex administration.
                   </p>
@@ -387,7 +379,7 @@ function ChapterFooterNavigation({
       : null;
 
   return (
-    <div className="mt-3 flex items-stretch justify-between gap-3">
+    <div className="mt-3 flex items-stretch justify-between gap-3 components_codex_public_codex_div_container_4">
       {previous ? (
         <button
           type="button"
@@ -397,18 +389,18 @@ function ChapterFooterNavigation({
               true,
             )
           }
-          className="min-w-0 flex-1 border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-left transition hover:border-[rgb(var(--sep-colour-85633a))] hover:bg-[rgb(var(--sep-colour-19120d))]"
+          className="min-w-0 flex-1 border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-left transition hover:border-[rgb(var(--sep-colour-85633a))] hover:bg-[rgb(var(--sep-colour-19120d))] components_codex_public_codex_button_action_2"
         >
-          <span className="block text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-756550))]">
+          <span className="block text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-756550))] components_codex_public_codex_span_text">
             ← Previous
           </span>
 
-          <span className="mt-1 block truncate font-serif text-sm text-[rgb(var(--sep-colour-bca47e))]">
+          <span className="mt-1 block truncate font-serif text-sm text-[rgb(var(--sep-colour-bca47e))] components_codex_public_codex_span_text_2">
             {previous.title}
           </span>
         </button>
       ) : (
-        <div className="flex-1" />
+        <div className="flex-1 components_codex_public_codex_div_container_5" />
       )}
 
       {next ? (
@@ -420,18 +412,18 @@ function ChapterFooterNavigation({
               true,
             )
           }
-          className="min-w-0 flex-1 border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-right transition hover:border-[rgb(var(--sep-colour-85633a))] hover:bg-[rgb(var(--sep-colour-19120d))]"
+          className="min-w-0 flex-1 border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-right transition hover:border-[rgb(var(--sep-colour-85633a))] hover:bg-[rgb(var(--sep-colour-19120d))] components_codex_public_codex_button_action_3"
         >
-          <span className="block text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-756550))]">
+          <span className="block text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-756550))] components_codex_public_codex_span_text_3">
             Next →
           </span>
 
-          <span className="mt-1 block truncate font-serif text-sm text-[rgb(var(--sep-colour-bca47e))]">
+          <span className="mt-1 block truncate font-serif text-sm text-[rgb(var(--sep-colour-bca47e))] components_codex_public_codex_span_text_4">
             {next.title}
           </span>
         </button>
       ) : (
-        <div className="flex-1" />
+        <div className="flex-1 components_codex_public_codex_div_container_6" />
       )}
     </div>
   );

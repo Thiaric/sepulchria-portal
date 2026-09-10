@@ -237,7 +237,7 @@ const [isEmbeddedPortal, setIsEmbeddedPortal] =
 
   return (
     <PortalSkinContext.Provider value={value}>
-      <div className="contents portal-skin-scope">
+      <div className="contents portal-skin-scope components_portal_portal_skin_provider_div_container">
   {children}
   {isEmbeddedPortal ? <CosmeticRuntime /> : null}
   <PortalSkinAtmosphere skin={skin} />

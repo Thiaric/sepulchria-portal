@@ -44,43 +44,37 @@ export function CharacterHealthDisplay({
 
   return (
     <section
-      className={
-        compact
+      className={[((compact
           ? "border border-[rgb(var(--sep-colour-60482e))]/45 bg-black/15 px-4 py-3"
-          : "border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 p-5 sm:p-6"
-      }
+          : "border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 p-5 sm:p-6")), "components_characters_character_health_display_section_section"].filter(Boolean).join(" ")}
     >
-      <div className="flex items-end justify-between gap-4">
-        <div>
-          <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
+      <div className="flex items-end justify-between gap-4 components_characters_character_health_display_div_container">
+        <div className="components_characters_character_health_display_div_health">
+          <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))] components_characters_character_health_display_p_health">
             Vital condition
           </p>
 
           <h2
-            className={
-              compact
+            className={[((compact
                 ? "mt-1 font-serif text-lg text-[rgb(var(--sep-colour-dec89f))]"
-                : "mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dec89f))]"
-            }
+                : "mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dec89f))]")), "components_characters_character_health_display_h2_health"].filter(Boolean).join(" ")}
           >
             Health
           </h2>
         </div>
 
         <p
-          className={
-            compact
+          className={[((compact
               ? "font-serif text-lg text-[rgb(var(--sep-colour-e1c28d))]"
-              : "font-serif text-2xl text-[rgb(var(--sep-colour-e1c28d))]"
-          }
+              : "font-serif text-2xl text-[rgb(var(--sep-colour-e1c28d))]")), "components_characters_character_health_display_p_text"].filter(Boolean).join(" ")}
         >
           {healthText}
         </p>
       </div>
 
-      <div className="mt-3 h-2 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0d0907))]">
+      <div className="mt-3 h-2 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0d0907))] components_characters_character_health_display_div_container_2">
         <div
-          className="h-full bg-gradient-to-r from-[rgb(var(--sep-colour-7b2f2a))] via-[rgb(var(--sep-colour-a94f3f))] to-[rgb(var(--sep-colour-c26a50))] transition-[width] duration-300"
+          className="h-full bg-gradient-to-r from-[rgb(var(--sep-colour-7b2f2a))] via-[rgb(var(--sep-colour-a94f3f))] to-[rgb(var(--sep-colour-c26a50))] transition-[width] duration-300 components_characters_character_health_display_div_container_3"
           style={{
             width: `${percentage}%`,
           }}
@@ -88,11 +82,11 @@ export function CharacterHealthDisplay({
       </div>
 
       {maxHealth === null ? (
-        <p className="mt-3 text-[10px] italic leading-5 text-[rgb(var(--sep-colour-756957))]">
+        <p className="mt-3 text-[10px] italic leading-5 text-[rgb(var(--sep-colour-756957))] components_characters_character_health_display_p_text_2">
           Health will be calculated when Vigor is assigned.
         </p>
       ) : (
-        <p className="mt-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-776957))]">
+        <p className="mt-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-776957))] components_characters_character_health_display_p_text_3">
           Maximum Health = Vigor × 10
         </p>
       )}

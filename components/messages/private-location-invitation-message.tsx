@@ -89,7 +89,7 @@ export function PrivateLocationInvitationMessage({
 
   if (!state) {
     return (
-      <p>
+      <p className="components_messages_private_location_invitation_message_p_text">
         Private Location invitation
       </p>
     );
@@ -97,12 +97,12 @@ export function PrivateLocationInvitationMessage({
 
   if (state.status !== "pending") {
     return (
-      <div className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-black/10 p-3">
-        <p className="font-serif text-base">
+      <div className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-black/10 p-3 components_messages_private_location_invitation_message_div_container">
+        <p className="font-serif text-base components_messages_private_location_invitation_message_p_text_2">
           {state.roomName}
         </p>
 
-        <p className="mt-1 text-[8px] uppercase tracking-[0.15em] opacity-60">
+        <p className="mt-1 text-[8px] uppercase tracking-[0.15em] opacity-60 components_messages_private_location_invitation_message_p_text_3">
           Invitation {state.status}
         </p>
       </div>
@@ -110,27 +110,27 @@ export function PrivateLocationInvitationMessage({
   }
 
   return (
-    <div className="border border-[rgb(var(--sep-colour-80613c))]/60 bg-black/10 p-3">
-      <p className="text-[8px] uppercase tracking-[0.16em] opacity-60">
+    <div className="border border-[rgb(var(--sep-colour-80613c))]/60 bg-black/10 p-3 components_messages_private_location_invitation_message_div_container_2">
+      <p className="text-[8px] uppercase tracking-[0.16em] opacity-60 components_messages_private_location_invitation_message_p_text_4">
         Private Location invitation
       </p>
 
-      <p className="mt-1 font-serif text-lg">
+      <p className="mt-1 font-serif text-lg components_messages_private_location_invitation_message_p_text_5">
         {state.roomName}
       </p>
 
-      <div className="mt-3 flex gap-2">
-        <form
+      <div className="mt-3 flex gap-2 components_messages_private_location_invitation_message_div_container_3">
+        <form className="components_messages_private_location_invitation_message_form_respond_private_location_invitation"
           action={
             respondPrivateLocationInvitation
           }
         >
-          <input
+          <input className="components_messages_private_location_invitation_message_input_invitation_id"
             type="hidden"
             name="invitationId"
             value={invitationId}
           />
-          <input
+          <input className="components_messages_private_location_invitation_message_input_response"
             type="hidden"
             name="response"
             value="refuse"
@@ -138,23 +138,23 @@ export function PrivateLocationInvitationMessage({
 
           <button
             type="submit"
-            className="border border-[rgb(var(--sep-colour-7b443b))] bg-[rgb(var(--sep-colour-2a1513))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d7a39a))]"
+            className="border border-[rgb(var(--sep-colour-7b443b))] bg-[rgb(var(--sep-colour-2a1513))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d7a39a))] components_messages_private_location_invitation_message_button_refuse"
           >
             Refuse
           </button>
         </form>
 
-        <form
+        <form className="components_messages_private_location_invitation_message_form_respond_private_location_invitation_2"
           action={
             respondPrivateLocationInvitation
           }
         >
-          <input
+          <input className="components_messages_private_location_invitation_message_input_invitation_id_2"
             type="hidden"
             name="invitationId"
             value={invitationId}
           />
-          <input
+          <input className="components_messages_private_location_invitation_message_input_response_2"
             type="hidden"
             name="response"
             value="accept"
@@ -162,7 +162,7 @@ export function PrivateLocationInvitationMessage({
 
           <button
             type="submit"
-            className="border border-[rgb(var(--sep-colour-668657))] bg-[rgb(var(--sep-colour-172313))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-b8d8a7))]"
+            className="border border-[rgb(var(--sep-colour-668657))] bg-[rgb(var(--sep-colour-172313))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-b8d8a7))] components_messages_private_location_invitation_message_button_accept_enter"
           >
             Accept & enter
           </button>

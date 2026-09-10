@@ -500,7 +500,7 @@ export function CharacterMusicPlayer({
   return (
     <section
       ref={playerRef}
-      className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-120e0b))] px-4 py-3 sm:px-5"
+      className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-120e0b))] px-4 py-3 sm:px-5 components_characters_character_music_player_section_section"
     >
       <audio
         ref={setAudioElement}
@@ -570,7 +570,7 @@ export function CharacterMusicPlayer({
         }}
       />
 
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3 components_characters_character_music_player_div_container">
         <button
           type="button"
           onClick={() => {
@@ -587,22 +587,22 @@ export function CharacterMusicPlayer({
               ? "Pause"
               : "Play"
           }
-          className="flex h-9 w-9 shrink-0 items-center justify-center border border-[rgb(var(--sep-colour-765937))]/70 bg-[rgb(var(--sep-colour-1b140f))] text-sm text-[rgb(var(--sep-colour-d4b77f))] transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:text-[rgb(var(--sep-colour-f0d49d))] disabled:cursor-not-allowed disabled:opacity-40"
+          className="flex h-9 w-9 shrink-0 items-center justify-center border border-[rgb(var(--sep-colour-765937))]/70 bg-[rgb(var(--sep-colour-1b140f))] text-sm text-[rgb(var(--sep-colour-d4b77f))] transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:text-[rgb(var(--sep-colour-f0d49d))] disabled:cursor-not-allowed disabled:opacity-40 components_characters_character_music_player_button_action"
         >
           {playing
             ? "Ⅱ"
             : "▶"}
         </button>
 
-        <div className="min-w-[150px] flex-1">
-          <div className="flex items-center justify-between gap-3">
-            <div className="min-w-0">
-              <p className="text-[7px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
+        <div className="min-w-[150px] flex-1 components_characters_character_music_player_div_container_2">
+          <div className="flex items-center justify-between gap-3 components_characters_character_music_player_div_container_3">
+            <div className="min-w-0 components_characters_character_music_player_div_container_4">
+              <p className="text-[7px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))] components_characters_character_music_player_p_text">
                 Music
               </p>
             </div>
 
-            <span className="shrink-0 text-[9px] tabular-nums text-[rgb(var(--sep-colour-776b5c))]">
+            <span className="shrink-0 text-[9px] tabular-nums text-[rgb(var(--sep-colour-776b5c))] components_characters_character_music_player_span_text">
               {formatTime(
                 currentTime,
               )}
@@ -639,7 +639,7 @@ export function CharacterMusicPlayer({
               duration <= 0
             }
             aria-label="Seek character music"
-            className="mt-2 h-1.5 w-full cursor-pointer accent-[rgb(var(--sep-colour-a77b43))] disabled:cursor-not-allowed disabled:opacity-40"
+            className="mt-2 h-1.5 w-full cursor-pointer accent-[rgb(var(--sep-colour-a77b43))] disabled:cursor-not-allowed disabled:opacity-40 components_characters_character_music_player_input_seek_character_music"
           />
         </div>
 
@@ -663,12 +663,12 @@ export function CharacterMusicPlayer({
                 ? "Unmute this track"
                 : "Mute this track"
           }
-          className={`flex h-9 w-9 shrink-0 items-center justify-center border bg-[rgb(var(--sep-colour-15100d))] text-xs transition ${
+          className={[((`flex h-9 w-9 shrink-0 items-center justify-center border bg-[rgb(var(--sep-colour-15100d))] text-xs transition ${
             portalMuted ||
             localMuted
               ? "border-[rgb(var(--sep-colour-65443b))] text-[rgb(var(--sep-colour-a56f64))]"
               : "border-[rgb(var(--sep-colour-60482e))]/60 text-[rgb(var(--sep-colour-c6a26d))] hover:border-[rgb(var(--sep-colour-987344))] hover:text-[rgb(var(--sep-colour-ead2a5))]"
-          }`}
+          }`)), "components_characters_character_music_player_button_toggle_local_mute"].filter(Boolean).join(" ")}
         >
           {portalMuted ||
           localMuted
@@ -676,8 +676,8 @@ export function CharacterMusicPlayer({
             : "♫"}
         </button>
 
-        <label className="hidden w-24 shrink-0 items-center gap-2 sm:flex">
-          <span className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6253))]">
+        <label className="hidden w-24 shrink-0 items-center gap-2 sm:flex components_characters_character_music_player_label_label">
+          <span className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6253))] components_characters_character_music_player_span_text_2">
             Vol
           </span>
 
@@ -696,19 +696,19 @@ export function CharacterMusicPlayer({
               );
             }}
             aria-label="Character music volume"
-            className="h-1.5 min-w-0 flex-1 cursor-pointer accent-[rgb(var(--sep-colour-a77b43))]"
+            className="h-1.5 min-w-0 flex-1 cursor-pointer accent-[rgb(var(--sep-colour-a77b43))] components_characters_character_music_player_input_character_music_volume"
           />
         </label>
       </div>
 
       {portalMuted ? (
-        <p className="mt-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-7d655d))]">
+        <p className="mt-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-7d655d))] components_characters_character_music_player_p_text_2">
           Muted by the portal sound control
         </p>
       ) : null}
 
       {error ? (
-        <p className="mt-2 text-xs text-[rgb(var(--sep-colour-b47c70))]">
+        <p className="mt-2 text-xs text-[rgb(var(--sep-colour-b47c70))] components_characters_character_music_player_p_text_3">
           This music link could not be played. Use a direct browser-playable audio URL.
         </p>
       ) : null}

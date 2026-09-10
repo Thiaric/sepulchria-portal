@@ -120,14 +120,14 @@ last_seen_at:
    */
 
   return (
-    <div className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-3">
-      <div className="flex items-center justify-between gap-3">
-        <div>
-          <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))]">
+    <div className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-3 game_components_presenceheartbeat_div_container">
+      <div className="flex items-center justify-between gap-3 game_components_presenceheartbeat_div_container_2">
+        <div className="game_components_presenceheartbeat_div_container_3">
+          <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))] game_components_presenceheartbeat_p_text">
             Your presence
           </p>
 
-          <p className="mt-1 text-xs text-[rgb(var(--sep-colour-8f8271))]">
+          <p className="mt-1 text-xs text-[rgb(var(--sep-colour-8f8271))] game_components_presenceheartbeat_p_text_2">
             Visible activity status
           </p>
         </div>
@@ -141,24 +141,24 @@ last_seen_at:
                 .value as PresenceStatus,
             );
           }}
-          className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-271c12))] px-3 py-2 text-xs capitalize text-[rgb(var(--sep-colour-dfc79c))] outline-none transition focus:border-[rgb(var(--sep-colour-b28a52))] disabled:cursor-wait disabled:opacity-60"
+          className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-271c12))] px-3 py-2 text-xs capitalize text-[rgb(var(--sep-colour-dfc79c))] outline-none transition focus:border-[rgb(var(--sep-colour-b28a52))] disabled:cursor-wait disabled:opacity-60 game_components_presenceheartbeat_select_select"
         >
-          <option value="online">
+          <option className="game_components_presenceheartbeat_option_line" value="online">
             Online
           </option>
 
-          <option value="away">
+          <option className="game_components_presenceheartbeat_option_away" value="away">
             Away
           </option>
 
-          <option value="busy">
+          <option className="game_components_presenceheartbeat_option_busy" value="busy">
             Busy
           </option>
         </select>
       </div>
 
       {error ? (
-        <p className="mt-3 text-xs leading-5 text-[rgb(var(--sep-colour-d18b80))]">
+        <p className="mt-3 text-xs leading-5 text-[rgb(var(--sep-colour-d18b80))] game_components_presenceheartbeat_p_text_3">
           {error}
         </p>
       ) : null}

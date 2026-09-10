@@ -65,7 +65,7 @@ export function PortalCollapsibleColumns({
 
   return (
     <div
-      className="sepulchria-viewport-body mx-auto grid min-h-0 w-full flex-1 grid-cols-1 overflow-y-auto lg:overflow-hidden"
+      className="sepulchria-viewport-body mx-auto grid min-h-0 w-full flex-1 grid-cols-1 overflow-y-auto lg:overflow-hidden components_portal_portal_collapsible_columns_div_container"
       data-left-collapsed={
         ready && leftCollapsed ? "true" : "false"
       }
@@ -73,7 +73,7 @@ export function PortalCollapsibleColumns({
         ready && rightCollapsed ? "true" : "false"
       }
     >
-      <div className="portal-left-shell relative min-h-0 min-w-0">
+      <div className="portal-left-shell relative min-h-0 min-w-0 components_portal_portal_collapsible_columns_div_container_2">
         {left}
 
         <button
@@ -90,7 +90,7 @@ export function PortalCollapsibleColumns({
               ? "Show left sidebar"
               : "Hide left sidebar"
           }
-          className="portal-left-collapse-toggle"
+          className="portal-left-collapse-toggle components_portal_portal_collapsible_columns_button_toggle_left"
         >
           {leftCollapsed ? "›" : "‹"}
         </button>
@@ -98,12 +98,12 @@ export function PortalCollapsibleColumns({
 
       <div
         data-portal-centre-host
-        className="min-h-0 min-w-0"
+        className="min-h-0 min-w-0 components_portal_portal_collapsible_columns_div_container_3"
       >
         {centre}
       </div>
 
-      <div className="portal-right-shell relative min-h-0 min-w-0">
+      <div className="portal-right-shell relative min-h-0 min-w-0 components_portal_portal_collapsible_columns_div_container_4">
         {right}
 
         <button
@@ -120,7 +120,7 @@ export function PortalCollapsibleColumns({
               ? "Show right sidebar"
               : "Hide right sidebar"
           }
-          className="portal-right-collapse-toggle"
+          className="portal-right-collapse-toggle components_portal_portal_collapsible_columns_button_toggle_right"
         >
           {rightCollapsed ? "‹" : "›"}
         </button>

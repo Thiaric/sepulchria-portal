@@ -105,11 +105,9 @@ useEffect(() => {
   return (
     <form
       action={formAction}
-      className={
-        compact ? "" : "mt-3"
-      }
+      className={[((compact ? "" : "mt-3")), "components_missions_daily_reward_claim_form_form_action"].filter(Boolean).join(" ")}
     >
-      <input
+      <input className="components_missions_daily_reward_claim_input_field"
         type="hidden"
         name={claimField}
         value={claimId}
@@ -123,14 +121,14 @@ useEffect(() => {
           claimed ||
           pending
         }
-        className={[
+        className={[(([
           compact
             ? "px-3 py-2 text-[9px] uppercase tracking-[0.14em]"
             : "w-full px-3 py-2 text-[10px] uppercase tracking-[0.16em]",
           complete && !claimed
             ? "border border-[rgb(var(--sep-colour-d19a4c))] bg-[rgb(var(--sep-colour-50371f))] font-semibold text-[rgb(var(--sep-colour-ffe4b5))] shadow-[0_0_14px_rgba(var(--sep-rgb-209-154-76),0.22)] transition hover:border-[rgb(var(--sep-colour-e0b062))] hover:bg-[rgb(var(--sep-colour-654321))]"
             : "border border-[rgb(var(--sep-colour-765937))]/65 bg-[rgb(var(--sep-colour-21170f))] text-[rgb(var(--sep-colour-d9c092))] transition-colors disabled:cursor-not-allowed disabled:opacity-45",
-        ].join(" ")}
+        ].join(" "))), "components_missions_daily_reward_claim_button_action"].filter(Boolean).join(" ")}
       >
         {pending
           ? "Claiming..."
@@ -147,7 +145,7 @@ useEffect(() => {
         <p
           role="status"
           aria-live="polite"
-          className={[
+          className={[(([
             compact
               ? "mt-2 max-w-[290px] text-right"
               : "mt-2 text-center",
@@ -155,7 +153,7 @@ useEffect(() => {
             state.success
               ? "text-[rgb(var(--sep-colour-d8bf91))]"
               : "text-red-300",
-          ].join(" ")}
+          ].join(" "))), "components_missions_daily_reward_claim_p_status"].filter(Boolean).join(" ")}
         >
           {state.success ? "✦ " : ""}
           {state.success && reward

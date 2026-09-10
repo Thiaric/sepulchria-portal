@@ -128,16 +128,16 @@ export function AdminOrdersContext() {
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+    <div className="flex h-full min-h-0 flex-col components_portal_admin_orders_context_div_jump_orders">
+      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_orders_context_p_jump_orders">
         Administration
       </p>
 
-      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_portal_admin_orders_context_h2_jump_orders">
         Jump to Orders
       </h2>
 
-      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_orders_context_p_jump_orders_2">
         Jump directly to the Order you
         want to work on.
       </p>
@@ -145,34 +145,34 @@ export function AdminOrdersContext() {
       <button
         type="button"
         onClick={jumpToCreate}
-        className="mt-3 flex w-full items-center justify-between border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-271c12))] px-3 py-2.5 text-left text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d6b37d))] transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:bg-[rgb(var(--sep-colour-342318))]"
+        className="mt-3 flex w-full items-center justify-between border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-271c12))] px-3 py-2.5 text-left text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d6b37d))] transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:bg-[rgb(var(--sep-colour-342318))] components_portal_admin_orders_context_button_jump_create"
       >
-        <span>Create new</span>
-        <span>+</span>
+        <span className="components_portal_admin_orders_context_span_jump_orders">Create new</span>
+        <span className="components_portal_admin_orders_context_span_jump_orders_2">+</span>
       </button>
 
       {error ? (
-        <p className="mt-3 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-2.5 text-[10px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]">
+        <p className="mt-3 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-2.5 text-[10px] leading-5 text-[rgb(var(--sep-colour-d8a49a))] components_portal_admin_orders_context_p_jump_orders_3">
           {error}
         </p>
       ) : null}
 
-      <div className="mt-3 min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1">
+      <div className="mt-3 min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1 components_portal_admin_orders_context_div_jump_orders_2">
         {loading ? (
-          <div className="space-y-2">
+          <div className="space-y-2 components_portal_admin_orders_context_div_container">
             {Array.from({
               length: 6,
             }).map(
               (_, index) => (
                 <div
                   key={index}
-                  className="h-10 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]"
+                  className="h-10 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))] components_portal_admin_orders_context_div_container_2"
                 />
               ),
             )}
           </div>
         ) : (
-          <div className="space-y-1.5">
+          <div className="space-y-1.5 components_portal_admin_orders_context_div_container_3">
             {orders.map(
               (order) => (
                 <button
@@ -183,9 +183,9 @@ export function AdminOrdersContext() {
                       order.slug,
                     )
                   }
-                  className="group flex w-full items-center justify-between gap-2 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-left transition hover:border-[rgb(var(--sep-colour-8d693e))] hover:bg-[rgb(var(--sep-colour-1d150f))]"
+                  className="group flex w-full items-center justify-between gap-2 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-left transition hover:border-[rgb(var(--sep-colour-8d693e))] hover:bg-[rgb(var(--sep-colour-1d150f))] components_portal_admin_orders_context_button_action"
                 >
-                  <span className="min-w-0 truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
+                  <span className="min-w-0 truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] group-hover:text-[rgb(var(--sep-colour-ead0a0))] components_portal_admin_orders_context_span_text">
                     {order.name}
                   </span>
 
@@ -195,11 +195,11 @@ export function AdminOrdersContext() {
                         ? "Active"
                         : "Inactive"
                     }
-                    className={`h-1.5 w-1.5 shrink-0 rounded-full ${
+                    className={[((`h-1.5 w-1.5 shrink-0 rounded-full ${
                       order.is_active
                         ? "bg-emerald-600"
                         : "bg-[rgb(var(--sep-colour-66594b))]"
-                    }`}
+                    }`)), "components_portal_admin_orders_context_span_text_2"].filter(Boolean).join(" ")}
                   />
                 </button>
               ),
@@ -210,7 +210,7 @@ export function AdminOrdersContext() {
         {!loading &&
         !error &&
         orders.length === 0 ? (
-          <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-3 text-[11px] text-[rgb(var(--sep-colour-8f8271))]">
+          <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-3 text-[11px] text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_orders_context_p_text">
             No Orders found.
           </p>
         ) : null}

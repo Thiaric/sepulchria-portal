@@ -134,7 +134,7 @@ export function BreezeLodgingInvitationMessage({
 
   if (!state) {
     return (
-      <p>
+      <p className="components_messages_breeze_lodging_invitation_message_p_text">
         Breeze Lodgings invitation
       </p>
     );
@@ -142,12 +142,12 @@ export function BreezeLodgingInvitationMessage({
 
   if (state.status !== "pending") {
     return (
-      <div className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-black/10 p-3">
-        <p className="font-serif text-base">
+      <div className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-black/10 p-3 components_messages_breeze_lodging_invitation_message_div_container">
+        <p className="font-serif text-base components_messages_breeze_lodging_invitation_message_p_text_2">
           {state.roomName}
         </p>
 
-        <p className="mt-1 text-[8px] uppercase tracking-[0.15em] opacity-60">
+        <p className="mt-1 text-[8px] uppercase tracking-[0.15em] opacity-60 components_messages_breeze_lodging_invitation_message_p_text_3">
           Invitation {state.status}
         </p>
       </div>
@@ -155,27 +155,27 @@ export function BreezeLodgingInvitationMessage({
   }
 
   return (
-    <div className="border border-[rgb(var(--sep-colour-80613c))]/60 bg-black/10 p-3">
-      <p className="text-[8px] uppercase tracking-[0.16em] opacity-60">
+    <div className="border border-[rgb(var(--sep-colour-80613c))]/60 bg-black/10 p-3 components_messages_breeze_lodging_invitation_message_div_container_2">
+      <p className="text-[8px] uppercase tracking-[0.16em] opacity-60 components_messages_breeze_lodging_invitation_message_p_text_4">
         The Breeze Lodgings
       </p>
 
-      <p className="mt-1 font-serif text-lg">
+      <p className="mt-1 font-serif text-lg components_messages_breeze_lodging_invitation_message_p_text_5">
         {state.roomName}
       </p>
 
-      <p className="mt-1 text-[9px] opacity-70">
+      <p className="mt-1 text-[9px] opacity-70 components_messages_breeze_lodging_invitation_message_p_text_6">
         You have been invited to enter this room.
       </p>
 
-      <div className="mt-3 flex gap-2">
+      <div className="mt-3 flex gap-2 components_messages_breeze_lodging_invitation_message_div_container_3">
         <button
           type="button"
           disabled={pending}
           onClick={() =>
             respond("refuse")
           }
-          className="border border-[rgb(var(--sep-colour-7b443b))] bg-[rgb(var(--sep-colour-2a1513))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d7a39a))] disabled:opacity-40"
+          className="border border-[rgb(var(--sep-colour-7b443b))] bg-[rgb(var(--sep-colour-2a1513))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d7a39a))] disabled:opacity-40 components_messages_breeze_lodging_invitation_message_button_refuse"
         >
           Refuse
         </button>
@@ -186,14 +186,14 @@ export function BreezeLodgingInvitationMessage({
           onClick={() =>
             respond("accept")
           }
-          className="border border-[rgb(var(--sep-colour-668657))] bg-[rgb(var(--sep-colour-172313))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-b8d8a7))] disabled:opacity-40"
+          className="border border-[rgb(var(--sep-colour-668657))] bg-[rgb(var(--sep-colour-172313))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-b8d8a7))] disabled:opacity-40 components_messages_breeze_lodging_invitation_message_button_accept_enter"
         >
           Accept & enter
         </button>
       </div>
 
       {message ? (
-        <p className="mt-2 text-[8px] opacity-75">
+        <p className="mt-2 text-[8px] opacity-75 components_messages_breeze_lodging_invitation_message_p_text_7">
           {message}
         </p>
       ) : null}

@@ -395,17 +395,17 @@ export function InteractiveWorldMap({
       : "Map of Sepulchria";
 
   return (
-    <section className="relative z-10 overflow-visible border border-[rgb(var(--sep-colour-654c2f))]/50 bg-[rgb(var(--sep-colour-100c09))]">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-654c2f))]/40 bg-[rgb(var(--sep-colour-17110d))] px-4 py-2">
-        <div>
-          <p className="text-[8px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-96734a))]">
+    <section className="relative z-10 overflow-visible border border-[rgb(var(--sep-colour-654c2f))]/50 bg-[rgb(var(--sep-colour-100c09))] components_portal_interactive_world_map_section_section">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-654c2f))]/40 bg-[rgb(var(--sep-colour-17110d))] px-4 py-2 components_portal_interactive_world_map_div_container">
+        <div className="components_portal_interactive_world_map_div_container_2">
+          <p className="text-[8px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-96734a))] components_portal_interactive_world_map_p_text">
             Welcome to Aureth -
             Explore the World and
             choose where your story
             will continue
           </p>
 
-          <h2 className="mt-0 font-serif text-xl text-[rgb(var(--sep-colour-e4cda1))]">
+          <h2 className="mt-0 font-serif text-xl text-[rgb(var(--sep-colour-e4cda1))] components_portal_interactive_world_map_h2_heading">
             {level ===
             "continent"
               ? "Aureth - The Godscar"
@@ -420,7 +420,7 @@ export function InteractiveWorldMap({
   setHoveredArea(null);
   router.push("/");
 }}
-            className="border border-[rgb(var(--sep-colour-765735))]/80 bg-[rgb(var(--sep-colour-21170f))] px-4 py-2 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-9c8156))] transition hover:border-[rgb(var(--sep-colour-b28246))] hover:bg-[rgb(var(--sep-colour-332317))] hover:text-[rgb(var(--sep-colour-fad798))]"
+            className="border border-[rgb(var(--sep-colour-765735))]/80 bg-[rgb(var(--sep-colour-21170f))] px-4 py-2 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-9c8156))] transition hover:border-[rgb(var(--sep-colour-b28246))] hover:bg-[rgb(var(--sep-colour-332317))] hover:text-[rgb(var(--sep-colour-fad798))] components_portal_interactive_world_map_button_return_aureth"
           >
             ← Return to Aureth
           </button>
@@ -431,7 +431,7 @@ export function InteractiveWorldMap({
   setHoveredArea(null);
   router.push("/?map=sepulchria");
 }}
-            className="border border-[rgb(var(--sep-colour-765735))]/80 bg-[rgb(var(--sep-colour-21170f))] px-4 py-2 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-9c8156))] transition hover:border-[rgb(var(--sep-colour-b28246))] hover:bg-[rgb(var(--sep-colour-332317))] hover:text-[rgb(var(--sep-colour-fad798))]"
+            className="border border-[rgb(var(--sep-colour-765735))]/80 bg-[rgb(var(--sep-colour-21170f))] px-4 py-2 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-9c8156))] transition hover:border-[rgb(var(--sep-colour-b28246))] hover:bg-[rgb(var(--sep-colour-332317))] hover:text-[rgb(var(--sep-colour-fad798))] components_portal_interactive_world_map_button_go_sepulchria"
           >
              Go to Sepulchria →
           </button>
@@ -441,10 +441,10 @@ export function InteractiveWorldMap({
 
       <div
         ref={mapAreaRef}
-        className="flex w-full min-w-0 justify-center overflow-hidden bg-[rgb(var(--sep-colour-090705))]"
+        className="flex w-full min-w-0 justify-center overflow-hidden bg-[rgb(var(--sep-colour-090705))] components_portal_interactive_world_map_div_container_3"
       >
         <div
-          className="relative min-w-0 max-w-full overflow-hidden"
+          className="relative min-w-0 max-w-full overflow-hidden components_portal_interactive_world_map_div_container_4"
           style={
             mapSize
               ? {
@@ -462,12 +462,12 @@ export function InteractiveWorldMap({
           {/* CONTINENT MAP */}
 
           <div
-            className={`absolute inset-0 transition-all duration-700 ease-out ${
+            className={[((`absolute inset-0 transition-all duration-700 ease-out ${
               level ===
               "continent"
                 ? "pointer-events-auto translate-x-0 scale-100 opacity-100"
                 : "pointer-events-none -translate-x-[4%] scale-110 opacity-0"
-            }`}
+            }`)), "components_portal_interactive_world_map_div_container_5"].filter(Boolean).join(" ")}
             aria-hidden={
               level !==
               "continent"
@@ -549,7 +549,7 @@ export function InteractiveWorldMap({
     return (
       <div
         key={`continent-label-${hotspot.slug}`}
-        className="pointer-events-none absolute z-30 -translate-x-1/2 -translate-y-full whitespace-nowrap border border-[rgb(var(--sep-colour-8f6a3d))] bg-[rgb(var(--sep-colour-17110d))]/95 px-3 py-1.5 font-serif text-xs text-[rgb(var(--sep-skin-c1))] shadow-[0_8px_22px_rgba(var(--sep-rgb-0-0-0),0.85)]"
+        className="pointer-events-none absolute z-30 -translate-x-1/2 -translate-y-full whitespace-nowrap border border-[rgb(var(--sep-colour-8f6a3d))] bg-[rgb(var(--sep-colour-17110d))]/95 px-3 py-1.5 font-serif text-xs text-[rgb(var(--sep-skin-c1))] shadow-[0_8px_22px_rgba(var(--sep-rgb-0-0-0),0.85)] components_portal_interactive_world_map_div_container_6"
         style={{
           left: `${
             (
@@ -576,11 +576,11 @@ export function InteractiveWorldMap({
           {/* CITY MAP */}
 
           <div
-            className={`absolute inset-0 transition-all duration-700 ease-out ${
+            className={[((`absolute inset-0 transition-all duration-700 ease-out ${
               level === "city"
                 ? "pointer-events-auto translate-x-0 scale-100 opacity-100"
                 : "pointer-events-none translate-x-[5%] scale-110 opacity-0"
-            }`}
+            }`)), "components_portal_interactive_world_map_div_container_7"].filter(Boolean).join(" ")}
             aria-hidden={
               level !== "city"
             }
@@ -672,13 +672,13 @@ export function InteractiveWorldMap({
               return (
                 <div
   key={`label-${hotspot.slug}`}
-  className="pointer-events-none absolute z-30 -translate-x-1/2 -translate-y-full whitespace-nowrap border border-[rgb(var(--sep-colour-8f6a3d))] bg-[rgb(var(--sep-colour-17110d))]/95 px-3 py-1.5 font-serif text-xs shadow-[0_8px_22px_rgba(var(--sep-rgb-0-0-0),0.85)]"
+  className="pointer-events-none absolute z-30 -translate-x-1/2 -translate-y-full whitespace-nowrap border border-[rgb(var(--sep-colour-8f6a3d))] bg-[rgb(var(--sep-colour-17110d))]/95 px-3 py-1.5 font-serif text-xs shadow-[0_8px_22px_rgba(var(--sep-rgb-0-0-0),0.85)] components_portal_interactive_world_map_div_container_8"
   style={{
     left: `${(hotspot.labelX / 1536) * 100}%`,
     top: `${(hotspot.labelY / 1024) * 100}%`,
   }}
 >
-  <span data-skin-role="primary">
+  <span className="components_portal_interactive_world_map_span_text" data-skin-role="primary">
     {area.name}
   </span>
 </div>
@@ -688,10 +688,10 @@ export function InteractiveWorldMap({
             {hoveredDatabaseArea &&
 hoveredInfoPosition ? (
   <div
-    className="pointer-events-none absolute z-40 hidden w-[min(42%,26rem)] -translate-x-1/2 -translate-y-1/2 border border-[rgb(var(--sep-colour-8f6a3d))]/80 bg-[rgb(var(--sep-colour-120b09))]/95 px-4 py-3 text-center shadow-[0_12px_34px_rgba(var(--sep-rgb-0-0-0),0.9)] transition-[left,top] duration-200 md:block"
+    className="pointer-events-none absolute z-40 hidden w-[min(42%,26rem)] -translate-x-1/2 -translate-y-1/2 border border-[rgb(var(--sep-colour-8f6a3d))]/80 bg-[rgb(var(--sep-colour-120b09))]/95 px-4 py-3 text-center shadow-[0_12px_34px_rgba(var(--sep-rgb-0-0-0),0.9)] transition-[left,top] duration-200 md:block components_portal_interactive_world_map_div_container_9"
     style={hoveredInfoPosition}
   >
-    <p className="font-serif text-base text-[rgb(var(--sep-skin-c1))]">
+    <p className="font-serif text-base text-[rgb(var(--sep-skin-c1))] components_portal_interactive_world_map_p_text_2">
       {hoveredDatabaseArea.name}
     </p>
 
@@ -730,7 +730,7 @@ hoveredInfoPosition ? (
       {level === "city" &&
 hoveredDatabaseArea ? (
   <div
-    className="fixed inset-x-3 z-[80] max-h-[42dvh] overflow-hidden border border-[rgb(var(--sep-colour-8f6a3d))]/80 bg-[rgb(var(--sep-colour-120b09))]/[0.98] shadow-[0_-12px_36px_rgba(var(--sep-rgb-0-0-0),0.72)] backdrop-blur md:hidden"
+    className="fixed inset-x-3 z-[80] max-h-[42dvh] overflow-hidden border border-[rgb(var(--sep-colour-8f6a3d))]/80 bg-[rgb(var(--sep-colour-120b09))]/[0.98] shadow-[0_-12px_36px_rgba(var(--sep-rgb-0-0-0),0.72)] backdrop-blur md:hidden components_portal_interactive_world_map_div_container_10"
     style={{
       bottom:
         `${72 + mobileTidingsHeight}px`,
@@ -825,18 +825,18 @@ hoveredDatabaseArea ? (
         mobilePopupDragRef.current =
           null;
       }}
-      className="relative flex touch-none select-none items-start justify-between gap-3 border-b border-[rgb(var(--sep-colour-654c2f))]/40 px-4 pb-3 pt-5 cursor-grab active:cursor-grabbing"
+      className="relative flex touch-none select-none items-start justify-between gap-3 border-b border-[rgb(var(--sep-colour-654c2f))]/40 px-4 pb-3 pt-5 cursor-grab active:cursor-grabbing components_portal_interactive_world_map_div_container_11"
     >
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-1.5 h-1 w-12 -translate-x-1/2 rounded-full bg-[rgb(var(--sep-colour-8f7757))]/70"
+        className="pointer-events-none absolute left-1/2 top-1.5 h-1 w-12 -translate-x-1/2 rounded-full bg-[rgb(var(--sep-colour-8f7757))]/70 components_portal_interactive_world_map_div_container_12"
       />
-      <div className="min-w-0">
-        <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-96734a))]">
+      <div className="min-w-0 components_portal_interactive_world_map_div_container_13">
+        <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-96734a))] components_portal_interactive_world_map_p_text_3">
           District
         </p>
 
-        <p className="mt-1 truncate font-serif text-base text-[rgb(var(--sep-skin-c1))]">
+        <p className="mt-1 truncate font-serif text-base text-[rgb(var(--sep-skin-c1))] components_portal_interactive_world_map_p_text_4">
           {hoveredDatabaseArea.name}
         </p>
       </div>
@@ -847,14 +847,14 @@ hoveredDatabaseArea ? (
         onClick={() =>
           setHoveredArea(null)
         }
-        className="flex h-7 w-7 shrink-0 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-17110d))] text-base text-[rgb(var(--sep-colour-b7a184))]"
+        className="flex h-7 w-7 shrink-0 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-17110d))] text-base text-[rgb(var(--sep-colour-b7a184))] components_portal_interactive_world_map_button_close_district_information"
       >
         ×
       </button>
     </div>
 
     {hoveredDatabaseArea.description ? (
-      <div className="max-h-[calc(42dvh-58px)] overflow-y-auto overscroll-contain px-4 py-3">
+      <div className="max-h-[calc(42dvh-58px)] overflow-y-auto overscroll-contain px-4 py-3 components_portal_interactive_world_map_div_container_14">
         <RichTextContentClient
           body={
             hoveredDatabaseArea.description

@@ -42,9 +42,9 @@ export default async function TicketPage({
   if (messageError) throw new Error(messageError.message);
 
   return (
-    <main className="p-5 sm:p-7 lg:p-9">
+    <main className="p-5 sm:p-7 lg:p-9 support_reference_page_main_main">
       <TicketLiveSync reference={ticket.public_reference} />
-      <div className="mx-auto max-w-4xl">
+      <div className="mx-auto max-w-4xl support_reference_page_div_container">
         <Link
           href="/support"
           className="mt-3 inline-flex border border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-261b12))] px-5 py-3 text-[8px] uppercase text-[rgb(var(--sep-colour-d5b785))]"
@@ -54,33 +54,33 @@ export default async function TicketPage({
 
         <div
           data-sep-interaction-fixed="true"
-          className="mt-7 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-6"
+          className="mt-7 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-6 support_reference_page_div_container_2"
         >
-          <p className="text-[8px] uppercase text-[rgb(var(--sep-colour-8c704b))]">
+          <p className="text-[8px] uppercase text-[rgb(var(--sep-colour-8c704b))] support_reference_page_p_text">
             {ticket.public_reference} · {ticket.category.replaceAll("_", " ")}
           </p>
-          <h1 className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-ead5ac))]">
+          <h1 className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-ead5ac))] support_reference_page_h1_title">
             {ticket.subject}
           </h1>
-          <p className="mt-3 text-[9px] text-[rgb(var(--sep-colour-756957))]">
+          <p className="mt-3 text-[9px] text-[rgb(var(--sep-colour-756957))] support_reference_page_p_text_2">
             Opened {fmt(ticket.created_at)} · {ticket.status.replaceAll("_", " ")}
           </p>
         </div>
 
-        <div className="mt-5 space-y-3">
+        <div className="mt-5 space-y-3 support_reference_page_div_container_3">
           {(messages ?? []).map((message) => (
             <div
               key={message.id}
               data-sep-interaction-fixed="true"
-              className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5"
+              className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 support_reference_page_div_container_4"
             >
-              <div className="text-[8px] uppercase text-[rgb(var(--sep-colour-8c704b))]">
+              <div className="text-[8px] uppercase text-[rgb(var(--sep-colour-8c704b))] support_reference_page_div_container_5">
                 {message.author_user_id === identity.userId
                   ? identity.characterName ?? "You"
                   : "Sepulchria Staff"}{" "}
                 · {fmt(message.created_at)}
               </div>
-              <p className="mt-3 whitespace-pre-wrap text-sm leading-7 text-[rgb(var(--sep-colour-c7b79e))]">
+              <p className="mt-3 whitespace-pre-wrap text-sm leading-7 text-[rgb(var(--sep-colour-c7b79e))] support_reference_page_p_text_3">
                 {message.body}
               </p>
             </div>
@@ -91,18 +91,18 @@ export default async function TicketPage({
           <form
             action={replyToSupportTicket}
             data-sep-interaction-fixed="true"
-            className="mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5"
+            className="mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 support_reference_page_form_reply_support_ticket"
           >
-            <input type="hidden" name="ticketId" value={ticket.id} />
-            <input type="hidden" name="reference" value={ticket.public_reference} />
+            <input className="support_reference_page_input_ticket_id" type="hidden" name="ticketId" value={ticket.id} />
+            <input className="support_reference_page_input_reference" type="hidden" name="reference" value={ticket.public_reference} />
             <textarea
               name="body"
               required
               maxLength={10000}
               rows={6}
-              className="w-full bg-[rgb(var(--sep-colour-100c09))] p-3"
+              className="w-full bg-[rgb(var(--sep-colour-100c09))] p-3 support_reference_page_textarea_body"
             />
-            <button className="mt-3 border border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-261b12))] px-5 py-3 text-[8px] uppercase text-[rgb(var(--sep-colour-d5b785))]">
+            <button className="mt-3 border border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-261b12))] px-5 py-3 text-[8px] uppercase text-[rgb(var(--sep-colour-d5b785))] support_reference_page_button_send_reply">
               Send Reply
             </button>
           </form>

@@ -229,13 +229,13 @@ export function MissionsContextPanel() {
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <div>
-        <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-a88658))]">
+    <div className="flex h-full min-h-0 flex-col components_portal_missions_context_panel_div_container">
+      <div className="components_portal_missions_context_panel_div_today_apos_s_missions">
+        <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-a88658))] components_portal_missions_context_panel_p_today_apos_s_missions">
           Daily Missions
         </p>
 
-        <h2 className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-d6bd91))]">
+        <h2 className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-d6bd91))] components_portal_missions_context_panel_h2_today_apos_s_missions">
           Today&apos;s Missions
         </h2>
       </div>
@@ -249,28 +249,28 @@ export function MissionsContextPanel() {
           )
         }
         placeholder="Search missions..."
-        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-655c50))] focus:border-[rgb(var(--sep-colour-8a673f))]"
+        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-655c50))] focus:border-[rgb(var(--sep-colour-8a673f))] components_portal_missions_context_panel_input_search_missions"
       />
 
-      <div className="my-4 h-px bg-[rgb(var(--sep-colour-59432c))]/35" />
+      <div className="my-4 h-px bg-[rgb(var(--sep-colour-59432c))]/35 components_portal_missions_context_panel_div_container_2" />
 
-      <p className="mb-2 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))]">
+      <p className="mb-2 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))] components_portal_missions_context_panel_p_text">
         Missions · {visibleMissions.length}
       </p>
 
       <div
         data-portal-scroll
-        className="min-h-0 flex-1 space-y-1 overflow-y-auto pr-1"
+        className="min-h-0 flex-1 space-y-1 overflow-y-auto pr-1 components_portal_missions_context_panel_div_container_3"
       >
         {loading ? (
-          <p className="px-2 py-3 text-xs text-[rgb(var(--sep-colour-8f826f))]">
+          <p className="px-2 py-3 text-xs text-[rgb(var(--sep-colour-8f826f))] components_portal_missions_context_panel_p_text_2">
             Loading missions...
           </p>
         ) : null}
 
         {!loading &&
         visibleMissions.length === 0 ? (
-          <p className="px-2 py-3 text-xs text-[rgb(var(--sep-colour-8f826f))]">
+          <p className="px-2 py-3 text-xs text-[rgb(var(--sep-colour-8f826f))] components_portal_missions_context_panel_p_text_3">
             No matching missions.
           </p>
         ) : null}
@@ -295,23 +295,23 @@ export function MissionsContextPanel() {
                 }
                 className="block border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-[rgb(var(--sep-colour-cbb28a))] transition-colors hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))] "
               >
-                <span className="flex items-center justify-between gap-2">
-                  <span className="block min-w-0">
-                    <span className="block text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-756550))]">
+                <span className="flex items-center justify-between gap-2 components_portal_missions_context_panel_span_text">
+                  <span className="block min-w-0 components_portal_missions_context_panel_span_text_2">
+                    <span className="block text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-756550))] components_portal_missions_context_panel_span_text_3">
                       {mission.family_snapshot}
                     </span>
 
-                    <span className="mt-0.5 block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))]">
+                    <span className="mt-0.5 block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] components_portal_missions_context_panel_span_text_4">
                       {mission.name_snapshot}
                     </span>
                   </span>
 
                   {claimed ? (
-                    <span className="shrink-0 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-766b59))]">
+                    <span className="shrink-0 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-766b59))] components_portal_missions_context_panel_span_text_5">
                       Claimed
                     </span>
                   ) : complete ? (
-                    <span className="shrink-0 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-bb9764))]">
+                    <span className="shrink-0 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-bb9764))] components_portal_missions_context_panel_span_text_6">
                       Reward Ready
                     </span>
                   ) : null}

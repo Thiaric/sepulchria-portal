@@ -59,11 +59,11 @@ function MessageModeBadge({
 
   return (
     <span
-      className={`inline-flex border px-2 py-1 text-[7px] uppercase tracking-[0.18em] ${
+      className={[((`inline-flex border px-2 py-1 text-[7px] uppercase tracking-[0.18em] ${
         ongame
           ? "border-[rgb(var(--sep-colour-9b7446))]/70 bg-[rgb(var(--sep-colour-312215))] text-[rgb(var(--sep-colour-e2bd82))]"
           : "border-[rgb(var(--sep-colour-687083))]/70 bg-[rgb(var(--sep-colour-22252c))] text-[rgb(var(--sep-colour-c6ccd8))]"
-      }`}
+      }`)), "messages_id_components_conversationmessagelist_span_text"].filter(Boolean).join(" ")}
     >
       {ongame
         ? "On-game"
@@ -446,10 +446,10 @@ export function ConversationMessageList({
 
   return (
     <>
-      <section className="border-b border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-120e0b))] p-2 sm:p-3 sm:px-4">
-        <div className="grid grid-cols-3 gap-1.5 sm:gap-2 lg:grid-cols-[minmax(0,1fr)_135px_135px_135px_auto]">
-          <label className="col-span-3 grid gap-0.5 sm:gap-1 lg:col-span-1">
-          <span className="text-[6px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-716350))] sm:text-[7px] sm:tracking-[0.15em]">
+      <section className="border-b border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-120e0b))] p-2 sm:p-3 sm:px-4 messages_id_components_conversationmessagelist_section_section">
+        <div className="grid grid-cols-3 gap-1.5 sm:gap-2 lg:grid-cols-[minmax(0,1fr)_135px_135px_135px_auto] messages_id_components_conversationmessagelist_div_container">
+          <label className="col-span-3 grid gap-0.5 sm:gap-1 lg:col-span-1 messages_id_components_conversationmessagelist_label_label">
+          <span className="text-[6px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-716350))] sm:text-[7px] sm:tracking-[0.15em] messages_id_components_conversationmessagelist_span_text_2">
               Search
             </span>
           <input
@@ -461,12 +461,12 @@ export function ConversationMessageList({
               )
             }
             placeholder="Search words in this conversation…"
-            className="min-w-0 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-2.5 py-1.5 text-[11px] text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))] sm:px-3 sm:py-2 sm:text-xs [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
+            className="min-w-0 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-2.5 py-1.5 text-[11px] text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))] sm:px-3 sm:py-2 sm:text-xs [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden messages_id_components_conversationmessagelist_input_search_words_conversation"
           />
           </label>
           
-          <label className="grid gap-0.5 sm:gap-1">
-<span className="text-[6px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-716350))] sm:text-[7px] sm:tracking-[0.15em]">
+          <label className="grid gap-0.5 sm:gap-1 messages_id_components_conversationmessagelist_label_label_2">
+<span className="text-[6px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-716350))] sm:text-[7px] sm:tracking-[0.15em] messages_id_components_conversationmessagelist_span_text_3">
               Type
             </span>
           <select
@@ -479,23 +479,23 @@ export function ConversationMessageList({
                   | PrivateMessageMode,
               )
             }
-            className="min-w-0 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-2 py-1.5 text-[10px] text-[rgb(var(--sep-colour-cdbb9f))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] sm:px-3 sm:py-2 sm:text-xs"
+            className="min-w-0 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-2 py-1.5 text-[10px] text-[rgb(var(--sep-colour-cdbb9f))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] sm:px-3 sm:py-2 sm:text-xs messages_id_components_conversationmessagelist_select_select"
           >
-            <option value="all">
+            <option className="messages_id_components_conversationmessagelist_option_all" value="all">
               All types
             </option>
 
-            <option value="ongame">
+            <option className="messages_id_components_conversationmessagelist_option_game" value="ongame">
               On-game
             </option>
 
-            <option value="offgame">
+            <option className="messages_id_components_conversationmessagelist_option_offgame" value="offgame">
               Off-game
             </option>
           </select>
           </label>
-          <label className="grid gap-0.5 sm:gap-1">
-            <span className="text-[6px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-716350))] sm:text-[7px] sm:tracking-[0.15em]">
+          <label className="grid gap-0.5 sm:gap-1 messages_id_components_conversationmessagelist_label_label_3">
+            <span className="text-[6px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-716350))] sm:text-[7px] sm:tracking-[0.15em] messages_id_components_conversationmessagelist_span_text_4">
               From
             </span>
 
@@ -507,12 +507,12 @@ export function ConversationMessageList({
                   event.target.value,
                 )
               }
-              className="min-w-0 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-1.5 py-1.5 text-[9px] text-[rgb(var(--sep-colour-cdbb9f))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] sm:px-2 sm:py-2 sm:text-[10px]"
+              className="min-w-0 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-1.5 py-1.5 text-[9px] text-[rgb(var(--sep-colour-cdbb9f))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] sm:px-2 sm:py-2 sm:text-[10px] messages_id_components_conversationmessagelist_input_field"
             />
           </label>
 
-          <label className="grid gap-0.5 sm:gap-1">
-            <span className="text-[6px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-716350))] sm:text-[7px] sm:tracking-[0.15em]">
+          <label className="grid gap-0.5 sm:gap-1 messages_id_components_conversationmessagelist_label_label_4">
+            <span className="text-[6px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-716350))] sm:text-[7px] sm:tracking-[0.15em] messages_id_components_conversationmessagelist_span_text_5">
               To
             </span>
 
@@ -524,18 +524,18 @@ export function ConversationMessageList({
                   event.target.value,
                 )
               }
-              className="min-w-0 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-1.5 py-1.5 text-[9px] text-[rgb(var(--sep-colour-cdbb9f))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] sm:px-2 sm:py-2 sm:text-[10px]"
+              className="min-w-0 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-1.5 py-1.5 text-[9px] text-[rgb(var(--sep-colour-cdbb9f))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] sm:px-2 sm:py-2 sm:text-[10px] messages_id_components_conversationmessagelist_input_field_2"
             />
           </label>
 
-          <div className="col-span-3 flex items-end gap-1.5 lg:col-span-1 lg:gap-2">
+          <div className="col-span-3 flex items-end gap-1.5 lg:col-span-1 lg:gap-2 messages_id_components_conversationmessagelist_div_container_2">
             {hasFilters ? (
               <button
                 type="button"
                 onClick={
                   clearFilters
                 }
-                className="h-9 border border-[rgb(var(--sep-colour-59432c))] px-3 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-9e8767))] transition hover:border-[rgb(var(--sep-colour-80613c))] hover:text-[rgb(var(--sep-colour-d5ba8c))]"
+                className="h-9 border border-[rgb(var(--sep-colour-59432c))] px-3 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-9e8767))] transition hover:border-[rgb(var(--sep-colour-80613c))] hover:text-[rgb(var(--sep-colour-d5ba8c))] messages_id_components_conversationmessagelist_button_clear_filters"
               >
                 Clear filters
               </button>
@@ -543,9 +543,9 @@ export function ConversationMessageList({
           </div>
         </div>
 
-        <div className="mt-1.5 flex flex-wrap items-center justify-between gap-1.5 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-1.5 sm:mt-2 sm:gap-2 sm:pt-2">
-          <div className="flex flex-wrap items-center gap-2">
-            <p className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-6f6253))]">
+        <div className="mt-1.5 flex flex-wrap items-center justify-between gap-1.5 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-1.5 sm:mt-2 sm:gap-2 sm:pt-2 messages_id_components_conversationmessagelist_div_container_3">
+          <div className="flex flex-wrap items-center gap-2 messages_id_components_conversationmessagelist_div_container_4">
+            <p className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-6f6253))] messages_id_components_conversationmessagelist_p_text">
               {
                 filteredMessages.length
               }{" "}
@@ -566,7 +566,7 @@ export function ConversationMessageList({
                     selectAllVisible();
                   }
                 }}
-                className="border border-[rgb(var(--sep-colour-59432c))]/65 bg-[rgb(var(--sep-colour-100c09))] px-2.5 py-1.5 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9e8767))] transition hover:border-[rgb(var(--sep-colour-80613c))] hover:text-[rgb(var(--sep-colour-d5ba8c))]"
+                className="border border-[rgb(var(--sep-colour-59432c))]/65 bg-[rgb(var(--sep-colour-100c09))] px-2.5 py-1.5 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9e8767))] transition hover:border-[rgb(var(--sep-colour-80613c))] hover:text-[rgb(var(--sep-colour-d5ba8c))] messages_id_components_conversationmessagelist_button_action"
               >
                 {allVisibleSelected
                   ? "Clear selection"
@@ -577,8 +577,8 @@ export function ConversationMessageList({
 
           {selectedIds.size >
           0 ? (
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-b79063))]">
+            <div className="flex flex-wrap items-center gap-2 messages_id_components_conversationmessagelist_div_container_5">
+              <span className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-b79063))] messages_id_components_conversationmessagelist_span_text_6">
                 {
                   selectedIds.size
                 }{" "}
@@ -590,12 +590,12 @@ export function ConversationMessageList({
                 onClick={
                   clearSelection
                 }
-                className="border border-[rgb(var(--sep-colour-59432c))] px-3 py-2 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-9e8767))] transition hover:border-[rgb(var(--sep-colour-80613c))] hover:text-[rgb(var(--sep-colour-d5ba8c))]"
+                className="border border-[rgb(var(--sep-colour-59432c))] px-3 py-2 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-9e8767))] transition hover:border-[rgb(var(--sep-colour-80613c))] hover:text-[rgb(var(--sep-colour-d5ba8c))] messages_id_components_conversationmessagelist_button_cancel"
               >
                 Cancel
               </button>
 
-              <form
+              <form className="messages_id_components_conversationmessagelist_form_delete_private_messages"
                 action={
                   deletePrivateMessages
                 }
@@ -611,7 +611,7 @@ export function ConversationMessageList({
                   }
                 }}
               >
-                <input
+                <input className="messages_id_components_conversationmessagelist_input_conversation_id"
                   type="hidden"
                   name="conversationId"
                   value={
@@ -622,7 +622,7 @@ export function ConversationMessageList({
                 {[
                   ...selectedIds,
                 ].map((id) => (
-                  <input
+                  <input className="messages_id_components_conversationmessagelist_input_message_ids"
                     key={id}
                     type="hidden"
                     name="messageIds"
@@ -632,7 +632,7 @@ export function ConversationMessageList({
 
                 <button
                   type="submit"
-                  className="inline-flex h-9 items-center justify-center border border-red-800/80 bg-red-950/45 px-4 text-[8px] uppercase tracking-[0.15em] text-red-300 transition hover:border-red-600 hover:bg-red-950/70 hover:text-red-200"
+                  className="inline-flex h-9 items-center justify-center border border-red-800/80 bg-red-950/45 px-4 text-[8px] uppercase tracking-[0.15em] text-red-300 transition hover:border-red-600 hover:bg-red-950/70 hover:text-red-200 messages_id_components_conversationmessagelist_button_delete_selected"
                 >
                   Delete selected (
                   {
@@ -643,7 +643,7 @@ export function ConversationMessageList({
               </form>
             </div>
           ) : (
-            <p className="text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-655a4d))]">
+            <p className="text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-655a4d))] messages_id_components_conversationmessagelist_p_text_2">
               Tick messages to
               delete several at
               once
@@ -655,7 +655,7 @@ export function ConversationMessageList({
       <div
         ref={scrollBoxRef}
         data-conversation-scrollbox
-        className="max-h-[64vh] space-y-1.5 overflow-y-auto p-2 sm:p-3"
+        className="max-h-[64vh] space-y-1.5 overflow-y-auto p-2 sm:p-3 messages_id_components_conversationmessagelist_div_container_6"
       >
         {filteredMessages.map(
           (message) => {
@@ -692,7 +692,7 @@ export function ConversationMessageList({
                 data-sep-interaction-ignore="true"
                 data-cosmetic-character-id={message.sender_character_id}
                 data-cosmetic-surface="pm"
-                className={`relative max-w-[92%] border px-2.5 py-2 transition ${
+                className={[((`relative max-w-[92%] border px-2.5 py-2 transition ${
                   own
                     ? ongame
                       ? "ml-auto border-[rgb(var(--sep-colour-514233))] bg-[rgb(var(--sep-colour-100c09))]"
@@ -704,14 +704,14 @@ export function ConversationMessageList({
                   selected
                     ? "ring-1 ring-[rgb(var(--sep-colour-c18b4d))]"
                     : ""
-                }`}
+                }`)), "messages_id_components_conversationmessagelist_article_article"].filter(Boolean).join(" ")}
               >
-                <div className="flex items-start gap-2">
+                <div className="flex items-start gap-2 messages_id_components_conversationmessagelist_div_container_7">
                   {/* CHARACTER PORTRAIT */}
                   <div
                     data-cosmetic-character-id={message.sender_character_id}
                     data-cosmetic-surface="portrait"
-                    className="h-8 w-8 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/75 bg-[rgb(var(--sep-colour-0d0907))]"
+                    className="h-8 w-8 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/75 bg-[rgb(var(--sep-colour-0d0907))] messages_id_components_conversationmessagelist_div_container_8"
                   >
                     {sender?.portrait_url ? (
                       // eslint-disable-next-line @next/next/no-img-element
@@ -720,10 +720,10 @@ export function ConversationMessageList({
                           sender.portrait_url
                         }
                         alt={`Portrait of ${senderName}`}
-                        className="h-full w-full object-cover"
+                        className="h-full w-full object-cover messages_id_components_conversationmessagelist_img_image"
                       />
                     ) : (
-                      <span className="flex h-full items-center justify-center font-serif text-sm text-[rgb(var(--sep-colour-9b805b))]">
+                      <span className="flex h-full items-center justify-center font-serif text-sm text-[rgb(var(--sep-colour-9b805b))] messages_id_components_conversationmessagelist_span_text_7">
                         {senderName
                           .charAt(0)
                           .toUpperCase()}
@@ -731,18 +731,18 @@ export function ConversationMessageList({
                     )}
                   </div>
 
-                  <div className="min-w-0 flex-1">
+                  <div className="min-w-0 flex-1 messages_id_components_conversationmessagelist_div_container_9">
                     {/* TOP ROW */}
-                    <div className="flex flex-wrap items-start justify-between gap-3">
-                      <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex flex-wrap items-start justify-between gap-3 messages_id_components_conversationmessagelist_div_container_10">
+                      <div className="flex flex-wrap items-center gap-2 messages_id_components_conversationmessagelist_div_container_11">
                         <p
                           data-cosmetic-character-id={message.sender_character_id}
                           data-cosmetic-surface="nameplate"
-                          className={`font-serif text-sm ${
+                          className={[((`font-serif text-sm ${
                             ongame
                               ? "text-[rgb(var(--sep-colour-d8bf91))]"
                               : "text-[rgb(var(--sep-colour-cbd0dc))]"
-                          }`}
+                          }`)), "messages_id_components_conversationmessagelist_p_text_3"].filter(Boolean).join(" ")}
                         >
                           {senderName}
                         </p>
@@ -754,7 +754,7 @@ export function ConversationMessageList({
                         />
                       </div>
 
-                      <div className="flex flex-wrap items-center justify-end gap-1.5">
+                      <div className="flex flex-wrap items-center justify-end gap-1.5 messages_id_components_conversationmessagelist_div_container_12">
                         <time className="text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-776b5c))]">
                           {new Date(
                             message.created_at,
@@ -765,7 +765,7 @@ export function ConversationMessageList({
 
                         {!message.optimistic ? <a
                           href={`/messages/forward/${message.id}`}
-                          className="inline-flex h-8 items-center justify-center border border-[rgb(var(--sep-colour-59432c))]/80 bg-[rgb(var(--sep-colour-17110d))] px-2.5 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-b99b70))] transition hover:border-[rgb(var(--sep-colour-8b6a40))] hover:text-[rgb(var(--sep-colour-e3c28d))]"
+                          className="inline-flex h-8 items-center justify-center border border-[rgb(var(--sep-colour-59432c))]/80 bg-[rgb(var(--sep-colour-17110d))] px-2.5 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-b99b70))] transition hover:border-[rgb(var(--sep-colour-8b6a40))] hover:text-[rgb(var(--sep-colour-e3c28d))] messages_id_components_conversationmessagelist_a_forward"
                         >
                           Forward
                         </a> : null}
@@ -778,7 +778,7 @@ export function ConversationMessageList({
                           />
                         ) : null}
 
-                        {!message.optimistic ? <form
+                        {!message.optimistic ? <form className="messages_id_components_conversationmessagelist_form_delete_private_messages_2"
                           action={
                             deletePrivateMessages
                           }
@@ -794,7 +794,7 @@ export function ConversationMessageList({
                             }
                           }}
                         >
-                          <input
+                          <input className="messages_id_components_conversationmessagelist_input_conversation_id_2"
                             type="hidden"
                             name="conversationId"
                             value={
@@ -802,7 +802,7 @@ export function ConversationMessageList({
                             }
                           />
 
-                          <input
+                          <input className="messages_id_components_conversationmessagelist_input_message_ids_2"
                             type="hidden"
                             name="messageIds"
                             value={
@@ -813,7 +813,7 @@ export function ConversationMessageList({
                           <button
                             type="submit"
                             title="Delete this message from your view"
-                            className="inline-flex h-8 items-center justify-center border border-red-800/80 bg-red-950/45 px-2.5 text-[7px] uppercase tracking-[0.13em] text-red-300 transition hover:border-red-600 hover:bg-red-950/70 hover:text-red-200"
+                            className="inline-flex h-8 items-center justify-center border border-red-800/80 bg-red-950/45 px-2.5 text-[7px] uppercase tracking-[0.13em] text-red-300 transition hover:border-red-600 hover:bg-red-950/70 hover:text-red-200 messages_id_components_conversationmessagelist_button_delete"
                           >
                             Delete
                           </button>
@@ -823,15 +823,15 @@ export function ConversationMessageList({
 
                     {/* MESSAGE BODY */}
                     <div
-                      className={`mt-1.5 break-words text-xs leading-5 ${
+                      className={[((`mt-1.5 break-words text-xs leading-5 ${
                         ongame
                           ? "text-[rgb(var(--sep-colour-c7b79d))]"
                           : "text-[rgb(var(--sep-colour-c2c7d1))]"
-                      }`}
+                      }`)), "messages_id_components_conversationmessagelist_div_container_13"].filter(Boolean).join(" ")}
                     >
                       {message.forwarded_body ? (
-                        <div className="mb-1.5 border-l-2 border-[rgb(var(--sep-colour-9a7543))] bg-black/20 p-2">
-                          <p className="mb-2 text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-9b8465))]">
+                        <div className="mb-1.5 border-l-2 border-[rgb(var(--sep-colour-9a7543))] bg-black/20 p-2 messages_id_components_conversationmessagelist_div_container_14">
+                          <p className="mb-2 text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-9b8465))] messages_id_components_conversationmessagelist_p_text_4">
                             Forwarded from{" "}
                             {message.forwarded_sender_name ??
                               "Unknown"}
@@ -899,11 +899,11 @@ export function ConversationMessageList({
 
                 {/* MESSAGE SELECTION */}
                 <label
-                  className={`mt-1.5 ml-auto flex h-5 w-5 cursor-pointer items-center justify-center border transition ${
+                  className={[((`mt-1.5 ml-auto flex h-5 w-5 cursor-pointer items-center justify-center border transition ${
                     selected
                       ? "border-[rgb(var(--sep-colour-b8874d))] bg-[rgb(var(--sep-colour-382516))]"
                       : "border-[rgb(var(--sep-colour-6a5135))] bg-[rgb(var(--sep-colour-0d0907))] hover:border-[rgb(var(--sep-colour-9b7446))]"
-                  }`}
+                  }`)), "messages_id_components_conversationmessagelist_label_select_message"].filter(Boolean).join(" ")}
                   title="Select this message"
                 >
                   <input
@@ -914,7 +914,7 @@ export function ConversationMessageList({
                         message.id,
                       )
                     }
-                    className="h-3.5 w-3.5 accent-[rgb(var(--sep-colour-b8874d))]"
+                    className="h-3.5 w-3.5 accent-[rgb(var(--sep-colour-b8874d))] messages_id_components_conversationmessagelist_input_select_message"
                     aria-label="Select message"
                   />
                 </label>
@@ -925,7 +925,7 @@ export function ConversationMessageList({
 
         {filteredMessages.length ===
         0 ? (
-          <p className="py-12 text-center text-sm text-[rgb(var(--sep-colour-8f8271))]">
+          <p className="py-12 text-center text-sm text-[rgb(var(--sep-colour-8f8271))] messages_id_components_conversationmessagelist_p_text_5">
             {messages.length ===
             0
               ? "Begin the conversation."

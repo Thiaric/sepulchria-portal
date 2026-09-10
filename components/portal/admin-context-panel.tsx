@@ -570,16 +570,16 @@ function AdminPollsNavigatorContext() {
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+    <div className="flex h-full min-h-0 flex-col components_portal_admin_context_panel_div_container">
+      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_context_panel_p_text">
         Poll administration
       </p>
 
-      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_portal_admin_context_panel_h2_heading">
         Find a Poll
       </h2>
 
-      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_context_panel_p_text_2">
         Search the Poll archive, filter
         by its state, or jump straight
         to a Poll&apos;s controls.
@@ -595,10 +595,10 @@ function AdminPollsNavigatorContext() {
         }
         placeholder="Search Polls..."
         aria-label="Search Polls"
-        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none transition focus:border-[rgb(var(--sep-colour-987344))] focus:shadow-[0_0_14px_rgba(var(--sep-rgb-177-132-75),0.12)] placeholder:text-[rgb(var(--sep-colour-665b4d))]"
+        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none transition focus:border-[rgb(var(--sep-colour-987344))] focus:shadow-[0_0_14px_rgba(var(--sep-rgb-177-132-75),0.12)] placeholder:text-[rgb(var(--sep-colour-665b4d))] components_portal_admin_context_panel_input_search_polls"
       />
 
-      <div className="mt-2 grid grid-cols-4 gap-1">
+      <div className="mt-2 grid grid-cols-4 gap-1 components_portal_admin_context_panel_div_container_2">
         {(
           [
             ["all", "All"],
@@ -614,12 +614,12 @@ function AdminPollsNavigatorContext() {
               onClick={() =>
                 setStatus(value)
               }
-              className={[
+              className={[(([
                 "border px-1.5 py-1.5 text-[7px] uppercase tracking-[0.1em] transition duration-150",
                 status === value
                   ? "border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-332719))] text-[rgb(var(--sep-colour-efd9aa))] shadow-[0_0_10px_rgba(var(--sep-rgb-177-132-75),0.12)]"
                   : "border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] text-[rgb(var(--sep-colour-8f806c))] hover:-translate-y-px hover:border-[rgb(var(--sep-colour-80613b))] hover:text-[rgb(var(--sep-colour-cbb28a))]",
-              ].join(" ")}
+              ].join(" "))), "components_portal_admin_context_panel_button_action"].filter(Boolean).join(" ")}
             >
               {label}
             </button>
@@ -630,30 +630,30 @@ function AdminPollsNavigatorContext() {
       <button
         type="button"
         onClick={jumpToCreate}
-        className="group mt-3 flex w-full items-center justify-between border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-21170f))] px-3 py-2.5 text-left transition duration-150 hover:-translate-y-px hover:translate-x-0.5 hover:border-[rgb(var(--sep-colour-a17a49))] hover:bg-[rgb(var(--sep-colour-2c1e13))] hover:shadow-[0_0_16px_rgba(var(--sep-rgb-177-132-75),0.14)]"
+        className="group mt-3 flex w-full items-center justify-between border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-21170f))] px-3 py-2.5 text-left transition duration-150 hover:-translate-y-px hover:translate-x-0.5 hover:border-[rgb(var(--sep-colour-a17a49))] hover:bg-[rgb(var(--sep-colour-2c1e13))] hover:shadow-[0_0_16px_rgba(var(--sep-rgb-177-132-75),0.14)] components_portal_admin_context_panel_button_jump_create"
       >
-        <span>
-          <span className="block font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] transition group-hover:text-[rgb(var(--sep-colour-efd6a8))]">
+        <span className="components_portal_admin_context_panel_span_text">
+          <span className="block font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] transition group-hover:text-[rgb(var(--sep-colour-efd6a8))] components_portal_admin_context_panel_span_text_2">
             Create new Poll
           </span>
-          <span className="mt-0.5 block text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))]">
+          <span className="mt-0.5 block text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))] components_portal_admin_context_panel_span_text_3">
             New draft
           </span>
         </span>
 
-        <span className="text-[rgb(var(--sep-colour-725a3d))] transition group-hover:translate-x-0.5 group-hover:text-[rgb(var(--sep-colour-c89b5d))]">
+        <span className="text-[rgb(var(--sep-colour-725a3d))] transition group-hover:translate-x-0.5 group-hover:text-[rgb(var(--sep-colour-c89b5d))] components_portal_admin_context_panel_span_text_4">
           +
         </span>
       </button>
 
-      <p className="mb-2 mt-4 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))]">
+      <p className="mb-2 mt-4 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_context_panel_p_text_3">
         Polls · {visibleEntries.length}
         {query || status !== "all"
           ? ` / ${entries.length}`
           : ""}
       </p>
 
-      <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">
+      <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1 components_portal_admin_context_panel_div_container_3">
         {visibleEntries.length ? (
           visibleEntries.map(
             (entry) => (
@@ -665,14 +665,14 @@ function AdminPollsNavigatorContext() {
                     entry.id,
                   )
                 }
-                className="group flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition duration-150 hover:-translate-y-px hover:translate-x-0.5 hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))] hover:shadow-[0_0_15px_rgba(var(--sep-rgb-177-132-75),0.13)]"
+                className="group flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition duration-150 hover:-translate-y-px hover:translate-x-0.5 hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))] hover:shadow-[0_0_15px_rgba(var(--sep-rgb-177-132-75),0.13)] components_portal_admin_context_panel_button_action_2"
               >
-                <span className="min-w-0">
-                  <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] transition group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
+                <span className="min-w-0 components_portal_admin_context_panel_span_text_5">
+                  <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] transition group-hover:text-[rgb(var(--sep-colour-ead0a0))] components_portal_admin_context_panel_span_text_6">
                     {entry.title}
                   </span>
 
-                  <span className="mt-0.5 block truncate text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))]">
+                  <span className="mt-0.5 block truncate text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))] components_portal_admin_context_panel_span_text_7">
                     {entry.status}
                     {" · "}
                     {entry.ballots}{" "}
@@ -683,14 +683,14 @@ function AdminPollsNavigatorContext() {
                   </span>
                 </span>
 
-                <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))] transition duration-150 group-hover:translate-x-1 group-hover:text-[rgb(var(--sep-colour-c89b5d))]">
+                <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))] transition duration-150 group-hover:translate-x-1 group-hover:text-[rgb(var(--sep-colour-c89b5d))] components_portal_admin_context_panel_span_text_8">
                   →
                 </span>
               </button>
             ),
           )
         ) : (
-          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))]">
+          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))] components_portal_admin_context_panel_p_text_4">
             No matching Polls.
           </p>
         )}
@@ -809,16 +809,16 @@ function AdminTrophiesNavigatorContext() {
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+    <div className="flex h-full min-h-0 flex-col components_portal_admin_context_panel_div_jump_trophy">
+      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_context_panel_p_jump_trophy">
         Trophy administration
       </p>
 
-      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_portal_admin_context_panel_h2_jump_trophy">
         Jump to Trophy
       </h2>
 
-      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_context_panel_p_jump_trophy_2">
         Search by Trophy name,
         category or description and
         jump directly to its editor.
@@ -833,17 +833,17 @@ function AdminTrophiesNavigatorContext() {
           )
         }
         placeholder="Search Trophies..."
-        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))]"
+        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))] components_portal_admin_context_panel_input_search_trophies"
       />
 
-      <p className="mb-2 mt-4 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))]">
+      <p className="mb-2 mt-4 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_context_panel_p_jump_trophy_3">
         Trophies · {visibleEntries.length}
         {query
           ? ` / ${entries.length}`
           : ""}
       </p>
 
-      <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">
+      <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1 components_portal_admin_context_panel_div_jump_trophy_2">
         {visibleEntries.length ? (
           visibleEntries.map(
             (entry) => (
@@ -855,14 +855,14 @@ function AdminTrophiesNavigatorContext() {
                     entry.id,
                   )
                 }
-                className="group flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))]"
+                className="group flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))] components_portal_admin_context_panel_button_action_3"
               >
-                <span className="min-w-0">
-                  <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
+                <span className="min-w-0 components_portal_admin_context_panel_span_text_9">
+                  <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] group-hover:text-[rgb(var(--sep-colour-ead0a0))] components_portal_admin_context_panel_span_text_10">
                     {entry.name}
                   </span>
 
-                  <span className="mt-0.5 block truncate text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))]">
+                  <span className="mt-0.5 block truncate text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))] components_portal_admin_context_panel_span_text_11">
                     {entry.category}
                     {" · "}
                     {entry.active
@@ -871,14 +871,14 @@ function AdminTrophiesNavigatorContext() {
                   </span>
                 </span>
 
-                <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))]">
+                <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))] components_portal_admin_context_panel_span_text_12">
                   →
                 </span>
               </button>
             ),
           )
         ) : (
-          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))]">
+          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))] components_portal_admin_context_panel_p_text_5">
             No matching Trophies.
           </p>
         )}
@@ -890,100 +890,100 @@ function AdminTrophiesNavigatorContext() {
 
 function AdminWorldGuideContext() {
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+    <div className="flex h-full min-h-0 flex-col components_portal_admin_context_panel_div_world_control_guide">
+      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_context_panel_p_world_control_guide">
         World administration
       </p>
 
-      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_portal_admin_context_panel_h2_world_control_guide">
         World Control Guide
       </h2>
 
-      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_context_panel_p_world_control_guide_2">
         Use this page to control Sepulchria&apos;s game time, weather and temperature.
       </p>
 
-      <div className="mt-4 min-h-0 flex-1 space-y-3 overflow-y-auto pr-1">
-        <section className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] p-3">
-          <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a88658))]">
+      <div className="mt-4 min-h-0 flex-1 space-y-3 overflow-y-auto pr-1 components_portal_admin_context_panel_div_world_control_guide_2">
+        <section className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] p-3 components_portal_admin_context_panel_section_world_control_guide">
+          <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a88658))] components_portal_admin_context_panel_p_world_control_guide_3">
             Normal play
           </p>
-          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-b8aa96))]">
-            Leave Time, Weather and Temperature on <strong className="font-normal text-[rgb(var(--sep-colour-e0c89d))]">Automatic</strong>.
+          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-b8aa96))] components_portal_admin_context_panel_p_world_control_guide_4">
+            Leave Time, Weather and Temperature on <strong className="font-normal text-[rgb(var(--sep-colour-e0c89d))] components_portal_admin_context_panel_strong_world_control_guide">Automatic</strong>.
             The world will manage itself.
           </p>
         </section>
 
-        <section className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] p-3">
-          <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a88658))]">
+        <section className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] p-3 components_portal_admin_context_panel_section_world_control_guide_2">
+          <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a88658))] components_portal_admin_context_panel_p_world_control_guide_5">
             Time
           </p>
-          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-b8aa96))]">
-            <strong className="font-normal text-[rgb(var(--sep-colour-e0c89d))]">Automatic time ON</strong> keeps time moving.
+          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-b8aa96))] components_portal_admin_context_panel_p_world_control_guide_6">
+            <strong className="font-normal text-[rgb(var(--sep-colour-e0c89d))] components_portal_admin_context_panel_strong_world_control_guide_2">Automatic time ON</strong> keeps time moving.
             The Time Scale controls speed: 1× is normal, higher values are faster, and Paused stops game time.
           </p>
         </section>
 
-        <section className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] p-3">
-          <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a88658))]">
+        <section className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] p-3 components_portal_admin_context_panel_section_world_control_guide_3">
+          <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a88658))] components_portal_admin_context_panel_p_world_control_guide_7">
             Temporary weather
           </p>
-          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-b8aa96))]">
-            For an event, keep <strong className="font-normal text-[rgb(var(--sep-colour-e0c89d))]">Automatic weather ON</strong>,
-            choose the weather and intensity, then choose how many <strong className="font-normal text-[rgb(var(--sep-colour-e0c89d))]">game hours</strong> it should last.
+          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-b8aa96))] components_portal_admin_context_panel_p_world_control_guide_8">
+            For an event, keep <strong className="font-normal text-[rgb(var(--sep-colour-e0c89d))] components_portal_admin_context_panel_strong_world_control_guide_3">Automatic weather ON</strong>,
+            choose the weather and intensity, then choose how many <strong className="font-normal text-[rgb(var(--sep-colour-e0c89d))] components_portal_admin_context_panel_strong_world_control_guide_4">game hours</strong> it should last.
           </p>
-          <p className="mt-2 text-[9px] leading-4 text-[rgb(var(--sep-colour-817565))]">
+          <p className="mt-2 text-[9px] leading-4 text-[rgb(var(--sep-colour-817565))] components_portal_admin_context_panel_p_world_control_guide_9">
             Example: Storm + Heavy + 6 game hours.
           </p>
         </section>
 
-        <section className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] p-3">
-          <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a88658))]">
+        <section className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] p-3 components_portal_admin_context_panel_section_world_control_guide_4">
+          <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a88658))] components_portal_admin_context_panel_p_world_control_guide_10">
             Temporary temperature
           </p>
-          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-b8aa96))]">
-            Keep <strong className="font-normal text-[rgb(var(--sep-colour-e0c89d))]">Automatic temperature ON</strong>,
+          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-b8aa96))] components_portal_admin_context_panel_p_world_control_guide_11">
+            Keep <strong className="font-normal text-[rgb(var(--sep-colour-e0c89d))] components_portal_admin_context_panel_strong_world_control_guide_5">Automatic temperature ON</strong>,
             enter the temperature, then choose how many game hours it should last.
           </p>
-          <p className="mt-2 text-[9px] leading-4 text-[rgb(var(--sep-colour-817565))]">
+          <p className="mt-2 text-[9px] leading-4 text-[rgb(var(--sep-colour-817565))] components_portal_admin_context_panel_p_world_control_guide_12">
             Example: -5°C for 3 game hours.
           </p>
         </section>
 
-        <section className="border border-[rgb(var(--sep-colour-79513f))]/50 bg-[rgb(var(--sep-colour-21130f))] p-3">
-          <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-c29a75))]">
+        <section className="border border-[rgb(var(--sep-colour-79513f))]/50 bg-[rgb(var(--sep-colour-21130f))] p-3 components_portal_admin_context_panel_section_world_control_guide_5">
+          <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-c29a75))] components_portal_admin_context_panel_p_world_control_guide_13">
             Restore previous climate
           </p>
-          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-b8aa96))]">
+          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-b8aa96))] components_portal_admin_context_panel_p_world_control_guide_14">
             Use this to end a temporary climate event early.
             It restores the exact weather and temperature that existed before the override.
           </p>
         </section>
 
-        <section className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] p-3">
-          <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a88658))]">
+        <section className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] p-3 components_portal_admin_context_panel_section_world_control_guide_6">
+          <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a88658))] components_portal_admin_context_panel_p_world_control_guide_15">
             Manual control
           </p>
-          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-b8aa96))]">
-            Turn an Automatic option <strong className="font-normal text-[rgb(var(--sep-colour-e0c89d))]">OFF</strong> only when staff want to control that setting indefinitely.
+          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-b8aa96))] components_portal_admin_context_panel_p_world_control_guide_16">
+            Turn an Automatic option <strong className="font-normal text-[rgb(var(--sep-colour-e0c89d))] components_portal_admin_context_panel_strong_world_control_guide_6">OFF</strong> only when staff want to control that setting indefinitely.
           </p>
         </section>
 
-        <section className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] p-3">
-          <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a88658))]">
+        <section className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] p-3 components_portal_admin_context_panel_section_world_control_guide_7">
+          <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a88658))] components_portal_admin_context_panel_p_world_control_guide_17">
             Automatic information
           </p>
-          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-b8aa96))]">
+          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-b8aa96))] components_portal_admin_context_panel_p_world_control_guide_18">
             Moon phase, Season and the Aureth date are calculated from game time.
             Staff do not need to set them separately.
           </p>
         </section>
 
-        <section className="border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-17110d))] p-3">
-          <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-d0ad78))]">
+        <section className="border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-17110d))] p-3 components_portal_admin_context_panel_section_world_control_guide_8">
+          <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-d0ad78))] components_portal_admin_context_panel_p_world_control_guide_19">
             Simple rule
           </p>
-          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-d4c09f))]">
+          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-d4c09f))] components_portal_admin_context_panel_p_world_control_guide_20">
             Normal day: leave everything Automatic.
             Event: use a timed override.
             End it early: Restore previous climate.
@@ -1104,16 +1104,16 @@ function AdminRegistrationsNavigatorContext() {
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+    <div className="flex h-full min-h-0 flex-col components_portal_admin_context_panel_div_jump_registration">
+      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_context_panel_p_jump_registration">
         Registration administration
       </p>
 
-      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_portal_admin_context_panel_h2_jump_registration">
         Jump to Registration
       </h2>
 
-      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_context_panel_p_jump_registration_2">
         Search applications by applicant name or email address.
       </p>
 
@@ -1126,17 +1126,17 @@ function AdminRegistrationsNavigatorContext() {
           )
         }
         placeholder="Search name or email..."
-        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))]"
+        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))] components_portal_admin_context_panel_input_search_name_email"
       />
 
-      <p className="mb-2 mt-4 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))]">
+      <p className="mb-2 mt-4 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_context_panel_p_jump_registration_3">
         Applications - {visibleEntries.length}
         {query
           ? ` / ${entries.length}`
           : ""}
       </p>
 
-      <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">
+      <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1 components_portal_admin_context_panel_div_jump_registration_2">
         {visibleEntries.length ? (
           visibleEntries.map(
             (entry) => (
@@ -1148,30 +1148,30 @@ function AdminRegistrationsNavigatorContext() {
                     entry.id,
                   )
                 }
-                className="group flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))]"
+                className="group flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))] components_portal_admin_context_panel_button_action_4"
               >
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
+                <span className="min-w-0 flex-1 components_portal_admin_context_panel_span_text_13">
+                  <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] group-hover:text-[rgb(var(--sep-colour-ead0a0))] components_portal_admin_context_panel_span_text_14">
                     {entry.name}
                   </span>
 
-                  <span className="mt-0.5 block truncate text-[9px] text-[rgb(var(--sep-colour-817565))]">
+                  <span className="mt-0.5 block truncate text-[9px] text-[rgb(var(--sep-colour-817565))] components_portal_admin_context_panel_span_text_15">
                     {entry.email}
                   </span>
 
-                  <span className="mt-1 block text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-6f6252))]">
+                  <span className="mt-1 block text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-6f6252))] components_portal_admin_context_panel_span_text_16">
                     {entry.status}
                   </span>
                 </span>
 
-                <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))]">
+                <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))] components_portal_admin_context_panel_span_text_17">
                   →
                 </span>
               </button>
             ),
           )
         ) : (
-          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))]">
+          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))] components_portal_admin_context_panel_p_text_6">
             No matching registrations.
           </p>
         )}
@@ -1314,16 +1314,16 @@ function AdminMediaNavigatorContext() {
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+    <div className="flex h-full min-h-0 flex-col components_portal_admin_context_panel_div_jump_media">
+      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_context_panel_p_jump_media">
         Media administration
       </p>
 
-      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_portal_admin_context_panel_h2_jump_media">
         Jump to Media
       </h2>
 
-      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_context_panel_p_jump_media_2">
         Search any part of an image URL or path and jump directly to that media item.
       </p>
 
@@ -1336,23 +1336,23 @@ function AdminMediaNavigatorContext() {
           )
         }
         placeholder="Search media URL..."
-        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))]"
+        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))] components_portal_admin_context_panel_input_search_media_url"
       />
 
-      <p className="mb-2 mt-4 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))]">
+      <p className="mb-2 mt-4 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_context_panel_p_jump_media_3">
         Media - {visibleEntries.length}
         {query
           ? ` / ${entries.length}`
           : ""}
       </p>
 
-      <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">
+      <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1 components_portal_admin_context_panel_div_jump_media_2">
         {loading ? (
-          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))]">
+          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))] components_portal_admin_context_panel_p_text_7">
             Loading media...
           </p>
         ) : error ? (
-          <p className="text-xs leading-5 text-[rgb(var(--sep-colour-c58d82))]">
+          <p className="text-xs leading-5 text-[rgb(var(--sep-colour-c58d82))] components_portal_admin_context_panel_p_text_8">
             Unable to load media.
           </p>
         ) : visibleEntries.length ? (
@@ -1368,9 +1368,9 @@ function AdminMediaNavigatorContext() {
                     entry.repositoryPath,
                   )
                 }
-                className="group flex w-full items-center gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] p-2 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))]"
+                className="group flex w-full items-center gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] p-2 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))] components_portal_admin_context_panel_button_action_5"
               >
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-090705))]">
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-090705))] components_portal_admin_context_panel_span_text_18">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={
@@ -1378,24 +1378,24 @@ function AdminMediaNavigatorContext() {
                     }
                     alt=""
                     loading="lazy"
-                    className="max-h-full max-w-full object-contain"
+                    className="max-h-full max-w-full object-contain components_portal_admin_context_panel_img_image"
                   />
                 </span>
 
-                <span className="min-w-0 flex-1">
+                <span className="min-w-0 flex-1 components_portal_admin_context_panel_span_text_19">
                   <code className="block break-all text-[9px] leading-4 text-[rgb(var(--sep-colour-cbb28a))] group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
                     {entry.publicPath}
                   </code>
                 </span>
 
-                <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))]">
+                <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))] components_portal_admin_context_panel_span_text_20">
                   →
                 </span>
               </button>
             ),
           )
         ) : (
-          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))]">
+          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))] components_portal_admin_context_panel_p_text_9">
             No matching media.
           </p>
         )}
@@ -1540,16 +1540,16 @@ function AdminCodexNavigatorContext() {
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+    <div className="flex h-full min-h-0 flex-col components_portal_admin_context_panel_div_jump_chapter">
+      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_context_panel_p_jump_chapter">
         Codex administration
       </p>
 
-      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_portal_admin_context_panel_h2_jump_chapter">
         Jump to Chapter
       </h2>
 
-      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_context_panel_p_jump_chapter_2">
         Search chapter headings or text and jump directly to the matching chapter.
       </p>
 
@@ -1560,23 +1560,23 @@ function AdminCodexNavigatorContext() {
           setSearch(event.target.value)
         }
         placeholder="Search title or content..."
-        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))]"
+        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))] components_portal_admin_context_panel_input_search_title_content"
       />
 
-      <p className="mb-2 mt-4 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))]">
+      <p className="mb-2 mt-4 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_context_panel_p_jump_chapter_3">
         Chapters · {visibleEntries.length}
         {query
           ? ` / ${entries.length}`
           : ""}
       </p>
 
-      <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">
+      <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1 components_portal_admin_context_panel_div_jump_chapter_2">
         {loading ? (
-          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))]">
+          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))] components_portal_admin_context_panel_p_text_10">
             Loading chapters...
           </p>
         ) : error ? (
-          <p className="text-xs leading-5 text-[rgb(var(--sep-colour-c58d82))]">
+          <p className="text-xs leading-5 text-[rgb(var(--sep-colour-c58d82))] components_portal_admin_context_panel_p_text_11">
             Unable to load Codex chapters.
           </p>
         ) : visibleEntries.length ? (
@@ -1587,14 +1587,14 @@ function AdminCodexNavigatorContext() {
               onClick={() =>
                 jumpToChapter(entry.id)
               }
-              className="group flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))]"
+              className="group flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))] components_portal_admin_context_panel_button_action_6"
             >
-              <span className="min-w-0">
-                <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
+              <span className="min-w-0 components_portal_admin_context_panel_span_text_21">
+                <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] group-hover:text-[rgb(var(--sep-colour-ead0a0))] components_portal_admin_context_panel_span_text_22">
                   {entry.title}
                 </span>
 
-                <span className="mt-0.5 block text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))]">
+                <span className="mt-0.5 block text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))] components_portal_admin_context_panel_span_text_23">
                   Chapter{" "}
                   {entry.chapterNumber ??
                     "—"}{" "}
@@ -1602,13 +1602,13 @@ function AdminCodexNavigatorContext() {
                 </span>
               </span>
 
-              <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))]">
+              <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))] components_portal_admin_context_panel_span_text_24">
                 →
               </span>
             </button>
           ))
         ) : (
-          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))]">
+          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))] components_portal_admin_context_panel_p_text_12">
             No matching chapters.
           </p>
         )}
@@ -1800,19 +1800,19 @@ function AdminNotificationsNavigatorContext() {
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+    <div className="flex h-full min-h-0 flex-col components_portal_admin_context_panel_div_jump_notification">
+      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_context_panel_p_jump_notification">
         Notification administration
       </p>
 
-      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_portal_admin_context_panel_h2_jump_notification">
         Jump to Notification
       </h2>
 
       <button
         type="button"
         onClick={jumpToNew}
-        className="mt-4 w-full border border-[rgb(var(--sep-colour-765937))]/65 bg-[rgb(var(--sep-colour-21170f))] px-3 py-2.5 text-left text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d9c092))] transition hover:border-[rgb(var(--sep-colour-a07945))]"
+        className="mt-4 w-full border border-[rgb(var(--sep-colour-765937))]/65 bg-[rgb(var(--sep-colour-21170f))] px-3 py-2.5 text-left text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d9c092))] transition hover:border-[rgb(var(--sep-colour-a07945))] components_portal_admin_context_panel_button_create_new_notification"
       >
         + Create new notification
       </button>
@@ -1826,17 +1826,17 @@ function AdminNotificationsNavigatorContext() {
           )
         }
         placeholder="Search notifications..."
-        className="mt-3 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))]"
+        className="mt-3 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))] components_portal_admin_context_panel_input_search_notifications"
       />
 
-      <p className="mb-2 mt-4 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))]">
+      <p className="mb-2 mt-4 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_context_panel_p_jump_notification_2">
         Notifications · {visibleEntries.length}
         {query
           ? ` / ${entries.length}`
           : ""}
       </p>
 
-      <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">
+      <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1 components_portal_admin_context_panel_div_jump_notification_2">
         {visibleEntries.length ? (
           visibleEntries.map(
             (entry) => (
@@ -1848,14 +1848,14 @@ function AdminNotificationsNavigatorContext() {
                     entry.id,
                   )
                 }
-                className="group flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:-translate-y-[1px] hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))] hover:shadow-[0_0_10px_rgba(var(--sep-rgb-177-132-75),0.06)]"
+                className="group flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:-translate-y-[1px] hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))] hover:shadow-[0_0_10px_rgba(var(--sep-rgb-177-132-75),0.06)] components_portal_admin_context_panel_button_action_7"
               >
-                <span className="min-w-0">
-                  <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
+                <span className="min-w-0 components_portal_admin_context_panel_span_text_25">
+                  <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] group-hover:text-[rgb(var(--sep-colour-ead0a0))] components_portal_admin_context_panel_span_text_26">
                     {entry.title}
                   </span>
 
-                  <span className="mt-0.5 block truncate text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))]">
+                  <span className="mt-0.5 block truncate text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))] components_portal_admin_context_panel_span_text_27">
                     {entry.type}
                     {" · "}
                     {entry.source}
@@ -1866,14 +1866,14 @@ function AdminNotificationsNavigatorContext() {
                   </span>
                 </span>
 
-                <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))]">
+                <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))] components_portal_admin_context_panel_span_text_28">
                   →
                 </span>
               </button>
             ),
           )
         ) : (
-          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))]">
+          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))] components_portal_admin_context_panel_p_text_13">
             No matching notifications.
           </p>
         )}
@@ -2024,16 +2024,16 @@ function AdminNavigationContext() {
     : [];
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+    <div className="flex h-full min-h-0 flex-col components_portal_admin_context_panel_div_admin_navigation">
+      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_context_panel_p_admin_navigation">
         Administration
       </p>
 
-      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_portal_admin_context_panel_h2_admin_navigation">
         Admin Navigation
       </h2>
 
-      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_context_panel_p_admin_navigation_2">
         Search the sections available to your staff role and open the page directly.
       </p>
 
@@ -2042,20 +2042,20 @@ function AdminNavigationContext() {
         value={search}
         onChange={(event) => setSearch(event.target.value)}
         placeholder="Search admin pages..."
-        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))]"
+        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))] components_portal_admin_context_panel_input_search_admin_pages"
       />
 
-      <p className="mb-2 mt-4 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))]">
+      <p className="mb-2 mt-4 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_context_panel_p_admin_navigation_3">
         Pages · {visibleEntries.length}
       </p>
 
-      <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">
+      <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1 components_portal_admin_context_panel_div_admin_navigation_2">
         {loading ? (
-          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))]">
+          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))] components_portal_admin_context_panel_p_text_14">
             Loading admin pages...
           </p>
         ) : error ? (
-          <p className="text-xs leading-5 text-[rgb(var(--sep-colour-c58d82))]">
+          <p className="text-xs leading-5 text-[rgb(var(--sep-colour-c58d82))] components_portal_admin_context_panel_p_text_15">
             {error}
           </p>
         ) : visibleEntries.length ? (
@@ -2065,16 +2065,16 @@ function AdminNavigationContext() {
               href={entry.href}
               className="group flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))]"
             >
-              <span className="truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
+              <span className="truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] group-hover:text-[rgb(var(--sep-colour-ead0a0))] components_portal_admin_context_panel_span_text_29">
                 {entry.label}
               </span>
-              <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))]">
+              <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))] components_portal_admin_context_panel_span_text_30">
                 →
               </span>
             </Link>
           ))
         ) : (
-          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))]">
+          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))] components_portal_admin_context_panel_p_text_16">
             No matching admin pages.
           </p>
         )}
@@ -2159,16 +2159,16 @@ function AdminCharacterFieldNavigator() {
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+    <div className="flex h-full min-h-0 flex-col components_portal_admin_context_panel_div_jump_field">
+      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_context_panel_p_jump_field">
         Character administration
       </p>
 
-      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_portal_admin_context_panel_h2_jump_field">
         Jump to Field
       </h2>
 
-      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_context_panel_p_jump_field_2">
         Search this character record and jump directly to the field or section you need.
       </p>
 
@@ -2177,32 +2177,32 @@ function AdminCharacterFieldNavigator() {
         value={search}
         onChange={(event) => setSearch(event.target.value)}
         placeholder="Search fields..."
-        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-655c50))] focus:border-[rgb(var(--sep-colour-8a673f))]"
+        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-655c50))] focus:border-[rgb(var(--sep-colour-8a673f))] components_portal_admin_context_panel_input_search_fields"
       />
 
-      <p className="mb-2 mt-4 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))]">
+      <p className="mb-2 mt-4 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_context_panel_p_jump_field_3">
         Fields · {visibleFields.length}
       </p>
 
-      <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">
+      <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1 components_portal_admin_context_panel_div_jump_field_2">
         {visibleFields.length ? (
           visibleFields.map((field) => (
             <button
               key={field.label}
               type="button"
               onClick={() => jumpToField(field.id)}
-              className="flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))]"
+              className="flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))] components_portal_admin_context_panel_button_action_8"
             >
-              <span className="truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))]">
+              <span className="truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] components_portal_admin_context_panel_span_text_31">
                 {field.label}
               </span>
-              <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))]">
+              <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))] components_portal_admin_context_panel_span_text_32">
                 →
               </span>
             </button>
           ))
         ) : (
-          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))]">
+          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))] components_portal_admin_context_panel_p_text_17">
             No matching fields.
           </p>
         )}
@@ -2221,7 +2221,7 @@ function AdminShapesJumpContext() {
   const visible=entries.filter(e=>!q||e.label.toLowerCase().includes(q)||(e.secondary??"").toLowerCase().includes(q));
   function jump(entry:JumpEntry){const el=document.getElementById(`shape-${entry.id}`);if(el instanceof HTMLDetailsElement)el.open=true;el?.scrollIntoView({behavior:"smooth",block:"start"});}
   function create(){document.getElementById("shape-new")?.scrollIntoView({behavior:"smooth",block:"start"});}
-  return <div className="flex h-full min-h-0 flex-col"><p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">Administration</p><h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">Jump to Shapes</h2><p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">Search the Shape catalogue and jump directly to a Shape.</p><button type="button" onClick={create} className="mt-3 flex w-full items-center justify-between border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-271c12))] px-3 py-2.5 text-left text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d6b37d))]"><span>Create new</span><span>+</span></button><label className="mt-3 block"><span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">Search Shapes</span><input type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Name or Word of Power..." className="mt-2 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none"/><span className="mt-1.5 block text-right text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-6f6353))]">{visible.length}{q?` / ${entries.length}`:""} Shapes</span></label>{error?<p className="mt-3 text-[10px] text-[rgb(var(--sep-colour-d8a49a))]">{error}</p>:null}<div className="mt-3 min-h-0 flex-1 overflow-y-auto pr-1">{loading?<p className="text-[10px] text-[rgb(var(--sep-colour-8f8271))]">Loading...</p>:<div className="space-y-1.5">{visible.map(e=><button key={e.id} type="button" onClick={()=>jump(e)} className="group flex w-full items-center justify-between gap-2 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-left"><span className="min-w-0"><span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))]">{e.label}</span><span className="mt-0.5 block truncate text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))]">{e.secondary}</span></span><span className={`h-1.5 w-1.5 rounded-full ${e.active?"bg-emerald-600":"bg-[rgb(var(--sep-colour-66594b))]"}`}/></button>)}</div>}</div></div>;
+  return <div className="flex h-full min-h-0 flex-col components_portal_admin_context_panel_div_jump_shapes"><p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_context_panel_p_jump_shapes">Administration</p><h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_portal_admin_context_panel_h2_jump_shapes">Jump to Shapes</h2><p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_context_panel_p_jump_shapes_2">Search the Shape catalogue and jump directly to a Shape.</p><button type="button" onClick={create} className="mt-3 flex w-full items-center justify-between border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-271c12))] px-3 py-2.5 text-left text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d6b37d))] components_portal_admin_context_panel_button_create"><span className="components_portal_admin_context_panel_span_jump_shapes">Create new</span><span className="components_portal_admin_context_panel_span_jump_shapes_2">+</span></button><label className="mt-3 block components_portal_admin_context_panel_label_jump_shapes"><span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_context_panel_span_jump_shapes_3">Search Shapes</span><input type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Name or Word of Power..." className="mt-2 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none components_portal_admin_context_panel_input_name_word_power"/><span className="mt-1.5 block text-right text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-6f6353))] components_portal_admin_context_panel_span_jump_shapes_4">{visible.length}{q?` / ${entries.length}`:""} Shapes</span></label>{error?<p className="mt-3 text-[10px] text-[rgb(var(--sep-colour-d8a49a))] components_portal_admin_context_panel_p_jump_shapes_3">{error}</p>:null}<div className="mt-3 min-h-0 flex-1 overflow-y-auto pr-1 components_portal_admin_context_panel_div_jump_shapes_2">{loading?<p className="text-[10px] text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_context_panel_p_jump_shapes_4">Loading...</p>:<div className="space-y-1.5 components_portal_admin_context_panel_div_jump_shapes_3">{visible.map(e=><button key={e.id} type="button" onClick={()=>jump(e)} className="group flex w-full items-center justify-between gap-2 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-left components_portal_admin_context_panel_button_action_9"><span className="min-w-0 components_portal_admin_context_panel_span_text_33"><span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] components_portal_admin_context_panel_span_text_34">{e.label}</span><span className="mt-0.5 block truncate text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))] components_portal_admin_context_panel_span_text_35">{e.secondary}</span></span><span className={[((`h-1.5 w-1.5 rounded-full ${e.active?"bg-emerald-600":"bg-[rgb(var(--sep-colour-66594b))]"}`)), "components_portal_admin_context_panel_span_text_36"].filter(Boolean).join(" ")}/></button>)}</div>}</div></div>;
 }
 
 function AdminGiftsJumpContext() {
@@ -2372,16 +2372,16 @@ function AdminGiftsJumpContext() {
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+    <div className="flex h-full min-h-0 flex-col components_portal_admin_context_panel_div_jump_feats">
+      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_context_panel_p_jump_feats">
         Administration
       </p>
 
-      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_portal_admin_context_panel_h2_jump_feats">
         Jump to Feats
       </h2>
 
-      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_context_panel_p_jump_feats_2">
         Search the Feats catalogue
         and jump directly to the
         definition you want to edit.
@@ -2390,14 +2390,14 @@ function AdminGiftsJumpContext() {
       <button
         type="button"
         onClick={jumpToCreate}
-        className="mt-3 flex w-full items-center justify-between border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-271c12))] px-3 py-2.5 text-left text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d6b37d))] transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:bg-[rgb(var(--sep-colour-342318))]"
+        className="mt-3 flex w-full items-center justify-between border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-271c12))] px-3 py-2.5 text-left text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d6b37d))] transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:bg-[rgb(var(--sep-colour-342318))] components_portal_admin_context_panel_button_jump_create_2"
       >
-        <span>Create new</span>
-        <span>+</span>
+        <span className="components_portal_admin_context_panel_span_jump_feats">Create new</span>
+        <span className="components_portal_admin_context_panel_span_jump_feats_2">+</span>
       </button>
 
-      <label className="mt-3 block">
-        <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+      <label className="mt-3 block components_portal_admin_context_panel_label_jump_feats">
+        <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_context_panel_span_jump_feats_3">
           Search Feats
         </span>
 
@@ -2408,10 +2408,10 @@ function AdminGiftsJumpContext() {
             setSearch(event.target.value)
           }
           placeholder="Search by name..."
-          className="mt-2 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))]"
+          className="mt-2 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))] components_portal_admin_context_panel_input_search_name"
         />
 
-        <span className="mt-1.5 block text-right text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-6f6353))]">
+        <span className="mt-1.5 block text-right text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-6f6353))] components_portal_admin_context_panel_span_jump_feats_4">
           {visibleEntries.length}
           {query
             ? ` / ${entries.length}`
@@ -2421,27 +2421,27 @@ function AdminGiftsJumpContext() {
       </label>
 
       {error ? (
-        <p className="mt-3 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-2.5 text-[10px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]">
+        <p className="mt-3 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-2.5 text-[10px] leading-5 text-[rgb(var(--sep-colour-d8a49a))] components_portal_admin_context_panel_p_jump_feats_3">
           {error}
         </p>
       ) : null}
 
-      <div className="mt-3 min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1">
+      <div className="mt-3 min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1 components_portal_admin_context_panel_div_jump_feats_2">
         {loading ? (
-          <div className="space-y-2">
+          <div className="space-y-2 components_portal_admin_context_panel_div_container_4">
             {Array.from({
               length: 7,
             }).map(
               (_, index) => (
                 <div
                   key={index}
-                  className="h-10 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]"
+                  className="h-10 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))] components_portal_admin_context_panel_div_container_5"
                 />
               ),
             )}
           </div>
         ) : (
-          <div className="space-y-1.5">
+          <div className="space-y-1.5 components_portal_admin_context_panel_div_container_6">
             {visibleEntries.map(
               (entry) => (
                 <button
@@ -2450,14 +2450,14 @@ function AdminGiftsJumpContext() {
                   onClick={() =>
                     jumpToGift(entry)
                   }
-                  className="group flex w-full items-center justify-between gap-2 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-left transition hover:border-[rgb(var(--sep-colour-8d693e))] hover:bg-[rgb(var(--sep-colour-1d150f))]"
+                  className="group flex w-full items-center justify-between gap-2 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-left transition hover:border-[rgb(var(--sep-colour-8d693e))] hover:bg-[rgb(var(--sep-colour-1d150f))] components_portal_admin_context_panel_button_action_10"
                 >
-                  <span className="min-w-0">
-                    <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
+                  <span className="min-w-0 components_portal_admin_context_panel_span_text_37">
+                    <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] group-hover:text-[rgb(var(--sep-colour-ead0a0))] components_portal_admin_context_panel_span_text_38">
                       {entry.label}
                     </span>
 
-                    <span className="mt-0.5 block text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))]">
+                    <span className="mt-0.5 block text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))] components_portal_admin_context_panel_span_text_39">
                       {entry.secondary}
                     </span>
                   </span>
@@ -2468,11 +2468,11 @@ function AdminGiftsJumpContext() {
                         ? "Active"
                         : "Inactive"
                     }
-                    className={`h-1.5 w-1.5 shrink-0 rounded-full ${
+                    className={[((`h-1.5 w-1.5 shrink-0 rounded-full ${
                       entry.active
                         ? "bg-emerald-600"
                         : "bg-[rgb(var(--sep-colour-66594b))]"
-                    }`}
+                    }`)), "components_portal_admin_context_panel_span_text_40"].filter(Boolean).join(" ")}
                   />
                 </button>
               ),
@@ -2484,7 +2484,7 @@ function AdminGiftsJumpContext() {
         !error &&
         visibleEntries.length ===
           0 ? (
-          <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-3 text-[11px] text-[rgb(var(--sep-colour-8f8271))]">
+          <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-3 text-[11px] text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_context_panel_p_text_18">
             {query
               ? "No Feats match this search."
               : "No Feats found."}
@@ -3002,16 +3002,16 @@ function AdminRecordJumpContext({
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+    <div className="flex h-full min-h-0 flex-col components_portal_admin_context_panel_div_jump">
+      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_context_panel_p_jump">
         Administration
       </p>
 
-      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_portal_admin_context_panel_h2_jump">
         Jump to {title}
       </h2>
 
-      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_context_panel_p_jump_2">
         Jump directly to the
         record you want to work
         on.
@@ -3024,37 +3024,37 @@ function AdminRecordJumpContext({
         <button
           type="button"
           onClick={jumpToCreate}
-          className="mt-3 flex w-full items-center justify-between border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-271c12))] px-3 py-2.5 text-left text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d6b37d))] transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:bg-[rgb(var(--sep-colour-342318))]"
+          className="mt-3 flex w-full items-center justify-between border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-271c12))] px-3 py-2.5 text-left text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d6b37d))] transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:bg-[rgb(var(--sep-colour-342318))] components_portal_admin_context_panel_button_jump_create_3"
         >
-          <span>
+          <span className="components_portal_admin_context_panel_span_text_41">
             Create new
           </span>
-          <span>+</span>
+          <span className="components_portal_admin_context_panel_span_text_42">+</span>
         </button>
       ) : null}
 
       {error ? (
-        <p className="mt-3 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-2.5 text-[10px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]">
+        <p className="mt-3 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-2.5 text-[10px] leading-5 text-[rgb(var(--sep-colour-d8a49a))] components_portal_admin_context_panel_p_jump_3">
           {error}
         </p>
       ) : null}
 
-      <div className="mt-3 min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1">
+      <div className="mt-3 min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1 components_portal_admin_context_panel_div_jump_2">
         {loading ? (
-          <div className="space-y-2">
+          <div className="space-y-2 components_portal_admin_context_panel_div_container_7">
             {Array.from({
               length: 6,
             }).map(
               (_, index) => (
                 <div
                   key={index}
-                  className="h-10 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]"
+                  className="h-10 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))] components_portal_admin_context_panel_div_container_8"
                 />
               ),
             )}
           </div>
         ) : (
-          <div className="space-y-1.5">
+          <div className="space-y-1.5 components_portal_admin_context_panel_div_container_9">
             {entries.map(
               (entry) => (
                 <button
@@ -3063,15 +3063,15 @@ function AdminRecordJumpContext({
                   onClick={() =>
                     jumpTo(entry)
                   }
-                  className="group flex w-full items-center justify-between gap-2 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-left transition hover:border-[rgb(var(--sep-colour-8d693e))] hover:bg-[rgb(var(--sep-colour-1d150f))]"
+                  className="group flex w-full items-center justify-between gap-2 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-left transition hover:border-[rgb(var(--sep-colour-8d693e))] hover:bg-[rgb(var(--sep-colour-1d150f))] components_portal_admin_context_panel_button_action_11"
                 >
-                  <span className="min-w-0">
-                    <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
+                  <span className="min-w-0 components_portal_admin_context_panel_span_text_43">
+                    <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] group-hover:text-[rgb(var(--sep-colour-ead0a0))] components_portal_admin_context_panel_span_text_44">
                       {entry.label}
                     </span>
 
                     {entry.secondary ? (
-                      <span className="mt-0.5 block truncate text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))]">
+                      <span className="mt-0.5 block truncate text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))] components_portal_admin_context_panel_span_text_45">
                         {
                           entry.secondary
                         }
@@ -3087,14 +3087,14 @@ function AdminRecordJumpContext({
                           ? "Active"
                           : "Inactive"
                       }
-                      className={`h-1.5 w-1.5 shrink-0 rounded-full ${
+                      className={[((`h-1.5 w-1.5 shrink-0 rounded-full ${
                         entry.active
                           ? "bg-emerald-600"
                           : "bg-[rgb(var(--sep-colour-66594b))]"
-                      }`}
+                      }`)), "components_portal_admin_context_panel_span_text_46"].filter(Boolean).join(" ")}
                     />
                   ) : (
-                    <span className="shrink-0 text-[10px] text-[rgb(var(--sep-colour-725a3d))]">
+                    <span className="shrink-0 text-[10px] text-[rgb(var(--sep-colour-725a3d))] components_portal_admin_context_panel_span_text_47">
                       ↓
                     </span>
                   )}
@@ -3107,34 +3107,34 @@ function AdminRecordJumpContext({
         {!loading &&
         !error &&
         entries.length === 0 ? (
-          <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-3 text-[11px] text-[rgb(var(--sep-colour-8f8271))]">
+          <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-3 text-[11px] text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_context_panel_p_text_19">
             No records found.
           </p>
         ) : null}
       </div>
 
       {mode === "rooms" ? (
-        <div className="mt-3 shrink-0 border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-3">
-          <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
+        <div className="mt-3 shrink-0 border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-3 components_portal_admin_context_panel_div_jump_3">
+          <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_context_panel_p_text_20">
             Connections
           </p>
 
           <button
             type="button"
             onClick={jumpToConnections}
-            className="mt-2 flex w-full items-center justify-between border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-271c12))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:bg-[rgb(var(--sep-colour-342318))]"
+            className="mt-2 flex w-full items-center justify-between border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-271c12))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:bg-[rgb(var(--sep-colour-342318))] components_portal_admin_context_panel_button_jump_connections"
           >
-            <span>
-              <span className="block font-serif text-[13px] text-[rgb(var(--sep-colour-d6b37d))]">
+            <span className="components_portal_admin_context_panel_span_text_48">
+              <span className="block font-serif text-[13px] text-[rgb(var(--sep-colour-d6b37d))] components_portal_admin_context_panel_span_text_49">
                 Room connections
               </span>
 
-              <span className="mt-0.5 block text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))]">
+              <span className="mt-0.5 block text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))] components_portal_admin_context_panel_span_text_50">
                 Existing paths
               </span>
             </span>
 
-            <span className="shrink-0 text-[11px] text-[rgb(var(--sep-colour-8d693e))]">
+            <span className="shrink-0 text-[11px] text-[rgb(var(--sep-colour-8d693e))] components_portal_admin_context_panel_span_text_51">
               ↓
             </span>
           </button>
@@ -3252,16 +3252,16 @@ function ForumModerationContext() {
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <p className="text-[8px] uppercase tracking-[0.24em] text-amber-500">
+    <div className="flex h-full min-h-0 flex-col components_portal_admin_context_panel_div_moderation_log">
+      <p className="text-[8px] uppercase tracking-[0.24em] text-amber-500 components_portal_admin_context_panel_p_moderation_log">
         Forum administration
       </p>
 
-      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_portal_admin_context_panel_h2_moderation_log">
         Moderation Log
       </h2>
 
-      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_context_panel_p_moderation_log_2">
         Latest recorded staff
         actions across the forum.
       </p>
@@ -3274,28 +3274,28 @@ function ForumModerationContext() {
       </Link>
 
       {error ? (
-        <p className="mt-3 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-2.5 text-[10px] text-[rgb(var(--sep-colour-d8a49a))]">
+        <p className="mt-3 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-2.5 text-[10px] text-[rgb(var(--sep-colour-d8a49a))] components_portal_admin_context_panel_p_moderation_log_3">
           The moderation log
           could not be loaded.
         </p>
       ) : null}
 
-      <div className="mt-3 min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1">
+      <div className="mt-3 min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1 components_portal_admin_context_panel_div_moderation_log_2">
         {loading ? (
-          <div className="space-y-2">
+          <div className="space-y-2 components_portal_admin_context_panel_div_container_10">
             {Array.from({
               length: 5,
             }).map(
               (_, index) => (
                 <div
                   key={index}
-                  className="h-12 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]"
+                  className="h-12 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))] components_portal_admin_context_panel_div_container_11"
                 />
               ),
             )}
           </div>
         ) : (
-          <div className="space-y-1.5">
+          <div className="space-y-1.5 components_portal_admin_context_panel_div_container_12">
             {logs.map((log) => {
               const topic =
                 typeof log.details
@@ -3308,16 +3308,16 @@ function ForumModerationContext() {
               return (
                 <div
                   key={log.id}
-                  className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2"
+                  className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 components_portal_admin_context_panel_div_container_13"
                 >
-                  <div className="flex items-start justify-between gap-2">
-                    <span className="text-[9px] uppercase tracking-[0.13em] text-amber-400">
+                  <div className="flex items-start justify-between gap-2 components_portal_admin_context_panel_div_container_14">
+                    <span className="text-[9px] uppercase tracking-[0.13em] text-amber-400 components_portal_admin_context_panel_span_text_52">
                       {formatAction(
                         log.action,
                       )}
                     </span>
 
-                    <span className="shrink-0 text-[8px] text-[rgb(var(--sep-colour-665a4b))]">
+                    <span className="shrink-0 text-[8px] text-[rgb(var(--sep-colour-665a4b))] components_portal_admin_context_panel_span_text_53">
                       {formatDate(
                         log.created_at,
                       )}
@@ -3325,7 +3325,7 @@ function ForumModerationContext() {
                   </div>
 
                   {topic ? (
-                    <p className="mt-1 truncate font-serif text-xs text-[rgb(var(--sep-colour-baa68a))]">
+                    <p className="mt-1 truncate font-serif text-xs text-[rgb(var(--sep-colour-baa68a))] components_portal_admin_context_panel_p_text_21">
                       {topic}
                     </p>
                   ) : null}
@@ -3338,7 +3338,7 @@ function ForumModerationContext() {
         {!loading &&
         !error &&
         logs.length === 0 ? (
-          <p className="text-[11px] text-[rgb(var(--sep-colour-8f8271))]">
+          <p className="text-[11px] text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_context_panel_p_text_22">
             No moderation actions
             have been recorded yet.
           </p>

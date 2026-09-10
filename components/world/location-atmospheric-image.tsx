@@ -182,7 +182,7 @@ const displayedSrc =
 
   return (
     <div
-      className="absolute inset-0"
+      className="absolute inset-0 components_world_location_atmospheric_image_div_container"
       onErrorCapture={() => {
   if (
     fallbackStage === "atmospheric"

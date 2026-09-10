@@ -90,14 +90,14 @@ export default function DeletePostButton({
         type="button"
         onClick={() => setIsOpen(true)}
         disabled={disabled}
-        className="border border-red-950/70 bg-red-950/10 px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-red-400 transition hover:border-red-800 hover:bg-red-950/25 disabled:cursor-not-allowed disabled:opacity-45"
+        className="border border-red-950/70 bg-red-950/10 px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-red-400 transition hover:border-red-800 hover:bg-red-950/25 disabled:cursor-not-allowed disabled:opacity-45 components_forum_delete_post_button_button_delete"
       >
         Delete
       </button>
 
       {isOpen ? (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 px-4 py-8 backdrop-blur-sm"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 px-4 py-8 backdrop-blur-sm components_forum_delete_post_button_div_presentation"
           role="presentation"
           onMouseDown={(event) => {
             if (
@@ -115,16 +115,16 @@ export default function DeletePostButton({
             aria-modal="true"
             aria-labelledby={`delete-post-title-${postId}`}
             tabIndex={-1}
-            className="w-full max-w-lg border border-red-950/70 bg-[rgb(var(--sep-colour-15100d))] shadow-2xl outline-none"
+            className="w-full max-w-lg border border-red-950/70 bg-[rgb(var(--sep-colour-15100d))] shadow-2xl outline-none components_forum_delete_post_button_div_dialog"
           >
-            <header className="border-b border-red-950/50 bg-red-950/10 px-5 py-5 sm:px-6">
-              <p className="text-[8px] uppercase tracking-[0.22em] text-red-500">
+            <header className="border-b border-red-950/50 bg-red-950/10 px-5 py-5 sm:px-6 components_forum_delete_post_button_header_header">
+              <p className="text-[8px] uppercase tracking-[0.22em] text-red-500 components_forum_delete_post_button_p_text">
                 Permanent action
               </p>
 
               <h2
                 id={`delete-post-title-${postId}`}
-                className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dec6ae))]"
+                className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dec6ae))] components_forum_delete_post_button_h2_heading"
               >
                 {isInitialPost
                   ? "Delete this discussion?"
@@ -132,16 +132,16 @@ export default function DeletePostButton({
               </h2>
             </header>
 
-            <div className="space-y-5 px-5 py-6 sm:px-6">
-              <p className="text-sm leading-7 text-[rgb(var(--sep-colour-aa9b88))]">
+            <div className="space-y-5 px-5 py-6 sm:px-6 components_forum_delete_post_button_div_container">
+              <p className="text-sm leading-7 text-[rgb(var(--sep-colour-aa9b88))] components_forum_delete_post_button_p_text_2">
                 {isInitialPost
                   ? "Deleting the opening post will remove the entire discussion and all of its replies from the forum."
                   : "The reply will remain in the discussion as a deleted-post marker, but its content will no longer be visible."}
               </p>
 
               {isInitialPost ? (
-                <div className="border border-red-950/55 bg-red-950/10 px-4 py-4">
-                  <p className="text-xs leading-6 text-red-300">
+                <div className="border border-red-950/55 bg-red-950/10 px-4 py-4 components_forum_delete_post_button_div_container_2">
+                  <p className="text-xs leading-6 text-red-300 components_forum_delete_post_button_p_text_3">
                     This affects every post
                     inside the topic. Continue
                     only when you are certain
@@ -152,26 +152,26 @@ export default function DeletePostButton({
               ) : null}
 
               {state.message ? (
-                <div className="border border-red-900/60 bg-red-950/20 px-4 py-3 text-sm text-red-300">
+                <div className="border border-red-900/60 bg-red-950/20 px-4 py-3 text-sm text-red-300 components_forum_delete_post_button_div_container_3">
                   {state.message}
                 </div>
               ) : null}
 
-              <form action={formAction}>
-                <input
+              <form className="components_forum_delete_post_button_form_form_action" action={formAction}>
+                <input className="components_forum_delete_post_button_input_post_id"
                   type="hidden"
                   name="postId"
                   value={postId}
                 />
 
-                <div className="flex flex-col-reverse gap-3 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-5 sm:flex-row sm:justify-end">
+                <div className="flex flex-col-reverse gap-3 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-5 sm:flex-row sm:justify-end components_forum_delete_post_button_div_container_4">
                   <button
                     type="button"
                     onClick={() =>
                       setIsOpen(false)
                     }
                     disabled={pending}
-                    className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-19120e))] px-5 py-3 text-[9px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-a58b68))] transition hover:border-[rgb(var(--sep-colour-947047))] hover:text-[rgb(var(--sep-colour-dec095))] disabled:cursor-not-allowed disabled:opacity-50"
+                    className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-19120e))] px-5 py-3 text-[9px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-a58b68))] transition hover:border-[rgb(var(--sep-colour-947047))] hover:text-[rgb(var(--sep-colour-dec095))] disabled:cursor-not-allowed disabled:opacity-50 components_forum_delete_post_button_button_cancel"
                   >
                     Cancel
                   </button>
@@ -179,7 +179,7 @@ export default function DeletePostButton({
                   <button
                     type="submit"
                     disabled={pending}
-                    className="border border-red-800 bg-red-950/35 px-5 py-3 text-[9px] uppercase tracking-[0.17em] text-red-300 transition hover:border-red-600 hover:bg-red-950/60 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="border border-red-800 bg-red-950/35 px-5 py-3 text-[9px] uppercase tracking-[0.17em] text-red-300 transition hover:border-red-600 hover:bg-red-950/60 disabled:cursor-not-allowed disabled:opacity-50 components_forum_delete_post_button_button_action"
                   >
                     {pending
                       ? "Deleting..."

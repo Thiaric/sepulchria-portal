@@ -116,7 +116,7 @@ export function PendingOpposedActions() {
   if (!pendingActions.length) return null;
 
   return (
-    <div className="mb-2 space-y-2">
+    <div className="mb-2 space-y-2 game_components_pendingopposedactions_div_container">
       {pendingActions.map((pendingAction) => {
         const attacker = Array.isArray(pendingAction.attacker)
           ? pendingAction.attacker[0] ?? null
@@ -125,20 +125,20 @@ export function PendingOpposedActions() {
         return (
           <section
             key={pendingAction.id}
-            className="border border-[rgb(var(--sep-colour-986a37))]/60 bg-[rgb(var(--sep-colour-20140c))] p-3"
+            className="border border-[rgb(var(--sep-colour-986a37))]/60 bg-[rgb(var(--sep-colour-20140c))] p-3 game_components_pendingopposedactions_section_section"
           >
-            <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-b88c55))]">
+            <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-b88c55))] game_components_pendingopposedactions_p_text">
               Incoming Action
             </p>
-            <p className="mt-1 font-serif text-base text-[rgb(var(--sep-colour-efd2a0))]">
+            <p className="mt-1 font-serif text-base text-[rgb(var(--sep-colour-efd2a0))] game_components_pendingopposedactions_p_text_2">
               {attacker?.display_name ?? "Someone"} — {pendingAction.action_label}
             </p>
-            <p className="mt-1 text-[9px] text-[rgb(var(--sep-colour-a18d6e))]">
+            <p className="mt-1 text-[9px] text-[rgb(var(--sep-colour-a18d6e))] game_components_pendingopposedactions_p_text_3">
               Action total: {pendingAction.attack_total}
             </p>
 
-            <form action={action} className="mt-3 flex flex-wrap gap-2">
-              <input
+            <form action={action} className="mt-3 flex flex-wrap gap-2 game_components_pendingopposedactions_form_action">
+              <input className="game_components_pendingopposedactions_input_opposed_action_id"
                 type="hidden"
                 name="opposed_action_id"
                 value={pendingAction.id}
@@ -151,7 +151,7 @@ export function PendingOpposedActions() {
                   type="submit"
                   name="counter_kind"
                   value={counter}
-                  className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-2a1c11))] px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-dfc18f))] transition hover:border-[rgb(var(--sep-colour-a47b48))]"
+                  className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-2a1c11))] px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-dfc18f))] transition hover:border-[rgb(var(--sep-colour-a47b48))] game_components_pendingopposedactions_button_counter_kind"
                 >
                   {COUNTER_LABELS[counter] ?? counter} (
                   {attributes
@@ -169,7 +169,7 @@ export function PendingOpposedActions() {
                 type="submit"
                 name="counter_kind"
                 value="__do_nothing__"
-                className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-2a1c11))] px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-dfc18f))] transition hover:border-[rgb(var(--sep-colour-a47b48))]"
+                className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-2a1c11))] px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-dfc18f))] transition hover:border-[rgb(var(--sep-colour-a47b48))] game_components_pendingopposedactions_button_do_nothing"
               >
                 Do nothing
               </button>
@@ -180,11 +180,11 @@ export function PendingOpposedActions() {
 
       {state.message ? (
         <p
-          className={`text-xs ${
+          className={[((`text-xs ${
             state.ok
               ? "text-[rgb(var(--sep-colour-9bb58c))]"
               : "text-[rgb(var(--sep-colour-d58d82))]"
-          }`}
+          }`)), "game_components_pendingopposedactions_p_text_4"].filter(Boolean).join(" ")}
         >
           {state.message}
         </p>

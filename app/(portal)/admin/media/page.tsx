@@ -20,19 +20,19 @@ export default async function AdminMediaPage() {
     );
 
   return (
-    <main>
-      <div className="mx-auto max-w-6xl">
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))]">
+    <main className="admin_media_page_main_main">
+      <div className="mx-auto max-w-6xl admin_media_page_div_container">
+        <div className="flex flex-wrap items-end justify-between gap-3 admin_media_page_div_container_2">
+          <div className="admin_media_page_div_media_library">
+            <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))] admin_media_page_p_media_library">
               Administration
             </p>
 
-            <h2 className="mt-1 font-serif text-3xl text-[rgb(var(--sep-colour-ead5ac))]">
+            <h2 className="mt-1 font-serif text-3xl text-[rgb(var(--sep-colour-ead5ac))] admin_media_page_h2_media_library">
               Media Library
             </h2>
 
-            <p className="mt-1 max-w-3xl text-xs leading-5 text-[rgb(var(--sep-colour-928674))]">
+            <p className="mt-1 max-w-3xl text-xs leading-5 text-[rgb(var(--sep-colour-928674))] admin_media_page_p_media_library_2">
               Stage uploads and deletions for
               the repository&apos;s public
               folder, then save the whole
@@ -49,12 +49,12 @@ export default async function AdminMediaPage() {
         </div>
 
         {!configured ? (
-          <section className="mt-4 border border-amber-800/55 bg-amber-950/15 px-4 py-3">
-            <p className="text-[8px] uppercase tracking-[0.18em] text-amber-400">
+          <section className="mt-4 border border-amber-800/55 bg-amber-950/15 px-4 py-3 admin_media_page_section_section">
+            <p className="text-[8px] uppercase tracking-[0.18em] text-amber-400 admin_media_page_p_text">
               Setup required
             </p>
 
-            <p className="mt-2 text-xs leading-5 text-amber-200/70">
+            <p className="mt-2 text-xs leading-5 text-amber-200/70 admin_media_page_p_text_2">
               GITHUB_MEDIA_TOKEN is not
               configured. Add a fine-grained
               GitHub token with Contents
@@ -65,12 +65,12 @@ export default async function AdminMediaPage() {
           </section>
         ) : null}
 
-        <section className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3">
-          <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9b805a))]">
+        <section className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 admin_media_page_section_section_2">
+          <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9b805a))] admin_media_page_p_text_3">
             How it works
           </p>
 
-          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-817567))]">
+          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-817567))] admin_media_page_p_text_4">
             Adding an upload only stages its
             bytes in GitHub and marking a
             deletion changes only this page.
@@ -80,7 +80,7 @@ export default async function AdminMediaPage() {
             </code>
             or triggers Vercel. When you
             click
-            <strong className="mx-1 font-normal text-[rgb(var(--sep-colour-d1b68e))]">
+            <strong className="mx-1 font-normal text-[rgb(var(--sep-colour-d1b68e))] admin_media_page_strong_emphasis">
               Save changes
             </strong>
             the entire batch is written as

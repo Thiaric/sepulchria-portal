@@ -154,9 +154,9 @@ export default function PortalEntryPage() {
   }, []);
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[rgb(var(--sep-colour-120f0d))] px-6 text-[rgb(var(--sep-colour-e8dcc4))]">
-      <div className="max-w-md text-center">
-        <p className="font-serif text-lg text-[rgb(var(--sep-colour-d4b27e))]">
+    <main className="flex min-h-screen items-center justify-center bg-[rgb(var(--sep-colour-120f0d))] px-6 text-[rgb(var(--sep-colour-e8dcc4))] auth_portal_entry_page_main_main">
+      <div className="max-w-md text-center auth_portal_entry_page_div_container">
+        <p className="font-serif text-lg text-[rgb(var(--sep-colour-d4b27e))] auth_portal_entry_page_p_text">
           {error
             ? "The gates did not open."
             : "Entering Sepulchria..."}
@@ -164,7 +164,7 @@ export default function PortalEntryPage() {
 
         {error ? (
           <>
-            <p className="mt-3 text-sm leading-6 text-[rgb(var(--sep-colour-b7a58c))]">
+            <p className="mt-3 text-sm leading-6 text-[rgb(var(--sep-colour-b7a58c))] auth_portal_entry_page_p_text_2">
               {error}
             </p>
 
@@ -175,7 +175,7 @@ export default function PortalEntryPage() {
                   "/auth/login",
                 );
               }}
-              className="mt-5 border border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-241a12))] px-4 py-2 text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-efd4a0))]"
+              className="mt-5 border border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-241a12))] px-4 py-2 text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-efd4a0))] auth_portal_entry_page_button_return_login"
             >
               Return to Login
             </button>

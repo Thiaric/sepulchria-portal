@@ -8,10 +8,10 @@ const Card = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn(
+    className={[((cn(
       "rounded-xl border bg-card text-card-foreground shadow",
       className,
-    )}
+    ))), "components_ui_card_div_container"].filter(Boolean).join(" ")}
     {...props}
   />
 ));
@@ -23,7 +23,7 @@ const CardHeader = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("flex flex-col space-y-1.5 p-6", className)}
+    className={[((cn("flex flex-col space-y-1.5 p-6", className))), "components_ui_card_div_container_2"].filter(Boolean).join(" ")}
     {...props}
   />
 ));
@@ -35,7 +35,7 @@ const CardTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("font-semibold leading-none tracking-tight", className)}
+    className={[((cn("font-semibold leading-none tracking-tight", className))), "components_ui_card_div_container_3"].filter(Boolean).join(" ")}
     {...props}
   />
 ));
@@ -47,7 +47,7 @@ const CardDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("text-sm text-muted-foreground", className)}
+    className={[((cn("text-sm text-muted-foreground", className))), "components_ui_card_div_container_4"].filter(Boolean).join(" ")}
     {...props}
   />
 ));
@@ -57,7 +57,7 @@ const CardContent = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("p-6 pt-0", className)} {...props} />
+  <div ref={ref} className={[((cn("p-6 pt-0", className))), "components_ui_card_div_container_5"].filter(Boolean).join(" ")} {...props} />
 ));
 CardContent.displayName = "CardContent";
 
@@ -67,7 +67,7 @@ const CardFooter = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("flex items-center p-6 pt-0", className)}
+    className={[((cn("flex items-center p-6 pt-0", className))), "components_ui_card_div_container_6"].filter(Boolean).join(" ")}
     {...props}
   />
 ));

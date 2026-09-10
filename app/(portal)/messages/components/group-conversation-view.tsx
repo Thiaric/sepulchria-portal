@@ -228,14 +228,14 @@ export async function GroupConversationView({
       }));
 
   return (
-    <main className="min-h-screen bg-[rgb(var(--sep-colour-100d0b))] text-[rgb(var(--sep-colour-e7d5b0))]">
+    <main className="min-h-screen bg-[rgb(var(--sep-colour-100d0b))] text-[rgb(var(--sep-colour-e7d5b0))] messages_components_group_conversation_view_main_main">
       <ConversationRealtime
         conversationId={
           conversationId
         }
       />
 
-      <div className="mx-auto max-w-[1000px] px-5 py-8">
+      <div className="mx-auto max-w-[1000px] px-5 py-8 messages_components_group_conversation_view_div_container">
         <Link
           href="/messages"
           className="border border-[rgb(var(--sep-colour-59432c))] px-3 py-2 text-[9px] uppercase tracking-[0.16em]"
@@ -243,46 +243,46 @@ export async function GroupConversationView({
           ← Messages
         </Link>
 
-        <section className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
-          <header className="flex flex-wrap items-start justify-between gap-4 border-b border-[rgb(var(--sep-colour-59432c))]/40 p-5 sm:p-6">
-            <div>
-              <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-826b4d))]">
+        <section className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] messages_components_group_conversation_view_section_section">
+          <header className="flex flex-wrap items-start justify-between gap-4 border-b border-[rgb(var(--sep-colour-59432c))]/40 p-5 sm:p-6 messages_components_group_conversation_view_header_header">
+            <div className="messages_components_group_conversation_view_div_container_2">
+              <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-826b4d))] messages_components_group_conversation_view_p_text">
                 Group conversation
               </p>
 
-              <h1 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dec69a))]">
+              <h1 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dec69a))] messages_components_group_conversation_view_h1_title">
                 {displayTitle ||
                   "Group conversation"}
               </h1>
 
-              <p className="mt-2 max-w-2xl text-[10px] leading-5 text-[rgb(var(--sep-colour-887a67))]">
+              <p className="mt-2 max-w-2xl text-[10px] leading-5 text-[rgb(var(--sep-colour-887a67))] messages_components_group_conversation_view_p_text_2">
                 {participants
                   .map(nameOf)
                   .join(" · ")}
               </p>
             </div>
 
-            <div className="flex gap-2">
-              <form
+            <div className="flex gap-2 messages_components_group_conversation_view_div_container_3">
+              <form className="messages_components_group_conversation_view_form_toggle_archive"
                 action={
                   toggleArchive
                 }
               >
-                <input
+                <input className="messages_components_group_conversation_view_input_conversation_id"
                   type="hidden"
                   name="conversationId"
                   value={
                     conversationId
                   }
                 />
-                <input
+                <input className="messages_components_group_conversation_view_input_archive"
                   type="hidden"
                   name="archive"
                   value="true"
                 />
                 <button
                   type="submit"
-                  className="border border-[rgb(var(--sep-colour-59432c))] px-3 py-2 text-[9px] uppercase tracking-[0.16em]"
+                  className="border border-[rgb(var(--sep-colour-59432c))] px-3 py-2 text-[9px] uppercase tracking-[0.16em] messages_components_group_conversation_view_button_archive"
                 >
                   Archive
                 </button>

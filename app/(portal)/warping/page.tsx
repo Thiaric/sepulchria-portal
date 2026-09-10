@@ -33,25 +33,25 @@ export default async function WarpingPage() {
     (data ?? []) as ShapeCard[];
 
   return (
-    <main className="p-5 sm:p-7 lg:p-9">
-      <div className="mx-auto max-w-7xl">
-        <header className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-5 py-5 sm:px-6">
-          <p className="text-[8px] uppercase tracking-[0.26em] text-[rgb(var(--sep-colour-8c704b))]">
+    <main className="p-5 sm:p-7 lg:p-9 warping_page_main_main">
+      <div className="mx-auto max-w-7xl warping_page_div_container">
+        <header className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-5 py-5 sm:px-6 warping_page_header_header">
+          <p className="text-[8px] uppercase tracking-[0.26em] text-[rgb(var(--sep-colour-8c704b))] warping_page_p_text">
             Codex
           </p>
 
-          <div className="mt-1 flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <h1 className="font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">
+          <div className="mt-1 flex flex-wrap items-end justify-between gap-4 warping_page_div_container_2">
+            <div className="warping_page_div_warping">
+              <h1 className="font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))] warping_page_h1_warping">
                 Warping
               </h1>
 
-              <p className="mt-2 max-w-3xl text-xs leading-6 text-[rgb(var(--sep-colour-9f927f))]">
+              <p className="mt-2 max-w-3xl text-xs leading-6 text-[rgb(var(--sep-colour-9f927f))] warping_page_p_warping">
                 The known Shapes of Sepulchria and the ways they shape the Current.
               </p>
             </div>
 
-            <p className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-766a59))]">
+            <p className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-766a59))] warping_page_p_text_2">
               {shapes.length} active Shapes
             </p>
           </div>

@@ -158,11 +158,11 @@ portalWindow.document.title =
   };
 
   return (
-    <form onSubmit={handleLogin} className="space-y-5">
-      <div className="space-y-2">
+    <form onSubmit={handleLogin} className="space-y-5 components_login_form_form_login">
+      <div className="space-y-2 components_login_form_div_email">
         <label
           htmlFor="email"
-          className="block text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-a68a63))]"
+          className="block text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-a68a63))] components_login_form_label_email"
         >
           Email
         </label>
@@ -175,15 +175,15 @@ portalWindow.document.title =
           required
           value={email}
           onChange={(event) => setEmail(event.target.value)}
-          className="h-12 w-full border border-[rgb(var(--sep-colour-62482f))] bg-[rgb(var(--sep-colour-0b0807))]/90 px-4 text-sm text-[rgb(var(--sep-colour-e8dcc4))] outline-none transition placeholder:text-[rgb(var(--sep-colour-5f574d))] focus:border-[rgb(var(--sep-colour-b28149))] focus:ring-1 focus:ring-[rgb(var(--sep-colour-b28149))]/50"
+          className="h-12 w-full border border-[rgb(var(--sep-colour-62482f))] bg-[rgb(var(--sep-colour-0b0807))]/90 px-4 text-sm text-[rgb(var(--sep-colour-e8dcc4))] outline-none transition placeholder:text-[rgb(var(--sep-colour-5f574d))] focus:border-[rgb(var(--sep-colour-b28149))] focus:ring-1 focus:ring-[rgb(var(--sep-colour-b28149))]/50 components_login_form_input_email"
         />
       </div>
 
-      <div className="space-y-2">
-        <div className="flex items-center justify-between gap-4">
+      <div className="space-y-2 components_login_form_div_container">
+        <div className="flex items-center justify-between gap-4 components_login_form_div_password">
           <label
             htmlFor="password"
-            className="block text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-a68a63))]"
+            className="block text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-a68a63))] components_login_form_label_password"
           >
             Password
           </label>
@@ -204,20 +204,20 @@ portalWindow.document.title =
           required
           value={password}
           onChange={(event) => setPassword(event.target.value)}
-          className="h-12 w-full border border-[rgb(var(--sep-colour-62482f))] bg-[rgb(var(--sep-colour-0b0807))]/90 px-4 text-sm text-[rgb(var(--sep-colour-e8dcc4))] outline-none transition focus:border-[rgb(var(--sep-colour-b28149))] focus:ring-1 focus:ring-[rgb(var(--sep-colour-b28149))]/50"
+          className="h-12 w-full border border-[rgb(var(--sep-colour-62482f))] bg-[rgb(var(--sep-colour-0b0807))]/90 px-4 text-sm text-[rgb(var(--sep-colour-e8dcc4))] outline-none transition focus:border-[rgb(var(--sep-colour-b28149))] focus:ring-1 focus:ring-[rgb(var(--sep-colour-b28149))]/50 components_login_form_input_password"
         />
       </div>
 
       {error && (
         <div
           role="alert"
-          className="border border-[rgb(var(--sep-colour-873e35))]/55 bg-[rgb(var(--sep-colour-421d1a))]/35 px-4 py-3 text-sm text-[rgb(var(--sep-colour-e2aaa1))]"
+          className="border border-[rgb(var(--sep-colour-873e35))]/55 bg-[rgb(var(--sep-colour-421d1a))]/35 px-4 py-3 text-sm text-[rgb(var(--sep-colour-e2aaa1))] components_login_form_div_alert"
         >
           {error}
         </div>
       )}
 
-      <div className="border border-[rgb(var(--sep-colour-62482f))]/45 bg-[rgb(var(--sep-colour-0b0807))]/35 px-4 py-3">
+      <div className="border border-[rgb(var(--sep-colour-62482f))]/45 bg-[rgb(var(--sep-colour-0b0807))]/35 px-4 py-3 components_login_form_div_container_2">
         <TurnstileWidget
           onTokenChange={setCaptchaToken}
         />
@@ -229,12 +229,12 @@ portalWindow.document.title =
   isLoading ||
   !captchaToken
 }
-        className="relative h-12 w-full overflow-hidden border border-[rgb(var(--sep-colour-a77a42))]/80 bg-[rgb(var(--sep-colour-382313))] font-serif text-base tracking-[0.05em] text-[rgb(var(--sep-colour-ead3a6))] transition hover:border-[rgb(var(--sep-colour-d4a460))] hover:bg-[rgb(var(--sep-colour-472c17))] disabled:cursor-not-allowed disabled:opacity-60"
+        className="relative h-12 w-full overflow-hidden border border-[rgb(var(--sep-colour-a77a42))]/80 bg-[rgb(var(--sep-colour-382313))] font-serif text-base tracking-[0.05em] text-[rgb(var(--sep-colour-ead3a6))] transition hover:border-[rgb(var(--sep-colour-d4a460))] hover:bg-[rgb(var(--sep-colour-472c17))] disabled:cursor-not-allowed disabled:opacity-60 components_login_form_button_action"
       >
         {isLoading ? "Opening the gates..." : "Enter Sepulchria"}
       </button>
 
-      <p className="text-center text-sm text-[rgb(var(--sep-colour-897d6c))]">
+      <p className="text-center text-sm text-[rgb(var(--sep-colour-897d6c))] components_login_form_p_text">
         Do not yet have an account?{" "}
         <Link
           href="/auth/sign-up"

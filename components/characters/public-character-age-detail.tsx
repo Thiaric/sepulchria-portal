@@ -26,7 +26,7 @@ export async function PublicCharacterAgeDetail({
       : null;
 
   return (
-    <div>
+    <div className="components_characters_public_character_age_detail_div_container">
       <dt className="text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
         Age
       </dt>

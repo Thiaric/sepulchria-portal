@@ -104,23 +104,23 @@ export function AdminMissionsContext() {
   );
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <div>
-        <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-a88658))]">
+    <div className="flex h-full min-h-0 flex-col components_portal_admin_missions_context_div_container">
+      <div className="components_portal_admin_missions_context_div_daily_missions">
+        <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-a88658))] components_portal_admin_missions_context_p_daily_missions">
           Mission management
         </p>
 
-        <h2 className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-d6bd91))]">
+        <h2 className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-d6bd91))] components_portal_admin_missions_context_h2_daily_missions">
           Daily Missions
         </h2>
       </div>
 
-      <div className="mt-4 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3">
-        <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+      <div className="mt-4 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 components_portal_admin_missions_context_div_container_2">
+        <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_missions_context_p_text">
           Daily rules
         </p>
 
-        <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-948672))]">
+        <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-948672))] components_portal_admin_missions_context_p_text_2">
           Reset: midnight UTC. Unclaimed rewards expire.
           Mission rewards never create Daily Mission progress.
         </p>
@@ -133,18 +133,18 @@ export function AdminMissionsContext() {
           setSearch(event.target.value)
         }
         placeholder="Search missions..."
-        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-655c50))] focus:border-[rgb(var(--sep-colour-8a673f))]"
+        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-655c50))] focus:border-[rgb(var(--sep-colour-8a673f))] components_portal_admin_missions_context_input_search_missions"
       />
 
-      <div className="my-4 h-px bg-[rgb(var(--sep-colour-59432c))]/35" />
+      <div className="my-4 h-px bg-[rgb(var(--sep-colour-59432c))]/35 components_portal_admin_missions_context_div_container_3" />
 
-      <p className="mb-2 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))]">
+      <p className="mb-2 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_missions_context_p_text_3">
         Missions · {visibleMissions.length}
       </p>
 
       <div
         data-portal-scroll
-        className="min-h-0 flex-1 space-y-1 overflow-y-auto pr-1"
+        className="min-h-0 flex-1 space-y-1 overflow-y-auto pr-1 components_portal_admin_missions_context_div_container_4"
       >
         {visibleMissions.map((mission) => (
           <Link
@@ -152,11 +152,11 @@ export function AdminMissionsContext() {
             href={`/admin/missions#mission-${mission.code}`}
             className="block border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-[rgb(var(--sep-colour-cbb28a))] transition-colors hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))] "
           >
-            <span className="block text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-756550))]">
+            <span className="block text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-756550))] components_portal_admin_missions_context_span_text">
               {mission.family}
             </span>
 
-            <span className="mt-0.5 block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))]">
+            <span className="mt-0.5 block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] components_portal_admin_missions_context_span_text_2">
               {mission.name}
             </span>
           </Link>
@@ -164,9 +164,9 @@ export function AdminMissionsContext() {
 
         {visibleMilestones.length > 0 ? (
           <>
-            <div className="my-3 h-px bg-[rgb(var(--sep-colour-59432c))]/35" />
+            <div className="my-3 h-px bg-[rgb(var(--sep-colour-59432c))]/35 components_portal_admin_missions_context_div_container_5" />
 
-            <p className="mb-2 px-1 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))]">
+            <p className="mb-2 px-1 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_missions_context_p_text_4">
               Daily Milestones
             </p>
 
@@ -176,11 +176,11 @@ export function AdminMissionsContext() {
                 href={`/admin/missions#milestone-${milestone.milestone_key}`}
                 className="block border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-[rgb(var(--sep-colour-cbb28a))] transition-colors hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))] "
               >
-                <span className="block text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-756550))]">
+                <span className="block text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-756550))] components_portal_admin_missions_context_span_text_3">
                   Milestone
                 </span>
 
-                <span className="mt-0.5 block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))]">
+                <span className="mt-0.5 block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] components_portal_admin_missions_context_span_text_4">
                   {milestone.name}
                 </span>
               </Link>

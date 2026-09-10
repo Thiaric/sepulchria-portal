@@ -37,11 +37,9 @@ export default async function RulesPage({
   return (
     <div
       data-public-skin-surface="true"
-      className={
-        isEmbedded
+      className={[((isEmbedded
           ? "relative h-full min-h-0 overflow-hidden"
-          : "relative"
-      }
+          : "relative")), "rules_page_div_container"].filter(Boolean).join(" ")}
     >
       <EmbeddedPortalSkinBridge />
       {!isEmbedded ? (

@@ -21,7 +21,7 @@ export function OrderHeadquartersPanel({
     <details
       data-sep-interaction-ignore="true"
       data-skin-widget="order-headquarters-manage"
-      className="group shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0d0907))]"
+      className="group shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0d0907))] components_orders_order_headquarters_panel_details_details"
     >
       <InvitationOwnerStateRefresh
         kind="order"
@@ -37,54 +37,54 @@ export function OrderHeadquartersPanel({
         }
       />
 
-      <summary className="sticky top-0 z-30 flex cursor-pointer list-none items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-59432c))]/30 bg-[linear-gradient(90deg,rgb(var(--sep-colour-100c09)),rgb(var(--sep-colour-17110d)),rgb(var(--sep-colour-100c09)))] px-3 py-2 [&::-webkit-details-marker]:hidden">
-        <div className="min-w-0">
-          <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+      <summary className="sticky top-0 z-30 flex cursor-pointer list-none items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-59432c))]/30 bg-[linear-gradient(90deg,rgb(var(--sep-colour-100c09)),rgb(var(--sep-colour-17110d)),rgb(var(--sep-colour-100c09)))] px-3 py-2 [&::-webkit-details-marker]:hidden components_orders_order_headquarters_panel_summary_summary">
+        <div className="min-w-0 components_orders_order_headquarters_panel_div_container">
+          <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_orders_order_headquarters_panel_p_text">
             Order Headquarters
           </p>
-          <p className="mt-0.5 truncate font-serif text-sm text-[rgb(var(--sep-colour-dec89f))]">
+          <p className="mt-0.5 truncate font-serif text-sm text-[rgb(var(--sep-colour-dec89f))] components_orders_order_headquarters_panel_p_text_2">
             {data.orderName}
           </p>
         </div>
 
-        <div className="flex shrink-0 items-center gap-4">
-          <p className="hidden text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))] sm:block">
+        <div className="flex shrink-0 items-center gap-4 components_orders_order_headquarters_panel_div_container_2">
+          <p className="hidden text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))] sm:block components_orders_order_headquarters_panel_p_text_3">
             {data.isStaff
               ? "Staff control"
               : data.level === 6
                 ? "Level 6 · Order Leader"
                 : "Level 5"}
           </p>
-          <span className="text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a88d65))]">
-            <span className="group-open:hidden">Manage ▾</span>
-            <span className="hidden group-open:inline">Close ▴</span>
+          <span className="text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a88d65))] components_orders_order_headquarters_panel_span_text">
+            <span className="group-open:hidden components_orders_order_headquarters_panel_span_text_2">Manage ▾</span>
+            <span className="hidden group-open:inline components_orders_order_headquarters_panel_span_text_3">Close ▴</span>
           </span>
         </div>
       </summary>
 
-      <div className="max-h-[58vh] overflow-y-auto border-t border-[rgb(var(--sep-colour-59432c))]/30 px-3 py-3">
-        <div className="mx-auto w-full max-w-3xl">
+      <div className="max-h-[58vh] overflow-y-auto border-t border-[rgb(var(--sep-colour-59432c))]/30 px-3 py-3 components_orders_order_headquarters_panel_div_container_3">
+        <div className="mx-auto w-full max-w-3xl components_orders_order_headquarters_panel_div_container_4">
           {data.canInvite ? (
-            <section>
-              <p className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-8c704b))]">
+            <section className="components_orders_order_headquarters_panel_section_section">
+              <p className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-8c704b))] components_orders_order_headquarters_panel_p_text_4">
                 Invite external character
               </p>
 
               <form
                 action={inviteOrderHeadquarters}
-                className="mt-2 grid gap-2"
+                className="mt-2 grid gap-2 components_orders_order_headquarters_panel_form_invite_order_headquarters"
               >
-                <input type="hidden" name="roomId" value={data.roomId} />
+                <input className="components_orders_order_headquarters_panel_input_room_id" type="hidden" name="roomId" value={data.roomId} />
 
                 <select
                   name="recipientId"
                   required
                   defaultValue=""
-                  className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))]"
+                  className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))] components_orders_order_headquarters_panel_select_recipient_id"
                 >
-                  <option value="" disabled>Select character...</option>
+                  <option className="components_orders_order_headquarters_panel_option_recipient_id" value="" disabled>Select character...</option>
                   {data.candidates.map((candidate: any) => (
-                    <option key={candidate.id} value={candidate.id}>
+                    <option className="components_orders_order_headquarters_panel_option_option" key={candidate.id} value={candidate.id}>
                       {candidate.name}
                     </option>
                   ))}
@@ -93,15 +93,15 @@ export function OrderHeadquartersPanel({
                 <select
                   name="accessDuration"
                   defaultValue="permanent"
-                  className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))]"
+                  className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))] components_orders_order_headquarters_panel_select_access_duration"
                 >
-                  <option value="60">1 hour</option>
-                  <option value="360">6 hours</option>
-                  <option value="1440">24 hours</option>
-                  <option value="4320">3 days</option>
-                  <option value="10080">7 days</option>
-                  <option value="43200">30 days</option>
-                  <option value="permanent">Permanent</option>
+                  <option className="components_orders_order_headquarters_panel_option_60" value="60">1 hour</option>
+                  <option className="components_orders_order_headquarters_panel_option_360" value="360">6 hours</option>
+                  <option className="components_orders_order_headquarters_panel_option_1440" value="1440">24 hours</option>
+                  <option className="components_orders_order_headquarters_panel_option_4320" value="4320">3 days</option>
+                  <option className="components_orders_order_headquarters_panel_option_10080" value="10080">7 days</option>
+                  <option className="components_orders_order_headquarters_panel_option_43200" value="43200">30 days</option>
+                  <option className="components_orders_order_headquarters_panel_option_permanent" value="permanent">Permanent</option>
                 </select>
 
                 <textarea
@@ -109,29 +109,29 @@ export function OrderHeadquartersPanel({
                   rows={2}
                   maxLength={1200}
                   placeholder="Optional invitation message..."
-                  className="resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))]"
+                  className="resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))] components_orders_order_headquarters_panel_textarea_custom_message"
                 />
 
                 <button
                   type="submit"
-                  className="border border-[rgb(var(--sep-colour-668657))] bg-[rgb(var(--sep-colour-172313))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-b8d8a7))]"
+                  className="border border-[rgb(var(--sep-colour-668657))] bg-[rgb(var(--sep-colour-172313))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-b8d8a7))] components_orders_order_headquarters_panel_button_send_invitation"
                 >
                   Send invitation
                 </button>
               </form>
 
               {data.externalGuests.length > 0 ? (
-                <div className="mt-3 space-y-1.5">
+                <div className="mt-3 space-y-1.5 components_orders_order_headquarters_panel_div_container_5">
                   {data.externalGuests.map((guest: any) => (
                     <div
                       key={guest.invitationId}
-                      className="flex items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] px-2.5 py-2"
+                      className="flex items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] px-2.5 py-2 components_orders_order_headquarters_panel_div_container_6"
                     >
-                      <div className="min-w-0">
-                        <p className="truncate text-xs text-[rgb(var(--sep-colour-c9b79a))]">
+                      <div className="min-w-0 components_orders_order_headquarters_panel_div_container_7">
+                        <p className="truncate text-xs text-[rgb(var(--sep-colour-c9b79a))] components_orders_order_headquarters_panel_p_text_5">
                           {guest.name}
                         </p>
-                        <p className="mt-0.5 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
+                        <p className="mt-0.5 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))] components_orders_order_headquarters_panel_p_text_6">
                           {guest.status}
                           {guest.expiresAt
                             ? ` · until ${new Date(guest.expiresAt).toLocaleString("en-GB")}`
@@ -141,16 +141,16 @@ export function OrderHeadquartersPanel({
                         </p>
                       </div>
 
-                      <form action={revokeOrderHeadquartersGuest}>
-                        <input type="hidden" name="roomId" value={data.roomId} />
-                        <input
+                      <form className="components_orders_order_headquarters_panel_form_revoke_order_headquarters_guest" action={revokeOrderHeadquartersGuest}>
+                        <input className="components_orders_order_headquarters_panel_input_room_id_2" type="hidden" name="roomId" value={data.roomId} />
+                        <input className="components_orders_order_headquarters_panel_input_invitation_id"
                           type="hidden"
                           name="invitationId"
                           value={guest.invitationId}
                         />
                         <button
                           type="submit"
-                          className="text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-d18f83))]"
+                          className="text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-d18f83))] components_orders_order_headquarters_panel_button_action"
                         >
                           {guest.status === "pending" ? "Cancel" : "Kick"}
                         </button>
@@ -163,8 +163,8 @@ export function OrderHeadquartersPanel({
           ) : null}
 
           {data.canCustomize ? (
-            <details className="mt-4 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-3">
-              <summary className="cursor-pointer text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-8c704b))]">
+            <details className="mt-4 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-3 components_orders_order_headquarters_panel_details_location_images">
+              <summary className="cursor-pointer text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-8c704b))] components_orders_order_headquarters_panel_summary_location_images">
                 Location images
               </summary>
 
@@ -172,10 +172,10 @@ export function OrderHeadquartersPanel({
                 action={updateOrderHeadquartersPresentation}
                 className="mt-3 grid gap-2"
               >
-                <input type="hidden" name="roomId" value={data.roomId} />
+                <input className="components_orders_order_headquarters_panel_input_room_id_3" type="hidden" name="roomId" value={data.roomId} />
 
-                <label className="grid gap-1">
-                  <span className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))]">
+                <label className="grid gap-1 components_orders_order_headquarters_panel_label_location_images">
+                  <span className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))] components_orders_order_headquarters_panel_span_location_images">
                     Location Image URL
                   </span>
                   <input
@@ -183,16 +183,16 @@ export function OrderHeadquartersPanel({
                     maxLength={2000}
                     defaultValue={data.imageUrl ?? ""}
                     placeholder="https://..."
-                    className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))]"
+                    className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))] components_orders_order_headquarters_panel_input_image_url"
                   />
                 </label>
 
-                <p className="text-[7px] leading-4 text-[rgb(var(--sep-colour-6f6252))]">
+                <p className="text-[7px] leading-4 text-[rgb(var(--sep-colour-6f6252))] components_orders_order_headquarters_panel_p_location_images">
                   Shown as the Headquarters location image outside the room.
                 </p>
 
-                <label className="grid gap-1">
-                  <span className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))]">
+                <label className="grid gap-1 components_orders_order_headquarters_panel_label_location_images_2">
+                  <span className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))] components_orders_order_headquarters_panel_span_location_images_2">
                     Background Image URL
                   </span>
                   <input
@@ -200,17 +200,17 @@ export function OrderHeadquartersPanel({
                     maxLength={2000}
                     defaultValue={data.backgroundImageUrl ?? ""}
                     placeholder="https://..."
-                    className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))]"
+                    className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-2 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))] components_orders_order_headquarters_panel_input_background_image_url"
                   />
                 </label>
 
-                <p className="text-[7px] leading-4 text-[rgb(var(--sep-colour-6f6252))]">
+                <p className="text-[7px] leading-4 text-[rgb(var(--sep-colour-6f6252))] components_orders_order_headquarters_panel_p_location_images_2">
                   Used only as the in-room chat background. It overrides each visitor&apos;s equipped Location Atmosphere while they are inside.
                 </p>
 
                 <button
                   type="submit"
-                  className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd6a8))]"
+                  className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd6a8))] components_orders_order_headquarters_panel_button_save_location_images"
                 >
                   Save location images
                 </button>

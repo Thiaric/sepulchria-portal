@@ -243,14 +243,14 @@ export default async function AdminItemsPage({ searchParams }: Props) {
       }));
 
   return (
-    <main className="p-5 sm:p-7 lg:p-9">
-      <div className="mx-auto max-w-7xl">
-        <div>
-          <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
+    <main className="p-5 sm:p-7 lg:p-9 admin_items_page_main_main">
+      <div className="mx-auto max-w-7xl admin_items_page_div_container">
+        <div className="admin_items_page_div_item_management">
+          <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))] admin_items_page_p_item_management">
             Administration
           </p>
-          <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">Item Management</h1>
-          <p className="mt-3 max-w-4xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))]">
+          <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))] admin_items_page_h1_item_management">Item Management</h1>
+          <p className="mt-3 max-w-4xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))] admin_items_page_p_item_management_2">
             Manage the master Item catalogue, staff-created subcategories, stack
             rules, transfer policies, usable-item settings, containers, and
             mechanical effects.
@@ -258,20 +258,20 @@ export default async function AdminItemsPage({ searchParams }: Props) {
         </div>
 
         {params.error ? (
-          <div className="mt-6 border border-red-900/60 bg-red-950/20 px-4 py-3 text-sm text-red-400">
+          <div className="mt-6 border border-red-900/60 bg-red-950/20 px-4 py-3 text-sm text-red-400 admin_items_page_div_container_2">
             {params.error}
           </div>
         ) : null}
 
         <section
           id="item-subcategories"
-          className="mt-8 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6"
+          className="mt-8 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6 admin_items_page_section_item_subcategories"
         >
-          <p className="text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))]">
+          <p className="text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))] admin_items_page_p_item_subcategories">
             Classification
           </p>
-          <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">Item subcategories</h2>
-          <p className="mt-2 max-w-3xl text-xs leading-6 text-[rgb(var(--sep-colour-8f8271))]">
+          <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))] admin_items_page_h2_item_subcategories">Item subcategories</h2>
+          <p className="mt-2 max-w-3xl text-xs leading-6 text-[rgb(var(--sep-colour-8f8271))] admin_items_page_p_item_subcategories_2">
             Core categories are fixed by the system. Create whatever subcategories
             Sepulchria needs beneath them.
           </p>
@@ -280,48 +280,48 @@ export default async function AdminItemsPage({ searchParams }: Props) {
             action={createSubcategory}
             className="mt-5 grid gap-3 md:grid-cols-[1fr_1fr_1fr_110px_auto]"
           >
-            <select name="categoryId" required defaultValue="" className={inputClass}>
-              <option value="" disabled>Core category</option>
+            <select name="categoryId" required defaultValue="" className={[((inputClass)), "admin_items_page_select_category_id"].filter(Boolean).join(" ")}>
+              <option className="admin_items_page_option_category_id" value="" disabled>Core category</option>
               {categories.map((category) => (
-                <option key={category.id} value={category.id}>{category.name}</option>
+                <option className="admin_items_page_option_option" key={category.id} value={category.id}>{category.name}</option>
               ))}
             </select>
 
-            <input name="name" required placeholder="Subcategory name" className={inputClass} />
-            <input name="slug" placeholder="slug (optional)" className={inputClass} />
-            <input type="number" name="sortOrder" defaultValue={0} className={inputClass} />
+            <input name="name" required placeholder="Subcategory name" className={[((inputClass)), "admin_items_page_input_name"].filter(Boolean).join(" ")} />
+            <input name="slug" placeholder="slug (optional)" className={[((inputClass)), "admin_items_page_input_slug"].filter(Boolean).join(" ")} />
+            <input type="number" name="sortOrder" defaultValue={0} className={[((inputClass)), "admin_items_page_input_sort_order"].filter(Boolean).join(" ")} />
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 admin_items_page_div_item_subcategories">
               <Check name="isActive" label="Active" checked />
-              <button type="submit" className={buttonClass}>Add</button>
+              <button type="submit" className={[((buttonClass)), "admin_items_page_button_add"].filter(Boolean).join(" ")}>Add</button>
             </div>
 
             <textarea
               name="description"
               rows={2}
               placeholder="Description (optional)"
-              className={`${inputClass} md:col-span-5`}
+              className={[((`${inputClass} md:col-span-5`)), "admin_items_page_textarea_description"].filter(Boolean).join(" ")}
             />
           </AdminActionForm>
 
           {subcategories.length ? (
-            <div className="mt-5 grid gap-2 xl:grid-cols-2">
+            <div className="mt-5 grid gap-2 xl:grid-cols-2 admin_items_page_div_item_subcategories_2">
               {subcategories.map((subcategory) => (
                 <AdminActionForm
                   key={subcategory.id}
                   action={updateSubcategory}
                   className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-3"
                 >
-                  <input type="hidden" name="subcategoryId" value={subcategory.id} />
+                  <input className="admin_items_page_input_subcategory_id" type="hidden" name="subcategoryId" value={subcategory.id} />
 
-                  <div className="grid gap-2 sm:grid-cols-2">
+                  <div className="grid gap-2 sm:grid-cols-2 admin_items_page_div_container_3">
                     <select
                       name="categoryId"
                       defaultValue={subcategory.category_id}
-                      className={inputClass}
+                      className={[((inputClass)), "admin_items_page_select_category_id_2"].filter(Boolean).join(" ")}
                     >
                       {categories.map((category) => (
-                        <option key={category.id} value={category.id}>{category.name}</option>
+                        <option className="admin_items_page_option_option_2" key={category.id} value={category.id}>{category.name}</option>
                       ))}
                     </select>
 
@@ -329,44 +329,44 @@ export default async function AdminItemsPage({ searchParams }: Props) {
                       name="name"
                       required
                       defaultValue={subcategory.name}
-                      className={inputClass}
+                      className={[((inputClass)), "admin_items_page_input_name_2"].filter(Boolean).join(" ")}
                     />
 
                     <input
                       name="slug"
                       defaultValue={subcategory.slug}
-                      className={inputClass}
+                      className={[((inputClass)), "admin_items_page_input_slug_2"].filter(Boolean).join(" ")}
                     />
 
                     <input
                       type="number"
                       name="sortOrder"
                       defaultValue={subcategory.sort_order}
-                      className={inputClass}
+                      className={[((inputClass)), "admin_items_page_input_sort_order_2"].filter(Boolean).join(" ")}
                     />
 
                     <textarea
                       name="description"
                       rows={2}
                       defaultValue={subcategory.description}
-                      className={`${inputClass} sm:col-span-2`}
+                      className={[((`${inputClass} sm:col-span-2`)), "admin_items_page_textarea_description_2"].filter(Boolean).join(" ")}
                     />
                   </div>
 
-                  <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+                  <div className="mt-3 flex flex-wrap items-center justify-between gap-3 admin_items_page_div_container_4">
                     <Check
                       name="isActive"
                       label="Active"
                       checked={subcategory.is_active}
                     />
 
-                    <div className="flex gap-2">
-                      <button type="submit" className={buttonClass}>Save</button>
+                    <div className="flex gap-2 admin_items_page_div_container_5">
+                      <button type="submit" className={[((buttonClass)), "admin_items_page_button_save"].filter(Boolean).join(" ")}>Save</button>
                       <button
                         type="submit"
                         formAction={deleteSubcategory}
                         data-confirm-message={`Are you sure you want to permanently delete the subcategory "${subcategory.name}"?`}
-                        className="border border-red-900/55 bg-red-950/20 px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-red-300"
+                        className="border border-red-900/55 bg-red-950/20 px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-red-300 admin_items_page_button_delete"
                       >
                         Delete
                       </button>
@@ -380,12 +380,12 @@ export default async function AdminItemsPage({ searchParams }: Props) {
 
         <section
           id="item-new"
-          className="mt-6 scroll-mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6"
+          className="mt-6 scroll-mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6 admin_items_page_section_item_new"
         >
-          <p className="text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))]">
+          <p className="text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))] admin_items_page_p_item_new">
             Catalogue
           </p>
-          <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">Create Item</h2>
+          <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))] admin_items_page_h2_item_new">Create Item</h2>
 
           <ItemForm
             action={createItem}
@@ -396,7 +396,7 @@ export default async function AdminItemsPage({ searchParams }: Props) {
           />
         </section>
 
-        <div className="mt-6 space-y-4">
+        <div className="mt-6 space-y-4 admin_items_page_div_container_6">
           {items.map((item) => {
             const category = categoryById.get(item.category_id);
             const subcategory = item.subcategory_id
@@ -410,10 +410,10 @@ export default async function AdminItemsPage({ searchParams }: Props) {
               <details
                 key={item.id}
                 id={`item-${item.id}`}
-                className="scroll-mt-6 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))]"
+                className="scroll-mt-6 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] admin_items_page_details_details"
               >
-                <summary className="cursor-pointer list-none px-4 py-4">
-                  <div className="flex items-center gap-4">
+                <summary className="cursor-pointer list-none px-4 py-4 admin_items_page_summary_summary">
+                  <div className="flex items-center gap-4 admin_items_page_div_container_7">
                     <ItemImageFrame
                       src={item.image_url}
                       quality={item.quality}
@@ -421,11 +421,11 @@ export default async function AdminItemsPage({ searchParams }: Props) {
                       badgeSize="sm"
                     />
 
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate font-serif text-lg text-[rgb(var(--sep-colour-d8bf91))]">
+                    <div className="min-w-0 flex-1 admin_items_page_div_container_8">
+                      <p className="truncate font-serif text-lg text-[rgb(var(--sep-colour-d8bf91))] admin_items_page_p_text">
                         {item.name}
                       </p>
-                      <p className="mt-1 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-766956))]">
+                      <p className="mt-1 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-766956))] admin_items_page_p_text_2">
                         {category?.name ?? "Unknown"}
                         {subcategory ? ` · ${subcategory.name}` : ""}
                         {" · "}
@@ -437,27 +437,27 @@ export default async function AdminItemsPage({ searchParams }: Props) {
                       </p>
                     </div>
 
-                    <span className="shrink-0 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9b8768))]">
+                    <span className="shrink-0 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9b8768))] admin_items_page_span_text">
                       {item.is_active ? "Active" : "Inactive"}
                     </span>
                   </div>
                 </summary>
 
-                <div className="border-t border-[rgb(var(--sep-colour-59432c))]/35 p-4 sm:p-5">
-                  <section className="border border-[rgb(var(--sep-colour-6a5032))]/45 bg-[rgb(var(--sep-colour-130e0b))] p-4 sm:p-5">
-                    <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-8c704b))]">
+                <div className="border-t border-[rgb(var(--sep-colour-59432c))]/35 p-4 sm:p-5 admin_items_page_div_container_9">
+                  <section className="border border-[rgb(var(--sep-colour-6a5032))]/45 bg-[rgb(var(--sep-colour-130e0b))] p-4 sm:p-5 admin_items_page_section_item_mechanics">
+                    <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-8c704b))] admin_items_page_p_item_mechanics">
                       Use / Effects
                     </p>
-                    <h3 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+                    <h3 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] admin_items_page_h3_item_mechanics">
                       Item mechanics
                     </h3>
-                    <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-817361))]">
+                    <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-817361))] admin_items_page_p_item_mechanics_2">
                       Configure the Item, its target, success roll, damage, use behaviour,
                       charges, cooldown and all additional Health or Attribute effects here.
                       Damage is a valid effect by itself and never requires a dummy Use effect.
                     </p>
 
-                    <div className="mt-4">
+                    <div className="mt-4 admin_items_page_div_item_mechanics">
                       <ItemForm
                         action={updateItem}
                         item={item}
@@ -467,13 +467,13 @@ export default async function AdminItemsPage({ searchParams }: Props) {
                       />
                     </div>
 
-                    <div className="mt-5 border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-5">
-                      <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+                    <div className="mt-5 border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-5 admin_items_page_div_item_mechanics_2">
+                      <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] admin_items_page_p_item_mechanics_3">
                         Health / Attribute effects
                       </p>
 
                       {effects.length ? (
-                        <div className="mt-4 space-y-3">
+                        <div className="mt-4 space-y-3 admin_items_page_div_container_10">
                           {effects.map((effect) => (
                             <EffectForm
                               key={effect.id}
@@ -483,16 +483,16 @@ export default async function AdminItemsPage({ searchParams }: Props) {
                           ))}
                         </div>
                       ) : (
-                        <p className="mt-3 text-xs italic text-[rgb(var(--sep-colour-766956))]">
+                        <p className="mt-3 text-xs italic text-[rgb(var(--sep-colour-766956))] admin_items_page_p_text_3">
                           No additional Health or Attribute effects configured.
                         </p>
                       )}
 
-                      <details className="mt-4 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))]">
-                        <summary className="cursor-pointer list-none px-3 py-3 font-serif text-sm text-[rgb(var(--sep-colour-cab28a))]">
+                      <details className="mt-4 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] admin_items_page_details_add_health_attribute_effect">
+                        <summary className="cursor-pointer list-none px-3 py-3 font-serif text-sm text-[rgb(var(--sep-colour-cab28a))] admin_items_page_summary_add_health_attribute_effect">
                           + Add Health / Attribute effect
                         </summary>
-                        <div className="border-t border-[rgb(var(--sep-colour-59432c))]/30 p-3">
+                        <div className="border-t border-[rgb(var(--sep-colour-59432c))]/30 p-3 admin_items_page_div_add_health_attribute_effect">
                           <EffectForm itemId={item.id} />
                         </div>
                       </details>
@@ -503,15 +503,15 @@ export default async function AdminItemsPage({ searchParams }: Props) {
                     itemId={item.id}
                   />
 
-                  <div className="mt-6 flex justify-end border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-5">
+                  <div className="mt-6 flex justify-end border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-5 admin_items_page_div_container_11">
                     <AdminActionForm
   action={deleteItem}
   confirmMessage={`Are you sure you want to permanently delete "${item.name}"?`}
 >
-                      <input type="hidden" name="itemId" value={item.id} />
+                      <input className="admin_items_page_input_item_id" type="hidden" name="itemId" value={item.id} />
                       <button
                         type="submit"
-                        className="border border-red-900/55 bg-red-950/20 px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-red-300"
+                        className="border border-red-900/55 bg-red-950/20 px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-red-300 admin_items_page_button_delete_item"
                       >
                         Delete Item
                       </button>
@@ -524,7 +524,7 @@ export default async function AdminItemsPage({ searchParams }: Props) {
         </div>
 
         {!items.length ? (
-          <section className="mt-6 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-6 text-sm italic text-[rgb(var(--sep-colour-817565))]">
+          <section className="mt-6 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-6 text-sm italic text-[rgb(var(--sep-colour-817565))] admin_items_page_section_section">
             No Items have been created yet.
           </section>
         ) : null}
@@ -554,13 +554,13 @@ function ItemForm({
 }) {
   return (
     <AdminActionForm action={action} className="mt-5">
-      {item ? <input type="hidden" name="itemId" value={item.id} /> : null}
+      {item ? <input className="admin_items_page_input_item_id_2" type="hidden" name="itemId" value={item.id} /> : null}
 
       <ItemUseFormLogic />
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4 admin_items_page_div_container_12">
         <Field label="Name">
-          <input name="name" required defaultValue={item?.name ?? ""} className={inputClass} />
+          <input name="name" required defaultValue={item?.name ?? ""} className={[((inputClass)), "admin_items_page_input_name_3"].filter(Boolean).join(" ")} />
         </Field>
 
         <Field label="Slug">
@@ -568,7 +568,7 @@ function ItemForm({
             name="slug"
             defaultValue={item?.slug ?? ""}
             placeholder="Auto from name"
-            className={inputClass}
+            className={[((inputClass)), "admin_items_page_input_slug_3"].filter(Boolean).join(" ")}
           />
         </Field>
 
@@ -577,10 +577,10 @@ function ItemForm({
             name="categoryId"
             required
             defaultValue={item?.category_id ?? categories[0]?.id ?? ""}
-            className={inputClass}
+            className={[((inputClass)), "admin_items_page_select_category_id_3"].filter(Boolean).join(" ")}
           >
             {categories.map((category) => (
-              <option key={category.id} value={category.id}>{category.name}</option>
+              <option className="admin_items_page_option_option_3" key={category.id} value={category.id}>{category.name}</option>
             ))}
           </select>
         </Field>
@@ -589,9 +589,9 @@ function ItemForm({
           <select
             name="subcategoryId"
             defaultValue={item?.subcategory_id ?? ""}
-            className={inputClass}
+            className={[((inputClass)), "admin_items_page_select_subcategory_id"].filter(Boolean).join(" ")}
           >
-            <option value="">None</option>
+            <option className="admin_items_page_option_subcategory_id" value="">None</option>
             {categories.map((category) => {
               const matches = subcategories.filter(
                 (subcategory) => subcategory.category_id === category.id,
@@ -601,7 +601,7 @@ function ItemForm({
               return (
                 <optgroup key={category.id} label={category.name}>
                   {matches.map((subcategory) => (
-                    <option key={subcategory.id} value={subcategory.id}>
+                    <option className="admin_items_page_option_option_4" key={subcategory.id} value={subcategory.id}>
                       {subcategory.name}
                       {!subcategory.is_active ? " (inactive)" : ""}
                     </option>
@@ -616,11 +616,11 @@ function ItemForm({
           <select
             name="teachesRecipeId"
             defaultValue={item?.teaches_recipe_id ?? ""}
-            className={inputClass}
+            className={[((inputClass)), "admin_items_page_select_teaches_recipe_id"].filter(Boolean).join(" ")}
           >
-            <option value="">None</option>
+            <option className="admin_items_page_option_teaches_recipe_id" value="">None</option>
             {recipes.map((recipe) => (
-              <option
+              <option className="admin_items_page_option_option_5"
                 key={recipe.id}
                 value={recipe.id}
               >
@@ -632,19 +632,19 @@ function ItemForm({
             ))}
           </select>
 
-          <p className="mt-1.5 text-[8px] leading-4 text-[rgb(var(--sep-colour-806b50))]">
+          <p className="mt-1.5 text-[8px] leading-4 text-[rgb(var(--sep-colour-806b50))] admin_items_page_p_text_4">
             When selected, this Item becomes a self-targeted consumable recipe document.
             Using it from Inventory teaches the linked recipe.
           </p>
         </Field>
 
-        <div className="md:col-span-2 xl:col-span-4">
+        <div className="md:col-span-2 xl:col-span-4 admin_items_page_div_container_13">
           <Field label="Description">
             <textarea
               name="description"
               rows={5}
               defaultValue={item?.description ?? ""}
-              className={inputClass}
+              className={[((inputClass)), "admin_items_page_textarea_description_3"].filter(Boolean).join(" ")}
             />
           </Field>
         </div>
@@ -655,18 +655,18 @@ function ItemForm({
             name="imageUrl"
             defaultValue={item?.image_url ?? ""}
             placeholder="https://..."
-            className={inputClass}
+            className={[((inputClass)), "admin_items_page_input_image_url"].filter(Boolean).join(" ")}
           />
         </Field>
 
         <Field label="Quality">
-          <select name="quality" defaultValue={item?.quality ?? "average"} className={inputClass}>
-            <option value="poor">Poor</option>
-            <option value="average">Average</option>
-            <option value="fine">Fine</option>
-            <option value="superior">Superior</option>
-            <option value="flawless">Flawless</option>
-            <option value="peerless">Peerless</option>
+          <select name="quality" defaultValue={item?.quality ?? "average"} className={[((inputClass)), "admin_items_page_select_quality"].filter(Boolean).join(" ")}>
+            <option className="admin_items_page_option_poor" value="poor">Poor</option>
+            <option className="admin_items_page_option_average" value="average">Average</option>
+            <option className="admin_items_page_option_fine" value="fine">Fine</option>
+            <option className="admin_items_page_option_superior" value="superior">Superior</option>
+            <option className="admin_items_page_option_flawless" value="flawless">Flawless</option>
+            <option className="admin_items_page_option_peerless" value="peerless">Peerless</option>
           </select>
         </Field>
 
@@ -674,11 +674,11 @@ function ItemForm({
           <select
             name="transferPolicy"
             defaultValue={item?.transfer_policy ?? "free"}
-            className={inputClass}
+            className={[((inputClass)), "admin_items_page_select_transfer_policy"].filter(Boolean).join(" ")}
           >
-            <option value="free">Free</option>
-            <option value="restricted">Restricted</option>
-            <option value="bound">Bound</option>
+            <option className="admin_items_page_option_free" value="free">Free</option>
+            <option className="admin_items_page_option_restricted" value="restricted">Restricted</option>
+            <option className="admin_items_page_option_bound" value="bound">Bound</option>
           </select>
         </Field>
 
@@ -688,7 +688,7 @@ function ItemForm({
             min={0}
             name="referenceValue"
             defaultValue={item?.reference_value ?? ""}
-            className={inputClass}
+            className={[((inputClass)), "admin_items_page_input_reference_value"].filter(Boolean).join(" ")}
           />
         </Field>
 
@@ -697,7 +697,7 @@ function ItemForm({
             type="number"
             name="sortOrder"
             defaultValue={item?.sort_order ?? 0}
-            className={inputClass}
+            className={[((inputClass)), "admin_items_page_input_sort_order_3"].filter(Boolean).join(" ")}
           />
         </Field>
 
@@ -708,7 +708,7 @@ function ItemForm({
             name="maxStack"
             defaultValue={item?.max_stack ?? ""}
             placeholder="Blank = unlimited"
-            className={inputClass}
+            className={[((inputClass)), "admin_items_page_input_blank_unlimited"].filter(Boolean).join(" ")}
           />
         </Field>
 
@@ -716,11 +716,11 @@ function ItemForm({
           <select
             name="useBehaviour"
             defaultValue={item?.use_behaviour ?? "reusable"}
-            className={inputClass}
+            className={[((inputClass)), "admin_items_page_select_use_behaviour"].filter(Boolean).join(" ")}
           >
-            <option value="reusable">Reusable</option>
-            <option value="consumable">Consumable</option>
-            <option value="limited_charges">Limited Charges</option>
+            <option className="admin_items_page_option_reusable" value="reusable">Reusable</option>
+            <option className="admin_items_page_option_consumable" value="consumable">Consumable</option>
+            <option className="admin_items_page_option_limited_charges" value="limited_charges">Limited Charges</option>
           </select>
         </Field>
 
@@ -728,11 +728,11 @@ function ItemForm({
           <select
             name="targetMode"
             defaultValue={item?.target_mode ?? "self"}
-            className={inputClass}
+            className={[((inputClass)), "admin_items_page_select_select"].filter(Boolean).join(" ")}
           >
-            <option value="self">Self</option>
-            <option value="other">Other</option>
-            <option value="either">Either</option>
+            <option className="admin_items_page_option_self" value="self">Self</option>
+            <option className="admin_items_page_option_other" value="other">Other</option>
+            <option className="admin_items_page_option_either" value="either">Either</option>
           </select>
         </Field>
 
@@ -740,11 +740,11 @@ function ItemForm({
           <select
             name="resolutionMode"
             defaultValue={item?.resolution_mode ?? "automatic"}
-            className={inputClass}
+            className={[((inputClass)), "admin_items_page_select_resolution_mode"].filter(Boolean).join(" ")}
           >
-            <option value="automatic">Automatic</option>
-            <option value="fixed">Fixed DC</option>
-            <option value="opposed">Opposed Roll</option>
+            <option className="admin_items_page_option_automatic" value="automatic">Automatic</option>
+            <option className="admin_items_page_option_fixed" value="fixed">Fixed DC</option>
+            <option className="admin_items_page_option_opposed" value="opposed">Opposed Roll</option>
           </select>
         </Field>
 
@@ -752,16 +752,16 @@ function ItemForm({
           <select
             name="successDie"
             defaultValue={item?.success_die ?? ""}
-            className={inputClass}
+            className={[((inputClass)), "admin_items_page_select_success_die"].filter(Boolean).join(" ")}
           >
-            <option value="">None</option>
-            <option value="4">d4</option>
-            <option value="6">d6</option>
-            <option value="8">d8</option>
-            <option value="10">d10</option>
-            <option value="12">d12</option>
-            <option value="20">d20</option>
-            <option value="100">d100</option>
+            <option className="admin_items_page_option_success_die" value="">None</option>
+            <option className="admin_items_page_option_4" value="4">d4</option>
+            <option className="admin_items_page_option_6" value="6">d6</option>
+            <option className="admin_items_page_option_8" value="8">d8</option>
+            <option className="admin_items_page_option_10" value="10">d10</option>
+            <option className="admin_items_page_option_12" value="12">d12</option>
+            <option className="admin_items_page_option_20" value="20">d20</option>
+            <option className="admin_items_page_option_100" value="100">d100</option>
           </select>
         </Field>
 
@@ -773,7 +773,7 @@ function ItemForm({
             name="successThreshold"
             defaultValue={item?.success_threshold ?? ""}
             placeholder="Required when a die is selected"
-            className={inputClass}
+            className={[((inputClass)), "admin_items_page_input_success_threshold"].filter(Boolean).join(" ")}
           />
         </Field>
 
@@ -781,23 +781,23 @@ function ItemForm({
           <select
             name="successAttribute"
             defaultValue={item?.success_attribute ?? ""}
-            className={inputClass}
+            className={[((inputClass)), "admin_items_page_select_success_attribute"].filter(Boolean).join(" ")}
           >
-            <option value="">None - pure roll</option>
-            <option value="muscles">Muscles</option>
-            <option value="reflexes">Reflexes</option>
-            <option value="vigor">Vigour</option>
-            <option value="brains">Brains</option>
-            <option value="shrewd">Shrewd</option>
-            <option value="presence_score">Presence</option>
+            <option className="admin_items_page_option_success_attribute" value="">None - pure roll</option>
+            <option className="admin_items_page_option_muscles" value="muscles">Muscles</option>
+            <option className="admin_items_page_option_reflexes" value="reflexes">Reflexes</option>
+            <option className="admin_items_page_option_vigor" value="vigor">Vigour</option>
+            <option className="admin_items_page_option_brains" value="brains">Brains</option>
+            <option className="admin_items_page_option_shrewd" value="shrewd">Shrewd</option>
+            <option className="admin_items_page_option_presence_score" value="presence_score">Presence</option>
           </select>
         </Field>
 
-        <div className="md:col-span-2 xl:col-span-4">
-          <p className="mb-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))]">
+        <div className="md:col-span-2 xl:col-span-4 admin_items_page_div_container_14">
+          <p className="mb-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))] admin_items_page_p_text_5">
             Allowed Counters — Opposed Roll only
           </p>
-          <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3 admin_items_page_div_container_15">
             {[
               ["dodge", "Dodge — Reflexes"],
               ["defend", "Defend — Vigour"],
@@ -808,9 +808,9 @@ function ItemForm({
             ].map(([value, label]) => (
               <label
                 key={value}
-                className="flex items-center gap-2 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-aa9473))]"
+                className="flex items-center gap-2 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-aa9473))] admin_items_page_label_label"
               >
-                <input
+                <input className="admin_items_page_input_counter_options"
                   type="checkbox"
                   name="counterOptions"
                   value={value}
@@ -829,7 +829,7 @@ function ItemForm({
             name="damageDice"
             defaultValue={item?.damage_dice ?? ""}
             placeholder="e.g. 1d4"
-            className={inputClass}
+            className={[((inputClass)), "admin_items_page_input_damage_dice"].filter(Boolean).join(" ")}
           />
         </Field>
 
@@ -838,7 +838,7 @@ function ItemForm({
             name="damageType"
             defaultValue={item?.damage_type ?? ""}
             placeholder="e.g. Piercing, Lightning"
-            className={inputClass}
+            className={[((inputClass)), "admin_items_page_input_damage_type"].filter(Boolean).join(" ")}
           />
         </Field>
 
@@ -848,7 +848,7 @@ function ItemForm({
             min={1}
             name="maxCharges"
             defaultValue={item?.max_charges ?? ""}
-            className={inputClass}
+            className={[((inputClass)), "admin_items_page_input_field"].filter(Boolean).join(" ")}
           />
         </Field>
 
@@ -859,7 +859,7 @@ function ItemForm({
             name="cooldownMinutes"
             defaultValue={item?.cooldown_minutes ?? ""}
             placeholder="Blank = none"
-            className={inputClass}
+            className={[((inputClass)), "admin_items_page_input_cooldown_minutes"].filter(Boolean).join(" ")}
           />
         </Field>
 
@@ -870,13 +870,13 @@ function ItemForm({
             name="containerCapacity"
             defaultValue={item?.container_capacity ?? ""}
             placeholder="Container items only"
-            className={inputClass}
+            className={[((inputClass)), "admin_items_page_input_container_capacity"].filter(Boolean).join(" ")}
           />
         </Field>
       </div>
 
-      <div className="mt-5 flex flex-wrap items-center justify-between gap-4 border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-4">
-        <div className="flex flex-wrap gap-5">
+      <div className="mt-5 flex flex-wrap items-center justify-between gap-4 border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-4 admin_items_page_div_container_16">
+        <div className="flex flex-wrap gap-5 admin_items_page_div_container_17">
           <Check name="isActive" label="Active" checked={item?.is_active ?? true} />
           <Check name="isQuestItem" label="Quest Item" checked={item?.is_quest_item ?? false} />
           <Check name="stackable" label="Stackable" checked={item?.stackable ?? true} />
@@ -891,26 +891,26 @@ function ItemForm({
 
         <button
           type="submit"
-          className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd6a8))]"
+          className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd6a8))] admin_items_page_button_action"
         >
           {item ? "Save Item" : "Create Item"}
         </button>
       </div>
 
-      <div className="mt-3 border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[9px] leading-5 text-[rgb(var(--sep-colour-756958))]">
-        <p>
-          <span className="text-[rgb(var(--sep-colour-a88b61))]">Resolution:</span>{" "}
+      <div className="mt-3 border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[9px] leading-5 text-[rgb(var(--sep-colour-756958))] admin_items_page_div_container_18">
+        <p className="admin_items_page_p_text_6">
+          <span className="text-[rgb(var(--sep-colour-a88b61))] admin_items_page_span_text_2">Resolution:</span>{" "}
           Automatic applies directly; Fixed DC rolls the selected die plus its
           optional Relevant Attribute against the configured threshold; Opposed
           rolls against one Counter chosen by the targeted Character.
         </p>
-        <p className="mt-1">
-          <span className="text-[rgb(var(--sep-colour-a88b61))]">Opposed:</span>{" "}
+        <p className="mt-1 admin_items_page_p_text_7">
+          <span className="text-[rgb(var(--sep-colour-a88b61))] admin_items_page_span_text_3">Opposed:</span>{" "}
           choose one or more valid Counters. The defender wins ties. Weapons use
           the same Relevant Attribute for their attack roll and damage unless a
           later rule overrides it.
         </p>
-        <p className="mt-1">
+        <p className="mt-1 admin_items_page_p_text_8">
           Usable controls the generic Use Item action only. An Item may be
           Equippable without being Usable, and equipped Weapons can still attack.
           Use behaviour, charges, cooldown and generic Use target apply only when
@@ -928,21 +928,21 @@ function EffectForm({ itemId, effect }: { itemId: string; effect?: Effect }) {
       action={effect ? updateItemEffect : createItemEffect}
       className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))] p-3"
     >
-      <input type="hidden" name="itemId" value={itemId} />
-      {effect ? <input type="hidden" name="effectId" value={effect.id} /> : null}
+      <input className="admin_items_page_input_item_id_3" type="hidden" name="itemId" value={itemId} />
+      {effect ? <input className="admin_items_page_input_effect_id" type="hidden" name="effectId" value={effect.id} /> : null}
 
       <ItemEffectFormLogic />
 
-      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4 admin_items_page_div_container_19">
         <Field label="Trigger">
           <select
             name="triggerType"
             defaultValue={effect?.trigger_type ?? "use"}
-            className={inputClass}
+            className={[((inputClass)), "admin_items_page_select_trigger_type"].filter(Boolean).join(" ")}
           >
-            <option value="owned">Owned</option>
-            <option value="equipped">Equipped</option>
-            <option value="use">Use</option>
+            <option className="admin_items_page_option_owned" value="owned">Owned</option>
+            <option className="admin_items_page_option_equipped" value="equipped">Equipped</option>
+            <option className="admin_items_page_option_use" value="use">Use</option>
           </select>
         </Field>
 
@@ -954,10 +954,10 @@ function EffectForm({ itemId, effect }: { itemId: string; effect?: Effect }) {
                 ? "instant"
                 : effect?.effect_mode ?? "instant"
             }
-            className={inputClass}
+            className={[((inputClass)), "admin_items_page_select_effect_mode"].filter(Boolean).join(" ")}
           >
-            <option value="instant">Instantaneous</option>
-            <option value="temporary">Timed</option>
+            <option className="admin_items_page_option_instant" value="instant">Instantaneous</option>
+            <option className="admin_items_page_option_temporary" value="temporary">Timed</option>
           </select>
         </Field>
 
@@ -967,7 +967,7 @@ function EffectForm({ itemId, effect }: { itemId: string; effect?: Effect }) {
             min={1}
             name="durationMinutes"
             defaultValue={effect?.duration_minutes ?? ""}
-            className={inputClass}
+            className={[((inputClass)), "admin_items_page_input_duration_minutes"].filter(Boolean).join(" ")}
           />
         </Field>
 
@@ -976,7 +976,7 @@ function EffectForm({ itemId, effect }: { itemId: string; effect?: Effect }) {
             type="number"
             name="sortOrder"
             defaultValue={effect?.sort_order ?? 0}
-            className={inputClass}
+            className={[((inputClass)), "admin_items_page_input_sort_order_4"].filter(Boolean).join(" ")}
           />
         </Field>
 
@@ -999,21 +999,21 @@ function EffectForm({ itemId, effect }: { itemId: string; effect?: Effect }) {
               max={100}
               name={String(name)}
               defaultValue={Number(value)}
-              className={inputClass}
+              className={[((inputClass)), "admin_items_page_input_field_2"].filter(Boolean).join(" ")}
             />
           </Field>
         ))}
       </div>
 
-      <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-3 admin_items_page_div_container_20">
         <Check
           name="allowDuplicateStacking"
           label="Allow identical copies to stack this effect"
           checked={effect?.allow_duplicate_stacking ?? false}
         />
 
-        <div className="flex gap-2">
-          <button type="submit" className={buttonClass}>
+        <div className="flex gap-2 admin_items_page_div_container_21">
+          <button type="submit" className={[((buttonClass)), "admin_items_page_button_action_2"].filter(Boolean).join(" ")}>
             {effect ? "Save Effect" : "Add Effect"}
           </button>
 
@@ -1022,7 +1022,7 @@ function EffectForm({ itemId, effect }: { itemId: string; effect?: Effect }) {
               type="submit"
               formAction={deleteItemEffect}
               data-confirm-message="Are you sure you want to permanently delete this Item effect?"
-              className="border border-red-900/55 bg-red-950/20 px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-red-300"
+              className="border border-red-900/55 bg-red-950/20 px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-red-300 admin_items_page_button_delete_2"
             >
               Delete
             </button>
@@ -1030,7 +1030,7 @@ function EffectForm({ itemId, effect }: { itemId: string; effect?: Effect }) {
         </div>
       </div>
 
-      <p className="mt-2 text-[8px] leading-5 text-[rgb(var(--sep-colour-6f6252))]">
+      <p className="mt-2 text-[8px] leading-5 text-[rgb(var(--sep-colour-6f6252))] admin_items_page_p_text_9">
         Owned and Equipped effects are saved as Passive. Instant Use effects
         apply Health only; Attribute and Max Health modifiers are for
         Timed/Passive effects. Warping bonuses are limited to Affinity +8
@@ -1042,8 +1042,8 @@ function EffectForm({ itemId, effect }: { itemId: string; effect?: Effect }) {
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <label className="block">
-      <span className="mb-1.5 block text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))]">
+    <label className="block admin_items_page_label_label_2">
+      <span className="mb-1.5 block text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))] admin_items_page_span_text_4">
         {label}
       </span>
       {children}
@@ -1061,8 +1061,8 @@ function Check({
   checked: boolean;
 }) {
   return (
-    <label className="flex items-center gap-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9d896a))]">
-      <input type="checkbox" name={name} defaultChecked={checked} />
+    <label className="flex items-center gap-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9d896a))] admin_items_page_label_label_3">
+      <input className="admin_items_page_input_field_3" type="checkbox" name={name} defaultChecked={checked} />
       {label}
     </label>
   );

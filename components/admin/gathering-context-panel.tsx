@@ -79,14 +79,14 @@ export function GatheringContextPanel() {
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+    <div className="flex h-full min-h-0 flex-col components_admin_gathering_context_panel_div_container">
+      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_admin_gathering_context_panel_p_text">
         Gathering administration
       </p>
-      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_admin_gathering_context_panel_h2_heading">
         Filter Gatherings
       </h2>
-      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_admin_gathering_context_panel_p_text_2">
         Search by Gathering, Location or description. Select one to show only that Gathering.
       </p>
 
@@ -98,44 +98,44 @@ export function GatheringContextPanel() {
           setSearch(event.target.value);
         }}
         placeholder="Search Gatherings..."
-        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))]"
+        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))] components_admin_gathering_context_panel_input_search_gatherings"
       />
 
       <button
         type="button"
         onClick={showAll}
-        className="mt-3 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-bca27b))] transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))]"
+        className="mt-3 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-bca27b))] transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))] components_admin_gathering_context_panel_button_show_all_gatherings"
       >
         Show all Gatherings
       </button>
 
-      <p className="mb-2 mt-4 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))]">
+      <p className="mb-2 mt-4 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))] components_admin_gathering_context_panel_p_text_3">
         Gatherings · {visibleEntries.length}
         {visibleEntries.length !== entries.length ? ` / ${entries.length}` : ""}
       </p>
 
-      <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">
+      <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1 components_admin_gathering_context_panel_div_container_2">
         {visibleEntries.length ? (
           visibleEntries.map((entry) => (
             <button
               key={entry.id}
               type="button"
               onClick={() => choose(entry.id)}
-              className="group flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))]"
+              className="group flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))] components_admin_gathering_context_panel_button_action"
             >
-              <span className="min-w-0">
-                <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
+              <span className="min-w-0 components_admin_gathering_context_panel_span_text">
+                <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] group-hover:text-[rgb(var(--sep-colour-ead0a0))] components_admin_gathering_context_panel_span_text_2">
                   {entry.name}
                 </span>
-                <span className="mt-0.5 block truncate text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))]">
+                <span className="mt-0.5 block truncate text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))] components_admin_gathering_context_panel_span_text_3">
                   {entry.room} · {entry.active ? "Active" : "Inactive"}
                 </span>
               </span>
-              <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))]">→</span>
+              <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))] components_admin_gathering_context_panel_span_text_4">→</span>
             </button>
           ))
         ) : (
-          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))]">No matching Gatherings.</p>
+          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))] components_admin_gathering_context_panel_p_text_4">No matching Gatherings.</p>
         )}
       </div>
     </div>

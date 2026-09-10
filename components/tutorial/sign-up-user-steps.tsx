@@ -8,19 +8,19 @@ export function SignUpUserSteps() {
       {process.env.VERCEL_ENV === "preview" ||
       process.env.VERCEL_ENV === "production" ? (
         <TutorialStep title="Set up redirect urls">
-          <p>It looks like this App is hosted on Vercel.</p>
-          <p className="mt-4">
+          <p className="components_tutorial_sign_up_user_steps_p_text">It looks like this App is hosted on Vercel.</p>
+          <p className="mt-4 components_tutorial_sign_up_user_steps_p_text_2">
             This particular deployment is
-            <span className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-xs font-medium text-secondary-foreground border">
+            <span className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-xs font-medium text-secondary-foreground border components_tutorial_sign_up_user_steps_span_text">
               &quot;{process.env.VERCEL_ENV}&quot;
             </span>{" "}
             on
-            <span className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-xs font-medium text-secondary-foreground border">
+            <span className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-xs font-medium text-secondary-foreground border components_tutorial_sign_up_user_steps_span_text_2">
               https://{process.env.VERCEL_URL}
             </span>
             .
           </p>
-          <p className="mt-4">
+          <p className="mt-4 components_tutorial_sign_up_user_steps_p_text_3">
             You will need to{" "}
             <Link
               className="text-primary hover:text-foreground"
@@ -32,22 +32,22 @@ export function SignUpUserSteps() {
             </Link>{" "}
             with redirect URLs based on your Vercel deployment URLs.
           </p>
-          <ul className="mt-4">
-            <li>
+          <ul className="mt-4 components_tutorial_sign_up_user_steps_ul_list">
+            <li className="components_tutorial_sign_up_user_steps_li_item">
               -{" "}
-              <span className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-xs font-medium text-secondary-foreground border">
+              <span className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-xs font-medium text-secondary-foreground border components_tutorial_sign_up_user_steps_span_text_3">
                 http://localhost:3000/**
               </span>
             </li>
-            <li>
+            <li className="components_tutorial_sign_up_user_steps_li_item_2">
               -{" "}
-              <span className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-xs font-medium text-secondary-foreground border">
+              <span className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-xs font-medium text-secondary-foreground border components_tutorial_sign_up_user_steps_span_text_4">
                 {`https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}/**`}
               </span>
             </li>
-            <li>
+            <li className="components_tutorial_sign_up_user_steps_li_item_3">
               -{" "}
-              <span className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-xs font-medium text-secondary-foreground border">
+              <span className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-xs font-medium text-secondary-foreground border components_tutorial_sign_up_user_steps_span_text_5">
                 {`https://${process.env.VERCEL_PROJECT_PRODUCTION_URL?.replace(
                   ".vercel.app",
                   "",
@@ -74,7 +74,7 @@ export function SignUpUserSteps() {
         </TutorialStep>
       ) : null}
       <TutorialStep title="Sign up your first user">
-        <p>
+        <p className="components_tutorial_sign_up_user_steps_p_text_4">
           Head over to the{" "}
           <Link
             href="auth/sign-up"

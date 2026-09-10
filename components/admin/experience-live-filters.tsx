@@ -135,14 +135,14 @@ export function ExperienceLiveFilters({
   return (
     <section
       data-sep-interaction-ignore="true"
-      className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 [transform:none!important]"
+      className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 [transform:none!important] components_admin_experience_live_filters_section_section"
     >
-      <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <p className="text-[9px] tracking-[0.08em] text-[rgb(var(--sep-colour-876a46))]">
+      <div className="mb-3 flex flex-wrap items-end justify-between gap-3 components_admin_experience_live_filters_div_container">
+        <div className="components_admin_experience_live_filters_div_container_2">
+          <p className="text-[9px] tracking-[0.08em] text-[rgb(var(--sep-colour-876a46))] components_admin_experience_live_filters_p_text">
             Filter responses
           </p>
-          <p className="mt-1 text-xs leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+          <p className="mt-1 text-xs leading-5 text-[rgb(var(--sep-colour-8f8271))] components_admin_experience_live_filters_p_text_2">
             Results update automatically as you change the filters.
           </p>
         </div>
@@ -151,15 +151,15 @@ export function ExperienceLiveFilters({
           type="button"
           onClick={reset}
           disabled={isPending}
-          className="border border-[rgb(var(--sep-colour-765937))]/60 bg-[rgb(var(--sep-colour-21170f))] px-2.5 py-1.5 text-[9px] tracking-[0.08em] text-[rgb(var(--sep-colour-a99b89))] transition hover:-translate-y-[1px] hover:border-[rgb(var(--sep-colour-a07945))] hover:bg-[rgb(var(--sep-colour-2b1d12))] hover:text-[rgb(var(--sep-colour-c9b184))] disabled:cursor-wait disabled:opacity-55"
+          className="border border-[rgb(var(--sep-colour-765937))]/60 bg-[rgb(var(--sep-colour-21170f))] px-2.5 py-1.5 text-[9px] tracking-[0.08em] text-[rgb(var(--sep-colour-a99b89))] transition hover:-translate-y-[1px] hover:border-[rgb(var(--sep-colour-a07945))] hover:bg-[rgb(var(--sep-colour-2b1d12))] hover:text-[rgb(var(--sep-colour-c9b184))] disabled:cursor-wait disabled:opacity-55 components_admin_experience_live_filters_button_reset"
         >
           Reset
         </button>
       </div>
 
-      <div className="grid gap-3 md:grid-cols-4 xl:grid-cols-5">
-        <label className="md:col-span-2 xl:col-span-2">
-          <span className="mb-1.5 block text-[9px] text-[rgb(var(--sep-colour-806b50))]">
+      <div className="grid gap-3 md:grid-cols-4 xl:grid-cols-5 components_admin_experience_live_filters_div_container_3">
+        <label className="md:col-span-2 xl:col-span-2 components_admin_experience_live_filters_label_label">
+          <span className="mb-1.5 block text-[9px] text-[rgb(var(--sep-colour-806b50))] components_admin_experience_live_filters_span_text">
             Search user or comment
           </span>
           <input
@@ -170,12 +170,12 @@ export function ExperienceLiveFilters({
               setQuery(event.target.value)
             }
             placeholder="Character, slug, user ID, comment..."
-            className={inputClass}
+            className={[((inputClass)), "components_admin_experience_live_filters_input_character_slug_user_id_comment"].filter(Boolean).join(" ")}
           />
         </label>
 
-        <label>
-          <span className="mb-1.5 block text-[9px] text-[rgb(var(--sep-colour-806b50))]">
+        <label className="components_admin_experience_live_filters_label_label_2">
+          <span className="mb-1.5 block text-[9px] text-[rgb(var(--sep-colour-806b50))] components_admin_experience_live_filters_span_text_2">
             Rating
           </span>
           <select
@@ -184,11 +184,11 @@ export function ExperienceLiveFilters({
             onChange={(event) =>
               setRating(event.target.value)
             }
-            className={inputClass}
+            className={[((inputClass)), "components_admin_experience_live_filters_select_select"].filter(Boolean).join(" ")}
           >
-            <option value="">All ratings</option>
+            <option className="components_admin_experience_live_filters_option_option" value="">All ratings</option>
             {EXPERIENCE_RATINGS.map((entry) => (
-              <option
+              <option className="components_admin_experience_live_filters_option_option_2"
                 key={entry.value}
                 value={entry.value}
               >
@@ -198,8 +198,8 @@ export function ExperienceLiveFilters({
           </select>
         </label>
 
-        <label>
-          <span className="mb-1.5 block text-[9px] text-[rgb(var(--sep-colour-806b50))]">
+        <label className="components_admin_experience_live_filters_label_label_3">
+          <span className="mb-1.5 block text-[9px] text-[rgb(var(--sep-colour-806b50))] components_admin_experience_live_filters_span_text_3">
             From
           </span>
           <input
@@ -209,12 +209,12 @@ export function ExperienceLiveFilters({
             onChange={(event) =>
               setFrom(event.target.value)
             }
-            className={inputClass}
+            className={[((inputClass)), "components_admin_experience_live_filters_input_field"].filter(Boolean).join(" ")}
           />
         </label>
 
-        <label>
-          <span className="mb-1.5 block text-[9px] text-[rgb(var(--sep-colour-806b50))]">
+        <label className="components_admin_experience_live_filters_label_label_4">
+          <span className="mb-1.5 block text-[9px] text-[rgb(var(--sep-colour-806b50))] components_admin_experience_live_filters_span_text_4">
             To
           </span>
           <input
@@ -224,7 +224,7 @@ export function ExperienceLiveFilters({
             onChange={(event) =>
               setTo(event.target.value)
             }
-            className={inputClass}
+            className={[((inputClass)), "components_admin_experience_live_filters_input_field_2"].filter(Boolean).join(" ")}
           />
         </label>
 

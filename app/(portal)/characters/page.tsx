@@ -45,7 +45,7 @@ export default async function CharactersPage() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-7xl space-y-6 py-2 px-2">
+    <div className="mx-auto w-full max-w-7xl space-y-6 py-2 px-2 characters_page_div_container">
       
 
       <CharacterDirectory

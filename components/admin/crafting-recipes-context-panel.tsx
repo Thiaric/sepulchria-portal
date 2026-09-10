@@ -230,21 +230,21 @@ export function CraftingRecipesContextPanel() {
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+    <div className="flex h-full min-h-0 flex-col components_admin_crafting_recipes_context_panel_div_crafting_recipes">
+      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_admin_crafting_recipes_context_panel_p_crafting_recipes">
         Administration
       </p>
 
-      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_admin_crafting_recipes_context_panel_h2_crafting_recipes">
         Crafting Recipes
       </h2>
 
-      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_admin_crafting_recipes_context_panel_p_crafting_recipes_2">
         Search by recipe name, slug or Ingredient and jump directly to its editor.
       </p>
 
-      <label className="mt-3 block">
-        <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+      <label className="mt-3 block components_admin_crafting_recipes_context_panel_label_crafting_recipes">
+        <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_admin_crafting_recipes_context_panel_span_crafting_recipes">
           Search Recipes
         </span>
 
@@ -257,10 +257,10 @@ export function CraftingRecipesContextPanel() {
             )
           }
           placeholder="Name, slug or ingredient..."
-          className="mt-2 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))]"
+          className="mt-2 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))] components_admin_crafting_recipes_context_panel_input_name_slug_ingredient"
         />
 
-        <span className="mt-1.5 block text-right text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-6f6353))]">
+        <span className="mt-1.5 block text-right text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-6f6353))] components_admin_crafting_recipes_context_panel_span_crafting_recipes_2">
           {visibleEntries.length}
           {query
             ? ` / ${entries.length}`
@@ -270,27 +270,27 @@ export function CraftingRecipesContextPanel() {
       </label>
 
       {error ? (
-        <p className="mt-3 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-2.5 text-[10px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]">
+        <p className="mt-3 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-2.5 text-[10px] leading-5 text-[rgb(var(--sep-colour-d8a49a))] components_admin_crafting_recipes_context_panel_p_crafting_recipes_3">
           {error}
         </p>
       ) : null}
 
-      <div className="mt-3 min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1">
+      <div className="mt-3 min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1 components_admin_crafting_recipes_context_panel_div_crafting_recipes_2">
         {loading ? (
-          <div className="space-y-2">
+          <div className="space-y-2 components_admin_crafting_recipes_context_panel_div_container">
             {Array.from({
               length: 7,
             }).map(
               (_, index) => (
                 <div
                   key={index}
-                  className="h-12 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]"
+                  className="h-12 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))] components_admin_crafting_recipes_context_panel_div_container_2"
                 />
               ),
             )}
           </div>
         ) : (
-          <div className="space-y-1.5">
+          <div className="space-y-1.5 components_admin_crafting_recipes_context_panel_div_container_3">
             {visibleEntries.map(
               (entry) => (
                 <button
@@ -299,14 +299,14 @@ export function CraftingRecipesContextPanel() {
                   onClick={() =>
                     jump(entry)
                   }
-                  className="group flex w-full items-center justify-between gap-2 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-left transition hover:border-[rgb(var(--sep-colour-8d693e))] hover:bg-[rgb(var(--sep-colour-1d150f))]"
+                  className="group flex w-full items-center justify-between gap-2 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-left transition hover:border-[rgb(var(--sep-colour-8d693e))] hover:bg-[rgb(var(--sep-colour-1d150f))] components_admin_crafting_recipes_context_panel_button_action"
                 >
-                  <span className="min-w-0">
-                    <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] group-hover:text-[rgb(var(--sep-colour-ead0a0))]">
+                  <span className="min-w-0 components_admin_crafting_recipes_context_panel_span_text">
+                    <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] group-hover:text-[rgb(var(--sep-colour-ead0a0))] components_admin_crafting_recipes_context_panel_span_text_2">
                       {entry.name}
                     </span>
 
-                    <span className="mt-0.5 block truncate text-[8px] tracking-[0.06em] text-[rgb(var(--sep-colour-6f6252))]">
+                    <span className="mt-0.5 block truncate text-[8px] tracking-[0.06em] text-[rgb(var(--sep-colour-6f6252))] components_admin_crafting_recipes_context_panel_span_text_3">
                       {entry.ingredients.length
                         ? entry.ingredients.join(
                             " · ",
@@ -321,11 +321,11 @@ export function CraftingRecipesContextPanel() {
                         ? "Active"
                         : "Inactive"
                     }
-                    className={`h-1.5 w-1.5 shrink-0 rounded-full ${
+                    className={[((`h-1.5 w-1.5 shrink-0 rounded-full ${
                       entry.active
                         ? "bg-emerald-600"
                         : "bg-[rgb(var(--sep-colour-66594b))]"
-                    }`}
+                    }`)), "components_admin_crafting_recipes_context_panel_span_text_4"].filter(Boolean).join(" ")}
                   />
                 </button>
               ),
@@ -337,7 +337,7 @@ export function CraftingRecipesContextPanel() {
         !error &&
         visibleEntries.length ===
           0 ? (
-          <p className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3 text-[10px] leading-5 text-[rgb(var(--sep-colour-817361))]">
+          <p className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3 text-[10px] leading-5 text-[rgb(var(--sep-colour-817361))] components_admin_crafting_recipes_context_panel_p_text">
             No recipes match this search.
           </p>
         ) : null}

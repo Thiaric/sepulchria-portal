@@ -122,49 +122,49 @@ export function OrderHeadquartersInvitationPopup({
   if (!invite) return null;
 
   return (
-    <div className="fixed inset-0 z-[310] flex items-center justify-center bg-black/60 p-4">
-      <section className="w-full max-w-md border border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-15100d))] p-6 shadow-2xl">
-        <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-9b7a50))]">
+    <div className="fixed inset-0 z-[310] flex items-center justify-center bg-black/60 p-4 components_orders_order_headquarters_invitation_popup_div_container">
+      <section className="w-full max-w-md border border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-15100d))] p-6 shadow-2xl components_orders_order_headquarters_invitation_popup_section_section">
+        <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-9b7a50))] components_orders_order_headquarters_invitation_popup_p_text">
           Order Headquarters invitation
         </p>
 
-        <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-ead1a5))]">
+        <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-ead1a5))] components_orders_order_headquarters_invitation_popup_h2_heading">
           {invite.roomName}
         </h2>
 
-        <p className="mt-3 text-sm leading-6 text-[rgb(var(--sep-colour-a99a84))]">
-          <span className="text-[rgb(var(--sep-colour-d9bd91))]">{invite.inviterName}</span>{" "}
+        <p className="mt-3 text-sm leading-6 text-[rgb(var(--sep-colour-a99a84))] components_orders_order_headquarters_invitation_popup_p_text_2">
+          <span className="text-[rgb(var(--sep-colour-d9bd91))] components_orders_order_headquarters_invitation_popup_span_text">{invite.inviterName}</span>{" "}
           has invited you into this Order Headquarters.
         </p>
 
         {invite.customMessage ? (
-          <p className="mt-3 border-l border-[rgb(var(--sep-colour-80613b))] pl-3 text-xs italic leading-5 text-[rgb(var(--sep-colour-b9aa94))]">
+          <p className="mt-3 border-l border-[rgb(var(--sep-colour-80613b))] pl-3 text-xs italic leading-5 text-[rgb(var(--sep-colour-b9aa94))] components_orders_order_headquarters_invitation_popup_p_text_3">
             {invite.customMessage}
           </p>
         ) : null}
 
-        <p className="mt-3 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
+        <p className="mt-3 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))] components_orders_order_headquarters_invitation_popup_p_text_4">
           {invite.durationLabel}
         </p>
 
-        <div className="mt-6 grid grid-cols-2 gap-3">
-          <form action={respondOrderHeadquartersInvitation}>
-            <input type="hidden" name="invitationId" value={invite.id} />
-            <input type="hidden" name="response" value="refuse" />
+        <div className="mt-6 grid grid-cols-2 gap-3 components_orders_order_headquarters_invitation_popup_div_container_2">
+          <form className="components_orders_order_headquarters_invitation_popup_form_respond_order_headquarters_invitation" action={respondOrderHeadquartersInvitation}>
+            <input className="components_orders_order_headquarters_invitation_popup_input_invitation_id" type="hidden" name="invitationId" value={invite.id} />
+            <input className="components_orders_order_headquarters_invitation_popup_input_response" type="hidden" name="response" value="refuse" />
             <button
               type="submit"
-              className="w-full border border-[rgb(var(--sep-colour-7b443b))] bg-[rgb(var(--sep-colour-2a1513))] px-4 py-3 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d7a39a))]"
+              className="w-full border border-[rgb(var(--sep-colour-7b443b))] bg-[rgb(var(--sep-colour-2a1513))] px-4 py-3 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d7a39a))] components_orders_order_headquarters_invitation_popup_button_refuse"
             >
               Refuse
             </button>
           </form>
 
-          <form action={respondOrderHeadquartersInvitation}>
-            <input type="hidden" name="invitationId" value={invite.id} />
-            <input type="hidden" name="response" value="accept" />
+          <form className="components_orders_order_headquarters_invitation_popup_form_respond_order_headquarters_invitation_2" action={respondOrderHeadquartersInvitation}>
+            <input className="components_orders_order_headquarters_invitation_popup_input_invitation_id_2" type="hidden" name="invitationId" value={invite.id} />
+            <input className="components_orders_order_headquarters_invitation_popup_input_response_2" type="hidden" name="response" value="accept" />
             <button
               type="submit"
-              className="w-full border border-[rgb(var(--sep-colour-668657))] bg-[rgb(var(--sep-colour-172313))] px-4 py-3 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b8d8a7))]"
+              className="w-full border border-[rgb(var(--sep-colour-668657))] bg-[rgb(var(--sep-colour-172313))] px-4 py-3 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b8d8a7))] components_orders_order_headquarters_invitation_popup_button_accept_enter"
             >
               Accept & enter
             </button>

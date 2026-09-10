@@ -55,25 +55,25 @@ export function OrderHeadGiftManager({
     );
 
   return (
-    <div className="mt-3 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-3">
-      <div className="flex flex-wrap items-end justify-between gap-2">
-        <div>
-          <p className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
+    <div className="mt-3 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-3 components_orders_order_head_gift_manager_div_container">
+      <div className="flex flex-wrap items-end justify-between gap-2 components_orders_order_head_gift_manager_div_container_2">
+        <div className="components_orders_order_head_gift_manager_div_container_3">
+          <p className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))] components_orders_order_head_gift_manager_p_text">
             Order Feats
           </p>
 
-          <p className="mt-1 text-[9px] leading-4 text-[rgb(var(--sep-colour-6f665a))]">
+          <p className="mt-1 text-[9px] leading-4 text-[rgb(var(--sep-colour-6f665a))] components_orders_order_head_gift_manager_p_text_2">
             Feats available through this member&apos;s current Role.
           </p>
         </div>
 
-        <span className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-695d4d))]">
+        <span className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-695d4d))] components_orders_order_head_gift_manager_span_text">
           {orderOwned.length} assigned by Order
         </span>
       </div>
 
       {eligible.length ? (
-        <div className="mt-3 grid gap-2 md:grid-cols-2 xl:grid-cols-3">
+        <div className="mt-3 grid gap-2 md:grid-cols-2 xl:grid-cols-3 components_orders_order_head_gift_manager_div_container_4">
           {eligible.map((gift) => {
             const owned =
               ownedByGiftId.get(
@@ -87,15 +87,15 @@ export function OrderHeadGiftManager({
             return (
               <div
                 key={gift.id}
-                className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-0d0907))] p-3"
+                className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-0d0907))] p-3 components_orders_order_head_gift_manager_div_container_5"
               >
-                <div className="flex items-start justify-between gap-2">
-                  <p className="font-serif text-sm text-[rgb(var(--sep-colour-d8bf91))]">
+                <div className="flex items-start justify-between gap-2 components_orders_order_head_gift_manager_div_container_6">
+                  <p className="font-serif text-sm text-[rgb(var(--sep-colour-d8bf91))] components_orders_order_head_gift_manager_p_text_3">
                     {gift.name}
                   </p>
 
                   {owned ? (
-                    <span className="shrink-0 text-[7px] uppercase tracking-[0.11em] text-[rgb(var(--sep-colour-8b7657))]">
+                    <span className="shrink-0 text-[7px] uppercase tracking-[0.11em] text-[rgb(var(--sep-colour-8b7657))] components_orders_order_head_gift_manager_span_text_2">
                       {isOrderOwned
                         ? "Assigned"
                         : `Owned · ${owned.source}`}
@@ -104,7 +104,7 @@ export function OrderHeadGiftManager({
                 </div>
 
                 {gift.description ? (
-                  <p className="mt-2 text-[9px] leading-4 text-[rgb(var(--sep-colour-817565))]">
+                  <p className="mt-2 text-[9px] leading-4 text-[rgb(var(--sep-colour-817565))] components_orders_order_head_gift_manager_p_text_4">
                     {gift.description}
                   </p>
                 ) : null}
@@ -115,19 +115,19 @@ export function OrderHeadGiftManager({
                     successMessage="Order Feat assigned."
                     className="mt-3"
                   >
-                    <input
+                    <input className="components_orders_order_head_gift_manager_input_order_id"
                       type="hidden"
                       name="orderId"
                       value={orderId}
                     />
 
-                    <input
+                    <input className="components_orders_order_head_gift_manager_input_membership_id"
                       type="hidden"
                       name="membershipId"
                       value={membershipId}
                     />
 
-                    <input
+                    <input className="components_orders_order_head_gift_manager_input_gift_id"
                       type="hidden"
                       name="giftId"
                       value={gift.id}
@@ -135,7 +135,7 @@ export function OrderHeadGiftManager({
 
                     <button
                       type="submit"
-                      className="border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-261b12))] px-3 py-2 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-ccb083))]"
+                      className="border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-261b12))] px-3 py-2 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-ccb083))] components_orders_order_head_gift_manager_button_assign_feat"
                     >
                       Assign Feat
                     </button>
@@ -146,19 +146,19 @@ export function OrderHeadGiftManager({
                     successMessage="Order Feat removed."
                     className="mt-3"
                   >
-                    <input
+                    <input className="components_orders_order_head_gift_manager_input_order_id_2"
                       type="hidden"
                       name="orderId"
                       value={orderId}
                     />
 
-                    <input
+                    <input className="components_orders_order_head_gift_manager_input_membership_id_2"
                       type="hidden"
                       name="membershipId"
                       value={membershipId}
                     />
 
-                    <input
+                    <input className="components_orders_order_head_gift_manager_input_assignment_id"
                       type="hidden"
                       name="assignmentId"
                       value={
@@ -168,13 +168,13 @@ export function OrderHeadGiftManager({
 
                     <button
                       type="submit"
-                      className="border border-red-900/45 bg-red-950/15 px-3 py-2 text-[7px] uppercase tracking-[0.12em] text-red-300"
+                      className="border border-red-900/45 bg-red-950/15 px-3 py-2 text-[7px] uppercase tracking-[0.12em] text-red-300 components_orders_order_head_gift_manager_button_remove_feat"
                     >
                       Remove Feat
                     </button>
                   </InlineActionForm>
                 ) : (
-                  <p className="mt-3 text-[8px] italic leading-4 text-[rgb(var(--sep-colour-6d6254))]">
+                  <p className="mt-3 text-[8px] italic leading-4 text-[rgb(var(--sep-colour-6d6254))] components_orders_order_head_gift_manager_p_text_5">
                     This character already owns this Feat through {owned.source}; the Order does not create a duplicate.
                   </p>
                 )}
@@ -183,7 +183,7 @@ export function OrderHeadGiftManager({
           })}
         </div>
       ) : (
-        <p className="mt-3 text-[9px] italic text-[rgb(var(--sep-colour-6d6254))]">
+        <p className="mt-3 text-[9px] italic text-[rgb(var(--sep-colour-6d6254))] components_orders_order_head_gift_manager_p_text_6">
           No active Feats are linked to this Role.
         </p>
       )}

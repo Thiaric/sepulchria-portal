@@ -46,20 +46,20 @@ export function CodexPreviewButton({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex min-h-9 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-a78d68))] transition hover:border-[rgb(var(--sep-colour-8d693e))] hover:text-[rgb(var(--sep-colour-d8bb8a))]"
+        className="inline-flex min-h-9 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-a78d68))] transition hover:border-[rgb(var(--sep-colour-8d693e))] hover:text-[rgb(var(--sep-colour-d8bb8a))] components_admin_codex_preview_button_button_preview"
       >
         Preview
       </button>
 
       {open ? (
-        <div className="pointer-events-none fixed inset-0 z-[120] flex items-center justify-center p-3 sm:p-6">
-          <section className="pointer-events-auto flex h-[88dvh] w-[92vw] max-w-[1400px] flex-col overflow-hidden border border-[rgb(var(--sep-colour-8d693e))]/65 bg-[rgb(var(--sep-colour-0d0a08))] shadow-2xl">
-            <header className="flex shrink-0 items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3">
-              <div>
-                <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-c79b5e))]">
+        <div className="pointer-events-none fixed inset-0 z-[120] flex items-center justify-center p-3 sm:p-6 components_admin_codex_preview_button_div_container">
+          <section className="pointer-events-auto flex h-[88dvh] w-[92vw] max-w-[1400px] flex-col overflow-hidden border border-[rgb(var(--sep-colour-8d693e))]/65 bg-[rgb(var(--sep-colour-0d0a08))] shadow-2xl components_admin_codex_preview_button_section_section">
+            <header className="flex shrink-0 items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 components_admin_codex_preview_button_header_header">
+              <div className="components_admin_codex_preview_button_div_container_2">
+                <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-c79b5e))] components_admin_codex_preview_button_p_text">
                   Staff preview
                 </p>
-                <p className="mt-1 text-xs text-[rgb(var(--sep-colour-8f806c))]">
+                <p className="mt-1 text-xs text-[rgb(var(--sep-colour-8f806c))] components_admin_codex_preview_button_p_text_2">
                   Draft content is visible here but not on the public Codex.
                 </p>
               </div>
@@ -69,7 +69,7 @@ export function CodexPreviewButton({
                 onClick={() =>
                   setOpen(false)
                 }
-                className="border border-[rgb(var(--sep-colour-60482e))]/55 px-3 py-2 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-bca27b))] hover:border-[rgb(var(--sep-colour-9b7446))] hover:text-[rgb(var(--sep-colour-ecd2a3))]"
+                className="border border-[rgb(var(--sep-colour-60482e))]/55 px-3 py-2 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-bca27b))] hover:border-[rgb(var(--sep-colour-9b7446))] hover:text-[rgb(var(--sep-colour-ecd2a3))] components_admin_codex_preview_button_button_close"
               >
                 Close
               </button>

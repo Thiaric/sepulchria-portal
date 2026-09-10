@@ -62,23 +62,23 @@ export function PendingShapeResponses(){
 
  if(!rows.length)return null;
 
- return <div className="mb-2 space-y-2">{rows.map(row=>{
+ return <div className="mb-2 space-y-2 game_components_pendingshaperesponses_div_container">{rows.map(row=>{
   const cast=one(row.cast),caster=one(cast?.caster),s=one(cast?.shape);
   if(!s)return null;
   if(s.is_dispel&&!row.dispel_effect_id)return null;
   const resolution=resolutionFor(row,s,caster);
-  return <section key={row.id} className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-20140c))] p-3">
-   <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-b88c55))]">Incoming Shape</p>
-   <p className="mt-1 font-serif text-base text-[rgb(var(--sep-colour-efd2a0))]">{caster?.display_name??"Someone"} — {s.name}</p>
-   <p className="mt-1 text-[9px] text-[rgb(var(--sep-colour-a18d6e))]">Level {s.level} · {s.school} · {s.word_of_power}{s.other_alternative_enabled?` · ${row.other_effect_choice==="harmful"?"Harmful":"Beneficial"} effect`:""}</p>
-   <p className="mt-1 text-[10px] text-[rgb(var(--sep-colour-b6a58d))]">{s.description}</p>
-   <form action={action} className="mt-3 flex flex-wrap gap-2">
-    <input type="hidden" name="shape_cast_target_id" value={row.id}/>
-    {resolution.saves.map((x:string)=><button key={x} type="submit" name="save_choice" value={x} className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-2a1c11))] px-3 py-2 text-[8px] uppercase text-[rgb(var(--sep-colour-dfc18f))]">{L[x]??x} ({sign(Number(attributes?.[A[x]]??0))})</button>)}
-    <button type="submit" name="save_choice" value="__do_nothing__" className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-2a1c11))] px-3 py-2 text-[8px] uppercase text-[rgb(var(--sep-colour-dfc18f))]">Do nothing</button>
+  return <section key={row.id} className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-20140c))] p-3 game_components_pendingshaperesponses_section_section">
+   <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-b88c55))] game_components_pendingshaperesponses_p_text">Incoming Shape</p>
+   <p className="mt-1 font-serif text-base text-[rgb(var(--sep-colour-efd2a0))] game_components_pendingshaperesponses_p_text_2">{caster?.display_name??"Someone"} — {s.name}</p>
+   <p className="mt-1 text-[9px] text-[rgb(var(--sep-colour-a18d6e))] game_components_pendingshaperesponses_p_text_3">Level {s.level} · {s.school} · {s.word_of_power}{s.other_alternative_enabled?` · ${row.other_effect_choice==="harmful"?"Harmful":"Beneficial"} effect`:""}</p>
+   <p className="mt-1 text-[10px] text-[rgb(var(--sep-colour-b6a58d))] game_components_pendingshaperesponses_p_text_4">{s.description}</p>
+   <form action={action} className="mt-3 flex flex-wrap gap-2 game_components_pendingshaperesponses_form_action">
+    <input className="game_components_pendingshaperesponses_input_field" type="hidden" name="shape_cast_target_id" value={row.id}/>
+    {resolution.saves.map((x:string)=><button key={x} type="submit" name="save_choice" value={x} className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-2a1c11))] px-3 py-2 text-[8px] uppercase text-[rgb(var(--sep-colour-dfc18f))] game_components_pendingshaperesponses_button_save_choice">{L[x]??x} ({sign(Number(attributes?.[A[x]]??0))})</button>)}
+    <button type="submit" name="save_choice" value="__do_nothing__" className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-2a1c11))] px-3 py-2 text-[8px] uppercase text-[rgb(var(--sep-colour-dfc18f))] game_components_pendingshaperesponses_button_do_nothing">Do nothing</button>
    </form>
   </section>
  })}
- {state.message?<p className={state.ok?"text-xs text-[rgb(var(--sep-colour-9bb58c))]":"text-xs text-[rgb(var(--sep-colour-d58d82))]"}>{state.message}</p>:null}
+ {state.message?<p className={[((state.ok?"text-xs text-[rgb(var(--sep-colour-9bb58c))]":"text-xs text-[rgb(var(--sep-colour-d58d82))]")), "game_components_pendingshaperesponses_p_text_5"].filter(Boolean).join(" ")}>{state.message}</p>:null}
  </div>
 }

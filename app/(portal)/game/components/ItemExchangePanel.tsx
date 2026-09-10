@@ -631,17 +631,17 @@ export function ItemExchangePanel({
     confirmed: boolean,
     own: boolean,
   ) => (
-    <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-0f0b08))] p-3">
-      <div className="flex justify-between gap-2">
-        <p className="font-serif text-base text-[rgb(var(--sep-colour-d7bf94))]">{title}</p>
-        <span className={confirmed ? "text-[7px] uppercase text-emerald-400" : "text-[7px] uppercase text-[rgb(var(--sep-colour-756958))]"}>
+    <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-0f0b08))] p-3 game_components_itemexchangepanel_div_container">
+      <div className="flex justify-between gap-2 game_components_itemexchangepanel_div_container_2">
+        <p className="font-serif text-base text-[rgb(var(--sep-colour-d7bf94))] game_components_itemexchangepanel_p_text">{title}</p>
+        <span className={[((confirmed ? "text-[7px] uppercase text-emerald-400" : "text-[7px] uppercase text-[rgb(var(--sep-colour-756958))]")), "game_components_itemexchangepanel_span_text"].filter(Boolean).join(" ")}>
           {confirmed ? "Confirmed" : "Not confirmed"}
         </span>
       </div>
-      <div className="mt-2 max-h-48 space-y-1.5 overflow-y-auto pr-1">
+      <div className="mt-2 max-h-48 space-y-1.5 overflow-y-auto pr-1 game_components_itemexchangepanel_div_container_3">
         {list.length ? list.map((offer) => (
-          <div key={offer.id} className="flex items-center justify-between gap-2 border border-[rgb(var(--sep-colour-59432c))]/25 px-3 py-2">
-            <span className="text-[10px] text-[rgb(var(--sep-colour-cdb894))]">
+          <div key={offer.id} className="flex items-center justify-between gap-2 border border-[rgb(var(--sep-colour-59432c))]/25 px-3 py-2 game_components_itemexchangepanel_div_container_4">
+            <span className="text-[10px] text-[rgb(var(--sep-colour-cdb894))] game_components_itemexchangepanel_span_text_2">
               {inventoryRecords.get(
                 `${offer.record_kind}:${offer.record_id}`,
               )?.name ?? "Item"}
@@ -665,21 +665,21 @@ export function ItemExchangePanel({
               })()}
             </span>
             {own ? (
-              <button type="button" disabled={pending} onClick={() => void removeOffer(offer.id)} className="text-[7px] uppercase text-red-400">
+              <button type="button" disabled={pending} onClick={() => void removeOffer(offer.id)} className="text-[7px] uppercase text-red-400 game_components_itemexchangepanel_button_remove">
                 Remove
               </button>
             ) : null}
           </div>
         )) : (
-          <p className="text-[9px] italic text-[rgb(var(--sep-colour-756958))]">No Items offered yet.</p>
+          <p className="text-[9px] italic text-[rgb(var(--sep-colour-756958))] game_components_itemexchangepanel_p_text_2">No Items offered yet.</p>
         )}
       </div>
-      <div className="mt-2 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-2">
-        <div className="flex items-center justify-between gap-3">
-          <span className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
+      <div className="mt-2 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-2 game_components_itemexchangepanel_div_container_5">
+        <div className="flex items-center justify-between gap-3 game_components_itemexchangepanel_div_container_6">
+          <span className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))] game_components_itemexchangepanel_span_text_3">
             Items · Reference Value
           </span>
-          <strong className="font-serif text-sm text-[rgb(var(--sep-colour-d1b17d))]">
+          <strong className="font-serif text-sm text-[rgb(var(--sep-colour-d1b17d))] game_components_itemexchangepanel_strong_emphasis">
             {formatRemnants(
               offerReferenceTotal(
                 list,
@@ -688,22 +688,22 @@ export function ItemExchangePanel({
           </strong>
         </div>
 
-        <div className="mt-1 flex items-center justify-between gap-3">
-          <span className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
+        <div className="mt-1 flex items-center justify-between gap-3 game_components_itemexchangepanel_div_container_7">
+          <span className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))] game_components_itemexchangepanel_span_text_4">
             Remnants offered
           </span>
-          <strong className="font-serif text-sm text-[rgb(var(--sep-colour-e4c589))]">
+          <strong className="font-serif text-sm text-[rgb(var(--sep-colour-e4c589))] game_components_itemexchangepanel_strong_emphasis_2">
             {formatRemnants(
               remnants,
             )}
           </strong>
         </div>
 
-        <div className="mt-2 flex items-center justify-between gap-3 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-2">
-          <span className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a18b6c))]">
+        <div className="mt-2 flex items-center justify-between gap-3 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-2 game_components_itemexchangepanel_div_container_8">
+          <span className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a18b6c))] game_components_itemexchangepanel_span_text_5">
             Total offered value
           </span>
-          <strong className="font-serif text-base text-[rgb(var(--sep-colour-efd09a))]">
+          <strong className="font-serif text-base text-[rgb(var(--sep-colour-efd09a))] game_components_itemexchangepanel_strong_emphasis_3">
             {formatRemnants(
               offerReferenceTotal(
                 list,
@@ -716,26 +716,26 @@ export function ItemExchangePanel({
   );
 
   return (
-    <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3">
-      <div className="mb-3 flex flex-wrap items-start justify-between gap-3 border-b border-[rgb(var(--sep-colour-59432c))]/30 pb-3">
-        <div>
-          <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">Location Utility</p>
-          <h3 className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-dec89f))]">Item Exchange</h3>
+    <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3 game_components_itemexchangepanel_div_container_9">
+      <div className="mb-3 flex flex-wrap items-start justify-between gap-3 border-b border-[rgb(var(--sep-colour-59432c))]/30 pb-3 game_components_itemexchangepanel_div_container_10">
+        <div className="game_components_itemexchangepanel_div_item_exchange">
+          <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] game_components_itemexchangepanel_p_item_exchange">Location Utility</p>
+          <h3 className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-dec89f))] game_components_itemexchangepanel_h3_item_exchange">Item Exchange</h3>
           
         </div>
-        <button type="button" onClick={onClose} className={button}>Back to Chat</button>
+        <button type="button" onClick={onClose} className={[((button)), "game_components_itemexchangepanel_button_back_chat"].filter(Boolean).join(" ")}>Back to Chat</button>
       </div>
 
-      <div className="grid gap-3 lg:grid-cols-2">
+      <div className="grid gap-3 lg:grid-cols-2 game_components_itemexchangepanel_div_container_11">
         {!trade ? (
           <>
-        <section className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-15100d))] p-3">
-          <p className="font-serif text-base text-[rgb(var(--sep-colour-dec89f))]">Give Item as a Gift</p>
-          <div className="mt-2 grid gap-1">
-            <select className={field} value={giveChoice} onChange={(e) => setGiveChoice(e.target.value)}>
-              <option value="">Choose Item...</option>
+        <section className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-15100d))] p-3 game_components_itemexchangepanel_section_section">
+          <p className="font-serif text-base text-[rgb(var(--sep-colour-dec89f))] game_components_itemexchangepanel_p_text_3">Give Item as a Gift</p>
+          <div className="mt-2 grid gap-1 game_components_itemexchangepanel_div_container_12">
+            <select className={[((field)), "game_components_itemexchangepanel_select_select"].filter(Boolean).join(" ")} value={giveChoice} onChange={(e) => setGiveChoice(e.target.value)}>
+              <option className="game_components_itemexchangepanel_option_option" value="">Choose Item...</option>
               {inventory.map((row) => (
-                <option key={encoded(row)} value={encoded(row)}>
+                <option className="game_components_itemexchangepanel_option_option_2" key={encoded(row)} value={encoded(row)}>
                   {row.name}
                   {row.quantity > 1
                     ? ` ×${row.quantity}`
@@ -749,14 +749,14 @@ export function ItemExchangePanel({
                 </option>
               ))}
             </select>
-            <select className={field} value={giveTarget} onChange={(e) => setGiveTarget(e.target.value)}>
-              <option value="">Give to...</option>
+            <select className={[((field)), "game_components_itemexchangepanel_select_select_2"].filter(Boolean).join(" ")} value={giveTarget} onChange={(e) => setGiveTarget(e.target.value)}>
+              <option className="game_components_itemexchangepanel_option_option_3" value="">Give to...</option>
               {presentCharacters.map((character) => (
-                <option key={character.id} value={character.id}>{character.display_name}</option>
+                <option className="game_components_itemexchangepanel_option_option_4" key={character.id} value={character.id}>{character.display_name}</option>
               ))}
             </select>
-            <input className={field} type="number" min={1} value={giveQuantity} onChange={(e) => setGiveQuantity(Math.max(1, Number.parseInt(e.target.value || "1", 10) || 1))} />
-            <button type="button" className={button} disabled={pending || !giveChoice || !giveTarget} onClick={() => void give()}>Give Item</button>
+            <input className={[((field)), "game_components_itemexchangepanel_input_field"].filter(Boolean).join(" ")} type="number" min={1} value={giveQuantity} onChange={(e) => setGiveQuantity(Math.max(1, Number.parseInt(e.target.value || "1", 10) || 1))} />
+            <button type="button" className={[((button)), "game_components_itemexchangepanel_button_give_item"].filter(Boolean).join(" ")} disabled={pending || !giveChoice || !giveTarget} onClick={() => void give()}>Give Item</button>
 
             {giveChoice ? (() => {
               const { kind, id } =
@@ -773,9 +773,9 @@ export function ItemExchangePanel({
                 value === undefined
                 ? null
                 : (
-                  <p className="border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-9b8768))]">
+                  <p className="border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-9b8768))] game_components_itemexchangepanel_p_text_4">
                     Reference Value being given:{" "}
-                    <strong className="text-[rgb(var(--sep-colour-e1bd79))]">
+                    <strong className="text-[rgb(var(--sep-colour-e1bd79))] game_components_itemexchangepanel_strong_emphasis_4">
                       {formatRemnants(
                         value *
                           giveQuantity,
@@ -787,38 +787,38 @@ export function ItemExchangePanel({
           </div>
         </section>
 
-        <section className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-15100d))] p-3">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <p className="font-serif text-base text-[rgb(var(--sep-colour-dec89f))]">Give Remnants</p>
-              <p className="mt-1 text-[8px] leading-4 text-[rgb(var(--sep-colour-756958))]">
+        <section className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-15100d))] p-3 game_components_itemexchangepanel_section_section_2">
+          <div className="flex items-start justify-between gap-3 game_components_itemexchangepanel_div_container_13">
+            <div className="game_components_itemexchangepanel_div_container_14">
+              <p className="font-serif text-base text-[rgb(var(--sep-colour-dec89f))] game_components_itemexchangepanel_p_text_5">Give Remnants</p>
+              <p className="mt-1 text-[8px] leading-4 text-[rgb(var(--sep-colour-756958))] game_components_itemexchangepanel_p_text_6">
                 Give Remnants to another character currently in this location.
               </p>
             </div>
-            <div className="shrink-0 text-right">
-              <p className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">Wallet</p>
-              <p className="font-serif text-sm text-[rgb(var(--sep-colour-e4c589))]">
+            <div className="shrink-0 text-right game_components_itemexchangepanel_div_container_15">
+              <p className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))] game_components_itemexchangepanel_p_text_7">Wallet</p>
+              <p className="font-serif text-sm text-[rgb(var(--sep-colour-e4c589))] game_components_itemexchangepanel_p_text_8">
                 {walletBalance.toLocaleString("en-GB")} R
               </p>
             </div>
           </div>
 
-          <div className="mt-2 grid gap-1">
+          <div className="mt-2 grid gap-1 game_components_itemexchangepanel_div_container_16">
             <select
-              className={field}
+              className={[((field)), "game_components_itemexchangepanel_select_select_3"].filter(Boolean).join(" ")}
               value={remnantTarget}
               onChange={(e) => setRemnantTarget(e.target.value)}
             >
-              <option value="">Give to...</option>
+              <option className="game_components_itemexchangepanel_option_option_5" value="">Give to...</option>
               {presentCharacters.map((character) => (
-                <option key={character.id} value={character.id}>
+                <option className="game_components_itemexchangepanel_option_option_6" key={character.id} value={character.id}>
                   {character.display_name}
                 </option>
               ))}
             </select>
 
             <input
-              className={field}
+              className={[((field)), "game_components_itemexchangepanel_input_field_2"].filter(Boolean).join(" ")}
               type="number"
               min={1}
               step={1}
@@ -833,7 +833,7 @@ export function ItemExchangePanel({
 
             <button
               type="button"
-              className={button}
+              className={[((button)), "game_components_itemexchangepanel_button_give_remnants"].filter(Boolean).join(" ")}
               disabled={
                 pending ||
                 !remnantTarget ||
@@ -849,40 +849,40 @@ export function ItemExchangePanel({
           </>
         ) : null}
 
-        <section className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-15100d))] p-3 lg:col-span-2">
-          <p className="font-serif text-base text-[rgb(var(--sep-colour-dec89f))]">Exchange Items</p>
+        <section className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-15100d))] p-3 lg:col-span-2 game_components_itemexchangepanel_section_section_3">
+          <p className="font-serif text-base text-[rgb(var(--sep-colour-dec89f))] game_components_itemexchangepanel_p_text_9">Exchange Items</p>
           {!trade ? (
-            <div className="mt-3 grid gap-2">
-              <select className={field} value={tradeTarget} onChange={(e) => setTradeTarget(e.target.value)}>
-                <option value="">Exchange with...</option>
+            <div className="mt-3 grid gap-2 game_components_itemexchangepanel_div_container_17">
+              <select className={[((field)), "game_components_itemexchangepanel_select_select_4"].filter(Boolean).join(" ")} value={tradeTarget} onChange={(e) => setTradeTarget(e.target.value)}>
+                <option className="game_components_itemexchangepanel_option_option_7" value="">Exchange with...</option>
                 {presentCharacters.map((character) => (
-                  <option key={character.id} value={character.id}>{character.display_name}</option>
+                  <option className="game_components_itemexchangepanel_option_option_8" key={character.id} value={character.id}>{character.display_name}</option>
                 ))}
               </select>
-              <button type="button" className={button} disabled={pending || !tradeTarget} onClick={() => void startExchange()}>
+              <button type="button" className={[((button)), "game_components_itemexchangepanel_button_start_exchange"].filter(Boolean).join(" ")} disabled={pending || !tradeTarget} onClick={() => void startExchange()}>
                 Start Exchange
               </button>
             </div>
           ) : (
-            <p className="mt-3 text-[9px] leading-5 text-[rgb(var(--sep-colour-9b8768))]">
-              Live exchange with <strong className="text-[rgb(var(--sep-colour-d7bf94))]">{partnerName}</strong>. Changes update automatically.
+            <p className="mt-3 text-[9px] leading-5 text-[rgb(var(--sep-colour-9b8768))] game_components_itemexchangepanel_p_text_10">
+              Live exchange with <strong className="text-[rgb(var(--sep-colour-d7bf94))] game_components_itemexchangepanel_strong_emphasis_5">{partnerName}</strong>. Changes update automatically.
             </p>
           )}
         </section>
       </div>
 
       {trade ? (
-        <section className="mt-3 border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-15100d))] p-3">
-          <div className="grid gap-3 lg:grid-cols-2">
+        <section className="mt-3 border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-15100d))] p-3 game_components_itemexchangepanel_section_section_4">
+          <div className="grid gap-3 lg:grid-cols-2 game_components_itemexchangepanel_div_container_18">
             {offerBox(`${myName}'s Offer`, mine, mineRemnants, mineConfirmed, true)}
             {offerBox(`${partnerName}'s Offer`, theirs, theirsRemnants, theirsConfirmed, false)}
           </div>
 
-          <div className="mt-3 grid gap-2 md:grid-cols-[minmax(0,1fr)_100px_auto]">
-            <select className={field} value={offerChoice} onChange={(e) => setOfferChoice(e.target.value)}>
-              <option value="">Add one of your Items...</option>
+          <div className="mt-3 grid gap-2 md:grid-cols-[minmax(0,1fr)_100px_auto] game_components_itemexchangepanel_div_container_19">
+            <select className={[((field)), "game_components_itemexchangepanel_select_select_5"].filter(Boolean).join(" ")} value={offerChoice} onChange={(e) => setOfferChoice(e.target.value)}>
+              <option className="game_components_itemexchangepanel_option_option_9" value="">Add one of your Items...</option>
               {inventory.map((row) => (
-                <option key={encoded(row)} value={encoded(row)}>
+                <option className="game_components_itemexchangepanel_option_option_10" key={encoded(row)} value={encoded(row)}>
                   {row.name}
                   {row.quantity > 1
                     ? ` ×${row.quantity}`
@@ -896,17 +896,17 @@ export function ItemExchangePanel({
                 </option>
               ))}
             </select>
-            <input className={field} type="number" min={1} value={offerQuantity} onChange={(e) => setOfferQuantity(Math.max(1, Number.parseInt(e.target.value || "1", 10) || 1))} />
-            <button type="button" className={button} disabled={pending || !offerChoice} onClick={() => void addOffer()}>Add to Offer</button>
+            <input className={[((field)), "game_components_itemexchangepanel_input_field_3"].filter(Boolean).join(" ")} type="number" min={1} value={offerQuantity} onChange={(e) => setOfferQuantity(Math.max(1, Number.parseInt(e.target.value || "1", 10) || 1))} />
+            <button type="button" className={[((button)), "game_components_itemexchangepanel_button_add_offer"].filter(Boolean).join(" ")} disabled={pending || !offerChoice} onClick={() => void addOffer()}>Add to Offer</button>
           </div>
 
-          <div className="mt-3 grid gap-2 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-3 md:grid-cols-[minmax(0,1fr)_auto]">
-            <div>
-              <label className="mb-1 block text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
+          <div className="mt-3 grid gap-2 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-3 md:grid-cols-[minmax(0,1fr)_auto] game_components_itemexchangepanel_div_container_20">
+            <div className="game_components_itemexchangepanel_div_remnants_offer_wallet_r">
+              <label className="mb-1 block text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))] game_components_itemexchangepanel_label_remnants_offer_wallet_r">
                 Your Remnants offer · Wallet {walletBalance.toLocaleString("en-GB")} R
               </label>
               <input
-                className={field}
+                className={[((field)), "game_components_itemexchangepanel_input_remnants_offer_wallet_r"].filter(Boolean).join(" ")}
                 type="number"
                 min={0}
                 step={1}
@@ -921,7 +921,7 @@ export function ItemExchangePanel({
             </div>
             <button
               type="button"
-              className={`${button} self-end`}
+              className={[((`${button} self-end`)), "game_components_itemexchangepanel_button_update_remnants_offer"].filter(Boolean).join(" ")}
               disabled={
                 pending ||
                 tradeRemnantAmount < 0 ||
@@ -934,14 +934,14 @@ export function ItemExchangePanel({
             </button>
           </div>
 
-          <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-3">
-            <p className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-8f8271))]">
-              You: <strong className={mineConfirmed ? "text-emerald-400" : "text-[rgb(var(--sep-colour-b9a386))]"}>{mineConfirmed ? "Confirmed" : "Waiting"}</strong>
-              {" · "}{partnerName}: <strong className={theirsConfirmed ? "text-emerald-400" : "text-[rgb(var(--sep-colour-b9a386))]"}>{theirsConfirmed ? "Confirmed" : "Waiting"}</strong>
+          <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-3 game_components_itemexchangepanel_div_container_21">
+            <p className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-8f8271))] game_components_itemexchangepanel_p_text_11">
+              You: <strong className={[((mineConfirmed ? "text-emerald-400" : "text-[rgb(var(--sep-colour-b9a386))]")), "game_components_itemexchangepanel_strong_emphasis_6"].filter(Boolean).join(" ")}>{mineConfirmed ? "Confirmed" : "Waiting"}</strong>
+              {" · "}{partnerName}: <strong className={[((theirsConfirmed ? "text-emerald-400" : "text-[rgb(var(--sep-colour-b9a386))]")), "game_components_itemexchangepanel_strong_emphasis_7"].filter(Boolean).join(" ")}>{theirsConfirmed ? "Confirmed" : "Waiting"}</strong>
             </p>
-            <div className="flex gap-2">
-              <button type="button" className={`${button} border-red-900/55 text-red-300`} disabled={pending} onClick={() => void cancelExchange()}>Cancel</button>
-              <button type="button" className={`${button} border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] text-[rgb(var(--sep-colour-efd4a0))]`} disabled={pending || mineConfirmed} onClick={() => void confirmExchange()}>
+            <div className="flex gap-2 game_components_itemexchangepanel_div_container_22">
+              <button type="button" className={[((`${button} border-red-900/55 text-red-300`)), "game_components_itemexchangepanel_button_cancel"].filter(Boolean).join(" ")} disabled={pending} onClick={() => void cancelExchange()}>Cancel</button>
+              <button type="button" className={[((`${button} border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] text-[rgb(var(--sep-colour-efd4a0))]`)), "game_components_itemexchangepanel_button_action"].filter(Boolean).join(" ")} disabled={pending || mineConfirmed} onClick={() => void confirmExchange()}>
                 {mineConfirmed ? "Confirmed" : "Confirm Exchange"}
               </button>
             </div>
@@ -950,10 +950,10 @@ export function ItemExchangePanel({
       ) : null}
 
       {message ? (
-        <p className={ok ? "mt-3 text-xs text-emerald-400" : "mt-3 text-xs text-red-400"}>{message}</p>
+        <p className={[((ok ? "mt-3 text-xs text-emerald-400" : "mt-3 text-xs text-red-400")), "game_components_itemexchangepanel_p_text_12"].filter(Boolean).join(" ")}>{message}</p>
       ) : null}
 
-      <p className="mt-3 text-[8px] leading-4 text-[rgb(var(--sep-colour-756958))]">
+      <p className="mt-3 text-[8px] leading-4 text-[rgb(var(--sep-colour-756958))] game_components_itemexchangepanel_p_text_13">
         Only loose, unequipped, freely transferable, non-Quest Items can be given or exchanged. Item and Remnants offers are completed together. Changing either Items or Remnants resets both confirmations.
       </p>
     </div>

@@ -121,7 +121,7 @@ export function LocationImageSaveForm({
   ]);
 
   return (
-    <form
+    <form className="components_world_location_image_save_form_form_form"
       {...props}
       action={dispatch}
     >
@@ -142,12 +142,10 @@ export function LocationImageSaveForm({
               ? "alert"
               : "status"
           }
-          className={
-            state.kind ===
+          className={[((state.kind ===
             "success"
               ? "mt-2 text-[9px] leading-4 text-[rgb(var(--sep-colour-9fd0a9))]"
-              : "mt-2 text-[9px] leading-4 text-[rgb(var(--sep-colour-d8a49a))]"
-          }
+              : "mt-2 text-[9px] leading-4 text-[rgb(var(--sep-colour-d8a49a))]")), "components_world_location_image_save_form_p_text"].filter(Boolean).join(" ")}
         >
           {state.kind === "success"
             ? "✓ "
@@ -157,7 +155,7 @@ export function LocationImageSaveForm({
       ) : null}
 
       {pending ? (
-        <p className="mt-2 text-[9px] text-[rgb(var(--sep-colour-8f8271))]">
+        <p className="mt-2 text-[9px] text-[rgb(var(--sep-colour-8f8271))] components_world_location_image_save_form_p_text_2">
           Saving...
         </p>
       ) : null}

@@ -190,7 +190,7 @@ export function PollUnreadBadge({
       title={`${value} new open Poll${
         value === 1 ? "" : "s"
       }`}
-      className="ml-auto inline-flex h-4 min-w-4 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] px-1 text-[7px] font-bold leading-none text-[#ffe1ac] shadow-[0_0_9px_rgba(var(--sep-rgb-177-132-75),0.18)]"
+      className="ml-auto inline-flex h-4 min-w-4 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] px-1 text-[7px] font-bold leading-none text-[#ffe1ac] shadow-[0_0_9px_rgba(var(--sep-rgb-177-132-75),0.18)] components_polls_poll_unread_badge_span_text"
     >
       {value > 9 ? "9+" : value}
     </span>

@@ -352,16 +352,16 @@ export function GameContextPanel({
 
   if (!roomId) {
     return (
-      <div className="h-full overflow-y-auto">
-        <p className="text-[9px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-876a46))]">
+      <div className="h-full overflow-y-auto components_portal_game_context_panel_div_outside_city">
+        <p className="text-[9px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-876a46))] components_portal_game_context_panel_p_outside_city">
           Play
         </p>
 
-        <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-d6bd91))]">
+        <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-d6bd91))] components_portal_game_context_panel_h2_outside_city">
           Outside the city
         </h2>
 
-        <p className="mt-4 text-xs leading-6 text-[rgb(var(--sep-colour-938673))]">
+        <p className="mt-4 text-xs leading-6 text-[rgb(var(--sep-colour-938673))] components_portal_game_context_panel_p_outside_city_2">
           Your character has not yet
           been assigned to a room.
         </p>
@@ -370,32 +370,32 @@ export function GameContextPanel({
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <div id="game-music-context-slot" className="shrink-0" />
+    <div className="flex h-full min-h-0 flex-col components_portal_game_context_panel_div_container">
+      <div id="game-music-context-slot" className="shrink-0 components_portal_game_context_panel_div_game_music_context_slot" />
 
       {error ? (
-        <p className="mt-3 shrink-0 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-2.5 text-[11px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]">
+        <p className="mt-3 shrink-0 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-2.5 text-[11px] leading-5 text-[rgb(var(--sep-colour-d8a49a))] components_portal_game_context_panel_p_text">
           The room information could
           not be loaded.
         </p>
       ) : null}
 
-      <section className="mt-1 flex min-h-0 flex-1 flex-col border-[rgb(var(--sep-colour-59432c))]/40 pt-0">
-        <div className="flex shrink-0 items-center justify-between gap-3">
-          <div className="min-w-0">
-            <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-876a46))]">
+      <section className="mt-1 flex min-h-0 flex-1 flex-col border-[rgb(var(--sep-colour-59432c))]/40 pt-0 components_portal_game_context_panel_section_section">
+        <div className="flex shrink-0 items-center justify-between gap-3 components_portal_game_context_panel_div_container_2">
+          <div className="min-w-0 components_portal_game_context_panel_div_container_3">
+            <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-876a46))] components_portal_game_context_panel_p_text_2">
               Present in this Location
             </p>
 
             
           </div>
 
-          <span className="flex h-6 min-w-6 shrink-0 items-center justify-center border border-[rgb(var(--sep-colour-59432c))]/50 bg-[rgb(var(--sep-colour-15100d))] px-1.5 text-[10px] text-[rgb(var(--sep-colour-a68b67))]">
+          <span className="flex h-6 min-w-6 shrink-0 items-center justify-center border border-[rgb(var(--sep-colour-59432c))]/50 bg-[rgb(var(--sep-colour-15100d))] px-1.5 text-[10px] text-[rgb(var(--sep-colour-a68b67))] components_portal_game_context_panel_span_text">
             {presentCharacters.length}
           </span>
         </div>
 
-        <div className="mt-3 min-h-0 flex-1 space-y-1.5 overflow-y-auto overscroll-contain pr-1">
+        <div className="mt-3 min-h-0 flex-1 space-y-1.5 overflow-y-auto overscroll-contain pr-1 components_portal_game_context_panel_div_container_4">
           {loading ? (
             <SidebarLoadingRows />
           ) : (
@@ -432,11 +432,9 @@ export function GameContextPanel({
         ? "Appearing offline"
         : undefined
     }
-    className={
-      presence.appear_offline
+    className={[((presence.appear_offline
         ? "group relative overflow-hidden border border-dashed border-[rgb(var(--sep-colour-876a46))]/55 bg-[rgb(var(--sep-colour-100c09))] opacity-40 transition hover:border-[rgb(var(--sep-colour-9b7446))] hover:bg-[rgb(var(--sep-colour-1a120c))] hover:opacity-100"
-        : "group relative overflow-hidden border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] transition hover:border-[rgb(var(--sep-colour-9b7446))] hover:bg-[rgb(var(--sep-colour-1a120c))]"
-    }
+        : "group relative overflow-hidden border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] transition hover:border-[rgb(var(--sep-colour-9b7446))] hover:bg-[rgb(var(--sep-colour-1a120c))]")), "components_portal_game_context_panel_div_container_5"].filter(Boolean).join(" ")}
   >
     <button
       type="button"
@@ -452,12 +450,12 @@ export function GameContextPanel({
           href: `/characters/${person.public_slug}?from=game`,
         })
       }
-      className="block w-full text-left"
+      className="block w-full text-left components_portal_game_context_panel_button_action"
     >
-      <div className="absolute inset-y-0 left-0 w-px bg-[rgb(var(--sep-colour-b88a52))]/0 transition group-hover:bg-[rgb(var(--sep-colour-b88a52))]/70" />
+      <div className="absolute inset-y-0 left-0 w-px bg-[rgb(var(--sep-colour-b88a52))]/0 transition group-hover:bg-[rgb(var(--sep-colour-b88a52))]/70 components_portal_game_context_panel_div_container_6" />
 
-      <div className="flex  items-center gap-3 px-3 py-2.5 pr-10">
-        <div className="relative shrink-0 py-1 px-0.5">
+      <div className="flex  items-center gap-3 px-3 py-2.5 pr-10 components_portal_game_context_panel_div_container_7">
+        <div className="relative shrink-0 py-1 px-0.5 components_portal_game_context_panel_div_container_8">
           
 
           <PresenceDot
@@ -465,8 +463,8 @@ export function GameContextPanel({
           />
         </div>
 
-        <div className="min-w-0 flex-1">
-          <div className="flex min-w-0 items-center gap-1">
+        <div className="min-w-0 flex-1 components_portal_game_context_panel_div_container_9">
+          <div className="flex min-w-0 items-center gap-1 components_portal_game_context_panel_div_container_10">
   <MiniCodexIcon entry={race} />
 
   <CharacterOrderIdentity
@@ -474,7 +472,7 @@ export function GameContextPanel({
     variant="mini"
   />
 
-            <div className="px-1 font-serif text-[11px] leading-4 text-[rgb(var(--sep-colour-dbc397))] transition group-hover:text-[rgb(var(--sep-colour-ecd5a8))]">
+            <div className="px-1 font-serif text-[11px] leading-4 text-[rgb(var(--sep-colour-dbc397))] transition group-hover:text-[rgb(var(--sep-colour-ecd5a8))] components_portal_game_context_panel_div_container_11">
               {displayName}
             </div></div>
 
@@ -488,7 +486,7 @@ export function GameContextPanel({
       </div>
     </button>
 
-    <div className="absolute bottom-2 right-2 z-10 flex items-center gap-1">
+    <div className="absolute bottom-2 right-2 z-10 flex items-center gap-1 components_portal_game_context_panel_div_container_12">
       {person.id !== currentCharacterId &&
       !blockedCharacterIds.has(person.id) &&
       !communication.blocked ? (
@@ -514,7 +512,7 @@ export function GameContextPanel({
               href: `/admin/characters/${person.id}`,
             })
           }
-          className="flex h-6 w-6 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-17110d))] text-[12px] text-[rgb(var(--sep-colour-a98b61))] transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:bg-[rgb(var(--sep-colour-2a1d12))] hover:text-[rgb(var(--sep-colour-e0c392))]"
+          className="flex h-6 w-6 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-17110d))] text-[12px] text-[rgb(var(--sep-colour-a98b61))] transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:bg-[rgb(var(--sep-colour-2a1d12))] hover:text-[rgb(var(--sep-colour-e0c392))] components_portal_game_context_panel_button_action_2"
         >
           <svg viewBox="0 0 24 24" aria-hidden="true" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="12" r="3" />
@@ -532,7 +530,7 @@ export function GameContextPanel({
           {!loading &&
           presentCharacters.length ===
             0 ? (
-            <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+            <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_game_context_panel_p_text_3">
               No active characters are
               currently visible here.
             </p>
@@ -540,22 +538,22 @@ export function GameContextPanel({
         </div>
       </section>
 
-      <section className="mt-4 max-h-48 shrink-0 border-t border-[rgb(var(--sep-colour-59432c))]/40 pt-4">
-        <div className="flex items-end justify-between gap-3">
-          <div>
-            <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-876a46))]">
+      <section className="mt-4 max-h-48 shrink-0 border-t border-[rgb(var(--sep-colour-59432c))]/40 pt-4 components_portal_game_context_panel_section_section_2">
+        <div className="flex items-end justify-between gap-3 components_portal_game_context_panel_div_container_13">
+          <div className="components_portal_game_context_panel_div_container_14">
+            <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-876a46))] components_portal_game_context_panel_p_text_4">
               Journey to...
             </p>
 
             
           </div>
 
-          <span className="text-[10px] text-[rgb(var(--sep-colour-806c52))]">
+          <span className="text-[10px] text-[rgb(var(--sep-colour-806c52))] components_portal_game_context_panel_span_text_2">
             {exits.length}
           </span>
         </div>
 
-        <div className="mt-3 max-h-28 space-y-1.5 overflow-y-auto overscroll-contain pr-1">
+        <div className="mt-3 max-h-28 space-y-1.5 overflow-y-auto overscroll-contain pr-1 components_portal_game_context_panel_div_container_15">
           {loading ? (
             <CompactLoadingRows />
           ) : (
@@ -570,11 +568,11 @@ export function GameContextPanel({
               }
 
               return (
-                <form
+                <form className="components_portal_game_context_panel_form_move_character"
                   key={`${exit.id}-${destination.id}`}
                   action={moveCharacter}
                 >
-                  <input
+                  <input className="components_portal_game_context_panel_input_room_id"
                     type="hidden"
                     name="roomId"
                     value={
@@ -584,11 +582,11 @@ export function GameContextPanel({
 
                   <button
                     type="submit"
-                    className="group w-full border border-[rgb(var(--sep-colour-765937))]/60 bg-[rgb(var(--sep-colour-271c12))] px-2.5 py-2 text-left transition hover:border-[rgb(var(--sep-colour-a17a49))] hover:bg-[rgb(var(--sep-colour-3b2919))]"
+                    className="group w-full border border-[rgb(var(--sep-colour-765937))]/60 bg-[rgb(var(--sep-colour-271c12))] px-2.5 py-2 text-left transition hover:border-[rgb(var(--sep-colour-a17a49))] hover:bg-[rgb(var(--sep-colour-3b2919))] components_portal_game_context_panel_button_action_3"
                   >
-                    <span className="flex items-center justify-between gap-3">
-                      <span className="min-w-0">
-                        <span className="block truncate font-serif text-[13px] leading-4 text-[rgb(var(--sep-colour-d8bf91))] transition group-hover:text-[rgb(var(--sep-colour-ead2a4))]">
+                    <span className="flex items-center justify-between gap-3 components_portal_game_context_panel_span_text_3">
+                      <span className="min-w-0 components_portal_game_context_panel_span_text_4">
+                        <span className="block truncate font-serif text-[13px] leading-4 text-[rgb(var(--sep-colour-d8bf91))] transition group-hover:text-[rgb(var(--sep-colour-ead2a4))] components_portal_game_context_panel_span_text_5">
                           {destination.name}
                         </span>
 
@@ -597,7 +595,7 @@ export function GameContextPanel({
 
                       <span
                         aria-hidden="true"
-                        className="shrink-0 text-[10px] text-[rgb(var(--sep-colour-836746))] transition group-hover:translate-x-0.5"
+                        className="shrink-0 text-[10px] text-[rgb(var(--sep-colour-836746))] transition group-hover:translate-x-0.5 components_portal_game_context_panel_span_text_6"
                       >
                         →
                       </span>
@@ -610,7 +608,7 @@ export function GameContextPanel({
 
           {!loading &&
           exits.length === 0 ? (
-            <p className="text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+            <p className="text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_game_context_panel_p_text_5">
               No accessible passages
               have been recorded.
             </p>
@@ -635,7 +633,7 @@ function MiniCodexIcon({
 
   return (
     <span
-      className="flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-0d0907))] font-serif text-[8px]"
+      className="flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-0d0907))] font-serif text-[8px] components_portal_game_context_panel_span_text_7"
       style={{
         borderColor: `${colour}88`,
         color: colour,
@@ -647,7 +645,7 @@ function MiniCodexIcon({
         <img
           src={entry.icon_url}
           alt=""
-          className="h-full w-full object-cover"
+          className="h-full w-full object-cover components_portal_game_context_panel_img_image"
         />
       ) : (
         entry.name
@@ -690,7 +688,7 @@ function PresenceDot({
   return (
     <span
       title={status}
-      className={`absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 ${classes[status]}`}
+      className={[((`absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 ${classes[status]}`)), "components_portal_game_context_panel_span_text_8"].filter(Boolean).join(" ")}
     />
   );
 }
@@ -711,7 +709,7 @@ function PresenceLabel({
 
   return (
     <span
-      className={`shrink-0 text-[7px] uppercase tracking-[0.14em] ${classes[status]}`}
+      className={[((`shrink-0 text-[7px] uppercase tracking-[0.14em] ${classes[status]}`)), "components_portal_game_context_panel_span_text_9"].filter(Boolean).join(" ")}
     >
       {status}
     </span>
@@ -735,16 +733,16 @@ function Portrait({
     .join("");
 
   return (
-    <div className="h-9 w-9 overflow-hidden border border-[rgb(var(--sep-colour-705538))] bg-[rgb(var(--sep-colour-0d0a08))] shadow-inner">
+    <div className="h-9 w-9 overflow-hidden border border-[rgb(var(--sep-colour-705538))] bg-[rgb(var(--sep-colour-0d0a08))] shadow-inner components_portal_game_context_panel_div_container_16">
       {src ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={src}
           alt={`Portrait of ${name}`}
-          className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+          className="h-full w-full object-cover transition duration-300 group-hover:scale-105 components_portal_game_context_panel_img_image_2"
         />
       ) : (
-        <span className="flex h-full items-center justify-center font-serif text-[11px] text-[rgb(var(--sep-colour-a0845e))]">
+        <span className="flex h-full items-center justify-center font-serif text-[11px] text-[rgb(var(--sep-colour-a0845e))] components_portal_game_context_panel_span_text_10">
           {initials || "?"}
         </span>
       )}
@@ -755,9 +753,9 @@ function Portrait({
 function SidebarLoadingRows() {
   return (
     <>
-      <div className="h-[60px] animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
-      <div className="h-[60px] animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
-      <div className="h-[60px] animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
+      <div className="h-[60px] animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))] components_portal_game_context_panel_div_container_17" />
+      <div className="h-[60px] animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))] components_portal_game_context_panel_div_container_18" />
+      <div className="h-[60px] animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))] components_portal_game_context_panel_div_container_19" />
     </>
   );
 }
@@ -765,8 +763,8 @@ function SidebarLoadingRows() {
 function CompactLoadingRows() {
   return (
     <>
-      <div className="h-[43px] animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
-      <div className="h-[43px] animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
+      <div className="h-[43px] animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))] components_portal_game_context_panel_div_container_20" />
+      <div className="h-[43px] animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))] components_portal_game_context_panel_div_container_21" />
     </>
   );
 }

@@ -319,12 +319,12 @@ try {
     <>
       <form
         onSubmit={handleSignUp}
-        className="space-y-5"
+        className="space-y-5 components_sign_up_form_form_sign_up"
       >
-        <div className="space-y-2">
+        <div className="space-y-2 components_sign_up_form_div_email">
           <label
             htmlFor="email"
-            className={labelClass}
+            className={[((labelClass)), "components_sign_up_form_label_email"].filter(Boolean).join(" ")}
           >
             Email
           </label>
@@ -343,18 +343,18 @@ try {
                 event.target.value,
               )
             }
-            className={`${fieldClass} ${
+            className={[((`${fieldClass} ${
               isInvited
                 ? "cursor-not-allowed opacity-75"
                 : ""
-            }`}
+            }`)), "components_sign_up_form_input_email"].filter(Boolean).join(" ")}
           />
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-2 components_sign_up_form_div_date_birth">
           <label
             htmlFor="date-of-birth"
-            className={labelClass}
+            className={[((labelClass)), "components_sign_up_form_label_date_birth"].filter(Boolean).join(" ")}
           >
             Date of birth
           </label>
@@ -371,18 +371,18 @@ try {
                 event.target.value,
               )
             }
-            className={fieldClass}
+            className={[((fieldClass)), "components_sign_up_form_input_date_birth"].filter(Boolean).join(" ")}
           />
 
-          <p className="text-[10px] leading-5 text-[rgb(var(--sep-colour-776e63))]">
+          <p className="text-[10px] leading-5 text-[rgb(var(--sep-colour-776e63))] components_sign_up_form_p_date_birth">
             Sepulchria is strictly for users aged 18 or older.
           </p>
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-2 components_sign_up_form_div_password">
           <label
             htmlFor="password"
-            className={labelClass}
+            className={[((labelClass)), "components_sign_up_form_label_password"].filter(Boolean).join(" ")}
           >
             Password
           </label>
@@ -400,14 +400,14 @@ try {
                 event.target.value,
               )
             }
-            className={fieldClass}
+            className={[((fieldClass)), "components_sign_up_form_input_password"].filter(Boolean).join(" ")}
           />
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-2 components_sign_up_form_div_repeat_password">
           <label
             htmlFor="repeat-password"
-            className={labelClass}
+            className={[((labelClass)), "components_sign_up_form_label_repeat_password"].filter(Boolean).join(" ")}
           >
             Repeat password
           </label>
@@ -427,12 +427,12 @@ try {
                 event.target.value,
               )
             }
-            className={fieldClass}
+            className={[((fieldClass)), "components_sign_up_form_input_repeat_password"].filter(Boolean).join(" ")}
           />
         </div>
 
-        <div className="border border-[rgb(var(--sep-colour-7d4b3d))]/65 bg-[rgb(var(--sep-colour-1d0f0d))]/55 px-4 py-4">
-          <label className="flex cursor-pointer items-start gap-3">
+        <div className="border border-[rgb(var(--sep-colour-7d4b3d))]/65 bg-[rgb(var(--sep-colour-1d0f0d))]/55 px-4 py-4 components_sign_up_form_div_container">
+          <label className="flex cursor-pointer items-start gap-3 components_sign_up_form_label_label">
             <input
               type="checkbox"
               name="age-confirmation"
@@ -445,17 +445,17 @@ try {
                 )
               }
               required
-              className="mt-1 h-4 w-4 shrink-0 accent-[rgb(var(--sep-colour-a77a42))]"
+              className="mt-1 h-4 w-4 shrink-0 accent-[rgb(var(--sep-colour-a77a42))] components_sign_up_form_input_age_confirmation"
             />
 
-            <span className="text-xs leading-6 text-[rgb(var(--sep-colour-c9b8a0))]">
+            <span className="text-xs leading-6 text-[rgb(var(--sep-colour-c9b8a0))] components_sign_up_form_span_text">
               I confirm that I am 18 years of age or older.
             </span>
           </label>
         </div>
 
-        <div className="border border-[rgb(var(--sep-colour-62482f))]/55 bg-[rgb(var(--sep-colour-0b0807))]/55 px-4 py-4">
-          <label className="flex cursor-pointer items-start gap-3">
+        <div className="border border-[rgb(var(--sep-colour-62482f))]/55 bg-[rgb(var(--sep-colour-0b0807))]/55 px-4 py-4 components_sign_up_form_div_container_2">
+          <label className="flex cursor-pointer items-start gap-3 components_sign_up_form_label_label_2">
             <input
               type="checkbox"
               name="legal-acceptance"
@@ -469,10 +469,10 @@ try {
                 )
               }
               required
-              className="mt-1 h-4 w-4 shrink-0 accent-[rgb(var(--sep-colour-a77a42))]"
+              className="mt-1 h-4 w-4 shrink-0 accent-[rgb(var(--sep-colour-a77a42))] components_sign_up_form_input_legal_acceptance"
             />
 
-            <span className="text-xs leading-6 text-[rgb(var(--sep-colour-a99b87))]">
+            <span className="text-xs leading-6 text-[rgb(var(--sep-colour-a99b87))] components_sign_up_form_span_text_2">
   I have read and agree to Sepulchria&apos;s{" "}
   <button
     type="button"
@@ -480,7 +480,7 @@ try {
       event.preventDefault();
       setLegalDocument("terms");
     }}
-    className="text-[rgb(var(--sep-colour-d0aa72))] underline decoration-[rgb(var(--sep-colour-725636))] underline-offset-4 transition hover:text-[rgb(var(--sep-colour-efd5a7))]"
+    className="text-[rgb(var(--sep-colour-d0aa72))] underline decoration-[rgb(var(--sep-colour-725636))] underline-offset-4 transition hover:text-[rgb(var(--sep-colour-efd5a7))] components_sign_up_form_button_terms_service"
   >
     Terms of Service
   </button>
@@ -493,7 +493,7 @@ try {
       "community",
     );
   }}
-  className="text-[rgb(var(--sep-colour-d0aa72))] underline decoration-[rgb(var(--sep-colour-725636))] underline-offset-4 transition hover:text-[rgb(var(--sep-colour-efd5a7))]"
+  className="text-[rgb(var(--sep-colour-d0aa72))] underline decoration-[rgb(var(--sep-colour-725636))] underline-offset-4 transition hover:text-[rgb(var(--sep-colour-efd5a7))] components_sign_up_form_button_community_rules"
 >
   Community Rules
 </button>
@@ -504,7 +504,7 @@ try {
       event.preventDefault();
       setLegalDocument("privacy");
     }}
-    className="text-[rgb(var(--sep-colour-d0aa72))] underline decoration-[rgb(var(--sep-colour-725636))] underline-offset-4 transition hover:text-[rgb(var(--sep-colour-efd5a7))]"
+    className="text-[rgb(var(--sep-colour-d0aa72))] underline decoration-[rgb(var(--sep-colour-725636))] underline-offset-4 transition hover:text-[rgb(var(--sep-colour-efd5a7))] components_sign_up_form_button_privacy_policy"
   >
     Privacy Policy
   </button>
@@ -516,13 +516,13 @@ try {
         {error && (
           <div
             role="alert"
-            className="border border-[rgb(var(--sep-colour-873e35))]/55 bg-[rgb(var(--sep-colour-421d1a))]/35 px-4 py-3 text-sm text-[rgb(var(--sep-colour-e2aaa1))]"
+            className="border border-[rgb(var(--sep-colour-873e35))]/55 bg-[rgb(var(--sep-colour-421d1a))]/35 px-4 py-3 text-sm text-[rgb(var(--sep-colour-e2aaa1))] components_sign_up_form_div_alert"
           >
             {error}
           </div>
         )}
 
-        <div className="border border-[rgb(var(--sep-colour-62482f))]/45 bg-[rgb(var(--sep-colour-0b0807))]/35 px-4 py-3">
+        <div className="border border-[rgb(var(--sep-colour-62482f))]/45 bg-[rgb(var(--sep-colour-0b0807))]/35 px-4 py-3 components_sign_up_form_div_container_3">
           <TurnstileWidget
             onTokenChange={
               setCaptchaToken
@@ -539,14 +539,14 @@ try {
             !dateOfBirth ||
             !captchaToken
           }
-          className="h-12 w-full border border-[rgb(var(--sep-colour-a77a42))]/80 bg-[rgb(var(--sep-colour-382313))] font-serif text-base tracking-[0.05em] text-[rgb(var(--sep-colour-ead3a6))] transition hover:border-[rgb(var(--sep-colour-d4a460))] hover:bg-[rgb(var(--sep-colour-472c17))] disabled:cursor-not-allowed disabled:opacity-45"
+          className="h-12 w-full border border-[rgb(var(--sep-colour-a77a42))]/80 bg-[rgb(var(--sep-colour-382313))] font-serif text-base tracking-[0.05em] text-[rgb(var(--sep-colour-ead3a6))] transition hover:border-[rgb(var(--sep-colour-d4a460))] hover:bg-[rgb(var(--sep-colour-472c17))] disabled:cursor-not-allowed disabled:opacity-45 components_sign_up_form_button_action"
         >
           {isLoading
             ? "Writing your name..."
             : "Create your account"}
         </button>
 
-        <p className="text-center text-sm text-[rgb(var(--sep-colour-897d6c))]">
+        <p className="text-center text-sm text-[rgb(var(--sep-colour-897d6c))] components_sign_up_form_p_text">
           Already registered?{" "}
           <Link
             href="/auth/login"
@@ -570,7 +570,7 @@ try {
       >
         <LegalDevelopmentNotice />
 
-        <div className="mt-6 space-y-6 text-sm leading-7 text-[rgb(var(--sep-colour-aa9c88))]">
+        <div className="mt-6 space-y-6 text-sm leading-7 text-[rgb(var(--sep-colour-aa9c88))] components_sign_up_form_div_container_4">
           <LegalSection
             title="1. Use of Sepulchria"
           >
@@ -636,7 +636,7 @@ try {
             continuing.
           </LegalSection>
 
-          <p className="text-xs text-[rgb(var(--sep-colour-766b5e))]">
+          <p className="text-xs text-[rgb(var(--sep-colour-766b5e))] components_sign_up_form_p_text_2">
             Version: {TERMS_VERSION}
           </p>
         </div>
@@ -673,7 +673,7 @@ try {
       >
         <LegalDevelopmentNotice />
 
-        <div className="mt-6 space-y-6 text-sm leading-7 text-[rgb(var(--sep-colour-aa9c88))]">
+        <div className="mt-6 space-y-6 text-sm leading-7 text-[rgb(var(--sep-colour-aa9c88))] components_sign_up_form_div_container_5">
           <LegalSection
             title="1. Information used by the service"
           >
@@ -739,7 +739,7 @@ try {
             protection rights.
           </LegalSection>
 
-          <p className="text-xs text-[rgb(var(--sep-colour-766b5e))]">
+          <p className="text-xs text-[rgb(var(--sep-colour-766b5e))] components_sign_up_form_p_text_3">
             Version: {PRIVACY_VERSION}
           </p>
         </div>
@@ -750,7 +750,7 @@ try {
 
 function LegalDevelopmentNotice() {
   return (
-    <div className="border border-[rgb(var(--sep-colour-7a5b37))]/45 bg-[rgb(var(--sep-colour-21160f))] p-4 text-sm leading-6 text-[rgb(var(--sep-colour-c7aa7c))]">
+    <div className="border border-[rgb(var(--sep-colour-7a5b37))]/45 bg-[rgb(var(--sep-colour-21160f))] p-4 text-sm leading-6 text-[rgb(var(--sep-colour-c7aa7c))] components_sign_up_form_div_container_6">
       Development notice: this is a
       functional placeholder for the
       registration-consent system.
@@ -769,12 +769,12 @@ function LegalSection({
   children: React.ReactNode;
 }) {
   return (
-    <section>
-      <h3 className="font-serif text-xl text-[rgb(var(--sep-colour-d7bd91))]">
+    <section className="components_sign_up_form_section_section">
+      <h3 className="font-serif text-xl text-[rgb(var(--sep-colour-d7bd91))] components_sign_up_form_h3_heading">
         {title}
       </h3>
 
-      <p className="mt-2">
+      <p className="mt-2 components_sign_up_form_p_text_4">
         {children}
       </p>
     </section>

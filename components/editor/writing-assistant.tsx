@@ -442,10 +442,10 @@ export function SpellingTextareaOverlay({
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none absolute inset-0 z-20 overflow-hidden"
+      className="pointer-events-none absolute inset-0 z-20 overflow-hidden components_editor_writing_assistant_div_container"
     >
       <div
-        className="whitespace-pre-wrap break-words px-4 py-3 text-sm leading-6"
+        className="whitespace-pre-wrap break-words px-4 py-3 text-sm leading-6 components_editor_writing_assistant_div_container_2"
         style={{
           transform:
             `translateY(-${scrollTop}px)`,
@@ -461,7 +461,7 @@ export function SpellingTextareaOverlay({
             index,
           ) =>
             fragment.misspelled ? (
-              <span
+              <span className="components_editor_writing_assistant_span_text"
                 key={index}
                 style={{
                   color:
@@ -481,7 +481,7 @@ export function SpellingTextareaOverlay({
                 {fragment.text}
               </span>
             ) : (
-              <span
+              <span className="components_editor_writing_assistant_span_text_2"
                 key={index}
               >
                 {fragment.text}

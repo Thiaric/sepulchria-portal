@@ -141,7 +141,7 @@ export default function MessageComposer({
 
   if (communication.blocked) {
     return (
-      <div className="border-t border-[rgb(var(--sep-colour-59432c))]/40 p-3 sm:p-4">
+      <div className="border-t border-[rgb(var(--sep-colour-59432c))]/40 p-3 sm:p-4 messages_components_messagecomposer_div_container">
         <SanctionRestrictionNotice
           message={communication.message}
         />
@@ -181,21 +181,21 @@ export default function MessageComposer({
             ?.focus();
         });
       }}
-      className="border-t border-[rgb(var(--sep-colour-59432c))]/40 p-5 sm:p-6"
+      className="border-t border-[rgb(var(--sep-colour-59432c))]/40 p-5 sm:p-6 messages_components_messagecomposer_form_action"
     >
-      <input
+      <input className="messages_components_messagecomposer_input_conversation_id"
         type="hidden"
         name="conversationId"
         value={conversationId}
       />
 
-      <input
+      <input className="messages_components_messagecomposer_input_client_nonce"
         type="hidden"
         name="client_nonce"
         value={nonce}
       />
 
-      <input
+      <input className="messages_components_messagecomposer_input_message_mode"
         type="hidden"
         name="messageMode"
         value={messageMode}
@@ -206,24 +206,24 @@ export default function MessageComposer({
           Message type
         </legend>
 
-        <div className="mt-1.5 grid grid-cols-2 gap-2">
+        <div className="mt-1.5 grid grid-cols-2 gap-2 messages_components_messagecomposer_div_container_2">
           <button
             type="button"
             onClick={() =>
               setMessageMode("ongame")
             }
             aria-pressed={isOnGame}
-            className={`border px-3 py-2 text-left transition ${
+            className={[((`border px-3 py-2 text-left transition ${
               isOnGame
                 ? "border-[rgb(var(--sep-colour-a77a42))] bg-[rgb(var(--sep-colour-3b2919))] text-[rgb(var(--sep-colour-f0d3a1))]"
                 : "border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-100c09))] text-[rgb(var(--sep-colour-8e806d))] hover:border-[rgb(var(--sep-colour-80613c))]"
-            }`}
+            }`)), "messages_components_messagecomposer_button_action"].filter(Boolean).join(" ")}
           >
-            <span className="block text-[9px] uppercase tracking-[0.18em]">
+            <span className="block text-[9px] uppercase tracking-[0.18em] messages_components_messagecomposer_span_text">
               On-game
             </span>
 
-            <span className="mt-0.5 block text-[9px] leading-4 opacity-75">
+            <span className="mt-0.5 block text-[9px] leading-4 opacity-75 messages_components_messagecomposer_span_text_2">
               Written by the character.
             </span>
           </button>
@@ -236,17 +236,17 @@ export default function MessageComposer({
               setMessageMode("offgame")
             }
             aria-pressed={!isOnGame}
-            className={`border px-3 py-2 text-left transition ${
+            className={[((`border px-3 py-2 text-left transition ${
               !isOnGame
                 ? "border-[rgb(var(--sep-colour-6d7488))] bg-[rgb(var(--sep-colour-0d0907))] text-[rgb(var(--sep-colour-d6dae5))]"
                 : "border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-0d0907))] text-[rgb(var(--sep-colour-8e806d))] hover:border-[rgb(var(--sep-colour-6d7488))]"
-            }`}
+            }`)), "messages_components_messagecomposer_button_sep_offgame_message_selector"].filter(Boolean).join(" ")}
           >
-            <span className="block text-[9px] uppercase tracking-[0.18em]">
+            <span className="block text-[9px] uppercase tracking-[0.18em] messages_components_messagecomposer_span_sep_offgame_message_selector">
               Off-game
             </span>
 
-            <span className="mt-0.5 block text-[9px] leading-4 opacity-75">
+            <span className="mt-0.5 block text-[9px] leading-4 opacity-75 messages_components_messagecomposer_span_sep_offgame_message_selector_2">
               Written by the player.
             </span>
           </button>
@@ -254,18 +254,18 @@ export default function MessageComposer({
       </fieldset>
 
       <div
-        className={`mt-2 border-l-2 px-3 py-1.5 text-[9px] leading-4 ${
+        className={[((`mt-2 border-l-2 px-3 py-1.5 text-[9px] leading-4 ${
           isOnGame
             ? "border-[rgb(var(--sep-colour-a77a42))] bg-[rgb(var(--sep-colour-24190f))] text-[rgb(var(--sep-colour-bfa37a))]"
             : "border-[rgb(var(--sep-colour-6d7488))] bg-[rgb(var(--sep-colour-191b21))] text-[rgb(var(--sep-colour-aeb4c2))]"
-        }`}
+        }`)), "messages_components_messagecomposer_div_container_3"].filter(Boolean).join(" ")}
       >
         {isOnGame
           ? "This message belongs to the story and is visible as character correspondence."
           : "This message is out of character and should only contain player communication."}
       </div>
 
-      <div className="mt-2">
+      <div className="mt-2 messages_components_messagecomposer_div_container_4">
         <RichMessageEditor
           value={body}
           onChange={setBody}
@@ -280,16 +280,16 @@ export default function MessageComposer({
           }
         />
 
-        <input
+        <input className="messages_components_messagecomposer_input_body"
           type="hidden"
           name="body"
           value={body}
         />
       </div>
 
-      <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
-        <div>
-          <p className="text-[10px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-776b5c))]">
+      <div className="mt-2 flex flex-wrap items-center justify-between gap-2 messages_components_messagecomposer_div_container_5">
+        <div className="messages_components_messagecomposer_div_container_6">
+          <p className="text-[10px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-776b5c))] messages_components_messagecomposer_p_text">
             {stripRichTextForPreview(
               body,
             ).length.toLocaleString(
@@ -303,11 +303,11 @@ export default function MessageComposer({
 
           {state.message ? (
             <p
-              className={`mt-2 text-xs ${
+              className={[((`mt-2 text-xs ${
                 state.ok
                   ? "text-[rgb(var(--sep-colour-8ebc87))]"
                   : "text-[rgb(var(--sep-colour-d88d79))]"
-              }`}
+              }`)), "messages_components_messagecomposer_p_text_2"].filter(Boolean).join(" ")}
             >
               {state.message}
             </p>
@@ -322,11 +322,11 @@ export default function MessageComposer({
               body,
             )
           }
-          className={`border px-4 py-2 text-[10px] uppercase tracking-[0.18em] disabled:cursor-not-allowed disabled:opacity-40 ${
+          className={[((`border px-4 py-2 text-[10px] uppercase tracking-[0.18em] disabled:cursor-not-allowed disabled:opacity-40 ${
             isOnGame
               ? "border-[rgb(var(--sep-colour-967342))] bg-[rgb(var(--sep-colour-3b2b1b))] text-[rgb(var(--sep-colour-f1d9a7))]"
               : "border-[rgb(var(--sep-colour-697185))] bg-[rgb(var(--sep-colour-292d36))] text-[rgb(var(--sep-colour-e2e5ec))]"
-          }`}
+          }`)), "messages_components_messagecomposer_button_action_2"].filter(Boolean).join(" ")}
         >
           {pending
             ? "Sending..."

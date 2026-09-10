@@ -336,19 +336,19 @@ export function ForumFavouriteTopicsPanel() {
   }
 
   return (
-    <section className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-3">
-      <div className="flex items-center justify-between gap-3">
-        <div>
-          <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))]">
+    <section className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-3 components_forum_forum_favourite_topics_panel_section_section">
+      <div className="flex items-center justify-between gap-3 components_forum_forum_favourite_topics_panel_div_container">
+        <div className="components_forum_forum_favourite_topics_panel_div_favourite_topics">
+          <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))] components_forum_forum_favourite_topics_panel_p_favourite_topics">
             Forum
           </p>
 
-          <h3 className="mt-1 font-serif text-base text-[rgb(var(--sep-colour-d6bd91))]">
+          <h3 className="mt-1 font-serif text-base text-[rgb(var(--sep-colour-d6bd91))] components_forum_forum_favourite_topics_panel_h3_favourite_topics">
             Favourite Topics
           </h3>
         </div>
 
-        <span className="flex h-7 min-w-7 items-center justify-center border border-[rgb(var(--sep-colour-59432c))]/50 bg-[rgb(var(--sep-colour-0c0907))] px-2 text-[10px] text-[rgb(var(--sep-colour-b2956f))]">
+        <span className="flex h-7 min-w-7 items-center justify-center border border-[rgb(var(--sep-colour-59432c))]/50 bg-[rgb(var(--sep-colour-0c0907))] px-2 text-[10px] text-[rgb(var(--sep-colour-b2956f))] components_forum_forum_favourite_topics_panel_span_text">
           {favourites.length}
         </span>
       </div>
@@ -360,20 +360,20 @@ export function ForumFavouriteTopicsPanel() {
             void toggleCurrent()
           }
           disabled={saving}
-          className="mt-3 flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-20160f))] px-3 py-3 text-left transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:bg-[rgb(var(--sep-colour-2c1d13))] disabled:opacity-60"
+          className="mt-3 flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-20160f))] px-3 py-3 text-left transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:bg-[rgb(var(--sep-colour-2c1d13))] disabled:opacity-60 components_forum_forum_favourite_topics_panel_button_action"
         >
-          <span className="min-w-0">
-            <span className="block text-[8px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-8c7556))]">
+          <span className="min-w-0 components_forum_forum_favourite_topics_panel_span_text_2">
+            <span className="block text-[8px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-8c7556))] components_forum_forum_favourite_topics_panel_span_text_3">
               Current topic
             </span>
 
-            <span className="mt-1 block truncate font-serif text-sm text-[rgb(var(--sep-colour-d9c19a))]">
+            <span className="mt-1 block truncate font-serif text-sm text-[rgb(var(--sep-colour-d9c19a))] components_forum_forum_favourite_topics_panel_span_text_4">
               {currentTopic.title}
             </span>
           </span>
 
           <span
-            className="shrink-0 text-lg text-[rgb(var(--sep-colour-d3a85f))]"
+            className="shrink-0 text-lg text-[rgb(var(--sep-colour-d3a85f))] components_forum_forum_favourite_topics_panel_span_text_5"
             aria-hidden="true"
           >
             {currentIsFavourite
@@ -384,17 +384,17 @@ export function ForumFavouriteTopicsPanel() {
       ) : null}
 
       {error ? (
-        <p className="mt-3 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-2 text-[10px] leading-4 text-[rgb(var(--sep-colour-d8a49a))]">
+        <p className="mt-3 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-2 text-[10px] leading-4 text-[rgb(var(--sep-colour-d8a49a))] components_forum_forum_favourite_topics_panel_p_text">
           {error}
         </p>
       ) : null}
 
-      <div className="mt-3 space-y-2">
+      <div className="mt-3 space-y-2 components_forum_forum_favourite_topics_panel_div_container_2">
         {loading ? (
           <>
-            <div className="h-12 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
-            <div className="h-12 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
-            <div className="h-12 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
+            <div className="h-12 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))] components_forum_forum_favourite_topics_panel_div_container_3" />
+            <div className="h-12 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))] components_forum_forum_favourite_topics_panel_div_container_4" />
+            <div className="h-12 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))] components_forum_forum_favourite_topics_panel_div_container_5" />
           </>
         ) : favourites.length > 0 ? (
           favourites.map(
@@ -408,18 +408,18 @@ export function ForumFavouriteTopicsPanel() {
                 )}`}
                 className="block border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-0d0a08))] px-3 py-2.5 transition hover:border-[rgb(var(--sep-colour-8d6a40))] hover:bg-[rgb(var(--sep-colour-1a120d))]"
               >
-                <p className="truncate font-serif text-sm text-[rgb(var(--sep-colour-cfb78f))]">
+                <p className="truncate font-serif text-sm text-[rgb(var(--sep-colour-cfb78f))] components_forum_forum_favourite_topics_panel_p_text_2">
                   {item.title}
                 </p>
 
-                <p className="mt-1 truncate text-[8px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-746653))]">
+                <p className="mt-1 truncate text-[8px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-746653))] components_forum_forum_favourite_topics_panel_p_text_3">
                   {item.sectionName}
                 </p>
               </Link>
             ),
           )
         ) : (
-          <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-0d0a08))] p-3 text-[10px] leading-5 text-[rgb(var(--sep-colour-817565))]">
+          <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-0d0a08))] p-3 text-[10px] leading-5 text-[rgb(var(--sep-colour-817565))] components_forum_forum_favourite_topics_panel_p_text_4">
             No favourite topics yet.
             Open a topic and press ☆
             to save it here.

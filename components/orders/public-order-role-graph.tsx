@@ -175,7 +175,7 @@ export function PublicOrderRoleGraph({
 
   if (!roles.length) {
     return (
-      <p className="mt-4 text-sm italic text-[rgb(var(--sep-colour-807463))]">
+      <p className="mt-4 text-sm italic text-[rgb(var(--sep-colour-807463))] components_orders_public_order_role_graph_p_text">
         No Roles have been configured.
       </p>
     );
@@ -184,7 +184,7 @@ export function PublicOrderRoleGraph({
   return (
     <div
       ref={containerRef}
-      className="relative mt-5 overflow-x-auto border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-0d0a08))] px-3 py-4 sm:px-5"
+      className="relative mt-5 overflow-x-auto border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-0d0a08))] px-3 py-4 sm:px-5 components_orders_public_order_role_graph_div_container"
     >
       <svg
         aria-hidden="true"
@@ -211,7 +211,7 @@ export function PublicOrderRoleGraph({
         })}
       </svg>
 
-      <div className="relative z-10 min-w-[620px] space-y-7">
+      <div className="relative z-10 min-w-[620px] space-y-7 components_orders_public_order_role_graph_div_container_2">
         {levels.map((level) => {
           const levelRoles =
             rolesByLevel.get(level) ?? [];
@@ -219,24 +219,24 @@ export function PublicOrderRoleGraph({
           return (
             <div
               key={level}
-              className="grid grid-cols-[64px_minmax(0,1fr)] items-center gap-3"
+              className="grid grid-cols-[64px_minmax(0,1fr)] items-center gap-3 components_orders_public_order_role_graph_div_container_3"
             >
-              <div className="text-center">
-                <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-665c50))]">
+              <div className="text-center components_orders_public_order_role_graph_div_container_4">
+                <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-665c50))] components_orders_public_order_role_graph_p_text_2">
                   Level
                 </p>
-                <p className="font-serif text-lg text-[rgb(var(--sep-colour-c3a778))]">
+                <p className="font-serif text-lg text-[rgb(var(--sep-colour-c3a778))] components_orders_public_order_role_graph_p_text_3">
                   {level}
                 </p>
 
                 {payByLevel[level] ? (
-                  <p className="mt-1 text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-9b815d))]">
+                  <p className="mt-1 text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-9b815d))] components_orders_public_order_role_graph_p_text_4">
                     {payByLevel[level]} / month
                   </p>
                 ) : null}
               </div>
 
-              <div className="flex justify-center gap-3">
+              <div className="flex justify-center gap-3 components_orders_public_order_role_graph_div_container_5">
                 {levelRoles.map((role) => {
                   const active =
                     modifiers(role).filter(
@@ -262,14 +262,14 @@ export function PublicOrderRoleGraph({
                         role.description ??
                         undefined
                       }
-                      className="w-[150px] shrink-0 border border-[rgb(var(--sep-colour-6c5031))]/60 bg-[rgb(var(--sep-colour-18110d))] px-3 py-2 text-center"
+                      className="w-[150px] shrink-0 border border-[rgb(var(--sep-colour-6c5031))]/60 bg-[rgb(var(--sep-colour-18110d))] px-3 py-2 text-center components_orders_public_order_role_graph_div_container_6"
                     >
-                      <p className="truncate font-serif text-[13px] text-[rgb(var(--sep-colour-d6bd90))]">
+                      <p className="truncate font-serif text-[13px] text-[rgb(var(--sep-colour-d6bd90))] components_orders_public_order_role_graph_p_text_5">
                         {role.name}
                       </p>
 
                       {active.length ? (
-                        <p className="mt-1 truncate text-[7px] uppercase tracking-[0.08em] text-[rgb(var(--sep-colour-756958))]">
+                        <p className="mt-1 truncate text-[7px] uppercase tracking-[0.08em] text-[rgb(var(--sep-colour-756958))] components_orders_public_order_role_graph_p_text_6">
                           {active
                             .map(
                               ([label, value]) =>
@@ -282,7 +282,7 @@ export function PublicOrderRoleGraph({
                             .join(" · ")}
                         </p>
                       ) : (
-                        <p className="mt-1 text-[7px] uppercase tracking-[0.08em] text-[rgb(var(--sep-colour-554d43))]">
+                        <p className="mt-1 text-[7px] uppercase tracking-[0.08em] text-[rgb(var(--sep-colour-554d43))] components_orders_public_order_role_graph_p_text_7">
                           No modifiers
                         </p>
                       )}

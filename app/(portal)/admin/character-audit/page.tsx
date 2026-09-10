@@ -187,18 +187,18 @@ export default async function CharacterAuditPage({
     );
 
   return (
-    <main className="p-5 sm:p-7 lg:p-9">
-      <div className="mx-auto max-w-[1500px]">
-        <div>
-          <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
+    <main className="p-5 sm:p-7 lg:p-9 admin_character_audit_page_main_main">
+      <div className="mx-auto max-w-[1500px] admin_character_audit_page_div_container">
+        <div className="admin_character_audit_page_div_character_audit_log">
+          <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))] admin_character_audit_page_p_character_audit_log">
             Administration · Audit
           </p>
 
-          <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">
+          <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))] admin_character_audit_page_h1_character_audit_log">
             Character Audit Log
           </h1>
 
-          <p className="mt-3 max-w-4xl text-sm leading-7 text-[rgb(var(--sep-colour-9c8d79))]">
+          <p className="mt-3 max-w-4xl text-sm leading-7 text-[rgb(var(--sep-colour-9c8d79))] admin_character_audit_page_p_character_audit_log_2">
             Append-only history of account registration and material Character changes,
             including profile edits, approval state, Ancestry, Orders, Feats, Shapes,
             inventory, economy and other tracked Character state.
@@ -207,9 +207,9 @@ export default async function CharacterAuditPage({
 
         <CharacterAuditLiveFilter characters={(characters ?? []) as CharacterOption[]} />
 
-        <div className="mt-5 space-y-3">
+        <div className="mt-5 space-y-3 admin_character_audit_page_div_container_2">
           {rows.length === 0 ? (
-            <div className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-6 text-sm text-[rgb(var(--sep-colour-8f8271))]">
+            <div className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-6 text-sm text-[rgb(var(--sep-colour-8f8271))] admin_character_audit_page_div_container_3">
               No audit records match these filters.
             </div>
           ) : (
@@ -235,7 +235,7 @@ export default async function CharacterAuditPage({
                   data-character-audit-source={auditSourceLabel(row)}
                   data-character-audit-date={dateLabel}
                   data-character-audit-summary={summary}
-                  className="scroll-mt-6"
+                  className="scroll-mt-6 admin_character_audit_page_div_container_4"
                 >
                   <CharacterAuditEntry
                     row={row}

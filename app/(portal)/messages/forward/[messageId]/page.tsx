@@ -272,7 +272,7 @@ export default async function ForwardMessagePage({
       : senderRelation;
 
   return (
-    <main className="mx-auto max-w-3xl p-5 sm:p-7">
+    <main className="mx-auto max-w-3xl p-5 sm:p-7 messages_forward_messageid_page_main_main">
       <Link
         href={`/messages/${message.conversation_id}`}
         className="border border-[rgb(var(--sep-colour-a07742))] bg-[rgb(var(--sep-colour-402a17))] px-5 py-2.5 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-f1d5a2))]"
@@ -280,17 +280,17 @@ export default async function ForwardMessagePage({
         ← Conversation
       </Link>
 
-      <section className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6">
-        <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-8c704b))]">
+      <section className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6 messages_forward_messageid_page_section_forward">
+        <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-8c704b))] messages_forward_messageid_page_p_forward">
           Forward private message
         </p>
 
-        <h1 className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-e2c99d))]">
+        <h1 className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-e2c99d))] messages_forward_messageid_page_h1_forward">
           Forward
         </h1>
 
-        <div className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] p-4">
-          <p className="text-[9px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-8e795d))]">
+        <div className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] p-4 messages_forward_messageid_page_div_forward">
+          <p className="text-[9px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-8e795d))] messages_forward_messageid_page_p_forward_2">
             Original message —{" "}
             {sender
               ? nameOf(sender)
@@ -313,9 +313,9 @@ export default async function ForwardMessagePage({
           action={
             forwardPrivateMessage
           }
-          className="mt-5 space-y-5"
+          className="mt-5 space-y-5 messages_forward_messageid_page_form_forward_private_message"
         >
-          <input
+          <input className="messages_forward_messageid_page_input_source_message_id"
             type="hidden"
             name="sourceMessageId"
             value={message.id}
@@ -331,8 +331,8 @@ export default async function ForwardMessagePage({
             }
           />
 
-          <label className="block">
-            <span className="mb-2 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+          <label className="block messages_forward_messageid_page_label_forward">
+            <span className="mb-2 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] messages_forward_messageid_page_span_forward">
               Your message
             </span>
 
@@ -340,25 +340,25 @@ export default async function ForwardMessagePage({
               name="note"
               rows={4}
               placeholder='Example: "Read this, he was looking at something."'
-              className="w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none"
+              className="w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none messages_forward_messageid_page_textarea_note"
             />
           </label>
 
-          <label className="block">
-            <span className="mb-2 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+          <label className="block messages_forward_messageid_page_label_forward_2">
+            <span className="mb-2 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] messages_forward_messageid_page_span_forward_2">
               Group name (optional)
             </span>
 
             <input
               name="groupTitle"
               maxLength={80}
-              className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none"
+              className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none messages_forward_messageid_page_input_group_title"
             />
           </label>
 
           <button
             type="submit"
-            className="border border-[rgb(var(--sep-colour-a07742))] bg-[rgb(var(--sep-colour-402a17))] px-5 py-2.5 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-f1d5a2))]"
+            className="border border-[rgb(var(--sep-colour-a07742))] bg-[rgb(var(--sep-colour-402a17))] px-5 py-2.5 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-f1d5a2))] messages_forward_messageid_page_button_forward_message"
           >
             Forward message
           </button>

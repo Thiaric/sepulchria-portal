@@ -223,41 +223,41 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
   );
 
   return (
-    <main className="p-5 sm:p-7 lg:p-9">
-      <div className="mx-auto max-w-7xl">
-        <div>
-          <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
+    <main className="p-5 sm:p-7 lg:p-9 admin_gifts_page_main_main">
+      <div className="mx-auto max-w-7xl admin_gifts_page_div_container">
+        <div className="admin_gifts_page_div_feat_management">
+          <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))] admin_gifts_page_p_feat_management">
             Administration
           </p>
-          <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">
+          <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))] admin_gifts_page_h1_feat_management">
             Feat Management
           </h1>
-          <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))]">
+          <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))] admin_gifts_page_p_feat_management_2">
             Create Feats, configure Attribute, Health, duration and cooldown effects,
             link Ancestries and Order Roles, and assign Feats directly to characters.
           </p>
         </div>
 
         {params.success ? (
-          <div className="mt-6 border border-emerald-800/50 bg-emerald-950/20 px-4 py-3 text-sm text-emerald-400">
+          <div className="mt-6 border border-emerald-800/50 bg-emerald-950/20 px-4 py-3 text-sm text-emerald-400 admin_gifts_page_div_container_2">
             {params.success}
           </div>
         ) : null}
 
         {params.error ? (
-          <div className="mt-6 border border-red-900/60 bg-red-950/20 px-4 py-3 text-sm text-red-400">
+          <div className="mt-6 border border-red-900/60 bg-red-950/20 px-4 py-3 text-sm text-red-400 admin_gifts_page_div_container_3">
             {params.error}
           </div>
         ) : null}
 
         <section
           id="gift-new"
-          className="mt-8 scroll-mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6"
+          className="mt-8 scroll-mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6 admin_gifts_page_section_gift_new"
         >
-          <p className="text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))]">
+          <p className="text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))] admin_gifts_page_p_gift_new">
             New Feat
           </p>
-          <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">
+          <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))] admin_gifts_page_h2_gift_new">
             Create a Feat
           </h2>
 
@@ -268,20 +268,20 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
           />
         </section>
 
-        <div className="mt-6 space-y-4">
+        <div className="mt-6 space-y-4 admin_gifts_page_div_container_4">
           {gifts.map((gift) => (
             <details
               key={gift.id}
               id={`gift-${gift.id}`}
-              className="scroll-mt-6 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))]"
+              className="scroll-mt-6 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] admin_gifts_page_details_details"
             >
-              <summary className="cursor-pointer list-none px-4 py-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <p className="truncate font-serif text-lg text-[rgb(var(--sep-colour-d8bf91))]">
+              <summary className="cursor-pointer list-none px-4 py-4 admin_gifts_page_summary_summary">
+                <div className="flex items-start justify-between gap-3 admin_gifts_page_div_container_5">
+                  <div className="min-w-0 admin_gifts_page_div_container_6">
+                    <p className="truncate font-serif text-lg text-[rgb(var(--sep-colour-d8bf91))] admin_gifts_page_p_text">
                       {gift.name}
                     </p>
-                    <p className="mt-1 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-766956))]">
+                    <p className="mt-1 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-766956))] admin_gifts_page_p_text_2">
                       {gift.effect_mode === "passive"
                         ? "Passive"
                         : "Activated"}
@@ -291,12 +291,12 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
                     </p>
                   </div>
 
-                  <span className="shrink-0 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9b8768))]">
+                  <span className="shrink-0 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9b8768))] admin_gifts_page_span_text">
                     {gift.is_active ? "Active" : "Inactive"}
                   </span>
                 </div>
 
-                <div className="mt-3 grid grid-cols-2 gap-1.5 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-3 md:grid-cols-3 xl:grid-cols-6">
+                <div className="mt-3 grid grid-cols-2 gap-1.5 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-3 md:grid-cols-3 xl:grid-cols-6 admin_gifts_page_div_container_7">
                   <AdminRecapBox
                     label="Use"
                     value={`${
@@ -363,7 +363,7 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
                 </div>
               </summary>
 
-              <div className="border-t border-[rgb(var(--sep-colour-59432c))]/35 p-4 sm:p-5">
+              <div className="border-t border-[rgb(var(--sep-colour-59432c))]/35 p-4 sm:p-5 admin_gifts_page_div_container_8">
                 <GiftForm
                   action={updateGift}
                   gift={gift}
@@ -371,8 +371,8 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
                   roles={roles}
                 />
 
-                <div className="mt-6 border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-5">
-                  <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+                <div className="mt-6 border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-5 admin_gifts_page_div_container_9">
+                  <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] admin_gifts_page_p_text_3">
                     Staff assignment
                   </p>
 
@@ -380,19 +380,19 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
                     action={assignGiftToCharacter}
                     className="mt-3 flex flex-wrap gap-2"
                   >
-                    <input type="hidden" name="giftId" value={gift.id} />
+                    <input className="admin_gifts_page_input_gift_id" type="hidden" name="giftId" value={gift.id} />
 
                     <select
                       name="characterId"
                       required
                       defaultValue=""
-                      className="min-w-[240px] flex-1 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none"
+                      className="min-w-[240px] flex-1 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none admin_gifts_page_select_character_id"
                     >
-                      <option value="" disabled>
+                      <option className="admin_gifts_page_option_character_id" value="" disabled>
                         Select character
                       </option>
                       {characters.map((character) => (
-                        <option key={character.id} value={character.id}>
+                        <option className="admin_gifts_page_option_option" key={character.id} value={character.id}>
                           {character.display_name}
                         </option>
                       ))}
@@ -402,10 +402,10 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
                       name="assignmentMode"
                       required
                       defaultValue="permanent"
-                      className="min-w-[150px] border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none"
+                      className="min-w-[150px] border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none admin_gifts_page_select_assignment_mode"
                     >
-                      <option value="permanent">Permanent</option>
-                      <option value="temporary">Temporary</option>
+                      <option className="admin_gifts_page_option_permanent" value="permanent">Permanent</option>
+                      <option className="admin_gifts_page_option_temporary" value="temporary">Temporary</option>
                     </select>
 
                     <input
@@ -415,30 +415,30 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
                       step={1}
                       placeholder="Days"
                       aria-label="Temporary assignment duration in days"
-                      className="w-[100px] border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none"
+                      className="w-[100px] border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none admin_gifts_page_input_assignment_days"
                     />
 
                     <button
                       type="submit"
-                      className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-2.5 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-efd6a8))]"
+                      className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-2.5 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-efd6a8))] admin_gifts_page_button_assign_feat"
                     >
                       Assign Feat
                     </button>
                   </AdminActionForm>
 
                   {gift.assignments?.length ? (
-                    <div className="mt-4 grid gap-2 md:grid-cols-2 xl:grid-cols-3">
+                    <div className="mt-4 grid gap-2 md:grid-cols-2 xl:grid-cols-3 admin_gifts_page_div_container_10">
                       {gift.assignments.map((assignment) => (
                         <div
                           key={assignment.id}
-                          className="flex items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2"
+                          className="flex items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2 admin_gifts_page_div_container_11"
                         >
-                          <div className="min-w-0">
-                            <p className="truncate font-serif text-sm text-[rgb(var(--sep-colour-cab28a))]">
+                          <div className="min-w-0 admin_gifts_page_div_container_12">
+                            <p className="truncate font-serif text-sm text-[rgb(var(--sep-colour-cab28a))] admin_gifts_page_p_text_4">
                               {characterById.get(assignment.character_id)?.display_name ??
                                 "Unknown character"}
                             </p>
-                            <p className="mt-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6e6252))]">
+                            <p className="mt-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6e6252))] admin_gifts_page_p_text_5">
                               {assignment.acquisition_source}
                               {assignment.acquisition_source === "staff"
                                 ? assignment.expires_at
@@ -449,14 +449,14 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
                           </div>
 
                           <AdminActionForm action={removeGiftFromCharacter}>
-                            <input
+                            <input className="admin_gifts_page_input_assignment_id"
                               type="hidden"
                               name="assignmentId"
                               value={assignment.id}
                             />
                             <button
                               type="submit"
-                              className="text-[7px] uppercase tracking-[0.12em] text-red-300"
+                              className="text-[7px] uppercase tracking-[0.12em] text-red-300 admin_gifts_page_button_remove"
                             >
                               Remove
                             </button>
@@ -467,16 +467,16 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
                   ) : null}
                 </div>
 
-                <div className="mt-6 border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-5">
+                <div className="mt-6 border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-5 admin_gifts_page_div_container_13">
                   <AdminActionForm
   action={deleteGift}
   confirmMessage={`Are you sure you want to permanently delete the Feat "${gift.name}"?`}
   className="flex justify-end"
 >
-                    <input type="hidden" name="giftId" value={gift.id} />
+                    <input className="admin_gifts_page_input_gift_id_2" type="hidden" name="giftId" value={gift.id} />
                     <button
                       type="submit"
-                      className="border border-red-900/55 bg-red-950/20 px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-red-300"
+                      className="border border-red-900/55 bg-red-950/20 px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-red-300 admin_gifts_page_button_delete_feat"
                     >
                       Delete Feat
                     </button>
@@ -499,11 +499,11 @@ function AdminRecapBox({
   value: string;
 }) {
   return (
-    <div className="min-w-0 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))] px-2.5 py-2">
-      <p className="text-[6px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-806a4c))]">
+    <div className="min-w-0 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))] px-2.5 py-2 admin_gifts_page_div_container_14">
+      <p className="text-[6px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-806a4c))] admin_gifts_page_p_text_6">
         {label}
       </p>
-      <p className="mt-1 min-w-0 break-words text-[8px] leading-4 text-[rgb(var(--sep-colour-b8a382))]">
+      <p className="mt-1 min-w-0 break-words text-[8px] leading-4 text-[rgb(var(--sep-colour-b8a382))] admin_gifts_page_p_text_7">
         {value}
       </p>
     </div>
@@ -534,17 +534,17 @@ function GiftForm({
 
   return (
     <AdminActionForm action={action} className="mt-5">
-      {gift ? <input type="hidden" name="giftId" value={gift.id} /> : null}
+      {gift ? <input className="admin_gifts_page_input_gift_id_3" type="hidden" name="giftId" value={gift.id} /> : null}
 
       <GiftEffectFormLogic />
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2 admin_gifts_page_div_container_15">
         <Field label="Name">
           <input
             name="name"
             required
             defaultValue={gift?.name ?? ""}
-            className={inputClass}
+            className={[((inputClass)), "admin_gifts_page_input_name"].filter(Boolean).join(" ")}
           />
         </Field>
 
@@ -553,17 +553,17 @@ function GiftForm({
             type="number"
             name="sortOrder"
             defaultValue={gift?.sort_order ?? 0}
-            className={inputClass}
+            className={[((inputClass)), "admin_gifts_page_input_sort_order"].filter(Boolean).join(" ")}
           />
         </Field>
 
-        <div className="md:col-span-2">
+        <div className="md:col-span-2 admin_gifts_page_div_container_16">
           <Field label="Description">
             <textarea
               name="description"
               rows={5}
               defaultValue={gift?.description ?? ""}
-              className={inputClass}
+              className={[((inputClass)), "admin_gifts_page_textarea_description"].filter(Boolean).join(" ")}
             />
           </Field>
         </div>
@@ -576,10 +576,10 @@ function GiftForm({
                 ? "passive"
                 : "temporary"
             }
-            className={inputClass}
+            className={[((inputClass)), "admin_gifts_page_select_effect_mode"].filter(Boolean).join(" ")}
           >
-            <option value="passive">Passive</option>
-            <option value="temporary">Activated</option>
+            <option className="admin_gifts_page_option_passive" value="passive">Passive</option>
+            <option className="admin_gifts_page_option_temporary_2" value="temporary">Activated</option>
           </select>
         </Field>
 
@@ -587,11 +587,11 @@ function GiftForm({
           <select
             name="targetMode"
             defaultValue={gift?.target_mode ?? "self"}
-            className={inputClass}
+            className={[((inputClass)), "admin_gifts_page_select_select"].filter(Boolean).join(" ")}
           >
-            <option value="self">Self</option>
-            <option value="other">Other character</option>
-            <option value="either">Self or other character</option>
+            <option className="admin_gifts_page_option_self" value="self">Self</option>
+            <option className="admin_gifts_page_option_other" value="other">Other character</option>
+            <option className="admin_gifts_page_option_either" value="either">Self or other character</option>
           </select>
         </Field>
 
@@ -608,10 +608,10 @@ function GiftForm({
                 ? "instantaneous"
                 : "minutes"
             }
-            className={inputClass}
+            className={[((inputClass)), "admin_gifts_page_select_duration_mode"].filter(Boolean).join(" ")}
           >
-            <option value="instantaneous">Instantaneous</option>
-            <option value="minutes">Timed</option>
+            <option className="admin_gifts_page_option_instantaneous" value="instantaneous">Instantaneous</option>
+            <option className="admin_gifts_page_option_minutes" value="minutes">Timed</option>
           </select>
         </Field>
 
@@ -627,7 +627,7 @@ function GiftForm({
                 ? gift.duration_minutes
                 : ""
             }
-            className={inputClass}
+            className={[((inputClass)), "admin_gifts_page_input_duration_minutes"].filter(Boolean).join(" ")}
           />
         </Field>
 
@@ -639,17 +639,17 @@ function GiftForm({
             name="cooldownMinutes"
             list="feat-cooldown-options"
             defaultValue={gift?.cooldown_minutes ?? 360}
-            className={inputClass}
+            className={[((inputClass)), "admin_gifts_page_input_cooldown_minutes"].filter(Boolean).join(" ")}
           />
           <datalist id="feat-cooldown-options">
-            <option value="0" label="No cooldown" />
-            <option value="30" label="30 minutes" />
-            <option value="60" label="1 hour" />
-            <option value="120" label="2 hours" />
-            <option value="240" label="4 hours" />
-            <option value="360" label="6 hours" />
-            <option value="720" label="12 hours" />
-            <option value="1440" label="24 hours" />
+            <option className="admin_gifts_page_option_0" value="0" label="No cooldown" />
+            <option className="admin_gifts_page_option_30" value="30" label="30 minutes" />
+            <option className="admin_gifts_page_option_60" value="60" label="1 hour" />
+            <option className="admin_gifts_page_option_120" value="120" label="2 hours" />
+            <option className="admin_gifts_page_option_240" value="240" label="4 hours" />
+            <option className="admin_gifts_page_option_360" value="360" label="6 hours" />
+            <option className="admin_gifts_page_option_720" value="720" label="12 hours" />
+            <option className="admin_gifts_page_option_1440" value="1440" label="24 hours" />
           </datalist>
         </Field>
 
@@ -658,7 +658,7 @@ function GiftForm({
             type="number"
             name="healthDelta"
             defaultValue={gift?.health_delta ?? 0}
-            className={inputClass}
+            className={[((inputClass)), "admin_gifts_page_input_health_delta"].filter(Boolean).join(" ")}
           />
         </Field>
 
@@ -666,16 +666,16 @@ function GiftForm({
           <select
             name="successDie"
             defaultValue={gift?.success_die ?? ""}
-            className={inputClass}
+            className={[((inputClass)), "admin_gifts_page_select_success_die"].filter(Boolean).join(" ")}
           >
-            <option value="">Automatic success</option>
-            <option value="4">d4</option>
-            <option value="6">d6</option>
-            <option value="8">d8</option>
-            <option value="10">d10</option>
-            <option value="12">d12</option>
-            <option value="20">d20</option>
-            <option value="100">d100</option>
+            <option className="admin_gifts_page_option_success_die" value="">Automatic success</option>
+            <option className="admin_gifts_page_option_4" value="4">d4</option>
+            <option className="admin_gifts_page_option_6" value="6">d6</option>
+            <option className="admin_gifts_page_option_8" value="8">d8</option>
+            <option className="admin_gifts_page_option_10" value="10">d10</option>
+            <option className="admin_gifts_page_option_12" value="12">d12</option>
+            <option className="admin_gifts_page_option_20" value="20">d20</option>
+            <option className="admin_gifts_page_option_100" value="100">d100</option>
           </select>
         </Field>
 
@@ -687,7 +687,7 @@ function GiftForm({
             name="successThreshold"
             placeholder="e.g. 12"
             defaultValue={gift?.success_threshold ?? ""}
-            className={inputClass}
+            className={[((inputClass)), "admin_gifts_page_input_success_threshold"].filter(Boolean).join(" ")}
           />
         </Field>
 
@@ -695,19 +695,19 @@ function GiftForm({
           <select
             name="successAttribute"
             defaultValue={gift?.success_attribute ?? ""}
-            className={inputClass}
+            className={[((inputClass)), "admin_gifts_page_select_success_attribute"].filter(Boolean).join(" ")}
           >
-            <option value="">None - pure die</option>
-            <option value="muscles">Muscles</option>
-            <option value="reflexes">Reflexes</option>
-            <option value="vigor">Vigour</option>
-            <option value="brains">Brains</option>
-            <option value="shrewd">Shrewd</option>
-            <option value="presence_score">Presence</option>
+            <option className="admin_gifts_page_option_success_attribute" value="">None - pure die</option>
+            <option className="admin_gifts_page_option_muscles" value="muscles">Muscles</option>
+            <option className="admin_gifts_page_option_reflexes" value="reflexes">Reflexes</option>
+            <option className="admin_gifts_page_option_vigor" value="vigor">Vigour</option>
+            <option className="admin_gifts_page_option_brains" value="brains">Brains</option>
+            <option className="admin_gifts_page_option_shrewd" value="shrewd">Shrewd</option>
+            <option className="admin_gifts_page_option_presence_score" value="presence_score">Presence</option>
           </select>
         </Field>
 
-        <div className="flex items-end border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 text-[9px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+        <div className="flex items-end border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 text-[9px] leading-5 text-[rgb(var(--sep-colour-8f8271))] admin_gifts_page_div_container_17">
           No Success Die means automatic success. If a Defining Attribute is
           selected, its current effective value is added to the roll.
         </div>
@@ -717,7 +717,7 @@ function GiftForm({
             name="damageDice"
             placeholder="e.g. 1d4"
             defaultValue={gift?.damage_dice ?? ""}
-            className={inputClass}
+            className={[((inputClass)), "admin_gifts_page_input_damage_dice"].filter(Boolean).join(" ")}
           />
         </Field>
 
@@ -726,7 +726,7 @@ function GiftForm({
             name="damageType"
             placeholder="e.g. Lightning"
             defaultValue={gift?.damage_type ?? ""}
-            className={inputClass}
+            className={[((inputClass)), "admin_gifts_page_input_damage_type"].filter(Boolean).join(" ")}
           />
         </Field>
 
@@ -735,12 +735,12 @@ function GiftForm({
             type="number"
             name="maxHealthModifier"
             defaultValue={gift?.max_health_modifier ?? 0}
-            className={inputClass}
+            className={[((inputClass)), "admin_gifts_page_input_field"].filter(Boolean).join(" ")}
           />
         </Field>
 
-        <div className="md:col-span-2 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 text-[9px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
-          <strong className="text-[rgb(var(--sep-colour-c7ad83))]">Effect rules:</strong>{" "}
+        <div className="md:col-span-2 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 text-[9px] leading-5 text-[rgb(var(--sep-colour-8f8271))] admin_gifts_page_div_container_18">
+          <strong className="text-[rgb(var(--sep-colour-c7ad83))] admin_gifts_page_strong_emphasis">Effect rules:</strong>{" "}
           Passive Feats are always Self-only and always active while owned. They may
           provide persistent Attribute, Maximum Health or Warping modifiers. Activated
           Feats may be Instantaneous or Timed. Instantaneous Feats may mechanically
@@ -749,7 +749,7 @@ function GiftForm({
           their duration. Cooldown and Success Roll settings apply only to Activated Feats.
         </div>
 
-        <div className="md:col-span-2 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
+        <div className="md:col-span-2 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6 admin_gifts_page_div_container_19">
           {[
             ["Muscles", "musclesModifier", gift?.muscles_modifier ?? 0],
             ["Reflexes", "reflexesModifier", gift?.reflexes_modifier ?? 0],
@@ -767,7 +767,7 @@ function GiftForm({
                 max={10}
                 name={String(name)}
                 defaultValue={Number(value)}
-                className={inputClass}
+                className={[((inputClass)), "admin_gifts_page_input_field_2"].filter(Boolean).join(" ")}
               />
             </Field>
           ))}
@@ -794,8 +794,8 @@ function GiftForm({
         />
       </div>
 
-      <div className="mt-5 flex flex-wrap items-center justify-between gap-4">
-        <div className="flex flex-wrap gap-5">
+      <div className="mt-5 flex flex-wrap items-center justify-between gap-4 admin_gifts_page_div_container_20">
+        <div className="flex flex-wrap gap-5 admin_gifts_page_div_container_21">
           <Check
             name="isActive"
             label="Active"
@@ -810,7 +810,7 @@ function GiftForm({
 
         <button
           type="submit"
-          className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd6a8))]"
+          className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd6a8))] admin_gifts_page_button_action"
         >
           {gift ? "Save Feat" : "Create Feat"}
         </button>
@@ -827,8 +827,8 @@ function Field({
   children: React.ReactNode;
 }) {
   return (
-    <label>
-      <span className="mb-2 block text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-756958))]">
+    <label className="admin_gifts_page_label_label">
+      <span className="mb-2 block text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-756958))] admin_gifts_page_span_text_2">
         {label}
       </span>
       {children}
@@ -846,12 +846,12 @@ function Check({
   checked: boolean;
 }) {
   return (
-    <label className="flex items-center gap-2 text-[10px] text-[rgb(var(--sep-colour-b6a58d))]">
+    <label className="flex items-center gap-2 text-[10px] text-[rgb(var(--sep-colour-b6a58d))] admin_gifts_page_label_label_2">
       <input
         type="checkbox"
         name={name}
         defaultChecked={checked}
-        className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))]"
+        className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))] admin_gifts_page_input_field_3"
       />
       {label}
     </label>
@@ -868,20 +868,20 @@ function Eligibility({
   items: { id: string; label: string; checked: boolean }[];
 }) {
   return (
-    <div className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-0d0a08))] p-4">
-      <p className="font-serif text-base text-[rgb(var(--sep-colour-d3ba8c))]">{title}</p>
-      <div className="mt-3 max-h-56 space-y-1.5 overflow-y-auto pr-1">
+    <div className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-0d0a08))] p-4 admin_gifts_page_div_container_22">
+      <p className="font-serif text-base text-[rgb(var(--sep-colour-d3ba8c))] admin_gifts_page_p_text_8">{title}</p>
+      <div className="mt-3 max-h-56 space-y-1.5 overflow-y-auto pr-1 admin_gifts_page_div_container_23">
         {items.map((item) => (
           <label
             key={item.id}
-            className="flex items-center gap-2 text-[10px] text-[rgb(var(--sep-colour-b6a58d))]"
+            className="flex items-center gap-2 text-[10px] text-[rgb(var(--sep-colour-b6a58d))] admin_gifts_page_label_label_3"
           >
             <input
               type="checkbox"
               name={name}
               value={item.id}
               defaultChecked={item.checked}
-              className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))]"
+              className="h-4 w-4 accent-[rgb(var(--sep-colour-8b673d))] admin_gifts_page_input_field_4"
             />
             {item.label}
           </label>

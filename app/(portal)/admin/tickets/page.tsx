@@ -7,7 +7,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 
 function Badge({ count }: { count: number }) {
   return count > 0 ? (
-    <span data-sep-counter-badge="true" className="absolute -right-2 -top-2 inline-flex h-5 min-w-5 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] px-1 text-[8px] font-bold leading-none text-[#ffe1ac]">
+    <span data-sep-counter-badge="true" className="absolute -right-2 -top-2 inline-flex h-5 min-w-5 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] px-1 text-[8px] font-bold leading-none text-[#ffe1ac] admin_tickets_page_span_text">
       {count > 99 ? "99+" : count}
     </span>
   ) : null;
@@ -108,57 +108,57 @@ export default async function AdminTicketsPage({
   );
 
   return (
-    <main className="p-5 sm:p-7 lg:p-9">
+    <main className="p-5 sm:p-7 lg:p-9 admin_tickets_page_main_main">
       <TicketLiveSync admin />
-      <div className="mx-auto max-w-[1400px]">
-        <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
+      <div className="mx-auto max-w-[1400px] admin_tickets_page_div_tickets">
+        <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))] admin_tickets_page_p_tickets">
           Administration · Support
         </p>
-        <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">
+        <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))] admin_tickets_page_h1_tickets">
           Tickets
         </h1>
 
         <form
           method="get"
           data-sep-interaction-fixed="true"
-          className="mt-6 grid gap-2 border border-[rgb(var(--sep-colour-60482e))]/45 p-4 md:grid-cols-4"
+          className="mt-6 grid gap-2 border border-[rgb(var(--sep-colour-60482e))]/45 p-4 md:grid-cols-4 admin_tickets_page_form_tickets"
         >
           <input
             name="q"
             defaultValue={p.q ?? ""}
             placeholder="Search subject..."
-            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-sm text-[rgb(var(--sep-colour-d5c2a4))] outline-none transition placeholder:text-[rgb(var(--sep-colour-5f5447))] focus:border-[rgb(var(--sep-colour-a47a44))]"
+            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-sm text-[rgb(var(--sep-colour-d5c2a4))] outline-none transition placeholder:text-[rgb(var(--sep-colour-5f5447))] focus:border-[rgb(var(--sep-colour-a47a44))] admin_tickets_page_input_q"
           />
           <select
             name="status"
             defaultValue={p.status ?? ""}
-            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-sm text-[rgb(var(--sep-colour-d5c2a4))] outline-none"
+            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-sm text-[rgb(var(--sep-colour-d5c2a4))] outline-none admin_tickets_page_select_status"
           >
-            <option value="">All statuses</option>
-            <option value="open">Open</option>
-            <option value="in_progress">In Progress</option>
-            <option value="waiting_on_player">Waiting on Player</option>
-            <option value="waiting_on_staff">Waiting on Staff</option>
-            <option value="resolved">Resolved</option>
-            <option value="closed">Closed</option>
+            <option className="admin_tickets_page_option_status" value="">All statuses</option>
+            <option className="admin_tickets_page_option_open" value="open">Open</option>
+            <option className="admin_tickets_page_option_progress" value="in_progress">In Progress</option>
+            <option className="admin_tickets_page_option_waiting_player" value="waiting_on_player">Waiting on Player</option>
+            <option className="admin_tickets_page_option_waiting_staff" value="waiting_on_staff">Waiting on Staff</option>
+            <option className="admin_tickets_page_option_resolved" value="resolved">Resolved</option>
+            <option className="admin_tickets_page_option_closed" value="closed">Closed</option>
           </select>
           <select
             name="priority"
             defaultValue={p.priority ?? ""}
-            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-sm text-[rgb(var(--sep-colour-d5c2a4))] outline-none"
+            className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-sm text-[rgb(var(--sep-colour-d5c2a4))] outline-none admin_tickets_page_select_priority"
           >
-            <option value="">All priorities</option>
-            <option value="low">Low</option>
-            <option value="normal">Normal</option>
-            <option value="high">High</option>
-            <option value="urgent">Urgent</option>
+            <option className="admin_tickets_page_option_priority" value="">All priorities</option>
+            <option className="admin_tickets_page_option_low" value="low">Low</option>
+            <option className="admin_tickets_page_option_normal" value="normal">Normal</option>
+            <option className="admin_tickets_page_option_high" value="high">High</option>
+            <option className="admin_tickets_page_option_urgent" value="urgent">Urgent</option>
           </select>
-          <button className="border border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-261b12))] text-[8px] uppercase">
+          <button className="border border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-261b12))] text-[8px] uppercase admin_tickets_page_button_apply_filters">
             Apply Filters
           </button>
         </form>
 
-        <div className="mt-5 space-y-2">
+        <div className="mt-5 space-y-2 admin_tickets_page_div_tickets_2">
           {ticketRows.map((ticket) => {
             const n = unread.get(ticket.id) ?? 0;
             const opener =
@@ -183,27 +183,27 @@ export default async function AdminTicketsPage({
                 }`}
               >
                 <Badge count={n} />
-                <div className="text-[9px] uppercase text-[rgb(var(--sep-colour-a58b68))]">
+                <div className="text-[9px] uppercase text-[rgb(var(--sep-colour-a58b68))] admin_tickets_page_div_container">
                   {ticket.public_reference}
                 </div>
-                <div>
-                  <div className="text-sm text-[rgb(var(--sep-colour-d9c4a2))]">
+                <div className="admin_tickets_page_div_container_2">
+                  <div className="text-sm text-[rgb(var(--sep-colour-d9c4a2))] admin_tickets_page_div_container_3">
                     {ticket.subject}
                   </div>
-                  <div className="mt-1 text-[8px] uppercase text-[rgb(var(--sep-colour-756957))]">
+                  <div className="mt-1 text-[8px] uppercase text-[rgb(var(--sep-colour-756957))] admin_tickets_page_div_container_4">
                     Opened by{" "}
-                    <span className="text-[rgb(var(--sep-colour-c2aa83))]">
+                    <span className="text-[rgb(var(--sep-colour-c2aa83))] admin_tickets_page_span_text_2">
                       {openerLabel}
                     </span>
                     {" · "}
                     {ticket.category}
                   </div>
                 </div>
-                <div className="text-[8px] uppercase">
+                <div className="text-[8px] uppercase admin_tickets_page_div_container_5">
                   {ticket.status.replaceAll("_", " ")}
                 </div>
-                <div className="text-[8px] uppercase">{ticket.priority}</div>
-                <div className="text-[8px]">
+                <div className="text-[8px] uppercase admin_tickets_page_div_container_6">{ticket.priority}</div>
+                <div className="text-[8px] admin_tickets_page_div_container_7">
                   {ticket.assigned_staff_user_id === staff.userId
                     ? "Assigned to you"
                     : ticket.assigned_staff_user_id

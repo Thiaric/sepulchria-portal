@@ -15,7 +15,7 @@ export function SanctionNotificationBadge({
   if (!count) return null;
 
   return (
-    <span data-sep-counter-badge="true" className="ml-auto inline-flex h-4 min-w-4 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] px-1 text-[7px] font-bold text-[#ffe1ac]">
+    <span data-sep-counter-badge="true" className="ml-auto inline-flex h-4 min-w-4 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] px-1 text-[7px] font-bold text-[#ffe1ac] components_sanctions_sanction_notification_badge_span_text">
       {count > 99 ? "99+" : count}
     </span>
   );

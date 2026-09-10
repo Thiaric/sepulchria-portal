@@ -14,7 +14,7 @@ export function DeleteConversationForm({
   isGroup = false,
 }: DeleteConversationFormProps) {
   return (
-    <form
+    <form className="messages_id_components_deleteconversationform_form_delete_conversation"
       action={
         deleteConversationForMe
       }
@@ -31,7 +31,7 @@ export function DeleteConversationForm({
         }
       }}
     >
-      <input
+      <input className="messages_id_components_deleteconversationform_input_conversation_id"
         type="hidden"
         name="conversationId"
         value={conversationId}
@@ -39,7 +39,7 @@ export function DeleteConversationForm({
 
       <button
   type="submit"
-  className="border border-red-800/80 bg-red-950/45 px-3 py-2 text-[9px] leading-[1.15] uppercase tracking-[0.18em] text-red-300 transition hover:border-red-600 hover:bg-red-950/70 hover:text-red-200"
+  className="border border-red-800/80 bg-red-950/45 px-3 py-2 text-[9px] leading-[1.15] uppercase tracking-[0.18em] text-red-300 transition hover:border-red-600 hover:bg-red-950/70 hover:text-red-200 messages_id_components_deleteconversationform_button_action"
 >
   {isGroup
     ? "Leave conversation"

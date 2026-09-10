@@ -54,7 +54,7 @@ export function StoreMusicPreview({
   };
 
   return (
-    <div className="w-full border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-15100d))] p-3">
+    <div className="w-full border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-15100d))] p-3 components_store_store_music_preview_div_container">
       <audio
         ref={audioRef}
         src={src}
@@ -71,12 +71,12 @@ export function StoreMusicPreview({
         onEnded={() => stop()}
       />
 
-      <div className="flex items-center justify-between gap-3">
-        <div className="min-w-0">
-          <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-756958))]">
+      <div className="flex items-center justify-between gap-3 components_store_store_music_preview_div_container_2">
+        <div className="min-w-0 components_store_store_music_preview_div_container_3">
+          <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-756958))] components_store_store_music_preview_p_text">
             10 second preview
           </p>
-          <p className="mt-1 truncate text-[9px] text-[rgb(var(--sep-colour-a99b89))]">
+          <p className="mt-1 truncate text-[9px] text-[rgb(var(--sep-colour-a99b89))] components_store_store_music_preview_p_text_2">
             {title}
           </p>
         </div>
@@ -84,15 +84,15 @@ export function StoreMusicPreview({
         <button
           type="button"
           onClick={() => void toggle()}
-          className="shrink-0 border border-[rgb(var(--sep-colour-80613b))]/60 bg-[rgb(var(--sep-colour-21170f))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-dfc79c))] transition hover:border-[rgb(var(--sep-colour-a17a49))]"
+          className="shrink-0 border border-[rgb(var(--sep-colour-80613b))]/60 bg-[rgb(var(--sep-colour-21170f))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-dfc79c))] transition hover:border-[rgb(var(--sep-colour-a17a49))] components_store_store_music_preview_button_action"
         >
           {playing ? "Stop" : "▶ Preview"}
         </button>
       </div>
 
-      <div className="mt-2 h-px overflow-hidden bg-[rgb(var(--sep-colour-4f3d29))]">
+      <div className="mt-2 h-px overflow-hidden bg-[rgb(var(--sep-colour-4f3d29))] components_store_store_music_preview_div_container_4">
         <div
-          className="h-full bg-[rgb(var(--sep-colour-a17a49))] transition-[width] duration-100"
+          className="h-full bg-[rgb(var(--sep-colour-a17a49))] transition-[width] duration-100 components_store_store_music_preview_div_container_5"
           style={{
             width: `${Math.min(100, (elapsed / PREVIEW_SECONDS) * 100)}%`,
           }}

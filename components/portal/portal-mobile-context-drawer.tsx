@@ -45,32 +45,32 @@ export function PortalMobileContextDrawer({
         onClick={() => setOpen(true)}
         aria-label="Open context panel"
         aria-expanded={open}
-        className="fixed bottom-5 right-5 z-40 flex h-12 w-12 items-center justify-center border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-1d160f))] font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] shadow-[0_12px_35px_rgba(var(--sep-rgb-0-0-0),0.45)] transition hover:border-[rgb(var(--sep-colour-a37b45))] hover:text-[rgb(var(--sep-colour-f0d39d))] xl:hidden"
+        className="fixed bottom-5 right-5 z-40 flex h-12 w-12 items-center justify-center border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-1d160f))] font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] shadow-[0_12px_35px_rgba(var(--sep-rgb-0-0-0),0.45)] transition hover:border-[rgb(var(--sep-colour-a37b45))] hover:text-[rgb(var(--sep-colour-f0d39d))] xl:hidden components_portal_portal_mobile_context_drawer_button_open_context_panel"
       >
         ◈
       </button>
 
       {open ? (
-        <div className="fixed inset-0 z-[70] xl:hidden">
+        <div className="fixed inset-0 z-[70] xl:hidden components_portal_portal_mobile_context_drawer_div_container">
           <button
             type="button"
             aria-label="Close context panel"
             onClick={() => setOpen(false)}
-            className="absolute inset-0 bg-black/70 backdrop-blur-[2px]"
+            className="absolute inset-0 bg-black/70 backdrop-blur-[2px] components_portal_portal_mobile_context_drawer_button_close_context_panel"
           />
 
           <aside
             role="dialog"
             aria-modal="true"
             aria-label="Context panel"
-            className="absolute inset-y-0 right-0 flex w-[min(88vw,360px)] flex-col border-l border-[rgb(var(--sep-colour-6e5535))]/50 bg-[rgb(var(--sep-colour-100d0b))] shadow-[-18px_0_50px_rgba(var(--sep-rgb-0-0-0),0.55)]"
+            className="absolute inset-y-0 right-0 flex w-[min(88vw,360px)] flex-col border-l border-[rgb(var(--sep-colour-6e5535))]/50 bg-[rgb(var(--sep-colour-100d0b))] shadow-[-18px_0_50px_rgba(var(--sep-rgb-0-0-0),0.55)] components_portal_portal_mobile_context_drawer_aside_context_panel"
           >
-            <div className="flex h-16 shrink-0 items-center justify-between border-b border-[rgb(var(--sep-colour-6e5535))]/40 px-4">
-              <div>
-                <p className="text-[8px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-876a46))]">
+            <div className="flex h-16 shrink-0 items-center justify-between border-b border-[rgb(var(--sep-colour-6e5535))]/40 px-4 components_portal_portal_mobile_context_drawer_div_context_panel">
+              <div className="components_portal_portal_mobile_context_drawer_div_context_panel_2">
+                <p className="text-[8px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-876a46))] components_portal_portal_mobile_context_drawer_p_context_panel">
                   Context
                 </p>
-                <p className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-d6bd91))]">
+                <p className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-d6bd91))] components_portal_portal_mobile_context_drawer_p_context_panel_2">
                   Sepulchria
                 </p>
               </div>
@@ -79,27 +79,27 @@ export function PortalMobileContextDrawer({
                 type="button"
                 onClick={() => setOpen(false)}
                 aria-label="Close context panel"
-                className="flex h-9 w-9 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-17120f))] text-[rgb(var(--sep-colour-bca47e))] transition hover:border-[rgb(var(--sep-colour-977242))] hover:text-[rgb(var(--sep-colour-efd6a3))]"
+                className="flex h-9 w-9 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-17120f))] text-[rgb(var(--sep-colour-bca47e))] transition hover:border-[rgb(var(--sep-colour-977242))] hover:text-[rgb(var(--sep-colour-efd6a3))] components_portal_portal_mobile_context_drawer_button_close_context_panel_2"
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
 
-            <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-hidden p-4">
-              <section className="shrink-0 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4">
-                <p className="text-[8px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-876a46))]">
+            <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-hidden p-4 components_portal_portal_mobile_context_drawer_div_context_panel_3">
+              <section className="shrink-0 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 components_portal_portal_mobile_context_drawer_section_context_panel">
+                <p className="text-[8px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-876a46))] components_portal_portal_mobile_context_drawer_p_context_panel_3">
                   Current location
                 </p>
-                <h2 className="mt-2 truncate font-serif text-xl text-[rgb(var(--sep-colour-d6bd91))]">
+                <h2 className="mt-2 truncate font-serif text-xl text-[rgb(var(--sep-colour-d6bd91))] components_portal_portal_mobile_context_drawer_h2_context_panel">
                   {character?.currentRoom?.name ?? "No location"}
                 </h2>
-                <p className="mt-1 truncate text-[11px] text-[rgb(var(--sep-colour-8f8271))]">
+                <p className="mt-1 truncate text-[11px] text-[rgb(var(--sep-colour-8f8271))] components_portal_portal_mobile_context_drawer_p_context_panel_4">
                   {character?.currentRoom?.area?.name ??
                     "Your character has not entered the city yet."}
                 </p>
               </section>
 
-              <section className="min-h-0 flex-1 overflow-y-auto overscroll-contain border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4">
+              <section className="min-h-0 flex-1 overflow-y-auto overscroll-contain border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 components_portal_portal_mobile_context_drawer_section_context_panel_2">
                 <PortalContextPanel context={context} />
               </section>
             </div>

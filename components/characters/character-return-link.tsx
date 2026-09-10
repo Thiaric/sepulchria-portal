@@ -41,7 +41,7 @@ export function CharacterReturnLink({
         );
       }}
     >
-      <span aria-hidden="true">←</span>
+      <span className="components_characters_character_return_link_span_text" aria-hidden="true">←</span>
       {label}
     </Link>
   );

@@ -405,22 +405,22 @@ export function LiveDashboardChronicle({
   }, [refreshChronicle]);
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
+    <div className="flex h-full min-h-0 flex-col components_portal_live_dashboard_chronicle_div_container">
       
         
-          <p className="px-1 text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))]">
+          <p className="px-1 text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))] components_portal_live_dashboard_chronicle_p_text">
             People in Sepulchria
           </p>
       
 
       {error ? (
-        <p className="mt-3 shrink-0 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-3 text-[10px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]">
+        <p className="mt-3 shrink-0 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-3 text-[10px] leading-5 text-[rgb(var(--sep-colour-d8a49a))] components_portal_live_dashboard_chronicle_p_text_2">
           Live city activity could not be loaded:{" "}
           {error}
         </p>
       ) : null}
 
-      <div className="mt-3 min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain pr-0.5">
+      <div className="mt-3 min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain pr-0.5 components_portal_live_dashboard_chronicle_div_container_2">
         {loading ? (
           <ChronicleLoading />
         ) : (
@@ -443,7 +443,7 @@ export function LiveDashboardChronicle({
         {!loading &&
         !error &&
         rooms.length === 0 ? (
-          <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-4 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+          <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-4 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_live_dashboard_chronicle_p_text_3">
             No locations are populated at the moment.
           </p>
         ) : null}
@@ -464,34 +464,34 @@ function ActiveRoomCard({
     currentRoomId === room.id;
 
   return (
-    <article className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5">
-      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
-        <div className="min-w-0">
-          <h3 className="truncate font-serif text-sm text-[rgb(var(--sep-colour-d6bd91))]">
+    <article className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 components_portal_live_dashboard_chronicle_article_article">
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 components_portal_live_dashboard_chronicle_div_container_3">
+        <div className="min-w-0 components_portal_live_dashboard_chronicle_div_container_4">
+          <h3 className="truncate font-serif text-sm text-[rgb(var(--sep-colour-d6bd91))] components_portal_live_dashboard_chronicle_h3_heading">
             {room.name}
           </h3>
 
           {room.areaName ? (
-            <p className="mt-0.5 truncate text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-74654f))]">
+            <p className="mt-0.5 truncate text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-74654f))] components_portal_live_dashboard_chronicle_p_text_4">
               {room.areaName}
             </p>
           ) : null}
         </div>
 
-        <div className="flex shrink-0 flex-col items-center gap-1.5">
+        <div className="flex shrink-0 flex-col items-center gap-1.5 components_portal_live_dashboard_chronicle_div_container_5">
           <span
             title={`${room.characters.length} active character${
               room.characters.length === 1
                 ? ""
                 : "s"
             }`}
-            className="flex h-6 min-w-6 items-center justify-center rounded-full border border-[rgb(var(--sep-colour-59432c))]/60 bg-[rgb(var(--sep-colour-19120d))] px-1.5 text-[9px] text-[rgb(var(--sep-colour-c3a67d))]"
+            className="flex h-6 min-w-6 items-center justify-center rounded-full border border-[rgb(var(--sep-colour-59432c))]/60 bg-[rgb(var(--sep-colour-19120d))] px-1.5 text-[9px] text-[rgb(var(--sep-colour-c3a67d))] components_portal_live_dashboard_chronicle_span_text"
           >
             {room.characters.length}
           </span>
 
-          <form action={enterRoomFromMap}>
-            <input
+          <form className="components_portal_live_dashboard_chronicle_form_form" action={enterRoomFromMap}>
+            <input className="components_portal_live_dashboard_chronicle_input_room_id"
               type="hidden"
               name="roomId"
               value={room.id}
@@ -509,9 +509,9 @@ function ActiveRoomCard({
                   ? "Current room"
                   : `Join ${room.name}`
               }
-              className="flex h-6 w-6 items-center justify-center border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-271c12))] text-[11px] text-[rgb(var(--sep-colour-dfc79c))] transition hover:border-[rgb(var(--sep-colour-997042))] hover:bg-[rgb(var(--sep-colour-3b2919))] disabled:cursor-default disabled:border-[rgb(var(--sep-colour-4d4336))] disabled:bg-[rgb(var(--sep-colour-17130f))] disabled:text-[rgb(var(--sep-colour-706658))]"
+              className="flex h-6 w-6 items-center justify-center border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-271c12))] text-[11px] text-[rgb(var(--sep-colour-dfc79c))] transition hover:border-[rgb(var(--sep-colour-997042))] hover:bg-[rgb(var(--sep-colour-3b2919))] disabled:cursor-default disabled:border-[rgb(var(--sep-colour-4d4336))] disabled:bg-[rgb(var(--sep-colour-17130f))] disabled:text-[rgb(var(--sep-colour-706658))] components_portal_live_dashboard_chronicle_button_action"
             >
-              <span aria-hidden="true">
+              <span className="components_portal_live_dashboard_chronicle_span_text_2" aria-hidden="true">
                 {alreadyHere ? "⊙" : "➔"}
               </span>
             </button>
@@ -533,17 +533,17 @@ function ContextSummaryRow({
 }) {
   return (
     <div
-      className={`flex justify-between gap-4 py-2.5 text-xs ${
+      className={[((`flex justify-between gap-4 py-2.5 text-xs ${
         last
           ? ""
           : "border-b border-[rgb(var(--sep-colour-59432c))]/25"
-      }`}
+      }`)), "components_portal_live_dashboard_chronicle_div_container_6"].filter(Boolean).join(" ")}
     >
-      <span className="text-[rgb(var(--sep-colour-786b5b))]">
+      <span className="text-[rgb(var(--sep-colour-786b5b))] components_portal_live_dashboard_chronicle_span_text_3">
         {label}
       </span>
 
-      <span className="max-w-[150px] break-words text-right capitalize text-[rgb(var(--sep-colour-bba98d))]">
+      <span className="max-w-[150px] break-words text-right capitalize text-[rgb(var(--sep-colour-bba98d))] components_portal_live_dashboard_chronicle_span_text_4">
         {value}
       </span>
     </div>
@@ -553,9 +553,9 @@ function ContextSummaryRow({
 function ChronicleLoading() {
   return (
     <>
-      <div className="h-16 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
-      <div className="h-16 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
-      <div className="h-16 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
+      <div className="h-16 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))] components_portal_live_dashboard_chronicle_div_container_7" />
+      <div className="h-16 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))] components_portal_live_dashboard_chronicle_div_container_8" />
+      <div className="h-16 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))] components_portal_live_dashboard_chronicle_div_container_9" />
     </>
   );
 }

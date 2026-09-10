@@ -111,15 +111,15 @@ export default async function CosmeticsPage() {
   }
 
   return (
-    <main className="p-5 sm:p-7 lg:p-9">
-      <div className="mx-auto max-w-7xl">
-        <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
+    <main className="p-5 sm:p-7 lg:p-9 cosmetics_page_main_main">
+      <div className="mx-auto max-w-7xl cosmetics_page_div_cosmetics">
+        <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))] cosmetics_page_p_cosmetics">
           Premium
         </p>
-        <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">
+        <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))] cosmetics_page_h1_cosmetics">
           Cosmetics
         </h1>
-        <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))]">
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))] cosmetics_page_p_cosmetics_2">
           Equip character-facing and portal-facing visual treatments. You can own many items, but only one item can be equipped in each slot.
         </p>
 

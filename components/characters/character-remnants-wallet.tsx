@@ -15,11 +15,11 @@ export async function CharacterRemnantsWallet({ characterId }: { characterId: st
   const balance = Number(data?.balance ?? 0);
 
   return (
-    <section>
+    <section className="components_characters_character_remnants_wallet_section_section">
       
-          <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">Currency (Remnants)</p>
+          <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_characters_character_remnants_wallet_p_text">Currency (Remnants)</p>
           <dd className="mt-1 flex items-baseline gap-1">
-          <span className="font-serif text-2xl text-[rgb(var(--sep-colour-e0c79d))]">{formatRemnants(balance)}</span>
+          <span className="font-serif text-2xl text-[rgb(var(--sep-colour-e0c79d))] components_characters_character_remnants_wallet_span_text">{formatRemnants(balance)}</span>
         </dd>
     </section>
   );

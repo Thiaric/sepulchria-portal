@@ -50,7 +50,7 @@ export default async function NewPrivateMessagePage() {
 
   const communication = await getSanctionEnforcement(supabase,"communication");
   if (communication.blocked) {
-    return <main className="mx-auto max-w-3xl p-5 sm:p-7"><Link href="/messages" className="border border-[rgb(var(--sep-colour-a07742))] bg-[rgb(var(--sep-colour-402a17))] px-5 py-2.5 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-f1d5a2))]">← Messages</Link><div className="mt-5 border-l-2 border-[rgb(var(--sep-colour-9a5147))]/75 bg-[rgb(var(--sep-colour-291613))]/80 px-5 py-4 text-sm leading-7 text-[rgb(var(--sep-colour-d9a092))]">{communication.message ?? "Private communication is currently restricted on this account."}</div></main>;
+    return <main className="mx-auto max-w-3xl p-5 sm:p-7 messages_new_page_main_main"><Link href="/messages" className="border border-[rgb(var(--sep-colour-a07742))] bg-[rgb(var(--sep-colour-402a17))] px-5 py-2.5 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-f1d5a2))]">← Messages</Link><div className="mt-5 border-l-2 border-[rgb(var(--sep-colour-9a5147))]/75 bg-[rgb(var(--sep-colour-291613))]/80 px-5 py-4 text-sm leading-7 text-[rgb(var(--sep-colour-d9a092))] messages_new_page_div_container">{communication.message ?? "Private communication is currently restricted on this account."}</div></main>;
   }
 
   const {
@@ -224,7 +224,7 @@ export default async function NewPrivateMessagePage() {
   }
 
   return (
-    <main className="mx-auto max-w-3xl p-5 sm:p-7">
+    <main className="mx-auto max-w-3xl p-5 sm:p-7 messages_new_page_main_main_2">
       <Link
         href="/messages"
         className="border border-[rgb(var(--sep-colour-a07742))] bg-[rgb(var(--sep-colour-402a17))] px-5 py-2.5 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-f1d5a2))]"
@@ -232,12 +232,12 @@ export default async function NewPrivateMessagePage() {
         ← Messages
       </Link>
 
-      <section className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6">
-        <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-8c704b))]">
+      <section className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6 messages_new_page_section_new_message">
+        <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-8c704b))] messages_new_page_p_new_message">
           Private correspondence
         </p>
 
-        <h1 className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-e2c99d))]">
+        <h1 className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-e2c99d))] messages_new_page_h1_new_message">
           New message
         </h1>
 
@@ -245,7 +245,7 @@ export default async function NewPrivateMessagePage() {
           action={
             startMultiConversation
           }
-          className="mt-5 space-y-5"
+          className="mt-5 space-y-5 messages_new_page_form_start_multi_conversation"
         >
           <PmRecipientPicker
             characters={
@@ -257,8 +257,8 @@ export default async function NewPrivateMessagePage() {
             }
           />
 
-          <label className="block">
-            <span className="mb-2 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+          <label className="block messages_new_page_label_new_message">
+            <span className="mb-2 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] messages_new_page_span_new_message">
               Group name (optional)
             </span>
 
@@ -266,13 +266,13 @@ export default async function NewPrivateMessagePage() {
               name="groupTitle"
               maxLength={80}
               placeholder="Used only when several recipients are selected"
-              className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none"
+              className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none messages_new_page_input_group_title"
             />
           </label>
 
           <button
             type="submit"
-            className="border border-[rgb(var(--sep-colour-a07742))] bg-[rgb(var(--sep-colour-402a17))] px-5 py-2.5 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-f1d5a2))]"
+            className="border border-[rgb(var(--sep-colour-a07742))] bg-[rgb(var(--sep-colour-402a17))] px-5 py-2.5 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-f1d5a2))] messages_new_page_button_start_conversation"
           >
             Start conversation
           </button>

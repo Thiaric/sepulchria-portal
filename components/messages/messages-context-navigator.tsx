@@ -541,13 +541,13 @@ export function MessagesContextNavigator({
       : null;
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <header className="shrink-0">
-        <p className="text-[9px] uppercase tracking-[0.3em] text-[rgb(var(--sep-skin-c2,211_194_170))]">
+    <div className="flex h-full min-h-0 flex-col components_messages_messages_context_navigator_div_container">
+      <header className="shrink-0 components_messages_messages_context_navigator_header_header">
+        <p className="text-[9px] uppercase tracking-[0.3em] text-[rgb(var(--sep-skin-c2,211_194_170))] components_messages_messages_context_navigator_p_text">
           Correspondence
         </p>
 
-        <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-d6bd91))]">
+        <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-d6bd91))] components_messages_messages_context_navigator_h2_heading">
           {currentConversation
             ? getCharacterName(
                 currentConversation.other,
@@ -556,16 +556,16 @@ export function MessagesContextNavigator({
         </h2>
 
         {currentConversation ? (
-          <div className="mt-3 flex items-center gap-2 text-[9px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-756956))]">
+          <div className="mt-3 flex items-center gap-2 text-[9px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-756956))] components_messages_messages_context_navigator_div_container_2">
             <span
-              className={`inline-flex border px-2 py-1 ${
+              className={[((`inline-flex border px-2 py-1 ${
                 currentConversation
                   .lastMessage
                   ?.message_mode ===
                 "ongame"
                   ? "border-[rgb(var(--sep-colour-8d6a40))]/60 text-[rgb(var(--sep-colour-c7a471))]"
                   : "border-[rgb(var(--sep-colour-626979))]/60 text-[rgb(var(--sep-colour-aeb5c4))]"
-              }`}
+              }`)), "components_messages_messages_context_navigator_span_text"].filter(Boolean).join(" ")}
             >
               {currentConversation
                 .lastMessage
@@ -577,7 +577,7 @@ export function MessagesContextNavigator({
 
             {currentConversation
               .lastMessage ? (
-              <span>
+              <span className="components_messages_messages_context_navigator_span_text_2">
                 Updated{" "}
                 {formatRelativeTime(
                   currentConversation
@@ -588,43 +588,43 @@ export function MessagesContextNavigator({
             ) : null}
           </div>
         ) : (
-          <p className="mt-3 text-xs leading-6 text-[rgb(var(--sep-colour-938673))]">
+          <p className="mt-3 text-xs leading-6 text-[rgb(var(--sep-colour-938673))] components_messages_messages_context_navigator_p_text_2">
             Switch quickly between your
             most recent conversations.
           </p>
         )}
       </header>
 
-      <div className="mt-5 flex min-h-0 flex-1 flex-col border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-4">
-        <div className="flex shrink-0 items-center justify-between gap-3">
-          <div>
-            <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-skin-c2,211_194_170))]">
+      <div className="mt-5 flex min-h-0 flex-1 flex-col border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-4 components_messages_messages_context_navigator_div_container_3">
+        <div className="flex shrink-0 items-center justify-between gap-3 components_messages_messages_context_navigator_div_container_4">
+          <div className="components_messages_messages_context_navigator_div_container_5">
+            <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-skin-c2,211_194_170))] components_messages_messages_context_navigator_p_text_3">
               Recent conversations
             </p>
 
-            <p className="mt-1 text-[10px] text-[rgb(var(--sep-colour-756a5b))]">
+            <p className="mt-1 text-[10px] text-[rgb(var(--sep-colour-756a5b))] components_messages_messages_context_navigator_p_text_4">
               Most recently active
             </p>
           </div>
 
-          <span className="flex h-7 min-w-7 items-center justify-center rounded-full border border-[rgb(var(--sep-colour-59432c))]/50 bg-[rgb(var(--sep-colour-100c09))] px-2 text-[9px] text-[rgb(var(--sep-colour-b2956f))]">
+          <span className="flex h-7 min-w-7 items-center justify-center rounded-full border border-[rgb(var(--sep-colour-59432c))]/50 bg-[rgb(var(--sep-colour-100c09))] px-2 text-[9px] text-[rgb(var(--sep-colour-b2956f))] components_messages_messages_context_navigator_span_text_3">
             {conversations.length}
           </span>
         </div>
 
         {error ? (
-          <p className="mt-3 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-3 text-[10px] leading-5 text-[rgb(var(--sep-colour-d8a49a))]">
+          <p className="mt-3 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-3 text-[10px] leading-5 text-[rgb(var(--sep-colour-d8a49a))] components_messages_messages_context_navigator_p_text_5">
             Conversations could not be
             loaded.
           </p>
         ) : null}
 
-        <div className="mt-3 min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-contain pr-1">
+        <div className="mt-3 min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-contain pr-1 components_messages_messages_context_navigator_div_container_6">
           {loading ? (
             <>
-              <div className="h-16 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
-              <div className="h-16 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
-              <div className="h-16 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))]" />
+              <div className="h-16 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))] components_messages_messages_context_navigator_div_container_7" />
+              <div className="h-16 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))] components_messages_messages_context_navigator_div_container_8" />
+              <div className="h-16 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))] components_messages_messages_context_navigator_div_container_9" />
             </>
           ) : (
             conversations.map(
@@ -653,7 +653,7 @@ export function MessagesContextNavigator({
                         : "border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] hover:border-[rgb(var(--sep-colour-80613c))] hover:bg-[rgb(var(--sep-colour-19120e))]"
                     }`}
                   >
-                    <div className="relative h-10 w-10 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0a08))]">
+                    <div className="relative h-10 w-10 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0a08))] components_messages_messages_context_navigator_div_container_10">
                       {conversation.other
                         ?.portrait_url ? (
                         // eslint-disable-next-line @next/next/no-img-element
@@ -663,10 +663,10 @@ export function MessagesContextNavigator({
                               .portrait_url
                           }
                           alt=""
-                          className="h-full w-full object-cover"
+                          className="h-full w-full object-cover components_messages_messages_context_navigator_img_image"
                         />
                       ) : (
-                        <span className="flex h-full items-center justify-center font-serif text-sm text-[rgb(var(--sep-colour-8d724f))]">
+                        <span className="flex h-full items-center justify-center font-serif text-sm text-[rgb(var(--sep-colour-8d724f))] components_messages_messages_context_navigator_span_text_4">
                           {name
                             .charAt(0)
                             .toUpperCase()}
@@ -674,9 +674,9 @@ export function MessagesContextNavigator({
                       )}
                     </div>
 
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <p className="min-w-0 flex-1 truncate font-serif text-sm text-[rgb(var(--sep-colour-d6bd91))]">
+                    <div className="min-w-0 flex-1 components_messages_messages_context_navigator_div_container_11">
+                      <div className="flex items-center gap-2 components_messages_messages_context_navigator_div_container_12">
+                        <p className="min-w-0 flex-1 truncate font-serif text-sm text-[rgb(var(--sep-colour-d6bd91))] components_messages_messages_context_navigator_p_text_6">
                           {name}
                         </p>
 
@@ -690,7 +690,7 @@ export function MessagesContextNavigator({
                                 ? ""
                                 : "s"
                             }`}
-                            className="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border text-[7px] font-bold leading-none"
+                            className="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border text-[7px] font-bold leading-none components_messages_messages_context_navigator_span_text_5"
                           >
                             {conversation.unreadCount >
                             9
@@ -700,8 +700,8 @@ export function MessagesContextNavigator({
                         ) : null}
                       </div>
 
-                      <div className="mt-1 flex items-center gap-2">
-                        <p className="min-w-0 flex-1 truncate text-[10px] text-[rgb(var(--sep-colour-817565))]">
+                      <div className="mt-1 flex items-center gap-2 components_messages_messages_context_navigator_div_container_13">
+                        <p className="min-w-0 flex-1 truncate text-[10px] text-[rgb(var(--sep-colour-817565))] components_messages_messages_context_navigator_p_text_7">
                           {conversation
                             .lastMessage
                             ? compactText(
@@ -727,11 +727,11 @@ export function MessagesContextNavigator({
 
                     <span
                       aria-hidden="true"
-                      className={`shrink-0 text-xs transition group-hover:translate-x-0.5 ${
+                      className={[((`shrink-0 text-xs transition group-hover:translate-x-0.5 ${
                         isCurrent
                           ? "text-[rgb(var(--sep-colour-d2aa72))]"
                           : "text-[rgb(var(--sep-colour-69583f))] group-hover:text-[rgb(var(--sep-colour-b38d5e))]"
-                      }`}
+                      }`)), "components_messages_messages_context_navigator_span_text_6"].filter(Boolean).join(" ")}
                     >
                       {isCurrent
                         ? "•"
@@ -746,7 +746,7 @@ export function MessagesContextNavigator({
           {!loading &&
           !error &&
           conversations.length === 0 ? (
-            <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-4 text-center text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+            <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-4 text-center text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_messages_messages_context_navigator_p_text_8">
               No private conversations
               yet.
             </p>
@@ -757,8 +757,8 @@ export function MessagesContextNavigator({
           href="/messages?embedded=1"
           className="mt-4 flex shrink-0 items-center justify-between border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-271c12))] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-dfc79c))] transition hover:border-[rgb(var(--sep-colour-997042))] hover:bg-[rgb(var(--sep-colour-3b2919))]"
         >
-          <span>Open full inbox</span>
-          <span aria-hidden="true">→</span>
+          <span className="components_messages_messages_context_navigator_span_text_7">Open full inbox</span>
+          <span className="components_messages_messages_context_navigator_span_text_8" aria-hidden="true">→</span>
         </Link>
       </div>
     </div>

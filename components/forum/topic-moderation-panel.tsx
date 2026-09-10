@@ -152,14 +152,14 @@ export default function TopicModerationPanel({
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="inline-flex h-10 items-center justify-center whitespace-nowrap border border-amber-800/70 bg-[rgb(var(--sep-colour-17110d))] px-4 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-c8ae83))] transition hover:bg-[rgb(var(--sep-colour-21170f))] hover:text-[rgb(var(--sep-colour-ead4ad))]"
+        className="inline-flex h-10 items-center justify-center whitespace-nowrap border border-amber-800/70 bg-[rgb(var(--sep-colour-17110d))] px-4 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-c8ae83))] transition hover:bg-[rgb(var(--sep-colour-21170f))] hover:text-[rgb(var(--sep-colour-ead4ad))] components_forum_topic_moderation_panel_button_moderate_topic"
       >
         Moderate topic
       </button>
 
       {isOpen ? (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 px-4 py-8 backdrop-blur-sm"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 px-4 py-8 backdrop-blur-sm components_forum_topic_moderation_panel_div_container"
           onMouseDown={(event) => {
             if (
               event.target ===
@@ -174,22 +174,22 @@ export default function TopicModerationPanel({
             role="dialog"
             aria-modal="true"
             aria-labelledby="topic-moderation-title"
-            className="max-h-full w-full max-w-2xl overflow-y-auto border border-[rgb(var(--sep-colour-765733))]/60 bg-[rgb(var(--sep-colour-15100d))] shadow-2xl"
+            className="max-h-full w-full max-w-2xl overflow-y-auto border border-[rgb(var(--sep-colour-765733))]/60 bg-[rgb(var(--sep-colour-15100d))] shadow-2xl components_forum_topic_moderation_panel_section_dialog"
           >
-            <header className="flex items-start justify-between gap-5 border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-1a130e))] px-5 py-5 sm:px-6">
-              <div>
-                <p className="text-[8px] uppercase tracking-[0.22em] text-amber-500">
+            <header className="flex items-start justify-between gap-5 border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-1a130e))] px-5 py-5 sm:px-6 components_forum_topic_moderation_panel_header_header">
+              <div className="components_forum_topic_moderation_panel_div_moderate_discussion">
+                <p className="text-[8px] uppercase tracking-[0.22em] text-amber-500 components_forum_topic_moderation_panel_p_moderate_discussion">
                   Staff controls
                 </p>
 
                 <h2
                   id="topic-moderation-title"
-                  className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dec69d))]"
+                  className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dec69d))] components_forum_topic_moderation_panel_h2_topic_moderation_title"
                 >
                   Moderate discussion
                 </h2>
 
-                <p className="mt-2 text-sm leading-6 text-[rgb(var(--sep-colour-887968))]">
+                <p className="mt-2 text-sm leading-6 text-[rgb(var(--sep-colour-887968))] components_forum_topic_moderation_panel_p_moderate_discussion_2">
                   {topicTitle}
                 </p>
               </div>
@@ -201,13 +201,13 @@ export default function TopicModerationPanel({
                 }
                 disabled={anyPending}
                 aria-label="Close moderation panel"
-                className="border border-[rgb(var(--sep-colour-60482e))]/50 px-3 py-2 text-xs text-[rgb(var(--sep-colour-9f8765))] transition hover:border-[rgb(var(--sep-colour-967044))] hover:text-[rgb(var(--sep-colour-dec095))] disabled:opacity-50"
+                className="border border-[rgb(var(--sep-colour-60482e))]/50 px-3 py-2 text-xs text-[rgb(var(--sep-colour-9f8765))] transition hover:border-[rgb(var(--sep-colour-967044))] hover:text-[rgb(var(--sep-colour-dec095))] disabled:opacity-50 components_forum_topic_moderation_panel_button_close_moderation_panel"
               >
                 ×
               </button>
             </header>
 
-            <div className="space-y-6 p-5 sm:p-6">
+            <div className="space-y-6 p-5 sm:p-6 components_forum_topic_moderation_panel_div_container_2">
               <ModerationMessage
                 state={lockState}
               />
@@ -220,28 +220,28 @@ export default function TopicModerationPanel({
                 state={moveState}
               />
 
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-4 sm:grid-cols-2 components_forum_topic_moderation_panel_div_container_3">
                 <form
                   action={lockAction}
-                  className="border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] p-5"
+                  className="border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] p-5 components_forum_topic_moderation_panel_form_lock_action"
                 >
-                  <input
+                  <input className="components_forum_topic_moderation_panel_input_topic_id"
                     type="hidden"
                     name="topicId"
                     value={topicId}
                   />
 
-                  <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-917957))]">
+                  <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-917957))] components_forum_topic_moderation_panel_p_text">
                     Replies
                   </p>
 
-                  <h3 className="mt-2 font-serif text-xl text-[rgb(var(--sep-colour-d5bd98))]">
+                  <h3 className="mt-2 font-serif text-xl text-[rgb(var(--sep-colour-d5bd98))] components_forum_topic_moderation_panel_h3_heading">
                     {isLocked
                       ? "Unlock discussion"
                       : "Lock discussion"}
                   </h3>
 
-                  <p className="mt-3 min-h-16 text-xs leading-6 text-[rgb(var(--sep-colour-7d7062))]">
+                  <p className="mt-3 min-h-16 text-xs leading-6 text-[rgb(var(--sep-colour-7d7062))] components_forum_topic_moderation_panel_p_text_2">
                     {isLocked
                       ? "Allow regular members to publish replies and edit their posts again."
                       : "Prevent regular members from replying to or editing posts in this discussion."}
@@ -250,7 +250,7 @@ export default function TopicModerationPanel({
                   <button
                     type="submit"
                     disabled={anyPending}
-                    className="mt-5 w-full border border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-2c1e14))] px-4 py-3 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d8bd91))] transition hover:border-[rgb(var(--sep-colour-a67c45))] hover:bg-[rgb(var(--sep-colour-3a2819))] disabled:cursor-not-allowed disabled:opacity-50"
+                    className="mt-5 w-full border border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-2c1e14))] px-4 py-3 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d8bd91))] transition hover:border-[rgb(var(--sep-colour-a67c45))] hover:bg-[rgb(var(--sep-colour-3a2819))] disabled:cursor-not-allowed disabled:opacity-50 components_forum_topic_moderation_panel_button_action"
                   >
                     {lockPending
                       ? "Updating..."
@@ -262,25 +262,25 @@ export default function TopicModerationPanel({
 
                 <form
                   action={pinAction}
-                  className="border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] p-5"
+                  className="border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] p-5 components_forum_topic_moderation_panel_form_pin_action"
                 >
-                  <input
+                  <input className="components_forum_topic_moderation_panel_input_topic_id_2"
                     type="hidden"
                     name="topicId"
                     value={topicId}
                   />
 
-                  <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-917957))]">
+                  <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-917957))] components_forum_topic_moderation_panel_p_text_3">
                     Visibility
                   </p>
 
-                  <h3 className="mt-2 font-serif text-xl text-[rgb(var(--sep-colour-d5bd98))]">
+                  <h3 className="mt-2 font-serif text-xl text-[rgb(var(--sep-colour-d5bd98))] components_forum_topic_moderation_panel_h3_heading_2">
                     {isPinned
                       ? "Unpin discussion"
                       : "Pin discussion"}
                   </h3>
 
-                  <p className="mt-3 min-h-16 text-xs leading-6 text-[rgb(var(--sep-colour-7d7062))]">
+                  <p className="mt-3 min-h-16 text-xs leading-6 text-[rgb(var(--sep-colour-7d7062))] components_forum_topic_moderation_panel_p_text_4">
                     {isPinned
                       ? "Return this discussion to the normal chronological topic order."
                       : "Keep this discussion above ordinary topics inside its current section."}
@@ -289,7 +289,7 @@ export default function TopicModerationPanel({
                   <button
                     type="submit"
                     disabled={anyPending}
-                    className="mt-5 w-full border border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-2c1e14))] px-4 py-3 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d8bd91))] transition hover:border-[rgb(var(--sep-colour-a67c45))] hover:bg-[rgb(var(--sep-colour-3a2819))] disabled:cursor-not-allowed disabled:opacity-50"
+                    className="mt-5 w-full border border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-2c1e14))] px-4 py-3 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d8bd91))] transition hover:border-[rgb(var(--sep-colour-a67c45))] hover:bg-[rgb(var(--sep-colour-3a2819))] disabled:cursor-not-allowed disabled:opacity-50 components_forum_topic_moderation_panel_button_action_2"
                   >
                     {pinPending
                       ? "Updating..."
@@ -302,23 +302,23 @@ export default function TopicModerationPanel({
 
               <form
                 action={moveAction}
-                className="border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] p-5"
+                className="border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] p-5 components_forum_topic_moderation_panel_form_move_action"
               >
-                <input
+                <input className="components_forum_topic_moderation_panel_input_topic_id_3"
                   type="hidden"
                   name="topicId"
                   value={topicId}
                 />
 
-                <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-917957))]">
+                <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-917957))] components_forum_topic_moderation_panel_p_move_discussion">
                   Location
                 </p>
 
-                <h3 className="mt-2 font-serif text-xl text-[rgb(var(--sep-colour-d5bd98))]">
+                <h3 className="mt-2 font-serif text-xl text-[rgb(var(--sep-colour-d5bd98))] components_forum_topic_moderation_panel_h3_move_discussion">
                   Move discussion
                 </h3>
 
-                <p className="mt-3 text-xs leading-6 text-[rgb(var(--sep-colour-7d7062))]">
+                <p className="mt-3 text-xs leading-6 text-[rgb(var(--sep-colour-7d7062))] components_forum_topic_moderation_panel_p_move_discussion_2">
                   Transfer the topic and all
                   of its replies to another
                   active forum section.
@@ -326,7 +326,7 @@ export default function TopicModerationPanel({
 
                 {availableSections.length >
                 0 ? (
-                  <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+                  <div className="mt-5 flex flex-col gap-3 sm:flex-row components_forum_topic_moderation_panel_div_move_discussion">
                     <select
                       name="destinationSectionId"
                       value={
@@ -339,15 +339,15 @@ export default function TopicModerationPanel({
                       }
                       required
                       disabled={anyPending}
-                      className="min-w-0 flex-1 border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0d0907))] px-4 py-3 text-sm text-[rgb(var(--sep-colour-d2bea0))] outline-none focus:border-[rgb(var(--sep-colour-a47a44))] disabled:opacity-50"
+                      className="min-w-0 flex-1 border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0d0907))] px-4 py-3 text-sm text-[rgb(var(--sep-colour-d2bea0))] outline-none focus:border-[rgb(var(--sep-colour-a47a44))] disabled:opacity-50 components_forum_topic_moderation_panel_select_destination_section_id"
                     >
-                      <option value="">
+                      <option className="components_forum_topic_moderation_panel_option_destination_section_id" value="">
                         Select destination
                       </option>
 
                       {availableSections.map(
                         (section) => (
-                          <option
+                          <option className="components_forum_topic_moderation_panel_option_option"
                             key={section.id}
                             value={section.id}
                           >
@@ -363,7 +363,7 @@ export default function TopicModerationPanel({
                         anyPending ||
                         !destinationSectionId
                       }
-                      className="border border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-2c1e14))] px-5 py-3 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d8bd91))] transition hover:border-[rgb(var(--sep-colour-a67c45))] hover:bg-[rgb(var(--sep-colour-3a2819))] disabled:cursor-not-allowed disabled:opacity-50"
+                      className="border border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-2c1e14))] px-5 py-3 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d8bd91))] transition hover:border-[rgb(var(--sep-colour-a67c45))] hover:bg-[rgb(var(--sep-colour-3a2819))] disabled:cursor-not-allowed disabled:opacity-50 components_forum_topic_moderation_panel_button_action_3"
                     >
                       {movePending
                         ? "Moving..."
@@ -371,23 +371,23 @@ export default function TopicModerationPanel({
                     </button>
                   </div>
                 ) : (
-                  <div className="mt-5 border border-dashed border-[rgb(var(--sep-colour-60482e))]/35 px-4 py-4 text-xs text-[rgb(var(--sep-colour-716659))]">
+                  <div className="mt-5 border border-dashed border-[rgb(var(--sep-colour-60482e))]/35 px-4 py-4 text-xs text-[rgb(var(--sep-colour-716659))] components_forum_topic_moderation_panel_div_move_discussion_2">
                     No other active forum
                     sections are available.
                   </div>
                 )}
               </form>
 
-              <div className="border border-red-950/60 bg-red-950/10 p-5">
-                <p className="text-[8px] uppercase tracking-[0.18em] text-red-500">
+              <div className="border border-red-950/60 bg-red-950/10 p-5 components_forum_topic_moderation_panel_div_delete_discussion">
+                <p className="text-[8px] uppercase tracking-[0.18em] text-red-500 components_forum_topic_moderation_panel_p_delete_discussion">
                   Destructive action
                 </p>
 
-                <h3 className="mt-2 font-serif text-xl text-red-200">
+                <h3 className="mt-2 font-serif text-xl text-red-200 components_forum_topic_moderation_panel_h3_delete_discussion">
                   Delete discussion
                 </h3>
 
-                <p className="mt-3 text-xs leading-6 text-red-300/75">
+                <p className="mt-3 text-xs leading-6 text-red-300/75 components_forum_topic_moderation_panel_p_delete_discussion_2">
                   Remove the topic and mark
                   all of its posts as deleted.
                   Members will no longer be
@@ -400,7 +400,7 @@ export default function TopicModerationPanel({
                     setDeleteOpen(true)
                   }
                   disabled={anyPending}
-                  className="mt-5 border border-red-800 bg-red-950/35 px-5 py-3 text-[8px] uppercase tracking-[0.16em] text-red-300 transition hover:border-red-600 hover:bg-red-950/60 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="mt-5 border border-red-800 bg-red-950/35 px-5 py-3 text-[8px] uppercase tracking-[0.16em] text-red-300 transition hover:border-red-600 hover:bg-red-950/60 disabled:cursor-not-allowed disabled:opacity-50 components_forum_topic_moderation_panel_button_delete_topic"
                 >
                   Delete topic
                 </button>
@@ -412,7 +412,7 @@ export default function TopicModerationPanel({
 
       {deleteOpen ? (
         <div
-          className="fixed inset-0 z-[110] flex items-center justify-center bg-black/85 px-4 py-8 backdrop-blur-sm"
+          className="fixed inset-0 z-[110] flex items-center justify-center bg-black/85 px-4 py-8 backdrop-blur-sm components_forum_topic_moderation_panel_div_container_4"
           onMouseDown={(event) => {
             if (
               event.target ===
@@ -427,25 +427,25 @@ export default function TopicModerationPanel({
             role="alertdialog"
             aria-modal="true"
             aria-labelledby="delete-topic-title"
-            className="w-full max-w-lg border border-red-950/70 bg-[rgb(var(--sep-colour-15100d))] shadow-2xl"
+            className="w-full max-w-lg border border-red-950/70 bg-[rgb(var(--sep-colour-15100d))] shadow-2xl components_forum_topic_moderation_panel_section_alertdialog"
           >
-            <header className="border-b border-red-950/50 bg-red-950/10 px-5 py-5 sm:px-6">
-              <p className="text-[8px] uppercase tracking-[0.22em] text-red-500">
+            <header className="border-b border-red-950/50 bg-red-950/10 px-5 py-5 sm:px-6 components_forum_topic_moderation_panel_header_delete_discussion">
+              <p className="text-[8px] uppercase tracking-[0.22em] text-red-500 components_forum_topic_moderation_panel_p_delete_discussion_3">
                 Permanent action
               </p>
 
               <h2
                 id="delete-topic-title"
-                className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dec6ae))]"
+                className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-dec6ae))] components_forum_topic_moderation_panel_h2_delete_topic_title"
               >
                 Delete this discussion?
               </h2>
             </header>
 
-            <div className="space-y-5 px-5 py-6 sm:px-6">
-              <p className="text-sm leading-7 text-[rgb(var(--sep-colour-aa9b88))]">
+            <div className="space-y-5 px-5 py-6 sm:px-6 components_forum_topic_moderation_panel_div_container_5">
+              <p className="text-sm leading-7 text-[rgb(var(--sep-colour-aa9b88))] components_forum_topic_moderation_panel_p_text_5">
                 The discussion
-                <strong className="text-[rgb(var(--sep-colour-dfc6a0))]">
+                <strong className="text-[rgb(var(--sep-colour-dfc6a0))] components_forum_topic_moderation_panel_strong_emphasis">
                   {" "}
                   {topicTitle}
                 </strong>{" "}
@@ -453,8 +453,8 @@ export default function TopicModerationPanel({
                 be removed from the forum.
               </p>
 
-              <div className="border border-red-950/55 bg-red-950/10 px-4 py-4">
-                <p className="text-xs leading-6 text-red-300">
+              <div className="border border-red-950/55 bg-red-950/10 px-4 py-4 components_forum_topic_moderation_panel_div_container_6">
+                <p className="text-xs leading-6 text-red-300 components_forum_topic_moderation_panel_p_text_6">
                   This operation affects every
                   post in the topic and cannot
                   be undone from this panel.
@@ -465,10 +465,10 @@ export default function TopicModerationPanel({
   state={deleteState}
 />
 
-<div>
+<div className="components_forum_topic_moderation_panel_div_moderation_reason">
   <label
     htmlFor="topic-delete-reason"
-    className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-917957))]"
+    className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-917957))] components_forum_topic_moderation_panel_label_topic_delete_reason"
   >
     Moderation reason
   </label>
@@ -485,34 +485,34 @@ export default function TopicModerationPanel({
     rows={4}
     disabled={deletePending}
     placeholder="Reason for removing this discussion..."
-    className="mt-3 w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0d0907))] px-4 py-3 text-sm leading-6 text-[rgb(var(--sep-colour-d2bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-5f5548))] focus:border-[rgb(var(--sep-colour-a47a44))] disabled:opacity-50"
+    className="mt-3 w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0d0907))] px-4 py-3 text-sm leading-6 text-[rgb(var(--sep-colour-d2bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-5f5548))] focus:border-[rgb(var(--sep-colour-a47a44))] disabled:opacity-50 components_forum_topic_moderation_panel_textarea_topic_delete_reason"
   />
 
-  <p className="mt-2 text-right text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-665947))]">
+  <p className="mt-2 text-right text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-665947))] components_forum_topic_moderation_panel_p_moderation_reason">
     {deleteReason.length}/1000
   </p>
 </div>
 
-<form action={deleteAction}>
-  <input
+<form className="components_forum_topic_moderation_panel_form_delete_action" action={deleteAction}>
+  <input className="components_forum_topic_moderation_panel_input_reason"
     type="hidden"
     name="reason"
     value={deleteReason}
   />
-                <input
+                <input className="components_forum_topic_moderation_panel_input_topic_id_4"
                   type="hidden"
                   name="topicId"
                   value={topicId}
                 />
 
-                <div className="flex flex-col-reverse gap-3 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-5 sm:flex-row sm:justify-end">
+                <div className="flex flex-col-reverse gap-3 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-5 sm:flex-row sm:justify-end components_forum_topic_moderation_panel_div_container_7">
                   <button
                     type="button"
                     onClick={() =>
                       setDeleteOpen(false)
                     }
                     disabled={deletePending}
-                    className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-19120e))] px-5 py-3 text-[9px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-a58b68))] transition hover:border-[rgb(var(--sep-colour-947047))] hover:text-[rgb(var(--sep-colour-dec095))] disabled:opacity-50"
+                    className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-19120e))] px-5 py-3 text-[9px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-a58b68))] transition hover:border-[rgb(var(--sep-colour-947047))] hover:text-[rgb(var(--sep-colour-dec095))] disabled:opacity-50 components_forum_topic_moderation_panel_button_cancel"
                   >
                     Cancel
                   </button>
@@ -520,7 +520,7 @@ export default function TopicModerationPanel({
                   <button
                     type="submit"
                     disabled={deletePending}
-                    className="border border-red-800 bg-red-950/35 px-5 py-3 text-[9px] uppercase tracking-[0.17em] text-red-300 transition hover:border-red-600 hover:bg-red-950/60 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="border border-red-800 bg-red-950/35 px-5 py-3 text-[9px] uppercase tracking-[0.17em] text-red-300 transition hover:border-red-600 hover:bg-red-950/60 disabled:cursor-not-allowed disabled:opacity-50 components_forum_topic_moderation_panel_button_action_4"
                   >
                     {deletePending
                       ? "Deleting..."
@@ -547,11 +547,9 @@ function ModerationMessage({
 
   return (
     <div
-      className={
-        state.success
+      className={[((state.success
           ? "border border-emerald-900/60 bg-emerald-950/20 px-4 py-3 text-sm text-emerald-300"
-          : "border border-red-900/60 bg-red-950/20 px-4 py-3 text-sm text-red-300"
-      }
+          : "border border-red-900/60 bg-red-950/20 px-4 py-3 text-sm text-red-300")), "components_forum_topic_moderation_panel_div_container_8"].filter(Boolean).join(" ")}
     >
       {state.message}
     </div>

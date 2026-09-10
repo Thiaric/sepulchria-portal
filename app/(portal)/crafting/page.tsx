@@ -329,25 +329,25 @@ export default async function CraftingPage() {
 
       <main
         data-crafting-page
-        className="mx-auto flex h-full max-h-full w-full max-w-none flex-col overflow-y-auto overscroll-contain p-4 sm:p-7 lg:p-8 xl:overflow-hidden"
+        className="mx-auto flex h-full max-h-full w-full max-w-none flex-col overflow-y-auto overscroll-contain p-4 sm:p-7 lg:p-8 xl:overflow-hidden crafting_page_main_main"
       >
-        <header className="relative mb-4 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 px-6 py-4 sm:px-8">
-          <div className="absolute inset-0 opacity-30 [background-image:radial-gradient(circle_at_top_right,rgba(var(--sep-rgb-145-105-60),0.35),transparent_42%)]" />
+        <header className="relative mb-4 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 px-6 py-4 sm:px-8 crafting_page_header_header">
+          <div className="absolute inset-0 opacity-30 [background-image:radial-gradient(circle_at_top_right,rgba(var(--sep-rgb-145-105-60),0.35),transparent_42%)] crafting_page_div_container" />
 
-          <div className="relative flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
-            <div className="min-w-0">
-              <p className="text-[10px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-886c48))]">
+          <div className="relative flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-8 crafting_page_div_container_2">
+            <div className="min-w-0 crafting_page_div_crafting_workbench">
+              <p className="text-[10px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-886c48))] crafting_page_p_crafting_workbench">
                 Knowledge &amp; Craft
               </p>
 
-              <h1 className="mt-1 font-serif text-3xl text-[rgb(var(--sep-colour-ead6ad))]">
+              <h1 className="mt-1 font-serif text-3xl text-[rgb(var(--sep-colour-ead6ad))] crafting_page_h1_crafting_workbench">
                 Crafting Workbench
               </h1>
             </div>
 
-            <p className="max-w-2xl text-[11px] leading-6 text-[rgb(var(--sep-colour-9f9281))] sm:text-right">
+            <p className="max-w-2xl text-[11px] leading-6 text-[rgb(var(--sep-colour-9f9281))] sm:text-right crafting_page_p_text">
               Use materials carried by{" "}
-              <span className="text-[rgb(var(--sep-colour-d4bd94))]">
+              <span className="text-[rgb(var(--sep-colour-d4bd94))] crafting_page_span_text">
                 {character.display_name ?? "your character"}
               </span>{" "}
               to create items from recipes they have learned.
@@ -355,7 +355,7 @@ export default async function CraftingPage() {
           </div>
         </header>
 
-        <div className="min-h-0 flex-1 overflow-visible xl:overflow-hidden">
+        <div className="min-h-0 flex-1 overflow-visible xl:overflow-hidden crafting_page_div_container_3">
           <CraftingWorkbench
             recipes={recipes}
             inventory={inventory}

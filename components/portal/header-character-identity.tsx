@@ -397,8 +397,8 @@ last_seen_at:
     ];
 
   return (
-  <div className="flex min-w-0 items-center gap-1.5 border-l border-[rgb(var(--sep-colour-5c472f))]/60 pl-2 lg:gap-2 lg:pl-3 2xl:pl-4">
-    <div className="relative h-8 w-8 shrink-0 sm:h-9 sm:w-9 2xl:h-10 2xl:w-10">
+  <div className="flex min-w-0 items-center gap-1.5 border-l border-[rgb(var(--sep-colour-5c472f))]/60 pl-2 lg:gap-2 lg:pl-3 2xl:pl-4 components_portal_header_character_identity_div_container">
+    <div className="relative h-8 w-8 shrink-0 sm:h-9 sm:w-9 2xl:h-10 2xl:w-10 components_portal_header_character_identity_div_container_2">
   <button
     type="button"
     data-skin-widget="presence-status"
@@ -415,8 +415,7 @@ last_seen_at:
 
       void changePresence(nextStatus);
     }}
-    className="
-      flex
+    className="flex
       h-full
       w-full
       flex-col
@@ -431,13 +430,13 @@ last_seen_at:
       hover:bg-[rgb(var(--sep-colour-1d160f))]
       disabled:cursor-wait
       disabled:opacity-50
-    "
+     components_portal_header_character_identity_button_action"
   >
     <span
-      className={`block h-2 w-2 rounded-full border ${presence.dotClass}`}
+      className={[((`block h-2 w-2 rounded-full border ${presence.dotClass}`)), "components_portal_header_character_identity_span_text"].filter(Boolean).join(" ")}
     />
 
-    <span data-skin-role="primary" className="text-[7px] uppercase leading-none tracking-[0.08em] text-[rgb(var(--sep-colour-aa9677))]">
+    <span data-skin-role="primary" className="text-[7px] uppercase leading-none tracking-[0.08em] text-[rgb(var(--sep-colour-aa9677))] components_portal_header_character_identity_span_text_2">
       {presenceStatus === "online"
         ? "Online"
         : presenceStatus === "away"
@@ -461,10 +460,10 @@ last_seen_at:
           href: "/character",
         })
       }
-      className="flex min-w-0 items-center gap-2 text-left lg:gap-3"
+      className="flex min-w-0 items-center gap-2 text-left lg:gap-3 components_portal_header_character_identity_button_open_character_sheet"
     >
-      <div className="flex shrink-0 items-start gap-1.5">
-        <div className="relative h-8 w-8 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-6e5535))] bg-[rgb(var(--sep-colour-15100d))] sm:h-9 sm:w-9 2xl:h-10 2xl:w-10">
+      <div className="flex shrink-0 items-start gap-1.5 components_portal_header_character_identity_div_open_character_sheet">
+        <div className="relative h-8 w-8 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-6e5535))] bg-[rgb(var(--sep-colour-15100d))] sm:h-9 sm:w-9 2xl:h-10 2xl:w-10 components_portal_header_character_identity_div_open_character_sheet_2">
           {character.portrait_url ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -472,10 +471,10 @@ last_seen_at:
                 character.portrait_url
               }
               alt={`Portrait of ${character.display_name}`}
-              className="h-full w-full object-cover"
+              className="h-full w-full object-cover components_portal_header_character_identity_img_image"
             />
           ) : (
-            <span className="flex h-full items-center justify-center font-serif text-[rgb(var(--sep-colour-a98b61))]">
+            <span className="flex h-full items-center justify-center font-serif text-[rgb(var(--sep-colour-a98b61))] components_portal_header_character_identity_span_text_3">
               {character.first_name.slice(
                 0,
                 1,
@@ -486,7 +485,7 @@ last_seen_at:
           
         </div>
 
-        <div className="hidden shrink-0 flex-col items-center gap-1 pt-0.5 sm:flex">
+        <div className="hidden shrink-0 flex-col items-center gap-1 pt-0.5 sm:flex components_portal_header_character_identity_div_open_character_sheet_3">
           <CharacterLifeIcon
             characterId={character.id}
             raceIconUrl={character.race?.icon_url ?? null}

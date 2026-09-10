@@ -256,7 +256,7 @@ export function SanctionRestrictionNotice({
           message ??
           "This action is currently restricted."
         }
-        className="inline-flex h-8 w-8 items-center justify-center border border-[rgb(var(--sep-colour-8f4f44))]/65 bg-[rgb(var(--sep-colour-2b1714))] text-[13px] text-[rgb(var(--sep-colour-dc9789))]"
+        className="inline-flex h-8 w-8 items-center justify-center border border-[rgb(var(--sep-colour-8f4f44))]/65 bg-[rgb(var(--sep-colour-2b1714))] text-[13px] text-[rgb(var(--sep-colour-dc9789))] components_sanctions_sanction_capability_ui_span_text"
       >
         ⚠
       </span>
@@ -266,7 +266,7 @@ export function SanctionRestrictionNotice({
   return (
     <div
       role="status"
-      className="border-l-2 border-[rgb(var(--sep-colour-9a5147))]/75 bg-[rgb(var(--sep-colour-291613))]/80 px-4 py-3 text-xs leading-6 text-[rgb(var(--sep-colour-d9a092))]"
+      className="border-l-2 border-[rgb(var(--sep-colour-9a5147))]/75 bg-[rgb(var(--sep-colour-291613))]/80 px-4 py-3 text-xs leading-6 text-[rgb(var(--sep-colour-d9a092))] components_sanctions_sanction_capability_ui_div_status"
     >
       {message ??
         "This action is currently restricted."}

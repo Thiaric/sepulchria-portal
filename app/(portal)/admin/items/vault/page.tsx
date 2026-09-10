@@ -185,17 +185,17 @@ export default async function AdminItemVaultPage({
   const returnTo = "/admin/items/vault";
 
   return (
-    <main className="p-5 sm:p-7 lg:p-9">
-      <div className="mx-auto max-w-7xl">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
+    <main className="p-5 sm:p-7 lg:p-9 admin_items_vault_page_main_main">
+      <div className="mx-auto max-w-7xl admin_items_vault_page_div_container">
+        <div className="flex flex-wrap items-center justify-between gap-3 admin_items_vault_page_div_container_2">
+          <div className="admin_items_vault_page_div_admin_vault">
+            <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))] admin_items_vault_page_p_admin_vault">
               Administration
             </p>
-            <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">
+            <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))] admin_items_vault_page_h1_admin_vault">
               Admin Vault
             </h1>
-            <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))]">
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))] admin_items_vault_page_p_admin_vault_2">
               Ownerless Unique Items remain here until staff assigns them,
               reuses them in a plot, or deliberately destroys them.
             </p>
@@ -210,16 +210,16 @@ export default async function AdminItemVaultPage({
         </div>
 
         {params.error ? (
-          <div className="mt-6 border border-red-900/60 bg-red-950/20 px-4 py-3 text-sm text-red-400">
+          <div className="mt-6 border border-red-900/60 bg-red-950/20 px-4 py-3 text-sm text-red-400 admin_items_vault_page_div_container_3">
             {params.error}
           </div>
         ) : null}
 
-        <section className="mt-7 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5">
-          <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
+        <section className="mt-7 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 admin_items_vault_page_section_create_directly_vault">
+          <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))] admin_items_vault_page_p_create_directly_vault">
             New individual Item
           </p>
-          <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">
+          <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))] admin_items_vault_page_h2_create_directly_vault">
             Create directly in Vault
           </h2>
 
@@ -227,15 +227,15 @@ export default async function AdminItemVaultPage({
             action={createUniqueItemInVault}
             className="mt-5 grid gap-3 md:grid-cols-2"
           >
-            <input type="hidden" name="returnTo" value={returnTo} />
-            <input type="hidden" name="liveAction" value="1" />
+            <input className="admin_items_vault_page_input_return" type="hidden" name="returnTo" value={returnTo} />
+            <input className="admin_items_vault_page_input_live_action" type="hidden" name="liveAction" value="1" />
 
-            <select name="itemId" required defaultValue="" className={inputClass}>
-              <option value="" disabled>
+            <select name="itemId" required defaultValue="" className={[((inputClass)), "admin_items_vault_page_select_item_id"].filter(Boolean).join(" ")}>
+              <option className="admin_items_vault_page_option_item_id" value="" disabled>
                 Select master Item
               </option>
               {items.map((item) => (
-                <option key={item.id} value={item.id}>
+                <option className="admin_items_vault_page_option_option" key={item.id} value={item.id}>
                   {item.name}
                   {!item.is_active ? " (inactive)" : ""}
                 </option>
@@ -245,81 +245,81 @@ export default async function AdminItemVaultPage({
             <input
               name="customName"
               placeholder="Custom name (optional)"
-              className={inputClass}
+              className={[((inputClass)), "admin_items_vault_page_input_custom_name"].filter(Boolean).join(" ")}
             />
 
             <textarea
               name="customDescription"
               rows={3}
               placeholder="Custom description (optional)"
-              className={`${inputClass} md:col-span-2`}
+              className={[((`${inputClass} md:col-span-2`)), "admin_items_vault_page_textarea_custom_description"].filter(Boolean).join(" ")}
             />
 
             <input
               type="url"
               name="customImageUrl"
               placeholder="Custom image URL (optional)"
-              className={inputClass}
+              className={[((inputClass)), "admin_items_vault_page_input_custom_image_url"].filter(Boolean).join(" ")}
             />
 
-            <select name="qualityOverride" defaultValue="" className={inputClass}>
-              <option value="">Inherit quality</option>
-              <option value="poor">Poor</option>
-              <option value="average">Average</option>
-              <option value="fine">Fine</option>
-              <option value="superior">Superior</option>
-              <option value="flawless">Flawless</option>
-              <option value="peerless">Peerless</option>
+            <select name="qualityOverride" defaultValue="" className={[((inputClass)), "admin_items_vault_page_select_quality_override"].filter(Boolean).join(" ")}>
+              <option className="admin_items_vault_page_option_quality_override" value="">Inherit quality</option>
+              <option className="admin_items_vault_page_option_poor" value="poor">Poor</option>
+              <option className="admin_items_vault_page_option_average" value="average">Average</option>
+              <option className="admin_items_vault_page_option_fine" value="fine">Fine</option>
+              <option className="admin_items_vault_page_option_superior" value="superior">Superior</option>
+              <option className="admin_items_vault_page_option_flawless" value="flawless">Flawless</option>
+              <option className="admin_items_vault_page_option_peerless" value="peerless">Peerless</option>
             </select>
 
             <select
               name="transferPolicyOverride"
               defaultValue=""
-              className={inputClass}
+              className={[((inputClass)), "admin_items_vault_page_select_transfer_policy_override"].filter(Boolean).join(" ")}
             >
-              <option value="">Inherit transfer policy</option>
-              <option value="free">Free</option>
-              <option value="restricted">Restricted</option>
-              <option value="bound">Bound</option>
+              <option className="admin_items_vault_page_option_transfer_policy_override" value="">Inherit transfer policy</option>
+              <option className="admin_items_vault_page_option_free" value="free">Free</option>
+              <option className="admin_items_vault_page_option_restricted" value="restricted">Restricted</option>
+              <option className="admin_items_vault_page_option_bound" value="bound">Bound</option>
             </select>
 
             <select
               name="questOverride"
               defaultValue="inherit"
-              className={inputClass}
+              className={[((inputClass)), "admin_items_vault_page_select_quest_override"].filter(Boolean).join(" ")}
             >
-              <option value="inherit">Inherit Quest status</option>
-              <option value="yes">Quest Item: Yes</option>
-              <option value="no">Quest Item: No</option>
+              <option className="admin_items_vault_page_option_inherit" value="inherit">Inherit Quest status</option>
+              <option className="admin_items_vault_page_option_quest_override" value="yes">Quest Item: Yes</option>
+              <option className="admin_items_vault_page_option_quest_override_2" value="no">Quest Item: No</option>
             </select>
 
             <textarea
               name="notes"
               rows={2}
               placeholder="Private staff notes (optional)"
-              className={inputClass}
+              className={[((inputClass)), "admin_items_vault_page_textarea_notes"].filter(Boolean).join(" ")}
             />
 
-            <div className="md:col-span-2">
-              <button type="submit" className={buttonClass}>
+            <div className="md:col-span-2 admin_items_vault_page_div_create_directly_vault">
+              <button type="submit" className={[((buttonClass)), "admin_items_vault_page_button_create_vault"].filter(Boolean).join(" ")}>
                 Create in Vault
               </button>
             </div>
           </AdminActionForm>
         </section>
 
-        <section className="mt-6">
-          <div className="flex items-end justify-between gap-3">
-            <div>
-              <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
+        <section className="mt-6 admin_items_vault_page_section_section">
+          <div className="flex items-end justify-between gap-3 admin_items_vault_page_div_container_4">
+            <div className="admin_items_vault_page_div_vault_contents">
+              <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))] admin_items_vault_page_p_vault_contents">
                 Stored Items
               </p>
-              <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">
+              <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))] admin_items_vault_page_h2_vault_contents">
                 Vault contents
               </h2>
             </div>
 
-            <p className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
+            <p className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))] admin_items_vault_page_p_text">
               {vault.length} Item{vault.length === 1 ? "" : "s"}
             </p>
           </div>
@@ -329,7 +329,7 @@ export default async function AdminItemVaultPage({
           ) : null}
 
           {vault.length ? (
-            <div className="mt-4 grid gap-4 lg:grid-cols-2">
+            <div className="mt-4 grid gap-4 lg:grid-cols-2 admin_items_vault_page_div_container_5">
               {vault.map((row) => {
                 const master = one(row.item);
                 const name =
@@ -367,9 +367,9 @@ export default async function AdminItemVaultPage({
                     data-quality={quality}
                     data-transfer={transfer}
                     data-quest={quest ? "yes" : "no"}
-                    className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-4"
+                    className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-4 admin_items_vault_page_article_article"
                   >
-                    <div className="flex gap-3">
+                    <div className="flex gap-3 admin_items_vault_page_div_container_6">
                       <ItemImageFrame
                         src={image}
                         quality={quality}
@@ -377,11 +377,11 @@ export default async function AdminItemVaultPage({
                         badgeSize="sm"
                       />
 
-                      <div className="min-w-0">
-                        <p className="font-serif text-lg text-[rgb(var(--sep-colour-d8bf91))]">
+                      <div className="min-w-0 admin_items_vault_page_div_container_7">
+                        <p className="font-serif text-lg text-[rgb(var(--sep-colour-d8bf91))] admin_items_vault_page_p_text_2">
                           {name}
                         </p>
-                        <p className="mt-1 text-[8px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-756958))]">
+                        <p className="mt-1 text-[8px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-756958))] admin_items_vault_page_p_text_3">
                           Unique · {quality} · {transfer}
                           {quest ? " · Quest" : ""}
                         </p>
@@ -389,30 +389,30 @@ export default async function AdminItemVaultPage({
                     </div>
 
                     {row.custom_description?.trim() ? (
-                      <p className="mt-3 text-xs leading-6 text-[rgb(var(--sep-colour-8f8271))]">
+                      <p className="mt-3 text-xs leading-6 text-[rgb(var(--sep-colour-8f8271))] admin_items_vault_page_p_text_4">
                         {row.custom_description}
                       </p>
                     ) : null}
 
-                    <details className="mt-4 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))]">
-                      <summary className="cursor-pointer list-none px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9b8768))]">
+                    <details className="mt-4 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))] admin_items_vault_page_details_edit_vault_item">
+                      <summary className="cursor-pointer list-none px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9b8768))] admin_items_vault_page_summary_edit_vault_item">
                         Edit Vault Item
                       </summary>
 
-                      <div className="border-t border-[rgb(var(--sep-colour-59432c))]/30 p-3">
+                      <div className="border-t border-[rgb(var(--sep-colour-59432c))]/30 p-3 admin_items_vault_page_div_edit_vault_item">
                         <AdminActionForm
                           action={updateVaultUniqueItem}
                           className="grid gap-3 md:grid-cols-2"
                         >
-                          <input type="hidden" name="instanceId" value={row.id} />
-                          <input type="hidden" name="returnTo" value={returnTo} />
-                          <input type="hidden" name="liveAction" value="1" />
+                          <input className="admin_items_vault_page_input_instance_id" type="hidden" name="instanceId" value={row.id} />
+                          <input className="admin_items_vault_page_input_return_2" type="hidden" name="returnTo" value={returnTo} />
+                          <input className="admin_items_vault_page_input_live_action_2" type="hidden" name="liveAction" value="1" />
 
                           <input
                             name="customName"
                             defaultValue={row.custom_name ?? ""}
                             placeholder="Custom name"
-                            className={inputClass}
+                            className={[((inputClass)), "admin_items_vault_page_input_custom_name_2"].filter(Boolean).join(" ")}
                           />
 
                           <input
@@ -420,7 +420,7 @@ export default async function AdminItemVaultPage({
                             name="customImageUrl"
                             defaultValue={row.custom_image_url ?? ""}
                             placeholder="Custom image URL"
-                            className={inputClass}
+                            className={[((inputClass)), "admin_items_vault_page_input_custom_image_url_2"].filter(Boolean).join(" ")}
                           />
 
                           <textarea
@@ -428,32 +428,32 @@ export default async function AdminItemVaultPage({
                             rows={3}
                             defaultValue={row.custom_description ?? ""}
                             placeholder="Custom description"
-                            className={`${inputClass} md:col-span-2`}
+                            className={[((`${inputClass} md:col-span-2`)), "admin_items_vault_page_textarea_custom_description_2"].filter(Boolean).join(" ")}
                           />
 
                           <select
                             name="qualityOverride"
                             defaultValue={row.quality_override ?? ""}
-                            className={inputClass}
+                            className={[((inputClass)), "admin_items_vault_page_select_quality_override_2"].filter(Boolean).join(" ")}
                           >
-                            <option value="">Inherit quality</option>
-                            <option value="poor">Poor</option>
-                            <option value="average">Average</option>
-                            <option value="fine">Fine</option>
-                            <option value="superior">Superior</option>
-                            <option value="flawless">Flawless</option>
-                            <option value="peerless">Peerless</option>
+                            <option className="admin_items_vault_page_option_quality_override_2" value="">Inherit quality</option>
+                            <option className="admin_items_vault_page_option_poor_2" value="poor">Poor</option>
+                            <option className="admin_items_vault_page_option_average_2" value="average">Average</option>
+                            <option className="admin_items_vault_page_option_fine_2" value="fine">Fine</option>
+                            <option className="admin_items_vault_page_option_superior_2" value="superior">Superior</option>
+                            <option className="admin_items_vault_page_option_flawless_2" value="flawless">Flawless</option>
+                            <option className="admin_items_vault_page_option_peerless_2" value="peerless">Peerless</option>
                           </select>
 
                           <select
                             name="transferPolicyOverride"
                             defaultValue={row.transfer_policy_override ?? ""}
-                            className={inputClass}
+                            className={[((inputClass)), "admin_items_vault_page_select_transfer_policy_override_2"].filter(Boolean).join(" ")}
                           >
-                            <option value="">Inherit transfer policy</option>
-                            <option value="free">Free</option>
-                            <option value="restricted">Restricted</option>
-                            <option value="bound">Bound</option>
+                            <option className="admin_items_vault_page_option_transfer_policy_override_2" value="">Inherit transfer policy</option>
+                            <option className="admin_items_vault_page_option_free_2" value="free">Free</option>
+                            <option className="admin_items_vault_page_option_restricted_2" value="restricted">Restricted</option>
+                            <option className="admin_items_vault_page_option_bound_2" value="bound">Bound</option>
                           </select>
 
                           <select
@@ -465,11 +465,11 @@ export default async function AdminItemVaultPage({
                                   ? "yes"
                                   : "no"
                             }
-                            className={inputClass}
+                            className={[((inputClass)), "admin_items_vault_page_select_quest_override_2"].filter(Boolean).join(" ")}
                           >
-                            <option value="inherit">Inherit Quest status</option>
-                            <option value="yes">Quest Item: Yes</option>
-                            <option value="no">Quest Item: No</option>
+                            <option className="admin_items_vault_page_option_inherit_2" value="inherit">Inherit Quest status</option>
+                            <option className="admin_items_vault_page_option_quest_override_3" value="yes">Quest Item: Yes</option>
+                            <option className="admin_items_vault_page_option_quest_override_4" value="no">Quest Item: No</option>
                           </select>
 
                           <textarea
@@ -477,11 +477,11 @@ export default async function AdminItemVaultPage({
                             rows={2}
                             defaultValue={row.notes ?? ""}
                             placeholder="Private staff notes"
-                            className={inputClass}
+                            className={[((inputClass)), "admin_items_vault_page_textarea_notes_2"].filter(Boolean).join(" ")}
                           />
 
-                          <div className="md:col-span-2 flex justify-end">
-                            <button type="submit" className={buttonClass}>
+                          <div className="md:col-span-2 flex justify-end admin_items_vault_page_div_edit_vault_item_2">
+                            <button type="submit" className={[((buttonClass)), "admin_items_vault_page_button_save_vault_item"].filter(Boolean).join(" ")}>
                               Save Vault Item
                             </button>
                           </div>
@@ -493,47 +493,47 @@ export default async function AdminItemVaultPage({
                       action={assignVaultItemToCharacter}
                       className="mt-4 flex gap-2"
                     >
-                      <input type="hidden" name="instanceId" value={row.id} />
-                      <input type="hidden" name="returnTo" value={returnTo} />
-                      <input type="hidden" name="liveAction" value="1" />
+                      <input className="admin_items_vault_page_input_instance_id_2" type="hidden" name="instanceId" value={row.id} />
+                      <input className="admin_items_vault_page_input_return_3" type="hidden" name="returnTo" value={returnTo} />
+                      <input className="admin_items_vault_page_input_live_action_3" type="hidden" name="liveAction" value="1" />
 
                       <select
                         name="characterId"
                         required
                         defaultValue=""
-                        className={`${inputClass} min-w-0 flex-1`}
+                        className={[((`${inputClass} min-w-0 flex-1`)), "admin_items_vault_page_select_character_id"].filter(Boolean).join(" ")}
                       >
-                        <option value="" disabled>
+                        <option className="admin_items_vault_page_option_character_id" value="" disabled>
                           Assign to character
                         </option>
                         {characters.map((character) => (
-                          <option key={character.id} value={character.id}>
+                          <option className="admin_items_vault_page_option_option_2" key={character.id} value={character.id}>
                             {characterName(character)}
                           </option>
                         ))}
                       </select>
 
-                      <button type="submit" className={buttonClass}>
+                      <button type="submit" className={[((buttonClass)), "admin_items_vault_page_button_assign"].filter(Boolean).join(" ")}>
                         Assign
                       </button>
                     </AdminActionForm>
 
                     {history.length ? (
-                      <details className="mt-4 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))]">
-                        <summary className="cursor-pointer list-none px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9b8768))]">
+                      <details className="mt-4 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))] admin_items_vault_page_details_provenance">
+                        <summary className="cursor-pointer list-none px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9b8768))] admin_items_vault_page_summary_provenance">
                           Provenance
                         </summary>
 
-                        <div className="space-y-2 border-t border-[rgb(var(--sep-colour-59432c))]/30 p-3">
+                        <div className="space-y-2 border-t border-[rgb(var(--sep-colour-59432c))]/30 p-3 admin_items_vault_page_div_provenance">
                           {history.slice(0, 8).map((entry) => (
                             <div
                               key={entry.id}
-                              className="border-l border-[rgb(var(--sep-colour-765937))]/55 pl-3"
+                              className="border-l border-[rgb(var(--sep-colour-765937))]/55 pl-3 admin_items_vault_page_div_container_8"
                             >
-                              <p className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a68a61))]">
+                              <p className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a68a61))] admin_items_vault_page_p_text_5">
                                 {entry.event_type.replace(/_/g, " ")}
                               </p>
-                              <p className="mt-1 text-[10px] leading-5 text-[rgb(var(--sep-colour-817565))]">
+                              <p className="mt-1 text-[10px] leading-5 text-[rgb(var(--sep-colour-817565))] admin_items_vault_page_p_text_6">
                                 {entry.details}
                               </p>
                             </div>
@@ -547,12 +547,12 @@ export default async function AdminItemVaultPage({
                       confirmMessage={`Permanently destroy ${name}? The live Item will be removed, while its audit archive and provenance are retained.`}
                       className="mt-4 border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-4"
                     >
-                      <input type="hidden" name="instanceId" value={row.id} />
-                      <input type="hidden" name="returnTo" value={returnTo} />
-                      <input type="hidden" name="liveAction" value="1" />
+                      <input className="admin_items_vault_page_input_instance_id_3" type="hidden" name="instanceId" value={row.id} />
+                      <input className="admin_items_vault_page_input_return_4" type="hidden" name="returnTo" value={returnTo} />
+                      <input className="admin_items_vault_page_input_live_action_4" type="hidden" name="liveAction" value="1" />
 
-                      <label className="block">
-                        <span className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-8f7154))]">
+                      <label className="block admin_items_vault_page_label_label">
+                        <span className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-8f7154))] admin_items_vault_page_span_text">
                           Destruction reason
                         </span>
                         <textarea
@@ -561,14 +561,14 @@ export default async function AdminItemVaultPage({
                           maxLength={1000}
                           rows={2}
                           placeholder="Why is this individual Item being permanently destroyed?"
-                          className={`${inputClass} mt-2`}
+                          className={[((`${inputClass} mt-2`)), "admin_items_vault_page_textarea_destruction_reason"].filter(Boolean).join(" ")}
                         />
                       </label>
 
-                      <div className="mt-3 flex justify-end">
+                      <div className="mt-3 flex justify-end admin_items_vault_page_div_container_9">
                         <button
                           type="submit"
-                          className="border border-red-900/55 bg-red-950/20 px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-red-300"
+                          className="border border-red-900/55 bg-red-950/20 px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-red-300 admin_items_vault_page_button_archive_destroy"
                         >
                           Archive & destroy
                         </button>
@@ -579,27 +579,27 @@ export default async function AdminItemVaultPage({
               })}
             </div>
           ) : (
-            <div className="mt-4 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-6 text-sm italic text-[rgb(var(--sep-colour-817565))]">
+            <div className="mt-4 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-6 text-sm italic text-[rgb(var(--sep-colour-817565))] admin_items_vault_page_div_container_10">
               The Admin Vault is empty.
             </div>
           )}
         </section>
 
-        <section className="mt-8 border-t border-[rgb(var(--sep-colour-60482e))]/35 pt-7">
-          <div className="flex items-end justify-between gap-3">
-            <div>
-              <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
+        <section className="mt-8 border-t border-[rgb(var(--sep-colour-60482e))]/35 pt-7 admin_items_vault_page_section_section_2">
+          <div className="flex items-end justify-between gap-3 admin_items_vault_page_div_container_11">
+            <div className="admin_items_vault_page_div_destroyed_unique_items">
+              <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))] admin_items_vault_page_p_destroyed_unique_items">
                 Audit archive
               </p>
-              <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">
+              <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))] admin_items_vault_page_h2_destroyed_unique_items">
                 Destroyed Unique Items
               </h2>
-              <p className="mt-2 max-w-3xl text-xs leading-6 text-[rgb(var(--sep-colour-817565))]">
+              <p className="mt-2 max-w-3xl text-xs leading-6 text-[rgb(var(--sep-colour-817565))] admin_items_vault_page_p_destroyed_unique_items_2">
                 Destroyed Items no longer exist in live inventory, but their final
                 state, destruction reason, and complete provenance are retained here.
               </p>
             </div>
-            <p className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
+            <p className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))] admin_items_vault_page_p_text_7">
               {destroyed.length} archived
             </p>
           </div>
@@ -609,7 +609,7 @@ export default async function AdminItemVaultPage({
           ) : null}
 
           {destroyed.length ? (
-            <div className="mt-4 space-y-3">
+            <div className="mt-4 space-y-3 admin_items_vault_page_div_container_12">
               {destroyed.map((row) => {
                 const history = Array.isArray(row.provenance_snapshot)
                   ? row.provenance_snapshot
@@ -640,9 +640,9 @@ export default async function AdminItemVaultPage({
                       .join(" ")
                       .toLowerCase()}
                     data-quality={row.quality ?? ""}
-                    className="border border-red-950/45 bg-[rgb(var(--sep-colour-100c09))] p-4"
+                    className="border border-red-950/45 bg-[rgb(var(--sep-colour-100c09))] p-4 admin_items_vault_page_article_article_2"
                   >
-                    <div className="flex gap-3">
+                    <div className="flex gap-3 admin_items_vault_page_div_container_13">
                       <ItemImageFrame
                         src={row.image_url}
                         quality={row.quality ?? "average"}
@@ -651,69 +651,69 @@ export default async function AdminItemVaultPage({
                         muted
                       />
 
-                      <div className="min-w-0 flex-1">
-                        <div className="flex flex-wrap items-start justify-between gap-2">
-                          <div>
-                            <p className="font-serif text-lg text-[rgb(var(--sep-colour-bfa98a))]">
+                      <div className="min-w-0 flex-1 admin_items_vault_page_div_container_14">
+                        <div className="flex flex-wrap items-start justify-between gap-2 admin_items_vault_page_div_container_15">
+                          <div className="admin_items_vault_page_div_container_16">
+                            <p className="font-serif text-lg text-[rgb(var(--sep-colour-bfa98a))] admin_items_vault_page_p_text_8">
                               {row.display_name || row.item_name}
                             </p>
-                            <p className="mt-1 text-[8px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-756958))]">
+                            <p className="mt-1 text-[8px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-756958))] admin_items_vault_page_p_text_9">
                               Destroyed · {row.quality ?? "unknown quality"}
                             </p>
                           </div>
-                          <p className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6254))]">
+                          <p className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6254))] admin_items_vault_page_p_text_10">
                             {destroyedAt} UTC
                           </p>
                         </div>
                       </div>
                     </div>
 
-                    <div className="mt-3 border border-red-950/35 bg-red-950/10 px-3 py-2">
-                      <p className="text-[8px] uppercase tracking-[0.13em] text-red-300/80">
+                    <div className="mt-3 border border-red-950/35 bg-red-950/10 px-3 py-2 admin_items_vault_page_div_container_17">
+                      <p className="text-[8px] uppercase tracking-[0.13em] text-red-300/80 admin_items_vault_page_p_text_11">
                         Destruction reason
                       </p>
-                      <p className="mt-1 text-xs leading-5 text-[rgb(var(--sep-colour-9c8e7c))]">
+                      <p className="mt-1 text-xs leading-5 text-[rgb(var(--sep-colour-9c8e7c))] admin_items_vault_page_p_text_12">
                         {row.destruction_reason}
                       </p>
                     </div>
 
                     {row.description?.trim() ? (
-                      <p className="mt-3 text-xs leading-6 text-[rgb(var(--sep-colour-817565))]">
+                      <p className="mt-3 text-xs leading-6 text-[rgb(var(--sep-colour-817565))] admin_items_vault_page_p_text_13">
                         {row.description}
                       </p>
                     ) : null}
 
-                    <details className="mt-3 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))]">
-                      <summary className="cursor-pointer list-none px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9b8768))]">
+                    <details className="mt-3 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))] admin_items_vault_page_details_retained_provenance_event">
+                      <summary className="cursor-pointer list-none px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9b8768))] admin_items_vault_page_summary_retained_provenance_event">
                         Retained provenance · {history.length} event
                         {history.length === 1 ? "" : "s"}
                       </summary>
-                      <div className="space-y-2 border-t border-[rgb(var(--sep-colour-59432c))]/30 p-3">
+                      <div className="space-y-2 border-t border-[rgb(var(--sep-colour-59432c))]/30 p-3 admin_items_vault_page_div_retained_provenance_event">
                         {history.length ? (
                           history.map((entry, index) => (
                             <div
                               key={`${row.id}-${index}`}
-                              className="border-l border-[rgb(var(--sep-colour-765937))]/55 pl-3"
+                              className="border-l border-[rgb(var(--sep-colour-765937))]/55 pl-3 admin_items_vault_page_div_container_18"
                             >
-                              <p className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a68a61))]">
+                              <p className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a68a61))] admin_items_vault_page_p_text_14">
                                 {(entry.event_type ?? "unknown event").replace(/_/g, " ")}
                               </p>
                               {entry.details ? (
-                                <p className="mt-1 text-[10px] leading-5 text-[rgb(var(--sep-colour-817565))]">
+                                <p className="mt-1 text-[10px] leading-5 text-[rgb(var(--sep-colour-817565))] admin_items_vault_page_p_text_15">
                                   {entry.details}
                                 </p>
                               ) : null}
                             </div>
                           ))
                         ) : (
-                          <p className="text-xs italic text-[rgb(var(--sep-colour-756958))]">
+                          <p className="text-xs italic text-[rgb(var(--sep-colour-756958))] admin_items_vault_page_p_text_16">
                             No prior provenance records were present.
                           </p>
                         )}
                       </div>
                     </details>
 
-                    <p className="mt-3 font-mono text-[9px] text-[rgb(var(--sep-colour-5f5549))]">
+                    <p className="mt-3 font-mono text-[9px] text-[rgb(var(--sep-colour-5f5549))] admin_items_vault_page_p_text_17">
                       Original instance: {row.original_instance_id}
                     </p>
                   </article>
@@ -721,7 +721,7 @@ export default async function AdminItemVaultPage({
               })}
             </div>
           ) : (
-            <div className="mt-4 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-6 text-sm italic text-[rgb(var(--sep-colour-817565))]">
+            <div className="mt-4 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-6 text-sm italic text-[rgb(var(--sep-colour-817565))] admin_items_vault_page_div_container_19">
               No Unique Items have been destroyed since the archive was enabled.
             </div>
           )}

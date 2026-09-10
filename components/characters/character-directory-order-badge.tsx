@@ -104,15 +104,15 @@ export function CharacterDirectoryOrderBadge({
 
   if (!loaded) {
     return (
-      <div className="flex min-w-0 items-center gap-2.5 border border-[rgb(var(--sep-colour-59432c))]/45 bg-black/15 px-2.5 py-2">
-        <div className="h-8 w-8 shrink-0 animate-pulse border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-0d0907))]" />
+      <div className="flex min-w-0 items-center gap-2.5 border border-[rgb(var(--sep-colour-59432c))]/45 bg-black/15 px-2.5 py-2 components_characters_character_directory_order_badge_div_container">
+        <div className="h-8 w-8 shrink-0 animate-pulse border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-0d0907))] components_characters_character_directory_order_badge_div_container_2" />
 
-        <div className="min-w-0">
-          <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-705f49))]">
+        <div className="min-w-0 components_characters_character_directory_order_badge_div_container_3">
+          <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-705f49))] components_characters_character_directory_order_badge_p_text">
             Order
           </p>
 
-          <p className="mt-0.5 text-xs text-[rgb(var(--sep-colour-675e52))]">
+          <p className="mt-0.5 text-xs text-[rgb(var(--sep-colour-675e52))] components_characters_character_directory_order_badge_p_text_2">
             Loading…
           </p>
         </div>
@@ -126,14 +126,14 @@ export function CharacterDirectoryOrderBadge({
 
   return (
     <div
-      className="flex min-w-0 items-center gap-2.5 border border-[rgb(var(--sep-colour-59432c))]/45 bg-black/15 px-2.5 py-2"
+      className="flex min-w-0 items-center gap-2.5 border border-[rgb(var(--sep-colour-59432c))]/45 bg-black/15 px-2.5 py-2 components_characters_character_directory_order_badge_div_container_4"
       style={{
         borderColor: `${colour}66`,
         backgroundImage: `linear-gradient(90deg, ${colour}18, transparent 55%)`,
       }}
     >
       <div
-        className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-0d0907))] font-serif text-[11px]"
+        className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden border bg-[rgb(var(--sep-colour-0d0907))] font-serif text-[11px] components_characters_character_directory_order_badge_div_container_5"
         style={{
           borderColor: `${colour}88`,
           color: colour,
@@ -144,7 +144,7 @@ export function CharacterDirectoryOrderBadge({
           <img
             src={order.icon_url}
             alt=""
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover components_characters_character_directory_order_badge_img_image"
           />
         ) : (
           order?.name
@@ -153,13 +153,13 @@ export function CharacterDirectoryOrderBadge({
         )}
       </div>
 
-      <div className="min-w-0">
-        <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-705f49))]">
+      <div className="min-w-0 components_characters_character_directory_order_badge_div_container_6">
+        <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-705f49))] components_characters_character_directory_order_badge_p_text_3">
           Order
         </p>
 
         <p
-          className="truncate text-xs"
+          className="truncate text-xs components_characters_character_directory_order_badge_p_text_4"
           style={{
             color: order
               ? colour

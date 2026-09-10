@@ -1593,32 +1593,32 @@ export function PortalSidebar({
         <div
           key={item.label}
           title={`${item.title} — Coming soon`}
-          className={`flex min-h-[var(--portal-nav-min-h)] cursor-not-allowed items-center gap-2 border border-transparent px-2.5 py-[var(--portal-nav-y)] text-[11px] text-[rgb(var(--sep-colour-62594d))] opacity-65 lg:text-xs ${
+          className={[((`flex min-h-[var(--portal-nav-min-h)] cursor-not-allowed items-center gap-2 border border-transparent px-2.5 py-[var(--portal-nav-y)] text-[11px] text-[rgb(var(--sep-colour-62594d))] opacity-65 lg:text-xs ${
             item.subItem
               ? "lg:ml-5"
               : ""
-          }`}
+          }`)), "components_portal_portal_sidebar_div_container"].filter(Boolean).join(" ")}
         >
           <span
-  className={`flex shrink-0 items-center justify-center ${
+  className={[((`flex shrink-0 items-center justify-center ${
     item.subItem
       ? "h-4 w-4"
       : "h-[18px] w-[18px]"
-  }`}
+  }`)), "components_portal_portal_sidebar_span_text"].filter(Boolean).join(" ")}
 >
   <img
     src={item.icon}
     alt=""
     aria-hidden="true"
-    className="h-full w-full object-contain opacity-35"
+    className="h-full w-full object-contain opacity-35 components_portal_portal_sidebar_img_image"
   />
 </span>
 
-          <span className="truncate">
+          <span className="truncate components_portal_portal_sidebar_span_text_2">
             {item.label}
           </span>
 
-          <span className="ml-auto hidden text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-504940))] lg:block">
+          <span className="ml-auto hidden text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-504940))] lg:block components_portal_portal_sidebar_span_text_3">
             Soon
           </span>
         </div>
@@ -1661,21 +1661,21 @@ export function PortalSidebar({
     const contents = (
       <>
         <span
-  className={`flex shrink-0 items-center justify-center ${
+  className={[((`flex shrink-0 items-center justify-center ${
     item.subItem
       ? "h-4 w-4"
       : "h-[18px] w-[18px]"
-  }`}
+  }`)), "components_portal_portal_sidebar_span_text_4"].filter(Boolean).join(" ")}
 >
   <img
     src={item.icon}
     alt=""
     aria-hidden="true"
-    className="h-full w-full object-contain"
+    className="h-full w-full object-contain components_portal_portal_sidebar_img_image_2"
   />
 </span>
 
-        <span className="truncate">
+        <span className="truncate components_portal_portal_sidebar_span_text_5">
           {item.label}
         </span>
 
@@ -1710,7 +1710,7 @@ export function PortalSidebar({
           onClick={() =>
             void openModalItem(item)
           }
-          className={`${itemClassName} w-full text-left`}
+          className={[((`${itemClassName} w-full text-left`)), "components_portal_portal_sidebar_button_action"].filter(Boolean).join(" ")}
           aria-haspopup="dialog"
           aria-expanded={
             modalItem?.href ===
@@ -1749,15 +1749,15 @@ export function PortalSidebar({
     return (
       <div
         key="rules-menu"
-        className="min-w-0"
+        className="min-w-0 components_portal_portal_sidebar_div_container_2"
       >
         <div
-          className={`flex min-h-[var(--portal-nav-min-h)] items-center border text-[11px] transition lg:text-xs ${
+          className={[((`flex min-h-[var(--portal-nav-min-h)] items-center border text-[11px] transition lg:text-xs ${
             modalActive ||
             active
               ? "border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] text-[rgb(var(--sep-colour-efd9aa))]"
               : "border-transparent text-[rgb(var(--sep-colour-b6a894))] hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))] hover:text-[rgb(var(--sep-colour-e8d8ba))]"
-          }`}
+          }`)), "components_portal_portal_sidebar_div_container_3"].filter(Boolean).join(" ")}
         >
           <button
             type="button"
@@ -1769,22 +1769,22 @@ export function PortalSidebar({
                 rulesItem,
               )
             }
-            className="flex min-w-0 flex-1 items-center gap-2 px-2.5 py-[var(--portal-nav-y)] text-left"
+            className="flex min-w-0 flex-1 items-center gap-2 px-2.5 py-[var(--portal-nav-y)] text-left components_portal_portal_sidebar_button_action_2"
             aria-haspopup="dialog"
             aria-expanded={
               modalActive
             }
           >
-            <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center">
+            <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center components_portal_portal_sidebar_span_text_6">
               <img
                 src={rulesItem.icon}
                 alt=""
                 aria-hidden="true"
-                className="h-full w-full object-contain"
+                className="h-full w-full object-contain components_portal_portal_sidebar_img_image_3"
               />
             </span>
 
-            <span className="truncate">
+            <span className="truncate components_portal_portal_sidebar_span_text_7">
               {rulesItem.label}
             </span>
           </button>
@@ -1810,11 +1810,11 @@ export function PortalSidebar({
             aria-expanded={
               rulesExpanded
             }
-            className="relative mr-1 flex h-5 w-5 shrink-0 items-center justify-center text-[11px] leading-none text-[rgb(var(--sep-colour-b68b4f))] transition hover:bg-[rgb(var(--sep-colour-4a3420))]/45 hover:text-[rgb(var(--sep-colour-efd9aa))]"
+            className="relative mr-1 flex h-5 w-5 shrink-0 items-center justify-center text-[11px] leading-none text-[rgb(var(--sep-colour-b68b4f))] transition hover:bg-[rgb(var(--sep-colour-4a3420))]/45 hover:text-[rgb(var(--sep-colour-efd9aa))] components_portal_portal_sidebar_button_action_3"
           >
             <span
               aria-hidden="true"
-              className="absolute left-0 top-1/2 h-3 w-px -translate-y-1/2 bg-[rgb(var(--sep-colour-6e5535))]/30"
+              className="absolute left-0 top-1/2 h-3 w-px -translate-y-1/2 bg-[rgb(var(--sep-colour-6e5535))]/30 components_portal_portal_sidebar_span_text_8"
             />
 
             {rulesExpanded
@@ -1824,7 +1824,7 @@ export function PortalSidebar({
         </div>
 
         {rulesExpanded ? (
-          <div className="mt-1 border-l border-[rgb(var(--sep-colour-60482e))]/40 pl-3 lg:ml-4">
+          <div className="mt-1 border-l border-[rgb(var(--sep-colour-60482e))]/40 pl-3 lg:ml-4 components_portal_portal_sidebar_div_container_4">
             <button
               type="button"
               title={
@@ -1835,24 +1835,24 @@ export function PortalSidebar({
                   glossaryItem,
                 )
               }
-              className={`flex min-h-7 w-full items-center gap-2 border px-2 py-1 text-left text-[10px] transition ${
+              className={[((`flex min-h-7 w-full items-center gap-2 border px-2 py-1 text-left text-[10px] transition ${
                 modalItem?.href ===
                 glossaryItem.href
                   ? "border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-2a1d12))] text-[rgb(var(--sep-colour-efd9aa))]"
                   : "border-transparent text-[rgb(var(--sep-colour-8f806d))] hover:border-[rgb(var(--sep-colour-59432c))] hover:bg-[rgb(var(--sep-colour-19120d))] hover:text-[rgb(var(--sep-colour-d7bd91))]"
-              }`}
+              }`)), "components_portal_portal_sidebar_button_action_4"].filter(Boolean).join(" ")}
               aria-haspopup="dialog"
             >
-              <span className="flex h-4 w-4 shrink-0 items-center justify-center">
+              <span className="flex h-4 w-4 shrink-0 items-center justify-center components_portal_portal_sidebar_span_text_9">
                 <img
                   src={glossaryItem.icon}
                   alt=""
                   aria-hidden="true"
-                  className="h-full w-full object-contain"
+                  className="h-full w-full object-contain components_portal_portal_sidebar_img_image_4"
                 />
               </span>
 
-              <span className="truncate">
+              <span className="truncate components_portal_portal_sidebar_span_text_10">
                 Glossary
               </span>
             </button>
@@ -1885,14 +1885,14 @@ export function PortalSidebar({
     return (
       <div
         key="premium-menu"
-        className="min-w-0"
+        className="min-w-0 components_portal_portal_sidebar_div_container_5"
       >
         <div
-          className={`flex min-h-[var(--portal-nav-min-h)] items-center border text-[11px] transition lg:text-xs ${
+          className={[((`flex min-h-[var(--portal-nav-min-h)] items-center border text-[11px] transition lg:text-xs ${
             active
               ? "border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] text-[rgb(var(--sep-colour-efd9aa))]"
               : "border-transparent text-[rgb(var(--sep-colour-b6a894))] hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))] hover:text-[rgb(var(--sep-colour-e8d8ba))]"
-          }`}
+          }`)), "components_portal_portal_sidebar_div_container_6"].filter(Boolean).join(" ")}
         >
           <button
             type="button"
@@ -1901,22 +1901,22 @@ export function PortalSidebar({
                 (current) => !current,
               )
             }
-            className="flex min-w-0 flex-1 items-center gap-2 px-2.5 py-[var(--portal-nav-y)] text-left"
+            className="flex min-w-0 flex-1 items-center gap-2 px-2.5 py-[var(--portal-nav-y)] text-left components_portal_portal_sidebar_button_action_5"
             aria-expanded={
               premiumExpanded
             }
             aria-controls="premium-submenu"
           >
-            <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center">
+            <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center components_portal_portal_sidebar_span_text_11">
               <img
                 src="/icons/premium.png"
                 alt=""
                 aria-hidden="true"
-                className="h-full w-full object-contain"
+                className="h-full w-full object-contain components_portal_portal_sidebar_img_image_5"
               />
             </span>
 
-            <span className="truncate">
+            <span className="truncate components_portal_portal_sidebar_span_text_12">
               Premium
             </span>
           </button>
@@ -1936,7 +1936,7 @@ export function PortalSidebar({
             aria-expanded={
               premiumExpanded
             }
-            className="relative mr-1 flex h-5 w-5 shrink-0 items-center justify-center text-[11px] leading-none text-[rgb(var(--sep-colour-b68b4f))] transition hover:bg-[rgb(var(--sep-colour-4a3420))]/45 hover:text-[rgb(var(--sep-colour-efd9aa))]"
+            className="relative mr-1 flex h-5 w-5 shrink-0 items-center justify-center text-[11px] leading-none text-[rgb(var(--sep-colour-b68b4f))] transition hover:bg-[rgb(var(--sep-colour-4a3420))]/45 hover:text-[rgb(var(--sep-colour-efd9aa))] components_portal_portal_sidebar_button_action_6"
           >
             {premiumExpanded
               ? "−"
@@ -1947,7 +1947,7 @@ export function PortalSidebar({
         {premiumExpanded ? (
           <div data-premium-submenu="true"
             id="premium-submenu"
-            className="mt-1 border-l border-[rgb(var(--sep-colour-60482e))]/40 pl-2"
+            className="mt-1 border-l border-[rgb(var(--sep-colour-60482e))]/40 pl-2 components_portal_portal_sidebar_div_premium_submenu"
           >
             {renderNavigationItem(
               storeItem,
@@ -1985,7 +1985,7 @@ export function PortalSidebar({
       );
 
     return (
-      <div className="min-w-0">
+      <div className="min-w-0 components_portal_portal_sidebar_div_container_7">
         <button
           type="button"
           onClick={() =>
@@ -1999,19 +1999,19 @@ export function PortalSidebar({
           }
           aria-controls="legal-safety-submenu"
           data-left-sidebar-section-heading="true"
-          className={`flex w-full items-center justify-between py-0.5 text-left text-[9px] uppercase tracking-[0.18em] transition ${
+          className={[((`flex w-full items-center justify-between py-0.5 text-left text-[9px] uppercase tracking-[0.18em] transition ${
             anyModalOpen
               ? "text-[rgb(var(--sep-colour-d8bf91))]"
               : "text-[rgb(var(--sep-colour-9f8b70))] hover:text-[rgb(var(--sep-colour-d8bf91))]"
-          }`}
+          }`)), "components_portal_portal_sidebar_button_action_7"].filter(Boolean).join(" ")}
         >
-          <span>
+          <span className="components_portal_portal_sidebar_span_text_13">
             Legal &amp; Safety
           </span>
 
           <span
             aria-hidden="true"
-            className="ml-3 text-[12px] leading-none"
+            className="ml-3 text-[12px] leading-none components_portal_portal_sidebar_span_text_14"
           >
             {legalSafetyExpanded
               ? "−"
@@ -2022,7 +2022,7 @@ export function PortalSidebar({
         {legalSafetyExpanded ? (
           <div
             id="legal-safety-submenu"
-            className="mt-1 border-l border-[rgb(var(--sep-colour-60482e))]/40 pl-3"
+            className="mt-1 border-l border-[rgb(var(--sep-colour-60482e))]/40 pl-3 components_portal_portal_sidebar_div_legal_safety_submenu"
           >
             {legalSafetyItems.map(
               (item) => (
@@ -2035,12 +2035,12 @@ export function PortalSidebar({
                       item,
                     )
                   }
-                  className={`block w-full py-1 text-left text-[9px] tracking-[0.08em] transition ${
+                  className={[((`block w-full py-1 text-left text-[9px] tracking-[0.08em] transition ${
                     modalItem?.href ===
                     item.href
                       ? "text-[rgb(var(--sep-colour-efd9aa))]"
                       : "text-[rgb(var(--sep-colour-8f806d))] hover:text-[rgb(var(--sep-colour-d8bf91))]"
-                  }`}
+                  }`)), "components_portal_portal_sidebar_button_action_8"].filter(Boolean).join(" ")}
                   aria-haspopup="dialog"
                 >
                   {item.label}
@@ -2088,22 +2088,20 @@ export function PortalSidebar({
           key={item.label}
           title={`${item.label} — Coming soon`}
           aria-label={`${item.label} — Coming soon`}
-          className={
-            className
-          }
+          className={[((className)), "components_portal_portal_sidebar_div_container_8"].filter(Boolean).join(" ")}
         >
           <span
-  className={`flex shrink-0 items-center justify-center ${
+  className={[((`flex shrink-0 items-center justify-center ${
     item.subItem
       ? "h-4 w-4"
       : "h-[18px] w-[18px]"
-  }`}
+  }`)), "components_portal_portal_sidebar_span_text_15"].filter(Boolean).join(" ")}
 >
   <img
     src={item.icon}
     alt=""
     aria-hidden="true"
-    className="h-full w-full object-contain"
+    className="h-full w-full object-contain components_portal_portal_sidebar_img_image_6"
   />
 </span>
         </div>
@@ -2122,22 +2120,20 @@ export function PortalSidebar({
           onClick={() =>
             void openModalItem(item)
           }
-          className={
-            className
-          }
+          className={[((className)), "components_portal_portal_sidebar_button_action_9"].filter(Boolean).join(" ")}
         >
           <span
-  className={`flex shrink-0 items-center justify-center ${
+  className={[((`flex shrink-0 items-center justify-center ${
     item.subItem
       ? "h-4 w-4"
       : "h-[18px] w-[18px]"
-  }`}
+  }`)), "components_portal_portal_sidebar_span_text_16"].filter(Boolean).join(" ")}
 >
   <img
     src={item.icon}
     alt=""
     aria-hidden="true"
-    className="h-full w-full object-contain"
+    className="h-full w-full object-contain components_portal_portal_sidebar_img_image_7"
   />
 </span>
         </button>
@@ -2157,17 +2153,17 @@ export function PortalSidebar({
         }
       >
         <span
-  className={`flex shrink-0 items-center justify-center ${
+  className={[((`flex shrink-0 items-center justify-center ${
     item.subItem
       ? "h-4 w-4"
       : "h-[18px] w-[18px]"
-  }`}
+  }`)), "components_portal_portal_sidebar_span_text_17"].filter(Boolean).join(" ")}
 >
   <img
     src={item.icon}
     alt=""
     aria-hidden="true"
-    className="h-full w-full object-contain"
+    className="h-full w-full object-contain components_portal_portal_sidebar_img_image_8"
   />
 </span>
 
@@ -2175,7 +2171,7 @@ export function PortalSidebar({
           "Messages" &&
         unreadMessageCount >
           0 ? (
-          <span data-sep-counter-badge="true" className="absolute right-0.5 top-0.5 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] px-0.5 text-[7px] font-bold leading-none text-[#ffe1ac]">
+          <span data-sep-counter-badge="true" className="absolute right-0.5 top-0.5 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] px-0.5 text-[7px] font-bold leading-none text-[#ffe1ac] components_portal_portal_sidebar_span_text_18">
             {unreadMessageCount >
             9
               ? "9+"
@@ -2209,9 +2205,9 @@ export function PortalSidebar({
     return (
       <form
         action={enterRoomFromMap}
-        className="min-w-0"
+        className="min-w-0 components_portal_portal_sidebar_form_form"
       >
-        <input
+        <input className="components_portal_portal_sidebar_input_room_id"
           type="hidden"
           name="roomId"
           value={oddJobsRoomId ?? ""}
@@ -2226,14 +2222,14 @@ export function PortalSidebar({
               : "The Odd Jobs Bureau is currently unavailable."
           }
           aria-label="The Odd Jobs Bureau"
-          className={`${className} w-full`}
+          className={[((`${className} w-full`)), "components_portal_portal_sidebar_button_odd_jobs_bureau"].filter(Boolean).join(" ")}
         >
-          <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center">
+          <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center components_portal_portal_sidebar_span_odd_jobs_bureau">
             <img
               src="/icons/bureau.png"
               alt=""
               aria-hidden="true"
-              className="h-full w-full object-contain"
+              className="h-full w-full object-contain components_portal_portal_sidebar_img_odd_jobs_bureau"
             />
           </span>
         </button>
@@ -2263,9 +2259,9 @@ export function PortalSidebar({
     return (
       <form
         action={enterRoomFromMap}
-        className="min-w-0"
+        className="min-w-0 components_portal_portal_sidebar_form_form_2"
       >
-        <input
+        <input className="components_portal_portal_sidebar_input_room_id_2"
           type="hidden"
           name="roomId"
           value={
@@ -2282,14 +2278,14 @@ export function PortalSidebar({
               : "The Breeze Lodgings are currently unavailable."
           }
           aria-label="The Breeze Lodgings"
-          className={`${className} w-full`}
+          className={[((`${className} w-full`)), "components_portal_portal_sidebar_button_breeze_lodgings"].filter(Boolean).join(" ")}
         >
-          <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center">
+          <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center components_portal_portal_sidebar_span_breeze_lodgings">
             <img
               src="/icons/lodging.png"
               alt=""
               aria-hidden="true"
-              className="h-full w-full object-contain"
+              className="h-full w-full object-contain components_portal_portal_sidebar_img_breeze_lodgings"
             />
           </span>
         </button>
@@ -2321,13 +2317,13 @@ export function PortalSidebar({
         data-portal-column
         data-portal-scroll
         data-portal-navigation
-        className="border-b border-[rgb(var(--sep-colour-6e5535))]/30 bg-[rgb(var(--sep-colour-100d0b))]/90 lg:h-full lg:min-h-0 lg:overflow-y-auto lg:overscroll-contain lg:border-b-0 lg:border-r"
+        className="border-b border-[rgb(var(--sep-colour-6e5535))]/30 bg-[rgb(var(--sep-colour-100d0b))]/90 lg:h-full lg:min-h-0 lg:overflow-y-auto lg:overscroll-contain lg:border-b-0 lg:border-r components_portal_portal_sidebar_aside_sidebar"
       >
         {/* MOBILE NAVIGATION */}
-<div className="px-2 py-1.5 lg:hidden">
+<div className="px-2 py-1.5 lg:hidden components_portal_portal_sidebar_div_container_9">
   <nav
     aria-label="Main navigation"
-    className="grid grid-flow-col grid-rows-2 auto-cols-[minmax(42px,1fr)] gap-1 overflow-x-auto overscroll-x-contain pb-1"
+    className="grid grid-flow-col grid-rows-2 auto-cols-[minmax(42px,1fr)] gap-1 overflow-x-auto overscroll-x-contain pb-1 components_portal_portal_sidebar_nav_main_navigation"
   >
     {mobileNavigationItems.map(
       renderMobileItem,
@@ -2338,7 +2334,7 @@ export function PortalSidebar({
 
     {/* RULES */}
     <div
-      className={`relative flex h-10 min-w-0 border transition ${
+      className={[((`relative flex h-10 min-w-0 border transition ${
         isActive(
           rulesItem.activePaths,
         ) ||
@@ -2346,7 +2342,7 @@ export function PortalSidebar({
           rulesItem.href
           ? "border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))]"
           : "border-transparent hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))]"
-      }`}
+      }`)), "components_portal_portal_sidebar_div_main_navigation"].filter(Boolean).join(" ")}
     >
       <button
         type="button"
@@ -2355,13 +2351,13 @@ export function PortalSidebar({
         onClick={() =>
           void openModalItem(rulesItem)
         }
-        className="flex min-w-0 flex-1 items-center justify-center"
+        className="flex min-w-0 flex-1 items-center justify-center components_portal_portal_sidebar_button_rules"
       >
         <img
           src="/icons/rules.png"
           alt=""
           aria-hidden="true"
-          className="h-[18px] w-[18px] object-contain"
+          className="h-[18px] w-[18px] object-contain components_portal_portal_sidebar_img_rules"
         />
       </button>
 
@@ -2378,7 +2374,7 @@ export function PortalSidebar({
             ? "Collapse Rules submenu"
             : "Expand Rules submenu"
         }
-        className="flex w-5 shrink-0 items-center justify-center border-l border-[rgb(var(--sep-colour-60482e))]/45 text-sm text-[rgb(var(--sep-colour-b68b4f))]"
+        className="flex w-5 shrink-0 items-center justify-center border-l border-[rgb(var(--sep-colour-60482e))]/45 text-sm text-[rgb(var(--sep-colour-b68b4f))] components_portal_portal_sidebar_button_main_navigation"
       >
         {rulesExpanded
           ? "−"
@@ -2388,14 +2384,14 @@ export function PortalSidebar({
 
     {/* FORUM */}
     <div
-      className={`relative flex h-10 min-w-0 border transition ${
+      className={[((`relative flex h-10 min-w-0 border transition ${
         forumActive
           ? "border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))]"
           : currentUnreadForumCount >
               0
             ? "border-[rgb(var(--sep-colour-a87532))] bg-[rgb(var(--sep-colour-24190f))]"
             : "border-transparent hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))]"
-      }`}
+      }`)), "components_portal_portal_sidebar_div_main_navigation_2"].filter(Boolean).join(" ")}
     >
       <button
         type="button"
@@ -2404,18 +2400,18 @@ export function PortalSidebar({
         onClick={() =>
           void openModalItem(forumItem)
         }
-        className="relative flex min-w-0 flex-1 items-center justify-center"
+        className="relative flex min-w-0 flex-1 items-center justify-center components_portal_portal_sidebar_button_forum"
       >
         <img
           src="/icons/forum.png"
           alt=""
           aria-hidden="true"
-          className="h-[18px] w-[18px] object-contain"
+          className="h-[18px] w-[18px] object-contain components_portal_portal_sidebar_img_forum"
         />
 
         {currentUnreadForumCount >
         0 ? (
-          <span data-sep-counter-badge="true" className="absolute right-0.5 top-0.5 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] px-0.5 text-[7px] font-bold leading-none text-[#ffe1ac]">
+          <span data-sep-counter-badge="true" className="absolute right-0.5 top-0.5 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] px-0.5 text-[7px] font-bold leading-none text-[#ffe1ac] components_portal_portal_sidebar_span_forum">
             {currentUnreadForumCount >
             9
               ? "9+"
@@ -2437,7 +2433,7 @@ export function PortalSidebar({
             ? "Collapse Forum shortcuts"
             : "Expand Forum shortcuts"
         }
-        className="flex w-5 shrink-0 items-center justify-center border-l border-[rgb(var(--sep-colour-60482e))]/45 text-sm text-[rgb(var(--sep-colour-b68b4f))]"
+        className="flex w-5 shrink-0 items-center justify-center border-l border-[rgb(var(--sep-colour-60482e))]/45 text-sm text-[rgb(var(--sep-colour-b68b4f))] components_portal_portal_sidebar_button_main_navigation_2"
       >
         {mobileForumExpanded
           ? "−"
@@ -2471,7 +2467,7 @@ export function PortalSidebar({
   </nav>
 
   {rulesExpanded ? (
-    <div className="mt-1 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] p-1">
+    <div className="mt-1 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] p-1 components_portal_portal_sidebar_div_container_10">
       <button
         type="button"
         title="Glossary"
@@ -2479,20 +2475,20 @@ export function PortalSidebar({
         onClick={() =>
           void openModalItem(glossaryItem)
         }
-        className="flex h-9 w-full items-center justify-center border border-transparent transition hover:border-[rgb(var(--sep-colour-59432c))] hover:bg-[rgb(var(--sep-colour-19120d))]"
+        className="flex h-9 w-full items-center justify-center border border-transparent transition hover:border-[rgb(var(--sep-colour-59432c))] hover:bg-[rgb(var(--sep-colour-19120d))] components_portal_portal_sidebar_button_glossary"
       >
         <img
           src="/icons/rules.png"
           alt=""
           aria-hidden="true"
-          className="h-4 w-4 object-contain"
+          className="h-4 w-4 object-contain components_portal_portal_sidebar_img_glossary"
         />
       </button>
     </div>
   ) : null}
 
   {mobileForumExpanded ? (
-    <div className="mt-1 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] p-1">
+    <div className="mt-1 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] p-1 components_portal_portal_sidebar_div_container_11">
       <ForumSidebarMenu
         unreadCount={
           currentUnreadForumCount
@@ -2503,8 +2499,8 @@ export function PortalSidebar({
 </div>
 
         {/* DESKTOP SIDEBAR */}
-        <div className="hidden p-[var(--portal-column-pad)] lg:block">
-          <nav aria-label="Main navigation">
+        <div className="hidden p-[var(--portal-column-pad)] lg:block components_portal_portal_sidebar_div_container_12">
+          <nav className="components_portal_portal_sidebar_nav_main_navigation_2" aria-label="Main navigation">
             <NavigationGroup
   title="Explore Sepulchria"
   storageKey="sepulchria-sidebar-explore"
@@ -2517,9 +2513,9 @@ export function PortalSidebar({
   <form
     key="breeze-lodgings"
     action={enterRoomFromMap}
-    className="min-w-0"
+    className="min-w-0 components_portal_portal_sidebar_form_form_3"
   >
-    <input
+    <input className="components_portal_portal_sidebar_input_room_id_3"
       type="hidden"
       name="roomId"
       value={breezeLodgingsRoomId}
@@ -2528,18 +2524,18 @@ export function PortalSidebar({
     <button
       type="submit"
       title="Go directly to The Breeze Lodgings."
-      className="flex min-h-[var(--portal-nav-min-h)] w-full items-center gap-2 border border-transparent px-2.5 py-[var(--portal-nav-y)] text-left text-[11px] text-[rgb(var(--sep-colour-b6a894))] transition hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))] hover:text-[rgb(var(--sep-colour-e8d8ba))] lg:text-xs"
+      className="flex min-h-[var(--portal-nav-min-h)] w-full items-center gap-2 border border-transparent px-2.5 py-[var(--portal-nav-y)] text-left text-[11px] text-[rgb(var(--sep-colour-b6a894))] transition hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))] hover:text-[rgb(var(--sep-colour-e8d8ba))] lg:text-xs components_portal_portal_sidebar_button_go_directly_breeze_lodgings"
     >
-      <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center">
+      <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center components_portal_portal_sidebar_span_go_directly_breeze_lodgings">
         <img
           src="/icons/lodging.png"
           alt=""
           aria-hidden="true"
-          className="h-full w-full object-contain"
+          className="h-full w-full object-contain components_portal_portal_sidebar_img_go_directly_breeze_lodgings"
         />
       </span>
 
-      <span className="truncate">
+      <span className="truncate components_portal_portal_sidebar_span_go_directly_breeze_lodgings_2">
         The Breeze Lodgings
       </span>
     </button>
@@ -2550,23 +2546,23 @@ export function PortalSidebar({
                   <form
                     key="order-headquarters"
                     action={enterOwnOrderHeadquarters}
-                    className="min-w-0"
+                    className="min-w-0 components_portal_portal_sidebar_form_enter_own_order_headquarters"
                   >
                     <button
                       type="submit"
                       title="Enter your Order Headquarters."
-                      className="flex min-h-[var(--portal-nav-min-h)] w-full items-center gap-2 border border-transparent px-2.5 py-[var(--portal-nav-y)] text-left text-[11px] text-[rgb(var(--sep-colour-b6a894))] transition hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))] hover:text-[rgb(var(--sep-colour-e8d8ba))] lg:text-xs"
+                      className="flex min-h-[var(--portal-nav-min-h)] w-full items-center gap-2 border border-transparent px-2.5 py-[var(--portal-nav-y)] text-left text-[11px] text-[rgb(var(--sep-colour-b6a894))] transition hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))] hover:text-[rgb(var(--sep-colour-e8d8ba))] lg:text-xs components_portal_portal_sidebar_button_enter_order_headquarters"
                     >
-                      <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center">
+                      <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center components_portal_portal_sidebar_span_enter_order_headquarters">
                         <img
                           src="/icons/headquarters.png"
                           alt=""
                           aria-hidden="true"
-                          className="h-full w-full object-contain"
+                          className="h-full w-full object-contain components_portal_portal_sidebar_img_enter_order_headquarters"
                         />
                       </span>
 
-                      <span className="truncate">
+                      <span className="truncate components_portal_portal_sidebar_span_enter_order_headquarters_2">
                         Order Headquarters
                       </span>
                     </button>
@@ -2595,7 +2591,7 @@ export function PortalSidebar({
               ]}
             />
 
-            <section className="mb-[var(--portal-group-gap)] border-b border-[rgb(var(--sep-colour-6e5535))]/20 pb-[var(--portal-group-gap)]">
+            <section className="mb-[var(--portal-group-gap)] border-b border-[rgb(var(--sep-colour-6e5535))]/20 pb-[var(--portal-group-gap)] components_portal_portal_sidebar_section_main_navigation">
               <button
                 type="button"
                 onClick={() =>
@@ -2618,14 +2614,14 @@ export function PortalSidebar({
                   servicesExpanded
                 }
                 data-left-sidebar-section-heading="true"
-                className="mb-1 flex w-full items-center justify-between text-left text-[8px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-766754))] transition hover:text-[rgb(var(--sep-colour-b4a07f))]"
+                className="mb-1 flex w-full items-center justify-between text-left text-[8px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-766754))] transition hover:text-[rgb(var(--sep-colour-b4a07f))] components_portal_portal_sidebar_button_main_navigation_3"
               >
-                <span>
+                <span className="components_portal_portal_sidebar_span_main_navigation">
                   Services and Utilities
                 </span>
                 <span
                   aria-hidden="true"
-                  className="ml-3 text-[12px] leading-none"
+                  className="ml-3 text-[12px] leading-none components_portal_portal_sidebar_span_main_navigation_2"
                 >
                   {servicesExpanded
                     ? "−"
@@ -2634,15 +2630,15 @@ export function PortalSidebar({
               </button>
 
               {servicesExpanded ? (
-              <div className="grid grid-cols-1 gap-0">
-                <div className="min-w-0">
+              <div className="grid grid-cols-1 gap-0 components_portal_portal_sidebar_div_container_13">
+                <div className="min-w-0 components_portal_portal_sidebar_div_container_14">
                   <div
-                    className={`flex min-h-[var(--portal-nav-min-h)] items-center border text-[11px] transition lg:text-xs ${
+                    className={[((`flex min-h-[var(--portal-nav-min-h)] items-center border text-[11px] transition lg:text-xs ${
                       modalItem?.href === marketItem.href ||
                       modalItem?.href === craftingItem.href
                         ? "border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] text-[rgb(var(--sep-colour-efd9aa))]"
                         : "border-transparent text-[rgb(var(--sep-colour-b6a894))] hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))] hover:text-[rgb(var(--sep-colour-e8d8ba))]"
-                    }`}
+                    }`)), "components_portal_portal_sidebar_div_container_15"].filter(Boolean).join(" ")}
                   >
                     <button
                       type="button"
@@ -2655,18 +2651,18 @@ export function PortalSidebar({
                         economyCraftingExpanded
                       }
                       aria-controls="economy-crafting-submenu"
-                      className="flex min-w-0 flex-1 items-center gap-2 px-2.5 py-[var(--portal-nav-y)] text-left"
+                      className="flex min-w-0 flex-1 items-center gap-2 px-2.5 py-[var(--portal-nav-y)] text-left components_portal_portal_sidebar_button_action_10"
                     >
-                      <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center">
+                      <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center components_portal_portal_sidebar_span_text_19">
                         <img
                           src="/icons/economy.png"
                           alt=""
                           aria-hidden="true"
-                          className="h-full w-full object-contain"
+                          className="h-full w-full object-contain components_portal_portal_sidebar_img_image_9"
                         />
                       </span>
 
-                      <span className="truncate">
+                      <span className="truncate components_portal_portal_sidebar_span_text_20">
                         Economy &amp; Crafting
                       </span>
                     </button>
@@ -2686,7 +2682,7 @@ export function PortalSidebar({
                       aria-expanded={
                         economyCraftingExpanded
                       }
-                      className="relative mr-1 flex h-5 w-5 shrink-0 items-center justify-center text-[11px] leading-none text-[rgb(var(--sep-colour-b68b4f))] transition hover:bg-[rgb(var(--sep-colour-4a3420))]/45 hover:text-[rgb(var(--sep-colour-efd9aa))]"
+                      className="relative mr-1 flex h-5 w-5 shrink-0 items-center justify-center text-[11px] leading-none text-[rgb(var(--sep-colour-b68b4f))] transition hover:bg-[rgb(var(--sep-colour-4a3420))]/45 hover:text-[rgb(var(--sep-colour-efd9aa))] components_portal_portal_sidebar_button_action_11"
                     >
                       {economyCraftingExpanded
                         ? "−"
@@ -2695,7 +2691,7 @@ export function PortalSidebar({
                   </div>                  {economyCraftingExpanded ? (
                     <div
                       id="economy-crafting-submenu"
-                      className="mt-1 border-l border-[rgb(var(--sep-colour-60482e))]/40 pl-2"
+                      className="mt-1 border-l border-[rgb(var(--sep-colour-60482e))]/40 pl-2 components_portal_portal_sidebar_div_economy_crafting_submenu"
                     >
                       {renderNavigationItem(
                         marketItem,
@@ -2705,10 +2701,10 @@ export function PortalSidebar({
                         craftingItem,
                       )}
 
-                      <form
+                      <form className="components_portal_portal_sidebar_form_economy_crafting_submenu"
                         action={enterRoomFromMap}
                       >
-                        <input
+                        <input className="components_portal_portal_sidebar_input_room_id_4"
                           type="hidden"
                           name="roomId"
                           value={
@@ -2724,18 +2720,18 @@ export function PortalSidebar({
                               ? "Go directly to The Odd Jobs Bureau."
                               : "The Odd Jobs Bureau is currently unavailable."
                           }
-                          className="flex min-h-[var(--portal-nav-min-h)] w-full items-center gap-2 border border-transparent px-2.5 py-[var(--portal-nav-y)] text-left text-[11px] text-[rgb(var(--sep-colour-b6a894))] transition hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))] hover:text-[rgb(var(--sep-colour-e8d8ba))] disabled:cursor-not-allowed disabled:opacity-45 lg:text-xs"
+                          className="flex min-h-[var(--portal-nav-min-h)] w-full items-center gap-2 border border-transparent px-2.5 py-[var(--portal-nav-y)] text-left text-[11px] text-[rgb(var(--sep-colour-b6a894))] transition hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))] hover:text-[rgb(var(--sep-colour-e8d8ba))] disabled:cursor-not-allowed disabled:opacity-45 lg:text-xs components_portal_portal_sidebar_button_economy_crafting_submenu"
                         >
-                          <span className="flex h-4 w-4 shrink-0 items-center justify-center">
+                          <span className="flex h-4 w-4 shrink-0 items-center justify-center components_portal_portal_sidebar_span_economy_crafting_submenu">
                             <img
                               src="/icons/bureau.png"
                               alt=""
                               aria-hidden="true"
-                              className="h-full w-full object-contain"
+                              className="h-full w-full object-contain components_portal_portal_sidebar_img_economy_crafting_submenu"
                             />
                           </span>
 
-                          <span className="truncate">
+                          <span className="truncate components_portal_portal_sidebar_span_economy_crafting_submenu_2">
                             The Odd Jobs Bureau
                           </span>
                         </button>
@@ -2780,12 +2776,12 @@ export function PortalSidebar({
             </section>
           </nav>
 
-          <div className="mt-[var(--portal-group-gap)] border-t border-[rgb(var(--sep-colour-6e5535))]/30 pt-2">
+          <div className="mt-[var(--portal-group-gap)] border-t border-[rgb(var(--sep-colour-6e5535))]/30 pt-2 components_portal_portal_sidebar_div_container_16">
             <Link
               href="/support"
               data-left-sidebar-section-heading="true"
               className="flex items-center py-0.5 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9f8b70))] transition hover:text-[rgb(var(--sep-colour-d8bf91))]">
-              <span>Support</span><TicketNotificationBadge audience="player" variant="sidebar" />
+              <span className="components_portal_portal_sidebar_span_text_21">Support</span><TicketNotificationBadge audience="player" variant="sidebar" />
             </Link>
             <PlayerSanctionsSidebarLink />
 
@@ -3136,7 +3132,7 @@ function PublicPageModal({
       aria-modal="false"
       aria-label={item.label}
       data-sep-native-window="true"
-      className="pointer-events-none fixed inset-0"
+      className="pointer-events-none fixed inset-0 components_portal_portal_sidebar_div_dialog"
       style={{ zIndex }}
       onPointerDownCapture={
         onFocus
@@ -3149,10 +3145,10 @@ function PublicPageModal({
           width: frameWidth,
           height: frameHeight,
         }}
-        className="pointer-events-auto fixed flex min-h-0 min-w-0 flex-col overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-090705))] shadow-[0_20px_80px_rgba(var(--sep-rgb-0-0-0),0.65)]"
+        className="pointer-events-auto fixed flex min-h-0 min-w-0 flex-col overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-090705))] shadow-[0_20px_80px_rgba(var(--sep-rgb-0-0-0),0.65)] components_portal_portal_sidebar_div_container_17"
       >
         <div
-          className="flex h-10 shrink-0 cursor-move select-none items-center justify-between border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3"
+          className="flex h-10 shrink-0 cursor-move select-none items-center justify-between border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 components_portal_portal_sidebar_div_container_18"
           onPointerDown={(
             event,
           ) => {
@@ -3247,28 +3243,28 @@ function PublicPageModal({
               null;
           }}
         >
-          <div className="flex min-w-0 items-center gap-3">
+          <div className="flex min-w-0 items-center gap-3 components_portal_portal_sidebar_div_container_19">
             <span
-              className={`flex shrink-0 items-center justify-center ${
+              className={[((`flex shrink-0 items-center justify-center ${
                 item.subItem
                   ? "h-4 w-4"
                   : "h-[18px] w-[18px]"
-              }`}
+              }`)), "components_portal_portal_sidebar_span_text_22"].filter(Boolean).join(" ")}
             >
               <img
                 src={item.icon}
                 alt=""
                 aria-hidden="true"
-                className="h-full w-full object-contain"
+                className="h-full w-full object-contain components_portal_portal_sidebar_img_image_10"
               />
             </span>
 
-            <span className="truncate font-serif text-sm text-[rgb(var(--sep-colour-d8c096))]">
+            <span className="truncate font-serif text-sm text-[rgb(var(--sep-colour-d8c096))] components_portal_portal_sidebar_span_text_23">
               {item.label}
             </span>
           </div>
 
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 components_portal_portal_sidebar_div_container_20">
             <button
               type="button"
               onClick={() => {
@@ -3298,7 +3294,7 @@ function PublicPageModal({
                   ? "Restore window"
                   : "Collapse window"
               }
-              className="flex h-7 w-7 cursor-pointer items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-17110d))] text-sm leading-none text-[rgb(var(--sep-colour-aa9675))] transition hover:border-[rgb(var(--sep-colour-967342))] hover:text-[rgb(var(--sep-colour-f1d7a5))]"
+              className="flex h-7 w-7 cursor-pointer items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-17110d))] text-sm leading-none text-[rgb(var(--sep-colour-aa9675))] transition hover:border-[rgb(var(--sep-colour-967342))] hover:text-[rgb(var(--sep-colour-f1d7a5))] components_portal_portal_sidebar_button_action_12"
             >
               {collapsed
                 ? "□"
@@ -3327,7 +3323,7 @@ function PublicPageModal({
               aria-pressed={
                 maximized
               }
-              className="flex h-7 w-7 cursor-pointer items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-17110d))] text-sm leading-none text-[rgb(var(--sep-colour-aa9675))] transition hover:border-[rgb(var(--sep-colour-967342))] hover:text-[rgb(var(--sep-colour-f1d7a5))]"
+              className="flex h-7 w-7 cursor-pointer items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-17110d))] text-sm leading-none text-[rgb(var(--sep-colour-aa9675))] transition hover:border-[rgb(var(--sep-colour-967342))] hover:text-[rgb(var(--sep-colour-f1d7a5))] components_portal_portal_sidebar_button_action_13"
             >
               {maximized
                 ? "❐"
@@ -3339,7 +3335,7 @@ function PublicPageModal({
               onClick={onClose}
               aria-label={`Close ${item.label}`}
               title={`Close ${item.label}`}
-              className="flex h-7 w-7 cursor-pointer items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-17110d))] text-base leading-none text-[rgb(var(--sep-colour-aa9675))] transition hover:border-[rgb(var(--sep-colour-967342))] hover:text-[rgb(var(--sep-colour-f1d7a5))]"
+              className="flex h-7 w-7 cursor-pointer items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-17110d))] text-base leading-none text-[rgb(var(--sep-colour-aa9675))] transition hover:border-[rgb(var(--sep-colour-967342))] hover:text-[rgb(var(--sep-colour-f1d7a5))] components_portal_portal_sidebar_button_close"
             >
               ×
             </button>
@@ -3347,11 +3343,9 @@ function PublicPageModal({
         </div>
 
         <div
-          className={
-            collapsed
+          className={[((collapsed
               ? "hidden"
-              : "relative flex min-h-0 flex-1 flex-col"
-          }
+              : "relative flex min-h-0 flex-1 flex-col")), "components_portal_portal_sidebar_div_container_21"].filter(Boolean).join(" ")}
         >
           <iframe
             src={iframeSrc}
@@ -3846,7 +3840,7 @@ function PublicPageModal({
               role="separator"
               aria-label={`Resize ${item.label}`}
               title="Resize window"
-              className="absolute bottom-0 right-0 z-30 h-8 w-8 touch-none cursor-se-resize select-none"
+              className="absolute bottom-0 right-0 z-30 h-8 w-8 touch-none cursor-se-resize select-none components_portal_portal_sidebar_div_resize_window"
               onPointerDown={(
                 event,
               ) => {
@@ -3976,7 +3970,7 @@ function PublicPageModal({
             >
               <span
                 aria-hidden="true"
-                className="pointer-events-none absolute bottom-1.5 right-1.5 block h-3.5 w-3.5 border-b border-r border-[rgb(var(--sep-colour-a98b61))]/80"
+                className="pointer-events-none absolute bottom-1.5 right-1.5 block h-3.5 w-3.5 border-b border-r border-[rgb(var(--sep-colour-a98b61))]/80 components_portal_portal_sidebar_span_resize_window"
               />
             </div>
           ) : null}
@@ -4037,19 +4031,19 @@ function NavigationGroup({
   }
 
   return (
-    <section className="mb-[var(--portal-group-gap)] border-b border-[rgb(var(--sep-colour-6e5535))]/20 pb-[var(--portal-group-gap)]">
+    <section className="mb-[var(--portal-group-gap)] border-b border-[rgb(var(--sep-colour-6e5535))]/20 pb-[var(--portal-group-gap)] components_portal_portal_sidebar_section_section">
       <button
         type="button"
         onClick={toggleExpanded}
         aria-expanded={expanded}
         data-left-sidebar-section-heading="true"
-        className="mb-1 flex w-full items-center justify-between text-left text-[8px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-766754))] transition hover:text-[rgb(var(--sep-colour-b4a07f))]"
+        className="mb-1 flex w-full items-center justify-between text-left text-[8px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-766754))] transition hover:text-[rgb(var(--sep-colour-b4a07f))] components_portal_portal_sidebar_button_toggle_expanded"
       >
-        <span>{title}</span>
+        <span className="components_portal_portal_sidebar_span_text_24">{title}</span>
 
         <span
           aria-hidden="true"
-          className="ml-3 text-[12px] leading-none"
+          className="ml-3 text-[12px] leading-none components_portal_portal_sidebar_span_text_25"
         >
           {expanded
             ? "−"
@@ -4058,7 +4052,7 @@ function NavigationGroup({
       </button>
 
       {expanded ? (
-        <div className="grid grid-cols-1 gap-0">
+        <div className="grid grid-cols-1 gap-0 components_portal_portal_sidebar_div_container_22">
           {items}
         </div>
       ) : null}

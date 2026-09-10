@@ -272,19 +272,19 @@ export default async function AdminCharacterPremiumFeaturesPage({
       []) as CharacterCosmeticEntitlementRow[];
 
   return (
-    <main className="p-5 sm:p-7 lg:p-9">
-      <div className="mx-auto max-w-6xl">
-        <div className="flex flex-wrap items-end justify-between gap-4 border-b border-[rgb(var(--sep-colour-60482e))]/35 pb-5">
-          <div>
-            <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
+    <main className="p-5 sm:p-7 lg:p-9 admin_characters_id_premium_features_page_main_main">
+      <div className="mx-auto max-w-6xl admin_characters_id_premium_features_page_div_container">
+        <div className="flex flex-wrap items-end justify-between gap-4 border-b border-[rgb(var(--sep-colour-60482e))]/35 pb-5 admin_characters_id_premium_features_page_div_container_2">
+          <div className="admin_characters_id_premium_features_page_div_premium_features">
+            <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))] admin_characters_id_premium_features_page_p_premium_features">
               Character Administration
             </p>
 
-            <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">
+            <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))] admin_characters_id_premium_features_page_h1_premium_features">
               Premium Features
             </h1>
 
-            <p className="mt-1 text-[11px] text-[rgb(var(--sep-colour-8f8271))]">
+            <p className="mt-1 text-[11px] text-[rgb(var(--sep-colour-8f8271))] admin_characters_id_premium_features_page_p_premium_features_2">
               {characterName(
                 character as Character,
               )}

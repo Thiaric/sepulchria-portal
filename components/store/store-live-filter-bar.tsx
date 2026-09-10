@@ -47,7 +47,7 @@ export function StoreLiveFilterBar({
       }}
       placeholder={placeholder}
       aria-label={placeholder}
-      className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-756958))] focus:border-[rgb(var(--sep-colour-987344))]"
+      className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-756958))] focus:border-[rgb(var(--sep-colour-987344))] components_store_store_live_filter_bar_input_field"
     />
   );
 }

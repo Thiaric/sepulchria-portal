@@ -167,7 +167,7 @@ export function OrderLeadershipSidebarLink({
             : "border-transparent text-[rgb(var(--sep-colour-b68b4f))] hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))] hover:text-[rgb(var(--sep-colour-efd9aa))]"
         }`}
       >
-        <span aria-hidden="true">
+        <span className="components_orders_order_leadership_sidebar_link_span_text" aria-hidden="true">
           ⚜
         </span>
       </Link>
@@ -184,11 +184,11 @@ export function OrderLeadershipSidebarLink({
           : "border-transparent text-[rgb(var(--sep-colour-b6a894))] hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))] hover:text-[rgb(var(--sep-colour-e8d8ba))]"
       }`}
     >
-      <span className="w-4 shrink-0 text-center text-[12px] text-[rgb(var(--sep-colour-b68b4f))]">
+      <span className="w-4 shrink-0 text-center text-[12px] text-[rgb(var(--sep-colour-b68b4f))] components_orders_order_leadership_sidebar_link_span_text_2">
         ⚜
       </span>
 
-      <span className="truncate">
+      <span className="truncate components_orders_order_leadership_sidebar_link_span_text_3">
         Manage Order
       </span>
     </Link>

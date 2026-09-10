@@ -370,7 +370,7 @@ export function ForumTopicFlagButton({
 
   const modal = open ? (
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm components_forum_forum_topic_flag_button_div_container"
       onMouseDown={(
         event,
       ) => {
@@ -382,19 +382,19 @@ export function ForumTopicFlagButton({
         }
       }}
     >
-      <div className="flex max-h-[86vh] w-full max-w-3xl flex-col overflow-hidden border border-[rgb(var(--sep-colour-765735))] bg-[rgb(var(--sep-colour-100c09))] shadow-[0_28px_90px_rgba(var(--sep-rgb-0-0-0),0.9)]">
-        <div className="flex items-start justify-between gap-4 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-19120d))] px-5 py-4">
-          <div>
-            <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8f6c43))]">
+      <div className="flex max-h-[86vh] w-full max-w-3xl flex-col overflow-hidden border border-[rgb(var(--sep-colour-765735))] bg-[rgb(var(--sep-colour-100c09))] shadow-[0_28px_90px_rgba(var(--sep-rgb-0-0-0),0.9)] components_forum_forum_topic_flag_button_div_container_2">
+        <div className="flex items-start justify-between gap-4 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-19120d))] px-5 py-4 components_forum_forum_topic_flag_button_div_container_3">
+          <div className="components_forum_forum_topic_flag_button_div_flag_topic_reading">
+            <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8f6c43))] components_forum_forum_topic_flag_button_p_flag_topic_reading">
               Call attention
             </p>
 
-            <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-e0c89e))]">
+            <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-e0c89e))] components_forum_forum_topic_flag_button_h2_flag_topic_reading">
               Flag this topic
               for reading
             </h2>
 
-            <p className="mt-1 text-xs text-[rgb(var(--sep-colour-837565))]">
+            <p className="mt-1 text-xs text-[rgb(var(--sep-colour-837565))] components_forum_forum_topic_flag_button_p_flag_topic_reading_2">
               Only characters
               who can access this
               forum section are
@@ -407,14 +407,14 @@ export function ForumTopicFlagButton({
             onClick={() =>
               setOpen(false)
             }
-            className="flex h-8 w-8 shrink-0 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/55 text-[rgb(var(--sep-colour-a58b68))] hover:border-[rgb(var(--sep-colour-9a7445))] hover:text-[rgb(var(--sep-colour-e5c99a))]"
+            className="flex h-8 w-8 shrink-0 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/55 text-[rgb(var(--sep-colour-a58b68))] hover:border-[rgb(var(--sep-colour-9a7445))] hover:text-[rgb(var(--sep-colour-e5c99a))] components_forum_forum_topic_flag_button_button_close"
             aria-label="Close"
           >
             ×
           </button>
         </div>
 
-        <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 p-4">
+        <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 p-4 components_forum_forum_topic_flag_button_div_container_4">
           <input
             type="search"
             value={query}
@@ -424,34 +424,34 @@ export function ForumTopicFlagButton({
               )
             }
             placeholder="Search characters, ancestries or associations…"
-            className="w-full border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-0b0806))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c1a0))] outline-none placeholder:text-[rgb(var(--sep-colour-62584b))] focus:border-[rgb(var(--sep-colour-9a7445))] [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
+            className="w-full border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-0b0806))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c1a0))] outline-none placeholder:text-[rgb(var(--sep-colour-62584b))] focus:border-[rgb(var(--sep-colour-9a7445))] [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden components_forum_forum_topic_flag_button_input_search_characters_ancestries_associations"
           />
         </div>
 
-        <div className="min-h-0 flex-1 overflow-y-auto p-4">
+        <div className="min-h-0 flex-1 overflow-y-auto p-4 components_forum_forum_topic_flag_button_div_container_5">
           {loading ? (
-            <p className="py-10 text-center text-xs text-[rgb(var(--sep-colour-847666))]">
+            <p className="py-10 text-center text-xs text-[rgb(var(--sep-colour-847666))] components_forum_forum_topic_flag_button_p_text">
               Checking forum
               access…
             </p>
           ) : loadError ? (
-            <p className="border border-red-900/55 bg-red-950/15 p-4 text-xs text-red-300">
+            <p className="border border-red-900/55 bg-red-950/15 p-4 text-xs text-red-300 components_forum_forum_topic_flag_button_p_text_2">
               {loadError}
             </p>
           ) : characters.length ===
             0 ? (
-            <p className="py-10 text-center text-xs text-[rgb(var(--sep-colour-847666))]">
+            <p className="py-10 text-center text-xs text-[rgb(var(--sep-colour-847666))] components_forum_forum_topic_flag_button_p_text_3">
               No other
               characters have
               access to this
               section.
             </p>
           ) : (
-            <div className="space-y-5">
+            <div className="space-y-5 components_forum_forum_topic_flag_button_div_container_6">
               {friends.length > 0 ? (
-                <section className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-0d0a08))] p-3">
-                  <div className="mb-2 flex items-center justify-between gap-3">
-                    <h3 className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-9b774b))]">
+                <section className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-0d0a08))] p-3 components_forum_forum_topic_flag_button_section_section">
+                  <div className="mb-2 flex items-center justify-between gap-3 components_forum_forum_topic_flag_button_div_friend_list">
+                    <h3 className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-9b774b))] components_forum_forum_topic_flag_button_h3_friend_list">
                       Friend List
                     </h3>
 
@@ -460,7 +460,7 @@ export function ForumTopicFlagButton({
                       onClick={
                         selectAllFriends
                       }
-                      className="border border-[rgb(var(--sep-colour-765735))] px-2.5 py-1.5 text-[8px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-c4a578))] hover:border-[rgb(var(--sep-colour-a47a45))] hover:text-[rgb(var(--sep-colour-e3c79a))]"
+                      className="border border-[rgb(var(--sep-colour-765735))] px-2.5 py-1.5 text-[8px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-c4a578))] hover:border-[rgb(var(--sep-colour-a47a45))] hover:text-[rgb(var(--sep-colour-e3c79a))] components_forum_forum_topic_flag_button_button_select_full_friend_list"
                     >
                       Select full Friend List
                     </button>
@@ -514,13 +514,13 @@ export function ForumTopicFlagButton({
                 }
               />
 
-              <section>
-                <div className="mb-2 flex items-center justify-between">
-                  <h3 className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-9b774b))]">
+              <section className="components_forum_forum_topic_flag_button_section_section_2">
+                <div className="mb-2 flex items-center justify-between components_forum_forum_topic_flag_button_div_characters">
+                  <h3 className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-9b774b))] components_forum_forum_topic_flag_button_h3_characters">
                     Characters
                   </h3>
 
-                  <span className="text-[8px] text-[rgb(var(--sep-colour-6d6255))]">
+                  <span className="text-[8px] text-[rgb(var(--sep-colour-6d6255))] components_forum_forum_topic_flag_button_span_characters">
                     {
                       matchingCharacters.length
                     }{" "}
@@ -528,20 +528,20 @@ export function ForumTopicFlagButton({
                   </span>
                 </div>
 
-                <div className="grid gap-1.5 sm:grid-cols-2">
+                <div className="grid gap-1.5 sm:grid-cols-2 components_forum_forum_topic_flag_button_div_container_7">
                   {matchingCharacters.map(
                     (character) => (
                       <label
                         key={
                           character.id
                         }
-                        className={`flex cursor-pointer items-center gap-3 border p-2.5 transition ${
+                        className={[((`flex cursor-pointer items-center gap-3 border p-2.5 transition ${
                           selectedCharacters.has(
                             character.id,
                           )
                             ? "border-[rgb(var(--sep-colour-a47a45))] bg-[rgb(var(--sep-colour-2b1d12))]"
                             : "border-[rgb(var(--sep-colour-4e3a27))]/60 bg-[rgb(var(--sep-colour-15100d))] hover:border-[rgb(var(--sep-colour-765735))]"
-                        }`}
+                        }`)), "components_forum_forum_topic_flag_button_label_label"].filter(Boolean).join(" ")}
                       >
                         <input
                           type="checkbox"
@@ -554,10 +554,10 @@ export function ForumTopicFlagButton({
                               character.id,
                             )
                           }
-                          className="accent-[rgb(var(--sep-colour-a47a45))]"
+                          className="accent-[rgb(var(--sep-colour-a47a45))] components_forum_forum_topic_flag_button_input_field"
                         />
 
-                        <div className="h-9 w-9 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0b0806))]">
+                        <div className="h-9 w-9 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0b0806))] components_forum_forum_topic_flag_button_div_container_8">
                           {character.portraitUrl ? (
                             // eslint-disable-next-line @next/next/no-img-element
                             <img
@@ -565,19 +565,19 @@ export function ForumTopicFlagButton({
                                 character.portraitUrl
                               }
                               alt=""
-                              className="h-full w-full object-cover"
+                              className="h-full w-full object-cover components_forum_forum_topic_flag_button_img_image"
                             />
                           ) : null}
                         </div>
 
-                        <div className="min-w-0">
-                          <p className="truncate font-serif text-sm text-[rgb(var(--sep-colour-d7be94))]">
+                        <div className="min-w-0 components_forum_forum_topic_flag_button_div_container_9">
+                          <p className="truncate font-serif text-sm text-[rgb(var(--sep-colour-d7be94))] components_forum_forum_topic_flag_button_p_text_4">
                             {
                               character.name
                             }
                           </p>
 
-                          <p className="truncate text-[8px] text-[rgb(var(--sep-colour-776a5b))]">
+                          <p className="truncate text-[8px] text-[rgb(var(--sep-colour-776a5b))] components_forum_forum_topic_flag_button_p_text_5">
                             {[
                               character.raceName,
                               character.associationName,
@@ -602,33 +602,33 @@ export function ForumTopicFlagButton({
 
         <form
           action={formAction}
-          className="border-t border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4"
+          className="border-t border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 components_forum_forum_topic_flag_button_form_form_action"
         >
-          <input
+          <input className="components_forum_forum_topic_flag_button_input_topic_id"
             type="hidden"
             name="topicId"
             value={topicId}
           />
 
-          <input
+          <input className="components_forum_forum_topic_flag_button_input_topic_title"
             type="hidden"
             name="topicTitle"
             value={topicTitle}
           />
 
-          <input
+          <input className="components_forum_forum_topic_flag_button_input_section_id"
             type="hidden"
             name="sectionId"
             value={sectionId}
           />
 
-          <input
+          <input className="components_forum_forum_topic_flag_button_input_section_slug"
             type="hidden"
             name="sectionSlug"
             value={sectionSlug}
           />
 
-          <input
+          <input className="components_forum_forum_topic_flag_button_input_topic_slug"
             type="hidden"
             name="topicSlug"
             value={topicSlug}
@@ -637,7 +637,7 @@ export function ForumTopicFlagButton({
           {[
             ...selectedCharacters,
           ].map((id) => (
-            <input
+            <input className="components_forum_forum_topic_flag_button_input_character_ids"
               key={`c-${id}`}
               type="hidden"
               name="characterIds"
@@ -648,7 +648,7 @@ export function ForumTopicFlagButton({
           {[
             ...selectedRaces,
           ].map((id) => (
-            <input
+            <input className="components_forum_forum_topic_flag_button_input_race_ids"
               key={`r-${id}`}
               type="hidden"
               name="raceIds"
@@ -659,7 +659,7 @@ export function ForumTopicFlagButton({
           {[
             ...selectedAssociations,
           ].map((id) => (
-            <input
+            <input className="components_forum_forum_topic_flag_button_input_association_ids"
               key={`a-${id}`}
               type="hidden"
               name="associationIds"
@@ -667,10 +667,10 @@ export function ForumTopicFlagButton({
             />
           ))}
 
-          <label className="mb-3 block">
-            <span className="mb-1.5 block text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-9b774b))]">
+          <label className="mb-3 block components_forum_forum_topic_flag_button_label_label_2">
+            <span className="mb-1.5 block text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-9b774b))] components_forum_forum_topic_flag_button_span_text">
               Personal message
-              <span className="ml-1 normal-case tracking-normal text-[rgb(var(--sep-colour-6f6254))]">
+              <span className="ml-1 normal-case tracking-normal text-[rgb(var(--sep-colour-6f6254))] components_forum_forum_topic_flag_button_span_text_2">
                 (optional)
               </span>
             </span>
@@ -680,24 +680,24 @@ export function ForumTopicFlagButton({
               maxLength={1000}
               rows={3}
               placeholder='Example: "Read this, I found Reply number 3 quite interesting."'
-              className="w-full resize-y border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-0b0806))] px-3 py-2.5 text-xs leading-5 text-[rgb(var(--sep-colour-d7c1a0))] outline-none placeholder:text-[rgb(var(--sep-colour-62584b))] focus:border-[rgb(var(--sep-colour-9a7445))]"
+              className="w-full resize-y border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-0b0806))] px-3 py-2.5 text-xs leading-5 text-[rgb(var(--sep-colour-d7c1a0))] outline-none placeholder:text-[rgb(var(--sep-colour-62584b))] focus:border-[rgb(var(--sep-colour-9a7445))] components_forum_forum_topic_flag_button_textarea_custom_message"
             />
           </label>
 
           {state.message ? (
             <p
-              className={`mb-3 text-xs ${
+              className={[((`mb-3 text-xs ${
                 state.ok
                   ? "text-[rgb(var(--sep-colour-93a875))]"
                   : "text-[rgb(var(--sep-colour-d18b80))]"
-              }`}
+              }`)), "components_forum_forum_topic_flag_button_p_text_6"].filter(Boolean).join(" ")}
             >
               {state.message}
             </p>
           ) : null}
 
-          <div className="flex items-center justify-between gap-4">
-            <p className="text-[9px] text-[rgb(var(--sep-colour-7b6d5d))]">
+          <div className="flex items-center justify-between gap-4 components_forum_forum_topic_flag_button_div_container_10">
+            <p className="text-[9px] text-[rgb(var(--sep-colour-7b6d5d))] components_forum_forum_topic_flag_button_p_text_7">
               {resolvedCount}{" "}
               character
               {resolvedCount ===
@@ -715,7 +715,7 @@ export function ForumTopicFlagButton({
                 resolvedCount ===
                   0
               }
-              className="border border-[rgb(var(--sep-colour-8d693d))] bg-[rgb(var(--sep-colour-302014))] px-4 py-2.5 text-[8px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-e0c292))] transition hover:border-[rgb(var(--sep-colour-b4874e))] hover:bg-[rgb(var(--sep-colour-3b2818))] disabled:cursor-not-allowed disabled:opacity-40"
+              className="border border-[rgb(var(--sep-colour-8d693d))] bg-[rgb(var(--sep-colour-302014))] px-4 py-2.5 text-[8px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-e0c292))] transition hover:border-[rgb(var(--sep-colour-b4874e))] hover:bg-[rgb(var(--sep-colour-3b2818))] disabled:cursor-not-allowed disabled:opacity-40 components_forum_forum_topic_flag_button_button_action"
             >
               {pending
                 ? "Sending…"
@@ -734,7 +734,7 @@ export function ForumTopicFlagButton({
         onClick={() =>
           setOpen(true)
         }
-        className="inline-flex h-10 items-center justify-center gap-2 whitespace-nowrap border border-[rgb(var(--sep-colour-6f6755))]/70 bg-[rgb(var(--sep-colour-17110d))] px-4 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-c8ae83))] transition hover:bg-[rgb(var(--sep-colour-21170f))] hover:text-[rgb(var(--sep-colour-ead4ad))]"
+        className="inline-flex h-10 items-center justify-center gap-2 whitespace-nowrap border border-[rgb(var(--sep-colour-6f6755))]/70 bg-[rgb(var(--sep-colour-17110d))] px-4 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-c8ae83))] transition hover:bg-[rgb(var(--sep-colour-21170f))] hover:text-[rgb(var(--sep-colour-ead4ad))] components_forum_forum_topic_flag_button_button_flag_reading"
         title="Send selected characters a private message asking them to read this topic"
       >
         ⚑ Flag for reading
@@ -768,12 +768,12 @@ function SelectionGroup({
   }
 
   return (
-    <section>
-      <h3 className="mb-2 text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-9b774b))]">
+    <section className="components_forum_forum_topic_flag_button_section_section_3">
+      <h3 className="mb-2 text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-9b774b))] components_forum_forum_topic_flag_button_h3_heading">
         {title}
       </h3>
 
-      <div className="flex flex-wrap gap-1.5">
+      <div className="flex flex-wrap gap-1.5 components_forum_forum_topic_flag_button_div_container_11">
         {options.map(
           (option) => {
             const active =
@@ -792,11 +792,11 @@ function SelectionGroup({
                     option.id,
                   )
                 }
-                className={`border px-2.5 py-1.5 text-[9px] transition ${
+                className={[((`border px-2.5 py-1.5 text-[9px] transition ${
                   active
                     ? "border-[rgb(var(--sep-colour-a47a45))] bg-[rgb(var(--sep-colour-342216))] text-[rgb(var(--sep-colour-e3c79a))]"
                     : "border-[rgb(var(--sep-colour-4f3b28))] bg-[rgb(var(--sep-colour-15100d))] text-[rgb(var(--sep-colour-89775f))] hover:border-[rgb(var(--sep-colour-765735))]"
-                }`}
+                }`)), "components_forum_forum_topic_flag_button_button_action_2"].filter(Boolean).join(" ")}
               >
                 {active
                   ? "✓ "

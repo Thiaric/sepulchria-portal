@@ -132,7 +132,7 @@ export function HeaderOrderIcon({
   if (!order?.icon_url) {
     return (
       <span
-        className="h-4 w-4"
+        className="h-4 w-4 components_portal_header_order_icon_span_text"
         aria-hidden="true"
       />
     );
@@ -144,7 +144,7 @@ export function HeaderOrderIcon({
       src={order.icon_url}
       alt={order.name}
       title={`Order: ${order.name}`}
-      className="h-4 w-4 object-contain"
+      className="h-4 w-4 object-contain components_portal_header_order_icon_img_image"
     />
   );
 }

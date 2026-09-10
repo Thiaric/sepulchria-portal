@@ -253,10 +253,10 @@ export default async function EditPostPage({
   }));
 
   return (
-    <main className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
+    <main className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6 lg:px-8 forum_sectionslug_topicslug_posts_postid_edit_page_main_main">
       <nav
         aria-label="Forum breadcrumb"
-        className="mb-6 flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-746653))]"
+        className="mb-6 flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-746653))] forum_sectionslug_topicslug_posts_postid_edit_page_nav_forum_breadcrumb"
       >
         <Link
           href="/forum"
@@ -265,7 +265,7 @@ export default async function EditPostPage({
           Forum
         </Link>
 
-        <span aria-hidden="true">
+        <span className="forum_sectionslug_topicslug_posts_postid_edit_page_span_forum_breadcrumb" aria-hidden="true">
           /
         </span>
 
@@ -278,7 +278,7 @@ export default async function EditPostPage({
           {section.name}
         </Link>
 
-        <span aria-hidden="true">
+        <span className="forum_sectionslug_topicslug_posts_postid_edit_page_span_forum_breadcrumb_2" aria-hidden="true">
           /
         </span>
 
@@ -293,11 +293,11 @@ export default async function EditPostPage({
           {topic.title}
         </Link>
 
-        <span aria-hidden="true">
+        <span className="forum_sectionslug_topicslug_posts_postid_edit_page_span_forum_breadcrumb_3" aria-hidden="true">
           /
         </span>
 
-        <span className="text-[rgb(var(--sep-colour-9e886a))]">
+        <span className="text-[rgb(var(--sep-colour-9e886a))] forum_sectionslug_topicslug_posts_postid_edit_page_span_forum_breadcrumb_4">
           Edit post
         </span>
       </nav>

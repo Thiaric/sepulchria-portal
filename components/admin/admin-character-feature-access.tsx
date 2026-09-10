@@ -115,23 +115,23 @@ export function AdminCharacterFeatureAccess({
   );
 
   return (
-    <section className="mt-6 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
-      <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] px-5 py-4">
-        <p className="text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))]">
+    <section className="mt-6 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] components_admin_admin_character_feature_access_section_section">
+      <div className="border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] px-5 py-4 components_admin_admin_character_feature_access_div_premium_reward_features">
+        <p className="text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))] components_admin_admin_character_feature_access_p_premium_reward_features">
           Feature access
         </p>
 
-        <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-e1c89f))]">
+        <h2 className="mt-2 font-serif text-2xl text-[rgb(var(--sep-colour-e1c89f))] components_admin_admin_character_feature_access_h2_premium_reward_features">
           Premium & reward features
         </h2>
 
-        <p className="mt-2 max-w-3xl text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+        <p className="mt-2 max-w-3xl text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_admin_admin_character_feature_access_p_premium_reward_features_2">
           Staff controls optional character and account features.
           Paid records a real-money purchase already confirmed by staff.
         </p>
       </div>
 
-      <div className="grid gap-px bg-[rgb(var(--sep-colour-4f3b28))]/35 lg:grid-cols-2">
+      <div className="grid gap-px bg-[rgb(var(--sep-colour-4f3b28))]/35 lg:grid-cols-2 components_admin_admin_character_feature_access_div_container">
         {FEATURES.map((feature) => {
           const entitlement =
             byFeature.get(
@@ -160,25 +160,25 @@ export function AdminCharacterFeatureAccess({
                   "Access saved.",
                 );
               }}
-              className="scroll-mt-6 bg-[rgb(var(--sep-colour-17110d))] p-5"
+              className="scroll-mt-6 bg-[rgb(var(--sep-colour-17110d))] p-5 components_admin_admin_character_feature_access_form_form"
             >
-              <input
+              <input className="components_admin_admin_character_feature_access_input_character_id"
                 type="hidden"
                 name="characterId"
                 value={characterId}
               />
-              <input
+              <input className="components_admin_admin_character_feature_access_input_field"
                 type="hidden"
                 name="featureKey"
                 value={feature.key}
               />
 
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <h3 className="font-serif text-lg text-[rgb(var(--sep-colour-dfc79c))]">
+              <div className="flex items-start justify-between gap-4 components_admin_admin_character_feature_access_div_container_2">
+                <div className="components_admin_admin_character_feature_access_div_container_3">
+                  <h3 className="font-serif text-lg text-[rgb(var(--sep-colour-dfc79c))] components_admin_admin_character_feature_access_h3_heading">
                     {feature.name}
                   </h3>
-                  <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+                  <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_admin_admin_character_feature_access_p_text">
                     {
                       feature.description
                     }
@@ -186,11 +186,9 @@ export function AdminCharacterFeatureAccess({
                 </div>
 
                 <span
-                  className={
-                    enabled
+                  className={[((enabled
                       ? "shrink-0 border border-[rgb(var(--sep-colour-668657))] bg-[rgb(var(--sep-colour-172313))] px-2 py-1 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-a8cf92))]"
-                      : "shrink-0 border border-[rgb(var(--sep-colour-65483e))] bg-[rgb(var(--sep-colour-221512))] px-2 py-1 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b78378))]"
-                  }
+                      : "shrink-0 border border-[rgb(var(--sep-colour-65483e))] bg-[rgb(var(--sep-colour-221512))] px-2 py-1 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b78378))]")), "components_admin_admin_character_feature_access_span_text"].filter(Boolean).join(" ")}
                 >
                   {enabled
                     ? "Enabled"
@@ -198,9 +196,9 @@ export function AdminCharacterFeatureAccess({
                 </span>
               </div>
 
-              <div className="mt-5 grid gap-4">
-                <label>
-                  <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+              <div className="mt-5 grid gap-4 components_admin_admin_character_feature_access_div_container_4">
+                <label className="components_admin_admin_character_feature_access_label_label">
+                  <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_admin_admin_character_feature_access_span_text_2">
                     Access
                   </span>
 
@@ -211,19 +209,19 @@ export function AdminCharacterFeatureAccess({
                         ? "true"
                         : "false"
                     }
-                    className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-sm text-[rgb(var(--sep-colour-d7c4a5))]"
+                    className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-sm text-[rgb(var(--sep-colour-d7c4a5))] components_admin_admin_character_feature_access_select_enabled"
                   >
-                    <option value="false">
+                    <option className="components_admin_admin_character_feature_access_option_enabled" value="false">
                       Disabled
                     </option>
-                    <option value="true">
+                    <option className="components_admin_admin_character_feature_access_option_enabled_2" value="true">
                       Enabled
                     </option>
                   </select>
                 </label>
 
-                <label>
-                  <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+                <label className="components_admin_admin_character_feature_access_label_label_2">
+                  <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_admin_admin_character_feature_access_span_text_3">
                     Unlock source
                   </span>
 
@@ -233,22 +231,22 @@ export function AdminCharacterFeatureAccess({
                       entitlement?.source ??
                       "staff"
                     }
-                    className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-sm text-[rgb(var(--sep-colour-d7c4a5))]"
+                    className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-sm text-[rgb(var(--sep-colour-d7c4a5))] components_admin_admin_character_feature_access_select_source"
                   >
-                    <option value="paid">
+                    <option className="components_admin_admin_character_feature_access_option_paid" value="paid">
                       Real-money purchase
                     </option>
-                    <option value="expertise">
+                    <option className="components_admin_admin_character_feature_access_option_expertise" value="expertise">
                       Expertise reward
                     </option>
-                    <option value="staff">
+                    <option className="components_admin_admin_character_feature_access_option_staff" value="staff">
                       Staff grant
                     </option>
                   </select>
                 </label>
 
-                <label>
-                  <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+                <label className="components_admin_admin_character_feature_access_label_label_3">
+                  <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_admin_admin_character_feature_access_span_text_4">
                     Staff note
                   </span>
 
@@ -261,12 +259,12 @@ export function AdminCharacterFeatureAccess({
                       ""
                     }
                     placeholder="Optional: payment reference, reward reason, event prize..."
-                    className="mt-2 w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-sm leading-6 text-[rgb(var(--sep-colour-d7c4a5))]"
+                    className="mt-2 w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-sm leading-6 text-[rgb(var(--sep-colour-d7c4a5))] components_admin_admin_character_feature_access_textarea_note"
                   />
                 </label>
               </div>
 
-              <div className="mt-5 flex items-center justify-end gap-3 border-t border-[rgb(var(--sep-colour-5d452d))]/35 pt-4">
+              <div className="mt-5 flex items-center justify-end gap-3 border-t border-[rgb(var(--sep-colour-5d452d))]/35 pt-4 components_admin_admin_character_feature_access_div_container_5">
                 <AdminSaveFeedbackMessage
                   feedback={feedbackByKey[formKey]}
                 />
@@ -274,7 +272,7 @@ export function AdminCharacterFeatureAccess({
                 <button
                   type="submit"
                   disabled={pendingKey === formKey}
-                  className="border border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd9aa))] disabled:cursor-wait disabled:opacity-60"
+                  className="border border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd9aa))] disabled:cursor-wait disabled:opacity-60 components_admin_admin_character_feature_access_button_action"
                 >
                   {pendingKey === formKey
                     ? "Saving..."
@@ -316,41 +314,39 @@ export function AdminCharacterFeatureAccess({
                     "Access saved.",
                   );
                 }}
-                className="scroll-mt-6 bg-[rgb(var(--sep-colour-17110d))] p-5"
+                className="scroll-mt-6 bg-[rgb(var(--sep-colour-17110d))] p-5 components_admin_admin_character_feature_access_form_form_2"
               >
-                <input
+                <input className="components_admin_admin_character_feature_access_input_character_id_2"
                   type="hidden"
                   name="characterId"
                   value={characterId}
                 />
-                <input
+                <input className="components_admin_admin_character_feature_access_input_skin_id"
                   type="hidden"
                   name="skinId"
                   value={skin.id}
                 />
 
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className="mb-1 text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+                <div className="flex items-start justify-between gap-4 components_admin_admin_character_feature_access_div_container_6">
+                  <div className="components_admin_admin_character_feature_access_div_container_7">
+                    <p className="mb-1 text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_admin_admin_character_feature_access_p_text_2">
                       Portal skin
                     </p>
 
-                    <h3 className="font-serif text-lg text-[rgb(var(--sep-colour-dfc79c))]">
+                    <h3 className="font-serif text-lg text-[rgb(var(--sep-colour-dfc79c))] components_admin_admin_character_feature_access_h3_heading_2">
                       {skin.name}
                     </h3>
 
-                    <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+                    <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_admin_admin_character_feature_access_p_text_3">
                       {skin.description ||
                         "Unlocks this premium portal appearance for the account that owns this character."}
                     </p>
                   </div>
 
                   <span
-                    className={
-                      enabled
+                    className={[((enabled
                         ? "shrink-0 border border-[rgb(var(--sep-colour-668657))] bg-[rgb(var(--sep-colour-172313))] px-2 py-1 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-a8cf92))]"
-                        : "shrink-0 border border-[rgb(var(--sep-colour-65483e))] bg-[rgb(var(--sep-colour-221512))] px-2 py-1 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b78378))]"
-                    }
+                        : "shrink-0 border border-[rgb(var(--sep-colour-65483e))] bg-[rgb(var(--sep-colour-221512))] px-2 py-1 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b78378))]")), "components_admin_admin_character_feature_access_span_text_5"].filter(Boolean).join(" ")}
                   >
                     {enabled
                       ? "Enabled"
@@ -358,9 +354,9 @@ export function AdminCharacterFeatureAccess({
                   </span>
                 </div>
 
-                <div className="mt-5 grid gap-4">
-                  <label>
-                    <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+                <div className="mt-5 grid gap-4 components_admin_admin_character_feature_access_div_container_8">
+                  <label className="components_admin_admin_character_feature_access_label_label_4">
+                    <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_admin_admin_character_feature_access_span_text_6">
                       Access
                     </span>
 
@@ -371,19 +367,19 @@ export function AdminCharacterFeatureAccess({
                           ? "true"
                           : "false"
                       }
-                      className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-sm text-[rgb(var(--sep-colour-d7c4a5))]"
+                      className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-sm text-[rgb(var(--sep-colour-d7c4a5))] components_admin_admin_character_feature_access_select_enabled_2"
                     >
-                      <option value="false">
+                      <option className="components_admin_admin_character_feature_access_option_enabled_3" value="false">
                         Disabled
                       </option>
-                      <option value="true">
+                      <option className="components_admin_admin_character_feature_access_option_enabled_4" value="true">
                         Enabled
                       </option>
                     </select>
                   </label>
 
-                  <label>
-                    <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+                  <label className="components_admin_admin_character_feature_access_label_label_5">
+                    <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_admin_admin_character_feature_access_span_text_7">
                       Unlock source
                     </span>
 
@@ -393,19 +389,19 @@ export function AdminCharacterFeatureAccess({
                         entitlement?.source ??
                         "staff"
                       }
-                      className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-sm text-[rgb(var(--sep-colour-d7c4a5))]"
+                      className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-sm text-[rgb(var(--sep-colour-d7c4a5))] components_admin_admin_character_feature_access_select_source_2"
                     >
-                      <option value="paid">
+                      <option className="components_admin_admin_character_feature_access_option_paid_2" value="paid">
                         Real-money purchase
                       </option>
-                      <option value="staff">
+                      <option className="components_admin_admin_character_feature_access_option_staff_2" value="staff">
                         Staff grant
                       </option>
                     </select>
                   </label>
 
-                  <label>
-                    <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+                  <label className="components_admin_admin_character_feature_access_label_label_6">
+                    <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_admin_admin_character_feature_access_span_text_8">
                       Staff note
                     </span>
 
@@ -418,12 +414,12 @@ export function AdminCharacterFeatureAccess({
                         ""
                       }
                       placeholder="Optional: payment reference or staff grant reason..."
-                      className="mt-2 w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-sm leading-6 text-[rgb(var(--sep-colour-d7c4a5))]"
+                      className="mt-2 w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-sm leading-6 text-[rgb(var(--sep-colour-d7c4a5))] components_admin_admin_character_feature_access_textarea_note_2"
                     />
                   </label>
                 </div>
 
-                <div className="mt-5 flex items-center justify-end gap-3 border-t border-[rgb(var(--sep-colour-5d452d))]/35 pt-4">
+                <div className="mt-5 flex items-center justify-end gap-3 border-t border-[rgb(var(--sep-colour-5d452d))]/35 pt-4 components_admin_admin_character_feature_access_div_container_9">
                   <AdminSaveFeedbackMessage
                     feedback={feedbackByKey[formKey]}
                   />
@@ -431,7 +427,7 @@ export function AdminCharacterFeatureAccess({
                   <button
                     type="submit"
                     disabled={pendingKey === formKey}
-                    className="border border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd9aa))] disabled:cursor-wait disabled:opacity-60"
+                    className="border border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd9aa))] disabled:cursor-wait disabled:opacity-60 components_admin_admin_character_feature_access_button_action_2"
                   >
                     {pendingKey === formKey
                       ? "Saving..."

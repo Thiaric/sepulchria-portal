@@ -23,7 +23,7 @@ export function ShapeExtendedDescription({
   }
 
   return (
-    <div className="mt-2">
+    <div className="mt-2 components_warping_shape_extended_description_div_container">
       <button
   type="button"
   aria-expanded={expanded}
@@ -33,32 +33,32 @@ export function ShapeExtendedDescription({
         !current,
     )
   }
-  className="group flex w-full items-center gap-3 py-1.5"
+  className="group flex w-full items-center gap-3 py-1.5 components_warping_shape_extended_description_button_action"
 >
-  <span className="h-px flex-1 bg-[rgb(var(--sep-colour-60482e))]/45 transition group-hover:bg-[rgb(var(--sep-colour-8d6d3e))]/65" />
+  <span className="h-px flex-1 bg-[rgb(var(--sep-colour-60482e))]/45 transition group-hover:bg-[rgb(var(--sep-colour-8d6d3e))]/65 components_warping_shape_extended_description_span_text" />
 
-  <span className="inline-flex shrink-0 items-center gap-1.5 text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-a88d67))] transition group-hover:text-[rgb(var(--sep-colour-d3b278))]">
+  <span className="inline-flex shrink-0 items-center gap-1.5 text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-a88d67))] transition group-hover:text-[rgb(var(--sep-colour-d3b278))] components_warping_shape_extended_description_span_text_2">
     {expanded
       ? "Show Less Info"
       : "Show More Info"}
 
     <span
       aria-hidden="true"
-      className={`inline-block transition-transform ${
+      className={[((`inline-block transition-transform ${
         expanded
           ? "rotate-180"
           : ""
-      }`}
+      }`)), "components_warping_shape_extended_description_span_text_3"].filter(Boolean).join(" ")}
     >
       ▼
     </span>
   </span>
 
-  <span className="h-px flex-1 bg-[rgb(var(--sep-colour-60482e))]/45 transition group-hover:bg-[rgb(var(--sep-colour-8d6d3e))]/65" />
+  <span className="h-px flex-1 bg-[rgb(var(--sep-colour-60482e))]/45 transition group-hover:bg-[rgb(var(--sep-colour-8d6d3e))]/65 components_warping_shape_extended_description_span_text_4" />
 </button>
 
       {expanded ? (
-        <div className="mt-2 border-l-2 border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-120e0b))]/55 px-3 py-2.5">
+        <div className="mt-2 border-l-2 border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-120e0b))]/55 px-3 py-2.5 components_warping_shape_extended_description_div_container_2">
           <RichTextContentClient
             body={body}
             className="

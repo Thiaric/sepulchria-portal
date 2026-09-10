@@ -68,7 +68,7 @@ export function CodexEntryImageLightbox({
     mounted && open
       ? createPortal(
           <div
-            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 p-4 backdrop-blur-[3px] sm:p-8"
+            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 p-4 backdrop-blur-[3px] sm:p-8 components_codex_codex_entry_image_lightbox_div_dialog"
             role="dialog"
             aria-modal="true"
             aria-label={`${name} image preview`}
@@ -81,25 +81,25 @@ export function CodexEntryImageLightbox({
               }
             }}
           >
-            <div className="relative flex max-h-[92vh] w-full max-w-6xl items-center justify-center border border-[rgb(var(--sep-colour-745633))] bg-[rgb(var(--sep-colour-090705))] p-2 shadow-[0_30px_100px_rgba(var(--sep-rgb-0-0-0),0.95)] sm:p-3">
+            <div className="relative flex max-h-[92vh] w-full max-w-6xl items-center justify-center border border-[rgb(var(--sep-colour-745633))] bg-[rgb(var(--sep-colour-090705))] p-2 shadow-[0_30px_100px_rgba(var(--sep-rgb-0-0-0),0.95)] sm:p-3 components_codex_codex_entry_image_lightbox_div_container">
               <button
                 type="button"
                 onClick={() =>
                   setOpen(false)
                 }
-                className="absolute right-3 top-3 z-20 flex h-10 w-10 items-center justify-center border border-[rgb(var(--sep-colour-8b673d))] bg-[rgb(var(--sep-colour-100c09))]/95 text-xl text-[rgb(var(--sep-colour-d7b47d))] shadow-[0_5px_18px_rgba(var(--sep-rgb-0-0-0),0.7)] transition hover:border-[rgb(var(--sep-colour-c18c4e))] hover:bg-[rgb(var(--sep-colour-25180f))] hover:text-[rgb(var(--sep-colour-f0d6a7))]"
+                className="absolute right-3 top-3 z-20 flex h-10 w-10 items-center justify-center border border-[rgb(var(--sep-colour-8b673d))] bg-[rgb(var(--sep-colour-100c09))]/95 text-xl text-[rgb(var(--sep-colour-d7b47d))] shadow-[0_5px_18px_rgba(var(--sep-rgb-0-0-0),0.7)] transition hover:border-[rgb(var(--sep-colour-c18c4e))] hover:bg-[rgb(var(--sep-colour-25180f))] hover:text-[rgb(var(--sep-colour-f0d6a7))] components_codex_codex_entry_image_lightbox_button_close_image_preview"
                 aria-label="Close image preview"
                 title="Close"
               >
                 ×
               </button>
 
-              <div className="flex max-h-[calc(92vh-1.5rem)] min-h-[240px] w-full items-center justify-center overflow-hidden bg-black">
+              <div className="flex max-h-[calc(92vh-1.5rem)] min-h-[240px] w-full items-center justify-center overflow-hidden bg-black components_codex_codex_entry_image_lightbox_div_container_2">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={src}
                   alt={`${name} preview`}
-                  className="max-h-[calc(92vh-1.5rem)] max-w-full object-contain"
+                  className="max-h-[calc(92vh-1.5rem)] max-w-full object-contain components_codex_codex_entry_image_lightbox_img_image"
                 />
               </div>
 
@@ -118,11 +118,11 @@ export function CodexEntryImageLightbox({
         onClick={() =>
           setOpen(true)
         }
-        className="group/image absolute inset-0 z-10 cursor-zoom-in"
+        className="group/image absolute inset-0 z-10 cursor-zoom-in components_codex_codex_entry_image_lightbox_button_action"
         aria-label={`View ${name} image`}
         title={`View ${name} image`}
       >
-        <span data-sep-round-zoom-indicator="true" className="pointer-events-none absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full border border-[rgb(var(--sep-colour-c69a60))]/55 bg-[rgb(var(--sep-colour-100c09))]/75 text-[rgb(var(--sep-colour-d8b57e))] opacity-0 shadow-[0_4px_14px_rgba(var(--sep-rgb-0-0-0),0.45)] backdrop-blur-sm transition group-hover/image:opacity-100">
+        <span data-sep-round-zoom-indicator="true" className="pointer-events-none absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full border border-[rgb(var(--sep-colour-c69a60))]/55 bg-[rgb(var(--sep-colour-100c09))]/75 text-[rgb(var(--sep-colour-d8b57e))] opacity-0 shadow-[0_4px_14px_rgba(var(--sep-rgb-0-0-0),0.45)] backdrop-blur-sm transition group-hover/image:opacity-100 components_codex_codex_entry_image_lightbox_span_text">
           <svg
             viewBox="0 0 24 24"
             aria-hidden="true"

@@ -196,12 +196,12 @@ export default function CharacterForm({
     <form
       ref={formRef}
       action={action}
-      className="overflow-hidden border border-[rgb(var(--sep-colour-6c5132))]/50 bg-[rgb(var(--sep-colour-17110d))]/95"
+      className="overflow-hidden border border-[rgb(var(--sep-colour-6c5132))]/50 bg-[rgb(var(--sep-colour-17110d))]/95 character_characterform_form_action"
     >
-      <input type="hidden" name="race_id" value={raceId} />
+      <input className="character_characterform_input_race_id" type="hidden" name="race_id" value={raceId} />
 
       {ancestryGiftIds.map((giftId) => (
-        <input
+        <input className="character_characterform_input_ancestry_gift_ids"
           key={giftId}
           type="hidden"
           name="ancestryGiftIds"
@@ -209,7 +209,7 @@ export default function CharacterForm({
         />
       ))}
 
-      <div className="grid gap-2 border-b border-[rgb(var(--sep-colour-5d452d))]/40 bg-[rgb(var(--sep-colour-110d0a))] p-4 sm:grid-cols-3 xl:grid-cols-6">
+      <div className="grid gap-2 border-b border-[rgb(var(--sep-colour-5d452d))]/40 bg-[rgb(var(--sep-colour-110d0a))] p-4 sm:grid-cols-3 xl:grid-cols-6 character_characterform_div_container">
         {steps.map(([label], index) => (
           <button
             key={label}
@@ -217,40 +217,40 @@ export default function CharacterForm({
             onClick={() => {
               if (index + 1 <= step || validate(step)) setStep(index + 1);
             }}
-            className={`border px-3 py-3 text-left ${
+            className={[((`border px-3 py-3 text-left ${
               step === index + 1
                 ? "border-[rgb(var(--sep-colour-9a7543))] bg-[rgb(var(--sep-colour-382819))] text-[rgb(var(--sep-colour-f0d9ae))]"
                 : "border-[rgb(var(--sep-colour-4d3b29))]/50 bg-[rgb(var(--sep-colour-130f0c))] text-[rgb(var(--sep-colour-a99b87))]"
-            }`}
+            }`)), "character_characterform_button_action"].filter(Boolean).join(" ")}
           >
-            <span className="block text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+            <span className="block text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] character_characterform_span_text">
               Step {index + 1}
             </span>
-            <span className="mt-1 block font-serif text-sm">{label}</span>
+            <span className="mt-1 block font-serif text-sm character_characterform_span_text_2">{label}</span>
           </button>
         ))}
       </div>
 
-      <div className="p-6 sm:p-8 lg:p-10">
-        <header className="mb-8 border-b border-[rgb(var(--sep-colour-5e4930))]/35 pb-6">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-987447))]">
+      <div className="p-6 sm:p-8 lg:p-10 character_characterform_div_container_2">
+        <header className="mb-8 border-b border-[rgb(var(--sep-colour-5e4930))]/35 pb-6 character_characterform_header_header">
+          <p className="text-[10px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-987447))] character_characterform_p_text">
             Step {step} of {steps.length}
           </p>
-          <h2 className="mt-3 font-serif text-3xl text-[rgb(var(--sep-colour-ead5ad))]">
+          <h2 className="mt-3 font-serif text-3xl text-[rgb(var(--sep-colour-ead5ad))] character_characterform_h2_heading">
             {steps[step - 1][0]}
           </h2>
-          <p className="mt-3 text-sm leading-7 text-[rgb(var(--sep-colour-998c7a))]">
+          <p className="mt-3 text-sm leading-7 text-[rgb(var(--sep-colour-998c7a))] character_characterform_p_text_2">
             {steps[step - 1][1]}
           </p>
         </header>
 
         {error ? (
-          <div className="mb-7 border border-[rgb(var(--sep-colour-8c463d))] bg-[rgb(var(--sep-colour-2a1513))] p-4 text-sm text-[rgb(var(--sep-colour-e4b4aa))]">
+          <div className="mb-7 border border-[rgb(var(--sep-colour-8c463d))] bg-[rgb(var(--sep-colour-2a1513))] p-4 text-sm text-[rgb(var(--sep-colour-e4b4aa))] character_characterform_div_container_3">
             {error}
           </div>
         ) : null}
 
-        <section className={step === 1 ? "block" : "hidden"}>
+        <section className={[((step === 1 ? "block" : "hidden")), "character_characterform_section_section"].filter(Boolean).join(" ")}>
           {mode === "create" ? (
             <RaceSelection races={races} selectedId={raceId} onSelect={selectRace} />
           ) : (
@@ -258,23 +258,23 @@ export default function CharacterForm({
           )}
 
           {mode === "create" && race ? (
-            <div className="mt-6 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-4">
-              <div className="flex flex-wrap items-end justify-between gap-3">
-                <div>
-                  <p className="text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
+            <div className="mt-6 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-4 character_characterform_div_container_4">
+              <div className="flex flex-wrap items-end justify-between gap-3 character_characterform_div_container_5">
+                <div className="character_characterform_div_container_6">
+                  <p className="text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))] character_characterform_p_text_3">
                     Ancestry Feats
                   </p>
-                  <p className="mt-2 text-xs leading-6 text-[rgb(var(--sep-colour-8f8271))]">
+                  <p className="mt-2 text-xs leading-6 text-[rgb(var(--sep-colour-8f8271))] character_characterform_p_text_4">
                     Choose up to two Feats available to {race.name}.
                   </p>
                 </div>
-                <p className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))]">
+                <p className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756958))] character_characterform_p_text_5">
                   {ancestryGiftIds.length} / 2 selected
                 </p>
               </div>
 
               {eligibleAncestryGifts.length ? (
-                <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3 character_characterform_div_container_7">
                   {eligibleAncestryGifts.map((gift) => {
                     const selected = ancestryGiftIds.includes(gift.id);
                     const disabled = !selected && ancestryGiftIds.length >= 2;
@@ -285,23 +285,23 @@ export default function CharacterForm({
                         type="button"
                         disabled={disabled}
                         onClick={() => toggleAncestryGift(gift.id)}
-                        className={`border p-4 text-left transition ${
+                        className={[((`border p-4 text-left transition ${
                           selected
                             ? "border-[rgb(var(--sep-colour-c19352))] bg-[rgb(var(--sep-colour-332416))]"
                             : "border-[rgb(var(--sep-colour-5c462f))]/65 bg-[rgb(var(--sep-colour-120e0b))] hover:border-[rgb(var(--sep-colour-8a683f))]"
-                        } disabled:cursor-not-allowed disabled:opacity-35`}
+                        } disabled:cursor-not-allowed disabled:opacity-35`)), "character_characterform_button_action_2"].filter(Boolean).join(" ")}
                       >
-                        <div className="flex items-start justify-between gap-2">
-                          <span className="font-serif text-base text-[rgb(var(--sep-colour-dfc79c))]">
+                        <div className="flex items-start justify-between gap-2 character_characterform_div_container_8">
+                          <span className="font-serif text-base text-[rgb(var(--sep-colour-dfc79c))] character_characterform_span_text_3">
                             {gift.name}
                           </span>
-                          <span className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-8e7656))]">
+                          <span className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-8e7656))] character_characterform_span_text_4">
                             {selected ? "Selected" : "Choose"}
                           </span>
                         </div>
 
                         {gift.description ? (
-                          <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-918473))]">
+                          <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-918473))] character_characterform_p_text_6">
                             {gift.description}
                           </p>
                         ) : null}
@@ -310,18 +310,18 @@ export default function CharacterForm({
                   })}
                 </div>
               ) : (
-                <p className="mt-4 text-xs italic text-[rgb(var(--sep-colour-746958))]">
+                <p className="mt-4 text-xs italic text-[rgb(var(--sep-colour-746958))] character_characterform_p_text_7">
                   No active Ancestry Feats are currently available for {race.name}.
                 </p>
               )}
             </div>
           ) : null}
 
-          <div className="mt-6 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-4">
-            <p className="text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
+          <div className="mt-6 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] p-4 character_characterform_div_container_9">
+            <p className="text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))] character_characterform_p_text_8">
               Associations & Orders
             </p>
-            <p className="mt-2 text-xs leading-6 text-[rgb(var(--sep-colour-8f8271))]">
+            <p className="mt-2 text-xs leading-6 text-[rgb(var(--sep-colour-8f8271))] character_characterform_p_text_9">
               Association and Order membership are not selected during character creation
               or editing. A character joins an Order through play; the Association is then
               inherited from that Order.
@@ -329,8 +329,8 @@ export default function CharacterForm({
           </div>
         </section>
 
-        <section className={step === 2 ? "block" : "hidden"}>
-          <div className="grid gap-6 sm:grid-cols-2">
+        <section className={[((step === 2 ? "block" : "hidden")), "character_characterform_section_section_2"].filter(Boolean).join(" ")}>
+          <div className="grid gap-6 sm:grid-cols-2 character_characterform_div_container_10">
            <Field
   label="First name"
   name="first_name"
@@ -347,18 +347,18 @@ export default function CharacterForm({
   defaultValue={character?.surname}
 />
             <Field label="Pronouns" name="pronouns" defaultValue={character?.pronouns} />
-            <label>
+            <label className="character_characterform_label_label">
               <Label>Gender *</Label>
               <select
                 name="gender"
                 required
                 defaultValue={String(character?.gender ?? "")}
-                className={inputClass}
+                className={[((inputClass)), "character_characterform_select_gender"].filter(Boolean).join(" ")}
               >
-                <option value="">Choose gender</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="non_binary">Non-binary</option>
+                <option className="character_characterform_option_gender" value="">Choose gender</option>
+                <option className="character_characterform_option_male" value="male">Male</option>
+                <option className="character_characterform_option_female" value="female">Female</option>
+                <option className="character_characterform_option_non_binary" value="non_binary">Non-binary</option>
               </select>
             </label>
             <Field
@@ -366,7 +366,7 @@ export default function CharacterForm({
               name="sexual_orientation"
               defaultValue={character?.sexual_orientation}
             />
-            <label>
+            <label className="character_characterform_label_label_2">
               <Label>Age *</Label>
               <input
                 name="age"
@@ -377,9 +377,9 @@ export default function CharacterForm({
                 max={race?.max_age ?? undefined}
                 disabled={!race || race.min_age === null}
                 onChange={(event) => setAge(event.target.value)}
-                className={inputClass}
+                className={[((inputClass)), "character_characterform_input_age"].filter(Boolean).join(" ")}
               />
-              <span className="mt-2 block text-xs text-[rgb(var(--sep-colour-766b5d))]">
+              <span className="mt-2 block text-xs text-[rgb(var(--sep-colour-766b5d))] character_characterform_span_text_5">
                 {race?.min_age === null || !race
                   ? "Choose a configured ancestry first."
                   : race.max_age === null
@@ -390,7 +390,7 @@ export default function CharacterForm({
           </div>
         </section>
 
-        <section className={step === 3 ? "block" : "hidden"}>
+        <section className={[((step === 3 ? "block" : "hidden")), "character_characterform_section_section_3"].filter(Boolean).join(" ")}>
           <CharacterAttributeAllocator
             locked={mode === "update"}
             initialValues={{
@@ -412,16 +412,16 @@ export default function CharacterForm({
           />
         </section>
 
-        <section className={step === 4 ? "block" : "hidden"}>
-          <div className="space-y-6">
+        <section className={[((step === 4 ? "block" : "hidden")), "character_characterform_section_section_4"].filter(Boolean).join(" ")}>
+          <div className="space-y-6 character_characterform_div_container_11">
             <Field label="Portrait URL" name="portrait_url" type="url" defaultValue={character?.portrait_url} />
             <Field label="Character music URL" name="music_url" type="url" defaultValue={character?.music_url} />
             <Area label="Physical description" name="physical_description" required rows={14} maxLength={10000} defaultValue={character?.physical_description} />
           </div>
         </section>
 
-        <section className={step === 5 ? "block" : "hidden"}>
-          <div className="space-y-6">
+        <section className={[((step === 5 ? "block" : "hidden")), "character_characterform_section_section_5"].filter(Boolean).join(" ")}>
+          <div className="space-y-6 character_characterform_div_container_12">
             <Area label="Personality" name="personality" required rows={9} maxLength={10000} defaultValue={character?.personality} />
             <Area label="Biography" name="biography" required rows={14} maxLength={20000} defaultValue={character?.biography} />
             <Area label="Public notes" name="public_notes" rows={7} maxLength={10000} defaultValue={character?.public_notes} />
@@ -448,20 +448,20 @@ export default function CharacterForm({
           </div>
         </section>
 
-        <section className={step === 6 ? "block" : "hidden"}>
-          <div className="border border-[rgb(var(--sep-colour-735735))]/55 bg-[rgb(var(--sep-colour-21170f))] p-5">
-            <p className="text-[10px] uppercase tracking-[0.26em] text-[rgb(var(--sep-colour-ad8753))]">
+        <section className={[((step === 6 ? "block" : "hidden")), "character_characterform_section_section_6"].filter(Boolean).join(" ")}>
+          <div className="border border-[rgb(var(--sep-colour-735735))]/55 bg-[rgb(var(--sep-colour-21170f))] p-5 character_characterform_div_container_13">
+            <p className="text-[10px] uppercase tracking-[0.26em] text-[rgb(var(--sep-colour-ad8753))] character_characterform_p_text_10">
               Final review
             </p>
-            <h3 className="mt-3 font-serif text-2xl text-[rgb(var(--sep-colour-e3cba2))]">
+            <h3 className="mt-3 font-serif text-2xl text-[rgb(var(--sep-colour-e3cba2))] character_characterform_h3_heading">
               {mode === "create" ? "Ready to enter Sepulchria" : "Ready to save your changes"}
             </h3>
-            <p className="mt-3 text-sm leading-7 text-[rgb(var(--sep-colour-998b78))]">
-              Ancestry: <span className="text-[rgb(var(--sep-colour-d6bd91))]">{race?.name ?? "Not selected"}</span>.
+            <p className="mt-3 text-sm leading-7 text-[rgb(var(--sep-colour-998b78))] character_characterform_p_text_11">
+              Ancestry: <span className="text-[rgb(var(--sep-colour-d6bd91))] character_characterform_span_text_6">{race?.name ?? "Not selected"}</span>.
               {mode === "create" ? (
                 <>
                   {" "}Ancestry Feats:{" "}
-                  <span className="text-[rgb(var(--sep-colour-d6bd91))]">
+                  <span className="text-[rgb(var(--sep-colour-d6bd91))] character_characterform_span_text_7">
                     {selectedAncestryGifts.length
                       ? selectedAncestryGifts.map((gift) => gift.name).join(", ")
                       : "None selected"}
@@ -474,9 +474,9 @@ export default function CharacterForm({
         </section>
       </div>
 
-      <div className="flex justify-between gap-3 border-t border-[rgb(var(--sep-colour-5d452d))]/40 bg-[rgb(var(--sep-colour-110d0a))] p-6">
+      <div className="flex justify-between gap-3 border-t border-[rgb(var(--sep-colour-5d452d))]/40 bg-[rgb(var(--sep-colour-110d0a))] p-6 character_characterform_div_container_14">
         {step > 1 ? (
-          <button type="button" onClick={() => { setError(null); setStep(step - 1); }} className={secondaryButton}>
+          <button type="button" onClick={() => { setError(null); setStep(step - 1); }} className={[((secondaryButton)), "character_characterform_button_larr_previous"].filter(Boolean).join(" ")}>
             &larr; Previous
           </button>
         ) : (
@@ -486,11 +486,11 @@ export default function CharacterForm({
         )}
 
         {step < steps.length ? (
-          <button type="button" onClick={next} className={primaryButton}>
+          <button type="button" onClick={next} className={[((primaryButton)), "character_characterform_button_continue_rarr"].filter(Boolean).join(" ")}>
             Continue &rarr;
           </button>
         ) : (
-          <button type="submit" className={primaryButton}>
+          <button type="submit" className={[((primaryButton)), "character_characterform_button_action_3"].filter(Boolean).join(" ")}>
             {submitLabel}
           </button>
         )}
@@ -507,7 +507,7 @@ const secondaryButton =
   "border border-[rgb(var(--sep-colour-5f4a31))] px-6 py-3 text-xs uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-a99a84))] transition hover:bg-[rgb(var(--sep-colour-211810))]";
 
 function Label({ children }: { children: React.ReactNode }) {
-  return <span className="mb-2 block text-[11px] uppercase tracking-[0.25em] text-[rgb(var(--sep-colour-a38357))]">{children}</span>;
+  return <span className="mb-2 block text-[11px] uppercase tracking-[0.25em] text-[rgb(var(--sep-colour-a38357))] character_characterform_span_text_8">{children}</span>;
 }
 
 function Field({
@@ -526,7 +526,7 @@ function Field({
   defaultValue?: string | number | null;
 }) {
   return (
-    <label>
+    <label className="character_characterform_label_label_3">
       <Label>
         {label}
         {required ? " *" : ""}
@@ -538,7 +538,7 @@ function Field({
         required={required}
         maxLength={maxLength}
         defaultValue={defaultValue ?? ""}
-        className={inputClass}
+        className={[((inputClass)), "character_characterform_input_field"].filter(Boolean).join(" ")}
       />
     </label>
   );
@@ -551,9 +551,9 @@ function Area({
   defaultValue?: string | number | null;
 }) {
   return (
-    <label className="block">
+    <label className="block character_characterform_label_label_4">
       <Label>{label}{required ? " *" : ""}</Label>
-      <textarea name={name} required={required} rows={rows} maxLength={maxLength} defaultValue={defaultValue ?? ""} className={`${inputClass} resize-y leading-7`} />
+      <textarea name={name} required={required} rows={rows} maxLength={maxLength} defaultValue={defaultValue ?? ""} className={[((`${inputClass} resize-y leading-7`)), "character_characterform_textarea_field"].filter(Boolean).join(" ")} />
     </label>
   );
 }
@@ -564,12 +564,12 @@ function RaceSelection({
   races: RaceOption[]; selectedId: string; onSelect: (id: string) => void;
 }) {
   return (
-    <div>
-      <h3 className="font-serif text-2xl text-[rgb(var(--sep-colour-dfc79c))]">Choose an ancestry</h3>
-      <p className="mt-2 text-sm leading-7 text-[rgb(var(--sep-colour-918473))]">
+    <div className="character_characterform_div_choose_ancestry">
+      <h3 className="font-serif text-2xl text-[rgb(var(--sep-colour-dfc79c))] character_characterform_h3_choose_ancestry">Choose an ancestry</h3>
+      <p className="mt-2 text-sm leading-7 text-[rgb(var(--sep-colour-918473))] character_characterform_p_choose_ancestry">
         Ancestry represents inherited heritage and determines the playable age range.
       </p>
-      <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+      <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-3 character_characterform_div_choose_ancestry_2">
         {races.map((race) => {
           const selected = race.id === selectedId;
           return (
@@ -577,17 +577,17 @@ function RaceSelection({
               key={race.id}
               type="button"
               onClick={() => onSelect(race.id)}
-              className={`overflow-hidden border text-left ${
+              className={[((`overflow-hidden border text-left ${
                 selected ? "border-[rgb(var(--sep-colour-c19352))] bg-[rgb(var(--sep-colour-332416))]" : "border-[rgb(var(--sep-colour-5c462f))]/65 bg-[rgb(var(--sep-colour-120e0b))]"
-              }`}
+              }`)), "character_characterform_button_action_4"].filter(Boolean).join(" ")}
             >
               {race.banner_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={race.banner_url} alt="" className="aspect-[2/1] w-full object-cover" />
+                <img src={race.banner_url} alt="" className="aspect-[2/1] w-full object-cover character_characterform_img_image" />
               ) : null}
-              <div className="p-5">
-                <p className="font-serif text-xl text-[rgb(var(--sep-colour-e0c99e))]">{race.name}</p>
-                <p className="mt-2 line-clamp-3 text-xs leading-6 text-[rgb(var(--sep-colour-918473))]">
+              <div className="p-5 character_characterform_div_container_15">
+                <p className="font-serif text-xl text-[rgb(var(--sep-colour-e0c99e))] character_characterform_p_text_12">{race.name}</p>
+                <p className="mt-2 line-clamp-3 text-xs leading-6 text-[rgb(var(--sep-colour-918473))] character_characterform_p_text_13">
                   {race.summary || "Codex information will be added soon."}
                 </p>
                 <Link
@@ -609,11 +609,11 @@ function RaceSelection({
 
 function LockedRace({ race }: { race: RaceOption | null }) {
   return (
-    <div className="border border-[rgb(var(--sep-colour-735735))]/55 bg-[rgb(var(--sep-colour-21170f))] p-5">
-      <p className="text-[10px] uppercase tracking-[0.25em] text-[rgb(var(--sep-colour-ad8753))]">Permanent character information</p>
-      <p className="mt-3 text-sm leading-7 text-[rgb(var(--sep-colour-a0927f))]">
+    <div className="border border-[rgb(var(--sep-colour-735735))]/55 bg-[rgb(var(--sep-colour-21170f))] p-5 character_characterform_div_container_16">
+      <p className="text-[10px] uppercase tracking-[0.25em] text-[rgb(var(--sep-colour-ad8753))] character_characterform_p_text_14">Permanent character information</p>
+      <p className="mt-3 text-sm leading-7 text-[rgb(var(--sep-colour-a0927f))] character_characterform_p_text_15">
         Ancestry is fixed after character creation. Current ancestry:{" "}
-        <span className="text-[rgb(var(--sep-colour-d8bf91))]">{race?.name ?? "Not assigned"}</span>.
+        <span className="text-[rgb(var(--sep-colour-d8bf91))] character_characterform_span_text_9">{race?.name ?? "Not assigned"}</span>.
       </p>
     </div>
   );

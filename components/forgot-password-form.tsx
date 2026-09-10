@@ -84,18 +84,18 @@ const supabase = createClient();
 
   if (success) {
     return (
-      <div className="text-center">
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-[rgb(var(--sep-colour-8e693e))]/70 bg-[rgb(var(--sep-colour-2a1b10))]/70 font-serif text-2xl text-[rgb(var(--sep-colour-d9b478))]">
+      <div className="text-center components_forgot_password_form_div_check_email">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-[rgb(var(--sep-colour-8e693e))]/70 bg-[rgb(var(--sep-colour-2a1b10))]/70 font-serif text-2xl text-[rgb(var(--sep-colour-d9b478))] components_forgot_password_form_div_check_email_2">
           ✦
         </div>
 
-        <h3 className="mt-5 font-serif text-2xl text-[rgb(var(--sep-colour-e5cfa6))]">
+        <h3 className="mt-5 font-serif text-2xl text-[rgb(var(--sep-colour-e5cfa6))] components_forgot_password_form_h3_check_email">
           Check Your Email
         </h3>
 
-        <p className="mt-3 text-sm leading-6 text-[rgb(var(--sep-colour-9f927f))]">
+        <p className="mt-3 text-sm leading-6 text-[rgb(var(--sep-colour-9f927f))] components_forgot_password_form_p_check_email">
           If an account exists for{" "}
-          <span className="text-[rgb(var(--sep-colour-d3b27d))]">{email}</span>, password-reset
+          <span className="text-[rgb(var(--sep-colour-d3b27d))] components_forgot_password_form_span_check_email">{email}</span>, password-reset
           instructions have been sent.
         </p>
 
@@ -110,11 +110,11 @@ const supabase = createClient();
   }
 
   return (
-    <form onSubmit={handleForgotPassword} className="space-y-5">
-      <div className="space-y-2">
+    <form onSubmit={handleForgotPassword} className="space-y-5 components_forgot_password_form_form_forgot_password">
+      <div className="space-y-2 components_forgot_password_form_div_account_email">
         <label
           htmlFor="email"
-          className="block text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-a68a63))]"
+          className="block text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-a68a63))] components_forgot_password_form_label_email"
         >
           Account email
         </label>
@@ -128,20 +128,20 @@ const supabase = createClient();
           required
           value={email}
           onChange={(event) => setEmail(event.target.value)}
-          className="h-12 w-full border border-[rgb(var(--sep-colour-62482f))] bg-[rgb(var(--sep-colour-0b0807))]/90 px-4 text-sm text-[rgb(var(--sep-colour-e8dcc4))] outline-none transition placeholder:text-[rgb(var(--sep-colour-5f574d))] focus:border-[rgb(var(--sep-colour-b28149))] focus:ring-1 focus:ring-[rgb(var(--sep-colour-b28149))]/50"
+          className="h-12 w-full border border-[rgb(var(--sep-colour-62482f))] bg-[rgb(var(--sep-colour-0b0807))]/90 px-4 text-sm text-[rgb(var(--sep-colour-e8dcc4))] outline-none transition placeholder:text-[rgb(var(--sep-colour-5f574d))] focus:border-[rgb(var(--sep-colour-b28149))] focus:ring-1 focus:ring-[rgb(var(--sep-colour-b28149))]/50 components_forgot_password_form_input_email"
         />
       </div>
 
       {error && (
         <div
           role="alert"
-          className="border border-[rgb(var(--sep-colour-873e35))]/55 bg-[rgb(var(--sep-colour-421d1a))]/35 px-4 py-3 text-sm text-[rgb(var(--sep-colour-e2aaa1))]"
+          className="border border-[rgb(var(--sep-colour-873e35))]/55 bg-[rgb(var(--sep-colour-421d1a))]/35 px-4 py-3 text-sm text-[rgb(var(--sep-colour-e2aaa1))] components_forgot_password_form_div_alert"
         >
           {error}
         </div>
       )}
 
-      <div className="border border-[rgb(var(--sep-colour-62482f))]/45 bg-[rgb(var(--sep-colour-0b0807))]/35 px-4 py-3">
+      <div className="border border-[rgb(var(--sep-colour-62482f))]/45 bg-[rgb(var(--sep-colour-0b0807))]/35 px-4 py-3 components_forgot_password_form_div_container">
         <TurnstileWidget
           onTokenChange={setCaptchaToken}
         />
@@ -153,12 +153,12 @@ const supabase = createClient();
   isLoading ||
   !captchaToken
 }
-        className="h-12 w-full border border-[rgb(var(--sep-colour-a77a42))]/80 bg-[rgb(var(--sep-colour-382313))] font-serif text-base tracking-[0.05em] text-[rgb(var(--sep-colour-ead3a6))] transition hover:border-[rgb(var(--sep-colour-d4a460))] hover:bg-[rgb(var(--sep-colour-472c17))] disabled:cursor-not-allowed disabled:opacity-60"
+        className="h-12 w-full border border-[rgb(var(--sep-colour-a77a42))]/80 bg-[rgb(var(--sep-colour-382313))] font-serif text-base tracking-[0.05em] text-[rgb(var(--sep-colour-ead3a6))] transition hover:border-[rgb(var(--sep-colour-d4a460))] hover:bg-[rgb(var(--sep-colour-472c17))] disabled:cursor-not-allowed disabled:opacity-60 components_forgot_password_form_button_action"
       >
         {isLoading ? "Sending the sealed message..." : "Send Reset Link"}
       </button>
 
-      <p className="text-center text-sm text-[rgb(var(--sep-colour-897d6c))]">
+      <p className="text-center text-sm text-[rgb(var(--sep-colour-897d6c))] components_forgot_password_form_p_text">
         Remembered your password?{" "}
         <Link
           href="/auth/login"

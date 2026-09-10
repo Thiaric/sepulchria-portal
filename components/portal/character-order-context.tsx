@@ -186,8 +186,8 @@ export function CharacterOrderContext({
 
   return (
     <>
-      <div className="flex justify-between gap-4 border-b border-[rgb(var(--sep-colour-59432c))]/35 py-3 text-xs">
-        <span className="text-[rgb(var(--sep-colour-786b5b))]">
+      <div className="flex justify-between gap-4 border-b border-[rgb(var(--sep-colour-59432c))]/35 py-3 text-xs components_portal_character_order_context_div_container">
+        <span className="text-[rgb(var(--sep-colour-786b5b))] components_portal_character_order_context_span_text">
           Order
         </span>
 
@@ -199,7 +199,7 @@ export function CharacterOrderContext({
             {data.order.name}
           </Link>
         ) : (
-          <span className="max-w-[150px] break-words text-right text-[rgb(var(--sep-colour-bba98d))]">
+          <span className="max-w-[150px] break-words text-right text-[rgb(var(--sep-colour-bba98d))] components_portal_character_order_context_span_text_2">
             Not assigned
           </span>
         )}
@@ -237,17 +237,17 @@ function ContextLine({
 }) {
   return (
     <div
-      className={`flex justify-between gap-4 py-3 text-xs ${
+      className={[((`flex justify-between gap-4 py-3 text-xs ${
         last
           ? ""
           : "border-b border-[rgb(var(--sep-colour-59432c))]/35"
-      }`}
+      }`)), "components_portal_character_order_context_div_container_2"].filter(Boolean).join(" ")}
     >
-      <span className="text-[rgb(var(--sep-colour-786b5b))]">
+      <span className="text-[rgb(var(--sep-colour-786b5b))] components_portal_character_order_context_span_text_3">
         {label}
       </span>
 
-      <span className="max-w-[150px] break-words text-right text-[rgb(var(--sep-colour-bba98d))]">
+      <span className="max-w-[150px] break-words text-right text-[rgb(var(--sep-colour-bba98d))] components_portal_character_order_context_span_text_4">
         {value}
       </span>
     </div>

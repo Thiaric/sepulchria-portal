@@ -14,7 +14,7 @@ function fmt(v: string) {
 
 function Badge({ count }: { count: number }) {
   return count > 0 ? (
-    <span data-sep-counter-badge="true" className="absolute -right-2 -top-2 inline-flex h-5 min-w-5 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] px-1 text-[8px] font-bold leading-none text-[#ffe1ac]">
+    <span data-sep-counter-badge="true" className="absolute -right-2 -top-2 inline-flex h-5 min-w-5 items-center justify-center rounded-full border border-[#d19a4c] bg-[#7a291f] px-1 text-[8px] font-bold leading-none text-[#ffe1ac] support_page_span_text">
       {count > 99 ? "99+" : count}
     </span>
   ) : null;
@@ -40,18 +40,18 @@ export default async function SupportPage() {
   });
 
   return (
-    <main className="p-5 sm:p-7 lg:p-9">
+    <main className="p-5 sm:p-7 lg:p-9 support_page_main_main">
       <TicketLiveSync />
-      <div className="mx-auto max-w-5xl">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))]">
+      <div className="mx-auto max-w-5xl support_page_div_container">
+        <div className="flex flex-wrap items-end justify-between gap-4 support_page_div_container_2">
+          <div className="support_page_div_ticket_centre">
+            <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))] support_page_p_ticket_centre">
               Help · Support
             </p>
-            <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))]">
+            <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))] support_page_h1_ticket_centre">
               Ticket Centre
             </h1>
-            <p className="mt-3 text-sm text-[rgb(var(--sep-colour-9c8d79))]">
+            <p className="mt-3 text-sm text-[rgb(var(--sep-colour-9c8d79))] support_page_p_ticket_centre_2">
               Ask for help or follow an existing request.
             </p>
           </div>
@@ -63,11 +63,11 @@ export default async function SupportPage() {
           </Link>
         </div>
 
-        <div className="mt-8 space-y-3">
+        <div className="mt-8 space-y-3 support_page_div_container_3">
           {(tickets ?? []).length === 0 ? (
             <div
               data-sep-interaction-fixed="true"
-              className="border border-[rgb(var(--sep-colour-60482e))]/45 p-8 text-center text-sm text-[rgb(var(--sep-colour-8f806d))]"
+              className="border border-[rgb(var(--sep-colour-60482e))]/45 p-8 text-center text-sm text-[rgb(var(--sep-colour-8f806d))] support_page_div_container_4"
             >
               You have no support tickets.
             </div>
@@ -86,20 +86,20 @@ export default async function SupportPage() {
                   }`}
                 >
                   <Badge count={n} />
-                  <div className="flex justify-between gap-3">
-                    <div>
-                      <div className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-8c704b))]">
+                  <div className="flex justify-between gap-3 support_page_div_container_5">
+                    <div className="support_page_div_container_6">
+                      <div className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-8c704b))] support_page_div_container_7">
                         {ticket.public_reference} · {ticket.category.replaceAll("_", " ")}
                       </div>
-                      <h2 className="mt-2 font-serif text-xl text-[rgb(var(--sep-colour-e2c99f))]">
+                      <h2 className="mt-2 font-serif text-xl text-[rgb(var(--sep-colour-e2c99f))] support_page_h2_heading">
                         {ticket.subject}
                       </h2>
                     </div>
-                    <span className="h-fit border border-[rgb(var(--sep-colour-60482e))]/55 px-3 py-2 text-[8px] uppercase text-[rgb(var(--sep-colour-b7a083))]">
+                    <span className="h-fit border border-[rgb(var(--sep-colour-60482e))]/55 px-3 py-2 text-[8px] uppercase text-[rgb(var(--sep-colour-b7a083))] support_page_span_text_2">
                       {ticket.status.replaceAll("_", " ")}
                     </span>
                   </div>
-                  <p className="mt-3 text-[9px] text-[rgb(var(--sep-colour-756957))]">
+                  <p className="mt-3 text-[9px] text-[rgb(var(--sep-colour-756957))] support_page_p_text">
                     Opened {fmt(ticket.created_at)} · Updated {fmt(ticket.updated_at)}
                   </p>
                 </Link>

@@ -165,7 +165,7 @@ async function PortalLayoutContent({
 
         <div
           data-portal-shell
-          className="h-dvh overflow-hidden bg-[rgb(var(--sep-colour-120f0d))] text-[rgb(var(--sep-colour-e8dcc4))]"
+          className="h-dvh overflow-hidden bg-[rgb(var(--sep-colour-120f0d))] text-[rgb(var(--sep-colour-e8dcc4))] layout_div_container"
         >
           <div
             data-portal-shell-inner
@@ -188,7 +188,7 @@ async function PortalLayoutContent({
               portalCosmetics.location_atmosphere ? "true" : "false"
             }
             style={portalCosmeticStyle}
-            className="flex h-full min-h-0 flex-col bg-[radial-gradient(circle_at_top,_rgba(var(--sep-rgb-116-82-42),0.16),_transparent_38%),linear-gradient(to_bottom,_#17120f,_#0d0b0a)]"
+            className="flex h-full min-h-0 flex-col bg-[radial-gradient(circle_at_top,_rgba(var(--sep-rgb-116-82-42),0.16),_transparent_38%),linear-gradient(to_bottom,_#17120f,_#0d0b0a)] layout_div_container_2"
           >
             <PortalPresenceHeartbeat
               enabled={
@@ -201,7 +201,7 @@ async function PortalLayoutContent({
             <PortalInteractionLayer />
             <CosmeticRuntime />
 
-            <div className="shrink-0">
+            <div className="shrink-0 layout_div_container_3">
               <PortalHeader
                 context={context}
               />
@@ -955,7 +955,7 @@ async function PortalLayoutContent({
                 <main
                   data-portal-column
                   data-portal-scroll
-                  className="min-h-0 min-w-0 overflow-visible lg:overflow-y-auto lg:overscroll-contain"
+                  className="min-h-0 min-w-0 overflow-visible lg:overflow-y-auto lg:overscroll-contain layout_main_main"
                 >
                   {children}
                 </main>
@@ -1038,23 +1038,23 @@ function EmbeddedPortalLayout({
             <div
               data-portal-shell
               data-portal-modal-shell="true"
-              className="h-dvh overflow-hidden bg-[rgb(var(--sep-colour-120f0d))] text-[rgb(var(--sep-colour-e8dcc4))]"
+              className="h-dvh overflow-hidden bg-[rgb(var(--sep-colour-120f0d))] text-[rgb(var(--sep-colour-e8dcc4))] layout_div_container_4"
             >
               <div
                 data-portal-shell-inner
-                className="grid h-full min-h-0 grid-cols-1 overflow-hidden xl:grid-cols-[minmax(0,1fr)_clamp(240px,18vw,300px)]"
+                className="grid h-full min-h-0 grid-cols-1 overflow-hidden xl:grid-cols-[minmax(0,1fr)_clamp(240px,18vw,300px)] layout_div_container_5"
               >
                 <main
                   data-portal-centre-host
                   data-portal-column
                   data-portal-scroll
-                  className="min-h-0 min-w-0 overflow-y-auto overscroll-contain"
+                  className="min-h-0 min-w-0 overflow-y-auto overscroll-contain layout_main_main_2"
                 >
                   {children}
                 </main>
 
                 <div
-                  className="portal-right-shell relative min-h-0 min-w-0"
+                  className="portal-right-shell relative min-h-0 min-w-0 layout_div_container_6"
                 >
                   <PortalResponsiveRightSidebar
                     context={context}
@@ -1073,35 +1073,35 @@ function PortalLoadingShell() {
   return (
     <div
       data-portal-shell
-      className="h-dvh overflow-hidden bg-[rgb(var(--sep-colour-120f0d))] text-[rgb(var(--sep-colour-e8dcc4))]"
+      className="h-dvh overflow-hidden bg-[rgb(var(--sep-colour-120f0d))] text-[rgb(var(--sep-colour-e8dcc4))] layout_div_container_7"
     >
       <div
         data-portal-shell-inner
-        className="flex h-full min-h-0 flex-col bg-[radial-gradient(circle_at_top,_rgba(var(--sep-rgb-116-82-42),0.16),_transparent_38%),linear-gradient(to_bottom,_#17120f,_#0d0b0a)]"
+        className="flex h-full min-h-0 flex-col bg-[radial-gradient(circle_at_top,_rgba(var(--sep-rgb-116-82-42),0.16),_transparent_38%),linear-gradient(to_bottom,_#17120f,_#0d0b0a)] layout_div_container_8"
       >
-        <header className="h-[clamp(56px,8dvh,80px)] shrink-0 animate-pulse border-b border-[rgb(var(--sep-colour-6e5535))]/40 bg-[rgb(var(--sep-colour-0d0b0a))]" />
+        <header className="h-[clamp(56px,8dvh,80px)] shrink-0 animate-pulse border-b border-[rgb(var(--sep-colour-6e5535))]/40 bg-[rgb(var(--sep-colour-0d0b0a))] layout_header_header" />
 
-        <div className="mx-auto grid min-h-0 w-full max-w-[1800px] flex-1 grid-cols-1 overflow-y-auto lg:grid-cols-[clamp(180px,14vw,230px)_minmax(0,1fr)] lg:overflow-hidden xl:grid-cols-[clamp(180px,13vw,230px)_minmax(0,1fr)_clamp(240px,18vw,300px)]">
-          <aside className="hidden min-h-0 animate-pulse overflow-hidden border-r border-[rgb(var(--sep-colour-6e5535))]/30 bg-[rgb(var(--sep-colour-100d0b))] lg:block" />
+        <div className="mx-auto grid min-h-0 w-full max-w-[1800px] flex-1 grid-cols-1 overflow-y-auto lg:grid-cols-[clamp(180px,14vw,230px)_minmax(0,1fr)] lg:overflow-hidden xl:grid-cols-[clamp(180px,13vw,230px)_minmax(0,1fr)_clamp(240px,18vw,300px)] layout_div_container_9">
+          <aside className="hidden min-h-0 animate-pulse overflow-hidden border-r border-[rgb(var(--sep-colour-6e5535))]/30 bg-[rgb(var(--sep-colour-100d0b))] lg:block layout_aside_sidebar" />
 
-          <main className="min-h-0 overflow-hidden p-5 sm:p-7 lg:p-9">
-            <div className="h-4 w-52 animate-pulse bg-[rgb(var(--sep-colour-2c2118))]" />
-            <div className="mt-5 h-12 max-w-xl animate-pulse bg-[rgb(var(--sep-colour-2c2118))]" />
-            <div className="mt-5 h-5 max-w-2xl animate-pulse bg-[rgb(var(--sep-colour-211914))]" />
+          <main className="min-h-0 overflow-hidden p-5 sm:p-7 lg:p-9 layout_main_main_3">
+            <div className="h-4 w-52 animate-pulse bg-[rgb(var(--sep-colour-2c2118))] layout_div_container_10" />
+            <div className="mt-5 h-12 max-w-xl animate-pulse bg-[rgb(var(--sep-colour-2c2118))] layout_div_container_11" />
+            <div className="mt-5 h-5 max-w-2xl animate-pulse bg-[rgb(var(--sep-colour-211914))] layout_div_container_12" />
 
-            <div className="mt-10 grid gap-5 md:grid-cols-2">
-              <div className="h-64 animate-pulse border border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-17120f))]" />
-              <div className="h-64 animate-pulse border border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-17120f))]" />
+            <div className="mt-10 grid gap-5 md:grid-cols-2 layout_div_container_13">
+              <div className="h-64 animate-pulse border border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-17120f))] layout_div_container_14" />
+              <div className="h-64 animate-pulse border border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-17120f))] layout_div_container_15" />
             </div>
 
-            <div className="mt-6 grid gap-5 md:grid-cols-3">
-              <div className="h-44 animate-pulse border border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-17120f))]" />
-              <div className="h-44 animate-pulse border border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-17120f))]" />
-              <div className="h-44 animate-pulse border border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-17120f))]" />
+            <div className="mt-6 grid gap-5 md:grid-cols-3 layout_div_container_16">
+              <div className="h-44 animate-pulse border border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-17120f))] layout_div_container_17" />
+              <div className="h-44 animate-pulse border border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-17120f))] layout_div_container_18" />
+              <div className="h-44 animate-pulse border border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-17120f))] layout_div_container_19" />
             </div>
           </main>
 
-          <aside className="hidden min-h-0 animate-pulse overflow-hidden border-l border-[rgb(var(--sep-colour-6e5535))]/30 bg-[rgb(var(--sep-colour-100d0b))] xl:block" />
+          <aside className="hidden min-h-0 animate-pulse overflow-hidden border-l border-[rgb(var(--sep-colour-6e5535))]/30 bg-[rgb(var(--sep-colour-100d0b))] xl:block layout_aside_sidebar_2" />
         </div>
       </div>
     </div>

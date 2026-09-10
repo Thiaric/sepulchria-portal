@@ -62,14 +62,14 @@ export function CollapsibleRoomDescription({
   }
 
   return (
-    <div className="mt-1">
+    <div className="mt-1 components_world_collapsible_room_description_div_container">
       {expanded ? (
         <RichTextContentClient
           body={body}
           className="text-[11px] leading-5 text-[rgb(var(--sep-colour-9e907d))] [&_p]:m-0 [&_h1]:text-xs [&_h2]:text-xs [&_h3]:text-xs"
         />
       ) : (
-        <p className="text-[11px] leading-5 text-[rgb(var(--sep-colour-9e907d))]">
+        <p className="text-[11px] leading-5 text-[rgb(var(--sep-colour-9e907d))] components_world_collapsible_room_description_p_text">
           {preview}
         </p>
       )}
@@ -82,7 +82,7 @@ export function CollapsibleRoomDescription({
               !current,
           )
         }
-        className="mt-2 text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-b28b55))] transition hover:text-[rgb(var(--sep-colour-efd4a0))]"
+        className="mt-2 text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-b28b55))] transition hover:text-[rgb(var(--sep-colour-efd4a0))] components_world_collapsible_room_description_button_action"
         aria-expanded={
           expanded
         }

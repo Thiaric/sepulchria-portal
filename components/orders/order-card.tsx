@@ -20,7 +20,7 @@ export function OrderCard({
     one(order.association);
 
   return (
-    <div className="relative">
+    <div className="relative components_orders_order_card_div_container">
       <CodexEntryCard
         name={order.name}
         slug={order.slug}

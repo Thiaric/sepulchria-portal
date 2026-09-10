@@ -48,21 +48,21 @@ export function MarketItemsContext({ shopSlug }: { shopSlug: string }) {
     document.getElementById(`market-item-${id}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
-  return <div className="flex h-full min-h-0 flex-col">
-    <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">{shopName}</p>
-    <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">Shop Items</h2>
+  return <div className="flex h-full min-h-0 flex-col components_portal_market_items_context_div_shop_items">
+    <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_portal_market_items_context_p_shop_items">{shopName}</p>
+    <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_portal_market_items_context_h2_shop_items">Shop Items</h2>
     <input type="search" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search Items..."
-      className="mt-3 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))]" />
-    <p className="mt-1.5 text-right text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-6f6353))]">{visible.length}{search.trim() ? ` / ${items.length}` : ""} Items</p>
-    {error ? <p className="mt-3 text-[10px] text-red-400">{error}</p> : null}
-    <div className="mt-3 min-h-0 flex-1 overflow-y-auto pr-1">
-      {loading ? <p className="text-[10px] text-[rgb(var(--sep-colour-756958))]">Loading Items...</p> :
-        <div className="space-y-1.5">{visible.map((item) =>
+      className="mt-3 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))] components_portal_market_items_context_input_search_items" />
+    <p className="mt-1.5 text-right text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-6f6353))] components_portal_market_items_context_p_shop_items_2">{visible.length}{search.trim() ? ` / ${items.length}` : ""} Items</p>
+    {error ? <p className="mt-3 text-[10px] text-red-400 components_portal_market_items_context_p_shop_items_3">{error}</p> : null}
+    <div className="mt-3 min-h-0 flex-1 overflow-y-auto pr-1 components_portal_market_items_context_div_shop_items_2">
+      {loading ? <p className="text-[10px] text-[rgb(var(--sep-colour-756958))] components_portal_market_items_context_p_shop_items_4">Loading Items...</p> :
+        <div className="space-y-1.5 components_portal_market_items_context_div_shop_items_3">{visible.map((item) =>
           <button key={item.id} type="button" onClick={() => jump(item.id)}
-            className="flex w-full items-center justify-between gap-2 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-left transition hover:border-[rgb(var(--sep-colour-8d693e))] hover:bg-[rgb(var(--sep-colour-1a130e))]">
-            <span className="min-w-0"><span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))]">{item.name}</span>
-              {item.category ? <span className="mt-0.5 block truncate text-[8px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-6f6252))]">{item.category}</span> : null}</span>
-            <span className="text-[rgb(var(--sep-colour-806b50))]">↓</span>
+            className="flex w-full items-center justify-between gap-2 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-left transition hover:border-[rgb(var(--sep-colour-8d693e))] hover:bg-[rgb(var(--sep-colour-1a130e))] components_portal_market_items_context_button_action">
+            <span className="min-w-0 components_portal_market_items_context_span_text"><span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] components_portal_market_items_context_span_text_2">{item.name}</span>
+              {item.category ? <span className="mt-0.5 block truncate text-[8px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-6f6252))] components_portal_market_items_context_span_text_3">{item.category}</span> : null}</span>
+            <span className="text-[rgb(var(--sep-colour-806b50))] components_portal_market_items_context_span_text_4">↓</span>
           </button>)}</div>}
     </div>
   </div>;

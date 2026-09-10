@@ -253,7 +253,7 @@ export function FriendLivePresence({
 
   if (!loaded) {
     return (
-      <span className="text-[9px] text-[rgb(var(--sep-colour-756958))]">
+      <span className="text-[9px] text-[rgb(var(--sep-colour-756958))] components_friends_friend_live_presence_span_text">
         Checking presence...
       </span>
     );
@@ -261,9 +261,9 @@ export function FriendLivePresence({
 
   if (!presence) {
     return (
-      <div className="flex min-w-0 flex-1 items-center gap-2">
-        <span className="h-2 w-2 shrink-0 rounded-full bg-[rgb(var(--sep-colour-5f574d))]" />
-        <span className="text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-817567))]">
+      <div className="flex min-w-0 flex-1 items-center gap-2 components_friends_friend_live_presence_div_container">
+        <span className="h-2 w-2 shrink-0 rounded-full bg-[rgb(var(--sep-colour-5f574d))] components_friends_friend_live_presence_span_text_2" />
+        <span className="text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-817567))] components_friends_friend_live_presence_span_text_3">
           Outside the Gates
         </span>
       </div>
@@ -315,37 +315,37 @@ export function FriendLivePresence({
     maySeePrivateRoom;
 
   return (
-    <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-2">
-      <div className="flex items-center gap-1.5">
+    <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-2 components_friends_friend_live_presence_div_container_2">
+      <div className="flex items-center gap-1.5 components_friends_friend_live_presence_div_container_3">
         <span
-          className={`h-2 w-2 shrink-0 rounded-full ${statusDotClass(
+          className={[((`h-2 w-2 shrink-0 rounded-full ${statusDotClass(
             presence.status,
-          )}`}
+          )}`)), "components_friends_friend_live_presence_span_text_4"].filter(Boolean).join(" ")}
         />
-        <span className="text-[8px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-ae9a7b))]">
+        <span className="text-[8px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-ae9a7b))] components_friends_friend_live_presence_span_text_5">
           {statusLabel(
             presence.status,
           )}
         </span>
       </div>
 
-      <span className="min-w-0 truncate text-[10px] text-[rgb(var(--sep-colour-b7a58c))]">
+      <span className="min-w-0 truncate text-[10px] text-[rgb(var(--sep-colour-b7a58c))] components_friends_friend_live_presence_span_text_6">
         {visibleRoomName}
       </span>
 
       {canJump ? (
         <form
           action={enterRoomFromMap}
-          className="ml-auto"
+          className="ml-auto components_friends_friend_live_presence_form_form"
         >
-          <input
+          <input className="components_friends_friend_live_presence_input_room_id"
             type="hidden"
             name="roomId"
             value={room.id}
           />
           <button
             type="submit"
-            className="inline-flex h-8 items-center justify-center border border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-241a12))] px-3 text-[8px] font-semibold uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:border-[rgb(var(--sep-colour-b28b55))] hover:bg-[rgb(var(--sep-colour-302217))]"
+            className="inline-flex h-8 items-center justify-center border border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-241a12))] px-3 text-[8px] font-semibold uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:border-[rgb(var(--sep-colour-b28b55))] hover:bg-[rgb(var(--sep-colour-302217))] components_friends_friend_live_presence_button_journey"
           >
             Journey There
           </button>

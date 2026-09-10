@@ -116,13 +116,13 @@ export function OrderSubmissionsContext() {
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <div>
-        <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+    <div className="flex h-full min-h-0 flex-col components_admin_order_submissions_context_div_container">
+      <div className="components_admin_order_submissions_context_div_order_submissions">
+        <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_admin_order_submissions_context_p_order_submissions">
           Administration
         </p>
 
-        <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8c19a))]">
+        <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8c19a))] components_admin_order_submissions_context_h2_order_submissions">
           Order Submissions
         </h2>
       </div>
@@ -132,20 +132,20 @@ export function OrderSubmissionsContext() {
         value={search}
         onChange={(event) => setSearch(event.target.value)}
         placeholder="Filter by Order or character..."
-        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none focus:border-[rgb(var(--sep-colour-8a673f))]"
+        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none focus:border-[rgb(var(--sep-colour-8a673f))] components_admin_order_submissions_context_input_field"
       />
 
-      <p className="mt-3 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+      <p className="mt-3 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_admin_order_submissions_context_p_text">
         Proposed Orders · {filtered.length}
       </p>
 
-      <div className="mt-3 min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">
+      <div className="mt-3 min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1 components_admin_order_submissions_context_div_container_2">
         {loading ? (
-          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))]">
+          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))] components_admin_order_submissions_context_p_text_2">
             Loading submissions...
           </p>
         ) : error ? (
-          <p className="text-xs text-red-300">
+          <p className="text-xs text-red-300 components_admin_order_submissions_context_p_text_3">
             Unable to load submissions.
           </p>
         ) : filtered.length > 0 ? (
@@ -154,37 +154,35 @@ export function OrderSubmissionsContext() {
               key={entry.id}
               type="button"
               onClick={() => jumpTo(entry.id)}
-              className={
-                entry.status === "pending"
+              className={[((entry.status === "pending"
                   ? "w-full border border-[rgb(var(--sep-colour-b1844b))] bg-[rgb(var(--sep-colour-24180f))] px-3 py-2.5 text-left transition hover:bg-[rgb(var(--sep-colour-302217))]"
-                  : "w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))]"
-              }
+                  : "w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))]")), "components_admin_order_submissions_context_button_action"].filter(Boolean).join(" ")}
             >
-              <div className="flex items-start gap-2">
-                <div className="min-w-0 flex-1">
-                  <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))]">
+              <div className="flex items-start gap-2 components_admin_order_submissions_context_div_container_3">
+                <div className="min-w-0 flex-1 components_admin_order_submissions_context_div_container_4">
+                  <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] components_admin_order_submissions_context_span_text">
                     {entry.orderName}
                   </span>
 
-                  <span className="mt-1 block truncate text-[9px] text-[rgb(var(--sep-colour-817563))]">
+                  <span className="mt-1 block truncate text-[9px] text-[rgb(var(--sep-colour-817563))] components_admin_order_submissions_context_span_text_2">
                     {entry.characterName}
                   </span>
                 </div>
 
                 {entry.status === "pending" ? (
-                  <span className="shrink-0 rounded-full border border-[rgb(var(--sep-colour-d19a4c))] bg-[rgb(var(--sep-colour-7a291f))] px-1.5 py-0.5 text-[7px] font-bold uppercase text-[rgb(var(--sep-colour-ffe1ac))]">
+                  <span className="shrink-0 rounded-full border border-[rgb(var(--sep-colour-d19a4c))] bg-[rgb(var(--sep-colour-7a291f))] px-1.5 py-0.5 text-[7px] font-bold uppercase text-[rgb(var(--sep-colour-ffe1ac))] components_admin_order_submissions_context_span_text_3">
                     New
                   </span>
                 ) : null}
               </div>
 
-              <span className="mt-1 block text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756957))]">
+              <span className="mt-1 block text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756957))] components_admin_order_submissions_context_span_text_4">
                 {labelStatus(entry.status)}
               </span>
             </button>
           ))
         ) : (
-          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))]">
+          <p className="text-xs text-[rgb(var(--sep-colour-8f826f))] components_admin_order_submissions_context_p_text_4">
             No matching submissions.
           </p>
         )}

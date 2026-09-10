@@ -80,21 +80,21 @@ export default async function AppearancePage() {
     }));
 
   return (
-    <main>
-      <div className="mx-auto max-w-5xl">
+    <main className="appearance_page_main_main">
+      <div className="mx-auto max-w-5xl appearance_page_div_portal_appearance">
         
 
-        <h1 className="mt-1 font-serif text-3xl text-[rgb(var(--sep-colour-ead5ac))]">
+        <h1 className="mt-1 font-serif text-3xl text-[rgb(var(--sep-colour-ead5ac))] appearance_page_h1_portal_appearance">
           Portal Appearance
         </h1>
 
-        <p className="mt-2 max-w-3xl text-xs leading-5 text-[rgb(var(--sep-colour-928674))]">
+        <p className="mt-2 max-w-3xl text-xs leading-5 text-[rgb(var(--sep-colour-928674))] appearance_page_p_portal_appearance">
           Choose the appearance used throughout your Sepulchria
           portal. Premium skins belong to your account, so they
           remain available even if you create a different character.
         </p>
 
-        <div className="mt-5">
+        <div className="mt-5 appearance_page_div_portal_appearance_2">
           <PortalSkinGallery skins={skins} />
         </div>
       </div>

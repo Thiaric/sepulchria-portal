@@ -86,23 +86,23 @@ export function MusicContextPanel() {
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+    <div className="flex h-full min-h-0 flex-col components_admin_music_context_panel_div_music_catalogue">
+      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_admin_music_context_panel_p_music_catalogue">
         Music administration
       </p>
 
-      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_admin_music_context_panel_h2_music_catalogue">
         Music Catalogue
       </h2>
 
-      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_admin_music_context_panel_p_music_catalogue_2">
         Upload tracks or jump directly to an existing track.
       </p>
 
       <button
         type="button"
         onClick={jumpToCreate}
-        className="mt-4 w-full border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-21170f))] px-3 py-2.5 text-left font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] transition hover:border-[rgb(var(--sep-colour-a17a49))]"
+        className="mt-4 w-full border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-21170f))] px-3 py-2.5 text-left font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] transition hover:border-[rgb(var(--sep-colour-a17a49))] components_admin_music_context_panel_button_add_track"
       >
         + Add Track
       </button>
@@ -114,21 +114,21 @@ export function MusicContextPanel() {
           setSearch(event.target.value)
         }
         placeholder="Search music..."
-        className="mt-3 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none focus:border-[rgb(var(--sep-colour-987344))]"
+        className="mt-3 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none focus:border-[rgb(var(--sep-colour-987344))] components_admin_music_context_panel_input_search_music"
       />
 
-      <div className="mt-3 min-h-0 flex-1 space-y-1.5 overflow-y-auto">
+      <div className="mt-3 min-h-0 flex-1 space-y-1.5 overflow-y-auto components_admin_music_context_panel_div_music_catalogue_2">
         {visible.map((entry) => (
           <button
             key={entry.id}
             type="button"
             onClick={() => jumpToTrack(entry.id)}
-            className="w-full border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-80613b))]"
+            className="w-full border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-80613b))] components_admin_music_context_panel_button_action"
           >
-            <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))]">
+            <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] components_admin_music_context_panel_span_text">
               {entry.name}
             </span>
-            <span className="mt-1 block text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))]">
+            <span className="mt-1 block text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))] components_admin_music_context_panel_span_text_2">
               {entry.active ? "Active" : "Inactive"} ·{" "}
               {entry.personal
                 ? "Personal"
@@ -138,7 +138,7 @@ export function MusicContextPanel() {
         ))}
 
         {visible.length === 0 ? (
-          <p className="px-2 py-5 text-center text-[10px] text-[rgb(var(--sep-colour-706452))]">
+          <p className="px-2 py-5 text-center text-[10px] text-[rgb(var(--sep-colour-706452))] components_admin_music_context_panel_p_text">
             No matching tracks.
           </p>
         ) : null}

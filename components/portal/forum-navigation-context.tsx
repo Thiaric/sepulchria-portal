@@ -34,11 +34,11 @@ function ContextHeader({
   title: string;
 }) {
   return (
-    <header className="mb-4">
-      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">
+    <header className="mb-4 components_portal_forum_navigation_context_header_header">
+      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_portal_forum_navigation_context_p_text">
         {eyebrow}
       </p>
-      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d6bd91))]">
+      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d6bd91))] components_portal_forum_navigation_context_h2_heading">
         {title}
       </h2>
     </header>
@@ -62,7 +62,7 @@ function SearchField({
         onChange(event.target.value)
       }
       placeholder={placeholder}
-      className="w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-6f6253))] focus:border-[rgb(var(--sep-colour-8a673f))]"
+      className="w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-6f6253))] focus:border-[rgb(var(--sep-colour-8a673f))] components_portal_forum_navigation_context_input_field"
     />
   );
 }
@@ -78,34 +78,34 @@ function JumpList({
 }) {
   if (entries.length === 0) {
     return (
-      <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+      <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_forum_navigation_context_p_text_2">
         {emptyLabel}
       </p>
     );
   }
 
   return (
-    <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">
+    <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1 components_portal_forum_navigation_context_div_container">
       {entries.map((entry) => (
         <button
           key={entry.key}
           type="button"
           onClick={() => onJump(entry)}
-          className="flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17100c))]"
+          className="flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17100c))] components_portal_forum_navigation_context_button_action"
         >
-          <span className="min-w-0 flex-1">
-            <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))]">
+          <span className="min-w-0 flex-1 components_portal_forum_navigation_context_span_text">
+            <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] components_portal_forum_navigation_context_span_text_2">
               {entry.label}
             </span>
 
             {entry.preview ? (
-              <span className="mt-1 block max-h-12 overflow-hidden text-[10px] leading-4 text-[rgb(var(--sep-colour-8f8271))]">
+              <span className="mt-1 block max-h-12 overflow-hidden text-[10px] leading-4 text-[rgb(var(--sep-colour-8f8271))] components_portal_forum_navigation_context_span_text_3">
   {entry.preview}
 </span>
             ) : null}
           </span>
 
-          <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))]">
+          <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))] components_portal_forum_navigation_context_span_text_4">
             →
           </span>
         </button>
@@ -278,7 +278,7 @@ export function ForumSectionsNavigatorContext() {
     }, [entries, search]);
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
+    <div className="flex h-full min-h-0 flex-col components_portal_forum_navigation_context_div_container_2">
       <ContextHeader
         eyebrow="Forum"
         title="Sections"
@@ -290,7 +290,7 @@ export function ForumSectionsNavigatorContext() {
         placeholder="Search sections..."
       />
 
-      <p className="my-3 text-[8px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-716350))]">
+      <p className="my-3 text-[8px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-716350))] components_portal_forum_navigation_context_p_text_3">
         Sections · {filtered.length}
       </p>
 
@@ -598,7 +598,7 @@ export function ForumTopicsNavigatorContext({
     }, [entries, search]);
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
+    <div className="flex h-full min-h-0 flex-col components_portal_forum_navigation_context_div_container_3">
       <ContextHeader
         eyebrow="Forum section"
         title="Topics"
@@ -610,13 +610,13 @@ export function ForumTopicsNavigatorContext({
         placeholder="Search topics..."
       />
 
-      <p className="my-3 text-[8px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-716350))]">
+      <p className="my-3 text-[8px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-716350))] components_portal_forum_navigation_context_p_text_4">
         Topics · {filtered.length}
       </p>
 
-      <div className="min-h-0 flex-1 space-y-2 overflow-y-auto pr-1">
+      <div className="min-h-0 flex-1 space-y-2 overflow-y-auto pr-1 components_portal_forum_navigation_context_div_container_4">
         {filtered.length === 0 ? (
-          <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+          <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_forum_navigation_context_p_text_5">
             No topics match your search.
           </p>
         ) : (
@@ -634,30 +634,30 @@ export function ForumTopicsNavigatorContext({
             return (
               <div
                 key={entry.key}
-                className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))]"
+                className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] components_portal_forum_navigation_context_div_container_5"
               >
                 <button
                   type="button"
                   onClick={() =>
                     jumpToEntry(entry)
                   }
-                  className="flex w-full items-center justify-between gap-3 px-3 py-2.5 text-left transition hover:bg-[rgb(var(--sep-colour-17100c))]"
+                  className="flex w-full items-center justify-between gap-3 px-3 py-2.5 text-left transition hover:bg-[rgb(var(--sep-colour-17100c))] components_portal_forum_navigation_context_button_action_2"
                 >
-                  <span className="min-w-0 truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))]">
+                  <span className="min-w-0 truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] components_portal_forum_navigation_context_span_text_5">
                     {entry.label}
                   </span>
 
-                  <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))]">
+                  <span className="shrink-0 text-[rgb(var(--sep-colour-725a3d))] components_portal_forum_navigation_context_span_text_6">
                     →
                   </span>
                 </button>
 
-                <details className="border-t border-[rgb(var(--sep-colour-59432c))]/30">
-                  <summary className="cursor-pointer select-none px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-8b704d))] hover:text-[rgb(var(--sep-colour-c5a474))]">
+                <details className="border-t border-[rgb(var(--sep-colour-59432c))]/30 components_portal_forum_navigation_context_details_replies">
+                  <summary className="cursor-pointer select-none px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-8b704d))] hover:text-[rgb(var(--sep-colour-c5a474))] components_portal_forum_navigation_context_summary_replies">
                     Replies · {replies.length}
                   </summary>
 
-                  <div className="space-y-1 border-t border-[rgb(var(--sep-colour-59432c))]/20 p-2">
+                  <div className="space-y-1 border-t border-[rgb(var(--sep-colour-59432c))]/20 p-2 components_portal_forum_navigation_context_div_replies">
                     {replies.length > 0 ? (
                       replies.map(
                         (
@@ -667,20 +667,20 @@ export function ForumTopicsNavigatorContext({
                           <a
                             key={reply.id}
                             href={`${entry.href}#post-${reply.id}`}
-                            className="block border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-0d0907))] px-2.5 py-2 transition hover:border-[rgb(var(--sep-colour-80613c))]"
+                            className="block border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-0d0907))] px-2.5 py-2 transition hover:border-[rgb(var(--sep-colour-80613c))] components_portal_forum_navigation_context_a_link"
                           >
-                            <span className="block text-[8px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-8b704d))]">
+                            <span className="block text-[8px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-8b704d))] components_portal_forum_navigation_context_span_text_7">
                               Reply {replyIndex + 1}
                             </span>
 
-                            <span className="mt-1 line-clamp-2 block text-[10px] leading-4 text-[rgb(var(--sep-colour-8f8271))]">
+                            <span className="mt-1 line-clamp-2 block text-[10px] leading-4 text-[rgb(var(--sep-colour-8f8271))] components_portal_forum_navigation_context_span_text_8">
                               {reply.preview}
                             </span>
                           </a>
                         ),
                       )
                     ) : (
-                      <p className="px-1 py-1 text-[10px] text-[rgb(var(--sep-colour-776b5c))]">
+                      <p className="px-1 py-1 text-[10px] text-[rgb(var(--sep-colour-776b5c))] components_portal_forum_navigation_context_p_text_6">
                         No replies yet.
                       </p>
                     )}
@@ -1015,43 +1015,43 @@ export function ForumTopicNavigatorContext({
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
+    <div className="flex h-full min-h-0 flex-col components_portal_forum_navigation_context_div_container_6">
       <ContextHeader
         eyebrow="Forum discussion"
         title={topicTitle}
       />
 
-      <section className="shrink-0 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] p-3">
-        <p className="mb-2 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9b7b53))]">
+      <section className="shrink-0 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] p-3 components_portal_forum_navigation_context_section_section">
+        <p className="mb-2 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9b7b53))] components_portal_forum_navigation_context_p_text_7">
           Quick reply
         </p>
 
         {loading ? (
-          <p className="text-[11px] text-[rgb(var(--sep-colour-8f8271))]">
+          <p className="text-[11px] text-[rgb(var(--sep-colour-8f8271))] components_portal_forum_navigation_context_p_text_8">
             Loading reply form...
           </p>
         ) : loadError ? (
-          <p className="text-[11px] leading-5 text-[rgb(var(--sep-colour-c58d82))]">
+          <p className="text-[11px] leading-5 text-[rgb(var(--sep-colour-c58d82))] components_portal_forum_navigation_context_p_text_9">
             {loadError}
           </p>
         ) : topicLocked ? (
-          <p className="text-[11px] leading-5 text-[rgb(var(--sep-colour-9f927f))]">
+          <p className="text-[11px] leading-5 text-[rgb(var(--sep-colour-9f927f))] components_portal_forum_navigation_context_p_text_10">
             This discussion is locked.
           </p>
         ) : characters.length === 0 ? (
-          <p className="text-[11px] leading-5 text-[rgb(var(--sep-colour-9f927f))]">
+          <p className="text-[11px] leading-5 text-[rgb(var(--sep-colour-9f927f))] components_portal_forum_navigation_context_p_text_11">
             No approved character is available to reply.
           </p>
         ) : (
           <form
             action={action}
-            className="space-y-2"
+            className="space-y-2 components_portal_forum_navigation_context_form_action"
           >
-            <input type="hidden" name="topicId" value={topicId} />
-            <input type="hidden" name="sectionSlug" value={sectionSlug} />
-            <input type="hidden" name="topicSlug" value={topicSlug} />
-            <input type="hidden" name="quotedPostId" value="" />
-            <input type="hidden" name="imageUrls" value="[]" />
+            <input className="components_portal_forum_navigation_context_input_topic_id" type="hidden" name="topicId" value={topicId} />
+            <input className="components_portal_forum_navigation_context_input_section_slug" type="hidden" name="sectionSlug" value={sectionSlug} />
+            <input className="components_portal_forum_navigation_context_input_topic_slug" type="hidden" name="topicSlug" value={topicSlug} />
+            <input className="components_portal_forum_navigation_context_input_quoted_post_id" type="hidden" name="quotedPostId" value="" />
+            <input className="components_portal_forum_navigation_context_input_image_urls" type="hidden" name="imageUrls" value="[]" />
 
             <select
               name="characterId"
@@ -1064,11 +1064,11 @@ export function ForumTopicNavigatorContext({
                 )
               }
               disabled={pending}
-              className="w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-0d0907))] px-2.5 py-2 text-[11px] text-[rgb(var(--sep-colour-d4bea0))] outline-none"
+              className="w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-0d0907))] px-2.5 py-2 text-[11px] text-[rgb(var(--sep-colour-d4bea0))] outline-none components_portal_forum_navigation_context_select_character_id"
             >
               {characters.map(
                 (character) => (
-                  <option
+                  <option className="components_portal_forum_navigation_context_option_option"
                     key={character.id}
                     value={character.id}
                   >
@@ -1092,11 +1092,11 @@ export function ForumTopicNavigatorContext({
               maxLength={50000}
               disabled={pending}
               placeholder="Write a quick reply..."
-              className="w-full resize-y border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2 text-xs leading-5 text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-6f6253))]"
+              className="w-full resize-y border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2 text-xs leading-5 text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-6f6253))] components_portal_forum_navigation_context_textarea_body"
             />
 
-            <label className="flex items-center gap-2 text-[9px] text-[rgb(var(--sep-colour-9f927f))]">
-              <input
+            <label className="flex items-center gap-2 text-[9px] text-[rgb(var(--sep-colour-9f927f))] components_portal_forum_navigation_context_label_anonymous">
+              <input className="components_portal_forum_navigation_context_input_anonymous"
                 type="checkbox"
                 name="isAnonymous"
                 value="true"
@@ -1113,11 +1113,11 @@ export function ForumTopicNavigatorContext({
 
             {state.message ? (
               <p
-                className={`text-[10px] leading-4 ${
+                className={[((`text-[10px] leading-4 ${
                   state.success
                     ? "text-emerald-400"
                     : "text-red-400"
-                }`}
+                }`)), "components_portal_forum_navigation_context_p_anonymous"].filter(Boolean).join(" ")}
               >
                 {state.message}
               </p>
@@ -1131,7 +1131,7 @@ export function ForumTopicNavigatorContext({
                 !selectedCharacterId ||
                 !body.trim()
               }
-              className="w-full border border-[rgb(var(--sep-colour-8d6a40))] bg-[rgb(var(--sep-colour-2b1d12))] px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d8bd91))] transition hover:border-[rgb(var(--sep-colour-ad824d))] disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-full border border-[rgb(var(--sep-colour-8d6a40))] bg-[rgb(var(--sep-colour-2b1d12))] px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d8bd91))] transition hover:border-[rgb(var(--sep-colour-ad824d))] disabled:cursor-not-allowed disabled:opacity-50 components_portal_forum_navigation_context_button_anonymous"
             >
               {pending
                 ? "Publishing..."
@@ -1141,7 +1141,7 @@ export function ForumTopicNavigatorContext({
         )}
       </section>
 
-      <div className="my-3 h-px shrink-0 bg-[rgb(var(--sep-colour-59432c))]/35" />
+      <div className="my-3 h-px shrink-0 bg-[rgb(var(--sep-colour-59432c))]/35 components_portal_forum_navigation_context_div_container_7" />
 
       <SearchField
         value={search}
@@ -1149,7 +1149,7 @@ export function ForumTopicNavigatorContext({
         placeholder="Search replies..."
       />
 
-      <p className="my-3 shrink-0 text-[8px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-716350))]">
+      <p className="my-3 shrink-0 text-[8px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-716350))] components_portal_forum_navigation_context_p_text_12">
         Replies · {filteredReplies.length}
       </p>
 
@@ -1162,7 +1162,7 @@ export function ForumTopicNavigatorContext({
       <button
         type="button"
         onClick={jumpToMainReply}
-        className="mt-3 shrink-0 border border-[rgb(var(--sep-colour-8d6a40))] bg-[rgb(var(--sep-colour-2b1d12))] px-3 py-2.5 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d8bd91))] transition hover:border-[rgb(var(--sep-colour-ad824d))]"
+        className="mt-3 shrink-0 border border-[rgb(var(--sep-colour-8d6a40))] bg-[rgb(var(--sep-colour-2b1d12))] px-3 py-2.5 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d8bd91))] transition hover:border-[rgb(var(--sep-colour-ad824d))] components_portal_forum_navigation_context_button_jump_main_reply_editor"
       >
         Jump to main reply editor ↓
       </button>

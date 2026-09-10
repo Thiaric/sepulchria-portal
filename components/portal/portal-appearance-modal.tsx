@@ -385,7 +385,7 @@ export function PortalAppearanceModal({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/10 p-3 sm:p-6"
+      className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/10 p-3 sm:p-6 components_portal_portal_appearance_modal_div_presentation"
       role="presentation"
       onMouseDown={(event) => {
         if (
@@ -401,30 +401,30 @@ export function PortalAppearanceModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby="portal-appearance-title"
-        className="flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/65 bg-[rgb(var(--sep-colour-0d0a08))] shadow-2xl"
+        className="flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/65 bg-[rgb(var(--sep-colour-0d0a08))] shadow-2xl components_portal_portal_appearance_modal_section_dialog"
         style={{
           transform:
             `translate3d(${dragOffset.x}px, ${dragOffset.y}px, 0)`,
         }}
       >
         <header
-          className="flex shrink-0 cursor-move touch-none select-none items-start justify-between gap-4 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-5 py-4 sm:px-6"
+          className="flex shrink-0 cursor-move touch-none select-none items-start justify-between gap-4 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-5 py-4 sm:px-6 components_portal_portal_appearance_modal_header_drag_move_portal_appearance"
           onPointerDown={beginDrag}
           onPointerMove={moveDrag}
           onPointerUp={endDrag}
           onPointerCancel={endDrag}
           title="Drag to move Portal Appearance"
         >
-          <div>
+          <div className="components_portal_portal_appearance_modal_div_portal_appearance">
             
             <h2
               id="portal-appearance-title"
-              className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-ead5ac))]"
+              className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-ead5ac))] components_portal_portal_appearance_modal_h2_portal_appearance_title"
             >
               Portal Appearance
             </h2>
 
-            <p className="mt-1 max-w-3xl text-[10px] leading-5 text-[rgb(var(--sep-colour-928674))]">
+            <p className="mt-1 max-w-3xl text-[10px] leading-5 text-[rgb(var(--sep-colour-928674))] components_portal_portal_appearance_modal_p_portal_appearance">
               Preview your available skins or select an unlocked appearance.
             </p>
           </div>
@@ -433,19 +433,19 @@ export function PortalAppearanceModal({
             type="button"
             onClick={close}
             aria-label="Close Appearance"
-            className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-baa78c))] transition hover:border-[rgb(var(--sep-colour-987344))]"
+            className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-baa78c))] transition hover:border-[rgb(var(--sep-colour-987344))] components_portal_portal_appearance_modal_button_close_appearance"
           >
             ×
           </button>
         </header>
 
-        <div className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6">
+        <div className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6 components_portal_portal_appearance_modal_div_container">
           {loading ? (
-            <p className="py-12 text-center text-[10px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-8f8271))]">
+            <p className="py-12 text-center text-[10px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-8f8271))] components_portal_portal_appearance_modal_p_text">
               Loading appearances...
             </p>
           ) : error ? (
-            <div className="border border-red-900/55 bg-red-950/20 p-4 text-sm text-red-300">
+            <div className="border border-red-900/55 bg-red-950/20 p-4 text-sm text-red-300 components_portal_portal_appearance_modal_div_container_2">
               Unable to load Portal Appearance: {error}
             </div>
           ) : (

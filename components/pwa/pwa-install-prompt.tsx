@@ -221,8 +221,7 @@ export function PwaInstallPrompt() {
 
   return (
     <div
-      className="
-        fixed inset-x-3 bottom-[calc(76px+env(safe-area-inset-bottom))]
+      className="fixed inset-x-3 bottom-[calc(76px+env(safe-area-inset-bottom))]
         z-[120]
         mx-auto max-w-md
         border border-[rgb(var(--sep-colour-60482e))]/70
@@ -231,49 +230,48 @@ export function PwaInstallPrompt() {
         shadow-[0_16px_55px_rgba(var(--sep-rgb-0-0-0),0.7)]
         backdrop-blur
         lg:hidden
-      "
+       components_pwa_pwa_install_prompt_div_install_sepulchria"
       role="dialog"
       aria-label="Install Sepulchria"
     >
-      <div className="flex items-start gap-3">
+      <div className="flex items-start gap-3 components_pwa_pwa_install_prompt_div_install_sepulchria_2">
         <img
           src="/icons/pwa/icon-192.png"
           alt=""
           aria-hidden="true"
-          className="h-11 w-11 shrink-0"
+          className="h-11 w-11 shrink-0 components_pwa_pwa_install_prompt_img_install_sepulchria"
         />
 
-        <div className="min-w-0 flex-1">
-          <p className="font-serif text-base text-[rgb(var(--sep-colour-ecd9b2))]">
+        <div className="min-w-0 flex-1 components_pwa_pwa_install_prompt_div_install_sepulchria_3">
+          <p className="font-serif text-base text-[rgb(var(--sep-colour-ecd9b2))] components_pwa_pwa_install_prompt_p_install_sepulchria">
             Install Sepulchria
           </p>
 
-          <p className="mt-1 text-[10px] leading-4 text-[rgb(var(--sep-colour-a99a84))]">
+          <p className="mt-1 text-[10px] leading-4 text-[rgb(var(--sep-colour-a99a84))] components_pwa_pwa_install_prompt_p_install_sepulchria_2">
             {ios
               ? "Add Sepulchria to your Home Screen for faster access and an app-like experience."
               : "Install Sepulchria on your phone for faster access and an app-like experience."}
           </p>
 
           {ios ? (
-            <p className="mt-2 text-[10px] leading-4 text-[rgb(var(--sep-colour-c6ab80))]">
+            <p className="mt-2 text-[10px] leading-4 text-[rgb(var(--sep-colour-c6ab80))] components_pwa_pwa_install_prompt_p_text">
               Tap Share, then choose
               {" "}
-              <span className="font-semibold">
+              <span className="font-semibold components_pwa_pwa_install_prompt_span_text">
                 Add to Home Screen
               </span>
               .
             </p>
           ) : null}
 
-          <div className="mt-3 flex flex-wrap gap-2">
+          <div className="mt-3 flex flex-wrap gap-2 components_pwa_pwa_install_prompt_div_install_sepulchria_4">
             {!ios ? (
               <button
                 type="button"
                 onClick={() => {
                   void install();
                 }}
-                className="
-                  border border-[rgb(var(--sep-colour-987344))]
+                className="border border-[rgb(var(--sep-colour-987344))]
                   bg-[rgb(var(--sep-colour-3b2919))]
                   px-4 py-2
                   text-[9px] uppercase tracking-[0.18em]
@@ -281,7 +279,7 @@ export function PwaInstallPrompt() {
                   transition
                   hover:border-[rgb(var(--sep-colour-b98c50))]
                   hover:bg-[rgb(var(--sep-colour-50371f))]
-                "
+                 components_pwa_pwa_install_prompt_button_install"
               >
                 Install
               </button>
@@ -290,8 +288,7 @@ export function PwaInstallPrompt() {
             <button
               type="button"
               onClick={dismiss}
-              className="
-                border border-[rgb(var(--sep-colour-60482e))]/55
+              className="border border-[rgb(var(--sep-colour-60482e))]/55
                 bg-[rgb(var(--sep-colour-15100d))]
                 px-4 py-2
                 text-[9px] uppercase tracking-[0.18em]
@@ -299,7 +296,7 @@ export function PwaInstallPrompt() {
                 transition
                 hover:border-[rgb(var(--sep-colour-987344))]
                 hover:text-[rgb(var(--sep-colour-ead2a5))]
-              "
+               components_pwa_pwa_install_prompt_button_dismiss"
             >
               {ios ? "Got it" : "Not now"}
             </button>
@@ -310,12 +307,11 @@ export function PwaInstallPrompt() {
           type="button"
           onClick={dismiss}
           aria-label="Dismiss install prompt"
-          className="
-            flex h-8 w-8 shrink-0 items-center justify-center
+          className="flex h-8 w-8 shrink-0 items-center justify-center
             border border-[rgb(var(--sep-colour-60482e))]/45
             bg-[rgb(var(--sep-colour-17120f))]
             text-base text-[rgb(var(--sep-colour-a99b89))]
-          "
+           components_pwa_pwa_install_prompt_button_dismiss_install_prompt"
         >
           ×
         </button>

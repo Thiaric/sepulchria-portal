@@ -180,7 +180,7 @@ export function CharacterSheetTabs({
 
   return (
     <div
-      className="character-sheet-tabs"
+      className="character-sheet-tabs components_characters_character_sheet_tabs_div_container"
       data-character-sheet-active-tab={
         currentTab
       }
@@ -190,13 +190,12 @@ export function CharacterSheetTabs({
         aria-label="Character sheet sections"
         role="tablist"
         data-sep-interaction-ignore="true"
-        className="
-          flex min-w-0 flex-wrap items-end gap-1
+        className="flex min-w-0 flex-wrap items-end gap-1
           border-x border-t border-[rgb(var(--sep-colour-60482e))]/45
           bg-transparent
           px-2 pt-2
           rounded-t-xl
-        "
+         components_characters_character_sheet_tabs_nav_character_sheet_sections"
       >
         {tabs.map((tab) => {
           const active =
@@ -212,7 +211,7 @@ export function CharacterSheetTabs({
               onClick={() =>
                 openTab(tab.id)
               }
-              className={`
+              className={[((`
                 relative min-w-[92px] flex-1 basis-[92px]
                 rounded-t-lg
                 border border-b-0
@@ -241,19 +240,18 @@ export function CharacterSheetTabs({
                       hover:text-[rgb(var(--sep-colour-c9ad82))]
                     `
                 }
-              `}
+              `)), "components_characters_character_sheet_tabs_button_tab"].filter(Boolean).join(" ")}
             >
               {tab.label}
 
               {active ? (
                 <span
                   aria-hidden="true"
-                  className="
-                    absolute inset-x-5 bottom-0
+                  className="absolute inset-x-5 bottom-0
                     h-px
                     bg-[rgb(var(--sep-colour-c29456))]
                     shadow-[0_0_7px_rgba(var(--sep-rgb-194-148-86),0.45)]
-                  "
+                   components_characters_character_sheet_tabs_span_text"
                 />
               ) : null}
             </button>
@@ -261,14 +259,14 @@ export function CharacterSheetTabs({
         })}
       </nav>
 
-      <div className="-mt-8px">
+      <div className="-mt-8px components_characters_character_sheet_tabs_div_container_2">
         {(
           Object.entries(cachedPanels) as [
             CharacterSheetTab,
             ReactNode,
           ][]
         ).map(([tab, panel]) => (
-          <div
+          <div className="components_characters_character_sheet_tabs_div_container_3"
             key={`${cacheKey}-${tab}`}
             hidden={tab !== currentTab}
           >

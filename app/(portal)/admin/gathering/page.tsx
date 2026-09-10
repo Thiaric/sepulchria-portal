@@ -187,21 +187,21 @@ export default async function AdminGatheringPage() {
   );
 
   return (
-    <main>
-      <div data-sep-ui-ignore="true" className="mx-auto max-w-7xl">
-        <div>
-          <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))]">
+    <main className="admin_gathering_page_main_main">
+      <div data-sep-ui-ignore="true" className="mx-auto max-w-7xl admin_gathering_page_div_container">
+        <div className="admin_gathering_page_div_gathering">
+          <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))] admin_gathering_page_p_gathering">
             Administration
           </p>
-          <h2 className="mt-1 font-serif text-3xl text-[rgb(var(--sep-colour-ead5ac))]">
+          <h2 className="mt-1 font-serif text-3xl text-[rgb(var(--sep-colour-ead5ac))] admin_gathering_page_h2_gathering">
             Gathering
           </h2>
-          <p className="mt-1 max-w-3xl text-xs leading-5 text-[rgb(var(--sep-colour-928674))]">
+          <p className="mt-1 max-w-3xl text-xs leading-5 text-[rgb(var(--sep-colour-928674))] admin_gathering_page_p_gathering_2">
             Enable Gathering in Locations and configure their weighted Item and Remnant reward pools.
           </p>
         </div>
 
-        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+        <div className="mt-4 grid gap-3 sm:grid-cols-3 admin_gathering_page_div_container_2">
           <Stat label="Gathering Locations" value={locations.length} />
           <Stat label="Active Locations" value={activeLocations} />
           <Stat label="Active Rewards" value={activeRewards} />
@@ -209,18 +209,18 @@ export default async function AdminGatheringPage() {
 
         <section
           data-sep-interaction-fixed="true"
-          className="mt-5 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] p-4"
+          className="mt-5 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] p-4 admin_gathering_page_section_section"
         >
-          <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-8c704b))]">
+          <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-8c704b))] admin_gathering_page_p_text">
             Enable a Location
           </p>
-          <p className="mt-1 max-w-3xl text-[10px] leading-5 text-[rgb(var(--sep-colour-807464))]">
+          <p className="mt-1 max-w-3xl text-[10px] leading-5 text-[rgb(var(--sep-colour-807464))] admin_gathering_page_p_text_2">
             The 15 daily attempts remain shared globally across all Gathering Locations. Nothing chance may be 0–10%.
           </p>
           <GatheringCreateLocationForm rooms={availableRooms} />
         </section>
 
-        <section className="mt-5 space-y-4">
+        <section className="mt-5 space-y-4 admin_gathering_page_section_section_2">
           {editorLocations.map((location) => (
             <GatheringLocationCard
               key={location.id}
@@ -232,7 +232,7 @@ export default async function AdminGatheringPage() {
           {editorLocations.length === 0 ? (
             <div
               data-sep-interaction-fixed="true"
-              className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-6 text-center text-xs text-[rgb(var(--sep-colour-807464))]"
+              className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-6 text-center text-xs text-[rgb(var(--sep-colour-807464))] admin_gathering_page_div_container_3"
             >
               No Gathering Locations have been configured yet.
             </div>
@@ -247,12 +247,12 @@ function Stat({ label, value }: { label: string; value: number }) {
   return (
     <div
       data-sep-interaction-fixed="true"
-      className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3"
+      className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 admin_gathering_page_div_container_4"
     >
-      <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-7d6c55))]">
+      <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-7d6c55))] admin_gathering_page_p_text_3">
         {label}
       </p>
-      <p className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-d8c29a))]">
+      <p className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-d8c29a))] admin_gathering_page_p_text_4">
         {value}
       </p>
     </div>

@@ -60,21 +60,21 @@ export async function StoreAccountPanels({ userId }: { userId: string }) {
   return (
     <>
       {issued.length ? (
-        <section className="mb-4 border border-[rgb(var(--sep-colour-c69b5c))]/70 bg-[rgb(var(--sep-colour-21170f))] p-4 shadow-[0_0_18px_rgba(var(--sep-rgb-198-155-92),0.08)] sm:p-5">
-          <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-c69b5c))]">Unlocked Store reward</p>
-          <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-efd9aa))]">Your private discount codes</h2>
-          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-a99b89))]">These codes were unlocked by your purchases. Use them in the discount-code field on an eligible Store item before they expire.</p>
-          <div className="mt-3 grid gap-2 md:grid-cols-2">
+        <section className="mb-4 border border-[rgb(var(--sep-colour-c69b5c))]/70 bg-[rgb(var(--sep-colour-21170f))] p-4 shadow-[0_0_18px_rgba(var(--sep-rgb-198-155-92),0.08)] sm:p-5 components_store_store_account_panels_section_private_discount_codes">
+          <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-c69b5c))] components_store_store_account_panels_p_private_discount_codes">Unlocked Store reward</p>
+          <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-efd9aa))] components_store_store_account_panels_h2_private_discount_codes">Your private discount codes</h2>
+          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-a99b89))] components_store_store_account_panels_p_private_discount_codes_2">These codes were unlocked by your purchases. Use them in the discount-code field on an eligible Store item before they expire.</p>
+          <div className="mt-3 grid gap-2 md:grid-cols-2 components_store_store_account_panels_div_private_discount_codes">
             {issued.map((row) => {
               const discount = discountById.get(row.discount_code_id);
               const offer = row.post_purchase_offer_id ? offerById.get(row.post_purchase_offer_id) : null;
               return (
-                <div key={row.id} className="border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3">
-                  <p className="font-serif text-base text-[rgb(var(--sep-colour-dec79d))]">{offer?.name ?? discount?.name ?? "Store offer"}</p>
-                  <p className="mt-1 text-[9px] leading-4 text-[rgb(var(--sep-colour-8f8271))]">{offer?.description || discount?.description || "A private Store discount unlocked by your purchase."}</p>
-                  <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+                <div key={row.id} className="border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3 components_store_store_account_panels_div_container">
+                  <p className="font-serif text-base text-[rgb(var(--sep-colour-dec79d))] components_store_store_account_panels_p_text">{offer?.name ?? discount?.name ?? "Store offer"}</p>
+                  <p className="mt-1 text-[9px] leading-4 text-[rgb(var(--sep-colour-8f8271))] components_store_store_account_panels_p_text_2">{offer?.description || discount?.description || "A private Store discount unlocked by your purchase."}</p>
+                  <div className="mt-3 flex flex-wrap items-center justify-between gap-2 components_store_store_account_panels_div_container_2">
                     <code className="border border-[rgb(var(--sep-colour-80613b))]/55 bg-[rgb(var(--sep-colour-21170f))] px-2.5 py-1.5 text-[10px] tracking-[0.12em] text-[rgb(var(--sep-colour-efd9aa))]">{row.code}</code>
-                    <span className="text-[8px] text-[rgb(var(--sep-colour-756958))]">Expires {new Date(row.expires_at).toLocaleString("en-GB")}</span>
+                    <span className="text-[8px] text-[rgb(var(--sep-colour-756958))] components_store_store_account_panels_span_text">Expires {new Date(row.expires_at).toLocaleString("en-GB")}</span>
                   </div>
                 </div>
               );
@@ -83,45 +83,45 @@ export async function StoreAccountPanels({ userId }: { userId: string }) {
         </section>
       ) : null}
 
-      <details className="mb-5 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))]">
-        <summary className="relative cursor-pointer list-none px-4 py-3 pr-10 sm:px-5 [&::-webkit-details-marker]:hidden">
-  <div className="flex flex-wrap items-center justify-between gap-3">
-    <div>
-      <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-d8bf91))]">
+      <details className="mb-5 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] components_store_store_account_panels_details_details">
+        <summary className="relative cursor-pointer list-none px-4 py-3 pr-10 sm:px-5 [&::-webkit-details-marker]:hidden components_store_store_account_panels_summary_summary">
+  <div className="flex flex-wrap items-center justify-between gap-3 components_store_store_account_panels_div_container_3">
+    <div className="components_store_store_account_panels_div_container_4">
+      <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-d8bf91))] components_store_store_account_panels_p_text_3">
         Purchase history
       </p>
 
     </div>
 
-    <span className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))] px-2">
+    <span className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))] px-2 components_store_store_account_panels_span_text_2">
       {orders.length} shown - pending retained 7 days
     </span>
   </div>
 
   <span
     aria-hidden="true"
-    className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-[rgb(var(--sep-colour-c69b5c))]"
+    className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-[rgb(var(--sep-colour-c69b5c))] components_store_store_account_panels_span_text_3"
   >
     ▼
   </span>
 </summary>
-        <div className="border-t border-[rgb(var(--sep-colour-60482e))]/30 p-3 sm:p-4">
+        <div className="border-t border-[rgb(var(--sep-colour-60482e))]/30 p-3 sm:p-4 components_store_store_account_panels_div_container_5">
         {orders.length ? (
-          <div className="max-h-[520px] overflow-y-auto border border-[rgb(var(--sep-colour-60482e))]/35">
+          <div className="max-h-[520px] overflow-y-auto border border-[rgb(var(--sep-colour-60482e))]/35 components_store_store_account_panels_div_container_6">
             {orders.map((order) => {
               const names = itemNames.get(order.id) ?? ["Sepulchria Store purchase"];
               const money = order.payment_method === "stripe";
               const total = money ? moneyLabel(Number(order.total_money_minor ?? 0), order.currency) : `🝈 ${Number(order.total_remnants ?? 0)} Remnants`;
               const discount = money ? Number(order.discount_money_minor ?? 0) : Number(order.discount_remnants ?? 0);
               return (
-                <div key={order.id} className="grid gap-2 border-b border-[rgb(var(--sep-colour-60482e))]/25 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 last:border-b-0 md:grid-cols-[minmax(0,1fr)_120px_130px_165px]">
-                  <div className="min-w-0">
-                    <p className="text-[10px] text-[rgb(var(--sep-colour-cab38d))]">{names.join(" · ")}</p>
-                    <p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">{money ? "Real money" : "Remnants"}{discount > 0 ? " · discount applied" : ""}{order.stripe_payment_intent_id ? ` · ${order.stripe_payment_intent_id}` : ""}</p>
+                <div key={order.id} className="grid gap-2 border-b border-[rgb(var(--sep-colour-60482e))]/25 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 last:border-b-0 md:grid-cols-[minmax(0,1fr)_120px_130px_165px] components_store_store_account_panels_div_container_7">
+                  <div className="min-w-0 components_store_store_account_panels_div_container_8">
+                    <p className="text-[10px] text-[rgb(var(--sep-colour-cab38d))] components_store_store_account_panels_p_text_4">{names.join(" · ")}</p>
+                    <p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))] components_store_store_account_panels_p_text_5">{money ? "Real money" : "Remnants"}{discount > 0 ? " · discount applied" : ""}{order.stripe_payment_intent_id ? ` · ${order.stripe_payment_intent_id}` : ""}</p>
                   </div>
-                  <span className="text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a99578))]">{order.status.replaceAll("_", " ")}</span>
-                  <span className="text-[10px] text-[rgb(var(--sep-colour-e2cda4))]">{total}</span>
-                  <div className="flex flex-col gap-1">
+                  <span className="text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a99578))] components_store_store_account_panels_span_text_4">{order.status.replaceAll("_", " ")}</span>
+                  <span className="text-[10px] text-[rgb(var(--sep-colour-e2cda4))] components_store_store_account_panels_span_text_5">{total}</span>
+                  <div className="flex flex-col gap-1 components_store_store_account_panels_div_container_9">
                     <time className="text-[8px] text-[rgb(var(--sep-colour-756958))]">{new Date(order.paid_at ?? order.created_at).toLocaleString("en-GB")}</time>
                     <Link href={`/store/orders/${order.id}`} className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-c69b5c))] underline">View receipt</Link>
                   </div>
@@ -129,7 +129,7 @@ export async function StoreAccountPanels({ userId }: { userId: string }) {
               );
             })}
           </div>
-        ) : <p className="text-[10px] text-[rgb(var(--sep-colour-756958))]">No Store orders yet.</p>}
+        ) : <p className="text-[10px] text-[rgb(var(--sep-colour-756958))] components_store_store_account_panels_p_text_6">No Store orders yet.</p>}
         </div>
       </details>
     </>

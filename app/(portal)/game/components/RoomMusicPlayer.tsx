@@ -891,9 +891,9 @@ export default function RoomMusicPlayer({
     <section
       data-sep-interaction-ignore="true"
       data-skin-widget="room-music"
-      className="mb-3 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))]"
+      className="mb-3 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] game_components_roommusicplayer_section_section"
     >
-      <div className="flex h-10 items-center">
+      <div className="flex h-10 items-center game_components_roommusicplayer_div_container">
         <button
           type="button"
           onClick={() =>
@@ -902,13 +902,13 @@ export default function RoomMusicPlayer({
             )
           }
           aria-expanded={expanded}
-          className="flex min-w-0 flex-1 items-center gap-2 px-3 text-left"
+          className="flex min-w-0 flex-1 items-center gap-2 px-3 text-left game_components_roommusicplayer_button_action"
         >
-          <span data-skin-role="primary" className="text-[10px] text-[rgb(var(--sep-colour-a68b67))]">
+          <span data-skin-role="primary" className="text-[10px] text-[rgb(var(--sep-colour-a68b67))] game_components_roommusicplayer_span_text">
             ♫
           </span>
 
-          <span data-skin-role="primary" className="min-w-0 flex-1 truncate text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-876a46))]">
+          <span data-skin-role="primary" className="min-w-0 flex-1 truncate text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-876a46))] game_components_roommusicplayer_span_text_2">
             {activeTrack?.name ??
               "Location Music"}
           </span>
@@ -916,12 +916,12 @@ export default function RoomMusicPlayer({
           {playing ? (
             <span
               data-skin-role="secondary-bars"
-              className="flex h-4 shrink-0 items-end gap-[1px]"
+              className="flex h-4 shrink-0 items-end gap-[1px] game_components_roommusicplayer_span_text_3"
               aria-hidden="true"
             >
-              <span className="h-1.5 w-px animate-pulse bg-[rgb(var(--sep-colour-a68b67))]/70" />
-              <span className="h-2.5 w-px animate-pulse bg-[rgb(var(--sep-colour-a68b67))]/80 [animation-delay:160ms]" />
-              <span className="h-1 w-px animate-pulse bg-[rgb(var(--sep-colour-a68b67))]/60 [animation-delay:320ms]" />
+              <span className="h-1.5 w-px animate-pulse bg-[rgb(var(--sep-colour-a68b67))]/70 game_components_roommusicplayer_span_text_4" />
+              <span className="h-2.5 w-px animate-pulse bg-[rgb(var(--sep-colour-a68b67))]/80 [animation-delay:160ms] game_components_roommusicplayer_span_text_5" />
+              <span className="h-1 w-px animate-pulse bg-[rgb(var(--sep-colour-a68b67))]/60 [animation-delay:320ms] game_components_roommusicplayer_span_text_6" />
             </span>
           ) : null}
 
@@ -950,7 +950,7 @@ export default function RoomMusicPlayer({
               ? "Pause"
               : "Play"
           }
-          className="flex h-10 w-10 shrink-0 items-center justify-center border-l border-[rgb(var(--sep-colour-59432c))]/40 text-[rgb(var(--sep-colour-c6a26d))] transition hover:bg-[rgb(var(--sep-colour-17110d))] hover:text-[rgb(var(--sep-colour-ead2a5))]"
+          className="flex h-10 w-10 shrink-0 items-center justify-center border-l border-[rgb(var(--sep-colour-59432c))]/40 text-[rgb(var(--sep-colour-c6a26d))] transition hover:bg-[rgb(var(--sep-colour-17110d))] hover:text-[rgb(var(--sep-colour-ead2a5))] game_components_roommusicplayer_button_action_2"
         >
           {playing ? (
             <Pause className="h-4 w-4" />
@@ -973,11 +973,11 @@ export default function RoomMusicPlayer({
               ? "Unmute"
               : "Mute"
           }
-          className={`flex h-10 w-10 shrink-0 items-center justify-center border-l transition ${
+          className={[((`flex h-10 w-10 shrink-0 items-center justify-center border-l transition ${
             muted
               ? "border-red-900/70 bg-red-950/35 text-red-400 hover:border-red-700/80 hover:text-red-300"
               : "border-[rgb(var(--sep-colour-59432c))]/40 text-[rgb(var(--sep-colour-c6a26d))] hover:bg-[rgb(var(--sep-colour-17110d))] hover:text-[rgb(var(--sep-colour-ead2a5))]"
-          }`}
+          }`)), "game_components_roommusicplayer_button_toggle_mute"].filter(Boolean).join(" ")}
         >
           {muted ? (
             <VolumeX className="h-4 w-4" />
@@ -988,16 +988,16 @@ export default function RoomMusicPlayer({
       </div>
 
       {expanded ? (
-        <div className="border-t border-[rgb(var(--sep-colour-59432c))]/30 px-3 py-3">
-          <div className="flex items-center justify-between gap-3">
-            <div className="min-w-0">
-              <p className="text-[7px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-756957))]">
+        <div className="border-t border-[rgb(var(--sep-colour-59432c))]/30 px-3 py-3 game_components_roommusicplayer_div_container_2">
+          <div className="flex items-center justify-between gap-3 game_components_roommusicplayer_div_container_3">
+            <div className="min-w-0 game_components_roommusicplayer_div_container_4">
+              <p className="text-[7px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-756957))] game_components_roommusicplayer_p_text">
                 Location Music
               </p>
-              <p className="mt-1 truncate font-serif text-[13px] text-[rgb(var(--sep-colour-d6bd91))]">
+              <p className="mt-1 truncate font-serif text-[13px] text-[rgb(var(--sep-colour-d6bd91))] game_components_roommusicplayer_p_text_2">
                 {activeTrack?.name}
               </p>
-              <p className="mt-1 truncate text-[8px] text-[rgb(var(--sep-colour-756957))]">
+              <p className="mt-1 truncate text-[8px] text-[rgb(var(--sep-colour-756957))] game_components_roommusicplayer_p_text_3">
                 {effectivePersonal
                   ? "My Music"
                   : locationName}
@@ -1010,7 +1010,7 @@ export default function RoomMusicPlayer({
                 onClick={() =>
                   void togglePlayback()
                 }
-                className="flex h-8 w-8 shrink-0 items-center justify-center border border-[rgb(var(--sep-colour-80613b))]/70 text-[rgb(var(--sep-colour-d8bf91))]"
+                className="flex h-8 w-8 shrink-0 items-center justify-center border border-[rgb(var(--sep-colour-80613b))]/70 text-[rgb(var(--sep-colour-d8bf91))] game_components_roommusicplayer_button_play_location_music"
                 aria-label="Play location music"
               >
                 <Play className="h-3.5 w-3.5" />
@@ -1019,7 +1019,7 @@ export default function RoomMusicPlayer({
           </div>
 
           {personalAvailable ? (
-            <div className="mt-3 space-y-2">
+            <div className="mt-3 space-y-2 game_components_roommusicplayer_div_container_5">
               <select
                 value={
                   effectivePersonal
@@ -1033,9 +1033,9 @@ export default function RoomMusicPlayer({
                       "personal",
                   )
                 }
-                className="w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-0d0907))] px-2.5 py-2 text-[9px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-d4bea0))] outline-none focus:border-[rgb(var(--sep-colour-80613b))]"
+                className="w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-0d0907))] px-2.5 py-2 text-[9px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-d4bea0))] outline-none focus:border-[rgb(var(--sep-colour-80613b))] game_components_roommusicplayer_select_select"
               >
-                <option
+                <option className="game_components_roommusicplayer_option_location"
                   value="location"
                   disabled={!locationTrack}
                 >
@@ -1043,7 +1043,7 @@ export default function RoomMusicPlayer({
                     ? "Location Music"
                     : "Location Music — None"}
                 </option>
-                <option value="personal">
+                <option className="game_components_roommusicplayer_option_personal" value="personal">
                   My Music
                 </option>
               </select>
@@ -1060,11 +1060,11 @@ export default function RoomMusicPlayer({
                       event.target.value,
                     )
                   }
-                  className="w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-0d0907))] px-2.5 py-2 text-[9px] text-[rgb(var(--sep-colour-d4bea0))] outline-none focus:border-[rgb(var(--sep-colour-80613b))]"
+                  className="w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-0d0907))] px-2.5 py-2 text-[9px] text-[rgb(var(--sep-colour-d4bea0))] outline-none focus:border-[rgb(var(--sep-colour-80613b))] game_components_roommusicplayer_select_select_2"
                 >
                   {ownedTracks.map(
                     (track) => (
-                      <option
+                      <option className="game_components_roommusicplayer_option_option"
                         key={track.id}
                         value={track.id}
                       >
@@ -1077,10 +1077,10 @@ export default function RoomMusicPlayer({
             </div>
           ) : null}
 
-          <div className="mt-3">
-            <div className="mb-1.5 flex items-center justify-between gap-2 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756957))]">
-              <span>Progress</span>
-              <span className="tabular-nums">
+          <div className="mt-3 game_components_roommusicplayer_div_container_6">
+            <div className="mb-1.5 flex items-center justify-between gap-2 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-756957))] game_components_roommusicplayer_div_container_7">
+              <span className="game_components_roommusicplayer_span_text_7">Progress</span>
+              <span className="tabular-nums game_components_roommusicplayer_span_text_8">
                 {Math.floor(currentTime / 60)}:{String(
                   Math.floor(currentTime % 60),
                 ).padStart(2, "0")}
@@ -1108,12 +1108,12 @@ export default function RoomMusicPlayer({
               }
               disabled={duration <= 0}
               aria-label="Music progress"
-              className="block h-1.5 w-full cursor-pointer accent-[rgb(var(--sep-skin-c1,var(--sep-colour-a98a60)))] disabled:cursor-not-allowed disabled:opacity-40"
+              className="block h-1.5 w-full cursor-pointer accent-[rgb(var(--sep-skin-c1,var(--sep-colour-a98a60)))] disabled:cursor-not-allowed disabled:opacity-40 game_components_roommusicplayer_input_music_progress"
             />
           </div>
 
-          <label className="mt-3 block">
-            <span className="mb-1.5 block text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-756957))]">
+          <label className="mt-3 block game_components_roommusicplayer_label_label">
+            <span className="mb-1.5 block text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-756957))] game_components_roommusicplayer_span_text_9">
               Volume
             </span>
             <input
@@ -1139,7 +1139,7 @@ export default function RoomMusicPlayer({
                   volume,
                 })
               }
-              className="block h-1.5 w-full cursor-pointer accent-[rgb(var(--sep-skin-c1,var(--sep-colour-a98a60)))]"
+              className="block h-1.5 w-full cursor-pointer accent-[rgb(var(--sep-skin-c1,var(--sep-colour-a98a60)))] game_components_roommusicplayer_input_field"
             />
           </label>
         </div>

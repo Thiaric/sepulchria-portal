@@ -154,44 +154,44 @@ export function BreezeLodgingsPanel({ rooms }: { rooms: BreezeLodgingStateRow[] 
   return (
     <details
       data-sep-interaction-ignore="true"
-      className="group shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0d0907))]"
+      className="group shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0d0907))] game_components_breezelodgingspanel_details_details"
     >
       <summary
-        className="sticky top-0 z-30 flex cursor-pointer list-none items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-59432c))]/30 bg-[linear-gradient(90deg,rgb(var(--sep-colour-100c09)),rgb(var(--sep-colour-17110d)),rgb(var(--sep-colour-100c09)))] px-3 py-2 [&::-webkit-details-marker]:hidden"
+        className="sticky top-0 z-30 flex cursor-pointer list-none items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-59432c))]/30 bg-[linear-gradient(90deg,rgb(var(--sep-colour-100c09)),rgb(var(--sep-colour-17110d)),rgb(var(--sep-colour-100c09)))] px-3 py-2 [&::-webkit-details-marker]:hidden game_components_breezelodgingspanel_summary_summary"
       >
-        <div>
-          <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+        <div className="game_components_breezelodgingspanel_div_container">
+          <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] game_components_breezelodgingspanel_p_text">
             The Breeze Lodgings
           </p>
-          <p className="mt-0.5 font-serif text-sm text-[rgb(var(--sep-colour-dec89f))]">
+          <p className="mt-0.5 font-serif text-sm text-[rgb(var(--sep-colour-dec89f))] game_components_breezelodgingspanel_p_text_2">
             Rooms for travellers
           </p>
         </div>
 
-        <div className="flex items-center gap-4">
-          <div className="text-right">
-            <p className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))]">
+        <div className="flex items-center gap-4 game_components_breezelodgingspanel_div_container_2">
+          <div className="text-right game_components_breezelodgingspanel_div_container_3">
+            <p className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756958))] game_components_breezelodgingspanel_p_text_3">
               You Have
             </p>
-            <p className="font-serif text-base text-[rgb(var(--sep-colour-e4c589))]">
+            <p className="font-serif text-base text-[rgb(var(--sep-colour-e4c589))] game_components_breezelodgingspanel_p_text_4">
               {formatRemnants(wallet)}
             </p>
           </div>
 
-          <span className="text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a88d65))]">
-            <span className="group-open:hidden">View Rooms ▾</span>
-            <span className="hidden group-open:inline">Hide Rooms ▴</span>
+          <span className="text-[9px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a88d65))] game_components_breezelodgingspanel_span_text">
+            <span className="group-open:hidden game_components_breezelodgingspanel_span_text_2">View Rooms ▾</span>
+            <span className="hidden group-open:inline game_components_breezelodgingspanel_span_text_3">Hide Rooms ▴</span>
           </span>
         </div>
       </summary>
 
-      <div className="max-h-[58vh] overflow-y-auto border-t border-[rgb(var(--sep-colour-59432c))]/30 px-3 py-3">
+      <div className="max-h-[58vh] overflow-y-auto border-t border-[rgb(var(--sep-colour-59432c))]/30 px-3 py-3 game_components_breezelodgingspanel_div_container_4">
         {viewerIsStaff ? (
-          <p className="mb-0.1">
+          <p className="mb-0.1 game_components_breezelodgingspanel_p_text_5">
             
           </p>
         ) : myRental ? (
-          <p className="mb-3 border border-emerald-900/45 bg-emerald-950/10 px-3 py-2 text-[9px] text-emerald-400">
+          <p className="mb-3 border border-emerald-900/45 bg-emerald-950/10 px-3 py-2 text-[9px] text-emerald-400 game_components_breezelodgingspanel_p_text_6">
             You are staying in {myRental.room_name}
             {formatRentalEnd(myRental.rental_ends_at)
               ? ` until ${formatRentalEnd(myRental.rental_ends_at)}`
@@ -199,30 +199,30 @@ export function BreezeLodgingsPanel({ rooms }: { rooms: BreezeLodgingStateRow[] 
             . Only one room may be rented at a time.
           </p>
         ) : (
-          <p className="mb-3 text-[9px] leading-4 text-[rgb(var(--sep-colour-8f8271))]">
+          <p className="mb-3 text-[9px] leading-4 text-[rgb(var(--sep-colour-8f8271))] game_components_breezelodgingspanel_p_text_7">
             Choose an available room and a stay of 1 to 7 days. Payment is made in Remnants and recorded in your Ledger.
           </p>
         )}
 
-        <div className="space-y-4">
+        <div className="space-y-4 game_components_breezelodgingspanel_div_container_5">
           {grouped.map(({ tier, rooms: tierRooms }) => (
-            <section key={tier}>
-              <div className="mb-2 flex items-end justify-between gap-3">
-                <div>
-                  <h3 className="font-serif text-[13px] text-[rgb(var(--sep-colour-d9c29a))]">
+            <section className="game_components_breezelodgingspanel_section_section" key={tier}>
+              <div className="mb-2 flex items-end justify-between gap-3 game_components_breezelodgingspanel_div_container_6">
+                <div className="game_components_breezelodgingspanel_div_container_7">
+                  <h3 className="font-serif text-[13px] text-[rgb(var(--sep-colour-d9c29a))] game_components_breezelodgingspanel_h3_heading">
                     {TIER_LABELS[tier]}
                   </h3>
-                  <p className="mt-0.5 text-[8px] text-[rgb(var(--sep-colour-807463))]">
+                  <p className="mt-0.5 text-[8px] text-[rgb(var(--sep-colour-807463))] game_components_breezelodgingspanel_p_text_8">
                     {TIER_DESCRIPTIONS[tier]}
                   </p>
                 </div>
 
-                <span className="text-[9px] text-[rgb(var(--sep-colour-d8ad69))]">
+                <span className="text-[9px] text-[rgb(var(--sep-colour-d8ad69))] game_components_breezelodgingspanel_span_text_4">
                   {formatRemnants(tierRooms[0]?.daily_rate ?? 0)}/day
                 </span>
               </div>
 
-              <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-5">
+              <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-5 game_components_breezelodgingspanel_div_container_8">
                 {tierRooms.map((room) => {
                   const days = daysFor(room.room_id);
                   const total = room.daily_rate * days;
@@ -240,7 +240,7 @@ export function BreezeLodgingsPanel({ rooms }: { rooms: BreezeLodgingStateRow[] 
                   return (
                     <article
                       key={room.room_id}
-                      className="relative flex min-h-[148px] flex-col overflow-hidden border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-17110d))]"
+                      className="relative flex min-h-[148px] flex-col overflow-hidden border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-17110d))] game_components_breezelodgingspanel_article_article"
                     >
                       {room.image_url ? (
                         <>
@@ -257,17 +257,17 @@ export function BreezeLodgingsPanel({ rooms }: { rooms: BreezeLodgingStateRow[] 
                             name={room.room_name}
                           />
 
-                          <div className="pointer-events-none absolute inset-0 z-[6] bg-black/42" />
-                          <div className="pointer-events-none absolute inset-0 z-[7] bg-gradient-to-t from-black/82 via-black/32 to-black/10" />
+                          <div className="pointer-events-none absolute inset-0 z-[6] bg-black/42 game_components_breezelodgingspanel_div_container_9" />
+                          <div className="pointer-events-none absolute inset-0 z-[7] bg-gradient-to-t from-black/82 via-black/32 to-black/10 game_components_breezelodgingspanel_div_container_10" />
                         </>
                       ) : null}
 
-                      <div className="pointer-events-none relative z-20 flex min-h-[148px] flex-1 flex-col p-3">
-                        <h4 className="font-serif text-[12px] text-[#f0dfbd] [text-shadow:0_2px_4px_rgba(0,0,0,0.95)]">
+                      <div className="pointer-events-none relative z-20 flex min-h-[148px] flex-1 flex-col p-3 game_components_breezelodgingspanel_div_container_11">
+                        <h4 className="font-serif text-[12px] text-[#f0dfbd] [text-shadow:0_2px_4px_rgba(0,0,0,0.95)] game_components_breezelodgingspanel_h4_heading">
                           {room.room_name}
                         </h4>
 
-                        <p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-[#c9b99d] [text-shadow:0_2px_4px_rgba(0,0,0,0.95)]">
+                        <p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-[#c9b99d] [text-shadow:0_2px_4px_rgba(0,0,0,0.95)] game_components_breezelodgingspanel_p_text_9">
                           {room.rented_by_me
                             ? "Your room"
                             : occupied
@@ -278,10 +278,10 @@ export function BreezeLodgingsPanel({ rooms }: { rooms: BreezeLodgingStateRow[] 
                               : "Available"}
                         </p>
 
-                        <div className="pointer-events-auto mt-auto pt-3">
+                        <div className="pointer-events-auto mt-auto pt-3 game_components_breezelodgingspanel_div_container_12">
                         {!occupied && !viewerIsStaff && !myRental ? (
-                          <label className="block">
-                            <span className="mb-1 block text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806b50))]">
+                          <label className="block game_components_breezelodgingspanel_label_label">
+                            <span className="mb-1 block text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806b50))] game_components_breezelodgingspanel_span_text_5">
                               Stay
                             </span>
                             <select
@@ -292,11 +292,11 @@ export function BreezeLodgingsPanel({ rooms }: { rooms: BreezeLodgingStateRow[] 
                                   [room.room_id]: Number(event.target.value),
                                 }))
                               }
-                              className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0a08))] px-2 py-1.5 text-[9px] text-[rgb(var(--sep-colour-bba98c))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
+                              className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0a08))] px-2 py-1.5 text-[9px] text-[rgb(var(--sep-colour-bba98c))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] game_components_breezelodgingspanel_select_select"
                             >
                               {Array.from({ length: 7 }, (_, index) => index + 1).map(
                                 (value) => (
-                                  <option key={value} value={value}>
+                                  <option className="game_components_breezelodgingspanel_option_option" key={value} value={value}>
                                     {value} day{value === 1 ? "" : "s"}
                                   </option>
                                 ),
@@ -313,7 +313,7 @@ export function BreezeLodgingsPanel({ rooms }: { rooms: BreezeLodgingStateRow[] 
                               : rent(room)
                           }
                           disabled={disabled}
-                          className="mt-2 w-full border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-2 py-1.5 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:bg-[rgb(var(--sep-colour-4a351f))] disabled:cursor-not-allowed disabled:opacity-40"
+                          className="mt-2 w-full border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-2 py-1.5 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:bg-[rgb(var(--sep-colour-4a351f))] disabled:cursor-not-allowed disabled:opacity-40 game_components_breezelodgingspanel_button_action"
                         >
                           {pending && pendingRoomId === room.room_id
                             ? canEnter
@@ -342,7 +342,7 @@ export function BreezeLodgingsPanel({ rooms }: { rooms: BreezeLodgingStateRow[] 
         {message ? (
           <p
             aria-live="polite"
-            className={`mt-3 text-[9px] ${ok ? "text-emerald-400" : "text-red-400"}`}
+            className={[((`mt-3 text-[9px] ${ok ? "text-emerald-400" : "text-red-400"}`)), "game_components_breezelodgingspanel_p_text_10"].filter(Boolean).join(" ")}
           >
             {message}
           </p>

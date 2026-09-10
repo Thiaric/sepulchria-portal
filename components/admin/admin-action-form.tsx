@@ -386,7 +386,7 @@ export function AdminActionForm({
   ]);
 
   return (
-    <form
+    <form className="components_admin_admin_action_form_form_form"
       {...props}
       action={dispatch}
       onSubmit={(event) => {

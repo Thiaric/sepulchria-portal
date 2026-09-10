@@ -136,42 +136,42 @@ export function OrderRoleProgressionEditor({
   }
 
   return (
-    <div className="mt-6 border border-[rgb(var(--sep-colour-765937))]/35 bg-[rgb(var(--sep-colour-0d0a08))] p-4">
-      <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))]">
+    <div className="mt-6 border border-[rgb(var(--sep-colour-765937))]/35 bg-[rgb(var(--sep-colour-0d0a08))] p-4 components_admin_order_role_progression_editor_div_container">
+      <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))] components_admin_order_role_progression_editor_p_text">
         Role progression map
       </p>
 
-      <p className="mt-2 max-w-3xl text-[10px] leading-5 text-[rgb(var(--sep-colour-817565))]">
+      <p className="mt-2 max-w-3xl text-[10px] leading-5 text-[rgb(var(--sep-colour-817565))] components_admin_order_role_progression_editor_p_text_2">
         Add as many links as you need. Each connection points from a Role to
         a Role on the Level immediately above it. Incoming links are derived
         automatically, so every Role can have multiple paths below and above.
       </p>
 
       {error ? (
-        <div className="mt-3 border border-red-900/55 bg-red-950/20 px-3 py-2 text-[10px] text-red-300">
+        <div className="mt-3 border border-red-900/55 bg-red-950/20 px-3 py-2 text-[10px] text-red-300 components_admin_order_role_progression_editor_div_container_2">
           {error}
         </div>
       ) : null}
 
-      <div className="mt-4 space-y-5">
+      <div className="mt-4 space-y-5 components_admin_order_role_progression_editor_div_container_3">
         {levels.map((level) => {
           const levelRoles = rolesByLevel.get(level) ?? [];
 
           return (
             <div
               key={level}
-              className="grid gap-2 md:grid-cols-[56px_minmax(0,1fr)]"
+              className="grid gap-2 md:grid-cols-[56px_minmax(0,1fr)] components_admin_order_role_progression_editor_div_container_4"
             >
-              <div>
-                <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-756958))]">
+              <div className="components_admin_order_role_progression_editor_div_container_5">
+                <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-756958))] components_admin_order_role_progression_editor_p_text_3">
                   Level
                 </p>
-                <p className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+                <p className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_admin_order_role_progression_editor_p_text_4">
                   {level}
                 </p>
               </div>
 
-              <div className="flex flex-nowrap justify-center gap-2">
+              <div className="flex flex-nowrap justify-center gap-2 components_admin_order_role_progression_editor_div_container_6">
   {levelRoles.map((role) => {
     const incoming = links
       .filter((link) => link.to_job_id === role.id)
@@ -216,47 +216,47 @@ export function OrderRoleProgressionEditor({
     return (
       <div
         key={role.id}
-        className="w-[196px] shrink-0 self-stretch border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-15100d))] p-2.5"
+        className="w-[196px] shrink-0 self-stretch border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-15100d))] p-2.5 components_admin_order_role_progression_editor_div_container_7"
       >
-        <p className="font-serif text-[13px] text-[rgb(var(--sep-colour-d3ba8c))]">
+        <p className="font-serif text-[13px] text-[rgb(var(--sep-colour-d3ba8c))] components_admin_order_role_progression_editor_p_text_5">
           {role.name}
         </p>
 
-        <div className="mt-3">
-          <p className="text-[6px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-665c50))]">
+        <div className="mt-3 components_admin_order_role_progression_editor_div_container_8">
+          <p className="text-[6px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-665c50))] components_admin_order_role_progression_editor_p_text_6">
             From lower Level
           </p>
 
-          <div className="mt-1 flex flex-wrap gap-1.5">
+          <div className="mt-1 flex flex-wrap gap-1.5 components_admin_order_role_progression_editor_div_container_9">
             {incoming.length ? (
               incoming.map(({ link, role: source }) => (
                 <span
                   key={link.id}
-                  className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] px-2 py-1 text-[6px] text-[rgb(var(--sep-colour-a58d6a))]"
+                  className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] px-2 py-1 text-[6px] text-[rgb(var(--sep-colour-a58d6a))] components_admin_order_role_progression_editor_span_text"
                 >
                   L{source.level} · {source.name}
                 </span>
               ))
             ) : (
-              <span className="text-[7px] italic text-[rgb(var(--sep-colour-5e554a))]">
+              <span className="text-[7px] italic text-[rgb(var(--sep-colour-5e554a))] components_admin_order_role_progression_editor_span_text_2">
                 No incoming links
               </span>
             )}
           </div>
         </div>
 
-        <div className="mt-3">
-          <p className="text-[6px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-665c50))]">
+        <div className="mt-3 components_admin_order_role_progression_editor_div_container_10">
+          <p className="text-[6px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-665c50))] components_admin_order_role_progression_editor_p_text_7">
             To higher Level
           </p>
 
-          <div className="mt-1 space-y-1.5">
+          <div className="mt-1 space-y-1.5 components_admin_order_role_progression_editor_div_container_11">
             {outgoing.map(({ link, role: target }) => (
               <div
                 key={link.id}
-                className="flex items-center justify-between gap-2 border border-[rgb(var(--sep-colour-765937))]/35 bg-[rgb(var(--sep-colour-1b130d))] px-2 py-1.5"
+                className="flex items-center justify-between gap-2 border border-[rgb(var(--sep-colour-765937))]/35 bg-[rgb(var(--sep-colour-1b130d))] px-2 py-1.5 components_admin_order_role_progression_editor_div_container_12"
               >
-                <span className="min-w-0 truncate text-[6px] text-[rgb(var(--sep-colour-c0a174))]">
+                <span className="min-w-0 truncate text-[6px] text-[rgb(var(--sep-colour-c0a174))] components_admin_order_role_progression_editor_span_text_3">
                   → L{target.level} · {target.name}
                 </span>
 
@@ -267,7 +267,7 @@ export function OrderRoleProgressionEditor({
                     pendingKey === `remove:${link.id}`
                   }
                   onClick={() => removeLink(link.id)}
-                  className="shrink-0 text-[6px] uppercase text-red-300 disabled:opacity-40"
+                  className="shrink-0 text-[6px] uppercase text-red-300 disabled:opacity-40 components_admin_order_role_progression_editor_button_action"
                 >
                   {isPending &&
                   pendingKey === `remove:${link.id}`
@@ -292,14 +292,14 @@ export function OrderRoleProgressionEditor({
                   addLink(role.id, value);
                   event.currentTarget.value = "";
                 }}
-                className="w-full border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-100c09))] px-2 py-2 text-[8px] text-[rgb(var(--sep-colour-d7c4a5))] outline-none disabled:opacity-50"
+                className="w-full border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-100c09))] px-2 py-2 text-[8px] text-[rgb(var(--sep-colour-d7c4a5))] outline-none disabled:opacity-50 components_admin_order_role_progression_editor_select_select"
               >
-                <option value="" disabled>
+                <option className="components_admin_order_role_progression_editor_option_option" value="" disabled>
                   Link to Level {level + 1} Role
                 </option>
 
                 {candidates.map((candidate) => (
-                  <option
+                  <option className="components_admin_order_role_progression_editor_option_option_2"
                     key={candidate.id}
                     value={candidate.id}
                   >
@@ -308,11 +308,11 @@ export function OrderRoleProgressionEditor({
                 ))}
               </select>
             ) : rolesByLevel.has(level + 1) ? (
-              <p className="text-[7px] italic text-[rgb(var(--sep-colour-5e554a))]">
+              <p className="text-[7px] italic text-[rgb(var(--sep-colour-5e554a))] components_admin_order_role_progression_editor_p_text_8">
                 All available Roles above are linked.
               </p>
             ) : (
-              <p className="text-[7px] italic text-[rgb(var(--sep-colour-5e554a))]">
+              <p className="text-[7px] italic text-[rgb(var(--sep-colour-5e554a))] components_admin_order_role_progression_editor_p_text_9">
                 Highest Level
               </p>
             )}
