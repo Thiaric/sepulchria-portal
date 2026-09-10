@@ -259,19 +259,30 @@ export function SepulchriaHomepage({
               <div className="relative flex aspect-[9/16] max-h-[72dvh] max-w-full items-center justify-center overflow-hidden border border-[rgb(var(--sep-colour-6b5032))]/45 bg-[rgb(var(--sep-colour-110c09))]/84 p-[3px] shadow-[0_18px_60px_rgba(var(--sep-rgb-0-0-0),0.38)] lg:h-[90%] lg:max-h-[90%] lg:w-auto">
                 <div className="pointer-events-none absolute inset-1 z-20 border border-[rgb(var(--sep-colour-9a7547))]/10" />
 
-                <video
-                  className="block h-full max-h-full w-full max-w-full object-contain"
-                  src="/videos/Sepulchria_Promo.mp4"
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  controls
-                  preload="metadata"
-                  aria-label="Sepulchria promotional video"
-                >
-                  Your browser does not support HTML5 video.
-                </video>
+                <div className="relative h-full w-full">
+    <video
+      className="block h-full max-h-full w-full max-w-full object-contain"
+      src="/videos/Sepulchria_Promo.mp4"
+      autoPlay
+      muted
+      loop
+      playsInline
+      controls
+      preload="metadata"
+      aria-label="Sepulchria promotional video"
+    >
+      Your browser does not support HTML5 video.
+    </video>
+
+    <a
+      href="https://youtube.com/shorts/DKP4dsbnZtY"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="absolute left-1/2 top-2 z-30 -translate-x-1/2 rounded bg-black/55 px-1.5 py-0.5 text-[7px] uppercase tracking-[0.10em] text-white/80 transition hover:bg-black/75 hover:text-white"
+    >
+      Watch on YouTube ↗
+    </a>
+  </div>
               </div>
             </div>
           </section>
