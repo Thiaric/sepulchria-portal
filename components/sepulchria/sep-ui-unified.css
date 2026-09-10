@@ -5342,3 +5342,36 @@ body.portal-skin-scope
   [class*="bg-[rgb(var(--sep-colour-"] {
   opacity: 1 !important;
 }
+
+
+/* ==================================================================
+   LOCATION CHAT — MECHANICAL ACTION COLOURS
+   Generated game mechanics are UI, not authored rich-text emphasis.
+   C1 = ordinary mechanical text.
+   C2 = every automatically bracketed [mechanical value].
+   These rules intentionally beat the global <strong>/<b> emphasis rule.
+   ================================================================== */
+
+body[data-portal-skin]
+  [data-room-mechanical-action="true"] {
+  color: rgb(var(--sep-skin-c1)) !important;
+  -webkit-text-fill-color: rgb(var(--sep-skin-c1)) !important;
+}
+
+body[data-portal-skin]
+  [data-room-mechanical-action="true"]
+  :is(strong, b) {
+  color: inherit !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+body[data-portal-skin]
+  [data-room-mechanical-action="true"]
+  [data-mechanical-highlight="true"],
+body[data-portal-skin]
+  [data-room-mechanical-action="true"]
+  [data-mechanical-highlight="true"]
+  :is(strong, b) {
+  color: rgb(var(--sep-skin-c2)) !important;
+  -webkit-text-fill-color: rgb(var(--sep-skin-c2)) !important;
+}

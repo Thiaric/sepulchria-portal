@@ -78,6 +78,7 @@ export type PortalContext = {
   onlineCharacterCount: number;
   currentRoomAccessAllowed: boolean;
   isStaff: boolean;
+  canManageCharacters: boolean;
   privateLocations: PortalPrivateLocation[];
   allOrderHeadquartersRoomIds: string[];
   visibleOrderHeadquartersRoomIds: string[];

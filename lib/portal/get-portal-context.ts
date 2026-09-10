@@ -13,6 +13,7 @@ import {
 } from "@/lib/private-locations/access";
 import {
   getStaffSession,
+  hasStaffCapability,
 } from "@/lib/auth/require-staff";
 import {
   getOrderHeadquartersVisibility,
@@ -449,6 +450,12 @@ if (userError || !user) {
         currentRoomAccessAllowed,
         isStaff:
           staffSession !== null,
+        canManageCharacters:
+          staffSession !== null &&
+          hasStaffCapability(
+            staffSession.role,
+            "character_edit",
+          ),
         privateLocations,
         allOrderHeadquartersRoomIds,
         visibleOrderHeadquartersRoomIds,
@@ -481,6 +488,12 @@ if (userError || !user) {
       currentRoomAccessAllowed,
       isStaff:
         staffSession !== null,
+      canManageCharacters:
+        staffSession !== null &&
+        hasStaffCapability(
+          staffSession.role,
+          "character_edit",
+        ),
       privateLocations,
       allOrderHeadquartersRoomIds,
       visibleOrderHeadquartersRoomIds,

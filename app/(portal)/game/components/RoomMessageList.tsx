@@ -678,20 +678,17 @@ function renderMechanicalText(
           return (
             <span
               key={index}
+              data-mechanical-highlight={
+                highlighted
+                  ? "true"
+                  : undefined
+              }
               className={
                 highlighted
-                  ? "font-bold text-[rgb(var(--sep-colour-a98a60))]"
+                  ? "font-bold"
                   : undefined
               }
-              style={
-                highlighted &&
-                actionColour
-                  ? {
-                      color:
-                        actionColour,
-                    }
-                  : undefined
-              }
+
             >
               {segment}
             </span>
@@ -729,20 +726,17 @@ function renderRollText(
           return (
             <span
               key={index}
+              data-mechanical-highlight={
+                highlighted
+                  ? "true"
+                  : undefined
+              }
               className={
                 highlighted
-                  ? "font-bold text-[rgb(var(--sep-colour-a98a60))]"
+                  ? "font-bold"
                   : undefined
               }
-              style={
-                highlighted &&
-                actionColour
-                  ? {
-                      color:
-                        actionColour,
-                    }
-                  : undefined
-              }
+
             >
               {segment}
             </span>

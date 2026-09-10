@@ -1639,7 +1639,7 @@ export async function activateRoomGift(
           activated_by: user.id,
           target_character_id: target.id,
         })
-        .select("id, expires_at")
+        .select("id, activated_at, expires_at")
         .single();
 
     if (activationError || !activation) {
@@ -1660,17 +1660,21 @@ export async function activateRoomGift(
     });
 
     if (!successRoll.success) {
-      const { error: endError } = await admin
-        .from("gift_activations")
-        .update({ ended_at: new Date().toISOString() })
-        .eq("id", activation.id);
+  // Instantaneous Feats are already ended by the DB trigger
+  // at the exact same timestamp as activation.
+  if (Number(gift.duration_minutes ?? 0) > 0) {
+    const { error: endError } = await admin
+      .from("gift_activations")
+      .update({ ended_at: new Date().toISOString() })
+      .eq("id", activation.id);
 
-      if (endError) {
-        return {
-          ok: false,
-          message: `Unable to finish failed Feat attempt: ${endError.message}`,
-        };
-      }
+    if (endError) {
+      return {
+        ok: false,
+        message: `Unable to finish failed Feat attempt: ${endError.message}`,
+      };
+    }
+  }
 
       await insertGiftUseMessage({
         supabase,

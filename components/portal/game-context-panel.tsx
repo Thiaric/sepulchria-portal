@@ -21,6 +21,7 @@ type GameContextPanelProps = {
   roomId: string | null;
   currentCharacterId: string | null;
   viewerIsStaff: boolean;
+  canManageCharacters: boolean;
 };
 
 type CodexSummary = {
@@ -80,6 +81,7 @@ export function GameContextPanel({
   roomId,
   currentCharacterId,
   viewerIsStaff,
+  canManageCharacters,
 }: GameContextPanelProps) {
   const [
     presentCharacters,
@@ -486,20 +488,41 @@ export function GameContextPanel({
       </div>
     </button>
 
-    {person.id !== currentCharacterId &&
-    !blockedCharacterIds.has(
-      person.id,
-    ) && !communication.blocked ? (
-  <div className="absolute bottom-2 right-2 z-10">
-    <MessageCharacterModalButton
-      recipientId={person.id}
-      recipientName={displayName}
-      className="flex h-6 w-6 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-17110d))] text-[12px] text-[rgb(var(--sep-colour-a98b61))] transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:bg-[rgb(var(--sep-colour-2a1d12))] hover:text-[rgb(var(--sep-colour-e0c392))]"
-    />
-  </div>
-) : person.id !== currentCharacterId && communication.blocked ? (
-  <div className="absolute bottom-2 right-2 z-10"><SanctionRestrictionNotice message={communication.message} compact /></div>
-) : null}
+    <div className="absolute bottom-2 right-2 z-10 flex items-center gap-1">
+      {person.id !== currentCharacterId &&
+      !blockedCharacterIds.has(person.id) &&
+      !communication.blocked ? (
+        <MessageCharacterModalButton
+          recipientId={person.id}
+          recipientName={displayName}
+          className="flex h-6 w-6 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-17110d))] text-[12px] text-[rgb(var(--sep-colour-a98b61))] transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:bg-[rgb(var(--sep-colour-2a1d12))] hover:text-[rgb(var(--sep-colour-e0c392))]"
+        />
+      ) : person.id !== currentCharacterId && communication.blocked ? (
+        <SanctionRestrictionNotice message={communication.message} compact />
+      ) : null}
+
+      {canManageCharacters ? (
+        <button
+          type="button"
+          title={`Manage ${displayName}`}
+          aria-label={`Manage ${displayName}`}
+          onClick={() =>
+            openPortalModal({
+              label: `Manage ${displayName}`,
+              title: `Manage ${displayName}`,
+              icon: person.portrait_url ?? "/icons/characters.png",
+              href: `/admin/characters/${person.id}`,
+            })
+          }
+          className="flex h-6 w-6 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-17110d))] text-[12px] text-[rgb(var(--sep-colour-a98b61))] transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:bg-[rgb(var(--sep-colour-2a1d12))] hover:text-[rgb(var(--sep-colour-e0c392))]"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.42 1.42-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.55V20h-2v-.09a1.7 1.7 0 0 0-1.03-1.55 1.7 1.7 0 0 0-1.88.34l-.06.06-1.42-1.42.06-.06A1.7 1.7 0 0 0 9.4 15.4a1.7 1.7 0 0 0-1.55-1.03H7.76v-2h.09A1.7 1.7 0 0 0 9.4 11.34a1.7 1.7 0 0 0-.34-1.88L9 9.4 10.42 8l.06.06a1.7 1.7 0 0 0 1.88.34 1.7 1.7 0 0 0 1.03-1.55V6.76h2v.09a1.7 1.7 0 0 0 1.03 1.55 1.7 1.7 0 0 0 1.88-.34l.06-.06 1.42 1.42-.06.06a1.7 1.7 0 0 0-.34 1.88 1.7 1.7 0 0 0 1.55 1.03H21v2h-.09A1.7 1.7 0 0 0 19.4 15Z" />
+          </svg>
+        </button>
+      ) : null}
+    </div>
   </div>
 );
               },

@@ -232,14 +232,26 @@ export default function RoomChatForm({
     presentCharacters,
     setPresentCharacters,
   ] = useState<PresentRoomCharacter[]>(
-    initialPresentCharacters,
+    () =>
+      initialPresentCharacters.filter(
+        (entry) =>
+          entry.id !==
+          viewerCharacterId,
+      ),
   );
 
   useEffect(() => {
     setPresentCharacters(
-      initialPresentCharacters,
+      initialPresentCharacters.filter(
+        (entry) =>
+          entry.id !==
+          viewerCharacterId,
+      ),
     );
-  }, [initialPresentCharacters]);
+  }, [
+    initialPresentCharacters,
+    viewerCharacterId,
+  ]);
 
   useEffect(() => {
     let active = true;
@@ -322,7 +334,9 @@ export default function RoomChatForm({
             (
               entry,
             ): entry is PresentRoomCharacter =>
-              entry !== null,
+              entry !== null &&
+              entry.id !==
+                viewerCharacterId,
           );
 
       setPresentCharacters(
@@ -402,6 +416,7 @@ export default function RoomChatForm({
   }, [
     presenceSupabase,
     roomId,
+    viewerCharacterId,
   ]);
 
   const [attributes, setAttributes] = useState<CharacterAttributes>({
@@ -1521,6 +1536,7 @@ function ignoreSpellingWord() {
   data-room-chat-composer
   className="shrink-0 border-t border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-17110d))] p-2 sm:px-3 sm:py-2"
 >
+      <PendingOpposedActions />
       <PendingShapeResponses />
       <CharacterDeathGate characterId={viewerCharacterId} />
       <div className="mb-2 flex justify-end">

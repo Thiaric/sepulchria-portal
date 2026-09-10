@@ -2403,6 +2403,9 @@ function GameContext({
       viewerIsStaff={
         context.isStaff
       }
+      canManageCharacters={
+        context.canManageCharacters
+      }
     />
   );
 }

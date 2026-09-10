@@ -482,13 +482,13 @@ export async function CharacterTrophiesDisplay({
                                 data-trophy-progress-track="true"
                                 className="mt-1.5 h-1 overflow-hidden bg-[rgb(var(--sep-colour-090706))]"
                               >
-                                <div
-                                  data-trophy-progress-fill="true"
-                                  className="h-full bg-[rgb(var(--sep-colour-9b7545))]"
-                                  style={{
-                                    width: `${earned ? 100 : percentage}%`,
-                                  }}
-                                />
+                                <span
+  data-trophy-progress-fill="true"
+  className="block h-full bg-[rgb(var(--sep-colour-9b7545))]"
+  style={{
+    width: `${earned ? 100 : percentage}%`,
+  }}
+/>
                               </div>
 
                               {earned &&
