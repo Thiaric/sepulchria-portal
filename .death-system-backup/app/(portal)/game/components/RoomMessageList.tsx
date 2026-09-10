@@ -9,7 +9,6 @@ import {
 } from "react";
 import Link from "next/link";
 import { CharacterOrderIdentity } from "@/components/characters/character-order-identity";
-import { CharacterLifeIcon } from "@/components/characters/character-life-state";
 import { ReportButton } from "@/components/reports/report-button";
 import { PriceTooltip } from "@/components/warping/price-tooltip";
 import { cosmeticFrameStyle } from "@/components/cosmetics/cosmetic-frame-overlay";
@@ -67,16 +66,6 @@ type InsertedRoomMessage = {
   condition_snapshot: {
     label: string;
   }[];
-  speaker_type: "character" | "npc";
-  npc_id: string | null;
-  npc_snapshot: {
-    id: string;
-    name: string;
-    pronouns: string | null;
-    portrait_url: string | null;
-    description: string | null;
-    race: { id:string; name:string; icon_url:string|null } | null;
-  } | null;
   created_at: string;
 };
 
@@ -97,10 +86,8 @@ function normaliseRelation<T>(
 
 function CharacterIdentityIcons({
   author,
-  isNpc = false,
 }: {
   author: CharacterSummary | null;
-  isNpc?: boolean;
 }) {
   const race = author
     ? normaliseRelation(author.race)
@@ -112,18 +99,19 @@ function CharacterIdentityIcons({
 
   return (
     <div className="flex shrink-0 flex-col items-center gap-1 pt-0.5">
-      <CharacterLifeIcon
-        characterId={author.id}
-        raceIconUrl={race?.icon_url ?? null}
-        raceName={race?.name ?? null}
-      />
-
-      {!isNpc ? (
-        <CharacterOrderIdentity
-          characterId={author.id}
-          variant="chat"
+      {race?.icon_url ? (
+        <img
+          src={race.icon_url}
+          alt={race.name}
+          title={race.name}
+          className="h-4 w-4 object-contain"
         />
       ) : null}
+
+      <CharacterOrderIdentity
+        characterId={author.id}
+        variant="chat"
+      />
     </div>
   );
 }
@@ -1629,15 +1617,6 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                 )
                   ? inserted.condition_snapshot
                   : [],
-              speaker_type:
-                inserted.speaker_type ??
-                "character",
-              npc_id:
-                inserted.npc_id ??
-                null,
-              npc_snapshot:
-                inserted.npc_snapshot ??
-                null,
               created_at:
                 inserted.created_at,
               character_id:
@@ -1773,30 +1752,10 @@ const [activeShapeTags,setActiveShapeTags]=useState<
           <div className="divide-y divide-[rgb(var(--sep-colour-4f3b28))]/35">
             {liveMessages.map(
               (item) => {
-                const controllerAuthor =
+                const author =
                   normaliseRelation(
                     item.character,
                   );
-
-                const isNpcMessage =
-                  item.speaker_type === "npc" &&
-                  Boolean(item.npc_snapshot);
-
-                const npcSnapshot =
-                  isNpcMessage ? item.npc_snapshot : null;
-
-                const author: CharacterSummary | null =
-                  npcSnapshot
-                    ? {
-                        id: npcSnapshot.id,
-                        first_name: npcSnapshot.name,
-                        display_name: npcSnapshot.name,
-                        portrait_url: npcSnapshot.portrait_url,
-                        public_slug: null,
-                        race: npcSnapshot.race,
-                        association: null,
-                      }
-                    : controllerAuthor;
 
                 const recipient =
                   normaliseRelation(
@@ -1879,9 +1838,8 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                   "whisper";
 
                 const isSender =
-                  !isNpcMessage &&
                   item.character_id ===
-                    viewerCharacterId;
+                  viewerCharacterId;
 
                 const isRecipient =
                   item.whisper_recipient_character_id ===
@@ -1966,7 +1924,6 @@ const [activeShapeTags,setActiveShapeTags]=useState<
 
                           <CharacterIdentityIcons
                             author={author}
-                            isNpc={isNpcMessage}
                           />
                         </div>
 
@@ -2069,7 +2026,7 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                             </span>
                           )}
 
-                          {!isNpcMessage && author
+                          {author
                             ? shapeTagHeaderText(
                                 author.id,
                                 privateLocationTheme
@@ -2118,8 +2075,7 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                   isMechanicalAction;
 
                 const chatFrameUrl =
-                  !isMechanicalOutput &&
-                  !isNpcMessage
+                  !isMechanicalOutput
                     ? chatFrames[
                         item.character_id
                       ] ?? null
@@ -2199,7 +2155,6 @@ const [activeShapeTags,setActiveShapeTags]=useState<
 
                         <CharacterIdentityIcons
                           author={author}
-                          isNpc={isNpcMessage}
                         />
                       </div>
 
@@ -2275,21 +2230,13 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                         </span>
                       )}
 
-                      {isNpcMessage ? (
-                        <span className="ml-1.5 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-8f8170))]">
-                          NPC
-                        </span>
-                      ) : null}
-
-                      {!isNpcMessage && author
+                      {author
                         ? shapeTagHeaderText(author.id)
                         : null}
 
-                      {!isNpcMessage
-                        ? conditionSnapshotHeaderText(
-                            item.condition_snapshot,
-                          )
-                        : null}
+                      {conditionSnapshotHeaderText(
+                        item.condition_snapshot,
+                      )}
 
                       <br />
 

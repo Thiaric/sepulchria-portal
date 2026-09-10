@@ -47,15 +47,6 @@ export type RoomConditionSnapshot = {
   label: string;
 };
 
-export type NpcMessageSnapshot = {
-  id: string;
-  name: string;
-  pronouns: string | null;
-  portrait_url: string | null;
-  description: string | null;
-  race: CharacterIdentityRelation | null;
-};
-
 export type CharacterAttributeKey =
   | "muscles"
   | "reflexes"
@@ -98,9 +89,6 @@ export type RoomMessage = {
   created_at: string;
   character_id: string;
   condition_snapshot: RoomConditionSnapshot[];
-  speaker_type: "character" | "npc";
-  npc_id: string | null;
-  npc_snapshot: NpcMessageSnapshot | null;
   character:
     | CharacterSummary
     | CharacterSummary[]

@@ -11,7 +11,6 @@ import { CharacterInventoryDisplay } from "@/components/characters/character-inv
 import { CharacterTrophiesDisplay } from "@/components/characters/character-trophies-display";
 import { CharacterDisplayTrophies } from "@/components/characters/character-display-trophies";
 import { CharacterConditionsDisplay } from "@/components/characters/character-conditions-display";
-import { CharacterLifeStateBadge } from "@/components/characters/character-life-state";
 import { AutoFitCharacterName } from "@/components/characters/auto-fit-character-name";
 import { CharacterExpertiseTotal } from "@/components/characters/character-expertise-total";
 import { CharacterMusicPlayer } from "@/components/characters/character-music-player";
@@ -318,14 +317,9 @@ export function PublicCharacterProfileView({
                     </div>
                   </div>
 
-                  <>
-                    <CharacterConditionsDisplay
-                      characterId={character.id}
-                    />
-                    <CharacterLifeStateBadge
-                      characterId={character.id}
-                    />
-                  </>
+                  <CharacterConditionsDisplay
+                    characterId={character.id}
+                  />
                 </div>
               </div>
 

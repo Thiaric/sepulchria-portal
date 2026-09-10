@@ -343,9 +343,6 @@ async function GameContent() {
     roll_total,
     whisper_recipient_character_id,
     condition_snapshot,
-    speaker_type,
-    npc_id,
-    npc_snapshot,
     created_at,
     character_id,
 

@@ -50,7 +50,6 @@ import { PendingOpposedActions } from "./PendingOpposedActions";
 import { PendingShapeResponses } from "./PendingShapeResponses";
 import { CharacterDeathGate } from "./CharacterDeathGate";
 import { WarpingPanel } from "./WarpingPanel";
-import { NpcControlPanel } from "./NpcControlPanel";
 import { CharacterConditionsEditor } from "@/components/characters/character-conditions-editor";
 import {
   loadRoomCombatData,
@@ -505,7 +504,6 @@ export default function RoomChatForm({
       | "exchange"
       | "warping"
       | "conditions"
-      | "npc"
       | null
     >(null);
 
@@ -1437,8 +1435,7 @@ function ignoreSpellingWord() {
       | "items"
       | "exchange"
       | "warping"
-      | "conditions"
-      | "npc",
+      | "conditions",
   ) {
     if (utilityLoadingMode) return;
 
@@ -1708,16 +1705,7 @@ function ignoreSpellingWord() {
             </div>
           </div>
         </form>
-       ) : utilityMode === "npc" ? (
-        <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3">
-          <UtilityPanelHeader
-            title="NPC Control"
-            description="Create, manage and speak as NPCs. Your staff identity is retained only for internal audit."
-            onClose={() => setUtilityMode(null)}
-          />
-          <NpcControlPanel roomId={roomId} />
-        </div>
-      ) : utilityMode === "conditions" ? (
+       ) : utilityMode === "conditions" ? (
         <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3">
           <UtilityPanelHeader
             title="Conditions"
@@ -2795,16 +2783,6 @@ function ignoreSpellingWord() {
       ) : null}
       {utilityMode === null ? (
       <div className="-mt-8 mx-[92px] flex flex-wrap justify-center gap-1 border-0 pt-0 max-lg:mx-0 max-lg:mt-2 max-lg:border-t max-lg:border-[rgb(var(--sep-colour-59432c))]/30 max-lg:pt-2">
-        {canUseFate ? (
-          <button
-            type="button"
-            onClick={() => toggleUtility("npc")}
-            className={utilityMode === "npc" ? utilityButtonActiveClass : utilityButtonClass}
-          >
-            NPCs
-          </button>
-        ) : null}
-
         <button
   type="button"
   onClick={() =>

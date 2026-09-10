@@ -9,7 +9,6 @@ import { useRouter } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/client";
 import { HeaderOrderIcon } from "@/components/portal/header-order-icon";
-import { CharacterLifeIcon } from "@/components/characters/character-life-state";
 import { openPortalModal } from "@/components/portal/portal-modal-button";
 import type {
   PortalCharacter,
@@ -487,11 +486,26 @@ last_seen_at:
         </div>
 
         <div className="hidden shrink-0 flex-col items-center gap-1 pt-0.5 sm:flex">
-          <CharacterLifeIcon
-            characterId={character.id}
-            raceIconUrl={character.race?.icon_url ?? null}
-            raceName={character.race?.name ?? null}
-          />
+          {character.race
+            ?.icon_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={
+                character.race
+                  .icon_url
+              }
+              alt={
+                character.race.name
+              }
+              title={`Ancestry: ${character.race.name}`}
+              className="h-4 w-4 object-contain"
+            />
+          ) : (
+            <span
+              className="h-4 w-4"
+              aria-hidden="true"
+            />
+          )}
 
           <HeaderOrderIcon
             characterId={character.id}

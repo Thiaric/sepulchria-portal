@@ -23,7 +23,6 @@ import { CharacterLedger } from "@/components/characters/character-ledger";
 import { CharacterTrophiesDisplay } from "@/components/characters/character-trophies-display";
 import { CharacterDisplayTrophies } from "@/components/characters/character-display-trophies";
 import { CharacterConditionsDisplay } from "@/components/characters/character-conditions-display";
-import { CharacterLifeStateBadge } from "@/components/characters/character-life-state";
 import { CharacterConditionsEditor } from "@/components/characters/character-conditions-editor";
 import { AutoFitCharacterName } from "@/components/characters/auto-fit-character-name";
 import { DisplayTrophySelector } from "@/components/characters/display-trophy-selector";
@@ -492,14 +491,9 @@ export function Profile({
                     </div>
 
                     {character.id ? (
-                      <>
-                        <CharacterConditionsDisplay
-                          characterId={character.id}
-                        />
-                        <CharacterLifeStateBadge
-                          characterId={character.id}
-                        />
-                      </>
+                      <CharacterConditionsDisplay
+                        characterId={character.id}
+                      />
                     ) : null}
                   </div>
 

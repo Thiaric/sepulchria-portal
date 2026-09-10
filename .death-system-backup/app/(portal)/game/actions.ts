@@ -48,9 +48,6 @@ type OwnedCharacter = {
   brains: number | null;
   shrewd: number | null;
   presence_score: number | null;
-  current_health: number | null;
-  life_state: "alive" | "death_save_pending" | "dead";
-  dead_until: string | null;
 };
 
 function createPrivilegedClient() {
@@ -397,10 +394,7 @@ async function getOwnedCharacter(
       vigor,
       brains,
       shrewd,
-      presence_score,
-      current_health,
-      life_state,
-      dead_until
+      presence_score
     `)
     .eq("user_id", user.id)
     .maybeSingle();
@@ -422,56 +416,7 @@ async function getOwnedCharacter(
   }
 
   const ownedCharacter =
-    character as unknown as OwnedCharacter;
-
-  if (ownedCharacter.life_state === "dead") {
-    const expiry = ownedCharacter.dead_until
-      ? Date.parse(ownedCharacter.dead_until)
-      : Number.POSITIVE_INFINITY;
-
-    if (Number.isFinite(expiry) && expiry <= Date.now()) {
-      const admin = createPrivilegedClient();
-      const { error: reviveError } = await admin
-        .from("characters")
-        .update({
-          current_health: 1,
-          life_state: "alive",
-          zero_hp_at: null,
-          dead_until: null,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", ownedCharacter.id);
-
-      if (reviveError) {
-        throw new Error(`Unable to restore Character after death: ${reviveError.message}`);
-      }
-
-      await admin
-        .from("character_death_events")
-        .update({
-          status: "revived",
-          resolved_at: new Date().toISOString(),
-        })
-        .eq("character_id", ownedCharacter.id)
-        .eq("status", "dead");
-
-      ownedCharacter.life_state = "alive";
-      ownedCharacter.current_health = 1;
-      ownedCharacter.dead_until = null;
-    } else {
-      throw new Error(
-        ownedCharacter.dead_until
-          ? `This Character is dead until ${new Date(ownedCharacter.dead_until).toLocaleString("en-GB")}.`
-          : "This Character is dead.",
-      );
-    }
-  }
-
-  if (ownedCharacter.life_state === "death_save_pending") {
-    throw new Error(
-      "Your Character is at Death's Threshold. Resolve the single rescue Feat opportunity first.",
-    );
-  }
+    character as OwnedCharacter;
 
   if (
     ownedCharacter.current_room_id &&

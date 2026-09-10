@@ -1,0 +1,464 @@
+SEPULCHRIA NATIVE JSX ELEMENT AUDIT
+====================================================================================================
+
+FILE                                                                           ELEMENTS DIRECTLY RENDERED
+------------------------------------------------------------------------------------------------------------------------
+
+app/(portal)/admin/areas/page.tsx                                              button, div, h2, h3, input, label, main, p, section, span
+app/(portal)/admin/associations/page.tsx                                       aside, button, div, h2, h3, input, label, main, p, section, span
+app/(portal)/admin/character-audit/page.tsx                                    div, h1, main, p
+app/(portal)/admin/characters/[id]/inventory/page.tsx                          article, button, details, div, form, h1, h2, input, main, option, p, section, select, span, summary, textarea
+app/(portal)/admin/characters/[id]/ledger/page.tsx                             div, h1, main, p
+app/(portal)/admin/characters/[id]/page.tsx                                    button, div, form, h2, h3, h4, input, label, main, option, p, section, select, span, strong, textarea
+app/(portal)/admin/characters/[id]/premium-features/page.tsx                   div, h1, main, p
+app/(portal)/admin/characters/[id]/warping/page.tsx                            button, div, h1, h2, input, label, main, option, p, section, select, span
+app/(portal)/admin/characters/page.tsx                                         button, div, form, h2, h3, input, label, main, option, p, section, select, span
+app/(portal)/admin/codex/[id]/page.tsx                                         button, div, h1, header, input, p, section, span
+app/(portal)/admin/codex/page.tsx                                              a, article, button, div, h1, h2, h3, header, input, p, section, span
+app/(portal)/admin/communication-logs/page.tsx                                 article, button, details, div, form, h1, img, input, main, option, p, section, select, span, summary
+app/(portal)/admin/cosmetics/page.tsx                                          div, h2, main, p
+app/(portal)/admin/crafting-recipes/page.tsx                                   button, details, div, h1, input, main, p, span, summary
+app/(portal)/admin/events/page.tsx                                             button, details, div, h2, input, label, main, option, p, section, select, span, summary, textarea
+app/(portal)/admin/experience/page.tsx                                         article, div, h1, h2, header, img, p, section, span, table, td, tr
+app/(portal)/admin/expertise/page.tsx                                          button, div, form, h2, input, main, p, section, table, td, tr
+app/(portal)/admin/forum/moderation/page.tsx                                   article, div, h1, header, main, nav, p, section, span
+app/(portal)/admin/forum/page.tsx                                              div, h2, main, nav, p, section, span
+app/(portal)/admin/forum/replies/page.tsx                                      article, button, details, div, form, h1, h2, header, input, label, main, nav, option, p, section, select, span, summary
+app/(portal)/admin/forum/sections/[sectionId]/page.tsx                         button, div, footer, form, h1, h2, header, input, label, li, main, nav, option, p, section, select, span, textarea, ul
+app/(portal)/admin/forum/sections/new/page.tsx                                 button, div, footer, form, h1, h2, header, input, label, main, nav, option, p, section, select, span, textarea
+app/(portal)/admin/forum/sections/page.tsx                                     article, div, h1, h2, h3, header, main, nav, p, section, span
+app/(portal)/admin/forum/topics/page.tsx                                       article, button, details, div, form, h1, h2, header, input, label, main, nav, option, p, section, select, span, summary, textarea
+app/(portal)/admin/gathering/page.tsx                                          div, h2, main, p, section
+app/(portal)/admin/gifts/page.tsx                                              button, details, div, h1, h2, input, label, main, option, p, section, select, span, strong, summary, textarea
+app/(portal)/admin/house-of-chances/page.tsx                                   button, div, h1, h2, input, label, main, option, p, section, select, span, textarea
+app/(portal)/admin/items/page.tsx                                              button, details, div, h1, h2, h3, input, label, main, option, p, section, select, span, summary, textarea
+app/(portal)/admin/items/vault/page.tsx                                        article, button, details, div, h1, h2, input, label, main, option, p, section, select, span, summary, textarea
+app/(portal)/admin/jobs/page.tsx                                               button, div, h2, h3, input, label, main, p, section, span, textarea
+app/(portal)/admin/layout.tsx                                                  div, h1, nav, p, span
+app/(portal)/admin/market/page.tsx                                             button, div, h1, h2, input, label, main, option, p, section, select, span, textarea
+app/(portal)/admin/media/page.tsx                                              div, h2, main, p, section, strong
+app/(portal)/admin/missions/page.tsx                                           div, h2, h3, header, input, label, option, p, section, select
+app/(portal)/admin/music/page.tsx                                              div, h2, main, p
+app/(portal)/admin/new-register/page.tsx                                       button, div, h2, h3, input, main, p, section, span
+app/(portal)/admin/notifications/page.tsx                                      button, details, div, h2, input, label, main, option, p, section, select, span, summary, textarea
+app/(portal)/admin/order-submissions/page.tsx                                  button, details, div, h2, h3, h4, input, label, main, option, p, section, select, span, summary
+app/(portal)/admin/orders/page.tsx                                             aside, button, details, div, h2, h3, input, label, main, option, p, section, select, span, strong, summary
+app/(portal)/admin/page.tsx                                                    div, h3, main, p, section, span
+app/(portal)/admin/polls/page.tsx                                              button, details, div, h1, h2, input, label, main, option, p, section, select, span, summary, textarea
+app/(portal)/admin/races/page.tsx                                              button, div, h2, h3, input, label, main, p, section, span
+app/(portal)/admin/registrations/page.tsx                                      button, details, div, form, h2, h3, input, main, p, section, span, summary
+app/(portal)/admin/rooms/page.tsx                                              button, details, div, h2, h3, input, label, main, option, p, section, select, span, summary
+app/(portal)/admin/rules/page.tsx                                              a, button, details, div, h1, h2, header, input, label, option, p, section, select, span, summary
+app/(portal)/admin/safety/page.tsx                                             article, button, div, form, h1, h2, input, label, main, option, p, section, select, span
+app/(portal)/admin/sanctions/[id]/page.tsx                                     button, div, form, h1, h2, header, input, label, main, p, section, span, textarea
+app/(portal)/admin/sanctions/page.tsx                                          button, div, form, h1, input, main, option, p, select
+app/(portal)/admin/shapes/page.tsx                                             button, details, div, form, h1, h2, h3, h4, input, label, main, option, p, section, select, span, summary, textarea
+app/(portal)/admin/shapes/ShapeActionForm.tsx                                  button, div, form, span
+app/(portal)/admin/shapes/ShapeProgression.tsx                                 span
+app/(portal)/admin/store/page.tsx                                              button, details, div, h2, h3, h4, img, input, label, main, option, p, section, select, span, summary, textarea
+app/(portal)/admin/tickets/[reference]/page.tsx                                article, button, details, div, form, h1, h2, header, input, label, main, option, p, section, select, span, strong, summary, textarea
+app/(portal)/admin/tickets/page.tsx                                            button, div, form, h1, input, main, option, p, select, span
+app/(portal)/admin/tidings/page.tsx                                            article, button, details, div, h2, h3, h4, input, label, main, option, p, section, select, span, summary, textarea
+app/(portal)/admin/trophies/page.tsx                                           button, div, form, h2, h3, img, input, label, main, option, p, section, select, span, textarea
+app/(portal)/admin/users/page.tsx                                              aside, button, details, div, form, h2, h3, h4, input, label, main, option, p, section, select, span, strong, summary
+app/(portal)/admin/world/page.tsx                                              button, div, form, h2, h3, img, input, label, main, option, p, section, select, span, strong
+app/(portal)/ancestries/[slug]/page.tsx                                        div
+app/(portal)/ancestries/page.tsx                                               div, header, p, span
+app/(portal)/appearance/page.tsx                                               div, h1, main, p
+app/(portal)/areas/[slug]/page.tsx                                             article, button, div, form, h1, h3, input, p, section
+app/(portal)/associations/[slug]/page.tsx                                      div
+app/(portal)/associations/page.tsx                                             div, header, p, span
+app/(portal)/character/CharacterForm.tsx                                       button, div, form, h2, h3, header, img, input, label, option, p, section, select, span, textarea
+app/(portal)/character/create/page.tsx                                         div, h1, header, main, p
+app/(portal)/character/edit/page.tsx                                           div, h1, header, main, p
+app/(portal)/character/page.tsx                                                article, div, form, h2, img, input, label, p, section, span, textarea
+app/(portal)/characters/[slug]/not-found.tsx                                   div, h1, p, section
+app/(portal)/characters/[slug]/page.tsx                                        div
+app/(portal)/characters/page.tsx                                               div
+app/(portal)/cosmetics/page.tsx                                                div, h1, main, p
+app/(portal)/crafting/crafting-workbench.tsx                                   article, button, div, h2, p, section, span
+app/(portal)/crafting/page.tsx                                                 div, h1, header, main, p, span
+app/(portal)/feats/page.tsx                                                    div, h1, header, main, p
+app/(portal)/forum/[sectionSlug]/[topicSlug]/page.tsx                          div, h1, header, main, nav, p, section, span
+app/(portal)/forum/[sectionSlug]/[topicSlug]/posts/[postId]/edit/page.tsx      main, nav, span
+app/(portal)/forum/[sectionSlug]/new/page.tsx                                  div, h1, header, main, nav, p, span
+app/(portal)/forum/[sectionSlug]/page.tsx                                      article, button, div, form, h1, h2, h3, header, main, nav, p, section, span
+app/(portal)/forum/page.tsx                                                    button, div, form, h1, h2, header, main, p, section, span
+app/(portal)/friends/page.tsx                                                  article, button, div, form, h1, h2, header, input, label, main, option, p, section, select
+app/(portal)/game/components/BreezeLodgingGuestsPanel.tsx                      button, details, div, h3, input, label, p, span, summary
+app/(portal)/game/components/BreezeLodgingsPanel.tsx                           article, button, details, div, h3, h4, label, option, p, section, select, span, summary
+app/(portal)/game/components/DispelPicker.tsx                                  button, div, form, input, p
+app/(portal)/game/components/GatheringPanel.tsx                                button, details, div, h3, p, section, span, summary
+app/(portal)/game/components/HouseOfChancesPanel.tsx                           button, details, div, h3, p, span, summary
+app/(portal)/game/components/ItemExchangePanel.tsx                             button, div, h3, input, label, option, p, section, select, span, strong
+app/(portal)/game/components/OddJobsPanel.tsx                                  article, button, details, div, h3, p, span, summary
+app/(portal)/game/components/PendingOpposedActions.tsx                         button, div, form, input, p, section
+app/(portal)/game/components/PendingShapeResponses.tsx                         button, div, form, input, p, section
+app/(portal)/game/components/PresenceHeartbeat.tsx                             div, option, p, select
+app/(portal)/game/components/RoomChatForm.tsx                                  button, div, form, h3, img, input, label, option, p, select, span, textarea
+app/(portal)/game/components/RoomMessageList.tsx                               article, div, img, p, span
+app/(portal)/game/components/RoomMusicPlayer.tsx                               button, div, input, label, option, p, section, select, span
+app/(portal)/game/components/WarpingPanel.tsx                                  button, div, h3, input, option, p, select, span
+app/(portal)/game/page.tsx                                                     article, div
+app/(portal)/layout.tsx                                                        aside, div, header, main
+app/(portal)/market/[slug]/page.tsx                                            div, h1, img, main, p, section, span
+app/(portal)/market/page.tsx                                                   div, h1, h2, img, main, p, section
+app/(portal)/messages/[id]/components/ConversationMessageList.tsx              a, article, button, div, form, img, input, label, option, p, section, select, span
+app/(portal)/messages/[id]/components/DeleteConversationForm.tsx               button, form, input
+app/(portal)/messages/[id]/page.tsx                                            button, div, form, h1, header, img, input, main, p, section, span
+app/(portal)/messages/components/group-conversation-view.tsx                   button, div, form, h1, header, input, main, p, section
+app/(portal)/messages/components/MessageComposer.tsx                           button, div, form, input, p, span
+app/(portal)/messages/components/messages-inbox-client.tsx                     article, button, div, footer, form, h2, header, img, input, label, p, section, span
+app/(portal)/messages/components/pm-recipient-picker.tsx                       button, details, div, input, label, p, span, summary
+app/(portal)/messages/forward/[messageId]/page.tsx                             button, div, form, h1, input, label, main, p, section, span, textarea
+app/(portal)/messages/new/page.tsx                                             button, div, form, h1, input, label, main, p, section, span
+app/(portal)/missions/page.tsx                                                 article, div, h1, h2, h3, header, p, section, span
+app/(portal)/orders/[slug]/page.tsx                                            article, div, h1, h2, main, p, section, span
+app/(portal)/orders/manage/page.tsx                                            div, h1, h2, main, p, section, span
+app/(portal)/orders/page.tsx                                                   div, header, p, span
+app/(portal)/orders/submit/page.tsx                                            h1, header, main, p
+app/(portal)/page.tsx                                                          div
+app/(portal)/polls/page.tsx                                                    button, div, form, h1, h2, input, label, main, p, section, span
+app/(portal)/private-locations/page.tsx                                        article, button, div, form, h1, h2, h3, header, input, label, main, option, p, section, select, span
+app/(portal)/ranking/page.tsx                                                  div, h1, header, main, p, section, span
+app/(portal)/sanctions/[id]/appeal/page.tsx                                    button, div, form, h1, input, label, main, p, section, span, textarea
+app/(portal)/sanctions/page.tsx                                                article, div, h1, h2, main, p
+app/(portal)/store/orders/[id]/page.tsx                                        div, h1, h2, main, p, span
+app/(portal)/store/page.tsx                                                    article, button, details, div, h1, h2, h3, header, img, main, p, section, span, summary
+app/(portal)/support/[reference]/page.tsx                                      button, div, form, h1, input, main, p, textarea
+app/(portal)/support/new/page.tsx                                              button, div, form, h1, input, label, main, option, select, span, textarea
+app/(portal)/support/page.tsx                                                  div, h1, h2, main, p, span
+app/(portal)/warping/page.tsx                                                  div, h1, header, main, p
+app/age-policy/page.tsx                                                        a, article, div, footer, h1, h2, main, p, section, strong
+app/auth/error/page.tsx                                                        div, p
+app/auth/portal-entry/page.tsx                                                 button, div, main, p
+app/auth/sign-up-success/page.tsx                                              div, h3, p
+app/auth/update-password/page.tsx                                              div
+app/codex/page.tsx                                                             div
+app/community-rules/page.tsx                                                   div, footer, h1, h2, h3, header, li, main, p, section, span, strong, ul
+app/cookies/page.tsx                                                           a, article, div, footer, h1, h2, main, p, section
+app/privacy/page.tsx                                                           a, article, div, footer, h1, h2, li, main, p, section, ul
+app/protected/layout.tsx                                                       a, div, footer, main, nav, p
+app/protected/page.tsx                                                         div, h2
+app/purchases/page.tsx                                                         a, article, div, h1, h2, h3, main, p, section, span
+app/refund-policy/page.tsx                                                     a, article, div, h1, h2, main, p, section
+app/rules/page.tsx                                                             div
+app/safety/page.tsx                                                            a, article, div, footer, h1, h2, main, p, section
+app/terms/page.tsx                                                             a, article, div, footer, h1, h2, header, main, p, section
+components/admin/admin-action-form.tsx                                         form
+components/admin/admin-action-ui.tsx                                           button, div, form, section, span
+components/admin/admin-ancestry-gift-selector.tsx                              button, div, input, p, span
+components/admin/admin-character-cosmetics-access.tsx                          button, div, form, h2, h3, img, input, option, p, section, select, span, textarea
+components/admin/admin-character-edit-form.tsx                                 div, form, input, p, section
+components/admin/admin-character-feature-access.tsx                            button, div, form, h2, h3, input, label, option, p, section, select, span, textarea
+components/admin/admin-character-music-access.tsx                              button, div, form, h2, h3, input, option, p, section, select, span, textarea
+components/admin/admin-character-premium-features-context.tsx                  button, div, h2, input, p, span
+components/admin/admin-character-remnants.tsx                                  button, div, h3, input, label, p, section, span
+components/admin/admin-entitlement-submit.tsx                                  span
+components/admin/admin-mission-form.tsx                                        button, div, form
+components/admin/admin-order-collapsible.tsx                                   details, div, h3, p, span, summary
+components/admin/admin-order-member-remove-button.tsx                          button, div, span
+components/admin/admin-race-editor.tsx                                         aside, button, details, div, h3, input, label, p, section, span, summary
+components/admin/admin-user-portal-skins.tsx                                   button, details, div, form, input, option, select, span, summary
+components/admin/admin-vault-filters.tsx                                       button, div, input, option, p, select
+components/admin/AdminCharacterWarping.tsx                                     button, form, h2, input, label, p, section, span
+components/admin/character-audit-context-panel.tsx                             button, div, h2, input, p, span
+components/admin/character-audit-live-filter.tsx                               button, div, input, option, p, select
+components/admin/character-review-fields.tsx                                   label, option, select, span, textarea
+components/admin/codex-preview-button.tsx                                      button, div, header, p, section
+components/admin/cosmetics-context-panel.tsx                                   button, div, h2, input, p, span
+components/admin/cosmetics-feature-manager.tsx                                 button, div, form, h3, h4, header, img, input, label, option, p, section, select, span, textarea
+components/admin/crafting-recipe-form.tsx                                      button, div, h3, input, label, option, p, select, span, textarea
+components/admin/crafting-recipes-context-panel.tsx                            button, div, h2, input, label, p, span
+components/admin/daily-mission-reward-pool-editor.tsx                          button, div, input, label, option, p, select
+components/admin/experience-context-panel.tsx                                  button, div, h2, img, input, p, span
+components/admin/experience-live-filters.tsx                                   button, div, input, label, option, p, section, select, span
+components/admin/forum-order-section-fields.tsx                                div, label, option, p, select, span
+components/admin/forum-staff-role-access-fields.tsx                            div, input, label, p, span
+components/admin/gathering-admin-ui.tsx                                        button, details, div, form, h3, input, label, option, p, select, span, summary, textarea
+components/admin/gathering-context-panel.tsx                                   button, div, h2, input, p, span
+components/admin/gift-effect-form-logic.tsx                                    span
+components/admin/house-of-chances-context-panel.tsx                            button, div, h2, input, p, section, span
+components/admin/item-create-recipe-fields.tsx                                 button, div, h3, input, label, option, p, select, span
+components/admin/item-effect-form-logic.tsx                                    span
+components/admin/item-equipment-form.tsx                                       button, details, div, form, input, label, option, p, select, span, summary
+components/admin/item-use-form-logic.tsx                                       span
+components/admin/media-library-manager.tsx                                     a, article, aside, button, div, h3, img, input, label, option, p, section, span
+components/admin/music-context-panel.tsx                                       button, div, h2, input, p, span
+components/admin/music-feature-manager.tsx                                     button, div, form, h3, h4, header, input, label, p, section, span, textarea
+components/admin/order-level-structure.tsx                                     button, details, div, form, h4, input, label, option, p, section, select, span, summary
+components/admin/order-membership-manager.tsx                                  button, div, h4, input, label, option, p, section, select, span
+components/admin/order-role-progression-editor.tsx                             button, div, option, p, select, span
+components/admin/order-submission-badge.tsx                                    span
+components/admin/order-submissions-context.tsx                                 button, div, h2, input, p, span
+components/admin/registration-application-badge.tsx                            span
+components/admin/shape-delete-submit.tsx                                       button
+components/admin/store-commerce-operations.tsx                                 button, div, h3, input, label, p, section, span, strong
+components/admin/store-context-panel.tsx                                       button, div, h2, p
+components/admin/store-post-purchase-offers.tsx                                button, div, h3, input, label, option, p, section, select, span
+components/admin/submitted-character-badge.tsx                                 span
+components/admin/trophy-save-feedback.tsx                                      p
+components/admin/warping-reference.tsx                                         details, div, h4, p, strong, summary, table, td, tr
+components/associations/association-hero.tsx                                   div, p, section, span
+components/audio/portal-sound-toggle.tsx                                       button
+components/auth-button.tsx                                                     div
+components/auth-page-shell.tsx                                                 div, footer, h1, h2, header, main, p, section, span
+components/character/approval-notice.tsx                                       h2, p, section
+components/characters/ActivePriceEffects.tsx                                   div, h2, section, span
+components/characters/ActiveShapeEffects.tsx                                   div, h2, section, span
+components/characters/auto-fit-character-name.tsx                              h1, span
+components/characters/character-attribute-allocator.tsx                        article, div, h3, h4, input, p, strong
+components/characters/character-attributes-display.tsx                         div, h2, p, section, span
+components/characters/character-audit-entry.tsx                                article, details, div, h2, p, span, summary
+components/characters/character-audit-trail-client.tsx                         button, div, input, option, p, select
+components/characters/character-audit-trail.tsx                                button, div, h2, p, section
+components/characters/character-conditions-display.tsx                         div, span
+components/characters/character-conditions-editor.tsx                          button, div, input, option, p, select, span
+components/characters/character-directory-order-badge.tsx                      div, img, p
+components/characters/character-directory.tsx                                  article, button, div, form, h2, img, input, label, option, p, section, select, span
+components/characters/character-display-trophies.tsx                           img, span
+components/characters/character-expertise-total.tsx                            div, p, span
+components/characters/character-gifts-display.tsx                              div, h2, header, p, section
+components/characters/character-health-display.tsx                             div, h2, p, section
+components/characters/character-inventory-browser.tsx                          article, button, div, form, h2, h3, h4, img, input, label, option, p, section, select, span
+components/characters/character-ledger.tsx                                     div, h2, p, section
+components/characters/character-mechanics-display.tsx                          div, h2, p, section, span
+components/characters/character-music-player.tsx                               button, div, input, label, p, section, span
+components/characters/character-order-identity.tsx                             img, span
+components/characters/character-order-summary.tsx                              div, img, p
+components/characters/character-remnants-wallet.tsx                            p, section, span
+components/characters/character-return-link.tsx                                span
+components/characters/character-shapes-display.tsx                             div, h2, header, p, section
+components/characters/character-sheet-tabs.tsx                                 button, div, nav, span
+components/characters/character-trophies-display.tsx                           article, div, h2, h3, header, img, p, section, span
+components/characters/display-trophy-selector.tsx                              div, form, h2, label, option, p, section, select, span
+components/characters/expertise-display.tsx                                    div, p
+components/characters/live-character-presence.tsx                              div, p, section, span
+components/characters/public-character-age-detail.tsx                          div
+components/characters/public-character-order.tsx                               div, img, p
+components/characters/public-character-profile.tsx                             article, button, div, form, h2, input, option, p, section, select, span
+components/codex/codex-entry-card.tsx                                          article, details, div, h2, p, span, summary
+components/codex/codex-entry-grid.tsx                                          h2, p, section
+components/codex/codex-entry-hero.tsx                                          article, div, h1, img, p, section, span
+components/codex/codex-entry-image-lightbox.tsx                                button, div, img, span
+components/codex/public-codex.tsx                                              article, button, div, h1, h2, header, main, nav, p, section, span
+components/cosmetics/player-cosmetics-context-panel.tsx                        button, div, h2, input, option, p, select, span
+components/cosmetics/player-cosmetics-manager.tsx                              article, button, div, h2, h3, header, img, p, section, span
+components/deploy-button.tsx                                                   span
+components/economy/ledger-entries.tsx                                          button, div, input, option, p, select, span
+components/editor/rich-text-content-client.tsx                                 div
+components/editor/rich-text-content.tsx                                        div
+components/editor/rich-text-editor.tsx                                         button, div, input, label, option, p, select, span, textarea
+components/editor/writing-assistant.tsx                                        div, span
+components/env-var-warning.tsx                                                 div
+components/experience/experience-logout-guard.tsx                              button, div, h2, img, p, textarea
+components/forgot-password-form.tsx                                            button, div, form, h3, input, label, p, span
+components/forms/forum-staff-tools.tsx                                         article, aside, div, h2, h3, p
+components/forms/inline-action-form.tsx                                        form, p
+components/forms/pending-submit-button.tsx                                     button
+components/forum/delete-post-button.tsx                                        button, div, form, h2, header, input, p
+components/forum/edit-post-form.tsx                                            button, div, form, header, input, label, p, section, span
+components/forum/forum-favourite-topics-panel.tsx                              button, div, h3, p, section, span
+components/forum/forum-staff-tools.tsx                                         article, aside, div, h2, h3, p
+components/forum/forum-topic-favourite-button.tsx                              button, span
+components/forum/forum-topic-flag-button.tsx                                   button, div, form, h2, h3, img, input, label, p, section, span, textarea
+components/forum/new-topic-form.tsx                                            button, div, form, h2, input, label, option, p, section, select, span
+components/forum/order-level-visibility-fields.tsx                             div, h3, input, label, p, section, span
+components/forum/post-moderation-panel.tsx                                     button, div, form, h2, h3, header, input, label, p, section, textarea
+components/forum/topic-moderation-panel.tsx                                    button, div, form, h2, h3, header, input, label, option, p, section, select, strong, textarea
+components/forum/topic-post.tsx                                                a, article, aside, div, footer, h2, header, img, p, span
+components/forum/topic-reply-form.tsx                                          a, button, div, form, input, label, option, p, section, select, span
+components/friends/friend-live-presence.tsx                                    button, div, form, input, span
+components/gifts/gifts-catalogue.tsx                                           article, button, div, input, option, p, section, select, span
+components/hero.tsx                                                            a, div, h1, p, span
+components/homepage/homepage-contact-modal.tsx                                 button, div, form, h2, header, input, label, p, section, span, textarea
+components/homepage/homepage-public-modal.tsx                                  button, div, h2, p, section
+components/homepage/sepulchria-homepage.tsx                                    article, aside, button, div, footer, h1, h2, header, main, nav, p, section, span
+components/instant-chat/instant-chat-dock.tsx                                  button, div, header, img, input, p, section, span, textarea
+components/items/item-image-frame.tsx                                          div, img, span
+components/legal-modal.tsx                                                     button, div, footer, h2, header, p, section
+components/login-form.tsx                                                      button, div, form, input, label, p
+components/logout-button.tsx                                                   button
+components/market/market-catalogue.tsx                                         article, button, div, h2, input, label, option, p, section, select, span
+components/messages/breeze-lodging-invitation-message.tsx                      button, div, p
+components/messages/message-character-meta.tsx                                 div, img, span
+components/messages/message-character-modal-button.tsx                         button, span
+components/messages/messages-context-navigator.tsx                             div, h2, header, img, p, span
+components/messages/order-headquarters-invitation-message.tsx                  button, div, form, input, p
+components/messages/private-location-invitation-message.tsx                    button, div, form, input, p
+components/messages/unread-message-badge.tsx                                   span
+components/missions/daily-reward-claim.tsx                                     button, form, input, p
+components/notifications/admin-notification-audience-fields.tsx                div, input, label, option, select, span
+components/notifications/notification-bell.tsx                                 button, div, h2, input, p, span
+components/orders/order-card.tsx                                               div
+components/orders/order-head-add-member-form.tsx                               button, div, input, label, option, p, select, span
+components/orders/order-head-gift-manager.tsx                                  button, div, input, p, span
+components/orders/order-head-member-form.tsx                                   button, div, input, label, option, p, select, span
+components/orders/order-headquarters-invitation-popup.tsx                      button, div, form, h2, input, p, section, span
+components/orders/order-headquarters-manage-menu.tsx                           button, details, div, form, h3, input, label, option, p, section, select, span, summary, textarea
+components/orders/order-headquarters-panel.tsx                                 button, details, div, form, input, label, option, p, section, select, span, summary, textarea
+components/orders/order-leadership-sidebar-link.tsx                            span
+components/orders/order-submission-form.tsx                                    button, div, form, h2, input, label, p, section, span, textarea
+components/orders/public-order-role-graph.tsx                                  div, p
+components/polls/poll-unread-badge.tsx                                         span
+components/polls/polls-context-panel.tsx                                       button, div, h2, input, p, span
+components/portal/active-city-counter.tsx                                      article, button, div, form, h2, img, input, label, p, span
+components/portal/admin-communication-logs-context.tsx                         button, div, h2, input, p, span
+components/portal/admin-context-panel.tsx                                      button, div, h2, img, input, label, p, section, span, strong
+components/portal/admin-events-tidings-context.tsx                             button, div, h2, p, span
+components/portal/admin-jobs-context.tsx                                       button, div, h2, input, p, span
+components/portal/admin-market-context.tsx                                     button, div, h2, input, p, span
+components/portal/admin-missions-context.tsx                                   div, h2, input, p, span
+components/portal/admin-orders-context.tsx                                     button, div, h2, p, span
+components/portal/admin-record-search-context.tsx                              button, div, h2, input, option, p, select, span
+components/portal/admin-rules-context.tsx                                      button, div, h2, h3, input, label, p, section, span
+components/portal/character-detail-context-panel.tsx                           div, h2, header, p, span
+components/portal/character-order-context.tsx                                  div, span
+components/portal/forum-context-html-sanitizer.tsx                             div
+components/portal/forum-navigation-context.tsx                                 a, button, details, div, form, h2, header, input, label, option, p, section, select, span, summary, textarea
+components/portal/forum-section-activity-context.tsx                           div, h2, header, p
+components/portal/forum-sidebar-menu.tsx                                       button, div, img, p, span
+components/portal/game-context-panel.tsx                                       button, div, form, h2, img, input, p, section, span
+components/portal/header-character-identity.tsx                                button, div, img, span
+components/portal/header-order-icon.tsx                                        img, span
+components/portal/interactive-world-map.tsx                                    button, div, h2, p, section, span
+components/portal/live-dashboard-chronicle.tsx                                 article, button, div, form, h3, input, p, span
+components/portal/map-magnifying-lens.tsx                                      button, div
+components/portal/market-items-context.tsx                                     button, div, h2, input, p, span
+components/portal/market-shops-context.tsx                                     button, div, h2, input, p, span
+components/portal/missions-context-panel.tsx                                   div, h2, input, p, span
+components/portal/mobile-portal-navigation.tsx                                 button, div, form, h2, img, input, nav, p, section, span
+components/portal/order-leadership-context.tsx                                 button, div, h2, p, span
+components/portal/portal-appearance-modal.tsx                                  button, div, h2, header, p, section
+components/portal/portal-collapsible-columns.tsx                               button, div
+components/portal/portal-context-panel.tsx                                     a, article, button, div, form, h2, h3, header, img, input, label, option, p, select, span, textarea
+components/portal/portal-header.tsx                                            div, header, img, span
+components/portal/portal-mobile-context-drawer.tsx                             aside, button, div, h2, p, section
+components/portal/portal-modal-button.tsx                                      button
+components/portal/portal-responsive-right-sidebar.tsx                          aside, button, div, p, section
+components/portal/portal-right-sidebar.tsx                                     aside, div, h2, p, section
+components/portal/portal-sidebar.tsx                                           aside, button, div, form, img, input, nav, section, span
+components/portal/portal-skin-atmosphere.tsx                                   div, span
+components/portal/portal-skin-gallery.tsx                                      article, button, div, h2, p, span, strong
+components/portal/portal-skin-provider.tsx                                     div
+components/portal/portal-skin-switcher.tsx                                     button, span
+components/portal/room-info-button.tsx                                         button, div, h2, p, section
+components/portal/staff-appear-offline-toggle.tsx                              button
+components/portal/store-context-panel.tsx                                      button, div, h3, input, p, section
+components/privacy/cookie-storage-controls.tsx                                 button, div, h2, input, label, p, section, span
+components/private-location/private-location-invitation-popup.tsx              button, div, form, h2, input, p, section, span
+components/pwa/pwa-install-prompt.tsx                                          button, div, img, p, span
+components/races/ancestry-attribute-modifiers.tsx                              div, p, section, span
+components/registration-closed-notice.tsx                                      button, div, form, h2, input, label, p, textarea
+components/reports/character-profile-report-button.tsx                         button, div, h2, input, label, option, p, select, span, strong, textarea
+components/reports/report-button.tsx                                           button, div, h2, label, option, p, select, span, strong, textarea
+components/rules/public-rules.tsx                                              article, aside, button, div, h1, h2, h3, header, input, main, nav, p, section, span
+components/sanctions/player-sanctions-sidebar-link.tsx                         span
+components/sanctions/sanction-capability-ui.tsx                                div, span
+components/sanctions/sanction-context-panel.tsx                                button, div, h2, input, p, span
+components/sanctions/sanction-evidence.tsx                                     article, div, header, p, section
+components/sanctions/sanction-notification-badge.tsx                           span
+components/sepulchria/sep-ui.tsx                                               div, h2, header, p, section, span
+components/sign-up-form.tsx                                                    button, div, form, h3, input, label, p, section, span
+components/store/store-account-panels.tsx                                      details, div, h2, p, section, span, summary
+components/store/store-live-filter-bar.tsx                                     input
+components/store/store-music-preview.tsx                                       button, div, p
+components/store/store-remnant-purchase-button.tsx                             button, div, form, input, p
+components/store/store-stripe-purchase-button.tsx                              button, div, form, input, p
+components/support/ticket-context-panel.tsx                                    div, h2, input, p, span
+components/support/ticket-notification-badge.tsx                               span
+components/theme-switcher.tsx                                                  span
+components/tidings/tidings-ticker.tsx                                          div, footer, span, strong
+components/turnstile-widget.tsx                                                div
+components/tutorial/connect-supabase-steps.tsx                                 a, p, span
+components/tutorial/fetch-data-steps.tsx                                       a, p, span
+components/tutorial/sign-up-user-steps.tsx                                     li, p, span, ul
+components/tutorial/tutorial-step.tsx                                          div, label, li, span
+components/ui/badge.tsx                                                        div
+components/ui/card.tsx                                                         div
+components/ui/dropdown-menu.tsx                                                span
+components/ui/input.tsx                                                        input
+components/update-password-form.tsx                                            div, form, p
+components/warping/price-tooltip.tsx                                           span
+components/warping/shape-extended-description.tsx                              button, div, span
+components/warping/shapes-catalogue.tsx                                        article, button, div, input, option, p, section, select, span
+components/world/admin-london-clock.tsx                                        div, input, p
+components/world/atmospheric-image.tsx                                         div
+components/world/calendar-event-notification-badge.tsx                         span
+components/world/collapsible-room-description.tsx                              button, div, p
+components/world/image-preview-button.tsx                                      button, div, img
+components/world/location-atmospheric-image.tsx                                div
+components/world/location-image-lightbox.tsx                                   button, div, img, span
+components/world/location-image-save-form.tsx                                  form, p
+components/world/london-world-clock-control.tsx                                div, input, p
+components/world/world-indicator.tsx                                           article, button, div, h2, h3, h4, img, p, section, span
+
+====================================================================================================
+
+Active .tsx files scanned:       451
+Files rendering target tags:     393
+Files rendering none:            58
+Distinct native tags found:      31 / 31
+
+Tags found: a, article, aside, button, details, div, footer, form, h1, h2, h3, h4, header, img, input, label, li, main, nav, option, p, section, select, span, strong, summary, table, td, textarea, tr, ul
+
+FILES WITH NONE OF THE TARGET TAGS
+----------------------------------------------------------------------------------------------------
+app/(portal)/admin/orders/layout.tsx
+app/(portal)/forum/manage/page.tsx
+app/(portal)/forum/manage/sections/[sectionId]/page.tsx
+app/(portal)/forum/manage/sections/new/page.tsx
+app/(portal)/forum/manage/sections/page.tsx
+app/(portal)/forum/manage/topics/page.tsx
+app/(portal)/forum/moderation/page.tsx
+app/(portal)/game/components/RoomRealtime.tsx
+app/(portal)/gifts/page.tsx
+app/(portal)/messages/[id]/components/ConversationRealtime.tsx
+app/(portal)/messages/components/messages-inbox-realtime.tsx
+app/(portal)/messages/page.tsx
+app/(portal)/private-location/page.tsx
+app/(portal)/races/[slug]/page.tsx
+app/(portal)/races/page.tsx
+app/auth/forgot-password/page.tsx
+app/auth/login/page.tsx
+app/auth/sign-up/page.tsx
+app/codex-preview/[id]/page.tsx
+app/homepage/page.tsx
+app/layout.tsx
+components/admin/admin-interaction-keeper.tsx
+components/admin/admin-orders-collapse-enhancer.tsx
+components/associations/association-card.tsx
+components/associations/association-grid.tsx
+components/audio/portal-audio-provider.tsx
+components/audio/portal-message-sound-listener.tsx
+components/characters/character-inventory-display.tsx
+components/characters/live-character-sheet-refresh.tsx
+components/cosmetics/cosmetic-frame-overlay.tsx
+components/cosmetics/cosmetic-runtime.tsx
+components/forum/forum-character-link.tsx
+components/forum/forum-topic-realtime.tsx
+components/invitations/invitation-owner-state-refresh.tsx
+components/messages/rich-message-content.tsx
+components/messages/rich-message-editor.tsx
+components/missions/missions-live-sync.tsx
+components/next-logo.tsx
+components/notifications/portal-notification-counts-provider.tsx
+components/orders/order-grid.tsx
+components/polls/poll-seen-marker.tsx
+components/portal/embedded-portal-skin-bridge.tsx
+components/portal/portal-interaction-layer.tsx
+components/portal/portal-modal-viewport-manager.tsx
+components/portal/portal-presence-heartbeat.tsx
+components/portal/portal-session-guard.tsx
+components/pwa/service-worker-registration.tsx
+components/races/race-card.tsx
+components/races/race-grid.tsx
+components/races/race-hero.tsx
+components/sanctions/sanction-live-sync.tsx
+components/supabase-logo.tsx
+components/support/ticket-live-sync.tsx
+components/tutorial/code-block.tsx
+components/ui/button.tsx
+components/ui/checkbox.tsx
+components/ui/label.tsx
+components/world/world-state-provider.tsx
